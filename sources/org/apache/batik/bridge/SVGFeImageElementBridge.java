@@ -127,7 +127,10 @@ public class SVGFeImageElementBridge
                 (ctx, primitiveRegion, refElement, toBBoxNeeded, filterElement, filteredNode);
         } catch (BridgeException ex) {
             throw ex;
-        } catch (Exception ex) { /* Nothing to do */ }
+        } catch (SecurityException ex) {
+            throw new BridgeException(filterElement, ERR_URI_UNSECURE,
+                                      new Object[] {uriStr});
+        } catch (Exception ex) {/* Nothing to do */ }
 
         if (filter == null) {
             // try to load the image as a raster image (JPG or PNG)

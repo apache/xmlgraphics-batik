@@ -41,6 +41,7 @@ import org.apache.batik.gvt.TextPainter;
 import org.apache.batik.script.Interpreter;
 import org.apache.batik.script.InterpreterPool;
 import org.apache.batik.util.SVGConstants;
+import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.Service;
 
 import org.w3c.dom.Document;
@@ -457,6 +458,9 @@ public class BridgeContext implements ErrorConstants, CSSContext {
                                       new Object[] {uri});
         } catch (IllegalArgumentException ex) {
             throw new BridgeException(e, ERR_URI_REFERENCE_A_DOCUMENT,
+                                      new Object[] {uri});
+        } catch (SecurityException ex) {
+            throw new BridgeException(e, ERR_URI_UNSECURE,
                                       new Object[] {uri});
         }
     }
@@ -884,7 +888,11 @@ public class BridgeContext implements ErrorConstants, CSSContext {
             Node node = (Node)evt.getTarget();
             BridgeUpdateHandler h = getBridgeUpdateHandler(node);
             if (h != null) {
-                h.handleDOMAttrModifiedEvent((MutationEvent)evt);
+                try {
+                    h.handleDOMAttrModifiedEvent((MutationEvent)evt);
+                } catch (Exception e) {
+                    userAgent.displayError(e);
+                }
             }
         }
     }
@@ -902,7 +910,11 @@ public class BridgeContext implements ErrorConstants, CSSContext {
             BridgeUpdateHandler h = 
                 getBridgeUpdateHandler(me.getRelatedNode());
             if (h != null) {
-                h.handleDOMNodeInsertedEvent(me);
+                try {
+                    h.handleDOMNodeInsertedEvent(me);
+                } catch (Exception e) {
+                    userAgent.displayError(e);
+                }
             }
         }
     }
@@ -919,7 +931,11 @@ public class BridgeContext implements ErrorConstants, CSSContext {
             Node node = (Node)evt.getTarget();
             BridgeUpdateHandler h = getBridgeUpdateHandler(node);
             if (h != null) {
-                h.handleDOMNodeRemovedEvent((MutationEvent)evt);
+                try {
+                    h.handleDOMNodeRemovedEvent((MutationEvent)evt);
+                } catch (Exception e) {
+                    userAgent.displayError(e);
+                }
             }
         }
     }
@@ -939,7 +955,11 @@ public class BridgeContext implements ErrorConstants, CSSContext {
             }
             BridgeUpdateHandler h = getBridgeUpdateHandler(node);
             if (h != null) {
-                h.handleDOMCharacterDataModified((MutationEvent)evt);
+                try {
+                    h.handleDOMCharacterDataModified((MutationEvent)evt);
+                } catch (Exception e) {
+                    userAgent.displayError(e);
+                }
             }
         }
     }
@@ -1024,6 +1044,30 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     public float getBlockHeight(Element elt) {
         return getViewport(elt).getHeight();
     }
+
+    /**
+     * This method throws a SecurityException if the resource
+     * found at url and referenced from docURL
+     * should not be loaded.
+     * 
+     * This is a convenience method to call checkLoadExternalResource
+     * on the ExternalResourceSecurity strategy returned by 
+     * getExternalResourceSecurity.
+     *
+     * @param scriptURL url for the script, as defined in
+     *        the script's xlink:href attribute. If that
+     *        attribute was empty, then this parameter should
+     *        be null
+     * @param docURL url for the document into which the 
+     *        script was found.
+     */
+    public void 
+        checkLoadExternalResource(ParsedURL resourceURL,
+                                  ParsedURL docURL) throws SecurityException {
+        userAgent.checkLoadExternalResource(resourceURL,
+                                            docURL);
+    }
+
 
     // bridge extensions support //////////////////////////////////////////////
 

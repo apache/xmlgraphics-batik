@@ -97,10 +97,9 @@ public class SVGStyleSheetProcessingInstruction
                 } catch (Exception ex) {
                 }
                 CSSEngine e = doc.getCSSEngine();
+                
                 styleSheet = e.parseStyleSheet
-                    (new InputSource(new ParsedURL(durl, href).toString()),
-                     burl,
-                     media);
+                    (burl, media);
                 styleSheet.setAlternate("yes".equals(alternate));
                 styleSheet.setTitle(title);
             }

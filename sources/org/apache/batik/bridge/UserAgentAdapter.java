@@ -276,6 +276,78 @@ public class UserAgentAdapter implements UserAgent {
         return new DefaultScriptSecurity(scriptType, scriptPURL, docPURL);
     }
     
+    /**
+     * This method throws a SecurityException if the script
+     * of given type, found at url and referenced from docURL
+     * should not be loaded.
+     * 
+     * This is a convenience method to call checkLoadScript
+     * on the ScriptSecurity strategy returned by 
+     * getScriptSecurity.
+     *
+     * @param scriptType type of script, as found in the 
+     *        type attribute of the &lt;script&gt; element.
+     * @param scriptURL url for the script, as defined in
+     *        the script's xlink:href attribute. If that
+     *        attribute was empty, then this parameter should
+     *        be null
+     * @param docURL url for the document into which the 
+     *        script was found.
+     */
+    public void checkLoadScript(String scriptType,
+                                ParsedURL scriptURL,
+                                ParsedURL docURL) throws SecurityException {
+        ScriptSecurity s = getScriptSecurity(scriptType,
+                                             scriptURL,
+                                             docURL);
+        if (s != null) {
+            s.checkLoadScript();
+        }
+    }
+
+    /**
+     * Returns the security settings for the given resource
+     * url and document url
+     * 
+     * @param resourceURL url for the resource, as defined in
+     *        the resource's xlink:href attribute. If that
+     *        attribute was empty, then this parameter should
+     *        be null
+     * @param docURL url for the document into which the 
+     *        resource was found.
+     */
+    public ExternalResourceSecurity 
+        getExternalResourceSecurity(ParsedURL resourcePURL,
+                                    ParsedURL docURL) {
+        return new RelaxedExternalResourceSecurity(resourcePURL, docURL);
+    }
+    
+    /**
+     * This method throws a SecurityException if the resource
+     * found at url and referenced from docURL
+     * should not be loaded.
+     * 
+     * This is a convenience method to call checkLoadExternalResource
+     * on the ExternalResourceSecurity strategy returned by 
+     * getExternalResourceSecurity.
+     *
+     * @param scriptURL url for the script, as defined in
+     *        the script's xlink:href attribute. If that
+     *        attribute was empty, then this parameter should
+     *        be null
+     * @param docURL url for the document into which the 
+     *        script was found.
+     */
+    public void 
+        checkLoadExternalResource(ParsedURL resourceURL,
+                                  ParsedURL docURL) throws SecurityException {
+        ExternalResourceSecurity s 
+            =  getExternalResourceSecurity(resourceURL, docURL);
+
+        if (s != null) {
+            s.checkLoadExternalResource();
+        }
+    }
 
     /**
      * Returns a lighter font-weight.

@@ -35,6 +35,7 @@ import org.apache.batik.css.parser.ExtendedParser;
 import org.apache.batik.css.engine.sac.ExtendedSelector;
 
 import org.apache.batik.util.CSSConstants;
+import org.apache.batik.util.ParsedURL;
 
 import org.w3c.css.sac.CSSException;
 import org.w3c.css.sac.DocumentHandler;
@@ -958,8 +959,19 @@ public abstract class CSSEngine {
      */
     public void parseStyleSheet(StyleSheet ss, URL uri) throws DOMException {
 	try {
-            parseStyleSheet(ss, new InputSource(uri.toString()), uri);
-	} catch (Exception e) {
+            // Check that access to the uri is allowed
+             ParsedURL pDocURL = null;
+             if (documentURI != null) {
+                 pDocURL = new ParsedURL(documentURI);
+             }
+
+             ParsedURL pURL = new ParsedURL(uri);
+             cssContext.checkLoadExternalResource(pURL, pDocURL);
+             
+             parseStyleSheet(ss, new InputSource(uri.toString()), uri);
+	} catch (SecurityException e) {
+            throw e; 
+        } catch (Exception e) {
             String m = e.getMessage();
             String s =
                 Messages.formatMessage("syntax.error.at",

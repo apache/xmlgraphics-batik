@@ -358,16 +358,7 @@ public class BaseScriptingEnvironment {
     private void checkCompatibleScriptURL(String scriptType, 
                                           ParsedURL scriptPURL){
         ParsedURL docPURL = new ParsedURL(((SVGDocument)document).getURL());
-        ScriptSecurity security = userAgent.getScriptSecurity(scriptType,
-                                                              scriptPURL,
-                                                              docPURL);
-
-        if (security == null) {
-            security = new DefaultScriptSecurity(scriptType, scriptPURL,
-                                                 docPURL);
-        }
-
-        security.checkLoadScript();
+        userAgent.checkLoadScript(scriptType, scriptPURL, docPURL);
     }
 
     /**

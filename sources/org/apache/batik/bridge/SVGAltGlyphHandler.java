@@ -53,15 +53,24 @@ public class SVGAltGlyphHandler implements AltGlyphHandler, SVGConstants {
      */
     public GVTGlyphVector createGlyphVector(FontRenderContext frc, float fontSize,
                                      AttributedCharacterIterator aci) {
-        if (textElement.getTagName().equals(SVG_ALT_GLYPH_TAG)) {
-            SVGAltGlyphElementBridge altGlyphBridge
-                = (SVGAltGlyphElementBridge)ctx.getBridge(textElement);
-            Glyph[] glyphArray
-                = altGlyphBridge.createAltGlyphArray(ctx, textElement, fontSize, aci);
-            if (glyphArray != null) {
-                return new SVGGVTGlyphVector(null, glyphArray, frc);
+        try {
+            if (textElement.getTagName().equals(SVG_ALT_GLYPH_TAG)) {
+                SVGAltGlyphElementBridge altGlyphBridge
+                    = (SVGAltGlyphElementBridge)ctx.getBridge(textElement);
+                Glyph[] glyphArray
+                    = altGlyphBridge.createAltGlyphArray(ctx, textElement, fontSize, aci);
+                if (glyphArray != null) {
+                    return new SVGGVTGlyphVector(null, glyphArray, frc);
+                }
             }
+        } catch (SecurityException e) {
+            ctx.getUserAgent().displayError(e);
+            // Throw exception because we do not want to continue
+            // processing. In the case of a SecurityException, the 
+            // end user would get a lot of exception like this one.
+            throw e;
         }
+
         return null;
     }
 }

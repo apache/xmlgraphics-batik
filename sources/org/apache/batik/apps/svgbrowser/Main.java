@@ -187,6 +187,8 @@ public class Main implements Application {
                      Boolean.TRUE);
         defaults.put(PreferenceDialog.PREFERENCE_KEY_CONSTRAIN_SCRIPT_ORIGIN,
                      Boolean.TRUE);
+        defaults.put(PreferenceDialog.PREFERENCE_KEY_CONSTRAIN_EXTERNAL_RESOURCE_ORIGIN,
+                     Boolean.FALSE);
 	
         securityEnforcer 
             = new ApplicationSecurityEnforcer(this.getClass(),
@@ -586,5 +588,14 @@ public class Main implements Application {
     public boolean constrainScriptOrigin(){
             return preferenceManager.getBoolean
                 (PreferenceDialog.PREFERENCE_KEY_CONSTRAIN_SCRIPT_ORIGIN);
+    }
+
+    /**
+     * Returns true if the external resource's origin should be 
+     * constrained to be the same as the corresponding document's origin
+     */
+    public boolean constrainExternalResourceOrigin() {
+            return preferenceManager.getBoolean
+                (PreferenceDialog.PREFERENCE_KEY_CONSTRAIN_EXTERNAL_RESOURCE_ORIGIN);
     }
 }

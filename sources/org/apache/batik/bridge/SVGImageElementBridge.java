@@ -119,6 +119,9 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
             }
         } catch (BridgeException ex) {
             throw ex;
+        } catch (SecurityException ex) {
+            throw new BridgeException(e, ERR_URI_UNSECURE,
+                                      new Object[] {uriStr});
         } catch (Exception ex) {
             /* Nothing to do */
         }

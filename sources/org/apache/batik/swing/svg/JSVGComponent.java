@@ -39,8 +39,10 @@ import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeException;
 import org.apache.batik.bridge.BridgeExtension;
 import org.apache.batik.bridge.DefaultScriptSecurity;
+import org.apache.batik.bridge.RelaxedExternalResourceSecurity;
 import org.apache.batik.bridge.DocumentLoader;
 import org.apache.batik.bridge.GraphicsNodeBridge;
+import org.apache.batik.bridge.ExternalResourceSecurity;
 import org.apache.batik.bridge.ScriptSecurity;
 import org.apache.batik.bridge.UpdateManager;
 import org.apache.batik.bridge.UpdateManagerEvent;
@@ -1317,6 +1319,7 @@ public class JSVGComponent extends JGVTComponent {
                     (new Runnable() {
                         public void run() {
                             eventDispatcher.mouseClicked(e);
+                            
                         }
                     });
             }
@@ -2029,7 +2032,130 @@ public class JSVGComponent extends JGVTComponent {
             }
         }
     
+        /**
+         * This method throws a SecurityException if the script
+         * of given type, found at url and referenced from docURL
+         * should not be loaded.
+         * 
+         * This is a convenience method to call checkLoadScript
+         * on the ScriptSecurity strategy returned by 
+         * getScriptSecurity.
+         *
+         * @param scriptType type of script, as found in the 
+         *        type attribute of the &lt;script&gt; element.
+         * @param scriptURL url for the script, as defined in
+         *        the script's xlink:href attribute. If that
+         *        attribute was empty, then this parameter should
+         *        be null
+         * @param docURL url for the document into which the 
+         *        script was found.
+         */
+        public void checkLoadScript(String scriptType,
+                                    ParsedURL scriptPURL,
+                                    ParsedURL docPURL) throws SecurityException {
+            if (EventQueue.isDispatchThread()) {
+                userAgent.checkLoadScript(scriptType,
+                                          scriptPURL,
+                                          docPURL);
+            } else {
+                final String st = scriptType;
+                final ParsedURL sPURL= scriptPURL;
+                final ParsedURL dPURL= docPURL;
+                class Query implements Runnable {
+                    SecurityException se = null;
+                    public void run() {
+                        try {
+                            userAgent.checkLoadScript(st, sPURL, dPURL);
+                        } catch (SecurityException se) {
+                            this.se = se;
+                        }
+                    }
+                }
+                Query q = new Query();
+                invokeAndWait(q);
+                if (q.se != null) {
+                    throw q.se;
+                }
+            }
+        }
+        
 
+        /**
+         * Returns the security settings for the given resource
+         * url and document url
+         * 
+         * @param resourceURL url for the resource, as defined in
+         *        the resource's xlink:href attribute. If that
+         *        attribute was empty, then this parameter should
+         *        be null
+         * @param docURL url for the document into which the 
+         *        resource was found.
+         */
+        public ExternalResourceSecurity 
+            getExternalResourceSecurity(ParsedURL resourcePURL,
+                                        ParsedURL docPURL){
+            if (EventQueue.isDispatchThread()) {
+                return userAgent.getExternalResourceSecurity(resourcePURL,
+                                                             docPURL);
+            } else {
+                final ParsedURL rPURL= resourcePURL;
+                final ParsedURL dPURL= docPURL;
+                class Query implements Runnable {
+                    ExternalResourceSecurity result;
+                    public void run() {
+                        result = userAgent.getExternalResourceSecurity(rPURL, dPURL);
+                    }
+                }
+                Query q = new Query();
+                invokeAndWait(q);
+                return q.result;
+            }
+        }
+    
+        /**
+         * This method throws a SecurityException if the resource
+         * found at url and referenced from docURL
+         * should not be loaded.
+         * 
+         * This is a convenience method to call checkLoadExternalResource
+         * on the ExternalResourceSecurity strategy returned by 
+         * getExternalResourceSecurity.
+         *
+         * @param scriptURL url for the script, as defined in
+         *        the script's xlink:href attribute. If that
+         *        attribute was empty, then this parameter should
+         *        be null
+         * @param docURL url for the document into which the 
+         *        script was found.
+         */
+        public void 
+            checkLoadExternalResource(ParsedURL resourceURL,
+                                      ParsedURL docURL) throws SecurityException {
+            if (EventQueue.isDispatchThread()) {
+                userAgent.checkLoadExternalResource(resourceURL,
+                                                    docURL);
+            } else {
+                final ParsedURL rPURL= resourceURL;
+                final ParsedURL dPURL= docURL;
+                class Query implements Runnable {
+                    SecurityException se;
+                    public void run() {
+                        try {
+                            userAgent.checkLoadExternalResource(rPURL, dPURL);
+                        } catch (SecurityException se) {
+                            this.se = se;
+                        }
+                    }
+                }
+                Query q = new Query();
+                invokeAndWait(q);
+                if (q.se != null) {
+                    q.se.fillInStackTrace();
+                    throw q.se;
+                }
+            }
+        }
+        
         /**
          * Invokes the given runnable from the event thread, and wait
          * for the run method to terminate.
@@ -2261,6 +2387,7 @@ public class JSVGComponent extends JGVTComponent {
 
             // Avoid reloading if possible.
             if (svgDocument != null) {
+
                 // if the anchor element is in an external resource
                 if (elt.getOwnerDocument() != svgDocument) {
                     SVGDocument doc = (SVGDocument)elt.getOwnerDocument();
@@ -2445,6 +2572,96 @@ public class JSVGComponent extends JGVTComponent {
             }
         }
     
+        /**
+         * This method throws a SecurityException if the script
+         * of given type, found at url and referenced from docURL
+         * should not be loaded.
+         * 
+         * This is a convenience method to call checkLoadScript
+         * on the ScriptSecurity strategy returned by 
+         * getScriptSecurity.
+         *
+         * @param scriptType type of script, as found in the 
+         *        type attribute of the &lt;script&gt; element.
+         * @param scriptURL url for the script, as defined in
+         *        the script's xlink:href attribute. If that
+         *        attribute was empty, then this parameter should
+         *        be null
+         * @param docURL url for the document into which the 
+         *        script was found.
+         */
+        public void checkLoadScript(String scriptType,
+                                    ParsedURL scriptURL,
+                                    ParsedURL docURL) throws SecurityException {
+            if (svgUserAgent != null) {
+                svgUserAgent.checkLoadScript(scriptType,
+                                             scriptURL,
+                                             docURL);
+            } else {
+                ScriptSecurity s = getScriptSecurity(scriptType,
+                                                     scriptURL,
+                                                     docURL);
+                if (s != null) {
+                    s.checkLoadScript();
+                }
+            }
+        }
+        
+        /**
+         * Returns the security settings for the given 
+         * resource url and document url
+         * 
+         * @param resourceURL url for the script, as defined in
+         *        the resource's xlink:href attribute. If that
+         *        attribute was empty, then this parameter should
+         *        be null
+         * @param docURL url for the document into which the 
+         *        script was found.
+         */
+        public ExternalResourceSecurity 
+            getExternalResourceSecurity(ParsedURL resourceURL,
+                                        ParsedURL docURL){
+            if (svgUserAgent != null){
+                return svgUserAgent.getExternalResourceSecurity(resourceURL,
+                                                                docURL);
+            } else {
+                return new RelaxedExternalResourceSecurity(resourceURL, 
+                                                           docURL);
+            }
+        }
+    
+        /**
+         * This method throws a SecurityException if the resource
+         * found at url and referenced from docURL
+         * should not be loaded.
+         * 
+         * This is a convenience method to call checkLoadExternalResource
+         * on the ExternalResourceSecurity strategy returned by 
+         * getExternalResourceSecurity.
+         *
+         * @param scriptURL url for the script, as defined in
+         *        the script's xlink:href attribute. If that
+         *        attribute was empty, then this parameter should
+         *        be null
+         * @param docURL url for the document into which the 
+         *        script was found.
+         */
+        public void 
+            checkLoadExternalResource(ParsedURL resourceURL,
+                                      ParsedURL docURL) throws SecurityException {
+            if (svgUserAgent != null) {
+                svgUserAgent.checkLoadExternalResource(resourceURL,
+                                                       docURL);
+            } else {
+                ExternalResourceSecurity s 
+                    =  getExternalResourceSecurity(resourceURL, docURL);
+                
+                if (s != null) {
+                    s.checkLoadExternalResource();
+                }
+            }
+        }
+        
 
     }
 

@@ -137,7 +137,8 @@ public class PreferenceDialog extends JDialog
     public static final String LABEL_CONSTRAIN_SCRIPT_ORIGIN
         = "PreferenceDialog.label.constrain.script.origin";
 
-    
+    public static final String LABEL_CONSTRAIN_EXTERNAL_RESOURCE_ORIGIN
+        = "PreferenceDialog.label.constrain.external.resource.origin";
 
     public static final String LABEL_HOST
         = "PreferenceDialog.label.host";
@@ -222,6 +223,9 @@ public class PreferenceDialog extends JDialog
     public static final String PREFERENCE_KEY_CONSTRAIN_SCRIPT_ORIGIN
         = "preference.key.constrain.script.origin";
 
+    public static final String PREFERENCE_KEY_CONSTRAIN_EXTERNAL_RESOURCE_ORIGIN
+        = "preference.key.constrain.external.resource.origin";
+
     /**
      * <tt>PreferenceManager</tt> used to store and retrieve
      * preferences
@@ -262,6 +266,8 @@ public class PreferenceDialog extends JDialog
     protected JCheckBox loadEcmascript;
 
     protected JCheckBox constrainScriptOrigin;
+
+    protected JCheckBox constrainExternalResourceOrigin;
 
     protected JTextField host, port;
 
@@ -328,6 +334,7 @@ public class PreferenceDialog extends JDialog
         loadJava.setSelected(model.getBoolean(PREFERENCE_KEY_LOAD_JAVA));
         loadEcmascript.setSelected(model.getBoolean(PREFERENCE_KEY_LOAD_ECMASCRIPT));
         constrainScriptOrigin.setSelected(model.getBoolean(PREFERENCE_KEY_CONSTRAIN_SCRIPT_ORIGIN));
+        constrainExternalResourceOrigin.setSelected(model.getBoolean(PREFERENCE_KEY_CONSTRAIN_EXTERNAL_RESOURCE_ORIGIN));
 
         showRendering.setEnabled
             (!model.getBoolean(PREFERENCE_KEY_ENABLE_DOUBLE_BUFFERING));
@@ -376,6 +383,8 @@ public class PreferenceDialog extends JDialog
                          loadEcmascript.isSelected());
         model.setBoolean(PREFERENCE_KEY_CONSTRAIN_SCRIPT_ORIGIN,
                          constrainScriptOrigin.isSelected());
+        model.setBoolean(PREFERENCE_KEY_CONSTRAIN_EXTERNAL_RESOURCE_ORIGIN,
+                         constrainExternalResourceOrigin.isSelected());
 
         model.setString(PREFERENCE_KEY_PROXY_HOST,
                         host.getText());
@@ -569,6 +578,9 @@ public class PreferenceDialog extends JDialog
         constrainScriptOrigin
             = new JCheckBox(Resources.getString(LABEL_CONSTRAIN_SCRIPT_ORIGIN));
 
+        constrainExternalResourceOrigin
+            = new JCheckBox(Resources.getString(LABEL_CONSTRAIN_EXTERNAL_RESOURCE_ORIGIN));
+
         p.add(showRendering,    0, 0, 1, 1, WEST, HORIZONTAL, 1, 0);
         p.add(autoAdjustWindow, 0, 1, 1, 1, WEST, HORIZONTAL, 1, 0);
         p.add(enableDoubleBuffering, 0, 2, 1, 1, WEST, HORIZONTAL, 1, 0);
@@ -579,6 +591,7 @@ public class PreferenceDialog extends JDialog
         p.add(loadJava, 0, 7, 1, 1, WEST, HORIZONTAL, 1, 0);
         p.add(loadEcmascript, 0, 8, 1, 1, WEST, HORIZONTAL, 1, 0);
         p.add(constrainScriptOrigin, 0, 9, 1, 1, WEST, HORIZONTAL, 1, 0);
+        p.add(constrainExternalResourceOrigin, 0, 10, 1, 1, WEST, HORIZONTAL, 1, 0);
 
         p.setBorder(BorderFactory.createCompoundBorder
                     (BorderFactory.createTitledBorder

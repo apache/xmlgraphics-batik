@@ -100,11 +100,22 @@ public class SVGColorProfileElementBridge extends AbstractSVGBridge
                 throw new BridgeException(paintedElement, ERR_URI_MALFORMED,
                                           new Object[] {href});
             try{
+                ParsedURL pDocURL = null;
+                if (baseURI != null) {
+                    pDocURL = new ParsedURL(baseURI);
+                }
+
+               ctx.getUserAgent().checkLoadExternalResource(purl, 
+                                                            pDocURL);
+
                 p = ICC_Profile.getInstance(purl.openStream());
             } catch(IOException e) {
                 throw new BridgeException(paintedElement, ERR_URI_IO,
                                           new Object[] {href});
                 // ??? IS THAT AN ERROR FOR THE SVG SPEC ???
+            } catch(SecurityException e) {
+                throw new BridgeException(paintedElement, ERR_URI_UNSECURE,
+                                          new Object[] {href});
             }
         }
         if (p == null) {

@@ -84,6 +84,14 @@ public interface ErrorConstants {
         = "uri.io";
 
     /**
+     * The error code when the bridge encountered a SecurityException
+     * while loading a URI
+     * {0} = the uri
+     */
+    public static final String ERR_URI_UNSECURE
+        = "uri.unsecure";
+
+    /**
      * The error code when the bridge tries to referenced an invalid
      * node inside a document.
      * {0} = the uri

@@ -74,6 +74,14 @@
                       value="false" />
         </test>
 
+        <test id="externalResourcesAccess" 
+              class="org.apache.batik.bridge.ExternalResourcesTest" />
+
+        <test id="externalResourcesAccess" 
+              class="org.apache.batik.bridge.ExternalResourcesTest" >
+            <property name="Secure" class="java.lang.Boolean"
+                      value="false" />
+        </test>
 
     </testGroup>
 

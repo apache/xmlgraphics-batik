@@ -282,6 +282,9 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
             } catch(IOException ex) {
                 throw new BridgeException(e, ERR_URI_IO,
                                           new Object[] {uriStr});
+            } catch(SecurityException ex) {
+                throw new BridgeException(e, ERR_URI_UNSECURE,
+                                          new Object[] {uriStr});
             }
         }
     }
