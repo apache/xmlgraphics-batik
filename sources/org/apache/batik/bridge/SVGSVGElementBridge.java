@@ -137,8 +137,8 @@ public class SVGSVGElementBridge extends AbstractSVGBridge
                 // offsets[3] = left
                 clip = new Rectangle2D.Float(x+offsets[3],
                                              y+offsets[0],
-                                             w-offsets[1],
-                                             h-offsets[2]);
+                                             w-offsets[1]-offsets[3],
+                                             h-offsets[2]-offsets[0]);
             }
         }
 

@@ -199,8 +199,8 @@ public class SVGMarkerElementBridge extends AbstractSVGBridge
                 markerClip = new Rectangle2D.Float
                     (offsets[3],
                      offsets[0],
-                     strokeWidth * markerWidth - offsets[1],
-                     strokeWidth * markerHeight - offsets[2]);
+                     strokeWidth * markerWidth - offsets[1] - offsets[3],
+                     strokeWidth * markerHeight - offsets[2] - offsets[0]);
             }
 
             CompositeGraphicsNode comp = new CompositeGraphicsNode();
