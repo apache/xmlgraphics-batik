@@ -344,7 +344,7 @@ public class XMLTestReportProcessor
             
             entryElement.setAttributeNS(null, 
                                         XTR_VALUE_ATTRIBUTE,
-                                        value.toString());
+                                        value!=null?value.toString():"null");
 
         }
     }
