@@ -201,8 +201,10 @@ public class JSVGCanvas extends JComponent {
             renderer = rendererFactory.createRenderer(buffer);
             renderer.setTransform(transform);
         }
-        if (renderer != null && gvtRoot != null) {
+        if (renderer != null && gvtRoot != null &&
+            renderer.getTree() != gvtRoot) {
             renderer.setTree(gvtRoot);
+            repaint = true;
         }
         if (repaint) {
             renderer.repaint(new Rectangle2D.Float(0, 0, w, h));
