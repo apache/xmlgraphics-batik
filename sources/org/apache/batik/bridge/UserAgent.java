@@ -29,6 +29,12 @@ import org.w3c.dom.svg.SVGAElement;
  */
 public interface UserAgent {
 
+    // <!> FIXME: TO BE REMOVED
+    /**
+     * Returns the event dispatcher to use.
+     */
+    EventDispatcher getEventDispatcher();
+
     /**
      * Returns the default size of the viewport.
      */

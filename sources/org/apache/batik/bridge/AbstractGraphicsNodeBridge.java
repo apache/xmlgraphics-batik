@@ -94,6 +94,7 @@ public abstract class AbstractGraphicsNodeBridge implements GraphicsNodeBridge,
         // bind the specified element and its associated graphics node if needed
         if (ctx.isDynamic()) {
             ctx.bind(e, node);
+            BridgeEventSupport.addDOMListener(ctx, e);
         }
     }
 
