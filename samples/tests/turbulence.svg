@@ -6,10 +6,10 @@
 
 <g>
   <text x="225" y="50"
-        style="font-family:Helvetica; font-size:16pt; text-anchor:middle">
+        style="font-family:Helvetica; font-size:16; text-anchor:middle">
     Filter Effect: feTurbulence
   </text>
-  <g  style="font-family:Verdana; text-anchor:middle; font-size:10pt"
+  <g  style="font-family:SanSerif; text-anchor:middle; font-size:9pt"
       transform="translate(0,62.5)">
     <defs>
       <filter id="Turb1" filterUnits="objectBoundingBox" 

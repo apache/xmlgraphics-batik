@@ -11,93 +11,86 @@
 <!-- ========================================================================= -->
 
 <!-- ========================================================================= -->
-<!-- Opacity test. Apply 'stroke-opacity' 'fill-opacity' and 'opacity'         -->
+<!-- Test description here                                                     -->
 <!--                                                                           -->
-<!-- @author Thierry.Kormann@sophia.inria.fr                                   -->
+<!-- @author vincent.hardy@eng.sun.com                                         -->
 <!-- @version $Id$     -->
 <!-- ========================================================================= -->
 
 <?xml-stylesheet type="text/css" href="test.css" ?>
 
 <svg width="450" height="500" viewBox="0 0 450 500">
-<title>Opacity: stroke-opacity, fill-opacity, opacity </title>
+<title>Filter Effect: feTurbulence</title>
     <!-- ============================================================= -->
     <!-- Test content                                                  -->
     <!-- ============================================================= -->
-
     <g id="testContent">
 
+<g>
   <text x="225" y="50" class="title">
-    Opacity : stroke-opacity, fill-opacity and opacity
+    Filter Effect: feTurbulence
   </text>
-  <g class="legend">
+  <g transform="translate(0,62.5)">
     <defs>
-     <g id="elem">
-       <rect x="-45" y="-45" width="90" height="90" 
-             style="fill-opacity:1; stroke-opacity:1; opacity:1; fill:orange"/>
-       <circle cx="0" cy="0" r="35" 
-             style="fill: yellow; stroke: black; stroke-width: 8;"/>
-     </g>
+      <filter id="Turb1" filterUnits="objectBoundingBox" 
+              x="0%" y="0%" width="100%" height="100%">
+        <feTurbulence type="turbulence" baseFrequency="0.05" numOctaves="2"/>
+      </filter>
+      <filter id="Turb2" filterUnits="objectBoundingBox" 
+              x="0%" y="0%" width="100%" height="100%">
+        <feTurbulence type="turbulence" baseFrequency="0.1" numOctaves="2"/>
+      </filter>
+      <filter id="Turb3" filterUnits="objectBoundingBox" 
+              x="0%" y="0%" width="100%" height="100%">
+        <feTurbulence type="turbulence" baseFrequency="0.05" numOctaves="8"/>
+      </filter>
+      <filter id="Turb4" filterUnits="objectBoundingBox" 
+              x="0%" y="0%" width="100%" height="100%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.1" numOctaves="4"/>
+      </filter>
+      <filter id="Turb5" filterUnits="objectBoundingBox" 
+              x="0%" y="0%" width="100%" height="100%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.4" numOctaves="4"/>
+      </filter>
+      <filter id="Turb6" filterUnits="objectBoundingBox" 
+              x="0%" y="0%" width="100%" height="100%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.1" numOctaves="1"/>
+      </filter>
     </defs>
-    <g transform="translate(75 130)">
-      <use xlink:href="#elem" 
-           style="stroke-opacity:1; fill-opacity:1"/>
-      <text x="0" y="60">opacity:1</text>
-      <text x="0" y="70">stroke-opacity:1</text>
-      <text x="0" y="80">fill-opacity:1</text>
-    </g>
-    <g transform="translate(175 130)">
-      <use xlink:href="#elem"
-           style="stroke-opacity:1; fill-opacity:.5"/>
-      <text x="0" y="60">opacity:1</text>
-      <text x="0" y="70">stroke-opacity:1</text>
-      <text x="0" y="80">fill-opacity:0.5</text>
-    </g>
-    <g transform="translate(275 130)">
-    <use xlink:href="#elem"
-         style="stroke-opacity:.5; fill-opacity:1"/>
-      <text x="0" y="60">opacity:1</text>
-      <text x="0" y="70">stroke-opacity:0.5</text>
-      <text x="0" y="80">fill-opacity:1</text>
-    </g>
-    <g transform="translate(375 130)">
-    <use xlink:href="#elem"
-         style="stroke-opacity:.5; fill-opacity:.5"/>
-      <text x="0" y="60">opacity:1</text>
-      <text x="0" y="70">stroke-opacity:0.5</text>
-      <text x="0" y="80">fill-opacity:0.5</text>
-    </g>
+    <g class="legend">
+    <rect x="25" y="25" width="100" height="75" style="filter:url(#Turb1)" />
+    <text x="75" y="117">type=turbulence</text>
+    <text x="75" y="129">baseFrequency=0.05</text>
+    <text x="75" y="141">numOctaves=2</text>
 
-    <g transform="translate(75 330)" >
-    <use xlink:href="#elem"
-         style="stroke-opacity:1; fill-opacity:1; opacity:.5;"/>
-      <text x="0" y="60">opacity:0.5</text>
-      <text x="0" y="70">stroke-opacity:1</text>
-      <text x="0" y="80">fill-opacity:1</text>
-    </g>
-    <g transform="translate(175 330)">
-    <use xlink:href="#elem"
-         style="stroke-opacity:1; fill-opacity:.5 opacity:.5;"/>
-      <text x="0" y="60">opacity:0.5</text>
-      <text x="0" y="70">stroke-opacity:1</text>
-      <text x="0" y="80">fill-opacity:0.5</text>
-    </g>
-    <g transform="translate(275 330)">
-    <use xlink:href="#elem"
-         style="stroke-opacity:.5; fill-opacity:1 opacity:.5;"/>
-      <text x="0" y="60">opacity:0.5</text>
-      <text x="0" y="70">stroke-opacity:0.5</text>
-      <text x="0" y="80">fill-opacity:1</text>
-    </g>
-    <g transform="translate(375 330)">
-    <use xlink:href="#elem"
-         style="stroke-opacity:.5; fill-opacity:.5 opacity:.5;"/>
-      <text x="0" y="60">opacity:0.5</text>
-      <text x="0" y="70">stroke-opacity:0.5</text>
-      <text x="0" y="80">fill-opacity:0.5</text>
-    </g>
+    <rect x="175" y="25" width="100" height="75" style="filter:url(#Turb2)" />
+    <text x="225" y="117">type=turbulence</text>
+    <text x="225" y="129">baseFrequency=0.1</text>
+    <text x="225" y="141">numOctaves=2</text>
 
+    <rect x="325" y="25" width="100" height="75" style="filter:url(#Turb3)" />
+    <text x="375" y="117">type=turbulence</text>
+    <text x="375" y="129">baseFrequency=0.05</text>
+    <text x="375" y="141">numOctaves=8</text>
+
+    <rect x="25" y="180" width="100" height="75" style="filter:url(#Turb4)" />
+    <text x="75" y="272">type=fractalNoise</text>
+    <text x="75" y="284">baseFrequency=0.1</text>
+    <text x="75" y="296">numOctaves=4</text>
+
+    <rect x="175" y="180" width="100" height="75" style="filter:url(#Turb5)" />
+    <text x="225" y="272">type=fractalNoise</text>
+    <text x="225" y="284">baseFrequency=0.4</text>
+    <text x="225" y="296">numOctaves=4</text>
+
+    <rect x="325" y="180" width="100" height="75" style="filter:url(#Turb6)" />
+    <text x="375" y="272">type=fractalNoise</text>
+    <text x="375" y="284">baseFrequency=0.1</text>
+    <text x="375" y="296">numOctaves=1</text>
+   </g>
   </g>
+
+</g>
 
     </g>
 

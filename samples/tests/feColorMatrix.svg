@@ -11,93 +11,126 @@
 <!-- ========================================================================= -->
 
 <!-- ========================================================================= -->
-<!-- Opacity test. Apply 'stroke-opacity' 'fill-opacity' and 'opacity'         -->
+<!-- Test description here                                                     -->
 <!--                                                                           -->
-<!-- @author Thierry.Kormann@sophia.inria.fr                                   -->
+<!-- @author vincent.hardy@eng.sun.com                                         -->
 <!-- @version $Id$     -->
 <!-- ========================================================================= -->
 
 <?xml-stylesheet type="text/css" href="test.css" ?>
 
 <svg width="450" height="500" viewBox="0 0 450 500">
-<title>Opacity: stroke-opacity, fill-opacity, opacity </title>
+<title>Filter Effect: feColorMatrix</title>
     <!-- ============================================================= -->
     <!-- Test content                                                  -->
     <!-- ============================================================= -->
-
     <g id="testContent">
 
   <text x="225" y="50" class="title">
-    Opacity : stroke-opacity, fill-opacity and opacity
+    Filter Effect: feColorMatrix
   </text>
-  <g class="legend">
+  <g transform="translate(30,62.5)">
     <defs>
-     <g id="elem">
-       <rect x="-45" y="-45" width="90" height="90" 
-             style="fill-opacity:1; stroke-opacity:1; opacity:1; fill:orange"/>
-       <circle cx="0" cy="0" r="35" 
-             style="fill: yellow; stroke: black; stroke-width: 8;"/>
-     </g>
+      <filter id="turbSource" filterUnits="objectBoundingBox" 
+              x="0%" y="0%" width="100%" height="100%">
+        <feTurbulence type="turbulence" baseFrequency="0.05" numOctaves="2"/>
+      </filter>
+
+      <filter id="luminanceToAlpha" filterUnits="objectBoundingBox" 
+              x="0%" y="0%" width="100%" height="100%">
+        <feTurbulence type="turbulence" baseFrequency="0.05" numOctaves="2"/>
+        <feColorMatrix filterUnits="objectBoundingBox" 
+              x="0%" y="0%" width="100%" height="100%" 
+              type="luminanceToAlpha" />
+      </filter>
+
+      <filter id="hueRotate" filterUnits="objectBoundingBox" 
+              x="0%" y="0%" width="100%" height="100%">
+        <feTurbulence type="turbulence" baseFrequency="0.05" numOctaves="2"/>
+        <feColorMatrix filterUnits="objectBoundingBox" 
+              x="0%" y="0%" width="100%" height="100%" 
+              type="hueRotate" values="90"/>
+      </filter>
+
+      <filter id="saturate" filterUnits="objectBoundingBox" 
+              x="0%" y="0%" width="100%" height="100%">
+        <feTurbulence type="turbulence" baseFrequency="0.05" numOctaves="2"/>
+        <feColorMatrix filterUnits="objectBoundingBox" 
+              x="0%" y="0%" width="100%" height="100%" 
+              type="saturate" values="600%"/>
+      </filter>
+
+      <filter id="matrixAlpha" filterUnits="objectBoundingBox" 
+              x="0%" y="0%" width="100%" height="100%">
+        <feTurbulence type="turbulence" baseFrequency="0.05" numOctaves="2" stitchTiles="noStitch" seed="0" result="turb"/>
+		<feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" />
+      </filter>
+
+      <filter id="matrixRed" filterUnits="objectBoundingBox" 
+              x="0%" y="0%" width="100%" height="100%">
+        <feTurbulence type="turbulence" baseFrequency="0.05" numOctaves="2" stitchTiles="noStitch" seed="0" result="turb"/>
+        <feColorMatrix type="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0 1" />
+      </filter>
+
+      <filter id="matrixGreen" filterUnits="objectBoundingBox" 
+              x="0%" y="0%" width="100%" height="100%">
+        <feTurbulence type="turbulence" baseFrequency="0.05" numOctaves="2" stitchTiles="noStitch" seed="0" result="turb"/>
+	    <feColorMatrix type="matrix" values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 0 1" />
+      </filter>
+
+      <filter id="matrixBlue" filterUnits="objectBoundingBox" 
+              x="0%" y="0%" width="100%" height="100%">
+        <feTurbulence type="turbulence" baseFrequency="0.05" numOctaves="2" stitchTiles="noStitch" seed="0" result="turb"/>
+		<feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 0 1" />
+      </filter>
+
     </defs>
-    <g transform="translate(75 130)">
-      <use xlink:href="#elem" 
-           style="stroke-opacity:1; fill-opacity:1"/>
-      <text x="0" y="60">opacity:1</text>
-      <text x="0" y="70">stroke-opacity:1</text>
-      <text x="0" y="80">fill-opacity:1</text>
-    </g>
-    <g transform="translate(175 130)">
-      <use xlink:href="#elem"
-           style="stroke-opacity:1; fill-opacity:.5"/>
-      <text x="0" y="60">opacity:1</text>
-      <text x="0" y="70">stroke-opacity:1</text>
-      <text x="0" y="80">fill-opacity:0.5</text>
-    </g>
-    <g transform="translate(275 130)">
-    <use xlink:href="#elem"
-         style="stroke-opacity:.5; fill-opacity:1"/>
-      <text x="0" y="60">opacity:1</text>
-      <text x="0" y="70">stroke-opacity:0.5</text>
-      <text x="0" y="80">fill-opacity:1</text>
-    </g>
-    <g transform="translate(375 130)">
-    <use xlink:href="#elem"
-         style="stroke-opacity:.5; fill-opacity:.5"/>
-      <text x="0" y="60">opacity:1</text>
-      <text x="0" y="70">stroke-opacity:0.5</text>
-      <text x="0" y="80">fill-opacity:0.5</text>
+
+<g class="legend">
+
+    <g id="reference_Group">
+        <rect x="25" y="25" width="100" height="75" style="filter:url(#turbSource)" />
+        <text x="75" y="117">Reference Image</text>
     </g>
 
-    <g transform="translate(75 330)" >
-    <use xlink:href="#elem"
-         style="stroke-opacity:1; fill-opacity:1; opacity:.5;"/>
-      <text x="0" y="60">opacity:0.5</text>
-      <text x="0" y="70">stroke-opacity:1</text>
-      <text x="0" y="80">fill-opacity:1</text>
-    </g>
-    <g transform="translate(175 330)">
-    <use xlink:href="#elem"
-         style="stroke-opacity:1; fill-opacity:.5 opacity:.5;"/>
-      <text x="0" y="60">opacity:0.5</text>
-      <text x="0" y="70">stroke-opacity:1</text>
-      <text x="0" y="80">fill-opacity:0.5</text>
-    </g>
-    <g transform="translate(275 330)">
-    <use xlink:href="#elem"
-         style="stroke-opacity:.5; fill-opacity:1 opacity:.5;"/>
-      <text x="0" y="60">opacity:0.5</text>
-      <text x="0" y="70">stroke-opacity:0.5</text>
-      <text x="0" y="80">fill-opacity:1</text>
-    </g>
-    <g transform="translate(375 330)">
-    <use xlink:href="#elem"
-         style="stroke-opacity:.5; fill-opacity:.5 opacity:.5;"/>
-      <text x="0" y="60">opacity:0.5</text>
-      <text x="0" y="70">stroke-opacity:0.5</text>
-      <text x="0" y="80">fill-opacity:0.5</text>
+    <g id="luminanceToAlpha_Group" transform="translate(120, 0)">
+        <rect x="25" y="25" width="100" height="75" style="filter:url(#luminanceToAlpha)" />
+        <text x="75" y="117">type=luminanceToAlpha</text>
     </g>
 
-  </g>
+    <g id="hueRotate_Group" transform="translate(240, 0)">
+        <rect x="25" y="25" width="100" height="75" style="filter:url(#hueRotate)" />
+        <text x="75" y="117">type=hueRotate</text>
+    </g>
+
+    <g id="saturate_Group" transform="translate(0, 120)">
+        <rect x="25" y="25" width="100" height="75" style="filter:url(#saturate)" />
+        <text x="75" y="117">type=saturate</text>
+    </g>
+
+    <g id="matrixAlpha_Group" transform="translate(120, 120)">
+        <rect x="25" y="25" width="100" height="75" style="filter:url(#matrixAlpha)" />
+        <text x="75" y="117">type=matrix (alpha)</text>
+    </g>
+
+    <g id="matrixRed_Group" transform="translate(240, 120)">
+        <rect x="25" y="25" width="100" height="75" style="filter:url(#matrixRed)" />
+        <text x="75" y="117">type=matrix (red)</text>
+    </g>
+
+    <g id="matrixGreen_Group" transform="translate(0, 240)">
+        <rect x="25" y="25" width="100" height="75" style="filter:url(#matrixGreen)" />
+        <text x="75" y="117">type=matrix (green)</text>
+    </g>
+
+    <g id="matrixBlue_Group" transform="translate(120, 240)">
+        <rect x="25" y="25" width="100" height="75" style="filter:url(#matrixBlue)" />
+        <text x="75" y="117">type=matrix (blue)</text>
+    </g>
+
+
+</g>
+</g>
 
     </g>
 
