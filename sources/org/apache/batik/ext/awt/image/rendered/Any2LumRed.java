@@ -56,7 +56,6 @@ public class Any2LumRed extends AbstractRed {
                   FilterAsAlphaRable.VALUE_COLORSPACE_GREY);
     }
 
-
     public WritableRaster copyData(WritableRaster wr) {
         // Get my source.
         CachableRed src = (CachableRed)getSources().get(0);
@@ -105,7 +104,7 @@ public class Any2LumRed extends AbstractRed {
             } else {
                 // All this nonsense is to work around the fact that the
                 // Color convert op doesn't properly copy the Alpha from
-                // s    rc to dst.
+                // src to dst.
                 PixelInterleavedSampleModel dstSM;
                 dstSM = (PixelInterleavedSampleModel)wr.getSampleModel();
                 SampleModel smna = new PixelInterleavedSampleModel
