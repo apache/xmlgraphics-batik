@@ -32,7 +32,7 @@ public class CSSDocumentHandler implements DocumentHandler {
     /**
      * The parser class.
      */
-    protected static Class parserClass = "org.apache.batik.css.parser.Parser";
+    protected static Class parserClass = org.apache.batik.css.parser.Parser.class;
 
     /**
      * The CSS parser.
