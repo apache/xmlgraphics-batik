@@ -9,6 +9,8 @@
 package org.apache.batik.bridge;
 
 import java.awt.Cursor;
+import java.awt.Point;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Dimension2D;
 
 import org.apache.batik.gvt.event.EventDispatcher;
@@ -89,4 +91,16 @@ public interface UserAgent {
      * Returns the class name of the XML parser.
      */
     String getXMLParserClassName();
+
+    /**
+     * Returns the <code>AffineTransform</code> currently
+     * applied to the drawing by the UserAgent.
+     */
+    AffineTransform getTransform();
+
+    /**
+     * Returns the location on the screen of the
+     * client area in the UserAgent.
+     */
+    Point getClientAreaLocationOnScreen();
 }

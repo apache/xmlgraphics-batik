@@ -10,6 +10,8 @@ package org.apache.batik.refimpl.bridge;
 
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Dimension2D;
 
 import org.apache.batik.bridge.UserAgent;
@@ -112,5 +114,21 @@ public class DefaultUserAgent implements UserAgent {
      */
     public String getXMLParserClassName() {
         return "org.apache.crimson.parser.XMLReaderImpl";
+    }
+
+    /**
+     * Returns the <code>AffineTransform</code> currently
+     * applied to the drawing by the UserAgent.
+     */
+    public AffineTransform getTransform() {
+        return null;
+    }
+
+    /**
+     * Returns the location on the screen of the
+     * client area in the UserAgent.
+     */
+    public Point getClientAreaLocationOnScreen() {
+        return new Point();
     }
 }

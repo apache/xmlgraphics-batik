@@ -11,12 +11,18 @@ package org.apache.batik.apps.applet;
 import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Point;
+
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Dimension2D;
+
 import javax.swing.JApplet;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+
 import org.apache.batik.bridge.UserAgent;
 import org.apache.batik.css.CSSDocumentHandler;
 import org.apache.batik.dom.svg.DefaultSVGContext;
@@ -31,6 +37,7 @@ import org.apache.batik.util.DocumentLoadRunnable;
 import org.apache.batik.util.DocumentLoadRunnable;
 import org.apache.batik.util.DocumentLoadingEvent;
 import org.apache.batik.util.DocumentPropertyEvent;
+
 import org.w3c.dom.svg.SVGAElement;
 import org.w3c.dom.svg.SVGDocument;
 
@@ -291,5 +298,21 @@ public class JSVGApplet extends JApplet implements UserAgent, DocumentListener {
      */
     public String getXMLParserClassName() {
         return "org.apache.crimson.parser.XMLReaderImpl";
+    }
+
+    /**
+     * Returns the <code>AffineTransform</code> currently
+     * applied to the drawing by the UserAgent.
+     */
+    public AffineTransform getTransform() {
+        return canvas.getTransform();
+    }
+
+    /**
+     * Returns the location on the screen of the
+     * client area in the UserAgent.
+     */
+    public Point getClientAreaLocationOnScreen() {
+        return canvas.getLocationOnScreen();
     }
 }
