@@ -17,9 +17,10 @@ import java.awt.Rectangle;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 
-import java.awt.geom.Point2D;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
@@ -80,16 +81,20 @@ public class AffineRed extends AbstractRed {
         Rectangle srcR;
         srcR = me2src.createTransformedShape(wr.getBounds()).getBounds();
 
-        CachableRed src = (CachableRed)getSources().get(0);
+        // Outset by one pixel so we get context for interpolation...
+        srcR.setBounds(srcR.x-1, srcR.y-1, srcR.width+2, srcR.height+2);
 
         // Don't try and get data from src that it doesn't have...
+        CachableRed src = (CachableRed)getSources().get(0);
         srcR = srcR.intersection(src.getBounds());
-
+        
         if (srcR.isEmpty())
             return null;
 
-        WritableRaster srcWR = wr.createCompatibleWritableRaster(srcR);
-        src.copyData(srcWR);
+        Raster srcRas = src.getData(srcR.getBounds());
+
+        if (srcRas == null)
+            return null;
 
         // This works around the problem that the buffered ops
         // completely ignore the coords of the Rasters passed in.
@@ -98,13 +103,13 @@ public class AffineRed extends AbstractRed {
         // Translate what is at 0,0 (which will be what our current
         // minX/Y is) to our current minX,minY.
         aff.concatenate(AffineTransform.getTranslateInstance
-                        (srcWR.getMinX(), srcWR.getMinY()));
+                        (srcRas.getMinX(), srcRas.getMinY()));
 
-        Point2D srcPt = me2src.transform(new Point(wr.getMinX(), 
-                                                   wr.getMinY()), null);
+        Point2D srcPt = new Point2D.Float(wr.getMinX(), wr.getMinY());
+        srcPt         = me2src.transform(srcPt, null);
 
-        Point2D destPt = new Point2D.Double(srcPt.getX()-srcWR.getMinX(), 
-                                            srcPt.getY()-srcWR.getMinY());
+        Point2D destPt = new Point2D.Double(srcPt.getX()-srcRas.getMinX(), 
+                                            srcPt.getY()-srcRas.getMinY());
 
         destPt = aff.transform(destPt, null);
 
@@ -114,19 +119,13 @@ public class AffineRed extends AbstractRed {
         aff.preConcatenate(AffineTransform.getTranslateInstance
                            (-destPt.getX(), -destPt.getY()));
 
-        AffineTransform invAff=null;
-        try {
-            invAff = aff.createInverse();
-        } catch (Throwable t) {
-            t.printStackTrace();
-        }
-        srcPt = invAff.transform(new Point(0,0), null);
-
         AffineTransformOp op = new AffineTransformOp(aff, hints);
 
         BufferedImage srcBI, myBI;
         ColorModel srcCM = src.getColorModel();
-        srcBI = new BufferedImage(srcCM,srcWR.createWritableTranslatedChild(0,0),
+        WritableRaster srcWR = (WritableRaster)srcRas;
+        srcBI = new BufferedImage(srcCM,
+                                  srcWR.createWritableTranslatedChild(0,0),
                                   srcCM.isAlphaPremultiplied(), null);
 
         ColorModel myCM = getColorModel();
@@ -147,8 +146,10 @@ public class AffineRed extends AbstractRed {
                                                 Rectangle   bounds) {
         SampleModel sm = src.getSampleModel();
         int w = sm.getWidth();
+        if (w < 256) w = 256;
         if (w > bounds.width)  w = bounds.width;
         int h = sm.getHeight();
+        if (h < 256) h = 256;
         if (h > bounds.height) h = bounds.height;
         return sm.createCompatibleSampleModel(w, h);
     }
