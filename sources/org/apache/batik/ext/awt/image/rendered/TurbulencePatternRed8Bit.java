@@ -23,14 +23,37 @@ import java.awt.image.SinglePixelPackedSampleModel;
 import java.awt.image.DirectColorModel;
 import java.awt.image.ColorModel;
 /**
- * This class creates a noise pattern conform to the one defined for
- * the feTurbulence filter of the SVG specification. It can be used by
- * classes implementing specific interfaces, such as the TurbulenceOp
- * and TurbulencePaintContext classes.
+ * This class creates a RenderedImage in conformance to the one
+ * defined for the feTurbulence filter of the SVG specification.  What
+ * follows is my high-level description of how the noise is generated.
+ * This is not contained in the SVG spec, just the algorithm for
+ * doing it.  This is provided in the hope that someone will figure
+ * out a clever way to accelerate parts of the function.
  *
+ * gradient contains a long list of random unit vectors.  For each
+ * point we are to generate noise for we do two things.  first we use
+ * the latticeSelector to 'co-mingle' the integer portions of x and y
+ * (this allows us to have a one-dimensional array of gradients that
+ * appears 2 dimensional, by using the co-mingled index).
+ *
+ * We do this for [x,y], [x+1,y], [x,y+1], and [x+1, y+1], this gives
+ * us the four gradient vectors that surround the point (b00, b10, ...)
+ * 
+ * Next we construct the four vectors from the grid points (where the
+ * gradient vectors are defined) [these are rx0, rx1, ry0, ry1].
+ *
+ * We then take the dot product between the gradient vectors and the
+ * grid point vectors (this gives the portion of the grid point vector
+ * that projects along the gradient vector for each grid point).
+ * These four dot projects are then combined with linear interpolation.
+ * The weight factor for the linear combination is the result of applying
+ * the 's' curve function to the fractional part of x and y (rx0, ry0).
+ * The S curve function get's it's name because it looks a bit like as
+ * 'S' from 0->1.
+ *  
  * @author     <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
- * @version $Id$
- */
+ * @author     <a href="mailto:DeWeese@apache.org">Thomas DeWeese</a>
+ * @version $Id$ */
 public final class TurbulencePatternRed8Bit extends AbstractRed {
     /**
      * Inner class to store tile stitching info.
@@ -269,73 +292,14 @@ public final class TurbulencePatternRed8Bit extends AbstractRed {
         return ( a + t * (b - a) );
     }
 
-    private final void noise2_4(final double noise[], 
-                                double vec0, 
-                                double vec1){
-        int b0, b1;
-        final int i, j, b00, b10, b01, b11;
-        final double rx0, rx1, ry0, ry1, sx, sy;
-        vec0 += PerlinN;
-        b0 = (int)vec0;
-
-        i = latticeSelector[b0 & BM];
-        j = latticeSelector[(b0+1) & BM];
-
-        rx0 = vec0 - (int)vec0;
-        rx1 = rx0 - 1.0;
-        sx  = s_curve(rx0);
-
-        vec1 += PerlinN;
-        b0 = ((int)vec1) & BM;
-        b1 = (b0+1) & BM;
-
-        b00 = latticeSelector[i + b0]<<3;
-        b10 = latticeSelector[j + b0]<<3;
-        b01 = latticeSelector[i + b1]<<3;
-        b11 = latticeSelector[j + b1]<<3;
-
-        ry0 = vec1 - (int)vec1;
-        ry1 = ry0 - 1.0;
-        sy = s_curve(ry0);
-
-        noise[0] = 
-            lerp(sy, 
-                 lerp(sx, 
-                      rx0*gradient[b00+0] + ry0*gradient[b00+1],
-                      rx1*gradient[b10+0] + ry0*gradient[b10+1]),
-                 lerp(sx, 
-                      rx0*gradient[b01+0] + ry1*gradient[b01+1],
-                      rx1*gradient[b11+0] + ry1*gradient[b11+1]));
-
-        noise[1] = 
-            lerp(sy, 
-                 lerp(sx, 
-                      rx0*gradient[b00+2] + ry0*gradient[b00+3],
-                      rx1*gradient[b10+2] + ry0*gradient[b10+3]),
-                 lerp(sx, 
-                      rx0*gradient[b01+2] + ry1*gradient[b01+3],
-                      rx1*gradient[b11+2] + ry1*gradient[b11+3]));
-
-        noise[2] = 
-            lerp(sy, 
-                 lerp(sx, 
-                      rx0*gradient[b00+4] + ry0*gradient[b00+5],
-                      rx1*gradient[b10+4] + ry0*gradient[b10+5]),
-                 lerp(sx, 
-                      rx0*gradient[b01+4] + ry1*gradient[b01+5],
-                      rx1*gradient[b11+4] + ry1*gradient[b11+5]));
-
-        noise[3] = 
-            lerp(sy, 
-                 lerp(sx, 
-                      rx0*gradient[b00+6] + ry0*gradient[b00+7],
-                      rx1*gradient[b10+6] + ry0*gradient[b10+7]),
-                 lerp(sx, 
-                      rx0*gradient[b01+6] + ry1*gradient[b01+7],
-                      rx1*gradient[b11+6] + ry1*gradient[b11+7]));
-
-    }
-
+    /**
+     * Generate a pixel of noise corresponding to the point vec0,vec1.
+     * See class description for a high level discussion of method.
+     * This handles cases where channels <= 4.  
+     * @param noise The place to put the generated noise.
+     * @param vec0  The X coordiate to generate noise for
+     * @param vec1  The Y coordiate to generate noise for
+     */
     private final void noise2(final double noise[], double vec0, double vec1) {
         int b0, b1;
         final int i, j, b00, b10, b01, b11;
@@ -410,6 +374,10 @@ public final class TurbulencePatternRed8Bit extends AbstractRed {
      * If any of the lattice is on the right or bottom edge, the
      * function uses the the latice on the other side of the
      * tile, i.e., the left or right edge.
+     * @param noise The place to put the generated noise.
+     * @param vec0  The X coordiate to generate noise for
+     * @param vec1  The Y coordiate to generate noise for
+     * @param stitchInfo The stitching information for the noise function.
      */
     private final void noise2Stitch(final double noise[],
                                     final double vec0, final double vec1,
@@ -506,12 +474,12 @@ public final class TurbulencePatternRed8Bit extends AbstractRed {
 
     /**
      * This is the heart of the turbulence calculation. It returns
-     * 'turbFunctionResult', as defined in the spec.
-     * @param rgb array for the four color components
+     * 'turbFunctionResult', as defined in the spec.  This is
+     * special case for 4 bands of output.
+     *
      * @param point x and y coordinates of the point to process.
      * @param fSum array used to avoid reallocating double array for each pixel
-     * @param noise array used to avoid reallocating double array for
-     *        each pixel
+     * @return The ARGB pixel value.
      */
     private final int turbulence_4(double pointX, 
                                    double pointY,
@@ -637,7 +605,7 @@ public final class TurbulencePatternRed8Bit extends AbstractRed {
         switch (channels.length) {
         case 4:
             for(int nOctave = 0; nOctave < numOctaves; nOctave++){
-                noise2_4(noise, pointX, pointY);
+                noise2(noise, pointX, pointY);
 
                 if (noise[0]<0) fSum[0] -= (noise[0] * ratio);
                 else            fSum[0] += (noise[0] * ratio);
@@ -728,13 +696,14 @@ public final class TurbulencePatternRed8Bit extends AbstractRed {
     }
 
     /**
-     * This is the heart of the turbulence calculation. It returns 'turbFunctionResult', as
-     * defined in the spec.
+     * This is the heart of the turbulence calculation. It returns
+     * 'turbFunctionResult', as defined in the spec.
      * @param rgb array for the four color components
      * @param point x and y coordinates of the point to process.
      * @param fSum array used to avoid reallocating double array for each pixel
-     * @param noise array used to avoid reallocating double array for each pixel
-     * @param channels channels for which values should be computed
+     * @param noise array used to avoid reallocating double array for
+     * each pixel
+     * @param stitchInfo The stitching information for the noise function
      */
     private final void turbulenceStitch(final int rgb[], 
                                         double pointX, double pointY,
@@ -749,6 +718,7 @@ public final class TurbulencePatternRed8Bit extends AbstractRed {
         case 4:
             for(int nOctave = 0; nOctave < numOctaves; nOctave++){
                 noise2Stitch(noise, pointX, pointY, stitchInfo);
+
                 if (noise[3]<0) fSum[3] -= (noise[3] * ratio);
                 else            fSum[3] += (noise[3] * ratio);
                 if (noise[2]<0) fSum[2] -= (noise[2] * ratio);
@@ -840,15 +810,12 @@ public final class TurbulencePatternRed8Bit extends AbstractRed {
     }
 
     /**
-     * This is the heart of the turbulence calculation. It returns 'turbFunctionResult', as
-     * defined in the spec.
-     * @param rgb array for the four color components
+     * This is the heart of the turbulence calculation. It returns
+     * 'turbFunctionResult', as defined in the spec.  This handles the
+     * case where we are generating 4 channels of noise.
      * @param point x and y coordinates of the point to process.
      * @param fSum array used to avoid reallocating double array for each pixel
-     * @param noise array used to avoid reallocating double array for each pixel
-     * @param numOctaves number of octaves (may be limited so that spatial frequency below
-     *        half a pixel are not processed).
-     * @param channels channels for which values should be computed
+     * @return The ARGB pixel
      */
     private final int turbulenceFractal_4( double pointX, 
                                            double pointY,
@@ -940,15 +907,13 @@ public final class TurbulencePatternRed8Bit extends AbstractRed {
     }
 
     /**
-     * This is the heart of the turbulence calculation. It returns 'turbFunctionResult', as
-     * defined in the spec.
+     * This is the heart of the turbulence calculation. It returns
+     * 'turbFunctionResult', as defined in the spec.
      * @param rgb array for the four color components
      * @param point x and y coordinates of the point to process.
      * @param fSum array used to avoid reallocating double array for each pixel
-     * @param noise array used to avoid reallocating double array for each pixel
-     * @param numOctaves number of octaves (may be limited so that spatial frequency below
-     *        half a pixel are not processed).
-     * @param channels channels for which values should be computed
+     * @param noise array used to avoid reallocating double array for
+     * each pixel 
      */
     private final void turbulenceFractal(final int rgb[], 
                                          double pointX, 
@@ -1000,15 +965,14 @@ public final class TurbulencePatternRed8Bit extends AbstractRed {
     }
 
     /**
-     * This is the heart of the turbulence calculation. It returns 'turbFunctionResult', as
-     * defined in the spec.
+     * This is the heart of the turbulence calculation. It returns
+     * 'turbFunctionResult', as defined in the spec.
      * @param rgb array for the four color components
      * @param point x and y coordinates of the point to process.
      * @param fSum array used to avoid reallocating double array for each pixel
-     * @param noise array used to avoid reallocating double array for each pixel
-     * @param numOctaves number of octaves (may be limited so that spatial frequency below
-     *        half a pixel are not processed).
-     * @param channels channels for which values should be computed
+     * @param noise array used to avoid reallocating double array for
+     * each pixel
+     * @param stitchInfo The stitching information for the noise function
      */
     private final void turbulenceFractalStitch(final int rgb[], 
                                                double pointX,
@@ -1063,10 +1027,7 @@ public final class TurbulencePatternRed8Bit extends AbstractRed {
 
     /**
      * Generates a Perlin noise pattern into dest Raster.
-     *
-     * @param txf image space to noise space transform. The 'noise space' is the
-     *        space where the spatial characteristics of the noise are defined.
-     * @param des Raster where the pattern should be generated.
+     * @param dest Raster to fill with the pattern.
      */
     public WritableRaster copyData(WritableRaster dest) {
         //
@@ -1076,18 +1037,6 @@ public final class TurbulencePatternRed8Bit extends AbstractRed {
             throw new IllegalArgumentException
                 ("Cannot generate a noise pattern into a null raster");
 
-        //
-        // Now, limit the number of octaves so that we do not get frequencies
-        // below half a pixel.
-        //
-        // If d is the distance between to pixels in user space, then,
-        // numOctavesMax = -(log2(d) + log2(bf))
-        // along one axis.
-        //
-        // The maximum distance along each axis is processed by computing the
-        // inverse transform of 'maximum' vectors from device space to the filter space
-        // and determining the maximum component along each axis.
-        //
 
         int w = dest.getWidth();
         int h = dest.getHeight();
@@ -1289,6 +1238,19 @@ public final class TurbulencePatternRed8Bit extends AbstractRed {
         txf.deltaTransform(vecX, 0, vecX, 0, 1);
         txf.deltaTransform(vecY, 0, vecY, 0, 1);
 
+        //
+        // Now, limit the number of octaves so that we do not get frequencies
+        // below half a pixel.
+        //
+        // If d is the distance between to pixels in user space, then,
+        // numOctavesMax = -(log2(d) + log2(bf))
+        // along one axis.
+        //
+        // The maximum distance along each axis is processed by
+        // computing the inverse transform of 'maximum' vectors from
+        // device space to the filter space and determining the
+        // maximum component along each axis.
+
         double dx = Math.max(Math.abs(vecX[0]), Math.abs(vecY[0]));
         int maxX = -(int)Math.round((Math.log(dx) + Math.log(baseFrequencyX))/
                                     Math.log(2));
@@ -1305,7 +1267,9 @@ public final class TurbulencePatternRed8Bit extends AbstractRed {
 
         if (this.numOctaves > 8)
             // beyond 8 octaves there is no significant contribution
-            // to the output pixel.
+            // to the output pixel (contribution is halved for each
+            // octave so after 8 we are contributing less than half a
+            // code value _at_best_).
             this.numOctaves = 8;  
 
         if (tile != null) {
