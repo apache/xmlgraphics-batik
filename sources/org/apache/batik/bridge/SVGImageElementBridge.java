@@ -119,6 +119,8 @@ public class SVGImageElementBridge implements GraphicsNodeBridge,
         }
         ImageNode imgNode = new ImageNode();
         imgNode.setImage(node);
+        // visibility
+        imgNode.setVisible(CSSUtilities.convertVisibility(element));
         // initialize the transform
         String transformStr = element.getAttributeNS(null, ATTR_TRANSFORM);
         if (transformStr.length() > 0) {

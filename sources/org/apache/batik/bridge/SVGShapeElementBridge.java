@@ -59,6 +59,8 @@ public abstract class SVGShapeElementBridge implements GraphicsNodeBridge,
             AffineTransform at = SVGUtilities.convertAffineTransform(transformStr);
             node.setTransform(at);
         }
+        // visibility
+        node.setVisible(CSSUtilities.convertVisibility(element));
         // Initialize the shape of the ShapeNode
         buildShape(ctx, svgElement, node, cssDecl, uctx);
 

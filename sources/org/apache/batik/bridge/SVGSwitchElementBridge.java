@@ -41,6 +41,8 @@ public class SVGSwitchElementBridge
     public GraphicsNode createGraphicsNode(BridgeContext ctx,
                                            Element element){
         CompositeGraphicsNode gn = new CompositeGraphicsNode();
+        // visibility
+        gn.setVisible(CSSUtilities.convertVisibility(element));
 
         String transformStr = element.getAttributeNS(null, ATTR_TRANSFORM);
         if (transformStr.length() > 0) {

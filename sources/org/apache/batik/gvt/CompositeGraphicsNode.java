@@ -260,21 +260,6 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
     }
 
     /**
-     * Returns the bounds of this node in the GVT tree's space.
-     */
-    protected Rectangle2D getGlobalBounds(GraphicsNodeRenderContext rc) {
-        if (count == 0) {
-            return null;
-        }
-        Rectangle2D r = getBounds(rc);
-        if (r == null) {
-            return null;
-        } else {
-            return getGlobalTransform().createTransformedShape(r).getBounds2D();
-        }
-    }
-
-    /**
      * Returns the bounds of the area covered by this node's
      * primitive paint.
      * <b>Note</b>: The boundaries of some nodes (notably, text element nodes)

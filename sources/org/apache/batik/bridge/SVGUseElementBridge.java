@@ -95,6 +95,9 @@ public class SVGUseElementBridge
             gn.setBackgroundEnable(rect);
         }
 
+        // visibility
+        gn.setVisible(CSSUtilities.convertVisibility(element));
+
         return gn;
     }
 

@@ -265,6 +265,21 @@ public class CSSUtilities implements SVGConstants {
     }
 
     /**
+     * Returns true if the specified element is visible, false
+     * otherwise. Check the 'visibility' property.
+     * @param e the element
+     */
+    public static boolean convertVisibility(Element e) {
+        CSSStyleDeclaration decl = getComputedStyle(e);
+        CSSValue v = decl.getPropertyCSSValue(CSS_VISIBILITY_PROPERTY);
+        if (v.getCssValueType() == CSSValue.CSS_INHERIT) {
+            return true;
+        } else {
+            return (((CSSPrimitiveValue)v).getStringValue().charAt(0) == 'v');
+        }
+    }
+
+    /**
      * Converts the given RGBColor and opacity to a Color object.
      * @param c The CSS color to convert.
      * @param o The opacity value (0 <= o <= 1).

@@ -399,6 +399,8 @@ public class TextPathElementBridge implements GraphicsNodeBridge, SVGConstants {
         shape = TextPathLayout.layoutGlyphVector(vector, path, align, startOffset, textLength, method);
 
         node.setShape(shape);
+        // visibility
+        node.setVisible(CSSUtilities.convertVisibility(element));
 
         return node;
     }
