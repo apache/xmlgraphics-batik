@@ -21,7 +21,11 @@ import java.text.CharacterIterator;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import org.apache.batik.gvt.*;
+import org.apache.batik.gvt.TextNode;
+import org.apache.batik.gvt.Selector;
+import org.apache.batik.gvt.Selectable;
+import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.text.Mark;
 import org.apache.batik.gvt.event.GraphicsNodeMouseEvent;
 import org.apache.batik.gvt.event.GraphicsNodeInputEvent;
 import org.apache.batik.gvt.event.GraphicsNodeEvent;
@@ -46,26 +50,7 @@ public class ConcreteTextSelector implements Selector {
     private int firstHit;
     private int lastHit;
 
-    // XXX: below is used by our current "direct" approach to selection
-    // highlighting.  It should probably be migrated to a
-    // strategy that sends highlight requests directly to the Renderer.
-    private Graphics2D g2d;
-
-    private AffineTransform baseTransform = new AffineTransform();
-
     public ConcreteTextSelector() {
-    }
-
-    public void setGraphics2D(Graphics2D g2d) {
-        this.g2d = g2d;
-    }
-
-    /**
-     * Not used.
-     * @deprecated.
-     */
-    public void setBaseTransform(AffineTransform t) {
-        this.baseTransform = t;
     }
 
     public void mouseClicked(GraphicsNodeMouseEvent evt) {
@@ -109,6 +94,24 @@ public class ConcreteTextSelector implements Selector {
 
     public void keyTyped(GraphicsNodeKeyEvent evt) {
         report(evt, "keyTyped");
+    }
+
+    public void setSelection(Mark begin, Mark end) {
+        TextNode node = begin.getTextNode();
+        if (node != end.getTextNode())
+            throw new Error("Markers not from same TextNode");
+        node.setSelection(begin, end);
+        Object selection = getSelection();
+        Shape  shape     = node.getHighlightShape();
+        dispatchSelectionEvent(new SelectionEvent
+            (selection, SelectionEvent.SELECTION_DONE, shape));
+        copyToClipboard(selection);
+    }
+
+    public void clearSelection() {
+        dispatchSelectionEvent(new SelectionEvent
+            (null, SelectionEvent.SELECTION_CLEARED, null));
+        copyToClipboard(null);
     }
 
     /*
@@ -192,9 +195,8 @@ public class ConcreteTextSelector implements Selector {
                 }
 
             } else if (isSelectAllGesture(evt)) {
-
                 selectionNode = source;
-
+                
                 ((Selectable) source).selectAll(p.getX(), p.getY());
                 Object oldSelection = getSelection();
                 Shape newShape =
@@ -204,7 +206,6 @@ public class ConcreteTextSelector implements Selector {
                                 SelectionEvent.SELECTION_DONE,
                                 newShape));
                 copyToClipboard(oldSelection);
-
             }
         }
     }

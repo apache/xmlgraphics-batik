@@ -1089,17 +1089,16 @@ public class StrokingTextPainter extends BasicTextPainter {
         aci.setIndex(index);
         int charIndex = ((Integer)aci.getAttribute
          (GVTAttributedCharacterIterator.TextAttribute.CHAR_INDEX)).intValue();
-
+        
         // get the list of text runs
         List textRuns = getTextRuns(node, aci);
 
-        // for each text run, append any highlight it may contain for
-        // the current selection
+        // for each text run, see if it contains the current char.
         for (int i = 0; i < textRuns.size(); ++i) {
             TextRun textRun = (TextRun)textRuns.get(i);
             TextSpanLayout layout = textRun.getLayout();
 
-            int idx = layout.getGlyphIndex(index);
+            int idx = layout.getGlyphIndex(charIndex);
             if (idx != -1) {
                 TextHit textHit = new TextHit(charIndex, leadingEdge);
                 return new BasicTextPainter.BasicMark

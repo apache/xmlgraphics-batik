@@ -224,17 +224,18 @@ public class GlyphLayout implements TextSpanLayout {
      *         or -1 if a matching glyph could not be found.
      */
     public int getGlyphIndex(int charIndex) {
-
-        int currentChar = aci.getBeginIndex();
         int numGlyphs = getGlyphCount();
+        aci.first();
         for (int i = 0; i < numGlyphs; i++) {
-            aci.setIndex(currentChar);
-            int glyphCharIndex = ((Integer)aci.getAttribute(
-                GVTAttributedCharacterIterator.TextAttribute.CHAR_INDEX)).intValue();
-            if (charIndex == glyphCharIndex) {
-                return i;
+            int count = getCharacterCount(i, i);
+            for (int n=0; n<count; n++) {
+                int glyphCharIndex = ((Integer)aci.getAttribute
+                                      (GVTAttributedCharacterIterator.TextAttribute.CHAR_INDEX)).intValue();
+                if (charIndex == glyphCharIndex) 
+                    return i;
+                if (aci.next() == AttributedCharacterIterator.DONE)
+                    return -1;
             }
-            currentChar += getCharacterCount(i, i);
         }
         return -1;
     }

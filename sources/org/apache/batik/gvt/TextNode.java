@@ -296,6 +296,10 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
     // Selection methods
     //
     public void setSelection(Mark begin, Mark end) {
+        if ((begin.getTextNode() != this) ||
+            (end.getTextNode() != this))
+            throw new Error("Markers not from this TextNode");
+
         beginMark = begin;
         endMark   = end;
     }
@@ -347,7 +351,7 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
         int[] ranges = textPainter.getSelected(beginMark, endMark);
         Object o = null;
 
-	// TODO: later we can return more complex things like
+        // TODO: later we can return more complex things like
         // noncontiguous selections
         if ((ranges != null) && (ranges.length > 1)) {
             // make sure that they are in order
