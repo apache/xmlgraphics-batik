@@ -226,8 +226,8 @@ public interface SVGConstants extends CSSConstants {
     String SVG_ORDER_Y_ATTRIBUTE = "orderY";
     String SVG_ORIENT_ATTRIBUTE = "orient";
     String SVG_ORIENTATION_ATTRIBUTE = "orientation";
-    String SVG_OVERLINE_POSITION = "overline-position";
-    String SVG_OVERLINE_THICKNESS = "overline-thickness";
+    String SVG_OVERLINE_POSITION_ATTRIBUTE = "overline-position";
+    String SVG_OVERLINE_THICKNESS_ATTRIBUTE = "overline-thickness";
     String SVG_PANOSE_1_ATTRIBUTE = "panose-1";
     String SVG_PATTERN_CONTENT_UNITS_ATTRIBUTE = "patternContentUnits";
     String SVG_PATTERN_TRANSFORM_ATTRIBUTE = "patternTransform";
