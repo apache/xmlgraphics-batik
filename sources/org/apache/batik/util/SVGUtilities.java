@@ -1130,13 +1130,36 @@ public class SVGUtilities implements SVGConstants {
                 new AffineTransformSourceBoundingBox(node);
 
             ats = new CompositeAffineTransformSource(bbts, ts);
-        }
-        else{
+        } else {
             ats = new DefaultAffineTransformSource(at);
         }
 
         return ats;
     }
+
+    /**
+     * Creates an <tt>AffineTransform</tt>.
+     */
+    public static AffineTransform convertAffineTransform(AffineTransform at,
+                                                         GraphicsNode node,
+                                                         String units) {
+        AffineTransform Mx;
+        if(VALUE_OBJECT_BOUNDING_BOX.equals(units)) {
+            Mx = new AffineTransform();
+            // compute object bounding box matrix
+            Rectangle2D bounds = node.getGeometryBounds();
+            Mx.translate(bounds.getX(), bounds.getY());
+            Mx.scale(bounds.getWidth(), bounds.getHeight());
+            // concatenate the local transform
+            Mx.concatenate(at);
+        } else if (VALUE_USER_SPACE_ON_USE.equals(units)) {
+            Mx = new AffineTransform(at);
+        } else {
+            throw new IllegalArgumentException(units);
+        }
+        return Mx;
+    }
+
 
     /**
      * Creates a <tt>FilterRegion</tt> for the input filter
