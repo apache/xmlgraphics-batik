@@ -133,7 +133,7 @@ public class StrokingTextPainter extends BasicTextPainter {
         System.out.println("");
     }
 
-    private List getTextRuns(TextNode node, AttributedCharacterIterator aci) {
+    public List getTextRuns(TextNode node, AttributedCharacterIterator aci) {
         List textRuns = node.getTextRuns();
         if (textRuns != null) {
             return textRuns;
@@ -1384,7 +1384,7 @@ public class StrokingTextPainter extends BasicTextPainter {
      * Inner convenience class for associating a TextLayout for
      * sub-spans, and the ACI which iterates over that subspan.
      */
-    class TextRun {
+    public class TextRun {
 
         private AttributedCharacterIterator aci;
         private TextSpanLayout layout;

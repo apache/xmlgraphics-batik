@@ -129,7 +129,7 @@ public class XLinkSupport {
      * Returns the value of the 'xlink:href' attribute of the given element.
      */
     public static String getXLinkHref(Element elt) {
-	return elt.getAttributeNS(XLINK_NAMESPACE_URI, "href");
+        return elt.getAttributeNS(XLINK_NAMESPACE_URI, "href");
     }
 
     /**

@@ -113,7 +113,7 @@ public class URIResolver {
             //                    pDocURL.getPort()     + " - " +
             //                    pDocURL.getHost()     + " - " +
             //                    pDocURL.getProtocol());
-                               
+
 
             // Check if the rest of the URL matches...
             // if so then return the referenced element.
