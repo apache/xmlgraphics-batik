@@ -111,6 +111,7 @@
         <test id="samples/tests/spec/filters/feDisplacementMap.svg" />
         <test id="samples/tests/spec/filters/feGaussianDefault.svg" />
         <test id="samples/tests/spec/filters/feImage.svg" />
+        <test id="samples/tests/spec/filters/feImage2.svg" />
         <test id="samples/tests/spec/filters/feMerge.svg" />
         <test id="samples/tests/spec/filters/feMorphology.svg" />
         <test id="samples/tests/spec/filters/feTile.svg" />
