@@ -652,7 +652,7 @@ public class JSVGViewerFrame
         public NewWindowAction() {}
         public void actionPerformed(ActionEvent e) {
             JSVGViewerFrame vf = application.createAndShowJSVGViewerFrame();
-            
+
             // Copy the current settings to the new window.
             vf.autoAdjust = autoAdjust;
             AutoAdjustAction aaa;
@@ -885,6 +885,8 @@ public class JSVGViewerFrame
 
                     // paint the buffer to the image
                     Graphics2D g2d = img.createGraphics();
+                    g2d.setColor(Color.white);
+                    g2d.fillRect(0, 0, w, h);
                     g2d.drawImage(buffer, null, 0, 0);
                     new Thread() {
                         public void run() {
