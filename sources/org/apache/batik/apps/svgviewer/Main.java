@@ -10,13 +10,22 @@ package org.apache.batik.apps.svgviewer;
 
 import java.awt.Font;
 import java.awt.event.ActionEvent;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import java.util.Locale;
 import java.util.ResourceBundle;
+
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+
 import org.apache.batik.css.CSSDocumentHandler;
 
 import org.apache.batik.util.SwingInitializer;
+
+import org.w3c.dom.svg.SVGAElement;
+import org.w3c.dom.svg.SVGDocument;
 
 /**
  * This class represents a SVG viewer.
@@ -149,6 +158,29 @@ public class Main implements ViewerFrame.Application {
             System.exit(0);
         }
         return true;
+    }
+
+    /**
+     * Opens the given link.
+     */
+    public void openLink(ViewerFrame f, SVGAElement elt) {
+        String show = elt.getXlinkShow();
+        String href = elt.getHref().getBaseVal();
+
+        String docURL = ((SVGDocument)elt.getOwnerDocument()).getURL();
+        URL uri = null;
+        try {
+            uri = new URL(new URL(docURL), href);
+        } catch (MalformedURLException e) {
+            System.out.println(e.getMessage());
+        }
+
+        if (show.length() > 0 && show.charAt(0) == 'n') {
+            createAndShowViewerFrame();
+            mainFrame.loadDocument(uri.toString());
+        } else {
+            f.loadDocument(uri.toString());
+        }
     }
 
     // Actions /////////////////////////////////////////////////

@@ -33,6 +33,7 @@ import java.io.Reader;
 
 import java.net.URL;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -94,6 +95,7 @@ import org.xml.sax.InputSource;
 
 import org.w3c.dom.css.ViewCSS;
 import org.w3c.dom.svg.SVGSVGElement;
+import org.w3c.dom.svg.SVGAElement;
 
 /**
  * This class represents a viewer frame.
@@ -113,6 +115,8 @@ public class ViewerFrame
     public final static String OPEN_PAGE_ACTION   = "OpenPageAction";
     public final static String NEW_WINDOW_ACTION  = "NewWindowAction";
     public final static String RELOAD_ACTION      = "ReloadAction";
+    public final static String BACK_ACTION        = "BackAction";
+    public final static String FORWARD_ACTION     = "ForwardAction";
     public final static String CLOSE_ACTION       = "CloseAction";
     public final static String EXIT_ACTION        = "ExitAction";
     public final static String SOURCE_ACTION      = "SourceAction";
@@ -238,6 +242,16 @@ public class ViewerFrame
     protected ReloadAction reloadAction = new ReloadAction();
 
     /**
+     * The back action
+     */
+    protected BackAction backAction = new BackAction();
+
+    /**
+     * The forward action
+     */
+    protected ForwardAction forwardAction = new ForwardAction();
+
+    /**
      * The stop action
      */
     protected StopAction stopAction = new StopAction();
@@ -274,6 +288,21 @@ public class ViewerFrame
     protected String userStyleSheetURI;
 
     /**
+     * The documents loaded with this viewer.
+     */
+    protected List loadedDocuments = new ArrayList();
+
+    /**
+     * The current document index.
+     */
+    protected int loadedDocument = -1;
+
+    /**
+     * The loaded documents count.
+     */
+    protected int loadedDocumentsCount;
+
+    /**
      * Creates a new ViewerFrame object.
      * @param a The current application.
      */
@@ -302,6 +331,8 @@ public class ViewerFrame
         listeners.put(OPEN_PAGE_ACTION,   new OpenPageAction());
         listeners.put(NEW_WINDOW_ACTION,  new NewWindowAction());
         listeners.put(RELOAD_ACTION,      reloadAction);
+        listeners.put(BACK_ACTION,        backAction);
+        listeners.put(FORWARD_ACTION,     forwardAction);
         listeners.put(CLOSE_ACTION,       application.createCloseAction(this));
         listeners.put(EXIT_ACTION,        application.createExitAction());
         listeners.put(SOURCE_ACTION,      new SourceAction());
@@ -461,6 +492,14 @@ public class ViewerFrame
     }
 
     /**
+     * Opens a link.
+     * @param elt The activated link element.
+     */
+    public void openLink(SVGAElement elt) {
+        application.openLink(this, elt);
+    }
+
+    /**
      * Loads the given document.
      * @param s The document name.
      */
@@ -475,6 +514,22 @@ public class ViewerFrame
             }
         }
         if (uri != null) {
+            loadedDocument++;
+            if (loadedDocument == loadedDocuments.size()) {
+                loadedDocuments.add(uri);
+            } else {
+                Object o = loadedDocuments.get(loadedDocument);
+                if (!o.equals(uri)) {
+                    loadedDocumentsCount = loadedDocument + 1;
+                }
+                loadedDocuments.set(loadedDocument, uri);
+            }
+            if (loadedDocumentsCount == loadedDocument) {
+                loadedDocumentsCount++;
+            }
+            backAction.update();
+            forwardAction.update();
+
             locationBar.setText(uri);
             thread = new DocumentThread(uri);
             thread.start();
@@ -540,6 +595,11 @@ public class ViewerFrame
          * @return true if the frame must be closed.
          */
         boolean closeFrame(ViewerFrame f);
+
+        /**
+         * Opens the given link.
+         */
+        void openLink(ViewerFrame f, SVGAElement elt);
     }
 
     // Actions //////////////////////////////////////////////////////////
@@ -627,6 +687,57 @@ public class ViewerFrame
             Iterator it = components.iterator();
             while (it.hasNext()) {
                 ((JComponent)it.next()).setEnabled(!isRunning);
+            }
+        }
+    }
+
+    /**
+     * To go back to the previous document
+     */
+    public class BackAction extends    AbstractAction
+                            implements JComponentModifier {
+        java.util.List components = new LinkedList();
+        public BackAction() {}
+        public void actionPerformed(ActionEvent e) {
+            loadedDocument-=2;
+            loadDocument((String)loadedDocuments.get(loadedDocument+1));
+        }
+
+        public void addJComponent(JComponent c) {
+            components.add(c);
+            c.setEnabled(false);
+        }
+
+        protected void update() {
+            boolean b = loadedDocument > 0;
+            Iterator it = components.iterator();
+            while (it.hasNext()) {
+                ((JComponent)it.next()).setEnabled(b);
+            }
+        }
+    }
+
+    /**
+     * To go forward to the previous document
+     */
+    public class ForwardAction extends    AbstractAction
+                               implements JComponentModifier {
+        java.util.List components = new LinkedList();
+        public ForwardAction() {}
+        public void actionPerformed(ActionEvent e) {
+            loadDocument((String)loadedDocuments.get(loadedDocument+1));
+        }
+
+        public void addJComponent(JComponent c) {
+            components.add(c);
+            c.setEnabled(false);
+        }
+
+        protected void update() {
+            boolean b = loadedDocument < loadedDocumentsCount - 1;
+            Iterator it = components.iterator();
+            while (it.hasNext()) {
+                ((JComponent)it.next()).setEnabled(b);
             }
         }
     }
@@ -811,6 +922,7 @@ public class ViewerFrame
             Dimension sd = userStyleDialog.getSize();
             userStyleDialog.setLocation(fr.x + (fr.width  - sd.width) / 2,
                                         fr.y + (fr.height - sd.height) / 2);
+            userStyleDialog.pack();
             userStyleDialog.show();
         }
     }

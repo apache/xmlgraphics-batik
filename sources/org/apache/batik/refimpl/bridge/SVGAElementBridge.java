@@ -15,9 +15,11 @@ import java.awt.geom.AffineTransform;
 
 import java.io.StringReader;
 
+import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeMutationEvent;
 import org.apache.batik.bridge.GraphicsNodeBridge;
-import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.bridge.UserAgent;
+import org.apache.batik.css.HiddenChildElementSupport;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.Mask;
@@ -26,13 +28,18 @@ import org.apache.batik.util.SVGConstants;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 import org.w3c.dom.css.ViewCSS;
 import org.w3c.dom.css.CSSPrimitiveValue;
 import org.w3c.dom.css.CSSStyleDeclaration;
+
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
+
+import org.w3c.dom.svg.SVGAElement;
+
 import org.w3c.dom.views.DocumentView;
 
 /**
@@ -65,7 +72,8 @@ public class SVGAElementBridge implements GraphicsNodeBridge, SVGConstants {
         gn.setMask(mask);
 
         EventTarget et = (EventTarget)element;
-        et.addEventListener("click", new AnchorListener(), false);
+        et.addEventListener("click",
+                            new AnchorListener(ctx.getUserAgent()), false);
 
         // <!> TODO only when binding is enabled
         BridgeEventSupport.addDOMListener(ctx, element);
@@ -86,8 +94,21 @@ public class SVGAElementBridge implements GraphicsNodeBridge, SVGConstants {
      * To handle a click on an anchor.
      */
     protected static class AnchorListener implements EventListener {
+        protected UserAgent userAgent;
+        public AnchorListener(UserAgent ua) {
+            userAgent = ua;
+        }
         public void handleEvent(Event evt) {
-            System.out.println("CLICK!");
+            SVGAElement elt = null;
+            for (Element e = (Element)evt.getTarget();
+                 e != null;
+                 e = HiddenChildElementSupport.getParentElement(e)) {
+                if (e instanceof SVGAElement) {
+                    elt = (SVGAElement)e;
+                    break;
+                }
+            }
+            userAgent.openLink(elt);
         }
     }
 }

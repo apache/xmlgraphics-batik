@@ -139,11 +139,20 @@ public class SVGOMDocument
         factories.put(TAG_FE_COMPONENT_TRANSFER,
                       new FeComponentTransferElementFactory());
 
+        factories.put(TAG_FE_COMPOSITE,
+                      new FeCompositeElementFactory());
+
+        factories.put(TAG_FE_CONVOLVE_MATRIX,
+                      new FeConvolveMatrixElementFactory());
+
         factories.put(TAG_FE_DIFFUSE_LIGHTING,
                       new FeDiffuseLightingElementFactory());
 
         factories.put(TAG_FE_DISPLACEMENT_MAP,
                       new FeDisplacementMapElementFactory());
+
+        factories.put(TAG_FE_DISTANT_LIGHT,
+                      new FeDistantLightElementFactory());
 
         factories.put(TAG_FE_FUNC_A,
                       new FeFuncAElementFactory());
@@ -174,6 +183,9 @@ public class SVGOMDocument
 
         factories.put(TAG_FE_OFFSET,
                       new FeOffsetElementFactory());
+
+        factories.put(TAG_FE_POINT_LIGHT,
+                      new FePointLightElementFactory());
 
         factories.put(TAG_FE_SPECULAR_LIGHTING,
                       new FeSpecularLightingElementFactory());
@@ -219,6 +231,9 @@ public class SVGOMDocument
 
         factories.put(TAG_SCRIPT,
                       new ScriptElementFactory());
+
+        factories.put(TAG_STOP,
+                      new StopElementFactory());
 
         factories.put(TAG_STYLE,
                       new StyleElementFactory());
@@ -753,6 +768,31 @@ public class SVGOMDocument
     }
 
     /**
+     * To create a 'feConvolveMatrix' element.
+     */
+    protected class FeConvolveMatrixElementFactory implements ElementFactory {
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix) {
+            return new SVGOMFEConvolveMatrixElement(prefix, SVGOMDocument.this);
+        }
+    }
+
+    /**
+     * To create a 'feComposite' element.
+     */
+    protected class FeCompositeElementFactory
+        implements ElementFactory {
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix) {
+            return new SVGOMFECompositeElement(prefix, SVGOMDocument.this);
+        }
+    }
+
+    /**
      * To create a 'feDiffuseLighting' element.
      */
     protected class FeDiffuseLightingElementFactory implements ElementFactory {
@@ -760,9 +800,8 @@ public class SVGOMDocument
          * Creates an instance of the associated element type.
          */
         public Element create(String prefix) {
-            return new SVGOMToBeImplementedElement(prefix,
-                                                   SVGOMDocument.this,
-                                                   TAG_FE_DIFFUSE_LIGHTING);
+            return new SVGOMFEDiffuseLightingElement(prefix,
+                                                     SVGOMDocument.this);
         }
     }
 
@@ -777,6 +816,18 @@ public class SVGOMDocument
             return new SVGOMToBeImplementedElement(prefix,
                                                    SVGOMDocument.this,
                                                    TAG_FE_DISPLACEMENT_MAP);
+        }
+    }
+
+    /**
+     * To create a 'feDistantLight' element.
+     */
+    protected class FeDistantLightElementFactory implements ElementFactory {
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix) {
+            return new SVGOMFEDistantLightElement(prefix, SVGOMDocument.this);
         }
     }
 
@@ -803,9 +854,7 @@ public class SVGOMDocument
          * Creates an instance of the associated element type.
          */
         public Element create(String prefix) {
-            return new SVGOMToBeImplementedElement(prefix,
-                                                   SVGOMDocument.this,
-                                                   TAG_FE_FUNC_A);
+            return new SVGOMFEFuncAElement(prefix, SVGOMDocument.this);
         }
     }
 
@@ -818,9 +867,7 @@ public class SVGOMDocument
          * Creates an instance of the associated element type.
          */
         public Element create(String prefix) {
-            return new SVGOMToBeImplementedElement(prefix,
-                                                   SVGOMDocument.this,
-                                                   TAG_FE_FUNC_R);
+            return new SVGOMFEFuncRElement(prefix, SVGOMDocument.this);
         }
     }
 
@@ -833,9 +880,7 @@ public class SVGOMDocument
          * Creates an instance of the associated element type.
          */
         public Element create(String prefix) {
-            return new SVGOMToBeImplementedElement(prefix,
-                                                   SVGOMDocument.this,
-                                                   TAG_FE_FUNC_G);
+            return new SVGOMFEFuncGElement(prefix, SVGOMDocument.this);
         }
     }
 
@@ -848,12 +893,9 @@ public class SVGOMDocument
          * Creates an instance of the associated element type.
          */
         public Element create(String prefix) {
-            return new SVGOMToBeImplementedElement(prefix,
-                                                   SVGOMDocument.this,
-                                                   TAG_FE_FUNC_B);
+            return new SVGOMFEFuncBElement(prefix, SVGOMDocument.this);
         }
     }
-
 
     /**
      * To create a 'feGaussianBlur' element.
@@ -922,6 +964,18 @@ public class SVGOMDocument
             return new SVGOMToBeImplementedElement(prefix,
                                                    SVGOMDocument.this,
                                                    TAG_FE_OFFSET);
+        }
+    }
+
+    /**
+     * To create a 'fePointLight' element.
+     */
+    protected class FePointLightElementFactory implements ElementFactory {
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix) {
+            return new SVGOMFEPointLightElement(prefix, SVGOMDocument.this);
         }
     }
 
@@ -1114,6 +1168,20 @@ public class SVGOMDocument
          */
         public Element create(String prefix) {
             return new SVGOMScriptElement(prefix, SVGOMDocument.this);
+        }
+    }
+
+    /**
+     * To create a 'stop' element.
+     */
+    protected class StopElementFactory implements ElementFactory {
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix) {
+            return new SVGOMToBeImplementedElement(prefix,
+                                                   SVGOMDocument.this,
+                                                   TAG_STOP);
         }
     }
 
