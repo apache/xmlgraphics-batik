@@ -513,6 +513,7 @@ To display the available targets type:
         <include name="${package-prefix}/i18n/*.class"/>
         <include name="${package-prefix}/util/*.class"/>
         <include name="${package-prefix}/util/io/*.class"/>
+        <include name="${package-prefix}/Version.class"/>
         <include name="${package-prefix}/util/resources/*.class"/>
       </fileset>
       <fileset dir="${resources}" excludes="${resources}/**/CVS">
