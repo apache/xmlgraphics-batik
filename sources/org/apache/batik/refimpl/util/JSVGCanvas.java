@@ -455,8 +455,7 @@ public class JSVGCanvas
         if (doc == null) {
             document = doc;
             setRootNode(null, null, null);
-            selectionHighlightShape = null;
-            canvasSpaceHighlightShape = null;
+            clearSelection();
         } else {
             setIsLoadPending(true);
             requestCursor(WAIT_CURSOR);
@@ -676,9 +675,8 @@ public class JSVGCanvas
                              (GraphicsNodeMouseListener) textSelector);
                 // should make sure this does not add duplicates
             }
-            }
-        selectionHighlightShape = null;
-        canvasSpaceHighlightShape = null;
+        }
+        clearSelection();
     }
 
     // SelectionListener /////////////////////////////////////////////
@@ -707,6 +705,11 @@ public class JSVGCanvas
             selectionHighlightShape = null;
             // change highlight and notify user agent
         }
+    }
+
+    private void clearSelection() {
+        selectionChanged(
+            new SelectionEvent(null, SelectionEvent.SELECTION_CLEARED, null));
     }
 
     private String getSelectionDescription(Object o) {
@@ -884,6 +887,8 @@ public class JSVGCanvas
      */
     protected void paintOverlays(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                             RenderingHints.VALUE_ANTIALIAS_ON);
 
         g2d.setXORMode(Color.white);
         if (markerTop != null) {
@@ -903,7 +908,7 @@ public class JSVGCanvas
             g2d.draw(docBBox);
         }
         if (canvasSpaceHighlightShape != null) {
-            g2d.setColor(Color.blue);
+            g2d.setColor(Color.black);
             g2d.fill(canvasSpaceHighlightShape);
         }
         g2d.setXORMode(Color.white);
@@ -1213,6 +1218,7 @@ public class JSVGCanvas
         public void mouseClicked(MouseEvent e) {
             AbstractEventDispatcher dispatcher =
                 (AbstractEventDispatcher)userAgent.getEventDispatcher();
+            clearSelection();
             dispatcher.mouseClicked(e);
         }
 
@@ -1262,6 +1268,7 @@ public class JSVGCanvas
                 }
             }
             if (!operationPerformed) {
+                clearSelection();
                 // nothing done so forward the event to the dispatcher
                 AbstractEventDispatcher dispatcher =
                     (AbstractEventDispatcher)userAgent.getEventDispatcher();
@@ -1746,8 +1753,9 @@ public class JSVGCanvas
             if (transform.isIdentity()) {
                 float dw = elt.getWidth().getBaseVal().getValue();
                 float dh = elt.getHeight().getBaseVal().getValue();
-                float d = Math.max(dw, dh);
-                transform = AffineTransform.getScaleInstance(w / d, h / d);
+
+                transform = AffineTransform.getScaleInstance(w / (float)dw,
+                                                             h / (float)dh);
             }
         }
 
