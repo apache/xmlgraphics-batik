@@ -8,6 +8,10 @@
 
 package org.apache.batik.dom.util;
 
+import java.util.List;
+import java.util.LinkedList;
+import java.util.Iterator;
+
 import java.io.InputStream;
 import java.io.InterruptedIOException;
 import java.io.IOException;
@@ -58,7 +62,7 @@ public class SAXDocumentFactory
      * The created document.
      */
     protected Document document;
-
+    
     /**
      * The created document descriptor.
      */
@@ -95,11 +99,6 @@ public class SAXDocumentFactory
     protected boolean isValidating;
 
     /**
-     * Whether the document element has been parsed.
-     */
-    protected boolean documentElementParsed;
-
-    /**
      * The stack used to store the namespace URIs.
      */
     protected HashTableStack namespaces;
@@ -108,6 +107,57 @@ public class SAXDocumentFactory
      * The error handler.
      */
     protected ErrorHandler errorHandler;
+
+    interface PreInfo {
+        public Node createNode(Document doc);
+    }
+
+    static class ProcessingInstructionInfo implements PreInfo {
+        public String target, data;
+        public ProcessingInstructionInfo(String target, String data) {
+            this.target = target;
+            this.data = data;
+        }
+        public Node createNode(Document doc) { 
+            return doc.createProcessingInstruction(target, data);
+        }
+    };
+
+    static class CommentInfo implements PreInfo {
+        public String comment;
+        public CommentInfo(String comment) {
+            this.comment = comment;
+        }
+        public Node createNode(Document doc) { 
+            return doc.createComment(comment);
+        }
+    };
+
+    static class CDataInfo implements PreInfo {
+        public String cdata;
+        public CDataInfo(String cdata) {
+            this.cdata = cdata;
+        }
+        public Node createNode(Document doc) { 
+            return doc.createCDATASection(cdata);
+        }
+    };
+
+    static class TextInfo implements PreInfo {
+        public String text;
+        public TextInfo(String text) {
+            this.text = text;
+        }
+        public Node createNode(Document doc) { 
+            return doc.createTextNode(text);
+        }
+    };
+
+    /**
+     * Various elements encountered prior to real document root element.
+     * List of PreInfo objects.
+     */
+    protected List preInfo;
 
     /**
      * Creates a new SAXDocumentFactory object.
@@ -178,7 +228,7 @@ public class SAXDocumentFactory
     }
 
     /**
-     * Creates a GenericDocument.
+     * Creates a Document.
      * @param ns The namespace URI of the root element.
      * @param root The name of the root element.
      * @param uri The document URI.
@@ -188,7 +238,42 @@ public class SAXDocumentFactory
     protected Document createDocument(String ns, String root, String uri,
                                       InputSource is)
 	throws IOException {
-	document = implementation.createDocument(ns, root, null);
+        Document ret = createDocument(is);
+        Element docElem = ret.getDocumentElement();
+
+        String lname = root;
+        String nsURI = ns;
+        if (ns == null) {
+            int idx = lname.indexOf(':');
+            String nsp = (idx == -1 || idx == lname.length()-1)
+                ? ""
+                : lname.substring(0, idx);
+            nsURI = namespaces.get(nsp);
+            if (idx != -1 && idx != lname.length()-1) {
+                lname = lname.substring(idx+1);
+            }
+        }
+
+
+        if ((!docElem.getNamespaceURI().equals(nsURI)) ||
+            (!docElem.getLocalName().equals(lname))) {
+            throw new IOException("Root element does not match requested Document.");
+        }
+
+        return ret;
+    }
+
+
+    /**
+     * Creates a Document.
+     * @param ns The namespace URI of the root element.
+     * @param root The name of the root element.
+     * @param uri The document URI.
+     * @param is  The document input source.
+     * @exception IOException if an error occured while reading the document.
+     */
+    protected Document createDocument(InputSource is)
+	throws IOException {
 	try {
             XMLReader parser =
                 XMLReaderFactory.createXMLReader(parserClassName);
@@ -216,7 +301,10 @@ public class SAXDocumentFactory
             throw new IOException(e.getMessage());
 	}
 
-	return document;
+        currentNode = null;
+        Document ret = document;
+        document = null;
+	return ret;
     }
 
     /**
@@ -267,15 +355,15 @@ public class SAXDocumentFactory
      * org.xml.sax.ContentHandler#startDocument()}.
      */
     public void startDocument() throws SAXException {
+        preInfo    = new LinkedList();
         namespaces = new HashTableStack();
 	namespaces.put("xml", XMLSupport.XML_NAMESPACE_URI);
 	namespaces.put("xmlns", XMLSupport.XMLNS_NAMESPACE_URI);
 	namespaces.put("", null);
 
-	documentElementParsed = false;
         inCDATA = false;
         inDTD = false;
-	currentNode = document;
+        currentNode = null;
 
         if (createDocumentDescriptor) {
             documentDescriptor = new DocumentDescriptor();
@@ -327,34 +415,21 @@ public class SAXDocumentFactory
 	    ? ""
 	    : rawName.substring(0, idx);
 	String nsURI = namespaces.get(nsp);
-
-	if (currentNode == document) {
-	    e = document.getDocumentElement();
-	    String lname = rawName;
-	    if (idx != -1 && idx != rawName.length()-1) {
-		lname = rawName.substring(idx+1);
-	    }
-	    if (e.getNamespaceURI() != null && nsp.length() != 0) {
-		if (!e.getLocalName().equals(lname)) {
-		    throw new SAXException("Bad root element");
-		}
-		e.setPrefix(nsp);
-	    }
-	    String xmlns;
-	    Attr attr = (nsp.equals(""))
-		? e.getAttributeNodeNS(XMLSupport.XMLNS_NAMESPACE_URI,
-				       xmlns = "xmlns")
-		: e.getAttributeNodeNS(XMLSupport.XMLNS_NAMESPACE_URI,
-				       xmlns = "xmlns:" + nsp);
-	    if (attr != null) {
-		namespaces.put(nsp, attr.getValue());
-	    }
-	    documentElementParsed = true;
-	} else {
-	    e = document.createElementNS(nsURI, rawName);
-	    currentNode.appendChild(e);
-	}
-	currentNode = e;
+        if (currentNode == null) {
+            document = implementation.createDocument(nsURI, rawName, null);
+            Iterator i = preInfo.iterator();
+            currentNode = e = document.getDocumentElement();
+            while (i.hasNext()) {
+                PreInfo pi = (PreInfo)i.next();
+                Node n = pi.createNode(document);
+		document.insertBefore(n, e);
+            }
+            preInfo = null;
+        } else {
+            e = document.createElementNS(nsURI, rawName);
+            currentNode.appendChild(e);
+            currentNode = e;
+        }
 
         // Storage of the line number.
         if (createDocumentDescriptor && locator != null) {
@@ -380,6 +455,14 @@ public class SAXDocumentFactory
 
     /**
      * <b>SAX</b>: Implements {@link
+     * org.xml.sax.ErrorHandler#fatalError(SAXParseException)}.
+     */
+    public void fatalError(SAXParseException ex) throws SAXException {
+        throw ex;
+    }
+
+    /**
+     * <b>SAX</b>: Implements {@link
      * org.xml.sax.ErrorHandler#error(SAXParseException)}.
      */
     public void error(SAXParseException ex) throws SAXException {
@@ -399,7 +482,8 @@ public class SAXDocumentFactory
      */
     public void endElement(String uri, String localName, String rawName)
 	throws SAXException {
-	currentNode = currentNode.getParentNode();
+        if (currentNode != null)
+            currentNode = currentNode.getParentNode();
 	namespaces.pop();
     }
     
@@ -410,10 +494,15 @@ public class SAXDocumentFactory
     public void characters(char ch[], int start, int length)
         throws SAXException {
 	String data = new String(ch, start, length);
-	Node n = (inCDATA)
-	    ? document.createCDATASection(data)
-	    : document.createTextNode(data);
-	currentNode.appendChild(n);
+        if (currentNode == null) {
+            if (inCDATA) preInfo.add(new CDataInfo(data));
+            else         preInfo.add(new TextInfo(data));
+        } else {
+            Node n = (inCDATA)
+                ? document.createCDATASection(data)
+                : document.createTextNode(data);
+            currentNode.appendChild(n);
+        }
     }
     
     /**
@@ -423,12 +512,11 @@ public class SAXDocumentFactory
     public void processingInstruction(String target, String data)
         throws SAXException {
 	if (!inDTD) {
-	    Node n = document.createProcessingInstruction(target, data);
-	    if (currentNode == document && !documentElementParsed) {
-		currentNode.insertBefore(n, document.getDocumentElement());
-	    } else {
-		currentNode.appendChild(n);
-	    }
+            if (currentNode == null)
+                preInfo.add(new ProcessingInstructionInfo(target, data));
+            else
+                currentNode.appendChild
+                    (document.createProcessingInstruction(target, data));
 	}
     }
 
@@ -486,12 +574,13 @@ public class SAXDocumentFactory
      */
     public void comment(char ch[], int start, int length) throws SAXException {
 	if (!inDTD) {
-	    Node n = document.createComment(new String(ch, start, length));
-	    if (currentNode == document && !documentElementParsed) {
-		currentNode.insertBefore(n, document.getDocumentElement());
-	    } else {
-		currentNode.appendChild(n);
-	    }
+            String str = new String(ch, start, length);
+            if (currentNode == null) {
+                preInfo.add(new CommentInfo(str));
+            } else {
+                currentNode.appendChild
+                    (document.createComment(str));
+            }
 	}
     }
 }
