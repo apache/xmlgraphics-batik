@@ -174,8 +174,10 @@ public class SVGLinearGradientBridge extends SVGGradientBridge
             SVGUtilities.convertAffineTransform(paintElement,
                                                 ATTR_GRADIENT_TRANSFORM);
 
-        at  = SVGUtilities.convertAffineTransform(at, paintedNode,
-                                                  rc, unitsType);
+        at  = SVGUtilities.convertAffineTransform(at,
+                                                  paintedNode,
+                                                  rc,
+                                                  unitsType);
 
         // Extract stop colors and intervals
         Vector stopVector = extractGradientStops(paintElement, ctx);

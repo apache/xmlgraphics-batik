@@ -63,7 +63,7 @@ public abstract class SVGGradientBridge implements SVGConstants {
     }
 
     protected static Vector extractGradientStops(Element paintElement,
-                                               BridgeContext ctx){
+                                                 BridgeContext ctx){
         Element e = paintElement;
         List refs = new LinkedList();
         Vector stops = new Vector();
@@ -83,7 +83,7 @@ public abstract class SVGGradientBridge implements SVGConstants {
             if (stops.size() > 0) {
                 return stops; // exit if stop defined
             }
-            String uriStr = XLinkSupport.getXLinkHref(paintElement);
+            String uriStr = XLinkSupport.getXLinkHref(e);
             if (uriStr.length() == 0) {
                 return stops; // exit if no more xlink:href
             }

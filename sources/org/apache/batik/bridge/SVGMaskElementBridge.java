@@ -21,7 +21,6 @@ import org.apache.batik.bridge.BridgeMutationEvent;
 import org.apache.batik.bridge.GVTBuilder;
 import org.apache.batik.bridge.IllegalAttributeValueException;
 import org.apache.batik.bridge.MaskBridge;
-import org.apache.batik.bridge.ObjectBoundingBoxViewport;
 import org.apache.batik.bridge.Viewport;
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
@@ -97,11 +96,6 @@ public class SVGMaskElementBridge implements MaskBridge, SVGConstants {
                                                      ATTR_MASK_CONTENT_UNITS}));
         }
 
-        Viewport oldViewport = bridgeContext.getViewport();
-        if(maskContentUnitsType == SVGUtilities.OBJECT_BOUNDING_BOX) {
-            bridgeContext.setViewport(new ObjectBoundingBoxViewport());
-        }
-
         GVTBuilder builder = bridgeContext.getGVTBuilder();
         CompositeGraphicsNode maskNode = new CompositeGraphicsNode();
         CompositeGraphicsNode maskNodeContent = new CompositeGraphicsNode();
@@ -128,8 +122,6 @@ public class SVGMaskElementBridge implements MaskBridge, SVGConstants {
             hasChildren = true;
             maskNodeContent.getChildren().add(gn);
         }
-        // restore the viewport
-        bridgeContext.setViewport(oldViewport);
         if (!hasChildren) {
             return null; // no mask defined
         }

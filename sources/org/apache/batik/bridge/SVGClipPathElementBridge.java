@@ -67,7 +67,6 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
                                                 ATTR_TRANSFORM);
 
         // parse the clipPathUnits attribute
-        Viewport oldViewport = ctx.getViewport();
         String units = clipElement.getAttributeNS(null, SVG_CLIP_PATH_UNITS_ATTRIBUTE);
         if (units.length() == 0) {
             units = SVG_USER_SPACE_ON_USE_VALUE;
@@ -81,13 +80,8 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
                                        new Object[] {units,
                                                      SVG_CLIP_PATH_UNITS_ATTRIBUTE}));
         }
-        if (unitsType == SVGUtilities.OBJECT_BOUNDING_BOX) {
-            // units are resolved using objectBoundingBox
-            ctx.setViewport(new ObjectBoundingBoxViewport());
-        }
         // compute an additional transform related the clipPathUnits
         Tx = SVGUtilities.convertAffineTransform(Tx, gn, rc, unitsType);
-
         // build the clipPath according to the clipPath's children
         boolean hasChildren = false;
         for(Node node=clipElement.getFirstChild();
@@ -131,8 +125,6 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
             }
             clipPath.add(new Area(outline));
         }
-        // restore the viewport
-        ctx.setViewport(oldViewport);
         if (!hasChildren) {
             return null; // no clipPath defined
         }
