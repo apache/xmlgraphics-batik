@@ -58,3 +58,13 @@ ID: rlm7-1 Sz: 2
 ID: rlm7-1 Sz: 1
   java.awt.Rectangle[x=0,y=0,width=30,height=70]
 
+ID: rlm8-1 Sz: 4
+  java.awt.Rectangle[x=194,y=218,width=1,height=1]
+  java.awt.Rectangle[x=200,y=10,width=1,height=1]
+  java.awt.Rectangle[x=226,y=246,width=1,height=1]
+  java.awt.Rectangle[x=227,y=228,width=1,height=1]
+
+ID: rlm8-1 Sz: 2
+  java.awt.Rectangle[x=194,y=218,width=34,height=29]
+  java.awt.Rectangle[x=200,y=10,width=1,height=1]
+
