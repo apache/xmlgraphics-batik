@@ -19,7 +19,7 @@ set ANT_HOME=.
 :: ----- Set Up The Runtime Classpath ------------------------------------------
 
 
-set CP=%JAVA_HOME%\lib\tools.jar;%ANT_HOME%\ant_1_2.jar;.\lib\crimson.jar;.\lib\jaxp.jar
+set CP=%JAVA_HOME%\lib\tools.jar;%ANT_HOME%\lib\ant_1_2.jar;.\lib\crimson.jar;.\lib\jaxp.jar
  
 
 :: ----- Execute The Requested Build -------------------------------------------
