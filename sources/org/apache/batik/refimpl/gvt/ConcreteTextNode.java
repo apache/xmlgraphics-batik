@@ -18,6 +18,7 @@ import java.text.AttributedCharacterIterator;
 
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.TextNode;
+import org.apache.batik.gvt.TextNode.Anchor;
 import org.apache.batik.gvt.Selectable;
 import org.apache.batik.gvt.TextPainter;
 import org.apache.batik.gvt.text.Mark;
