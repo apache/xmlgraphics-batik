@@ -29,6 +29,7 @@ import java.awt.image.renderable.RenderContext;
 
 import org.apache.batik.ext.awt.image.GraphicsUtil;
 import org.apache.batik.ext.awt.image.renderable.Filter;
+import org.apache.batik.ext.awt.image.renderable.TileRable;
 import org.apache.batik.ext.awt.image.renderable.TileRable8Bit;
 import org.apache.batik.ext.awt.image.rendered.TileCacheRed;
 
@@ -93,59 +94,41 @@ public class PatternPaintContext implements PaintContext {
         // System.out.println("PatB: " + patternRegion);
         // System.out.println("Tile: " + tile);
 
-        Filter tileRable = new TileRable8Bit(tile,
-                                             EVERYTHING,
-                                             patternRegion,
-                                             overflow);
+        TileRable tileRable = new TileRable8Bit(tile,
+                                                EVERYTHING,
+                                                patternRegion,
+                                                overflow);
+
+        ColorSpace destCS = destCM.getColorSpace();
+        if (destCS == ColorSpace.getInstance(ColorSpace.CS_sRGB))
+            tileRable.setColorSpaceLinear(false);
+        else if (destCS == ColorSpace.getInstance(ColorSpace.CS_LINEAR_RGB))
+            tileRable.setColorSpaceLinear(true);
 
         RenderContext rc = new RenderContext(usr2dev,  EVERYTHING, hints);
-
         tiled = tileRable.createRendering(rc);
 
         // System.out.println("tileRed: " + tiled);
         // org.apache.batik.test.gvt.ImageDisplay.showImage("Tiled: ", tiled);
 
         //System.out.println("Created rendering");
-        if(tiled != null) {
-            rasterCM = tiled.getColorModel();
-            ColorSpace destCS = destCM.getColorSpace();
-
-            if (destCS != rasterCM.getColorSpace()) {
-                if (destCS == ColorSpace.getInstance(ColorSpace.CS_sRGB))
-                    tiled = GraphicsUtil.convertTosRGB
-                        (GraphicsUtil.wrap(tiled));
-                else if (destCS == 
-                         ColorSpace.getInstance(ColorSpace.CS_LINEAR_RGB))
-                    tiled = GraphicsUtil.convertToLsRGB
-                        (GraphicsUtil.wrap(tiled));
-            }
-
-            rasterCM = tiled.getColorModel();
-            if (rasterCM.hasAlpha()) {
-                if (destCM.hasAlpha()) {
-                    if (rasterCM.isAlphaPremultiplied() !=
-                        destCM  .isAlphaPremultiplied())
-                        rasterCM = GraphicsUtil.coerceColorModel
-                            (rasterCM, destCM.isAlphaPremultiplied());
-                } else {
-                    rasterCM = GraphicsUtil.coerceColorModel(rasterCM, false);
-                }
-            }
-        }
-        else {
+        if(tiled == null) {
             //System.out.println("Tile was null");
             rasterCM = ColorModel.getRGBdefault();
             WritableRaster wr;
             wr = rasterCM.createCompatibleWritableRaster(32, 32);
             tiled = new BufferedImage(rasterCM, wr, false, null);
+            return;
         }
 
-
-        // System.out.println("DestCM  : " + destCM);
-        // System.out.println("RasterCM: " + rasterCM);
-        // Exception e = new Exception("Pattern");
-        // e.printStackTrace();
-        
+        rasterCM = tiled.getColorModel();
+        if (rasterCM.hasAlpha()) {
+            if (destCM.hasAlpha()) 
+                rasterCM = GraphicsUtil.coerceColorModel
+                    (rasterCM, destCM.isAlphaPremultiplied());
+            else 
+                rasterCM = GraphicsUtil.coerceColorModel(rasterCM, false);
+        }
     }
 
     public void dispose(){

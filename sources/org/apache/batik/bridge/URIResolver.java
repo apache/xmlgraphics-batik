@@ -85,22 +85,22 @@ public class URIResolver {
         if (documentURI == null)
             documentURI = document.getURL();
 
-        if (documentURI.equals(uri)) {
-            return document;
-        }
-        if (uri.startsWith(documentURI) &&
-            uri.length() > documentURI.length() + 1 &&
-            uri.charAt(documentURI.length()) == '#') {
-            uri = uri.substring(documentURI.length());
-        }
-
-        if (uri.startsWith("#")) {
-            return document.getElementById(uri.substring(1));
-        }
-
         ParsedURL purl = new ParsedURL(documentURI, uri);
+        String    ref  = purl.getRef();
+        if ((ref != null) && (documentURI != null)) {
+            ParsedURL pDocURL = new ParsedURL(documentURI);
+            // Check if the rest of the URL matches...
+            // if so then return the referenced element.
+            if ((pDocURL.getPath() == purl.getPath()) &&
+                (pDocURL.getPort() == purl.getPort()) &&
+                (pDocURL.getHost() == purl.getHost()) &&
+                (pDocURL.getProtocol() == purl.getProtocol()))
+                return document.getElementById(ref);
+        }
+
+        // uri is not a reference into this document, so load the 
+        // document it does reference.
         Document doc = documentLoader.loadDocument(purl.toString());
-        String ref = purl.getRef();
         if (ref != null)
             return doc.getElementById(ref);
         return doc;
