@@ -176,19 +176,7 @@ public class JSVGComponent extends JGVTComponent {
             return;
         }
         url = newURI.toString();
-        String s = newURI.getRef();
-
-        if (svgDocument != null) {
-            if (newURI.sameFile(oldURI) &&
-                ((fragmentIdentifier == null && s != null) ||
-                 (s == null && fragmentIdentifier != null) ||
-                 (s != null && !s.equals(fragmentIdentifier)))) {
-                fragmentIdentifier = s;
-                computeRenderingTransform();
-                return;
-            }
-        }
-        fragmentIdentifier = s;
+        fragmentIdentifier = newURI.getRef();
 
         loader = new DocumentLoader(userAgent.getXMLParserClassName());
         documentLoader = new SVGDocumentLoader(url, loader);
@@ -252,6 +240,14 @@ public class JSVGComponent extends JGVTComponent {
      */
     public String getFragmentIdentifier() {
         return fragmentIdentifier;
+    }
+
+    /**
+     * Sets the current fragment identifier.
+     */
+    public void setFragmentIdentifier(String fi) {
+        fragmentIdentifier = fi;
+        computeRenderingTransform();
     }
 
     /**
@@ -556,7 +552,7 @@ public class JSVGComponent extends JGVTComponent {
             if (svgUserAgent != null) {
                 return svgUserAgent.getPixelToMM();
             }
-            return 0.264583333333333333333f; // 72 dpi
+            return 0.264583333333333333333f; // 96 dpi
         }
 
         /**
@@ -602,6 +598,28 @@ public class JSVGComponent extends JGVTComponent {
                     href = newURI.toString();
 
                     svgUserAgent.openLink(href);
+                    return;
+                }
+            }
+
+            // Avoid reloading if possible.
+            if (svgDocument != null) {
+                URL oldURI = ((SVGOMDocument)svgDocument).getURLObject();
+                URL newURI = null;
+                try {
+                    newURI = new URL(oldURI, href);
+                } catch (MalformedURLException e) {
+                    userAgent.displayError(e);
+                    return;
+                }
+                String s = newURI.getRef();
+                if (newURI.sameFile(oldURI)) {
+                    if ((fragmentIdentifier == null && s != null) ||
+                        (s == null && fragmentIdentifier != null) ||
+                        (s != null && !s.equals(fragmentIdentifier))) {
+                        fragmentIdentifier = s;
+                        computeRenderingTransform();
+                    }
                     return;
                 }
             }

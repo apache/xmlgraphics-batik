@@ -598,18 +598,43 @@ public class JSVGViewerFrame
                                        fr.y + (fr.height - sd.height) / 2);
             }
             if (uriChooser.showDialog() == URIChooser.OK_OPTION) {
-                String text = uriChooser.getText();
-                try {
-                    File f = new File(text);
-                    URL u = null;
-                    if (f.exists() && !f.isDirectory()) {
-                        u = f.toURL();
-                    } else {
-                        u = new URL(text);
+                String s = uriChooser.getText();
+                int i = s.indexOf("#");
+                String t = "";
+                if (i != -1) {
+                    t = s.substring(i + 1);
+                    s = s.substring(0, i);
+                }
+                if (!s.equals("")) {
+                    File f = new File(s);
+                    if (f.exists()) {
+                        if (f.isDirectory()) {
+                            s = null;
+                        } else {
+                            try {
+                                s = "file:" + f.getCanonicalPath();
+                            } catch (IOException ex) {
+                            }
+                        }
                     }
-                    svgCanvas.loadSVGDocument(u.toString());
-                } catch (Exception ex) {
-                    userAgent.displayError(ex);
+                    if (s != null) {
+                        if (svgDocument != null) {
+                            try {
+                                SVGOMDocument doc = (SVGOMDocument)svgDocument;
+                                URL docURL = doc.getURLObject();
+                                URL url = new URL(docURL, s);
+                                String fi = svgCanvas.getFragmentIdentifier();
+                                if (docURL.equals(url) && t.equals(fi)) {
+                                    return;
+                                }
+                            } catch (MalformedURLException ex) {
+                            }
+                        }
+                        if (t.length() != 0) {
+                            s += "#" + t;
+                        }
+                        svgCanvas.loadSVGDocument(s);
+                    }
                 }
             }
         }
