@@ -290,9 +290,26 @@ public class SAXDocumentFactory
         }
 
 
-        if ((!docElem.getNamespaceURI().equals(nsURI)) ||
-            (!docElem.getLocalName().equals(lname))) {
-            throw new IOException("Root element does not match requested Document.");
+        String docElemNS = docElem.getNamespaceURI();
+        if ((docElemNS != nsURI) &&
+            ((docElemNS == null) || (!docElemNS.equals(nsURI))))
+            throw new IOException
+                ("Root element namespace does not match that requested:\n" +
+                 "Requested: " + nsURI + "\n" +
+                 "Found: " + docElemNS);
+
+        if (docElemNS != null) {
+            if (!docElem.getLocalName().equals(lname))
+                throw new IOException
+                    ("Root element does not match that requested:\n" +
+                     "Requested: " + lname + "\n" +
+                     "Found: " + docElem.getLocalName());
+        } else {
+            if (!docElem.getNodeName().equals(lname))
+                throw new IOException
+                    ("Root element does not match that requested:\n" +
+                     "Requested: " + lname + "\n" +
+                     "Found: " + docElem.getNodeName());
         }
 
         return ret;
@@ -457,7 +474,7 @@ public class SAXDocumentFactory
             while (i.hasNext()) {
                 PreInfo pi = (PreInfo)i.next();
                 Node n = pi.createNode(document);
-		document.insertBefore(n, e);
+                document.insertBefore(n, e);
             }
             preInfo = null;
         } else {

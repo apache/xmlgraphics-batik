@@ -124,18 +124,24 @@ public class ParsedURLData {
      * URL.
      */
     protected URL buildURL() throws MalformedURLException {
-        String file = "";
-        if (path != null) 
-            file = path;
 
         // System.out.println("File: " + file);
         // if (ref != null)
         //     file += "#" + ref;
+        // System.out.println("Building: " + protocol + " - " + 
+        //                     host + " - " + path);
 
-        if (port == -1)
-            return new URL(protocol, host, file);
+        if ((protocol != null) && (host != null)) {
+            String file = "";
+            if (path != null) 
+                file = path;
+            if (port == -1)
+                return new URL(protocol, host, file);
 
-        return new URL(protocol, host, port, file);
+            return new URL(protocol, host, port, file);
+        }
+
+        return new URL(toString());
     }
 
     /**

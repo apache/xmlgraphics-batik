@@ -199,6 +199,7 @@ public class ParsedURL {
      */
     public ParsedURL(URL baseURL, String urlStr) {
         this.userAgent = getGlobalUserAgent();
+        
         if (baseURL != null)
             this.data = parseURL(new ParsedURL(baseURL), urlStr);
         else
