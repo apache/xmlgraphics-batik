@@ -36,12 +36,13 @@ public interface XMLConstants {
     String XMLNS_PREFIX = "xmlns";
     String XLINK_PREFIX = "xlink";
 
-    // xml:{lang,space,base} attributes
+    // xml:{lang,space,base} and XML Events attributes
     String XML_LANG_ATTRIBUTE  = XML_PREFIX + ":lang";
     String XML_SPACE_ATTRIBUTE = XML_PREFIX + ":space";
     String XML_DEFAULT_VALUE = "default";
     String XML_PRESERVE_VALUE = "preserve";
     String XML_BASE_ATTRIBUTE = "base";
+    String XML_EVENTS_EVENT_ATTRIBUTE = "event";
 
     // Serialization constants
     String XML_TAB = "    ";

@@ -170,6 +170,9 @@ public class SVG12DOMImplementation
         svg12Factories.put(SVG12Constants.SVG_FLOW_SPAN_TAG,
                            new FlowSpanElementFactory());
 
+        svg12Factories.put(SVG12Constants.SVG_HANDLER_TAG,
+                           new HandlerElementFactory());
+
         svg12Factories.put(SVG12Constants.SVG_MULTI_IMAGE_TAG,
                            new MultiImageElementFactory());
 
@@ -303,6 +306,22 @@ public class SVG12DOMImplementation
             return new SVGOMFlowSpanElement(prefix, (AbstractDocument)doc);
         }
     }
+
+    /**
+     * To create a 'handler' element.
+     */
+    protected static class HandlerElementFactory 
+        implements ElementFactory {
+        public HandlerElementFactory() {
+        }
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix, Document doc) {
+            return new SVGOMHandlerElement(prefix, (AbstractDocument)doc);
+        }
+    }
+
     /**
      * To create a 'multiImage' element.
      */
