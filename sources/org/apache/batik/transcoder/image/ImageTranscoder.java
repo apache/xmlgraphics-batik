@@ -140,7 +140,14 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
             throw new TranscoderException(
                 Messages.formatMessage("notsvg", null));
         }
+	
         SVGDocument svgDoc = (SVGDocument)document;
+	// set the alternate stylesheet if any
+        if (hints.containsKey(KEY_ALTERNATE_STYLESHEET)) {
+            String stylesheetName = (String)hints.get(KEY_ALTERNATE_STYLESHEET);
+	    ((SVGOMDocument)svgDoc).enableAlternateStyleSheet(stylesheetName);
+        }
+
         SVGSVGElement root = svgDoc.getRootElement();
         // initialize the SVG document with the appropriate context
         DefaultSVGContext svgCtx = new DefaultSVGContext();
@@ -578,7 +585,7 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
         = new StringKey();
 
     /**
-     * The language key.
+     * The media key.
      * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
      * <TR>
      * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Key: </TH>
@@ -599,6 +606,30 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
      * </TABLE>
      */
     public static final TranscodingHints.Key KEY_MEDIA
+        = new StringKey();
+
+    /**
+     * The alternate stylesheet key.
+     * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Key: </TH>
+     * <TD VALIGN="TOP">KEY_ALTERNATE_STYLESHEET</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Value: </TH>
+     * <TD VALIGN="TOP">String</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Default: </TH>
+     * <TD VALIGN="TOP">null</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Required: </TH>
+     * <TD VALIGN="TOP">No</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Description: </TH>
+     * <TD VALIGN="TOP">Specify the alternate stylesheet to use.
+     * </TD></TR>
+     * </TABLE>
+     */
+    public static final TranscodingHints.Key KEY_ALTERNATE_STYLESHEET
         = new StringKey();
 
     /**
