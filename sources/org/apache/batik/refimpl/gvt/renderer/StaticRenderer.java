@@ -139,7 +139,7 @@ public class StaticRenderer implements Renderer {
         g.transform(nodeRenderContext.getTransform());
 
         // Set initial clip
-        g.clip(nodeRenderContext.getAreaOfInterest());
+        //g.clip(nodeRenderContext.getAreaOfInterest());
 
         // Set default rendering hints
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
