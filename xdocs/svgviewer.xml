@@ -269,7 +269,7 @@
                 <figure src="images/svgviewerRotate.gif" alt="Rotating an SVG document" />
                 <p>It is sometimes useful to be able to rotate a document (maps for example). You can
                 do this in the Batik viewer by first pressing the Ctrl key and then clicking and dragging
-                the left mouse button to a new location. A marker will show the rotation angle corresponding
+                the right mouse button to a new location. A marker will show the rotation angle corresponding
                 to the new mouse cursor location. When you are satisfied with that angle, you can release
                 the mouse button and the document will be displayed with the rotation you have specified.
                 </p>
