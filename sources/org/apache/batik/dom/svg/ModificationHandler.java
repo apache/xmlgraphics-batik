@@ -18,21 +18,17 @@ import org.w3c.dom.svg.SVGElement;
  * @version $Id$
  */
 public interface ModificationHandler {
+
     /**
      * Called when the handled value has been modified.
+     * @param object The modified object.
+     * @param value The new value.
      */
-    void valueChanged(String value);
+    void valueChanged(Object object, String value);
 
     /**
-     * Returns the associated element.
+     * Returns the object associated with the given key.
+     * @param key The key to use to retreive the object.
      */
-    SVGElement getSVGElement();
-
-    /**
-     * Creates a DOM exception with a localized message.
-     * @param type The DOM exception type.
-     * @param key The key of the message in the resource bundle.
-     * @param args The message arguments.
-     */
-    DOMException createDOMException(short type, String key, Object[] args);
+    Object getObject(Object key);
 }

@@ -452,7 +452,7 @@ public class DOMViewer extends JFrame implements ActionMap {
 	    /**
 	     * The node.
 	     */
-	protected Node node;
+            protected Node node;
 	    
 	    /**
 	     * Creates a new NodeAttributesModel object.
@@ -515,12 +515,30 @@ public class DOMViewer extends JFrame implements ActionMap {
 	     * The node.
 	     */
 	    protected Node node;
+
+            /**
+             * The computed style.
+             */
+            protected CSSStyleDeclaration style;
 	    
+            /**
+             * The property names.
+             */
+            protected java.util.List propertyNames;
+
 	    /**
 	     * Creates a new NodeAttributesModel object.
 	     */
 	    public NodeCSSValuesModel(Node n) {
 		node = n;
+                if (viewCSS != null) {
+                    style = viewCSS.getComputedStyle((Element)n, null);
+                    propertyNames = new ArrayList();
+                    for (int i = 0; i < style.getLength(); i++) {
+                        propertyNames.add(style.item(i));
+                    }
+                    Collections.sort(propertyNames);
+                }
 	    }
 
 	    /**
@@ -545,12 +563,10 @@ public class DOMViewer extends JFrame implements ActionMap {
 	     * Returns the number of rows in the table.
 	     */
 	    public int getRowCount() {
-		if (viewCSS == null) {
+		if (style == null) {
 		    return 0;
 		}
-		CSSStyleDeclaration sd;
-                sd = viewCSS.getComputedStyle((Element)node, null);
-		return sd.getLength();
+		return style.getLength();
 	    }
 
 	    /**
@@ -564,13 +580,11 @@ public class DOMViewer extends JFrame implements ActionMap {
 	     * Returns the value of the given cell.
 	     */
 	    public Object getValueAt(int row, int col) {
-		CSSStyleDeclaration sd;
-                sd = viewCSS.getComputedStyle((Element)node, null);
-		String prop = sd.item(row);
+		String prop = (String)propertyNames.get(row);
 		if (col == 0) {
 		    return prop;
 		} else {
-		    return sd.getPropertyValue(prop);
+		    return style.getPropertyValue(prop);
 		}
 	    }
 	}

@@ -123,7 +123,6 @@ public class InputBuffer {
     public int next() throws IOException {
 	next(markSet);
 
-        /*
 	switch (current) {
 	case 10:
 	    break;
@@ -153,7 +152,6 @@ public class InputBuffer {
 	}
 	line++;
 	column = 1;
-        */
 
 	return current;
     }
@@ -278,16 +276,32 @@ public class InputBuffer {
 	    throw new IllegalArgumentException("a.length < contentSize()");
 	}
 	if (bufferIndex == 0) {
-	    System.arraycopy(buffers[0], mark, a, 0, size);
+	    //System.arraycopy(buffers[0], mark, a, 0, size);
+            char[] buffer = buffers[0];
+            for (int i = size - 1; i >= 0; i--) {
+                a[i] = buffer[i + mark];
+            }
 	} else {
 	    int offset = BUFFER_SIZE - mark;
-	    System.arraycopy(buffers[0], mark, a, 0, offset);
+	    //System.arraycopy(buffers[0], mark, a, 0, offset);
+            char[] buffer = buffers[0];
+            for (int i = offset - 1; i >= 0; i--) {
+                a[i] = buffer[i + mark];
+            }
 	    for (int i = 1; i < bufferIndex; i++) {
-		System.arraycopy(buffers[i], 0, a, offset, BUFFER_SIZE);
+		//System.arraycopy(buffers[i], 0, a, offset, BUFFER_SIZE);
+                buffer = buffers[i];
+                for (int j = BUFFER_SIZE - 1; j >= 0; j--) {
+                    a[j + offset] = buffer[j];
+                }
 		offset += BUFFER_SIZE;
 	    }
 	    size = position + ((current != -1) ? 1 : 0);
-	    System.arraycopy(buffers[bufferIndex], 0, a, offset, size);
+	    //System.arraycopy(buffers[bufferIndex], 0, a, offset, size);
+            buffer = buffers[bufferIndex];
+            for (int i = size - 1; i >= 0; i--) {
+                a[i + offset] = buffer[i];
+            }
 	}
     }
 }

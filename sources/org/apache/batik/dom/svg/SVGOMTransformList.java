@@ -74,7 +74,7 @@ public class SVGOMTransformList
     public void clear() {
         list.clear();
         if (modificationHandler != null) {
-            modificationHandler.valueChanged(toString());
+            modificationHandler.valueChanged(this, toString());
         }
     }
 
@@ -101,7 +101,7 @@ public class SVGOMTransformList
         list.clear();
         list.add(newItem);
         if (modificationHandler != null) {
-            modificationHandler.valueChanged(toString());
+            modificationHandler.valueChanged(this, toString());
         }
         return newItem;
      }
@@ -134,7 +134,7 @@ public class SVGOMTransformList
             list.add(index, newItem);
         }
         if (modificationHandler != null) {
-            modificationHandler.valueChanged(toString());
+            modificationHandler.valueChanged(this, toString());
         }
         return newItem;
     }
@@ -153,7 +153,7 @@ public class SVGOMTransformList
         }
         list.set(index, newItem);
         if (modificationHandler != null) {
-            modificationHandler.valueChanged(toString());
+            modificationHandler.valueChanged(this, toString());
         }
         return newItem;
     }
@@ -170,7 +170,7 @@ public class SVGOMTransformList
         }
         Object result = list.remove(index);
         if (modificationHandler != null) {
-            modificationHandler.valueChanged(toString());
+            modificationHandler.valueChanged(this, toString());
         }
         return (SVGTransform)result;
     }
@@ -181,7 +181,7 @@ public class SVGOMTransformList
     public SVGTransform appendItem(SVGTransform np) throws SVGException {
         list.add(np);
         if (modificationHandler != null) {
-            modificationHandler.valueChanged(toString());
+            modificationHandler.valueChanged(this, toString());
         }
         return np;
     }
@@ -207,11 +207,7 @@ public class SVGOMTransformList
      */
     protected DOMException createDOMException(short type, String key,
                                               Object[] args) {
-        if (modificationHandler != null) {
-            return modificationHandler.createDOMException(type, key, args);
-        } else {
-            return new DOMException(type, key);
-        }
+        return new DOMException(type, key);
     }
 
     /**

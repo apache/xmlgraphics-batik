@@ -99,21 +99,19 @@ public class SVGOMAnimatedNumberList
         return element;
     }
 
+    // ModificationHandler ///////////////////////////////////////////////
+
     /**
-     * Implements {@link ModificationHandler#valueChanged(String)}.
+     * Implements {@link ModificationHandler#valueChanged(Object,String)}.
      */
-    public void valueChanged(String value) {
+    public void valueChanged(Object object, String value) {
 	element.setAttributeNS(attributeNsURI, attributeName, value);
     }
 
     /**
-     * Creates a DOM exception with a localized message.
-     * @param type The DOM exception type.
-     * @param key The key of the message in the resource bundle.
-     * @param args The message arguments.
+     * Implements {@link ModificationHandler#getObject(Object,String)}.
      */
-    public DOMException createDOMException(short type, String key,
-                                           Object[] args) {
-        return element.createDOMException(type, key, args);
+    public Object getObject(Object key) {
+        return null;
     }
 }

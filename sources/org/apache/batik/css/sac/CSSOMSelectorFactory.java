@@ -29,6 +29,18 @@ import org.w3c.css.sac.SimpleSelector;
  */
 
 public class CSSOMSelectorFactory implements SelectorFactory {
+
+    /**
+     * The instance of this class.
+     */
+    public final static SelectorFactory INSTANCE = new CSSOMSelectorFactory();
+
+    /**
+     * This class does not need to be instantiated.
+     */
+    protected CSSOMSelectorFactory() {
+    }
+
     /**
      * <b>SAC</b>: Implements {@link
      * SelectorFactory#createConditionalSelector(SimpleSelector,Condition)}.

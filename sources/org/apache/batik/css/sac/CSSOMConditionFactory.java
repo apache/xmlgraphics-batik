@@ -28,6 +28,18 @@ import org.w3c.css.sac.PositionalCondition;
  */
 
 public class CSSOMConditionFactory implements ConditionFactory {
+
+    /**
+     * The instance of this class.
+     */
+    public final static ConditionFactory INSTANCE = new CSSOMConditionFactory();
+
+    /**
+     * This class does not need to be instantiated.
+     */
+    protected CSSOMConditionFactory() {
+    }
+
     /**
      * <b>SAC</b>: Implements {@link
      * ConditionFactory#createAndCondition(Condition,Condition)}.
