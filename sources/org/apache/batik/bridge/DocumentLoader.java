@@ -83,7 +83,10 @@ public class DocumentLoader {
      * the document
      */
     public Document loadDocument(String uri) throws IOException {
-        int n = uri.indexOf('#');
+        int n = uri.lastIndexOf('/');
+        if (n == -1) 
+            n = 0;
+        n = uri.indexOf('#', n);
         if (n != -1) {
             uri = uri.substring(0, n);
         }

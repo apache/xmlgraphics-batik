@@ -1029,14 +1029,14 @@ public class PNGRed extends AbstractRed {
         }
 
         int r = 0, g = 0, b = 0;
-        if (bitDepth < 8) {
-            r = expandBits[bitDepth][bkgdRed];
-            g = expandBits[bitDepth][bkgdGreen];
-            b = expandBits[bitDepth][bkgdBlue];
-        } else if (bitDepth == 8) {
+        if ((colorType == PNG_COLOR_PALETTE) || (bitDepth == 8)) {
             r = bkgdRed;
             g = bkgdGreen;
             b = bkgdBlue;
+        } else if (bitDepth < 8) {
+            r = expandBits[bitDepth][bkgdRed];
+            g = expandBits[bitDepth][bkgdGreen];
+            b = expandBits[bitDepth][bkgdBlue];
         } else if (bitDepth == 16) {
             r = bkgdRed >> 8;
             g = bkgdGreen >> 8;
