@@ -16,6 +16,7 @@ import java.awt.Font;
 import java.awt.font.TextAttribute;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Area;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
@@ -391,7 +392,17 @@ public class GlyphLayout implements TextSpanLayout {
         return shape;
     }
 
-    public static int cleanPtsList(Point2D.Float [] pts, int numPts) {
+    /**
+     * This checks for simple self-intersections in the poly-line
+     * described by the array of points in <tt>pts</tt>.
+     * @param pts array of points to visit (modified by function).
+     * @param numPts The number of points to use out of pts.
+     * @param numPrev The number of previous segments to check
+     *        note that 1 will never find anything.
+     * @return the number of points to use remaining in <tt>pts</tt>.
+     */
+    public static int cleanPtsList(Point2D.Float [] pts, int numPts,
+                                   int numPrev) {
         // Can't get into trouble with only 3 points...
         if (numPts < 4) return numPts;
 
@@ -402,90 +413,306 @@ public class GlyphLayout implements TextSpanLayout {
         int outPts = 3;
         Point2D.Float inter;
         for (int i=3; i<numPts; i++) {
-            pt00 = pt01;
-            pt01 = pt10;
-            pt10 = pt11;
+            pt10 = pts[outPts-1];
             pt11 = pts[i];
 
-            inter = calcIntervalIntersection(pt00, pt01, pt10, pt11);
-            if (inter != null) {
-                // We got an intersection (lines crossed over each other...)
-                // So lets remove the cross over...
-                //        00\     __11
-                //          _\_--
-                //       10____\01
-                //
-                //  We want to replace this with 00->inter->11
-                // This means replacing 01 with inter, and replacing
-                // 10 with 11
-                pts[outPts-1] = pt11;  // replace 10
-                pts[outPts-2] = inter; // replace 01
-            } else {
-                pts[outPts] = pt11;    // clean add pt11.
+            int oldest = (outPts-1)-numPrev;
+            if (oldest < 0) oldest = 0;
+            while (oldest < outPts-2) {
+                pt00 = pts[oldest];
+                pt01 = pts[oldest+1];
+
+                inter = calcIntervalIntersection(pt00, pt01, pt10, pt11);
+                if (inter != null) {
+                    // We got an intersection (lines crossed over each other)
+                    // So lets remove the cross over...
+                    //        00\     __11
+                    //          _\_--
+                    //       10____\01
+                    //
+                    //  We want to replace this with 00->inter->11
+                    // This means replacing 01 with inter, and replacing
+                    // 10 with 11
+                    pts[oldest+1] = inter;  
+                    pts[oldest+2] = pt11; 
+                    outPts = oldest+3;
+                    break;
+                }
+                oldest++;
+            }
+            if (oldest == outPts-2) {
+                // clean add pt11.
+                pts[outPts] = pt11;
                 outPts++;
             }
         }
+
+        // If we removed points clean the list again...
+        if (outPts != numPts)
+            return cleanPtsList(pts, outPts, numPrev);
+
         return outPts;
     }
 
-    public static void addPtsToPath(GeneralPath shape, 
+    public static int makeConvexHull(Point2D.Float [] pts, int numPts) {
+        // Sort the Pts in X...
+        Point2D.Float tmp;
+        // System.out.print("Sorting...");
+        for (int i=1; i<numPts; i++) {
+            // Simple bubble sort (numPts should be small so shouldn't
+            // be too bad.).
+            if ((pts[i].x < pts[i-1].x) ||
+                ((pts[i].x == pts[i-1].x) && (pts[i].y < pts[i-1].y))) {
+                tmp = pts[i];
+                pts[i] = pts[i-1];
+                pts[i-1] = tmp;
+                i=0;
+                continue;
+            }
+        }
+
+        // System.out.println("Sorted");
+                
+        Point2D.Float pt0 = pts[0];
+        Point2D.Float pt1 = pts[numPts-1];
+        Point2D.Float dxdy = new Point2D.Float(pt1.x-pt0.x, pt1.y-pt0.y);
+        float soln, c = dxdy.y*pt0.x-dxdy.x*pt0.y;
+
+        Point2D.Float [] topList = new Point2D.Float[numPts];
+        Point2D.Float [] botList = new Point2D.Float[numPts];
+        botList[0] = topList[0] = pts[0];
+        int nTopPts=1; 
+        int nBotPts=1;
+        for (int i=1; i<numPts-1; i++) {
+            Point2D.Float pt = pts[i];
+            soln = dxdy.x*pt.y-dxdy.y*pt.x+c;
+            if (soln < 0) {
+                // Below line goes into bot pt list...
+                while (nBotPts >= 2) {
+                    pt0 = botList[nBotPts-2];
+                    pt1 = botList[nBotPts-1];
+                    float dx = pt1.x-pt0.x;
+                    float dy = pt1.y-pt0.y;
+                    float c0 = dy*pt0.x-dx*pt0.y;
+                    soln = dx*pt.y-dy*pt.x+c0;
+                    if (soln > eps) // Left turn add and we are done..
+                        break;
+                    if (soln > -eps) {
+                        // On line take lowest Y of two and keep going
+                        if (pt1.y < pt.y) pt = pt1;
+                        nBotPts--;
+                        break;
+                    }
+                    // right turn drop prev pt;
+                    nBotPts--;
+                }
+                botList[nBotPts++] = pt;
+            } else {
+                // Above line goes into top pt list...
+                while (nTopPts >= 2) {
+                    pt0 = topList[nTopPts-2];
+                    pt1 = topList[nTopPts-1];
+                    float dx = pt1.x-pt0.x;
+                    float dy = pt1.y-pt0.y;
+                    float c0 = dy*pt0.x-dx*pt0.y;
+                    soln = dx*pt.y-dy*pt.x+c0;
+                    if (soln < -eps) // Right turn add and check next point.
+                        break;
+                    if (soln < eps) {
+                        // On line take greatest Y of two and keep going
+                        if (pt1.y > pt.y) pt = pt1;
+                        nTopPts--;
+                        break;
+                    }
+                    // left turn drop prev pt;
+                    nTopPts--;
+                }
+                topList[nTopPts++] = pt;
+            }
+        }
+
+        // Check last point in both sets...
+        Point2D.Float pt = pts[numPts-1];
+        while (nBotPts >= 2) {
+            pt0 = botList[nBotPts-2];
+            pt1 = botList[nBotPts-1];
+            float dx = pt1.x-pt0.x;
+            float dy = pt1.y-pt0.y;
+            float c0 = dy*pt0.x-dx*pt0.y;
+            soln = dx*pt.y-dy*pt.x+c0;
+            if (soln > eps) 
+                // Left turn add and we are done..
+                break;
+            if (soln > -eps) {
+                // On line take lowest Y of two and keep going
+                if (pt1.y >= pt.y) nBotPts--;
+                break;
+            }
+            // right turn drop prev pt;
+            nBotPts--;
+        }
+
+        while (nTopPts >= 2) {
+            pt0 = topList[nTopPts-2];
+            pt1 = topList[nTopPts-1];
+            float dx = pt1.x-pt0.x;
+            float dy = pt1.y-pt0.y;
+            float c0 = dy*pt0.x-dx*pt0.y;
+            soln = dx*pt.y-dy*pt.x+c0;
+            if (soln < -eps) 
+                // Right turn done...
+                break;
+            if (soln < eps) {
+                // On line take lowest Y of two and keep going
+                if (pt1.y <= pt.y) nTopPts--;
+                break;
+            }
+            // left turn drop prev pt;
+            nTopPts--;
+        }
+
+        int i=0;
+        for (; i<nTopPts; i++)
+            pts[i] = topList[i];
+
+        // We always include the 'last' point as it is always on convex hull.
+        pts[i++] = pts[numPts-1];
+
+        // don't include botList[0] since it is the same as topList[0].
+        for (int n=nBotPts-1; n>0; n--, i++)
+            pts[i] = botList[n];
+
+        // System.out.println("CHull has " + i + " pts");
+        return i;
+    }
+    
+    public static void addPtsToPath(GeneralPath shape,
                                      Point2D.Float [] topPts,
                                      Point2D.Float [] botPts,
                                      int numPts) {
         if (numPts < 2) return;
-
-        int nTopPts = 2;
-        int nBotPts = 2;
-
-        // Here we make sure that we aren't "intruding" on the adjacent
-        // characters box with our top and bottom lines.
-        //           10+------+11
-        //  tp00+--------+01  |      If line tp00->tp01 intersects tp10->bp10
-        //      |      | |    |      Then we drop tp01.
-        //      |      | |    |
-        //      |    10+------+11
-        //  bp00+--------+01
-        Point2D.Float tp00, tp01, tp10, tp11;
-        Point2D.Float bp00, bp01, bp10, bp11;
-        tp10 = topPts[0];
-        tp11 = topPts[1];
-        bp10 = botPts[0];
-        bp11 = botPts[1];
-        for (int i=2; i<numPts; i+=2) {
-            tp00 = tp10; tp01 = tp11;
-            bp00 = bp10; bp01 = bp11;
-            tp10 = topPts[i];
-            tp11 = topPts[i+1];
-            bp10 = botPts[i];
-            bp11 = botPts[i+1];
-            
-            Point2D.Float inter;
-            inter = calcIntervalIntersection(tp00, tp01, tp10, bp10);
-            if (inter != null) nTopPts--; // we will now overwrite tp01..
-
-            inter = calcIntervalIntersection(bp00, bp01, bp10, tp10);
-            if (inter != null) nBotPts--; // we will now overwrite bp01..
-
-            inter = calcIntervalIntersection(tp10, tp11, tp01, bp01);
-            if (inter == null) 
-                topPts[nTopPts++] = tp10;
-            topPts[nTopPts++] = tp11;
-
-            inter = calcIntervalIntersection(bp10, bp11, bp01, tp01);
-            if (inter == null) 
-                botPts[nBotPts++] = bp10;
-            botPts[nBotPts++] = bp11;
+        if (numPts == 2) {
+            shape.moveTo(topPts[0].x, topPts[0].y);
+            shape.lineTo(topPts[1].x, topPts[1].y);
+            shape.lineTo(botPts[1].x, botPts[1].y);
+            shape.lineTo(botPts[0].x, botPts[0].y);
+            shape.lineTo(topPts[0].x, topPts[0].y);
+            return;
         }
 
-        nTopPts = cleanPtsList(topPts, nTopPts);
-        shape.moveTo(topPts[0].x, topPts[0].y);
-        for (int i=1; i<nTopPts; i++) 
-            shape.lineTo(topPts[i].x, topPts[i].y);
+        // Here we 'connect the dots' the best way we know how...
+        // What I do is construct a convex hull between adjacent
+        // character boxes, then I union that into the shape.  this
+        // does a good job of bridging between adjacent characters,
+        // but still closely tracking to text boxes.  The use of the
+        // Area class is fairly heavy weight but it seems to keep up
+        // in this instanace (probably because all the shapes are very
+        // simple polygons).
+        Point2D.Float [] boxes = new Point2D.Float[8];
+        Point2D.Float [] chull = new Point2D.Float[8];
+        boxes[4] = topPts[0];
+        boxes[5] = topPts[1];
+        boxes[6] = botPts[1];
+        boxes[7] = botPts[0];
+        Area []areas = new Area[numPts/2];
+        int nAreas =0;
+        for (int i=2; i<numPts; i+=2) {
+            boxes[0] = boxes[4];
+            boxes[1] = boxes[5];
+            boxes[2] = boxes[6];
+            boxes[3] = boxes[7];
+            boxes[4] = topPts[i];
+            boxes[5] = topPts[i+1];
+            boxes[6] = botPts[i+1];
+            boxes[7] = botPts[i];
 
-        nBotPts = cleanPtsList(botPts, nBotPts);
-        for (int i=nBotPts-1; i>=0; i--) 
-            shape.lineTo(botPts[i].x, botPts[i].y);
-        shape.closePath();
+            float delta,sz,dist;
+            delta  = boxes[2].x-boxes[0].x;
+            dist   = delta*delta;
+            delta  = boxes[2].y-boxes[0].y;
+            dist  += delta*delta;
+            sz     = (float)Math.sqrt(dist);
+
+            delta  = boxes[6].x-boxes[4].x;
+            dist   = delta*delta;
+            delta  = boxes[6].y-boxes[4].y;
+            dist  += delta*delta;
+            sz    += (float)Math.sqrt(dist);
+            
+            delta = ((boxes[0].x+boxes[1].x+boxes[2].x+boxes[3].x)-
+                     (boxes[4].x+boxes[5].x+boxes[6].x+boxes[7].x))/4;
+            dist = delta*delta;
+            delta = ((boxes[0].y+boxes[1].y+boxes[2].y+boxes[3].y)-
+                     (boxes[4].y+boxes[5].y+boxes[6].y+boxes[7].y))/4;
+            dist += delta*delta;
+            dist  = (float)Math.sqrt(dist);
+            // Note here that dist is the distance between center
+            // points, and sz is the sum of the length of the
+            // diagonals of the letter boxes.  In normal cases one
+            // would expect dist to be approximately equal to sz/2.
+            // So here we merge if the two characters are within four
+            // character widths of each other. If they are farther
+            // apart than that chances are it's a 'line break' or
+            // something similar where we will get better results
+            // merging seperately, and anyways with this much space
+            // between them the extra outline shouldn't hurt..
+            GeneralPath gp = new GeneralPath();
+            if (dist < 2*sz) {
+                // Close enough to merge with previous char...
+                System.arraycopy(boxes, 0, chull, 0, 8);
+                int npts = makeConvexHull(chull, 8);
+                gp.moveTo(chull[0].x, chull[0].y);
+                for(int n=1; n<npts; n++)
+                    gp.lineTo(chull[n].x, chull[n].y);
+                gp.closePath();
+            } else {
+                // Merge all previous areas
+                mergeAreas(shape, areas, nAreas);
+                nAreas = 0; // Start fresh...
+                
+                // Then just add box (add the previous char box if first pts)
+                if (i==2) {
+                    gp.moveTo(boxes[0].x, boxes[0].y);
+                    gp.lineTo(boxes[1].x, boxes[1].y);
+                    gp.lineTo(boxes[2].x, boxes[2].y);
+                    gp.lineTo(boxes[3].x, boxes[3].y);
+                    gp.closePath();
+                    shape.append(gp, false);
+                    gp.reset();
+                }
+                gp.moveTo(boxes[4].x, boxes[4].y);
+                gp.lineTo(boxes[5].x, boxes[5].y);
+                gp.lineTo(boxes[6].x, boxes[6].y);
+                gp.lineTo(boxes[7].x, boxes[7].y);
+                gp.closePath();
+            }
+            areas[nAreas++] = new Area(gp);
+        }
+
+        mergeAreas(shape, areas, nAreas);
+    }
+
+    public static void mergeAreas(GeneralPath shape, 
+                                  Area []shapes, int nShapes) {
+        // Merge areas hierarchically, this means that while there are
+        // the same number of Area.add calls (n-1) the great majority
+        // of them are very simple combinations.  This helps to speed
+        // things up a tad...
+        while (nShapes > 1) {
+            int n=0;
+            for (int i=1; i<nShapes;i+=2) {
+                shapes[i-1].add(shapes[i]);
+                shapes[n++] = shapes[i-1];
+                shapes[i] = null;
+            }
+
+            // make sure we include the last one if odd.
+            if ((nShapes&0x1) == 1)
+                shapes[n-1].add(shapes[nShapes-1]);
+            nShapes = nShapes/2;
+        }
+        if (nShapes == 1)
+            shape.append(shapes[0], false);
     }
 
     public static final float eps = 0.00001f;
