@@ -16,7 +16,7 @@ import org.apache.batik.dom.svg.SVGOMDocument;
  * unfolding (as when state is discovered by background threads).
  *
  * @author <a href="mailto:bill.haneman@ireland.sun.com">Bill Haneman</a>
- * @version $Id $
+ * @version $Id$
  */
 public class DocumentLoadingEvent extends DocumentEvent {
 

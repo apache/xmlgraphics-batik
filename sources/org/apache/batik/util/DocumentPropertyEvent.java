@@ -14,7 +14,7 @@ package org.apache.batik.util;
  * unfolding (as when state is discovered by background threads).
  *
  * @author <a href="mailto:bill.haneman@ireland.sun.com">Bill Haneman</a>
- * @version $Id $
+ * @version $Id$
  */
 public class DocumentPropertyEvent extends DocumentEvent {
 
