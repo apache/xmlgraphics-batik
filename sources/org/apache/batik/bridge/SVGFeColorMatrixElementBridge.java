@@ -135,12 +135,15 @@ public class SVGFeColorMatrixElementBridge
      */
     protected static float[][] convertValuesToMatrix(Element filterElement) {
         String s = filterElement.getAttributeNS(null, SVG_VALUES_ATTRIBUTE);
+        float [][] matrix = new float[4][5];
         if (s.length() == 0) {
-            throw new BridgeException(filterElement, ERR_ATTRIBUTE_MISSING,
-                                      new Object[] {SVG_VALUES_ATTRIBUTE});
+            matrix[0][0] = 1;
+            matrix[1][1] = 1;
+            matrix[2][2] = 1;
+            matrix[3][3] = 1;
+            return matrix;
         }
         StringTokenizer tokens = new StringTokenizer(s, " ,");
-        float [][] matrix = new float[4][5];
         int n = 0;
         try {
             while (n < 20 && tokens.hasMoreTokens()) {
@@ -175,7 +178,7 @@ public class SVGFeColorMatrixElementBridge
         String s = filterElement.getAttributeNS(null, SVG_VALUES_ATTRIBUTE);
         int length = s.length();
         if (s.length() == 0) {
-            return 0; // default is 0
+            return 1; // default is 1
         } else {
             try {
                 return SVGUtilities.convertSVGNumber(s);
@@ -197,7 +200,7 @@ public class SVGFeColorMatrixElementBridge
         String s = filterElement.getAttributeNS(null, SVG_VALUES_ATTRIBUTE);
         int length = s.length();
         if (s.length() == 0) {
-            return 1; // default is 1
+            return 0; // default is 0
         } else {
             try {
                 return (float)(SVGUtilities.convertSVGNumber(s)*Math.PI)/180f;
