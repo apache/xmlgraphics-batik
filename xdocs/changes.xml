@@ -2,28 +2,40 @@
 
 <!DOCTYPE changes SYSTEM "./dtd/changes-v10.dtd">
 
-
-
-
-
-
-<!-- I left this here so that you have a view of the structure of the thing
-     feel free to add as you go -->
-
-
-
-
-
-
 <changes title="History of Changes">
   <devs>
-    <person name="Donald Ball" email="balld@webslingerZ.com" id="XX"/>
-    <person name="Ricardo Rocha" email="ricardo@apache.org" id="RR"/>
-    <person name="Pierpaolo Fumagalli" email="pier@apache.org" id="PF"/>
-    <person name="Robin Green" email="greenrd@hotmail.com" id="RDG"/>
+    <person name="Everybody" email="batik-dev@apache.org" id="XX"/>
+    <person name="Stephane Hillion" email="stephane@hillion.org" id="SH"/>
   </devs>
 
+  <release version="???" date="???">
+
+    <action dev="SH" type="fix">
+    Fixed a problem with the 'xml-stylesheet' processing instructions creation in
+    the generic DOM implementation.
+    </action>
+  
+    <action dev="SH" type="add">
+    Added a CSS parser (org.apache.batik.css.parser.Parser) in remplacement of
+    Flute (org.w3c.flute.parser.Parser).
+    Modified resources/org/apache/batik/apps/svgviewer/resources/Application.properties
+    to make the viewer use the new parser.
+    </action>  
+
+  </release>
+
+  <release version="1.0" date="December 4 2000">
+    <action dev="XX" type="add">
+    Initial version.
+    </action>
+  </release>
+
+</changes>
+
 <!--
+
+  ================ Examples =================
+
  <release version="???" date="???">
   <action dev="RDG" type="fix">
    Changed &lt;xsp:pi&gt; back to use target= instead of name= in order
@@ -993,10 +1005,3 @@
  </action>
 </release>
 -->
-<release version="1.0" date="December 4 2000">
- <action dev="XX" type="add">
-  Initial version.
- </action>
-</release>
-
-</changes>
