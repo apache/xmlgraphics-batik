@@ -16,7 +16,7 @@
 <!-- @author bill.haneman@ireland.sun.com                                      -->
 <!-- @version $Id$                                                             -->
 <!-- ========================================================================= -->
-<?xml-stylesheet type="text/css" href="./tests/test.css" ?>
+<?xml-stylesheet type="text/css" href="./tests/resources/style/test.css" ?>
 
 <svg width="450" height="500" viewBox="0 0 450 500">
 <title>Text Rotation and Shadows</title>
