@@ -9,20 +9,32 @@
 package org.apache.batik.parser;
 
 /**
- * This interface must be implemented and then registred as the
- * handler of a <code>PreserveAspectRatioParser</code> instance
- * in order to be notified of parsing events.
+ * This class provides an adapter for FragmentIdentifierHandler.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public interface FragmentIdentifierHandler extends PreserveAspectRatioHandler {
+public class DefaultFragmentIdentifierHandler
+    extends DefaultPreserveAspectRatioHandler
+    implements FragmentIdentifierHandler {
+
     /**
-     * Invoked when the fragment identifier starts.
-     * @exception ParseException if an error occured while processing the
-     *                           fragment identifier
+     * The only instance of this class.
      */
-    void startFragmentIdentifier() throws ParseException;
+    public final static FragmentIdentifierHandler INSTANCE
+        = new DefaultFragmentIdentifierHandler();
+
+    /**
+     * This class does not need to be instantiated.
+     */
+    protected DefaultFragmentIdentifierHandler() {
+    }
+
+    /**
+     * Implements {@link FragmentIdentifierHandler#startFragmentIdentifier()}.
+     */
+    public void startFragmentIdentifier() throws ParseException {
+    }
 
     /**
      * Invoked when an ID has been parsed.
@@ -30,7 +42,9 @@ public interface FragmentIdentifierHandler extends PreserveAspectRatioHandler {
      * @exception ParseException if an error occured while processing the
      *                           fragment identifier
      */
-    void idReference(String s) throws ParseException;
+    public void idReference(String s) throws ParseException {
+
+    }
 
     /**
      * Invoked when 'viewBox(x,y,width,height)' has been parsed.
@@ -38,8 +52,10 @@ public interface FragmentIdentifierHandler extends PreserveAspectRatioHandler {
      * @exception ParseException if an error occured while processing the
      *                           fragment identifier
      */
-    void viewBox(float x, float y, float width, float height)
-        throws ParseException;
+    public void viewBox(float x, float y, float width, float height)
+        throws ParseException {
+
+    }
 
     /**
      * Invoked when 'viewTarget(name)' has been parsed.
@@ -47,12 +63,13 @@ public interface FragmentIdentifierHandler extends PreserveAspectRatioHandler {
      * @exception ParseException if an error occured while processing the
      *                           fragment identifier
      */
-    void viewTarget(String name) throws ParseException;
+    public void viewTarget(String name) throws ParseException {
+
+    }
 
     /**
-     * Invoked when the fragment identifier ends.
-     * @exception ParseException if an error occured while processing the
-     *                           fragment identifier
+     * Implements {@link FragmentIdentifierHandler#endFragmentIdentifier()}.
      */
-    void endFragmentIdentifier() throws ParseException;
+    public void endFragmentIdentifier() throws ParseException {
+    }
 }

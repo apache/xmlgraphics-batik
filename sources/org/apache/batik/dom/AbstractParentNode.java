@@ -553,14 +553,22 @@ public abstract class AbstractParentNode extends AbstractNode {
 	 */
 	public ExtendedNode replace(ExtendedNode n, ExtendedNode o) {
 	    if (o == firstChild) {
-		n.setNextSibling(firstChild.getNextSibling());
+                ExtendedNode t = (ExtendedNode)firstChild.getNextSibling();
+		n.setNextSibling(t);
+                if (o == lastChild) {
+                    lastChild = n;
+                } else {
+                    t.setPreviousSibling(n);
+                }
 		firstChild.setNextSibling(null);
 		firstChild = n;
 		return o;
 	    }
 
 	    if (o == lastChild) {
-		n.setPreviousSibling(lastChild.getPreviousSibling());
+                ExtendedNode t = (ExtendedNode)lastChild.getPreviousSibling();
+		n.setPreviousSibling(t);
+                t.setNextSibling(n);
 		lastChild.setPreviousSibling(null);
 		lastChild = n;
 		return o;
@@ -569,8 +577,12 @@ public abstract class AbstractParentNode extends AbstractNode {
 	    ExtendedNode cn = firstChild;
 	    while (cn != null) {
 		if (cn == o) {
-		    n.setPreviousSibling(o.getPreviousSibling());
-		    n.setNextSibling(o.getNextSibling());
+                    ExtendedNode t = (ExtendedNode)o.getPreviousSibling();
+		    n.setPreviousSibling(t);
+                    t.setNextSibling(n);
+                    t = (ExtendedNode)o.getNextSibling();
+		    n.setNextSibling(t);
+                    t.setPreviousSibling(n);
 		    o.setPreviousSibling(null);
 		    o.setNextSibling(null);
 		    return o;

@@ -507,7 +507,6 @@ public class JSVGCanvas
             backgroundBuilderThread.setPriority(Thread.MIN_PRIORITY);
             backgroundBuilderThread.start();
         }
-
     }
 
     /**
@@ -1096,6 +1095,50 @@ public class JSVGCanvas
      */
     public AffineTransform getTransform() {
         return transform;
+    }
+    
+    /**
+     * Applies the given transform to the canvas.
+     */
+    public void setTransform(AffineTransform at) {
+        documentTransformed = false;
+        computeTransform();
+        rotateAngle = 0;
+        rotateCos = 1;
+        previousRotateTransform = null;
+        rotateTransform = null;
+
+        transform.concatenate(at);
+        documentTransformed = true;
+        updateBaseTransform();
+        if (zoomHandler != null) {
+            zoomHandler.zoomChanged((float)(transform.getScaleX() /
+                                            rotateCos / initialScale));
+        }
+        bufferNeedsRendering = true;
+        repaint();
+        if (thumbnailCanvas != null) {
+            thumbnailCanvas.repaint();
+        }
+    }
+
+    /**
+     * Specifies a view box.
+     */
+    public void setViewBox(float x, float y, float width, float height) {
+        AffineTransform t;
+        Dimension d = getSize();
+        AffineTransform part = SVGUtilities.getPreserveAspectRatioTransform
+            (document.getRootElement(), d.width, d.height);
+        try {
+            part = part.createInverse();
+            Point2D p2d = part.transform(new Point2D.Double(d.width, d.height), null);
+            t = AffineTransform.getScaleInstance(p2d.getX() / width,
+                                                 p2d.getY() / height);
+            t.translate(-x, -y);
+            setTransform(t);
+        } catch (NoninvertibleTransformException e) {
+        }
     }
 
     /**

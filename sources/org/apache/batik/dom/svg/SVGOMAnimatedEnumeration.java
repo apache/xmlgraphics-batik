@@ -121,7 +121,7 @@ public class SVGOMAnimatedEnumeration
 
     /**
      * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGAnimatedNumber#setBaseVal(short)}.
+     * org.w3c.dom.svg.SVGAnimatedEnumeration#setBaseVal(short)}.
      */
     public void setBaseVal(short baseVal) throws DOMException {
         if (baseVal == 0 || baseVal > shortStringMap.size()) {

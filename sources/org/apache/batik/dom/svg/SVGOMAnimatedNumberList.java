@@ -102,7 +102,7 @@ public class SVGOMAnimatedNumberList
     }
 
     /**
-     * Implements {@link ModificationHandler#getObject(Object,String)}.
+     * Implements {@link ModificationHandler#getObject(Object)}.
      */
     public Object getObject(Object key) {
         return null;
