@@ -61,6 +61,11 @@ public class SVGAElementBridge implements GraphicsNodeBridge, SVGConstants {
              ctx.getParserFactory());
         gn.setTransform(at);
 
+        return gn;
+    }
+
+    public void buildGraphicsNode(GraphicsNode gn, BridgeContext ctx,
+                                  Element element) {
         CSSStyleDeclaration decl;
         decl = ctx.getViewCSS().getComputedStyle(element, null);
         CSSPrimitiveValue val =
@@ -90,13 +95,6 @@ public class SVGAElementBridge implements GraphicsNodeBridge, SVGConstants {
         // <!> TODO only when binding is enabled
         BridgeEventSupport.addDOMListener(ctx, element);
         ctx.bind(element, gn);
-
-        return gn;
-    }
-
-    public void buildGraphicsNode(GraphicsNode node, BridgeContext ctx,
-                                  Element element) {
-
     }
 
     public void update(BridgeMutationEvent evt) {

@@ -91,7 +91,6 @@ public class SVGTextPathElementBridge implements GraphicsNodeBridge, SVGConstant
 
         //System.out.println("creating Text Path node");
 
-        SVGElement svgElement = (SVGElement) element;
         CSSStyleDeclaration cssDecl
             = ctx.getViewCSS().getComputedStyle(element, null);
         UnitProcessor.Context uctx
@@ -100,36 +99,11 @@ public class SVGTextPathElementBridge implements GraphicsNodeBridge, SVGConstant
 
         ShapeNode node = ctx.getGVTFactory().createShapeNode();
 
-        // Initialize the style properties
-        ShapePainter painter
-            = CSSUtilities.convertStrokeAndFill(svgElement, node,
-                                                ctx, cssDecl, uctx);
-        node.setShapePainter(painter);
-
         // Transform
         AffineTransform at = AWTTransformProducer.createAffineTransform
             (new StringReader(element.getAttributeNS(null, ATTR_TRANSFORM)),
              ctx.getParserFactory());
         node.setTransform(at);
-
-        // Set node composite
-        CSSPrimitiveValue opacityVal =
-            (CSSPrimitiveValue)cssDecl.getPropertyCSSValue(ATTR_OPACITY);
-        Composite composite =
-            CSSUtilities.convertOpacityToComposite(opacityVal);
-        node.setComposite(composite);
-
-        // Set node filter
-        Filter filter = CSSUtilities.convertFilter(element, node, ctx);
-        node.setFilter(filter);
-
-        // Set the node mask
-        Mask mask = CSSUtilities.convertMask(element, node, ctx);
-        node.setMask(mask);
-
-        // Set the node clip
-        Clip clip = CSSUtilities.convertClipPath(element, node, ctx);
-        node.setClip(clip);
 
         // <!> TODO only when binding is enabled
         //BridgeEventSupport.addDOMListener(ctx, element);
@@ -183,6 +157,7 @@ public class SVGTextPathElementBridge implements GraphicsNodeBridge, SVGConstant
             text = XMLSupport.defaultXMLSpace(text);
         }
         text = (text.length() == 0) ? " " : text;
+
 
         Map attrs = new HashMap();
 
@@ -361,7 +336,6 @@ public class SVGTextPathElementBridge implements GraphicsNodeBridge, SVGConstant
 
         Font font = new Font(attrs);
 
-
         // get the path
 
         URIResolver ur;
@@ -425,8 +399,44 @@ public class SVGTextPathElementBridge implements GraphicsNodeBridge, SVGConstant
         return node;
     }
 
-    public void buildGraphicsNode(GraphicsNode node, BridgeContext ctx,
-                                  Element elt) {
+    public void buildGraphicsNode(GraphicsNode gn, BridgeContext ctx,
+                                  Element element) {
+        ShapeNode node = (ShapeNode)gn;
+
+        SVGElement svgElement = (SVGElement) element;
+
+        CSSStyleDeclaration cssDecl
+            = ctx.getViewCSS().getComputedStyle(element, null);
+
+        UnitProcessor.Context uctx
+            = new DefaultUnitProcessorContext(ctx,
+                                              cssDecl);
+
+        // Initialize the style properties
+        ShapePainter painter
+            = CSSUtilities.convertStrokeAndFill(svgElement, node,
+                                                ctx, cssDecl, uctx);
+        node.setShapePainter(painter);
+
+        // Set node composite
+        CSSPrimitiveValue opacityVal =
+            (CSSPrimitiveValue)cssDecl.getPropertyCSSValue(ATTR_OPACITY);
+        Composite composite =
+            CSSUtilities.convertOpacityToComposite(opacityVal);
+        node.setComposite(composite);
+
+        // Set node filter
+        Filter filter = CSSUtilities.convertFilter(element, node, ctx);
+        node.setFilter(filter);
+
+        // Set the node mask
+        Mask mask = CSSUtilities.convertMask(element, node, ctx);
+        node.setMask(mask);
+
+        // Set the node clip
+        Clip clip = CSSUtilities.convertClipPath(element, node, ctx);
+        node.setClip(clip);
+
     }
 
     public void update(BridgeMutationEvent evt) {

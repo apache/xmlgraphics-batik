@@ -120,32 +120,35 @@ public class SVGImageElementBridge implements GraphicsNodeBridge,
         // bind it as soon as it's available...
         ctx.bind(element, imgNode);
 
-        // Set node composite
-        CSSPrimitiveValue val
-            = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue(ATTR_OPACITY);
-        Composite composite = CSSUtilities.convertOpacityToComposite(val);
-        imgNode.setComposite(composite);
-
-        // Set node filter
-        Filter filter = CSSUtilities.convertFilter(element, imgNode, ctx);
-        imgNode.setFilter(filter);
-
-        // Set the node mask
-        Mask   mask   = CSSUtilities.convertMask(element, imgNode, ctx);
-        imgNode.setMask(mask);
-
-        // Set the node clip
-        Clip clip = CSSUtilities.convertClipPath(element, imgNode, ctx);
-        imgNode.setClip(clip);
-
-        // <!> TODO only when binding is enabled
-        BridgeEventSupport.addDOMListener(ctx, element);
-
         return imgNode;
     }
 
     public void buildGraphicsNode(GraphicsNode node, BridgeContext ctx,
                                   Element element) {
+        CSSStyleDeclaration cssDecl
+            = ctx.getViewCSS().getComputedStyle(element, null);
+
+        // Set node composite
+        CSSPrimitiveValue val
+            = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue(ATTR_OPACITY);
+        Composite composite = CSSUtilities.convertOpacityToComposite(val);
+        node.setComposite(composite);
+
+        // Set node filter
+        Filter filter = CSSUtilities.convertFilter(element, node, ctx);
+        node.setFilter(filter);
+
+        // Set the node mask
+        Mask   mask   = CSSUtilities.convertMask(element, node, ctx);
+        node.setMask(mask);
+
+        // Set the node clip
+        Clip clip = CSSUtilities.convertClipPath(element, node, ctx);
+        node.setClip(clip);
+
+        // <!> TODO only when binding is enabled
+        BridgeEventSupport.addDOMListener(ctx, element);
+
 
     }
 

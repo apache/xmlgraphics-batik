@@ -50,35 +50,33 @@ public class SVGGElementBridge implements GraphicsNodeBridge, SVGConstants {
              ctx.getParserFactory());
         gn.setTransform(at);
 
-        CSSStyleDeclaration decl;
-        decl = ctx.getViewCSS().getComputedStyle(element, null);
-        CSSPrimitiveValue val =
-            (CSSPrimitiveValue)decl.getPropertyCSSValue(ATTR_OPACITY);
-        Composite composite = CSSUtilities.convertOpacityToComposite(val);
-        gn.setComposite(composite);
-
-        // Set the node filter
-        Filter filter = CSSUtilities.convertFilter(element, gn, ctx);
-        gn.setFilter(filter);
-
-        // Set the node mask
-        Mask mask = CSSUtilities.convertMask(element, gn, ctx);
-        gn.setMask(mask);
-
-        // Set the node clip
-        Clip clip = CSSUtilities.convertClipPath(element, gn, ctx);
-        gn.setClip(clip);
-
-        // <!> TODO only when binding is enabled
-        BridgeEventSupport.addDOMListener(ctx, element);
-        ctx.bind(element, gn);
-
         return gn;
     }
 
     public void buildGraphicsNode(GraphicsNode node, BridgeContext ctx,
                                   Element element) {
+        CSSStyleDeclaration decl;
+        decl = ctx.getViewCSS().getComputedStyle(element, null);
+        CSSPrimitiveValue val =
+            (CSSPrimitiveValue)decl.getPropertyCSSValue(ATTR_OPACITY);
+        Composite composite = CSSUtilities.convertOpacityToComposite(val);
+        node.setComposite(composite);
 
+        // Set the node filter
+        Filter filter = CSSUtilities.convertFilter(element, node, ctx);
+        node.setFilter(filter);
+
+        // Set the node mask
+        Mask mask = CSSUtilities.convertMask(element, node, ctx);
+        node.setMask(mask);
+
+        // Set the node clip
+        Clip clip = CSSUtilities.convertClipPath(element, node, ctx);
+        node.setClip(clip);
+
+        // <!> TODO only when binding is enabled
+        BridgeEventSupport.addDOMListener(ctx, element);
+        ctx.bind(element, node);
     }
 
     public void update(BridgeMutationEvent evt) {

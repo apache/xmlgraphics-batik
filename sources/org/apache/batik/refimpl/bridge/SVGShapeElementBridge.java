@@ -53,6 +53,21 @@ public abstract class SVGShapeElementBridge implements GraphicsNodeBridge,
         ShapeNode node = ctx.getGVTFactory().createShapeNode();
         // Initialize the shape of the ShapeNode
         node.setShape(createShape(ctx, svgElement, cssDecl, uctx));
+
+        return node;
+    }
+
+    public void buildGraphicsNode(GraphicsNode gn, BridgeContext ctx,
+                                  Element element) {
+        ShapeNode node = (ShapeNode)gn;
+
+        SVGElement svgElement = (SVGElement) element;
+        CSSStyleDeclaration cssDecl
+            = ctx.getViewCSS().getComputedStyle(element, null);
+        UnitProcessor.Context uctx
+            = new DefaultUnitProcessorContext(ctx,
+                                              cssDecl);
+
         // Initialize the style properties
         ShapePainter painter
             = CSSUtilities.convertStrokeAndFill(svgElement, node,
@@ -86,13 +101,6 @@ public abstract class SVGShapeElementBridge implements GraphicsNodeBridge,
         // <!> TODO only when binding is enabled
         BridgeEventSupport.addDOMListener(ctx, element);
         ctx.bind(element, node);
-
-        return node;
-    }
-
-    public void buildGraphicsNode(GraphicsNode node, BridgeContext ctx,
-                                  Element element) {
-
     }
 
     public void update(BridgeMutationEvent evt) {
