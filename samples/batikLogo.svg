@@ -24,8 +24,7 @@
     <title>Batik Logo</title>
     <g id="content">
         <defs>
-            <symbol id="Batik_Squiggle" stroke="none"
-                    width="54" height="57" viewBox="0 0 540 570">
+            <symbol id="Batik_Squiggle" stroke="none" viewBox="0 0 540 570">
                 <path id="Batik_Squiggle_Blue" fill="#6666FF"
                  d="M172,44C137,60,31,135,11,199c-8,27,22,48,44,33
                     C14,306-1,332,0,356c0,14,13,42,44,27c8-4,35-25,52-41
@@ -74,7 +73,7 @@
                                c0,6.539,1.789,10.953,5.371,13.242c3.578,2.293,11.16,3.438,22.746,3.438c14.172,0,24.82-3.031,31.945-9.094s10.688-15.156,10.688-27.281c0-13.031-4.234-23.188-12.695-30.461s-20.316-10.914-35.563-10.914H47.463c-3.578,0-5.84,0.477-6.793,1.426
                                s-1.426,3.285-1.426,7.004v52.641z"/>
                      <!-- Put the Squiggle in the B -->
-                     <use xlink:href="#Batik_Squiggle" 
+                     <use xlink:href="#Batik_Squiggle" width="54" height="57"
                           transform="translate(45,103)" />
                    </g>
 	          </glyph>
@@ -118,8 +117,8 @@
 
                <glyph unicode="*" glyph-name="*" horiz-adv-x="120">
                 <g transform="scale(1, -1)">
-                  <use xlink:href="#Batik_Squiggle" 
-                          transform="scale(2,2) translate(0,-67)" />
+                  <use xlink:href="#Batik_Squiggle" width="108" height="114"
+                          transform="translate(0,-130)" />
                 </g>
                </glyph>
           
@@ -163,8 +162,8 @@
           <g id="Batik_Tag_Box" >
               <rect x="1" y="1" width="446" height="496" 
                     style="fill:none; stroke:black" />
-              <use xlink:href="#Batik_Squiggle" 
-                   transform="translate(418,467) scale(0.5, 0.5)" />
+              <use xlink:href="#Batik_Squiggle" width="27" height="28"
+                   transform="translate(418,467)" />
           </g> <!-- End Batik_Tag_Box -->
         </defs>
 
