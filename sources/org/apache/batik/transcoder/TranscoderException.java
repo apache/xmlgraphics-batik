@@ -14,15 +14,10 @@ package org.apache.batik.transcoder;
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  * @version $Id$
  */
-public class TranscoderException extends RuntimeException {
+public class TranscoderException extends Exception {
 
     /** The enclosed exception. */
     protected Exception ex;
-
-    /**
-     * Constructs a new empty transcoder exception.
-     */
-    public TranscoderException() {}
 
     /**
      * Constructs a new transcoder exception with the specified detail message.
@@ -30,6 +25,14 @@ public class TranscoderException extends RuntimeException {
      */
     public TranscoderException(String s) {
         this(s, null);
+    }
+
+    /**
+     * Constructs a new transcoder exception with the specified detail message.
+     * @param ex the enclosed exception
+     */
+    public TranscoderException(Exception ex) {
+        this(null, ex);
     }
 
     /**

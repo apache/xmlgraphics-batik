@@ -8,14 +8,10 @@
 
 package org.apache.batik.transcoder;
 
-import java.io.OutputStream;
 import java.util.Map;
 
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
-
 /**
- * Provides a way to transcode an input stream or a document.
+ * This class defines an API for transcoding.
  *
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  * @version $Id$
@@ -23,24 +19,13 @@ import org.xml.sax.InputSource;
 public interface Transcoder {
 
     /**
-     * Transcodes the specified input and write the result to the
-     * specified output.
-     * @param isource the input to transcode
-     * @param ostream the ouput stream where to write the transcoded input
+     * Transcodes the specified input in the specified output.
+     * @param input the input to transcode
+     * @param output the ouput where to transcode
      * @exception TranscoderException if an error occured while transcoding
      */
-    void transcodeToStream(InputSource isource, OutputStream ostream)
-        throws TranscoderException;
-
-    /**
-     * Transcodes the specified document and write the result to the
-     * specified output.
-     * @param document the document to transcode
-     * @param ostream the ouput stream where to write the transcoded input
-     * @exception TranscoderException if an error occured while transcoding
-     */
-    void transcodeToStream(Document document, OutputStream ostream)
-        throws TranscoderException;
+    void transcode(TranscoderInput input, TranscoderOutput output)
+            throws TranscoderException;
 
     /**
      * Returns the transcoding hints of this transcoder.
@@ -48,7 +33,7 @@ public interface Transcoder {
     TranscodingHints getTranscodingHints();
 
     /**
-     * Sets the value of a single preference for the transcoding algorithms.
+     * Sets the value of a single preference for the transcoding process.
      * @param key the key of the hint to be set
      * @param value the value indicating preferences for the specified
      * hint category.
@@ -61,6 +46,19 @@ public interface Transcoder {
      * @param hints the rendering hints to be set
      */
     void setTranscodingHints(Map hints);
+
+    /**
+     * Sets the error handler this transcoder may use to report
+     * warnings and errors.
+     * @param handler to ErrorHandler to use
+     */
+    void setErrorHandler(ErrorHandler handler);
+
+    /**
+     * Returns the error handler this transcoder uses to report
+     * warnings and errors, or null if any.
+     */
+    ErrorHandler getErrorHandler();
 
     /**
      * Returns the mime type of the ouput format of this transcoder.

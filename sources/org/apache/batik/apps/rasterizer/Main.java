@@ -17,8 +17,10 @@ import java.io.PrintStream;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.net.URL;
 import java.net.MalformedURLException;
 import org.apache.batik.refimpl.transcoder.ConcreteTranscoderFactory;
+import org.apache.batik.refimpl.transcoder.ImageTranscoder;
 import org.apache.batik.transcoder.Transcoder;
 import org.apache.batik.transcoder.TranscoderFactory;
 import org.xml.sax.InputSource;
@@ -31,7 +33,7 @@ import org.xml.sax.InputSource;
  */
 public class Main {
 
-    public static void writeImage(Transcoder transcoder,
+    public static void writeImage(ImageTranscoder transcoder,
                                   String uri, String output) {
         try {
             System.out.println("Converting "+uri+" to "+output);
@@ -41,7 +43,7 @@ public class Main {
             transcoder.transcodeToStream(isource, ostream);
             ostream.flush();
             ostream.close();
-        } catch(IOException ex) {
+        } catch(Exception ex) {
             System.out.println("Error while writing "+uri+" to "+output);
         }
     }
@@ -118,7 +120,7 @@ public class Main {
             }
             File output = new File(directory, uri);
             try {
-                writeImage(t,
+                writeImage((ImageTranscoder)t,
                            f.toURL().toString(),
                            output.getAbsolutePath());
             } catch (MalformedURLException ex) {

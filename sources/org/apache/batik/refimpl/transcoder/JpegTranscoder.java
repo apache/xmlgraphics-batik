@@ -30,7 +30,7 @@ public class JpegTranscoder extends ImageTranscoder {
      * Constructs a new jpeg transcoder.
      */
     public JpegTranscoder(){
-        hints.put(TranscodingHints.KEY_BACKGROUND, Color.white);
+        hints.put(BatikHints.KEY_BACKGROUND, Color.white);
     }
 
     /**
