@@ -1,254 +1,162 @@
-<!--                                                             -->
-<!--         Ant project file for the Batik project              -->
-<!--         ______________________________________              -->
-<!--                                                             -->
-<!--                          by                                 -->
-<!--                                                             -->
-<!--           Stephane Hillion and Thierry Kormann              -->
-<!--                                                             -->
 
-<project default="build" basedir=".">
-  <!-- The main target: build the distribution -->
-  <target name="build" depends="compile, javadoc"/>
+<!--
 
 
-  <!-- Help on usage -->
-  <target name="usage">
-    <echo message=""/>
+              A p a c h e   B a t i k   B u i l d   S y s t e m
+
+
+
+Build Tools
+..............................................................................
+
+The Batik build system is based on Apache Ant, which is a Java building tool
+used in Apache projects.
+For more information refer to "http://jakarta.apache.org/ant/".
+
+The distribution contains a precompiled version of Ant.
+
+The only thing that you have to make sure, is the "JAVA_HOME" environment
+property should be set to match the JVM you want to use. 
+
+
+Building Instructions
+..............................................................................
+
+First, make sure your current working directory is where this file is located.
+Then type:
+
+  [unix]  ./build.sh compile
+  [win32] .\build.bat compile
+
+This action will compile the sources to the 'classes' directory.
+
+You can now launch the SVG viewer by typing:
+
+  [unix]  ./build.sh svgviewer
+  [win32] .\build.bat svgviewer
+
+
+Build Targets
+..............................................................................
+
+To display the available targets type:
+
+  [unix]  ./build.sh  help
+  [win32] .\build.bat help
+
+ 
+ $Id$
+
+-->
+
+<project default="help" basedir=".">
+
+  <!-- Initializations .................................................... -->
+  <target name="init-args" unless="args">
+    <property name="args" value="samples/tests/index.svg"/>
+  </target>
+
+  <target name="init" depends="init-args">
+    <tstamp/>
+    <property name="project" value="batik"/>
+
+    <property name="src"             value="sources"/>
+    <property name="dest"            value="classes"/>
+    <property name="docs"            value="docs"/>
+    <property name="class-prefix"    value="org.apache.${project}"/>
+
+    <property name="xdocs"           value="xdocs"/>
+    <property name="skins"           value="xdocs/skins"/>
+    <property name="stylebook-class" value="org.apache.stylebook.StyleBook"/>
+
+    <property name="site"            value="../xml-site/targets/${project}"/>
+    <property name="site-skin"       value="${skins}/xml.apache.org/"/>
+
+  </target>
+
+  <path id="libs-classpath">
+    <fileset dir="lib">
+      <include name="*.jar"/>
+    </fileset>
+  </path>
+
+
+  <!-- Help ............................................................... -->
+  <target name       ="help"
+          depends    ="init"
+          description="Displays the usage">
     <echo message=""/>
     <echo message="${project} build file"/>
-    <echo message="-------------------------------------------------------------"/>
     <echo message=""/>
-    <echo message=" available targets are:"/>
+    <echo message=" Available targets are:"/>
     <echo message=""/>
-    <echo message="   compile      --> compiles the source code"/>
-    <echo message="   javadoc      --> generates the API documentation"/>
-    <echo message="   clean        --> cleans up the directory"/>
+    <echo message="   compile   --> compiles the source code"/>
+    <echo message="   svgviewer --> runs the SVG viewer"/>
+    <echo message="   javadoc   --> generates the API documentation"/>
+    <echo message="   sitedoc   --> generates the site documentation"/>
+    <echo message="   clean     --> cleans up the directory"/>
     <echo message=""/>
-    <echo message=" See the comments inside the build.xml file for more details."/>
-    <echo message="-------------------------------------------------------------"/>
+    <echo message=" See the comments in the build.xml file for more details."/>
     <echo message=""/>
     <echo message=""/>
   </target>
 
-  <!-- Initialization target -->
-  <target name="init">
-    <tstamp/>
-    <property name="project"       value="batik"/>
-    <property name="version"       value="1.0b1"/>
-    <property name="jdoc"          value="docs/javadoc"/>
-    <property name="src"           value="sources"/>
-    <property name="dest"          value="classes"/>
-    <property name="res"           value="resources"/>
-    <property name="class-prefix"  value="org.apache.${project}"/>
-    <property name="source-prefix" value="org/apache/${project}"/>
-    <property name="packages"      value="
-		      ${class-prefix}.apps.svgviewer,
-		      ${class-prefix}.bridge,
-		      ${class-prefix}.css,
-		      ${class-prefix}.css.event,
-		      ${class-prefix}.css.sac,
-		      ${class-prefix}.css.svg,
-		      ${class-prefix}.css.value,
-		      ${class-prefix}.dom,
-		      ${class-prefix}.dom.events,
-		      ${class-prefix}.dom.svg,
-		      ${class-prefix}.dom.util,
-		      ${class-prefix}.gvt,
-		      ${class-prefix}.gvt.event,
-		      ${class-prefix}.gvt.filter,
-		      ${class-prefix}.gvt.renderer,
-		      ${class-prefix}.gvt.text,
-		      ${class-prefix}.i18n,
-		      ${class-prefix}.parser,
-		      ${class-prefix}.parser.style,
-		      ${class-prefix}.script,
-		      ${class-prefix}.script.test,
-		      ${class-prefix}.transcoder,
-		      ${class-prefix}.util,
-		      ${class-prefix}.util.gui.resource,
-		      ${class-prefix}.util.gui"/>
-    <property name="packages-ext"  value="
-			org.w3c.css.sac,
-			org.w3c.css.sac.helpers,
-			org.w3c.dom,
-			org.w3c.dom.css,
-			org.w3c.dom.events,
-			org.w3c.dom.smil,
-			org.w3c.dom.stylesheets,
-			org.w3c.dom.svg,
-			org.w3c.dom.views,
-			org.xml.sax,
-			org.xml.sax.ext,
-			org.xml.sax.helpers"/>
-    <property name="packages-refimpl" value="
-			  ${class-prefix}.refimpl.bridge,
-			  ${class-prefix}.refimpl.gvt,
-			  ${class-prefix}.refimpl.gvt.event,
-			  ${class-prefix}.refimpl.gvt.filter,
-			  ${class-prefix}.refimpl.gvt.renderer,
-			  ${class-prefix}.refimpl.gvt.text,
-			  ${class-prefix}.refimpl.parser,
-			  ${class-prefix}.refimpl.script,
-			  ${class-prefix}.refimpl.script.jacl,
-			  ${class-prefix}.refimpl.script.jpython,
-			  ${class-prefix}.refimpl.script.rhino,
-			  ${class-prefix}.refimpl.transcoder,
-			  ${class-prefix}.refimpl.util"/>
-    <property name="packages-all"  value="${packages}, 
-                                          ${packages-refimpl},
-			                  ${packages-ext}"/>
-    <mkdir dir="dist/${project}${version}"/>
-  </target>
 
-
-  <!-- Compiles the source files to the ${dest} directory -->
-  <target name="compile" depends="init">
+  <!-- Compilation ........................................................ -->
+  <target name       ="compile"
+          depends    ="init"
+          description="Compiles the source files">
     <mkdir dir="${dest}"/>
-    <javac classpath="lib/js.jar:lib/jpython.jar:lib/jacl.jar:lib/tcljava.jar:lib/xalan_2_0_D01.jar"
-           srcdir="${src}"
-           destdir="${dest}"
-           deprecation="on"
-           includes="**/*.java"/>
-    <copyfile src="${src}/org/w3c/flute/util/encoding.properties"
-              dest="${dest}/org/w3c/flute/util/encoding.properties"/>
+
+    <javac srcdir="${src}" destdir="${dest}" deprecation="on">
+      <classpath refid="libs-classpath"/>
+      <exclude name="**/*.html"/>
+    </javac>
+
+    <copy file="${src}/org/w3c/flute/util/encoding.properties"
+          todir="${dest}/org/w3c/flute/util"/>
   </target>
 
-  <!-- Cleans the files generated by a compilation -->
-  <target name="clean-compile" depends="init">
-      <deltree dir="${dest}"/>
+  <target name="clean-compile"
+          depends="init"
+          description="Cleans the files generated by compile">
+    <delete dir="${dest}"/>
   </target>
 
-  <!-- Generates the javadoc for all the source files -->
-  <target name="javadoc">
-    <mkdir dir="${jdoc}"/>
-    <javadoc packagenames="${packages-all}"
-             sourcepath="${src}"
-             destdir="${jdoc}"
-             author="false"
-             version="false"/>
+  <!-- Applications ....................................................... -->
+  <target name="svgviewer"
+          depends="compile"
+          description="Runs the SVG viewer">
+    <java fork="yes"
+          classname="${class-prefix}.apps.svgviewer.Main">
+      <classpath>
+        <path refid="libs-classpath"/>
+        <pathelement location="resources" />
+        <pathelement location="${dest}" />
+      </classpath>
+      <arg value="${args}"/>
+    </java>
   </target>
 
-  <!-- Cleans the files generated by javadoc -->
-  <target name="clean-javadoc" depends="init">
-      <deltree dir="${jdoc}"/>
+
+  <!-- Documentation ...................................................... -->
+  <target name="prepare-docs" depends="init">
+    <mkdir dir="${docs}"/>
   </target>
 
-  <!-- Creates the jar file that contains the interfaces -->
-  <target name="jar-int" depends="compile">
-    <jar jarfile="dist/${project}${version}/${project}-int.jar"
-         basedir="${dest}"
-         includes="org/apache/${project}/bridge/**,
-                   org/apache/${project}/gvt/**,
-                   org/apache/${project}/parser/**,
-                   org/apache/${project}/script/**,
-                   org/apache/${project}/i18n/**"/>
+  <target name="sitedoc" depends="prepare-docs">
+    <mkdir dir="${site}"/>
+    <copy file="${xdocs}/site-book.xml"
+          tofile="${xdocs}/book.xml"
+          filtering="on"/>
+    <java classname="${stylebook-class}" fork="yes">
+      <classpath refid="libs-classpath"/>
+      <arg line="targetDirectory=${site} ${xdocs}/book.xml ${site-skin}"/>
+    </java>
   </target>
 
-  <!-- Cleans the files generated by jar-${project} -->
-  <target name="clean-jar-int" depends="init">
-      <delete file="dist/${project}${version}/${project}-int.jar"/>
-  </target>
-
-  <!-- Creates the jar file that contains the reference implementation -->
-  <target name="jar-refimpl" depends="compile">
-    <jar jarfile="dist/${project}${version}/${project}-refimpl.jar"
-         basedir="${dest}"
-         includes="org/apache/${project}/refimpl/**"/>
-  </target>
-
-  <!-- Cleans the files generated by jar-${project} -->
-  <target name="clean-jar-refimpl" depends="init">
-      <delete file="dist/${project}${version}/${project}-refimpl.jar"/>
-  </target>
-
-  <!-- Creates the jar file that contains the resources -->
-  <target name="jar-res" depends="compile">
-    <jar jarfile="dist/${project}${version}/${project}-res.jar"
-         basedir="resources"
-         includes="**"/>
-  </target>
-
-  <!-- Cleans the files generated by jar-res -->
-  <target name="clean-jar-res" depends="init">
-      <delete file="dist/${project}${version}/${project}-res.jar"/>
-  </target>
-
-  <!-- Creates the jar file that contains the DOM classes -->
-  <target name="jar-dom" depends="compile">
-    <jar jarfile="dist/${project}${version}/${project}-dom.jar"
-         basedir="${dest}"
-         includes="org/apache/${project}/dom/**, org/apache/${project}/css/**"/>
-  </target>
-
-  <!-- Cleans the files generated by jar-dom -->
-  <target name="clean-jar-dom" depends="init">
-      <delete file="dist/${project}${version}/${project}-dom.jar"/>
-  </target>
-
-  <!-- Creates the jar file that contains the external classes -->
-  <target name="jar-ext" depends="compile">
-    <jar jarfile="dist/${project}${version}/${project}-ext.jar"
-         basedir="${dest}"
-         includes="org/w3c/**, org/xml/**"/>
-  </target>
-
-  <!-- Cleans the files generated by jar-w3c -->
-  <target name="clean-jar-w3c" depends="init">
-      <delete file="dist/${project}${version}/${project}-w3c.jar"/>
-  </target>
-
-  <!-- Creates the jar file that contains the utility classes -->
-  <target name="jar-util" depends="compile">
-    <jar jarfile="dist/${project}${version}/${project}-util.jar"
-         basedir="${dest}"
-         includes="org/apache/${project}/util/**"/>
-  </target>
-
-  <!-- Cleans the files generated by jar-util -->
-  <target name="clean-jar-util" depends="init">
-      <delete file="dist/${project}${version}/${project}-util.jar"/>
-  </target>
-
-  <!-- Creates the jar file to lauch the viewer -->
-  <target name="jar-viewer" depends="compile">
-    <jar jarfile="dist/${project}${version}/${project}-viewer.jar"
-         basedir="${dest}"
-         includes="org/apache/${project}/apps/svgviewer/**"
-         manifest="${src}/${project}-viewer.mf"/>
-  </target>
-
-  <!-- Cleans the files generated by jar-viewer -->
-  <target name="clean-jar-viewer" depends="init">
-      <delete file="dist/${project}${version}/${project}-viewer.jar"/>
-  </target>
-
-  <target name="jars" depends="jar-viewer,
-                               jar-dom,
-                               jar-res,
-                               jar-refimpl,
-                               jar-int,
-                               jar-util,
-                               jar-ext">
-    <copyfile src="lib/crimson.jar"
-              dest="dist/${project}${version}/crimson.jar"/>
-    <copyfile src="lib/js.jar"
-              dest="dist/${project}${version}/js.jar"/>
-  </target>
-
-  <!-- Cleans the files generated by jars -->
-  <target name="clean-jars" depends="init">
-      <deltree dir="dist/${project}${version}"/>
-  </target>
-
-  <!-- Cleans everything -->
-  <target name="clean" depends="clean-compile, clean-jars, clean-javadoc"/>
-
-  <!-- Launch the SVG viewer -->
-  <target name="svgviewer" depends="init">
-    <java classpath="lib/xerces_1_2.jar:classes:lib/crimson.jar:lib/js.jar:resources:lib/xalan_2_0_D01.jar"
-          classname="${class-prefix}.apps.svgviewer.Main"
-          fork="yes"/>
-  </target>
-
+  <!-- Cleans everything .................................................. -->
+  <target name="clean"
+          depends="clean-compile"
+          description="Cleans everything"/>
 </project>

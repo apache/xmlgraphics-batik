@@ -12,23 +12,14 @@
 <!-- This file contains the list of action items for the team members. It      -->
 <!-- contains three priorities (high, medium and low) of action items. In each -->
 <!-- priority, a list of actions define what needs to be done. Each action has -->
-<!-- a person assigned to it (by initials) and a context. The current contexts -->
-<!-- are:                                                                      -->
-<!--  + core                                                                   -->
-<!--  + docs                                                                   -->
-<!--  + apps.xxx (e.g. apps.svgviewer, apps.rasteriser                         -->
-<!--  + gvt                                                                    -->
-<!--  + bridge                                                                 -->
-<!--  + gvt.text                                                               -->
-<!--  + docs.demo                                                              -->
-<!--  + gvt.filter                                                             -->
+<!-- a person assigned to it (by initials) and a context.                      -->
 <!--                                                                           -->
 <!-- author vincent.hardy@eng.sun.com                                          -->
-<!-- version $Id$                                                              -->
+<!-- version $Id$ -->
 <!-- ========================================================================= -->
 <!DOCTYPE todo SYSTEM "./dtd/todo-v10.dtd">
 
-<todo title="Things To Do Batik">
+<todo title="Batik To Do List">
     <devs>
         <person name="Thomas De Weese" email="Thomas.DeWeese@Kodak.com" id="TD" />
         <person name="Bill Haneman" email="bill.haneman@ireland.sun.com" id="BH" />
@@ -48,96 +39,96 @@
         </action>
 
         <action context="docs" 
-                assigned-to="VH, TK">
+                assigned-to="VH">
             Create initial version of documentation set.
         </action>
 
-        <action context="core"
+        <action context="code"
                 assigned-to="SH">
             External use support
         </action>
 
-        <action context="core"
-                assigned-to="SH, TK">
+        <action context="code"
+                assigned-to="TK">
             objectBoundingBox, userSpaceOnUser for masks, clip-path
             and patterns.
         </action>
 
-        <action context="apps.svgviewer"
-                assigned-to="">
+        <action context="code"
+                assigned-to="SH">
             Error handling (tolerance on DOCTYPE and processing errors).
         </action>
 
-        <action context="core"
+        <action context="code"
                 assigned-to="SH">
             images with SVG source.
         </action>
 
-        <action context="gvt"
+        <action context="code"
                 assigned-to="BH">
             tspan support
         </action>
 
-        <action context="bridge"
-                assigned-to="TK">
+        <action context="code"
+                assigned-to="SH">
             tspan support
         </action>
 
-        <action context="core"
+        <action context="code"
                 assigned-to="VH">
             Patterns
         </action>
 
-        <action context="core"
-                assigned-to="BH, VH, TK">
+        <action context="code"
+                assigned-to="BH">
             Small font-size layout problem.
         </action>
 
-        <action context="gvt.text"
+        <action context="code"
                 assigned-to="BH">
             Text selection.
         </action>
 
-        <action context="docs.demo"
+        <action context="docs"
                 assigned-to="VH">
             SVG Viewer page with Screen Shots.
         </action>
 
-        <action context="docs.demo"
+        <action context="docs"
                 assigned-to="TK">
             SVG Viewer Pluggin page
         </action>
 
-        <action context="docs.demo"
+        <action context="docs"
                 assigned-to="TK">
             SVG Rasterizer image examples
         </action>
 
-        <action context="docs.demo"
+        <action context="docs"
                 assigned-to="VH">
             SVG Generator sample page
         </action>
 
-        <action context="core"
+        <action context="code"
                 assigned-to="DJ">
             SVG Font support
         </action>
     </actions>
 
     <actions priority="medium">
-        <action context="gvt.filter"
+        <action context="code"
                 assigned-to="VH">
             hueRotate bug in ColorMatrix.
         </action>
 
-        <action context="bridge"
-                assigned-to="VH, SH">
+        <action context="code"
+                assigned-to="SH">
             Use consistent naming conventions for value
             constants in CSSConstants and SVGConstants
         </action>
 
-        <action context="apps.svgviewer"
-                assigned-to="SH, TK">
+        <action context="code"
+                assigned-to="SH">
             Implement a Shift+Reload that forces reload of 
             raster images referenced in an SVG document (i.e.,
             do not use the one cached by the JVM).

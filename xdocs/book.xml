@@ -4,12 +4,14 @@
      I believe it's pretty self-explanatory. -->
 
 <book title="Apache Batik documentation" copyright="2000 The Apache Software Foundation">
-  <page id="index" label="Index" source="index.xml"/>
+  <page id="index"   label="Index" source="index.xml"/>
   <page id="license" label="License" source="license.xml"/>
-  <page id="status" label="Implementation Status" source="status.xml" />
+  <page id="status"  label="Status" source="status.xml" />
+<!--
   <page id="download" label="Download" source="download.xml" />
 <separator/>
   <page id="whoAreWe" label="Who are we?" source="whoAreWe.xml" />
+-->
   <faqs id="faqs" label="FAQ" source="faq.xml"/>
   <changes id="changes" label="Changes" source="changes.xml"/>
   <todo id="todo" label="Todo" source="todo.xml"/>
