@@ -174,13 +174,6 @@ public class SVGTextElementBridge extends AbstractSVGBridge
         throw new Error("Not implemented");
     }
 
-    /**
-     * Creates a <tt>TextNode</tt>.
-     */
-    protected GraphicsNode instantiateGraphicsNode() {
-        return new TextNode();
-    }
-
     // -----------------------------------------------------------------------
     // -----------------------------------------------------------------------
     // -----------------------------------------------------------------------
@@ -516,7 +509,7 @@ public class SVGTextElementBridge extends AbstractSVGBridge
                             new Float(Float.NaN), 0, asLength);
 
             if ((x.length > 1) || (isChild)) {
-                as.addAttribute(GVTAttributedCharacterIterator.TextAttribute.EXPLICIT_LAYOUT, new Boolean(true), 0, asLength);
+                as.addAttribute(GVTAttributedCharacterIterator.TextAttribute.EXPLICIT_LAYOUT, Boolean.TRUE, 0, asLength);
             }
 
             for (int i=0; i<asLength; ++i) {
@@ -537,7 +530,7 @@ public class SVGTextElementBridge extends AbstractSVGBridge
 
             if ((y.length > 1) || (isChild)) {
                 as.addAttribute
-                    (GVTAttributedCharacterIterator.TextAttribute.EXPLICIT_LAYOUT, new Boolean(true), 0, asLength);
+                    (GVTAttributedCharacterIterator.TextAttribute.EXPLICIT_LAYOUT, Boolean.TRUE, 0, asLength);
             }
 
             for (int i=0; i<asLength; ++i) {
@@ -947,7 +940,7 @@ public class SVGTextElementBridge extends AbstractSVGBridge
                        new Float(f));
             result.put(GVTAttributedCharacterIterator.
                        TextAttribute.CUSTOM_SPACING,
-                       new Boolean(true));
+                       Boolean.TRUE);
         }
 
         // Word spacing
@@ -965,7 +958,7 @@ public class SVGTextElementBridge extends AbstractSVGBridge
                        new Float(f));
             result.put(GVTAttributedCharacterIterator.
                        TextAttribute.CUSTOM_SPACING,
-                       new Boolean(true));
+                       Boolean.TRUE);
         }
 
         // Kerning
@@ -981,7 +974,7 @@ public class SVGTextElementBridge extends AbstractSVGBridge
                        new Float(f));
             result.put(GVTAttributedCharacterIterator.
                        TextAttribute.CUSTOM_SPACING,
-                       new Boolean(true));
+                       Boolean.TRUE);
         }
 
         // textLength
@@ -1004,7 +997,7 @@ public class SVGTextElementBridge extends AbstractSVGBridge
                            GVTAttributedCharacterIterator.TextAttribute.ADJUST_SPACING);
                 result.put(GVTAttributedCharacterIterator.
                            TextAttribute.CUSTOM_SPACING,
-                           new Boolean(true));
+                           Boolean.TRUE);
             } else {
                 result.put(GVTAttributedCharacterIterator.
                            TextAttribute.LENGTH_ADJUST,
