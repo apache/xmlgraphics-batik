@@ -12,8 +12,8 @@ import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.awt.geom.GeneralPath;
-
 import java.io.StringReader;
+
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeMutationEvent;
 import org.apache.batik.bridge.ClipBridge;
@@ -21,6 +21,7 @@ import org.apache.batik.bridge.GVTBuilder;
 import org.apache.batik.bridge.ObjectBoundingBoxViewport;
 import org.apache.batik.bridge.Viewport;
 
+import org.apache.batik.gvt.GVTFactory;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.ShapeNode;
 import org.apache.batik.gvt.filter.Clip;
@@ -44,15 +45,6 @@ import org.w3c.dom.css.CSSPrimitiveValue;
 import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.ViewCSS;
 
-// For ClipSource
-import java.util.Iterator;
-import java.util.List;
-import java.util.LinkedList;
-import java.awt.geom.PathIterator;
-import java.awt.geom.Rectangle2D;
-import java.awt.Rectangle;
-import java.awt.geom.Point2D;
-
 /**
  * A factory for the &lt;clipPath&gt; SVG element.
  *
@@ -65,12 +57,12 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
      * Returns the <tt>Shape</tt> referenced by the input element's
      * <tt>clip-path</tt> attribute.
      */
-    public Clip createClip(BridgeContext bridgeContext,
+    public Clip createClip(BridgeContext ctx,
                             GraphicsNode gn,
                             Element clipElement,
                             Element clipedElement) {
         CSSStyleDeclaration decl
-            = bridgeContext.getViewCSS().getComputedStyle(clipElement, null);
+            = ctx.getViewCSS().getComputedStyle(clipElement, null);
 
         // Build the GVT tree that represents the clip path
         //
@@ -81,198 +73,94 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
         // The 'clipPath' element or any of its children can specify
         // property 'clip-path'.
         //
-        ClipSource area = new ClipSource();
-        GVTBuilder builder = bridgeContext.getGVTBuilder();
-        Viewport oldViewport = bridgeContext.getCurrentViewport();
-        bridgeContext.setCurrentViewport(new ObjectBoundingBoxViewport());
+        Area clipPath = new Area();
+        GVTBuilder builder = ctx.getGVTBuilder();
+        GVTFactory gvtFactory = ctx.getGVTFactory();
+        Viewport oldViewport = ctx.getCurrentViewport();
+        ctx.setCurrentViewport(new ObjectBoundingBoxViewport());
 
-        // Compute the transform matrix of this clipPath Element
-        AffineTransform at = AWTTransformProducer.createAffineTransform
+        // compute the transform matrix of this clipPath Element
+        AffineTransform Tx = AWTTransformProducer.createAffineTransform
            (new StringReader(clipElement.getAttributeNS(null, ATTR_TRANSFORM)),
-             bridgeContext.getParserFactory());
-
+            ctx.getParserFactory());
+        // compute an additional transform related the clipPathUnits
         String units = clipElement.getAttributeNS(null, ATTR_CLIP_PATH_UNITS);
         if (units.length() == 0) {
             units = VALUE_OBJECT_BOUNDING_BOX;
         }
-        AffineTransformSource ats =
-            SVGUtilities.convertAffineTransformSource(at, gn, units);
+        Tx = SVGUtilities.convertAffineTransform(Tx, gn, units);
 
-        for(Node child=clipElement.getFirstChild();
-            child != null;
-            child = child.getNextSibling()){
-            if(child.getNodeType() == child.ELEMENT_NODE){
-                GraphicsNode node
-                    = builder.build(bridgeContext, (Element)child) ;
-                if(node != null){
-                    CSSStyleDeclaration childDecl
-                        = bridgeContext.getViewCSS().getComputedStyle((Element)child, null);
-                    Shape outline =
-                        new TransformedShape(node.getOutline(), ats);
-                    // set the clip-rule
-                    CSSPrimitiveValue v;
-                    v = (CSSPrimitiveValue)childDecl.getPropertyCSSValue(CLIP_RULE_PROPERTY);
-                    int wr = (CSSUtilities.rule(v) == CSSUtilities.RULE_NONZERO)
-                        ? GeneralPath.WIND_NON_ZERO
-                        : GeneralPath.WIND_EVEN_ODD;
+        // build the clipPath according to the clipPath's children
+        for(Node node=clipElement.getFirstChild();
+                node != null;
+                node = node.getNextSibling()){
 
-                    ClipSource clipSource = new ClipSource(outline, wr);
-                    // compute clip-path on the child
-                    ShapeNode outlineNode =
-                        bridgeContext.getGVTFactory().createShapeNode();
-                    outlineNode.setShape(outline);
-                    Clip clip = CSSUtilities.convertClipPath((Element)child,
-                                                             outlineNode,
-                                                             bridgeContext);
-                    if (clip != null) {
-                        Shape clipPath = clip.getClipPath();
-                        if (clipPath != null) {
-                            clipSource.subtract(new ClipSource(clipPath));
-                        }
-                    }
-                    area.add(clipSource);
-                }
+            Element child = (Element)node;
+
+            // check if the node is a valid Element
+            if (node.getNodeType() != node.ELEMENT_NODE) {
+                throw new Error("Bad node type "+child.getNodeName());
             }
+
+            GraphicsNode clipNode = builder.build(ctx, child) ;
+            // check if a GVT node has been created
+            if (clipNode == null) {
+                throw new Error("Bad node type "+child.getNodeName());
+            }
+
+            // compute the outline of the current Element
+            CSSStyleDeclaration c =
+                ctx.getViewCSS().getComputedStyle(child, null);
+            CSSPrimitiveValue v =
+                (CSSPrimitiveValue)c.getPropertyCSSValue(CLIP_RULE_PROPERTY);
+            int wr = (CSSUtilities.rule(v) == CSSUtilities.RULE_NONZERO)
+                ? GeneralPath.WIND_NON_ZERO
+                : GeneralPath.WIND_EVEN_ODD;
+            GeneralPath path = new GeneralPath(clipNode.getOutline());
+            path.setWindingRule(wr);
+            Shape outline = Tx.createTransformedShape(path);
+
+            // apply the clip-path of the current Element
+            ShapeNode outlineNode = gvtFactory.createShapeNode();
+            outlineNode.setShape(outline);
+            Clip clip = CSSUtilities.convertClipPath(child,
+                                                     outlineNode,
+                                                     ctx);
+            if (clip != null) {
+                Area area = new Area(outline);
+                area.subtract(new Area(clip.getClipPath()));
+                outline = area;
+            }
+            clipPath.add(new Area(outline));
         }
 
-        //
-        // Now clipPath represents the current clip path defined by the
-        // children of the clipPath element in user space.
-        //
-        ClipSource clipPath = area;
-
-        // Get the clip-path property of this clipPath Element in user space
-        ShapeNode outlineNode = bridgeContext.getGVTFactory().createShapeNode();
-        outlineNode.setShape(clipPath);
+        // apply the clip-path of this clipPath Element (already in user space)
+        ShapeNode clipPathNode = gvtFactory.createShapeNode();
+        clipPathNode.setShape(clipPath);
         Clip clipElementClipPath =
             CSSUtilities.convertClipPath(clipElement,
-                                         outlineNode,
-                                         bridgeContext);
+                                         clipPathNode,
+                                         ctx);
         if (clipElementClipPath != null) {
-            ClipSource merge = new ClipSource(clipPath);
-            merge.subtract(new ClipSource(clipElementClipPath.getClipPath()));
-            clipPath = merge;
+            clipPath.subtract(new Area(clipElementClipPath.getClipPath()));
         }
-        bridgeContext.setCurrentViewport(oldViewport); // restore the viewport
+
+        // restore the viewport
+        ctx.setCurrentViewport(oldViewport);
 
         // OTHER PROBLEM: SHOULD TAKE MASK REGION INTO ACCOUNT
         Filter filter = gn.getFilter();
         if (filter == null) {
               // Make the initial source as a RenderableImage
             GraphicsNodeRableFactory gnrFactory
-                = bridgeContext.getGraphicsNodeRableFactory();
+                = ctx.getGraphicsNodeRableFactory();
             filter = gnrFactory.createGraphicsNodeRable(gn);
         }
         return new ConcreteClipRable(filter, clipPath);
+
     }
 
     public void update(BridgeMutationEvent evt) {
         // <!> FIXME : TODO
-    }
-}
-
-class ClipSource implements Shape {
-
-    private Shape resolvedArea;
-    private List addList = new LinkedList();
-    private List subtractList = new LinkedList();
-    private Shape source;
-    private int clipRule = PathIterator.WIND_NON_ZERO;
-
-    public ClipSource() {
-    }
-
-    public ClipSource(Shape shape) {
-        this.source = shape;
-    }
-
-    public ClipSource(Shape shape, int clipRule) {
-        this.source = shape;
-        this.clipRule = clipRule;
-    }
-
-    public void add(ClipSource area) {
-        addList.add(area);
-    }
-
-    public void subtract(ClipSource area) {
-        subtractList.add(area);
-    }
-
-    protected void resolve() {
-        if (resolvedArea == null) {
-            Area area;
-            if (source != null) {
-                GeneralPath path = new GeneralPath(source);
-                path.setWindingRule(clipRule);
-                area = new Area(path);
-
-            } else {
-                area = new Area();
-            }
-            for(Iterator iter = addList.iterator(); iter.hasNext();) {
-                ClipSource source = (ClipSource) iter.next();
-                area.add(new Area(source));
-            }
-            for(Iterator iter = subtractList.iterator(); iter.hasNext();) {
-                ClipSource source = (ClipSource) iter.next();
-                area.subtract(new Area(source));
-            }
-            addList = null;
-            subtractList = null;
-            source = null;
-            GeneralPath clipPath = new GeneralPath(area);
-            resolvedArea = clipPath;
-        }
-    }
-
-    public Rectangle getBounds() {
-        resolve();
-        return resolvedArea.getBounds();
-    }
-
-    public Rectangle2D getBounds2D() {
-        resolve();
-        return resolvedArea.getBounds2D();
-    }
-
-    public boolean contains(double x, double y) {
-        resolve();
-        return resolvedArea.contains(x, y);
-    }
-
-    public boolean contains(Point2D p) {
-        resolve();
-        return resolvedArea.contains(p);
-    }
-
-    public boolean intersects(double x, double y, double w, double h) {
-        resolve();
-        return resolvedArea.intersects(x, y, w, h);
-    }
-
-    public boolean intersects(Rectangle2D r) {
-        resolve();
-        return resolvedArea.intersects(r);
-    }
-
-    public boolean contains(double x, double y, double w, double h) {
-        resolve();
-        return resolvedArea.contains(x, y, w, h);
-    }
-
-    public boolean contains(Rectangle2D r) {
-        resolve();
-        return resolvedArea.contains(r);
-    }
-
-    public PathIterator getPathIterator(AffineTransform at) {
-        resolve();
-        return resolvedArea.getPathIterator(at);
-    }
-
-    public PathIterator getPathIterator(AffineTransform at, double flatness) {
-        resolve();
-        return resolvedArea.getPathIterator(at, flatness);
     }
 }
