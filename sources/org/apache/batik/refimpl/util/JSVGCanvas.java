@@ -731,6 +731,7 @@ public class JSVGCanvas
             canvasSpaceHighlightShape = null;
             selectionHighlightShape = null;
             // change highlight and notify user agent
+            repaint();
         }
     }
 
