@@ -314,9 +314,6 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
         }
         if (clip != null) {
             g2d.clip(clip);
-            // Work around clipping issue. DO NOT REMOVE, EVEN
-            // if it looks stupid.
-            g2d.setClip(new GeneralPath(g2d.getClip()));
         }
         if (composite != null) {
             g2d.setComposite(composite);
