@@ -812,8 +812,7 @@ public class JSVGViewerFrame
         public PrintAction() {}
         public void actionPerformed(ActionEvent e) {
             if (svgDocument != null) {
-                // final SVGDocument doc = svgDocument;
-                final String docURI = svgCanvas.getURI();
+                final SVGDocument doc = svgDocument;
                 new Thread() {
                     public void run(){
                         //
@@ -838,7 +837,7 @@ public class JSVGViewerFrame
                         //
                         // Do transcoding now
                         //
-                        pt.transcode(new TranscoderInput(docURI), null);
+                        pt.transcode(new TranscoderInput(doc), null);
 
                         //
                         // Print
