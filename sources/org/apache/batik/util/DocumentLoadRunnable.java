@@ -287,14 +287,13 @@ public class DocumentLoadRunnable implements Runnable, DocumentEventSource {
             fireAsyncDocumentEvent(new DocumentLoadingEvent(
                         DocumentLoadingEvent.LOAD_CANCELLED, null), false);
         } catch (IOException e) {
-            System.out.println("I/O Exception loading document: "
-                                                +e.getMessage());
+            //System.out.println("I/O Exception loading document: " +e.getMessage());
             fireAsyncDocumentEvent(new DocumentLoadingEvent(
-                        DocumentLoadingEvent.LOAD_FAILED, null), false);
+                        DocumentLoadingEvent.LOAD_FAILED, null, e), false);
         } catch (SAXException e) {
-            System.out.println("Malformed XML document: " +e.getMessage());
+            //System.out.println("Malformed XML document: " +e.getMessage());
             fireAsyncDocumentEvent(new DocumentLoadingEvent(
-                        DocumentLoadingEvent.LOAD_FAILED, null), false);
+                        DocumentLoadingEvent.LOAD_FAILED, null, e), false);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -26,9 +26,25 @@ public class DocumentLoadingEvent extends DocumentEvent {
     public static final int LOAD_CANCELLED = 0xfe;
     public static final int LOAD_FAILED = 0xff;
 
+    protected Exception ex;
+
     public DocumentLoadingEvent(int t, SVGOMDocument doc) {
         super(DocumentEvent.LOADING, t);
         o = doc;
+    }
+
+    public DocumentLoadingEvent(int t, SVGOMDocument doc, Exception ex) {
+        super(DocumentEvent.LOADING, t);
+        o = doc;
+        this.ex = ex;
+    }
+
+    /**
+     * Returns the exception that causes an error or null if the type
+     * of the event is not LOAD_FAILED.
+     */
+    public Exception getException() {
+        return ex;
     }
 }
 
