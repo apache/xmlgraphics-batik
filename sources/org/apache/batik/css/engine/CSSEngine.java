@@ -1044,48 +1044,6 @@ public abstract class CSSEngine {
     }
 
     /**
-     * Adds the rules of the given style-sheet to a style-map.
-     */
-    protected void putStyleSheetRules(Element elt,
-                                      String pseudo,
-                                      StyleMap sm,
-                                      StyleSheet ss,
-                                      short origin) {
-        List rules = new ArrayList();
-        addMatchingRules(rules, ss, elt, pseudo);
-        sortRules(rules, elt, pseudo);
-        int rlen = rules.size();
-        int props = getNumberOfProperties();
-
-        if (origin == StyleMap.AUTHOR_ORIGIN) {
-            for (int r = 0; r < rlen; r++) {
-                StyleRule sr = (StyleRule)rules.get(r);
-                StyleDeclaration sd = sr.getStyleDeclaration();
-                int len = sd.size();
-                for (int i = 0; i < len; i++) {
-                    putAuthorProperty(sm,
-                                      sd.getIndex(i),
-                                      sd.getValue(i),
-                                      sd.getPriority(i),
-                                      origin);
-                }
-            }
-        } else {
-            for (int r = 0; r < rlen; r++) {
-                StyleRule sr = (StyleRule)rules.get(r);
-                StyleDeclaration sd = sr.getStyleDeclaration();
-                int len = sd.size();
-                for (int i = 0; i < len; i++) {
-                    int idx = sd.getIndex(i);
-                    sm.putValue(idx, sd.getValue(i));
-                    sm.putImportant(idx, sd.getPriority(i));
-                    sm.putOrigin(idx, origin);
-                }
-            }
-        }
-    }
-
-    /**
      * Puts an author property from a style-map in another style-map,
      * if possible.
      */
