@@ -29,6 +29,8 @@ import org.apache.batik.bridge.BridgeException;
 import org.apache.batik.bridge.SVGUtilities;
 
 import org.apache.batik.dom.svg.SVGOMDocument;
+import org.apache.batik.dom.svg.XMLBaseSupport;
+
 import org.apache.batik.dom.util.XLinkSupport;
 
 import org.apache.batik.ext.awt.image.renderable.Filter;
