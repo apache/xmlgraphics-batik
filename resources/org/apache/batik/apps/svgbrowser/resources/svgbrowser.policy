@@ -1,4 +1,4 @@
-/* AUTOMATICALLY GENERATED ON Wed Apr 17 13:44:15 CEST 2002*/
+/* AUTOMATICALLY GENERATED */
 /* DO NOT EDIT */
 
 grant codeBase "${app.dev.base}/classes/" {

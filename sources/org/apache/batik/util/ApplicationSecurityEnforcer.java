@@ -146,16 +146,35 @@ public class ApplicationSecurityEnforcer {
         }
         
         if (enforce) {
-            // We want to install a SecurityManager.
-            if (sm == null) {
-                installSecurityManager();
-            }
+            // We first set the security manager to null to
+            // force reloading of the policy file in case there
+            // has been a change since it was last enforced (this
+            // may happen with dynamically generated policy files).
+            System.setSecurityManager(null);
+            installSecurityManager();
         } else {
             if (sm != null) {
                 System.setSecurityManager(null);
                 lastSecurityManagerInstalled = null;
             }
         }
+    }
+
+    /**
+     * Returns the url for the default policy. This never 
+     * returns null, but it may throw a NullPointerException
+     */
+    public URL getPolicyURL() {
+        ClassLoader cl = appMainClass.getClassLoader();
+        URL policyURL = cl.getResource(securityPolicy);
+        
+        if (policyURL == null) {
+            throw new NullPointerException
+                (Messages.formatMessage(EXCEPTION_NO_POLICY_FILE,
+                                        new Object[]{securityPolicy}));
+        }
+
+        return policyURL;
     }
 
     /**
@@ -177,13 +196,7 @@ public class ApplicationSecurityEnforcer {
         if (securityPolicyProperty == null || securityPolicyProperty.equals("")) {
             // Specify app's security policy in the
             // system property. 
-            URL policyURL = cl.getResource(securityPolicy);
-            
-            if (policyURL == null) {
-                throw new NullPointerException
-                    (Messages.formatMessage(EXCEPTION_NO_POLICY_FILE,
-                                        new Object[]{securityPolicy}));
-            }
+            URL policyURL = getPolicyURL();
             
             System.setProperty(PROPERTY_JAVA_SECURITY_POLICY,
                                policyURL.toString());

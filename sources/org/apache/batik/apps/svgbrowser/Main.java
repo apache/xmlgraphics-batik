@@ -13,9 +13,14 @@ import java.awt.Font;
 
 import java.awt.event.ActionEvent;
 
-import java.io.File;
-import java.io.IOException;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.Writer;
 import java.security.Policy;
 
 import java.util.HashMap;
@@ -66,6 +71,44 @@ public class Main implements Application {
      */
     public static final String UNKNOWN_SCRIPT_TYPE_LOAD_KEY_EXTENSION 
         = ".load";
+
+    /**
+     * User home property
+     */
+    public static final String PROPERTY_USER_HOME = "user.home";
+
+    /**
+     * System property for specifying an additional policy file.
+     */
+    public static final String PROPERTY_JAVA_SECURITY_POLICY 
+        = "java.security.policy";
+
+    /**
+     * Batik configuration sub-directory
+     */
+    public static final String BATIK_CONFIGURATION_SUBDIRECTORY = ".batik";
+
+    /**
+     * Name of the Squiggle configuration file
+     */
+    public static final String SQUIGGLE_CONFIGURATION_FILE = "preferences.xml";
+
+    /**
+     * Name of the Squiggle policy file
+     */
+    public static final String SQUIGGLE_POLICY_FILE = "__svgbrowser.policy";
+
+    /**
+     * Entry for granting network access to scripts
+     */
+    public static final String POLICY_GRANT_SCRIPT_NETWORK_ACCESS
+        = "grant {\n  permission java.net.SocketPermission \"*\", \"listen, connect, resolve, accept\";\n};\n\n";
+
+    /**
+     * Entry for granting file system access to scripts
+     */
+    public static final String POLICY_GRANT_SCRIPT_FILE_ACCESS
+        = "grant {\n  permission java.io.FilePermission \"<<ALL FILES>>\", \"read\";\n};\n\n";
 
     /**
      * Creates a viewer frame and shows it..
@@ -122,6 +165,14 @@ public class Main implements Application {
      * The arguments.
      */
     protected String[] arguments;
+
+    /**
+     * Controls whether the application can override the 
+     * system security policy property. This is done when there
+     * was no initial security policy specified when the application
+     * stated, in which case Batik will use that property.
+     */
+    protected boolean overrideSecurityPolicy = false;
 
     /**
      * Script security enforcement is delegated to the 
@@ -181,6 +232,10 @@ public class Main implements Application {
                      Boolean.FALSE);
         defaults.put(PreferenceDialog.PREFERENCE_KEY_ENFORCE_SECURE_SCRIPTING,
                      Boolean.TRUE);
+        defaults.put(PreferenceDialog.PREFERENCE_KEY_GRANT_SCRIPT_FILE_ACCESS,
+                     Boolean.FALSE);
+        defaults.put(PreferenceDialog.PREFERENCE_KEY_GRANT_SCRIPT_NETWORK_ACCESS,
+                     Boolean.FALSE);
         defaults.put(PreferenceDialog.PREFERENCE_KEY_LOAD_JAVA,
                      Boolean.TRUE);
         defaults.put(PreferenceDialog.PREFERENCE_KEY_LOAD_ECMASCRIPT,
@@ -196,10 +251,10 @@ public class Main implements Application {
                                               SQUIGGLE_JAR_NAME);
                                               
         try {
-            preferenceManager = new XMLPreferenceManager("preferences.xml",
+            preferenceManager = new XMLPreferenceManager(SQUIGGLE_CONFIGURATION_FILE,
                                                          defaults);
-            String dir = System.getProperty("user.home");
-            File f = new File(dir, ".batik");
+            String dir = System.getProperty(PROPERTY_USER_HOME);
+            File f = new File(dir, BATIK_CONFIGURATION_SUBDIRECTORY);
             f.mkdir();
             preferenceManager.setPreferenceDirectory(f.getCanonicalPath());
             preferenceManager.load();
@@ -250,9 +305,69 @@ public class Main implements Application {
         });
         c.setSize(100, 100);
         c.loadSVGDocument(Main.class.getResource("resources/init.svg").toString());
-
-                                              
                                                            
+    }
+
+    /**
+     * Installs a custom policy file in the '.batik' directory. This is initialized 
+     * with the content of the policy file coming with the distribution
+     */
+    public void installCustomPolicyFile() throws IOException {
+        String securityPolicyProperty 
+            = System.getProperty(PROPERTY_JAVA_SECURITY_POLICY);
+
+        if (overrideSecurityPolicy
+            ||
+            securityPolicyProperty == null
+            ||
+            "".equals(securityPolicyProperty)) {
+            // Access default policy file
+            ParsedURL policyURL = new ParsedURL(securityEnforcer.getPolicyURL());
+            
+            // Override the user policy 
+            String dir = System.getProperty(PROPERTY_USER_HOME);
+            File batikConfigDir = new File(dir, BATIK_CONFIGURATION_SUBDIRECTORY);
+            File policyFile = new File(batikConfigDir, SQUIGGLE_POLICY_FILE);
+            
+            // Copy original policy file into local policy file
+            Reader r = new BufferedReader(new InputStreamReader(policyURL.openStream()));
+            Writer w = new FileWriter(policyFile);
+            
+            char[] buf = new char[1024];
+            int n = 0;
+            while ( (n=r.read(buf, 0, buf.length)) != -1 ) {
+                w.write(buf, 0, n);
+            }
+            
+            r.close();
+            
+            // Now, append additional grants depending on the security
+            // settings
+            boolean grantScriptNetworkAccess 
+                = preferenceManager.getBoolean
+                (PreferenceDialog.PREFERENCE_KEY_GRANT_SCRIPT_NETWORK_ACCESS);
+            boolean grantScriptFileAccess
+                = preferenceManager.getBoolean
+                (PreferenceDialog.PREFERENCE_KEY_GRANT_SCRIPT_FILE_ACCESS);
+            
+            if (grantScriptNetworkAccess) {
+                w.write(POLICY_GRANT_SCRIPT_NETWORK_ACCESS);
+            }
+            
+            if (grantScriptFileAccess) {
+                w.write(POLICY_GRANT_SCRIPT_FILE_ACCESS);
+            }
+            
+            w.close();
+            
+            // We now use the JAVA_SECURITY_POLICY property, so 
+            // we allow override on subsequent calls.
+            overrideSecurityPolicy = true;
+            
+            System.setProperty(PROPERTY_JAVA_SECURITY_POLICY,
+                               policyFile.toURL().toString());
+            
+        }
     }
 
     /**
@@ -490,7 +605,7 @@ public class Main implements Application {
         }
     }
 
-    private void setPreferences() {
+    private void setPreferences() throws IOException {
         Iterator it = viewerFrames.iterator();
         while (it.hasNext()) {
             setPreferences((JSVGViewerFrame)it.next());
@@ -501,10 +616,13 @@ public class Main implements Application {
         System.setProperty("proxyPort", preferenceManager.getString
                            (PreferenceDialog.PREFERENCE_KEY_PROXY_PORT));
 
+        installCustomPolicyFile();
+
         securityEnforcer.enforceSecurity
             (preferenceManager.getBoolean
              (PreferenceDialog.PREFERENCE_KEY_ENFORCE_SECURE_SCRIPTING)
              );
+
     }
 
     private void setPreferences(JSVGViewerFrame vf) {

@@ -132,6 +132,15 @@ public class PreferenceDialog extends JDialog
     public static final String LABEL_ENFORCE_SECURE_SCRIPTING
         = "PreferenceDialog.label.enforce.secure.scripting";
 
+    public static final String LABEL_SECURE_SCRIPTING_TOGGLE
+        = "PreferenceDialog.label.secure.scripting.toggle";
+
+    public static final String LABEL_GRANT_SCRIPT_FILE_ACCESS
+        = "PreferenceDialog.label.grant.script.file.access";
+
+    public static final String LABEL_GRANT_SCRIPT_NETWORK_ACCESS
+        = "PreferenceDialog.label.grant.script.network.access";
+
     public static final String LABEL_LOAD_JAVA
         = "PreferenceDialog.label.load.java";
 
@@ -171,8 +180,14 @@ public class PreferenceDialog extends JDialog
     public static final String LABEL_CANCEL
         = "PreferenceDialog.label.cancel";
 
+    public static final String TITLE_BROWSER_OPTIONS
+        = "PreferenceDialog.title.browser.options";
+
     public static final String TITLE_BEHAVIOR
         = "PreferenceDialog.title.behavior";
+
+    public static final String TITLE_SECURITY
+        = "PreferenceDialog.title.security";
 
     public static final String TITLE_NETWORK
         = "PreferenceDialog.title.network";
@@ -233,6 +248,12 @@ public class PreferenceDialog extends JDialog
     public static final String PREFERENCE_KEY_ENFORCE_SECURE_SCRIPTING
         = "preference.key.enforce.secure.scripting";
 
+    public static final String PREFERENCE_KEY_GRANT_SCRIPT_FILE_ACCESS
+        = "preference.key.grant.script.file.access";
+
+    public static final String PREFERENCE_KEY_GRANT_SCRIPT_NETWORK_ACCESS
+        = "preferenced.key.grant.script.network.access";
+
     public static final String PREFERENCE_KEY_LOAD_ECMASCRIPT
         = "preference.key.load.ecmascript";
 
@@ -279,6 +300,10 @@ public class PreferenceDialog extends JDialog
     protected JCheckBox isXMLParserValidating;
 
     protected JCheckBox enforceSecureScripting;
+
+    protected JCheckBox grantScriptFileAccess;
+
+    protected JCheckBox grantScriptNetworkAccess;
 
     protected JCheckBox loadJava;
 
@@ -350,6 +375,8 @@ public class PreferenceDialog extends JDialog
 
         isXMLParserValidating.setSelected(model.getBoolean(PREFERENCE_KEY_IS_XML_PARSER_VALIDATING));
         enforceSecureScripting.setSelected(model.getBoolean(PREFERENCE_KEY_ENFORCE_SECURE_SCRIPTING));
+        grantScriptFileAccess.setSelected(model.getBoolean(PREFERENCE_KEY_GRANT_SCRIPT_FILE_ACCESS));
+        grantScriptNetworkAccess.setSelected(model.getBoolean(PREFERENCE_KEY_GRANT_SCRIPT_NETWORK_ACCESS));
         loadJava.setSelected(model.getBoolean(PREFERENCE_KEY_LOAD_JAVA));
         loadEcmascript.setSelected(model.getBoolean(PREFERENCE_KEY_LOAD_ECMASCRIPT));
 
@@ -422,6 +449,10 @@ public class PreferenceDialog extends JDialog
                          isXMLParserValidating.isSelected());
         model.setBoolean(PREFERENCE_KEY_ENFORCE_SECURE_SCRIPTING,
                          enforceSecureScripting.isSelected());
+        model.setBoolean(PREFERENCE_KEY_GRANT_SCRIPT_FILE_ACCESS,
+                         grantScriptFileAccess.isSelected());
+        model.setBoolean(PREFERENCE_KEY_GRANT_SCRIPT_NETWORK_ACCESS,
+                         grantScriptNetworkAccess.isSelected());
         model.setBoolean(PREFERENCE_KEY_LOAD_JAVA,
                          loadJava.isSelected());
         model.setBoolean(PREFERENCE_KEY_LOAD_ECMASCRIPT,
@@ -611,7 +642,25 @@ public class PreferenceDialog extends JDialog
             = new JCheckBox(Resources.getString(LABEL_IS_XML_PARSER_VALIDATING));
 
         enforceSecureScripting
-            = new JCheckBox(Resources.getString(LABEL_ENFORCE_SECURE_SCRIPTING));
+            = new JCheckBox(Resources.getString(LABEL_SECURE_SCRIPTING_TOGGLE));
+
+        grantScriptFileAccess
+            = new JCheckBox(Resources.getString(LABEL_GRANT_SCRIPT_FILE_ACCESS));
+        
+        grantScriptNetworkAccess
+            = new JCheckBox(Resources.getString(LABEL_GRANT_SCRIPT_NETWORK_ACCESS));
+
+        JGridBagPanel scriptSecurityPanel = new JGridBagPanel();
+        scriptSecurityPanel.add(enforceSecureScripting,    0, 0, 1, 1, WEST, HORIZONTAL, 1, 0);
+        scriptSecurityPanel.add(grantScriptFileAccess,    1, 0, 1, 1, WEST, HORIZONTAL, 1, 0);
+        scriptSecurityPanel.add(grantScriptNetworkAccess, 1, 1, 1, 1, WEST, HORIZONTAL, 1, 0);
+        
+        enforceSecureScripting.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    grantScriptFileAccess.setEnabled(enforceSecureScripting.isSelected());
+                    grantScriptNetworkAccess.setEnabled(enforceSecureScripting.isSelected());
+                }
+            });
 
         loadJava
             = new JCheckBox(Resources.getString(LABEL_LOAD_JAVA));
@@ -619,9 +668,9 @@ public class PreferenceDialog extends JDialog
         loadEcmascript
             = new JCheckBox(Resources.getString(LABEL_LOAD_ECMASCRIPT));
 
-        JPanel loadScriptPanel = new JPanel();
-        loadScriptPanel.add(loadJava);
-        loadScriptPanel.add(loadEcmascript);
+        JGridBagPanel loadScriptPanel = new JGridBagPanel();
+        loadScriptPanel.add(loadJava, 0, 0, 1, 1, WEST, NONE, 1, 0);
+        loadScriptPanel.add(loadEcmascript, 1, 0, 1, 1, WEST, NONE, 1, 0);
 
         JPanel scriptOriginPanel = new JPanel();
 
@@ -671,27 +720,43 @@ public class PreferenceDialog extends JDialog
         resourceOriginGroup.add(rb);
         resourceOriginPanel.add(rb);
 
+        JTabbedPane browserOptions = new JTabbedPane();
+        // browserOptions.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+
         p.add(showRendering,    0, 0, 2, 1, WEST, HORIZONTAL, 1, 0);
         p.add(autoAdjustWindow, 0, 1, 2, 1, WEST, HORIZONTAL, 1, 0);
         p.add(enableDoubleBuffering, 0, 2, 2, 1, WEST, HORIZONTAL, 1, 0);
         p.add(showDebugTrace,   0, 3, 2, 1, WEST, HORIZONTAL, 1, 0);
         p.add(selectionXorMode,   0, 4, 2, 1, WEST, HORIZONTAL, 1, 0);
         p.add(isXMLParserValidating,   0, 5, 2, 1, WEST, HORIZONTAL, 1, 0);
-        p.add(enforceSecureScripting, 0, 6, 2, 1, WEST, HORIZONTAL, 1, 0);
-        p.add(new JLabel(Resources.getString(LABEL_LOAD_SCRIPTS)), 0, 7, 1, 1, WEST, NONE, 0, 0);
-        p.add(loadScriptPanel, 1, 7, 1, 1, WEST, NONE, 1, 0);
-        p.add(new JLabel(Resources.getString(LABEL_SCRIPT_ORIGIN)), 0, 8, 1, 1, WEST, NONE, 0, 0);
-        p.add(scriptOriginPanel, 1, 8, 1, 1, WEST, NONE, 1, 0);
+        p.add(new JLabel(), 0, 11, 2, 1, WEST, BOTH, 1, 1); 
+
+        browserOptions.addTab(Resources.getString(TITLE_BEHAVIOR), p);
+        p.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        p = new JGridBagPanel();
+        p.add(new JLabel(Resources.getString(LABEL_ENFORCE_SECURE_SCRIPTING)), 0, 6, 1, 1, NORTHWEST, NONE, 0, 0);
+        p.add(scriptSecurityPanel, 1, 6, 1, 1, WEST, NONE, 0, 0);
+        p.add(new JLabel(Resources.getString(LABEL_LOAD_SCRIPTS)), 0, 8, 1, 1, WEST, NONE, 0, 0);
+        p.add(loadScriptPanel, 1, 8, 1, 1, WEST, NONE, 1, 0);
+        p.add(new JLabel(Resources.getString(LABEL_SCRIPT_ORIGIN)), 0, 9, 1, 1, WEST, NONE, 0, 0);
+        p.add(scriptOriginPanel, 1, 9, 1, 1, WEST, NONE, 1, 0);
         p.add(new JLabel(Resources.getString(LABEL_RESOURCE_ORIGIN)), 0, 10, 1, 1, WEST, NONE, 0, 0);
-        p.add(resourceOriginPanel, 1, 10, 1, 1, WEST, NONE, 1, 0);
+        p.add(resourceOriginPanel, 1, 10, 1, 1, WEST, NONE, 1, 0); 
+        p.add(new JLabel(), 0, 11, 2, 1, WEST, BOTH, 1, 1); 
 
-        p.setBorder(BorderFactory.createCompoundBorder
-                    (BorderFactory.createTitledBorder
-                     (BorderFactory.createEtchedBorder(),
-                     Resources.getString(TITLE_BEHAVIOR)),
-                     BorderFactory.createEmptyBorder(10, 10, 10, 10)));
+        browserOptions.addTab(Resources.getString(TITLE_SECURITY), p);
+        p.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        return p;
+        JGridBagPanel borderedPanel = new JGridBagPanel();
+        borderedPanel.add(browserOptions, 0, 0, 1, 1, WEST, BOTH, 1, 1);
+        borderedPanel.setBorder(BorderFactory.createCompoundBorder
+                                (BorderFactory.createTitledBorder
+                                 (BorderFactory.createEtchedBorder(),
+                                  Resources.getString(TITLE_BROWSER_OPTIONS)),
+                                 BorderFactory.createEmptyBorder(10, 10, 10, 10)));
+        
+        return borderedPanel;
     }
 
     protected Component buildNetwork(){
