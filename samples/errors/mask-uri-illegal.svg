@@ -23,6 +23,11 @@
 <title>Error: "mask" references an invalid element</title>
 
     <!-- ============================================================= -->
+    <!-- Batik sample mark                                             -->
+    <!-- ============================================================= -->
+    <use xlink:href="./batikMark.svg#BatikTag" />
+
+    <!-- ============================================================= -->
     <!-- Test content                                                  -->
     <!-- ============================================================= -->
     <g id="testContent">
@@ -53,17 +58,10 @@
     <text x="225" y="454" class="legend">
       "mask" references an invalid element
     </text>
-    <rect x="175" y="100" width="100" height="100" style="fill:#eeeeee"/>
-    <rect x="175" y="300" width="100" height="100" style="fill:#eeeeee"/>
 
     <rect x="175" y="100" width="100" height="100" style="fill:url(#maskedGradient); mask:url(#good)"/>
     <rect x="175" y="300" width="100" height="100" style="fill:url(#maskedGradient); mask:url(#bad)"/>
 
 
     </g>
-    <!-- ============================================================= -->
-    <!-- Batik sample mark                                             -->
-    <!-- ============================================================= -->
-    <use xlink:href="../testTemplate.svg/#BatikTag" />
-    
 </svg>
