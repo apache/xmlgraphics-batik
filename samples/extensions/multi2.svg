@@ -26,33 +26,20 @@
      xmlns:batikExt="http://xml.apache.org/batik/ext">
 
     <title>MultiImage Extension Tag</title>
-    <defs>
-       <g id="sample">
-          <rect fill="#ADA" x="0" y="0" width="280" height="400"/>
-          <batikExt:multiImage id="img" xlink:href="multi1.jpg"
-                 x="20" y="20" width="240" height="360" 
-                 pixel-width="480" pixel-height="720">
-             <batikExt:subImage xlink:href="multi2.jpg" 
-                        pixel-width="240" pixel-height="360"/>
-             <batikExt:subImage xlink:href="multi3.jpg" 
-                        pixel-width="120" pixel-height="180"/>
-             <batikExt:subImage xlink:href="multi4.jpg" 
-                        pixel-width="60" pixel-height="90"/>
-          </batikExt:multiImage>
-       </g>
-    </defs>  
-
     <!-- ============================================================= -->
     <!-- Test content                                                  -->
     <!-- ============================================================= -->
     <g id="testContent" class="legend" style="text-anchor:middle">
         <text x="225" y="40" class="title">MultiImage Extension Tag</text>
   
-        <use transform="translate(10, 50)" xlink:href="#sample"/>
+        <image x="10" y="50" width="270" height="405"
+               xlink:href="opera/opera-3-0-0.svg"/>
 
-        <use transform="translate(300, 50) scale(.5)" xlink:href="#sample"/>
+        <image x="300" y="50" width="135" height="202.5"
+               xlink:href="opera/opera-3-0-0.svg"/>
 
-        <use transform="translate(300, 260) scale(.25)" xlink:href="#sample"/>
+        <image x="300" y="277" width="67.5" height="101.25"
+               xlink:href="opera/opera-3-0-0.svg"/>
 
     </g>
 

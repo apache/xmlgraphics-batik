@@ -39,7 +39,7 @@ public class SVGBrokenLinkProvider
     extends    DefaultBrokenLinkProvider 
     implements ErrorConstants {
 
-    final static String SVG_BROKEN_LINK_DOCUMENT_PROPERTY = 
+    public final static String SVG_BROKEN_LINK_DOCUMENT_PROPERTY = 
         "org.apache.batik.bridge.BrokenLinkDocument";
 
     UserAgent      userAgent;

@@ -33,13 +33,9 @@ import org.apache.batik.dom.svg.XMLBaseSupport;
 
 import org.apache.batik.dom.util.XLinkSupport;
 
-import org.apache.batik.ext.awt.image.renderable.Filter;
-
-import org.apache.batik.extension.svg.renderable.MultiResRable;
-
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.ImageNode;
-import org.apache.batik.gvt.RasterImageNode;
+import org.apache.batik.gvt.CompositeGraphicsNode;
 
 import org.apache.batik.util.ParsedURL;
 
@@ -105,18 +101,10 @@ public class BatikMultiImageElementBridge extends SVGImageElementBridge
             return null;
         }
 
-        ImageNode imageNode = (ImageNode)instantiateGraphicsNode();
-
-        // 'transform'
-        String s = e.getAttributeNS(null, SVG_TRANSFORM_ATTRIBUTE);
-        if (s.length() != 0) {
-            imageNode.setTransform
-                (SVGUtilities.convertTransform(e, SVG_TRANSFORM_ATTRIBUTE, s));
+        ImageNode imgNode = (ImageNode)super.createGraphicsNode(ctx, e);
+        if (imgNode == null) {
+            return null;
         }
-        // 'visibility'
-        imageNode.setVisible(CSSUtilities.convertVisibility(e));
-
-        RasterImageNode node = new RasterImageNode();
 
         List dims = new LinkedList();
         List uris = new LinkedList();
@@ -154,23 +142,22 @@ public class BatikMultiImageElementBridge extends SVGImageElementBridge
             n++;
         }
 
-        Filter f = new MultiResRable(uary, dary);
+        Rectangle2D b = getImageBounds(ctx, e);
 
-        Rectangle2D imgB, b;
-        imgB = f.getBounds2D();
-        b = getImageBounds(ctx, e);
+        GraphicsNode node = new MultiResGraphicsNode(e, b, uary, dary);
 
-        node.setImage(f);
+        // 'transform'
+        String s = e.getAttributeNS(null, SVG_TRANSFORM_ATTRIBUTE);
+        if (s.length() != 0) {
+            node.setTransform
+                (SVGUtilities.convertTransform(e, SVG_TRANSFORM_ATTRIBUTE, s));
+        }
+        // 'visibility'
+        node.setVisible(CSSUtilities.convertVisibility(e));
 
-        float []vb = new float[4];
-        vb[0] = 0;
-        vb[1] = 0;
-        vb[2] = (float)imgB.getWidth();
-        vb[3] = (float)imgB.getHeight();
-        initializeViewport(ctx, e, node, vb, b);
+        imgNode.setImage(node);
 
-        imageNode.setImage(node);
-        return imageNode;
+        return imgNode;
     }
 
     protected void addInfo(Element e, Collection dims, Collection uris) {
