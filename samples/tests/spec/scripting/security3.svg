@@ -81,12 +81,28 @@
     <script type="text/ecmascript" ><![CDATA[
 
 function windowTest() {
+    evalTest();
     setIntervalTest();
     setTimeoutTest();
     getURLTest();
     alertTest();
     confirmTest();
     promptTest();
+}
+
+function evalTest() {
+    var t = document.getElementById("eval");
+    try {
+        eval("dummyGetURL()");
+        t.setAttributeNS(null, "class", "passedTest");
+    } catch (e) {
+        t.setAttributeNS(null, "class", "failedTest");
+    }
+}
+
+function dummyGetURL(){
+    alert('dummyGetURL');
+    getURL('security3Include.svg', dummyFunction);
 }
 
 function dummyFunction() {
@@ -272,6 +288,13 @@ function promptTest(){
             <rect class="cellStatus" x="200" width="20" height="20" />
             <rect id="prompt" class="untested" x="203" y="3" width="14" height="14" />
             <text x="5" y="15" class="label">prompt</text>
+        </g>
+
+        <g id="evalTest" transform="translate(0, 160)">
+            <rect class="cellLabel" width="200" height="20" />
+            <rect class="cellStatus" x="200" width="20" height="20" />
+            <rect id="eval" class="untested" x="203" y="3" width="14" height="14" />
+            <text x="5" y="15" class="label">eval</text>
         </g>
 
         

@@ -79,6 +79,21 @@
         <text x="50%" y="400" text-anchor="middle" >Click 1 and 2, the bounding box of &lt;rect&gt; should appear in red</text>
 
     </g>
+
+    <script type="text/ecmascript"><![CDATA[
+function onDone() {
+    if (!(regardTestInstance == null)) {
+        regardTestInstance.scriptDone();   
+    } else {
+        alert("This button only works when run in the regard framework");
+    }
+}
+    ]]></script>
+    <g id="done" transform="translate(195, 458)" cursor="pointer" onclick="onDone()">
+        <rect rx="5" ry="5" width="60" height="25" fill="#eeeeee" stroke="black" />
+        <text x="30" y="18" font-size="14" font-weight="bold" text-anchor="middle">Done</text>
+    </g>
+
     <!-- ============================================================= -->
     <!-- Batik sample mark                                             -->
     <!-- ============================================================= -->
