@@ -32,8 +32,10 @@ import org.w3c.dom.Element;
  * @see                org.apache.batik.util.awt.svg.SVGBufferedImageOp
  */
 public class SVGRescaleOp extends AbstractSVGFilterConverter{
-    public static final String ERROR_SCALE_FACTORS_AND_OFFSETS_MISMATCH = "RescapeOp offsets and scaleFactor array lenght do not match";
-    public static final String ERROR_ILLEGAL_BUFFERED_IMAGE_RESCALE_OP = "BufferedImage RescaleOp should have 1, 3 or 4 scale factors";
+    public static final String ERROR_SCALE_FACTORS_AND_OFFSETS_MISMATCH =
+        "RescapeOp offsets and scaleFactor array lenght do not match";
+    public static final String ERROR_ILLEGAL_BUFFERED_IMAGE_RESCALE_OP =
+        "BufferedImage RescaleOp should have 1, 3 or 4 scale factors";
 
     /**
      * @param domFactory used to build Elements
@@ -78,7 +80,8 @@ public class SVGRescaleOp extends AbstractSVGFilterConverter{
             // SVG filter
             //
             Element filterDef = domFactory.createElement(TAG_FILTER);
-            Element feComponentTransferDef = domFactory.createElement(TAG_FE_COMPONENT_TRANSFER);
+            Element feComponentTransferDef =
+                domFactory.createElement(SVG_FE_COMPONENT_TRANSFER_TAG);
 
             // Append transfer function for each component, setting
             // the attributes corresponding to the scale and offset.
@@ -112,29 +115,31 @@ public class SVGRescaleOp extends AbstractSVGFilterConverter{
                 feFuncR.setAttribute(SVG_TYPE_ATTRIBUTE, type);
                 feFuncG.setAttribute(SVG_TYPE_ATTRIBUTE, type);
                 feFuncB.setAttribute(SVG_TYPE_ATTRIBUTE, type);
-                feFuncR.setAttribute(ATTR_SLOPE, slope);
-                feFuncG.setAttribute(ATTR_SLOPE, slope);
-                feFuncB.setAttribute(ATTR_SLOPE, slope);
-                feFuncR.setAttribute(ATTR_INTERCEPT, intercept);
-                feFuncG.setAttribute(ATTR_INTERCEPT, intercept);
-                feFuncB.setAttribute(ATTR_INTERCEPT, intercept);
+                feFuncR.setAttribute(SVG_SLOPE_ATTRIBUTE, slope);
+                feFuncG.setAttribute(SVG_SLOPE_ATTRIBUTE, slope);
+                feFuncB.setAttribute(SVG_SLOPE_ATTRIBUTE, slope);
+                feFuncR.setAttribute(SVG_INTERCEPT_ATTRIBUTE, intercept);
+                feFuncG.setAttribute(SVG_INTERCEPT_ATTRIBUTE, intercept);
+                feFuncB.setAttribute(SVG_INTERCEPT_ATTRIBUTE, intercept);
             }
             else if(offsets.length >= 3){
                 feFuncR.setAttribute(SVG_TYPE_ATTRIBUTE, type);
                 feFuncG.setAttribute(SVG_TYPE_ATTRIBUTE, type);
                 feFuncB.setAttribute(SVG_TYPE_ATTRIBUTE, type);
-                feFuncR.setAttribute(ATTR_SLOPE, doubleString(scaleFactors[0]));
-                feFuncG.setAttribute(ATTR_SLOPE, doubleString(scaleFactors[1]));
-                feFuncB.setAttribute(ATTR_SLOPE, doubleString(scaleFactors[2]));
-                feFuncR.setAttribute(ATTR_INTERCEPT, doubleString(offsets[0]));
-                feFuncG.setAttribute(ATTR_INTERCEPT, doubleString(offsets[1]));
-                feFuncB.setAttribute(ATTR_INTERCEPT, doubleString(offsets[2]));
+                feFuncR.setAttribute(SVG_SLOPE_ATTRIBUTE, doubleString(scaleFactors[0]));
+                feFuncG.setAttribute(SVG_SLOPE_ATTRIBUTE, doubleString(scaleFactors[1]));
+                feFuncB.setAttribute(SVG_SLOPE_ATTRIBUTE, doubleString(scaleFactors[2]));
+                feFuncR.setAttribute(SVG_INTERCEPT_ATTRIBUTE, doubleString(offsets[0]));
+                feFuncG.setAttribute(SVG_INTERCEPT_ATTRIBUTE, doubleString(offsets[1]));
+                feFuncB.setAttribute(SVG_INTERCEPT_ATTRIBUTE, doubleString(offsets[2]));
 
                 if(offsets.length == 4){
                     feFuncA = domFactory.createElement(TAG_FE_FUNC_A);
                     feFuncA.setAttribute(SVG_TYPE_ATTRIBUTE, type);
-                    feFuncA.setAttribute(ATTR_SLOPE, doubleString(scaleFactors[3]));
-                    feFuncA.setAttribute(ATTR_INTERCEPT, doubleString(offsets[3]));
+                    feFuncA.setAttribute(SVG_SLOPE_ATTRIBUTE,
+                                         doubleString(scaleFactors[3]));
+                    feFuncA.setAttribute(SVG_INTERCEPT_ATTRIBUTE,
+                                         doubleString(offsets[3]));
                 }
             }
 

@@ -27,6 +27,17 @@ public class SVGOMClipPathElement
     implements SVGClipPathElement {
     
     /**
+     * The DefaultAttributeValueProducer for clipPathUnits.
+     */
+    protected final static DefaultAttributeValueProducer
+        CLIP_PATH_UNITS_DEFAULT_VALUE_PRODUCER =
+        new DefaultAttributeValueProducer() {
+                public String getDefaultAttributeValue() {
+                    return SVG_DEFAULT_VALUE_CLIP_PATH_CLIP_PATH_UNITS;
+                }
+            };
+    
+    /**
      * The clipPathUnits attribute reference.
      */
     protected transient WeakReference clipPathUnitsReference;
@@ -65,7 +76,7 @@ public class SVGOMClipPathElement
                                                   SVG_CLIP_PATH_UNITS_ATTRIBUTE,
                                                   STRING_TO_SHORT_UNITS,
                                                   SHORT_TO_STRING_UNITS,
-                                               DEFAULT_VALUE_CLIP_PATH_CLIP_PATH_UNITS);
+                                                CLIP_PATH_UNITS_DEFAULT_VALUE_PRODUCER);
             clipPathUnitsReference = new WeakReference(result);
         }
         return result;

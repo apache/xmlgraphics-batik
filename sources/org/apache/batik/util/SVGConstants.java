@@ -35,8 +35,8 @@ public interface SVGConstants extends CSSConstants {
     String SVG_ELLIPSE_TAG = "ellipse";
     String SVG_FE_BLEND_TAG = "feBlend";
     String SVG_FE_COLOR_MATRIX_TAG = "feColorMatrix";
-    String TAG_FE_COMPONENT_TRANSFER = "feComponentTransfer";
-    String TAG_FE_COMPOSITE = "feComposite";
+    String SVG_FE_COMPONENT_TRANSFER_TAG = "feComponentTransfer";
+    String SVG_FE_COMPOSITE_TAG = "feComposite";
     String TAG_FE_CONVOLVE_MATRIX = "feConvolveMatrix";
     String TAG_FE_DIFFUSE_LIGHTING = "feDiffuseLighting";
     String TAG_FE_DISPLACEMENT_MAP = "feDisplacementMap";
@@ -71,7 +71,7 @@ public interface SVGConstants extends CSSConstants {
     String TAG_RADIAL_GRADIENT = "radialGradient";
     String TAG_RECT = "rect";
     String TAG_SCRIPT = "script";
-    String TAG_STOP = "stop";
+    String SVG_STOP_TAG = "stop";
     String TAG_STYLE = "style";
     String TAG_SVG = "svg";
     String TAG_SWITCH = "switch";
@@ -86,7 +86,7 @@ public interface SVGConstants extends CSSConstants {
     /**
      * Attribute names
      */
-    String ATTR_AMPLITUDE = "amplitude";
+    String SVG_AMPLITUDE_ATTRIBUTE = "amplitude";
     String ATTR_AZIMUTH = "azimuth";
     String ATTR_BASE_FREQUENCY = "baseFrequency";
     String ATTR_BIAS = "bias";
@@ -104,7 +104,7 @@ public interface SVGConstants extends CSSConstants {
     String ATTR_EDGE_MODE = "edgemode";
     String ATTR_ELEVATION = "elevation";
     String ATTR_ENABLE_BACKGROUND = CSS_ENABLE_BACKGROUND_PROPERTY;
-    String ATTR_EXPONENT = "exponent";
+    String SVG_EXPONENT_ATTRIBUTE = "exponent";
     String ATTR_FILL = CSS_FILL_PROPERTY;
     String ATTR_FILL_OPACITY = CSS_FILL_OPACITY_PROPERTY;
     String ATTR_FILL_RULE = CSS_FILL_RULE_PROPERTY;
@@ -127,11 +127,11 @@ public interface SVGConstants extends CSSConstants {
     String ATTR_IMAGE_RENDERING = CSS_IMAGE_RENDERING_PROPERTY;
     String SVG_IN_ATTRIBUTE = "in";
     String SVG_IN2_ATTRIBUTE = "in2";
-    String ATTR_INTERCEPT = "intercept";
-    String ATTR_K1 = "k1";
-    String ATTR_K2 = "k2";
-    String ATTR_K3 = "k3";
-    String ATTR_K4 = "k4";
+    String SVG_INTERCEPT_ATTRIBUTE = "intercept";
+    String SVG_K1_ATTRIBUTE = "k1";
+    String SVG_K2_ATTRIBUTE = "k2";
+    String SVG_K3_ATTRIBUTE = "k3";
+    String SVG_K4_ATTRIBUTE = "k4";
     String ATTR_KERNEL_MATRIX = "kernelMatrix";
     String ATTR_KERNEL_UNIT_LENGTH_X = "kernelUnitLengthX";
     String ATTR_KERNEL_UNIT_LENGTH_Y = "kernelUnitLengthY";
@@ -144,9 +144,9 @@ public interface SVGConstants extends CSSConstants {
     String ATTR_MEDIA = "media";
     String ATTR_METHOD = "method";
     String SVG_MODE_ATTRIBUTE = "mode";
-    String ATTR_OFFSET = "offset";
+    String SVG_OFFSET_ATTRIBUTE = "offset";
     String ATTR_OPACITY = CSS_OPACITY_PROPERTY;
-    String ATTR_OPERATOR = "operator";
+    String SVG_OPERATOR_ATTRIBUTE = "operator";
     String ATTR_ORDER = "order";
     String ATTR_ORDER_X = "orderX";
     String ATTR_ORDER_Y = "orderY";
@@ -169,7 +169,7 @@ public interface SVGConstants extends CSSConstants {
     String ATTR_SCALE = "scale";
     String ATTR_SEED = "seed";
     String ATTR_SHAPE_RENDERING = CSS_SHAPE_RENDERING_PROPERTY;
-    String ATTR_SLOPE = "slope";
+    String SVG_SLOPE_ATTRIBUTE = "slope";
     String ATTR_SPACE = "space";
     String ATTR_SPACING = "spacing";
     String ATTR_SPECULAR_CONSTANT = "specularConstant";
@@ -195,7 +195,7 @@ public interface SVGConstants extends CSSConstants {
     String SVG_TARGET_ATTRIBUTE = "target";
     String ATTR_TARGET_X = "targetX";
     String ATTR_TARGET_Y = "targetY";
-    String ATTR_TABLE_VALUES = "tableValues";
+    String SVG_TABLE_VALUES_ATTRIBUTE = "tableValues";
     String ATTR_TEXT_ANCHOR = CSS_TEXT_ANCHOR_PROPERTY;
     String ATTR_TEXT_LENGTH = "textLength";
     String ATTR_TEXT_RENDERING = "text-rendering";
@@ -230,7 +230,7 @@ public interface SVGConstants extends CSSConstants {
     String SVG_DARKEN_VALUE = "darken";
     String VALUE_DIGIT_ONE = "1";
     String VALUE_DILATE = "dilate";
-    String VALUE_DISCRETE = "discrete";
+    String SVG_DISCRETE_VALUE = "discrete";
     String VALUE_EDGE_DUPLICATE = "duplicate";
     String VALUE_EDGE_NONE = "none";
     String VALUE_END = "end";
@@ -256,20 +256,20 @@ public interface SVGConstants extends CSSConstants {
     String VALUE_FONT_STYLE_OBLIQUE = "oblique";
     String VALUE_FRACTAL_NOISE = "fractalNoise";
     String VALUE_G = "G";
-    String VALUE_GAMMA = "gamma";
+    String SVG_GAMMA_VALUE = "gamma";
     String VALUE_GEOMETRIC_PRECISION = "geometricPrecision";
     String SVG_HUE_ROTATE_VALUE = "hueRotate";
     String VALUE_HUNDRED_PERCENT = "100%";
     String VALUE_IN = "in";
-    String VALUE_IDENTITY = "identity";
+    String SVG_IDENTITY_VALUE = "identity";
     String SVG_LIGHTEN_VALUE = "lighten";
-    String VALUE_LINEAR = "linear";
     String VALUE_LINE_CAP_BUTT = "butt";
     String VALUE_LINE_CAP_SQUARE = "square";
     String VALUE_LINE_CAP_ROUND = "round";
     String VALUE_LINE_JOIN_ROUND = "round";
     String VALUE_LINE_JOIN_BEVEL = "bevel";
     String VALUE_LINE_JOIN_MITER = "miter";
+    String SVG_LINEAR_VALUE = "linear";
     String VALUE_LINEAR_RGB = "linearRGB";
     String SVG_LUMINANCE_TO_ALPHA_VALUE = "luminanceToAlpha";
     String SVG_MATRIX_VALUE = "matrix";
@@ -288,7 +288,7 @@ public interface SVGConstants extends CSSConstants {
     String VALUE_OPTIMIZE_QUALITY = "optimizeQuality";
     String VALUE_OPTIMIZE_SPEED = "optimizeSpeed";
     String VALUE_OUT = "out";
-    String VALUE_OVER = "over";
+    String SVG_OVER_VALUE = "over";
     String VALUE_PAD = "pad";
     String VALUE_PRESERVE = "preserve";
     String VALUE_R = "R";
@@ -301,7 +301,7 @@ public interface SVGConstants extends CSSConstants {
     String VALUE_START = "start";
     String VALUE_STITCH = "stitch";
     String VALUE_STRETCH = "stretch";
-    String VALUE_TABLE = "table";
+    String SVG_TABLE_VALUE = "table";
     String VALUE_TURBULENCE = "turbulence";
     String VALUE_TYPE_LINEAR = "linear";
     String VALUE_TYPE_TABLE = "table";
@@ -333,13 +333,46 @@ public interface SVGConstants extends CSSConstants {
     /**
      * Default values for attributes
      */
-    String DEFAULT_VALUE_CIRCLE_CX = "0";
-    String DEFAULT_VALUE_CIRCLE_CY = "0";
+    String SVG_DEFAULT_VALUE_CIRCLE_CX = "0";
+    String SVG_DEFAULT_VALUE_CIRCLE_CY = "0";
 
-    String DEFAULT_VALUE_ELLIPSE_CX = "0";
-    String DEFAULT_VALUE_ELLIPSE_CY = "0";
+    String SVG_DEFAULT_VALUE_CLIP_PATH_CLIP_PATH_UNITS = SVG_USER_SPACE_ON_USE_VALUE;
 
-    String DEFAULT_VALUE_CLIP_PATH_CLIP_PATH_UNITS = SVG_USER_SPACE_ON_USE_VALUE;
+    String SVG_DEFAULT_VALUE_ELLIPSE_CX = "0";
+    String SVG_DEFAULT_VALUE_ELLIPSE_CY = "0";
+
+    String SVG_DEFAULT_VALUE_FE_COMPOSITE_K1 = "0";
+    String SVG_DEFAULT_VALUE_FE_COMPOSITE_K2 = "0";
+    String SVG_DEFAULT_VALUE_FE_COMPOSITE_K3 = "0";
+    String SVG_DEFAULT_VALUE_FE_COMPOSITE_K4 = "0";
+
+    String SVG_DEFAULT_VALUE_COMPONENT_TRANSFER_FUNCTION_TABLE_VALUES = "";
+    String SVG_DEFAULT_VALUE_COMPONENT_TRANSFER_FUNCTION_SLOPE = "1";
+    String SVG_DEFAULT_VALUE_COMPONENT_TRANSFER_FUNCTION_INTERCEPT = "0";
+    String SVG_DEFAULT_VALUE_COMPONENT_TRANSFER_FUNCTION_AMPLITUDE = "1";
+    String SVG_DEFAULT_VALUE_COMPONENT_TRANSFER_FUNCTION_EXPONENT = "1";
+    String SVG_DEFAULT_VALUE_COMPONENT_TRANSFER_FUNCTION_OFFSET = "0";
+
+    String SVG_DEFAULT_VALUE_FE_DIFFUSE_LIGHTING_SURFACE_SCALE = "1";
+    String SVG_DEFAULT_VALUE_FE_DIFFUSE_LIGHTING_DIFFUSE_CONSTANT = "1";
+
+    String SVG_DEFAULT_VALUE_FE_DISPLACEMENT_MAP_SCALE = "0";
+
+    String SVG_DEFAULT_VALUE_FE_DISTANT_LIGHT_AZIMUTH = "0";
+    String SVG_DEFAULT_VALUE_FE_DISTANT_LIGHT_ELEVATION = "0";
+
+    String SVG_DEFAULT_VALUE_FE_POINT_LIGHT_X = "0";
+    String SVG_DEFAULT_VALUE_FE_POINT_LIGHT_Y = "0";
+    String SVG_DEFAULT_VALUE_FE_POINT_LIGHT_Z = "0";
+
+    String SVG_DEFAULT_VALUE_FE_SPOT_LIGHT_X = "0";
+    String SVG_DEFAULT_VALUE_FE_SPOT_LIGHT_Y = "0";
+    String SVG_DEFAULT_VALUE_FE_SPOT_LIGHT_Z = "0";
+    String SVG_DEFAULT_VALUE_FE_SPOT_LIGHT_POINTS_AT_X = "0";
+    String SVG_DEFAULT_VALUE_FE_SPOT_LIGHT_POINTS_AT_Y = "0";
+    String SVG_DEFAULT_VALUE_FE_SPOT_LIGHT_POINTS_AT_Z = "0";
+    String SVG_DEFAULT_VALUE_FE_SPOT_LIGHT_SPECULAR_EXPONENT = "1";
+    String SVG_DEFAULT_VALUE_FE_SPOT_LIGHT_LIMITING_CONE_ANGLE = "90";
 
     String DEFAULT_VALUE_FILTER_X = "-10%";
     String DEFAULT_VALUE_FILTER_Y = "-10%";

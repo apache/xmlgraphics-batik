@@ -31,7 +31,8 @@ import org.w3c.dom.Element;
  * @see                org.apache.batik.util.awt.svg.SVGBufferedImageOp
  */
 public class SVGLookupOp extends AbstractSVGFilterConverter{
-    public static final String ERROR_ILLEGAL_BUFFERED_IMAGE_LOOKUP_OP = "BufferedImage LookupOp should have 1, 3 or 4 lookup arrays";
+    public static final String ERROR_ILLEGAL_BUFFERED_IMAGE_LOOKUP_OP =
+        "BufferedImage LookupOp should have 1, 3 or 4 lookup arrays";
 
     /**
      * @param domFactory used to build Elements
@@ -76,7 +77,8 @@ public class SVGLookupOp extends AbstractSVGFilterConverter{
             // SVG filter
             //
             Element filterDef = domFactory.createElement(TAG_FILTER);
-            Element feComponentTransferDef = domFactory.createElement(TAG_FE_COMPONENT_TRANSFER);
+            Element feComponentTransferDef =
+                domFactory.createElement(SVG_FE_COMPONENT_TRANSFER_TAG);
 
             // Append transfer function for each component, setting
             // the attributes corresponding to the scale and offset.
@@ -100,22 +102,22 @@ public class SVGLookupOp extends AbstractSVGFilterConverter{
                 feFuncR.setAttribute(SVG_TYPE_ATTRIBUTE, type);
                 feFuncG.setAttribute(SVG_TYPE_ATTRIBUTE, type);
                 feFuncB.setAttribute(SVG_TYPE_ATTRIBUTE, type);
-                feFuncR.setAttribute(ATTR_TABLE_VALUES, lookupTables[0]);
-                feFuncG.setAttribute(ATTR_TABLE_VALUES, lookupTables[0]);
-                feFuncB.setAttribute(ATTR_TABLE_VALUES, lookupTables[0]);
+                feFuncR.setAttribute(SVG_TABLE_VALUES_ATTRIBUTE, lookupTables[0]);
+                feFuncG.setAttribute(SVG_TABLE_VALUES_ATTRIBUTE, lookupTables[0]);
+                feFuncB.setAttribute(SVG_TABLE_VALUES_ATTRIBUTE, lookupTables[0]);
             }
             else if(lookupTables.length >= 3){
                 feFuncR.setAttribute(SVG_TYPE_ATTRIBUTE, type);
                 feFuncG.setAttribute(SVG_TYPE_ATTRIBUTE, type);
                 feFuncB.setAttribute(SVG_TYPE_ATTRIBUTE, type);
-                feFuncR.setAttribute(ATTR_TABLE_VALUES, lookupTables[0]);
-                feFuncG.setAttribute(ATTR_TABLE_VALUES, lookupTables[1]);
-                feFuncB.setAttribute(ATTR_TABLE_VALUES, lookupTables[2]);
+                feFuncR.setAttribute(SVG_TABLE_VALUES_ATTRIBUTE, lookupTables[0]);
+                feFuncG.setAttribute(SVG_TABLE_VALUES_ATTRIBUTE, lookupTables[1]);
+                feFuncB.setAttribute(SVG_TABLE_VALUES_ATTRIBUTE, lookupTables[2]);
 
                 if(lookupTables.length == 4){
                     feFuncA = domFactory.createElement(TAG_FE_FUNC_A);
                     feFuncA.setAttribute(SVG_TYPE_ATTRIBUTE, type);
-                    feFuncA.setAttribute(ATTR_TABLE_VALUES, lookupTables[3]);
+                    feFuncA.setAttribute(SVG_TABLE_VALUES_ATTRIBUTE, lookupTables[3]);
                 }
             }
 

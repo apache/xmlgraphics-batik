@@ -25,6 +25,28 @@ public class SVGOMEllipseElement
     implements SVGEllipseElement {
 
     /**
+     * The DefaultAttributeValueProducer for cx.
+     */
+    protected final static DefaultAttributeValueProducer
+        CX_DEFAULT_VALUE_PRODUCER =
+        new DefaultAttributeValueProducer() {
+                public String getDefaultAttributeValue() {
+                    return SVG_DEFAULT_VALUE_ELLIPSE_CX;
+                }
+            };
+    
+    /**
+     * The DefaultAttributeValueProducer for cy.
+     */
+    protected final static DefaultAttributeValueProducer
+        CY_DEFAULT_VALUE_PRODUCER =
+        new DefaultAttributeValueProducer() {
+                public String getDefaultAttributeValue() {
+                    return SVG_DEFAULT_VALUE_ELLIPSE_CY;
+                }
+            };
+    
+    /**
      * The reference to the cx attribute.
      */
     protected transient WeakReference cxReference;
@@ -74,13 +96,8 @@ public class SVGOMEllipseElement
 	SVGAnimatedLength result;
 	if (cxReference == null ||
 	    (result = (SVGAnimatedLength)cxReference.get()) == null) {
-            DefaultAttributeValueProducer davp;
-            davp = new DefaultAttributeValueProducer() {
-                public String getDefaultAttributeValue() {
-                    return DEFAULT_VALUE_ELLIPSE_CX;
-                }
-            };
-	    result = new SVGOMAnimatedLength(this, null, SVG_CX_ATTRIBUTE, davp);
+	    result = new SVGOMAnimatedLength(this, null, SVG_CX_ATTRIBUTE,
+                                             CX_DEFAULT_VALUE_PRODUCER);
 	    cxReference = new WeakReference(result);
 	}
 	return result;
@@ -94,13 +111,8 @@ public class SVGOMEllipseElement
 	SVGAnimatedLength result;
 	if (cyReference == null ||
 	    (result = (SVGAnimatedLength)cyReference.get()) == null) {
-            DefaultAttributeValueProducer davp;
-            davp = new DefaultAttributeValueProducer() {
-                public String getDefaultAttributeValue() {
-                    return DEFAULT_VALUE_ELLIPSE_CY;
-                }
-            };
-	    result = new SVGOMAnimatedLength(this, null, SVG_CY_ATTRIBUTE, davp);
+	    result = new SVGOMAnimatedLength(this, null, SVG_CY_ATTRIBUTE,
+                                             CY_DEFAULT_VALUE_PRODUCER);
 	    cyReference = new WeakReference(result);
 	}
 	return result;

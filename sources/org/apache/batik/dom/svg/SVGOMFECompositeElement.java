@@ -30,34 +30,74 @@ public class SVGOMFECompositeElement
     implements SVGFECompositeElement {
 
     /**
+     * The DefaultAttributeValueProducer for k1.
+     */
+    protected final static DefaultAttributeValueProducer K1_DEFAULT_VALUE_PRODUCER =
+        new DefaultAttributeValueProducer() {
+                public String getDefaultAttributeValue() {
+                    return SVG_DEFAULT_VALUE_FE_COMPOSITE_K1;
+                }
+            };
+
+    /**
+     * The DefaultAttributeValueProducer for k2.
+     */
+    protected final static DefaultAttributeValueProducer K2_DEFAULT_VALUE_PRODUCER =
+        new DefaultAttributeValueProducer() {
+                public String getDefaultAttributeValue() {
+                    return SVG_DEFAULT_VALUE_FE_COMPOSITE_K2;
+                }
+            };
+
+    /**
+     * The DefaultAttributeValueProducer for k3.
+     */
+    protected final static DefaultAttributeValueProducer K3_DEFAULT_VALUE_PRODUCER =
+        new DefaultAttributeValueProducer() {
+                public String getDefaultAttributeValue() {
+                    return SVG_DEFAULT_VALUE_FE_COMPOSITE_K3;
+                }
+            };
+
+    /**
+     * The DefaultAttributeValueProducer for k4.
+     */
+    protected final static DefaultAttributeValueProducer K4_DEFAULT_VALUE_PRODUCER =
+        new DefaultAttributeValueProducer() {
+                public String getDefaultAttributeValue() {
+                    return SVG_DEFAULT_VALUE_FE_COMPOSITE_K4;
+                }
+            };
+
+    /**
      * The reference to the in attribute.
      */
-    protected WeakReference inReference;
+    protected transient WeakReference inReference;
 
     /**
      * The reference to the in2 attribute.
      */
-    protected WeakReference in2Reference;
+    protected transient WeakReference in2Reference;
 
     /**
      * The reference to the k1 attribute.
      */
-    protected WeakReference k1Reference;
+    protected transient WeakReference k1Reference;
 
     /**
      * The reference to the k2 attribute.
      */
-    protected WeakReference k2Reference;
+    protected transient WeakReference k2Reference;
 
     /**
      * The reference to the k3 attribute.
      */
-    protected WeakReference k3Reference;
+    protected transient WeakReference k3Reference;
 
     /**
      * The reference to the k4 attribute.
      */
-    protected WeakReference k4Reference;
+    protected transient WeakReference k4Reference;
 
     /**
      * The attribute-value map map.
@@ -65,7 +105,7 @@ public class SVGOMFECompositeElement
     protected static Map attributeValues = new HashMap(3);
     static {
         Map values = new HashMap(2);
-        values.put("operator",  "over");
+        values.put(SVG_OPERATOR_ATTRIBUTE, SVG_OVER_VALUE);
         attributeValues.put(null, values);
     }
 
@@ -88,7 +128,7 @@ public class SVGOMFECompositeElement
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
      */
     public String getLocalName() {
-        return "feComposite";
+        return SVG_FE_COMPOSITE_TAG;
     }
 
     /**
@@ -135,7 +175,8 @@ public class SVGOMFECompositeElement
 	SVGAnimatedNumber result;
 	if (k1Reference == null ||
 	    (result = (SVGAnimatedNumber)k1Reference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, ATTR_K1);
+	    result = new SVGOMAnimatedNumber(this, null, SVG_K1_ATTRIBUTE,
+                                             K1_DEFAULT_VALUE_PRODUCER);
 	    k1Reference = new WeakReference(result);
 	}
 	return result;
@@ -149,7 +190,8 @@ public class SVGOMFECompositeElement
 	SVGAnimatedNumber result;
 	if (k2Reference == null ||
 	    (result = (SVGAnimatedNumber)k2Reference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, ATTR_K2);
+	    result = new SVGOMAnimatedNumber(this, null, SVG_K2_ATTRIBUTE,
+                                             K2_DEFAULT_VALUE_PRODUCER);
 	    k2Reference = new WeakReference(result);
 	}
 	return result;
@@ -163,7 +205,8 @@ public class SVGOMFECompositeElement
 	SVGAnimatedNumber result;
 	if (k3Reference == null ||
 	    (result = (SVGAnimatedNumber)k3Reference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, ATTR_K3);
+	    result = new SVGOMAnimatedNumber(this, null, SVG_K3_ATTRIBUTE,
+                                             K3_DEFAULT_VALUE_PRODUCER);
 	    k3Reference = new WeakReference(result);
 	}
 	return result;
@@ -177,7 +220,8 @@ public class SVGOMFECompositeElement
 	SVGAnimatedNumber result;
 	if (k4Reference == null ||
 	    (result = (SVGAnimatedNumber)k4Reference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, ATTR_K4);
+	    result = new SVGOMAnimatedNumber(this, null, SVG_K4_ATTRIBUTE,
+                                             K4_DEFAULT_VALUE_PRODUCER);
 	    k4Reference = new WeakReference(result);
 	}
 	return result;

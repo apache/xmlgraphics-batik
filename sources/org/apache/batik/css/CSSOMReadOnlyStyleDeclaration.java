@@ -165,8 +165,8 @@ public class CSSOMReadOnlyStyleDeclaration implements CSSStyleDeclaration {
 				    CSSValue v,
 				    String   imp,
 				    int      orig) {
-	ValueEntry ve = (ValueEntry)properties.put(propertyName,
-					      createValueEntry(v, imp, orig));
+	/*ValueEntry ve = (ValueEntry)*/
+        properties.put(propertyName, createValueEntry(v, imp, orig));
     }
 
     /**

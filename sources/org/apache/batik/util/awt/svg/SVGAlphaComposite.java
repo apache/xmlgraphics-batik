@@ -57,13 +57,20 @@ public class SVGAlphaComposite extends AbstractSVGConverter{
         //
         // Initialize map of AlphaComposite filter definitions
         //
-        compositeDefsMap.put(AlphaComposite.Src, compositeToSVG(AlphaComposite.Src));
-        compositeDefsMap.put(AlphaComposite.SrcIn, compositeToSVG(AlphaComposite.SrcIn));
-        compositeDefsMap.put(AlphaComposite.SrcOut, compositeToSVG(AlphaComposite.SrcOut));
-        compositeDefsMap.put(AlphaComposite.DstIn, compositeToSVG(AlphaComposite.DstIn));
-        compositeDefsMap.put(AlphaComposite.DstOut, compositeToSVG(AlphaComposite.DstOut));
-        compositeDefsMap.put(AlphaComposite.DstOver, compositeToSVG(AlphaComposite.DstOver));
-        compositeDefsMap.put(AlphaComposite.Clear, compositeToSVG(AlphaComposite.Clear));
+        compositeDefsMap.put(AlphaComposite.Src,
+                             compositeToSVG(AlphaComposite.Src));
+        compositeDefsMap.put(AlphaComposite.SrcIn,
+                             compositeToSVG(AlphaComposite.SrcIn));
+        compositeDefsMap.put(AlphaComposite.SrcOut,
+                             compositeToSVG(AlphaComposite.SrcOut));
+        compositeDefsMap.put(AlphaComposite.DstIn,
+                             compositeToSVG(AlphaComposite.DstIn));
+        compositeDefsMap.put(AlphaComposite.DstOut,
+                             compositeToSVG(AlphaComposite.DstOut));
+        compositeDefsMap.put(AlphaComposite.DstOver,
+                             compositeToSVG(AlphaComposite.DstOver));
+        compositeDefsMap.put(AlphaComposite.Clear,
+                             compositeToSVG(AlphaComposite.Clear));
     }
 
     /**
@@ -101,7 +108,8 @@ public class SVGAlphaComposite extends AbstractSVGConverter{
      *         input composite in SVG
      */
     public SVGCompositeDescriptor toSVG(AlphaComposite composite){
-        SVGCompositeDescriptor compositeDesc = (SVGCompositeDescriptor)descMap.get(composite);
+        SVGCompositeDescriptor compositeDesc =
+            (SVGCompositeDescriptor)descMap.get(composite);
 
         if(compositeDesc == null){
             // Process the composite opacity
@@ -115,7 +123,8 @@ public class SVGAlphaComposite extends AbstractSVGConverter{
                 // Note that the extra alpha is ignored by using the
                 // majorComposite. The extra alpha is already represented
                 // by the ATTR_OPACITY value.
-                AlphaComposite majorComposite = AlphaComposite.getInstance(composite.getRule());
+                AlphaComposite majorComposite =
+                    AlphaComposite.getInstance(composite.getRule());
                 filterDef = (Element)compositeDefsMap.get(majorComposite);
                 defSet.add(filterDef);
 
@@ -130,7 +139,8 @@ public class SVGAlphaComposite extends AbstractSVGConverter{
             else
                 filterValue = VALUE_NONE;
 
-            compositeDesc = new SVGCompositeDescriptor(opacityValue, filterValue, filterDef);
+            compositeDesc = new SVGCompositeDescriptor(opacityValue, filterValue,
+                                                       filterDef);
 
             descMap.put(composite, compositeDesc);
         }
@@ -202,7 +212,7 @@ public class SVGAlphaComposite extends AbstractSVGConverter{
             id = ID_PREFIX_ALPHA_COMPOSITE_DST_OUT;
             break;
         case AlphaComposite.DST_OVER:
-            operator = VALUE_OVER;
+            operator = SVG_OVER_VALUE;
             input2 = VALUE_SOURCE_GRAPHIC;
             input1 = VALUE_BACKGROUND_IMAGE;
             id = ID_PREFIX_ALPHA_COMPOSITE_DST_OVER;
@@ -219,11 +229,11 @@ public class SVGAlphaComposite extends AbstractSVGConverter{
         compositeFilter.setAttribute(ATTR_WIDTH, VALUE_HUNDRED_PERCENT);
         compositeFilter.setAttribute(ATTR_HEIGHT, VALUE_HUNDRED_PERCENT);
 
-        Element feComposite = domFactory.createElement(TAG_FE_COMPOSITE);
-        feComposite.setAttribute(ATTR_OPERATOR, operator);
+        Element feComposite = domFactory.createElement(SVG_FE_COMPOSITE_TAG);
+        feComposite.setAttribute(SVG_OPERATOR_ATTRIBUTE, operator);
         feComposite.setAttribute(SVG_IN_ATTRIBUTE, input1);
         feComposite.setAttribute(SVG_IN2_ATTRIBUTE, input2);
-        feComposite.setAttribute(ATTR_K2, k2);
+        feComposite.setAttribute(SVG_K2_ATTRIBUTE, k2);
         feComposite.setAttribute(ATTR_RESULT, VALUE_COMPOSITE);
 
         Element feFlood = domFactory.createElement(TAG_FE_FLOOD);

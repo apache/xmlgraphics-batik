@@ -38,7 +38,7 @@ public class SVGOMStopElement
     /**
      * The reference to the offset attribute.
      */
-    protected WeakReference offsetReference;
+    protected transient WeakReference offsetReference;
 
     /**
      * Creates a new SVGOMStopElement object.
@@ -60,7 +60,7 @@ public class SVGOMStopElement
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
      */
     public String getLocalName() {
-        return TAG_STOP;
+        return SVG_STOP_TAG;
     }
 
     /**
@@ -71,7 +71,7 @@ public class SVGOMStopElement
 	SVGAnimatedNumber result;
 	if (offsetReference == null ||
 	    (result = (SVGAnimatedNumber)offsetReference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, ATTR_OFFSET);
+	    result = new SVGOMAnimatedNumber(this, null, SVG_OFFSET_ATTRIBUTE, null);
 	    offsetReference = new WeakReference(result);
 	}
 	return result;

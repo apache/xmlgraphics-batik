@@ -36,52 +36,52 @@ public class SVGOMFEConvolveMatrixElement
     /**
      * The reference to the in attribute.
      */
-    protected WeakReference inReference;
+    protected transient WeakReference inReference;
 
     /**
      * The reference to the orderX attribute.
      */
-    protected WeakReference orderXReference;
+    protected transient WeakReference orderXReference;
 
     /**
      * The reference to the orderY attribute.
      */
-    protected WeakReference orderYReference;
+    protected transient WeakReference orderYReference;
 
     /**
      * The reference to the targetX attribute.
      */
-    protected WeakReference targetXReference;
+    protected transient WeakReference targetXReference;
 
     /**
      * The reference to the targetY attribute.
      */
-    protected WeakReference targetYReference;
+    protected transient WeakReference targetYReference;
 
     /**
      * The reference to the divisor attribute.
      */
-    protected WeakReference divisorReference;
+    protected transient WeakReference divisorReference;
 
     /**
      * The reference to the bias attribute.
      */
-    protected WeakReference biasReference;
+    protected transient WeakReference biasReference;
 
     /**
      * The reference to the kernelUnitLengthX attribute.
      */
-    protected WeakReference kernelUnitLengthXReference;
+    protected transient WeakReference kernelUnitLengthXReference;
 
     /**
      * The reference to the kernelUnitLengthY attribute.
      */
-    protected WeakReference kernelUnitLengthYReference;
+    protected transient WeakReference kernelUnitLengthYReference;
 
     /**
      * The reference to the preserveAlpha attribute.
      */
-    protected WeakReference preserveAlphaReference;
+    protected transient WeakReference preserveAlphaReference;
 
     /**
      * The attribute-value map map.
@@ -209,7 +209,7 @@ public class SVGOMFEConvolveMatrixElement
 	SVGAnimatedNumber result;
 	if (divisorReference == null ||
 	    (result = (SVGAnimatedNumber)divisorReference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, ATTR_DIVISOR);
+	    result = new SVGOMAnimatedNumber(this, null, ATTR_DIVISOR, null);
 	    divisorReference = new WeakReference(result);
 	}
 	return result;
@@ -223,7 +223,7 @@ public class SVGOMFEConvolveMatrixElement
 	SVGAnimatedNumber result;
 	if (biasReference == null ||
 	    (result = (SVGAnimatedNumber)biasReference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, ATTR_BIAS);
+	    result = new SVGOMAnimatedNumber(this, null, ATTR_BIAS, null);
 	    biasReference = new WeakReference(result);
 	}
 	return result;

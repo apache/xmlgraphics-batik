@@ -61,7 +61,7 @@ public abstract class SVGGradientBridge implements SVGConstants {
             stop != null;
             stop = stop.getNextSibling()){
             if(stop.getNodeType() == stop.ELEMENT_NODE &&
-               stop.getNodeName().equals(TAG_STOP)){
+               stop.getNodeName().equals(SVG_STOP_TAG)){
                 GradientStop gs = convertGradientStop((Element)stop, ctx);
                 if(gs != null){
                     stops.addElement(gs);
@@ -74,7 +74,7 @@ public abstract class SVGGradientBridge implements SVGConstants {
     public static GradientStop convertGradientStop(Element stop,
                                                    BridgeContext ctx) {
         // parse the offset attribute, (required and must between [0-1])
-        String offsetStr = stop.getAttributeNS(null, ATTR_OFFSET);
+        String offsetStr = stop.getAttributeNS(null, SVG_OFFSET_ATTRIBUTE);
         if (offsetStr.length() == 0) {
             throw new IllegalAttributeValueException(
                 Messages.formatMessage("stop.offset.required", null));

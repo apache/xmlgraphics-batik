@@ -41,14 +41,27 @@ public class SVGOMNumberList
 	modificationHandler = mh;
     }
 
+    /**
+     * <b>DOM</b>: Implements {@link SVGNumberList#getNumberOfItems()}.
+     */
     public int getNumberOfItems() {
         return list.getNumberOfItems();
     }
 
+    /**
+     * <b>DOM</b>: Implements {@link SVGNumberList#getNumberOfItems()}.
+     */
     public void clear() throws DOMException {
-        list.clear();
+        if (modificationHandler == null) {
+            list.clear();
+        } else {
+            modificationHandler.valueChanged("");
+        }
     }
 
+    /**
+     * <b>DOM</b>: Implements {@link SVGNumberList#initialize(SVGNumber)}.
+     */
     public SVGNumber initialize(SVGNumber newItem)
         throws DOMException, SVGException {
         SVGOMNumber result = (SVGOMNumber)list.initialize(newItem);

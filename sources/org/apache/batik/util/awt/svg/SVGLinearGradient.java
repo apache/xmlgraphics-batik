@@ -87,8 +87,8 @@ public class SVGLinearGradient extends AbstractSVGConverter{
             //
             // First gradient stop
             //
-            Element gradientStop = domFactory.createElement(TAG_STOP);
-            gradientStop.setAttribute(ATTR_OFFSET,
+            Element gradientStop = domFactory.createElement(SVG_STOP_TAG);
+            gradientStop.setAttribute(SVG_OFFSET_ATTRIBUTE,
                                       VALUE_ZERO_PERCENT);
 
             SVGPaintDescriptor colorDesc = SVGColor.toSVG(gradient.getColor1());
@@ -102,8 +102,8 @@ public class SVGLinearGradient extends AbstractSVGConverter{
             //
             // Second gradient stop
             //
-            gradientStop = domFactory.createElement(TAG_STOP);
-            gradientStop.setAttribute(ATTR_OFFSET,
+            gradientStop = domFactory.createElement(SVG_STOP_TAG);
+            gradientStop.setAttribute(SVG_OFFSET_ATTRIBUTE,
                                       VALUE_HUNDRED_PERCENT);
 
             colorDesc = SVGColor.toSVG(gradient.getColor2());

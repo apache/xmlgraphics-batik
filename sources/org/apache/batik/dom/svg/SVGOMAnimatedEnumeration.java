@@ -65,9 +65,9 @@ public class SVGOMAnimatedEnumeration
     protected Map shortStringMap;
 
     /**
-     * The default value when not specified.
+     * The default value producer.
      */
-    protected String defaultValue;
+    protected DefaultAttributeValueProducer defaultValueProducer;
 
     /**
      * Creates a new SVGAnimatedEnumeration object.
@@ -78,16 +78,17 @@ public class SVGOMAnimatedEnumeration
      *                 values are Short objects.
      * @param shortStr The enumeration values. The keys are Short objects and
      *                 the values are strings.
-     * @param def The default value when not specified.
+     * @param def The default value producer.
      */
     public SVGOMAnimatedEnumeration(SVGOMElement elt, String nsURI, String attr,
-                                    Map strShort, Map shortStr, String def) {
+                                    Map strShort, Map shortStr,
+                                    DefaultAttributeValueProducer def) {
 	element = elt;
 	attributeNsURI = nsURI;
 	attributeName = attr;
         stringShortMap = strShort;
         shortStringMap = shortStr;
-        defaultValue = def;
+        defaultValueProducer = def;
     }
 
     /**
@@ -113,7 +114,8 @@ public class SVGOMAnimatedEnumeration
             }
             return 0; // Unknown
         }
-        return ((Short)stringShortMap.get(defaultValue)).shortValue();
+        String s = defaultValueProducer.getDefaultAttributeValue();
+        return ((Short)stringShortMap.get(s)).shortValue();
     }
 
     /**

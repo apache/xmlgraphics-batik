@@ -139,11 +139,11 @@ public class SVGOMLength
                 SVGOMDocument doc = (SVGOMDocument)elt.getOwnerDocument();
                 UnitProcessor.Context ctx;
                 ctx = new DefaultUnitProcessorContext(doc.getSVGContext(), elt);
-                valueInSpecifiedUnits = UnitProcessor.userSpaceToSVG(unitType,
-                                                                     value,
-                                                                     elt,
-                                                                     direction,
-                                                                     ctx);
+                setValueInSpecifiedUnits(UnitProcessor.userSpaceToSVG(unitType,
+                                                                      value,
+                                                                      elt,
+                                                                      direction,
+                                                                      ctx));
             }
         } catch (RuntimeException e) {
             throw new DOMException(DOMException.INVALID_STATE_ERR,

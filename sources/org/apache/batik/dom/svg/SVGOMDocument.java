@@ -145,10 +145,10 @@ public class SVGOMDocument
         factories.put(SVG_FE_COLOR_MATRIX_TAG,
                       new FeColorMatrixElementFactory());
 
-        factories.put(TAG_FE_COMPONENT_TRANSFER,
+        factories.put(SVG_FE_COMPONENT_TRANSFER_TAG,
                       new FeComponentTransferElementFactory());
 
-        factories.put(TAG_FE_COMPOSITE,
+        factories.put(SVG_FE_COMPOSITE_TAG,
                       new FeCompositeElementFactory());
 
         factories.put(TAG_FE_CONVOLVE_MATRIX,
@@ -253,7 +253,7 @@ public class SVGOMDocument
         factories.put(TAG_SCRIPT,
                       new ScriptElementFactory());
 
-        factories.put(TAG_STOP,
+        factories.put(SVG_STOP_TAG,
                       new StopElementFactory());
 
         factories.put(TAG_STYLE,

@@ -90,7 +90,9 @@ public class InputBuffer {
 	line = 1;
 	column = 1;
        	count = reader.read(buffer, 0, BUFFER_SIZE);
-	current = (count == 0) ? -1 : buffer[0];
+	current = (count == -1) ? -1 : 0;
+        position = -1;
+        next();
     }
 
     /**
@@ -140,6 +142,7 @@ public class InputBuffer {
 		break;
 	    case -1:
                 line++;
+                column = 1;
 		return 10;
 	    }
 	    break;
