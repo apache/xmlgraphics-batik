@@ -18,6 +18,7 @@ import java.io.StringWriter;
 import java.io.PrintWriter;
 
 import java.net.URL;
+import java.net.MalformedURLException;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -244,10 +245,29 @@ public class SVGRenderingAccuracyTest implements Test{
             throw new IllegalArgumentException();
         }
 
-        this.svgURL = svgURL;
+        this.svgURL = getSVGURL(svgURL.toString());
         this.refImgURL = refImgURL;
         this.variationURL = variationURL;
         this.saveVariation = saveVariation;
+    }
+
+    private URL getSVGURL(String s) {
+        URL url = null;
+        
+        try{
+            File f = new File(s);
+            if(f.exists()){
+                url = f.toURL();
+            }
+            else{
+                url = new URL(s);
+            }
+        }catch(MalformedURLException e){
+            // Cannot happen because s is originall a URL,
+            // see constructor.
+        }
+        
+        return url;
     }
 
     /**
@@ -330,7 +350,7 @@ public class SVGRenderingAccuracyTest implements Test{
         }
 
         ImageTranscoder transcoder = getImageTranscoder();
-        TranscoderInput src = new TranscoderInput(svgURL.toExternalForm());
+        TranscoderInput src = new TranscoderInput(svgURL.toString());
         TranscoderOutput dst = new TranscoderOutput(tmpFileOS);
         
         try{
@@ -343,7 +363,7 @@ public class SVGRenderingAccuracyTest implements Test{
             report.setDescription(new TestReport.Entry[]{
                 new TestReport.Entry(Messages.formatMessage(ENTRY_KEY_ERROR_DESCRIPTION, null),
                           Messages.formatMessage(ERROR_CANNOT_TRANSCODE_SVG,
-                                                 new String[]{svgURL.toExternalForm(), 
+                                                 new String[]{svgURL.toString(), 
                                                               e.getClass().getName(),
                                                               e.getMessage(),
                                                               trace.toString()
@@ -358,7 +378,7 @@ public class SVGRenderingAccuracyTest implements Test{
             report.setDescription(new TestReport.Entry[]{
                 new TestReport.Entry(Messages.formatMessage(ENTRY_KEY_ERROR_DESCRIPTION, null),
                           Messages.formatMessage(ERROR_CANNOT_TRANSCODE_SVG,
-                                                 new String[]{svgURL.toExternalForm(), 
+                                                 new String[]{svgURL.toString(), 
                                                               e.getClass().getName(),
                                                               e.getMessage(),
                                                               trace.toString()
@@ -380,7 +400,7 @@ public class SVGRenderingAccuracyTest implements Test{
             report.setDescription( new TestReport.Entry[]{
                 new TestReport.Entry(Messages.formatMessage(ENTRY_KEY_ERROR_DESCRIPTION, null),
                           Messages.formatMessage(ERROR_CANNOT_OPEN_REFERENCE_IMAGE,
-                                                 new Object[]{refImgURL.toExternalForm(), 
+                                                 new Object[]{refImgURL.toString(), 
                                                               e.getMessage()})) });
             report.setPassed(false);
             tmpFile.delete();
@@ -411,7 +431,7 @@ public class SVGRenderingAccuracyTest implements Test{
             report.setDescription(new TestReport.Entry[]{
                 new TestReport.Entry(Messages.formatMessage(ENTRY_KEY_ERROR_DESCRIPTION, null),
                           Messages.formatMessage(ERROR_ERROR_WHILE_COMPARING_FILES,
-                                                 new Object[]{refImgURL.toExternalForm(), 
+                                                 new Object[]{refImgURL.toString(), 
                                                               tmpFile.getAbsolutePath(),
                                                               e.getMessage()}))});
             report.setPassed(false);
