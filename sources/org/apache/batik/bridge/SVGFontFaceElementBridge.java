@@ -17,7 +17,7 @@ import org.w3c.dom.Element;
  * @version $Id$
  */
 public class SVGFontFaceElementBridge extends AbstractSVGBridge
-    implements ErrorConstants {
+                                      implements ErrorConstants {
 
     /**
      * Constructs a new bridge for the &lt;font-face> element.
@@ -26,7 +26,7 @@ public class SVGFontFaceElementBridge extends AbstractSVGBridge
     }
 
     /**
-     * Returns 'fontFace'.
+     * Returns 'font-face'.
      */
     public String getLocalName() {
         return SVG_FONT_FACE_TAG;
@@ -226,7 +226,6 @@ public class SVGFontFaceElementBridge extends AbstractSVGBridge
 
         // TODO: get the rest of the attributes
 
-        // should really pass in a HashMap containing the attribute values
         return new SVGFontFace(familyNames, unitsPerEm, fontWeight, fontStyle,
                                fontVariant, fontStretch, slope, panose1, ascent,
                                descent, strikethroughPos, strikethroughThickness,

@@ -23,7 +23,8 @@ import org.w3c.dom.NodeList;
  * @author <a href="mailto:bella.robinson@cmis.csiro.au">Bella Robinson</a>
  * @version $Id$
  */
-public class SVGAltGlyphElementBridge extends AbstractSVGBridge {
+public class SVGAltGlyphElementBridge extends AbstractSVGBridge
+                                      implements ErrorConstants {
 
     /**
      * Constructs a new bridge for the &lt;altGlyph> element.
@@ -43,10 +44,9 @@ public class SVGAltGlyphElementBridge extends AbstractSVGBridge {
      * &lt;altGlyph> element at the requested size.
      *
      * @param ctx The current bridge context.
-     * @param fontElement The altGlyph element to base the SVGGVTGlyphVector
+     * @param altGlyphElement The altGlyph element to base the SVGGVTGlyphVector
      * construction on.
      * @param fontSize The font size of the Glyphs to create.
-     * @param fontFace The font face object that contains the font attributes.
      *
      * @return The new SVGGVTGlyphVector or null if any of the glyphs are
      * unavailable.
@@ -167,12 +167,22 @@ public class SVGAltGlyphElementBridge extends AbstractSVGBridge {
             }
         }
 
-        // reference is not to a valid element, should throw an exception
-        return null;
-
+        // reference is not to a valid element type, throw an exception
+        throw new BridgeException(altGlyphElement, ERR_URI_BAD_TARGET,
+                                  new Object[] {uri});
     }
 
 
+    /**
+     * Returns a Glyph object that represents the glyph at the specified URI
+     * scaled to the required font size.
+     *
+     * @param ctx The bridge context.
+     * @param glyphUri The URI of the glyph to retreive.
+     * @param altGlyphElement The element that references the glyph.
+     * @param fontSize Indicates the required size of the glyph.
+     * @return The Glyph or null if the glyph URI is not available.
+     */
     private Glyph getGlyph(BridgeContext ctx,
                            String glyphUri,
                            Element altGlyphElement,

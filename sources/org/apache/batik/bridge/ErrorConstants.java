@@ -54,6 +54,13 @@ public interface ErrorConstants {
         = "css.uri.badTarget";
 
     /**
+     * The error code when a specified URI references a bad element.
+     * {0} = the uri
+     */
+    public static final String ERR_URI_BAD_TARGET
+        = "uri.badTarget";
+
+    /**
      * The error code when the bridge detected circular dependencies
      * while resolving a list of URI.
      * {0} = the uri

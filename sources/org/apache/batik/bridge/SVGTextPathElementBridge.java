@@ -26,11 +26,29 @@ import java.awt.Shape;
  * @version $Id$
  */
 public class SVGTextPathElementBridge extends AbstractSVGBridge
-    implements Bridge, ErrorConstants {
+                                      implements ErrorConstants {
 
-    public SVGTextPathElementBridge() {
+    /**
+     * Constructs a new bridge for the &lt;textPath> element.
+     */
+    public SVGTextPathElementBridge() {}
+
+    /**
+     * Returns 'textPath'.
+     */
+    public String getLocalName() {
+        return SVG_TEXT_PATH_TAG;
     }
 
+    /**
+     * Creates a TextPath object that represents the path along which the text
+     * is to be rendered.
+     *
+     * @param ctx The bridge context.
+     * @param textPathElement The &lt;textPath> element.
+     *
+     * @return The new TextPath.
+     */
     public TextPath createTextPath(BridgeContext ctx, Element textPathElement) {
 
         // get the referenced element
@@ -40,7 +58,8 @@ public class SVGTextPathElementBridge extends AbstractSVGBridge
         if (pathElement == null || !pathElement.getTagName().equals(SVG_PATH_TAG)) {
             // couldn't find the referenced element
             // or the referenced element was not a path
-            return null;
+            throw new BridgeException(textPathElement, ERR_URI_BAD_TARGET,
+                                          new Object[] {uri});
         }
 
         // construct a shape for the referenced path element
@@ -108,8 +127,6 @@ public class SVGTextPathElementBridge extends AbstractSVGBridge
         return textPath;
     }
 
-    public String getLocalName() {
-        return SVG_TEXT_PATH_TAG;
-    }
+
 }
 

@@ -11,6 +11,8 @@ package org.apache.batik.bridge;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import org.apache.batik.gvt.text.ArabicTextHandler;
+
 /**
  * Bridge class for the &lt;font> element.
  *
@@ -38,7 +40,7 @@ public class SVGFontElementBridge extends AbstractSVGBridge {
      *
      * @param ctx The current bridge context.
      * @param fontElement The font element to base the SVGGVTFont construction on.
-     * @param textElement The textElement that will use the new font.
+     * @param textElement The text element that will use the new font.
      * @param size The size of the new font.
      * @param fontFace The font face object that contains the font attributes.
      *
@@ -57,21 +59,35 @@ public class SVGFontElementBridge extends AbstractSVGBridge {
         int numGlyphs = glyphElements.getLength();
         String[] glyphCodes = new String[numGlyphs];
         String[] glyphNames = new String[numGlyphs];
+        String[] glyphLangs = new String[numGlyphs];
+        String[] glyphOrientations = new String[numGlyphs];
+        String[] glyphForms = new String[numGlyphs];
         Element[] glyphElementArray = new Element[numGlyphs];
 
         for (int i = 0; i < numGlyphs; i++) {
             Element glyphElement = (Element)glyphElements.item(i);
-            glyphCodes[i] = glyphElement.getAttribute(SVG_UNICODE_ATTRIBUTE);
-            glyphNames[i] = glyphElement.getAttribute(SVG_GLYPH_NAME_ATTRIBUTE);
+            glyphCodes[i] = glyphElement.getAttributeNS(null, SVG_UNICODE_ATTRIBUTE);
+            if (glyphCodes[i].length() > 1) {
+                // ligature, may need to reverse if arabic so that it is in visual order
+                if (ArabicTextHandler.arabicChar(glyphCodes[i].charAt(0))) {
+                    glyphCodes[i] = (new StringBuffer(glyphCodes[i])).reverse().toString();
+                }
+            }
+            glyphNames[i] = glyphElement.getAttributeNS(null, SVG_GLYPH_NAME_ATTRIBUTE);
+            glyphLangs[i] = glyphElement.getAttributeNS(null, SVG_LANG_ATTRIBUTE);
+            glyphOrientations[i] = glyphElement.getAttributeNS(null, SVG_ORIENTATION_ATTRIBUTE);
+            glyphForms[i] = glyphElement.getAttributeNS(null, SVG_ARABIC_FORM_ATTRIBUTE);
             glyphElementArray[i] = glyphElement;
         }
 
+        // get the missing glyph element
         NodeList missingGlyphElements = fontElement.getElementsByTagName(SVG_MISSING_GLYPH_TAG);
         Element missingGlyphElement = null;
         if (missingGlyphElements.getLength() > 0) {
             missingGlyphElement = (Element)missingGlyphElements.item(0);
         }
 
+        // get the hkern elements
         NodeList hkernElements = fontElement.getElementsByTagName(SVG_HKERN_TAG);
         Element[] hkernElementArray = new Element[hkernElements.getLength()];
 
@@ -80,6 +96,7 @@ public class SVGFontElementBridge extends AbstractSVGBridge {
             hkernElementArray[i] = hkernElement;
         }
 
+        // get the vkern elements
         NodeList vkernElements = fontElement.getElementsByTagName(SVG_VKERN_TAG);
         Element[] vkernElementArray = new Element[vkernElements.getLength()];
 
@@ -88,7 +105,9 @@ public class SVGFontElementBridge extends AbstractSVGBridge {
             vkernElementArray[i] = vkernElement;
         }
 
-        return new SVGGVTFont(size, fontFace, glyphCodes, glyphNames, ctx,
+        // return the new SVGGVTFont
+        return new SVGGVTFont(size, fontFace, glyphCodes, glyphNames, glyphLangs,
+                              glyphOrientations, glyphForms, ctx,
                               glyphElementArray, missingGlyphElement,
                               hkernElementArray, vkernElementArray, textElement);
     }

@@ -33,11 +33,8 @@ public class SVGFontFace {
     protected float overlinePosition;
     protected float overlineThickness;
 
-    // TODO: change this list of parameters into a Map of some sort, will be
-    // too many attributes to pass in individually
-
     /**
-     * Constructes an SVGFontFace with the specfied font attributes.
+     * Constructes an SVGFontFace with the specfied font-face attributes.
      */
     public SVGFontFace(String familyName, float unitsPerEm, String fontWeight,
                        String fontStyle, String fontVariant, String fontStretch,
@@ -64,47 +61,88 @@ public class SVGFontFace {
         this.overlineThickness = overlineThickness;
     }
 
+    /**
+     * Returns the family name of this font, it may contain more than one.
+     */
     public String getFamilyName() {
         return familyName;
     }
 
+    /**
+     * Returns the font-weight.
+     */
     public String getFontWeight() {
         return fontWeight;
     }
 
+    /**
+     * Returns the font-style.
+     */
     public String getFontStyle() {
         return fontStyle;
     }
 
+    /**
+     * The number of coordinate units on the em square for this font.
+     */
     public float getUnitsPerEm() {
         return unitsPerEm;
     }
 
+    /**
+     * Returns the maximum unaccented height of the font within the font
+     * coordinate system.
+     */
     public float getAscent() {
         return ascent;
     }
 
+    /**
+     * Returns the maximum unaccented depth of the font within the font
+     * coordinate system.
+     */
     public float getDescent() {
         return descent;
     }
 
+    /**
+     * Returns the position of the strikethrough decoration.
+     */
     public float getStrikethroughPosition() {
         return strikethroughPosition;
     }
+
+    /**
+     * Returns the stroke thickness to use when drawing a strikethrough.
+     */
     public float getStrikethroughThickness() {
         return strikethroughThickness;
     }
 
+    /**
+     * Returns the position of the underline decoration.
+     */
     public float getUnderlinePosition() {
         return underlinePosition;
     }
+
+    /**
+     * Returns the stroke thickness to use when drawing a underline.
+     */
     public float getUnderlineThickness() {
         return underlineThickness;
     }
 
+    /**
+     * Returns the position of the overline decoration.
+     */
     public float getOverlinePosition() {
         return overlinePosition;
     }
+
+    /**
+     * Returns the stroke thickness to use when drawing a overline.
+     */
     public float getOverlineThickness() {
         return overlineThickness;
     }

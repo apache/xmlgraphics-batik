@@ -166,8 +166,8 @@ public class SVGGlyphElementBridge extends AbstractSVGBridge
                 if (childNode.getNodeType() == Node.ELEMENT_NODE) {
                     Element childElement = (Element)childNode;
                     GraphicsNode childGraphicsNode =
-                        builder.build(ctx, childElement);
-                    glyphChildrenNode.add(childGraphicsNode);
+                         builder.build(ctx, childElement);
+                         glyphChildrenNode.add(childGraphicsNode);
                 }
             }
             glyphContentNode.add(glyphChildrenNode);
@@ -179,6 +179,7 @@ public class SVGGlyphElementBridge extends AbstractSVGBridge
         // unicode
         String unicode
             = glyphElement.getAttributeNS(null, SVG_UNICODE_ATTRIBUTE);
+
         // glyph-name
         String nameList
             = glyphElement.getAttributeNS(null, SVG_GLYPH_NAME_ATTRIBUTE);
@@ -199,6 +200,7 @@ public class SVGGlyphElementBridge extends AbstractSVGBridge
         // lang
         String lang = glyphElement.getAttributeNS(null, SVG_LANG_ATTRIBUTE);
 
+
         Element parentFontElement = (Element)glyphElement.getParentNode();
 
         // horz-adv-x
@@ -207,8 +209,9 @@ public class SVGGlyphElementBridge extends AbstractSVGBridge
             // look for attribute on parent font element
             s = parentFontElement.getAttributeNS(null, SVG_HORIZ_ADV_X_ATTRIBUTE);
             if (s.length() == 0) {
-                // not specified on parent either, use one em
-                s = String.valueOf(fontFace.getUnitsPerEm());
+                // throw an exception since this attribute is required on the font element
+                throw new BridgeException (parentFontElement, ERR_ATTRIBUTE_MISSING,
+                                           new Object[] {SVG_HORIZ_ADV_X_ATTRIBUTE});
             }
         }
         float horizAdvX;
@@ -245,15 +248,8 @@ public class SVGGlyphElementBridge extends AbstractSVGBridge
             // look for attribute on parent font element
             s = parentFontElement.getAttributeNS(null, SVG_VERT_ORIGIN_X_ATTRIBUTE);
             if (s.length() == 0) {
-                // not specified so use the default value which is font.horzAdvX/2
-                s = parentFontElement.getAttributeNS(null, SVG_HORIZ_ADV_X_ATTRIBUTE);
-                if (s.length() == 0) {
-                    // not specified on parent either, use one em/2
-                    s = String.valueOf(fontFace.getUnitsPerEm()/2);
-                } else {
-                    // need to divide by 2
-                    s = String.valueOf(Float.parseFloat(s)/2);
-                }
+                // not specified so use the default value which is horizAdvX/2
+                s = Float.toString(horizAdvX/2);
             }
         }
         float vertOriginX;
@@ -286,9 +282,44 @@ public class SVGGlyphElementBridge extends AbstractSVGBridge
 
         Point2D vertOrigin = new Point2D.Float(vertOriginX, vertOriginY);
 
+
+        // get the horizontal origin from the parent font element
+
+        // horiz-origin-x
+        s = parentFontElement.getAttributeNS(null, SVG_HORIZ_ORIGIN_X_ATTRIBUTE);
+        if (s.length() == 0) {
+            // not specified so use the default value which is 0
+            s = SVG_HORIZ_ORIGIN_X_DEFAULT_VALUE;
+        }
+        float horizOriginX;
+        try {
+            horizOriginX = SVGUtilities.convertSVGNumber(s) * scale;
+        } catch (NumberFormatException ex) {
+            throw new BridgeException
+                (parentFontElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                new Object [] {SVG_HORIZ_ORIGIN_X_ATTRIBUTE, s});
+        }
+
+        // horiz-origin-y
+        s = parentFontElement.getAttributeNS(null, SVG_HORIZ_ORIGIN_Y_ATTRIBUTE);
+        if (s.length() == 0) {
+            // not specified so use the default value which is 0
+            s = SVG_HORIZ_ORIGIN_Y_DEFAULT_VALUE;
+        }
+        float horizOriginY;
+        try {
+            horizOriginY = SVGUtilities.convertSVGNumber(s) * -scale;
+        } catch (NumberFormatException ex) {
+            throw new BridgeException
+                (glyphElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                new Object [] {SVG_HORIZ_ORIGIN_Y_ATTRIBUTE, s});
+        }
+
+        Point2D horizOrigin = new Point2D.Float(horizOriginX, horizOriginY);
+
         // return a new Glyph
-        return new Glyph(glyphContentNode, unicode, names,
-                                orientation, arabicForm, lang, vertOrigin,
-                                horizAdvX, vertAdvY, glyphCode, scale);
+        return new Glyph(glyphContentNode, unicode, names, orientation,
+                         arabicForm, lang, horizOrigin, vertOrigin,
+                         horizAdvX, vertAdvY, glyphCode, scale);
     }
 }

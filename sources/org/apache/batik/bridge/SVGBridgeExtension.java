@@ -79,30 +79,23 @@ public class SVGBridgeExtension implements BridgeExtension {
         // bridges to handle elements in the SVG namespace
 
         ctx.putBridge(new SVGAElementBridge());
-
+        ctx.putBridge(new SVGAltGlyphElementBridge());
         ctx.putBridge(new SVGCircleElementBridge());
-
         ctx.putBridge(new SVGClipPathElementBridge());
-
         ctx.putBridge(new SVGColorProfileElementBridge());
-
         ctx.putBridge(new SVGEllipseElementBridge());
-
         ctx.putBridge(new SVGFeBlendElementBridge());
         ctx.putBridge(new SVGFeColorMatrixElementBridge());
         ctx.putBridge(new SVGFeComponentTransferElementBridge());
         ctx.putBridge(new SVGFeCompositeElementBridge());
         ctx.putBridge(new SVGFeComponentTransferElementBridge.SVGFeFuncAElementBridge());
-
         ctx.putBridge(new SVGFeComponentTransferElementBridge.SVGFeFuncRElementBridge());
-
         ctx.putBridge(new SVGFeComponentTransferElementBridge.SVGFeFuncGElementBridge());
-
         ctx.putBridge(new SVGFeComponentTransferElementBridge.SVGFeFuncBElementBridge());
-
         ctx.putBridge(new SVGFeConvolveMatrixElementBridge());
         ctx.putBridge(new SVGFeDiffuseLightingElementBridge());
         ctx.putBridge(new SVGFeDisplacementMapElementBridge());
+        ctx.putBridge(new AbstractSVGLightingElementBridge.SVGFeDistantLightElementBridge());
         ctx.putBridge(new SVGFeFloodElementBridge());
         ctx.putBridge(new SVGFeGaussianBlurElementBridge());
         ctx.putBridge(new SVGFeImageElementBridge());
@@ -110,68 +103,36 @@ public class SVGBridgeExtension implements BridgeExtension {
         ctx.putBridge(new SVGFeMergeElementBridge.SVGFeMergeNodeElementBridge());
         ctx.putBridge(new SVGFeMorphologyElementBridge());
         ctx.putBridge(new SVGFeOffsetElementBridge());
+        ctx.putBridge(new AbstractSVGLightingElementBridge.SVGFePointLightElementBridge());
         ctx.putBridge(new SVGFeSpecularLightingElementBridge());
+        ctx.putBridge(new AbstractSVGLightingElementBridge.SVGFeSpotLightElementBridge());
         ctx.putBridge(new SVGFeTileElementBridge());
         ctx.putBridge(new SVGFeTurbulenceElementBridge());
-
-        ctx.putBridge(new SVGFilterElementBridge());
-
-        ctx.putBridge(new SVGGElementBridge());
-
-        ctx.putBridge(new SVGHKernElementBridge());
-
-
-        ctx.putBridge(new SVGImageElementBridge());
-
-        ctx.putBridge(new SVGLineElementBridge());
-
-        ctx.putBridge(new SVGLinearGradientElementBridge());
-
-        ctx.putBridge(new SVGMarkerElementBridge());
-
-        ctx.putBridge(new SVGMaskElementBridge());
-
-        ctx.putBridge(new SVGPathElementBridge());
-
-        ctx.putBridge(new SVGPatternElementBridge());
-
-        ctx.putBridge(new SVGPolylineElementBridge());
-
-        ctx.putBridge(new SVGPolygonElementBridge());
-
-        ctx.putBridge(new SVGRadialGradientElementBridge());
-
-        ctx.putBridge(new SVGRectElementBridge());
-
-        ctx.putBridge(new AbstractSVGGradientElementBridge.SVGStopElementBridge());
-
-        ctx.putBridge(new SVGSVGElementBridge());
-
-        ctx.putBridge(new SVGSwitchElementBridge());
-
-        ctx.putBridge(new SVGTextElementBridge());
-
-        ctx.putBridge(new SVGUseElementBridge());
-
-        ctx.putBridge(new SVGVKernElementBridge());
-
-        ctx.putBridge(new AbstractSVGLightingElementBridge.SVGFeSpotLightElementBridge());
-
-        ctx.putBridge(new AbstractSVGLightingElementBridge.SVGFePointLightElementBridge());
-
-        ctx.putBridge(new AbstractSVGLightingElementBridge.SVGFeDistantLightElementBridge());
-
         ctx.putBridge(new SVGFontElementBridge());
-
         ctx.putBridge(new SVGFontFaceElementBridge());
-
+        ctx.putBridge(new SVGFilterElementBridge());
+        ctx.putBridge(new SVGGElementBridge());
         ctx.putBridge(new SVGGlyphElementBridge());
-
+        ctx.putBridge(new SVGHKernElementBridge());
+        ctx.putBridge(new SVGImageElementBridge());
+        ctx.putBridge(new SVGLineElementBridge());
+        ctx.putBridge(new SVGLinearGradientElementBridge());
+        ctx.putBridge(new SVGMarkerElementBridge());
+        ctx.putBridge(new SVGMaskElementBridge());
         ctx.putBridge(new SVGMissingGlyphElementBridge());
-
-        ctx.putBridge(new SVGAltGlyphElementBridge());
-
+        ctx.putBridge(new SVGPathElementBridge());
+        ctx.putBridge(new SVGPatternElementBridge());
+        ctx.putBridge(new SVGPolylineElementBridge());
+        ctx.putBridge(new SVGPolygonElementBridge());
+        ctx.putBridge(new SVGRadialGradientElementBridge());
+        ctx.putBridge(new SVGRectElementBridge());
+        ctx.putBridge(new AbstractSVGGradientElementBridge.SVGStopElementBridge());
+        ctx.putBridge(new SVGSVGElementBridge());
+        ctx.putBridge(new SVGSwitchElementBridge());
+        ctx.putBridge(new SVGTextElementBridge());
         ctx.putBridge(new SVGTextPathElementBridge());
+        ctx.putBridge(new SVGUseElementBridge());
+        ctx.putBridge(new SVGVKernElementBridge());
 
     }
 }
