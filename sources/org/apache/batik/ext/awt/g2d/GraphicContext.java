@@ -23,6 +23,7 @@ import java.awt.font.*;
  * + RenderingHints <br>
  * + AffineTransform <br>
  *
+ * @author <a href="mailto:cjolif@ilog.fr">Christophe Jolif</a>
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
@@ -99,17 +100,20 @@ public class GraphicContext implements Cloneable{
     /**
      * Default constructor
      */
-    public GraphicContext(){
+    public GraphicContext() {
+        // to workaround a JDK bug
+        hints.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_DEFAULT);
     }
 
     /**
      * @param defaultDeviceTransform Default affine transform applied to map the user space to the
      *                               user space.
      */
-    public GraphicContext(AffineTransform defaultDeviceTransform){
-        this.defaultTransform = new AffineTransform(defaultDeviceTransform);
-        this.transform = new AffineTransform(defaultTransform);
-        if(!defaultTransform.isIdentity())
+    public GraphicContext(AffineTransform defaultDeviceTransform) {
+        this();
+        defaultTransform = new AffineTransform(defaultDeviceTransform);
+        transform = new AffineTransform(defaultTransform);
+        if (!defaultTransform.isIdentity())
             transformStack.addElement(TransformStackElement.createGeneralTransformElement(defaultTransform));
     }
 
@@ -262,9 +266,6 @@ public class GraphicContext implements Cloneable{
      * @see #setClip(Shape)
      */
     public void clipRect(int x, int y, int width, int height){
-        // System.out.println("clipRect(" + x + "," + y + "," + width + "," + height + ")");
-        // Exception e = new Exception("");
-        // e.printStackTrace();
         clip(new Rectangle(x, y, width, height));
     }
 
@@ -284,7 +285,6 @@ public class GraphicContext implements Cloneable{
      * @since       JDK1.1
      */
     public void setClip(int x, int y, int width, int height){
-        System.out.println("setClip(" + x + "," + y + "," + width + "," + height + ")");
         setClip(new Rectangle(x, y, width, height));
     }
 
@@ -330,8 +330,8 @@ public class GraphicContext implements Cloneable{
      * @see         java.awt.Graphics#setClip(int, int, int, int)
      * @since       JDK1.1
      */
-    public void setClip(Shape clip){
-        if(clip != null)
+    public void setClip(Shape clip) {
+        if (clip != null)
             this.clip = transform.createTransformedShape(clip);
         else
             this.clip = null;
@@ -795,15 +795,14 @@ public class GraphicContext implements Cloneable{
      *          this method clears the current <code>Clip</code>.
      */
     public void clip(Shape s){
-        if(s != null)
+        if (s != null)
             s = transform.createTransformedShape(s);
 
-        if(clip != null){
+        if (clip != null) {
             Area newClip = new Area(clip);
             newClip.intersect(new Area(s));
             clip = new GeneralPath(newClip);
-        }
-        else{
+        } else {
             clip = s;
         }
     }
