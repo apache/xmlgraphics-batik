@@ -39,7 +39,7 @@ public interface TestReport {
      */
     public static final String 
         ENTRY_KEY_INTERNAL_TEST_FAILURE_EXCEPTION_CLASS
-        = "TestReport.entry.key.test.failure.exception.class";
+        = "TestReport.entry.key.internal.test.failure.exception.class";
 
     /**
      * Entry describing the messages of the internal exception 
@@ -47,7 +47,7 @@ public interface TestReport {
      */
     public static final String 
         ENTRY_KEY_INTERNAL_TEST_FAILURE_EXCEPTION_MESSAGE
-        = "TestReport.entry.key.test.failure.exception.message";
+        = "TestReport.entry.key.internal.test.failure.exception.message";
 
     /**
      * Entry with the stack trace for the internal exception 
@@ -55,7 +55,46 @@ public interface TestReport {
      */
     public static final String 
         ENTRY_KEY_INTERNAL_TEST_FAILURE_EXCEPTION_STACK_TRACE
-        = "TestReport.entry.key.test.failure.exception.stack.trace";
+        = "TestReport.entry.key.internal.test.failure.exception.stack.trace";
+
+    /**
+     * Entry with the class of the exception that caused the test to fail.
+     * Note that this is different from 
+     * ENTRY_KEY_INTERNAL_TEST_FAILURE_EXCEPTION_CLASS, in
+     * which case, the test itself failed unexpectedly. In this
+     * case, the entry is used to describe an expected exception
+     * for which the <tt>Test</tt> author probably created a
+     * specific error code.
+     */
+    public static final String
+        ENTRY_KEY_REPORTED_TEST_FAILURE_EXCEPTION_CLASS
+        = "TestReport.entry.key.reported.test.failure.exception.class";
+
+    /**
+     * Entry with the message of the exception that caused the test to fail.
+     * Note that this is different from 
+     * ENTRY_KEY_INTERNAL_TEST_FAILURE_EXCEPTION_MESSAGE, in
+     * which case, the test itself failed unexpectedly. In this
+     * case, the entry is used to describe an expected exception
+     * for which the <tt>Test</tt> author probably created a
+     * specific error code.
+     */
+    public static final String
+        ENTRY_KEY_REPORTED_TEST_FAILURE_EXCEPTION_MESSAGE
+        = "TestReport.entry.key.reported.test.failure.exception.message";
+
+    /**
+     * Entry with the stack trace that caused the test to fail.
+     * Note that this is different from 
+     * ENTRY_KEY_INTERNAL_TEST_FAILURE_EXCEPTION_STACK_TRACE, in
+     * which case, the test itself failed unexpectedly. In this
+     * case, the entry is used to describe an expected exception
+     * for which the <tt>Test</tt> author probably created a
+     * specific error code.
+     */
+    public static final String
+        ENTRY_KEY_REPORTED_TEST_FAILURE_EXCEPTION_STACK_TRACE
+        = "TestReport.entry.key.reported.test.failure.exception.stack.trace";
 
     /**
      * Inner class for describing an information element in a 

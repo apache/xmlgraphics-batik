@@ -306,7 +306,7 @@ public class XMLTestReportProcessor
                                      XTR_TEST_NAME_ATTRIBUTE,
                                      report.getTest().getName());
 
-        String id = report.getTest().getId();
+        String id = report.getTest().getQualifiedId();
         if( !"".equals(id) ){
             reportElement.setAttributeNS(null,
                                          XTR_ID_ATTRIBUTE,

@@ -180,6 +180,21 @@ public class SVGRenderingAccuracyTest extends AbstractTest {
         "org.apache.batik.test.svg.resources.Configuration";
 
     /**
+     * Suffix used for comparison images
+     */
+    public final static String IMAGE_TYPE_COMPARISON = "_cmp";
+
+    /**
+     * Suffix used for diff images
+     */
+    public final static String IMAGE_TYPE_DIFF = "_diff";
+
+    /**
+     * Suffix used for saved images (e.g., comparison and diff images)
+     */
+    public final static String IMAGE_FILE_EXTENSION = ".png";
+
+    /**
      * The configuration resource bundle
      */
     protected static ResourceBundle configuration;
@@ -230,6 +245,29 @@ public class SVGRenderingAccuracyTest extends AbstractTest {
      * variationURL
      */
     protected File saveVariation;
+
+    /**
+     * Temporary directory
+     */
+    protected static File tempDirectory;
+
+    /**
+     * Returns the temporary directory
+     */
+    public static File getTempDirectory(){
+        if(tempDirectory == null){
+            String tmpDir = System.getProperty("java.io.tmpdir");
+            if(tmpDir == null){
+                throw new Error();
+            }
+
+            tempDirectory = new File(tmpDir);
+            if(!tempDirectory.exists()){
+                throw new Error();
+            }
+        }
+        return tempDirectory;
+    }
 
     /**
      * Constructor.
@@ -461,7 +499,7 @@ public class SVGRenderingAccuracyTest extends AbstractTest {
                 // computed difference.
                 //
                 if(variationURL != null){
-                    File tmpDiff = imageToFile(diff);
+                    File tmpDiff = imageToFile(diff, IMAGE_TYPE_DIFF);
 
                     InputStream variationURLStream = null;
                     try{
@@ -500,8 +538,8 @@ public class SVGRenderingAccuracyTest extends AbstractTest {
                     // b. One with the difference between the two images and the set of 
                     //    different pixels.
                     BufferedImage cmp = makeCompareImage(ref, gen);
-                    File cmpFile = imageToFile(cmp);
-                    File diffFile = imageToFile(diff);
+                    File cmpFile = imageToFile(cmp, IMAGE_TYPE_COMPARISON);
+                    File diffFile = imageToFile(diff, IMAGE_TYPE_DIFF);
                     
                     report.setErrorCode(ERROR_SVG_RENDERING_NOT_ACCURATE);
                     
@@ -651,27 +689,113 @@ public class SVGRenderingAccuracyTest extends AbstractTest {
     }
 
     /**
+     * Creates a File into which the input image is
+     * saved.
+     * If there is a "file" component in the SVG url,
+     * then a temporary file is created with that 
+     * name and the imageType suffix in the temp 
+     * directory of the test-reports directory. 
+     */
+    protected File imageToFile(BufferedImage img,
+                               String imageType)
+        throws IOException {
+        String file = getURLFile(svgURL);
+
+        File imageFile = null;
+        if( !"".equals(file) ){
+            imageFile = makeTempFileName(file, imageType);
+        }
+        else{
+            imageFile = makeRandomFileName(imageType);
+        }
+        
+        imageFile.deleteOnExit();
+
+        PNGImageEncoder encoder 
+            = new PNGImageEncoder(new FileOutputStream(imageFile),
+                                  PNGEncodeParam.getDefaultEncodeParam(img));
+        
+        encoder.encode(img);
+        
+        return imageFile;
+        
+    }
+
+    /**
+     * Extracts the file portion of the URL
+     */
+    protected String getURLFile(URL url){
+        String path = url.getPath();
+        int n = path.lastIndexOf('/');
+        if(n == -1){
+            return path;
+        }
+        else{
+            if(n<path.length()){
+                return path.substring(n+1, path.length());
+            }
+            else{
+                return "";
+            }
+        }
+    }
+
+    protected File makeTempFileName(String svgFileName,
+                                    String imageType){
+        int dotIndex = svgFileName.lastIndexOf('.');
+        if( dotIndex == -1){
+            return getNextTempFileName(svgFileName + imageType);
+        }
+        else{
+            return getNextTempFileName
+                (svgFileName.substring(0, dotIndex) +
+                 imageType + IMAGE_FILE_EXTENSION);
+        }
+    }
+    
+    protected File getNextTempFileName(String fileName){
+        File f = new File(getTempDirectory(), fileName);
+        if(!f.exists()){
+            return f;
+        }
+        else{
+            return getNextTempFileName(fileName,
+                                       1);
+        } 
+    }
+    
+    protected File getNextTempFileName(String fileName,
+                                       int instance){
+        // First, create a 'versioned' file name
+        int n = fileName.lastIndexOf('.');
+        String iFileName = fileName + instance;
+        if(n != -1){
+            iFileName = fileName.substring(0, n) + instance
+                + fileName.substring(n, fileName.length());
+        }
+        
+        File r = new File(getTempDirectory(), iFileName);
+        if(!r.exists()){
+            return r;
+        }
+        else{
+            return getNextTempFileName(fileName,
+                                       instance + 1);
+        }
+    }
+    
+    /**
      * Creates a temporary File into which the input image is
      * saved.
      */
-    protected File imageToFile(BufferedImage img)
+    protected File makeRandomFileName(String imageType)
         throws IOException {
-
-        File imgFile 
-            = File.createTempFile(TEMP_FILE_PREFIX,
-                                  TEMP_FILE_SUFFIX,
-                                  null);
-        imgFile.deleteOnExit();
-
-        PNGImageEncoder encoder 
-            = new PNGImageEncoder(new FileOutputStream(imgFile),
-                             PNGEncodeParam.getDefaultEncodeParam(img));
-
-        encoder.encode(img);
-
-        return imgFile;
+        
+        return File.createTempFile(TEMP_FILE_PREFIX,
+                                   TEMP_FILE_SUFFIX + imageType,
+                                   null);
     }
-
+    
     /**
      * Returns the <tt>ImageTranscoder</tt> the Test should
      * use
