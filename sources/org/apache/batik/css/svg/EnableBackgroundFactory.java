@@ -84,6 +84,9 @@ public class EnableBackgroundFactory
 	    for (int i = 0; i < 4; i++) {
 		lu = lu.getNextLexicalUnit();
                 if (lu == null){
+                    if (i == 0) {
+                        return list;
+                    }
                     throw CSSDOMExceptionFactory.createDOMException
                         (DOMException.INVALID_ACCESS_ERR,
                          "unexpected.end.of.list", null);
