@@ -30,12 +30,18 @@ public class ParsedURLJarProtocolHandler
         super(JAR);
     }
 
+
+    // We mostly use the base class parse methods (that leverage
+    // java.net.URL.  But we take care to ignore the baseURL if urlStr
+    // is an absolute URL.
     public ParsedURLData parseURL(ParsedURL baseURL, String urlStr) {
         String start = urlStr.substring(0, JAR.length()+1).toLowerCase();
         
+        // urlStr is absolute...
         if (start.equals(JAR+":"))
             return parseURL(urlStr);
 
+        // It's relative so base it off baseURL.
         return super.parseURL(baseURL, urlStr);
     }
 }
