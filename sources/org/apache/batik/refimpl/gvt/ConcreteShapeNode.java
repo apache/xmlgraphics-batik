@@ -85,21 +85,8 @@ public class ConcreteShapeNode extends AbstractGraphicsNode
         if (shapePainter == null) {
             return;
         }
-        // Save default rendering attributes
-        AffineTransform defaultTransform = g2d.getTransform();
-        RenderingHints defaultHints = g2d.getRenderingHints();
-        // Apply the rendering attributes of this node
-        if (transform != null) {
-            g2d.transform(transform);
-        }
-        if (hints != null) {
-            g2d.addRenderingHints(hints);
-        }
         // Paint the shape
         shapePainter.paint(shape, g2d, rc);
-        // Restore default rendering attributes
-        g2d.setTransform(defaultTransform);
-        g2d.setRenderingHints(defaultHints);
     }
 
     //

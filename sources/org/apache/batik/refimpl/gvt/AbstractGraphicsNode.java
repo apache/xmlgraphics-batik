@@ -276,13 +276,28 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
         if (!isOffscreenBufferNeeded()) {
             Shape defaultClip = g2d.getClip();
             Composite defaultComposite = g2d.getComposite();
+            AffineTransform defaultTransform = g2d.getTransform();
+            RenderingHints defaultHints = g2d.getRenderingHints();
+
             if (clip != null) {
                 g2d.clip(clip);
             }
             if (composite != null) {
                 g2d.setComposite(composite);
             }
+
+            if (transform != null) {
+                g2d.transform(transform);
+            }
+            if (hints != null) {
+                g2d.addRenderingHints(hints);
+            }
+
             primitivePaint(g2d, rc);
+
+            // Restore default rendering attributes
+            g2d.setTransform(defaultTransform);
+            g2d.setRenderingHints(defaultHints);
             g2d.setClip(defaultClip);
             g2d.setComposite(defaultComposite);
         } else {
@@ -315,8 +330,11 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
 
             // Create the render context for drawing this 
             // node.
-            
-            RenderContext context = new RenderContext(g2d.getTransform(), g2d.getClip(), g2d.getRenderingHints());
+            AffineTransform usr2dev = g2d.getTransform();
+            if(transform != null){
+                usr2dev.concatenate(transform);
+            }
+            RenderContext context = new RenderContext(usr2dev, g2d.getClip(), g2d.getRenderingHints());
             RenderedImage renderedNodeImage = filteredImage.createRendering(context);
 
             if(renderedNodeImage != null){

@@ -88,16 +88,7 @@ public class ConcreteCompositeGraphicsNode extends AbstractGraphicsNode
         if (count == 0) {
             return;
         }
-        // Save default rendering attributes
-        AffineTransform defaultTransform = g2d.getTransform();
-        RenderingHints defaultHints = g2d.getRenderingHints();
-        // Apply the rendering attributes of this node
-        if (transform != null) {
-            g2d.transform(transform);
-        }
-        if (hints != null) {
-            g2d.addRenderingHints(hints);
-        }
+
         // Paint children
         for (int i=0; i < count; ++i) {
             GraphicsNode node = children[i];
@@ -106,9 +97,6 @@ public class ConcreteCompositeGraphicsNode extends AbstractGraphicsNode
             }
             node.paint(g2d, rc);
         }
-        // Restore default rendering attributes
-        g2d.setTransform(defaultTransform);
-        g2d.setRenderingHints(defaultHints);
     }
 
     //
