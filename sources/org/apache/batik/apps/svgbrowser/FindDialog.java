@@ -18,6 +18,8 @@ import java.awt.Insets;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 
+import java.text.AttributedCharacterIterator;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -34,6 +36,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -45,7 +48,10 @@ import org.apache.batik.gvt.GVTTreeWalker;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.TextNode;
 
+import org.apache.batik.gvt.text.Mark;
+
 import org.apache.batik.swing.JSVGCanvas;
+import org.apache.batik.swing.gvt.TextSelectionManager;
 
 import org.apache.batik.util.gui.ExtendedGridBagConstraints;
 import org.apache.batik.util.gui.resource.ActionMap;
@@ -69,8 +75,8 @@ public class FindDialog extends JDialog implements ActionMap {
         "org.apache.batik.apps.svgbrowser.resources.FindDialog";
 
     // action names
-    public final static String NEXT_ACTION = "NextButtonAction";
-    public final static String PREVIOUS_ACTION = "PreviousButtonAction";
+    public final static String FIND_ACTION = "FindButtonAction";
+    public final static String CLEAR_ACTION = "ClearButtonAction";
     public final static String CLOSE_ACTION = "CloseButtonAction";
 
     /**
@@ -101,13 +107,13 @@ public class FindDialog extends JDialog implements ActionMap {
     protected JTextField search;
 
     /** The next button. */
-    protected JButton next;
+    protected JButton findButton;
 
     /** The next button. */
-    protected JButton previous;
+    protected JButton clearButton;
 
     /** The cancel button. */
-    protected JButton close;
+    protected JButton closeButton;
 
     /** The case sensitive button. */
     protected JCheckBox caseSensitive;
@@ -134,8 +140,8 @@ public class FindDialog extends JDialog implements ActionMap {
 
         buttonFactory = new ButtonFactory(bundle, this);
 
-        listeners.put(NEXT_ACTION, new NextButtonAction());
-        listeners.put(PREVIOUS_ACTION, new PreviousButtonAction());
+        listeners.put(FIND_ACTION, new FindButtonAction());
+        listeners.put(CLEAR_ACTION, new ClearButtonAction());
         listeners.put(CLOSE_ACTION, new CloseButtonAction());
 
         getContentPane().add(createFindPanel(), BorderLayout.CENTER);
@@ -165,7 +171,6 @@ public class FindDialog extends JDialog implements ActionMap {
         gbc.setWeight(1.0, 0);
         gbc.setGridBounds(1, 0, 2, 1);
         panel.add(search = new JTextField(20), gbc);
-        search.getDocument().addDocumentListener(new TextTracker());
 
         gbc.fill = ExtendedGridBagConstraints.NONE;
         gbc.anchor = ExtendedGridBagConstraints.WEST;
@@ -179,7 +184,7 @@ public class FindDialog extends JDialog implements ActionMap {
         gbc.setWeight(0, 0);
         gbc.setGridBounds(2, 1, 1, 1);
         enableZoom = buttonFactory.createJCheckBox("EnableZoomCheckBox");
-        panel.add(enableZoom, gbc);
+        //panel.add(enableZoom, gbc);
 
         return panel;
     }
@@ -189,12 +194,9 @@ public class FindDialog extends JDialog implements ActionMap {
      */
     protected JPanel createButtonsPanel() {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        panel.add(next = buttonFactory.createJButton("NextButton"));
-        panel.add(previous = buttonFactory.createJButton("PreviousButton"));
-        panel.add(close = buttonFactory.createJButton("CloseButton"));
-
-        updateButtonState();
-
+        panel.add(findButton = buttonFactory.createJButton("FindButton"));
+        panel.add(clearButton = buttonFactory.createJButton("ClearButton"));
+        panel.add(closeButton = buttonFactory.createJButton("CloseButton"));
         return panel;
     }
 
@@ -210,7 +212,6 @@ public class FindDialog extends JDialog implements ActionMap {
         } else {
             this.walker = null;
         }
-        updateButtonState();
     }
 
     /**
@@ -220,6 +221,9 @@ public class FindDialog extends JDialog implements ActionMap {
      * @param text the text to match
      */
     protected GraphicsNode getNext(String text) {
+	if (walker == null && gvtRoot != null) {
+	    walker = new GVTTreeWalker(gvtRoot);
+	}
         GraphicsNode gn = walker.nextGraphicsNode();
         while (gn != null && !match(gn, text)) {
             gn = walker.nextGraphicsNode();
@@ -234,6 +238,9 @@ public class FindDialog extends JDialog implements ActionMap {
      * @param text the text to match
      */
     protected GraphicsNode getPrevious(String text) {
+	if (walker == null && gvtRoot != null) {
+	    walker = new GVTTreeWalker(gvtRoot);
+	}
         GraphicsNode gn = walker.previousGraphicsNode();
         while (gn != null && !match(gn, text)) {
             gn = walker.previousGraphicsNode();
@@ -242,11 +249,11 @@ public class FindDialog extends JDialog implements ActionMap {
     }
 
     /**
-     * Returns true if the specified node matches the following text, false
-     * otherwise.
+     * Returns the index inside the specified TextNode of the specified text, or
+     * -1 if not found.
      *
      * @param node the graphics node to check
-     * @param text the text use to match
+     * @param text the text use to match 
      */
     protected boolean match(GraphicsNode node, String text) {
         if (!(node instanceof TextNode)
@@ -254,28 +261,13 @@ public class FindDialog extends JDialog implements ActionMap {
             || text == null || text.length() == 0) {
             return false;
         }
-
         String s = ((TextNode)node).getText();
         if (!caseSensitive.isSelected()) {
             s = s.toLowerCase();
             text = text.toLowerCase();
         }
-        return s.startsWith(text);
+        return (s.indexOf(text) >= 0);
     }
-
-    /**
-     * Updates the state of the 'next', 'previous' buttons and 'search' text
-     * field.
-     */
-    private void updateButtonState() {
-        boolean b1 = (gvtRoot != null);
-        String text = search.getText();
-        boolean b2 = (text != null && text.length() > 0);
-        next.setEnabled(b1 && b2);
-        previous.setEnabled(b1 && b2);
-        search.setEnabled(b1);
-    }
-
 
     /**
      * Shows the current selected <tt>TextNode</tt>.
@@ -285,7 +277,24 @@ public class FindDialog extends JDialog implements ActionMap {
         if (!(gn instanceof TextNode)) {
             return;
         }
-        System.out.println(((TextNode)gn).getText());
+	TextNode textNode = (TextNode)gn;
+	// mark the selection of the substring found
+	String text = textNode.getText();
+	String pattern = search.getText();
+	AttributedCharacterIterator aci = 
+	    textNode.getAttributedCharacterIterator();
+	aci.first();
+	for (int i=0; i < text.indexOf(pattern); ++i) {
+	    aci.next();
+	}
+	Mark startMark = textNode.getMarkerForChar(aci.getIndex(), true);
+	for (int i = 0; i < pattern.length()-1; ++i) {
+	    aci.next();
+	}
+	Mark endMark = textNode.getMarkerForChar(aci.getIndex(), false);
+	svgCanvas.select(startMark, endMark);
+
+	// zoom on the TextNode if needed
         if (enableZoom.isSelected()) {
             Rectangle2D bounds = gn.getBounds();
             bounds = gn.getGlobalTransform().createTransformedShape
@@ -299,7 +308,6 @@ public class FindDialog extends JDialog implements ActionMap {
             svgCanvas.setRenderingTransform(Tx);
         }
     }
-
 
     // ActionMap implementation
 
@@ -323,32 +331,35 @@ public class FindDialog extends JDialog implements ActionMap {
     //////////////////////////////////////////////////////////////////////////
 
     /**
-     * The action associated to the 'next' button.
+     * The action associated to the 'find' button.
      */
-    protected class NextButtonAction extends AbstractAction {
+    protected class FindButtonAction extends AbstractAction {
         public void actionPerformed(ActionEvent e) {
-            GraphicsNode gn = getNext(search.getText());
-            if (gn != null) {
-                previous.setEnabled(true);
-                showSelectedGraphicsNode();
-            } else {
-                next.setEnabled(false);
-            }
-        }
+            String text = search.getText();
+	    if (text == null || text.length() == 0) {
+		return;
+	    }
+	    GraphicsNode gn = getNext(text);
+	    if (gn != null) {
+		showSelectedGraphicsNode();
+	    } else {
+		// end of document reached
+		walker = null;
+		JOptionPane.showMessageDialog(FindDialog.this, 
+					      resources.getString("End.text"), 
+					      resources.getString("End.title"),
+					      JOptionPane.INFORMATION_MESSAGE);
+	    }
+	}
     }
 
     /**
-     * The action associated to the 'previous' button.
+     * The action associated to the 'clear' button.
      */
-    protected class PreviousButtonAction extends AbstractAction {
+    protected class ClearButtonAction extends AbstractAction {
         public void actionPerformed(ActionEvent e) {
-            GraphicsNode gn = getPrevious(search.getText());
-            if (gn != null) {
-                next.setEnabled(true);
-                showSelectedGraphicsNode();
-            } else {
-                previous.setEnabled(false);
-            }
+	    search.setText(null);
+	    walker = null;
         }
     }
 
@@ -358,40 +369,6 @@ public class FindDialog extends JDialog implements ActionMap {
     protected class CloseButtonAction extends AbstractAction {
         public void actionPerformed(ActionEvent e) {
             dispose();
-        }
-    }
-
-    /**
-     * This class is used to track all modifications of the search TextField.
-     */
-    protected class TextTracker implements DocumentListener {
-
-        public void changedUpdate(DocumentEvent e) { }
-
-        public void insertUpdate(DocumentEvent e) {
-            updateButtonState();
-            String text = search.getText();
-            // go to next only if the current node does not match the text
-            if (!match(walker.getCurrentGraphicsNode(), text)) {
-                GraphicsNode gn = getNext(text);
-                if (gn != null) {
-                    previous.setEnabled(true);
-                    showSelectedGraphicsNode();
-                } else {
-                    next.setEnabled(false);
-                }
-            }
-        }
-
-        public void removeUpdate(DocumentEvent e) {
-            updateButtonState();
-            GraphicsNode gn = getPrevious(search.getText());
-            if (gn != null) {
-                next.setEnabled(true);
-                showSelectedGraphicsNode();
-            } else {
-                previous.setEnabled(false);
-            }
         }
     }
 }

@@ -116,6 +116,13 @@ public class TextSelectionManager {
     }
 
     /**
+     * Clears the selection.
+     */
+    public void clearSelection() {
+	textSelector.clearSelection();
+    }
+
+    /**
      * To implement a GraphicsNodeMouseListener.
      */
     protected class MouseListener implements GraphicsNodeMouseListener {

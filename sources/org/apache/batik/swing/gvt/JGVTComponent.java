@@ -47,6 +47,8 @@ import org.apache.batik.gvt.renderer.DynamicRendererFactory;
 import org.apache.batik.gvt.renderer.ImageRenderer;
 import org.apache.batik.gvt.renderer.ImageRendererFactory;
 
+import org.apache.batik.gvt.text.Mark;
+
 /**
  * This class represents a component which can display a GVT tree.
  *
@@ -288,6 +290,35 @@ public class JGVTComponent extends JComponent {
             }
         }
     }
+
+    ////////////////////////////////////////////////////////////////////////
+    // Selection methods
+    ////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Sets the selection to the specified start and end mark.
+     *
+     * @param start the mark used to define where the selection starts
+     * @param end the mark used to define where the selection ends
+     */
+    public void select(Mark start, Mark end) {
+	if (textSelectionManager != null) {
+	    textSelectionManager.setSelection(start, end);
+	}
+    }
+
+    /**
+     * Deselects all.
+     */
+    public void deselectAll() {
+	if (textSelectionManager != null) {
+	    textSelectionManager.clearSelection();
+	}
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // Painting methods
+    ////////////////////////////////////////////////////////////////////////
 
     /**
      * Whether to enable the progressive paint.

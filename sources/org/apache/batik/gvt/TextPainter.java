@@ -33,8 +33,7 @@ public interface TextPainter {
      * @param g2d the Graphics2D to use
      * @param context the rendering context.
      */
-    void paint(TextNode node, 
-               Graphics2D g2d);
+    void paint(TextNode node, Graphics2D g2d);
 
     /**
      * Initiates a text selection on a particular AttributedCharacterIterator,
