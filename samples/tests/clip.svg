@@ -54,8 +54,12 @@
             <circle cx="84"  cy="60" r="36"/>
         </clipPath>
 
-        <clipPath id="clip0" clipPathUnits="objectBoundingBox">
+        <clipPath id="clip00" clipPathUnits="objectBoundingBox">
             <circle cx=".5" cy=".5" r="16%"/>
+        </clipPath>
+
+        <clipPath id="clip0" clipPathUnits="objectBoundingBox">
+            <circle cx=".5" cy=".5" r="16%" style="clip-path:url(#clip00)"/>
         </clipPath>
 
         <clipPath id="clip" clipPathUnits="objectBoundingBox" style="clip-path:url(#clip0)">
