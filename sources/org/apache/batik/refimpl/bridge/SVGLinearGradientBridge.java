@@ -19,7 +19,6 @@ import org.apache.batik.bridge.PaintBridge;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.parser.AWTTransformProducer;
 import org.apache.batik.util.SVGConstants;
-import org.apache.batik.util.SVGUtilities;
 import org.apache.batik.util.UnitProcessor;
 import org.apache.batik.util.awt.LinearGradientPaint;
 import org.w3c.dom.Element;

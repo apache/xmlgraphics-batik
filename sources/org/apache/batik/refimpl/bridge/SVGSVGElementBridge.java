@@ -20,7 +20,6 @@ import org.apache.batik.bridge.SVGViewport;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.CanvasGraphicsNode;
 import org.apache.batik.util.SVGConstants;
-import org.apache.batik.util.SVGUtilities;
 import org.apache.batik.util.UnitProcessor;
 
 import org.apache.batik.gvt.filter.Filter;

@@ -45,7 +45,6 @@ import org.apache.batik.refimpl.gvt.filter.ConcreteClipRable;
 import org.apache.batik.refimpl.gvt.filter.RasterRable;
 
 import org.apache.batik.util.SVGConstants;
-import org.apache.batik.util.SVGUtilities;
 import org.apache.batik.util.UnitProcessor;
 
 import org.w3c.dom.Document;

@@ -30,7 +30,6 @@ import org.apache.batik.refimpl.gvt.filter.ConcreteCompositeRable;
 import org.apache.batik.refimpl.gvt.filter.ConcretePadRable;
 
 import org.apache.batik.util.SVGConstants;
-import org.apache.batik.util.SVGUtilities;
 import org.apache.batik.util.UnitProcessor;
 
 import org.w3c.dom.Element;

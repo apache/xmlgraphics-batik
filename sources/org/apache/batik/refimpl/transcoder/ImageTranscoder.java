@@ -16,6 +16,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
+
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.dom.svg.DefaultSVGContext;
 import org.apache.batik.dom.svg.SVGOMDocument;
@@ -23,9 +24,10 @@ import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.renderer.Renderer;
 import org.apache.batik.parser.ParserFactory;
 import org.apache.batik.refimpl.bridge.DefaultBridgeContext;
+import org.apache.batik.refimpl.bridge.SVGUtilities;
 import org.apache.batik.refimpl.gvt.renderer.StaticRendererFactory;
 import org.apache.batik.transcoder.TranscoderException;
-import org.apache.batik.util.SVGUtilities;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.svg.SVGSVGElement;
