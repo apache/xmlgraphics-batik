@@ -268,6 +268,13 @@
     </test>
 
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.lang.String" value="samples/tests/textPCDATA.svg" />
+        <arg class="java.lang.String" value="test-references/samples/tests/textPCDATA.png" />
+        <property name="VariationURL" class="java.lang.String" value="test-references/samples/tests/accepted-variation/textPCDATA.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/textPCDATA.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="samples/tests/fontArabic.svg" />
         <arg class="java.lang.String" value="test-references/samples/tests/fontArabic.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/samples/tests/accepted-variation/fontArabic.png" />
