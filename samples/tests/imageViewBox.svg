@@ -1,0 +1,318 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20000802//EN"
+"http://www.w3.org/TR/2000/CR-SVG-20000802/DTD/svg-20000802.dtd">
+
+<!-- ========================================================================= -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.        -->
+<!--                                                                           -->
+<!-- This software is published under the terms of the Apache Software License -->
+<!-- version 1.1, a copy of which has been included with this distribution in  -->
+<!-- the LICENSE file.                                                         -->
+<!-- ========================================================================= -->
+
+<!-- ========================================================================= -->
+<!-- This interactive test validates handling of viewBox and                   -->
+<!-- preserveAspectRatio on the <image> tag.                                   -->
+<!--                                                                           -->
+<!-- @author vhardy@apache.org                                                 -->
+<!-- @version $Id$    -->
+<!-- ========================================================================= -->
+<?xml-stylesheet type="text/css" href="test.css" ?>  
+
+<svg id="body" width="450" height="500" viewBox="0 0 450 500">
+<title>Marker Test</title>
+
+    <style type="text/css"><![CDATA[
+        .label { text-anchor: middle; }
+        .oddRow { fill:white; stroke:black; }
+        .evenRow { fill:#eeeeee; stroke:black; }
+    ]]></style>
+
+    <g id="content">
+
+        <text class="title" x="50%" y="40">viewBox &amp; preserveAspectRatio on &lt;image&gt;</text>
+
+        <g id="table" class="label" transform="translate(90, 70)">
+            <rect         width="110" height="20" class="oddRow" />
+            <text x="55" y="15">meet</text>
+            <rect width="110" height="20" class="oddRow" transform="translate(110,0)"/>
+            <text x="55" y="15" transform="translate(110, 0)">slice</text>
+            <rect width="110" height="20" class="oddRow" transform="translate(220,0)"/>
+            <text x="55" y="15" transform="translate(220, 0)">unspecified</text>
+
+            <g id="yMXX">
+                <rect x="-20" y="20" width="20" height="40" class="oddRow" />
+                <text x="-5" y="40" transform="rotate(-90,-5,40)">yMin</text>
+
+                <g transform="translate(0,40)">
+                    <rect x="-20" y="20" width="20" height="40" class="evenRow" />
+                    <text x="-5" y="40" transform="rotate(-90,-5,40)">yMid</text>
+                </g>
+
+                <g transform="translate(0,80)">
+                    <rect x="-20" y="20" width="20" height="40" class="oddRow" />
+                    <text x="-5" y="40" transform="rotate(-90,-5,40)">yMax</text>
+                </g>
+            </g>
+            
+
+            <g transform="translate(0,120)">
+                <rect x="-20" y="20" width="20" height="40" class="oddRow" />
+                <text x="-5" y="40" transform="rotate(-90,-5,40)">yMin</text>
+
+                <g transform="translate(0,40)">
+                    <rect x="-20" y="20" width="20" height="40" class="evenRow" />
+                    <text x="-5" y="40" transform="rotate(-90,-5,40)">yMid</text>
+                </g>
+
+                <g transform="translate(0,80)">
+                    <rect x="-20" y="20" width="20" height="40" class="oddRow" />
+                    <text x="-5" y="40" transform="rotate(-90,-5,40)">yMax</text>
+                </g>
+            </g>
+            
+            <g transform="translate(0,240)">
+                <rect x="-20" y="20" width="20" height="40" class="oddRow" />
+                <text x="-5" y="40" transform="rotate(-90,-5,40)">yMin</text>
+
+                <g transform="translate(0,40)">
+                    <rect x="-20" y="20" width="20" height="40" class="evenRow" />
+                    <text x="-5" y="40" transform="rotate(-90,-5,40)">yMid</text>
+                </g>
+
+                <g transform="translate(0,80)">
+                    <rect x="-20" y="20" width="20" height="40" class="oddRow" />
+                    <text x="-5" y="40" transform="rotate(-90,-5,40)">yMax</text>
+                </g>
+            </g>
+            
+            <rect x="-40" y="20" width="20" height="120" class="evenRow" />
+            <text x="-25" y="80" transform="rotate(-90,-25,80)">xMin</text>
+            
+            <g transform="translate(0,120)">
+                <rect x="-40" y="20" width="20" height="120" class="oddRow" />
+                <text x="-25" y="80" transform="rotate(-90,-25,80)">xMid</text>
+            </g>
+    
+            <g transform="translate(0,240)">
+                <rect x="-40" y="20" width="20" height="120" class="evenRow" />
+                <text x="-25" y="80" transform="rotate(-90,-25,80)">xMax</text>
+            </g>
+    
+            <defs>
+                <g id="row">
+                    <rect width="110" height="40" transform="translate(0  ,20)"/>
+                    <rect width="110" height="40" transform="translate(110,20)"/>
+                    <rect width="110" height="40" transform="translate(220,20)"/>
+                </g>
+            </defs>
+
+            <g id="evenRowBlock">
+                <use xlink:href="#row" class="evenRow" transform="translate(0,0)"/>
+                <use xlink:href="#row" class="oddRow" transform="translate(0,40)"/>
+                <use xlink:href="#row" class="evenRow" transform="translate(0,80)"/>
+            </g>
+
+            <g id="oddRowBlock" transform="translate(0,120)">
+                <use xlink:href="#row" class="oddRow" transform="translate(0,0)"/>
+                <use xlink:href="#row" class="evenRow" transform="translate(0,40)"/>
+                <use xlink:href="#row" class="oddRow" transform="translate(0,80)"/>
+            </g>
+
+            <use xlink:href="#evenRowBlock" transform="translate(0,240)"/>
+
+        </g>
+
+        <g id="testCases" transform="translate(90, 90)">
+            <defs>
+                <rect id="viewBox" x="5" y="2" width="50" height="36" transform="translate(25,0)" stroke="red" fill="none"/>                
+            </defs>
+
+            <!-- xMinYXXX XXX -->
+            <g>
+                <!-- ... YMin XXX -->
+                <use xlink:href="#viewBox" />
+                <image x="25" y="0" width="43" height="18" xlink:href="png.png" viewBox="5 2 50 36" 
+                       preserveAspectRatio="xMinYMin meet" />
+
+                <g transform="translate(110, 0)">
+                    <use xlink:href="#viewBox" />
+                    <image x="25" y="0" width="43" height="18" xlink:href="png.png" viewBox="5 2 50 36" 
+                           preserveAspectRatio="xMinYMin slice" />
+                </g>
+
+                <g transform="translate(220, 0)">
+                    <use xlink:href="#viewBox" />
+                    <image x="25" y="0" width="43" height="18" xlink:href="png.png" viewBox="5 2 50 36" 
+                           preserveAspectRatio="xMinYMin" />
+                </g>
+
+
+                <!-- ... YMid XXX -->
+                <g transform="translate(0,40)">
+                    <use xlink:href="#viewBox" />
+                    <image x="25" y="0" width="43" height="18" xlink:href="png.png" viewBox="5 2 50 36" 
+                           preserveAspectRatio="xMinYMid meet" />
+
+                    <g transform="translate(110, 0)">
+                        <use xlink:href="#viewBox" />
+                        <image x="25" y="0" width="43" height="18" xlink:href="png.png" viewBox="5 2 50 36" 
+                               preserveAspectRatio="xMinYMid slice" />
+                    </g>
+
+                    <g transform="translate(220, 0)">
+                        <use xlink:href="#viewBox" />
+                        <image x="25" y="0" width="43" height="18" xlink:href="png.png" viewBox="5 2 50 36" 
+                               preserveAspectRatio="xMinYMid" />
+                    </g>
+                </g>
+
+                <!-- ... YMax XXX -->
+                <g transform="translate(0,80)">
+                    <use xlink:href="#viewBox" />
+                    <image x="25" y="0" width="43" height="18" xlink:href="png.png" viewBox="5 2 50 36" 
+                           preserveAspectRatio="xMinYMax meet" />
+
+                    <g transform="translate(110, 0)">
+                        <use xlink:href="#viewBox" />
+                        <image x="25" y="0" width="43" height="18" xlink:href="png.png" viewBox="5 2 50 36" 
+                               preserveAspectRatio="xMinYMax slice" />
+                    </g>
+
+                    <g transform="translate(220, 0)">
+                        <use xlink:href="#viewBox" />
+                        <image x="25" y="0" width="43" height="18" xlink:href="png.png" viewBox="5 2 50 36" 
+                               preserveAspectRatio="xMinYMax" />
+                    </g>
+                </g>
+
+            <!-- xMidYXXX XXX -->
+            <g transform="translate(0,120)">
+                <!-- ... YMin XXX -->
+                <use xlink:href="#viewBox" />
+                <image x="25" y="0" width="43" height="18" xlink:href="png.png" viewBox="5 2 50 36" 
+                       preserveAspectRatio="xMidYMin meet" />
+
+                <g transform="translate(110, 0)">
+                    <use xlink:href="#viewBox" />
+                    <image x="25" y="0" width="43" height="18" xlink:href="png.png" viewBox="5 2 50 36" 
+                           preserveAspectRatio="xMidYMin slice" />
+                </g>
+
+                <g transform="translate(220, 0)">
+                    <use xlink:href="#viewBox" />
+                    <image x="25" y="0" width="43" height="18" xlink:href="png.png" viewBox="5 2 50 36" 
+                           preserveAspectRatio="xMidYMin" />
+                </g>
+
+
+                <!-- ... YMid XXX -->
+                <g transform="translate(0,40)">
+                    <use xlink:href="#viewBox" />
+                    <image x="25" y="0" width="43" height="18" xlink:href="png.png" viewBox="5 2 50 36" 
+                           preserveAspectRatio="xMidYMid meet" />
+
+                    <g transform="translate(110, 0)">
+                        <use xlink:href="#viewBox" />
+                        <image x="25" y="0" width="43" height="18" xlink:href="png.png" viewBox="5 2 50 36" 
+                               preserveAspectRatio="xMidYMid slice" />
+                    </g>
+
+                    <g transform="translate(220, 0)">
+                        <use xlink:href="#viewBox" />
+                        <image x="25" y="0" width="43" height="18" xlink:href="png.png" viewBox="5 2 50 36" 
+                               preserveAspectRatio="xMidYMid" />
+                    </g>
+                </g>
+
+                <!-- ... YMax XXX -->
+                <g transform="translate(0,80)">
+                    <use xlink:href="#viewBox" />
+                    <image x="25" y="0" width="43" height="18" xlink:href="png.png" viewBox="5 2 50 36" 
+                           preserveAspectRatio="xMidYMax meet" />
+
+                    <g transform="translate(110, 0)">
+                        <use xlink:href="#viewBox" />
+                        <image x="25" y="0" width="43" height="18" xlink:href="png.png" viewBox="5 2 50 36" 
+                               preserveAspectRatio="xMidYMax slice" />
+                    </g>
+
+                    <g transform="translate(220, 0)">
+                        <use xlink:href="#viewBox" />
+                        <image x="25" y="0" width="43" height="18" xlink:href="png.png" viewBox="5 2 50 36" 
+                               preserveAspectRatio="xMidYMax" />
+                    </g>
+                </g>
+
+            </g>
+
+            <!-- xMaxYXXX XXX -->
+            <g transform="translate(0,240)">
+                <!-- ... YMin XXX -->
+                <use xlink:href="#viewBox" />
+                <image x="25" y="0" width="43" height="18" xlink:href="png.png" viewBox="5 2 50 36" 
+                       preserveAspectRatio="xMaxYMin meet" />
+
+                <g transform="translate(110, 0)">
+                    <use xlink:href="#viewBox" />
+                    <image x="25" y="0" width="43" height="18" xlink:href="png.png" viewBox="5 2 50 36" 
+                           preserveAspectRatio="xMaxYMin slice" />
+                </g>
+
+                <g transform="translate(220, 0)">
+                    <use xlink:href="#viewBox" />
+                    <image x="25" y="0" width="43" height="18" xlink:href="png.png" viewBox="5 2 50 36" 
+                           preserveAspectRatio="xMaxYMin" />
+                </g>
+
+
+                <!-- ... YMid XXX -->
+                <g transform="translate(0,40)">
+                    <use xlink:href="#viewBox" />
+                    <image x="25" y="0" width="43" height="18" xlink:href="png.png" viewBox="5 2 50 36" 
+                           preserveAspectRatio="xMaxYMid meet" />
+
+                    <g transform="translate(110, 0)">
+                        <use xlink:href="#viewBox" />
+                        <image x="25" y="0" width="43" height="18" xlink:href="png.png" viewBox="5 2 50 36" 
+                               preserveAspectRatio="xMaxYMid slice" />
+                    </g>
+
+                    <g transform="translate(220, 0)">
+                        <use xlink:href="#viewBox" />
+                        <image x="25" y="0" width="43" height="18" xlink:href="png.png" viewBox="5 2 50 36" 
+                               preserveAspectRatio="xMaxYMid" />
+                    </g>
+                </g>
+
+                <!-- ... YMax XXX -->
+                <g transform="translate(0,80)">
+                    <use xlink:href="#viewBox" />
+                    <image x="25" y="0" width="43" height="18" xlink:href="png.png" viewBox="5 2 50 36" 
+                           preserveAspectRatio="xMaxYMax meet" />
+
+                    <g transform="translate(110, 0)">
+                        <use xlink:href="#viewBox" />
+                        <image x="25" y="0" width="43" height="18" xlink:href="png.png" viewBox="5 2 50 36" 
+                               preserveAspectRatio="xMaxYMax slice" />
+                    </g>
+
+                    <g transform="translate(220, 0)">
+                        <use xlink:href="#viewBox" />
+                        <image x="25" y="0" width="43" height="18" xlink:href="png.png" viewBox="5 2 50 36" 
+                               preserveAspectRatio="xMaxYMax" />
+                    </g>
+                </g>
+
+            </g>
+            </g>
+        </g>
+
+    </g><!-- "content" -->
+
+    <!-- ============================================================= -->
+    <!-- Batik sample mark                                             -->
+    <!-- ============================================================= -->
+    <use xlink:href="../batikLogo.svg#Batik_Tag_Box" />
+
+</svg>
