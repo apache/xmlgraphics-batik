@@ -79,6 +79,15 @@ public class GraphicsUtil {
         ColorSpace g2dCS = g2dCM.getColorSpace();
 
         if (g2dCS != srcCM.getColorSpace()) {
+            /*
+            System.out.println("srcCS: " + srcCM.getColorSpace());
+            System.out.println("g2dCS: " + g2dCS);
+            System.out.println("sRGB: " + 
+                               ColorSpace.getInstance(ColorSpace.CS_sRGB));
+            System.out.println("LsRGB: " + 
+                               ColorSpace.getInstance
+                               (ColorSpace.CS_LINEAR_RGB));
+            */
             if      (g2dCS == ColorSpace.getInstance(ColorSpace.CS_sRGB))
                 cr = convertTosRGB(cr);
             else if (g2dCS == ColorSpace.getInstance(ColorSpace.CS_LINEAR_RGB))
@@ -88,9 +97,9 @@ public class GraphicsUtil {
 
         ColorModel drawCM = srcCM;
         if ((drawCM.hasAlpha()) && (g2dCM.hasAlpha())) {
-            if (drawCM.isAlphaPremultiplied() !=
+            if (drawCM.isAlphaPremultiplied() != 
                 g2dCM .isAlphaPremultiplied())
-                drawCM = coerceColorModel(drawCM,
+                drawCM = coerceColorModel(drawCM, 
                                           g2dCM.isAlphaPremultiplied());
         }
 
@@ -210,31 +219,42 @@ public class GraphicsUtil {
                 CompositeRable cr = (CompositeRable)filter;
                 // For the over mode we can just draw them in order...
                 if (cr.getCompositeRule() == CompositeRule.OVER) {
-                    Vector srcs = cr.getSources();
-                    Iterator i = srcs.iterator();
-                    while (i.hasNext()) {
-                        drawImage(g2d, (Filter)i.next());
+                    ColorSpace crCS = cr.getCompositeColorSpace();
+                    GraphicsConfiguration gc = g2d.getDeviceConfiguration();
+                    ColorModel g2dCM = gc.getColorModel();
+                    ColorSpace g2dCS = g2dCM.getColorSpace();
+                    if (g2dCS == crCS) {
+                        Vector srcs = cr.getSources();
+                        Iterator i = srcs.iterator();
+                        while (i.hasNext()) {
+                            drawImage(g2d, (Filter)i.next());
+                        }
+                        return;
                     }
-                    return;
                 }
             }
             else if (filter instanceof GraphicsNodeRable) {
                 GraphicsNodeRable gnr = (GraphicsNodeRable)filter;
-                if (gnr.getUsePrimitivePaint()) {
-                    gnr.getGraphicsNode().primitivePaint
-                        (g2d, GraphicsNodeRenderContext.
-                         getGraphicsNodeRenderContext(g2d));
-                } else {
-                    try {
-                        gnr.getGraphicsNode().paint
+                GraphicsConfiguration gc = g2d.getDeviceConfiguration();
+                ColorModel g2dCM = gc.getColorModel();
+                ColorSpace g2dCS = g2dCM.getColorSpace();
+                if (g2dCS == ColorSpace.getInstance(ColorSpace.CS_sRGB)) {
+                    if (gnr.getUsePrimitivePaint()) {
+                        gnr.getGraphicsNode().primitivePaint
                             (g2d, GraphicsNodeRenderContext.
                              getGraphicsNodeRenderContext(g2d));
-                    } catch (InterruptedException ie) {
-                        // Don't do anything we just return...
+                    } else {
+                        try {
+                            gnr.getGraphicsNode().paint
+                                (g2d, GraphicsNodeRenderContext.
+                                 getGraphicsNodeRenderContext(g2d));
+                        } catch (InterruptedException ie) {
+                            // Don't do anything we just return...
+                        }
                     }
+                    // Primitive Paint did the work...
+                    return;
                 }
-                // Primitive Paint did the work...
-                return;
             }
             else if (filter instanceof FilterChainRable) {
                 FilterChainRable fcr = (FilterChainRable)filter;

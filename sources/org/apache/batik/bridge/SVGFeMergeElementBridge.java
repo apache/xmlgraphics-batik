@@ -139,7 +139,7 @@ public class SVGFeMergeElementBridge implements FilterPrimitiveBridge,
                                                         uctx);
 
         Filter filter = null;
-        filter = new CompositeRable8Bit(srcs, CompositeRule.OVER);
+        filter = new CompositeRable8Bit(srcs, CompositeRule.OVER, false);
 
         filter = new PadRable8Bit(filter,
                                       primitiveRegion,
