@@ -146,6 +146,7 @@
                                 <xsl:choose>
                                     <xsl:when test="@status='failed'">
                                      &#160;(<xsl:value-of select="@errorCode" />)
+                                     &#160;(<xsl:value-of select="@class" />)
                                     </xsl:when>
                                 </xsl:choose>
 

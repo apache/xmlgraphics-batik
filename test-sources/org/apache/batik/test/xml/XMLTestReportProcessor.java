@@ -332,6 +332,11 @@ public class XMLTestReportProcessor
         reportElement.setAttribute(XTR_STATUS_ATTRIBUTE,
                                    status);
 
+        String className = report.getTest().getClass().getName();
+
+        reportElement.setAttribute(XTR_CLASS_ATTRIBUTE,
+                                   className);
+
         if(!report.hasPassed()){
             reportElement.setAttribute(XTR_ERROR_CODE_ATTRIBUTE,
                                        report.getErrorCode());
