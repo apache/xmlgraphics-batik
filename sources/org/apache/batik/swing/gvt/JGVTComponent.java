@@ -25,7 +25,10 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.Toolkit;
 import java.awt.Shape;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.InputEvent;
@@ -37,6 +40,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.image.BufferedImage;
+import java.text.CharacterIterator;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -46,6 +50,8 @@ import javax.swing.JComponent;
 
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.event.AWTEventDispatcher;
+import org.apache.batik.gvt.event.SelectionAdapter;
+import org.apache.batik.gvt.event.SelectionEvent;
 import org.apache.batik.gvt.renderer.ConcreteImageRendererFactory;
 import org.apache.batik.gvt.renderer.ImageRenderer;
 import org.apache.batik.gvt.renderer.ImageRendererFactory;
@@ -174,6 +180,14 @@ public class JGVTComponent extends JComponent {
     protected boolean selectableText;
 
     /**
+     * Whether the JGVTComponent should adhere to 'Unix' text
+     * selection semantics where as soon as text is selected it
+     * is copied to the clipboard.  If users want Mac/Windows
+     * behaviour they need to handle selections them selves.
+     */
+    protected boolean useUnixTextSelection = true;
+
+    /**
      * Whether to suspend interactions.
      */
     protected boolean suspendInteractions;
@@ -221,12 +235,39 @@ public class JGVTComponent extends JComponent {
 
     }
 
+    /**
+     * Turn off all 'interactor' objects (pan, zoom, etc) if
+     * 'b' is true, turn them on if 'b' is false.
+     */
     public void setDisableInteractions(boolean b) {
         disableInteractions = b;
     }
 
+    /**
+     * Returns true if all 'interactor' objects 
+     * (pan, zoom, etc) are disabled.
+     */
     public boolean getDisableInteractions() {
         return disableInteractions;
+    }
+
+    /**
+     * If 'b' is true text selections will copied to
+     * the clipboard immediately.  If 'b' is false
+     * then nothing will be done when selections are
+     * made (the application is responsable for copying
+     * the selection in response to user actions).
+     */
+    public void setUseUnixTextSelection(boolean b) {
+        useUnixTextSelection = b;
+    }
+
+    /**
+     * Returns true if the canvas will copy selections
+     * to the clipboard when they are completed.
+     */
+    public void getUseUnixTextSelection(boolean b) {
+        useUnixTextSelection = b;
     }
 
     /**
@@ -318,6 +359,8 @@ public class JGVTComponent extends JComponent {
             eventDispatcher = new AWTEventDispatcher();
             if (selectableText) {
                 textSelectionManager = createTextSelectionManager();
+                textSelectionManager.addSelectionListener
+                    (new UnixTextSelectionListener());
             }
         }
     }
@@ -336,7 +379,9 @@ public class JGVTComponent extends JComponent {
     ////////////////////////////////////////////////////////////////////////
 
     /**
-     *  Returns the current Text selection manager for the Component.
+     * Returns the current Text selection manager for the Component.
+     * Users can register with this to be notifed of changes in
+     * the text selection.
      */
     public TextSelectionManager getTextSelectionManager() {
         return textSelectionManager;
@@ -1160,4 +1205,52 @@ public class JGVTComponent extends JComponent {
             }
         }
     }
+
+    protected class UnixTextSelectionListener 
+        extends SelectionAdapter {
+        
+        public void selectionDone(SelectionEvent evt) {
+            if (!useUnixTextSelection) return;
+
+            Object o = evt.getSelection();
+            if (!(o instanceof CharacterIterator))
+                return;
+            CharacterIterator iter = (CharacterIterator) o;
+
+            // first see if we can access the clipboard
+            SecurityManager securityManager;
+            securityManager = System.getSecurityManager();
+            if (securityManager != null) {
+                try {
+                    securityManager.checkSystemClipboardAccess();
+                } catch (SecurityException e) {
+                    return; // Can't access clipboard.
+                }
+            }
+
+            int sz = iter.getEndIndex()-iter.getBeginIndex();
+            if (sz == 0) return;
+
+            char[] cbuff = new char[sz];
+            cbuff[0] = iter.first();
+            for (int i=1; i<cbuff.length;++i) {
+                cbuff[i] = iter.next();
+            }
+            final String strSel = new String(cbuff);
+            // HACK: getSystemClipboard sometimes deadlocks on
+            // linux when called from the AWT Thread. The Thread
+            // creation prevents that.
+            new Thread() {
+                public void run() {
+                    Clipboard cb;
+                    cb = Toolkit.getDefaultToolkit().getSystemClipboard();
+                    StringSelection sel;
+                    sel = new StringSelection(strSel);
+                    cb.setContents(sel, sel);
+                }
+            }.start();
+        }
+    }
+
+
 }

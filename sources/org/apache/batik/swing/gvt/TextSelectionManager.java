@@ -100,6 +100,11 @@ public class TextSelectionManager {
     protected boolean xorMode = false;
 
     /**
+     * The current selection or null if there is none.
+     */
+    Object selection = null;
+
+    /**
      * Creates a new TextSelectionManager.
      */
     public TextSelectionManager(JGVTComponent comp,
@@ -190,6 +195,13 @@ public class TextSelectionManager {
     }
 
     /**
+     * Returns the current text selection or null if there is none.
+     */
+    public Object getSelection() {
+        return selection;
+    }
+
+    /**
      * Sets the selected text
      */
     public void setSelection(Mark start, Mark end) {
@@ -265,6 +277,7 @@ public class TextSelectionManager {
     protected class TextSelectionListener implements SelectionListener {
         public void selectionDone(SelectionEvent e) {
             selectionChanged(e);
+            selection = e.getSelection();
         }
         public void selectionCleared(SelectionEvent e) {
             selectionStarted(e);
@@ -275,6 +288,7 @@ public class TextSelectionManager {
                 selectionHighlight = null;
                 component.repaint(r);
             }
+            selection = null;
         }
         public void selectionChanged(SelectionEvent e) {
             Rectangle r = null;
