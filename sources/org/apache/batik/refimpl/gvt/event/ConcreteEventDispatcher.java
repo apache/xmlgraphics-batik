@@ -267,6 +267,13 @@ public class ConcreteEventDispatcher extends AbstractEventDispatcher {
         }
 
         GraphicsNode node = root.nodeHitAt(p);
+
+        if (isModalEvent(evt, node) && (lastHit != null)) { 
+            // modal if either button release on null node, or
+            // if button is down on a non-press
+            node = lastHit;
+        }
+
         // If the receiving node has changed, send a notification
         // check if we enter a new node
         if (lastHit != node) {
@@ -313,4 +320,16 @@ public class ConcreteEventDispatcher extends AbstractEventDispatcher {
         }
         lastHit = node;
     }
+
+    protected boolean isModalEvent(MouseEvent evt, GraphicsNode node) {
+        int type = evt.getID();
+        boolean isModal = 
+            ((type == MouseEvent.MOUSE_RELEASED) && (node == null));
+        isModal = isModal || 
+            ((type != MouseEvent.MOUSE_PRESSED) && 
+             ((evt.getModifiers() & 
+              InputEvent.BUTTON2_MASK) != 0) ); 
+        return isModal;
+    }
+
 }
