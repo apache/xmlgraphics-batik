@@ -50,7 +50,7 @@ public class RhinoInterpreter implements Interpreter {
     /**
      * Build a <code>Interpreter</code> for ECMAScript using Rhino.
      * @see org.apache.batik.script.Interpreter
-     * @see org.apache.batik.refimpl.ConcreateInterpreterPool
+     * @see org.apache.batik.script.InterpreterPool
      */
     public RhinoInterpreter() {
         // entering a context
