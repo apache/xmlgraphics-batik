@@ -26,7 +26,7 @@
     <body>
         <s1 title="Introduction">
 
-        <figure src="images/rasterizer.jpg" alt="Batik SVG Rasterizer" />
+        <!-- <figure src="images/rasterizerBanner.jpg" alt="Batik SVG Rasterizer" /> -->
 
         <p>
         This page describes the features of the SVG Rasterizer utility that
