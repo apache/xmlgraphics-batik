@@ -112,9 +112,8 @@ public class SVGMaskElementBridge extends AbstractSVGBridge
         }
 
         // additional transform to move to objectBoundingBox coordinate system
-        GraphicsNodeRenderContext rc = ctx.getGraphicsNodeRenderContext();
         if (coordSystemType == SVGUtilities.OBJECT_BOUNDING_BOX) {
-            Tx = SVGUtilities.toObjectBBox(Tx, maskedNode, rc);
+            Tx = SVGUtilities.toObjectBBox(Tx, maskedNode);
         }
 
         maskNodeContent.setTransform(Tx);
@@ -122,6 +121,7 @@ public class SVGMaskElementBridge extends AbstractSVGBridge
         Filter filter = maskedNode.getFilter();
         if (filter == null) {
             // Make the initial source as a RenderableImage
+            GraphicsNodeRenderContext rc = ctx.getGraphicsNodeRenderContext();
             filter = new GraphicsNodeRable8Bit(maskedNode, rc);
         }
 

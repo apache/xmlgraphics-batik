@@ -80,9 +80,8 @@ public class SVGClipPathElementBridge extends AbstractSVGBridge
                 (clipElement, SVG_CLIP_PATH_UNITS_ATTRIBUTE, s);
         }
         // additional transform to move to objectBoundingBox coordinate system
-        GraphicsNodeRenderContext rc = ctx.getGraphicsNodeRenderContext();
         if (coordSystemType == SVGUtilities.OBJECT_BOUNDING_BOX) {
-            Tx = SVGUtilities.toObjectBBox(Tx, clipedNode, rc);
+            Tx = SVGUtilities.toObjectBBox(Tx, clipedNode);
         }
 
         // Build the GVT tree that represents the clip path
@@ -116,7 +115,7 @@ public class SVGClipPathElementBridge extends AbstractSVGBridge
 
             // compute the outline of the current clipPath's child
             int wr = CSSUtilities.convertClipRule(child);
-            GeneralPath path = new GeneralPath(clipNode.getOutline(rc));
+            GeneralPath path = new GeneralPath(clipNode.getOutline());
             path.setWindingRule(wr);
             Shape outline = Tx.createTransformedShape(path);
 
@@ -151,6 +150,7 @@ public class SVGClipPathElementBridge extends AbstractSVGBridge
         Filter filter = clipedNode.getFilter();
         if (filter == null) {
             // Make the initial source as a RenderableImage
+	    GraphicsNodeRenderContext rc = ctx.getGraphicsNodeRenderContext();
             filter = new GraphicsNodeRable8Bit(clipedNode, rc);
         }
         return new ClipRable8Bit(filter, clipPath);

@@ -291,8 +291,7 @@ public class JGVTComponent extends JComponent {
      */
     protected void initializeEventHandling() {
         if (eventsEnabled) {
-            eventDispatcher =
-                new AWTEventDispatcher(rendererFactory.getRenderContext());
+            eventDispatcher = new AWTEventDispatcher();
             if (selectableText) {
                 textSelectionManager =
                     new TextSelectionManager(this, rendererFactory.getRenderContext(),

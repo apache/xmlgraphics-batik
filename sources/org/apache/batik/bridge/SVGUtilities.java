@@ -25,7 +25,6 @@ import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.dom.util.XMLSupport;
 
 import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
 
 import org.apache.batik.parser.AWTTransformProducer;
 import org.apache.batik.parser.LengthHandler;
@@ -386,8 +385,7 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
                              hStr,
                              unitsType,
                              maskedNode,
-                             uctx,
-                             ctx.getGraphicsNodeRenderContext());
+                             uctx);
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -455,8 +453,7 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
                              hStr,
                              unitsType,
                              paintedNode,
-                             uctx,
-                             ctx.getGraphicsNodeRenderContext());
+                             uctx);
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -571,8 +568,7 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
                              hStr,
                              unitsType,
                              filteredNode,
-                             uctx,
-                             ctx.getGraphicsNodeRenderContext());
+                             uctx);
     }
 
     /**
@@ -641,8 +637,7 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
 
         switch (unitsType) {
         case OBJECT_BOUNDING_BOX:
-            GraphicsNodeRenderContext rc = ctx.getGraphicsNodeRenderContext();
-            Rectangle2D bounds = filteredNode.getGeometryBounds(rc);
+            Rectangle2D bounds = filteredNode.getGeometryBounds();
             if (xStr.length() != 0) {
                 x = UnitProcessor.svgHorizontalCoordinateToObjectBoundingBox
                     (xStr, SVG_X_ATTRIBUTE, uctx);
@@ -766,8 +761,7 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
                                                String hStr,
                                                short unitsType,
                                                GraphicsNode targetNode,
-                                               UnitProcessor.Context uctx,
-                                               GraphicsNodeRenderContext rc) {
+                                               UnitProcessor.Context uctx) {
 
         // construct the mask region in the appropriate coordinate system
         double x, y, w, h;
@@ -782,7 +776,7 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
             h = UnitProcessor.svgVerticalLengthToObjectBoundingBox
                 (hStr, SVG_HEIGHT_ATTRIBUTE, uctx);
 
-            Rectangle2D bounds = targetNode.getGeometryBounds(rc);
+            Rectangle2D bounds = targetNode.getGeometryBounds();
             if (bounds != null ) {
                 x = bounds.getX() + x*bounds.getWidth();
                 y = bounds.getY() + y*bounds.getHeight();
@@ -842,11 +836,10 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
      * @param rc the graphics node render context
      */
     public static AffineTransform toObjectBBox(AffineTransform Tx,
-                                               GraphicsNode node,
-                                               GraphicsNodeRenderContext rc) {
+                                               GraphicsNode node) {
 
         AffineTransform Mx = new AffineTransform();
-        Rectangle2D bounds = node.getGeometryBounds(rc);
+        Rectangle2D bounds = node.getGeometryBounds();
         Mx.translate(bounds.getX(), bounds.getY());
         Mx.scale(bounds.getWidth(), bounds.getHeight());
         Mx.concatenate(Tx);
@@ -863,10 +856,9 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
      * @param rc the graphics node render context
      */
     public static Rectangle2D toObjectBBox(Rectangle2D r,
-                                           GraphicsNode node,
-                                           GraphicsNodeRenderContext rc) {
+                                           GraphicsNode node) {
 
-        Rectangle2D bounds = node.getGeometryBounds(rc);
+        Rectangle2D bounds = node.getGeometryBounds();
         if(bounds != null){
             return new Rectangle2D.Double
                 (bounds.getX() + r.getX()*bounds.getWidth(),
