@@ -89,7 +89,7 @@ public class RunnableQueue implements Runnable {
     public static RunnableQueue createRunnableQueue() {
         RunnableQueue result = new RunnableQueue();
         synchronized (result) {
-            Thread t = new Thread(result);
+            Thread t = new Thread(result, "RunnableQueue-" + threadCount++);
             t.setDaemon(true);
             t.start();
             while (result.getThread() == null) {
@@ -101,6 +101,7 @@ public class RunnableQueue implements Runnable {
         }
         return result;
     }
+    private static int threadCount;
     
     /**
      * Runs this queue.

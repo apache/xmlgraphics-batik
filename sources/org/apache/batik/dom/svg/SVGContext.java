@@ -22,5 +22,4 @@ public interface SVGContext extends SVGCSSContext {
      * Return the pixel to millimeters factor.
      */
     float getPixelToMM();
-
 }

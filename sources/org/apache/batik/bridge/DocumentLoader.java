@@ -72,7 +72,8 @@ public class DocumentLoader {
     /**
      * Returns a document from the specified uri.
      * @param uri the uri of the document
-     * @exception IOException if an I/O error occured while loading the document
+     * @exception IOException if an I/O error occured while loading
+     * the document
      */
     public Document loadDocument(String uri) throws IOException {
         int n = uri.indexOf('#');
@@ -82,10 +83,9 @@ public class DocumentLoader {
         DocumentState state = (DocumentState)cacheMap.get(uri);
         if (state == null) {
             Document document = documentFactory.createDocument(uri);
-            DefaultSVGContext ctx
-                = (DefaultSVGContext)((SVGOMDocument)document).getSVGContext();
+            SVGOMDocument svgDoc = (SVGOMDocument)document;
+            DefaultSVGContext ctx = (DefaultSVGContext)svgDoc.getSVGContext();
             ctx.setUserStyleSheetURI(userAgent.getUserStyleSheetURI());
-
             DocumentDescriptor desc = documentFactory.getDocumentDescriptor();
             state = new DocumentState(uri, document, desc);
             cacheMap.put(uri, state);

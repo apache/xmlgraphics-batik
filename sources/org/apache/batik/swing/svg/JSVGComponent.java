@@ -347,6 +347,9 @@ public class JSVGComponent extends JGVTComponent {
      * Returns the current update manager.
      */
     public UpdateManager getUpdateManager() {
+        if (svgLoadEventDispatcher != null) {
+            return svgLoadEventDispatcher.getUpdateManager();
+        }
         if (nextUpdateManager != null) {
             return nextUpdateManager;
         }

@@ -6,25 +6,14 @@
  * the LICENSE file.                                                         *
  *****************************************************************************/
 
-package org.apache.batik.script;
+package org.apache.batik.bridge;
 
 /**
- * This interface represents an object which is transformed to a
- * function when binded to an interpreter.
+ * A tagging interface to prevent a repaint at the end of the
+ * execution of this runnable.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public interface JavaFunction {
-
-    /**
-     * Returns the know parameter types.
-     */
-    Class[] getParameterTypes();
-
-    /**
-     * Called by the interpreter. Arguments are casted to the types
-     * returned by <code>getParameterTypes()</code>
-     */
-    Object call(Object[] arguments);
+public interface NoRepaintRunnable extends Runnable {
 }

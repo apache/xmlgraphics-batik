@@ -20,7 +20,7 @@ import org.w3c.dom.events.EventTarget;
 
 import org.apache.batik.script.Interpreter;
 import org.apache.batik.script.InterpreterException;
-import org.apache.batik.script.JavaFunction;
+import org.apache.batik.script.Window;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
@@ -91,7 +91,7 @@ public class RhinoInterpreter implements Interpreter {
                 p[i] = new NativeJavaPackage(TO_BE_IMPORTED[i]);
             }
             importer.importPackage(ctx, globalObject, p, null);
-            ctx.setWrapHandler(wrapHandler = new EventTargetWrapHandler(this));
+            ctx.setWrapHandler(wrapHandler);
         } finally {
             Context.exit();
         }
@@ -239,16 +239,27 @@ public class RhinoInterpreter implements Interpreter {
         Context ctx = Context.enter();
         ctx.setWrapHandler(wrapHandler);
         try {
-            if (object instanceof JavaFunction) {
-                JavaFunction jf = (JavaFunction)object;
-                globalObject.put(name, globalObject,
-                                 new RhinoFunction(jf, globalObject));
-                return;
-            }
             Scriptable jsObject =  Context.toObject(object, globalObject);
             globalObject.put(name, globalObject, jsObject);
         } finally {
             Context.exit();
+        }
+
+        if (name.equals("window") && object instanceof Window) {
+            try {
+                // Defines the 'Window' class.
+                ScriptableObject.defineClass(globalObject,
+                                             WindowWrapper.class);
+
+                // Wrap the given window object.
+                evaluate(new StringReader("window = new Window(window)"));
+
+                // The window becomes the global object.
+                globalObject =
+                    (ScriptableObject)globalObject.get("window", globalObject);
+            } catch (Exception e) {
+                // Cannot happen.
+            }
         }
     }
 
@@ -263,6 +274,21 @@ public class RhinoInterpreter implements Interpreter {
         try {
             arg = Context.toObject(arg, globalObject);
             Object[] args = {arg};
+            handler.call(ctx, globalObject, globalObject, args);
+        } finally {
+            Context.exit();
+        }
+    }
+
+    /**
+     * To be used by <code>WindowWrapper</code>.
+     */
+    void callHandler(Function handler,
+                     Object[] args)
+        throws JavaScriptException {
+        Context ctx = Context.enter();
+        ctx.setWrapHandler(wrapHandler);
+        try {
             handler.call(ctx, globalObject, globalObject, args);
         } finally {
             Context.exit();

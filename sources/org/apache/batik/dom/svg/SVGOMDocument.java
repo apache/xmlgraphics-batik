@@ -54,12 +54,17 @@ import org.w3c.dom.Text;
 
 import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.DocumentCSS;
+
+import org.w3c.dom.events.EventListener;
+
 import org.w3c.dom.stylesheets.LinkStyle;
 import org.w3c.dom.stylesheets.StyleSheet;
 import org.w3c.dom.stylesheets.StyleSheetList;
+
 import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.svg.SVGLangSpace;
 import org.w3c.dom.svg.SVGSVGElement;
+
 import org.w3c.dom.views.AbstractView;
 import org.w3c.dom.views.DocumentView;
 
