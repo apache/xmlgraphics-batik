@@ -39,9 +39,12 @@ import java.awt.geom.NoninvertibleTransformException;
 
 import java.awt.image.BufferedImage;
 
+import java.text.CharacterIterator;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Iterator;
 import java.util.Map;
 
 import javax.swing.AbstractAction;
@@ -58,8 +61,15 @@ import org.apache.batik.dom.svg.SVGDocumentLoader;
 import org.apache.batik.dom.svg.SVGOMDocument;
 
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.GraphicsNodeTreeIterator;
+import org.apache.batik.gvt.Selectable;
+import org.apache.batik.gvt.Selector;
 
 import org.apache.batik.gvt.event.AbstractEventDispatcher;
+import org.apache.batik.gvt.event.GraphicsNodeMouseListener;
+import org.apache.batik.gvt.event.SelectionListener;
+import org.apache.batik.gvt.event.SelectionEvent;
+
 import org.apache.batik.gvt.renderer.Renderer;
 import org.apache.batik.gvt.renderer.RendererFactory;
 
@@ -69,6 +79,8 @@ import org.apache.batik.refimpl.bridge.DefaultUserAgent;
 import org.apache.batik.refimpl.bridge.SVGBridgeContext;
 
 import org.apache.batik.refimpl.gvt.ConcreteGVTFactory;
+
+import org.apache.batik.refimpl.gvt.text.ConcreteTextSelector;
 
 import org.apache.batik.refimpl.gvt.filter.ConcreteGraphicsNodeRableFactory;
 import org.apache.batik.refimpl.gvt.renderer.DynamicRenderer;
@@ -104,7 +116,8 @@ import org.w3c.dom.events.MutationEvent;
 public class JSVGCanvas
     extends    JComponent
     implements ActionMap,
-               DynamicRenderer.RepaintHandler {
+               DynamicRenderer.RepaintHandler,
+               SelectionListener {
     // The actions names.
     public final static String UNZOOM_ACTION = "UnzoomAction";
     public final static String ZOOM_IN_ACTION = "ZoomInAction";
@@ -243,6 +256,16 @@ public class JSVGCanvas
     protected Shape rotateMarker;
 
     /**
+     * The selection highlight shape.
+     */
+    protected Shape selectionHighlightShape = null;
+
+    /**
+     * The selection highlight shape, in canvas space coords.
+     */
+    private Shape canvasSpaceHighlightShape = null;
+
+    /**
      * The thumbnail canvas.
      */
     protected ThumbnailCanvas thumbnailCanvas;
@@ -251,6 +274,11 @@ public class JSVGCanvas
      * The parser factory.
      */
     protected ParserFactory parserFactory = new ParserFactory();
+
+    /**
+     * The text selector.
+     */
+    protected Selector textSelector;
 
     /**
      * The zoom handler.
@@ -291,6 +319,16 @@ public class JSVGCanvas
      */
     protected Object loadPendingLock = new Object();
 
+
+    /**
+     * The background rendering thread instance - should be only one alive.
+     */
+    private Thread backgroundRenderThread = null;
+
+    /**
+     * The background gvt building thread instance - should be only one alive.
+     */
+    private Thread backgroundBuilderThread = null;
 
     /**
      * Creates a new SVG canvas.
@@ -397,6 +435,11 @@ public class JSVGCanvas
                        (backgroundRenderThread.isAlive())) {
                 backgroundRenderThread.interrupt();
         }
+        if ((backgroundBuilderThread != null) &&
+                       (backgroundBuilderThread.isAlive())) {
+                backgroundBuilderThread.interrupt();
+        }
+
         if (document != null) {
             // fire the unload event
             Event evt = document.createEvent("SVGEvents");
@@ -411,22 +454,33 @@ public class JSVGCanvas
             requestCursor(WAIT_CURSOR);
             // HACK: we do both in case there is a pending paint
             setCursor(WAIT_CURSOR);
-            Thread t = new Thread() {
+            backgroundBuilderThread = new Thread() {
                 public void run() {
-                    GraphicsNode root;
-                    BridgeContext bridgeContext = createBridgeContext(doc);
-                    bridgeContext.setViewCSS((ViewCSS)((SVGOMDocument)doc).getDefaultView());
-                    bridgeContext.setGVTBuilder(builder);
-                    long t1 = System.currentTimeMillis();
-                    root = builder.build(bridgeContext, doc);
-                    bridgeContext.getDocumentLoader().dispose();
-                    long t2 = System.currentTimeMillis();
-
-                    System.out.println("---- GVT tree construction ---- " +
-                                       (t2 - t1) + " ms");
                     try {
-                        EventQueue.invokeAndWait
-                        (new RootNodeChangedRunnable(root, bridgeContext, doc));
+                        GraphicsNode root;
+                        BridgeContext bridgeContext = createBridgeContext(doc);
+                        bridgeContext.setViewCSS(
+                           (ViewCSS)((SVGOMDocument)doc).getDefaultView());
+                        bridgeContext.setGVTBuilder(builder);
+                        long t1 = System.currentTimeMillis();
+                        if (Thread.currentThread().isInterrupted()) {
+                            throw new InterruptedException();
+                        }
+                        root = builder.build(bridgeContext, doc);
+                        initSelectors(root);
+                        bridgeContext.getDocumentLoader().dispose();
+                        long t2 = System.currentTimeMillis();
+
+                        System.out.println("---- GVT tree construction ---- " +
+                                       (t2 - t1) + " ms");
+
+                        if (Thread.currentThread().isInterrupted()) {
+                            throw new InterruptedException();
+                        } else {
+                            EventQueue.invokeAndWait
+                                (new RootNodeChangedRunnable
+                                     (root, bridgeContext, doc));
+                        }
                     } catch (InterruptedException ie) {
                     } catch (java.lang.reflect.InvocationTargetException ite) {
                     } catch (Exception e) {
@@ -435,8 +489,8 @@ public class JSVGCanvas
                     //requestCursor(NORMAL_CURSOR); Don't reset until buffer paint completes.
                 }
             };
-            t.setPriority(Thread.MIN_PRIORITY);
-            t.start();
+            backgroundBuilderThread.setPriority(Thread.MIN_PRIORITY);
+            backgroundBuilderThread.start();
         }
 
     }
@@ -589,6 +643,75 @@ public class JSVGCanvas
         }
         return thumbnailCanvas;
     }
+
+    /**
+     * Associate selectable elements in the current tree with
+     * Selector instances.
+     */
+    public void initSelectors(GraphicsNode treeRoot) {
+        Iterator nodeIter = new GraphicsNodeTreeIterator(treeRoot);
+        if (textSelector == null) {
+            textSelector =
+                new ConcreteTextSelector(
+                    getRendererFactory().getRenderContext());
+            textSelector.addSelectionListener(this);
+        }
+        while (nodeIter.hasNext()) {
+            GraphicsNode node = (GraphicsNode) nodeIter.next();
+            if (node instanceof Selectable) {
+                node.addGraphicsNodeMouseListener(
+                             (GraphicsNodeMouseListener) textSelector);
+                // should make sure this does not add duplicates
+            }
+        }
+        selectionHighlightShape = null;
+        canvasSpaceHighlightShape = null;
+    }
+
+    // SelectionListener /////////////////////////////////////////////
+
+
+    public void selectionChanged(SelectionEvent e) {
+        Graphics g = getGraphics();
+        paintOverlays(g);
+        if (e.getType() == SelectionEvent.SELECTION_CHANGED) {
+            selectionHighlightShape = e.getHighlightShape();
+            canvasSpaceHighlightShape =
+                transform.createTransformedShape(selectionHighlightShape);
+            paintOverlays(g);
+        } else if (e.getType() == SelectionEvent.SELECTION_DONE) {
+            // notify user agent
+            selectionHighlightShape = e.getHighlightShape();
+            canvasSpaceHighlightShape =
+                transform.createTransformedShape(selectionHighlightShape);
+            String selectionString = getSelectionDescription(e.getSelection());
+            userAgent.displayMessage("Selection: "+selectionString);
+            repaint(); // in case immediate-mode XORs are out of sync
+                       // with the regular repaint-on-request repaints
+        } else if (e.getType() == SelectionEvent.SELECTION_CLEARED) {
+            userAgent.displayMessage("");
+            canvasSpaceHighlightShape = null;
+            selectionHighlightShape = null;
+            // change highlight and notify user agent
+        }
+    }
+
+    private String getSelectionDescription(Object o) {
+        String label="[unknown return type]";
+        if (o instanceof CharacterIterator) {
+            CharacterIterator iter = (CharacterIterator) o;
+            char[] cbuff = new char[iter.getEndIndex()-iter.getBeginIndex()];
+            if (cbuff.length > 0) {
+                cbuff[0] = iter.first();
+            }
+            for (int i=1; i<cbuff.length;++i) {
+                cbuff[i] = iter.next();
+            }
+            label = new String(cbuff);
+        }
+        return label;
+    }
+
 
     // ActionMap /////////////////////////////////////////////////////
 
@@ -766,6 +889,10 @@ public class JSVGCanvas
             g2d.setStroke(markerStroke);
             g2d.draw(docBBox);
         }
+        if (canvasSpaceHighlightShape != null) {
+            g2d.setColor(Color.blue);
+            g2d.fill(canvasSpaceHighlightShape);
+        }
         g2d.setXORMode(Color.white);
     }
 
@@ -832,6 +959,8 @@ public class JSVGCanvas
     }
 
     protected void updateBaseTransform() {
+        canvasSpaceHighlightShape =
+                transform.createTransformedShape(selectionHighlightShape);
         // for event dispatching inside GVT with the right transformer
         AbstractEventDispatcher dispatcher =
             (AbstractEventDispatcher)userAgent.getEventDispatcher();
@@ -848,11 +977,6 @@ public class JSVGCanvas
             }
         }
     }
-
-    /**
-     * The background rendering thread instance - should be only one alive.
-     */
-    private Thread backgroundRenderThread = null;
 
     /**
      * To repaint the buffer.
@@ -1722,3 +1846,34 @@ public class JSVGCanvas
     }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

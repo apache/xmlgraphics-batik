@@ -6,25 +6,25 @@
  * the LICENSE file.                                                         *
  *****************************************************************************/
 
-package org.apache.batik.refimpl.gvt.renderer;
+package org.apache.batik.gvt.event;
 
-import java.awt.image.BufferedImage;
-
-import org.apache.batik.gvt.renderer.Renderer;
-import org.apache.batik.gvt.renderer.RendererFactory;
+import java.util.EventListener;
 
 /**
- * This class is a factory for DynamicRenderers.
+ * The listener interface for receiving graphics node paint events.
  *
- * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
+ * @author <a href="mailto:bill.haneman@ireland.sun.com">Bill Haneman</a>
  * @version $Id$
  */
-public class DynamicRendererFactory extends StaticRendererFactory {
+public interface SelectionListener extends EventListener {
+
     /**
-     * Creates a new renderer.
-     * @param im The buffered image used to render.
+     * Invoked when a selection has changed
+     * @param evt the selection change event
+     * @see org.apache.batik.gvt.Selector
+     * @see org.apache.batik.gvt.event.SelectionChangeEvent
+     * @see org.apache.batik.gvt.Selectable
      */
-    public Renderer createRenderer(BufferedImage im) {
-        return new DynamicRenderer(im, getRenderContext());
-    }
+    void selectionChanged(SelectionEvent e);
+
 }

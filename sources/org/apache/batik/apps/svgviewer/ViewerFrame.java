@@ -1079,7 +1079,6 @@ public class ViewerFrame
             domViewer.setDocument(doc, (ViewCSS)doc.getDocumentElement());
             statusBar.setMainMessage(resources.getString
                                          ("Document.creating"));
-            //canvas.setSVGDocument(null);
             break;
         case (DocumentLoadingEvent.DONE):
             doc = (SVGOMDocument) e.getValue();
@@ -1122,10 +1121,12 @@ public class ViewerFrame
             break;
         case (DocumentPropertyEvent.SIZE) :
             Dimension size = (Dimension) e.getValue();
-            canvas.setPreferredSize(size);
-            panel.invalidate();
-            if (!fixedSize) {
-                pack();
+            if (!canvas.getSize().equals(size)) {
+                canvas.setPreferredSize(size);
+                panel.invalidate();
+                if (!fixedSize) {
+                    pack();
+                }
             }
             break;
         case (DocumentPropertyEvent.DESCRIPTION) :
@@ -1138,6 +1139,18 @@ public class ViewerFrame
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -277,8 +277,8 @@ public class ConcreteEventDispatcher extends AbstractEventDispatcher {
                                                     MOUSE_EXITED,
                                                     evt.getWhen(),
                                                     evt.getModifiers(),
-                                                    evt.getX(),
-                                                    evt.getY(),
+                                                    (float)p.getX(),
+                                                    (float)p.getY(),
                                                     evt.getClickCount());
                 globalMouseEvent(gvtevt);
                 lastHit.processMouseEvent(gvtevt);
@@ -291,8 +291,8 @@ public class ConcreteEventDispatcher extends AbstractEventDispatcher {
                                                     evt.getWhen(),
                                                     evt.
                                                     getModifiers(),
-                                                    evt.getX(),
-                                                    evt.getY(),
+                                                    (float)p.getX(),
+                                                    (float)p.getY(),
                                                     evt.
                                                     getClickCount());
                 globalMouseEvent(gvtevt);
@@ -301,7 +301,13 @@ public class ConcreteEventDispatcher extends AbstractEventDispatcher {
         }
         // In all cases, dispatch the original event
         if (node != null) {
-            gvtevt = new GraphicsNodeMouseEvent(node, evt);
+            gvtevt = new GraphicsNodeMouseEvent(node, 
+                                                evt.getID(),
+                                                evt.getWhen(),
+                                                evt.getModifiers(),
+                                                (float)p.getX(),
+                                                (float)p.getY(),
+                                                evt.getClickCount());
             node.processMouseEvent(gvtevt);
             globalMouseEvent(gvtevt);
         }

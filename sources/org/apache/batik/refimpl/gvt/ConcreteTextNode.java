@@ -11,6 +11,7 @@ package org.apache.batik.refimpl.gvt;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Shape;
+import java.awt.font.TextLayout;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
@@ -285,7 +286,9 @@ public class ConcreteTextNode
      * @param the anchor of this node
      */
     public void selectAt(double x, double y, GraphicsNodeRenderContext rc) {
-        beginMark = rc.getTextPainter().selectAt(x, y, aci, anchor, rc);
+         beginMark = rc.getTextPainter().selectAt(x-location.getX(), 
+						 y-location.getY(), 
+                                                 aci, anchor, rc);
         return;
     }
 
@@ -294,7 +297,9 @@ public class ConcreteTextNode
      * @param the anchor of this node
      */
     public void selectTo(double x, double y, GraphicsNodeRenderContext rc) {
-        endMark = rc.getTextPainter().selectTo(x, y, beginMark, aci, anchor,
+        endMark = rc.getTextPainter().selectTo(x-location.getX(), 
+					       y-location.getY(), 
+                                               beginMark, aci, anchor,
                                                rc);
         return;
     }
@@ -304,7 +309,9 @@ public class ConcreteTextNode
      * @param the anchor of this node
      */
     public void selectAll(double x, double y, GraphicsNodeRenderContext rc) {
-        endMark = rc.getTextPainter().selectAll(x, y, aci, anchor, rc);
+        endMark = rc.getTextPainter().selectAll(x-location.getX(), 
+                                                y-location.getY(), 
+                                                aci, anchor, rc);
         beginMark = endMark;
         return;
     }
@@ -335,6 +342,43 @@ public class ConcreteTextNode
         // AttributedCharacterMultiSpanIterator(aci, ranges);
 
         return o;
+    }
+
+    public Shape getHighlightShape(GraphicsNodeRenderContext rc) {
+        Shape shape;
+        if (beginMark == endMark) {
+	    shape = getBounds();
+        } else {
+            shape = 
+                rc.getTextPainter().getHighlightShape(beginMark, endMark);
+            if (shape != null) {
+                if (aci != null) {
+                    java.awt.font.TextLayout layout
+                        = new java.awt.font.TextLayout(aci,
+                             new java.awt.font.FontRenderContext(
+                                            new AffineTransform(),
+                                                          true,
+                                                          true));
+                    Rectangle2D bounds = layout.getBounds();
+                    double tx = location.getX();
+                    double ty = location.getY();
+                    if (anchor == Anchor.MIDDLE) {
+                        tx -= layout.getAdvance()/2;
+                    } else if (anchor == Anchor.END) {
+                        tx -= layout.getAdvance();
+                    }
+                    AffineTransform t = getTransform();
+                    if (t == null) {
+                        t = new AffineTransform();
+                    } else {
+                        t = (AffineTransform) t.clone();
+                    }
+                    t.translate(tx, ty);
+	            shape = t.createTransformedShape(shape);
+                }
+            }
+        } 
+        return shape;
     }
 
     //
