@@ -9,18 +9,24 @@
 package org.apache.batik.bridge;
 
 /**
- * Defines a viewport for 'objectBoundingBox'.
+ * Defines a viewport for a <tt>UserAgent</tt>.
  *
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  * @version $Id$
  */
-public class ObjectBoundingBoxViewport implements Viewport {
+public class UserAgentViewport implements Viewport {
+
+    protected UserAgent userAgent;
+
+    public UserAgentViewport(UserAgent ua) {
+        this.userAgent = ua;
+    }
 
     public float getWidth() {
-        return 1f;
+        return (float) userAgent.getViewportSize().getWidth();
     }
 
     public float getHeight() {
-        return 1f;
+        return (float) userAgent.getViewportSize().getHeight();
     }
 }

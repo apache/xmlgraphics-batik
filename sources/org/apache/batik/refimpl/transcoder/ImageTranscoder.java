@@ -45,6 +45,7 @@ public abstract class ImageTranscoder extends AbstractTranscoder {
         BridgeContext ctx =
             new DefaultBridgeContext(getParserClassName(), svgDocument);
         ctx.setGVTBuilder(getGVTBuilder());
+        ctx.setCurrentViewport(getDefaultViewport());
 
         DefaultSVGContext svgCtx = new DefaultSVGContext();
         svgCtx.setUserAgent(ctx.getUserAgent());

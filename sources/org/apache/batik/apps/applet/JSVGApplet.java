@@ -13,6 +13,7 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Dimension2D;
 import javax.swing.JApplet;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
@@ -200,6 +201,13 @@ public class JSVGApplet extends JApplet implements UserAgent, DocumentListener {
     }
 
     // UserAgent ///////////////////////////////////////////////////
+
+    /**
+     * Returns the default size of the viewport of this user agent.
+     */
+    public Dimension2D getViewportSize() {
+        return getSize();
+    }
 
     /**
      * Returns the <code>EventDispatcher</code> used by the

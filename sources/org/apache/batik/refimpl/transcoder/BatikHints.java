@@ -39,5 +39,12 @@ public class BatikHints {
         }
     };
 
+    public static final TranscodingHints.Key KEY_DEFAULT_VIEWPORT =
+            new TranscodingHints.Key() {
+        public boolean isCompatibleValue(Object v) {
+            return (v instanceof org.apache.batik.bridge.Viewport);
+        }
+    };
+
 }
 

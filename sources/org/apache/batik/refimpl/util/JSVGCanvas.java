@@ -57,6 +57,7 @@ import org.apache.batik.bridge.BridgeMutationEvent;
 import org.apache.batik.bridge.GraphicsNodeBridge;
 import org.apache.batik.bridge.GVTBuilder;
 import org.apache.batik.bridge.UserAgent;
+import org.apache.batik.bridge.UserAgentViewport;
 
 import org.apache.batik.dom.svg.SVGDocumentLoader;
 import org.apache.batik.dom.svg.SVGOMDocument;
@@ -643,6 +644,7 @@ public class JSVGCanvas
             (new ConcreteGraphicsNodeRableFactory());
         ((SVGBridgeContext)result).setInterpreterPool
             (new ConcreteInterpreterPool(doc));
+        result.setCurrentViewport(new UserAgentViewport(userAgent));
         return result;
     }
 
