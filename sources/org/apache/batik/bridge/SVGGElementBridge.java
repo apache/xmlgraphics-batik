@@ -38,6 +38,13 @@ public class SVGGElementBridge extends AbstractGraphicsNodeBridge {
     }
 
     /**
+     * Returns a new instance of this bridge.
+     */
+    public Bridge getInstance() {
+        return new SVGGElementBridge();
+    }
+
+    /**
      * Creates a <tt>GraphicsNode</tt> according to the specified parameters.
      *
      * @param ctx the bridge context to use

@@ -90,7 +90,8 @@ public class SVGPathElementBridge extends SVGDecoratedShapeElementBridge {
      * @param evt the DOM mutation event
      */
     protected void handleDOMAttrModifiedEvent(MutationEvent evt) {
-        if (evt.getAttrName().equals(SVG_D_ATTRIBUTE)) {
+        String attrName = evt.getAttrName();
+        if (attrName.equals(SVG_D_ATTRIBUTE)) {
 
             BridgeUpdateEvent be = new BridgeUpdateEvent();
             fireBridgeUpdateStarting(be);

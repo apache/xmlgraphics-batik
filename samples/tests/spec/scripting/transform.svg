@@ -56,9 +56,20 @@
       <path d="M50 0 L100 100 L0 100Z" style="fill:gold"
         onload="transform(evt, 'translate(320 250)')"/>
 
-      <line x1="0" y1="0" x2="100" y2="50" style="stroke:orange; stroke-width:8; fill:none"
-        onload="transform(evt, 'translate(170 400)')"/>
+      <line x1="0" y1="0" x2="100" y2="50" 
+        style="stroke:crimson; stroke-width:8; fill:none"
+        onload="transform(evt, 'translate(20 400)')"/>
 
+      <text x="0" y="0" 
+         style="fill:orange; text-anchor:middle;font-size:48" 
+         onload="transform(evt, 'translate(220 420)')">Batik</text>
+
+      <image x="0" y="0" width="50" height="50" 
+         xlink:href="../../resources/images/png2.png"
+         onload="transform(evt, 'translate(320 400)')" />
+      <image x="0" y="0" width="50" height="50" 
+         xlink:href="../../resources/images/svg.svg"
+         onload="transform(evt, 'translate(370 400)')" />
 </g>
 
 <g style="fill:none; stroke:black">
@@ -75,7 +86,15 @@
 
       <path d="M50 0 L100 100 L0 100Z" transform="translate(320 250)"/>
 
-      <line x1="0" y1="0" x2="100" y2="50" transform="translate(170 400)"/>
+      <line x1="0" y1="0" x2="100" y2="50" transform="translate(20 400)"/>
+
+      <text x="0" y="0" 
+             style="stroke:black; fill:none; text-anchor:middle;font-size:48" 
+             transform="translate(220 420)">Batik</text>
+      <rect x="0" y="0" width="50" height="50" transform="translate(320 400)" 
+            style="stroke:black; fill:none;"/>
+      <rect x="0" y="0" width="50" height="50" transform="translate(370 400)"
+            style="stroke:black; fill:none;"/>
 
 </g>
 

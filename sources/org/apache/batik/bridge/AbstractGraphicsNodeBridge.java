@@ -140,7 +140,8 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
      * @param evt the DOM mutation event
      */
     protected void handleDOMAttrModifiedEvent(MutationEvent evt) {
-        if (evt.getAttrName().equals(SVG_TRANSFORM_ATTRIBUTE)) {
+        String attrName = evt.getAttrName();
+        if (attrName.equals(SVG_TRANSFORM_ATTRIBUTE)) {
             BridgeUpdateEvent be = new BridgeUpdateEvent();
             fireBridgeUpdateStarting(be);
             
@@ -151,7 +152,6 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
                     (e, SVG_TRANSFORM_ATTRIBUTE, s);
             }
             node.setTransform(at);
-
             fireBridgeUpdateCompleted(be);
         }
     }

@@ -51,6 +51,10 @@ import org.w3c.dom.css.CSSPrimitiveValue;
 import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.CSSValue;
 import org.w3c.dom.css.CSSValueList;
+import org.w3c.dom.events.Event;
+import org.w3c.dom.events.EventListener;
+import org.w3c.dom.events.EventTarget;
+import org.w3c.dom.events.MutationEvent;
 
 /**
  * Bridge class for the &lt;text> element.
@@ -62,10 +66,24 @@ public class SVGTextElementBridge extends AbstractSVGBridge
     implements GraphicsNodeBridge, ErrorConstants {
 
     /**
+     * The element that has been handled by this bridge.
+     */
+    protected Element e;
+
+    /**
+     * The graphics node constructed by this bridge.
+     */
+    protected GraphicsNode node;
+
+    /**
+     * The bridge context to use for dynamic updates.
+     */
+    protected BridgeContext ctx;
+
+    /**
      * Constructs a new bridge for the &lt;text> element.
      */
     public SVGTextElementBridge() {}
-
 
     /**
      * Returns 'text'.
@@ -74,8 +92,11 @@ public class SVGTextElementBridge extends AbstractSVGBridge
         return SVG_TEXT_TAG;
     }
 
-    public Bridge getInstance(){
-        return this;
+    /**
+     * Returns a new instance of this bridge.
+     */
+    public Bridge getInstance() {
+        return new SVGTextElementBridge();
     }
 
     /**
@@ -123,10 +144,23 @@ public class SVGTextElementBridge extends AbstractSVGBridge
             node.setRenderingHints(hints);
         }
 
+        node.setLocation(getLocation(ctx, e));
+
+        return node;
+    }
+
+    /**
+     * Returns the text node location according to the 'x' and 'y'
+     * attributes of the specified text element.
+     *
+     * @param ctx the bridge context to use
+     * @param e the text element
+     */
+    protected Point2D getLocation(BridgeContext ctx, Element e) {
         UnitProcessor.Context uctx = UnitProcessor.createContext(ctx, e);
 
         // 'x' attribute - default is 0
-        s = e.getAttributeNS(null, SVG_X_ATTRIBUTE);
+        String s = e.getAttributeNS(null, SVG_X_ATTRIBUTE);
         float x = 0;
         if (s.length() != 0) {
             StringTokenizer st = new StringTokenizer(s);
@@ -145,10 +179,7 @@ public class SVGTextElementBridge extends AbstractSVGBridge
             y = UnitProcessor.svgVerticalCoordinateToUserSpace
                 (startY, SVG_Y_ATTRIBUTE, uctx);
         }
-
-        node.setLocation(new Point2D.Float(x, y));
-
-        return node;
+        return new Point2D.Float(x, y);
     }
 
     /**
@@ -170,7 +201,8 @@ public class SVGTextElementBridge extends AbstractSVGBridge
         // now add the painting attributes, cannot do it before this because
         // some of the Paint objects need to know the bounds of the text
         // and this isn't know until the text node aci is set
-        TextDecoration textDecoration = getTextDecoration(e, (TextNode)node, new TextDecoration(), ctx);
+        TextDecoration textDecoration = 
+            getTextDecoration(e, (TextNode)node, new TextDecoration(), ctx);
         addPaintAttributes(as, e, (TextNode)node, textDecoration, ctx);
         ((TextNode)node).setAttributedCharacterIterator(as.getIterator());
 
@@ -185,7 +217,14 @@ public class SVGTextElementBridge extends AbstractSVGBridge
 
         // bind the specified element and its associated graphics node if needed
         if (ctx.isDynamic()) {
+            ((EventTarget)e).addEventListener("DOMAttrModified", 
+                                              new DOMAttrModifiedEventListener(),
+                                              false);
+            this.e = e;
+            this.node = node;
+            this.ctx = ctx;
             ctx.bind(e, node);
+            BridgeEventSupport.addDOMListener(ctx, e);
         }
 
         // Handle children elements such as <title>
@@ -197,6 +236,53 @@ public class SVGTextElementBridge extends AbstractSVGBridge
      */
     public boolean isComposite() {
         return false;
+    }
+
+    // dynamic support
+
+    /**
+     * Handles DOMAttrModified events.
+     *
+     * @param evt the DOM mutation event
+     */
+    protected void handleDOMAttrModifiedEvent(MutationEvent evt) {
+        String attrName = evt.getAttrName();
+        if (attrName.equals(SVG_TRANSFORM_ATTRIBUTE)) {
+            BridgeUpdateEvent be = new BridgeUpdateEvent();
+            fireBridgeUpdateStarting(be);
+            
+            String s = evt.getNewValue();
+            AffineTransform at = GraphicsNode.IDENTITY;
+            if (s.length() != 0) {
+                at = SVGUtilities.convertTransform
+                    (e, SVG_TRANSFORM_ATTRIBUTE, s);
+            }
+            node.setTransform(at);
+
+            fireBridgeUpdateCompleted(be);
+
+        }
+    }
+
+
+    /**
+     * The listener class for 'DOMAttrModified' event.
+     */
+    protected class DOMAttrModifiedEventListener implements EventListener {
+
+        /**
+         * Handles 'DOMAttrModfied' events and deleguates to the
+         * 'handleDOMAttrModifiedEvent' method any changes to the
+         * GraphicsNode if any.
+         *
+         * @param evt the DOM event
+         */
+        public void handleEvent(Event evt) {
+            if (evt.getTarget() != e) {
+                throw new Error("handleEvent bad target");
+            }
+            handleDOMAttrModifiedEvent((MutationEvent)evt);
+        }
     }
 
     // -----------------------------------------------------------------------
