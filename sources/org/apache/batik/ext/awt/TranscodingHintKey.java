@@ -19,9 +19,7 @@ import java.awt.Shape;
  */
 final class TranscodingHintKey extends RenderingHints.Key {
 
-    TranscodingHintKey() {
-        super(10100);
-    }
+    TranscodingHintKey(int number) { super(number); }
 
     public boolean isCompatibleValue(Object val) {
         boolean isCompatible = true;

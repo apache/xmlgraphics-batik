@@ -28,6 +28,7 @@ import java.awt.image.SampleModel;
 import java.awt.image.PixelInterleavedSampleModel;
 import java.awt.image.WritableRaster;
 
+import org.apache.batik.ext.awt.ColorSpaceHintKey;
 import org.apache.batik.ext.awt.image.renderable.FilterAsAlphaRable;
 
 /**
@@ -52,8 +53,8 @@ public class Any2LumRed extends AbstractRed {
               src.getTileGridYOffset(),
               null);
 
-        props.put(FilterAsAlphaRable.PROPERTY_COLORSPACE,
-                  FilterAsAlphaRable.VALUE_COLORSPACE_GREY);
+        props.put(ColorSpaceHintKey.PROPERTY_COLORSPACE,
+                  ColorSpaceHintKey.VALUE_COLORSPACE_GREY);
     }
 
     public WritableRaster copyData(WritableRaster wr) {

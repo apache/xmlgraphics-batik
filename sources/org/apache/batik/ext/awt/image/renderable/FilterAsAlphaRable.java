@@ -20,6 +20,8 @@ import java.awt.image.RenderedImage;
 
 import java.awt.image.renderable.RenderContext;
 
+import org.apache.batik.ext.awt.ColorSpaceHintKey;
+import org.apache.batik.ext.awt.RenderingHintsKeyExt;
 import org.apache.batik.ext.awt.image.rendered.CachableRed;
 import org.apache.batik.ext.awt.image.rendered.RenderedImageCachableRed;
 import org.apache.batik.ext.awt.image.rendered.FilterAsAlphaRed;
@@ -35,57 +37,6 @@ import org.apache.batik.ext.awt.image.rendered.FilterAsAlphaRed;
  */
 public class FilterAsAlphaRable
     extends    AbstractRable {
-
-    /**
-     * Notice to source that we prefer an Alpha RGB Image.
-     */
-    public static Object VALUE_COLORSPACE_ARGB  = new Object();
-
-    /**
-     * Notice to source that we will not use Alpha Channel but
-     * we still want RGB data.
-     */
-    public static Object VALUE_COLORSPACE_RGB   = new Object();
-
-    /**
-     * Notice to source that we only want Greyscale data (no Alpha).
-     */
-    public static Object VALUE_COLORSPACE_GREY  = new Object();
-
-    /**
-     * Notice to source that we only want Greyscale data with
-     * an alpha channel.
-     */
-    public static Object VALUE_COLORSPACE_AGREY = new Object();
-
-    /**
-     * Notice to source that we only want an alpha channel.
-     * The source should simply render alpha (no conversion)
-     */
-    public static Object VALUE_COLORSPACE_ALPHA = new Object();
-
-    /**
-     * Notice to source that we only want an alpha channel.
-     * The source should follow the SVG spec for how to
-     * convert ARGB, RGB, Grey and AGrey to just an Alpha channel.
-     */
-    public static Object VALUE_COLORSPACE_ALPHA_CONVERT = new Object();
-
-    public static RenderingHints.Key KEY_COLORSPACE =
-        new RenderingHints.Key(9876) {
-                public boolean isCompatibleValue(Object val) {
-                    if (val == VALUE_COLORSPACE_ARGB)          return true;
-                    if (val == VALUE_COLORSPACE_RGB)           return true;
-                    if (val == VALUE_COLORSPACE_GREY)          return true;
-                    if (val == VALUE_COLORSPACE_AGREY)         return true;
-                    if (val == VALUE_COLORSPACE_ALPHA)         return true;
-                    if (val == VALUE_COLORSPACE_ALPHA_CONVERT) return true;
-                    return false;
-                }
-            };
-
-    public static final String PROPERTY_COLORSPACE =
-        "org.apache.batik.gvt.filter.Colorspace";
 
     public FilterAsAlphaRable(Filter src) {
         super(src, null);
@@ -116,7 +67,8 @@ public class FilterAsAlphaRable
             aoi = getBounds2D();
         }
 
-        rh.put(KEY_COLORSPACE, VALUE_COLORSPACE_ALPHA_CONVERT);
+        rh.put(RenderingHintsKeyExt.KEY_COLORSPACE, 
+               ColorSpaceHintKey.VALUE_COLORSPACE_ALPHA_CONVERT);
 
         RenderedImage ri;
         ri = getSource().createRendering(new RenderContext(at, aoi, rh));
@@ -125,8 +77,8 @@ public class FilterAsAlphaRable
 
         CachableRed cr = RenderedImageCachableRed.wrap(ri);
 
-        Object val = cr.getProperty(PROPERTY_COLORSPACE);
-        if (val == VALUE_COLORSPACE_ALPHA_CONVERT)
+        Object val = cr.getProperty(ColorSpaceHintKey.PROPERTY_COLORSPACE);
+        if (val == ColorSpaceHintKey.VALUE_COLORSPACE_ALPHA_CONVERT)
             return cr;
 
         return new FilterAsAlphaRed(cr);
