@@ -297,6 +297,14 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
     }
 
     /**
+     * Returns the global transformation matrix from the current
+     * element to the root.
+     */
+    public AffineTransform getGlobalTransform() {
+        return node.getGlobalTransform();
+    }
+
+    /**
      * Returns the width of the viewport which directly contains the
      * given element.
      */

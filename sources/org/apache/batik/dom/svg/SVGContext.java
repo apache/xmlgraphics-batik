@@ -40,6 +40,12 @@ public interface SVGContext {
     AffineTransform getCTM();
 
     /**
+     * Returns the global transformation matrix from the current
+     * element to the root.
+     */
+    AffineTransform getGlobalTransform();
+
+    /**
      * Returns the width of the viewport which directly contains the
      * associated element.
      */
