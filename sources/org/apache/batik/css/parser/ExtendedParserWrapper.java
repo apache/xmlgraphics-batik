@@ -11,15 +11,17 @@ package org.apache.batik.css.parser;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Locale;
+import java.util.StringTokenizer;
 
 import org.w3c.css.sac.CSSException;
-import org.w3c.css.sac.LexicalUnit;
-import org.w3c.css.sac.SelectorList;
-import org.w3c.css.sac.DocumentHandler;
-import org.w3c.css.sac.SelectorFactory;
 import org.w3c.css.sac.ConditionFactory;
+import org.w3c.css.sac.DocumentHandler;
 import org.w3c.css.sac.ErrorHandler;
 import org.w3c.css.sac.InputSource;
+import org.w3c.css.sac.LexicalUnit;
+import org.w3c.css.sac.SACMediaList;
+import org.w3c.css.sac.SelectorFactory;
+import org.w3c.css.sac.SelectorList;
 
 import org.w3c.css.sac.Parser;
 
@@ -239,6 +241,21 @@ public class ExtendedParserWrapper implements ExtendedParser {
     public boolean parsePriority(InputSource source)
         throws CSSException, IOException {
 	return parser.parsePriority(source);
+    }
+
+    /**
+     * Implements {@link ExtendedParser#parseMedia(String)}.
+     */
+    public SACMediaList parseMedia(String mediaText)
+        throws CSSException, IOException {
+        CSSSACMediaList result = new CSSSACMediaList();
+        if (!"all".equalsIgnoreCase(mediaText)) {
+            StringTokenizer st = new StringTokenizer(mediaText, " ,");
+            while (st.hasMoreTokens()) {
+                result.append(st.nextToken());
+            }
+        }
+        return result;
     }
 
     /**
