@@ -19,6 +19,7 @@
         <subtitle>SVG Toolkit</subtitle>
         <authors>
             <person name="Vincent Hardy" email="vincent.hardy@eng.sun.com"/>
+            <person name="Thierry Kormann" email="tkormann.apache.org"/>
         </authors>
     </header>
 
@@ -111,7 +112,7 @@
         This means that there are lots of ways to contribute to the project, either
         with direct participation (coding, documenting, answering questions,
         proposing ideas, reporting bugs, suggesting bug-fixes, etc..) or by resource
-        donation (money, time, publicity, hardware, software, conference
+        donation (publicity, hardware, software, conference
         presentations, speeches, etc...).
         </p>
         <p>
@@ -119,19 +120,7 @@
         <link href="http://xml.apache.org/mail.html">Batik mailing list</link>
         (follow the link for information on how to subscribe and to access the mail
         list archives), to checkout the <link href="http://xml.apache.org/websrc/index.cgi/xml-batik/">
-        latest code</link>. Document writers are usually the most wanted people so if
-        you like to help but you're not familiar with technical details, don't worry:
-        we have work for you.
-        </p>
-        <p>
-        A great way of contributing back to the project is to
-        allow others to know about it so that the word spreads and others may wish to
-        contribute, so, please, help us by placing the cocoon logo somewhere in your
-        site to indicate that you are using and supporting the Cocoon Project.
-        </p>
-
-        <p>
-        Thank you very much.
+        latest code</link>.
         </p>
         </s1>
     </body>
