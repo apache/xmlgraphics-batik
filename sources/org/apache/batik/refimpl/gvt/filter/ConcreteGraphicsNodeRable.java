@@ -335,7 +335,7 @@ public class ConcreteGraphicsNodeRable implements GraphicsNodeRable{
             BufferedImage offScreen
                 = new BufferedImage(renderedArea.width,
                                     renderedArea.height,
-                                    BufferedImage.TYPE_INT_ARGB_PRE);
+                                    BufferedImage.TYPE_INT_ARGB);
 
             Graphics2D g = offScreen.createGraphics();
 
