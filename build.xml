@@ -153,9 +153,9 @@ To display the available targets type:
     <java fork="yes"
           classname="${class-prefix}.apps.svgviewer.Main">
       <classpath>
+        <pathelement location="${dest}" />
         <path refid="libs-classpath"/>
         <pathelement location="resources" />
-        <pathelement location="${dest}" />
       </classpath>
       <arg value="${args}"/>
     </java>
