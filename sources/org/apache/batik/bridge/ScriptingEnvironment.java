@@ -59,6 +59,16 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
     protected EventListener domAttrModifiedListener;
 
     /**
+     * The DOMNodeInserted event listener.
+     */
+    protected EventListener domNodeInsertedListener;
+
+    /**
+     * The DOMNodeRemoved event listener.
+     */
+    protected EventListener domNodeRemovedListener;
+
+    /**
      * The SVGAbort event listener.
      */
     protected EventListener svgAbortListener =
@@ -181,11 +191,19 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
         // Add the scripting listeners.
         addScriptingListeners(doc.getDocumentElement());
 
-        // Add the listener responsible of updating the event attributes
+        // Add the listeners responsible of updating the event attributes
         EventTarget et = (EventTarget)doc;
         domAttrModifiedListener = new DOMAttrModifiedListener();
         et.addEventListener("DOMAttrModified",
                             domAttrModifiedListener,
+                            false);
+        domNodeInsertedListener = new DOMNodeInsertedListener();
+        et.addEventListener("DOMNodeInserted",
+                            domNodeInsertedListener,
+                            false);
+        domNodeRemovedListener = new DOMNodeRemovedListener();
+        et.addEventListener("DOMAttrRemoved",
+                            domNodeRemovedListener,
                             false);
     }
 
@@ -593,6 +611,24 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
      * document.
      */
     protected class DOMAttrModifiedListener implements EventListener {
+        public void handleEvent(Event evt) {
+            // !!! Updates the listeners.
+        }
+    }
+
+    /**
+     * The listener class for 'DOMNodeInserted' event.
+     */
+    protected class DOMNodeInsertedListener implements EventListener {
+        public void handleEvent(Event evt) {
+            addScriptingListeners((Node)evt.getTarget());
+        }
+    }
+
+    /**
+     * The listener class for 'DOMNodeRemoved' event.
+     */
+    protected class DOMNodeRemovedListener implements EventListener {
         public void handleEvent(Event evt) {
             // !!! Updates the listeners.
         }
