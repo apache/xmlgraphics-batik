@@ -31,9 +31,9 @@
     <!-- ============================================================= -->
     <g id="testContent" class="legend" style="text-anchor:middle">
         <text x="225" y="40" class="title">
-            Solid Color Paint Server
+            Color Switch Paint Server
         </text>
-
+  
         <path d="M25,135 c50,-50 50,50 100,0 c50,-50 50,50 100,0 
                  c50,-50 50,50 100,0c50,-50 50,50 100,0" 
               fill="none" stroke="black" stroke-width="10"/> 
@@ -47,17 +47,42 @@
               fill="none" stroke="black" stroke-width="10"/> 
   
         <switch>
-          <g requiredExtensions="http://xml.apache.org/batik/ext/solidColor/1.0"
+          <g requiredExtensions="http://xml.apache.org/batik/ext/colorSwitch/1.0"
              fill="#0D0" stroke="#88F" stroke-width="2">
 
-            <batik:solidColor id="TransPurple" color="#FF00FF" opacity=".5"/>
-            <batik:solidColor id="SolidPurple" color="#FF00FF" />
-            <batik:solidColor id="orange"      color="orange" opacity="1"/>
+            <batik:colorSwitch id="TransPurple">
+                <batik:solidColor color="red" 
+                       requiredExtensions="NonExistantExtension"/>
+                <batik:solidColor color="#FF00FF" opacity=".5"
+                       requiredExtensions="http://xml.apache.org/batik/ext/solidColor/1.0"/>
+                <linearGradient>
+                    <stop offset="0" stop-color="#FF0000" stop-opacity="0.5"/>
+                </linearGradient>
+            </batik:colorSwitch>
+
+            <batik:colorSwitch id="SolidPurple">
+                <batik:solidColor color="#FF00FF" 
+                       requiredExtensions="http://xml.apache.org/batik/ext/solidColor/1.0"/>
+                <linearGradient>
+                    <stop offset="0" stop-color="#FFFF00" />
+                </linearGradient>
+            </batik:colorSwitch>
+
+            <batik:colorSwitch id="orange">
+                <batik:solidColor color="orange" opacity="1"
+                       requiredExtensions="NonExistantExtension" />
+                <linearGradient y2="100%">
+                    <stop offset=".1" stop-color="crimson" />
+                    <stop offset=".5" stop-color="gold" stop-opacity="0.5"/>
+                    <stop offset=".9" stop-color="crimson" />
+                </linearGradient>
+            </batik:colorSwitch>
+
 
             <circle fill="url(#SolidPurple)"   cx="85"  cy="135" r="50"/>
             <circle fill="url(#TransPurple)"   cx="225" cy="135" r="50"/>
             <circle fill="url(#orange)"        cx="365" cy="135" r="50"/>
-
+                                            
             <g stroke-width="5" fill="none">
                 <circle stroke="url(#SolidPurple)" cx="85"  cy="275" r="50"/>
                 <circle stroke="url(#TransPurple)" cx="225" cy="275" r="50"/>

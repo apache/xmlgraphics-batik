@@ -91,6 +91,11 @@ public class BatikDomExtension
             (BATIK_EXT_NAMESPACE_URI,
              BATIK_EXT_SOLID_COLOR_TAG,
              new SolidColorElementFactory());
+
+        di.registerCustomElementFactory
+            (BATIK_EXT_NAMESPACE_URI,
+             BATIK_EXT_COLOR_SWITCH_TAG,
+             new ColorSwitchElementFactory());
     }
 
     /**
@@ -144,7 +149,6 @@ public class BatikDomExtension
     protected static class SolidColorElementFactory 
         implements SVGDOMImplementation.ElementFactory {
         public SolidColorElementFactory() {
-            System.out.println("FActory created");
         }
         /**
          * Creates an instance of the associated element type.
@@ -154,5 +158,19 @@ public class BatikDomExtension
         }
     }
 
+    /**
+     * To create a 'solidColor' element.
+     */
+    protected static class ColorSwitchElementFactory 
+        implements SVGDOMImplementation.ElementFactory {
+        public ColorSwitchElementFactory() {
+        }
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix, Document doc) {
+            return new ColorSwitchElement(prefix, (AbstractDocument)doc);
+        }
+    }
 
 }
