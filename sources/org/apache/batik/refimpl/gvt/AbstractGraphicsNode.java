@@ -572,8 +572,6 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
         return bounds;
     }
 
-
-
     public boolean contains(Point2D p) {
         return getBounds().contains(p);
     }
