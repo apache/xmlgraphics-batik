@@ -213,6 +213,10 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
 
         SVGSVGElement svgElement = imgDocument.getRootElement();
         GraphicsNode node = ctx.getGVTBuilder().build(ctx, svgElement);
+	// HACK: remove the clip set by the SVGSVGElement as the overflow
+	// and clip properties must be ignored. The clip will be set later
+	// using the overflow and clip of the <image> element.
+	node.setClip(null);
         result.getChildren().add(node);
 
 	// create the implicit viewBox for the SVG image. The viewBox for a
@@ -225,7 +229,6 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
 	// appropriate AffineTransform to the image node
         Rectangle2D bounds = getImageBounds(ctx, e);
 	initializeViewport(ctx, e, result, vb, bounds);
-
         return result;
     }
 
