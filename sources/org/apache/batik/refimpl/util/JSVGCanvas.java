@@ -642,11 +642,6 @@ public class JSVGCanvas
                 int ty = (int)panTransform.getTranslateY();
                 paintPanRegions(g2d, tx, ty, w, h);
                 g2d.transform(panTransform);
-            } else {
-                g2d.setComposite(AlphaComposite.SrcOver);
-                g2d.setClip(0, 0, w, h);
-                g2d.setPaint(Color.white);
-                g2d.fillRect(0, 0, w, h);
             }
             g2d.drawImage(buffer, null, 0, 0);
 
@@ -758,18 +753,26 @@ public class JSVGCanvas
     }
 
     /**
+     * The background rendering thread instance - should be only one alive.
+     */
+    private Thread backgroundRenderThread = null;
+
+    /**
      * To repaint the buffer.
      */
-    protected void repaintAOI(Renderer renderer, Dimension size, BufferedImage buffer) {
+    protected void repaintAOI(Renderer renderer, Dimension size,
+                                                 BufferedImage buffer) {
 
-        // Issue:  we now may have multiple repaintAOI runnables alive
-        //   at the same time (for instance, if we do 2 pans in quick succession).
-        //   This is of course inefficient.  It would be better to interrupt the old
-        //   thread when a new one is created.
-
-        Shape aoi = getAreaOfInterest(new Rectangle(0, 0, size.width, size.height));
-        Thread t = new Thread(new RenderBufferAOIRunnable(renderer, aoi, buffer, size));
+        Shape aoi = getAreaOfInterest(
+                        new Rectangle(0, 0, size.width, size.height));
+        Thread t = new Thread(
+                   new RenderBufferAOIRunnable(renderer, aoi, buffer, size));
         t.setPriority(Thread.MIN_PRIORITY);
+        if ((backgroundRenderThread != null) &&
+                       (backgroundRenderThread.isAlive())) {
+                backgroundRenderThread.interrupt();
+        }
+        backgroundRenderThread = t;
         t.start();
     }
 
@@ -792,19 +795,21 @@ public class JSVGCanvas
             long t1 = System.currentTimeMillis();
             requestCursor(WAIT_CURSOR);
             synchronized (globalBuffer) {
-
                 // if we don't synchronize, we can accidentlly
                 // paint twice after clearing twice
-
-                clearBuffer(buffer, (int) (this.size.getWidth()),
+                if (!Thread.currentThread().isInterrupted()) {
+                    clearBuffer(buffer, (int) (this.size.getWidth()),
                                     (int) (this.size.getHeight()));
-                renderer.repaint(aoi);
+                    renderer.repaint(aoi);
+                }
             }
-            long t2 = System.currentTimeMillis();
-            System.out.println("----------- Rendering --------- " +
+            if (!Thread.currentThread().isInterrupted()) {
+                long t2 = System.currentTimeMillis();
+                System.out.println("----------- Rendering --------- " +
                                (t2 - t1) + " ms");
-            requestCursor(NORMAL_CURSOR);
-            JSVGCanvas.this.repaint();
+                requestCursor(NORMAL_CURSOR);
+                JSVGCanvas.this.repaint();
+            }
         }
     }
 
@@ -1108,6 +1113,7 @@ public class JSVGCanvas
                 }
             }
         }
+
         protected void paintRotateMarker(int x, int y) {
             clearRotateMarker();
 
@@ -1144,23 +1150,30 @@ public class JSVGCanvas
                      dim.height / 2);
 
                 rotateMarker = rotateTransform.createTransformedShape(p);
-
-                Rectangle r;
-                r = markerStroke.createStrokedShape(rotateMarker).getBounds();
-                paintImmediately(r.x, r.y, r.width, r.height);
-            }
+/*
+ *               Rectangle r;
+ *               r = markerStroke.createStrokedShape(rotateMarker).getBounds();
+ *               paintImmediately(r.x, r.y, r.width, r.height);
+ */
+                 paintOverlays(getGraphics());
+           }
         }
+
         protected void clearRotateMarker() {
-            if (rotateMarker != null) {
-                Rectangle r;
-                r = markerStroke.createStrokedShape(rotateMarker).getBounds();
-                rotateMarker = null;
-                paintImmediately(r.x, r.y, r.width, r.height);
-            }
+/*            if (rotateMarker != null) {
+ *               Rectangle r;
+ *               r = markerStroke.createStrokedShape(rotateMarker).getBounds();
+ *               rotateMarker = null;
+ *               paintImmediately(r.x, r.y, r.width, r.height);
+ *            }
+ */
+              paintOverlays(getGraphics());
+              rotateMarker = null;
         }
-        protected void paintZoomMarker(int x, int y) {
-            clearZoomMarker();
 
+        protected void paintZoomMarker(int x, int y) {
+            Graphics g = JSVGCanvas.this.getGraphics();
+            clearZoomMarker();
             if (mouseExited) {
                 markerTop = null;
                 markerLeft = null;
@@ -1171,40 +1184,51 @@ public class JSVGCanvas
                 markerLeft   = new Line2D.Float(sx, sy, sx, y);
                 markerBottom = new Line2D.Float(sx, y,  x,  y);
                 markerRight  = new Line2D.Float(x,  y,  x,  sy);
-
-                Rectangle r;
-                r = markerStroke.createStrokedShape(markerTop).getBounds();
-                paintImmediately(r.x, r.y, r.width, r.height);
-
-                r = markerStroke.createStrokedShape(markerLeft).getBounds();
-                paintImmediately(r.x, r.y, r.width, r.height);
-
-                r = markerStroke.createStrokedShape(markerBottom).getBounds();
-                paintImmediately(r.x, r.y, r.width, r.height);
-
-                r = markerStroke.createStrokedShape(markerRight).getBounds();
-                paintImmediately(r.x, r.y, r.width, r.height);
+/*
+ *               Rectangle r;
+ *               r = markerStroke.createStrokedShape(markerTop).getBounds();
+ *               paintImmediately(r.x, r.y, r.width, r.height);
+ *
+ *               r = markerStroke.createStrokedShape(markerLeft).getBounds();
+ *               paintImmediately(r.x, r.y, r.width, r.height);
+ *
+ *               r = markerStroke.createStrokedShape(markerBottom).getBounds();
+ *               paintImmediately(r.x, r.y, r.width, r.height);
+ *
+ *               r = markerStroke.createStrokedShape(markerRight).getBounds();
+ *               paintImmediately(r.x, r.y, r.width, r.height);
+ */
+                paintOverlays(g);
+                // NOTE: If overlays do more than XOR, we will need to go back to using
+                //       paintImmediately.
             }
         }
+
         protected void clearZoomMarker() {
-            if (markerTop != null) {
-                Rectangle r;
-                r = markerStroke.createStrokedShape(markerTop).getBounds();
-                markerTop = null;
-                paintImmediately(r.x, r.y, r.width, r.height);
 
-                r = markerStroke.createStrokedShape(markerLeft).getBounds();
-                markerLeft = null;
-                paintImmediately(r.x, r.y, r.width, r.height);
-
-                r = markerStroke.createStrokedShape(markerBottom).getBounds();
-                markerBottom = null;
-                paintImmediately(r.x, r.y, r.width, r.height);
-
-                r = markerStroke.createStrokedShape(markerRight).getBounds();
-                markerRight = null;
-                paintImmediately(r.x, r.y, r.width, r.height);
-            }
+            Graphics g = JSVGCanvas.this.getGraphics();
+            paintOverlays(g);
+            markerTop = null;
+/*
+ *            if (markerTop != null) {
+ *               Rectangle r;
+ *               r = markerStroke.createStrokedShape(markerTop).getBounds();
+ *               markerTop = null;
+ *               paintImmediately(r.x, r.y, r.width, r.height);
+ *
+ *               r = markerStroke.createStrokedShape(markerLeft).getBounds();
+ *               markerLeft = null;
+ *               paintImmediately(r.x, r.y, r.width, r.height);
+ *
+ *               r = markerStroke.createStrokedShape(markerBottom).getBounds();
+ *               markerBottom = null;
+ *               paintImmediately(r.x, r.y, r.width, r.height);
+ *
+ *               r = markerStroke.createStrokedShape(markerRight).getBounds();
+ *               markerRight = null;
+ *               paintImmediately(r.x, r.y, r.width, r.height);
+ *           }
+ */
         }
     }
 
