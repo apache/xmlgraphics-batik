@@ -331,6 +331,13 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     }
 
     /**
+     * Returns the focus manager.
+     */
+    public FocusManager getFocusManager() {
+        return focusManager;
+    }
+
+    /**
      * Sets the interpreter pool used to handle scripts to the
      * specified interpreter pool.
      * @param interpreterPool the interpreter pool
@@ -729,6 +736,11 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     protected CSSEngineListener cssPropertiesChangedListener;
 
     /**
+     * The EventListener that is responsible of managing DOM focus event.
+     */
+    protected FocusManager focusManager;
+
+    /**
      * Adds EventListeners to the DOM and CSSEngineListener to the
      * CSSEngine to handle any modifications on the DOM tree or style
      * properties and update the GVT tree in response.
@@ -757,6 +769,8 @@ public class BridgeContext implements ErrorConstants, CSSContext {
                                    domCharacterDataModifiedListener,
                                    true);
 
+        focusManager = new FocusManager(document);
+
         SVGOMDocument svgDocument = (SVGOMDocument)document;
         CSSEngine cssEngine = svgDocument.getCSSEngine();
         cssPropertiesChangedListener = new CSSPropertiesChangedListener();
@@ -784,6 +798,8 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         SVGOMDocument svgDocument = (SVGOMDocument)document;
         CSSEngine cssEngine = svgDocument.getCSSEngine();
         cssEngine.removeCSSEngineListener(cssPropertiesChangedListener);
+
+        focusManager.dispose();
     }
 
     /**

@@ -49,19 +49,15 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
 import org.w3c.dom.events.DocumentEvent;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
 import org.w3c.dom.events.MouseEvent;
+
 import org.w3c.dom.svg.SVGElement;
 import org.w3c.dom.svg.SVGSVGElement;
-
-    // <!> FIXME: TO BE REMOVED
-    // <!> FIXME: TO BE REMOVED
-    // <!> FIXME: TO BE REMOVED
-    // <!> FIXME: TO BE REMOVED
-    // <!> FIXME: TO BE REMOVED
 
 /**
  * A class to attach listeners on the <code>Document</code> to
@@ -72,7 +68,7 @@ import org.w3c.dom.svg.SVGSVGElement;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-class BridgeEventSupport implements SVGConstants {
+public class BridgeEventSupport implements SVGConstants {
 
     private BridgeEventSupport() {}
 
@@ -350,7 +346,7 @@ class BridgeEventSupport implements SVGConstants {
             Element target = context.getElement(node);
             // Lookup inside the text element children to see if the target
             // is a tspan or textPath
-            if (node instanceof TextNode) {
+            if (target != null && node instanceof TextNode) {
 		TextNode textNode = (TextNode)node;
 		List list = textNode.getTextRuns();
 		for (int i = 0 ; i < list.size(); i++) {
