@@ -1803,6 +1803,27 @@ public class GlyphLayout implements TextSpanLayout {
     //   Should dy be considered for line offsets? (super scripts)
     //   Should p's & br's carry over from flow rect to flow rect if
     //   so how much????
+
+    // In cases where 1/2 leading is negative (lineBox is smaller than
+    // lineAscent+lineDescent) do we use the lineBox (some glyphs will
+    // go outside flowRegion) or the visual box.  My feeling is that
+    // we should use the larger of the two.
+
+    // We stated that for empty para elements it moves to the new flow
+    // region if the zero-height line is outside the flow region.  In
+    // this case the para elements top-margin is used in the new flow
+    // region (and it's bottom-margin is collapsed with the next
+    // flowPara element if any).  What happens when the first line of
+    // a non-empty flowPara doesn't fit (so the top margin does fit
+    // but the first line of text doesn't).  I think the para should
+    // move to the next flow region and the top margin should apply in
+    // the new flow region.  The top margin does not apply if
+    // subsequint lines move to a new flow region.
+
+    // Note that line wrapping is done on visual bounds of glyph
+    // not the glyph advance (which often includes some whitespace
+    // after the right edge of the glyph char).
+
     //
     //   How are Margins done?  Can't figure out Box size until
     //   after we know the margins.
@@ -1818,8 +1839,14 @@ public class GlyphLayout implements TextSpanLayout {
     //         bit as well as grow (pretty easy to add).
     //
     // This Only does horizontal languages.
-    // text-decoration won't work on this text.
-    // Soft hyphen isn't handled yet.
+    // Supports Zero Width Spaces (0x200B) Zero Width Joiner( 0x200D), 
+    // and soft hyphens (0x00AD).
+    // 
+    // Does not properly handle Bi-DI languages (does text wrapping on
+    // display order not logical order).
+    //
+    // Does not drop leading non-printing chars on a line..
+
     /**
      * This will wrap the text associated with <tt>aci</tt> and
      * <tt>layouts</tt>.
@@ -1853,8 +1880,8 @@ public class GlyphLayout implements TextSpanLayout {
         Iterator flowRectsIter = flowRects.iterator();
         // Get info for new flow rect.
         Rectangle2D cRect = (Rectangle2D)flowRectsIter.next();
-        float y0     = (float)cRect.getY();
-        float x0, width, height;
+        float y0, x0, width, height;
+        height = (float)cRect.getHeight();
 
         boolean lineHeightRelative = true;
         float lineHeight           = 1.0f;
@@ -1873,11 +1900,29 @@ public class GlyphLayout implements TextSpanLayout {
                     Iterator epi = extraP.iterator();
                     while (epi.hasNext()) {
                         MarginInfo emi = (MarginInfo)epi.next();
-                        dy += ((prevBotMargin > emi.getTopMargin()) 
-                               ? prevBotMargin 
-                               : emi.getTopMargin());
+                        float inc = ((prevBotMargin > emi.getTopMargin()) 
+                                     ? prevBotMargin 
+                                     : emi.getTopMargin());
+                        if ((dy + inc <= height) &&
+                            !emi.isFlowRegionBreak()) {
+                            dy += inc;
+                        } else {
+                            // Move to next flow region..
+                            if (!flowRectsIter.hasNext()) {
+                                cRect = null;
+                                break; // No flow rect stop layout here...
+                            }
+
+                            cRect = (Rectangle2D)flowRectsIter.next();
+                            height = (float)cRect.getHeight();
+
+                            // New rect so no previous row to consider...
+                            dy        = emi.getTopMargin();
+                        }
                         prevBotMargin = emi.getBottomMargin();
                     }
+
+                    if (cRect == null) break;
                 }
             }
             aci.first();
@@ -1903,11 +1948,27 @@ public class GlyphLayout implements TextSpanLayout {
                 continue;
             }
 
-            dy += ((prevBotMargin > mi.getTopMargin()) ? 
-                   prevBotMargin : mi.getTopMargin());
+            float inc = ((prevBotMargin > mi.getTopMargin()) 
+                         ? prevBotMargin : mi.getTopMargin());
+            if (dy + inc <= height) {
+                dy += inc;
+            } else {
+                // Move to next flow region..
+                if (!flowRectsIter.hasNext()) {
+                    cRect = null;
+                    break; // No flow rect stop layout here...
+                }
+
+                cRect = (Rectangle2D)flowRectsIter.next();
+                height = (float)cRect.getHeight();
+
+                            // New rect so no previous row to consider...
+                dy        = mi.getTopMargin();
+            }
             prevBotMargin = mi.getBottomMargin();
 
             x0    = (float)cRect.getX() + mi.getLeftMargin();
+            y0    = (float)cRect.getY();
             width = (float)(cRect.getWidth() - 
                             (mi.getLeftMargin()+mi.getRightMargin()));
             height = (float)cRect.getHeight();
@@ -1918,13 +1979,36 @@ public class GlyphLayout implements TextSpanLayout {
             GlyphIterator gi = new GlyphIterator(aci, gv);
             GlyphIterator breakGI  = null, newBreakGI = null;
             GlyphIterator lineGI   =  gi.copy();
+            boolean firstLine = true;
             while (!gi.done()) {
                 boolean doBreak = false;
                 boolean partial = false;
 
-                if (gi.isPrinting() &&
-                    (breakGI != null) && // Don't break at first char in line
-                    (gi.getAdv() > width)) {
+                if (gi.isPrinting() && (gi.getAdv() > width)) {
+                    if (breakGI == null) {
+                        // first char on line didn't fit.
+                        // move to next flow rect.
+                        if (!flowRectsIter.hasNext()) {
+                            cRect = null;
+                            gi = lineGI.copy(gi);
+                            break; // No flow rect stop layout here...
+                        }
+
+                        cRect = (Rectangle2D)flowRectsIter.next();
+                        x0    = (float) cRect.getX() + mi.getLeftMargin();
+                        y0    = (float) cRect.getY();
+                        width = (float)(cRect.getWidth() - 
+                                        (mi.getLeftMargin()+
+                                         mi.getRightMargin()));
+                        height = (float)cRect.getHeight();
+
+                        // New rect so no previous row to consider...
+                        dy        = firstLine?mi.getTopMargin():0; ;
+                        prevDesc  = 0;
+                        gi = lineGI.copy(gi);
+                        continue;
+                    }
+
                     gi = breakGI.copy(gi);  // Back up to break loc...
 
                     nextLineMult = 1;
@@ -1992,7 +2076,11 @@ public class GlyphLayout implements TextSpanLayout {
                 float newDesc = halfLeading + gi.getMaxDescent();
 
                 dy += ladv;
-                if ((dy + newDesc) > height)  {
+                float bottomEdge = newDesc;
+                if (newDesc < gi.getMaxDescent()) 
+                    bottomEdge = gi.getMaxDescent();
+
+                if ((dy + bottomEdge) > height)  {
                     // The current Line doesn't fit in the
                     // current flow rectangle so we need to
                     // move line to the next flow rect.
@@ -2017,7 +2105,7 @@ public class GlyphLayout implements TextSpanLayout {
                     height = (float)cRect.getHeight();
 
                     // New rect so no previous row to consider...
-                    dy        = 0; // mi.getTopMargin();
+                    dy        = firstLine?mi.getTopMargin():0; ;
                     prevDesc  = 0;
                     // previous flows?
 
@@ -2038,6 +2126,7 @@ public class GlyphLayout implements TextSpanLayout {
                                width,
                                partial));
                 gi.newLine();
+                firstLine = false;
                 // The line fits in the current flow rectangle.
                 lineGI  = gi.copy(lineGI);
                 breakGI = null;
@@ -2049,6 +2138,16 @@ public class GlyphLayout implements TextSpanLayout {
                 gv.setGlyphVisible(idx++, false);
 
             layoutChunk(aci, gv, justification, lineInfos);
+
+            if (mi.isFlowRegionBreak()) {
+                // Move to next flow region..
+                cRect = null;
+                if (flowRectsIter.hasNext()) {
+                    cRect  = (Rectangle2D)flowRectsIter.next();
+                    height = (float)cRect.getHeight();
+                    dy     = mi.getTopMargin();
+                }
+            }
         }
     }
 
