@@ -157,9 +157,11 @@ public class ConcreteTextSelector implements Selector {
     }
 
     public void clearSelection() {
+        if (selectionNode == null) 
+            return;
         dispatchSelectionEvent(new SelectionEvent
             (null, SelectionEvent.SELECTION_CLEARED, null));
-        copyToClipboard(null);
+        // copyToClipboard(null);
         selectionNode = null;
     }
 

@@ -131,14 +131,16 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
      *        content will be appended. The composite node is emptied
      *        before appending new content.
      */
-    public CompositeGraphicsNode buildCompositeGraphicsNode(BridgeContext ctx, Element e,
-                                                            CompositeGraphicsNode gn,
-                                                            ReferencedElementMutationListener l) {
+    public CompositeGraphicsNode buildCompositeGraphicsNode
+        (BridgeContext ctx, Element e,
+         CompositeGraphicsNode gn,
+         ReferencedElementMutationListener l) {
         // get the referenced element
         String uri = XLinkSupport.getXLinkHref(e);
-        if (uri.length() == 0)
-            throw new BridgeException(e, ERR_URI_MALFORMED, 
-                                      new Object[] {uri});
+        if (uri.length() == 0) {
+            throw new BridgeException(e, ERR_ATTRIBUTE_MISSING,
+                                      new Object[] {"xlink:href"});
+        }
 
         Element refElement = ctx.getReferencedElement(e, uri);
         SVGOMDocument document
