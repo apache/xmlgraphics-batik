@@ -9,10 +9,16 @@
 package org.apache.batik.swing;
 
 import java.awt.Dimension;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+
+import java.awt.geom.AffineTransform;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -20,6 +26,11 @@ import java.beans.PropertyChangeSupport;
 
 import java.util.List;
 
+import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
+import javax.swing.InputMap;
+import javax.swing.JComponent;
+import javax.swing.KeyStroke;
 import javax.swing.ToolTipManager;
 
 import org.apache.batik.bridge.UserAgent;
@@ -43,6 +54,7 @@ import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
 
+
 /**
  * This class represents a general-purpose swing SVG component. The
  * <tt>JSVGCanvas</tt> does not provided additional functionalities compared to
@@ -56,79 +68,6 @@ import org.w3c.dom.events.EventTarget;
  * @version $Id$
  */
 public class JSVGCanvas extends JSVGComponent {
-
-    /**
-     * An interactor to perform a zoom.
-     * <p>Binding: BUTTON1 + CTRL Key</p>
-     */
-    protected Interactor zoomInteractor = new AbstractZoomInteractor() {
-        public boolean startInteraction(InputEvent ie) {
-            int mods = ie.getModifiers();
-            return
-                ie.getID() == MouseEvent.MOUSE_PRESSED &&
-                (mods & ie.BUTTON1_MASK) != 0 &&
-                (mods & ie.CTRL_MASK) != 0;
-        }
-    };
-
-    /**
-     * An interactor to perform a realtime zoom.
-     * <p>Binding: BUTTON3 + SHIFT Key</p>
-     */
-    protected Interactor imageZoomInteractor
-        = new AbstractImageZoomInteractor() {
-        public boolean startInteraction(InputEvent ie) {
-            int mods = ie.getModifiers();
-            return
-                ie.getID() == MouseEvent.MOUSE_PRESSED &&
-                (mods & ie.BUTTON3_MASK) != 0 &&
-                (mods & ie.SHIFT_MASK) != 0;
-        }
-    };
-
-    /**
-     * An interactor to perform a translation.
-     * <p>Binding: BUTTON1 + SHIFT Key</p>
-     */
-    protected Interactor panInteractor = new AbstractPanInteractor() {
-        public boolean startInteraction(InputEvent ie) {
-            int mods = ie.getModifiers();
-            return
-                ie.getID() == MouseEvent.MOUSE_PRESSED &&
-                (mods & ie.BUTTON1_MASK) != 0 &&
-                (mods & ie.SHIFT_MASK) != 0;
-        }
-    };
-
-    /**
-     * An interactor to perform a rotation.
-     * <p>Binding: BUTTON3 + CTRL Key</p>
-     */
-    protected Interactor rotateInteractor = new AbstractRotateInteractor() {
-        public boolean startInteraction(InputEvent ie) {
-            int mods = ie.getModifiers();
-            return
-                ie.getID() == MouseEvent.MOUSE_PRESSED &&
-                (mods & ie.BUTTON3_MASK) != 0 &&
-                (mods & ie.CTRL_MASK) != 0;
-        }
-    };
-
-    /**
-     * An interactor to reset the rendering transform.
-     * <p>Binding: CTRL+SHIFT+BUTTON3</p>
-     */
-    protected Interactor resetTransformInteractor =
-        new AbstractResetTransformInteractor() {
-        public boolean startInteraction(InputEvent ie) {
-            int mods = ie.getModifiers();
-            return
-                ie.getID() == MouseEvent.MOUSE_CLICKED &&
-                (mods & ie.BUTTON3_MASK) != 0 &&
-                (mods & ie.SHIFT_MASK) != 0 &&
-                (mods & ie.CTRL_MASK) != 0;
-        }
-    };
 
     /**
      * This flag bit indicates whether or not the zoom interactor is
@@ -172,6 +111,12 @@ public class JSVGCanvas extends JSVGComponent {
     protected String uri;
 
     /**
+     * Keeps track of the last known mouse position over the canvas.
+     * This is used for displaying tooltips at the right location.
+     */
+    protected LocationListener locationListener = null;
+
+    /**
      * Creates a new JSVGCanvas.
      */
     public JSVGCanvas() {
@@ -180,23 +125,104 @@ public class JSVGCanvas extends JSVGComponent {
 
     /**
      * Creates a new JSVGCanvas.
+     *
      * @param ua a SVGUserAgent instance or null.
-     * @param eventEnabled Whether the GVT tree should be reactive
-     *        to mouse and key events.
-     * @param selectableText Whether the text should be selectable.
+     * @param eventEnabled Whether the GVT tree should be reactive to mouse and
+     * key events.
+     * @param selectableText Whether the text should be selectable.  
      */
-    public JSVGCanvas(SVGUserAgent ua, boolean eventsEnabled,
+    public JSVGCanvas(SVGUserAgent ua, 
+		      boolean eventsEnabled,
                       boolean selectableText) {
+
         super(ua, eventsEnabled, selectableText);
+
         setPreferredSize(new Dimension(200, 200));
         setMinimumSize(new Dimension(100, 100));
-
+	
         List intl = getInteractors();
         intl.add(zoomInteractor);
         intl.add(imageZoomInteractor);
         intl.add(panInteractor);
         intl.add(rotateInteractor);
         intl.add(resetTransformInteractor);
+
+	if (eventsEnabled) {
+	    addMouseListener(new MouseAdapter() {
+		public void mousePressed(MouseEvent evt) {
+		    requestFocus();
+		}
+	    });
+
+	    installActions();
+	    installKeyboardActions();
+	}
+    }
+
+    /**
+     * Builds the ActionMap of this canvas with a set of predefined
+     * <tt>Action</tt>s.
+     */
+    protected void installActions() {
+	ActionMap actionMap = getActionMap();
+	
+	actionMap.put(ScrollRightAction.NAME, new ScrollRightAction());
+	actionMap.put(ScrollLeftAction.NAME, new ScrollLeftAction());
+	actionMap.put(ScrollUpAction.NAME, new ScrollUpAction());
+	actionMap.put(ScrollDownAction.NAME, new ScrollDownAction());
+	
+	actionMap.put(FastScrollRightAction.NAME, new FastScrollRightAction());
+	actionMap.put(FastScrollLeftAction.NAME, new FastScrollLeftAction());
+	actionMap.put(FastScrollUpAction.NAME, new FastScrollUpAction());
+	actionMap.put(FastScrollDownAction.NAME, new FastScrollDownAction());
+
+	actionMap.put(ZoomInAction.NAME, new ZoomInAction());
+	actionMap.put(ZoomOutAction.NAME, new ZoomOutAction());
+
+	actionMap.put(ResetTransformAction.NAME, new ResetTransformAction());
+    }
+
+    /**
+     * Builds the InputMap of this canvas with a set of predefined
+     * <tt>Action</tt>s.  
+     */
+    protected void installKeyboardActions() {
+
+	InputMap inputMap = getInputMap(JComponent.WHEN_FOCUSED);
+	KeyStroke key;
+
+	key = KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0);
+	inputMap.put(key, ScrollRightAction.NAME);
+
+	key = KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0);
+	inputMap.put(key, ScrollLeftAction.NAME);
+
+	key = KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0);
+	inputMap.put(key, ScrollUpAction.NAME);
+
+	key = KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0);
+	inputMap.put(key, ScrollDownAction.NAME);
+
+	key = KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, KeyEvent.SHIFT_MASK);
+	inputMap.put(key, FastScrollRightAction.NAME);
+
+	key = KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, KeyEvent.SHIFT_MASK);
+	inputMap.put(key, FastScrollLeftAction.NAME);
+
+	key = KeyStroke.getKeyStroke(KeyEvent.VK_UP, KeyEvent.SHIFT_MASK);
+	inputMap.put(key, FastScrollUpAction.NAME);
+
+	key = KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, KeyEvent.SHIFT_MASK);
+	inputMap.put(key, FastScrollDownAction.NAME);
+
+	key = KeyStroke.getKeyStroke(KeyEvent.VK_I, KeyEvent.CTRL_MASK);
+	inputMap.put(key, ZoomInAction.NAME);
+
+	key = KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_MASK);
+	inputMap.put(key, ZoomOutAction.NAME);
+
+	key = KeyStroke.getKeyStroke(KeyEvent.VK_T, KeyEvent.CTRL_MASK);
+	inputMap.put(key, ResetTransformAction.NAME);
     }
 
     /**
@@ -218,11 +244,11 @@ public class JSVGCanvas extends JSVGComponent {
     }
 
     /**
-     * Adds the specified <tt>PropertyChangeListener</tt> for the
-     * specified property.
+     * Adds the specified <tt>PropertyChangeListener</tt> for the specified
+     * property.
      *
      * @param propertyName the name of the property to listen on
-     * @param pcl the property change listener to add
+     * @param pcl the property change listener to add 
      */
     public void addPropertyChangeListener(String propertyName,
                                           PropertyChangeListener pcl) {
@@ -230,11 +256,11 @@ public class JSVGCanvas extends JSVGComponent {
     }
 
     /**
-     * Removes the specified <tt>PropertyChangeListener</tt> for the
-     * specified property.
+     * Removes the specified <tt>PropertyChangeListener</tt> for the specified
+     * property.
      *
      * @param propertyName the name of the property that was listened on
-     * @param pcl the property change listener to remove
+     * @param pcl the property change listener to remove 
      */
     public void removePropertyChangeListener(String propertyName,
                                              PropertyChangeListener pcl) {
@@ -345,12 +371,15 @@ public class JSVGCanvas extends JSVGComponent {
             } else {
                 getInteractors().remove(resetTransformInteractor);
             }
-            pcs.firePropertyChange("enableResetTransformInteractor", oldValue, b);
+            pcs.firePropertyChange("enableResetTransformInteractor", 
+				   oldValue, 
+				   b);
         }
     }
-
+    
     /**
-     * Returns true if the reset transform interactor is enabled, false otherwise.
+     * Returns true if the reset transform interactor is enabled, false
+     * otherwise.  
      */
     public boolean getEnableResetTransformInteractor() {
         return isResetTransformInteractorEnabled;
@@ -382,36 +411,282 @@ public class JSVGCanvas extends JSVGComponent {
         return new CanvasUserAgent();
     }
 
+    // ----------------------------------------------------------------------
+    // Actions
+    // ----------------------------------------------------------------------
+
     /**
-     * Helper class. Simply keeps track of the last known mouse
-     * position over the canvas.
+     * A swing action to reset the rendering transform of the canvas.
      */
-    protected class LocationListener extends MouseMotionAdapter {
-        protected int lastX, lastY;
-        public void mouseMoved(MouseEvent evt){
-            lastX = evt.getX();
-            lastY = evt.getY();
-        }
-        
-        public int getLastX(){ return lastX; }
-        public int getLastY(){ return lastY; }
+    protected class ResetTransformAction extends AbstractAction {
+
+	/** The action name. */
+	public static final String NAME = "resetTransform";
+
+	public void actionPerformed(ActionEvent evt) {
+            resetRenderingTransform();
+	}
     }
 
     /**
-     * Keeps track of the last known mouse position over the canvas.
-     * This is used for displaying tooltips at the right location.
+     * A swing action to zoom in the canvas.
      */
-    protected LocationListener locationListener = null;
+    protected class ZoomInAction extends AbstractAction {
+
+	/** The action name. */
+	public static final String NAME = "zoomIn";
+
+	public void actionPerformed(ActionEvent evt) {
+            AffineTransform at = getRenderingTransform();
+            if (at != null) {
+                Dimension dim = getSize();
+                int x = dim.width / 2;
+                int y = dim.height / 2;
+                AffineTransform t = AffineTransform.getTranslateInstance(x, y);
+                t.scale(2, 2);
+                t.translate(-x, -y);
+                t.concatenate(at);
+                setRenderingTransform(t);
+	    }
+	}
+    }
 
     /**
-     * The <tt>CanvasUserAgent</tt> only adds tooltips to the behavior
-     * of the default <tt>BridgeUserAgent</tt>.<br />
-     * A tooltip will be displayed wheneven the mouse lingers over
-     * an element which has a &lt;title&gt; or a &lt;desc&gt; child
-     * element.
+     * A swing action to zoom out the canvas.
      */
-    protected class CanvasUserAgent 
-        extends    BridgeUserAgent 
+    protected class ZoomOutAction extends AbstractAction {
+
+	/** The action name. */
+	public static final String NAME = "zoomOut";
+
+	public void actionPerformed(ActionEvent evt) {
+            AffineTransform at = getRenderingTransform();
+            if (at != null) {
+                Dimension dim = getSize();
+                int x = dim.width / 2;
+                int y = dim.height / 2;
+                AffineTransform t = AffineTransform.getTranslateInstance(x, y);
+                t.scale(.5, .5);
+                t.translate(-x, -y);
+                t.concatenate(at);
+                setRenderingTransform(t);
+	    }
+	}
+    }
+
+    /**
+     * A swing action to scroll the canvas to the right.
+     */
+    protected class ScrollRightAction extends AbstractAction {
+
+	/** The action name. */
+	public static final String NAME = "scrollRight";
+
+	/** The scroll increment. */
+	protected int inc = 10;
+
+	public void actionPerformed(ActionEvent evt) {
+	    AffineTransform at = new AffineTransform(getRenderingTransform());
+	    at.translate(-inc, 0);
+	    setRenderingTransform(at);
+	}
+    }
+
+    /**
+     * A swing action to scroll the canvas to the left.
+     */
+    protected class ScrollLeftAction extends AbstractAction {
+
+	/** The action name. */
+	public static final String NAME = "scrollLeft";
+
+	/** The scroll increment. */
+	protected int inc = 10;
+
+	public void actionPerformed(ActionEvent evt) {
+	    AffineTransform at = new AffineTransform(getRenderingTransform());
+	    at.translate(inc, 0);
+	    setRenderingTransform(at);
+	}
+    }
+
+    /**
+     * A swing action to scroll the canvas up.
+     */
+    protected class ScrollUpAction extends AbstractAction {
+
+	/** The action name. */
+	public static final String NAME = "scrollUp";
+
+	/** The scroll increment. */
+	protected int inc = 10;
+
+	public void actionPerformed(ActionEvent evt) {
+	    AffineTransform at = new AffineTransform(getRenderingTransform());
+	    at.translate(0, inc);
+	    setRenderingTransform(at);
+	}
+    }
+
+    /**
+     * A swing action to scroll the canvas down.
+     */
+    protected class ScrollDownAction extends AbstractAction {
+
+	/** The action name. */
+	public static final String NAME = "scrollDown";
+
+	/** The scroll increment. */
+	protected int inc = 10;
+
+	public void actionPerformed(ActionEvent evt) {
+	    AffineTransform at = new AffineTransform(getRenderingTransform());
+	    at.translate(0, -inc);
+	    setRenderingTransform(at);
+	}
+    }
+
+    /**
+     * A swing action to scroll the canvas to the right fastely.
+     */
+    protected class FastScrollRightAction extends ScrollRightAction {
+
+	/** The action name. */
+	public static final String NAME = "fastScrollRight";
+
+	public FastScrollRightAction() {
+	    inc = 30;
+	}
+    }
+
+    /**
+     * A swing action to scroll the canvas to the left.
+     */
+    protected class FastScrollLeftAction extends ScrollLeftAction {
+
+	/** The action name. */
+	public static final String NAME = "fastScrollLeft";
+
+	public FastScrollLeftAction() {
+	    inc = 30;
+	}
+    }
+
+    /**
+     * A swing action to scroll the canvas up fastely.
+     */
+    protected class FastScrollUpAction extends ScrollUpAction {
+
+	/** The action name. */
+	public static final String NAME = "fastScrollUp";
+
+	public FastScrollUpAction() {
+	    inc = 30;
+	}
+    }
+
+    /**
+     * A swing action to scroll the canvas down fastely.
+     */
+    protected class FastScrollDownAction extends ScrollDownAction {
+
+	/** The action name. */
+	public static final String NAME = "fastScrollDown";
+
+	public FastScrollDownAction() {
+	    inc = 30;
+	}
+    }
+
+    // ----------------------------------------------------------------------
+    // Interactors
+    // ----------------------------------------------------------------------
+
+    /**
+     * An interactor to perform a zoom.
+     * <p>Binding: BUTTON1 + CTRL Key</p>
+     */
+    protected Interactor zoomInteractor = new AbstractZoomInteractor() {
+        public boolean startInteraction(InputEvent ie) {
+            int mods = ie.getModifiers();
+            return
+                ie.getID() == MouseEvent.MOUSE_PRESSED &&
+                (mods & ie.BUTTON1_MASK) != 0 &&
+                (mods & ie.CTRL_MASK) != 0;
+        }
+    };
+
+    /**
+     * An interactor to perform a realtime zoom.
+     * <p>Binding: BUTTON3 + SHIFT Key</p>
+     */
+    protected Interactor imageZoomInteractor
+        = new AbstractImageZoomInteractor() {
+        public boolean startInteraction(InputEvent ie) {
+            int mods = ie.getModifiers();
+            return
+                ie.getID() == MouseEvent.MOUSE_PRESSED &&
+                (mods & ie.BUTTON3_MASK) != 0 &&
+                (mods & ie.SHIFT_MASK) != 0;
+        }
+    };
+
+    /**
+     * An interactor to perform a translation.
+     * <p>Binding: BUTTON1 + SHIFT Key</p>
+     */
+    protected Interactor panInteractor = new AbstractPanInteractor() {
+        public boolean startInteraction(InputEvent ie) {
+            int mods = ie.getModifiers();
+            return
+                ie.getID() == MouseEvent.MOUSE_PRESSED &&
+                (mods & ie.BUTTON1_MASK) != 0 &&
+                (mods & ie.SHIFT_MASK) != 0;
+        }
+    };
+
+    /**
+     * An interactor to perform a rotation.
+     * <p>Binding: BUTTON3 + CTRL Key</p>
+     */
+    protected Interactor rotateInteractor = new AbstractRotateInteractor() {
+        public boolean startInteraction(InputEvent ie) {
+            int mods = ie.getModifiers();
+            return
+                ie.getID() == MouseEvent.MOUSE_PRESSED &&
+                (mods & ie.BUTTON3_MASK) != 0 &&
+                (mods & ie.CTRL_MASK) != 0;
+        }
+    };
+
+    /**
+     * An interactor to reset the rendering transform.
+     * <p>Binding: CTRL+SHIFT+BUTTON3</p>
+     */
+    protected Interactor resetTransformInteractor =
+        new AbstractResetTransformInteractor() {
+        public boolean startInteraction(InputEvent ie) {
+            int mods = ie.getModifiers();
+            return
+                ie.getID() == MouseEvent.MOUSE_CLICKED &&
+                (mods & ie.BUTTON3_MASK) != 0 &&
+                (mods & ie.SHIFT_MASK) != 0 &&
+                (mods & ie.CTRL_MASK) != 0;
+        }
+    };
+
+    // ----------------------------------------------------------------------
+    // User agent implementation
+    // ----------------------------------------------------------------------
+
+    /**
+     * The <tt>CanvasUserAgent</tt> only adds tooltips to the behavior of the
+     * default <tt>BridgeUserAgent</tt>.<br /> A tooltip will be displayed
+     * wheneven the mouse lingers over an element which has a &lt;title&gt; or a
+     * &lt;desc&gt; child element.  
+     */
+    protected class CanvasUserAgent extends BridgeUserAgent 
+
         implements XMLConstants {
 
         final String TOOLTIP_TITLE_ONLY 
@@ -444,60 +719,56 @@ public class JSVGCanvas extends JSVGComponent {
             
             if (elt.getNamespaceURI().equals(SVGConstants.SVG_NAMESPACE_URI)) {
                 if (elt.getLocalName().equals(SVGConstants.SVG_TITLE_TAG)) {
-                    //
-                    // If there is a <desc> peer, do nothing as the tooltip
-                    // will be handled when handleElement is invoked for 
-                    // the <desc> peer.
-                    //
+                    // If there is a <desc> peer, do nothing as the tooltip will
+                    // be handled when handleElement is invoked for the <desc>
+                    // peer.
                     if (hasPeerWithTag(elt, 
                                        SVGConstants.SVG_NAMESPACE_URI, 
                                        SVGConstants.SVG_DESC_TAG)){
                         return;
                     }
-
+		    
                     elt.normalize();
                     String toolTip = elt.getFirstChild().getNodeValue();
-                    toolTip = Messages.formatMessage(TOOLTIP_TITLE_ONLY,
-                                                     new Object[]{toFormattedHTML(toolTip)});
+                    toolTip = Messages.formatMessage
+			(TOOLTIP_TITLE_ONLY, 
+			 new Object[]{toFormattedHTML(toolTip)});
                                             
                     setToolTip((Element)(elt.getParentNode()), toolTip);
                 }
                 else if (elt.getLocalName().equals(SVGConstants.SVG_DESC_TAG)) {
-                    //
-                    // If there is a <title> peer, prepend its content to 
-                    // the content of the <desc> element.
-                    //
+                    // If there is a <title> peer, prepend its content to the
+                    // content of the <desc> element.
                     elt.normalize();
                     String toolTip = elt.getFirstChild().getNodeValue();
 
-                    Element titlePeer = getPeerWithTag(elt,
-                                                       SVGConstants.SVG_NAMESPACE_URI,
-                                                       SVGConstants.SVG_TITLE_TAG);
-
+                    Element titlePeer = 
+			getPeerWithTag(elt,
+				       SVGConstants.SVG_NAMESPACE_URI,
+				       SVGConstants.SVG_TITLE_TAG);
                     if (titlePeer != null) {
                         titlePeer.normalize();
-                        toolTip = Messages.formatMessage
-                            (TOOLTIP_TITLE_AND_TEXT,
-                             new Object[]{toFormattedHTML(titlePeer.getFirstChild().getNodeValue()),
-                                          toFormattedHTML(toolTip)});
+                        toolTip = Messages.formatMessage(TOOLTIP_TITLE_AND_TEXT,
+							 new Object[] {
+			    toFormattedHTML(titlePeer.getFirstChild().getNodeValue()),
+				toFormattedHTML(toolTip)});
+                    } else {
+                        toolTip = 
+			    Messages.formatMessage
+			    (TOOLTIP_DESC_ONLY,
+			     new Object[]{toFormattedHTML(toolTip)});
                     }
-                    else{
-                        toolTip = Messages.formatMessage(TOOLTIP_DESC_ONLY,
-                                                         new Object[]{toFormattedHTML(toolTip)});
-                    }
-
+		    
                     setToolTip((Element)(elt.getParentNode()), toolTip);
                 }
             }
         }
 
         /**
-         * Converts line breaks to HTML breaks and encodes 
-         * special entities.
-         * Poor way of replacing '<', '>', '"', '&' and '''
-         * in attribute values.
-         */
-        public String toFormattedHTML(String str){
+         * Converts line breaks to HTML breaks and encodes special entities.
+         * Poor way of replacing '<', '>', '"', '&' and ''' in attribute values.
+	 */
+        public String toFormattedHTML(String str) {
             StringBuffer sb = new StringBuffer(str);
             replace(sb, XML_CHAR_AMP, XML_ENTITY_AMP);
             replace(sb, XML_CHAR_LT, XML_ENTITY_LT);
@@ -508,61 +779,52 @@ public class JSVGCanvas extends JSVGComponent {
             return sb.toString();
         }
         
-        protected void replace(StringBuffer s, 
-                               char c, 
-                               String r){
+        protected void replace(StringBuffer s, char c, String r) {
             String v = s.toString() + 1;
             int i = v.length();
             
-            while( (i=v.lastIndexOf(c, --i)) != -1 ){
+            while( (i=v.lastIndexOf(c, --i)) != -1 ) {
                 s.deleteCharAt(i);
                 s.insert(i, r);
             }
         }
 
         /**
-         * Checks if there is a peer element of a given type.
-         * This returns the first occurence of the given type
-         * or null if none is found.
-         */
-        public Element getPeerWithTag(Element elt,
-                                      String nameSpaceURI,
-                                      String localName){
+         * Checks if there is a peer element of a given type.  This returns the
+         * first occurence of the given type or null if none is found.
+	 */
+        public Element getPeerWithTag(Element elt, 
+				      String nameSpaceURI,
+                                      String localName) {
+
             Element p = (Element)elt.getParentNode();
             if (p == null) {
                 return null;
             }
             
-            for (Node n=p.getFirstChild(); n!=null; n=n.getNextSibling()){
+            for (Node n=p.getFirstChild(); n!=null; n = n.getNextSibling()) {
                 if (!nameSpaceURI.equals(n.getNamespaceURI())){
                     continue;
                 }
-                
                 if (!localName.equals(n.getLocalName())){
                     continue;
                 }
-                
                 if (n.getNodeType() == n.ELEMENT_NODE) {
                     return (Element)n;
                 }
             }
-
             return null;
         }
         
         /**
-         * Returns a boolean defining whether or not there is a
-         * peer of <tt>elt</tt> with the given qualified tag.
-         */
+         * Returns a boolean defining whether or not there is a peer of
+         * <tt>elt</tt> with the given qualified tag.  
+	 */
         public boolean hasPeerWithTag(Element elt,
                                       String nameSpaceURI,
                                       String localName){
-            if (getPeerWithTag(elt, nameSpaceURI, localName) == null){
-                return false;
-            }
-            else{
-                return true;
-            }
+
+            return !(getPeerWithTag(elt, nameSpaceURI, localName) == null);
         }
         
         /**
@@ -570,8 +832,7 @@ public class JSVGCanvas extends JSVGComponent {
          */
         public void setToolTip(Element elt, String toolTip){
             EventTarget target = (EventTarget)elt;
-            
-            elt.normalize();
+	    elt.normalize();
             
             // On mouseover, set the tooltip to the title value
             target.addEventListener(SVGConstants.SVG_EVENT_MOUSEOVER, 
@@ -583,23 +844,47 @@ public class JSVGCanvas extends JSVGComponent {
                                     new ToolTipModifier(null),
                                     false);
             
-            if (locationListener == null){
+            if (locationListener == null) {
                 locationListener = new LocationListener();
                 addMouseMotionListener(locationListener);
             }
         }
     }
 
+    // ----------------------------------------------------------------------
+    // Tooltip
+    // ----------------------------------------------------------------------
+
     /**
-     * Sets a specific tooltip on the JSVGCanvas when a given event
-     * occurs. This listener is used in the handleElement method
-     * to set, remove or modify the JSVGCanvas tooltip on mouseover
-     * and on mouseout.<br/>
-     * Because we are on a single <tt>JComponent</tt> we trigger an
-     * artificial <tt>MouseEvent</tt> when the toolTip is set to 
-     * a non-null value, so as to make sure it will show after the 
-     * <tt>ToolTipManager</tt>'s default delay.
+     * Helper class. Simply keeps track of the last known mouse
+     * position over the canvas.
+     */
+    protected class LocationListener extends MouseMotionAdapter {
+
+        protected int lastX, lastY;
+
+        public void mouseMoved(MouseEvent evt) {
+            lastX = evt.getX();
+            lastY = evt.getY();
+        }
+        
+        public int getLastX() {
+	    return lastX; 
+	}
+
+        public int getLastY() {
+	    return lastY; 
+	}
+    }
+
+    /**
+     * Sets a specific tooltip on the JSVGCanvas when a given event occurs. This
+     * listener is used in the handleElement method to set, remove or modify the
+     * JSVGCanvas tooltip on mouseover and on mouseout.<br/>
      *
+     * Because we are on a single <tt>JComponent</tt> we trigger an artificial
+     * <tt>MouseEvent</tt> when the toolTip is set to a non-null value, so as to
+     * make sure it will show after the <tt>ToolTipManager</tt>'s default delay.
      */
     protected class ToolTipModifier implements EventListener {
         /**
@@ -618,7 +903,7 @@ public class JSVGCanvas extends JSVGComponent {
         public void handleEvent(Event evt){
             setToolTipText(toolTip);
 
-            if(toolTip != null){
+            if (toolTip != null) {
                 MouseEvent e = new MouseEvent(JSVGCanvas.this,
                                               MouseEvent.MOUSE_ENTERED,
                                               System.currentTimeMillis(),
@@ -631,5 +916,4 @@ public class JSVGCanvas extends JSVGComponent {
             }
         }
     }
-
 }
