@@ -316,6 +316,10 @@ public class JSVGCanvas
             // This should not happen. See setTransform
             throw new Error();
         }
+
+        System.out.println("devAOI : " + devAOI);
+        System.out.println("usrAOI : " + dev2usr.createTransformedShape(devAOI).getBounds2D());
+        System.out.println("devAOI 2: " + transform.createTransformedShape(dev2usr.createTransformedShape(devAOI)).getBounds2D());
         return dev2usr.createTransformedShape(devAOI);
     }
 

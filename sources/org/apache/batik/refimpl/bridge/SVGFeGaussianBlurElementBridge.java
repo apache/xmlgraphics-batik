@@ -75,7 +75,7 @@ public class SVGFeGaussianBlurElementBridge implements FilterBridge,
         //
         // Build filter only if stdDeviationX is greater than 0
         // 
-        GaussianBlurRable filter = null;
+        Filter filter = null;
         if((deviationPair[0] != null)
            || (deviationPair[0].floatValue() > 0)){
             float stdDeviationX = deviationPair[0].floatValue();
@@ -148,8 +148,8 @@ public class SVGFeGaussianBlurElementBridge implements FilterBridge,
                                                                 uctx);
                 
                 PadRable pad = new ConcretePadRable(in, 
-                                                    blurArea.getRegion(),
-                                                    PadMode.ZERO_PAD){
+                                              blurArea.getRegion(),
+                                              PadMode.ZERO_PAD){
                         public Rectangle2D getBounds2D(){
                             setPadRect(blurArea.getRegion());
                             return super.getBounds2D();
@@ -165,8 +165,9 @@ public class SVGFeGaussianBlurElementBridge implements FilterBridge,
                 filter = new ConcreteGaussianBlurRable(pad, stdDeviationX, stdDeviationY);
 
                 // Get result attribute if any
-                String result = filterElement.getAttributeNS(null, 
-                                                             ATTR_RESULT);
+                String result 
+                    = filterElement.getAttributeNS(null, 
+                                                   ATTR_RESULT);
                 if((result != null) && (result.trim().length() > 0)){
                     // The filter will be added to the filter map. Before
                     // we do that, append the filter region crop

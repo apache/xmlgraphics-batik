@@ -118,7 +118,7 @@ public class ConcreteFloodRable extends AbstractRable
         }
 
         // Find out the renderable area
-        // CHANGE: DO INTEGER APPROX.
+        // <!> FIX ME CHANGE: DO INTEGER APPROX.
 
         Rectangle2D imageRect = getBounds2D();
 
