@@ -1091,7 +1091,7 @@ To display the available targets type:
     <java fork="yes"
           classname="${class-prefix}.test.xml.XMLTestSuiteRunner">
 <!--      <jvmarg value="-Xrunhprof:format=b" /> -->
-<!--      <jvmarg value="-Xrunhprof:net=localhost:7001,format=b" /> -->
+<!--      <jvmarg value="-Xrunhprof:net=localhost:1234,format=b" /> -->
       <jvmarg value="-Xmx512m"/>  <jvmarg value="-Xms64m"/>
       <classpath>
         <pathelement location="${dest}" />

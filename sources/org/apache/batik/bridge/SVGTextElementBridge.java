@@ -2028,6 +2028,13 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         public int getCharNumAtPosition(float x , float y){
             return textBridge.getCharNumAtPosition(e,x,y);
         }
+        /**
+         * Informs the user agent that the text selection should be
+         * cleared.
+         */
+        public void deselectAll() {
+            textBridge.deselectAll();
+        }
     }
 
     /**

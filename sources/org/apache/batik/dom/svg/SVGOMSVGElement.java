@@ -227,16 +227,16 @@ public class SVGOMSVGElement
     } 
 
     public float getPixelUnitToMillimeterX( ) {
-        throw new Error();
+        return getSVGContext().getPixelUnitToMillimeter();
     }
     public float getPixelUnitToMillimeterY( ) {
-        throw new Error();
+        return getSVGContext().getPixelUnitToMillimeter();
     }
     public float getScreenPixelToMillimeterX( ) {
-        throw new Error();
+        return getSVGContext().getPixelUnitToMillimeter();
     }
     public float getScreenPixelToMillimeterY( ) {
-        throw new Error();
+        return getSVGContext().getPixelUnitToMillimeter();
     }
     public boolean getUseCurrentView( ) {
         throw new Error();
@@ -359,7 +359,7 @@ public class SVGOMSVGElement
         throw new Error();
     }
     public void          deselectAll (  ) {
-        throw new Error();
+        getSVGContext().deselectAll();
     }
 
     /**

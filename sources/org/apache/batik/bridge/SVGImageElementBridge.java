@@ -713,7 +713,10 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
             tgt.removeEventListener(SVG_EVENT_MOUSEUP,   listener, false);
             listener = null;
         }
-        subCtx.removeUIEventListeners(imgDocument);
+        if (subCtx != null) {
+            subCtx.removeUIEventListeners(imgDocument);
+        }
+
         imgDocument = null;
         subCtx = null;
     }

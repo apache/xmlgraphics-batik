@@ -175,6 +175,11 @@ public interface UserAgent {
     void setTextSelection(Mark start, Mark end);
 
     /**
+     * Informs the user agent that the text selection should be cleared.
+     */
+    void deselectAll();
+
+    /**
      * Returns the class name of the XML parser.
      */
     String getXMLParserClassName();

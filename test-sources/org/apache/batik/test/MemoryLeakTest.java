@@ -78,7 +78,7 @@ public abstract class MemoryLeakTest  extends AbstractTest {
     // (why so large I don't know) - it will bail if the all
     // the objects of interest are collected sooner so the runtime
     // is really only a concern for failures.
-    final static int NUM_GC=120;
+    final static int NUM_GC=60;
 
     final static String ERROR_OBJS_NOT_CLEARED = 
         "MemoryLeakTest.message.error.objs.not.cleared";
@@ -154,7 +154,9 @@ public abstract class MemoryLeakTest  extends AbstractTest {
 
         if (objStr.length() > 40) 
             objStr = objStr.substring(0,40) + "..." ;
-        System.err.print(">>>>> Objects not cleared: " + objStr + "\n");
+        System.err.println(">>>>> Objects not cleared: " + objStr);
+        // System.err.println("Waiting for heap dump...");
+        // try { Thread.sleep(60000); } catch (InterruptedException ie) { }
         return false;
     }
 
@@ -193,7 +195,9 @@ public abstract class MemoryLeakTest  extends AbstractTest {
                 if (!passed)
                     sb.append(",");
                 passed = false;
+                sb.append("'");
                 sb.append(wr.getDesc());
+                sb.append("'");
             }
             if (passed) return true;
         }
@@ -207,7 +211,9 @@ public abstract class MemoryLeakTest  extends AbstractTest {
 
         if (objStr.length() > 40) 
             objStr = objStr.substring(0,40) + "..." ;
-        System.err.print(">>>>> Objects not cleared: " + objStr + "\n");
+        System.err.println(">>>>> Objects not cleared: " + objStr);
+        // System.err.println("Waiting for heap dump...");
+        // try { Thread.sleep(60000); } catch (InterruptedException ie) { }
         return false;
     }
 

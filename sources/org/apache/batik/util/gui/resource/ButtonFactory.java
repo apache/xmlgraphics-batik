@@ -4,7 +4,7 @@
                    The Apache Software License, Version 1.1
  ============================================================================
 
- Copyright (C) 1999-2003 The Apache Software Foundation. All rights reserved.
+ Copyright (C) 1999-2004 The Apache Software Foundation. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without modifica-
  tion, are permitted provided that the following conditions are met:
@@ -226,7 +226,12 @@ public class ButtonFactory extends ResourceManager {
                                                    name+ACTION_SUFFIX);
 	    }
 	    b.setAction(a);
-            b.setText(getString(name+TEXT_SUFFIX));
+            try {
+                b.setText(getString(name+TEXT_SUFFIX));
+            } catch (MissingResourceException mre) {
+                // not all buttons have text defined so just
+                // ignore this exception.
+            }
 	    if (a instanceof JComponentModifier) {
 		((JComponentModifier)a).addJComponent(b);
 	    }

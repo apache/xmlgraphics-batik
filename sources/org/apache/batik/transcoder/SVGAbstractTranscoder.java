@@ -57,7 +57,8 @@ import java.awt.geom.Rectangle2D;
 import java.net.URL;
 import java.net.MalformedURLException;
 import java.util.StringTokenizer;
-import java.util.Vector;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.apache.batik.bridge.BaseScriptingEnvironment;
 import org.apache.batik.bridge.BridgeContext;
@@ -272,7 +273,8 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
                 throw new TranscoderException(ex);
             }
 
-            if (Px.isIdentity() && (width != docWidth || height != docHeight)) {
+            if (Px.isIdentity() && 
+                (width != docWidth || height != docHeight)) {
                 // The document has no viewBox, we need to resize it by hand.
                 // we want to keep the document size ratio
                 float xscale, yscale;
@@ -312,7 +314,10 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
         if (!(gn instanceof CompositeGraphicsNode))
             return null;
         CompositeGraphicsNode cgn = (CompositeGraphicsNode)gn;
-        gn = (GraphicsNode)cgn.getChildren().get(0);
+        List children = cgn.getChildren();
+        if (children.size() == 0) 
+            return null;
+        gn = (GraphicsNode)children.get(0);
         if (!(gn instanceof CanvasGraphicsNode))
             return null;
         return (CanvasGraphicsNode)gn;
@@ -775,7 +780,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
         /**
          * Vector containing the allowed script types
          */
-        protected Vector scripts;
+        protected List scripts;
 
         public SVGAbstractTranscoderUserAgent() {
             addStdFeatures();
@@ -984,7 +989,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
          * values for the &lt;script&gt; element's type attribute.
          */
         protected void computeAllowedScripts(){
-            scripts = new Vector();
+            scripts = new LinkedList();
             if (!SVGAbstractTranscoder.this.hints.containsKey
                 (KEY_ALLOWED_SCRIPT_TYPES)) {
                 return;
@@ -996,7 +1001,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
                 
             StringTokenizer st = new StringTokenizer(allowedScripts, ",");
             while (st.hasMoreTokens()) {
-                scripts.addElement(st.nextToken());
+                scripts.add(st.nextToken());
             }
         }
 

@@ -144,6 +144,7 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
         }
 
         Element refElement = ctx.getReferencedElement(e, uri);
+
         SVGOMDocument document
             = (SVGOMDocument)e.getOwnerDocument();
         SVGOMDocument refDocument
@@ -222,20 +223,15 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
         CSSUtilities.computeStyleAndURIs(refElement, localRefElement, uri);
 
         GVTBuilder builder = ctx.getGVTBuilder();
-        GraphicsNode refNode = builder.build(theCtx, g);
+        GraphicsNode refNode = builder.build(ctx, g);
 
         ///////////////////////////////////////////////////////////////////////
-        boolean update = true;
         if (gn == null) {
             gn = new CompositeGraphicsNode();
-            update = false;
-        }
-
-        if (update) {
+        } else {
             int s = gn.size();
-            for (int i=0; i<s; i++) {
+            for (int i=0; i<s; i++)
                 gn.remove(0);
-            }
         }
 
         gn.getChildren().add(refNode);
@@ -247,6 +243,7 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
 
         // 'visibility'
         gn.setVisible(CSSUtilities.convertVisibility(e));
+
 
         // 'enable-background'
         Rectangle2D r = CSSUtilities.convertEnableBackground(e);

@@ -254,6 +254,11 @@ public class UserAgentAdapter implements UserAgent {
     public void setTextSelection(Mark start, Mark end) { }
 
     /**
+     * This user agent doesn't display text selections so nothing to clear.
+     */
+    public void deselectAll() { }
+
+    /**
      * Unsupported operation.
      */
     public void runThread(Thread t) { }

@@ -1948,18 +1948,15 @@ public class JSVGViewerFrame
 
         String dt = svgDocumentTitle;
         if (dt.length() != 0) {
-            setTitle(title + ":" + dt);
+            setTitle(title + ": " + dt);
         } else {
             int i = s.lastIndexOf("/");
-            if (i == -1) {
+            if (i == -1)
                 i = s.lastIndexOf("\\");
-                if (i == -1) {
-                    setTitle(title + ":" + s);
-                } else {
-                    setTitle(title + ":" + s.substring(i + 1));
-                }
+            if (i == -1) {
+                setTitle(title + ": " + s);
             } else {
-                setTitle(title + ":" + s.substring(i + 1));
+                setTitle(title + ": " + s.substring(i + 1));
             }
         }
 
