@@ -15,6 +15,9 @@ import java.awt.font.*;
 
 import org.w3c.dom.*;
 
+import org.apache.batik.ext.awt.g2d.GraphicContext;
+import org.apache.batik.ext.awt.g2d.TransformStackElement;
+
 /**
  * This class performs the task of converting the state of the
  * Java 2D API graphic context into a set of graphic attributes.

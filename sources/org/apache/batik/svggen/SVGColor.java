@@ -16,6 +16,8 @@ import java.util.Iterator;
 
 import org.w3c.dom.*;
 
+import org.apache.batik.ext.awt.g2d.GraphicContext;
+
 /**
  * Utility class that converts a Color object into a set of
  * corresponding SVG attributes.

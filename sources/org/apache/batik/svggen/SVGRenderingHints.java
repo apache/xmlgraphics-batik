@@ -17,6 +17,8 @@ import java.util.Hashtable;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import org.apache.batik.ext.awt.g2d.GraphicContext;
+
 /**
  * Utility class that converts a RenderingHins object into
  * a set of SVG properties. Here is how individual hints

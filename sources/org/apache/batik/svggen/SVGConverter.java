@@ -10,6 +10,8 @@ package org.apache.batik.svggen;
 
 import java.util.Set;
 
+import org.apache.batik.ext.awt.g2d.GraphicContext;
+
 /**
  * Defines the interface for classes that are able to convert
  * part or all of a GraphicContext.

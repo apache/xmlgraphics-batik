@@ -19,6 +19,8 @@ import java.util.HashSet;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import org.apache.batik.ext.awt.g2d.GraphicContext;
+
 /**
  * Utility class that converts an custom Paint object into
  * a set of SVG properties and definitions.
