@@ -44,13 +44,11 @@ public interface TextPainter {
      * @param y the y coordinate, in the text layout's coordinate system,
      *       of the selection event.
      * @param aci the AttributedCharacterIterator describing the text
-     * @param anchor the text anchor (alignment) type of this text
      * @param context the GraphicsNodeRenderContext to use when doing text layout.
      * @return an instance of Mark which encapsulates the state necessary to
      * implement hit testing and text selection.
      */
     public Mark selectAt(double x, double y, AttributedCharacterIterator aci,
-                         TextNode.Anchor anchor,
                          GraphicsNodeRenderContext context);
 
     /**
@@ -61,14 +59,12 @@ public interface TextPainter {
      * @param y the y coordinate, in the text layout's coordinate system,
      *       of the selection event.
      * @param aci the AttributedCharacterIterator describing the text
-     * @param anchor the text anchor (alignment) type of this text
      * @param context the GraphicsNodeRenderContext to use when doing text layout.
      * @return an instance of Mark which encapsulates the state necessary to
      * implement hit testing and text selection.
      */
     public Mark selectTo(double x, double y, Mark beginMark,
                             AttributedCharacterIterator aci,
-                            TextNode.Anchor anchor,
                             GraphicsNodeRenderContext context);
 
     /**
@@ -79,14 +75,12 @@ public interface TextPainter {
      * @param y the y coordinate, in the text layout's coordinate system,
      *       of the selection event.
      * @param aci the AttributedCharacterIterator describing the text
-     * @param anchor the text anchor (alignment) type of this text
      * @param context the GraphicsNodeRenderContext to use when doing text layout.
      * @return an instance of Mark which encapsulates the state necessary to
      * implement hit testing and text selection.
      */
     public Mark selectAll(double x, double y,
                             AttributedCharacterIterator aci,
-                            TextNode.Anchor anchor,
                             GraphicsNodeRenderContext context);
 
     /*
@@ -111,9 +105,7 @@ public interface TextPainter {
      * selectTo(), since the TextPainter implementation may rely on hidden
      * implementation details of its own Mark implementation.
      */
-     public Shape getHighlightShape(Mark beginMark, Mark endMark,
-                                    Point2D location,
-                                    TextNode.Anchor anchor);
+     public Shape getHighlightShape(Mark beginMark, Mark endMark);
 
     /*
      * Get a Shape in userspace coords which defines the textnode glyph outlines.

@@ -161,23 +161,6 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
         UnitProcessor.Context uctx
             = new DefaultUnitProcessorContext(ctx, cssDecl);
 
-        // Text-anchor
-        CSSPrimitiveValue v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue
-            (CSS_TEXT_ANCHOR_PROPERTY);
-        String s = v.getStringValue();
-        TextNode.Anchor a;
-        switch (s.charAt(0)) {
-        case 's':
-            a = TextNode.Anchor.START;
-            break;
-        case 'm':
-            a = TextNode.Anchor.MIDDLE;
-            break;
-        default:
-            a = TextNode.Anchor.END;
-        }
-        result.setAnchor(a);
-
         element.normalize();
 
         AttributedString as = buildAttributedString(ctx,
@@ -398,7 +381,9 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                 as = createAttributedString(
                               s, m, indexMap, preserve, stripFirst, last && top);
                 if (as != null) {
-                     addGlyphPositionAttributes(as, indexMap, ctx, element);
+                     if (first) {
+                         addGlyphPositionAttributes(as, indexMap, ctx, element);
+                     }
                      stripLast = (as.getIterator().first() == ' ');
                      if (stripLast && !result.isEmpty()) {
                          AttributedString las =
@@ -537,8 +522,6 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
             // AttributedStrings always start at index 0, we hope!
 
         // glyph and sub-element positions
-        // (Don't do these for <text> elements
-        if (((Node)element).getLocalName() != "text") {
             String s = element.getAttributeNS(null, SVG_X_ATTRIBUTE);
             //System.out.println("X: "+s);
             if (s.length() != 0) {
@@ -546,6 +529,15 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                                             SVG_X_ATTRIBUTE, s,
                                             uctx,
                                             UnitProcessor.HORIZONTAL_LENGTH);
+
+                as.addAttribute(GVTAttributedCharacterIterator.TextAttribute.X,
+                                new Float(Float.NaN), 0, asLength);
+
+                if (x.length > 1) {
+                    as.addAttribute(
+                GVTAttributedCharacterIterator.TextAttribute.EXPLICIT_LAYOUT,
+                                new Boolean(true), 0, asLength);
+                }
 
                 for (int i=0; i<asLength; ++i) {
                     if (i < x.length) {
@@ -563,6 +555,14 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                                             SVG_Y_ATTRIBUTE, s,
                                             uctx,
                                             UnitProcessor.VERTICAL_LENGTH);
+                as.addAttribute(GVTAttributedCharacterIterator.TextAttribute.Y,
+                                new Float(Float.NaN), 0, asLength);
+
+                if (y.length > 1) {
+                    as.addAttribute(
+                GVTAttributedCharacterIterator.TextAttribute.EXPLICIT_LAYOUT,
+                                new Boolean(true), 0, asLength);
+                }
 
                 for (int i=0; i<asLength; ++i) {
                     if (i < y.length) {
@@ -580,6 +580,11 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                                             SVG_DX_ATTRIBUTE, s,
                                             uctx,
                                             UnitProcessor.HORIZONTAL_LENGTH);
+
+                as.addAttribute(
+                    GVTAttributedCharacterIterator.TextAttribute.DX,
+                          new Float(Float.NaN), 0, asLength);
+
                 int i=0;
                 float cx = 0f;
                 for (int n=0; n<indexMap.length && indexMap[n] >= 0; ++n) {
@@ -607,6 +612,10 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                                             SVG_DY_ATTRIBUTE, s,
                                             uctx,
                                             UnitProcessor.VERTICAL_LENGTH);
+                as.addAttribute(
+                    GVTAttributedCharacterIterator.TextAttribute.DY,
+                          new Float(Float.NaN), 0, asLength);
+
                 int i=0;
                 float cy = 0f;
                 for (int n=0; n<indexMap.length && indexMap[n] >= 0; ++n) {
@@ -626,7 +635,6 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                     //System.out.println("Setting DY to "+cy+" at "+n);
                     cy = 0f;
                 }
-            }
         }
     }
 
@@ -644,8 +652,26 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
 
         Map result = new HashMap();
         CSSPrimitiveValue v;
+        String s;
 
         result.put(GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER, element);
+
+        // Text-anchor
+        v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue
+            (CSS_TEXT_ANCHOR_PROPERTY);
+        s = v.getStringValue();
+        TextNode.Anchor a;
+        switch (s.charAt(0)) {
+        case 's':
+            a = TextNode.Anchor.START;
+            break;
+        case 'm':
+            a = TextNode.Anchor.MIDDLE;
+            break;
+        default:
+            a = TextNode.Anchor.END;
+        }
+        result.put(GVTAttributedCharacterIterator.TextAttribute.ANCHOR_TYPE, a);
 
         // Font size, in user space units.
         float fs = CSSUtilities.convertFontSize((SVGElement)element,
@@ -658,7 +684,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
         // Font family
         CSSValueList ff = (CSSValueList)cssDecl.getPropertyCSSValue
             (CSS_FONT_FAMILY_PROPERTY);
-        String s = null;
+        s = null;
         for (int i = 0; s == null && i < ff.getLength(); i++) {
             v = (CSSPrimitiveValue)ff.item(i);
             s = (String)fonts.get(v.getStringValue());

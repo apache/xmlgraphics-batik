@@ -18,6 +18,8 @@ import java.text.AttributedCharacterIterator;
 import java.text.StringCharacterIterator;
 import java.text.AttributedString;
 
+import org.apache.batik.gvt.TextNode;
+
 /**
  * GVTAttributedCharacterIterator
  *
@@ -210,6 +212,14 @@ public interface GVTAttributedCharacterIterator extends
         public final static TextAttribute TEXT_COMPOUND_DELIMITER =
                               new TextAttribute("TEXT_COMPOUND_DELIMITER");
 
+        /** Anchor type.*/
+        public final static TextAttribute ANCHOR_TYPE =
+                              new TextAttribute("ANCHOR_TYPE");
+
+        /** Marker attribute indicating explicit glyph layout.*/
+        public final static TextAttribute EXPLICIT_LAYOUT =
+                              new TextAttribute("EXPLICIT_LAYOUT");
+
         /** User-space X coordinate for character.*/
         public final static TextAttribute X = new TextAttribute("X");
 
@@ -287,7 +297,6 @@ public interface GVTAttributedCharacterIterator extends
         /** Value for STRIKETHROUGH specifying strikethrough-on */
         public final static Boolean STRIKETHROUGH_ON =
                             java.awt.font.TextAttribute.STRIKETHROUGH_ON;
-
 
     }
 
