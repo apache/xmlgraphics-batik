@@ -19,7 +19,7 @@ import java.awt.geom.*;
  * @author <a href="mailto:vhardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
-public class AffineTransform implements Painter {
+public class ATransform implements Painter {
     public void paint(Graphics2D g) {
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                            RenderingHints.VALUE_ANTIALIAS_ON);
