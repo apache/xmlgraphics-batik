@@ -9,6 +9,8 @@
 package org.apache.batik.test.svg;
 
 import java.io.File;
+import java.net.URL;
+import java.net.MalformedURLException;
 
 import org.apache.batik.dom.svg.SVGOMDocument;
 
@@ -62,6 +64,50 @@ public class SVGReferenceRenderingAccuracyTest
 
         setVariationURL(buildVariationURL(dirNfile[0], dirNfile[1]));
         setSaveVariation(new File(buildSaveVariationFile(dirNfile[0], dirNfile[1])));
+    }
+
+    /**
+     * Resolves the input string as follows.
+     *
+     * + First, the string is interpreted as a file description minus
+     *   any url fragment it may have (stuff after a '#').  If the
+     *   file's parent directory exists, then the file name is turned
+     *   into a URL and the fragment if any is appended.
+     * + Otherwise, the string is supposed to be a URL. If it
+     *   is an invalid URL, an IllegalArgumentException is thrown.  
+     */
+    protected URL resolveURL(String url){
+        // We must strip the # off if there is one otherwise File thinks
+        // we want to reference a file that has a '#' in it's name...
+        String fragment = null;
+        String file     = url;
+        int n = file.lastIndexOf('#');
+        if (n != -1) {
+            fragment = file.substring(n); // include the #.
+            file     = file.substring(0,n);
+        }
+
+        // Is url a file?
+        File f = (new File(file)).getAbsoluteFile();
+        if(f.getParentFile().exists()){
+            try{
+                if (fragment == null) {
+                    return f.toURL(); // No fragment.
+                } else {
+                    // Construct URL that includes fragment...
+                    return new URL(f.toURL(), fragment);
+                }
+            }catch(MalformedURLException e){
+                throw new IllegalArgumentException();
+            }
+        }
+        
+        // url is not a file. It must be a regular URL...
+        try{
+            return new URL(url);
+        }catch(MalformedURLException e){
+            throw new IllegalArgumentException(url);
+        }
     }
 
     /**

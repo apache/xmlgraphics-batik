@@ -58,12 +58,7 @@ public class LengthParser extends NumberParser {
 	return lengthHandler;
     }
 
-    /**
-     * Parses the given reader.
-     */
-    public void parse(Reader r) throws ParseException {
-	initialize(r);
-
+    protected void doParse() throws ParseException {
 	lengthHandler.startLength();
 
 	read();

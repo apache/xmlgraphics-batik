@@ -121,6 +121,8 @@ public class ParsedURLDefaultProtocolHandler
                 // Path spec follows...
                 hostPort = urlStr.substring(pidx, idx);
 
+            hostPort = hostPort;
+
             pidx = idx;  // Remember location of '/'
 
             // pull apart host and port number...
@@ -134,10 +136,8 @@ public class ParsedURLDefaultProtocolHandler
                     ret.host = hostPort;
             } else {
                 // Host and port
-                if (idx == 0) 
-                    ret.host = null;
-                else
-                    ret.host = hostPort.substring(0,idx);
+                if (idx == 0) ret.host = null;
+                else          ret.host = hostPort.substring(0,idx);
 
                 if (idx+1 < hostPort.length()) {
                     String portStr = hostPort.substring(idx+1);
@@ -153,6 +153,8 @@ public class ParsedURLDefaultProtocolHandler
         if ((pidx == -1) || (pidx >= len)) return ret; // Nothing follows
 
         String pathRef = urlStr.substring(pidx);
+        pathRef = pathRef;
+
         idx = pathRef.indexOf('#');
         ret.ref = null;
         if (idx == -1) {
@@ -164,6 +166,44 @@ public class ParsedURLDefaultProtocolHandler
                 ret.ref = pathRef.substring(idx+1);
         }
         return ret;
+    }
+
+    public static String unescapeStr(String str) {
+        int idx = str.indexOf('%');
+        if (idx == -1) return str; // quick out..
+
+        int prev=0;
+        StringBuffer ret = new StringBuffer();
+        while (idx != -1) {
+            if (idx != prev)
+                ret.append(str.substring(prev, idx));
+
+            if (idx+2 >= str.length()) break;
+            prev = idx+3;
+            idx = str.indexOf('%', prev);
+
+            int ch1 = charToHex(str.charAt(idx+1));
+            int ch2 = charToHex(str.charAt(idx+1));
+            if ((ch1 == -1) || (ch2==-1)) continue;
+            ret.append((char)(ch1<<4 | ch2));
+        }
+
+        return ret.toString();
+    }
+
+    public static int charToHex(int ch) {
+        switch(ch) {
+        case '0': case '1': case '2':  case '3':  case '4': 
+        case '5': case '6': case '7':  case '8':  case '9': 
+            return ch-'0';
+        case 'a': case 'A': return 10;
+        case 'b': case 'B': return 11;
+        case 'c': case 'C': return 12;
+        case 'd': case 'D': return 13;
+        case 'e': case 'E': return 14;
+        case 'f': case 'F': return 15;
+        default:            return -1;
+        }
     }
 
     /**

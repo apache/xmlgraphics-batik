@@ -57,7 +57,7 @@ public class SVGPathElementBridge extends SVGDecoratedShapeElementBridge {
             try {
                 PathParser pathParser = new PathParser();
                 pathParser.setPathHandler(app);
-                pathParser.parse(new StringReader(s));
+                pathParser.parse(s);
             } catch (ParseException ex) {
                 BridgeException bex
                     = new BridgeException(e, ERR_ATTRIBUTE_VALUE_MALFORMED,

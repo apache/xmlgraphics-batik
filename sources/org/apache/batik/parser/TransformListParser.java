@@ -56,9 +56,7 @@ public class TransformListParser extends NumberParser {
     /**
      * Parses the given reader.
      */
-    public void parse(Reader r) throws ParseException {
-	initialize(r);
-
+    protected void doParse() throws ParseException {
 	transformListHandler.startTransformList();
 
 	loop: for (;;) {

@@ -41,6 +41,21 @@ public class AWTTransformProducer implements TransformListHandler {
     }
 
     /**
+     * Utility method for creating an AffineTransform.
+     * @param r The reader used to read the transform specification.
+     */
+    public static AffineTransform createAffineTransform(String s)
+        throws ParseException {
+        TransformListParser p = new TransformListParser();
+        AWTTransformProducer th = new AWTTransformProducer();
+
+        p.setTransformListHandler(th);
+        p.parse(s);
+
+        return th.getAffineTransform();
+    }
+
+    /**
      * Returns the AffineTransform object initialized during the last parsing.
      * @return the transform or null if this handler has not been used by
      *         a parser.

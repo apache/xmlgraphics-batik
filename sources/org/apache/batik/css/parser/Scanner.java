@@ -36,11 +36,6 @@ public class Scanner {
     protected int column = 1;
 
     /**
-     * The previous char.
-     */
-    protected int previous;
-
-    /**
      * The current char.
      */
     protected int current;
@@ -48,7 +43,7 @@ public class Scanner {
     /**
      * The reading buffer.
      */
-    protected char[] readBuffer = new char[4096];
+    protected char[] readBuffer;
 
     /**
      * The current position in the read buffer.
@@ -63,7 +58,7 @@ public class Scanner {
     /**
      * The recording buffer.
      */
-    protected char[] buffer = new char[4096];
+    protected char[] buffer = new char[128];
 
     /**
      * The current position in the buffer.
@@ -98,7 +93,29 @@ public class Scanner {
     public Scanner(Reader r) throws ParseException {
         try {
             reader = r;
+            readBuffer = new char[4096];
             current = nextChar();
+        } catch (IOException e) {
+            throw new ParseException(e);
+        }
+    }
+
+    /**
+     * Creates a new Scanner object.
+     * @param r The reader to scan.
+     */
+    public Scanner(String s) throws ParseException {
+        try {
+            reader       = null;
+            readBuffer   = s.toCharArray();
+            readPosition = 0;
+            readCount    = readBuffer.length;
+            collapseCRNL(0);
+            if (readCount == 0) {
+                current = -1; 
+            } else {
+                current = nextChar();
+            }
         } catch (IOException e) {
             throw new ParseException(e);
         }
@@ -143,8 +160,12 @@ public class Scanner {
      * Clears the buffer.
      */
     public void clearBuffer() {
-        position = 1;
-        buffer[0] = (char)previous;
+        if (position <= 0) {
+            position = 0;
+        } else {
+            buffer[0] = buffer[position-1];
+            position = 1;
+        }
     }
 
     /**
@@ -1186,57 +1207,95 @@ public class Scanner {
      * end of stream has been reached.
      */
     protected int nextChar() throws IOException {
-        int c = readChar();
-
-        // Line break normalization.
-        switch (c) {
-        case -1:
-            return current = previous = -1;
-
-        case 10:
-            if (previous == 13) {
-                previous = 10;
-                return current = nextChar();
-            }
-            line++;
-            column = 1;
-            previous = c;
-            break;
-
-        case 13:
-            previous = c;
-            c = 10;
-            line++;
-            column = 1;
-            break;
-
-        default:
-            previous = c;
-            column++;
+        if ((readPosition == readCount) && (!fillReadBuffer())) {
+            return (char)(current = -1);
         }
+
+        current = readBuffer[readPosition++];
+
+        if (current != 10) {
+            column++;
+        } else {
+            line++;
+            column = 1;
+        }
+
         if (position == buffer.length) {
             char[] t = new char[position * 3 / 2];
-            for (int i = position - 1; i >= 0; --i) {
-                t[i] = buffer[i];
-            }
+            // System.out.println("Resizing Buffer: " + t.length);
+            System.arraycopy(buffer, 0, t, 0, position);
             buffer = t;
         }
-        buffer[position++] = (char)c;
-        return current = c;
+
+        return buffer[position++] = (char)current;
     }
 
-    /**
-     * Reads a single char from the reader.
-     */
-    protected int readChar() throws IOException {
-        if (readPosition == readCount) {
-            readPosition = 0;
-            readCount = reader.read(readBuffer, 0, readBuffer.length);
-            if (readCount == -1) {
-                readCount = 0;
-                return -1;
+    protected final boolean fillReadBuffer() throws IOException {
+        if (readCount != 0) {
+            if (readPosition == readCount) {
+                readBuffer[0] = readBuffer[readCount-1];
+                readCount=readPosition=1;
+            } else {
+                // we keep the last char in our readBuffer.
+                System.arraycopy(readBuffer, readPosition-1, readBuffer, 0, 
+                                 readCount-readPosition+1);
+                readCount = (readCount-readPosition)+1;
+                readPosition = 1;
             }
         }
-        return readBuffer[readPosition++];
+
+        // No reader so can't extend...
+        if (reader == null)
+            return (readCount != readPosition);
+                    
+        // remember where the fill starts...
+        int src=readCount-1;
+        if (src < 0) src = 0;
+
+        // Refill the readBuffer...
+        int read = reader.read(readBuffer, readCount, 
+                               readBuffer.length-readCount);
+        if (read == -1)
+            return (readCount != readPosition);
+
+        readCount+=read; // add in chars read.
+
+        
+        collapseCRNL(src); // Now collapse cr/nl...
+
+        return (readCount != readPosition);
+    }
+
+    protected final void collapseCRNL(int src) {
+        // Now collapse cr/nl...
+        while (src<readCount) {
+            if (readBuffer[src] != 13) {
+                src++;
+            } else {
+                readBuffer[src] = 10;
+                src++;
+                if (src>=readCount) break;
+                if (readBuffer[src] == 10) {
+                    // We now need to collapse some of the chars to
+                    // eliminate cr/nl pairs.  This is where we do it...
+                    int dst = src; // start writing where this 10 is
+                    src++; // skip reading this 10.
+                    while (src<readCount) {
+                        if (readBuffer[src] == 13) {
+                            readBuffer[dst++] = 10;
+                            src++;
+                            if (src>=readCount) break;
+                            if (readBuffer[src] == 10) {
+                                src++;
+                            }
+                            continue;
+                        }
+                        readBuffer[dst++] = readBuffer[src++];
+                    }
+                    readCount = dst;
+                    break;
+                }
+            }
+        }
     }
 }

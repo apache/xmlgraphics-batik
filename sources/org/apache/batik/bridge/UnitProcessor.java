@@ -196,7 +196,7 @@ public abstract class UnitProcessor {
             LengthParser lengthParser = new LengthParser();
             UnitResolver ur = new UnitResolver();
             lengthParser.setLengthHandler(ur);
-            lengthParser.parse(new StringReader(s));
+            lengthParser.parse(s);
             return svgToObjectBoundingBox(ur.value, ur.unit, d, ctx);
         } catch (ParseException ex) {
             throw new BridgeException(ctx.getElement(),
@@ -368,7 +368,7 @@ public abstract class UnitProcessor {
             LengthParser lengthParser = new LengthParser();
             UnitResolver ur = new UnitResolver();
             lengthParser.setLengthHandler(ur);
-            lengthParser.parse(new StringReader(s));
+            lengthParser.parse(s);
             return svgToUserSpace(ur.value, ur.unit, d, ctx);
         } catch (ParseException ex) {
             throw new BridgeException(ctx.getElement(),

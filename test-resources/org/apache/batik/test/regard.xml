@@ -29,14 +29,14 @@
     <!--                     Rendering Accuracy Tests                           -->
     <!-- ====================================================================== -->
 
-    <!--                           SVG Working Group                            -->
-    <!--                           Basic Effectivity                            -->
-    <!--                               Test Suite                               -->
+    <!--                                Batik                                    -->
+    <!--                               Samples                                   -->
     <testSuite href="file:test-resources/org/apache/batik/test/samplesRendering.xml" /> 
 
 
-    <!--                                Batik                                    -->
-    <!--                               Samples                                   -->
+    <!--                           SVG Working Group                            -->
+    <!--                           Basic Effectivity                            -->
+    <!--                               Test Suite                               -->
     <testSuite href="file:test-resources/org/apache/batik/test/beSuite.xml" />
 
 

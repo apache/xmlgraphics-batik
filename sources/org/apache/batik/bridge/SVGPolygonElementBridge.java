@@ -56,7 +56,7 @@ public class SVGPolygonElementBridge extends SVGDecoratedShapeElementBridge {
             try {
                 PointsParser pp = new PointsParser();
                 pp.setPointsHandler(app);
-                pp.parse(new StringReader(s));
+                pp.parse(s);
             } catch (ParseException ex) {
                 BridgeException bex
                     = new BridgeException(e, ERR_ATTRIBUTE_VALUE_MALFORMED,

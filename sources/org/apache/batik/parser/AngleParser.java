@@ -50,9 +50,7 @@ public class AngleParser extends NumberParser {
     /**
      * Parses the given reader representing an angle.
      */
-    public void parse(Reader r) throws ParseException {
-	initialize(r);
-
+    protected void doParse() throws ParseException {
 	angleHandler.startAngle();
 
 	read();

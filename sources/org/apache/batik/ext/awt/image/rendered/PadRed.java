@@ -101,12 +101,17 @@ public class PadRed extends AbstractRed {
     protected static class ZeroRecter {
         WritableRaster wr;
         int bands;
+        static int [] zeros=null;
         public ZeroRecter(WritableRaster wr) {
             this.wr = wr;
             this.bands = wr.getSampleModel().getNumBands();
         }
         public void zeroRect(Rectangle r) {
-            int [] zeros = new int[r.width*bands];
+            synchronized (this) {
+                if ((zeros == null) || (zeros.length <r.width*bands))
+                    zeros = new int[r.width*bands];
+            }
+
             for (int y=0; y<r.height; y++) {
                 wr.setPixels(r.x, r.y+y, r.width, 1, zeros);
             }
