@@ -21,6 +21,11 @@
     <!-- ========================================================================== -->
     <test id="svgRenderingAccuracyTestValidator" class="org.apache.batik.test.svg.SVGRenderingAccuracyTestValidator" />
 
+    <!-- ============================================================================ -->
+    <!-- Validates that the SelfContainedSVGOnLoadTest class is operating as expected -->
+    <!-- ============================================================================ -->
+    <test id="selfContainedSVGOnLoadTestValidator" class="org.apache.batik.test.svg.SelfContainedSVGOnLoadTestValidator" />
+
     <!-- ========================================================================== -->
     <!-- Validates that the SVGAccuracyTest class is operating as expected          -->
     <!-- ========================================================================== -->

@@ -1,0 +1,41 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN"
+"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+
+<!-- ========================================================================= -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.        -->
+<!--                                                                           -->
+<!-- This software is published under the terms of the Apache Software License -->
+<!-- version 1.1, a copy of which has been included with this distribution in  -->
+<!-- the LICENSE file.                                                         -->
+<!-- ========================================================================= -->
+
+<!-- ========================================================================= -->
+<!-- This file is used by SelfContainedSVGOnLoadTestValidator to validate      -->
+<!-- handling of an unexpected 'result' attribute value in the 'testResult'    -->
+<!-- element.                                                                  -->
+<!--                                                                           -->
+<!-- @author vincent.hardy@sun.com                                             -->
+<!-- @version $Id$            -->
+<!-- ========================================================================= -->
+
+<svg xmlns="http://www.w3.org/2000/svg" 
+     xmlns:xlink="http://www.w3.org/1999/xlink" 
+     xmlns:test="http://xml.apache.org/batik/test"
+     width="450" height="500" viewBox="0 0 450 500"
+     onload="runTest(evt)">
+
+    <script type="text/ecmascript"><![CDATA[
+    var testNS = "http://xml.apache.org/batik/test";
+
+    function runTest(evt){
+        var tr = document.createElementNS(testNS, "testResult");
+        tr.setAttributeNS(null, "result", "invalidResultValue");
+        var root = document.getDocumentElement();
+        root.appendChild(tr);
+    }
+
+    ]]></script>
+
+</svg>
+
