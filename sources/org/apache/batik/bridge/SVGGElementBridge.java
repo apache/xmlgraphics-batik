@@ -66,14 +66,13 @@ public class SVGGElementBridge extends AbstractGraphicsNodeBridge {
             (CompositeGraphicsNode)super.createGraphicsNode(ctx, e);
 
         // 'color-rendering'
-        Map colorHints = CSSUtilities.convertColorRendering(e);
-        if (colorHints != null) {
-            gn.setRenderingHints(new RenderingHints(colorHints));
+        RenderingHints hints = CSSUtilities.convertColorRendering(e, null);
+        if (hints != null) {
+            gn.setRenderingHints(hints);
         }
 
         // 'enable-background'
-        UnitProcessor.Context uctx = UnitProcessor.createContext(ctx, e);
-        Rectangle2D r = CSSUtilities.convertEnableBackground(e, uctx);
+        Rectangle2D r = CSSUtilities.convertEnableBackground(e);
         if (r != null) {
             gn.setBackgroundEnable(r);
         }

@@ -8,29 +8,45 @@
 
 package org.apache.batik.extension;
 
-import org.apache.batik.css.ElementNonCSSPresentationalHints;
-import org.apache.batik.css.ExtendedElementCSSInlineStyle;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import org.apache.batik.css.engine.CSSStylableElement;
+import org.apache.batik.css.engine.StyleMap;
 
 import org.apache.batik.dom.AbstractDocument;
-import org.apache.batik.dom.svg.ElementNonCSSPresentationalHintsSupport;
-import org.apache.batik.dom.svg.SVGStylableSupport;
-import org.apache.batik.dom.util.OverrideStyleElement;
+import org.apache.batik.dom.svg.XMLBaseSupport;
 
+import org.w3c.dom.Node;
 import org.w3c.dom.css.CSSStyleDeclaration;
+import org.w3c.dom.css.CSSValue;
+import org.w3c.dom.svg.SVGAnimatedString;
+import org.w3c.dom.svg.SVGStylable;
 
 /**
- * This class implements the basic features an element must have in order
- * to be usable as a foreign element within an SVGOMDocument, and the support
- * for both the 'style' attribute and the style attributes (ie: fill="red", ...).
+ * This class implements the basic features an element must have in
+ * order to be usable as a foreign element within an SVGOMDocument,
+ * and the support for both the 'style' attribute and the style
+ * attributes (ie: fill="red", ...).
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
 public abstract class StylableExtensionElement
-    extends    ExtensionElement
-    implements OverrideStyleElement,
-	       ExtendedElementCSSInlineStyle,
-	       ElementNonCSSPresentationalHints {
+    extends ExtensionElement
+    implements CSSStylableElement,
+               SVGStylable {
+
+    /**
+     * The base URL.
+     */
+    protected URL cssBase;
+
+    /**
+     * The computed style map.
+     */
+    protected StyleMap computedStyleMap;
+
     /**
      * Creates a new Element object.
      */
@@ -45,65 +61,94 @@ public abstract class StylableExtensionElement
     protected StylableExtensionElement(String name, AbstractDocument owner) {
         super(name, owner);
     }
+
+    // CSSStylableElement //////////////////////////////////////////
     
     /**
-     * The stylable support.
+     * Returns the computed style of this element/pseudo-element.
      */
-    protected SVGStylableSupport stylableSupport;
-
-    /**
-     * Returns stylableSupport different from null.
-     */
-    protected final SVGStylableSupport getStylableSupport() {
-	if (stylableSupport == null) {
-	    stylableSupport = new SVGStylableSupport();
-	}
-	return stylableSupport;
+    public StyleMap getComputedStyleMap(String pseudoElement) {
+        return computedStyleMap;
     }
 
     /**
-     * Implements {@link
-     * org.apache.batik.css.ExtendedElementCSSInlineStyle#hasStyle()}.
+     * Sets the computed style of this element/pseudo-element.
      */
-    public boolean hasStyle() {
-        return SVGStylableSupport.hasStyle(this);
+    public void setComputedStyleMap(String pseudoElement, StyleMap sm) {
+        computedStyleMap = sm;
     }
+
+    /**
+     * Returns the ID of this element.
+     */
+    public String getXMLId() {
+        return getAttributeNS(null, "id");
+    }
+
+    /**
+     * Returns the class of this element.
+     */
+    public String getCSSClass() {
+        return getAttributeNS(null, "class");
+    }
+
+    /**
+     * Returns the CSS base URL of this element.
+     */
+    public URL getCSSBase() {
+        if (cssBase == null) {
+            try {
+                String bu = XMLBaseSupport.getCascadedXMLBase(this);
+                if (bu == null) {
+                    return null;
+                }
+                cssBase = new URL(XMLBaseSupport.getCascadedXMLBase(this));
+            } catch (MalformedURLException e) {
+                // !!! TODO
+                e.printStackTrace();
+                throw new InternalError();
+            }
+        }
+        return cssBase;
+    }
+
+    /**
+     * Tells whether this element is an instance of the given pseudo
+     * class.
+     */
+    public boolean isPseudoInstanceOf(String pseudoClass) {
+        if (pseudoClass.equals("first-child")) {
+            Node n = getPreviousSibling();
+            while (n != null && n.getNodeType() != ELEMENT_NODE) {
+                n = n.getPreviousSibling();
+            }
+            return n == null;
+        }
+        return false;
+    }
+
+    // SVGStylable //////////////////////////////////////////////////
 
     /**
      * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGStylable#getStyle()}.
      */
     public CSSStyleDeclaration getStyle() {
-        return getStylableSupport().getStyle(this);
+        throw new InternalError("Not implemented");
     }
 
-    // OverrideStyleElement ///////////////////////////////////////////
-
     /**
-     * Implements {@link
-     * OverrideStyleElement#hasOverrideStyle(String)}.
+     * <b>DOM</b>: Implements {@link
+     * org.w3c.dom.svg.SVGStylable#getPresentationAttribute(String)}.
      */
-    public boolean hasOverrideStyle(String pseudoElt) {
-	return getStylableSupport().hasOverrideStyle(pseudoElt);
-    }    
-
-    /**
-     * Implements {@link
-     * OverrideStyleElement#getOverrideStyle(String)}.
-     */
-    public CSSStyleDeclaration getOverrideStyle(String pseudoElt) {
-	return getStylableSupport().getOverrideStyle(pseudoElt, this);
+    public CSSValue getPresentationAttribute(String name) {
+        throw new InternalError("Not implemented");
     }
 
-    // ElementNonCSSPresentationalHints ////////////////////////////////////
-
     /**
-     * Returns the translation of the non-CSS hints to the corresponding
-     * CSS rules. The result can be null.
+     * <b>DOM</b>: Implements {@link
+     * org.w3c.dom.svg.SVGStylable#getClassName()}.
      */
-    public CSSStyleDeclaration getNonCSSPresentationalHints() {
-	return ElementNonCSSPresentationalHintsSupport.
-            getNonCSSPresentationalHints(this);
+    public SVGAnimatedString getClassName() {
+        throw new InternalError("Not implemented");
     }
-
-    
 }

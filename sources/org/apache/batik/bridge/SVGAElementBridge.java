@@ -10,7 +10,6 @@ package org.apache.batik.bridge;
 
 import java.awt.Cursor;
 
-import org.apache.batik.css.HiddenChildElementSupport;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
@@ -99,7 +98,7 @@ public class SVGAElementBridge extends AbstractGraphicsNodeBridge {
             SVGAElement elt = null;
             for (Element e = (Element)evt.getTarget();
                  e != null;
-                 e = HiddenChildElementSupport.getParentElement(e)) {
+                 e = SVGUtilities.getParentElement(e)) {
                 if (e instanceof SVGAElement) {
                     elt = (SVGAElement)e;
                     break;
@@ -127,7 +126,7 @@ public class SVGAElementBridge extends AbstractGraphicsNodeBridge {
             SVGAElement elt = null;
             for (Element e = (Element)evt.getTarget();
                  e != null;
-                 e = HiddenChildElementSupport.getParentElement(e)) {
+                 e = SVGUtilities.getParentElement(e)) {
                 if (e instanceof SVGAElement) {
                     elt = (SVGAElement)e;
                     break;
@@ -158,7 +157,7 @@ public class SVGAElementBridge extends AbstractGraphicsNodeBridge {
             SVGAElement elt = null;
             for (Element e = (Element)evt.getTarget();
                  e != null;
-                 e = HiddenChildElementSupport.getParentElement(e)) {
+                 e = SVGUtilities.getParentElement(e)) {
                 if (e instanceof SVGAElement) {
                     elt = (SVGAElement)e;
                     break;

@@ -181,7 +181,7 @@ public class SVGSVGElementBridge extends AbstractSVGBridge
         }
 
         // 'enable-background'
-        Rectangle2D r = CSSUtilities.convertEnableBackground(e, uctx);
+        Rectangle2D r = CSSUtilities.convertEnableBackground(e);
         if (r != null) {
             gn.setBackgroundEnable(r);
         }
@@ -237,7 +237,6 @@ public class SVGSVGElementBridge extends AbstractSVGBridge
                                           new DOMAttrModifiedEventListener(),
                                           false);
         ctx.bind(e, node);
-        BridgeEventSupport.addDOMListener(ctx, e);
     }
 
     /**

@@ -11,9 +11,6 @@ package org.apache.batik.bridge;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import org.apache.batik.css.AbstractViewCSS;
-import org.apache.batik.css.CSSOMReadOnlyStyleDeclaration;
-import org.apache.batik.css.CSSOMReadOnlyValue;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.svg.XMLBaseSupport;
 import org.apache.batik.dom.util.XLinkSupport;
@@ -94,7 +91,6 @@ public class URIResolver {
             return document.getElementById(uri.substring(1));
 
         ParsedURL purl = new ParsedURL(baseURI, uri);
-        // System.out.println("PURL: " + purl);
 
         if (documentURI == null)
             documentURI = document.getURL();
@@ -103,26 +99,8 @@ public class URIResolver {
         if ((frag != null) && (documentURI != null)) {
             ParsedURL pDocURL = new ParsedURL(documentURI);
 
-            // System.out.println("Purl: " + 
-            //                    purl.getPath()     + " - " +
-            //                    purl.getPort()     + " - " +
-            //                    purl.getHost()     + " - " +
-            //                    purl.getProtocol() + "\n" +
-            //                    "doc:  " +
-            //                    pDocURL.getPath()     + " - " +
-            //                    pDocURL.getPort()     + " - " +
-            //                    pDocURL.getHost()     + " - " +
-            //                    pDocURL.getProtocol());
-
-
             // Check if the rest of the URL matches...
             // if so then return the referenced element.
-            // if ((pDocURL.getPath()     == purl.getPath()) &&
-            //     (pDocURL.getPort()     == purl.getPort()) &&
-            //     (pDocURL.getHost()     == purl.getHost()) &&
-            //     (pDocURL.getProtocol() == purl.getProtocol()))
-            //     return document.getElementById(frag);
-
             if ((pDocURL.getPort()      == purl.getPort()) &&
                 ((pDocURL.getPath()     == purl.getPath()) 
                  || ((pDocURL.getPath()!=null) 

@@ -10,13 +10,15 @@ package org.apache.batik.dom.svg;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+
 import java.net.URL;
 
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.MissingResourceException;
 
-import org.apache.batik.css.DOMStyleSheetList;
-import org.apache.batik.css.ElementWithID;
+import org.apache.batik.css.engine.CSSEngine;
+import org.apache.batik.css.engine.CSSStyleSheetNode;
 
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.GenericAttr;
@@ -30,7 +32,7 @@ import org.apache.batik.dom.GenericProcessingInstruction;
 import org.apache.batik.dom.GenericText;
 import org.apache.batik.dom.StyleSheetFactory;
 
-import org.apache.batik.dom.util.OverrideStyleElement;
+import org.apache.batik.dom.util.HashTable;
 import org.apache.batik.dom.util.XMLSupport;
 
 import org.apache.batik.util.SVGConstants;
@@ -112,14 +114,14 @@ public class SVGOMDocument
     protected transient AbstractView defaultView;
 
     /**
-     * The document's stylesheets.
-     */
-    protected transient DOMStyleSheetList styleSheets;
-
-    /**
      * The document context.
      */
     protected transient SVGContext context;
+
+    /**
+     * The CSS engine.
+     */
+    protected transient CSSEngine cssEngine;
 
     /**
      * Creates a new uninitialized document.
@@ -152,6 +154,20 @@ public class SVGOMDocument
      */
     public void setSVGContext(SVGContext ctx) {
         context = ctx;
+    }
+
+    /**
+     * Sets the CSS engine.
+     */
+    public void setCSSEngine(CSSEngine ctx) {
+        cssEngine = ctx;
+    }
+
+    /**
+     * Returns the CSS engine.
+     */
+    public CSSEngine getCSSEngine() {
+        return cssEngine;
     }
 
     /**
@@ -362,13 +378,11 @@ public class SVGOMDocument
      * An auxiliary method used by getElementById.
      */
     protected static Element getById(String id, Node node) {
-        if (!(node instanceof ElementWithID)) {
-            return null;
-        }
-
-        ElementWithID e = (ElementWithID)node;
-        if (e.getID().equals(id)) {
-            return (Element)e;
+        if (node.getNodeType() == Node.ELEMENT_NODE) {
+            Element elt = (Element)node;
+            if (elt.getAttributeNS(null, "id").equals(id)) {
+                return elt;
+            }
         }
         for (Node n = node.getFirstChild();
              n != null;
@@ -404,44 +418,7 @@ public class SVGOMDocument
      * org.w3c.dom.stylesheets.DocumentStyle#getStyleSheets()}.
      */
     public StyleSheetList getStyleSheets() {
-        if (styleSheets == null) {
-            // !!! TODO: Live list
-            getStyleSheets(this, styleSheets = new DOMStyleSheetList());
-        }
-        return styleSheets;
-    }
-
-    /**
-     * An auxiliary method for getStyleSheets.
-     */
-    protected static void getStyleSheets(Node n, DOMStyleSheetList l) {
-        if (n instanceof LinkStyle) {
-            StyleSheet ss = ((LinkStyle)n).getSheet();
-            if (ss != null) {
-                l.append(ss);
-            }
-        }
-        for (Node c = n.getFirstChild(); c != null; c = c.getNextSibling()) {
-            getStyleSheets(c, l);
-        }
-    }
-
-    /**
-     * Enables the alternate stylesheet with the given title.
-     */
-    public void enableAlternateStyleSheet(String title) {
-        getStyleSheets();
-        for (int i = 0; i < styleSheets.getLength(); i++) {
-            StyleSheet ss = (StyleSheet)styleSheets.item(i);
-            Node on = ss.getOwnerNode();
-            if (on instanceof SVGStyleSheetProcessingInstruction) {
-                SVGStyleSheetProcessingInstruction sspi;
-                sspi = (SVGStyleSheetProcessingInstruction)on;
-                if ("yes".equals(sspi.getPseudoAttributes().get("alternate"))) {
-                    ss.setDisabled(!title.equals(ss.getTitle()));
-                }
-            }
-        }
+        throw new InternalError("Not implemented");
     }
 
     // DocumentView ///////////////////////////////////////////////////////////
@@ -463,22 +440,21 @@ public class SVGOMDocument
      */
     public void clearViewCSS() {
         defaultView = null;
+        if (cssEngine != null) {
+            cssEngine.dispose();
+        }
+        cssEngine = null;
     }
 
     // DocumentCSS ////////////////////////////////////////////////////////////
 
     /**
-     * <b>DOM</b>: Implements {@link DocumentCSS#getOverrideStyle(Element,String)}.
+     * <b>DOM</b>: Implements
+     * {@link DocumentCSS#getOverrideStyle(Element,String)}.
      */
     public CSSStyleDeclaration getOverrideStyle(Element elt,
                                                 String pseudoElt) {
-        if (elt instanceof OverrideStyleElement) {
-            OverrideStyleElement ose = (OverrideStyleElement)elt;
-            return ose.hasOverrideStyle(pseudoElt)
-                ? null
-                : ose.getOverrideStyle(pseudoElt);
-        }
-        return null;
+        throw new InternalError("Not implemented");
     }
 
     /**

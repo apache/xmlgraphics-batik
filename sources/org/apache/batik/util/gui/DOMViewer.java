@@ -534,10 +534,12 @@ public class DOMViewer extends JFrame implements ActionMap {
                 if (viewCSS != null) {
                     style = viewCSS.getComputedStyle((Element)n, null);
                     propertyNames = new ArrayList();
-                    for (int i = 0; i < style.getLength(); i++) {
-                        propertyNames.add(style.item(i));
+                    if (style != null) {
+                        for (int i = 0; i < style.getLength(); i++) {
+                            propertyNames.add(style.item(i));
+                        }
+                        Collections.sort(propertyNames);
                     }
-                    Collections.sort(propertyNames);
                 }
 	    }
 

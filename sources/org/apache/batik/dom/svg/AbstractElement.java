@@ -8,12 +8,7 @@
 
 package org.apache.batik.dom.svg;
 
-import org.apache.batik.css.CSSOMReadOnlyStyleDeclaration;
-import org.apache.batik.css.ElementWithBaseURI;
-import org.apache.batik.css.ElementWithID;
-import org.apache.batik.css.ElementWithPseudoClass;
-import org.apache.batik.css.HiddenChildElement;
-import org.apache.batik.css.HiddenChildElementSupport;
+import org.apache.batik.css.engine.CSSEngine;
 
 import org.apache.batik.dom.AbstractAttr;
 import org.apache.batik.dom.AbstractDocument;
@@ -39,25 +34,12 @@ import org.w3c.dom.events.MutationEvent;
  */
 public abstract class AbstractElement
     extends org.apache.batik.dom.AbstractElement
-    implements ElementWithBaseURI,
-               ElementWithID,
-               ElementWithPseudoClass,
-               HiddenChildElement {
+    implements NodeEventTarget {
     
-    /**
-     * The parent element.
-     */
-    protected transient Element parentElement;
-
     /**
      * The live attribute values.
      */
     protected transient SoftDoublyIndexedTable liveAttributeValues;
-
-    /**
-     * The cascaded style, if any.
-     */
-    protected transient CSSOMReadOnlyStyleDeclaration styleDeclaration;
 
     /**
      * Creates a new Element object.
@@ -76,97 +58,21 @@ public abstract class AbstractElement
 	initializeAttributes();
     }
 
-    // ElementWithBaseURI ////////////////////////////////////////////
-
-    /**
-     * Returns this element's base URI.
-     */
-    public String getBaseURI() {
-        return XMLBaseSupport.getCascadedXMLBase(this);
-    }
-
-    // ElementWithID /////////////////////////////////////////////////
-
-    /**
-     * Sets the element ID attribute name.
-     * @param uri The namespace uri.
-     * @param s   The attribute local name.
-     */
-    public void setIDName(String uri, String s) {
-        if (uri != null || s == null || !s.equals("id")) {
-	    throw createDOMException
-		(DOMException.NO_MODIFICATION_ALLOWED_ERR,
-		 "id.name",
-		 new Object[] { s });
-        }
-    }
-
-    /**
-     * Returns the ID of this element or the empty string.
-     */
-    public String getID() {
-        return getAttribute("id");
-    }
-
-    // ElementWithPseudoClass ////////////////////////////////////////
-
-    /**
-     * Whether this element matches the given pseudo-class.
-     * This methods supports the :first-child pseudo class.
-     */
-    public boolean matchPseudoClass(String pseudoClass) {
-        if (pseudoClass.equals("first-child")) {
-            Node n = getPreviousSibling();
-            while (n != null && n.getNodeType() != ELEMENT_NODE) {
-                n = n.getPreviousSibling();
-            }
-            return n == null;
-        }
-        return false;
-    }
-
-    // HiddenChildElement ////////////////////////////////////////////
-
-    /**
-     * The parent element of this element.
-     */
-    public Element getParentElement() {
-        return parentElement;
-    }
-
-    /**
-     * Sets the parent element.
-     */
-    public void setParentElement(Element elt) {
-        parentElement = elt;
-    }
-
-    /**
-     * Gets the style of this element.
-     */
-    public CSSOMReadOnlyStyleDeclaration getStyleDeclaration() {
-        return styleDeclaration;
-    }
-
-    /**
-     * Sets the style of this element.
-     */
-    public void setStyleDeclaration(CSSOMReadOnlyStyleDeclaration sd) {
-        styleDeclaration = sd;
-    }
+    // NodeEventTarget ////////////////////////////////////////////////////
 
     /**
      * Implements {@link NodeEventTarget#getParentNodeEventTarget()}.
      */
     public NodeEventTarget getParentNodeEventTarget() {
         return (NodeEventTarget)
-            HiddenChildElementSupport.getParentElement(this);
+            CSSEngine.getLogicalParentNode(getParentNode());
     }
 
     // Attributes /////////////////////////////////////////////////////////
 
     /**
-     * Returns the live attribute value associated with given attribute, if any.
+     * Returns the live attribute value associated with given
+     * attribute, if any.
      * @param ns The attribute's namespace.
      * @param ln The attribute's local name.
      */
@@ -183,7 +89,8 @@ public abstract class AbstractElement
      * @param ln The attribute's local name.
      * @param val The live value.
      */
-    public void putLiveAttributeValue(String ns, String ln, LiveAttributeValue val) {
+    public void putLiveAttributeValue(String ns, String ln,
+                                      LiveAttributeValue val) {
         if (liveAttributeValues == null) {
             liveAttributeValues = new SoftDoublyIndexedTable();
         }
@@ -233,7 +140,8 @@ public abstract class AbstractElement
      * @param name The attribute's qualified name.
      * @param value The attribute's default value.
     */
-    public void setUnspecifiedAttribute(String nsURI, String name, String value) {
+    public void setUnspecifiedAttribute(String nsURI, String name,
+                                        String value) {
 	if (attributes == null) {
 	    attributes = createAttributes();
 	}
@@ -272,7 +180,8 @@ public abstract class AbstractElement
     }
 
     /**
-     * Gets Returns the live attribute value associated with given attribute, if any.
+     * Gets Returns the live attribute value associated with given
+     * attribute, if any.
      */
     private LiveAttributeValue getLiveAttributeValue(Attr node) {
         String ns = node.getNamespaceURI();
@@ -298,7 +207,8 @@ public abstract class AbstractElement
          * @param name The attribute's qualified name.
          * @param value The attribute's default value.
 	 */
-	public void setUnspecifiedAttribute(String nsURI, String name, String value) {
+	public void setUnspecifiedAttribute(String nsURI, String name,
+                                            String value) {
 	    Attr attr = getOwnerDocument().createAttributeNS(nsURI, name);
 	    attr.setValue(value);
 	    ((AbstractAttr)attr).setSpecified(false);
@@ -306,7 +216,8 @@ public abstract class AbstractElement
 	}
 
  	/**
-	 * <b>DOM</b>: Implements {@link NamedNodeMap#removeNamedItemNS(String,String)}.
+	 * <b>DOM</b>: Implements {@link
+         * NamedNodeMap#removeNamedItemNS(String,String)}.
 	 */
 	public Node removeNamedItemNS(String namespaceURI, String localName)
 	    throws DOMException {
@@ -333,7 +244,8 @@ public abstract class AbstractElement
             // Reset the attribute to its default value
             if (!resetAttribute(namespaceURI, prefix, localName)) {
                 // Mutation event
-                fireDOMAttrModifiedEvent(n.getNodeName(), n, n.getNodeValue(), "",
+                fireDOMAttrModifiedEvent(n.getNodeName(), n,
+                                         n.getNodeValue(), "",
                                          MutationEvent.REMOVAL);
             }
             return n;

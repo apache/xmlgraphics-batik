@@ -20,6 +20,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
 
+import org.apache.batik.css.engine.SVGCSSEngine;
+import org.apache.batik.css.engine.value.Value;
+
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.dom.svg.XMLBaseSupport;
@@ -139,18 +142,9 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
         }
 
         // 'image-rendering' and 'color-rendering'
-        Map imageHints = CSSUtilities.convertImageRendering(e);
-        Map colorHints = CSSUtilities.convertColorRendering(e);
-        if (imageHints != null || colorHints != null) {
-            RenderingHints hints;
-            if (imageHints == null) {
-                hints = new RenderingHints(colorHints);
-            } else if (colorHints == null) {
-                hints = new RenderingHints(imageHints);
-            } else {
-                hints = new RenderingHints(imageHints);
-                hints.putAll(colorHints);
-            }
+        RenderingHints hints = CSSUtilities.convertImageRendering(e, null);
+        hints = CSSUtilities.convertColorRendering(e, hints);
+        if (hints != null) {
             node.setRenderingHints(hints);
         }
 
@@ -226,7 +220,6 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
         } else {
             ctx.bind(e, node);
         }
-        BridgeEventSupport.addDOMListener(ctx, e);
     }
 
     /**
@@ -309,11 +302,8 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
                                                      SVGDocument imgDocument) {
 
         CompositeGraphicsNode result = new CompositeGraphicsNode();
-        CSSStyleDeclaration decl = CSSUtilities.getComputedStyle(e);
-        UnitProcessor.Context uctx = UnitProcessor.createContext(ctx, e);
 
-        Rectangle2D r
-            = CSSUtilities.convertEnableBackground(e, uctx);
+        Rectangle2D r = CSSUtilities.convertEnableBackground(e);
         if (r != null) {
             result.setBackgroundEnable(r);
         }
@@ -466,10 +456,8 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
     protected static ICCColorSpaceExt extractColorSpace(Element element,
                                                         BridgeContext ctx) {
 
-        CSSStyleDeclaration decl = CSSUtilities.getComputedStyle(element);
-        String colorProfileProperty
-            = ((CSSPrimitiveValue)decl.getPropertyCSSValue
-               (CSS_COLOR_PROFILE_PROPERTY)).getStringValue();
+        String colorProfileProperty = CSSUtilities.getComputedStyle
+            (element, SVGCSSEngine.COLOR_PROFILE_INDEX).getStringValue();
 
         // The only cases that need special handling are 'sRGB' and 'name'
         ICCColorSpaceExt colorSpace = null;

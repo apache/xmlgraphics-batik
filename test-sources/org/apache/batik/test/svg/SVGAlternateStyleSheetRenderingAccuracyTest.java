@@ -8,13 +8,12 @@
 
 package org.apache.batik.test.svg;
 
-import org.apache.batik.dom.svg.SVGOMDocument;
-
-import org.w3c.dom.Document;
+import org.apache.batik.transcoder.image.ImageTranscoder;
+import org.apache.batik.transcoder.image.PNGTranscoder;
 
 /**
  * Checks for regressions in rendering of a document with a given
- * alternate stylesheet label.
+ * alternate stylesheet.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
@@ -22,21 +21,14 @@ import org.w3c.dom.Document;
 public class SVGAlternateStyleSheetRenderingAccuracyTest
     extends ParametrizedRenderingAccuracyTest {
     /**
-     * Constructor.
+     * Returns the <tt>ImageTranscoder</tt> the Test should
+     * use
      */
-    public SVGAlternateStyleSheetRenderingAccuracyTest(){
-        super();
+    public ImageTranscoder getTestImageTranscoder(){
+        ImageTranscoder t = super.getTestImageTranscoder();
+        t.addTranscodingHint(PNGTranscoder.KEY_ALTERNATE_STYLESHEET,
+                             parameter);
+        return t;
     }
 
-    /**
-     * Template method which subclasses can override if they
-     * need to manipulate the DOM in some way before running 
-     * the accuracy test. For example, this can be useful to 
-     * test the alternate stylesheet support.
-     */
-    protected Document manipulateSVGDocument(Document doc) {
-        // enable the stylesheet
-        ((SVGOMDocument)doc).enableAlternateStyleSheet(parameter);
-        return doc;
-    }
 }

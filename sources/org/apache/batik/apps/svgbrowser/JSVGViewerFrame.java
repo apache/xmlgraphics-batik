@@ -381,6 +381,11 @@ public class JSVGViewerFrame
     protected TransformHistory transformHistory = new TransformHistory();
 
     /**
+     * The alternate style-sheet title.
+     */
+    protected String alternateStyleSheet;
+
+    /**
      * Creates a new SVG viewer frame.
      */
     public JSVGViewerFrame(Application app) {
@@ -1246,6 +1251,7 @@ public class JSVGViewerFrame
         }
 
         protected void update() {
+            alternateStyleSheet = null;
             Iterator it = components.iterator();
             SVGDocument doc = svgCanvas.getSVGDocument();
             while (it.hasNext()) {
@@ -1273,8 +1279,8 @@ public class JSVGViewerFrame
                                     public void actionPerformed(ActionEvent e) {
                                         SVGOMDocument doc;
                                         doc = (SVGOMDocument)svgCanvas.getSVGDocument();
-                                        doc.enableAlternateStyleSheet(title);
                                         doc.clearViewCSS();
+                                        alternateStyleSheet = title;
                                         svgCanvas.setSVGDocument(doc);
                                     }
                                 });
@@ -2004,6 +2010,13 @@ public class JSVGViewerFrame
          */
         public String getMedia() {
             return application.getMedia();
+        }
+
+        /**
+         * Returns this user agent's alternate style-sheet title.
+         */
+        public String getAlternateStyleSheet() {
+            return alternateStyleSheet;
         }
 
         /**

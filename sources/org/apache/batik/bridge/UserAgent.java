@@ -120,6 +120,11 @@ public interface UserAgent {
     String getMedia();
 
     /**
+     * Returns this user agent's alternate style-sheet title.
+     */
+    String getAlternateStyleSheet();
+
+    /**
      * Returns the location on the screen of the
      * client area in the UserAgent.
      */

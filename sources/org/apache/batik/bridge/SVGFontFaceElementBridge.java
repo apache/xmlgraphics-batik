@@ -33,7 +33,8 @@ public class SVGFontFaceElementBridge extends AbstractSVGBridge
     }
 
     /**
-     * Creates an SVGFontFace that repesents the specified &lt;font-face> element.
+     * Creates an SVGFontFace that repesents the specified
+     * &lt;font-face> element.
      *
      * @param ctx The current bridge context.
      * @param fontFaceElement The &lt;font-face> element.
@@ -45,10 +46,12 @@ public class SVGFontFaceElementBridge extends AbstractSVGBridge
 
         // get all the font-face attributes
 
-        String familyNames = fontFaceElement.getAttributeNS(null, SVG_FONT_FAMILY_ATTRIBUTE);
+        String familyNames = fontFaceElement.getAttributeNS
+            (null, SVG_FONT_FAMILY_ATTRIBUTE);
 
         // units per em
-        String unitsPerEmStr = fontFaceElement.getAttributeNS(null, SVG_UNITS_PER_EM_ATTRIBUTE);
+        String unitsPerEmStr = fontFaceElement.getAttributeNS
+            (null, SVG_UNITS_PER_EM_ATTRIBUTE);
         if (unitsPerEmStr.length() == 0) {
             unitsPerEmStr = SVG_FONT_FACE_UNITS_PER_EM_DEFAULT_VALUE;
         }
@@ -62,31 +65,36 @@ public class SVGFontFaceElementBridge extends AbstractSVGBridge
         }
 
         // font-weight
-        String fontWeight = fontFaceElement.getAttributeNS(null, SVG_FONT_WEIGHT_ATTRIBUTE);
+        String fontWeight = fontFaceElement.getAttributeNS
+            (null, SVG_FONT_WEIGHT_ATTRIBUTE);
         if (fontWeight.length() == 0) {
             fontWeight = SVG_FONT_FACE_FONT_WEIGHT_DEFAULT_VALUE;
         }
 
         // font-style
-        String fontStyle = fontFaceElement.getAttributeNS(null, SVG_FONT_STYLE_ATTRIBUTE);
+        String fontStyle = fontFaceElement.getAttributeNS
+            (null, SVG_FONT_STYLE_ATTRIBUTE);
         if (fontStyle.length() == 0) {
             fontStyle = SVG_FONT_FACE_FONT_STYLE_DEFAULT_VALUE;
         }
 
         // font-variant
-        String fontVariant = fontFaceElement.getAttributeNS(null, SVG_FONT_VARIANT_ATTRIBUTE);
+        String fontVariant = fontFaceElement.getAttributeNS
+            (null, SVG_FONT_VARIANT_ATTRIBUTE);
          if (fontVariant.length() == 0) {
             fontVariant = SVG_FONT_FACE_FONT_VARIANT_DEFAULT_VALUE;
         }
 
         // font-stretch
-        String fontStretch = fontFaceElement.getAttributeNS(null, SVG_FONT_STRETCH_ATTRIBUTE);
+        String fontStretch = fontFaceElement.getAttributeNS
+            (null, SVG_FONT_STRETCH_ATTRIBUTE);
          if (fontStretch.length() == 0) {
             fontStretch = SVG_FONT_FACE_FONT_STRETCH_DEFAULT_VALUE;
         }
 
         // slopeStr
-        String slopeStr = fontFaceElement.getAttributeNS(null, SVG_SLOPE_ATTRIBUTE);
+        String slopeStr = fontFaceElement.getAttributeNS
+            (null, SVG_SLOPE_ATTRIBUTE);
         if (slopeStr.length() == 0) {
             slopeStr = SVG_FONT_FACE_SLOPE_DEFAULT_VALUE;
         }
@@ -100,13 +108,15 @@ public class SVGFontFaceElementBridge extends AbstractSVGBridge
         }
 
         // panose-1
-        String panose1 = fontFaceElement.getAttributeNS(null, SVG_PANOSE_1_ATTRIBUTE);
+        String panose1 = fontFaceElement.getAttributeNS
+            (null, SVG_PANOSE_1_ATTRIBUTE);
          if (panose1.length() == 0) {
             panose1 = SVG_FONT_FACE_PANOSE_1_DEFAULT_VALUE;
         }
 
         // ascent
-        String ascentStr = fontFaceElement.getAttributeNS(null, SVG_ASCENT_ATTRIBUTE);
+        String ascentStr = fontFaceElement.getAttributeNS
+            (null, SVG_ASCENT_ATTRIBUTE);
         if (ascentStr.length() == 0) {
             // set it to be unitsPerEm/2, not sure if this is correct or not
             ascentStr = String.valueOf(unitsPerEm/2);
@@ -121,7 +131,8 @@ public class SVGFontFaceElementBridge extends AbstractSVGBridge
         }
 
         // descent
-        String descentStr = fontFaceElement.getAttributeNS(null, SVG_DESCENT_ATTRIBUTE);
+        String descentStr = fontFaceElement.getAttributeNS
+            (null, SVG_DESCENT_ATTRIBUTE);
         if (descentStr.length() == 0) {
             // set it to be unitsPerEm/2, not sure if this is correct or not
             descentStr = String.valueOf(unitsPerEm/2);
@@ -136,7 +147,8 @@ public class SVGFontFaceElementBridge extends AbstractSVGBridge
         }
 
         // underline-position
-        String underlinePosStr = fontFaceElement.getAttributeNS(null, SVG_UNDERLINE_POSITION_ATTRIBUTE);
+        String underlinePosStr = fontFaceElement.getAttributeNS
+            (null, SVG_UNDERLINE_POSITION_ATTRIBUTE);
         if (underlinePosStr.length() == 0) {
             underlinePosStr = "0";
         }
@@ -146,56 +158,67 @@ public class SVGFontFaceElementBridge extends AbstractSVGBridge
         } catch (NumberFormatException ex) {
             throw new BridgeException
                 (fontFaceElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
-                new Object [] {SVG_FONT_FACE_SLOPE_DEFAULT_VALUE, underlinePosStr});
+                new Object [] {SVG_FONT_FACE_SLOPE_DEFAULT_VALUE,
+                               underlinePosStr});
         }
 
 
         // underline-thickness
-        String underlineThicknessStr = fontFaceElement.getAttributeNS(null, SVG_UNDERLINE_THICKNESS_ATTRIBUTE);
+        String underlineThicknessStr = fontFaceElement.getAttributeNS
+            (null, SVG_UNDERLINE_THICKNESS_ATTRIBUTE);
         if (underlineThicknessStr.length() == 0) {
             underlineThicknessStr = String.valueOf(unitsPerEm/20);
         }
         float underlineThickness;
         try {
-            underlineThickness = SVGUtilities.convertSVGNumber(underlineThicknessStr);
+            underlineThickness =
+                SVGUtilities.convertSVGNumber(underlineThicknessStr);
         } catch (NumberFormatException ex) {
             throw new BridgeException
                 (fontFaceElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
-                new Object [] {SVG_FONT_FACE_SLOPE_DEFAULT_VALUE, underlineThicknessStr});
+                new Object [] {SVG_FONT_FACE_SLOPE_DEFAULT_VALUE,
+                               underlineThicknessStr});
         }
 
 
         // strikethrough-position
-        String strikethroughPosStr = fontFaceElement.getAttributeNS(null, SVG_STRIKETHROUGH_POSITION_ATTRIBUTE);
+        String strikethroughPosStr = fontFaceElement.getAttributeNS
+            (null, SVG_STRIKETHROUGH_POSITION_ATTRIBUTE);
         if (strikethroughPosStr.length() == 0) {
             strikethroughPosStr = String.valueOf(ascent/3);
         }
         float strikethroughPos;
         try {
-            strikethroughPos = SVGUtilities.convertSVGNumber(strikethroughPosStr);
+            strikethroughPos =
+                SVGUtilities.convertSVGNumber(strikethroughPosStr);
         } catch (NumberFormatException ex) {
             throw new BridgeException
                 (fontFaceElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
-                new Object [] {SVG_FONT_FACE_SLOPE_DEFAULT_VALUE, strikethroughPosStr});
+                new Object [] {SVG_FONT_FACE_SLOPE_DEFAULT_VALUE,
+                               strikethroughPosStr});
         }
 
 
         // strikethrough-thickness
-        String strikethroughThicknessStr = fontFaceElement.getAttributeNS(null, SVG_STRIKETHROUGH_THICKNESS_ATTRIBUTE);
+        String strikethroughThicknessStr = fontFaceElement.getAttributeNS
+            (null, SVG_STRIKETHROUGH_THICKNESS_ATTRIBUTE);
         if (strikethroughThicknessStr.length() == 0) {
             strikethroughThicknessStr = String.valueOf(unitsPerEm/20);
         }
         float strikethroughThickness;
         try {
-            strikethroughThickness = SVGUtilities.convertSVGNumber(strikethroughThicknessStr);
+            strikethroughThickness =
+                SVGUtilities.convertSVGNumber(strikethroughThicknessStr);
         } catch (NumberFormatException ex) {
             throw new BridgeException
                 (fontFaceElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
-                new Object [] {SVG_FONT_FACE_SLOPE_DEFAULT_VALUE, strikethroughThicknessStr});
+                new Object [] {SVG_FONT_FACE_SLOPE_DEFAULT_VALUE,
+                               strikethroughThicknessStr});
         }
 
         // overline-position
-        String overlinePosStr = fontFaceElement.getAttributeNS(null, this.SVG_OVERLINE_POSITION_ATTRIBUTE);
+        String overlinePosStr = fontFaceElement.getAttributeNS
+            (null, this.SVG_OVERLINE_POSITION_ATTRIBUTE);
          if (overlinePosStr.length() == 0) {
             overlinePosStr = String.valueOf(ascent);
         }
@@ -205,31 +228,36 @@ public class SVGFontFaceElementBridge extends AbstractSVGBridge
         } catch (NumberFormatException ex) {
             throw new BridgeException
                 (fontFaceElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
-                new Object [] {SVG_FONT_FACE_SLOPE_DEFAULT_VALUE, overlinePosStr});
+                new Object [] {SVG_FONT_FACE_SLOPE_DEFAULT_VALUE,
+                               overlinePosStr});
         }
 
 
         // overline-thickness
-        String overlineThicknessStr = fontFaceElement.getAttributeNS(null, SVG_OVERLINE_THICKNESS_ATTRIBUTE);
+        String overlineThicknessStr = fontFaceElement.getAttributeNS
+            (null, SVG_OVERLINE_THICKNESS_ATTRIBUTE);
         if (overlineThicknessStr.length() == 0) {
             overlineThicknessStr = String.valueOf(unitsPerEm/20);
         }
         float overlineThickness;
         try {
-            overlineThickness = SVGUtilities.convertSVGNumber(overlineThicknessStr);
+            overlineThickness =
+                SVGUtilities.convertSVGNumber(overlineThicknessStr);
         } catch (NumberFormatException ex) {
             throw new BridgeException
                 (fontFaceElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
-                new Object [] {SVG_FONT_FACE_SLOPE_DEFAULT_VALUE, overlineThicknessStr});
+                new Object [] {SVG_FONT_FACE_SLOPE_DEFAULT_VALUE,
+                               overlineThicknessStr});
         }
 
 
         // TODO: get the rest of the attributes
 
         return new SVGFontFace(familyNames, unitsPerEm, fontWeight, fontStyle,
-                               fontVariant, fontStretch, slope, panose1, ascent,
-                               descent, strikethroughPos, strikethroughThickness,
-                               underlinePos, underlineThickness,
-                               overlinePos, overlineThickness);
+                               fontVariant, fontStretch, slope, panose1,
+                               ascent, descent, strikethroughPos,
+                               strikethroughThickness, underlinePos,
+                               underlineThickness, overlinePos,
+                               overlineThickness);
     }
 }

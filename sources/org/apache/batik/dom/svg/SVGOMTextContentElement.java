@@ -8,10 +8,7 @@
 
 package org.apache.batik.dom.svg;
 
-import org.apache.batik.css.ElementNonCSSPresentationalHints;
-import org.apache.batik.css.ExtendedElementCSSInlineStyle;
 import org.apache.batik.dom.AbstractDocument;
-import org.apache.batik.dom.util.OverrideStyleElement;
 import org.apache.batik.dom.util.XMLSupport;
 
 import org.w3c.dom.DOMException;
@@ -39,10 +36,8 @@ import org.w3c.dom.svg.SVGRect;
  * @version $Id$
  */
 public abstract class SVGOMTextContentElement
-    extends    SVGOMElement
-    implements OverrideStyleElement,
-	       ExtendedElementCSSInlineStyle,
-	       ElementNonCSSPresentationalHints {
+    extends    SVGStylableElement {
+
     /**
      * Creates a new SVGOMTextContentElement.
      */
@@ -147,68 +142,6 @@ public abstract class SVGOMTextContentElement
     public void selectSubString(int charnum, int nchars)
         throws DOMException {
         throw new RuntimeException(" !!! SVGOMTextContentElement.getSubStringLength()");
-    }
-
-    // ElementNonCSSPresentationalHints ////////////////////////////////////
-
-    /**
-     * Returns the translation of the non-CSS hints to the corresponding
-     * CSS rules. The result can be null.
-     */
-    public CSSStyleDeclaration getNonCSSPresentationalHints() {
-	return ElementNonCSSPresentationalHintsSupport.
-            getNonCSSPresentationalHints(this);
-    }
-
-    // SVGStylable support ///////////////////////////////////////////////////
-
-    /**
-     * Implements {@link
-     * org.apache.batik.css.ExtendedElementCSSInlineStyle#hasStyle()}.
-     */
-    public boolean hasStyle() {
-        return SVGStylableSupport.hasStyle(this);
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGStylable#getStyle()}.
-     */
-    public CSSStyleDeclaration getStyle() {
-        return SVGStylableSupport.getStyle(this);
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGStylable#getPresentationAttribute(String)}.
-     */
-    public CSSValue getPresentationAttribute(String name) {
-        return SVGStylableSupport.getPresentationAttribute(name, this);
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGStylable#getClassName()}.
-     */
-    public SVGAnimatedString getClassName() {
-        return SVGStylableSupport.getClassName(this);
-    }
-
-    // OverrideStyleElement ///////////////////////////////////////////
-
-    /**
-     * Implements {@link
-     * org.apache.batik.dom.util.OverrideStyleElement#hasOverrideStyle(String)}.
-     */
-    public boolean hasOverrideStyle(String pseudoElt) {
-	return SVGStylableSupport.hasOverrideStyle(pseudoElt);
-    }    
-
-    /**
-     * Implements {@link
-     * org.apache.batik.dom.util.OverrideStyleElement#getOverrideStyle(String)}.
-     */
-    public CSSStyleDeclaration getOverrideStyle(String pseudoElt) {
-	return SVGStylableSupport.getOverrideStyle(pseudoElt, this);
     }
 
     // SVGExternalResourcesRequired support /////////////////////////////

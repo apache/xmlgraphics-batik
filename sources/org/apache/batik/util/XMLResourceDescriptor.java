@@ -23,7 +23,14 @@ public class XMLResourceDescriptor {
     /**
      * The XML parser class name key.
      */
-    public final static String XML_PARSER_CLASS_NAME_KEY = "org.xml.sax.driver";
+    public final static String XML_PARSER_CLASS_NAME_KEY =
+        "org.xml.sax.driver";
+
+    /**
+     * The CSS parser class name key.
+     */
+    public final static String CSS_PARSER_CLASS_NAME_KEY =
+        "org.w3c.css.sac.driver";
 
     /**
      * The resources file name
@@ -40,6 +47,11 @@ public class XMLResourceDescriptor {
      * The class name of the XML parser to use.
      */
     protected static String xmlParserClassName;
+
+    /**
+     * The class name of the CSS parser to use.
+     */
+    protected static String cssParserClassName;
 
     static {
         bundle = ResourceBundle.getBundle(RESOURCES, Locale.getDefault());
@@ -67,5 +79,31 @@ public class XMLResourceDescriptor {
      */
     public static void setXMLParserClassName(String xmlParserClassName) {
         XMLResourceDescriptor.xmlParserClassName = xmlParserClassName;
+    }
+
+    /**
+     * Returns the class name of the CSS parser to use.
+     *
+     * <p>This method first checks if any CSS parser has been
+     * specified using the <tt>setCSSParserClassName</tt> method. If
+     * any, this method will return the value of the property
+     * 'org.w3c.css.sac.driver' specified in the
+     * <tt>resources/XMLResourceDescriptor.properties</tt> resource
+     * file.
+     */
+    public static String getCSSParserClassName() {
+        if (cssParserClassName == null) {
+            cssParserClassName = bundle.getString(CSS_PARSER_CLASS_NAME_KEY);
+        }
+        return cssParserClassName;
+    }
+
+    /**
+     * Sets the class name of the CSS parser to use.
+     *
+     * @param cssParserClassName the classname of the CSS parser
+     */
+    public static void setCSSParserClassName(String cssParserClassName) {
+        XMLResourceDescriptor.cssParserClassName = xmlParserClassName;
     }
 }

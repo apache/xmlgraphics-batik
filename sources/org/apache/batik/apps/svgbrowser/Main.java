@@ -36,8 +36,6 @@ import javax.swing.UIManager;
 
 import javax.swing.plaf.FontUIResource;
 
-import org.apache.batik.css.CSSDocumentHandler;
-
 import org.apache.batik.swing.JSVGCanvas;
 import org.apache.batik.swing.gvt.GVTTreeRendererAdapter;
 import org.apache.batik.swing.gvt.GVTTreeRendererEvent;
@@ -66,11 +64,6 @@ public class Main implements Application {
     public static void main(String[] args) {
         new Main(args);
     }
-
-    /**
-     * The CSS parser class name key.
-     */
-    public final static String CSS_PARSER_CLASS_NAME_KEY = "org.w3c.css.sac.parser";
 
     /**
      * The gui resources file name
@@ -132,8 +125,6 @@ public class Main implements Application {
      */
     public Main(String[] args) {
         arguments = args;
-        CSSDocumentHandler.setParserClassName
-        (resources.getString(CSS_PARSER_CLASS_NAME_KEY));
 
         // Preferences
         //

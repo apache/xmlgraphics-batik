@@ -15,11 +15,10 @@ import org.apache.batik.parser.LengthParser;
 import org.apache.batik.parser.ParseException;
 import org.apache.batik.util.CSSConstants;
 
-import org.apache.batik.css.HiddenChildElementSupport;
+import org.apache.batik.css.engine.SVGCSSEngine;
+import org.apache.batik.css.engine.value.Value;
 
 import org.w3c.dom.Element;
-import org.w3c.dom.css.CSSPrimitiveValue;
-import org.w3c.dom.css.CSSValue;
 import org.w3c.dom.svg.SVGLength;
 
 /**
@@ -219,21 +218,21 @@ public abstract class UnitProcessor {
                                                short d,
                                                Context ctx) {
         switch (type) {
-        case CSSPrimitiveValue.CSS_NUMBER:
+        case SVGLength.SVG_LENGTHTYPE_NUMBER:
             // as is
             return value;
-        case CSSPrimitiveValue.CSS_PERCENTAGE:
+        case SVGLength.SVG_LENGTHTYPE_PERCENTAGE:
             // If a percentage value is used, it is converted to a
             // 'bounding box' space coordinate by division by 100
             return value / 100f;
-        case CSSPrimitiveValue.CSS_PX:
-        case CSSPrimitiveValue.CSS_MM:
-        case CSSPrimitiveValue.CSS_CM:
-        case CSSPrimitiveValue.CSS_IN:
-        case CSSPrimitiveValue.CSS_PT:
-        case CSSPrimitiveValue.CSS_PC:
-        case CSSPrimitiveValue.CSS_EMS:
-        case CSSPrimitiveValue.CSS_EXS:
+        case SVGLength.SVG_LENGTHTYPE_PX:
+        case SVGLength.SVG_LENGTHTYPE_MM:
+        case SVGLength.SVG_LENGTHTYPE_CM:
+        case SVGLength.SVG_LENGTHTYPE_IN:
+        case SVGLength.SVG_LENGTHTYPE_PT:
+        case SVGLength.SVG_LENGTHTYPE_PC:
+        case SVGLength.SVG_LENGTHTYPE_EMS:
+        case SVGLength.SVG_LENGTHTYPE_EXS:
             // <!> FIXME: resolve units in userSpace but consider them
             // in the objectBoundingBox coordinate system
             return svgToUserSpace(value, type, d, ctx);
@@ -391,24 +390,24 @@ public abstract class UnitProcessor {
                                        short d,
                                        Context ctx) {
         switch (type) {
-        case CSSPrimitiveValue.CSS_NUMBER:
-        case CSSPrimitiveValue.CSS_PX:
+        case SVGLength.SVG_LENGTHTYPE_NUMBER:
+        case SVGLength.SVG_LENGTHTYPE_PX:
             return v;
-        case CSSPrimitiveValue.CSS_MM:
+        case SVGLength.SVG_LENGTHTYPE_MM:
             return (v / ctx.getPixelToMM());
-        case CSSPrimitiveValue.CSS_CM:
+        case SVGLength.SVG_LENGTHTYPE_CM:
             return (v * 10f / ctx.getPixelToMM());
-        case CSSPrimitiveValue.CSS_IN:
+        case SVGLength.SVG_LENGTHTYPE_IN:
             return (v * 25.4f / ctx.getPixelToMM());
-        case CSSPrimitiveValue.CSS_PT:
+        case SVGLength.SVG_LENGTHTYPE_PT:
             return (v * 25.4f / (72f * ctx.getPixelToMM()));
-        case CSSPrimitiveValue.CSS_PC:
+        case SVGLength.SVG_LENGTHTYPE_PC:
             return (v * 25.4f / (6f * ctx.getPixelToMM()));
-        case CSSPrimitiveValue.CSS_EMS:
+        case SVGLength.SVG_LENGTHTYPE_EMS:
             return emsToPixels(v, d, ctx);
-        case CSSPrimitiveValue.CSS_EXS:
+        case SVGLength.SVG_LENGTHTYPE_EXS:
             return exsToPixels(v, d, ctx);
-        case CSSPrimitiveValue.CSS_PERCENTAGE:
+        case SVGLength.SVG_LENGTHTYPE_PERCENTAGE:
             return percentagesToPixels(v, d, ctx);
         default:
             throw new Error(); // can't be reached
@@ -452,196 +451,6 @@ public abstract class UnitProcessor {
             throw new Error(); // can't be reached
         }
     }
-
-    /////////////////////////////////////////////////////////////////////////
-    // CSS methods
-    /////////////////////////////////////////////////////////////////////////
-
-    /**
-     * Returns the other coordinate value in user units. The value must be
-     * a CSSPrimitiveValue and the type of the value will be the one
-     * defined in the CSSPrimitiveValue.
-     *
-     * @param v the value to convert
-     * @param prop the CSS property
-     * @param ctx the context used to resolve relative value
-     */
-    public static float cssOtherCoordinateToUserSpace(CSSValue v,
-                                                      String prop,
-                                                      Context ctx) {
-        CSSPrimitiveValue pv = (CSSPrimitiveValue)v;
-        short type = pv.getPrimitiveType();
-        return cssToUserSpace(pv.getFloatValue(type),
-                              type,
-                              OTHER_LENGTH,
-                              ctx);
-    }
-
-    /**
-     * Returns the horizontal coordinate in user units. The value must be
-     * a CSSPrimitiveValue and the type of the value will be the one
-     * defined in the CSSPrimitiveValue.
-     *
-     * @param v the value to convert
-     * @param prop the CSS property
-     * @param ctx the context used to resolve relative value
-     */
-    public static float cssHorizontalCoordinateToUserSpace(CSSValue v,
-                                                           String prop,
-                                                           Context ctx) {
-        CSSPrimitiveValue pv = (CSSPrimitiveValue)v;
-        short type = pv.getPrimitiveType();
-        return cssToUserSpace(pv.getFloatValue(type),
-                              type,
-                              HORIZONTAL_LENGTH,
-                              ctx);
-    }
-
-    /**
-     * Returns the vertical coordinate in user units. The value must be a
-     * CSSPrimitiveValue and the type of the value will be the one
-     * defined in the CSSPrimitiveValue.
-     *
-     * @param v the value to convert
-     * @param prop the CSS property
-     * @param ctx the context used to resolve relative value
-     */
-    public static float cssVerticalCoordinateToUserSpace(CSSValue v,
-                                                         String prop,
-                                                         Context ctx) {
-        CSSPrimitiveValue pv = (CSSPrimitiveValue)v;
-        short type = pv.getPrimitiveType();
-        return cssToUserSpace(pv.getFloatValue(type),
-                              type,
-                              VERTICAL_LENGTH,
-                              ctx);
-    }
-
-    /**
-     * Returns the other length value in user units. The value must be
-     * a CSSPrimitiveValue and the type of the value will be the one
-     * defined in the CSSPrimitiveValue.
-     *
-     * @param v the value to convert
-     * @param prop the CSS property
-     * @param ctx the context used to resolve relative value
-     */
-    public static float cssOtherLengthToUserSpace(CSSValue v,
-                                                  String prop,
-                                                  Context ctx) {
-        CSSPrimitiveValue pv = (CSSPrimitiveValue)v;
-        short type = pv.getPrimitiveType();
-        return cssLengthToUserSpace(pv.getFloatValue(type),
-                                    prop,
-                                    type,
-                                    OTHER_LENGTH,
-                                    ctx);
-    }
-
-    /**
-     * Returns the horizontal length in user units. The value must be
-     * a CSSPrimitiveValue and the type of the value will be the one
-     * defined in the CSSPrimitiveValue.
-     *
-     * @param v the value to convert
-     * @param prop the CSS property
-     * @param ctx the context used to resolve relative value
-     */
-    public static float cssHorizontalLengthToUserSpace(CSSValue v,
-                                                       String prop,
-                                                       Context ctx) {
-        CSSPrimitiveValue pv = (CSSPrimitiveValue)v;
-        short type = pv.getPrimitiveType();
-        return cssLengthToUserSpace(pv.getFloatValue(type),
-                                    prop,
-                                    type,
-                                    HORIZONTAL_LENGTH,
-                                    ctx);
-    }
-
-    /**
-     * Returns the vertical length in user units. The value must be a
-     * CSSPrimitiveValue and the type of the value will be the one
-     * defined in the CSSPrimitiveValue.
-     *
-     * @param v the value to convert
-     * @param prop the CSS property
-     * @param ctx the context used to resolve relative value
-     */
-    public static float cssVerticalLengthToUserSpace(CSSValue v,
-                                                     String prop,
-                                                     Context ctx) {
-        CSSPrimitiveValue pv = (CSSPrimitiveValue)v;
-        short type = pv.getPrimitiveType();
-        return cssLengthToUserSpace(pv.getFloatValue(type),
-                                    prop,
-                                    type,
-                                    VERTICAL_LENGTH,
-                                    ctx);
-    }
-
-    /**
-     * Converts the specified value of the specified type and
-     * direction to user units.
-     *
-     * @param v the value to convert
-     * @param prop the CSS property
-     * @param type the type of the value
-     * @param d HORIZONTAL_LENGTH, VERTICAL_LENGTH, or OTHER_LENGTH
-     * @param ctx the context used to resolve relative value
-     */
-    public static float cssLengthToUserSpace(float v,
-                                             String prop,
-                                             short type,
-                                             short d,
-                                             Context ctx) {
-        float vv = cssToUserSpace(v, type, d, ctx);
-        if (vv < 0) {
-            throw new BridgeException(ctx.getElement(),
-                                      ErrorConstants.ERR_CSS_LENGTH_NEGATIVE,
-                                      new Object[] {prop});
-        }
-        return vv;
-    }
-
-    /**
-     * Converts the specified value of the specified type and
-     * direction to user units.
-     *
-     * @param v the value to convert
-     * @param type the type of the value
-     * @param d HORIZONTAL_LENGTH, VERTICAL_LENGTH, or OTHER_LENGTH
-     * @param ctx the context used to resolve relative value
-     */
-    public static float cssToUserSpace(float v,
-                                       short type,
-                                       short d,
-                                       Context ctx) {
-        switch (type) {
-        case CSSPrimitiveValue.CSS_NUMBER:
-        case CSSPrimitiveValue.CSS_PX:
-            return v;
-        case CSSPrimitiveValue.CSS_MM:
-            return (v / ctx.getPixelToMM());
-        case CSSPrimitiveValue.CSS_CM:
-            return (v * 10f / ctx.getPixelToMM());
-        case CSSPrimitiveValue.CSS_IN:
-            return (v * 25.4f / ctx.getPixelToMM());
-        case CSSPrimitiveValue.CSS_PT:
-            return (v * 25.4f / (72f * ctx.getPixelToMM()));
-        case CSSPrimitiveValue.CSS_PC:
-            return (v * 25.4f / (6f * ctx.getPixelToMM()));
-        case CSSPrimitiveValue.CSS_EMS:
-            return emsToPixels(v, d, ctx);
-        case CSSPrimitiveValue.CSS_EXS:
-            return exsToPixels(v, d, ctx);
-        case CSSPrimitiveValue.CSS_PERCENTAGE:
-            return percentagesToPixels(v, d, ctx);
-        default:
-            throw new Error(); // can't be reached
-        }
-    }
-
 
     /////////////////////////////////////////////////////////////////////////
     // Utilities methods for relative length
@@ -699,22 +508,7 @@ public abstract class UnitProcessor {
      * @param ctx the context
      */
     protected static float pixelsToEms(float v, short d, Context ctx) {
-        CSSPrimitiveValue fontSize = ctx.getFontSize();
-        short type = fontSize.getPrimitiveType();
-        switch (type) {
-            case CSSPrimitiveValue.CSS_IDENT:
-                float fs = ctx.getMediumFontSize();
-                fs = TextUtilities.parseFontSize(fontSize.getStringValue(), fs);
-                return v / cssToUserSpace(fs,
-                                          CSSPrimitiveValue.CSS_PT,
-                                          d,
-                                          ctx);
-            default:
-                return v / cssToUserSpace(fontSize.getFloatValue(type),
-                                          type,
-                                          d,
-                                          ctx.getParentElementContext());
-        }
+        return v / ctx.getFontSize();
     }
 
     /**
@@ -725,22 +519,7 @@ public abstract class UnitProcessor {
      * @param ctx the context
      */
     protected static float emsToPixels(float v, short d, Context ctx) {
-        CSSPrimitiveValue fontSize = ctx.getFontSize();
-        short type = fontSize.getPrimitiveType();
-        switch (type) {
-            case CSSPrimitiveValue.CSS_IDENT:
-                float fs = ctx.getMediumFontSize();
-                fs = TextUtilities.parseFontSize(fontSize.getStringValue(), fs);
-                return v * cssToUserSpace(fs,
-                                          CSSPrimitiveValue.CSS_PT,
-                                          d,
-                                          ctx);
-            default:
-                return v * cssToUserSpace(fontSize.getFloatValue(type),
-                                          type,
-                                          d,
-                                          ctx.getParentElementContext());
-        }
+        return v * ctx.getFontSize();
     }
 
     /**
@@ -751,26 +530,8 @@ public abstract class UnitProcessor {
      * @param ctx the context
      */
     protected static float pixelsToExs(float v, short d, Context ctx) {
-        CSSPrimitiveValue fontSize = ctx.getFontSize();
-        short type = fontSize.getPrimitiveType();
-        float fontSizeVal;
-        switch (type) {
-            case CSSPrimitiveValue.CSS_IDENT:
-                float fs = ctx.getMediumFontSize();
-                fs = TextUtilities.parseFontSize(fontSize.getStringValue(), fs);
-                fontSizeVal = cssToUserSpace(fs,
-                                             CSSPrimitiveValue.CSS_PT,
-                                             d,
-                                             ctx);
-                break;
-            default:
-                fontSizeVal = cssToUserSpace(fontSize.getFloatValue(type),
-					     type,
-                                             d,
-                                             ctx.getParentElementContext());
-        }
         float xh = ctx.getXHeight();
-        return v / xh / fontSizeVal;
+        return v / xh / ctx.getFontSize();
     }
 
     /**
@@ -781,26 +542,8 @@ public abstract class UnitProcessor {
      * @param ctx the context
      */
     protected static float exsToPixels(float v, short d, Context ctx) {
-        CSSPrimitiveValue fontSize = ctx.getFontSize();
-        short type = fontSize.getPrimitiveType();
-        float fontSizeVal;
-        switch (type) {
-            case CSSPrimitiveValue.CSS_IDENT:
-                float fs = ctx.getMediumFontSize();
-                fs = TextUtilities.parseFontSize(fontSize.getStringValue(), fs);
-                fontSizeVal = cssToUserSpace(fs,
-                                             CSSPrimitiveValue.CSS_PT,
-                                             d,
-                                             ctx);
-                break;
-            default:
-                fontSizeVal = cssToUserSpace(fontSize.getFloatValue(type),
-					     type,
-                                             d,
-                                             ctx.getParentElementContext());
-        }
         float xh = ctx.getXHeight();
-        return v * xh * fontSizeVal;
+        return v * xh * ctx.getFontSize();
     }
 
 
@@ -913,14 +656,9 @@ public abstract class UnitProcessor {
         float getPixelToMM();
 
         /**
-         * Returns the font-size medium value in pt.
-         */
-        float getMediumFontSize();
-
-        /**
          * Returns the font-size value.
          */
-        CSSPrimitiveValue getFontSize();
+        float getFontSize();
 
         /**
          * Returns the x-height value.
@@ -936,11 +674,6 @@ public abstract class UnitProcessor {
          * Returns the viewport height used to compute units.
          */
         float getViewportHeight();
-
-	/**
-	 * Returns the context of the parent element of this context.
-	 */
-	Context getParentElementContext();
     }
 
     /**
@@ -967,14 +700,6 @@ public abstract class UnitProcessor {
             return e;
         }
 
-	/**
-	 * Returns the context of the parent element of this context.
-	 */
-	public Context getParentElementContext() {
-	    return new DefaultContext
-		(ctx, HiddenChildElementSupport.getParentElement(e));
-	}
-	
         /**
          * Returns the pixel to mm factor.
          */
@@ -983,17 +708,11 @@ public abstract class UnitProcessor {
         }
 
         /**
-         * Returns the font-size medium value in pt.
-         */
-        public float getMediumFontSize() {
-            return 9f;
-        }
-
-        /**
          * Returns the font-size value.
          */
-        public CSSPrimitiveValue getFontSize() {
-            return CSSUtilities.getComputedStyle(e).getPropertyCSSValueInternal(CSSConstants.CSS_FONT_SIZE_PROPERTY);
+        public float getFontSize() {
+            return CSSUtilities.getComputedStyle
+                (e, SVGCSSEngine.FONT_SIZE_INDEX).getFloatValue();
         }
 
         /**

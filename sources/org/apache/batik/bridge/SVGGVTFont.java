@@ -20,7 +20,7 @@ import java.text.StringCharacterIterator;
 import java.text.AttributedCharacterIterator;
 import java.util.Vector;
 import java.util.StringTokenizer;
-import org.w3c.dom.Element;
+
 import org.apache.batik.gvt.text.ArabicTextHandler;
 import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
 import org.apache.batik.gvt.font.GVTFont;
@@ -32,9 +32,11 @@ import org.apache.batik.gvt.font.Kern;
 import org.apache.batik.gvt.font.KerningTable;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.dom.util.XMLSupport;
-import org.apache.batik.css.CSSOMReadOnlyStyleDeclaration;
-import org.w3c.dom.css.CSSPrimitiveValue;
-import org.w3c.dom.css.CSSStyleDeclaration;
+
+import org.apache.batik.css.engine.SVGCSSEngine;
+import org.apache.batik.css.engine.value.Value;
+
+import org.w3c.dom.Element;
 
 /**
  * Represents an SVG font.
@@ -67,22 +69,29 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
      *
      * @param fontSize The size of the font to create.
      * @param fontFace The font face that describes the font.
-     * @param glyphUnicodes An array containing the unicode values for all
-     * the glyphs this font can display.
-     * @param glyphNames An array containing the names of all the glyphs this
-     * font can display.
+     * @param glyphUnicodes An array containing the unicode values for
+     * all the glyphs this font can display.
+     * @param glyphNames An array containing the names of all the
+     * glyphs this font can display.
      * @param ctx The bridge context.
-     * @param glyphElements An array containing the children glyph elements
-     * of the SVG font.
-     * @param missingGlyphElement The missing glyph element for this font.
-     * @param hkernElements An array containing all hkern elements for this font.
-     * @param vkernElements An array containing all vkern elements for this font.
-     * @param textElement The text element that contains the text to be rendered
-     * using this font.
+     * @param glyphElements An array containing the children glyph
+     * elements of the SVG font.
+     * @param missingGlyphElement The missing glyph element for this
+     * font.
+     * @param hkernElements An array containing all hkern elements for
+     * this font.
+     * @param vkernElements An array containing all vkern elements for
+     * this font.
+     * @param textElement The text element that contains the text to
+     * be rendered using this font.
      */
-    public SVGGVTFont(float fontSize, SVGFontFace fontFace, String[] glyphUnicodes,
-                      String[] glyphNames, String[] glyphLangs,
-                      String[] glyphOrientations, String[] glyphForms,
+    public SVGGVTFont(float fontSize,
+                      SVGFontFace fontFace,
+                      String[] glyphUnicodes,
+                      String[] glyphNames,
+                      String[] glyphLangs,
+                      String[] glyphOrientations,
+                      String[] glyphForms,
                       BridgeContext ctx,
                       Element[] glyphElements,
                       Element missingGlyphElement,
@@ -105,8 +114,8 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
 
         this.language = XMLSupport.getXMLLang(textElement);
 
-        CSSOMReadOnlyStyleDeclaration cssDecl = CSSUtilities.getComputedStyle(textElement);
-        CSSPrimitiveValue v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValueInternal(CSS_WRITING_MODE_PROPERTY);
+        Value v = CSSUtilities.getComputedStyle
+            (textElement, SVGCSSEngine.WRITING_MODE_INDEX);
         if (v.getStringValue().startsWith(CSS_TB_VALUE)) {
             // top to bottom, so set orientation to "v"
             this.orientation = SVG_V_VALUE;
@@ -128,7 +137,8 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
         Kern[] hEntries = new Kern[hkernElements.length];
         for (int i = 0; i < hkernElements.length; i++) {
             Element hkernElement = hkernElements[i];
-            SVGHKernElementBridge hkernBridge = (SVGHKernElementBridge)ctx.getBridge(hkernElement);
+            SVGHKernElementBridge hkernBridge =
+                (SVGHKernElementBridge)ctx.getBridge(hkernElement);
             Kern hkern = hkernBridge.createKern(ctx, hkernElement, this);
             hEntries[i] = hkern;
         }
@@ -137,7 +147,8 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
         Kern[] vEntries = new Kern[vkernElements.length];
         for (int i = 0; i < vkernElements.length; i++) {
             Element vkernElement = vkernElements[i];
-            SVGVKernElementBridge vkernBridge = (SVGVKernElementBridge)ctx.getBridge(vkernElement);
+            SVGVKernElementBridge vkernBridge =
+                (SVGVKernElementBridge)ctx.getBridge(vkernElement);
             Kern vkern = vkernBridge.createKern(ctx, vkernElement, this);
             vEntries[i] = vkern;
         }
@@ -228,11 +239,11 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
     }
 
     /**
-     * Returns true if the glyph language matches the language of the text node
-     * to be rendered by this font.  This will be the case if one of the
-     * languages in glyphLang matches exactly with the xml:lang attibute of
-     * the text node, or if the xml:lang attribute exactly equals a prefix of one
-     * glyph languages.
+     * Returns true if the glyph language matches the language of the
+     * text node to be rendered by this font.  This will be the case
+     * if one of the languages in glyphLang matches exactly with the
+     * xml:lang attibute of the text node, or if the xml:lang
+     * attribute exactly equals a prefix of one glyph languages.
      *
      * @param glyphLang A comma separated list of languages that are associated
      * with a glyph.
@@ -283,8 +294,10 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
      * @param aci The aci containing the character to check.
      * @param currentIndex The index of the character to check.
      */
-    private boolean formMatches(String glyphUnicode, String glyphForm,
-                                AttributedCharacterIterator aci, int currentIndex) {
+    private boolean formMatches(String glyphUnicode,
+                                String glyphForm,
+                                AttributedCharacterIterator aci,
+                                int currentIndex) {
         if (aci == null || glyphForm == null || glyphForm.length() == 0) {
             // there aren't any attributes attached to the text
             // or the glyph doesn't have an arabic form
@@ -292,10 +305,13 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
         }
 
         char c = aci.setIndex(currentIndex);
-        Integer form = (Integer)aci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.ARABIC_FORM);
+        Integer form = (Integer)aci.getAttribute
+            (GVTAttributedCharacterIterator.TextAttribute.ARABIC_FORM);
 
-        if (form == null || form.equals(GVTAttributedCharacterIterator.TextAttribute.ARABIC_NONE)) {
-            // the glyph has an arabic form and the current character form is "none" so don't match
+        if (form == null || form.equals
+            (GVTAttributedCharacterIterator.TextAttribute.ARABIC_NONE)) {
+            // the glyph has an arabic form and the current character
+            // form is "none" so don't match
             return false;
         }
 
@@ -317,7 +333,8 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
             if (matched) {
 
                 // ligature matches, now check that the arabic forms are ok
-                char lastChar = aci.setIndex(currentIndex + glyphUnicode.length() - 1);
+                char lastChar =
+                    aci.setIndex(currentIndex + glyphUnicode.length() - 1);
                 Integer lastForm = (Integer)aci.getAttribute(
                     GVTAttributedCharacterIterator.TextAttribute.ARABIC_FORM);
 
@@ -325,17 +342,24 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
                 aci.setIndex(currentIndex);
 
                 if (form != null && lastForm != null) {
-                    if (form.equals(GVTAttributedCharacterIterator.TextAttribute.ARABIC_TERMINAL)
-                        && lastForm.equals(GVTAttributedCharacterIterator.TextAttribute.ARABIC_INITIAL)) {
+                    if (form.equals(GVTAttributedCharacterIterator.
+                                    TextAttribute.ARABIC_TERMINAL) &&
+                        lastForm.equals(GVTAttributedCharacterIterator.
+                                        TextAttribute.ARABIC_INITIAL)) {
                         // return true if the glyph form is isolated
-                        return glyphForm.equals(SVGConstants.SVG_ISOLATED_VALUE);
+                        return glyphForm.equals
+                            (SVGConstants.SVG_ISOLATED_VALUE);
 
-                    } else if (form.equals(GVTAttributedCharacterIterator.TextAttribute.ARABIC_TERMINAL)) {
+                    } else if (form.equals(GVTAttributedCharacterIterator.
+                                           TextAttribute.ARABIC_TERMINAL)) {
                         // return true if the glyph form is terminal
-                        return glyphForm.equals(SVGConstants.SVG_TERMINAL_VALUE);
+                        return glyphForm.equals
+                            (SVGConstants.SVG_TERMINAL_VALUE);
 
-                    } else if (form.equals(GVTAttributedCharacterIterator.TextAttribute.ARABIC_MEDIAL)
-                            && lastForm.equals(GVTAttributedCharacterIterator.TextAttribute.ARABIC_MEDIAL)) {
+                    } else if (form.equals(GVTAttributedCharacterIterator.
+                                           TextAttribute.ARABIC_MEDIAL) &&
+                               lastForm.equals(GVTAttributedCharacterIterator.
+                                               TextAttribute.ARABIC_MEDIAL)) {
                         // return true if the glyph form is medial
                         return glyphForm.equals(SVGConstants.SVG_MEDIAL_VALUE);
                     }
@@ -344,16 +368,20 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
             }
         }
 
-        if (form.equals(GVTAttributedCharacterIterator.TextAttribute.ARABIC_ISOLATED)) {
+        if (form.equals(GVTAttributedCharacterIterator.
+                        TextAttribute.ARABIC_ISOLATED)) {
             return glyphForm.equals(SVGConstants.SVG_ISOLATED_VALUE);
         }
-        if (form.equals(GVTAttributedCharacterIterator.TextAttribute.ARABIC_TERMINAL)) {
+        if (form.equals(GVTAttributedCharacterIterator.
+                        TextAttribute.ARABIC_TERMINAL)) {
             return glyphForm.equals(SVGConstants.SVG_TERMINAL_VALUE);
         }
-        if (form.equals(GVTAttributedCharacterIterator.TextAttribute.ARABIC_INITIAL)) {
+        if (form.equals(GVTAttributedCharacterIterator.
+                        TextAttribute.ARABIC_INITIAL)) {
             return glyphForm.equals(SVGConstants.SVG_INITIAL_VALUE);
         }
-        if (form.equals(GVTAttributedCharacterIterator.TextAttribute.ARABIC_MEDIAL)) {
+        if (form.equals(GVTAttributedCharacterIterator.
+                        TextAttribute.ARABIC_MEDIAL)) {
             return glyphForm.equals(SVGConstants.SVG_MEDIAL_VALUE);
         }
         return false;
@@ -380,8 +408,8 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
 
 
     /**
-     * Indicates whether or not the specified character can be displayed by this
-     * font.
+     * Indicates whether or not the specified character can be
+     * displayed by this font.
      *
      * @param c The character to check.
      *
@@ -410,7 +438,8 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
      * it can display the whole string.
      */
     public int canDisplayUpTo(char[] text, int start, int limit) {
-        StringCharacterIterator sci = new StringCharacterIterator(new String(text));
+        StringCharacterIterator sci =
+            new StringCharacterIterator(new String(text));
         return canDisplayUpTo(sci, start, limit);
     }
 
@@ -467,7 +496,8 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
                             break;
 
                         } else {
-                            // did not match ligature, keep looking for another glyph
+                            // did not match ligature, keep looking
+                            // for another glyph
                             c = iter.setIndex(currentIndex);
                         }
                     }
@@ -507,7 +537,8 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
      */
     public GVTGlyphVector createGlyphVector(FontRenderContext frc,
                                             char[] chars) {
-         StringCharacterIterator sci = new StringCharacterIterator(new String(chars));
+         StringCharacterIterator sci =
+             new StringCharacterIterator(new String(chars));
          return createGlyphVector(frc, sci);
     }
 
@@ -533,26 +564,35 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
         while (c != ci.DONE) {
             boolean foundMatchingGlyph = false;
             for (int i = 0; i < glyphUnicodes.length; i++) {
-                if (glyphUnicodes[i].indexOf(c) == 0
-                    && languageMatches(glyphLangs[i])
-                    && orientationMatches(glyphOrientations[i])
-                    && formMatches(glyphUnicodes[i], glyphForms[i], aci, ci.getIndex())) {  // found a possible match
+                if (glyphUnicodes[i].indexOf(c) == 0 &&
+                    languageMatches(glyphLangs[i]) &&
+                    orientationMatches(glyphOrientations[i]) &&
+                    formMatches(glyphUnicodes[i], glyphForms[i], aci,
+                                ci.getIndex())) {  // found a possible match
 
                     if (glyphUnicodes[i].length() == 1)  { // not a ligature
                         Element glyphElement = glyphElements[i];
-                        SVGGlyphElementBridge glyphBridge
-                            = (SVGGlyphElementBridge)ctx.getBridge(glyphElement);
+                        SVGGlyphElementBridge glyphBridge =
+                            (SVGGlyphElementBridge)ctx.getBridge
+                                (glyphElement);
                         Glyph glyph;
                         if (aci != null) {
                             aci.setIndex(ci.getIndex());
-                            Paint fillPaint = (Paint)aci.getAttribute(TextAttribute.FOREGROUND);
-                            Paint strokePaint = (Paint)aci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.STROKE_PAINT);
-                            Stroke stroke = (Stroke)aci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.STROKE);
-                            glyph = glyphBridge.createGlyph(
-                                ctx, glyphElement, textElement, i, fontSize, fontFace, fillPaint, strokePaint, stroke);
+                            Paint fillPaint = (Paint)aci.getAttribute
+                                (TextAttribute.FOREGROUND);
+                            Paint strokePaint = (Paint)aci.getAttribute
+                                (GVTAttributedCharacterIterator.
+                                 TextAttribute.STROKE_PAINT);
+                            Stroke stroke = (Stroke)aci.getAttribute
+                                (GVTAttributedCharacterIterator.
+                                 TextAttribute.STROKE);
+                            glyph = glyphBridge.createGlyph
+                                (ctx, glyphElement, textElement, i, fontSize,
+                                 fontFace, fillPaint, strokePaint, stroke);
                         } else {
-                             glyph = glyphBridge.createGlyph(
-                                ctx, glyphElement, textElement, i, fontSize, fontFace, null, null, null);
+                             glyph = glyphBridge.createGlyph
+                                 (ctx, glyphElement, textElement, i, fontSize,
+                                  fontFace, null, null, null);
                         }
                         glyphs.add(glyph);
                         foundMatchingGlyph = true;
@@ -574,25 +614,35 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
 
                             Element glyphElement = glyphElements[i];
                             SVGGlyphElementBridge glyphBridge
-                                = (SVGGlyphElementBridge)ctx.getBridge(glyphElement);
+                                = (SVGGlyphElementBridge)ctx.getBridge
+                                (glyphElement);
                             Glyph glyph;
                             if (aci != null) {
                                 aci.setIndex(ci.getIndex());
-                                Paint fillPaint = (Paint)aci.getAttribute(TextAttribute.FOREGROUND);
-                                Paint strokePaint = (Paint)aci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.STROKE_PAINT);
-                                Stroke stroke = (Stroke)aci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.STROKE);
-                                glyph = glyphBridge.createGlyph(
-                                    ctx, glyphElement, textElement, i, fontSize, fontFace, fillPaint, strokePaint, stroke);
+                                Paint fillPaint = (Paint)aci.getAttribute
+                                    (TextAttribute.FOREGROUND);
+                                Paint strokePaint = (Paint)aci.getAttribute
+                                    (GVTAttributedCharacterIterator.
+                                     TextAttribute.STROKE_PAINT);
+                                Stroke stroke = (Stroke)aci.getAttribute
+                                    (GVTAttributedCharacterIterator.
+                                     TextAttribute.STROKE);
+                                glyph = glyphBridge.createGlyph
+                                    (ctx, glyphElement, textElement, i,
+                                     fontSize, fontFace, fillPaint,
+                                     strokePaint, stroke);
                             } else {
-                                glyph = glyphBridge.createGlyph(
-                                    ctx, glyphElement, textElement, i, fontSize, fontFace, null, null, null);
+                                glyph = glyphBridge.createGlyph
+                                    (ctx, glyphElement, textElement, i,
+                                     fontSize, fontFace, null, null, null);
                             }
                             glyphs.add(glyph);
                             foundMatchingGlyph = true;
                             break;
 
                         } else {
-                            // did not match ligature, keep looking for another glyph
+                            // did not match ligature, keep looking
+                            // for another glyph
                             c = ci.setIndex(current);
                         }
                     }
@@ -600,21 +650,25 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
             }
             if (!foundMatchingGlyph) {
                 // add the missing glyph
-                SVGGlyphElementBridge glyphBridge
-                    = (SVGGlyphElementBridge)ctx.getBridge(missingGlyphElement);
+                SVGGlyphElementBridge glyphBridge =
+                    (SVGGlyphElementBridge)ctx.getBridge(missingGlyphElement);
                 Glyph glyph;
                 if (aci != null) {
                     aci.setIndex(ci.getIndex());
-                    Paint fillPaint = (Paint)aci.getAttribute(TextAttribute.FOREGROUND);
-                    Paint strokePaint = (Paint)aci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.STROKE_PAINT);
-                    Stroke stroke = (Stroke)aci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.STROKE);
-                    glyph = glyphBridge.createGlyph(
-                        ctx, missingGlyphElement, textElement, -1, fontSize,
-                        fontFace, fillPaint, strokePaint, stroke);
+                    Paint fillPaint = (Paint)aci.getAttribute
+                        (TextAttribute.FOREGROUND);
+                    Paint strokePaint = (Paint)aci.getAttribute
+                        (GVTAttributedCharacterIterator.
+                         TextAttribute.STROKE_PAINT);
+                    Stroke stroke = (Stroke)aci.getAttribute
+                        (GVTAttributedCharacterIterator.TextAttribute.STROKE);
+                    glyph = glyphBridge.createGlyph
+                        (ctx, missingGlyphElement, textElement, -1, fontSize,
+                         fontFace, fillPaint, strokePaint, stroke);
                 } else {
-                    glyph = glyphBridge.createGlyph(
-                            ctx, missingGlyphElement, textElement, -1, fontSize,
-                            fontFace, null, null, null);
+                    glyph = glyphBridge.createGlyph
+                        (ctx, missingGlyphElement, textElement, -1, fontSize,
+                         fontFace, null, null, null);
                 }
                 glyphs.add(glyph);
 
@@ -662,7 +716,8 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
      *
      * @return The new glyph vector.
      */
-    public GVTGlyphVector createGlyphVector(FontRenderContext frc, String str) {
+    public GVTGlyphVector createGlyphVector(FontRenderContext frc,
+                                            String str) {
         StringCharacterIterator sci = new StringCharacterIterator(str);
         return createGlyphVector(frc, sci);
     }
@@ -678,8 +733,8 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
     public GVTFont deriveFont(float size) {
         return new SVGGVTFont(size, fontFace, glyphUnicodes, glyphNames,
                               glyphLangs, glyphOrientations, glyphForms, ctx,
-                              glyphElements, missingGlyphElement, hkernElements,
-                              vkernElements, textElement);
+                              glyphElements, missingGlyphElement,
+                              hkernElements, vkernElements, textElement);
     }
 
     /**
@@ -692,9 +747,11 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
      *
      * @return The new GVTLineMetrics object.
      */
-    public GVTLineMetrics getLineMetrics(char[] chars, int beginIndex, int limit,
+    public GVTLineMetrics getLineMetrics(char[] chars, int beginIndex,
+                                         int limit,
                                          FontRenderContext frc) {
-        StringCharacterIterator sci = new StringCharacterIterator(new String(chars));
+        StringCharacterIterator sci =
+            new StringCharacterIterator(new String(chars));
         return getLineMetrics(sci, beginIndex, limit, frc);
     }
 
@@ -736,22 +793,27 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
 
         float[] baselineOffsets = new float[numGlyphs];
         for (int i = 0; i < numGlyphs; i++) {
-            baselineOffsets[i] = (float)( gv.getGlyphMetrics(i).getBounds2D().getMaxY()
-                                - gv.getGlyphPosition(i).getY());
+            baselineOffsets[i] =
+                (float)( gv.getGlyphMetrics(i).getBounds2D().getMaxY()
+                         - gv.getGlyphPosition(i).getY());
         }
 
-        float strikethroughOffset = fontFace.getStrikethroughPosition() * -scale;
-        float strikethroughThickness = fontFace.getStrikethroughThickness() * scale;
+        float strikethroughOffset = fontFace.getStrikethroughPosition() *
+            -scale;
+        float strikethroughThickness = fontFace.getStrikethroughThickness() *
+            scale;
         float underlineOffset = fontFace.getUnderlinePosition() * scale;
         float underlineThickness = fontFace.getUnderlineThickness() * scale;
         float overlineOffset = fontFace.getOverlinePosition() * -scale;
         float overlineThickness = fontFace.getOverlineThickness() * scale;
 
 
-        return new GVTLineMetrics(ascent, Font.ROMAN_BASELINE, baselineOffsets, descent,
-                                  fontHeight, fontHeight, numGlyphs, strikethroughOffset,
+        return new GVTLineMetrics(ascent, Font.ROMAN_BASELINE,
+                                  baselineOffsets, descent, fontHeight,
+                                  fontHeight, numGlyphs, strikethroughOffset,
                                   strikethroughThickness, underlineOffset,
-                                  underlineThickness, overlineOffset, overlineThickness);
+                                  underlineThickness, overlineOffset,
+                                  overlineThickness);
     }
 
     /**
@@ -803,5 +865,3 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
               + fontFace.getFontStyle();
     }
 }
-
-

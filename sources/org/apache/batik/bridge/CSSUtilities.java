@@ -22,9 +22,12 @@ import java.awt.geom.Rectangle2D;
 import java.util.Map;
 import java.util.HashMap;
 
-import org.apache.batik.css.AbstractViewCSS;
-import org.apache.batik.css.CSSOMReadOnlyStyleDeclaration;
-import org.apache.batik.css.HiddenChildElementSupport;
+import org.apache.batik.css.engine.CSSEngine;
+import org.apache.batik.css.engine.CSSStylableElement;
+import org.apache.batik.css.engine.SVGCSSEngine;
+import org.apache.batik.css.engine.value.ListValue;
+import org.apache.batik.css.engine.value.Value;
+import org.apache.batik.css.engine.value.svg.ICCColor;
 
 import org.apache.batik.dom.svg.SVGOMDocument;
 
@@ -79,20 +82,20 @@ public abstract class CSSUtilities
     /////////////////////////////////////////////////////////////////////////
 
     /**
-     * Returns the View CSS associated to the specified element.
+     * Returns CSSEngine associated to the specified element.
      * @param e the element
      */
-    public static AbstractViewCSS getViewCSS(Element e) {
-        return (AbstractViewCSS)
-            ((SVGOMDocument)e.getOwnerDocument()).getDefaultView();
+    public static CSSEngine getCSSEngine(Element e) {
+        return ((SVGOMDocument)e.getOwnerDocument()).getCSSEngine();
     }
 
     /**
-     * Returns the computed style of the specified element.
-     * @param e the element
+     * Returns the computed style of the given property.
      */
-    public static CSSOMReadOnlyStyleDeclaration getComputedStyle(Element e) {
-        return getViewCSS(e).getComputedStyleInternal(e, null);
+    public static Value getComputedStyle(Element e, int property) {
+        return getCSSEngine(e).getComputedStyle((CSSStylableElement)e,
+                                                null,
+                                                property);
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -113,10 +116,7 @@ public abstract class CSSUtilities
      *         GraphicsNode.NONE
      */
     public static int convertPointerEvents(Element e) {
-        CSSOMReadOnlyStyleDeclaration decl = getComputedStyle(e);
-        CSSPrimitiveValue v
-            = (CSSPrimitiveValue) decl.getPropertyCSSValueInternal
-            (CSS_POINTER_EVENTS_PROPERTY);
+        Value v = getComputedStyle(e, SVGCSSEngine.POINTER_EVENTS_INDEX);
         String s = v.getStringValue();
         switch(s.charAt(0)) {
         case 'v':
@@ -159,42 +159,26 @@ public abstract class CSSUtilities
      *
      * @param e the container element
      */
-    public static
-        Rectangle2D convertEnableBackground(Element e,
-                                            UnitProcessor.Context uctx) {
-
-        CSSOMReadOnlyStyleDeclaration decl = getComputedStyle(e);
-        CSSValue v
-            = decl.getPropertyCSSValueInternal(CSS_ENABLE_BACKGROUND_PROPERTY);
-        if (v.getCssValueType() != v.CSS_VALUE_LIST) {
+    public static Rectangle2D convertEnableBackground(Element e /*,
+                                        UnitProcessor.Context uctx*/) {
+        Value v = getComputedStyle(e, SVGCSSEngine.ENABLE_BACKGROUND_INDEX);
+        if (v.getCssValueType() != CSSValue.CSS_VALUE_LIST) {
             return null; // accumulate
         }
-        CSSValueList l = (CSSValueList)v;
-        int length = l.getLength();
+        ListValue lv = (ListValue)v;
+        int length = lv.getLength();
         switch (length) {
         case 1:
             return CompositeGraphicsNode.VIEWPORT; // new
         case 5: // new <x>,<y>,<width>,<height>
-            v = l.item(1);
-            float x = UnitProcessor.cssHorizontalCoordinateToUserSpace
-                (v, CSS_ENABLE_BACKGROUND_PROPERTY, uctx);
-            v = l.item(2);
-            float y = UnitProcessor.cssVerticalCoordinateToUserSpace
-                (v, CSS_ENABLE_BACKGROUND_PROPERTY, uctx);
-            v = l.item(3);
-            float w = UnitProcessor.cssHorizontalLengthToUserSpace
-                (v, CSS_ENABLE_BACKGROUND_PROPERTY, uctx);
-            v = l.item(4);
-            float h = UnitProcessor.cssVerticalLengthToUserSpace
-                (v, CSS_ENABLE_BACKGROUND_PROPERTY, uctx);
+            float x = lv.item(1).getFloatValue();
+            float y = lv.item(2).getFloatValue();
+            float w = lv.item(3).getFloatValue();
+            float h = lv.item(4).getFloatValue();
             return new Rectangle2D.Float(x, y, w, h);
+
         default:
-            // If more than zero but less than four of the values
-            // <x>,<y>,<width> and <height> are specified or if zero
-            // values are specified for <width> or <height>,
-            // BackgroundImage and BackgroundAlpha are processed as if
-            // background image processing were not enabled.
-            return null;
+            throw new InternalError(); // Cannot happen
         }
     }
 
@@ -206,18 +190,13 @@ public abstract class CSSUtilities
      * Returns the color space for the specified filter element. Checks the
      * 'color-interpolation-filters' property.
      *
-     * @param filterElement the element
+     * @param e the element
      * @return true if the color space is linear, false otherwise (sRGB).
      */
-    public static
-        boolean convertColorInterpolationFilters(Element filterElement) {
-
-        CSSOMReadOnlyStyleDeclaration decl = getComputedStyle(filterElement);
-        CSSPrimitiveValue v
-            = (CSSPrimitiveValue) decl.getPropertyCSSValueInternal
-            (CSS_COLOR_INTERPOLATION_FILTERS_PROPERTY);
-
-        return CSS_LINEARRGB_VALUE.equals(v.getStringValue());
+    public static boolean convertColorInterpolationFilters(Element e) {
+        Value v = getComputedStyle(e,
+                             SVGCSSEngine.COLOR_INTERPOLATION_FILTERS_INDEX);
+        return CSS_LINEARRGB_VALUE == v.getStringValue();
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -232,24 +211,22 @@ public abstract class CSSUtilities
      */
     public static MultipleGradientPaint.ColorSpaceEnum
         convertColorInterpolation(Element e) {
-
-        CSSOMReadOnlyStyleDeclaration decl = getComputedStyle(e);
-        CSSPrimitiveValue v
-            = (CSSPrimitiveValue) decl.getPropertyCSSValueInternal
-            (CSS_COLOR_INTERPOLATION_PROPERTY);
-
-        return CSS_LINEARRGB_VALUE.equals(v.getStringValue())
+        Value v = getComputedStyle(e, SVGCSSEngine.COLOR_INTERPOLATION_INDEX);
+        return (CSS_LINEARRGB_VALUE == v.getStringValue())
             ? MultipleGradientPaint.LINEAR_RGB
             : MultipleGradientPaint.SRGB;
     }
 
-    /////////////////////////////////////////////////////////////////////////
-    // 'color-rendering', 'text-rendering', 'image-rendering', 'shape-rendering'
-    /////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////
+    // 'color-rendering', 'text-rendering', 'image-rendering',
+    // 'shape-rendering'
+    ////////////////////////////////////////////////////////////////////////
 
     /**
-     * Returns the rendering hints for the specified shape element or null
-     * none has been specified. Checks the 'shape-rendering' property.
+     * Fills the rendering hints for the specified shape element or do
+     * nothing none has been specified. Checks the 'shape-rendering'
+     * property. If the given RenderingHints is null, a new
+     * RenderingHints is created.
      *
      * <p>Here is how the mapping between SVG rendering hints and the Java2D
      * rendering hints is done:</p>
@@ -279,16 +256,18 @@ public abstract class CSSUtilities
      * </dl>
      *
      * @param e the element
+     * @param hints a RenderingHints to fill, or null.
      */
-    public static Map convertShapeRendering(Element e) {
-        CSSOMReadOnlyStyleDeclaration decl = getComputedStyle(e);
-        CSSPrimitiveValue v = (CSSPrimitiveValue)
-            decl.getPropertyCSSValueInternal(CSS_SHAPE_RENDERING_PROPERTY);
+    public static RenderingHints convertShapeRendering(Element e,
+                                                       RenderingHints hints) {
+        Value v = getComputedStyle(e, SVGCSSEngine.SHAPE_RENDERING_INDEX);
         String s = v.getStringValue();
         if (s.charAt(0) == 'a') { // auto
-            return null;
+            return hints;
         }
-        Map hints = new HashMap();
+        if (hints == null) {
+            hints = new RenderingHints(null);
+        }
         switch(s.charAt(0)) {
         case 'o': // optimizeSpeed
             hints.put(RenderingHints.KEY_RENDERING,
@@ -313,8 +292,10 @@ public abstract class CSSUtilities
     }
 
     /**
-     * Returns the rendering hints for the specified text element or null
-     * none has been specified. Checks the 'text-rendering' property.
+     * Fills the rendering hints for the specified text element or do
+     * nothing if none has been specified. If the given RenderingHints
+     * is null, a new one is created. Checks the 'text-rendering'
+     * property.
      *
      * <p>Here is how the mapping between SVG rendering hints and the Java2D
      * rendering hints is done:</p>
@@ -349,21 +330,24 @@ public abstract class CSSUtilities
      * </dd>
      * </dl>
      *
-     * <p>Note that for text both KEY_TEXT_ANTIALIASING and KEY_ANTIALIASING are
-     * set as there is no guarantee that a Java2D text rendering primitive will
-     * be used to draw text (eg. SVG Font...).</p>
+     * <p>Note that for text both KEY_TEXT_ANTIALIASING and
+     * KEY_ANTIALIASING are set as there is no guarantee that a Java2D
+     * text rendering primitive will be used to draw text (eg. SVG
+     * Font...).</p>
      *
      * @param e the element
+     * @param hints a RenderingHints to fill, or null.
      */
-    public static Map convertTextRendering(Element e) {
-        CSSOMReadOnlyStyleDeclaration decl = getComputedStyle(e);
-        CSSPrimitiveValue v = (CSSPrimitiveValue)
-            decl.getPropertyCSSValueInternal(CSS_TEXT_RENDERING_PROPERTY);
+    public static RenderingHints convertTextRendering(Element e,
+                                                      RenderingHints hints) {
+        Value v = getComputedStyle(e, SVGCSSEngine.TEXT_RENDERING_INDEX);
         String s = v.getStringValue();
         if (s.charAt(0) == 'a') { // auto
-            return null;
+            return hints;
         }
-        Map hints = new HashMap();
+        if (hints == null) {
+            hints = new RenderingHints(null);
+        }
         switch(s.charAt(8)) {
         case 's': // optimizeSpeed
             hints.put(RenderingHints.KEY_RENDERING,
@@ -400,8 +384,10 @@ public abstract class CSSUtilities
     }
 
     /**
-     * Returns the rendering hints for the specified image element or null
-     * none has been specified. Checks the 'image-rendering' property.
+     * Fills the rendering hints for the specified image element or do
+     * nothing if none has been specified. If the given RenderingHints
+     * is null, a new one is created. Checks the 'image-rendering'
+     * property.
      *
      * <p>Here is how the mapping between SVG rendering hints and the Java2D
      * rendering hints is done:</p>
@@ -424,16 +410,18 @@ public abstract class CSSUtilities
      * </dl>
      *
      * @param e the element
+     * @param hints a RenderingHints to fill, or null.
      */
-    public static Map convertImageRendering(Element e) {
-        CSSOMReadOnlyStyleDeclaration decl = getComputedStyle(e);
-        CSSPrimitiveValue v = (CSSPrimitiveValue)
-            decl.getPropertyCSSValueInternal(CSS_IMAGE_RENDERING_PROPERTY);
+    public static RenderingHints convertImageRendering(Element e,
+                                                       RenderingHints hints) {
+        Value v = getComputedStyle(e, SVGCSSEngine.IMAGE_RENDERING_INDEX);
         String s = v.getStringValue();
         if (s.charAt(0) == 'a') { // auto
-            return null;
+            return hints;
         }
-        Map hints = new HashMap();
+        if (hints == null) {
+            hints = new RenderingHints(null);
+        }
         switch(s.charAt(8)) {
         case 's': // optimizeSpeed
             hints.put(RenderingHints.KEY_RENDERING,
@@ -452,8 +440,10 @@ public abstract class CSSUtilities
     }
 
     /**
-     * Returns the rendering hints for the specified element or null
-     * none has been specified. Checks the 'color-rendering' property.
+     * Fills the rendering hints for the specified element or do
+     * nothing if none has been specified. If the given RenderingHints
+     * is null, a new one is created. Checks the 'color-rendering'
+     * property.
      *
      * <p>Here is how the mapping between SVG rendering hints and the Java2D
      * rendering hints is done:</p>
@@ -476,17 +466,18 @@ public abstract class CSSUtilities
      * </dl>
      *
      * @param e the element
+     * @param hints a RenderingHints to fill, or null.
      */
-    public static Map convertColorRendering(Element e) {
-        CSSOMReadOnlyStyleDeclaration decl = getComputedStyle(e);
-        CSSPrimitiveValue v = (CSSPrimitiveValue)
-            decl.getPropertyCSSValueInternal(CSS_COLOR_RENDERING_PROPERTY);
+    public static RenderingHints convertColorRendering(Element e,
+                                                       RenderingHints hints) {
+        Value v = getComputedStyle(e, SVGCSSEngine.COLOR_RENDERING_INDEX);
         String s = v.getStringValue();
         if (s.charAt(0) == 'a') { // auto
-            return null;
+            return hints;
         }
-        // System.out.println("Str: " + s + "[8] = '" + s.charAt(8) + "'");
-        Map hints = new HashMap();
+        if (hints == null) {
+            hints = new RenderingHints(null);
+        }
         switch(s.charAt(8)) {
         case 's': // optimizeSpeed
             hints.put(RenderingHints.KEY_COLOR_RENDERING,
@@ -515,9 +506,8 @@ public abstract class CSSUtilities
      * @param e the element
      */
     public static boolean convertDisplay(Element e) {
-        CSSOMReadOnlyStyleDeclaration decl = getComputedStyle(e);
-        CSSValue v = decl.getPropertyCSSValueInternal(CSS_DISPLAY_PROPERTY);
-        return (((CSSPrimitiveValue)v).getStringValue().charAt(0) != 'n');
+        Value v = getComputedStyle(e, SVGCSSEngine.DISPLAY_INDEX);
+        return v.getStringValue().charAt(0) != 'n';
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -531,17 +521,8 @@ public abstract class CSSUtilities
      * @param e the element
      */
     public static boolean convertVisibility(Element e) {
-        CSSOMReadOnlyStyleDeclaration decl = getComputedStyle(e);
-        CSSValue v = decl.getPropertyCSSValueInternal(CSS_VISIBILITY_PROPERTY);
-        if (v.getCssValueType() == CSSValue.CSS_INHERIT) {
-            // workaround for the CSS2 spec which indicates that the
-            // initial value is 'inherit'. So if we get 'inherit' it
-            // means that we are on the outermost svg element and we
-            // always return true.
-            return true;
-        } else {
-            return (((CSSPrimitiveValue)v).getStringValue().charAt(0) == 'v');
-        }
+        Value v = getComputedStyle(e, SVGCSSEngine.VISIBILITY_INDEX);
+        return v.getStringValue().charAt(0) == 'v';
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -558,16 +539,14 @@ public abstract class CSSUtilities
      * @param e the element
      */
     public static Composite convertOpacity(Element e) {
-        CSSOMReadOnlyStyleDeclaration decl = getComputedStyle(e);
-        CSSValue v = decl.getPropertyCSSValueInternal
-            (CSS_OPACITY_PROPERTY);
-        float opacity = PaintServer.convertOpacity(v);
-        if (opacity <= 0f) {
+        Value v = getComputedStyle(e, SVGCSSEngine.OPACITY_INDEX);
+        float f = v.getFloatValue();
+        if (f <= 0f) {
             return TRANSPARENT;
-        } else if (opacity >= 1f) {
+        } else if (f >= 1f) {
             return AlphaComposite.SrcOver;
         } else {
-            return AlphaComposite.getInstance(AlphaComposite.SRC_OVER, opacity);
+            return AlphaComposite.getInstance(AlphaComposite.SRC_OVER, f);
         }
     }
 
@@ -584,12 +563,8 @@ public abstract class CSSUtilities
      * @param e the element with the 'overflow' property
      */
     public static boolean convertOverflow(Element e) {
-        CSSOMReadOnlyStyleDeclaration decl = getComputedStyle(e);
-        CSSPrimitiveValue overflow =
-            (CSSPrimitiveValue)decl.getPropertyCSSValueInternal
-            (CSS_OVERFLOW_PROPERTY);
-        String s = overflow.getStringValue();
-        // clip if 'hidden' or 'scroll'
+        Value v = getComputedStyle(e, SVGCSSEngine.OVERFLOW_INDEX);
+        String s = v.getStringValue();
         return (s.charAt(0) == 'h') || (s.charAt(0) == 's');
     }
 
@@ -601,18 +576,14 @@ public abstract class CSSUtilities
      * @param e the element with the 'clip' property
      */
     public static float[] convertClip(Element e) {
-        CSSOMReadOnlyStyleDeclaration decl = getComputedStyle(e);
-        CSSPrimitiveValue clip =
-            (CSSPrimitiveValue)decl.getPropertyCSSValueInternal
-            (CSS_CLIP_PROPERTY);
-        switch (clip.getPrimitiveType()) {
+        Value v = getComputedStyle(e, SVGCSSEngine.CLIP_INDEX);
+        switch (v.getPrimitiveType()) {
         case CSSPrimitiveValue.CSS_RECT:
             float [] off = new float[4];
-            Rect r = clip.getRectValue();
-            off[0] = r.getTop().getFloatValue(CSSPrimitiveValue.CSS_NUMBER);
-            off[1] = r.getRight().getFloatValue(CSSPrimitiveValue.CSS_NUMBER);
-            off[2] = r.getBottom().getFloatValue(CSSPrimitiveValue.CSS_NUMBER);
-            off[3] = r.getLeft().getFloatValue(CSSPrimitiveValue.CSS_NUMBER);
+            off[0] = v.getTop().getFloatValue();
+            off[1] = v.getRight().getFloatValue();
+            off[2] = v.getBottom().getFloatValue();
+            off[3] = v.getLeft().getFloatValue();
             return off;
         case CSSPrimitiveValue.CSS_IDENT:
             return null; // 'auto' means no offsets
@@ -631,23 +602,20 @@ public abstract class CSSUtilities
      * Handle the 'filter' property.
      *
      * @param filteredElement the element that references the filter
-     * @param filteredNode the graphics node associated to the element to filter
+     * @param filteredNode the graphics node associated to the element
+     *                     to filter.
      * @param ctx the bridge context
      */
     public static Filter convertFilter(Element filteredElement,
                                        GraphicsNode filteredNode,
                                        BridgeContext ctx) {
-        CSSOMReadOnlyStyleDeclaration decl = getComputedStyle(filteredElement);
-
-        CSSPrimitiveValue filterValue =
-            (CSSPrimitiveValue)decl.getPropertyCSSValueInternal
-            (CSS_FILTER_PROPERTY);
-
-        switch(filterValue.getPrimitiveType()){
+        Value v = getComputedStyle(filteredElement, SVGCSSEngine.FILTER_INDEX);
+        switch (v.getPrimitiveType()) {
         case CSSPrimitiveValue.CSS_IDENT:
             return null; // 'filter:none'
+
         case CSSPrimitiveValue.CSS_URI:
-            String uri = filterValue.getStringValue();
+            String uri = v.getStringValue();
             Element filter = ctx.getReferencedElement(filteredElement, uri);
             Bridge bridge = ctx.getBridge(filter);
             if (bridge == null || !(bridge instanceof FilterBridge)) {
@@ -660,7 +628,8 @@ public abstract class CSSUtilities
                                                        filteredElement,
                                                        filteredNode);
         default:
-            throw new Error(); // can't be reached
+            throw new InternalError(); // can't be reached
+            
         }
     }
 
@@ -673,37 +642,35 @@ public abstract class CSSUtilities
      * which applies on the specified graphics node.
      * Handle the 'clip-path' property.
      *
-     * @param clipedElement the element that references the clip
-     * @param clipedNode the graphics node associated to the element to clip
+     * @param clippedElement the element that references the clip
+     * @param clippedNode the graphics node associated to the element to clip
      * @param ctx the bridge context
      */
-    public static ClipRable convertClipPath(Element clipedElement,
-                                            GraphicsNode clipedNode,
+    public static ClipRable convertClipPath(Element clippedElement,
+                                            GraphicsNode clippedNode,
                                             BridgeContext ctx) {
-        CSSOMReadOnlyStyleDeclaration decl = getComputedStyle(clipedElement);
-
-        CSSPrimitiveValue clipValue =
-            (CSSPrimitiveValue)decl.getPropertyCSSValueInternal
-            (CSS_CLIP_PATH_PROPERTY);
-
-        switch(clipValue.getPrimitiveType()){
+        Value v = getComputedStyle(clippedElement,
+                                   SVGCSSEngine.CLIP_PATH_INDEX);
+        switch (v.getPrimitiveType()) {
         case CSSPrimitiveValue.CSS_IDENT:
             return null; // 'clip-path:none'
+
         case CSSPrimitiveValue.CSS_URI:
-            String uri = clipValue.getStringValue();
-            Element clipPath = ctx.getReferencedElement(clipedElement, uri);
-            Bridge bridge = ctx.getBridge(clipPath);
+            String uri = v.getStringValue();
+            Element cp = ctx.getReferencedElement(clippedElement, uri);
+            Bridge bridge = ctx.getBridge(cp);
             if (bridge == null || !(bridge instanceof ClipBridge)) {
-                throw new BridgeException(clipedElement,
+                throw new BridgeException(clippedElement,
                                           ERR_CSS_URI_BAD_TARGET,
                                           new Object[] {uri});
             }
             return ((ClipBridge)bridge).createClip(ctx,
-                                                   clipPath,
-                                                   clipedElement,
-                                                   clipedNode);
+                                                   cp,
+                                                   clippedElement,
+                                                   clippedNode);
         default:
-            throw new Error(); // can't be reached
+            throw new InternalError(); // can't be reached
+            
         }
     }
 
@@ -714,8 +681,10 @@ public abstract class CSSUtilities
      * @return GeneralPath.WIND_NON_ZERO | GeneralPath.WIND_EVEN_ODD
      */
     public static int convertClipRule(Element e) {
-        CSSOMReadOnlyStyleDeclaration decl = getComputedStyle(e);
-        return rule(decl.getPropertyCSSValueInternal(CSS_CLIP_RULE_PROPERTY));
+        Value v = getComputedStyle(e, SVGCSSEngine.CLIP_RULE_INDEX);
+        return (v.getStringValue().charAt(0) == 'n')
+            ? GeneralPath.WIND_NON_ZERO
+            : GeneralPath.WIND_EVEN_ODD;
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -734,30 +703,27 @@ public abstract class CSSUtilities
     public static Mask convertMask(Element maskedElement,
                                    GraphicsNode maskedNode,
                                    BridgeContext ctx) {
-        CSSOMReadOnlyStyleDeclaration decl = getComputedStyle(maskedElement);
-
-        CSSPrimitiveValue maskValue =
-            (CSSPrimitiveValue)decl.getPropertyCSSValueInternal
-            (CSS_MASK_PROPERTY);
-
-        switch(maskValue.getPrimitiveType()){
+        Value v = getComputedStyle(maskedElement, SVGCSSEngine.MASK_INDEX);
+        switch (v.getPrimitiveType()) {
         case CSSPrimitiveValue.CSS_IDENT:
             return null; // 'mask:none'
+
         case CSSPrimitiveValue.CSS_URI:
-            String uri = maskValue.getStringValue();
-            Element mask = ctx.getReferencedElement(maskedElement, uri);
-            Bridge bridge = ctx.getBridge(mask);
+            String uri = v.getStringValue();
+            Element m = ctx.getReferencedElement(maskedElement, uri);
+            Bridge bridge = ctx.getBridge(m);
             if (bridge == null || !(bridge instanceof MaskBridge)) {
                 throw new BridgeException(maskedElement,
                                           ERR_CSS_URI_BAD_TARGET,
                                           new Object[] {uri});
             }
             return ((MaskBridge)bridge).createMask(ctx,
-                                                   mask,
+                                                   m,
                                                    maskedElement,
                                                    maskedNode);
         default:
-            throw new Error(); // can't be reached
+            throw new InternalError(); // can't be reached
+            
         }
     }
 
@@ -768,9 +734,10 @@ public abstract class CSSUtilities
      * @return GeneralPath.WIND_NON_ZERO | GeneralPath.WIND_EVEN_ODD
      */
     public static int convertFillRule(Element e) {
-        CSSOMReadOnlyStyleDeclaration decl = getComputedStyle(e);
-        return rule(decl.getPropertyCSSValueInternal
-                    (CSS_FILL_RULE_PROPERTY));
+        Value v = getComputedStyle(e, SVGCSSEngine.FILL_RULE_INDEX);
+        return (v.getStringValue().charAt(0) == 'n')
+            ? GeneralPath.WIND_NON_ZERO
+            : GeneralPath.WIND_EVEN_ODD;
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -785,16 +752,12 @@ public abstract class CSSUtilities
      * @param ctx the bridge context
      */
     public static Color convertLightingColor(Element e, BridgeContext ctx) {
-        CSSOMReadOnlyStyleDeclaration decl = getComputedStyle(e);
-
-        CSSValue colorDef = decl.getPropertyCSSValueInternal
-            (CSS_LIGHTING_COLOR_PROPERTY);
-        if (colorDef.getCssValueType() == CSSValue.CSS_PRIMITIVE_VALUE) {
-            CSSPrimitiveValue v = (CSSPrimitiveValue)colorDef;
-            return PaintServer.convertColor(v.getRGBColorValue(), 1);
+        Value v = getComputedStyle(e, SVGCSSEngine.LIGHTING_COLOR_INDEX);
+        if (v.getCssValueType() == CSSValue.CSS_PRIMITIVE_VALUE) {
+            return PaintServer.convertColor(v, 1);
         } else {
             return PaintServer.convertRGBICCColor
-                (e, (SVGColor)colorDef, 1, ctx);
+                (e, v.item(0), (ICCColor)v.item(1), 1, ctx);
         }
     }
 
@@ -810,18 +773,14 @@ public abstract class CSSUtilities
      * @param ctx the bridge context
      */
     public static Color convertFloodColor(Element e, BridgeContext ctx) {
-        CSSOMReadOnlyStyleDeclaration decl = getComputedStyle(e);
-        float opacity = PaintServer.convertOpacity
-            (decl.getPropertyCSSValueInternal(CSS_FLOOD_OPACITY_PROPERTY));
-
-        CSSValue colorDef
-            = decl.getPropertyCSSValueInternal(CSS_FLOOD_COLOR_PROPERTY);
-        if (colorDef.getCssValueType() == CSSValue.CSS_PRIMITIVE_VALUE) {
-            CSSPrimitiveValue v = (CSSPrimitiveValue)colorDef;
-            return PaintServer.convertColor(v.getRGBColorValue(), opacity);
+        Value v = getComputedStyle(e, SVGCSSEngine.FLOOD_COLOR_INDEX);
+        Value o = getComputedStyle(e, SVGCSSEngine.FLOOD_OPACITY_INDEX);
+        float f = PaintServer.convertOpacity(o);
+        if (v.getCssValueType() == CSSValue.CSS_PRIMITIVE_VALUE) {
+            return PaintServer.convertColor(v, f);
         } else {
             return PaintServer.convertRGBICCColor
-                (e, (SVGColor)colorDef, opacity, ctx);
+                (e, v.item(0), (ICCColor)v.item(1), f, ctx);
         }
     }
 
@@ -833,29 +792,21 @@ public abstract class CSSUtilities
      * Converts the color defined on the specified &lt;stop> element
      * to a <tt>Color</tt>.
      *
-     * @param stopElement the stop element
+     * @param e the stop element
      * @param opacity the paint opacity
      * @param ctx the bridge context to use
      */
-    public static Color convertStopColor(Element stopElement,
+    public static Color convertStopColor(Element e,
                                          float opacity,
                                          BridgeContext ctx) {
-
-        CSSOMReadOnlyStyleDeclaration decl = getComputedStyle(stopElement);
-
-        CSSValue colorDef
-            = decl.getPropertyCSSValueInternal(CSS_STOP_COLOR_PROPERTY);
-
-        float stopOpacity = PaintServer.convertOpacity
-            (decl.getPropertyCSSValueInternal(CSS_STOP_OPACITY_PROPERTY));
-        opacity *= stopOpacity;
-
-        if (colorDef.getCssValueType() == CSSValue.CSS_PRIMITIVE_VALUE) {
-            CSSPrimitiveValue v = (CSSPrimitiveValue)colorDef;
-            return PaintServer.convertColor(v.getRGBColorValue(), opacity);
+        Value v = getComputedStyle(e, SVGCSSEngine.STOP_COLOR_INDEX);
+        Value o = getComputedStyle(e, SVGCSSEngine.STOP_OPACITY_INDEX);
+        opacity *= PaintServer.convertOpacity(o);
+        if (v.getCssValueType() == CSSValue.CSS_PRIMITIVE_VALUE) {
+            return PaintServer.convertColor(v, opacity);
         } else {
             return PaintServer.convertRGBICCColor
-                (stopElement, (SVGColor)colorDef, opacity, ctx);
+                (e, v.item(0), (ICCColor)v.item(1), opacity, ctx);
         }
     }
 
@@ -887,6 +838,24 @@ public abstract class CSSUtilities
                                        "xml:base",
                                        uri);
 
+        CSSEngine engine = CSSUtilities.getCSSEngine(localRefElement);
+        CSSEngine refEngine = CSSUtilities.getCSSEngine(refElement);
+        
+        engine.importCascadedStyleMaps(refElement, refEngine, localRefElement);
+
+        /*
+        Attr xmlBase = localRefElement.getAttributeNodeNS
+            (XML_NAMESPACE_URI, "xml:base");
+        if (xmlBase != null) {
+            // We have a current base so merge it with our new base and
+            // set the result...
+            ParsedURL purl = new ParsedURL(uri, xmlBase.getNodeValue());
+            uri = purl.toString();
+        }
+        localRefElement.setAttributeNS(XML_NAMESPACE_URI,
+                                       "xml:base",
+                                       uri);
+
         SVGOMDocument document
             = (SVGOMDocument)localRefElement.getOwnerDocument();
         AbstractViewCSS view = (AbstractViewCSS)document.getDefaultView();
@@ -900,6 +869,7 @@ public abstract class CSSUtilities
                                            view,
                                            refElement,
                                            refView);
+        */
     }
 
     /////////////////////////////////////////////////////////////////////////

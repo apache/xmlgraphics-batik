@@ -12,13 +12,14 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
-import org.apache.batik.css.CSSOMReadOnlyStyleDeclaration;
-import org.apache.batik.css.CSSOMReadOnlyValue;
-import org.apache.batik.css.HiddenChildElement;
-import org.apache.batik.css.value.ValueConstants;
+import org.apache.batik.css.engine.SVGCSSEngine;
+import org.apache.batik.css.engine.value.Value;
+
 import org.apache.batik.dom.svg.SVGOMDocument;
+
 import org.apache.batik.ext.awt.image.renderable.ClipRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.Filter;
+
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.Marker;
@@ -137,11 +138,9 @@ public class SVGMarkerElementBridge extends AbstractSVGBridge
         }
 
         // 'stroke-width' property
-        CSSStyleDeclaration decl
-            = CSSUtilities.getComputedStyle(paintedElement);
-        CSSValue v = decl.getPropertyCSSValue(CSS_STROKE_WIDTH_PROPERTY);
-        float strokeWidth = UnitProcessor.cssOtherLengthToUserSpace
-            (v, CSS_STROKE_WIDTH_PROPERTY, uctx);
+        Value val = CSSUtilities.getComputedStyle
+            (paintedElement, SVGCSSEngine.STROKE_WIDTH_INDEX);
+        float strokeWidth = val.getFloatValue();
 
         // 'markerUnits' attribute - default is 'strokeWidth'
         short unitsType;

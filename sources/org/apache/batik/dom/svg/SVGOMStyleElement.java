@@ -8,16 +8,20 @@
 
 package org.apache.batik.dom.svg;
 
-import org.apache.batik.css.CSSDocumentHandler;
-import org.apache.batik.css.CSSOMStyleSheet;
-import org.apache.batik.css.ExtendedLinkStyle;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import org.apache.batik.css.engine.CSSEngine;
+import org.apache.batik.css.engine.CSSStyleSheetNode;
+import org.apache.batik.css.engine.StyleSheet;
+
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.XMLSupport;
 
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
+import org.w3c.dom.stylesheets.LinkStyle;
 import org.w3c.dom.css.DOMImplementationCSS;
-import org.w3c.dom.stylesheets.StyleSheet;
 import org.w3c.dom.svg.SVGStyleElement;
 
 /**
@@ -28,8 +32,9 @@ import org.w3c.dom.svg.SVGStyleElement;
  */
 public class SVGOMStyleElement
     extends    SVGOMElement
-    implements SVGStyleElement,
-               ExtendedLinkStyle {
+    implements CSSStyleSheetNode,
+               SVGStyleElement,
+               LinkStyle {
 
     /**
      * The attribute initializer.
@@ -46,7 +51,12 @@ public class SVGOMStyleElement
     /**
      * The style sheet.
      */
-    protected StyleSheet sheet;
+    protected org.w3c.dom.stylesheets.StyleSheet sheet;
+
+    /**
+     * The style-sheet.
+     */
+    protected StyleSheet styleSheet;
 
     /**
      * Creates a new SVGOMStyleElement object.
@@ -72,32 +82,47 @@ public class SVGOMStyleElement
     }
 
     /**
+     * Returns the associated style-sheet.
+     */
+    public StyleSheet getCSSStyleSheet() {
+        if (styleSheet == null) {
+            if (getType().equals("text/css")) {
+                SVGOMDocument doc = (SVGOMDocument)getOwnerDocument();
+                CSSEngine e = doc.getCSSEngine();
+                String text = "";
+                Node n = getFirstChild();
+                if (n != null) {
+                    StringBuffer sb = new StringBuffer();
+                    while (n != null) {
+                        sb.append(n.getNodeValue());
+                        n = n.getNextSibling();
+                    }
+                    text = sb.toString();
+                }
+                URL burl = null;
+                try {
+                    String bu = XMLBaseSupport.getCascadedXMLBase(this);
+                    if (bu != null) {
+                        burl = new URL(bu);
+                    }
+                } catch (MalformedURLException ex) {
+                    // !!! TODO
+                    ex.printStackTrace();
+                    throw new InternalError();
+                }
+                String  media = getAttributeNS(null, SVG_MEDIA_ATTRIBUTE);
+                styleSheet = e.parseStyleSheet(text, burl, media);
+            }
+        }
+        return styleSheet;
+    }
+
+    /**
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.stylesheets.LinkStyle#getSheet()}.
      */
-    public StyleSheet getSheet() {
-        if (sheet == null) {
-            // Create the stylesheet
-            if (!getType().equals("text/css")) {
-                return null;
-            }
-
-            DOMImplementationCSS impl;
-            impl = (DOMImplementationCSS)getOwnerDocument().
-                getImplementation();
-            CSSOMStyleSheet ss;
-            ss = (CSSOMStyleSheet)impl.createCSSStyleSheet(getTitle(),
-                                                           getMedia());
-
-            StringBuffer sb = new StringBuffer();
-            for (Node n = getFirstChild(); n != null; n = n.getNextSibling()) {
-                sb.append(n.getNodeValue());
-            }
-            CSSDocumentHandler.parseRules(ss, sb.toString());
-            sheet = ss;
-            ss.setOwnerNode(this);
-        }
-        return sheet;
+    public org.w3c.dom.stylesheets.StyleSheet getSheet() {
+        throw new InternalError("Not implemented.");
     }
 
     /**

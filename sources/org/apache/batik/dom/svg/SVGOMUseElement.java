@@ -8,6 +8,9 @@
 
 package org.apache.batik.dom.svg;
 
+import org.apache.batik.css.engine.CSSImportedElementRoot;
+import org.apache.batik.css.engine.CSSImportNode;
+
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.dom.util.XMLSupport;
@@ -26,7 +29,8 @@ import org.w3c.dom.svg.SVGUseElement;
  */
 public class SVGOMUseElement
     extends    SVGURIReferenceGraphicsElement
-    implements SVGUseElement {
+    implements SVGUseElement,
+               CSSImportNode {
 
     /**
      * The attribute initializer.
@@ -51,6 +55,11 @@ public class SVGOMUseElement
                                           "actuate",
                                           "onRequest");
     }
+
+    /**
+     * Store the imported element.
+     */
+    protected CSSImportedElementRoot cssImportedElementRoot;
 
     /**
      * Creates a new SVGOMUseElement object.
@@ -114,6 +123,22 @@ public class SVGOMUseElement
      */
     public SVGElementInstance getAnimatedInstanceRoot() {
 	throw new RuntimeException(" !!! TODO: getAnimatedInstanceRoot()");
+    }
+
+    // CSSImportNode //////////////////////////////////////////////////
+
+    /**
+     * The CSSImportedElementRoot.
+     */
+    public CSSImportedElementRoot getCSSImportedElementRoot() {
+        return cssImportedElementRoot;
+    }
+
+    /**
+     * Sets the CSSImportedElementRoot.
+     */
+    public void setCSSImportedElementRoot(CSSImportedElementRoot r) {
+        cssImportedElementRoot = r;
     }
 
     /**

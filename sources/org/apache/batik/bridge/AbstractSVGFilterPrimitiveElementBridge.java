@@ -31,7 +31,8 @@ import org.w3c.dom.css.CSSStyleDeclaration;
  * @version $Id$
  */
 public abstract class AbstractSVGFilterPrimitiveElementBridge
-    extends AbstractSVGBridge implements FilterPrimitiveBridge, ErrorConstants {
+    extends AbstractSVGBridge
+    implements FilterPrimitiveBridge, ErrorConstants {
 
     /**
      * Constructs a new bridge for a filter primitive element.
@@ -170,8 +171,6 @@ public abstract class AbstractSVGFilterPrimitiveElementBridge
                 }
             } else if (SVG_STROKE_PAINT_VALUE.equals(s)) {
                     // StrokePaint
-                    CSSStyleDeclaration cssDecl
-                        = CSSUtilities.getComputedStyle(filteredElement);
                     Paint paint = PaintServer.convertStrokePaint
                         (filteredElement,filteredNode, ctx);
                     // <!> FIXME: Should we create a transparent flood ???
@@ -193,8 +192,6 @@ public abstract class AbstractSVGFilterPrimitiveElementBridge
         case 9:
             if (SVG_FILL_PAINT_VALUE.equals(s)) {
                 // FillPaint
-                CSSStyleDeclaration cssDecl
-                    = CSSUtilities.getComputedStyle(filteredElement);
                 Paint paint = PaintServer.convertFillPaint
                     (filteredElement,filteredNode, ctx);
                 if (paint == null) {

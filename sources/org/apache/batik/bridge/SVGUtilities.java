@@ -20,6 +20,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import org.apache.batik.css.engine.CSSEngine;
+
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.dom.util.XMLSupport;
@@ -59,9 +61,25 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
      */
     protected SVGUtilities() {}
 
-    /////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////
     // common methods
-    /////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Returns the node imported by the given node, or null.
+     */
+    public static Node getImportedChild(Node n) {
+        return CSSEngine.getImportedChild(n);
+    }   
+
+    /**
+     * Returns the logical parent element of the given element.
+     * The parent element of a used element is the &lt;use> element
+     * which reference it.
+     */
+    public static Element getParentElement(Element elt) {
+        return CSSEngine.getParentElement(elt);
+    }
 
     /**
      * Converts an SVGNumberList into a float array.
@@ -129,7 +147,9 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
             if (name.equals(SVG_DESC_TAG)) {
                 preserve = ((SVGLangSpace)n).getXMLspace().equals
                     (SVG_PRESERVE_VALUE);
-                for (n = n.getFirstChild(); n != null; n = n.getNextSibling()) {
+                for (n = n.getFirstChild();
+                     n != null;
+                     n = n.getNextSibling()) {
                     if (n.getNodeType() == Node.TEXT_NODE) {
                         result += n.getNodeValue();
                     }
@@ -150,7 +170,8 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
     public static boolean matchUserAgent(Element elt, UserAgent ua) {
         test: if (elt.hasAttributeNS(null, SVG_SYSTEM_LANGUAGE_ATTRIBUTE)) {
             // Tests the system languages.
-            String sl = elt.getAttributeNS(null, SVG_SYSTEM_LANGUAGE_ATTRIBUTE);
+            String sl = elt.getAttributeNS(null,
+                                           SVG_SYSTEM_LANGUAGE_ATTRIBUTE);
             StringTokenizer st = new StringTokenizer(sl, ", ");
             while (st.hasMoreTokens()) {
                 String s = st.nextToken();
@@ -162,7 +183,8 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
         }
         if (elt.hasAttributeNS(null, SVG_REQUIRED_FEATURES_ATTRIBUTE)) {
             // Tests the system features.
-            String sf = elt.getAttributeNS(null, SVG_REQUIRED_FEATURES_ATTRIBUTE);
+            String sf = elt.getAttributeNS(null,
+                                           SVG_REQUIRED_FEATURES_ATTRIBUTE);
             StringTokenizer st = new StringTokenizer(sf, " ");
             while (st.hasMoreTokens()) {
                 String s = st.nextToken();
@@ -173,7 +195,8 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
         }
         if (elt.hasAttributeNS(null, SVG_REQUIRED_EXTENSIONS_ATTRIBUTE)) {
             // Tests the system features.
-            String sf = elt.getAttributeNS(null, SVG_REQUIRED_EXTENSIONS_ATTRIBUTE);
+            String sf = elt.getAttributeNS(null,
+                                           SVG_REQUIRED_EXTENSIONS_ATTRIBUTE);
             StringTokenizer st = new StringTokenizer(sf, " ");
             while (st.hasMoreTokens()) {
                 String s = st.nextToken();
@@ -192,7 +215,8 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
      * @param s the langage to check
      * @param userLanguages the user langages
      */
-    protected static boolean matchUserLanguage(String s, String userLanguages) {
+    protected static boolean matchUserLanguage(String s,
+                                               String userLanguages) {
         StringTokenizer st = new StringTokenizer(userLanguages, ", ");
         while (st.hasMoreTokens()) {
             String t = st.nextToken();
@@ -558,7 +582,8 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
                 (filterElement, SVG_FILTER_UNITS_ATTRIBUTE, units);
         }
 
-        // resolve units in the (referenced) filteredElement's coordinate system
+        // resolve units in the (referenced) filteredElement's
+        // coordinate system
         UnitProcessor.Context uctx
             = UnitProcessor.createContext(ctx, filteredElement);
 
@@ -583,13 +608,13 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
      * @param filterRegion the filter chain region
      * @param ctx the bridge context
      */
-    public static
-        Rectangle2D convertFilterPrimitiveRegion(Element filterPrimitiveElement,
-                                                 Element filteredElement,
-                                                 GraphicsNode filteredNode,
-                                                 Rectangle2D defaultRegion,
-                                                 Rectangle2D filterRegion,
-                                                 BridgeContext ctx) {
+    public static Rectangle2D
+        convertFilterPrimitiveRegion(Element filterPrimitiveElement,
+                                     Element filteredElement,
+                                     GraphicsNode filteredNode,
+                                     Rectangle2D defaultRegion,
+                                     Rectangle2D filterRegion,
+                                     BridgeContext ctx) {
 
         // 'primitiveUnits' - default is userSpaceOnUse
         Node parentNode = filterPrimitiveElement.getParentNode();

@@ -62,8 +62,8 @@
         </g>       
 
         <g transform="translate(225, 180)">
-            <text font-size="30">sample</text>
-            <text y="15" style="Caption">font-size="30"</text>
+            <text font-size="200%">sample</text>
+            <text y="15" style="Caption">font-size="200%"</text>
         </g>       
 
         <g transform="translate(350, 180)">

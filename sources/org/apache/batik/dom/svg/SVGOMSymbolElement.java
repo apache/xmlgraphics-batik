@@ -11,9 +11,7 @@ package org.apache.batik.dom.svg;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.batik.css.ExtendedElementCSSInlineStyle;
 import org.apache.batik.dom.AbstractDocument;
-import org.apache.batik.dom.util.OverrideStyleElement;
 import org.apache.batik.dom.util.XMLSupport;
 
 import org.w3c.dom.Node;

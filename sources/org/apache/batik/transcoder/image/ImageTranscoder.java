@@ -37,9 +37,12 @@ import org.apache.batik.bridge.GVTBuilder;
 import org.apache.batik.bridge.UserAgent;
 import org.apache.batik.bridge.ViewBox;
 
+import org.apache.batik.css.engine.CSSEngine;
+
 import org.apache.batik.dom.svg.DefaultSVGContext;
 import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
 import org.apache.batik.dom.svg.ExtensibleSVGDOMImplementation;
+import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.DocumentFactory;
 
@@ -141,24 +144,19 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
             throw new TranscoderException(
                 Messages.formatMessage("notsvg", null));
         }
-	
-        SVGDocument svgDoc = (SVGDocument)document;
-	// set the alternate stylesheet if any
-        if (hints.containsKey(KEY_ALTERNATE_STYLESHEET)) {
-            String stylesheetName = (String)hints.get(KEY_ALTERNATE_STYLESHEET);
-	    ((SVGOMDocument)svgDoc).enableAlternateStyleSheet(stylesheetName);
-        }
+
+        BridgeContext ctx = new BridgeContext(userAgent);
+        SVGOMDocument svgDoc = (SVGOMDocument)document;
 
         SVGSVGElement root = svgDoc.getRootElement();
         // initialize the SVG document with the appropriate context
         DefaultSVGContext svgCtx = new DefaultSVGContext();
         svgCtx.setPixelToMM(userAgent.getPixelToMM());
-        ((SVGOMDocument)document).setSVGContext(svgCtx);
+        svgDoc.setSVGContext(svgCtx);
 
         // build the GVT tree
         GVTBuilder builder = new GVTBuilder();
         ImageRendererFactory rendFactory = new ConcreteImageRendererFactory();
-        BridgeContext ctx = new BridgeContext(userAgent);
         // flag that indicates if the document is dynamic
         boolean isDynamic = 
             (hints.containsKey(KEY_EXECUTE_ONLOAD) &&
@@ -455,6 +453,13 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
         }
 
         /**
+         * Returns this user agent's alternate style-sheet title.
+         */
+        public String getAlternateStyleSheet() {
+            return (String)hints.get(KEY_ALTERNATE_STYLESHEET);
+        }
+
+        /**
          * Unsupported operation.
          */
         public EventDispatcher getEventDispatcher() {
@@ -699,7 +704,7 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
      * <TD VALIGN="TOP">No</TD></TR>
      * <TR>
      * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Description: </TH>
-     * <TD VALIGN="TOP">Specify the alternate stylesheet to use.
+     * <TD VALIGN="TOP">Specify the alternate style sheet title.
      * </TD></TR>
      * </TABLE>
      */
