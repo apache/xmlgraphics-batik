@@ -259,6 +259,7 @@ To display the available targets type:
           depends    ="compile"
           description="Compiles the source files for the samples scripts and the test-resources">
     <mkdir dir="${testresources}/classes"/>
+    <mkdir dir="${samples}/tests/resources/java/classes"/>
 
     <echo message="debug ${debug}, optimize ${optimize}, deprecation ${deprecation}"/>
 
