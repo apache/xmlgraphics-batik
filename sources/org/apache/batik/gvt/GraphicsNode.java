@@ -268,6 +268,17 @@ public interface GraphicsNode {
     Rectangle2D getBounds(GraphicsNodeRenderContext rc);
 
     /**
+     * Returns the bounds of this node after applying the input transform
+     * (if any), concatenated with this node's transform (if any).
+     *
+     * @param txf the affine transform with which this node's transform should
+     *        be concatenated. Should not be null.
+     * @param rc the GraphicsNodeRenderContext 
+     */
+    Rectangle2D getTransformedBounds(AffineTransform txf, 
+                                     GraphicsNodeRenderContext rc);
+
+    /**
      * Returns the bounds of the area covered by this node's
      * primitive paint.
      * <b>Note</b>: The boundaries of some nodes (notably, text element nodes)
@@ -277,6 +288,17 @@ public interface GraphicsNode {
      * @param rc the GraphicsNodeRenderContext for which this dimension applies
      */
     Rectangle2D getPrimitiveBounds(GraphicsNodeRenderContext rc);
+
+    /**
+     * Returns the bounds of this node's primitivePaint after applying the input transform
+     * (if any), concatenated with this node's transform (if any).
+     *
+     * @param txf the affine transform with which this node's transform should
+     *        be concatenated. Should not be null.
+     * @param rc the GraphicsNodeRenderContext 
+     */
+    Rectangle2D getTransformedPrimitiveBounds(AffineTransform txf, 
+                                              GraphicsNodeRenderContext rc);
 
     /**
      * Returns the bounds of the area covered by this node, without
@@ -289,6 +311,24 @@ public interface GraphicsNode {
      * @param rc the GraphicsNodeRenderContext for which this dimension applies
      */
     Rectangle2D getGeometryBounds(GraphicsNodeRenderContext rc);
+
+    /**
+     * Returns the bounds of the area covered by this node, without
+     * taking any of its rendering attribute into account, i.e., exclusive
+     * of any clipping, masking, filtering or stroking, for example.
+     * The returned value is transformed by the concatenation of the input
+     * transform and this node's transform.
+     *
+     * <b>Note</b>: The boundaries of some nodes (notably, text element nodes)
+     * cannot be precisely determined independent of their
+     * GraphicsNodeRenderContext.
+     *
+     * @param txf the affine transform with which this node's transform should
+     *        be concatenated. Should not be null.
+     * @param rc the GraphicsNodeRenderContext 
+     */
+    Rectangle2D getTransformedGeometryBounds(AffineTransform txf, 
+                                             GraphicsNodeRenderContext rc);
 
     /**
      * Tests if the specified Point2D is inside the boundary of this node.

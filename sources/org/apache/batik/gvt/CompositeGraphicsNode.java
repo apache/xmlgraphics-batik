@@ -36,7 +36,6 @@ import org.apache.batik.gvt.event.GraphicsNodeEvent;
  */
 public class CompositeGraphicsNode extends AbstractGraphicsNode
         implements List {
-
     public static final Rectangle2D VIEWPORT = new Rectangle(0, 0, 0, 0);
 
     /**
@@ -116,6 +115,7 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
         if (count == 0) {
             return;
         }
+
         // Paint children
         for (int i=0; i < count; ++i) {
             GraphicsNode node = children[i];
@@ -270,35 +270,47 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
       */
     public Rectangle2D getPrimitiveBounds(GraphicsNodeRenderContext rc) {
         if (primitiveBounds == null) {
-            // System.out.println("Prim: " + this);
-            Rectangle2D bounds = null, nodeBounds = null;
-            AffineTransform txf = null;
-            if(count == 0)
+            if(count == 0){
                 // With the following empty groups may have bad side effects.
                 return new Rectangle(0, 0, 0, 0);
-
-            txf = children[0].getTransform();
-            nodeBounds = children[0].getBounds(rc);
-            bounds = (txf == null)
-                ? nodeBounds
-                : txf.createTransformedShape(nodeBounds).getBounds2D();
-            // System.out.println("SubBounds: " + bounds);
-            for (int i=1; i < count; ++i) {
-                GraphicsNode node = children[i];
-                nodeBounds = node.getBounds(rc);
-                txf        = node.getTransform();
-                if (txf != null) {
-                    nodeBounds =
-                        txf.createTransformedShape(nodeBounds).getBounds2D();
-                }
-                // System.out.println("SubBounds: " + nodeBounds);
-                bounds.add(nodeBounds);
             }
-            // System.out.println("   Bounds: " + bounds );
-            // System.out.println("End Prim: " + this );
-            primitiveBounds = bounds;
+
+            primitiveBounds = children[0].getTransformedBounds(IDENTITY, rc);
+
+            for (int i=1; i < count; ++i) {
+                primitiveBounds.add(children[i].getTransformedBounds(IDENTITY, rc));
+            }
         }
         return primitiveBounds;
+    }
+
+    /**
+     * Returns the bounds of the area covered by this node's
+     * primitive paint.
+     * <b>Note</b>: The boundaries of some nodes (notably, text element nodes)
+     * cannot be precisely determined independent of their
+     * GraphicsNodeRenderContext.
+     *
+     * @param rc the GraphicsNodeRenderContext for which this dimension applies
+      */
+    public Rectangle2D getTransformedPrimitiveBounds(AffineTransform txf, 
+                                                     GraphicsNodeRenderContext rc) {
+        AffineTransform t = new AffineTransform(txf);
+        if(transform != null){
+            t.concatenate(transform);
+        }
+
+        if(count == 0)
+            return new Rectangle(0, 0, 0, 0);
+        
+        Rectangle2D bounds = children[0].getTransformedBounds(t, rc);
+        
+        // System.out.println("SubBounds: " + bounds);
+        for (int i=1; i < count; ++i) {
+            bounds.add(children[i].getTransformedBounds(t, rc));
+        }
+
+        return bounds;
     }
 
     /**
@@ -312,42 +324,55 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
      * @param rc the GraphicsNodeRenderContext for which this dimension applies
       */
     public Rectangle2D getGeometryBounds(GraphicsNodeRenderContext rc){
-        Rectangle2D b = null;
         if(geometryBounds == null){
-            Rectangle2D nodeBounds = null;
-            AffineTransform txf = null;
-            if(count > 0){
-                txf = children[0].getTransform();
-                nodeBounds = children[0].getGeometryBounds(rc);
-                geometryBounds = (txf == null)
-                    ? nodeBounds
-                    : txf.createTransformedShape(nodeBounds).getBounds2D();
-                b = geometryBounds;
-            } else {
+            if(count <= 0){
                 System.out.println("Group is empty ...");
-                Exception e = new Exception();
-                e.printStackTrace();
                 // With the following empty groups may have bad side effects.
                 // Note that we do not cache this value as this does not
                 // have a performance impact and it is likely that this
                 // group is under construction.
-                b = new Rectangle(0, 0, 0, 0);
+                return new Rectangle(0, 0, 0, 0);
             }
+
+            geometryBounds = children[0].getTransformedGeometryBounds(IDENTITY, rc);
+
             for (int i=1; i < count; ++i) {
-                GraphicsNode node = children[i];
-                nodeBounds = node.getGeometryBounds(rc);
-                txf = children[i].getTransform();
-                if (txf != null) {
-                    nodeBounds =
-                        txf.createTransformedShape(nodeBounds).getBounds2D();
-                }
-                geometryBounds.add(nodeBounds);
+                geometryBounds.add(children[i].getTransformedGeometryBounds(IDENTITY, rc));
             }
         }
-        else{
-            b = geometryBounds;
+        return geometryBounds;
+    }
+
+    /**
+     * Returns the bounds of the area covered by this node, without
+     * taking any of its rendering attribute into account, i.e., exclusive
+     * of any clipping, masking, filtering or stroking, for example.
+     * <b>Note</b>: The boundaries of some nodes (notably, text element nodes)
+     * cannot be precisely determined independent of their
+     * GraphicsNodeRenderContext.
+     *
+     * The returned Rectangle2D is transformed through the contenation of the 
+     * input transform and this node's transform.
+     *
+     * @param rc the GraphicsNodeRenderContext for which this dimension applies
+      */
+    public Rectangle2D getTransformedGeometryBounds(AffineTransform txf,
+                                                    GraphicsNodeRenderContext rc){
+        AffineTransform t = new AffineTransform(txf);
+        if(transform != null){
+            t.concatenate(transform);
         }
-        return b;
+
+        if(count <= 0){
+            return new Rectangle(0, 0, 0, 0);
+        }
+
+        Rectangle2D gb = children[0].getTransformedGeometryBounds(t, rc);
+        for(int i=0; i<count; i++){
+            gb.add(children[i].getTransformedGeometryBounds(t, rc));
+        }
+
+        return gb;
     }
 
     /**

@@ -749,6 +749,69 @@ public abstract class AbstractGraphicsNode implements GraphicsNode, Cloneable {
     }
 
     /**
+     * Returns the bounds of this node after applying the input transform
+     * (if any), concatenated with this node's transform (if any).
+     *
+     * @param txf the affine transform with which this node's transform should
+     *        be concatenated. Should not be null.
+     * @param rc the GraphicsNodeRenderContext 
+     */
+    public Rectangle2D getTransformedBounds(AffineTransform txf, 
+                                            GraphicsNodeRenderContext rc){
+        AffineTransform t = new AffineTransform(txf);
+        if(transform != null){
+            t.concatenate(transform);
+        }
+
+        // The painted region, before cliping, masking
+        // and compositing is either the area painted
+        // by the primitive paint or the area painted
+        // by the filter.
+        Rectangle2D tBounds = null;
+        if(filter == null){
+            tBounds = getTransformedPrimitiveBounds(txf, rc);
+        } else {
+            tBounds = t.createTransformedShape(filter.getBounds2D()).getBounds2D();
+        }
+        // Factor in the clipping area, if any
+        if(clip != null) {
+            tBounds.intersect(tBounds,
+                              t.createTransformedShape(clip.getClipPath()).getBounds2D(),
+                              tBounds);
+        }
+        
+        // Factor in the mask, if any
+        if(mask != null) {
+            tBounds.intersect(tBounds,
+                              t.createTransformedShape(mask.getBounds2D()).getBounds2D(),
+                              tBounds);
+        }
+        return tBounds;
+    }
+
+    public Rectangle2D getTransformedPrimitiveBounds(AffineTransform txf,
+                                                     GraphicsNodeRenderContext rc){
+        Rectangle2D tpBounds = getPrimitiveBounds(rc);
+        AffineTransform t = new AffineTransform(txf);
+        if(transform != null){
+            t.concatenate(transform);
+        }
+
+        return t.createTransformedShape(tpBounds).getBounds2D();
+    }        
+
+    public Rectangle2D getTransformedGeometryBounds(AffineTransform txf,
+                                                    GraphicsNodeRenderContext rc){
+        Rectangle2D tpBounds = getGeometryBounds(rc);
+        AffineTransform t = new AffineTransform(txf);
+        if(transform != null){
+            t.concatenate(transform);
+        }
+        
+        return t.createTransformedShape(tpBounds).getBounds2D();
+    }        
+
+    /**
      * Compute the rendered bounds of this node based on it's
      * renderBounds. i.e., the area painted by its primitivePaint
      * method. This is used in addition to the mask, clip and filter
@@ -779,6 +842,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode, Cloneable {
                                  mask.getBounds2D(),
                                  bounds);
             }
+
         }
         return bounds;
     }
