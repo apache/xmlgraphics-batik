@@ -12,6 +12,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.text.AttributedCharacterIterator;
@@ -287,7 +288,15 @@ public class ConcreteTextNode
     }
 
     public void primitivePaint(Graphics2D g2d, GraphicsNodeRenderContext rc) {
-        // g2d.translate(location.getX(), location.getY());
+        //
+        // DO NOT REMOVE: THE FOLLOWING IS A WORK AROUND
+        // A BUG IN THE JDK 1.2 RENDERING PIPELINE WHEN
+        // THE CLIP IS A RECTANGLE
+        //
+        Shape clip = g2d.getClip();
+        if(clip != null && !(clip instanceof GeneralPath)){
+            g2d.setClip(new GeneralPath(clip));
+        }
 
         // Paint the text
         TextPainter textPainter = rc.getTextPainter();
