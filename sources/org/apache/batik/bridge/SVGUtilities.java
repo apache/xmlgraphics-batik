@@ -168,6 +168,8 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
             // Tests the system languages.
             String sl = elt.getAttributeNS(null,
                                            SVG_SYSTEM_LANGUAGE_ATTRIBUTE);
+            if (sl.length() == 0) // SVG spec says empty returns false
+                return false;
             StringTokenizer st = new StringTokenizer(sl, ", ");
             while (st.hasMoreTokens()) {
                 String s = st.nextToken();
@@ -179,9 +181,11 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
         }
         if (elt.hasAttributeNS(null, SVG_REQUIRED_FEATURES_ATTRIBUTE)) {
             // Tests the system features.
-            String sf = elt.getAttributeNS(null,
+            String rf = elt.getAttributeNS(null,
                                            SVG_REQUIRED_FEATURES_ATTRIBUTE);
-            StringTokenizer st = new StringTokenizer(sf, " ");
+            if (rf.length() == 0)  // SVG spec says empty returns false
+                return false;
+            StringTokenizer st = new StringTokenizer(rf, " ");
             while (st.hasMoreTokens()) {
                 String s = st.nextToken();
                 if (!ua.hasFeature(s)) {
@@ -191,9 +195,11 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
         }
         if (elt.hasAttributeNS(null, SVG_REQUIRED_EXTENSIONS_ATTRIBUTE)) {
             // Tests the system features.
-            String sf = elt.getAttributeNS(null,
+            String re = elt.getAttributeNS(null,
                                            SVG_REQUIRED_EXTENSIONS_ATTRIBUTE);
-            StringTokenizer st = new StringTokenizer(sf, " ");
+            if (re.length() == 0)  // SVG spec says empty returns false
+                return false;
+            StringTokenizer st = new StringTokenizer(re, " ");
             while (st.hasMoreTokens()) {
                 String s = st.nextToken();
                 if (!ua.supportExtension(s)) {

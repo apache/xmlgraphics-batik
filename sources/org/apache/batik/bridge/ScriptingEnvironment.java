@@ -634,20 +634,27 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
             script = s;
         }
         public void run() {
-            if (error) {
-                return;
+            synchronized (this) {
+                if (error)
+                    return;
+                count--;
             }
-            count--;
             try {
                 interpreter.evaluate(script);
             } catch (InterpreterException ie) {
                 handleInterpreterException(ie);
-                error = true;
+                synchronized (this) {
+                    error = true;
+                }
             } catch (Exception e) {
                 if (userAgent != null) {
                     userAgent.displayError(e);
+                } else {
+                    e.printStackTrace(); // No UA so just output...
                 }
-                error = true;
+                synchronized (this) {
+                    error = true;
+                }
             }
         }
     }
@@ -668,17 +675,22 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
             runnable = r;
         }
         public void run() {
-            if (error) {
-                return;
+            synchronized (this) {
+                if (error)
+                    return;
+                count--;
             }
-            count--;
             try {
                 runnable.run();
             } catch (Exception e) {
                 if (userAgent != null) {
                     userAgent.displayError(e);
+                } else {
+                    e.printStackTrace(); // No UA so just output...
                 }
-                error = true;
+                synchronized (this) { 
+                    error = true;
+                }
             }
         }
     }
@@ -715,10 +727,11 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
                     EvaluateIntervalRunnable eir =
                         new EvaluateIntervalRunnable(script, interpreter);
                     public void run() {
-                        if (eir.count > 1) {
-                            return;
+                        synchronized (eir) {
+                            if (eir.count > 1)
+                                return;
+                            eir.count++;
                         }
-                        eir.count++;
                         synchronized (updateRunnableQueue.getIteratorLock()) {
                             if (updateRunnableQueue.getThread() == null) {
                                 cancel();
@@ -726,8 +739,9 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
                             }
                             updateRunnableQueue.invokeLater(eir);
                         }
-                        if (eir.error) {
-                            cancel();
+                        synchronized (eir) {
+                            if (eir.error)
+                                cancel();
                         }
                     }
                 };
@@ -745,13 +759,15 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
                     EvaluateRunnableRunnable eihr =
                         new EvaluateRunnableRunnable(r);
                     public void run() {
-                        if (eihr.count > 1) {
-                            return;
+                        synchronized (eihr) {
+                            if (eihr.count > 1)
+                                return;
+                            eihr.count++;
                         }
-                        eihr.count++;
                         updateRunnableQueue.invokeLater(eihr);
-                        if (eihr.error) {
-                            cancel();
+                        synchronized (eihr) {
+                            if (eihr.error)
+                                cancel();
                         }
                     }
                 };

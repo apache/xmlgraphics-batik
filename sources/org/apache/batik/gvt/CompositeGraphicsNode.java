@@ -221,6 +221,36 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
     }
 
     /**
+     * Transforms a Rectangle 2D by an affine transform.  It assumes the transform
+     * is only scale/translate so there is no loss of precision over transforming
+     * the source geometry.
+     */
+    public static Rectangle2D  getTransformedBBox(Rectangle2D r2d, AffineTransform t) {
+        if ((t  == null) || (r2d == null)) return r2d;
+
+        double x  = r2d.getX();
+        double w  = r2d.getWidth();
+        double y  = r2d.getY();
+        double h  = r2d.getHeight();
+
+        double sx = t.getScaleX();
+        double sy = t.getScaleY();
+        if (sx < 0) {
+            x = -(x + w);
+            sx = -sx;
+        }
+        if (sy < 0) {
+            y = -(y + h);
+            sy = -sy;
+        }
+
+        return new Rectangle2D.Float
+            ((float)(x*sx+t.getTranslateX()), 
+             (float)(y*sy+t.getTranslateY()),
+             (float)(w*sx), (float)(h*sy));
+    }
+
+    /**
      * Returns the bounds of this node's primitivePaint after applying
      * the input transform (if any), concatenated with this node's
      * transform (if any).
@@ -233,6 +263,12 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
             t = new AffineTransform(txf);
             t.concatenate(transform);
         }
+
+        if ((t == null) || ((t.getShearX() == 0) && (t.getShearY() == 0))) {
+            // No rotation it's safe to simply transform our bounding box.
+            return getTransformedBBox(getPrimitiveBounds(), t);
+        }
+	
         int i = 0;
         Rectangle2D tpb = null;
         while (tpb == null && i < count) {
@@ -299,6 +335,11 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
             t = new AffineTransform(txf);
             t.concatenate(transform);
         }
+
+        if ((t == null) || ((t.getShearX() == 0) && (t.getShearY() == 0))) {
+            // No rotation it's safe to simply transform our bounding box.
+            return getTransformedBBox(getGeometryBounds(), t);
+        }
 	
         Rectangle2D gb = null;
         int i=0;
@@ -364,6 +405,11 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
         if (transform != null) {
             t = new AffineTransform(txf);
             t.concatenate(transform);
+        }
+	
+        if ((t == null) || ((t.getShearX() == 0) && (t.getShearY() == 0))) {
+            // No rotation it's safe to simply transform our bounding box.
+            return getTransformedBBox(getSensitiveBounds(), t);
         }
 	
         Rectangle2D sb = null;

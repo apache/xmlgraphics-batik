@@ -953,8 +953,10 @@ To display the available targets type:
   <!-- Applications ....................................................... -->
   <target name="squiggle" depends="compile"
           description="Runs Squiggle - the SVG browser">
-    <java fork="yes"
-          classname="${class-prefix}.apps.svgbrowser.Main">
+    <java fork="yes" 
+          classname="${class-prefix}.apps.svgbrowser.Main"
+<!--      jvm="C:\Documents and Settings\<user>\.netbeans\4.0\modules\profiler-ea-vm\jre\bin\java"  -->
+          >
       <classpath>
         <pathelement location="${dest}" />
         <path refid="libs-classpath"/>
