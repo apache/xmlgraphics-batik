@@ -1,0 +1,12 @@
+#
+# Author  : Vincent Hardy
+# Version : $Id$
+#
+
+Content of this directory
+=========================
+
+This directory contains fonts contributed by Bert Bos to the Apache Batik 
+project. The svg directory contains SVG fonts and the ttf directory contains
+the fonts in the True Type format.
+
