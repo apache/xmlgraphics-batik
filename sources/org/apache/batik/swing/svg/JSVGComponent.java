@@ -1231,19 +1231,18 @@ public class JSVGComponent extends JGVTComponent {
          * Called when an update was completed.
          */
         public void updateCompleted(final UpdateManagerEvent e) {
+            // IMPORTANT:
+            // ==========
+            //
+            // The following call is 'invokeAndWait' and not
+            // 'invokeLater' because it is essential that the
+            // UpdateManager thread (which invokes this
+            // 'updateCompleted' method, blocks until the repaint
+            // has completed. Otherwise, there is a possibility
+            // that internal buffers would get updated in the
+            // middle of a swing repaint.
+            //
             try {
-                //
-                // IMPORTANT:
-                // ==========
-                //
-                // The following call is 'invokeAndWait' and not
-                // 'invokeLater' because it is essential that the
-                // UpdateManager thread (which invokes this
-                // 'updateCompleted' method, blocks until the repaint
-                // has completed. Otherwise, there is a possibility
-                // that internal buffers would get updated in the
-                // middle of a swing repaint.
-                //
                 EventQueue.invokeAndWait(new Runnable() {
                         public void run() {
                             image = e.getImage();
@@ -1261,7 +1260,10 @@ public class JSVGComponent extends JGVTComponent {
                                 Iterator i = l.iterator();
                                 while (i.hasNext()) {
                                     Rectangle r = (Rectangle)i.next();
-                                    paintImmediately(r);
+                                    if (doubleBufferedRendering)
+                                        repaint(r);
+                                    else
+                                        paintImmediately(r);
                                 }
                             }
                             suspendInteractions = false;
