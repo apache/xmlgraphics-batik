@@ -8,6 +8,9 @@
 
 package org.apache.batik.css.dom;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.batik.css.engine.CSSEngine;
 import org.apache.batik.css.engine.CSSStylableElement;
 import org.apache.batik.css.engine.value.Value;
@@ -43,6 +46,11 @@ public class CSSOMComputedStyle implements CSSStyleDeclaration {
     protected String pseudoElement;
 
     /**
+     * The CSS values.
+     */
+    protected Map values = new HashMap();
+
+    /**
      * Creates a new computed style.
      */
     public CSSOMComputedStyle(CSSEngine e,
@@ -58,7 +66,15 @@ public class CSSOMComputedStyle implements CSSStyleDeclaration {
      * org.w3c.dom.css.CSSStyleDeclaration#getCssText()}.
      */
     public String getCssText() {
-        return null;
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < cssEngine.getNumberOfProperties(); i++) {
+            sb.append(cssEngine.getPropertyName(i));
+            sb.append(": ");
+            sb.append(cssEngine.getComputedStyle(element, pseudoElement,
+                                                 i).getCssText());
+            sb.append(";\n");
+        }
+        return sb.toString();
     }
 
     /**
@@ -88,7 +104,15 @@ public class CSSOMComputedStyle implements CSSStyleDeclaration {
      * org.w3c.dom.css.CSSStyleDeclaration#getPropertyCSSValue(String)}.
      */
     public CSSValue getPropertyCSSValue(String propertyName) {
-        return null;
+        CSSValue result = (CSSValue)values.get(propertyName);
+        if (result == null) {
+            int idx = cssEngine.getPropertyIndex(propertyName);
+            if (idx != -1) {
+                result = createCSSValue(idx);
+                values.put(propertyName, result);
+            }
+        }
+        return result;
     }
 
     /**
@@ -144,4 +168,39 @@ public class CSSOMComputedStyle implements CSSStyleDeclaration {
         return null;
     }
 
+    /**
+     * Creates a CSSValue to manage the value at the given index.
+     */
+    protected CSSValue createCSSValue(int idx) {
+        return new ComputedCSSValue(idx);
+    }
+
+    /**
+     * To manage a computed CSSValue.
+     */
+    protected class ComputedCSSValue
+        extends CSSOMValue
+        implements CSSOMValue.ValueProvider {
+        
+        /**
+         * The index of the associated value.
+         */
+        protected int index;
+
+        /**
+         * Creates a new ComputedCSSValue.
+         */
+        public ComputedCSSValue(int idx) {
+            super(null);
+            valueProvider = this;
+            index = idx;
+        }
+
+        /**
+         * Returns the Value associated with this object.
+         */
+        public Value getValue() {
+            return cssEngine.getComputedStyle(element, pseudoElement, index);
+        }
+    }
 }

@@ -481,12 +481,12 @@ To display the available targets type:
       </fileset>
       <fileset dir="${resources}" excludes="${resources}/**/CVS">
         <include name="${package-prefix}/css/dom/resources/**"/>
-        <include name="${package-prefix}/css/sac/resources/**"/>
-        <include name="${package-prefix}/css/parser/resources/**"/>
         <include name="${package-prefix}/css/engine/resources/**"/>
+        <include name="${package-prefix}/css/engine/sac/resources/**"/>
         <include name="${package-prefix}/css/engine/value/resources/**"/>
         <include name="${package-prefix}/css/engine/value/css2/resources/**"/>
         <include name="${package-prefix}/css/engine/value/svg/resources/**"/>
+        <include name="${package-prefix}/css/parser/resources/**"/>
       </fileset>
     </jar>
   </target>

@@ -252,7 +252,15 @@ public class SVGOMSVGElement
      * <b>DOM</b>: Implements {@link SVGSVGElement#createSVGNumber()}.
      */
     public SVGNumber createSVGNumber() {
-        throw new RuntimeException("!!! TODO: createSVGNumber()");
+        return new SVGNumber() {
+                float value;
+                public float getValue() {
+                    return value;
+                }
+                public void setValue(float f) {
+                    value = f;
+                }
+            };
     }
 
     /**

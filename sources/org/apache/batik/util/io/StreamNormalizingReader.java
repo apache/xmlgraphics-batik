@@ -78,6 +78,12 @@ public class StreamNormalizingReader extends NormalizingReader {
     }
 
     /**
+     * This constructor is intended for use by subclasses.
+     */
+    protected StreamNormalizingReader() {
+    }
+
+    /**
      * Read a single character.  This method will block until a
      * character is available, an I/O error occurs, or the end of the
      * stream is reached.

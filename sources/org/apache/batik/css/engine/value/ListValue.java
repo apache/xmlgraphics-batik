@@ -49,6 +49,13 @@ public class ListValue extends AbstractValue {
     }
 
     /**
+     * Returns the separator used for this list.
+     */
+    public char getSeparatorChar() {
+        return separator;
+    }
+
+    /**
      * Implements {@link Value#getCssValueType()}.
      */
     public short getCssValueType() {
