@@ -670,7 +670,6 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
                     for (Node n = d.getDocumentElement().getFirstChild();
                          n != null;
                          n = n.getNextSibling()) {
-                        System.out.println("We screwed up");
                         if (n.getNodeType() == n.ELEMENT_NODE) {
                             n = doc.importNode(n, true);
                             result = doc.createDocumentFragment();
@@ -733,9 +732,12 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
                                 });
                         }
                     }
+
                 };
             t.setPriority(Thread.MIN_PRIORITY);
             t.start();
+
+                    
         }
 
 

@@ -8,12 +8,20 @@
 
 package org.apache.batik.script.rhino;
 
+import java.io.File;
+import java.io.FilePermission;
+import java.io.IOException;
+
 import java.net.URL;
 import java.net.URLClassLoader;
 
-import java.security.SecureClassLoader;
+import java.security.AccessControlContext;
 import java.security.CodeSource;
+import java.security.Permission;
 import java.security.PermissionCollection;
+import java.security.Principal;
+import java.security.ProtectionDomain;
+import java.security.SecureClassLoader;
 
 /**
  * This class loader implementation will work whether or not the
@@ -32,6 +40,19 @@ public class RhinoClassLoader extends URLClassLoader {
      * CodeSource for classes defined by this loader
      */
     protected CodeSource codeSource;
+
+    /**
+     * The protection Domain for this class loader
+     */
+    protected ProtectionDomain rhinoProtectionDomain;
+
+    /**
+     * The AccessControlContext which can be associated with 
+     * code loaded by this class loader if it was running
+     * stand-alone (i.e., not invoked by code with lesser
+     * priviledges).
+     */
+    protected AccessControlContext rhinoAccessControlContext;
     
     /**
      * Constructor.
@@ -44,21 +65,80 @@ public class RhinoClassLoader extends URLClassLoader {
         if (documentURL != null){
             codeSource = new CodeSource(documentURL, null);
         }
+         
+        //
+        // Create the Rhino ProtectionDomain
+        // and AccessControlContext
+        //
+        rhinoProtectionDomain 
+            = new ProtectionDomain(codeSource,
+                                   getPermissions(codeSource));
+
+        rhinoAccessControlContext
+            = new AccessControlContext(new ProtectionDomain[]{
+                rhinoProtectionDomain});
     }
-    
+
     /**
      * Define and load a Java class
      */
     public Class defineClass(String name, 
                              byte[] data){
+        // System.out.println("========================== Trying to load : " + name);
         return super.defineClass(name, data, 0, data.length, codeSource);
     }
 
     /**
+     * Returns the ProtectionDomain to which Rhino code belongs
+     */
+    public ProtectionDomain getProtectionDomain(){
+        return rhinoProtectionDomain;
+    }
+
+    /**
+     * Returns the AccessControlContext which should be associated with
+     * RhinoCode.
+     */
+    public AccessControlContext getAccessControlContext() {
+        return rhinoAccessControlContext;
+    }
+
+    /**
      * Returns the permissions for the given CodeSource object. 
+     * Compared to URLClassLoader, this adds a FilePermission so
+     * that files under the same root directory as the document
+     * can be read.
      */
     protected PermissionCollection getPermissions(CodeSource codesource) {
-        return super.getPermissions(codesource);
+        PermissionCollection perms = super.getPermissions(codesource);
+
+        if (documentURL != null && perms != null) {
+            Permission p = null;
+            Permission dirPerm = null;
+            try {
+                p = documentURL.openConnection().getPermission();
+            } catch (IOException e){
+                p = null;
+            }
+
+            if (p instanceof FilePermission){
+                String path = p.getName();
+                if (!path.endsWith(File.separator)) {
+                    // We are dealing with a file, as we would expect
+                    // from a document file URL
+                    int dirEnd = path.lastIndexOf(File.separator);
+                    if (dirEnd != -1){
+                        // Include trailing file separator
+                        path = path.substring(0, dirEnd + 1);
+                        path += "-";
+                        dirPerm = new FilePermission(path, "read");
+                        perms.add(dirPerm);
+                    }
+                }
+            }
+        }
+
+        return perms;
     }
 }
 

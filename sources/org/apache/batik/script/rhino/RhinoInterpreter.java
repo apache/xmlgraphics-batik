@@ -15,6 +15,8 @@ import java.io.StringReader;
 
 import java.net.URL;
 
+import java.security.AccessControlContext;
+
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Locale;
@@ -134,6 +136,14 @@ public class RhinoInterpreter implements Interpreter {
         } finally {
             Context.exit();
         }
+    }
+
+    /**
+     * Returns the AccessControlContext associated with this Interpreter.
+     * @see org.apache.batik.script.rhino.RhinoClassLoader
+     */
+    public AccessControlContext getAccessControlContext(){
+        return rhinoClassLoader.getAccessControlContext();
     }
 
     /**
