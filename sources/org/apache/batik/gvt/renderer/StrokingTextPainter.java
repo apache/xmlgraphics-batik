@@ -8,7 +8,6 @@
 
 package org.apache.batik.gvt.renderer;
 
-
 import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.Color;
@@ -82,7 +81,7 @@ public class StrokingTextPainter extends BasicTextPainter {
      * @param context the rendering context.
      */
     public void paint(TextNode node, Graphics2D g2d,
-                           GraphicsNodeRenderContext context) {
+		      GraphicsNodeRenderContext context) {
 
         FontRenderContext frc = context.getFontRenderContext();
         AttributedCharacterIterator aci = node.getAttributedCharacterIterator();
@@ -672,9 +671,9 @@ public class StrokingTextPainter extends BasicTextPainter {
      *            in bounds computation.
      */
      protected Rectangle2D getBounds(TextNode node,
-               FontRenderContext context,
-               boolean includeDecoration,
-               boolean includeStrokeWidth) {
+				     FontRenderContext context,
+				     boolean includeDecoration,
+				     boolean includeStrokeWidth) {
 
          Rectangle2D bounds = getOutline(node, context, includeDecoration).getBounds2D();
 
@@ -1236,6 +1235,7 @@ public class StrokingTextPainter extends BasicTextPainter {
 // inner classes
 
     class TextChunk {
+
         public int begin;
         public int end;
         public Point2D advance;
@@ -1254,6 +1254,7 @@ public class StrokingTextPainter extends BasicTextPainter {
      * sub-spans, and the ACI which iterates over that subspan.
      */
     class TextRun {
+
         private AttributedCharacterIterator aci;
         private TextSpanLayout layout;
         private int anchorType;
