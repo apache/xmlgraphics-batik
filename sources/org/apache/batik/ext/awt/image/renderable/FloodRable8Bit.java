@@ -13,16 +13,14 @@ import java.awt.Paint;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.Rectangle;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.NoninvertibleTransformException;
 import java.awt.image.RenderedImage;
 import java.awt.image.renderable.RenderContext;
 
-import org.apache.batik.ext.awt.image.GraphicsUtil;
-import org.apache.batik.ext.awt.image.rendered.BufferedImageCachableRed;
+import org.apache.batik.ext.awt.image.rendered.FloodRed;
+import org.apache.batik.ext.awt.image.rendered.PadRed;
+import org.apache.batik.ext.awt.image.rendered.CachableRed;
 
 /**
  * Concrete implementation of the FloodRable interface.
@@ -144,34 +142,13 @@ public class FloodRable8Bit extends AbstractRable
             return null;
         }
 
-        // There is a non-empty intersection. Render into
-        // that image
-        BufferedImage offScreen
-            = new BufferedImage(renderedArea.width,
-                                renderedArea.height,
-                                BufferedImage.TYPE_INT_ARGB);
+        CachableRed cr;
+        cr = new FloodRed(renderedArea, getFloodPaint());
+        // We use a pad because while FloodRed will advertise it's
+        // bounds based on renderedArea it will actually provide the
+        // flood data anywhere.
+        cr = new PadRed(cr, renderedArea, PadMode.ZERO_PAD, null);
 
-        // System.out.println("renderedArea x/y/w/h: " + renderedArea.x + " / " + renderedArea.y + " / " + renderedArea.width + " / " + renderedArea.height);
-        Graphics2D g = GraphicsUtil.createGraphics(offScreen,
-                                                   rc.getRenderingHints());
-
-        // do the usr2dev transform - just in case this becomes a
-        // flood paint rather than the simple paint fill
-        g.translate(-renderedArea.x, -renderedArea.y);
-        g.transform(usr2dev);
-
-        // set the flood paint as the paint
-        g.setPaint(getFloodPaint());
-
-        // fill the user space renderable area, this is the
-        // area that was used to create the device space offscreen
-        // image
-        g.fill(userAOI);
-
-        g.dispose();
-
-        return new BufferedImageCachableRed(offScreen, 
-                                            renderedArea.x,
-                                            renderedArea.y);
+        return cr;
     }
 }

@@ -100,9 +100,10 @@ public class PointLight implements Light {
                                       L[2]*L[2]);
 
         if(norm > 0){
-            L[0] /= norm;
-            L[1] /= norm;
-            L[2] /= norm;
+            final double invNorm = 1.0/norm;
+            L[0] *= invNorm;
+            L[1] *= invNorm;
+            L[2] *= invNorm;
         }
     }
 

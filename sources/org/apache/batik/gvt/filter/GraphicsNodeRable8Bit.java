@@ -188,7 +188,8 @@ public class GraphicsNodeRable8Bit
             return false;
         
         ColorSpace g2dCS = GraphicsUtil.getDestinationColorSpace(g2d);
-        if (g2dCS != ColorSpace.getInstance(ColorSpace.CS_sRGB))
+        if ((g2dCS == null) ||
+            (g2dCS != ColorSpace.getInstance(ColorSpace.CS_sRGB)))
             // Only draw directly into sRGB destinations...
             return false;
 

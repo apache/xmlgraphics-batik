@@ -28,7 +28,7 @@ import org.apache.batik.ext.awt.image.GraphicsUtil;
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
-public class SpecularLightingRed extends AbstractRed{
+public class SpecularLightingRed extends AbstractTiledRed{
     /**
      * Specular lighting constant
      */
@@ -75,16 +75,22 @@ public class SpecularLightingRed extends AbstractRed{
         this.scaleY = scaleY;
 
         ColorModel cm = GraphicsUtil.Linear_sRGB_Unpre;
-
-        SampleModel sm = 
-            cm.createCompatibleSampleModel(litRegion.width,
-                                           litRegion.height);
+        int tw = litRegion.width;
+        int th = litRegion.height;
+        if (tw > 256) tw = 256;
+        if (th > 256) th = 256;
+        SampleModel sm = cm.createCompatibleSampleModel(tw, th);
                                              
         init((CachableRed)null, litRegion, cm, sm,
              litRegion.x, litRegion.y, null);
     }
 
-    public WritableRaster copyData(WritableRaster wr){
+    public WritableRaster copyData(WritableRaster wr) {
+        copyToRaster(wr);
+        return wr;
+    }
+
+    public void genRect(WritableRaster wr) {
         // Copy variable on stack for faster access in thight loop
         final double scaleX = this.scaleX;
         final double scaleY = this.scaleY;
@@ -121,18 +127,20 @@ public class SpecularLightingRed extends AbstractRed{
         // final double[] L = new double[3];
         double[] N;
         final double[][][] NA = bumpMap.getNormalArray(minX, minY, w, h);
-
+        // System.out.println("Entering Specular Lighting");
         if(!light.isConstant()){
             double[] L;
-            final double[][][] LA = light.getLightMap(x, y, scaleX, scaleY, w, h, NA);
             for(i=0; i<h; i++){
+                // System.out.println("Row: " + i);
+                final double[][][] NARow = { NA[i] };
+                final double[][][] LA = light.getLightMap(x, y+i*scaleY, scaleX, scaleY, w, 1, NARow);
                 for(j=0; j<w; j++){
                     // Get Normal 
                     N = NA[i][j];
                     
                     // Get Light Vector
                     // light.getLight(x, y, N[3], L);
-                    L = LA[i][j];
+                    L = LA[0][j];
 
                     // Compute Half-way vector
                     L[2] += 1;
@@ -233,8 +241,6 @@ public class SpecularLightingRed extends AbstractRed{
                 p += adjust;
             }        
         }
-        
-        return wr;
+        // System.out.println("Exiting Specular Lighting");
     }
-
 }

@@ -9,7 +9,7 @@
 package org.apache.batik.gvt.filter;
 
 import org.apache.batik.ext.awt.image.GraphicsUtil;
-import org.apache.batik.ext.awt.image.rendered.AbstractRed;
+import org.apache.batik.ext.awt.image.rendered.AbstractTiledRed;
 import org.apache.batik.ext.awt.image.rendered.CachableRed;
 import org.apache.batik.ext.awt.image.rendered.TileGenerator;
 import org.apache.batik.ext.awt.image.rendered.TileStore;
@@ -38,7 +38,7 @@ import org.apache.batik.gvt.GraphicsNodeRenderContext;
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
-public class GraphicsNodeRed8Bit extends AbstractRed 
+public class GraphicsNodeRed8Bit extends AbstractTiledRed 
     implements TileGenerator {
 
     /**
@@ -49,8 +49,6 @@ public class GraphicsNodeRed8Bit extends AbstractRed
     private AffineTransform node2dev;
 
     private RenderingHints  hints;
-
-    private TileStore tiles;
 
     private GraphicsNodeRenderContext gnrc;
 
@@ -91,41 +89,26 @@ public class GraphicsNodeRed8Bit extends AbstractRed
             }
         }
         Rectangle   bounds = at.createTransformedShape(bounds2D).getBounds();
+        // System.out.println("Bounds: " + bounds);
 
         ColorModel cm = GraphicsUtil.sRGB_Unpre;
-        
-        int tw = bounds.width;
-        if (tw > 128) tw = 128;
-        int th = bounds.height;
-        if (th > 128) th = 128;
+
+        int tgX = bounds.x & 0xFFFFFF00;
+        int tw  = (bounds.x+bounds.width)-tgX;
+        if (tw > 256) tw = 256;
+        int tgY = bounds.y & 0xFFFFFF00;
+        int th  = (bounds.y+bounds.height)-tgY;
+        if (th > 256) th = 256;
 
         // fix my sample model so it makes sense given my size.
         SampleModel sm = cm.createCompatibleSampleModel(tw, th);
 
         // Finish initializing our base class...
-        init((CachableRed)null, bounds, cm, sm, 0, 0, null);
-
-        tiles = TileCache.getTileGrid(this, this);
+        // Make our tile grid fall on the closes multiply of 256.
+        init((CachableRed)null, bounds, cm, sm, tgX, tgY, null);
     }
 
-    public WritableRaster copyData(WritableRaster wr) {
-        copyToRaster(wr);
-        // genRect(wr, true);
-        return wr;
-    }
-
-    public Raster getTile(int x, int y) {
-        return tiles.getTile(x, y);
-    }
-
-    public Raster genTile(int x, int y) {
-        WritableRaster wr = makeTile(x, y);
-
-        genRect(wr, false);
-        return wr;
-    }
-
-    public void genRect(WritableRaster wr, boolean clear) {
+    public void genRect(WritableRaster wr) {
         BufferedImage offScreen
             = new BufferedImage(cm, 
                                 wr.createWritableTranslatedChild(0,0),
@@ -133,11 +116,9 @@ public class GraphicsNodeRed8Bit extends AbstractRed
                                 null);
 
         Graphics2D g = GraphicsUtil.createGraphics(offScreen, hints);
-        if (clear) {
-            g.setComposite(AlphaComposite.Clear);
-            g.fillRect(0, 0, wr.getWidth(), wr.getHeight());
-            g.setComposite(AlphaComposite.SrcOver);
-        }
+        g.setComposite(AlphaComposite.Clear);
+        g.fillRect(0, 0, wr.getWidth(), wr.getHeight());
+        g.setComposite(AlphaComposite.SrcOver);
         g.translate(-wr.getMinX(), -wr.getMinY());
 
         // Set transform

@@ -19,10 +19,10 @@ public interface TileStore {
     
     public void setTile(int x, int y, Raster ras);
 
-    // Returns true if the tile is _currently_ in the cache.  This
-    // may not be true by the time you get around to calling
-    // getTile however...
-    public boolean checkTile(int x, int y);
-
     public Raster getTile(int x, int y);
+
+    // This is return the tile if it is available otherwise
+    // returns null.  It will not compute the tile if it is
+    // not present.
+    public Raster getTileNoCompute(int x, int y);
 }

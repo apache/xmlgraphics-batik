@@ -99,9 +99,6 @@ public class GraphicsUtil {
 
         ColorModel  srcCM = cr.getColorModel();
 
-        ColorModel g2dCM = getDestinationColorModel(g2d);
-        ColorSpace g2dCS = g2dCM.getColorSpace();
-
         AffineTransform at = null;
         while (true) {
             if (cr instanceof AffineRed) {
@@ -150,16 +147,15 @@ public class GraphicsUtil {
             }
         }
     
-        if (g2dCS != srcCM.getColorSpace()) {
-            /*
-            System.out.println("srcCS: " + srcCM.getColorSpace());
-            System.out.println("g2dCS: " + g2dCS);
-            System.out.println("sRGB: " +
-                               ColorSpace.getInstance(ColorSpace.CS_sRGB));
-            System.out.println("LsRGB: " +
-                               ColorSpace.getInstance
-                               (ColorSpace.CS_LINEAR_RGB));
-            */
+        ColorSpace g2dCS = getDestinationColorSpace(g2d);
+        if ((g2dCS != null) && (g2dCS != srcCM.getColorSpace())) {
+            // System.out.println("srcCS: " + srcCM.getColorSpace());
+            // System.out.println("g2dCS: " + g2dCS);
+            // System.out.println("sRGB: " +
+            //                    ColorSpace.getInstance(ColorSpace.CS_sRGB));
+            // System.out.println("LsRGB: " +
+            //                    ColorSpace.getInstance
+            //                    (ColorSpace.CS_LINEAR_RGB));
             if      (g2dCS == ColorSpace.getInstance(ColorSpace.CS_sRGB))
                 cr = convertTosRGB(cr);
             else if (g2dCS == ColorSpace.getInstance(ColorSpace.CS_LINEAR_RGB))
@@ -190,10 +186,11 @@ public class GraphicsUtil {
             }
 
             Rectangle gcR = getDestinationBounds(g2d);
-            
-            if (clipR.intersects(gcR) == false)
-                return; // Nothing to draw...
-            clipR = clipR.intersection(gcR);
+            if (gcR != null) {
+                if (clipR.intersects(gcR) == false)
+                    return; // Nothing to draw...
+                clipR = clipR.intersection(gcR);
+            }
 
             if ( false) {
                 // There has been a problem where the render tries to
@@ -219,12 +216,10 @@ public class GraphicsUtil {
                         cr = new PadRed(cr, clipR, PadMode.ZERO_PAD, null);
                     else {
                         // Complex clip...
-                        /*
-                         * System.out.println("Clip:" + clip);
-                         * System.out.println("ClipR: " + clipR);
-                         * System.out.println("crR: " + cr.getBounds());
-                         * System.out.println("at: " + at);
-                         */
+                        // System.out.println("Clip:" + clip);
+                        // System.out.println("ClipR: " + clipR);
+                        // System.out.println("crR: " + cr.getBounds());
+                        // System.out.println("at: " + at);
 
                         if (clipR.intersects(cr.getBounds()) == false)
                             return; // Nothing to draw...
@@ -252,8 +247,10 @@ public class GraphicsUtil {
             }
 
             srcCM = cr.getColorModel();
+            ColorModel g2dCM = getDestinationColorModel(g2d);
             ColorModel drawCM = srcCM;
-            if ((drawCM.hasAlpha()) && (g2dCM.hasAlpha())) {
+            if ((g2dCM != null) &&
+                ((drawCM.hasAlpha()) && (g2dCM.hasAlpha()))) {
                 if (drawCM.isAlphaPremultiplied() !=
                     g2dCM .isAlphaPremultiplied())
                     drawCM = coerceColorModel(drawCM,
@@ -312,6 +309,8 @@ public class GraphicsUtil {
             }
 
             // System.out.println("Starting Draw: " + cr);
+            long startTime = System.currentTimeMillis();
+
             yloc = yt0*th+cr.getTileGridYOffset();
             for (int y=yt0; y<yt1; y++, yloc += th) {
                 if (yloc > endY) break;
@@ -326,7 +325,8 @@ public class GraphicsUtil {
                     twr = wr.createWritableChild(0, 0,
                                                  iR.width, iR.height,
                                                  iR.x, iR.y, null);
-                    
+
+                    // System.out.println("Generating tile: " + twr);
                     cr.copyData(twr);
                     coerceData(twr, srcCM, drawCM.isAlphaPremultiplied());
 
@@ -338,10 +338,15 @@ public class GraphicsUtil {
                         System.out.println("IR: "      + iR);
                     }
 
-                    g2d.drawImage(subBI, null, iR.x, iR.y);
+                    AffineTransform trans;
+                    trans = AffineTransform.getTranslateInstance(iR.x, iR.y);
+                    g2d.drawImage(subBI, trans, null);
                     // big2d.fillRect(0, 0, tw, th);
                 }
             }
+
+            long endTime = System.currentTimeMillis();
+            // System.out.println("Time: " + (endTime-startTime));
         } finally {
             g2d.setTransform(g2dAt);
         }
@@ -449,6 +454,8 @@ public class GraphicsUtil {
     }
 
 
+    public final static boolean WARN_DESTINATION = false;
+
     public static BufferedImage getDestination(Graphics2D g2d) {
         Object o = g2d.getRenderingHint
             (RenderingHintsKeyExt.KEY_BUFFERED_IMAGE);
@@ -458,10 +465,11 @@ public class GraphicsUtil {
         // Check if this is a BufferedImage G2d if so throw an error...
         GraphicsConfiguration gc = g2d.getDeviceConfiguration();
         GraphicsDevice gd = gc.getDevice();
-        if (gd.getType() == GraphicsDevice.TYPE_IMAGE_BUFFER) {
-            throw new IllegalArgumentException
+        if (WARN_DESTINATION &&
+            (gd.getType() == GraphicsDevice.TYPE_IMAGE_BUFFER))
+            // throw new IllegalArgumentException
+            System.out.println
                 ("Graphics2D from BufferedImage lacks BUFFERED_IMAGE hint");
-        }
 
         return null;
     }
@@ -472,11 +480,20 @@ public class GraphicsUtil {
             return bi.getColorModel();
 
         GraphicsConfiguration gc = g2d.getDeviceConfiguration();
+
+        // We are going to a BufferedImage but no hint was provided
+        // so we can't determine the destination Color Model.
+        if (gc.getDevice().getType() == GraphicsDevice.TYPE_IMAGE_BUFFER)
+            return null;
+
         return gc.getColorModel();
     }
 
     public static ColorSpace getDestinationColorSpace(Graphics2D g2d) {
         ColorModel cm = getDestinationColorModel(g2d);
+        if (cm == null)
+            return null;
+
         return cm.getColorSpace();
     }
 
@@ -486,6 +503,12 @@ public class GraphicsUtil {
             return new Rectangle(0, 0, bi.getWidth(), bi.getHeight());
 
         GraphicsConfiguration gc = g2d.getDeviceConfiguration();
+
+        // We are going to a BufferedImage but no hint was provided
+        // so we can't determine the destination bounds.
+        if (gc.getDevice().getType() == GraphicsDevice.TYPE_IMAGE_BUFFER)
+            return null;
+
         return gc.getBounds();
     }
 

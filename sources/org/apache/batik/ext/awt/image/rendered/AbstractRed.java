@@ -8,8 +8,6 @@
 
 package org.apache.batik.ext.awt.image.rendered;
 
-
-
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Vector;
