@@ -72,6 +72,7 @@ public class MemoryMonitor extends JFrame implements ActionMap {
      */
     public MemoryMonitor(long time) {
 	super(resources.getString("Frame.title"));
+        listeners.put("CollectButtonAction", new CollectButtonAction());
         listeners.put("CloseButtonAction", new CloseButtonAction());
 	
 	panel = new Panel(time);
@@ -83,6 +84,7 @@ public class MemoryMonitor extends JFrame implements ActionMap {
 
 	JPanel p = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 	ButtonFactory bf = new ButtonFactory(bundle, this);
+	p.add(bf.createJButton("CollectButton"));
 	p.add(bf.createJButton("CloseButton"));
 	getContentPane().add("South", p);
 		
@@ -119,6 +121,15 @@ public class MemoryMonitor extends JFrame implements ActionMap {
      */
     public Action getAction(String key) throws MissingListenerException {
 	return (Action)listeners.get(key);
+    }
+
+    /**
+     * The action associated with the 'Collect' button of the memory monitor.
+     */
+    protected class CollectButtonAction extends AbstractAction {
+        public void actionPerformed(ActionEvent e) {
+            System.gc();
+        }
     }
 
     /**
