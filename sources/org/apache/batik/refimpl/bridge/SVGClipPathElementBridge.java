@@ -72,7 +72,6 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
         GVTBuilder builder = ctx.getGVTBuilder();
         GVTFactory gvtFactory = ctx.getGVTFactory();
         Viewport oldViewport = ctx.getCurrentViewport();
-        ctx.setCurrentViewport(new ObjectBoundingBoxViewport());
 
         // compute the transform matrix of this clipPath Element
         AffineTransform Tx = AWTTransformProducer.createAffineTransform
@@ -82,6 +81,10 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
         String units = clipElement.getAttributeNS(null, ATTR_CLIP_PATH_UNITS);
         if (units.length() == 0) {
             units = VALUE_OBJECT_BOUNDING_BOX;
+        }
+        if (VALUE_OBJECT_BOUNDING_BOX.equals(units)) {
+            // units are resolved using objectBoundingBox
+            ctx.setCurrentViewport(new ObjectBoundingBoxViewport());
         }
         Tx = SVGUtilities.convertAffineTransform(Tx, gn, units);
 
