@@ -8,11 +8,8 @@
 
 package org.apache.batik.test.svg;
 
-import org.apache.batik.css.AbstractViewCSS;
-
-import org.w3c.dom.Document;
-
-import org.w3c.dom.views.DocumentView;
+import org.apache.batik.transcoder.image.ImageTranscoder;
+import org.apache.batik.transcoder.image.PNGTranscoder;
 
 /**
  * Checks for regressions in rendering of a document with a given
@@ -42,17 +39,13 @@ public class SVGMediaRenderingAccuracyTest extends SVGRenderingAccuracyTest {
     }
 
     /**
-     * Template method which subclasses can override if they
-     * need to manipulate the DOM in some way before running 
-     * the accuracy test. For example, this can be useful to 
-     * test the alternate stylesheet support.
+     * Returns the <tt>ImageTranscoder</tt> the Test should
+     * use
      */
-    protected Document manipulateSVGDocument(Document doc) {
-        // set the media type
-        AbstractViewCSS view;
-        view = (AbstractViewCSS)((DocumentView)doc).getDefaultView();
-        view.setMedia(media);
-        
-        return doc;
+    public ImageTranscoder getTestImageTranscoder(){
+        ImageTranscoder t = super.getTestImageTranscoder();
+        t.addTranscodingHint(PNGTranscoder.KEY_MEDIA, media);
+        return t;
     }
+
 }
