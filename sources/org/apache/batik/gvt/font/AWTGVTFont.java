@@ -149,8 +149,8 @@ public class AWTGVTFont implements GVTFont {
 
         StringCharacterIterator sci = 
 	    new StringCharacterIterator(new String(chars));
-        return new AWTGVTGlyphVector(awtFont.createGlyphVector(frc, chars), 
-                                     this, scale, sci);
+        GlyphVector gv = awtFont.createGlyphVector(frc, chars);
+        return new AWTGVTGlyphVector(gv, this, scale, sci);
     }
 
     /**
@@ -168,9 +168,8 @@ public class AWTGVTFont implements GVTFont {
                 return createGlyphVector(frc, str);
             }
         }
-
-        return new AWTGVTGlyphVector(awtFont.createGlyphVector(frc, ci), 
-                                     this, scale, ci);
+        GlyphVector gv = awtFont.createGlyphVector(frc, ci);
+        return new AWTGVTGlyphVector(gv, this, scale, ci);
     }
 
     /**

@@ -54,6 +54,7 @@ public abstract class AbstractRable implements Filter {
      * method need to be computed in the subclasses constructor.
      */
     protected AbstractRable() {
+        srcs = new Vector();
     }
 
     /**

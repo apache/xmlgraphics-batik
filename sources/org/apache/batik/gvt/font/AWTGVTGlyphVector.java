@@ -41,6 +41,8 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
     private GlyphVector awtGlyphVector;
     private AWTGVTFont gvtFont;
     private CharacterIterator ci;
+    /** This contains the glyphPostions after doing a performDefaultLayout */
+    private Point2D[] defaultGlyphPositions;
     private Point2D[] glyphPositions;
 
     // need to keep track of the glyphTransforms since GlyphVector doesn't seem
@@ -88,12 +90,11 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
         ascent  = lineMetrics.getAscent();
         descent = lineMetrics.getDescent();
 
-
-        int numGlyphs = glyphVector.getNumGlyphs();
-        outline = null;
+        outline       = null;
         logicalBounds = null;
-        glyphTransforms    = new AffineTransform[numGlyphs];
+        int numGlyphs = glyphVector.getNumGlyphs();
         glyphPositions     = new Point2D.Float[numGlyphs];
+        glyphTransforms    = new AffineTransform[numGlyphs];
         glyphOutlines      = new Shape[numGlyphs];
         glyphVisualBounds  = new Shape[numGlyphs];
         glyphLogicalBounds = new Shape[numGlyphs];
@@ -141,6 +142,17 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
      */
     public GlyphJustificationInfo getGlyphJustificationInfo(int glyphIndex) {
         return awtGlyphVector.getGlyphJustificationInfo(glyphIndex);
+    }
+
+    /**
+     *  Returns the logical bounds of this GlyphVector.
+     */
+    public Rectangle2D getLogicalBounds() {
+        if (logicalBounds == null) {
+            // This fills in logicalBounds...
+            computeGlyphLogicalBounds();
+        }
+        return logicalBounds;
     }
 
     /**
@@ -369,43 +381,49 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
             if (glyphTransform != null) {
                 tr.concatenate(glyphTransform);
             }
-	    //
-	    // <!> HACK
-	    //
-	    // GlyphVector.getGlyphOutline behavior changes between 1.3 and 1.4
-	    //
-	    // I've looked at this problem a bit more and the incorrect glyph
-	    // positioning in Batik is definitely due to the change in
-	    // behavior of GlyphVector.getGlyphOutline(glyphIndex). It used to
-	    // return the outline of the glyph at position 0,0 which meant
-	    // that we had to translate it to the actual glyph position before
-	    // drawing it. Now, it returns the outline which has already been
-	    // positioned.
-	    //
-	    // -- Bella
-	    //
+            //
+            // <!> HACK
+            //
+            // GlyphVector.getGlyphOutline behavior changes between 1.3 and 1.4
+            //
+            // I've looked at this problem a bit more and the incorrect glyph
+            // positioning in Batik is definitely due to the change in
+            // behavior of GlyphVector.getGlyphOutline(glyphIndex). It used to
+            // return the outline of the glyph at position 0,0 which meant
+            // that we had to translate it to the actual glyph position before
+            // drawing it. Now, it returns the outline which has already been
+            // positioned.
+            //
+            // -- Bella
+            //
 
-	    if (isJDK1_4OrGreater()) {
-		Point2D glyphPos = awtGlyphVector.getGlyphPosition(glyphIndex);
-		tr.translate(-glyphPos.getX(), -glyphPos.getY());
-	    }
+            if (outlinesPositioned()) {
+                Point2D glyphPos = defaultGlyphPositions[glyphIndex];
+                tr.translate(-glyphPos.getX(), -glyphPos.getY());
+            }
 
             tr.scale(scaleFactor, scaleFactor);
-            glyphOutlines[glyphIndex] = tr.createTransformedShape(glyphOutline);
+            glyphOutlines[glyphIndex]=tr.createTransformedShape(glyphOutline);
         }
 
         return glyphOutlines[glyphIndex];
     }
 
-    private static final boolean is1_4OrGreater;
+    private static final boolean outlinesPositioned;
 
     static {
-	String s = System.getProperty("java.version");
-	is1_4OrGreater = ("1.4".compareTo(s) < 0);
+        String s = System.getProperty("java.version");
+        if ("1.4".compareTo(s) <= 0) {
+            outlinesPositioned = true;
+        } else if ("Mac OS X".equals(System.getProperty("os.name"))) {
+            outlinesPositioned = true;
+        } else {
+            outlinesPositioned = false;
+        }
     }
 
-    private static boolean isJDK1_4OrGreater() {
-	return is1_4OrGreater;
+    private static boolean outlinesPositioned() {
+        return outlinesPositioned;
     }
 
     /**
@@ -467,17 +485,6 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
     }
 
     /**
-     *  Returns the logical bounds of this GlyphVector.
-     */
-    public Rectangle2D getLogicalBounds() {
-        if (logicalBounds == null) {
-            // This fills in logicalBounds...
-            computeGlyphLogicalBounds();
-        }
-        return logicalBounds;
-    }
-
-    /**
      * Returns the number of glyphs in this GlyphVector.
      */
     public int getNumGlyphs() {
@@ -527,28 +534,32 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
      * Assigns default positions to each glyph in this GlyphVector.
      */
     public void performDefaultLayout() {
-        awtGlyphVector.performDefaultLayout();
-        outline = null;
+        if (defaultGlyphPositions == null) {
+            awtGlyphVector.performDefaultLayout();
+            defaultGlyphPositions = new Point2D.Float[getNumGlyphs()];
+            for (int i = 0; i < getNumGlyphs(); i++)
+                defaultGlyphPositions[i] = awtGlyphVector.getGlyphPosition(i);
+        }
+
+        outline       = null;
         logicalBounds = null;
         float shiftLeft = 0;
         for (int i = 0; i < getNumGlyphs(); i++) {
-            Point2D glyphPos = awtGlyphVector.getGlyphPosition(i);
-
-            glyphPositions[i] = new Point2D.Float
-                ((float)((glyphPos.getX()-shiftLeft) * scaleFactor),
-                 (float)(glyphPos.getY() * scaleFactor));
-
-            glyphTransforms[i] = null;
-            glyphVisualBounds[i] = null;
+            glyphTransforms   [i] = null;
+            glyphVisualBounds [i] = null;
             glyphLogicalBounds[i] = null;
-            glyphOutlines[i] = null;
+            glyphOutlines     [i] = null;
+
+            Point2D glyphPos = defaultGlyphPositions[i];
+            glyphPositions[i] = new Point2D.Float
+                ((float)((glyphPos.getX() * scaleFactor)-shiftLeft),
+                 (float) (glyphPos.getY() * scaleFactor));
 
             // if c is a transparent arabic char then need to shift the
             // following glyphs left so that the current glyph is overwritten
             char c = ci.setIndex(i + ci.getBeginIndex());
             if (ArabicTextHandler.arabicCharTransparent(c)) {
-                GlyphMetrics gm = awtGlyphVector.getGlyphMetrics(i);
-                shiftLeft = gm.getAdvance();
+                shiftLeft += getGlyphMetrics(i).getHorizontalAdvance();
             }
         }
     }
