@@ -1592,7 +1592,8 @@ public class JSVGViewerFrame
         }
         statusBar.setMainMessage("");
         statusBar.setMessage(resources.getString("Message.done"));
-
+	svgCanvas.setSelectionOverlayXORMode
+	    (application.isSelectionOverlayXORMode());
         stopAction.update(false);
         svgCanvas.setCursor(DEFAULT_CURSOR);
 

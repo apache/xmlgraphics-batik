@@ -65,4 +65,10 @@ public interface Application {
      */
     String getMedia();
 
+    /**
+     * Returns true if the selection overlay is painted in XOR mode, false
+     * otherwise.
+     */
+    boolean isSelectionOverlayXORMode();
+
 }

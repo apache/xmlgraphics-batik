@@ -441,4 +441,13 @@ public class Main implements Application {
             (PreferenceDialog.PREFERENCE_KEY_CSS_MEDIA);
         return (s == null) ? "screen" : s;
     }
+
+    /**
+     * Returns true if the selection overlay is painted in XOR mode, false
+     * otherwise.
+     */
+    public boolean isSelectionOverlayXORMode() {
+        return preferenceManager.getBoolean
+            (PreferenceDialog.PREFERENCE_KEY_SELECTION_XOR_MODE);
+    }
 }
