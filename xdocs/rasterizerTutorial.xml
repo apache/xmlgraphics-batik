@@ -122,6 +122,7 @@ trasnform a SVG document to a JPEG image.
 <source>
 SaveAsJpeg.java
 ===============
+
 import java.io.*;
 import org.apache.batik.transcoder.image.JPEGTranscoder;
 import org.apache.batik.transcoder.TranscoderInput;
@@ -218,11 +219,11 @@ import org.apache.batik.transcoder.image.JPEGTranscoder;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 
-public class TileProducer {
+public class SaveAsJPEGTiles {
 
     JPEGTranscoder trans = new JPEGTranscoder();
 
-    public TileProducer() {
+    public SaveAsJPEGTiles() {
         trans.addTranscodingHint(JPEGTranscoder.KEY_XML_PARSER_CLASSNAME,
                                  "org.apache.crimson.parser.XMLReaderImpl");
         trans.addTranscodingHint(JPEGTranscoder.KEY_QUALITY,
@@ -247,7 +248,7 @@ public class TileProducer {
     }
 
     public static void main(String [] args) throws Exception {
-        TileProducer p = new TileProducer();
+        SaveAsJPEGTiles p = new SaveAsJPEGTiles();
         <strong>String in = "samples/anne.svg";
         int documentWidth = 450;
         int documentHeight = 500;</strong>
@@ -278,8 +279,8 @@ image size.
 <strong>Try this:</strong>
 </p>
 <ol>
-<li>Compile and run the program: TileProducer.java. You will need the "anne.svg" document.<br />
-<code>% java TileProducder</code></li>
+<li>Compile and run the program: SaveAsJPEGTiles.java. You will need the "anne.svg" document.<br />
+<code>% java SaveAsJPEGTiles</code></li>
 <li>Take a look at: tileTopRight.jpg, tileTopRight.jpg, tileBottomRight.jpg
  and tileBottomLeft.jpg</li>
 </ol>
@@ -290,6 +291,9 @@ image size.
 The following code creates and saves a SVG DOM tree.
 </p>
 <source>
+DOMRasterizer.java
+==================
+
 import java.io.*;
 import org.apache.batik.transcoder.image.JPEGTranscoder;
 import org.apache.batik.transcoder.TranscoderInput;
