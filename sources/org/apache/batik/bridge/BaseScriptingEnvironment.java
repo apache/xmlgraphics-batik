@@ -591,7 +591,7 @@ public class BaseScriptingEnvironment {
          * @param uri The URI where the data is located.
          * @param h A handler called when the data is available.
          */
-        public void getURL(String uri, GetURLHandler h) {
+        public void getURL(String uri, org.apache.batik.script.Window.GetURLHandler h) {
         }
 
         /**
@@ -600,7 +600,9 @@ public class BaseScriptingEnvironment {
          * @param h A handler called when the data is available.
          * @param enc The character encoding of the data.
          */
-        public void getURL(String uri, GetURLHandler h, String enc) {
+        public void getURL(String uri, 
+                           org.apache.batik.script.Window.GetURLHandler h, 
+                           String enc) {
         }
 
         /**

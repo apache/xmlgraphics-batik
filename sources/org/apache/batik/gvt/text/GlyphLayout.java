@@ -2395,7 +2395,7 @@ public class GlyphLayout implements TextSpanLayout {
      * over space in the flow rect and scaling that value by 1.0 to
      * align to the bottom, 0.5 for middle and 0.0 for top.
      *
-     * @param verticalAlignOffset the {@link Point2D.Float} object that 
+     * @param verticalAlignOffset the {@link java.awt.geom.Point2D.Float} object that 
      *                            is storing the alignment offset.
      * @param currentRegion the {@link RegionInfo} object that we 
      *                      are rendering into.

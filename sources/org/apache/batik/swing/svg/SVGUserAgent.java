@@ -68,7 +68,7 @@ public interface SVGUserAgent {
     /**
      * Returns the size of a px CSS unit in millimeters.
      * This will be removed after next release.
-     * @see #getPixelUnitToMillimeter();
+     * @see #getPixelUnitToMillimeter()
      */
     float getPixelToMM();
 

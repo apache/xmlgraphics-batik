@@ -59,7 +59,7 @@ public class SVGOMAnimatedString
     }
 
     /**
-     * <b>DOM</b>: Implements {@link SVGAnimatedString#setBaseVal(string)}.
+     * <b>DOM</b>: Implements {@link SVGAnimatedString#setBaseVal(String)}.
      */
     public void setBaseVal(String baseVal) throws DOMException {
         element.setAttributeNS(namespaceURI, localName, baseVal);

@@ -1913,7 +1913,7 @@ public class JSVGComponent extends JGVTComponent {
         /**
          * Returns the size of a px CSS unit in millimeters.
          * This will be removed after next release.
-         * @see #getPixelUnitToMillimeter();
+         * @see #getPixelUnitToMillimeter()
          */
         public float getPixelToMM() { return getPixelUnitToMillimeter(); }
 
@@ -2549,7 +2549,7 @@ public class JSVGComponent extends JGVTComponent {
         /**
          * Returns the size of a px CSS unit in millimeters.
          * This will be removed after next release.
-         * @see #getPixelUnitToMillimeter();
+         * @see #getPixelUnitToMillimeter()
          */
         public float getPixelToMM() { return getPixelUnitToMillimeter(); }
 
