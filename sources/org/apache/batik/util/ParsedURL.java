@@ -26,6 +26,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.batik.Version;
+
 /**
  * This class is used as a replacement for java.net.URL.  This is done
  * for several reasons.  First unlike java.net.URL this class will
@@ -75,7 +77,7 @@ public class ParsedURL {
     private static ParsedURLProtocolHandler defaultHandler 
         = new ParsedURLDefaultProtocolHandler();
 
-    private static String globalUserAgent = "Batik/1.0";
+    private static String globalUserAgent = "Batik/"+Version.getVersion();
 
     public static String getGlobalUserAgent() { return globalUserAgent; }
 

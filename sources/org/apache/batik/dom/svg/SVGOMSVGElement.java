@@ -18,10 +18,13 @@
 package org.apache.batik.dom.svg;
 
 import java.awt.geom.AffineTransform;
+import java.util.List;
 
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.dom.util.XMLSupport;
+import org.apache.batik.dom.util.ListNodeList;
+
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -310,23 +313,31 @@ public class SVGOMSVGElement
     public void          setCurrentTime ( float seconds ) {
         throw new Error();
     }
+
     public NodeList      getIntersectionList ( SVGRect rect,
                                                SVGElement referenceElement ) {
-        throw new Error();
+        SVGSVGContext ctx = (SVGSVGContext)getSVGContext();
+        List list = ctx.getIntersectionList(rect, referenceElement);
+        return new ListNodeList(list);
     }
+
     public NodeList      getEnclosureList ( SVGRect rect,
                                             SVGElement referenceElement ) {
-        throw new Error();
+        SVGSVGContext ctx = (SVGSVGContext)getSVGContext();
+        List list = ctx.getEnclosureList(rect, referenceElement);
+        return new ListNodeList(list);
     }
-    public boolean       checkIntersection ( SVGElement element,
-                                             SVGRect rect ) {
-        throw new Error();
+    public boolean checkIntersection(SVGElement element, SVGRect rect) {
+        SVGSVGContext ctx = (SVGSVGContext)getSVGContext();
+        return ctx.checkIntersection(element, rect);
     }
-    public boolean       checkEnclosure ( SVGElement element, SVGRect rect ) {
-        throw new Error();
+    public boolean checkEnclosure(SVGElement element, SVGRect rect) {
+        SVGSVGContext ctx = (SVGSVGContext)getSVGContext();
+        return ctx.checkEnclosure(element, rect);
     }
+
     public void          deselectAll (  ) {
-        getSVGContext().deselectAll();
+        ((SVGSVGContext)getSVGContext()).deselectAll();
     }
 
     /**
