@@ -46,6 +46,8 @@ import javax.swing.Action;
 import javax.swing.JComponent;
 
 import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.bridge.BridgeMutationEvent;
+import org.apache.batik.bridge.GraphicsNodeBridge;
 import org.apache.batik.bridge.GVTBuilder;
 import org.apache.batik.bridge.UserAgent;
 
@@ -63,8 +65,7 @@ import org.apache.batik.refimpl.bridge.SVGBridgeContext;
 import org.apache.batik.refimpl.gvt.ConcreteGVTFactory;
 
 import org.apache.batik.refimpl.gvt.filter.ConcreteGraphicsNodeRableFactory;
-import org.apache.batik.refimpl.gvt.renderer.StaticRenderer;
-import org.apache.batik.refimpl.gvt.renderer.StaticRendererFactory;
+import org.apache.batik.refimpl.gvt.renderer.DynamicRendererFactory;
 
 import org.apache.batik.refimpl.parser.ParserFactory;
 
@@ -75,11 +76,14 @@ import org.apache.batik.util.SVGUtilities;
 import org.apache.batik.util.gui.resource.ActionMap;
 import org.apache.batik.util.gui.resource.MissingListenerException;
 
+import org.w3c.dom.Element;
 import org.w3c.dom.css.ViewCSS;
 import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.svg.SVGSVGElement;
 import org.w3c.dom.events.Event;
+import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
+import org.w3c.dom.events.MutationEvent;
 
 
 /**
@@ -145,6 +149,11 @@ public class JSVGCanvas
      * The GVT builder.
      */
     protected GVTBuilder builder;
+
+    /**
+     * The bridge context.
+     */
+    protected BridgeContext bridgeContext;
 
     /**
      * The SVG document to render.
@@ -246,7 +255,7 @@ public class JSVGCanvas
             addKeyListener(dispatcher);
         }
 
-        rendererFactory = new StaticRendererFactory();
+        rendererFactory = new DynamicRendererFactory();
 
         builder = new ConcreteGVTBuilder();
 
@@ -292,11 +301,15 @@ public class JSVGCanvas
         if (document == null) {
             gvtRoot = null;
         } else {
-            BridgeContext bc = createBridgeContext(doc);
-            bc.setViewCSS((ViewCSS)doc.getDocumentElement());
-            bc.setGVTBuilder(builder);
-            gvtRoot = builder.build(bc, document);
+            bridgeContext = createBridgeContext(doc);
+            bridgeContext.setViewCSS((ViewCSS)doc.getDocumentElement());
+            bridgeContext.setGVTBuilder(builder);
+            gvtRoot = builder.build(bridgeContext, document);
             computeTransform();
+
+            ((EventTarget)doc).addEventListener("DOMAttrModified",
+                                                new MutationListener(),
+                                                false);
         }
 
         if (userAgent.getEventDispatcher() != null)
@@ -307,6 +320,32 @@ public class JSVGCanvas
 
         if (thumbnailCanvas != null) {
             thumbnailCanvas.fullRepaint();
+        }
+    }
+
+    /**
+     * To listener to the DOM mutation events.
+     */
+    protected class MutationListener implements EventListener {
+        public void handleEvent(Event evt) {
+            BridgeMutationEvent bme;
+            Element target = (Element)evt.getTarget();
+            bme = new BridgeMutationEvent
+                (target,
+                 bridgeContext,
+                 BridgeMutationEvent.PROPERTY_MUTATION_TYPE);
+
+            MutationEvent me = (MutationEvent)evt;
+
+            bme.setAttrName(me.getAttrName());
+            bme.setAttrNewValue(me.getNewValue());
+
+            GraphicsNodeBridge bridge;
+            bridge = (GraphicsNodeBridge)bridgeContext.getBridge(target);
+
+            System.out.println("XXXXXXXXXXXX");
+            bridge.update(bme);
+            System.out.println("YYYYYYYYYYYY");
         }
     }
 
