@@ -121,6 +121,16 @@
           <br /><br />
           </dd>
 
+          <dt>Bella Robinson (BR)</dt><dd><br />
+          <link href="mailto:bella.robinson@cmis.csiro.au">bella.robinson@cmis.csiro.au</link> <br />
+          <em>
+          Bella is a Software Engineer working for CSIRO Australia. She was one
+          of the main developers of the CSIRO SVG Toolkit and has also been working
+          on a Pocket SVG Viewer for handheld devices. Her interests include 
+          graphics and XML programming.</em>
+          <br /><br />
+          </dd>
+
         </dl>
 
         <p>
@@ -136,6 +146,8 @@
       </p>
         <ul>
           <li><link href="mailto:carnold@houston.rr.com">Curt Arnold</link> - Contributed many bug reports and fixes</li>
+          <li><link href="mailto:r_diblasi@hotmail.com">Robert DiBlasi</link> - Contributed a lot of feedback on the 
+            Batik documentation and suggestions on how to improve the it</li>
           <li><link href="mailto:pier.fumagalli@eng.sun.com">Pier Fumagalli</link>- is helping us with the Batik web site and
               mailing lists.</li>
           <li><link href="mailto:keiron@aftexsw.com">Keiron Liddle</link> - A <link href="http://xml.apache.org/fop">FOP</link>
@@ -145,8 +157,8 @@
               to generate SVG charts, such as line graphs, bar charts or pie charts</li>
           <li><link href="mailto:luano@asd.ie">Luan O'Carroll</link> - Contributed the WMF transcoder.</li>
           <li><link href="mailto:spei@cs.uiowa.edu">Sheng Pei</link> - Contributed on filters and the Regard tool.</li>
-          <li><link href="mailto:bella.robinson@cmis.csiro.au">Bella Robinson</link> - Co-author of the SVG Font support in 
-              Batik in collaboration with <link href="mailto:dean.jackson@cmis.csiro.au">Dean Jackson</link></li>
+          <li><link href="mailto:neeme.praks@one.ee">Neeme Praks</link> - Contributed patches, feedback and scripts for
+            building charts from John Morrisson's XSL stylesheets</li>
           <li><link href="mailto:david@steadystate.co.uk">David Schweinsberg</link> - Contributed the True Type Font to 
               SVG Font converter</li>
           <li><link href="mailto:natalian@cs.brown.edu">Nicholas Talian</link> - Contributed on gradients.</li>
