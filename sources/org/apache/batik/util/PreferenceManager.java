@@ -831,9 +831,10 @@ public class PreferenceManager
     public void setBoolean(String key, boolean value)
     {
         if (getDefault(key) != null &&
-            ((Boolean)getDefault(key)).booleanValue() != value)
+            ((Boolean)getDefault(key)).booleanValue() != value) {
             internal.setProperty(key, value?"true":"false");
-        else
+	} else {
             internal.remove(key);
+	}
     }
 }

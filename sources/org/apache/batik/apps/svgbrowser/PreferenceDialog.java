@@ -119,6 +119,9 @@ public class PreferenceDialog extends JDialog
     public static final String LABEL_SHOW_DEBUG_TRACE
         = "PreferenceDialog.label.show.debug.trace";
 
+    public static final String LABEL_SELECTION_XOR_MODE
+        = "PreferenceDialog.label.selection.xor.mode";
+
     public static final String LABEL_HOST
         = "PreferenceDialog.label.host";
 
@@ -175,9 +178,11 @@ public class PreferenceDialog extends JDialog
     public static final String PREFERENCE_KEY_SHOW_DEBUG_TRACE
         = "preference.key.show.debug.trace";
 
+    public static final String PREFERENCE_KEY_SELECTION_XOR_MODE
+        = "preference.key.selection.xor.mode";
+
     public static final String PREFERENCE_KEY_PROXY_HOST
         = "preference.key.proxy.host";
-
 
     public static final String PREFERENCE_KEY_CSS_MEDIA
         = "preference.key.cssmedia";
@@ -213,6 +218,8 @@ public class PreferenceDialog extends JDialog
     protected JCheckBox showDebugTrace;
 
     protected JCheckBox enableDoubleBuffering;
+
+    protected JCheckBox selectionXorMode;
 
     protected JTextField host, port;
 
@@ -272,6 +279,7 @@ public class PreferenceDialog extends JDialog
         autoAdjustWindow.setSelected(model.getBoolean(PREFERENCE_KEY_AUTO_ADJUST_WINDOW));
         enableDoubleBuffering.setSelected(model.getBoolean(PREFERENCE_KEY_ENABLE_DOUBLE_BUFFERING));
         showDebugTrace.setSelected(model.getBoolean(PREFERENCE_KEY_SHOW_DEBUG_TRACE));
+        selectionXorMode.setSelected(model.getBoolean(PREFERENCE_KEY_SELECTION_XOR_MODE));
 
         //
         // Initialize the proxy options
@@ -305,6 +313,12 @@ public class PreferenceDialog extends JDialog
                          enableDoubleBuffering.isSelected());
         model.setBoolean(PREFERENCE_KEY_SHOW_DEBUG_TRACE,
                          showDebugTrace.isSelected());
+
+        model.setBoolean(PREFERENCE_KEY_SELECTION_XOR_MODE,
+			 selectionXorMode.isSelected());
+	System.out.println("--------------------- "+selectionXorMode.isSelected());
+	System.out.println(">>>>>>>>>>>>>>>>>>>>>>"+model.getBoolean(PREFERENCE_KEY_SELECTION_XOR_MODE));
+
         model.setString(PREFERENCE_KEY_PROXY_HOST,
                         host.getText());
         model.setString(PREFERENCE_KEY_PROXY_PORT,
@@ -473,11 +487,14 @@ public class PreferenceDialog extends JDialog
             = new JCheckBox(Resources.getString(LABEL_ENABLE_DOUBLE_BUFFERING));
         showDebugTrace
             = new JCheckBox(Resources.getString(LABEL_SHOW_DEBUG_TRACE));
+        selectionXorMode
+            = new JCheckBox(Resources.getString(LABEL_SELECTION_XOR_MODE));
 
         p.add(showRendering,    0, 0, 1, 1, WEST, HORIZONTAL, 1, 0);
         p.add(autoAdjustWindow, 0, 1, 1, 1, WEST, HORIZONTAL, 1, 0);
         p.add(enableDoubleBuffering, 0, 2, 1, 1, WEST, HORIZONTAL, 1, 0);
         p.add(showDebugTrace,   0, 3, 1, 1, WEST, HORIZONTAL, 1, 0);
+        p.add(selectionXorMode,   0, 4, 1, 1, WEST, HORIZONTAL, 1, 0);
 
         p.setBorder(BorderFactory.createCompoundBorder
                     (BorderFactory.createTitledBorder
@@ -526,10 +543,11 @@ public class PreferenceDialog extends JDialog
     public static void main(String[] args){
         Map defaults = new Hashtable();
         defaults.put(PREFERENCE_KEY_LANGUAGES, "fr");
-        defaults.put(PREFERENCE_KEY_SHOW_RENDERING, new Boolean(true));
-        defaults.put(PREFERENCE_KEY_AUTO_ADJUST_WINDOW, new Boolean(true));
-        defaults.put(PREFERENCE_KEY_ENABLE_DOUBLE_BUFFERING, new Boolean(true));
-        defaults.put(PREFERENCE_KEY_SHOW_DEBUG_TRACE, new Boolean(true));
+        defaults.put(PREFERENCE_KEY_SHOW_RENDERING, Boolean.TRUE);
+        defaults.put(PREFERENCE_KEY_SELECTION_XOR_MODE, Boolean.FALSE);
+        defaults.put(PREFERENCE_KEY_AUTO_ADJUST_WINDOW, Boolean.TRUE);
+        defaults.put(PREFERENCE_KEY_ENABLE_DOUBLE_BUFFERING, Boolean.TRUE);
+        defaults.put(PREFERENCE_KEY_SHOW_DEBUG_TRACE, Boolean.TRUE);
         defaults.put(PREFERENCE_KEY_PROXY_HOST, "webcache.eng.sun.com");
         defaults.put(PREFERENCE_KEY_PROXY_PORT, "8080");
 

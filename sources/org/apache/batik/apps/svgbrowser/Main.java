@@ -133,6 +133,8 @@ public class Main implements Application {
                      Boolean.FALSE);
         defaults.put(PreferenceDialog.PREFERENCE_KEY_AUTO_ADJUST_WINDOW,
                      Boolean.TRUE);
+        defaults.put(PreferenceDialog.PREFERENCE_KEY_SELECTION_XOR_MODE,
+                     Boolean.FALSE);
         defaults.put(PreferenceDialog.PREFERENCE_KEY_ENABLE_DOUBLE_BUFFERING,
                      Boolean.TRUE);
         defaults.put(PreferenceDialog.PREFERENCE_KEY_SHOW_DEBUG_TRACE,
@@ -405,6 +407,10 @@ public class Main implements Application {
         boolean aa = preferenceManager.getBoolean
             (PreferenceDialog.PREFERENCE_KEY_AUTO_ADJUST_WINDOW);
         vf.setAutoAdjust(aa);
+        boolean dd = preferenceManager.getBoolean
+            (PreferenceDialog.PREFERENCE_KEY_SELECTION_XOR_MODE);
+	System.out.println("++++++++++++++++ "+dd);
+	vf.getJSVGCanvas().setSelectionOverlayXORMode(dd);
     }
 
     /**
