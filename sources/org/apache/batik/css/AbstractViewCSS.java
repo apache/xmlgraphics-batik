@@ -388,15 +388,7 @@ public abstract class AbstractViewCSS implements ViewCSS {
                 if (!ss.getDisabled() && mediaMatch(ss.getMedia())) {
                     Node on = ss.getOwnerNode();
                     URL baseURI = null;
-                    if (on == null) {
-                        if (e instanceof ElementWithBaseURI) {
-                            try {
-                                baseURI =
-                                    new URL(((ElementWithBaseURI)e).getBaseURI());
-                            } catch (MalformedURLException ex) {
-                            }
-                        }
-                    } else if (on instanceof ExtendedLinkStyle) {
+                    if (on instanceof ExtendedLinkStyle) {
                         try {
                             baseURI =
                                 new URL(((ExtendedLinkStyle)on).getStyleSheetURI());
