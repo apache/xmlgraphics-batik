@@ -553,6 +553,9 @@ public class JSVGCanvas
         gvtRoot = root;  // based on event notification
         JSVGCanvas.this.document = document;
 
+        if (userAgent.getEventDispatcher() != null) {
+            userAgent.getEventDispatcher().setRootNode(gvtRoot);
+        }
         if (root != null) {
             computeTransform();
             // <!> HACK maybe not the right place to dispatch
@@ -563,9 +566,6 @@ public class JSVGCanvas
             ((EventTarget)(document.getRootElement())).dispatchEvent(evt);
             ((EventTarget)document).addEventListener("DOMAttrModified",
                                        new MutationListener(bridgeContext), false);
-            if (userAgent.getEventDispatcher() != null) {
-                userAgent.getEventDispatcher().setRootNode(gvtRoot);
-            }
         }
         rotateAngle = 0;
         rotateCos = 1;
