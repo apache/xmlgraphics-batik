@@ -92,7 +92,7 @@ public class GlyphIterator {
         this.gv        = gv;
  
         this.idx       = 0;
-        this.chIdx     = -1;
+        this.chIdx     = 0;
         this.lineIdx   = 0;
         this.aciIdx    = aci.getBeginIndex();
         this.charCount = gv.getCharacterCount(idx, idx);
@@ -369,15 +369,6 @@ public class GlyphIterator {
         int   lineInfoIdx = idx+1;
         float lineInfoAdv = adv;
         float lineInfoAdj = adj;
-        float lineInfoChW;
-        int   hideIdx;
-        if (chIdx != -1) {
-            lineInfoChW = getCharWidth(chIdx);
-            hideIdx     = chIdx+1;
-        } else {
-            lineInfoChW = 0;
-            hideIdx     = 0;
-        }
 
         while (!done()) {
           adv=0;
@@ -395,19 +386,31 @@ public class GlyphIterator {
           lineInfoIdx = idx+1;
           lineInfoAdj += adj;
         }
+
         // hide trailing spaces if any
-        for (int i = hideIdx; i<lineInfoIdx; i++)
-          gv.setGlyphVisible(i, false);
+        float lineInfoChW;
+        int   hideIdx;
+        // System.out.println("ChIdx: " + chIdx);
+        if (chIdx != -1) {
+            lineInfoChW = getCharWidth(chIdx);
+            hideIdx     = chIdx+1;
+        } else {
+            lineInfoChW = 0;
+            hideIdx     = 0;
+        }
+        for (int i = hideIdx; i<lineInfoIdx; i++) {
+            gv.setGlyphVisible(i, false);
+        }
 
         maxAscent   = -Float.MAX_VALUE;
         maxDescent  = -Float.MAX_VALUE;
         maxFontSize = -Float.MAX_VALUE;
-
+        LineInfo ret = new LineInfo(loc, aci, gv, lineIdx, lineInfoIdx, 
+                            lineInfoAdj, lineInfoAdv, lineInfoChW, 
+                                    lineWidth, partial);
         lineIdx = idx;
 
-        return new LineInfo(loc, aci, gv, lineIdx, lineInfoIdx, 
-                            lineInfoAdj, lineInfoAdv, lineInfoChW, 
-                            lineWidth, partial);
+        return ret;
     }
 
     public boolean isPrinting() {

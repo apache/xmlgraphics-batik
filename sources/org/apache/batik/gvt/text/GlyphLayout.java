@@ -2209,6 +2209,8 @@ public class GlyphLayout implements TextSpanLayout {
                 if (!lInfoIter.hasNext())
                     break;
                 LineInfo li = (LineInfo)lInfoIter.next();
+                // System.out.println(li.toString());
+
                 lineEnd   = li.getEndIdx();
                 lineLoc   = li.getLocation();
                 lineAdv   = li.getAdvance();

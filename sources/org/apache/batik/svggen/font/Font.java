@@ -153,7 +153,7 @@ public class Font {
             raf.close();
 
             // Get references to commonly used tables
-            os2 = (Os2Table) getTable(Table.OS_2);
+            os2  = (Os2Table) getTable(Table.OS_2);
             cmap = (CmapTable) getTable(Table.cmap);
             glyf = (GlyfTable) getTable(Table.glyf);
             head = (HeadTable) getTable(Table.head);
@@ -165,7 +165,8 @@ public class Font {
             post = (PostTable) getTable(Table.post);
 
             // Initialize the tables that require it
-            hmtx.init(hhea.getNumberOfHMetrics(), maxp.getNumGlyphs() - hhea.getNumberOfHMetrics());
+            hmtx.init(hhea.getNumberOfHMetrics(), 
+                      maxp.getNumGlyphs() - hhea.getNumberOfHMetrics());
             loca.init(maxp.getNumGlyphs(), head.getIndexToLocFormat() == 0);
             glyf.init(maxp.getNumGlyphs(), loca);
         } catch (IOException e) {
