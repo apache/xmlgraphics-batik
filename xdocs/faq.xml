@@ -508,7 +508,7 @@
 	    <ul>
 	        <li>ECMAScript thanks to the <link href="http://www.mozilla.org/rhino">Mozilla Rhino</link> JavaScript engine included in the distribution.
 	        </li>
-	        <li>Python for which you need to download the <link href="http://www.jpython.org">JPython</link> engine.
+	        <li>Python for which you need to download the <link href="http://www.jython.org">Jython</link> engine.
 	        </li>
 	        <li>Tcl for which you need to download the <link href="http://dev.scriptics.com/software/java/">Jacl</link> engine.
 	        </li>
