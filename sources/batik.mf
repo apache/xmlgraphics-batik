@@ -19,7 +19,7 @@ Class-Path: lib/batik-ext.jar \
             batik-squiggle.jar \
             batik-rasterizer.jar \
             batik-pp.jar \
-            lib/xerces_2_3_0.jar \
+            lib/xerces_2_5_0.jar \
             lib/xml-apis.jar \
             lib/pdf-transcoder.jar \
             lib/js.jar
