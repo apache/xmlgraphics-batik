@@ -45,7 +45,7 @@ public class JaclInterpreter implements org.apache.batik.script.Interpreter {
             sbuffer.append(buffer, 0, val);
         }
         String str = sbuffer.toString();
-        return evaluate(str, 0);
+        return evaluate(str);
     }
 
     public Object evaluate(String script)
