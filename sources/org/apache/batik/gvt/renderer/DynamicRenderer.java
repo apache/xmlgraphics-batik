@@ -83,7 +83,7 @@ public class DynamicRenderer extends StaticRenderer {
      * user space coordinate system.  
      */
     // long lastFrame = -1;
-    public void repaint(List areas) throws InterruptedException {
+    public void repaint(List areas) {
         if (areas == null)
             return;
 

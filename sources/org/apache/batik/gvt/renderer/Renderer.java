@@ -41,7 +41,7 @@ public interface Renderer {
      * @param areas the region to be repainted, in the current user
      * space coordinate system.  
      */
-    public void repaint(Shape area) throws InterruptedException;
+    public void repaint(Shape area);
 
     /**
      * Repaints the associated GVT tree at least in areas under the
@@ -50,7 +50,7 @@ public interface Renderer {
      * @param areas a List of regions to be repainted, in the current
      * user space coordinate system.  
      */
-    public void repaint(List areas) throws InterruptedException;
+    public void repaint(List areas);
 
     /**
      * Sets the transform from the current user space (as defined by
