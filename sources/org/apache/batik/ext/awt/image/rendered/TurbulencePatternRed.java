@@ -54,7 +54,7 @@ import java.awt.image.ColorModel;
  * @author     <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @author     <a href="mailto:DeWeese@apache.org">Thomas DeWeese</a>
  * @version $Id$ */
-public final class TurbulencePatternRed8Bit extends AbstractRed {
+public final class TurbulencePatternRed extends AbstractRed {
     /**
      * Inner class to store tile stitching info.
      * #see
@@ -206,8 +206,8 @@ public final class TurbulencePatternRed8Bit extends AbstractRed {
     private static final double PerlinN = 0x1000;
     private static final int NP = 12 /* 2^PerlinN */;
     private static final int NM = 0xfff;
-    private final int latticeSelector[] = new int[BSize + BSize + 2];
-    private final double gradient[] = new double[BSize*8];
+    private final int latticeSelector[] = new int[BSize + 1];
+    private final double gradient[] = new double[(BSize+1)*8];
 
     public double getBaseFrequencyX(){
         return baseFrequencyX;
@@ -255,7 +255,7 @@ public final class TurbulencePatternRed8Bit extends AbstractRed {
 
     private void initLattice(int seed) {
         double u, v, s;
-        int i, j, k;
+        int i, j, k, s1, s2;
         seed = setupSeed(seed);
 
         for(k = 0; k < 4; k++){
@@ -277,10 +277,20 @@ public final class TurbulencePatternRed8Bit extends AbstractRed {
             j = (seed = random(seed)) % BSize;
             latticeSelector[i] = latticeSelector[j];
             latticeSelector[j] = k;
+            
+            // Now we apply the lattice to the gradient array, this
+            // lets us avoid one of the lattice lookups.
+            s1 = i<<3;
+            s2 = j<<3;
+            for (j=0; j<8; j++) {
+                s = gradient[s1+j];
+                gradient[s1+j] = gradient[s2+j];
+                gradient[s2+j] = s;
+            }
         }
-
-        for(i = 0; i < BSize + 2; i++)
-            latticeSelector[BSize + i] = latticeSelector[i];
+        latticeSelector[BSize] = latticeSelector[0];
+        for (j=0; j<8; j++)
+            gradient[(BSize*8)+j] = gradient[j];
     }
 
 
@@ -302,27 +312,26 @@ public final class TurbulencePatternRed8Bit extends AbstractRed {
      */
     private final void noise2(final double noise[], double vec0, double vec1) {
         int b0, b1;
-        final int i, j, b00, b10, b01, b11;
+        final int i, j;
         final double rx0, rx1, ry0, ry1, sx, sy;
 
         vec0 += PerlinN;
-        b0 = (int)vec0;
+        b0 = ((int)vec0)&BM;
 
-        i = latticeSelector[b0 & BM];
-        j = latticeSelector[(b0+1) & BM];
+        i = latticeSelector[b0];
+        j = latticeSelector[b0+1];
 
         rx0 = vec0 - (int)vec0;
         rx1 = rx0 - 1.0;
         sx  = s_curve(rx0);
 
         vec1 += PerlinN;
-        b0 = ((int)vec1) & BM;
-        b1 = (b0+1) & BM;
+        b0 = (int)vec1;
 
-        b00 = latticeSelector[i + b0]<<3;
-        b10 = latticeSelector[j + b0]<<3;
-        b01 = latticeSelector[i + b1]<<3;
-        b11 = latticeSelector[j + b1]<<3;
+        // The gradient array already has the latticeSelector applied
+        // to it, So we can avoid doing the last lookup.
+        b1 = ((j + b0)&BM)<<3;
+        b0 = ((i + b0)&BM)<<3;
 
         ry0 = vec1 - (int)vec1;
         ry1 = ry0 - 1.0;
@@ -334,38 +343,38 @@ public final class TurbulencePatternRed8Bit extends AbstractRed {
             noise[3] = 
                 lerp(sy, 
                      lerp(sx, 
-                          rx0*gradient[b00+6] + ry0*gradient[b00+7],
-                          rx1*gradient[b10+6] + ry0*gradient[b10+7]),
+                          rx0*gradient[b0+6] + ry0*gradient[b0+7],
+                          rx1*gradient[b1+6] + ry0*gradient[b1+7]),
                      lerp(sx, 
-                          rx0*gradient[b01+6] + ry1*gradient[b01+7],
-                          rx1*gradient[b11+6] + ry1*gradient[b11+7]));
+                          rx0*gradient[b0+8+6] + ry1*gradient[b0+8+7],
+                          rx1*gradient[b1+8+6] + ry1*gradient[b1+8+7]));
         case 3:
             noise[2] = 
                 lerp(sy, 
                      lerp(sx, 
-                          rx0*gradient[b00+4] + ry0*gradient[b00+5],
-                          rx1*gradient[b10+4] + ry0*gradient[b10+5]),
+                          rx0*gradient[b0+4] + ry0*gradient[b0+5],
+                          rx1*gradient[b1+4] + ry0*gradient[b1+5]),
                      lerp(sx, 
-                          rx0*gradient[b01+4] + ry1*gradient[b01+5],
-                          rx1*gradient[b11+4] + ry1*gradient[b11+5]));
+                          rx0*gradient[b0+8+4] + ry1*gradient[b0+8+5],
+                          rx1*gradient[b1+8+4] + ry1*gradient[b1+8+5]));
         case 2:
             noise[1] = 
                 lerp(sy, 
                      lerp(sx, 
-                          rx0*gradient[b00+2] + ry0*gradient[b00+3],
-                          rx1*gradient[b10+2] + ry0*gradient[b10+3]),
+                          rx0*gradient[b0+2] + ry0*gradient[b0+3],
+                          rx1*gradient[b1+2] + ry0*gradient[b1+3]),
                      lerp(sx, 
-                          rx0*gradient[b01+2] + ry1*gradient[b01+3],
-                          rx1*gradient[b11+2] + ry1*gradient[b11+3]));
+                          rx0*gradient[b0+8+2] + ry1*gradient[b0+8+3],
+                          rx1*gradient[b1+8+2] + ry1*gradient[b1+8+3]));
         case 1:
             noise[0] = 
                 lerp(sy, 
                      lerp(sx, 
-                          rx0*gradient[b00+0] + ry0*gradient[b00+1],
-                          rx1*gradient[b10+0] + ry0*gradient[b10+1]),
+                          rx0*gradient[b0+0] + ry0*gradient[b0+1],
+                          rx1*gradient[b1+0] + ry0*gradient[b1+1]),
                      lerp(sx, 
-                          rx0*gradient[b01+0] + ry1*gradient[b01+1],
-                          rx1*gradient[b11+0] + ry1*gradient[b11+1]));
+                          rx0*gradient[b0+8+0] + ry1*gradient[b0+8+1],
+                          rx1*gradient[b1+8+0] + ry1*gradient[b1+8+1]));
         }
     }
 
@@ -418,14 +427,14 @@ public final class TurbulencePatternRed8Bit extends AbstractRed {
                 b1 -= stitchInfo.height;
             }
         }
-
-        b0 &= BM;
-        b1 &= BM;
-
-        b00 = latticeSelector[i + b0]<<3;
-        b10 = latticeSelector[j + b0]<<3;
-        b01 = latticeSelector[i + b1]<<3;
-        b11 = latticeSelector[j + b1]<<3;
+        // In this case we still need to keep all four indexes since
+        // we may have split y across the stitch boundry, in which
+        // case b0 and b1 do not have a fixed offset from one another.
+        // We still avoid a latticeSelector lookup for each index though...
+        b00 = ((i + b0)&BM)<<3;
+        b10 = ((j + b0)&BM)<<3;
+        b01 = ((i + b1)&BM)<<3;
+        b11 = ((j + b1)&BM)<<3;
 
         ry0 = t - (int)t;
         ry1 = ry0 - 1.0;
@@ -485,8 +494,7 @@ public final class TurbulencePatternRed8Bit extends AbstractRed {
                                    double pointY,
                                    final double fSum[]) {
         double n, ratio = 255;
-        int b0, b1, nOctave;
-        int i, j, b00, b10, b01, b11;
+        int i, j, b0, b1, nOctave;
         double px, py, rx0, rx1, ry0, ry1, sx, sy;
 
         pointX *= baseFrequencyX;
@@ -495,10 +503,10 @@ public final class TurbulencePatternRed8Bit extends AbstractRed {
 
         for (nOctave = numOctaves; nOctave > 0; nOctave--){
             px = pointX+PerlinN;
-            b0 = (int)px;
 
-            i = latticeSelector[b0 & BM];
-            j = latticeSelector[(b0+1) & BM];
+            b0 = ((int)px)&BM;
+            i = latticeSelector[b0 ];
+            j = latticeSelector[b0+1];
 
             rx0 = px - (int)px;
             rx1 = rx0 - 1.0;
@@ -508,10 +516,8 @@ public final class TurbulencePatternRed8Bit extends AbstractRed {
             b0 = ((int)py) & BM;
             b1 = (b0+1) & BM;
 
-            b00 = (latticeSelector[i + b0]&BM)<<3;
-            b10 = (latticeSelector[j + b0]&BM)<<3;
-            b01 = (latticeSelector[i + b1]&BM)<<3;
-            b11 = (latticeSelector[j + b1]&BM)<<3;
+            b1 = ((j + b0)&BM)<<3;
+            b0 = ((i + b0)&BM)<<3;
 
             ry0 = py - (int)py;
             ry1 = ry0 - 1.0;
@@ -519,44 +525,44 @@ public final class TurbulencePatternRed8Bit extends AbstractRed {
 
             n = lerp(sy, 
                      lerp(sx, 
-                          rx0*gradient[b00+0] + ry0*gradient[b00+1],
-                          rx1*gradient[b10+0] + ry0*gradient[b10+1]),
+                          rx0*gradient[b0+0] + ry0*gradient[b0+1],
+                          rx1*gradient[b1+0] + ry0*gradient[b1+1]),
                      lerp(sx, 
-                          rx0*gradient[b01+0] + ry1*gradient[b01+1],
-                          rx1*gradient[b11+0] + ry1*gradient[b11+1]));
+                          rx0*gradient[b0+8+0] + ry1*gradient[b0+8+1],
+                          rx1*gradient[b1+8+0] + ry1*gradient[b1+8+1]));
 
             if (n<0) fSum[0] -= (n * ratio);
             else     fSum[0] += (n * ratio);
 
             n = lerp(sy, 
                      lerp(sx, 
-                          rx0*gradient[b00+2] + ry0*gradient[b00+3],
-                          rx1*gradient[b10+2] + ry0*gradient[b10+3]),
+                          rx0*gradient[b0+2] + ry0*gradient[b0+3],
+                          rx1*gradient[b1+2] + ry0*gradient[b1+3]),
                      lerp(sx, 
-                          rx0*gradient[b01+2] + ry1*gradient[b01+3],
-                          rx1*gradient[b11+2] + ry1*gradient[b11+3]));
+                          rx0*gradient[b0+8+2] + ry1*gradient[b0+8+3],
+                          rx1*gradient[b1+8+2] + ry1*gradient[b1+8+3]));
 
             if (n<0) fSum[1] -= (n * ratio);
             else     fSum[1] += (n * ratio);
 
             n = lerp(sy, 
                      lerp(sx, 
-                          rx0*gradient[b00+4] + ry0*gradient[b00+5],
-                          rx1*gradient[b10+4] + ry0*gradient[b10+5]),
+                          rx0*gradient[b0+4] + ry0*gradient[b0+5],
+                          rx1*gradient[b1+4] + ry0*gradient[b1+5]),
                      lerp(sx, 
-                          rx0*gradient[b01+4] + ry1*gradient[b01+5],
-                          rx1*gradient[b11+4] + ry1*gradient[b11+5]));
+                          rx0*gradient[b0+8+4] + ry1*gradient[b0+8+5],
+                          rx1*gradient[b1+8+4] + ry1*gradient[b1+8+5]));
 
             if (n<0) fSum[2] -= (n * ratio);
             else     fSum[2] += (n * ratio);
 
             n = lerp(sy, 
                      lerp(sx, 
-                          rx0*gradient[b00+6] + ry0*gradient[b00+7],
-                          rx1*gradient[b10+6] + ry0*gradient[b10+7]),
+                          rx0*gradient[b0+6] + ry0*gradient[b0+7],
+                          rx1*gradient[b1+6] + ry0*gradient[b1+7]),
                      lerp(sx, 
-                          rx0*gradient[b01+6] + ry1*gradient[b01+7],
-                          rx1*gradient[b11+6] + ry1*gradient[b11+7]));
+                          rx0*gradient[b0+8+6] + ry1*gradient[b0+8+7],
+                          rx1*gradient[b1+8+6] + ry1*gradient[b1+8+7]));
             if (n<0) fSum[3] -= (n * ratio);
             else     fSum[3] += (n * ratio);
 
@@ -820,7 +826,7 @@ public final class TurbulencePatternRed8Bit extends AbstractRed {
     private final int turbulenceFractal_4( double pointX, 
                                            double pointY,
                                            final double fSum[]) {
-        int b0, b1, nOctave, i, j, b00, b10, b01, b11;
+        int b0, b1, nOctave, i, j;
         double px, py, rx0, rx1, ry0, ry1, sx, sy, ratio = 127.5;
 
         pointX *= baseFrequencyX;
@@ -829,10 +835,10 @@ public final class TurbulencePatternRed8Bit extends AbstractRed {
 
         for (nOctave = numOctaves; nOctave > 0; nOctave--){
             px = pointX+PerlinN;
-            b0 = (int)px;
 
-            i = latticeSelector[b0 & BM];
-            j = latticeSelector[(b0+1) & BM];
+            b0 = ((int)px)&BM;
+            i = latticeSelector[b0 ];
+            j = latticeSelector[b0+1];
 
             rx0 = px - (int)px;
             rx1 = rx0 - 1.0;
@@ -842,10 +848,8 @@ public final class TurbulencePatternRed8Bit extends AbstractRed {
             b0 = ((int)py) & BM;
             b1 = (b0+1) & BM;
 
-            b00 = (latticeSelector[i + b0]&BM)<<3;
-            b10 = (latticeSelector[j + b0]&BM)<<3;
-            b01 = (latticeSelector[i + b1]&BM)<<3;
-            b11 = (latticeSelector[j + b1]&BM)<<3;
+            b1 = ((j + b0)&BM)<<3;
+            b0 = ((i + b0)&BM)<<3;
 
             ry0 = py - (int)py;
             ry1 = ry0 - 1.0;
@@ -853,35 +857,35 @@ public final class TurbulencePatternRed8Bit extends AbstractRed {
 
             fSum[0] += lerp(sy, 
                      lerp(sx, 
-                          rx0*gradient[b00+0] + ry0*gradient[b00+1],
-                          rx1*gradient[b10+0] + ry0*gradient[b10+1]),
+                          rx0*gradient[b0+0] + ry0*gradient[b0+1],
+                          rx1*gradient[b1+0] + ry0*gradient[b1+1]),
                      lerp(sx, 
-                          rx0*gradient[b01+0] + ry1*gradient[b01+1],
-                          rx1*gradient[b11+0] + ry1*gradient[b11+1]))*ratio;
+                          rx0*gradient[b0+8+0] + ry1*gradient[b0+8+1],
+                          rx1*gradient[b1+8+0] + ry1*gradient[b1+8+1]))*ratio;
 
             fSum[1] += lerp(sy, 
                      lerp(sx, 
-                          rx0*gradient[b00+2] + ry0*gradient[b00+3],
-                          rx1*gradient[b10+2] + ry0*gradient[b10+3]),
+                          rx0*gradient[b0+2] + ry0*gradient[b0+3],
+                          rx1*gradient[b1+2] + ry0*gradient[b1+3]),
                      lerp(sx, 
-                          rx0*gradient[b01+2] + ry1*gradient[b01+3],
-                          rx1*gradient[b11+2] + ry1*gradient[b11+3]))*ratio;
+                          rx0*gradient[b0+8+2] + ry1*gradient[b0+8+3],
+                          rx1*gradient[b1+8+2] + ry1*gradient[b1+8+3]))*ratio;
 
             fSum[2] += lerp(sy, 
                      lerp(sx, 
-                          rx0*gradient[b00+4] + ry0*gradient[b00+5],
-                          rx1*gradient[b10+4] + ry0*gradient[b10+5]),
+                          rx0*gradient[b0+4] + ry0*gradient[b0+5],
+                          rx1*gradient[b1+4] + ry0*gradient[b1+5]),
                      lerp(sx, 
-                          rx0*gradient[b01+4] + ry1*gradient[b01+5],
-                          rx1*gradient[b11+4] + ry1*gradient[b11+5]))*ratio;
+                          rx0*gradient[b0+8+4] + ry1*gradient[b0+8+5],
+                          rx1*gradient[b1+8+4] + ry1*gradient[b1+8+5]))*ratio;
 
             fSum[3] += lerp(sy, 
                      lerp(sx, 
-                          rx0*gradient[b00+6] + ry0*gradient[b00+7],
-                          rx1*gradient[b10+6] + ry0*gradient[b10+7]),
+                          rx0*gradient[b0+6] + ry0*gradient[b0+7],
+                          rx1*gradient[b1+6] + ry0*gradient[b1+7]),
                      lerp(sx, 
-                          rx0*gradient[b01+6] + ry1*gradient[b01+7],
-                          rx1*gradient[b11+6] + ry1*gradient[b11+7]))*ratio;
+                          rx0*gradient[b0+8+6] + ry1*gradient[b0+8+7],
+                          rx1*gradient[b1+8+6] + ry1*gradient[b1+8+7]))*ratio;
 
             ratio  *= .5;
             pointX *= 2;
@@ -1204,16 +1208,16 @@ public final class TurbulencePatternRed8Bit extends AbstractRed {
      * @param cs The Colorspace to output. 
      * @param alpha True if the data should have an alpha channel.
      */
-    public TurbulencePatternRed8Bit(double baseFrequencyX, 
-                                    double baseFrequencyY, 
-                                    int     numOctaves,
-                                    int     seed, 
-                                    boolean isFractalNoise,
-                                    Rectangle2D tile,
-                                    AffineTransform txf,
-                                    Rectangle       devRect,
-                                    ColorSpace      cs,
-                                    boolean         alpha) {
+    public TurbulencePatternRed(double baseFrequencyX, 
+                                double baseFrequencyY, 
+                                int     numOctaves,
+                                int     seed, 
+                                boolean isFractalNoise,
+                                Rectangle2D tile,
+                                AffineTransform txf,
+                                Rectangle       devRect,
+                                ColorSpace      cs,
+                                boolean         alpha) {
         this.baseFrequencyX = baseFrequencyX;
         this.baseFrequencyY = baseFrequencyY;
         this.seed = seed;

@@ -214,18 +214,12 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
      * This method compares the two input variables according
      * to the doDilation boolean variable.
      */
-    static final boolean isBetter (final int v1, final int v2, final boolean doDilation){
-        if (doDilation) {
-            if (v1 >= v2) {
-                return true;
-            }
-        }
-        else {
-            if (v1 <= v2) {
-                return true;
-            }
-        }
-        return false;
+    static final boolean isBetter (final int v1, final int v2, final boolean doDilation) {
+        if (v1 > v2)
+            return doDilation;
+        if (v1 < v2)
+            return !doDilation;
+        return true;
     }
 
     /*
@@ -302,7 +296,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
                     r1 = currentPixel&0xff0000;
                     g1 = currentPixel&0xff00;
                     b1 = currentPixel&0xff;
-
+                    
                     if (isBetter(a1, a, doDilation)){
                         a = a1;
                     }
@@ -318,7 +312,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
                 }
                 // all the element share the same max/min value
                 for (int k=0; k<w; k++){
-                    destPixels[dp++] = (a << 24) | (r & 0xff0000) | (g & 0xff00) | (b & 0xff);
+                    destPixels[dp++] = (a << 24) | r | g | b;
                 }
             }
         }
@@ -382,7 +376,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
                         maxIndexB = k;
                     }
                 }
-                destPixels[dp++] = (a << 24) | (r & 0xff0000) | (g & 0xff00) | (b & 0xff);
+                destPixels[dp++] = (a << 24) | r | g | b;
 
                 //
                 // 1 <= j <= w-radiusX-1 : The left margin of each row.
@@ -435,8 +429,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
                     // new max/min value according to each channel's
                     // max/min vlue
 
-                    destPixels[dp++] = (a << 24) | (r & 0xff0000) | (g & 0xff00) | (b & 0xff);
-
+                    destPixels[dp++] = (a << 24) | r | g | b;
                 }
                 // Now is the inner body of the row:
                 // all elements in this segment share the same max/min value
@@ -512,7 +505,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
                     // discard the leftmost element
                     bufferHead++;
 
-                    destPixels[dp++] = (a << 24) | (r & 0xff0000) | (g & 0xff00) | (b & 0xff);
+                    destPixels[dp++] = (a << 24) | r | g | b;
                 }
                 // return to the first pixel of the next row
             }
@@ -596,7 +589,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
                     }
                 }
                 for (int k=0; k<h; k++){
-                    destPixels[dp] = (a << 24) | (r & 0xff0000) | (g & 0xff00) | (b & 0xff);
+                    destPixels[dp] = (a << 24) | r | g | b;
                     dp += dstScanStride;
                 }
                 // return to the first pixel of the next column
@@ -665,7 +658,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
                     }
                 }
                 // fill the first pixel of each column
-                destPixels[dp] = (a << 24) | (r & 0xff0000) | (g & 0xff00) | (b & 0xff);
+                destPixels[dp] = (a << 24) | r | g | b;
                 dp += dstScanStride;
 
                 //
@@ -719,7 +712,8 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
                     // new max/min value according to each channel's
                     // max/min vlue
 
-                    destPixels[dp] = (a << 24) | (r & 0xff0000) | (g & 0xff00) | (b & 0xff);                                 dp += dstScanStride;
+                    destPixels[dp] = (a << 24) | r | g | b;
+                    dp += dstScanStride;
                 }
                 // Now is the inner body of the column
                 // when radiusY < h <= 2*radiusY
@@ -795,7 +789,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
                     // discard the leftmost element
                     bufferHead++;
 
-                    destPixels[dp] = (a << 24) | (r & 0xff0000) | (g & 0xff00) | (b & 0xff);
+                    destPixels[dp] = (a << 24) | r | g | b;
                     dp += dstScanStride;
                 }
                 // return to the first pixel of the next column
@@ -956,7 +950,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
                         maxIndexB = k;
                     }
                 }
-                destPixels[dp++] = (a << 24) | (r & 0xff0000) | (g & 0xff00) | (b & 0xff);
+                destPixels[dp++] = (a << 24) | r | g | b;
 
                 //
                 // 1 <= j <= radiusX : The left margin of each row.
@@ -1009,7 +1003,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
                     // new max/min value according to each channel's
                     // max/min vlue
 
-                    destPixels[dp++] = (a << 24) | (r & 0xff0000) | (g & 0xff00) | (b & 0xff);
+                    destPixels[dp++] = (a << 24) | r | g | b;
                 }
 
                 //
@@ -1121,7 +1115,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
                             maxIndexB = bufferHead;
                         }
                     }
-                    destPixels[dp++] = (a << 24) | (r & 0xff0000) | (g & 0xff00) | (b & 0xff);
+                    destPixels[dp++] = (a << 24) | r | g | b;
                     bufferHead = (bufferHead+1)%rangeX;
                 }
 
@@ -1190,7 +1184,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
                             hd = (hd+1)%rangeX;
                         }
                     }
-                    destPixels[dp++] = (a << 24) | (r & 0xff0000) | (g & 0xff00) | (b & 0xff);
+                    destPixels[dp++] = (a << 24) | r | g | b;
                     bufferHead = (bufferHead+1)%rangeX;
                     // we throw another element
                     count--;
@@ -1272,7 +1266,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
                         maxIndexB = k;
                     }
                 }
-                destPixels[dp] = (a << 24) | (r & 0xff0000) | (g & 0xff00) | (b & 0xff);
+                destPixels[dp] = (a << 24) | r | g | b;
                 // go to the next element in the column.
                 dp += dstScanStride;
 
@@ -1318,7 +1312,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
                         b = b1;
                         maxIndexB = maxI;
                     }
-                    destPixels[dp] = (a << 24) | (r & 0xff0000) | (g & 0xff00) | (b & 0xff);
+                    destPixels[dp] = (a << 24) | r | g | b;
                     dp += dstScanStride;
                 }
 
@@ -1430,7 +1424,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
                             maxIndexB = bufferHead;
                         }
                     }
-                    destPixels[dp] = (a << 24) | (r & 0xff0000) | (g & 0xff00) | (b & 0xff);
+                    destPixels[dp] = (a << 24) | r | g | b;
                     dp += dstScanStride;
                     bufferHead = (bufferHead+1)%rangeY;
                 }
@@ -1497,7 +1491,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
                             hd = (hd+1)%rangeY;
                         }
                     }
-                    destPixels[dp] = (a << 24) | (r & 0xff0000) | (g & 0xff00) | (b & 0xff);
+                    destPixels[dp] = (a << 24) | r | g | b;
                     dp += dstScanStride;
                     bufferHead = (bufferHead+1)%rangeY;
                     // we throw out this useless element

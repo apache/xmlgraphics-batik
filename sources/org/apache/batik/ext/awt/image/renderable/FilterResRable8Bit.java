@@ -95,6 +95,7 @@ public class FilterResRable8Bit extends AbstractRable
         if(filterResolutionX < 0){
             throw new IllegalArgumentException();
         }
+        touch();
         this.filterResolutionX = filterResolutionX;
     }
     
@@ -112,6 +113,7 @@ public class FilterResRable8Bit extends AbstractRable
      * the rendered images is computed to preserve the image's aspect ratio
      */
     public void setFilterResolutionY(int filterResolutionY){
+        touch();
         this.filterResolutionY = filterResolutionY;
     }
     

@@ -70,6 +70,7 @@ public class PadRable8Bit extends AbstractRable
      * @param rect the new rectangle to use for pad.
      */
     public void setPadRect(Rectangle2D rect) {
+        touch();
         this.padRect = rect;
     }
 

@@ -37,7 +37,7 @@ import org.apache.batik.ext.awt.image.ARGBChannel;
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
-public class DisplacementMapRed8Bit extends AbstractRed {
+public class DisplacementMapRed extends AbstractRed {
     // Use these to control timing and Nearest Neighbot vs. Bilinear Interp.
     static private final boolean TIME   = false;
     static private final boolean USE_NN = false;
@@ -125,12 +125,12 @@ public class DisplacementMapRed8Bit extends AbstractRed {
      * @param off defines the input bufferedImage whose component
      *            values will be used in displacment operation 
      */
-    public DisplacementMapRed8Bit(CachableRed image, 
-                                  CachableRed offsets,
-                                  ARGBChannel xChannel, 
-                                  ARGBChannel yChannel, 
-                                  float scaleX, float scaleY,
-                                  RenderingHints rh) {
+    public DisplacementMapRed(CachableRed image, 
+                              CachableRed offsets,
+                              ARGBChannel xChannel, 
+                              ARGBChannel yChannel, 
+                              float scaleX, float scaleY,
+                              RenderingHints rh) {
         
         if(xChannel == null){
             throw new IllegalArgumentException("Must provide xChannel");
