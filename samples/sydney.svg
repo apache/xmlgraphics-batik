@@ -1,0 +1,175 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" 
+  "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<svg width="655" height="600" viewBox="0 0 655 600"
+     xmlns="http://www.w3.org/2000/svg" 
+     xmlns:xlink="http://www.w3.org/1999/xlink" >
+
+<script type="text/ecmascript">
+<![CDATA[
+var svgns   = "http://www.w3.org/2000/svg";
+var xlinkns = "http://www.w3.org/1999/xlink";
+
+var dragNode;
+var scaleNode;
+var scaleTgt;
+var dx;
+var dy;
+var imgGroup = document.getElementById("imgGroup")
+var filter = imgGroup.getAttribute("style");
+var dragged=false;
+
+function dragOn(evt) {
+  dragNode = evt.target;
+  var currX = parseFloat(dragNode.getAttribute("x"));
+  var currY = parseFloat(dragNode.getAttribute("y"));
+  dx = evt.getClientX()-currX;
+  dy = evt.getClientY()-currY;
+  dragged=false;
+}
+
+function scaleOn(evt) {
+  scaleNode = scaleTgt;
+  var cW = parseFloat(scaleNode.getAttribute("width"));
+  var cH = parseFloat(scaleNode.getAttribute("height"));
+  dx = evt.getClientX()-cW;
+  dy = evt.getClientY()-cH;
+  dragged=false;
+}
+
+function dragScaleOff() {
+  if (dragged) 
+     imgGroup.setAttribute("style",filter);
+
+  if (dragNode != null) {
+    if (dragNode != imgGroup.lastChild) {
+       imgGroup.appendChild(dragNode);
+    }
+    dragNode = null;
+  }
+  if (scaleNode != null) {
+    if (scaleNode != imgGroup.lastChild) {
+       imgGroup.appendChild(scaleNode);
+    }
+    scaleNode = null;
+  }
+}
+
+function dragScaleImgBg(evt) {
+  if ((dragNode == null) && (scaleNode == null)) {
+	hideOverlay();
+	return;
+  }
+  dragScaleImg(evt);
+}
+
+function dragScaleImg(evt) {
+  if ((dragNode == null) && (scaleNode == null))
+    return;
+
+  dragged = true;
+  imgGroup.setAttribute("style","");
+  if (dragNode != null) {
+    if (dragNode != imgGroup.lastChild) 
+       imgGroup.appendChild(dragNode);
+    dragNode.setAttribute("x",""+(evt.getClientX()-dx));
+    dragNode.setAttribute("y",""+(evt.getClientY()-dy));
+    updateOverlay(dragNode);
+  }
+  if (scaleNode != null) {
+    if (scaleNode != imgGroup.lastChild) 
+       imgGroup.appendChild(scaleNode);
+    var cW = parseFloat(scaleNode.getAttribute("width"));
+    var cH = parseFloat(scaleNode.getAttribute("height"));
+
+    var ar = cW/cH; 
+    var nW = evt.getClientX()-dx;
+    var nH = evt.getClientY()-dy;
+
+    if (nW/nH < ar) {
+       nW = ar*nH;
+    } else {
+       nH = nW/ar;
+    }
+
+    scaleNode.setAttribute("width", ""+nW);
+    scaleNode.setAttribute("height",""+nH);
+    updateOverlay(scaleNode);
+  }
+}
+
+function updateOverlay(tgt) {
+  var cX = parseFloat(tgt.getAttribute("x"));
+  var cY = parseFloat(tgt.getAttribute("y"));
+  var cW = parseFloat(tgt.getAttribute("width"));
+  var cH = parseFloat(tgt.getAttribute("height"));
+
+  var over = document.getElementById("overlay");
+  over.setAttribute("transform","translate("+(cX+cW-1)+","+(cY+cH-1)+")");
+  scaleTgt = tgt;
+}
+
+function showOverlay(evt) {
+  if ((dragNode != null) || (scaleNode != null))
+     return;
+  var tgt = evt.target;
+  updateOverlay(tgt);
+  var over = document.getElementById("overlay");
+  over.setAttribute("visibility","visible");
+}
+
+function hideOverlay() {
+  if ((dragNode != null) || (scaleNode != null))
+     return;
+  var over = document.getElementById("overlay");
+  over.setAttribute("visibility","hidden");
+}
+
+]]></script>
+
+   <filter id="merge"  filterUnits="objectBoundingBox" >
+       <feMorphology operator="dilate" radius="10" in="SourceAlpha" />
+       <feGaussianBlur stdDeviation="4" /> 
+       <feOffset dx="3" dy="3"/>
+       <feComponentTransfer result="shadow">
+          <feFuncA type="linear" slope=".6" intercept="0" />
+       </feComponentTransfer>
+       <feComposite operator="over" in="SourceGraphic" in2="shadow"/>
+   </filter>
+
+   <rect fill="#88A" x="0%" y="0%" width="100%" height="100%"/>
+   <text x="302" y="47" font-size="24" fill="#448"
+        >Click and drag to move images</text>
+   <text x="300" y="45" font-size="24" fill="white"
+        >Click and drag to move images</text>
+   <rect fill="none" x="0%" y="0%" width="100%" height="100%"
+         pointer-events="fill"
+         onmousedown="dragScaleOff()"
+         onmouseup="dragScaleOff()"
+         onmousemove="dragScaleImgBg(evt)"/>
+
+   <g id="imgGroup" style="filter:url(#merge)" 
+	     onmousedown="dragOn(evt)"
+	     onmouseup="dragScaleOff()"
+	     onmousemove="dragScaleImg(evt)"
+             onmouseover="showOverlay(evt)">
+
+      <image x="25" y="315" width="360" height="240"
+             xlink:href="tests/resources/images/operaSteps.jpg"/>
+   
+      <image x="50" y="40" width="200" height="300"
+             xlink:href="tests/resources/images/operaWalk.jpg"/>
+   
+      <image x="270" y="200" width="360" height="240"
+             xlink:href="tests/resources/images/operaBridge.jpg"/>
+   </g>
+
+   <g id="overlay" visibility="hidden" 
+      onmousedown="scaleOn(evt)"
+      onmouseup="dragScaleOff()"
+      onmousemove="dragScaleImg(evt)">
+      <path fill="darkgrey" stroke="white"
+	    d="M0,0 h-20 l20,-20 z M-12,-3 l9-9 z M-6,-3 l3-3z"/>
+   </g>
+
+</svg>

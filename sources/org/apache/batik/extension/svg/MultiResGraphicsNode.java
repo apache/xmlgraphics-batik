@@ -47,46 +47,36 @@ public class MultiResGraphicsNode
     extends AbstractGraphicsNode implements SVGConstants {
 
     SoftReference [] srcs;
-    ParsedURL     [] srcURLs;
+    Element       [] srcElems;
     Dimension     [] minSz;
     Dimension     [] maxSz;
     Rectangle2D      bounds;
 
-    UserAgent      userAgent;
-    DocumentLoader loader;
     BridgeContext  ctx;
 
     Element multiImgElem;
 
-    /**
-     * The error code when a required attribute is missing.
-     * {0} = the name of the attribute
-     */
-    public static final String ERR_ATTRIBUTE_MISSING
-        = "attribute.missing";
-
-
     public MultiResGraphicsNode(Element multiImgElem,
                                 Rectangle2D  bounds,
-                                ParsedURL [] srcURLs,
+                                Element   [] srcElems,
                                 Dimension [] minSz,
-                                Dimension [] maxSz) {
-        this.multiImgElem = multiImgElem;
-        this.srcURLs     = new ParsedURL[srcURLs.length];
-        this.minSz       = new Dimension[srcURLs.length];
-        this.maxSz       = new Dimension[srcURLs.length];
+                                Dimension [] maxSz,
+                                BridgeContext ctx) {
 
-        for (int i=0; i<srcURLs.length; i++) {
-            this.srcURLs[i] = srcURLs[i];
-            this.minSz[i]   = minSz[i];
-            this.maxSz[i]   = maxSz[i];
+        this.multiImgElem = multiImgElem;
+        this.srcElems     = new Element  [srcElems.length];
+        this.minSz        = new Dimension[srcElems.length];
+        this.maxSz        = new Dimension[srcElems.length];
+        this.ctx          = ctx;
+
+        for (int i=0; i<srcElems.length; i++) {
+            this.srcElems[i] = srcElems[i];
+            this.minSz[i]    = minSz[i];
+            this.maxSz[i]    = maxSz[i];
         }
 
-        this.srcs = new SoftReference[srcURLs.length];
+        this.srcs = new SoftReference[srcElems.length];
         this.bounds = bounds;
-        userAgent = new UserAgentAdapter();
-        loader    = new DocumentLoader(userAgent);
-        ctx       = new BridgeContext(userAgent, loader);
     }
 
     /**
@@ -95,12 +85,13 @@ public class MultiResGraphicsNode
      * @param g2d the Graphics2D to use
      */
     public void primitivePaint(Graphics2D g2d) {
-        // System.err.println("PrimPaint: " + this);
         // get the current affine transform
         AffineTransform at = g2d.getTransform();
 
-        double scx = Math.sqrt(at.getShearX()*at.getShearX()+
+        double scx = Math.sqrt(at.getShearY()*at.getShearY()+
                                at.getScaleX()*at.getScaleX());
+        double scy = Math.sqrt(at.getShearX()*at.getShearX()+
+                               at.getScaleY()*at.getScaleY());
 
         GraphicsNode gn = null;
         int idx =-1;
@@ -133,7 +124,43 @@ public class MultiResGraphicsNode
 
         if (gn == null) return;
 
-        // Rectangle2D gnBounds = gn.getBounds();
+        // This makes sure that the image 'pushes out' to it's pixel
+        // bounderies.
+        Rectangle2D gnBounds = gn.getBounds();
+        double gnDevW = gnBounds.getWidth()*scx;
+        double gnDevH = gnBounds.getHeight()*scy;
+        double gnDevX = gnBounds.getX()*scx;
+        double gnDevY = gnBounds.getY()*scy;
+        double gnDevX0, gnDevX1, gnDevY0, gnDevY1;
+        if (gnDevW < 0) {
+            gnDevX0 = gnDevX+gnDevW;
+            gnDevX1 = gnDevX;
+        } else {
+            gnDevX0 = gnDevX;
+            gnDevX1 = gnDevX+gnDevW;
+        }
+        if (gnDevH < 0) {
+            gnDevY0 = gnDevY+gnDevH;
+            gnDevY1 = gnDevY;
+        } else {
+            gnDevY0 = gnDevY;
+            gnDevY1 = gnDevY+gnDevH;
+        }
+        // This calculate the width/height in pixels given 'worst
+        // case' assessment.
+        gnDevW = (int)(Math.ceil(gnDevX1)-Math.floor(gnDevX0));
+        gnDevH = (int)(Math.ceil(gnDevY1)-Math.floor(gnDevY0));
+        scx = (gnDevW/gnBounds.getWidth())/scx;
+        scy = (gnDevH/gnBounds.getHeight())/scy;
+
+        // This scales things up slightly so our edges fall on device
+        // pixel boundries.
+        AffineTransform nat = g2d.getTransform();
+        nat = new AffineTransform(nat.getScaleX()*scx, nat.getShearY()*scx,
+                                 nat.getShearX()*scy, nat.getScaleY()*scy,
+                                 nat.getTranslateX(), nat.getTranslateY());
+        g2d.setTransform(nat);
+
         // double sx = bounds.getWidth()/sizes[idx].getWidth();
         // double sy = bounds.getHeight()/sizes[idx].getHeight();
         // System.err.println("Scale: [" + sx + ", " + sy + "]");
@@ -199,170 +226,14 @@ public class MultiResGraphicsNode
         }
         
         try {
-            SVGDocument svgDoc = (SVGDocument)loader.loadDocument
-                (srcURLs[idx].toString());
-
+            GVTBuilder builder = ctx.getGVTBuilder();
             GraphicsNode gn;
-            gn = createSVGImageNode(ctx, multiImgElem, 
-                                    bounds, svgDoc);
+            gn = builder.build(ctx, srcElems[idx]);
             srcs[idx] = new SoftReference(gn);
             return gn;
-        } catch (Exception ex) { /* ex.printStackTrace(); */ }
-
-        try {
-            GraphicsNode gn;
-            gn = createRasterImageNode(ctx, multiImgElem, 
-                                       bounds, srcURLs[idx]);
-            srcs[idx] = new SoftReference(gn);
-            return gn;
-        } catch (Exception ex) { /* ex.printStackTrace(); */ }
+        } catch (Exception ex) { ex.printStackTrace();  }
 
         return null;
-    }
-
-
-    /**
-     * Returns a GraphicsNode that represents an raster image in JPEG or PNG
-     * format.
-     *
-     * @param ctx the bridge context
-     * @param e the image element
-     * @param uriStr the uri of the image
-     */
-    protected static GraphicsNode createRasterImageNode(BridgeContext ctx,
-                                                        Element e,
-                                                        Rectangle2D bounds,
-                                                        ParsedURL     purl) {
-
-        RasterImageNode node = new RasterImageNode();
-
-        ImageTagRegistry reg = ImageTagRegistry.getRegistry();
-        Filter           img = reg.readURL(purl);
-        Object           obj = img.getProperty
-            (SVGBrokenLinkProvider.SVG_BROKEN_LINK_DOCUMENT_PROPERTY);
-        if ((obj != null) && (obj instanceof SVGDocument)) {
-            // Ok so we are dealing with a broken link.
-            return createSVGImageNode(ctx, e, bounds, (SVGDocument)obj);
-        }
-        node.setImage(img);
-        Rectangle2D imgBounds = img.getBounds2D();
-
-        // create the implicit viewBox for the raster image. The viewBox for a
-        // raster image is the size of the image
-        float [] vb = new float[4];
-        vb[0] = 0; // x
-        vb[1] = 0; // y
-        vb[2] = (float)imgBounds.getWidth(); // width
-        vb[3] = (float)imgBounds.getHeight(); // height
-
-        // System.err.println("Bounds: " + bounds);
-        // System.err.println("ImgB: " + imgBounds);
-        // handles the 'preserveAspectRatio', 'overflow' and 'clip' and 
-        // sets the appropriate AffineTransform to the image node
-        initializeViewport(e, node, vb, bounds);
-
-        return node;
-    }
-
-    /**
-     * Returns a GraphicsNode that represents a svg document as an image.
-     *
-     * @param ctx the bridge context
-     * @param e the image element
-     * @param bounds the bounds for this graphicsNode
-     * @param imgDocument the SVG document that represents the image
-     */
-    protected static GraphicsNode createSVGImageNode(BridgeContext ctx,
-                                                     Element e,
-                                                     Rectangle2D bounds,
-                                                     SVGDocument imgDocument) {
-
-        CompositeGraphicsNode result = new CompositeGraphicsNode();
-
-        Rectangle2D r = CSSUtilities.convertEnableBackground(e);
-        if (r != null) {
-            result.setBackgroundEnable(r);
-        }
-
-        SVGSVGElement svgElement = imgDocument.getRootElement();
-        GVTBuilder builder = new GVTBuilder();
-        GraphicsNode node = builder.build(ctx, imgDocument);
-        // HACK: remove the clip set by the SVGSVGElement as the overflow
-        // and clip properties must be ignored. The clip will be set later
-        // using the overflow and clip of the <image> element.
-        node.setClip(null);
-        result.getChildren().add(node);
-
-        // create the implicit viewBox for the SVG image. The viewBox
-        // for a SVG image is the viewBox of the outermost SVG element
-        // of the SVG file
-        String viewBox =
-            svgElement.getAttributeNS(null, SVG_VIEW_BOX_ATTRIBUTE);
-        float [] vb = ViewBox.parseViewBoxAttribute(e, viewBox);
-        
-        // handles the 'preserveAspectRatio', 'overflow' and 'clip' and sets 
-        // the appropriate AffineTransform to the image node
-
-        // System.err.println("Bounds: " + bounds);
-        // System.err.println("ViewBox: " + viewBox);
-        initializeViewport(e, result, vb, bounds);
-
-        return result;
-    }
-
-    /**
-     * Initializes according to the specified element, the specified graphics
-     * node with the specified bounds. This method takes into account the
-     * 'viewBox', 'preserveAspectRatio', and 'clip' properties. According to
-     * those properties, a AffineTransform and a clip is set.
-     *
-     * @param e the image element that defines the properties
-     * @param node the graphics node
-     * @param vb the implicit viewBox definition
-     * @param bounds the bounds of the image element
-     */
-    protected static void initializeViewport(Element e,
-                                             GraphicsNode node,
-                                             float [] vb,
-                                             Rectangle2D bounds) {
-
-        float x = (float)bounds.getX();
-        float y = (float)bounds.getY();
-        float w = (float)bounds.getWidth();
-        float h = (float)bounds.getHeight();
-
-        AffineTransform at
-            = ViewBox.getPreserveAspectRatioTransform(e, vb, w, h);
-        // System.err.println("VP Affine: " + at);
-        at.preConcatenate(AffineTransform.getTranslateInstance(x, y));
-        node.setTransform(at);
-
-        // 'overflow' and 'clip'
-        Shape clip = null;
-        if (CSSUtilities.convertOverflow(e)) { // overflow:hidden
-            float [] offsets = CSSUtilities.convertClip(e);
-            if (offsets == null) { // clip:auto
-                clip = new Rectangle2D.Float(x, y, w, h);
-            } else { // clip:rect(<x> <y> <w> <h>)
-                // offsets[0] = top
-                // offsets[1] = right
-                // offsets[2] = bottom
-                // offsets[3] = left
-                clip = new Rectangle2D.Float(x+offsets[3],
-                                             y+offsets[0],
-                                             w-offsets[1]-offsets[3],
-                                             h-offsets[2]-offsets[0]);
-            }
-        }
-
-        if (clip != null) {
-            try {
-                at = at.createInverse(); // clip in user space
-                Filter filter = node.getGraphicsNodeRable(true);
-                clip = at.createTransformedShape(clip);
-                node.setClip(new ClipRable8Bit(filter, clip));
-            } catch (java.awt.geom.NoninvertibleTransformException ex) {}
-        }
     }
 }    
 
