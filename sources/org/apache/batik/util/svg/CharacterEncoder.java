@@ -19,39 +19,40 @@ import java.io.IOException;
  * A character encoder is an algorithim for transforming 8 bit binary
  * data into text (generally 7 bit ASCII or 8 bit ISO-Latin-1 text)
  * for transmition over text channels such as e-mail and network news.
- * 
+ *
  * The character encoders have been structured around a central theme
  * that, in general, the encoded text has the form:
  *
  * <pre>
- *	[Buffer Prefix]
- *	[Line Prefix][encoded data atoms][Line Suffix]
- *	[Buffer Suffix]
+ *      [Buffer Prefix]
+ *      [Line Prefix][encoded data atoms][Line Suffix]
+ *      [Buffer Suffix]
  * </pre>
  *
  * In the CharacterEncoder and CharacterDecoder classes, one complete
- * chunk of data is referred to as a <i>buffer</i>. Encoded buffers 
- * are all text, and decoded buffers (sometimes just referred to as 
+ * chunk of data is referred to as a <i>buffer</i>. Encoded buffers
+ * are all text, and decoded buffers (sometimes just referred to as
  * buffers) are binary octets.
  *
  * To create a custom encoder, you must, at a minimum,  overide three
  * abstract methods in this class.
  * <DL>
- * <DD>bytesPerAtom which tells the encoder how many bytes to 
+ * <DD>bytesPerAtom which tells the encoder how many bytes to
  * send to encodeAtom
  * <DD>encodeAtom which encodes the bytes sent to it as text.
  * <DD>bytesPerLine which tells the encoder the maximum number of
  * bytes per line.
  * </DL>
  *
- * Several useful encoders have already been written and are 
+ * Several useful encoders have already been written and are
  * referenced in the See Also list below.
  *
  * @author <a href="vincent.hardy@eng.sun.com">Vincent Hardy</a>
- * @author	Chuck McManis
+ * @author      Chuck McManis
+ * @version $Id$
  *
- * @see		CharacterDecoder;
- * @see		BASE64Encoder
+ * @see         CharacterDecoder;
+ * @see         BASE64Encoder
  */
 
 public abstract class CharacterEncoder {
@@ -101,12 +102,12 @@ public abstract class CharacterEncoder {
      * input stream.
      */
     public void encodeBuffer(InputStream inStream, OutputStream outStream) throws IOException{
-        int	j;
-        int	numBytes;
-        byte	tmpbuffer[] = new byte[bytesPerLine()];
+        int     j;
+        int     numBytes;
+        byte    tmpbuffer[] = new byte[bytesPerLine()];
 
         encodeBufferPrefix(outStream);
-	
+
         while (true) {
             numBytes = inStream.read(tmpbuffer);
             if (numBytes == -1) {
@@ -122,7 +123,7 @@ public abstract class CharacterEncoder {
             }
             encodeLineSuffix(outStream);
             if (numBytes < bytesPerLine()) {
-                break;	
+                break;
             }
         }
         encodeBufferSuffix(outStream);
@@ -142,8 +143,8 @@ public abstract class CharacterEncoder {
      * bytes and returns a string containing the encoded buffer.
      */
     public String encodeBuffer(byte aBuffer[]) throws IOException{
-        ByteArrayOutputStream	outStream = new ByteArrayOutputStream();
-        ByteArrayInputStream	inStream = new ByteArrayInputStream(aBuffer);
+        ByteArrayOutputStream   outStream = new ByteArrayOutputStream();
+        ByteArrayInputStream    inStream = new ByteArrayInputStream(aBuffer);
         encodeBuffer(inStream, outStream);
         return (outStream.toString());
     }
