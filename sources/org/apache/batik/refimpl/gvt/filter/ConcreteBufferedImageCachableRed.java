@@ -38,6 +38,16 @@ public class ConcreteBufferedImageCachableRed extends AbstractRed {
         this.bi = bi;
     }
 
+    public ConcreteBufferedImageCachableRed(BufferedImage bi, 
+                                            int xloc, int yloc) {
+        super((CachableRed)null, new Rectangle(xloc,  yloc,
+                                               bi.getWidth(), 
+                                               bi.getHeight()),
+              bi.getColorModel(), bi.getSampleModel(), 0, 0, null);
+
+        this.bi = bi;
+    }
+
     public Rectangle getBounds() {
         return new Rectangle(getMinX(),
                              getMinY(),
