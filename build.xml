@@ -289,6 +289,8 @@ To display the available targets type:
         <include name="${package-prefix}/util/*.class"/>
         <include name="${package-prefix}/util/resources/*.class"/>
         <include name="${package-prefix}/util/svg/*.class"/>
+        <include name="${package-prefix}/xml/*.class"/>
+        <include name="${package-prefix}/xml/scanner/*.class"/>
       </fileset>
       <fileset dir="${resources}">
         <include name="${package-prefix}/util/resources/**"/>
