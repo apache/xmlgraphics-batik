@@ -17,124 +17,153 @@
     <xsl:template match="/">
         <html>
             <head>
+                <link rel="stylesheet" type="text/css" media="screen" href="../../style/style.css" />
             </head>
 
-            <body>
-        <table width="600" border="0" cellpadding="0" cellspacing="0" hspace="0" vspace="0">
-          <tr bgcolor="black"><td>
-	          <table width="600" border="0" cellpadding="1" cellspacing="1" hspace="0" vspace="0">
+            <body style="background-image: url(../../images/background.png);">
 
-                <xsl:apply-templates/>
-                </table>
-          </td></tr>
-        </table>
+        <h1>Regard Test Report -- 
+            <xsl:value-of select="count(/descendant::testReport[@status='passed'])" />/<xsl:value-of select="count(/descendant::testReport)" />
+        </h1>
+
+        <hr noshade="noshade" size="1" width="600" align="left"/>
+
+        <!-- ======= -->
+        <!-- Summary -->
+        <!-- ======= -->
+        <xsl:call-template name="summary" />
+        &#160;<br />
+
+        <!-- ======= -->
+        <!-- Details -->
+        <!-- ======= -->
+        <xsl:call-template name="details" />
+
             </body>
         </html>
+
+    </xsl:template>
+
+    <xsl:template name="details">
+
+        <h2>Report Details</h2>
+
+        <xsl:apply-templates/>
+
+    </xsl:template>
+
+    <xsl:template name="summary">
+    
+        <h2>Failed Leaf Tests:</h2>
+
+        <xsl:call-template name="failedTestsLinks">
+            <xsl:with-param name="failedNodes" select="/descendant::testReport[@status='failed']" />
+        </xsl:call-template>
+
+        <hr noshade="noshade" size="1" width="600" align="left" />
+
+    </xsl:template>
+
+    <xsl:template name="failedTestsLinks">
+        <xsl:param name="failedNodes" />
+        <ol>
+        <xsl:for-each select="$failedNodes">
+            <li>
+                <a>
+                    <xsl:attribute name="href">#<xsl:value-of select="@id" /></xsl:attribute>
+                    <xsl:value-of select="@testName" />
+                </a>  
+
+            </li>
+        </xsl:for-each>
+        </ol>                   
+
+
     </xsl:template>
 
     <xsl:template match="testReport | testSuiteReport">
-        <xsl:param name="prefix" />
-        <xsl:variable name="childrenTests" select="description/testReport" />
+        <xsl:variable name="childrenTests" select="description/testReport" />  
+
         <xsl:variable name="childrenTestSuites" select="description/testSuiteReport" />
         <xsl:variable name="childrenTestsCount" select="count($childrenTests) + count($childrenTestSuites)" />
 
         <a>
-            <xsl:attribute name="href">
+            <xsl:attribute name="name">
                 <xsl:value-of select="@id" />
             </xsl:attribute>
         </a>
 
+        
         <xsl:choose>
-        <xsl:when test="$childrenTestsCount &gt; 0 or @status='failed'">
-            <tr bgcolor="#cccccc">
-                <td colspan="2">
-                    <table bgcolor="#cccccc" vspace="0" hspace="0" cellspacing="0" cellpadding="0" border="0" width="100%">
-                        <tr bgcolor="#cccccc">     
-                            <td width="4%">
-                                <xsl:attribute name="bgcolor">
-                                  <xsl:choose>
-                                     <xsl:when test="@status='failed'">red</xsl:when>
-                                     <xsl:when test="@status='passed'">green</xsl:when>
-                                  </xsl:choose>
-                                </xsl:attribute>&#160;
-                            </td>
-                            <td width="96%">
-                                <b>&#160;<xsl:value-of select="$prefix" /><xsl:value-of select="@testName" /></b>
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-            <tr bgcolor="white">
-                <td colspan="2">
-                    <xsl:value-of select="$prefix" />
+        <xsl:when test="$childrenTestsCount = 0 and @status='failed'">
+                    <table bgcolor="black" vspace="0" hspace="0" cellspacing="0" cellpadding="0" border="0" width="600">
+                    <tr><td>
+                    <table bgcolor="black" vspace="0" hspace="0" cellspacing="1" cellpadding="2" border="0" width="600">
+                        <tr bgcolor="#eeeeee">     
+                            <td colspan="2"><img align="bottom" src="../../images/deco.png" width="16" height="16" />&#160;
 
-                    <!-- Plain Status -->
-                    <xsl:value-of select="@status" />
+                                <font><xsl:attribute name="class">title<xsl:value-of select="@status"/></xsl:attribute>&#160;<xsl:value-of select="@testName" /></font>
 
-                    <xsl:choose>
-                        <xsl:when test="@status='failed'">
-                            &#160;(<xsl:value-of select="@errorCode" />)
-                        </xsl:when>
-                    </xsl:choose>
+                                <xsl:choose>
+                                    <xsl:when test="@status='failed'">
+                                     &#160;(<xsl:value-of select="@errorCode" />)
+                                    </xsl:when>
+                                </xsl:choose>
 
-                    <!-- If this is a composite report, add counts of success/failures -->
-                    <xsl:choose>
-                        <xsl:when test="$childrenTestsCount &gt; 0" >
-                            <xsl:variable name="passedChildrenTests" 
+                                <!-- If this is a composite report, add counts of success/failures -->
+                                <xsl:choose> 
+
+
+                                    <xsl:when test="$childrenTestsCount &gt; 0" >
+                                    <xsl:variable name="passedChildrenTests" 
                                           select="description/testReport[attribute::status='passed']" />
-                            <xsl:variable name="passedChildrenTestSuites" 
+                                    <xsl:variable name="passedChildrenTestSuites" 
                                           select="description/testSuiteReport[attribute::status='passed']" />
 
-                            -- Success Rate :&#160;<xsl:value-of select=" count($passedChildrenTests) + count($passedChildrenTestSuites)" /> / 
-                            <xsl:value-of select="$childrenTestsCount" />
-                        </xsl:when>
-                    </xsl:choose>
-                </td>
-            </tr>
+                                    -- &#160;<xsl:value-of select=" count($passedChildrenTests) + count($passedChildrenTestSuites)" /> / 
+                                    <xsl:value-of select="$childrenTestsCount" />
+                                    </xsl:when>
+                                </xsl:choose>
 
-            <tr bgcolor="white">
-                <td><xsl:apply-templates>
-                        <xsl:with-param name="prefix" select="$prefix"/>
-                    </xsl:apply-templates></td>
-            </tr>
+                            </td>
+                        </tr>
+                        <xsl:apply-templates />
+                    </table></td></tr></table>
+                        <br />
+
         </xsl:when>
+        <xsl:otherwise>
+            <xsl:apply-templates />
+        </xsl:otherwise>
         </xsl:choose>
+
     </xsl:template>
 
     <xsl:template match="description">
-        <xsl:param name="prefix">&#160;</xsl:param>
-        <xsl:apply-templates select="genericEntry | uriEntry | fileEntry">
-            <xsl:with-param name="prefix" select="$prefix" />
-        </xsl:apply-templates>
+        <xsl:apply-templates select="genericEntry | uriEntry | fileEntry" />
+
         <xsl:apply-templates select="testReport | testSuiteReport">
-            <xsl:with-param name="prefix">
-                <xsl:value-of select="$prefix"/>&#160;&#160;&#160;
-            </xsl:with-param>
         </xsl:apply-templates>
     </xsl:template>
 
     <xsl:template match="genericEntry">
-        <xsl:param name="prefix">&#160;</xsl:param>
         <tr bgcolor="white">
-            <td><xsl:value-of select="$prefix" /><xsl:value-of select="@key" /></td>
+            <td><xsl:value-of select="@key" /></td>
             <td><xsl:value-of select="@value" /></td>
         </tr>
     </xsl:template>
 
     <xsl:template match="uriEntry">
-        <xsl:param name="prefix">&#160;</xsl:param>
         <tr bgcolor="white" margin-left="50pt">
-            <td><xsl:value-of select="$prefix" /><xsl:value-of select="@key" /></td>
+            <td><xsl:value-of select="@key" /></td>
             <xsl:variable name="value" select="@value" />
             <td><a target="image" href="{$value}"><img height="150" src="{$value}" /></a></td>
         </tr>
     </xsl:template>
 
     <xsl:template match="fileEntry">
-        <xsl:param name="prefix">&#160;</xsl:param>
         <tr bgcolor="white">
-            <td><xsl:value-of select="$prefix" /><xsl:value-of select="@key" /></td>
+            <td><xsl:value-of select="@key" /></td>
             <xsl:variable name="value" select="@value" />
             <td><a target="image" href="{$value}"><img height="150" src="{$value}" /></a></td>
         </tr>
