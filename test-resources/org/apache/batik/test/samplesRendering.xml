@@ -818,4 +818,73 @@
         <property name="SaveVariation" class="java.io.File" value="test-references/samples/candidate-variation/anneTransform2.png" />
     </test>
 
+  <!-- Sample tests, alternate stylesheets test -->
+    <test id="samples/tests/alternateStylesheet.svg-Hot" class="org.apache.batik.test.svg.SVGAlternateStyleSheetRenderingAccuracyTest">
+        <arg class="java.lang.String" value="samples/tests/alternateStylesheet.svg" />
+        <arg class="java.lang.String" value="test-references/samples/tests/alternateStylesheetHot.png" />
+        <arg class="java.lang.String" value="Hot"/>
+        <property name="VariationURL" class="java.lang.String" value="test-references/samples/accepted-variation/alternateStylesheetHot.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/candidate-variation/alternateStylesheetHot.png" />
+    </test>
+
+    <test id="samples/tests/alternateStylesheet.svg-Cold" class="org.apache.batik.test.svg.SVGAlternateStyleSheetRenderingAccuracyTest">
+        <arg class="java.lang.String" value="samples/tests/alternateStylesheet.svg" />
+        <arg class="java.lang.String" value="test-references/samples/tests/alternateStylesheetCold.png" />
+        <arg class="java.lang.String" value="Cold"/>
+        <property name="VariationURL" class="java.lang.String" value="test-references/samples/accepted-variation/alternateStylesheetCold.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/candidate-variation/alternateStylesheetCold.png" />
+    </test>
+
+    <test id="samples/tests/smiley.svg-Smiling" class="org.apache.batik.test.svg.SVGAlternateStyleSheetRenderingAccuracyTest">
+        <arg class="java.lang.String" value="samples/tests/smiley.svg"/>
+        <arg class="java.lang.String" value="test-references/samples/tests/smileySmiling.png"/>
+        <arg class="java.lang.String" value="Smiling"/>
+        <property name="VariationURL" class="java.lang.String" value="test-references/samples/accepted-variation/smileySmiling.png"/>
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/candidate-variation/smileySmiling.png"/>
+    </test>
+
+    <test id="samples/tests/smiley.svg-BasicSad" class="org.apache.batik.test.svg.SVGAlternateStyleSheetRenderingAccuracyTest">
+        <arg class="java.lang.String" value="samples/tests/smiley.svg"/>
+        <arg class="java.lang.String" value="test-references/samples/tests/smileyBasicSad.png"/>
+        <arg class="java.lang.String" value="Basic Sad"/>
+        <property name="VariationURL" class="java.lang.String" value="test-references/samples/accepted-variation/smileyBasicSad.png"/>
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/candidate-variation/smileyBasicSad.png"/>
+    </test>
+
+
+    <test id="samples/tests/smiley.svg-Wow!" class="org.apache.batik.test.svg.SVGAlternateStyleSheetRenderingAccuracyTest">
+        <arg class="java.lang.String" value="samples/tests/smiley.svg"/>
+        <arg class="java.lang.String" value="test-references/samples/tests/smileyWow!.png"/>
+        <arg class="java.lang.String" value="Wow!"/>
+        <property name="VariationURL" class="java.lang.String" value="test-references/samples/accepted-variation/smileyWow!.png"/>
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/candidate-variation/smileyWow!.png"/>
+    </test>
+
+
+    <test id="samples/tests/smiley.svg-Grim" class="org.apache.batik.test.svg.SVGAlternateStyleSheetRenderingAccuracyTest">
+        <arg class="java.lang.String" value="samples/tests/smiley.svg"/>
+        <arg class="java.lang.String" value="test-references/samples/tests/smileyGrim.png"/>
+        <arg class="java.lang.String" value="Grim"/>
+        <property name="VariationURL" class="java.lang.String" value="test-references/samples/accepted-variation/smileyGrim.png"/>
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/candidate-variation/smileyGrim.png"/>
+    </test>
+
+    <test id="samples/tests/smiley.svg-Oups" class="org.apache.batik.test.svg.SVGAlternateStyleSheetRenderingAccuracyTest">
+        <arg class="java.lang.String" value="samples/tests/smiley.svg"/>
+        <arg class="java.lang.String" value="test-references/samples/tests/smileyOups.png"/>
+        <arg class="java.lang.String" value="Oups"/>
+        <property name="VariationURL" class="java.lang.String" value="test-references/samples/accepted-variation/smileyOups.png"/>
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/candidate-variation/smileyOups.png"/>
+    </test>
+
+  <!-- Sample tests, media test -->
+    <test id="samples/tests/smiley.svg-Smiling" class="org.apache.batik.test.svg.SVGAlternateStyleSheetRenderingAccuracyTest">
+        <arg class="java.lang.String" value="samples/tests/smiley.svg"/>
+        <arg class="java.lang.String" value="test-references/samples/tests/smileySmiling.png"/>
+        <arg class="java.lang.String" value="Smiling"/>
+        <property name="VariationURL" class="java.lang.String" value="test-references/samples/accepted-variation/smileySmiling.png"/>
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/candidate-variation/smileySmiling.png"/>
+    </test>
+
+
 </testSuite>

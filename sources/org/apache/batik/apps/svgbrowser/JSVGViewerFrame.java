@@ -1198,7 +1198,7 @@ public class JSVGViewerFrame
                 TreeWalker tw;
                 tw = ((DocumentTraversal)doc).createTreeWalker
                     (doc,
-                     NodeFilter.SHOW_PROCESSING_INSTRUCTION,
+                     NodeFilter.SHOW_ALL,
                      null,
                      true);
 
