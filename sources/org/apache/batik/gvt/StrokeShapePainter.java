@@ -84,7 +84,7 @@ public class StrokeShapePainter implements ShapePainter {
     /**
      * Returns the area painted by this shape painter.
      */
-    public Shape getPaintedArea(GraphicsNodeRenderContext rc){
+    public Shape getPaintedArea(){
         if (paint != null && stroke != null) {
             return stroke.createStrokedShape(shape);
         } else {

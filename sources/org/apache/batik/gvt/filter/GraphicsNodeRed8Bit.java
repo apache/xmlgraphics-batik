@@ -70,9 +70,9 @@ public class GraphicsNodeRed8Bit extends AbstractRed {
         AffineTransform at = node2dev;
         Rectangle2D bounds2D;
         if (usePrimitivePaint) {
-            bounds2D = node.getPrimitiveBounds(gnrc);
+            bounds2D = node.getPrimitiveBounds();
         } else {
-            bounds2D = node.getPrimitiveBounds(gnrc);
+            bounds2D = node.getPrimitiveBounds();
             // When not using Primitive paint we return out bounds in
             // the nodes parent's user space.  This makes sense since
             // this is the space that we will draw our selves into

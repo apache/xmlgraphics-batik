@@ -43,8 +43,10 @@ public class GVTGlyphMetrics {
      * @param bounds The black box bounds of the glyph.
      * @param glyphType The type of the glyph.
      */
-    public GVTGlyphMetrics(float horizontalAdvance, float verticalAdvance,
-                           Rectangle2D bounds, byte glyphType) {
+    public GVTGlyphMetrics(float horizontalAdvance, 
+			   float verticalAdvance,
+                           Rectangle2D bounds, 
+			   byte glyphType) {
         this.gm = new GlyphMetrics(horizontalAdvance, bounds, glyphType);
         this.verticalAdvance = verticalAdvance;
     }

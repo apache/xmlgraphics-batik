@@ -29,7 +29,7 @@ public interface ShapePainter {
     /**
      * Returns the area painted by this shape painter.
      */
-    Shape getPaintedArea(GraphicsNodeRenderContext rc);
+    Shape getPaintedArea();
 
     /**
      * Sets the Shape this shape painter is associated with.

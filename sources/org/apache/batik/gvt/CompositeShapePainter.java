@@ -88,12 +88,12 @@ public class CompositeShapePainter implements ShapePainter {
     /**
      * Returns the area painted by this shape painter.
      */
-    public Shape getPaintedArea(GraphicsNodeRenderContext rc){
+    public Shape getPaintedArea(){
         // <!> FIX ME: Use of GeneralPath is a work around Area problems.
         if (painters != null) {
             GeneralPath paintedArea = new GeneralPath();
             for (int i=0; i < count; ++i) {
-                Shape s = painters[i].getPaintedArea(rc);
+                Shape s = painters[i].getPaintedArea();
                 if (s != null) {
                     paintedArea.append(s, false);
                 }

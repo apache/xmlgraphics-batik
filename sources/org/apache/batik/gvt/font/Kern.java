@@ -32,20 +32,20 @@ public class Kern {
      *
      * @param firstGlyphCodes An array of glyph codes that are part of the first
      * set of glyphs in this kerning entry.
-     * @param secondGlyphCodes An array of glyph codes that are part of the second
-     * set of glyphs in this kerning entry.
+     * @param secondGlyphCodes An array of glyph codes that are part of the
+     * second set of glyphs in this kerning entry.
      * @param firstUnicodeRanges An array of unicode ranges that are part of the
      * first set of glyphs in this kerning entry.
      * @param secondUnicodeRanges An array of unicode ranges that are part of
      * the second set of glyphs in this kerning entry.
      * @param adjustValue The kerning adjustment (positive value means the space
-     * between glyphs should decrease).
+     * between glyphs should decrease).  
      */
-    public Kern(int[] firstGlyphCodes, int[] secondGlyphCodes,
+    public Kern(int[] firstGlyphCodes, 
+		int[] secondGlyphCodes,
                 UnicodeRange[] firstUnicodeRanges,
                 UnicodeRange[] secondUnicodeRanges,
                 float adjustValue) {
-
         this.firstGlyphCodes = firstGlyphCodes;
         this.secondGlyphCodes = secondGlyphCodes;
         this.firstUnicodeRanges = firstUnicodeRanges;
@@ -59,7 +59,8 @@ public class Kern {
      *
      * @param glyphCode The id of the glyph to test.
      * @param glyphUnicode The unicode value of the glyph to test.
-     * @return True if this glyph is in the list of first glyphs for the kerning entry
+     * @return True if this glyph is in the list of first glyphs for the kerning
+     * entry 
      */
     public boolean matchesFirstGlyph(int glyphCode, String glyphUnicode) {
         for (int i = 0; i < firstGlyphCodes.length; i++) {
@@ -81,10 +82,11 @@ public class Kern {
      *
      * @param glyphCode The id of the glyph to test.
      * @param glyphUnicode The unicode value of the glyph to test.
-     * @return True if this glyph is in the list of second glyphs for the kerning entry
+
+     * @return True if this glyph is in the list of second glyphs for the
+     * kerning entry 
      */
     public boolean matchesSecondGlyph(int glyphCode, String glyphUnicode) {
-
         for (int i = 0; i < secondGlyphCodes.length; i++) {
             if (secondGlyphCodes[i] == glyphCode) {
                 return true;

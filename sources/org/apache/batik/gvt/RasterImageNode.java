@@ -166,7 +166,7 @@ public class RasterImageNode extends AbstractGraphicsNode {
     /**
      * Returns the bounds of the area covered by this node's primitive paint.
      */
-    public Rectangle2D getPrimitiveBounds(GraphicsNodeRenderContext rc) {
+    public Rectangle2D getPrimitiveBounds() {
         return (Rectangle2D) imageBounds.clone();
     }
 
@@ -175,14 +175,14 @@ public class RasterImageNode extends AbstractGraphicsNode {
      * of its rendering attribute into account. i.e., exclusive of any clipping,
      * masking, filtering or stroking, for example.
      */
-    public Rectangle2D getGeometryBounds(GraphicsNodeRenderContext rc) {
+    public Rectangle2D getGeometryBounds() {
         return (Rectangle2D) imageBounds.clone();
     }
 
     /**
      * Returns the outline of this node.
      */
-    public Shape getOutline(GraphicsNodeRenderContext rc) {
+    public Shape getOutline() {
         return (Rectangle2D) imageBounds.clone();
     }
 }

@@ -68,7 +68,7 @@ public class FillShapePainter implements ShapePainter {
     /**
      * Returns the area painted by this shape painter.
      */
-    public Shape getPaintedArea(GraphicsNodeRenderContext rc){
+    public Shape getPaintedArea(){
         return shape;
     }
 
