@@ -512,22 +512,24 @@ public class SVGFlowTextElementBridge extends SVGTextElementBridge
                                                false, subBidiLevel, 
 					       asb, lnLocs);
                 } else if (ln.equals(SVG_A_TAG)) {
-                    EventTarget target = (EventTarget)nodeElement;
-                    UserAgent ua = ctx.getUserAgent();
-                    target.addEventListener
-                        (SVG_EVENT_CLICK, 
-                         new SVGAElementBridge.AnchorListener(ua),
-                         false);
+                    if (ctx.isInteractive()) {
+                        EventTarget target = (EventTarget)nodeElement;
+                        UserAgent ua = ctx.getUserAgent();
+                        target.addEventListener
+                            (SVG_EVENT_CLICK, 
+                             new SVGAElementBridge.AnchorListener(ua),
+                             false);
                     
-                    target.addEventListener
-                        (SVG_EVENT_MOUSEOVER,
-                         new SVGAElementBridge.CursorMouseOverListener(ua),
-                         false);
+                        target.addEventListener
+                            (SVG_EVENT_MOUSEOVER,
+                             new SVGAElementBridge.CursorMouseOverListener(ua),
+                             false);
                     
-                    target.addEventListener
-                        (SVG_EVENT_MOUSEOUT,
-                         new SVGAElementBridge.CursorMouseOutListener(ua),
-                         false);
+                        target.addEventListener
+                            (SVG_EVENT_MOUSEOUT,
+                             new SVGAElementBridge.CursorMouseOutListener(ua),
+                             false);
+                    }
                     fillAttributedStringBuffer(ctx,
                                                nodeElement,
                                                false, subBidiLevel,

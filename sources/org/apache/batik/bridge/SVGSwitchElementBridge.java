@@ -85,7 +85,7 @@ public class SVGSwitchElementBridge extends AbstractSVGBridge
                                   Element e,
                                   GraphicsNode node) {
         // bind the specified element and its associated graphics node if needed
-        if (ctx.isDynamic()) {
+        if (ctx.isInteractive()) {
             ctx.bind(e, node);
         }
     }

@@ -186,9 +186,8 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         // 'pointer-events'
         node.setPointerEventType(CSSUtilities.convertPointerEvents(e));
 
-        if (ctx.isDynamic()) {
-            initializeDynamicSupport(ctx, e, node);
-        }
+        initializeDynamicSupport(ctx, e, node);
+
         // Handle children elements such as <title>
         SVGUtilities.bridgeChildren(ctx, e);
     }
@@ -251,6 +250,10 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                                             Element e,
                                             GraphicsNode node) {
         super.initializeDynamicSupport(ctx,e,node);
+
+        if (!ctx.isDynamic())
+            return;             // Only add the listeners if we are dynamic
+
 
         EventTarget evtTarget = (EventTarget)e;
 

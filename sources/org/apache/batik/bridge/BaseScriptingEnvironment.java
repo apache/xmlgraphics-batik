@@ -191,6 +191,13 @@ public class BaseScriptingEnvironment {
      */
     protected ParsedURL docPURL;
 
+    protected Set languages = new HashSet();
+
+    /**
+     * The default Interpreter for the document
+     */
+    protected Interpreter interpreter;
+
     /**
      * Creates a new BaseScriptingEnvironment.
      * @param ctx the bridge context
@@ -218,6 +225,41 @@ public class BaseScriptingEnvironment {
     }
 
     /**
+     * Returns the default Interpreter for this document.
+     */
+    public Interpreter getInterpreter() {
+        if (interpreter != null)
+            return interpreter;
+
+        SVGSVGElement root = (SVGSVGElement)document.getDocumentElement();
+        String lang = root.getContentScriptType();
+        return getInterpreter(lang);
+    }
+
+    public Interpreter getInterpreter(String lang) {
+        interpreter = bridgeContext.getInterpreter(lang);
+        if (interpreter == null) {
+            if (languages.contains(lang)) 
+                // Already issued warning so just return null;
+                return null;
+
+            UserAgent ua = bridgeContext.getUserAgent();
+            if (ua != null) {
+                ua.displayError(new Exception("Unknown language: " + lang));
+            }
+            // So we know we have processed this interpreter.
+            languages.add(lang);
+            return null;
+        }
+
+        if (!languages.contains(lang)) {
+            languages.add(lang);
+            initializeEnvironment(interpreter, lang);
+        }
+        return interpreter;
+    }
+
+    /**
      * Initializes the environment of the given interpreter.
      */
     public void initializeEnvironment(Interpreter interp, String lang) {
@@ -237,8 +279,6 @@ public class BaseScriptingEnvironment {
         if (len == 0) {
             return;
         }
-
-        Set languages = new HashSet();
 
         for (int i = 0; i < len; i++) {
             Element script = (Element)scripts.item(i);
@@ -302,20 +342,10 @@ public class BaseScriptingEnvironment {
             //
             // Scripting language invocation.
             //
-            Interpreter interpreter = bridgeContext.getInterpreter(type);
-
-            if (interpreter == null) {
-                UserAgent ua = bridgeContext.getUserAgent();
-                if (ua != null) {
-                    ua.displayError(new Exception("Unknown language: "+type));
-                }
-                return;
-            }
-
-            if (!languages.contains(type)) {
-                languages.add(type);
-                initializeEnvironment(interpreter, type);
-            }
+            Interpreter interpreter = getInterpreter(type);
+            if (interpreter == null)
+                // Can't find interpreter so just skip this script block.
+                continue;
 
             try {
                 String href = XLinkSupport.getXLinkHref(script);
@@ -376,31 +406,22 @@ public class BaseScriptingEnvironment {
      * Recursively dispatch the SVG 'onload' event.
      */
     public void dispatchSVGLoadEvent() {
-        SVGSVGElement root =
-            (SVGSVGElement)document.getDocumentElement();
+        SVGSVGElement root = (SVGSVGElement)document.getDocumentElement();
         String lang = root.getContentScriptType();
-        Interpreter interp = bridgeContext.getInterpreter(lang);
-        if (interp == null) {
-            UserAgent ua = bridgeContext.getUserAgent();
-            if (ua != null) {
-                ua.displayError(new Exception("Unknown language: " + lang));
-            }
-            return;
-        }
-
-        dispatchSVGLoad(root, interp, true, lang);
+        dispatchSVGLoad(root, true, lang);
     }
 
     /**
      * Auxiliary method for dispatchSVGLoad.
      */
-    protected void dispatchSVGLoad(Element elt, final Interpreter interp,
-                                   boolean checkCanRun, String lang) {
+    protected void dispatchSVGLoad(Element elt, 
+                                   boolean checkCanRun, 
+                                   String lang) {
         for (Node n = elt.getFirstChild();
              n != null;
              n = n.getNextSibling()) {
             if (n.getNodeType() == n.ELEMENT_NODE) {
-                dispatchSVGLoad((Element)n, interp, checkCanRun, lang);
+                dispatchSVGLoad((Element)n, checkCanRun, lang);
             }
         }
 
@@ -412,32 +433,42 @@ public class BaseScriptingEnvironment {
 
         final String s =
             elt.getAttributeNS(null, SVGConstants.SVG_ONLOAD_ATTRIBUTE);
-        EventListener l = null;
-        if (s.length() > 0) {
-            if (checkCanRun) {
-                // Check that it is ok to run embeded scripts
-                checkCompatibleScriptURL(lang, docPURL);
-                checkCanRun = false; // we only check once for onload handlers
-            }
+        if (s.length() == 0) {
+            // No script to run so just dispatch the event to DOM
+            // (For java presumably).
+            t.dispatchEvent(ev);
+            return;
+        }
 
-            l = new EventListener() {
-                    public void handleEvent(Event evt) {
-                        try {
-                            interp.bindObject(EVENT_NAME, evt);
-                            interp.bindObject(ALTERNATE_EVENT_NAME, evt);
-                            interp.evaluate(new StringReader(s));
-                        } catch (IOException io) {
-                        } catch (InterpreterException e) {
-                            handleInterpreterException(e);
-                        }
+        final Interpreter interp = getInterpreter();
+        if (interp == null) {
+            // Can't load interpreter so just dispatch normal event
+            // to the DOM (for java presumably).
+            t.dispatchEvent(ev);
+            return;
+        }
+        
+        if (checkCanRun) {
+            // Check that it is ok to run embeded scripts
+            checkCompatibleScriptURL(lang, docPURL);
+            checkCanRun = false; // we only check once for onload handlers
+        }
+
+        EventListener l = new EventListener() {
+                public void handleEvent(Event evt) {
+                    try {
+                        interp.bindObject(EVENT_NAME, evt);
+                        interp.bindObject(ALTERNATE_EVENT_NAME, evt);
+                        interp.evaluate(new StringReader(s));
+                    } catch (IOException io) {
+                    } catch (InterpreterException e) {
+                        handleInterpreterException(e);
                     }
-                };
-            t.addEventListener("SVGLoad", l, false);
-        }
+                }
+            };
+        t.addEventListener("SVGLoad", l, false);
         t.dispatchEvent(ev);
-        if (s.length() > 0) {
-            t.removeEventListener("SVGLoad", l, false);
-        }
+        t.removeEventListener("SVGLoad", l, false);
     }
 
     /**

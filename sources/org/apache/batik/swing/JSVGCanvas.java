@@ -761,63 +761,67 @@ public class JSVGCanvas extends JSVGComponent {
         public void handleElement(Element elt, Object data){
             super.handleElement(elt, data);
 
-            if (elt.getNamespaceURI().equals(SVGConstants.SVG_NAMESPACE_URI)) {
-                if (elt.getLocalName().equals(SVGConstants.SVG_TITLE_TAG)) {
-                    // If there is a <desc> peer, do nothing as the tooltip will
-                    // be handled when handleElement is invoked for the <desc>
-                    // peer.
-                    if (hasPeerWithTag
-                        (elt,
-                         SVGConstants.SVG_NAMESPACE_URI,
-                         SVGConstants.SVG_DESC_TAG)){
-                        return;
-                    }
+            // Don't handle tool tips unless we are interactive.
+            if (!isInteractive()) return;
+            
+            if (!SVGConstants.SVG_NAMESPACE_URI.equals(elt.getNamespaceURI()))
+                return;
 
-                    elt.normalize();
-                    if (elt.getFirstChild() == null) {
-                        return;
-                    }
-                    String toolTip = elt.getFirstChild().getNodeValue();
-                    if (toolTip == null || toolTip.length() == 0) {
-                        return;
-                    }
-                    toolTip = Messages.formatMessage
-                        (TOOLTIP_TITLE_ONLY,
-                         new Object[]{toFormattedHTML(toolTip)});
-
-                    setToolTip((Element)(elt.getParentNode()), toolTip);
-                } else if (elt.getLocalName().equals
-                           (SVGConstants.SVG_DESC_TAG)) {
-                    // If there is a <title> peer, prepend its content to the
-                    // content of the <desc> element.
-                    elt.normalize();
-                    if (elt.getFirstChild() == null) {
-                        return;
-                    }
-                    String toolTip = elt.getFirstChild().getNodeValue();
-                    if (toolTip == null || toolTip.length() == 0) {
-                        return;
-                    }
-
-                    Element titlePeer =
-                        getPeerWithTag(elt,
-                                       SVGConstants.SVG_NAMESPACE_URI,
-                                       SVGConstants.SVG_TITLE_TAG);
-                    if (titlePeer != null) {
-                        titlePeer.normalize();
-                        toolTip = Messages.formatMessage(TOOLTIP_TITLE_AND_TEXT,
-                                                         new Object[] {
-                            toFormattedHTML(titlePeer.getFirstChild().getNodeValue()),
-                                toFormattedHTML(toolTip)});
-                    } else {
-                        toolTip =
-                            Messages.formatMessage
-                            (TOOLTIP_DESC_ONLY,
-                             new Object[]{toFormattedHTML(toolTip)});
-                    }
-
-                    setToolTip((Element)(elt.getParentNode()), toolTip);
+            if (elt.getLocalName().equals(SVGConstants.SVG_TITLE_TAG)) {
+                // If there is a <desc> peer, do nothing as the tooltip will
+                // be handled when handleElement is invoked for the <desc>
+                // peer.
+                if (hasPeerWithTag
+                    (elt,
+                     SVGConstants.SVG_NAMESPACE_URI,
+                     SVGConstants.SVG_DESC_TAG)){
+                    return;
                 }
+                
+                elt.normalize();
+                if (elt.getFirstChild() == null) {
+                    return;
+                }
+                String toolTip = elt.getFirstChild().getNodeValue();
+                if (toolTip == null || toolTip.length() == 0) {
+                    return;
+                }
+                toolTip = Messages.formatMessage
+                    (TOOLTIP_TITLE_ONLY,
+                     new Object[]{toFormattedHTML(toolTip)});
+                
+                setToolTip((Element)(elt.getParentNode()), toolTip);
+            } else if (elt.getLocalName().equals
+                       (SVGConstants.SVG_DESC_TAG)) {
+                //  If there is a <title> peer, prepend its content to the
+                // content of the <desc> element.
+                elt.normalize();
+                if (elt.getFirstChild() == null) {
+                    return;
+                }
+                String toolTip = elt.getFirstChild().getNodeValue();
+                if (toolTip == null || toolTip.length() == 0) {
+                    return;
+                }
+                
+                Element titlePeer =
+                    getPeerWithTag(elt,
+                                   SVGConstants.SVG_NAMESPACE_URI,
+                                   SVGConstants.SVG_TITLE_TAG);
+                if (titlePeer != null) {
+                    titlePeer.normalize();
+                    toolTip = Messages.formatMessage(TOOLTIP_TITLE_AND_TEXT,
+                                                     new Object[] {
+                                                         toFormattedHTML(titlePeer.getFirstChild().getNodeValue()),
+                                                         toFormattedHTML(toolTip)});
+                } else {
+                    toolTip =
+                        Messages.formatMessage
+                        (TOOLTIP_DESC_ONLY,
+                         new Object[]{toFormattedHTML(toolTip)});
+                }
+                
+                setToolTip((Element)(elt.getParentNode()), toolTip);
             }
         }
 

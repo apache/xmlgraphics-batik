@@ -202,9 +202,8 @@ public class BatikMultiImageElementBridge extends SVGImageElementBridge
     public void buildGraphicsNode(BridgeContext ctx,
                                   Element e,
                                   GraphicsNode node) {
-        if (ctx.isDynamic()) {
-            initializeDynamicSupport(ctx, e, node);
-        }
+        initializeDynamicSupport(ctx, e, node);
+
         // Handle children elements such as <title>
         //SVGUtilities.bridgeChildren(ctx, e);
         //super.buildGraphicsNode(ctx, e, node);
@@ -220,13 +219,19 @@ public class BatikMultiImageElementBridge extends SVGImageElementBridge
     protected void initializeDynamicSupport(BridgeContext ctx,
                                             Element e,
                                             GraphicsNode node) {
-        this.e = e;
-        this.node = node;
-        this.ctx = ctx;
+        if (!ctx.isInteractive())
+            return;
+
         // HACK due to the way images are represented in GVT
         ImageNode imgNode = (ImageNode)node;
         ctx.bind(e, imgNode.getImage());
-        ((SVGOMElement)e).setSVGContext(this);
+
+        if (ctx.isDynamic()) {
+            this.e = e;
+            this.node = node;
+            this.ctx = ctx;
+            ((SVGOMElement)e).setSVGContext(this);
+        }
     }
 
     /**

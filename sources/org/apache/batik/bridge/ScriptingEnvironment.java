@@ -243,19 +243,15 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
      * Runs an event handler.
      */
     public void runEventHandler(String script, Event evt, String lang) {
-        Interpreter interpreter = bridgeContext.getInterpreter(lang);
-        if (interpreter == null) {
-            if (userAgent != null) {
-                userAgent.displayError
-                    (new Exception("unknow language: " + lang));
-            }
-        }
+        Interpreter interpreter = getInterpreter(lang);
+        if (interpreter == null)
+            return;
 
-        interpreter.bindObject(EVENT_NAME, evt);
-        interpreter.bindObject(ALTERNATE_EVENT_NAME, evt);
-            
         try {
             checkCompatibleScriptURL(lang, docPURL);
+
+            interpreter.bindObject(EVENT_NAME, evt);
+            interpreter.bindObject(ALTERNATE_EVENT_NAME, evt);
             interpreter.evaluate(script);
         } catch (InterpreterException ie) {
             handleInterpreterException(ie);
@@ -891,6 +887,11 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
          */
         public void handleEvent(Event evt) {
             Element elt = (Element)evt.getCurrentTarget();
+            // Evaluate the script
+            String script = elt.getAttributeNS(null, attribute);
+            if (script.length() == 0)
+                return;
+
             // Find the scripting language
             Element e = elt;
             while (e != null &&
@@ -899,17 +900,13 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
                     !SVGConstants.SVG_SVG_TAG.equals(e.getLocalName()))) {
                 e = SVGUtilities.getParentElement(e);
             }
-            if (e == null) {
+            if (e == null)
                 return;
-            }
+
             String lang = e.getAttributeNS
                 (null, SVGConstants.SVG_CONTENT_SCRIPT_TYPE_ATTRIBUTE);
 
-            // Evaluate the script
-            String script = elt.getAttributeNS(null, attribute);
-            if (script.length() > 0) {
-                runEventHandler(script, evt, lang);
-            }
+            runEventHandler(script, evt, lang);
         }
     }
 }

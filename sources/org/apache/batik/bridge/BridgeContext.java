@@ -25,6 +25,7 @@ import org.apache.batik.css.engine.CSSContext;
 import org.apache.batik.css.engine.CSSEngine;
 import org.apache.batik.css.engine.CSSEngineEvent;
 import org.apache.batik.css.engine.CSSEngineListener;
+import org.apache.batik.css.engine.SVGCSSEngine;
 import org.apache.batik.css.engine.SystemColorSupport;
 import org.apache.batik.css.engine.value.Value;
 import org.apache.batik.dom.svg.SVGContext;
@@ -35,12 +36,15 @@ import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.TextPainter;
 import org.apache.batik.script.Interpreter;
 import org.apache.batik.script.InterpreterPool;
+import org.apache.batik.util.CSSConstants;
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.css.CSSPrimitiveValue;
+import org.w3c.dom.css.CSSValue;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
@@ -147,9 +151,29 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     protected TextPainter textPainter;
 
     /**
-     * Whether the bridge must support dynamic features.
+     * Indicates that no DOM listeners should be registered.
+     * In this case the generated GVT tree should be totally
+     * independent of the DOM tree.
      */
-    protected boolean dynamic;
+    public final static int STATIC      = 0;
+    /**
+     * Indicates that DOM listeners should be registered to support,
+     * 'interactivity' this includes anchors and cursors, but does not
+     * include support for DOM modifications.
+     */
+    public final static int INTERACTIVE = 1;
+
+    /**
+     * Indicates that all DOM listeners should be registered. This supports
+     * 'interactivity' (anchors and cursors), as well as DOM modifications
+     * listeners to update the GVT rendering tree.
+     */
+    public final static int DYNAMIC     = 2;
+
+    /**
+     * Whether the bridge should support dynamic, or interactive features.
+     */
+    protected int dynamicStatus = STATIC;
 
     /**
      * The update manager.
@@ -399,19 +423,50 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      * Returns true if the document is dynamic, false otherwise.
      */
     public boolean isDynamic() {
-        return dynamic;
+        return (dynamicStatus == DYNAMIC);
     }
 
     /**
-     * Sets the document as a dynamic document. Call this method
-     * before the build phase (ie. before <tt>gvtBuilder.build(...)</tt>)
+     * Returns true if the document is interactive, false otherwise.
+     */
+    public boolean isInteractive() {
+        return (dynamicStatus != STATIC);
+    }
+
+    /**
+     * Sets the document as a STATIC, INTERACTIVE or DYNAMIC document. 
+     * Call this method before the build phase 
+     * (ie. before <tt>gvtBuilder.build(...)</tt>)
      * otherwise, that will have no effect.
      *
-     *@param b the document state
+     *@param status the document dynamicStatus
      */
-    public void setDynamic(boolean b) {
-        dynamic = b;
+    public void setDynamicState(int status) {
+        dynamicStatus = status;
     }
+
+    /**
+     * Sets the document as DYNAMIC if <tt>dynamic</tt> is true
+     * STATIC otherwise.
+     */
+    public void setDynamic(boolean dynamic) {
+        if (dynamic)
+            setDynamicState(DYNAMIC);
+        else
+            setDynamicState(STATIC);
+    }
+
+    /**
+     * Sets the document as INTERACTIVE if <tt>interactive</tt> is
+     * true STATIC otherwise.
+     */
+    public void setInteractive(boolean interactive) {
+        if (interactive)
+            setDynamicState(INTERACTIVE);
+        else
+            setDynamicState(STATIC);
+    }
+
 
     /**
      * Returns the update manager, if the bridge supports dynamic features.
@@ -636,7 +691,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
             return null;
         }
         Bridge bridge = (Bridge)localNameMap.get(localName);
-        if (dynamic) {
+        if (isDynamic()) {
             return bridge == null ? null : bridge.getInstance();
         } else {
             return bridge;
@@ -1156,6 +1211,74 @@ public class BridgeContext implements ErrorConstants, CSSContext {
                                             docURL);
     }
 
+
+    /**
+     * Tells whether the given SVG document is dynamic.
+     */
+    public static boolean isDynamicDocument(Document doc) {
+        return BaseScriptingEnvironment.isDynamicDocument(doc);
+    }
+    
+    /**
+     * Tells whether the given SVG document is Interactive.
+     * We say it is, if it has any <title>, <desc>, or <a> elements,
+     * of if the 'cursor' property is anything but Auto on any element.
+     */
+    public static boolean isInteractiveDocument(Document doc) {
+        
+        Element root = ((SVGDocument)doc).getRootElement();
+        if (!SVGConstants.SVG_NAMESPACE_URI.equals(root.getNamespaceURI()))
+            return false;
+
+        return checkInteractiveElement(root);
+    }
+
+    public static boolean checkInteractiveElement(Element e) {
+        String tag = e.getNodeName();
+
+        // Check if it's one of our important element.
+        if (SVGConstants.SVG_A_TAG.equals(tag))
+            return true;
+        if (SVGConstants.SVG_TITLE_TAG.equals(tag))
+            return true;
+        if (SVGConstants.SVG_DESC_TAG.equals(tag))
+            return true;
+        if (SVGConstants.SVG_CURSOR_TAG.equals(tag))
+            return true;
+
+        // I am well aware that this is not 100% accurate but it's
+        // the best I can do w/o booting the CSSEngine.
+        if (e.getAttribute(CSSConstants.CSS_CURSOR_PROPERTY).length() >0)
+            return true;
+
+        /* We would like to do this but the CSS Engine isn't setup when
+           we want to do this.
+           
+        // Check if cursor property is set to something other than 'auto'.
+        Value cursorValue = CSSUtilities.getComputedStyle
+            (e, SVGCSSEngine.CURSOR_INDEX);
+        if ((cursorValue != null) &&
+            (cursorValue.getCssValueType()  == CSSValue.CSS_PRIMITIVE_VALUE) &&
+            (cursorValue.getPrimitiveType() == CSSPrimitiveValue.CSS_IDENT) &&
+            (SVGConstants.SVG_AUTO_VALUE.equals(cursorValue.getStringValue())))
+            return true;
+        */
+
+        // Check all the child elements for any of the above.
+        final String svg_ns = SVGConstants.SVG_NAMESPACE_URI;
+        for (Node n = e.getFirstChild();
+             n != null;
+             n = n.getNextSibling()) {
+            if (n.getNodeType() == Node.ELEMENT_NODE) {
+                Element child = (Element)n;
+                if (svg_ns.equals(child.getNamespaceURI()))
+                    if (checkInteractiveElement(child))
+                        return true;
+            }
+        }
+        return false;
+    }
+    
 
     // bridge extensions support //////////////////////////////////////////////
 

@@ -400,7 +400,8 @@ public abstract class CSSEngine {
             }
         }
 
-        if (document instanceof EventTarget) {
+        if (cssContext.isDynamic() &&
+            (document instanceof EventTarget)) {
             // Attach the mutation events listeners.
             EventTarget et = (EventTarget)document;
             domAttrModifiedListener = new DOMAttrModifiedListener();
