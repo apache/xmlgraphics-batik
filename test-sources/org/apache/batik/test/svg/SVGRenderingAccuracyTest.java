@@ -53,6 +53,8 @@ import org.apache.batik.test.DefaultTestReport;
 import org.apache.batik.test.Test;
 import org.apache.batik.test.TestReport;
 
+import org.w3c.dom.Document;
+
 
 /**
  * Checks for regressions in rendering a specific SVG document.
@@ -348,6 +350,18 @@ public class SVGRenderingAccuracyTest extends AbstractTest {
     }
 
     /**
+     * Template method which subclasses can override if they
+     * need to manipulate the DOM in some way before running 
+     * the accuracy test. For example, this can be useful to 
+     * test the alternate stylesheet support.
+     */
+    private final Document manipulateSVGDocument(Document doc) {
+        return doc;
+    }
+
+
+
+    /**
      * Requests this <tt>Test</tt> to run and produce a 
      * report.
      *
@@ -394,7 +408,7 @@ public class SVGRenderingAccuracyTest extends AbstractTest {
             return report;
         }
 
-        ImageTranscoder transcoder = getImageTranscoder();
+        ImageTranscoder transcoder = getTestImageTranscoder();
         TranscoderInput src = new TranscoderInput(svgURL.toString());
         TranscoderOutput dst = new TranscoderOutput(tmpFileOS);
         
@@ -800,12 +814,34 @@ public class SVGRenderingAccuracyTest extends AbstractTest {
      * Returns the <tt>ImageTranscoder</tt> the Test should
      * use
      */
-    public static ImageTranscoder getImageTranscoder(){
-        ImageTranscoder t = new PNGTranscoder();
+    public ImageTranscoder getTestImageTranscoder(){
+        ImageTranscoder t = new InternalPNGTranscoder();
         t.addTranscodingHint(PNGTranscoder.KEY_XML_PARSER_CLASSNAME,
                              PARSER_CLASS_NAME);
         t.addTranscodingHint(PNGTranscoder.KEY_FORCE_TRANSPARENT_WHITE,
                              new Boolean(false));
         return t;
+    }
+
+    /**
+     * Inner class which derives from the PNGTranscoder and calls the 
+     * manipulateSVGDocument just before encoding happens.
+     */
+    protected class InternalPNGTranscoder extends PNGTranscoder{
+        /**
+         * Transcodes the specified Document as an image in the specified output.
+         *
+         * @param document the document to transcode
+         * @param uri the uri of the document or null if any
+         * @param output the ouput where to transcode
+         * @exception TranscoderException if an error occured while transcoding
+         */
+        protected void transcode(Document document,
+                                 String uri,
+                                 TranscoderOutput output)
+            throws TranscoderException {
+            SVGRenderingAccuracyTest.this.manipulateSVGDocument(document);
+            super.transcode(document, uri, output);
+        }
     }
 }
