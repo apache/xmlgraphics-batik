@@ -59,7 +59,7 @@
         </p>
         <p>
         Batik makes it easy for Java based applications to deal with SVG
-        contents. For example, using Batik's SVG generator, a Java application
+        content. For example, using Batik's SVG generator, a Java application
         can very easily export its graphics in the SVG format. Using 
         Batik's SVG processor and SVG Viewing component, an application can very easily
         integrate SVG viewing capabilities. Another possibility is to
