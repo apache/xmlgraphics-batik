@@ -35,6 +35,8 @@ import org.apache.batik.ext.awt.image.PadMode;
 import org.apache.batik.ext.awt.image.renderable.AbstractRable;
 import org.apache.batik.ext.awt.image.renderable.CompositeRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.AffineRable8Bit;
+import org.apache.batik.ext.awt.image.renderable.PadRable8Bit;
+import org.apache.batik.ext.awt.image.PadMode;
 
 /**
 * This implementation of RenderableImage will render its input
@@ -353,8 +355,6 @@ public class BackgroundRable8Bit
         return false;
     }
 
-    Filter background = null;
-
     /**
      * Creates a RenderedImage that represented a rendering of this image
      * using a given RenderContext.  This is the most general way to obtain a
@@ -388,12 +388,21 @@ public class BackgroundRable8Bit
             Rectangle2D.intersect(r2d, aoiR2d, r2d);
         }
 
-        background = getBackground(node, null, r2d);
-
+        Filter background = getBackground(node, null, r2d);
+        
         if ( background == null)
             return null;
+        
+        background = new PadRable8Bit(background, r2d, PadMode.ZERO_PAD);
 
-        RenderedImage ri = background.createRendering(renderContext);
+        
+        RenderedImage ri = background.createRendering
+            (new RenderContext(renderContext.getTransform(), r2d, 
+                               renderContext.getRenderingHints()));
+        // System.out.println("RI: [" + ri.getMinX() + ", " 
+        //                    + ri.getMinY() + ", " +
+        //                    + ri.getWidth() + ", " +
+        //                    + ri.getHeight() + "]");
         // org.ImageDisplay.showImage("BG: ", ri);
         return ri;
     }
