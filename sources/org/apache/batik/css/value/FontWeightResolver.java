@@ -10,6 +10,7 @@ package org.apache.batik.css.value;
 
 import org.apache.batik.css.CSSOMReadOnlyStyleDeclaration;
 import org.apache.batik.css.CSSOMReadOnlyValue;
+import org.apache.batik.css.HiddenChildElementSupport;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.css.ViewCSS;
@@ -69,7 +70,7 @@ public class FontWeightResolver implements RelativeValueResolver {
 	ImmutableValue im = value.getImmutableValue();
 	boolean b = im == FontWeightFactory.BOLDER_VALUE;
 	if (b || im == FontWeightFactory.LIGHTER_VALUE) {
-	    Element p = getParentElement(element);
+	    Element p = HiddenChildElementSupport.getParentElement(element);
 	    CSSOMReadOnlyValue val;
 	    if (p == null) {
 		val = new CSSOMReadOnlyValue((b)
@@ -137,17 +138,5 @@ public class FontWeightResolver implements RelativeValueResolver {
 						 priority,
 						 origin);
 	}
-    }
-
-    /**
-     * Returns the parent element of the given one, or null.
-     */
-    protected Element getParentElement(Element e) {
-	for (Node n = e.getParentNode(); n != null; n = n.getParentNode()) {
-	    if (n.getNodeType() == Node.ELEMENT_NODE) {
-		return (Element)n;
-	    }
-	}
-	return null;
     }
 }
