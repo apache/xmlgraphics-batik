@@ -122,6 +122,7 @@
         <li><link href="http://xml.apache.org/fop">The Apache FOP project</link> uses Batik to handle SVG images. It uses the SVG rasterizer and extends the Batik transcoder 
             architecture to offer SVG to PDF conversion.</li>
         <li><link href="http://xml.apache.org/cocoon">The Apache Cocoon project</link> uses Batik to rasterize SVG images. </li>
+        <li><link href="http://www.jrefinery.com/jfreechart">The JFreeChart Project</link> uses Batik to export charts in the SVG format. </li>
         <li><link href="http://www.ilog.com/products/jviews">ILOG's JViews</link> product uses and extends the Batik SVG export module. </li>
         <li><link href="http://otn.oracle.com/products/jdev/content.html">Oracle Corp.'s JDeveloper9i</link> uses Batik to export class diagrams in SVG. It uses the
         SVG export module (SVGGraphics2D).</li>
@@ -130,6 +131,7 @@
         <li><link href="http://xweb.sf.net">XWeb</link>, a tool to create websites automatically out of XML input. Uses the Batik SVG Rasterizer.</li>
         <li><link href="http://www.elixirtech.com/ElixirReport">ElixirTech's ElixirReport</link> uses 
         Batik for charting and for its SVG component.</li>
+        <li><link href="http://lagoon.sourceforge.net/">Lagoon</link>, an XML-based framework for web site maintenance, uses the Batik SVG Rasterizer to render SVG as bitmap graphics for web publishing</li>
         </ul>
         </s1>
     </body>
