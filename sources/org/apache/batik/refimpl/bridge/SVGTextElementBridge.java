@@ -18,6 +18,8 @@ import java.awt.Stroke;
 import java.awt.font.TextAttribute;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import java.io.StringReader;
 
@@ -31,18 +33,22 @@ import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.batik.bridge.BridgeMutationEvent;
-import org.apache.batik.bridge.GraphicsNodeBridge;
 import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.bridge.BridgeMutationEvent;
+import org.apache.batik.bridge.DocumentLoader;
+import org.apache.batik.bridge.GraphicsNodeBridge;
+import org.apache.batik.bridge.IllegalAttributeValueException;
+import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.dom.util.XMLSupport;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.TextNode;
-import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.Clip;
+import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.Mask;
 import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
+import org.apache.batik.refimpl.bridge.resources.Messages;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.UnitProcessor;
 
@@ -54,6 +60,7 @@ import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.CSSValue;
 import org.w3c.dom.css.CSSValueList;
 import org.w3c.dom.svg.SVGElement;
+import org.w3c.dom.svg.SVGDocument;
 
 /**
  * A factory for the &lt;text&gt; SVG element.
@@ -143,7 +150,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
         return result;
     }
 
-    public void buildGraphicsNode(GraphicsNode node, 
+    public void buildGraphicsNode(GraphicsNode node,
                                   BridgeContext ctx,
                                   Element element) {
 
@@ -295,7 +302,30 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                                                          node,
                                                          false));
                 } else if (n.getLocalName().equals("tref")) {
-                    s = XLinkSupport.getXLinkHref((Element)n);
+                    try {
+                        String uriStr = XLinkSupport.getXLinkHref((Element)n);
+                        SVGDocument svgDoc =
+                            (SVGDocument)element.getOwnerDocument();
+                        URL baseURL = ((SVGOMDocument)svgDoc).getURLObject();
+                        URL url = new URL(baseURL, uriStr);
+
+                        DocumentLoader loader = ctx.getDocumentLoader();
+                        URIResolver resolver = new URIResolver(svgDoc, loader);
+                        Element ref = (Element)resolver.getNode(url.toString());
+                        s = getElementContent(ref);
+                        AttributedString as;
+                        Map map = getAttributeMap(ctx, (Element)n, node);
+                        as = createAttributedString(s, map, preserve, top,
+                                                    first, last);
+                        if (as != null) {
+                            result.add(as);
+                        }
+                    } catch(MalformedURLException ex) {
+                        throw new IllegalAttributeValueException(
+                         Messages.formatMessage("tref.xlinkHref.badURL", null));
+                    } catch (Exception ex) { /* Nothing to do */ }
+                    /*
+                      s = XLinkSupport.getXLinkHref((Element)n);
                     if (s.startsWith("#")) {
                         Document doc = n.getOwnerDocument();
                         Element ref = doc.getElementById(s.substring(1));
@@ -310,6 +340,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                     } else {
                         System.out.println(" !!! <tref> Non local URI");
                     }
+                    */
                 }
                 break;
             case Node.TEXT_NODE:
