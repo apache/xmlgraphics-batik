@@ -85,7 +85,7 @@ public class ExtendedGeneralPath implements Shape, Cloneable {
      * the arc.
      */
     public synchronized void arcTo(double rx, double ry,
-                                   double theta,
+                                   double angle,
                                    boolean largeArcFlag,
                                    boolean sweepFlag,
                                    double x, double y) {
@@ -105,14 +105,16 @@ public class ExtendedGeneralPath implements Shape, Cloneable {
         // Compute the half distance between the current and the final point
         double dx2 = (x0 - x) / 2.0;
         double dy2 = (y0 - y) / 2.0;
-        // Convert theta from degrees to radians
-        theta = Math.toRadians(theta % 360.0);
+        // Convert angle from degrees to radians
+        angle = Math.toRadians(angle % 360.0);
+        double cosAngle = Math.cos(angle);
+        double sinAngle = Math.sin(angle);
 
         //
         // Step 1 : Compute (x1, y1)
         //
-        double x1 = (Math.cos(theta) * dx2 + Math.sin(theta) * dy2);
-        double y1 = (-Math.sin(theta) * dx2 + Math.cos(theta) * dy2);
+        double x1 = (cosAngle * dx2 + sinAngle * dy2);
+        double y1 = (-sinAngle * dx2 + cosAngle * dy2);
         // Ensure radii are large enough
         rx = Math.abs(rx);
         ry = Math.abs(ry);
@@ -120,10 +122,11 @@ public class ExtendedGeneralPath implements Shape, Cloneable {
         double Pry = ry * ry;
         double Px1 = x1 * x1;
         double Py1 = y1 * y1;
-        double d = Px1/Prx + Py1/Pry;
-        if (d > 1) {
-            rx = Math.abs((Math.sqrt(d) * rx));
-            ry = Math.abs((Math.sqrt(d) * ry));
+        // check that radii are large enough
+        double radiiCheck = Px1/Prx + Py1/Pry;
+        if (radiiCheck > 1) {
+            rx = Math.sqrt(radiiCheck) * rx;
+            ry = Math.sqrt(radiiCheck) * ry;
             Prx = rx * rx;
             Pry = ry * ry;
         }
@@ -131,9 +134,10 @@ public class ExtendedGeneralPath implements Shape, Cloneable {
         //
         // Step 2 : Compute (cx1, cy1)
         //
-        double sign = (largeArcFlag == sweepFlag) ? -1d : 1d;
-        double coef = (sign * Math.sqrt(((Prx*Pry)-(Prx*Py1)-(Pry*Px1)) /
-                                        ((Prx*Py1)+(Pry*Px1))));
+        double sign = (largeArcFlag == sweepFlag) ? -1 : 1;
+        double sq = ((Prx*Pry)-(Prx*Py1)-(Pry*Px1)) / ((Prx*Py1)+(Pry*Px1));
+        sq = (sq < 0) ? 0 : sq;
+        double coef = (sign * Math.sqrt(sq));
         double cx1 = coef * ((rx * y1) / ry);
         double cy1 = coef * -((ry * x1) / rx);
 
@@ -142,11 +146,11 @@ public class ExtendedGeneralPath implements Shape, Cloneable {
         //
         double sx2 = (x0 + x) / 2.0;
         double sy2 = (y0 + y) / 2.0;
-        double cx = sx2 + (Math.cos(theta) * cx1 - Math.sin(theta) * cy1);
-        double cy = sy2 + (Math.sin(theta) * cx1 + Math.cos(theta) * cy1);
+        double cx = sx2 + (cosAngle * cx1 - sinAngle * cy1);
+        double cy = sy2 + (sinAngle * cx1 + cosAngle * cy1);
 
         //
-        // Step 4 : Compute the angleStart (theta1) and the angleExtent (dtheta)
+        // Step 4 : Compute the angleStart (angle1) and the angleExtent (dangle)
         //
         double ux = (x1 - cx1) / rx;
         double uy = (y1 - cy1) / ry;
@@ -158,6 +162,7 @@ public class ExtendedGeneralPath implements Shape, Cloneable {
         p = ux; // (1 * ux) + (0 * uy)
         sign = (uy < 0) ? -1d : 1d;
         double angleStart = Math.toDegrees(sign * Math.acos(p / n));
+
         // Compute the angle extent
         n = Math.sqrt((ux * ux + uy * uy) * (vx * vx + vy * vy));
         p = ux * vx + uy * vy;
@@ -181,7 +186,9 @@ public class ExtendedGeneralPath implements Shape, Cloneable {
         arc.height = ry * 2.0;
         arc.start = -angleStart;
         arc.extent = -angleExtent;
-        AffineTransform t = AffineTransform.getRotateInstance(theta, cx, cy);
+        System.out.println(arc.x+" "+arc.y+" "+arc.width+" "+arc.height+" "+
+                           arc.start+" "+arc.extent);
+        AffineTransform t = AffineTransform.getRotateInstance(angle, cx, cy);
         Shape s = t.createTransformedShape(arc);
         append(s, true);
     }
