@@ -108,10 +108,13 @@ public class JSVGViewerFrame
 
     // The actions names.
     public final static String OPEN_ACTION = "OpenAction";
+    public final static String NEW_WINDOW_ACTION = "NewWindowAction";
     public final static String RELOAD_ACTION = "ReloadAction";
     public final static String CLOSE_ACTION = "CloseAction";
     public final static String EXIT_ACTION = "ExitAction";
     public final static String RESET_TRANSFORM_ACTION = "ResetTransformAction";
+    public final static String ZOOM_IN_ACTION = "ZoomInAction";
+    public final static String ZOOM_OUT_ACTION = "ZoomOutAction";
     public final static String STOP_ACTION = "StopAction";
     //public final static String DOUBLE_BUFFER_ACTION = "DoubleBufferAction";
     public final static String AUTO_ADJUST_ACTION = "AutoAdjustAction";
@@ -251,10 +254,13 @@ public class JSVGViewerFrame
         });
 
         listeners.put(OPEN_ACTION, new OpenAction());
+        listeners.put(NEW_WINDOW_ACTION, new NewWindowAction());
         listeners.put(RELOAD_ACTION, new ReloadAction());
         listeners.put(CLOSE_ACTION, new CloseAction());
         listeners.put(EXIT_ACTION, application.createExitAction(this));
         listeners.put(RESET_TRANSFORM_ACTION, new ResetTransformAction());
+        listeners.put(ZOOM_IN_ACTION, new ZoomInAction());
+        listeners.put(ZOOM_OUT_ACTION, new ZoomOutAction());
         listeners.put(STOP_ACTION, stopAction);
         //listeners.put(DOUBLE_BUFFER_ACTION, new DoubleBufferAction());
         listeners.put(AUTO_ADJUST_ACTION, new AutoAdjustAction());
@@ -490,6 +496,16 @@ public class JSVGViewerFrame
     }
 
     /**
+     * To open a new window.
+     */
+    public class NewWindowAction extends AbstractAction {
+        public NewWindowAction() {}
+        public void actionPerformed(ActionEvent e) {
+            application.createAndShowJSVGViewerFrame();
+        }
+    }
+
+    /**
      * To close the last document.
      */
     public class CloseAction extends AbstractAction {
@@ -519,6 +535,46 @@ public class JSVGViewerFrame
         public ResetTransformAction() {}
         public void actionPerformed(ActionEvent e) {
             svgComponent.setRenderingTransform(initialTransform);
+        }
+    }
+
+    /**
+     * To zoom in.
+     */
+    public class ZoomInAction extends AbstractAction {
+        public ZoomInAction() {}
+        public void actionPerformed(ActionEvent e) {
+            AffineTransform at = svgComponent.getRenderingTransform();
+            if (at != null) {
+                Dimension dim = getSize();
+                int x = dim.width / 2;
+                int y = dim.height / 2;
+                AffineTransform t = AffineTransform.getTranslateInstance(x, y);
+                t.scale(2, 2);
+                t.translate(-x, -y);
+                t.concatenate(at);
+                svgComponent.setRenderingTransform(t);
+            }
+        }
+    }
+
+    /**
+     * To zoom out.
+     */
+    public class ZoomOutAction extends AbstractAction {
+        public ZoomOutAction() {}
+        public void actionPerformed(ActionEvent e) {
+            AffineTransform at = svgComponent.getRenderingTransform();
+            if (at != null) {
+                Dimension dim = getSize();
+                int x = dim.width / 2;
+                int y = dim.height / 2;
+                AffineTransform t = AffineTransform.getTranslateInstance(x, y);
+                t.scale(0.5, 0.5);
+                t.translate(-x, -y);
+                t.concatenate(at);
+                svgComponent.setRenderingTransform(t);
+            }
         }
     }
 
@@ -574,6 +630,7 @@ public class JSVGViewerFrame
         public ShowDebugAction() {}
         public void actionPerformed(ActionEvent e) {
             debug = ((JCheckBoxMenuItem)e.getSource()).isSelected();
+            time = System.currentTimeMillis();
         }
     }
 
