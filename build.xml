@@ -174,6 +174,7 @@ To display the available targets type:
         <exclude name="xml-${project}/lib/build/mail.jar" />
         <exclude name="xml-${project}/lib/build/activation.jar" />
         <exclude name="xml-${project}/test-references/**" />
+        <exclude name="xml-${project}/${build}/**" />
     </zip>
 
   </target>
