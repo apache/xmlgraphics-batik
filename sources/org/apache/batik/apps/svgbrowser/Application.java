@@ -84,15 +84,17 @@ public interface Application {
     boolean canLoadScriptType(String scriptType);
 
     /**
-     * Returns true if the script origin should be constrained
-     * to be the same as the corresponding document's origin.
+     * Returns the allowed origins for scripts.
+     * @see ResourceOrigin
      */
-    boolean constrainScriptOrigin();
+    int getAllowedScriptOrigin();
 
     /**
-     * Returns true if resources origin should be constrained to
-     * be the same as the corresponding document's origin
+     * Returns the allowed origins for external
+     * resources. 
+     *
+     * @see ResourceOrigin.
      */
-    boolean constrainExternalResourceOrigin();
+    int getAllowedExternalResourceOrigin();
 
 }

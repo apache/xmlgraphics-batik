@@ -19,6 +19,7 @@ import org.apache.batik.util.ParsedURL;
  * @version $Id$
  */
 public class DefaultExternalResourceSecurity implements ExternalResourceSecurity {
+    public static final String DATA_PROTOCOL = "data";
     /**
      * Message when trying to load a external resource file and the Document
      * does not have a URL
@@ -73,12 +74,17 @@ public class DefaultExternalResourceSecurity implements ExternalResourceSecurity
             
             if ((docHost != externalResourceHost) &&
                 ((docHost == null) || (!docHost.equals(externalResourceHost)))){
+                
+                if ( externalResourceURL == null
+                     ||
+                     !DATA_PROTOCOL.equals(externalResourceURL.getProtocol()) ) {
                 se = new SecurityException
                     (Messages.formatMessage(ERROR_EXTERNAL_RESOURCE_FROM_DIFFERENT_URL,
                                             new Object[]{externalResourceURL}));
+                }
+                
             }
         }
-        
     }
 }
 

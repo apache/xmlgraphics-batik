@@ -85,4 +85,26 @@
 
     </testGroup>
 
+    <testGroup id="SecurityExceptions" name="Security Exceptions" class="org.apache.batik.test.svg.SVGOnLoadExceptionTest">
+        <test id="bridge/ecmaCheckNoEmbed" >
+            <property name="Scripts" class="java.lang.String" 
+                      value="application/java-archive" />
+            <property name="ScriptOrigin" class="java.lang.String"
+                      value="NONE" />
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="java.lang.SecurityException" />
+        </test>
+
+        <test id="bridge/embedData" >
+            <property name="Scripts" class="java.lang.String" 
+                      value="application/java-archive" />
+            <property name="ResourceOrigin" class="java.lang.String"
+                      value="NONE" />
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="uri.unsecure" />
+        </test>
+
+    </testGroup>
 </testSuite>

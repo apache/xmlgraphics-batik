@@ -24,6 +24,9 @@ import org.apache.batik.test.svg.SelfContainedSVGOnLoadTest;
 public class ScriptSelfTest extends SelfContainedSVGOnLoadTest {
     boolean secure = true;
     boolean constrain = true;
+    boolean document = true;
+    boolean embed = false;
+
     String scripts = "text/ecmascript, application/java-archive";
     TestUserAgent userAgent = new TestUserAgent();
 
@@ -47,6 +50,23 @@ public class ScriptSelfTest extends SelfContainedSVGOnLoadTest {
     public Boolean getConstrain(){
         return new Boolean(this.constrain);
     }
+
+    public void setEmbed(Boolean embed){
+        this.embed = embed.booleanValue();
+    }
+
+    public Boolean getEmbed(){
+        return new Boolean(this.embed);
+    }
+
+    public void setDocument(Boolean document){
+        this.document = document.booleanValue();
+    }
+
+    public Boolean getDocument(){
+        return new Boolean(this.document);
+    }
+
 
     public void setScripts(String scripts){
         this.scripts = scripts;
@@ -84,9 +104,16 @@ public class ScriptSelfTest extends SelfContainedSVGOnLoadTest {
             if (scripts.indexOf(scriptType) == -1){
                 return new NoLoadScriptSecurity(scriptType);
             } else {
-                if (constrain){
-                    return new DefaultScriptSecurity
-                        (scriptType, scriptPURL, docPURL);
+                if (constrain) {
+                    if (document) {
+                        return new DefaultScriptSecurity
+                            (scriptType, scriptPURL, docPURL);
+                    } else if (embed){
+                        return new EmbededScriptSecurity
+                            (scriptType, scriptPURL, docPURL);
+                    } else {
+                        return new NoLoadScriptSecurity(scriptType);
+                    }
                 } else {
                     return new RelaxedScriptSecurity
                         (scriptType, scriptPURL, docPURL);

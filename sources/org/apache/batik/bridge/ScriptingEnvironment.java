@@ -262,9 +262,12 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
         interpreter.bindObject(ALTERNATE_EVENT_NAME, evt);
             
         try {
+            checkCompatibleScriptURL(lang, docPURL);
             interpreter.evaluate(script);
         } catch (InterpreterException ie) {
             handleInterpreterException(ie);
+        } catch (SecurityException se) {
+            handleSecurityException(se);
         }
     }
 

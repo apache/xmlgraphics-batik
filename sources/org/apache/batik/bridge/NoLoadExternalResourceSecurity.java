@@ -43,15 +43,8 @@ public class NoLoadExternalResourceSecurity implements ExternalResourceSecurity 
     }
 
     /**
-     * @param externalResourceURL url for the externalResource, as defined in
-     *        the externalResource's xlink:href attribute. If that
-     *        attribute was empty, then this parameter should
-     *        be null
-     * @param docURL url for the document into which the 
-     *        externalResource was found.
      */
-    public NoLoadExternalResourceSecurity(ParsedURL externalResourceURL,
-                                          ParsedURL docURL){
+    public NoLoadExternalResourceSecurity(){
         se = new SecurityException
             (Messages.formatMessage(ERROR_NO_EXTERNAL_RESOURCE_ALLOWED,
                                     null));

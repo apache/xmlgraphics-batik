@@ -11,15 +11,17 @@ package org.apache.batik.bridge;
 import org.apache.batik.util.ParsedURL;
 
 /**
- * Default implementation for the <tt>ScriptSecurity</tt> interface.
- * It allows all types of scripts to be loaded, but only if they
- * come from the same server as the document they are included into.
+ * This implementation of the <tt>ScriptSecurity</tt> interface only
+ * allows scripts embeded in the document, i.e., scripts whith either
+ * the same URL as the document (as for event attributes) or scripts
+ * embeded with the data protocol.
  *
  * @author <a href="mailto:vhardy@apache.org">Vincent Hardy</a>
  * @version $Id$
  */
-public class DefaultScriptSecurity implements ScriptSecurity {
+public class EmbededScriptSecurity implements ScriptSecurity {
     public static final String DATA_PROTOCOL = "data";
+
     /**
      * Message when trying to load a script file and the Document
      * does not have a URL
@@ -28,11 +30,11 @@ public class DefaultScriptSecurity implements ScriptSecurity {
         = "DefaultScriptSecurity.error.cannot.access.document.url";
 
     /**
-     * Message when trying to load a script file from a server 
-     * different than the one of the document.
+     * Message when trying to load a script that is not embeded
+     * in the document.
      */
-    public static final String ERROR_SCRIPT_FROM_DIFFERENT_URL
-        = "DefaultScriptSecurity.error.script.from.different.url";
+    public static final String ERROR_SCRIPT_NOT_EMBEDED
+        = "EmbededScriptSecurity.error.script.not.embeded";
 
     /**
      * The exception is built in the constructor and thrown if 
@@ -61,7 +63,7 @@ public class DefaultScriptSecurity implements ScriptSecurity {
      * @param docURL url for the document into which the 
      *        script was found.
      */
-    public DefaultScriptSecurity(String scriptType,
+    public EmbededScriptSecurity(String scriptType,
                                  ParsedURL scriptURL,
                                  ParsedURL docURL){
         // Make sure that the archives comes from the same host
@@ -71,23 +73,16 @@ public class DefaultScriptSecurity implements ScriptSecurity {
                 (Messages.formatMessage(ERROR_CANNOT_ACCESS_DOCUMENT_URL,
                                         new Object[]{scriptURL}));
         } else {
-            String docHost    = docURL.getHost();
-            String scriptHost = scriptURL.getHost();
-            
-            if ((docHost != scriptHost) &&
-                ((docHost == null) || (!docHost.equals(scriptHost)))) {
-                if ( !docURL.equals(scriptURL)
-                     &&
-                     (scriptURL == null
-                      ||
-                      !DATA_PROTOCOL.equals(scriptURL.getProtocol()) )) {
-                    se = new SecurityException
-                        (Messages.formatMessage(ERROR_SCRIPT_FROM_DIFFERENT_URL,
-                                                new Object[]{scriptURL}));
-                }
+            if ( !docURL.equals(scriptURL)
+                 &&
+                 (scriptURL == null
+                  ||
+                  !DATA_PROTOCOL.equals(scriptURL.getProtocol()) )) {
+                se = new SecurityException
+                    (Messages.formatMessage(ERROR_SCRIPT_NOT_EMBEDED,
+                                            new Object[]{scriptURL}));
             }
         }
-        
     }
 }
 

@@ -198,12 +198,18 @@ public class BaseScriptingEnvironment {
     protected Document document;
 
     /**
+     * The URL of the document ot manage
+     */
+    protected ParsedURL docPURL;
+
+    /**
      * Creates a new BaseScriptingEnvironment.
      * @param ctx the bridge context
      */
     public BaseScriptingEnvironment(BridgeContext ctx) {
         bridgeContext = ctx;
         document = ctx.getDocument();
+        docPURL = new ParsedURL(((SVGDocument)document).getURL());
         userAgent     = bridgeContext.getUserAgent();
     }
 
@@ -264,8 +270,6 @@ public class BaseScriptingEnvironment {
                         (XMLBaseSupport.getCascadedXMLBase(script), href);
 
                     checkCompatibleScriptURL(type, purl);
-                    ParsedURL docPURL 
-                        = new ParsedURL(((SVGDocument)document).getURL());
 
                     DocumentJarClassLoader cll;
                     URL docURL = null;
@@ -371,9 +375,8 @@ public class BaseScriptingEnvironment {
      * compatible. A SecurityException is thrown if loading
      * the script is not allowed.
      */
-    private void checkCompatibleScriptURL(String scriptType, 
+    protected void checkCompatibleScriptURL(String scriptType, 
                                           ParsedURL scriptPURL){
-        ParsedURL docPURL = new ParsedURL(((SVGDocument)document).getURL());
         userAgent.checkLoadScript(scriptType, scriptPURL, docPURL);
     }
 
@@ -392,18 +395,20 @@ public class BaseScriptingEnvironment {
             }
             return;
         }
-        dispatchSVGLoad(root, interp);
+
+        dispatchSVGLoad(root, interp, true, lang);
     }
 
     /**
      * Auxiliary method for dispatchSVGLoad.
      */
-    protected void dispatchSVGLoad(Element elt, final Interpreter interp) {
+    protected void dispatchSVGLoad(Element elt, final Interpreter interp,
+                                   boolean checkCanRun, String lang) {
         for (Node n = elt.getFirstChild();
              n != null;
              n = n.getNextSibling()) {
             if (n.getNodeType() == n.ELEMENT_NODE) {
-                dispatchSVGLoad((Element)n, interp);
+                dispatchSVGLoad((Element)n, interp, checkCanRun, lang);
             }
         }
 
@@ -417,6 +422,12 @@ public class BaseScriptingEnvironment {
             elt.getAttributeNS(null, SVGConstants.SVG_ONLOAD_ATTRIBUTE);
         EventListener l = null;
         if (s.length() > 0) {
+            if (checkCanRun) {
+                // Check that it is ok to run embeded scripts
+                checkCompatibleScriptURL(lang, docPURL);
+                checkCanRun = false; // we only check once for onload handlers
+            }
+
             l = new EventListener() {
                     public void handleEvent(Event evt) {
                         try {
@@ -444,6 +455,15 @@ public class BaseScriptingEnvironment {
         if (userAgent != null) {
             Exception ex = ie.getException();
             userAgent.displayError((ex == null) ? ie : ex);
+        }
+    }
+
+    /**
+     * Handles the given exception.
+     */
+    protected void handleSecurityException(SecurityException se) {
+        if (userAgent != null) {
+            userAgent.displayError(se);
         }
     }
 
