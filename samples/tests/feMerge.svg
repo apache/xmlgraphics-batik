@@ -183,7 +183,7 @@
     	       style="fill:FireBrick;  filter:url(#Merge4)"/>
               <g transform="translate(60, 130)">
                <text x="0" y="0" style="text-anchor:middle">
-                lt blue/green/orange/blue
+                lt blue/green/lt green/blue
                </text>
              </g>
     	  </g>
@@ -194,7 +194,7 @@
     	       style="fill:FireBrick;  filter:url(#Merge5)"/>
               <g transform="translate(60, 130)">
                <text x="0" y="0" style="text-anchor:middle">
-                lt blue/orange/green/blue
+                lt blue/lt green/green/blue
                </text>
              </g>
     	  </g>
@@ -205,7 +205,7 @@
     	       style="fill:FireBrick;  filter:url(#Merge6)"/>
               <g transform="translate(60, 130)">
                <text x="0" y="0" style="text-anchor:middle">
-                green/blue/lt blue/orange
+                green/blue/lt blue/lt green
                </text>
              </g>
     	  </g>
