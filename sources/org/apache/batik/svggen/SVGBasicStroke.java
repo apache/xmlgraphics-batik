@@ -80,7 +80,7 @@ public class SVGBasicStroke extends AbstractSVGConverter{
             dashArrayBuf.append(doubleString(dashArray[0]));
 
         for(int i=1; i<dashArray.length; i++){
-            dashArrayBuf.append(SPACE);
+            dashArrayBuf.append(COMMA);
             dashArrayBuf.append(doubleString(dashArray[i]));
         }
 
