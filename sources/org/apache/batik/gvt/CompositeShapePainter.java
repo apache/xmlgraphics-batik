@@ -23,36 +23,42 @@ import java.util.List;
  * @version $Id$
  */
 public class CompositeShapePainter implements ShapePainter {
+
     /**
      * The shape associated with this painter
      */
     protected Shape shape;
 
-    /** The enclosed <tt>ShapePainter</tt>s of this composite shape painter. */
+    /** 
+     * The enclosed <tt>ShapePainter</tt>s of this composite shape painter.
+     */
     protected ShapePainter [] painters;
-    /** The number of shape painter. */
+
+    /**
+     * The number of shape painter.
+     */
     protected int count;
 
     /**
      * Constructs a new empty <tt>CompositeShapePainter</tt>.
      */
     public CompositeShapePainter(Shape shape) {
-        if(shape == null){
+        if (shape == null) {
             throw new IllegalArgumentException();
         }
-
         this.shape = shape;
     }
 
     /**
-     * Adds the specified shape painter.
+     * Adds the specified shape painter to the shape painter..
+     *
      * @param shapePainter the shape painter to add
      */
     public void addShapePainter(ShapePainter shapePainter) {
         if (shapePainter == null) {
             return;
         }
-        if(this.shape != shapePainter.getShape()){
+        if (this.shape != shapePainter.getShape()) {
             shapePainter.setShape(shape);
         }
         if (painters == null) {
@@ -67,12 +73,11 @@ public class CompositeShapePainter implements ShapePainter {
     }
 
     /**
-     * Paints the specified shape using the specified Graphics2D and context.
+     * Paints the specified shape using the specified Graphics2D.
+     *
      * @param g2d the Graphics2D to use
-     * @param ctx the render context to use
      */
-    public void paint(Graphics2D g2d,
-                      GraphicsNodeRenderContext ctx) {
+    public void paint(Graphics2D g2d, GraphicsNodeRenderContext ctx) {
         if (painters != null) {
             for (int i=0; i < count; ++i) {
                 painters[i].paint(g2d, ctx);
@@ -81,7 +86,7 @@ public class CompositeShapePainter implements ShapePainter {
     }
 
     /**
-     * Returns the area painted by this painter
+     * Returns the area painted by this shape painter.
      */
     public Shape getPaintedArea(GraphicsNodeRenderContext rc){
         // <!> FIX ME: Use of GeneralPath is a work around Area problems.
@@ -98,13 +103,17 @@ public class CompositeShapePainter implements ShapePainter {
             return null;
         }
     }
-
+    
     /**
-     * Sets the Shape this painter is associated with.
+     * Sets the Shape this shape painter is associated with.
+     *
      * @param shape new shape this painter should be associated with.
-     *        should not be null.
+     * Should not be null.
      */
     public void setShape(Shape shape){
+        if (shape == null) {
+            throw new IllegalArgumentException();
+        }
         if (painters != null) {
             for (int i=0; i < count; ++i) {
                 painters[i].setShape(shape);
@@ -114,9 +123,9 @@ public class CompositeShapePainter implements ShapePainter {
     }
 
     /**
-     * Gets the Shape this painter is associated with.
+     * Gets the Shape this shape painter is associated with.
      *
-     * @return shape associated with this Painter.
+     * @return shape associated with this painter
      */
     public Shape getShape(){
         return shape;

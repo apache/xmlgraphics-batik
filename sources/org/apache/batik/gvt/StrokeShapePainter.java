@@ -20,7 +20,10 @@ import java.awt.Paint;
  * @version $Id$
  */
 public class StrokeShapePainter implements ShapePainter {
-    /** Shape painted by this painter */
+
+    /** 
+     * Shape painted by this painter.
+     */
     protected Shape shape;
 
     /**
@@ -34,16 +37,16 @@ public class StrokeShapePainter implements ShapePainter {
     protected Paint paint;
 
     /**
-     * Constructs a new <tt>ShapePainter</tt> that can be used to draw
-     * the outline of a <tt>Shape</tt>.
+     * Constructs a new <tt>ShapePainter</tt> that can be used to draw the
+     * outline of a <tt>Shape</tt>.
      *
-     * @param shape shape to be painted by this painter. Should not be null.
+     * @param shape shape to be painted by this painter.
+     * Should not be null.
      */
     public StrokeShapePainter(Shape shape) {
-        if(shape == null){
+        if (shape == null) {
             throw new IllegalArgumentException();
         }
-
         this.shape = shape;
     }
 
@@ -66,15 +69,11 @@ public class StrokeShapePainter implements ShapePainter {
     }
 
     /**
-     * Paints the outline of the specified shape using the specified
-     * Graphics2D and context.
+     * Paints the outline of the specified shape using the specified Graphics2D.
      *
-     * @param shape the shape to paint
-     * @param g2d the Graphics2D to use
-     * @param ctx the render context to use
+     * @param g2d the Graphics2D to use 
      */
-    public void paint(Graphics2D g2d,
-                      GraphicsNodeRenderContext ctx) {
+    public void paint(Graphics2D g2d, GraphicsNodeRenderContext ctx) {
         if (stroke != null && paint != null) {
             g2d.setPaint(paint);
             g2d.setStroke(stroke);
@@ -83,12 +82,10 @@ public class StrokeShapePainter implements ShapePainter {
     }
 
     /**
-     * Returns the area painted by this painter for a given input shape
-     *
-     * @param shape the shape to paint
+     * Returns the area painted by this shape painter.
      */
     public Shape getPaintedArea(GraphicsNodeRenderContext rc){
-        if(paint != null && stroke != null){
+        if (paint != null && stroke != null) {
             return stroke.createStrokedShape(shape);
         } else {
             return null;
@@ -96,21 +93,24 @@ public class StrokeShapePainter implements ShapePainter {
     }
 
     /**
-     * Sets the Shape this painter is associated with.
+     * Sets the Shape this shape painter is associated with.
+     *
      * @param shape new shape this painter should be associated with.
-     *        should not be null.
+     * Should not be null.
      */
     public void setShape(Shape shape){
+        if (shape == null) {
+            throw new IllegalArgumentException();
+        }
         this.shape = shape;
     }
 
     /**
-     * Gets the Shape this painter is associated with.
+     * Gets the Shape this shape painter is associated with.
      *
-     * @return shape associated with this Painter.
+     * @return shape associated with this painter.
      */
     public Shape getShape(){
         return shape;
     }
-
 }

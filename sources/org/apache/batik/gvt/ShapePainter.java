@@ -20,29 +20,29 @@ import java.awt.Graphics2D;
 public interface ShapePainter {
 
     /**
-     * Paints the specified shape using the specified Graphics2D and context.
+     * Paints the specified shape using the specified Graphics2D.
+     *
      * @param g2d the Graphics2D to use
-     * @param ctx the render context to use
      */
     void paint(Graphics2D g2d, GraphicsNodeRenderContext ctx);
 
     /**
-     * Returns the area painted by this painter
-     *
+     * Returns the area painted by this shape painter.
      */
     Shape getPaintedArea(GraphicsNodeRenderContext rc);
 
     /**
-     * Sets the Shape this painter is associated with.
+     * Sets the Shape this shape painter is associated with.
+     *
      * @param shape new shape this painter should be associated with.
-     *        should not be null.
+     * Should not be null.  
      */
-    public void setShape(Shape shape);
+    void setShape(Shape shape);
 
     /**
-     * Gets the Shape this painter is associated with.
+     * Gets the shape this shape painter is associated with.
      *
-     * @return shape associated with this Painter.
+     * @return shape associated with this painter
      */
-    public Shape getShape();
+    Shape getShape();
 }
