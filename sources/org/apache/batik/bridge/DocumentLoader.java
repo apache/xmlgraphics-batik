@@ -6,22 +6,20 @@
  * the LICENSE file.                                                         *
  *****************************************************************************/
 
-package org.apache.batik.gvt.filter;
+package org.apache.batik.bridge;
 
-import org.apache.batik.gvt.GraphicsNode;
+import org.w3c.dom.Document;
+import org.w3c.dom.DOMException;
+import org.xml.sax.SAXException;
 
 /**
- * This interface lets <tt>GraphicsNode</tt> create instances of
- * <tt>GraphicsNodeRable</tt> appropriate for the filter module
- * implementation.
+ * Defines a class that is responsible of loading (creating) a Document.
  *
- * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
+ * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  * @version $Id$
  */
-public interface GraphicsNodeRableFactory {
-    /**
-     * Returns a <tt>GraphicsNodeRable</tt> initialized with the
-     * input <tt>GraphicsNode</tt>.
-     */
-    GraphicsNodeRable createGraphicsNodeRable(GraphicsNode node);
+public interface DocumentLoader {
+
+    Document loadDocument(String uri) throws DOMException, SAXException;
+
 }

@@ -12,15 +12,7 @@ import org.apache.batik.gvt.GVTFactory;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
 import org.apache.batik.parser.ParserFactory;
-import org.apache.batik.bridge.GraphicsNodeBridge;
-import org.apache.batik.bridge.FilterBridge;
-import org.apache.batik.bridge.MaskBridge;
-import org.apache.batik.bridge.ClippingAreaBridge;
-import org.apache.batik.bridge.CompositeBridge;
-import org.apache.batik.bridge.TransformBridge;
-import org.apache.batik.bridge.ShapePainterBridge;
-import org.apache.batik.bridge.GraphicsNodeEventFilterBridge;
-import org.apache.batik.bridge.CursorBridge;
+import org.apache.batik.bridge.DocumentLoader;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.StyleReference;
 import org.apache.batik.bridge.Bridge;
@@ -45,6 +37,7 @@ import java.util.Iterator;
  * instances.
  *
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
+ * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  * @author <a href="mailto:etissandier@ilog.fr">Emmanuel Tissandier</a>
  * @author <a href="mailto:cjolif@ilog.fr">Christophe Jolif</a>
  * @version $Id$
@@ -112,13 +105,29 @@ public class ConcreteBridgeContext implements BridgeContext {
      */
     private ViewCSS viewCSS;
 
+    /**
+     * The factory class for vending <tt>GraphicsNodeRable</tt> objects.
+     */
     private GraphicsNodeRableFactory graphicsNodeRableFactory;
+
+    /**
+     * The document loader used to load/create Document.
+     */
+    private DocumentLoader documentLoader;
 
     /**
      * Constructs a new empty <tt>BridgeContext</tt>.
      */
     public ConcreteBridgeContext(){
         updateManager = new BridgeUpdateManager(this);
+    }
+
+    public DocumentLoader getDocumentLoader() {
+        return documentLoader;
+    }
+
+    public void setDocumentLoader(DocumentLoader newDocumentLoader) {
+        this.documentLoader = newDocumentLoader;
     }
 
     public ViewCSS getViewCSS() {
@@ -306,9 +315,6 @@ public class ConcreteBridgeContext implements BridgeContext {
         return parserFactory;
     }
 
-    /**
-     * Returns a GraphicsNodeRable factory
-     */
     public GraphicsNodeRableFactory getGraphicsNodeRableFactory(){
         return graphicsNodeRableFactory;
     }

@@ -35,6 +35,17 @@ public interface BridgeContext {
     InterpreterPool getInterpreterPool();
 
     /**
+     * Returns the document loader to use to load a document.
+     */
+    DocumentLoader getDocumentLoader();
+
+    /**
+     * Sets the document loader to use to load a document.
+     * @param newDocumentLoader the new document loader
+     */
+    void setDocumentLoader(DocumentLoader newDocumentLoader);
+
+    /**
      * Returns the <code>UserAgent</code> than can used by the bridge.
      */
     UserAgent getUserAgent();
