@@ -232,8 +232,8 @@ public class SVGFeCompositeElementBridge implements FilterBridge,
         // Now, do the composite.
         Filter filter = null;
         Vector srcs = new Vector(2);
-        srcs.add(in1);
         srcs.add(in2);
+        srcs.add(in1);
         filter = new ConcreteCompositeRable(srcs, rule);
         
         filter = new ConcretePadRable(filter,

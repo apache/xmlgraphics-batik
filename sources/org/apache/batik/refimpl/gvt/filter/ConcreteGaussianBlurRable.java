@@ -124,6 +124,16 @@ public class ConcreteGaussianBlurRable
         return (Filter)getSources().get(0);
     }
 
+    public final static double eps = 0.0001;
+    public static boolean eps_eq(double f1, double f2) {
+        return ((f1 >= f2-eps) && (f1 <= f2+eps));
+    }
+    public static boolean eps_abs_eq(double f1, double f2) {
+        if (f1 <0) f1 = -f1;
+        if (f2 <0) f2 = -f2;
+        return eps_eq(f1, f2);
+    }
+
     public RenderedImage createRendering(RenderContext rc) {
         // Just copy over the rendering hints.
         RenderingHints rh = rc.getRenderingHints();
@@ -149,33 +159,19 @@ public class ConcreteGaussianBlurRable
         double scaleX = Math.sqrt(sx*sx + shy*shy);
         double scaleY = Math.sqrt(sy*sy + shx*shx);
 
-        AffineTransform srcAt;
-        srcAt = AffineTransform.getScaleInstance(scaleX, scaleY);
-
         double sdx = stdDeviationX*scaleX;
         double sdy = stdDeviationY*scaleY;
 
         GaussianBlurOp op = new GaussianBlurOp(sdx, sdy, rh);
 
-        // This is the affine transform between our intermediate
-        // coordinate space and the real device space.
-        AffineTransform resAt;
-        // The shear/rotation simply divides out the
-        // common scale factor in the matrix.
-        resAt = new AffineTransform(sx/scaleX, shy/scaleX,
-                                    shx/scaleY,  sy/scaleY,
-                                    tx, ty);
-        
+        double blurRadX = op.getRadiusX();
+        double blurRadY = op.getRadiusY();
+
         Shape aoi = rc.getAreaOfInterest();
         if(aoi == null)
             aoi = getBounds2D();
 
-        double blurRadX = op.getRadiusX();
-        double blurRadY = op.getRadiusY();
-
         Rectangle2D r = aoi.getBounds2D();
-
-          // System.out.println("Rect: " + r);
 
         // Grow the region in usr space.
         r = new Rectangle2D.Double(r.getX()-blurRadX/scaleX, 
@@ -183,8 +179,43 @@ public class ConcreteGaussianBlurRable
                                    r.getWidth() +2*blurRadX/scaleX, 
                                    r.getHeight()+2*blurRadY/scaleY);
 
-          // System.out.println("Rect2: " + r);
+        // This is the affine transform between our usr space and an
+        // intermediate space which is scaled similarly to our device
+        // space but is still axially aligned with our device space.
+        AffineTransform srcAt;
 
+        // This is the affine transform between our intermediate
+        // coordinate space and the real device space, or null (if
+        // we don't need an intermediate space).
+        AffineTransform resAt;
+
+        if (eps_eq(blurRadX, blurRadY) &&
+            eps_abs_eq(sx/scaleX, sy/scaleY)) {
+            // Ok we have a square Gaussian kernel which means it is
+            // circularly symetric, further our residual matrix (after
+            // removing scaling) is a rotation matrix (perhaps with
+            // mirroring), thus we can generate our source directly in
+            // device space and convolve there rather than going to an
+            // intermediate space (axially aligned with usr space) and
+            // then completing the requested rotation/shear, with an
+            // AffineRed...
+
+            srcAt = at;
+            resAt = null;
+            System.out.println("No resAt\n");
+        } else {
+            // Scale to device coords.
+            srcAt = AffineTransform.getScaleInstance(scaleX, scaleY);
+
+            // The shear/rotation simply divides out the
+            // common scale factor in the matrix.
+            resAt = new AffineTransform(sx/scaleX, shy/scaleX,
+                                        shx/scaleY,  sy/scaleY,
+                                        tx, ty);
+            System.out.println("Using resAt\n");
+        }
+
+        
         RenderedImage ri;
         ri = getSource().createRendering(new RenderContext(srcAt, r, rh));
         if (ri == null)
@@ -199,8 +230,8 @@ public class ConcreteGaussianBlurRable
                                    r.getY()-blurRadY,
                                    r.getWidth() +2*blurRadX, 
                                    r.getHeight()+2*blurRadY);
-
-        cr = new PadRed(cr, r.getBounds(), PadMode.ZERO_PAD, rh);
+        if (!r.getBounds().equals(cr.getBounds()))
+            cr = new PadRed(cr, r.getBounds(), PadMode.ZERO_PAD, rh);
         
         ColorModel cm = ri.getColorModel();
 
@@ -224,9 +255,9 @@ public class ConcreteGaussianBlurRable
 
         cr = new ConcreteBufferedImageCachableRed(destBI, rrMinX, rrMinY);
 
-        if (!resAt.isIdentity())
+        if ((resAt != null) && (!resAt.isIdentity()))
             cr = new AffineRed(cr, resAt, rh);
-
+        
         return cr;
     }
 
