@@ -130,9 +130,16 @@ public class GraphicsNodeRable8Bit
      * Returns the bounds of this Rable in the user coordinate system.
      */
     public Rectangle2D getBounds2D(){
-        if (usePrimitivePaint)
-            return (Rectangle2D)(node.getPrimitiveBounds(
-                                 getGraphicsNodeRenderContext()).clone());
+        if (usePrimitivePaint){
+            Rectangle2D primitiveBounds 
+                = node.getPrimitiveBounds(getGraphicsNodeRenderContext());
+            if(primitiveBounds != null){
+                return (Rectangle2D)(primitiveBounds.clone());
+            }
+            else{
+                return new Rectangle2D.Double(0, 0, 0, 0);
+            }
+        }
 
         // When not using Primitive paint we return out bounds in our
         // parent's user space.  This makes sense since this is the
@@ -140,9 +147,15 @@ public class GraphicsNodeRable8Bit
         // primitivePaint incorporates the transform from our user
         // space to our parents user space).
         Rectangle2D bounds = node.getBounds(getGraphicsNodeRenderContext());
+        if(bounds == null){
+            return new Rectangle2D.Double(0, 0, 0, 0);
+        }
+
         AffineTransform at = node.getTransform();
-        if (at != null)
-            bounds = at.createTransformedShape(bounds).getBounds2D();
+        if (at != null){
+           bounds = at.createTransformedShape(bounds).getBounds2D();
+        }
+        
         return bounds;
     }
 
@@ -254,11 +267,17 @@ public class GraphicsNodeRable8Bit
             System.out.println("Not using Cached Red: " + usr2dev);
             System.out.println("Old:                  " + cachedUsr2dev);
         }
-        cachedUsr2dev = (AffineTransform)usr2dev.clone();
-        cachedRed =  new GraphicsNodeRed8Bit
-            (node, usr2dev, getGraphicsNodeRenderContext(),
-             usePrimitivePaint, renderContext.getRenderingHints());
-        return cachedRed;
+
+        Rectangle2D bounds2D = getBounds2D();
+        if(bounds2D.getWidth() > 0 && bounds2D.getHeight() > 0){
+            cachedUsr2dev = (AffineTransform)usr2dev.clone();
+            cachedRed =  new GraphicsNodeRed8Bit
+                (node, usr2dev, getGraphicsNodeRenderContext(),
+                 usePrimitivePaint, renderContext.getRenderingHints());
+            return cachedRed;
+        }
+
+        return null;
     }
 
     protected void setGraphicsNodeRenderContext(GraphicsNodeRenderContext rc) {
