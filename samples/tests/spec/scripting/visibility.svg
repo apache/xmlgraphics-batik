@@ -1,0 +1,51 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20000802//EN"
+"http://www.w3.org/TR/2000/CR-SVG-20000802/DTD/svg-20000802.dtd">
+
+<!-- ====================================================================== -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.     -->
+<!--                                                                        -->
+<!-- This software is published under the terms of the Apache Software      -->
+<!-- License version 1.1, a copy of which has been included with this       -->
+<!-- distribution in the LICENSE file.                                      -->
+<!-- ====================================================================== -->
+
+<!-- ====================================================================== -->
+<!-- Modification of a rect's attributes                                    -->
+<!--                                                                        -->
+<!-- @author tkormann@ilog.fr                                               -->
+<!-- @version $Id$ -->
+<!-- ====================================================================== -->
+
+<?xml-stylesheet type="text/css" href="../../resources/style/test.css" ?>  
+
+<svg id="body" width="450" height="500" viewBox="0 0 450 500">
+    <title>'visibility' property on 'onload'</title>
+
+    <text x="50%" y="45" class="title">'visibility' property on 'onload'</text>
+
+    <script type="text/ecmascript"><![CDATA[
+        function changeVisibility(evt, newValue) {
+                evt.target.setAttribute("style", "visibility:"+newValue);
+        }
+
+    ]]></script>
+
+    <g id="test-content">
+
+       <g onload="changeVisibility(evt, 'hidden')" style="visibility:visible">
+           <rect x="100" y="100" width="100" height="100" style="fill:#eee"/>
+           <rect x="150" y="100" width="100" height="100" style="fill:gold"/>
+           <rect x="200" y="100" width="100" height="100" style="fill:crimson"/>
+           <rect x="250" y="100" width="100" height="100" style="fill:orange"/>
+       </g>
+
+       <g onload="changeVisibility(evt, 'visible')" style="visibility:hidden">
+           <rect x="100" y="300" width="100" height="100" style="fill:#eee"/>
+           <rect x="150" y="300" width="100" height="100" style="fill:gold"/>
+           <rect x="200" y="300" width="100" height="100" style="fill:crimson"/>
+           <rect x="250" y="300" width="100" height="100" style="fill:orange"/>
+       </g>
+
+    </g>
+</svg>
