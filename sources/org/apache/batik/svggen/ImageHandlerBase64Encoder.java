@@ -151,13 +151,41 @@ public class ImageHandlerBase64Encoder extends DefaultImageHandler{
     /**
      * Unit testing
      */
+    public static final String USAGE = "java org.apache.batik.svggen.ImageHandlerBase64Encoder [<imageFile>]";
+
     public static void main(String args[]) {
-        BufferedImage buf = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g = buf.createGraphics();
-        g.setPaint(Color.red);
-        g.fillRect(0, 0, 50, 50);
-        g.fillRect(50, 50, 50, 50);
-        g.dispose();
+        BufferedImage buf = null;
+
+        if(args.length == 0){
+            buf = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g = buf.createGraphics();
+            g.setPaint(Color.red);
+            g.fillRect(0, 0, 50, 50);
+            g.fillRect(50, 50, 50, 50);
+            g.dispose();
+        }
+        else{
+            Component cmp = new Component(){};
+            MediaTracker mediaTracker = new MediaTracker(cmp);
+            Image img = Toolkit.getDefaultToolkit().createImage(args[0]);
+            mediaTracker.addImage(img, 0);
+            try{
+                mediaTracker.waitForAll();
+            }catch(InterruptedException e){
+                img = null;
+            }
+
+            if(img == null){
+                System.err.println("Could not load : " + args[0]);
+            }
+
+            buf = new BufferedImage(img.getWidth(null),
+                                    img.getHeight(null),
+                                    BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g = buf.createGraphics();
+            g.drawImage(img, 0, 0, null);
+            g.dispose();
+        }
 
         ImageHandler imageHandler = new ImageHandlerBase64Encoder();
         Document domFactory = TestUtil.getDocumentPrototype();
@@ -171,7 +199,8 @@ public class ImageHandlerBase64Encoder extends DefaultImageHandler{
         System.out.println();
         System.out.println("<svg width=\"450\" height=\"500\">");
         System.out.println("    <rect width=\"100%\" height=\"100%\" fill=\"yellow\" />");
-        System.out.println("    <image x=\"30\" y=\"30\" xlink:href=\"" + imageElement.getAttributeNS(null, SVGSyntax.ATTR_XLINK_HREF) + "\" width=\"100\" height=\"100\" />");
+        System.out.println("    <image width=\"" + buf.getWidth() + "\" height=\"" +
+                           buf.getHeight() + "\" xlink:href=\"" + XLinkSupport.getXLinkHref(imageElement) + "\" />");
         System.out.println("</svg>");
         System.exit(0);
     }

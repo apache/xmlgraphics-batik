@@ -21,7 +21,6 @@ import java.awt.Component;
 import java.awt.Graphics2D;
 import java.awt.Label;
 import java.awt.MediaTracker;
-import java.awt.MediaTracker;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
@@ -205,7 +204,6 @@ public class RasterRable
          */
         public ImageLoader(ICCColorSpaceExt colorSpace) { 
             this.colorSpace = colorSpace;
-            System.out.println("colorSpace : " + colorSpace);
         }
 
         /**
@@ -371,7 +369,6 @@ public class RasterRable
             RenderedImage bi = cache.request(url);
 
             if (bi == null){
-                System.out.println("Loading " + url);
                 // Image is not loaded yet
                 bi = super.load();
                 
@@ -451,5 +448,15 @@ public class RasterRable
                 return null;
             }
         }
+
+        public RenderedImage load() {
+            RenderedImage ri = super.load();
+            if(ri != null && colorSpace != null){
+                ri = applyColorProfile(ri);
+            }
+
+            return ri;
+        }
+
     }
 }

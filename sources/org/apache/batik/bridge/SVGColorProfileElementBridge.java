@@ -20,6 +20,7 @@ import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.bridge.resources.Messages;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.ext.awt.color.ICCColorSpaceExt;
+import org.apache.batik.ext.awt.color.NamedProfileCache;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -35,6 +36,11 @@ import org.w3c.dom.NodeList;
  */
 public class SVGColorProfileElementBridge implements Bridge, SVGConstants {
     /**
+     * Profile cache
+     */
+    public NamedProfileCache cache = new NamedProfileCache();
+
+    /**
      * Builds an ICC_ColorSpace for the given input color profile 
      * name, if the name can be resolved and successfully accessed
      *
@@ -49,9 +55,17 @@ public class SVGColorProfileElementBridge implements Bridge, SVGConstants {
     public ICCColorSpaceExt build(String iccProfileName,
                                   BridgeContext ctx,
                                   Element paintedElement){
-        System.out.println("Invoking ColorProfileElementBridge : " + iccProfileName);
+        /*
+         * Check if there is one if the cache.
+         */
+        ICCColorSpaceExt cs = cache.request(iccProfileName);
+        if(cs != null){
+            return cs;
+        }
 
         /**
+         * There was no cached copies for the profile. Load it
+         * now.
          * Search for a color-profile element with specific name
          */
         Document doc = paintedElement.getOwnerDocument();
@@ -107,7 +121,14 @@ public class SVGColorProfileElementBridge implements Bridge, SVGConstants {
         String intentStr = profile.getAttributeNS(null, SVG_RENDERING_INTENT_ATTRIBUTE);
         int intent = convertIntent(intentStr);
 
-        return new ICCColorSpaceExt(p, intent);
+        cs = new ICCColorSpaceExt(p, intent);
+
+        /**
+         * Add profile to cache
+         */
+        cache.put(iccProfileName, cs);
+
+        return cs;
     }
 
     private int convertIntent(String intentStr){
@@ -125,6 +146,10 @@ public class SVGColorProfileElementBridge implements Bridge, SVGConstants {
         }
         if(VALUE_RENDERING_INTENT_ABSOLUTE_COLORIMETRIC_VALUE.equals(intentStr)){
             return ICCColorSpaceExt.ABSOLUTE_COLORIMETRIC;
+        }
+
+        if(VALUE_RENDERING_INTENT_SATURATION_VALUE.equals(intentStr)){
+            return ICCColorSpaceExt.SATURATION;
         }
 
         throw new IllegalAttributeValueException

@@ -41,9 +41,17 @@ public class ICCColorSpaceExt extends ICC_ColorSpace {
         case ABSOLUTE_COLORIMETRIC:
         case SATURATION:
         case PERCEPTUAL:
-            return;
+            break;
         default:
             throw new IllegalArgumentException();
+        }
+
+        /**
+         * Apply the requested intent into the profile
+         */
+        if(intent != AUTO){
+            byte[] hdr = p.getData(ICC_Profile.icSigHead);
+            hdr[ICC_Profile.icHdrRenderingIntent] = (byte)intent;
         }
     }
 
@@ -73,7 +81,6 @@ public class ICCColorSpaceExt extends ICC_ColorSpace {
      * base class's toRGB method
      */
     public float[] perceptualToRGB(float[] values){
-        System.out.println("==> perceptual");
         return toRGB(values);
     }
 
@@ -82,22 +89,23 @@ public class ICCColorSpaceExt extends ICC_ColorSpace {
      * conversion
      */
     public float[] relativeColorimetricToRGB(float[] values){
-        System.out.println("==> relativeColorimetric");
         float[] ciexyz = toCIEXYZ(values);
         return sRGB.fromCIEXYZ(ciexyz);
     }
 
     /**
-     * Absolute colorimetric. NOT IMPLEMENTED
+     * Absolute colorimetric. NOT IMPLEMENTED.
+     * Temporarily returns same as perceptual
      */
     public float[] absoluteColorimetricToRGB(float[] values){
-        throw new Error();
+        return perceptualToRGB(values);
     }
 
     /**
-     * Saturation. NOT IMPLEMENTED
+     * Saturation. NOT IMPLEMENTED. Temporarily returns same
+     * as perceptual.
      */
     public float[] saturationToRGB(float[] values){
-        throw new Error();
+        return perceptualToRGB(values);
     }
 }

@@ -643,18 +643,8 @@ public class CSSUtilities implements SVGConstants {
             return null;
         }
 
-        for(int i=0; i<colorValue.length; i++){
-            System.out.println("colorValue[" + i + "] = " + colorValue[i]);
-            // colorValue[i] /= 255f;
-        }
-
-        System.out.println("opacity : " + opacity);
-
         // Convert values to RGB
         float rgb[] = profileCS.intendedToRGB(colorValue);
-        for(int i=0; i<colorValue.length; i++){
-            System.out.println("rgb[" + i + "] = " + rgb[i]);
-        }
 
         return new Color(rgb[0], rgb[1], rgb[2], opacity);
     }

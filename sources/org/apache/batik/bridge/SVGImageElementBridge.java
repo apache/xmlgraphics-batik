@@ -200,8 +200,6 @@ public class SVGImageElementBridge implements GraphicsNodeBridge,
         String colorProfileProperty 
             = svgElement.getAttributeNS(null, CSS_COLOR_PROFILE_PROPERTY);
 
-        System.out.println(CSS_COLOR_PROFILE_PROPERTY + " : " + colorProfileProperty);
-
         /**
          * The only cases that need special handling are
          * 'sRGB' and 'name'
@@ -229,7 +227,6 @@ public class SVGImageElementBridge implements GraphicsNodeBridge,
                     = profileBridge.build(colorProfileProperty,
                                           ctx, svgElement);
 
-                System.out.println("colorSpace : " + colorSpace);
             }
         }
               
