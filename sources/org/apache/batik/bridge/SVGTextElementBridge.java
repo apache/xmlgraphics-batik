@@ -2076,6 +2076,22 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                           Element e) {
             super(ctx,parent,e);
         }
+
+        /**
+         * Handle the dynamic update for the attributes of 
+         * &lt;tspan&gt; : 'x', 'y', 'dx', 'dy' and 'rotate'.
+         */
+        public void handleDOMAttrModifiedEvent(MutationEvent evt){
+            String attrName = evt.getAttrName();
+            if (attrName.equals(SVG_X_ATTRIBUTE) ||
+                attrName.equals(SVG_Y_ATTRIBUTE) ||
+                attrName.equals(SVG_DX_ATTRIBUTE) ||
+                attrName.equals(SVG_DY_ATTRIBUTE) ||
+                attrName.equals(SVG_ROTATE_ATTRIBUTE)) {
+                //recompute the layout of the text node
+                textBridge.computeLayoutedText();
+            }
+        }        
     }
 
     /**
@@ -2114,7 +2130,6 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                 attrName.equals(SVG_DX_ATTRIBUTE) ||
                 attrName.equals(SVG_DY_ATTRIBUTE) ||
                 attrName.equals(SVG_ROTATE_ATTRIBUTE)) {
-                
                 //recompute the layout of the text node
                 textBridge.computeLayoutedText();
             }

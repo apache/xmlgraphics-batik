@@ -44,28 +44,32 @@ public abstract class SVGOMTextPositioningElement
      * <b>DOM</b>: Implements {@link SVGTextPositioningElement#getX()}.
      */
     public SVGAnimatedLengthList getX() {
-        throw new RuntimeException(" !!! SVGOMTextPositioningElement.getX()");
+        //throw new RuntimeException(" !!! SVGOMTextPositioningElement.getX()");
+        return SVGTextPositioningElementSupport.getX(this);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGTextPositioningElement#getY()}.
      */
     public SVGAnimatedLengthList getY() {
-        throw new RuntimeException(" !!! SVGOMTextPositioningElement.getY()");
+        //throw new RuntimeException(" !!! SVGOMTextPositioningElement.getY()");
+        return SVGTextPositioningElementSupport.getY(this);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGTextPositioningElement#getDx()}.
      */
     public SVGAnimatedLengthList getDx() {
-        throw new RuntimeException(" !!! SVGOMTextPositioningElement.getDx()");
+        //throw new RuntimeException(" !!! SVGOMTextPositioningElement.getDx()");
+        return SVGTextPositioningElementSupport.getDx(this);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGTextPositioningElement#getDy()}.
      */
     public SVGAnimatedLengthList getDy() {
-        throw new RuntimeException(" !!! SVGOMTextPositioningElement.getDy()");
+        //throw new RuntimeException(" !!! SVGOMTextPositioningElement.getDy()");
+        return SVGTextPositioningElementSupport.getDy(this);
     }
 
     /**
