@@ -168,6 +168,11 @@ abstract public class TransformStackElement implements Cloneable{
                 transformParameters[0] *= stackElement.transformParameters[0];
                 transformParameters[1] *= stackElement.transformParameters[1];
                 break;
+            case TransformType.TRANSFORM_GENERAL:
+                transformParameters 
+                    = matrixMultiply(transformParameters, 
+                                     stackElement.transformParameters);
+                break;
             default:
                 canConcatenate = false;
             }
@@ -175,4 +180,16 @@ abstract public class TransformStackElement implements Cloneable{
 
         return canConcatenate;
     }
+
+    /**
+     *  Multiplies two 2x3 matrices of double precision values
+     */
+    private double[] matrixMultiply(double[] matrix1, double[] matrix2) {
+        double[] product = new double[6];
+        AffineTransform transform1 = new AffineTransform(matrix1);
+        transform1.concatenate(new AffineTransform(matrix2));
+        transform1.getMatrix(product);
+        return product;
+    }
+
 }

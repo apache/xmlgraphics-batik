@@ -89,6 +89,15 @@ public class SVGAccuracyTest extends AbstractTest
     public static final String ENTRY_KEY_LINE_NUMBER
         = "SVGAccuracyTest.entry.key.line.number";
 
+    public static final String ENTRY_KEY_COLUMN_NUMBER
+        = "SVGAccuracyTest.entry.key.column.number";
+
+    public static final String ENTRY_KEY_COLUMN_EXPECTED_VALUE
+        = "SVGAccuracyTest.entry.key.column.expected.value";
+
+    public static final String ENTRY_KEY_COLUMN_FOUND_VALUE
+        = "SVGAccuracyTest.entry.key.column.found.value";
+
     public static final String ENTRY_KEY_REFERENCE_LINE
         = "SVGAccuracyTest.entry.key.reference.line";
 
@@ -237,8 +246,28 @@ public class SVGAccuracyTest extends AbstractTest
 
         if(!accurate){
             save(bos.toByteArray());
+            int cn = computeColumnNumber(refLine, newLine);
+            String expectedChar = "eol";
+            if(refLine.length() > cn){
+                expectedChar = (new Character(refLine.charAt(cn))).toString();
+            }
+            String foundChar = "null";
+            if(newLine != null && newLine.length() > cn){
+                foundChar = (new Character(newLine.charAt(cn))).toString();
+            }
+
+            if(expectedChar.equals(" ")){
+                expectedChar = "' '";
+            }
+            if(foundChar.equals(" ")){
+                foundChar = "' '";
+            }
+
             report.setErrorCode(ERROR_GENERATED_SVG_INACCURATE);
             report.addDescriptionEntry(Messages.formatMessage(ENTRY_KEY_LINE_NUMBER,null), new Integer(ln));
+            report.addDescriptionEntry(Messages.formatMessage(ENTRY_KEY_COLUMN_NUMBER,null), new Integer(cn));
+            report.addDescriptionEntry(Messages.formatMessage(ENTRY_KEY_COLUMN_EXPECTED_VALUE,null), expectedChar);
+            report.addDescriptionEntry(Messages.formatMessage(ENTRY_KEY_COLUMN_FOUND_VALUE,null), foundChar);
             report.addDescriptionEntry(Messages.formatMessage(ENTRY_KEY_REFERENCE_LINE,null), refLine);
             report.addDescriptionEntry(Messages.formatMessage(ENTRY_KEY_NEW_LINE,null), newLine);
             report.setPassed(false);
@@ -248,6 +277,29 @@ public class SVGAccuracyTest extends AbstractTest
         }
 
         return report;
+    }
+    
+    public int computeColumnNumber(String aStr, String bStr){
+        if(aStr == null || bStr == null){
+            return -1;
+        }
+
+        int n = aStr.length();
+        int i = -1;
+        for(i=0; i<n; i++){
+            char a = aStr.charAt(i);
+            if(i < bStr.length()){
+                char b = bStr.charAt(i);
+                if(a != b){
+                    break;
+                }
+            }
+            else {
+                break;
+            }
+        }
+
+        return i;
     }
 
     /**
