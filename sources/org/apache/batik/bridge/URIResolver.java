@@ -84,11 +84,14 @@ public class URIResolver {
         throws MalformedURLException, IOException, SecurityException {
 
         String baseURI = XMLBaseSupport.getCascadedXMLBase(ref);
+        // System.err.println("baseURI: " + baseURI);
+        // System.err.println("URI: " + uri);
         if ((baseURI == null) &&
             (uri.startsWith("#")))
             return document.getElementById(uri.substring(1));
 
         ParsedURL purl = new ParsedURL(baseURI, uri);
+        // System.err.println("PURL: " + purl);
 
         if (documentURI == null)
             documentURI = document.getURL();

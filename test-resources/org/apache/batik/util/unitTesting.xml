@@ -359,6 +359,24 @@
              value="jar:file:dir/file.jar!/p/a/t/c/h/new.svg#foo" />
     </test>
 
+    <test id="ParsedURL.28" class="org.apache.batik.util.ParsedURLTest">
+        <!-- Test relative path, relative jar -->
+        <arg class="java.lang.String" 
+             value="#data:1" />
+        <arg class="java.lang.String" 
+             value="#data:1" />
+    </test>
+
+    <test id="ParsedURL.29" class="org.apache.batik.util.ParsedURLTest">
+        <!-- Test relative path, relative jar -->
+        <arg class="java.lang.String" 
+             value="http://foo.bar.com/path/test.svg" />
+        <arg class="java.lang.String" 
+             value="#data:1" />
+        <arg class="java.lang.String" 
+             value="http://foo.bar.com/path/test.svg#data:1" />
+    </test>
+
     <test id="ParsedURLData.1" class="org.apache.batik.util.ParsedURLDataTest">
         <!-- Test basic image base 64 data -->
         <arg class="java.lang.String" 

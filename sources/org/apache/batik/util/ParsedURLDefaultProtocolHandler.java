@@ -90,24 +90,31 @@ public class ParsedURLDefaultProtocolHandler
             urlStr = urlStr.substring(0,idx);
         }
 
-        String prefix = urlStr;
-        if ((idx = prefix.indexOf('/')) != -1)
-            // Only check for ':' prior to first '/'
-            // allows for foo/12:30 as a relative URL.
-            prefix = prefix.substring(0, idx);
+        if (urlStr.length() == 0)
+            return ret;
 
-        idx = prefix.indexOf(':');
-        if (idx != -1) {
-            // May have a protocol spec...
-            ret.protocol = urlStr.substring(pidx, idx).toLowerCase();
-            if (ret.protocol.indexOf('/') == -1)
-                pidx = idx+1;
-            else {
-                // Got a slash in protocol probably means 
-                // no protocol given, (host and port?)
-                ret.protocol = null;
-                pidx = 0;
+        // Protocol is only allowed to include -+.a-zA-Z
+        // So as soon as we hit something else we know we
+        // are done (if it is a ':' then we have protocol otherwise
+        // we don't.
+        idx = 0;
+        char ch = urlStr.charAt(idx);
+        while ((ch == '-') ||
+               (ch == '+') ||
+               (ch == '.') ||
+               ((ch >= 'a') && (ch <= 'z')) ||
+               ((ch >= 'A') && (ch <= 'Z'))) {
+            idx++;
+            if (idx == len) {
+                ch=0;
+                break;
             }
+            ch = urlStr.charAt(idx);
+        }
+        if (ch == ':') {
+            // Has a protocol spec...
+            ret.protocol = urlStr.substring(pidx, idx).toLowerCase();
+            pidx = idx+1; // Skip ':'
         }
 
         // See if we have host/port spec.
@@ -222,24 +229,39 @@ public class ParsedURLDefaultProtocolHandler
         // System.err.println("Base: " + baseURL + "\n" +
         //                    "Sub:  " + urlStr);
 
-        int idx;
-        String prefix = urlStr;
-        if ((idx = prefix.indexOf('/')) != -1)
-            // Only check for ':' prior to first '/'
-            // allows for foo/12:30 as a relative URL.
-            prefix = prefix.substring(0, idx);
-            
-        idx = prefix.indexOf(':');
-        if (idx != -1) {
-            String protocol = prefix.substring(0,idx).toLowerCase();
+        int idx = 0, len = urlStr.length();
+        if (len == 0) return baseURL.data;
 
+        // Protocol is only allowed to include -+.a-zA-Z
+        // So as soon as we hit something else we know we
+        // are done (if it is a ':' then we have protocol otherwise
+        // we don't.
+        char ch = urlStr.charAt(idx);
+        while ((ch == '-') ||
+               (ch == '+') ||
+               (ch == '.') ||
+               ((ch >= 'a') && (ch <= 'z')) ||
+               ((ch >= 'A') && (ch <= 'Z'))) {
+            idx++;
+            if (idx == len) {
+                ch=0;
+                break;
+            }
+            ch = urlStr.charAt(idx);
+        }
+        String protocol = null;
+        if (ch == ':') {
+            // Has a protocol spec...
+            protocol = urlStr.substring(0, idx).toLowerCase();
+        }
+
+        if (protocol != null) {
             // Temporary if we have a protocol then assume absolute
             // URL.  Technically this is the correct handling but much
             // software supports relative URLs with a protocol that
             // matches the base URL's protocol.
             // if (true)
             //     return parseURL(urlStr);
-
             if (!protocol.equals(baseURL.getProtocol()))
                 // Different protocols, assume absolute URL ignore base...
                 return parseURL(urlStr);
