@@ -12,6 +12,7 @@ import java.awt.Color;
 import java.awt.GradientPaint;
 import java.awt.geom.Point2D;
 import java.awt.geom.AffineTransform;
+import java.util.Stack;
 
 import org.apache.batik.ext.awt.g2d.GraphicContext;
 import org.apache.batik.ext.awt.g2d.TransformType;
@@ -22,6 +23,7 @@ import org.apache.batik.ext.awt.g2d.TransformStackElement;
  * into an SVG transform attribute.
  *
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
+ * @author <a href="mailto:paul_evenblij@compuware.com">Paul Evenblij</a>
  * @version $Id$
  */
 public class SVGTransform extends AbstractSVGConverter{
@@ -57,32 +59,101 @@ public class SVGTransform extends AbstractSVGConverter{
      * This method tries to collapse the transform stack into an SVG
      * string as compact as possible while still conveying the semantic
      * of the stack. Successive stack elements of the same kind (e.g., two
-     * successive transforms or scales) are collasped into a single element.
+     * successive transforms or scales) are collapsed into a single element.
      *
      * @param transformStack sequence of transform that should
      *        be converted to an SVG transform attribute equivalent
      */
     public static String toSVGTransform(TransformStackElement transformStack[]){
         StringBuffer transformStackBuffer = new StringBuffer();
-
-        //
-        // Append transforms in the stack
-        //
         int nTransforms = transformStack.length;
+        //
+        // Append transforms in the presentation stack
+        //
+        Stack presentation = new Stack() {
+            /**
+             * Adapted push implementation
+             */
+            public Object push(Object o) {
+                Object element;
+                if(((TransformStackElement)o).isIdentity()) {
+                    // identity transform: don't push,
+                    // and try to return top of stack
+                    element = pop();
+                } else {
+                    // non-identity: push,
+                    // and return null
+                    super.push(o);
+                    element = null;
+                }
+                return element;
+            }
+            
+            /**
+             * Adapted pop implementation
+             */
+            public Object pop() {
+                Object element = null;
+                if(!super.empty()) {
+                    element = super.pop();
+                }
+                return element;
+            }
+        };
         boolean canConcatenate = false;
-        int i = 0, j = 0;
-        while(i<nTransforms){
-            // Clone current element and try to concatenate
-            // elements on top of it
-            TransformStackElement element = (TransformStackElement)transformStack[i].clone();
+        int i = 0, j = 0, next = 0;
+        TransformStackElement element = null;
+
+        // We keep a separate 'presentation' stack, which contains
+        // all concatenated elements. The top of this stack is the
+        // element we try to concatenate onto. If this element
+        // becomes an identity transform, we discard it and look at
+        // the element underneath it instead.
+        // The presentation stack is guaranteed not to contain
+        // identity transforms.
+
+        while(i < nTransforms) {
+
+            // If we do not have an element to concatenate onto,
+            // we grab one here.
+            next = i;
+            if(element == null) {
+                element = (TransformStackElement) transformStack[i].clone();
+                next++;
+            }
+
+            // try to concatenate as much as possible
             canConcatenate = true;
-            for(j= (i+1); j < nTransforms; j++){
+            for(j = next; j < nTransforms; j++) {
                 canConcatenate = element.concatenate(transformStack[j]);
                 if(!canConcatenate)
                     break;
             }
+            // loop variable assertion: 
+            // If "i" does not increment during this iteration, it is guaranteed
+            // to do so in the next, since "i" can only keep the same value as a
+            // result of "element" having a non-null value on starting this
+            // iteration, which can only be the case if it was popped from the
+            // stack during the previous one. The stack does not contain
+            // identities, and since "i" has not grown, "element" has remained
+            // unchanged and will be pushed onto the stack again. "element" will
+            // then become null, so "i" will eventually increment.
             i = j;
-            transformStackBuffer.append(convertTransform(element));
+ 
+            // Get rid of identity transforms within the stack.
+            // If an identity is pushed, it is immediately removed, and
+            // the current top of stack will be returned to concatenate onto.
+            // Otherwise, null will be returned.
+            element = (TransformStackElement) presentation.push(element);
+        }
+ 
+        //
+        // Transform presentation stack to SVG
+        //
+        int nPresentations = presentation.size();
+        
+        for(i = 0; i < nPresentations; i++) {
+            transformStackBuffer.append(convertTransform((TransformStackElement) presentation.elementAt(i)));
             transformStackBuffer.append(SPACE);
         }
 
@@ -98,7 +169,7 @@ public class SVGTransform extends AbstractSVGConverter{
         double transformParameters[] = transformElement.getTransformParameters();
         switch(transformElement.getType().toInt()){
         case TransformType.TRANSFORM_TRANSLATE:
-            if(transformParameters[0] != 0 || transformParameters[1] != 0){
+            if(!transformElement.isIdentity()) {
                 transformString.append(TRANSFORM_TRANSLATE);
                 transformString.append(OPEN_PARENTHESIS);
                 transformString.append(doubleString(transformParameters[0]));
@@ -108,7 +179,7 @@ public class SVGTransform extends AbstractSVGConverter{
             }
             break;
         case TransformType.TRANSFORM_ROTATE:
-            if(transformParameters[0] != 0){
+            if(!transformElement.isIdentity()) {
                 transformString.append(TRANSFORM_ROTATE);
                 transformString.append(OPEN_PARENTHESIS);
                 transformString.append(doubleString(radiansToDegrees*transformParameters[0]));
@@ -116,7 +187,7 @@ public class SVGTransform extends AbstractSVGConverter{
             }
             break;
         case TransformType.TRANSFORM_SCALE:
-            if(transformParameters[0] != 1 || transformParameters[1] != 1){
+            if(!transformElement.isIdentity()) {
                 transformString.append(TRANSFORM_SCALE);
                 transformString.append(OPEN_PARENTHESIS);
                 transformString.append(doubleString(transformParameters[0]));
@@ -126,23 +197,25 @@ public class SVGTransform extends AbstractSVGConverter{
             }
             break;
         case TransformType.TRANSFORM_SHEAR:
-            transformString.append(TRANSFORM_MATRIX);
-            transformString.append(OPEN_PARENTHESIS);
-            transformString.append(1);
-            transformString.append(COMMA);
-            transformString.append(doubleString(transformParameters[1]));
-            transformString.append(COMMA);
-            transformString.append(doubleString(transformParameters[0]));
-            transformString.append(COMMA);
-            transformString.append(1);
-            transformString.append(COMMA);
-            transformString.append(0);
-            transformString.append(COMMA);
-            transformString.append(0);
-            transformString.append(CLOSE_PARENTHESIS);
+            if(!transformElement.isIdentity()) {
+                transformString.append(TRANSFORM_MATRIX);
+                transformString.append(OPEN_PARENTHESIS);
+                transformString.append(1);
+                transformString.append(COMMA);
+                transformString.append(doubleString(transformParameters[1]));
+                transformString.append(COMMA);
+                transformString.append(doubleString(transformParameters[0]));
+                transformString.append(COMMA);
+                transformString.append(1);
+                transformString.append(COMMA);
+                transformString.append(0);
+                transformString.append(COMMA);
+                transformString.append(0);
+                transformString.append(CLOSE_PARENTHESIS);
+            }
             break;
         case TransformType.TRANSFORM_GENERAL:
-            if(!isIdentity(transformParameters)){
+            if(!transformElement.isIdentity()) {
                 transformString.append(TRANSFORM_MATRIX);
                 transformString.append(OPEN_PARENTHESIS);
                 transformString.append(doubleString(transformParameters[0]));
@@ -166,17 +239,5 @@ public class SVGTransform extends AbstractSVGConverter{
         }
 
         return transformString.toString();
-    }
-
-    /**
-     * Examines the input array to find if it represents an
-     * identity transform.
-     */
-    private static boolean isIdentity(double matrix[]){
-        if(matrix.length != 6)
-            throw new Error();
-
-        return (matrix[0] == 1 && matrix[2] == 0 && matrix[4] == 0 &&
-                matrix[1] == 0 && matrix[3] == 1 && matrix[5] == 0);
     }
 }
