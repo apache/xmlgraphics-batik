@@ -62,6 +62,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
+import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.test.AbstractTest;
 import org.apache.batik.test.DefaultTestReport;
 import org.apache.batik.test.TestReport;
@@ -93,7 +94,8 @@ import org.apache.batik.util.XMLResourceDescriptor;
  * @version $Id$
  */
 
-public class ExternalResourcesTest extends AbstractTest {
+public class ExternalResourcesTest extends AbstractTest 
+    implements ErrorConstants {
     /**
      * Error when the input file cannot be loaded into a
      * Document object
@@ -179,6 +181,11 @@ public class ExternalResourcesTest extends AbstractTest {
     public static final String INSERTION_POINT_ID = "insertionPoint";
 
     /**
+     * Location of test files in filesystem.
+     */
+    public static final String FILE_DIR = 
+        "test-resources/org/apache/batik/bridge/";
+    /**
      * Controls whether the test works in secure mode or not
      */
     protected boolean secure = true;
@@ -187,7 +194,12 @@ public class ExternalResourcesTest extends AbstractTest {
 
     public void setId(String id){
         super.setId(id);
-        svgURL = resolveURL("test-resources/org/apache/batik/bridge/" + id + ".svg");
+        String file = id;
+        int idx = file.indexOf('.');
+        if (idx != -1) {
+            file = file.substring(0,idx);
+        }
+        svgURL = resolveURL(FILE_DIR + file + ".svg");
     }
 
     public Boolean getSecure(){
@@ -267,32 +279,40 @@ public class ExternalResourcesTest extends AbstractTest {
         // Do an initial processing to validate that the external 
         // stylesheet causes a SecurityException
         //
-        UserAgent userAgent = buildUserAgent();
+        MyUserAgent userAgent = buildUserAgent();
         GVTBuilder builder = new GVTBuilder();
         BridgeContext ctx = new BridgeContext(userAgent);
         ctx.setDynamic(true);
 
         // We expect either a SecurityException or a BridgeException 
         // with ERR_URI_UNSECURE.
+        Throwable th = null;
         try {
-            builder.build(ctx, doc);
-            if (secure) {
-                failures.addElement(EXTERNAL_STYLESHEET_ID);
-            }
+            GraphicsNode gn = builder.build(ctx, doc);
+            gn.getBounds();
+            th = userAgent.getDisplayError();
         } catch (BridgeException e){
-            if (!secure 
-                ||
-                (secure && !ErrorConstants.ERR_URI_UNSECURE.equals(e.getCode()))) {
+            th = e;
+        } catch (SecurityException e) {
+            th = e;
+        } catch (Throwable t) {
+            th = t;
+        }
+        if (th == null) {
+            if (secure)
+                failures.addElement(EXTERNAL_STYLESHEET_ID);
+        } else if (th instanceof SecurityException) {
+            if (!secure)
+                failures.addElement(EXTERNAL_STYLESHEET_ID);
+        } else if (th instanceof BridgeException) {
+            BridgeException be = (BridgeException)th;
+            if (!secure  ||
+                (secure && !ERR_URI_UNSECURE.equals(be.getCode()))) {
                 report.setErrorCode(ERROR_WHILE_PROCESSING_SVG_DOCUMENT);
                 report.addDescriptionEntry(ENTRY_KEY_ERROR_DESCRIPTION,
-                                           e.getMessage());
+                                           be.getMessage());
                 report.setPassed(false);
                 return report;
-            } 
-            
-        } catch (SecurityException e) {
-            if (!secure) {
-                failures.addElement(EXTERNAL_STYLESHEET_ID);
             }
         }
         
@@ -355,29 +375,43 @@ public class ExternalResourcesTest extends AbstractTest {
             }
 
             insertionPoint.appendChild(target);
-
+            th = null;
             try {
-                builder.build(ctx, cloneDoc);
-                if (secure) {
-                    // If we get here, it means that no SecurityException
-                    // was thrown, which is wrong.
-                    failures.addElement(id);
-                }
+                GraphicsNode gn = builder.build(ctx, cloneDoc);
+                gn.getBounds();
+                th = userAgent.getDisplayError();
             } catch (BridgeException e){
-                if (!secure
-                    ||
-                    (secure && !ErrorConstants.ERR_URI_UNSECURE.equals(e.getCode()))) {
+                th = e;
+            } catch (SecurityException e) {
+                th = e;
+            } catch (Throwable t) {
+                th = t;
+            }
+            if (th == null) {
+                if (secure)
+                    failures.addElement(id);
+            } else if (th instanceof SecurityException) {
+                if (!secure)
+                    failures.addElement(id);
+            } else if (th instanceof BridgeException) {
+                BridgeException be = (BridgeException)th;
+                if (!secure  ||
+                    (secure && !ERR_URI_UNSECURE.equals(be.getCode()))) {
                     report.setErrorCode(ERROR_WHILE_PROCESSING_SVG_DOCUMENT);
                     report.addDescriptionEntry(ENTRY_KEY_ERROR_DESCRIPTION,
-                                               e.getMessage());
+                                               be.getMessage());
                     report.setPassed(false);
                     return report;
                 }
-            } catch (SecurityException e) {
-                if (!secure) {
-                    failures.addElement(id);
-                }
+            } else {
+                // Some unknown exception was displayed...
+                report.setErrorCode(ERROR_WHILE_PROCESSING_SVG_DOCUMENT);
+                report.addDescriptionEntry(ENTRY_KEY_ERROR_DESCRIPTION,
+                                           th.getMessage());
+                report.setPassed(false);
+                return report;
             }
+
         }
 
         if (failures.size() == 0) {
@@ -402,7 +436,11 @@ public class ExternalResourcesTest extends AbstractTest {
         return report;
     }
 
-    protected UserAgent buildUserAgent(){
+    protected interface MyUserAgent extends UserAgent {
+        public Exception getDisplayError();
+    }
+
+    protected MyUserAgent buildUserAgent(){
         if (secure) {
             return new SecureUserAgent();
         } else {
@@ -410,17 +448,26 @@ public class ExternalResourcesTest extends AbstractTest {
         }
     }
     
-    class SecureUserAgent extends UserAgentAdapter {
+    class MyUserAgentAdapter extends UserAgentAdapter implements MyUserAgent {
+        Exception ex = null;
+        public void displayError(Exception ex) {
+            this.ex = ex;
+            super.displayError(ex);
+        }
+
+        public Exception getDisplayError() { return ex; }
+    }
+    
+    class SecureUserAgent extends MyUserAgentAdapter {
         public ExternalResourceSecurity 
             getExternalResourceSecurity(ParsedURL resourcePURL,
                                         ParsedURL docPURL){
             return new NoLoadExternalResourceSecurity();
             
         }
-
     }
 
-    class RelaxedUserAgent extends UserAgentAdapter {
+    class RelaxedUserAgent extends MyUserAgentAdapter {
         public ExternalResourceSecurity 
             getExternalResourceSecurity(ParsedURL resourcePURL,
                                         ParsedURL docPURL){
@@ -428,7 +475,6 @@ public class ExternalResourcesTest extends AbstractTest {
                                                        docPURL);
             
         }
-
     }
 
 }

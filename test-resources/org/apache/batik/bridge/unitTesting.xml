@@ -116,10 +116,10 @@
                       value="false" />
         </test>
 
-        <test id="externalResourcesAccess" 
+        <test id="externalResourcesAccess.secure" 
               class="org.apache.batik.bridge.ExternalResourcesTest" />
 
-        <test id="externalResourcesAccess" 
+        <test id="externalResourcesAccess.unsecure" 
               class="org.apache.batik.bridge.ExternalResourcesTest" >
             <property name="Secure" class="java.lang.Boolean"
                       value="false" />

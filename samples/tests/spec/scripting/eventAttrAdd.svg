@@ -95,7 +95,12 @@
     root.removeAttributeNS(null, "onzoom");
     setRect('c', 'gold');  // It should stay gold.
     root.currentScale = 1.0;
-    if (inRegard)
+    if (inRegard) {
+      setTimeout(done, 500);
+    }
+  }
+
+  function done() {
       regardTestInstance.scriptDone();
   }
 

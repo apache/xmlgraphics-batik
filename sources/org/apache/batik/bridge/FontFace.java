@@ -75,7 +75,8 @@ import org.apache.batik.gvt.font.AWTFontFamily;
  * @author <a href="mailto:bella.robinson@cmis.csiro.au">Bella Robinson</a>
  * @version $Id$
  */
-public abstract class FontFace extends GVTFontFace {
+public abstract class FontFace extends GVTFontFace
+    implements ErrorConstants  {
 
     static Set fontSet;
     static {
@@ -153,6 +154,14 @@ public abstract class FontFace extends GVTFontFace {
                     GVTFontFamily ff = getFontFamily(ctx, (ParsedURL)o);
                     if (ff != null)
                         return ff;
+                } catch (SecurityException ex) {
+                    // Security violation notify the user but keep going.
+                    ctx.getUserAgent().displayError(ex);
+                } catch (BridgeException ex) {
+                    // If Security violation notify 
+                    // the user but keep going.
+                    if (ERR_URI_UNSECURE.equals(ex.getCode())) 
+                        ctx.getUserAgent().displayError(ex);
                 } catch (Throwable t) {
                     // Do nothing couldn't get Referenced URL.
                 }
@@ -168,9 +177,33 @@ public abstract class FontFace extends GVTFontFace {
     protected GVTFontFamily getFontFamily(BridgeContext ctx,
                                           ParsedURL purl) {
         String purlStr = purl.toString();
+
+        Element e = getBaseElement(ctx);
+        SVGDocument svgDoc = (SVGDocument)e.getOwnerDocument();
+        String docURL = svgDoc.getURL();
+        ParsedURL pDocURL = null;
+        if (docURL != null)
+            pDocURL = new ParsedURL(docURL);
+
+        // try to load an SVG document
+        String baseURI = XMLBaseSupport.getCascadedXMLBase(e);
+        purl = new ParsedURL(baseURI, purlStr);
+        UserAgent userAgent = ctx.getUserAgent();
+
+        try {
+            userAgent.checkLoadExternalResource(purl, pDocURL);
+        } catch (SecurityException ex) {
+            // Can't load font - Security violation.
+            // We should not throw the error that is for certain, just
+            // move down the font list, but do we display the error or not???
+            // I'll vote yes just because it is a security exception (other
+            // exceptions like font not available etc I would skip).
+            userAgent.displayError(ex);
+            return null; 
+        }
+
         if (purl.getRef() != null) {
             // Reference must be to a SVGFont.
-            Element e = getBaseElement(ctx);
             Element ref = ctx.getReferencedElement(e, purlStr);
             if (!ref.getNamespaceURI().equals(SVG_NAMESPACE_URI) ||
                 !ref.getLocalName().equals(SVG_FONT_TAG)) {

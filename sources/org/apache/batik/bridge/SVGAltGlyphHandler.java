@@ -93,14 +93,15 @@ public class SVGAltGlyphHandler implements AltGlyphHandler, SVGConstants {
      * @return The GVTGlyphVector containing the alternate glyphs, or null if
      * the alternate glyphs could not be found.
      */
-    public GVTGlyphVector createGlyphVector(FontRenderContext frc, float fontSize,
-                                     AttributedCharacterIterator aci) {
+    public GVTGlyphVector createGlyphVector
+        (FontRenderContext frc, float fontSize,
+         AttributedCharacterIterator aci) {
         try {
             if (textElement.getTagName().equals(SVG_ALT_GLYPH_TAG)) {
                 SVGAltGlyphElementBridge altGlyphBridge
                     = (SVGAltGlyphElementBridge)ctx.getBridge(textElement);
-                Glyph[] glyphArray
-                    = altGlyphBridge.createAltGlyphArray(ctx, textElement, fontSize, aci);
+                Glyph[] glyphArray = altGlyphBridge.createAltGlyphArray
+                    (ctx, textElement, fontSize, aci);
                 if (glyphArray != null) {
                     return new SVGGVTGlyphVector(null, glyphArray, frc);
                 }
