@@ -80,10 +80,7 @@ public class SVGOMStyleElement
         if (sheet == null) {
             // Create the stylesheet
 	    if (!getType().equals("text/css")) {
-		throw createDOMException
-		    (DOMException.NOT_SUPPORTED_ERR,
-		     "stylesheet.type",
-		     new Object[] { getType() });
+                return null;
 	    }
 
             DOMImplementationCSS impl;

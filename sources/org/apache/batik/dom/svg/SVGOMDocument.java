@@ -55,6 +55,7 @@ import org.w3c.dom.Text;
 import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.DocumentCSS;
 import org.w3c.dom.stylesheets.LinkStyle;
+import org.w3c.dom.stylesheets.StyleSheet;
 import org.w3c.dom.stylesheets.StyleSheetList;
 import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.svg.SVGLangSpace;
@@ -617,7 +618,10 @@ public class SVGOMDocument
      */
     protected static void getStyleSheets(Node n, DOMStyleSheetList l) {
         if (n instanceof LinkStyle) {
-            l.append(((LinkStyle)n).getSheet());
+            StyleSheet ss = ((LinkStyle)n).getSheet();
+            if (ss != null) {
+                l.append(ss);
+            }
         }
         for (Node c = n.getFirstChild(); c != null; c = c.getNextSibling()) {
             getStyleSheets(c, l);

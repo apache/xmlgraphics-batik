@@ -105,7 +105,7 @@
   <!-- Compiles the source files to the ${dest} directory -->
   <target name="compile" depends="init">
     <mkdir dir="${dest}"/>
-    <javac classpath="lib/js.jar:lib/jpython.jar:lib/jacl.jar:lib/tcljava.jar"
+    <javac classpath="lib/js.jar:lib/jpython.jar:lib/jacl.jar:lib/tcljava.jar:lib/xalan_2_0_D01.jar"
            srcdir="${src}"
            destdir="${dest}"
            deprecation="on"
@@ -244,7 +244,7 @@
 
   <!-- Launch the SVG viewer -->
   <target name="svgviewer" depends="init">
-    <java classpath="classes:lib/crimson.jar:lib/js.jar:resources"
+    <java classpath="lib/xerces_1_2.jar:classes:lib/crimson.jar:lib/js.jar:resources:lib/xalan_2_0_D01.jar"
           classname="${class-prefix}.apps.svgviewer.Main"
           fork="yes"/>
   </target>

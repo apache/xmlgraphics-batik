@@ -68,6 +68,7 @@ import org.apache.batik.bridge.UserAgent;
 import org.apache.batik.dom.svg.DefaultSVGContext;
 import org.apache.batik.dom.svg.SVGDocumentFactory;
 import org.apache.batik.dom.svg.SVGOMDocument;
+import org.apache.batik.dom.svg.XSLTransformer;
 import org.apache.batik.gvt.event.EventDispatcher;
 
 import org.apache.batik.refimpl.util.JSVGCanvas;
@@ -1060,7 +1061,25 @@ public class ViewerFrame
                 
 		checkInterrupt();
                 doc = df.createDocument(documentURI, new InputSource(r));
-                
+
+                List l = XSLTransformer.getStyleSheets(doc.getFirstChild(),
+                                                       documentURI);
+                if (l.size() > 0) {
+                    // XSL transformations
+                    is.close();
+                    is = url.openStream();
+                    try {
+                        is = new GZIPInputStream(is);
+                    } catch (IOException e) {
+                        is.close();
+                        is = url.openStream();
+                    }
+                    r = new InputStreamReader(is);
+                    r = XSLTransformer.transform(r, l);
+
+                    doc = df.createDocument(documentURI, new InputSource(r));
+                }
+
                 DefaultSVGContext dc = new DefaultSVGContext();
                 dc.setUserAgent(ViewerFrame.this);
                 dc.setUserStyleSheetURI(userStyleSheetURI);

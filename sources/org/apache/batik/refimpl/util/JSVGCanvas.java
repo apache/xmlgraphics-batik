@@ -645,15 +645,14 @@ public class JSVGCanvas
             Dimension size = getSize();
 
             long t1 = System.currentTimeMillis();
-            System.out.println("-----------start---------------------");
+            System.out.println("-----------start---------------------------");
 
             renderer.repaint(getAreaOfInterest
                              (new Rectangle(0, 0, size.width, size.height)));
 
             long t2 = System.currentTimeMillis();
-            System.out.println(" Tree rendering time: " +
-                               (t2 - t1) + " ms");
-            System.out.println("-----------end-----------------------");
+            System.out.println("-----------end--------- " +
+                               (t2 - t1) + " ms --------------");
 
             repaintThread = null;
             repaint();
@@ -1122,7 +1121,18 @@ public class JSVGCanvas
                 Dimension csize = JSVGCanvas.this.getSize();
                 Rectangle rect = new Rectangle(0, 0, csize.width, csize.height);
                 
-                Shape s = JSVGCanvas.this.getAreaOfInterest(rect);
+                GeneralPath p = new GeneralPath();
+                p.moveTo(0, 0);
+                p.lineTo(csize.width, 0);
+                p.lineTo(csize.width, csize.height);
+                p.lineTo(0, csize.height);
+                p.closePath();
+                p.moveTo(csize.width / 2, 0);
+                p.lineTo(csize.width / 2 + csize.height / 6, csize.height / 6);
+                p.moveTo(csize.width / 2, 0);
+                p.lineTo(csize.width / 2 - csize.height / 6, csize.height / 6);
+
+                Shape s = JSVGCanvas.this.getAreaOfInterest(p);
                 AffineTransform at = (AffineTransform)transform.clone();
                 at.preConcatenate(markerTransform);
                 s = at.createTransformedShape(s);

@@ -99,10 +99,10 @@
     </text>
   </a> 
 
-  <a xlink:href="index.svg">
+  <a xlink:href="xsltest.svg" xlink:show="new">
     <text class="link" x="50" y="0"
           transform="translate(0, 250) rotate(-25)">
-      Linking (index.svg)
+      XSL Stylesheets (xsltest.svg)
     </text>
   </a> 
 
