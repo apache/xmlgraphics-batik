@@ -123,44 +123,77 @@ public class SVGComposite
                 ("sRGB: " + ColorSpace.getInstance(ColorSpace.CS_sRGB));
         }
 
+        // Orig Time no int_pack = 51792
+        // Simple int_pack       = 19600
         boolean use_int_pack = (is_INT_PACK(srcCM) && is_INT_PACK(dstCM));
+        // use_int_pack = false;
 
         switch (rule.getRule()) {
         case CompositeRule.RULE_OVER:
-            if (use_int_pack) 
+            if (!use_int_pack)
+                return new OverCompositeContext(srcCM, dstCM);
+            
+            if (srcCM.isAlphaPremultiplied())
                 return new OverCompositeContext_INT_PACK(srcCM, dstCM);
             else
-                return new OverCompositeContext(srcCM, dstCM);
+                return new OverCompositeContext_INT_PACK_UNPRE(srcCM, dstCM);
 
         case CompositeRule.RULE_IN:
-            return new InCompositeContext  (srcCM, dstCM);
+            if (use_int_pack) 
+                return new InCompositeContext_INT_PACK(srcCM, dstCM);
+            else
+                return new InCompositeContext  (srcCM, dstCM);
 
         case CompositeRule.RULE_OUT:
-            return new OutCompositeContext (srcCM, dstCM);
+            if (use_int_pack) 
+                return new OutCompositeContext_INT_PACK(srcCM, dstCM);
+            else
+                return new OutCompositeContext (srcCM, dstCM);
 
         case CompositeRule.RULE_ATOP:
-            return new AtopCompositeContext(srcCM, dstCM);
+            if (use_int_pack) 
+                return new AtopCompositeContext_INT_PACK(srcCM, dstCM);
+            else
+                return new AtopCompositeContext(srcCM, dstCM);
 
         case CompositeRule.RULE_XOR:
-            return new XorCompositeContext (srcCM, dstCM);
+            if (use_int_pack) 
+                return new XorCompositeContext_INT_PACK(srcCM, dstCM);
+            else
+                return new XorCompositeContext (srcCM, dstCM);
 
         case CompositeRule.RULE_ARITHMETIC:
             float [] coeff = rule.getCoefficients();
-            return new ArithCompositeContext(srcCM, dstCM,
-                                             coeff[0], coeff[1],
-                                             coeff[2], coeff[3]);
+            if (use_int_pack) 
+                return new ArithCompositeContext_INT_PACK_LUT
+                    (srcCM, dstCM, coeff[0], coeff[1], coeff[2], coeff[3]);
+            else
+                return new ArithCompositeContext
+                    (srcCM, dstCM, coeff[0], coeff[1], coeff[2], coeff[3]);
 
         case CompositeRule.RULE_MULTIPLY:
-            return new MultiplyCompositeContext(srcCM, dstCM);
+            if (use_int_pack) 
+                return new MultiplyCompositeContext_INT_PACK(srcCM, dstCM);
+            else
+                return new MultiplyCompositeContext(srcCM, dstCM);
 
         case CompositeRule.RULE_SCREEN:
-            return new ScreenCompositeContext(srcCM, dstCM);
+            if (use_int_pack) 
+                return new ScreenCompositeContext_INT_PACK(srcCM, dstCM);
+            else
+                return new ScreenCompositeContext  (srcCM, dstCM);
 
         case CompositeRule.RULE_DARKEN:
-            return new DarkenCompositeContext(srcCM, dstCM);
+            if (use_int_pack) 
+                return new DarkenCompositeContext_INT_PACK(srcCM, dstCM);
+            else
+                return new DarkenCompositeContext  (srcCM, dstCM);
 
         case CompositeRule.RULE_LIGHTEN:
-            return new LightenCompositeContext(srcCM, dstCM);
+            if (use_int_pack) 
+                return new LightenCompositeContext_INT_PACK(srcCM, dstCM);
+            else
+                return new LightenCompositeContext (srcCM, dstCM);
 
         default:
             throw new UnsupportedOperationException
@@ -196,7 +229,7 @@ public class SVGComposite
             if (!dstCM.isAlphaPremultiplied())
                 dstPreCM = GraphicsUtil.coerceData((WritableRaster)dstIn,
                                                    dstCM, true);
-
+            
             precompose(src, dstIn, dstOut);
 
             if (!srcCM.isAlphaPremultiplied())
@@ -213,6 +246,77 @@ public class SVGComposite
         }
     }
 
+    public static abstract class AlphaPreCompositeContext_INT_PACK 
+        extends AlphaPreCompositeContext {
+
+        AlphaPreCompositeContext_INT_PACK(ColorModel srcCM, ColorModel dstCM) {
+            super(srcCM, dstCM);
+        }
+
+        protected abstract void precompose_INT_PACK
+            (final int width, final int height,
+             final int [] srcPixels,    final int srcAdjust,    int srcSp,
+             final int [] dstInPixels,  final int dstInAdjust,  int dstInSp,
+             final int [] dstOutPixels, final int dstOutAdjust, int dstOutSp);
+
+        protected void precompose(Raster src, Raster dstIn, 
+                                           WritableRaster dstOut) {
+            
+            int x0=dstOut.getMinX();
+            int w =dstOut.getWidth();
+
+            int y0=dstOut.getMinY();
+            int h =dstOut.getHeight();
+
+            SinglePixelPackedSampleModel srcSPPSM;
+            srcSPPSM = (SinglePixelPackedSampleModel)src.getSampleModel();
+
+            final int     srcScanStride = srcSPPSM.getScanlineStride();
+            DataBufferInt srcDB         = (DataBufferInt)src.getDataBuffer();
+            final int []  srcPixels     = srcDB.getBankData()[0];
+            final int     srcBase =
+                (srcDB.getOffset() +
+                 srcSPPSM.getOffset(x0-src.getSampleModelTranslateX(),
+                                    y0-src.getSampleModelTranslateY()));
+
+
+            SinglePixelPackedSampleModel dstInSPPSM;
+            dstInSPPSM = (SinglePixelPackedSampleModel)dstIn.getSampleModel();
+
+            final int dstInScanStride = dstInSPPSM.getScanlineStride();
+            DataBufferInt dstInDB     = (DataBufferInt)dstIn.getDataBuffer();
+            final int []  dstInPixels     = dstInDB.getBankData()[0];
+            final int     dstInBase =
+                (dstInDB.getOffset() +
+                 dstInSPPSM.getOffset(x0-dstIn.getSampleModelTranslateX(),
+                                      y0-dstIn.getSampleModelTranslateY()));
+
+            SinglePixelPackedSampleModel dstOutSPPSM
+                = (SinglePixelPackedSampleModel)dstOut.getSampleModel();
+
+            final int dstOutScanStride = dstOutSPPSM.getScanlineStride();
+            DataBufferInt dstOutDB     = (DataBufferInt)dstOut.getDataBuffer();
+            final int []  dstOutPixels     = dstOutDB.getBankData()[0];
+            final int     dstOutBase =
+                (dstOutDB.getOffset() +
+                 dstOutSPPSM.getOffset(x0-dstOut.getSampleModelTranslateX(),
+                                       y0-dstOut.getSampleModelTranslateY()));
+
+            final int   srcAdjust  =    srcScanStride - w;
+            final int  dstInAdjust =  dstInScanStride - w;
+            final int dstOutAdjust = dstOutScanStride - w;
+
+            precompose_INT_PACK(w, h, 
+                                srcPixels,    srcAdjust,    srcBase,
+                                dstInPixels,  dstInAdjust,  dstInBase,
+                                dstOutPixels, dstOutAdjust, dstOutBase);
+        }
+    }
+
+
+    /**
+     * This implements SRC_OVER for 4 band byte data.
+     */
     public static class OverCompositeContext 
         extends AlphaPreCompositeContext {
         OverCompositeContext(ColorModel srcCM, ColorModel dstCM) {
@@ -255,85 +359,114 @@ public class SVGComposite
         }
     }
 
+    /**
+     * This implements SRC_OVER for Int packed data where the src is
+     * premultiplied.
+     */
     public static class OverCompositeContext_INT_PACK 
-        extends AlphaPreCompositeContext {
+        extends AlphaPreCompositeContext_INT_PACK {
         OverCompositeContext_INT_PACK(ColorModel srcCM, ColorModel dstCM) {
             super(srcCM, dstCM);
         }
 
-        public void precompose(Raster src, Raster dstIn, 
-                               WritableRaster dstOut) {
-
-            int x0=dstOut.getMinX();
-            int w =dstOut.getWidth();
-
-            int y0=dstOut.getMinY();
-            int y1=y0 + dstOut.getHeight();
-
-            SinglePixelPackedSampleModel srcSPPSM;
-            srcSPPSM = (SinglePixelPackedSampleModel)src.getSampleModel();
-
-            final int     srcScanStride = srcSPPSM.getScanlineStride();
-            DataBufferInt srcDB         = (DataBufferInt)src.getDataBuffer();
-            final int []  srcPixels     = srcDB.getBankData()[0];
-            final int     srcBase =
-                (srcDB.getOffset() +
-                 srcSPPSM.getOffset(x0-src.getSampleModelTranslateX(),
-                                    y0-src.getSampleModelTranslateY()));
-
-
-            SinglePixelPackedSampleModel dstInSPPSM;
-            dstInSPPSM = (SinglePixelPackedSampleModel)dstIn.getSampleModel();
-
-            final int     dstInScanStride = dstInSPPSM.getScanlineStride();
-            DataBufferInt dstInDB         = (DataBufferInt)dstIn.getDataBuffer();
-            final int []  dstInPixels     = dstInDB.getBankData()[0];
-            final int     dstInBase =
-                (dstInDB.getOffset() +
-                 dstInSPPSM.getOffset(x0-dstIn.getSampleModelTranslateX(),
-                                      y0-dstIn.getSampleModelTranslateY()));
-
-            SinglePixelPackedSampleModel dstOutSPPSM;
-            dstOutSPPSM = (SinglePixelPackedSampleModel)dstOut.getSampleModel();
-
-            final int     dstOutScanStride = dstOutSPPSM.getScanlineStride();
-            DataBufferInt dstOutDB         = (DataBufferInt)dstOut.getDataBuffer();
-            final int []  dstOutPixels     = dstOutDB.getBankData()[0];
-            final int     dstOutBase =
-                (dstOutDB.getOffset() +
-                 dstOutSPPSM.getOffset(x0-dstOut.getSampleModelTranslateX(),
-                                       y0-dstOut.getSampleModelTranslateY()));
+        public void precompose_INT_PACK
+            (final int width,           final int height,
+             final int [] srcPixels,    final int srcAdjust,    int srcSp,
+             final int [] dstInPixels,  final int dstInAdjust,  int dstInSp,
+             final int [] dstOutPixels, final int dstOutAdjust, int dstOutSp) {
 
             final int norm = (1<<24)/255;
             final int pt5  = (1<<23);
 
-            final int   srcAdjust  =    srcScanStride - w;
-            final int  dstInAdjust =  dstInScanStride - w;
-            final int dstOutAdjust = dstOutScanStride - w;
+            int srcP, dstInP, dstM;
 
-            int srcSp    = srcBase;
-            int dstInSp  = dstInBase;
-            int dstOutSp = dstOutBase;
-
-            int srcP, dstInP, dstM, a, r, g, b;
-
-            for (int y = y0; y<y1; y++) {
-                final int end = dstOutSp+w;
+            for (int y = 0; y<height; y++) {
+                final int end = dstOutSp+width;
                 while (dstOutSp<end) {
                     srcP   = srcPixels  [srcSp++];
                     dstInP = dstInPixels[dstInSp++];
                     
                     dstM = (255-(srcP>>>24))*norm;
-                    a = ((     srcP & 0xFF000000) +
-                         ((((dstInP>>>24)     )*dstM + pt5)     )) &0xFF000000;
-                    r = ((     srcP & 0x00FF0000) +
-                         ((((dstInP>> 16)&0xFF)*dstM + pt5)>>  8)) &0x00FF0000;
-                    g = ((     srcP & 0x0000FF00) +
-                         ((((dstInP>>  8)&0xFF)*dstM + pt5)>> 16)) &0x0000FF00;
-                    b = ((     srcP & 0x000000FF) +
-                         ((((dstInP     )&0xFF)*dstM + pt5)>>>24));
+                    dstOutPixels[dstOutSp++] = 
+                        (((     srcP & 0xFF000000) +
+                          (((((dstInP>>>24)     )*dstM+pt5)&0xFF000000)     ))|
+                         ((     srcP & 0x00FF0000) +
+                          (((((dstInP>> 16)&0xFF)*dstM+pt5)&0xFF000000)>>> 8))|
+                         ((     srcP & 0x0000FF00) +
+                          (((((dstInP>>  8)&0xFF)*dstM+pt5)&0xFF000000)>>>16))|
+                         ((     srcP & 0x000000FF) +
+                          (((((dstInP     )&0xFF)*dstM+pt5)         )>>>24)));
+                }
+                srcSp    += srcAdjust;
+                dstInSp  += dstInAdjust;
+                dstOutSp += dstOutAdjust;
+            }
+        }
+    }
 
-                    dstOutPixels[dstOutSp++] = (a|r|g|b);
+    /**
+     * This implements SRC_OVER for Int packed data where the src is
+     * unpremultiplied.  This avoids having to multiply the alpha on the
+     * the source then divide it out again.
+     */
+    public static class OverCompositeContext_INT_PACK_UNPRE 
+        extends AlphaPreCompositeContext_INT_PACK {
+        OverCompositeContext_INT_PACK_UNPRE
+            (ColorModel srcCM, ColorModel dstCM) {
+            super(srcCM, dstCM);
+
+            if (srcCM.isAlphaPremultiplied())
+                throw new IllegalArgumentException
+                    ("OverCompositeContext_INT_PACK_UNPRE is only for" +
+                     "sources with unpremultiplied alpha");
+        }
+
+        public void compose(Raster src, Raster dstIn, WritableRaster dstOut) {
+            ColorModel dstPreCM = dstCM;
+            if (!dstCM.isAlphaPremultiplied())
+                dstPreCM = GraphicsUtil.coerceData((WritableRaster)dstIn,
+                                                   dstCM, true);
+            
+            precompose(src, dstIn, dstOut);
+
+            if (!dstCM.isAlphaPremultiplied()) {
+                GraphicsUtil.coerceData(dstOut, dstPreCM, false);
+                
+                if (dstIn != dstOut)
+                    GraphicsUtil.coerceData((WritableRaster)dstIn, 
+                                            dstPreCM, false);
+            }
+        }
+
+        public void precompose_INT_PACK
+            (final int width,           final int height,
+             final int [] srcPixels,    final int srcAdjust,    int srcSp,
+             final int [] dstInPixels,  final int dstInAdjust,  int dstInSp,
+             final int [] dstOutPixels, final int dstOutAdjust, int dstOutSp) {
+
+            final int norm = (1<<24)/255;
+            final int pt5  = (1<<23);
+
+            int srcP, srcM, dstP, dstM;
+
+            for (int y = 0; y<height; y++) {
+                final int end = dstOutSp+width;
+                while (dstOutSp<end) {
+                    srcP   = srcPixels  [srcSp++];
+                    dstP = dstInPixels[dstInSp++];
+                    
+                    srcM = (    (srcP>>>24))*norm;
+                    dstM = (255-(srcP>>>24))*norm;
+
+                    dstOutPixels[dstOutSp++] = 
+                        ((((( srcP&0xFF000000)      +
+                            ((dstP>>>24)     )*dstM + pt5)&0xFF000000)     ) |
+                         (((((srcP>> 16)&0xFF)*srcM +
+                            ((dstP>> 16)&0xFF)*dstM + pt5)&0xFF000000)>>> 8) |
+                         (((((srcP>>  8)&0xFF)*srcM +
+                            ((dstP>>  8)&0xFF)*dstM + pt5)&0xFF000000)>>>16) |
+                         (((((srcP     )&0xFF)*srcM +
+                            ((dstP     )&0xFF)*dstM + pt5)           )>>>24));
                 }
                 srcSp    += srcAdjust;
                 dstInSp  += dstInAdjust;
@@ -380,6 +513,41 @@ public class SVGComposite
         }
     }
 
+    public static class InCompositeContext_INT_PACK 
+        extends AlphaPreCompositeContext_INT_PACK {
+        InCompositeContext_INT_PACK(ColorModel srcCM, ColorModel dstCM) {
+            super(srcCM, dstCM);
+        }
+
+        public void precompose_INT_PACK
+            (final int width,           final int height,
+             final int [] srcPixels,    final int srcAdjust,    int srcSp,
+             final int [] dstInPixels,  final int dstInAdjust,  int dstInSp,
+             final int [] dstOutPixels, final int dstOutAdjust, int dstOutSp) {
+
+            final int norm = (1<<24)/255;
+            final int pt5  = (1<<23);
+
+            int srcP, srcM;
+
+            for (int y = 0; y<height; y++) {
+                final int end = dstOutSp+width;
+                while (dstOutSp<end) {
+                    srcM = (dstInPixels[dstInSp++]>>>24)*norm;
+                    srcP = srcPixels   [srcSp++];
+                    dstOutPixels[dstOutSp++] = 
+                        ((((((srcP>>>24)     )*srcM + pt5)&0xFF000000)     ) |
+                         (((((srcP>> 16)&0xFF)*srcM + pt5)&0xFF000000)>>> 8) |
+                         (((((srcP>>  8)&0xFF)*srcM + pt5)&0xFF000000)>>>16) |
+                         (((((srcP     )&0xFF)*srcM + pt5)           )>>>24));
+                }
+                srcSp    += srcAdjust;
+                dstInSp  += dstInAdjust;
+                dstOutSp += dstOutAdjust;
+            }
+        }
+    }
+
     public static class OutCompositeContext 
         extends AlphaPreCompositeContext {
         OutCompositeContext(ColorModel srcCM, ColorModel dstCM) {
@@ -415,6 +583,41 @@ public class SVGComposite
                 dstOut.setPixels(x, y, w, 1, dstPix);
             }
 
+        }
+    }
+
+    public static class OutCompositeContext_INT_PACK 
+        extends AlphaPreCompositeContext_INT_PACK {
+        OutCompositeContext_INT_PACK(ColorModel srcCM, ColorModel dstCM) {
+            super(srcCM, dstCM);
+        }
+
+        public void precompose_INT_PACK
+            (final int width,           final int height,
+             final int [] srcPixels,    final int srcAdjust,    int srcSp,
+             final int [] dstInPixels,  final int dstInAdjust,  int dstInSp,
+             final int [] dstOutPixels, final int dstOutAdjust, int dstOutSp) {
+
+            final int norm = (1<<24)/255;
+            final int pt5  = (1<<23);
+
+            int srcP, srcM;
+
+            for (int y = 0; y<height; y++) {
+                final int end = dstOutSp+width;
+                while (dstOutSp<end) {
+                    srcM = (255-(dstInPixels[dstInSp++]>>>24))*norm;
+                    srcP = srcPixels   [srcSp++];
+                    dstOutPixels[dstOutSp++] = 
+                        ((((((srcP>>>24)     )*srcM + pt5)&0xFF000000)     ) |
+                         (((((srcP>> 16)&0xFF)*srcM + pt5)&0xFF000000)>>> 8) |
+                         (((((srcP>>  8)&0xFF)*srcM + pt5)&0xFF000000)>>>16) |
+                         (((((srcP     )&0xFF)*srcM + pt5)           )>>>24));
+                }
+                srcSp    += srcAdjust;
+                dstInSp  += dstInAdjust;
+                dstOutSp += dstOutAdjust;
+            }
         }
     }
 
@@ -456,6 +659,48 @@ public class SVGComposite
                 dstOut.setPixels(x, y, w, 1, dstPix);
             }
 
+        }
+    }
+
+    public static class AtopCompositeContext_INT_PACK 
+        extends AlphaPreCompositeContext_INT_PACK {
+        AtopCompositeContext_INT_PACK(ColorModel srcCM, ColorModel dstCM) {
+            super(srcCM, dstCM);
+        }
+
+        public void precompose_INT_PACK
+            (final int width,           final int height,
+             final int [] srcPixels,    final int srcAdjust,    int srcSp,
+             final int [] dstInPixels,  final int dstInAdjust,  int dstInSp,
+             final int [] dstOutPixels, final int dstOutAdjust, int dstOutSp) {
+
+            final int norm = (1<<24)/255;
+            final int pt5  = (1<<23);
+
+            int srcP, srcM, dstP, dstM;
+
+            for (int y = 0; y<height; y++) {
+                final int end = dstOutSp+width;
+                while (dstOutSp<end) {
+                    srcP = srcPixels  [srcSp++];
+                    dstP = dstInPixels[dstInSp++];
+
+                    srcM = (     dstP>>>24) *norm;
+                    dstM = (255-(srcP>>>24))*norm;
+
+                    dstOutPixels[dstOutSp++] = 
+                        ((dstP&0xFF000000)                                   |
+                         (((((srcP>> 16)&0xFF)*srcM + 
+                            ((dstP>> 16)&0xFF)*dstM + pt5)&0xFF000000)>>> 8) |
+                         (((((srcP>>  8)&0xFF)*srcM + 
+                            ((dstP>>  8)&0xFF)*dstM + pt5)&0xFF000000)>>>16) |
+                         (((((srcP     )&0xFF)*srcM + 
+                            ((dstP     )&0xFF)*dstM + pt5)           )>>>24));
+                }
+                srcSp    += srcAdjust;
+                dstInSp  += dstInAdjust;
+                dstOutSp += dstOutAdjust;
+            }
         }
     }
 
@@ -504,6 +749,49 @@ public class SVGComposite
         }
     }
 
+    public static class XorCompositeContext_INT_PACK 
+        extends AlphaPreCompositeContext_INT_PACK {
+        XorCompositeContext_INT_PACK(ColorModel srcCM, ColorModel dstCM) {
+            super(srcCM, dstCM);
+        }
+
+        public void precompose_INT_PACK
+            (final int width,           final int height,
+             final int [] srcPixels,    final int srcAdjust,    int srcSp,
+             final int [] dstInPixels,  final int dstInAdjust,  int dstInSp,
+             final int [] dstOutPixels, final int dstOutAdjust, int dstOutSp) {
+
+            final int norm = (1<<24)/255;
+            final int pt5  = (1<<23);
+
+            int srcP, srcM, dstP, dstM;
+
+            for (int y = 0; y<height; y++) {
+                final int end = dstOutSp+width;
+                while (dstOutSp<end) {
+                    srcP = srcPixels  [srcSp++];
+                    dstP = dstInPixels[dstInSp++];
+
+                    srcM = (255-(dstP>>>24))*norm;
+                    dstM = (255-(srcP>>>24))*norm;
+
+                    dstOutPixels[dstOutSp++] = 
+                        ((((((srcP>>>24)     )*srcM + 
+                            ((dstP>>>24)     )*dstM + pt5)&0xFF000000)     ) |
+                         (((((srcP>> 16)&0xFF)*srcM + 
+                            ((dstP>> 16)&0xFF)*dstM + pt5)&0xFF000000)>>> 8) |
+                         (((((srcP>>  8)&0xFF)*srcM + 
+                            ((dstP>>  8)&0xFF)*dstM + pt5)&0xFF000000)>>>16) |
+                         (((((srcP     )&0xFF)*srcM + 
+                            ((dstP     )&0xFF)*dstM + pt5)           )>>>24));
+                }
+                srcSp    += srcAdjust;
+                dstInSp  += dstInAdjust;
+                dstOutSp += dstOutAdjust;
+            }
+        }
+    }
+
     public static class ArithCompositeContext 
         extends AlphaPreCompositeContext {
         float k1, k2, k3, k4;
@@ -531,23 +819,153 @@ public class SVGComposite
             float kk1 = k1/255.0f;
             float kk4 = k4*255.0f+0.5f;
 
+            int val;
             for (int y = y0; y<y1; y++) {
                 srcPix = src.getPixels  (x, y, w, 1, srcPix);
                 dstPix = dstIn.getPixels(x, y, w, 1, dstPix);
                 for (int i=0; i<srcPix.length; i++) {
-                    dstPix[i] =(int)((kk1*srcPix[i]*dstPix[i]) +
-                                     k2*srcPix[i] + k3*dstPix[i] + kk4);
-                    if      (dstPix[i] < 0)   dstPix[i] = 0;
-                    else if (dstPix[i] > 255) dstPix[i] = 255;
+                    val =(int)((kk1*srcPix[i]*dstPix[i]) +
+                               k2*srcPix[i] + k3*dstPix[i] + kk4);
+                    if ((val & 0xFFFFFF00) != 0)
+                        if ((val & 0x80000000) != 0) val = 0;
+                        else                         val = 255;
+
+                    dstPix[i] = val;
                 }
                 dstOut.setPixels(x, y, w, 1, dstPix);
             }
         }
     }
 
+    public static class ArithCompositeContext_INT_PACK 
+        extends AlphaPreCompositeContext_INT_PACK {
+        float k1, k2, k3, k4;
+        ArithCompositeContext_INT_PACK(ColorModel srcCM,
+                                       ColorModel dstCM,
+                                       float k1, float k2, 
+                                       float k3, float k4) {
+            super(srcCM, dstCM);
+            this.k1 = k1/255.0f;
+            this.k2 = k2;
+            this.k3 = k3;
+            this.k4 = k4*255.0f+0.5f;
+        }
+
+        public void precompose_INT_PACK
+            (final int width,           final int height,
+             final int [] srcPixels,    final int srcAdjust,    int srcSp,
+             final int [] dstInPixels,  final int dstInAdjust,  int dstInSp,
+             final int [] dstOutPixels, final int dstOutAdjust, int dstOutSp) {
+
+            final int norm = (1<<24)/255;
+            final int pt5  = (1<<23);
+
+            int srcP, dstP, a, r, g, b;
+
+            for (int y = 0; y<height; y++) {
+                final int end = dstOutSp+width;
+                while (dstOutSp<end) {
+                    srcP = srcPixels   [srcSp++];
+                    dstP = dstInPixels   [dstInSp++];
+                    a = (int)((srcP>>>24)*(dstP>>>24)*k1 +
+                              (srcP>>>24)*k2 + (dstP>>>24)*k3 + k4);
+                    if ((a & 0xFFFFFF00) != 0)
+                        if ((a & 0x80000000) != 0) a = 0;
+                        else                       a = 255;
+
+                    r = (int)(((srcP>> 16)&0xFF)*((dstP>> 16)&0xFF)*k1 +
+                              ((srcP>> 16)&0xFF)*k2 + 
+                              ((dstP>> 16)&0xFF)*k3 + k4);
+                    if ((r & 0xFFFFFF00) != 0)
+                        if ((r & 0x80000000) != 0) r = 0;
+                        else                       r = 255;
+
+                    g = (int)(((srcP>>  8)&0xFF)*((dstP>>  8)&0xFF)*k1 +
+                              ((srcP>>  8)&0xFF)*k2 + 
+                              ((dstP>>  8)&0xFF)*k3 + k4);
+                    if ((g & 0xFFFFFF00) != 0)
+                        if ((g & 0x80000000) != 0) g = 0;
+                        else                       g = 255;
+
+                    b = (int)((srcP&0xFF)*(dstP&0xFF)*k1 +
+                              (srcP&0xFF)*k2 + (dstP&0xFF)*k3 + k4);
+                    if ((b & 0xFFFFFF00) != 0)
+                        if ((b & 0x80000000) != 0) b = 0;
+                        else                       b = 255;
+                    
+                    dstOutPixels[dstOutSp++] 
+                        = ((a<<24) | (r<<16) | (g<<8) | b);
+                }
+                srcSp    += srcAdjust;
+                dstInSp  += dstInAdjust;
+                dstOutSp += dstOutAdjust;
+            }
+            // long endTime = System.currentTimeMillis();
+            // System.out.println("Arith Time: " + (endTime-startTime));
+        }
+    }
+
+    public static class ArithCompositeContext_INT_PACK_LUT
+        extends AlphaPreCompositeContext_INT_PACK {
+        byte [] lut;
+        ArithCompositeContext_INT_PACK_LUT(ColorModel srcCM,
+                                           ColorModel dstCM,
+                                           float k1, float k2, 
+                                           float k3, float k4) {
+            super(srcCM, dstCM);
+            k1 = k1/255.0f;
+            k4 = k4*255.0f+0.5f;
+            int sz = 256*256;
+            lut = new byte[sz];
+            int val;
+            for (int i=0; i<sz; i++) {
+                val = (int)((i>>8)*(i&0xFF)*k1 + (i>>8)*k2 + (i&0xFF)*k3 + k4);
+                if ((val & 0xFFFFFF00) != 0)
+                    if ((val & 0x80000000) != 0) val = 0;
+                    else                         val = 255;
+                lut[i] = (byte)val;
+            }
+        }
+
+        public void precompose_INT_PACK
+            (final int width,           final int height,
+             final int [] srcPixels,    final int srcAdjust,    int srcSp,
+             final int [] dstInPixels,  final int dstInAdjust,  int dstInSp,
+             final int [] dstOutPixels, final int dstOutAdjust, int dstOutSp) {
+
+            final int norm = (1<<24)/255;
+            final int pt5  = (1<<23);
+
+            int srcP, dstP;
+
+            for (int y = 0; y<height; y++) {
+                final int end = dstOutSp+width;
+                while (dstOutSp<end) {
+                    srcP = srcPixels   [srcSp++];
+                    dstP = dstInPixels   [dstInSp++];
+
+                    dstOutPixels[dstOutSp++] 
+                        = (((((int)lut[(((srcP>> 16)&0xFF00) | 
+                                        ((dstP>>>24)&0x00FF))])     )<< 24) |
+                           ((((int)lut[(((srcP>>  8)&0xFF00) | 
+                                        ((dstP>> 16)&0x00FF))])&0xFF)<< 16) |
+                           ((((int)lut[(((srcP     )&0xFF00) | 
+                                        ((dstP>>  8)&0x00FF))])&0xFF)<<  8) |
+                           ((((int)lut[(((srcP<<  8)&0xFF00) | 
+                                        ((dstP     )&0x00FF))])&0xFF)     ));
+                }
+                srcSp    += srcAdjust;
+                dstInSp  += dstInAdjust;
+                dstOutSp += dstOutAdjust;
+            }
+            // long endTime = System.currentTimeMillis();
+            // System.out.println("ArithLut Time: " + (endTime-startTime));
+        }
+    }
+
+
     /**
-     * The following classes implement the various blend modes from SVG.
-     */
+     * The following classes implement the various blend modes from SVG.  */
     public static class MultiplyCompositeContext 
         extends AlphaPreCompositeContext {
 
@@ -566,28 +984,88 @@ public class SVGComposite
             int y0=dstOut.getMinY();
             int y1=y0 + dstOut.getHeight();
 
+            final int norm = (1<<24)/255;
+            final int pt5  = (1<<23);
+            int srcM, dstM;
+
             for (int y = y0; y<y1; y++) {
                 srcPix = src.getPixels  (x, y, w, 1, srcPix);
                 dstPix = dstIn.getPixels(x, y, w, 1, dstPix);
                 int sp  = 0;
                 int end = w*4;
                 while(sp<end) {
-                    final int srcM = 255-dstPix[sp+3];
-                    final int dstM = 255-srcPix[sp+3];
+                    srcM = 255-dstPix[sp+3];
+                    dstM = 255-srcPix[sp+3];
 
-                    dstPix[sp] = (srcPix[sp]*srcM + 
-                                  dstPix[sp]*dstM +
-                                  srcPix[sp]*dstPix[sp])/255; ++sp;
-                    dstPix[sp] = (srcPix[sp]*srcM + 
-                                  dstPix[sp]*dstM +
-                                  srcPix[sp]*dstPix[sp])/255; ++sp;
-                    dstPix[sp] = (srcPix[sp]*srcM + 
-                                  dstPix[sp]*dstM +
-                                  srcPix[sp]*dstPix[sp])/255; ++sp;
+                    dstPix[sp] = ((srcPix[sp]*srcM + dstPix[sp]*dstM +
+                                   srcPix[sp]*dstPix[sp])*norm + pt5)>>>24;
+                    ++sp;
+
+                    dstPix[sp] = ((srcPix[sp]*srcM + dstPix[sp]*dstM +
+                                   srcPix[sp]*dstPix[sp])*norm + pt5)>>>24;
+                    ++sp;
+
+                    dstPix[sp] = ((srcPix[sp]*srcM + dstPix[sp]*dstM +
+                                   srcPix[sp]*dstPix[sp])*norm + pt5)>>>24;
+                    ++sp;
+
                     dstPix[sp] = (srcPix[sp] + dstPix[sp] -
-                                  ((dstPix[sp]*srcPix[sp])/255)); ++sp;
+                                  ((dstPix[sp]*srcPix[sp]*norm + pt5)>>>24)); 
+                    ++sp;
                 }
                 dstOut.setPixels(x, y, w, 1, dstPix);
+            }
+        }
+    }
+
+    public static class MultiplyCompositeContext_INT_PACK 
+        extends AlphaPreCompositeContext_INT_PACK {
+        MultiplyCompositeContext_INT_PACK(ColorModel srcCM, ColorModel dstCM) {
+            super(srcCM, dstCM);
+        }
+
+        public void precompose_INT_PACK
+            (final int width,           final int height,
+             final int [] srcPixels,    final int srcAdjust,    int srcSp,
+             final int [] dstInPixels,  final int dstInAdjust,  int dstInSp,
+             final int [] dstOutPixels, final int dstOutAdjust, int dstOutSp) {
+
+            final int norm = (1<<24)/255;
+            final int pt5  = (1<<23);
+
+            int srcP, srcA, srcR, srcG, srcB, srcM;
+            int dstP, dstA, dstR, dstG, dstB, dstM;
+
+            for (int y = 0; y<height; y++) {
+                final int end = dstOutSp+width;
+                while (dstOutSp<end) {
+                    srcP = srcPixels  [srcSp++];
+                    dstP = dstInPixels[dstInSp++];
+
+                    srcA = (srcP>>>24);
+                    dstA = (dstP>>>24);
+                    srcR = (srcP>> 16)&0xFF;
+                    dstR = (dstP>> 16)&0xFF;
+                    srcG = (srcP>>  8)&0xFF;
+                    dstG = (dstP>>  8)&0xFF;
+                    srcB = (srcP     )&0xFF;
+                    dstB = (dstP     )&0xFF;
+
+                    srcM = 255-dstA;
+                    dstM = 255-srcA;
+
+                    dstOutPixels[dstOutSp++] = 
+                        (((((srcR*srcM + dstR*dstM + srcR*dstR)
+                            *norm + pt5)&0xFF000000)>>> 8) |
+                         ((((srcG*srcM + dstG*dstM + srcG*dstG)
+                            *norm + pt5)&0xFF000000)>>>16) |
+                         ((((srcB*srcM + dstB*dstM + srcB*dstB)
+                            *norm + pt5)           )>>>24) |
+                         ((srcA + dstA - ((srcA*dstA*norm + pt5)>>>24))<<24));
+                }
+                srcSp    += srcAdjust;
+                dstInSp  += dstInAdjust;
+                dstOutSp += dstOutAdjust;
             }
         }
     }
@@ -610,6 +1088,9 @@ public class SVGComposite
             int y0=dstOut.getMinY();
             int y1=y0 + dstOut.getHeight();
 
+            final int norm = (1<<24)/255;
+            final int pt5  = (1<<23);
+
             for (int y = y0; y<y1; y++) {
                 srcPix = src.getPixels  (x, y, w, 1, srcPix);
                 dstPix = dstIn.getPixels(x, y, w, 1, dstPix);
@@ -617,15 +1098,65 @@ public class SVGComposite
                 int end = w*4;
                 while(sp<end) {
                     dstPix[sp] = (srcPix[sp] + dstPix[sp] -
-                                  ((srcPix[sp]*dstPix[sp])/255)); ++sp;
+                                  ((dstPix[sp]*srcPix[sp]*norm + pt5)>>>24)); 
+                    ++sp;
                     dstPix[sp] = (srcPix[sp] + dstPix[sp] -
-                                  ((srcPix[sp]*dstPix[sp])/255)); ++sp;
+                                  ((dstPix[sp]*srcPix[sp]*norm + pt5)>>>24)); 
+                    ++sp;
                     dstPix[sp] = (srcPix[sp] + dstPix[sp] -
-                                  ((srcPix[sp]*dstPix[sp])/255)); ++sp;
+                                  ((dstPix[sp]*srcPix[sp]*norm + pt5)>>>24)); 
+                    ++sp;
                     dstPix[sp] = (srcPix[sp] + dstPix[sp] -
-                                  ((dstPix[sp]*srcPix[sp])/255)); ++sp;
+                                  ((dstPix[sp]*srcPix[sp]*norm + pt5)>>>24)); 
+                    ++sp;
                 }
                 dstOut.setPixels(x, y, w, 1, dstPix);
+            }
+        }
+    }
+
+    public static class ScreenCompositeContext_INT_PACK 
+        extends AlphaPreCompositeContext_INT_PACK {
+        ScreenCompositeContext_INT_PACK(ColorModel srcCM, ColorModel dstCM) {
+            super(srcCM, dstCM);
+        }
+
+        public void precompose_INT_PACK
+            (final int width,           final int height,
+             final int [] srcPixels,    final int srcAdjust,    int srcSp,
+             final int [] dstInPixels,  final int dstInAdjust,  int dstInSp,
+             final int [] dstOutPixels, final int dstOutAdjust, int dstOutSp) {
+
+            final int norm = (1<<24)/255;
+            final int pt5  = (1<<23);
+
+            int srcP, srcA, srcR, srcG, srcB;
+            int dstP, dstA, dstR, dstG, dstB;
+
+            for (int y = 0; y<height; y++) {
+                final int end = dstOutSp+width;
+                while (dstOutSp<end) {
+                    srcP = srcPixels  [srcSp++];
+                    dstP = dstInPixels[dstInSp++];
+
+                    srcA = (srcP>>>24);
+                    dstA = (dstP>>>24);
+                    srcR = (srcP>> 16)&0xFF;
+                    dstR = (dstP>> 16)&0xFF;
+                    srcG = (srcP>>  8)&0xFF;
+                    dstG = (dstP>>  8)&0xFF;
+                    srcB = (srcP     )&0xFF;
+                    dstB = (dstP     )&0xFF;
+
+                    dstOutPixels[dstOutSp++] = 
+                        (((srcR + dstR - ((srcR*dstR*norm + pt5)>>>24))<<16)|
+                         ((srcG + dstG - ((srcG*dstG*norm + pt5)>>>24))<< 8)|
+                         ((srcB + dstB - ((srcB*dstB*norm + pt5)>>>24))    )|
+                         ((srcA + dstA - ((srcA*dstA*norm + pt5)>>>24))<<24));
+                }
+                srcSp    += srcAdjust;
+                dstInSp  += dstInAdjust;
+                dstOutSp += dstOutAdjust;
             }
         }
     }
@@ -648,27 +1179,104 @@ public class SVGComposite
             int y0=dstOut.getMinY();
             int y1=y0 + dstOut.getHeight();
 
+            final int norm = (1<<24)/255;
+            final int pt5  = (1<<23);
+
+            int sp, srcM, dstM, t1, t2;
+
             for (int y = y0; y<y1; y++) {
                 srcPix = src.getPixels  (x, y, w, 1, srcPix);
                 dstPix = dstIn.getPixels(x, y, w, 1, dstPix);
-                int sp  = 0;
-                int end = w*4;
+                sp  = 0;
+                final int end = w*4;
                 while(sp<end) {
-                    final int alp = sp +3;
-                    final int srcM = 255-dstPix[alp];
-                    final int dstM = 255-srcPix[alp];
+                    srcM = 255-dstPix[sp+3];
+                    dstM = 255-srcPix[sp+3];
 
-                    while (sp < alp) {
-                        int t1 = ((srcM*srcPix[sp])/255) + dstPix[sp];
-                        int t2 = ((dstM*dstPix[sp])/255) + srcPix[sp];
-                        if (t1 > t2) dstPix[sp] = t2;
-                        else         dstPix[sp] = t1;
-                        ++sp;
-                    }
+                    t1 = ((srcM*srcPix[sp]*norm + pt5)>>>24) + dstPix[sp];
+                    t2 = ((dstM*dstPix[sp]*norm + pt5)>>>24) + srcPix[sp];
+                    if (t1 > t2) dstPix[sp] = t2;
+                    else         dstPix[sp] = t1;
+                    ++sp;
+
+                    t1 = ((srcM*srcPix[sp]*norm + pt5)>>>24) + dstPix[sp];
+                    t2 = ((dstM*dstPix[sp]*norm + pt5)>>>24) + srcPix[sp];
+                    if (t1 > t2) dstPix[sp] = t2;
+                    else         dstPix[sp] = t1;
+                    ++sp;
+
+                    t1 = ((srcM*srcPix[sp]*norm + pt5)>>>24) + dstPix[sp];
+                    t2 = ((dstM*dstPix[sp]*norm + pt5)>>>24) + srcPix[sp];
+                    if (t1 > t2) dstPix[sp] = t2;
+                    else         dstPix[sp] = t1;
+                    ++sp;
+
                     dstPix[sp] = (srcPix[sp] + dstPix[sp] -
-                                  ((dstPix[sp]*srcPix[sp])/255)); ++sp;
+                                  ((dstPix[sp]*srcPix[sp]*norm + pt5)>>>24)); 
+                    ++sp;
                 }
                 dstOut.setPixels(x, y, w, 1, dstPix);
+            }
+        }
+    }
+
+    public static class DarkenCompositeContext_INT_PACK 
+        extends AlphaPreCompositeContext_INT_PACK {
+        DarkenCompositeContext_INT_PACK(ColorModel srcCM, ColorModel dstCM) {
+            super(srcCM, dstCM);
+        }
+
+        public void precompose_INT_PACK
+            (final int width,           final int height,
+             final int [] srcPixels,    final int srcAdjust,    int srcSp,
+             final int [] dstInPixels,  final int dstInAdjust,  int dstInSp,
+             final int [] dstOutPixels, final int dstOutAdjust, int dstOutSp) {
+
+            final int norm = (1<<24)/255;
+            final int pt5  = (1<<23);
+
+            int srcP, srcM;
+            int dstP, dstM, dstA, dstR, dstG, dstB;
+
+            int srcV, dstV, tmp;
+
+            for (int y = 0; y<height; y++) {
+                final int end = dstOutSp+width;
+                while (dstOutSp<end) {
+                    srcP = srcPixels  [srcSp++];
+                    dstP = dstInPixels[dstInSp++];
+
+                    srcV = (srcP>>>24);
+                    dstV = (dstP>>>24);
+                    srcM = (255-dstV)*norm;
+                    dstM = (255-srcV)*norm;
+                    dstA = (srcV + dstV - ((srcV*dstV*norm + pt5)>>>24));
+
+                    srcV = (srcP>> 16)&0xFF;
+                    dstV = (dstP>> 16)&0xFF;
+                    dstR = ((srcM*srcV + pt5)>>>24) + dstV;
+                    tmp  = ((dstM*dstV + pt5)>>>24) + srcV;
+                    if (dstR > tmp) dstR = tmp;
+                    
+                    srcV = (srcP>>  8)&0xFF;
+                    dstV = (dstP>>  8)&0xFF;
+                    dstG = ((srcM*srcV + pt5)>>>24) + dstV;
+                    tmp  = ((dstM*dstV + pt5)>>>24) + srcV;
+                    if (dstG > tmp) dstG = tmp;
+                    
+
+                    srcV = (srcP     )&0xFF;
+                    dstV = (dstP     )&0xFF;
+                    dstB = ((srcM*srcV + pt5)>>>24) + dstV;
+                    tmp  = ((dstM*dstV + pt5)>>>24) + srcV;
+                    if (dstB > tmp) dstB = tmp;
+
+                    dstOutPixels[dstOutSp++] = 
+                        ((dstA<<24) | (dstR<<16) | (dstG<< 8) | dstB);
+                }
+                srcSp    += srcAdjust;
+                dstInSp  += dstInAdjust;
+                dstOutSp += dstOutAdjust;
             }
         }
     }
@@ -691,27 +1299,106 @@ public class SVGComposite
             int y0=dstOut.getMinY();
             int y1=y0 + dstOut.getHeight();
 
+            final int norm = (1<<24)/255;
+            final int pt5  = (1<<23);
+
+            int sp, srcM, dstM, t1, t2;
+
             for (int y = y0; y<y1; y++) {
                 srcPix = src.getPixels  (x, y, w, 1, srcPix);
                 dstPix = dstIn.getPixels(x, y, w, 1, dstPix);
-                int sp  = 0;
-                int end = w*4;
+                sp  = 0;
+                final int end = w*4;
                 while(sp<end) {
-                    final int alp = sp +3;
-                    final int srcM = 255-dstPix[alp];
-                    final int dstM = 255-srcPix[alp];
-                    while (sp < alp) {
-                        int t1 = ((srcM*srcPix[sp])/255) + dstPix[sp];
-                        int t2 = ((dstM*dstPix[sp])/255) + srcPix[sp];
-                        if (t1 > t2) dstPix[sp] = t1;
-                        else         dstPix[sp] = t2;
-                        ++sp;
-                    }
+                    srcM = 255-dstPix[sp+3];
+                    dstM = 255-srcPix[sp+3];
+
+                    t1 = ((srcM*srcPix[sp]*norm + pt5)>>>24) + dstPix[sp];
+                    t2 = ((dstM*dstPix[sp]*norm + pt5)>>>24) + srcPix[sp];
+                    if (t1 > t2) dstPix[sp] = t1;
+                    else         dstPix[sp] = t2;
+                    ++sp;
+
+                    t1 = ((srcM*srcPix[sp]*norm + pt5)>>>24) + dstPix[sp];
+                    t2 = ((dstM*dstPix[sp]*norm + pt5)>>>24) + srcPix[sp];
+                    if (t1 > t2) dstPix[sp] = t1;
+                    else         dstPix[sp] = t2;
+                    ++sp;
+
+                    t1 = ((srcM*srcPix[sp]*norm + pt5)>>>24) + dstPix[sp];
+                    t2 = ((dstM*dstPix[sp]*norm + pt5)>>>24) + srcPix[sp];
+                    if (t1 > t2) dstPix[sp] = t1;
+                    else         dstPix[sp] = t2;
+                    ++sp;
+
                     dstPix[sp] = (srcPix[sp] + dstPix[sp] -
-                                  ((dstPix[sp]*srcPix[sp])/255)); ++sp;
+                                  ((dstPix[sp]*srcPix[sp]*norm + pt5)>>>24)); 
+                    ++sp;
                 }
                 dstOut.setPixels(x, y, w, 1, dstPix);
             }
         }
     }
+
+    public static class LightenCompositeContext_INT_PACK 
+        extends AlphaPreCompositeContext_INT_PACK {
+        LightenCompositeContext_INT_PACK(ColorModel srcCM, ColorModel dstCM) {
+            super(srcCM, dstCM);
+        }
+
+        public void precompose_INT_PACK
+            (final int width,           final int height,
+             final int [] srcPixels,    final int srcAdjust,    int srcSp,
+             final int [] dstInPixels,  final int dstInAdjust,  int dstInSp,
+             final int [] dstOutPixels, final int dstOutAdjust, int dstOutSp) {
+
+            final int norm = (1<<24)/255;
+            final int pt5  = (1<<23);
+
+            int srcP, srcM;
+            int dstP, dstM, dstA, dstR, dstG, dstB;
+
+            int srcV, dstV, tmp;
+
+            for (int y = 0; y<height; y++) {
+                final int end = dstOutSp+width;
+                while (dstOutSp<end) {
+                    srcP = srcPixels  [srcSp++];
+                    dstP = dstInPixels[dstInSp++];
+
+                    srcV = (srcP>>>24);
+                    dstV = (dstP>>>24);
+                    srcM = (255-dstV)*norm;
+                    dstM = (255-srcV)*norm;
+                    dstA = (srcV + dstV - ((srcV*dstV*norm + pt5)>>>24));
+
+                    srcV = (srcP>> 16)&0xFF;
+                    dstV = (dstP>> 16)&0xFF;
+                    dstR = ((srcM*srcV + pt5)>>>24) + dstV;
+                    tmp  = ((dstM*dstV + pt5)>>>24) + srcV;
+                    if (dstR < tmp) dstR = tmp;
+                    
+                    srcV = (srcP>>  8)&0xFF;
+                    dstV = (dstP>>  8)&0xFF;
+                    dstG = ((srcM*srcV + pt5)>>>24) + dstV;
+                    tmp  = ((dstM*dstV + pt5)>>>24) + srcV;
+                    if (dstG < tmp) dstG = tmp;
+                    
+
+                    srcV = (srcP     )&0xFF;
+                    dstV = (dstP     )&0xFF;
+                    dstB = ((srcM*srcV + pt5)>>>24) + dstV;
+                    tmp  = ((dstM*dstV + pt5)>>>24) + srcV;
+                    if (dstB < tmp) dstB = tmp;
+
+                    dstOutPixels[dstOutSp++] = 
+                        ((dstA<<24) | (dstR<<16) | (dstG<< 8) | dstB);
+                }
+                srcSp    += srcAdjust;
+                dstInSp  += dstInAdjust;
+                dstOutSp += dstOutAdjust;
+            }
+        }
+    }
+
 }

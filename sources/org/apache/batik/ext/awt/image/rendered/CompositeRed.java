@@ -153,9 +153,9 @@ public class CompositeRed extends AbstractRed {
     }
 
     public void genRect(WritableRaster wr) {
+        // long startTime = System.currentTimeMillis();
         // System.out.println("Comp GenR: " + wr);
-        Rectangle r = new Rectangle(wr.getMinX(), wr.getMinY(),
-                                    wr.getWidth(), wr.getHeight());
+        Rectangle r = wr.getBounds();
         
         int idx = 0;
         Iterator i = srcs.iterator();
@@ -163,11 +163,11 @@ public class CompositeRed extends AbstractRed {
         while (i.hasNext()) {
             CachableRed cr = (CachableRed)i.next();
             if (first) {
-                Rectangle myR = getBounds();
-                if ((r.x < myR.x)                   || 
-                    (r.y < myR.y)                   ||
-                    (r.x+r.width > myR.x+myR.width) ||
-                    (r.y+r.height > myR.y+myR.height))
+                Rectangle crR = cr.getBounds();
+                if ((r.x < crR.x)                   || 
+                    (r.y < crR.y)                   ||
+                    (r.x+r.width > crR.x+crR.width) ||
+                    (r.y+r.height > crR.y+crR.height))
                     // Portions outside my bounds, zero them...
                     emptyRect(wr);
 
@@ -192,6 +192,52 @@ public class CompositeRed extends AbstractRed {
 
             idx++;
         }
+        // long endTime = System.currentTimeMillis();
+        // System.out.println("Other: " + (endTime-startTime));
+    }
+
+    // This is an alternate Implementation that uses drawImage.
+    // In testing this was not significantly faster and it had some
+    // problems with alpha premultiplied.
+    public void genRect_OVER(WritableRaster wr) {
+        // long startTime = System.currentTimeMillis();
+        // System.out.println("Comp GenR: " + wr);
+        Rectangle r = wr.getBounds();
+
+        ColorModel cm = getColorModel();
+
+        BufferedImage bi = new BufferedImage
+            (cm, wr.createWritableTranslatedChild(0,0), 
+             cm.isAlphaPremultiplied(), null);
+
+        Graphics2D g2d = GraphicsUtil.createGraphics(bi);
+        g2d.translate(-r.x, -r.y);
+
+        Iterator i = srcs.iterator();
+        boolean first = true;
+        while (i.hasNext()) {
+            CachableRed cr = (CachableRed)i.next();
+            if (first) {
+                Rectangle crR = cr.getBounds();
+                if ((r.x < crR.x)                   || 
+                    (r.y < crR.y)                   ||
+                    (r.x+r.width > crR.x+crR.width) ||
+                    (r.y+r.height > crR.y+crR.height))
+                    // Portions outside my bounds, zero them...
+                    emptyRect(wr);
+
+                // Fill in initial image...
+                cr.copyData(wr);
+
+                GraphicsUtil.coerceData(wr, cr.getColorModel(), 
+                                        cm.isAlphaPremultiplied());
+                first = false;
+            } else {
+                GraphicsUtil.drawImage(g2d, cr);
+            }
+        }
+        // long endTime = System.currentTimeMillis();
+        // System.out.println("OVER: " + (endTime-startTime));
     }
 
         /**
@@ -238,7 +284,7 @@ public class CompositeRed extends AbstractRed {
         int [] masks = new int[4];
         for (int i=0; i < b-1; i++) 
             masks[i] = 0xFF0000 >> (8*i);
-        masks[3] = 0xFF << (8*b-1);
+        masks[3] = 0xFF << (8*(b-1));
         ColorSpace cs = cm.getColorSpace();
 
         return new DirectColorModel(cs, 8*b, masks[0], masks[1], 

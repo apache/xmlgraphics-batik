@@ -112,19 +112,22 @@ public class BackgroundRable8Bit
             if (at != null)
                 cr2d = at.createTransformedShape(cr2d).getBounds2D();
 
-            if (r2d == null) r2d = cr2d;
+            if (r2d == null) r2d = (Rectangle2D)cr2d.clone();
             r2d.add(cr2d);
         }
 
         if (r2d == null) {
             if (init == null)
                 return CompositeGraphicsNode.VIEWPORT;
-            else
-                return init;
-        } else if (init ==null)
+
+            return init;
+        }
+
+        if (init == null)
             return r2d;
 
         init.add(r2d);
+
         return init;
     }
 
@@ -270,12 +273,13 @@ public class BackgroundRable8Bit
             if (at != null)
                 paoi = at.createTransformedShape(aoi).getBounds2D();
             Filter f = getBackground(gn.getParent(), gn, rc, paoi);
-            if (f != null)
-              srcs.add(f);
+            if ((f != null) && f.getBounds2D().intersects(aoi)) {
+                srcs.add(f);
+            }
         }
 
         GraphicsNodeRableFactory gnrf;
-        gnrf = rc.getGraphicsNodeRableFactory();
+         gnrf = rc.getGraphicsNodeRableFactory();
 
         if (child != null) {
             CompositeGraphicsNode cgn = (CompositeGraphicsNode)gn;
@@ -290,9 +294,14 @@ public class BackgroundRable8Bit
                     break;
 
                 Rectangle2D cbounds = childGN.getBounds(rc);
+                // System.out.println("Child : " + childGN);
+                // System.out.println("Bounds: " + cbounds);
+                // System.out.println("      : " + aoi);
+
                 AffineTransform at = childGN.getTransform();
                 if (at != null) 
                     cbounds = at.createTransformedShape(cbounds).getBounds2D();
+
 
                 if (aoi.intersects(cbounds)) {
                     GraphicsNodeRable gnr;
@@ -385,6 +394,7 @@ public class BackgroundRable8Bit
             return null;
 
         RenderedImage ri = f.createRendering(renderContext);
+        // org.ImageDisplay.showImage("BG: ", ri);
         return ri;
     }
 
