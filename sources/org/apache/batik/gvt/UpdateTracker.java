@@ -53,7 +53,7 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
         // System.out.println("Getting dirty areas");
 
         if (dirtyNodes == null) 
-        return null;
+            return null;
 
         List ret = new LinkedList();
         Set keys = dirtyNodes.keySet();
@@ -75,6 +75,7 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
 
             Rectangle2D srcNRgn = gn.getBounds();
             AffineTransform nat = gn.getTransform();
+            nodeBounds.put(gnWRef, srcNRgn); // remember the new bounds...
 
             Shape oRgn = srcORgn;
             Shape nRgn = srcNRgn;
@@ -120,7 +121,7 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
                 ret.add(oRgn);
                 ret.add(nRgn);
             }
-    }
+        }
 
         // System.out.println("Dirty area: " + ret);
         return ret;
