@@ -19,12 +19,12 @@ import org.apache.batik.i18n.LocalizableSupport;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class Messages {
+public class TestMessages {
 
     /**
      * This class does not need to be instantiated.
      */
-    protected Messages() { }
+    protected TestMessages() { }
 
     /**
      * The error messages bundle class name.

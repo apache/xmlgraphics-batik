@@ -298,6 +298,7 @@
         <test id="samples/tests/spec/text/verticalTextOnPath.svg" />
         <test id="samples/tests/spec/text/textPosition.svg" />
         <test id="samples/tests/spec/text/textPosition2.svg" />
+        <test id="samples/tests/spec/text/textGlyphOrientationHorizontal.svg"/>
     </testGroup>
 
     <testGroup id="tests.spec.scripting">

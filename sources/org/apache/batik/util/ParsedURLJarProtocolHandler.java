@@ -13,6 +13,9 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.util.Iterator;
 
+import java.net.URL;
+import java.net.MalformedURLException;
+
 /**
  * Protocol Handler for the 'jar' protocol.
  * This appears to have the format:
@@ -42,7 +45,13 @@ public class ParsedURLJarProtocolHandler
             return parseURL(urlStr);
 
         // It's relative so base it off baseURL.
-        return super.parseURL(baseURL, urlStr);
+        try {
+            URL context = new URL(baseURL.toString());
+            URL url     = new URL(context, urlStr);
+            return constructParsedURLData(url);
+        } catch (MalformedURLException mue) {
+            return super.parseURL(baseURL, urlStr);
+        }
     }
 }
 

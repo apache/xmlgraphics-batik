@@ -544,6 +544,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge {
             case SVGCSSEngine.DIRECTION_INDEX:
             case SVGCSSEngine.WRITING_MODE_INDEX:
             case SVGCSSEngine.GLYPH_ORIENTATION_VERTICAL_INDEX:
+            case SVGCSSEngine.GLYPH_ORIENTATION_HORIZONTAL_INDEX:
             case SVGCSSEngine.LETTER_SPACING_INDEX:
             case SVGCSSEngine.WORD_SPACING_INDEX:
             case SVGCSSEngine.KERNING_INDEX: {
@@ -1514,6 +1515,31 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge {
                        TextAttribute.ORIENTATION_ANGLE);
             result.put(GVTAttributedCharacterIterator.
                        TextAttribute.VERTICAL_ORIENTATION_ANGLE,
+                       new Float(val.getFloatValue() * 9 / 5));
+            break;
+        default:
+            // Cannot happen
+            throw new InternalError();
+        }
+
+        // glyph-orientation-horizontal
+
+        val = CSSUtilities.getComputedStyle
+            (element, SVGCSSEngine.GLYPH_ORIENTATION_HORIZONTAL_INDEX);
+        switch (val.getPrimitiveType()) {
+        case CSSPrimitiveValue.CSS_DEG:
+            result.put(GVTAttributedCharacterIterator.
+                       TextAttribute.HORIZONTAL_ORIENTATION_ANGLE,
+                       new Float(val.getFloatValue()));
+            break;
+        case CSSPrimitiveValue.CSS_RAD:
+            result.put(GVTAttributedCharacterIterator.
+                       TextAttribute.HORIZONTAL_ORIENTATION_ANGLE,
+                       new Float(val.getFloatValue() * 180 / Math.PI));
+            break;
+        case CSSPrimitiveValue.CSS_GRAD:
+            result.put(GVTAttributedCharacterIterator.
+                       TextAttribute.HORIZONTAL_ORIENTATION_ANGLE,
                        new Float(val.getFloatValue() * 9 / 5));
             break;
         default:
