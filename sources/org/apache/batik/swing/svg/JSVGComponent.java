@@ -237,6 +237,11 @@ public class JSVGComponent extends JGVTComponent {
     protected String fragmentIdentifier;
 
     /**
+     * Whether the update manager was stopped.
+     */
+    protected boolean updateManagerStopped;
+
+    /**
      * Creates a new JSVGComponent.
      */
     public JSVGComponent() {
@@ -298,6 +303,7 @@ public class JSVGComponent extends JGVTComponent {
             }
             updateManager.dispatchSVGUnLoad();
             updateManager = null;
+            updateManagerStopped = true;
         } else {
             super.stopProcessing();
         }
@@ -365,6 +371,7 @@ public class JSVGComponent extends JGVTComponent {
         if (eventsEnabled && svgDocument != null && updateManager != null) {
             updateManager.dispatchSVGUnLoad();
             updateManager = null;
+            updateManagerStopped = false;
         }
 
         svgDocument = doc;
@@ -741,7 +748,9 @@ public class JSVGComponent extends JGVTComponent {
                 return;
             }
 
-            if (JSVGComponent.this.eventsEnabled && updateManager == null) {
+            if (JSVGComponent.this.eventsEnabled &&
+                updateManager == null &&
+                !updateManagerStopped) {
                 updateManager = new UpdateManager(bridgeContext,
                                                   svgDocument,
                                                   renderer);
@@ -1097,7 +1106,6 @@ public class JSVGComponent extends JGVTComponent {
          * @param elt The activated link element.
          */
         public void openLink(final SVGAElement elt) {
-            System.out.println("AAA" + Thread.currentThread());
             if (EventQueue.isDispatchThread()) {
                 userAgent.openLink(elt);
             } else {
@@ -1400,7 +1408,6 @@ public class JSVGComponent extends JGVTComponent {
          * @param elt The activated link element.
          */
         public void openLink(SVGAElement elt) {
-            System.out.println("XXX" + Thread.currentThread());
             String show = XLinkSupport.getXLinkShow(elt);
             String href = XLinkSupport.getXLinkHref(elt);
             if (show.equals("new")) {
