@@ -399,7 +399,6 @@ public abstract class AbstractNode
                                     EventListener listener,
                                     boolean useCapture) {
         if (eventSupport != null) {
-            AbstractDocument doc = getCurrentDocument();
             eventSupport.removeEventListener(type, listener, useCapture);
         }
     }

@@ -204,7 +204,7 @@ canvas.getUpdateManager().getUpdateRunnableQueue().
 
       In order to use this extension, the <code>type</code> attribute
       of a &lt;script&gt; element must be set to
-      <code>application/x-java-jar-file</code>. In addition the
+      <code>application/java-archive</code>. In addition the
       <code>xlink:href</code> attribute must be the URI of a jar file
       which contains the program to run.
 

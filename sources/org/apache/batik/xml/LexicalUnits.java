@@ -6,7 +6,7 @@
  * the LICENSE file.                                                         *
  *****************************************************************************/
 
-package org.apache.batik.xml.scanner;
+package org.apache.batik.xml;
 
 /**
  * This interface defines the constants that represent XML lexical units.
@@ -27,169 +27,170 @@ public interface LexicalUnits {
     int S = 1;
 
     /**
-     * Represents a start tag lexical unit, ie. '<Name'.
-     */
-    int START_TAG = 2;
-
-    /**
-     * Represents a PI start lexical unit, ie. '<?Name'.
-     */
-    int PI_START = 3;
-
-    /**
      * Represents an XML declaration start lexical unit, ie. '<?xml'.
      */
-    int XML_DECL_START = 4;
-
-    /**
-     * Represents a PI data lexical unit.
-     */
-    int PI_DATA = 5;
-
-    /**
-     * Represents a PI end lexical unit, ie. '?>'.
-     */
-    int PI_END = 6;
-
-    /**
-     * Represents a comment lexical unit.
-     */
-    int COMMENT = 7;
+    int XML_DECL_START = 2;
 
     /**
      * Represents a doctype start lexical unit, ie. <!DOCTYPE.
      */
-    int DOCTYPE_START = 8;
+    int DOCTYPE_START = 3;
 
     /**
-     * Represents an empty element end lexical unit, ie. '/>'.
+     * Represents a comment lexical unit.
      */
-    int EMPTY_ELEMENT_END = 9;
+    int COMMENT = 4;
 
     /**
-     * Represents a end character lexical unit, ie. '>'.
+     * Represents a PI start lexical unit, ie. '<?Name'.
      */
-    int END_CHAR = 10;
+    int PI_START = 5;
 
     /**
-     * Represents a name lexical unit.
+     * Represents a PI data lexical unit.
      */
-    int NAME = 11;
+    int PI_DATA = 6;
 
     /**
-     * Represents '=' lexical unit.
+     * Represents a PI end lexical unit, ie. '?>'.
      */
-    int EQ = 12;
+    int PI_END = 7;
 
     /**
-     * Represents a string without entities lexical unit.
+     * Represents a character data lexical unit, ie. the content of an
+     * element.
      */
-    int STRING_FRAGMENT = 13;
+    int CHARACTER_DATA = 8;
 
     /**
-     * Represents an entity reference lexical unit.
+     * Represents a start tag lexical unit, ie. '<Name'.
      */
-    int ENTITY_REFERENCE = 14;
-
-    /**
-     * Represents a character reference lexical unit.
-     */
-    int CHARACTER_REFERENCE = 15;
-
-    /**
-     * Represents a character data lexical unit, ie. the content of an element.
-     */
-    int CHARACTER_DATA = 16;
+    int START_TAG = 9;
 
     /**
      * Represents an end tag lexical unit, ie. '</Name'.
      */
-    int END_TAG = 17;
+    int END_TAG = 10;
 
     /**
      * Represents a CDATA section start lexical unit, ie. '<![CDATA['.
      */
-    int CDATA_START = 18;
+    int CDATA_START = 11;
+
+    /**
+     * Represents a character reference lexical unit.
+     */
+    int CHARACTER_REFERENCE = 12;
+
+    /**
+     * Represents an entity reference lexical unit.
+     */
+    int ENTITY_REFERENCE = 13;
+
+    /**
+     * Represents a name lexical unit.
+     */
+    int NAME = 14;
+
+    /**
+     * Represents '=' lexical unit.
+     */
+    int EQ = 15;
+
+    /**
+     * Represents a first attribute fragment lexical unit.
+     */
+    int FIRST_ATTRIBUTE_FRAGMENT = 16;
+
+    /**
+     * Represents an attribute fragment lexical unit.
+     */
+    int ATTRIBUTE_FRAGMENT = 17;
+
+    /**
+     * Represents a last attribute fragment lexical unit.
+     */
+    int LAST_ATTRIBUTE_FRAGMENT = 18;
+
+    /**
+     * Represents an empty element end lexical unit, ie. '/>'.
+     */
+    int EMPTY_ELEMENT_END = 19;
+
+    /**
+     * Represents a end character lexical unit, ie. '>'.
+     */
+    int END_CHAR = 20;
 
     /**
      * Represents a section end lexical unit, ie. ']]>'.
      */
-    int SECTION_END = 19;
+    int SECTION_END = 21;
 
     /**
      * Represents a 'version' lexical unit.
      */
-    int VERSION_IDENTIFIER = 20;
+    int VERSION_IDENTIFIER = 22;
 
     /**
      * Represents a 'encoding' lexical unit.
      */
-    int ENCODING_IDENTIFIER = 21;
+    int ENCODING_IDENTIFIER = 23;
 
     /**
      * Represents a 'standalone' lexical unit.
      */
-    int STANDALONE_IDENTIFIER = 22;
+    int STANDALONE_IDENTIFIER = 24;
 
     /**
      * Represents a string lexical unit.
      */
-    int STRING = 23;
+    int STRING = 25;
 
     /**
      * Represents a 'SYSTEM' lexical unit.
      */
-    int SYSTEM_IDENTIFIER = 24;
+    int SYSTEM_IDENTIFIER = 26;
 
     /**
      * Represents a 'PUBLIC' lexical unit.
      */
-    int PUBLIC_IDENTIFIER = 25;
+    int PUBLIC_IDENTIFIER = 27;
 
     /**
      * Represents a '[' lexical unit.
      */
-    int LSQUARE_BRACKET = 26;
+    int LSQUARE_BRACKET = 28;
 
     /**
      * Represents a ']' lexical unit.
      */
-    int RSQUARE_BRACKET = 27;
-
-    /**
-     * Represents a parameter entity reference lexical unit, ie. '%Name;'.
-     */
-    int PARAMETER_ENTITY_REFERENCE = 28;
+    int RSQUARE_BRACKET = 29;
 
     /**
      * Represents a element declaration start lexical unit, ie. '<!ELEMENT'.
      */
-    int ELEMENT_DECLARATION_START = 29;
+    int ELEMENT_DECLARATION_START = 30;
 
     /**
      * Represents an ATTLIST declaration start lexical unit, ie. '<!ATTLIST'.
      */
-    int ATTLIST_START = 30;
+    int ATTLIST_START = 31;
 
     /**
      * Represents an entity start lexical unit, ie. '<!ENTITY'.
      */
-    int ENTITY_START = 31;
+    int ENTITY_START = 32;
 
     /**
      * Represents a notation start lexical unit, ie. '<!NOTATION'.
      */
-    int NOTATION_START = 32;
+    int NOTATION_START = 33;
 
     /**
-     * Represents a '%' lexical unit.
+     * Represents a parameter entity reference lexical unit, ie. '%Name;'.
      */
-    int PERCENT = 33;
-
-    /**
-     * Represents a 'NDATA' lexical unit.
-     */
-    int NDATA_IDENTIFIER = 34;
+    int PARAMETER_ENTITY_REFERENCE = 34;
 
     /**
      * Represents a 'EMPTY' lexical unit.
@@ -307,66 +308,13 @@ public interface LexicalUnits {
     int NOTATION_IDENTIFIER = 57;
 
     /**
-     * The lexical units values.
+     * Represents a '%' lexical unit.
      */
-    char[][] VALUES = {
-	"".toCharArray(),
-	null,
-	null,
-	null,
-	"<?xml".toCharArray(),
-	null,
-	"?>".toCharArray(),
-	null,
-	"<!DOCTYPE".toCharArray(),
-	"/>".toCharArray(),
-	">".toCharArray(),
-	null,
-	"=".toCharArray(),
-	null,
-	null,
-	null,
-	null,
-	null,
-	"<![CDATA[".toCharArray(),
-	"]]>".toCharArray(),
-	"version".toCharArray(),
-	"encoding".toCharArray(),
-	"standalone".toCharArray(),
-	null,
-	"SYSTEM".toCharArray(),
-	"PUBLIC".toCharArray(),
-	"[".toCharArray(),
-	"]".toCharArray(),
-	null,
-	"<!ELEMENT".toCharArray(),
-	"<!ATTLIST".toCharArray(),
-	"<!ENTITY".toCharArray(),
-	"<!NOTATION".toCharArray(),
-	"%".toCharArray(),
-	"NDATA".toCharArray(),
-	"EMPTY".toCharArray(),
-	"ANY".toCharArray(),
-	"?".toCharArray(),
-	"+".toCharArray(),
-	"*".toCharArray(),
-	"(".toCharArray(),
-	")".toCharArray(),
-	"|".toCharArray(),
-	",".toCharArray(),
-	"#PCDATA".toCharArray(),
-	"CDATA".toCharArray(),
-	"ID".toCharArray(),
-	"IDREF".toCharArray(),
-	"IDREFS".toCharArray(),
-	"NMTOKEN".toCharArray(),
-	"NMTOKENS".toCharArray(),
-	"ENTITY".toCharArray(),
-	"ENTITIES".toCharArray(),
-	"#REQUIRED".toCharArray(),
-	"#IMPLIED".toCharArray(),
-	"#FIXED".toCharArray(),
-        null,
-	"NOTATION".toCharArray(),
-    };
+    int PERCENT = 58;
+
+    /**
+     * Represents a 'NDATA' lexical unit.
+     */
+    int NDATA_IDENTIFIER = 59;
+
 }
