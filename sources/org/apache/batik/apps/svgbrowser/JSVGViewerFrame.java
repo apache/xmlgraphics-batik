@@ -143,10 +143,6 @@ import org.w3c.dom.ProcessingInstruction;
 import org.w3c.dom.stylesheets.DocumentStyle;
 import org.w3c.dom.stylesheets.StyleSheetList;
  
-import org.w3c.dom.traversal.DocumentTraversal;
-import org.w3c.dom.traversal.NodeFilter;
-import org.w3c.dom.traversal.TreeWalker;
-
 import org.w3c.dom.css.CSSStyleSheet;
 
 import org.w3c.dom.css.ViewCSS;
@@ -1207,14 +1203,10 @@ public class JSVGViewerFrame
                 stylesheetMenu.setEnabled(false);
 
                 ButtonGroup buttonGroup = new ButtonGroup();
-                TreeWalker tw;
-                tw = ((DocumentTraversal)doc).createTreeWalker
-                    (doc,
-                     NodeFilter.SHOW_PROCESSING_INSTRUCTION,
-                     null,
-                     true);
 
-                for (Node n = tw.nextNode(); n != null; n = tw.nextNode()) {
+                for (Node n = doc.getFirstChild();
+                     n != null && n.getNodeType() != n.ELEMENT_NODE;
+                     n = n.getNextSibling()) {
                     if (n instanceof StyleSheetProcessingInstruction) {
                         StyleSheetProcessingInstruction sspi;
                         sspi = (StyleSheetProcessingInstruction)n;
