@@ -8,16 +8,25 @@
 
 package org.apache.batik.bridge;
 
+import java.io.StringReader;
+
 import java.util.Timer;
 import java.util.TimerTask;
+
+import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
+import org.apache.batik.dom.svg.SVGOMDocument;
+
+import org.apache.batik.dom.util.DocumentFactory;
 
 import org.apache.batik.script.Interpreter;
 import org.apache.batik.script.InterpreterException;
 
 import org.apache.batik.util.RunnableQueue;
 import org.apache.batik.util.SVGConstants;
+import org.apache.batik.util.XMLResourceDescriptor;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -581,6 +590,35 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
         }
 
         /**
+         * Implements {@link
+         * org.apache.batik.script.Window#parseXML(String,Document)}.
+         */
+        public DocumentFragment parseXML(String text, Document doc) {
+            text = "<svg>" + text + "</svg>";
+            SAXSVGDocumentFactory df = new SAXSVGDocumentFactory
+                (XMLResourceDescriptor.getXMLParserClassName());
+            String uri = ((SVGOMDocument)context.getDocument()).
+                getURLObject().toString();
+            DocumentFragment result = null;
+            try {
+                Document d = df.createDocument(uri, new StringReader(text));
+                for (Node n = d.getDocumentElement().getFirstChild();
+                     n != null;
+                     n = n.getNextSibling()) {
+                    if (n.getNodeType() == n.ELEMENT_NODE) {
+                        n = doc.importNode(n, true);
+                        result = doc.createDocumentFragment();
+                        result.appendChild(n);
+                        break;
+                    }
+                }
+            } catch (Exception ex) {
+                // !!! TODO: warning
+            }
+            return result;
+        }
+
+        /**
          * Displays an alert dialog box.
          */
         public void alert(String message) {
@@ -617,6 +655,13 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
                 return userAgent.showPrompt(message, defVal);
             }
             return null;
+        }
+
+        /**
+         * Returns the current BridgeContext.
+         */
+        public BridgeContext getBridgeContext() {
+            return bridgeContext;
         }
 
         /**

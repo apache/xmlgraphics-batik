@@ -1,4 +1,4 @@
-Manifest-Version: $Id$
+Manifest-Version: 1.0
 Main-Class: org.apache.batik.apps.svgpp.Main
 Class-Path: lib/batik-ext.jar \
             lib/batik-dom.jar \

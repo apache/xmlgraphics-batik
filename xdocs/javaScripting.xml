@@ -22,6 +22,22 @@
   </header>
 
   <body>
+    <s1 title="Introduction">
+    <p>
+    This section explains how to manipulate the DOM tree of an SVG document from a Java program. It contains the following sub-sections:
+    </p>
+
+    <ul>
+      <li><link href="#Swing">
+        How to manipulate a JSVGCanvas' document?</link></li>
+      <li><link href="#Threads">
+        How to write thread-safe code?</link></li>
+      <li><link href="#Extension">
+        How to run Java code using a &lt;script&gt; element?</link></li>
+    </ul>                          
+    </s1>
+
+    <anchor id="Swing"/>
     <s1 title="How to manipulate a JSVGCanvas DOM document">
       <p>
       The follow code template demonstrates how to manipulate an SVG
@@ -138,6 +154,10 @@ public class SVGApplication {
 }
 </source>
     </s1>
+  
+    <!-- #################################################### -->
+
+    <anchor id="Threads"/>
     <s1 title="Writing thread-safe code">
       <p>
       The DOM listeners registered on the SVG document are called from
@@ -166,5 +186,45 @@ canvas.getUpdateManager().getUpdateRunnableQueue().
     thread, the graphics are updated.
     </p>
     </s1>
+
+    <!-- #################################################### -->
+
+    <anchor id="Extension"/>
+    <s1 title="Alternate way to manipulate an SVG document">
+      <p>
+      Batik provides an extension of the SVG &lt;script&gt; element
+      which allows Java programs to be called from an SVG document.
+
+      This feature is available to any application of Batik that uses
+      the bridge module (for example the Swing component and the
+      transcoders).
+      </p>
+
+      <p>
+
+      In order to use this extension, the <code>type</code> attribute
+      of a &lt;script&gt; element must be set to
+      <code>application/x-java-jar-file</code>. In addition the
+      <code>xlink:href</code> attribute must be the URI of a jar file
+      which contains the program to run.
+
+      The manifest of this jar file must contains an entry of the form:
+      <br/><br/>
+      <code>Script-Handler: </code><em>classname</em><br/><br/>
+
+      Where <em>classname</em> must be the name of a class which
+      implements the
+      <code>org.apache.batik.script.ScriptHandler</code> interface.
+      See the javadoc of this interface for more details.
+      <br/>
+
+      The class can be contained directly in the jar file, but it is
+      also possible for it to be contained in a jar file added to the
+      classpath using the <code>Class-Path</code> entry of the
+      manifest.
+
+      </p>
+    </s1>
+
   </body>
 </document>

@@ -8,6 +8,11 @@
 
 package org.apache.batik.script;
 
+import org.apache.batik.bridge.BridgeContext;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.DocumentFragment;
+
 /**
  * This interface represents the 'window' object defined in the global
  * environment of a SVG document.
@@ -61,6 +66,13 @@ public interface Window {
     void clearTimeout(Object timeout);
 
     /**
+     * Parses the given XML string into a DocumentFragment of the
+     * given document.
+     * @return The document fragment or null on error.
+     */
+    DocumentFragment parseXML(String text, Document doc);
+
+    /**
      * Displays an alert dialog box.
      */
     void alert(String message);
@@ -81,6 +93,12 @@ public interface Window {
      * @return The input of the user, or null if the dialog was cancelled.
      */
     String prompt(String message, String defVal);
+
+    /**
+     * Returns the current BridgeContext. This object given a deep
+     * access to the viewer internals.
+     */
+    BridgeContext getBridgeContext();
 
     /**
      * Returns the associated interpreter.

@@ -23,7 +23,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import java.util.jar.Manifest;
+
 import org.apache.batik.dom.svg.SVGOMDocument;
+import org.apache.batik.dom.svg.XMLBaseSupport;
 
 import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.dom.util.HashTable;
@@ -31,10 +34,12 @@ import org.apache.batik.dom.util.XLinkSupport;
 
 import org.apache.batik.script.Interpreter;
 import org.apache.batik.script.InterpreterException;
+import org.apache.batik.script.ScriptHandler;
 
 import org.apache.batik.util.SVGConstants;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -55,24 +60,10 @@ import org.w3c.dom.svg.SVGSVGElement;
  */
 public class BaseScriptingEnvironment {
 
-    protected final static String BATIK_PLUGIN_PI = "batik-plugin";
-
     /**
      * Tells whether the given SVG document is dynamic.
      */
     public static boolean isDynamicDocument(Document doc) {
-        for (Node n = doc.getFirstChild();
-             n != null && n.getNodeType() != n.ELEMENT_NODE;
-             n = n.getNextSibling()) {
-            if (n.getNodeType() != n.PROCESSING_INSTRUCTION_NODE) {
-                continue;
-            }
-            ProcessingInstruction pi = (ProcessingInstruction)n;
-            if (!BATIK_PLUGIN_PI.equals(pi.getTarget())) {
-                continue;
-            }
-            return true;
-        }
         Element elt = doc.getDocumentElement();
         if (elt.getNamespaceURI().equals(SVGConstants.SVG_NAMESPACE_URI)) {
             if (elt.getAttributeNS
@@ -226,61 +217,6 @@ public class BaseScriptingEnvironment {
      */
     public void loadScripts() {
         org.apache.batik.script.Window window = null;
-        for (Node n = document.getFirstChild();
-             n != null && n.getNodeType() != n.ELEMENT_NODE;
-             n = n.getNextSibling()) {
-            if (n.getNodeType() != n.PROCESSING_INSTRUCTION_NODE) {
-                continue;
-            }
-            ProcessingInstruction pi = (ProcessingInstruction)n;
-            if (!BATIK_PLUGIN_PI.equals(pi.getTarget())) {
-                continue;
-            }
-
-            if (window == null) {
-                window = createWindow();
-            }
-
-            try {
-                HashTable pattrs = new HashTable();
-                DOMUtilities.parseStyleSheetPIData(pi.getData(), pattrs);
-                
-                URL url = ((SVGOMDocument)document).getURLObject();
-                String base = (String)pattrs.get("codebase");
-                if (base == null) {
-                    url = new URL(url, ".");
-                } else {
-                    url = new URL(url, base);
-                }
-
-                URL[] urls;
-
-                String archive = (String)pattrs.get("archive");
-                if (archive != null) {
-                    List lst = new ArrayList();
-                    lst.add(url);
-                    StringTokenizer st = new StringTokenizer(archive, ", ");
-                    while (st.hasMoreTokens()) {
-                        String ar = st.nextToken();
-                        lst.add(new URL(url, ar));
-                    }
-                    urls = (URL[])lst.toArray(new URL[] {});
-                } else {
-                    urls = new URL[] { url };
-                }
-
-                URLClassLoader cl = new URLClassLoader(urls);
-                String cname = (String)pattrs.get("code");
-                Class c = cl.loadClass(cname);
-                Plugin p = (Plugin)c.newInstance();
-                p.run(document, window);
-            } catch (Exception ex) {
-                UserAgent ua = bridgeContext.getUserAgent();
-                if (ua != null) {
-                    ua.displayError(ex);
-                }
-            }
-        }
 
         NodeList scripts = document.getElementsByTagNameNS
             (SVGConstants.SVG_NAMESPACE_URI, SVGConstants.SVG_SCRIPT_TAG);
@@ -296,6 +232,51 @@ public class BaseScriptingEnvironment {
             Element script = (Element)scripts.item(i);
             String type = script.getAttributeNS
                 (null, SVGConstants.SVG_TYPE_ATTRIBUTE);
+
+            //
+            // Java code invocation.
+            //
+            if (type.equals("application/x-java-jar-file")) {
+                try {
+                    String href = XLinkSupport.getXLinkHref(script);
+                    URL url;
+                    url = new URL(XMLBaseSupport.getCascadedXMLBase(script));
+                    url = new URL(url, href);
+                    URLClassLoader cll = new URLClassLoader(new URL[] { url });
+
+                    // Get the 'Script-Handler' entry in the manifest.
+                    url = cll.findResource("META-INF/MANIFEST.MF");
+                    if (url == null) {
+                        continue;
+                    }
+                    Manifest man = new Manifest(url.openStream());
+                    String sh;
+                    sh = man.getMainAttributes().getValue("Script-Handler");
+                    if (sh == null) {
+                        continue;
+                    }
+
+                    // Run the script handler.
+                    ScriptHandler h;
+                    h = (ScriptHandler)cll.loadClass(sh).newInstance();
+
+                    if (window == null) {
+                        window = createWindow();
+                    }
+
+                    h.run(document, window);
+                    
+                } catch (Exception e) {
+                    if (userAgent != null) {
+                        userAgent.displayError(e);
+                    }
+                }
+                continue;
+            }
+
+            //
+            // Scripting language invocation.
+            //
             Interpreter interpreter = bridgeContext.getInterpreter(type);
 
             if (interpreter == null) {
@@ -316,8 +297,9 @@ public class BaseScriptingEnvironment {
                 Reader reader;
                 if (href.length() > 0) {
                     // External script.
-                    URL url = new URL(((SVGOMDocument)document).getURLObject(),
-                                      href);
+                    URL url;
+                    url = new URL(XMLBaseSupport.getCascadedXMLBase(script));
+                    url = new URL(url, href);
                     reader = new InputStreamReader(url.openStream());
                 } else {
                     // Inline script.
@@ -488,6 +470,15 @@ public class BaseScriptingEnvironment {
         }
 
         /**
+         * Parses the given XML string into a DocumentFragment of the
+         * given document.
+         * @return The document fragment or null on error.
+         */
+        public DocumentFragment parseXML(String text, Document doc) {
+            return null;
+        }
+
+        /**
          * Displays an alert dialog box.
          */
         public void alert(String message) {
@@ -512,6 +503,13 @@ public class BaseScriptingEnvironment {
          */
         public String prompt(String message, String defVal) {
             return null;
+        }
+
+        /**
+         * Returns the current BridgeContext.
+         */
+        public BridgeContext getBridgeContext() {
+            return bridgeContext;
         }
 
         /**

@@ -294,6 +294,7 @@ To display the available targets type:
                                script-jar,
                                transcoder-jar,
                                bridge-jar,
+                               swing-jar,
                                extension-jar,
                                xml-jar,
                                root-jar,
@@ -361,6 +362,7 @@ To display the available targets type:
         <include name="${package-prefix}/script/**/*.class"/>
         <include name="${package-prefix}/swing/**/*.class"/>
         <include name="${package-prefix}/util/*.class"/>
+        <include name="${package-prefix}/util/io/*.class"/>
         <include name="${package-prefix}/xml/*.class"/>
       </fileset>
       <fileset dir="${resources}" excludes="${resources}/**/CVS">
@@ -371,6 +373,7 @@ To display the available targets type:
         <include name="${package-prefix}/parser/**"/>
         <include name="${package-prefix}/swing/**"/>
         <include name="${package-prefix}/util/resources/**"/>
+        <include name="${package-prefix}/util/io/resources/**"/>
       </fileset>
       <fileset dir="${build}/tmp">
         <include name="org/**"/>
@@ -396,12 +399,12 @@ To display the available targets type:
       <fileset dir="${dest}">
         <include name="${package-prefix}/i18n/*.class"/>
         <include name="${package-prefix}/util/*.class"/>
+        <include name="${package-prefix}/util/io/*.class"/>
         <include name="${package-prefix}/util/resources/*.class"/>
-        <include name="${package-prefix}/util/svg/*.class"/>
       </fileset>
       <fileset dir="${resources}" excludes="${resources}/**/CVS">
         <include name="${package-prefix}/util/resources/**"/>
-        <include name="${package-prefix}/util/svg/resources/**"/>
+        <include name="${package-prefix}/util/io/resources/**"/>
       </fileset>
     </jar>
   </target>
@@ -574,11 +577,21 @@ To display the available targets type:
     <jar jarfile="${build}/lib/${project}-bridge.jar">
       <fileset dir="${dest}">
         <include name="${package-prefix}/bridge/**/*.class"/>
-        <include name="${package-prefix}/swing/**/*.class"/>
       </fileset>
       <fileset dir="${resources}" excludes="${resources}/**/CVS">
         <include name="${package-prefix}/bridge/BrokenLink.svg"/>
         <include name="${package-prefix}/bridge/**/resources/*"/>
+      </fileset>
+    </jar>
+  </target>
+
+  <!-- Swing (dependencies: all) -->
+  <target name="swing-jar" depends="compile, prepare-build">
+    <jar jarfile="${build}/lib/${project}-swing.jar">
+      <fileset dir="${dest}">
+        <include name="${package-prefix}/swing/**/*.class"/>
+      </fileset>
+      <fileset dir="${resources}" excludes="${resources}/**/CVS">
         <include name="${package-prefix}/swing/**/resources/*"/>
       </fileset>
     </jar>
