@@ -26,10 +26,10 @@
     <!-- ============================================================= -->
 
     <defs>
-            <text x="0" y="0" transform="scale(1.6, 1.6)" fill="DarkSlateBlue" text-anchor="middle" font-size="8%" font-family="Serif" id="words">batik</text>
+            <text x="0" y="0" transform="scale(1.6, 1.6)" fill="DarkSlateBlue" text-anchor="middle" font-size="40" font-family="Serif" id="words">batik</text>
     </defs>
     <g id="testContent">
-    <text class="title" x="50%" y="10%" font-size="3%" text-anchor="middle" >
+    <text class="title" x="50%" y="10%" font-size="15" text-anchor="middle" >
             Text Transformation</text>
     <g opacity="1.0" transform="translate(225, 250)" id="rotatedText">
     <g opacity="0.95"  transform="scale(1.05) rotate(15)">
@@ -85,7 +85,7 @@
     </g></g></g></g></g>
     </g></g></g></g></g>
     </g></g></g></g>
-        <text style="font-size:15%;font-family:Serif;fill:white" text-anchor="middle">batik</text>
+        <text style="font-size:75;font-family:Serif;fill:white" text-anchor="middle">batik</text>
     </g>
     </g>
 
