@@ -29,7 +29,7 @@ public class GraphicsNodeRenderContext extends RenderContext{
     /**
      * Key for the FontRenderContext hint
      */
-    public static RenderingHints.Key KEY_FONT_RENDER_CONTEXT = new RenderingHints.Key(0){
+    public static RenderingHints.Key KEY_FONT_RENDER_CONTEXT = new RenderingHints.Key(100){
             /**
              * Value should be either null or of type FontRenderContext
              */
@@ -45,7 +45,7 @@ public class GraphicsNodeRenderContext extends RenderContext{
     /**
      * Key for the TextPainter hint
      */
-    public static RenderingHints.Key KEY_TEXT_PAINTER = new RenderingHints.Key(0){
+    public static RenderingHints.Key KEY_TEXT_PAINTER = new RenderingHints.Key(101){
             public boolean isCompatibleValue(Object val){
                 boolean isCompatible = true;
                 if((val != null) && !(val instanceof TextPainter)){
@@ -58,7 +58,7 @@ public class GraphicsNodeRenderContext extends RenderContext{
     /**
      * Key for the GraphicsNodeRableFactory hint
      */
-    public static RenderingHints.Key KEY_GRAPHICS_NODE_RABLE_FACTORY = new RenderingHints.Key(0){
+    public static RenderingHints.Key KEY_GRAPHICS_NODE_RABLE_FACTORY = new RenderingHints.Key(102){
             public boolean isCompatibleValue(Object val){
                 boolean isCompatible = true;
                 System.out.println("==> val : " + val);
@@ -103,6 +103,8 @@ public class GraphicsNodeRenderContext extends RenderContext{
     public void setTextPainter(TextPainter textPainter){
         RenderingHints hints = getRenderingHints();
         hints.put(KEY_TEXT_PAINTER, textPainter);
+	setRenderingHints(hints);
+	hints = getRenderingHints();
     }
 
     /**
@@ -164,8 +166,13 @@ public class GraphicsNodeRenderContext extends RenderContext{
                                      TextPainter textPainter,
                                      GraphicsNodeRableFactory gnrFactory){
         super(transform, aoi, hints);
-        setTextPainter(textPainter);
-        setFontRenderContext(frc);
+        if (textPainter != null) {
+	    setTextPainter(textPainter);
+	}
+        if (frc != null) {
+	    setFontRenderContext(frc);
+	} 
+
         setGraphicsNodeRableFactory(gnrFactory);
 
         if(gnrFactory == null){
@@ -174,3 +181,4 @@ public class GraphicsNodeRenderContext extends RenderContext{
     }
 
 }
+

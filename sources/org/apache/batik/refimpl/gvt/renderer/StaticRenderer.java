@@ -9,13 +9,19 @@
 package org.apache.batik.refimpl.gvt.renderer;
 
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.TextPainter;
+import org.apache.batik.gvt.Selector;
+import org.apache.batik.gvt.Selectable;
 import org.apache.batik.gvt.filter.GraphicsNodeRable;
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
 import org.apache.batik.gvt.renderer.Renderer;
+import org.apache.batik.gvt.event.GraphicsNodeMouseListener;
 
 import org.apache.batik.refimpl.gvt.filter.ConcreteGraphicsNodeRableFactory;
+import java.util.Iterator;
+import java.util.Stack;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Shape;
@@ -43,24 +49,22 @@ public class StaticRenderer implements Renderer {
     /**
      * Tree this Renderer paints.
      */
-    protected GraphicsNode treeRoot;
+    private GraphicsNode treeRoot;
 
     /**
      * Flag for progressive rendering. Not used in this implementation
      */
-    protected boolean progressivePaintAllowed;
+    private boolean progressivePaintAllowed;
 
     /**
      * Offscreen image where the Renderer does its rendering
      */
-    protected BufferedImage offScreen;
+    private BufferedImage offScreen;
 
     /**
      * Passed to the GVT tree to describe the rendering environment
      */
-    protected GraphicsNodeRenderContext nodeRenderContext;
-
-    protected AffineTransform usr2dev = new AffineTransform();
+    private GraphicsNodeRenderContext nodeRenderContext;
 
     /**
      * @param offScreen image where the Renderer should do its rendering
@@ -75,18 +79,14 @@ public class StaticRenderer implements Renderer {
         hints.put(RenderingHints.KEY_INTERPOLATION,
                   RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 
-        hints.put(RenderingHints.KEY_FRACTIONALMETRICS,
-                  RenderingHints.VALUE_FRACTIONALMETRICS_ON);
-
-        FontRenderContext fontRenderContext =
-            new FontRenderContext(new AffineTransform(), true, true);
+        FontRenderContext fontRenderContext = 
+	    new FontRenderContext(new AffineTransform(), true, true);
         TextPainter textPainter = new StrokingTextPainter();
 
-        GraphicsNodeRableFactory gnrFactory =
-            new ConcreteGraphicsNodeRableFactory();
+        GraphicsNodeRableFactory gnrFactory = new ConcreteGraphicsNodeRableFactory();
 
         this.nodeRenderContext =
-            new GraphicsNodeRenderContext(usr2dev,
+            new GraphicsNodeRenderContext(new AffineTransform(),
                                           null,
                                           hints,
                                           fontRenderContext,
@@ -116,6 +116,8 @@ public class StaticRenderer implements Renderer {
      */
     public void setTree(GraphicsNode treeRoot){
         this.treeRoot = treeRoot;
+	// associate selectable nodes with selector object(s)
+	initSelectors();
     }
 
     /**
@@ -126,19 +128,16 @@ public class StaticRenderer implements Renderer {
     }
 
     /**
-     * Forces repaint of the specified area of interest in the current
-     * user space coordinate system.
+     * Forces repaint of provided node. 'node' must be a node in the
+     * currently associated GVT tree. Normally there is no need to
+     * call this method explicitly as the Renderer listens for changes
+     * on all nodes in the tree it is associated with.
      *
      * @param area region to be repainted, in the current user space
      * coordinate system.
      */
     public void repaint(Shape area){
-        if (area == null) {
-            System.err.println("**** WARNING *** : aoi is null in renderer");
-            return;
-        }
         // First, set the Area Of Interest in the renderContext
-        nodeRenderContext.setTransform(usr2dev);
         nodeRenderContext.setAreaOfInterest(area);
 
         // Now, paint into offscreen image
@@ -154,9 +153,8 @@ public class StaticRenderer implements Renderer {
         g.addRenderingHints(nodeRenderContext.getRenderingHints());
 
         // Render tree
-        if(treeRoot != null) {
+        if(treeRoot != null)
             treeRoot.paint(g, nodeRenderContext);
-        }
     }
 
     /**
@@ -167,10 +165,9 @@ public class StaticRenderer implements Renderer {
      *        the identity transform will be set.
      */
     public void setTransform(AffineTransform usr2dev){
-        if(usr2dev == null) {
+        if(usr2dev == null)
             usr2dev = new AffineTransform();
-        }
-        this.usr2dev = usr2dev;
+
         // Update the RenderContext in the nodeRenderContext
         nodeRenderContext.setTransform(usr2dev);
     }
@@ -200,5 +197,94 @@ public class StaticRenderer implements Renderer {
     public void setProgressivePaintAllowed(boolean progressivePaintAllowed){
         this.progressivePaintAllowed = progressivePaintAllowed;
     }
+
+    /**
+     * Associate selectable elements in the current tree with
+     * Selector instances. 
+     */
+    public void initSelectors() {
+	Iterator nodeIter = new GraphicsNodeTreeIterator(treeRoot);
+	Selector selector = 
+	    new org.apache.batik.test.gvt.TestSelector(nodeRenderContext);
+	while (nodeIter.hasNext()) {
+	    GraphicsNode node = (GraphicsNode) nodeIter.next();
+	    if (node instanceof Selectable) {
+
+// temporarily disabled until we can debug ...
+/*	        node.addGraphicsNodeMouseListener(
+			     (GraphicsNodeMouseListener) selector) */ ; 
+
+	    }
+	}
+    }
+
+    class GraphicsNodeTreeIterator implements Iterator {
+
+	GraphicsNode root;
+	GraphicsNode current = null;
+	Iterator currentIter;
+	Stack iterStack;
+	Stack nodeStack;
+
+	public GraphicsNodeTreeIterator(GraphicsNode root) {
+	    this.root = root;
+	    if (root instanceof CompositeGraphicsNode) {
+		currentIter = ((CompositeGraphicsNode) root).getChildren().iterator();
+	    } 
+	    iterStack = new Stack();
+	    nodeStack = new Stack();
+	}
+
+	public boolean hasNext() {
+	    return (current != root);
+	}
+
+	public Object next() {
+	    if (currentIter.hasNext()) {
+		current = (GraphicsNode) currentIter.next();
+		while (current instanceof CompositeGraphicsNode) {
+		    iterStack.push(currentIter);
+		    nodeStack.push(current);
+		    currentIter = ((CompositeGraphicsNode) current).getChildren().iterator();
+		    if (currentIter.hasNext()) {
+			current = (GraphicsNode) currentIter.next();
+		    } else {
+			currentIter = (Iterator) iterStack.pop();
+			current = (GraphicsNode) nodeStack.pop();
+		    }
+		}
+	    } else {
+		if (!iterStack.empty()) {
+		    do {
+			currentIter = (Iterator) iterStack.pop();
+			current = (GraphicsNode) nodeStack.pop();
+		    } while (!currentIter.hasNext() && !iterStack.isEmpty());
+		} else {
+		    current = root;
+		}
+	    }
+	    return current;
+	}
+
+	public void remove() {
+	    ; // FIXME: should throw an exception, probably
+	}
+    }
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
