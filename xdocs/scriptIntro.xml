@@ -24,12 +24,12 @@
     <body>
         <s1 title="Introduction">
            <p>
-               Batik 1.1 is a static SVG implementation, that's why scripting cannot be used to modify the rendering of the SVG elements on the screen. However you will find below a little introduction on scripting basics, on how it could be useful through an example and on how you can go a little bit further.
+               You will find below a little introduction on scripting basics, on how it could be useful through an example and on how you can go a little bit further.
            </p>
         </s1>
         <s1 title="Scripting Basics">
            <p>
-               As it is one of the most popular scripting language and as the SVG specification states that an SVG conforming implementation should support it, the ECMAScript (JavaScript) language is supported in Batik through the Mozilla ECMAScript interpreter called Rhino. Even if it is the only scripting language provided with the Batik standart distribution, other languages such a Python or Tcl can also be supported. All examples in this section will use ECMAScript.
+               As it is one of the most popular scripting language and as the SVG specification states that an SVG conforming implementation should support it, the ECMAScript (JavaScript) language is supported in Batik through the Mozilla ECMAScript interpreter called Rhino. Even if it is the only scripting language provided with the Batik standard distribution, other languages such a Python or Tcl can also be supported. All examples in this section will use ECMAScript.
            </p>
            <p>
                There are two places in an SVG file where you can put scripts. 
@@ -67,7 +67,6 @@
            </ul>
         </s1>
         <s1 title="Scripting Uses in Batik">
-	<p>Batik release 1.1 is a static SVG implementation, that's why in this version you can't use scripting to move or change graphic objects on the screen, however it can still be usefull for other purposes.</p>
 	<p>The following simplified example that you can find in your Batik distribution displays a simple message in response to user events:</p>
 	<source>
 &lt;svg width="450" height="500" viewBox="0 0 450 500"&gt;
@@ -78,16 +77,22 @@
 &nbsp;&nbsp;&nbsp;&nbsp;}
 
 &nbsp;&nbsp;&nbsp;&nbsp;&lt;g&gt;
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;circle cx="137.5" cy="110" r="20" style="fill:crimson" onmousedown="showDialog('onmousedown')"/&gt;
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;circle cx="312.5" cy="110" r="20" style="fill:crimson" onmouseup="showDialog('onmouseup')"/&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;circle cx="137.5" cy="110" r="20" style="fill:crimson"
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;onmousedown="showDialog('onmousedown')"/&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;circle cx="312.5" cy="110" r="20" style="fill:crimson"
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;onmouseup="showDialog('onmouseup')"/&gt;
 &nbsp;&nbsp;&nbsp;&nbsp;&lt;/g&gt;
 &nbsp;&nbsp;&nbsp;&nbsp;&lt;g transform="translate(0 80)"&gt;
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;circle cx="137.5" cy="110" r="20" style="fill:crimson" onmouseover="showDialog('onmouseover')"/&gt;
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;circle cx="312.5" cy="110" r="20" style="fill:crimson" onmouseout="showDialog('onmouseout')"/&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;circle cx="137.5" cy="110" r="20" style="fill:crimson"
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;onmouseover="showDialog('onmouseover')"/&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;circle cx="312.5" cy="110" r="20" style="fill:crimson"
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;onmouseout="showDialog('onmouseout')"/&gt;
 &nbsp;&nbsp;&nbsp;&nbsp;&lt;/g&gt;
 &nbsp;&nbsp;&nbsp;&nbsp;&lt;g transform="translate(0 160)"&gt;
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;circle cx="137.5" cy="110" r="20" style="fill:crimson" onmousemove="showDialog('onmousemove')"/&gt;
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;circle cx="312.5" cy="110" r="20" style="fill:crimson" onclick="showDialog('onclick')"/&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;circle cx="137.5" cy="110" r="20" style="fill:crimson"
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;onmousemove="showDialog('onmousemove')"/&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;circle cx="312.5" cy="110" r="20" style="fill:crimson"
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;onclick="showDialog('onclick')"/&gt;
 &nbsp;&nbsp;&nbsp;&nbsp;&lt;/g&gt;
 &lt;/svg&gt;
 </source>
