@@ -13,6 +13,10 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.HashMap;
 
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.event.EventDispatcher;
@@ -150,8 +154,6 @@ class BridgeEventSupport implements SVGConstants {
         String language = svgElement.getContentScriptType();
         Interpreter interpret = null;
         String script = null;
-        // <!> TODO we need to memo listeners to be able to remove
-        // them later when deconnecting the bridge binding...
         if (element.getLocalName().equals(SVG_SVG_TAG)) {
             for (int i = 0; i < EVENT_ATTRIBUTES_SVG.length; i++) {
                 if (!(script = element.getAttribute(EVENT_ATTRIBUTES_SVG[i])).
@@ -165,15 +167,14 @@ class BridgeEventSupport implements SVGConstants {
                         if (interpret == null) {
                             UserAgent ua = ctx.getUserAgent();
                             if (ua != null)
-                                ua.displayError(new Exception("unknow language: "+language));
+                                ua.displayError(new Exception("unknow language: "+
+                                                              language));
                             break;
                         }
                     }
-                    target.
-                        addEventListener(EVENT_NAMES[i+FIRST_SVG_EVENT],
-                                         new ScriptCaller(ctx.getUserAgent(),
-                                                          script, interpret),
-                                         false);
+                    addScriptCaller(target, EVENT_NAMES[i+FIRST_SVG_EVENT],
+                                     new ScriptCaller(ctx.getUserAgent(),
+                                                      script, interpret));
                 }
             }
             // continue
@@ -199,12 +200,10 @@ class BridgeEventSupport implements SVGConstants {
                                 break;
                             }
                         }
-                        target.
-                            addEventListener(EVENT_NAMES[i+
-                                                        FIRST_ANIMATION_EVENT],
-                                             new ScriptCaller(ctx.getUserAgent(),
-                                                              script, interpret),
-                                             false);
+                        addScriptCaller(target, EVENT_NAMES[i+
+                                                            FIRST_ANIMATION_EVENT],
+                                         new ScriptCaller(ctx.getUserAgent(),
+                                                          script, interpret));
                     }
                 }
                 // not other stuff to do on this kind of events
@@ -226,11 +225,9 @@ class BridgeEventSupport implements SVGConstants {
                         break;
                     }
                 }
-                target.
-                    addEventListener(EVENT_NAMES[i],
-                                     new ScriptCaller(ctx.getUserAgent(),
-                                                      script, interpret),
-                                     false);
+                addScriptCaller(target, EVENT_NAMES[i],
+                                 new ScriptCaller(ctx.getUserAgent(),
+                                                  script, interpret));
             }
         }
     }
@@ -238,6 +235,66 @@ class BridgeEventSupport implements SVGConstants {
 
     public static void updateDOMListener(BridgeContext ctx,
                                          SVGElement element) {
+    }
+
+    // utility
+    private static void addScriptCaller(EventTarget target,
+                                        String type,
+                                        ScriptCaller listener) {
+        target.addEventListener(type, listener, false);
+        Element svgRoot = ((Element)target).getOwnerDocument().getDocumentElement();
+        SVGUnloadListener unload = null;
+        if ((unload = SVGUnloadListener.getInstance(svgRoot)) == null)
+            ((EventTarget)svgRoot).
+                addEventListener("SVGUnload",
+                                 unload = new SVGUnloadListener(svgRoot),
+                                 false);
+        unload.addListener(target, type, listener);
+    }
+
+
+    /**
+     * This class is a listener that will remove all listeners installed
+     * by the bridge on the unload event.
+     */
+    private static class SVGUnloadListener
+        implements EventListener {
+        private class Entry {
+            String type;
+            EventListener caller;
+            EventTarget target;
+            Entry(String type, EventListener listener, EventTarget target) {
+                this.type = type;
+                this.caller = listener;
+                this.target = target;
+            }
+        }
+        private Element svgRoot = null;
+        private List list = new LinkedList();
+        private static HashMap map = new HashMap(1);
+        SVGUnloadListener(Element svgRoot) {
+            this.svgRoot = svgRoot;
+            map.put(svgRoot, this);
+        }
+        public static SVGUnloadListener getInstance(Element svgRoot) {
+            return (SVGUnloadListener)map.get(svgRoot);
+        }
+        public void addListener(EventTarget element, String type, EventListener listener) {
+            list.add(new Entry(type, listener, element));
+        }
+        public void handleEvent(Event evt) {
+            Iterator it = list.iterator();
+            while (it.hasNext()) {
+                Entry entry = (Entry)it.next();
+                entry.target.removeEventListener(entry.type,
+                                                 entry.caller,
+                                                 false);
+            }
+            map.remove(svgRoot);
+            svgRoot = null;
+            list = null;
+            evt.getTarget().removeEventListener("SVGUnload", this, false);
+        }
     }
 
     /**
@@ -251,16 +308,18 @@ class BridgeEventSupport implements SVGConstants {
             if (dispatcher != null) {
                 final Listener listener = new Listener(ctx, ua);
                 dispatcher.addGraphicsNodeMouseListener(listener);
+                // add an unload listener on the SVGDocument to remove
+                // that listener for dispatching events
                 ((EventTarget)svgRoot).
                     addEventListener("SVGUnload",
-                                     new UnloadListener(dispatcher, listener),
+                                     new GVTUnloadListener(dispatcher, listener),
                                      false);
             }
         }
     }
 
     public static void loadScripts(BridgeContext ctx, Document doc) {
-        NodeList list = doc.getElementsByTagName("script");
+        NodeList list = doc.getElementsByTagName(SVG_SCRIPT_TAG);
         final UserAgent ua = ctx.getUserAgent();
         String language = null;
         Element selement = null;
@@ -290,12 +349,11 @@ class BridgeEventSupport implements SVGConstants {
         }
     }
 
-    private static class UnloadListener
+    private static class GVTUnloadListener
         implements EventListener {
         private EventDispatcher dispatcher;
         private Listener listener;
-        UnloadListener(EventDispatcher dispatcher, Listener listener)
-        {
+        GVTUnloadListener(EventDispatcher dispatcher, Listener listener) {
             this.dispatcher = dispatcher;
             this.listener = listener;
         }
@@ -423,7 +481,8 @@ class BridgeEventSupport implements SVGConstants {
                 target.dispatchEvent(mevent);
             } catch (RuntimeException e) {
                 // runtime exceptions may appear we need to display them...
-                ua.displayError(new Exception("scripting error in event handling: "+e.getMessage()));
+                ua.displayError(new Exception("scripting error in event handling: "+
+                                              e.getMessage()));
             }
         }
     }
@@ -456,4 +515,3 @@ class BridgeEventSupport implements SVGConstants {
         }
     }
 }
-
