@@ -66,6 +66,7 @@ public class SVGFeMergeElementBridge
         List srcs = extractFeMergeNode(filterElement,
                                        filteredElement,
                                        filteredNode,
+                                       inputFilter,
                                        filterMap,
                                        ctx);
 
@@ -106,12 +107,15 @@ public class SVGFeMergeElementBridge
      * @param filterElement the feMerge filter element
      * @param filteredElement the filtered element
      * @param filteredNode the filtered graphics node
+     * @param inputFilter the <tt>Filter</tt> that represents the current
+     *        filter input if the filter chain.
      * @param filterMap the filter map that contains named filter primitives
      * @param ctx the bridge context
      */
     protected static List extractFeMergeNode(Element filterElement,
                                              Element filteredElement,
                                              GraphicsNode filteredNode,
+                                             Filter inputFilter,
                                              Map filterMap,
                                              BridgeContext ctx) {
 
@@ -133,9 +137,9 @@ public class SVGFeMergeElementBridge
             Filter filter =  ((SVGFeMergeNodeElementBridge)bridge).createFilter
                 (ctx,
                  e,
-                 filterElement,
                  filteredElement,
                  filteredNode,
+                 inputFilter,
                  filterMap);
             if (filter != null) {
                 if (srcs == null) {
@@ -172,19 +176,17 @@ public class SVGFeMergeElementBridge
          *        know its name.
          */
         public Filter createFilter(BridgeContext ctx,
-                                   Element mergeNodeElement,
                                    Element filterElement,
                                    Element filteredElement,
                                    GraphicsNode filteredNode,
+                                   Filter inputFilter,
                                    Map filterMap) {
-
-            String in = mergeNodeElement.getAttributeNS(null, SVG_IN_ATTRIBUTE);
-            return getFilterSource(filterElement,
-                                   in,
-                                   filteredElement,
-                                   filteredNode,
-                                   filterMap,
-                                   ctx);
+            return getIn(filterElement,
+                         filteredElement,
+                         filteredNode,
+                         inputFilter,
+                         filterMap,
+                         ctx);
         }
 
         /**

@@ -22,6 +22,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import org.apache.batik.dom.svg.SVGOMPathElement;
+import org.apache.batik.dom.svg.SVGOMGElement;
+
 /**
  * This class is responsible for creating a GVT tree using an SVG DOM tree.
  *
@@ -33,7 +36,7 @@ public class GVTBuilder implements SVGConstants {
     /**
      * Constructs a new builder.
      */
-    public GVTBuilder() {}
+    public GVTBuilder() { }
 
     /**
      * Builds using the specified bridge context the specified SVG document.

@@ -295,7 +295,7 @@ public class BridgeContext implements ErrorConstants {
 
     /**
      * Returns the actual size of the document or null if the document
-     * has not ben built yet.
+     * has not been built yet.
      */
     public Dimension2D getDocumentSize() {
         return documentSize;
