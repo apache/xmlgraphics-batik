@@ -141,9 +141,9 @@ public class SVGAElementBridge extends AbstractGraphicsNodeBridge {
             // The cursor on the inside rect will be set to the hand cursor and
             // not the wait cursor
             //
-            String cursorStr = CSSUtilities.convertCursor((Element)evt.getTarget());
+            Element target = (Element)evt.getTarget();
             
-            if (SVG_AUTO_VALUE.equalsIgnoreCase(cursorStr)) {
+            if (CSSUtilities.isAutoCursor(target)) {
                 // The target's cursor value is 'auto': use the hand cursor
                 userAgent.setSVGCursor(CursorManager.ANCHOR_CURSOR);
             }

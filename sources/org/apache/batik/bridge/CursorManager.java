@@ -9,11 +9,31 @@
 package org.apache.batik.bridge;
 
 import java.awt.Cursor;
-
+import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.Toolkit;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.RenderedImage;
+import java.awt.image.Raster;
+import java.awt.image.WritableRaster;
+import java.awt.image.SampleModel;
 import java.util.Map;
 import java.util.Hashtable;
 
+import org.apache.batik.ext.awt.image.spi.ImageTagRegistry;
+import org.apache.batik.ext.awt.image.renderable.Filter;
+
+import org.apache.batik.dom.util.XLinkSupport;
+import org.apache.batik.dom.svg.XMLBaseSupport;
 import org.apache.batik.util.SVGConstants;
+import org.apache.batik.util.ParsedURL;
+
+import org.w3c.dom.Element;
 
 /**
  * The CursorManager class is a helper class which preloads the cursors 
@@ -85,13 +105,217 @@ public class CursorManager implements SVGConstants {
     }
 
     /**
+     * BridgeContext associated with this CursorManager
+     */
+    protected BridgeContext ctx;
+
+    /**
+     * Constructor
+     *
+     * @param BridgeContext ctx, the BridgeContext associated to this CursorManager
+     */
+    public CursorManager(BridgeContext ctx) {
+        this.ctx = ctx;
+    }
+
+    /**
      * Returns a Cursor object for a given cursor value. This initial implementation
      * does not handle user-defined cursors, so it always uses the cursor at the 
      * end of the list
      */
-    public static Cursor getCursor(String cursorName){
-        Cursor c = (Cursor)cursorMap.get(cursorName);
-        return c != null ? c : DEFAULT_CURSOR;
+    public static Cursor getPredefinedCursor(String cursorName){
+        return (Cursor)cursorMap.get(cursorName);
     }
     
+    /**
+     * Returns a cursor for the given cursorElement
+     */
+    public Cursor convertSVGCursor(Element cursorElement) {
+        // One of the cursor url resolved to a <cursor> element
+        // Try to handle its image.
+        String uriStr = XLinkSupport.getXLinkHref(cursorElement);
+        String baseURI = XMLBaseSupport.getCascadedXMLBase(cursorElement);
+        ParsedURL purl;
+        if (baseURI == null) {
+            purl = new ParsedURL(uriStr);
+        } else {
+            purl = new ParsedURL(baseURI, uriStr);
+        }
+
+        //
+        // Convert the cursor's hot spot
+        //
+        UnitProcessor.Context uctx 
+            = UnitProcessor.createContext(ctx, cursorElement);
+
+        String s = cursorElement.getAttributeNS(null, SVG_X_ATTRIBUTE);
+        float x = 0;
+        if (s.length() != 0) {
+            x = UnitProcessor.svgHorizontalCoordinateToUserSpace
+                (s, SVG_X_ATTRIBUTE, uctx);
+        }
+
+        s = cursorElement.getAttributeNS(null, SVG_Y_ATTRIBUTE);
+        float y = 0;
+        if (s.length() != 0) {
+            y = UnitProcessor.svgVerticalCoordinateToUserSpace
+                (s, SVG_Y_ATTRIBUTE, uctx);
+        }
+
+        CursorDescriptor desc = new CursorDescriptor(purl, x, y);
+
+        // Check if there is a cursor in the cache for this url
+        Cursor cachedCursor = getCachedCursor(desc);
+
+        if (cachedCursor != null) {
+            return cachedCursor;
+        } 
+        
+        ImageTagRegistry reg = ImageTagRegistry.getRegistry();
+        Filter f = reg.readURL(purl);
+
+        //
+        // Now, get the preferred cursor dimension
+        //
+        Rectangle preferredSize = f.getBounds2D().getBounds();
+        if (preferredSize == null || preferredSize.width <=0
+            || preferredSize.height <=0 ) {
+            return null;
+        }
+
+        Dimension cursorSize 
+            = Toolkit.getDefaultToolkit().getBestCursorSize
+            (preferredSize.width, preferredSize.height);
+
+        // 
+        // Fit the rendered image into the cursor image
+        // size and aspect ratio if it does not fit into 
+        // the cursorSize area. Otherwise, draw the cursor 
+        // into an image the size of the preferred cursor 
+        // size.
+        //
+        Image bi = null;
+
+        if (cursorSize.width < preferredSize.width 
+            ||
+            cursorSize.height < preferredSize.height) {
+            float rw = cursorSize.width;
+            float rh = (cursorSize.width * preferredSize.height) / (float)preferredSize.width;
+            
+            if (rh > cursorSize.height) {
+                rw *= (cursorSize.height / rh);
+                rh = cursorSize.height;
+            }
+            
+            RenderedImage img = f.createScaledRendering((int)Math.round(rw),
+                                                        (int)Math.round(rh),
+                                                        null);
+            
+            if (bi instanceof Image) {
+                bi = (Image)img;
+            } else {
+                bi = renderedImageToImage(img);
+            }
+
+            // Apply the scale transform that is applied to the image
+            x *= rw/preferredSize.width;
+            y *= rh/preferredSize.height;
+
+        } else {
+            // Preferred size fits into ideal cursor size. No resize,
+            // just draw cursor in 0, 0.
+            BufferedImage tbi = new BufferedImage(cursorSize.width,
+                                                  cursorSize.height,
+                                                  BufferedImage.TYPE_INT_ARGB);
+            RenderedImage ri = f.createScaledRendering(preferredSize.width,
+                                                       preferredSize.height,
+                                                       null);
+            Graphics2D g = tbi.createGraphics();
+            g.drawRenderedImage(ri, new AffineTransform());
+            g.dispose();
+            bi = tbi;
+        }
+
+        // Make sure the not spot does not fall out of the cursor area. If it
+        // does, then clamp the coordinates to the image space.
+        x = x < 0 ? 0 : x;
+        y = y < 0 ? 0 : y;
+        x = x > (cursorSize.width-1) ? cursorSize.width - 1 : x;
+        y = y > (cursorSize.height-1) ? cursorSize.height - 1: y;
+
+        //
+        // The cursor image is not into the bi image
+        //
+        Cursor c = Toolkit.getDefaultToolkit()
+            .createCustomCursor(bi, 
+                                new Point((int)Math.round(x),
+                                          (int)Math.round(y)),
+                                purl.toString());
+
+        addCursorToCache(desc, c);
+        return c;        
+    }
+
+    /**
+     * Implementation helper: converts a RenderedImage to an Image
+     */
+    protected Image renderedImageToImage(RenderedImage ri) {
+        int x = ri.getMinX();
+        int y = ri.getMinY();
+        SampleModel sm = ri.getSampleModel();
+        ColorModel cm = ri.getColorModel();
+        WritableRaster wr = Raster.createWritableRaster(sm, new Point(x,y));
+        ri.copyData(wr);
+
+        return new BufferedImage(ri.getColorModel(),
+                                 wr,
+                                 cm.isAlphaPremultiplied(),
+                                 null);
+    }
+
+    /**
+     * Checks if the cursor referencing the input image and
+     * with the given hot spot is in the cache
+     */
+    protected Cursor getCachedCursor(CursorDescriptor desc) {
+        return null;
+    }
+
+    /**
+     * Puts the input Cursor in the cache
+     */
+    protected void addCursorToCache(CursorDescriptor desc, Cursor c) {
+    }
+
+    static class CursorDescriptor {
+        ParsedURL purl;
+        float x;
+        float y;
+
+        public CursorDescriptor(ParsedURL purl,
+                                float x, float y) {
+            if (purl == null) {
+                throw new IllegalArgumentException();
+            }
+
+            this.x = x;
+            this.y = y;
+        }
+
+        public boolean equals(Object obj) {
+            if (obj == null 
+                ||
+                !(obj instanceof CursorDescriptor)) {
+                return false;
+            }
+
+            CursorDescriptor desc = (CursorDescriptor)obj;
+            return 
+                (this.purl.equals(desc.purl)
+                 &&
+                 this.x == desc.x
+                 &&
+                 this.y == desc.y);
+        }
+    }
 }

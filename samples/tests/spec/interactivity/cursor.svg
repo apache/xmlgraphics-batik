@@ -34,6 +34,10 @@
         <use id="evenRow" xlink:href="#row" stroke="black" fill="#eeeeee" />
         <use id="oddRowCursor" xlink:href="#row" stroke="black" fill="crimson" cursor="wait"/>
         <use id="evenRowCursor" xlink:href="#row" stroke="black" fill="gold" cursor="wait"/>
+
+        <cursor id="customCursor" x="16" y="16" xlink:href="../../resources/images/hotSpotCenter.png" />
+        <cursor id="customCursor2" x="32" y="0" xlink:href="../../resources/images/hotSpotNE.png" />
+
     </defs>
 
     <g transform="translate(120, 120)" class="label" text-anchor="middle">
@@ -142,7 +146,7 @@
             <use xlink:href="#evenRow"/>
             <text>Good url, wait</text>
         </g>
-        <g transform="translate(0,200)" cursor="url(#badCustom), url(#customCursor), crosshair">
+        <g transform="translate(0,200)" cursor="url(#badCustom), url(#customCursor2), crosshair">
             <use xlink:href="#oddRow"/>
             <text>Bad url, good url, crosshair</text>
         </g>
