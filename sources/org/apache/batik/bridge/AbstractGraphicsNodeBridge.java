@@ -317,6 +317,15 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
         case SVGCSSEngine.POINTER_EVENTS_INDEX:
             node.setPointerEventType(CSSUtilities.convertPointerEvents(e));
             break;
+        case SVGCSSEngine.DISPLAY_INDEX:
+            if (!getDisplay(e)) {
+                // Remove the subtree.
+                CompositeGraphicsNode parent = node.getParent();
+                int idx = parent.indexOf(node);
+                parent.remove(node);
+                disposeTree(e);
+            }
+            break;
         }
     }
 

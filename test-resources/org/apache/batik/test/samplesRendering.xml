@@ -352,6 +352,7 @@
     <testGroup id="tests.spec.scripting">
         <test id="samples/tests/spec/scripting/add.svg" />
         <test id="samples/tests/spec/scripting/circle.svg" />
+        <test id="samples/tests/spec/scripting/display.svg" />
         <test id="samples/tests/spec/scripting/ellipse.svg" />
         <test id="samples/tests/spec/scripting/fill.svg" />
         <test id="samples/tests/spec/scripting/image.svg" />

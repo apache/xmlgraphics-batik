@@ -52,6 +52,7 @@ package org.apache.batik.bridge;
 
 import java.awt.Shape;
 
+import org.apache.batik.css.engine.SVGCSSEngine;
 import org.apache.batik.gvt.CompositeShapePainter;
 import org.apache.batik.gvt.ShapeNode;
 import org.apache.batik.gvt.ShapePainter;
@@ -121,4 +122,21 @@ public abstract class SVGDecoratedShapeElementBridge
         }
         return painter;
     }
+
+    protected void handleCSSPropertyChanged(int property) {
+        switch(property) {
+        case SVGCSSEngine.MARKER_START_INDEX:
+        case SVGCSSEngine.MARKER_MID_INDEX:
+        case SVGCSSEngine.MARKER_END_INDEX:
+            if (!hasNewShapePainter) {
+                hasNewShapePainter = true;
+                ShapeNode shapeNode = (ShapeNode)node;
+                shapeNode.setShapePainter(createShapePainter(ctx, e, shapeNode));
+            }
+            break;
+        default:
+            super.handleCSSPropertyChanged(property);
+        }
+    }
 }
+

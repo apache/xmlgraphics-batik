@@ -404,12 +404,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
         // Bind the nodes for interactive and dynamic
         // HACK due to the way images are represented in GVT
         ImageNode imgNode = (ImageNode)node;
-        if (imgNode.getImage() instanceof RasterImageNode) {
-            // register the RasterImageNode instead
-            ctx.bind(e, imgNode.getImage());
-        } else {
-            ctx.bind(e, node);
-        }
+        ctx.bind(e, node);
 
         if (ctx.isDynamic()) {
             // Only do this for dynamic not interactive.
@@ -512,12 +507,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
         }
         ImageNode imgNode = (ImageNode)node;
         //HACK : see 'initializeDynamicSupport'
-        if (imgNode.getImage() instanceof RasterImageNode) {
-            // register the RasterImageNode instead
-            ctx.unbind(e);
-            ctx.bind(e, inode );
-        }
-        else{
+        if (!(imgNode.getImage() instanceof RasterImageNode)) {
             //it was an svg file referenced
             //dispose it
             if ( oldSVGDoc != null ){

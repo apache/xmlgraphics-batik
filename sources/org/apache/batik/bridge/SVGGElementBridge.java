@@ -153,28 +153,30 @@ public class SVGGElementBridge extends AbstractGraphicsNodeBridge {
         if (childNode == null) {
             return; // the added element is not a graphic element
         }
-        // add the graphics node
-        Node n = parent.getFirstChild();
-        Node lastChild = parent.getLastChild();
-        if (n == childElt) {
-            // add at the beginning
-            gn.add(0, childNode);
-        } else if (lastChild == childElt) {
-            // append at the end
-            gn.add(childNode);
-        } else {
-            // find the index of the GraphicsNode to add
-            int index = 0;
-            while (n != lastChild && n != childElt) {
-                if (n.getNodeType() == Node.ELEMENT_NODE) {
-                    if (ctx.hasGraphicsNodeBridge((Element)n)) {
-                        index++;
-                    }
-                }
-                n = n.getNextSibling();
+        
+        // Find the index where the GraphicsNode should be added
+        int idx = -1;
+        for(Node ps = childElt.getPreviousSibling(); ps != null;
+            ps = ps.getPreviousSibling()) {
+            if (ps.getNodeType() != Node.ELEMENT_NODE)
+                continue;
+            Element pse = (Element)ps;
+            GraphicsNode psgn = ctx.getGraphicsNode(pse);
+            while ((psgn != null) && (psgn.getParent() != gn)) {
+                // In some cases the GN linked is
+                // a child (in particular for images).
+                psgn = psgn.getParent();
             }
-            // insert at the index
-            gn.add(index, childNode);
+            if (psgn == null)
+                continue;
+            idx = gn.indexOf(psgn);
+            if (idx == -1)
+                continue;
+            break;
         }
+        // insert after prevSibling, if
+        // it was -1 this becomes 0 (first slot)
+        idx++; 
+        gn.add(idx, childNode);
     }
 }

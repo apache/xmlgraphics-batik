@@ -71,6 +71,7 @@ import org.apache.batik.css.engine.CSSEngine;
 import org.apache.batik.css.engine.CSSEngineEvent;
 import org.apache.batik.css.engine.CSSEngineListener;
 import org.apache.batik.css.engine.CSSEngineUserAgent;
+import org.apache.batik.css.engine.SVGCSSEngine;
 import org.apache.batik.css.engine.SystemColorSupport;
 import org.apache.batik.css.engine.value.Value;
 import org.apache.batik.dom.svg.SVGContext;
@@ -78,6 +79,7 @@ import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.svg.SVGOMElement;
 import org.apache.batik.dom.svg.SVGStylableElement;
+import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.TextPainter;
 import org.apache.batik.script.Interpreter;
@@ -1208,8 +1210,56 @@ public class BridgeContext implements ErrorConstants, CSSContext {
          * that have changed on a particular element.
          */
         public void propertiesChanged(CSSEngineEvent evt) {
-            SVGContext ctx = getSVGContext(evt.getElement());
-            if (ctx != null && (ctx instanceof BridgeUpdateHandler)) {
+            Element elem = evt.getElement();
+            SVGContext ctx = getSVGContext(elem);
+            if (ctx == null) {
+                GraphicsNode pgn = getGraphicsNode
+                    ((Element)elem.getParentNode());
+                if ((pgn == null) || !(pgn instanceof CompositeGraphicsNode)) {
+                    // Something changed in this element but we really don't
+                    // care since it's parent isn't displayed either.
+                    return;
+                }
+                CompositeGraphicsNode parent = (CompositeGraphicsNode)pgn;
+                // Check if 'display' changed on this element.
+
+                int [] properties = evt.getProperties();
+                for (int i=0; i < properties.length; ++i) {
+                    if (properties[i] == SVGCSSEngine.DISPLAY_INDEX) {
+                        if (!CSSUtilities.convertDisplay(elem)) {
+                            // (Still) Not displayed
+                            break;
+                        }
+                        // build the graphics node
+                        GVTBuilder builder = getGVTBuilder();
+                        GraphicsNode childNode = builder.build
+                            (BridgeContext.this, elem);
+                        if (childNode == null) {
+                            // the added element is not a graphic element?
+                            break; 
+                        }
+                        int idx = -1;
+                        for(Node ps = elem.getPreviousSibling(); ps != null;
+                            ps = ps.getPreviousSibling()) {
+                            if (ps.getNodeType() != Node.ELEMENT_NODE)
+                                continue;
+                            Element pse = (Element)ps;
+                            GraphicsNode gn = getGraphicsNode(pse);
+                            if (gn == null)
+                                continue;
+                            idx = parent.indexOf(gn);
+                            if (idx == -1)
+                                continue;
+                            break;
+                        }
+                        // insert after prevSibling, if
+                        // it was -1 this becomes 0 (first slot)
+                        idx++; 
+                        parent.add(idx, childNode);
+                        break;
+                    }
+                }
+            } if (ctx != null && (ctx instanceof BridgeUpdateHandler)) {
                 ((BridgeUpdateHandler)ctx).handleCSSEngineEvent(evt);
             }
         }

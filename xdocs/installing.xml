@@ -125,7 +125,7 @@
           the Javadoc for the Batik source code.</li>
       </ul>
 
-      <p>We make nightly copies of the source tree avaiable from the
+      <p>We make nightly copies of the source tree available from the
       <link href="http://cvs.apache.org/builds/xml-batik">Apache
       build</link> server. These builds represent the current state of
       development and may or may not be as stable as releases.
@@ -144,13 +144,13 @@
         <li><strong>batik-src-</strong><em>date</em><strong>.zip</strong>
           (e.g., <code>batik-src-03-09-26.zip</code>)<br/> 
 
-          This contains all the source code an libraries needed to
+          This contains all the source code and libraries needed to
           build and run Batik from source. But does not include the
           testing facilities.
         </li>
       </ul>
 
-      <p>Older releases are avaiable from the <link
+      <p>Older releases are available from the <link
       href="http://archive.apache.org/dist/xml/batik">Apache
       archives</link>.  However, we strongly recommend using
       the current release of Batik.</p>
@@ -167,11 +167,23 @@
         <li>Select the directory where he/she wants to download the
         distribution
         </li>
+
         <li>Download the desired distribution from the <link
         href="http://www.apache.org/dyn/closer.cgi/xml/batik">download
-        area</link></li> <li>Open a console and go to the directory
-        where the distribution was downloaded.
-        </li>
+        area</link></li> 
+
+        <li>Download the associated PGP signature (.asc) and KEYS file
+        (preferable) or MD5 hash (.md5).  This must be done directly
+        from the <link
+        href="http://www.apache.org/dist/xml/batik">Apache
+        download</link> area to mean anything.</li>
+
+        <li>Open a console and go to the directory
+        where the distribution was downloaded.</li>
+
+        <li><link href="#verify">Verify the integrity</link> of the
+        distribution</li>
+
         <li>Unpack the distribution with Java's JAR utility:<br></br>
         <code>jar xvf &lt;distribution&gt;</code><br /> For example,
         if you have downloaded batik-1.5.zip into /home/IamHere, type
@@ -182,6 +194,7 @@
         various Batik zip files, as this would not set the directories
         access rights properly.
         </li>
+
         <li>From there, following the instructions specific to the
         application you want to use.  For example, see the <link
         href="svgviewer.html">SVG Browser</link> page or the <link
@@ -252,12 +265,12 @@
       </p>
       <figure src="images/jarDependImg.png" 
         alt="Batik Jar File Dependency Graph" />
-      <note>  Some jar file names are shortend for clarity.<br/>
+      <note>  Some jar file names are shortened for clarity.<br/>
         All 'batik' package references are short for
         'org.apache.batik'.<br/>
       </note>
       <p>It is worth pointing out that a determined/clever programmer
-      may be able to pair down some of these dependencies.  For
+      may be able to pare down some of these dependencies.  For
       example the 'batik-dom.jar' depends on 'xerces.jar' because of
       the SAXDocumentFactory class in 'org.apache.batik.dom.util'.  If
       you didn't need to parse XML it would be possible to ignore or
@@ -300,8 +313,8 @@
       </p>
       <p>
         Alternatively, you can verify the MD5 signature on the files.
-        A unix program called <code>md5</code> or <code>md5sum</code>
-        is included in many unix distributions.  It is also available
+        A UNIX program called <code>md5</code> or <code>md5sum</code>
+        is included in many UNIX distributions.  It is also available
         as part of <link
           href="http://www.gnu.org/software/textutils/textutils.html">GNU
           Textutils</link> .  Windows users can get binary md5 programs
@@ -312,7 +325,7 @@
       </p>
       <p>
         We recommend using PGP signatures as they can provide a much
-        higher level of assurance compaired with MD5.
+        higher level of assurance compared with MD5.
       </p>
     </s1>
   </body>
