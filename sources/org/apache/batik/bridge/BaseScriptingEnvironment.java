@@ -35,6 +35,7 @@ import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
 import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.svg.SVGSVGElement;
+import org.w3c.dom.svg.EventListenerInitializer;
 
 /**
  * This class is the base class for SVG scripting.
@@ -46,7 +47,7 @@ public class BaseScriptingEnvironment {
     /**
      * Constant used to describe inline scripts
      */
-    public static final String INLINE_SCRIPT_DESCRIPTION 
+    public static final String INLINE_SCRIPT_DESCRIPTION
         = "BaseScriptingEnvironment.constant.inline.script.description";
 
     /**
@@ -84,7 +85,7 @@ public class BaseScriptingEnvironment {
         }
         return false;
     }
-    
+
     /**
      * Tells whether the given SVG element is dynamic.
      */
@@ -153,7 +154,7 @@ public class BaseScriptingEnvironment {
                 (null, SVGConstants.SVG_ONMOUSEUP_ATTRIBUTE).length() > 0) {
                 return true;
             }
-        
+
             for (Node n = elt.getFirstChild();
                  n != null;
                  n = n.getNextSibling()) {
@@ -166,7 +167,7 @@ public class BaseScriptingEnvironment {
         }
         return false;
     }
-    
+
 
     protected final static String EVENT_NAME = "event";
     protected final static String ALTERNATE_EVENT_NAME = "evt";
@@ -180,7 +181,7 @@ public class BaseScriptingEnvironment {
      * The user-agent.
      */
     protected UserAgent userAgent;
-    
+
     /**
      * The document to manage.
      */
@@ -239,7 +240,7 @@ public class BaseScriptingEnvironment {
     public Interpreter getInterpreter(String lang) {
         interpreter = bridgeContext.getInterpreter(lang);
         if (interpreter == null) {
-            if (languages.contains(lang)) 
+            if (languages.contains(lang))
                 // Already issued warning so just return null;
                 return null;
 
@@ -304,33 +305,47 @@ public class BaseScriptingEnvironment {
                     URL docURL = null;
                     try {
                         docURL = new URL(docPURL.toString());
-                    } catch (MalformedURLException mue) { 
+                    } catch (MalformedURLException mue) {
                         /* nothing just let docURL be null */
                     }
                     cll = new DocumentJarClassLoader
                         (new URL(purl.toString()), docURL);
-                    
+
                     // Get the 'Script-Handler' entry in the manifest.
                     URL url = cll.findResource("META-INF/MANIFEST.MF");
                     if (url == null) {
                         continue;
                     }
                     Manifest man = new Manifest(url.openStream());
+
                     String sh;
+
                     sh = man.getMainAttributes().getValue("Script-Handler");
-                    if (sh == null) {
-                        continue;
+                    if (sh != null) {
+                        // Run the script handler.
+                        ScriptHandler h;
+                        h = (ScriptHandler)cll.loadClass(sh).newInstance();
+
+                        if (window == null) {
+                            window = createWindow();
+                        }
+
+                        h.run(document, window);
                     }
-                    
-                    // Run the script handler.
-                    ScriptHandler h;
-                    h = (ScriptHandler)cll.loadClass(sh).newInstance();
-                    
-                    if (window == null) {
-                        window = createWindow();
+
+                    sh = man.getMainAttributes().getValue("SVG-Handler-Class");
+                    if (sh != null) {
+                        // Run the initializer
+                        EventListenerInitializer initializer;
+                        initializer =
+                            (EventListenerInitializer)cll.loadClass(sh).newInstance();
+
+                        if (window == null) {
+                            window = createWindow();
+                        }
+
+                        initializer.initializeEventListeners((SVGDocument)document);
                     }
-                    
-                    h.run(document, window);
                 } catch (Exception e) {
                     if (userAgent != null) {
                         userAgent.displayError(e);
@@ -395,11 +410,11 @@ public class BaseScriptingEnvironment {
     }
 
     /**
-     * Checks that the script URLs and the document url are 
+     * Checks that the script URLs and the document url are
      * compatible. A SecurityException is thrown if loading
      * the script is not allowed.
      */
-    protected void checkCompatibleScriptURL(String scriptType, 
+    protected void checkCompatibleScriptURL(String scriptType,
                                           ParsedURL scriptPURL){
         userAgent.checkLoadScript(scriptType, scriptPURL, docPURL);
     }
@@ -416,8 +431,8 @@ public class BaseScriptingEnvironment {
     /**
      * Auxiliary method for dispatchSVGLoad.
      */
-    protected void dispatchSVGLoad(Element elt, 
-                                   boolean checkCanRun, 
+    protected void dispatchSVGLoad(Element elt,
+                                   boolean checkCanRun,
                                    String lang) {
         for (Node n = elt.getFirstChild();
              n != null;
@@ -449,7 +464,7 @@ public class BaseScriptingEnvironment {
             t.dispatchEvent(ev);
             return;
         }
-        
+
         if (checkCanRun) {
             // Check that it is ok to run embeded scripts
             checkCompatibleScriptURL(lang, docPURL);
@@ -618,8 +633,8 @@ public class BaseScriptingEnvironment {
          * @param h A handler called when the data is available.
          * @param enc The character encoding of the data.
          */
-        public void getURL(String uri, 
-                           org.apache.batik.script.Window.GetURLHandler h, 
+        public void getURL(String uri,
+                           org.apache.batik.script.Window.GetURLHandler h,
                            String enc) {
         }
 
