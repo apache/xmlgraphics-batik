@@ -291,31 +291,35 @@ public class DOMTreeWalker implements TreeWalker {
      * Returns the previous sibling of the given node.
      */
     protected Node previousSibling(Node n, Node root) {
-        if (n == root) {
-            return null;
-        }
-        Node result = n.getPreviousSibling();
-        if (result == null) {
-            result = n.getParentNode();
-            if (result == null || result == root) {
+        while (true) {
+            if (n == root) {
                 return null;
             }
-            if (acceptNode(result) == NodeFilter.FILTER_SKIP) {
-                return previousSibling(result, root);
+            Node result = n.getPreviousSibling();
+            if (result == null) {
+                result = n.getParentNode();
+                if (result == null || result == root) {
+                    return null;
+                }
+                if (acceptNode(result) == NodeFilter.FILTER_SKIP) {
+                    n = result;
+                    continue;
+                }
+                return null;
             }
-            return null;
-        }
-        switch (acceptNode(result)) {
-        case NodeFilter.FILTER_ACCEPT:
-            return result;
-        case NodeFilter.FILTER_SKIP:
-            Node t = lastChild(result);
-            if (t != null) {
-                return t;
+            switch (acceptNode(result)) {
+            case NodeFilter.FILTER_ACCEPT:
+                return result;
+            case NodeFilter.FILTER_SKIP:
+                Node t = lastChild(result);
+                if (t != null) {
+                    return t;
+                }
+                // Fall through
+            default: // NodeFilter.FILTER_REJECT
+                n = result;
+                continue;
             }
-            // Fall through
-        default: // NodeFilter.FILTER_REJECT
-            return previousSibling(result, root);
         }
     }
 
@@ -323,31 +327,36 @@ public class DOMTreeWalker implements TreeWalker {
      * Returns the next sibling of the given node.
      */
     protected Node nextSibling(Node n, Node root) {
-        if (n == root) {
-            return null;
-        }
-        Node result = n.getNextSibling();
-        if (result == null) {
-            result = n.getParentNode();
-            if (result == null || result == root) {
+        while (true) {
+            if (n == root) {
                 return null;
             }
-            if (acceptNode(result) == NodeFilter.FILTER_SKIP) {
-                return nextSibling(result, root);
+            Node result = n.getNextSibling();
+            if (result == null) {
+                result = n.getParentNode();
+                if (result == null || result == root) {
+                    return null;
+                }
+                if (acceptNode(result) == NodeFilter.FILTER_SKIP) {
+                    n = result;
+                    continue;
+                }
+                return null;
             }
-            return null;
-        }
-        switch (acceptNode(result)) {
-        case NodeFilter.FILTER_ACCEPT:
-            return result;
-        case NodeFilter.FILTER_SKIP:
-            Node t = firstChild(result);
-            if (t != null) {
-                return t;
+
+            switch (acceptNode(result)) {
+            case NodeFilter.FILTER_ACCEPT:
+                return result;
+            case NodeFilter.FILTER_SKIP:
+                Node t = firstChild(result);
+                if (t != null) {
+                    return t;
+                }
+                // Fall through
+            default: // NodeFilter.FILTER_REJECT
+                n = result;
+                continue;
             }
-            // Fall through
-        default: // NodeFilter.FILTER_REJECT
-            return nextSibling(result, root);
         }
     }
 
