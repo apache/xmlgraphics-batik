@@ -35,13 +35,31 @@
       The following people are active Batik developers and are the project's commiters:
       </p>
         <dl>
-          <dt>Thomas De Weese (TD)</dt><dd><br />
-          <link href="mailto:Thomas.DeWeese@Kodak.com">Thomas.DeWeese@Kodak.com</link> 
+          <dt>Thomas DeWeese (TD)</dt><dd><br />
+          <link href="mailto:Thomas.DeWeese@Kodak.com">Thomas.DeWeese@Kodak.com</link> <br />
+          <em>
+          Thomas DeWeese is a Senior Software Engineer at Eastman Kodak Company,
+          in Rochester New York where he has worked for the Image Science
+          Division's, image application development group since 1994.  Thomas
+          has made contributions to the imaging portions of the Java2D API,
+          and was a major contributor to the Java Advanced Image API (version
+          1.0).  Since then he has participated in the Jini Printing Working
+          group and has recently become a member of Kodak's SVG Working Group
+          team.
+          </em>
           <br /><br />
           </dd>
 
           <dt>Bill Haneman (BH)</dt><dd><br />
-          <link href="mailto:bill.haneman@ireland.sun.com">bill.haneman@ireland.sun.com</link> 
+          <link href="mailto:bill.haneman@ireland.sun.com">bill.haneman@ireland.sun.com</link><br />
+          <em>
+          Bill Haneman works for Sun Microsystems' Desktop Enabling Middleware group 
+          in Dublin, Ireland.  His current technical focus is on 2D APIs and in 
+          printing and transcoding technologies, though he maintains an interest in 
+          the fate of the world as a whole.  A twenty-year veteran of scientific 
+          programming and application development, he is a US expatriate who plays 
+          traditional music on the uilleann pipes.
+          </em> 
           <br /><br />
           </dd>
 
@@ -56,17 +74,30 @@
           </dd>
 
           <dt>Stephane Hillion (SH)</dt><dd><br />
-          <link href="mailto:hillion@apache.org">hillion@apache.org</link>
+          <link href="mailto:hillion@apache.org">hillion@apache.org</link><br />
+          <em>
+          Stephane is a research engineer at ILOG. His main interests are in
+          programming languages and web standards. He wrote DynamicJava, a Java
+          source interpreter, and the Apache Batik's DOM and CSS modules.
+          </em>
           <br /><br />
           </dd>
 
           <dt>Dean Jackson (DJ)</dt><dd><br />
-          <link href="mailto:dean.jackson@cmis.csiro.au">dean.jackson@cmis.csiro.au</link>
+          <link href="mailto:dean.jackson@cmis.csiro.au">dean.jackson@cmis.csiro.au</link><br />
           <br /><br />
           </dd>
 
           <dt>Christophe Jolif (CJ)</dt><dd><br />
           <link href="mailto:cjolif@ilog.fr">cjolif@ilog.fr</link>
+          <em>
+          Christophe Jolif is an R&amp;D Software Engineer mainly working on the ILOG
+          JViews Component Suite, the ILOG Java vizualisation framework. He has
+          been working for ILOG since 1997, and is representing the company at the
+          Scalable Vector Graphic (SVG) W3C Working Group. He has implemented the
+          SVG import and export features in ILOG JViews and is now working on the
+          SVG Batik project at Apache.
+          </em>
           <br /><br />
           </dd>
 
@@ -81,7 +112,15 @@
           </dd>
 
           <dt>Emmanuel Tissandier (ET)</dt><dd><br />
-          <link href="mailto:tissandi@ilog.fr">tissandi@ilog.fr</link>
+          <link href="mailto:tissandi@ilog.fr">tissandi@ilog.fr</link><br />
+          <em>
+          Emmanuel Tissandier has been working for 10 years as a software engineer
+          in object oriented environments. He started with the development of CASE
+          tools at Rank Xerox and joined the visualization R&amp;D team of ILOG in
+          1995. Since 1997, he has been the R&amp;D Project Manager for the ILOG
+          JViews Component Suite, a product for delivering two-dimensional
+          structured graphics, cartography, diagrams, and Gantt charts in Java.  
+          </em>
           <br /><br />
           </dd>
 
