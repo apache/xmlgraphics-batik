@@ -19,8 +19,10 @@ import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.FunctionObject;
 import org.mozilla.javascript.JavaScriptException;
+import org.mozilla.javascript.ImporterTopLevel;
 import org.mozilla.javascript.NativeJavaObject;
 import org.mozilla.javascript.NativeObject;
+import org.mozilla.javascript.PropertyException;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.Undefined;
@@ -35,11 +37,13 @@ import org.w3c.dom.Document;
 
 /**
  * This class wraps a Window object to expose it to the interpreter.
+ * This will be the Global Object of our interpreter.
  *
+ * @author <a href="mailto:cjolif@ilog.fr">Christophe Jolif</a>
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class WindowWrapper extends ScriptableObject {
+public class WindowWrapper extends ImporterTopLevel {
 
     private final static Object[] EMPTY_ARGUMENTS = new Object[0];
 
@@ -56,17 +60,16 @@ public class WindowWrapper extends ScriptableObject {
     /**
      * Creates a new WindowWrapper.
      */
-    public WindowWrapper() {
-    }
-
-    /**
-     * The ecmascript constructor for the Window class.
-     */
-    public static Object jsConstructor(Context cx, Object[] args,
-                                       Function ctorObj, boolean inNewExpr) {
-        WindowWrapper result = new WindowWrapper();
-        result.window = (Window)((Wrapper)args[0]).unwrap();
-        return result;
+    public WindowWrapper(Context context) {
+        super(context);
+        String[] names = { "setInterval", "setTimeout", "clearInterval", "clearTimeout",
+                           "parseXML", "getURL", "alert", "confirm", "prompt" };
+        try {
+            this.defineFunctionProperties(names, WindowWrapper.class,
+                                          ScriptableObject.DONTENUM);
+        } catch (PropertyException e) {
+            throw new Error();  // should never happen
+        }
     }
 
     public String getClassName() {
@@ -78,36 +81,12 @@ public class WindowWrapper extends ScriptableObject {
     }
 
     /**
-     * Wraps the 'eval' methods of the Window interface.
-     */
-    public static void jsFunction_eval(Context cx,
-                                       Scriptable thisObj,
-                                       Object[] args,
-                                       Function funObj)
-        throws JavaScriptException {
-        int len = args.length;
-        WindowWrapper ww = (WindowWrapper)thisObj;
-        Window window = ww.window;
-        if (len >= 1) {
-            String code =
-                (String)NativeJavaObject.coerceType(String.class, args[0]);
-            RhinoInterpreter interp =
-                (RhinoInterpreter)window.getInterpreter();
-            try {
-                interp.evaluate(code);
-            } catch (InterpreterException e) {
-                throw new JavaScriptException(e);
-            }
-        }
-    }
-
-    /**
      * Wraps the 'setInterval' methods of the Window interface.
      */
-    public static Object jsFunction_setInterval(Context cx,
-                                                Scriptable thisObj,
-                                                Object[] args,
-                                                Function funObj)
+    public static Object setInterval(Context cx,
+                                     Scriptable thisObj,
+                                     Object[] args,
+                                     Function funObj)
         throws JavaScriptException {
         int len = args.length;
         WindowWrapper ww = (WindowWrapper)thisObj;
@@ -133,10 +112,10 @@ public class WindowWrapper extends ScriptableObject {
     /**
      * Wraps the 'setTimeout' methods of the Window interface.
      */
-    public static Object jsFunction_setTimeout(Context cx,
-                                               Scriptable thisObj,
-                                               Object[] args,
-                                               Function funObj)
+    public static Object setTimeout(Context cx,
+                                    Scriptable thisObj,
+                                    Object[] args,
+                                    Function funObj)
         throws JavaScriptException {
         int len = args.length;
         WindowWrapper ww = (WindowWrapper)thisObj;
@@ -162,10 +141,10 @@ public class WindowWrapper extends ScriptableObject {
     /**
      * Wraps the 'clearInterval' method of the Window interface.
      */
-    public static void jsFunction_clearInterval(Context cx,
-                                                Scriptable thisObj,
-                                                Object[] args,
-                                                Function funObj)
+    public static void clearInterval(Context cx,
+                                     Scriptable thisObj,
+                                     Object[] args,
+                                     Function funObj)
         throws JavaScriptException {
         int len = args.length;
         WindowWrapper ww = (WindowWrapper)thisObj;
@@ -179,10 +158,10 @@ public class WindowWrapper extends ScriptableObject {
     /**
      * Wraps the 'clearTimeout' method of the Window interface.
      */
-    public static void jsFunction_clearTimeout(Context cx,
-                                               Scriptable thisObj,
-                                               Object[] args,
-                                               Function funObj)
+    public static void clearTimeout(Context cx,
+                                    Scriptable thisObj,
+                                    Object[] args,
+                                    Function funObj)
         throws JavaScriptException {
         int len = args.length;
         WindowWrapper ww = (WindowWrapper)thisObj;
@@ -196,10 +175,10 @@ public class WindowWrapper extends ScriptableObject {
     /**
      * Wraps the 'parseXML' method of the Window interface.
      */
-    public static Object jsFunction_parseXML(Context cx,
-                                             Scriptable thisObj,
-                                             final Object[] args,
-                                             Function funObj)
+    public static Object parseXML(Context cx,
+                                  Scriptable thisObj,
+                                  final Object[] args,
+                                  Function funObj)
         throws JavaScriptException {
         int len = args.length;
         WindowWrapper ww = (WindowWrapper)thisObj;
@@ -223,10 +202,10 @@ public class WindowWrapper extends ScriptableObject {
     /**
      * Wraps the 'getURL' method of the Window interface.
      */
-    public static void jsFunction_getURL(Context cx,
-                                         Scriptable thisObj,
-                                         final Object[] args,
-                                         Function funObj)
+    public static void getURL(Context cx,
+                              Scriptable thisObj,
+                              final Object[] args,
+                              Function funObj)
         throws JavaScriptException {
         int len = args.length;
         WindowWrapper ww = (WindowWrapper)thisObj;
@@ -270,10 +249,10 @@ public class WindowWrapper extends ScriptableObject {
     /**
      * Wraps the 'alert' method of the Window interface.
      */
-    public static void jsFunction_alert(Context cx,
-                                        Scriptable thisObj,
-                                        Object[] args,
-                                        Function funObj)
+    public static void alert(Context cx,
+                             Scriptable thisObj,
+                             Object[] args,
+                             Function funObj)
         throws JavaScriptException {
         int len = args.length;
         WindowWrapper ww = (WindowWrapper)thisObj;
@@ -288,10 +267,10 @@ public class WindowWrapper extends ScriptableObject {
     /**
      * Wraps the 'confirm' method of the Window interface.
      */
-    public static boolean jsFunction_confirm(Context cx,
-                                             Scriptable thisObj,
-                                             Object[] args,
-                                             Function funObj)
+    public static boolean confirm(Context cx,
+                                  Scriptable thisObj,
+                                  Object[] args,
+                                  Function funObj)
         throws JavaScriptException {
         int len = args.length;
         WindowWrapper ww = (WindowWrapper)thisObj;
@@ -307,10 +286,10 @@ public class WindowWrapper extends ScriptableObject {
     /**
      * Wraps the 'prompt' method of the Window interface.
      */
-    public static String jsFunction_prompt(Context cx,
-                                           Scriptable thisObj,
-                                           Object[] args,
-                                           Function funObj)
+    public static String prompt(Context cx,
+                                Scriptable thisObj,
+                                Object[] args,
+                                Function funObj)
         throws JavaScriptException {
         int len = args.length;
         WindowWrapper ww = (WindowWrapper)thisObj;

@@ -23,6 +23,8 @@ import java.security.Principal;
 import java.security.ProtectionDomain;
 import java.security.SecureClassLoader;
 
+import org.mozilla.javascript.GeneratedClassLoader;
+
 /**
  * This class loader implementation will work whether or not the
  * documentURL is null.
@@ -30,7 +32,7 @@ import java.security.SecureClassLoader;
  * @author <a href="mailto:vincent.hardy@sun.com">Vincent Hardy</a>
  * @version $Id$
  */
-public class RhinoClassLoader extends URLClassLoader {
+public class RhinoClassLoader extends URLClassLoader implements GeneratedClassLoader {
     /**
      * URL for the document referencing the script.
      */
@@ -42,35 +44,34 @@ public class RhinoClassLoader extends URLClassLoader {
     protected CodeSource codeSource;
 
     /**
-     * The AccessControlContext which can be associated with 
+     * The AccessControlContext which can be associated with
      * code loaded by this class loader if it was running
      * stand-alone (i.e., not invoked by code with lesser
      * priviledges).
      */
     protected AccessControlContext rhinoAccessControlContext;
-    
+
     /**
      * Constructor.
-     * @param documentURL the URL from which to load classes and resources 
-     * @param parent the parent class loader for delegation 
+     * @param documentURL the URL from which to load classes and resources
+     * @param parent the parent class loader for delegation
      */
     public RhinoClassLoader(URL documentURL, ClassLoader parent){
         super(documentURL != null ? new URL[]{documentURL} : new URL[]{},
               parent);
-        // super(new URL[]{});
         this.documentURL = documentURL;
         if (documentURL != null){
             codeSource = new CodeSource(documentURL, null);
         }
-        
+
         //
         // Create the Rhino ProtectionDomain
         // and AccessControlContext
         //
-        ProtectionDomain rhinoProtectionDomain 
+        ProtectionDomain rhinoProtectionDomain
             = new ProtectionDomain(codeSource,
                                    getPermissions(codeSource));
-        
+
         rhinoAccessControlContext
             = new AccessControlContext(new ProtectionDomain[]{
                 rhinoProtectionDomain});
@@ -79,10 +80,16 @@ public class RhinoClassLoader extends URLClassLoader {
     /**
      * Define and load a Java class
      */
-    public Class defineClass(String name, 
-                             byte[] data){
-        // System.out.println("========================== Trying to load : " + name);
+    public Class defineClass(String name,
+                             byte[] data) {
         return super.defineClass(name, data, 0, data.length, codeSource);
+    }
+
+    /**
+     * Links the Java class.
+     */
+    public void linkClass(Class clazz) {
+        super.resolveClass(clazz);
     }
 
     /**
@@ -94,7 +101,7 @@ public class RhinoClassLoader extends URLClassLoader {
     }
 
     /**
-     * Returns the permissions for the given CodeSource object. 
+     * Returns the permissions for the given CodeSource object.
      * Compared to URLClassLoader, this adds a FilePermission so
      * that files under the same root directory as the document
      * can be read.
