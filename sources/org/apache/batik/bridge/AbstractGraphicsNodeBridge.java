@@ -153,9 +153,11 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
             }
             node.setTransform(at);
             fireBridgeUpdateCompleted(be);
+        } else {
+            System.out.println("Unsupported attribute modification: "+attrName+
+                               " on "+e.getLocalName());
         }
     }
-
 
     /**
      * The listener class for 'DOMAttrModified' event.
@@ -171,7 +173,7 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
          */
         public void handleEvent(Event evt) {
             if (evt.getTarget() != e) {
-                throw new Error("handleEvent bad target");
+                return;
             }
             handleDOMAttrModifiedEvent((MutationEvent)evt);
         }

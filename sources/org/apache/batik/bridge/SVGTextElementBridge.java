@@ -258,9 +258,11 @@ public class SVGTextElementBridge extends AbstractSVGBridge
                     (e, SVG_TRANSFORM_ATTRIBUTE, s);
             }
             node.setTransform(at);
-
+            
             fireBridgeUpdateCompleted(be);
-
+        } else {
+            System.out.println("Unsupported attribute modification: "+attrName+
+                               " on "+e.getLocalName());
         }
     }
 
@@ -279,7 +281,7 @@ public class SVGTextElementBridge extends AbstractSVGBridge
          */
         public void handleEvent(Event evt) {
             if (evt.getTarget() != e) {
-                throw new Error("handleEvent bad target");
+                return;
             }
             handleDOMAttrModifiedEvent((MutationEvent)evt);
         }
