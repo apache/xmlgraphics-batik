@@ -126,6 +126,8 @@ public abstract class AbstractParentNode extends AbstractNode {
 	    // Mutation event
 	    fireDOMNodeRemovedEvent(oldChild);
 
+            getCurrentDocument().nodeToBeRemoved(oldChild);
+
 	    // Node modification
 	    ExtendedNode n = (ExtendedNode)newChild;
 	    ExtendedNode o = childNodes.replace(n, (ExtendedNode)oldChild);
@@ -159,6 +161,8 @@ public abstract class AbstractParentNode extends AbstractNode {
 
 	// Mutation event
 	fireDOMNodeRemovedEvent(oldChild);
+
+        getCurrentDocument().nodeToBeRemoved(oldChild);
 
 	// Node modification
 	ExtendedNode result = childNodes.remove((ExtendedNode)oldChild);

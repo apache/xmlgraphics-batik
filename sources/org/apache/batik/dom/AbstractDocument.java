@@ -18,6 +18,7 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 
 import org.apache.batik.dom.events.EventSupport;
+import org.apache.batik.dom.traversal.TraversalSupport;
 import org.apache.batik.i18n.Localizable;
 import org.apache.batik.i18n.LocalizableSupport;
 
@@ -30,6 +31,10 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.events.DocumentEvent;
 import org.w3c.dom.events.Event;
+import org.w3c.dom.traversal.DocumentTraversal;
+import org.w3c.dom.traversal.NodeFilter;
+import org.w3c.dom.traversal.NodeIterator;
+import org.w3c.dom.traversal.TreeWalker;
 
 /**
  * This class implements the {@link org.w3c.dom.Document} interface.
@@ -41,6 +46,7 @@ public abstract class AbstractDocument
     extends    AbstractParentNode
     implements Document,
                DocumentEvent,
+               DocumentTraversal,
                Localizable {
 
     /**
@@ -59,6 +65,11 @@ public abstract class AbstractDocument
      * The DOM implementation.
      */
     protected transient DOMImplementation implementation;
+
+    /**
+     * The traversal support.
+     */
+    protected transient TraversalSupport traversalSupport;
 
     /**
      * Whether the event dispatching must be done.
@@ -246,6 +257,53 @@ public abstract class AbstractDocument
      */
     public Event createEvent(String eventType) throws DOMException {
 	return EventSupport.createEvent(eventType);
+    }
+
+    // DocumentTraversal /////////////////////////////////////////////////////
+
+    /**
+     * <b>DOM</b>: Implements {@link
+     * DocumentTraversal#createNodeIterator(Node,int,NodeFilter,boolean)}.
+     */
+    public NodeIterator createNodeIterator(Node root,
+                                           int whatToShow, 
+                                           NodeFilter filter, 
+                                           boolean entityReferenceExpansion)
+        throws DOMException {
+        if (traversalSupport == null) {
+            traversalSupport = new TraversalSupport();
+        }
+        return traversalSupport.createNodeIterator(this, root, whatToShow, filter,
+                                                   entityReferenceExpansion);
+    }
+
+    /**
+     * <b>DOM</b>: Implements {@link
+     * DocumentTraversal#createTreeWalker(Node,int,NodeFilter,boolean)}.
+     */
+    public TreeWalker createTreeWalker(Node root, 
+                                       int whatToShow, 
+                                       NodeFilter filter, 
+                                       boolean entityReferenceExpansion)
+        throws DOMException {
+        return TraversalSupport.createTreeWalker(this, root, whatToShow, filter,
+                                                 entityReferenceExpansion);
+    }
+
+    /**
+     * Detaches the given node iterator from this document.
+     */
+    public void detachNodeIterator(NodeIterator it) {
+        traversalSupport.detachNodeIterator(it);
+    }
+
+    /**
+     * Notifies this document that a node will be removed.
+     */
+    public void nodeToBeRemoved(Node node) {
+        if (traversalSupport != null) {
+            traversalSupport.nodeToBeRemoved(node);
+        }
     }
 
     /**
