@@ -20,6 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.batik.gvt.renderer.ImageRenderer;
+import org.apache.batik.bridge.InterruptedBridgeException;
 
 /**
  * This class represents an object which renders asynchroneaously
@@ -29,7 +30,7 @@ import org.apache.batik.gvt.renderer.ImageRenderer;
  * @version $Id$
  */
 public class GVTTreeRenderer extends Thread {
-    
+
     /**
      * The renderer used to paint.
      */
@@ -112,6 +113,10 @@ public class GVTTreeRenderer extends Thread {
         } catch (NoClassDefFoundError e) {
             // This error was reported to happen when the rendering
             // is interrupted with JDK1.3.0rc1 Solaris.
+        } catch (InterruptedBridgeException e) {
+            // this sometimes happens with SVG Fonts since the glyphs are
+            // not built till the rendering stage
+            fireFailedEvent();
         } catch (Exception e) {
             e.printStackTrace();
             fireFailedEvent();
