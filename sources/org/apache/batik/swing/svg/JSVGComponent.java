@@ -27,11 +27,11 @@ import javax.swing.JComponent;
 
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeMutationEvent;
+import org.apache.batik.bridge.DocumentLoader;
 import org.apache.batik.bridge.GraphicsNodeBridge;
 import org.apache.batik.bridge.ViewBox;
 import org.apache.batik.bridge.UserAgent;
 
-import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
 import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.apache.batik.dom.svg.SVGOMDocument;
 
@@ -63,6 +63,11 @@ public class JSVGComponent extends JGVTComponent {
      * The document loader.
      */
     protected SVGDocumentLoader documentLoader;
+
+    /**
+     * The concrete bridge document loader.
+     */
+    protected DocumentLoader loader;
 
     /**
      * The GVT tree builder.
@@ -157,8 +162,8 @@ public class JSVGComponent extends JGVTComponent {
             url = newURI.toString();
         }
 
-        documentLoader = new SVGDocumentLoader(url,
-            new SAXSVGDocumentFactory(userAgent.getXMLParserClassName()));
+        loader = new DocumentLoader(userAgent.getXMLParserClassName());
+        documentLoader = new SVGDocumentLoader(url, loader);
         documentLoader.setPriority(Thread.MIN_PRIORITY);
 
         Iterator it = svgDocumentLoaderListeners.iterator();
@@ -199,7 +204,9 @@ public class JSVGComponent extends JGVTComponent {
      * Creates a new bridge context.
      */
     protected BridgeContext createBridgeContext() {
-        return new BridgeContext(userAgent, rendererFactory.getRenderContext());
+        return new BridgeContext(userAgent,
+                                 rendererFactory.getRenderContext(),
+                                 loader);
     }
 
     /**
@@ -331,6 +338,9 @@ public class JSVGComponent extends JGVTComponent {
          * Called when a build was completed.
          */
         public void gvtBuildCompleted(GVTTreeBuilderEvent e) {
+            loader.dispose(); // purge loader cache
+            loader = null;
+
             gvtTreeBuilder = null;
             setGraphicsNode(e.getGVTRoot(), false);
             Dimension2D dim = bridgeContext.getDocumentSize();
@@ -342,6 +352,9 @@ public class JSVGComponent extends JGVTComponent {
          * Called when a build was cancelled.
          */
         public void gvtBuildCancelled(GVTTreeBuilderEvent e) {
+            loader.dispose(); // purge loader cache
+            loader = null;
+
             gvtTreeBuilder = null;
             image = null;
             repaint();
@@ -351,6 +364,9 @@ public class JSVGComponent extends JGVTComponent {
          * Called when a build failed.
          */
         public void gvtBuildFailed(GVTTreeBuilderEvent e) {
+            loader.dispose(); // purge loader cache
+            loader = null;
+
             gvtTreeBuilder = null;
             image = null;
             repaint();

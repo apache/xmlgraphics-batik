@@ -10,29 +10,27 @@ package org.apache.batik.bridge;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+
 import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
 import org.apache.batik.dom.svg.SVGDocumentFactory;
+
 import org.apache.batik.dom.util.DocumentDescriptor;
+
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.svg.SVGDocument;
+
 import org.xml.sax.SAXException;
 
 /**
- * This class is responsible on loading an SVG document.
+ * This class is responsible on loading an SVG document and
+ * maintaining a cache.
  *
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  * @version $Id$
  */
 public class DocumentLoader {
-
-    /**
-     * The default size of the cache in terms of number of nodes.
-     */
-    public static final int DEFAULT_MAX_CACHED_NODE_COUNT = 2000;
 
     /**
      * The document factory used to create the document according a
@@ -46,29 +44,7 @@ public class DocumentLoader {
      * WARNING: tagged private as no element of this Map should be
      * referenced outise of this class
      */
-    private HashMap documentMap = new HashMap();
-
-    /**
-     * A list of the cached documents that can be removed from the
-     * cache at any time.
-     */
-    private List cachedDocs = new LinkedList();
-
-    /**
-     * A list of the <tt>DocumentState</tt> that represents the
-     * documents in progress.
-     */
-    private List currentDocs = new LinkedList();
-
-    /**
-     * The current number of cached nodes.
-     */
-    private int currentCachedNodeCount = 0;
-
-    /**
-     * The size of the cache.
-     */
-    private int size;
+    protected HashMap cacheMap = new HashMap();
 
     /**
      * Constructs a new <tt>DocumentLoader</tt>.
@@ -80,17 +56,7 @@ public class DocumentLoader {
      * @param parser The SAX2 parser classname.
      */
     public DocumentLoader(String parser) {
-        this(parser, DEFAULT_MAX_CACHED_NODE_COUNT);
-    }
-
-    /**
-     * Constructs a new <tt>DocumentLoader</tt> with the specified XML parser.
-     * @param parser The SAX2 parser classname.
-     * @param size the size of the cache
-     */
-    public DocumentLoader(String parser, int size) {
-        this.documentFactory = new SAXSVGDocumentFactory(parser, true);
-        this.size = size;
+        documentFactory = new SAXSVGDocumentFactory(parser, true);
     }
 
     /**
@@ -103,76 +69,24 @@ public class DocumentLoader {
         if (n != -1) {
             uri = uri.substring(0, n);
         }
-        Document document = (Document) documentMap.get(uri);
-        if (document != null) {
-            //System.out.println("reusing: "+uri);
-            DocumentState state = getDocumentState(cachedDocs, document);
-            // move the state if the document is cached and not in progress
-            if (state != null) {
-                cachedDocs.remove(state);
-                cachedDocs.add(0, state);
-            }
-        } else {
+        DocumentState state = (DocumentState)cacheMap.get(uri);
+        if (state == null) {
             //System.out.println("loading: "+uri);
             // load the document
-            document = documentFactory.createDocument(uri);
+            Document document = documentFactory.createDocument(uri);
             DocumentDescriptor desc = documentFactory.getDocumentDescriptor();
-            // update the cache
-            int num = desc.getNumberOfElements();
-            while ((currentCachedNodeCount + num) > size &&
-                    cachedDocs.size() > 0) {
-                // remove the oldest document loaded
-                int i = cachedDocs.size()-1;
-                DocumentState state = (DocumentState)cachedDocs.get(i);
-                cachedDocs.remove(i);
-                documentMap.remove(state.uri);
-                currentCachedNodeCount -= state.nodeCount;
-            }
-            currentCachedNodeCount += num;
-            // add the new loaded document to the cache
-            DocumentState state = new DocumentState(uri, document, num, desc);
-            currentDocs.add(0, state);
-            documentMap.put(uri, document);
+            state = new DocumentState(uri, document, desc);
+            cacheMap.put(uri, state);
         }
-        return document;
-    }
-
-    /**
-     * Disposes and releases all resources allocated for the specified
-     * document. It's the document loader's responsability to
-     * physically removed the specified document from the cache when
-     * needed. The specified document is in fact just tagged as no
-     * more in progress.
-     *
-     * @param document the document to dispose
-     */
-    public void dispose(Document document) {
-        DocumentState state = getDocumentState(currentDocs, document);
-        if (state != null) {
-            //System.out.println("disposing: "+state.uri);
-            // allow GC of the DocumentDescriptor
-            state.desc = null;
-            // remove the state from the 'in progress' list
-            currentDocs.remove(state);
-            // add the state to the cached document list. The document
-            // is tagged as no more in progress and can be removed
-            // from the cache at any time
-            cachedDocs.add(0, state);
-        }
+        return state.document;
     }
 
     /**
      * Disposes and releases all resources allocated by this document loader.
      */
     public void dispose() {
-        if (currentDocs.size() > 0) {
-            System.err.println(
-                "WARNING: The loader still has "+currentDocs.size()+
-                " documents marked in progress.");
-        }
         //System.out.println("purge the cache");
-        documentMap.clear();
-        cachedDocs.clear();
+        cacheMap.clear();
     }
 
     /**
@@ -184,28 +98,13 @@ public class DocumentLoader {
      * been loaded by this document loader.
      */
     public int getLineNumber(Element e) {
-        DocumentState state = getDocumentState(currentDocs,
-                                               e.getOwnerDocument());
-        if (state == null || state.desc == null) {
-            System.err.println("line number not available.");
+        String uri = ((SVGDocument)e.getOwnerDocument()).getURL();
+        DocumentState state = (DocumentState)cacheMap.get(uri);
+        if (state == null) {
             return -1;
         } else {
             return state.desc.getLocationLine(e);
         }
-    }
-
-    /**
-     * Returns the <tt>DocumentState</tt> of the specified Document.
-     * @param document the document
-     */
-    private DocumentState getDocumentState(List l, Document document) {
-        for (Iterator i = l.iterator(); i.hasNext();) {
-            DocumentState state = (DocumentState) i.next();
-            if (state.document == document) {
-                return state;
-            }
-        }
-        return null;
     }
 
     /**
@@ -215,16 +114,13 @@ public class DocumentLoader {
 
         private String uri;
         private Document document;
-        private int nodeCount;
         private DocumentDescriptor desc;
 
         public DocumentState(String uri,
                              Document document,
-                             int nodeCount,
                              DocumentDescriptor desc) {
             this.uri = uri;
             this.document = document;
-            this.nodeCount = nodeCount;
             this.desc = desc;
         }
 
@@ -238,10 +134,6 @@ public class DocumentLoader {
 
         public Document getDocument() {
             return document;
-        }
-
-        public int getNodeCount() {
-            return nodeCount;
         }
     }
 }
