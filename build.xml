@@ -63,9 +63,9 @@ To display the available targets type:
     <property name="Project"  value="Batik"/>
     <property name="project"  value="batik"/>
     <property name="year"     value="2002"/>
-    <property name="version"  value="1.5"/>
-    <property name="revisionType" value=""/>
-    <property name="revisionNumber" value="" />
+    <property name="version"  value="1.5.1"/>
+    <property name="revisionType" value="rc"/>
+    <property name="revisionNumber" value="2" />
 
     <property file="build.properties"/>
     <property name="debug"       value="off"/>
