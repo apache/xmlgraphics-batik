@@ -32,8 +32,8 @@ public class DefaultImageHandler implements ImageHandler{
         //
         // First, set the image width and height
         //
-        imageElement.setAttribute(SVG_WIDTH_ATTRIBUTE, "" + image.getWidth(null));
-        imageElement.setAttribute(SVG_HEIGHT_ATTRIBUTE, "" + image.getHeight(null));
+        imageElement.setAttributeNS(SVG_NAMESPACE_URI, SVG_WIDTH_ATTRIBUTE, "" + image.getWidth(null));
+        imageElement.setAttributeNS(SVG_NAMESPACE_URI, SVG_HEIGHT_ATTRIBUTE, "" + image.getHeight(null));
 
         //
         // Now, set the href
@@ -49,8 +49,8 @@ public class DefaultImageHandler implements ImageHandler{
         //
         // First, set the image width and height
         //
-        imageElement.setAttribute(SVG_WIDTH_ATTRIBUTE, "" + image.getWidth());
-        imageElement.setAttribute(SVG_HEIGHT_ATTRIBUTE, "" + image.getHeight());
+        imageElement.setAttributeNS(SVG_NAMESPACE_URI, SVG_WIDTH_ATTRIBUTE, "" + image.getWidth());
+        imageElement.setAttributeNS(SVG_NAMESPACE_URI, SVG_HEIGHT_ATTRIBUTE, "" + image.getHeight());
 
         //
         // Now, set the href
@@ -66,8 +66,8 @@ public class DefaultImageHandler implements ImageHandler{
         //
         // First, set the image width and height
         //
-        imageElement.setAttribute(SVG_WIDTH_ATTRIBUTE, "" + image.getWidth());
-        imageElement.setAttribute(SVG_HEIGHT_ATTRIBUTE, "" + image.getHeight());
+        imageElement.setAttributeNS(SVG_NAMESPACE_URI, SVG_WIDTH_ATTRIBUTE, "" + image.getWidth());
+        imageElement.setAttributeNS(SVG_NAMESPACE_URI, SVG_HEIGHT_ATTRIBUTE, "" + image.getHeight());
 
         //
         // Now, set the href
@@ -81,7 +81,7 @@ public class DefaultImageHandler implements ImageHandler{
      */
     protected void handleHREF(Image image, Element imageElement){
         // Simply write a placeholder
-        imageElement.setAttribute(ATTR_HREF, image.toString());
+        imageElement.setAttributeNS(SVG_NAMESPACE_URI, ATTR_HREF, image.toString());
     }
 
     /**
@@ -92,7 +92,7 @@ public class DefaultImageHandler implements ImageHandler{
         System.out.println("********************************************");
         System.out.println("Setting HREF attribute....");
         // Simply write a placeholder
-        imageElement.setAttribute(ATTR_HREF, image.toString());
+        imageElement.setAttributeNS(SVG_NAMESPACE_URI, ATTR_HREF, image.toString());
     }
 
     /**
@@ -101,6 +101,6 @@ public class DefaultImageHandler implements ImageHandler{
      */
     protected void handleHREF(RenderableImage image, Element imageElement){
         // Simply write a placeholder
-        imageElement.setAttribute(ATTR_HREF, image.toString());
+        imageElement.setAttributeNS(SVG_NAMESPACE_URI, ATTR_HREF, image.toString());
     }
 }

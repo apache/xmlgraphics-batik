@@ -57,7 +57,7 @@ public class SVGCSSStyler implements SVGSyntax{
             if(styleAttrBuffer.length() > 0){
                                 // System.out.println("Setting style attribute on node: " + styleAttrBuffer.toString().trim());
                                 // There were some styling attributes
-                element.setAttribute(ATTR_STYLE, styleAttrBuffer.toString().trim());
+                element.setAttributeNS(SVG_NAMESPACE_URI, ATTR_STYLE, styleAttrBuffer.toString().trim());
 
                 int n = toBeRemoved.size();
                 for(int i=0; i<n; i++)

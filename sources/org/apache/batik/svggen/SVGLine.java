@@ -34,10 +34,10 @@ public class SVGLine extends SVGGraphicObjectConverter{
      */
     public Element toSVG(Line2D line){
         Element svgLine = domFactory.createElement(TAG_LINE);
-        svgLine.setAttribute(ATTR_X1, doubleString(line.getX1()));
-        svgLine.setAttribute(ATTR_Y1, doubleString(line.getY1()));
-        svgLine.setAttribute(ATTR_X2, doubleString(line.getX2()));
-        svgLine.setAttribute(ATTR_Y2, doubleString(line.getY2()));
+        svgLine.setAttributeNS(SVG_NAMESPACE_URI, ATTR_X1, doubleString(line.getX1()));
+        svgLine.setAttributeNS(SVG_NAMESPACE_URI, ATTR_Y1, doubleString(line.getY1()));
+        svgLine.setAttributeNS(SVG_NAMESPACE_URI, ATTR_X2, doubleString(line.getX2()));
+        svgLine.setAttributeNS(SVG_NAMESPACE_URI, ATTR_Y2, doubleString(line.getY2()));
         return svgLine;
     }
 

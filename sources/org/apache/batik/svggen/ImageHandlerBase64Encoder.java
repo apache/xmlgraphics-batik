@@ -79,9 +79,9 @@ public class ImageHandlerBase64Encoder extends DefaultImageHandler{
     }
 
     protected void handleEmptyImage(Element imageElement){
-        imageElement.setAttribute(ATTR_HREF, DATA_PROTOCOL_PNG_PREFIX);
-        imageElement.setAttribute(SVG_WIDTH_ATTRIBUTE, "0");
-        imageElement.setAttribute(SVG_HEIGHT_ATTRIBUTE, "0");
+        imageElement.setAttributeNS(SVG_NAMESPACE_URI, ATTR_HREF, DATA_PROTOCOL_PNG_PREFIX);
+        imageElement.setAttributeNS(SVG_NAMESPACE_URI, SVG_WIDTH_ATTRIBUTE, "0");
+        imageElement.setAttributeNS(SVG_NAMESPACE_URI, SVG_HEIGHT_ATTRIBUTE, "0");
     }
 
     /**
@@ -113,7 +113,7 @@ public class ImageHandlerBase64Encoder extends DefaultImageHandler{
         //
         // Finally, write out url
         //
-        imageElement.setAttribute(ATTR_HREF,
+        imageElement.setAttributeNS(SVG_NAMESPACE_URI, ATTR_HREF,
                                   DATA_PROTOCOL_PNG_PREFIX + 
                                   os.toString());
         
@@ -164,7 +164,7 @@ public class ImageHandlerBase64Encoder extends DefaultImageHandler{
         System.out.println();
         System.out.println("<svg width=\"450\" height=\"500\">");
         System.out.println("    <rect width=\"100%\" height=\"100%\" fill=\"yellow\" />");
-        System.out.println("    <image x=\"30\" y=\"30\" xlink:href=\"" + imageElement.getAttribute(SVGSyntax.ATTR_HREF) + "\" width=\"100\" height=\"100\" />");        
+        System.out.println("    <image x=\"30\" y=\"30\" xlink:href=\"" + imageElement.getAttributeNS(SVG_NAMESPACE_URI, SVGSyntax.ATTR_HREF) + "\" width=\"100\" height=\"100\" />");        
         System.out.println("</svg>");
         System.exit(0);
     }

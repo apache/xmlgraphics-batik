@@ -236,14 +236,14 @@ public class SVGRenderingHints extends AbstractSVGConverter{
             String testName = (String)iter.next();
             RenderingHints hints[] = (RenderingHints[])testMap.get(testName);
             Element testGroup = domFactory.createElement(SVG_G_TAG);
-            testGroup.setAttribute(ATTR_ID, testName);
+            testGroup.setAttributeNS(SVG_NAMESPACE_URI, ATTR_ID, testName);
             for(int i=0; i<hints.length; i++){
                 Element testRect = domFactory.createElement(TAG_RECT);
                 Map attrMap = converter.toSVG(hints[i]).getAttributeMap(null);
                 Iterator attrIter = attrMap.keySet().iterator();
                 while(attrIter.hasNext()){
                     String attrName = (String)attrIter.next();
-                    testRect.setAttribute(attrName, (String)attrMap.get(attrName));
+                    testRect.setAttributeNS(SVG_NAMESPACE_URI, attrName, (String)attrMap.get(attrName));
                 }
                 testGroup.appendChild(testRect);
             }
