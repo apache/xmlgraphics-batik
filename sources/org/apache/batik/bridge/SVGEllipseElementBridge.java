@@ -76,6 +76,10 @@ public class SVGEllipseElementBridge extends SVGShapeElementBridge {
             throw new BridgeException(e, ERR_ATTRIBUTE_MISSING,
                                       new Object[] {SVG_RX_ATTRIBUTE, s});
         }
+	// A value of zero disables rendering of the element
+	if (rx == 0) {
+	    return;
+	}
 
         // 'ry' attribute - required
         s = e.getAttributeNS(null, SVG_RY_ATTRIBUTE);
@@ -87,6 +91,10 @@ public class SVGEllipseElementBridge extends SVGShapeElementBridge {
             throw new BridgeException(e, ERR_ATTRIBUTE_MISSING,
                                       new Object[] {SVG_RY_ATTRIBUTE, s});
         }
+	// A value of zero disables rendering of the element
+	if (ry == 0) {
+	    return;
+	}
 
         shapeNode.setShape(new Ellipse2D.Float(cx-rx, cy-ry, rx*2, ry*2));
     }

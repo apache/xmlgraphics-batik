@@ -77,6 +77,10 @@ public class SVGRectElementBridge extends SVGShapeElementBridge {
             throw new BridgeException(e, ERR_ATTRIBUTE_MISSING,
                                       new Object[] {SVG_WIDTH_ATTRIBUTE, s});
         }
+	// A value of zero disables rendering of the element
+	if (w == 0) {
+	    return;
+	}
 
         // 'height' attribute - required
         s = e.getAttributeNS(null, SVG_HEIGHT_ATTRIBUTE);
@@ -88,6 +92,10 @@ public class SVGRectElementBridge extends SVGShapeElementBridge {
             throw new BridgeException(e, ERR_ATTRIBUTE_MISSING,
                                       new Object[] {SVG_HEIGHT_ATTRIBUTE, s});
         }
+	// A value of zero disables rendering of the element
+	if (h == 0) {
+	    return;
+	}
 
         // 'rx' attribute - default is 0
         s = e.getAttributeNS(null, SVG_RX_ATTRIBUTE);
