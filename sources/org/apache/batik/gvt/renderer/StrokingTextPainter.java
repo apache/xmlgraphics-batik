@@ -362,12 +362,15 @@ public class StrokingTextPainter extends BasicTextPainter {
     private AttributedCharacterIterator createModifiedACIForFontMatching
         (TextNode node, AttributedCharacterIterator aci) {
 
-        aci.first();
-        AttributedCharacterSpanIterator acsi = 
-	    new AttributedCharacterSpanIterator(aci, aci.getBeginIndex(), 
-						aci.getEndIndex());
-
-        AttributedString as = new AttributedString(acsi);
+        // This looks like vestigial code, but perhaps it works around
+        // a bug...
+        // aci.first();
+        // AttributedCharacterSpanIterator acsi = 
+	    // new AttributedCharacterSpanIterator(aci, aci.getBeginIndex(), 
+		//                 aci.getEndIndex());
+        //
+        // AttributedString as = new AttributedString(acsi);
+        AttributedString as = new AttributedString(aci);
         aci.first();
 
         boolean moreChunks = true;
@@ -380,8 +383,8 @@ public class StrokingTextPainter extends BasicTextPainter {
             AttributedCharacterSpanIterator runaci
                 = new AttributedCharacterSpanIterator(aci, start, end);
 
-            Vector fontFamilies = (Vector)runaci.getAttributes().get(
-                GVTAttributedCharacterIterator.TextAttribute.GVT_FONT_FAMILIES);
+            Vector fontFamilies = (Vector)runaci.getAttributes().get
+                (GVTAttributedCharacterIterator.TextAttribute.GVT_FONT_FAMILIES);
 
             if (fontFamilies == null) {
                 // no font families set, just return the same aci
@@ -404,8 +407,9 @@ public class StrokingTextPainter extends BasicTextPainter {
                     resolvedFontFamilies.add(fontFamily);
                 }
             }
+
             // if could not resolve at least one of the fontFamilies then use
-            // the default faont
+            // the default font
             if (resolvedFontFamilies.size() == 0) {
                 resolvedFontFamilies.add(FontFamilyResolver.defaultFont);
             }
@@ -440,7 +444,8 @@ public class StrokingTextPainter extends BasicTextPainter {
                 int currentRunIndex = runaci.getBeginIndex();
                 while (currentRunIndex < runaci.getEndIndex()) {
 
-                    int displayUpToIndex = font.canDisplayUpTo(runaci, currentRunIndex, end);
+                    int displayUpToIndex = 
+                        font.canDisplayUpTo(runaci, currentRunIndex, end);
 
                     if (displayUpToIndex == -1) {
                         // for each char, if not already assigned a font,
@@ -454,9 +459,9 @@ public class StrokingTextPainter extends BasicTextPainter {
                         currentRunIndex = runaci.getEndIndex();
 
                     } else if (displayUpToIndex > currentRunIndex) {
-                        // could display some but not all
-                        // for each char it can display,
-                        // if not already assigned a font, assign this font to it
+                        // could display some but not all, so for each
+                        // char it can display, if char not already
+                        // assigned a font, assign this font to it
                         for (int j = currentRunIndex; j < displayUpToIndex; j++) {
                             if (!fontAssigned[j - start]) {
                                 as.addAttribute(GVTAttributedCharacterIterator.TextAttribute.GVT_FONT, font, j, j+1);
@@ -471,11 +476,13 @@ public class StrokingTextPainter extends BasicTextPainter {
                     }
                 }
             }
+
             // assign the first font to any chars haven't alreay been assigned
             for (int i = 0; i < runaciLength; i++) {
                 if (!fontAssigned[i]) {
-                    GVTFontFamily fontFamily
-                        = FontFamilyResolver.getFamilyThatCanDisplay(runaci.setIndex(start+i));
+                    GVTFontFamily fontFamily 
+                        = FontFamilyResolver.getFamilyThatCanDisplay
+                        (runaci.setIndex(start+i));
                     if (fontFamily != null) {
                         GVTFont font = fontFamily.deriveFont(fontSize, runaci);
                         as.addAttribute(GVTAttributedCharacterIterator.TextAttribute.GVT_FONT,

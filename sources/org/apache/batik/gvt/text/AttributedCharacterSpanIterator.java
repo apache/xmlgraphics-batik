@@ -43,8 +43,9 @@ public class AttributedCharacterSpanIterator implements
      * @param start the first index of the subinterval
      * @param stop the index of the first character after the subinterval
      */
-    public AttributedCharacterSpanIterator(AttributedCharacterIterator aci, int start, int stop) {
-    this.aci = aci;
+    public AttributedCharacterSpanIterator(AttributedCharacterIterator aci, 
+                                           int start, int stop) {
+        this.aci = aci;
         end = Math.min(aci.getEndIndex(), stop);
         begin = Math.max(aci.getBeginIndex(), start);
         this.aci.setIndex(begin);
@@ -64,7 +65,7 @@ public class AttributedCharacterSpanIterator implements
      * Get the value of the named attribute for the current
      *     character.
      */
-    public Object getAttribute(AttributedCharacterIterator.Attribute attribute) {
+    public Object getAttribute(Attribute attribute) {
         return aci.getAttribute(attribute);
     }
 
@@ -122,9 +123,10 @@ public class AttributedCharacterSpanIterator implements
     }
 
     /**
-     * Get the index of the first character of the run with
-     *      respect to the given attributes containing the current character.
-     * @param attributes the Set of attributes which begins at the returned index.
+     * Get the index of the first character of the run with respect to
+     * the given attributes containing the current character.
+     * @param attributes the Set of attributes which begins at the
+     * returned index.  
      */
     public int getRunStart(Set attributes) {
         return Math.max(aci.getRunStart(attributes), begin);

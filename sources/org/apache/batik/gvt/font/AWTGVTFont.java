@@ -160,10 +160,9 @@ public class AWTGVTFont implements GVTFont {
 
         if (ci instanceof AttributedCharacterIterator) {
             AttributedCharacterIterator aci = (AttributedCharacterIterator)ci;
-            AttributedString as = new AttributedString(aci);
-            if (ArabicTextHandler.containsArabic(as)) {
+            if (ArabicTextHandler.containsArabic(aci)) {
                 String substString = 
-		    ArabicTextHandler.createSubstituteString(aci);
+                    ArabicTextHandler.createSubstituteString(aci);
 
                 return createGlyphVector(frc, substString);
             }

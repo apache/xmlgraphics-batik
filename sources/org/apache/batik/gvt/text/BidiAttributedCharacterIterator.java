@@ -44,7 +44,8 @@ public class BidiAttributedCharacterIterator implements AttributedCharacterItera
      * order.
      * @param frc The current font render context
      */
-    public BidiAttributedCharacterIterator(AttributedCharacterIterator aci, FontRenderContext frc) {
+    public BidiAttributedCharacterIterator(AttributedCharacterIterator aci, 
+                                           FontRenderContext           frc) {
 
         this.frc = frc;
         aci.first();
@@ -54,8 +55,9 @@ public class BidiAttributedCharacterIterator implements AttributedCharacterItera
         int numChars = tl.getCharacterCount();
         AttributedString as = new AttributedString(aci);
         for (int i = 0; i < numChars; i++) {
-            as.addAttribute(GVTAttributedCharacterIterator.TextAttribute.BIDI_LEVEL,
-                            new Integer(tl.getCharacterLevel(i)), i, i+1);
+            as.addAttribute
+                (GVTAttributedCharacterIterator.TextAttribute.BIDI_LEVEL,
+                 new Integer(tl.getCharacterLevel(i)), i, i+1);
         }
 
         this.aci = as.getIterator();
