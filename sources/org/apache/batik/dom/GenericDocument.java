@@ -115,10 +115,6 @@ public class GenericDocument
     public ProcessingInstruction createProcessingInstruction(String target,
                                                              String data)
         throws DOMException {
-        if ("xml-stylesheet".equals(target)) {
-            return new StyleSheetProcessingInstruction
-                (data, this, (StyleSheetFactory)getImplementation());
-        }
         return new GenericProcessingInstruction(target, data, this);
     }
 
