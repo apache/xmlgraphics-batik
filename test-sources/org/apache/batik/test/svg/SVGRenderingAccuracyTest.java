@@ -232,11 +232,11 @@ public class SVGRenderingAccuracyTest implements Test{
 
     /**
      * Constructor.
-     * @param svgURL the URL for the SVG document being tested.
+     * @param svgURL the URL String for the SVG document being tested.
      * @param refImgURL the URL for the reference image.
      */
-    public SVGRenderingAccuracyTest(URL svgURL,
-                                    URL refImgURL){
+    public SVGRenderingAccuracyTest(String svgURL,
+                                    String refImgURL){
         if(svgURL == null){
             throw new IllegalArgumentException();
         }
@@ -245,29 +245,35 @@ public class SVGRenderingAccuracyTest implements Test{
             throw new IllegalArgumentException();
         }
 
-        this.svgURL = getSVGURL(svgURL.toString());
-        this.refImgURL = refImgURL;
-        this.variationURL = variationURL;
-        this.saveVariation = saveVariation;
+        this.svgURL = resolveURL(svgURL);
+        this.refImgURL = resolveURL(refImgURL);
     }
-
-    private URL getSVGURL(String s) {
-        URL url = null;
-        
-        try{
-            File f = new File(s);
-            if(f.exists()){
-                url = f.toURL();
+    
+    /**
+     * Resolves the input string as follows.
+     * + First, the string is interpreted as a file description.
+     *   If the file exists, then the file name is turned into
+     *   a URL.
+     * + Otherwise, the string is supposed to be a URL. If it
+     *   is an invalid URL, an IllegalArgumentException is thrown.
+     */
+    protected URL resolveURL(String url){
+        // Is url a file?
+        File f = (new File(url)).getAbsoluteFile();
+        if(f.getParentFile().exists()){
+            try{
+                return f.toURL();
+            }catch(MalformedURLException e){
+                throw new IllegalArgumentException();
             }
-            else{
-                url = new URL(s);
-            }
-        }catch(MalformedURLException e){
-            // Cannot happen because s is originall a URL,
-            // see constructor.
         }
         
-        return url;
+        // url is not a file. It must be a regular URL...
+        try{
+            return new URL(url);
+        }catch(MalformedURLException e){
+            throw new IllegalArgumentException(url);
+        }
     }
 
     /**
@@ -282,16 +288,16 @@ public class SVGRenderingAccuracyTest implements Test{
         return saveVariation;
     }
 
-    public URL getVariationURL(){
-        return variationURL;
+    public String getVariationURL(){
+        return variationURL.toString();
     }
 
     /**
      * Sets the URL where an acceptable variation fron the reference 
      * image can be found.
      */
-    public void setVariationURL(URL variationURL){
-        this.variationURL = variationURL;
+    public void setVariationURL(String variationURL){
+        this.variationURL = resolveURL(variationURL);
     }
 
     /**
