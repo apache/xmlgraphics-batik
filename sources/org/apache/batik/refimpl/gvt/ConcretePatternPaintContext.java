@@ -58,7 +58,7 @@ public class ConcretePatternPaintContext implements PaintContext {
      * Tile
      */
     private RenderedImage tile;
-    
+
     /**
      * Tile info
      */
@@ -71,12 +71,12 @@ public class ConcretePatternPaintContext implements PaintContext {
     /**
      * @param destCM ColorModel that receives the paint data
      * @param usr2dev user space to device space transform
-     * @param hints 
+     * @param hints
      * @param node GraphicsNode generating the pixel pattern
-     * @param nodeTransform additional transform to apply to the 
+     * @param nodeTransform additional transform to apply to the
      *        pattern content node.
      * @param patternTile region to which the pattern is constrained
-     * @param overflow controls whether the pattern region clips the 
+     * @param overflow controls whether the pattern region clips the
      *        pattern tile
      */
     public ConcretePatternPaintContext(ColorModel destCM,
@@ -115,8 +115,8 @@ public class ConcretePatternPaintContext implements PaintContext {
 
         Shape aoiShape = (Shape)hints.get(GraphicsNode.KEY_AREA_OF_INTEREST);
         Rectangle2D aoi = (aoiShape == null? null : aoiShape.getBounds2D());
-        System.out.println("nodeBounds    : " + nodeBounds);
-        System.out.println("patternBounds : " + patternBounds);
+        //System.out.println("nodeBounds    : " + nodeBounds);
+        //System.out.println("patternBounds : " + patternBounds);
 
         //
         // adjustTxf applies the nodeTransform first, then
@@ -128,41 +128,41 @@ public class ConcretePatternPaintContext implements PaintContext {
                             patternBounds.getY());
         adjustTxf.concatenate(nodeTxf);
 
-        GraphicsNodeRable gnr 
+        GraphicsNodeRable gnr
             = new ConcreteGraphicsNodeRable(node);
 
-        AffineRable atr 
+        AffineRable atr
             = new ConcreteAffineRable(gnr, adjustTxf);
 
         Rectangle2D padBounds = (Rectangle2D)patternBounds.clone();
         if(overflow){
             //
-            // When there is overflow, make sure we take the 
+            // When there is overflow, make sure we take the
             // full node bounds into account.
             //
-            Rectangle2D adjustedNodeBounds 
+            Rectangle2D adjustedNodeBounds
                 = adjustTxf.createTransformedShape(nodeBounds).getBounds2D();
 
-            System.out.println("adjustedBounds : " + adjustedNodeBounds);
+            //System.out.println("adjustedBounds : " + adjustedNodeBounds);
             padBounds.add(adjustedNodeBounds);
         }
 
         // Take area of interest into account
         if(aoi != null){
-            System.out.println("padBounds : " + padBounds);
-            System.out.println("aoi           : " + aoi);
+            //System.out.println("padBounds : " + padBounds);
+            //System.out.println("aoi           : " + aoi);
             // Rectangle2D.intersect(padBounds, aoi, padBounds);
-            System.out.println("padBounds : " + padBounds);
+            //System.out.println("padBounds : " + padBounds);
         }
 
         // System.out.println("padBounds : " + padBounds);
 
-        PadRable pad 
+        PadRable pad
             = new ConcretePadRable(atr,
                                    padBounds,
                                    PadMode.ZERO_PAD);
 
-        System.out.println("Created PadRable");
+        //System.out.println("Created PadRable");
 
         padTxf = new AffineTransform(usr2dev);
 
@@ -171,9 +171,9 @@ public class ConcretePatternPaintContext implements PaintContext {
                                              hints);
         tile = pad.createRendering(rc);
 
-        System.out.println("Created rendering");
+        //System.out.println("Created rendering");
         if(tile == null){
-            System.out.println("Tile was null");
+            //System.out.println("Tile was null");
             WritableRaster wr = rasterCM.createCompatibleWritableRaster(32, 32);
             tile = new BufferedImage(rasterCM, wr, false, null);
         }
@@ -198,7 +198,7 @@ public class ConcretePatternPaintContext implements PaintContext {
         if(raster == null){
             raster = rasterCM.createCompatibleWritableRaster(width, height);
         }
-        else if(raster.getWidth() < width || 
+        else if(raster.getWidth() < width ||
                 raster.getHeight() < height){
             raster = rasterCM.createCompatibleWritableRaster(width, height);
         }
@@ -224,7 +224,7 @@ public class ConcretePatternPaintContext implements PaintContext {
         double fw = rasterBounds2D.getWidth();
         double fh = rasterBounds2D.getHeight();
 
-        // System.out.println("rasterBounds in user space : " + fx + "/" + fy 
+        // System.out.println("rasterBounds in user space : " + fx + "/" + fy
         //+ "/" + fw + "/" + fh);
 
         // (rx, ry) is the current tile's origin, in translated user space,
@@ -248,7 +248,7 @@ public class ConcretePatternPaintContext implements PaintContext {
             ry = -tileHeight - ry;
         }
 
-        Point2D.Double tileOrigin 
+        Point2D.Double tileOrigin
             = new Point2D.Double(tileWidth, 0);
 
         padTxf.deltaTransform(tileOrigin, tileOrigin);
@@ -267,35 +267,35 @@ public class ConcretePatternPaintContext implements PaintContext {
 
         while(curY < fh){
             while(curX < fw){
-                // Paint a tile with upper left corner in 
-                // (fx + curX, fy + curY) in user space. 
+                // Paint a tile with upper left corner in
+                // (fx + curX, fy + curY) in user space.
                 tileOrigin.x = fx + curX;
                 tileOrigin.y = fy + curY;
 
                 tileOrigin.x = tileOrigin.x - tileX;
                 tileOrigin.y = tileOrigin.y - tileY;
-                
+
                 double nTileX = Math.round(tileOrigin.x / tileWidth);
                 double nTileY = Math.round(tileOrigin.y / tileHeight);
-                
+
                 // System.out.println("Tile : " + nTileX + "/" + nTileY);
 
                 AffineTransform tileTxfBad
-                = AffineTransform.getTranslateInstance(txx*nTileX + tyx*nTileY, 
+                = AffineTransform.getTranslateInstance(txx*nTileX + tyx*nTileY,
                                                        txy*nTileX + tyy*nTileY);
 
                 padTxf.deltaTransform(tileOrigin, tileOrigin);
 
-                AffineTransform tileTxf 
+                AffineTransform tileTxf
                     = AffineTransform.getTranslateInstance(Math.floor(tileOrigin.x),
                                                            Math.floor(tileOrigin.y));
-                
+
 
                 // System.out.println("Good : " + tileTxf.getTranslateX() + "/" + tileTxf.getTranslateY());
                 // System.out.println("Bad  : " + tileTxfBad.getTranslateX() + "/" + tileTxfBad.getTranslateY());
                 /*double nTileX = Math.floor(tileOrigin.x / tileWidth);
                 double nTileY = Math.floor(tileOrigin.y / tileHeight);
-                AffineTransform tileTxf 
+                AffineTransform tileTxf
                 = AffineTransform.getTranslateInstance(nTileX*tx, nTileY*ty);*/
 
                 g.drawRenderedImage(tile, tileTxf);

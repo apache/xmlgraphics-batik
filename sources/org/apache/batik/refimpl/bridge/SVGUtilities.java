@@ -93,6 +93,8 @@ public class SVGUtilities implements SVGConstants {
      */
     public final static int IDENTIFIER = 7;
 
+    // region coordinate system //////////////////////////////////////////
+
     /**
      * Represents 'objectBoundingBox'.
      */
@@ -108,8 +110,8 @@ public class SVGUtilities implements SVGConstants {
      */
     public static int parseCoordinateSystem(String value) {
         int len = value.length();
+        // INTERNAL : check for correct argument - should never happen
         if (len == 0) {
-            // INTERNAL : should never happen
             throw new Error("Can't accept empty coordinate system");
         }
         if (VALUE_USER_SPACE_ON_USE.equals(value)) {
