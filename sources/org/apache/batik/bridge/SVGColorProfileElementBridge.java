@@ -58,7 +58,7 @@ public class SVGColorProfileElementBridge implements Bridge, SVGConstants {
         /*
          * Check if there is one if the cache.
          */
-        ICCColorSpaceExt cs = cache.request(iccProfileName);
+        ICCColorSpaceExt cs = cache.request(iccProfileName.toLowerCase());
         if(cs != null){
             return cs;
         }
@@ -81,7 +81,7 @@ public class SVGColorProfileElementBridge implements Bridge, SVGConstants {
                 String nameAttr 
                     = profileNode.getAttributeNS(null, SVG_NAME_ATTRIBUTE);
                 
-                if(iccProfileName.equals(nameAttr)){
+                if(iccProfileName.equalsIgnoreCase(nameAttr)){
                     profile = profileNode;
                 }
             }
@@ -126,7 +126,7 @@ public class SVGColorProfileElementBridge implements Bridge, SVGConstants {
         /**
          * Add profile to cache
          */
-        cache.put(iccProfileName, cs);
+        cache.put(iccProfileName.toLowerCase(), cs);
 
         return cs;
     }
