@@ -26,6 +26,7 @@ import java.util.List;
 import javax.swing.JComponent;
 
 import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.bridge.BridgeException;
 import org.apache.batik.bridge.BridgeMutationEvent;
 import org.apache.batik.bridge.DocumentLoader;
 import org.apache.batik.bridge.GraphicsNodeBridge;
@@ -263,12 +264,16 @@ public class JSVGComponent extends JGVTComponent {
      * Computes the transform used for rendering.
      */
     protected void computeRenderingTransform() {
-        if (svgDocument != null) {
-            SVGSVGElement elt = svgDocument.getRootElement();
-            Dimension d = getSize();
-            setRenderingTransform(ViewBox.getViewTransform
-                                  (fragmentIdentifier, elt, d.width, d.height));
-            initialTransform = renderingTransform;
+        try {
+            if (svgDocument != null) {
+                SVGSVGElement elt = svgDocument.getRootElement();
+                Dimension d = getSize();
+                setRenderingTransform(ViewBox.getViewTransform
+                                      (fragmentIdentifier, elt, d.width, d.height));
+                initialTransform = renderingTransform;
+            }
+        } catch (BridgeException e) {
+            userAgent.displayError(e);
         }
     }
 
