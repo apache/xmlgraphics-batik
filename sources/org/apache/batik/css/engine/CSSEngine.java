@@ -1375,6 +1375,7 @@ public abstract class CSSEngine {
          * org.w3c.css.sac.DocumentHandler#startFontFace()}.
          */
         public void startFontFace() throws CSSException {
+            styleDeclaration = new StyleDeclaration();
         }
     
         /**
@@ -1382,6 +1383,13 @@ public abstract class CSSEngine {
          * org.w3c.css.sac.DocumentHandler#endFontFace()}.
          */
         public void endFontFace() throws CSSException {
+            // We should really register this fontFace Defn with the
+            // BridgeContext fontFamilyMap, so if someone tries to
+            // resolve this font we can look at the associated uri.
+            // We know that if it has a fragment identifier then it
+            // must be an SVG font otherwise it may be a stream
+            // worth passing to Font.createFont(int type, InputStream);
+            styleDeclaration = null;
         }
     
         /**
