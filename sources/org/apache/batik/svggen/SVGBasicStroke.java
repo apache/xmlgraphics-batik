@@ -152,7 +152,7 @@ public class SVGBasicStroke extends AbstractSVGConverter{
         for(int i=0; i<strokes.length; i++){
             BasicStroke stroke = strokes[i];
             Map attrMap = SVGBasicStroke.toSVG(stroke).getAttributeMap(null);
-            Element rectElement = domFactory.createElementNS(SVG_NAMESPACE_URI, TAG_RECT);
+            Element rectElement = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_RECT_TAG);
             Iterator iter = attrMap.keySet().iterator();
             while(iter.hasNext()){
                 String attrName = (String)iter.next();

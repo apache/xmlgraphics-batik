@@ -61,7 +61,7 @@ public class SVGPath extends SVGGraphicObjectConverter{
             return null;
         }
 
-        Element svgPath = domFactory.createElementNS(SVG_NAMESPACE_URI, TAG_PATH);
+        Element svgPath = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_PATH_TAG);
         svgPath.setAttributeNS(null, SVG_D_ATTRIBUTE, dAttr);
 
         // Set winding rule if different than SVG's default

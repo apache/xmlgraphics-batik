@@ -184,10 +184,10 @@ public class SVGImageElementBridge implements GraphicsNodeBridge,
                                               SVGElement element,
                                               SVGDocument imgDocument) {
 
-        Viewport oldViewport = ctx.getCurrentViewport();
+        Viewport oldViewport = ctx.getViewport();
         ViewCSS oldViewCSS = ctx.getViewCSS();
 
-        ctx.setCurrentViewport(null);
+        ctx.setViewport(null);
         ctx.setViewCSS((ViewCSS)((SVGOMDocument)imgDocument).getDefaultView());
         SVGSVGElement svgElement = imgDocument.getRootElement();
 
@@ -235,7 +235,7 @@ public class SVGImageElementBridge implements GraphicsNodeBridge,
         } catch (java.awt.geom.NoninvertibleTransformException ex) {}
 
         // restore viewport and current CSS view
-        ctx.setCurrentViewport(oldViewport);
+        ctx.setViewport(oldViewport);
         ctx.setViewCSS(oldViewCSS);
         return result;
     }

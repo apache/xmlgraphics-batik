@@ -25,7 +25,7 @@ import org.w3c.dom.svg.SVGLinearGradientElement;
 public class SVGOMLinearGradientElement
     extends    SVGOMGradientElement
     implements SVGLinearGradientElement {
-    
+
     /**
      * The reference to the x1 attribute.
      */
@@ -65,7 +65,7 @@ public class SVGOMLinearGradientElement
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
      */
     public String getLocalName() {
-        return TAG_LINEAR_GRADIENT;
+        return SVG_LINEAR_GRADIENT_TAG;
     }
 
     /**
@@ -73,56 +73,56 @@ public class SVGOMLinearGradientElement
      * org.w3c.dom.svg.SVGLinearGradientElement#getX1()}.
      */
     public SVGAnimatedLength getX1() {
-	SVGAnimatedLength result;
-	if (x1Reference == null ||
-	    (result = (SVGAnimatedLength)x1Reference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, ATTR_X1, null);
-	    x1Reference = new WeakReference(result);
-	}
-	return result;
-    } 
+        SVGAnimatedLength result;
+        if (x1Reference == null ||
+            (result = (SVGAnimatedLength)x1Reference.get()) == null) {
+            result = new SVGOMAnimatedLength(this, null, ATTR_X1, null);
+            x1Reference = new WeakReference(result);
+        }
+        return result;
+    }
 
     /**
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGLinearGradientElement#getY1()}.
      */
     public SVGAnimatedLength getY1() {
-	SVGAnimatedLength result;
-	if (y1Reference == null ||
-	    (result = (SVGAnimatedLength)y1Reference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, ATTR_Y1, null);
-	    y1Reference = new WeakReference(result);
-	}
-	return result;
-    } 
+        SVGAnimatedLength result;
+        if (y1Reference == null ||
+            (result = (SVGAnimatedLength)y1Reference.get()) == null) {
+            result = new SVGOMAnimatedLength(this, null, ATTR_Y1, null);
+            y1Reference = new WeakReference(result);
+        }
+        return result;
+    }
 
     /**
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGLinearGradientElement#getX2()}.
      */
     public SVGAnimatedLength getX2() {
-	SVGAnimatedLength result;
-	if (x2Reference == null ||
-	    (result = (SVGAnimatedLength)x2Reference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, ATTR_X2, null);
-	    x2Reference = new WeakReference(result);
-	}
-	return result;
-    } 
+        SVGAnimatedLength result;
+        if (x2Reference == null ||
+            (result = (SVGAnimatedLength)x2Reference.get()) == null) {
+            result = new SVGOMAnimatedLength(this, null, ATTR_X2, null);
+            x2Reference = new WeakReference(result);
+        }
+        return result;
+    }
 
     /**
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGLinearGradientElement#getY2()}.
      */
     public SVGAnimatedLength getY2() {
-	SVGAnimatedLength result;
-	if (y2Reference == null ||
-	    (result = (SVGAnimatedLength)y2Reference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, ATTR_Y2, null);
-	    y2Reference = new WeakReference(result);
-	}
-	return result;
-    } 
+        SVGAnimatedLength result;
+        if (y2Reference == null ||
+            (result = (SVGAnimatedLength)y2Reference.get()) == null) {
+            result = new SVGOMAnimatedLength(this, null, ATTR_Y2, null);
+            y2Reference = new WeakReference(result);
+        }
+        return result;
+    }
 
     /**
      * Returns a new uninitialized instance of this object's class.

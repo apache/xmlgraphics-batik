@@ -130,7 +130,7 @@ public class SVGSVGElementBridge implements GraphicsNodeBridge, SVGConstants {
         BridgeEventSupport.addDOMListener(ctx, element);
         ctx.bind(element, node);
 
-        ctx.setCurrentViewport(new SVGViewport(svgElement, uctx));
+        ctx.setViewport(new SVGViewport(svgElement, uctx));
         return node;
     }
 

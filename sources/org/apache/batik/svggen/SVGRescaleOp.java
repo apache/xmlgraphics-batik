@@ -191,14 +191,14 @@ public class SVGRescaleOp extends AbstractSVGFilterConverter{
 
         for(int i=0; i<rescaleOps.length; i++){
             SVGFilterDescriptor filterDesc = converter.toSVG(rescaleOps[i]);
-            Element rect = domFactory.createElementNS(SVG_NAMESPACE_URI, TAG_RECT);
+            Element rect = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_RECT_TAG);
             rect.setAttributeNS(null, SVG_FILTER_ATTRIBUTE, filterDesc.getFilterValue());
             rectGroupOne.appendChild(rect);
         }
 
         for(int i=0; i<rescaleOps.length; i++){
             SVGFilterDescriptor filterDesc = converter.toSVG(rescaleOps[i]);
-            Element rect = domFactory.createElementNS(SVG_NAMESPACE_URI, TAG_RECT);
+            Element rect = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_RECT_TAG);
             rect.setAttributeNS(null, SVG_FILTER_ATTRIBUTE, filterDesc.getFilterValue());
             rectGroupTwo.appendChild(rect);
         }

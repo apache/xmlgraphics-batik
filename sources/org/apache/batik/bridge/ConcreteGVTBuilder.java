@@ -80,11 +80,10 @@ public class ConcreteGVTBuilder implements GVTBuilder, SVGConstants {
             BridgeEventSupport.loadScripts(ctx, svgDocument);
             EventTarget target = (EventTarget) svgRoot;
             target.addEventListener("DOMAttrModified",
-                                    new BridgeDOMAttrModifiedListener
-                                    ((ConcreteBridgeContext)ctx),
+                                    new BridgeDOMAttrModifiedListener(ctx),
                                     true);
             EventListener listener =
-               new BridgeDOMInsertedRemovedListener((ConcreteBridgeContext)ctx);
+               new BridgeDOMInsertedRemovedListener(ctx);
             // Adds the Listener on Attr Modified event.
             target.addEventListener("DOMNodeInserted", listener, true);
             // Adds the Listener on Attr Modified event.
@@ -192,7 +191,7 @@ public class ConcreteGVTBuilder implements GVTBuilder, SVGConstants {
 
                     if (inst instanceof SVGSymbolElement) {
                         Element tmp = e.getOwnerDocument().createElementNS
-                            (SVG_NAMESPACE_URI, TAG_SVG);
+                            (SVG_NAMESPACE_URI, SVG_SVG_TAG);
                         for (n = inst.getFirstChild();
                              n != null;
                              n = inst.getFirstChild()) {

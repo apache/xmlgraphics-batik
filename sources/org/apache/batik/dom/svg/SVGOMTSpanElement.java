@@ -43,7 +43,7 @@ public class SVGOMTSpanElement
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
      */
     public String getLocalName() {
-        return TAG_TSPAN;
+        return SVG_TSPAN_TAG;
     }
 
     /**

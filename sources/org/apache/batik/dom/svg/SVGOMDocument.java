@@ -222,10 +222,10 @@ public class SVGOMDocument
         factories.put(SVG_IMAGE_TAG,
                       new ImageElementFactory());
 
-        factories.put(TAG_LINE,
+        factories.put(SVG_LINE_TAG,
                       new LineElementFactory());
 
-        factories.put(TAG_LINEAR_GRADIENT,
+        factories.put(SVG_LINEAR_GRADIENT_TAG,
                       new LinearGradientElementFactory());
 
         factories.put(SVG_MASK_TAG,
@@ -237,22 +237,22 @@ public class SVGOMDocument
         factories.put(SVG_METADATA_TAG,
                       new MetadataElementFactory());
 
-        factories.put(TAG_PATH,
+        factories.put(SVG_PATH_TAG,
                       new PathElementFactory());
 
-        factories.put(TAG_PATTERN,
+        factories.put(SVG_PATTERN_TAG,
                       new PatternElementFactory());
 
-        factories.put(TAG_POLYGON,
+        factories.put(SVG_POLYGON_TAG,
                       new PolygonElementFactory());
 
-        factories.put(TAG_POLYLINE,
+        factories.put(SVG_POLYLINE_TAG,
                       new PolylineElementFactory());
 
-        factories.put(TAG_RADIAL_GRADIENT,
+        factories.put(SVG_RADIAL_GRADIENT_TAG,
                       new RadialGradientElementFactory());
 
-        factories.put(TAG_RECT,
+        factories.put(SVG_RECT_TAG,
                       new RectElementFactory());
 
         factories.put(SVG_SCRIPT_TAG,
@@ -261,16 +261,16 @@ public class SVGOMDocument
         factories.put(SVG_STOP_TAG,
                       new StopElementFactory());
 
-        factories.put(TAG_STYLE,
+        factories.put(SVG_STYLE_TAG,
                       new StyleElementFactory());
 
-        factories.put(TAG_SVG,
+        factories.put(SVG_SVG_TAG,
                       new SvgElementFactory());
 
         factories.put(SVG_SWITCH_TAG,
                       new SwitchElementFactory());
 
-        factories.put(TAG_SYMBOL,
+        factories.put(SVG_SYMBOL_TAG,
                       new SymbolElementFactory());
 
         factories.put(SVG_TEXT_TAG,
@@ -282,10 +282,10 @@ public class SVGOMDocument
         factories.put(SVG_TITLE_TAG,
                       new TitleElementFactory());
 
-        factories.put(TAG_TREF,
+        factories.put(SVG_TREF_TAG,
                       new TrefElementFactory());
 
-        factories.put(TAG_TSPAN,
+        factories.put(SVG_TSPAN_TAG,
                       new TspanElementFactory());
 
         factories.put(SVG_USE_TAG,

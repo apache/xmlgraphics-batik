@@ -8,12 +8,9 @@
 
 package org.apache.batik.bridge;
 
-import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.util.UnitProcessor;
-import org.apache.batik.bridge.Viewport;
-
-import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.CSSPrimitiveValue;
+import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.svg.SVGElement;
 import org.w3c.dom.svg.SVGSVGElement;
 
@@ -66,13 +63,13 @@ public class DefaultUnitProcessorContext implements UnitProcessor.Context {
      * Returns the viewport width used to compute units.
      */
     public float getViewportWidth() {
-        return ctx.getCurrentViewport().getWidth();
+        return ctx.getViewport().getWidth();
     }
 
     /**
      * Returns the viewport height used to compute units.
      */
     public float getViewportHeight() {
-        return ctx.getCurrentViewport().getHeight();
+        return ctx.getViewport().getHeight();
     }
 }

@@ -8,26 +8,20 @@
 
 package org.apache.batik.bridge;
 
-import org.w3c.dom.events.EventListener;
-import org.w3c.dom.events.Event;
-import org.w3c.dom.events.MutationEvent;
-
-import org.apache.batik.gvt.GraphicsNode;
+import java.util.Iterator;
+import java.util.List;
 import org.apache.batik.gvt.CompositeGraphicsNode;
-import org.apache.batik.bridge.BridgeContext;
-import org.apache.batik.bridge.GraphicsNodeBridge;
-import org.apache.batik.bridge.BridgeMutationEvent;
-import org.apache.batik.bridge.StyleReference;
-
+import org.apache.batik.gvt.GraphicsNode;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-
-import java.util.List;
-import java.util.Iterator;
+import org.w3c.dom.events.Event;
+import org.w3c.dom.events.EventListener;
+import org.w3c.dom.events.MutationEvent;
 
 /**
- * This class listens to DOMNodeInserted and DOMNodeRemoved
- * events in the SVG tree.
+ * This class listens to DOMNodeInserted and DOMNodeRemoved events in
+ * the SVG tree.
+ *
  * @author <a href="mailto:etissandier@ilog.fr">Emmanuel Tissandier</a>
  * @author <a href="mailto:cjolif@ilog.fr">Christophe Jolif</a>
  * @version $Id$
@@ -37,12 +31,12 @@ public class BridgeDOMInsertedRemovedListener implements EventListener {
     private static final String DOM_NODE_INSERTED_TYPE = "DOMNodeInserted";
     private static final String DOM_NODE_REMOVED_TYPE = "DOMNodeRemoved";
 
-    private ConcreteBridgeContext context;
+    private BridgeContext context;
 
     /**
      * Creates the listener.
      */
-    public BridgeDOMInsertedRemovedListener(ConcreteBridgeContext context) {
+    public BridgeDOMInsertedRemovedListener(BridgeContext context) {
         this.context = context;
     }
 

@@ -45,7 +45,7 @@ public class SVGOMTRefElement
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
      */
     public String getLocalName() {
-        return TAG_TREF;
+        return SVG_TREF_TAG;
     }
 
     // XLink support //////////////////////////////////////////////////////
@@ -59,10 +59,10 @@ public class SVGOMTRefElement
      * Returns uriReferenceSupport different from null.
      */
     protected final SVGURIReferenceSupport getSVGURIReferenceSupport() {
-	if (uriReferenceSupport == null) {
-	    uriReferenceSupport = new SVGURIReferenceSupport();
-	}
-	return uriReferenceSupport;
+        if (uriReferenceSupport == null) {
+            uriReferenceSupport = new SVGURIReferenceSupport();
+        }
+        return uriReferenceSupport;
     }
 
     /**

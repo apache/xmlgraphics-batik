@@ -13,24 +13,16 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Rectangle2D;
 import java.io.StringReader;
-
-import org.apache.batik.bridge.BridgeContext;
-import org.apache.batik.bridge.GVTBuilder;
-import org.apache.batik.bridge.IllegalAttributeValueException;
-import org.apache.batik.bridge.ObjectBoundingBoxViewport;
-import org.apache.batik.bridge.PaintBridge;
-import org.apache.batik.bridge.Viewport;
+import org.apache.batik.bridge.resources.Messages;
+import org.apache.batik.ext.awt.image.renderable.ClipRable8Bit;
+import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
-import org.apache.batik.ext.awt.image.renderable.Filter;
-import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
-import org.apache.batik.bridge.resources.Messages;
 import org.apache.batik.gvt.PatternPaint;
-import org.apache.batik.ext.awt.image.renderable.ClipRable8Bit;
+import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.UnitProcessor;
-
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.css.CSSPrimitiveValue;
@@ -84,7 +76,7 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
         GraphicsNodeRenderContext rc =
                          ctx.getGraphicsNodeRenderContext();
 
-        Viewport oldViewport = ctx.getCurrentViewport();
+        Viewport oldViewport = ctx.getViewport();
 
         // parse the patternContentUnits attribute
         String patternContentUnits
@@ -104,7 +96,7 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
         }
 
         if (unitsType == SVGUtilities.OBJECT_BOUNDING_BOX) {
-            ctx.setCurrentViewport(new ObjectBoundingBoxViewport());
+            ctx.setViewport(new ObjectBoundingBoxViewport());
         }
 
         // Build pattern content
@@ -137,7 +129,7 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
             patternContentNode.getChildren().add(patternNode);
         }
         // restore the viewport
-        ctx.setCurrentViewport(oldViewport);
+        ctx.setViewport(oldViewport);
         if (!hasChildren) {
             return null; // no pattern defined
         }

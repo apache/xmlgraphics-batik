@@ -29,6 +29,7 @@ import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.DocumentFactory;
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.event.EventDispatcher;
 import org.apache.batik.gvt.renderer.Renderer;
 import org.apache.batik.transcoder.TranscoderException;
@@ -48,9 +49,9 @@ import org.w3c.dom.svg.SVGSVGElement;
 
 // <!> FIXME : Those import clauses will change with new design
 import org.apache.batik.bridge.ConcreteGVTBuilder;
-import org.apache.batik.bridge.DefaultBridgeContext;
 import org.apache.batik.bridge.SVGUtilities;
 import org.apache.batik.gvt.renderer.StaticRenderer;
+import org.apache.batik.gvt.renderer.StaticRendererFactory;
 
 /**
  * This class enables to transcode an input to an image of any format.
@@ -91,7 +92,7 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
         hints.put(KEY_DOCUMENT_ELEMENT_NAMESPACE_URI,
                   SVGConstants.SVG_NAMESPACE_URI);
         hints.put(KEY_DOCUMENT_ELEMENT,
-                  SVGConstants.TAG_SVG);
+                  SVGConstants.SVG_SVG_TAG);
         hints.put(KEY_DOM_IMPLEMENTATION,
                   SVGDOMImplementation.getDOMImplementation());
     }
@@ -168,10 +169,6 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
             // we apply first the preserveAspectRatio matrix
             Px.preConcatenate(Mx);
         }
-        // build the GVT tree
-        GVTBuilder builder = new ConcreteGVTBuilder();
-        BridgeContext ctx = new DefaultBridgeContext(userAgent, svgDoc);
-        GraphicsNode gvtRoot = builder.build(ctx, svgDoc);
         // prepare the image to be painted
         int w = (int)width;
         int h = (int)height;
@@ -184,8 +181,16 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
             g2d.fillRect(0, 0, w, h);
         }
         g2d.setComposite(AlphaComposite.SrcOver);
-        // paint the SVG document using the bridge package
+        // create the appropriate renderer
         Renderer renderer = new StaticRenderer(img);
+        // build the GVT tree
+        GVTBuilder builder = new ConcreteGVTBuilder();
+        GraphicsNodeRenderContext rc = new StaticRendererFactory().getRenderContext(); // <!> FIX ME
+        BridgeContext ctx = new BridgeContext(svgDoc,
+                                              userAgent,
+                                              rc);
+        GraphicsNode gvtRoot = builder.build(ctx, svgDoc);
+        // paint the SVG document using the bridge package
         renderer.setTransform(Px);
         renderer.setTree(gvtRoot);
         try {

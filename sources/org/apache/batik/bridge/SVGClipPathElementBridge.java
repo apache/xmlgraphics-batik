@@ -13,25 +13,16 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.awt.geom.GeneralPath;
 import java.io.StringReader;
-
-import org.apache.batik.bridge.BridgeContext;
-import org.apache.batik.bridge.BridgeMutationEvent;
-import org.apache.batik.bridge.ClipBridge;
-import org.apache.batik.bridge.GVTBuilder;
-import org.apache.batik.bridge.IllegalAttributeValueException;
-import org.apache.batik.bridge.ObjectBoundingBoxViewport;
-import org.apache.batik.bridge.Viewport;
+import org.apache.batik.bridge.resources.Messages;
+import org.apache.batik.ext.awt.image.renderable.Clip;
+import org.apache.batik.ext.awt.image.renderable.ClipRable8Bit;
+import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.ShapeNode;
-import org.apache.batik.ext.awt.image.renderable.Clip;
-import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
-import org.apache.batik.bridge.resources.Messages;
-import org.apache.batik.ext.awt.image.renderable.ClipRable8Bit;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.UnitProcessor;
-
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.css.CSSPrimitiveValue;
@@ -77,7 +68,7 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
                                                 ATTR_TRANSFORM);
 
         // parse the clipPathUnits attribute
-        Viewport oldViewport = ctx.getCurrentViewport();
+        Viewport oldViewport = ctx.getViewport();
         String units = clipElement.getAttributeNS(null, SVG_CLIP_PATH_UNITS_ATTRIBUTE);
         if (units.length() == 0) {
             units = SVG_USER_SPACE_ON_USE_VALUE;
@@ -93,7 +84,7 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
         }
         if (unitsType == SVGUtilities.OBJECT_BOUNDING_BOX) {
             // units are resolved using objectBoundingBox
-            ctx.setCurrentViewport(new ObjectBoundingBoxViewport());
+            ctx.setViewport(new ObjectBoundingBoxViewport());
         }
         // compute an additional transform related the clipPathUnits
         Tx = SVGUtilities.convertAffineTransform(Tx, gn, rc, unitsType);
@@ -143,7 +134,7 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
             clipPath.add(new Area(outline));
         }
         // restore the viewport
-        ctx.setCurrentViewport(oldViewport);
+        ctx.setViewport(oldViewport);
         if (!hasChildren) {
             return null; // no clipPath defined
         }

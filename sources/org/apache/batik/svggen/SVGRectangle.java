@@ -52,7 +52,8 @@ public class SVGRectangle extends SVGGraphicObjectConverter{
      * @param rect rectangle object to convert to SVG
      */
     private Element toSVG(RectangularShape rect){
-        Element svgRect = domFactory.createElementNS(SVG_NAMESPACE_URI, TAG_RECT);
+        Element svgRect = domFactory.createElementNS(SVG_NAMESPACE_URI,
+                                                     SVG_RECT_TAG);
         svgRect.setAttributeNS(null, SVG_X_ATTRIBUTE, doubleString(rect.getX()));
         svgRect.setAttributeNS(null, SVG_Y_ATTRIBUTE, doubleString(rect.getY()));
         svgRect.setAttributeNS(null, SVG_WIDTH_ATTRIBUTE, doubleString(rect.getWidth()));

@@ -61,29 +61,32 @@ public interface SVGConstants extends CSSConstants {
     String SVG_FILTER_TAG = "filter";
     String SVG_G_TAG = "g";
     String SVG_IMAGE_TAG = "image";
-    String TAG_LINE = "line";
-    String TAG_LINEAR_GRADIENT = "linearGradient";
+    String SVG_LINE_TAG = "line";
+    String SVG_LINEAR_GRADIENT_TAG = "linearGradient";
     String SVG_MARKER_TAG = "marker";
     String SVG_MASK_TAG = "mask";
     String SVG_METADATA_TAG = "metadata";
-    String TAG_PATH = "path";
-    String TAG_PATTERN = "pattern";
-    String TAG_POLYGON = "polygon";
-    String TAG_POLYLINE = "polyline";
-    String TAG_RADIAL_GRADIENT = "radialGradient";
-    String TAG_RECT = "rect";
+    String SVG_PATH_TAG = "path";
+    String SVG_PATTERN_TAG = "pattern";
+    String SVG_POLYGON_TAG = "polygon";
+    String SVG_POLYLINE_TAG = "polyline";
+    String SVG_RADIAL_GRADIENT_TAG = "radialGradient";
+    String SVG_RECT_TAG = "rect";
     String SVG_SCRIPT_TAG = "script";
     String SVG_STOP_TAG = "stop";
-    String TAG_STYLE = "style";
-    String TAG_SVG = "svg";
+    String SVG_STYLE_TAG = "style";
+    String SVG_SVG_TAG = "svg";
     String SVG_SWITCH_TAG = "switch";
-    String TAG_SYMBOL = "symbol";
+    String SVG_SYMBOL_TAG = "symbol";
     String SVG_TEXT_TAG = "text";
-    String TAG_TEXT_PATH = "textPath";
+    String SVG_TEXT_PATH_TAG = "textPath";
     String SVG_TITLE_TAG = "title";
-    String TAG_TREF = "tref";
-    String TAG_TSPAN = "tspan";
+    String SVG_TREF_TAG = "tref";
+    String SVG_TSPAN_TAG = "tspan";
     String SVG_USE_TAG = "use";
+
+    // custom tag
+    String TAG_TEXT_PATH = "textPath";
 
     //
     // Attribute names

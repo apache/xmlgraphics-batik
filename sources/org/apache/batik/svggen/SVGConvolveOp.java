@@ -144,14 +144,14 @@ public class SVGConvolveOp extends AbstractSVGFilterConverter{
 
         for(int i=0; i<convolveOps.length; i++){
             SVGFilterDescriptor filterDesc = converter.toSVG(convolveOps[i]);
-            Element rect = domFactory.createElementNS(SVG_NAMESPACE_URI, TAG_RECT);
+            Element rect = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_RECT_TAG);
             rect.setAttributeNS(null, SVG_FILTER_ATTRIBUTE, filterDesc.getFilterValue());
             rectGroupOne.appendChild(rect);
         }
 
         for(int i=0; i<convolveOps.length; i++){
             SVGFilterDescriptor filterDesc = converter.toSVG(convolveOps[i]);
-            Element rect = domFactory.createElementNS(SVG_NAMESPACE_URI, TAG_RECT);
+            Element rect = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_RECT_TAG);
             rect.setAttributeNS(null, SVG_FILTER_ATTRIBUTE, filterDesc.getFilterValue());
             rectGroupTwo.appendChild(rect);
         }

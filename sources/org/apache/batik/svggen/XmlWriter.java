@@ -297,7 +297,7 @@ class XmlWriter implements SVGConstants {
         out.write ("' '");
         out.write (SVG_SYSTEM_ID);
         out.write ("'");
-        
+
         out.write (">");
         out.write (EOL);
     }
@@ -400,7 +400,7 @@ class XmlWriter implements SVGConstants {
     public static void main(String args[]) throws Exception {
         Document domFactory = TestUtil.getDocumentPrototype();
 
-        Element root = domFactory.createElementNS(SVG_NAMESPACE_URI, TAG_SVG);
+        Element root = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_SVG_TAG);
         Element genericDefs = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_DEFS_TAG);
         Element topLevelGroup = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
         Element topLevelDefs = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_DEFS_TAG);
