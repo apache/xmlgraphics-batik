@@ -260,6 +260,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
      */
     public void setVisible(boolean isVisible) {
         fireGraphicsNodeChangeStarted();
+        invalidateGeometryCache();
         this.isVisible = isVisible;
         fireGraphicsNodeChangeCompleted();
     }
