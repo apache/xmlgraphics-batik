@@ -9,6 +9,7 @@
 package org.apache.batik.gvt.font;
 
 import java.awt.font.FontRenderContext;
+import java.text.AttributedCharacterIterator;
 
 /**
  * An interface for handling altGlyphs.
@@ -26,6 +27,7 @@ public interface AltGlyphHandler {
      * @return The GVTGlyphVector containing the alternate glyphs, or null if
      * the alternate glyphs could not be found.
      */
-    GVTGlyphVector createGlyphVector(FontRenderContext frc, float fontSize);
+    GVTGlyphVector createGlyphVector(FontRenderContext frc, float fontSize,
+                                     AttributedCharacterIterator aci);
 
 }

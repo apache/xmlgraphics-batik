@@ -15,6 +15,7 @@ import org.apache.batik.gvt.font.Glyph;
 import org.apache.batik.util.SVGConstants;
 
 import java.awt.font.FontRenderContext;
+import java.text.AttributedCharacterIterator;
 import org.w3c.dom.Element;
 
 /**
@@ -50,10 +51,13 @@ public class SVGAltGlyphHandler implements AltGlyphHandler, SVGConstants {
      * @return The GVTGlyphVector containing the alternate glyphs, or null if
      * the alternate glyphs could not be found.
      */
-    public GVTGlyphVector createGlyphVector(FontRenderContext frc, float fontSize) {
+    public GVTGlyphVector createGlyphVector(FontRenderContext frc, float fontSize,
+                                     AttributedCharacterIterator aci) {
         if (textElement.getTagName().equals(SVG_ALT_GLYPH_TAG)) {
-            SVGAltGlyphElementBridge altGlyphBridge = (SVGAltGlyphElementBridge)ctx.getBridge(textElement);
-            Glyph[] glyphArray = altGlyphBridge.createAltGlyphArray(ctx, textElement, fontSize);
+            SVGAltGlyphElementBridge altGlyphBridge
+                = (SVGAltGlyphElementBridge)ctx.getBridge(textElement);
+            Glyph[] glyphArray
+                = altGlyphBridge.createAltGlyphArray(ctx, textElement, fontSize, aci);
             if (glyphArray != null) {
                 return new SVGGVTGlyphVector(null, glyphArray, frc);
             }

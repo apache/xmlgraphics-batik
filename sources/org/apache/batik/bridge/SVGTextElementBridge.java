@@ -973,9 +973,6 @@ public class SVGTextElementBridge extends AbstractSVGBridge
         }
 
         // Unicode-bidi mode
-        // full support requires revision: see comments
-        // below regarding 'direction'
-
         v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValueInternal
             (CSS_UNICODE_BIDI_PROPERTY);
         s = v.getStringValue();
@@ -1033,6 +1030,8 @@ public class SVGTextElementBridge extends AbstractSVGBridge
 
         // Writing mode
 
+        boolean horizontal = true;
+
         v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValueInternal
             (CSS_WRITING_MODE_PROPERTY);
         s = v.getStringValue();
@@ -1050,10 +1049,11 @@ public class SVGTextElementBridge extends AbstractSVGBridge
                        TextAttribute.WRITING_MODE_RTL);
             break;
         case 't':
-	    result.put(GVTAttributedCharacterIterator.
+	        result.put(GVTAttributedCharacterIterator.
 		       TextAttribute.WRITING_MODE,
 		       GVTAttributedCharacterIterator.
 		       TextAttribute.WRITING_MODE_TTB);
+            horizontal = false;
             break;
         }
 
@@ -1142,12 +1142,13 @@ public class SVGTextElementBridge extends AbstractSVGBridge
             (CSS_LETTER_SPACING_PROPERTY);
         t = v.getPrimitiveType();
         if (t != CSSPrimitiveValue.CSS_IDENT) {
-            f = UnitProcessor.cssHorizontalCoordinateToUserSpace
-                (v, CSS_LETTER_SPACING_PROPERTY, uctx);
-
-            // XXX: HACK: Assuming horizontal length units is wrong,
-            // layout might be vertical!
-
+            if (horizontal) {
+                f = UnitProcessor.cssHorizontalCoordinateToUserSpace
+                    (v, CSS_LETTER_SPACING_PROPERTY, uctx);
+            } else {
+                f = UnitProcessor.cssVerticalCoordinateToUserSpace
+                    (v, CSS_LETTER_SPACING_PROPERTY, uctx);
+            }
             result.put(GVTAttributedCharacterIterator.
                        TextAttribute.LETTER_SPACING,
                        new Float(f));
@@ -1161,12 +1162,13 @@ public class SVGTextElementBridge extends AbstractSVGBridge
             (CSS_WORD_SPACING_PROPERTY);
         t = v.getPrimitiveType();
         if (t != CSSPrimitiveValue.CSS_IDENT) {
-            f = UnitProcessor.cssHorizontalCoordinateToUserSpace
-                (v, CSS_WORD_SPACING_PROPERTY, uctx);
-
-            // XXX: HACK: Assuming horizontal length units is wrong,
-            // layout might be vertical!
-
+            if (horizontal) {
+                f = UnitProcessor.cssHorizontalCoordinateToUserSpace
+                    (v, CSS_WORD_SPACING_PROPERTY, uctx);
+            } else {
+                f = UnitProcessor.cssVerticalCoordinateToUserSpace
+                    (v, CSS_WORD_SPACING_PROPERTY, uctx);
+            }
             result.put(GVTAttributedCharacterIterator.TextAttribute.WORD_SPACING,
                        new Float(f));
             result.put(GVTAttributedCharacterIterator.
@@ -1177,12 +1179,13 @@ public class SVGTextElementBridge extends AbstractSVGBridge
         // Kerning
         s = element.getAttributeNS(null, SVG_KERNING_ATTRIBUTE);
         if (s.length() != 0) {
-            f = UnitProcessor.svgHorizontalLengthToUserSpace
-                (s, SVG_KERNING_ATTRIBUTE, uctx);
-
-            // XXX: Assuming horizontal length units is wrong,
-            // layout might be vertical!
-
+            if (horizontal) {
+                f = UnitProcessor.svgHorizontalLengthToUserSpace
+                    (s, SVG_KERNING_ATTRIBUTE, uctx);
+            } else {
+                f = UnitProcessor.svgVerticalLengthToUserSpace
+                    (s, SVG_KERNING_ATTRIBUTE, uctx);
+            }
             result.put(GVTAttributedCharacterIterator.TextAttribute.KERNING,
                        new Float(f));
             result.put(GVTAttributedCharacterIterator.
@@ -1193,14 +1196,16 @@ public class SVGTextElementBridge extends AbstractSVGBridge
         // textLength
         s = element.getAttributeNS(null, SVG_TEXT_LENGTH_ATTRIBUTE);
         if (s.length() != 0) {
-            f = UnitProcessor.svgHorizontalLengthToUserSpace
-                (s, SVG_TEXT_LENGTH_ATTRIBUTE, uctx);
-
-            // XXX: Assuming horizontal length units is wrong,
-            // layout might be vertical!
-
+            if (horizontal) {
+                f = UnitProcessor.svgHorizontalLengthToUserSpace
+                    (s, SVG_TEXT_LENGTH_ATTRIBUTE, uctx);
+            } else {
+                f = UnitProcessor.svgVerticalLengthToUserSpace
+                    (s, SVG_TEXT_LENGTH_ATTRIBUTE, uctx);
+            }
             result.put(GVTAttributedCharacterIterator.TextAttribute.BBOX_WIDTH,
                        new Float(f));
+
             // lengthAdjust
             s = element.getAttributeNS(null, SVG_LENGTH_ADJUST_ATTRIBUTE);
 
@@ -1216,7 +1221,6 @@ public class SVGTextElementBridge extends AbstractSVGBridge
                            TextAttribute.LENGTH_ADJUST,
                            GVTAttributedCharacterIterator.TextAttribute.ADJUST_ALL);
             }
-
         }
 
         return result;
