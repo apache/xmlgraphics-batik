@@ -232,6 +232,13 @@ public class JGVTComponent extends JComponent {
     }
 
     /**
+     * Resets the rendering transform to its initial value.
+     */
+    public void resetRenderingTransform() {
+        renderingTransform = initialTransform;
+    }
+
+    /**
      * Stops the processing of the current tree.
      */
     public void stopProcessing() {
