@@ -120,20 +120,28 @@ public class ConcreteShapeNode extends AbstractGraphicsNode
     }
 
     public boolean contains(Point2D p) {
-        return (getBounds().contains(p) &&
-                paintedArea != null &&
-                paintedArea.contains(p));
+        Rectangle2D b = getBounds();
+        if (b != null) {
+            return (b.contains(p) &&
+                    paintedArea != null &&
+                    paintedArea.contains(p));
+        }
+        return false;
     }
 
     public boolean intersects(Rectangle2D r) {
-        return (getBounds().intersects(r) &&
-                paintedArea != null &&
-                paintedArea.intersects(r));
+        Rectangle2D b = getBounds();
+        if (b != null) {
+            return (b.intersects(r) &&
+                    paintedArea != null &&
+                    paintedArea.intersects(r));
+        }
+        return false;
     }
 
     public Rectangle2D getPrimitiveBounds() {
         if (primitiveBounds == null) {
-            if (shapePainter == null) {
+            if (shapePainter == null || shape == null) {
                 return null;
             }
             paintedArea = shapePainter.getPaintedArea(shape);
@@ -144,6 +152,9 @@ public class ConcreteShapeNode extends AbstractGraphicsNode
 
     public Rectangle2D getGeometryBounds(){
         if (geometryBounds == null) {
+            if (shape == null) {
+                return null;
+            }
             geometryBounds = shape.getBounds();
         }
         return geometryBounds;
