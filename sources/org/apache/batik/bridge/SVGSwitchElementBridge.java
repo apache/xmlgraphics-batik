@@ -22,13 +22,11 @@ import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.Mask;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.UnitProcessor;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.css.CSSPrimitiveValue;
 import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.ViewCSS;
 import org.w3c.dom.svg.SVGElement;
-import org.w3c.dom.views.DocumentView;
 
 /**
  * A factory for the &lt;switch&gt; SVG element.
@@ -67,8 +65,6 @@ public class SVGSwitchElementBridge
     public void buildGraphicsNode(GraphicsNode gn,
                                   BridgeContext ctx,
                                   Element element) {
-
-        Document document = element.getOwnerDocument();
         CSSStyleDeclaration decl = CSSUtilities.getComputedStyle(element);
         CSSPrimitiveValue val =
             (CSSPrimitiveValue)decl.getPropertyCSSValue(ATTR_OPACITY);
@@ -85,7 +81,7 @@ public class SVGSwitchElementBridge
         gn.setClip(clip);
 
         // <!> TODO only when binding is enabled
-        BridgeEventSupport.addDOMListener(ctx, element);
+        BridgeEventSupport.addDOMListener(ctx, (SVGElement)element);
         ctx.bind(element, gn);
     }
 

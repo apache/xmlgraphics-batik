@@ -104,7 +104,7 @@ public abstract class SVGShapeElementBridge implements GraphicsNodeBridge,
         node.setClip(clip);
 
         // <!> TODO only when binding is enabled
-        BridgeEventSupport.addDOMListener(ctx, element);
+        BridgeEventSupport.addDOMListener(ctx, svgElement);
         ctx.bind(element, node);
     }
 

@@ -43,8 +43,8 @@ import org.w3c.dom.svg.SVGSVGElement;
  * @version $Id$
  */
 class BridgeEventSupport {
-    private static final String[] EVENT_ATTRIBUTES = {
-        // all
+    private static final String[] EVENT_ATTRIBUTES_GRAPHICS = {
+        // graphics + svg
         "onfocusin",
         "onfocusout",
         "onactivate",
@@ -54,16 +54,24 @@ class BridgeEventSupport {
         "onmouseover",
         "onmouseout",
         "onmousemove",
-        "onload",
+        "onload"
+    };
 
+    private static final int FIRST_SVG_EVENT = 10;
+
+    private static final String[] EVENT_ATTRIBUTES_SVG = {
         // document
         "onunload",
         "onabort",
         "onerror",
         "onresize",
         "onscroll",
-        "onzoom",
+        "onzoom"
+    };
 
+    private static final int FIRST_ANIMATION_EVENT = 16;
+
+    private static final String[] EVENT_ATTRIBUTES_ANIMATION = {
         // animation
         "onbegin",
         "onend",
@@ -104,35 +112,95 @@ class BridgeEventSupport {
      * when necessary.
      * @param ctx the <code>BridgeContext</code> containing useful
      * information.
-     * @param element the DOM element corresponding to the node. It should
-     * also be an event target.
+     * @param element the DOM SVGElement corresponding to the node. It should
+     * also be an instance of <code>EventTarget</code> otherwise no listener
+     * will be added.
      * @param node the <code>GraphicsNode</code>.
      */
     public static void addDOMListener(BridgeContext ctx,
-                                      Element element) {
-        // ability for scripts to be called
-        EventTarget target = (EventTarget)element;
-        String script = null;
-        // <!> HACK (the cast) should be modified : call the method
-        // with SVGElement's only
-        SVGSVGElement svgElement = (SVGSVGElement)
-            ((SVGElement)element).getOwnerSVGElement();
+                                      SVGElement element) {
+        EventTarget target = null;
+        try {
+            // ability for scripts to be called
+            target = (EventTarget)element;
+        } catch (ClassCastException e) {
+            // will not work on this one!
+            return;
+        }
+        SVGSVGElement svgElement = (SVGSVGElement)element.getOwnerSVGElement();
         if (svgElement == null) {
-            if (element instanceof SVGSVGElement) {
+            if (element.getLocalName().equals("svg")) {
                 svgElement = (SVGSVGElement)element;
             } else {
-                // disable scripting
+                // something goes wrong => disable scripting
                 return;
             }
         }
         String language = svgElement.getContentScriptType();
         Interpreter interpret = null;
+        String script = null;
         // <!> TODO we need to memo listeners to be able to remove
-        // them later.
-        // <!> TODO be smarter : don't look for doc attr on other
-        // elements.
-        for (int i = 0; i < EVENT_ATTRIBUTES.length; i++) {
-            if (!(script = element.getAttribute(EVENT_ATTRIBUTES[i])).
+        // them later when deconnecting the bridge binding...
+        if (element.getLocalName().equals("svg")) {
+            for (int i = 0; i < EVENT_ATTRIBUTES_SVG.length; i++) {
+                if (!(script = element.getAttribute(EVENT_ATTRIBUTES_SVG[i])).
+                    equals("")) {
+                    if (interpret == null) {
+                        // try to get the intepreter only if we have
+                        // a reason to do it!
+                        interpret = ctx.getInterpreterPool().
+                            getInterpreter(element.getOwnerDocument(), language);
+                        // the interpreter is not avaible => stop it now!
+                        if (interpret == null) {
+                            UserAgent ua = ctx.getUserAgent();
+                            if (ua != null)
+                                ua.displayError("unknow language: "+language);
+                            break;
+                        }
+                    }
+                    target.
+                        addEventListener(EVENT_NAMES[i+FIRST_SVG_EVENT],
+                                         new ScriptCaller(ctx.getUserAgent(),
+                                                          script, interpret),
+                                         false);
+                }
+            }
+            // continue
+        } else
+            if (element.getLocalName().equals("set") ||
+                element.getLocalName().startsWith("animate")) {
+                for (int i = 0; i < EVENT_ATTRIBUTES_ANIMATION.length; i++) {
+                    if (!(script =
+                          element.getAttribute(EVENT_ATTRIBUTES_ANIMATION[i])).
+                        equals("")) {
+                        if (interpret == null) {
+                            // try to get the intepreter only if we have
+                            // a reason to do it!
+                            interpret = ctx.getInterpreterPool().
+                                getInterpreter(element.getOwnerDocument(),
+                                               language);
+                            // the interpreter is not avaible => stop it now!
+                            if (interpret == null) {
+                                UserAgent ua = ctx.getUserAgent();
+                                if (ua != null)
+                                    ua.displayError("unknow language: "+
+                                                    language);
+                                break;
+                            }
+                        }
+                        target.
+                            addEventListener(EVENT_NAMES[i+
+                                                        FIRST_ANIMATION_EVENT],
+                                             new ScriptCaller(ctx.getUserAgent(),
+                                                              script, interpret),
+                                             false);
+                    }
+                }
+                // not other stuff to do on this kind of events
+                return;
+            }
+        for (int i = 0; i < EVENT_ATTRIBUTES_GRAPHICS.length; i++) {
+            if (!(script = element.getAttribute(EVENT_ATTRIBUTES_GRAPHICS[i])).
                 equals("")) {
                 if (interpret == null) {
                     // try to get the intepreter only if we have
@@ -156,10 +224,15 @@ class BridgeEventSupport {
         }
     }
 
+
     public static void updateDOMListener(BridgeContext ctx,
                                          Element element) {
     }
 
+    /**
+     * Is called only for the root element in order to dispatch GVT
+     * events to the DOM.
+     */
     public static void addGVTListener(BridgeContext ctx, Element svgRoot) {
         UserAgent ua = ctx.getUserAgent();
         if (ua != null) {
@@ -263,6 +336,7 @@ class BridgeEventSupport {
                              (int)Math.floor(pos.getY()));
             // compute screen coordinates
             GraphicsNode node = evt.getGraphicsNode();
+            // <!> TODO dispatch it only if pointers-event property ask for
             Element elmt = context.getElement(node);
             if (elmt == null) // should not appeared if binding on
                 return;
@@ -274,7 +348,7 @@ class BridgeEventSupport {
                 if ((evt.BUTTON3_MASK & evt.getModifiers()) != 0)
                     button = 2;
             MouseEvent mevent =
-                // DOM Level 2 6.5 cast form Document to DocumentEvent is ok
+                // DOM Level 2 6.5 cast from Document to DocumentEvent is ok
                 (MouseEvent)org.apache.batik.dom.events.EventSupport.
                 createEvent(org.apache.batik.dom.events.EventSupport.
                             MOUSE_EVENT_TYPE);
