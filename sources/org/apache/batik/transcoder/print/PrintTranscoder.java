@@ -290,16 +290,11 @@ public class PrintTranscoder extends SVGAbstractTranscoder
         // Check hint to know if scaling is really needed
         Boolean scaleToPage = (Boolean)hints.get(KEY_SCALE_TO_PAGE);
         if(scaleToPage != null && !scaleToPage.booleanValue()) {
-            /** I think should fix the off by 1.3333x bug
-                but since I can't print right now I'm leaving 
-                commented out.
-            float pixSzMM = userAgent.getPixelUnitToMillimeter();
-            float pixSzInch = (25.4/pixSzMM);
-            // Printing Graphics is always set up for 72dpi, so
-            // scale to user request.
+            // Printing Graphics is always set up for 72dpi, so scale
+            // according to what user agent thinks it should be.
+            double pixSzMM = userAgent.getPixelUnitToMillimeter();
+            double pixSzInch = (25.4/pixSzMM);
             scale = 72/pixSzInch;
-            ***/
-            scale = 1;
         }
 
         double xMargin = (pageFormat.getImageableWidth() - 
