@@ -92,7 +92,7 @@
 
             <s2 title="Using the source distribution">
             
-                <p>If you downloaded the <link href="installing.html#distributions">source distribution</link> of Batik, you 
+                <p>If you downloaded the <link href="install.html#distributions">source distribution</link> of Batik, you 
                 got a zip or tar file that expanded into a directory called <code>xml-batik</code>. In that directory, you
                 can find build scripts for the platform you are running on. For example, there is 
                 a <code>build.bat</code> script for users of the Windows platform and there is a <code>build.sh</code> script

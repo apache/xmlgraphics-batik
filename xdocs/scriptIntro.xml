@@ -53,7 +53,7 @@
                (<code>js.jar</code> ).  Even if it is the only
                scripting language provided with standard with the Batik
                distribution, other languages such a Python or Tcl can
-               also be <link href="installing.html#optionalComponents">
+               also be <link href="install.html#optionalComponents">
                supported</link>.
            </p>
            <p><strong>Note:</strong>All examples in this section will use 

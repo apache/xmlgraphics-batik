@@ -38,9 +38,9 @@
         </s1>
         <anchor id="runningTheApplication" />
         <s1 title="Running the Font Converter">
-            <p>If you are using the Batik <link href="installing.html#distributions">binary distribution</link>, type the following at the command line:<br/><br />
+            <p>If you are using the Batik <link href="install.html#distributions">binary distribution</link>, type the following at the command line:<br/><br />
             <code>java -jar batik-ttf2svg.jar [options]</code><br /><br />
-            If you are using the Batik <link href="installing.html#distributions">source distribution</link>, type the following at the command line:<br/><br />
+            If you are using the Batik <link href="install.html#distributions">source distribution</link>, type the following at the command line:<br/><br />
             <code>build ttf2svg [options]</code><br /><br />
             In both cases, the options are the same:<br /><br />
             <code>Options: &lt;ttf-path&gt; [-l &lt;range-begin&gt;] [-h &lt;range-end&gt;] [-ascii] [-id &lt;id&gt;] [-o &lt;output-path&gt;] [-testcard]</code><br /><br />
