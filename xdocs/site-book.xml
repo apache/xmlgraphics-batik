@@ -30,7 +30,7 @@
     <page id="license"            label="License"                  source="license.xml"/>
     <external                     label="Download"                 href="http://xml.apache.org/batik/dist" />
     <page id="install"            label="Install"                  source="installing.xml"/>
-    <!-- <page id="batikDemo"          label="Demo"                     source="batikDemo.xml"/> -->
+    <page id="batikDemo"          label="Demo"                     source="batikDemo.xml"/>
     <external                     label="Demo"                     href="batikDemo.html"/>
     <separator/>
 
