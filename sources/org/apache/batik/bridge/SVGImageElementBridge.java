@@ -73,13 +73,13 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
      *
      * @param ctx the bridge context to use
      * @param e the element that describes the graphics node to build
-     * @return a graphics node that represents the specified element 
+     * @return a graphics node that represents the specified element
      */
     public GraphicsNode createGraphicsNode(BridgeContext ctx, Element e) {
-	// 'requiredFeatures', 'requiredExtensions' and 'systemLanguage'
-	if (!SVGUtilities.matchUserAgent(e, ctx.getUserAgent())) {
-	    return null;
-	}
+        // 'requiredFeatures', 'requiredExtensions' and 'systemLanguage'
+        if (!SVGUtilities.matchUserAgent(e, ctx.getUserAgent())) {
+            return null;
+        }
 
         ImageNode imageNode = (ImageNode)super.createGraphicsNode(ctx, e);
 
@@ -166,14 +166,14 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
 
         // bind the specified element and its associated graphics node if needed
         if (ctx.isDynamic()) {
-	    // HACK due to the way images are represented in GVT
-	    ImageNode imgNode = (ImageNode)node;
-	    if (imgNode.getImage() instanceof RasterImageNode) {
-		// register the RasterImageNode instead
-		ctx.bind(e, imgNode.getImage());
-	    } else {
-		ctx.bind(e, node);
-	    }
+            // HACK due to the way images are represented in GVT
+            ImageNode imgNode = (ImageNode)node;
+            if (imgNode.getImage() instanceof RasterImageNode) {
+                // register the RasterImageNode instead
+                ctx.bind(e, imgNode.getImage());
+            } else {
+                ctx.bind(e, node);
+            }
             BridgeEventSupport.addDOMListener(ctx, e);
         }
         SVGUtilities.bridgeChildren(ctx, e);
@@ -199,7 +199,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
      *
      * @param ctx the bridge context
      * @param e the image element
-     * @param uriStr the uri of the image 
+     * @param uriStr the uri of the image
      */
     protected static GraphicsNode createRasterImageNode(BridgeContext ctx,
                                                         Element       e,
@@ -216,21 +216,21 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
             return createSVGImageNode(ctx, e, (SVGDocument)obj);
         }
         node.setImage(img);
-	Rectangle2D imgBounds = img.getBounds2D();
-	node.setImageBounds(imgBounds);
+        Rectangle2D imgBounds = img.getBounds2D();
+        node.setImageBounds(imgBounds);
         Rectangle2D bounds = getImageBounds(ctx, e);
 
-	// create the implicit viewBox for the raster image. The viewBox for a
-	// raster image is the size of the image
-	float [] vb = new float[4];
-	vb[0] = 0; // x
-	vb[1] = 0; // y
-	vb[2] = (float)imgBounds.getWidth(); // width
-	vb[3] = (float)imgBounds.getHeight(); // height
+        // create the implicit viewBox for the raster image. The viewBox for a
+        // raster image is the size of the image
+        float [] vb = new float[4];
+        vb[0] = 0; // x
+        vb[1] = 0; // y
+        vb[2] = (float)imgBounds.getWidth(); // width
+        vb[3] = (float)imgBounds.getHeight(); // height
 
-	// handles the 'preserveAspectRatio', 'overflow' and 'clip' and sets the
-	// appropriate AffineTransform to the image node
-	initializeViewport(ctx, e, node, vb, bounds);
+        // handles the 'preserveAspectRatio', 'overflow' and 'clip' and sets the
+        // appropriate AffineTransform to the image node
+        initializeViewport(ctx, e, node, vb, bounds);
 
         return node;
     }
@@ -258,83 +258,84 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
 
         SVGSVGElement svgElement = imgDocument.getRootElement();
         GraphicsNode node = ctx.getGVTBuilder().build(ctx, svgElement);
-	// HACK: remove the clip set by the SVGSVGElement as the overflow
-	// and clip properties must be ignored. The clip will be set later
-	// using the overflow and clip of the <image> element.
-	node.setClip(null);
+        // HACK: remove the clip set by the SVGSVGElement as the overflow
+        // and clip properties must be ignored. The clip will be set later
+        // using the overflow and clip of the <image> element.
+        node.setClip(null);
         result.getChildren().add(node);
 
-	// create the implicit viewBox for the SVG image. The viewBox for a
-	// SVG image is the viewBox of the outermost SVG element of the SVG file
-	String viewBox = 
-	    svgElement.getAttributeNS(null, SVG_VIEW_BOX_ATTRIBUTE);
-	float [] vb = ViewBox.parseViewBoxAttribute(e, viewBox);
-	
-	// handles the 'preserveAspectRatio', 'overflow' and 'clip' and sets the
-	// appropriate AffineTransform to the image node
-        Rectangle2D bounds = getImageBounds(ctx, e);
-	initializeViewport(ctx, e, result, vb, bounds);
+        // create the implicit viewBox for the SVG image. The viewBox for a
+        // SVG image is the viewBox of the outermost SVG element of the SVG file
+        String viewBox =
+            svgElement.getAttributeNS(null, SVG_VIEW_BOX_ATTRIBUTE);
+        float [] vb = ViewBox.parseViewBoxAttribute(e, viewBox);
 
-	// add a listener on the outermost svg element of the SVG image.
-	// if an event occured inside the SVG image document, send it
-	// to the <image> element (inside the original document).
-	if (ctx.isDynamic()) {
-	    EventListener listener = new ForwardEventListener(svgElement, e);
-	    EventTarget target = (EventTarget)svgElement;
-	    target.addEventListener(SVG_EVENT_CLICK, listener, false);
-	    target.addEventListener(SVG_EVENT_MOUSEOVER, listener, false);
-	    target.addEventListener(SVG_EVENT_MOUSEOUT, listener, false);
-	}
+        // handles the 'preserveAspectRatio', 'overflow' and 'clip' and sets the
+        // appropriate AffineTransform to the image node
+        Rectangle2D bounds = getImageBounds(ctx, e);
+        initializeViewport(ctx, e, result, vb, bounds);
+
+        // add a listener on the outermost svg element of the SVG image.
+        // if an event occured inside the SVG image document, send it
+        // to the <image> element (inside the original document).
+        if (ctx.isDynamic()) {
+            EventListener listener = new ForwardEventListener(svgElement, e);
+            EventTarget target = (EventTarget)svgElement;
+            target.addEventListener(SVG_EVENT_CLICK, listener, false);
+            target.addEventListener(SVG_EVENT_MOUSEOVER, listener, false);
+            target.addEventListener(SVG_EVENT_MOUSEOUT, listener, false);
+        }
 
         return result;
     }
 
     /**
      * A simple DOM listener to forward events from the SVG image document to
-     * the original document.  
+     * the original document.
      */
     protected static class ForwardEventListener implements EventListener {
 
-	/**
-	 * The root element of the SVG image.
-	 */
-	protected Element svgElement;
+        /**
+         * The root element of the SVG image.
+         */
+        protected Element svgElement;
 
-	/**
-	 * The image element.
-	 */
-	protected Element imgElement;
+        /**
+         * The image element.
+         */
+        protected Element imgElement;
 
-	/**
-	 * Constructs a new <tt>ForwardEventListener</tt>
-	 */
-	public ForwardEventListener(Element svgElement, Element imgElement) {
-	    this.svgElement = svgElement;
-	    this.imgElement = imgElement;
-	}
-	
+        /**
+         * Constructs a new <tt>ForwardEventListener</tt>
+         */
+        public ForwardEventListener(Element svgElement, Element imgElement) {
+            this.svgElement = svgElement;
+            this.imgElement = imgElement;
+        }
+
         public void handleEvent(Event e) {
             MouseEvent evt = (MouseEvent) e;
             MouseEvent newMouseEvent = (MouseEvent)
                 // DOM Level 2 6.5 cast from Document to DocumentEvent is ok
                 ((DocumentEvent)imgElement.getOwnerDocument()).createEvent("MouseEvents");
-            newMouseEvent.initMouseEvent(evt.getType(), 
-					 evt.getBubbles(), 
-					 evt.getCancelable(), 
-					 evt.getView(),
-					 evt.getDetail(),
-					 evt.getScreenX(), 
-					 evt.getScreenY(),
-					 evt.getClientX(),
-					 evt.getClientY(),
-					 evt.getCtrlKey(), 
-					 evt.getAltKey(),
-					 evt.getShiftKey(), 
-					 evt.getMetaKey(),
-					 evt.getButton(), 
-					 (EventTarget)imgElement);
-	    ((EventTarget)imgElement).dispatchEvent(newMouseEvent);
-	}
+
+            newMouseEvent.initMouseEvent(evt.getType(),
+                                         evt.getBubbles(),
+                                         evt.getCancelable(),
+                                         evt.getView(),
+                                         evt.getDetail(),
+                                         evt.getScreenX(),
+                                         evt.getScreenY(),
+                                         evt.getClientX(),
+                                         evt.getClientY(),
+                                         evt.getCtrlKey(),
+                                         evt.getAltKey(),
+                                         evt.getShiftKey(),
+                                         evt.getMetaKey(),
+                                         evt.getButton(),
+                                         (EventTarget)imgElement);
+            ((EventTarget)imgElement).dispatchEvent(newMouseEvent);
+        }
     }
 
     /**
@@ -347,14 +348,14 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
      * @param e the image element that defines the properties
      * @param node the graphics node
      * @param vb the implicit viewBox definition
-     * @param bounds the bounds of the image element 
+     * @param bounds the bounds of the image element
      */
     protected static void initializeViewport(BridgeContext ctx,
-					     Element e,
-					     GraphicsNode node,
-					     float [] vb,
-					     Rectangle2D bounds) {
-	
+                                             Element e,
+                                             GraphicsNode node,
+                                             float [] vb,
+                                             Rectangle2D bounds) {
+
         float x = (float)bounds.getX();
         float y = (float)bounds.getY();
         float w = (float)bounds.getWidth();
@@ -384,13 +385,13 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
         }
 
         if (clip != null) {
-	    try {
-		at = at.createInverse(); // clip in user space
-		Filter filter = node.getGraphicsNodeRable();
-		clip = at.createTransformedShape(clip);
-		node.setClip(new ClipRable8Bit(filter, clip));
-	    } catch (java.awt.geom.NoninvertibleTransformException ex) {}
-	}
+            try {
+                at = at.createInverse(); // clip in user space
+                Filter filter = node.getGraphicsNodeRable();
+                clip = at.createTransformedShape(clip);
+                node.setClip(new ClipRable8Bit(filter, clip));
+            } catch (java.awt.geom.NoninvertibleTransformException ex) {}
+        }
     }
 
     /**
