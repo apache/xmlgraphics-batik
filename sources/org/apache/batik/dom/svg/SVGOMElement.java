@@ -23,6 +23,7 @@ import org.apache.batik.css.HiddenChildElementSupport;
 import org.apache.batik.dom.AbstractAttr;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.AbstractElement;
+import org.apache.batik.dom.events.NodeEventTarget;
 import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.dom.util.HashTable;
 import org.apache.batik.util.SVGConstants;
@@ -91,6 +92,15 @@ public abstract class SVGOMElement
         ownerDocument = owner;
         setPrefix(prefix);
 	initializeAttributes();
+    }
+
+    /**
+     * Implements {@link
+     * org.apache.batik.dom.events.NodeEventTarget#getParentNodeEventTarget()}.
+     */
+    public NodeEventTarget getParentNodeEventTarget() {
+        return (NodeEventTarget)
+            HiddenChildElementSupport.getParentElement(this);
     }
 
     /**
