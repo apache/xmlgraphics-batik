@@ -57,7 +57,7 @@
     <page id="svggen"             label="Generator"                source="svggen.xml" />
     <page id="domapi"             label="DOM API"                  source="domTutorial.xml" />
     <page id="scripting"          label="Scripting"                source="scriptIntro.xml" />
-    <page id="svgcanvas"          label="SVG Bean"                 source="jsvgcanvas.xml" />
+    <page id="svgcanvas"          label="JSVGCanvas"                 source="jsvgcanvas.xml" />
     <page id="rasterizerTutorial" label="Transcoder API"           source="rasterizerTutorial.xml"/>
     <separator/>
     <page id="extendingBatik"     label="Extensions"               source="extendingBatik.xml" />
