@@ -227,7 +227,7 @@ public abstract class AbstractDocument
                 Element e = createElementNS(importedNode.getNamespaceURI(),
                                             importedNode.getNodeName());
                 result = e;
-                if (e.hasAttributes()) {
+                if (importedNode.hasAttributes()) {
                     NamedNodeMap attr = importedNode.getAttributes();
                     int len = attr.getLength();
                     for (int i = 0; i < len; i++) {
