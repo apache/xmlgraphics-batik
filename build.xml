@@ -232,7 +232,10 @@ To display the available targets type:
           description="Compiles the tests infrastructure source files">
     <mkdir dir="${dest}"/>
 
-    <javac srcdir="${testsrc}" destdir="${dest}" deprecation="on" >
+    <echo message="debug ${debug}, optimize ${optimize}, deprecation ${deprecation}"/>
+
+    <javac srcdir="${testsrc}" destdir="${dest}"  deprecation="${deprecation}" 
+           debug="${debug}" optimize="${optimize}" >
       <classpath>
         <pathelement location="${dest}" />
         <path refid="libs-classpath"/>
