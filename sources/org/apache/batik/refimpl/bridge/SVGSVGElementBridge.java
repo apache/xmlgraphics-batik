@@ -51,33 +51,57 @@ public class SVGSVGElementBridge implements GraphicsNodeBridge, SVGConstants {
                                               cssDecl);
         CanvasGraphicsNode node
             = ctx.getGVTFactory().createCanvasGraphicsNode();
-        float x = 0;
-        float y = 0;
+        float x;
+        float y;
         float w;
         float h;
         String s;
         if (svgElement.getOwnerSVGElement() != null) {
+            // parse the x attribute, (default is 0)
             s = svgElement.getAttributeNS(null, ATTR_X);
-            x = UnitProcessor.svgToUserSpace(s,
-                                             svgElement,
-                                             UnitProcessor.HORIZONTAL_LENGTH,
-                                             uctx);
+            x = 0;
+            if (s.length() != 0) {
+                x = UnitProcessor.svgToUserSpace(s,
+                                                 svgElement,
+                                                UnitProcessor.HORIZONTAL_LENGTH,
+                                                 uctx);
+            }
+
+            // parse the y attribute, (default is 0)
             s = svgElement.getAttributeNS(null, ATTR_Y);
-            y = UnitProcessor.svgToUserSpace(s,
-                                             svgElement,
-                                             UnitProcessor.VERTICAL_LENGTH,
-                                             uctx);
+            y = 0;
+            if (s.length() != 0) {
+                y = UnitProcessor.svgToUserSpace(s,
+                                                 svgElement,
+                                                 UnitProcessor.VERTICAL_LENGTH,
+                                                 uctx);
+            }
+        } else {
+            x = 0;
+            y = 0;
         }
+
+        // parse the width attribute (default is 100%)
         s = svgElement.getAttributeNS(null, ATTR_WIDTH);
+        if (s.length() == 0) {
+            s = "100%";
+        }
         w = UnitProcessor.svgToUserSpace(s,
                                          svgElement,
                                          UnitProcessor.HORIZONTAL_LENGTH,
                                          uctx);
+
+        // parse the height attribute (default is 100%)
         s = svgElement.getAttributeNS(null, ATTR_HEIGHT);
+        if (s.length() == 0) {
+            s = "100%";
+        }
         h = UnitProcessor.svgToUserSpace(s,
                                          svgElement,
                                          UnitProcessor.VERTICAL_LENGTH,
                                          uctx);
+
+        // parse the tranform attribute
         AffineTransform at;
         at = SVGUtilities.getPreserveAspectRatioTransform
             (svgElement, w, h, ctx.getParserFactory());

@@ -21,6 +21,8 @@ import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeMutationEvent;
 import org.apache.batik.bridge.DocumentLoader;
 import org.apache.batik.bridge.GraphicsNodeBridge;
+import org.apache.batik.bridge.IllegalAttributeValueException;
+import org.apache.batik.bridge.MissingAttributeException;
 import org.apache.batik.bridge.Viewport;
 
 import org.apache.batik.dom.svg.SVGOMDocument;
@@ -38,6 +40,7 @@ import org.apache.batik.gvt.filter.Mask;
 
 import org.apache.batik.parser.AWTTransformProducer;
 
+import org.apache.batik.refimpl.bridge.resources.Messages;
 import org.apache.batik.refimpl.gvt.filter.ConcreteClipRable;
 import org.apache.batik.refimpl.gvt.filter.RasterRable;
 
@@ -75,14 +78,15 @@ public class SVGImageElementBridge implements GraphicsNodeBridge,
 
         String uriStr = XLinkSupport.getXLinkHref(svgElement);
         // nothing referenced.
-        if (uriStr == null) {
-            return null;
+        if (uriStr.length() == 0) {
+            throw new MissingAttributeException(
+                Messages.formatMessage("image.xlinkHref.required", null));
         }
         // bad URL type
-        if (uriStr.indexOf('#') != -1)
-            throw new IllegalArgumentException
-                ("<image> element can not reference elements within a URL: " +
-                 uriStr);
+        if (uriStr.indexOf('#') != -1) {
+            throw new IllegalAttributeValueException(
+                Messages.formatMessage("image.xlinkHref.invalid", null));
+        }
 
         GraphicsNode node = null;
         try {
@@ -102,18 +106,19 @@ public class SVGImageElementBridge implements GraphicsNodeBridge,
                         SVGDocument imgDocument = (SVGDocument)n;
                         node=createSVGImageNode(ctx, svgElement, imgDocument);
                     }
-                } catch (Exception ex) { }
+                } catch (Exception ex) { /* Nothing to do */ }
                 if (node == null) {
                     // try to load the image as a raster image (JPG or PNG)
                     node = createRasterImageNode(ctx, svgElement, url);
                 }
             }
-        } catch (MalformedURLException ex) {
-            ex.printStackTrace();
-            throw new IllegalArgumentException("Malformed URL: "+uriStr);
+        } catch(MalformedURLException ex) {
+            throw new IllegalAttributeValueException(
+                Messages.formatMessage("image.xlinkHref.badURL", null));
         }
         if (node == null) {
-            throw new Error("Unreconized image format URL:"+uriStr);
+            throw new IllegalAttributeValueException(
+                Messages.formatMessage("image.xlinkHref.badImageType", null));
         }
         ImageNode imgNode = ctx.getGVTFactory().createImageNode();
         imgNode.setImage(node);
@@ -148,8 +153,6 @@ public class SVGImageElementBridge implements GraphicsNodeBridge,
 
         // <!> TODO only when binding is enabled
         BridgeEventSupport.addDOMListener(ctx, element);
-
-
     }
 
     protected GraphicsNode createBase64ImageNode(BridgeContext ctx,
@@ -241,27 +244,59 @@ public class SVGImageElementBridge implements GraphicsNodeBridge,
         UnitProcessor.Context uctx
             = new DefaultUnitProcessorContext(ctx, cssDecl);
 
-        String s;
-        s = svgElement.getAttributeNS(null, ATTR_X);
-        float x = UnitProcessor.svgToUserSpace(s,
-                                               svgElement,
-                                               UnitProcessor.HORIZONTAL_LENGTH,
-                                               uctx);
+        // parse the x attribute, (default is 0)
+        String s = svgElement.getAttributeNS(null, ATTR_X);
+        float x = 0;
+        if (s.length() != 0) {
+            x = UnitProcessor.svgToUserSpace(s,
+                                             svgElement,
+                                             UnitProcessor.HORIZONTAL_LENGTH,
+                                             uctx);
+        }
+
+        // parse the x attribute, (default is 0)
         s = svgElement.getAttributeNS(null, ATTR_Y);
-        float y = UnitProcessor.svgToUserSpace(s,
-                                               svgElement,
-                                               UnitProcessor.VERTICAL_LENGTH,
-                                               uctx);
+        float y = 0;
+        if (s.length() != 0) {
+            y = UnitProcessor.svgToUserSpace(s,
+                                             svgElement,
+                                             UnitProcessor.VERTICAL_LENGTH,
+                                             uctx);
+        }
+
+        // parse the width attribute, (required and must be positive)
         s = svgElement.getAttributeNS(null, ATTR_WIDTH);
-        float w = UnitProcessor.svgToUserSpace(s,
-                                               svgElement,
-                                               UnitProcessor.HORIZONTAL_LENGTH,
-                                               uctx);
+        float w;
+        if (s.length() == 0) {
+            throw new MissingAttributeException(
+                Messages.formatMessage("image.width.required", null));
+        } else {
+            w = UnitProcessor.svgToUserSpace(s,
+                                             svgElement,
+                                             UnitProcessor.HORIZONTAL_LENGTH,
+                                             uctx);
+            if (w < 0) {
+                throw new IllegalAttributeValueException(
+                    Messages.formatMessage("image.width.negative", null));
+            }
+        }
+
+        // parse the height attribute, (required and must be positive)
         s = svgElement.getAttributeNS(null, ATTR_HEIGHT);
-        float h = UnitProcessor.svgToUserSpace(s,
-                                               svgElement,
-                                               UnitProcessor.VERTICAL_LENGTH,
-                                               uctx);
+        float h;
+        if (s.length() == 0) {
+            throw new MissingAttributeException(
+                Messages.formatMessage("image.height.required", null));
+        } else {
+            h = UnitProcessor.svgToUserSpace(s,
+                                             svgElement,
+                                             UnitProcessor.VERTICAL_LENGTH,
+                                             uctx);
+            if (h < 0) {
+                throw new IllegalAttributeValueException(
+                    Messages.formatMessage("image.height.negative", null));
+            }
+        }
 
         return new Rectangle2D.Float(x, y, w, h);
     }
