@@ -78,8 +78,8 @@ public class GlyphLayout implements TextSpanLayout {
      * @param x the x position of the rendered layout origin.
      * @param y the y position of the rendered layout origin.
      */
-    public void draw(Graphics2D g2d, float x, float y) {
-        g2d.drawGlyphVector(gv, x, y);
+    public void draw(Graphics2D g2d) {
+        g2d.drawGlyphVector(gv, 0f, 0f);
     }
 
     /**
@@ -87,16 +87,28 @@ public class GlyphLayout implements TextSpanLayout {
      * by an AffineTransform.
      * @param t an AffineTransform to apply to the outline before returning it.
      */
-    public Shape getOutline(AffineTransform t) {
-        Shape s;
+    public Shape getOutline() {
+        return gv.getOutline(0f, 0f);
+    }
 
-        if (t.getType() == AffineTransform.TYPE_TRANSLATION) {
-           s = gv.getOutline((float) t.getTranslateX(),
-                             (float) t.getTranslateY());
-        } else {
-           s = t.createTransformedShape(gv.getOutline(0f, 0f));
-        }
-        return s;
+    /**
+     * Returns the current text position at the beginning
+     * of glyph layout, before the application of explicit
+     * glyph positioning attributes.
+     */
+    public Point2D getOffset() {
+        return offset;
+    }
+
+    /**
+     * Sets the text position used for the implicit origin
+     * of glyph layout. Ignored if multiple explicit glyph
+     * positioning attributes are present in ACI
+     * (e.g. if the aci has multiple X or Y values).
+     */
+    public void setOffset(Point2D offset) {
+        System.out.println("Offset set to "+offset);
+        this.offset = offset;
     }
 
     /**
@@ -106,9 +118,8 @@ public class GlyphLayout implements TextSpanLayout {
      *     included in this shape.  May be the result of "OR-ing" several
      *     values together:
      * e.g. <tt>DECORATION_UNDERLINE | DECORATION_STRIKETHROUGH</tt>
-     * @param t an AffineTransform to apply to the outline before returning it.
      */
-    public Shape getDecorationOutline(int decorationType, AffineTransform t) {
+    public Shape getDecorationOutline(int decorationType) {
         GeneralPath g = new GeneralPath();
         if ((decorationType & DECORATION_UNDERLINE) != 0) {
              g.append(getUnderlineShape(), false);
@@ -119,7 +130,7 @@ public class GlyphLayout implements TextSpanLayout {
         if ((decorationType & DECORATION_OVERLINE) != 0) {
              g.append(getOverlineShape(), false);
         }
-        return t.createTransformedShape(g);
+        return g;
     }
 
     /**
@@ -136,7 +147,7 @@ public class GlyphLayout implements TextSpanLayout {
     public Rectangle2D getDecoratedBounds() {
         return getBounds().createUnion(
             getDecorationOutline(
-                DECORATION_ALL, new AffineTransform()).getBounds2D());
+                DECORATION_ALL).getBounds2D());
     }
 
     /**

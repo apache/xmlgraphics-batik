@@ -36,8 +36,7 @@ import org.apache.batik.gvt.text.TextSpanLayout;
  * More sophisticated implementation of TextPainter which
  * renders the attributed character iterator of a <tt>TextNode</tt>.
  * <em>StrokingTextPainter includes support for stroke, fill, opacity,
- * text-decoration, and other attributes, but does not handle
- * explicit per-glyph positioning.</em>
+ * text-decoration, and other attributes.</em>
  * @see org.apache.batik.gvt.TextPainter
  * @see org.apache.batik.gvt.text.GVTAttributedCharacterIterator
  *
@@ -68,11 +67,10 @@ public class StrokingTextPainter extends BasicTextPainter {
 
         FontRenderContext frc = context.getFontRenderContext();
         AttributedCharacterIterator aci = node.getAttributedCharacterIterator();
-        Point2D location = node.getLocation();
-        TextNode.Anchor anchor = node.getAnchor();
         List textRuns = new ArrayList();
         double xadvance = 0d;
         Point2D advance = new Point2D.Float(0f, 0f);
+        int i=0;
 
         aci.first();
         /*
@@ -81,57 +79,94 @@ public class StrokingTextPainter extends BasicTextPainter {
          * accumulate an overall advance for the text display.
          */
         while (aci.current() != CharacterIterator.DONE) {
+            int beginChunk = i;
+            int endChunk = beginChunk;
+            AttributedCharacterIterator runaci;
 
-            int start = aci.getRunStart(extendedAtts);
-            int end = aci.getRunLimit(extendedAtts);
+            do {
+                ++endChunk;
+                int start = aci.getRunStart(extendedAtts);
+                int end = aci.getRunLimit(extendedAtts);
 
-            AttributedCharacterIterator runaci =
+                runaci =
                     new AttributedCharacterSpanIterator(aci, start, end);
 
-            TextSpanLayout layout = getTextLayoutFactory().createTextLayout(runaci, advance, frc);
+                Point2D location = node.getLocation();
 
-            if (layout.isVertical()) {
-                AttributedString as = new AttributedString(runaci);
-                if (runaci.getAttribute(GVTAttributedCharacterIterator.
+                Point2D offset = new Point2D.Float(
+                   (float) (location.getX()+advance.getX()), 
+                   (float) (location.getY()+advance.getY()));
+
+                TextSpanLayout layout = getTextLayoutFactory().
+                                       createTextLayout(runaci, offset, frc);
+
+                if (layout.isVertical()) {
+                    AttributedString as = new AttributedString(runaci);
+                    if (runaci.getAttribute(GVTAttributedCharacterIterator.
                                         TextAttribute.UNDERLINE) != null) {
-                    as.addAttribute(TextAttribute.UNDERLINE,
+                        as.addAttribute(TextAttribute.UNDERLINE,
                                     TextAttribute.UNDERLINE_ON);
-                }
-                if (runaci.getAttribute(GVTAttributedCharacterIterator.
+                    }
+                    if (runaci.getAttribute(GVTAttributedCharacterIterator.
                                         TextAttribute.STRIKETHROUGH) != null) {
-                    as.addAttribute(TextAttribute.STRIKETHROUGH,
+                        as.addAttribute(TextAttribute.STRIKETHROUGH,
                                     TextAttribute.STRIKETHROUGH_ON);
+                    }
+                    runaci = as.getIterator();
                 }
-                runaci = as.getIterator();
-            }
 
-            TextRun run = new TextRun(layout, runaci);
+                TextRun run = new TextRun(layout, runaci);
 
-            textRuns.add(run);
+                textRuns.add(run);
 
-            Point2D layoutAdvance = layout.getAdvance2D();
-            advance = new Point2D.Float(
-                       (float) (advance.getX()+layoutAdvance.getX()), 
+                Point2D layoutAdvance = layout.getAdvance2D();
+                advance = new Point2D.Float(
+                       (float) (advance.getX()+layoutAdvance.getX()),
                        (float) (advance.getY()+layoutAdvance.getY()));
 
-            xadvance = advance.getX();
+                ++i;
 
-            // FIXME: not BIDI compliant yet!
+                if (aci.setIndex(end) == CharacterIterator.DONE) break;
 
-            aci.setIndex(end);
-        }
+            } while (runaci.getAttribute(
+                     GVTAttributedCharacterIterator.TextAttribute.X) == null);
 
-        double x = 0d;
-        double y = 0d;
+            for (int n=beginChunk; n<endChunk; ++n) {
 
-        // XXX: horizontal layouts only!
+                TextRun r = (TextRun) textRuns.get(n);
+                runaci = r.getACI();
 
-        switch(anchor.getType()){
-        case TextNode.Anchor.ANCHOR_MIDDLE:
-            x = -xadvance/2d;
-            break;
-        case TextNode.Anchor.ANCHOR_END:
-            x = -xadvance;
+                int anchorType = r.getAnchorType();
+
+                float dx = 0f;
+                float dy = 0f;
+
+                switch(anchorType){
+                case TextNode.Anchor.ANCHOR_MIDDLE:
+                    dx = (float) (-advance.getX()/2d);
+                    dy = (float) (-advance.getY()/2d);
+                    break;
+                case TextNode.Anchor.ANCHOR_END:
+                    dx = (float) (-advance.getX());
+                    dy = (float) (-advance.getY());
+                    break;
+                default:
+                    // leave untouched
+                }
+
+                TextSpanLayout layout = r.getLayout();
+                Point2D offset = layout.getOffset();
+
+                if (layout.isVertical()) {
+                    layout.setOffset(new Point2D.Float(
+                                         (float) offset.getX(), 
+                                         (float) offset.getY()+dy));
+                } else {
+                    layout.setOffset(new Point2D.Float(
+                                        (float) offset.getX()+dx, 
+                                        (float) offset.getY()));
+                }
+            }
         }
 
         /*
@@ -139,18 +174,12 @@ public class StrokingTextPainter extends BasicTextPainter {
          * we render each of the TextLayout glyphsets
          * in turn.
          */
-        for (int i=0; i<textRuns.size(); ++i) {
+        for (i=0; i<textRuns.size(); ++i) {
             TextRun textRun = (TextRun) textRuns.get(i);
             AttributedCharacterIterator runaci = textRun.getACI();
             TextSpanLayout layout = textRun.getLayout();
             runaci.first();
-            //System.out.print("Painting text: ");
-            //for (int j=runaci.getBeginIndex(); j<runaci.getEndIndex(); ++j) {
-            //    System.out.print(runaci.setIndex(j));
-            //}
-            //System.out.println("");
-            runaci.first();
-
+ 
             Composite opacity = (Composite)
                       runaci.getAttribute(GVTAttributedCharacterIterator.
                                                   TextAttribute.OPACITY);
@@ -165,21 +194,18 @@ public class StrokingTextPainter extends BasicTextPainter {
             // paint over-and-underlines first, then layer glyphs over them
 
             if (underline && !layout.isVertical()) {
-                paintUnderline(textRun, location, x, g2d);
+                paintUnderline(textRun, g2d);
             }
             boolean overline =
                 (runaci.getAttribute(GVTAttributedCharacterIterator.
                                      TextAttribute.OVERLINE) != null);
 
             if (overline && !layout.isVertical()) {
-                paintOverline(textRun, location, x, g2d);
+                paintOverline(textRun, g2d);
             }
 
 
-            AffineTransform tx = AffineTransform.getTranslateInstance(
-                                        location.getX() + x, 
-                                        location.getY() + y);
-            Shape outline = layout.getOutline(tx);
+            Shape outline = layout.getOutline();
 
             // check if we need to fill this glyph
             Paint paint = (Paint)
@@ -206,28 +232,22 @@ public class StrokingTextPainter extends BasicTextPainter {
                             TextAttribute.STRIKETHROUGH_ON);
             // paint strikethrough last
             if (strikethrough && !layout.isVertical()) {
-                paintStrikethrough(textRun, location, x, g2d);
+                paintStrikethrough(textRun, g2d);
             }
         }
 
-        // FIXME: Finish implementation!
-        // (Currently only understands STROKE, STROKE_PAINT, UNDERLINE atts,
-        // FOREGROUND, OVERLINE)
         // TODO: FONT_VARIANT, SUPERSCRIPT, SUBSCRIPT...
     }
 
     /**
      * Paints the overline for a given ACI.
      */
-    private void paintOverline(TextRun textRun, Point2D location,
-                     double xoffset, Graphics2D g2d) {
+    private void paintOverline(TextRun textRun, Graphics2D g2d) {
         AttributedCharacterIterator runaci = textRun.getACI();
         TextSpanLayout layout = textRun.getLayout();
         java.awt.Shape overlineShape =
                 layout.getDecorationOutline(
-                           TextSpanLayout.DECORATION_OVERLINE,
-                              AffineTransform.getTranslateInstance(
-                                  location.getX()+xoffset, location.getY()));
+                           TextSpanLayout.DECORATION_OVERLINE);
 
         Paint paint = (Paint) runaci.getAttribute(
             TextAttribute.FOREGROUND);
@@ -252,16 +272,13 @@ public class StrokingTextPainter extends BasicTextPainter {
      * internal underlining but computes the underline manually, allowing
      * the underline fill and stroke to differ from that of the text glyphs.
      */
-    private void paintUnderline(TextRun textRun, Point2D location,
-                    double xoffset, Graphics2D g2d) {
+    private void paintUnderline(TextRun textRun, Graphics2D g2d) {
 
         AttributedCharacterIterator runaci = textRun.getACI();
         TextSpanLayout layout = textRun.getLayout();
 
         Shape underlineShape = layout.getDecorationOutline(
-                           TextSpanLayout.DECORATION_UNDERLINE,
-                              AffineTransform.getTranslateInstance(
-                                  location.getX()+xoffset, location.getY()));
+                           TextSpanLayout.DECORATION_UNDERLINE);
 
         // TODO: change getAdvance to getVisibleAdvance for
         // ACIs which do not inherit their underline attribute
@@ -292,17 +309,14 @@ public class StrokingTextPainter extends BasicTextPainter {
      * rely on TextLayout's
      * internal strikethrough but computes it manually.
      */
-    private void paintStrikethrough(TextRun textRun, Point2D location,
-                     double xoffset, Graphics2D g2d) {
+    private void paintStrikethrough(TextRun textRun, Graphics2D g2d) {
 
         AttributedCharacterIterator runaci = textRun.getACI();
         TextSpanLayout layout = textRun.getLayout();
 
         java.awt.Shape strikethroughShape =
                 layout.getDecorationOutline(
-                           TextSpanLayout.DECORATION_STRIKETHROUGH,
-                              AffineTransform.getTranslateInstance(
-                                  location.getX()+xoffset, location.getY()));
+                           TextSpanLayout.DECORATION_STRIKETHROUGH);
 
         Paint paint = (Paint) runaci.getAttribute(
             TextAttribute.FOREGROUND);
@@ -328,16 +342,27 @@ public class StrokingTextPainter extends BasicTextPainter {
     class TextRun {
         private AttributedCharacterIterator aci;
         private TextSpanLayout layout;
+        private int anchorType;
 
         public TextRun(TextSpanLayout layout, AttributedCharacterIterator aci) {
             this.layout = layout;
             this.aci = aci;
+            TextNode.Anchor anchor = (TextNode.Anchor) aci.getAttribute(
+                     GVTAttributedCharacterIterator.TextAttribute.ANCHOR_TYPE);
+            anchorType = TextNode.Anchor.ANCHOR_START;
+            if (anchor != null) anchorType = anchor.getType();
         }
+
         public AttributedCharacterIterator getACI() {
             return aci;
         }
+
         public TextSpanLayout getLayout() {
             return layout;
+        }
+
+        public int getAnchorType() {
+            return anchorType;
         }
 
     }

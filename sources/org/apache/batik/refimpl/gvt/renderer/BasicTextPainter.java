@@ -56,27 +56,13 @@ public class BasicTextPainter implements TextPainter {
 
         FontRenderContext frc = context.getFontRenderContext();
         AttributedCharacterIterator aci = node.getAttributedCharacterIterator();
-        Point2D location = node.getLocation();
-        TextNode.Anchor anchor = node.getAnchor();
-
         /* XXX:  The code below only
          *     works for J2SE base implementation of AttributeCharacterIterator
          */
-        TextSpanLayout layout = getTextLayoutFactory().
-                       createTextLayout(aci, new Point2D.Float(0f, 0f), frc);
 
-        float advance = layout.getAdvance();
-        float tx = 0f;
+        TextSpanLayout layout = getOffsetAdjustedTextLayout(aci, frc);
 
-        switch(anchor.getType()){
-        case TextNode.Anchor.ANCHOR_MIDDLE:
-            tx = -advance/2;
-            break;
-        case TextNode.Anchor.ANCHOR_END:
-            tx = -advance;
-        }
-        layout.draw(g2d, (float)(location.getX() + tx),
-                         (float)location.getY());
+        layout.draw(g2d);
     }
 
     private static TextLayoutFactory textLayoutFactory =
@@ -87,7 +73,7 @@ public class BasicTextPainter implements TextPainter {
     }
 
     /**
-     * Given an X, y coordinate, text anchor type,
+     * Given an X, y coordinate,
      * AttributedCharacterIterator, and GraphicsNodeRenderContext,
      * return a Mark which encapsulates a "selection start" action.
      * The standard order of method calls for selection is:
@@ -95,17 +81,16 @@ public class BasicTextPainter implements TextPainter {
      */
     public org.apache.batik.gvt.text.Mark selectAt(double x, double y,
                          AttributedCharacterIterator aci,
-                         TextNode.Anchor anchor,
                          GraphicsNodeRenderContext context) {
 
         org.apache.batik.gvt.text.Mark
-              newMark = hitTest(x, y, aci, anchor, context);
+              newMark = hitTest(x, y, aci, context);
         cachedHit = null;
         return newMark;
     }
 
     /**
-     * Given an X, y coordinate, text anchor type, starting Mark,
+     * Given an X, y coordinate, starting Mark,
      * AttributedCharacterIterator, and GraphicsNodeRenderContext,
      * return a Mark which encapsulates a "selection continued" action.
      * The standard order of method calls for selection is:
@@ -114,10 +99,9 @@ public class BasicTextPainter implements TextPainter {
     public org.apache.batik.gvt.text.Mark selectTo(double x, double y,
                             org.apache.batik.gvt.text.Mark beginMark,
                             AttributedCharacterIterator aci,
-                            TextNode.Anchor anchor,
                             GraphicsNodeRenderContext context) {
         org.apache.batik.gvt.text.Mark newMark =
-             hitTest(x, y, aci, anchor, context);
+             hitTest(x, y, aci, context);
 
         return newMark;
     }
@@ -129,10 +113,9 @@ public class BasicTextPainter implements TextPainter {
      */
     public org.apache.batik.gvt.text.Mark selectAll(double x, double y,
                             AttributedCharacterIterator aci,
-                            TextNode.Anchor anchor,
                             GraphicsNodeRenderContext context) {
         org.apache.batik.gvt.text.Mark newMark =
-                              hitTest(x, y, aci, anchor, context);
+                              hitTest(x, y, aci, context);
         return newMark;
     }
 
@@ -194,8 +177,7 @@ public class BasicTextPainter implements TextPainter {
      * an instance of this enclosing TextPainter implementation.</em>
      */
     public Shape getHighlightShape(org.apache.batik.gvt.text.Mark beginMark,
-                                   org.apache.batik.gvt.text.Mark endMark,
-                                   Point2D location, TextNode.Anchor anchor) {
+                                   org.apache.batik.gvt.text.Mark endMark) {
 
         // TODO: later we can return more complex things like
         // noncontiguous selections
@@ -241,16 +223,6 @@ public class BasicTextPainter implements TextPainter {
                                     firsthit,
                                     lasthit);
 
-            double tx = location.getX();
-            double ty = location.getY();
-            if (anchor == TextNode.Anchor.MIDDLE) {
-                tx -= layout.getAdvance()/2;
-            } else if (anchor == TextNode.Anchor.END) {
-                tx -= layout.getAdvance();
-            }
-            AffineTransform t =
-                    AffineTransform.getTranslateInstance(tx, ty);
-            highlightShape = t.createTransformedShape(highlightShape);
         }
         return highlightShape;
     }
@@ -311,25 +283,8 @@ public class BasicTextPainter implements TextPainter {
                boolean includeStrokeWidth) {
 
          AttributedCharacterIterator aci = node.getAttributedCharacterIterator();
-         TextSpanLayout layout
-                    = getTextLayoutFactory().createTextLayout(aci,
-                          new Point2D.Float(0f, 0f),
-                          new java.awt.font.FontRenderContext(
-                                            new AffineTransform(),
-                                                true, true));
+         TextSpanLayout layout = getOffsetAdjustedTextLayout(aci, context);
 
-         Point2D location = node.getLocation();
-         float tx = (float) location.getX();
-         float ty = (float) location.getY();
-
-         TextNode.Anchor anchor = node.getAnchor();
-         if (anchor == TextNode.Anchor.MIDDLE) {
-                tx -= layout.getAdvance()/2;
-         } else if (anchor == TextNode.Anchor.END) {
-                tx -= layout.getAdvance();
-         }
-
-         Rectangle2D layoutBounds;
          Rectangle2D bounds;
 
          if (includeStrokeWidth) {
@@ -337,25 +292,14 @@ public class BasicTextPainter implements TextPainter {
              if (s != null) {
                  bounds = s.getBounds2D();
              } else {
-                 layoutBounds = layout.getBounds();
-                 bounds = new Rectangle2D.Float(
-                              (float) (tx+layoutBounds.getX()),
-                              (float) (ty+layoutBounds.getY()),
-                              (float) layout.getAdvance(),
-                              (float) layoutBounds.getHeight());
-              }
+                 bounds = layout.getBounds();
+             }
          } else {
              if (includeDecoration) {
-                 layoutBounds = layout.getDecoratedBounds();
+                 bounds = layout.getDecoratedBounds();
              } else {
-                 layoutBounds = layout.getBounds();
+                 bounds = layout.getBounds();
              }
-
-             bounds = new Rectangle2D.Float(
-                              (float) (tx+layoutBounds.getX()),
-                              (float) (ty+layoutBounds.getY()),
-                              (float) layout.getAdvance(),
-                              (float) layoutBounds.getHeight());
          }
 
         return bounds;
@@ -373,24 +317,9 @@ public class BasicTextPainter implements TextPainter {
                                     boolean includeDecoration) {
         Shape outline;
         AttributedCharacterIterator aci = node.getAttributedCharacterIterator();
+        TextSpanLayout layout = getOffsetAdjustedTextLayout(aci, frc);
 
-        TextSpanLayout layout = getTextLayoutFactory().createTextLayout(aci,
-                          new Point2D.Float(0f, 0f),
-                          new java.awt.font.FontRenderContext(
-                                            new AffineTransform(),
-                                                          true,
-                                                          true));
-        Point2D location = node.getLocation();
-        double tx = location.getX();
-        double ty = location.getY();
-        TextNode.Anchor anchor = node.getAnchor();
-        if (anchor == TextNode.Anchor.MIDDLE) {
-            tx -= layout.getAdvance()/2;
-        } else if (anchor == TextNode.Anchor.END) {
-            tx -= layout.getAdvance();
-        }
-        AffineTransform t = AffineTransform.getTranslateInstance(tx, ty);
-        outline = layout.getOutline(t);
+        outline = layout.getOutline();
 
         if (includeDecoration) {
             int decorationTypes = 0;
@@ -413,7 +342,7 @@ public class BasicTextPainter implements TextPainter {
                 ((GeneralPath) outline).setWindingRule(
                                            GeneralPath.WIND_NON_ZERO);
                 ((GeneralPath) outline).append(
-                    layout.getDecorationOutline(decorationTypes, t), false);
+                    layout.getDecorationOutline(decorationTypes), false);
             }
 
         }
@@ -463,33 +392,73 @@ public class BasicTextPainter implements TextPainter {
         return outline;
     }
 
+    /* 
+     * Note: this method only works if the layout is constructed
+     * from the entire "text chunk"!  If there are multiple
+     * text chunks in this node, this code will fail.
+     * TODO: fix/replace, removing dependencies on this code!
+     */
+
+    private TextSpanLayout getOffsetAdjustedTextLayout(
+                     AttributedCharacterIterator aci, FontRenderContext frc) {
+
+        TextSpanLayout layout = getTextLayoutFactory().createTextLayout(aci,
+                          new Point2D.Float(0f, 0f),
+                          new java.awt.font.FontRenderContext(
+                                            new AffineTransform(),
+                                                          true,
+                                                          true));
+ 
+        TextNode.Anchor anchor = (TextNode.Anchor) aci.getAttribute(
+                     GVTAttributedCharacterIterator.TextAttribute.ANCHOR_TYPE);
+        int anchorType = TextNode.Anchor.ANCHOR_START;
+        if (anchor != null) anchorType = anchor.getType();
+
+        Point2D advance = layout.getAdvance2D();
+
+        float dx = 0f;
+        float dy = 0f;
+
+        switch(anchorType){
+        case TextNode.Anchor.ANCHOR_MIDDLE:
+            dx = (float) (-advance.getX()/2d);
+            dy = (float) (-advance.getY()/2d);
+            break;
+        case TextNode.Anchor.ANCHOR_END:
+            dx = (float) (-advance.getX());
+            dy = (float) (-advance.getY());
+            break;
+        default:
+            // leave untouched
+        }
+
+        Point2D offset = layout.getOffset();
+
+        if (layout.isVertical()) {
+            layout.setOffset(new Point2D.Float(
+                     (float) offset.getX(), (float) offset.getY()+dy));
+        } else {
+            layout.setOffset(new Point2D.Float(
+                    (float) offset.getX()+dx, (float) offset.getY()));
+        }
+
+        return layout;
+    }
+
     private Mark cachedMark = null;
     private AttributedCharacterIterator cachedACI = null;
     private TextHit cachedHit = null;
 
     private org.apache.batik.gvt.text.Mark hitTest(
                          double x, double y, AttributedCharacterIterator aci,
-                         TextNode.Anchor anchor,
                          GraphicsNodeRenderContext context) {
 
         FontRenderContext frc = context.getFontRenderContext();
-        TextSpanLayout layout =
-               getTextLayoutFactory().createTextLayout(aci,
-               new Point2D.Float(0f, 0f),
-               frc);
-        float advance = layout.getAdvance();
-        float tx = 0f;
 
-        switch(anchor.getType()){
-        case TextNode.Anchor.ANCHOR_MIDDLE:
-            tx = advance/2;
-            break;
-        case TextNode.Anchor.ANCHOR_END:
-            tx = advance;
-        }
+        TextSpanLayout layout = getOffsetAdjustedTextLayout(aci, frc);
 
         TextHit textHit =
-            layout.hitTestChar((float) (x+tx), (float) y);
+            layout.hitTestChar((float) x, (float) y);
 
         // Note that a texthit char index of -1 signals that the
         // hit, though within the text element bounds, did not

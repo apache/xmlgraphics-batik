@@ -61,18 +61,18 @@ public class ConcreteTextLayoutFactory implements TextLayoutFactory {
      * @param aci the character iterator to be laid out
      */
     public TextSpanLayout createTextLayout(AttributedCharacterIterator aci,
-                                                Point2D offset, 
+                                                Point2D offset,
                                                 FontRenderContext frc) {
         Set keys = aci.getAllAttributeKeys();
         Set glyphPositionKeys = new HashSet();
-        glyphPositionKeys.add(GVTAttributedCharacterIterator.TextAttribute.X);
-        glyphPositionKeys.add(GVTAttributedCharacterIterator.TextAttribute.Y);
+        //glyphPositionKeys.add(
+        //      GVTAttributedCharacterIterator.TextAttribute.EXPLICIT_LAYOUT);
         glyphPositionKeys.add(GVTAttributedCharacterIterator.TextAttribute.DX);
         glyphPositionKeys.add(GVTAttributedCharacterIterator.TextAttribute.DY);
         glyphPositionKeys.add(
-                       GVTAttributedCharacterIterator.TextAttribute.ROTATION);
+                GVTAttributedCharacterIterator.TextAttribute.ROTATION);
         glyphPositionKeys.retainAll(keys);
-        if (glyphPositionKeys.isEmpty()) {
+        if (true) { //        if (glyphPositionKeys.isEmpty()) {
             return new TextLayoutAdapter(new TextLayout(aci, frc), offset, aci);
         } else {
             char ch = aci.first();

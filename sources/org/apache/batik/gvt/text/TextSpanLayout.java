@@ -40,17 +40,14 @@ public interface TextSpanLayout {
      * Paints the specified text layout using the
      * specified Graphics2D and rendering context.
      * @param g2d the Graphics2D to use
-     * @param x the x position of the rendered layout origin.
-     * @param y the y position of the rendered layout origin.
      */
-    public void draw(Graphics2D g2d, float x, float y);
+    public void draw(Graphics2D g2d);
 
     /**
      * Returns the outline of the completed glyph layout, transformed
      * by an AffineTransform.
-     * @param t an AffineTransform to apply to the outline before returning it.
      */
-    public Shape getOutline(AffineTransform t);
+    public Shape getOutline();
 
     /**
      * Returns the outline of the specified decorations on the glyphs,
@@ -59,9 +56,8 @@ public interface TextSpanLayout {
      *     included in this shape.  May be the result of "OR-ing" several
      *     values together:
      * e.g. <tt>DECORATION_UNDERLINE | DECORATION_STRIKETHROUGH</tt>
-     * @param t an AffineTransform to apply to the outline before returning it.
      */
-    public Shape getDecorationOutline(int decorationType, AffineTransform t);
+    public Shape getDecorationOutline(int decorationType);
 
     /**
      * Returns the rectangular bounds of the completed glyph layout.
@@ -84,11 +80,26 @@ public interface TextSpanLayout {
 
     /**
      * Returns the current text position at the completion
-     * of glyph layout. 
+     * of glyph layout.
      * (This is the position that should be used for positioning
      * adjacent layouts.)
      */
     public Point2D getAdvance2D();
+
+    /**
+     * Returns the current text position at the completion beginning
+     * of glyph layout, before the application of explicit
+     * glyph positioning attributes.
+     */
+    public Point2D getOffset();
+
+    /**
+     * Sets the text position used for the implicit origin
+     * of glyph layout. Ignored if multiple explicit glyph
+     * positioning attributes are present in ACI
+     * (e.g. if the aci has multiple X or Y values).
+     */
+    public void setOffset(Point2D offset);
 
     /**
      * Returns a Shape which encloses the currently selected glyphs

@@ -21,7 +21,6 @@ import java.text.AttributedCharacterIterator;
 
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.TextNode;
-import org.apache.batik.gvt.TextNode.Anchor;
 import org.apache.batik.gvt.Selectable;
 import org.apache.batik.gvt.TextPainter;
 import org.apache.batik.gvt.text.Mark;
@@ -39,8 +38,10 @@ public class ConcreteTextNode
     extends    AbstractGraphicsNode
     implements TextNode,
                Selectable {
+
     /**
-     * Location of this text node
+     * Location of this text node (inherited, independent of explicit
+     * X and Y attributes applied to children).
      */
     protected Point2D location = new Point2D.Float(0, 0);
 
@@ -59,11 +60,6 @@ public class ConcreteTextNode
      * Cache: Primitive Bounds.
      */
     private Rectangle2D primitiveBounds;
-
-    /**
-     * Text Anchor
-     */
-    protected Anchor anchor = Anchor.START;
 
     /**
      * Sets the location of this raster text node.
@@ -102,25 +98,6 @@ public class ConcreteTextNode
      */
     public AttributedCharacterIterator getAttributedCharacterIterator(){
         return aci;
-    }
-
-    /**
-     * Sets the anchor of this text node.
-     * @param newAnchor the new anchor of this text node
-     */
-    public void setAnchor(Anchor newAnchor){
-        invalidateGeometryCache();
-        Anchor oldAnchor = anchor;
-        this.anchor = newAnchor;
-        firePropertyChange("anchor", oldAnchor, anchor);
-    }
-
-    /**
-     * Returns the anchor of this text node.
-     * @return the anchor of this node
-     */
-    public Anchor getAnchor(){
-        return anchor;
     }
 
     protected void invalidateGeometryCache() {
@@ -199,9 +176,7 @@ public class ConcreteTextNode
      * @param the anchor of this node
      */
     public boolean selectAt(double x, double y, GraphicsNodeRenderContext rc) {
-         beginMark = rc.getTextPainter().selectAt(x-location.getX(),
-                                                 y-location.getY(),
-                                                 aci, anchor, rc);
+         beginMark = rc.getTextPainter().selectAt(x, y, aci, rc);
          return true; // assume this always changes selection, for now.
     }
 
@@ -210,10 +185,7 @@ public class ConcreteTextNode
      * @param the anchor of this node
      */
     public boolean selectTo(double x, double y, GraphicsNodeRenderContext rc) {
-        Mark tmpMark = rc.getTextPainter().selectTo(x-location.getX(),
-                                               y-location.getY(),
-                                               beginMark, aci, anchor,
-                                               rc);
+        Mark tmpMark = rc.getTextPainter().selectTo(x, y, beginMark, aci, rc);
         boolean result = false;
 
         if (tmpMark != endMark) {
@@ -229,9 +201,7 @@ public class ConcreteTextNode
      * @param the anchor of this node
      */
     public boolean selectAll(double x, double y, GraphicsNodeRenderContext rc) {
-        endMark = rc.getTextPainter().selectAll(x-location.getX(),
-                                                y-location.getY(),
-                                                aci, anchor, rc);
+        endMark = rc.getTextPainter().selectAll(x, y, aci, rc);
         beginMark = endMark;
         return true;
     }
@@ -272,9 +242,7 @@ public class ConcreteTextNode
         Shape highlightShape;
         highlightShape =
             rc.getTextPainter().getHighlightShape(beginMark,
-                                                  endMark,
-                                                  location,
-                                                  anchor);
+                                                  endMark);
 
         AffineTransform t = getGlobalTransform();
         highlightShape = t.createTransformedShape(highlightShape);
@@ -311,7 +279,6 @@ public class ConcreteTextNode
         if(textPainter != null) {
             textPainter.paint(this, g2d, rc);
         }
-        // g2d.translate(-location.getX(), -location.getY());
 
     }
 

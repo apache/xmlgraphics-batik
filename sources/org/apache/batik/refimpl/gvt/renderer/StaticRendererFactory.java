@@ -41,11 +41,11 @@ public class StaticRendererFactory implements RendererFactory {
     }
 
     /**
-     * @return a GraphicsNodeRenderContext suitable for use 
+     * @return a GraphicsNodeRenderContext suitable for use
      * with this factory's Renderers.
      */
     public GraphicsNodeRenderContext getRenderContext() {
-        if (nodeRenderContext == null) { 
+        if (nodeRenderContext == null) {
             RenderingHints hints = new RenderingHints(null);
             hints.put(RenderingHints.KEY_ANTIALIASING,
                   RenderingHints.VALUE_ANTIALIAS_ON);
@@ -70,7 +70,7 @@ public class StaticRendererFactory implements RendererFactory {
                                           gnrFactory);
             }
 
-        return nodeRenderContext;   
+        return nodeRenderContext;
     }
 
 }

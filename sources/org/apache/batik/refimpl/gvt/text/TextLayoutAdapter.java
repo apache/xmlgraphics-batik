@@ -20,8 +20,10 @@ import java.awt.font.TextLayout;
 import java.awt.font.TextAttribute;
 import java.awt.font.TextHitInfo;
 import java.text.AttributedCharacterIterator;
+import org.apache.batik.gvt.TextNode;
 import org.apache.batik.gvt.text.TextSpanLayout;
 import org.apache.batik.gvt.text.TextHit;
+import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
 
 /**
  * Implementation of TextSpanLayout that uses java.awt.font.TextLayout
@@ -40,29 +42,45 @@ public class TextLayoutAdapter implements TextSpanLayout {
 
     public TextLayoutAdapter(TextLayout layout, Point2D offset, AttributedCharacterIterator aci) {
         this.layout = layout;
-        this.offset = offset;
         this.aci = aci;
+        this.offset = adjustOffset(offset);
     }
 
     /**
      * Paints the specified text layout using the
      * specified Graphics2D and rendering context.
      * @param g2d the Graphics2D to use
-     * @param x the x position of the rendered layout origin.
-     * @param y the y position of the rendered layout origin.
      */
-    public void draw(Graphics2D g2d, float x, float y) {
-        layout.draw(g2d, x+(float) offset.getX(), y+(float) offset.getY());
+    public void draw(Graphics2D g2d) {
+        layout.draw(g2d, (float) offset.getX(), (float) offset.getY());
+    }
+
+    /**
+     * Returns the current text position at the beginning
+     * of glyph layout, before the application of explicit
+     * glyph positioning attributes.
+     */
+    public Point2D getOffset() {
+        return offset;
+    }
+
+    /**
+     * Sets the text position used for the implicit origin
+     * of glyph layout. Ignored if multiple explicit glyph
+     * positioning attributes are present in ACI
+     * (e.g. if the aci has multiple X or Y values).
+     */
+    public void setOffset(Point2D offset) {
+        this.offset = offset;
     }
 
     /**
      * Returns the outline of the completed glyph layout, transformed
      * by an AffineTransform.
-     * @param t an AffineTransform to apply to the outline before returning it.
      */
-    public Shape getOutline(AffineTransform t) {
-        AffineTransform nt = (AffineTransform) t.clone();
-        nt.translate(offset.getX(), offset.getY());
+    public Shape getOutline() {
+        AffineTransform nt = AffineTransform.getTranslateInstance(
+               offset.getX(), offset.getY());
         return layout.getOutline(nt);
     }
 
@@ -73,9 +91,8 @@ public class TextLayoutAdapter implements TextSpanLayout {
      *     included in this shape.  May be the result of "OR-ing" several
      *     values together:
      * e.g. <tt>DECORATION_UNDERLINE | DECORATION_STRIKETHROUGH</tt>
-     * @param t an AffineTransform to apply to the outline before returning it.
      */
-    public Shape getDecorationOutline(int decorationType, AffineTransform t) {
+    public Shape getDecorationOutline(int decorationType) {
         GeneralPath g = new GeneralPath();
         if ((decorationType & DECORATION_UNDERLINE) != 0) {
              g.append(getUnderlineShape(aci, layout), false);
@@ -86,8 +103,8 @@ public class TextLayoutAdapter implements TextSpanLayout {
         if ((decorationType & DECORATION_OVERLINE) != 0) {
              g.append(getOverlineShape(aci, layout), false);
         }
-        AffineTransform nt = (AffineTransform) t.clone();
-        nt.translate(offset.getX(), offset.getY());
+        AffineTransform nt = AffineTransform.getTranslateInstance(
+               offset.getX(), offset.getY());
         return nt.createTransformedShape(g);
     }
 
@@ -98,7 +115,7 @@ public class TextLayoutAdapter implements TextSpanLayout {
         Rectangle2D bounds = layout.getBounds();
         return new Rectangle2D.Double(bounds.getX()+offset.getX(),
                                       bounds.getY()+offset.getY(),
-                                      bounds.getWidth(), 
+                                      bounds.getWidth(),
                                       bounds.getHeight());
     }
 
@@ -107,8 +124,8 @@ public class TextLayoutAdapter implements TextSpanLayout {
      */
     public Rectangle2D getDecoratedBounds() {
         Rectangle2D dbounds = getDecorationOutline(
-          DECORATION_UNDERLINE|DECORATION_OVERLINE|DECORATION_STRIKETHROUGH,
-          new AffineTransform()).getBounds2D();
+          DECORATION_UNDERLINE|DECORATION_OVERLINE|DECORATION_STRIKETHROUGH
+              ).getBounds2D();
        return dbounds.createUnion(getBounds());
     }
 
@@ -154,7 +171,7 @@ public class TextLayoutAdapter implements TextSpanLayout {
      * @param y the y coordinate of the point to be tested.
      */
     public TextHit hitTestChar(float x, float y) {
-        TextHitInfo hit = layout.hitTestChar(x-(float) offset.getX(), 
+        TextHitInfo hit = layout.hitTestChar(x-(float) offset.getX(),
                                              y-(float) offset.getY());
         return new TextHit(hit.getCharIndex(), hit.isLeadingEdge());
     }
@@ -253,6 +270,27 @@ public class TextLayoutAdapter implements TextSpanLayout {
                 thick_div = 14f;
             }
         return layout.getAscent()/thick_div;
+    }
+
+// private
+
+    private Point2D adjustOffset(Point2D p) {
+
+        aci.first();
+        Float X = (Float) aci.getAttribute(
+                   GVTAttributedCharacterIterator.TextAttribute.X);
+        Float Y = (Float) aci.getAttribute(
+                   GVTAttributedCharacterIterator.TextAttribute.Y);
+
+        if ((X == null) || (X.isNaN())) {
+              X = new Float((float) p.getX());
+        }
+
+        if ((Y == null) || (Y.isNaN())) {
+              Y = new Float((float) p.getY());
+        }
+
+        return new Point2D.Float(X.floatValue(), Y.floatValue());
     }
 
 }
