@@ -28,6 +28,16 @@ public interface Interpreter extends org.apache.batik.i18n.Localizable {
     public Object evaluate(Reader scriptreader)
         throws InterpreterException, IOException;
     /**
+     * This method should evaluate a piece of script using a <code>String</code>
+     * instead of a <code>Reader</code>. This usually allows do easily do some
+     * caching.
+     * @param script the piece of script
+     * @return if no exception is thrown during the call, should return the
+     * value of the last expression evaluated in the script
+     */
+    public Object evaluate(String script)
+        throws InterpreterException;
+    /**
      * This method should register a particular Java <code>Object</code> in
      * the environment of the interpreter.
      * @param name the name of the script object to create

@@ -33,6 +33,10 @@ import org.w3c.dom.Text;
  * @version $Id$
  */
 public class DocumentProxy implements Document {
+    /**
+     * The <code>WeakReference</code> to the actual
+     * <code>Document</code>.
+     */
     protected WeakReference ref = null;
 
     public DocumentProxy(Document document)
