@@ -154,17 +154,24 @@ public class ConcreteCompositeGraphicsNode extends AbstractGraphicsNode
     }
 
     public Rectangle2D getPrimitiveBounds() {
-        Rectangle2D bounds = null;
+        Rectangle2D bounds = null, nodeBounds = null;
+        AffineTransform txf = null;
         if(count > 0){
-            bounds = children[0].getBounds();
+            txf = children[0].getTransform();
+            nodeBounds = children[0].getBounds();
+            bounds = txf.createTransformedShape(nodeBounds).getBounds2D();
         }
         else{
+            // With the following empty groups may have bad side effects.
             bounds = new Rectangle(0, 0, 0, 0);
         }
 
         for (int i=1; i < count; ++i) {
             GraphicsNode node = children[i];
-            bounds.add(node.getBounds());
+            nodeBounds = node.getBounds();
+            txf = children[i].getTransform();
+            nodeBounds = txf.createTransformedShape(nodeBounds).getBounds2D();
+            bounds.add(nodeBounds);
         }
 
         return bounds;

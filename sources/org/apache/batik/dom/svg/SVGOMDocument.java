@@ -142,6 +142,18 @@ public class SVGOMDocument
         factories.put(TAG_FE_DISPLACEMENT_MAP,
                       new FeDisplacementMapElementFactory());
 
+        factories.put(TAG_FE_FUNC_A,        
+                      new FeFuncAElementFactory());
+        
+        factories.put(TAG_FE_FUNC_R,        
+                      new FeFuncRElementFactory());
+
+        factories.put(TAG_FE_FUNC_G,        
+                      new FeFuncGElementFactory());
+
+        factories.put(TAG_FE_FUNC_B,        
+                      new FeFuncBElementFactory());
+
         factories.put(TAG_FE_FLOOD,
                       new FeFloodElementFactory());
 
@@ -760,6 +772,67 @@ public class SVGOMDocument
                                                    TAG_FE_FLOOD);
         }
     }
+
+
+    /**
+     * To create a 'feFuncA' element.
+     */
+    protected class FeFuncAElementFactory implements ElementFactory {
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix) {
+            return new SVGOMToBeImplementedElement(prefix,
+                                                   SVGOMDocument.this,
+                                                   TAG_FE_FUNC_A);
+        }
+    }
+
+
+    /**
+     * To create a 'feFuncR' element.
+     */
+    protected class FeFuncRElementFactory implements ElementFactory {
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix) {
+            return new SVGOMToBeImplementedElement(prefix,
+                                                   SVGOMDocument.this,
+                                                   TAG_FE_FUNC_R);
+        }
+    }
+
+
+    /**
+     * To create a 'feFuncG' element.
+     */
+    protected class FeFuncGElementFactory implements ElementFactory {
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix) {
+            return new SVGOMToBeImplementedElement(prefix,
+                                                   SVGOMDocument.this,
+                                                   TAG_FE_FUNC_G);
+        }
+    }
+
+
+    /**
+     * To create a 'feFuncB' element.
+     */
+    protected class FeFuncBElementFactory implements ElementFactory {
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix) {
+            return new SVGOMToBeImplementedElement(prefix,
+                                                   SVGOMDocument.this,
+                                                   TAG_FE_FUNC_B);
+        }
+    }
+
 
     /**
      * To create a 'feGaussianBlur' element.

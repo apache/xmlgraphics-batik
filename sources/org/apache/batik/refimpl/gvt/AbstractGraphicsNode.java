@@ -317,9 +317,6 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
                                   clipBounds.getY(),
                                   clipBounds.getWidth(),
                                   clipBounds.getHeight())){
-                // System.out.println("clipBounds : " + clipBounds);
-                // System.out.println("bounds     : " + bounds);
-                // System.out.println("==> Not painting");
                 paintNeeded = false;
             }
         }
@@ -327,6 +324,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
         //
         // Only paint if needed.
         //
+        // paintNeeded = true;
         if (paintNeeded){
             if (!isOffscreenBufferNeeded()) {
                 // Render directly on the canvas
@@ -349,9 +347,11 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
                 
                 // Create the render context for drawing this node.
                 AffineTransform usr2dev = g2d.getTransform();
-                RenderContext context = new RenderContext(usr2dev, g2d.getClip(), g2d.getRenderingHints());
+                RenderContext context = new RenderContext(usr2dev, g2d.getClip(), rc.getRenderingHints());
                 RenderedImage renderedNodeImage = filteredImage.createRendering(context);
-                
+                Rectangle2D filterBounds = filteredImage.getBounds2D();
+                g2d.clip(filterBounds);
+
                 if(renderedNodeImage != null){
                     g2d.setTransform(IDENTITY);
                     g2d.drawRenderedImage(renderedNodeImage, IDENTITY);

@@ -129,6 +129,7 @@ public class ConcretePadRable extends AbstractRable
                 
                 System.out.println("Pad rect : " + arect);
                 // Use arect (my bounds intersect area of interest)
+
                 result = new PadRed(cr, arect.getBounds(), padMode, rh);
             }
         }
