@@ -24,6 +24,8 @@ import java.util.Iterator;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import org.apache.batik.ext.awt.g2d.GraphicContext;
+
 /**
  * Utility class that converts a TexturePaint object into an
  * SVG pattern element

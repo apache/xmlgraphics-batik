@@ -15,6 +15,8 @@ import java.awt.font.*;
 
 import org.w3c.dom.*;
 
+import org.apache.batik.ext.awt.g2d.GraphicContext;
+
 /**
  * This class is used by the SVGGraphics2D SVG Generator to manage
  * addition of new Nodes to the SVG DOM Tree. This class handles

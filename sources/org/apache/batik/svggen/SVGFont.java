@@ -14,6 +14,8 @@ import java.util.*;
 import java.awt.font.TextAttribute;
 import org.w3c.dom.*;
 
+import org.apache.batik.ext.awt.g2d.GraphicContext;
+
 /**
  * Utility class that converts a Font object into a set of SVG
  * font attributes

@@ -13,6 +13,10 @@ import java.awt.GradientPaint;
 import java.awt.geom.Point2D;
 import java.awt.geom.AffineTransform;
 
+import org.apache.batik.ext.awt.g2d.GraphicContext;
+import org.apache.batik.ext.awt.g2d.TransformType;
+import org.apache.batik.ext.awt.g2d.TransformStackElement;
+
 /**
  * Utility class that converts a GraphicContext transform stack
  * into an SVG transform attribute.

@@ -90,7 +90,7 @@ public class SVGCSSStyler implements SVGSyntax{
         g.fillRect(10, 10, 200, 50);
         g.setPaint(java.awt.Color.white);
         g.setFont(new java.awt.Font("SunSansCondensed-Heavy", java.awt.Font.PLAIN, 20));
-        g.drawString("Hello Java 2D to SVG", 40, 40);
+        g.drawString("Hello Java 2D to SVG", 40f, 40f);
 
         g.stream(new java.io.OutputStreamWriter(System.out));
     }

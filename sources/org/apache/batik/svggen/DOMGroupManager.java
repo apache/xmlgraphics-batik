@@ -15,6 +15,9 @@ import java.awt.font.*;
 
 import org.w3c.dom.*;
 
+import org.apache.batik.ext.awt.g2d.GraphicContext;
+import org.apache.batik.ext.awt.g2d.TransformStackElement;
+
 /**
  * This class is used by the Graphics2D SVG Generator to manage
  * a group of Nodes that can later be added to the SVG DOM Tree

@@ -12,6 +12,8 @@ import org.w3c.dom.*;
 import java.util.*;
 import java.awt.BasicStroke;
 
+import org.apache.batik.ext.awt.g2d.GraphicContext;
+
 /**
  * Utility class that converts a Java BasicStroke object into
  * a set of SVG style attributes

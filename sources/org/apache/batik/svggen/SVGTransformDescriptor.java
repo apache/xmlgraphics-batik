@@ -13,6 +13,8 @@ import java.util.Set;
 import java.util.Hashtable;
 import java.util.HashSet;
 
+import org.apache.batik.ext.awt.g2d.GraphicContext;
+
 /**
  * Describes an SVG transform
  *
