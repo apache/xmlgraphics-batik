@@ -287,32 +287,31 @@ public abstract class PaintServer
                 throw new Error(); // can't be reached
             }
         } else { // List
-            ListValue lv = (ListValue)paintDef;
-            Value v = lv.item(0);
+            Value v = paintDef.item(0);
             switch (v.getPrimitiveType()) {
             case CSSPrimitiveValue.CSS_RGBCOLOR:
                 return convertRGBICCColor(paintedElement, v,
-                                          (ICCColor)lv.item(1),
+                                          (ICCColor)paintDef.item(1),
                                           opacity, ctx);
 
             case CSSPrimitiveValue.CSS_URI:
                 Paint result = silentConvertURIPaint(paintedElement,
                                                      paintedNode,
-                                                     lv,
+                                                     v,
                                                      opacity,
                                                      ctx);
                 if (result == null) {
-                    v = lv.item(1);
+                    v = paintDef.item(1);
                     switch (v.getPrimitiveType()) {
                     case CSSPrimitiveValue.CSS_IDENT:
                         return null; // none
 
                     case CSSPrimitiveValue.CSS_RGBCOLOR:
-                        if (lv.getLength() == 2) {
+                        if (paintDef.getLength() == 2) {
                             return convertColor(v, opacity);
                         } else {
                             return convertRGBICCColor(paintedElement, v,
-                                                      (ICCColor)lv.item(2),
+                                                      (ICCColor)paintDef.item(2),
                                                       opacity, ctx);
                         }
                     default:
@@ -339,13 +338,13 @@ public abstract class PaintServer
      */
     public static Paint silentConvertURIPaint(Element paintedElement,
                                               GraphicsNode paintedNode,
-                                              ListValue paintDef,
+                                              Value paintDef,
                                               float opacity,
                                               BridgeContext ctx) {
         Paint paint = null;
         try {
             paint = convertURIPaint(paintedElement, paintedNode,
-                                    paintDef.item(0), opacity, ctx);
+                                    paintDef, opacity, ctx);
         } catch (BridgeException ex) {
         }
         return paint;
