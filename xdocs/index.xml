@@ -175,7 +175,7 @@ template engine and much more. Gerard Bauer, the Luxor project lead, has written
         <li><link href="http://xml.apache.org/cocoon">The Apache Cocoon project</link> uses Batik to rasterize SVG images. </li>
         <li><link href="http://www.object-refinery.com/jfreechart/index.html">The JFreeChart Project</link> uses Batik to export charts in the SVG format. </li>
         <li><link href="http://www.ilog.com/products/jviews">ILOG JViews Component Suite</link>, a product for advanced visualization, uses and extends the Batik SVG export module. </li>
-        <li><link href="http://www2.ilog.com/preview/Discovery/">ILOG Discovery Preview</link>, a free visual data analysis tool letting you visualize and edit data sets in a very wide variety of views (2D graphs and charts, various kinds of treemaps, parallel coordinates, parallel histograms (aka "Table Lens") and much more), uses the Batik SVG export module. </li>
+        <li><link href="http://www2.ilog.com/preview/Discovery/">ILOG Discovery Preview</link>, a free visual data analysis tool letting you visualize and edit data sets in a very wide variety of views (2D graphs and charts, various kinds of treemaps, parallel coordinates, parallel histograms and much more), uses the Batik SVG export module. </li>
         <li><link href="http://otn.oracle.com/products/jdev/content.html">Oracle Corp.'s JDeveloper9i</link> uses Batik to export class diagrams in SVG. It uses the
         SVG export module (SVGGraphics2D).</li>
         <li><link href="http://www.optimalj.com">OptimalJ</link>, a UML Class Diagram Editor for NetBeans, uses Batik to export SVG. </li>
