@@ -1,21 +1,13 @@
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20000802//EN"
 "http://www.w3.org/TR/2000/CR-SVG-20000802/DTD/svg-20000802.dtd">
 
-<svg  width="493" height="400" xml:space="preserve" viewBox="0 0 493 400">
+<svg  width="493" height="420" xml:space="preserve" viewBox="0 0 493 400">
 
 <defs>
-    <filter id="blurFilterBothBounds"  x="0" y="0" width="500" height="500" filterRes="200">
-        <feGaussianBlur stdDeviation="2 3" x="0" y="0" width="500" height="500" /> 
+    <filter id="blurFilterBothBounds"  x="0" y="0" width="500" height="500" filterRes="50">
+        <feGaussianBlur stdDeviation="2 3" x="0" y="0" width="500" height="500"/> 
+        <feOffset dx="10" dy="10" />
     </filter>
-
-    <filter id="blurFilter" >
-        <feGaussianBlur stdDeviation="2 3" />
-    </filter>
-
-    <filter id="floodFilterBothBounds"  x="80" y="80" width="100" height="100" >
-        <feFlood style="flood-color:red; flood-opacity:.5; fill-opacity:.5" x="80" y="80" width="100" height="100" />
-    </filter>
-
 </defs>
 
 <g transform="skewX(0)">
@@ -111,7 +103,7 @@
 		</g>
 	</g>
 
-	<g id="Layer_x0020_1" style="fill-rule:nonzero;clip-rule:nonzero;stroke:#000000;stroke-miterlimit:4;" transform="translate(-10, -10)">
+	<g id="Layer_x0020_1" style="fill-rule:nonzero;clip-rule:nonzero;stroke:#000000;stroke-miterlimit:4;" >
 		<path style="stroke:none;" d="M64.994,178.963V77.831c0-6.188-0.57-10.773-1.707-13.754c-1.137-2.977-3.066-5.461-5.793-7.449c-1.137-0.766-2.367-1.395-3.695-1.891s-3.012-0.938-5.055-1.32c-2.125-0.371-3.488-0.781-4.094-1.23s-0.906-1.121-0.906-2.02
 			c0-1.195,0.32-2.035,0.969-2.52c0.645-0.484,1.953-0.73,3.93-0.73c0.758,0,3.816,0.211,9.176,0.625c5.355,0.418,10.387,0.625,15.098,0.625c2.961,0,7.883-0.207,14.758-0.625c6.875-0.414,12.324-0.625,16.352-0.625c16.711,0,29.762,3.461,39.145,10.379
 			s14.074,16.574,14.074,28.965c0,7.148-1.793,13.418-5.375,18.816c-3.586,5.398-9,9.996-16.242,13.797v2.18c11.574,2.051,20.445,6.547,26.613,13.492s9.254,15.879,9.254,26.805c0,15.406-5.184,27.645-15.551,36.715s-24.473,13.602-42.316,13.602
