@@ -115,8 +115,7 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
             return null;
         }
 
-        CompositeGraphicsNode gn = buildCompositeGraphicsNode(ctx, e, 
-                                                              null, null);
+        CompositeGraphicsNode gn = buildCompositeGraphicsNode(ctx, e, null);
 
         return gn;
     }
@@ -133,8 +132,7 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
      */
     public CompositeGraphicsNode buildCompositeGraphicsNode
         (BridgeContext ctx, Element e,
-         CompositeGraphicsNode gn,
-         ReferencedElementMutationListener l) {
+         CompositeGraphicsNode gn) {
         // get the referenced element
         String uri = XLinkSupport.getXLinkHref(e);
         if (uri.length() == 0) {
@@ -413,7 +411,7 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
             // Note that this is way sub-optimal, because multiple changes
             // to the referenced content will cause multiple updates to the
             // referencing <use>. However, this provides the desired behavior
-            buildCompositeGraphicsNode(ctx, e, (CompositeGraphicsNode)node, this);
+            buildCompositeGraphicsNode(ctx, e, (CompositeGraphicsNode)node);
         }
     }
 
@@ -434,7 +432,7 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
         } else if (( XLinkSupport.XLINK_NAMESPACE_URI.equals
                      (evtNode.getNamespaceURI()) ) 
                    && SVG_HREF_ATTRIBUTE.equals(evtNode.getLocalName()) ){
-            buildCompositeGraphicsNode(ctx, e, (CompositeGraphicsNode)node, l);
+            buildCompositeGraphicsNode(ctx, e, (CompositeGraphicsNode)node);
         }
     }
 }

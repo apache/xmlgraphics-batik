@@ -30,16 +30,15 @@
     mailing list, please first look at the following resources in this order:</p>
    <ol>
     <li><link href="faqs.html">Batik FAQs</link></li>
-    <li><link href="http://nagoya.apache.org/eyebrowse/SummarizeList?listName=batik-users@xml.apache.org">Batik-Users Archive</link>
-    <li><link href="http://nagoya.apache.org/eyebrowse/SummarizeList?listName=batik-dev@xml.apache.org">Batik-Dev Archive</link>
-    <li><link href="http://koala.ilog.fr/batik/">Batik mailing lists archives hosted by Koala</link></li>
+    <li><link href="http://mail-archives.apache.org/eyebrowse/SummarizeList?listName=batik-users@xml.apache.org">Batik-Users Archive</link>
+    <li><link href="http://mail-archives.apache.org/eyebrowse/SummarizeList?listName=batik-dev@xml.apache.org">Batik-Dev Archive</link>
    </ol>
   </s1>
 
   <s1 title="Batik Users">
    <p><link href="mailto:batik-users-subscribe@xml.apache.org">Subscribe</link>
       <link href="mailto:batik-users-unsubscribe@xml.apache.org">Unsubscribe</link>
-      <link href="http://nagoya.apache.org/eyebrowse/SummarizeList?listName=batik-users@xml.apache.org">Archive</link>
+      <link href="http://mail-archives.apache.org/eyebrowse/SummarizeList?listName=batik-users@xml.apache.org">Archive</link>
    </p>
 
    <p>The general Batik list, for problems using Batik, bug reports... 
@@ -57,7 +56,7 @@
   <s1 title="Batik Dev">
    <p><link href="mailto:batik-dev-subscribe@xml.apache.org">Subscribe</link>
       <link href="mailto:batik-dev-unsubscribe@xml.apache.org">Unsubscribe</link>
-      <link href="http://nagoya.apache.org/eyebrowse/SummarizeList?listName=batik-dev@xml.apache.org">Archive</link>
+      <link href="http://mail-archives.apache.org/eyebrowse/SummarizeList?listName=batik-dev@xml.apache.org">Archive</link>
    </p>
 
    <p>This list is for developers <strong>working on</strong> or wanting to work on
