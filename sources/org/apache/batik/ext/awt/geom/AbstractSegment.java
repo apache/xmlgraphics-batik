@@ -35,7 +35,7 @@ public abstract class AbstractSegment implements Segment {
 
     protected abstract int findRoots(double y, double [] roots);
 
-    public SplitResults split(double y) {
+    public Segment.SplitResults split(double y) {
         double [] roots = { 0, 0, 0 };
         int numSol = findRoots(y, roots);
         if (numSol == 0) return null; // No split

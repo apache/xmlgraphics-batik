@@ -73,7 +73,7 @@ public class GraphicContext implements Cloneable{
      * This is for use by the class clients. The client should
      * validate the stack every time it starts using it. The
      * stack becomes invalid when a new transform is set.
-     * @see #invalidatTransformStack
+     * @see #invalidateTransformStack()
      * @see #isTransformStackValid
      * @see #setTransform
      */
@@ -710,7 +710,7 @@ public class GraphicContext implements Cloneable{
      * since it was last read. Only validateTransformStack
      * can override this memento
      */
-    void invalidateTransformStack(){
+    protected void invalidateTransformStack(){
         transformStack.removeAllElements();
         transformStackValid = false;
     }

@@ -33,7 +33,7 @@ import org.w3c.dom.DOMException;
 public class SVGPathSupport {
 
     /**
-     * To implement {@link org.w3c.dom.svg.SVGPath#getTotalLength()}.
+     * To implement {@link org.w3c.dom.svg.SVGPathElement#getTotalLength()}.
      */
     public static float getTotalLength(SVGOMPathElement path) {
         SVGPathContext pathCtx = (SVGPathContext)path.getSVGContext();
@@ -42,7 +42,7 @@ public class SVGPathSupport {
 
 
     /**
-     * To implement {@link org.w3c.dom.svg.SVGPath#getPointAtLength()}.
+     * To implement {@link org.w3c.dom.svg.SVGPathElement#getPointAtLength(float)}.
      */
     public static SVGPoint getPointAtLength(final SVGOMPathElement path,
                                             final float distance) {

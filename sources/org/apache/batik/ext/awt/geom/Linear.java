@@ -100,7 +100,7 @@ public class Linear implements Segment {
         return new Point2D.Double(x, y);
     }
 
-    public SplitResults split(double y) {
+    public Segment.SplitResults split(double y) {
         if ((y == p1.y) || (y == p2.y)) return null;
         if ((y <= p1.y) && (y <= p2.y)) return null;
         if ((y >= p1.y) && (y >= p2.y)) return null;
@@ -114,8 +114,8 @@ public class Linear implements Segment {
         Segment [] t1 = {getSegment(t,1)};
 
         if (p2.y < y)
-            return new SplitResults(t0, t1);
-        return new SplitResults(t1, t0);
+            return new Segment.SplitResults(t0, t1);
+        return new Segment.SplitResults(t1, t0);
     }
 
     public Segment getSegment(double t0, double t1) {
