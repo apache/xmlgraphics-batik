@@ -13,11 +13,17 @@ import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
+
 import java.net.MalformedURLException;
 import java.net.URL;
+
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.MissingResourceException;
 
+import org.apache.batik.css.sac.CSSOMConditionFactory;
+import org.apache.batik.css.sac.CSSOMSelectorFactory;
 import org.apache.batik.i18n.Localizable;
 import org.apache.batik.i18n.LocalizableSupport;
 
@@ -44,6 +50,105 @@ import org.w3c.css.sac.SimpleSelector;
 public class Parser
     implements org.w3c.css.sac.Parser,
                Localizable {
+
+    /**
+     * The CSS to Java encoding table.
+     */
+    protected final static Map ENCODINGS = new HashMap();
+    static {
+        ENCODINGS.put("iso-ir-6",             "ASCII");
+        ENCODINGS.put("ANSI_X3.4-1986",       "ASCII");
+        ENCODINGS.put("ISO_646.irv:1991",     "ASCII");
+        ENCODINGS.put("ASCII",                "ASCII");
+        ENCODINGS.put("ISO646-US",            "ASCII");
+        ENCODINGS.put("US-ASCII",             "ASCII");
+        ENCODINGS.put("us",                   "ASCII");
+        ENCODINGS.put("IBM367",               "ASCII");
+        ENCODINGS.put("cp367",                "ASCII");
+        ENCODINGS.put("csASCII",              "ASCII");
+
+        ENCODINGS.put("iso-ir-100",           "ISO8859_1");
+        ENCODINGS.put("ISO_8859-1:1987",      "ISO8859_1");
+        ENCODINGS.put("ISO_8859-1",           "ISO8859_1");
+        ENCODINGS.put("ISO-8859-1",           "ISO8859_1");
+        ENCODINGS.put("latin1",               "ISO8859_1");
+        ENCODINGS.put("l1",                   "ISO8859_1");
+        ENCODINGS.put("IBM819",               "ISO8859_1");
+        ENCODINGS.put("CP819",                "ISO8859_1");
+        ENCODINGS.put("csISOLatin1",          "ISO8859_1");
+
+        ENCODINGS.put("iso-ir-101",           "ISO8859_2"); 
+        ENCODINGS.put("ISO_8859-2:1987",      "ISO8859_2"); 
+        ENCODINGS.put("ISO_8859-2",           "ISO8859_2"); 
+        ENCODINGS.put("ISO-8859-2",           "ISO8859_2");
+        ENCODINGS.put("latin2",               "ISO8859_2"); 
+        ENCODINGS.put("l2",                   "ISO8859_2"); 
+        ENCODINGS.put("csISOLatin2",          "ISO8859_2");
+
+        ENCODINGS.put("ISO_8859-3:1988",      "ISO8859_3");
+        ENCODINGS.put("iso-ir-109",           "ISO8859_3");
+        ENCODINGS.put("ISO_8859-3",           "ISO8859_3");
+        ENCODINGS.put("ISO-8859-3",           "ISO8859_3");
+        ENCODINGS.put("latin3",               "ISO8859_3");
+        ENCODINGS.put("l3",                   "ISO8859_3");
+        ENCODINGS.put("csISOLatin3",          "ISO8859_3");
+
+        ENCODINGS.put("iso-ir-110",           "ISO8859_4");
+        ENCODINGS.put("ISO_8859-4:1988",      "ISO8859_4");
+        ENCODINGS.put("ISO_8859-4",           "ISO8859_4");
+        ENCODINGS.put("ISO-8859-4",           "ISO8859_4");
+        ENCODINGS.put("latin4",               "ISO8859_4");
+        ENCODINGS.put("l4",                   "ISO8859_4");
+        ENCODINGS.put("csISOLatin4",          "ISO8859_4");
+
+        ENCODINGS.put("iso-ir-127",           "ISO8859_6");
+        ENCODINGS.put("ISO_8859-6",           "ISO8859_6");
+        ENCODINGS.put("ISO_8859-6:1987",      "ISO8859_6");
+        ENCODINGS.put("ISO-8859-6",           "ISO8859_6");
+        ENCODINGS.put("ECMA-114",             "ISO8859_6");
+        ENCODINGS.put("ASMO-708",             "ISO8859_6");
+        ENCODINGS.put("arabic",               "ISO8859_6");
+        ENCODINGS.put("csISOLatinArabic",     "ISO8859_6");
+
+        ENCODINGS.put("iso-ir-126",           "ISO8859_7");
+        ENCODINGS.put("ISO_8859-7",           "ISO8859_7");
+        ENCODINGS.put("ISO_8859-7:1987",      "ISO8859_7");
+        ENCODINGS.put("ISO-8859-7",           "ISO8859_7");
+        ENCODINGS.put("ELOT_928",             "ISO8859_7");
+        ENCODINGS.put("ECMA-118",             "ISO8859_7");
+        ENCODINGS.put("greek",                "ISO8859_7");
+        ENCODINGS.put("greek8",               "ISO8859_7");
+        ENCODINGS.put("csISOLatinGreek",      "ISO8859_7");
+
+        ENCODINGS.put("ISO_8859-8:1988",      "ISO8859_8");
+        ENCODINGS.put("iso-ir-138",           "ISO8859_8");
+        ENCODINGS.put("ISO_8859-8",           "ISO8859_8");
+        ENCODINGS.put("ISO-8859-8",           "ISO8859_8");
+        ENCODINGS.put("hebrew",               "ISO8859_8");
+        ENCODINGS.put("csISOLatinHebrew",     "ISO8859_8");
+
+        ENCODINGS.put("ISO_8859-9:1989",      "ISO8859_9");
+        ENCODINGS.put("iso-ir-148",           "ISO8859_9");
+        ENCODINGS.put("ISO_8859-9",           "ISO8859_9");
+        ENCODINGS.put("ISO-8859-9",           "ISO8859_9");
+        ENCODINGS.put("latin5",               "ISO8859_9");
+        ENCODINGS.put("l5",                   "ISO8859_9");
+        ENCODINGS.put("csISOLatin5",          "ISO8859_9");
+
+        ENCODINGS.put("ISO_8859-15",          "ISO8859_15_FDIS");
+
+        ENCODINGS.put("UTF-8",                "UTF8");
+
+        ENCODINGS.put("Shift_JIS",            "SJIS");
+        ENCODINGS.put("MS_Kanji",             "SJIS");
+        ENCODINGS.put("csShiftJIS",           "SJIS");
+
+        ENCODINGS.put("EUC-JP",               "EUC_JP");
+        ENCODINGS.put("csEUCPkdFmtJapanese",  "EUC_JP");
+        ENCODINGS.put("Extended_UNIX_Code_Packed_Format_for_Japanese", "EUC_JP");
+
+        ENCODINGS.put("csBig5",               "Big5");
+    }
 
     /**
      * The default resource bundle base name.
@@ -75,12 +180,12 @@ public class Parser
     /**
      * The selector factory.
      */
-    protected SelectorFactory selectorFactory;
+    protected SelectorFactory selectorFactory = CSSOMSelectorFactory.INSTANCE;
 
     /**
      * The condition factory.
      */
-    protected ConditionFactory conditionFactory;
+    protected ConditionFactory conditionFactory = CSSOMConditionFactory.INSTANCE;
 
     /**
      * The error handler.
@@ -88,8 +193,18 @@ public class Parser
     protected ErrorHandler errorHandler = DefaultErrorHandler.INSTANCE;
 
     /**
+     * To store the current pseudo element.
+     */
+    protected String pseudoElement;
+
+    /**
+     * The document URI.
+     */
+    protected String documentURI;
+
+    /**
      * <b>SAC</b>: Implements {@link org.w3c.css.sac.Parser#getParserVersion()}.
-     * @return "CSS2".
+     * @return "http://www.w3.org/TR/REC-CSS2".
      */
     public String getParserVersion() {
         return "http://www.w3.org/TR/REC-CSS2";
@@ -233,7 +348,11 @@ public class Parser
         throws CSSException, IOException {
         scanner = new Scanner(characterStream(source, null), null);
         nextIgnoreSpaces();
-        parseStyleDeclaration(false);
+        try {
+            parseStyleDeclaration(false);
+        } catch (CSSParseException e) {
+            reportError(e);
+        }
     }
 
     /**
@@ -265,13 +384,17 @@ public class Parser
         scanner = new Scanner(characterStream(source, null), null);
         nextIgnoreSpaces();
         
-        LexicalUnit exp = parseExpression(false);
+        LexicalUnit exp = null;
+
+        try {
+            exp = parseExpression(false);
+        } catch (CSSParseException e) {
+            reportError(e);
+            return null;
+        }
 
         if (current != LexicalUnits.EOF) {
-            errorHandler.fatalError(new CSSParseException("eof.expected",
-                                                          null,
-                                                          scanner.getLine(),
-                                                          scanner.getColumn()));
+            errorHandler.fatalError(createCSSParseException("eof.expected"));
         }
         return exp;
     }
@@ -282,7 +405,17 @@ public class Parser
      */    
     public boolean parsePriority(InputSource source)
         throws CSSException, IOException {
-        throw new CSSException("!!! Not Implemented");
+        scanner = new Scanner(characterStream(source, null), null);
+        nextIgnoreSpaces();
+        switch (current) {
+        case LexicalUnits.EOF:
+            return false;
+        case LexicalUnits.IMPORT_SYMBOL:
+            return true;
+        default:
+            reportError("token");
+            return false;
+        }
     }
 
     /**
@@ -391,12 +524,20 @@ public class Parser
             } else {
                 nextIgnoreSpaces();
         
-                parseStyleDeclaration(true);
+                boolean err = false;
+                try {
+                    parseStyleDeclaration(true);
+                } catch (CSSParseException e) {
+                    reportError(e);
+                    err = true;
+                }
 
-                if (current != LexicalUnits.RIGHT_CURLY_BRACE) {
-                    reportError("right.curly.brace");
-                } else {
-                    nextIgnoreSpaces();
+                if (!err) {
+                    if (current != LexicalUnits.RIGHT_CURLY_BRACE) {
+                        reportError("right.curly.brace");
+                    } else {
+                        nextIgnoreSpaces();
+                    }
                 }
             }
         } finally {
@@ -435,12 +576,20 @@ public class Parser
             } else {
                 nextIgnoreSpaces();
         
-                parseStyleDeclaration(true);
+                boolean err = false;
+                try {
+                    parseStyleDeclaration(true);
+                } catch (CSSParseException e) {
+                    reportError(e);
+                    err = true;
+                }
 
-                if (current != LexicalUnits.RIGHT_CURLY_BRACE) {
-                    reportError("right.curly.brace");
-                } else {
-                    nextIgnoreSpaces();
+                if (!err) {
+                    if (current != LexicalUnits.RIGHT_CURLY_BRACE) {
+                        reportError("right.curly.brace");
+                    } else {
+                        nextIgnoreSpaces();
+                    }
                 }
             }
         } finally {
@@ -481,7 +630,14 @@ public class Parser
      * Parses a ruleset.
      */
     protected void parseRuleSet() {
-        SelectorList sl = parseSelectorList();
+        SelectorList sl = null;
+
+        try {
+            sl = parseSelectorList();
+        } catch (CSSParseException e) {
+            reportError(e);
+            return;
+        }
 
         try {
             documentHandler.startSelector(sl);
@@ -491,12 +647,20 @@ public class Parser
             } else {
                 nextIgnoreSpaces();
         
-                parseStyleDeclaration(true);
+                boolean err = false;
+                try {
+                    parseStyleDeclaration(true);
+                } catch (CSSParseException e) {
+                    reportError(e);
+                    err = true;
+                }
 
-                if (current != LexicalUnits.RIGHT_CURLY_BRACE) {
-                    reportError("right.curly.brace");
-                } else {
-                    nextIgnoreSpaces();
+                if (!err) {
+                    if (current != LexicalUnits.RIGHT_CURLY_BRACE) {
+                        reportError("right.curly.brace");
+                    } else {
+                        nextIgnoreSpaces();
+                    }
                 }
             }
         } finally {
@@ -527,6 +691,8 @@ public class Parser
         SimpleSelector ss = parseSimpleSelector();
         Selector result = ss;
 
+        pseudoElement = null;
+
         loop: for (;;) {
             switch (current) {
             default:
@@ -556,6 +722,11 @@ public class Parser
                      parseSimpleSelector());
              }
         }
+        if (pseudoElement != null) {
+            result = selectorFactory.createChildSelector
+                (result,
+                 selectorFactory.createPseudoElementSelector(null, pseudoElement));
+        }
         return result;
     }
 
@@ -564,6 +735,7 @@ public class Parser
      */
     protected SimpleSelector parseSimpleSelector() {
         SimpleSelector result;
+
         switch (current) {
         case LexicalUnits.IDENTIFIER:
             result = selectorFactory.createElementSelector(null,
@@ -577,7 +749,7 @@ public class Parser
         }
         Condition cond = null;
         loop: for (;;) {
-            Condition c;
+            Condition c = null;
             switch (current) {
             case LexicalUnits.HASH:
                 c = conditionFactory.createIdCondition(scanner.currentValue());
@@ -585,14 +757,14 @@ public class Parser
                 break;
             case LexicalUnits.DOT:
                 if (next() != LexicalUnits.IDENTIFIER) {
-                    throw new CSSException("identifier");
+                    throw createCSSParseException("identifier");
                 }
                 c = conditionFactory.createClassCondition(null, scanner.currentValue());
                 next();
                 break;
             case LexicalUnits.LEFT_BRACKET:
                 if (nextIgnoreSpaces() != LexicalUnits.IDENTIFIER) {
-                    throw new CSSException("identifier");
+                    throw createCSSParseException("identifier");
                 }
                 String name = scanner.currentValue();
                 int op = nextIgnoreSpaces();
@@ -607,14 +779,14 @@ public class Parser
                     String val = null;
                     switch (nextIgnoreSpaces()) {
                     default:
-                        throw new CSSException("identifier.or.string");
+                        throw createCSSParseException("identifier.or.string");
                     case LexicalUnits.STRING:
                     case LexicalUnits.IDENTIFIER:
                         val = scanner.currentValue();
                         nextIgnoreSpaces();
                     }
                     if (current != LexicalUnits.RIGHT_BRACKET) {
-                        throw new CSSException("right.bracket");
+                        throw createCSSParseException("right.bracket");
                     }
                     next();
                     switch (op) {
@@ -637,23 +809,48 @@ public class Parser
             case LexicalUnits.COLON:
                 switch (nextIgnoreSpaces()) {
                 case LexicalUnits.IDENTIFIER:
-                    // !!! Todo pseudo element.
-                    c = conditionFactory.createPseudoClassCondition(null,
-                                                               scanner.currentValue());
+                    String val = scanner.currentValue();
+                    if (isPseudoElement(val)) {
+                        if (pseudoElement != null) {
+                            throw createCSSParseException("duplicate.pseudo.element");
+                        }
+                        pseudoElement = val;
+                    } else {
+                        c = conditionFactory.createPseudoClassCondition(null, val);
+                    }
                     next();
                     break;
-                // !!! Todo lang(l)
+                case LexicalUnits.FUNCTION:
+                    String func = scanner.currentValue();
+                    if (nextIgnoreSpaces() != LexicalUnits.IDENTIFIER) {
+                        throw createCSSParseException("identifier");
+                    }
+                    String lang = scanner.currentValue();
+                    if (nextIgnoreSpaces() != LexicalUnits.RIGHT_BRACE) {
+                        throw createCSSParseException("right.brace");
+                    }
+
+                    if (!func.equalsIgnoreCase("lang")) {
+                        throw createCSSParseException("pseudo.function");
+                    }
+
+                    c = conditionFactory.createLangCondition(lang);
+
+                    next();
+                    break;
                 default:
-                    throw new CSSException("identifier");
+                    throw createCSSParseException("identifier");
                 }
                 break;
             default:
                 break loop;
             }
-            if (cond == null) {
-                cond = c;
-            } else {
-                cond = conditionFactory.createAndCondition(cond, c);
+            if (c != null) {
+                if (cond == null) {
+                    cond = c;
+                } else {
+                    cond = conditionFactory.createAndCondition(cond, c);
+                }
             }
         }
         skipSpaces();
@@ -661,6 +858,25 @@ public class Parser
             result = selectorFactory.createConditionalSelector(result, cond);
         }
         return result;
+    }
+
+    /**
+     * Tells whether or not the given string represents a pseudo-element.
+     */
+    protected boolean isPseudoElement(String s) {
+        switch (s.charAt(0)) {
+        case 'a':
+        case 'A':
+            return s.equalsIgnoreCase("after");
+        case 'b':
+        case 'B':
+            return s.equalsIgnoreCase("before");
+        case 'f':
+        case 'F':
+            return s.equalsIgnoreCase("first-letter") ||
+                   s.equalsIgnoreCase("first-line");
+        }
+        return false;
     }
 
     /**
@@ -672,38 +888,45 @@ public class Parser
             switch (current) {
             case LexicalUnits.EOF:
                 if (inSheet) {
-                    throw new CSSException("eof");
+                    throw createCSSParseException("eof");
                 }
                 return;
             case LexicalUnits.RIGHT_CURLY_BRACE:
                 if (!inSheet) {
-                    throw new CSSException("eof.expected");
+                    throw createCSSParseException("eof.expected");
                 }
                 return;
             case LexicalUnits.SEMI_COLON:
                 nextIgnoreSpaces();
                 continue;
             default:
-                throw new CSSException("identifier");
+                throw createCSSParseException("identifier");
             case LexicalUnits.IDENTIFIER:
             }
 
             String name = scanner.currentValue();
         
             if (nextIgnoreSpaces() != LexicalUnits.COLON) {
-                throw new CSSException("colon");
+                throw createCSSParseException("colon");
             }
             nextIgnoreSpaces();
         
-            LexicalUnit exp = parseExpression(false);
-
-            boolean important = false;
-            if (current == LexicalUnits.IMPORTANT_SYMBOL) {
-                important = true;
-                nextIgnoreSpaces();
+            LexicalUnit exp = null;
+            
+            try {
+                exp = parseExpression(false);
+            } catch (CSSParseException e) {
+                reportError(e);
             }
 
-            documentHandler.property(name, exp, important);
+            if (exp != null) {
+                boolean important = false;
+                if (current == LexicalUnits.IMPORTANT_SYMBOL) {
+                    important = true;
+                    nextIgnoreSpaces();
+                }
+                documentHandler.property(name, exp, important);
+            }
         }
     }
 
@@ -733,7 +956,7 @@ public class Parser
             if (param) {
                 if (current == LexicalUnits.RIGHT_BRACE) {
                     if (op) {
-                        throw new CSSException("token");
+                        throw createCSSParseException("token");
                     }
                     return result;
                 }
@@ -745,7 +968,7 @@ public class Parser
                 case LexicalUnits.RIGHT_CURLY_BRACE:
                 case LexicalUnits.EOF:
                     if (op) {
-                        throw new CSSException("token");
+                        throw createCSSParseException("token");
                     }
                     return result;
                 default:
@@ -832,7 +1055,7 @@ public class Parser
                 return parseFunction(plus, prev);
             }
             if (sgn) {
-                throw new CSSException("token");
+                throw createCSSParseException("token");
             }
         }
         switch (current) {
@@ -860,7 +1083,7 @@ public class Parser
             return hexcolor(prev);
         default:
             new Exception().printStackTrace();
-            throw new CSSException("token" + current);
+            throw createCSSParseException("token" + current);
         }
     }
 
@@ -873,17 +1096,333 @@ public class Parser
         
         LexicalUnit params = parseExpression(true);
 
-        if (name.equalsIgnoreCase("rgb")) {
-            if (current != LexicalUnits.RIGHT_BRACE) {
-                throw new CSSException("token");
-            }
-            nextIgnoreSpaces();
-            return CSSLexicalUnit.createPredefinedFunction(LexicalUnit.SAC_RGBCOLOR,
-                                                           params,
-                                                           prev);
+        if (current != LexicalUnits.RIGHT_BRACE) {
+            throw createCSSParseException("token");
         }
-        // !!! Todo counters...
         nextIgnoreSpaces();
+
+        predefined: switch (name.charAt(0)) {
+        case 'r':
+        case 'R':
+            LexicalUnit lu;
+            if (name.equalsIgnoreCase("rgb")) {
+                lu = params;
+                if (lu == null) {
+                    break;
+                }
+                switch (lu.getLexicalUnitType()) {
+                default:
+                    break predefined;
+                case LexicalUnit.SAC_INTEGER:
+                case LexicalUnit.SAC_PERCENTAGE:
+                    lu = lu.getNextLexicalUnit();
+                }
+                if (lu == null) {
+                    break;
+                }
+                switch (lu.getLexicalUnitType()) {
+                default:
+                    break predefined;
+                case LexicalUnit.SAC_OPERATOR_COMMA:
+                    lu = lu.getNextLexicalUnit();
+                }
+                if (lu == null) {
+                    break;
+                }
+                switch (lu.getLexicalUnitType()) {
+                default:
+                    break predefined;
+                case LexicalUnit.SAC_INTEGER:
+                case LexicalUnit.SAC_PERCENTAGE:
+                    lu = lu.getNextLexicalUnit();
+                }
+                if (lu == null) {
+                    break;
+                }
+                switch (lu.getLexicalUnitType()) {
+                default:
+                    break predefined;
+                case LexicalUnit.SAC_OPERATOR_COMMA:
+                    lu = lu.getNextLexicalUnit();
+                }
+                if (lu == null) {
+                    break;
+                }
+                switch (lu.getLexicalUnitType()) {
+                default:
+                    break predefined;
+                case LexicalUnit.SAC_INTEGER:
+                case LexicalUnit.SAC_PERCENTAGE:
+                    lu = lu.getNextLexicalUnit();
+                }
+                if (lu != null) {
+                    break;
+                }
+                return CSSLexicalUnit.createPredefinedFunction
+                    (LexicalUnit.SAC_RGBCOLOR, params, prev);
+            } else if (name.equalsIgnoreCase("rect")) {
+                lu = params;
+                if (lu == null) {
+                    break;
+                }
+                switch (lu.getLexicalUnitType()) {
+                default:
+                    break predefined;
+                case LexicalUnit.SAC_INTEGER:
+                    if (lu.getIntegerValue() != 0) {
+                        break predefined;
+                    }
+                    lu = lu.getNextLexicalUnit();
+                    break;
+                case LexicalUnit.SAC_IDENT:
+                    if (!lu.getStringValue().equalsIgnoreCase("auto")) {
+                        break predefined;
+                    }
+                    lu = lu.getNextLexicalUnit();
+                    break;
+                case LexicalUnit.SAC_EM:
+                case LexicalUnit.SAC_EX:
+                case LexicalUnit.SAC_PIXEL:
+                case LexicalUnit.SAC_CENTIMETER:
+                case LexicalUnit.SAC_MILLIMETER:
+                case LexicalUnit.SAC_INCH:
+                case LexicalUnit.SAC_POINT:
+                case LexicalUnit.SAC_PICA:
+                case LexicalUnit.SAC_PERCENTAGE:
+                    lu = lu.getNextLexicalUnit();
+                }
+                if (lu == null) {
+                    break;
+                }
+                switch (lu.getLexicalUnitType()) {
+                default:
+                    break predefined;
+                case LexicalUnit.SAC_OPERATOR_COMMA:
+                    lu = lu.getNextLexicalUnit();
+                }
+                if (lu == null) {
+                    break;
+                }
+                switch (lu.getLexicalUnitType()) {
+                default:
+                    break predefined;
+                case LexicalUnit.SAC_INTEGER:
+                    if (lu.getIntegerValue() != 0) {
+                        break predefined;
+                    }
+                    lu = lu.getNextLexicalUnit();
+                    break;
+                case LexicalUnit.SAC_IDENT:
+                    if (!lu.getStringValue().equalsIgnoreCase("auto")) {
+                        break predefined;
+                    }
+                    lu = lu.getNextLexicalUnit();
+                    break;
+                case LexicalUnit.SAC_EM:
+                case LexicalUnit.SAC_EX:
+                case LexicalUnit.SAC_PIXEL:
+                case LexicalUnit.SAC_CENTIMETER:
+                case LexicalUnit.SAC_MILLIMETER:
+                case LexicalUnit.SAC_INCH:
+                case LexicalUnit.SAC_POINT:
+                case LexicalUnit.SAC_PICA:
+                case LexicalUnit.SAC_PERCENTAGE:
+                    lu = lu.getNextLexicalUnit();
+                }
+                if (lu == null) {
+                    break;
+                }
+                switch (lu.getLexicalUnitType()) {
+                default:
+                    break predefined;
+                case LexicalUnit.SAC_OPERATOR_COMMA:
+                    lu = lu.getNextLexicalUnit();
+                }
+                if (lu == null) {
+                    break;
+                }
+                switch (lu.getLexicalUnitType()) {
+                default:
+                    break predefined;
+                case LexicalUnit.SAC_INTEGER:
+                    if (lu.getIntegerValue() != 0) {
+                        break predefined;
+                    }
+                    lu = lu.getNextLexicalUnit();
+                    break;
+                case LexicalUnit.SAC_IDENT:
+                    if (!lu.getStringValue().equalsIgnoreCase("auto")) {
+                        break predefined;
+                    }
+                    lu = lu.getNextLexicalUnit();
+                    break;
+                case LexicalUnit.SAC_EM:
+                case LexicalUnit.SAC_EX:
+                case LexicalUnit.SAC_PIXEL:
+                case LexicalUnit.SAC_CENTIMETER:
+                case LexicalUnit.SAC_MILLIMETER:
+                case LexicalUnit.SAC_INCH:
+                case LexicalUnit.SAC_POINT:
+                case LexicalUnit.SAC_PICA:
+                case LexicalUnit.SAC_PERCENTAGE:
+                    lu = lu.getNextLexicalUnit();
+                }
+                if (lu == null) {
+                    break;
+                }
+                switch (lu.getLexicalUnitType()) {
+                default:
+                    break predefined;
+                case LexicalUnit.SAC_OPERATOR_COMMA:
+                    lu = lu.getNextLexicalUnit();
+                }
+                if (lu == null) {
+                    break;
+                }
+                switch (lu.getLexicalUnitType()) {
+                default:
+                    break predefined;
+                case LexicalUnit.SAC_INTEGER:
+                    if (lu.getIntegerValue() != 0) {
+                        break predefined;
+                    }
+                    lu = lu.getNextLexicalUnit();
+                    break;
+                case LexicalUnit.SAC_IDENT:
+                    if (!lu.getStringValue().equalsIgnoreCase("auto")) {
+                        break predefined;
+                    }
+                    lu = lu.getNextLexicalUnit();
+                    break;
+                case LexicalUnit.SAC_EM:
+                case LexicalUnit.SAC_EX:
+                case LexicalUnit.SAC_PIXEL:
+                case LexicalUnit.SAC_CENTIMETER:
+                case LexicalUnit.SAC_MILLIMETER:
+                case LexicalUnit.SAC_INCH:
+                case LexicalUnit.SAC_POINT:
+                case LexicalUnit.SAC_PICA:
+                case LexicalUnit.SAC_PERCENTAGE:
+                    lu = lu.getNextLexicalUnit();
+                }
+                if (lu != null) {
+                    break;
+                }
+                return CSSLexicalUnit.createPredefinedFunction
+                    (LexicalUnit.SAC_RECT_FUNCTION, params, prev);
+            }
+            break;
+        case 'c':
+        case 'C':
+            if (name.equalsIgnoreCase("counter")) {
+                lu = params;
+                if (lu == null) {
+                    break;
+                }
+                switch (lu.getLexicalUnitType()) {
+                default:
+                    break predefined;
+                case LexicalUnit.SAC_IDENT:
+                    lu = lu.getNextLexicalUnit();
+                }
+                if (lu == null) {
+                    break;
+                }
+                switch (lu.getLexicalUnitType()) {
+                default:
+                    break predefined;
+                case LexicalUnit.SAC_OPERATOR_COMMA:
+                    lu = lu.getNextLexicalUnit();
+                }
+                if (lu == null) {
+                    break;
+                }
+                switch (lu.getLexicalUnitType()) {
+                default:
+                    break predefined;
+                case LexicalUnit.SAC_IDENT:
+                    lu = lu.getNextLexicalUnit();
+                }
+                if (lu != null) {
+                    break;
+                }
+                return CSSLexicalUnit.createPredefinedFunction
+                    (LexicalUnit.SAC_COUNTER_FUNCTION, params, prev);
+            } else if (name.equalsIgnoreCase("counters")) {
+                lu = params;
+                if (lu == null) {
+                    break;
+                }
+                switch (lu.getLexicalUnitType()) {
+                default:
+                    break predefined;
+                case LexicalUnit.SAC_IDENT:
+                    lu = lu.getNextLexicalUnit();
+                }
+                if (lu == null) {
+                    break;
+                }
+                switch (lu.getLexicalUnitType()) {
+                default:
+                    break predefined;
+                case LexicalUnit.SAC_OPERATOR_COMMA:
+                    lu = lu.getNextLexicalUnit();
+                }
+                if (lu == null) {
+                    break;
+                }
+                switch (lu.getLexicalUnitType()) {
+                default:
+                    break predefined;
+                case LexicalUnit.SAC_STRING_VALUE:
+                    lu = lu.getNextLexicalUnit();
+                }
+                if (lu == null) {
+                    break;
+                }
+                switch (lu.getLexicalUnitType()) {
+                default:
+                    break predefined;
+                case LexicalUnit.SAC_OPERATOR_COMMA:
+                    lu = lu.getNextLexicalUnit();
+                }
+                if (lu == null) {
+                    break;
+                }
+                switch (lu.getLexicalUnitType()) {
+                default:
+                    break predefined;
+                case LexicalUnit.SAC_IDENT:
+                    lu = lu.getNextLexicalUnit();
+                }
+                if (lu != null) {
+                    break;
+                }
+                return CSSLexicalUnit.createPredefinedFunction
+                    (LexicalUnit.SAC_COUNTERS_FUNCTION, params, prev);
+            }
+            break;
+        case 'a':
+        case 'A':
+            if (name.equalsIgnoreCase("attr")) {
+                lu = params;
+                if (lu == null) {
+                    break;
+                }
+                switch (lu.getLexicalUnitType()) {
+                default:
+                    break predefined;
+                case LexicalUnit.SAC_IDENT:
+                    lu = lu.getNextLexicalUnit();
+                }
+                if (lu != null) {
+                    break;
+                }
+                return CSSLexicalUnit.createString
+                    (LexicalUnit.SAC_ATTR, params.getStringValue(), prev);
+            }
+        }
+
         return CSSLexicalUnit.createFunction(name, params, prev);
     }
 
@@ -902,7 +1441,7 @@ public class Parser
             if (!ScannerUtilities.isCSSHexadecimalCharacter(rc) ||
                 !ScannerUtilities.isCSSHexadecimalCharacter(gc) ||
                 !ScannerUtilities.isCSSHexadecimalCharacter(bc)) {
-                throw new CSSException("rgb.color");
+                throw createCSSParseException("rgb.color");
             }
             int t;
             int r = t = (rc >= '0' && rc <= '9') ? rc - '0' : rc - 'a' + 10;
@@ -934,7 +1473,7 @@ public class Parser
                 !ScannerUtilities.isCSSHexadecimalCharacter(gc2) ||
                 !ScannerUtilities.isCSSHexadecimalCharacter(bc1) ||
                 !ScannerUtilities.isCSSHexadecimalCharacter(bc2)) {
-                throw new CSSException("rgb.color");
+                throw createCSSParseException("rgb.color");
             }
             r = (rc1 >= '0' && rc1 <= '9') ? rc1 - '0' : rc1 - 'a' + 10;
             r <<= 4;
@@ -952,7 +1491,7 @@ public class Parser
             tmp = CSSLexicalUnit.createInteger(b, tmp);
             break;
         default:
-            throw new CSSException("rgb.color");
+            throw createCSSParseException("rgb.color");
         }
         nextIgnoreSpaces();
         return CSSLexicalUnit.createPredefinedFunction(LexicalUnit.SAC_RGBCOLOR,
@@ -964,8 +1503,12 @@ public class Parser
      * Returns the Java encoding string mapped with the given CSS encoding string.
      */
     protected String javaEncoding(String encoding) {
-        // !!! Todo
-        return encoding;
+        String result = (String)ENCODINGS.get(encoding);
+        if (result == null) {
+            throw new CSSException(formatMessage("encoding",
+                                                 new Object[] { encoding }));
+        }
+        return result;
     }
 
     /**
@@ -1004,14 +1547,18 @@ public class Parser
      * @param enc The encoding or null.
      */
     protected Reader characterStream(InputSource source, InputStream is, String enc) {
+        documentURI = source.getURI();
+        documentURI = (documentURI == null) ? "" : documentURI;
+
         try {
             String encoding = source.getEncoding();
             if (encoding == null && enc == null) {
                 return new InputStreamReader(is);
             } else if (encoding != null && enc != null) {
                 if (!javaEncoding(encoding).equals(javaEncoding(enc))) {
-                    throw new CSSException("encoding");
-                    }
+                    throw new CSSException(formatMessage("encoding",
+                                                         new Object[] { enc }));
+                }
                 return new InputStreamReader(is, javaEncoding(encoding));
             } else {
                 return new InputStreamReader(is, javaEncoding((enc != null)
@@ -1061,7 +1608,7 @@ public class Parser
             nextIgnoreSpaces();
             return sgn * Float.parseFloat(val);
         } catch (NumberFormatException e) {
-            throw new CSSException(e);
+            throw createCSSParseException("number.format");
         }
     }
 
@@ -1088,7 +1635,7 @@ public class Parser
                  val.substring(i),
                  prev);
         } catch (NumberFormatException e) {
-            throw new CSSException(e);
+            throw createCSSParseException("number.format");
         }
     }
 
@@ -1139,10 +1686,15 @@ public class Parser
      * Reports a parsing error.
      */
     protected void reportError(String key) {
-        errorHandler.error(new CSSParseException(formatMessage(key, null),
-                                                 null, // !!! Todo set the URI
-                                                 scanner.getLine(),
-                                                 scanner.getColumn()));
+        reportError(createCSSParseException(formatMessage(key, null)));
+    }
+
+    /**
+     * Reports a parsing error.
+     */
+    protected void reportError(CSSParseException e) {
+        errorHandler.error(e);
+
         int brackets = 1;
         for (;;) {
             switch (current) {
@@ -1159,5 +1711,15 @@ public class Parser
             }
             nextIgnoreSpaces();
         }
+    }
+
+    /**
+     * Creates a parse exception.
+     */
+    protected CSSParseException createCSSParseException(String key) {
+        return new CSSParseException(formatMessage(key, null),
+                                     documentURI,
+                                     scanner.getLine(),
+                                     scanner.getColumn());
     }
 }

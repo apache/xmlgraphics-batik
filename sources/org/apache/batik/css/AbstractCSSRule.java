@@ -22,17 +22,18 @@ import org.w3c.dom.css.CSSStyleSheet;
  * @version $Id$
  */
 public abstract class AbstractCSSRule implements CSSRule {
+
     /**
      * The selector factory.
      */
     public final static SelectorFactory SELECTOR_FACTORY =
-        new CSSOMSelectorFactory();
+        CSSOMSelectorFactory.INSTANCE;
     
     /**
      * The condition factory.
      */
     public final static ConditionFactory CONDITION_FACTORY =
-        new CSSOMConditionFactory();
+        CSSOMConditionFactory.INSTANCE;
 
     /**
      * The parent StyleSheet.

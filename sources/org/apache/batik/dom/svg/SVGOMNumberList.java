@@ -55,7 +55,7 @@ public class SVGOMNumberList
         if (modificationHandler == null) {
             list.clear();
         } else {
-            modificationHandler.valueChanged("");
+            modificationHandler.valueChanged(this, "");
         }
     }
 
@@ -64,18 +64,34 @@ public class SVGOMNumberList
      */
     public SVGNumber initialize(SVGNumber newItem)
         throws DOMException, SVGException {
-        SVGOMNumber result = (SVGOMNumber)list.initialize(newItem);
-        
-        return result;
+        if (modificationHandler == null) {
+            //newItem.setModificationHandler(this);
+            return (SVGNumber)list.initialize(newItem);
+        } else {
+            modificationHandler.valueChanged(this, Float.toString(newItem.getValue()));
+            return (SVGNumber)list.getItem(0);
+        }
     }
 
+    /**
+     * <b>DOM</b>: Implements {@link SVGNumberList#getItem(int)}.
+     */
     public SVGNumber getItem(int index) throws DOMException {
-        return null;
+        return (SVGNumber)list.getItem(index);
     }
 
+    /**
+     * <b>DOM</b>: Implements {@link SVGNumberList#insertItemBefore(SVGNumber,int)}.
+     */
     public SVGNumber insertItemBefore(SVGNumber newItem, int index)
         throws DOMException, SVGException {
-        return null;
+        if (modificationHandler == null) {
+            //newItem.setModificationHandler(this);
+            return (SVGNumber)list.insertItemBefore(newItem, index);
+        } else {
+            //modificationHandler.valueChanged(sb.toString());
+            return (SVGNumber)list.getItem(index);
+        }
     }
 
     public SVGNumber replaceItem(SVGNumber newItem, int index)
@@ -98,13 +114,24 @@ public class SVGOMNumberList
      * @param newValue The new Attr node.
      */
     public void valueChanged(Attr oldValue, Attr newValue) {
-	parseValue(newValue.getValue());
+        if (oldValue == null) {
+            parseValue(newValue.getValue());
+        } else {
+            parseValue(oldValue.getValue(), newValue.getValue());
+        }
     }
 
     /**
      * Parses the given value and initializes the list.
      */
     public void parseValue(String val) {
+        parseValue("", val);
+    }
 
+    /**
+     * Parses the old and new values and modifies the list.
+     */
+    protected void parseValue(String oldVal, String newVal) {
+        
     }
 }

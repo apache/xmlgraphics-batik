@@ -103,7 +103,7 @@ public class SVGOMLength
                     throw new RuntimeException("Invalid Unit");
                 }
             } else {
-                SVGElement elt = modificationHandler.getSVGElement();
+                SVGElement elt = (SVGElement)modificationHandler.getObject(null);
                 SVGOMDocument doc = (SVGOMDocument)elt.getOwnerDocument();
                 UnitProcessor.Context ctx;
                 ctx = new DefaultUnitProcessorContext(doc.getSVGContext(), elt);
@@ -135,7 +135,7 @@ public class SVGOMLength
                     throw new RuntimeException("Invalid Unit");
                 }
             } else {
-                SVGElement elt = modificationHandler.getSVGElement();
+                SVGElement elt = (SVGElement)modificationHandler.getObject(null);
                 SVGOMDocument doc = (SVGOMDocument)elt.getOwnerDocument();
                 UnitProcessor.Context ctx;
                 ctx = new DefaultUnitProcessorContext(doc.getSVGContext(), elt);
@@ -168,7 +168,7 @@ public class SVGOMLength
 	if (modificationHandler == null) {
 	    parseLength(value + UNITS[unitType]);
 	} else {
-	    modificationHandler.valueChanged(value + UNITS[unitType]);
+	    modificationHandler.valueChanged(this, value + UNITS[unitType]);
 	}
     }
 
@@ -188,7 +188,7 @@ public class SVGOMLength
 	if (modificationHandler == null) {
 	    parseLength(valueAsString);
 	} else {
-	    modificationHandler.valueChanged(valueAsString);
+	    modificationHandler.valueChanged(this, valueAsString);
 	}
     }
 

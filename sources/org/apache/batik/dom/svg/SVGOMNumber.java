@@ -18,10 +18,50 @@ import org.w3c.dom.svg.SVGNumber;
  * @version $Id$
  */
 public class SVGOMNumber implements SVGNumber {
-    public float getValue() {
-        return 0;
+
+    /**
+     * The value of this number.
+     */
+    protected float value;
+
+    /**
+     * The associated attribute modifier.
+     */
+    protected ModificationHandler modificationHandler;
+
+    /**
+     * Sets the associated attribute modifier.
+     */
+    public void setModificationHandler(ModificationHandler mh) {
+        modificationHandler = mh;
     }
 
-    public void setValue(float value) throws DOMException {
+    /**
+     * <b>DOM</b>: Implements {@link SVGNumber#getValue()}.
+     */
+    public float getValue() {
+        return value;
+    }
+
+    /**
+     * <b>DOM</b>: Implements {@link SVGNumber#setValue(float)}.
+     */
+    public void setValue(float val) throws DOMException {
+        if (modificationHandler == null) {
+            value = val;
+        } else {
+            modificationHandler.valueChanged(this, Float.toString(val));
+        }
+    }
+
+    /**
+     * Parses the given string.
+     */
+    public void parseValue(String val) {
+        try {
+            value = Float.parseFloat(val);
+        } catch (NumberFormatException e) {
+	    throw new DOMException(DOMException.SYNTAX_ERR, e.getMessage());
+        }
     }
 }
