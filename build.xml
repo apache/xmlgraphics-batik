@@ -640,22 +640,6 @@ To display the available targets type:
     </java>
   </target>
 
-  <target name="regsvggen"
-          depends="compile"
-          description="Runs the SVG generator regression utility">
-    <java fork="yes"
-          classname="${class-prefix}.apps.regsvggen.Main">
-      <classpath>
-        <path refid="libs-classpath"/>
-        <pathelement location="${dest}" />
-        <pathelement location="resources" />
-        <pathelement location="regsvggen/classes" />
-      </classpath>
-      <arg line="${args}"/>
-    </java>
-  </target>
-
-
   <!-- Documentation ...................................................... -->
   <target name="prepare-docs" depends="init">
     <mkdir dir="${docs}"/>
