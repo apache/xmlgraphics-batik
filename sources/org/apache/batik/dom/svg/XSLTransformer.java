@@ -22,6 +22,7 @@ import org.apache.batik.dom.GenericDOMImplementation;
 import org.apache.batik.dom.util.DocumentFactory;
 import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.dom.util.HashTable;
+import org.apache.batik.dom.util.SAXDocumentFactory;
 import org.apache.batik.util.SVGConstants;
 
 import org.w3c.dom.Document;
@@ -100,16 +101,14 @@ public class XSLTransformer {
                     
                     if ("text/xsl".equals(type)) {
                         DocumentFactory df =
-                            new DocumentFactory(GenericDOMImplementation.
-                                                getDOMImplementation(),
-                                   "org.apache.crimson.parser.XMLReaderImpl");
+                            new SAXDocumentFactory(GenericDOMImplementation.
+                                                   getDOMImplementation(),
+                                        "org.apache.crimson.parser.XMLReaderImpl");
                         String href = (String)attrs.get("href");
                         URL url = new URL(new URL(uri), href);
-                        InputSource is = new InputSource(url.toString());
                         Document doc = df.createDocument(XSL_NAMESPACE_URI,
                                                          "stylesheet",
-                                                         url.toString(),
-                                                         is);
+                                                         url.toString());
                         result.add(href);
                         result.add(doc);
                     }

@@ -10,6 +10,10 @@
 
   <release version="???" date="???">
 
+    <action dev="SH" type="update">
+    Moved the parsers and handlers in batik/refimpl/parser to batik/parser.
+    </action>
+  
     <action dev="SH" type="fix">
     Fixed a problem with the 'xml-stylesheet' processing instructions creation in
     the generic DOM implementation.

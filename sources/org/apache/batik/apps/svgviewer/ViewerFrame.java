@@ -88,6 +88,7 @@ import javax.swing.text.PlainDocument;
 import org.apache.batik.bridge.UserAgent;
 
 import org.apache.batik.dom.svg.DefaultSVGContext;
+import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
 import org.apache.batik.dom.svg.SVGDocumentFactory;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.svg.XSLTransformer;
@@ -369,7 +370,7 @@ public class ViewerFrame
                 resources.getInteger("Frame.height"));
         URL url = getClass().getResource(resources.getString("Frame.icon"));
         setIconImage(new ImageIcon(url).getImage());
-        df = new SVGDocumentFactory(application.getXMLParserClassName());
+        df = new SAXSVGDocumentFactory(application.getXMLParserClassName());
 
         addWindowListener(new WindowAdapter() {
                 public void windowClosing(WindowEvent e) {

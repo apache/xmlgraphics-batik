@@ -244,6 +244,8 @@ To display the available targets type:
                                script-jar,
                                transcoder-jar,
                                bridge-jar,
+                               xml-jar,
+                               svg-pp-jar,
                                svg-viewer-jar,
                                rasterizer-jar">
     <copy todir="${build}/lib">
@@ -432,6 +434,19 @@ To display the available targets type:
   </target>
 
 
+  <!-- XML (dependencies: util) -->
+  <target name="xml-jar" depends="compile, prepare-build">
+    <jar jarfile="${build}/lib/${project}-xml.jar">
+      <fileset dir="${dest}">
+        <include name="${package-prefix}/xml/**/*.class"/>
+      </fileset>
+      <fileset dir="${resources}">
+        <include name="${package-prefix}/xml/**/resources/*"/>
+      </fileset>
+    </jar>
+  </target>
+
+
   <!-- Bridge (dependencies: all) -->
   <target name="bridge-jar" depends="compile, prepare-build">
     <jar jarfile="${build}/lib/${project}-bridge.jar">
@@ -452,6 +467,18 @@ To display the available targets type:
     </jar>
   </target>
 
+  <!-- SVG Pretty-printer (dependencies: ???) -->
+  <target name="svg-pp-jar" depends="compile, prepare-build">
+    <jar manifest="${src}/${project}-pp.mf"
+         jarfile="${build}/${project}-svgpp.jar">
+      <fileset dir="${dest}">
+        <include name="${package-prefix}/apps/svgpp/**/*.class"/>
+      </fileset>
+      <fileset dir="${resources}">
+        <include name="${package-prefix}/apps/svgpp/**/resources/**"/>
+      </fileset>
+    </jar>
+  </target>
 
   <!-- SVG Viewer (dependencies: all) -->
   <target name="svg-viewer-jar" depends="compile, prepare-build">
