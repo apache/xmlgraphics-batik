@@ -420,15 +420,18 @@ public class BaseScriptingEnvironment {
                 String href = XLinkSupport.getXLinkHref(script);
                 String desc = null;
                 Reader reader;
+
                 if (href.length() > 0) {
                     desc = href;
 
                     // External script.
                     ParsedURL purl = new ParsedURL
                         (XMLBaseSupport.getCascadedXMLBase(script), href);
+
                     checkCompatibleScriptURL(type, purl);
                     reader = new InputStreamReader(purl.openStream());
                 } else {
+                    checkCompatibleScriptURL(type, docPURL);
                     DocumentLoader dl = bridgeContext.getDocumentLoader();
                     Element e = script;
                     SVGDocument d = (SVGDocument)e.getOwnerDocument();
