@@ -994,6 +994,13 @@ public class BridgeContext implements ErrorConstants, CSSContext {
                 svgDocument.setCSSEngine(null);
             }
         }
+        Iterator iter = interpreterMap.values().iterator();
+        while (iter.hasNext()) {
+            Interpreter interpreter = (Interpreter)iter.next();
+            interpreter.dispose();
+        }
+        interpreterMap.clear();
+
         if (focusManager != null) {
             focusManager.dispose();
         }
