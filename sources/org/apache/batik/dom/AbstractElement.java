@@ -479,11 +479,14 @@ public abstract class AbstractElement
 
     /**
      * Fires a DOMAttrModified event.
+     * <!> WARNING: public accessor because of compilation problems
+     *     on Solaris. Do not change.
+     *
      * @param name The attribute name.
      * @param oldv The old value of the attribute.
      * @param newv The new value of the attribute.
      */
-    protected void fireDOMAttrModifiedEvent(String name, String oldv,
+    public void fireDOMAttrModifiedEvent(String name, String oldv,
                                             String newv) {
 	AbstractDocument doc = getCurrentDocument();
 	if (doc.getEventsEnabled() && !oldv.equals(newv)) {
