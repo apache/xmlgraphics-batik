@@ -231,7 +231,6 @@ public class ThumbnailDialog extends JDialog {
 	    if (documentChanged) {
 		svgThumbnailCanvas.setGraphicsNode(null);
 		svgThumbnailCanvas.setRenderingTransform(new AffineTransform());
-                documentChanged = false;
 	    }
         }
 
@@ -239,7 +238,6 @@ public class ThumbnailDialog extends JDialog {
 	    if (documentChanged) {
 		svgThumbnailCanvas.setGraphicsNode(null);
 		svgThumbnailCanvas.setRenderingTransform(new AffineTransform());
-                documentChanged = false;
 	    }
 	}
     }
