@@ -74,7 +74,7 @@ public class SVGPatternElementBridge implements PaintBridge,
             return null; // no content means no paint
         }
 
-        // get pattern region using 'patternUnits'
+        // get pattern region using 'patternUnits'. Pattern region is in tile pace.
         Rectangle2D patternRegion = SVGUtilities.convertPatternRegion
             (patternElement, paintedElement, paintedNode, ctx);
 
@@ -91,11 +91,8 @@ public class SVGPatternElementBridge implements PaintBridge,
             patternTransform = new AffineTransform();
         }
 
-        // 'overflow' on the painted element
+        // 'overflow' on the pattern element
         boolean overflowIsHidden = CSSUtilities.convertOverflow(patternElement);
-
-        // 'clip' on the painted element
-        float[] clip = CSSUtilities.convertClip(patternElement);
 
         // 'patternContentUnits' - default is userSpaceOnUse
         short contentCoordSystem;
@@ -109,56 +106,84 @@ public class SVGPatternElementBridge implements PaintBridge,
         }
 
         // Compute a transform according to viewBox,  preserveAspectRatio
-        // and patternContentUnits
+        // and patternContentUnits and the pattern transform attribute.
+        //
+        // The stack of transforms is:
+        //
+        // +-------------------------------+
+        // | viewPortTranslation           |
+        // +-------------------------------+
+        // | preserveAspectRatioTransform  |
+        // +-------------------------------+
+        // + patternContentUnitsTransform  |
+        // +-------------------------------+
+        // 
+        // where:
+        //   - viewPortTranslation is the transform that translate to the viewPort's 
+        //     origin.
+        //   - preserveAspectRatioTransform is the transformed implied by the 
+        //     preserveAspectRatio attribute.
+        //   - patternContentUnitsTransform is the transform implied by the 
+        //     patternContentUnits attribute.
+        //
+        // Note that there is an additional transform from the tiling space to the 
+        // user space (patternTransform) that is passed separately to the PatternPaintContext.
+        //
         GraphicsNodeRenderContext rc = ctx.getGraphicsNodeRenderContext();
-        AffineTransform patternContentTransform;
+        AffineTransform patternContentTransform 
+            = new AffineTransform(); 
+        
+        //
+        // Process viewPortTranslation
+        //
+        patternContentTransform.translate(patternRegion.getX(),
+                                          patternRegion.getY());
+
+        //
+        // Process preserveAspectRatioTransform
+        //
 
         // 'viewBox' attribute
         String viewBoxStr = SVGUtilities.getChainableAttributeNS
             (patternElement, null, SVG_VIEW_BOX_ATTRIBUTE, ctx);
 
-        if (viewBoxStr.length() == 0) {
-            // No viewBox has been found, handle 'patternContentUnits'
-            if (contentCoordSystem == SVGUtilities.OBJECT_BOUNDING_BOX) {
-                // objectBoundingBox: a transform for paintedNode bounds
-                Rectangle2D r = paintedNode.getGeometryBounds(rc);
-                patternContentTransform = new AffineTransform();
-                patternContentTransform.translate(r.getX(), r.getY());
-                patternContentTransform.scale(r.getWidth(), r.getHeight());
-            } else {
-                // userSpaceOnUse: no additional transform required
-                patternContentTransform = null;
-            }
-        } else {
-            // A viewBox has been found, handle 'preserveAspectRatio'
+        if (viewBoxStr.length() > 0) {
+            // There is a viewBox attribute. Then, take 
+            // preserveAspectRatio into account.
             String aspectRatioStr = SVGUtilities.getChainableAttributeNS
                (patternElement, null, SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE, ctx);
             float w = (float)patternRegion.getWidth();
             float h = (float)patternRegion.getHeight();
-            patternContentTransform = ViewBox.getPreserveAspectRatioTransform
+            AffineTransform preserveAspectRatioTransform 
+                = ViewBox.getPreserveAspectRatioTransform
                 (patternElement, viewBoxStr, aspectRatioStr, w, h);
 
-            // <!> FIXME: START
-            // - Why do we clip using viewBox region?
-            // - Why do we ignore the objectBoundingBox transform?
-
-            // clip the patternContentNode according to the 'overflow' property
-            if (overflowIsHidden) {
-                float [] vb
-                    = ViewBox.parseViewBoxAttribute(patternElement, viewBoxStr);
-                Rectangle2D viewBox
-                    = new Rectangle2D.Float(vb[0], vb[1], vb[2], vb[3]);
-
-                CompositeGraphicsNode comp = new CompositeGraphicsNode();
-                comp.getChildren().add(patternContentNode);
-
-                Filter filter = new GraphicsNodeRable8Bit(comp, rc);
-                comp.setClip(new ClipRable8Bit(filter, viewBox));
-
-                patternContentNode = comp;
-            }
-            // <!> FIXME: END
+            patternContentTransform.concatenate(preserveAspectRatioTransform);
         }
+        
+        //
+        // Process patternContentUnitsTransform
+        //
+        if(contentCoordSystem == SVGUtilities.OBJECT_BOUNDING_BOX){
+            AffineTransform patternContentUnitsTransform
+                = new AffineTransform();
+            Rectangle2D objectBoundingBox = paintedNode.getGeometryBounds(rc);
+            patternContentUnitsTransform.translate
+                (objectBoundingBox.getX(),
+                 objectBoundingBox.getY());
+
+            patternContentUnitsTransform.scale
+                (objectBoundingBox.getWidth(),
+                 objectBoundingBox.getHeight());
+
+            patternContentTransform.concatenate
+                (patternContentUnitsTransform);
+        }
+
+        //
+        // Apply transform
+        //
+        patternContentNode.setTransform(patternContentTransform);
 
         // take the opacity into account. opacity is implemented by a Filter
         if (opacity != 1) {
@@ -167,20 +192,15 @@ public class SVGPatternElementBridge implements PaintBridge,
                                  {0, 0, 1, 0, 0},
                                  {0, 0, 0, opacity, 0} };
 
-            // <!> FIXME: Why do we need to create an intermediate node?
             ColorMatrixRable filter = ColorMatrixRable8Bit.buildMatrix(matrix);
             Filter contentRable
                 = new GraphicsNodeRable8Bit(patternContentNode, rc);
             filter.setSource(contentRable);
             patternContentNode.setFilter(filter);
-            CompositeGraphicsNode comp = new CompositeGraphicsNode();
-            comp.getChildren().add(patternContentNode);
-            patternContentNode = comp;
         }
 
         return new PatternPaint(patternContentNode,
                                 rc,
-                                patternContentTransform,
                                 patternRegion,
                                 !overflowIsHidden,
                                 patternTransform);
