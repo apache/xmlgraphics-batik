@@ -196,7 +196,7 @@
 
 
     <p><strong>Dynamic Tests Not Passed by Batik</strong></p>
-        <table class="batikTable">
+        <table >
             <tr>
 	    <td>animation-inherit-BE-10.svg</td>
 	    <td>animation-overall-BE-01.svg</td>
