@@ -78,7 +78,7 @@ public class DocumentWrapper
 
     /**
      * <b>DOM</b>: Implements {@link org.w3c.dom.Document#getImplementation()}.
-     * @return {@link #implementation}
+     * @return {@link #domImplementationWrapper}
      */
     public DOMImplementation getImplementation() {
         return domImplementationWrapper;

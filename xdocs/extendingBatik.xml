@@ -173,6 +173,7 @@
 
                 <p>
                 The distribution comes with a number of examples
+		</p>
                 <ul>
                   <li><code>org.apache.batik.extension.svg.BatikStarElement</code></li>
                   <li><code>org.apache.batik.extension.svg.BatikRegularPolygonElement</code></li>
@@ -180,6 +181,7 @@
                   <li><code>org.apache.batik.extension.svg.SolidColorElement</code></li>
                   <li><code>org.apache.batik.extension.svg.ColorSwitchElement</code></li>
                 </ul>
+		<p>
                 Included with these examples is 
                 <code>org.apache.batik.extension.svg.BatikDomExtension</code> 
                 which is the required instance of <code>DomExtension</code> 
