@@ -13,6 +13,7 @@ import java.awt.Composite;
 import java.awt.GraphicsEnvironment;
 import java.awt.Paint;
 import java.awt.RenderingHints;
+import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.font.TextAttribute;
@@ -82,6 +83,22 @@ public class SVGTextElementBridge implements GraphicsNodeBridge,
         }
         // 'visibility'
         node.setVisible(CSSUtilities.convertVisibility(e));
+
+        // 'text-rendering' and 'color-rendering'
+        Map textHints = CSSUtilities.convertTextRendering(e);
+        Map colorHints = CSSUtilities.convertColorRendering(e);
+        if (textHints != null || colorHints != null) {
+            RenderingHints hints;
+            if (textHints == null) {
+                hints = new RenderingHints(colorHints);
+            } else if (colorHints == null) {
+                hints = new RenderingHints(textHints);
+            } else {
+                hints = new RenderingHints(textHints);
+                hints.putAll(colorHints);
+            }
+            node.setRenderingHints(hints);
+        }
 
         UnitProcessor.Context uctx = UnitProcessor.createContext(ctx, e);
 

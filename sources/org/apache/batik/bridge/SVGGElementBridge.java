@@ -8,7 +8,9 @@
 
 package org.apache.batik.bridge;
 
+import java.awt.RenderingHints;
 import java.awt.geom.Rectangle2D;
+import java.util.Map;
 
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
@@ -38,6 +40,12 @@ public class SVGGElementBridge extends AbstractGraphicsNodeBridge {
     public GraphicsNode createGraphicsNode(BridgeContext ctx, Element e) {
         CompositeGraphicsNode gn =
             (CompositeGraphicsNode)super.createGraphicsNode(ctx, e);
+
+        // 'color-rendering'
+        Map colorHints = CSSUtilities.convertColorRendering(e);
+        if (colorHints != null) {
+            gn.setRenderingHints(new RenderingHints(colorHints));
+        }
 
         // 'enable-background'
         UnitProcessor.Context uctx = UnitProcessor.createContext(ctx, e);

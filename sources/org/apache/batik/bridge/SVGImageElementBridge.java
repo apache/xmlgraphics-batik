@@ -8,6 +8,7 @@
 
 package org.apache.batik.bridge;
 
+import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.color.ColorSpace;
 import java.awt.color.ICC_Profile;
@@ -16,6 +17,7 @@ import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Map;
 
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.XLinkSupport;
@@ -114,6 +116,23 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
             throw new BridgeException(e, ERR_URI_IMAGE_INVALID,
                                       new Object[] {uriStr});
         }
+
+        // 'image-rendering' and 'color-rendering'
+        Map imageHints = CSSUtilities.convertImageRendering(e);
+        Map colorHints = CSSUtilities.convertColorRendering(e);
+        if (imageHints != null || colorHints != null) {
+            RenderingHints hints;
+            if (imageHints == null) {
+                hints = new RenderingHints(colorHints);
+            } else if (colorHints == null) {
+                hints = new RenderingHints(imageHints);
+            } else {
+                hints = new RenderingHints(imageHints);
+                hints.putAll(colorHints);
+            }
+            node.setRenderingHints(hints);
+        }
+
         imageNode.setImage(node);
         return imageNode;
     }
@@ -196,16 +215,16 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
         }
 
         Rectangle2D bounds = getImageBounds(ctx, element);
-        svgElement.setAttributeNS(null, SVG_WIDTH_ATTRIBUTE, 
+        svgElement.setAttributeNS(null, SVG_WIDTH_ATTRIBUTE,
                                   String.valueOf(bounds.getWidth()));
-        svgElement.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE, 
-                                  String.valueOf(bounds.getHeight())); 
+        svgElement.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE,
+                                  String.valueOf(bounds.getHeight()));
 
         AffineTransform at
-            = ViewBox.getPreserveAspectRatioTransform(svgElement, 
-                                                      (float)bounds.getWidth(), 
+            = ViewBox.getPreserveAspectRatioTransform(svgElement,
+                                                      (float)bounds.getWidth(),
                                                       (float)bounds.getHeight());
-        at.preConcatenate(AffineTransform.getTranslateInstance(bounds.getX(), 
+        at.preConcatenate(AffineTransform.getTranslateInstance(bounds.getX(),
                                                                bounds.getY()));
         result.setTransform(at);
 
@@ -214,7 +233,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
 
         /*
         // resolve x, y, width, height and preserveAspectRatio on image
-        
+
         Rectangle2D bounds = getImageBounds(ctx, element);
         float x = (float)bounds.getX();
         float y = (float)bounds.getY();
