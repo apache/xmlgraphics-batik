@@ -24,6 +24,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
+import java.security.AccessControlException;
+
 /**
  * This class allows to manage users preferences.
  * <p>
@@ -67,11 +69,23 @@ public class PreferenceManager
     protected String prefFileName = null;
     protected String fullName = null;
 
-    protected final static String USER_HOME = System.getProperty("user.home");
-    protected final static String USER_DIR  = System.getProperty("user.dir");
-    protected final static String FILE_SEP  = System.getProperty("file.separator");
+    protected final static String USER_HOME = getSystemProperty("user.home");
+    protected final static String USER_DIR  = getSystemProperty("user.dir");
+    protected final static String FILE_SEP  = getSystemProperty("file.separator");
 
     private static String PREF_DIR = null;
+
+    /**
+     * Gets a System property if accessible. Returns an empty string 
+     * otherwise
+     */
+    protected static String getSystemProperty(String prop){
+        try{
+            return System.getProperty(prop);
+        }catch(AccessControlException e){
+            return "";
+        }
+    }
 
     /**
      * Creates a preference manager.
