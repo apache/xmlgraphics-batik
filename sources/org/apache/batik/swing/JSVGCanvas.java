@@ -908,7 +908,7 @@ public class JSVGCanvas extends JSVGComponent {
             if (svgUserAgent != null) {
                 super.displayError(ex);
             } else {
-                JOptionPane pane =
+                JErrorPane pane =
                     new JErrorPane(ex, JOptionPane.ERROR_MESSAGE);
                 JDialog dialog = pane.createDialog(JSVGCanvas.this, "ERROR");
                 dialog.setModal(false);

@@ -1696,7 +1696,7 @@ public class JSVGViewerFrame
             if (debug) {
                 ex.printStackTrace();
             }
-            JOptionPane pane =
+            JErrorPane pane =
                 new JErrorPane(ex, JOptionPane.ERROR_MESSAGE);
             JDialog dialog = pane.createDialog(JSVGViewerFrame.this, "ERROR");
             dialog.setModal(false);
