@@ -192,8 +192,10 @@ public class BackgroundRable8Bit
                                           GraphicsNode child) {
 
         Rectangle2D r2d = null;
-        if (gn == null)
+        if (gn == null) {
+            // System.out.println("Null GN Parent: " + child );
             return null;
+        }
 
         if (gn instanceof CompositeGraphicsNode) {
             CompositeGraphicsNode cgn = (CompositeGraphicsNode)gn;
@@ -208,9 +210,11 @@ public class BackgroundRable8Bit
         // No background enable so check our parent's value.
         r2d = getBoundsRecursive(gn.getParent(), gn);
 
-        // No background for any ancester (error) return null
-        if (r2d == null)
-            return null;
+        // No background for any ancester (error) return empty Rect...
+        if (r2d == null) {
+            // System.out.println("Null GetBoundsRec:" + gn + "\n\t" + child);
+            return new Rectangle2D.Float(0, 0, 0, 0);
+        }
 
         // Our parent has background but no bounds (and we must
         // have been the first child so build the new bounds...
@@ -240,8 +244,13 @@ public class BackgroundRable8Bit
         // System.out.println("GetBounds2D called");
         Rectangle2D r2d = getBoundsRecursive(node, null);
 
-        if (r2d == CompositeGraphicsNode.VIEWPORT)
-            r2d = getViewportBounds(node, null, getGraphicsNodeRenderContext());
+        // System.out.println("BoundsRec: " + r2d);
+
+        if (r2d == CompositeGraphicsNode.VIEWPORT) {
+            r2d = getViewportBounds(node, null, 
+                                    getGraphicsNodeRenderContext());
+            // System.out.println("BoundsViewport: " + r2d);
+        }
 
         return r2d;
     }

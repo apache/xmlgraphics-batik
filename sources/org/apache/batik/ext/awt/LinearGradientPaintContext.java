@@ -125,15 +125,21 @@ final class LinearGradientPaintContext extends MultipleGradientPaintContext {
             final int rowLimit = off+w;  // end of row iteration
 
             if (dgdX == 0) {
-                if (g < 0) g = 0;
-                if (g > 1) g = 1;
-
-                // Could be a binary search...
-                int gradIdx = 0;
-                while (gradIdx < gradientsLength) {
-                    if (g < fractions[gradIdx+1])
-                        break;
-                    gradIdx++;
+                int gradIdx;
+                if (g <= 0) {
+                    g = 0;
+                    gradIdx = 0;
+                } else if (g >= 1) {
+                    g = 1; 
+                    gradIdx = gradientsLength-1;
+                } else {
+                    // Could be a binary search...
+                    gradIdx = 0;
+                    while (gradIdx < gradientsLength-1) {
+                        if (g < fractions[gradIdx+1])
+                            break;
+                        gradIdx++;
+                    }
                 }
 
                 float delta = (g-fractions[gradIdx]);
@@ -179,7 +185,7 @@ final class LinearGradientPaintContext extends MultipleGradientPaintContext {
                 if (dgdX > 0) {
                     // Could be a binary search...
                     int gradIdx = 0;
-                    while (gradIdx < gradientsLength) {
+                    while (gradIdx < gradientsLength-1) {
                         if (g < fractions[gradIdx+1])
                             break;
                         gradIdx++;
@@ -211,7 +217,7 @@ final class LinearGradientPaintContext extends MultipleGradientPaintContext {
                 } else {
                     // Could be a binary search...
                     int gradIdx = gradientsLength-1;
-                    while (gradIdx >= 0) {
+                    while (gradIdx > 0) {
                         if (g > fractions[gradIdx])
                             break;
                         gradIdx--;
