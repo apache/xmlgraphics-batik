@@ -370,10 +370,10 @@ public abstract class AbstractGraphicsNode implements GraphicsNode, Cloneable {
         Shape g2dClip = g2d.getClip();
         if(g2dClip != null){
             Rectangle2D clipBounds = g2dClip.getBounds2D();
-            if(!bounds.intersects(clipBounds.getX(),
-                                  clipBounds.getY(),
-                                  clipBounds.getWidth(),
-                                  clipBounds.getHeight())){
+            if(bounds != null && !bounds.intersects(clipBounds.getX(),
+                                                    clipBounds.getY(),
+                                                    clipBounds.getWidth(),
+                                                    clipBounds.getHeight())){
                 paintNeeded = false;
             }
         }
@@ -784,8 +784,10 @@ public abstract class AbstractGraphicsNode implements GraphicsNode, Cloneable {
      */
     public Rectangle2D getTransformedBounds(AffineTransform txf, 
                                             GraphicsNodeRenderContext rc){
-        AffineTransform t = new AffineTransform(txf);
+        // System.out.println("getTransformedBounds A:" + this.getClass().getName());
+        AffineTransform t = txf;
         if(transform != null){
+            t = new AffineTransform(txf);
             t.concatenate(transform);
         }
 
@@ -795,31 +797,38 @@ public abstract class AbstractGraphicsNode implements GraphicsNode, Cloneable {
         // by the filter.
         Rectangle2D tBounds = null;
         if(filter == null){
-            tBounds = getTransformedPrimitiveBounds(txf, rc);
+            // System.out.println("getTransformedBounds B:" + this.getClass().getName());
+            tBounds = getTransformedPrimitiveBounds(txf, rc); /* Use txf, not t */
+            // System.out.println("getTransformedBounds C:" + this.getClass().getName());
         } else {
             tBounds = t.createTransformedShape(filter.getBounds2D()).getBounds2D();
         }
         // Factor in the clipping area, if any
-        if(clip != null) {
-            tBounds.intersect(tBounds,
-                              t.createTransformedShape(clip.getClipPath()).getBounds2D(),
-                              tBounds);
+        if(tBounds != null){
+            // System.out.println("getTransformedBounds D:" + this.getClass().getName());
+            if(clip != null) {
+                tBounds.intersect(tBounds,
+                                  t.createTransformedShape(clip.getClipPath()).getBounds2D(),
+                                  tBounds);
+            }
+            
+            // Factor in the mask, if any
+            if(mask != null) {
+                tBounds.intersect(tBounds,
+                                  t.createTransformedShape(mask.getBounds2D()).getBounds2D(),
+                                  tBounds);
+            }
         }
-        
-        // Factor in the mask, if any
-        if(mask != null) {
-            tBounds.intersect(tBounds,
-                              t.createTransformedShape(mask.getBounds2D()).getBounds2D(),
-                              tBounds);
-        }
+        // System.out.println("getTransformedBounds E:" + this.getClass().getName());
         return tBounds;
     }
 
     public Rectangle2D getTransformedPrimitiveBounds(AffineTransform txf,
                                                      GraphicsNodeRenderContext rc){
         Rectangle2D tpBounds = getPrimitiveBounds(rc);
-        AffineTransform t = new AffineTransform(txf);
+        AffineTransform t = txf; 
         if(transform != null){
+            t = new AffineTransform(txf);
             t.concatenate(transform);
         }
 
@@ -829,8 +838,9 @@ public abstract class AbstractGraphicsNode implements GraphicsNode, Cloneable {
     public Rectangle2D getTransformedGeometryBounds(AffineTransform txf,
                                                     GraphicsNodeRenderContext rc){
         Rectangle2D tpBounds = getGeometryBounds(rc);
-        AffineTransform t = new AffineTransform(txf);
+        AffineTransform t = txf;
         if(transform != null){
+            t = new AffineTransform(txf);
             t.concatenate(transform);
         }
         
@@ -857,18 +867,19 @@ public abstract class AbstractGraphicsNode implements GraphicsNode, Cloneable {
                 bounds = filter.getBounds2D();
             }
             // Factor in the clipping area, if any
-            if(clip != null) {
-                bounds.intersect(bounds,
-                                 clip.getClipPath().getBounds2D(),
-                                 bounds);
+            if(bounds != null){
+                if(clip != null) {
+                    bounds.intersect(bounds,
+                                     clip.getClipPath().getBounds2D(),
+                                     bounds);
+                }
+                // Factor in the mask, if any
+                if(mask != null) {
+                    bounds.intersect(bounds,
+                                     mask.getBounds2D(),
+                                     bounds);
+                }
             }
-            // Factor in the mask, if any
-            if(mask != null) {
-                bounds.intersect(bounds,
-                                 mask.getBounds2D(),
-                                 bounds);
-            }
-
         }
         return bounds;
     }
