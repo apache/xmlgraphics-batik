@@ -58,12 +58,6 @@ public class PatternPaint implements Paint {
      */
     private AffineTransform patternTransform;
 
-    /**
-     * Controls whether or not the pattern clips the
-     * the node
-     */
-    private boolean overflow;
-
     /*
      * The basic tile to fill the region with.
      * we replicate this out in the Context.
@@ -71,18 +65,21 @@ public class PatternPaint implements Paint {
     private Filter tile;
 
     /**
+     * Controls whether or not the pattern overflows
+     * the pattern tile
+     */
+    private boolean overflow;
+
+    /**
      * @param node Used to generate the paint pixel pattern
-     * @param nodeTransform Additional transform to
-     *        set on the pattern content node.
      * @param patternRegion Region to which this paint is constrained
-     * @param overflow controls whether or not the patternRegion
-     *        clips the pattern node.
+     * @param overflow controls whether or not the node can overflow
+     *        the patternRegion.
      * @param patternTransform additional transform added on
      *        top of the user space to device space transform.
      */
     public PatternPaint(GraphicsNode node,
                         GraphicsNodeRenderContext gnrc,
-                        AffineTransform nodeTransform,
                         Rectangle2D patternRegion,
                         boolean overflow,
                         AffineTransform patternTransform){
@@ -94,44 +91,34 @@ public class PatternPaint implements Paint {
             throw new IllegalArgumentException();
         }
 
-        if (nodeTransform == null)
-            nodeTransform = new AffineTransform();
-
         this.node             = node;
         this.gnrc             = gnrc;
         this.patternRegion    = patternRegion;
         this.overflow         = overflow;
         this.patternTransform = patternTransform;
-
-        //
-        // adjustTxf applies the nodeTransform first, then
-        // the translation to move the node rendering into
-        // the pattern region space
-        //
-        AffineTransform adjustTxf = new AffineTransform();
-        adjustTxf.translate(patternRegion.getX(), patternRegion.getY());
-        adjustTxf.concatenate(nodeTransform);
-
-        GraphicsNodeRable gnr = new GraphicsNodeRable8Bit(node, gnrc);
-
-        AffineRable atr = new AffineRable8Bit(gnr, adjustTxf);
-
+        
+        // Wrap the input node so that the primitivePaint
+        // in GraphicsNodeRable takes the filter, clip....
+        // into account.
+        CompositeGraphicsNode comp = new CompositeGraphicsNode();
+        comp.getChildren().add(node);
+        GraphicsNodeRable gnr = new GraphicsNodeRable8Bit(comp, gnrc);
 
         Rectangle2D padBounds = (Rectangle2D)patternRegion.clone();
-        if(overflow){
-            //
-            // When there is overflow, make sure we take the
-            // full node bounds into account.
-            //
-            Rectangle2D nodeBounds = node.getBounds(gnrc);
-            Rectangle2D adjustedNodeBounds
-                = adjustTxf.createTransformedShape(nodeBounds).getBounds2D();
 
-            //System.out.println("adjustedBounds : " + adjustedNodeBounds);
-            padBounds.add(adjustedNodeBounds);
+        //
+        // When there is overflow, make sure we take the
+        // full node bounds into account.
+        //
+        if(overflow){
+            Rectangle2D nodeBounds = comp.getBounds(gnrc);
+            // System.out.println("Node Bounds    : " + nodeBounds);
+            padBounds.add(nodeBounds);
         }
 
-        tile = new PadRable8Bit(atr, padBounds, PadMode.ZERO_PAD);
+        // System.out.println("Pattern region : " + patternRegion);
+        // System.out.println("Node txf       : " + node.getTransform());
+        tile = new PadRable8Bit(gnr, padBounds, PadMode.ZERO_PAD);
     }
 
     public GraphicsNode getGraphicsNode(){
@@ -140,10 +127,6 @@ public class PatternPaint implements Paint {
 
     public Rectangle2D getPatternRect(){
         return (Rectangle2D)patternRegion.clone();
-    }
-
-    public boolean isOverflow(){
-        return overflow;
     }
 
     public AffineTransform getPatternTransform(){
@@ -155,6 +138,9 @@ public class PatternPaint implements Paint {
                                       Rectangle2D     userBounds,
                                       AffineTransform xform,
                                       RenderingHints  hints) {
+        // System.out.println("userBounds : " + userBounds);
+        // System.out.println("patternTransform : " + patternTransform);
+
         //
         // Concatenate the patternTransform to xform
         //
