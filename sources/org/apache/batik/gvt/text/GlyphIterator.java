@@ -174,24 +174,27 @@ public class GlyphIterator {
 
     public float getMaxFontSize()  {
         if (aciIdx >= fontStart) {
-            updateLineMetrics(aciIdx);
-            fontStart = aciIdx + gv.getCharacterCount(idx,idx);
+            int newFS = aciIdx + gv.getCharacterCount(idx,idx);
+            updateLineMetrics(newFS);
+            fontStart = newFS;
         }
         return maxFontSize; 
     }
 
     public float getMaxAscent()  { 
         if (aciIdx >= fontStart) {
-            updateLineMetrics(aciIdx);
-            fontStart = aciIdx + gv.getCharacterCount(idx,idx);
+            int newFS = aciIdx + gv.getCharacterCount(idx,idx);
+            updateLineMetrics(newFS);
+            fontStart = newFS;
         }
         return maxAscent; 
     }
 
     public float getMaxDescent() { 
         if (aciIdx >= fontStart) {
-            updateLineMetrics(aciIdx);
-            fontStart = aciIdx + gv.getCharacterCount(idx,idx);
+            int newFS = aciIdx + gv.getCharacterCount(idx,idx);
+            updateLineMetrics(newFS);
+            fontStart = newFS;
         }
         return maxDescent; 
     }
@@ -263,14 +266,13 @@ public class GlyphIterator {
             }
         }
 
-        int preIncACIIdx = aciIdx;
         aciIdx += gv.getCharacterCount(idx,idx);
         ch = aci.setIndex(aciIdx);
         idx++;
         if (idx == numGlyphs) return;
 
         if (aciIdx >= runLimit) {
-            updateLineMetrics(preIncACIIdx);
+            updateLineMetrics(aciIdx);
             runLimit = aci.getRunLimit(TEXT_COMPOUND_DELIMITER);
             font     = (GVTFont)aci.getAttribute(GVT_FONT);
             if (font == null) {
