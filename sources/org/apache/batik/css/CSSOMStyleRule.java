@@ -9,6 +9,8 @@
 package org.apache.batik.css;
 
 import java.io.StringReader;
+import java.net.URL;
+
 import org.apache.batik.css.value.ValueFactory;
 import org.apache.batik.css.event.CSSStyleDeclarationChangeEvent;
 import org.apache.batik.css.event.CSSStyleDeclarationChangeListener;
@@ -67,6 +69,11 @@ public class CSSOMStyleRule
      * The Style rule change support.
      */
     protected CSSStyleRuleChangeSupport styleRuleChangeSupport;
+
+    /**
+     * The base URI.
+     */
+    protected URL baseURI;
     
     /**
      * Creates a new rule set.
@@ -81,6 +88,20 @@ public class CSSOMStyleRule
 	style = new CSSOMStyleDeclaration(this, p);
 	style.setValueFactoryMap(m);
 	style.addCSSStyleDeclarationChangeListener(this);
+    }
+
+    /**
+     * Sets the base URI.
+     */
+    public void setBaseURI(URL url) {
+        baseURI = url;
+    }
+
+    /**
+     * Returns the base URI.
+     */
+    public URL getBaseURI() {
+        return baseURI;
     }
 
     /**

@@ -87,7 +87,7 @@ public class URIResolver {
     public Node getNode(String uri, Element ref)
         throws MalformedURLException, IOException {
 
-        String baseURI = XMLBaseSupport.getXMLBase(ref);
+        String baseURI = XMLBaseSupport.getCascadedXMLBase(ref);
         if ((baseURI == null) &&
             (uri.startsWith("#")))
             return document.getElementById(uri.substring(1));

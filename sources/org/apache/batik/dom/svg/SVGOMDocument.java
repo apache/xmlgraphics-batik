@@ -29,7 +29,6 @@ import org.apache.batik.dom.GenericElement;
 import org.apache.batik.dom.GenericEntityReference;
 import org.apache.batik.dom.GenericProcessingInstruction;
 import org.apache.batik.dom.GenericText;
-import org.apache.batik.dom.StyleSheetProcessingInstruction;
 import org.apache.batik.dom.StyleSheetFactory;
 
 import org.apache.batik.dom.util.OverrideStyleElement;
@@ -292,14 +291,14 @@ public class SVGOMDocument
     /**
      * <b>DOM</b>: Implements {@link
      * Document#createProcessingInstruction(String,String)}.
-     * @return a StyleSheetProcessingInstruction if target is
+     * @return a SVGStyleSheetProcessingInstruction if target is
      *         "xml-stylesheet" or a GenericProcessingInstruction otherwise.
      */
     public ProcessingInstruction createProcessingInstruction(String target,
                                                              String data)
         throws DOMException {
         if ("xml-stylesheet".equals(target)) {
-            return new StyleSheetProcessingInstruction
+            return new SVGStyleSheetProcessingInstruction
                 (data, this, (StyleSheetFactory)getImplementation());
         }
         return new GenericProcessingInstruction(target, data, this);
@@ -433,9 +432,9 @@ public class SVGOMDocument
         for (int i = 0; i < styleSheets.getLength(); i++) {
             StyleSheet ss = (StyleSheet)styleSheets.item(i);
             Node on = ss.getOwnerNode();
-            if (on instanceof StyleSheetProcessingInstruction) {
-                StyleSheetProcessingInstruction sspi;
-                sspi = (StyleSheetProcessingInstruction)on;
+            if (on instanceof SVGStyleSheetProcessingInstruction) {
+                SVGStyleSheetProcessingInstruction sspi;
+                sspi = (SVGStyleSheetProcessingInstruction)on;
                 if ("yes".equals(sspi.getPseudoAttributes().get("alternate"))) {
                     ss.setDisabled(!title.equals(ss.getTitle()));
                 }

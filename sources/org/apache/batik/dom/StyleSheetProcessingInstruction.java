@@ -130,6 +130,6 @@ public class StyleSheetProcessingInstruction
      * Returns a new uninitialized instance of this object's class.
      */
     protected Node newNode() {
-        return new GenericAttr();
+        return new StyleSheetProcessingInstruction();
     }
 }

@@ -8,33 +8,18 @@
 
 package org.apache.batik.css;
 
-import org.w3c.dom.Element;
+import org.w3c.dom.stylesheets.LinkStyle;
 
 /**
- * This interface allows an element to be considered as the child
- * of another element without being added to the DOM tree.
+ * This interface is an extension of the standard LinkStyle interface.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public interface HiddenChildElement {
+public interface ExtendedLinkStyle extends LinkStyle {
+    
     /**
-     * The parent element of this element.
+     * Returns the URI of the referenced stylesheet.
      */
-    Element getParentElement();
-
-    /**
-     * Sets the parent element of this element.
-     */
-    void setParentElement(Element elt);
-
-    /**
-     * Gets the style of this element.
-     */
-    CSSOMReadOnlyStyleDeclaration getStyleDeclaration();
-
-    /**
-     * Sets the style of this element.
-     */
-    void setStyleDeclaration(CSSOMReadOnlyStyleDeclaration sd);
+    String getStyleSheetURI();
 }

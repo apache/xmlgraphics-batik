@@ -103,7 +103,7 @@ public class SVGAltGlyphElementBridge extends AbstractSVGBridge
             if (!isLocal) {
                 // need to attach the imported element to the document and
                 // then compute the styles and uris
-                String base = XMLBaseSupport.getXMLBase(altGlyphElement);
+                String base = XMLBaseSupport.getCascadedXMLBase(altGlyphElement);
                 Element g = document.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
                 g.appendChild(localRefElement);
                 g.setAttributeNS(XMLBaseSupport.XML_NAMESPACE_URI,
@@ -253,7 +253,7 @@ public class SVGAltGlyphElementBridge extends AbstractSVGBridge
             // import the whole font
             Element localFontElement
                 = (Element)document.importNode(refGlyphElement.getParentNode(), true);
-            String base = XMLBaseSupport.getXMLBase(altGlyphElement);
+            String base = XMLBaseSupport.getCascadedXMLBase(altGlyphElement);
             Element g = document.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
             g.appendChild(localFontElement);
             g.setAttributeNS(XMLBaseSupport.XML_NAMESPACE_URI,

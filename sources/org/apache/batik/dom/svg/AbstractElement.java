@@ -57,7 +57,7 @@ public abstract class AbstractElement
     /**
      * The cascaded style, if any.
      */
-    protected transient CSSOMReadOnlyStyleDeclaration cascadedStyle;
+    protected transient CSSOMReadOnlyStyleDeclaration styleDeclaration;
 
     /**
      * Creates a new Element object.
@@ -82,12 +82,7 @@ public abstract class AbstractElement
      * Returns this element's base URI.
      */
     public String getBaseURI() {
-        try {
-            return new java.net.URL(((SVGOMDocument)ownerDocument).getURLObject(),
-                                    XMLBaseSupport.getXMLBase(this)).toString();
-        } catch (java.net.MalformedURLException e) {
-            throw new RuntimeException(e.getMessage());
-        }
+        return XMLBaseSupport.getCascadedXMLBase(this);
     }
 
     // ElementWithID /////////////////////////////////////////////////
@@ -147,17 +142,17 @@ public abstract class AbstractElement
     }
 
     /**
-     * Sets the cascaded style of this element.
+     * Gets the style of this element.
      */
-    public CSSOMReadOnlyStyleDeclaration getCascadedStyle() {
-        return cascadedStyle;
+    public CSSOMReadOnlyStyleDeclaration getStyleDeclaration() {
+        return styleDeclaration;
     }
 
     /**
-     * Sets the cascaded style of this element.
+     * Sets the style of this element.
      */
-    public void setCascadedStyle(CSSOMReadOnlyStyleDeclaration sd) {
-        cascadedStyle = sd;
+    public void setStyleDeclaration(CSSOMReadOnlyStyleDeclaration sd) {
+        styleDeclaration = sd;
     }
 
     /**

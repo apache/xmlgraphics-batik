@@ -34,10 +34,17 @@ public class XMLBaseSupport implements XMLConstants {
     }
 
     /**
+     * Returns the xml:base attribute value of the given element.
+     */
+    public static String getXMLBase(Element elt) {
+        return elt.getAttributeNS(XML_NAMESPACE_URI, "base");
+    }
+
+    /**
      * Returns the xml:base attribute value of the given element
      * Resolving any dependency on parent bases if needed.
      */
-    public static String getXMLBase(Element elt) {
+    public static String getCascadedXMLBase(Element elt) {
         String base = null;
         Node n = elt;
         while (true) {
@@ -51,7 +58,7 @@ public class XMLBaseSupport implements XMLConstants {
             // new Exception("N: " + n).printStackTrace();
             if (n== null) break;
             if (n.getNodeType() == Node.ELEMENT_NODE) {
-                base = getXMLBase((Element)n);
+                base = getCascadedXMLBase((Element)n);
                 break;
             }
         }

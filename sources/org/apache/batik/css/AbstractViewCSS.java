@@ -9,6 +9,10 @@
 package org.apache.batik.css;
 
 import java.lang.ref.SoftReference;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -17,6 +21,7 @@ import java.util.Map;
 
 import org.apache.batik.css.sac.ExtendedSelector;
 import org.apache.batik.css.value.ImmutableInherit;
+import org.apache.batik.css.value.ImmutableString;
 import org.apache.batik.css.value.RelativeValueResolver;
 import org.apache.batik.util.SoftDoublyIndexedTable;
 
@@ -26,6 +31,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.css.CSSImportRule;
 import org.w3c.dom.css.CSSMediaRule;
+import org.w3c.dom.css.CSSPrimitiveValue;
 import org.w3c.dom.css.CSSRule;
 import org.w3c.dom.css.CSSRuleList;
 import org.w3c.dom.css.CSSStyleDeclaration;
@@ -174,7 +180,7 @@ public abstract class AbstractViewCSS implements ViewCSS {
                                                       String pseudoElt) {
         CSSOMReadOnlyStyleDeclaration result;
         if (elt instanceof HiddenChildElement) {
-            result = ((HiddenChildElement)elt).getCascadedStyle();
+            result = ((HiddenChildElement)elt).getStyleDeclaration();
             if (result != null) {
                 return new CSSOMReadOnlyStyleDeclaration(result);
             }
@@ -195,10 +201,19 @@ public abstract class AbstractViewCSS implements ViewCSS {
 
         addUserAgentProperties(elt, pseudoElt, result);
         addUserProperties(elt, pseudoElt, result);
-        addNonCSSPresentationalHints(elt, pseudoElt, result);
+
+        URL baseURI = null;
+        if (elt instanceof ElementWithBaseURI) {
+            try {
+                baseURI = new URL(((ElementWithBaseURI)elt).getBaseURI());
+            } catch (MalformedURLException e) {
+            }
+        }
+
+        addNonCSSPresentationalHints(elt, pseudoElt, baseURI, result);
         addAuthorStyleSheetProperties(elt, pseudoElt, result);
-        addInlineStyleProperties(elt, pseudoElt, result);
-        addOverrideStyleProperties(elt, pseudoElt, result);
+        addInlineStyleProperties(elt, pseudoElt, baseURI, result);
+        addOverrideStyleProperties(elt, pseudoElt, baseURI, result);
 
 	return result;
     }
@@ -258,7 +273,7 @@ public abstract class AbstractViewCSS implements ViewCSS {
 	
 	if (userAgentStyleSheet != null) {
 	    addMatchingRules(userAgentStyleSheet.getCssRules(), e, pe,
-                             uaRules);
+                             null, uaRules);
 	    uaRules = sortRules(uaRules, e, pe);
 	    for (int i = 0; i < uaRules.getLength(); i++) {
 		CSSStyleRule rule = (CSSStyleRule)uaRules.item(i);
@@ -302,7 +317,7 @@ public abstract class AbstractViewCSS implements ViewCSS {
 	CSSOMRuleList uaRules = new CSSOMRuleList();
 	
 	if (userStyleSheet != null) {
-	    addMatchingRules(userStyleSheet.getCssRules(), e, pe, uaRules);
+	    addMatchingRules(userStyleSheet.getCssRules(), e, pe, null, uaRules);
 	    uaRules = sortRules(uaRules, e, pe);
 	    for (int i = 0; i < uaRules.getLength(); i++) {
 		CSSStyleRule rule = (CSSStyleRule)uaRules.item(i);
@@ -340,7 +355,7 @@ public abstract class AbstractViewCSS implements ViewCSS {
      * @param rd The result style declaration.
      */
     protected void addNonCSSPresentationalHints
-        (Element e, String pe, CSSOMReadOnlyStyleDeclaration rd) {
+        (Element e, String pe, URL buri, CSSOMReadOnlyStyleDeclaration rd) {
 	if ((pe == null || pe.equals("")) &&
 	    e instanceof ElementNonCSSPresentationalHints) {
 	    ElementNonCSSPresentationalHints elt;
@@ -350,7 +365,7 @@ public abstract class AbstractViewCSS implements ViewCSS {
 	    if (nonCSSDecl != null) {
 		int len = nonCSSDecl.getLength();
 		for (int i = 0; i < len; i++) {
-		    setAuthorProperty(nonCSSDecl.item(i), nonCSSDecl, rd);
+		    setAuthorProperty(nonCSSDecl.item(i), nonCSSDecl, buri, rd);
 		}
 	    }
 	}
@@ -371,19 +386,38 @@ public abstract class AbstractViewCSS implements ViewCSS {
             for (int i = 0; i < l.getLength(); i++) {
                 CSSStyleSheet ss = (CSSStyleSheet)l.item(i);
                 if (!ss.getDisabled() && mediaMatch(ss.getMedia())) {
+                    Node on = ss.getOwnerNode();
+                    URL baseURI = null;
+                    if (on == null) {
+                        if (e instanceof ElementWithBaseURI) {
+                            try {
+                                baseURI =
+                                    new URL(((ElementWithBaseURI)e).getBaseURI());
+                            } catch (MalformedURLException ex) {
+                            }
+                        }
+                    } else if (on instanceof ExtendedLinkStyle) {
+                        try {
+                            baseURI =
+                                new URL(((ExtendedLinkStyle)on).getStyleSheetURI());
+                        } catch (MalformedURLException ex) {
+                        }
+                    }
                     addMatchingRules(ss.getCssRules(),
                                      e,
                                      pe,
+                                     baseURI,
                                      authorRules);
                 }
             }
             authorRules = sortRules(authorRules, e, pe);
             for (int i = 0; i < authorRules.getLength(); i++) {
-                CSSStyleRule rule = (CSSStyleRule)authorRules.item(i);
+                CSSOMStyleRule rule = (CSSOMStyleRule)authorRules.item(i);
+                URL baseURI = rule.getBaseURI();
                 CSSStyleDeclaration decl = rule.getStyle();
                 int len = decl.getLength();
                 for (int j = 0; j < len; j++) {
-                    setAuthorProperty(decl.item(j), decl, rd);
+                    setAuthorProperty(decl.item(j), decl, baseURI, rd);
                 }
             }
 	} catch (DOMException ex) {
@@ -397,10 +431,12 @@ public abstract class AbstractViewCSS implements ViewCSS {
      * Adds the inline style properties to the given style declaration.
      * @param e The element to match.
      * @param pe The pseudo-element to match.
+     * @param buri The base uri, if any.
      * @param rd The result style declaration.
      */
     protected void addInlineStyleProperties(Element e,
 					    String pe,
+                                            URL buri,
 					    CSSOMReadOnlyStyleDeclaration rd) {
         try {
             if (e instanceof ElementCSSInlineStyle) {
@@ -414,7 +450,7 @@ public abstract class AbstractViewCSS implements ViewCSS {
                     inlineDecl = ((ElementCSSInlineStyle)e).getStyle();
                     int len = inlineDecl.getLength();
                     for (int i = 0; i < len; i++) {
-                        setAuthorProperty(inlineDecl.item(i), inlineDecl, rd);
+                        setAuthorProperty(inlineDecl.item(i), inlineDecl, buri, rd);
                     }
                 }
             }
@@ -429,17 +465,18 @@ public abstract class AbstractViewCSS implements ViewCSS {
      * Adds the override style properties to the given style declaration.
      * @param e The element to match.
      * @param pe The pseudo-element to match.
+     * @param buri The base uri, if any.
      * @param rd The result style declaration.
      */
     protected void addOverrideStyleProperties
-        (Element e, String pe, CSSOMReadOnlyStyleDeclaration rd) {
+        (Element e, String pe, URL buri, CSSOMReadOnlyStyleDeclaration rd) {
 	CSSStyleDeclaration overrideDecl;
 	overrideDecl = ((DocumentCSS)document).getOverrideStyle(e, pe);
 	if ((pe == null || pe.equals("")) &&
 	    overrideDecl != null) {
 	    int len = overrideDecl.getLength();
 	    for (int i = 0; i < len; i++) {
-		setAuthorProperty(overrideDecl.item(i), overrideDecl, rd);
+		setAuthorProperty(overrideDecl.item(i), overrideDecl, buri, rd);
 	    }
 	}
     }
@@ -448,10 +485,12 @@ public abstract class AbstractViewCSS implements ViewCSS {
      * Sets a author value to a computed style declaration.
      * @param name The property name.
      * @param decl The style declaration.
+     * @param buri The base uri, if any.
      * @param dest The result style declaration.
      */
     protected void setAuthorProperty(String name,
                                      CSSStyleDeclaration decl,
+                                     URL buri,
                                      CSSOMReadOnlyStyleDeclaration dest) {
 	CSSOMValue         val   = (CSSOMValue)decl.getPropertyCSSValue(name);
 	String             prio  = decl.getPropertyPriority(name);
@@ -464,21 +503,30 @@ public abstract class AbstractViewCSS implements ViewCSS {
         if (dval == null ||
             dorg != CSSOMReadOnlyStyleDeclaration.USER_ORIGIN ||
             dprio.length() == 0) {
-            /*
-            if (value.getCssValueType() == CSSValue.CSS_PRIMITIVE_VALUE) {
-                if (value.getPrimitiveType() == CSSPrimitiveValue.CSS_URI) {
-                    value.setImmutableValue
-                        (new ImmutableString
-                         (CSSPrimitiveValue.CSS_URI,
-                          new ParsedURL(basePURL, 
-                                        value.getStringValue()).toString()));
-                }
-            }
-            */
+            resolveURI(value, buri);
             dest.setPropertyCSSValue(name,
                                      value,
                                      prio,
                                      CSSOMReadOnlyStyleDeclaration.AUTHOR_ORIGIN);
+        }
+    }
+
+    /**
+     * If 'value' is an CSS_URI, resolves the value, relative to the given
+     * URI.
+     */
+    protected void resolveURI(CSSOMReadOnlyValue value, URL buri) {
+        if (buri != null &&
+            value.getCssValueType() == CSSValue.CSS_PRIMITIVE_VALUE) {
+            if (value.getPrimitiveType() == CSSPrimitiveValue.CSS_URI) {
+                try {
+                    value.setImmutableValue
+                        (new ImmutableString
+                         (CSSPrimitiveValue.CSS_URI,
+                          new URL(buri, value.getStringValue()).toString()));
+                } catch (MalformedURLException e) {
+                }
+            }
         }
     }
     
@@ -488,11 +536,13 @@ public abstract class AbstractViewCSS implements ViewCSS {
      * @param l The input rule list.
      * @param e The element to match.
      * @param pe The pseudo-element to match.
+     * @param buri The base uri, if any.
      * @param rl The result rule list.
      */
     protected void addMatchingRules(CSSRuleList l,
 				    Element e,
 				    String pe,
+                                    URL buri,
 				    CSSOMRuleList rl) {
 	int llen = l.getLength();
 	for (int i = 0; i < llen; i++) {
@@ -505,21 +555,35 @@ public abstract class AbstractViewCSS implements ViewCSS {
 		for (int j = 0; j < slen; j++) {
 		    ExtendedSelector s = (ExtendedSelector)sl.item(j);
 		    if (s.match(e, pe)) {
+                        sr.setBaseURI(buri);
 			rl.append(rule);
 		    }
 		}
 		break;
+
 	    case CSSRule.IMPORT_RULE:
 		CSSImportRule ir = (CSSImportRule)rule;
-		CSSStyleSheet   is = ir.getStyleSheet();
-		if (is != null) {
-		    addMatchingRules(is.getCssRules(), e, pe, rl);
-		}
+                if (mediaMatch(ir.getMedia())) {
+                    try {
+                        if (buri == null) {
+                            buri = new URL(ir.getHref());
+                        } else {
+                            buri = new URL(buri, ir.getHref());
+                        }
+                    } catch (MalformedURLException ex) {
+                        break;
+                    }
+                    CSSStyleSheet is = ir.getStyleSheet();
+                    if (is != null) {
+                        addMatchingRules(is.getCssRules(), e, pe, buri, rl);
+                    }
+                }
 		break;
+
 	    case CSSRule.MEDIA_RULE:
 		CSSMediaRule mr = (CSSMediaRule)rule;
 		if (mediaMatch(mr.getMedia())) {
-		    addMatchingRules(mr.getCssRules(), e, pe, rl);
+		    addMatchingRules(mr.getCssRules(), e, pe, buri, rl);
 		}
 		break;
 	    }
