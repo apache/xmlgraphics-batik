@@ -620,6 +620,22 @@ public class JSVGComponent extends JGVTComponent {
     }
 
     /**
+     * Returns the transform from viewBox coords to screen coords
+     */
+    public AffineTransform getViewBoxTransform() {
+        AffineTransform at = getRenderingTransform();
+        if (at == null) at = new AffineTransform();
+        else            at = new AffineTransform(at);
+        CanvasGraphicsNode cgn = getCanvasGraphicsNode();
+        if (cgn != null) {
+            AffineTransform vAT = cgn.getViewingTransform();
+            if (vAT != null)
+                at.concatenate(vAT);
+        }
+        return at;
+    }
+
+    /**
      * Computes the transform used for rendering.
      * Returns true if the component needs to be repainted.
      */
