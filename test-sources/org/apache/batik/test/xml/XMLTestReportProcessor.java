@@ -244,7 +244,7 @@ public class XMLTestReportProcessor
         //
         Calendar c = Calendar.getInstance();
         String dirName = "" + c.get(c.YEAR) + "."
-            + makeTwoDigits(c.get(c.MONTH)) + "." 
+            + makeTwoDigits(1 + c.get(c.MONTH)) + "." 
             + makeTwoDigits(c.get(c.DAY_OF_MONTH)) + "-"
             + makeTwoDigits(c.get(c.HOUR_OF_DAY)) + "h"
             + makeTwoDigits(c.get(c.MINUTE)) + "m"
