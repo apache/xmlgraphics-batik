@@ -228,6 +228,7 @@ class IDATOutputStream extends FilterOutputStream {
 /**
  * An ImageEncoder for the PNG file format.
  *
+ * @since EA4
  */
 public class PNGImageEncoder extends ImageEncoderImpl {
 
@@ -733,17 +734,6 @@ public class PNGImageEncoder extends ImageEncoderImpl {
         }
     }
 
-    private final byte[][] expandBits = {
-        null,
-        { (byte)0x00, (byte)0xff },
-        { (byte)0x00, (byte)0x55, (byte)0xaa, (byte)0xff },
-        null,
-        { (byte)0x00, (byte)0x11, (byte)0x22, (byte)0x33,
-          (byte)0x44, (byte)0x55, (byte)0x66, (byte)0x77,
-          (byte)0x88, (byte)0x99, (byte)0xaa, (byte)0xbb,
-          (byte)0xcc, (byte)0xdd, (byte)0xee, (byte)0xff }
-    };
-
     /**
      * Analyzes a set of palettes and determines if it can be expressed
      * as a standard set of gray values, with zero or one values being
@@ -759,12 +749,13 @@ public class PNGImageEncoder extends ImageEncoderImpl {
         PNGEncodeParam.Gray param = new PNGEncodeParam.Gray();
         int numTransparent = 0;
 
+        int grayFactor = 255/((1 << bitDepth) - 1);
         int entries = 1 << bitDepth;
         for (int i = 0; i < entries; i++) {
             byte red = redPalette[i];
-            if ((red != greenPalette[i]) ||
-                (red != bluePalette[i]) ||
-                (red != expandBits[bitDepth][i])) {
+            if ((red != i*grayFactor) ||
+                (red != greenPalette[i]) ||
+                (red != bluePalette[i])) {
                 return null;
             }
 
@@ -971,5 +962,61 @@ public class PNGImageEncoder extends ImageEncoderImpl {
         dataOutput.flush();
         dataOutput.close();
     }
-}
 
+//     public static void main(String[] args) {
+//         try {
+//             SeekableStream stream = new FileSeekableStream(args[0]);
+//             String[] names = ImageCodec.getDecoderNames(stream);
+
+//             ImageDecoder dec =
+//                 ImageCodec.createImageDecoder(names[0], stream, null);
+//             RenderedImage im = dec.decodeAsRenderedImage();
+
+//             OutputStream output = new FileOutputStream(args[1]);
+
+//             PNGEncodeParam param = null;
+//             Object o = im.getProperty("encode_param");
+//             if ((o != null) && (o instanceof PNGEncodeParam)) {
+//                 param = (PNGEncodeParam)o;
+//             } else {
+//                 param = PNGEncodeParam.getDefaultEncodeParam(im);
+//             }
+
+//             if (param instanceof PNGEncodeParam.RGB) {
+//                 int[] rgb = { 50, 100, 150 };
+//                 ((PNGEncodeParam.RGB)param).setBackgroundRGB(rgb);
+//             }
+
+//             param.setChromaticity(0.32270F, 0.319F,
+//                                   0.65F, 0.32F,
+//                                   0.31F, 0.58F,
+//                                   0.16F, 0.04F);
+
+//             param.setGamma(3.5F);
+
+//             int[] sbits = { 8, 8, 8 };
+//             param.setSignificantBits(sbits);
+
+//             param.setSRGBIntent(0);
+
+//             String[] text = new String[4];
+//             text[0] = "Title";
+//             text[1] = "PNG Test Image";
+//             text[2] = "Author";
+//             text[3] = "Daniel Rice";
+//             param.setText(text);
+
+//             String[] ztext = new String[2];
+//             ztext[0] = "Description";
+//             ztext[1] = "A really incredibly long-winded description of extremely little if any substance whatsoever.";
+//             param.setCompressedText(ztext);
+
+//             ImageEncoder enc = new PNGImageEncoder(output, param);
+//             enc.encode(im);
+//         } catch (Exception e) {
+//             e.printStackTrace();
+//             System.exit(1);
+//         }
+//     }
+
+}
