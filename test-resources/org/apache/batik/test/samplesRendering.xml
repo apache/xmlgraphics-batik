@@ -104,6 +104,8 @@
         <test id="samples/tests/spec/filters/feTurbulence.svg" />
         <test id="samples/tests/spec/filters/filterRegions.svg" />
         <test id="samples/tests/spec/filters/svgEnableBackground.svg" />
+        <test id="samples/batikCandy.svg#svgView(transform(scale(0.01)))-BumpMap1" 
+              class="org.apache.batik.test.svg.SVGReferenceRenderingAccuracyTest"/>
     </testGroup>
 
     <testGroup id="tests.spec.fonts">    

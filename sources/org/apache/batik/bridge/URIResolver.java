@@ -97,8 +97,12 @@ public class URIResolver {
         String    frag  = purl.getRef();
         if ((frag != null) && (documentURI != null)) {
             ParsedURL pDocURL = new ParsedURL(documentURI);
-            if (pDocURL.sameFile(purl))
+            // System.out.println("doc: " + pDocURL);
+            // System.out.println("Purl: " + purl);
+            if (pDocURL.sameFile(purl)) {
+                // System.out.println("match");
                 return document.getElementById(frag);
+            }
         }
 
         // uri is not a reference into this document, so load the 

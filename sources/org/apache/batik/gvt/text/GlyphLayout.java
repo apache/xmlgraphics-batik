@@ -1848,8 +1848,6 @@ public class GlyphLayout implements TextSpanLayout {
     // 
     // Does not properly handle Bi-DI languages (does text wrapping on
     // display order not logical order).
-    //
-    // Does not drop leading non-printing chars on a line..
 
     /**
      * This will wrap the text associated with <tt>aci</tt> and
