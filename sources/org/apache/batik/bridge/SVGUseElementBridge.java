@@ -53,8 +53,7 @@ public class SVGUseElementBridge
 
         CompositeGraphicsNode gn = new CompositeGraphicsNode();
 
-        CSSStyleDeclaration decl
-            = ctx.getViewCSS().getComputedStyle(element, null);
+        CSSStyleDeclaration decl = CSSUtilities.getComputedStyle(element);
 
         UnitProcessor.Context uctx
             = new DefaultUnitProcessorContext(ctx,
@@ -100,8 +99,7 @@ public class SVGUseElementBridge
     public void buildGraphicsNode(GraphicsNode gn,
                                   BridgeContext ctx,
                                   Element element) {
-        CSSStyleDeclaration decl
-            = ctx.getViewCSS().getComputedStyle(element, null);
+        CSSStyleDeclaration decl = CSSUtilities.getComputedStyle(element);
 
         CSSPrimitiveValue val =
             (CSSPrimitiveValue)decl.getPropertyCSSValue(ATTR_OPACITY);

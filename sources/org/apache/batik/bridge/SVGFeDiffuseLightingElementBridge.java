@@ -76,7 +76,7 @@ public class SVGFeDiffuseLightingElementBridge
                          Map filterMap){
         Filter filter = null;
 
-        GraphicsNodeRenderContext rc = 
+        GraphicsNodeRenderContext rc =
                          bridgeContext.getGraphicsNodeRenderContext();
 
         // First, extract source
@@ -107,7 +107,7 @@ public class SVGFeDiffuseLightingElementBridge
         }
 
         CSSStyleDeclaration cssDecl
-            = bridgeContext.getViewCSS().getComputedStyle(filterElement, null);
+            = CSSUtilities.getComputedStyle(filterElement);
 
         UnitProcessor.Context uctx
             = new DefaultUnitProcessorContext(bridgeContext, cssDecl);
@@ -135,7 +135,7 @@ public class SVGFeDiffuseLightingElementBridge
         }
 
         Node lightNode = children.item(0);
-        if((lightNode == null) || 
+        if((lightNode == null) ||
            !(lightNode.getNodeType() == Node.ELEMENT_NODE)){
             throw new IllegalAttributeValueException(
                 Messages.formatMessage("feDiffuseLighting.child.missing",
@@ -148,15 +148,15 @@ public class SVGFeDiffuseLightingElementBridge
         String kdStr =
             filterElement.getAttributeNS(null, SVG_DIFFUSE_CONSTANT_ATTRIBUTE);
 
-        double kd = 
+        double kd =
             SVGUtilities.convertSVGNumber(SVG_DIFFUSE_CONSTANT_ATTRIBUTE, kdStr);
-        
+
         // Extract surface scale
         String surfaceScaleStr =
             filterElement.getAttributeNS(null, SVG_SURFACE_SCALE_ATTRIBUTE);
 
-        double surfaceScale = 
-            SVGUtilities.convertSVGNumber(SVG_SURFACE_SCALE_ATTRIBUTE, 
+        double surfaceScale =
+            SVGUtilities.convertSVGNumber(SVG_SURFACE_SCALE_ATTRIBUTE,
                                           surfaceScaleStr);
 
         filter = new DiffuseLightingRable8Bit(in,

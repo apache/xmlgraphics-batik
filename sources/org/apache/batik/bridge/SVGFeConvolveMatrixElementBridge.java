@@ -141,7 +141,7 @@ public class SVGFeConvolveMatrixElementBridge implements FilterPrimitiveBridge,
                 divisor += kernel[i];
             if (divisor == 0.0f) divisor = 1.0f;
         }
-        if (divisor == 0.0f) 
+        if (divisor == 0.0f)
             throw new IllegalAttributeValueException
                 (Messages.formatMessage
                      ("feConvolveMatrix.divisor.zero", null));
@@ -263,12 +263,12 @@ public class SVGFeConvolveMatrixElementBridge implements FilterPrimitiveBridge,
         }
 
         CSSStyleDeclaration cssDecl
-            = bridgeContext.getViewCSS().getComputedStyle(filterElement, null);
+            = CSSUtilities.getComputedStyle(filterElement);
 
         UnitProcessor.Context uctx
             = new DefaultUnitProcessorContext(bridgeContext, cssDecl);
 
-        GraphicsNodeRenderContext rc = 
+        GraphicsNodeRenderContext rc =
                          bridgeContext.getGraphicsNodeRenderContext();
         Rectangle2D convolveArea
             = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
@@ -305,7 +305,7 @@ public class SVGFeConvolveMatrixElementBridge implements FilterPrimitiveBridge,
         // for (int i=0; i<kernel.length; i++)
         //     System.out.print(kernel[i] + ", ");
         // System.out.println("");
-        
+
         convolve.setKernel(new Kernel(orderX, orderY, kernel));
         convolve.setTarget(new Point(targetX, targetY));
         convolve.setBias(bias);

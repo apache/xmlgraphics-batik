@@ -76,7 +76,7 @@ public class SVGFeComponentTransferElementBridge
                          Map filterMap){
         Filter filter = null;
 
-        GraphicsNodeRenderContext rc = 
+        GraphicsNodeRenderContext rc =
                          bridgeContext.getGraphicsNodeRenderContext();
 
         // First, extract source
@@ -107,7 +107,7 @@ public class SVGFeComponentTransferElementBridge
         }
 
         CSSStyleDeclaration cssDecl
-            = bridgeContext.getViewCSS().getComputedStyle(filterElement, null);
+            = CSSUtilities.getComputedStyle(filterElement);
 
         UnitProcessor.Context uctx
             = new DefaultUnitProcessorContext(bridgeContext, cssDecl);

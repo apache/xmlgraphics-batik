@@ -50,11 +50,6 @@ import org.apache.batik.gvt.renderer.StaticRenderer;
 public class BridgeContext implements SVGConstants {
 
     /**
-     * The view CSS.
-     */
-    protected ViewCSS viewCSS;
-
-    /**
      * The GVT builder that might be used to create a GVT subtree.
      */
     protected GVTBuilder gvtBuilder;
@@ -160,8 +155,7 @@ public class BridgeContext implements SVGConstants {
     /**
      * Should be partially removed when removing the ViewCSS from the bridge.
      */
-    void initialize(SVGDocument svgDocument, GVTBuilder gvtBuilder) {
-        this.viewCSS = (ViewCSS)svgDocument.getRootElement();
+    void initialize(GVTBuilder gvtBuilder) {
         this.gvtBuilder = gvtBuilder;
     }
 
@@ -255,21 +249,6 @@ public class BridgeContext implements SVGConstants {
      */
     public void setViewport(Viewport newViewport) {
         this.viewport = newViewport;
-    }
-
-    /**
-     * Returns the view CSS.
-     */
-    public ViewCSS getViewCSS() {
-        return viewCSS;
-    }
-
-    /**
-     * Sets the view CSS used to access the style to the specified view CSS.
-     * @param newViewCSS the new view CSS to consider
-     */
-    public void setViewCSS(ViewCSS newViewCSS) {
-        this.viewCSS = newViewCSS;
     }
 
     //

@@ -56,8 +56,7 @@ public class SVGGElementBridge implements GraphicsNodeBridge, SVGConstants {
             SVGUtilities.convertAffineTransform(element, ATTR_TRANSFORM);
         gn.setTransform(at);
 
-        CSSStyleDeclaration decl;
-        decl = ctx.getViewCSS().getComputedStyle(element, null);
+        CSSStyleDeclaration decl = CSSUtilities.getComputedStyle(element);
         UnitProcessor.Context uctx
             = new DefaultUnitProcessorContext(ctx, decl);
 
@@ -75,8 +74,7 @@ public class SVGGElementBridge implements GraphicsNodeBridge, SVGConstants {
     public void buildGraphicsNode(GraphicsNode node,
                                   BridgeContext ctx,
                                   Element element) {
-        CSSStyleDeclaration decl;
-        decl = ctx.getViewCSS().getComputedStyle(element, null);
+        CSSStyleDeclaration decl = CSSUtilities.getComputedStyle(element);
         CSSPrimitiveValue val =
             (CSSPrimitiveValue)decl.getPropertyCSSValue(ATTR_OPACITY);
         Composite composite = CSSUtilities.convertOpacityToComposite(val);

@@ -72,7 +72,7 @@ public class SVGFeMergeElementBridge implements FilterPrimitiveBridge,
                          Rectangle2D filterRegion,
                          Map filterMap){
 
-        GraphicsNodeRenderContext rc = 
+        GraphicsNodeRenderContext rc =
                      bridgeContext.getGraphicsNodeRenderContext();
 
         // Extract sources, they are defined in the filterElement's children.
@@ -124,7 +124,7 @@ public class SVGFeMergeElementBridge implements FilterPrimitiveBridge,
         }
 
         CSSStyleDeclaration cssDecl
-            = bridgeContext.getViewCSS().getComputedStyle(filterElement, null);
+            = CSSUtilities.getComputedStyle(filterElement);
 
         UnitProcessor.Context uctx
             = new DefaultUnitProcessorContext(bridgeContext, cssDecl);

@@ -71,7 +71,7 @@ public class SVGFilterElementBridge implements FilterBridge, SVGConstants {
                          Rectangle2D filterRegion,
                          Map filterMap){
 
-         GraphicsNodeRenderContext rc = 
+         GraphicsNodeRenderContext rc =
                      bridgeContext.getGraphicsNodeRenderContext();
 
         // Make the initial source as a RenderableImage
@@ -83,7 +83,7 @@ public class SVGFilterElementBridge implements FilterBridge, SVGConstants {
 
         // Get the filter region and resolution
         CSSStyleDeclaration cssDecl
-            = bridgeContext.getViewCSS().getComputedStyle(filterElement, null);
+            = CSSUtilities.getComputedStyle(filterElement);
 
         UnitProcessor.Context uctx
             = new DefaultUnitProcessorContext(bridgeContext, cssDecl);

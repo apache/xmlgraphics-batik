@@ -44,8 +44,7 @@ public class SVGSVGElementBridge implements GraphicsNodeBridge, SVGConstants {
     public GraphicsNode createGraphicsNode(BridgeContext ctx,
                                            Element element){
         SVGSVGElement svgElement = (SVGSVGElement) element;
-        CSSStyleDeclaration cssDecl
-            = ctx.getViewCSS().getComputedStyle(element, null);
+        CSSStyleDeclaration cssDecl = CSSUtilities.getComputedStyle(element);
         UnitProcessor.Context uctx
             = new DefaultUnitProcessorContext(ctx,
                                               cssDecl);

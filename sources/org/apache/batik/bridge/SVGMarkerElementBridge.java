@@ -71,26 +71,26 @@ public class SVGMarkerElementBridge implements MarkerBridge {
             (CSSOMReadOnlyStyleDeclaration)viewCSS.getComputedStyle(g, null);
 
         gsd.setPropertyCSSValue
-            (CSS_MARKER_PROPERTY, 
+            (CSS_MARKER_PROPERTY,
              new CSSOMReadOnlyValue(ValueConstants.NONE_VALUE),
              gsd.getLocalPropertyPriority(CSS_MARKER_PROPERTY),
              gsd.getLocalPropertyOrigin(CSS_MARKER_PROPERTY));
         gsd.setPropertyCSSValue
-            (CSS_MARKER_START_PROPERTY, 
+            (CSS_MARKER_START_PROPERTY,
              new CSSOMReadOnlyValue(ValueConstants.NONE_VALUE),
              gsd.getLocalPropertyPriority(CSS_MARKER_START_PROPERTY),
              gsd.getLocalPropertyOrigin(CSS_MARKER_START_PROPERTY));
         gsd.setPropertyCSSValue
-            (CSS_MARKER_MID_PROPERTY, 
+            (CSS_MARKER_MID_PROPERTY,
              new CSSOMReadOnlyValue(ValueConstants.NONE_VALUE),
              gsd.getLocalPropertyPriority(CSS_MARKER_START_PROPERTY),
              gsd.getLocalPropertyOrigin(CSS_MARKER_START_PROPERTY));
         gsd.setPropertyCSSValue
-            (CSS_MARKER_END_PROPERTY, 
+            (CSS_MARKER_END_PROPERTY,
              new CSSOMReadOnlyValue(ValueConstants.NONE_VALUE),
              gsd.getLocalPropertyPriority(CSS_MARKER_START_PROPERTY),
              gsd.getLocalPropertyOrigin(CSS_MARKER_START_PROPERTY));
-        
+
 
         g.appendChild(inst);
 
@@ -159,7 +159,7 @@ public class SVGMarkerElementBridge implements MarkerBridge {
                                            SVG_REFY_ATTRIBUTE, s,
                                            uctx,
                                            UnitProcessor.VERTICAL_LENGTH);
-        
+
         // Extract the Marker's width/height
         s = inst.getAttributeNS(null, SVG_MARKER_WIDTH_ATTRIBUTE);
         float markerWidth = 0;
@@ -221,11 +221,11 @@ public class SVGMarkerElementBridge implements MarkerBridge {
             orient = Double.NaN;
         }
         else{
-            orient = 
+            orient =
                 SVGUtilities.convertSVGNumber(SVG_ORIENT_ATTRIBUTE, s);
         }
 
-        // Extract the overflow property 
+        // Extract the overflow property
         CSSPrimitiveValue vbOverflow =
             (CSSPrimitiveValue)cssDecl.getPropertyCSSValue(CSS_OVERFLOW_PROPERTY);
 
@@ -272,8 +272,8 @@ public class SVGMarkerElementBridge implements MarkerBridge {
         float strokeWidth = 1;
         if(markerUnits.equals(SVG_STROKE_WIDTH_VALUE)){
             CSSStyleDeclaration cssDeclPainted
-                = ctx.getViewCSS().getComputedStyle(paintedElement, null);
-        
+                = CSSUtilities.getComputedStyle(paintedElement);
+
             UnitProcessor.Context uctxPainted
                 = new DefaultUnitProcessorContext(ctx,
                                                   cssDeclPainted);
@@ -295,22 +295,22 @@ public class SVGMarkerElementBridge implements MarkerBridge {
         if(preserveAspectRatioTransform != null){
             markerTxf.concatenate(preserveAspectRatioTransform);
         }
-        
+
 
         markerContentNode.setTransform(markerTxf);
 
         //
-        // Set the markerContentNode's clipping area 
+        // Set the markerContentNode's clipping area
         // depending on the overflow property
         //
         if(overflow == false){
-            Rectangle2D markerClip 
+            Rectangle2D markerClip
                 = new Rectangle2D.Float(0, 0, strokeWidth*markerWidth,
                                         strokeWidth*markerHeight);
-            
+
             CompositeGraphicsNode newMarkerContentNode
                 = new CompositeGraphicsNode();
-            
+
             newMarkerContentNode.getChildren().add(markerContentNode);
 
             GraphicsNodeRenderContext rc =
@@ -318,7 +318,7 @@ public class SVGMarkerElementBridge implements MarkerBridge {
 
             Filter clipSrc = new GraphicsNodeRable8Bit
                 (newMarkerContentNode, rc);
-            
+
             newMarkerContentNode.setClip
                 (new ClipRable8Bit(clipSrc, markerClip));
 
@@ -331,7 +331,7 @@ public class SVGMarkerElementBridge implements MarkerBridge {
         //
 
         //
-        // Watch out: the reference point is defined a little weirdly in the 
+        // Watch out: the reference point is defined a little weirdly in the
         // SVG spec., but the bottom line is that the marker content should
         // not be translated. Rather, the reference point should be computed
         // in viewport space (this  is what the following transform

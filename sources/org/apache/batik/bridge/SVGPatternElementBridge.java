@@ -141,7 +141,7 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
 
         // Get the overflow property on the pattern element
         CSSStyleDeclaration cssDecl
-            = ctx.getViewCSS().getComputedStyle(paintElement, null);
+            = CSSUtilities.getComputedStyle(paintElement);
 
         CSSPrimitiveValue vbOverflow =
             (CSSPrimitiveValue)cssDecl.getPropertyCSSValue(CSS_OVERFLOW_PROPERTY);
@@ -159,7 +159,7 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
         // Get pattern region. This is from the paintedElement, as
         // percentages are from the referencing element.
         CSSStyleDeclaration cssDeclPainted
-            = ctx.getViewCSS().getComputedStyle(paintedElement, null);
+            = CSSUtilities.getComputedStyle(paintedElement);
         UnitProcessor.Context uctx
             = new DefaultUnitProcessorContext(ctx, cssDecl);
 

@@ -69,7 +69,7 @@ public class SVGFeMorphologyElementBridge implements FilterPrimitiveBridge,
                          Rectangle2D filterRegion,
                          Map filterMap){
 
-        GraphicsNodeRenderContext rc = 
+        GraphicsNodeRenderContext rc =
                      bridgeContext.getGraphicsNodeRenderContext();
 
         // Extract the radius (or radii) for the operation.
@@ -148,7 +148,7 @@ public class SVGFeMorphologyElementBridge implements FilterPrimitiveBridge,
         }
 
         CSSStyleDeclaration cssDecl
-            = bridgeContext.getViewCSS().getComputedStyle(filterElement, null);
+            = CSSUtilities.getComputedStyle(filterElement);
 
         UnitProcessor.Context uctx
             = new DefaultUnitProcessorContext(bridgeContext, cssDecl);

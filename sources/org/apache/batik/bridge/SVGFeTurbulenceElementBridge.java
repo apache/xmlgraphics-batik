@@ -72,7 +72,7 @@ public class SVGFeTurbulenceElementBridge implements FilterPrimitiveBridge,
                          Rectangle2D filterRegion,
                          Map filterMap){
 
-         GraphicsNodeRenderContext rc = 
+         GraphicsNodeRenderContext rc =
                          bridgeContext.getGraphicsNodeRenderContext();
 
         // parse the baseFrequency attribute
@@ -149,7 +149,7 @@ public class SVGFeTurbulenceElementBridge implements FilterPrimitiveBridge,
         Rectangle2D defaultRegion = filterRegion;
 
         CSSStyleDeclaration cssDecl
-            = bridgeContext.getViewCSS().getComputedStyle(filterElement, null);
+            = CSSUtilities.getComputedStyle(filterElement);
 
         UnitProcessor.Context uctx
             = new DefaultUnitProcessorContext(bridgeContext, cssDecl);

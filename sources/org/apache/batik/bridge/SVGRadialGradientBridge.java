@@ -84,7 +84,7 @@ public class SVGRadialGradientBridge extends SVGGradientBridge
         // Get unit processor to compute gradient control points
         //
         CSSStyleDeclaration cssDecl
-            = ctx.getViewCSS().getComputedStyle(paintElement, null);
+            = CSSUtilities.getComputedStyle(paintElement);
 
         UnitProcessor.Context uctx
             = new DefaultUnitProcessorContext(ctx, cssDecl);

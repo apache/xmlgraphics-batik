@@ -79,7 +79,7 @@ public class SVGFeOffsetElementBridge implements FilterPrimitiveBridge,
                          Rectangle2D filterRegion,
                          Map filterMap){
 
-        GraphicsNodeRenderContext rc = 
+        GraphicsNodeRenderContext rc =
                          bridgeContext.getGraphicsNodeRenderContext();
 
         // parse the dx attribute
@@ -126,7 +126,7 @@ public class SVGFeOffsetElementBridge implements FilterPrimitiveBridge,
         }
 
         CSSStyleDeclaration cssDecl
-            = bridgeContext.getViewCSS().getComputedStyle(filterElement, null);
+            = CSSUtilities.getComputedStyle(filterElement);
 
         UnitProcessor.Context uctx
             = new DefaultUnitProcessorContext(bridgeContext, cssDecl);
