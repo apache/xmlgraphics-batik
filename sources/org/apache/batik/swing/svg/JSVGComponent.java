@@ -73,6 +73,11 @@ public class JSVGComponent extends JGVTComponent {
     protected SVGDocumentLoader documentLoader;
 
     /**
+     * The next document loader to run.
+     */
+    protected SVGDocumentLoader nextDocumentLoader;
+
+    /**
      * The concrete bridge document loader.
      */
     protected DocumentLoader loader;
@@ -81,6 +86,11 @@ public class JSVGComponent extends JGVTComponent {
      * The GVT tree builder.
      */
     protected GVTTreeBuilder gvtTreeBuilder;
+
+    /**
+     * The next GVT tree builder to run.
+     */
+    protected GVTTreeBuilder nextGVTTreeBuilder;
 
     /**
      * The current SVG document.
@@ -147,6 +157,9 @@ public class JSVGComponent extends JGVTComponent {
      * Stops the processing of the current document.
      */
     public void stopProcessing() {
+        nextDocumentLoader = null;
+        nextGVTTreeBuilder = null;
+
         if (documentLoader != null) {
             documentLoader.interrupt();
         } else if (gvtTreeBuilder != null) {
@@ -181,15 +194,28 @@ public class JSVGComponent extends JGVTComponent {
         fragmentIdentifier = newURI.getRef();
 
         loader = new DocumentLoader(userAgent.getXMLParserClassName());
-        documentLoader = new SVGDocumentLoader(url, loader);
-        documentLoader.setPriority(Thread.MIN_PRIORITY);
+        nextDocumentLoader = new SVGDocumentLoader(url, loader);
+        nextDocumentLoader.setPriority(Thread.MIN_PRIORITY);
 
         Iterator it = svgDocumentLoaderListeners.iterator();
         while (it.hasNext()) {
-            documentLoader.addSVGDocumentLoaderListener
+            nextDocumentLoader.addSVGDocumentLoaderListener
                 ((SVGDocumentLoaderListener)it.next());
         }
 
+        if (documentLoader == null &&
+            gvtTreeBuilder == null &&
+            gvtTreeRenderer == null) {
+            startDocumentLoader();
+        }
+    }
+
+    /**
+     * Starts a loading thread.
+     */
+    private void startDocumentLoader() {
+        documentLoader = nextDocumentLoader;
+        nextDocumentLoader = null;
         documentLoader.start();
     }
 
@@ -201,32 +227,49 @@ public class JSVGComponent extends JGVTComponent {
         if (!(doc.getImplementation() instanceof SVGDOMImplementation)) {
             throw new IllegalArgumentException("Invalid DOM implementation.");
         }
-        svgDocument = doc;
-        if (loader == null) {
-            loader = new DocumentLoader(userAgent.getXMLParserClassName());
+
+        if (eventsEnabled && svgDocument != null) {
+            // fire the unload event
+            Event evt = svgDocument.createEvent("SVGEvents");
+            evt.initEvent("SVGUnload", false, false);
+            ((EventTarget)(svgDocument.getRootElement())).dispatchEvent(evt);
         }
+
+        svgDocument = doc;
 
         DefaultSVGContext ctx = (DefaultSVGContext)((SVGOMDocument)doc).getSVGContext();
         ctx.setUserStyleSheetURI(userAgent.getUserStyleSheetURI());
 
         Element root = doc.getDocumentElement();
         String znp = root.getAttributeNS(null, SVGConstants.SVG_ZOOM_AND_PAN_ATTRIBUTE);
-        if (!znp.equals(SVGConstants.SVG_MAGNIFY_VALUE)) {
-            disableInteractions = true;
-        }
+        disableInteractions = !znp.equals(SVGConstants.SVG_MAGNIFY_VALUE);
 
-        gvtTreeBuilder = new GVTTreeBuilder(doc, bridgeContext = createBridgeContext());
-        gvtTreeBuilder.setPriority(Thread.MIN_PRIORITY);
+        bridgeContext = createBridgeContext();
+        nextGVTTreeBuilder = new GVTTreeBuilder(doc, bridgeContext);
+        nextGVTTreeBuilder.setPriority(Thread.MIN_PRIORITY);
 
         Iterator it = gvtTreeBuilderListeners.iterator();
         while (it.hasNext()) {
-            gvtTreeBuilder.addGVTTreeBuilderListener
+            nextGVTTreeBuilder.addGVTTreeBuilderListener
                 ((GVTTreeBuilderListener)it.next());
         }
 
         releaseRenderingReferences();
         initializeEventHandling();
 
+        if (gvtTreeBuilder == null &&
+            documentLoader == null &&
+            gvtTreeRenderer == null) {
+            startGVTTreeBuilder();
+        }
+    }
+
+    /**
+     * Starts a tree builder.
+     */
+    private void startGVTTreeBuilder() {
+        gvtTreeBuilder = nextGVTTreeBuilder;
+        nextGVTTreeBuilder = null;
         gvtTreeBuilder.start();
     }
 
@@ -256,6 +299,9 @@ public class JSVGComponent extends JGVTComponent {
      * Creates a new bridge context.
      */
     protected BridgeContext createBridgeContext() {
+        if (loader == null) {
+            loader = new DocumentLoader(userAgent.getXMLParserClassName());
+        }
         return new BridgeContext(userAgent,
                                  rendererFactory.getRenderContext(),
                                  loader);
@@ -355,12 +401,11 @@ public class JSVGComponent extends JGVTComponent {
          * Called when the loading of a document was completed.
          */
         public void documentLoadingCompleted(SVGDocumentLoaderEvent e) {
-            if (eventsEnabled && svgDocument != null) {
-                // fire the unload event
-                Event evt = svgDocument.createEvent("SVGEvents");
-                evt.initEvent("SVGUnload", false, false);
-                ((EventTarget)(svgDocument.getRootElement())).dispatchEvent(evt);
+            if (nextDocumentLoader != null) {
+                startDocumentLoader();
+                return;
             }
+
             documentLoader = null;
             setSVGDocument(e.getSVGDocument());
         }
@@ -369,15 +414,35 @@ public class JSVGComponent extends JGVTComponent {
          * Called when the loading of a document was cancelled.
          */
         public void documentLoadingCancelled(SVGDocumentLoaderEvent e) {
+            if (nextDocumentLoader != null) {
+                startDocumentLoader();
+                return;
+            }
+
             documentLoader = null;
+
+            if (nextGVTTreeBuilder != null) {
+                startGVTTreeBuilder();
+                return;
+            }
         }
 
         /**
          * Called when the loading of a document has failed.
          */
         public void documentLoadingFailed(SVGDocumentLoaderEvent e) {
+            if (nextDocumentLoader != null) {
+                startDocumentLoader();
+                return;
+            }
+
             documentLoader = null;
             userAgent.displayError(((SVGDocumentLoader)e.getSource()).getException());
+
+            if (nextGVTTreeBuilder != null) {
+                startGVTTreeBuilder();
+                return;
+            }
         }
 
         // GVTTreeBuilderListener //////////////////////////////////////////////
@@ -394,10 +459,18 @@ public class JSVGComponent extends JGVTComponent {
          * Called when a build was completed.
          */
         public void gvtBuildCompleted(GVTTreeBuilderEvent e) {
-            loader.dispose(); // purge loader cache
-            loader = null;
+            if (nextGVTTreeBuilder != null) {
+                startGVTTreeBuilder();
+                return;
+            }
 
+            loader = null;
             gvtTreeBuilder = null;
+            if (nextDocumentLoader != null) {
+                startDocumentLoader();
+                return;
+            }
+
             setGraphicsNode(e.getGVTRoot(), false);
             Dimension2D dim = bridgeContext.getDocumentSize();
             setPreferredSize(new Dimension((int)dim.getWidth(), (int)dim.getHeight()));
@@ -408,10 +481,17 @@ public class JSVGComponent extends JGVTComponent {
          * Called when a build was cancelled.
          */
         public void gvtBuildCancelled(GVTTreeBuilderEvent e) {
-            loader.dispose(); // purge loader cache
-            loader = null;
+            if (nextGVTTreeBuilder != null) {
+                startGVTTreeBuilder();
+                return;
+            }
 
+            loader = null;
             gvtTreeBuilder = null;
+            if (nextDocumentLoader != null) {
+                startDocumentLoader();
+                return;
+            }
             image = null;
             repaint();
         }
@@ -420,10 +500,18 @@ public class JSVGComponent extends JGVTComponent {
          * Called when a build failed.
          */
         public void gvtBuildFailed(GVTTreeBuilderEvent e) {
-            loader.dispose(); // purge loader cache
-            loader = null;
+            if (nextGVTTreeBuilder != null) {
+                startGVTTreeBuilder();
+                return;
+            }
 
+            loader = null;
             gvtTreeBuilder = null;
+            if (nextDocumentLoader != null) {
+                startDocumentLoader();
+                return;
+            }
+
             GraphicsNode gn = e.getGVTRoot();
             Dimension2D dim = bridgeContext.getDocumentSize();
             if (gn == null || dim == null) {
@@ -446,12 +534,53 @@ public class JSVGComponent extends JGVTComponent {
         public void gvtRenderingCompleted(GVTTreeRendererEvent e) {
             super.gvtRenderingCompleted(e);
 
+            if (nextGVTTreeBuilder != null) {
+                startGVTTreeBuilder();
+                return;
+            }
+            if (nextDocumentLoader != null) {
+                startDocumentLoader();
+                return;
+            }
+
             if (eventsEnabled) {
                 Event evt = svgDocument.createEvent("SVGEvents");
                 evt.initEvent("SVGLoad", false, false);
                 ((EventTarget)(svgDocument.getRootElement())).dispatchEvent(evt);
                 ((EventTarget)svgDocument).addEventListener("DOMAttrModified",
                                         new MutationListener(bridgeContext), false);
+            }
+        }
+
+        /**
+         * Called when a rendering was cancelled.
+         */
+        public void gvtRenderingCancelled(GVTTreeRendererEvent e) {
+            super.gvtRenderingCancelled(e);
+
+            if (nextGVTTreeBuilder != null) {
+                startGVTTreeBuilder();
+                return;
+            }
+            if (nextDocumentLoader != null) {
+                startDocumentLoader();
+                return;
+            }
+        }
+        
+        /**
+         * Called when a rendering failed.
+         */
+        public void gvtRenderingFailed(GVTTreeRendererEvent e) {
+            super.gvtRenderingFailed(e);
+
+            if (nextGVTTreeBuilder != null) {
+                startGVTTreeBuilder();
+                return;
+            }
+            if (nextDocumentLoader != null) {
+                startDocumentLoader();
+                return;
             }
         }
 

@@ -236,6 +236,7 @@ public class JGVTComponent extends JComponent {
      */
     public void stopProcessing() {
         if (gvtTreeRenderer != null) {
+            needRender = false;
             gvtTreeRenderer.interrupt();
             interruptProgressivePaintThread();
         }
