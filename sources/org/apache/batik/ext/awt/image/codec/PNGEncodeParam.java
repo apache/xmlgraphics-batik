@@ -1362,96 +1362,118 @@ public abstract class PNGEncodeParam implements ImageEncodeParam {
                          byte[][] scratchRows,
                          int bytesPerRow,
                          int bytesPerPixel) {
-        int[] filterBadness = new int[5];
-        for (int i = 0; i < 5; i++) {
-            filterBadness[i] = Integer.MAX_VALUE;
-        }
-        
-        {
-            int badness = 0;
-            
-            for (int i = bytesPerPixel; i < bytesPerRow + bytesPerPixel; i++) {
-                int curr = currRow[i] & 0xff;
-                badness += curr;
-            }
-            
-            filterBadness[0] = badness;
-        }
-        
-        {
-            byte[] subFilteredRow = scratchRows[1];
-            int badness = 0;
-            
-            for (int i = bytesPerPixel; i < bytesPerRow + bytesPerPixel; i++) {
-                int curr = currRow[i] & 0xff;
-                int left = currRow[i - bytesPerPixel] & 0xff;
-                int difference = curr - left;
-                subFilteredRow[i] = (byte)difference;
-                
-                badness += abs(difference);
-            }
-            
-            filterBadness[1] = badness;
-        }
-        
-        {
-            byte[] upFilteredRow = scratchRows[2];
-            int badness = 0;
-            
-            for (int i = bytesPerPixel; i < bytesPerRow + bytesPerPixel; i++) {
-                int curr = currRow[i] & 0xff;
-                int up = prevRow[i] & 0xff;
-                int difference = curr - up;
-                upFilteredRow[i] = (byte)difference;
-                
-                badness += abs(difference);
-            }
-            
-            filterBadness[2] = badness;
-        }
-        
-        {
-            byte[] averageFilteredRow = scratchRows[3];
-            int badness = 0;
 
-            for (int i = bytesPerPixel; i < bytesPerRow + bytesPerPixel; i++) {
-                int curr = currRow[i] & 0xff;
-                int left = currRow[i - bytesPerPixel] & 0xff;
-                int up = prevRow[i] & 0xff;
-                int difference = curr - (left + up)/2;;
-                averageFilteredRow[i] = (byte)difference;
+        int [] badness = {0, 0, 0, 0, 0};
+        int curr, left, up, upleft, diff;
+        int pa, pb, pc;
+        for (int i = bytesPerPixel; i < bytesPerRow + bytesPerPixel; i++) {
+            curr   = currRow[i] & 0xff;
+            left   = currRow[i - bytesPerPixel] & 0xff;
+            up     = prevRow[i] & 0xff;
+            upleft = prevRow[i - bytesPerPixel] & 0xff;
                 
-                badness += abs(difference);
-            }
-            
-            filterBadness[3] = badness;
-        }
-        
-        {
-            byte[] paethFilteredRow = scratchRows[4];
-            int badness = 0;
-            
-            for (int i = bytesPerPixel; i < bytesPerRow + bytesPerPixel; i++) {
-                int curr = currRow[i] & 0xff;
-                int left = currRow[i - bytesPerPixel] & 0xff;
-                int up = prevRow[i] & 0xff;
-                int upleft = prevRow[i - bytesPerPixel] & 0xff;
-                int predictor = paethPredictor(left, up, upleft);
-                int difference = curr - predictor;
-                paethFilteredRow[i] = (byte)difference;
+            // no filter
+            badness[0] += curr;
+
+            // sub filter
+            diff = curr - left;
+            scratchRows[1][i]  = (byte)diff;
+            badness    [1]    +=   (diff>0)?diff:-diff;
+
+            // up filter
+            diff = curr - up;
+            scratchRows[2][i]  = (byte)diff;
+            badness    [2]    +=   (diff>=0)?diff:-diff;
                 
-                badness += abs(difference);
+            // average filter
+            diff = curr - ((left+up)>>1);
+            scratchRows[3][i]  = (byte)diff;
+            badness    [3]    +=   (diff>=0)?diff:-diff;
+                
+            // paeth filter
+
+            // Original code much simplier but doesn't take full
+            // advantage of relationship between pa/b/c and
+            // information gleaned in abs operations.
+            /// pa = up  -upleft;
+            /// pb = left-upleft;
+            /// pc = pa+pb;
+            /// pa = abs(pa);
+            /// pb = abs(pb);
+            /// pc = abs(pc);
+            /// if ((pa <= pb) && (pa <= pc))
+            ///   diff = curr-left;
+            /// else if (pb <= pc)
+            ///   diff = curr-up;
+            /// else
+            ///   diff = curr-upleft;
+
+            pa = up  -upleft;
+            pb = left-upleft;
+            if (pa<0) {
+              if (pb<0) {
+                // both pa & pb neg so pc is always greater than or
+                // equal to pa or pb;
+                if (pa >= pb) // since pa & pb neg check sense is reversed.
+                  diff = curr-left;
+                else
+                  diff = curr-up;
+              } else {
+                // pa neg pb pos so we must compute pc...
+                pc = pa+pb;
+                pa=-pa;
+                if (pa <= pb)     // pc is positive and less than pb
+                  if (pa <= pc)
+                    diff = curr-left;
+                  else
+                    diff = curr-upleft;
+                else 
+                  // pc is negative and less than or equal to pa,
+                  // but since pa is greater than pb this isn't an issue...
+                  if (pb <= -pc)
+                    diff = curr-up;
+                  else
+                    diff = curr-upleft;
+              }
+            } else {
+              if (pb<0) {
+                pb =-pb; // make it positive...
+                if (pa <= pb) {  
+                  // pc would be negative and less than or equal to pb
+                  pc = pb-pa;
+                  if (pa <= pc)
+                    diff = curr-left;
+                  else if (pb == pc) 
+                    // if pa is zero then pc==pb otherwise
+                    // pc must be less than pb.
+                    diff = curr-up;
+                  else 
+                    diff = curr-upleft;
+                } else { 
+                  // pc would be positive and less than pa.
+                  pc = pa-pb;
+                  if (pb <= pc)
+                    diff = curr-up;
+                  else
+                    diff = curr-upleft;
+                }
+              } else {
+                // both pos so pa+pb is always greater than pa/pb
+                if (pa <= pb)
+                  diff = curr-left;
+                else
+                  diff = curr-up;
+              }
             }
-            
-            filterBadness[4] = badness;
+            scratchRows[4][i]  = (byte)diff;
+            badness    [4]    +=   (diff>=0)?diff:-diff;
         }
-        
         int filterType = 0;
-        int minBadness = filterBadness[0];
+        int minBadness = badness[0];
         
         for (int i = 1; i < 5; i++) {
-            if (filterBadness[i] < minBadness) {
-                minBadness = filterBadness[i];
+            if (badness[i] < minBadness) {
+                minBadness = badness[i];
                 filterType = i;
             }
         }

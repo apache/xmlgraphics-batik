@@ -46,8 +46,8 @@ public class AWTFontFamily implements GVTFontFamily {
      * Derives a GVTFont object of the correct size.
      *
      * @param size The required size of the derived font.
-     * @param aci The character iterator that will be rendered using the derived
-     * font.
+     * @param aci  The character iterator that will be rendered using
+     *             the derived font.  
      */
     public GVTFont deriveFont(float size, AttributedCharacterIterator aci) {
         HashMap fontAttributes = new HashMap(aci.getAttributes());

@@ -31,11 +31,12 @@ public class ArabicTextHandler {
     private final static Map charMap = new HashMap(54);
 
     /**
-     * If the AttributedString contains any arabic chars, assigns an arabic form
-     * attribute, ie. initial|medial|terminal|isolated, to each arabic char.
+     * If the AttributedString contains any arabic chars, assigns an
+     * arabic form attribute, ie. initial|medial|terminal|isolated, to
+     * each arabic char.
      *
      * @param as The string to attach the arabic form attributes to.
-     * @return An attributed string with arabic form attributes.
+     * @return An attributed string with arabic form attributes.  
      */
     public static AttributedString assignArabicForms(AttributedString as) {
 
@@ -227,8 +228,17 @@ public class ArabicTextHandler {
      * @return True if at least one char is arabic, false otherwise.
      */
     public static boolean containsArabic(AttributedString as) {
+        return containsArabic(as.getIterator());
+    }
+
+    /**
+     * Returns true if the ACI contains any arabic characters.
+     *
+     * @param aci The AttributedCharacterIterator to test.
+     * @return True if at least one char is arabic, false otherwise.
+     */
+    public static boolean containsArabic(AttributedCharacterIterator aci) {
         char c;
-        AttributedCharacterIterator aci = as.getIterator();
         for (int i = aci.getBeginIndex(); i < aci.getEndIndex(); i++) {
             c = aci.setIndex(i);
             if (arabicChar(c)) {
