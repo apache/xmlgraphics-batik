@@ -37,6 +37,11 @@ public interface URLRegistryEntry extends RegistryEntry {
     /**
      * Decode the URL into a RenderableImage, here you should feel
      * free to open the URL yourself.
+     *
+     * @param url The url that reference the image.
+     * @param needRawData If true the image returned should not have
+     *                    any default color correction the file may 
+     *                    specify applied.  
      */
-    public Filter handleURL(ParsedURL url);
+    public Filter handleURL(ParsedURL url, boolean needRawData);
 }

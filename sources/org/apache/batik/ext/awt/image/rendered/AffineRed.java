@@ -13,15 +13,21 @@ import org.apache.batik.ext.awt.image.GraphicsUtil;
 
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.Transparency;
 
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+
+import java.awt.color.ColorSpace;
 
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
+import java.awt.image.DirectColorModel;
+import java.awt.image.ComponentColorModel;
+import java.awt.image.DataBuffer;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
 import java.awt.image.SampleModel;
@@ -75,11 +81,10 @@ public class AffineRed extends AbstractRed {
         // fails to properly divide out the Alpha (it always does
         // the affine on premultiplied data), hence you get ugly
         // back aliasing effects...
-        ColorModel cm = src.getColorModel();
-        cm = GraphicsUtil.coerceColorModel(cm, true);
+        ColorModel cm = fixColorModel(src);
 
         // fix my sample model so it makes sense given my size.
-        SampleModel sm = fixSampleModel(src, myBounds);
+        SampleModel sm = fixSampleModel(src, cm, myBounds);
 
         Point2D pt = new Point2D.Float(src.getTileGridXOffset(),
                                        src.getTileGridYOffset());
@@ -131,12 +136,11 @@ public class AffineRed extends AbstractRed {
         // Don't try and get data from src that it doesn't have...
         CachableRed src = (CachableRed)getSources().get(0);
 
-        // if (srcR.intersects(src.getBounds()) == false)
-        //     return;
-        // 
-        // srcR = srcR.intersection(src.getBounds());
-        
-        Raster srcRas = src.getData(srcR);
+        // Raster srcRas = src.getData(srcR);
+
+        if (srcR.intersects(src.getBounds()) == false)
+            return;
+        Raster srcRas = src.getData(srcR.intersection(src.getBounds()));
 
         if (srcRas == null)
             return;
@@ -171,10 +175,10 @@ public class AffineRed extends AbstractRed {
         ColorModel myCM = getColorModel();
 
         WritableRaster srcWR = (WritableRaster)srcRas;
-        GraphicsUtil.coerceData(srcWR, srcCM, true);
-        srcBI = new BufferedImage(myCM,
+        srcCM = GraphicsUtil.coerceData(srcWR, srcCM, true);
+        srcBI = new BufferedImage(srcCM,
                                   srcWR.createWritableTranslatedChild(0,0),
-                                  myCM.isAlphaPremultiplied(), null);
+                                  srcCM.isAlphaPremultiplied(), null);
 
         myBI = new BufferedImage(myCM,wr.createWritableTranslatedChild(0,0),
                                  myCM.isAlphaPremultiplied(), null);
@@ -190,13 +194,46 @@ public class AffineRed extends AbstractRed {
 
     // int count=0;
 
-        /**
+    protected static ColorModel fixColorModel(CachableRed src) {
+        ColorModel  cm = src.getColorModel();
+
+        if (cm.hasAlpha()) {
+            if (!cm.isAlphaPremultiplied())
+                cm = GraphicsUtil.coerceColorModel(cm, true);
+            return cm;
+        }
+
+        ColorSpace cs = cm.getColorSpace();
+
+        int b = src.getSampleModel().getNumBands()+1;
+        if (b == 4) {
+            int [] masks = new int[4];
+            for (int i=0; i < b-1; i++) 
+                masks[i] = 0xFF0000 >> (8*i);
+            masks[3] = 0xFF << (8*(b-1));
+
+            return new DirectColorModel(cs, 8*b, masks[0], masks[1], 
+                                        masks[2], masks[3],
+                                        true, DataBuffer.TYPE_INT);
+        }
+
+        int [] bits = new int[b];
+        for (int i=0; i<b; i++)
+            bits[i] = 8;
+        return new ComponentColorModel(cs, bits, true, true, 
+                                       Transparency.TRANSLUCENT,
+                                       DataBuffer.TYPE_INT);
+        
+    }
+
+    /**
          * This function 'fixes' the source's sample model.
          * right now it just ensures that the sample model isn't
          * much larger than my width.
          */
-    protected static SampleModel fixSampleModel(CachableRed src,
-                                                Rectangle   bounds) {
+    protected SampleModel fixSampleModel(CachableRed src,
+                                         ColorModel  cm,
+                                         Rectangle   bounds) {
         SampleModel sm = src.getSampleModel();
         int defSz = AbstractTiledRed.getDefaultTileSize();
 
@@ -206,6 +243,12 @@ public class AffineRed extends AbstractRed {
         int h = sm.getHeight();
         if (h < defSz) h = defSz;
         if (h > bounds.height) h = bounds.height;
-        return sm.createCompatibleSampleModel(w, h);
+
+        if ((w <= 0) || (h <= 0)) {
+            w = 1;
+            h = 1;
+        }
+
+        return cm.createCompatibleSampleModel(w, h);
     }
 }

@@ -17,10 +17,9 @@ import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
 /**
- * This implements CachableRed based on a BufferedImage.
- * You can use this to wrap a BufferedImage that you want to
- * appear as a CachableRed.
- * It essentially ignores the dependency and dirty region methods.
+ * This is a special case of an Affine that only contains integer
+ * translations, this allows it to do it's work by simply changing
+ * the coordinate system of the tiles.
  *
  * @author <a href="mailto:Thomas.DeWeeese@Kodak.com">Thomas DeWeese</a>
  * @version $Id$ */
@@ -30,7 +29,9 @@ public class TranslateRed extends AbstractRed {
     protected int deltaY;
 
     /**
-     * Construct an instance of CachableRed around a BufferedImage.
+     * Construct an instance of TranslateRed
+     * @param xloc The new x coordinate of cr.getMinX().
+     * @param yloc The new y coordinate of cr.getMinY().
      */
     public TranslateRed(CachableRed cr, int xloc, int yloc) {
         super(cr, new Rectangle(xloc,  yloc,
@@ -42,8 +43,15 @@ public class TranslateRed extends AbstractRed {
         deltaX = xloc-cr.getMinX();
         deltaY = yloc-cr.getMinY();
     }
-
+    
+    /**
+     * The delata translation in x (absolute loc is available from getMinX())
+     */
     public int getDeltaX() { return deltaX; }
+
+    /**
+     * The delata translation in y (absolute loc is available from getMinY())
+     */
     public int getDeltaY() { return deltaY; }
 
     /**

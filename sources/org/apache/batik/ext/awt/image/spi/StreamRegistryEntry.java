@@ -47,6 +47,12 @@ public interface StreamRegistryEntry extends RegistryEntry {
 
     /**
      * Decode the Stream into a RenderableImage
+     *
+     * @param is The input stream that contains the image.
+     * @param needRawData If true the image returned should not have
+     *                    any default color correction the file may 
+     *                    specify applied.  
      */
-    public Filter handleStream(InputStream is);
+    public Filter handleStream(InputStream is, boolean needRawData);
 }
+

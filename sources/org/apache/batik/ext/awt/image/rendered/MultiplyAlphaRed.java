@@ -188,7 +188,10 @@ public class MultiplyAlphaRed extends AbstractRed {
             srcRed.copyData(wr);
 
             Rectangle rgn = wr.getBounds();
-            rgn = rgn.intersection(alphaRed.getBounds());
+            if (rgn.intersects(alphaRed.getBounds()))
+                rgn = rgn.intersection(alphaRed.getBounds());
+            else 
+                return wr;
             
             int [] wrData    = null;
             int [] alphaData = null;
@@ -196,34 +199,36 @@ public class MultiplyAlphaRed extends AbstractRed {
             Raster r = alphaRed.getData(rgn);
             int    w = rgn.width;
 
-            final int bands = srcRed.getSampleModel().getNumBands();
+            final int bands = wr.getSampleModel().getNumBands();
 
             if (cm.isAlphaPremultiplied()) {
                 for (int y=rgn.y; y<rgn.y+rgn.height; y++) {
                     wrData    = wr.getPixels (rgn.x, y, w, 1, wrData);
                     alphaData = r .getSamples(rgn.x, y, w, 1, 0, alphaData);
-                    int i=0;
+                    int i=0, a, b;
                           // 4 is the most common case.  
                           // 2 is probably next most common...
                     switch (bands) {
                     case 2: 
                         for (int x=0; x<alphaData.length; x++) {
-                            final int a = alphaData[x]&0xFF;
+                            a = alphaData[x]&0xFF;
                             wrData[i] = ((wrData[i]&0xFF)*a)>>8; ++i;
                             wrData[i] = ((wrData[i]&0xFF)*a)>>8; ++i;
                         }
+                        break;
                     case 4: 
                         for (int x=0; x<alphaData.length; x++) {
-                            final int a = alphaData[x]&0xFF;
+                            a = alphaData[x]&0xFF;
                             wrData[i] = ((wrData[i]&0xFF)*a)>>8; ++i;
                             wrData[i] = ((wrData[i]&0xFF)*a)>>8; ++i;
                             wrData[i] = ((wrData[i]&0xFF)*a)>>8; ++i;
                             wrData[i] = ((wrData[i]&0xFF)*a)>>8; ++i;
                         }
+                        break;
                     default:
                         for (int x=0; x<alphaData.length; x++) {
-                            final int a = alphaData[x]&0xFF;
-                            for (int b=0; b<bands; b++) {
+                            a = alphaData[x]&0xFF;
+                            for (b=0; b<bands; b++) {
                                 wrData[i] = ((wrData[i]&0xFF)*a)>>8; 
                                 ++i;
                             }

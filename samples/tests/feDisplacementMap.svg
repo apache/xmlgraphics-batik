@@ -37,7 +37,7 @@
             <!-- ========================================== -->
             <pattern id="pattern" patternUnits="userSpaceOnUse" x="0" y="0"
                      width="20" height="20">
-                <rect x="0" y="0" width="10" height="10" fill="red" />
+                <rect x="0" y="0" width="10" height="10" fill="red"/>
                 <rect x="10" y="10" width="10" height="10" fill="green" />
             </pattern>
 
@@ -53,23 +53,23 @@
             <!-- ========================================== -->
             <!-- Variations in the Red channel only         -->
             <!-- ========================================== -->
-            <linearGradient id="redOnly" gradientUnits="objectBoundingBox" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0" stop-color="rgb(255, 128, 128)" />
-                <stop offset=".25" stop-color="rgb(0, 128, 128)" />
-                <stop offset=".5" stop-color="rgb(255, 128, 128)" />
-                <stop offset="1" stop-color="rgb(0, 128, 128)" />
+            <linearGradient id="redOnly" gradientUnits="objectBoundingBox" x1="0" y1="0" x2="1" y2="0" color-interpolation="linearRGB">
+                <stop offset="0" stop-color="rgb(255, 188, 188)" />
+                <stop offset=".25" stop-color="rgb(0, 188, 188)" />
+                <stop offset=".5" stop-color="rgb(255, 188, 188)" />
+                <stop offset="1" stop-color="rgb(0, 188, 188)" />
             </linearGradient>
 
             <radialGradient id="redAndGreenFill2" gradientUnits="objectBoundingBox" cx=".5" cy=".5" r="1" spreadMethod="reflect">
-                <stop offset="0" stop-color="rgb(255, 0, 128)" />
-                <stop offset="1" stop-color="rgb(0, 255, 128)" />
+                <stop offset="0" stop-color="rgb(255, 0, 188)" />
+                <stop offset="1" stop-color="rgb(0, 255, 188)" />
             </radialGradient>
 
-            <linearGradient id="redAndGreenFill" gradientUnits="objectBoundingBox" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0" stop-color="rgb(255, 0, 128)" />
-                <stop offset=".25" stop-color="rgb(0, 255, 128)" />
-                <stop offset=".5" stop-color="rgb(255, 0, 128)" />
-                <stop offset="1" stop-color="rgb(0, 255, 128)" />
+            <linearGradient id="redAndGreenFill" gradientUnits="objectBoundingBox" x1="0" y1="0" x2="1" y2="0" color-interpolation="linearRGB">
+                <stop offset="0" stop-color="rgb(255, 0, 188)" />
+                <stop offset=".25" stop-color="rgb(0, 255, 188)" />
+                <stop offset=".5" stop-color="rgb(255, 0, 188)" />
+                <stop offset="1" stop-color="rgb(0, 255, 188)" />
             </linearGradient>
 
             <rect id="redOnlyMap" x="0" y="0" width="100" height="100" fill="url(#redOnly)" />

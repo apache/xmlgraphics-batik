@@ -182,7 +182,7 @@ public class DiffuseLightingRable8Bit
         this.kernelUnitLength[1] = (float)kernelUnitLength[1];
     }
 
-    public RenderedImage createRendering(RenderContext rc){
+    public RenderedImage createRendering(RenderContext rc) {
         Shape aoi = rc.getAreaOfInterest();
         if (aoi == null)
             aoi = getBounds2D();

@@ -15,11 +15,14 @@ import java.awt.image.BufferedImage;
 import java.awt.Graphics2D;
 import java.awt.Color;
 
+import org.apache.batik.ext.awt.image.GraphicsUtil;
+import org.apache.batik.ext.awt.image.codec.PNGRed;
+import org.apache.batik.ext.awt.image.codec.PNGDecodeParam;
+import org.apache.batik.ext.awt.image.rendered.Any2sRGBRed;
+import org.apache.batik.ext.awt.image.rendered.CachableRed;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.renderable.RedRable;
 import org.apache.batik.ext.awt.image.renderable.DeferRable;
-import org.apache.batik.ext.awt.image.codec.PNGRed;
-import org.apache.batik.ext.awt.image.GraphicsUtil;
 
 public class PNGRegistryEntry 
     extends MagicNumberRegistryEntry {
@@ -31,17 +34,39 @@ public class PNGRegistryEntry
         super("PNG", "png", 0, signature);
     }
 
-    public Filter handleStream(InputStream inIS) {
-        final DeferRable dr = new DeferRable();
-        final InputStream is = inIS;
-	
+    /**
+     * Decode the Stream into a RenderableImage
+     *
+     * @param is The input stream that contains the image.
+     * @param needRawData If true the image returned should not have
+     *                    any default color correction the file may 
+     *                    specify applied.  
+     */
+    public Filter handleStream(InputStream inIS, boolean needRawData) {
+
+        final DeferRable  dr  = new DeferRable();
+        final InputStream is  = inIS;
+        final boolean     raw = needRawData;
+
         Thread t = new Thread() {
                 public void run() {
                     Filter filt;
                     try {
-                        filt = new RedRable(new PNGRed(is));
+                        PNGDecodeParam param = new PNGDecodeParam();
+                        param.setExpandPalette(true);
+                        
+                        if (raw) 
+                            param.setPerformGammaCorrection(false);
+                        else {
+                            param.setPerformGammaCorrection(true);
+                            param.setDisplayExponent(2.4f); // sRGB gamma
+                        }
+                        CachableRed cr = new PNGRed(is, param);
+                        cr = new Any2sRGBRed(cr);
+                        filt = new RedRable(cr);
+
                     } catch (IOException ioe) {
-                        filt = getBrokenLinkImage();
+                        filt = ImageTagRegistry.getBrokenLinkImage();
                     }
 
                     dr.setSource(filt);

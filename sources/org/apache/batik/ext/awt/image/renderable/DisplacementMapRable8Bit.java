@@ -24,6 +24,8 @@ import java.awt.image.renderable.RenderContext;
 
 import java.util.List;
 
+import org.apache.batik.ext.awt.image.GraphicsUtil;
+
 import org.apache.batik.ext.awt.image.ARGBChannel;
 import org.apache.batik.ext.awt.image.PadMode;
 import org.apache.batik.ext.awt.image.rendered.BufferedImageCachableRed;
@@ -215,6 +217,10 @@ public class DisplacementMapRable8Bit
             return null;
         }
 
+        displacedRed = GraphicsUtil.convertToLsRGB
+            (GraphicsUtil.wrap(displacedRed));
+        mapRed = GraphicsUtil.convertToLsRGB
+            (GraphicsUtil.wrap(mapRed));
         //
         // Build a BufferedImages from the two sources
         //
@@ -222,8 +228,17 @@ public class DisplacementMapRable8Bit
         // Get Raster for displacedRed
         Raster displacedRas = displacedRed.getData();
 
+        ColorModel disCM = displacedRed.getColorModel();
+        // Make sure displaced is premultiplied
+        disCM = GraphicsUtil.coerceData((WritableRaster)displacedRas,
+                                        disCM, true);
+
         // Get Raster for mapRed
-        Raster mapRas       = mapRed.getData();
+        Raster mapRas    = mapRed.getData();
+        ColorModel mapCM = mapRed.getColorModel();
+        // ensure map isn't pre-multiplied.
+        GraphicsUtil.coerceData((WritableRaster)mapRas, mapCM, false);
+
         
         DisplacementMapOp op 
             = new DisplacementMapOp(xChannelSelector,
@@ -234,9 +249,8 @@ public class DisplacementMapRable8Bit
         WritableRaster destRas = op.filter(displacedRas, null);
         destRas = destRas.createWritableTranslatedChild(0,0);
 
-        ColorModel cm = displacedRed.getColorModel();
-        BufferedImage destBI = new BufferedImage(cm, destRas, 
-                                                 cm.isAlphaPremultiplied(),
+        BufferedImage destBI = new BufferedImage(disCM, destRas, 
+                                                 disCM.isAlphaPremultiplied(),
                                                  null);
         //
         // Apply the non scaling part of the transform now,
