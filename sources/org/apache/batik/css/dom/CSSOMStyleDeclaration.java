@@ -179,9 +179,15 @@ public class CSSOMStyleDeclaration implements CSSStyleDeclaration {
      * Gets the CSS value associated with the given property.
      */
     protected CSSValue getCSSValue(String name) {
-        CSSValue result = (CSSValue)values.get(name);
+        CSSValue result = null;
+        if (values != null) {
+            result = (CSSValue)values.get(name);
+        }
         if (result == null) {
             result = createCSSValue(name);
+            if (values == null) {
+                values = new HashMap(11);
+            }
             values.put(name, result);
         }
         return result;

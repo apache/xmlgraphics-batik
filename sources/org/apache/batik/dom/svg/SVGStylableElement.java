@@ -637,7 +637,7 @@ public abstract class SVGStylableElement
             for (int i = 0; i < declaration.size(); i++) {
                 if (idx == declaration.getIndex(i)) {
                     Value v = cssEngine.parsePropertyValue(name, value);
-                    declaration.put(v, i, prio.length() > 0);
+                    declaration.put(i, v, idx, prio.length() > 0);
                     mutate = true;
                     setAttributeNS(null, SVG_STYLE_ATTRIBUTE,
                                    declaration.toString(cssEngine));

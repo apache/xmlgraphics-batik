@@ -85,9 +85,9 @@ public class StyleDeclaration {
     /**
      * Sets a value within the declaration.
      */
-    public void put(Value v, int idx, boolean prio) {
+    public void put(int idx, Value v, int i, boolean prio) {
         values[idx]     = v;
-        indexes[idx]    = idx;
+        indexes[idx]    = i;
         priorities[idx] = prio;
     }
 
