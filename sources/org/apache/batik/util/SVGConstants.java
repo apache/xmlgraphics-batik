@@ -25,17 +25,19 @@ public interface SVGConstants extends CSSConstants {
     /**
      * Tags
      */
+    String TAG_A = "a";
     String TAG_CIRCLE = "circle";
     String TAG_CLIP_PATH = "clipPath";
     String TAG_DEFS = "defs";
     String TAG_DESC = "desc";
     String TAG_ELLIPSE = "ellipse";
+    String TAG_FE_BLEND = "feBlend";
     String TAG_FE_COLOR_MATRIX = "feColorMatrix";
-    String TAG_FE_COMPONENT_TRANSFER =
-        "feComponentTransfer";
+    String TAG_FE_COMPONENT_TRANSFER = "feComponentTransfer";
     String TAG_FE_COMPOSITE = "feComposite";
     String TAG_FE_CONVOLVE_MATRIX = "feConvolveMatrix";
     String TAG_FE_DIFFUSE_LIGHTING = "feDiffuseLighting";
+    String TAG_FE_DISPLACEMENT_MAP = "feDisplacementMap";
     String TAG_FE_DISTANT_LIGHT = "feDistantLight";
     String TAG_FE_FLOOD = "feFlood";
     String TAG_FE_FUNC_A = "feFuncA";
@@ -46,6 +48,7 @@ public interface SVGConstants extends CSSConstants {
     String TAG_FE_IMAGE = "feImage";
     String TAG_FE_MERGE = "feMerge";
     String TAG_FE_MERGE_NODE = "feMergeNode";
+    String TAG_FE_MORPHOLOGY = "feMorphology";
     String TAG_FE_OFFSET = "feOffset";
     String TAG_FE_SPECULAR_LIGHTING = "feSpecularLighting";
     String TAG_FE_SPOT_LIGHT = "feSpotLight";
@@ -64,9 +67,13 @@ public interface SVGConstants extends CSSConstants {
     String TAG_RADIAL_GRADIENT = "radialGradient";
     String TAG_RECT = "rect";
     String TAG_STOP = "stop";
+    String TAG_STYLE = "style";
+    String TAG_SWITCH = "switch";
+    String TAG_SYMBOL = "symbol";
     String TAG_TEXT = "text";
     String TAG_TITLE = "title";
     String TAG_SVG = "svg";
+    String TAG_USE = "use";
 
     /**
      * Attribute names

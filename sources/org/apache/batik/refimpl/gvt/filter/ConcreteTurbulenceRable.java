@@ -231,7 +231,7 @@ public class ConcreteTurbulenceRable
         TurbulencePatternGenerator turbGenerator 
             = new TurbulencePatternGenerator(baseFreqX, baseFreqY, numOctaves,
                                              seed, stitched, fractalNoise, true,
-                                             aoi.getBounds2D(), new boolean[]{true, true, true, true});
+                                             region.getRegion(), new boolean[]{true, true, true, true});
 
         AffineTransform patternTxf = new AffineTransform();
         try{
