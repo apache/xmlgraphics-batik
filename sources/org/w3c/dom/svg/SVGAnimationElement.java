@@ -13,8 +13,8 @@ public interface SVGAnimationElement extends
                EventTarget {
   public SVGElement getTargetElement( );
 
-  float getStartTime (  );
-  float getCurrentTime (  );
-  float getSimpleDuration (  )
+  public float getStartTime (  );
+  public float getCurrentTime (  );
+  public float getSimpleDuration (  )
                   throws DOMException;
 }

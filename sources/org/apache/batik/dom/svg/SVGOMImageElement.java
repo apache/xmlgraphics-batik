@@ -11,6 +11,7 @@ package org.apache.batik.dom.svg;
 import java.lang.ref.WeakReference;
 import org.apache.batik.dom.AbstractDocument;
 import org.w3c.dom.svg.SVGAnimatedLength;
+import org.w3c.dom.svg.SVGAnimatedPreserveAspectRatio;
 import org.w3c.dom.svg.SVGAnimatedString;
 import org.w3c.dom.svg.SVGElementInstance;
 import org.w3c.dom.svg.SVGImageElement;
@@ -119,4 +120,14 @@ public class SVGOMImageElement
 	}
 	return result;
     } 
+
+    /**
+     * <b>DOM</b>: Implements {@link
+     * org.w3c.dom.svg.SVGImageElement#getPreserveAspectRatio()}.
+     */
+    public SVGAnimatedPreserveAspectRatio getPreserveAspectRatio() {
+	throw new RuntimeException
+	    (" !!! TODO: SVGOMImageElement.getPreserveAspectRatio()");
+    }
+
 }

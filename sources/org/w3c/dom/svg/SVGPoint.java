@@ -11,5 +11,5 @@ public interface SVGPoint {
   public void      setY( float y )
                        throws DOMException;
 
-  SVGPoint matrixTransform ( SVGMatrix matrix );
+  public SVGPoint matrixTransform ( SVGMatrix matrix );
 }

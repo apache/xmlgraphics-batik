@@ -16,6 +16,7 @@ public interface SVGSVGElement extends
                SVGLangSpace,
                SVGExternalResourcesRequired,
                SVGStylable,
+               SVGLocatable,
                SVGFitToViewBox,
                SVGZoomAndPan,
                EventTarget,
@@ -33,7 +34,6 @@ public interface SVGSVGElement extends
   public void      setContentStyleType( String contentStyleType )
                        throws DOMException;
   public SVGRect           getViewport( );
-    /*
   public float getPixelUnitToMillimeterX( );
   public float getPixelUnitToMillimeterY( );
   public float getScreenPixelToMillimeterX( );
@@ -46,33 +46,30 @@ public interface SVGSVGElement extends
   public void      setCurrentScale( float currentScale )
                        throws DOMException;
   public SVGPoint getCurrentTranslate( );
-  public void      setCurrentTranslate( SVGPoint currentTranslate )
-                       throws DOMException;
 
-  int          suspendRedraw ( int max_wait_milliseconds );
-  void          unsuspendRedraw ( int suspend_handle_id )
+  public int          suspendRedraw ( int max_wait_milliseconds );
+  public void          unsuspendRedraw ( int suspend_handle_id )
                   throws DOMException;
-  void          unsuspendRedrawAll (  );
-  void          forceRedraw (  );
-  void          pauseAnimations (  );
-  void          unpauseAnimations (  );
-  boolean       animationsPaused (  );
-  float         getCurrentTime (  );
-  void          setCurrentTime ( float seconds );
-  NodeList      getIntersectionList ( SVGRect rect, SVGElement referenceElement );
-  NodeList      getEnclosureList ( SVGRect rect, SVGElement referenceElement );
-  boolean       checkIntersection ( SVGElement element, SVGRect rect );
-  boolean       checkEnclosure ( SVGElement element, SVGRect rect );
-  void          deSelectAll (  );
-  SVGLength              createSVGLength (  );
-  SVGAngle               createSVGAngle (  );
-  SVGPoint               createSVGPoint (  );
-  SVGMatrix              createSVGMatrix (  );
-  SVGRect                createSVGRect (  );
-  SVGTransform           createSVGTransform (  );
-  SVGTransform     createSVGTransformFromMatrix ( SVGMatrix matrix );
-  RGBColor    createRGBColor (  );
-  SVGICCColor              createSVGICCColor (  );
-  Element         getElementById ( String elementId );
-    */
+  public void          unsuspendRedrawAll (  );
+  public void          forceRedraw (  );
+  public void          pauseAnimations (  );
+  public void          unpauseAnimations (  );
+  public boolean       animationsPaused (  );
+  public float         getCurrentTime (  );
+  public void          setCurrentTime ( float seconds );
+  public NodeList      getIntersectionList ( SVGRect rect, SVGElement referenceElement );
+  public NodeList      getEnclosureList ( SVGRect rect, SVGElement referenceElement );
+  public boolean       checkIntersection ( SVGElement element, SVGRect rect );
+  public boolean       checkEnclosure ( SVGElement element, SVGRect rect );
+  public void          deSelectAll (  );
+  public SVGNumber              createSVGNumber (  );
+  public SVGLength              createSVGLength (  );
+  public SVGAngle               createSVGAngle (  );
+  public SVGPoint               createSVGPoint (  );
+  public SVGMatrix              createSVGMatrix (  );
+  public SVGRect                createSVGRect (  );
+  public SVGTransform           createSVGTransform (  );
+  public SVGTransform     createSVGTransformFromMatrix ( SVGMatrix matrix );
+  public String              createSVGString (  );
+  public Element         getElementById ( String elementId );
 }

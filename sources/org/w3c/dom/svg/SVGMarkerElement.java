@@ -10,8 +10,7 @@ public interface SVGMarkerElement extends
   // Marker Unit Types
   public static final short SVG_MARKERUNITS_UNKNOWN        = 0;
   public static final short SVG_MARKERUNITS_USERSPACEONUSE = 1;
-  public static final short SVG_MARKERUNITS_USERSPACE      = 2;
-  public static final short SVG_MARKERUNITS_STROKEWIDTH    = 3;
+  public static final short SVG_MARKERUNITS_STROKEWIDTH    = 2;
   // Marker Orientation Types
   public static final short SVG_MARKER_ORIENT_UNKNOWN      = 0;
   public static final short SVG_MARKER_ORIENT_AUTO         = 1;
@@ -25,6 +24,6 @@ public interface SVGMarkerElement extends
   public SVGAnimatedEnumeration getOrientType( );
   public SVGAnimatedAngle      getOrientAngle( );
 
-  void setOrientToAuto (  );
-  void setOrientToAngle ( SVGAngle angle );
+  public void setOrientToAuto (  );
+  public void setOrientToAngle ( SVGAngle angle );
 }

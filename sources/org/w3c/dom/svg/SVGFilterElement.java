@@ -17,5 +17,5 @@ public interface SVGFilterElement extends
   public SVGAnimatedInteger    getFilterResX( );
   public SVGAnimatedInteger    getFilterResY( );
 
-  void setFilterRes ( int filterResX, int filterResY );
+  public void setFilterRes ( int filterResX, int filterResY );
 }

@@ -19,6 +19,7 @@ public interface SVGPaint extends
   public short getPaintType( );
   public String      getUri( );
 
-  void setUri ( String uri );
-  void setPaint ( short paintType, String uri, RGBColor rgbColor, SVGICCColor iccColor );
+  public void setUri ( String uri );
+  public void setPaint ( short paintType, String uri, String rgbColor, String iccColor )
+                  throws SVGException;
 }

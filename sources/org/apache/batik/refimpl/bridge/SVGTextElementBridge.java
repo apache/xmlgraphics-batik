@@ -75,11 +75,12 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
         //
         // Load all fonts. Work around
         //
-        GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        GraphicsEnvironment env;
+        env = GraphicsEnvironment.getLocalGraphicsEnvironment();
         System.out.println("Initializing fonts .... please wait");
         String fontNames[] = env.getAvailableFontFamilyNames();
-        System.out.println("Done initializing " + fontNames.length + " fonts");
         int nFonts = fontNames != null ? fontNames.length : 0;
+        System.out.println("Done initializing " + nFonts + " fonts");
         for(int i=0; i<nFonts; i++){
             fonts.put(fontNames[i], fontNames[i]);
         }

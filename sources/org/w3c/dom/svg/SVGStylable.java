@@ -8,6 +8,5 @@ public interface SVGStylable {
   public SVGAnimatedString getClassName( );
   public CSSStyleDeclaration getStyle( );
 
-  CSSValue getPresentationAttribute ( String name );
-  CSSValue getAnimatedPresentationAttribute ( String name );
+  public CSSValue getPresentationAttribute ( String name );
 }

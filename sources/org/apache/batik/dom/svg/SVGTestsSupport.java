@@ -10,7 +10,7 @@ package org.apache.batik.dom.svg;
 
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
-import org.w3c.dom.svg.SVGList;
+import org.w3c.dom.svg.SVGStringList;
 
 /**
  * This class provides support for SVGTests features.
@@ -43,15 +43,15 @@ public class SVGTestsSupport {
     /**
      * To implements {@link org.w3c.dom.svg.SVGTests#getRequiredFeatures()}.
      */
-    public SVGList getRequiredFeatures(Element elt) {
+    public SVGStringList getRequiredFeatures(Element elt) {
 	throw new RuntimeException(" !!! TODO: SVGTestsSupport.getRequiredFeatures()");
     }
 
     /**
      * To implements {@link
-     * org.w3c.dom.svg.SVGTests#setRequiredFeatures(org.w3c.dom.svg.SVGList)}.
+     * org.w3c.dom.svg.SVGTests#setRequiredFeatures(SVGStringList)}.
      */
-    public void setRequiredFeatures(SVGList requiredFeatures, Element elt)
+    public void setRequiredFeatures(SVGStringList requiredFeatures, Element elt)
 	throws DOMException {
 	throw new RuntimeException(" !!! TODO: SVGTestsSupport.setRequiredFeatures()");
     }
@@ -59,15 +59,16 @@ public class SVGTestsSupport {
     /**
      * To implements {@link org.w3c.dom.svg.SVGTests#getRequiredExtensions()}.
      */
-    public SVGList getRequiredExtensions(Element elt) {
+    public SVGStringList getRequiredExtensions(Element elt) {
 	throw new RuntimeException(" !!! TODO: SVGTestsSupport.getRequiredExtensions()");
     }
 
     /**
      * To implements {@link
-     * org.w3c.dom.svg.SVGTests#setRequiredExtensions(org.w3c.dom.svg.SVGList)}.
+     * org.w3c.dom.svg.SVGTests#setRequiredExtensions(SVGStringList)}.
      */
-    public void setRequiredExtensions(SVGList requiredExtensions, Element elt)
+    public void setRequiredExtensions(SVGStringList requiredExtensions,
+                                      Element elt)
 	throws DOMException {
 	throw new RuntimeException(" !!! TODO: SVGTestsSupport.setRequiredExtensions()");
     }
@@ -75,15 +76,15 @@ public class SVGTestsSupport {
     /**
      * To implements {@link org.w3c.dom.svg.SVGTests#getSystemLanguage()}.
      */
-    public SVGList getSystemLanguage(Element elt) {
+    public SVGStringList getSystemLanguage(Element elt) {
 	throw new RuntimeException(" !!! TODO: SVGTestsSupport.getSystemLanguage()");
     }
 
     /**
      * To implements {@link
-     * org.w3c.dom.svg.SVGTests#setRequiredExtensions(org.w3c.dom.svg.SVGList)}.
+     * org.w3c.dom.svg.SVGTests#setRequiredExtensions(SVGStringList)}.
      */
-    public void setSystemLanguage(SVGList systemLanguage, Element elt)
+    public void setSystemLanguage(SVGStringList systemLanguage, Element elt)
 	throws DOMException {
 	throw new RuntimeException(" !!! TODO: SVGTestsSupport.setSystemLanguage()");
     }

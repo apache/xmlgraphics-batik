@@ -12,7 +12,7 @@ import java.lang.ref.WeakReference;
 import org.apache.batik.dom.AbstractDocument;
 import org.w3c.dom.svg.SVGAnimatedLength;
 import org.w3c.dom.svg.SVGAnimatedNumber;
-import org.w3c.dom.svg.SVGList;
+import org.w3c.dom.svg.SVGPathSegList;
 import org.w3c.dom.svg.SVGPathElement;
 import org.w3c.dom.svg.SVGPathSegArcAbs;
 import org.w3c.dom.svg.SVGPathSegArcRel;
@@ -102,7 +102,7 @@ public class SVGOMPathElement
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGAnimatedPathData#getPathSegList()}.
      */
-    public SVGList getPathSegList() {
+    public SVGPathSegList getPathSegList() {
         throw new RuntimeException(" !!! SVGOMPathElement#getPathSegList()");
     }
 
@@ -110,7 +110,7 @@ public class SVGOMPathElement
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGAnimatedPathData#getNormalizedPathSegList()}.
      */
-    public SVGList getNormalizedPathSegList() {
+    public SVGPathSegList getNormalizedPathSegList() {
         throw new RuntimeException(" !!! SVGOMPathElement#getNormalizedPathSegList()");
     }
 
@@ -118,7 +118,7 @@ public class SVGOMPathElement
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGAnimatedPathData#getAnimatedPathSegList()}.
      */
-    public SVGList getAnimatedPathSegList() {
+    public SVGPathSegList getAnimatedPathSegList() {
         throw new RuntimeException(" !!! SVGOMPathElement#getAnimatedPathSegList()");
     }
 
@@ -126,7 +126,7 @@ public class SVGOMPathElement
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGAnimatedPathData#getAnimatedNormalizedPathSegList()}.
      */
-    public SVGList getAnimatedNormalizedPathSegList() {
+    public SVGPathSegList getAnimatedNormalizedPathSegList() {
         throw new RuntimeException(" !!! SVGOMPathElement#getAnimatedNormalizedPathSegList()");
     }
 

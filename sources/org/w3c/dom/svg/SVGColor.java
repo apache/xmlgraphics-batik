@@ -15,8 +15,8 @@ public interface SVGColor extends
   public RGBColor       getRGBColor( );
   public SVGICCColor    getICCColor( );
 
-  void        setRGBColor ( RGBColor rgbColor );
-  void        setRGBColorICCColor ( RGBColor rgbColor, SVGICCColor iccColor );
-  RGBColor    createRGBColor (  );
-  SVGICCColor createSVGICCColor (  );
+  public void        setRGBColor ( String rgbColor )
+                  throws SVGException;
+  public void        setRGBColorICCColor ( String rgbColor, String iccColor )
+                  throws SVGException;
 }

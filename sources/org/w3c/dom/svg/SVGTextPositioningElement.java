@@ -7,5 +7,5 @@ public interface SVGTextPositioningElement extends
   public SVGAnimatedLengthList getY( );
   public SVGAnimatedLengthList getDx( );
   public SVGAnimatedLengthList getDy( );
-  public SVGAnimatedTextRotate getRotate( );
+  public SVGAnimatedNumberList getRotate( );
 }
