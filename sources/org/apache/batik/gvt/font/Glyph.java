@@ -14,9 +14,13 @@ import org.apache.batik.gvt.text.ArabicTextHandler;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.GeneralPath;
+import java.awt.geom.Rectangle2D;
 import java.awt.Shape;
 import java.awt.font.GlyphMetrics;
 import java.util.Vector;
+import java.awt.Paint;
+import java.awt.Stroke;
 
 
 /**
@@ -28,7 +32,6 @@ import java.util.Vector;
  */
 public class Glyph {
 
-    private GraphicsNode glyphNode;
     private String unicode;
     private Vector names;
     private String orientation;
@@ -46,33 +49,23 @@ public class Glyph {
 
     private Shape outline; // cache the glyph outline
 
+    private Paint fillPaint;
+    private Paint strokePaint;
+    private Stroke stroke;
+    private Shape dShape;
+    private GraphicsNode glyphChildrenNode;
+
 
     /**
      * Constructs a Glyph with the specified parameters.
-     *
-     * @param glyphNode The graphics node for this glyph.
-     * @param unicode The unicode char or chars that this glpyh represents.
-     * @param names The list of names for this glyph.
-     * @param orientation Indicates what inline-progression-direction this glyph
-     * can be used in. Should be either "h" for horizontal only, "v" for vertical
-     * only, or empty which indicates that the glpyh can be use in both.
-     * @param arabicForm
-     * @param lang
-     * @param horizOrigin
-     * @param vertOrigin
-     * @param horizAdvX
-     * @param vertAdvY
-     * @param glyphCode
-     * @param kernScale
      */
-    public Glyph(GraphicsNode glyphNode, String unicode, Vector names,
+    public Glyph(String unicode, Vector names,
                  String orientation, String arabicForm, String lang,
                  Point2D horizOrigin, Point2D vertOrigin, float horizAdvX,
-                 float vertAdvY, int glyphCode, float kernScale) {
+                 float vertAdvY, int glyphCode, float kernScale,
+                 Paint fillPaint, Paint strokePaint, Stroke stroke,
+                 Shape dShape, GraphicsNode glyphChildrenNode) {
 
-        if (glyphNode == null) {
-            throw new IllegalArgumentException();
-        }
         if (unicode == null) {
             throw new IllegalArgumentException();
         }
@@ -83,7 +76,6 @@ public class Glyph {
             throw new IllegalArgumentException();
         }
 
-        this.glyphNode = glyphNode;
         this.unicode = unicode;
         this.names = names;
         this.orientation = orientation;
@@ -106,15 +98,13 @@ public class Glyph {
         this.glyphCode = glyphCode;
         this.position = new Point2D.Float(0,0);
         this.outline = null;
-    }
 
-    /**
-     * Returns the graphics node associated with this glyph.
-     *
-     * @return The glyph graphics node.
-     */
-    public GraphicsNode getGlyphNode() {
-        return glyphNode;
+
+        this.fillPaint = fillPaint;
+        this.strokePaint = strokePaint;
+        this.stroke = stroke;
+        this.dShape = dShape;
+        this.glyphChildrenNode = glyphChildrenNode;
     }
 
     /**
@@ -258,8 +248,7 @@ public class Glyph {
     public GVTGlyphMetrics getGlyphMetrics() {
         if (metrics == null) {
             metrics = new GVTGlyphMetrics(getHorizAdvX(), getVertAdvY(),
-                                          glyphNode.getOutline(null).getBounds2D(),
-                                          GlyphMetrics.COMPONENT);
+                                          getBounds(), GlyphMetrics.COMPONENT);
         }
         return metrics;
     }
@@ -274,10 +263,26 @@ public class Glyph {
     public GVTGlyphMetrics getGlyphMetrics(float hkern, float vkern) {
         return new GVTGlyphMetrics(getHorizAdvX() - (hkern * kernScale),
                                    getVertAdvY() - (vkern * kernScale),
-                                   glyphNode.getOutline(null).getBounds2D(),
-                                   GlyphMetrics.COMPONENT);
+                                   getBounds(), GlyphMetrics.COMPONENT);
 
     }
+
+    public Rectangle2D getBounds() {
+
+        if (dShape != null && glyphChildrenNode == null) {
+            return dShape.getBounds2D();
+        }
+        if (glyphChildrenNode != null && dShape == null) {
+            return glyphChildrenNode.getOutline(null).getBounds2D();
+        }
+        if (dShape != null && glyphChildrenNode != null) {
+            Rectangle2D dBounds = dShape.getBounds2D();
+            Rectangle2D childrenBounds = glyphChildrenNode.getOutline(null).getBounds2D();
+            return dBounds.createUnion(childrenBounds);
+        }
+        return new Rectangle2D.Double(0,0,0,0);
+    }
+
 
 
     /**
@@ -292,10 +297,21 @@ public class Glyph {
             if (transform != null) {
                 tr.concatenate(transform);
             }
-            Shape glyphOutline = glyphNode.getOutline(null);
-            AffineTransform glyphNodeTransform = glyphNode.getTransform();
-            if (glyphNodeTransform != null) {
-                glyphOutline = glyphNodeTransform.createTransformedShape(glyphOutline);
+            Shape glyphChildrenOutline = null;
+            if (glyphChildrenNode != null) {
+                glyphChildrenOutline = glyphChildrenNode.getOutline(null);
+            }
+            GeneralPath glyphOutline = null;
+            if (dShape != null && glyphChildrenOutline != null) {
+                glyphOutline = new GeneralPath(dShape);
+                glyphOutline.append(glyphChildrenOutline, false);
+            } else if (dShape != null && glyphChildrenOutline == null) {
+                glyphOutline = new GeneralPath(dShape);
+            } else if (dShape == null && glyphChildrenOutline != null) {
+                glyphOutline = new GeneralPath(glyphChildrenOutline);
+            } else {
+                // must be a whitespace glyph, return an empty shape
+                glyphOutline = new GeneralPath();
             }
             outline = tr.createTransformedShape(glyphOutline);
         }
@@ -309,12 +325,34 @@ public class Glyph {
      * @param context The current rendering context.
      */
     public void draw(Graphics2D graphics2D, GraphicsNodeRenderContext context) {
-        AffineTransform tr = AffineTransform.getTranslateInstance(position.getX(), position.getY());
+        AffineTransform tr
+            = AffineTransform.getTranslateInstance(position.getX(),
+                                                   position.getY());
         if (transform != null) {
             tr.concatenate(transform);
         }
-        glyphNode.setTransform(tr);
-        glyphNode.paint(graphics2D, context);
+
+        // paint the dShape first
+        if (dShape != null) {
+            Shape tShape = tr.createTransformedShape(dShape);
+            if (fillPaint != null) {
+                graphics2D.setPaint(fillPaint);
+                graphics2D.fill(tShape);
+            }
+
+            // check if we need to draw the outline of this glyph
+            if (stroke != null && strokePaint != null) {
+                graphics2D.setStroke(stroke);
+                graphics2D.setPaint(strokePaint);
+                graphics2D.draw(tShape);
+            }
+        }
+
+        // paint the glyph children nodes
+        if (glyphChildrenNode != null) {
+            glyphChildrenNode.setTransform(tr);
+            glyphChildrenNode.paint(graphics2D, context);
+        }
     }
 }
 

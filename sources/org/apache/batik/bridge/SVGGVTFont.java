@@ -9,6 +9,9 @@
 package org.apache.batik.bridge;
 
 import java.awt.Font;
+import java.awt.Paint;
+import java.awt.Stroke;
+import java.awt.font.TextAttribute;
 import java.awt.font.FontRenderContext;
 import java.awt.font.LineMetrics;
 import java.awt.font.GlyphVector;
@@ -538,8 +541,18 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
                         Element glyphElement = glyphElements[i];
                         SVGGlyphElementBridge glyphBridge
                             = (SVGGlyphElementBridge)ctx.getBridge(glyphElement);
-                        Glyph glyph = glyphBridge.createGlyph(
-                            ctx, glyphElement, textElement, i, fontSize, fontFace);
+                        Glyph glyph;
+                        if (aci != null) {
+                            aci.setIndex(ci.getIndex());
+                            Paint fillPaint = (Paint)aci.getAttribute(TextAttribute.FOREGROUND);
+                            Paint strokePaint = (Paint)aci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.STROKE_PAINT);
+                            Stroke stroke = (Stroke)aci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.STROKE);
+                            glyph = glyphBridge.createGlyph(
+                                ctx, glyphElement, textElement, i, fontSize, fontFace, fillPaint, strokePaint, stroke);
+                        } else {
+                             glyph = glyphBridge.createGlyph(
+                                ctx, glyphElement, textElement, i, fontSize, fontFace, null, null, null);
+                        }
                         glyphs.add(glyph);
                         foundMatchingGlyph = true;
                         break;
@@ -561,8 +574,18 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
                             Element glyphElement = glyphElements[i];
                             SVGGlyphElementBridge glyphBridge
                                 = (SVGGlyphElementBridge)ctx.getBridge(glyphElement);
-                            Glyph glyph = glyphBridge.createGlyph(
-                                ctx, glyphElement, textElement, i, fontSize, fontFace);
+                            Glyph glyph;
+                            if (aci != null) {
+                                aci.setIndex(ci.getIndex());
+                                Paint fillPaint = (Paint)aci.getAttribute(TextAttribute.FOREGROUND);
+                                Paint strokePaint = (Paint)aci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.STROKE_PAINT);
+                                Stroke stroke = (Stroke)aci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.STROKE);
+                                glyph = glyphBridge.createGlyph(
+                                    ctx, glyphElement, textElement, i, fontSize, fontFace, fillPaint, strokePaint, stroke);
+                            } else {
+                                glyph = glyphBridge.createGlyph(
+                                    ctx, glyphElement, textElement, i, fontSize, fontFace, null, null, null);
+                            }
                             glyphs.add(glyph);
                             foundMatchingGlyph = true;
                             break;
@@ -578,8 +601,20 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
                 // add the missing glyph
                 SVGGlyphElementBridge glyphBridge
                     = (SVGGlyphElementBridge)ctx.getBridge(missingGlyphElement);
-                Glyph glyph = glyphBridge.createGlyph(
-                    ctx, missingGlyphElement, textElement, -1, fontSize, fontFace);
+                Glyph glyph;
+                if (aci != null) {
+                    aci.setIndex(ci.getIndex());
+                    Paint fillPaint = (Paint)aci.getAttribute(TextAttribute.FOREGROUND);
+                    Paint strokePaint = (Paint)aci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.STROKE_PAINT);
+                    Stroke stroke = (Stroke)aci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.STROKE);
+                    glyph = glyphBridge.createGlyph(
+                        ctx, missingGlyphElement, textElement, -1, fontSize,
+                        fontFace, fillPaint, strokePaint, stroke);
+                } else {
+                    glyph = glyphBridge.createGlyph(
+                            ctx, missingGlyphElement, textElement, -1, fontSize,
+                            fontFace, null, null, null);
+                }
                 glyphs.add(glyph);
 
             }

@@ -9,6 +9,9 @@
 package org.apache.batik.bridge;
 
 import java.awt.Shape;
+import java.awt.Paint;
+import java.awt.Stroke;
+import java.awt.Color;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 
@@ -20,8 +23,11 @@ import java.util.Vector;
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.ShapeNode;
-import org.apache.batik.gvt.ShapePainter;
+import org.apache.batik.gvt.StrokeShapePainter;
+import org.apache.batik.gvt.FillShapePainter;
+import org.apache.batik.gvt.CompositeShapePainter;
 import org.apache.batik.gvt.font.Glyph;
+import org.apache.batik.ext.awt.LinearGradientPaint;
 
 import org.apache.batik.parser.AWTPathProducer;
 import org.apache.batik.parser.ParseException;
@@ -72,24 +78,22 @@ public class SVGGlyphElementBridge extends AbstractSVGBridge
                              Element textElement,
                              int glyphCode,
                              float fontSize,
-                             SVGFontFace fontFace) {
+                             SVGFontFace fontFace,
+                             Paint fillPaint,
+                             Paint strokePaint,
+                             Stroke stroke) {
 
-        // build the GVT tree that represents the glyph
 
-        GVTBuilder builder = ctx.getGVTBuilder();
-
-        CompositeGraphicsNode glyphContentNode
-            = new CompositeGraphicsNode();
 
         float fontHeight = fontFace.getUnitsPerEm();
         float scale = fontSize/fontHeight;
         AffineTransform scaleTransform
             = AffineTransform.getScaleInstance(scale, -scale);
 
-        // create a shape node that represents the d attribute
+        // create a shape that represents the d attribute
         String d = glyphElement.getAttributeNS(null, SVG_D_ATTRIBUTE);
+        Shape dShape = null;
         if (d.length() != 0) {
-            ShapeNode shapeNode = new ShapeNode();
             AWTPathProducer app = new AWTPathProducer();
             app.setWindingRule(CSSUtilities.convertFillRule(glyphElement));
             try {
@@ -105,15 +109,7 @@ public class SVGGlyphElementBridge extends AbstractSVGBridge
                 Shape shape = app.getShape();
                 Shape transformedShape
                     = scaleTransform.createTransformedShape(shape);
-
-                shapeNode.setShape(transformedShape);
-
-                // set up the painter for the d part of the glyph
-                ShapePainter painter = PaintServer.convertFillAndStroke(
-                                      textElement, shapeNode, ctx);
-                shapeNode.setShapePainter(painter);
-
-                glyphContentNode.add(shapeNode);
+                dShape = transformedShape;
             }
         }
 
@@ -132,7 +128,14 @@ public class SVGGlyphElementBridge extends AbstractSVGBridge
             }
         }
 
+        CompositeGraphicsNode glyphContentNode = null;
+
         if (numGlyphChildren > 0) {  // the glyph has child elements
+
+            // build the GVT tree that represents the glyph children
+            GVTBuilder builder = ctx.getGVTBuilder();
+
+            glyphContentNode = new CompositeGraphicsNode();
 
             //
             // need to clone the parent font element and glyph element
@@ -318,8 +321,10 @@ public class SVGGlyphElementBridge extends AbstractSVGBridge
         Point2D horizOrigin = new Point2D.Float(horizOriginX, horizOriginY);
 
         // return a new Glyph
-        return new Glyph(glyphContentNode, unicode, names, orientation,
+        return new Glyph(unicode, names, orientation,
                          arabicForm, lang, horizOrigin, vertOrigin,
-                         horizAdvX, vertAdvY, glyphCode, scale);
+                         horizAdvX, vertAdvY, glyphCode, scale,
+                         fillPaint, strokePaint, stroke,
+                         dShape, glyphContentNode);
     }
 }
