@@ -8,12 +8,23 @@
 
 package org.apache.batik.css.svg;
 
+import org.apache.batik.css.CSSDOMExceptionFactory;
+import org.apache.batik.css.CSSOMValue;
+
+import org.apache.batik.css.value.ImmutableFloat;
+import org.apache.batik.css.value.ImmutableRGBColor;
 import org.apache.batik.css.value.ImmutableString;
 import org.apache.batik.css.value.ImmutableValue;
+import org.apache.batik.css.value.ValueFactory;
+
 import org.w3c.css.sac.LexicalUnit;
 import org.w3c.css.sac.Parser;
+
 import org.w3c.dom.DOMException;
+
 import org.w3c.dom.css.CSSPrimitiveValue;
+
+import org.w3c.dom.svg.SVGPaint;
 
 /**
  * This class provides a factory for values of type paint.
@@ -41,9 +52,135 @@ public class PaintFactory
      * Creates a value from a lexical unit.
      */
     public ImmutableValue createValue(LexicalUnit lu) throws DOMException {
-	if (lu.getLexicalUnitType() == LexicalUnit.SAC_URI) {
-	    return new ImmutableString(CSSPrimitiveValue.CSS_URI,
-				       lu.getStringValue());
+	switch (lu.getLexicalUnitType()) {
+	case LexicalUnit.SAC_INHERIT:
+	    return INHERIT;
+	case LexicalUnit.SAC_IDENT:
+            return super.createValue(lu);
+        case LexicalUnit.SAC_RGBCOLOR:
+            LexicalUnit l = lu.getParameters();
+            ValueFactory ph = new ColorComponentFactory(getParser());
+            CSSPrimitiveValue r = new CSSOMValue(ph, createColorValue(l));
+            l = l.getNextLexicalUnit().getNextLexicalUnit();
+            CSSPrimitiveValue g = new CSSOMValue(ph, createColorValue(l));
+            l = l.getNextLexicalUnit().getNextLexicalUnit();
+            CSSPrimitiveValue b = new CSSOMValue(ph, createColorValue(l));
+            lu = lu.getNextLexicalUnit();
+            if (lu == null) {
+                return new ImmutableRGBColor(r, g, b);
+            }
+            if (lu.getLexicalUnitType() != LexicalUnit.SAC_FUNCTION) {
+                throw CSSDOMExceptionFactory.createDOMException
+                    (DOMException.INVALID_ACCESS_ERR,
+                     "invalid.lexical.unit",
+                     new Object[] { new Integer(lu.getLexicalUnitType()) });
+            }
+            if (!lu.getFunctionName().toLowerCase().equals("icc-color")) {
+                throw CSSDOMExceptionFactory.createDOMException
+                    (DOMException.INVALID_ACCESS_ERR,
+                     "invalid.lexical.unit",
+                     new Object[] { new Integer(lu.getLexicalUnitType()) });
+            }
+            lu = lu.getParameters();
+            if (lu.getLexicalUnitType() != LexicalUnit.SAC_IDENT) {
+                throw CSSDOMExceptionFactory.createDOMException
+                    (DOMException.INVALID_ACCESS_ERR,
+                     "invalid.lexical.unit",
+                     new Object[] { new Integer(lu.getLexicalUnitType()) });
+            }
+            String cp = lu.getStringValue();
+            lu = lu.getNextLexicalUnit();
+            SVGCSSNumberList nl = new SVGCSSNumberList();
+            while (lu != null) {
+                lu = lu.getNextLexicalUnit();
+                if (lu == null) {
+                    throw CSSDOMExceptionFactory.createDOMException
+                        (DOMException.INVALID_ACCESS_ERR,
+                         "invalid.lexical.unit",
+                         new Object[] { null });
+                }
+                nl.appendItem(new SVGCSSNumber(getColorValue(lu)));
+                lu = lu.getNextLexicalUnit();
+            }
+            return new ImmutableSVGPaintValue
+                (SVGPaint.SVG_PAINTTYPE_RGBCOLOR_ICCCOLOR,
+                 r, g, b, cp, nl, null);
+
+        case LexicalUnit.SAC_URI:
+            String uri = lu.getStringValue();
+            lu = lu.getNextLexicalUnit();
+            if (lu == null) {
+                return new ImmutableString(CSSPrimitiveValue.CSS_URI, uri);
+            }
+
+            switch (lu.getLexicalUnitType()) {
+            case LexicalUnit.SAC_RGBCOLOR:
+                l = lu.getParameters();
+                ph = new ColorComponentFactory(getParser());
+                r = new CSSOMValue(ph, createColorValue(l));
+                l = l.getNextLexicalUnit().getNextLexicalUnit();
+                g = new CSSOMValue(ph, createColorValue(l));
+                l = l.getNextLexicalUnit().getNextLexicalUnit();
+                b = new CSSOMValue(ph, createColorValue(l));
+                lu = lu.getNextLexicalUnit();
+                if (lu == null) {
+                    return new ImmutableSVGPaintValue
+                        (SVGPaint.SVG_PAINTTYPE_URI_RGBCOLOR,
+                         r, g, b, null, null, uri);
+                }
+                if (lu.getLexicalUnitType() != LexicalUnit.SAC_FUNCTION) {
+                    throw CSSDOMExceptionFactory.createDOMException
+                        (DOMException.INVALID_ACCESS_ERR,
+                         "invalid.lexical.unit",
+                         new Object[] { new Integer(lu.getLexicalUnitType()) });
+                }
+                if (!lu.getFunctionName().toLowerCase().equals("icc-color")) {
+                    throw CSSDOMExceptionFactory.createDOMException
+                        (DOMException.INVALID_ACCESS_ERR,
+                         "invalid.lexical.unit",
+                         new Object[] { new Integer(lu.getLexicalUnitType()) });
+                }
+                lu = lu.getParameters();
+                if (lu.getLexicalUnitType() != LexicalUnit.SAC_IDENT) {
+                    throw CSSDOMExceptionFactory.createDOMException
+                        (DOMException.INVALID_ACCESS_ERR,
+                         "invalid.lexical.unit",
+                         new Object[] { new Integer(lu.getLexicalUnitType()) });
+                }
+                cp = lu.getStringValue();
+                lu = lu.getNextLexicalUnit();
+                nl = new SVGCSSNumberList();
+                while (lu != null) {
+                    lu = lu.getNextLexicalUnit();
+                    if (lu == null) {
+                        throw CSSDOMExceptionFactory.createDOMException
+                            (DOMException.INVALID_ACCESS_ERR,
+                             "invalid.lexical.unit",
+                             new Object[] { null });
+                    }
+                    nl.appendItem(new SVGCSSNumber(getColorValue(lu)));
+                    lu = lu.getNextLexicalUnit();
+                }
+                return new ImmutableSVGPaintValue
+                    (SVGPaint.SVG_PAINTTYPE_URI_RGBCOLOR_ICCCOLOR,
+                     r, g, b, cp, nl, uri);
+            case LexicalUnit.SAC_IDENT:
+                String id = lu.getStringValue().toLowerCase();
+                if (id.equals(CSS_NONE_VALUE)) {
+                    return new ImmutableSVGPaintValue
+                        (SVGPaint.SVG_PAINTTYPE_URI_NONE,
+                         null, null, null, null, null, uri);
+                } else if (id.equals(CSS_CURRENTCOLOR_VALUE)) {
+                    return new ImmutableSVGPaintValue
+                        (SVGPaint.SVG_PAINTTYPE_URI_CURRENTCOLOR,
+                         null, null, null, null, null, uri);
+                } else {
+                    throw CSSDOMExceptionFactory.createDOMException
+                        (DOMException.INVALID_ACCESS_ERR,
+                         "invalid.lexical.unit",
+                         new Object[] { new Integer(lu.getLexicalUnitType()) });
+                }
+            }
 	}
 	return super.createValue(lu);
     }
@@ -61,4 +198,46 @@ public class PaintFactory
 	}
 	return super.createStringValue(type, value);
     }
+
+    /**
+     * Creates a float value usable by an RGBColor.
+     * @param lu The SAC lexical unit used to create the value.
+     */
+    protected ImmutableValue createColorValue(LexicalUnit lu) {
+	switch (lu.getLexicalUnitType()) {
+	case LexicalUnit.SAC_INTEGER:
+	    return new ImmutableFloat(CSSPrimitiveValue.CSS_NUMBER,
+				      lu.getIntegerValue());
+	case LexicalUnit.SAC_REAL:
+	    return new ImmutableFloat(CSSPrimitiveValue.CSS_NUMBER,
+				      lu.getFloatValue());
+	case LexicalUnit.SAC_PERCENTAGE:
+	    return new ImmutableFloat(CSSPrimitiveValue.CSS_PERCENTAGE,
+				      lu.getFloatValue());
+	default:
+	    throw CSSDOMExceptionFactory.createDOMException
+		(DOMException.INVALID_ACCESS_ERR,
+		 "invalid.lexical.unit",
+		 new Object[] { new Integer(lu.getLexicalUnitType()) });
+	}
+    }
+
+    /**
+     * Creates a float value usable by an RGBColor.
+     * @param lu The SAC lexical unit used to create the value.
+     */
+    protected float getColorValue(LexicalUnit lu) {
+	switch (lu.getLexicalUnitType()) {
+	case LexicalUnit.SAC_INTEGER:
+	    return lu.getIntegerValue();
+	case LexicalUnit.SAC_REAL:
+	    return lu.getFloatValue();
+	default:
+	    throw CSSDOMExceptionFactory.createDOMException
+		(DOMException.INVALID_ACCESS_ERR,
+		 "invalid.lexical.unit",
+		 new Object[] { new Integer(lu.getLexicalUnitType()) });
+	}
+    }
+
 }

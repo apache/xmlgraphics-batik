@@ -8,7 +8,11 @@
 
 package org.apache.batik.css.svg;
 
+import org.apache.batik.css.CSSOMValue;
+
+import org.apache.batik.css.value.ImmutableValue;
 import org.apache.batik.css.value.ColorFactory;
+
 import org.w3c.css.sac.Parser;
 
 /**
@@ -160,4 +164,12 @@ public class SVGColorFactory extends ColorFactory {
     public SVGColorFactory(Parser p, String prop) {
 	super(p, prop);
     }
+
+    /**
+     * Creates a new CSSValue.
+     */
+    protected CSSOMValue createCSSValue(ImmutableValue v) {
+        return new SVGCSSValue(this, v);
+    }
+
 }

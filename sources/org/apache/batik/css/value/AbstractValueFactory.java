@@ -91,7 +91,7 @@ public abstract class AbstractValueFactory
 			       CSSOMStyleDeclaration d,
 			       String imp) throws DOMException {
 	d.setPropertyCSSValue(getPropertyName(),
-			      new CSSOMValue(this, createValue(lu)),
+			      createCSSValue(createValue(lu)),
 			      imp);
     }
     
@@ -121,6 +121,13 @@ public abstract class AbstractValueFactory
 	    (DOMException.NOT_SUPPORTED_ERR,
 	     "bad.unit.type",
 	     new Object[] { new Integer(type) });
+    }
+
+    /**
+     * Creates a new CSSValue.
+     */
+    protected CSSOMValue createCSSValue(ImmutableValue v) {
+        return new CSSOMValue(this, v);
     }
 
     /**
