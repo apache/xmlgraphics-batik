@@ -171,6 +171,9 @@
         <test id="samples/tests/spec/structure/toolTips.svg" />
         <test id="samples/tests/spec/structure/useMultiple.svg" />
         <test id="samples/tests/spec/structure/useMultipleURI.svg" />
+	<test id="samples/tests/spec/structure/useStylesheet.svg" />
+	<test id="samples/tests/spec/useStyling.svg" />
+	<test id="samples/tests/spec/useStylingURI.svg" />
         <test id="samples/tests/spec/structure/useTargets.svg" />
         <test id="samples/tests/spec/structure/xmlBase.svg" />
     </testGroup>
