@@ -132,7 +132,7 @@ public class ConcreteFloodRable extends AbstractRable
         final Rectangle renderedArea
             = usr2dev.createTransformedShape(userSpaceRenderableArea).getBounds();
 
-        if ((renderedArea.width == 0) || (renderedArea.height == 0)) {
+        if ((renderedArea.width <= 0) || (renderedArea.height <= 0)) {
             // If there is no intersection, return null
             return null;
         }
@@ -142,17 +142,9 @@ public class ConcreteFloodRable extends AbstractRable
         BufferedImage offScreen
             = new BufferedImage(renderedArea.width,
                                 renderedArea.height,
-                                BufferedImage.TYPE_INT_ARGB) {
-                    public int getMinX(){
-                        return renderedArea.x;
-                    }
+                                BufferedImage.TYPE_INT_ARGB);
 
-                    public int getMinY(){
-                        return renderedArea.y;
-                        }
-                        };
-
-        System.out.println("renderedArea x/y/w/h: " + renderedArea.x + " / " + renderedArea.y + " / " + renderedArea.width + " / " + renderedArea.height);
+        // System.out.println("renderedArea x/y/w/h: " + renderedArea.x + " / " + renderedArea.y + " / " + renderedArea.width + " / " + renderedArea.height);
         Graphics2D g = offScreen.createGraphics();
 
         // a simple fill such as this probably doesn't consider
@@ -177,7 +169,8 @@ public class ConcreteFloodRable extends AbstractRable
 
         g.dispose();
 
-        return offScreen;
-
+        return new ConcreteBufferedImageCachableRed(offScreen, 
+                                                    renderedArea.x,
+                                                    renderedArea.y);
     }
 }

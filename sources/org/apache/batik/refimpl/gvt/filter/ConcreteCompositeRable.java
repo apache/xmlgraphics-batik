@@ -145,11 +145,7 @@ public class ConcreteCompositeRable
         // AOI bounds in device space...
         Rectangle r = at.createTransformedShape(aoi).getBounds();
 
-        System.out.println("R: " + r +
-                           "AOI: " + aoi.getBounds2D());
-
-        if ((r.width <= 0)
-            || (r.height <= 0))
+        if ((r.width <= 0) || (r.height <= 0))
             return null;
 
         BufferedImage bi = new BufferedImage(r.width, r.height,
