@@ -9,24 +9,39 @@
 package org.apache.batik.bridge;
 
 import java.awt.Point;
+
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
+
 import java.io.IOException;
 import java.io.StringReader;
+
+import java.text.AttributedCharacterIterator;
+
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.HashMap;
 
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.TextNode;
+
 import org.apache.batik.gvt.event.EventDispatcher;
 import org.apache.batik.gvt.event.GraphicsNodeKeyEvent;
 import org.apache.batik.gvt.event.GraphicsNodeKeyListener;
 import org.apache.batik.gvt.event.GraphicsNodeMouseEvent;
 import org.apache.batik.gvt.event.GraphicsNodeMouseListener;
+
+import org.apache.batik.gvt.renderer.StrokingTextPainter;
+
+import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
+import org.apache.batik.gvt.text.TextHit;
+import org.apache.batik.gvt.text.TextSpanLayout;
+
 import org.apache.batik.script.Interpreter;
 import org.apache.batik.script.InterpreterException;
 import org.apache.batik.script.InterpreterPool;
+
 import org.apache.batik.util.RunnableQueue;
 import org.apache.batik.util.SVGConstants;
 
@@ -171,6 +186,8 @@ class BridgeEventSupport implements SVGConstants {
         public void mouseMoved(GraphicsNodeMouseEvent evt) {
             dispatchMouseEvent("mousemove", evt, false);
         }
+
+
         private void dispatchMouseEvent(String eventType,
                                         GraphicsNodeMouseEvent evt,
                                         boolean cancelok) {
@@ -186,6 +203,32 @@ class BridgeEventSupport implements SVGConstants {
             Element elmt = context.getElement(node);
             if (elmt == null) // should not appeared if binding on
                 return;
+
+            // see whether or not the GraphicsNode is a TextNode
+            if (node instanceof TextNode) {
+                // handle tspan or textPath if any
+		TextNode textNode = (TextNode)node;
+		List list = textNode.getTextRuns();
+		for (int i = 0 ; i < list.size(); i++) {
+                    StrokingTextPainter.TextRun run =
+                        (StrokingTextPainter.TextRun)list.get(i);
+                    AttributedCharacterIterator aci = run.getACI();
+                    //printACI(aci);
+                    TextSpanLayout layout = run.getLayout();
+                    float x = (float)pos.getX();
+                    float y = (float)pos.getY();
+                    TextHit textHit = layout.hitTestChar(x, y);
+                    if (textHit != null && layout.getBounds().contains(x, y)) {
+                        Object delimiter = aci.getAttribute
+                            (GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER);
+                        if (delimiter instanceof Element) {
+                            elmt = (Element)delimiter;
+                            break;
+                        }
+                    }
+		}
+            }
+
             EventTarget target = (EventTarget)elmt;
             // <!> TODO dispatch it only if pointers-event property ask for
             short button = 1;
@@ -218,4 +261,15 @@ class BridgeEventSupport implements SVGConstants {
             }
         }
     }
+    /*
+    public static void printACI(AttributedCharacterIterator aci) {
+        AttributedCharacterIterator newAci = (AttributedCharacterIterator)aci.clone();
+        newAci.first();
+        while (newAci.current() != AttributedCharacterIterator.DONE &&
+               newAci.getIndex() < newAci.getEndIndex()) {
+            System.out.print(newAci.current());
+            newAci.next();
+        }
+        System.out.println("\n---------------------------------------");
+        }*/
 }
