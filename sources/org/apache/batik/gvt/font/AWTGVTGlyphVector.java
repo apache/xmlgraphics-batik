@@ -94,7 +94,7 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
         outline       = null;
         logicalBounds = null;
         int numGlyphs = glyphVector.getNumGlyphs();
-        glyphPositions     = new Point2D.Float[numGlyphs];
+        glyphPositions     = new Point2D.Float[numGlyphs+1];
         glyphTransforms    = new AffineTransform[numGlyphs];
         glyphOutlines      = new Shape[numGlyphs];
         glyphVisualBounds  = new Shape[numGlyphs];
@@ -584,7 +584,8 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
         visualBounds  = null;
         logicalBounds = null;
         float shiftLeft = 0;
-        for (int i = 0; i < getNumGlyphs(); i++) {
+        int i=0;
+        for (; i < getNumGlyphs(); i++) {
             glyphTransforms   [i] = null;
             glyphVisualBounds [i] = null;
             glyphLogicalBounds[i] = null;
@@ -602,6 +603,12 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
                 shiftLeft += getGlyphMetrics(i).getHorizontalAdvance();
             }
         }
+
+        // Need glyph pos for point after last char...
+        Point2D glyphPos = defaultGlyphPositions[i];
+        glyphPositions[i] = new Point2D.Float
+                ((float)((glyphPos.getX() * scaleFactor)-shiftLeft),
+                 (float) (glyphPos.getY() * scaleFactor));
     }
 
     /**
@@ -613,9 +620,11 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
         outline = null;
         logicalBounds = null;
         visualBounds = null;
-        glyphVisualBounds[glyphIndex] = null;
-        glyphLogicalBounds[glyphIndex] = null;
-        glyphOutlines[glyphIndex] = null;
+        if (glyphIndex != getNumGlyphs()) {
+            glyphVisualBounds[glyphIndex] = null;
+            glyphLogicalBounds[glyphIndex] = null;
+            glyphOutlines[glyphIndex] = null;
+        }
     }
 
     /**

@@ -247,8 +247,8 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
             Px.preConcatenate(Mx);
         }
         // prepare the image to be painted
-        int w = (int)width;
-        int h = (int)height;
+        int w = (int)(width+0.5);
+        int h = (int)(height+0.5);
 
         // paint the SVG document using the bridge package
         // create the appropriate renderer
@@ -751,4 +751,42 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
     public static final TranscodingHints.Key KEY_BACKGROUND_COLOR
         = new PaintKey();
 
+    /**
+     * The forceTransparentWhite key.
+     *
+     * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Key: </TH>
+     * <TD VALIGN="TOP">KEY_FORCE_TRANSPARENT_WHITE</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Value: </TH>
+     * <TD VALIGN="TOP">Boolean</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Default: </TH>
+     * <TD VALIGN="TOP">false</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Required: </TH>
+     * <TD VALIGN="TOP">No</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Description: </TH>
+
+     * <TD VALIGN="TOP">It controls whether the encoder should force
+     * the image's fully transparent pixels to be fully transparent
+     * white instead of fully transparent black.  This is usefull when
+     * the encoded file is displayed in a browser which does not
+     * support transparency correctly and lets the image display with
+     * a white background instead of a black background. <br />
+     *
+     * However, note that the modified image will display differently
+     * over a white background in a viewer that supports
+     * transparency.<br/>
+     *
+     * Not all Transcoders use this key (in particular some formats
+     * can't preserve the alpha channel at all in which case this
+     * is not used.
+     * </TD></TR> 
+     * </TABLE> 
+     */
+    public static final TranscodingHints.Key KEY_FORCE_TRANSPARENT_WHITE
+        = new BooleanKey();
 }

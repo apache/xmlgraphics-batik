@@ -158,7 +158,7 @@ public class PNGTranscoder extends ImageTranscoder {
      * </TABLE>
      */
     public static final TranscodingHints.Key KEY_FORCE_TRANSPARENT_WHITE
-        = new BooleanKey();
+        = ImageTranscoder.KEY_FORCE_TRANSPARENT_WHITE;
 
     /**
      * The gamma correction key.

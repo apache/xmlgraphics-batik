@@ -221,6 +221,35 @@ public class StrokingTextPainter extends BasicTextPainter {
             currentChunk++;
 	    
         } while (chunk != null && currentChunk < chunkACIs.length);
+
+
+        if (false) {
+            // When doing text wrapping there should only ever be
+            // one text chunk (as chunks are caused by use of 
+            // the 'x' and 'y' attributes which aren't allowed in
+            // the 'textFlow' element.
+            Iterator i = textRuns.iterator();
+            List layouts = new ArrayList();
+            while (i.hasNext()) {
+                TextRun tr = (TextRun)i.next();
+                layouts.add(tr.getLayout());
+            }
+
+            List rects = new ArrayList();
+            rects.add(new Rectangle2D.Float( 17, 80, 200, 400));
+            rects.add(new Rectangle2D.Float(233, 80, 200, 400));
+
+            List brLocs = new ArrayList();
+            brLocs.add(new Integer(292));
+            brLocs.add(new Integer(476));
+            List pLocs = new ArrayList();
+            pLocs.add(new Integer(96));
+            pLocs.add(new Integer(175));
+
+            org.apache.batik.gvt.text.GlyphLayout.textWrapTextChunk
+                (chunkACIs[0], layouts, rects, brLocs, pLocs, 3);
+        }
+
         // t1 = System.currentTimeMillis();
         // layoutTime += t1-t0;
         // System.out.println("Reorder: " + reorderTime + " FontMatching: " + fontMatchingTime + " Layout: " + layoutTime);

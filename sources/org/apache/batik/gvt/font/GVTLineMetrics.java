@@ -67,6 +67,9 @@ public class GVTLineMetrics {
         this.ascent = lineMetrics.getAscent() * scaleFactor;
         this.baselineIndex = lineMetrics.getBaselineIndex();
         this.baselineOffsets = lineMetrics.getBaselineOffsets();
+        for (int i=0; i<baselineOffsets.length; i++) {
+            this.baselineOffsets[i] *= scaleFactor;
+        }
         this.descent = lineMetrics.getDescent() * scaleFactor;
         this.height = lineMetrics.getHeight() * scaleFactor;
         this.leading = lineMetrics.getLeading();

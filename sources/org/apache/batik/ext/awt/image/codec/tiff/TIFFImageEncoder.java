@@ -192,7 +192,7 @@ public class TIFFImageEncoder extends ImageEncoderImpl {
         }
 	IndexColorModel icm = null;
 	int sizeOfColormap = 0;	
-	int colormap[] = null;
+        char colormap[] = null;
 
         // Set image type.
 	int imageType = TIFF_UNSUPPORTED;
@@ -343,11 +343,11 @@ public class TIFFImageEncoder extends ImageEncoderImpl {
 
 	    int redIndex = 0, greenIndex = sizeOfColormap;
 	    int blueIndex = 2 * sizeOfColormap;
-	    colormap = new int[sizeOfColormap * 3];
+            colormap = new char[sizeOfColormap * 3];
 	    for (int i=0; i<sizeOfColormap; i++) {
-		colormap[redIndex++] = (r[i] << 8) & 0xffff;
-		colormap[greenIndex++] = (g[i] << 8) & 0xffff;
-		colormap[blueIndex++] = (b[i] << 8) & 0xffff;
+                colormap[redIndex++]   = (char)(((r[i] << 8) | r[i]) & 0xffff);
+                colormap[greenIndex++] = (char)(((g[i] << 8) | g[i]) & 0xffff);
+                colormap[blueIndex++]  = (char)(((b[i] << 8) | b[i]) & 0xffff);
 	    }
 
 	    sizeOfColormap *= 3;
@@ -486,18 +486,21 @@ public class TIFFImageEncoder extends ImageEncoderImpl {
                                  TIFFField.TIFF_LONG, 1, 
                                  new long[] {(long)height}));
 
+        char [] shortSampleSize = new char[numBands];
+        for (int i=0; i<numBands; i++)
+            shortSampleSize[i] = (char)sampleSize[i];
 	fields.add(new TIFFField(TIFFImageDecoder.TIFF_BITS_PER_SAMPLE,
                                  TIFFField.TIFF_SHORT, numBands,
-                                 sampleSize));
+                                 shortSampleSize));
 
 	fields.add(new TIFFField(TIFFImageDecoder.TIFF_COMPRESSION,
                                  TIFFField.TIFF_SHORT, 1, 
-                                 new int[] {compression}));
+                                 new char[] {(char)compression}));
 
 	fields.add(
 	    new TIFFField(TIFFImageDecoder.TIFF_PHOTOMETRIC_INTERPRETATION,
                           TIFFField.TIFF_SHORT, 1, 
-                          new int[] {photometricInterpretation}));
+                                 new char[] {(char)photometricInterpretation}));
 
         if(!isTiled) {
             fields.add(new TIFFField(TIFFImageDecoder.TIFF_STRIP_OFFSETS,
@@ -507,7 +510,7 @@ public class TIFFImageEncoder extends ImageEncoderImpl {
 	
 	fields.add(new TIFFField(TIFFImageDecoder.TIFF_SAMPLES_PER_PIXEL,
                                  TIFFField.TIFF_SHORT, 1, 
-                                 new int[] {numBands}));
+                                 new char[] {(char)numBands}));
 
         if(!isTiled) {
             fields.add(new TIFFField(TIFFImageDecoder.TIFF_ROWS_PER_STRIP, 
@@ -544,9 +547,9 @@ public class TIFFImageEncoder extends ImageEncoderImpl {
         }
 
         if(numExtraSamples > 0) {
-            int[] extraSamples = new int[numExtraSamples];
+            char[] extraSamples = new char[numExtraSamples];
             for(int i = 0; i < numExtraSamples; i++) {
-                extraSamples[i] = extraSampleType;
+                extraSamples[i] = (char)extraSampleType;
             }
             fields.add(new TIFFField(TIFFImageDecoder.TIFF_EXTRA_SAMPLES,
                                      TIFFField.TIFF_SHORT, numExtraSamples, 
@@ -556,7 +559,7 @@ public class TIFFImageEncoder extends ImageEncoderImpl {
         // Data Sample Format Extension fields.
         if(dataType != DataBuffer.TYPE_BYTE) {
             // SampleFormat
-            int[] sampleFormat = new int[numBands];
+            char[] sampleFormat = new char[numBands];
             if(dataType == DataBuffer.TYPE_FLOAT) {
                 sampleFormat[0] = 3;
             } else if(dataType == DataBuffer.TYPE_USHORT) {
@@ -635,20 +638,20 @@ public class TIFFImageEncoder extends ImageEncoderImpl {
         if(imageType == TIFF_YCBCR) {
             // YCbCrSubSampling: 2 is the default so we must write 1 as
             // we do not (yet) do any subsampling.
-            int subsampleH = 1;
-            int subsampleV = 1;
+            char subsampleH = 1;
+            char subsampleV = 1;
 
             // If JPEG, update values.
             if(compression == COMP_JPEG_TTN2) {
                 // Determine maximum subsampling.
-                subsampleH = jep.getHorizontalSubsampling(0);
-                subsampleV = jep.getVerticalSubsampling(0);
+                subsampleH = (char)jep.getHorizontalSubsampling(0);
+                subsampleV = (char)jep.getVerticalSubsampling(0);
                 for(int i = 1; i < numBands; i++) {
-                    int subH = jep.getHorizontalSubsampling(i);
+                    char subH = (char)jep.getHorizontalSubsampling(i);
                     if(subH > subsampleH) {
                         subsampleH = subH;
                     }
-                    int subV = jep.getVerticalSubsampling(i);
+                    char subV = (char)jep.getVerticalSubsampling(i);
                     if(subV > subsampleV) {
                         subsampleV = subV;
                     }
@@ -657,7 +660,7 @@ public class TIFFImageEncoder extends ImageEncoderImpl {
 
             fields.add(new TIFFField(TIFF_YCBCR_SUBSAMPLING,
                                      TIFFField.TIFF_SHORT, 2, 
-                                     new int[] {subsampleH, subsampleV}));
+                                     new char[] {subsampleH, subsampleV}));
 
 
             // YCbCr positioning.
@@ -1461,28 +1464,22 @@ public class TIFFImageEncoder extends ImageEncoderImpl {
 	    // unsigned 8 bits
 	case TIFFField.TIFF_BYTE:
 	    byte bytes[] = field.getAsBytes();
-	
-	    for (int i=0; i<count; i++) {
+            if (count > 4) count =4;
+            for (int i=0; i<count; i++)
 		output.write(bytes[i]);
-	    }
 
-	    for (int i = 0; i < (4 - count); i++) {
+            for (int i = 0; i < (4 - count); i++)
 		output.write(0);
-	    }
-
 	    break;
 	    
 	    // unsigned 16 bits
 	case TIFFField.TIFF_SHORT:
-	    int shorts[] = field.getAsInts();
-
-	    for (int i=0; i<count; i++) {
-		writeUnsignedShort(shorts[i]);
-	    }
-
-	    for (int i = 0; i < (2 - count); i++) {
-		writeUnsignedShort(0);
-	    }
+            char chars[] = field.getAsChars();
+        if (count > 2) count=2;
+        for (int i=0; i<count; i++)
+            writeUnsignedShort(chars[i]);
+        for (int i = 0; i < (2 - count); i++)
+            writeUnsignedShort(0);
 
 	    break;
 	    
@@ -1517,8 +1514,13 @@ public class TIFFImageEncoder extends ImageEncoderImpl {
 	    
 	    // unsigned 16 bits
 	case TIFFField.TIFF_SHORT:
+	    char chars[] = field.getAsChars();
+	    for (int i=0; i<count; i++) {
+            writeUnsignedShort(chars[i]);
+	    }
+	    break;
 	case TIFFField.TIFF_SSHORT:
-	    int shorts[] = field.getAsInts();
+	    short shorts[] = field.getAsShorts();
 	    for (int i=0; i<count; i++) {
 		writeUnsignedShort(shorts[i]);
 	    }
@@ -1545,8 +1547,8 @@ public class TIFFImageEncoder extends ImageEncoderImpl {
             double[] doubles = field.getAsDoubles();
 	    for (int i=0; i<count; i++) {
                 long longBits = Double.doubleToLongBits(doubles[i]);
-                writeLong((int)(longBits >> 32));
-		writeLong((int)(longBits & 0xffffffff));
+                writeLong(longBits >>> 32);
+		writeLong(longBits & 0xffffffff);
 	    }
             break;
 
