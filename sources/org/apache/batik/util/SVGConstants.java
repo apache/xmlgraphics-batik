@@ -30,6 +30,7 @@ public interface SVGConstants extends CSSConstants {
     String SVG_ANIMATE_TAG = "animate";
     String SVG_CIRCLE_TAG = "circle";
     String SVG_CLIP_PATH_TAG = "clipPath";
+    String SVG_COLOR_PROFILE_TAG = "color-profile";
     String SVG_DEFS_TAG = "defs";
     String SVG_DESC_TAG = "desc";
     String SVG_ELLIPSE_TAG = "ellipse";
