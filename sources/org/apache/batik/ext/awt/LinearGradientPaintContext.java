@@ -30,8 +30,13 @@ final class LinearGradientPaintContext extends MultipleGradientPaintContext {
      * a device space coordinate, (X, Y):
      * g(X, Y) = dgdX*X + dgdY*Y + gc
      */
-    private float dgdX, dgdY, gc;    
+    private float dgdX, dgdY, gc, pixSz;    
            
+    private static final int DEFAULT_IMPL = 1;
+    private static final int ANTI_ALIAS_IMPL  = 3;
+
+    private int fillMethod;
+
     /** 
      * Constructor for LinearGradientPaintContext.
      *
@@ -106,11 +111,34 @@ final class LinearGradientPaintContext extends MultipleGradientPaintContext {
         float constX = dx/dSq;
         float constY = dy/dSq;
 	
-        dgdX = a00*constX + a10*constY;//incremental change along gradient for +x
-        dgdY = a01*constX + a11*constY;//incremental change along gradient for +y
+        //incremental change along gradient for +x
+        dgdX = a00*constX + a10*constY;
+        //incremental change along gradient for +y
+        dgdY = a01*constX + a11*constY;
+        
+        float dgdXAbs = Math.abs(dgdX);
+        float dgdYAbs = Math.abs(dgdY);
+        if (dgdXAbs > dgdYAbs)  pixSz = dgdXAbs;
+        else                    pixSz = dgdYAbs;
 
         //constant, incorporates the translation components from the matrix
         gc = (a02-start.x)*constX + (a12-start.y)*constY;	       	
+
+        Object colorRend = hints.get(RenderingHints.KEY_COLOR_RENDERING);
+        Object rend      = hints.get(RenderingHints.KEY_RENDERING);
+
+        fillMethod = DEFAULT_IMPL;
+
+        if ((cycleMethod == MultipleGradientPaint.REPEAT) ||
+            hasDiscontinuity) {
+            if (rend      == RenderingHints.VALUE_RENDER_QUALITY)
+                fillMethod = ANTI_ALIAS_IMPL;
+            // ColorRend overrides rend.
+            if (colorRend == RenderingHints.VALUE_COLOR_RENDER_SPEED)
+                fillMethod = DEFAULT_IMPL;
+            else if (colorRend == RenderingHints.VALUE_COLOR_RENDER_QUALITY)
+                fillMethod = ANTI_ALIAS_IMPL;
+        } 
     }
 
     protected void fillHardNoCycle(int[] pixels, int off, int adjust, 
@@ -448,7 +476,21 @@ final class LinearGradientPaintContext extends MultipleGradientPaintContext {
         //constant which can be pulled out of the inner loop
         final float initConst = (dgdX*x) + gc;
 
-        if (!isSimpleLookup) {
+        if (fillMethod == ANTI_ALIAS_IMPL) {
+            //initialize current value to be start.
+            for(int i=0; i<h; i++){ //for every row
+                float g = initConst + dgdY*(y+i);
+                
+                final int rowLimit = off+w;  // end of row iteration
+                while(off < rowLimit){ //for every pixel in this row.
+                    //get the color
+                    pixels[off++] = indexGradientAntiAlias(g, pixSz); 
+                    g += dgdX; //incremental change in g
+                }
+                off += adjust; //change in off from row to row
+            }
+        }
+        else if (!isSimpleLookup) {
             if (cycleMethod == MultipleGradientPaint.NO_CYCLE) {
                 fillHardNoCycle(pixels, off, adjust, x, y, w, h);
             }
