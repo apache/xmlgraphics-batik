@@ -10,12 +10,26 @@ package org.apache.batik.apps.svgviewer;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Insets;
+import java.awt.Color;
+
+import java.awt.geom.AffineTransform;
+
+import java.awt.Font;
+import java.awt.font.FontRenderContext;
+import java.awt.font.TextLayout;
+import java.awt.font.TextAttribute;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.HashMap;
 
 import javax.swing.BorderFactory;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JTextArea;
 import javax.swing.JPanel;
 import javax.swing.border.BevelBorder;
 
@@ -52,21 +66,21 @@ public class StatusBar extends JPanel {
      * The x position/width label.
      */
     protected JLabel xPosition;
-    
+
     /**
      * The y position/height label.
      */
     protected JLabel yPosition;
-    
+
     /**
      * The zoom label.
      */
     protected JLabel zoom;
-    
+
     /**
      * The message label
      */
-    protected JLabel message;
+    protected MessageArea message;
 
     /**
      * The main message
@@ -105,7 +119,8 @@ public class StatusBar extends JPanel {
         p.add("East", zoom);
 
         p = new JPanel(new BorderLayout(0, 0));
-        message = new JLabel();
+        message = new MessageArea();
+        message.setForeground(zoom.getForeground());
         message.setBorder(bb);
         p.add(message);
         add(p);
@@ -169,7 +184,7 @@ public class StatusBar extends JPanel {
      * @param s the message
      */
     public void setMessage(String s) {
-        message.setText(s);
+        mainMessage = s;
         setPreferredSize(new Dimension(0, getPreferredSize().height));
         new DisplayThread().start();
     }
@@ -179,6 +194,7 @@ public class StatusBar extends JPanel {
      * @param s the message
      */
     public void setMainMessage(String s) {
+        mainMessage = s;
         message.setText(mainMessage = s);
         setPreferredSize(new Dimension(0, getPreferredSize().height));
     }
@@ -196,7 +212,46 @@ public class StatusBar extends JPanel {
                 Thread.sleep(3000);
             } catch(InterruptedException e) {
             }
+
             message.setText(mainMessage);
         }
+    }
+
+    public class MessageArea extends JComponent {
+
+        String text = "";
+        TextLayout layout;
+        FontRenderContext frc;
+        HashMap textAttMap;
+
+        public MessageArea() {
+            super();
+            textAttMap = new HashMap(2);
+            textAttMap.put(TextAttribute.SIZE, new Float(12f));
+            textAttMap.put(TextAttribute.WEIGHT, TextAttribute.WEIGHT_BOLD);
+            frc = new FontRenderContext(new AffineTransform(), true, true);
+        }
+
+        public void setText(String s) {
+            text = s;
+            if (s.length() > 0) {
+                layout = new TextLayout(text, textAttMap, frc);
+            } else {
+                layout = null;
+            }
+            repaint();
+        }
+
+        public void paint(Graphics g) {
+            super.paint(g);
+            Insets insets = getInsets();
+            g.setColor(getForeground());
+            if (layout != null)  {
+                layout.draw((Graphics2D) g,
+                    (float) getX()+insets.left+2,
+                    (float) (getY()+getHeight()-insets.bottom-2));
+            }
+        }
+
     }
 }
