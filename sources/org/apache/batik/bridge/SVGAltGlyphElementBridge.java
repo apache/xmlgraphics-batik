@@ -165,15 +165,27 @@ public class SVGAltGlyphElementBridge extends AbstractSVGBridge
 		    (SVG_NAMESPACE_URI, SVG_ALT_GLYPH_ITEM_TAG);
                 int numAltGlyphItemNodes = altGlyphItemNodes.getLength();
                 if (numAltGlyphItemNodes > 0) {
-                    Glyph[] glyphArray = new Glyph[numAltGlyphItemNodes];
-                    for (int i = 0; i < numAltGlyphItemNodes; i++) {
+                    boolean foundMatchingGlyph = false;
+                    Glyph[] glyphArray = null;
+
+                    //look through all altGlyphItem to find the one
+                    //that have all its glyphs available
+
+                    for (int i = 0; i < numAltGlyphItemNodes && !foundMatchingGlyph ; i++) {
+
                         // try to find a resolvable glyphRef
                         Element altGlyphItemElement = (Element)altGlyphItemNodes.item(i);
                         NodeList altGlyphRefNodes
                             = altGlyphItemElement.getElementsByTagNameNS
 			    (SVG_NAMESPACE_URI, SVG_GLYPH_REF_TAG);
                         int numAltGlyphRefNodes = altGlyphRefNodes.getLength();
-                        boolean foundMatchingGlyph = false;
+
+                        glyphArray = new Glyph[numAltGlyphRefNodes];
+
+                        // consider that all glyphs are available
+                        // and check if they can be found
+                        foundMatchingGlyph = true;
+
                         for (int j = 0; j < numAltGlyphRefNodes; j++) {
                             // get the referenced glyph element
                             Element glyphRefElement = (Element)altGlyphRefNodes.item(j);
@@ -182,25 +194,36 @@ public class SVGAltGlyphElementBridge extends AbstractSVGBridge
                             Glyph glyph = getGlyph(ctx, glyphUri, glyphRefElement, fontSize, aci);
                             if (glyph != null) {
                                 // found a matching glyph for this altGlyphItem
-                                glyphArray[i] = glyph;
-                                foundMatchingGlyph = true;
+                                glyphArray[j] = glyph;
+                            }
+                            else{
+                                //this altGlyphItem is not good
+                                //seek for the next one
+                                foundMatchingGlyph = false;
                                 break;
                             }
                         }
-                        if (!foundMatchingGlyph) {
-                            // couldn't find a matching glyph for this alGlyphItem
-                            // so stop and return null
-                            return null;
-                        }
                     }
+                    if (!foundMatchingGlyph) {
+                        // couldn't find a  alGlyphItem
+                        // with all its glyphs available
+                        // so stop and return null
+                        return null;
+                    }
+                    
                     return glyphArray;
                 }
             }
         }
 
+
+        /*
         // reference is not to a valid element type, throw an exception
         throw new BridgeException(altGlyphElement, ERR_URI_BAD_TARGET,
                                   new Object[] {uri});
+        */
+        //reference not valid, no altGlyph created
+        return null;
     }
 
 

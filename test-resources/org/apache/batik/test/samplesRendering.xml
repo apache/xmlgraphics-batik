@@ -112,6 +112,7 @@
     <testGroup id="tests.spec.fonts">    
         <test id="samples/tests/spec/fonts/batikFont.svg" />
         <test id="samples/tests/spec/fonts/fontAltGlyph.svg" />
+        <test id="samples/tests/spec/fonts/fontAltGlyph2.svg" />
         <test id="samples/tests/spec/fonts/fontArabic.svg" />
         <test id="samples/tests/spec/fonts/fontBounds.svg" />
         <test id="samples/tests/spec/fonts/fontChoice.svg" />
