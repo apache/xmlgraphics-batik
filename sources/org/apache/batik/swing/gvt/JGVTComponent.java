@@ -296,6 +296,57 @@ public class JGVTComponent extends JComponent {
     ////////////////////////////////////////////////////////////////////////
 
     /**
+     * Sets the color of the selection overlay to the specified color.
+     *
+     * @param color the new color of the selection overlay
+     */
+    public void setSelectionOverlayColor(Color color) {
+	textSelectionManager.setSelectionOverlayColor(color);
+    }
+
+    /**
+     * Returns the color of the selection overlay.
+     */
+    public Color getSelectionOverlayColor() {
+	return textSelectionManager.getSelectionOverlayColor();
+    }
+
+    /**
+     * Sets the color of the outline of the selection overlay to the specified
+     * color.
+     *
+     * @param color the new color of the outline of the selection overlay 
+     */
+    public void setSelectionOverlayStrokeColor(Color color) {
+	textSelectionManager.setSelectionOverlayStrokeColor(color);
+    }
+
+    /**
+     * Returns the color of the outline of the selection overlay.
+     */
+    public Color getSelectionOverlayStrokeColor() {
+	return textSelectionManager.getSelectionOverlayStrokeColor();
+    }
+
+    /**
+     * Sets whether or not the selection overlay will be painted in XOR mode,
+     * depending on the specified parameter.
+     *
+     * @param state true implies the selection overlay will be in XOR mode 
+     */
+    public void setSelectionOverlayXORMode(boolean state) {
+	textSelectionManager.setSelectionOverlayXORMode(state);
+    }
+
+    /**
+     * Returns true if the selection overlay is painted in XOR mode, false
+     * otherwise.
+     */
+    public boolean isSelectionOverlayXORMode() {
+	return textSelectionManager.isSelectionOverlayXORMode();
+    }
+
+    /**
      * Sets the selection to the specified start and end mark.
      *
      * @param start the mark used to define where the selection starts

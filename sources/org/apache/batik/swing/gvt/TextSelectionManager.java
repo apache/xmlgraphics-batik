@@ -86,6 +86,22 @@ public class TextSelectionManager {
     protected SelectionListener textSelectionListener;
 
     /**
+     * The color of the selection overlay.
+     */
+    protected Color selectionOverlayColor = new Color(200, 200, 255, 100);
+
+    /**
+     * The color of the outline of the selection overlay.
+     */
+    protected Color selectionOverlayStrokeColor = new Color(255, 255, 255, 255);
+
+    /**
+     * A flag bit that indicates whether or not the selection overlay is painted
+     * in XOR mode.
+     */
+    protected boolean xorMode = true;
+
+    /**
      * Creates a new TextSelectionManager.
      */
     public TextSelectionManager(JGVTComponent comp,
@@ -99,6 +115,57 @@ public class TextSelectionManager {
         component.getOverlays().add(selectionOverlay);
 
         ed.addGraphicsNodeMouseListener(mouseListener);
+    }
+
+    /**
+     * Sets the color of the selection overlay to the specified color.
+     *
+     * @param color the new color of the selection overlay
+     */
+    public void setSelectionOverlayColor(Color color) {
+	this.selectionOverlayColor = color;
+    }
+
+    /**
+     * Returns the color of the selection overlay.
+     */
+    public Color getSelectionOverlayColor() {
+	return selectionOverlayColor;
+    }
+
+    /**
+     * Sets the color of the outline of the selection overlay to the specified
+     * color.
+     *
+     * @param color the new color of the outline of the selection overlay 
+     */
+    public void setSelectionOverlayStrokeColor(Color color) {
+	this.selectionOverlayStrokeColor = color;
+    }
+
+    /**
+     * Returns the color of the outline of the selection overlay.
+     */
+    public Color getSelectionOverlayStrokeColor() {
+	return selectionOverlayStrokeColor;
+    }
+
+    /**
+     * Sets whether or not the selection overlay will be painted in XOR mode,
+     * depending on the specified parameter.
+     *
+     * @param state true implies the selection overlay will be in XOR mode 
+     */
+    public void setSelectionOverlayXORMode(boolean state) {
+	this.xorMode = state;
+    }
+
+    /**
+     * Returns true if the selection overlay is painted in XOR mode, false
+     * otherwise.
+     */
+    public boolean isSelectionOverlayXORMode() {
+	return xorMode;
     }
 
     /**
@@ -239,9 +306,6 @@ public class TextSelectionManager {
         return outset(s.getBounds(), 1);
     }
 
-    static final Color fillColor   = new Color(200, 200, 255, 100);
-    static final Color strokeColor = new Color(255, 255, 255, 255);
-
     /**
      * The selection overlay.
      */
@@ -256,15 +320,20 @@ public class TextSelectionManager {
                 Shape s = at.createTransformedShape(selectionHighlight);
 
                 Graphics2D g2d = (Graphics2D)g;
-
-                // g2d.setXORMode(Color.white);
-                // g2d.setColor(Color.black);
-                g2d.setColor(fillColor);
+		if (xorMode) {
+		    int red = 255 - selectionOverlayColor.getRed();
+		    int green = 255 - selectionOverlayColor.getGreen();
+		    int blue = 255 - selectionOverlayColor.getBlue();
+		    g2d.setXORMode(new Color(red, green, blue));
+		}
+                g2d.setColor(selectionOverlayColor);
                 g2d.fill(s);
-
-                g2d.setStroke(new java.awt.BasicStroke(1.0f));
-                g2d.setColor(strokeColor);
-                g2d.draw(s);
+	
+		if (selectionOverlayStrokeColor != null) {
+		    g2d.setStroke(new java.awt.BasicStroke(1.0f));
+		    g2d.setColor(selectionOverlayStrokeColor);
+		    g2d.draw(s);
+		}
             }
         }
     }
