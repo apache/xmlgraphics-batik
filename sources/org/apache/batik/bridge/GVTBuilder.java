@@ -10,6 +10,7 @@ package org.apache.batik.bridge;
 
 import org.apache.batik.gvt.GraphicsNode;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * This class is responsible on building a GVT tree using an SVG document.
@@ -25,5 +26,12 @@ public interface GVTBuilder {
      * @param svgDocument the DOM tree that represents an SVG document
      */
     GraphicsNode build(BridgeContext ctx, Document svgDocument);
+
+    /**
+     * Builds a GVT tree using the specified context and SVG element
+     * @param ctx the context to use
+     * @param element element for which a GVT representation should be built
+     */
+    GraphicsNode build(BridgeContext ctx, Element element);
 
 }

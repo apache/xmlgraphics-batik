@@ -19,13 +19,16 @@ import org.w3c.dom.svg.SVGElement;
 
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.FilterBridge;
+import org.apache.batik.bridge.MaskBridge;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GVTFactory;
 import org.apache.batik.gvt.CompositeShapePainter;
 import org.apache.batik.gvt.FillShapePainter;
 import org.apache.batik.gvt.ShapePainter;
 import org.apache.batik.gvt.StrokeShapePainter;
+import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
 import org.apache.batik.gvt.filter.Filter;
+import org.apache.batik.gvt.filter.Mask;
 import org.apache.batik.refimpl.bridge.resources.Messages;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.UnitProcessor;
@@ -111,6 +114,66 @@ public class CSSUtilities implements SVGConstants {
         return new Color(r, g, b, Math.round(o * 255f));
     }
 
+     /**
+      * Returns the <tt>Mask</tt> referenced by the input
+      * element's <tt>mask</tt> attribute.
+      */
+     public static Mask convertMask(Element       maskedElement,
+                                    GraphicsNode  gn,
+                                    BridgeContext ctx) {
+         CSSStyleDeclaration decl
+             = ctx.getViewCSS().getComputedStyle(maskedElement, null);
+         
+         //
+         // Build Mask based on 'mask' attr.
+         //
+         CSSPrimitiveValue maskValue
+             = (CSSPrimitiveValue)decl.getPropertyCSSValue(ATTR_MASK);
+         String uriString = null;
+         switch(maskValue.getPrimitiveType()){
+         case CSSPrimitiveValue.CSS_IDENT:
+             // NONE
+             break;
+         case CSSPrimitiveValue.CSS_URI:
+             uriString = maskValue.getStringValue();
+             break;
+         default:
+             throw new Error("maskValue's primitive type is: " +
+                             maskValue.getPrimitiveType());
+         }
+
+         // nothing referenced.
+         if(uriString == null){
+             return null;
+         }
+
+         // Can't make sense of reference
+         if(!uriString.startsWith("#")){
+             return null;
+         }
+
+         uriString = uriString.substring(1); // Drop the hash.
+
+         Element maskElement;
+         maskElement = maskedElement.getOwnerDocument().getElementById(uriString);
+
+         // Cannot access referenced mask
+         if(maskElement == null){
+             return null;
+         }
+
+         MaskBridge maskBridge = (MaskBridge)ctx.getBridge(maskElement);
+
+         // No bridge understands the mask element...
+         if(maskBridge == null){
+             return null;
+         }
+
+         return maskBridge.createMask(gn, ctx,
+                                      maskElement, 
+                                      maskedElement);
+     }
+
     /**
      * Returns the <tt>ShapePainter</tt> for the specified Element
      * using the specified context and css style declaration.
@@ -151,9 +214,24 @@ public class CSSUtilities implements SVGConstants {
                                              BridgeContext ctx,
                                              CSSStyleDeclaration decl,
                                              UnitProcessor.Context uctx) {
-        GVTFactory f = ctx.getGVTFactory();
-        StrokeShapePainter painter = null;
 
+        Stroke stroke = convertStrokeToBasicStroke(svgElement,
+                                                   ctx,
+                                                   decl,
+                                                   uctx);
+        Paint paint = convertStrokeToPaint(decl);
+
+        StrokeShapePainter painter = ctx.getGVTFactory().createStrokeShapePainter();
+        painter.setStroke(stroke);
+        painter.setPaint(paint);
+        return painter;
+    }
+
+    /**
+     * Returns a Paint object that corresponds to the various
+     * stroke attributes in the input element
+     */
+    public static Paint convertStrokeToPaint(CSSStyleDeclaration decl) {
         // resolve the paint of the StrokeShapePainter
         CSSPrimitiveValue v
             = (CSSPrimitiveValue) decl.getPropertyCSSValue(STROKE_PROPERTY);
@@ -161,20 +239,32 @@ public class CSSUtilities implements SVGConstants {
         case CSSPrimitiveValue.CSS_IDENT:
             return null; // stroke:'none'
         case CSSPrimitiveValue.CSS_RGBCOLOR:
-            painter = f.createStrokeShapePainter();
             CSSPrimitiveValue vv = (CSSPrimitiveValue)
                 decl.getPropertyCSSValue(STROKE_OPACITY_PROPERTY);
             float opacity = convertOpacity(vv);
             Color c = convertColor(v.getRGBColorValue(), opacity);
-            painter.setPaint(c);
-            break;
+            return c;
         case CSSPrimitiveValue.CSS_URI:
             // <!> FIXME : TODO !!!
             throw new Error("Not yet implemented");
         }
 
+        return null;
+    }
+
+    /**
+     * Returns a Stoke object that corresponds to the various
+     * stroke attributes in the input element
+     */
+    public static BasicStroke convertStrokeToBasicStroke(
+                                                         SVGElement svgElement,
+                                                         BridgeContext ctx,
+                                                         CSSStyleDeclaration decl,
+                                                         UnitProcessor.Context uctx) {
+        GVTFactory f = ctx.getGVTFactory();
+
         // resolve the java.awt.Stroke of the StrokeShapePainter
-        v = (CSSPrimitiveValue) decl.getPropertyCSSValue(STROKE_WIDTH_PROPERTY);
+        CSSPrimitiveValue v = (CSSPrimitiveValue) decl.getPropertyCSSValue(STROKE_WIDTH_PROPERTY);
         short type = v.getPrimitiveType();
         // 'stroke-width'
         float width
@@ -252,14 +342,14 @@ public class CSSUtilities implements SVGConstants {
                                              uctx);
         }
 
-        Stroke stroke = new BasicStroke(width,
-                                        linecap,
-                                        linejoin,
-                                        miterlimit,
-                                        dashArray,
-                                        dashOffset);
-        painter.setStroke(stroke);
-        return painter;
+        BasicStroke stroke = new BasicStroke(width,
+                                             linecap,
+                                             linejoin,
+                                             miterlimit,
+                                             dashArray,
+                                             dashOffset);
+
+        return stroke;
     }
 
     /**
@@ -530,13 +620,15 @@ public class CSSUtilities implements SVGConstants {
                     FilterBridge filterBridge
                         = (FilterBridge)ctx.getBridge(filterElement);
                     
-                    filter = filterBridge.create(node,
-                                                 ctx,
-                                                 filterElement,
-                                                 element,
-                                                 null,   // in
-                                                 null,   // filterRegion
-                                                 null);  // filterMap
+                    if(filterBridge != null){
+                        filter = filterBridge.create(node,
+                                                     ctx,
+                                                     filterElement,
+                                                     element,
+                                                     null,   // in
+                                                     null,   // filterRegion
+                                                     null);  // filterMap
+                    }
                 } else {
                     System.out.println("Could not find : " + uriString +
                                        " in document");

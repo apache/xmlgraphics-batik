@@ -22,6 +22,7 @@ import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.ShapeNode;
 import org.apache.batik.gvt.ShapePainter;
 import org.apache.batik.gvt.filter.Filter;
+import org.apache.batik.gvt.filter.Mask;
 import org.apache.batik.parser.AWTTransformProducer;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.UnitProcessor;
@@ -69,6 +70,9 @@ public abstract class SVGShapeElementBridge implements GraphicsNodeBridge,
         // Set node filter
         Filter filter = CSSUtilities.convertFilter(element, node, ctx);
         node.setFilter(filter);
+
+        Mask mask = CSSUtilities.convertMask(element, node, ctx);
+        node.setMask(mask);
 
         // <!> TODO only when binding is enabled
         BridgeEventSupport.addDOMListener(ctx, element);

@@ -28,6 +28,7 @@ import org.apache.batik.gvt.event.GraphicsNodeKeyEvent;
 import org.apache.batik.gvt.event.GraphicsNodeKeyListener;
 import org.apache.batik.gvt.event.GraphicsNodeEventFilter;
 import org.apache.batik.gvt.filter.Filter;
+import org.apache.batik.gvt.filter.Mask;
 
 /**
  * The base class for all graphics nodes. A GraphicsNode encapsulates

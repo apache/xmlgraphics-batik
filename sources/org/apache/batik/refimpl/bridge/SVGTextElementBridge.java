@@ -10,6 +10,7 @@ package org.apache.batik.refimpl.bridge;
 
 import java.awt.Color;
 import java.awt.Paint;
+import java.awt.Stroke;
 import java.awt.RenderingHints;
 import java.awt.font.TextAttribute;
 import java.awt.geom.AffineTransform;
@@ -28,6 +29,9 @@ import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.dom.util.XMLSupport;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.TextNode;
+import org.apache.batik.gvt.filter.Filter;
+import org.apache.batik.gvt.filter.Mask;
+import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
 import org.apache.batik.parser.AWTTransformProducer;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.UnitProcessor;
@@ -286,7 +290,34 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
             as.addAttribute(TextAttribute.FOREGROUND, p);
         }
 
+        // Stroke Paint
+        p = CSSUtilities.convertStrokeToPaint(cssDecl);
+        if (p != null) {
+            as.addAttribute(GVTAttributedCharacterIterator.TextAttribute.STROKE_PAINT,
+                            p);
+        }
+
+        // Stroke
+        Stroke stroke 
+            = CSSUtilities.convertStrokeToBasicStroke((SVGElement)element,
+                                                      ctx, 
+                                                      cssDecl,
+                                                      uctx);
+
+        if(stroke != null){
+            as.addAttribute(GVTAttributedCharacterIterator.TextAttribute.STROKE,
+                            stroke);
+        }
+
         result.setAttributedCharacterIterator(as.getIterator());
+
+        Filter filter = CSSUtilities.convertFilter(element, result, ctx);
+        result.setFilter(filter);
+
+        Mask mask = CSSUtilities.convertMask(element, result, ctx);
+        result.setMask(mask);
+
+
         return result;
     }
 

@@ -9,7 +9,8 @@
 package org.apache.batik.bridge;
 
 import org.w3c.dom.Element;
-import org.apache.batik.gvt.Mask;
+import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.filter.Mask;
 
 /**
  * Factory class for vending <tt>Mask</tt> objects.
@@ -21,10 +22,15 @@ public interface MaskBridge extends Bridge {
 
     /**
      * Creates a <tt>Mask</tt> using the specified context and element.
+     * @param maskedNode node defining the mask
      * @param ctx the context to use
-     * @param element the Element with the 'mask' attribute
+     * @param maskElement element containing the mask definition
+     * @param maskedElement the Element with the 'mask' attribute
      */
-    Mask createMask(BridgeContext ctx, Element element);
+    Mask createMask(GraphicsNode maskedNode,
+                    BridgeContext ctx, 
+                    Element maskElement,
+                    Element maskedElement);
 
     /**
      * Updates an Element coresponding to the specified BridgeMutationEvent.

@@ -128,6 +128,7 @@ public interface SVGConstants extends CSSConstants {
     String ATTR_LIGHT_COLOR = "lightColor";
     String ATTR_NUM_OCTAVES = "numOctaves";
     String ATTR_MASK = "mask";
+    String ATTR_MASK_UNITS = "maskUnits";
     String ATTR_MEDIA = "media";
     String ATTR_OFFSET = "offset";
     String ATTR_OPACITY = "opacity";

@@ -75,7 +75,7 @@ public class StaticRenderer implements Renderer {
 
         FontRenderContext fontRenderContext = new FontRenderContext(new AffineTransform(), true,
                                                                     true);
-        TextPainter textPainter = new ConcreteTextPainter();
+        TextPainter textPainter = new StrokingTextPainter();
 
         GraphicsNodeRableFactory gnrFactory = new ConcreteGraphicsNodeRableFactory();
 
@@ -142,10 +142,7 @@ public class StaticRenderer implements Renderer {
         g.clip(nodeRenderContext.getAreaOfInterest());
 
         // Set default rendering hints
-        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                           RenderingHints.VALUE_ANTIALIAS_ON);
-        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-                           RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+        g.addRenderingHints(nodeRenderContext.getRenderingHints());
 
         // Render tree
         if(treeRoot != null)
