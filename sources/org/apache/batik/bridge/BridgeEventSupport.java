@@ -57,6 +57,7 @@ import org.w3c.dom.svg.SVGSVGElement;
  * @version $Id$
  */
 class BridgeEventSupport implements SVGConstants {
+
     private static final String[] EVENT_ATTRIBUTES_GRAPHICS = {
         // graphics + svg
         "onfocusin",
@@ -129,8 +130,7 @@ class BridgeEventSupport implements SVGConstants {
      * will be added.
      * @param node the <code>GraphicsNode</code>.
      */
-    public static void addDOMListener(BridgeContext ctx,
-                                      Element eee) {
+    public static void addDOMListener(BridgeContext ctx, Element eee) {
         SVGElement element = null;
         EventTarget target = null;
         try {
@@ -201,6 +201,7 @@ class BridgeEventSupport implements SVGConstants {
                                         ScriptCaller listener) {
         target.addEventListener(type, listener, false);
         Element svgRoot = ((Element)target).getOwnerDocument().getDocumentElement();
+        /*
         SVGUnloadListener unload = null;
         if ((unload = SVGUnloadListener.getInstance(svgRoot)) == null)
             ((EventTarget)svgRoot).
@@ -208,6 +209,7 @@ class BridgeEventSupport implements SVGConstants {
                                  unload = new SVGUnloadListener(svgRoot),
                                  false);
         unload.addListener(target, type, listener);
+        */
     }
 
 
