@@ -30,6 +30,8 @@ import org.apache.batik.script.Window;
  * @version $Id$
  */
 public class WindowWrapper extends ScriptableObject {
+
+    private final static Object[] EMPTY_ARGUMENTS = new Object[0];
     
     /**
      * The rhino interpreter.
@@ -82,17 +84,11 @@ public class WindowWrapper extends ScriptableObject {
         long to = ((Long)NativeJavaObject.coerceType
                    (Long.TYPE, args[1])).longValue();
         if (args[0] instanceof Function) {
-            /*
-            Object[] fargs = new Object[len - 2];
-            for (int i = 2, j = 0; i < len; i++, j++) {
-                fargs[j] = args[i];
-            }
-            */
             RhinoInterpreter interp =
                 (RhinoInterpreter)window.getInterpreter();
             FunctionWrapper fw;
             fw = new FunctionWrapper(interp, (Function)args[0],
-                                     new Object[0]);
+                                     EMPTY_ARGUMENTS);
             return window.setInterval(fw, to);
         }
         String script =
@@ -117,17 +113,11 @@ public class WindowWrapper extends ScriptableObject {
         long to = ((Long)NativeJavaObject.coerceType
                    (Long.TYPE, args[1])).longValue();
         if (args[0] instanceof Function) {
-            /*
-            Object[] fargs = new Object[len - 2];
-            for (int i = 2, j = 0; i < len; i++, j++) {
-                fargs[j] = args[i];
-            }
-            */
             RhinoInterpreter interp =
                 (RhinoInterpreter)window.getInterpreter();
             FunctionWrapper fw;
             fw = new FunctionWrapper(interp, (Function)args[0],
-                                     new Object[0]);
+                                     EMPTY_ARGUMENTS);
             return window.setTimeout(fw, to);
         }
         String script =
