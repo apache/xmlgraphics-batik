@@ -47,7 +47,7 @@ import org.apache.batik.ext.awt.image.rendered.PadRed;
  */
 public class CompositeRable8Bit
     extends    AbstractRable
-    implements CompositeRable {
+    implements CompositeRable, PaintRable {
 
     protected CompositeRule rule;
     protected ColorSpace    colorspace;
@@ -115,6 +115,40 @@ public class CompositeRable8Bit
         return this.colorspace;
     }
 
+    /**
+     * Should perform the equivilent action as 
+     * createRendering followed by drawing the RenderedImage to 
+     * Graphics2D, or return false.
+     *
+     * @param g2d The Graphics2D to draw to.
+     * @return true if the paint call succeeded, false if
+     *         for some reason the paint failed (in which 
+     *         case a createRendering should be used).
+     */
+    public boolean paintRable(Graphics2D g2d) {
+        // This optimization only apply if we are using
+        // SrcOver.  Otherwise things break...
+        Composite c = g2d.getComposite();
+        if (!SVGComposite.OVER.equals(c))
+            return false;
+        
+        // For the over mode we can just draw them in order...
+        if (getCompositeRule() != CompositeRule.OVER) 
+            return false;
+
+        ColorSpace crCS = getCompositeColorSpace();
+        ColorSpace g2dCS = GraphicsUtil.getDestinationColorSpace(g2d);
+        if (g2dCS != crCS)
+            return false;
+
+        // System.out.println("drawImage : " + g2dCS +
+        //                    crCS);
+        Iterator i = getSources().iterator();
+        while (i.hasNext()) {
+            GraphicsUtil.drawImage(g2d, (Filter)i.next());
+        }
+        return true;
+    }
 
     protected RenderedImage createRenderingOver(RenderContext rc) {
         // System.out.println("Rendering Over: " + rule);

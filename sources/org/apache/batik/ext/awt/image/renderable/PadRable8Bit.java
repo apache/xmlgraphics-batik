@@ -10,6 +10,8 @@ package org.apache.batik.ext.awt.image.renderable;
 
 import java.awt.RenderingHints;
 import java.awt.Shape;
+import java.awt.Graphics2D;
+import java.awt.Composite;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.RenderedImage;
@@ -29,7 +31,7 @@ import org.apache.batik.ext.awt.image.GraphicsUtil;
  * @version $Id$
  */
 public class PadRable8Bit extends AbstractRable
-    implements PadRable {
+    implements PadRable, PaintRable {
 
     PadMode           padMode;
     Rectangle2D       padRect;
@@ -92,6 +94,35 @@ public class PadRable8Bit extends AbstractRable
      */
     public PadMode getPadMode() {
         return padMode;
+    }
+
+    /**
+     * Should perform the equivilent action as 
+     * createRendering followed by drawing the RenderedImage to 
+     * Graphics2D, or return false.
+     *
+     * @param g2d The Graphics2D to draw to.
+     * @return true if the paint call succeeded, false if
+     *         for some reason the paint failed (in which 
+     *         case a createRendering should be used).
+     */
+    public boolean paintRable(Graphics2D g2d) {
+        // This optimization only apply if we are using
+        // SrcOver.  Otherwise things break...
+        Composite c = g2d.getComposite();
+        if (!SVGComposite.OVER.equals(c))
+            return false;
+
+        if (getPadMode() != PadMode.ZERO_PAD)
+            return false;
+
+        Rectangle2D padBounds = getPadRect();
+
+        Shape clip = g2d.getClip();
+        g2d.clip(padBounds);
+        GraphicsUtil.drawImage(g2d, getSource());
+        g2d.setClip(clip);
+        return true;
     }
 
     public RenderedImage createRendering(RenderContext rc) {
