@@ -96,16 +96,11 @@ public class StrokeDasharrayFactory extends AbstractValueFactory {
             if (lu == null) {
                 break;
             }
-            if (lu.getLexicalUnitType() != LexicalUnit.SAC_OPERATOR_COMMA) {
-                throw CSSDOMExceptionFactory.createDOMException
-                    (DOMException.INVALID_ACCESS_ERR,
-                     "invalid.lexical.unit",
-                     new Object[] { new Integer(lu.getLexicalUnitType()),
-                                    getPropertyName() });
-            }
-	    lu = lu.getNextLexicalUnit();
-            if (lu == null) {
-                break;
+            if (lu.getLexicalUnitType() == LexicalUnit.SAC_OPERATOR_COMMA) {
+                lu = lu.getNextLexicalUnit();
+                if (lu == null) {
+                    break;
+                }
             }
 	}
 	return list;
