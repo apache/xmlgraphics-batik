@@ -44,6 +44,7 @@ public abstract class PreconfiguredRenderingTest extends SVGRenderingAccuracyTes
 
         setVariationURL(buildVariationURL(dirNfile[0], dirNfile[1]));
         setSaveVariation(new File(buildSaveVariationFile(dirNfile[0], dirNfile[1])));
+        setCandidateReference(new File(buildCandidateReferenceFile(dirNfile[0],dirNfile[1])));
     }
 
     /**
@@ -108,6 +109,19 @@ public abstract class PreconfiguredRenderingTest extends SVGRenderingAccuracyTes
     protected abstract String getSaveVariationPrefix();
 
     protected abstract String getSaveVariationSuffix();
+
+    /**
+     * Gives a chance to the subclass to control the construction
+     * of the candidateReference URL, which is built as:
+     * getCandidatereferencePrefix() + svgDir + getCandidatereferenceSuffix() + svgFile + PNG_EXTENSION
+     */
+    public String  buildCandidateReferenceFile(String svgDir, String svgFile){
+        return getCandidateReferencePrefix() + svgDir + getCandidateReferenceSuffix() + svgFile + PNG_EXTENSION;
+    }
+
+    protected abstract String getCandidateReferencePrefix();
+
+    protected abstract String getCandidateReferenceSuffix();
 
 
     protected String[] breakSVGFile(String svgFile){

@@ -249,6 +249,13 @@ public class SVGRenderingAccuracyTest extends AbstractTest {
     protected File saveVariation;
 
     /**
+     * The File where the candidate reference 
+     * should be saved if there is not candidate reference
+     * or if it cannot be opened.
+     */
+    protected File candidateReference;
+
+    /**
      * Temporary directory
      */
     protected static File tempDirectory;
@@ -353,6 +360,17 @@ public class SVGRenderingAccuracyTest extends AbstractTest {
      */
     public void setVariationURL(String variationURL){
         this.variationURL = resolveURL(variationURL);
+    }
+
+    /**
+     * See {@link #candidateReference}
+     */
+    public void setCandidateReference(File candidateReference){
+        this.candidateReference = candidateReference;
+    }
+
+    public File getCandidateReference(){
+        return candidateReference;
     }
 
     /**
@@ -479,7 +497,18 @@ public class SVGRenderingAccuracyTest extends AbstractTest {
                                                  new Object[]{refImgURL.toString(), 
                                                               e.getMessage()})) });
             report.setPassed(false);
-            tmpFile.delete();
+            // Try and save tmp file as a candidate variation
+            boolean deleteTmp = true;
+            if (candidateReference != null){
+                if (candidateReference.exists()){
+                    candidateReference.delete();
+                }
+                deleteTmp = tmpFile.renameTo(candidateReference);
+            }
+
+            if (deleteTmp){
+                tmpFile.delete();
+            }
             return report;
         }
 

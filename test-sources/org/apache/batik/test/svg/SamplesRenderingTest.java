@@ -36,6 +36,14 @@ public class SamplesRenderingTest extends PreconfiguredRenderingTest {
     public static final String SAVE_VARIATION_SUFFIX
         = "candidate-variation/";
 
+    public static final String SAVE_CANDIDATE_REFERENCE_PREFIX
+        = "test-references/";
+
+    public static final String SAVE_CANDIDATE_REFERENCE_SUFFIX
+        = "candidate-reference/";
+
+
+
     protected String getSVGURLPrefix(){
         return SVG_URL_PREFIX;
     }
@@ -62,6 +70,14 @@ public class SamplesRenderingTest extends PreconfiguredRenderingTest {
 
     protected String getSaveVariationSuffix(){
         return SAVE_VARIATION_SUFFIX;
+    }
+
+    protected String getCandidateReferencePrefix(){
+        return SAVE_CANDIDATE_REFERENCE_PREFIX;
+    }
+
+    protected String getCandidateReferenceSuffix(){
+        return SAVE_CANDIDATE_REFERENCE_SUFFIX;
     }
 
 
