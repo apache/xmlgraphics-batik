@@ -152,7 +152,13 @@ public class SVGTextElementBridge extends AbstractSVGBridge
         e.normalize();
         AttributedString as = buildAttributedString(ctx, e, node);
         addGlyphPositionAttributes(as, e, ctx);
+        ((TextNode)node).setAttributedCharacterIterator(as.getIterator());
 
+        // now add the painting attributes, cannot do it before this because
+        // some of the Paint objects need to know the bounds of the text
+        // and this isn't know until the text node aci is set
+        TextDecoration textDecoration = getTextDecoration(e, (TextNode)node, new TextDecoration(), ctx);
+        addPaintAttributes(as, e, (TextNode)node, textDecoration, ctx);
         ((TextNode)node).setAttributedCharacterIterator(as.getIterator());
 
         // 'filter'
@@ -202,9 +208,8 @@ public class SVGTextElementBridge extends AbstractSVGBridge
                                                      GraphicsNode node) {
 
         AttributedString result = null;
-        TextDecoration textDecoration = getTextDecoration(element, node, new TextDecoration(), ctx);
         List l = buildAttributedStrings
-            (ctx, element, node, true, null, textDecoration, new LinkedList());
+            (ctx, element, node, true, null, new LinkedList());
 
         // Simple cases
         switch (l.size()) {
@@ -271,11 +276,10 @@ public class SVGTextElementBridge extends AbstractSVGBridge
                                           GraphicsNode node,
                                           boolean top,
                                           TextPath textPath,
-                                          TextDecoration textDecoration,
                                           LinkedList result) {
 
         // !!! return two lists
-        Map m = getAttributeMap(ctx, element, node, textPath, textDecoration);
+        Map m = getAttributeMap(ctx, element, node, textPath);
         String s = XMLSupport.getXMLSpace(element);
         boolean preserve = s.equals(SVG_PRESERVE_VALUE);
         boolean first = true;
@@ -307,8 +311,6 @@ public class SVGTextElementBridge extends AbstractSVGBridge
 
                 nodeElement = (Element)n;
 
-                TextDecoration childTextDecoration = getTextDecoration(nodeElement, node, textDecoration, ctx);
-
                 if (n.getLocalName().equals(SVG_TSPAN_TAG)
                     || n.getLocalName().equals(SVG_ALT_GLYPH_TAG)) {
 
@@ -317,20 +319,20 @@ public class SVGTextElementBridge extends AbstractSVGBridge
                                            node,
                                            false,
                                            textPath,
-                                           childTextDecoration,
                                            result);
 
                 } else if (n.getLocalName().equals(SVG_TEXT_PATH_TAG)) {
 
-                    SVGTextPathElementBridge textPathBridge = (SVGTextPathElementBridge)ctx.getBridge(nodeElement);
-                    TextPath newTextPath = textPathBridge.createTextPath(ctx, nodeElement);
+                    SVGTextPathElementBridge textPathBridge
+                        = (SVGTextPathElementBridge)ctx.getBridge(nodeElement);
+                    TextPath newTextPath
+                        = textPathBridge.createTextPath(ctx, nodeElement);
                     if (newTextPath != null) {
                         buildAttributedStrings(ctx,
                                            nodeElement,
                                            node,
                                            false,
                                            newTextPath,
-                                           childTextDecoration,
                                            result);
                     }
 
@@ -339,7 +341,7 @@ public class SVGTextElementBridge extends AbstractSVGBridge
                     String uriStr = XLinkSupport.getXLinkHref((Element)n);
                     Element ref = ctx.getReferencedElement((Element)n, uriStr);
                     s = getElementContent(ref);
-                    Map map = getAttributeMap(ctx, nodeElement, node, textPath, childTextDecoration);
+                    Map map = getAttributeMap(ctx, nodeElement, node, textPath);
                     int[] indexMap = new int[s.length()];
                     as = createAttributedString(s, map, indexMap, preserve,
                                                 stripFirst, last && top);
@@ -382,7 +384,7 @@ public class SVGTextElementBridge extends AbstractSVGBridge
                             if (iter.setIndex(endIndex) == ' ') {
                                 las = new AttributedString
                                     (las.getIterator(null,
-                                                     iter.getBeginIndex(), endIndex));
+                                        iter.getBeginIndex(), endIndex));
                             }
                             result.add(las);
                         }
@@ -634,6 +636,119 @@ public class SVGTextElementBridge extends AbstractSVGBridge
         }
     }
 
+    /**
+     * Adds painting attributes to an AttributedString.
+     */
+    protected void addPaintAttributes(AttributedString as,
+                                      Element element,
+                                      TextNode node,
+                                      TextDecoration textDecoration,
+                                      BridgeContext ctx) {
+
+
+        AttributedCharacterIterator aci = as.getIterator();
+
+        // calculate which chars in the string belong to this element
+        int firstChar = 0;
+        for (int i = 0; i < aci.getEndIndex(); i++) {
+            aci.setIndex(i);
+            Element delimeter = (Element)aci.getAttribute(
+            GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER);
+            if (delimeter == element || nodeAncestorOf(element, delimeter)) {
+                firstChar = i;
+                break;
+            }
+        }
+        int lastChar = aci.getEndIndex()-1;
+        for (int i = aci.getEndIndex()-1; i >= 0; i--) {
+            aci.setIndex(i);
+            Element delimeter = (Element)aci.getAttribute(
+                GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER);
+            if (delimeter == element || nodeAncestorOf(element, delimeter)) {
+                lastChar = i;
+                break;
+            }
+        }
+
+        // Opacity
+        Composite composite = CSSUtilities.convertOpacity(element);
+        as.addAttribute(GVTAttributedCharacterIterator.TextAttribute.OPACITY,
+                        composite, firstChar, lastChar+1);
+
+        // Fill
+        Paint p = PaintServer.convertFillPaint(element, node, ctx);
+        as.addAttribute(TextAttribute.FOREGROUND, p, firstChar, lastChar+1);
+
+        // Stroke Paint
+        Paint sp = PaintServer.convertStrokePaint(element, node, ctx);
+        as.addAttribute(GVTAttributedCharacterIterator.TextAttribute.STROKE_PAINT,
+                            sp, firstChar, lastChar+1);
+
+        // Stroke
+        Stroke stroke = PaintServer.convertStroke(element, ctx);
+        as.addAttribute(GVTAttributedCharacterIterator.TextAttribute.STROKE,
+                            stroke, firstChar, lastChar+1);
+
+        // Text decoration
+        if (textDecoration != null) {
+
+            as.addAttribute(GVTAttributedCharacterIterator.
+                TextAttribute.UNDERLINE_PAINT, textDecoration.underlinePaint,
+                firstChar, lastChar+1);
+
+            as.addAttribute(GVTAttributedCharacterIterator.
+                TextAttribute.UNDERLINE_STROKE_PAINT,
+                textDecoration.underlineStrokePaint,
+                firstChar, lastChar+1);
+
+            as.addAttribute(GVTAttributedCharacterIterator.
+                TextAttribute.UNDERLINE_STROKE,
+                textDecoration.underlineStroke,
+                firstChar, lastChar+1);
+
+            as.addAttribute(GVTAttributedCharacterIterator.
+                TextAttribute.OVERLINE_PAINT, textDecoration.overlinePaint,
+                firstChar, lastChar+1);
+
+            as.addAttribute(GVTAttributedCharacterIterator.
+                TextAttribute.OVERLINE_STROKE_PAINT,
+                textDecoration.overlineStrokePaint,
+                firstChar, lastChar+1);
+
+            as.addAttribute(GVTAttributedCharacterIterator.
+                TextAttribute.OVERLINE_STROKE,
+                textDecoration.overlineStroke,
+                firstChar, lastChar+1);
+
+            as.addAttribute(GVTAttributedCharacterIterator.
+                TextAttribute.STRIKETHROUGH_PAINT,
+                textDecoration.strikethroughPaint,
+                firstChar, lastChar+1);
+
+            as.addAttribute(GVTAttributedCharacterIterator.
+                TextAttribute.STRIKETHROUGH_STROKE_PAINT,
+                textDecoration.strikethroughStrokePaint,
+                firstChar, lastChar+1);
+
+            as.addAttribute(GVTAttributedCharacterIterator.
+                TextAttribute.STRIKETHROUGH_STROKE,
+                textDecoration.strikethroughStroke,
+                firstChar, lastChar+1);
+        }
+
+        // do the same for each child element
+        NodeList children = element.getChildNodes();
+        for (int i = 0; i < children.getLength(); i++) {
+            Node child = children.item(i);
+            if (child.getNodeType() == Node.ELEMENT_NODE) {
+                Element childElement = (Element)child;
+                TextDecoration childTextDecoration
+                    = getTextDecoration(childElement, node, textDecoration, ctx);
+                addPaintAttributes(as, childElement, node, childTextDecoration, ctx);
+            }
+        }
+    }
+
 
     /**
      * Returns the map to pass to the current characters.
@@ -641,8 +756,7 @@ public class SVGTextElementBridge extends AbstractSVGBridge
     protected Map getAttributeMap(BridgeContext ctx,
                                   Element element,
                                   GraphicsNode node,
-                                  TextPath textPath,
-                                  TextDecoration textDecoration) {
+                                  TextPath textPath) {
 
         CSSOMReadOnlyStyleDeclaration cssDecl
             = CSSUtilities.getComputedStyle(element);
@@ -814,10 +928,6 @@ public class SVGTextElementBridge extends AbstractSVGBridge
         CSSValueList ff = (CSSValueList)cssDecl.getPropertyCSSValueInternal
             (CSS_FONT_FAMILY_PROPERTY);
 
-        //
-        // new code for SVGFonts:
-        //
-
         //  make a list of GVTFontFamily objects
         Vector fontFamilyList = new Vector();
         for (int i = 0; i < ff.getLength(); i++) {
@@ -830,7 +940,6 @@ public class SVGTextElementBridge extends AbstractSVGBridge
         }
         result.put(GVTAttributedCharacterIterator.TextAttribute.GVT_FONT_FAMILIES,
                    fontFamilyList);
-
 
         // Text baseline adjustment.
         v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValueInternal
@@ -1110,87 +1219,6 @@ public class SVGTextElementBridge extends AbstractSVGBridge
 
         }
 
-        // Opacity
-        Composite composite = CSSUtilities.convertOpacity(element);
-        result.put(GVTAttributedCharacterIterator.TextAttribute.OPACITY,
-                   composite);
-
-        // Fill
-        Paint p = PaintServer.convertFillPaint(element, node, ctx);
-        if (p != null) {
-            result.put(TextAttribute.FOREGROUND, p);
-        }
-
-        // Stroke Paint
-        Paint sp = PaintServer.convertStrokePaint(element, node, ctx);
-        if (sp != null) {
-            result.put
-                (GVTAttributedCharacterIterator.TextAttribute.STROKE_PAINT, sp);
-        }
-
-        // Stroke
-        Stroke stroke = PaintServer.convertStroke(element, ctx);
-        if(stroke != null){
-            result.put(GVTAttributedCharacterIterator.TextAttribute.STROKE,
-                       stroke);
-        }
-
-        // Text decoration
-        if (textDecoration != null) {
-
-            if (textDecoration.underlinePaint != null || textDecoration.underlineStrokePaint != null) {
-
-                result.put(GVTAttributedCharacterIterator.TextAttribute.UNDERLINE,
-                            GVTAttributedCharacterIterator.TextAttribute.UNDERLINE_ON);
-                if (textDecoration.underlinePaint != null) {
-                    result.put(GVTAttributedCharacterIterator.
-                    TextAttribute.UNDERLINE_PAINT, textDecoration.underlinePaint);
-                }
-                if (textDecoration.underlineStrokePaint != null) {
-                    result.put(GVTAttributedCharacterIterator.
-                    TextAttribute.UNDERLINE_STROKE_PAINT, textDecoration.underlineStrokePaint);
-                }
-                if (textDecoration.underlineStroke != null) {
-                    result.put(GVTAttributedCharacterIterator.
-                    TextAttribute.UNDERLINE_STROKE, textDecoration.underlineStroke);
-                }
-            }
-
-            if (textDecoration.overlinePaint != null || textDecoration.overlineStrokePaint != null) {
-                 result.put(GVTAttributedCharacterIterator.TextAttribute.OVERLINE,
-                            GVTAttributedCharacterIterator.TextAttribute.OVERLINE_ON);
-                if (textDecoration.overlinePaint != null) {
-                    result.put(GVTAttributedCharacterIterator.
-                    TextAttribute.OVERLINE_PAINT, textDecoration.overlinePaint);
-                }
-                if (textDecoration.overlineStrokePaint != null) {
-                    result.put(GVTAttributedCharacterIterator.
-                    TextAttribute.OVERLINE_STROKE_PAINT, textDecoration.overlineStrokePaint);
-                }
-                if (textDecoration.overlineStroke != null) {
-                    result.put(GVTAttributedCharacterIterator.
-                    TextAttribute.OVERLINE_STROKE, textDecoration.overlineStroke);
-                }
-            }
-
-            if (textDecoration.strikethroughPaint != null || textDecoration.strikethroughStrokePaint != null) {
-                 result.put(GVTAttributedCharacterIterator.TextAttribute.STRIKETHROUGH,
-                            GVTAttributedCharacterIterator.TextAttribute.STRIKETHROUGH_ON);
-
-                if (textDecoration.strikethroughPaint != null) {
-                    result.put(GVTAttributedCharacterIterator.
-                    TextAttribute.STRIKETHROUGH_PAINT, textDecoration.strikethroughPaint);
-                }
-                if (textDecoration.strikethroughStrokePaint != null) {
-                    result.put(GVTAttributedCharacterIterator.
-                    TextAttribute.STRIKETHROUGH_STROKE_PAINT, textDecoration.strikethroughStrokePaint);
-                }
-                if (textDecoration.strikethroughStroke != null) {
-                    result.put(GVTAttributedCharacterIterator.
-                    TextAttribute.STRIKETHROUGH_STROKE, textDecoration.strikethroughStroke);
-                }
-            }
-        }
         return result;
     }
 
