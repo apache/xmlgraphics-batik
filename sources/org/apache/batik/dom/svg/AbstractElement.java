@@ -18,6 +18,8 @@ import org.apache.batik.dom.AbstractDocument;
 
 import org.apache.batik.dom.events.NodeEventTarget;
 
+import org.apache.batik.dom.util.SoftDoublyIndexedTable;
+
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
@@ -41,6 +43,11 @@ public abstract class AbstractElement
      * The parent element.
      */
     protected transient Element parentElement;
+
+    /**
+     * The live attribute values.
+     */
+    protected transient SoftDoublyIndexedTable liveAttributeValues;
 
     /**
      * Creates a new Element object.
@@ -126,6 +133,31 @@ public abstract class AbstractElement
     // Attributes /////////////////////////////////////////////////////////
 
     /**
+     * Returns the live attribute value associated with given attribute, if any.
+     * @param ns The attribute's namespace.
+     * @param ln The attribute's local name.
+     */
+    public LiveAttributeValue getLiveAttributeValue(String ns, String ln) {
+        if (liveAttributeValues == null) {
+            return null;
+        }
+        return (LiveAttributeValue)liveAttributeValues.get(ns, ln);
+    }
+
+    /**
+     * Associates a live attribute value to this element.
+     * @param ns The attribute's namespace.
+     * @param ln The attribute's local name.
+     * @param val The live value.
+     */
+    public void putLiveAttributeValue(String ns, String ln, LiveAttributeValue val) {
+        if (liveAttributeValues == null) {
+            liveAttributeValues = new SoftDoublyIndexedTable();
+        }
+        liveAttributeValues.put(ns, ln, val);
+    }
+
+    /**
      * Returns the AttributeInitializer for this element type.
      * @return null if this element has no attribute with a default value.
      */
@@ -185,6 +217,20 @@ public abstract class AbstractElement
          * Creates a new ExtendedNamedNodeHashMap object.
          */
         public ExtendedNamedNodeHashMap() {
+        }
+
+        /**
+         * Adds a node to the map.
+         */
+        public Node setNamedItem(String ns, String name, Node arg)  throws DOMException {
+            Attr result = (Attr)super.setNamedItem(ns, name, arg);
+
+            LiveAttributeValue lav = getLiveAttributeValue(ns, name);
+            if (lav != null) {
+                lav.valueChanged(result, (Attr)arg);
+            }
+
+            return result;
         }
 
 	/**
