@@ -262,14 +262,21 @@ public class XMLTestSuiteRunner implements XTSConstants{
         Constructor[] cs = cl.getDeclaredConstructors();
         for(int i=0; i<cs.length; i++){
             Class[] reqArgClasses = cs[i].getParameterTypes();
-            if(reqArgClasses.length == argClasses.length){
-                int j=0;
-                for(; j<argClasses.length; j++){
-                    if(!reqArgClasses[j].isAssignableFrom(argClasses[j])){
-                        break;
+            if(reqArgClasses != null && reqArgClasses.length > 0){
+                if(reqArgClasses.length == argClasses.length){
+                    int j=0;
+                    for(; j<argClasses.length; j++){
+                        if(!reqArgClasses[j].isAssignableFrom(argClasses[j])){
+                            break;
+                        }
+                    }
+                    if(j == argClasses.length){
+                        return cs[i];
                     }
                 }
-                if(j == argClasses.length){
+            }
+            else{
+                if(argClasses == null || argClasses.length == 0){
                     return cs[i];
                 }
             }
