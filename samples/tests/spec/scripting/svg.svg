@@ -1,0 +1,50 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN"
+"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+
+<!-- ====================================================================== -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.     -->
+<!--                                                                        -->
+<!-- This software is published under the terms of the Apache Software      -->
+<!-- License version 1.1, a copy of which has been included with this       -->
+<!-- distribution in the LICENSE file.                                      -->
+<!-- ====================================================================== -->
+
+<!-- ====================================================================== -->
+<!-- append child test                                                      -->
+<!--                                                                        -->
+<!-- @author tkormann@ilog.fr                                               -->
+<!-- @version $Id$ -->
+<!-- ====================================================================== -->
+
+<?xml-stylesheet type="text/css" href="../../resources/style/test.css" ?>  
+
+<svg xmlns="http://www.w3.org/2000/svg" 
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     id="body" width="450" height="500" viewBox="0 0 450 500">
+
+    <title>svg viewport modification 'onclick'</title>
+
+    <text x="50%" y="45" class="title">svg viewport modification 'onclick'</text>
+
+    <script type="text/ecmascript">
+
+    function changeSize(evt) {
+        var e = evt.currentTarget;
+        e.setAttribute("x", "10%");
+        e.setAttribute("y", "10%");
+        e.setAttribute("width", "80%");
+        e.setAttribute("height", "80%");
+    }
+
+    </script>
+
+    <g id="test-content">
+
+        <svg onclick="changeSize(evt)" 
+             x="25%" y="25%" width="50%" height="50%" >
+                <rect width="100%" height="100%" fill="crimson" />
+        </svg>
+
+    </g>
+</svg>
