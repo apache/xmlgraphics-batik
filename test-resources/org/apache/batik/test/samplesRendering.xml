@@ -43,13 +43,13 @@
     <!-- ======================================================================= -->
     <testGroup id="extensions" name="extensions rendering">
         <test id="samples/extensions/regularPolygon.svg" >
-            <property name="validating" value="false" />
+            <property name="Validating" class="java.lang.Boolean" value="false" />
 	</test>
         <test id="samples/extensions/star.svg" >
-            <property name="validating" value="false" />
+            <property name="Validating" class="java.lang.Boolean" value="false" />
 	</test>
         <test id="samples/extensions/histogramNormalization.svg" >
-            <property name="validating" value="false" />
+            <property name="Validating" class="java.lang.Boolean" value="false" />
 	</test>
     </testGroup>
 
