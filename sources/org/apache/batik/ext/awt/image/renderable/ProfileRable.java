@@ -55,6 +55,7 @@ public class ProfileRable extends  AbstractRable{
      * Sets the ColorSpace of the Profile operation
      */
     public void setColorSpace(ICCColorSpaceExt colorSpace){
+        touch();
         this.colorSpace = colorSpace;
     }
 

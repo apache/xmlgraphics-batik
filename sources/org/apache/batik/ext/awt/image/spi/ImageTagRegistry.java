@@ -68,6 +68,8 @@ public class ImageTagRegistry implements ErrorConstants {
     }
 
     public Filter readURL(ParsedURL purl, ICCColorSpaceExt colorSpace) {
+
+        // I just realized that this whole thing could 
         boolean needRawData = (colorSpace != null);
 
         Filter      ret        = null;
@@ -135,9 +137,18 @@ public class ImageTagRegistry implements ErrorConstants {
             }
         }
         
-        if (ret == null) 
-            ret = getBrokenLinkImage(ERR_URL_UNREADABLE, 
+        if (openFailed) {
+            // Technially it's possible that it's an unknown
+            // 'protocol that caused the open to fail but probably
+            // it's a bad URL...
+            ret = getBrokenLinkImage(this, ERR_URL_UNREACHABLE,
+                                     new Object[] { purl });
+        } else {
+            // We were able to get to the data we just couldn't
+            // make sense of it...
+            ret = getBrokenLinkImage(this, ERR_URL_UNINTERPRETABLE, 
                                      new Object[] { purl } );
+        }
 
         cache.put(purl, ret);
 
@@ -181,10 +192,10 @@ public class ImageTagRegistry implements ErrorConstants {
         }
 
         if (ret == null)
-            ret = getBrokenLinkImage(ERR_STREAM_UNREADABLE, null);
-        else if ((colorSpace != null) &&
-                 (ret.getProperty(BrokenLinkProvider.BROKEN_LINK_PROPERTY) 
-                  == null))
+            return getBrokenLinkImage(this, ERR_STREAM_UNREADABLE, null);
+
+        if ((colorSpace != null) &&
+            (ret.getProperty(BrokenLinkProvider.BROKEN_LINK_PROPERTY) == null))
             ret = new ProfileRable(ret, colorSpace);
 
         return ret;
@@ -275,13 +286,13 @@ public class ImageTagRegistry implements ErrorConstants {
     static BrokenLinkProvider brokenLinkProvider = null;
 
     public synchronized static Filter 
-        getBrokenLinkImage(String code, Object [] params) {
+        getBrokenLinkImage(Object base, String code, Object [] params) {
         Filter ret = null;
         if (brokenLinkProvider != null)
-            ret = brokenLinkProvider.getBrokenLinkImage(code, params);
+            ret = brokenLinkProvider.getBrokenLinkImage(base, code, params);
 
         if (ret == null)
-            ret = defaultProvider.getBrokenLinkImage(code, params);
+            ret = defaultProvider.getBrokenLinkImage(base, code, params);
 
         return ret;
     }

@@ -36,9 +36,11 @@ public interface BrokenLinkProvider {
      * localized messages for insertion into the broken link image, or
      * for selecting the broken link image returned.
      *
+     * @param base The object to use for Message decoding.
      * @param code This is the reason the image is unavailable should
      *             be taken from ErrorConstants.
      * @param params This is more detailed information about
      *        the circumstances of the failure.  */
-    public Filter getBrokenLinkImage(String code, Object[] params);
+    public Filter getBrokenLinkImage(Object base,
+                                     String code, Object[] params);
 }

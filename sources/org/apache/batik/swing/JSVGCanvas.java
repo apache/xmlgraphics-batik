@@ -410,10 +410,16 @@ public class JSVGCanvas extends JSVGComponent {
      * an element which has a &lt;title&gt; or a &lt;desc&gt; child
      * element.
      */
-    protected class CanvasUserAgent extends BridgeUserAgent implements XMLConstants{
-        final String TOOLTIP_TITLE_ONLY = "JSVGCanvas.CanvasUserAgent.ToolTip.titleOnly";
-        final String TOOLTIP_DESC_ONLY  = "JSVGCanvas.CanvasUserAgent.ToolTip.titleOnly";
-        final String TOOLTIP_TITLE_AND_TEXT = "JSVGCanvas.CanvasUserAgent.ToolTip.titleAndDesc";
+    protected class CanvasUserAgent 
+        extends    BridgeUserAgent 
+        implements XMLConstants {
+
+        final String TOOLTIP_TITLE_ONLY 
+            = "JSVGCanvas.CanvasUserAgent.ToolTip.titleOnly";
+        final String TOOLTIP_DESC_ONLY  
+            = "JSVGCanvas.CanvasUserAgent.ToolTip.descOnly";
+        final String TOOLTIP_TITLE_AND_TEXT 
+            = "JSVGCanvas.CanvasUserAgent.ToolTip.titleAndDesc";
 
         /**
          * The handleElement method builds a tool tip from the
@@ -423,14 +429,15 @@ public class JSVGCanvas extends JSVGComponent {
          * is the algorithm used to build the tool tip:<br />
          * <ul>
          * <li>If a &lt;title&gt; is passed to <tt>handleElement</tt>
-         *     the method checks if there is a &gt;desc&gt; peer. If there
-         *     is one, nothing is done. If there in none, the tool tip
-         *     is set to the value of the &lt;title&gt; element content.</li>
+         *     the method checks if there is a &gt;desc&gt; peer. If
+         *     there is one, nothing is done (because the desc will do
+         *     it). If there in none, the tool tip is set to the value
+         *     of the &lt;title&gt; element content.</li>
          * <li>If a &lt;desc&gt; is passed to <tt>handleElement</tt> 
          *     the method checks if there is a &lt;title&gt; peer. If there
          *     is one, the content of that peer is pre-pended to the
          *     content of the &lt;desc&gt; element.</li>
-         * </ul>
+         * </ul> 
          */
         public void handleElement(Element elt, Object data){
             super.handleElement(elt, data);

@@ -93,6 +93,7 @@ public class ComponentTransferRable8Bit
      * Sets the transfer function for the alpha channel
      */
     public void setAlphaFunction(ComponentTransferFunction alphaFunction){
+        touch();
         functions[ALPHA] = alphaFunction;
         txfFunc[ALPHA] = null;
     }
@@ -108,6 +109,7 @@ public class ComponentTransferRable8Bit
      * Sets the transfer function for the red channel
      */
     public void setRedFunction(ComponentTransferFunction redFunction){
+        touch();
         functions[RED] = redFunction;
         txfFunc[RED] = null;
     }
@@ -123,6 +125,7 @@ public class ComponentTransferRable8Bit
      * Sets the transfer function for the green channel
      */
     public void setGreenFunction(ComponentTransferFunction greenFunction){
+        touch();
         functions[GREEN] = greenFunction;
         txfFunc[GREEN] = null;
     }
@@ -138,6 +141,7 @@ public class ComponentTransferRable8Bit
      * Sets the transfer function for the blue channel
      */
     public void setBlueFunction(ComponentTransferFunction blueFunction){
+        touch();
         functions[BLUE] = blueFunction;
         txfFunc[BLUE] = null;
     }

@@ -81,10 +81,10 @@ public class TIFFRegistryEntry
                         filt = new RedRable(cr);
                     } catch (IOException ioe) {
                         filt = ImageTagRegistry.getBrokenLinkImage
-                            (errCode, errParam);
+                            (this, errCode, errParam);
                     } catch (Throwable t) {
                         filt = ImageTagRegistry.getBrokenLinkImage
-                            (errCode, errParam);
+                            (this, errCode, errParam);
                     }
 
                     dr.setSource(filt);

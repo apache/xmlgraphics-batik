@@ -11,11 +11,13 @@ package org.apache.batik.ext.awt.image.spi;
 import java.awt.Graphics2D;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+
 import java.util.Hashtable;
 
 import org.apache.batik.ext.awt.image.GraphicsUtil;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.renderable.RedRable;
+import org.apache.batik.i18n.LocalizableSupport;
 
 public class DefaultBrokenLinkProvider 
     implements BrokenLinkProvider {
@@ -23,7 +25,18 @@ public class DefaultBrokenLinkProvider
     static Filter brokenLinkImg = null;
         
 
-    public Filter getBrokenLinkImage(String code, Object [] params) {
+    public static String formatMessage(Object base,
+                                       String code,
+                                       Object [] params) {
+        String res = (base.getClass().getPackage().getName() + 
+                      ".resources.Messages");
+        // Should probably cache these...
+        LocalizableSupport ls = new LocalizableSupport(res);
+        return ls.formatMessage(code, params);
+    }
+
+    public Filter getBrokenLinkImage(Object base, 
+                                     String code, Object [] params) {
         synchronized (DefaultBrokenLinkProvider.class) {
             if (brokenLinkImg != null)
                 return brokenLinkImg;
@@ -34,7 +47,8 @@ public class DefaultBrokenLinkProvider
             // Put the broken link property in the image so people know
             // This isn't the "real" image.
             Hashtable ht = new Hashtable();
-            ht.put(BROKEN_LINK_PROPERTY, "BrokenLink");
+            ht.put(BROKEN_LINK_PROPERTY, 
+                   formatMessage(base, code, params));
             bi = new BufferedImage(bi.getColorModel(), bi.getRaster(),
                                    bi.isAlphaPremultiplied(),
                                    ht);

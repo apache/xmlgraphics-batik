@@ -11,13 +11,21 @@ package org.apache.batik.bridge;
 import java.net.URL;
 
 import org.apache.batik.ext.awt.image.renderable.Filter;
-import org.apache.batik.ext.awt.image.spi.BrokenLinkProvider;
+import org.apache.batik.ext.awt.image.spi.DefaultBrokenLinkProvider;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.renderer.StaticRenderer;
 import org.apache.batik.gvt.filter.GraphicsNodeRable8Bit;
+import org.apache.batik.i18n.LocalizableSupport;
+
+import org.apache.batik.dom.svg.SVGDOMImplementation;
+import org.apache.batik.dom.svg.SVGOMDocument;
+import org.apache.batik.dom.svg.SVGOMDescElement;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.svg.SVGDocument;
+
 import java.util.Map;
 import java.util.HashMap;
 /**
@@ -25,19 +33,18 @@ import java.util.HashMap;
  * generating a placeholder image when the ImageTagRegistry
  * fails to handle a given reference.
  */
-public class SVGBrokenLinkProvider implements BrokenLinkProvider {
+public class SVGBrokenLinkProvider extends DefaultBrokenLinkProvider {
+
+    final static String SVG_BROKEN_LINK_DOCUMENT_PROPERTY = 
+        "org.apache.batik.bridge.BrokenLinkDocument";
 
     UserAgent      userAgent;
     DocumentLoader loader;
     GraphicsNodeRenderContext  rc;
     BridgeContext  ctx;
     GraphicsNode   gvtRoot = null;
+    SVGDocument       svgDoc;
     
-    static Map props = new HashMap();
-    static {
-        props.put(BROKEN_LINK_PROPERTY, BROKEN_LINK_PROPERTY);
-    }
-
     public SVGBrokenLinkProvider() {
         StaticRenderer renderer = new StaticRenderer();
         rc        = renderer.getRenderContext();
@@ -51,7 +58,7 @@ public class SVGBrokenLinkProvider implements BrokenLinkProvider {
 
         GVTBuilder builder = new GVTBuilder();
         try {
-            Document svgDoc = loader.loadDocument(blURL.toString());
+            svgDoc  = (SVGDocument)loader.loadDocument(blURL.toString());
             gvtRoot = builder.build(ctx, svgDoc);
         } catch (Throwable t) {
             // t.printStackTrace();
@@ -71,8 +78,23 @@ public class SVGBrokenLinkProvider implements BrokenLinkProvider {
      *             be taken from ErrorConstants.
      * @param params This is more detailed information about
      *        the circumstances of the failure.  */
-    public Filter getBrokenLinkImage(String code, Object[] params) {
+    public Filter getBrokenLinkImage(Object base, String code, 
+                                     Object[] params) {
         if (gvtRoot != null) {
+            String message = formatMessage(base, code, params);
+            SVGOMDocument doc = new SVGOMDocument
+                (null, SVGDOMImplementation.getDOMImplementation());
+            doc.appendChild(doc.importNode(svgDoc.getRootElement(), true));
+
+            Element infoE = doc.getElementById("More_About");
+            Element desc = new SVGOMDescElement(null, doc);
+            desc.appendChild(doc.createTextNode(message));
+            infoE.appendChild(desc);
+
+            Map props = new HashMap();
+            props.put(BROKEN_LINK_PROPERTY, message);
+            props.put(SVG_BROKEN_LINK_DOCUMENT_PROPERTY, doc);
+
             // We should format the code and params and replace a node
             // in the gvtRoot with the result.
             return new GraphicsNodeRable8Bit(gvtRoot, rc, props);

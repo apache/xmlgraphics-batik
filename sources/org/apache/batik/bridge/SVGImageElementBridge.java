@@ -22,8 +22,6 @@ import java.util.Map;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.ext.awt.color.ICCColorSpaceExt;
-import org.apache.batik.ext.awt.image.renderable.ClipRable;
-import org.apache.batik.ext.awt.image.renderable.ClipRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.spi.ImageTagRegistry;
 import org.apache.batik.gvt.CompositeGraphicsNode;
@@ -166,6 +164,12 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
 
         ImageTagRegistry reg = ImageTagRegistry.getRegistry();
         Filter           img = reg.readURL(purl, extractColorSpace(e, ctx));
+        SVGDocument errDoc = (SVGDocument)img.getProperty
+            (SVGBrokenLinkProvider.SVG_BROKEN_LINK_DOCUMENT_PROPERTY);
+        if (errDoc != null) {
+            // Ok so we are dealing with a broken link.
+            return createSVGImageNode(ctx, e, errDoc);
+        }
         node.setImage(img);
 
         node.setImageBounds(bounds);
@@ -330,5 +334,4 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
     static {
         ImageTagRegistry.setBrokenLinkProvider(new SVGBrokenLinkProvider());
     }
-
 }

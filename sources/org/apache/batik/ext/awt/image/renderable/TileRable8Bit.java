@@ -66,6 +66,7 @@ public class TileRable8Bit
         if(tileRegion == null){
             throw new IllegalArgumentException();
         }
+        touch();
         this.tileRegion = tileRegion;
     }
 
@@ -83,6 +84,7 @@ public class TileRable8Bit
         if(tiledRegion == null){
             throw new IllegalArgumentException();
         }
+        touch();
         this.tiledRegion = tiledRegion;
     }
 
@@ -97,6 +99,7 @@ public class TileRable8Bit
      * Sets the overflow strategy
      */
     public void setOverflow(boolean overflow){
+        touch();
         this.overflow = overflow;
     }
 

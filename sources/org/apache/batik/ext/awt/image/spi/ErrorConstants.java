@@ -38,11 +38,20 @@ public interface ErrorConstants {
         = "stream.format.unreadable";
 
     /**
-     * The error code when a url is unreadable (corrupt or unsupported).
+     * The error code when the data in the  url is uninterpretable by this
+     * software (meaning it's corrupt or an unsupported format of some sort).
      * {0} = the ParsedURL that couldn't be read.
      */
-    public static final String ERR_URL_UNREADABLE
-        = "url.unreadable";
+    public static final String ERR_URL_UNINTERPRETABLE
+        = "url.uninterpretable";
+
+    /**
+     * The error code when a url is unreachable (ussually bad URL,
+     * or server is down).
+     * {0} = the ParsedURL that couldn't be read.
+     */
+    public static final String ERR_URL_UNREACHABLE
+        = "url.unreachable";
 
 
     /**

@@ -64,6 +64,7 @@ public class AffineRable8Bit
        * @param affine the new Affine transform to apply.
        */
     public void setAffine(AffineTransform affine) {
+        touch();
         this.affine = affine;
         try {
             invAffine = affine.createInverse();
