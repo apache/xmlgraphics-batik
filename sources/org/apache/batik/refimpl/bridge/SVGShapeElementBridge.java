@@ -107,7 +107,6 @@ public abstract class SVGShapeElementBridge implements GraphicsNodeBridge,
         case BridgeMutationEvent.STYLE_MUTATION_TYPE:
             throw new Error("Not yet implemented");
         }
-
     }
 
     public boolean isContainer() {

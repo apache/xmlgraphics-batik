@@ -10,6 +10,7 @@ package org.apache.batik.refimpl.gvt;
 
 import org.apache.batik.gvt.RootGraphicsNode;
 
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
@@ -35,17 +36,16 @@ public class ConcreteRootGraphicsNode extends ConcreteCompositeGraphicsNode
     // Properties methods
     //
 
-
     public RootGraphicsNode getRoot() {
         return this;
     }
-    
+
     /**
      * Adds the specified property change listener to receive property
      * change events from all elements of the GVT tree.
      * @param l the property change listener to add
      */
-    public void addGlobalPropertyChangeListener(PropertyChangeListener l){ 
+    public void addGlobalPropertyChangeListener(PropertyChangeListener l) {
         pcs.addPropertyChangeListener(l);
     }
 
@@ -57,7 +57,7 @@ public class ConcreteRootGraphicsNode extends ConcreteCompositeGraphicsNode
      * @param l the property change listener to add for the specified property
      */
     public void addGlobalPropertyChangeListener(String propertyName,
-                                                PropertyChangeListener l){ 
+                                                PropertyChangeListener l){
         pcs.addPropertyChangeListener(propertyName, l);
     }
 
@@ -67,28 +67,50 @@ public class ConcreteRootGraphicsNode extends ConcreteCompositeGraphicsNode
      * the GVT tree.
      * @param l the property change listener to remove
      */
-    public void removeGlobalPropertyChangeListener(PropertyChangeListener l){   
+    public void removeGlobalPropertyChangeListener(PropertyChangeListener l){
         pcs.removePropertyChangeListener(l);
     }
 
     /**
      * Fires a property change event to "global" property change listeners.
      */
-    public void fireGlobalPropertyChange(String propertyName, Object oldValue, Object newValue) {
-        pcs.firePropertyChange(propertyName, oldValue, newValue);
+    public void fireGlobalPropertyChange(Object source,
+                                         String propertyName,
+                                         Object oldValue, Object newValue) {
+        PropertyChangeEvent evt = new PropertyChangeEvent(source,
+                                                          propertyName,
+                                                          oldValue,
+                                                          newValue);
+        pcs.firePropertyChange(evt);
     }
 
     /**
      * Fires a property change event to "global" property change listeners.
      */
-    public void fireGlobalPropertyChange(String propertyName, boolean oldValue, boolean newValue) {
-        pcs.firePropertyChange(propertyName, oldValue, newValue);
+    public void fireGlobalPropertyChange(Object source,
+                                         String propertyName,
+                                         boolean oldValue, boolean newValue) {
+        Object oldV = (oldValue) ? Boolean.TRUE : Boolean.FALSE;
+        Object newV = (oldValue) ? Boolean.TRUE : Boolean.FALSE;
+        PropertyChangeEvent evt = new PropertyChangeEvent(source,
+                                                          propertyName,
+                                                          oldV,
+                                                          newV);
+        pcs.firePropertyChange(evt);
     }
 
     /**
      * Fires a property change event to "global" property change listeners.
      */
-    public void fireGlobalPropertyChange(String propertyName, int oldValue, int newValue) {
-        pcs.firePropertyChange(propertyName, oldValue, newValue);
+    public void fireGlobalPropertyChange(Object source,
+                                         String propertyName,
+                                         int oldValue, int newValue) {
+        Object oldV = new Integer(oldValue);
+        Object newV = new Integer(newValue);
+        PropertyChangeEvent evt = new PropertyChangeEvent(source,
+                                                          propertyName,
+                                                          oldV,
+                                                          newV);
+        pcs.firePropertyChange(evt);
     }
 }
