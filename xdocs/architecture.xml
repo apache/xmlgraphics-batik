@@ -83,10 +83,10 @@
                 in the SVG recommendation. It lets the programmer manipulate SVG documents in a Java program.</li>
                 <li><link href="svgcanvas.html"><code>JSVGCanvas</code></link> is a UI component that can display
                 SVG content and let the user interact with that content (zoom, pan, rotate, text selection, etc...)</li>
-                <li><strong>Bridge</strong> this module, more rarely used directly, is responsible on creating 
-                and maintaining an appropriate object according to an Element. The Modual can convert an
-                SVG document into the internal representation Batik uses for graphics, based on the 
-                Graphic Vector Toolkit(GVT)</li>
+                <li><strong>Bridge</strong>. This module is rarely used directly. It is responsible for creating 
+                and maintaining an appropriate object corresponding to an Element. The Bridge converts an
+                SVG document into the internal representation Batik uses for graphics (GVT, the 
+                Graphic Vector Toolkit)</li>
                 <li><link href="rasterizerTutorial.html">Transcoder</link> is a module that provide a generic API for 
                 transcoding an input to an output. This module transcodes an input stream or a document 
                 into a particular ouput format. </li>
@@ -107,8 +107,8 @@
                 some caching (the default Renderer in Batik does that). However, a Renderer could perform
                 any task it deems necessary and does not have to be raster based.</li>
                 <li>The <strong>SVG Parser</strong> module contains 'Micro Parsers'. These are parsers for complex 
-                SVG attributes such as <code>transform</code> or <code>color</code> attributes, which higher level modules 
-                rely on.</li>
+                SVG attributes such as <code>transform</code> or <code>color</code> attributes. Higher level modules 
+                rely on the SVG Parser module.</li>
             </ul>
         </s1>
     </body>
