@@ -579,6 +579,43 @@
 </faq>
 
 <faq>
+    <question>When I modify create new SVG elements or modify some 
+    SVG attributes through the DOM API, from ECMA Script,
+    nothing happens, changes are not rendered? What is going on?</question>
+
+    <answer>
+    <p>A common problem is that script contain the wrong DOM calls
+    to create elements or modify attributes. </p>
+
+    <p>SVG elements need to be 
+    created in the SVG namespace. For example, to create a <code>&lt;rect&gt;</code>
+    element, you should use <code>document.createElementNS(svgNS, "rect")</code>,
+    (where <code>svgNS</code> is equals to <code>"http://www.w3.org/2000/svg"</code>),
+    which appropriately creates the <code>&lt;rect&gt;</code> element in the
+    SVG namespace. A call to <code>document.createElement("rect")</code> creates
+    an element with the tag <code>rect</code> but which does not belong to the 
+    SVG namespace. As such, it is ignored by Batik.</p>
+    <p>Most SVG attributes belong to what is called the 'per element type partition
+    namespace' (see the <link href="http://www.w3.org/TR/REC-xml-names">Namespaces in
+    XML</link> specification). The appropriate way to set attributes on
+    an SVG element is a call to <code>setAttributeNS</code> with a namespace
+    value of <code>null</code>, for example: <code>elt.setAttributeNS(null, "width", "40")</code>.
+    In the Batik SVG DOM implementation, you can also use a call to <code>setAttribute</code> and
+    you can write <code>elt.setAttribute("width", "40")</code>. However, it is important
+    to know that some implementations make a difference between <code>setAttribute(x, y)</code>
+    and <code>setAttributeNS(null, x, y)</code>, so it is a better practice to use 
+    <code>setAttributeNS</code> which is the only guaranteed interoperable way of 
+    setting attributes in a namespace aware DOM implementation.</p>
+    <p>Finally, for attributes which belong to a specific namespace, like the 
+    the href attribute on the <code>&lt;image&gt;</code> element, you have to 
+    use the <code>setAttributeNS</code> method with the XLink namespace. For example,
+    assuming <code>img</code> references an <code>&lt;image&gt;</code> DOM <code>Element</code>,
+    you can modify the href as follows: <code>img.setAttributeNS(xlinkNS, "xlink:href", "myImage.jpg")</code>
+    where <code>xlinkNS</code> is equal to <code>"http://www.w3.org/1999/xlink"</code></p>
+    </answer>
+</faq>
+
+<faq>
     <question>When I get the UpdateManager from the canvas sometimes
     it is null, why?</question>
     <answer>
