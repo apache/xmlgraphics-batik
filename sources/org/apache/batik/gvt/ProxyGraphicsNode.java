@@ -10,6 +10,7 @@ package org.apache.batik.gvt;
 
 import java.awt.Graphics2D;
 import java.awt.Shape;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 
 /**
@@ -63,34 +64,86 @@ public class ProxyGraphicsNode extends AbstractGraphicsNode {
      * Returns the bounds of the area covered by this node's primitive paint.
      */
     public Rectangle2D getPrimitiveBounds() {
-        if (source != null) {
-            return source.getBounds();
-        } else {
+        if (source == null) 
             return null;
-        }
+
+        return source.getBounds();
     }
 
     /**
-     * Returns the bounds of the area covered by this node, without taking any
-     * of its rendering attribute into account. i.e., exclusive of any clipping,
-     * masking, filtering or stroking, for example.
+     * Returns the bounds of this node's primitivePaint after applying
+     * the input transform (if any), concatenated with this node's
+     * transform (if any).
+     *
+     * @param txf the affine transform with which this node's transform should
+     *        be concatenated. Should not be null.  */
+    public Rectangle2D getTransformedPrimitiveBounds(AffineTransform txf) {
+        if (source == null) 
+            return null;
+
+        AffineTransform t = txf;
+        if (transform != null) {
+            t = new AffineTransform(txf);
+            t.concatenate(transform);
+        }
+        return source.getTransformedPrimitiveBounds(t);
+    }
+
+    /**
+     * Returns the bounds of the area covered by this node, without
+     * taking any of its rendering attribute into account. i.e.,
+     * exclusive of any clipping, masking, filtering or stroking, for
+     * example.
      */
     public Rectangle2D getGeometryBounds() {
-        if (source != null) {
-            return source.getGeometryBounds();
-        } else {
+        if (source == null) 
             return null;
+
+        return source.getGeometryBounds();
+    }
+
+    /**
+     * Returns the bounds of the sensitive area covered by this node,
+     * This includes the stroked area but does not include the effects
+     * of clipping, masking or filtering. The returned value is
+     * transformed by the concatenation of the input transform and
+     * this node's transform.
+     *
+     * @param txf the affine transform with which this node's
+     * transform should be concatenated. Should not be null.
+     */
+    public Rectangle2D getTransformedGeometryBounds(AffineTransform txf) {
+        if (source == null) 
+            return null;
+
+        AffineTransform t = txf;
+        if (transform != null) {
+            t = new AffineTransform(txf);
+            t.concatenate(transform);
         }
+        return source.getTransformedGeometryBounds(t);
+    }
+
+
+    /**
+     * Returns the bounds of the sensitive area covered by this node,
+     * This includes the stroked area but does not include the effects
+     * of clipping, masking or filtering.
+     */
+    public Rectangle2D getSensitiveBounds() {
+        if (source == null) 
+            return null;
+
+        return source.getSensitiveBounds();
     }
 
     /**
      * Returns the outline of this node.
      */
     public Shape getOutline() {
-        if (source != null) {
-            return source.getOutline();
-        } else {
+        if (source == null) 
             return null;
-        }
+
+        return source.getOutline();
     }
 }

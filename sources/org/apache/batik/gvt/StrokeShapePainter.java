@@ -28,6 +28,11 @@ public class StrokeShapePainter implements ShapePainter {
     protected Shape shape;
 
     /**
+     * Stroked version of the shape.
+     */
+    protected Shape strokedShape;
+
+    /**
      * The stroke attribute used to draw the outline of the shape.
      */
     protected Stroke stroke;
@@ -57,7 +62,8 @@ public class StrokeShapePainter implements ShapePainter {
      * @param newStroke the stroke object used to draw the outline of the shape
      */
     public void setStroke(Stroke newStroke) {
-        this.stroke = newStroke;
+        this.stroke       = newStroke;
+        this.strokedShape = null;
     }
 
     /**
@@ -70,7 +76,8 @@ public class StrokeShapePainter implements ShapePainter {
     }
 
     /**
-     * Paints the outline of the specified shape using the specified Graphics2D.
+     * Paints the outline of the specified shape using the specified 
+     * Graphics2D.
      *
      * @param g2d the Graphics2D to use 
      */
@@ -86,23 +93,49 @@ public class StrokeShapePainter implements ShapePainter {
      * Returns the area painted by this shape painter.
      */
     public Shape getPaintedArea(){
-        if (paint != null && stroke != null) {
-            return stroke.createStrokedShape(shape);
-        } else {
+        if ((paint == null) || (stroke == null))
             return null;
-        }
+
+        if (strokedShape == null)
+            strokedShape = stroke.createStrokedShape(shape);
+
+        return strokedShape;
     }
 
     /**
      * Returns the bounds of the area painted by this shape painter
      */
-    public Rectangle2D getPaintedBounds2D(){
+    public Rectangle2D getPaintedBounds2D() {
         Shape painted = getPaintedArea();
-        if (painted != null){
-            return painted.getBounds2D();
-        } else {
+        if (painted == null)
             return null;
-        }
+
+        return painted.getBounds2D();
+    }
+
+    /**
+     * Returns the area covered by this shape painter (even if not painted).
+     */
+    public Shape getSensitiveArea(){
+        if (stroke == null)
+            return null;
+
+        if (strokedShape == null)
+            strokedShape = stroke.createStrokedShape(shape);
+
+        return strokedShape;
+    }
+
+    /**
+     * Returns the bounds of the area covered by this shape painte
+     * (even if not painted).
+     */
+    public Rectangle2D getSensitiveBounds2D() {
+        Shape sensitive = getSensitiveArea();
+        if (sensitive == null)
+            return null;
+
+        return sensitive.getBounds2D();
     }
 
 
@@ -117,6 +150,7 @@ public class StrokeShapePainter implements ShapePainter {
             throw new IllegalArgumentException();
         }
         this.shape = shape;
+        this.strokedShape = null;
     }
 
     /**

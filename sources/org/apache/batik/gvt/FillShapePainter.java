@@ -39,10 +39,10 @@ public class FillShapePainter implements ShapePainter {
      * Should not be null.  
      */
     public FillShapePainter(Shape shape) {
-        if (shape == null) {
-            throw new IllegalArgumentException();
-        }
-	this.shape = shape;
+        if (shape == null)
+            throw new IllegalArgumentException("Shape can not be null!");
+
+        this.shape = shape;
     }
 
     /**
@@ -70,6 +70,8 @@ public class FillShapePainter implements ShapePainter {
      * Returns the area painted by this shape painter.
      */
     public Shape getPaintedArea(){
+        if (paint == null)
+            return null;
         return shape;
     }
 
@@ -77,11 +79,28 @@ public class FillShapePainter implements ShapePainter {
      * Returns the bounds of the area painted by this shape painter
      */
     public Rectangle2D getPaintedBounds2D(){
-	if (shape != null){
+        if ((paint == null) || (shape == null))
+            return  null;
+
 	    return shape.getBounds2D();
-	} else {
-	    return null;
-	}
+    }
+
+    /**
+     * Returns the area covered by this shape painter (even if not painted).
+     * 
+     */
+    public Shape getSensitiveArea(){
+        return shape;
+    }
+
+    /**
+     * Returns the bounds of the area covered by this shape painte
+     * (even if not painted).
+     */
+    public Rectangle2D getSensitiveBounds2D() {
+        if (shape == null)
+            return  null;
+	    return shape.getBounds2D();
     }
 
     /**

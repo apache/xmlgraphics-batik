@@ -773,9 +773,9 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
             t.concatenate(transform);
         }
 
-        // The painted region, before cliping, masking and compositing is either
-        // the area painted by the primitive paint or the area painted by the
-        // filter.
+        // The painted region, before cliping, masking and compositing
+        // is either the area painted by the primitive paint or the
+        // area painted by the filter.
         Rectangle2D tBounds = null;
         if (filter == null) {
             // Use txf, not t
@@ -827,9 +827,14 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     }
 
     /**
-     * Returns the bounds of the area covered by this node, without taking any
-     * of its rendering attribute into account. i.e., exclusive of any clipping,
-     * masking, filtering or stroking, for example.
+     * Returns the bounds of the area covered by this node, without
+     * taking any of its rendering attribute into accoun. i.e.,
+     * exclusive of any clipping, masking, filtering or stroking, for
+     * example. The returned value is transformed by the concatenation
+     * of the input transform and this node's transform.
+     *
+     * @param txf the affine transform with which this node's transform should
+     *        be concatenated. Should not be null.
      */
     public Rectangle2D getTransformedGeometryBounds(AffineTransform txf) {
         Rectangle2D tpBounds = getGeometryBounds();
@@ -846,13 +851,37 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     }
 
     /**
+     * Returns the bounds of the sensitive area covered by this node,
+     * This includes the stroked area but does not include the effects
+     * of clipping, masking or filtering. The returned value is
+     * transformed by the concatenation of the input transform and
+     * this node's transform.
+     *
+     * @param txf the affine transform with which this node's
+     * transform should be concatenated. Should not be null.
+     */
+    public Rectangle2D getTransformedSensitiveBounds(AffineTransform txf) {
+        Rectangle2D sBounds = getSensitiveBounds();
+        if (sBounds == null) {
+            return null;
+        }
+        AffineTransform t = txf;
+        if (transform != null) {
+            t = new AffineTransform(txf);
+            t.concatenate(transform);
+        }
+
+        return t.createTransformedShape(sBounds).getBounds2D();
+    }
+
+    /**
      * Returns true if the specified Point2D is inside the boundary of this
      * node, false otherwise.
      *
      * @param p the specified Point2D in the user space
      */
     public boolean contains(Point2D p) {
-        Rectangle2D b = getBounds();
+        Rectangle2D b = getSensitiveBounds();
         if (b == null || !b.contains(p)) {
             return false;
         }
@@ -868,7 +897,6 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
         case ALL:
             return true;
         case NONE:
-            return false;
         default:
             return false;
         }
@@ -881,11 +909,10 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
      * @param r the specified Rectangle2D in the user node space
      */
     public boolean intersects(Rectangle2D r) {
-        if (getBounds() != null ){
-            return getBounds().intersects(r);
-        } else {
-            return false;
-        }
+        Rectangle2D b = getBounds();
+        if (b == null) return false;
+
+        return b.intersects(r);
     }
 
     /**

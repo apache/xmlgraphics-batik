@@ -122,38 +122,68 @@ public class CompositeShapePainter implements ShapePainter {
      * Returns the area painted by this shape painter.
      */
     public Shape getPaintedArea(){
-        if (painters != null) {
-            Area paintedArea = new Area();
-            for (int i=0; i < count; ++i) {
-                Shape s = painters[i].getPaintedArea();
-                if (s != null) {
-                    paintedArea.add(new Area(s));
-                }
-            }
-            return paintedArea;
-        } else {
+        if (painters == null)
             return null;
+        Area paintedArea = new Area();
+        for (int i=0; i < count; ++i) {
+            Shape s = painters[i].getPaintedArea();
+            if (s != null) {
+                paintedArea.add(new Area(s));
+            }
         }
+        return paintedArea;
     }
 
     /**
      * Returns the bounds of the area painted by this shape painter
      */
     public Rectangle2D getPaintedBounds2D(){
-        if (painters != null) {
-            GeneralPath paintedArea = new GeneralPath();
-            for (int i=0; i < count; ++i) {
-                Shape s = painters[i].getPaintedArea();
-                if (s != null) {
-                    paintedArea.append(s, false);
-                }
-            }
-            return paintedArea.getBounds2D();
-        } else {
+        if (painters == null) 
             return null;
+
+        Rectangle2D bounds = null;
+        for (int i=0; i < count; ++i) {
+            Rectangle2D pb = painters[i].getPaintedBounds2D();
+            if (pb == null) continue;
+            if (bounds == null) bounds = (Rectangle2D)pb.clone();
+            else                bounds.add(pb);
         }
+        return bounds;
     }
 
+
+    /**
+     * Returns the area covered by this shape painter (even if nothing
+     * is painted there).
+     */
+    public Shape getSensitiveArea() {
+        if (painters == null)
+            return null;
+        Area paintedArea = new Area();
+        for (int i=0; i < count; ++i) {
+            Shape s = painters[i].getSensitiveArea();
+            if (s != null) {
+                paintedArea.add(new Area(s));
+            }
+        }
+        return paintedArea;
+    }
+
+    /**
+     * Returns the bounds of the area painted by this shape painter
+     */
+    public Rectangle2D getSensitiveBounds2D() {
+        if (painters == null) 
+            return null;
+
+        Rectangle2D bounds = null;
+        for (int i=0; i < count; ++i) {
+            Rectangle2D pb = painters[i].getSensitiveBounds2D();
+            if (bounds == null) bounds = (Rectangle2D)pb.clone();
+            else                bounds.add(pb);
+        }
+        return bounds;
+    }
 
     /**
      * Sets the Shape this shape painter is associated with.

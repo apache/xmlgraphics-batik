@@ -218,9 +218,10 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
     }
 
     /**
-     * Returns the bounds of the area covered by this node, without taking any
-     * of its rendering attribute into account. i.e., exclusive of any clipping,
-     * masking, filtering or stroking, for example.
+     * Returns the bounds of the area covered by this node, without
+     * taking any of its rendering attribute into account. i.e.,
+     * exclusive of any clipping, masking, filtering or stroking, for
+     * example.
      */
     public Rectangle2D getGeometryBounds(){
         if (geometryBounds == null){
@@ -229,6 +230,15 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
             }
         }
         return geometryBounds;
+    }
+
+    /**
+     * Returns the bounds of the sensitive area covered by this node,
+     * This includes the stroked area but does not include the effects
+     * of clipping, masking or filtering.
+     */
+    public Rectangle2D getSensitiveBounds() {
+        return getGeometryBounds();
     }
 
     /**
