@@ -15,20 +15,21 @@
 <!-- ========================================================================= -->
 <document>
     <header>
-        <title>Batik</title>
-        <subtitle>SVG Toolkit</subtitle>
+        <title>Batik SVG Toolkit</title>
+        <subtitle>SVG Tools in Java</subtitle>
         <authors>
             <person name="Vincent Hardy" email="vincent.hardy@eng.sun.com"/>
             <person name="Thierry Kormann" email="tkormann@apache.org"/>
+            <person name="Stephane Hillion" email="stephane@hillion.org"/>
         </authors>
     </header>
 
     <body>
-        <s1 title="What is it?">
+        <s1 title="Batik Overview">
 
         <p>
         Batik is a Java based toolkit for applications which
-        images in the Scalable Vector Graphics (SVG) format for
+        images in the <link href="http://www.w3.org/TR/SVG/">Scalable Vector Graphics (SVG)</link> format for
         various purposes, such as viewing, generation or manipulation.
         </p>
         <p>
@@ -41,16 +42,13 @@
 
         </s1>
 
-        <s1 title="What does it do?">
+        <s1 title="Applications of Batik">
         <p>
         With Batik, you can view SVG documents on all platforms where
         Java is available. You can also use the various Batik modules to
         generate, manipulate, transcode and search SVG images in your 
         applications.
         </p>
-        </s1>
-
-        <s1 title="What does it change for me?">
         <p>
         Batik makes it easy for Java based applications to deal with SVG
         contents. For example, using Batik's SVG generator, a Java application
@@ -66,7 +64,7 @@
         </p>
          </s1>
 
-        <s1 title="Are there any known limitations?">
+        <s1 title="Batik Limitations">
 
         <p>
         At this time, Batik does not support all of the SVG features. It 
@@ -82,7 +80,7 @@
         </p>
         </s1>
 
-        <s1 title="What is SVG anyway?">
+        <s1 title="SVG 1.0 Beta Support">
         <p>
         Scalable Vector Graphics, SVG, is a <link href="http://www.w3.org">W3C</link>
         Candidate Recommendation. It defines an XML grammar for rich 2D graphics
@@ -95,7 +93,7 @@
         </p>
          </s1>
  
-        <s1 title="Where do I get it?">
+        <s1 title="Batik Download">
         <p>
         You can get Batik on the 
         <link href="http://xml.apache.org/xml-batik/download/">download page</link>.
@@ -106,7 +104,7 @@
         </note>
         </s1>
 
-        <s1 title="How do I Contribute?">
+        <s1 title="Contributions To The Batik Project">
         <p>
         The Batik Project is an open volunteer project based on the spirit of the
         <link href="http://www.apache.org">Apache Software Foundation</link> (ASF).
