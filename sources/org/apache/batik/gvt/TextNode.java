@@ -78,7 +78,7 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
     /**
      * The text painter used to display the text of this text node.
      */
-    protected TextPainter textPainter = new StrokingTextPainter();
+    protected static TextPainter textPainter = new StrokingTextPainter();
 
     /**
      * Internal Cache: Bounds for this text node, without taking any of the
@@ -367,7 +367,7 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
         // THE CLIP IS A RECTANGLE
         //
         Shape clip = g2d.getClip();
-        if(clip != null && !(clip instanceof GeneralPath)){
+        if (clip != null && !(clip instanceof GeneralPath)) {
             g2d.setClip(new GeneralPath(clip));
         }
         // Paint the text
