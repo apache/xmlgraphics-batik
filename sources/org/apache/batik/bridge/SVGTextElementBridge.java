@@ -335,17 +335,20 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                         if (as != null) {
                             addGlyphPositionAttributes(
                                  as, true, indexMap, ctx, nodeElement);
-                            stripLast = !preserve && (as.getIterator().first() == ' ');
+                            stripLast = !preserve && 
+                                        (as.getIterator().first() == ' ');
                             if (stripLast) {
                                 AttributedString las =
                                      (AttributedString) result.removeLast();
                                 if (las != null) {
-                                    AttributedCharacterIterator iter = las.getIterator();
+                                    AttributedCharacterIterator iter = 
+                                                            las.getIterator();
                                     int endIndex = iter.getEndIndex()-1;
                                     if (iter.setIndex(endIndex) == ' ') {
                                          las = new AttributedString(
                                              las.getIterator(null,
-                                                 iter.getBeginIndex(), endIndex));
+                                                 iter.getBeginIndex(), 
+                                                     endIndex));
                                     }
                                     result.add(las);
                                 }
@@ -354,7 +357,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                         }
                     } catch(MalformedURLException ex) {
                         throw new IllegalAttributeValueException(
-                         Messages.formatMessage("tref.xlinkHref.badURL", null));
+                        Messages.formatMessage("tref.xlinkHref.badURL", null));
                     } catch (Exception ex) { /* Nothing to do */ }
                 }
                 break;
@@ -362,17 +365,20 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                 s = n.getNodeValue();
                 int[] indexMap = new int[s.length()];
                 as = createAttributedString(
-                              s, m, indexMap, preserve, stripFirst, last && top);
+                         s, m, indexMap, preserve, stripFirst, last && top);
                 if (as != null) {
                      if (first) {
-                         addGlyphPositionAttributes(as, !top, indexMap, ctx, element);
+                         addGlyphPositionAttributes(
+                              as, !top, indexMap, ctx, element);
                      }
-                     stripLast = !preserve && (as.getIterator().first() == ' ');
+                     stripLast = 
+                             !preserve && (as.getIterator().first() == ' ');
                      if (stripLast && !result.isEmpty()) {
                          AttributedString las =
                               (AttributedString) result.removeLast();
                          if (las != null) {
-                             AttributedCharacterIterator iter = las.getIterator();
+                             AttributedCharacterIterator iter = 
+                                                         las.getIterator();
                              int endIndex = iter.getEndIndex()-1;
                              if (iter.setIndex(endIndex) == ' ') {
                                  las = new AttributedString(
@@ -616,6 +622,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
         CSSPrimitiveValue v;
         String s;
         float f;
+        short t;
 
         result.put(GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER, element);
 
@@ -867,12 +874,13 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
         // Letter Spacing
         v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue
             (CSS_LETTER_SPACING_PROPERTY);
-        if (v.getPrimitiveType() != CSSPrimitiveValue.CSS_IDENT) {
-            s = v.getStringValue();
-            f = SVGUtilities.svgToUserSpace(element,
-                                            CSS_LETTER_SPACING_PROPERTY, s,
-                                            uctx,
-                                            UnitProcessor.HORIZONTAL_LENGTH);
+        t = v.getPrimitiveType();
+        if (t != CSSPrimitiveValue.CSS_IDENT) {
+            f = UnitProcessor.cssToUserSpace(t,
+                                            v.getFloatValue(t),
+                                            (SVGElement) element,
+                                            UnitProcessor.HORIZONTAL_LENGTH,
+                                            uctx);
 
             // XXX: HACK: Assuming horizontal length units is wrong,
             // layout might be vertical!
@@ -888,12 +896,13 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
         // Word spacing
         v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue
             (CSS_WORD_SPACING_PROPERTY);
-        if (v.getPrimitiveType() != CSSPrimitiveValue.CSS_IDENT) {
-            s = v.getStringValue();
-            f = SVGUtilities.svgToUserSpace(element,
-                                            CSS_WORD_SPACING_PROPERTY, s,
-                                            uctx,
-                                            UnitProcessor.HORIZONTAL_LENGTH);
+        t = v.getPrimitiveType();
+        if (t != CSSPrimitiveValue.CSS_IDENT) {
+            f = UnitProcessor.cssToUserSpace(t,
+                                            v.getFloatValue(t),
+                                            (SVGElement) element,
+                                            UnitProcessor.HORIZONTAL_LENGTH,
+                                            uctx);
 
             // XXX: HACK: Assuming horizontal length units is wrong,
             // layout might be vertical!
@@ -1002,7 +1011,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
         // Text decoration
         CSSValue cssVal = cssDecl.getPropertyCSSValue
             (CSS_TEXT_DECORATION_PROPERTY);
-        short t = cssVal.getCssValueType();
+        t = cssVal.getCssValueType();
         if (t == CSSValue.CSS_VALUE_LIST) {
             CSSValueList lst = (CSSValueList)cssVal;
             for (int i = 0; i < lst.getLength(); i++) {
