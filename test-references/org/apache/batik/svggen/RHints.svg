@@ -9,7 +9,7 @@
       <text xml:space="preserve" x="10" y="20" stroke="none">Text antialiasing</text>
       <text font-size="25" x="30" y="60" font-family="&apos;Impact&apos;" shape-rendering="crispEdges" stroke="none" xml:space="preserve">HELLO antialiased</text>
     </g>
-    <g text-rendering="geometricPrecision" font-size="25" shape-rendering="crispEdges" font-family="&apos;Impact&apos;">
+    <g text-rendering="optimizeSpeed" font-size="25" shape-rendering="crispEdges" font-family="&apos;Impact&apos;">
       <text xml:space="preserve" x="30" y="90" stroke="none">HELLO aliased</text>
     </g>
     <g text-rendering="optimizeLegibility" shape-rendering="geometricPrecision" transform="translate(0,100)">
