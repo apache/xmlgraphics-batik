@@ -100,7 +100,7 @@ public class StrokeDasharrayFactory extends AbstractValueFactory {
                 throw CSSDOMExceptionFactory.createDOMException
                     (DOMException.INVALID_ACCESS_ERR,
                      "bad.unit.type",
-                     new Object[] { lu.getLexicalUnitType() });
+                     new Object[] { new Integer(lu.getLexicalUnitType()) });
             }
 	    lu = lu.getNextLexicalUnit();
             if (lu == null) {
