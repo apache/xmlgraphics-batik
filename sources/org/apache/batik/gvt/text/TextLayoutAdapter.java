@@ -282,9 +282,35 @@ public class TextLayoutAdapter implements TextSpanLayout {
 // private
 
     private AffineTransform computeTransform() {
-         AffineTransform nt = AffineTransform.getTranslateInstance(
+        AffineTransform nt = AffineTransform.getTranslateInstance(
                offset.getX(), offset.getY());
-         return nt;
+
+        Integer adjustType = (Integer) aci.getAttribute(
+                GVTAttributedCharacterIterator.TextAttribute.LENGTH_ADJUST);
+        if (adjustType==
+                GVTAttributedCharacterIterator.TextAttribute.ADJUST_ALL) {
+
+            Float length = (Float) aci.getAttribute(
+                GVTAttributedCharacterIterator.TextAttribute.BBOX_WIDTH);
+            if (length!= null && !length.isNaN()) {
+                double xscale = 1d;
+                double yscale = 1d;
+                if (isVertical()) {
+                    yscale =
+                    length.floatValue()/layout.getBounds().getHeight();
+                } else {
+                    xscale =
+                    length.floatValue()/layout.getBounds().getWidth();
+                }
+                try {
+                    AffineTransform inverse = nt.createInverse();
+                    nt.concatenate(
+                        AffineTransform.getScaleInstance(xscale, yscale));
+                    nt.concatenate(inverse);
+                } catch (java.awt.geom.NoninvertibleTransformException e) {;}
+            }
+        }
+        return nt;
     }
 
     private Point2D adjustOffset(Point2D p) {

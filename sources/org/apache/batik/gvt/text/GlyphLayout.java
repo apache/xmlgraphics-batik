@@ -807,6 +807,10 @@ public class GlyphLayout implements TextSpanLayout {
     protected void doExplicitGlyphLayout(boolean applyOffset) {
         char ch = aci.first();
         int i=0;
+        float baselineAscent = isVertical() ?
+                               (float) gv.getLogicalBounds().getWidth() :
+                               (float) gv.getLogicalBounds().getHeight();
+
         float[] gp = new float[(gv.getNumGlyphs()+1)*2];
         gp = (float[]) gv.getGlyphPositions(0, gv.getNumGlyphs(), gp).clone();
         float init_x_pos = (float) offset.getX();
@@ -823,6 +827,8 @@ public class GlyphLayout implements TextSpanLayout {
                              GVTAttributedCharacterIterator.TextAttribute.Y);
             Float dy = (Float) aci.getAttribute(
                              GVTAttributedCharacterIterator.TextAttribute.DY);
+            Float rotation = (Float) aci.getAttribute(
+                        GVTAttributedCharacterIterator.TextAttribute.ROTATION);
             if (x!= null && !x.isNaN()) {
                 if (i==0) {
                     if (applyOffset) {
@@ -855,8 +861,36 @@ public class GlyphLayout implements TextSpanLayout {
                 curr_y_pos += gp[i*2 + 1]-gp[i*2 - 1];
             }
 
-            glyphPositions[i] = new Point2D.Float(curr_x_pos,  curr_y_pos);
+	    // ox and oy are origin adjustments for each glyph,
+            // computed on the basis of baseline-shifts, etc.
+            float ox = 0f;
+            float oy = 0f;
+            float baselineAdjust = 0f;
+            Object baseline = aci.getAttribute(
+                GVTAttributedCharacterIterator.TextAttribute.BASELINE_SHIFT);
+            if (baseline != null) {
+                if (baseline instanceof Integer) {
+    	            if (baseline==TextAttribute.SUPERSCRIPT_SUPER) {
+                        baselineAdjust = baselineAscent*0.5f;
+                    } else if (baseline==TextAttribute.SUPERSCRIPT_SUB) {
+                        baselineAdjust = -baselineAscent*0.5f;
+                    }
+                } else if (baseline instanceof Float) {
+                    baselineAdjust = ((Float) baseline).floatValue();
+                }
+                if (isVertical()) {
+                    ox = baselineAdjust;
+                } else {
+                    oy = -baselineAdjust;
+                }
+            }
+            glyphPositions[i] = new Point2D.Float(curr_x_pos+ox,curr_y_pos+oy);
             gv.setGlyphPosition(i, glyphPositions[i]);
+            if (rotation != null && !rotation.isNaN()) {
+                gv.setGlyphTransform(i, 
+                    AffineTransform.getRotateInstance(
+                        (double)rotation.floatValue()));
+            }
             //System.out.print(ch);
             //System.out.print("["+curr_x_pos+","+curr_y_pos+"]");
             curr_x_pos += (float) gv.getGlyphMetrics(i).getAdvance();

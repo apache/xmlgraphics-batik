@@ -310,7 +310,8 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
 
                 nodeElement = (Element)n;
 
-                if (n.getLocalName().equals("tspan")) {
+                if (n.getLocalName().equals("tspan")
+|| n.getLocalName().equals("altGlyph")) {
                     buildAttributedStrings(ctx,
                                            nodeElement,
                                            node,
@@ -338,19 +339,19 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                             // link target
                             addGlyphPositionAttributes(
                                  as, true, indexMap, ctx, nodeElement);
-                            stripLast = !preserve && 
+                            stripLast = !preserve &&
                                         (as.getIterator().first() == ' ');
                             if (stripLast) {
                                 AttributedString las =
                                      (AttributedString) result.removeLast();
                                 if (las != null) {
-                                    AttributedCharacterIterator iter = 
+                                    AttributedCharacterIterator iter =
                                                             las.getIterator();
                                     int endIndex = iter.getEndIndex()-1;
                                     if (iter.setIndex(endIndex) == ' ') {
                                          las = new AttributedString(
                                              las.getIterator(null,
-                                                 iter.getBeginIndex(), 
+                                                 iter.getBeginIndex(),
                                                      endIndex));
                                     }
                                     result.add(las);
@@ -374,13 +375,13 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                          addGlyphPositionAttributes(
                               as, !top, indexMap, ctx, element);
                      }
-                     stripLast = 
+                     stripLast =
                              !preserve && (as.getIterator().first() == ' ');
                      if (stripLast && !result.isEmpty()) {
                          AttributedString las =
                               (AttributedString) result.removeLast();
                          if (las != null) {
-                             AttributedCharacterIterator iter = 
+                             AttributedCharacterIterator iter =
                                                          las.getIterator();
                              int endIndex = iter.getEndIndex()-1;
                              if (iter.setIndex(endIndex) == ' ') {
@@ -670,6 +671,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
         v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue
             (CSS_FONT_WEIGHT_PROPERTY);
         if (v.getPrimitiveType() == CSSPrimitiveValue.CSS_IDENT) {
+            //System.out.println("CSS Font Weight "+v.getStringValue());
             if (v.getStringValue().charAt(0) == 'n') {
                 result.put(TextAttribute.WEIGHT,
                            TextAttribute.WEIGHT_REGULAR);
@@ -681,6 +683,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                            TextAttribute.WEIGHT_BOLD);
             }
         } else {
+            //System.out.println("CSS Font Weight "+v.getFloatValue(CSSPrimitiveValue.CSS_NUMBER));
             switch ((int)v.getFloatValue(CSSPrimitiveValue.CSS_NUMBER)) {
             case 100:
                 result.put(TextAttribute.WEIGHT,
@@ -704,7 +707,8 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                 break;
             case 600:
                 result.put(TextAttribute.WEIGHT,
-                           TextAttribute.WEIGHT_DEMIBOLD);
+                           //TextAttribute.WEIGHT_DEMIBOLD);
+                           TextAttribute.WEIGHT_BOLD);
                 break;
             case 700:
                 result.put(TextAttribute.WEIGHT,
@@ -728,73 +732,86 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
             (CSS_BASELINE_SHIFT_PROPERTY);
         if (v.getPrimitiveType() == CSSPrimitiveValue.CSS_IDENT) {
             s = v.getStringValue();
+            //System.out.println("Baseline-shift: "+s);
             switch (s.charAt(2)) {
             case 'p': //suPerscript
-                result.put(TextAttribute.SUPERSCRIPT,
-                       TextAttribute.SUPERSCRIPT_SUPER);
+                result.put(GVTAttributedCharacterIterator.
+                           TextAttribute.BASELINE_SHIFT,
+                           TextAttribute.SUPERSCRIPT_SUPER);
                 break;
             case 'b': //suBscript
-                result.put(TextAttribute.SUPERSCRIPT,
-                       TextAttribute.SUPERSCRIPT_SUB);
+                result.put(GVTAttributedCharacterIterator.
+                           TextAttribute.BASELINE_SHIFT,
+                           TextAttribute.SUPERSCRIPT_SUB);
                 break;
             case 's': //baSeline
-                result.put(TextAttribute.SUPERSCRIPT,
-                       new Integer(0)); // XXX: jdk1.2 doesn't define
-                                        // SUPERSCRIPT_NONE, 1.3 does
                 break;
             }
+        } else if (v.getPrimitiveType() == CSSPrimitiveValue.CSS_PERCENTAGE) {
+            f = v.getFloatValue(v.getPrimitiveType());
+            result.put(GVTAttributedCharacterIterator.TextAttribute.BASELINE_SHIFT,
+                       new Float(f*fs/100f));
         } else {
-            // TODO
-            f = v.getFloatValue(CSSPrimitiveValue.CSS_NUMBER);
-            // result.put(TextAttribute.TRANSFORM,
-            //           CSSUtilities.convertFloatToTranslation(0f, f));
+            // TODO 
+            t = v.getPrimitiveType();
+            f = UnitProcessor.cssToUserSpace(t,
+                                            v.getFloatValue(t),
+                                            (SVGElement) element,
+                                            UnitProcessor.HORIZONTAL_LENGTH,
+                                            uctx);
+
+            // XXX: HORIZONTAL LENGTH not appropriate for vertical layout!
+
+            result.put(GVTAttributedCharacterIterator.TextAttribute.BASELINE_SHIFT,
+                       new Float(f));
         }
 
         // Unicode-bidi mode
-        // XXX: below supports single override level only,
         // full support requires revision: see comments
         // below regarding 'direction'
 
         v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue
             (CSS_UNICODE_BIDI_PROPERTY);
         s = v.getStringValue();
-        switch (s.charAt(0)) {
-        case 'e':
-            result.put(TextAttribute.BIDI_EMBEDDING,
-                       new Integer(1));
-            break;
-        case 'b':
-            result.put(TextAttribute.BIDI_EMBEDDING,
-                       new Integer(-1));
-            break;
-        case 'n':
-            result.put(TextAttribute.BIDI_EMBEDDING,
+        if (s.charAt(0) == 'n') {
+             result.put(TextAttribute.BIDI_EMBEDDING,
                        new Integer(0));
-        }
+        } else {
 
-        // Text direction
-        // XXX: this needs to coordinate with the unicode-bidi
-        // property, so that when an explicit reversal
-        // occurs, the BIDI_EMBEDDING level is
-        // appropriately incremented or decremented.
-        // Note that direction is implicitly handled by unicode
-        // BiDI algorithm in most cases, this property
-        // is only needed when one wants to override the
-        // normal writing direction for a string/substring.
+            // Text direction
+            // XXX: this needs to coordinate with the unicode-bidi
+            // property, so that when an explicit reversal
+            // occurs, the BIDI_EMBEDDING level is
+            // appropriately incremented or decremented.
+            // Note that direction is implicitly handled by unicode
+            // BiDi algorithm in most cases, this property
+            // is only needed when one wants to override the
+            // normal writing direction for a string/substring.
 
-        v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue
-            (CSS_DIRECTION_PROPERTY);
-        s = v.getStringValue();
-        switch (s.charAt(0)) {
-        case 'l':
-            result.put(TextAttribute.RUN_DIRECTION,
+            v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue
+                (CSS_DIRECTION_PROPERTY);
+            String rs = v.getStringValue();
+            switch (rs.charAt(0)) {
+            case 'l':
+                result.put(TextAttribute.RUN_DIRECTION,
                        TextAttribute.RUN_DIRECTION_LTR);
-            break;
-        case 'r':
-            result.put(TextAttribute.RUN_DIRECTION,
+                break;
+            case 'r':
+                result.put(TextAttribute.RUN_DIRECTION,
                        TextAttribute.RUN_DIRECTION_RTL);
-            break;
-        }
+                switch (s.charAt(0)) {
+		case 'b': // bidi-override
+                    result.put(TextAttribute.BIDI_EMBEDDING,
+                               new Integer(-1));
+                    break;
+                case 'e': // embed
+                    result.put(TextAttribute.BIDI_EMBEDDING,
+                               new Integer(1));
+                    break;
+                }
+                break;
+            }
+       }
 
         // Writing mode
 
@@ -803,12 +820,16 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
         s = v.getStringValue();
         switch (s.charAt(0)) {
         case 'l':
-            result.put(TextAttribute.RUN_DIRECTION,
-                       TextAttribute.RUN_DIRECTION_LTR);
+            result.put(GVTAttributedCharacterIterator.
+                       TextAttribute.WRITING_MODE,
+                       GVTAttributedCharacterIterator.
+                       TextAttribute.WRITING_MODE_LTR);
             break;
         case 'r':
-            result.put(TextAttribute.RUN_DIRECTION,
-                       TextAttribute.RUN_DIRECTION_RTL);
+            result.put(GVTAttributedCharacterIterator.
+                       TextAttribute.WRITING_MODE,
+                       GVTAttributedCharacterIterator.
+                       TextAttribute.WRITING_MODE_RTL);
             break;
         case 't':
             break;
