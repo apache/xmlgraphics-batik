@@ -969,10 +969,12 @@ public class SVGGraphics2D extends AbstractGraphics2D
     public void drawString(String s, float x, float y) {
         if (!textAsShapes) {
 
-            // record that the font is being used to draw this string, this is
-            // so that the SVG Font element will only create glyphs for the
-            // characters that are needed
-            SVGFont.recordFontUsage(s, getFont());
+            if (generatorCtx.svgFont) {
+                // record that the font is being used to draw this string, this is
+                // so that the SVG Font element will only create glyphs for the
+                // characters that are needed
+                SVGFont.recordFontUsage(s, getFont());
+            }
 
             Element text =
                 getDOMFactory().createElementNS(SVG_NAMESPACE_URI, SVG_TEXT_TAG);
