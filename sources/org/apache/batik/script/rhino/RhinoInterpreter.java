@@ -89,7 +89,8 @@ public class RhinoInterpreter implements Interpreter {
     protected RhinoClassLoader rhinoClassLoader;
 
     /**
-     * Default Context for scripts
+     * Default Context for scripts. This is used only for efficiency
+     * reason. 
      */
     protected Context defaultContext;
 
@@ -97,7 +98,7 @@ public class RhinoInterpreter implements Interpreter {
      * Context vector, to make sure we are not 
      * setting the security context too many times
      */
-    protected Vector contexts;
+    protected Vector contexts = new Vector();
 
     /**
      * Build a <code>Interpreter</code> for ECMAScript using Rhino.
@@ -113,8 +114,8 @@ public class RhinoInterpreter implements Interpreter {
         Context.setCachingEnabled(false); // reset the cache
         Context.setCachingEnabled(true);  // enable caching again
         // entering a context
-        defaultContext = new Context(securitySupport);
-        Context ctx = enterContext();
+        defaultContext = enterContext();
+        Context ctx = defaultContext;
             
         try {
 
@@ -140,13 +141,17 @@ public class RhinoInterpreter implements Interpreter {
      * on the context.
      */
     public Context enterContext(){
-        Context ctx = Context.enter(defaultContext);
+        Context ctx = Context.enter();
         if (ctx != defaultContext){
             // Set the SecuritySupport the Context should
             // use.
             if (!contexts.contains(ctx)) {
                 ctx.setSecuritySupport(securitySupport);
                 contexts.add(ctx);
+
+                // Hopefully, we are not switching threads too 
+                // often ....
+                defaultContext = ctx;
             }
         }
         return ctx;
