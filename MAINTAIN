@@ -30,8 +30,8 @@ For creating a distribution the following steps must be done:
       e.g., cvs rtag -d batik-1_1rc3 xml-batik
 
  3) checkout the tagged release:
-      cvs -r <tag> co xml-batik
-      e.g., cvs -r batik-1_1rc3 co xml-batik
+      cvs co -r <tag> xml-batik
+      e.g., cvs co -r batik-1_1rc3 xml-batik
 
  4) run the build script with target "dist-zip"
       build dist-zip 
