@@ -493,10 +493,10 @@ public class JSVGCanvas
                         }
                         bridgeContext.getDocumentLoader().dispose();
                         long t2 = System.currentTimeMillis();
-
+/*
                         System.out.println("---- GVT tree construction ---- " +
                                        (t2 - t1) + " ms");
-
+*/
                         if (Thread.currentThread().isInterrupted()) {
                             throw new InterruptedException();
                         } else {
@@ -1215,8 +1215,8 @@ public class JSVGCanvas
             }
             if (!Thread.currentThread().isInterrupted()) {
                 long t2 = System.currentTimeMillis();
-                System.out.println("----------- Rendering --------- " +
-                               (t2 - t1) + " ms");
+/*                System.out.println("----------- Rendering --------- " +
+                               (t2 - t1) + " ms");*/
                 if (!isLoadPending()) {
                     requestCursor(NORMAL_CURSOR);
                 }

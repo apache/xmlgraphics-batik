@@ -249,10 +249,10 @@ public class DocumentLoadRunnable implements Runnable, DocumentEventSource {
             fireAsyncDocumentEvent(
                 new DocumentLoadingEvent(
                         DocumentLoadingEvent.LOADED, doc), true);
-
+/*
             System.out.println("---- Document loading time ---- " +
                                    (t2 - t1) + " ms");
-
+*/
             String title = doc.getTitle();
 
             checkInterrupt();
