@@ -100,7 +100,7 @@
         </tr>
       </table>
       <p>
-      Shows an confirm dialog with 'OK' and 'Cancel' button.
+      Shows a confirm dialog with 'OK' and 'Cancel' buttons.
       </p>
       <ul>
         <li><em>question</em>: The string to display</li>
@@ -114,8 +114,8 @@
 
       <table>
         <tr>
-          <td>Method <code>prompt</code>(<em>message</em>,
-                                         [<em>defaultValue</em>])</td>
+          <td>Method <code>prompt</code>(<em>message</em>[,
+                                         <em>defaultValue</em>])</td>
         </tr>
       </table>
       <p>
@@ -208,7 +208,7 @@
       </p>
       <ul>
         <li><em>script</em>: A string representing the script to evaluate.</li>
-        <li><em>interval</em>: The timeout in milliseconds.</li>
+        <li><em>timeout</em>: The timeout in milliseconds.</li>
       </ul>
       <p>
       This method returns an object which can be used with
@@ -231,7 +231,7 @@
       </p>
       <ul>
         <li><em>function</em>: A function to call.</li>
-        <li><em>interval</em>: The timeout in milliseconds.</li>
+        <li><em>timeout</em>: The timeout in milliseconds.</li>
       </ul>
       <p>
       This method returns an object which can be used with
@@ -247,7 +247,7 @@
         </tr>
       </table>
       <p>
-      Cancels an timeout that was set by a call to <code>setTimeout</code>.
+      Cancels a timeout that was set by a call to <code>setTimeout</code>.
       </p>
       <ul>
         <li><em>timeoutID</em>: An object returned by a call to

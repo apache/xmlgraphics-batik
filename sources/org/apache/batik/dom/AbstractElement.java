@@ -235,13 +235,7 @@ public abstract class AbstractElement
             attr.setValue(value);
             attributes.setNamedItemNS(attr);
         } else {
-            String s = attr.getValue();
             attr.setValue(value);
-            fireDOMAttrModifiedEvent(qualifiedName,
-                                     attr,
-                                     s,
-                                     value,
-                                     MutationEvent.MODIFICATION);
         }
     }
 
