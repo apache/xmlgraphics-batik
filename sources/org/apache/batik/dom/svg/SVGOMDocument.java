@@ -298,38 +298,12 @@ public class SVGOMDocument
     }
 
     /**
-     * <b>DOM</b>: Implements {@link Document#getElementById(String)}.
+     * Returns true if the given Attr node represents an 'id' 
+     * for this document.
      */
-    public Element getElementById(String elementId) {
-        if (elementId == null || elementId.equals("")) {
-            return null;
-        }
-        Element e = getDocumentElement();
-        if (e == null) {
-            return null;
-        }
-        return getById(elementId, e);
-    }
-
-    /**
-     * An auxiliary method used by getElementById.
-     */
-    protected static Element getById(String id, Node node) {
-        if (node.getNodeType() == Node.ELEMENT_NODE) {
-            Element elt = (Element)node;
-            if (elt.getAttributeNS(null, "id").equals(id)) {
-                return elt;
-            }
-        }
-        for (Node n = node.getFirstChild();
-             n != null;
-             n = n.getNextSibling()) {
-            Element result = getById(id, n);
-            if (result != null) {
-                return result;
-            }
-        }
-        return null;
+    public boolean isID(Attr node) {
+        if (node.getNamespaceURI() != null) return false;
+        return SVG_ID_ATTRIBUTE.equals(node.getNodeName());
     }
 
     // AbstractDocument ///////////////////////////////////////////////

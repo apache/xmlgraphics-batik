@@ -364,6 +364,7 @@
         <test id="samples/tests/spec/scripting/enclosureList.svg" />
         <test id="samples/tests/spec/scripting/enclosureList2.svg" />
         <test id="samples/tests/spec/scripting/fill.svg" />
+        <test id="samples/tests/spec/scripting/getElementById.svg" />
         <test id="samples/tests/spec/scripting/image.svg" />
         <test id="samples/tests/spec/scripting/imageRefUpdate.svg" />
         <test id="samples/tests/spec/scripting/imageraster.svg" />

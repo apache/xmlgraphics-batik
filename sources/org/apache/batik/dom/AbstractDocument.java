@@ -21,7 +21,12 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.WeakHashMap;
 
@@ -29,6 +34,7 @@ import org.apache.batik.dom.events.DocumentEventSupport;
 import org.apache.batik.dom.traversal.TraversalSupport;
 import org.apache.batik.i18n.Localizable;
 import org.apache.batik.i18n.LocalizableSupport;
+import org.apache.batik.util.CleanerThread;
 import org.apache.batik.util.SoftDoublyIndexedTable;
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
@@ -100,6 +106,15 @@ public abstract class AbstractDocument
      * The ElementsByTagNameNS lists.
      */
     protected transient WeakHashMap elementsByTagNamesNS;
+
+    /**
+     * The elementsById lists.
+     * This is keyed on 'id'.  the entry is either
+     * a IdSoftReference to the element or a List of
+     * IdSoftReferences (if there is more than one element
+     * owned by this document with a particular 'id').
+     */
+    protected transient Map elementsById;
 
     /**
      * Creates a new document.
@@ -321,6 +336,182 @@ public abstract class AbstractDocument
         }
         return n;
     }
+
+    public abstract boolean isID(Attr node);
+
+    /**
+     * <b>DOM</b>: Implements {@link
+     * org.w3c.dom.Document#getElementById(String)}.
+     */
+    public Element getElementById(String id) {
+        return getChildElementById(getDocumentElement(), id);
+    }
+
+    /**
+     * Finds an element that is in the same document fragment as
+     * 'requestor' that has 'id'.
+     */
+    public Element getChildElementById(Node requestor, String id) {
+        if ((id == null) || (id.length()==0)) return null;
+        if (elementsById == null) return null;
+
+        Node root = getRoot(requestor);
+
+        Object o = elementsById.get(id);
+        if (o == null) return null;
+        if (o instanceof IdSoftRef) {
+            o = ((IdSoftRef)o).get();
+            if (o == null) {
+                elementsById.remove(id);
+                return null;
+            }
+            Element e = (Element)o;
+            if (getRoot(e) == root)
+                return e;
+            return null;
+        }
+        
+        // Not a IdSoftRef so it must be a list.
+        List l = (List)o;
+        Iterator li = l.iterator();
+        while (li.hasNext()) {
+            IdSoftRef sr = (IdSoftRef)li.next();
+            o = sr.get();
+            if (o == null) {
+                li.remove();
+            } else {
+                Element e = (Element)o;
+                if (getRoot(e) == root)
+                    return e;
+            }
+        }
+        return null;
+    }
+
+    protected Node getRoot(Node n) {
+        Node r = n;
+        while (n != null) {
+            r = n;
+            n = n.getParentNode();
+        }
+        return r;
+    }
+
+    protected class IdSoftRef extends CleanerThread.SoftReferenceCleared {
+        String id;
+        List   list;
+        IdSoftRef(Object o, String id) { 
+            super(o);
+            this.id = id; 
+        }
+        IdSoftRef(Object o, String id, List list) {
+            super(o);
+            this.id = id;
+            this.list = list;
+        }
+        public void setList(List list) {
+            this.list = list;
+        }
+        public void cleared() {
+            if (elementsById == null) return;
+            synchronized (elementsById) {
+                if (list != null) 
+                    list.remove(this);
+                else {
+                  Object o = elementsById.remove(id);
+                  if (o != this) // oops not us!
+                      elementsById.put(id, o);
+                }
+            }
+        }
+    }
+
+    /**
+     * Remove the mapping for <tt>element</tt> to <tt>id</tt>
+     */
+    public void removeIdEntry(Element e, String id) {
+        // Remove old Id mapping if we have one.
+        if (id == null) return;
+        if (elementsById == null) return;
+
+        synchronized (elementsById) {
+            Object o = elementsById.get(id);
+            if (o == null) return;
+
+            if (o instanceof IdSoftRef) {
+                elementsById.remove(id);
+                return;
+            } 
+            
+            List l = (List)o;
+            Iterator li = l.iterator();
+            while (li.hasNext()) {
+                IdSoftRef ip = (IdSoftRef)li.next();
+                o = ip.get();
+                if (o == null) {
+                    li.remove();
+                } else if (e == o) {
+                    li.remove();
+                    break;
+                }
+            }
+            
+            if (l.size() == 0)
+                elementsById.remove(id);
+        }
+    }
+
+    public void addIdEntry(Element e, String id) {
+        if (id == null) return;
+
+        if (elementsById == null) {
+            Map tmp = new HashMap();
+            synchronized (tmp) {
+                elementsById = tmp;
+                elementsById.put(id, new IdSoftRef(e, id));
+            }
+            return;
+        }
+
+        synchronized (elementsById) {
+            // Add new Id mapping.
+            Object o = elementsById.get(id);
+            if (o == null) {
+                elementsById.put(id, new IdSoftRef(e, id));
+                return;
+            }
+            if (o instanceof IdSoftRef) {
+                IdSoftRef ip = (IdSoftRef)o;
+                Object r = ip.get();
+                if (r == null) { // reference is gone so replace it.
+                    elementsById.put(id, new IdSoftRef(e, id));
+                    return;
+                }
+                
+                // Create new List for this id.
+                List l = new ArrayList(4);
+                ip.setList(l);
+                l.add(ip);
+                l.add(new IdSoftRef(e, id, l));
+                elementsById.put(id, l);
+                return;
+            }
+            
+            List l = (List)o;
+            l.add(new IdSoftRef(e, id, l));
+        }
+    }
+
+    public void updateIdEntry(Element e, String oldId, String newId) {
+        if ((oldId == newId) || 
+            ((oldId != null) && (oldId.equals(newId)))) 
+            return;
+
+        removeIdEntry(e, oldId);
+
+        addIdEntry(e, newId);
+    }
+
 
     /**
      * Returns an ElementsByTagName object from the cache, if any.
