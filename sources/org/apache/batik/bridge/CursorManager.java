@@ -10,7 +10,6 @@ package org.apache.batik.bridge;
 
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -19,39 +18,32 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
-import java.awt.image.RenderedImage;
 import java.awt.image.Raster;
-import java.awt.image.WritableRaster;
+import java.awt.image.RenderedImage;
 import java.awt.image.SampleModel;
-import java.util.Map;
+import java.awt.image.WritableRaster;
 import java.util.Hashtable;
-import java.lang.ref.SoftReference;
-
-import org.apache.batik.ext.awt.image.GraphicsUtil;
-import org.apache.batik.ext.awt.image.PadMode;
-import org.apache.batik.ext.awt.image.spi.ImageTagRegistry;
-import org.apache.batik.ext.awt.image.renderable.Filter;
-import org.apache.batik.ext.awt.image.renderable.AffineRable8Bit;
-import org.apache.batik.ext.awt.image.renderable.PadRable8Bit;
-
-import org.apache.batik.gvt.GraphicsNode;
+import java.util.Map;
 
 import org.apache.batik.css.engine.SVGCSSEngine;
 import org.apache.batik.css.engine.value.ListValue;
-import org.apache.batik.css.engine.value.StringValue;
 import org.apache.batik.css.engine.value.Value;
-
-import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.dom.svg.XMLBaseSupport;
-import org.apache.batik.util.SVGConstants;
+import org.apache.batik.dom.util.XLinkSupport;
+import org.apache.batik.ext.awt.image.PadMode;
+import org.apache.batik.ext.awt.image.renderable.AffineRable8Bit;
+import org.apache.batik.ext.awt.image.renderable.Filter;
+import org.apache.batik.ext.awt.image.renderable.PadRable8Bit;
+import org.apache.batik.ext.awt.image.spi.ImageTagRegistry;
+import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.util.ParsedURL;
+import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.SoftReferenceCache;
-
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.css.CSSPrimitiveValue;
 import org.w3c.dom.css.CSSValue;
+import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.svg.SVGPreserveAspectRatio;
 
 

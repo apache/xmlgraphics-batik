@@ -8,23 +8,13 @@
 
 package org.apache.batik.bridge;
 
-import java.util.List;
-
-import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.CanvasGraphicsNode;
 import org.apache.batik.gvt.CompositeGraphicsNode;
+import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.RootGraphicsNode;
-
-import org.apache.batik.css.engine.CSSStylableElement;
-
 import org.apache.batik.util.SVGConstants;
-
-import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-
-import org.w3c.dom.views.DocumentView;
 
 /**
  * This class is responsible for creating a GVT tree using an SVG DOM tree.

@@ -8,8 +8,8 @@
 
 package org.apache.batik.ext.awt.image.renderable;
 
-import java.awt.image.Kernel;
 import java.awt.Point;
+import java.awt.image.Kernel;
 
 import org.apache.batik.ext.awt.image.PadMode;
 

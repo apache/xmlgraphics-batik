@@ -8,10 +8,9 @@
 
 package org.apache.batik.ext.awt;
 
-import java.lang.ref.Reference;
-
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+import java.lang.ref.Reference;
 
 /**
  * This class is here to workaround a javadoc problem. It is only used by

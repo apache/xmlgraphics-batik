@@ -8,11 +8,8 @@
 
 package org.apache.batik.ext.awt.image.rendered;
 
-import java.awt.Rectangle;
 import java.awt.image.ColorModel;
-import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferInt;
-import java.awt.image.DirectColorModel;
 import java.awt.image.SampleModel;
 import java.awt.image.SinglePixelPackedSampleModel;
 import java.awt.image.WritableRaster;

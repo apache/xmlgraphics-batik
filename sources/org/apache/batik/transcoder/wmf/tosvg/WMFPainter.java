@@ -9,24 +9,16 @@ package org.apache.batik.transcoder.wmf.tosvg;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Shape;
-import java.awt.geom.GeneralPath;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Point2D;
 import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.GeneralPath;
+import java.awt.geom.Point2D;
 import java.io.BufferedInputStream;
-import java.io.DataInputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.io.IOException;
-import java.net.URL;
-import java.net.MalformedURLException;
 import java.util.Stack;
 import java.util.Vector;
 

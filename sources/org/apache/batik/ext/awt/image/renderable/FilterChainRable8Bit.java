@@ -8,8 +8,8 @@
 
 package org.apache.batik.ext.awt.image.renderable;
 
-import java.awt.Graphics2D;
 import java.awt.Composite;
+import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.RenderedImage;
 import java.awt.image.renderable.RenderContext;

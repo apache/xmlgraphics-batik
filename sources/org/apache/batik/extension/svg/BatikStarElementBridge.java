@@ -8,18 +8,15 @@
 
 package org.apache.batik.extension.svg;
 
-import java.awt.Shape;
 import java.awt.geom.GeneralPath;
-import java.util.Vector;
 
-import org.apache.batik.parser.ParseException;
-import org.apache.batik.gvt.ShapeNode;
 import org.apache.batik.bridge.Bridge;
-import org.apache.batik.bridge.SVGDecoratedShapeElementBridge;
-import org.apache.batik.bridge.UnitProcessor;
-import org.apache.batik.bridge.BridgeException;
 import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.bridge.BridgeException;
+import org.apache.batik.bridge.SVGDecoratedShapeElementBridge;
 import org.apache.batik.bridge.SVGUtilities;
+import org.apache.batik.bridge.UnitProcessor;
+import org.apache.batik.gvt.ShapeNode;
 import org.w3c.dom.Element;
 
 /**

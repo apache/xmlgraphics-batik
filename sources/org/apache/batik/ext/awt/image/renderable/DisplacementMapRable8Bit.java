@@ -8,22 +8,19 @@
 
 package org.apache.batik.ext.awt.image.renderable;
 
-import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.Shape;
-
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.RenderedImage;
 import java.awt.image.renderable.RenderContext;
-
 import java.util.List;
 
 import org.apache.batik.ext.awt.image.ARGBChannel;
 import org.apache.batik.ext.awt.image.GraphicsUtil;
+import org.apache.batik.ext.awt.image.rendered.AffineRed;
 import org.apache.batik.ext.awt.image.rendered.CachableRed;
 import org.apache.batik.ext.awt.image.rendered.DisplacementMapRed;
-import org.apache.batik.ext.awt.image.rendered.AffineRed;
 
 /**
  * Implements a DisplacementMap operation, which takes pixel values from

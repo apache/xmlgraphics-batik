@@ -7,11 +7,22 @@
  *****************************************************************************/
 package org.apache.batik.svggen;
 
-import org.w3c.dom.*;
-import java.awt.*;
-import javax.swing.border.*;
-import javax.swing.plaf.*;
-import javax.swing.*;
+import java.awt.Component;
+import java.awt.Rectangle;
+
+import javax.swing.AbstractButton;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JMenuBar;
+import javax.swing.JPopupMenu;
+import javax.swing.JProgressBar;
+import javax.swing.JScrollBar;
+import javax.swing.JToolBar;
+import javax.swing.UIManager;
+import javax.swing.border.Border;
+import javax.swing.plaf.ComponentUI;
+
+import org.w3c.dom.Element;
 /**
  * This class offers a way to create an SVG document with grouping
  * that reflects the Swing composite structure (container/components).

@@ -8,11 +8,9 @@
 
 package org.apache.batik.gvt.font;
 
-import java.awt.Font;
-import java.util.Map;
-import java.util.HashMap;
 import java.awt.font.TextAttribute;
 import java.text.AttributedCharacterIterator;
+import java.util.HashMap;
 
 /**
  * A font family class for AWT fonts.

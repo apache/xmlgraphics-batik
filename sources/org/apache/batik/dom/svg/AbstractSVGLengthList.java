@@ -11,15 +11,11 @@ package org.apache.batik.dom.svg;
 import org.apache.batik.parser.LengthListHandler;
 import org.apache.batik.parser.LengthListParser;
 import org.apache.batik.parser.ParseException;
-import org.apache.batik.parser.UnitProcessor;
-
-import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
-
 import org.w3c.dom.svg.SVGException;
-import org.w3c.dom.svg.SVGLengthList;
 import org.w3c.dom.svg.SVGLength;
+import org.w3c.dom.svg.SVGLengthList;
 
 
 /**

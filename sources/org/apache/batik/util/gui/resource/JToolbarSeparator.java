@@ -11,6 +11,7 @@ package org.apache.batik.util.gui.resource;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+
 import javax.swing.JComponent;
 
 /**

@@ -8,20 +8,16 @@
 
 package org.apache.batik.svggen;
 
-import java.awt.image.BufferedImage;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Image;
-
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.awt.image.renderable.RenderableImage;
-
-import java.awt.geom.AffineTransform;
-
 import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
 import java.io.IOException;
-
+import java.io.OutputStream;
 import java.lang.reflect.Method;
 
 import org.w3c.dom.Element;

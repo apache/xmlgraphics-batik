@@ -13,10 +13,8 @@ import java.net.URL;
 
 import org.apache.batik.css.engine.CSSStylableElement;
 import org.apache.batik.css.engine.StyleMap;
-
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.svg.XMLBaseSupport;
-
 import org.w3c.dom.Node;
 import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.CSSValue;

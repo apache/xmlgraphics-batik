@@ -11,31 +11,26 @@ package org.apache.batik.bridge;
 import java.awt.Font;
 import java.awt.Paint;
 import java.awt.Stroke;
-import java.awt.font.TextAttribute;
 import java.awt.font.FontRenderContext;
-import java.awt.font.LineMetrics;
-import java.awt.font.GlyphVector;
+import java.awt.font.TextAttribute;
+import java.text.AttributedCharacterIterator;
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
-import java.text.AttributedCharacterIterator;
-import java.util.Vector;
 import java.util.StringTokenizer;
+import java.util.Vector;
 
-import org.apache.batik.gvt.text.ArabicTextHandler;
-import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
+import org.apache.batik.css.engine.SVGCSSEngine;
+import org.apache.batik.css.engine.value.Value;
+import org.apache.batik.dom.util.XMLSupport;
 import org.apache.batik.gvt.font.GVTFont;
 import org.apache.batik.gvt.font.GVTGlyphVector;
-import org.apache.batik.gvt.font.SVGGVTGlyphVector;
 import org.apache.batik.gvt.font.GVTLineMetrics;
 import org.apache.batik.gvt.font.Glyph;
 import org.apache.batik.gvt.font.Kern;
 import org.apache.batik.gvt.font.KerningTable;
+import org.apache.batik.gvt.font.SVGGVTGlyphVector;
+import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
 import org.apache.batik.util.SVGConstants;
-import org.apache.batik.dom.util.XMLSupport;
-
-import org.apache.batik.css.engine.SVGCSSEngine;
-import org.apache.batik.css.engine.value.Value;
-
 import org.w3c.dom.Element;
 
 /**

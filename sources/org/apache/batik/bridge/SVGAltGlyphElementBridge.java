@@ -8,20 +8,19 @@
 
 package org.apache.batik.bridge;
 
+import java.awt.Paint;
+import java.awt.Stroke;
+import java.awt.font.TextAttribute;
+import java.text.AttributedCharacterIterator;
+
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.svg.XMLBaseSupport;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.gvt.font.Glyph;
 import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
-
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import java.text.AttributedCharacterIterator;
-import java.awt.font.TextAttribute;
-import java.awt.Paint;
-import java.awt.Stroke;
 
 
 /**

@@ -10,8 +10,8 @@ package org.apache.batik.extension.svg;
 
 import java.awt.Color;
 import java.awt.Paint;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.batik.bridge.AbstractSVGBridge;
 import org.apache.batik.bridge.BridgeContext;
@@ -20,24 +20,18 @@ import org.apache.batik.bridge.CSSUtilities;
 import org.apache.batik.bridge.ErrorConstants;
 import org.apache.batik.bridge.PaintBridge;
 import org.apache.batik.bridge.PaintServer;
-
 import org.apache.batik.css.engine.CSSEngine;
 import org.apache.batik.css.engine.CSSStylableElement;
 import org.apache.batik.css.engine.StyleMap;
 import org.apache.batik.css.engine.value.Value;
 import org.apache.batik.css.engine.value.svg.ICCColor;
-
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.XLinkSupport;
-
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.util.CSSConstants;
 import org.apache.batik.util.ParsedURL;
-
-import org.w3c.dom.css.CSSPrimitiveValue;
-import org.w3c.dom.css.CSSValue;
 import org.w3c.dom.Element;
-import org.w3c.dom.svg.SVGColor;
+import org.w3c.dom.css.CSSValue;
 
 /**
  * Bridge class for a regular polygon element.

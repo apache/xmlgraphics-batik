@@ -10,11 +10,8 @@ package org.apache.batik.css.engine.value;
 
 import java.net.URL;
 
-import org.w3c.css.sac.LexicalUnit;
-
-import org.w3c.dom.DOMException;
-
 import org.apache.batik.util.ParsedURL;
+import org.w3c.dom.DOMException;
 
 /**
  * This class provides a base implementation for the value factories.

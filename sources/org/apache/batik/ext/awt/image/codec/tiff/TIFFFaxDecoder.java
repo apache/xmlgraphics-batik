@@ -8,7 +8,6 @@
 
 package org.apache.batik.ext.awt.image.codec.tiff;
 
-import java.awt.image.WritableRaster;
 
 class TIFFFaxDecoder {
 

@@ -9,7 +9,6 @@
 package org.apache.batik.apps.svgbrowser;
 
 import java.awt.geom.AffineTransform;
-
 import java.util.ArrayList;
 import java.util.List;
 

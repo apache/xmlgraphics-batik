@@ -10,7 +10,7 @@ package org.apache.batik.util.resources;
 
 import java.util.Locale;
 import java.util.MissingResourceException;
-import org.apache.batik.i18n.Localizable;
+
 import org.apache.batik.i18n.LocalizableSupport;
 
 /**

@@ -8,12 +8,12 @@
 
 package org.apache.batik.ext.awt.geom;
 
-import java.awt.Shape;
 import java.awt.Rectangle;
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
+import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.PathIterator;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 
 /**
  * This class wraps a normal path into an extended path.

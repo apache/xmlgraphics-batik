@@ -8,10 +8,8 @@
 
 package org.apache.batik.svggen;
 
-import java.awt.geom.*;
-import java.awt.Shape;
+import java.awt.geom.Line2D;
 
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**

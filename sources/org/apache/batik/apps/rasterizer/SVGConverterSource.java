@@ -8,8 +8,8 @@
 
 package org.apache.batik.apps.rasterizer;
 
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Interface used to handle both Files and URLs in the 

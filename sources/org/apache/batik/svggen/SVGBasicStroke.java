@@ -8,8 +8,6 @@
 
 package org.apache.batik.svggen;
 
-import org.w3c.dom.*;
-import java.util.*;
 import java.awt.BasicStroke;
 
 import org.apache.batik.ext.awt.g2d.GraphicContext;

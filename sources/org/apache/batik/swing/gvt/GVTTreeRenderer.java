@@ -10,19 +10,15 @@ package org.apache.batik.swing.gvt;
 
 import java.awt.EventQueue;
 import java.awt.Shape;
-
 import java.awt.geom.AffineTransform;
-
 import java.awt.image.BufferedImage;
-
 import java.lang.reflect.InvocationTargetException;
-
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.batik.gvt.renderer.ImageRenderer;
 import org.apache.batik.bridge.InterruptedBridgeException;
+import org.apache.batik.gvt.renderer.ImageRenderer;
 
 /**
  * This class represents an object which renders asynchroneaously

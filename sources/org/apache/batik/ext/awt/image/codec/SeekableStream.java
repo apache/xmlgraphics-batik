@@ -11,8 +11,8 @@ package org.apache.batik.ext.awt.image.codec;
 import java.io.DataInput;
 import java.io.DataInputStream;
 import java.io.EOFException;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * An abstract subclass of <code>java.io.InputStream</code> that allows seeking

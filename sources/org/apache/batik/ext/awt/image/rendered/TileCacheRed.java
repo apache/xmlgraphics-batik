@@ -9,9 +9,9 @@
 package org.apache.batik.ext.awt.image.rendered;
 
 import java.awt.Rectangle;
-import java.awt.image.WritableRaster;
 import java.awt.image.ColorModel;
 import java.awt.image.SampleModel;
+import java.awt.image.WritableRaster;
 
 /**
  * This implementation of RenderedImage only serves to put the tiles

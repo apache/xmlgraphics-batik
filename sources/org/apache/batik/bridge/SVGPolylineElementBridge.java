@@ -9,17 +9,13 @@
 package org.apache.batik.bridge;
 
 import java.awt.Shape;
-import java.io.StringReader;
-
 import java.awt.geom.GeneralPath;
 
 import org.apache.batik.gvt.ShapeNode;
 import org.apache.batik.parser.AWTPolylineProducer;
 import org.apache.batik.parser.ParseException;
 import org.apache.batik.parser.PointsParser;
-
 import org.w3c.dom.Element;
-
 import org.w3c.dom.events.MutationEvent;
 
 /**

@@ -8,11 +8,9 @@
 
 package org.apache.batik.svggen;
 
-import java.awt.image.*;
-import java.awt.geom.*;
-import java.awt.*;
+import java.awt.Rectangle;
+import java.awt.image.BufferedImageOp;
 
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**

@@ -8,15 +8,10 @@
 
 package org.apache.batik.svggen;
 
-import java.awt.Paint;
 import java.awt.Composite;
+import java.awt.Paint;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImageOp;
-import java.util.Map;
-
-import org.w3c.dom.Node;
-import org.w3c.dom.Element;
-import org.w3c.dom.Document;
 
 /**
  * The ExtensionHandler interface allows the user to handle

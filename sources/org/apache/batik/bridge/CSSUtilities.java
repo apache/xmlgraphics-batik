@@ -9,59 +9,33 @@
 package org.apache.batik.bridge;
 
 import java.awt.AlphaComposite;
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Cursor;
-import java.awt.Paint;
 import java.awt.RenderingHints;
-import java.awt.Shape;
-import java.awt.Stroke;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Rectangle2D;
-
-import java.util.Map;
-import java.util.HashMap;
 
 import org.apache.batik.css.engine.CSSEngine;
 import org.apache.batik.css.engine.CSSStylableElement;
 import org.apache.batik.css.engine.SVGCSSEngine;
 import org.apache.batik.css.engine.value.ListValue;
-import org.apache.batik.css.engine.value.StringValue;
 import org.apache.batik.css.engine.value.Value;
 import org.apache.batik.css.engine.value.svg.ICCColor;
-
 import org.apache.batik.dom.svg.SVGOMDocument;
-
 import org.apache.batik.ext.awt.MultipleGradientPaint;
-import org.apache.batik.ext.awt.color.ICCColorSpaceExt;
 import org.apache.batik.ext.awt.image.renderable.ClipRable;
 import org.apache.batik.ext.awt.image.renderable.Filter;
-
 import org.apache.batik.gvt.CompositeGraphicsNode;
-import org.apache.batik.gvt.CompositeShapePainter;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.Mask;
-import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.CSSConstants;
-import org.apache.batik.util.XMLConstants;
 import org.apache.batik.util.ParsedURL;
-
+import org.apache.batik.util.XMLConstants;
 import org.w3c.dom.Attr;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.css.CSSPrimitiveValue;
-import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.CSSValue;
-import org.w3c.dom.css.CSSValueList;
-import org.w3c.dom.css.RGBColor;
-import org.w3c.dom.css.ViewCSS;
-import org.w3c.dom.css.Rect;
-import org.w3c.dom.svg.SVGICCColor;
-import org.w3c.dom.svg.SVGColor;
-import org.w3c.dom.svg.SVGNumberList;
-import org.w3c.dom.svg.SVGPaint;
 
 /**
  * A collection of utility method involving CSS property. The listed

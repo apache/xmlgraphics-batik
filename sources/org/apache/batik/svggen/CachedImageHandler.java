@@ -8,12 +8,6 @@
 
 package org.apache.batik.svggen;
 
-import java.awt.Image;
-import java.awt.image.RenderedImage;
-import java.awt.image.renderable.RenderableImage;
-import java.awt.geom.AffineTransform;
-
-import org.w3c.dom.Element;
 
 /**
  * Extends the default ImageHandler interface with calls to

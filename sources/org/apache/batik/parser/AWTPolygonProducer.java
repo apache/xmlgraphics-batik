@@ -9,7 +9,6 @@
 package org.apache.batik.parser;
 
 import java.awt.Shape;
-import java.awt.geom.GeneralPath;
 import java.io.IOException;
 import java.io.Reader;
 

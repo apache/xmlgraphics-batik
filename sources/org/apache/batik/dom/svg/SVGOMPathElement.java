@@ -9,29 +9,28 @@
 package org.apache.batik.dom.svg;
 
 import org.apache.batik.dom.AbstractDocument;
-
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedNumber;
-import org.w3c.dom.svg.SVGPathSeg;
-import org.w3c.dom.svg.SVGPathSegList;
 import org.w3c.dom.svg.SVGPathElement;
+import org.w3c.dom.svg.SVGPathSeg;
 import org.w3c.dom.svg.SVGPathSegArcAbs;
 import org.w3c.dom.svg.SVGPathSegArcRel;
 import org.w3c.dom.svg.SVGPathSegClosePath;
 import org.w3c.dom.svg.SVGPathSegCurvetoCubicAbs;
 import org.w3c.dom.svg.SVGPathSegCurvetoCubicRel;
-import org.w3c.dom.svg.SVGPathSegCurvetoQuadraticAbs;
-import org.w3c.dom.svg.SVGPathSegCurvetoQuadraticRel;
 import org.w3c.dom.svg.SVGPathSegCurvetoCubicSmoothAbs;
 import org.w3c.dom.svg.SVGPathSegCurvetoCubicSmoothRel;
+import org.w3c.dom.svg.SVGPathSegCurvetoQuadraticAbs;
+import org.w3c.dom.svg.SVGPathSegCurvetoQuadraticRel;
 import org.w3c.dom.svg.SVGPathSegCurvetoQuadraticSmoothAbs;
 import org.w3c.dom.svg.SVGPathSegCurvetoQuadraticSmoothRel;
 import org.w3c.dom.svg.SVGPathSegLinetoAbs;
-import org.w3c.dom.svg.SVGPathSegLinetoRel;
 import org.w3c.dom.svg.SVGPathSegLinetoHorizontalAbs;
 import org.w3c.dom.svg.SVGPathSegLinetoHorizontalRel;
+import org.w3c.dom.svg.SVGPathSegLinetoRel;
 import org.w3c.dom.svg.SVGPathSegLinetoVerticalAbs;
 import org.w3c.dom.svg.SVGPathSegLinetoVerticalRel;
+import org.w3c.dom.svg.SVGPathSegList;
 import org.w3c.dom.svg.SVGPathSegMovetoAbs;
 import org.w3c.dom.svg.SVGPathSegMovetoRel;
 import org.w3c.dom.svg.SVGPoint;

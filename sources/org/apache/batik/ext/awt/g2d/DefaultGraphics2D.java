@@ -9,14 +9,20 @@
 package org.apache.batik.ext.awt.g2d;
 
 
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.GraphicsConfiguration;
+import java.awt.Image;
+import java.awt.Shape;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
+import java.awt.image.ImageObserver;
+import java.awt.image.RenderedImage;
+import java.awt.image.renderable.RenderableImage;
 import java.text.AttributedCharacterIterator;
-import java.awt.*;
-import java.awt.image.*;
-import java.awt.font.*;
-import java.awt.geom.*;
-import java.awt.image.renderable.*;
-
-import java.util.Map;
 
 /**
  * This concrete implementation of <tt>AbstractGraphics2D</tt> is a 

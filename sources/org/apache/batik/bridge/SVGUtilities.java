@@ -12,43 +12,27 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.io.IOException;
-import java.io.StringReader;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
 
 import org.apache.batik.css.engine.CSSEngine;
-
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.dom.util.XMLSupport;
-
-import org.apache.batik.gvt.GraphicsNode;
-
-import org.apache.batik.parser.AWTTransformProducer;
-import org.apache.batik.parser.LengthHandler;
-import org.apache.batik.parser.LengthParser;
-import org.apache.batik.parser.ParseException;
-import org.apache.batik.parser.PreserveAspectRatioHandler;
-import org.apache.batik.parser.PreserveAspectRatioParser;
-import org.apache.batik.parser.PreserveAspectRatioParser;
-
 import org.apache.batik.extension.svg.BatikExtConstants;
-
-import org.apache.batik.util.SVGConstants;
+import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.parser.AWTTransformProducer;
+import org.apache.batik.parser.ParseException;
 import org.apache.batik.util.ParsedURL;
-
+import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.svg.SVGElement;
 import org.w3c.dom.svg.SVGLangSpace;
-import org.w3c.dom.svg.SVGLength;
 import org.w3c.dom.svg.SVGNumberList;
-import org.w3c.dom.svg.SVGPreserveAspectRatio;
 
 /**
  * A collection of utility methods for SVG.

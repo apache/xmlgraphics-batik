@@ -8,10 +8,9 @@
 
 package org.apache.batik.util.io;
 
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
-
 import java.util.HashMap;
 import java.util.Map;
 

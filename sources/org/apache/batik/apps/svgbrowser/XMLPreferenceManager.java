@@ -10,28 +10,25 @@ package org.apache.batik.apps.svgbrowser;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 
 import org.apache.batik.dom.GenericDOMImplementation;
-import org.apache.batik.dom.util.DocumentFactory;
 import org.apache.batik.dom.util.DOMUtilities;
+import org.apache.batik.dom.util.DocumentFactory;
 import org.apache.batik.dom.util.SAXDocumentFactory;
 import org.apache.batik.util.PreferenceManager;
-
+import org.apache.batik.util.XMLResourceDescriptor;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-
-import org.apache.batik.util.XMLResourceDescriptor;
 
 /**
  * An extension of {@link PreferenceManager} which store the preference

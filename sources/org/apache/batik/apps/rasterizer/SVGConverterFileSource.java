@@ -9,10 +9,9 @@
 package org.apache.batik.apps.rasterizer;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
-
 import java.net.MalformedURLException;
 
 /**

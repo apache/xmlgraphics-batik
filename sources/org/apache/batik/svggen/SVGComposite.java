@@ -8,13 +8,10 @@
 
 package org.apache.batik.svggen;
 
-import java.awt.geom.*;
-import java.awt.Composite;
 import java.awt.AlphaComposite;
-import java.util.*;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import java.awt.Composite;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.apache.batik.ext.awt.g2d.GraphicContext;
 

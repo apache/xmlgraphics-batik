@@ -8,12 +8,22 @@
 
 package org.apache.batik.ext.awt.image.rendered;
 
-import java.awt.RenderingHints;
 import java.awt.Rectangle;
-import java.awt.geom.Rectangle2D;
-import java.awt.geom.Point2D;
+import java.awt.RenderingHints;
 import java.awt.color.ColorSpace;
-import java.awt.image.*;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
+import java.awt.image.BufferedImageOp;
+import java.awt.image.ColorModel;
+import java.awt.image.DataBuffer;
+import java.awt.image.DataBufferInt;
+import java.awt.image.DirectColorModel;
+import java.awt.image.Raster;
+import java.awt.image.RasterOp;
+import java.awt.image.SampleModel;
+import java.awt.image.SinglePixelPackedSampleModel;
+import java.awt.image.WritableRaster;
 
 import org.apache.batik.ext.awt.image.GraphicsUtil;
 

@@ -9,18 +9,13 @@
 package org.apache.batik.transcoder;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.util.Map;
 
 import org.apache.batik.dom.util.DocumentFactory;
 import org.apache.batik.dom.util.SAXDocumentFactory;
 import org.apache.batik.transcoder.keys.BooleanKey;
 import org.apache.batik.transcoder.keys.DOMImplementationKey;
 import org.apache.batik.transcoder.keys.StringKey;
-
 import org.apache.batik.util.XMLResourceDescriptor;
-
 import org.w3c.dom.DOMException;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;

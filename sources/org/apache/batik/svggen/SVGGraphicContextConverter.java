@@ -8,9 +8,10 @@
 
 package org.apache.batik.svggen;
 
-import java.util.*;
-
-import org.w3c.dom.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.batik.ext.awt.g2d.GraphicContext;
 import org.apache.batik.ext.awt.g2d.TransformStackElement;

@@ -8,12 +8,10 @@
 
 package org.apache.batik.swing.svg;
 
-import org.w3c.dom.Element;
-
-import org.apache.batik.bridge.ScriptSecurity;
 import org.apache.batik.bridge.ExternalResourceSecurity;
-
+import org.apache.batik.bridge.ScriptSecurity;
 import org.apache.batik.util.ParsedURL;
+import org.w3c.dom.Element;
 
 /**
  * This interface must be implemented to provide client services to

@@ -8,32 +8,22 @@
 
 package org.apache.batik.ext.awt.image.rendered;
 
-import java.util.List;
-import java.util.ArrayList;
-
-import java.awt.Point;
 import java.awt.Rectangle;
-
-import java.awt.Color;
-import java.awt.AlphaComposite;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.awt.Transparency;
-
 import java.awt.color.ColorSpace;
-
-import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.ComponentColorModel;
+import java.awt.image.ComponentSampleModel;
 import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferByte;
 import java.awt.image.DataBufferInt;
+import java.awt.image.PixelInterleavedSampleModel;
 import java.awt.image.Raster;
 import java.awt.image.SampleModel;
-import java.awt.image.ColorModel;
-import java.awt.image.ComponentColorModel;
-import java.awt.image.PixelInterleavedSampleModel;
 import java.awt.image.SinglePixelPackedSampleModel;
-import java.awt.image.ComponentSampleModel;
 import java.awt.image.WritableRaster;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**

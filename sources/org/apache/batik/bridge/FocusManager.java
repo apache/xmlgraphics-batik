@@ -10,13 +10,12 @@ package org.apache.batik.bridge;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
 import org.w3c.dom.events.DocumentEvent;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
-import org.w3c.dom.events.UIEvent;
 import org.w3c.dom.events.MouseEvent;
+import org.w3c.dom.events.UIEvent;
 
 /**
  * A class that manages focus on elements.

@@ -8,10 +8,13 @@
 
 package org.apache.batik.svggen;
 
-import java.awt.geom.*;
-import java.awt.*;
+import java.awt.Polygon;
+import java.awt.Shape;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Line2D;
+import java.awt.geom.Rectangle2D;
+import java.awt.geom.RoundRectangle2D;
 
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**

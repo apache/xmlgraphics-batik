@@ -8,10 +8,20 @@
 
 package org.apache.batik.svggen;
 
-import org.apache.batik.util.SVGConstants;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 
-import java.io.*;
-import org.w3c.dom.*;
+import org.apache.batik.util.SVGConstants;
+import org.w3c.dom.Attr;
+import org.w3c.dom.CDATASection;
+import org.w3c.dom.Comment;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
 
 /**
  * Writes a Node as text output. Package access. This is

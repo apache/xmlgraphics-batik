@@ -13,7 +13,6 @@ import java.awt.geom.AffineTransform;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.dom.util.XMLSupport;
-
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -37,14 +36,12 @@ import org.w3c.dom.svg.SVGMatrix;
 import org.w3c.dom.svg.SVGNumber;
 import org.w3c.dom.svg.SVGPoint;
 import org.w3c.dom.svg.SVGRect;
-import org.w3c.dom.svg.SVGStringList;
 import org.w3c.dom.svg.SVGSVGElement;
+import org.w3c.dom.svg.SVGStringList;
 import org.w3c.dom.svg.SVGTransform;
 import org.w3c.dom.svg.SVGViewSpec;
 import org.w3c.dom.views.AbstractView;
 import org.w3c.dom.views.DocumentView;
-
-import java.awt.geom.AffineTransform;
 
 /**
  * This class implements {@link org.w3c.dom.svg.SVGSVGElement}.

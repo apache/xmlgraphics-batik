@@ -18,9 +18,7 @@ import org.apache.batik.css.engine.SVGCSSEngine;
 import org.apache.batik.css.engine.value.ListValue;
 import org.apache.batik.css.engine.value.Value;
 import org.apache.batik.css.engine.value.svg.ICCColor;
-
 import org.apache.batik.ext.awt.color.ICCColorSpaceExt;
-
 import org.apache.batik.gvt.CompositeShapePainter;
 import org.apache.batik.gvt.FillShapePainter;
 import org.apache.batik.gvt.GraphicsNode;
@@ -29,21 +27,11 @@ import org.apache.batik.gvt.MarkerShapePainter;
 import org.apache.batik.gvt.ShapeNode;
 import org.apache.batik.gvt.ShapePainter;
 import org.apache.batik.gvt.StrokeShapePainter;
-
 import org.apache.batik.util.CSSConstants;
 import org.apache.batik.util.SVGConstants;
-
 import org.w3c.dom.Element;
-
 import org.w3c.dom.css.CSSPrimitiveValue;
-import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.CSSValue;
-import org.w3c.dom.css.CSSValueList;
-import org.w3c.dom.css.RGBColor;
-
-import org.w3c.dom.svg.SVGColor;
-import org.w3c.dom.svg.SVGICCColor;
-import org.w3c.dom.svg.SVGPaint;
 
 /**
  * A collection of utility methods to deliver <tt>java.awt.Paint</tt>,

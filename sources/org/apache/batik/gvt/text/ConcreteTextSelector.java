@@ -8,31 +8,25 @@
 
 package org.apache.batik.gvt.text;
 
-import java.awt.Toolkit;
 import java.awt.Shape;
-import java.awt.Graphics2D;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Point2D;
-import java.awt.datatransfer.StringSelection;
+import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
+import java.awt.geom.Point2D;
 import java.text.CharacterIterator;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import org.apache.batik.gvt.TextNode;
-import org.apache.batik.gvt.Selector;
-import org.apache.batik.gvt.Selectable;
 import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.RootGraphicsNode;
-import org.apache.batik.gvt.text.Mark;
+import org.apache.batik.gvt.Selectable;
+import org.apache.batik.gvt.Selector;
+import org.apache.batik.gvt.TextNode;
 import org.apache.batik.gvt.event.GraphicsNodeChangeEvent;
-import org.apache.batik.gvt.event.GraphicsNodeMouseEvent;
-import org.apache.batik.gvt.event.GraphicsNodeInputEvent;
 import org.apache.batik.gvt.event.GraphicsNodeEvent;
 import org.apache.batik.gvt.event.GraphicsNodeKeyEvent;
-import org.apache.batik.gvt.event.GraphicsNodeMouseListener;
+import org.apache.batik.gvt.event.GraphicsNodeMouseEvent;
 import org.apache.batik.gvt.event.SelectionEvent;
 import org.apache.batik.gvt.event.SelectionListener;
 

@@ -11,11 +11,8 @@ package org.apache.batik.dom.svg;
 import org.apache.batik.parser.DefaultPathHandler;
 import org.apache.batik.parser.ParseException;
 import org.apache.batik.parser.PathParser;
-
 import org.w3c.dom.DOMException;
-
 import org.w3c.dom.svg.SVGException;
-import org.w3c.dom.svg.SVGPathSegList;
 import org.w3c.dom.svg.SVGPathSeg;
 import org.w3c.dom.svg.SVGPathSegArcAbs;
 import org.w3c.dom.svg.SVGPathSegArcRel; 
@@ -34,6 +31,7 @@ import org.w3c.dom.svg.SVGPathSegLinetoHorizontalRel;
 import org.w3c.dom.svg.SVGPathSegLinetoRel;
 import org.w3c.dom.svg.SVGPathSegLinetoVerticalAbs;
 import org.w3c.dom.svg.SVGPathSegLinetoVerticalRel; 
+import org.w3c.dom.svg.SVGPathSegList;
 import org.w3c.dom.svg.SVGPathSegMovetoAbs;
 import org.w3c.dom.svg.SVGPathSegMovetoRel;
 

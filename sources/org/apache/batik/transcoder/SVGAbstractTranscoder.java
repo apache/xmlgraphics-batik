@@ -12,41 +12,35 @@ import java.awt.Dimension;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Rectangle2D;
-
 import java.util.StringTokenizer;
 import java.util.Vector;
-
-import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
-import org.apache.batik.dom.svg.ExtensibleSVGDOMImplementation;
-import org.apache.batik.dom.svg.SVGOMDocument;
-import org.apache.batik.dom.util.DocumentFactory;
-
-import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.CanvasGraphicsNode;
-import org.apache.batik.gvt.CompositeGraphicsNode;
 
 import org.apache.batik.bridge.BaseScriptingEnvironment;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeException;
-import org.apache.batik.bridge.NoLoadScriptSecurity;
 import org.apache.batik.bridge.DefaultScriptSecurity;
-import org.apache.batik.bridge.RelaxedScriptSecurity;
 import org.apache.batik.bridge.GVTBuilder;
+import org.apache.batik.bridge.NoLoadScriptSecurity;
+import org.apache.batik.bridge.RelaxedScriptSecurity;
 import org.apache.batik.bridge.ScriptSecurity;
 import org.apache.batik.bridge.UserAgent;
 import org.apache.batik.bridge.UserAgentAdapter;
 import org.apache.batik.bridge.ViewBox;
-
+import org.apache.batik.dom.svg.ExtensibleSVGDOMImplementation;
+import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
+import org.apache.batik.dom.svg.SVGOMDocument;
+import org.apache.batik.dom.util.DocumentFactory;
+import org.apache.batik.gvt.CanvasGraphicsNode;
+import org.apache.batik.gvt.CompositeGraphicsNode;
+import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.transcoder.image.resources.Messages;
 import org.apache.batik.transcoder.keys.BooleanKey;
 import org.apache.batik.transcoder.keys.FloatKey;
 import org.apache.batik.transcoder.keys.LengthKey;
 import org.apache.batik.transcoder.keys.Rectangle2DKey;
 import org.apache.batik.transcoder.keys.StringKey;
-import org.apache.batik.transcoder.image.resources.Messages;
-
-import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.ParsedURL;
-
+import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.svg.SVGSVGElement;

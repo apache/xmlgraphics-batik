@@ -8,20 +8,9 @@
 
 package org.apache.batik.bridge;
 
-import java.io.StringReader;
-
-import org.apache.batik.parser.LengthHandler;
-import org.apache.batik.parser.LengthParser;
-import org.apache.batik.parser.ParseException;
-// import org.apache.batik.parser.UnitProcessor;
-
-import org.apache.batik.util.CSSConstants;
-
 import org.apache.batik.css.engine.SVGCSSEngine;
-import org.apache.batik.css.engine.value.Value;
-
+import org.apache.batik.parser.ParseException;
 import org.w3c.dom.Element;
-import org.w3c.dom.svg.SVGLength;
 
 /**
  * This class provides methods to convert SVG length and coordinate to

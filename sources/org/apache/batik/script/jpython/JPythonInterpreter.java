@@ -8,13 +8,14 @@
 
 package org.apache.batik.script.jpython;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.Writer;
 import java.util.Locale;
 
-import org.apache.batik.script.Interpreter;
 import org.apache.batik.script.InterpreterException;
-
-import org.python.util.*;
+import org.python.util.PythonInterpreter;
+;
 
 /**
  * A simple implementation of <code>Interpreter</code> interface to use

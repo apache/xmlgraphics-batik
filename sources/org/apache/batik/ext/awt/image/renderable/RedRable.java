@@ -8,19 +8,17 @@
 
 package org.apache.batik.ext.awt.image.renderable;
 
-import java.awt.Shape;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.RenderedImage;
 import java.awt.image.renderable.RenderContext;
 
-import org.apache.batik.ext.awt.image.PadMode;
-import org.apache.batik.ext.awt.image.rendered.CachableRed;
 import org.apache.batik.ext.awt.image.rendered.AffineRed;
+import org.apache.batik.ext.awt.image.rendered.CachableRed;
 import org.apache.batik.ext.awt.image.rendered.TranslateRed;
-import org.apache.batik.ext.awt.image.rendered.PadRed;
 
 /**
  * RasterRable This is used to wrap a Rendered Image back into the

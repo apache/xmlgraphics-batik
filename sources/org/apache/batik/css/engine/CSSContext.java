@@ -9,9 +9,7 @@
 package org.apache.batik.css.engine;
 
 import org.apache.batik.css.engine.value.Value;
-
 import org.apache.batik.util.ParsedURL;
-
 import org.w3c.dom.Element;
 
 /**

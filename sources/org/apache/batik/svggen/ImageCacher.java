@@ -8,16 +8,21 @@
 
 package org.apache.batik.svggen;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.ListIterator;
-import java.util.Arrays;
-import java.util.zip.Checksum;
 import java.util.zip.Adler32;
-import java.awt.image.RenderedImage;
+import java.util.zip.Checksum;
 
-import org.w3c.dom.*;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 
 /**

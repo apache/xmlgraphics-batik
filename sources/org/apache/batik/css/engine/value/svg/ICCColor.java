@@ -9,7 +9,6 @@
 package org.apache.batik.css.engine.value.svg;
 
 import org.apache.batik.css.engine.value.AbstractValue;
-
 import org.w3c.dom.DOMException;
 import org.w3c.dom.css.CSSValue;
 

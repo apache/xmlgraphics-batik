@@ -20,13 +20,8 @@ import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.ext.awt.MultipleGradientPaint;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.util.ParsedURL;
-
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.events.Event;
-import org.w3c.dom.events.EventListener;
-import org.w3c.dom.events.EventTarget;
-import org.w3c.dom.events.MutationEvent;
 
 /**
  * Bridge class for vending gradients.

@@ -9,9 +9,8 @@
 package org.apache.batik.svggen;
 
 import java.awt.image.BufferedImage;
-
-import java.io.OutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 import org.apache.batik.ext.awt.image.codec.ImageEncoder;
 import org.apache.batik.ext.awt.image.codec.PNGImageEncoder;

@@ -9,6 +9,7 @@
 package org.apache.batik.gvt.event;
 
 import java.awt.event.InputEvent;
+
 import org.apache.batik.gvt.GraphicsNode;
 
 /**

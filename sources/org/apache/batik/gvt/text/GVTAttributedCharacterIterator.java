@@ -10,8 +10,8 @@ package org.apache.batik.gvt.text;
 
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
-import java.util.Set;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * GVTAttributedCharacterIterator

@@ -9,7 +9,6 @@
 package org.apache.batik.svggen;
 
 
-import org.w3c.dom.Document;
 
 /**
  *

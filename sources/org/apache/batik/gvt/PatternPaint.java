@@ -12,23 +12,14 @@ import java.awt.Paint;
 import java.awt.PaintContext;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
-import java.awt.Shape;
-
 import java.awt.geom.AffineTransform;
-import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Rectangle2D;
-
 import java.awt.image.ColorModel;
 import java.awt.image.Raster;
-
-import org.apache.batik.gvt.filter.GraphicsNodeRable8Bit;
-import org.apache.batik.gvt.filter.GraphicsNodeRable;
 
 import org.apache.batik.ext.awt.image.PadMode;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.renderable.PadRable8Bit;
-import org.apache.batik.ext.awt.image.renderable.AffineRable8Bit;
-import org.apache.batik.ext.awt.image.renderable.AffineRable;
 
 /**
  * The PatternPaint class provides a way to fill a Shape with a a pattern

@@ -8,7 +8,8 @@
 
 package org.apache.batik.svggen.font.table;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 
 /**
  *

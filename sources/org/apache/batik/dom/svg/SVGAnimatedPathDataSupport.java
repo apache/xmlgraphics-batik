@@ -9,7 +9,6 @@
 package org.apache.batik.dom.svg;
 
 import org.apache.batik.util.SVGConstants;
-
 import org.w3c.dom.svg.SVGPathSegList;
 
 /**

@@ -10,8 +10,6 @@ package org.apache.batik.css.engine;
 
 import org.apache.batik.css.engine.value.Value;
 
-import org.w3c.css.sac.SelectorList;
-
 /**
  * This class represents a collection of CSS property values.
  *

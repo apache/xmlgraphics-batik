@@ -8,10 +8,9 @@
 
 package org.apache.batik.apps.svgbrowser;
 
-import javax.swing.filechooser.FileFilter;
-
 import java.io.File;
-import java.net.MalformedURLException;
+
+import javax.swing.filechooser.FileFilter;
 
 /**
  * This class filters file for a given <tt>SquiggleInputHandler</tt>

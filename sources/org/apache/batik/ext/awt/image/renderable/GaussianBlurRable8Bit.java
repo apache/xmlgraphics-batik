@@ -8,29 +8,20 @@
 
 package org.apache.batik.ext.awt.image.renderable;
 
-import org.apache.batik.ext.awt.image.GraphicsUtil;
-
-import java.awt.Shape;
-import java.awt.Point;
-import java.awt.RenderingHints;
 import java.awt.Rectangle;
-
+import java.awt.RenderingHints;
+import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Rectangle2D;
-
-import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
-import java.awt.image.Raster;
-import java.awt.image.WritableRaster;
-import java.awt.image.ColorModel;
 import java.awt.image.renderable.RenderContext;
 
 import org.apache.batik.ext.awt.image.PadMode;
 import org.apache.batik.ext.awt.image.rendered.AffineRed;
 import org.apache.batik.ext.awt.image.rendered.CachableRed;
-import org.apache.batik.ext.awt.image.rendered.PadRed;
 import org.apache.batik.ext.awt.image.rendered.GaussianBlurRed8Bit;
+import org.apache.batik.ext.awt.image.rendered.PadRed;
 
 /**
  * GaussianBlurRable implementation

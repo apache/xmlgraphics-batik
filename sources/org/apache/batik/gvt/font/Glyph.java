@@ -8,18 +8,19 @@
 
 package org.apache.batik.gvt.font;
 
-import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.text.ArabicTextHandler;
 import java.awt.Graphics2D;
-import java.awt.geom.Point2D;
+import java.awt.Paint;
+import java.awt.Shape;
+import java.awt.Stroke;
+import java.awt.font.GlyphMetrics;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.awt.Shape;
-import java.awt.font.GlyphMetrics;
 import java.util.Vector;
-import java.awt.Paint;
-import java.awt.Stroke;
+
+import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.text.ArabicTextHandler;
 
 
 /**

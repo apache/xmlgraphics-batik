@@ -9,20 +9,14 @@
 package org.apache.batik.swing.svg;
 
 import java.awt.EventQueue;
-
 import java.io.InterruptedIOException;
-
 import java.lang.reflect.InvocationTargetException;
-
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.batik.bridge.DocumentLoader;
-
 import org.w3c.dom.svg.SVGDocument;
-
-import org.xml.sax.SAXException;
 
 /**
  * This class represents an object which loads asynchroneaously a SVG document.

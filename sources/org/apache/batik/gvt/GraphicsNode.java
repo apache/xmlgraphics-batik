@@ -16,16 +16,10 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.lang.ref.WeakReference;
-
-import java.util.EventListener;
 import java.util.Map;
+
 import org.apache.batik.ext.awt.image.renderable.ClipRable;
 import org.apache.batik.ext.awt.image.renderable.Filter;
-import org.apache.batik.gvt.event.GraphicsNodeEvent;
-import org.apache.batik.gvt.event.GraphicsNodeKeyEvent;
-import org.apache.batik.gvt.event.GraphicsNodeKeyListener;
-import org.apache.batik.gvt.event.GraphicsNodeMouseEvent;
-import org.apache.batik.gvt.event.GraphicsNodeMouseListener;
 import org.apache.batik.gvt.filter.Mask;
 
 /**

@@ -15,19 +15,19 @@ import java.awt.image.PixelInterleavedSampleModel;
 import java.awt.image.RenderedImage;
 import java.awt.image.SampleModel;
 import java.awt.image.SinglePixelPackedSampleModel;
-
 import java.io.IOException;
 import java.io.OutputStream;
+
+import org.apache.batik.ext.awt.image.GraphicsUtil;
+import org.apache.batik.ext.awt.image.codec.tiff.TIFFEncodeParam;
+import org.apache.batik.ext.awt.image.codec.tiff.TIFFField;
+import org.apache.batik.ext.awt.image.codec.tiff.TIFFImageDecoder;
+import org.apache.batik.ext.awt.image.codec.tiff.TIFFImageEncoder;
+import org.apache.batik.ext.awt.image.rendered.FormatRed;
 import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.TranscodingHints;
 import org.apache.batik.transcoder.image.resources.Messages;
-import org.apache.batik.ext.awt.image.codec.tiff.TIFFEncodeParam;
-import org.apache.batik.ext.awt.image.codec.tiff.TIFFImageEncoder;
-import org.apache.batik.ext.awt.image.codec.tiff.TIFFImageDecoder;
-import org.apache.batik.ext.awt.image.codec.tiff.TIFFField;
-import org.apache.batik.ext.awt.image.rendered.FormatRed;
-import org.apache.batik.ext.awt.image.GraphicsUtil;
 
 
 /**

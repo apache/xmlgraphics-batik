@@ -9,7 +9,6 @@
 package org.apache.batik.parser;
 
 import java.awt.geom.AffineTransform;
-import java.io.IOException;
 import java.io.Reader;
 
 /**

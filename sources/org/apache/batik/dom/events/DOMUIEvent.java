@@ -8,8 +8,8 @@
 
 package org.apache.batik.dom.events;
 
-import org.w3c.dom.views.AbstractView;
 import org.w3c.dom.events.UIEvent;
+import org.w3c.dom.views.AbstractView;
 
 /**
  * The UIEvent class provides specific contextual information

@@ -8,9 +8,9 @@
 
 package org.apache.batik.gvt.text;
 
+import java.awt.font.FontRenderContext;
 import java.awt.geom.Point2D;
 import java.text.AttributedCharacterIterator;
-import java.awt.font.FontRenderContext;
 
 /**
  * Interface implemented by factory instances that can return

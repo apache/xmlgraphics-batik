@@ -8,14 +8,11 @@
 
 package org.apache.batik.svggen;
 
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
-import org.w3c.dom.*;
-
-import org.apache.batik.util.SVGConstants;
-import org.apache.batik.ext.awt.g2d.GraphicContext;
 import org.apache.batik.ext.awt.g2d.TransformStackElement;
+import org.apache.batik.util.SVGConstants;
 
 /**
  * Represents the SVG equivalent of a Java 2D API graphic

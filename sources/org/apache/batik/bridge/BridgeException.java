@@ -9,11 +9,7 @@
 package org.apache.batik.bridge;
 
 import org.apache.batik.gvt.GraphicsNode;
-
-import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGDocument;
 
 /**

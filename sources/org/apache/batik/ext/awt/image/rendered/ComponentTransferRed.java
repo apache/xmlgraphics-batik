@@ -9,10 +9,9 @@
 package org.apache.batik.ext.awt.image.rendered;
 
 import java.awt.RenderingHints;
-import java.awt.image.WritableRaster;
-import java.awt.image.LookupOp;
-import java.awt.image.LookupTable;
 import java.awt.image.ByteLookupTable;
+import java.awt.image.LookupOp;
+import java.awt.image.WritableRaster;
 
 import org.apache.batik.ext.awt.image.GraphicsUtil;
 import org.apache.batik.ext.awt.image.TransferFunction;

@@ -10,10 +10,7 @@ package org.apache.batik.apps.svgbrowser;
 
 import java.awt.Dimension;
 import java.awt.Font;
-
 import java.awt.event.ActionEvent;
-
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileWriter;
@@ -21,12 +18,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.Writer;
-import java.security.Policy;
-
+import java.net.Authenticator;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.net.Authenticator;
-
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -40,27 +34,22 @@ import java.util.Vector;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 import javax.swing.UIManager;
-
 import javax.swing.plaf.FontUIResource;
 
 import org.apache.batik.swing.JSVGCanvas;
 import org.apache.batik.swing.gvt.GVTTreeRendererAdapter;
 import org.apache.batik.swing.gvt.GVTTreeRendererEvent;
 import org.apache.batik.swing.svg.GVTTreeBuilderAdapter;
+import org.apache.batik.swing.svg.GVTTreeBuilderEvent;
 import org.apache.batik.swing.svg.SVGDocumentLoaderAdapter;
 import org.apache.batik.swing.svg.SVGDocumentLoaderEvent;
-import org.apache.batik.swing.svg.GVTTreeBuilderEvent;
-
-import org.apache.batik.util.PreferenceManager;
-import org.apache.batik.util.XMLResourceDescriptor;
-import org.apache.batik.util.SVGConstants;
-
 import org.apache.batik.util.ApplicationSecurityEnforcer;
 import org.apache.batik.util.ParsedURL;
+import org.apache.batik.util.SVGConstants;
+import org.apache.batik.util.XMLResourceDescriptor;
 import org.apache.batik.util.gui.resource.ResourceManager;
 
 /**

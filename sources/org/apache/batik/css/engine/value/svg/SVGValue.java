@@ -9,7 +9,6 @@
 package org.apache.batik.css.engine.value.svg;
 
 import org.apache.batik.css.engine.value.Value;
-
 import org.w3c.dom.DOMException;
 
 /**

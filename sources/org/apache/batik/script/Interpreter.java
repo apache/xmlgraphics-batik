@@ -8,11 +8,9 @@
 
 package org.apache.batik.script;
 
+import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
-import java.io.IOException;
-
-import org.w3c.dom.Document;
 
 /**
  * An hight level interface that represents an interpreter engine of

@@ -8,9 +8,9 @@
 
 package org.apache.batik.gvt.text;
 
-import java.text.AttributedCharacterIterator;
-import java.awt.geom.Point2D;
 import java.awt.font.FontRenderContext;
+import java.awt.geom.Point2D;
+import java.text.AttributedCharacterIterator;
 
 /**
  * Factory instance that returns TextSpanLayouts appropriate to

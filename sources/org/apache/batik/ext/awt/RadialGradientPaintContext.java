@@ -8,9 +8,13 @@
 
 package org.apache.batik.ext.awt;
 
-import java.awt.*;
-import java.awt.image.*;
-import java.awt.geom.*;
+import java.awt.Color;
+import java.awt.Rectangle;
+import java.awt.RenderingHints;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.NoninvertibleTransformException;
+import java.awt.geom.Rectangle2D;
+import java.awt.image.ColorModel;
 
 /**
  * Provides the actual implementation for the RadialGradientPaint.

@@ -8,10 +8,8 @@
 
 package org.apache.batik.gvt;
 
-import java.awt.Paint;
-import java.awt.Rectangle;
 import java.awt.Graphics2D;
-import java.awt.geom.Dimension2D;
+import java.awt.Paint;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 

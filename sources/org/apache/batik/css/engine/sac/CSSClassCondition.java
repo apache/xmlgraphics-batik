@@ -9,7 +9,6 @@
 package org.apache.batik.css.engine.sac;
 
 import org.apache.batik.css.engine.CSSStylableElement;
-
 import org.w3c.dom.Element;
 
 /**

@@ -11,17 +11,13 @@ package org.apache.batik.script.rhino;
 import java.io.File;
 import java.io.FilePermission;
 import java.io.IOException;
-
 import java.net.URL;
 import java.net.URLClassLoader;
-
 import java.security.AccessControlContext;
 import java.security.CodeSource;
 import java.security.Permission;
 import java.security.PermissionCollection;
-import java.security.Principal;
 import java.security.ProtectionDomain;
-import java.security.SecureClassLoader;
 
 import org.mozilla.javascript.GeneratedClassLoader;
 

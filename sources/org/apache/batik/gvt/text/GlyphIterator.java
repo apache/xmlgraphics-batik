@@ -8,11 +8,11 @@
 
 package org.apache.batik.gvt.text;
 
-import java.awt.font.TextAttribute;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.text.AttributedCharacterIterator;
+
 import org.apache.batik.gvt.font.AWTGVTFont;
 import org.apache.batik.gvt.font.GVTFont;
 import org.apache.batik.gvt.font.GVTGlyphVector;

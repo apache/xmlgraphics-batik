@@ -8,8 +8,8 @@
 
 package org.apache.batik.ext.awt.image.spi;
 
-import org.apache.batik.util.ParsedURL;
 import org.apache.batik.ext.awt.image.renderable.Filter;
+import org.apache.batik.util.ParsedURL;
 
 /**
  * This type of Image tag registy entry is used for 'odd' URL types.

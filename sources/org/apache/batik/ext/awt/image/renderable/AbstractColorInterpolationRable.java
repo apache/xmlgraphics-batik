@@ -8,10 +8,10 @@
 
 package org.apache.batik.ext.awt.image.renderable;
 
-import java.util.List;
-import java.util.Map;
 import java.awt.color.ColorSpace;
 import java.awt.image.RenderedImage;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.batik.ext.awt.image.GraphicsUtil;
 import org.apache.batik.ext.awt.image.rendered.CachableRed;

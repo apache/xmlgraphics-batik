@@ -8,13 +8,8 @@
 
 package org.apache.batik.util;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.io.IOException;
-import java.util.Iterator;
-
-import java.net.URL;
 import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * Protocol Handler for the 'jar' protocol.

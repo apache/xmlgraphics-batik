@@ -8,9 +8,8 @@
 
 package org.apache.batik.ext.awt.image.codec;
 
-import java.awt.image.Raster;
 import java.awt.image.ColorModel;
-import java.awt.image.SampleModel;
+import java.awt.image.Raster;
 
 /**
  * A simple class that provides RenderedImage functionality

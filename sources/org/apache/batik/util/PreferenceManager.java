@@ -17,14 +17,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URL;
 import java.net.MalformedURLException;
+import java.net.URL;
+import java.security.AccessControlException;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
-
-import java.security.AccessControlException;
 
 /**
  * This class allows to manage users preferences.

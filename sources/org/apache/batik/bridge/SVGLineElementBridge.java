@@ -10,11 +10,8 @@ package org.apache.batik.bridge;
 
 import java.awt.geom.Line2D;
 
-import org.apache.batik.parser.ParseException;
 import org.apache.batik.gvt.ShapeNode;
-
 import org.w3c.dom.Element;
-
 import org.w3c.dom.events.MutationEvent;
 
 /**

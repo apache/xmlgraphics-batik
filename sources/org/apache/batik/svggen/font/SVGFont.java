@@ -11,22 +11,21 @@ package org.apache.batik.svggen.font;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 
-import org.apache.batik.util.XMLConstants;
-import org.apache.batik.util.SVGConstants;
-
-import org.apache.batik.svggen.font.table.Table;
-import org.apache.batik.svggen.font.table.PostTable;
+import org.apache.batik.svggen.font.table.CmapFormat;
+import org.apache.batik.svggen.font.table.Feature;
+import org.apache.batik.svggen.font.table.FeatureTags;
+import org.apache.batik.svggen.font.table.GsubTable;
 import org.apache.batik.svggen.font.table.KernSubtable;
 import org.apache.batik.svggen.font.table.KernTable;
-import org.apache.batik.svggen.font.table.SingleSubst;
-import org.apache.batik.svggen.font.table.Feature;
-import org.apache.batik.svggen.font.table.LangSys;
-import org.apache.batik.svggen.font.table.Script;
-import org.apache.batik.svggen.font.table.GsubTable;
-import org.apache.batik.svggen.font.table.CmapFormat;
 import org.apache.batik.svggen.font.table.KerningPair;
+import org.apache.batik.svggen.font.table.LangSys;
+import org.apache.batik.svggen.font.table.PostTable;
+import org.apache.batik.svggen.font.table.Script;
 import org.apache.batik.svggen.font.table.ScriptTags;
-import org.apache.batik.svggen.font.table.FeatureTags;
+import org.apache.batik.svggen.font.table.SingleSubst;
+import org.apache.batik.svggen.font.table.Table;
+import org.apache.batik.util.SVGConstants;
+import org.apache.batik.util.XMLConstants;
 
 /**
  * Converts a TrueType font to an SVG embedded font.

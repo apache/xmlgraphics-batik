@@ -15,22 +15,14 @@ import java.awt.Frame;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Shape;
-
+import java.awt.event.ActionEvent;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.Dimension2D;
-import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-
 import java.text.AttributedCharacterIterator;
-
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
-
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -45,19 +37,11 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
-import javax.swing.event.DocumentListener;
-import javax.swing.event.DocumentEvent;
-
-import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GVTTreeWalker;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.TextNode;
-
 import org.apache.batik.gvt.text.Mark;
-
 import org.apache.batik.swing.JSVGCanvas;
-import org.apache.batik.swing.gvt.TextSelectionManager;
-
 import org.apache.batik.util.gui.ExtendedGridBagConstraints;
 import org.apache.batik.util.gui.resource.ActionMap;
 import org.apache.batik.util.gui.resource.ButtonFactory;

@@ -9,25 +9,22 @@
 package org.apache.batik.bridge;
 
 import java.awt.geom.Rectangle2D;
-import java.net.URL;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.dom.svg.SVGOMDocument;
-import org.apache.batik.ext.awt.image.renderable.Filter;
-import org.apache.batik.ext.awt.image.renderable.FilterChainRable8Bit;
-import org.apache.batik.ext.awt.image.renderable.FilterChainRable;
+import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.ext.awt.image.PadMode;
+import org.apache.batik.ext.awt.image.renderable.Filter;
+import org.apache.batik.ext.awt.image.renderable.FilterChainRable;
+import org.apache.batik.ext.awt.image.renderable.FilterChainRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.PadRable8Bit;
 import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.filter.GraphicsNodeRable;
-import org.apache.batik.gvt.filter.GraphicsNodeRable8Bit;
-
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 

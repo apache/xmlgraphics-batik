@@ -12,30 +12,26 @@ import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.net.MalformedURLException;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.DOMImplementation;
-
-import org.xml.sax.XMLFilter;
-
-import org.apache.batik.util.SVGConstants;
-
-import org.apache.batik.svggen.SVGGraphics2D;
 import org.apache.batik.dom.svg.ExtensibleSVGDOMImplementation;
-
+import org.apache.batik.svggen.SVGGraphics2D;
 import org.apache.batik.transcoder.AbstractTranscoder;
+import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
-import org.apache.batik.transcoder.TranscoderException;
+import org.apache.batik.util.SVGConstants;
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.xml.sax.XMLFilter;
 
 
 /**

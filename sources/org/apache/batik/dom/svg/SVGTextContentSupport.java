@@ -10,11 +10,9 @@ package org.apache.batik.dom.svg;
 
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
-
-import org.w3c.dom.svg.SVGElement;
-import org.w3c.dom.svg.SVGRect;
-import org.w3c.dom.svg.SVGPoint;
 import org.w3c.dom.svg.SVGMatrix;
+import org.w3c.dom.svg.SVGPoint;
+import org.w3c.dom.svg.SVGRect;
 
 /**
  * This class provides support for the SVGTextContentElement interface.

@@ -10,6 +10,7 @@ package org.apache.batik.gvt.text;
 
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
+
 import org.apache.batik.ext.awt.geom.PathLength;
 
 /**

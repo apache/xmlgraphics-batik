@@ -8,18 +8,12 @@
 
 package org.apache.batik.svggen;
 
-import java.awt.Paint;
-import java.awt.GradientPaint;
 import java.awt.Color;
+import java.awt.GradientPaint;
+import java.awt.Paint;
 import java.awt.TexturePaint;
-import java.awt.image.RenderedImage;
-import java.awt.image.BufferedImage;
-import java.awt.geom.Rectangle2D;
-import java.awt.Rectangle;
-import java.util.*;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.apache.batik.ext.awt.g2d.GraphicContext;
 

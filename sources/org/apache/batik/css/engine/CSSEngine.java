@@ -10,10 +10,8 @@ package org.apache.batik.css.engine;
 
 import java.io.IOException;
 import java.io.StringReader;
-
 import java.net.MalformedURLException;
 import java.net.URL;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -23,33 +21,26 @@ import java.util.Set;
 
 import org.apache.batik.css.engine.sac.CSSConditionFactory;
 import org.apache.batik.css.engine.sac.CSSSelectorFactory;
-
+import org.apache.batik.css.engine.sac.ExtendedSelector;
 import org.apache.batik.css.engine.value.ComputedValue;
 import org.apache.batik.css.engine.value.InheritValue;
 import org.apache.batik.css.engine.value.ShorthandManager;
 import org.apache.batik.css.engine.value.Value;
 import org.apache.batik.css.engine.value.ValueManager;
-
 import org.apache.batik.css.parser.ExtendedParser;
-
-import org.apache.batik.css.engine.sac.ExtendedSelector;
-
 import org.apache.batik.util.CSSConstants;
 import org.apache.batik.util.ParsedURL;
-
 import org.w3c.css.sac.CSSException;
 import org.w3c.css.sac.DocumentHandler;
 import org.w3c.css.sac.InputSource;
 import org.w3c.css.sac.LexicalUnit;
-import org.w3c.css.sac.SelectorList;
 import org.w3c.css.sac.SACMediaList;
-
-import org.w3c.dom.Document;
+import org.w3c.css.sac.SelectorList;
 import org.w3c.dom.DOMException;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
-
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;

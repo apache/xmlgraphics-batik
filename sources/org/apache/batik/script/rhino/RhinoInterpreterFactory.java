@@ -9,7 +9,6 @@
 package org.apache.batik.script.rhino;
 
 import java.net.URL;
-import java.net.URLClassLoader;
 
 import org.apache.batik.script.Interpreter;
 import org.apache.batik.script.InterpreterFactory;

@@ -14,34 +14,24 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.GeneralPath;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
-import java.awt.image.ColorModel;
-import java.awt.image.RenderedImage;
-import java.awt.image.WritableRaster;
-import java.awt.image.renderable.RenderContext;
-import java.awt.image.renderable.RenderableImage;
-import java.lang.reflect.Array;
 import java.lang.ref.WeakReference;
-import java.util.EventListener;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
+
 import javax.swing.event.EventListenerList;
+
 import org.apache.batik.ext.awt.RenderingHintsKeyExt;
-import org.apache.batik.ext.awt.image.PadMode;
 import org.apache.batik.ext.awt.image.renderable.ClipRable;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.gvt.event.GraphicsNodeChangeEvent;
 import org.apache.batik.gvt.event.GraphicsNodeChangeListener;
-import org.apache.batik.gvt.filter.Mask;
 import org.apache.batik.gvt.filter.GraphicsNodeRable;
 import org.apache.batik.gvt.filter.GraphicsNodeRable8Bit;
+import org.apache.batik.gvt.filter.Mask;
 
 /**
  * A partial implementation of the <tt>GraphicsNode</tt> interface.

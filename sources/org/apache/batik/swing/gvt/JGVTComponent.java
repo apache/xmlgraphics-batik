@@ -10,16 +10,13 @@ package org.apache.batik.swing.gvt;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Shape;
-
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.InputEvent;
@@ -28,12 +25,9 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
-
 import java.awt.image.BufferedImage;
-
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -43,11 +37,9 @@ import javax.swing.JComponent;
 
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.event.AWTEventDispatcher;
-
 import org.apache.batik.gvt.renderer.ConcreteImageRendererFactory;
 import org.apache.batik.gvt.renderer.ImageRenderer;
 import org.apache.batik.gvt.renderer.ImageRendererFactory;
-
 import org.apache.batik.gvt.text.Mark;
 
 /**

@@ -8,18 +8,20 @@
 
 package org.apache.batik.svggen;
 
-import java.awt.*;
-import java.awt.image.*;
+import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
 import java.awt.image.renderable.RenderableImage;
-import java.awt.geom.AffineTransform;
-import java.io.*;
-import java.net.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 
-import org.apache.batik.util.Base64EncoderStream;
 import org.apache.batik.ext.awt.image.codec.ImageEncoder;
 import org.apache.batik.ext.awt.image.codec.PNGImageEncoder;
-
-import org.w3c.dom.*;
+import org.apache.batik.util.Base64EncoderStream;
+import org.w3c.dom.Element;
 
 /**
  * This implementation of ImageHandler encodes the input image as

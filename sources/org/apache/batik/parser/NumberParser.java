@@ -9,7 +9,6 @@
 package org.apache.batik.parser;
 
 import java.io.IOException;
-import org.apache.batik.parser.ParseException;
 
 /**
  * This class represents a parser with support for numbers.

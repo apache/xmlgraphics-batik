@@ -9,11 +9,12 @@
 package org.apache.batik.svggen;
 
 import java.awt.Rectangle;
-import java.awt.image.*;
-import java.util.*;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import java.awt.image.BufferedImageOp;
+import java.awt.image.ConvolveOp;
+import java.awt.image.LookupOp;
+import java.awt.image.RescaleOp;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Utility class that converts a BufferedImageOp object into

@@ -10,6 +10,7 @@ package org.apache.batik.gvt.text;
 
 import java.awt.geom.Point2D;
 import java.text.AttributedCharacterIterator;
+
 import org.apache.batik.gvt.font.GVTGlyphVector;
 
 /**

@@ -8,37 +8,33 @@
 
 package org.apache.batik.gvt.renderer;
 
-import org.apache.batik.gvt.GraphicsNode;
+import java.awt.AlphaComposite;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.RenderingHints;
+import java.awt.Shape;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.Raster;
+import java.awt.image.RenderedImage;
+import java.awt.image.SampleModel;
+import java.awt.image.WritableRaster;
+import java.awt.image.renderable.RenderContext;
+import java.lang.ref.SoftReference;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import org.apache.batik.ext.awt.image.GraphicsUtil;
 import org.apache.batik.ext.awt.image.PadMode;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.rendered.CachableRed;
 import org.apache.batik.ext.awt.image.rendered.PadRed;
-import org.apache.batik.ext.awt.image.rendered.TranslateRed;
 import org.apache.batik.ext.awt.image.rendered.TileCacheRed;
-
-import java.lang.ref.SoftReference;
-import java.util.Iterator;
-import java.util.Stack;
-import java.util.List;
-import java.util.ArrayList;
-
-import java.awt.AlphaComposite;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.Shape;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.font.FontRenderContext;
-import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
-import java.awt.image.WritableRaster;
-import java.awt.image.Raster;
-import java.awt.image.ColorModel;
-import java.awt.image.SampleModel;
-import java.awt.image.renderable.RenderContext;
+import org.apache.batik.ext.awt.image.rendered.TranslateRed;
+import org.apache.batik.gvt.GraphicsNode;
 
 /**
  * Simple implementation of the Renderer that simply does static

@@ -8,12 +8,10 @@
 
 package org.apache.batik.util;
 
-import java.util.Map;
-import java.util.HashMap;
-
 import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.SoftReference;
+import java.util.HashMap;
 
 /**
  * This class manages a cache of soft references to objects that may

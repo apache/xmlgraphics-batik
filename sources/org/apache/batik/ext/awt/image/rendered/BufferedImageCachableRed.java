@@ -9,13 +9,12 @@
 package org.apache.batik.ext.awt.image.rendered;
 
 
-import org.apache.batik.ext.awt.image.GraphicsUtil;
-
 import java.awt.Rectangle;
-
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
+
+import org.apache.batik.ext.awt.image.GraphicsUtil;
 /**
  * This implements CachableRed based on a BufferedImage.
  * You can use this to wrap a BufferedImage that you want to

@@ -9,47 +9,32 @@
 package org.apache.batik.bridge;
 
 import java.awt.Point;
-
 import java.awt.event.KeyEvent;
-
-import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-
 import java.text.AttributedCharacterIterator;
-
 import java.util.List;
 
 import org.apache.batik.dom.events.DOMKeyEvent;
-
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.TextNode;
-
 import org.apache.batik.gvt.event.EventDispatcher;
 import org.apache.batik.gvt.event.GraphicsNodeKeyEvent;
 import org.apache.batik.gvt.event.GraphicsNodeKeyListener;
 import org.apache.batik.gvt.event.GraphicsNodeMouseEvent;
 import org.apache.batik.gvt.event.GraphicsNodeMouseListener;
-
 import org.apache.batik.gvt.renderer.StrokingTextPainter;
-
 import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
 import org.apache.batik.gvt.text.TextHit;
 import org.apache.batik.gvt.text.TextSpanLayout;
-
 import org.apache.batik.util.SVGConstants;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
 import org.w3c.dom.events.DocumentEvent;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
 import org.w3c.dom.events.MouseEvent;
-
-import org.w3c.dom.svg.SVGElement;
 
 /**
  * This class is responsible of tracking GraphicsNodeMouseEvent and

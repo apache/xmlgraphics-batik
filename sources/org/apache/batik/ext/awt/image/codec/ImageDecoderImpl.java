@@ -10,8 +10,8 @@ package org.apache.batik.ext.awt.image.codec;
 
 import java.awt.image.Raster;
 import java.awt.image.RenderedImage;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * A partial implementation of the <code>ImageDecoder</code> interface

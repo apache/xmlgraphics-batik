@@ -8,13 +8,12 @@
 
 package org.apache.batik.gvt.font;
 
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Collection;
-import java.awt.Font;
 import java.awt.GraphicsEnvironment;
-import java.util.StringTokenizer;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.StringTokenizer;
 import java.util.Vector;
 
 /**

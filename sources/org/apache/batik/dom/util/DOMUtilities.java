@@ -12,11 +12,10 @@ import java.io.IOException;
 import java.io.Writer;
 
 import org.apache.batik.xml.XMLUtilities;
-
 import org.w3c.dom.Attr;
-import org.w3c.dom.Document;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;

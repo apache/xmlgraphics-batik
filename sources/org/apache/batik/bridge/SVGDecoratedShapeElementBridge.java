@@ -13,7 +13,6 @@ import java.awt.Shape;
 import org.apache.batik.gvt.CompositeShapePainter;
 import org.apache.batik.gvt.ShapeNode;
 import org.apache.batik.gvt.ShapePainter;
-
 import org.w3c.dom.Element;
 
 /**

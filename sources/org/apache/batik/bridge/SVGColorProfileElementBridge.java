@@ -8,8 +8,6 @@
 
 package org.apache.batik.bridge;
 
-import java.awt.color.ColorSpace;
-import java.awt.color.ICC_ColorSpace;
 import java.awt.color.ICC_Profile;
 import java.io.IOException;
 
@@ -17,10 +15,7 @@ import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.ext.awt.color.ICCColorSpaceExt;
 import org.apache.batik.ext.awt.color.NamedProfileCache;
-
-import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.ParsedURL;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

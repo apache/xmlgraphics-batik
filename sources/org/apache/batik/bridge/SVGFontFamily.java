@@ -8,11 +8,12 @@
 
 package org.apache.batik.bridge;
 
-import org.apache.batik.gvt.font.GVTFontFamily;
+import java.text.AttributedCharacterIterator;
+
 import org.apache.batik.gvt.font.GVTFont;
+import org.apache.batik.gvt.font.GVTFontFamily;
 import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
 import org.w3c.dom.Element;
-import java.text.AttributedCharacterIterator;
 
 /**
  * A font family class for SVG fonts.

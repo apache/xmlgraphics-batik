@@ -8,9 +8,9 @@
 
 package org.apache.batik.gvt;
 
-import java.awt.Shape;
 import java.awt.Graphics2D;
 import java.awt.Paint;
+import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
 
 /**

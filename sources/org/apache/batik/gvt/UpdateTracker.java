@@ -8,12 +8,10 @@
 
 package org.apache.batik.gvt;
 
-import java.awt.geom.Rectangle2D;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
-
+import java.awt.geom.Rectangle2D;
 import java.lang.ref.WeakReference;
-
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -21,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.gvt.event.GraphicsNodeChangeAdapter;
 import org.apache.batik.gvt.event.GraphicsNodeChangeEvent;
 

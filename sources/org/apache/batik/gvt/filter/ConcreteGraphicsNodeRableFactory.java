@@ -9,8 +9,6 @@
 package org.apache.batik.gvt.filter;
 
 import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.filter.GraphicsNodeRable;
-import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
 
 /**
  * This interface lets <tt>GraphicsNode</tt> create instances of

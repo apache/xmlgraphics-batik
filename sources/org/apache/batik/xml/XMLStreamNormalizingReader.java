@@ -8,8 +8,8 @@
 
 package org.apache.batik.xml;
 
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PushbackInputStream;
 import java.io.Reader;
 

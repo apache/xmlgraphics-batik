@@ -8,38 +8,32 @@
 
 package org.apache.batik.ext.awt.image.codec.tiff;
 
-import  org.apache.batik.ext.awt.image.rendered.AbstractRed;
-import  org.apache.batik.ext.awt.image.rendered.CachableRed;
-import  org.apache.batik.ext.awt.image.codec.SeekableStream;
-
-import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Transparency;
 import java.awt.color.ColorSpace;
 import java.awt.image.ColorModel;
+import java.awt.image.ComponentColorModel;
 import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferByte;
+import java.awt.image.DataBufferInt;
 import java.awt.image.DataBufferShort;
 import java.awt.image.DataBufferUShort;
-import java.awt.image.DataBufferInt;
-import java.awt.image.Raster;
-import java.awt.image.WritableRaster;
-import java.awt.image.RenderedImage;
-import java.awt.image.SampleModel;
 import java.awt.image.IndexColorModel;
 import java.awt.image.MultiPixelPackedSampleModel;
 import java.awt.image.PixelInterleavedSampleModel;
-import java.awt.image.ComponentColorModel;
+import java.awt.image.Raster;
+import java.awt.image.SampleModel;
+import java.awt.image.WritableRaster;
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.InputStream;
 import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.zip.DataFormatException;
 import java.util.zip.Inflater;
-import java.util.Map;
-import java.util.HashMap;
+
+import org.apache.batik.ext.awt.image.codec.SeekableStream;
+import org.apache.batik.ext.awt.image.rendered.AbstractRed;
+import org.apache.batik.ext.awt.image.rendered.CachableRed;
 
 import com.sun.image.codec.jpeg.JPEGCodec;
 import com.sun.image.codec.jpeg.JPEGDecodeParam;

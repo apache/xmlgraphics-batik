@@ -9,19 +9,15 @@
 package org.apache.batik.ext.awt.image.rendered;
 
 import java.awt.Rectangle;
-
 import java.awt.color.ColorSpace;
-
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
-
-import java.awt.image.WritableRaster;
-import java.awt.image.SampleModel;
+import java.awt.image.ColorModel;
 import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferInt;
-import java.awt.image.SinglePixelPackedSampleModel;
 import java.awt.image.DirectColorModel;
-import java.awt.image.ColorModel;
+import java.awt.image.SinglePixelPackedSampleModel;
+import java.awt.image.WritableRaster;
 /**
  * This class creates a RenderedImage in conformance to the one
  * defined for the feTurbulence filter of the SVG specification.  What

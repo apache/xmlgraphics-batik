@@ -12,9 +12,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.LayoutManager;
-
 import java.awt.event.ActionEvent;
-
 import java.util.Locale;
 import java.util.ResourceBundle;
 

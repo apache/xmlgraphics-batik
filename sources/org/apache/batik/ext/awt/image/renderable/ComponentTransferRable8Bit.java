@@ -8,23 +8,17 @@
 
 package org.apache.batik.ext.awt.image.renderable;
 
-import org.apache.batik.ext.awt.image.GraphicsUtil;
-
-import java.awt.Point;
-import java.awt.RenderingHints;
-
 import java.awt.image.RenderedImage;
 import java.awt.image.renderable.RenderContext;
 
-import org.apache.batik.ext.awt.image.rendered.ComponentTransferRed;
-
 import org.apache.batik.ext.awt.image.ComponentTransferFunction;
-import org.apache.batik.ext.awt.image.TransferFunction;
-import org.apache.batik.ext.awt.image.IdentityTransfer;
-import org.apache.batik.ext.awt.image.TableTransfer;
 import org.apache.batik.ext.awt.image.DiscreteTransfer;
-import org.apache.batik.ext.awt.image.LinearTransfer;
 import org.apache.batik.ext.awt.image.GammaTransfer;
+import org.apache.batik.ext.awt.image.IdentityTransfer;
+import org.apache.batik.ext.awt.image.LinearTransfer;
+import org.apache.batik.ext.awt.image.TableTransfer;
+import org.apache.batik.ext.awt.image.TransferFunction;
+import org.apache.batik.ext.awt.image.rendered.ComponentTransferRed;
 
 /**
  * This class implements the interface expected from a component

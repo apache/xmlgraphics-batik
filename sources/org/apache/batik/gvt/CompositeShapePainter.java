@@ -13,9 +13,6 @@ import java.awt.Shape;
 import java.awt.geom.Area;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Rectangle2D;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * A shape painter which consists of multiple shape painters.

@@ -9,11 +9,8 @@
 package org.apache.batik.dom.svg;
 
 import org.apache.batik.dom.AbstractDocument;
-
 import org.apache.batik.dom.util.XMLSupport;
-
 import org.w3c.dom.Node;
-
 import org.w3c.dom.svg.SVGAngle;
 import org.w3c.dom.svg.SVGAnimatedAngle;
 import org.w3c.dom.svg.SVGAnimatedBoolean;
@@ -21,7 +18,6 @@ import org.w3c.dom.svg.SVGAnimatedEnumeration;
 import org.w3c.dom.svg.SVGAnimatedLength;
 import org.w3c.dom.svg.SVGAnimatedPreserveAspectRatio;
 import org.w3c.dom.svg.SVGAnimatedRect;
-import org.w3c.dom.svg.SVGExternalResourcesRequired;
 import org.w3c.dom.svg.SVGMarkerElement;
 
 /**

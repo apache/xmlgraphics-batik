@@ -9,9 +9,9 @@
 package org.apache.batik.transcoder.svg2svg;
 
 import java.io.IOException;
+import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.io.Reader;
 import java.io.Writer;
 
 import org.apache.batik.dom.util.DOMUtilities;
@@ -24,7 +24,6 @@ import org.apache.batik.transcoder.TranscodingHints;
 import org.apache.batik.transcoder.keys.BooleanKey;
 import org.apache.batik.transcoder.keys.IntegerKey;
 import org.apache.batik.transcoder.keys.StringKey;
-
 import org.w3c.dom.Document;
 
 /**

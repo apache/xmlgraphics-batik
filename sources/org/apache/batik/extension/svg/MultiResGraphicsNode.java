@@ -9,52 +9,32 @@
 package org.apache.batik.extension.svg;
 
 import java.awt.Dimension;
-import java.awt.Rectangle;
-import java.awt.RenderingHints;
-import java.awt.Shape;
 import java.awt.Graphics2D;
+import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
-import java.awt.image.RenderedImage;
-import java.awt.image.renderable.RenderContext;
-
 import java.lang.ref.SoftReference;
 
-import org.apache.batik.ext.awt.image.spi.ImageTagRegistry;
-import org.apache.batik.ext.awt.image.renderable.Filter;
-import org.apache.batik.ext.awt.image.renderable.AbstractRable;
+import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.bridge.CSSUtilities;
+import org.apache.batik.bridge.DocumentLoader;
+import org.apache.batik.bridge.GVTBuilder;
+import org.apache.batik.bridge.SVGBrokenLinkProvider;
+import org.apache.batik.bridge.UserAgent;
+import org.apache.batik.bridge.UserAgentAdapter;
+import org.apache.batik.bridge.ViewBox;
 import org.apache.batik.ext.awt.image.renderable.ClipRable8Bit;
-
+import org.apache.batik.ext.awt.image.renderable.Filter;
+import org.apache.batik.ext.awt.image.spi.ImageTagRegistry;
+import org.apache.batik.gvt.AbstractGraphicsNode;
+import org.apache.batik.gvt.CompositeGraphicsNode;
+import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.RasterImageNode;
 import org.apache.batik.util.ParsedURL;
-
-
+import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
-import org.w3c.dom.events.Event;
-import org.w3c.dom.events.EventListener;
-import org.w3c.dom.events.EventTarget;
-import org.w3c.dom.events.MouseEvent;
-import org.w3c.dom.events.MutationEvent;
-import org.w3c.dom.events.DocumentEvent;
-
 import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.svg.SVGSVGElement;
-
-import org.apache.batik.util.SVGConstants;
-import org.apache.batik.bridge.BridgeException;
-import org.apache.batik.bridge.SVGBrokenLinkProvider;
-import org.apache.batik.bridge.GVTBuilder;
-import org.apache.batik.bridge.UnitProcessor;
-import org.apache.batik.bridge.UserAgent;
-import org.apache.batik.bridge.DocumentLoader;
-import org.apache.batik.bridge.BridgeContext;
-import org.apache.batik.bridge.UserAgentAdapter;
-import org.apache.batik.bridge.CSSUtilities;
-import org.apache.batik.bridge.ViewBox;
-
-import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.CompositeGraphicsNode;
-import org.apache.batik.gvt.RasterImageNode;
-import org.apache.batik.gvt.AbstractGraphicsNode;
 
 /**
  * RasterRable This is used to wrap a Rendered Image back into the

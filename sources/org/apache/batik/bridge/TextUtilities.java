@@ -9,22 +9,16 @@
 package org.apache.batik.bridge;
 
 import java.awt.font.TextAttribute;
-
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 import org.apache.batik.css.engine.SVGCSSEngine;
-import org.apache.batik.css.engine.value.ListValue;
 import org.apache.batik.css.engine.value.Value;
-
 import org.apache.batik.gvt.TextNode;
-
 import org.apache.batik.util.CSSConstants;
-
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.css.CSSPrimitiveValue;
-import org.w3c.dom.css.CSSStyleDeclaration;
 
 /**
  * A collection of utility method for text.

@@ -9,21 +9,14 @@
 package org.apache.batik.dom.svg;
 
 import org.apache.batik.css.engine.CSSEngine;
-
 import org.apache.batik.dom.AbstractAttr;
 import org.apache.batik.dom.AbstractDocument;
-import org.apache.batik.dom.AbstractNode;
-
 import org.apache.batik.dom.events.NodeEventTarget;
-
 import org.apache.batik.util.SoftDoublyIndexedTable;
-
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
-import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
-
 import org.w3c.dom.events.MutationEvent;
 
 /**

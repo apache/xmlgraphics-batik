@@ -8,10 +8,23 @@
 
 package org.apache.batik.ext.awt.g2d;
 
-import java.awt.*;
-import java.awt.geom.*;
-import java.util.*;
-import java.awt.font.*;
+import java.awt.AlphaComposite;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Composite;
+import java.awt.Font;
+import java.awt.Paint;
+import java.awt.Rectangle;
+import java.awt.RenderingHints;
+import java.awt.Shape;
+import java.awt.Stroke;
+import java.awt.font.FontRenderContext;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Area;
+import java.awt.geom.GeneralPath;
+import java.awt.geom.NoninvertibleTransformException;
+import java.util.Map;
+import java.util.Vector;
 
 /**
  * Handles the attributes in a graphic context:<br>

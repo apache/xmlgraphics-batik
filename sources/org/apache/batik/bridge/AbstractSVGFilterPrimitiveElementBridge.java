@@ -13,18 +13,15 @@ import java.awt.Paint;
 import java.awt.geom.Rectangle2D;
 import java.util.Map;
 
+import org.apache.batik.ext.awt.image.PadMode;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.renderable.FilterAlphaRable;
 import org.apache.batik.ext.awt.image.renderable.FilterColorInterpolation;
 import org.apache.batik.ext.awt.image.renderable.FloodRable8Bit;
-import org.apache.batik.ext.awt.image.PadMode;
 import org.apache.batik.ext.awt.image.renderable.PadRable8Bit;
-
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.BackgroundRable8Bit;
-
 import org.w3c.dom.Element;
-import org.w3c.dom.css.CSSStyleDeclaration;
 
 /**
  * The base bridge class for SVG filter primitives.

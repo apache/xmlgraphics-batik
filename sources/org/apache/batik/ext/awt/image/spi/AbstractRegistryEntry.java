@@ -8,9 +8,9 @@
 
 package org.apache.batik.ext.awt.image.spi;
 
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public abstract class AbstractRegistryEntry 
     implements RegistryEntry, ErrorConstants {

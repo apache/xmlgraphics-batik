@@ -8,10 +8,9 @@
 
 package org.apache.batik.extension;
 
-import org.w3c.dom.DOMException;
-
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.DOMUtilities;
+import org.w3c.dom.DOMException;
 
 /**
  * This class implements a simple method for handling the node 'prefix'.

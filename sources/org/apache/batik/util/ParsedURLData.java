@@ -9,17 +9,16 @@
 package org.apache.batik.util;
 
 import java.io.BufferedInputStream;
-import java.io.InputStream;
 import java.io.IOException;
-import java.net.URL;
-import java.net.URLConnection;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-
-import java.util.zip.GZIPInputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.zip.GZIPInputStream;
 
 /**
  * Holds the data for more URL's

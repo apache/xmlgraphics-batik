@@ -8,10 +8,7 @@
 
 package org.apache.batik.dom.svg;
 
-import java.lang.ref.WeakReference;
-
 import org.apache.batik.dom.AbstractDocument;
-
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedEnumeration;
 import org.w3c.dom.svg.SVGClipPathElement;

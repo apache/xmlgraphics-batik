@@ -8,8 +8,11 @@
 
 package org.apache.batik.svggen;
 
-import java.awt.image.*;
-import java.awt.*;
+import java.awt.Rectangle;
+import java.awt.image.BufferedImageOp;
+import java.awt.image.ByteLookupTable;
+import java.awt.image.LookupOp;
+import java.awt.image.LookupTable;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

@@ -12,12 +12,9 @@ import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-
 import java.awt.event.ActionEvent;
-
 import java.io.File;
 import java.io.IOException;
-
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -35,7 +32,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 

@@ -10,7 +10,7 @@ package org.apache.batik.apps.svgbrowser;
 
 import java.util.Locale;
 import java.util.MissingResourceException;
-import org.apache.batik.i18n.Localizable;
+
 import org.apache.batik.i18n.LocalizableSupport;
 import org.apache.batik.util.gui.resource.ResourceManager;
 

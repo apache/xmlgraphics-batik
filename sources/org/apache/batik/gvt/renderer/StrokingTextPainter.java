@@ -8,25 +8,18 @@
 
 package org.apache.batik.gvt.renderer;
 
+import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.Paint;
-import java.awt.Color;
 import java.awt.Shape;
 import java.awt.Stroke;
-import java.awt.Composite;
-import java.awt.BasicStroke;
-
-import java.awt.font.FontRenderContext;
 import java.awt.font.TextAttribute;
-
-import java.awt.geom.Point2D;
 import java.awt.geom.GeneralPath;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
 import java.text.CharacterIterator;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -36,7 +29,6 @@ import java.util.Vector;
 
 import org.apache.batik.gvt.TextNode;
 import org.apache.batik.gvt.TextPainter;
-
 import org.apache.batik.gvt.font.FontFamilyResolver;
 import org.apache.batik.gvt.font.GVTFont;
 import org.apache.batik.gvt.font.GVTFontFamily;

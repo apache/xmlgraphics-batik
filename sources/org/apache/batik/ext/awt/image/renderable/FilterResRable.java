@@ -8,8 +8,6 @@
 
 package org.apache.batik.ext.awt.image.renderable;
 
-import java.awt.geom.Rectangle2D;
-import java.awt.image.renderable.RenderableImage;
 
 /**
  * Interface for implementing filter resolution.

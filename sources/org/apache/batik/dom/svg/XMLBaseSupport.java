@@ -11,10 +11,8 @@ package org.apache.batik.dom.svg;
 import java.net.URL;
 
 import org.apache.batik.css.engine.CSSImportedElementRoot;
-
-import org.apache.batik.util.XMLConstants;
 import org.apache.batik.util.ParsedURL;
-
+import org.apache.batik.util.XMLConstants;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

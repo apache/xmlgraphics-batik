@@ -9,6 +9,7 @@
 package org.apache.batik.swing.svg;
 
 import java.io.File;
+
 import javax.swing.filechooser.FileFilter;
 
 /**

@@ -12,9 +12,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
-import org.apache.batik.svggen.font.table.TableDirectory;
-import org.apache.batik.svggen.font.table.Table;
-import org.apache.batik.svggen.font.table.Os2Table;
 import org.apache.batik.svggen.font.table.CmapTable;
 import org.apache.batik.svggen.font.table.GlyfTable;
 import org.apache.batik.svggen.font.table.HeadTable;
@@ -23,7 +20,10 @@ import org.apache.batik.svggen.font.table.HmtxTable;
 import org.apache.batik.svggen.font.table.LocaTable;
 import org.apache.batik.svggen.font.table.MaxpTable;
 import org.apache.batik.svggen.font.table.NameTable;
+import org.apache.batik.svggen.font.table.Os2Table;
 import org.apache.batik.svggen.font.table.PostTable;
+import org.apache.batik.svggen.font.table.Table;
+import org.apache.batik.svggen.font.table.TableDirectory;
 import org.apache.batik.svggen.font.table.TableFactory;
 
 /**

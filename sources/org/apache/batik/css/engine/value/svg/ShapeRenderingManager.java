@@ -8,11 +8,10 @@
 
 package org.apache.batik.css.engine.value.svg;
 
-import org.apache.batik.util.CSSConstants;
-
 import org.apache.batik.css.engine.value.IdentifierManager;
 import org.apache.batik.css.engine.value.StringMap;
 import org.apache.batik.css.engine.value.Value;
+import org.apache.batik.util.CSSConstants;
 
 /**
  * This class provides a manager for the 'shape-rendering' property values.

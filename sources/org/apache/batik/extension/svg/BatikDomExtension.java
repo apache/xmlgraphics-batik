@@ -8,16 +8,14 @@
 
 package org.apache.batik.extension.svg;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
 import org.apache.batik.css.engine.value.svg.OpacityManager;
 import org.apache.batik.css.engine.value.svg.SVGColorManager;
-
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.dom.svg.DomExtension;
 import org.apache.batik.dom.svg.ExtensibleSVGDOMImplementation;
 import org.apache.batik.dom.svg.SVGDOMImplementation;
-import org.apache.batik.dom.svg.DomExtension;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * This is a Service interface for classes that want to extend the

@@ -10,25 +10,10 @@ package org.apache.batik.apps.svgbrowser;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Insets;
-import java.awt.Color;
-
-import java.awt.geom.AffineTransform;
-
-import java.awt.Font;
-import java.awt.font.FontRenderContext;
-import java.awt.font.TextLayout;
-import java.awt.font.TextAttribute;
-
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import javax.swing.BorderFactory;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JTextArea;
 import javax.swing.JPanel;
 import javax.swing.border.BevelBorder;
 

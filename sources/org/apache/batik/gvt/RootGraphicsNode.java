@@ -8,8 +8,8 @@
 
 package org.apache.batik.gvt;
 
-import java.util.List;
 import java.util.LinkedList;
+import java.util.List;
 
 import org.apache.batik.gvt.event.GraphicsNodeChangeListener;
 

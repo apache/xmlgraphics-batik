@@ -9,7 +9,6 @@
 package org.apache.batik.swing.gvt;
 
 import java.awt.image.BufferedImage;
-
 import java.util.EventObject;
 
 /**

@@ -8,17 +8,15 @@
 
 package org.apache.batik.ext.awt.image.rendered;
 
-import java.util.Vector;
-
-import java.awt.Shape;
 import java.awt.Rectangle;
-
-import java.awt.image.Raster;
-import java.awt.image.SampleModel;
-import java.awt.image.ColorModel;
-import java.awt.image.WritableRaster;
-import java.awt.image.RenderedImage;
+import java.awt.Shape;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.Raster;
+import java.awt.image.RenderedImage;
+import java.awt.image.SampleModel;
+import java.awt.image.WritableRaster;
+import java.util.Vector;
 
 
 /**

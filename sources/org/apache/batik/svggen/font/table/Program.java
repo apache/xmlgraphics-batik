@@ -8,9 +8,9 @@
 
 package org.apache.batik.svggen.font.table;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.io.ByteArrayInputStream;
 
 /**
  * @version $Id$

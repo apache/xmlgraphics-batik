@@ -9,11 +9,7 @@
 package org.apache.batik.dom.svg;
 
 import org.apache.batik.dom.AbstractDocument;
-
 import org.w3c.dom.DOMException;
-
-import org.w3c.dom.smil.ElementTimeControl;
-
 import org.w3c.dom.svg.SVGAnimatedBoolean;
 import org.w3c.dom.svg.SVGAnimationElement;
 import org.w3c.dom.svg.SVGElement;

@@ -8,18 +8,17 @@
 
 package org.apache.batik.ext.awt.image.rendered;
 
-import org.apache.batik.ext.awt.image.GraphicsUtil;
-
-import java.util.Map;
-import java.util.List;
-import java.awt.Rectangle;
 import java.awt.Point;
-
+import java.awt.Rectangle;
+import java.awt.image.ColorModel;
 import java.awt.image.DataBufferInt;
 import java.awt.image.Raster;
-import java.awt.image.WritableRaster;
 import java.awt.image.SampleModel;
-import java.awt.image.ColorModel;
+import java.awt.image.WritableRaster;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.batik.ext.awt.image.GraphicsUtil;
 
 /**
  * This is an abstract base class that takes care of most of the

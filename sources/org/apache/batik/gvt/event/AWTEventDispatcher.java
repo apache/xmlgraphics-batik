@@ -15,12 +15,9 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
-
 import java.lang.reflect.Array;
-
 import java.util.EventListener;
 import java.util.EventObject;
 

@@ -8,20 +8,14 @@
 
 package org.apache.batik.dom;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.Serializable;
 
 import org.apache.batik.dom.util.DOMUtilities;
-import org.apache.batik.dom.util.HashTable;
-
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import org.w3c.dom.events.DocumentEvent;
 import org.w3c.dom.events.MutationEvent;
 

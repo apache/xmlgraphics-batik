@@ -8,8 +8,9 @@
 
 package org.apache.batik.transcoder;
 
-import java.io.Writer;
 import java.io.OutputStream;
+import java.io.Writer;
+
 import org.w3c.dom.Document;
 import org.xml.sax.XMLFilter;
 

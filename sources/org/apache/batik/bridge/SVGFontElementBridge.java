@@ -8,10 +8,9 @@
 
 package org.apache.batik.bridge;
 
+import org.apache.batik.gvt.text.ArabicTextHandler;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-
-import org.apache.batik.gvt.text.ArabicTextHandler;
 
 /**
  * Bridge class for the &lt;font> element.

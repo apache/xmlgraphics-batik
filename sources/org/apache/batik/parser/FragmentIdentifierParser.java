@@ -9,7 +9,6 @@
 package org.apache.batik.parser;
 
 import java.io.IOException;
-import java.io.Reader;
 
 import org.apache.batik.xml.XMLUtilities;
 

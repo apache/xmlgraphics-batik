@@ -8,16 +8,6 @@
 
 package org.apache.batik.ext.awt.image.codec.tiff;
 
-import org.apache.batik.ext.awt.image.codec.ImageEncoderImpl;
-import org.apache.batik.ext.awt.image.codec.ImageEncodeParam;
-import org.apache.batik.ext.awt.image.codec.SeekableOutputStream;
-
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.RandomAccessFile;
 import java.awt.Rectangle;
 import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
@@ -31,11 +21,21 @@ import java.awt.image.Raster;
 import java.awt.image.RenderedImage;
 import java.awt.image.SampleModel;
 import java.awt.image.WritableRaster;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.zip.Deflater;
+
+import org.apache.batik.ext.awt.image.codec.ImageEncodeParam;
+import org.apache.batik.ext.awt.image.codec.ImageEncoderImpl;
+import org.apache.batik.ext.awt.image.codec.SeekableOutputStream;
 
 import com.sun.image.codec.jpeg.JPEGEncodeParam;
 import com.sun.image.codec.jpeg.JPEGQTable;

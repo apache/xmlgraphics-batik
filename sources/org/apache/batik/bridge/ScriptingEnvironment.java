@@ -13,33 +13,25 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
-
 import java.net.URL;
-
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.apache.batik.dom.util.SAXDocumentFactory;
 import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
 import org.apache.batik.dom.svg.SVGOMDocument;
-
-import org.apache.batik.dom.util.DocumentFactory;
+import org.apache.batik.dom.util.SAXDocumentFactory;
 import org.apache.batik.dom.util.XLinkSupport;
-
 import org.apache.batik.script.Interpreter;
 import org.apache.batik.script.InterpreterException;
-
 import org.apache.batik.util.EncodingUtilities;
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.RunnableQueue;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLResourceDescriptor;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;

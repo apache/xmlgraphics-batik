@@ -8,15 +8,14 @@
 
 package org.apache.batik.gvt.text;
 
+import java.awt.font.FontRenderContext;
+import java.awt.font.TextLayout;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
-import java.awt.font.TextLayout;
-import java.awt.font.TextAttribute;
-import java.awt.font.FontRenderContext;
-import java.util.Map;
 import java.util.HashMap;
-import java.util.Set;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * An attributed character iterator that does the reordering of the characters

@@ -1,8 +1,8 @@
 
 package org.w3c.dom.svg;
 
-import org.w3c.dom.css.RGBColor;
 import org.w3c.dom.css.CSSValue;
+import org.w3c.dom.css.RGBColor;
 
 public interface SVGColor extends 
                CSSValue {

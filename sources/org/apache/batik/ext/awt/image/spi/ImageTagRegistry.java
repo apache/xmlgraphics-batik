@@ -8,24 +8,22 @@
 
 package org.apache.batik.ext.awt.image.spi;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.LinkedList;
-import java.util.ListIterator;
-import java.util.Iterator;
-
-import java.io.InputStream;
 import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StreamCorruptedException;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
 
-import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.color.ICCColorSpaceExt;
+import org.apache.batik.ext.awt.image.URLImageCache;
+import org.apache.batik.ext.awt.image.renderable.Filter;
+import org.apache.batik.ext.awt.image.renderable.ProfileRable;
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.Service;
-
-import org.apache.batik.ext.awt.image.URLImageCache;
-import org.apache.batik.ext.awt.image.renderable.ProfileRable;
 
 
 /**

@@ -9,13 +9,10 @@
 package org.apache.batik.gvt.renderer;
 
 import java.awt.Graphics2D;
-import java.text.AttributedCharacterIterator;
-import java.awt.image.renderable.RenderContext;
-import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
 import java.awt.geom.Point2D;
+import java.text.AttributedCharacterIterator;
 
-import org.apache.batik.gvt.TextPainter;
 import org.apache.batik.gvt.TextNode;
 
 /**

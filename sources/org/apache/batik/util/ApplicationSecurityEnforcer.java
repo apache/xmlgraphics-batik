@@ -9,7 +9,6 @@
 package org.apache.batik.util;
 
 import java.net.URL;
-
 import java.security.Policy;
 
 /**

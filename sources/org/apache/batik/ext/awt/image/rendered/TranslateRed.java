@@ -9,11 +9,7 @@
 package org.apache.batik.ext.awt.image.rendered;
 
 
-import org.apache.batik.ext.awt.image.GraphicsUtil;
-
 import java.awt.Rectangle;
-
-import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
 /**

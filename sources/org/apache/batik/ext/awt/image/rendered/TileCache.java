@@ -8,7 +8,6 @@
 
 package org.apache.batik.ext.awt.image.rendered;
 
-import java.awt.image.Raster;
 import java.awt.image.RenderedImage;
 
 public class TileCache {

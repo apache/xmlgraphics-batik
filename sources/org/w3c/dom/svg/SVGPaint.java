@@ -1,7 +1,6 @@
 
 package org.w3c.dom.svg;
 
-import org.w3c.dom.css.RGBColor;
 
 public interface SVGPaint extends 
                SVGColor {

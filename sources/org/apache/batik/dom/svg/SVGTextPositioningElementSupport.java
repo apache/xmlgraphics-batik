@@ -8,10 +8,8 @@
 
 package org.apache.batik.dom.svg;
 
-import org.w3c.dom.svg.SVGAnimatedLengthList;
-import org.w3c.dom.svg.SVGAnimatedNumberList;
-
 import org.apache.batik.util.SVGConstants;
+import org.w3c.dom.svg.SVGAnimatedLengthList;
 
 /**
  * This class provide support for the SVGTextPositionningElement 

@@ -8,9 +8,9 @@
 
 package org.apache.batik.ext.awt.image.renderable;
 
-import java.awt.image.renderable.RenderableImage;
 import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.renderable.RenderableImage;
 
 /**
  * This is an extension of RenderableImage that adds some needed

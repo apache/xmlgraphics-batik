@@ -8,8 +8,8 @@
 
 package org.apache.batik.dom.events;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.events.*;
+import org.w3c.dom.events.Event;
+import org.w3c.dom.events.EventTarget;
 
 /**
  * The abstract <code>Event</code> root class.

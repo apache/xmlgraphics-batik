@@ -10,11 +10,6 @@ package org.apache.batik.dom.svg;
 
 import java.awt.geom.AffineTransform;
 
-import org.w3c.dom.DOMException;
-
-import org.w3c.dom.svg.SVGException;
-import org.w3c.dom.svg.SVGMatrix;
-
 /**
  * This class provides an implementation of the {@link SVGMatrix}
  * interface.

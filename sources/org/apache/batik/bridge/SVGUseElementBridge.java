@@ -8,8 +8,6 @@
 
 package org.apache.batik.bridge;
 
-import java.net.MalformedURLException;
-
 import java.awt.Cursor;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
@@ -17,18 +15,13 @@ import java.awt.geom.Rectangle2D;
 import org.apache.batik.dom.svg.SVGOMCSSImportedElementRoot;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.svg.SVGOMUseElement;
-
 import org.apache.batik.dom.util.XLinkSupport;
-import org.apache.batik.dom.util.XMLSupport;
-
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
-
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
-import org.w3c.dom.css.ViewCSS;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;

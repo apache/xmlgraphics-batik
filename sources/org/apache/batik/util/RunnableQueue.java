@@ -9,8 +9,6 @@
 package org.apache.batik.util;
 
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * This class represents an object which queues Runnable objects for

@@ -8,15 +8,15 @@
 
 package org.apache.batik.svggen;
 
-import org.w3c.dom.Document;
-
-import java.awt.Paint;
-import java.awt.Stroke;
-import java.awt.Composite;
-import java.awt.Shape;
-import java.awt.RenderingHints;
-import java.awt.Font;
 import java.awt.Color;
+import java.awt.Composite;
+import java.awt.Font;
+import java.awt.Paint;
+import java.awt.RenderingHints;
+import java.awt.Shape;
+import java.awt.Stroke;
+
+import org.w3c.dom.Document;
 
 /**
  * This class contains all non graphical contextual information that

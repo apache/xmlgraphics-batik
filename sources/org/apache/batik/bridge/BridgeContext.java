@@ -9,15 +9,11 @@
 package org.apache.batik.bridge;
 
 import java.awt.Cursor;
-
 import java.awt.geom.Dimension2D;
-import java.io.InterruptedIOException;
 import java.io.IOException;
-
-import java.net.URL;
+import java.io.InterruptedIOException;
 import java.net.MalformedURLException;
-
-import java.util.Collections;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -31,32 +27,26 @@ import org.apache.batik.css.engine.CSSEngineEvent;
 import org.apache.batik.css.engine.CSSEngineListener;
 import org.apache.batik.css.engine.SystemColorSupport;
 import org.apache.batik.css.engine.value.Value;
-
 import org.apache.batik.dom.svg.SVGContext;
 import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.svg.SVGOMElement;
-
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.TextPainter;
 import org.apache.batik.script.Interpreter;
 import org.apache.batik.script.InterpreterPool;
-import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.ParsedURL;
+import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.Service;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
-import org.w3c.dom.events.MutationEvent;
 import org.w3c.dom.events.MouseEvent;
+import org.w3c.dom.events.MutationEvent;
 import org.w3c.dom.svg.SVGDocument;
-
-import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
-import org.apache.batik.gvt.filter.ConcreteGraphicsNodeRableFactory;
 
 /**
  * This class represents a context used by the various bridges and the

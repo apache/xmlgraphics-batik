@@ -9,8 +9,15 @@
 package org.apache.batik.util.gui.resource;
 
 import java.net.URL;
-import java.util.*;
-import javax.swing.*;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
+
+import javax.swing.AbstractButton;
+import javax.swing.Action;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JRadioButton;
 
 /**
  * This class represents a button factory which builds

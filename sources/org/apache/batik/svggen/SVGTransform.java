@@ -8,15 +8,11 @@
 
 package org.apache.batik.svggen;
 
-import java.awt.Color;
-import java.awt.GradientPaint;
-import java.awt.geom.Point2D;
-import java.awt.geom.AffineTransform;
 import java.util.Stack;
 
 import org.apache.batik.ext.awt.g2d.GraphicContext;
-import org.apache.batik.ext.awt.g2d.TransformType;
 import org.apache.batik.ext.awt.g2d.TransformStackElement;
+import org.apache.batik.ext.awt.g2d.TransformType;
 
 /**
  * Utility class that converts a GraphicContext transform stack

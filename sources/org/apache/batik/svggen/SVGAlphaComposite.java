@@ -9,12 +9,13 @@
 package org.apache.batik.svggen;
 
 import java.awt.AlphaComposite;
-import java.util.*;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.batik.ext.awt.g2d.GraphicContext;
+import org.w3c.dom.Element;
 
 /**
  * Utility class that converts an AlphaComposite object into

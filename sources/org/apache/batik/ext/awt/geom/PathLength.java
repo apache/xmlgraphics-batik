@@ -9,9 +9,9 @@
 package org.apache.batik.ext.awt.geom;
 
 import java.awt.Shape;
-import java.awt.geom.GeneralPath;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.FlatteningPathIterator;
+import java.awt.geom.GeneralPath;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
 import java.util.Vector;

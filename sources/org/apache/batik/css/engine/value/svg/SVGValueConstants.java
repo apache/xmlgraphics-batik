@@ -13,9 +13,7 @@ import org.apache.batik.css.engine.value.RGBColorValue;
 import org.apache.batik.css.engine.value.StringValue;
 import org.apache.batik.css.engine.value.Value;
 import org.apache.batik.css.engine.value.ValueConstants;
-
 import org.apache.batik.util.CSSConstants;
-
 import org.w3c.dom.css.CSSPrimitiveValue;
 
 /**

@@ -8,24 +8,21 @@
 
 package org.apache.batik.gvt.filter;
 
-import org.apache.batik.ext.awt.image.GraphicsUtil;
-import org.apache.batik.ext.awt.image.rendered.AbstractTiledRed;
-import org.apache.batik.ext.awt.image.rendered.AbstractRed;
-import org.apache.batik.ext.awt.image.rendered.CachableRed;
-
 import java.awt.AlphaComposite;
-import java.awt.Rectangle;
-import java.awt.Point;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
-import java.awt.image.BufferedImage;
-import java.awt.image.ColorModel;
-import java.awt.image.Raster;
-import java.awt.image.SampleModel;
-import java.awt.image.WritableRaster;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.SampleModel;
+import java.awt.image.WritableRaster;
 
+import org.apache.batik.ext.awt.image.GraphicsUtil;
+import org.apache.batik.ext.awt.image.rendered.AbstractRed;
+import org.apache.batik.ext.awt.image.rendered.AbstractTiledRed;
+import org.apache.batik.ext.awt.image.rendered.CachableRed;
 import org.apache.batik.gvt.GraphicsNode;
 
 /**

@@ -11,17 +11,60 @@ package org.apache.batik.css.engine;
 import java.net.URL;
 
 import org.apache.batik.css.engine.value.ShorthandManager;
-import org.apache.batik.css.engine.value.Value;
 import org.apache.batik.css.engine.value.ValueConstants;
 import org.apache.batik.css.engine.value.ValueManager;
-
-import org.apache.batik.css.engine.value.css2.*;
-import org.apache.batik.css.engine.value.svg.*;
-
+import org.apache.batik.css.engine.value.css2.ClipManager;
+import org.apache.batik.css.engine.value.css2.CursorManager;
+import org.apache.batik.css.engine.value.css2.DirectionManager;
+import org.apache.batik.css.engine.value.css2.DisplayManager;
+import org.apache.batik.css.engine.value.css2.FontFamilyManager;
+import org.apache.batik.css.engine.value.css2.FontSizeAdjustManager;
+import org.apache.batik.css.engine.value.css2.FontSizeManager;
+import org.apache.batik.css.engine.value.css2.FontStretchManager;
+import org.apache.batik.css.engine.value.css2.FontStyleManager;
+import org.apache.batik.css.engine.value.css2.FontVariantManager;
+import org.apache.batik.css.engine.value.css2.FontWeightManager;
+import org.apache.batik.css.engine.value.css2.OverflowManager;
+import org.apache.batik.css.engine.value.css2.TextDecorationManager;
+import org.apache.batik.css.engine.value.css2.UnicodeBidiManager;
+import org.apache.batik.css.engine.value.css2.VisibilityManager;
+import org.apache.batik.css.engine.value.svg.AlignmentBaselineManager;
+import org.apache.batik.css.engine.value.svg.BaselineShiftManager;
+import org.apache.batik.css.engine.value.svg.ClipPathManager;
+import org.apache.batik.css.engine.value.svg.ClipRuleManager;
+import org.apache.batik.css.engine.value.svg.ColorInterpolationFiltersManager;
+import org.apache.batik.css.engine.value.svg.ColorInterpolationManager;
+import org.apache.batik.css.engine.value.svg.ColorManager;
+import org.apache.batik.css.engine.value.svg.ColorProfileManager;
+import org.apache.batik.css.engine.value.svg.ColorRenderingManager;
+import org.apache.batik.css.engine.value.svg.DominantBaselineManager;
+import org.apache.batik.css.engine.value.svg.EnableBackgroundManager;
+import org.apache.batik.css.engine.value.svg.FillRuleManager;
+import org.apache.batik.css.engine.value.svg.FilterManager;
+import org.apache.batik.css.engine.value.svg.GlyphOrientationHorizontalManager;
+import org.apache.batik.css.engine.value.svg.GlyphOrientationVerticalManager;
+import org.apache.batik.css.engine.value.svg.ImageRenderingManager;
+import org.apache.batik.css.engine.value.svg.KerningManager;
+import org.apache.batik.css.engine.value.svg.MarkerManager;
+import org.apache.batik.css.engine.value.svg.MarkerShorthandManager;
+import org.apache.batik.css.engine.value.svg.MaskManager;
+import org.apache.batik.css.engine.value.svg.OpacityManager;
+import org.apache.batik.css.engine.value.svg.PointerEventsManager;
+import org.apache.batik.css.engine.value.svg.SVGColorManager;
+import org.apache.batik.css.engine.value.svg.SVGPaintManager;
+import org.apache.batik.css.engine.value.svg.ShapeRenderingManager;
+import org.apache.batik.css.engine.value.svg.SpacingManager;
+import org.apache.batik.css.engine.value.svg.StrokeDasharrayManager;
+import org.apache.batik.css.engine.value.svg.StrokeDashoffsetManager;
+import org.apache.batik.css.engine.value.svg.StrokeLinecapManager;
+import org.apache.batik.css.engine.value.svg.StrokeLinejoinManager;
+import org.apache.batik.css.engine.value.svg.StrokeMiterlimitManager;
+import org.apache.batik.css.engine.value.svg.StrokeWidthManager;
+import org.apache.batik.css.engine.value.svg.TextAnchorManager;
+import org.apache.batik.css.engine.value.svg.TextRenderingManager;
+import org.apache.batik.css.engine.value.svg.WritingModeManager;
 import org.apache.batik.css.parser.ExtendedParser;
-
 import org.apache.batik.util.CSSConstants;
-
 import org.w3c.dom.Document;
 
 /**

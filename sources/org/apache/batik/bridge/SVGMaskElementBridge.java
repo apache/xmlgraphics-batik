@@ -16,7 +16,6 @@ import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.Mask;
 import org.apache.batik.gvt.filter.MaskRable8Bit;
-
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 

@@ -12,13 +12,10 @@ import org.apache.batik.css.engine.CSSContext;
 import org.apache.batik.css.engine.CSSEngine;
 import org.apache.batik.css.engine.CSSStylableElement;
 import org.apache.batik.css.engine.StyleMap;
-
 import org.w3c.css.sac.LexicalUnit;
-
 import org.w3c.dom.DOMException;
-
-import org.w3c.dom.css.CSSValue;
 import org.w3c.dom.css.CSSPrimitiveValue;
+import org.w3c.dom.css.CSSValue;
 
 /**
  * This class provides a manager for the property with support for

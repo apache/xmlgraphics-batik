@@ -8,31 +8,23 @@
 
 package org.apache.batik.gvt.filter;
 
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
-import java.awt.RenderingHints;
-import java.awt.Shape;
 import java.awt.Composite;
+import java.awt.Graphics2D;
 import java.awt.color.ColorSpace;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.RenderedImage;
-import java.awt.image.BufferedImage;
 import java.awt.image.renderable.RenderContext;
-import java.awt.image.renderable.RenderableImage;
 import java.util.Map;
 
-import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.filter.GraphicsNodeRable;
-import org.apache.batik.ext.awt.RenderingHintsKeyExt;
 import org.apache.batik.ext.awt.image.GraphicsUtil;
-import org.apache.batik.ext.awt.image.renderable.Filter;
+import org.apache.batik.ext.awt.image.SVGComposite;
 import org.apache.batik.ext.awt.image.renderable.AbstractRable;
+import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.renderable.PaintRable;
 import org.apache.batik.ext.awt.image.rendered.CachableRed;
 import org.apache.batik.ext.awt.image.rendered.TranslateRed;
-import org.apache.batik.ext.awt.image.SVGComposite;
+import org.apache.batik.gvt.GraphicsNode;
 
 /**
  * This implementation of RenderableImage will render its input

@@ -10,21 +10,16 @@ package org.apache.batik.ext.awt.image.renderable;
 
 import java.awt.RenderingHints;
 import java.awt.Shape;
-
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
-
-import java.awt.image.ColorModel;
-import java.awt.image.WritableRaster;
 import java.awt.image.RenderedImage;
-
 import java.awt.image.renderable.RenderContext;
 
 import org.apache.batik.ext.awt.ColorSpaceHintKey;
 import org.apache.batik.ext.awt.RenderingHintsKeyExt;
 import org.apache.batik.ext.awt.image.rendered.CachableRed;
-import org.apache.batik.ext.awt.image.rendered.RenderedImageCachableRed;
 import org.apache.batik.ext.awt.image.rendered.FilterAsAlphaRed;
+import org.apache.batik.ext.awt.image.rendered.RenderedImageCachableRed;
 
 /**
  * FilterAsAlphaRable implementation.

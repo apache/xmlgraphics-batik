@@ -13,20 +13,15 @@ import java.awt.geom.Rectangle2D;
 
 import org.apache.batik.css.engine.CSSEngineEvent;
 import org.apache.batik.css.engine.SVGCSSEngine;
-
 import org.apache.batik.dom.svg.SVGContext;
 import org.apache.batik.dom.svg.SVGOMElement;
-
-import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.CanvasGraphicsNode;
+import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.RootGraphicsNode;
-
-
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.svg.SVGFitToViewBox;
 import org.w3c.dom.events.MutationEvent;
+import org.w3c.dom.svg.SVGFitToViewBox;
 
 /**
  * The base bridge class for SVG graphics node. By default, the namespace URI is

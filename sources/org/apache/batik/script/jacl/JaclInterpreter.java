@@ -8,13 +8,16 @@
 
 package org.apache.batik.script.jacl;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.Writer;
 import java.util.Locale;
 
-import org.apache.batik.script.Interpreter;
 import org.apache.batik.script.InterpreterException;
 
-import tcl.lang.*;
+import tcl.lang.Interp;
+import tcl.lang.ReflectObject;
+import tcl.lang.TclException;
 
 /**
  * A simple implementation of <code>Interpreter</code> interface to use
@@ -40,7 +43,7 @@ public class JaclInterpreter implements org.apache.batik.script.Interpreter {
         return evaluate(scriptreader, "");
     }
 
-    public Object evaluate(Reader scriptreader, String description) {
+    public Object evaluate(Reader scriptreader, String description) throws IOException, InterpreterException {
         // oups jacl doesn't accept reader in its eval method :-(
         StringBuffer sbuffer = new StringBuffer();
         char[] buffer = new char[1024];

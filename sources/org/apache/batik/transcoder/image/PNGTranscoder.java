@@ -13,16 +13,16 @@ import java.awt.image.DataBufferInt;
 import java.awt.image.SinglePixelPackedSampleModel;
 import java.io.IOException;
 import java.io.OutputStream;
-import org.apache.batik.transcoder.keys.IntegerKey;
-import org.apache.batik.transcoder.keys.BooleanKey;
-import org.apache.batik.transcoder.keys.FloatKey;
+
+import org.apache.batik.ext.awt.image.codec.PNGEncodeParam;
+import org.apache.batik.ext.awt.image.codec.PNGImageEncoder;
+import org.apache.batik.ext.awt.image.rendered.IndexImage;
 import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.TranscodingHints;
 import org.apache.batik.transcoder.image.resources.Messages;
-import org.apache.batik.ext.awt.image.codec.PNGEncodeParam;
-import org.apache.batik.ext.awt.image.codec.PNGImageEncoder;
-import org.apache.batik.ext.awt.image.rendered.IndexImage;
+import org.apache.batik.transcoder.keys.FloatKey;
+import org.apache.batik.transcoder.keys.IntegerKey;
 
 /**
  * This class is an <tt>ImageTranscoder</tt> that produces a PNG image.

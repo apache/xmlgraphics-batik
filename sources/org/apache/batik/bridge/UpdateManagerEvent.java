@@ -9,7 +9,6 @@
 package org.apache.batik.bridge;
 
 import java.awt.image.BufferedImage;
-
 import java.util.EventObject;
 import java.util.List;
 

@@ -10,29 +10,22 @@ package org.apache.batik.script.rhino;
 
 import java.io.IOException;
 import java.io.StringReader;
-
 import java.security.AccessControlContext;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
+import org.apache.batik.script.InterpreterException;
+import org.apache.batik.script.Window;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
-import org.mozilla.javascript.FunctionObject;
-import org.mozilla.javascript.JavaScriptException;
 import org.mozilla.javascript.ImporterTopLevel;
+import org.mozilla.javascript.JavaScriptException;
 import org.mozilla.javascript.NativeJavaObject;
 import org.mozilla.javascript.NativeObject;
 import org.mozilla.javascript.PropertyException;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
-import org.mozilla.javascript.Undefined;
 import org.mozilla.javascript.WrappedException;
-import org.mozilla.javascript.Wrapper;
-
-import org.apache.batik.script.Interpreter;
-import org.apache.batik.script.InterpreterException;
-import org.apache.batik.script.Window;
-
 import org.w3c.dom.Document;
 
 /**

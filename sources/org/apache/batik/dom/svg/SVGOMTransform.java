@@ -10,9 +10,8 @@ package org.apache.batik.dom.svg;
 
 import java.awt.geom.AffineTransform;
 
-import org.w3c.dom.svg.SVGMatrix;
-
 import org.w3c.dom.DOMException;
+import org.w3c.dom.svg.SVGMatrix;
 
 /**
  * This class is the implementation of

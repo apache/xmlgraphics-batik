@@ -8,12 +8,11 @@
 
 package org.apache.batik.gvt.renderer;
 
-import org.apache.batik.gvt.GraphicsNode;
-import java.awt.image.BufferedImage;
-import java.awt.geom.AffineTransform;
 import java.awt.Shape;
-
+import java.awt.geom.AffineTransform;
 import java.util.List;
+
+import org.apache.batik.gvt.GraphicsNode;
 
 /**
  * Interface for GVT Renderers.

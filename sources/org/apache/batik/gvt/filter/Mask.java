@@ -8,10 +8,10 @@
 
 package org.apache.batik.gvt.filter;
 
+import java.awt.geom.Rectangle2D;
+
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.gvt.GraphicsNode;
-
-import java.awt.geom.Rectangle2D;
 
 /**
  * Implements a masking operation.  This masks the source by the result
