@@ -11,6 +11,7 @@ package org.apache.batik.apps.svgbrowser;
 import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
 import java.awt.event.ActionEvent;
@@ -27,8 +28,13 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.geom.NoninvertibleTransformException;
 
+import java.awt.image.BufferedImage;
+
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -60,13 +66,22 @@ import org.apache.batik.swing.gvt.AbstractZoomInteractor;
 import org.apache.batik.swing.gvt.GVTTreeRendererEvent;
 import org.apache.batik.swing.gvt.GVTTreeRendererListener;
 
+import org.apache.batik.swing.JSVGCanvas;
+
 import org.apache.batik.swing.svg.GVTTreeBuilderEvent;
 import org.apache.batik.swing.svg.GVTTreeBuilderListener;
-import org.apache.batik.swing.svg.JSVGComponent;
 import org.apache.batik.swing.svg.SVGDocumentLoaderEvent;
 import org.apache.batik.swing.svg.SVGDocumentLoaderListener;
 import org.apache.batik.swing.svg.SVGFileFilter;
 import org.apache.batik.swing.svg.SVGUserAgent;
+
+import org.apache.batik.transcoder.TranscoderOutput;
+
+import org.apache.batik.transcoder.image.ImageTranscoder;
+import org.apache.batik.transcoder.image.JPEGTranscoder;
+import org.apache.batik.transcoder.image.PNGTranscoder;
+
+import org.apache.batik.transcoder.print.PrintTranscoder;
 
 import org.apache.batik.util.gui.DOMViewer;
 import org.apache.batik.util.gui.LanguageChangeHandler;
@@ -110,6 +125,9 @@ public class JSVGViewerFrame
     public final static String OPEN_ACTION = "OpenAction";
     public final static String NEW_WINDOW_ACTION = "NewWindowAction";
     public final static String RELOAD_ACTION = "ReloadAction";
+    public final static String PRINT_ACTION = "PrintAction";
+    public final static String EXPORT_AS_PNG_ACTION = "ExportAsPNGAction";
+    public final static String EXPORT_AS_JPG_ACTION = "ExportAsJPGAction";
     public final static String CLOSE_ACTION = "CloseAction";
     public final static String EXIT_ACTION = "ExitAction";
     public final static String RESET_TRANSFORM_ACTION = "ResetTransformAction";
@@ -157,9 +175,9 @@ public class JSVGViewerFrame
     protected Application application;
 
     /**
-     * The JSVGComponent.
+     * The JSVGCanvas.
      */
-    protected JSVGComponent svgComponent;
+    protected JSVGCanvas svgCanvas;
 
     /**
      * The memory monitor frame.
@@ -170,6 +188,11 @@ public class JSVGViewerFrame
      * The current path.
      */
     protected String currentPath = ".";
+
+    /**
+     * The current export path.
+     */
+    protected String currentExportPath = ".";
 
     /**
      * The stop action
@@ -184,7 +207,7 @@ public class JSVGViewerFrame
     /**
      * The auto adjust flag.
      */
-    protected boolean autoAdjust;
+    protected boolean autoAdjust = true;
 
     /**
      * The SVG user agent.
@@ -256,6 +279,9 @@ public class JSVGViewerFrame
         listeners.put(OPEN_ACTION, new OpenAction());
         listeners.put(NEW_WINDOW_ACTION, new NewWindowAction());
         listeners.put(RELOAD_ACTION, new ReloadAction());
+        listeners.put(PRINT_ACTION, new PrintAction());
+        listeners.put(EXPORT_AS_PNG_ACTION, new ExportAsPNGAction());
+        listeners.put(EXPORT_AS_JPG_ACTION, new ExportAsJPGAction());
         listeners.put(CLOSE_ACTION, new CloseAction());
         listeners.put(EXIT_ACTION, application.createExitAction(this));
         listeners.put(RESET_TRANSFORM_ACTION, new ResetTransformAction());
@@ -295,7 +321,7 @@ public class JSVGViewerFrame
         JPanel p2 = new JPanel(new BorderLayout());
         p2.setBorder(BorderFactory.createEtchedBorder());
 
-        p2.add(svgComponent = new JSVGComponent(userAgent, true, true),
+        p2.add(svgCanvas = new JSVGCanvas(userAgent, true, true),
                BorderLayout.CENTER);
         p = new JPanel(new BorderLayout());
         p.add(p2, BorderLayout.CENTER);
@@ -303,18 +329,18 @@ public class JSVGViewerFrame
 
         getContentPane().add(p, BorderLayout.CENTER);
 
-        svgComponent.addSVGDocumentLoaderListener(this);
-        svgComponent.addGVTTreeBuilderListener(this);
-        svgComponent.addGVTTreeRendererListener(this);
+        svgCanvas.addSVGDocumentLoaderListener(this);
+        svgCanvas.addGVTTreeBuilderListener(this);
+        svgCanvas.addGVTTreeRendererListener(this);
 
-        svgComponent.addMouseMotionListener(new MouseMotionAdapter() {
+        svgCanvas.addMouseMotionListener(new MouseMotionAdapter() {
                 public void mouseMoved(MouseEvent e) {
                     if (svgDocument == null) {
                         statusBar.setXPosition(e.getX());
                         statusBar.setYPosition(e.getY());
                     } else {
                         try {
-                            AffineTransform at = svgComponent.getRenderingTransform();
+                            AffineTransform at = svgCanvas.getRenderingTransform();
                             if (at != null) {
                                 at = at.createInverse();
                                 Point2D p2d =
@@ -331,7 +357,7 @@ public class JSVGViewerFrame
                     }
                 }
             });
-        svgComponent.addMouseListener(new MouseAdapter() {
+        svgCanvas.addMouseListener(new MouseAdapter() {
                 public void mouseExited(MouseEvent e) {
                     Dimension dim = getSize();
                     if (svgDocument == null) {
@@ -339,7 +365,7 @@ public class JSVGViewerFrame
                         statusBar.setHeight(dim.height);
                     } else {
                         try {
-                            AffineTransform at = svgComponent.getRenderingTransform();
+                            AffineTransform at = svgCanvas.getRenderingTransform();
                             if (at != null) {
                                 at = at.createInverse();
                                 Point2D o =
@@ -360,7 +386,7 @@ public class JSVGViewerFrame
                     }
                 }
             });
-        svgComponent.addComponentListener(new ComponentAdapter() {
+        svgCanvas.addComponentListener(new ComponentAdapter() {
                 public void componentResized(ComponentEvent e) {
                     Dimension dim = getSize();
                     if (svgDocument == null) {
@@ -368,7 +394,7 @@ public class JSVGViewerFrame
                         statusBar.setHeight(dim.height);
                     } else {
                         try {
-                            AffineTransform at = svgComponent.getRenderingTransform();
+                            AffineTransform at = svgCanvas.getRenderingTransform();
                             if (at != null) {
                                 at = at.createInverse();
                                 Point2D o =
@@ -415,7 +441,7 @@ public class JSVGViewerFrame
                         }
                         locationBar.setText(s);
                         locationBar.addToHistory(s);
-                        svgComponent.loadSVGDocument(s);
+                        svgCanvas.loadSVGDocument(s);
                     }
                 }
             }
@@ -423,7 +449,7 @@ public class JSVGViewerFrame
 
         // Interactors initialization ///////////////////////////////////////
 
-        svgComponent.getInteractors().add(new AbstractZoomInteractor() {
+        svgCanvas.getInteractors().add(new AbstractZoomInteractor() {
             public boolean startInteraction(InputEvent ie) {
                 int mods = ie.getModifiers();
                 return
@@ -432,7 +458,7 @@ public class JSVGViewerFrame
                     (mods & ie.CTRL_MASK) != 0;
             }
         });
-        svgComponent.getInteractors().add(new AbstractImageZoomInteractor() {
+        svgCanvas.getInteractors().add(new AbstractImageZoomInteractor() {
             public boolean startInteraction(InputEvent ie) {
                 int mods = ie.getModifiers();
                 return
@@ -441,7 +467,7 @@ public class JSVGViewerFrame
                     (mods & ie.SHIFT_MASK) != 0;
             }
         });
-        svgComponent.getInteractors().add(new AbstractPanInteractor() {
+        svgCanvas.getInteractors().add(new AbstractPanInteractor() {
             public boolean startInteraction(InputEvent ie) {
                 int mods = ie.getModifiers();
                 return
@@ -450,7 +476,7 @@ public class JSVGViewerFrame
                     (mods & ie.SHIFT_MASK) != 0;
             }
         });
-        svgComponent.getInteractors().add(new AbstractRotateInteractor() {
+        svgCanvas.getInteractors().add(new AbstractRotateInteractor() {
             public boolean startInteraction(InputEvent ie) {
                 int mods = ie.getModifiers();
                 return
@@ -463,10 +489,10 @@ public class JSVGViewerFrame
     }
 
     /**
-     * Returns the main JSVGComponent of this frame.
+     * Returns the main JSVGCanvas of this frame.
      */
-    public JSVGComponent getJSVGComponent() {
-        return svgComponent;
+    public JSVGCanvas getJSVGCanvas() {
+        return svgCanvas;
     }
 
     /**
@@ -487,7 +513,7 @@ public class JSVGViewerFrame
                 File f = fileChooser.getSelectedFile();
                 try {
                     currentPath = f.getCanonicalPath();
-                    svgComponent.loadSVGDocument(f.toURL().toString());
+                    svgCanvas.loadSVGDocument(f.toURL().toString());
                 } catch (IOException ex) {
                     // !!! Error dialog
                 }
@@ -516,14 +542,126 @@ public class JSVGViewerFrame
     }
 
     /**
-     * To reload the last document.
+     * To reload the current document.
      */
     public class ReloadAction extends AbstractAction {
         public ReloadAction() {}
         public void actionPerformed(ActionEvent e) {
             if (svgDocument != null) {
                 String url = ((SVGOMDocument)svgDocument).getURLObject().toString();
-                svgComponent.loadSVGDocument(url.toString());
+                svgCanvas.loadSVGDocument(url.toString());
+            }
+        }
+    }
+
+    /**
+     * To print the current document.
+     */
+    public class PrintAction extends AbstractAction {
+        public PrintAction() {}
+        public void actionPerformed(ActionEvent e) {
+            if (svgDocument != null) {
+
+            }
+        }
+    }
+
+    /**
+     * To save the current document as PNG.
+     */
+    public class ExportAsPNGAction extends AbstractAction {
+        public ExportAsPNGAction() {}
+        public void actionPerformed(ActionEvent e) {
+            JFileChooser fileChooser =
+                new JFileChooser(currentExportPath);
+            fileChooser.setFileHidingEnabled(false);
+            fileChooser.setFileSelectionMode
+                (JFileChooser.FILES_AND_DIRECTORIES);
+
+            int choice = fileChooser.showSaveDialog(JSVGViewerFrame.this);
+            if (choice == JFileChooser.APPROVE_OPTION) {
+                final File f = fileChooser.getSelectedFile();
+                BufferedImage buffer = svgCanvas.getOffScreen();
+                if (buffer != null) {
+                    statusBar.setMessage
+                        (resources.getString("Message.exportAsPNG"));
+
+                    // create a BufferedImage of the appropriate type
+                    int w = buffer.getWidth();
+                    int h = buffer.getHeight();
+                    final ImageTranscoder trans = new PNGTranscoder();
+                    trans.addTranscodingHint(PNGTranscoder.KEY_XML_PARSER_CLASSNAME,
+                                             application.getXMLParserClassName());
+                    final BufferedImage img = trans.createImage(w, h);
+
+                    // paint the buffer to the image
+                    Graphics2D g2d = img.createGraphics();
+                    g2d.drawImage(buffer, null, 0, 0);
+                    new Thread() {
+                        public void run() {
+                            try {
+                                currentExportPath = f.getCanonicalPath();
+                                OutputStream ostream =
+                                    new BufferedOutputStream(new FileOutputStream(f));
+                                trans.writeImage(img,
+                                                 new TranscoderOutput(ostream));
+                                ostream.flush();
+                            } catch (Exception ex) {}
+                            statusBar.setMessage
+                                (resources.getString("Message.done"));
+                        }
+                    }.start();
+                }
+            }
+        }
+    }
+
+    /**
+     * To save the current document as JPG.
+     */
+    public class ExportAsJPGAction extends AbstractAction {
+        public ExportAsJPGAction() {}
+        public void actionPerformed(ActionEvent e) {
+            JFileChooser fileChooser =
+                new JFileChooser(currentExportPath);
+            fileChooser.setFileHidingEnabled(false);
+            fileChooser.setFileSelectionMode
+                (JFileChooser.FILES_AND_DIRECTORIES);
+
+            int choice = fileChooser.showSaveDialog(JSVGViewerFrame.this);
+            if (choice == JFileChooser.APPROVE_OPTION) {
+                final File f = fileChooser.getSelectedFile();
+                BufferedImage buffer = svgCanvas.getOffScreen();
+                if (buffer != null) {
+                    statusBar.setMessage
+                        (resources.getString("Message.exportAsJPG"));
+
+                    // create a BufferedImage of the appropriate type
+                    int w = buffer.getWidth();
+                    int h = buffer.getHeight();
+                    final ImageTranscoder trans = new JPEGTranscoder();
+                    trans.addTranscodingHint(JPEGTranscoder.KEY_XML_PARSER_CLASSNAME,
+                                             application.getXMLParserClassName());
+                    final BufferedImage img = trans.createImage(w, h);
+
+                    // paint the buffer to the image
+                    Graphics2D g2d = img.createGraphics();
+                    g2d.drawImage(buffer, null, 0, 0);
+                    new Thread() {
+                        public void run() {
+                            try {
+                                currentExportPath = f.getCanonicalPath();
+                                OutputStream ostream =
+                                    new BufferedOutputStream(new FileOutputStream(f));
+                                trans.writeImage(img, new TranscoderOutput(ostream));
+                                ostream.flush();
+                                ostream.close();
+                            } catch (Exception ex) { }
+                            statusBar.setMessage
+                                (resources.getString("Message.done"));
+                        }
+                    }.start();
+                }
             }
         }
     }
@@ -534,7 +672,7 @@ public class JSVGViewerFrame
     public class ResetTransformAction extends AbstractAction {
         public ResetTransformAction() {}
         public void actionPerformed(ActionEvent e) {
-            svgComponent.setRenderingTransform(initialTransform);
+            svgCanvas.setRenderingTransform(initialTransform);
         }
     }
 
@@ -544,7 +682,7 @@ public class JSVGViewerFrame
     public class ZoomInAction extends AbstractAction {
         public ZoomInAction() {}
         public void actionPerformed(ActionEvent e) {
-            AffineTransform at = svgComponent.getRenderingTransform();
+            AffineTransform at = svgCanvas.getRenderingTransform();
             if (at != null) {
                 Dimension dim = getSize();
                 int x = dim.width / 2;
@@ -553,7 +691,7 @@ public class JSVGViewerFrame
                 t.scale(2, 2);
                 t.translate(-x, -y);
                 t.concatenate(at);
-                svgComponent.setRenderingTransform(t);
+                svgCanvas.setRenderingTransform(t);
             }
         }
     }
@@ -564,7 +702,7 @@ public class JSVGViewerFrame
     public class ZoomOutAction extends AbstractAction {
         public ZoomOutAction() {}
         public void actionPerformed(ActionEvent e) {
-            AffineTransform at = svgComponent.getRenderingTransform();
+            AffineTransform at = svgCanvas.getRenderingTransform();
             if (at != null) {
                 Dimension dim = getSize();
                 int x = dim.width / 2;
@@ -573,7 +711,7 @@ public class JSVGViewerFrame
                 t.scale(0.5, 0.5);
                 t.translate(-x, -y);
                 t.concatenate(at);
-                svgComponent.setRenderingTransform(t);
+                svgCanvas.setRenderingTransform(t);
             }
         }
     }
@@ -586,7 +724,7 @@ public class JSVGViewerFrame
         java.util.List components = new LinkedList();
         public StopAction() {}
         public void actionPerformed(ActionEvent e) {
-            svgComponent.stopProcessing();
+            svgCanvas.stopProcessing();
         }
 
         public void addJComponent(JComponent c) {
@@ -608,7 +746,7 @@ public class JSVGViewerFrame
     public class DoubleBufferAction extends AbstractAction {
         public DoubleBufferAction() {}
         public void actionPerformed(ActionEvent e) {
-            svgComponent.setDoubleBufferedRendering
+            svgCanvas.setDoubleBufferedRendering
                 (((JCheckBoxMenuItem)e.getSource()).isSelected());
         }
     }
@@ -640,7 +778,7 @@ public class JSVGViewerFrame
     public class ShowRenderingAction extends AbstractAction {
         public ShowRenderingAction() {}
         public void actionPerformed(ActionEvent e) {
-            svgComponent.setProgressivePaint
+            svgCanvas.setProgressivePaint
                 (((JCheckBoxMenuItem)e.getSource()).isSelected());
         }
     }
@@ -770,7 +908,7 @@ public class JSVGViewerFrame
         }
         statusBar.setMainMessage(resources.getString("Message.documentLoad"));
         stopAction.update(true);
-        svgComponent.setCursor(WAIT_CURSOR);
+        svgCanvas.setCursor(WAIT_CURSOR);
     }
 
     /**
@@ -793,7 +931,7 @@ public class JSVGViewerFrame
         }
         initialTransform = null;
         stopAction.update(false);
-        svgComponent.setCursor(DEFAULT_CURSOR);
+        svgCanvas.setCursor(DEFAULT_CURSOR);
         String s = ((SVGOMDocument)svgDocument).getURLObject().toString();
         locationBar.setText(s);
         if (title == null) {
@@ -817,7 +955,7 @@ public class JSVGViewerFrame
         statusBar.setMainMessage("");
         statusBar.setMessage(resources.getString("Message.documentCancelled"));
         stopAction.update(false);
-        svgComponent.setCursor(DEFAULT_CURSOR);
+        svgCanvas.setCursor(DEFAULT_CURSOR);
     }
 
     /**
@@ -830,7 +968,7 @@ public class JSVGViewerFrame
         statusBar.setMainMessage("");
         statusBar.setMessage(resources.getString("Message.documentFailed"));
         stopAction.update(false);
-        svgComponent.setCursor(DEFAULT_CURSOR);
+        svgCanvas.setCursor(DEFAULT_CURSOR);
     }
 
     // GVTTreeBuilderListener //////////////////////////////////////////////
@@ -846,7 +984,7 @@ public class JSVGViewerFrame
         }
         statusBar.setMainMessage(resources.getString("Message.treeBuild"));
         stopAction.update(true);
-        svgComponent.setCursor(WAIT_CURSOR);
+        svgCanvas.setCursor(WAIT_CURSOR);
     }
 
     /**
@@ -858,7 +996,7 @@ public class JSVGViewerFrame
             System.out.println((System.currentTimeMillis() - time) + " ms");
         }
         stopAction.update(false);
-        svgComponent.setCursor(DEFAULT_CURSOR);
+        svgCanvas.setCursor(DEFAULT_CURSOR);
         if (autoAdjust) {
             pack();
         }
@@ -874,7 +1012,7 @@ public class JSVGViewerFrame
         statusBar.setMainMessage("");
         statusBar.setMessage(resources.getString("Message.treeCancelled"));
         stopAction.update(false);
-        svgComponent.setCursor(DEFAULT_CURSOR);
+        svgCanvas.setCursor(DEFAULT_CURSOR);
     }
 
     /**
@@ -887,7 +1025,7 @@ public class JSVGViewerFrame
         statusBar.setMainMessage("");
         statusBar.setMessage(resources.getString("Message.treeFailed"));
         stopAction.update(false);
-        svgComponent.setCursor(DEFAULT_CURSOR);
+        svgCanvas.setCursor(DEFAULT_CURSOR);
     }
 
     // GVTTreeRendererListener /////////////////////////////////////////////
@@ -901,7 +1039,7 @@ public class JSVGViewerFrame
             time = System.currentTimeMillis();
         }
         stopAction.update(true);
-        svgComponent.setCursor(WAIT_CURSOR);
+        svgCanvas.setCursor(WAIT_CURSOR);
         statusBar.setMainMessage(resources.getString("Message.treeRendering"));
     }
 
@@ -923,10 +1061,10 @@ public class JSVGViewerFrame
         statusBar.setMainMessage("");
         statusBar.setMessage(resources.getString("Message.done"));
         if (initialTransform == null) {
-            initialTransform = svgComponent.getRenderingTransform();
+            initialTransform = svgCanvas.getRenderingTransform();
         }
         stopAction.update(false);
-        svgComponent.setCursor(DEFAULT_CURSOR);
+        svgCanvas.setCursor(DEFAULT_CURSOR);
     }
 
     /**
@@ -938,7 +1076,7 @@ public class JSVGViewerFrame
         }
         statusBar.setMainMessage("");
         stopAction.update(false);
-        svgComponent.setCursor(DEFAULT_CURSOR);
+        svgCanvas.setCursor(DEFAULT_CURSOR);
     }
 
     /**
@@ -950,7 +1088,7 @@ public class JSVGViewerFrame
         }
         statusBar.setMainMessage("");
         stopAction.update(false);
-        svgComponent.setCursor(DEFAULT_CURSOR);
+        svgCanvas.setCursor(DEFAULT_CURSOR);
     }
 
     /**

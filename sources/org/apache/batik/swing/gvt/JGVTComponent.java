@@ -217,6 +217,13 @@ public class JGVTComponent extends JComponent {
     }
 
     /**
+     * Returns the off-screen image, if any.
+     */
+    public BufferedImage getOffScreen() {
+        return image;
+    }
+
+    /**
      * Stops the processing of the current tree.
      */
     public void stopProcessing() {
