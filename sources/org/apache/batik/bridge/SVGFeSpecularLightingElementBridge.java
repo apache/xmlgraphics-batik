@@ -75,6 +75,9 @@ public class SVGFeSpecularLightingElementBridge
         // extract the light definition from the filterElement's children list
         Light light = extractLight(filterElement, ctx);
 
+        // 'kernelUnitLength' attribute
+        double [] kernelUnitLength = convertKernelUnitLength(filterElement);
+
         // 'in' attribute
         Filter in = getIn(filterElement,
                           filteredElement,
@@ -110,7 +113,9 @@ public class SVGFeSpecularLightingElementBridge
                                                        light,
                                                        specularConstant,
                                                        specularExponent,
-                                                       surfaceScale);
+                                                       surfaceScale,
+                                                       kernelUnitLength);
+
 
         // update the filter Map
         updateFilterMap(filterElement, filter, filterMap);

@@ -9,6 +9,7 @@
 package org.apache.batik.bridge;
 
 import java.awt.Color;
+import java.util.StringTokenizer;
 
 import org.apache.batik.ext.awt.image.DistantLight;
 import org.apache.batik.ext.awt.image.Light;
@@ -63,6 +64,41 @@ public abstract class SVGFeAbstractLightingElementBridge
                 (ctx, filterElement, e, color);
         }
         return null;
+    }
+
+    /**
+     * Convert the 'kernelUnitLength' attribute of the specified
+     * feDiffuseLighting or feSpecularLighting filter primitive element.
+     *
+     * @param filterElement the filter primitive element
+     */
+    protected static double [] convertKernelUnitLength(Element filterElement) {
+        String s = filterElement.getAttributeNS
+            (null, SVG_KERNEL_UNIT_LENGTH_ATTRIBUTE);
+        if (s.length() == 0) {
+            return null;
+        }
+        double [] units = new double[2];
+        StringTokenizer tokens = new StringTokenizer(s, " ,");
+        try {
+            units[0] = SVGUtilities.convertSVGNumber(tokens.nextToken());
+            if (tokens.hasMoreTokens()) {
+                units[1] = SVGUtilities.convertSVGNumber(tokens.nextToken());
+            } else {
+                units[1] = units[0];
+            }
+        } catch (NumberFormatException ex) {
+            throw new BridgeException
+                (filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                 new Object[] {SVG_KERNEL_UNIT_LENGTH_ATTRIBUTE, s});
+
+        }
+        if (tokens.hasMoreTokens() || units[0] <= 0 || units[1] <= 0) {
+            throw new BridgeException
+                (filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                 new Object[] {SVG_KERNEL_UNIT_LENGTH_ATTRIBUTE, s});
+        }
+        return units;
     }
 
     /**

@@ -31,7 +31,7 @@ import org.apache.batik.ext.awt.image.rendered.PadRed;
  * @author <a href="mailto:vincent.hardy@eng.sun.com>Vincent Hardy</a>
  * @version $Id$
  */
-public class DiffuseLightingRable8Bit 
+public class DiffuseLightingRable8Bit
     extends AbstractRable
     implements DiffuseLightingRable {
     /**
@@ -57,18 +57,20 @@ public class DiffuseLightingRable8Bit
     /**
      * The dx/dy to use in user space for the sobel gradient.
      */
-    float [] kernelUnitLength = null;
+    private float [] kernelUnitLength = null;
 
     public DiffuseLightingRable8Bit(Filter src,
-                                        Rectangle2D litRegion,
-                                        Light light,
-                                        double kd,
-                                        double surfaceScale){
+                                    Rectangle2D litRegion,
+                                    Light light,
+                                    double kd,
+                                    double surfaceScale,
+                                    double [] kernelUnitLength) {
         super(src, null);
         setLight(light);
         setKd(kd);
         setSurfaceScale(surfaceScale);
         setLitRegion(litRegion);
+        setKernelUnitLength(kernelUnitLength);
     }
 
     /**
@@ -149,11 +151,11 @@ public class DiffuseLightingRable8Bit
     }
 
     /**
-     * Returns the min [dx,dy] distance in user space for evalutation of 
+     * Returns the min [dx,dy] distance in user space for evalutation of
      * the sobel gradient.
      */
     public double [] getKernelUnitLength() {
-        if (kernelUnitLength == null) 
+        if (kernelUnitLength == null)
             return null;
 
         double [] ret = new double[2];
@@ -163,7 +165,7 @@ public class DiffuseLightingRable8Bit
     }
 
     /**
-     * Sets the min [dx,dy] distance in user space for evaluation of the 
+     * Sets the min [dx,dy] distance in user space for evaluation of the
      * sobel gradient. If set to zero or null then device space will be used.
      */
     public void setKernelUnitLength(double [] kernelUnitLength) {
@@ -175,7 +177,7 @@ public class DiffuseLightingRable8Bit
 
         if (this.kernelUnitLength == null)
             this.kernelUnitLength = new float[2];
-            
+
         this.kernelUnitLength[0] = (float)kernelUnitLength[0];
         this.kernelUnitLength[1] = (float)kernelUnitLength[1];
     }
@@ -190,18 +192,18 @@ public class DiffuseLightingRable8Bit
 
         AffineTransform at = rc.getTransform();
         Rectangle devRect = at.createTransformedShape(aoiR).getBounds();
-        
+
         if(devRect.width == 0 || devRect.height == 0){
             return null;
         }
 
         //
         // DiffuseLightingRed only operates on a scaled space.
-        // The following extracts the scale portion of the 
+        // The following extracts the scale portion of the
         // user to device transform
         //
         // The source is rendered with the scale-only transform
-        // and the rendered result is used as a bumpMap for the 
+        // and the rendered result is used as a bumpMap for the
         // DiffuseLightingRed filter.
         //
         double sx = at.getScaleX();
@@ -228,21 +230,21 @@ public class DiffuseLightingRable8Bit
             if ((kernelUnitLength[0] > 0) &&
                 (scaleX > 1/kernelUnitLength[0]))
                 scaleX = 1/kernelUnitLength[0];
-        
+
             if ((kernelUnitLength[1] > 0) &&
                 (scaleY > 1/kernelUnitLength[1]))
                 scaleY = 1/kernelUnitLength[1];
         }
-        
+
         AffineTransform scale =
             AffineTransform.getScaleInstance(scaleX, scaleY);
 
         devRect = scale.createTransformedShape(aoiR).getBounds();
 
         // Grow for surround needs of bump map.
-        aoiR.setRect(aoiR.getX()     -(2/scaleX), 
+        aoiR.setRect(aoiR.getX()     -(2/scaleX),
                      aoiR.getY()     -(2/scaleY),
-                     aoiR.getWidth() +(4/scaleX), 
+                     aoiR.getWidth() +(4/scaleX),
                      aoiR.getHeight()+(4/scaleY));
 
 
@@ -266,17 +268,17 @@ public class DiffuseLightingRable8Bit
             new AffineTransform(sx/scaleX, shy/scaleX,
                                 shx/scaleY, sy/scaleY,
                                 tx, ty);
-        
+
         if(!shearAt.isIdentity()) {
             RenderingHints rh = rc.getRenderingHints();
             Rectangle padRect = new Rectangle(devRect.x-1, devRect.y-1,
-                                              devRect.width+2, 
+                                              devRect.width+2,
                                               devRect.height+2);
             cr = new PadRed(cr, padRect, PadMode.REPLICATE, rh);
 
             cr = new AffineRed(cr, shearAt, rh);
         }
-       
+
         return cr;
     }
 }
