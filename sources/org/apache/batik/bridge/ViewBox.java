@@ -47,12 +47,13 @@ public abstract class ViewBox implements SVGConstants, ErrorConstants {
      * @param e the element interested in its view transform
      * @param w the width of the effective viewport
      * @param h The height of the effective viewport
+     * @exception BridgeException if an error occured while computing the
+     *            preserveAspectRatio transform
      */
     public static AffineTransform getViewTransform(String ref,
                                                    Element e,
                                                    float w,
-                                                   float h)
-        throws ParseException {
+                                                   float h) {
 
         // no reference has been specified, no extra viewBox is defined
         if (ref == null || ref.length() == 0) {
@@ -257,8 +258,11 @@ public abstract class ViewBox implements SVGConstants, ErrorConstants {
                                                         boolean meet,
                                                         float w,
                                                         float h) {
-        AffineTransform result = new AffineTransform();
+        if (vb == null) {
+            return new AffineTransform();
+        }
 
+        AffineTransform result = new AffineTransform();
         float vpar  = vb[2] / vb[3];
         float svgar = w / h;
 
