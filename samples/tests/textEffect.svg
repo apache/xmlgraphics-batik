@@ -51,11 +51,19 @@
 <glyph unicode="T" glyph-name="T" horiz-adv-x="1251" d="M531 0V1293H48V1466H1210V1293H725V0H531Z" />
 </font>
 
-	<linearGradient id="grad">
+	<linearGradient id="linearGradient">
 		<stop style="stop-color:gold" offset="0"/>
 		<stop style="stop-color:orange" offset=".5"/>
 		<stop style="stop-color:crimson" offset="1"/>
 	</linearGradient>
+
+
+      <radialGradient id="radialGradient">
+		<stop style="stop-color:gold" offset="0"/>
+		<stop style="stop-color:orange" offset=".5"/>
+		<stop style="stop-color:crimson" offset="1"/>
+	</radialGradient>
+
 
         <filter id="dropShadow"  filterUnits="objectBoundingBox">
             <feGaussianBlur in="SourceGraphic" stdDeviation="2 2" /> 
@@ -63,19 +71,32 @@
 
 </defs>
 
-  <text x="100" y="160" style="fill:url(#grad); font-size:40pt; font-family:Arial">BATIK
-	<tspan x="300" style="font-size:12; fill:black">(System font)</tspan>
+  <text x="120" y="160" style="fill:url(#linearGradient); font-size:40pt; font-family:Arial; text-anchor:middle">
+    BATIK
   </text>
 
-  <text x="100" y="260" style="fill:url(#grad); font-family:SVGArial; font-size:40pt">BATIK
-	<tspan x="300" style="font-size:12; fill:black">(SVG font)</tspan>
+  <text x="330" y="160" style="fill:url(#linearGradient); font-family:SVGArial; font-size:40pt; text-anchor:middle">
+    BATIK
   </text>
 
-  <text x="100" y="360" style="filter:url(#dropShadow); fill:red; font-size:40pt; font-family:Arial">BATIK</text>
-  <text x="300" y="360" style="font-size:12; filter:none; fill:black">(System font)</text>
+  <text x="120" y="260" style="stroke:url(#radialGradient); stroke-width:2; fill:none; font-size:40pt; text-anchor:middle; font-family:Arial">
+    BATIK
+  </text>
 
-  <text x="100" y="460" style="filter:url(#dropShadow); fill:red; font-family:SVGArial; font-size:40pt">BATIK</text>
-  <text x="300" y="460" style="font-size:12; filter:none; fill:black">(SVG font)</text>
+  <text x="330" y="260" style="stroke:url(#radialGradient); stroke-width:2; fill:none; font-family:SVGArial; font-size:40pt; text-anchor:middle">
+    BATIK
+  </text>
+
+  <text x="120" y="360" style="filter:url(#dropShadow); fill:red; font-size:40pt; font-family:Arial; text-anchor:middle">
+    BATIK
+  </text>
+  
+  <text x="330" y="360" style="filter:url(#dropShadow); fill:red; font-family:SVGArial; font-size:40pt; text-anchor:middle">
+    BATIK
+  </text>
+  
+  <text x="120" y="400" style="font-size:12; filter:none; fill:black; text-anchor:middle">(System font)</text>
+  <text x="330" y="400" style="font-size:12; filter:none; fill:black; text-anchor:middle">(SVG font)</text>
 
     </g>
 
