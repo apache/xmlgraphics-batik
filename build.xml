@@ -60,10 +60,12 @@ To display the available targets type:
 
   <target name="init" depends="init-args">
     <tstamp/>
-    <property name="Project" value="Batik"/>
-    <property name="project" value="batik"/>
-    <property name="year"    value="2002"/>
-    <property name="version" value="1.5"/>
+    <property name="Project"  value="Batik"/>
+    <property name="project"  value="batik"/>
+    <property name="year"     value="2002"/>
+    <property name="version"  value="1.5"/>
+    <property name="revisionType" value="beta"/>
+    <property name="revisionNumber" value="3" />
 
     <property file="build.properties"/>
     <property name="debug"       value="off"/>
@@ -157,6 +159,7 @@ To display the available targets type:
     <echo message="   printerdoc    --> generates the printable documentation in"/>
     <echo message="                     ${build}/docs/print"/>
     <echo message="   clean         --> cleans up the directory"/>
+    <echo message="   splash        --> updates documentation and browser splash screens"/>
     <echo message=""/>
     <echo message=" See the comments in the build.xml file for more details."/>
     <echo message=""/>
@@ -1054,6 +1057,34 @@ To display the available targets type:
   <target name="clean-docs" depends="init">
     <delete dir="${docs}"/>
   </target>
+
+  <!-- Generates splash screens for the documentation and the browser ..... -->
+
+  <!-- Simply transform the splash.xsl stylesheet, rasterize the result and -->
+  <!-- copy to all destinations                                             -->
+
+  <target name="splash" depends="compile" 
+          description="Updates documentation and browser splash screens">
+    <java fork="yes"
+          classname="org.apache.xalan.xslt.Process" >
+        <classpath>
+            <path refid="libs-build-classpath"/>
+        </classpath>
+        <arg line="-PARAM version ${version} -PARAM revisionType revisionType${revisionType} -PARAM revisionNumber revisionNumber${revisionNumber} -in ${xdocs}/images/splash.xsl -xsl ${xdocs}/images/splash.xsl -out ${xdocs}/images/splash.svg" />
+    </java>
+
+    <java fork="yes"
+          classname="${class-prefix}.apps.rasterizer.Main">
+      <classpath>
+        <pathelement location="${dest}" />
+        <path refid="libs-classpath"/>
+        <pathelement location="resources" />
+      </classpath>
+      <arg line="${xdocs}/images/splash.svg"/>
+    </java>
+    <copy file="${xdocs}/images/splash.png" tofile="${resources}/org/apache/batik/apps/svgbrowser/resources/batikSplash.png" />
+  </target>
+
 
   <!-- Cleans everything .................................................. -->
   <target name="clean"

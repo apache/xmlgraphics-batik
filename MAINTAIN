@@ -17,10 +17,19 @@ Distribution Creation
 
 For creating a distribution the following steps must be done:
 
- 1) modify build.xml with the distribution version. Only modify for main
-    releases (e.g. 1.1) but not for release candidates (e.g. 1.1rc3)
+ 1) modify build.xml with the distribution version. Only modify the version 
+    for main releases (e.g. version value="1.1") but not for release 
+    candidates or beta versions where only the revision type and number should be 
+    updated(e.g. revisionType value="beta" and revisionNumber value="3")
 
- 2) tag the release on CVS:
+ 2) update the splash screens:
+    build splash
+
+ 3) commit the updated splash screens into CVS:
+    cvs commit xdocs/images/splash.png  xdocs/images/splash.svg
+    cvs commit resources/org/apache/batik/apps/svgbrowser/resources/batikSplash.png
+
+ 4) tag the release on CVS:
       cvs rtag <tag> <module>
       e.g., cvs rtag batik-1_1rc3 xml-batik. 
     Note: sometimes, it is necessary to remove a tag because the 
@@ -29,16 +38,16 @@ For creating a distribution the following steps must be done:
       cvs rtag -d <tag> <module>
       e.g., cvs rtag -d batik-1_1rc3 xml-batik
 
- 3) checkout the tagged release:
+ 5) checkout the tagged release:
       cvs co -r <tag> xml-batik
       e.g., cvs co -r batik-1_1rc3 xml-batik
 
- 4) run the build script with target "dist-zip"
+ 6) run the build script with target "dist-zip"
       build dist-zip 
     this will create the binary release zip, the source release zip and the
     javadoc zip.
 
- 5) test the distributions
+ 7) test the distributions
       build regard
     The build results are in xml-batik/test-reports. Check that there
     are no show-stoppers for the release. If there are fixes required,
@@ -52,18 +61,18 @@ For creating a distribution the following steps must be done:
     http://www.w3.org/Graphics/SVG for instructions on how to get
     the SVG test suite.
 
- 5) Update the README file describing the content of the release and
+ 8) Update the README file describing the content of the release and
     the modifications which have taken place:
     http://xml.apache.org/batik/dist/README 
 
- 6) - If you are creating a release candidate, rename the distribution files
+ 9) - If you are creating a release candidate, rename the distribution files
       to an rc name. For example:
       mv batik-src-1.1.zip batik-src-1.1rc1.zip
 
     - scp the distributions and the README under /www/xml.apache.org/dist/batik/
     e.g., scp batik-1.1rc1.zip vhardy@xml.apache.org:/www/xml.apache.org/dist/batik/
 
- 7) send an email to the batik-dev and batik-users mailing lists announcing the
+10) send an email to the batik-dev and batik-users mailing lists announcing the
     release.
 
 Site Creation
