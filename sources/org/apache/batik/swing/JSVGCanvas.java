@@ -70,6 +70,61 @@ import org.w3c.dom.events.EventTarget;
 public class JSVGCanvas extends JSVGComponent {
 
     /**
+     * The key for the Action to scroll right.
+     */
+    public static final String SCROLL_RIGHT_ACTION = "ScrollRight";
+
+    /**
+     * The key for the Action to scroll left.
+     */
+    public static final String SCROLL_LEFT_ACTION = "ScrollLeft";
+
+    /**
+     * The key for the Action to scroll up.
+     */
+    public static final String SCROLL_UP_ACTION = "ScrollUp";
+
+    /**
+     * The key for the Action to scroll down.
+     */
+    public static final String SCROLL_DOWN_ACTION = "ScrollDown";
+    
+    /**
+     * The key for the Action to quickly scroll right.
+     */
+    public static final String FAST_SCROLL_RIGHT_ACTION = "FastScrollRight";
+
+    /**
+     * The key for the Action to quickly scroll left.
+     */
+    public static final String FAST_SCROLL_LEFT_ACTION = "FastScrollLeft";
+
+    /**
+     * The key for the Action to quickly scroll up.
+     */
+    public static final String FAST_SCROLL_UP_ACTION = "FastScrollUp";
+
+    /**
+     * The key for the Action to quickly scroll down.
+     */
+    public static final String FAST_SCROLL_DOWN_ACTION = "FastScrollDown";
+    
+    /**
+     * The key for the Action to zoom in.
+     */
+    public static final String ZOOM_IN_ACTION = "ZoomIn";
+
+    /**
+     * The key for the Action to zoom out.
+     */
+    public static final String ZOOM_OUT_ACTION = "ZoomOut";
+    
+    /**
+     * The key for the Action to reset the transform.
+     */
+    public static final String RESET_TRANSFORM_ACTION = "ResetTransform";
+
+    /**
      * This flag bit indicates whether or not the zoom interactor is
      * enabled. True means the zoom interactor is functional.
      */
@@ -147,6 +202,8 @@ public class JSVGCanvas extends JSVGComponent {
         intl.add(rotateInteractor);
         intl.add(resetTransformInteractor);
 
+	installActions();
+
 	if (eventsEnabled) {
 	    addMouseListener(new MouseAdapter() {
 		public void mousePressed(MouseEvent evt) {
@@ -154,7 +211,6 @@ public class JSVGCanvas extends JSVGComponent {
 		}
 	    });
 
-	    installActions();
 	    installKeyboardActions();
 	}
     }
@@ -166,20 +222,20 @@ public class JSVGCanvas extends JSVGComponent {
     protected void installActions() {
 	ActionMap actionMap = getActionMap();
 	
-	actionMap.put(ScrollRightAction.NAME, new ScrollRightAction());
-	actionMap.put(ScrollLeftAction.NAME, new ScrollLeftAction());
-	actionMap.put(ScrollUpAction.NAME, new ScrollUpAction());
-	actionMap.put(ScrollDownAction.NAME, new ScrollDownAction());
+	actionMap.put(SCROLL_RIGHT_ACTION, new ScrollRightAction(10));
+	actionMap.put(SCROLL_LEFT_ACTION, new ScrollLeftAction(10));
+	actionMap.put(SCROLL_UP_ACTION, new ScrollUpAction(10));
+	actionMap.put(SCROLL_DOWN_ACTION, new ScrollDownAction(10));
 	
-	actionMap.put(FastScrollRightAction.NAME, new FastScrollRightAction());
-	actionMap.put(FastScrollLeftAction.NAME, new FastScrollLeftAction());
-	actionMap.put(FastScrollUpAction.NAME, new FastScrollUpAction());
-	actionMap.put(FastScrollDownAction.NAME, new FastScrollDownAction());
+	actionMap.put(FAST_SCROLL_RIGHT_ACTION, new ScrollRightAction(30));
+	actionMap.put(FAST_SCROLL_LEFT_ACTION, new ScrollLeftAction(30));
+	actionMap.put(FAST_SCROLL_UP_ACTION, new ScrollUpAction(30));
+	actionMap.put(FAST_SCROLL_DOWN_ACTION, new ScrollDownAction(30));
 
-	actionMap.put(ZoomInAction.NAME, new ZoomInAction());
-	actionMap.put(ZoomOutAction.NAME, new ZoomOutAction());
+	actionMap.put(ZOOM_IN_ACTION, new ZoomInAction());
+	actionMap.put(ZOOM_OUT_ACTION, new ZoomOutAction());
 
-	actionMap.put(ResetTransformAction.NAME, new ResetTransformAction());
+	actionMap.put(RESET_TRANSFORM_ACTION, new ResetTransformAction());
     }
 
     /**
@@ -192,37 +248,37 @@ public class JSVGCanvas extends JSVGComponent {
 	KeyStroke key;
 
 	key = KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0);
-	inputMap.put(key, ScrollRightAction.NAME);
+	inputMap.put(key, SCROLL_RIGHT_ACTION);
 
 	key = KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0);
-	inputMap.put(key, ScrollLeftAction.NAME);
+	inputMap.put(key, SCROLL_LEFT_ACTION);
 
 	key = KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0);
-	inputMap.put(key, ScrollUpAction.NAME);
+	inputMap.put(key, SCROLL_UP_ACTION);
 
 	key = KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0);
-	inputMap.put(key, ScrollDownAction.NAME);
+	inputMap.put(key, SCROLL_DOWN_ACTION);
 
 	key = KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, KeyEvent.SHIFT_MASK);
-	inputMap.put(key, FastScrollRightAction.NAME);
+	inputMap.put(key, FAST_SCROLL_RIGHT_ACTION);
 
 	key = KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, KeyEvent.SHIFT_MASK);
-	inputMap.put(key, FastScrollLeftAction.NAME);
+	inputMap.put(key, FAST_SCROLL_LEFT_ACTION);
 
 	key = KeyStroke.getKeyStroke(KeyEvent.VK_UP, KeyEvent.SHIFT_MASK);
-	inputMap.put(key, FastScrollUpAction.NAME);
+	inputMap.put(key, FAST_SCROLL_UP_ACTION);
 
 	key = KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, KeyEvent.SHIFT_MASK);
-	inputMap.put(key, FastScrollDownAction.NAME);
+	inputMap.put(key, FAST_SCROLL_DOWN_ACTION);
 
 	key = KeyStroke.getKeyStroke(KeyEvent.VK_I, KeyEvent.CTRL_MASK);
-	inputMap.put(key, ZoomInAction.NAME);
+	inputMap.put(key, ZOOM_IN_ACTION);
 
 	key = KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_MASK);
-	inputMap.put(key, ZoomOutAction.NAME);
+	inputMap.put(key, ZOOM_OUT_ACTION);
 
 	key = KeyStroke.getKeyStroke(KeyEvent.VK_T, KeyEvent.CTRL_MASK);
-	inputMap.put(key, ResetTransformAction.NAME);
+	inputMap.put(key, RESET_TRANSFORM_ACTION);
     }
 
     /**
@@ -419,11 +475,8 @@ public class JSVGCanvas extends JSVGComponent {
      * A swing action to reset the rendering transform of the canvas.
      */
     protected class ResetTransformAction extends AbstractAction {
-
-	/** The action name. */
-	public static final String NAME = "resetTransform";
-
 	public void actionPerformed(ActionEvent evt) {
+	    setFragmentIdentifier(null);
             resetRenderingTransform();
 	}
     }
@@ -432,10 +485,6 @@ public class JSVGCanvas extends JSVGComponent {
      * A swing action to zoom in the canvas.
      */
     protected class ZoomInAction extends AbstractAction {
-
-	/** The action name. */
-	public static final String NAME = "zoomIn";
-
 	public void actionPerformed(ActionEvent evt) {
             AffineTransform at = getRenderingTransform();
             if (at != null) {
@@ -455,10 +504,6 @@ public class JSVGCanvas extends JSVGComponent {
      * A swing action to zoom out the canvas.
      */
     protected class ZoomOutAction extends AbstractAction {
-
-	/** The action name. */
-	public static final String NAME = "zoomOut";
-
 	public void actionPerformed(ActionEvent evt) {
             AffineTransform at = getRenderingTransform();
             if (at != null) {
@@ -479,11 +524,12 @@ public class JSVGCanvas extends JSVGComponent {
      */
     protected class ScrollRightAction extends AbstractAction {
 
-	/** The action name. */
-	public static final String NAME = "scrollRight";
-
 	/** The scroll increment. */
-	protected int inc = 10;
+	protected int inc;
+
+	public ScrollRightAction(int inc) {
+	    this.inc = inc;
+	}
 
 	public void actionPerformed(ActionEvent evt) {
 	    AffineTransform at = new AffineTransform(getRenderingTransform());
@@ -497,11 +543,12 @@ public class JSVGCanvas extends JSVGComponent {
      */
     protected class ScrollLeftAction extends AbstractAction {
 
-	/** The action name. */
-	public static final String NAME = "scrollLeft";
-
 	/** The scroll increment. */
-	protected int inc = 10;
+	protected int inc;
+
+	public ScrollLeftAction(int inc) {
+	    this.inc = inc;
+	}
 
 	public void actionPerformed(ActionEvent evt) {
 	    AffineTransform at = new AffineTransform(getRenderingTransform());
@@ -515,11 +562,12 @@ public class JSVGCanvas extends JSVGComponent {
      */
     protected class ScrollUpAction extends AbstractAction {
 
-	/** The action name. */
-	public static final String NAME = "scrollUp";
-
 	/** The scroll increment. */
-	protected int inc = 10;
+	protected int inc;
+
+	public ScrollUpAction(int inc) {
+	    this.inc = inc;
+	}
 
 	public void actionPerformed(ActionEvent evt) {
 	    AffineTransform at = new AffineTransform(getRenderingTransform());
@@ -533,68 +581,17 @@ public class JSVGCanvas extends JSVGComponent {
      */
     protected class ScrollDownAction extends AbstractAction {
 
-	/** The action name. */
-	public static final String NAME = "scrollDown";
-
 	/** The scroll increment. */
-	protected int inc = 10;
+	protected int inc;
+
+	public ScrollDownAction(int inc) {
+	    this.inc = inc;
+	}
 
 	public void actionPerformed(ActionEvent evt) {
 	    AffineTransform at = new AffineTransform(getRenderingTransform());
 	    at.translate(0, -inc);
 	    setRenderingTransform(at);
-	}
-    }
-
-    /**
-     * A swing action to scroll the canvas to the right fastely.
-     */
-    protected class FastScrollRightAction extends ScrollRightAction {
-
-	/** The action name. */
-	public static final String NAME = "fastScrollRight";
-
-	public FastScrollRightAction() {
-	    inc = 30;
-	}
-    }
-
-    /**
-     * A swing action to scroll the canvas to the left.
-     */
-    protected class FastScrollLeftAction extends ScrollLeftAction {
-
-	/** The action name. */
-	public static final String NAME = "fastScrollLeft";
-
-	public FastScrollLeftAction() {
-	    inc = 30;
-	}
-    }
-
-    /**
-     * A swing action to scroll the canvas up fastely.
-     */
-    protected class FastScrollUpAction extends ScrollUpAction {
-
-	/** The action name. */
-	public static final String NAME = "fastScrollUp";
-
-	public FastScrollUpAction() {
-	    inc = 30;
-	}
-    }
-
-    /**
-     * A swing action to scroll the canvas down fastely.
-     */
-    protected class FastScrollDownAction extends ScrollDownAction {
-
-	/** The action name. */
-	public static final String NAME = "fastScrollDown";
-
-	public FastScrollDownAction() {
-	    inc = 30;
 	}
     }
 
