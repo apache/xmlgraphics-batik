@@ -296,6 +296,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
         }
 
         this.root = gvtRoot;
+        ctx.dispose();
     }
 
     protected CanvasGraphicsNode getCanvasGraphicsNode(GraphicsNode gn) {
