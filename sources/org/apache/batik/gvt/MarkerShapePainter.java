@@ -12,12 +12,18 @@ import java.awt.Shape;
 import java.awt.Graphics2D;
 
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Arc2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.PathIterator;
 
 import java.util.List;
 import java.util.Vector;
+
+import org.apache.batik.ext.awt.geom.ExtendedGeneralPath;
+import org.apache.batik.ext.awt.geom.ExtendedPathIterator;
+import org.apache.batik.ext.awt.geom.ExtendedShape;
+import org.apache.batik.ext.awt.geom.ShapeExtender;
 
 /**
  * A shape painter that can be used to paint markers on a shape.
@@ -30,7 +36,7 @@ public class MarkerShapePainter implements ShapePainter {
     /** 
      * The Shape to be painted.
      */
-    protected Shape shape;
+    protected ExtendedShape extShape;
 
     /**
      * Start Marker
@@ -88,7 +94,11 @@ public class MarkerShapePainter implements ShapePainter {
         if (shape == null) {
             throw new IllegalArgumentException();
         }
-        this.shape = shape;
+        if (shape instanceof ExtendedShape) {
+            this.extShape = (ExtendedShape)shape;
+        } else {
+            this.extShape = new ShapeExtender(shape);
+        }
     }
 
     /**
@@ -138,11 +148,25 @@ public class MarkerShapePainter implements ShapePainter {
         if (shape == null) {
             throw new IllegalArgumentException();
         }
-        this.shape = shape;
+        if (shape instanceof ExtendedShape) {
+            this.extShape = (ExtendedShape)shape;
+        } else {
+            this.extShape = new ShapeExtender(shape);
+        }
+
         this.startMarkerProxy = null;
         this.middleMarkerProxies = null;
         this.endMarkerProxy = null;
 	this.markerGroup = null;
+    }
+
+    /**
+     * Gets the Shape this shape painter is associated with as an
+     * Extended Shape.
+     *
+     * @return shape associated with this painter */
+    public ExtendedShape getExtShape(){
+        return extShape;
     }
 
     /**
@@ -151,7 +175,7 @@ public class MarkerShapePainter implements ShapePainter {
      * @return shape associated with this painter
      */
     public Shape getShape(){
-        return shape;
+        return extShape;
     }
 
     /**
@@ -259,10 +283,10 @@ public class MarkerShapePainter implements ShapePainter {
      */
     protected ProxyGraphicsNode buildStartMarkerProxy() {
 
-        PathIterator iter = getShape().getPathIterator(null);
+        ExtendedPathIterator iter = getExtShape().getExtendedPathIterator();
 
         // Get initial point on the path
-        double coords[] = new double[6];
+        double coords[] = new double[7];
         int segType = 0;
 
         if (iter.isDone()) {
@@ -282,7 +306,7 @@ public class MarkerShapePainter implements ShapePainter {
         double rotation = startMarker.getOrient();
         if (Double.isNaN(rotation)) {
             if (!iter.isDone()) {
-                double next[] = new double[6];
+                double next[] = new double[7];
                 int nextSegType = 0;
                 nextSegType = iter.currentSegment(next);
                 if(nextSegType == PathIterator.SEG_CLOSE){
@@ -316,7 +340,7 @@ public class MarkerShapePainter implements ShapePainter {
      */
     protected ProxyGraphicsNode buildEndMarkerProxy() {
 
-        PathIterator iter = getShape().getPathIterator(null);
+        ExtendedPathIterator iter = getExtShape().getExtendedPathIterator();
 
         int nPoints = 0;
 
@@ -326,7 +350,7 @@ public class MarkerShapePainter implements ShapePainter {
             return null;
         }
 	
-        double coords[] = new double[6];
+        double coords[] = new double[7];
         double moveTo[] = new double[2];
         int segType = 0;
         segType = iter.currentSegment(coords);
@@ -340,9 +364,10 @@ public class MarkerShapePainter implements ShapePainter {
         iter.next();
         
         // Now, get the last two points on the path
-        double[] lastButOne = new double[6];
+        double[] lastButOne = new double[7];
         double[] last = {coords[0], coords[1], coords[2],
-                         coords[3], coords[4], coords[5] }, tmp = null;
+                         coords[3], coords[4], coords[5], coords[6] };
+        double[] tmp = null;
         int lastSegType = segType;
         int lastButOneSegType = 0;
 
@@ -398,17 +423,17 @@ public class MarkerShapePainter implements ShapePainter {
     }
 
     /**
-     * Builds a proxy <tt>GraphicsNode</tt> for the input <tt>Marker</tt> to be
-     * drawn at the middle positions 
+     * Builds a proxy <tt>GraphicsNode</tt> for the input
+     * <tt>Marker</tt> to be drawn at the middle positions 
      */
     protected ProxyGraphicsNode[] buildMiddleMarkerProxies() {
 
-        PathIterator iter = getShape().getPathIterator(null);
+        ExtendedPathIterator iter = getExtShape().getExtendedPathIterator();
 
-        double[] prev = new double[6];
-        double[] cur = new double[6];
-        double[] next = new double[6], tmp = null;
-        int prevSegType = 0, curSegType = 0, nextSegType = 0;
+        double[] prev = new double[7];
+        double[] curr = new double[7];
+        double[] next = new double[7], tmp = null;
+        int prevSegType = 0, currSegType = 0, nextSegType = 0;
 
         // Get the first three points on the path
         if (iter.isDone()) {
@@ -430,15 +455,15 @@ public class MarkerShapePainter implements ShapePainter {
             return null;
         }
 	
-        curSegType = iter.currentSegment(cur);
+        currSegType = iter.currentSegment(curr);
 
-        if (curSegType == PathIterator.SEG_MOVETO) {
-            moveTo[0] = cur[0];
-            moveTo[1] = cur[1];
-        } else if (curSegType == PathIterator.SEG_CLOSE) {
-            curSegType = PathIterator.SEG_LINETO;
-            cur[0] = moveTo[0];
-            cur[1] = moveTo[1];
+        if (currSegType == PathIterator.SEG_MOVETO) {
+            moveTo[0] = curr[0];
+            moveTo[1] = curr[1];
+        } else if (currSegType == PathIterator.SEG_CLOSE) {
+            currSegType = PathIterator.SEG_LINETO;
+            curr[0] = moveTo[0];
+            curr[1] = moveTo[1];
         }
 
         iter.next();
@@ -457,14 +482,14 @@ public class MarkerShapePainter implements ShapePainter {
             }
 	    
             proxies.addElement(createMiddleMarker(prev, prevSegType,
-                                                  cur, curSegType,
+                                                  curr, currSegType,
                                                   next, nextSegType));
             
             tmp = prev;
-            prev = cur;
-            prevSegType = curSegType;
-            cur = next;
-            curSegType = nextSegType;
+            prev = curr;
+            prevSegType = currSegType;
+            curr = next;
+            currSegType = nextSegType;
             next = tmp;
             
             iter.next();
@@ -479,22 +504,20 @@ public class MarkerShapePainter implements ShapePainter {
     /**
      * Creates a ProxyGraphicsNode for a middle marker.
      */
-    private ProxyGraphicsNode createMiddleMarker(double[] prev,
-						 int prevSegType,
-						 double[] cur,
-						 int curSegType,
-						 double[] next,
-						 int nextSegType){
+    private ProxyGraphicsNode createMiddleMarker
+        (double[] prev, int prevSegType,
+         double[] curr, int currSegType,
+         double[] next, int nextSegType) {
 
-        // Turn the cur segment into a position
-        Point2D markerPosition = getSegmentTerminatingPoint(cur, curSegType);
+        // Turn the curr segment into a position
+        Point2D markerPosition = getSegmentTerminatingPoint(curr, currSegType);
 
         // If the marker's orient property is NaN,
         // the slope needs to be computed
         double rotation = middleMarker.getOrient();
         if (Double.isNaN(rotation)) {
             rotation = computeRotation(prev, prevSegType,
-                                       cur, curSegType,
+                                       curr, currSegType,
                                        next, nextSegType);
         }
 	
@@ -514,21 +537,18 @@ public class MarkerShapePainter implements ShapePainter {
     /**
      * Returns the rotation according to the specified parameters.
      */
-    private double computeRotation(double[] prev,
-                                   int prevSegType,
-                                   double[] cur,
-                                   int curSegType,
-                                   double[] next,
-                                   int nextSegType){
+    private double computeRotation(double[] prev, int prevSegType,
+                                   double[] curr, int currSegType,
+                                   double[] next, int nextSegType){
 
         // Compute in slope, i.e., the slope of the segment
         // going into the current point
         double[] inSlope = computeInSlope(prev, prevSegType, 
-                                          cur, curSegType);
+                                          curr, currSegType);
 
         // Compute out slope, i.e., the slope of the segment
         // going out of the current point
-        double[] outSlope = computeOutSlope(cur, curSegType, 
+        double[] outSlope = computeOutSlope(curr, currSegType, 
                                             next, nextSegType);
 
         if (inSlope == null) {
@@ -553,39 +573,76 @@ public class MarkerShapePainter implements ShapePainter {
     /**
      * Returns dx/dy for the in slope.
      */
-    private double[] computeInSlope(double[] prev,
-                                    int prevSegType,
-                                    double[] cur,
-                                    int curSegType){
+    private double[] computeInSlope(double[] prev, int prevSegType,
+                                    double[] curr, int currSegType){
 
         // Compute point into which the slope runs
-        Point2D curEndPoint = getSegmentTerminatingPoint(cur, curSegType);
+        Point2D currEndPoint = getSegmentTerminatingPoint(curr, currSegType);
 
         double dx = 0;
-	double dy = 0;
+        double dy = 0;
 
-        switch(curSegType){
-        case PathIterator.SEG_QUADTO:
-            // If the current segment is a line, quad or cubic curve.  the slope
-            // is about equal to that of the line from the last control point
-            // and the curEndPoint
-            dx = curEndPoint.getX() - cur[0];
-            dy = curEndPoint.getY() - cur[1];
-            break;
-        case PathIterator.SEG_LINETO:
+        switch(currSegType){
+        case PathIterator.SEG_LINETO: {
             // This is equivalent to a line from the previous segment's
             // terminating point and the current end point.
             Point2D prevEndPoint = 
-		getSegmentTerminatingPoint(prev, prevSegType);
-            dx = curEndPoint.getX() - prevEndPoint.getX();
-            dy = curEndPoint.getY() - prevEndPoint.getY();
+                getSegmentTerminatingPoint(prev, prevSegType);
+            dx = currEndPoint.getX() - prevEndPoint.getX();
+            dy = currEndPoint.getY() - prevEndPoint.getY();
+        }
+            break;
+        case PathIterator.SEG_QUADTO:
+            // If the current segment is a line, quad or cubic curve.
+            // the slope is about equal to that of the line from the
+            // last control point and the curEndPoint
+            dx = currEndPoint.getX() - curr[0];
+            dy = currEndPoint.getY() - curr[1];
             break;
         case PathIterator.SEG_CUBICTO:
-            // If the current segment is a line, quad or cubic curve.  the slope
-            // is about equal to that of the line from the last control point
-            // and the curEndPoint
-            dx = curEndPoint.getX() - cur[2];
-            dy = curEndPoint.getY() - cur[3];
+            // If the current segment is a quad or cubic curve.
+            // the slope is about equal to that of the line from the
+            // last control point and the curEndPoint
+            dx = currEndPoint.getX() - curr[2];
+            dy = currEndPoint.getY() - curr[3];
+            break;
+        case ExtendedPathIterator.SEG_ARCTO: {
+            // If the current segment is an ARCTO then we build the
+            // arc and ask for it's end angle and get the tangent there.
+            Point2D prevEndPoint = 
+                getSegmentTerminatingPoint(prev, prevSegType);
+            boolean large   = (curr[3]!=0.);
+            boolean goLeft = (curr[4]!=0.);
+            Arc2D arc = ExtendedGeneralPath.computeArc
+                (prevEndPoint.getX(), prevEndPoint.getY(),
+                 curr[0], curr[1], curr[2],
+                 large, goLeft, curr[5], curr[6]);
+            double theta = arc.getAngleStart()+arc.getAngleExtent();
+            theta = Math.toRadians(theta);
+            dx = -arc.getWidth()/2.0*Math.sin(theta);
+            dy = arc.getHeight()/2.0*Math.cos(theta);
+
+            // System.out.println("In  Theta:  " + Math.toDegrees(theta) +  
+            //                    " Dx/Dy: " + dx + "/" + dy);
+            if (curr[2] != 0) {
+                double ang = Math.toRadians(-curr[2]);
+                double sinA = Math.sin(ang);
+                double cosA = Math.cos(ang);
+                double tdx = dx*cosA - dy*sinA;
+                double tdy = dx*sinA + dy*cosA;
+                dx = tdx;
+                dy = tdy;
+            }
+            // System.out.println("    Rotate: " + curr[2] + 
+            //                    " Dx/Dy: " + dx + "/" + dy);
+            if (goLeft) {
+                dx = -dx;
+            } else {
+                dy = -dy;
+            }
+            // System.out.println("    GoLeft? " + goLeft + 
+            //                    " Dx/Dy: " + dx + "/" + dy);
+        }
             break;
         case PathIterator.SEG_CLOSE:
             // Should not have any close at this point
@@ -606,28 +663,62 @@ public class MarkerShapePainter implements ShapePainter {
     /**
      * Returns dx/dy for the out slope.
      */
-    private double[] computeOutSlope(double[] cur,
-                                     int curSegType,
-                                     double[] next,
-                                     int nextSegType){
+    private double[] computeOutSlope(double[] curr, int currSegType,
+                                     double[] next, int nextSegType){
 
-        Point2D curEndPoint = getSegmentTerminatingPoint(cur, curSegType);
+        Point2D currEndPoint = getSegmentTerminatingPoint(curr, currSegType);
         
         double dx = 0, dy = 0;
 
         switch(nextSegType){
         case PathIterator.SEG_CLOSE:
-            // Should not happen at this point, because all close segments have
-            // been replaced by lineTo segments.
+            // Should not happen at this point, because all close
+            // segments have been replaced by lineTo segments.
             break;
         case PathIterator.SEG_CUBICTO:
         case PathIterator.SEG_LINETO:
         case PathIterator.SEG_QUADTO:
-            // If the next segment is a line, quad or cubic curve.  the slope is
-            // about equal to that of the line from curEndPoint and the first
-            // control point
-            dx = next[0] - curEndPoint.getX();
-            dy = next[1] - curEndPoint.getY();
+            // If the next segment is a line, quad or cubic curve.
+            // the slope is about equal to that of the line from
+            // curEndPoint and the first control point
+            dx = next[0] - currEndPoint.getX();
+            dy = next[1] - currEndPoint.getY();
+            break;
+        case ExtendedPathIterator.SEG_ARCTO: {
+            // If the current segment is an ARCTO then we build the
+            // arc and ask for it's end angle and get the tangent there.
+            boolean large   = (next[3]!=0.);
+            boolean goLeft = (next[4]!=0.);
+            Arc2D arc = ExtendedGeneralPath.computeArc
+                (currEndPoint.getX(), currEndPoint.getY(),
+                 next[0], next[1], next[2],
+                 large, goLeft, next[5], next[6]);
+            double theta = arc.getAngleStart();
+            theta = Math.toRadians(theta);
+            dx = -arc.getWidth()/2.0*Math.sin(theta);
+            dy = arc.getHeight()/2.0*Math.cos(theta);
+            // System.out.println("Out Theta:  " + Math.toDegrees(theta) +  
+            //                    " Dx/Dy: " + dx + "/" + dy);
+            if (next[2] != 0) {
+                double ang = Math.toRadians(-next[2]);
+                double sinA = Math.sin(ang);
+                double cosA = Math.cos(ang);
+                double tdx = dx*cosA - dy*sinA;
+                double tdy = dx*sinA + dy*cosA;
+                dx = tdx;
+                dy = tdy;
+            }
+            // System.out.println("    Rotate: " + next[2] + 
+            //                    " Dx/Dy: " + dx + "/" + dy);
+
+            if (goLeft) {
+                dx = -dx;
+            } else {
+                dy = -dy;
+            }
+            // System.out.println("    GoLeft? " + goLeft + 
+            //                    " Dx/Dy: " + dx + "/" + dy);
+        }
             break;
         case PathIterator.SEG_MOVETO:
             // Cannot compute the out slope
@@ -680,6 +771,8 @@ public class MarkerShapePainter implements ShapePainter {
             return new Point2D.Double(coords[0], coords[1]);
         case PathIterator.SEG_QUADTO:
             return new Point2D.Double(coords[2], coords[3]);
+        case ExtendedPathIterator.SEG_ARCTO:
+            return new Point2D.Double(coords[5], coords[6]);
         case PathIterator.SEG_CLOSE:
         default:
             throw new Error(); 
