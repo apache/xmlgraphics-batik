@@ -755,10 +755,14 @@ public class DecoratedShapeNode extends ShapeNode {
     public Rectangle2D getGeometryBounds(GraphicsNodeRenderContext rc){
         if (dGeometryBounds == null) {
             Rectangle2D shapeGeometryBounds = super.getGeometryBounds(rc);
-            Rectangle2D markerGroupGeometryBounds 
-                = markerGroup.getGeometryBounds(rc);
+            Rectangle2D markerGroupGeometryBounds = null;
+            if(markerGroup.getChildren().size() > 0){
+                    markerGroupGeometryBounds = markerGroup.getGeometryBounds(rc);
+            }
             dGeometryBounds  = (Rectangle2D)shapeGeometryBounds.clone();
-            dGeometryBounds.add(markerGroupGeometryBounds);
+            if(markerGroupGeometryBounds != null){
+                dGeometryBounds.add(markerGroupGeometryBounds);
+            }
         }
         return dGeometryBounds;
     }
