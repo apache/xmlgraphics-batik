@@ -193,7 +193,7 @@ public final class CompositeRule implements java.io.Serializable {
         this.rule = rule;
     }
 
-    private CompositeRule(float k1, float k2, float k3, float k4) {
+    public CompositeRule(float k1, float k2, float k3, float k4) {
         rule = RULE_ARITHMETIC;
         this.k1 = k1;
         this.k2 = k2;
