@@ -125,24 +125,20 @@ public class ConcreteGVTBuilder implements GVTBuilder, SVGConstants {
      */
     public GraphicsNode build(BridgeContext ctx, Element element){
 
-        GraphicsNodeBridge graphicsNodeBridge =
-            (GraphicsNodeBridge)ctx.getBridge(element);
+        GraphicsNode treeRoot = null;
 
-        if (graphicsNodeBridge == null)
-            throw new IllegalArgumentException(
-                 "Bridge for "+element.getTagName()+" is not registered");
+        Bridge bridge = ctx.getBridge(element);
 
-        GraphicsNode treeRoot;
-        treeRoot = graphicsNodeBridge.createGraphicsNode(ctx, element);
-
-        if(treeRoot instanceof CompositeGraphicsNode){
-            buildComposite(ctx,
-                           (CompositeGraphicsNode)treeRoot,
-                           element.getFirstChild());
+        if (bridge != null && bridge instanceof GraphicsNodeBridge) {
+            GraphicsNodeBridge graphicsNodeBridge = (GraphicsNodeBridge) bridge;
+            treeRoot = graphicsNodeBridge.createGraphicsNode(ctx, element);
+            if(treeRoot instanceof CompositeGraphicsNode) {
+                buildComposite(ctx,
+                               (CompositeGraphicsNode)treeRoot,
+                               element.getFirstChild());
+            }
+            graphicsNodeBridge.buildGraphicsNode(treeRoot, ctx, element);
         }
-
-        graphicsNodeBridge.buildGraphicsNode(treeRoot, ctx, element);
-
         return treeRoot;
     }
 
