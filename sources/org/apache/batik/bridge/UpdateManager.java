@@ -313,21 +313,21 @@ public class UpdateManager  {
      */
     public synchronized void interrupt() {
         if (updateRunnableQueue.getThread() != null) {
-            if (started) {
-                dispatchSVGUnLoadEvent();
-            } else {
-                // Invoke first to cancel the pending tasks
-                updateRunnableQueue.preemptLater(new Runnable() {
-                        public void run() {
+            // Preempt to cancel the pending tasks
+            updateRunnableQueue.preemptLater(new Runnable() {
+                    public void run() {
+                        if (started) {
+                            dispatchSVGUnLoadEvent();
+                        } else {
                             synchronized (UpdateManager.this) {
                                 running = false;
                                 scriptingEnvironment.interrupt();
                                 updateRunnableQueue.getThread().interrupt();
                             }
                         }
-                    });
-                resume();
-            }
+                    }
+                });
+            resume();
         }
     }
 

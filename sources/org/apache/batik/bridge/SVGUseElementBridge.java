@@ -198,6 +198,10 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
         root.appendChild(localRefElement);
 
         SVGOMUseElement ue = (SVGOMUseElement)e;
+        Node oldRoot = ue.getCSSImportedElementRoot();
+        if (oldRoot != null) {
+            disposeTree(oldRoot);
+        }
         ue.setCSSImportedElementRoot(root);
 
         Element g = localRefElement;

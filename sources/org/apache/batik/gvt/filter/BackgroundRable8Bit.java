@@ -204,8 +204,11 @@ public class BackgroundRable8Bit
             // Add our childrens bounds to it...
             CompositeGraphicsNode cgn = (CompositeGraphicsNode)gn;
             r2d = addBounds(cgn, child, r2d);
-        } else
-            r2d.add(gn.getPrimitiveBounds());
+        } else {
+            Rectangle2D gnb = gn.getPrimitiveBounds();
+            if (gnb != null)
+                r2d.add(gnb);
+        }
 
         return r2d;
     }
