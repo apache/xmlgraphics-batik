@@ -68,7 +68,11 @@ public class EcmaLoadTest extends DefaultTestSuite {
                                  "ecmaCheckLoadEmbedAttr",
         };
         boolean[] secure = {true, false};
-        String[] scriptOrigin = {"any", "document", "embeded"};
+        String[][] scriptOrigin = {{"any"},
+                                   {"any", "document"},
+                                   {"any", "document", "embeded"},
+                                   {"any", "document", "embeded"},
+                                   };;
 
         //
         // <!> Need to make restricted {true/false}
@@ -82,10 +86,10 @@ public class EcmaLoadTest extends DefaultTestSuite {
         // influence on whether or not the script can be loaded.
         //
         for (int i=0; i<scriptSource.length; i++) {
-            for (int j=0; j<=i; j++) {
+            for (int j=0; j<scriptOrigin[i].length; j++) {
                 for (int k=0; k<secure.length; k++) {
                     ScriptSelfTest t= buildTest(scripts, scriptSource[i],
-                                                scriptOrigin[j],
+                                                scriptOrigin[i][j],
                                                 secure[k]);
                     addTest(t);
                 }
