@@ -699,10 +699,20 @@ public abstract class UnitProcessor {
     protected static float pixelsToEms(float v, short d, Context ctx) {
         CSSPrimitiveValue fontSize = ctx.getFontSize();
         short type = fontSize.getPrimitiveType();
-        return v / cssToUserSpace(fontSize.getFloatValue(type),
-                                  type,
-                                  d,
-                                  ctx);
+        switch (type) {
+            case CSSPrimitiveValue.CSS_IDENT:
+                float fs = ctx.getMediumFontSize();
+                fs = TextUtilities.parseFontSize(fontSize.getStringValue(), fs);
+                return v / cssToUserSpace(fs,
+                                          CSSPrimitiveValue.CSS_PT,
+                                          d,
+                                          ctx);
+            default:
+                return v / cssToUserSpace(fontSize.getFloatValue(type),
+                                          type,
+                                          d,
+                                          ctx);
+        }
     }
 
     /**
@@ -715,10 +725,20 @@ public abstract class UnitProcessor {
     protected static float emsToPixels(float v, short d, Context ctx) {
         CSSPrimitiveValue fontSize = ctx.getFontSize();
         short type = fontSize.getPrimitiveType();
-        return v * cssToUserSpace(fontSize.getFloatValue(type),
-                                  type,
-                                  d,
-                                  ctx);
+        switch (type) {
+            case CSSPrimitiveValue.CSS_IDENT:
+                float fs = ctx.getMediumFontSize();
+                fs = TextUtilities.parseFontSize(fontSize.getStringValue(), fs);
+                return v * cssToUserSpace(fs,
+                                          CSSPrimitiveValue.CSS_PT,
+                                          d,
+                                          ctx);
+            default:
+                return v * cssToUserSpace(fontSize.getFloatValue(type),
+                                          type,
+                                          d,
+                                          ctx);
+        }
     }
 
     /**
@@ -731,12 +751,24 @@ public abstract class UnitProcessor {
     protected static float pixelsToExs(float v, short d, Context ctx) {
         CSSPrimitiveValue fontSize = ctx.getFontSize();
         short type = fontSize.getPrimitiveType();
-        float fs = cssToUserSpace(fontSize.getFloatValue(type),
-                                  type,
-                                  d,
-                                  ctx);
+        float fontSizeVal;
+        switch (type) {
+            case CSSPrimitiveValue.CSS_IDENT:
+                float fs = ctx.getMediumFontSize();
+                fs = TextUtilities.parseFontSize(fontSize.getStringValue(), fs);
+                fontSizeVal = cssToUserSpace(fs,
+                                             CSSPrimitiveValue.CSS_PT,
+                                             d,
+                                             ctx);
+                break;
+            default:
+                fontSizeVal = cssToUserSpace(fontSize.getFloatValue(type),
+                                             type,
+                                             d,
+                                             ctx);
+        }
         float xh = ctx.getXHeight();
-        return v / xh / fs;
+        return v / xh / fontSizeVal;
     }
 
     /**
@@ -749,12 +781,24 @@ public abstract class UnitProcessor {
     protected static float exsToPixels(float v, short d, Context ctx) {
         CSSPrimitiveValue fontSize = ctx.getFontSize();
         short type = fontSize.getPrimitiveType();
-        float fs = cssToUserSpace(fontSize.getFloatValue(type),
-                                  type,
-                                  d,
-                                  ctx);
+        float fontSizeVal;
+        switch (type) {
+            case CSSPrimitiveValue.CSS_IDENT:
+                float fs = ctx.getMediumFontSize();
+                fs = TextUtilities.parseFontSize(fontSize.getStringValue(), fs);
+                fontSizeVal = cssToUserSpace(fs,
+                                             CSSPrimitiveValue.CSS_PT,
+                                             d,
+                                             ctx);
+                break;
+            default:
+                fontSizeVal = cssToUserSpace(fontSize.getFloatValue(type),
+                                             type,
+                                             d,
+                                             ctx);
+        }
         float xh = ctx.getXHeight();
-        return v * xh * fs;
+        return v * xh * fontSizeVal;
     }
 
 
