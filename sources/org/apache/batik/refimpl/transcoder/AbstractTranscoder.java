@@ -42,8 +42,6 @@ public abstract class AbstractTranscoder implements Transcoder {
     public AbstractTranscoder() {
         hints.put(TranscodingHints.KEY_XML_PARSER_CLASSNAME,
                   "org.apache.crimson.parser.XMLReaderImpl");
-        hints.put(TranscodingHints.KEY_BACKGROUND,
-                  Color.white);
         hints.put(TranscodingHints.KEY_GVT_BUILDER,
                   new org.apache.batik.refimpl.bridge.ConcreteGVTBuilder());
     }
