@@ -10,6 +10,8 @@ package org.apache.batik.bridge;
 
 import java.awt.Point;
 
+import java.awt.event.KeyEvent;
+
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
@@ -162,7 +164,7 @@ public class BridgeEventSupport implements SVGConstants {
                                 evt.isAltDown(),
                                 evt.isShiftDown(), 
                                 evt.isMetaDown(),
-                                evt.getKeyCode(), 
+                                mapKeyCode(evt.getKeyCode()), 
                                 evt.getKeyChar(),
                                 null);
 
@@ -170,6 +172,25 @@ public class BridgeEventSupport implements SVGConstants {
                 ((EventTarget)targetElement).dispatchEvent(keyEvt);
             } catch (RuntimeException e) {
                 ua.displayError(e);
+            }
+        }
+
+        /**
+         * The java KeyEvent keyCodes and the DOMKeyEvent keyCodes
+         * map except for the VK_ENTER code (which has a different value
+         * in DOM and the VK_KANA_LOCK and VK_INPUT_METHOD_ON_OFF which
+         * have no DOM equivalent.
+         */
+        protected final int mapKeyCode(int keyCode) {
+            switch (keyCode) {
+                case KeyEvent.VK_ENTER:
+                    return DOMKeyEvent.DOM_VK_ENTER; 
+            case KeyEvent.VK_KANA_LOCK:
+                return DOMKeyEvent.DOM_VK_UNDEFINED;
+            case KeyEvent.VK_INPUT_METHOD_ON_OFF:
+                return DOMKeyEvent.DOM_VK_UNDEFINED;
+            default:
+                return keyCode;
             }
         }
 

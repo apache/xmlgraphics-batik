@@ -1,0 +1,609 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN"
+"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+
+
+<!-- ========================================================================= -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.        -->
+<!--                                                                           -->
+<!-- This software is published under the terms of the Apache Software License -->
+<!-- version 1.1, a copy of which has been included with this distribution in  -->
+<!-- the LICENSE file.                                                         -->
+<!-- ========================================================================= -->
+
+<!-- ========================================================================= -->
+<!-- Traces the DOM_VK_* values on keydown events                              -->
+<!--                                                                           -->
+<!-- @author vincent.hardy@sun.com                                             -->
+<!-- @version $Id$ -->
+<!-- ========================================================================= -->
+
+<?xml-stylesheet type="text/css" href="../../resources/style/test.css" ?>
+
+<svg xmlns="http://www.w3.org/2000/svg" 
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     id="body" width="450" height="500" viewBox="0 0 450 500">
+
+    <rect x="0" y="0" width="100%" height="100%" fill="white"
+          onkeydown="traceKeyCode(evt)" />
+
+    <text class="title" x="50%" y="50">KeyEvents test: DOM_VK_* values</text>
+
+  <script type="text/ecmascript"><![CDATA[
+
+var traceText = document.createTextNode("");
+var trace = document.getElementById('trace');
+trace.appendChild(traceText);
+
+function traceKeyCode(evt) {
+    var keyCode = evt.keyCode;
+    var keyCodeStr = "";
+
+    switch (keyCode) {
+        case evt.DOM_VK_0:
+            keyCodeStr = "DOM_VK_0"; break;
+
+        case evt.DOM_VK_1:
+            keyCodeStr = "DOM_VK_1"; break;
+
+        case evt.DOM_VK_2:
+            keyCodeStr = "DOM_VK_2"; break;
+
+        case evt.DOM_VK_3:
+            keyCodeStr = "DOM_VK_3"; break;
+
+        case evt.DOM_VK_4:
+            keyCodeStr = "DOM_VK_4"; break;
+
+        case evt.DOM_VK_5:
+            keyCodeStr = "DOM_VK_5"; break;
+
+        case evt.DOM_VK_6:
+            keyCodeStr = "DOM_VK_6"; break;
+
+        case evt.DOM_VK_7:
+            keyCodeStr = "DOM_VK_7"; break;
+
+        case evt.DOM_VK_8:
+            keyCodeStr = "DOM_VK_8"; break;
+
+        case evt.DOM_VK_9:
+            keyCodeStr = "DOM_VK_9"; break;
+
+        case evt.DOM_VK_A:
+            keyCodeStr = "DOM_VK_A"; break;
+
+        case evt.DOM_VK_ACCEPT:
+            keyCodeStr = "DOM_VK_ACCEPT"; break;
+
+        case evt.DOM_VK_ADD:
+            keyCodeStr = "DOM_VK_ADD"; break;
+
+        case evt.DOM_VK_AGAIN:
+            keyCodeStr = "DOM_VK_AGAIN"; break;
+
+        case evt.DOM_VK_ALL_CANDIDATES:
+            keyCodeStr = "DOM_VK_ALL_CANDIDATES"; break;
+
+        case evt.DOM_VK_ALPHANUMERIC:
+            keyCodeStr = "DOM_VK_ALPHANUMERIC"; break;
+
+        case evt.DOM_VK_ALT:
+            keyCodeStr = "DOM_VK_ALT"; break;
+
+        case evt.DOM_VK_ALT_GRAPH:
+            keyCodeStr = "DOM_VK_ALT_GRAPH"; break;
+
+        case evt.DOM_VK_AMPERSAND:
+            keyCodeStr = "DOM_VK_AMPERSAND"; break;
+
+        case evt.DOM_VK_ASTERISK:
+            keyCodeStr = "DOM_VK_ASTERISK"; break;
+
+        case evt.DOM_VK_AT:
+            keyCodeStr = "DOM_VK_AT"; break;
+
+        case evt.DOM_VK_B:
+            keyCodeStr = "DOM_VK_B"; break;
+
+        case evt.DOM_VK_BACK_QUOTE:
+            keyCodeStr = "DOM_VK_BACK_QUOTE"; break;
+
+        case evt.DOM_VK_BACK_SLASH:
+            keyCodeStr = "DOM_VK_BACK_SLASH"; break;
+
+        case evt.DOM_VK_BACK_SPACE:
+            keyCodeStr = "DOM_VK_BACK_SPACE"; break;
+
+        case evt.DOM_VK_BRACELEFT:
+            keyCodeStr = "DOM_VK_BRACELEFT"; break;
+
+        case evt.DOM_VK_BRACERIGHT:
+            keyCodeStr = "DOM_VK_BRACERIGHT"; break;
+
+        case evt.DOM_VK_C:
+            keyCodeStr = "DOM_VK_C"; break;
+
+        case evt.DOM_VK_CANCEL:
+            keyCodeStr = "DOM_VK_CANCEL"; break;
+
+        case evt.DOM_VK_CAPS_LOCK:
+            keyCodeStr = "DOM_VK_CAPS_LOCK"; break;
+
+        case evt.DOM_VK_CIRCUMFLEX:
+            keyCodeStr = "DOM_VK_CIRCUMFLEX"; break;
+
+        case evt.DOM_VK_CLEAR:
+            keyCodeStr = "DOM_VK_CLEAR"; break;
+
+        case evt.DOM_VK_CLOSE_BRACKET:
+            keyCodeStr = "DOM_VK_CLOSE_BRACKET"; break;
+
+        case evt.DOM_VK_CODE_INPUT:
+            keyCodeStr = "DOM_VK_CODE_INPUT"; break;
+
+        case evt.DOM_VK_COLON:
+            keyCodeStr = "DOM_VK_COLON"; break;
+
+        case evt.DOM_VK_COMMA:
+            keyCodeStr = "DOM_VK_COMMA"; break;
+
+        case evt.DOM_VK_COMPOSE:
+            keyCodeStr = "DOM_VK_COMPOSE"; break;
+
+        case evt.DOM_VK_CONTROL:
+            keyCodeStr = "DOM_VK_CONTROL"; break;
+
+        case evt.DOM_VK_CONVERT:
+            keyCodeStr = "DOM_VK_CONVERT"; break;
+
+        case evt.DOM_VK_COPY:
+            keyCodeStr = "DOM_VK_COPY"; break;
+
+        case evt.DOM_VK_CUT:
+            keyCodeStr = "DOM_VK_CUT"; break;
+
+        case evt.DOM_VK_D:
+            keyCodeStr = "DOM_VK_D"; break;
+
+        case evt.DOM_VK_DEAD_ABOVEDOT:
+            keyCodeStr = "DOM_VK_DEAD_ABOVEDOT"; break;
+
+        case evt.DOM_VK_DEAD_ABOVERING:
+            keyCodeStr = "DOM_VK_DEAD_ABOVERING"; break;
+
+        case evt.DOM_VK_DEAD_ACUTE:
+            keyCodeStr = "DOM_VK_DEAD_ACUTE"; break;
+
+        case evt.DOM_VK_DEAD_BREVE:
+            keyCodeStr = "DOM_VK_DEAD_BREVE"; break;
+
+        case evt.DOM_VK_DEAD_CARON:
+            keyCodeStr = "DOM_VK_DEAD_CARON"; break;
+
+        case evt.DOM_VK_DEAD_CEDILLA:
+            keyCodeStr = "DOM_VK_DEAD_CEDILLA"; break;
+
+        case evt.DOM_VK_DEAD_CIRCUMFLEX:
+            keyCodeStr = "DOM_VK_DEAD_CIRCUMFLEX"; break;
+
+        case evt.DOM_VK_DEAD_DIAERESIS:
+            keyCodeStr = "DOM_VK_DEAD_DIAERESIS"; break;
+
+        case evt.DOM_VK_DEAD_DOUBLEACUTE:
+            keyCodeStr = "DOM_VK_DEAD_DOUBLEACUTE"; break;
+
+        case evt.DOM_VK_DEAD_GRAVE:
+            keyCodeStr = "DOM_VK_DEAD_GRAVE"; break;
+
+        case evt.DOM_VK_DEAD_IOTA:
+            keyCodeStr = "DOM_VK_DEAD_IOTA"; break;
+
+        case evt.DOM_VK_DEAD_MACRON:
+            keyCodeStr = "DOM_VK_DEAD_MACRON"; break;
+
+        case evt.DOM_VK_DEAD_OGONEK:
+            keyCodeStr = "DOM_VK_DEAD_OGONEK"; break;
+
+        case evt.DOM_VK_DEAD_SEMIVOICED_SOUND:
+            keyCodeStr = "DOM_VK_DEAD_SEMIVOICED_SOUND"; break;
+
+        case evt.DOM_VK_DEAD_TILDE:
+            keyCodeStr = "DOM_VK_DEAD_TILDE"; break;
+
+        case evt.DOM_VK_DEAD_VOICED_SOUND:
+            keyCodeStr = "DOM_VK_DEAD_VOICED_SOUND"; break;
+
+        case evt.DOM_VK_DECIMAL:
+            keyCodeStr = "DOM_VK_DECIMAL"; break;
+
+        case evt.DOM_VK_DELETE:
+            keyCodeStr = "DOM_VK_DELETE"; break;
+
+        case evt.DOM_VK_DIVIDE:
+            keyCodeStr = "DOM_VK_DIVIDE"; break;
+
+        case evt.DOM_VK_DOLLAR:
+            keyCodeStr = "DOM_VK_DOLLAR"; break;
+
+        case evt.DOM_VK_DOWN:
+            keyCodeStr = "DOM_VK_DOWN"; break;
+
+        case evt.DOM_VK_E:
+            keyCodeStr = "DOM_VK_E"; break;
+
+        case evt.DOM_VK_END:
+            keyCodeStr = "DOM_VK_END"; break;
+
+        case evt.DOM_VK_ENTER:
+            keyCodeStr = "DOM_VK_ENTER"; break;
+
+        case evt.DOM_VK_EQUALS:
+            keyCodeStr = "DOM_VK_EQUALS"; break;
+
+        case evt.DOM_VK_ESCAPE:
+            keyCodeStr = "DOM_VK_ESCAPE"; break;
+
+        case evt.DOM_VK_EURO_SIGN:
+            keyCodeStr = "DOM_VK_EURO_SIGN"; break;
+
+        case evt.DOM_VK_EXCLAMATION_MARK:
+            keyCodeStr = "DOM_VK_EXCLAMATION_MARK"; break;
+
+        case evt.DOM_VK_F:
+            keyCodeStr = "DOM_VK_F"; break;
+
+        case evt.DOM_VK_F1:
+            keyCodeStr = "DOM_VK_F1"; break;
+
+        case evt.DOM_VK_F10:
+            keyCodeStr = "DOM_VK_F10"; break;
+
+        case evt.DOM_VK_F11:
+            keyCodeStr = "DOM_VK_F11"; break;
+
+        case evt.DOM_VK_F12:
+            keyCodeStr = "DOM_VK_F12"; break;
+
+        case evt.DOM_VK_F13:
+            keyCodeStr = "DOM_VK_F13"; break;
+
+        case evt.DOM_VK_F14:
+            keyCodeStr = "DOM_VK_F14"; break;
+
+        case evt.DOM_VK_F15:
+            keyCodeStr = "DOM_VK_F15"; break;
+
+        case evt.DOM_VK_F16:
+            keyCodeStr = "DOM_VK_F16"; break;
+
+        case evt.DOM_VK_F17:
+            keyCodeStr = "DOM_VK_F17"; break;
+
+        case evt.DOM_VK_F18:
+            keyCodeStr = "DOM_VK_F18"; break;
+
+        case evt.DOM_VK_F19:
+            keyCodeStr = "DOM_VK_F19"; break;
+
+        case evt.DOM_VK_F2:
+            keyCodeStr = "DOM_VK_F2"; break;
+
+        case evt.DOM_VK_F20:
+            keyCodeStr = "DOM_VK_F20"; break;
+
+        case evt.DOM_VK_F21:
+            keyCodeStr = "DOM_VK_F21"; break;
+
+        case evt.DOM_VK_F22:
+            keyCodeStr = "DOM_VK_F22"; break;
+
+        case evt.DOM_VK_F23:
+            keyCodeStr = "DOM_VK_F23"; break;
+
+        case evt.DOM_VK_F24:
+            keyCodeStr = "DOM_VK_F24"; break;
+
+        case evt.DOM_VK_F3:
+            keyCodeStr = "DOM_VK_F3"; break;
+
+        case evt.DOM_VK_F4:
+            keyCodeStr = "DOM_VK_F4"; break;
+
+        case evt.DOM_VK_F5:
+            keyCodeStr = "DOM_VK_F5"; break;
+
+        case evt.DOM_VK_F6:
+            keyCodeStr = "DOM_VK_F6"; break;
+
+        case evt.DOM_VK_F7:
+            keyCodeStr = "DOM_VK_F7"; break;
+
+        case evt.DOM_VK_F8:
+            keyCodeStr = "DOM_VK_F8"; break;
+
+        case evt.DOM_VK_F9:
+            keyCodeStr = "DOM_VK_F9"; break;
+
+        case evt.DOM_VK_FINAL:
+            keyCodeStr = "DOM_VK_FINAL"; break;
+
+        case evt.DOM_VK_FIND:
+            keyCodeStr = "DOM_VK_FIND"; break;
+
+        case evt.DOM_VK_FULL_WIDTH:
+            keyCodeStr = "DOM_VK_FULL_WIDTH"; break;
+
+        case evt.DOM_VK_G:
+            keyCodeStr = "DOM_VK_G"; break;
+
+        case evt.DOM_VK_GREATER:
+            keyCodeStr = "DOM_VK_GREATER"; break;
+
+        case evt.DOM_VK_H:
+            keyCodeStr = "DOM_VK_H"; break;
+
+        case evt.DOM_VK_HALF_WIDTH:
+            keyCodeStr = "DOM_VK_HALF_WIDTH"; break;
+
+        case evt.DOM_VK_HELP:
+            keyCodeStr = "DOM_VK_HELP"; break;
+
+        case evt.DOM_VK_HIRAGANA:
+            keyCodeStr = "DOM_VK_HIRAGANA"; break;
+
+        case evt.DOM_VK_HOME:
+            keyCodeStr = "DOM_VK_HOME"; break;
+
+        case evt.DOM_VK_I:
+            keyCodeStr = "DOM_VK_I"; break;
+
+        case evt.DOM_VK_INSERT:
+            keyCodeStr = "DOM_VK_INSERT"; break;
+
+        case evt.DOM_VK_INVERTED_EXCLAMATION_MARK:
+            keyCodeStr = "DOM_VK_INVERTED_EXCLAMATION_MARK"; break;
+
+        case evt.DOM_VK_J:
+            keyCodeStr = "DOM_VK_J"; break;
+
+        case evt.DOM_VK_JAPANESE_HIRAGANA:
+            keyCodeStr = "DOM_VK_JAPANESE_HIRAGANA"; break;
+
+        case evt.DOM_VK_JAPANESE_KATAKANA:
+            keyCodeStr = "DOM_VK_JAPANESE_KATAKANA"; break;
+
+        case evt.DOM_VK_JAPANESE_ROMAN:
+            keyCodeStr = "DOM_VK_JAPANESE_ROMAN"; break;
+
+        case evt.DOM_VK_K:
+            keyCodeStr = "DOM_VK_K"; break;
+
+        case evt.DOM_VK_KANA:
+            keyCodeStr = "DOM_VK_KANA"; break;
+
+        case evt.DOM_VK_KANJI:
+            keyCodeStr = "DOM_VK_KANJI"; break;
+
+        case evt.DOM_VK_KATAKANA:
+            keyCodeStr = "DOM_VK_KATAKANA"; break;
+
+        case evt.DOM_VK_KP_DOWN:
+            keyCodeStr = "DOM_VK_KP_DOWN"; break;
+
+        case evt.DOM_VK_KP_LEFT:
+            keyCodeStr = "DOM_VK_KP_LEFT"; break;
+
+        case evt.DOM_VK_KP_RIGHT:
+            keyCodeStr = "DOM_VK_KP_RIGHT"; break;
+
+        case evt.DOM_VK_KP_UP:
+            keyCodeStr = "DOM_VK_KP_UP"; break;
+
+        case evt.DOM_VK_L:
+            keyCodeStr = "DOM_VK_L"; break;
+
+        case evt.DOM_VK_LEFT:
+            keyCodeStr = "DOM_VK_LEFT"; break;
+
+        case evt.DOM_VK_LEFT_PARENTHESIS:
+            keyCodeStr = "DOM_VK_LEFT_PARENTHESIS"; break;
+
+        case evt.DOM_VK_LESS:
+            keyCodeStr = "DOM_VK_LESS"; break;
+
+        case evt.DOM_VK_M:
+            keyCodeStr = "DOM_VK_M"; break;
+
+        case evt.DOM_VK_META:
+            keyCodeStr = "DOM_VK_META"; break;
+
+        case evt.DOM_VK_MINUS:
+            keyCodeStr = "DOM_VK_MINUS"; break;
+
+        case evt.DOM_VK_MODECHANGE:
+            keyCodeStr = "DOM_VK_MODECHANGE"; break;
+
+        case evt.DOM_VK_MULTIPLY:
+            keyCodeStr = "DOM_VK_MULTIPLY"; break;
+
+        case evt.DOM_VK_N:
+            keyCodeStr = "DOM_VK_N"; break;
+
+        case evt.DOM_VK_NONCONVERT:
+            keyCodeStr = "DOM_VK_NONCONVERT"; break;
+
+        case evt.DOM_VK_NUM_LOCK:
+            keyCodeStr = "DOM_VK_NUM_LOCK"; break;
+
+        case evt.DOM_VK_NUMBER_SIGN:
+            keyCodeStr = "DOM_VK_NUMBER_SIGN"; break;
+
+        case evt.DOM_VK_NUMPAD0:
+            keyCodeStr = "DOM_VK_NUMPAD0"; break;
+
+        case evt.DOM_VK_NUMPAD1:
+            keyCodeStr = "DOM_VK_NUMPAD1"; break;
+
+        case evt.DOM_VK_NUMPAD2:
+            keyCodeStr = "DOM_VK_NUMPAD2"; break;
+
+        case evt.DOM_VK_NUMPAD3:
+            keyCodeStr = "DOM_VK_NUMPAD3"; break;
+
+        case evt.DOM_VK_NUMPAD4:
+            keyCodeStr = "DOM_VK_NUMPAD4"; break;
+
+        case evt.DOM_VK_NUMPAD5:
+            keyCodeStr = "DOM_VK_NUMPAD5"; break;
+
+        case evt.DOM_VK_NUMPAD6:
+            keyCodeStr = "DOM_VK_NUMPAD6"; break;
+
+        case evt.DOM_VK_NUMPAD7:
+            keyCodeStr = "DOM_VK_NUMPAD7"; break;
+
+        case evt.DOM_VK_NUMPAD8:
+            keyCodeStr = "DOM_VK_NUMPAD8"; break;
+
+        case evt.DOM_VK_NUMPAD9:
+            keyCodeStr = "DOM_VK_NUMPAD9"; break;
+
+        case evt.DOM_VK_O:
+            keyCodeStr = "DOM_VK_O"; break;
+
+        case evt.DOM_VK_OPEN_BRACKET:
+            keyCodeStr = "DOM_VK_OPEN_BRACKET"; break;
+
+        case evt.DOM_VK_P:
+            keyCodeStr = "DOM_VK_P"; break;
+
+        case evt.DOM_VK_PAGE_DOWN:
+            keyCodeStr = "DOM_VK_PAGE_DOWN"; break;
+
+        case evt.DOM_VK_PAGE_UP:
+            keyCodeStr = "DOM_VK_PAGE_UP"; break;
+
+        case evt.DOM_VK_PASTE:
+            keyCodeStr = "DOM_VK_PASTE"; break;
+
+        case evt.DOM_VK_PAUSE:
+            keyCodeStr = "DOM_VK_PAUSE"; break;
+
+        case evt.DOM_VK_PERIOD:
+            keyCodeStr = "DOM_VK_PERIOD"; break;
+
+        case evt.DOM_VK_PLUS:
+            keyCodeStr = "DOM_VK_PLUS"; break;
+
+        case evt.DOM_VK_PREVIOUS_CANDIDATE:
+            keyCodeStr = "DOM_VK_PREVIOUS_CANDIDATE"; break;
+
+        case evt.DOM_VK_PRINTSCREEN:
+            keyCodeStr = "DOM_VK_PRINTSCREEN"; break;
+
+        case evt.DOM_VK_PROPS:
+            keyCodeStr = "DOM_VK_PROPS"; break;
+
+        case evt.DOM_VK_Q:
+            keyCodeStr = "DOM_VK_Q"; break;
+
+        case evt.DOM_VK_QUOTE:
+            keyCodeStr = "DOM_VK_QUOTE"; break;
+
+        case evt.DOM_VK_QUOTEDBL:
+            keyCodeStr = "DOM_VK_QUOTEDBL"; break;
+
+        case evt.DOM_VK_R:
+            keyCodeStr = "DOM_VK_R"; break;
+
+        case evt.DOM_VK_RIGHT:
+            keyCodeStr = "DOM_VK_RIGHT"; break;
+
+        case evt.DOM_VK_RIGHT_PARENTHESIS:
+            keyCodeStr = "DOM_VK_RIGHT_PARENTHESIS"; break;
+
+        case evt.DOM_VK_ROMAN_CHARACTERS:
+            keyCodeStr = "DOM_VK_ROMAN_CHARACTERS"; break;
+
+        case evt.DOM_VK_S:
+            keyCodeStr = "DOM_VK_S"; break;
+
+        case evt.DOM_VK_SCROLL_LOCK:
+            keyCodeStr = "DOM_VK_SCROLL_LOCK"; break;
+
+        case evt.DOM_VK_SEMICOLON:
+            keyCodeStr = "DOM_VK_SEMICOLON"; break;
+
+        case evt.DOM_VK_SEPARATER:
+            keyCodeStr = "DOM_VK_SEPARATER"; break;
+
+        case evt.DOM_VK_SHIFT:
+            keyCodeStr = "DOM_VK_SHIFT"; break;
+
+        case evt.DOM_VK_SLASH:
+            keyCodeStr = "DOM_VK_SLASH"; break;
+
+        case evt.DOM_VK_SPACE:
+            keyCodeStr = "DOM_VK_SPACE"; break;
+
+        case evt.DOM_VK_STOP:
+            keyCodeStr = "DOM_VK_STOP"; break;
+
+        case evt.DOM_VK_SUBTRACT:
+            keyCodeStr = "DOM_VK_SUBTRACT"; break;
+
+        case evt.DOM_VK_T:
+            keyCodeStr = "DOM_VK_T"; break;
+
+        case evt.DOM_VK_TAB:
+            keyCodeStr = "DOM_VK_TAB"; break;
+
+        case evt.DOM_VK_U:
+            keyCodeStr = "DOM_VK_U"; break;
+
+        case evt.DOM_VK_UNDEFINED:
+            keyCodeStr = "DOM_VK_UNDEFINED"; break;
+
+        case evt.DOM_VK_UNDERSCORE:
+            keyCodeStr = "DOM_VK_UNDERSCORE"; break;
+
+        case evt.DOM_VK_UNDO:
+            keyCodeStr = "DOM_VK_UNDO"; break;
+
+        case evt.DOM_VK_UP:
+            keyCodeStr = "DOM_VK_UP"; break;
+
+        case evt.DOM_VK_V:
+            keyCodeStr = "DOM_VK_V"; break;
+
+        case evt.DOM_VK_W:
+            keyCodeStr = "DOM_VK_W"; break;
+
+        case evt.DOM_VK_X:
+            keyCodeStr = "DOM_VK_X"; break;
+
+        case evt.DOM_VK_Y:
+            keyCodeStr = "DOM_VK_Y"; break;
+
+        case evt.DOM_VK_Z:
+            keyCodeStr = "DOM_VK_Z"; break;
+
+        default: 
+            keyCodeStr = "UNDEFINED";
+    }
+
+    traceText.setData(keyCodeStr);
+}
+
+  ]]></script>
+
+<g id="body-content" >
+
+    <text x="50%" y="200" text-anchor="middle">Type text over the canvas to see the code of the last key pressed</text>
+
+    <text id="trace" x="50%" y="250" text-anchor="middle">Last key pressed: </text>
+
+</g>
+
+</svg>
