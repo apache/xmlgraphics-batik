@@ -381,26 +381,28 @@ public class CSSUtilities implements SVGConstants {
     /**
      * Returns the <tt>ShapePainter</tt> for the specified Element
      * using the specified context and css style declaration.
+     * @param shape shape to be stroked and filled
      * @param svgElement the SVG Element
      * @param ctx the bridge context
      * @param decl the css style declaration
      * @param uctx the UnitProcessor context
      */
-    public static ShapePainter convertStrokeAndFill(SVGElement svgElement,
-                                                GraphicsNode node,
-                                                BridgeContext ctx,
-                                                CSSStyleDeclaration decl,
-                                                UnitProcessor.Context uctx){
+    public static ShapePainter convertStrokeAndFill(Shape shape, 
+                                                    SVGElement svgElement,
+                                                    GraphicsNode node,
+                                                    BridgeContext ctx,
+                                                    CSSStyleDeclaration decl,
+                                                    UnitProcessor.Context uctx){
 
         // resolve fill
-        ShapePainter fillPainter = convertFill(svgElement, node, ctx,
+        ShapePainter fillPainter = convertFill(shape, svgElement, node, ctx,
                                                decl, uctx);
         // resolve stroke
-        ShapePainter strokePainter = convertStroke(svgElement, node, ctx,
+        ShapePainter strokePainter = convertStroke(shape, svgElement, node, ctx,
                                                    decl, uctx);
         ShapePainter painter = null;
         if (fillPainter != null && strokePainter != null) {
-            CompositeShapePainter comp = new CompositeShapePainter();
+            CompositeShapePainter comp = new CompositeShapePainter(shape);
             comp.addShapePainter(fillPainter);
             comp.addShapePainter(strokePainter);
             painter = comp;
@@ -416,12 +418,13 @@ public class CSSUtilities implements SVGConstants {
      * Returns the <tt>ShapePainter</tt> used to draw the outline of
      * the specified Element using the specified context and css style
      * declaration.
+     * @param shape shape to be stroked.
      * @param svgElement the SVG Element
      * @param ctx the bridge context
      * @param decl the css style declaration
      * @param uctx the UnitProcessor context
      */
-    public static ShapePainter convertStroke(SVGElement svgElement,
+    public static ShapePainter convertStroke(Shape shape, SVGElement svgElement,
                                              GraphicsNode node,
                                              BridgeContext ctx,
                                              CSSStyleDeclaration decl,
@@ -429,7 +432,7 @@ public class CSSUtilities implements SVGConstants {
 
         Stroke stroke = convertStrokeToBasicStroke(svgElement, ctx, decl, uctx);
         Paint paint = convertStrokeToPaint(svgElement, node, ctx, decl, uctx);
-        StrokeShapePainter painter = new StrokeShapePainter();
+        StrokeShapePainter painter = new StrokeShapePainter(shape);
         painter.setStroke(stroke);
         painter.setPaint(paint);
         return painter;
@@ -568,12 +571,14 @@ public class CSSUtilities implements SVGConstants {
     /**
      * Returns the <tt>ShapePainter</tt> used to fill the specified
      * Element using the specified context and css style declaration.
+     * @param shape Shape to be filled
      * @param svgElement the SVG Element
      * @param ctx the bridge context
      * @param decl the css style declaration
      * @param uctx the UnitProcessor context
      */
-    public static ShapePainter convertFill(SVGElement svgElement,
+    public static ShapePainter convertFill(Shape shape,
+                                           SVGElement svgElement,
                                            GraphicsNode node,
                                            BridgeContext ctx,
                                            CSSStyleDeclaration decl,
@@ -586,7 +591,7 @@ public class CSSUtilities implements SVGConstants {
                                              decl,
                                              uctx);
         if(fillPaint != null){
-            painter = new FillShapePainter();
+            painter = new FillShapePainter(shape);
             painter.setPaint(fillPaint);
         }
 

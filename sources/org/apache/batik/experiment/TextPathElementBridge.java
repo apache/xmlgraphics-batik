@@ -418,7 +418,7 @@ public class TextPathElementBridge implements GraphicsNodeBridge, SVGConstants {
 
         // Initialize the style properties
         ShapePainter painter
-            = CSSUtilities.convertStrokeAndFill(svgElement, node,
+            = CSSUtilities.convertStrokeAndFill(node.getShape(), svgElement, node,
                                                 ctx, cssDecl, uctx);
         node.setShapePainter(painter);
 

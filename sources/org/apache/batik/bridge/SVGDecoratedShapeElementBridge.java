@@ -19,7 +19,8 @@ import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeMutationEvent;
 import org.apache.batik.bridge.GraphicsNodeBridge;
 import org.apache.batik.bridge.IllegalAttributeValueException;
-import org.apache.batik.gvt.DecoratedShapeNode;
+import org.apache.batik.gvt.CompositeShapePainter;
+import org.apache.batik.gvt.MarkerShapePainter;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.Marker;
@@ -47,38 +48,14 @@ import org.w3c.dom.css.CSSPrimitiveValue;
 public abstract class SVGDecoratedShapeElementBridge 
     extends SVGShapeElementBridge {
     
-    public GraphicsNode createGraphicsNode(BridgeContext ctx, Element element){
-        SVGElement svgElement = (SVGElement) element;
-        CSSStyleDeclaration cssDecl
-            = ctx.getViewCSS().getComputedStyle(element, null);
-        UnitProcessor.Context uctx
-            = new DefaultUnitProcessorContext(ctx,
-                                              cssDecl);
-
-        DecoratedShapeNode node = new DecoratedShapeNode();
-
-        // Initialize the transform
-        AffineTransform at =
-            SVGUtilities.convertAffineTransform(element,
-                                                ATTR_TRANSFORM);
-        node.setTransform(at);
-        // Initialize the shape of the ShapeNode
-        buildShape(ctx, svgElement, node, cssDecl, uctx);
-
-        return node;
-    }
-
-    public void buildGraphicsNode(GraphicsNode gn, 
-                                  BridgeContext ctx,
-                                  Element element) {
-        DecoratedShapeNode node = (DecoratedShapeNode)gn;
-
-        SVGElement svgElement = (SVGElement) element;
-        CSSStyleDeclaration cssDecl
-            = ctx.getViewCSS().getComputedStyle(element, null);
-        UnitProcessor.Context uctx
-            = new DefaultUnitProcessorContext(ctx,
-                                              cssDecl);
+    protected ShapePainter convertPainter(SVGElement svgElement,
+                                          ShapeNode node,
+                                          CSSStyleDeclaration cssDecl,
+                                          UnitProcessor.Context uctx,
+                                          BridgeContext ctx){
+        ShapePainter strokeAndFill =
+            super.convertPainter(svgElement, node, cssDecl,
+                                 uctx, ctx);
 
         //
         // Extract the marker properties
@@ -90,22 +67,36 @@ public abstract class SVGDecoratedShapeElementBridge
             = CSSUtilities.convertMarker(svgElement,
                                          CSS_MARKER_START_PROPERTY,
                                          ctx, cssDecl, uctx);
-        node.setStartMarker(startMarker);
-        
         Marker endMarker 
             = CSSUtilities.convertMarker(svgElement,
                                          CSS_MARKER_END_PROPERTY,
                                          ctx, cssDecl, uctx);
-        node.setEndMarker(endMarker);
-        
         Marker middleMarker 
             = CSSUtilities.convertMarker(svgElement,
                                          CSS_MARKER_MID_PROPERTY,
                                          ctx, cssDecl, uctx);
         
-        node.setMiddleMarker(middleMarker);
+        ShapePainter painter = strokeAndFill;
 
+        if(startMarker  != null  ||
+           middleMarker != null  ||
+           endMarker    != null) {
+            MarkerShapePainter markerPainter = new MarkerShapePainter(node.getShape());
+            markerPainter.setStartMarker(startMarker);
+            markerPainter.setEndMarker(endMarker);
+            markerPainter.setMiddleMarker(middleMarker);
+            if(strokeAndFill != null){
+                CompositeShapePainter compositePainter 
+                    = new CompositeShapePainter(node.getShape());
+                compositePainter.addShapePainter(strokeAndFill);
+                compositePainter.addShapePainter(markerPainter);
+                painter = compositePainter;
+            }
+            else{
+                painter = markerPainter;
+            }
+        }
 
-        super.buildGraphicsNode(gn, ctx, element);
+        return painter;
     }
 }
