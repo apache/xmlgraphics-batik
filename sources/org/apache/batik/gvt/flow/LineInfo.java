@@ -66,7 +66,6 @@ public class LineInfo {
         this.baseline   = (float)(fr.getCurrentY()+hLeading+ascent);
         this.paraStart  = paraStart;
         this.paraEnd    = false;
-
         if (lineHeight > 0) {
             fr.newLineHeight(lineHeight);        
             updateRangeInfo();

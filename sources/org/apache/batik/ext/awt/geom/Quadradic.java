@@ -8,11 +8,10 @@
 
 package org.apache.batik.ext.awt.geom;
 
-import java.util.Arrays;
+import java.awt.geom.CubicCurve2D;
 import java.awt.geom.Point2D;
+import java.awt.geom.QuadCurve2D;
 import java.awt.geom.Rectangle2D;
-import java.io.PrintStream;
-import java.io.FileOutputStream;
 
 public class Quadradic extends AbstractSegment {
     public Point2D.Double p1, p2, p3;
@@ -60,12 +59,10 @@ public class Quadradic extends AbstractSegment {
         }
 
         double a = (p1-2*p2+p3);
-        double eps = 0.00001;
-        if (Math.abs(a) < 4*eps) {
-            return;
-        }
-
         double b = (p2-p1);
+
+        if (a == 0) return;
+
         double tv = b/a;
         if ((tv <= 0) || (tv >= 1)) return;
 
@@ -106,11 +103,9 @@ public class Quadradic extends AbstractSegment {
     }
 
     protected int findRoots(double y, double [] roots) {
-        double a = p1.y-2*p2.y+p3.y;
-        double b = 2*(p2.y-p1.y);
-        double c = p1.y-y;
-
-        return solveQuad(a, b, c, roots);
+        double [] eqn = { p1.y-y, 2*(p2.y-p1.y), p1.y-2*p2.y+p3.y };
+        return QuadCurve2D.solveQuadratic(eqn, roots);
+        // return solveQuad(eqn[2], eqn[1], eqn[0], roots);
     }
 
     public Point2D.Double evalDt(double t) { 

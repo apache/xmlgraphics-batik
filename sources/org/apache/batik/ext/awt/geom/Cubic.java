@@ -8,7 +8,9 @@
 
 package org.apache.batik.ext.awt.geom;
 
+import java.awt.geom.CubicCurve2D;
 import java.awt.geom.Point2D;
+import java.awt.geom.QuadCurve2D;
 import java.awt.geom.Rectangle2D;
 
 public class Cubic extends AbstractSegment {
@@ -63,44 +65,17 @@ public class Cubic extends AbstractSegment {
         double c0 = 3*(p2-p1);
         double c1 = 6*(p3-p2);
         double c2 = 3*(p4-p3);
-        double c = c0;
-        double b = c1-2*c0;
-        double a = c2-c1+c0;
-        double det = b*b-4*a*c;
-        if (det == 0) {
-            // one real root.
-            double tv = -b/(2*a);
-            if ((tv <= 0) || (tv >= 1)) return;
+        double [] eqn = { c0, c1-2*c0, c2-c1+c0 };
+        int roots = QuadCurve2D.solveQuadratic(eqn);
+        for (int r=0; r<roots; r++) {
+            double tv = eqn[r];
+            if ((tv <= 0) || (tv >= 1)) continue;
             tv = ((1-tv)*(1-tv)*(1-tv)*p1 + 
                     3*tv*(1-tv)*(1-tv)*p2 +
                     3*tv*tv*(1-tv)*p3 +
                     tv*tv*tv*p4);
             if      (tv < minMax[0]) minMax[0] = tv;
             else if (tv > minMax[1]) minMax[1] = tv;
-        } else if (det > 0) {
-            // Two real roots
-            det = Math.sqrt(det);
-            double w = -(b + matchSign(det, b));
-
-            double tv = (2*c)/w;
-            if ((tv > 0) && (tv < 1)) {
-                tv = ((1-tv)*(1-tv)*(1-tv)*p1 + 
-                      3*tv*(1-tv)*(1-tv)*p2 +
-                      3*tv*tv*(1-tv)*p3 +
-                      tv*tv*tv*p4);
-                if      (tv < minMax[0]) minMax[0] = tv;
-                else if (tv > minMax[1]) minMax[1] = tv;
-            }
-
-            tv = w/(2*a);
-            if ((tv > 0) && (tv < 1)) {
-                tv = ((1-tv)*(1-tv)*(1-tv)*p1 + 
-                      3*tv*(1-tv)*(1-tv)*p2 +
-                      3*tv*tv*(1-tv)*p3 +
-                      tv*tv*tv*p4);
-                if      (tv < minMax[0]) minMax[0] = tv;
-                else if (tv > minMax[1]) minMax[1] = tv;
-            }
         }
     }
     public double minX() {
@@ -136,12 +111,10 @@ public class Cubic extends AbstractSegment {
     }
 
     protected int findRoots(double y, double [] roots) {
-        double d = p1.y-y;
-        double c = 3*(p2.y-p1.y);
-        double b = 3*(p1.y-2*p2.y+p3.y);
-        double a = 3*p2.y-p1.y+p4.y-3*p3.y;
-
-        return solveCubic(a, b, c, d, roots);
+        double [] eqn = { p1.y-y, 3*(p2.y-p1.y), 3*(p1.y-2*p2.y+p3.y),
+                          3*p2.y-p1.y+p4.y-3*p3.y };
+        return CubicCurve2D.solveCubic(eqn, roots);
+        // return solveCubic(eqn[3], eqn[2], eqn[1], eqn[0], roots);
     }
 
     public Point2D.Double evalDt(double t) {

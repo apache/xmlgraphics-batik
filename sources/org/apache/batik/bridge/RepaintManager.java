@@ -38,7 +38,7 @@ import org.apache.batik.ext.awt.geom.RectListManager;
  * @version $Id$
  */
 public class RepaintManager {
-    final static int COPY_OVERHEAD      = 1000;
+    final static int COPY_OVERHEAD      = 10000;
     final static int COPY_LINE_OVERHEAD = 10;
 
     /**

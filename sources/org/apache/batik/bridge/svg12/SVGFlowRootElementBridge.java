@@ -146,6 +146,34 @@ public class SVGFlowRootElementBridge extends SVGTextElementBridge {
         return new Point2D.Float(0,0);
     }
 
+    protected boolean isTextElement(Element e) {
+        if (!SVG_NAMESPACE_URI.equals(e.getNamespaceURI()))
+            return false;
+        String nodeName = e.getLocalName();
+        return (nodeName.equals(SVG12Constants.SVG_FLOW_DIV_TAG) ||
+                nodeName.equals(SVG12Constants.SVG_FLOW_LINE_TAG) ||
+                nodeName.equals(SVG12Constants.SVG_FLOW_PARA_TAG) ||
+                nodeName.equals(SVG12Constants.SVG_FLOW_REGION_BREAK_TAG) ||
+                nodeName.equals(SVG12Constants.SVG_FLOW_SPAN_TAG));
+    }
+
+    protected boolean isTextChild(Element e) {
+        if (!SVG_NAMESPACE_URI.equals(e.getNamespaceURI()))
+            return false;
+        String nodeName = e.getLocalName();
+        return (nodeName.equals(SVG12Constants.SVG_A_TAG) ||
+                nodeName.equals(SVG12Constants.SVG_FLOW_LINE_TAG) ||
+                nodeName.equals(SVG12Constants.SVG_FLOW_PARA_TAG) ||
+                nodeName.equals(SVG12Constants.SVG_FLOW_REGION_BREAK_TAG) ||
+                nodeName.equals(SVG12Constants.SVG_FLOW_SPAN_TAG));
+    }
+    
+    protected void computeLaidoutText(BridgeContext ctx, 
+                                       Element e,
+                                       GraphicsNode node) {
+        super.computeLaidoutText(ctx, getFlowDivElement(e), node);
+    }
+
     /**
      * Creates the attributed string which represents the given text
      * element children.
@@ -184,204 +212,35 @@ public class SVGFlowRootElementBridge extends SVGTextElementBridge {
         System.out.println(brkStr);
     }
 
-    /**
-     * Adds glyph position attributes to an AttributedString.
-     */
-    protected void addGlyphPositionAttributes(AttributedString as,
-                                              Element element,
-                                              BridgeContext ctx) {
-        if (element.getNodeType()     != Node.ELEMENT_NODE) return;
-        String eNS = element.getNamespaceURI();
-        if ((!eNS.equals(getNamespaceURI())) &&
-            (!eNS.equals(SVG_NAMESPACE_URI)))
-            return;
-        if (element.getLocalName()    != SVG12Constants.SVG_FLOW_ROOT_TAG) {
-            // System.out.println("Elem: " + element);
-            super.addGlyphPositionAttributes(as, element, ctx);
-            return;
-        }
+    protected Element getFlowDivElement(Element elem) {
+        String eNS = elem.getNamespaceURI();
+        if (!eNS.equals(SVG_NAMESPACE_URI)) return null;
 
-        for (Node n = element.getFirstChild();
+        String nodeName = elem.getLocalName();
+        if (nodeName.equals(SVG12Constants.SVG_FLOW_DIV_TAG)) return elem;
+
+        if (!nodeName.equals(SVG12Constants.SVG_FLOW_ROOT_TAG)) return null;
+        
+        for (Node n = elem.getFirstChild();
              n != null; n = n.getNextSibling()) {
             if (n.getNodeType()     != Node.ELEMENT_NODE) continue;
+
             String nNS = n.getNamespaceURI();
-            if ((!getNamespaceURI().equals(nNS)) &&
-                (!SVG_NAMESPACE_URI.equals(nNS))) {
-                continue;
-            }
+            if (!SVG_NAMESPACE_URI.equals(nNS)) continue;
+
             Element e = (Element)n;
             String ln = e.getLocalName();
-            if (ln.equals(SVG12Constants.SVG_FLOW_DIV_TAG)) {
-                // System.out.println("D Elem: " + e);
-                super.addGlyphPositionAttributes(as, e, ctx);
-                return;
-            }
-        }
-    }
-
-    protected void addChildGlyphPositionAttributes(AttributedString as,
-                                                   Element element,
-                                                   BridgeContext ctx) {
-        // Add Paint attributres for children of text element
-        for (Node child = element.getFirstChild();
-             child != null;
-             child = child.getNextSibling()) {
-            if (child.getNodeType() != Node.ELEMENT_NODE) {
-                continue;
-            }
-            String cNS = child.getNamespaceURI();
-            if ((!getNamespaceURI().equals(cNS)) &&
-                (!SVG_NAMESPACE_URI.equals(cNS))) {
-                continue;
-            }
-            String ln = child.getLocalName();
-            if (ln.equals(SVG12Constants.SVG_FLOW_PARA_TAG) ||
-                ln.equals(SVG12Constants.SVG_FLOW_REGION_BREAK_TAG) ||
-                ln.equals(SVG12Constants.SVG_FLOW_LINE_TAG) ||
-                ln.equals(SVG12Constants.SVG_FLOW_SPAN_TAG) ||
-                ln.equals(SVG12Constants.SVG_A_TAG) ||
-                ln.equals(SVG12Constants.SVG_TREF_TAG)) {
-                addGlyphPositionAttributes(as, (Element)child, ctx);
-            }
-        }
-    }
-
-    protected void addNullPaintAttributes(AttributedString as, 
-                                          Element element,
-                                          BridgeContext ctx) {
-        if (element.getNodeType() != Node.ELEMENT_NODE) return;
-        String eNS = element.getNamespaceURI();
-        if ((!eNS.equals(getNamespaceURI())) &&
-            (!eNS.equals(SVG_NAMESPACE_URI)))
-            return;
-        if (element.getLocalName()    != SVG12Constants.SVG_FLOW_ROOT_TAG) {
-            // System.out.println("Elem: " + element);
-            super.addNullPaintAttributes(as, element, ctx);
-            return;
-        }
-
-        for (Node n = element.getFirstChild();
-             n != null; n = n.getNextSibling()) {
-            if (n.getNodeType()     != Node.ELEMENT_NODE) continue;
-            if (!getNamespaceURI().equals(n.getNamespaceURI())) continue;
-            Element e = (Element)n;
-            String ln = e.getLocalName();
-            if (ln.equals(SVG12Constants.SVG_FLOW_DIV_TAG)) {
-                // System.out.println("D Elem: " + e);
-                super.addNullPaintAttributes(as, e, ctx);
-                return;
-            }
-        }
-    }
-
-
-    protected void addChildNullPaintAttributes(AttributedString as,
-                                               Element element,
-                                               BridgeContext ctx) {
-        // Add Paint attributres for children of text element
-        for (Node child = element.getFirstChild();
-             child != null;
-             child = child.getNextSibling()) {
-            if (child.getNodeType() != Node.ELEMENT_NODE) {
-                continue;
-            }
-            String cNS = child.getNamespaceURI();
-            if ((!getNamespaceURI().equals(cNS)) &&
-                (!SVG_NAMESPACE_URI.equals(cNS))) {
-                continue;
-            }
-            String ln = child.getLocalName();
-            if (ln.equals(SVG12Constants.SVG_FLOW_PARA_TAG) ||
-                ln.equals(SVG12Constants.SVG_FLOW_REGION_BREAK_TAG) ||
-                ln.equals(SVG12Constants.SVG_FLOW_LINE_TAG) ||
-                ln.equals(SVG12Constants.SVG_FLOW_SPAN_TAG) ||
-                ln.equals(SVG12Constants.SVG_A_TAG) ||
-                ln.equals(SVG12Constants.SVG_TREF_TAG)) {
-                Element childElement = (Element)child;
-                addNullPaintAttributes(as, childElement, ctx);
-            }
-        }
-    }
-
-    /**
-     * Adds painting attributes to an AttributedString.
-     */
-    protected void addPaintAttributes(AttributedString as,
-                                      Element element,
-                                      TextNode node,
-                                      TextPaintInfo parentPI,
-                                      BridgeContext ctx) {
-        if (element.getNodeType() != Node.ELEMENT_NODE) return;
-        String eNS = element.getNamespaceURI();
-        if ((!eNS.equals(getNamespaceURI())) &&
-            (!eNS.equals(SVG_NAMESPACE_URI)))
-            return;
-        if (element.getLocalName()    != SVG12Constants.SVG_FLOW_ROOT_TAG) {
-            // System.out.println("Elem: " + element);
-            super.addPaintAttributes(as, element, node, parentPI, ctx);
-            return;
-        }
-
-        for (Node n = element.getFirstChild();
-             n != null; n = n.getNextSibling()) {
-            if (n.getNodeType()     != Node.ELEMENT_NODE) continue;
-            if (!getNamespaceURI().equals(n.getNamespaceURI())) continue;
-            Element e = (Element)n;
-            String ln = e.getLocalName();
-            if (ln.equals(SVG12Constants.SVG_FLOW_DIV_TAG)) {
-                // System.out.println("D Elem: " + e);
-                super.addPaintAttributes(as, e, node, parentPI, ctx);
-                return;
-            }
-        }
-    }
-
-    protected void addChildPaintAttributes(AttributedString as,
-                                           Element element,
-                                           TextNode node,
-                                           TextPaintInfo parentPI,
-                                           BridgeContext ctx) {
-        // Add Paint attributres for children of text element
-        for (Node child = element.getFirstChild();
-             child != null;
-             child = child.getNextSibling()) {
-            if (child.getNodeType() != Node.ELEMENT_NODE) {
-                continue;
-            }
-            String cNS = child.getNamespaceURI();
-            if ((!getNamespaceURI().equals(cNS)) &&
-                (!SVG_NAMESPACE_URI.equals(cNS))) {
-                continue;
-            }
-            String ln = child.getLocalName();
-            if (ln.equals(SVG12Constants.SVG_FLOW_PARA_TAG) ||
-                ln.equals(SVG12Constants.SVG_FLOW_REGION_BREAK_TAG) ||
-                ln.equals(SVG12Constants.SVG_FLOW_LINE_TAG) ||
-                ln.equals(SVG12Constants.SVG_FLOW_SPAN_TAG) ||
-                ln.equals(SVG12Constants.SVG_A_TAG) ||
-                ln.equals(SVG12Constants.SVG_TREF_TAG)) {
-                Element childElement = (Element)child;
-                TextPaintInfo pi = getTextPaintInfo(childElement, node,
-                                                    parentPI, ctx);
-                addPaintAttributes(as, childElement, node, pi, ctx);
-            }
-        }
-    }
-
-    protected AttributedString getFlowDiv
-        (BridgeContext ctx, Element element) {
-        for (Node n = element.getFirstChild();
-             n != null; n = n.getNextSibling()) {
-            if (n.getNodeType()     != Node.ELEMENT_NODE) continue;
-            if (!getNamespaceURI().equals(n.getNamespaceURI())) continue;
-            Element e = (Element)n;
-
-            String ln = n.getLocalName();
-            if (ln.equals(SVG12Constants.SVG_FLOW_DIV_TAG)) {
-                return gatherFlowPara(ctx, e);
-            }
+            if (ln.equals(SVG12Constants.SVG_FLOW_DIV_TAG)) 
+                return e;
         }
         return null;
+    }
+
+    protected AttributedString getFlowDiv(BridgeContext ctx, Element element) {
+        Element flowDiv = getFlowDivElement(element);
+        if (flowDiv == null) return null;
+
+        return gatherFlowPara(ctx, flowDiv);
     }
 
     protected AttributedString gatherFlowPara
@@ -454,15 +313,17 @@ public class SVGFlowRootElementBridge extends SVGTextElementBridge {
     }
 
     protected List getRegions(BridgeContext ctx, Element element)  {
+        // Element comes in as flowDiv element we want flowRoot.
+        element = (Element)element.getParentNode();
         List ret = new LinkedList();
         for (Node n = element.getFirstChild();
              n != null; n = n.getNextSibling()) {
             
             if (n.getNodeType()     != Node.ELEMENT_NODE) continue;
-            if (!getNamespaceURI().equals(n.getNamespaceURI())) continue;
+            if (!SVG12Constants.SVG_NAMESPACE_URI.equals(n.getNamespaceURI())) 
+                continue;
 
             Element e = (Element)n;
-
             String ln = e.getLocalName();
             if (!SVG12Constants.SVG_FLOW_REGION_TAG.equals(ln))  continue;
 
@@ -759,8 +620,9 @@ public class SVGFlowRootElementBridge extends SVGTextElementBridge {
 
         Value v = CSSUtilities.getComputedStyle(element, lineHeightIndex);
         if ((v == ValueConstants.INHERIT_VALUE) ||
-            (v == SVG12ValueConstants.NORMAL_VALUE)) 
+            (v == SVG12ValueConstants.NORMAL_VALUE)) {
             return fontSize*1.1f;
+        }
 
         float lineHeight = v.getFloatValue();
         if (v instanceof ComputedValue)
@@ -768,7 +630,6 @@ public class SVGFlowRootElementBridge extends SVGTextElementBridge {
         if ((v instanceof LineHeightValue) &&
             ((LineHeightValue)v).getFontSizeRelative())
             lineHeight *= fontSize;
-
         return lineHeight;
     }
 }
