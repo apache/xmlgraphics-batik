@@ -405,14 +405,18 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
         String attrName = evt.getAttrName();
         Node evtNode = evt.getRelatedNode();
 
-        if (attrName.equals(SVG_X_ATTRIBUTE) ||
-            attrName.equals(SVG_Y_ATTRIBUTE) ||
-            attrName.equals(SVG_TRANSFORM_ATTRIBUTE)) {
+        if ((evtNode.getNamespaceURI() == null) &&
+            (attrName.equals(SVG_X_ATTRIBUTE) ||
+             attrName.equals(SVG_Y_ATTRIBUTE) ||
+             attrName.equals(SVG_TRANSFORM_ATTRIBUTE))) {
             node.setTransform(computeTransform(e, ctx));
             handleGeometryChanged();
-        } else if (( XLinkSupport.XLINK_NAMESPACE_URI.equals
-                     (evtNode.getNamespaceURI()) ) 
-                   && SVG_HREF_ATTRIBUTE.equals(evtNode.getLocalName()) ){
+        } else if (((evtNode.getNamespaceURI() == null) && 
+                   (attrName.equals(SVG_WIDTH_ATTRIBUTE) ||
+                    attrName.equals(SVG_HEIGHT_ATTRIBUTE))) ||
+                   (( XLinkSupport.XLINK_NAMESPACE_URI.equals
+                     (evtNode.getNamespaceURI()) ) &&  
+                    SVG_HREF_ATTRIBUTE.equals(evtNode.getLocalName()))) {
             buildCompositeGraphicsNode(ctx, e, (CompositeGraphicsNode)node);
         }
     }

@@ -446,17 +446,18 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
      * Returns the outline of this node.
      */
     public Shape getOutline() {
-        if (outline == null) {
-            outline = new GeneralPath();
-            for (int i = 0; i < count; i++) {
-                Shape childOutline = children[i].getOutline();
-                if (childOutline != null) {
-                    AffineTransform tr = children[i].getTransform();
-                    if (tr != null) {
-                        ((GeneralPath)outline).append(tr.createTransformedShape(childOutline), false);
-                    } else {
-                        ((GeneralPath)outline).append(childOutline, false);
-                    }
+        if (outline != null) 
+            return outline;
+
+        outline = new GeneralPath();
+        for (int i = 0; i < count; i++) {
+            Shape childOutline = children[i].getOutline();
+            if (childOutline != null) {
+                AffineTransform tr = children[i].getTransform();
+                if (tr != null) {
+                    ((GeneralPath)outline).append(tr.createTransformedShape(childOutline), false);
+                } else {
+                    ((GeneralPath)outline).append(childOutline, false);
                 }
             }
         }

@@ -52,7 +52,9 @@ function screenCTM(elem) {
     if (elem.getScreenCTM)
       return elem.getScreenCTM();
 
-    if (elem == root) {
+    // This is to handle ASV 3.0, this depends on
+    // a number of bugs in the ASV implementation.
+    if (elem.currentScale) {
       var scale = root.currentScale;
       var trans = root.currentTranslate;
       var ret = root.createSVGMatrix();

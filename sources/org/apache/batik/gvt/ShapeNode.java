@@ -226,21 +226,22 @@ public class ShapeNode extends AbstractGraphicsNode {
      * Returns the bounds of the area covered by this node's primitive paint.
      */
     public Rectangle2D getPrimitiveBounds() {
-        if (primitiveBounds == null) {
-            if (shape == null)
-                return null;
+        if (!isVisible)    return null;
+        if (shape == null) return null;
+        if (primitiveBounds != null) 
+            return primitiveBounds;
 
-            if (shapePainter == null)
-                primitiveBounds = shape.getBounds2D();
-            else
-                primitiveBounds = shapePainter.getPaintedBounds2D();
-
-            // Check If we should halt early.
-            if (HaltingThread.hasBeenHalted()) {
-                // The Thread has been halted. 
-                // Invalidate any cached values and proceed.
-                invalidateGeometryCache();
-            }
+        if (shapePainter == null)
+            primitiveBounds = shape.getBounds2D();
+        else
+            primitiveBounds = shapePainter.getPaintedBounds2D();
+        
+        // Check If we should halt early.
+        if (HaltingThread.hasBeenHalted()) {
+            // The Thread has been halted. 
+            // Invalidate any cached values and proceed (this
+            // sets primitiveBounds to null).
+            invalidateGeometryCache();
         }
         return primitiveBounds;
     }

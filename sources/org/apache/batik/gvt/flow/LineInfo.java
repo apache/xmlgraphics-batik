@@ -140,7 +140,6 @@ public class LineInfo {
                 if (delta < 0) break;
                 
                 i++;
-
                 rangeAdvance += adv;
             }
 
@@ -334,6 +333,7 @@ public class LineInfo {
         // of glpyhs in each range for use with full justification.
         int []rangeGG = new int[numRanges];
         int []rangeG  = new int[numRanges];
+        GlyphGroupInfo []rangeLastGGI = new GlyphGroupInfo[numRanges];
         GlyphGroupInfo ggi  = ggis[0];
         int r = ggi.getRange();
         rangeGG[r]++;
@@ -341,8 +341,10 @@ public class LineInfo {
         for (int i=1; i<size; i++) {
             ggi  = ggis[i];
             r = ggi.getRange();
-            if (!ggi.getHideLast())
+            if ((rangeLastGGI[r]==null) || !rangeLastGGI[r].getHideLast())
                 rangeGG[r]++;
+            rangeLastGGI[r] = ggi;
+
             rangeG [r] += ggi.getGlyphCount();
 
             GlyphGroupInfo pggi = ggis[i-1];
@@ -355,7 +357,7 @@ public class LineInfo {
         int currRange = -1;
         double         locX=0, range=0, rAdv=0;
         r=-1;
-        ggi = ggis[0];
+        ggi = null;
         for (int i=0; i<size; i++) {
             GlyphGroupInfo pggi = ggi;
             int prevRange = currRange;
@@ -388,10 +390,10 @@ public class LineInfo {
                 case BlockInfo.ALIGN_MIDDLE: locX += (range-rAdv)/2; break;
                 case BlockInfo.ALIGN_END:    locX += (range-rAdv);   break;
                 }
-            } else if (pggi.getHideLast()) {
+            } else if ((pggi!= null) && pggi.getHideLast()) {
                 // Hide last glyph from prev glyph group (soft hyphen etc).
-                gv.setGlyphVisible(pggi.getEnd(), false);
-            }
+                gv.setGlyphVisible(pggi.getEnd(), false); 
+           }
 
             int        start  = ggi.getStart();
             int        end    = ggi.getEnd();
@@ -413,9 +415,10 @@ public class LineInfo {
                 p2d = np2d;
                 advAdj -= gAdv;
             }
-            locX += ggi.getAdvance()-advAdj+ggAdv;
-            prevRange = currRange;
-            pggi = ggi;
+            if (ggi.getHideLast()) 
+                locX += ggi.getAdvance()-advAdj;
+            else
+                locX += ggi.getAdvance()-advAdj+ggAdv;
         }
     }
 
