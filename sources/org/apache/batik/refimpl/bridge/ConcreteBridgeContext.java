@@ -16,6 +16,7 @@ import org.apache.batik.bridge.DocumentLoader;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.StyleReference;
 import org.apache.batik.bridge.Bridge;
+import org.apache.batik.bridge.GVTBuilder;
 import org.apache.batik.bridge.UserAgent;
 
 import org.apache.batik.script.InterpreterPool;
@@ -106,6 +107,11 @@ public class ConcreteBridgeContext implements BridgeContext {
     private ViewCSS viewCSS;
 
     /**
+     * The GVT Builder.
+     */
+    private GVTBuilder gvtBuilder;
+
+    /**
      * The factory class for vending <tt>GraphicsNodeRable</tt> objects.
      */
     private GraphicsNodeRableFactory graphicsNodeRableFactory;
@@ -118,8 +124,16 @@ public class ConcreteBridgeContext implements BridgeContext {
     /**
      * Constructs a new empty <tt>BridgeContext</tt>.
      */
-    public ConcreteBridgeContext(){
+    public ConcreteBridgeContext() {
         updateManager = new BridgeUpdateManager(this);
+    }
+
+    public GVTBuilder getGVTBuilder() {
+        return gvtBuilder;
+    }
+
+    public void setGVTBuilder(GVTBuilder gvtBuilder) {
+        this.gvtBuilder = gvtBuilder;
     }
 
     public DocumentLoader getDocumentLoader() {

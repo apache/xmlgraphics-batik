@@ -47,6 +47,7 @@ public abstract class ImageTranscoder extends AbstractTranscoder {
         SVGDocument svgDocument = (SVGDocument) document;
         BridgeContext ctx =
             new DefaultBridgeContext(getParserClassName(), svgDocument);
+        ctx.setGVTBuilder(getGVTBuilder());
         ParserFactory parserFactory = ctx.getParserFactory();
 
         SVGSVGElement elt = svgDocument.getRootElement();

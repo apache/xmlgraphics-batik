@@ -20,7 +20,8 @@ import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.css.ViewCSS;
 
 /**
- * A default bridge context.
+ * A default bridge context. The only attribute that is missing is the
+ * <tt>GVTBuilder</tt> to use.
  *
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  * @version $Id$
