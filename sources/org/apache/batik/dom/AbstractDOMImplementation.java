@@ -29,6 +29,7 @@ public abstract class AbstractDOMImplementation implements DOMImplementation {
 	features.put("Events",         "2.0");
 	features.put("MouseEvents",    "2.0");
 	features.put("MutationEvents", "2.0");
+	features.put("Traversal",      "2.0");
 	features.put("UIEvents",       "2.0");
     }
     

@@ -268,9 +268,7 @@ To display the available targets type:
              windowtitle="${Project} Javadoc"
              doctitle="${Project} API Specification"
              bottom="Copyright &#169; ${year} Apache Software Foundation. All Rights Reserved.">
-      <classpath>
-        <pathelement location="lib/xalan_2_0_D01.jar" />
-      </classpath>
+      <classpath refid="libs-classpath"/>
     </javadoc>
   </target>
 
