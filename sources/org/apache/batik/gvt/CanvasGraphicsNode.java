@@ -21,7 +21,9 @@ import java.awt.geom.Dimension2D;
  */
 public class CanvasGraphicsNode extends CompositeGraphicsNode {
 
-    /** The background of this canvas graphics node. */
+    /** 
+     * The background of this canvas graphics node.
+     */
     protected Paint backgroundPaint;
 
     /**
@@ -35,6 +37,7 @@ public class CanvasGraphicsNode extends CompositeGraphicsNode {
 
     /**
      * Sets the background paint of this canvas graphics node.
+     *
      * @param newBackgroundPaint the new background paint
      */
     public void setBackgroundPaint(Paint newBackgroundPaint) {
@@ -43,7 +46,6 @@ public class CanvasGraphicsNode extends CompositeGraphicsNode {
 
     /**
      * Returns the background paint of this canvas graphics node.
-     * @return the background paint
      */
     public Paint getBackgroundPaint() {
         return backgroundPaint;
@@ -53,6 +55,11 @@ public class CanvasGraphicsNode extends CompositeGraphicsNode {
     // Drawing methods
     //
 
+    /**
+     * Paints this node without applying Filter, Mask, Composite, and clip.
+     *
+     * @param g2d the Graphics2D to use
+     */
     public void primitivePaint(Graphics2D g2d, GraphicsNodeRenderContext rc) {
         if (backgroundPaint != null) {
             g2d.setPaint(backgroundPaint);

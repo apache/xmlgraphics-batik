@@ -13,13 +13,16 @@ import java.awt.PaintContext;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Shape;
+
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Rectangle2D;
+
 import java.awt.image.ColorModel;
 
 import org.apache.batik.gvt.filter.GraphicsNodeRable8Bit;
 import org.apache.batik.gvt.filter.GraphicsNodeRable;
+
 import org.apache.batik.ext.awt.image.PadMode;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.renderable.PadRable8Bit;
@@ -27,10 +30,11 @@ import org.apache.batik.ext.awt.image.renderable.AffineRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.AffineRable;
 
 /**
- * Concrete implementation of the <tt>PatternPaint</tt> interface
+ * The PatternPaint class provides a way to fill a Shape with a a pattern
+ * defined as a GVT Tree.
  *
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
- * @version $Id$
+ * @version $Id$ 
  */
 public class PatternPaint implements Paint {
 
@@ -71,6 +75,8 @@ public class PatternPaint implements Paint {
     private boolean overflow;
 
     /**
+     * Constructs a new <tt>PatternPaint</tt>.
+     *
      * @param node Used to generate the paint pixel pattern
      * @param patternRegion Region to which this paint is constrained
      * @param overflow controls whether or not the node can overflow
@@ -83,6 +89,7 @@ public class PatternPaint implements Paint {
                         Rectangle2D patternRegion,
                         boolean overflow,
                         AffineTransform patternTransform){
+
         if (node == null) {
             throw new IllegalArgumentException();
         }
@@ -106,11 +113,9 @@ public class PatternPaint implements Paint {
 
         Rectangle2D padBounds = (Rectangle2D)patternRegion.clone();
 
-        //
-        // When there is overflow, make sure we take the
-        // full node bounds into account.
-        //
-        if(overflow){
+        // When there is overflow, make sure we take the full node bounds into
+        // account.
+        if (overflow) {
             Rectangle2D nodeBounds = comp.getBounds(gnrc);
             // System.out.println("Comp Bounds    : " + nodeBounds);
             // System.out.println("Node Bounds    : " + node.getBounds(gnrc));
@@ -122,36 +127,47 @@ public class PatternPaint implements Paint {
         tile = new PadRable8Bit(gnr, padBounds, PadMode.ZERO_PAD);
     }
 
+    /**
+     * Returns the graphics node that define the pattern.
+     */
     public GraphicsNode getGraphicsNode(){
         return node;
     }
 
+    /**
+     * Returns the pattern region.
+     */
     public Rectangle2D getPatternRect(){
         return (Rectangle2D)patternRegion.clone();
     }
 
+    /**
+     * Returns the additional transform of the pattern paint.
+     */
     public AffineTransform getPatternTransform(){
         return patternTransform;
     }
 
+    /**
+     * Creates and returns a context used to generate the pattern.
+     */
     public PaintContext createContext(ColorModel      cm, 
                                       Rectangle       deviceBounds,
                                       Rectangle2D     userBounds,
                                       AffineTransform xform,
                                       RenderingHints  hints) {
+
         // System.out.println("userBounds : " + userBounds);
         // System.out.println("patternTransform : " + patternTransform);
 
-        //
         // Concatenate the patternTransform to xform
-        //
-        if(patternTransform != null) {
+        if (patternTransform != null) {
             xform = new AffineTransform(xform);
             xform.concatenate(patternTransform);
-
-            try{
-                AffineTransform patternTransformInv 
-                    = patternTransform.createInverse();
+	    
+            try {
+                AffineTransform patternTransformInv = 
+		    patternTransform.createInverse();
                 userBounds = patternTransformInv.
                     createTransformedShape(userBounds).getBounds2D();
             }
@@ -165,6 +181,9 @@ public class PatternPaint implements Paint {
                                        overflow);
     }
 
+    /**
+     * Returns the transparency mode for this pattern paint.
+     */
     public int getTransparency(){
         return TRANSLUCENT;
     }

@@ -11,31 +11,31 @@ package org.apache.batik.gvt;
 import java.awt.geom.Point2D;
 
 /**
- * A Marker describes a GraphicsNode with a reference point that can
- * be used to position the Marker at a particular location and a 
- * particular policy for rotating the marker when drawing it.
+ * A Marker describes a GraphicsNode with a reference point that can be used to
+ * position the Marker at a particular location and a particular policy for
+ * rotating the marker when drawing it.
  *
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
- * @version $Id$
+ * @version $Id$ 
  */
 public class Marker {
 
     /**
-     * Rotation angle, about (0, 0) is user space. If orient is NaN
-     * then the marker's x-axis should be aligned with the slope
-     * of the curve on the point where the object is drawn
+     * Rotation angle, about (0, 0) is user space. If orient is NaN then the
+     * marker's x-axis should be aligned with the slope of the curve on the
+     * point where the object is drawn 
      */
-    private double orient;
+    protected double orient;
 
     /**
      * GraphicsNode this marker is associated to
      */
-    private GraphicsNode markerNode;
+    protected GraphicsNode markerNode;
 
     /**
      * Reference point about which the marker should be drawn
      */
-    private Point2D ref;
+    protected Point2D ref;
 
     /**
      * Constructs a new marker.
@@ -44,14 +44,13 @@ public class Marker {
      * @param ref the reference point
      * @param orient the orientation of the marker
      */
-    public Marker(GraphicsNode markerNode,
-                  Point2D ref,
-                  double orient){
-        if(markerNode == null){
+    public Marker(GraphicsNode markerNode, Point2D ref, double orient){
+
+        if (markerNode == null) {
             throw new IllegalArgumentException();
         }
 
-        if(ref == null){
+        if (ref == null) {
             throw new IllegalArgumentException();
         }
 

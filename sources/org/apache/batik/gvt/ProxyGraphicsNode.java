@@ -14,13 +14,12 @@ import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
 
 /**
- * A graphics node which provides a placeholder for another graphics
- * node. This node is self defined except that it delegates to the
- * enclosed (proxied) graphics node, its paint routine and bounds
- * computation.
+ * A graphics node which provides a placeholder for another graphics node. This
+ * node is self defined except that it delegates to the enclosed (proxied)
+ * graphics node, its paint routine and bounds computation.
  *
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
- * @version $Id$
+ * @version $Id$ 
  */
 public class ProxyGraphicsNode extends AbstractGraphicsNode {
 
@@ -36,6 +35,7 @@ public class ProxyGraphicsNode extends AbstractGraphicsNode {
 
     /**
      * Sets the graphics node to proxy to the specified graphics node.
+     *
      * @param source the graphics node to proxy
      */
     public void setSource(GraphicsNode source) {
@@ -51,8 +51,8 @@ public class ProxyGraphicsNode extends AbstractGraphicsNode {
 
     /**
      * Paints this node without applying Filter, Mask, Composite and clip.
+     *
      * @param g2d the Graphics2D to use
-     * @param rc the GraphicsNodeRenderContext to use
      */
     public void primitivePaint(Graphics2D g2d, GraphicsNodeRenderContext rc) {
         if (source != null) {
@@ -61,39 +61,31 @@ public class ProxyGraphicsNode extends AbstractGraphicsNode {
     }
 
     /**
-     * Returns the bounds of the area covered by this node's
-     * primitive paint. ie. the proxied graphics node's bounds.
-     * <b>Note</b>: The boundaries of some nodes (notably, text element nodes)
-     * cannot be precisely determined independent of their
-     * GraphicsNodeRenderContext.
-     *
-     * @param rc the GraphicsNodeRenderContext for which this dimension applies
+     * Returns the bounds of the area covered by this node's primitive paint.
      */
     public Rectangle2D getPrimitiveBounds(GraphicsNodeRenderContext rc) {
         if (source != null) {
             return source.getBounds(rc);
         } else {
-            return new Rectangle(0, 0, 0, 0);
+            //return new Rectangle(0, 0, 0, 0);
+            return null;
         }
     }
 
     /**
-     * Returns the bounds of the area covered by this node, without
-     * taking any of its rendering attribute into account, i.e., exclusive
-     * of any clipping, masking, filtering or stroking, for example.
-     * <b>Note</b>: The boundaries of some nodes (notably, text element nodes)
-     * cannot be precisely determined independent of their
-     * GraphicsNodeRenderContext.
-     *
-     * @param rc the GraphicsNodeRenderContext for which this dimension applies
-      */
+     * Returns the bounds of the area covered by this node, without taking any
+     * of its rendering attribute into account. i.e., exclusive of any clipping,
+     * masking, filtering or stroking, for example.
+     */
     public Rectangle2D getGeometryBounds(GraphicsNodeRenderContext rc){
         if (source != null) {
             return source.getGeometryBounds(rc);
         } else {
-            return new Rectangle(0, 0, 0, 0);
+            //return new Rectangle(0, 0, 0, 0);
+            return null;
         }
     }
+
 
     /**
      * Returns the outline of this node.

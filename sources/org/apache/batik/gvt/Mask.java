@@ -18,8 +18,9 @@ import java.awt.image.renderable.RenderableImage;
  * @version $Id$
  */
 public interface Mask extends RenderableImage {
+
     /**
-     * Returns the bounds of this mask
+     * Returns the bounds of this mask.
      */
-    public Rectangle2D getBounds2D();
+    Rectangle2D getBounds2D();
 }
