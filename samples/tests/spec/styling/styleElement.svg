@@ -1,0 +1,69 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN"
+"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+
+<!-- ====================================================================== -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.     -->
+<!--                                                                        -->
+<!-- This software is published under the terms of the Apache Software      -->
+<!-- License version 1.1, a copy of which has been included with this       -->
+<!-- distribution in the LICENSE file.                                      -->
+<!-- ====================================================================== -->
+
+<!-- ====================================================================== -->
+<!-- Modification of a circle attributes                                    -->
+<!--                                                                        -->
+<!-- @author tkormann@ilog.fr                                               -->
+<!-- @version $Id$ -->
+<!-- ====================================================================== -->
+
+<?xml-stylesheet type="text/css" href="../../resources/style/test.css" ?>  
+
+<svg id="body" width="450" height="500" viewBox="0 0 450 500"
+     xmlns="http://www.w3.org/2000/svg" 
+     xmlns:xlink="http://www.w3.org/1999/xlink">
+
+  <style type="text/css">
+    rect { stroke="black" }
+  </style>
+
+<!-- The '.blue' will be applied as the comment characters will be ignored.
+     the '.green' rule will not be as the parser will abort on the invalid
+     'TEST' content because the CDATA block hides the XML comments from
+     the XML parser. --> 
+
+  <style type="text/css"><![CDATA[
+    <!-- .blue { fill: blue } -->
+    <!-- TEST -->
+    .green { fill: green }
+    /*end of css */
+  ]]></style>
+
+<!-- Only .yellow will be applied .purple will be stripped by the
+     XML parser (Note no CDATA block). --> 
+
+  <style type="text/css">
+    <!-- .purple { fill: purple } -->
+    <!-- TEST -->
+    .yellow { fill: yellow }
+    /* end of css */
+  </style>
+
+  <title>Test of XML comments in &lt;style&gt; elements</title>
+  <text x="50%" y="50" class="title"
+    >Test of XML comments in &lt;style&gt; elements</text>
+  <g id="test-content" >
+    <rect class="blue" x="10" y="100" width="100" height="50"/>
+    <text x="150" y="125">class="blue"</text>
+
+    <rect class="green" x="10" y="175" width="100" height="50"/>
+    <text x="150" y="200">class="green"</text>
+
+    <rect class="purple" x="10" y="250" width="100" height="50"/>
+    <text x="150" y="275">class="purple"</text>
+
+    <rect class="yellow" x="10" y="325" width="100" height="50"/>
+    <text x="150" y="350">class="yellow"</text>
+  </g>
+</svg>
+

@@ -370,34 +370,9 @@ public class WindowWrapper extends ImporterTopLevel {
                                final String mime,
                                final String content) {
             try {
-                interpreter.callHandler(function,
-                    new RhinoInterpreter.ArgumentsBuilder() {
-                        public Object[] buildArguments() {
-                            try {
-                                Object[] arguments = new Object[1];
-                                ScriptableObject so =
-                                    (ScriptableObject)interpreter.evaluate
-                                    (new StringReader("new Object()"));
-                                so.put("success", so,
-                                       (success) ?
-                                       Boolean.TRUE : Boolean.FALSE);
-                                if (mime != null) {
-                                    so.put("contentType", so,
-                                           Context.toObject(mime, scope));
-                                }
-                                if (content != null) {
-                                    so.put("content", so,
-                                           Context.toObject(content, scope));
-                                }
-                                arguments[0] = so;
-                                return arguments;
-                            } catch (IOException e) {
-                                throw new WrappedException(e);
-                            } catch (InterpreterException e) {
-                                throw new WrappedException(e);
-                            }
-                        }
-                    });
+                interpreter.callHandler
+                    (function,
+                     new GetURLDoneArgBuilder(success, mime, content, scope));
             } catch (JavaScriptException e) {
                 throw new WrappedException(e);
             }
@@ -451,30 +426,44 @@ public class WindowWrapper extends ImporterTopLevel {
             try {
                 interpreter.callMethod
                     (object, COMPLETE,
-                     new RhinoInterpreter.ArgumentsBuilder() {
-                         public Object[] buildArguments() {
-                             Object[] arguments = new Object[1];
-                             ScriptableObject so =
-                                 new NativeObject();
-                             so.put("success", so,
-                                    (success) ?
-                                    Boolean.TRUE : Boolean.FALSE);
-                             if (mime != null) {
-                                 so.put("contentType", so,
-                                        Context.toObject(mime, scope));
-                             }
-                             if (content != null) {
-                                 so.put("content", so,
-                                        Context.toObject(content, scope));
-                             }
-                             arguments[0] = so;
-                             return arguments;
-                         }
-                     });
+                     new GetURLDoneArgBuilder(success, mime, content, scope));
             } catch (JavaScriptException e) {
                 Context.exit();
                 throw new WrappedException(e);
             }
         }
     }
+
+    static class GetURLDoneArgBuilder 
+        implements RhinoInterpreter.ArgumentsBuilder {
+        boolean success;
+        String mime, content;
+        ScriptableObject scope;
+        public GetURLDoneArgBuilder(boolean success, 
+                                    String mime, String content,
+                                    ScriptableObject scope) {
+            this.success = success;
+            this.mime    = mime;
+            this.content = content;
+            this.scope   = scope;
+        }
+
+        public Object[] buildArguments() {
+            Object[] arguments = new Object[1];
+            ScriptableObject so = new NativeObject();
+            so.put("success", so,
+                   (success) ? Boolean.TRUE : Boolean.FALSE);
+            if (mime != null) {
+                so.put("contentType", so,
+                       Context.toObject(mime, scope));
+            }
+            if (content != null) {
+                so.put("content", so,
+                       Context.toObject(content, scope));
+            }
+            arguments[0] = so;
+            return arguments;
+        }
+    }
+    
 }

@@ -1693,20 +1693,7 @@ public abstract class CSSEngine {
             }
 
             if (removed) {
-                // Invalidate all the values.
-                elt.setComputedStyleMap(null, null);
-
-                firePropertiesChangedEvent(elt, ALL_PROPERTIES);
-                    
-                Node c = getImportedChild(elt);
-                if (c != null) {
-                    propagateChanges(c, ALL_PROPERTIES);
-                }
-                for (Node n = elt.getFirstChild();
-                     n != null;
-                     n = n.getNextSibling()) {
-                    propagateChanges(n, ALL_PROPERTIES);
-                }
+                invalidateProperties(elt, null);
             } else {
                 int count = 0;
             
@@ -1754,17 +1741,7 @@ public abstract class CSSEngine {
                             props[count++] = i;
                         }
                     }
-                    firePropertiesChangedEvent(elt, props);
-                    
-                    Node c = getImportedChild(elt);
-                    if (c != null) {
-                        propagateChanges(c, props);
-                    }
-                    for (Node n = elt.getFirstChild();
-                         n != null;
-                         n = n.getNextSibling()) {
-                        propagateChanges(n, props);
-                    }
+                    invalidateProperties(elt, props);
                 }
             }
             break;
@@ -1789,137 +1766,141 @@ public abstract class CSSEngine {
         style.putComputed(n, false);
     }
 
-    /**
-     * Invalidates all the stylable elements descendant of the given
-     * node, and the node.
-     */
-    protected void invalidateTreeProperties(Node node) {
-        if (node instanceof CSSStylableElement) {
-            CSSStylableElement elt = (CSSStylableElement)node;
-            StyleMap style = elt.getComputedStyleMap(null);
-            if (style != null) {
-                elt.setComputedStyleMap(null, null);
-                firePropertiesChangedEvent(elt, ALL_PROPERTIES);
-            }
-        }
-
-        Node c = getImportedChild(node);
-        if (c != null) {
-            propagateChanges(c, ALL_PROPERTIES);
-        }
-        for (Node n = node.getFirstChild();
-             n != null;
-             n = n.getNextSibling()) {
-            invalidateTreeProperties(n);
-        }
-    }
 
     /**
      * Invalidates all the properties of the given node.
      */
-    protected void invalidateProperties(Node node) {
-        if (node instanceof CSSStylableElement) {
-            CSSStylableElement elt = (CSSStylableElement)node;
-            StyleMap style = elt.getComputedStyleMap(null);
-            if (style != null) {
-                elt.setComputedStyleMap(null, null);
-                firePropertiesChangedEvent(elt, ALL_PROPERTIES);
-            }
+    protected void invalidateProperties(Node node, int [] properties) {
+        if (!(node instanceof CSSStylableElement))
+            return;  // Not Stylable sub tree
+        // System.err.println("Node id: " + 
+        //                    ((Element)node).getAttribute("id"));
+
+        CSSStylableElement elt = (CSSStylableElement)node;
+        StyleMap style = elt.getComputedStyleMap(null);
+        if (style == null)
+            return;  // Nothing to invalidate.
+        
+        StyleMap newStyle = getCascadedStyleMap(elt, null);
+        elt.setComputedStyleMap(null, newStyle);
+        boolean [] diffs = new boolean[getNumberOfProperties()];
+        int count =0;
+        if (properties != null) {
+            for (int i=0; i<properties.length; i++)
+                diffs[properties[i]] = true;
+            count = properties.length;
         }
 
-        Node c = getImportedChild(node);
-        if (c != null) {
-            propagateChanges(c, ALL_PROPERTIES);
+        for (int i=0; i<diffs.length; i++) {
+            if (diffs[i]) continue; // Already marked changed.
+
+            Value nv = newStyle.getValue(i);
+            Value ov = null;
+            if (!style.isNullCascaded(i)) {
+                ov = style.getValue(i);
+                if (ov instanceof ComputedValue) {
+                    ov = ((ComputedValue)ov).getCascadedValue();
+                }
+            }
+
+            if (nv == ov) continue;
+            if ((nv == null) || 
+                (!nv.equals(ov) && !nv.getCssText().equals(ov.getCssText()))) {
+                count++;
+                diffs[i] = true;
+            }
         }
-        for (Node n = node.getFirstChild();
-             n != null;
-             n = n.getNextSibling()) {
-            propagateChanges(n, ALL_PROPERTIES);
+        int []props = null;
+        if (count != 0) {
+            props = new int[count];
+            count = 0;
+            for (int i=0; i<diffs.length; i++) {
+                if (diffs[i])
+                    props[count++] = i;
+            }
         }
+        propagateChanges(elt, props);
     }
 
     /**
      * Propagates the changes that occurs on the parent of the given node.
      */
     protected void propagateChanges(Node node, int[] props) {
-        if (node instanceof CSSStylableElement) {
-            CSSStylableElement elt = (CSSStylableElement)node;
-            StyleMap style = elt.getComputedStyleMap(null);
-            if (style != null) {
-                boolean[] updated =
-                    styleDeclarationUpdateHandler.updatedProperties;
-                for (int i = getNumberOfProperties() - 1; i >= 0; --i) {
-                    updated[i] = false;
-                }
+        if (!(node instanceof CSSStylableElement))
+            return;
+        CSSStylableElement elt = (CSSStylableElement)node;
+        StyleMap style = elt.getComputedStyleMap(null);
+        if (style != null) {
+            boolean[] updated =
+                styleDeclarationUpdateHandler.updatedProperties;
+            for (int i = getNumberOfProperties() - 1; i >= 0; --i) {
+                updated[i] = false;
+            }
+            if (props != null) {
                 for (int i = props.length - 1; i >= 0; --i) {
                     int idx = props[i];
-                    if (style.isComputed(idx) &&
-                        style.isParentRelative(idx)) {
-                        updated[idx] = true;
-                        clearComputedValue(style, idx);
-                    }
+                    updated[idx] = true;
                 }
+            }
 
-                // Invalidate the relative values
-                boolean fs = (fontSizeIndex == -1)
-                    ? false
-                    : updated[fontSizeIndex];
-                boolean lh = (lineHeightIndex == -1)
-                    ? false
-                    : updated[lineHeightIndex];
-                boolean cl = (colorIndex == -1)
-                    ? false
-                    : updated[colorIndex];
-                int count = 0;
+            // Invalidate the relative values
+            boolean fs = (fontSizeIndex == -1)
+                ? false
+                : updated[fontSizeIndex];
+            boolean lh = (lineHeightIndex == -1)
+                ? false
+                : updated[lineHeightIndex];
+            boolean cl = (colorIndex == -1)
+                ? false
+                : updated[colorIndex];
+            int count = 0;
 
-                for (int i = getNumberOfProperties() - 1; i >= 0; --i) {
-                    if (!updated[i]) {
-                        if (style.isComputed(i)) {
-                            if (fs && style.isFontSizeRelative(i)) {
-                                updated[i] = true;
-                                count++;
-                                clearComputedValue(style, i);
-                            }
-                            if (lh && style.isLineHeightRelative(i)) {
-                                updated[i] = true;
-                                count++;
-                                clearComputedValue(style, i);
-                            }
-                            if (cl && style.isColorRelative(i)) {
-                                updated[i] = true;
-                                count++;
-                                clearComputedValue(style, i);
-                            }
-                        }
-                    } else {
+            for (int i = getNumberOfProperties() - 1; i >= 0; --i) {
+                if (updated[i]) {
+                    count++;
+                    continue;
+                }
+                if (style.isComputed(i)) {
+                    if (fs && style.isFontSizeRelative(i)) {
+                        updated[i] = true;
                         count++;
+                        clearComputedValue(style, i);
+                    }
+                    if (lh && style.isLineHeightRelative(i)) {
+                        updated[i] = true;
+                        count++;
+                        clearComputedValue(style, i);
+                    }
+                    if (cl && style.isColorRelative(i)) {
+                        updated[i] = true;
+                        count++;
+                        clearComputedValue(style, i);
                     }
                 }
+            }
 
-                if (count > 0) {
-                    props = new int[count];
-                    count = 0;
-                    for (int i = getNumberOfProperties() - 1; i >= 0; --i) {
-                        if (updated[i]) {
-                            props[count++] = i;
-                        }
+            if (count == 0) {
+                props = null;
+            } else {
+                props = new int[count];
+                count = 0;
+                for (int i = getNumberOfProperties() - 1; i >= 0; --i) {
+                    if (updated[i]) {
+                        props[count++] = i;
                     }
-                    firePropertiesChangedEvent(elt, props);
-                } else {
-                    props = null;
                 }
+                firePropertiesChangedEvent(elt, props);
             }
         }
-        if (props != null) {
-            Node c = getImportedChild(node);
-            if (c != null) {
-                propagateChanges(c, props);
-            }
-            for (Node n = node.getFirstChild();
-                 n != null;
-                 n = n.getNextSibling()) {
-                propagateChanges(n, props);
-            }
+
+        Node c = getImportedChild(node);
+        if (c != null) {
+            invalidateProperties(c, props);
+        }
+        for (Node n = node.getFirstChild();
+             n != null;
+             n = n.getNextSibling()) {
+            invalidateProperties(n, props);
         }
     }
 
@@ -1976,6 +1957,7 @@ public abstract class CSSEngine {
                                                    StyleMap style,
                                                    String property,
                                                    MutationEvent evt) {
+        // System.err.println("update: " + property);
         int idx = getPropertyIndex(property);
 
         if (style.isImportant(idx)) {
@@ -1991,8 +1973,6 @@ public abstract class CSSEngine {
             return;
         }
         
-        boolean comp = style.isComputed(idx);
-
         switch (evt.getAttrChange()) {
         case MutationEvent.ADDITION:
         case MutationEvent.MODIFICATION:
@@ -2021,26 +2001,7 @@ public abstract class CSSEngine {
             break;
 
         case MutationEvent.REMOVAL:
-            // Invalidate all the values.
-            elt.setComputedStyleMap(null, null);
-            
-            firePropertiesChangedEvent(elt, ALL_PROPERTIES);
-                    
-            Node c = getImportedChild(elt);
-            if (c != null) {
-                propagateChanges(c, ALL_PROPERTIES);
-            }
-            for (Node n = elt.getFirstChild();
-                 n != null;
-                 n = n.getNextSibling()) {
-                propagateChanges(n, ALL_PROPERTIES);
-            }
-            return;
-        }
-
-        if (!comp) {
-            // The previous value was not computed: nobody is
-            // interested by this property modifications
+            invalidateProperties(elt, null);
             return;
         }
 
@@ -2087,17 +2048,8 @@ public abstract class CSSEngine {
                 props[count++] = i;
             }
         }
-        firePropertiesChangedEvent(elt, props);
 
-        Node c = getImportedChild(elt);
-        if (c != null) {
-            propagateChanges(c, props);
-        }
-        for (Node n = elt.getFirstChild();
-             n != null;
-             n = n.getNextSibling()) {
-            propagateChanges(n, props);
-        }
+        invalidateProperties(elt, props);
     }
 
     /**
@@ -2111,7 +2063,7 @@ public abstract class CSSEngine {
                 styleSheetNodes = null;
 
                 // Invalidate all the CSSStylableElements in the document.
-                invalidateTreeProperties(document.getDocumentElement());
+                invalidateProperties(document.getDocumentElement(), null);
                 return;
             }
             if (et instanceof CSSStylableElement) {
@@ -2121,7 +2073,7 @@ public abstract class CSSEngine {
                 for (Node n = ((Node)evt.getTarget()).getNextSibling();
                      n != null;
                      n = n.getNextSibling()) {
-                    invalidateProperties(n);
+                    invalidateProperties(n, null);
                 }
             }
         }
@@ -2159,7 +2111,7 @@ public abstract class CSSEngine {
                 styleSheetNodes = null;
 
                 // Invalidate all the CSSStylableElements in the document.
-                invalidateTreeProperties(document.getDocumentElement());
+                invalidateProperties(document.getDocumentElement(), null);
             } else if (removedStylableElementSibling != null) {
                 // Invalidate the CSSStylableElement siblings, to
                 // correctly match the adjacent selectors and
@@ -2167,7 +2119,7 @@ public abstract class CSSEngine {
                 for (Node n = removedStylableElementSibling;
                      n != null;
                      n = n.getNextSibling()) {
-                    invalidateProperties(n);
+                    invalidateProperties(n, null);
                 }
                 removedStylableElementSibling = null;
             }
@@ -2184,7 +2136,7 @@ public abstract class CSSEngine {
                 styleSheetNodes = null;
 
                 // Invalidate all the CSSStylableElements in the document.
-                invalidateTreeProperties(document.getDocumentElement());
+                invalidateProperties(document.getDocumentElement(), null);
             }
         }
     }
@@ -2250,20 +2202,7 @@ public abstract class CSSEngine {
                 selectorAttributes.contains(name)) {
                 // An attribute has been modified, invalidate all the
                 // properties to correctly match attribute selectors.
-
-                elt.setComputedStyleMap(null, null);
-
-                firePropertiesChangedEvent(elt, ALL_PROPERTIES);
-                
-                Node c = getImportedChild(elt);
-                if (c != null) {
-                    propagateChanges(c, ALL_PROPERTIES);
-                }
-                for (Node n = elt.getFirstChild();
-                     n != null;
-                     n = n.getNextSibling()) {
-                    propagateChanges(n, ALL_PROPERTIES);
-                }
+                invalidateProperties(elt, null);
             }
         }
     }
