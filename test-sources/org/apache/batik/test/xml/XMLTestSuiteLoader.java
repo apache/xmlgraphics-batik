@@ -154,6 +154,10 @@ public class XMLTestSuiteLoader implements XTSConstants {
                         Test t = buildTest(childElement);
                         testSuite.addTest(t);
                     }
+                    else if(tagName == XTS_TEST_GROUP_TAG){
+                        Test t = buildTestSuite(childElement, testSuite);
+                        testSuite.addTest(t);
+                    }
                 }
             }
         }

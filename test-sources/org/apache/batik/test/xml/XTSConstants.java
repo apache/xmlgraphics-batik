@@ -22,6 +22,7 @@ public interface XTSConstants extends XMLReflectConstants{
     // XTS tags
     /////////////////////////////////////////////////////////////////////////
     String XTS_TEST_TAG       = "test";
+    String XTS_TEST_GROUP_TAG = "testGroup";
     String XTS_TEST_SUITE_TAG = "testSuite";
 
     /////////////////////////////////////////////////////////////////////////
