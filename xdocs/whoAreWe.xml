@@ -162,6 +162,9 @@ as a software engineer for Bull.</em>
               the Batik infrastructure</li>
           <li><link href="mailto:john.morrison@uk.experian.com">John Morrison</link> - Contributed a set of XSL stylesheets
               to generate SVG charts, such as line graphs, bar charts or pie charts</li>
+          <li><link href="mailto:neumann@karto.baug.ethz.ch">Andreas Neumann</link> - Contributed two SVG maps which 
+              <link href="bert@w3.org">Bert Bos</link> has internationalized (adding an English version to the original
+              German text).</li>
           <li><link href="mailto:luano@asd.ie">Luan O'Carroll</link> - Contributed the WMF transcoder.</li>
           <li><link href="mailto:spei@cs.uiowa.edu">Sheng Pei</link> - Contributed on filters and the Regard tool.</li>
           <li><link href="mailto:neeme.praks@one.ee">Neeme Praks</link> - Contributed patches, feedback and scripts for
