@@ -683,7 +683,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements Cloneable
         gc.setPaint(bgcolor);
         fillRect(x, y, width, height);
         gc.setPaint(paint);
-        drawImage(img, x, y, observer);
+        drawImage(img, x, y, width, height, observer);
 
         return true;
     }
