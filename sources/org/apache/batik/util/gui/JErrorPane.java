@@ -140,7 +140,8 @@ public class JErrorPane extends JOptionPane {
             ExtendedGridBagConstraints constraints =
                 new ExtendedGridBagConstraints();
 
-            JTextArea msgArea = new JTextArea(4, 50);
+            JTextArea msgArea = new JTextArea();
+            msgArea.setColumns(50);
             msgArea.setFont(new JLabel().getFont());
             msgArea.setForeground(new JLabel().getForeground());
             msgArea.setOpaque(false);
@@ -148,14 +149,14 @@ public class JErrorPane extends JOptionPane {
             msgArea.setText(msg);
             msgArea.setLineWrap(true);
 
-            constraints.insets = new Insets(10, 10, 10, 10);
+            constraints.insets = new Insets(5, 5, 5, 5);
             constraints.setWeight(0, 0);
             constraints.anchor = GridBagConstraints.WEST;
             constraints.fill = GridBagConstraints.NONE;
-            constraints.setGridBounds(0, 0, 2, 1);
+            constraints.setGridBounds(0, 0, 1, 1);
             add(msgArea, constraints);
 
-            constraints.insets = new Insets(0, 10, 10, 10);
+            constraints.insets = new Insets(0, 5, 5, 5);
             showDetailButton = bf.createJButton("ShowDetailButton");
             constraints.setWeight(0, 0);
             constraints.anchor = GridBagConstraints.NORTHWEST;
@@ -172,7 +173,7 @@ public class JErrorPane extends JOptionPane {
             constraints.setWeight(1d, 1d);
             constraints.anchor = GridBagConstraints.CENTER;
             constraints.fill = GridBagConstraints.BOTH;
-            constraints.setGridBounds(1, 1, 1, 1);
+            constraints.setGridBounds(0, 2, 1, 1);
             add(subpanel, constraints);
         }
 
