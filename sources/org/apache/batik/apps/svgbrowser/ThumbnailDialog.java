@@ -12,6 +12,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Dimension2D;
 
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -24,11 +25,16 @@ import java.util.ResourceBundle;
 import javax.swing.JDialog;
 
 import org.apache.batik.bridge.ViewBox;
+
 import org.apache.batik.swing.JSVGCanvas;
+
 import org.apache.batik.swing.gvt.GVTTreeRendererAdapter;
 import org.apache.batik.swing.gvt.GVTTreeRendererEvent;
+import org.apache.batik.swing.gvt.JGVTComponent;
+
 import org.apache.batik.swing.svg.SVGDocumentLoaderAdapter;
 import org.apache.batik.swing.svg.SVGDocumentLoaderEvent;
+
 import org.apache.batik.util.gui.resource.ResourceManager;
 
 import org.w3c.dom.svg.SVGDocument;
@@ -68,7 +74,7 @@ public class ThumbnailDialog extends JDialog {
     protected JSVGCanvas svgCanvas;
 
     /** The canvas that displays the thumbnail. */
-    protected JSVGCanvas svgThumbnailCanvas;
+    protected JGVTComponent svgThumbnailCanvas;
 
     /** A flag bit that indicates a document has been loaded. */
     protected boolean documentChanged;
@@ -89,18 +95,10 @@ public class ThumbnailDialog extends JDialog {
         svgCanvas.addSVGDocumentLoaderListener(new ThumbnailDocumentListener());
 
         // create the thumbnail
-        svgThumbnailCanvas = new JSVGCanvas(null, false, false);
+        svgThumbnailCanvas = new JGVTComponent();
         svgThumbnailCanvas.setPreferredSize(new Dimension(150, 150));
-
-        svgThumbnailCanvas.setEnableZoomInteractor(false);
-        svgThumbnailCanvas.setEnableImageZoomInteractor(false);
-        svgThumbnailCanvas.setEnablePanInteractor(false);
-        svgThumbnailCanvas.setEnableRotateInteractor(false);
-
         svgThumbnailCanvas.addComponentListener(new ThumbnailComponentListener());
-
         getContentPane().add(svgThumbnailCanvas, BorderLayout.CENTER);
-
     }
 
     /**
@@ -122,6 +120,14 @@ public class ThumbnailDialog extends JDialog {
 
             AffineTransform Tx
                 = ViewBox.getViewTransform(null, elt, dim.width, dim.height);
+            if (Tx.isIdentity()) {
+                // no viewBox has been specified, create a scale transform
+                Dimension2D docSize = svgCanvas.getSVGDocumentSize();
+                double sx = dim.width / docSize.getWidth();
+                double sy = dim.height / docSize.getHeight();
+                double s = Math.min(sx, sy);
+                Tx = AffineTransform.getScaleInstance(s, s);
+            }
             svgThumbnailCanvas.setRenderingTransform(Tx);
         }
     }

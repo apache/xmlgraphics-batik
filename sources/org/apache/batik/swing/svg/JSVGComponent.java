@@ -285,6 +285,13 @@ public class JSVGComponent extends JGVTComponent {
     }
 
     /**
+     * Returns the size of the SVG document.
+     */
+    public Dimension2D getSVGDocumentSize() {
+        return bridgeContext.getDocumentSize();
+    }
+
+    /**
      * Returns the current's document fragment identifier.
      */
     public String getFragmentIdentifier() {
