@@ -1308,6 +1308,64 @@ public class JSVGComponent extends JGVTComponent {
         /**
          * Dispatches the event to the GVT tree.
          */
+        protected void dispatchKeyTyped(final KeyEvent e) {
+            if (!isDynamicDocument) {
+                super.dispatchKeyTyped(e);
+                return;
+            }
+
+            if (updateManager != null && updateManager.isRunning()) {
+                updateManager.getUpdateRunnableQueue().invokeLater
+                    (new Runnable() {
+                        public void run() {
+                            eventDispatcher.keyTyped(e);
+                        }
+                    });
+            }
+
+        }
+
+        /**
+         * Dispatches the event to the GVT tree.
+         */
+        protected void dispatchKeyPressed(final KeyEvent e) {
+            if (!isDynamicDocument) {
+                super.dispatchKeyPressed(e);
+                return;
+            }
+
+            if (updateManager != null && updateManager.isRunning()) {
+                updateManager.getUpdateRunnableQueue().invokeLater
+                    (new Runnable() {
+                        public void run() {
+                            eventDispatcher.keyPressed(e);
+                        }
+                    });
+            }
+        }
+
+        /**
+         * Dispatches the event to the GVT tree.
+         */
+        protected void dispatchKeyReleased(final KeyEvent e) {
+            if (!isDynamicDocument) {
+                super.dispatchKeyReleased(e);
+                return;
+            }
+
+            if (updateManager != null && updateManager.isRunning()) {
+                updateManager.getUpdateRunnableQueue().invokeLater
+                    (new Runnable() {
+                        public void run() {
+                            eventDispatcher.keyReleased(e);
+                        }
+                    });
+            }
+        }
+
+        /**
+         * Dispatches the event to the GVT tree.
+         */
         protected void dispatchMouseClicked(final MouseEvent e) {
             if (!isDynamicDocument) {
                 super.dispatchMouseClicked(e);

@@ -19,6 +19,7 @@ import java.net.URL;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.apache.batik.dom.util.SAXDocumentFactory;
 import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
 import org.apache.batik.dom.svg.SVGOMDocument;
 
@@ -682,6 +683,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
          * org.apache.batik.script.Window#parseXML(String,Document)}.
          */
         public DocumentFragment parseXML(String text, Document doc) {
+            // System.out.println("Text: " + text);
             SAXSVGDocumentFactory df = new SAXSVGDocumentFactory
                 (XMLResourceDescriptor.getXMLParserClassName());
             String uri = ((SVGOMDocument)bridgeContext.getDocument()).
@@ -699,10 +701,10 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
                 sb.append(FRAGMENT_PREFIX);
                 sb.append(text);
                 sb.append("</svg>");
-                text = sb.toString();
+                String newText = sb.toString();
                 try {
-                    Document d = df.createDocument(uri,
-                                                   new StringReader(text));
+                    Document d = df.createDocument
+                        (uri, new StringReader(newText));
                     for (Node n = d.getDocumentElement().getFirstChild();
                          n != null;
                          n = n.getNextSibling()) {
@@ -714,7 +716,19 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
                         }
                     }
                 } catch (Exception exc) {
-                    // !!! TODO: warning
+                    SAXDocumentFactory sdf = new SAXDocumentFactory
+                        (doc.getImplementation(),
+                         XMLResourceDescriptor.getXMLParserClassName());
+                    try {
+                        Document d = sdf.createDocument
+                            ("http://example.org/Foo", "foo", 
+                             uri, new StringReader(text));
+                        result = doc.createDocumentFragment();
+                        result.appendChild(doc.importNode(d.getDocumentElement(), true));
+                    } catch (Exception ext) {
+                        if (userAgent != null)
+                            userAgent.displayError(ext);
+                    }
                 }
             }
             return result;
@@ -742,7 +756,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
                             burl = ((SVGOMDocument)document).getURLObject();
                             final ParsedURL purl = new ParsedURL(burl, uri);
                             String e = EncodingUtilities.javaEncoding(enc);
-                            e = (e == null) ? enc : e;
+                            e = ((e == null) ? enc : e);
                             Reader r =
                                 new InputStreamReader(purl.openStream(), e);
                             r = new BufferedReader(r);
@@ -767,6 +781,9 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
                                     }
                                 });
                         } catch (Exception e) {
+                            if (e instanceof SecurityException) {
+                                userAgent.displayError(e);
+                            }
                             updateRunnableQueue.invokeLater(new Runnable() {
                                     public void run() {
                                         try {

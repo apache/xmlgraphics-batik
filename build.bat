@@ -24,7 +24,7 @@ set CP=%JAVA_HOME%\lib\tools.jar;%ANT_HOME%\lib\build\ant_1_4_1.jar;.\lib\build\
 
 :: ----- Execute The Requested Build ------------------------------------------
 
-%JAVA_HOME%\bin\java.exe %ANT_OPTS% -classpath %CP% org.apache.tools.ant.Main -Dant.home=%ANT_HOME% %1 -Dargs="%2 %3 %4 %5 %6 %7 %8 %9"
+%JAVA_HOME%\bin\java.exe %ANT_OPTS% -classpath %CP% org.apache.tools.ant.Main -emacs -Dant.home=%ANT_HOME% %1 -Dargs="%2 %3 %4 %5 %6 %7 %8 %9"
 
 :: ----- Cleanup the environment ----------------------------------------------
 

@@ -45,6 +45,19 @@ import org.w3c.dom.events.MutationEvent;
  */
 public class UpdateManager implements RunnableQueue.RunHandler {
 
+    static final long MIN_REPAINT_TIME;
+    static {
+        String s = System.getProperty
+            ("org.apache.batik.min_repaint_time", "20");
+        long value = 20;
+        try {
+            value = Long.parseLong(s);
+        } catch (NumberFormatException nfe) {
+        } finally {
+            MIN_REPAINT_TIME = value;
+        }
+    }
+
     /**
      * Tells whether the given SVG document is dynamic.
      */
@@ -322,16 +335,32 @@ public class UpdateManager implements RunnableQueue.RunHandler {
         }
     }
 
+    long lastRepaint=0;
+
     /**
      * Repaints the dirty areas, if needed.
      */
     public void repaint() {
+        long ctime = System.currentTimeMillis();
         if (updateTracker.hasChanged()) {
+            if (ctime-lastRepaint < MIN_REPAINT_TIME) {
+                // We very recently did a repaint check if other 
+                // repaint runnables are pending.
+                Iterator i = updateRunnableQueue.iterator();
+                while (i.hasNext())
+                    if (!(i.next() instanceof NoRepaintRunnable))
+                        // have a pending repaint runnable so we
+                        // will skip this repaint and we will let 
+                        // the next one pick it up.
+                        return;
+            }
+               
             List dirtyAreas = updateTracker.getDirtyAreas();
             if (dirtyAreas != null) {
                 updateRendering(dirtyAreas);
             }
             updateTracker.clear();
+            lastRepaint = System.currentTimeMillis();
         }
     }
 
