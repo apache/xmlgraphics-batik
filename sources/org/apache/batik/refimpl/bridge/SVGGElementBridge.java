@@ -19,6 +19,7 @@ import org.apache.batik.bridge.BridgeMutationEvent;
 import org.apache.batik.bridge.GraphicsNodeBridge;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.parser.AWTTransformProducer;
 import org.apache.batik.util.SVGConstants;
 
@@ -53,7 +54,8 @@ public class SVGGElementBridge implements GraphicsNodeBridge, SVGConstants {
         Composite composite = CSSUtilities.convertOpacityToComposite(val);
         gn.setComposite(composite);
 
-        CSSUtilities.setupFilter(element, gn, ctx);
+        Filter filter = CSSUtilities.convertFilter(element, gn, ctx);
+        gn.setFilter(filter);
 
         return gn;
     }
