@@ -64,6 +64,12 @@
                 <text y=".3em"><tspan font-size="95">batik</tspan> 1.5<tspan font-size="45"></tspan></text>
                 <text y="3em" font-size="17">http://xml.apache.org/batik</text>
             </g>
+
+            <g id="betaStamp" transform="translate(170, 20) rotate(-30) scale(.7)" filter="url(#dropShadow)">
+                <rect x="-90" y="-32" width="180" height="40" stroke="red" stroke-width="5" fill="none" />
+                <text font-family="'20th Century Font'" text-anchor="middle" font-size="45" fill="red" >beta 2</text>
+            </g>
+
     
         </g>
     
