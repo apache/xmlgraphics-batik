@@ -171,6 +171,8 @@ public class RunnableQueue implements Runnable {
                     rable = l.runnable;
                 }
 
+                runnableStart(rable);
+
                 try {
                     rable.run();
                 } catch (ThreadDeath td) {
@@ -435,6 +437,17 @@ public class RunnableQueue implements Runnable {
     }
         
     /**
+     * Called just prior to executing a Runnable.
+     * Currently just notifies runHandler
+     * @param rable The runnable that is about to start
+     */
+    protected synchronized void runnableStart(Runnable rable ) {
+        if (runHandler != null) {
+            runHandler.runnableStart(this, rable);
+        }
+    }
+
+    /**
      * Called when a Runnable completes.
      * Currently just notifies runHandler
      * @param rable The runnable that just completed.
@@ -452,6 +465,11 @@ public class RunnableQueue implements Runnable {
     public interface RunHandler {
 
         /**
+         * Called just prior to invoking the runnable
+         */
+        void runnableStart(RunnableQueue rq, Runnable r);
+
+        /**
          * Called when the given Runnable has just been invoked and
          * has returned.
          */
@@ -466,6 +484,34 @@ public class RunnableQueue implements Runnable {
          * Called when the execution of the queue has been resumed.
          */
         void executionResumed(RunnableQueue rq);
+    }
+
+    /**
+     * This is an adapter class that implements the RunHandler interface.
+     * It simply does nothing in response to the calls.
+     */
+    public static class RunHandlerAdapter implements RunHandler {
+
+        /**
+         * Called just prior to invoking the runnable
+         */
+        public void runnableStart(RunnableQueue rq, Runnable r) { }
+
+        /**
+         * Called when the given Runnable has just been invoked and
+         * has returned.
+         */
+        public void runnableInvoked(RunnableQueue rq, Runnable r) { }
+
+        /**
+         * Called when the execution of the queue has been suspended.
+         */
+        public void executionSuspended(RunnableQueue rq) { }
+
+        /**
+         * Called when the execution of the queue has been resumed.
+         */
+        public void executionResumed(RunnableQueue rq) { }
     }
 
     /**
