@@ -171,7 +171,7 @@ public class ProfileRed extends AbstractRed {
                 img = imgComp;
                 imgCM = imgCompCM;
                 srcWR = wr.createWritableTranslatedChild(minX, minY);
-            }
+            } 
 
             /**
              * Now, the input image is using a component color
@@ -217,37 +217,40 @@ public class ProfileRed extends AbstractRed {
             colorConvertOp.filter(newImg, sRGBImage);
 
             /**
-             * Integrate alpha back into the image
+             * Integrate alpha back into the image if there is any
              */
-            DataBufferByte rgbData = (DataBufferByte)wr.getDataBuffer();
-            byte[][] imgBanks = data.getBankData();
-            byte[][] rgbBanks = rgbData.getBankData();
-            byte[][] argbBanks = {rgbBanks[0], rgbBanks[1], 
-                                  rgbBanks[2], imgBanks[3]};
-            DataBufferByte argbData = new DataBufferByte(argbBanks, imgBanks[0].length);
-            srcWR = Raster.createBandedRaster(argbData, img.getWidth(), img.getHeight(),
-                                           img.getWidth(), new int[]{0, 1, 2, 3},
-                                           new int[]{0, 0, 0, 0}, new Point(0, 0));
-            sRGBCompCM =
-                new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_sRGB),
-                                        new int[]{8, 8, 8, 8},
-                                        true,
-                                        false,
-                                        Transparency.TRANSLUCENT,
-                                        DataBuffer.TYPE_BYTE);
-            sRGBImage = new BufferedImage(sRGBCompCM,
-                                          srcWR,
-                                          false,
-                                          null);
-            
+            if (imgCM.hasAlpha()){
+                DataBufferByte rgbData = (DataBufferByte)wr.getDataBuffer();
+                byte[][] imgBanks = data.getBankData();
+                byte[][] rgbBanks = rgbData.getBankData();
+                
+                byte[][] argbBanks = {rgbBanks[0], rgbBanks[1], 
+                                      rgbBanks[2], imgBanks[3]};
+                DataBufferByte argbData = new DataBufferByte(argbBanks, imgBanks[0].length);
+                srcWR = Raster.createBandedRaster(argbData, img.getWidth(), img.getHeight(),
+                                                  img.getWidth(), new int[]{0, 1, 2, 3},
+                                                  new int[]{0, 0, 0, 0}, new Point(0, 0));
+                sRGBCompCM =
+                    new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_sRGB),
+                                            new int[]{8, 8, 8, 8},
+                                            true,
+                                            false,
+                                            Transparency.TRANSLUCENT,
+                                            DataBuffer.TYPE_BYTE);
+                sRGBImage = new BufferedImage(sRGBCompCM,
+                                              srcWR,
+                                              false,
+                                              null);
+                
+            } 
+
             /*BufferedImage result = new BufferedImage(img.getWidth(),
-                                                     img.getHeight(),
-                                                     BufferedImage.TYPE_INT_ARGB);*/
+              img.getHeight(),
+              BufferedImage.TYPE_INT_ARGB);*/
             BufferedImage result = new BufferedImage(sRGBCM,
                                                      argbWR.createWritableTranslatedChild(0, 0),
                                                      false,
                                                      null);
-            
             ///////////////////////////////////////////////
             // BUG IN ColorConvertOp: The following breaks:
             // colorConvertOp.filter(sRGBImage, result);
