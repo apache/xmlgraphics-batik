@@ -12,17 +12,18 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.awt.image.renderable.RenderContext;
 
-import org.apache.batik.ext.awt.image.rendered.SpecularLightingRed;
-import org.apache.batik.ext.awt.image.rendered.PadRed;
-import org.apache.batik.ext.awt.image.rendered.RenderedImageCachableRed;
-import org.apache.batik.ext.awt.image.rendered.CachableRed;
+import org.apache.batik.ext.awt.image.GraphicsUtil;
 import org.apache.batik.ext.awt.image.rendered.AffineRed;
+import org.apache.batik.ext.awt.image.rendered.CachableRed;
+import org.apache.batik.ext.awt.image.rendered.PadRed;
+import org.apache.batik.ext.awt.image.rendered.SpecularLightingRed;
 
 /**
  * Implementation of the SpecularLightRable interface.
@@ -163,18 +164,23 @@ public class SpecularLightingRable8Bit
         this.specularExponent = specularExponent;
     }
 
-    public RenderedImage createRendering(RenderContext rc){
-        Rectangle2D aoi = rc.getAreaOfInterest().getBounds2D();
-        if(aoi == null){
-            aoi = getBounds2D();
-        }
+    static final boolean SCALE_RESULT=true;
 
-        aoi.intersect(aoi, getBounds2D(), aoi);
+    public RenderedImage createRendering(RenderContext rc){
+        Shape aoi = rc.getAreaOfInterest();
+        if (aoi == null)
+            aoi = getBounds2D();
+
+        Rectangle2D aoiR = aoi.getBounds2D();
+        aoiR.intersect(aoiR, getBounds2D(), aoiR);
+
+        aoiR.setRect(aoiR.getX()-1, aoiR.getY()-1,
+                     aoiR.getWidth()+2, aoiR.getHeight()+2);
 
         AffineTransform at = rc.getTransform();
-        Rectangle bounds = at.createTransformedShape(aoi).getBounds();
+        Rectangle devRect = at.createTransformedShape(aoiR).getBounds();
 
-        if(bounds.width == 0 || bounds.height == 0){
+        if(devRect.width == 0 || devRect.height == 0){
             return null;
         }
 
@@ -204,25 +210,27 @@ public class SpecularLightingRable8Bit
             // Non invertible transform
             return null;
         }
-        
+
+        if (SCALE_RESULT) {
+            scaleX = 1;
+            scaleY = 1;
+        }
         AffineTransform scale =
             AffineTransform.getScaleInstance(scaleX, scaleY);
 
         // Build texture from the source
         rc = (RenderContext)rc.clone();
-        rc.setAreaOfInterest(aoi);
+        rc.setAreaOfInterest(aoiR);
         rc.setTransform(scale);
 
         // System.out.println("scaleX / scaleY : " + scaleX + "/" + scaleY);
 
         RenderingHints rh = rc.getRenderingHints();
-        bounds = scale.createTransformedShape(aoi).getBounds();
+        devRect = scale.createTransformedShape(aoiR).getBounds();
 
-        PadRed texture 
-            = new PadRed(RenderedImageCachableRed.wrap(getSource().createRendering(rc)),
-                         bounds,
-                         PadMode.ZERO_PAD,
-                         rh);
+        CachableRed texture;
+        texture = GraphicsUtil.wrap(getSource().createRendering(rc));
+        texture = new PadRed(texture, devRect, PadMode.ZERO_PAD, rh);
 
         BumpMap bumpMap = new BumpMap(texture, surfaceScale, scaleX, scaleY);
 
@@ -231,7 +239,7 @@ public class SpecularLightingRable8Bit
                                     specularExponent,
                                     light,
                                     bumpMap,
-                                    bounds,
+                                    devRect,
                                     1/scaleX, 1/scaleY);
 
         // Return sheared/rotated tiled image
@@ -239,20 +247,14 @@ public class SpecularLightingRable8Bit
             new AffineTransform(sx/scaleX, shy/scaleX,
                                 shx/scaleY, sy/scaleY,
                                 tx, ty);
-        
+
         if(shearAt.isIdentity()){
             // System.out.println("Scale only transform");
             return specularRed;
         }
        
         // System.out.println("Transform has translate and/or shear and rotate");
-        CachableRed cr 
-            = new RenderedImageCachableRed(specularRed);
-
-        cr = new AffineRed(cr, shearAt, rh);
-
-        return cr;
-        
+        return new AffineRed(specularRed, shearAt, rh);
     }
 }
 

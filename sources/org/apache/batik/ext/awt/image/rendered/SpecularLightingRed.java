@@ -124,35 +124,35 @@ public class SpecularLightingRed extends AbstractTiledRed{
         double y = scaleY*minY;
         double ksPwNHns = 0, norm = 0;
 
-        // final double[] L = new double[3];
-        double[] N;
         final double[][][] NA = bumpMap.getNormalArray(minX, minY, w, h);
+
         // System.out.println("Entering Specular Lighting");
         if(!light.isConstant()){
-            double[] L;
+            final double[][] LA = new double[w][3];
             for(i=0; i<h; i++){
                 // System.out.println("Row: " + i);
-                final double[][][] NARow = { NA[i] };
-                final double[][][] LA = light.getLightMap(x, y+i*scaleY, scaleX, scaleY, w, 1, NARow);
-                for(j=0; j<w; j++){
+                final double [][] NR = NA[i];
+                light.getLightRow(x, y+i*scaleY, scaleX, w, NR, LA);
+                for (j=0; j<w; j++){
                     // Get Normal 
-                    N = NA[i][j];
+                    final double [] N = NR[j];
                     
                     // Get Light Vector
-                    // light.getLight(x, y, N[3], L);
-                    L = LA[0][j];
+                    final double [] L = LA[j];
 
                     // Compute Half-way vector
                     L[2] += 1;
                     norm = Math.sqrt(L[0]*L[0] + L[1]*L[1] + L[2]*L[2]);
                     if(norm > 0){
-                        L[0] /= norm;
-                        L[1] /= norm;
-                        L[2] /= norm;
+                        double iNorm = 1.0/norm;
+                        L[0] *= iNorm;
+                        L[1] *= iNorm;
+                        L[2] *= iNorm;
                     }
                     
-                    ksPwNHns = 255.*ks*Math.pow(N[0]*L[0] + N[1]*L[1] + N[2]*L[2],
-                                                specularExponent);
+                    ksPwNHns = 255.*ks*Math.pow(N[0]*L[0] + 
+                                                N[1]*L[1] + 
+                                                N[2]*L[2], specularExponent);
                     
                     r = (int)(ksPwNHns*lightColor[0]);
                     g = (int)(ksPwNHns*lightColor[1]);
@@ -180,16 +180,13 @@ public class SpecularLightingRed extends AbstractTiledRed{
                                    |
                                    b);
                     
-                    x += scaleX;
                 }
-                x = scaleX*minX;
-                y += scaleY;
                 p += adjust;
             }
         }
         else{
             // Get constant light vector
-            double[] L = new double[3];
+            final double[] L = new double[3];
             light.getLight(0, 0, 0, L);
 
             // Compute Half-way vector
@@ -202,9 +199,10 @@ public class SpecularLightingRed extends AbstractTiledRed{
             }
 
             for(i=0; i<h; i++){
+                final double [][] NR = NA[i];
                 for(j=0; j<w; j++){
                     // Get Normal 
-                    N = NA[i][j];
+                    final double [] N = NR[j];
                     
                     ksPwNHns = 255.*ks*Math.pow(N[0]*L[0] + N[1]*L[1] + N[2]*L[2],
                                                 specularExponent);
@@ -234,12 +232,9 @@ public class SpecularLightingRed extends AbstractTiledRed{
                                    |
                                    b);
                     
-                    x += scaleX;
                 }
-                x = scaleX*minX;
-                y += scaleY;
                 p += adjust;
-            }        
+            }
         }
         // System.out.println("Exiting Specular Lighting");
     }

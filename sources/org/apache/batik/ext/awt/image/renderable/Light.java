@@ -58,6 +58,27 @@ public interface Light {
                                   final double[][][] z);
 
     /**
+     * Returns a row of the light map, starting at (x, y) with dx
+     * increments, a given width, and z elevations stored in the
+     * fourth component on the N array.
+     *
+     * @param x x-axis coordinate where the light should be computed
+     * @param y y-axis coordinate where the light should be computed
+     * @param dx delta x for computing light vectors in user space
+     * @param width number of samples to compute on the x axis
+     * @param z array containing the z elevation for all the points
+     * @param lightRwo array to store the light info to, if null it will
+     *                 be allocated for you and returned.
+     *
+     * @return an array width columns where each element
+     *         is an array of three components representing the x, y and z
+     *         components of the light vector.  */
+    public double[][] getLightRow(double x, double y, 
+                                  final double dx, final int width,
+                                  final double[][] z,
+                                  final double[][] lightRow);
+
+    /**
      * @return the Light's color. The return value is an array of normalized
      *         RGB intensities.
      */

@@ -90,7 +90,8 @@ public class PointLight implements Light {
      * @param z z-axis coordinate where the light should be computed
      * @param L array of length 3 where the result is stored
      */
-    public final void getLight(final double x, final double y, final double z, final double L[]){
+    public final void getLight(final double x, final double y, final double z,
+                               final double L[]){
         L[0] = lightX - x;
         L[1] = lightY - y;
         L[2] = lightZ - z;
@@ -107,6 +108,7 @@ public class PointLight implements Light {
         }
     }
 
+
     /**
      * Returns a light map, starting in (x, y) with dx, dy increments, a given
      * width and height, and z elevations stored in the fourth component on the 
@@ -121,23 +123,50 @@ public class PointLight implements Light {
      * @param z array containing the z elevation for all the points
      */
     public double[][][] getLightMap(double x, double y, 
-                                    final double dx, final double dy,
-                                    final int width, final int height,
-                                    final double[][][] z)
+                                  final double dx, final double dy,
+                                  final int width, final int height,
+                                  final double[][][] z)
     {
-        double[][][] L = new double[height][width][3];
-        final double xStart = x;
+        double[][][] L = new double[height][][];
 
         for(int i=0; i<height; i++){
-            for(int j=0; j<width; j++){
-                getLight(x, y, z[i][j][3], L[i][j]);
-                x += dx;
-            }
-            x = xStart;
+            L[i] = getLightRow(x, y, dx, width, z[i], null);
             y += dy;
         }
 
         return L;
+    }
+
+    /**
+     * Returns a row of the light map, starting at (x, y) with dx
+     * increments, a given width, and z elevations stored in the
+     * fourth component on the N array.
+     *
+     * @param x x-axis coordinate where the light should be computed
+     * @param y y-axis coordinate where the light should be computed
+     * @param dx delta x for computing light vectors in user space
+     * @param width number of samples to compute on the x axis
+     * @param z array containing the z elevation for all the points
+     * @param lightRwo array to store the light info to, if null it will
+     *                 be allocated for you and returned.
+     *
+     * @return an array width columns where each element
+     *         is an array of three components representing the x, y and z
+     *         components of the light vector.  */
+    public double[][] getLightRow(double x, double y, 
+                                  final double dx, final int width,
+                                  final double[][] z,
+                                  final double[][] lightRow) {
+        double [][] ret = lightRow;
+        if (ret == null) 
+            ret = new double[width][3];
+
+        for(int i=0; i<width; i++){
+            getLight(x, y, z[i][3], ret[i]);
+            x += dx;
+        }
+
+        return ret;
     }
 }
 
