@@ -55,7 +55,7 @@ public abstract class AbstractDOMImplementation implements DOMImplementation {
 	if (v == null) {
 	    return false;
 	}
-	if (version == null) {
+	if (version == null || version.length() == 0) {
 	    return true;
 	}
         if (v instanceof String) {
