@@ -39,6 +39,7 @@
         <test id="samples/moonPhases.svg" />
         <test id="samples/sizeOfSun.svg" />
         <test id="samples/sunRise.svg" />
+        <test id="samples/sydney.svg" />
         <test id="samples/textRotate.svg" />
         <test id="samples/textRotateShadows.svg" />
     </testGroup>
@@ -75,6 +76,12 @@
             <property name="Validating" class="java.lang.Boolean" value="false" />
 	</test>
         <test id="samples/extensions/filterRegionDetailed.svg" >
+            <property name="Validating" class="java.lang.Boolean" value="false" />
+	</test>
+        <test id="samples/extensions/opera/opera-subImage.svg" >
+            <property name="Validating" class="java.lang.Boolean" value="false" />
+	</test>
+        <test id="samples/extensions/opera/opera-subImageRef.svg" >
             <property name="Validating" class="java.lang.Boolean" value="false" />
 	</test>
     </testGroup>
@@ -364,6 +371,7 @@
         <test id="samples/tests/spec/scripting/tspanProperties.svg" />
         <test id="samples/tests/spec/scripting/use.svg" />
         <test id="samples/tests/spec/scripting/visibility.svg" />
+        <test id="samples/tests/spec/scripting/viewBoxOnLoad.svg" />
         <test id="samples/tests/spec/scripting/xyModifOnLoad.svg" />
     </testGroup>
 
