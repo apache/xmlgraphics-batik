@@ -153,7 +153,7 @@ To display the available targets type:
 
   <!-- Build .............................................................. -->
   <target name="dist-zip" depends="build"/>
-  <target name="build" depends="jars, html">
+  <target name="build" depends="jars, html"> 
     <delete dir="${build}/docs/images/BE"/>
     <zip zipfile="${project}-docs-${version}.zip" basedir="${build}"
          includes="docs/javadoc/**"/>
@@ -166,14 +166,16 @@ To display the available targets type:
       <fileset dir="samples"/>
     </copy>
     <delete file="${build}/samples/tests/bboxOnText.svg" />
-    <zip zipfile="${project}-${version}.zip" basedir="." includes="${build}/**"/>
+    <zip zipfile="${project}-${version}.zip" basedir="." includes="${build}/**"/> 
 
-    <cvs cvsRoot=":pserver:anoncvs@xml.apache.org:/home/cvspublic"
-         package="xml-batik"
-         dest="xml-${project}"/>
-    <zip zipfile="${project}-src-${version}.zip" basedir="." includes="xml-${project}"/>
+    <zip zipfile="${project}-src-${version}.zip" basedir=".." 
+         includes="xml-${project}/**" excludes="xml-${project}/test-references/**">
+        <exclude name="xml-${project}/${project}-src-${version}.zip" />
+        <exclude name="xml-${project}/classes/**" />
+    </zip>
+
+
   </target>
-
 
   <target name="dist-tgz" depends="build-tgz"/>
   <target name="build-tgz" depends="jars, html">
