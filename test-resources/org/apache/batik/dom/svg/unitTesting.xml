@@ -43,4 +43,12 @@
         <test id="presentationAttrRemovalTest"/>
     </testGroup>
 
+    <!-- ================================================================ -->
+    <!-- Supported Public IDs test                                        -->
+    <!-- ================================================================ -->
+    <test id="dom.svg.publicIds" 
+          name="Checks that there are system ids for the supported public Ids"
+          class="org.apache.batik.dom.svg.SystemIdTest" />
+
+
 </testSuite>
