@@ -1,0 +1,35 @@
+<!-- ========================================================================= -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.        -->
+<!--                                                                           -->
+<!-- This software is published under the terms of the Apache Software License -->
+<!-- version 1.1, a copy of which has been included with this distribution in  -->
+<!-- the LICENSE file.                                                         -->
+<!-- ========================================================================= -->
+
+<!-- ========================================================================= -->
+<!-- This file contains the set of tests that should be run for basic and/or   -->
+<!-- detailed tests, and that require manual interactivity. In other words,    -->
+<!-- these tests require a manual operator.                                    -->
+<!--                                                                           -->
+<!-- @author vincent.hardy@eng.sun.com                                         -->
+<!-- @version $Id$  -->
+<!-- ========================================================================= -->
+<testRun id="regard" name="Batik Standard Regression Test Run">
+    <testReportProcessor class="org.apache.batik.test.xml.XMLTestReportProcessor" > 
+        <arg class="org.apache.batik.test.xml.XSLXMLReportConsumer">
+            <!-- Stylesheet -->
+        <arg class="java.lang.String" value="file:test-resources/org/apache/batik/test/svg/HTMLReport.xsl" />
+            <!-- Ouput Directory -->
+        <arg class="java.lang.String" value="html" />
+            <!-- Output file name -->
+        <arg class="java.lang.String" value="regardReport.html" />
+        </arg>
+    </testReportProcessor>
+
+    <!-- ================================================================== -->
+    <!--                     Scripting and Interactivity                    -->
+    <!-- ================================================================== -->
+
+    <testSuite href="file:test-resources/org/apache/batik/test/interactiveSamples.xml" /> 
+
+</testRun>

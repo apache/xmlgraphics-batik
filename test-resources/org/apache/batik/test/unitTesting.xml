@@ -56,5 +56,22 @@
         <property name="ReferenceScore" class="java.lang.Double" value="1" />
     </test>
     
+    <!-- =================================================================== -->
+    <!-- Validates parametrization of tests                                  -->
+    <!-- =================================================================== -->
+    <testGroup id="parametrizedGroup" class="org.apache.batik.test.ParametrizedTest">
+        <property name="A" class="java.lang.String" value="parametrizedGroup_A_value" />
+        <property name="B" class="java.lang.String" value="parametrizedGroup_B_value" />
+
+        <test id="parametrizedInstanceA">
+            <property name="ExpectedA" class="java.lang.String" value="parametrizedGroup_A_value" />
+            <property name="ExpectedB" class="java.lang.String" value="parametrizedGroup_B_value" />
+        </test>
+        <test id="parametrizedInstanceB">
+            <property name="B" class="java.lang.String" value="parametrizedInstanceB_B_value" />
+            <property name="ExpectedA" class="java.lang.String" value="parametrizedGroup_A_value" />
+            <property name="ExpectedB" class="java.lang.String" value="parametrizedInstanceB_B_value" />
+        </test>
+    </testGroup>
 
 </testSuite>

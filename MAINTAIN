@@ -49,6 +49,7 @@ For creating a distribution the following steps must be done:
 
  7) test the distributions
       build regard
+      build regard.manual
     The build results are in xml-batik/test-reports. Check that there
     are no show-stoppers for the release. If there are fixes required,
     you need to remove the tag (as explained in step 2) and then fix
