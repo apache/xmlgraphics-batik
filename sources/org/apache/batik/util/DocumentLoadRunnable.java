@@ -216,10 +216,8 @@ public class DocumentLoadRunnable implements Runnable {
                 new DocumentLoadingEvent(
                         DocumentLoadingEvent.LOADED, doc));
 
-            System.out.println("--------------------------------");
-            System.out.println(" Document loading time: " +
+            System.out.println("---- Document loading time ---- " +
                                    (t2 - t1) + " ms");
-            System.out.println("--------------------------------");
 
             String title = doc.getTitle();
 
@@ -235,13 +233,6 @@ public class DocumentLoadRunnable implements Runnable {
             checkInterrupt();
             fireDocumentEvent(new DocumentPropertyEvent(
                 DocumentPropertyEvent.SIZE, new Dimension((int)w, (int)h)));
-
-            t1 = System.currentTimeMillis();
-
-            System.out.println("--------------------------------");
-            System.out.println(" Tree construction time: " +
-                                    (t1 - t2) + " ms");
-            System.out.println("--------------------------------");
 
             String description =
                         SVGUtilities.getDescription(doc.getRootElement());

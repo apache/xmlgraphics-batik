@@ -345,7 +345,14 @@ public class JSVGCanvas
                     bridgeContext.setViewCSS((ViewCSS)doc.getDocumentElement());
                     bridgeContext.setGVTBuilder(builder);
                     
+                    long t1 = System.currentTimeMillis();
+
                     gvtRoot = builder.build(bridgeContext, document);
+
+                    long t2 = System.currentTimeMillis();
+
+                    System.out.println("---- GVT tree construction ---- " +
+                                       (t2 - t1) + " ms");
                     
                     computeTransform();
                     
