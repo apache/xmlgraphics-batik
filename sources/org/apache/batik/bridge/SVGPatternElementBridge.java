@@ -189,22 +189,12 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
             patternTransform = new AffineTransform();
         }
 
-        // Get the overflow property on the pattern element
         CSSStyleDeclaration cssDecl
             = CSSUtilities.getComputedStyle(paintElement);
 
-        CSSPrimitiveValue vbOverflow =
-            (CSSPrimitiveValue)cssDecl.getPropertyCSSValue(CSS_OVERFLOW_PROPERTY);
+        // Get the overflow property on the pattern element
+        boolean overflowIsHidden = CSSUtilities.convertOverflow(paintElement);
 
-        String overFlowValue = vbOverflow.getStringValue();
-        if(overFlowValue.length() == 0){
-            overFlowValue = CSS_HIDDEN_VALUE;
-        }
-
-        boolean overflow = true;
-        if(CSS_HIDDEN_VALUE.equals(overFlowValue)){
-            overflow = false;
-        }
 
         // Get pattern region. This is from the paintedElement, as
         // percentages are from the referencing element.
@@ -265,7 +255,7 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
         AffineTransform nodeTransform = null;
         if(hasViewBox){
             nodeTransform = preserveAspectRatioTransform;
-            if(!overflow){
+            if(overflowIsHidden){
                 // Need to do clipping
                 CompositeGraphicsNode newPatternContentNode
                     = new CompositeGraphicsNode();
@@ -321,7 +311,7 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
                                        rc,
                                        nodeTransform,
                                        patternRegion,
-                                       overflow,
+                                       !overflowIsHidden,
                                        patternTransform);
 
         return paint;

@@ -226,23 +226,12 @@ public class SVGMarkerElementBridge implements MarkerBridge {
         }
 
         // Extract the overflow property
-        CSSPrimitiveValue vbOverflow =
-            (CSSPrimitiveValue)cssDecl.getPropertyCSSValue(CSS_OVERFLOW_PROPERTY);
-
-        String overFlowValue = vbOverflow.getStringValue();
-        if(overFlowValue.length() == 0){
-            overFlowValue = CSS_HIDDEN_VALUE;
-        }
-
-        boolean overflow = true;
-        if(CSS_HIDDEN_VALUE.equals(overFlowValue)){
-            overflow = false;
-        }
+        boolean overflowIsHidden = CSSUtilities.convertOverflow(markerElement);
 
         // Extract the marker units
         s = inst.getAttributeNS(null,
-                                      SVG_MARKER_UNITS_ATTRIBUTE);
-
+                                SVG_MARKER_UNITS_ATTRIBUTE);
+        
         if (s.length() == 0) {
             s = SVG_DEFAULT_VALUE_MARKER_MARKER_UNITS;
         }
@@ -303,10 +292,24 @@ public class SVGMarkerElementBridge implements MarkerBridge {
         // Set the markerContentNode's clipping area
         // depending on the overflow property
         //
-        if(overflow == false){
-            Rectangle2D markerClip
-                = new Rectangle2D.Float(0, 0, strokeWidth*markerWidth,
-                                        strokeWidth*markerHeight);
+        if(overflowIsHidden == true){
+            float[] offsets = CSSUtilities.convertClip(markerElement);
+            Rectangle2D markerClip = null;
+            if(offsets == null){ // auto
+                markerClip
+                    = new Rectangle2D.Float(0, 0, strokeWidth*markerWidth,
+                                            strokeWidth*markerHeight);
+            }
+            else{
+                // offsets[0] = top
+                // offsets[1] = right
+                // offsets[2] = bottom
+                // offsets[3] = left
+                markerClip = new Rectangle2D.Float(offsets[3],
+                                                    offsets[0],
+                                                    strokeWidth*markerWidth - offsets[1],
+                                                    strokeWidth*markerHeight - offsets[2]);
+            }
 
             CompositeGraphicsNode newMarkerContentNode
                 = new CompositeGraphicsNode();
