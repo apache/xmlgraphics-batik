@@ -8,43 +8,18 @@
 
 package org.apache.batik.bridge;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringReader;
-
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.apache.batik.dom.svg.SVGOMDocument;
-
-import org.apache.batik.dom.util.XLinkSupport;
-
 import org.apache.batik.script.Interpreter;
 import org.apache.batik.script.InterpreterException;
-import org.apache.batik.script.InterpreterPool;
 
 import org.apache.batik.util.RunnableQueue;
-import org.apache.batik.util.SVGConstants;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
-import org.w3c.dom.events.DocumentEvent;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
-import org.w3c.dom.events.EventTarget;
-
-import org.w3c.dom.svg.SVGSVGElement;
 
 /**
  * This class contains the informations needed by the SVG scripting.
@@ -52,117 +27,12 @@ import org.w3c.dom.svg.SVGSVGElement;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class ScriptingEnvironment {
-
-    /**
-     * Tells whether the given SVG document is dynamic.
-     */
-    public static boolean isDynamicDocument(Document doc) {
-        Element elt = doc.getDocumentElement();
-        if (elt.getNamespaceURI().equals(SVGConstants.SVG_NAMESPACE_URI)) {
-            if (elt.getAttributeNS
-                (null, SVGConstants.SVG_ONABORT_ATTRIBUTE).length() > 0) {
-                return true;
-            }
-            if (elt.getAttributeNS
-                (null, SVGConstants.SVG_ONERROR_ATTRIBUTE).length() > 0) {
-                return true;
-            }
-            if (elt.getAttributeNS
-                (null, SVGConstants.SVG_ONRESIZE_ATTRIBUTE).length() > 0) {
-                return true;
-            }
-            if (elt.getAttributeNS
-                (null, SVGConstants.SVG_ONUNLOAD_ATTRIBUTE).length() > 0) {
-                return true;
-            }
-            if (elt.getAttributeNS
-                (null, SVGConstants.SVG_ONSCROLL_ATTRIBUTE).length() > 0) {
-                return true;
-            }
-            if (elt.getAttributeNS
-                (null, SVGConstants.SVG_ONZOOM_ATTRIBUTE).length() > 0) {
-                return true;
-            }
-            return isDynamicElement(doc.getDocumentElement());
-        }
-        return false;
-    }
-    
-    /**
-     * Tells whether the given SVG element is dynamic.
-     */
-    public static boolean isDynamicElement(Element elt) {
-        if (elt.getNamespaceURI().equals(SVGConstants.SVG_NAMESPACE_URI)) {
-            String name = elt.getLocalName();
-            if (name.equals(SVGConstants.SVG_SCRIPT_TAG)) {
-                return true;
-            }
-            if (name.startsWith("animate") || name.equals("set")) {
-                return true;
-            }
-            if (elt.getAttributeNS
-                (null, SVGConstants.SVG_ONERROR_ATTRIBUTE).length() > 0) {
-                return true;
-            }
-            if (elt.getAttributeNS
-                (null, SVGConstants.SVG_ONACTIVATE_ATTRIBUTE).length() > 0) {
-                return true;
-            }
-            if (elt.getAttributeNS
-                (null, SVGConstants.SVG_ONCLICK_ATTRIBUTE).length() > 0) {
-                return true;
-            }
-            if (elt.getAttributeNS
-                (null, SVGConstants.SVG_ONFOCUSIN_ATTRIBUTE).length() > 0) {
-                return true;
-            }
-            if (elt.getAttributeNS
-                (null, SVGConstants.SVG_ONFOCUSOUT_ATTRIBUTE).length() > 0) {
-                return true;
-            }
-            if (elt.getAttributeNS
-                (null, SVGConstants.SVG_ONMOUSEDOWN_ATTRIBUTE).length() > 0) {
-                return true;
-            }
-            if (elt.getAttributeNS
-                (null, SVGConstants.SVG_ONMOUSEMOVE_ATTRIBUTE).length() > 0) {
-                return true;
-            }
-            if (elt.getAttributeNS
-                (null, SVGConstants.SVG_ONMOUSEOUT_ATTRIBUTE).length() > 0) {
-                return true;
-            }
-            if (elt.getAttributeNS
-                (null, SVGConstants.SVG_ONMOUSEOVER_ATTRIBUTE).length() > 0) {
-                return true;
-            }
-            if (elt.getAttributeNS
-                (null, SVGConstants.SVG_ONMOUSEUP_ATTRIBUTE).length() > 0) {
-                return true;
-            }
-        
-            for (Node n = elt.getFirstChild();
-                 n != null;
-                 n = n.getNextSibling()) {
-                if (n.getNodeType() == Node.ELEMENT_NODE) {
-                    if (isDynamicElement((Element)n)) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-    
-
-    private final static String EVENT_NAME = "event";
-    private final static String ALTERNATE_EVENT_NAME = "evt";
+public class ScriptingEnvironment extends BaseScriptingEnvironment {
 
     /**
      * The timer for periodic or delayed tasks.
      */
-    Timer timer = new Timer(true);
+    protected Timer timer = new Timer(true);
 
     /**
      * The update manager.
@@ -170,61 +40,26 @@ public class ScriptingEnvironment {
     protected UpdateManager updateManager;
 
     /**
-     * The repaint manager.
-     */
-    protected RepaintManager repaintManager;
-
-    /**
      * The update runnable queue.
      */
     protected RunnableQueue updateRunnableQueue;
 
     /**
-     * The bridge context.
-     */
-    protected BridgeContext bridgeContext;
-
-    /**
-     * The user-agent.
-     */
-    protected UserAgent userAgent;
-    
-    /**
-     * The document to manage.
-     */
-    protected Document document;
-
-    /**
      * Creates a new ScriptingEnvironment.
-     * @param um The update manager.
+     * @param ctx the bridge context
      */
-    public ScriptingEnvironment(UpdateManager um) {
-        updateManager = um;
-        bridgeContext = updateManager.getBridgeContext();
-        userAgent     = bridgeContext.getUserAgent();
-        document      = updateManager.getDocument();
-        updateRunnableQueue = um.getUpdateRunnableQueue();
+    public ScriptingEnvironment(BridgeContext ctx) {
+        super(ctx);
+        updateManager = ctx.getUpdateManager();
+        updateRunnableQueue = updateManager.getUpdateRunnableQueue();
     }
 
     /**
      * Creates a new Window object.
      */
-    public Window createWindow(Interpreter interp, String lang) {
+    public org.apache.batik.script.Window createWindow
+        (Interpreter interp, String lang) {
         return new Window(interp, lang);
-    }
-
-    /**
-     * Creates a new Window object.
-     */
-    public Window createWindow() {
-        return new Window(null, null);
-    }
-
-    /**
-     * Initializes the environment of the given interpreter.
-     */
-    public void initializeEnvironment(Interpreter interp, String lang) {
-        interp.bindObject("window", new Window(interp, lang));
     }
 
     /**
@@ -255,146 +90,6 @@ public class ScriptingEnvironment {
      */
     public void interrupt() {
         timer.cancel();
-    }
-
-    /**
-     * Loads the scripts contained in the <script> elements.
-     */
-    public void loadScripts() {
-        NodeList scripts = document.getElementsByTagNameNS
-            (SVGConstants.SVG_NAMESPACE_URI, SVGConstants.SVG_SCRIPT_TAG);
-        int len = scripts.getLength();
-
-        if (len == 0) {
-            return;
-        }
-
-        Set languages = new HashSet();
-
-        for (int i = 0; i < len; i++) {
-            Element script = (Element)scripts.item(i);
-            String type = script.getAttributeNS
-                (null, SVGConstants.SVG_TYPE_ATTRIBUTE);
-            Interpreter interpreter = bridgeContext.getInterpreter(type);
-
-            if (interpreter == null) {
-                UserAgent ua = bridgeContext.getUserAgent();
-                if (ua != null) {
-                    ua.displayError(new Exception("Unknown language: "+type));
-                }
-                return;
-            }
-
-            if (!languages.contains(type)) {
-                languages.add(type);
-                initializeEnvironment(interpreter, type);
-            }
-
-            try {
-                String href = XLinkSupport.getXLinkHref(script);
-                Reader reader;
-                if (href.length() > 0) {
-                    // External script.
-                    URL url = new URL(((SVGOMDocument)document).getURLObject(),
-                                      href);
-                    reader = new InputStreamReader(url.openStream());
-                } else {
-                    // Inline script.
-                    Node n = script.getFirstChild();
-                    if (n != null) {
-                        StringBuffer sb = new StringBuffer();
-                        while (n != null) {
-                            sb.append(n.getNodeValue());
-                            n = n.getNextSibling();
-                        }
-                        reader = new StringReader(sb.toString());
-                    } else {
-                        continue;
-                    }
-                }
-
-                interpreter.evaluate(reader);
-
-            } catch (IOException e) {
-                if (userAgent != null) {
-                    userAgent.displayError(e);
-                }
-                return;
-            } catch (InterpreterException e) {
-                handleInterpreterException(e);
-                return;
-            }
-        }
-    }
-
-    /**
-     * Recursively dispatch the SVG 'onload' event.
-     */
-    public void dispatchSVGLoadEvent() {
-        SVGSVGElement root =
-            (SVGSVGElement)document.getDocumentElement();
-        String lang = root.getContentScriptType();
-        Interpreter interp = bridgeContext.getInterpreter(lang);
-        if (interp == null) {
-            UserAgent ua = bridgeContext.getUserAgent();
-            if (ua != null) {
-                ua.displayError(new Exception("Unknown language: " + lang));
-            }
-            return;
-        }
-        dispatchSVGLoad(root, interp);
-    }
-
-    /**
-     * Auxiliary method for dispatchSVGLoad.
-     */
-    protected void dispatchSVGLoad(Element elt, final Interpreter interp) {
-        for (Node n = elt.getFirstChild();
-             n != null;
-             n = n.getNextSibling()) {
-            if (n.getNodeType() == n.ELEMENT_NODE) {
-                dispatchSVGLoad((Element)n, interp);
-            }
-        }
-
-        Event ev;
-        DocumentEvent de = (DocumentEvent)elt.getOwnerDocument();
-        ev = de.createEvent("SVGEvents");
-        ev.initEvent("SVGLoad", false, false);
-        EventTarget t = (EventTarget)elt;
-
-        final String s =
-            elt.getAttributeNS(null, SVGConstants.SVG_ONLOAD_ATTRIBUTE);
-        EventListener l = null;
-        if (s.length() > 0) {
-            l = new EventListener() {
-                    public void handleEvent(Event evt) {
-                        try {
-                            interp.bindObject(EVENT_NAME, evt);
-                            interp.bindObject(ALTERNATE_EVENT_NAME, evt);
-                            interp.evaluate(new StringReader(s));
-                        } catch (IOException io) {
-                        } catch (InterpreterException e) {
-                            handleInterpreterException(e);
-                        }
-                    }
-                };
-            t.addEventListener("SVGLoad", l, false);
-        }
-        t.dispatchEvent(ev);
-        if (s.length() > 0) {
-            t.removeEventListener("SVGLoad", l, false);
-        }
-    }
-
-    /**
-     * Handles the given exception.
-     */
-    protected void handleInterpreterException(InterpreterException ie) {
-        if (userAgent != null) {
-            Exception ex = ie.getException();
-            userAgent.displayError((ex == null) ? ie : ex);
-        }
     }
 
     /**
@@ -493,7 +188,7 @@ public class ScriptingEnvironment {
     /**
      * Represents the window object of this environment.
      */
-    public class Window implements org.apache.batik.script.Window {
+    protected class Window implements org.apache.batik.script.Window {
 
         /**
          * The associated interpreter.

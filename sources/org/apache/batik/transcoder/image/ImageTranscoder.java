@@ -29,6 +29,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.apache.batik.bridge.BaseScriptingEnvironment;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeException;
 import org.apache.batik.bridge.BridgeExtension;
@@ -119,6 +120,8 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
                   ExtensibleSVGDOMImplementation.getDOMImplementation());
         hints.put(KEY_MEDIA,
                   "screen");
+        hints.put(KEY_EXECUTE_ONLOAD, 
+                  Boolean.FALSE);
     }
 
     /**
@@ -156,9 +159,22 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
         GVTBuilder builder = new GVTBuilder();
         ImageRendererFactory rendFactory = new ConcreteImageRendererFactory();
         BridgeContext ctx = new BridgeContext(userAgent);
+        // flag that indicates if the document is dynamic
+        boolean isDynamic = 
+            (hints.containsKey(KEY_EXECUTE_ONLOAD) &&
+             ((Boolean)hints.get(KEY_EXECUTE_ONLOAD)).booleanValue() &&
+             BaseScriptingEnvironment.isDynamicDocument(svgDoc));
+        ctx.setDynamic(isDynamic);
+
         GraphicsNode gvtRoot;
         try {
             gvtRoot = builder.build(ctx, svgDoc);
+            // dispatch an 'onload' event if needed
+            if (ctx.isDynamic()) {
+                BaseScriptingEnvironment se = new BaseScriptingEnvironment(ctx);
+                se.loadScripts();
+                se.dispatchSVGLoadEvent();
+            }
         } catch (BridgeException ex) {
             throw new TranscoderException(ex);
         }
@@ -497,6 +513,30 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
     // --------------------------------------------------------------------
     // Keys definition
     // --------------------------------------------------------------------
+
+    /**
+     * The 'onload' execution key.
+     * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Key: </TH>
+     * <TD VALIGN="TOP">KEY_EXECUTE_ONLOAD</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Value: </TH>
+     * <TD VALIGN="TOP">Boolean</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Default: </TH>
+     * <TD VALIGN="TOP">false</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Required: </TH>
+     * <TD VALIGN="TOP">No</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Description: </TH>
+     * <TD VALIGN="TOP">Specify if scripts added on the 'onload' event 
+     * attribute must be invoked.</TD></TR>
+     * </TABLE> 
+     */
+    public static final TranscodingHints.Key KEY_EXECUTE_ONLOAD
+        = new BooleanKey();
 
     /**
      * The image width key.

@@ -49,7 +49,7 @@ public class UpdateManager implements RunnableQueue.RunHandler {
      * Tells whether the given SVG document is dynamic.
      */
     public static boolean isDynamicDocument(Document doc) {
-        return ScriptingEnvironment.isDynamicDocument(doc);
+        return BaseScriptingEnvironment.isDynamicDocument(doc);
     }
     
     /**
@@ -126,7 +126,7 @@ public class UpdateManager implements RunnableQueue.RunHandler {
 
         graphicsNode = gn;
 
-        scriptingEnvironment = new ScriptingEnvironment(this);
+        scriptingEnvironment = new ScriptingEnvironment(ctx);
     }
 
     /**
