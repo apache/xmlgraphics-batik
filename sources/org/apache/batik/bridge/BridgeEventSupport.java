@@ -19,10 +19,14 @@ import java.text.AttributedCharacterIterator;
 
 import java.util.List;
 
+import org.apache.batik.dom.events.DOMKeyEvent;
+
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.TextNode;
 
 import org.apache.batik.gvt.event.EventDispatcher;
+import org.apache.batik.gvt.event.GraphicsNodeKeyEvent;
+import org.apache.batik.gvt.event.GraphicsNodeKeyListener;
 import org.apache.batik.gvt.event.GraphicsNodeMouseEvent;
 import org.apache.batik.gvt.event.GraphicsNodeMouseListener;
 
@@ -67,6 +71,7 @@ public class BridgeEventSupport implements SVGConstants {
             if (dispatcher != null) {
                 final Listener listener = new Listener(ctx, ua);
                 dispatcher.addGraphicsNodeMouseListener(listener);
+                dispatcher.addGraphicsNodeKeyListener(listener);
                 // add an unload listener on the SVGDocument to remove
                 // that listener for dispatching events
                 EventListener l = new GVTUnloadListener(dispatcher, listener);
@@ -90,6 +95,7 @@ public class BridgeEventSupport implements SVGConstants {
 
         public void handleEvent(Event evt) {
             dispatcher.removeGraphicsNodeMouseListener(listener);
+            dispatcher.removeGraphicsNodeKeyListener(listener);
             evt.getTarget().removeEventListener("SVGUnload", this, false);
         }
     }
@@ -97,16 +103,74 @@ public class BridgeEventSupport implements SVGConstants {
     /**
      * A GraphicsNodeMouseListener that dispatch DOM events accordingly.
      */
-    protected static class Listener implements GraphicsNodeMouseListener {
+    protected static class Listener 
+        implements GraphicsNodeMouseListener, GraphicsNodeKeyListener {
         
         protected BridgeContext context;
         protected UserAgent ua;
         protected Element lastTargetElement;
+        protected boolean isDown;
 
         public Listener(BridgeContext ctx, UserAgent u) {
             context = ctx;
             ua = u;
         }
+
+        // Key -------------------------------------------------------------
+
+        /**
+         * Invoked when a key has been pressed.
+         * @param evt the graphics node key event
+         */
+        public void keyPressed(GraphicsNodeKeyEvent evt) {
+            if (!isDown) {
+                isDown = true;
+                dispatchKeyEvent("keydown", evt);
+            }
+        }
+
+        /**
+         * Invoked when a key has been released.
+         * @param evt the graphics node key event
+         */
+        public void keyReleased(GraphicsNodeKeyEvent evt) {
+            dispatchKeyEvent("keyup", evt);
+            isDown = false;
+        }
+
+        /**
+         * Invoked when a key has been typed.
+         * @param evt the graphics node key event
+         */
+        public void keyTyped(GraphicsNodeKeyEvent evt) {
+            dispatchKeyEvent("keypress", evt);
+        }
+
+        protected void dispatchKeyEvent(String eventType, 
+                                        GraphicsNodeKeyEvent evt) {
+            Element targetElement = 
+                (Element)context.getFocusManager().getCurrentEventTarget();
+            DocumentEvent d = (DocumentEvent)targetElement.getOwnerDocument();
+            DOMKeyEvent keyEvt = (DOMKeyEvent)d.createEvent("KeyEvents");
+            keyEvt.initKeyEvent(eventType, 
+                                true, 
+                                true, 
+                                evt.isControlDown(), 
+                                evt.isAltDown(),
+                                evt.isShiftDown(), 
+                                evt.isMetaDown(),
+                                evt.getKeyCode(), 
+                                evt.getKeyChar(),
+                                null);
+
+            try {
+                ((EventTarget)targetElement).dispatchEvent(keyEvt);
+            } catch (RuntimeException e) {
+                ua.displayError(e);
+            }
+        }
+
+        // Mouse -----------------------------------------------------------
 
         public void mouseClicked(GraphicsNodeMouseEvent evt) {
             dispatchMouseEvent("click", evt, true);
@@ -135,8 +199,7 @@ public class BridgeEventSupport implements SVGConstants {
                                    clientXY,
                                    evt,
                                    true);
-                                   }
-            dispatchMouseEvent("mouseout", evt, true);
+            }
         }
 
         public void mouseDragged(GraphicsNodeMouseEvent evt) {

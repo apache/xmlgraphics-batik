@@ -41,6 +41,11 @@ public class DocumentEventSupport {
     public static final String UI_EVENT_TYPE = "UIEvents";
 
     /**
+     * The KeyEvent type.
+     */
+    public static final String KEY_EVENT_TYPE = "KeyEvents";
+
+    /**
      * The event factories table.
      */
     protected HashTable eventFactories = new HashTable();
@@ -51,6 +56,8 @@ public class DocumentEventSupport {
                            new MutationEventFactory());
         eventFactories.put(MOUSE_EVENT_TYPE.toLowerCase(),
                            new MouseEventFactory());
+        eventFactories.put(KEY_EVENT_TYPE.toLowerCase(),
+                           new KeyEventFactory());
         eventFactories.put(UI_EVENT_TYPE.toLowerCase(),
                            new UIEventFactory());
     }
@@ -146,6 +153,18 @@ public class DocumentEventSupport {
          */
         public Event createEvent() {
             return new DOMMouseEvent();
+        }
+    }
+
+    /**
+     * To create a key event.
+     */
+    protected static class KeyEventFactory implements EventFactory {
+        /**
+         * Creates a new Event object.
+         */
+        public Event createEvent() {
+            return new DOMKeyEvent();
         }
     }
 

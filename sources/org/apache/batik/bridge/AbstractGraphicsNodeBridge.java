@@ -133,6 +133,14 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
     }
 
     /**
+     * Returns true if the graphics node has to be displayed, false
+     * otherwise.
+     */
+    public boolean getDisplay(Element e) {
+        return CSSUtilities.convertDisplay(e);
+    }
+
+    /**
      * This method is invoked during the build phase if the document
      * is dynamic. The responsability of this method is to ensure that
      * any dynamic modifications of the element this bridge is

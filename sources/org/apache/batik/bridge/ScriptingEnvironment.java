@@ -195,6 +195,26 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
         new ScriptingEventListener("onmousemove");
 
     /**
+     * The keypress event listener.
+     */
+    protected EventListener keypressListener =
+        new ScriptingEventListener("onkeypress");
+
+    /**
+     * The keydown event listener.
+     */
+    protected EventListener keydownListener =
+        new ScriptingEventListener("onkeydown");
+
+    /**
+     * The keyup event listener.
+     */
+    protected EventListener keyupListener =
+        new ScriptingEventListener("onkeyup");
+
+
+
+    /**
      * Creates a new ScriptingEnvironment.
      * @param ctx the bridge context
      */
@@ -357,6 +377,15 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
             if (elt.hasAttributeNS(null, "onmousemove")) {
                 target.addEventListener("mousemove", mousemoveListener, false);
             }
+            if (elt.hasAttributeNS(null, "onkeypress")) {
+                target.addEventListener("keypress", keypressListener, false);
+            }
+            if (elt.hasAttributeNS(null, "onkeydown")) {
+                target.addEventListener("keydown", keydownListener, false);
+            }
+            if (elt.hasAttributeNS(null, "onkeyup")) {
+                target.addEventListener("keyup", keyupListener, false);
+            }
         }
 
         // Adds the listeners to the children
@@ -419,6 +448,9 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
             target.removeEventListener("mouseover", mouseoverListener, false);
             target.removeEventListener("mouseout", mouseoutListener, false);
             target.removeEventListener("mousemove", mousemoveListener, false);
+            target.removeEventListener("keypress", keypressListener, false);
+            target.removeEventListener("keydown", keydownListener, false);
+            target.removeEventListener("keyup", keyupListener, false);
         }
 
         // Removes the listeners from the children

@@ -177,7 +177,7 @@ public class DOMMouseEvent extends DOMUIEvent implements MouseEvent {
 			       short buttonArg, 
 			       EventTarget relatedTargetArg) {
 	initUIEvent(typeArg, canBubbleArg, cancelableArg, 
-		    viewArg, (int) detailArg);
+                    viewArg, (int) detailArg);
 	this.screenX = screenXArg;
 	this.screenY = screenYArg; 
 	this.clientX = clientXArg; 

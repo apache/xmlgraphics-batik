@@ -108,12 +108,12 @@ public class GVTBuilder implements SVGConstants {
         if (bridge == null || !(bridge instanceof GraphicsNodeBridge)) {
             return null;
         }
-        // check the display property
-        if (!CSSUtilities.convertDisplay(e)) {
-            return null;
-        }
         // create the associated graphics node
         GraphicsNodeBridge gnBridge = (GraphicsNodeBridge)bridge;
+        // check the display property
+        if (!gnBridge.getDisplay(e)) {
+            return null;
+        }
         GraphicsNode gn = gnBridge.createGraphicsNode(ctx, e);
         if (gn != null) {
             if (gnBridge.isComposite()) {

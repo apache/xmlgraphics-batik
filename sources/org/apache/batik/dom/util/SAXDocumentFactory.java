@@ -200,7 +200,7 @@ public class SAXDocumentFactory
                                    this : errorHandler);
 
             parser.setFeature("http://xml.org/sax/features/namespaces", 
-			      false);
+			      true);
             parser.setFeature("http://xml.org/sax/features/namespace-prefixes",
                               true);
 	    parser.setFeature("http://xml.org/sax/features/validation",
