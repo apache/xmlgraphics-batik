@@ -8,41 +8,31 @@
 
 package org.apache.batik.bridge;
 
-import org.w3c.dom.Element;
+import java.awt.Point;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
+import java.io.IOException;
+import java.io.StringReader;
+import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.event.EventDispatcher;
+import org.apache.batik.gvt.event.GraphicsNodeKeyEvent;
+import org.apache.batik.gvt.event.GraphicsNodeKeyListener;
+import org.apache.batik.gvt.event.GraphicsNodeMouseEvent;
+import org.apache.batik.gvt.event.GraphicsNodeMouseListener;
+import org.apache.batik.script.Interpreter;
+import org.apache.batik.script.InterpreterException;
+import org.apache.batik.script.InterpreterPool;
 import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-
+import org.w3c.dom.NodeList;
+import org.w3c.dom.events.DocumentEvent;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
 import org.w3c.dom.events.MouseEvent;
-import org.w3c.dom.events.DocumentEvent;
-
 import org.w3c.dom.svg.SVGElement;
 import org.w3c.dom.svg.SVGSVGElement;
-
-import org.apache.batik.gvt.GraphicsNode;
-
-import org.apache.batik.gvt.event.EventDispatcher;
-import org.apache.batik.gvt.event.GraphicsNodeMouseListener;
-import org.apache.batik.gvt.event.GraphicsNodeKeyListener;
-import org.apache.batik.gvt.event.GraphicsNodeMouseEvent;
-import org.apache.batik.gvt.event.GraphicsNodeKeyEvent;
-
-import org.apache.batik.script.Interpreter;
-import org.apache.batik.script.InterpreterPool;
-import org.apache.batik.script.InterpreterException;
-
-import org.apache.batik.bridge.BridgeContext;
-import org.apache.batik.bridge.UserAgent;
-
-import java.io.StringReader;
-import java.io.IOException;
-
-import java.awt.Point;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Point2D;
 
 /**
  * A class to attach listeners on the <code>Document</code> to
@@ -53,7 +43,7 @@ import java.awt.geom.Point2D;
  * @version $Id$
  */
 class BridgeEventSupport {
-    private static String[] EVENT_ATTRIBUTES = {
+    private static final String[] EVENT_ATTRIBUTES = {
         // all
         "onfocusin",
         "onfocusout",
@@ -80,7 +70,7 @@ class BridgeEventSupport {
         "onrepeat"
     };
 
-    private static String[] EVENT_NAMES = {
+    private static final String[] EVENT_NAMES = {
         // all
         "focusin",
         "focusout",
@@ -171,7 +161,7 @@ class BridgeEventSupport {
             EventDispatcher dispatcher = ua.getEventDispatcher();
             if (dispatcher != null) {
                 final Listener listener = new Listener(ctx, ua);
-                dispatcher.addGlobalGraphicsNodeMouseListener(listener);
+                dispatcher.addGraphicsNodeMouseListener(listener);
                 ((EventTarget)svgRoot).
                     addEventListener("SVGUnload",
                                      new UnloadListener(dispatcher, listener),
@@ -223,7 +213,7 @@ class BridgeEventSupport {
             this.listener = listener;
         }
         public void handleEvent(Event evt) {
-            dispatcher.removeGlobalGraphicsNodeMouseListener(listener);
+            dispatcher.removeGraphicsNodeMouseListener(listener);
             evt.getTarget().removeEventListener("SVGUnload", this, false);
         }
     }

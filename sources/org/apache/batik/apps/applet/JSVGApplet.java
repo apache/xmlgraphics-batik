@@ -12,25 +12,21 @@ import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Point;
-
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Dimension2D;
-
 import javax.swing.JApplet;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
-
 import org.apache.batik.bridge.UserAgent;
 import org.apache.batik.css.CSSDocumentHandler;
 import org.apache.batik.dom.svg.DefaultSVGContext;
 import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
 import org.apache.batik.dom.svg.SVGDocumentFactory;
 import org.apache.batik.dom.svg.SVGOMDocument;
+import org.apache.batik.gvt.event.AWTEventDispatcher;
 import org.apache.batik.gvt.event.EventDispatcher;
-import org.apache.batik.gvt.event.ConcreteEventDispatcher;
 import org.apache.batik.swing.JSVGCanvas;
 import org.apache.batik.util.DocumentEvent;
 import org.apache.batik.util.DocumentListener;
@@ -38,7 +34,6 @@ import org.apache.batik.util.DocumentLoadRunnable;
 import org.apache.batik.util.DocumentLoadRunnable;
 import org.apache.batik.util.DocumentLoadingEvent;
 import org.apache.batik.util.DocumentPropertyEvent;
-
 import org.w3c.dom.svg.SVGAElement;
 import org.w3c.dom.svg.SVGDocument;
 
@@ -126,7 +121,7 @@ public class JSVGApplet extends JApplet implements UserAgent, DocumentListener {
         df = new SAXSVGDocumentFactory(getXMLParserClassName());
         canvas = new JSVGCanvas(this);
         eventDispatcher =
-            new ConcreteEventDispatcher(
+            new AWTEventDispatcher(
                 canvas.getRendererFactory().getRenderContext());
 
         canvas.setPreferredSize(new Dimension(600, 400));

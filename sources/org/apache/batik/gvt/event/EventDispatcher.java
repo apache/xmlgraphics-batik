@@ -8,98 +8,130 @@
 
 package org.apache.batik.gvt.event;
 
-import org.apache.batik.gvt.GraphicsNode;
 import java.awt.event.InputEvent;
 import java.awt.geom.AffineTransform;
+import java.util.EventListener;
+import java.util.EventObject;
+import org.apache.batik.gvt.GraphicsNode;
 
 /**
- * Interface for receiving InputEvents and dispatching them as GraphicsNodeEvents.
- * Mouse events are dispatched to their "containing" node (the GraphicsNode
- * corresponding to the mouse event coordinate). Searches for containment
- * are performed from the EventDispatcher's "root" node.
+ * Interface for receiving and dispatching events down to a GVT tree.
+ *
+ * <p>Mouse events are dispatched to their "containing" node (the
+ * GraphicsNode corresponding to the mouse event coordinate). Searches
+ * for containment are performed from the EventDispatcher's "root"
+ * node.</p>
  *
  * @author <a href="bill.haneman@ireland.sun.com>Bill Haneman</a>
- * @version $Id$
- */
+ * @author <a href="tkormann@ilog.fr>Thierry Kormann</a>
+ * @version $Id$ */
 public interface EventDispatcher {
 
-    /*
-     * Sets the root node for MouseEvent dispatch containment searches 
+    /**
+     * Sets the root node for MouseEvent dispatch containment searches
      * and field selections.
+     * @param root the root node
      */
-    public void setRootNode(GraphicsNode root);
-
-
-    /*
-     * Sets the base transform applied to MouseEvent coordinates prior to
-     * dispatch..
-     */
-    public void setBaseTransform(AffineTransform t);
-
-    /*
-     * Convert the InputEvent to a corresponding GraphicsNodeEvent and
-     * dispatch to the appropriate GraphicsNodes.
-     * If the InputEvent is a MouseEvent the dispatch is performed
-     * to each GraphicsNode which contains the MouseEvent coordinate,
-     * until the event is consumed.
-     * If the InputEvent is a KeyEvent, it is dispatched to the currently
-     * selected GraphicsNode.
-     * @see org.apache.batik.gvt.EventDispatcher#setNodeIncrementEvent
-     * @see org.apache.batik.gvt.EventDispatcher#setNodeDecrementEvent
-     */
-    public void dispatch(InputEvent e);
+    void setRootNode(GraphicsNode root);
 
     /**
-     * Add a GraphicsNodeMouseListener which is notified of all MouseEvents dispatched.
+     * Returns the root node for MouseEvent dispatch containment
+     * searches and field selections.
      */
-    public void addGlobalGraphicsNodeMouseListener(GraphicsNodeMouseListener l);
-
+    GraphicsNode getRootNode();
 
     /**
-     * Remove a "global" GraphicsNodeMouseListener.
-     * @see org.apache.batik.gvt.event.EventDispatcher#addGlobalGraphicsNodeMouseListener
+     * Sets the base transform applied to MouseEvent coordinates prior
+     * to dispatch.
+     * @param t the affine transform
      */
-    public void removeGlobalGraphicsNodeMouseListener(GraphicsNodeMouseListener l);
-
+    void setBaseTransform(AffineTransform t);
 
     /**
-     * Add a GraphicsNodeKeyListener which is notified of all KeyEvents dispatched.
+     * Returns the base transform applied to MouseEvent coordinates prior
+     * to dispatch.
      */
-    public void addGlobalGraphicsNodeKeyListener(GraphicsNodeKeyListener l);
-
+    AffineTransform getBaseTransform();
 
     /**
-     * Remove a "global" GraphicsNodeKeyListener.
-     * @see org.apache.batik.gvt.event.EventDispatcher#addGlobalGraphicsNodeMouseListener
+     * Dispatched the specified event object.
+     *
+     * <p>Converts the EventObject to a corresponding GraphicsNodeEvent
+     * and dispatch it to the appropriate GraphicsNode(s). If the
+     * event is a MouseEvent the dispatch is performed to each
+     * GraphicsNode which contains the MouseEvent coordinate, until
+     * the event is consumed. If the event is a KeyEvent, it is
+     * dispatched to the currently selected GraphicsNode.</p>
+     *
+     * @param e the event to dispatch
      */
-    public void removeGlobalGraphicsNodeKeyListener(GraphicsNodeKeyListener l);
+    void dispatchEvent(EventObject e);
+
+    //
+    // Global GVT listeners support
+    //
 
     /**
-     * Add a GraphicsNodeFocusChangeListener which is notified when the node focus changes..
+     * Adds the specified 'global' GraphicsNodeMouseListener which is
+     * notified of all MouseEvents dispatched.
+     * @param l the listener to add
      */
-    public void addFocusChangeListener(GraphicsNodeFocusChangeListener l);
-
+    void addGraphicsNodeMouseListener(GraphicsNodeMouseListener l);
+    /**
+     * Removes the specified 'global' GraphicsNodeMouseListener which is
+     * notified of all MouseEvents dispatched.
+     * @param l the listener to remove
+     */
+    void removeGraphicsNodeMouseListener(GraphicsNodeMouseListener l);
 
     /**
-     * Remove a "global" GraphicsNodeFocusChangeListener.
-     * @see org.apache.batik.gvt.event.EventDispatcher#addFocusChangeListener
+     * Adds the specified 'global' GraphicsNodeKeyListener which is
+     * notified of all KeyEvents dispatched.
+     * @param l the listener to add
      */
-    public void removeFocusChangeListener(GraphicsNodeFocusChangeListener l);
+    void addGraphicsNodeKeyListener(GraphicsNodeKeyListener l);
 
-    /*
+    /**
+     * Removes the specified 'global' GraphicsNodeKeyListener which is
+     * notified of all KeyEvents dispatched.
+     * @param l the listener to remove
+     */
+    void removeGraphicsNodeKeyListener(GraphicsNodeKeyListener l);
+
+    /**
+     * Adds the specified 'global' GraphicsNodeFocusListener which is
+     * notified of all FocusEvents dispatched.
+     * @param l the listener to add
+     */
+    void addGraphicsNodeFocusListener(GraphicsNodeFocusListener l);
+
+    /**
+     * Removes the specified 'global' GraphicsNodeFocusListener which is
+     * notified of all FocusEvents dispatched.
+     * @param l the listener to remove
+     */
+    void removeGraphicsNodeFocusListener(GraphicsNodeFocusListener l);
+
+    /**
+     * Returns an array of listeners that were added to this event
+     * dispatcher and of the specified type.
+     * @param listenerType the type of the listeners to return
+     */
+    EventListener [] getListeners(Class listenerType);
+
+    /**
      * Associates all InputEvents of type <tt>e.getID()</tt>
      * with "incrementing" of the currently selected GraphicsNode.
      */
-    public void setNodeIncrementEvent(InputEvent e);
+    void setNodeIncrementEvent(InputEvent e);
 
-    /*
+    /**
      * Associates all InputEvents of type <tt>e.getID()</tt>
      * with "decrementing" of the currently selected GraphicsNode.
      * The notion of "currently selected" GraphicsNode is used
      * for dispatching KeyEvents.
      */
-    public void setNodeDecrementEvent(InputEvent e);
-
+    void setNodeDecrementEvent(InputEvent e);
 
 }
 

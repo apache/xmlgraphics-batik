@@ -53,11 +53,6 @@ import org.apache.batik.gvt.filter.Mask;
 public abstract class AbstractGraphicsNode implements GraphicsNode {
 
     /**
-     * Used to draw renderable images
-     */
-    static final AffineTransform IDENTITY = new AffineTransform();
-
-    /**
      * The listeners list.
      */
     protected EventListenerList listeners;

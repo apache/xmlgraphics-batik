@@ -106,7 +106,7 @@ import org.apache.batik.transcoder.image.ImageTranscoder;
 import org.apache.batik.transcoder.image.PNGTranscoder;
 import org.apache.batik.transcoder.image.JPEGTranscoder;
 import org.apache.batik.swing.JSVGCanvas;
-import org.apache.batik.gvt.event.ConcreteEventDispatcher;
+import org.apache.batik.gvt.event.AWTEventDispatcher;
 
 import org.apache.batik.util.SVGFileFilter;
 import org.apache.batik.util.DocumentEvent;
@@ -333,7 +333,7 @@ public class ViewerFrame
     /**
      * The event dispatcher.
      */
-    private ConcreteEventDispatcher eventDispatcher;
+    private AWTEventDispatcher eventDispatcher;
 
     /**
      * The user languages.
@@ -393,7 +393,7 @@ public class ViewerFrame
         canvas = new JSVGCanvas(this);
 
         eventDispatcher =
-            new ConcreteEventDispatcher(
+            new AWTEventDispatcher(
                 canvas.getRendererFactory().getRenderContext());
 
         listeners.put(OPEN_ACTION,        new OpenAction());

@@ -14,7 +14,7 @@ import java.awt.Graphics2D;
 import java.awt.geom.Dimension2D;
 
 /**
- * The top-level graphics node with a background color.
+ * The graphics node container with a background color.
  *
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  * @version $Id$

@@ -8,13 +8,25 @@
 
 package org.apache.batik.gvt.event;
 
+import java.util.EventListener;
+
 /**
- * Not yet implemented.
- * @author <a href="bill.haneman@ireland.sun.com>Bill Haneman</a>
+ * The listener interface for receiving keyboard focus events on a
+ * graphics node.
+ *
+ * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  * @version $Id$
  */
+public interface GraphicsNodeFocusListener extends EventListener {
 
-public interface GraphicsNodeFocusChangeListener {
+    /**
+     * Invoked when a graphics node gains the keyboard focus.
+     */
+    void focusGained(GraphicsNodeFocusEvent evt);
 
+    /**
+     * Invoked when a graphics node loses the keyboard focus.
+     */
+    void focusLost(GraphicsNodeFocusEvent evt);
 
 }
