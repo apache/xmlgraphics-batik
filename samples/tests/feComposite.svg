@@ -16,17 +16,18 @@
 <!-- @author tkormann@apache.org                                               -->
 <!-- @version $Id $  -->
 <!-- ========================================================================= -->
+<?xml-stylesheet type="text/css" href="test.css" ?>
 
 <svg id="body" width="450" height="500" viewBox="0 0 450 500">
-<title>Composite Test</title>
+<title>feComposite Test</title>
 
     <!-- ============================================================= -->
     <!-- Test content                                                  -->
     <!-- ============================================================= -->
     <g id="testContent">
 
-      <text x="175" y="40" class="title">
-    	Composite Test
+      <text x="225" y="40" class="title">
+      feComposite Test
       </text>
   
       <defs>
