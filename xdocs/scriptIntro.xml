@@ -48,7 +48,7 @@
   &lt;!-- Your SVG elements --&gt;
 &lt;/svg&gt;</source>
 	   <p>
-	       You can also put script in respond to user or document events using attributes on SVG elements. As you have seen in previous example, the scripting language must be set on the &lt;script&gt; element, however for event handling the default language type "text/ecmascript" is already set. If you want to change it you can use the contentScriptType attribute on the &lt;svg&gt; element.
+	       You can also put script in response to user or document events using attributes on SVG elements. As shown in the previous example, the scripting language must be set on the &lt;script&gt; element. However for event handling the default language type "text/ecmascript" is already set. If you want to change it you can use the contentScriptType attribute on the &lt;svg&gt; element.
 	   </p>
 	   <p>
 	       In most cases, the event attribute will only call a function defined in a &lt;script&gt; section, however as you can see below it can also contains regular code.
@@ -68,83 +68,37 @@
         </s1>
         <s1 title="Scripting Uses in Batik">
 	<p>Batik release 1.1 is a static SVG implementation, that's why in this version you can't use scripting to move or change graphic objects on the screen, however it can still be usefull for other purposes.</p>
-	<p>The following simplified example that you can find in your Batik distribution uses the Java Sound API through scripting to simulate a piano in SVG:</p>
+	<p>The following simplified example that you can find in your Batik distribution displays a simple message in response to user events:</p>
 	<source>
+&lt;svg width="450" height="500" viewBox="0 0 450 500"&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;script type="text/ecmascript"&gt;
 
-&lt;svg width="420" height="64"&gt;
-    &lt;defs&gt;
-      &lt;style type="text/css"&gt;
-          #blank {fill:white;stroke:black}
-	  #black {fill:black;stroke:black}
-      &lt;/style&gt;
-      &lt;script type="text/ecmascript"&gt;
-	  importPackage(Packages.javax.sound.midi)
-          var midiChannel
-          var lastId = -1
-	  synthesizer = MidiSystem.synthesizer
-	  synthesizer.open()
-	  var instruments = synthesizer.defaultSoundbank.instruments
-	  // load the first instrument
-	  synthesizer.loadInstrument(instruments[0])
-          midiChannel = synthesizer.getChannels()[0]
-	  midiChannel.programChange(0)
+&nbsp;&nbsp;&nbsp;&nbsp;function showDialog(msg) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;alert(msg);
+&nbsp;&nbsp;&nbsp;&nbsp;}
 
-          function down(evt) {
-		target = evt.target.parentElement
-		midiChannel.noteOn(target.id, 64)
-	        lastId = target.id
-          }
-
-          function drag(evt) {
-		if (lastId != -1) {
-		  target = evt.target.parentElement
-		  midiChannel.noteOn(target.id, 64)
-		  lastId = target.id
-		}
-          }
-      &lt;/script&gt;
-      &lt;rect onmousedown="down(evt)" onmouseover="drag(evt)" 
-               id="blank" x="0" y="0" width="10" height="60"/&gt;
-      &lt;rect onmousedown="down(evt)" onmouseover="drag(evt)" 
-               id="black" x="0" y="0" width="6" height="33"/&gt;
-    &lt;/defs&gt;
-    &lt;g&gt;
-      &lt;use id="24" xlink:href="#blank"/&gt;
-      &lt;use id="26" x="10" xlink:href="#blank"/&gt;
-      &lt;use id="25" x="7"  xlink:href="#black"/&gt;
-      &lt;use id="28" x="20" xlink:href="#blank"/&gt;
-      &lt;use id="27" x="17" xlink:href="#black"/&gt;
-      &lt;!-- some other keys as in batikMusic.svg from the distribution --&gt;
-      &lt;use id="93" x="400" xlink:href="#blank"/&gt;
-      &lt;use id="92" x="397" xlink:href="#black"/&gt;
-      &lt;use id="95" x="410" xlink:href="#blank"/&gt;
-      &lt;use id="94" x="407" xlink:href="#black"/&gt;
-    &lt;/g&gt;
-&lt;/svg&gt;</source>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;g&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;circle cx="137.5" cy="110" r="20" style="fill:crimson" onmousedown="showDialog('onmousedown')"/&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;circle cx="312.5" cy="110" r="20" style="fill:crimson" onmouseup="showDialog('onmouseup')"/&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/g&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;g transform="translate(0 80)"&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;circle cx="137.5" cy="110" r="20" style="fill:crimson" onmouseover="showDialog('onmouseover')"/&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;circle cx="312.5" cy="110" r="20" style="fill:crimson" onmouseout="showDialog('onmouseout')"/&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/g&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;g transform="translate(0 160)"&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;circle cx="137.5" cy="110" r="20" style="fill:crimson" onmousemove="showDialog('onmousemove')"/&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;circle cx="312.5" cy="110" r="20" style="fill:crimson" onclick="showDialog('onclick')"/&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/g&gt;
+&lt;/svg&gt;
+</source>
         <p>
 	You can see in the above example that the &lt;script&gt; element contains
-	some code that will be executed when the element is read (the loading of the first
-	instrument in Java Sound bank for example), and also the definition of two functions:
-	<code>down</code> and <code>drag</code>.
+    the definition of a single function: <code>showDialog</code>.
 	</p>
 	<p>
-	These functions will be called thanks to the Batik event handling mechanism in answer to
-	user events. 
-	<code>down</code> is registered to listen to mouse down events on the piano keys and 
-	<code>drag</code> to listen to mouse over events.
-	</p>
-	<p>
-	When the user presses the mouse down on a piano key, the <code>down</code> function is called,
-	it gets the SVG element corresponding to the key on which the mouse button has been pressed
-	and plays the note corresponding to that key by retrieving it
-	from the ID set on the element (<code>target.id</code>).
-	A similar job is done in the <code>drag</code> function.
-	</p>
-	<p>
-	To sum up, this sample shows that the Batik 1.1 release is able to handle events and perform
-	some actions in ECMAScript when receiving them. Here the action is to play music with the Java 
-	Sound API, it could be other kind of job (logging user actions, performing tasks in answer
-	to user actions...).
+	This function will be called thanks to the Batik event handling mechanism in answer to
+	user events. The function is registered to listen to mouse events on the various &lt;circle&gt;
+    elements.
 	</p>
         </s1>
         <s1 title="Going Further">
