@@ -20,6 +20,7 @@
         <subtitle>A cross platform SVG Rasterizer</subtitle>
         <authors>
             <person name="Vincent Hardy" email="vincent.hardy@eng.sun.com"/>
+            <person name="Henri Ruini" email="ruini@iki.fi"/>
         </authors>
     </header>
 
@@ -34,6 +35,7 @@
         <ul>
             <li><link href="#downloading">Downloading the rasterizer</link></li>
             <li><link href="#using">Rasterizing one or several SVG files</link></li>
+            <li><link href="#task">The rasterizer Ant task</link></li>
         </ul>            
         <p>
             The SVG Rasterizer is a utility that can convert SVG files to a
@@ -138,5 +140,242 @@
             </s2>
 
         </s1>
+
+
+        <anchor id="task" />
+        <s1 title="Rasterizer Ant Task">
+            <p>Rasterizer task is an 
+            <link href="http://jakarta.apache.org/ant/index.html">Ant</link> 
+            version of the rasterizer utility. It fulfills the same basic 
+            purpose as the utility but has a different syntax and a 
+            little different set of features.</p>
+
+            <p>The task is able to produce four raster formats: PNG, JPEG, TIFF 
+            and PDF. You need to set 
+            <link href="http://xml.apache.org/fop/">FOP</link> (versions after 
+            0.20.2 should work) in your <em>CLASSPATH</em> if you want to 
+            produce result images in PDF format.</p>
+
+            <anchor id="initTask" />
+            <s2 title="Taking rasterizer task in use">
+                <p>The first thing to do before you can use the task in your Ant 
+                projects is to set <em>batik-rasterizer.jar</em> and 
+                classes of the rasterizer task to your 
+                <em>CLASSPATH</em>.</p>
+
+                <p>After that you have to define the task in your Ant 
+                project. To do this, add the following line either after the 
+                <code>project</code> start tag or after the <code>target</code> 
+                start tag in the target you are using the rasterizer task:</p>
+
+<source>
+&lt;taskdef name="rasterize" 
+classname="org.apache.tools.ant.taskdefs.optional.RasterizerTask" /&gt;
+</source>
+
+                <p>Now you can use the rasterizer task in your project! See the 
+                <link href="taskParameters">parameters section</link> for an 
+                explanation of the available parameters or 
+                <link href="taskExamples">examples section</link> to see few 
+                usage examples.</p>
+            </s2>
+
+            <anchor id="taskParameters" />
+            <s2 title="Parameters of the task">
+                <table>
+                    <tr>
+                        <th>Attribute</th>
+                        <th>Description</th>
+                        <th>Required</th>
+                    </tr>
+                    <tr>
+                        <td>result</td>
+                        <td>Sets the type of the result image. Only one the 
+                        following values are allowed: <code>image/png</code>, 
+                        <code>image/jpeg</code>, <code>image/tiff</code> or 
+                        <code>application/pdf</code>. The value have to be in 
+                        lowercase letters.</td>
+                        <td>Yes</td>
+                    </tr>
+                    <tr>
+                        <td>height</td>
+                        <td>Sets the height of the result image in pixels. Task 
+                        calculates the height from the SVG file if this 
+                        parameter has not been set. The rasterizer keeps the 
+                        aspect ratio of the SVG file even if the both 
+                        <code>height</code> and <code>width</code> has been set. 
+                        </td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td>width</td>
+                        <td>Sets the width of the result image in pixels. Task 
+                        calculates the width from the SVG file if this 
+                        parameter has not been set. The rasterizer keeps the 
+                        aspect ratio of the SVG file even if the both 
+                        <code>height</code> and <code>width</code> has been set. 
+                        </td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td>quality</td>
+                        <td>Sets the quality of the produced image. The value 
+                        have to be greater than 0 but smaller than 1. A bigger 
+                        number means better quality. Quality value is used 
+                        only with JPEG images. 
+                        The default quality value is 0.99.</td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td>area</td>
+                        <td>Defines the area in the SVG file which will be 
+                        rasterized. Parts outside this area are discarded and 
+                        don't show in the result image. The area attribute value 
+                        has four integers separated with commas. 
+                        The first two integers set the x and y coordinates of 
+                        the upper left corner of the area, respectively. The 
+                        last two integers set the width and height of the area, 
+                        respectively. For example, 
+                        <code>"10, 20, 100, 200"</code> sets the 
+                        rectangular area from point 10,10 to point 110, 220. 
+                        The specified area is applied to all images if more 
+                        than one file is rasterized during one task.</td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td>bg</td>
+                        <td>Sets the background color of the result image. 
+                        The <code>bg</code> attribute value is either three 
+                        or four integers separated with commas. 
+                        The four values are alpha channel, red, 
+                        green, and blue, respectively. If only three values 
+                        are given, then the values are red, green, and blue and 
+                        the alpha channel is automatically set to 255 (opaque). 
+                        All values have to between 0 and 255.
+                        The default value is none which means that background 
+                        is transparent and not filled with any color.</td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td>media</td>
+                        <td>CSS media type which is used to select CSS 
+                        stylesheet. The selected stylesheet is then used to
+                        rasterize the SVG files. Only visual media group is 
+                        supported (see 
+                        <link href="http://www.w3.org/TR/REC-CSS2/">CSS2 specification</link>
+                        for more information about media groups). 
+                        The default value is <code>screen</code>.</td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td>dpi</td>
+                        <td>Resolution for the result image. The attribute 
+                        value is used to compute the "pixel to millimeter" 
+                        ratio used when processing SVG files. 
+                        The default value is 96.</td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td>lang</td>
+                        <td>Language which is used select language specific 
+                        areas from the SVG file during the rasterizing 
+                        process. The valid values are defined in RFC3066. 
+                        The default value is <code>en</code>.</td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td>src</td>
+                        <td>Name of a one input file. Use this parameter to 
+                        convert just one file which name and location are known. 
+                        <code>dest</code> parameter have to be set, too.</td>
+                        <td>One of the following is required: <code>src</code> 
+                        attribute, <code>srcdir</code> attribute or 
+                        <code>fileset</code> element(s).</td>
+                    </tr>
+                    <tr>
+                        <td>dest</td>
+                        <td>Name of a one output file. Use this with 
+                        <code>src</code> parameter only. Output directory is 
+                        created if it doesn't exist.</td>
+                        <td>Required if <code>src</code> is used.</td>
+                    </tr>
+                    <tr>
+                        <td>srcdir</td>
+                        <td>Name of the input directory. <code>srcdir</code> and 
+                        <code>fileset</code> elements can be combined and 
+                        <code>srcdir</code> can be left out if there are at 
+                        least one <code>fileset</code> child element. 
+                        <code>srcdir</code> file selection can be controlled 
+                        with <code>include</code>, <code>exclude</code>, etc. 
+                        child elements. Note that without control parameters 
+                        the task tries to rasterize <em>all</em> files in 
+                        the given directory.</td>
+                        <td>One of the following is required: <code>src</code> 
+                        attribute, <code>srcdir</code> attribute or 
+                        <code>fileset</code> element(s).</td>
+                    </tr>
+                    <tr>
+                        <td>destdir</td>
+                        <td>Name of an output directory. Use this with 
+                        <code>srcdir</code> parameter or <code>fileset</code> 
+                        elements. The task generates the names of the output 
+                        images by changing the suffix of the input file names to 
+                        correspond the result image type. A suffix is added if 
+                        the input file doesn't have one. Output directories are 
+                        created if they don't exist.</td>
+                        <td>Required if <code>srcdir</code> attribute or 
+                        <code>fileset</code> elements are used.</td>
+                    </tr>
+                </table>
+                <p>You can use <code>fileset</code> elements to select input 
+                files and directories. See the Ant documentation to learn how to 
+                use 
+                <link href="http://jakarta.apache.org/ant/manual/CoreTypes/fileset.html">filesets</link>.</p>
+            </s2>
+
+            <anchor id="taskExamples" />
+            <s2 title="Examples of using the rasterizer task">
+
+                <p>The following example is the complete Ant project which 
+                converts SVG image (called <em>input.svg</em>) to PNG image 
+                (called <em>output.png</em>):</p>
+
+<source>
+&lt;?xml version="1.0"?&gt;
+
+&lt;project name="RasterizerExample" default="main" basedir="."&gt;
+
+    &lt;taskdef name="rasterize" 
+        classname="org.apache.tools.ant.taskdefs.optional.RasterizerTask" /&gt;
+
+    &lt;target name="main"&gt;
+        &lt;rasterize result="image/png"
+            src="input.svg"
+            dest="output.png" /&gt;
+    &lt;/target&gt;
+&lt;/project&gt;
+</source>
+
+                <p>The next example is just a one task in a project. It 
+                converts all files with <code>.svg</code> suffix in 
+                <em>images</em> directory and all files in <em>images2</em> 
+                directory to TIFF images. The resulting image files are placed 
+                in the <em>results</em> directory.</p>
+
+<source>
+&lt;rasterize 
+    result="image/tiff"
+    destdir="results"&gt;
+    &lt;fileset dir="images"&gt;
+        &lt;include name="**/*.svg" /&gt;
+    &lt;/fileset&gt;
+    &lt;fileset dir="images2" /&gt;
+&lt;/rasterize&gt;
+</source>
+
+            </s2>
+        </s1>
+
+
     </body>
 </document>
