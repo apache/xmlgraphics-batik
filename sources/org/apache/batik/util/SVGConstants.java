@@ -538,4 +538,13 @@ public interface SVGConstants extends CSSConstants {
     String PATH_HORIZONTAL_LINE_TO = "H";
     String PATH_QUAD_TO = "Q";
     String PATH_SMOOTH_QUAD_TO = "T";
+
+    ///////////////////////////////////////////////////////////////////
+    // event constants
+    ///////////////////////////////////////////////////////////////////
+    
+    String SVG_EVENT_CLICK = "click";
+    String SVG_EVENT_MOUSEOVER = "mouseover";
+    String SVG_EVENT_MOUSEOUT  = "mouseout";
+
 }

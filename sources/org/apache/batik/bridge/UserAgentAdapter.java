@@ -22,11 +22,16 @@ import org.apache.batik.gvt.event.EventDispatcher;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLResourceDescriptor;
 
+import org.w3c.dom.Element;
+
 import org.w3c.dom.svg.SVGAElement;
 
 /**
  * An abstract user agent adaptor implementation.  It exists to simply
  * the creation of UserAgent instances.
+ *
+ * @author <a href="mailto:thomas.deweese@kodak.com">Thomas DeWeese</a>
+ * @version $Id$
  */
 public class UserAgentAdapter implements UserAgent {
     protected Set FEATURES = new HashSet();
@@ -142,22 +147,33 @@ public class UserAgentAdapter implements UserAgent {
 
     protected Set extensions = new HashSet();
 
-        /**
-         * Tells whether the given extension is supported by this
-         * user agent.
-         */
+    /**
+     * Tells whether the given extension is supported by this
+     * user agent.
+     */
     public boolean supportExtension(String s) {
         return extensions.contains(s);
     }
 
     /**
-         * Lets the bridge tell the user agent that the following
-         * ex   tension is supported by the bridge.  
-         */
+     * Lets the bridge tell the user agent that the following
+     * ex   tension is supported by the bridge.  
+     */
     public void registerExtension(BridgeExtension ext) {
         Iterator i = ext.getImplementedExtensions();
         while (i.hasNext())
             extensions.add(i.next());
+    }
+
+
+    /**
+     * Notifies the UserAgent that the input element 
+     * has been found in the document. This is sometimes
+     * called, for example, to handle &lt;a&gt; or
+     * &lt;title&gt; elements in a UserAgent-dependant
+     * way.
+     */
+    public void handleElement(Element elt, Object data){
     }
 }
 

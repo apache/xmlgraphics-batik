@@ -84,6 +84,7 @@ import org.apache.batik.util.XMLResourceDescriptor;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGAElement;
 import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.svg.SVGSVGElement;
@@ -914,6 +915,16 @@ public class PrintTranscoder extends XMLAbstractTranscoder
             Iterator i = ext.getImplementedExtensions();
             while (i.hasNext())
                 extensions.add(i.next());
+        }
+
+        /**
+         * Notifies the UserAgent that the input element 
+         * has been found in the document. This is sometimes
+         * called, for example, to handle &lt;a&gt; or
+         * &lt;title&gt; elements in a UserAgent-dependant
+         * way.
+         */
+        public void handleElement(Element elt, Object data){
         }
     }
 

@@ -83,6 +83,7 @@ public class SVGBridgeExtension implements BridgeExtension {
         ctx.putBridge(new SVGCircleElementBridge());
         ctx.putBridge(new SVGClipPathElementBridge());
         ctx.putBridge(new SVGColorProfileElementBridge());
+        ctx.putBridge(new SVGDescElementBridge());
         ctx.putBridge(new SVGEllipseElementBridge());
         ctx.putBridge(new SVGFeBlendElementBridge());
         ctx.putBridge(new SVGFeColorMatrixElementBridge());
@@ -131,6 +132,7 @@ public class SVGBridgeExtension implements BridgeExtension {
         ctx.putBridge(new SVGSwitchElementBridge());
         ctx.putBridge(new SVGTextElementBridge());
         ctx.putBridge(new SVGTextPathElementBridge());
+        ctx.putBridge(new SVGTitleElementBridge());
         ctx.putBridge(new SVGUseElementBridge());
         ctx.putBridge(new SVGVKernElementBridge());
 

@@ -172,6 +172,9 @@ public class SVGTextElementBridge extends AbstractSVGBridge
         if (ctx.isDynamic()) {
             ctx.bind(e, node);
         }
+
+        // Handle children elements such as <title>
+        SVGUtilities.bridgeChildren(ctx, e);
     }
 
     /**
