@@ -15,6 +15,8 @@ import javax.swing.plaf.FontUIResource;
 /**
  * This is a helper class to set the desired default resources
  * in Swing UIs
+ *
+ * @version $Id$
  */
 public class SwingInitializer {
     /**
