@@ -24,6 +24,11 @@ import org.apache.batik.ext.awt.g2d.GraphicContext;
  */
 public class SVGClip extends AbstractSVGConverter {
     /**
+     * Constant used for some degenerate cases
+     */
+    public static final Shape ORIGIN = new Line2D.Float(0,0,0,0);
+
+    /**
      * Descriptor to use where there is no clip on an element
      */
     public static final SVGClipDescriptor NO_CLIP =
@@ -121,8 +126,14 @@ public class SVGClip extends AbstractSVGConverter {
         if (clipPath != null) {
             clipDef.appendChild(clipPath);
             return clipDef;
-        } else
-            return null; // what means the shape return null ?
+        } else {
+            // Here, we know clip is not null but we got a
+            // null clipDef. This means we ran into a degenerate 
+            // case which in Java 2D means everything is clippped.
+            // To provide an equivalent behavior, we clip to a point
+            clipDef.appendChild(shapeConverter.toSVG(ORIGIN));
+            return clipDef;
+        }
     }
 }
 
