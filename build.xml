@@ -416,6 +416,7 @@ To display the available targets type:
          jarfile="${build}/${project}-svgviewer.jar">
       <fileset dir="${dest}">
         <include name="${package-prefix}/apps/svgviewer/**/*.class"/>
+        <include name="${package-prefix}/experiment/**/*.class"/>
       </fileset>
       <fileset dir="${resources}">
         <include name="${package-prefix}/apps/svgviewer/**/resources/**"/>
@@ -552,7 +553,6 @@ To display the available targets type:
              use="true"
              windowtitle="${Project} Javadoc"
              doctitle="${Project} API Specification"
-             link="http://java.sun.com/j2se/1.3/docs/api"
              bottom="Copyright &#169; ${year} Apache Software Foundation. All Rights Reserved.">
       <classpath refid="libs-classpath"/>
     </javadoc>
