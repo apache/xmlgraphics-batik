@@ -211,18 +211,18 @@
     .fil3 {fill:#F3CFA8}
     .fil11 {fill:#F6F18B}
     .fil0 {fill:#C4E1F6}
-    .fnt10 {font-weight:normal;font-size:56;font-family:FontID0 'Humnst777 BT'}
-    .fnt7 {font-weight:normal;font-size:69;font-family:FontID0 'Humnst777 BT'}
-    .fnt6 {font-weight:normal;font-size:83;font-family:FontID0 'Humnst777 BT'}
-    .fnt9 {font-weight:normal;font-size:97;font-family:FontID0 'Humnst777 BT'}
-    .fnt8 {font-weight:normal;font-size:111;font-family:FontID0 'Humnst777 BT'}
-    .fnt11 {font-weight:bold;font-size:111;font-family:FontID0 'Humnst777 BT'}
-    .fnt0 {font-weight:normal;font-size:125;font-family:FontID0 'Humnst777 BT'}
-    .fnt4 {font-weight:bold;font-size:139;font-family:FontID0 'Humnst777 BT'}
-    .fnt5 {font-weight:normal;font-size:194;font-family:FontID0 'Humnst777 BT'}
-    .fnt3 {font-weight:bold;font-size:306;font-family:FontID0 'Humnst777 BT'}
-    .fnt2 {font-style:italic;font-weight:normal;font-size:111;font-family:FontID0 'Humnst777 BT'}
-    .fnt1 {font-style:italic;font-weight:normal;font-size:167;font-family:FontID0 'Humnst777 BT'}
+    .fnt10 {font-weight:normal;font-size:56;font-family:FontID0, 'Humnst777 BT'}
+    .fnt7 {font-weight:normal;font-size:69;font-family:FontID0, 'Humnst777 BT'}
+    .fnt6 {font-weight:normal;font-size:83;font-family:FontID0, 'Humnst777 BT'}
+    .fnt9 {font-weight:normal;font-size:97;font-family:FontID0, 'Humnst777 BT'}
+    .fnt8 {font-weight:normal;font-size:111;font-family:FontID0, 'Humnst777 BT'}
+    .fnt11 {font-weight:bold;font-size:111;font-family:FontID0, 'Humnst777 BT'}
+    .fnt0 {font-weight:normal;font-size:125;font-family:FontID0, 'Humnst777 BT'}
+    .fnt4 {font-weight:bold;font-size:139;font-family:FontID0, 'Humnst777 BT'}
+    .fnt5 {font-weight:normal;font-size:194;font-family:FontID0, 'Humnst777 BT'}
+    .fnt3 {font-weight:bold;font-size:306;font-family:FontID0, 'Humnst777 BT'}
+    .fnt2 {font-style:italic;font-weight:normal;font-size:111;font-family:FontID0, 'Humnst777 BT'}
+    .fnt1 {font-style:italic;font-weight:normal;font-size:167;font-family:FontID0, 'Humnst777 BT'}
    ]]></style></defs>
         <g id="polygonAreas">
             <path  class="fil0"

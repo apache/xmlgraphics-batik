@@ -229,14 +229,14 @@
                <text x="260" y="130" glyph-orientation-vertical="auto" writing-mode="tb" font-family="SVGComic" fill="#6666FF">abcdefg</text>
                <text x="285" y="130" glyph-orientation-vertical="auto" writing-mode="tb" font-family="SVGComicK" fill="#6666FF">abcdefg</text>
            
-               <text x="260" y="300" glyph-orientation-vertical="0" writing-mode="tb" font-family="SVGComic" fill="#6666FF">abcdefg</text>
-               <text x="280" y="300" glyph-orientation-vertical="0" writing-mode="tb" font-family="SVGComicK" fill="#6666FF">abcdefg</text>
+               <text x="260" y="300" glyph-orientation-vertical="0deg" writing-mode="tb" font-family="SVGComic" fill="#6666FF">abcdefg</text>
+               <text x="280" y="300" glyph-orientation-vertical="0deg" writing-mode="tb" font-family="SVGComicK" fill="#6666FF">abcdefg</text>
 
-               <text x="340" y="130" glyph-orientation-vertical="0" writing-mode="tb" font-family="SVGComic" fill="red">uvwxyz</text>
-               <text x="360" y="130" glyph-orientation-vertical="0" writing-mode="tb" font-family="SVGComicK" fill="red">uvwxyz</text>
+               <text x="340" y="130" glyph-orientation-vertical="0deg" writing-mode="tb" font-family="SVGComic" fill="red">uvwxyz</text>
+               <text x="360" y="130" glyph-orientation-vertical="0deg" writing-mode="tb" font-family="SVGComicK" fill="red">uvwxyz</text>
       
-               <text x="340" y="300" glyph-orientation-vertical="180" writing-mode="tb" font-family="SVGComic" fill="#33CC33">abcxyz</text>
-               <text x="360" y="300" glyph-orientation-vertical="180" writing-mode="tb" font-family="SVGComicK" fill="#33CC33">abcxyz</text>
+               <text x="340" y="300" glyph-orientation-vertical="180deg" writing-mode="tb" font-family="SVGComic" fill="#33CC33">abcxyz</text>
+               <text x="360" y="300" glyph-orientation-vertical="180deg" writing-mode="tb" font-family="SVGComicK" fill="#33CC33">abcxyz</text>
 
             </g>
        
