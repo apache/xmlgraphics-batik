@@ -13,11 +13,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.batik.ext.awt.image.renderable.ARGBChannel;
+import org.apache.batik.ext.awt.image.ARGBChannel;
+import org.apache.batik.ext.awt.image.PadMode;
+
 import org.apache.batik.ext.awt.image.renderable.DisplacementMapRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.DisplacementMapRable;
 import org.apache.batik.ext.awt.image.renderable.Filter;
-import org.apache.batik.ext.awt.image.renderable.PadMode;
 import org.apache.batik.ext.awt.image.renderable.PadRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.PadRable;
 import org.apache.batik.gvt.GraphicsNode;

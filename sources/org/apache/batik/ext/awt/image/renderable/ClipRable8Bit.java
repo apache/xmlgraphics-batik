@@ -26,6 +26,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.renderable.RenderContext;
 
 import org.apache.batik.ext.awt.image.GraphicsUtil;
+import org.apache.batik.ext.awt.image.PadMode;
 
 import org.apache.batik.ext.awt.image.rendered.CachableRed;
 import org.apache.batik.ext.awt.image.rendered.RenderedImageCachableRed;
@@ -41,7 +42,7 @@ import org.apache.batik.ext.awt.image.rendered.PadRed;
  */
 public class ClipRable8Bit
     extends    AbstractRable 
-    implements Clip {
+    implements ClipRable {
 
     /**
      * The node who's outline specifies our mask.

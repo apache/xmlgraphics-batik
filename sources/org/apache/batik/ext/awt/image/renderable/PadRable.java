@@ -11,6 +11,8 @@ package org.apache.batik.ext.awt.image.renderable;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.renderable.RenderableImage;
 
+import org.apache.batik.ext.awt.image.PadMode;
+
 /**
  * Pads image to the given Rectangle (the rect may be smaller than the
  * image in which case this is actually a crop). The rectangle is

@@ -6,14 +6,12 @@
  * the LICENSE file.                                                         *
  *****************************************************************************/
 
-package org.apache.batik.ext.awt.image.renderable;
-
-import java.lang.Math;
+package org.apache.batik.ext.awt.image;
 
 /**
- * GammaTransfer.java
+ * LinearTransfer.java
  *
- * This class defines the Gamma type transfer function for the
+ * This class defines the Linear type transfer function for the
  * feComponentTransfer filter, as defined in chapter 15, section 11
  * of the SVG specification.
  *
@@ -22,55 +20,57 @@ import java.lang.Math;
  *
  * @see  org.apache.batik.gvt.filter.ComponentTransferOp
  */
-public class GammaTransfer implements TransferFunction {
+
+public class LinearTransfer implements TransferFunction {
     /**
      * This byte array stores the lookuptable data
      */
     public byte [] lutData;
 
     /**
-     * The amplitude of the Gamma function
+     * The slope of the linear function
      */
-    public float amplitude;
+    public float slope;
 
     /**
-     * The exponent of the Gamma function
+     * The intercept of the linear function
      */
-    public float exponent;
+    public float intercept;
 
     /**
-     * The offset of the Gamma function
+     * Two floats as the input for the function
      */
-    public float offset;
-
-    /**
-     * Three floats as the input for the Gamma function
-     */
-    public GammaTransfer(float amplitude, float exponent, float offset){
-        this.amplitude = amplitude;
-        this.exponent = exponent;
-        this.offset = offset;
+    public LinearTransfer(float slope, float intercept){
+        this.slope = slope;
+        this.intercept = intercept;
     }
 
     /*
      * This method will build the lut data. Each entry's
-     * value is in form of "amplitude*pow(C, exponent) + offset"
+     * value is in form of "slope*C+intercept"
      */
     private void buildLutData(){
         lutData = new byte [256];
-        int i, j, v;
+        int j, value;
+        float scaledInt = (intercept*255f)+0.5f;
         for (j=0; j<=255; j++){
-            v = (int)Math.round(255*(amplitude*Math.pow(j/255f, exponent)+offset));
-            if(v > 255){
-                v = (byte)0xff;
+            value = (int)(slope*j+scaledInt);
+            if(value < 0){
+                value = 0;
             }
-            else if(v < 0){
-                v = (byte)0x00;
+            else if(value > 255){
+                value = 255;
             }
-            lutData[j] = (byte)(v & 0xff);
+            lutData[j] = (byte)(0xff & value);
         }
-    }
 
+        /*System.out.println("Linear : " + slope + " / " + intercept);
+        for(j=0; j<=255; j++){
+            System.out.print("[" + j + "] = " + (0xff & lutData[j]) + " ");
+        }
+
+        System.out.println();*/
+    }
 
     /**
      * This method will return the lut data in order

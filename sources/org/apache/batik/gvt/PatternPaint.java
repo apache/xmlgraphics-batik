@@ -20,8 +20,8 @@ import java.awt.image.ColorModel;
 
 import org.apache.batik.gvt.filter.GraphicsNodeRable8Bit;
 import org.apache.batik.gvt.filter.GraphicsNodeRable;
+import org.apache.batik.ext.awt.image.PadMode;
 import org.apache.batik.ext.awt.image.renderable.Filter;
-import org.apache.batik.ext.awt.image.renderable.PadMode;
 import org.apache.batik.ext.awt.image.renderable.PadRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.AffineRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.AffineRable;

@@ -20,7 +20,7 @@ import java.net.URL;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.ext.awt.color.ICCColorSpaceExt;
-import org.apache.batik.ext.awt.image.renderable.Clip;
+import org.apache.batik.ext.awt.image.renderable.ClipRable;
 import org.apache.batik.ext.awt.image.renderable.ClipRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.renderable.RasterRable;

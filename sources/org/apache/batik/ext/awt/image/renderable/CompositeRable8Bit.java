@@ -28,6 +28,8 @@ import java.awt.image.RenderedImage;
 
 import java.awt.image.renderable.RenderContext;
 
+import org.apache.batik.ext.awt.image.CompositeRule;
+import org.apache.batik.ext.awt.image.SVGComposite;
 import org.apache.batik.ext.awt.image.rendered.CachableRed;
 import org.apache.batik.ext.awt.image.rendered.CompositeRed;
 import org.apache.batik.ext.awt.image.rendered.FloodRed;

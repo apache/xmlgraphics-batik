@@ -24,11 +24,13 @@ import java.awt.image.WritableRaster;
 import java.awt.image.ColorModel;
 import java.awt.image.renderable.RenderContext;
 
-import org.apache.batik.ext.awt.image.rendered.CachableRed;
-import org.apache.batik.ext.awt.image.rendered.RenderedImageCachableRed;
-import org.apache.batik.ext.awt.image.rendered.PadRed;
-import org.apache.batik.ext.awt.image.rendered.BufferedImageCachableRed;
+import org.apache.batik.ext.awt.image.PadMode;
 import org.apache.batik.ext.awt.image.rendered.AffineRed;
+import org.apache.batik.ext.awt.image.rendered.BufferedImageCachableRed;
+import org.apache.batik.ext.awt.image.rendered.CachableRed;
+import org.apache.batik.ext.awt.image.rendered.MorphologyOp;
+import org.apache.batik.ext.awt.image.rendered.PadRed;
+import org.apache.batik.ext.awt.image.rendered.RenderedImageCachableRed;
 
 /**
  * Implements a Morphology operation, where the kernel size is

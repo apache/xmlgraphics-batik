@@ -17,7 +17,7 @@ import java.awt.Shape;
  *
  * @author <a href="mailto:Thomas.DeWeeese@Kodak.com">Thomas DeWeese</a>
  * @version $Id$ */
-public interface Clip extends Filter {
+public interface ClipRable extends Filter {
 
       /**
        * The source to be clipped by the outline of the clip node.

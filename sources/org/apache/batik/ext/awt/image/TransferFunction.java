@@ -5,7 +5,7 @@
  * version 1.1, a copy of which has been included with this distribution in  *
  * the LICENSE file.                                                         *
  *****************************************************************************/
-package org.apache.batik.ext.awt.image.renderable;
+package org.apache.batik.ext.awt.image;
 
 /**
  * Defines the interface for all the <tt>ComponentTransferOp</tt>

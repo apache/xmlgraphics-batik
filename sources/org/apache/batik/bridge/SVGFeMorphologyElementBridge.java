@@ -12,10 +12,10 @@ import java.awt.geom.Rectangle2D;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import org.apache.batik.ext.awt.image.PadMode;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.renderable.MorphologyRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.MorphologyRable;
-import org.apache.batik.ext.awt.image.renderable.PadMode;
 import org.apache.batik.ext.awt.image.renderable.PadRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.PadRable;
 import org.apache.batik.gvt.GraphicsNode;

@@ -10,6 +10,8 @@ package org.apache.batik.ext.awt.image.renderable;
 
 import java.awt.geom.Rectangle2D;
 
+import org.apache.batik.ext.awt.image.Light;
+
 /**
  * This filter follows the specification of the feSpecularLighting filter in 
  * the SVG 1.0 specification.

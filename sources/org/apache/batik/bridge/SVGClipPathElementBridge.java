@@ -13,7 +13,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.awt.geom.GeneralPath;
 
-import org.apache.batik.ext.awt.image.renderable.Clip;
+import org.apache.batik.ext.awt.image.renderable.ClipRable;
 import org.apache.batik.ext.awt.image.renderable.ClipRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.gvt.GraphicsNode;
@@ -46,10 +46,10 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
      * @param clipedElement the element that references the clip element
      * @param clipedNode the graphics node to clip
      */
-    public Clip createClip(BridgeContext ctx,
-                           Element clipElement,
-                           Element clipedElement,
-                           GraphicsNode clipedNode) {
+    public ClipRable createClip(BridgeContext ctx,
+                                Element clipElement,
+                                Element clipedElement,
+                                GraphicsNode clipedNode) {
 
         String s;
 
@@ -116,9 +116,9 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
             // apply the 'clip-path' of the current clipPath's child
             ShapeNode outlineNode = new ShapeNode();
             outlineNode.setShape(outline);
-            Clip clip = CSSUtilities.convertClipPath(child,
-                                                     outlineNode,
-                                                     ctx);
+            ClipRable clip = CSSUtilities.convertClipPath(child,
+                                                          outlineNode,
+                                                          ctx);
             if (clip != null) {
                 Area area = new Area(outline);
                 area.subtract(new Area(clip.getClipPath()));
@@ -135,7 +135,7 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
         clipPathNode.setShape(clipPath);
 
         // apply the 'clip-path' of the clipPath element (already in user space)
-        Clip clipElementClipPath =
+        ClipRable clipElementClipPath =
             CSSUtilities.convertClipPath(clipElement, clipPathNode, ctx);
         if (clipElementClipPath != null) {
             clipPath.subtract(new Area(clipElementClipPath.getClipPath()));

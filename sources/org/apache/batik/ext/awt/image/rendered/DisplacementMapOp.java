@@ -6,7 +6,7 @@
  * the LICENSE file.                                                         *
  *****************************************************************************/
 
-package org.apache.batik.ext.awt.image.renderable;
+package org.apache.batik.ext.awt.image.rendered;
 
 import java.awt.RenderingHints;
 import java.awt.Rectangle;
@@ -20,6 +20,8 @@ import java.awt.image.RasterOp;
 import java.awt.image.SampleModel;
 import java.awt.image.SinglePixelPackedSampleModel;
 import java.awt.image.WritableRaster;
+
+import org.apache.batik.ext.awt.image.ARGBChannel;
 
 /**
  * This class provides an implementation for the SVG

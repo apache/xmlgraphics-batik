@@ -10,10 +10,10 @@ package org.apache.batik.bridge;
 
 import java.awt.Color;
 
-import org.apache.batik.ext.awt.image.renderable.DistantLight;
-import org.apache.batik.ext.awt.image.renderable.Light;
-import org.apache.batik.ext.awt.image.renderable.PointLight;
-import org.apache.batik.ext.awt.image.renderable.SpotLight;
+import org.apache.batik.ext.awt.image.DistantLight;
+import org.apache.batik.ext.awt.image.Light;
+import org.apache.batik.ext.awt.image.PointLight;
+import org.apache.batik.ext.awt.image.SpotLight;
 import org.apache.batik.util.SVGConstants;
 
 import org.w3c.dom.Element;

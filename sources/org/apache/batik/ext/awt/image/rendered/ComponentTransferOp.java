@@ -6,12 +6,14 @@
  * the LICENSE file.                                                         *
  *****************************************************************************/
 
-package org.apache.batik.ext.awt.image.renderable;
+package org.apache.batik.ext.awt.image.rendered;
 
 import java.awt.RenderingHints;
 import java.awt.image.LookupOp;
 import java.awt.image.LookupTable;
 import java.awt.image.ByteLookupTable;
+
+import org.apache.batik.ext.awt.image.TransferFunction;
 
 /**
  * This class provides an implementation for the feComponentTransfer

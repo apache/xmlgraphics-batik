@@ -6,12 +6,12 @@
  * the LICENSE file.                                                         *
  *****************************************************************************/
 
-package org.apache.batik.ext.awt.image.renderable;
+package org.apache.batik.ext.awt.image;
+
+import java.lang.Math;
 
 /**
- * LinearTransfer.java
- *
- * This class defines the Linear type transfer function for the
+ * This class defines the Discrete type transfer function for the
  * feComponentTransfer filter, as defined in chapter 15, section 11
  * of the SVG specification.
  *
@@ -20,56 +20,45 @@ package org.apache.batik.ext.awt.image.renderable;
  *
  * @see  org.apache.batik.gvt.filter.ComponentTransferOp
  */
-
-public class LinearTransfer implements TransferFunction {
+public class DiscreteTransfer implements TransferFunction {
     /**
      * This byte array stores the lookuptable data
      */
     public byte [] lutData;
 
     /**
-     * The slope of the linear function
+     * This int array is the input table values from the user
      */
-    public float slope;
+    public int [] tableValues;
+
+    /*
+     * The number of the input table's elements
+     */
+    private int n;
 
     /**
-     * The intercept of the linear function
+     * The input is an int array which will be used
+     * later to construct the lut data
      */
-    public float intercept;
-
-    /**
-     * Two floats as the input for the function
-     */
-    public LinearTransfer(float slope, float intercept){
-        this.slope = slope;
-        this.intercept = intercept;
+    public DiscreteTransfer(int [] tableValues){
+        this.tableValues = tableValues;
+        this.n = tableValues.length;
     }
 
     /*
-     * This method will build the lut data. Each entry's
-     * value is in form of "slope*C+intercept"
+     * This method will build the lut data. Each entry
+     * has the value as its index.
      */
     private void buildLutData(){
         lutData = new byte [256];
-        int j, value;
-        float scaledInt = (intercept*255f)+0.5f;
+        int i, j;
         for (j=0; j<=255; j++){
-            value = (int)(slope*j+scaledInt);
-            if(value < 0){
-                value = 0;
+            i = (int)(Math.floor(j*n/255f));
+            if(i == n){
+                i = n-1;
             }
-            else if(value > 255){
-                value = 255;
-            }
-            lutData[j] = (byte)(0xff & value);
+            lutData[j] = (byte)(tableValues[i] & 0xff);
         }
-
-        /*System.out.println("Linear : " + slope + " / " + intercept);
-        for(j=0; j<=255; j++){
-            System.out.print("[" + j + "] = " + (0xff & lutData[j]) + " ");
-        }
-
-        System.out.println();*/
     }
 
     /**

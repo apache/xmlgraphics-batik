@@ -6,12 +6,14 @@
  * the LICENSE file.                                                         *
  *****************************************************************************/
 
-package org.apache.batik.ext.awt.image.renderable;
+package org.apache.batik.ext.awt.image;
 
 import java.lang.Math;
 
 /**
- * This class defines the Discrete type transfer function for the
+ * GammaTransfer.java
+ *
+ * This class defines the Gamma type transfer function for the
  * feComponentTransfer filter, as defined in chapter 15, section 11
  * of the SVG specification.
  *
@@ -20,46 +22,55 @@ import java.lang.Math;
  *
  * @see  org.apache.batik.gvt.filter.ComponentTransferOp
  */
-public class DiscreteTransfer implements TransferFunction {
+public class GammaTransfer implements TransferFunction {
     /**
      * This byte array stores the lookuptable data
      */
     public byte [] lutData;
 
     /**
-     * This int array is the input table values from the user
+     * The amplitude of the Gamma function
      */
-    public int [] tableValues;
-
-    /*
-     * The number of the input table's elements
-     */
-    private int n;
+    public float amplitude;
 
     /**
-     * The input is an int array which will be used
-     * later to construct the lut data
+     * The exponent of the Gamma function
      */
-    public DiscreteTransfer(int [] tableValues){
-        this.tableValues = tableValues;
-        this.n = tableValues.length;
+    public float exponent;
+
+    /**
+     * The offset of the Gamma function
+     */
+    public float offset;
+
+    /**
+     * Three floats as the input for the Gamma function
+     */
+    public GammaTransfer(float amplitude, float exponent, float offset){
+        this.amplitude = amplitude;
+        this.exponent = exponent;
+        this.offset = offset;
     }
 
     /*
-     * This method will build the lut data. Each entry
-     * has the value as its index.
+     * This method will build the lut data. Each entry's
+     * value is in form of "amplitude*pow(C, exponent) + offset"
      */
     private void buildLutData(){
         lutData = new byte [256];
-        int i, j;
+        int i, j, v;
         for (j=0; j<=255; j++){
-            i = (int)(Math.floor(j*n/255f));
-            if(i == n){
-                i = n-1;
+            v = (int)Math.round(255*(amplitude*Math.pow(j/255f, exponent)+offset));
+            if(v > 255){
+                v = (byte)0xff;
             }
-            lutData[j] = (byte)(tableValues[i] & 0xff);
+            else if(v < 0){
+                v = (byte)0x00;
+            }
+            lutData[j] = (byte)(v & 0xff);
         }
     }
+
 
     /**
      * This method will return the lut data in order

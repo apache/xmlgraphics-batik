@@ -33,6 +33,7 @@ import java.awt.image.RenderedImage;
 import java.awt.image.WritableRaster;
 import java.awt.image.renderable.RenderContext;
 
+import org.apache.batik.ext.awt.image.rendered.TurbulencePatternGenerator;
 import org.apache.batik.ext.awt.image.rendered.BufferedImageCachableRed;
 
 /**

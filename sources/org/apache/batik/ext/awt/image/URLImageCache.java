@@ -6,7 +6,7 @@
  * the LICENSE file.                                                         *
  *****************************************************************************/
 
-package org.apache.batik.ext.awt.image.renderable;
+package org.apache.batik.ext.awt.image;
 
 import java.awt.image.RenderedImage;
 

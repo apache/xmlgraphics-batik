@@ -44,10 +44,9 @@ import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.filter.GraphicsNodeRable;
 
 import org.apache.batik.ext.awt.RenderingHintsKeyExt;
+import org.apache.batik.ext.awt.image.PadMode;
 import org.apache.batik.ext.awt.image.renderable.Filter;
-import org.apache.batik.ext.awt.image.renderable.PadMode;
 import org.apache.batik.ext.awt.image.renderable.PaintRable;
-import org.apache.batik.ext.awt.image.renderable.SVGComposite;
 import org.apache.batik.ext.awt.image.rendered.AffineRed;
 import org.apache.batik.ext.awt.image.rendered.Any2LsRGBRed;
 import org.apache.batik.ext.awt.image.rendered.Any2sRGBRed;
@@ -57,6 +56,7 @@ import org.apache.batik.ext.awt.image.rendered.MultiplyAlphaRed;
 import org.apache.batik.ext.awt.image.rendered.PadRed;
 import org.apache.batik.ext.awt.image.rendered.RenderedImageCachableRed;
 import org.apache.batik.ext.awt.image.rendered.TranslateRed;
+import org.apache.batik.ext.awt.image.SVGComposite;
 
 
 /**

@@ -53,10 +53,12 @@ import java.io.EOFException;
 import java.io.IOException;
 
 import org.apache.batik.ext.awt.color.ICCColorSpaceExt;
+import org.apache.batik.ext.awt.image.PadMode;
 import org.apache.batik.ext.awt.image.rendered.AffineRed;
 import org.apache.batik.ext.awt.image.rendered.PadRed;
 import org.apache.batik.ext.awt.image.rendered.ProfileRed;
 import org.apache.batik.ext.awt.image.rendered.RenderedImageCachableRed;
+import org.apache.batik.ext.awt.image.URLImageCache;
 
 /**
  * RasterRable This is used to wrap a Rendered Image back into the

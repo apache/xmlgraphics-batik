@@ -32,9 +32,9 @@ import java.util.Map;
 import java.util.Vector;
 import javax.swing.event.EventListenerList;
 import org.apache.batik.ext.awt.RenderingHintsKeyExt;
-import org.apache.batik.ext.awt.image.renderable.Clip;
+import org.apache.batik.ext.awt.image.PadMode;
+import org.apache.batik.ext.awt.image.renderable.ClipRable;
 import org.apache.batik.ext.awt.image.renderable.Filter;
-import org.apache.batik.ext.awt.image.renderable.PadMode;
 import org.apache.batik.gvt.event.GraphicsNodeEvent;
 import org.apache.batik.gvt.event.GraphicsNodeKeyEvent;
 import org.apache.batik.gvt.event.GraphicsNodeKeyListener;
@@ -87,7 +87,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode, Cloneable {
     /**
      * The clipping filter for this graphics node.
      */
-    protected Clip clip;
+    protected ClipRable clip;
 
     /**
      * The rendering hints that control the quality to use when rendering
@@ -223,7 +223,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode, Cloneable {
      * Sets the clipping filter for this node.
      * @param newClipper the new clipping filter of this node
      */
-    public void setClip(Clip newClipper) {
+    public void setClip(ClipRable newClipper) {
         invalidateGeometryCache();
         this.clip = newClipper;
     }
@@ -231,7 +231,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode, Cloneable {
     /**
      * Returns the clipping filter of this node or null if any.
      */
-    public Clip getClip() {
+    public ClipRable getClip() {
         return clip;
     }
 

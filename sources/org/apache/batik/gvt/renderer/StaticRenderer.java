@@ -23,9 +23,9 @@ import org.apache.batik.gvt.filter.GraphicsNodeRable8Bit;
 import org.apache.batik.gvt.text.ConcreteTextSelector;
 
 import org.apache.batik.ext.awt.image.GraphicsUtil;
+import org.apache.batik.ext.awt.image.PadMode;
 import org.apache.batik.ext.awt.image.rendered.CachableRed;
 import org.apache.batik.ext.awt.image.rendered.PadRed;
-import org.apache.batik.ext.awt.image.renderable.PadMode;
 
 import java.util.Iterator;
 import java.util.Stack;

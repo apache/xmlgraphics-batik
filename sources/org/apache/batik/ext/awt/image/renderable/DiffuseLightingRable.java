@@ -10,6 +10,8 @@ package org.apache.batik.ext.awt.image.renderable;
 
 import java.awt.geom.Rectangle2D;
 
+import org.apache.batik.ext.awt.image.Light;
+
 /**
  * This filter primitive lights an image using the alpha channel as a bump map. 
  * The resulting image is an RGBA opaque image based on the light color

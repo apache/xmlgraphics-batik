@@ -24,8 +24,11 @@ import java.awt.image.renderable.RenderContext;
 
 import java.util.List;
 
+import org.apache.batik.ext.awt.image.ARGBChannel;
+import org.apache.batik.ext.awt.image.PadMode;
 import org.apache.batik.ext.awt.image.rendered.BufferedImageCachableRed;
 import org.apache.batik.ext.awt.image.rendered.CachableRed;
+import org.apache.batik.ext.awt.image.rendered.DisplacementMapOp;
 import org.apache.batik.ext.awt.image.rendered.AffineRed;
 
 /**

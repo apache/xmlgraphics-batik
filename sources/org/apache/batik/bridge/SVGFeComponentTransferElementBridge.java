@@ -12,11 +12,12 @@ import java.awt.geom.Rectangle2D;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import org.apache.batik.ext.awt.image.renderable.ComponentTransferFunction;
-import org.apache.batik.ext.awt.image.renderable.ComponentTransferRable8Bit;
-import org.apache.batik.ext.awt.image.renderable.ConcreteComponentTransferFunction;
+import org.apache.batik.ext.awt.image.ComponentTransferFunction;
+import org.apache.batik.ext.awt.image.ConcreteComponentTransferFunction;
+import org.apache.batik.ext.awt.image.PadMode;
+
 import org.apache.batik.ext.awt.image.renderable.Filter;
-import org.apache.batik.ext.awt.image.renderable.PadMode;
+import org.apache.batik.ext.awt.image.renderable.ComponentTransferRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.PadRable8Bit;
 import org.apache.batik.gvt.GraphicsNode;
 
