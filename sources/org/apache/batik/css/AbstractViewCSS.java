@@ -169,7 +169,7 @@ public abstract class AbstractViewCSS implements ViewCSS {
     /**
      * Adds a resolver to the resolver list.
      */
-    protected void addRelativeValueResolver(RelativeValueResolver rvr) {
+    public void addRelativeValueResolver(RelativeValueResolver rvr) {
 	relativeValueResolvers.add(rvr);
     }
 

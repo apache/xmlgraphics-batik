@@ -13,6 +13,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 
+import org.apache.batik.css.svg.SVGViewCSS;
+import org.apache.batik.css.value.RelativeValueResolver;
+import org.apache.batik.css.value.ValueFactory;
+
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.GenericElement;
 import org.apache.batik.dom.GenericElementNS;
@@ -24,6 +28,7 @@ import org.apache.batik.util.Service;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Element;
+import org.w3c.dom.css.ViewCSS;
 
 /**
  * This class implements the {@link org.w3c.dom.DOMImplementation} interface.
@@ -46,6 +51,11 @@ public class ExtensibleSVGDOMImplementation extends SVGDOMImplementation {
      * The custom elements factories.
      */
     protected DoublyIndexedTable customFactories;
+
+    /**
+     * The custom value resolvers.
+     */
+    protected List relativeValueResolvers = new LinkedList();
 
     /**
      * Returns the default instance of this class.
@@ -76,6 +86,37 @@ public class ExtensibleSVGDOMImplementation extends SVGDOMImplementation {
             customFactories = new DoublyIndexedTable();
         }
         customFactories.put(namespaceURI, localName, factory);
+    }
+
+    /**
+     * Allows the user to register a new CSS value factory.
+     */
+    public void registerCustomCSSValueFactory(ValueFactory vf) {
+        String name = vf.getPropertyName();
+        presentationAttributeSet.add(name);
+        valueFactoryMap.put(name, vf);
+    }
+
+    /**
+     * Allows the user to register a new CSS value resolver.
+     */
+    public void registerCustomCSSRelativeValueResolver(RelativeValueResolver rvr) {
+        presentationAttributeSet.add(rvr.getPropertyName());
+        relativeValueResolvers.add(rvr);
+    }
+
+    /**
+     * Creates a ViewCSS.
+     */
+    public ViewCSS createViewCSS(SVGOMDocument doc) {
+        SVGViewCSS result = (SVGViewCSS)super.createViewCSS(doc);
+
+        ListIterator it = relativeValueResolvers.listIterator();
+        while (it.hasNext()) {
+            result.addRelativeValueResolver((RelativeValueResolver)it.next());
+        }
+
+        return result;
     }
 
     /**
