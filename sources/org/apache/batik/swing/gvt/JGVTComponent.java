@@ -431,7 +431,7 @@ public class JGVTComponent extends JComponent {
         }
 
         // Renderer setup.
-        if (renderer == null) {
+        if (renderer == null || renderer.getTree() != gvtRoot) {
             renderer = rendererFactory.createImageRenderer();
             renderer.setTree(gvtRoot);
         }
