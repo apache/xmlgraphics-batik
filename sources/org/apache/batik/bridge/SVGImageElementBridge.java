@@ -24,6 +24,7 @@ import org.apache.batik.ext.awt.color.ICCColorSpaceExt;
 import org.apache.batik.ext.awt.image.renderable.ClipRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.spi.ImageTagRegistry;
+import org.apache.batik.gvt.CanvasGraphicsNode;
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.ImageNode;
@@ -367,13 +368,18 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
         }
 
         SVGSVGElement svgElement = imgDocument.getRootElement();
-        GraphicsNode node = ctx.getGVTBuilder().build(ctx, svgElement);
+        CanvasGraphicsNode node;
+        node = (CanvasGraphicsNode)ctx.getGVTBuilder().build(ctx, svgElement);
         ctx.addUIEventListeners(imgDocument);
 
         // HACK: remove the clip set by the SVGSVGElement as the overflow
         // and clip properties must be ignored. The clip will be set later
         // using the overflow and clip of the <image> element.
         node.setClip(null);
+        // HACK: remove the viewingTransform set by the SVGSVGElement
+        // as the viewBox must be ignored. The viewingTransform will
+        // be set later using the width/height of the image element.
+        node.setViewingTransform(new AffineTransform());
         result.getChildren().add(node);
 
         // create the implicit viewBox for the SVG image. The viewBox for a

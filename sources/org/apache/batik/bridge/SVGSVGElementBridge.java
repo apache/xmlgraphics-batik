@@ -74,7 +74,7 @@ public class SVGSVGElementBridge extends SVGGElementBridge {
         // have a parent SVG element, this check makes sure only the
         // real root of the SVG Document tries to do negotiation with
         // the UA.
-        SVGDocument doc = (SVGDocument)((SVGElement)e).getOwnerDocument();
+        SVGDocument doc = (SVGDocument)e.getOwnerDocument();
         boolean isOutermost = (doc.getRootElement() == e);
         float x = 0;
         float y = 0;
@@ -132,14 +132,17 @@ public class SVGSVGElementBridge extends SVGGElementBridge {
         // agent, so we don't need to set the transform for outermost svg
         Shape clip = null;
         if (!isOutermost) {
+            // X & Y are ignored on outermost SVG.
             cgn.setPositionTransform(positionTransform);
-            cgn.setViewingTransform(viewingTransform);
         } else {
             // <!> FIXME: hack to compute the original document's size
             if (ctx.getDocumentSize() == null) {
                 ctx.setDocumentSize(new Dimension((int)w, (int)h));
             }
         }
+        // Set the viewing transform, this is often updated when the
+        // component prepares for rendering.
+        cgn.setViewingTransform(viewingTransform);
 
         if (CSSUtilities.convertOverflow(e)) { // overflow:hidden
             float [] offsets = CSSUtilities.convertClip(e);
