@@ -146,6 +146,11 @@ public class SVGTransform extends AbstractSVGConverter{
             // Otherwise, null will be returned.
             element = (TransformStackElement) presentation.push(element);
         }
+
+        // Push back teh last element popped, if not null
+        if (element != null){
+            presentation.push(element);
+        }
  
         //
         // Transform presentation stack to SVG

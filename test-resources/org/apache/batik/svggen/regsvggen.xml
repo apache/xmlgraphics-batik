@@ -16,6 +16,7 @@
     <test id="BasicShapes" />
     <test id="BasicShapes2" />
     <test id="BStroke" />
+    <test id="Bug4389" />
     <test id="Clip" />
     <test id="Color1" />
     <test id="Color2" />

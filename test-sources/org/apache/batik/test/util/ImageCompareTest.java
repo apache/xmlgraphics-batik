@@ -96,15 +96,16 @@ public class ImageCompareTest extends AbstractTest {
     public static final String TEMP_FILE_SUFFIX
         = "";
 
-
     /**
      * URL for the first image to be compared.
      */
+    protected String urlAStr;
     protected URL urlA;
     
     /**
      * URL for the second image to be compared
      */
+    protected String urlBStr;
     protected URL urlB;
 
     /**
@@ -145,6 +146,11 @@ public class ImageCompareTest extends AbstractTest {
      */
     public ImageCompareTest(String urlA,
                             String urlB){
+        urlAStr = urlA;
+        urlBStr = urlB;
+    }
+
+    protected void initURLs(){
         if(urlA == null){
             throw new IllegalArgumentException();
         }
@@ -152,11 +158,14 @@ public class ImageCompareTest extends AbstractTest {
         if(urlB == null){
             throw new IllegalArgumentException();
         }
-        this.urlA = resolveURL(urlA);
-        this.urlB = resolveURL(urlB);
+
+        this.urlA = resolveURL(urlAStr);
+        this.urlB = resolveURL(urlBStr);
     }
 
     public TestReport rumImpl() throws Exception {
+        initURLs();
+
         InputStream streamA = null;
 
         try{
