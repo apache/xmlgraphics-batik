@@ -27,7 +27,8 @@
         <s1 title="Introduction">
             <p>This document briefly describes the Batik architecture and the role of each of 
             its modules. For detailed module design, you can refer to the 
-            <link href="http://opensource.objectsbydesign.com/batik/index.html">Batik UML diagrams.</link></p>
+            Batik UML diagrams <link href="http://opensource.objectsbydesign.com/batik/index.html">Object by Design</link>
+            or <link href="http://www.yworks.com/products/yDoc/showcase/batik-1.5/">yWorks</link>.</p>
             <p>The Batik modules are of one of three types:</p>
             <ul>
                 <li><link href="#applicationComponents">Application Modules</link></li>
