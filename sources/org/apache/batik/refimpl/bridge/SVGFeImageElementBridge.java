@@ -8,7 +8,13 @@
 
 package org.apache.batik.refimpl.bridge;
 
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
+
+import java.awt.image.RenderedImage;
+
+import java.awt.image.renderable.RenderContext;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
@@ -22,6 +28,7 @@ import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.FilterRegion;
 import org.apache.batik.gvt.filter.PadMode;
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
+import org.apache.batik.refimpl.gvt.filter.ConcreteAffineRable;
 import org.apache.batik.refimpl.gvt.filter.ConcretePadRable;
 import org.apache.batik.refimpl.gvt.filter.FilterSourceRegion;
 import org.apache.batik.refimpl.gvt.filter.RasterRable;
@@ -58,7 +65,7 @@ public class SVGFeImageElementBridge implements FilterBridge,
      * @param filterElement DOM element that represents a filter abstraction
      * @param in the <tt>Filter</tt> that represents the current
      *        filter input if the filter chain.
-     * @param filterRegion the filter area defined for the filter chained
+     * @param filterRegion the filter area defined for the filter chain
      *        the new node will be part of.
      * @param filterMap a map where the mediator can map a name to the
      *        <tt>Filter</tt> it creates. Other <tt>FilterBridge</tt>s
@@ -80,55 +87,10 @@ public class SVGFeImageElementBridge implements FilterBridge,
             return null;
         }
 
-         Filter filter = null;
-         if (uriStr.startsWith(PROTOCOL_DATA))
-             filter = RasterRable.create(uriStr, null);
-         else {
-             SVGDocument svgDoc;
-             svgDoc = (SVGDocument)filterElement.getOwnerDocument();
-             URL baseURL = ((SVGOMDocument)svgDoc).getURLObject();
-             URL url = null;
-             try {
-                 url = new URL(baseURL, uriStr);
-             } catch (MalformedURLException mue) {
-                 return null;
-             }
-
-             try {
-
-                 URIResolver ur = new URIResolver
-                     (svgDoc, bridgeContext.getDocumentLoader());
-            
-                 Node refNode = ur.getNode(url.toString());
-                 if (refNode == null)
-                     return null;
-
-                 Element refElement;
-                 if (refNode.getNodeType() == refNode.DOCUMENT_NODE)
-                     refElement = ((SVGDocument)refNode).getRootElement();
-                 else
-                     refElement = (Element)refNode;
-
-                   // Cannot access referenced file...
-                 if(refElement == null){
-                     return null;
-                 }
-             
-                 GraphicsNode gn;
-                 gn = bridgeContext.getGVTBuilder().build(bridgeContext, 
-                                                          refElement);
-
-                 GraphicsNodeRableFactory gnrFactory
-                     = bridgeContext.getGraphicsNodeRableFactory();
-                 filter = gnrFactory.createGraphicsNodeRable(gn);
-             } catch (Exception ex) {
-                 filter = RasterRable.create(url, null);
-             }
-         }
-
-        FilterRegion defaultRegion = new FilterSourceRegion(filter);
+        // feImage's default region is that of the filter chain.
+        FilterRegion defaultRegion = filterRegion;
         
-          // Get unit. Comes from parent node.
+        // Get unit. Comes from parent node.
         Node parentNode = filterElement.getParentNode();
         String units = VALUE_USER_SPACE_ON_USE;
         if((parentNode != null)
@@ -137,9 +99,9 @@ public class SVGFeImageElementBridge implements FilterBridge,
                 getAttributeNS(null, ATTR_PRIMITIVE_UNITS);
         }
         
-          //
-          // Now, extraact filter region
-          //
+        //
+        // Now, extraact filter region
+        //
         CSSStyleDeclaration cssDecl
             = bridgeContext.getViewCSS().getComputedStyle(filterElement,
                                                           null);
@@ -148,35 +110,135 @@ public class SVGFeImageElementBridge implements FilterBridge,
             = new DefaultUnitProcessorContext(bridgeContext,
                                               cssDecl);
         
-        final FilterRegion compositeArea
+        final FilterRegion primitiveRegion
             = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
                                                         filteredElement,
                                                         defaultRegion,
                                                         units,
                                                         filteredNode,
                                                         uctx);
+        Filter filter = null;
+        if (uriStr.startsWith(PROTOCOL_DATA))
+            filter = RasterRable.create(uriStr, null);
+        else {
+            SVGDocument svgDoc;
+            svgDoc = (SVGDocument)filterElement.getOwnerDocument();
+            URL baseURL = ((SVGOMDocument)svgDoc).getURLObject();
+            URL url = null;
+            try {
+                url = new URL(baseURL, uriStr);
+            } catch (MalformedURLException mue) {
+                return null;
+            }
+
+            try {
+
+                URIResolver ur = new URIResolver
+                    (svgDoc, bridgeContext.getDocumentLoader());
+            
+                Node refNode = ur.getNode(url.toString());
+                if (refNode == null)
+                    return null;
+
+                Element refElement;
+                if (refNode.getNodeType() == refNode.DOCUMENT_NODE)
+                    refElement = ((SVGDocument)refNode).getRootElement();
+                else
+                    refElement = (Element)refNode;
+
+                // Cannot access referenced file...
+                if(refElement == null){
+                    return null;
+                }
+             
+                GraphicsNode gn;
+                gn = bridgeContext.getGVTBuilder().build(bridgeContext, 
+                                                         refElement);
+
+                GraphicsNodeRableFactory gnrFactory
+                    = bridgeContext.getGraphicsNodeRableFactory();
+                filter = gnrFactory.createGraphicsNodeRable(gn);
+
+                //
+                // Need to translate the image to the x, y coordinate to
+                // have the same behavior as the <use> element
+                // <!> FIX ME? I THINK THIS IS ONLY PARTIALLY IMPLEMENTING THE
+                //     SPEC. 
+                filter
+                    = new ConcreteAffineRable(filter, new AffineTransform()){
+                            public Rectangle2D getBounds2D(){
+                                return primitiveRegion.getRegion();
+                            }
+
+                            private void computeTransform(){
+                                Rectangle2D bounds = getSource().getBounds2D();
+                                Rectangle2D region = primitiveRegion.getRegion();
+                                AffineTransform at = new AffineTransform();
+                                at.translate(region.getX(), region.getY());
+                                setAffine(at);
+                            }
+                                
+                            public RenderedImage createRendering(RenderContext rc){
+                                computeTransform();
+                                return super.createRendering(rc);
+                            }
+                        };
+                
+            } catch (Exception ex) {
+                // 
+                // Need to fit the raster image to the filter
+                // region so that we have the same behavior as
+                // raster images in the <image> element.
+                //
+                filter = RasterRable.create(url, null);
+
+                filter
+                    = new ConcreteAffineRable(filter, new AffineTransform()){
+                            public Rectangle2D getBounds2D(){
+                                return primitiveRegion.getRegion();
+                            }
+
+                            private void computeTransform(){
+                                Rectangle2D bounds = getSource().getBounds2D();
+                                Rectangle2D region = primitiveRegion.getRegion();
+                                AffineTransform scale = new AffineTransform();
+                                scale.translate(region.getX(), region.getY());
+                                scale.scale(region.getWidth()/bounds.getWidth(),
+                                            region.getHeight()/bounds.getHeight());
+                                scale.translate(-bounds.getX(), -bounds.getY());
+
+                                setAffine(scale);
+                            }
+                                
+                            public RenderedImage createRendering(RenderContext rc){
+                                computeTransform();
+                                return super.createRendering(rc);
+                            }
+                        };
+            }
+        }
         
         filter = new ConcretePadRable(filter,
-                                      compositeArea.getRegion(),
+                                      new Rectangle2D.Double(0, 0, 0, 0),
                                       PadMode.ZERO_PAD) {
                 public Rectangle2D getBounds2D(){
-                    setPadRect(compositeArea.getRegion());
+                    setPadRect(primitiveRegion.getRegion());
                     return super.getBounds2D();
                 }
                 
                 public java.awt.image.RenderedImage createRendering
                     (java.awt.image.renderable.RenderContext rc){
-                    setPadRect(compositeArea.getRegion());
+                    setPadRect(primitiveRegion.getRegion());
                     return super.createRendering(rc);
                 }
             };
         
         
-          // Get result attribute and update map
+        // Get result attribute and update map
         String result = filterElement.getAttributeNS(null, ATTR_RESULT);
         if((result != null) && (result.trim().length() > 0)){
-              // The filter will be added to the filter map. Before
-              // we do that, append the filter region crop
+            // The filter will be added to the filter map. Before
+            // we do that, append the filter region crop
             filterMap.put(result, filter);
         }
 

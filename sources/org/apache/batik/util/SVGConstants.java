@@ -203,9 +203,11 @@ public interface SVGConstants extends CSSConstants {
     String ATTR_VALUES = "values";
     String ATTR_VIEW_BOX = "viewBox";
     String ATTR_X = "x";
+    String ATTR_X_CHANNEL_SELECTOR = "xChannelSelector";
     String ATTR_X1 = "x1";
     String ATTR_X2 = "x2";
     String ATTR_Y = "y";
+    String ATTR_Y_CHANNEL_SELECTOR = "yChannelSelector";
     String ATTR_Y1 = "y1";
     String ATTR_Y2 = "y2";
     String ATTR_WIDTH = "width";
