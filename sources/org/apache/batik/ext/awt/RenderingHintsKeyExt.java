@@ -19,6 +19,15 @@ import java.awt.RenderingHints;
  */
 public final class RenderingHintsKeyExt {
     /**
+     * Hint as to the transcoding destination.
+     */
+    public static final RenderingHints.Key KEY_TRANSCODING =
+        new TranscodingHintKey();
+
+    public static final String VALUE_TRANSCODING_PRINTING = 
+        new String("Printing");
+    
+    /**
      * Key for the AOI hint. This hint is used to propagate the AOI to Paint
      * and PaintContext instances.
      */

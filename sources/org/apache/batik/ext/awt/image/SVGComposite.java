@@ -379,7 +379,7 @@ public class SVGComposite
             final int pt5  = (1<<23);
 
             int srcP, dstInP, dstM;
-
+            
             for (int y = 0; y<height; y++) {
                 final int end = dstOutSp+width;
                 while (dstOutSp<end) {
