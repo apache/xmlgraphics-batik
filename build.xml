@@ -938,7 +938,7 @@ To display the available targets type:
         <pathelement location="resources" />
       </classpath>
       <arg line="${args}"/> 
-      <jvmarg value="-Xmx512m"/>  <jvmarg value="-Xms64m"/>
+      <!-- <jvmarg value="-Xmx512m"/>  <jvmarg value="-Xms64m"/> -->
       <!-- <jvmarg value="-Djava.security.debug=all"/>  
            <jvmarg value="-verbose" /> -->
      <!-- 
