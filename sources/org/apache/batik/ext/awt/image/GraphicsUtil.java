@@ -8,6 +8,9 @@
 
 package org.apache.batik.ext.awt.image;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+
 import java.awt.color.ColorSpace;
 
 import java.awt.Color;
@@ -448,7 +451,8 @@ public class GraphicsUtil {
         Graphics2D g2d = bi.createGraphics();
         if (hints != null)
             g2d.addRenderingHints(hints);
-        g2d.setRenderingHint(RenderingHintsKeyExt.KEY_BUFFERED_IMAGE, bi);
+        g2d.setRenderingHint(RenderingHintsKeyExt.KEY_BUFFERED_IMAGE, 
+                             new WeakReference(bi));
         g2d.clip(new Rectangle(0, 0, bi.getWidth(), bi.getHeight()));
         return g2d;
     }
@@ -456,7 +460,8 @@ public class GraphicsUtil {
 
     public static Graphics2D createGraphics(BufferedImage bi) {
         Graphics2D g2d = bi.createGraphics();
-        g2d.setRenderingHint(RenderingHintsKeyExt.KEY_BUFFERED_IMAGE, bi);
+        g2d.setRenderingHint(RenderingHintsKeyExt.KEY_BUFFERED_IMAGE, 
+                             new WeakReference(bi));
         g2d.clip(new Rectangle(0, 0, bi.getWidth(), bi.getHeight()));
         return g2d;
     }
@@ -468,7 +473,7 @@ public class GraphicsUtil {
         Object o = g2d.getRenderingHint
             (RenderingHintsKeyExt.KEY_BUFFERED_IMAGE);
         if (o != null)
-            return (BufferedImage)o;
+            return (BufferedImage)(((Reference)o).get());
 
         // Check if this is a BufferedImage G2d if so throw an error...
         GraphicsConfiguration gc = g2d.getDeviceConfiguration();
