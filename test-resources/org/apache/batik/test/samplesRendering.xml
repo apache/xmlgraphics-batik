@@ -878,12 +878,28 @@
     </test>
 
   <!-- Sample tests, media test -->
-    <test id="samples/tests/smiley.svg-Smiling" class="org.apache.batik.test.svg.SVGAlternateStyleSheetRenderingAccuracyTest">
-        <arg class="java.lang.String" value="samples/tests/smiley.svg"/>
-        <arg class="java.lang.String" value="test-references/samples/tests/smileySmiling.png"/>
-        <arg class="java.lang.String" value="Smiling"/>
-        <property name="VariationURL" class="java.lang.String" value="test-references/samples/accepted-variation/smileySmiling.png"/>
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/candidate-variation/smileySmiling.png"/>
+    <test id="samples/tests/cssMedia.svg-screen" class="org.apache.batik.test.svg.SVGMediaRenderingAccuracyTest">
+        <arg class="java.lang.String" value="samples/tests/cssMedia.svg"/>
+        <arg class="java.lang.String" value="test-references/samples/tests/cssMediaScreen.png"/>
+        <arg class="java.lang.String" value="screen"/>
+        <property name="VariationURL" class="java.lang.String" value="test-references/samples/accepted-variation/cssMediaScreen.png"/>
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/candidate-variation/cssMediaScreen.png"/>
+    </test>
+
+    <test id="samples/tests/cssMedia.svg-print" class="org.apache.batik.test.svg.SVGMediaRenderingAccuracyTest">
+        <arg class="java.lang.String" value="samples/tests/cssMedia.svg"/>
+        <arg class="java.lang.String" value="test-references/samples/tests/cssMediaPrint.png"/>
+        <arg class="java.lang.String" value="print"/>
+        <property name="VariationURL" class="java.lang.String" value="test-references/samples/accepted-variation/cssMediaPrint.png"/>
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/candidate-variation/cssMediaPrint.png"/>
+    </test>
+
+    <test id="samples/tests/cssMedia.svg-projection" class="org.apache.batik.test.svg.SVGMediaRenderingAccuracyTest">
+        <arg class="java.lang.String" value="samples/tests/cssMedia.svg"/>
+        <arg class="java.lang.String" value="test-references/samples/tests/cssMediaProjection.png"/>
+        <arg class="java.lang.String" value="projection"/>
+        <property name="VariationURL" class="java.lang.String" value="test-references/samples/accepted-variation/cssMediaProjection.png"/>
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/candidate-variation/cssMediaProjection.png"/>
     </test>
 
 

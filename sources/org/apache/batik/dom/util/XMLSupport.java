@@ -8,10 +8,7 @@
 
 package org.apache.batik.dom.util;
 
-import java.net.URL;
-
 import org.apache.batik.util.XMLConstants;
-import org.apache.batik.util.ParsedURL;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
@@ -26,8 +23,9 @@ import org.w3c.dom.Node;
  */
 
 public class XMLSupport implements XMLConstants {
+
     /**
-     * This class do not need to be instanciated.
+     * This class does not need to be instanciated.
      */
     protected XMLSupport() {
     }
@@ -71,56 +69,6 @@ public class XMLSupport implements XMLConstants {
 	}
 	return "default";
     }
-
-    /**
-     * Returns the xml:base attribute value of the given element
-     * Resolving any dependency on parent bases if needed.
-     */
-    public static String getXMLBase(Element elt) {
-        String base = null;
-        Node n = elt;
-        while (true) {
-            if (n.getParentNode() != null)
-                n = n.getParentNode();
-            else if (n instanceof org.apache.batik.css.HiddenChildElement)
-                n = ((org.apache.batik.css.HiddenChildElement)n)
-                    .getParentElement();
-            else 
-                break; 
-                
-            // new Exception("N: " + n).printStackTrace();
-            if (n== null) break;
-            if (n.getNodeType() == Node.ELEMENT_NODE) {
-                base = getXMLBase((Element)n);
-                break;
-            }
-        }
-
-        if (base == null) {
-            // try to load the image as an svg document
-            org.apache.batik.dom.svg.SVGOMDocument svgDoc;
-            svgDoc = (org.apache.batik.dom.svg.SVGOMDocument)
-                elt.getOwnerDocument();
-            URL url = svgDoc.getURLObject();
-            if (url != null)
-                base = url.toString();
-        }
-        Attr attr = elt.getAttributeNodeNS(XML_NAMESPACE_URI, "base");
-        if (attr != null) {
-            // System.out.println("Base: " + base + 
-            //                    " attr: " + attr.getNodeValue());
-            if (base == null) 
-                base = attr.getNodeValue();
-            else 
-                base = new ParsedURL(base, attr.getNodeValue()).toString();
-        }
-        return base;
-    }
-
-    public static void setXMLBase(Element elt, String base) {
-        elt.setAttributeNS(XML_NAMESPACE_URI, "base", base);
-    }
-        
 
     /**
      * Strips the white spaces in the given string according to the xml:space

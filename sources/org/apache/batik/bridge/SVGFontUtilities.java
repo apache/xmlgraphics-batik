@@ -13,8 +13,8 @@ import org.apache.batik.util.SVGConstants;
 import org.apache.batik.gvt.font.GVTFontFamily;
 import org.apache.batik.gvt.font.UnresolvedFontFamily;
 import org.apache.batik.dom.util.XLinkSupport;
-import org.apache.batik.dom.util.XMLSupport;
 import org.apache.batik.dom.svg.SVGOMDocument;
+import org.apache.batik.dom.svg.XMLBaseSupport;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Document;
@@ -134,14 +134,16 @@ public abstract class SVGFontUtilities implements SVGConstants {
                                 fontElement = (isLocal) ? refElement
                                     : (Element)document.importNode(refElement, true);
                                 if (!isLocal) {
-                                    String base = XMLSupport.getXMLBase(fontFaceUriElement);
+                                    String base = XMLBaseSupport.getXMLBase(fontFaceUriElement);
                                     // need to attach the imported
                                     // element to the document and
                                     // then compute the styles and
                                     // uris
                                     Element g = document.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
                                     g.appendChild(fontElement);
-                                    XMLSupport.setXMLBase(g, base);
+                                    g.setAttributeNS(XMLBaseSupport.XML_NAMESPACE_URI,
+                                                     "xml:base",
+                                                     base);
                                     CSSUtilities.computeStyleAndURIs(refElement, fontElement, uri);
                                 }
                             }

@@ -29,7 +29,6 @@ import org.apache.batik.css.value.ImmutableString;
 
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.XLinkSupport;
-import org.apache.batik.dom.util.XMLSupport;
 
 import org.apache.batik.ext.awt.MultipleGradientPaint;
 import org.apache.batik.ext.awt.color.ICCColorSpaceExt;
@@ -825,14 +824,16 @@ public abstract class CSSUtilities
                                            Element localRefElement,
                                            String  uri) {
         Attr xmlBase = localRefElement.getAttributeNodeNS
-            (XML_NAMESPACE_URI, "base");
+            (XML_NAMESPACE_URI, "xml:base");
         if (xmlBase != null) {
             // We have a current base so merge it with our new base and
             // set the result...
             ParsedURL purl = new ParsedURL(uri, xmlBase.getNodeValue());
             uri = purl.toString();
         }
-        XMLSupport.setXMLBase(localRefElement, uri);
+        localRefElement.setAttributeNS(XML_NAMESPACE_URI,
+                                       "xml:base",
+                                       uri);
 
         SVGOMDocument document
             = (SVGOMDocument)localRefElement.getOwnerDocument();

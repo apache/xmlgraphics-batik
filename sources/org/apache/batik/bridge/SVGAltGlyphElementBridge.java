@@ -9,8 +9,8 @@
 package org.apache.batik.bridge;
 
 import org.apache.batik.dom.svg.SVGOMDocument;
+import org.apache.batik.dom.svg.XMLBaseSupport;
 import org.apache.batik.dom.util.XLinkSupport;
-import org.apache.batik.dom.util.XMLSupport;
 import org.apache.batik.gvt.font.Glyph;
 import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
 
@@ -103,10 +103,12 @@ public class SVGAltGlyphElementBridge extends AbstractSVGBridge
             if (!isLocal) {
                 // need to attach the imported element to the document and
                 // then compute the styles and uris
-                String base = XMLSupport.getXMLBase(altGlyphElement);
+                String base = XMLBaseSupport.getXMLBase(altGlyphElement);
                 Element g = document.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
                 g.appendChild(localRefElement);
-                XMLSupport.setXMLBase(g, base);
+                g.setAttributeNS(XMLBaseSupport.XML_NAMESPACE_URI,
+                                 "xml:base",
+                                 base);
                 CSSUtilities.computeStyleAndURIs(refElement, 
                                                  localRefElement, 
                                                  uri);
@@ -251,10 +253,12 @@ public class SVGAltGlyphElementBridge extends AbstractSVGBridge
             // import the whole font
             Element localFontElement
                 = (Element)document.importNode(refGlyphElement.getParentNode(), true);
-            String base = XMLSupport.getXMLBase(altGlyphElement);
+            String base = XMLBaseSupport.getXMLBase(altGlyphElement);
             Element g = document.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
             g.appendChild(localFontElement);
-            XMLSupport.setXMLBase(g, base);
+            g.setAttributeNS(XMLBaseSupport.XML_NAMESPACE_URI,
+                             "xml:base",
+                             base);
             CSSUtilities.computeStyleAndURIs(
                 (Element)refGlyphElement.getParentNode(), 
                 localFontElement, glyphUri);
