@@ -11,7 +11,6 @@ package org.apache.batik.gvt.renderer;
 import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 import java.awt.font.FontRenderContext;
-import java.awt.image.BufferedImage;
 
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.TextPainter;
@@ -34,10 +33,9 @@ public class StaticRendererFactory implements RendererFactory {
 
     /**
      * Creates a new renderer.
-     * @param im The buffered image used to render.
      */
-    public Renderer createRenderer(BufferedImage im) {
-        return new StaticRenderer(im, getRenderContext());
+    public Renderer createRenderer() {
+        return new StaticRenderer(getRenderContext());
     }
 
     /**

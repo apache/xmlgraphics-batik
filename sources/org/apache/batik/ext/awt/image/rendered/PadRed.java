@@ -457,12 +457,14 @@ public class PadRed extends AbstractRed {
          */
     protected static SampleModel fixSampleModel(CachableRed src,
                                                 Rectangle   bounds) {
+        int defSz = AbstractTiledRed.getDefaultTileSize();
+
         SampleModel sm = src.getSampleModel();
         int w = sm.getWidth();
-        if (w < 256) w = 256;
+        if (w < defSz) w = defSz;
         if      (w > bounds.width)  w = bounds.width;
         int h = sm.getHeight();
-        if (h < 256) h = 256;
+        if (h < defSz) h = defSz;
         if (h > bounds.height) h = bounds.height;
 
         // System.out.println("Pad SMSz: " + w + "x" + h);

@@ -59,10 +59,12 @@ public class FloodRed extends AbstractRed {
 
         ColorModel cm = GraphicsUtil.sRGB_Unpre;
         
+        int defSz = AbstractTiledRed.getDefaultTileSize();
+
         int tw = bounds.width;
-        if (tw > 256) tw = 256;
+        if (tw > defSz) tw = defSz;
         int th = bounds.height;
-        if (th > 256) th = 256;
+        if (th > defSz) th = defSz;
 
         // fix my sample model so it makes sense given my size.
         SampleModel sm = cm.createCompatibleSampleModel(tw, th);

@@ -198,11 +198,13 @@ public class AffineRed extends AbstractRed {
     protected static SampleModel fixSampleModel(CachableRed src,
                                                 Rectangle   bounds) {
         SampleModel sm = src.getSampleModel();
+        int defSz = AbstractTiledRed.getDefaultTileSize();
+
         int w = sm.getWidth();
-        if (w < 256) w = 256;
+        if (w < defSz) w = defSz;
         if (w > bounds.width)  w = bounds.width;
         int h = sm.getHeight();
-        if (h < 256) h = 256;
+        if (h < defSz) h = defSz;
         if (h > bounds.height) h = bounds.height;
         return sm.createCompatibleSampleModel(w, h);
     }

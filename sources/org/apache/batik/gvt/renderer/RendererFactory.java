@@ -8,8 +8,6 @@
 
 package org.apache.batik.gvt.renderer;
 
-import java.awt.image.BufferedImage;
-
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
 
 /**
@@ -21,9 +19,8 @@ import org.apache.batik.gvt.GraphicsNodeRenderContext;
 public interface RendererFactory {
     /**
      * Creates a new renderer.
-     * @param im The buffered image used to render.
      */
-    Renderer createRenderer(BufferedImage im);
+    Renderer createRenderer();
 
     /**
      * @return a GraphicsNodeRenderContext of the type used by the renderers.

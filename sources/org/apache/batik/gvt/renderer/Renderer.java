@@ -9,6 +9,7 @@
 package org.apache.batik.gvt.renderer;
 
 import org.apache.batik.gvt.GraphicsNode;
+import java.awt.image.BufferedImage;
 import java.awt.geom.AffineTransform;
 import java.awt.Shape;
 
@@ -31,6 +32,21 @@ public interface Renderer {
      * Returns the GVT tree associated with this renderer
      */
     public GraphicsNode getTree();
+
+    /**
+     * Update the required size of the offscreen buffer.
+     */
+    public void updateOffScreen(int width, int height);
+
+    /**
+     * Get the Current offscreen buffer used for rendering
+     */
+    public BufferedImage getOffScreen();
+
+    /**
+     * Tells renderer to clear current contents of offscreen buffer
+     */
+    public void clearOffScreen();
 
     /**
      * Forces repaint of provided node. 'node' must be a node in the

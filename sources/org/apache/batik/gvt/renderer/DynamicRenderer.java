@@ -21,19 +21,16 @@ public class DynamicRenderer extends StaticRenderer {
 
     /**
      * Constructs a new dynamic renderer with the specified buffer image.
-     * @param offScreen the offscreen buffer to use
      */
-    public DynamicRenderer(BufferedImage offScreen) {
-        super(offScreen);
+    public DynamicRenderer() {
+        super();
     }
 
     /**
      * Constructs a new dynamic renderer with the specified buffer image.
-     * @param offScreen the offscreen buffer to use
      * @param rc the GraphicsNodeRenderContext to use
      */
-    public DynamicRenderer(BufferedImage offScreen,
-                           GraphicsNodeRenderContext rc) {
-        super(offScreen, rc);
+    public DynamicRenderer(GraphicsNodeRenderContext rc) {
+        super(rc);
     }
 }

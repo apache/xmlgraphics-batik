@@ -122,9 +122,11 @@ public class CompositeRed extends AbstractRed {
         // System.out.println("Comp: " + myBounds);
         // System.out.println("  SM: " + sm.getWidth()+"x"+sm.getHeight());
 
-        // Make our tile grid fall on the closes multiply of 256.
-        int tgX = myBounds.x & 0xFFFFFF00;
-        int tgY = myBounds.y & 0xFFFFFF00; 
+        int defSz = AbstractTiledRed.getDefaultTileSize();
+
+        // Make tile(0,0) fall on the closest intersection of defaultSz.
+        int tgX = defSz*(int)Math.floor(myBounds.x/defSz);
+        int tgY = defSz*(int)Math.floor(myBounds.y/defSz);
 
         // Finish initializing our base class...
         init(srcs, myBounds, cm, sm, tgX, tgY, null);
@@ -247,18 +249,24 @@ public class CompositeRed extends AbstractRed {
          */
     protected static SampleModel fixSampleModel(CachableRed src,
                                                 Rectangle   bounds) {
-        SampleModel sm = src.getSampleModel();
-        int tgX = bounds.x & 0xFFFFFF00;
-        int tw  = (bounds.x+bounds.width)-tgX;
-        int  w  = sm.getWidth();
-        if (w < 256) w = 256;
-        if (w > tw)  w = tw;
+        int defSz = AbstractTiledRed.getDefaultTileSize();
 
-        int tgY = bounds.y & 0xFFFFFF00;
+        // Make tile(0,0) fall on the closest intersection of defaultSz.
+        int tgX = defSz*(int)Math.floor(bounds.x/defSz);
+        int tgY = defSz*(int)Math.floor(bounds.y/defSz);
+
+        int tw  = (bounds.x+bounds.width)-tgX;
         int th  = (bounds.y+bounds.height)-tgY;
+
+        SampleModel sm = src.getSampleModel();
+
+        int  w  = sm.getWidth();
+        if (w < defSz) w = defSz;
+        if (w > tw)    w = tw;
+
         int h   = sm.getHeight();
-        if (h < 256) h = 256;
-        if (h > th)  h = th;
+        if (h < defSz) h = defSz;
+        if (h > th)    h = th;
 
         // System.out.println("tg: " + tgX + "x" + tgY);
         // System.out.println("t: " + tw + "x" + th);
