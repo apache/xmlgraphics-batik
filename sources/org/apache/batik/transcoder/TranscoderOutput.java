@@ -85,7 +85,7 @@ public class TranscoderOutput {
      * byte stream.
      * @param ostream the byte stream of this transcoder output
      */
-    public void setOutputstream(OutputStream ostream) {
+    public void setOutputStream(OutputStream ostream) {
         this.ostream = ostream;
     }
 
@@ -93,7 +93,7 @@ public class TranscoderOutput {
      * Returns the output of this transcoder as a byte stream or null
      * if none was supplied.
      */
-    public OutputStream getOutputstream() {
+    public OutputStream getOutputStream() {
         return ostream;
     }
 

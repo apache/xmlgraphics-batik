@@ -19,15 +19,17 @@ import java.util.Map;
  */
 public class TranscoderSupport {
 
+    static final ErrorHandler defaultErrorHandler = new DefaultErrorHandler();
+
     /** The transcoding hints. */
-    protected TranscodingHints hints;
+    protected TranscodingHints hints = new TranscodingHints();
     /** The error handler used to report warnings and error. */
-    protected ErrorHandler handler;
+    protected ErrorHandler handler = defaultErrorHandler;
 
     /**
-     * Constructs a new <tt>TranscoderSupport</tt>
+     * Constructs a new <tt>TranscoderSupport</tt>.
      */
-    public TranscoderSupport() {}
+    public TranscoderSupport() { }
 
     /**
      * Returns the transcoding hints of this transcoder.
@@ -52,7 +54,7 @@ public class TranscoderSupport {
      * @param hints the rendering hints to be set
      */
     public void setTranscodingHints(Map hints) {
-        hints.putAll(hints);
+        this.hints.putAll(hints);
     }
 
     /**
