@@ -63,6 +63,7 @@ public class ParametrizedRenderingAccuracyTest
 
         setVariationURL(buildVariationURL(dirNfile[0], dirNfile[1]));
         setSaveVariation(new File(buildSaveVariationFile(dirNfile[0], dirNfile[1])));
+        setCandidateReference(new File(buildCandidateReferenceFile(dirNfile[0], dirNfile[1])));
     }
 
     /**
@@ -91,6 +92,15 @@ public class ParametrizedRenderingAccuracyTest
      */
     public String  buildSaveVariationFile(String svgDir, String svgFile){
         return getSaveVariationPrefix() + svgDir + getSaveVariationSuffix() + svgFile + parameter + PNG_EXTENSION;
+    }
+
+    /**
+     * Gives a chance to the subclass to control the construction
+     * of the candidateReference URL, which is built as:
+     * getSaveVariationPrefix() + svgDir + getSaveVariationSuffix() + svgFile + parameter + PNG_EXTENSION
+     */
+    public String  buildCandidateReferenceFile(String svgDir, String svgFile){
+        return getCandidateReferencePrefix() + svgDir + getCandidateReferenceSuffix() + svgFile + parameter + PNG_EXTENSION;
     }
 
 }
