@@ -831,6 +831,12 @@ public class JSVGComponent extends JGVTComponent {
                     URL oldURI = ((SVGOMDocument)svgDocument).getURLObject();
                     URL newURI = null;
                     try {
+			// if the anchor element is in an external resource
+			if (elt.getOwnerDocument() != svgDocument) {
+			    SVGOMDocument doc = 
+				(SVGOMDocument)elt.getOwnerDocument();
+			    href = new URL(doc.getURLObject(), href).toString();
+			}
                         newURI = new URL(oldURI, href);
                     } catch (MalformedURLException e) {
                         userAgent.displayError(e);
@@ -838,7 +844,6 @@ public class JSVGComponent extends JGVTComponent {
                     }
 
                     href = newURI.toString();
-
                     svgUserAgent.openLink(href, true);
                 } else {
                     JSVGComponent.this.loadSVGDocument(href);
@@ -851,6 +856,12 @@ public class JSVGComponent extends JGVTComponent {
                 URL oldURI = ((SVGOMDocument)svgDocument).getURLObject();
                 URL newURI = null;
                 try {
+		    // if the anchor element is in an external resource
+		    if (elt.getOwnerDocument() != svgDocument) {
+			SVGOMDocument doc = 
+			    (SVGOMDocument)elt.getOwnerDocument();
+			href = new URL(doc.getURLObject(), href).toString();
+		    }
                     newURI = new URL(oldURI, href);
                 } catch (MalformedURLException e) {
                     userAgent.displayError(e);
