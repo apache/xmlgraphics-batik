@@ -771,6 +771,15 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         return asb.toAttributedString();
     }
 
+
+    /**
+     * This is used to store the end of the last piece of text
+     * content from an element with xml:space="preserve".  When
+     * we are stripping trailing spaces we need to make sure
+     * we don't strip anything before this point.
+     */
+    protected int endLimit;
+
     /**
      * Fills the given AttributedStringBuffer.
      */
@@ -780,7 +789,8 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                                               TextPath textPath,
                                               Integer bidiLevel,
                                               AttributedStringBuffer asb) {
-        // 'requiredFeatures', 'requiredExtensions' and 'systemLanguage'
+        // 'requiredFeatures', 'requiredExtensions', 'systemLanguage' &
+        // 'display="none".
         if ((!SVGUtilities.matchUserAgent(element, ctx.getUserAgent())) ||
             (!CSSUtilities.convertDisplay(element))) {
             return;
@@ -788,12 +798,14 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         
         String s = XMLSupport.getXMLSpace(element);
         boolean preserve = s.equals(SVG_PRESERVE_VALUE);
-        boolean first = true;
-        boolean last;
-        boolean stripFirst  = !preserve;
-        boolean stripLast   = !preserve;
+        boolean prevEndsWithSpace;
         Element nodeElement = element;
 
+        if (top)
+            endLimit = 0;
+        if (preserve)
+            endLimit = asb.length();
+        
 	Map map = getAttributeMap(ctx, element, textPath, bidiLevel);
 	Object o = map.get(TextAttribute.BIDI_EMBEDDING);
         Integer subBidiLevel = bidiLevel;
@@ -804,12 +816,15 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
              n != null;
              n = n.getNextSibling()) {
 
-            last = n.getNextSibling() == null;
-            
-            int lastChar = asb.getLastChar();
-            stripFirst = !preserve && first &&
-                (top || lastChar == ' ' || lastChar == -1);
-            
+            if (preserve) {
+                prevEndsWithSpace = false;
+            } else {
+                if (asb.length() == 0) 
+                    prevEndsWithSpace = true;
+                else
+                    prevEndsWithSpace = (asb.getLastChar() == ' ');
+            }
+
             switch (n.getNodeType()) {
             case Node.ELEMENT_NODE:
                 if (!SVG_NAMESPACE_URI.equals(n.getNamespaceURI()))
@@ -844,14 +859,10 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                     String uriStr = XLinkSupport.getXLinkHref((Element)n);
                     Element ref = ctx.getReferencedElement((Element)n, uriStr);
                     s = TextUtilities.getElementContent(ref);
-                    s = normalizeString(s, preserve, stripFirst, last && top);
+                    s = normalizeString(s, preserve, prevEndsWithSpace);
                     if (s != null) {
-                        stripLast = !preserve && s.charAt(0) == ' ';
-                        if (stripLast && !asb.isEmpty()) {
-                            asb.stripLast();
-                        }
                         Map m = getAttributeMap(ctx, nodeElement, 
-						textPath, bidiLevel);
+                                                textPath, bidiLevel);
                         asb.append(s, m);
                     }
                 } else if (ln.equals(SVG_A_TAG)) {
@@ -872,15 +883,16 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             case Node.TEXT_NODE:
             case Node.CDATA_SECTION_NODE:
                 s = n.getNodeValue();
-                s = normalizeString(s, preserve, stripFirst, last && top);
-                if (s != null) {
-                    stripLast = !preserve && s.charAt(0) == ' ';
-                    if (stripLast && !asb.isEmpty())
-                        asb.stripLast();
-                    asb.append(s, map);
-                }
+                s = normalizeString(s, preserve, prevEndsWithSpace);
+                asb.append(s, map);
+                if (preserve)
+                    endLimit = asb.length();
             }
-            first = false;
+        }
+
+        if (top) {
+            while ((endLimit < asb.length()) && (asb.getLastChar() == ' '))
+                asb.stripLast();
         }
     }
 
@@ -889,9 +901,8 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
      */
     protected String normalizeString(String s,
                                      boolean preserve,
-                                     boolean stripfirst,
-                                     boolean striplast) {
-        StringBuffer sb = new StringBuffer();
+                                     boolean stripfirst) {
+        StringBuffer sb = new StringBuffer(s.length());
         if (preserve) {
             for (int i = 0; i < s.length(); i++) {
                 char c = s.charAt(i);
@@ -905,57 +916,45 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                     sb.append(c);
                 }
             }
-        } else {
-            boolean space = false;
-            int idx = 0;
-            if (stripfirst) {
-                loop: while (idx < s.length()) {
-                    switch (s.charAt(idx)) {
-                    default:
-                        break loop;
-                    case 10:
-                    case 13:
-                    case ' ':
-                    case '\t':
-                        idx++;
-                    }
-                }
-            }
-            for (int i = idx; i < s.length(); i++) {
-                char c = s.charAt(i);
-                switch (c) {
+            return sb.toString();
+        }
+
+        int idx = 0;
+        if (stripfirst) {
+            loop: while (idx < s.length()) {
+                switch (s.charAt(idx)) {
+                default:
+                    break loop;
                 case 10:
                 case 13:
-                    break;
                 case ' ':
                 case '\t':
-                    if (!space) {
-                        sb.append(' ');
-                        space = true;
-                    }
-                    break;
-                default:
-                    sb.append(c);
-                    space = false;
-                }
-            }
-            if (striplast) {
-                int len;
-                while ((len = sb.length()) > 0) {
-                    if (sb.charAt(len - 1) == ' ') {
-                        sb.deleteCharAt(len - 1);
-                    } else {
-                        break;
-                    }
+                    idx++;
                 }
             }
         }
-        if (sb.length() > 0) {
-            return sb.toString();
-        } else if (stripfirst && striplast) {
-            return " ";
+
+        boolean space = false;
+        for (int i = idx; i < s.length(); i++) {
+            char c = s.charAt(i);
+            switch (c) {
+            case 10:
+            case 13:
+                break;
+            case ' ':
+            case '\t':
+                if (!space) {
+                    sb.append(' ');
+                    space = true;
+                }
+                break;
+            default:
+                sb.append(c);
+                space = false;
+            }
         }
-        return null;
+
+        return sb.toString();
     }
 
     /**
@@ -1030,20 +1029,42 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         }
 
         /**
-         * Strips the last string last character.
+         * Strips the last string character.
+         */
+        public void stripFirst() {
+            String s = (String)strings.get(0);
+            if (s.charAt(s.length() - 1) != ' ') 
+                return;
+
+            length--;
+
+            if (s.length() == 1) {
+                attributes.remove(0);
+                strings.remove(0);
+                count--;
+                return;
+            }
+
+            strings.set(0, s.substring(1));
+        }
+
+        /**
+         * Strips the last string character.
          */
         public void stripLast() {
-            String s = (String)strings.remove(count - 1);
-            if (s.charAt(s.length() - 1) == ' ') {
-                if (s.length() == 1) {
-                    attributes.remove(--count);
-                    return;
-                }
-                strings.add(s.substring(0, s.length() - 1));
-                length--;
-            } else {
-                strings.add(s);
+            String s = (String)strings.get(count - 1);
+            if (s.charAt(s.length() - 1) != ' ') 
+                return;
+
+            length--;
+
+            if (s.length() == 1) {
+                attributes.remove(--count);
+                strings.remove(count);
+                return;
             }
+
+            strings.set(count-1, s.substring(0, s.length() - 1));
         }
 
         /**

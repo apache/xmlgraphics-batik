@@ -53,7 +53,7 @@
       <line x1="243" y1="70" x2="243" y2="490" stroke="grey" fill="none"/>
       <line x1="423" y1="70" x2="423" y2="490" stroke="grey" fill="none"/>
 
-      <flowRoot font-size="20" xml:space="preserve">
+      <flowRoot font-size="20">
          <flowRegion>
             <path d="M 67,80 l-50,400 h200 l-50,-400 z"/>
 	    <!-- <rect x="17"  y="80" width="200" height="400"/> -->

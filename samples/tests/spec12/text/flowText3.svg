@@ -48,7 +48,7 @@
       <line x1="243" y1="70" x2="243" y2="490" stroke="grey" fill="none"/>
       <line x1="423" y1="70" x2="423" y2="490" stroke="grey" fill="none"/>
 
-      <flowRoot font-size="20" xml:space="preserve">
+      <flowRoot font-size="20">
          <flowRegion>
             <path d="M  17,80 v400 h200 v-400 z
                          M 220,80 v400 h10  v-400 z
