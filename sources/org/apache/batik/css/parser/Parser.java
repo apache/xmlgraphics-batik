@@ -14,13 +14,13 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 import java.util.MissingResourceException;
 
 import org.apache.batik.css.sac.CSSOMConditionFactory;
 import org.apache.batik.css.sac.CSSOMSelectorFactory;
+import org.apache.batik.util.CSSConstants;
+import org.apache.batik.util.EncodingUtilities;
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.i18n.Localizable;
 import org.apache.batik.i18n.LocalizableSupport;
@@ -46,60 +46,6 @@ import org.w3c.css.sac.SimpleSelector;
  * @version $Id$
  */
 public class Parser implements ExtendedParser, Localizable {
-
-    /**
-     * The CSS to Java encoding table.
-     */
-    protected final static Map ENCODINGS = new HashMap();
-    static {
-        ENCODINGS.put("UTF-8",           "UTF8");
-        ENCODINGS.put("UTF-16",          "Unicode");
-        ENCODINGS.put("US-ASCII",        "ASCII");
-
-        ENCODINGS.put("ISO-8859-1",      "8859_1");
-        ENCODINGS.put("ISO-8859-2",      "8859_2");
-        ENCODINGS.put("ISO-8859-3",      "8859_3");
-        ENCODINGS.put("ISO-8859-4",      "8859_4");
-        ENCODINGS.put("ISO-8859-5",      "8859_5");
-        ENCODINGS.put("ISO-8859-6",      "8859_6");
-        ENCODINGS.put("ISO-8859-7",      "8859_7");
-        ENCODINGS.put("ISO-8859-8",      "8859_8");
-        ENCODINGS.put("ISO-8859-9",      "8859_9");
-        ENCODINGS.put("ISO-2022-JP",     "JIS");
-
-        ENCODINGS.put("WINDOWS-31J",     "MS932");
-        ENCODINGS.put("EUC-JP",          "EUCJIS");
-        ENCODINGS.put("GB2312",          "GB2312");
-        ENCODINGS.put("BIG5",            "Big5");
-        ENCODINGS.put("EUC-KR",          "KSC5601");
-        ENCODINGS.put("ISO-2022-KR",     "ISO2022KR");
-        ENCODINGS.put("KOI8-R",          "KOI8_R");
-
-        ENCODINGS.put("EBCDIC-CP-US",    "Cp037");
-        ENCODINGS.put("EBCDIC-CP-CA",    "Cp037");
-        ENCODINGS.put("EBCDIC-CP-NL",    "Cp037");
-	ENCODINGS.put("EBCDIC-CP-WT",    "Cp037");
-        ENCODINGS.put("EBCDIC-CP-DK",    "Cp277");
-        ENCODINGS.put("EBCDIC-CP-NO",    "Cp277");
-        ENCODINGS.put("EBCDIC-CP-FI",    "Cp278");
-        ENCODINGS.put("EBCDIC-CP-SE",    "Cp278");
-        ENCODINGS.put("EBCDIC-CP-IT",    "Cp280");
-        ENCODINGS.put("EBCDIC-CP-ES",    "Cp284");
-        ENCODINGS.put("EBCDIC-CP-GB",    "Cp285");
-        ENCODINGS.put("EBCDIC-CP-FR",    "Cp297");
-        ENCODINGS.put("EBCDIC-CP-AR1",   "Cp420");
-        ENCODINGS.put("EBCDIC-CP-HE",    "Cp424");
-        ENCODINGS.put("EBCDIC-CP-BE",    "Cp500");
-        ENCODINGS.put("EBCDIC-CP-CH",    "Cp500");
-        ENCODINGS.put("EBCDIC-CP-ROECE", "Cp870");
-        ENCODINGS.put("EBCDIC-CP-YU",    "Cp870");
-        ENCODINGS.put("EBCDIC-CP-IS",    "Cp871");
-        ENCODINGS.put("EBCDIC-CP-AR2",   "Cp918");
-
-        ENCODINGS.put("CP1252",          "Cp1252");
-    }
-
-    public final static String MIME_TYPE_CSS = "text/css";
 
     /**
      * The default resource bundle base name.
@@ -1492,7 +1438,7 @@ public class Parser implements ExtendedParser, Localizable {
      * Returns the Java encoding string mapped with the given CSS encoding string.
      */
     protected String javaEncoding(String encoding) {
-        String result = (String)ENCODINGS.get(encoding.toUpperCase());
+        String result = EncodingUtilities.javaEncoding(encoding);
         if (result == null) {
             throw createCSSParseException("encoding", new Object[] { encoding });
         }
@@ -1515,14 +1461,13 @@ public class Parser implements ExtendedParser, Localizable {
                 if (uri != null) {
                     try {
                         ParsedURL purl = new ParsedURL(uri);
-                        r = characterStream(source, 
-                                            purl.openStreamRaw(MIME_TYPE_CSS), 
-                                            enc);
+                        is = purl.openStreamRaw(CSSConstants.CSS_MIME_TYPE);
+                        r = characterStream(source, is, enc);
                     } catch (IOException e) {
                         throw new CSSException(e);
                     }
                 } else {
-                    throw new CSSException("Empty source");
+                    throw new CSSException(formatMessage("empty.source", null));
                 }
             }
         }
