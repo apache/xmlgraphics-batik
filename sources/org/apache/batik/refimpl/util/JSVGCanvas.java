@@ -976,7 +976,7 @@ public class JSVGCanvas
         } else if ((panTransform != null) && (docBBox != null)) {
             g2d.setColor(Color.black);
             g2d.setStroke(markerStroke);
-            g2d.draw(docBBox);
+            //g2d.draw(docBBox); <!> slow with a high zoom factor !
         }
         if (canvasSpaceHighlightShape != null) {
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
