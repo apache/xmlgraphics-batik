@@ -40,6 +40,8 @@ import org.apache.batik.bridge.UserAgent;
 import java.io.StringReader;
 import java.io.IOException;
 
+import java.awt.Point;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 
 /**
@@ -168,7 +170,7 @@ class BridgeEventSupport {
         if (ua != null) {
             EventDispatcher dispatcher = ua.getEventDispatcher();
             if (dispatcher != null) {
-                final Listener listener = new Listener(ctx);
+                final Listener listener = new Listener(ctx, ua);
                 dispatcher.addGlobalGraphicsNodeMouseListener(listener);
                 ((EventTarget)svgRoot).
                     addEventListener("SVGUnload",
@@ -229,8 +231,10 @@ class BridgeEventSupport {
     private static class Listener
         implements GraphicsNodeMouseListener {
         private BridgeContext context;
-        public Listener(BridgeContext ctx) {
+        private UserAgent ua;
+        public Listener(BridgeContext ctx, UserAgent u) {
             context = ctx;
+            ua = u;
         }
         public void mouseClicked(GraphicsNodeMouseEvent evt) {
             dispatchMouseEvent("click", evt, true);
@@ -257,6 +261,13 @@ class BridgeEventSupport {
                                         GraphicsNodeMouseEvent evt,
                                         boolean cancelok) {
             Point2D pos = evt.getPoint2D();
+            AffineTransform transform = ua.getTransform();
+            if (transform != null & !transform.isIdentity())
+                transform.transform(pos, pos);
+            Point screen = ua.getClientAreaLocationOnScreen();
+            screen.translate((int)Math.floor(pos.getX()),
+                             (int)Math.floor(pos.getY()));
+            // compute screen coordinates
             GraphicsNode node = evt.getGraphicsNode();
             Element elmt = context.getElement(node);
             if (elmt == null) // should not appeared if binding on
@@ -268,14 +279,14 @@ class BridgeEventSupport {
             else
                 if ((evt.BUTTON3_MASK & evt.getModifiers()) != 0)
                     button = 2;
-            // <!> TODO some stuff to transform pos
             MouseEvent mevent =
                 // DOM Level 2 6.5 cast form Document to DocumentEvent is ok
                 (MouseEvent)org.apache.batik.dom.events.EventSupport.
                 createEvent(org.apache.batik.dom.events.EventSupport.
                             MOUSE_EVENT_TYPE);
             mevent.initMouseEvent(eventType, true, cancelok, null,
-                                  evt.getClickCount(), 0, 0,
+                                  evt.getClickCount(),
+                                  screen.x, screen.y,
                                   (int)Math.floor(pos.getX()),
                                   (int)Math.floor(pos.getY()),
                                   evt.isControlDown(), evt.isAltDown(),

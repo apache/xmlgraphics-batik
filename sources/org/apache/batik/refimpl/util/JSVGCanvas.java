@@ -1042,6 +1042,10 @@ public class JSVGCanvas
         }
     }
 
+    public AffineTransform getTransform() {
+        return transform;
+    }
+
     /**
      * To repaint the buffer.
      */

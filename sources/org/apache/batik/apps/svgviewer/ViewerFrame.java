@@ -16,7 +16,10 @@ import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Rectangle;
+
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Dimension2D;
 
 import java.awt.event.ActionEvent;
@@ -609,12 +612,27 @@ public class ViewerFrame
         thread.start();
     }
 
-
     /**
      * Returns the class name of the XML parser.
      */
     public String getXMLParserClassName() {
         return application.getXMLParserClassName();
+    }
+
+    /**
+     * Returns the <code>AffineTransform</code> currently
+     * applied to the drawing by the UserAgent.
+     */
+    public AffineTransform getTransform() {
+        return canvas.getTransform();
+    }
+
+    /**
+     * Returns the location on the screen of the
+     * client area in the UserAgent.
+     */
+    public Point getClientAreaLocationOnScreen() {
+        return canvas.getLocationOnScreen();
     }
 
     /**
