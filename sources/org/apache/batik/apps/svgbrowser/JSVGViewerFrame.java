@@ -114,6 +114,7 @@ public class JSVGViewerFrame
     public final static String RESET_TRANSFORM_ACTION = "ResetTransformAction";
     public final static String STOP_ACTION = "StopAction";
     //public final static String DOUBLE_BUFFER_ACTION = "DoubleBufferAction";
+    public final static String AUTO_ADJUST_ACTION = "AutoAdjustAction";
     public final static String SHOW_DEBUG_ACTION = "ShowDebugAction";
     public final static String SHOW_RENDERING_ACTION = "ShowRenderingAction";
     public final static String LANGUAGE_ACTION = "LanguageAction";
@@ -176,6 +177,11 @@ public class JSVGViewerFrame
      * The debug flag.
      */
     protected boolean debug;
+
+    /**
+     * The auto adjust flag.
+     */
+    protected boolean autoAdjust;
 
     /**
      * The SVG user agent.
@@ -251,6 +257,7 @@ public class JSVGViewerFrame
         listeners.put(RESET_TRANSFORM_ACTION, new ResetTransformAction());
         listeners.put(STOP_ACTION, stopAction);
         //listeners.put(DOUBLE_BUFFER_ACTION, new DoubleBufferAction());
+        listeners.put(AUTO_ADJUST_ACTION, new AutoAdjustAction());
         listeners.put(SHOW_DEBUG_ACTION, new ShowDebugAction());
         listeners.put(SHOW_RENDERING_ACTION, new ShowRenderingAction());
         listeners.put(LANGUAGE_ACTION, new LanguageAction());
@@ -551,6 +558,16 @@ public class JSVGViewerFrame
     }
 
     /**
+     * To adjust the window size on load.
+     */
+    public class AutoAdjustAction extends AbstractAction {
+        public AutoAdjustAction() {}
+        public void actionPerformed(ActionEvent e) {
+            autoAdjust = ((JCheckBoxMenuItem)e.getSource()).isSelected();
+        }
+    }
+
+    /**
      * To enable the debug traces.
      */
     public class ShowDebugAction extends AbstractAction {
@@ -785,6 +802,9 @@ public class JSVGViewerFrame
         }
         stopAction.update(false);
         svgComponent.setCursor(DEFAULT_CURSOR);
+        if (autoAdjust) {
+            pack();
+        }
     }
 
     /**

@@ -333,6 +333,8 @@ public class JSVGComponent extends JGVTComponent {
         public void gvtBuildCompleted(GVTTreeBuilderEvent e) {
             gvtTreeBuilder = null;
             setGraphicsNode(e.getGVTRoot(), false);
+            Dimension2D dim = bridgeContext.getDocumentSize();
+            setPreferredSize(new Dimension((int)dim.getWidth(), (int)dim.getHeight()));
         }
 
         /**
