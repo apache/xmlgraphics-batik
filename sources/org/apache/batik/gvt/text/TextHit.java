@@ -23,7 +23,7 @@ package org.apache.batik.gvt.text;
  * a <tt>TextSpanLayout</tt> instance.
  * @see org.apache.batik.gvt.text.TextSpanLayout
  *
- * @author <a href="bill.haneman@ireland.sun.com>Bill Haneman</a>
+ * @author <a href="mailto:bill.haneman@ireland.sun.com">Bill Haneman</a>
  * @version $Id$
  */
 public class TextHit {

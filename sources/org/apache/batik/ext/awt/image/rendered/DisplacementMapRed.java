@@ -114,16 +114,16 @@ public class DisplacementMapRed extends AbstractRed {
     }
 
     /**
+     * @param image the image to distort
+     * @param offsets the displacement map
+     * @param xChannel defines the channel of off whose values will be
+     *                 on X-axis operation
+     * @param yChannel defines the channel of off whose values will be
      * @param scaleX defines the scale factor of the filter operation
      *               on the X axis.
      * @param scaleY defines the scale factor of the filter operation
      *               on the Y axis
-     * @param xChannel defines the channel of off whose values will be
-     *                 on X-axis operation
-     * @param xChannel defines the channel of off whose values will be
-     *                 on X-axis operation
-     * @param off defines the input bufferedImage whose component
-     *            values will be used in displacment operation 
+     * @param rh the rendering hints
      */
     public DisplacementMapRed(CachableRed image, 
                               CachableRed offsets,
@@ -650,7 +650,7 @@ public class DisplacementMapRed extends AbstractRed {
     /**
      * Does displacement map using Nearest neighbor interpolation
      *
-     * @param img the Raster to be filtered
+     * @param off the displacement map
      * @param dst stores the filtered image. If null, a destination will
      *        be created. img and dst can refer to the same Raster, in
      *        which situation the img will be modified.

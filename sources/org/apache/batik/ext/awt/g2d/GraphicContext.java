@@ -397,8 +397,8 @@ public class GraphicContext implements Cloneable{
      * @param paint the <code>Paint</code> object to be used to generate
      * color during the rendering process, or <code>null</code>
      * @see java.awt.Graphics#setColor
-     * @see GradientPaint
-     * @see TexturePaint
+     * @see java.awt.GradientPaint
+     * @see java.awt.TexturePaint
      */
     public void setPaint( Paint paint ){
         if(paint == null)
@@ -583,7 +583,8 @@ public class GraphicContext implements Cloneable{
      * Rotating with a positive angle theta rotates points on the positive
      * x axis toward the positive y axis.
      * @param theta the angle of rotation in radians
-     * @param x,&nbsp;y coordinates of the origin of the rotation
+     * @param x x coordinate of the origin of the rotation
+     * @param y y coordinate of the origin of the rotation
      */
     public void rotate(double theta, double x, double y){
         transform.rotate(theta, x, y);
@@ -808,9 +809,9 @@ public class GraphicContext implements Cloneable{
      * The <i>user clip</i> modified by this method is independent of the
      * clipping associated with device bounds and visibility.  If no clip has
      * previously been set, or if the clip has been cleared using
-     * {@link Graphics#setClip(Shape) setClip} with a <code>null</code>
-     * argument, the specified <code>Shape</code> becomes the new
-     * user clip.
+     * {@link java.awt.Graphics#setClip(Shape) setClip} with a
+     * <code>null</code> argument, the specified <code>Shape</code> becomes
+     * the new user clip.
      * @param s the <code>Shape</code> to be intersected with the current
      *          <code>Clip</code>.  If <code>s</code> is <code>null</code>,
      *          this method clears the current <code>Clip</code>.

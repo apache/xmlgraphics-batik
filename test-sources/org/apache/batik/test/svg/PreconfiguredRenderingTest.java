@@ -23,7 +23,7 @@ import java.io.File;
  * Convenience class for creating a SVGRenderingAccuracyTest with predefined
  * rules for the various configuration parameters.
  *
- * @author <a href="vhardy@apache.org">Vincent Hardy</a>
+ * @author <a href="mailto:vhardy@apache.org">Vincent Hardy</a>
  * @version $Id$
  */
 public abstract class PreconfiguredRenderingTest extends SVGRenderingAccuracyTest {

@@ -84,7 +84,7 @@ public class PadRable8Bit extends AbstractRable
 
     /**
      * Get the current rectangle for padding
-     * @returns Rectangle currently in use for pad.
+     * @return Rectangle currently in use for pad.
      */
     public Rectangle2D getPadRect() {
         return (Rectangle2D)padRect.clone();
@@ -92,7 +92,7 @@ public class PadRable8Bit extends AbstractRable
 
     /**
      * Set the current extension mode for pad
-     * @param mode the new pad mode
+     * @param padMode the new pad mode
      */
     public void setPadMode(PadMode padMode) {
         touch();
@@ -101,7 +101,7 @@ public class PadRable8Bit extends AbstractRable
 
     /**
      * Get the current extension mode for pad
-     * @returns Mode currently in use for pad
+     * @return Mode currently in use for pad
      */
     public PadMode getPadMode() {
         return padMode;

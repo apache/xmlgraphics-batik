@@ -141,9 +141,9 @@ public class CursorManager implements SVGConstants, ErrorConstants {
     protected CursorCache cursorCache = new CursorCache();
 
     /**
-     * Constructor
+     * Creates a new CursorManager object.
      *
-     * @param BridgeContext ctx, the BridgeContext associated to this CursorManager
+     * @param ctx the BridgeContext associated to this CursorManager
      */
     public CursorManager(BridgeContext ctx) {
         this.ctx = ctx;

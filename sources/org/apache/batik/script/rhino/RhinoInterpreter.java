@@ -500,7 +500,7 @@ public class RhinoInterpreter implements Interpreter {
     /**
      * By default Rhino has no output method in its language. That's why
      * this method does nothing.
-     * @param output the new out <code>Writer</code>.
+     * @param out the new out <code>Writer</code>.
      */
     public void setOut(Writer out) {
         // no implementation of a default output function in Rhino
@@ -509,10 +509,8 @@ public class RhinoInterpreter implements Interpreter {
     // org.apache.batik.i18n.Localizable implementation
 
     /**
-     * Provides a way to the user to specify a locale which override the
-     * default one. If null is passed to this method, the used locale
-     * becomes the global one.
-     * @param l The locale to set.
+     * Returns the current locale or null if the locale currently used is
+     * the default one.
      */
     public Locale getLocale() {
         // <!> TODO : in Rhino the local is for a thread not a scope..
@@ -520,8 +518,10 @@ public class RhinoInterpreter implements Interpreter {
     }
 
     /**
-     * Returns the current locale or null if the locale currently used is
-     * the default one.
+     * Provides a way to the user to specify a locale which override the
+     * default one. If null is passed to this method, the used locale
+     * becomes the global one.
+     * @param locale The locale to set.
      */
     public void setLocale(Locale locale) {
         // <!> TODO : in Rhino the local is for a thread not a scope..

@@ -237,7 +237,6 @@ public abstract class PaintServer
      * instance according to the specified parameters.
      *
      * @param paintedElement the element interested in a Paint
-     * @param decl the CSS declaration of the painted element
      * @param paintedNode the graphics node to paint (objectBoundingBox)
      * @param paintDef the paint definition
      * @param opacity the opacity to consider for the Paint
@@ -391,7 +390,7 @@ public abstract class PaintServer
      * ICC color value or null if the related color profile could not
      * be used or loaded for any reason.
      *
-     * @param paintedElement the element using the color
+     * @param e the element using the color
      * @param c the ICC color definition
      * @param opacity the opacity
      * @param ctx the bridge context to use
@@ -437,7 +436,7 @@ public abstract class PaintServer
     /**
      * Converts the given Value and opacity to a Color object.
      * @param c The CSS color to convert.
-     * @param o The opacity value (0 <= o <= 1).
+     * @param opacity The opacity value (0 &lt;= o &lt;= 1).
      */
     public static Color convertColor(Value c, float opacity) {
         int r = resolveColorComponent(c.getRed());
@@ -519,7 +518,6 @@ public abstract class PaintServer
      * number in user units.
      *
      * @param v the CSS value describing the dasharray property
-     * @param uctx the unit processor context used to resolve units
      */
     public static float [] convertStrokeDasharray(Value v) {
         float [] dasharray = null;

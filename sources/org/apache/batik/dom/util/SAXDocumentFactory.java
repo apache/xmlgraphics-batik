@@ -363,9 +363,6 @@ public class SAXDocumentFactory
 
     /**
      * Creates a Document.
-     * @param ns The namespace URI of the root element.
-     * @param root The name of the root element.
-     * @param uri The document URI.
      * @param is  The document input source.
      * @exception IOException if an error occured while reading the document.
      */
@@ -503,7 +500,7 @@ public class SAXDocumentFactory
 
     /**
      * <b>SAX</b>: Implements {@link
-     * ContentHandler#startElement(String,String,String,Attributes)}.
+     * org.xml.sax.ContentHandler#startElement(String,String,String,Attributes)}.
      */
     public void startElement(String     uri,
 			     String     localName,

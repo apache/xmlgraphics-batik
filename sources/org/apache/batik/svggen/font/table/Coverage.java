@@ -31,7 +31,7 @@ public abstract class Coverage {
 
     /**
      * @param glyphId The ID of the glyph to find.
-     * @returns The index of the glyph within the coverage, or -1 if the glyph
+     * @return The index of the glyph within the coverage, or -1 if the glyph
      * can't be found.
      */
     public abstract int findGlyph(int glyphId);

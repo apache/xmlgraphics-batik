@@ -39,7 +39,7 @@ import org.w3c.dom.svg.SVGDocument;
  *
  * Complete Class Desc
  *
- * @author <a href="mailto:deweese@apache.org>l449433</a>
+ * @author <a href="mailto:deweese@apache.org">l449433</a>
  * @version $Id$
  */
 public class JSVGInterruptTest extends JSVGMemoryLeakTest {

@@ -221,7 +221,7 @@ public class XMLScanner implements Localizable {
 
     /**
      * Creates a new XML scanner.
-     * @param r The input stream to scan.
+     * @param is The input stream to scan.
      * @param enc The character encoding to use.
      */
     public XMLScanner(InputStream is, String enc) throws XMLException {
@@ -1964,7 +1964,7 @@ public class XMLScanner implements Localizable {
 
     /**
      * Reads an entity or character reference. The current character
-     * must be '&'.
+     * must be '&amp;'.
      * @return type.
      */
     protected int readReference() throws IOException, XMLException {

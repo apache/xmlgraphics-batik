@@ -1099,7 +1099,7 @@ public class GraphicsUtil {
      * @param src The source
      * @param srcRect The Rectangle of source data to be copied
      * @param dst The destination
-     * @param dstP The Place for the upper left corner of srcRect in dst.
+     * @param destP The Place for the upper left corner of srcRect in dst.
      */
     public static void
         copyData(BufferedImage src, Rectangle srcRect,

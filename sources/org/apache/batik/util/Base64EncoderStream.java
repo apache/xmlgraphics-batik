@@ -29,8 +29,8 @@ import java.io.PrintStream;
  * This means that the encoded text will simply start with the first line
  * of encoded text and end with the last line of encoded text.
  *
- * @author <a href="deweese@apache.org">Thomas DeWeese</a>
- * @author <a href="vincent.hardy@eng.sun.com">Vincent Hardy</a>
+ * @author <a href="mailto:deweese@apache.org">Thomas DeWeese</a>
+ * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @author      Chuck McManis
  * @version $Id$
  */

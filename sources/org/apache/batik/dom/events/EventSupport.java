@@ -150,7 +150,7 @@ public class EventSupport {
      * <code>dispatchEvent</code> is called.
      *
      * @param target the target node
-     * @param evt Specifies the event type, behavior, and contextual
+     * @param e Specifies the event type, behavior, and contextual
      * information to be used in processing the event.
      *
      * @return The return value of <code>dispatchEvent</code>

@@ -34,7 +34,7 @@ public class SVGAttributeMap{
     private static Map attrMap = new HashMap();
 
     /**
-     * @param name SVG name of the requested attribute
+     * @param attrName SVG name of the requested attribute
      * @return attribute with requested name
      */
     public static SVGAttribute get(String attrName) {

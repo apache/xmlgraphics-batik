@@ -20,7 +20,7 @@ package org.apache.batik.test.svg;
 /**
  * Preconfigured test for SVG files under the xml-batik directory.
  *
- * @author <a href="vhardy@apache.org">Vincent Hardy</a>
+ * @author <a href="mailto:vhardy@apache.org">Vincent Hardy</a>
  * @version $Id$
  */
 public class SamplesRenderingTest extends PreconfiguredRenderingTest {

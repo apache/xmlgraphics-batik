@@ -28,7 +28,7 @@ import org.apache.batik.ext.awt.image.renderable.Filter;
  * A graphics node that represents a raster image.
  *
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
- * @author <a href="mailto:Thomas.DeWeese@Kodak.com>Thomas DeWeese</a>
+ * @author <a href="mailto:Thomas.DeWeese@Kodak.com">Thomas DeWeese</a>
  * @version $Id$
  */
 public class RasterImageNode extends AbstractGraphicsNode {
@@ -118,7 +118,7 @@ public class RasterImageNode extends AbstractGraphicsNode {
 
     /**
      * Returns the bounds of the area covered by this node, without taking any
-     * of its rendering attribute into account. i.e., exclusive of any clipping,
+     * of its rendering attribute into account. That is, exclusive of any clipping,
      * masking, filtering or stroking, for example.
      */
     public Rectangle2D getGeometryBounds() {

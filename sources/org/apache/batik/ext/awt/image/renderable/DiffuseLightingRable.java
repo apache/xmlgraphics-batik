@@ -31,7 +31,7 @@ import org.apache.batik.ext.awt.image.Light;
  * This filter follows the specification of the feDiffuseLighting filter in 
  * the SVG 1.0 specification.
  *
- * @author <a href="mailto:vincent.hardy@eng.sun.com>Vincent Hardy</a>
+ * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
 public interface DiffuseLightingRable extends FilterColorInterpolation {
@@ -51,7 +51,7 @@ public interface DiffuseLightingRable extends FilterColorInterpolation {
     public Light getLight();
 
     /**
-     * @param New Light object
+     * @param light New Light object
      */
     public void setLight(Light light);
 

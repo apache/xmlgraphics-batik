@@ -49,7 +49,7 @@ public interface ClipRable extends Filter {
 
       /**
        * This returns the current image being clipped by the clip node.
-       * @returns The image to clip
+       * @return The image to clip
        */
     public Filter getSource();
 

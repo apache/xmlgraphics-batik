@@ -210,8 +210,8 @@ public class JSVGCanvas extends JSVGComponent {
      * Creates a new JSVGCanvas.
      *
      * @param ua a SVGUserAgent instance or null.
-     * @param eventEnabled Whether the GVT tree should be reactive to mouse and
-     * key events.
+     * @param eventsEnabled Whether the GVT tree should be reactive to mouse
+     *                      and key events.
      * @param selectableText Whether the text should be selectable.
      */
     public JSVGCanvas(SVGUserAgent ua,
@@ -787,7 +787,7 @@ public class JSVGCanvas extends JSVGComponent {
 
     /**
      * The <tt>CanvasUserAgent</tt> only adds tooltips to the behavior of the
-     * default <tt>BridgeUserAgent</tt>.<br /> A tooltip will be displayed
+     * default <tt>BridgeUserAgent</tt>. A tooltip will be displayed
      * wheneven the mouse lingers over an element which has a &lt;title&gt; or a
      * &lt;desc&gt; child element.
      */
@@ -1114,10 +1114,7 @@ public class JSVGCanvas extends JSVGComponent {
         protected CanvasUserAgent canvasUserAgent;
 
         /**
-         * @param toolTip value to which the JSVGCanvas should be
-         *        set when the event occurs.
-         * @param cua the CanvasUserAgent which will be used to track
-         *        the last tool tip event.
+         * Creates a new ToolTipModifier object.
          */
         public ToolTipModifier() {
         }

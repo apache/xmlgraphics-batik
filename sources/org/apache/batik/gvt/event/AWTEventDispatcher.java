@@ -45,9 +45,9 @@ import org.apache.batik.gvt.TextNode;
  * for containment are performed from the EventDispatcher's "root"
  * node.</p>
  *
- * @author <a href="bill.haneman@ireland.sun.com>Bill Haneman</a>
- * @author <a href="cjolif@ilog.fr>Christophe Jolif</a>
- * @author <a href="tkormann@ilog.fr>Thierry Kormann</a>
+ * @author <a href="mailto:bill.haneman@ireland.sun.com">Bill Haneman</a>
+ * @author <a href="mailto:cjolif@ilog.fr">Christophe Jolif</a>
+ * @author <a href="mailto:tkormann@ilog.fr">Thierry Kormann</a>
  * @version $Id$
  */
 public class AWTEventDispatcher implements EventDispatcher,
@@ -77,7 +77,7 @@ public class AWTEventDispatcher implements EventDispatcher,
     protected GraphicsNode lastHit;
 
     /**
-     * A dummy graphics node to dispacth "deselect" mouse events to. ie.
+     * A dummy graphics node to dispatch "deselect" mouse events to. That is,
      * when the mouse is clicked outside any nodes.
      */
     protected GraphicsNode dummyNode = new TextNode();
@@ -637,5 +637,3 @@ public class AWTEventDispatcher implements EventDispatcher,
 
     }
 }
-
-

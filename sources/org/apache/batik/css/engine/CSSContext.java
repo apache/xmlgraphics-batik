@@ -83,12 +83,12 @@ public interface CSSContext {
      * This method should throw a SecurityException if the resource
      * found at url and referenced from docURL should not be loaded.
      * 
-     * @param scriptURL url for the script, as defined in
-     *        the script's xlink:href attribute. If that
+     * @param resourceURL url for the resource, as defined in
+     *        the resource's xlink:href attribute. If that
      *        attribute was empty, then this parameter should
      *        be null
      * @param docURL url for the document into which the 
-     *        script was found.
+     *        resource was found.
      */
     public void 
         checkLoadExternalResource(ParsedURL resourceURL,

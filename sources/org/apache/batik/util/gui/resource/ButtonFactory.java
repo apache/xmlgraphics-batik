@@ -30,7 +30,7 @@ import javax.swing.JRadioButton;
 
 /**
  * This class represents a button factory which builds
- * buttons from the content of a resource bundle.<br>
+ * buttons from the content of a resource bundle. <br>
  *
  * The resource entries format is (for a button named 'Button'):<br>
  * <pre>

@@ -20,8 +20,8 @@ package org.apache.batik.dom.svg;
 import java.awt.geom.AffineTransform;
 
 /**
- * This class provides an implementation of the {@link SVGMatrix}
- * interface.
+ * This class provides an implementation of the {@link
+ * org.w3c.dom.svg.SVGMatrix} interface.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$

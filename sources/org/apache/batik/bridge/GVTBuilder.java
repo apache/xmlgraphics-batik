@@ -148,8 +148,8 @@ public class GVTBuilder implements SVGConstants {
      *
      * @param ctx the bridge context
      * @param e the element to build
-     * @param parent the composite graphics node, parent of the
-     *               graphics node to build
+     * @param parentNode the composite graphics node, parent of the
+     *                   graphics node to build
      * @exception BridgeException if an error occured while constructing
      * the GVT tree
      */
@@ -168,8 +168,8 @@ public class GVTBuilder implements SVGConstants {
      *
      * @param ctx the bridge context
      * @param e the element to build
-     * @param parent the composite graphics node, parent of the
-     *               graphics node to build
+     * @param parentNode the composite graphics node, parent of the
+     *                   graphics node to build
      * @exception BridgeException if an error occured while constructing
      * the GVT tree
      */

@@ -36,7 +36,7 @@ public interface ExtendedParser extends org.w3c.css.sac.Parser {
     /**
      * Parse a CSS style declaration (without '{' and '}').
      *
-     * @param styleValue The declaration.
+     * @param source The declaration.
      * @exception CSSException Any CSS exception, possibly
      *            wrapping another exception.
      * @exception java.io.IOException An IO exception from the parser,
@@ -100,7 +100,7 @@ public interface ExtendedParser extends org.w3c.css.sac.Parser {
         throws CSSException, IOException;
 
     /**
-     * Parse a CSS priority value (e.g. "!important").
+     * Parse a CSS priority value (e&#x2e;g&#x2e; "&#x21;important").
      * 
      * 
      * @exception CSSException Any CSS exception, possibly

@@ -50,7 +50,7 @@ import org.w3c.dom.events.MouseEvent;
  * This class is responsible of tracking GraphicsNodeMouseEvent and
  * fowarding them to the DOM as regular DOM MouseEvent.
  *
- * @author <a href="mailto:tkormann@ilog.fr>Thierry Kormann</a>
+ * @author <a href="mailto:tkormann@ilog.fr">Thierry Kormann</a>
  * @version $Id$
  */
 public class BridgeEventSupport implements SVGConstants {

@@ -26,7 +26,7 @@ import org.apache.batik.gvt.GraphicsNode;
 /**
  * An event which indicates that a mouse action occurred in a graphics node.
  *
- * @author <a href="cjolif@ilog.fr>Christophe Jolif</a>
+ * @author <a href="mailto:cjolif@ilog.fr">Christophe Jolif</a>
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  * @version $Id$
  */
@@ -118,8 +118,10 @@ public class GraphicsNodeMouseEvent extends GraphicsNodeInputEvent {
      * @param id the id of this event
      * @param when the time the event occurred
      * @param modifiers the modifier keys down while event occurred
-     * @param x,&nbsp;y the mouse coordinates
-     * @param screenX,&nbsp;screenY the mouse coordinates relative to the screen
+     * @param x the mouse x coordinate
+     * @param y the mouse y coordinate
+     * @param screenX the mouse x coordinate relative to the screen
+     * @param screenY the mouse y coordinate relative to the screen
      * @param clickCount the number of clicks
      * @param relatedNode the related node
      * @see #getRelatedNode

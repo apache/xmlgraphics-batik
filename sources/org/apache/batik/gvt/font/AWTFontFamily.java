@@ -38,7 +38,7 @@ public class AWTFontFamily implements GVTFontFamily {
     /**
      * Constructs an AWTFontFamily with the specified familyName.
      *
-     * @param familyName The name of the font family.
+     * @param fontFace The name of the font family.
      */
     public AWTFontFamily(GVTFontFace fontFace) {
         this.fontFace = fontFace;
@@ -56,7 +56,7 @@ public class AWTFontFamily implements GVTFontFamily {
     /**
      * Constructs an AWTFontFamily with the specified familyName.
      *
-     * @param familyName The name of the font family.
+     * @param fontFace The name of the font family.
      */
     public AWTFontFamily(GVTFontFace fontFace, Font font) {
         this.fontFace = fontFace;

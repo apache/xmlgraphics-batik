@@ -36,12 +36,12 @@ public interface LexicalUnits {
     int S = 1;
 
     /**
-     * Represents an XML declaration start lexical unit, ie. '<?xml'.
+     * Represents an XML declaration start lexical unit, i&#x2e;e&#x2e; '&lt;&#x3f;xml'.
      */
     int XML_DECL_START = 2;
 
     /**
-     * Represents a doctype start lexical unit, ie. <!DOCTYPE.
+     * Represents a doctype start lexical unit, i&#x2e;e&#x2e; &lt;&#x21;DOCTYPE.
      */
     int DOCTYPE_START = 3;
 
@@ -51,7 +51,7 @@ public interface LexicalUnits {
     int COMMENT = 4;
 
     /**
-     * Represents a PI start lexical unit, ie. '<?Name'.
+     * Represents a PI start lexical unit, i&#x2e;e&#x2e; '&lt;&#x3f;Name'.
      */
     int PI_START = 5;
 
@@ -61,28 +61,29 @@ public interface LexicalUnits {
     int PI_DATA = 6;
 
     /**
-     * Represents a PI end lexical unit, ie. '?>'.
+     * Represents a PI end lexical unit, i&#x2e;e&#x2e; '&#x3f;&gt;'.
      */
     int PI_END = 7;
 
     /**
-     * Represents a character data lexical unit, ie. the content of an
-     * element.
+     * Represents a character data lexical unit, i&#x2e;e&#x2e; the content of
+     * an element.
      */
     int CHARACTER_DATA = 8;
 
     /**
-     * Represents a start tag lexical unit, ie. '<Name'.
+     * Represents a start tag lexical unit, i&#x2e;e&#x2e; '&lt;Name'.
      */
     int START_TAG = 9;
 
     /**
-     * Represents an end tag lexical unit, ie. '</Name'.
+     * Represents an end tag lexical unit, i&#x2e;e&#x2e; '&lt;/Name'.
      */
     int END_TAG = 10;
 
     /**
-     * Represents a CDATA section start lexical unit, ie. '<![CDATA['.
+     * Represents a CDATA section start lexical unit, i&#x2e;e&#x2e;
+     * '&lt;&#x21;[CDATA['.
      */
     int CDATA_START = 11;
 
@@ -122,17 +123,17 @@ public interface LexicalUnits {
     int LAST_ATTRIBUTE_FRAGMENT = 18;
 
     /**
-     * Represents an empty element end lexical unit, ie. '/>'.
+     * Represents an empty element end lexical unit, i&#x2e;e&#x2e; '/&gt;'.
      */
     int EMPTY_ELEMENT_END = 19;
 
     /**
-     * Represents a end character lexical unit, ie. '>'.
+     * Represents a end character lexical unit, i&#x2e;e&#x2e; '&gt;'.
      */
     int END_CHAR = 20;
 
     /**
-     * Represents a section end lexical unit, ie. ']]>'.
+     * Represents a section end lexical unit, i&#x2e;e&#x2e; ']]&gt;'.
      */
     int SECTION_END = 21;
 
@@ -177,27 +178,31 @@ public interface LexicalUnits {
     int RSQUARE_BRACKET = 29;
 
     /**
-     * Represents a element declaration start lexical unit, ie. '<!ELEMENT'.
+     * Represents a element declaration start lexical unit, i&#x2e;e&#x2e;
+     * '&lt;&#x21;ELEMENT'.
      */
     int ELEMENT_DECLARATION_START = 30;
 
     /**
-     * Represents an ATTLIST declaration start lexical unit, ie. '<!ATTLIST'.
+     * Represents an ATTLIST declaration start lexical unit, i&#x2e;e&#x2e;
+     * '&lt;&#x21;ATTLIST'.
      */
     int ATTLIST_START = 31;
 
     /**
-     * Represents an entity start lexical unit, ie. '<!ENTITY'.
+     * Represents an entity start lexical unit, i&#x2e;e&#x2e; '&lt;&#x21;ENTITY'.
      */
     int ENTITY_START = 32;
 
     /**
-     * Represents a notation start lexical unit, ie. '<!NOTATION'.
+     * Represents a notation start lexical unit, i&#x2e;e&#x2e;
+     * '&lt;&#x21;NOTATION'.
      */
     int NOTATION_START = 33;
 
     /**
-     * Represents a parameter entity reference lexical unit, ie. '%Name;'.
+     * Represents a parameter entity reference lexical unit, i&#x2e;e&#x2e;
+     * '%Name;'.
      */
     int PARAMETER_ENTITY_REFERENCE = 34;
 
@@ -212,7 +217,7 @@ public interface LexicalUnits {
     int ANY_IDENTIFIER = 36;
 
     /**
-     * Represents a '?' lexical unit.
+     * Represents a '&#x3f;' lexical unit.
      */
     int QUESTION = 37;
 

@@ -380,7 +380,7 @@ public abstract class AbstractNode
     /**
      * <b>DOM</b>: Implements
      * {@link
-     * EventTarget#addEventListener(String,EventListener,boolean)}.
+     * org.w3c.dom.events.EventTarget#addEventListener(String,EventListener,boolean)}.
      */
     public void addEventListener(String type,
                                  EventListener listener,
@@ -396,7 +396,7 @@ public abstract class AbstractNode
     /**
      * <b>DOM</b>: Implements
      * {@link
-     * EventTarget#removeEventListener(String,EventListener,boolean)}.
+     * org.w3c.dom.events.EventTarget#removeEventListener(String,EventListener,boolean)}.
      */
     public void removeEventListener(String type,
                                     EventListener listener,

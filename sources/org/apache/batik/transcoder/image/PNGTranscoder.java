@@ -61,7 +61,7 @@ public class PNGTranscoder extends ImageTranscoder {
      * Writes the specified image to the specified output.
      * @param img the image to write
      * @param output the output where to store the image
-     * @param TranscoderException if an error occured while storing the image
+     * @throws TranscoderException if an error occured while storing the image
      */
     public void writeImage(BufferedImage img, TranscoderOutput output)
             throws TranscoderException {

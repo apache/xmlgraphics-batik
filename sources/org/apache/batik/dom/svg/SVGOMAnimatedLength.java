@@ -17,10 +17,9 @@
  */
 package org.apache.batik.dom.svg;
 
-
 /**
  * This class provides an implementation of the {@link
- * SVGAnimatedLength} interface.
+ * org.w3c.dom.svg.SVGAnimatedLength} interface.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$

@@ -240,21 +240,21 @@ public abstract class AbstractSVGNumberList extends AbstractSVGList implements S
             listHandler.startList();
         }
         /**
-         * Implements {@link org.apache.batik.parser.NumberHandler#startNumber()}.
+         * Implements {@link org.apache.batik.parser.NumberListHandler#startNumber()}.
          */
         public void startNumber() throws ParseException {
             currentValue = 0.0f;
         }
 
         /**
-         * Implements {@link org.apache.batik.parser.NumberHandler#numberValue(float)}.
+         * Implements {@link org.apache.batik.parser.NumberListHandler#numberValue(float)}.
          */
         public void numberValue(float v) throws ParseException {
             currentValue = v;
         }
         
         /**
-         * Implements {@link org.apache.batik.parser.NumberHandler#endNumber()}.
+         * Implements {@link org.apache.batik.parser.NumberListHandler#endNumber()}.
          */
         public void endNumber() throws ParseException {
             listHandler.item(new SVGNumberItem(currentValue));

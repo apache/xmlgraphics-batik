@@ -78,8 +78,8 @@ import org.w3c.dom.events.MutationEvent;
 /**
  * Bridge class for the &lt;text> element.
  *
- * @author <a href="stephane@hillion.org">Stephane Hillion</a>
- * @author <a href="bill.haneman@ireland.sun.com">Bill Haneman</a>
+ * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
+ * @author <a href="mailto:bill.haneman@ireland.sun.com">Bill Haneman</a>
  * @version $Id$
  */
 public class SVGTextElementBridge extends AbstractGraphicsNodeBridge 
@@ -2635,11 +2635,11 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
      * look for is the charnum th character in the 
      * element
      *
-     * @param list : list of the layouts
-     * @param firstChar : index in the ACI of the first
+     * @param list list of the layouts
+     * @param startIndex index in the ACI of the first
      *   character for the element
-     * @param charnum : index of the character ( among the 
-     *   characters of the element ) looked for.
+     * @param charnum index of the character (among the 
+     *   characters of the element) looked for.
      *
      * @return information about the glyph representing the
      *  character
@@ -2930,7 +2930,4 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             return false;
         }
     }
-
-
-    
 }

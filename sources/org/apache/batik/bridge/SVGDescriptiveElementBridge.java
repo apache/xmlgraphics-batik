@@ -31,7 +31,7 @@ import org.apache.batik.dom.svg.SVGOMElement;
 /**
  * Base class for 'descriptive' elements, mostly title and desc.
  *
- * @author <a href="mailto:deweese@apache.org>deweese</a>
+ * @author <a href="mailto:deweese@apache.org">deweese</a>
  * @version $Id$
  */
 public abstract class SVGDescriptiveElementBridge extends AbstractSVGBridge 

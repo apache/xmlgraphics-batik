@@ -115,14 +115,9 @@ public class DOMTreeManager implements SVGSyntax, ErrorConstants {
     /**
      * Constructor
      * @param gc default graphic context state
-     * @param domFactory used to create top level svg root node
-     *                    and children group nodes.
-     * @param extensionHandler used by SVGConverters to handle custom
-     *                         implementations of interfaces such as Paint,
-     *                         Composite and BufferedImageOp.
+     * @param generatorContext the SVG generator context
      * @param maxGCOverrides defines how many overrides are allowed
      *                       in children nodes of the current group.
-     * @param imageHandler used by SVGConverters to handle image elements.
      */
     public DOMTreeManager(GraphicContext gc,
                           SVGGeneratorContext generatorContext,
@@ -304,7 +299,7 @@ public class DOMTreeManager implements SVGSyntax, ErrorConstants {
     /**
      * This will change the extension handler on the
      * <code>SVGGeneratorContext</code>.
-     * @param new extension handler this object should use
+     * @param extensionHandler new extension handler this object should use
      */
     void setExtensionHandler(ExtensionHandler extensionHandler) {
         generatorContext.setExtensionHandler(extensionHandler);

@@ -25,7 +25,7 @@ import org.apache.batik.util.ParsedURL;
  * This mostly exists to give us a place to store the 
  * URI to be used for 'src' URI resolution.
  *
- * @author <a href="mailto:deweese@apache.org>l449433</a>
+ * @author <a href="mailto:deweese@apache.org">l449433</a>
  * @version $Id$
  */
 public class FontFaceRule implements Rule {

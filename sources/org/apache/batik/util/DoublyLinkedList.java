@@ -170,7 +170,7 @@ public class DoublyLinkedList {
 
     /**
      * Removes 'head' from list and returns it. Returns null if list is empty.
-     * @returns current head element, next element becomes head.
+     * @return current head element, next element becomes head.
      */
     public Node pop() {
         if (head == null) return null;
@@ -182,7 +182,7 @@ public class DoublyLinkedList {
 
     /**
      * Removes 'tail' from list and returns it. Returns null if list is empty.
-     * @returns current tail element.
+     * @return current tail element.
      */
     public Node unpush() {
         if (head == null) return null;

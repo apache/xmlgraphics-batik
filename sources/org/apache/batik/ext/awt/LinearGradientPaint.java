@@ -29,7 +29,7 @@ import java.awt.image.ColorModel;
 
 /**
  * The <code>LinearGradientPaint</code> class provides a way to fill
- * a {@link Shape} with a linear color gradient pattern.  The user may
+ * a {@link java.awt.Shape} with a linear color gradient pattern.  The user may
  * specify 2 or more gradient colors, and this paint will provide an
  * interpolation between each color.  The user also specifies start and end
  * points which define where in user space the color gradient should begin 
@@ -85,7 +85,6 @@ import java.awt.image.ColorModel;
  * @see java.awt.Graphics2D#setPaint
  *
  */
-
 public final class LinearGradientPaint extends MultipleGradientPaint {
 
     /** Gradient start and end points. */

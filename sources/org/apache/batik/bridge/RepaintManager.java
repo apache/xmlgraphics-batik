@@ -55,7 +55,7 @@ public class RepaintManager {
     
     /**
      * Updates the rendering buffer.
-     * @param aoi The area of interest in the renderer space units.
+     * @param areas The areas of interest in renderer space units.
      * @return the list of the rectangles to repaint.
      */
     public Collection updateRendering(Collection areas) 
@@ -98,7 +98,8 @@ public class RepaintManager {
      * @param u2d The user to device transform.
      * @param dbr Whether the double buffering should be used.
      * @param aoi The area of interest in the renderer space units.
-     * @param width&nbsp;height The offscreen buffer size.
+     * @param width The offscreen buffer width.
+     * @param height The offscreen buffer width.
      */
     public void setupRenderer(AffineTransform u2d,
                               boolean dbr,

@@ -17,7 +17,6 @@
  */
 package org.apache.batik.bridge;
 
-
 /**
  * This implementation for the <tt>ScriptSecurity</tt> interface
  * does not allow scripts to be loaded.
@@ -26,6 +25,7 @@ package org.apache.batik.bridge;
  * @version $Id$
  */
 public class NoLoadScriptSecurity implements ScriptSecurity {
+
     /**
      * Message when trying to load a script file and the Document
      * does not have a URL
@@ -49,14 +49,9 @@ public class NoLoadScriptSecurity implements ScriptSecurity {
     }
 
     /**
+     * Creates a new NoLoadScriptSecurity object.
      * @param scriptType type of script, as found in the 
      *        type attribute of the &lt;script&gt; element.
-     * @param scriptURL url for the script, as defined in
-     *        the script's xlink:href attribute. If that
-     *        attribute was empty, then this parameter should
-     *        be null
-     * @param docURL url for the document into which the 
-     *        script was found.
      */
     public NoLoadScriptSecurity(String scriptType){
 
@@ -65,6 +60,3 @@ public class NoLoadScriptSecurity implements ScriptSecurity {
                                     new Object[]{scriptType}));
     }
 }
-
-
-    

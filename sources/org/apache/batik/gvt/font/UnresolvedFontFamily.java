@@ -34,7 +34,7 @@ public class UnresolvedFontFamily implements GVTFontFamily {
     /**
      * Constructs an UnresolvedFontFamily with the specified familyName.
      *
-     * @param familyName The name of the font family.
+     * @param fontFace The name of the font family.
      */
     public UnresolvedFontFamily(GVTFontFace fontFace) {
         this.fontFace = fontFace;

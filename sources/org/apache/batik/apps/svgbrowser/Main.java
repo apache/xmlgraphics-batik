@@ -18,14 +18,15 @@
 package org.apache.batik.apps.svgbrowser;
 
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
+import java.awt.Font;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.IOException;
 import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.Authenticator;
 import java.net.URLDecoder;
@@ -818,7 +819,14 @@ public class Main implements Application {
         StringBuffer lastVisitedBuffer = new StringBuffer();
 
         for (int i=0; i<lastVisited.size(); i++) {
-            lastVisitedBuffer.append(URLEncoder.encode(lastVisited.elementAt(i).toString()));
+            try {
+                lastVisitedBuffer.append
+                    (URLEncoder.encode(lastVisited.elementAt(i).toString(),
+                                       "UTF-8"));
+            } catch (UnsupportedEncodingException ex) {
+                // should never happen, UTF-8 should always be available
+                ex.printStackTrace();
+            }
             lastVisitedBuffer.append(URI_SEPARATOR);
         }
         
@@ -864,7 +872,12 @@ public class Main implements Application {
         }
 
         for (int i=0; i<n; i++) {
-            lastVisited.addElement(URLDecoder.decode(st.nextToken()));
+            try {
+                lastVisited.addElement(URLDecoder.decode(st.nextToken(), "UTF-8"));
+            } catch (UnsupportedEncodingException ex) {
+                // should never happen, UTF-8 should always be available
+                ex.printStackTrace();
+            }
         }
     }
 }

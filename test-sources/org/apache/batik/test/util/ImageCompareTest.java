@@ -78,7 +78,7 @@ import org.apache.batik.util.ParsedURL;
  * two images are identical. It fails otherwise, producing a report
  * describing why the two images are different.
  *
- * @author <a href="vhardy@apache.org">Vincent Hardy</a>
+ * @author <a href="mailto:vhardy@apache.org">Vincent Hardy</a>
  * @version $Id$
  */
 public class ImageCompareTest extends AbstractTest {

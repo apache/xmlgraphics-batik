@@ -36,7 +36,7 @@ import org.apache.batik.gvt.GraphicsNode;
 /**
  * MaskRable implementation
  *
- * @author <a href="mailto:Thomas.DeWeese@Kodak.com>Thomas DeWeese</a>
+ * @author <a href="mailto:Thomas.DeWeese@Kodak.com">Thomas DeWeese</a>
  * @version $Id$
  */
 public class MaskRable8Bit
@@ -70,7 +70,7 @@ public class MaskRable8Bit
 
     /**
      * This returns the current image being masked by the mask node.
-     * @returns The image to mask
+     * @return The image to mask
      */
     public Filter getSource() {
         return (Filter)getSources().get(0);
@@ -101,7 +101,7 @@ public class MaskRable8Bit
      * rgb to luminance conversion.
      * In the case of an rgb only image, just the rgb to luminance
      * conversion is performed.
-     * @param gn The graphics node that defines the mask image.
+     * @param mask The graphics node that defines the mask image.
      */
     public void setMaskNode(GraphicsNode mask) {
         touch();

@@ -341,7 +341,7 @@ public class JSVGComponent extends JGVTComponent {
     /**
      * Creates a new JSVGComponent.
      * @param ua a SVGUserAgent instance or null.
-     * @param eventEnabled Whether the GVT tree should be reactive
+     * @param eventsEnabled Whether the GVT tree should be reactive
      *        to mouse and key events.
      * @param selectableText Whether the text should be selectable.
      */
@@ -2456,7 +2456,7 @@ public class JSVGComponent extends JGVTComponent {
         }
         
         /**
-         * Informs the user agent that the text selection should changed.
+         * Informs the user agent that the text selection should be changed.
          * @param start The Mark for the start of the selection.
          * @param end   The Mark for the end of the selection.
          */
@@ -2473,9 +2473,7 @@ public class JSVGComponent extends JGVTComponent {
         }
 
         /**
-         * Informs the user agent that the text selection should changed.
-         * @param start The Mark for the start of the selection.
-         * @param end   The Mark for the end of the selection.
+         * Informs the user agent that the text should be deselected.
          */
         public void deselectAll() {
             if (EventQueue.isDispatchThread()) {
@@ -2706,11 +2704,11 @@ public class JSVGComponent extends JGVTComponent {
          * 
          * @param scriptType type of script, as found in the 
          *        type attribute of the &lt;script&gt; element.
-         * @param scriptURL url for the script, as defined in
+         * @param scriptPURL url for the script, as defined in
          *        the script's xlink:href attribute. If that
          *        attribute was empty, then this parameter should
          *        be null
-         * @param docURL url for the document into which the 
+         * @param docPURL url for the document into which the 
          *        script was found.
          */
         public ScriptSecurity getScriptSecurity(String scriptType,
@@ -2747,11 +2745,11 @@ public class JSVGComponent extends JGVTComponent {
          *
          * @param scriptType type of script, as found in the 
          *        type attribute of the &lt;script&gt; element.
-         * @param scriptURL url for the script, as defined in
+         * @param scriptPURL url for the script, as defined in
          *        the script's xlink:href attribute. If that
          *        attribute was empty, then this parameter should
          *        be null
-         * @param docURL url for the document into which the 
+         * @param docPURL url for the document into which the 
          *        script was found.
          */
         public void checkLoadScript(String scriptType,
@@ -2789,11 +2787,11 @@ public class JSVGComponent extends JGVTComponent {
          * Returns the security settings for the given resource
          * url and document url
          * 
-         * @param resourceURL url for the resource, as defined in
+         * @param resourcePURL url for the resource, as defined in
          *        the resource's xlink:href attribute. If that
          *        attribute was empty, then this parameter should
          *        be null
-         * @param docURL url for the document into which the 
+         * @param docPURL url for the document into which the 
          *        resource was found.
          */
         public ExternalResourceSecurity 
@@ -2826,12 +2824,12 @@ public class JSVGComponent extends JGVTComponent {
          * on the ExternalResourceSecurity strategy returned by 
          * getExternalResourceSecurity.
          *
-         * @param scriptURL url for the script, as defined in
-         *        the script's xlink:href attribute. If that
+         * @param resourceURL url for the resource, as defined in
+         *        the resource's xlink:href attribute. If that
          *        attribute was empty, then this parameter should
          *        be null
          * @param docURL url for the document into which the 
-         *        script was found.
+         *        resource was found.
          */
         public void 
             checkLoadExternalResource(ParsedURL resourceURL,
@@ -3386,12 +3384,12 @@ public class JSVGComponent extends JGVTComponent {
          * on the ExternalResourceSecurity strategy returned by 
          * getExternalResourceSecurity.
          *
-         * @param scriptURL url for the script, as defined in
-         *        the script's xlink:href attribute. If that
+         * @param resourceURL url for the resource, as defined in
+         *        the resource's xlink:href attribute. If that
          *        attribute was empty, then this parameter should
          *        be null
          * @param docURL url for the document into which the 
-         *        script was found.
+         *        resource was found.
          */
         public void 
             checkLoadExternalResource(ParsedURL resourceURL,
