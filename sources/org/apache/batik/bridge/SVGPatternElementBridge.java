@@ -13,6 +13,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Rectangle2D;
 import java.io.StringReader;
+import java.util.List;
 import org.apache.batik.bridge.resources.Messages;
 import org.apache.batik.ext.awt.image.renderable.ClipRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.Filter;
@@ -119,11 +120,6 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
             // check if a GVT node has been created
             if (patternNode == null) {
                 continue; // skip element as <pattern> can contain <defs>...
-                /*
-                throw new IllegalAttributeValueException(
-                    Messages.formatMessage("pattern.subelement.illegal",
-                                           new Object[] {node.getLocalName()}));
-                                           */
             }
             hasChildren = true;
             patternContentNode.getChildren().add(patternNode);

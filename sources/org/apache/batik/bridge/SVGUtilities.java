@@ -11,13 +11,18 @@ package org.apache.batik.bridge;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.io.IOException;
 import java.io.StringReader;
-import java.util.StringTokenizer;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
-
-import org.apache.batik.bridge.IllegalAttributeValueException;
-import org.apache.batik.bridge.MissingAttributeException;
-import org.apache.batik.bridge.UserAgent;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.StringTokenizer;
+import org.apache.batik.bridge.resources.Messages;
+import org.apache.batik.dom.svg.SVGOMDocument;
+import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.dom.util.XMLSupport;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
@@ -29,16 +34,16 @@ import org.apache.batik.parser.ParseException;
 import org.apache.batik.parser.PreserveAspectRatioHandler;
 import org.apache.batik.parser.PreserveAspectRatioParser;
 import org.apache.batik.parser.PreserveAspectRatioParser;
-import org.apache.batik.bridge.resources.Messages;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.UnitProcessor;
-
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.svg.SVGElement;
 import org.w3c.dom.svg.SVGLangSpace;
 import org.w3c.dom.svg.SVGLength;
 import org.w3c.dom.svg.SVGPreserveAspectRatio;
+import org.xml.sax.SAXException;
 
 /**
  * This class contains utility methods for SVG.
@@ -586,6 +591,60 @@ public class SVGUtilities implements SVGConstants {
 
         }
     }
+
+    // ------------------------------------------------------------------------
+    // Convenient methods for gradients, pattern and filter for xlink:href
+    // ------------------------------------------------------------------------
+
+    /**
+     * Returns the value of the attribute if defined one of the
+     * element or one of its ancestor (using xlink:href).
+     *
+     * @param element the element
+     * @param namespaceURI the namespace URI of the attribute to return
+     * @param attrName the name of the attribute to search
+     */
+    public static String getChainableAttributeNS(Element element,
+                                                 String namespaceURI,
+                                                 String attrName,
+                                                 DocumentLoader loader) {
+        Element e = element;
+        List refs = new LinkedList();
+        for (;;) {
+            String v = e.getAttributeNS(namespaceURI, attrName);
+            if (v.length() > 0) { // exit if attribute defined
+                return v;
+            }
+            String uriStr = XLinkSupport.getXLinkHref(e);
+            if (uriStr.length() == 0) { // exit if no more xlink:href
+                return "";
+            }
+            SVGDocument svgDoc = (SVGDocument)e.getOwnerDocument();
+            URL baseURL = ((SVGOMDocument)svgDoc).getURLObject();
+            try {
+                URL url = new URL(baseURL, uriStr);
+                Iterator iter = refs.iterator();
+                while (iter.hasNext()) {
+                    URL urlTmp = (URL)iter.next();
+                    if (urlTmp.sameFile(url) &&
+                            urlTmp.getRef().equals(url.getRef())) {
+                        throw new IllegalAttributeValueException(
+                            "circular reference on "+e);
+                    }
+                }
+                URIResolver resolver = new URIResolver(svgDoc, loader);
+                e = resolver.getElement(url.toString());
+                refs.add(url);
+            } catch(MalformedURLException ex) {
+                throw new IllegalAttributeValueException("bad url on "+uriStr);
+            } catch(SAXException ex) {
+                throw new IllegalAttributeValueException("bad document on "+uriStr);
+            } catch(IOException ex) {
+                throw new IllegalAttributeValueException("I/O error on "+uriStr);
+            }
+        }
+    }
+
 
     // ------------------------------------------------------------------------
     // Region computation for <filter> <mask> and <pattern>
