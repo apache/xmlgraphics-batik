@@ -15,4 +15,4 @@ Class-Path: lib/batik-ext.jar \
             lib/crimson.jar \
             lib/js.jar \
             lib/xalan-1.2.1.jar \
-            lib/xerces_1_2.jar
+            lib/xerces-1.2.1.jar
