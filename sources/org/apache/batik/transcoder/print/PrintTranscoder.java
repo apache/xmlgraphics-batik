@@ -48,7 +48,10 @@ import org.apache.batik.dom.svg.ExtensibleSVGDOMImplementation;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.DocumentFactory;
 
+import org.apache.batik.ext.awt.RenderingHintsKeyExt;
+
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.event.EventDispatcher;
 
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeException;
@@ -56,8 +59,6 @@ import org.apache.batik.bridge.BridgeExtension;
 import org.apache.batik.bridge.GVTBuilder;
 import org.apache.batik.bridge.UserAgent;
 import org.apache.batik.bridge.ViewBox;
-
-import org.apache.batik.gvt.event.EventDispatcher;
 
 import org.apache.batik.transcoder.Transcoder;
 import org.apache.batik.transcoder.TranscoderException;
@@ -238,7 +239,8 @@ public class PrintTranscoder extends XMLAbstractTranscoder
                           pageHeight.floatValue());
         }
 
-        float x=0, y=0, width=(float)paper.getWidth(), height=(float)paper.getHeight();
+        float x=0, y=0;
+        float width=(float)paper.getWidth(), height=(float)paper.getHeight();
 
         Float leftMargin = (Float)hints.get(KEY_MARGIN_LEFT);
         Float topMargin = (Float)hints.get(KEY_MARGIN_TOP);
@@ -353,6 +355,8 @@ public class PrintTranscoder extends XMLAbstractTranscoder
                            RenderingHints.VALUE_ANTIALIAS_ON);
         g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
                            RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g.setRenderingHint(RenderingHintsKeyExt.KEY_TRANSCODING,
+                           RenderingHintsKeyExt.VALUE_TRANSCODING_PRINTING);
 
         //
         // Compute transform so that the SVG document fits on one page

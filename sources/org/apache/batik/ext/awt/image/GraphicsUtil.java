@@ -14,6 +14,7 @@ import java.lang.ref.WeakReference;
 import java.awt.color.ColorSpace;
 
 import java.awt.Color;
+import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
@@ -130,6 +131,8 @@ public class GraphicsUtil {
         else
             at.preConcatenate(g2dAt);
 
+        Composite g2dComposite = g2d.getComposite();
+
         if (false) {
             System.out.println("CR: " + cr);
             System.out.println("CRR: " + cr.getBounds());
@@ -171,14 +174,13 @@ public class GraphicsUtil {
         ColorModel drawCM = g2dCM;
         if (g2dCM == null) {
             // If we can't find out about our device assume
-            // it's not premultiplied (Just because this
-            // seems to work for us!).
-            drawCM = coerceColorModel(srcCM, false);
+            // it's SRGB unpremultiplied (Just because this
+            // seems to work for us).
+            drawCM = sRGB_Unpre;
         } else if (drawCM.hasAlpha() && g2dCM.hasAlpha() &&
                    (drawCM.isAlphaPremultiplied() !=
                     g2dCM .isAlphaPremultiplied())) {
-            drawCM = coerceColorModel(drawCM,
-                                      g2dCM.isAlphaPremultiplied());
+            drawCM = coerceColorModel(drawCM, g2dCM.isAlphaPremultiplied());
         }
 
         cr = FormatRed.construct(cr, drawCM);
@@ -190,6 +192,16 @@ public class GraphicsUtil {
         // Now CR is in device space, so clear the g2d transform.
         g2d.setTransform(IDENTITY);
 
+        // Ugly Hack alert.  This Makes it use our SrcOver implementation
+        // Which doesn't seem to have as many bugs as the JDK one when
+        // going between different src's and destinations (of course it's
+        // also a lot slower).
+        if (g2d.getRenderingHint(RenderingHintsKeyExt.KEY_TRANSCODING) ==
+            RenderingHintsKeyExt.VALUE_TRANSCODING_PRINTING) {
+            if (SVGComposite.OVER.equals(g2dComposite)) {
+                g2d.setComposite(SVGComposite.OVER);
+            }
+        }
         Rectangle crR  = cr.getBounds();
         Shape     clip = g2d.getClip();
 
@@ -272,6 +284,7 @@ public class GraphicsUtil {
             long startTime = System.currentTimeMillis();
 
             if (false) {
+                // org.ImageDisplay.showImage("foo: ", cr);
                 // This can be significantly faster but can also
                 // require much more memory.
                 g2d.drawRenderedImage(cr, IDENTITY);
@@ -350,16 +363,19 @@ public class GraphicsUtil {
                         // System.out.println("Generating tile: " + twr);
                         cr.copyData(twr);
 
-                        // Make sure we only draw the region that was written...
+                        // Make sure we only draw the region that was written.
                         BufferedImage subBI;
                         subBI = bi.getSubimage(0, 0, iR.width,  iR.height);
+
                         if (false) {
                             System.out.println("Drawing: " + tR);
                             System.out.println("IR: "      + iR);
                         }
 
                         AffineTransform trans;
-                        trans = AffineTransform.getTranslateInstance(iR.x, iR.y);
+                        trans = AffineTransform.getTranslateInstance(iR.x, 
+                                                                     iR.y);
+
                         g2d.drawImage(subBI, trans, null);
                         // big2d.fillRect(0, 0, tw, th);
                     }
@@ -369,9 +385,13 @@ public class GraphicsUtil {
             }
             long endTime = System.currentTimeMillis();
             // System.out.println("Time: " + (endTime-startTime));
+
+
         } finally {
             g2d.setTransform(g2dAt);
+            g2d.setComposite(g2dComposite);
         }
+
         // System.out.println("Finished Draw");
     }
 
@@ -492,7 +512,9 @@ public class GraphicsUtil {
         GraphicsConfiguration gc = g2d.getDeviceConfiguration();
         GraphicsDevice gd = gc.getDevice();
         if (WARN_DESTINATION &&
-            (gd.getType() == GraphicsDevice.TYPE_IMAGE_BUFFER))
+            (gd.getType() == GraphicsDevice.TYPE_IMAGE_BUFFER) &&
+            (g2d.getRenderingHint(RenderingHintsKeyExt.KEY_TRANSCODING) !=
+                RenderingHintsKeyExt.VALUE_TRANSCODING_PRINTING))
             // throw new IllegalArgumentException
             System.out.println
                 ("Graphics2D from BufferedImage lacks BUFFERED_IMAGE hint");
@@ -509,18 +531,24 @@ public class GraphicsUtil {
 
         // We are going to a BufferedImage but no hint was provided
         // so we can't determine the destination Color Model.
-        if (gc.getDevice().getType() == GraphicsDevice.TYPE_IMAGE_BUFFER)
+        if (gc.getDevice().getType() == GraphicsDevice.TYPE_IMAGE_BUFFER) {
+            if (g2d.getRenderingHint(RenderingHintsKeyExt.KEY_TRANSCODING) ==
+                RenderingHintsKeyExt.VALUE_TRANSCODING_PRINTING) 
+                return sRGB_Unpre;
+
+            // System.out.println("CM: " + gc.getColorModel());
+            // System.out.println("CS: " + gc.getColorModel().getColorSpace());
             return null;
+        }
 
         return gc.getColorModel();
     }
 
     public static ColorSpace getDestinationColorSpace(Graphics2D g2d) {
         ColorModel cm = getDestinationColorModel(g2d);
-        if (cm == null)
-            return null;
+        if (cm != null) return cm.getColorSpace();
 
-        return cm.getColorSpace();
+        return null;
     }
 
     public static Rectangle getDestinationBounds(Graphics2D g2d) {
@@ -997,6 +1025,8 @@ public class GraphicsUtil {
         if (cm.isAlphaPremultiplied() == newAlphaPreMult)
             // nothing to do alpha state matches...
             return cm;
+
+        // System.out.println("CoerceData: " + wr.getSampleModel());
 
         int [] pixel = null;
         int    bands = wr.getNumBands();
@@ -1501,4 +1531,72 @@ public class GraphicsUtil {
             }
         }
     }
+
+/*
+  This is skanky debugging code that might be useful in the future:
+
+            if (count == 33) {
+                String label = "sub [" + x + ", " + y + "]: ";
+                org.ImageDisplay.showImage
+                    (label, subBI);
+                org.ImageDisplay.printImage
+                    (label, subBI,
+                     new Rectangle(75-iR.x, 90-iR.y, 32, 32));
+                
+            }
+
+
+            // if ((count++ % 50) == 10)
+            //     org.ImageDisplay.showImage("foo: ", subBI);
+
+
+            Graphics2D realG2D = g2d;
+            while (realG2D instanceof sun.java2d.ProxyGraphics2D) {
+                realG2D = ((sun.java2d.ProxyGraphics2D)realG2D).getDelegate();
+            }
+            if (realG2D instanceof sun.awt.image.BufferedImageGraphics2D) {
+                count++;
+                if (count == 34) {
+                    RenderedImage ri;
+                    ri = ((sun.awt.image.BufferedImageGraphics2D)realG2D).bufImg;
+                    // g2d.setComposite(SVGComposite.OVER);
+                    // org.ImageDisplay.showImage("Bar: " + count, cr);
+                    org.ImageDisplay.printImage("Bar: " + count, cr,
+                                                new Rectangle(75, 90, 32, 32));
+
+                    org.ImageDisplay.showImage ("Foo: " + count, ri);
+                    org.ImageDisplay.printImage("Foo: " + count, ri,
+                                                new Rectangle(75, 90, 32, 32));
+
+                    System.out.println("BI: "   + ri);
+                    System.out.println("BISM: " + ri.getSampleModel());
+                    System.out.println("BICM: " + ri.getColorModel());
+                    System.out.println("BICM class: " + ri.getColorModel().getClass());
+                    System.out.println("BICS: " + ri.getColorModel().getColorSpace());
+                    System.out.println
+                        ("sRGB CS: " + 
+                         ColorSpace.getInstance(ColorSpace.CS_sRGB));
+                    System.out.println("G2D info");
+                    System.out.println("\tComposite: " + g2d.getComposite());
+                    System.out.println("\tTransform" + g2d.getTransform());
+                    java.awt.RenderingHints rh = g2d.getRenderingHints();
+                    java.util.Set keys = rh.keySet();
+                    java.util.Iterator iter = keys.iterator();
+                    while (iter.hasNext()) {
+                        Object o = iter.next();
+
+                        System.out.println("\t" + o.toString() + " -> " +
+                                           rh.get(o).toString());
+                    }
+
+                    ri = cr;
+                    System.out.println("RI: "   + ri);
+                    System.out.println("RISM: " + ri.getSampleModel());
+                    System.out.println("RICM: " + ri.getColorModel());
+                    System.out.println("RICM class: " + ri.getColorModel().getClass());
+                    System.out.println("RICS: " + ri.getColorModel().getColorSpace());
+                }
+            }
+*/
+
 }

@@ -105,8 +105,9 @@ public class CompositeRable8Bit
 
         ColorSpace crCS = getOperationColorSpace();
         ColorSpace g2dCS = GraphicsUtil.getDestinationColorSpace(g2d);
-        if ((g2dCS == null) || (g2dCS != crCS))
+        if ((g2dCS == null) || (g2dCS != crCS)) {
             return false;
+        }
 
         // System.out.println("drawImage : " + g2dCS +
         //                    crCS);

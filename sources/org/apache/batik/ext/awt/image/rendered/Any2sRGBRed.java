@@ -124,16 +124,17 @@ public class Any2sRGBRed extends AbstractRed {
         final int height     = wr.getHeight();
         final int scanStride = sm.getScanlineStride();
 
-        int count=0;
+        int end, pix;
+
         // For alpha premult we need to multiply all comps.
         for (int y=0; y<height; y++) {
             int sp  = srcBase + y*scanStride;
-            final int end = sp + width;
+            end = sp + width;
 
             while (sp<end) {
-                final int pix = pixels[sp];
+                pix = pixels[sp];
                 pixels[sp] = 
-                    ((pix&0xFF000000)           |
+                    ((     pix      &0xFF000000)|
                      (lut[(pix>>>16)&0xFF]<<16) |
                      (lut[(pix>>> 8)&0xFF]<< 8) |
                      (lut[(pix     )&0xFF]    ));
