@@ -17,6 +17,7 @@ import org.apache.batik.test.DefaultTestReport;
 import org.apache.batik.test.TestReport;
 import org.apache.batik.test.MemoryLeakTest;
 
+import java.awt.Container;
 import java.io.File;
 import java.net.MalformedURLException;
 import javax.swing.SwingUtilities;
@@ -62,10 +63,9 @@ public class JSVGMemoryLeakTest extends MemoryLeakTest
         SwingUtilities.invokeAndWait( new Runnable() {
                 public void run() {
                     // System.out.println("In Invoke");
-                    theCanvas.stopProcessing();
+                    theCanvas.dispose();
                     theFrame.remove(theCanvas);
                     theFrame.removeNotify();
-                    theCanvas.removeNotify();
                     theFrame=null;
                     theCanvas=null;
                 }
