@@ -32,6 +32,12 @@ public class DefaultTestSuiteReport implements TestReport {
         = "DefaultTestSuiteReport.entry.key.failed.child.test.report";
 
     /**
+     * Entry for a passed child test report
+     */
+    public static final String ENTRY_KEY_PASSED_CHILD_TEST_REPORT
+        = "DefaultTestSuiteReport.entry.key.passed.child.test.report";
+
+    /**
      * Set of <tt>TestReport</tt> coming from the <tt>TestSuite</tt>
      */
     protected Vector reports = new Vector();
@@ -89,6 +95,17 @@ public class DefaultTestSuiteReport implements TestReport {
             if(!childReport.hasPassed()){
                 TestReport.Entry entry 
                     = new TestReport.Entry(Messages.formatMessage(ENTRY_KEY_FAILED_CHILD_TEST_REPORT, null),
+                                           childReport);
+                descs.addElement(entry);
+            }
+        }
+        
+        iter = reports.iterator();
+        while(iter.hasNext()){
+            TestReport childReport = (TestReport)iter.next();
+            if(childReport.hasPassed()){
+                TestReport.Entry entry 
+                    = new TestReport.Entry(Messages.formatMessage(ENTRY_KEY_PASSED_CHILD_TEST_REPORT, null),
                                            childReport);
                 descs.addElement(entry);
             }

@@ -10,31 +10,11 @@
 <!-- @author vincent.hardy@eng.sun.com                                         -->
 <!-- @version $Id$ -->
 <!-- ========================================================================= -->
-<testSuite name="REGARD">
-    <testReportProcessor class="org.apache.batik.test.xml.XMLTestReportProcessor" > 
-        <arg class="org.apache.batik.test.xml.XSLXMLReportConsumer">
-            <!-- Stylesheet -->
-            <arg class="java.lang.String" value="file:test-resources/org/apache/batik/test/svg/HTMLReport.xsl" />
-            <!-- Ouput Directory -->
-            <arg class="java.lang.String" value="test-reports/html" />
-            <!-- Output file prefix -->
-            <arg class="java.lang.String" value="SVGRenderingAccuracyTestReport" />
-            <!-- Output file suffix -->
-            <arg class="java.lang.String" value=".html" />
-        </arg>
-    </testReportProcessor>
-
+<testSuite name="samples and samples/test Rendering">
     <!-- ========================================================================== -->
-    <!-- Validates that the SVGRenderingAccuracyTest class is operating as expected -->
+    <!-- The following tests check correct rendering of images in the samples       -->
+    <!-- directory.                                                                 -->
     <!-- ========================================================================== -->
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTestValidator" />
-
-        
-    <!-- ========================================================================== -->
-    <!-- The following tests correspond to what regard used to do.                  -->
-    <!-- ========================================================================== -->
-    <!-- http://xml.apache.org/websrc/index.cgi/~checkout~/xml-batik/ -->
-
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/anne.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/anne.png" />
@@ -105,14 +85,12 @@
         <property name="SaveVariation" class="java.io.File" value="test-references/samples/candidate-variation/batikLogo.png" />
     </test>
 
-
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/batikMusic.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/batikMusic.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/accepted-variation/batikMusic.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/samples/candidate-variation/batikMusic.png" />
     </test>
-
 
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/batikYin.svg" />
@@ -192,12 +170,11 @@
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/accepted-variation/textRotateShadows.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/samples/candidate-variation/textRotateShadows.png" />
     </test>
-
+    -->
  
     <!-- ======================================================================= -->
     <!-- Samples tests files                                                     -->
     <!-- ======================================================================= -->
-
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/tests/display.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/display.png" />

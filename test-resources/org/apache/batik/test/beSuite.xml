@@ -11,19 +11,6 @@
 <!-- @version $Id$ -->
 <!-- ========================================================================= -->
 <testSuite name="SVG Basic Effectivity Test Suite">
-    <testReportProcessor class="org.apache.batik.test.xml.XMLTestReportProcessor" > 
-        <arg class="org.apache.batik.test.xml.XSLXMLReportConsumer">
-            <!-- Stylesheet -->
-            <arg class="java.lang.String" value="file:test-resources/org/apache/batik/test/svg/HTMLReport.xsl" />
-            <!-- Ouput Directory -->
-            <arg class="java.lang.String" value="test-reports/html" />
-            <!-- Output file prefix -->
-            <arg class="java.lang.String" value="SVGRenderingAccuracyTestReport" />
-            <!-- Output file suffix -->
-            <arg class="java.lang.String" value=".html" />
-        </arg>
-    </testReportProcessor>
-
     <!-- =================================================================== -->
     <!-- Rendering                                                           -->
     <!-- =================================================================== -->
