@@ -34,7 +34,7 @@
         </g>
 
         <defs>            
-            <g id="crossHair" marker="none" marker-start="none" marker-end="none" marker-mid="none" stroke="black">
+            <g id="crossHair" style="marker:none" stroke="black">
                 <line y1="-5" x2="0" y2="5" />
                 <line x1="-5" x2="5" y2="0" />
             </g>
@@ -186,13 +186,11 @@
         <g transform="translate(0, 140)"  >
             <!-- Top reference point -->
             <use xlink:href="#testPath" 
-                 marker="url(#markerHidden)"
-                 style="stroke-width:1; stroke:crimson"/>
+                 style="marker:url(#markerHidden); stroke-width:1; stroke:crimson"/>
             <use xlink:href="#testPathCrossHairs" />
             
             <use y="70" xlink:href="#testPath" 
-                 marker="url(#markerOverflow)"
-                 style="stroke-width:1; stroke:crimson"/>
+                 style="marker:url(#markerOverflow);stroke-width:1; stroke:crimson"/>
             <use y="70" xlink:href="#testPathCrossHairs" />
 
             <g class="label" transform="translate(60, 90)" text-anchor="middle">
@@ -229,13 +227,11 @@
         <g transform="translate(225, 140)"  >
             <!-- Top reference point -->
             <use xlink:href="#testPath" 
-                 marker="url(#markerStrokeWidth)"
-                 style="stroke-width:.5; stroke:crimson"/>
+                 style="marker:url(#markerStrokeWidth);stroke-width:.5; stroke:crimson"/>
             <use xlink:href="#testPathCrossHairs" />
 
             <use y="70" xlink:href="#testPath" 
-                 marker="url(#markerUserSpace)"
-                 style="stroke-width:.5; stroke:crimson"/>
+                 style="marker:url(#markerUserSpace); stroke-width:.5; stroke:crimson"/>
             <use y="70" xlink:href="#testPathCrossHairs" />
 
             <g class="label" transform="translate(60, 90)" text-anchor="middle">
