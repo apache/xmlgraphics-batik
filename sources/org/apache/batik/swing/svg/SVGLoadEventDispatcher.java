@@ -10,6 +10,8 @@ package org.apache.batik.swing.svg;
 
 import java.awt.EventQueue;
 
+import java.lang.reflect.InvocationTargetException;
+
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -125,7 +127,7 @@ public class SVGLoadEventDispatcher extends Thread {
     /**
      * Fires a SVGLoadEventDispatcherEvent.
      */
-    protected void fireStartedEvent() {
+    protected void fireStartedEvent() throws InterruptedException {
         final Object[] dll = listeners.toArray();
 
         if (dll.length > 0) {
@@ -139,15 +141,18 @@ public class SVGLoadEventDispatcher extends Thread {
                     dl.svgLoadEventDispatchStarted(ev);
                 }
             } else {
-                EventQueue.invokeLater(new Runnable() {
-                    public void run() {
-                        for (int i = 0; i < dll.length; i++) {
-                            SVGLoadEventDispatcherListener dl =
-                                (SVGLoadEventDispatcherListener)dll[i];
-                            dl.svgLoadEventDispatchStarted(ev);
-                        }
-                    }
-                });
+                try {
+                    EventQueue.invokeAndWait(new Runnable() {
+                            public void run() {
+                                for (int i = 0; i < dll.length; i++) {
+                                    SVGLoadEventDispatcherListener dl =
+                                        (SVGLoadEventDispatcherListener)dll[i];
+                                    dl.svgLoadEventDispatchStarted(ev);
+                                }
+                            }
+                        });
+                } catch (InvocationTargetException e) {
+                }
             }
         }
     }

@@ -10,6 +10,8 @@ package org.apache.batik.swing.svg;
 
 import java.awt.EventQueue;
 
+import java.lang.reflect.InvocationTargetException;
+
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -115,7 +117,7 @@ public class GVTTreeBuilder extends Thread {
     /**
      * Fires a GVTTreeBuilderEvent.
      */
-    protected void fireStartedEvent() {
+    protected void fireStartedEvent() throws InterruptedException {
         final Object[] dll = listeners.toArray();
 
         if (dll.length > 0) {
@@ -127,15 +129,18 @@ public class GVTTreeBuilder extends Thread {
                     dl.gvtBuildStarted(ev);
                 }
             } else {
-                EventQueue.invokeLater(new Runnable() {
-                    public void run() {
-                        for (int i = 0; i < dll.length; i++) {
-                            GVTTreeBuilderListener dl =
-                                (GVTTreeBuilderListener)dll[i];
-                            dl.gvtBuildStarted(ev);
-                        }
-                    }
-                });
+                try {
+                    EventQueue.invokeAndWait(new Runnable() {
+                            public void run() {
+                                for (int i = 0; i < dll.length; i++) {
+                                    GVTTreeBuilderListener dl =
+                                        (GVTTreeBuilderListener)dll[i];
+                                    dl.gvtBuildStarted(ev);
+                                }
+                            }
+                        });
+                } catch (InvocationTargetException e) {
+                }
             }
         }
     }

@@ -15,6 +15,8 @@ import java.awt.geom.AffineTransform;
 
 import java.awt.image.BufferedImage;
 
+import java.lang.reflect.InvocationTargetException;
+
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -160,24 +162,29 @@ public class GVTTreeRenderer extends Thread {
     /**
      * Fires a GVTTreeRendererEvent in the preparing phase.
      */
-    protected void firePrepareEvent() {
+    protected void firePrepareEvent() throws InterruptedException {
         final Object[] dll = listeners.toArray();
 
         if (dll.length > 0) {
-            final GVTTreeRendererEvent ev = new GVTTreeRendererEvent(this, null);
+            final GVTTreeRendererEvent ev =
+                new GVTTreeRendererEvent(this, null);
 
             if (EventQueue.isDispatchThread()) {
                 for (int i = 0; i < dll.length; i++) {
                     ((GVTTreeRendererListener)dll[i]).gvtRenderingPrepare(ev);
                 }
             } else {
-                EventQueue.invokeLater(new Runnable() {
-                    public void run() {
-                        for (int i = 0; i < dll.length; i++) {
-                            ((GVTTreeRendererListener)dll[i]).gvtRenderingPrepare(ev);
-                        }
-                    }
-                });
+                try {
+                    EventQueue.invokeAndWait(new Runnable() {
+                            public void run() {
+                                for (int i = 0; i < dll.length; i++) {
+                                    ((GVTTreeRendererListener)dll[i]).
+                                        gvtRenderingPrepare(ev);
+                                }
+                            }
+                        });
+                } catch (InvocationTargetException e) {
+                }
             }
         }
     }
@@ -185,7 +192,8 @@ public class GVTTreeRenderer extends Thread {
     /**
      * Fires a GVTTreeRendererEvent in the starting phase.
      */
-    protected void fireStartedEvent(BufferedImage bi) {
+    protected void fireStartedEvent(BufferedImage bi)
+        throws InterruptedException {
         final Object[] dll = listeners.toArray();
 
         if (dll.length > 0) {
@@ -196,13 +204,17 @@ public class GVTTreeRenderer extends Thread {
                     ((GVTTreeRendererListener)dll[i]).gvtRenderingStarted(ev);
                 }
             } else {
-                EventQueue.invokeLater(new Runnable() {
-                    public void run() {
-                        for (int i = 0; i < dll.length; i++) {
-                            ((GVTTreeRendererListener)dll[i]).gvtRenderingStarted(ev);
-                        }
-                    }
-                });
+                try {
+                    EventQueue.invokeAndWait(new Runnable() {
+                            public void run() {
+                                for (int i = 0; i < dll.length; i++) {
+                                    ((GVTTreeRendererListener)dll[i]).
+                                        gvtRenderingStarted(ev);
+                                }
+                            }
+                        });
+                } catch (InvocationTargetException e) {
+                }
             }
         }
     }
@@ -218,13 +230,15 @@ public class GVTTreeRenderer extends Thread {
 
             if (EventQueue.isDispatchThread()) {
                 for (int i = 0; i < dll.length; i++) {
-                    ((GVTTreeRendererListener)dll[i]).gvtRenderingCancelled(ev);
+                    ((GVTTreeRendererListener)dll[i]).
+                        gvtRenderingCancelled(ev);
                 }
             } else {
                 EventQueue.invokeLater(new Runnable() {
                     public void run() {
                         for (int i = 0; i < dll.length; i++) {
-                            ((GVTTreeRendererListener)dll[i]).gvtRenderingCancelled(ev);
+                            ((GVTTreeRendererListener)dll[i]).
+                                gvtRenderingCancelled(ev);
                         }
                     }
                 });
@@ -243,13 +257,15 @@ public class GVTTreeRenderer extends Thread {
 
             if (EventQueue.isDispatchThread()) {
                 for (int i = 0; i < dll.length; i++) {
-                    ((GVTTreeRendererListener)dll[i]).gvtRenderingCompleted(ev);
+                    ((GVTTreeRendererListener)dll[i]).
+                        gvtRenderingCompleted(ev);
                 }
             } else {
                 EventQueue.invokeLater(new Runnable() {
                     public void run() {
                         for (int i = 0; i < dll.length; i++) {
-                            ((GVTTreeRendererListener)dll[i]).gvtRenderingCompleted(ev);
+                            ((GVTTreeRendererListener)dll[i]).
+                                gvtRenderingCompleted(ev);
                         }
                     }
                 });
@@ -264,7 +280,8 @@ public class GVTTreeRenderer extends Thread {
         final Object[] dll = listeners.toArray();
 
         if (dll.length > 0) {
-            final GVTTreeRendererEvent ev = new GVTTreeRendererEvent(this, null);
+            final GVTTreeRendererEvent ev =
+                new GVTTreeRendererEvent(this, null);
 
             if (EventQueue.isDispatchThread()) {
                 for (int i = 0; i < dll.length; i++) {
@@ -274,7 +291,8 @@ public class GVTTreeRenderer extends Thread {
                 EventQueue.invokeLater(new Runnable() {
                     public void run() {
                         for (int i = 0; i < dll.length; i++) {
-                            ((GVTTreeRendererListener)dll[i]).gvtRenderingFailed(ev);
+                            ((GVTTreeRendererListener)dll[i]).
+                                gvtRenderingFailed(ev);
                         }
                     }
                 });

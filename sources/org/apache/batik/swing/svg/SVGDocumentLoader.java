@@ -12,6 +12,8 @@ import java.awt.EventQueue;
 
 import java.io.InterruptedIOException;
 
+import java.lang.reflect.InvocationTargetException;
+
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -100,27 +102,32 @@ public class SVGDocumentLoader extends Thread {
     /**
      * Fires a SVGDocumentLoaderEvent.
      */
-    protected void fireStartedEvent() {
+    protected void fireStartedEvent() throws InterruptedException {
         final Object[] dll = listeners.toArray();
 
         if (dll.length > 0) {
-            final SVGDocumentLoaderEvent ev = new SVGDocumentLoaderEvent(this, null);
+            final SVGDocumentLoaderEvent ev =
+                new SVGDocumentLoaderEvent(this, null);
 
             if (EventQueue.isDispatchThread()) {
                 for (int i = 0; i < dll.length; i++) {
-                    SVGDocumentLoaderListener dl = (SVGDocumentLoaderListener)dll[i];
+                    SVGDocumentLoaderListener dl =
+                        (SVGDocumentLoaderListener)dll[i];
                     dl.documentLoadingStarted(ev);
                 }
             } else {
-                EventQueue.invokeLater(new Runnable() {
-                    public void run() {
-                        for (int i = 0; i < dll.length; i++) {
-                            SVGDocumentLoaderListener dl =
-                                (SVGDocumentLoaderListener)dll[i];
-                            dl.documentLoadingStarted(ev);
-                        }
-                    }
-                });
+                try {
+                    EventQueue.invokeAndWait(new Runnable() {
+                            public void run() {
+                                for (int i = 0; i < dll.length; i++) {
+                                    SVGDocumentLoaderListener dl =
+                                        (SVGDocumentLoaderListener)dll[i];
+                                    dl.documentLoadingStarted(ev);
+                                }
+                            }
+                        });
+                } catch (InvocationTargetException e) {
+                }
             }
         }
     }
@@ -132,11 +139,13 @@ public class SVGDocumentLoader extends Thread {
         final Object[] dll = listeners.toArray();
 
         if (dll.length > 0) {
-            final SVGDocumentLoaderEvent ev = new SVGDocumentLoaderEvent(this, doc);
+            final SVGDocumentLoaderEvent ev =
+                new SVGDocumentLoaderEvent(this, doc);
 
             if (EventQueue.isDispatchThread()) {
                 for (int i = 0; i < dll.length; i++) {
-                    SVGDocumentLoaderListener dl = (SVGDocumentLoaderListener)dll[i];
+                    SVGDocumentLoaderListener dl =
+                        (SVGDocumentLoaderListener)dll[i];
                     dl.documentLoadingCompleted(ev);
                 }
             } else {
@@ -160,11 +169,13 @@ public class SVGDocumentLoader extends Thread {
         final Object[] dll = listeners.toArray();
 
         if (dll.length > 0) {
-            final SVGDocumentLoaderEvent ev = new SVGDocumentLoaderEvent(this, null);
+            final SVGDocumentLoaderEvent ev =
+                new SVGDocumentLoaderEvent(this, null);
 
             if (EventQueue.isDispatchThread()) {
                 for (int i = 0; i < dll.length; i++) {
-                    SVGDocumentLoaderListener dl = (SVGDocumentLoaderListener)dll[i];
+                    SVGDocumentLoaderListener dl =
+                        (SVGDocumentLoaderListener)dll[i];
                     dl.documentLoadingFailed(ev);
                 }
             } else {
@@ -188,11 +199,13 @@ public class SVGDocumentLoader extends Thread {
         final Object[] dll = listeners.toArray();
 
         if (dll.length > 0) {
-            final SVGDocumentLoaderEvent ev = new SVGDocumentLoaderEvent(this, null);
+            final SVGDocumentLoaderEvent ev =
+                new SVGDocumentLoaderEvent(this, null);
 
             if (EventQueue.isDispatchThread()) {
                 for (int i = 0; i < dll.length; i++) {
-                    SVGDocumentLoaderListener dl = (SVGDocumentLoaderListener)dll[i];
+                    SVGDocumentLoaderListener dl =
+                        (SVGDocumentLoaderListener)dll[i];
                     dl.documentLoadingCancelled(ev);
                 }
             } else {
