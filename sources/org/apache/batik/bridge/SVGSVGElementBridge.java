@@ -27,6 +27,7 @@ import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
 import org.w3c.dom.events.MutationEvent;
+import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.svg.SVGElement;
 import org.w3c.dom.svg.SVGSVGElement;
 
@@ -75,7 +76,12 @@ public class SVGSVGElementBridge extends SVGGElementBridge {
         UnitProcessor.Context uctx = UnitProcessor.createContext(ctx, e);
         String s;
 
-        boolean isOutermost = (((SVGElement)e).getOwnerSVGElement() == null);
+        // In some cases we converted document fragments which didn't
+        // have a parent SVG element, this check makes sure only the
+        // real root of the SVG Document tries to do negotiation with
+        // the UA.
+        SVGDocument doc = (SVGDocument)((SVGElement)e).getOwnerDocument();
+        boolean isOutermost = (doc.getRootElement() == e);
         float x = 0;
         float y = 0;
         // x and y have no meaning on the outermost 'svg' element

@@ -133,6 +133,7 @@ public class CanvasGraphicsNode extends CompositeGraphicsNode {
     public AffineTransform getViewingTransform() {
         return viewingTransform;
     }
+
     //
     // Drawing methods
     //
