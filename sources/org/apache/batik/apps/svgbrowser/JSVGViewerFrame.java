@@ -646,7 +646,9 @@ public class JSVGViewerFrame
         List components = new LinkedList();
         public BackAction() {}
         public void actionPerformed(ActionEvent e) {
-            localHistory.back();
+            if (localHistory.canGoBack()) {
+                localHistory.back();
+            }
         }
 
         public void addJComponent(JComponent c) {
@@ -671,7 +673,9 @@ public class JSVGViewerFrame
         List components = new LinkedList();
         public ForwardAction() {}
         public void actionPerformed(ActionEvent e) {
-            localHistory.forward();
+            if (localHistory.canGoForward()) {
+                localHistory.forward();
+            }
         }
 
         public void addJComponent(JComponent c) {
