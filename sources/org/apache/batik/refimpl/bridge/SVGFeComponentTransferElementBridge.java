@@ -116,6 +116,7 @@ public class SVGFeComponentTransferElementBridge
             = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
                                                         filteredElement,
                                                         defaultRegion,
+                                                        filterRegion,
                                                         filteredNode,
                                                         rc,
                                                         uctx);

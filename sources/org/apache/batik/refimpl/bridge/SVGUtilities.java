@@ -832,6 +832,7 @@ public class SVGUtilities implements SVGConstants {
      * @param filterPrimitiveElement the primitive filter
      * @param filteredElement the element which uses the filter
      * @param defaultRegion the default region to filter
+     * @param filterRegion the filter chain region
      * @param node the graphics node that represents the element to filter
      * @param uctx the context used to compute units and percentages
      */
@@ -839,6 +840,7 @@ public class SVGUtilities implements SVGConstants {
         Rectangle2D convertFilterPrimitiveRegion(Element filterPrimitiveElement,
                                                  Element filteredElement,
                                                  Rectangle2D defaultRegion,
+                                                 Rectangle2D filterRegion,
                                                  GraphicsNode node,
                                                  GraphicsNodeRenderContext rc,
                                                  UnitProcessor.Context uctx) {
@@ -944,7 +946,9 @@ public class SVGUtilities implements SVGConstants {
                     new Object[] {filterPrimitiveElement.getLocalName()}));
         }
 
-        return new Rectangle2D.Double(x, y, w, h);
+        Rectangle2D region = new Rectangle2D.Double(x, y, w, h);
+        region.intersect(region, filterRegion, region);
+        return region;
     }
 
     // ------------------------------------------------------------------------

@@ -619,6 +619,17 @@ public class CSSUtilities implements SVGConstants {
     }
 
     /**
+     * Returns the <tt>Color</tt> corresponding to the lighting-color
+     * attribute.
+     * @param decl the css style declaration
+     */
+    public static Color convertLightingColor(CSSStyleDeclaration decl) {
+        CSSPrimitiveValue v =
+            (CSSPrimitiveValue) decl.getPropertyCSSValue(CSS_LIGHTING_COLOR_PROPERTY);
+        return convertColor(v.getRGBColorValue(), 1);
+    }
+
+    /**
      * Returns the <tt>Color</tt> corresponding to the stop
      * attributes.
      * @param decl the css style declaration

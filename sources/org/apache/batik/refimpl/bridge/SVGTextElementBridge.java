@@ -647,13 +647,11 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
 
         result.put(GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER, element);
 
-        // Font size
+        // Font size, in user space units.
         float fs = CSSUtilities.convertFontSize((SVGElement)element,
                                                 ctx,
                                                 cssDecl,
                                                 uctx);
-
-        fs = fs * ctx.getUserAgent().getPixelToMM() * 72f / 25.4f;
 
         result.put(TextAttribute.SIZE, new Float(fs));
 

@@ -92,6 +92,9 @@ public class SVGBridgeContext extends ConcreteBridgeContext
         putBridge(SVG_NAMESPACE_URI, SVG_FE_CONVOLVE_MATRIX_TAG,
                   new SVGFeConvolveMatrixElementBridge());
 
+        putBridge(SVG_NAMESPACE_URI, SVG_FE_DIFFUSE_LIGHTING_TAG,
+                  new SVGFeDiffuseLightingElementBridge());
+
         putBridge(SVG_NAMESPACE_URI, SVG_FE_DISPLACEMENT_MAP_TAG,
                   new SVGFeDisplacementMapElementBridge());
 
@@ -112,6 +115,9 @@ public class SVGBridgeContext extends ConcreteBridgeContext
 
         putBridge(SVG_NAMESPACE_URI, SVG_FE_OFFSET_TAG,
                   new SVGFeOffsetElementBridge());
+
+        putBridge(SVG_NAMESPACE_URI, SVG_FE_SPECULAR_LIGHTING_TAG,
+                  new SVGFeSpecularLightingElementBridge());
 
         putBridge(SVG_NAMESPACE_URI, SVG_FE_TILE_TAG,
                   new SVGFeTileElementBridge());
