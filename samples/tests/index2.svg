@@ -100,10 +100,10 @@
     </text>
   </a> 
 
-  <a xlink:href="xsltest.svg" xlink:show="new">
+  <a xlink:href="textFeatures.svg" xlink:show="new">
     <text class="link" x="70" y="0"
           transform="translate(0, 250) rotate(-35)">
-      XSL Stylesheets (xsltest.svg)
+      Text (textFeatures.svg)
     </text>
   </a> 
 
