@@ -26,7 +26,14 @@ import org.apache.batik.gvt.RootGraphicsNode;
  */
 public class DynamicRenderer extends StaticRenderer {
 
+    /**
+     * The listener that receives <tt>PropertyChangeEvent</tt> and
+     * notify the <tt>RepaintHandler</tt> that a region has to be repainted.
+     */
     protected UpdateListener updateListener = new UpdateListener();
+    /**
+     * The handler to notify that a region has to be repainted.
+     */
     protected RepaintHandler repaintHandler;
 
     public DynamicRenderer(BufferedImage offScreen) {
@@ -54,29 +61,13 @@ public class DynamicRenderer extends StaticRenderer {
         return repaintHandler;
     }
 
-    public void repaint(Shape area) {
-        System.out.println("********* repaint "+area.getBounds());
-        super.repaint(area);
-    }
-
     /**
      * Returns the bounds of the specified graphics node in the
      * current user space coordinate system.
      * @param node the graphics node
      */
     protected Shape getBoundsInRendererSpace(GraphicsNode node) {
-        Rectangle2D bounds = node.getBounds();
-        AffineTransform Gx = getGlobalTransform(node);
-        try {
-            AffineTransform GxInv = Gx.createInverse();
-            return GxInv.createTransformedShape(bounds);
-        } catch(NoninvertibleTransformException ex) {
-            ex.printStackTrace();
-            return null;
-        }
-    }
-
-    protected AffineTransform getGlobalTransform(GraphicsNode node) {
+        // compute the matrix to go to renderer space
         AffineTransform Gx = new AffineTransform();
         RootGraphicsNode root = node.getRoot();
         while (node != root) {
@@ -86,21 +77,18 @@ public class DynamicRenderer extends StaticRenderer {
             }
             node = node.getParent();
         }
-        return Gx;
+        Rectangle2D bounds = node.getBounds();
+        return Gx.createTransformedShape(bounds);
     }
 
     /**
      * Simple listener that fire the repaint handler when the GVT tree
      * has been modified.
      */
-    class UpdateListener implements PropertyChangeListener {
+    protected class UpdateListener implements PropertyChangeListener {
         public void propertyChange(PropertyChangeEvent evt) {
             GraphicsNode node = (GraphicsNode) evt.getSource();
             Shape aoi = getBoundsInRendererSpace(node);
-            System.out.println("+-+-+-+-+-+-+-+-+ "+node+" propertyChange "+" "+
-                               node.getBounds()+" "+
-                               evt.getPropertyName()+" "+
-                               aoi);
             repaintHandler.notifyRepaintedRegion(aoi);
         }
     }
