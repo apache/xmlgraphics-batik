@@ -80,7 +80,7 @@
                 they draw to a screen or a printer, by leveraging the Java 2D API's extensible design.</li>
                 <li><link href="domapi.html"><code>SVG DOM</code></link> an implementation of the SVG DOM API defined
                 in the SVG recommendation. It lets the programmer manipulate SVG documents in a Java program.</li>
-                <li><link href="jsvgcanvas.html"><code>JSVGCanvas</code></link> is a UI component that can display
+                <li><link href="svgcanvas.html"><code>JSVGCanvas</code></link> is a UI component that can display
                 SVG content and let the user interact with that content (zoom, pan, rotate, text selection, etc...)</li>
                 <li><code>Bridge</code> this module, more rarely used directly, can convert an
                 SVG document into the internal representation Batik uses for graphics, based on the 
