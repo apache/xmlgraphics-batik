@@ -39,14 +39,14 @@
         <arg class="java.net.URL" value="file:samples/anne.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/anne.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/accepted-variation/anne.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/variation-candidate/anne.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/candidate-variation/anne.png" />
     </test>
 
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/asf-logo.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/asf-logo.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/accepted-variation/asf-logo.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/variation-candidate/asf-logo.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/candidate-variation/asf-logo.png" />
     </test>
 
 
@@ -54,7 +54,7 @@
         <arg class="java.net.URL" value="file:samples/authors.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/authors.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/accepted-variation/authors.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/variation-candidate/authors.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/candidate-variation/authors.png" />
     </test>
 
 
@@ -62,7 +62,7 @@
         <arg class="java.net.URL" value="file:samples/barChart.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/barChart.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/accepted-variation/barChart.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/variation-candidate/barChart.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/candidate-variation/barChart.png" />
     </test>
 
 
@@ -70,7 +70,7 @@
         <arg class="java.net.URL" value="file:samples/batik3D.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/batik3D.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/accepted-variation/batik3D.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/variation-candidate/batik3D.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/candidate-variation/batik3D.png" />
     </test>
 
 
@@ -78,7 +78,7 @@
         <arg class="java.net.URL" value="file:samples/batik70.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/batik70.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/accepted-variation/batik70.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/variation-candidate/batik70.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/candidate-variation/batik70.png" />
     </test>
 
 
@@ -86,7 +86,7 @@
         <arg class="java.net.URL" value="file:samples/batikBatik.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/batikBatik.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/accepted-variation/batikBatik.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/variation-candidate/batikBatik.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/candidate-variation/batikBatik.png" />
     </test>
 
 
@@ -94,7 +94,7 @@
         <arg class="java.net.URL" value="file:samples/batikFX.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/batikFX.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/accepted-variation/batikFX.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/variation-candidate/batikFX.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/candidate-variation/batikFX.png" />
     </test>
 
 
@@ -102,7 +102,7 @@
         <arg class="java.net.URL" value="file:samples/batikLogo.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/batikLogo.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/accepted-variation/batikLogo.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/variation-candidate/batikLogo.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/candidate-variation/batikLogo.png" />
     </test>
 
 
@@ -110,7 +110,7 @@
         <arg class="java.net.URL" value="file:samples/batikMusic.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/batikMusic.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/accepted-variation/batikMusic.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/variation-candidate/batikMusic.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/candidate-variation/batikMusic.png" />
     </test>
 
 
@@ -118,7 +118,7 @@
         <arg class="java.net.URL" value="file:samples/batikYin.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/batikYin.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/accepted-variation/batikYin.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/variation-candidate/batikYin.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/candidate-variation/batikYin.png" />
     </test>
 
 
@@ -126,7 +126,7 @@
         <arg class="java.net.URL" value="file:samples/chessboard.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/chessboard.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/accepted-variation/chessboard.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/variation-candidate/chessboard.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/candidate-variation/chessboard.png" />
     </test>
 
 
@@ -134,7 +134,7 @@
         <arg class="java.net.URL" value="file:samples/gradients.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/gradients.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/accepted-variation/gradients.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/variation-candidate/gradients.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/candidate-variation/gradients.png" />
     </test>
 
 
@@ -142,7 +142,7 @@
         <arg class="java.net.URL" value="file:samples/henryV.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/henryV.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/accepted-variation/henryV.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/variation-candidate/henryV.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/candidate-variation/henryV.png" />
     </test>
 
 
@@ -150,7 +150,7 @@
         <arg class="java.net.URL" value="file:samples/logoShadowOffset.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/logoShadowOffset.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/accepted-variation/logoShadowOffset.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/variation-candidate/logoShadowOffset.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/candidate-variation/logoShadowOffset.png" />
     </test>
 
 
@@ -158,7 +158,7 @@
         <arg class="java.net.URL" value="file:samples/logoTexture.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/logoTexture.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/accepted-variation/logoTexture.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/variation-candidate/logoTexture.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/candidate-variation/logoTexture.png" />
     </test>
 
 
@@ -166,7 +166,7 @@
         <arg class="java.net.URL" value="file:samples/moonPhases.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/moonPhases.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/accepted-variation/moonPhases.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/variation-candidate/moonPhases.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/candidate-variation/moonPhases.png" />
     </test>
 
 
@@ -174,7 +174,7 @@
         <arg class="java.net.URL" value="file:samples/sizeOfSun.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/sizeOfSun.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/accepted-variation/sizeOfSun.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/variation-candidate/sizeOfSun.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/candidate-variation/sizeOfSun.png" />
     </test>
 
 
@@ -182,7 +182,7 @@
         <arg class="java.net.URL" value="file:samples/textRotate.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/textRotate.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/accepted-variation/textRotate.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/variation-candidate/textRotate.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/candidate-variation/textRotate.png" />
     </test>
 
 
@@ -190,7 +190,7 @@
         <arg class="java.net.URL" value="file:samples/textRotateShadows.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/textRotateShadows.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/accepted-variation/textRotateShadows.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/variation-candidate/textRotateShadows.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/candidate-variation/textRotateShadows.png" />
     </test>
 
  
@@ -201,309 +201,309 @@
         <arg class="java.net.URL" value="file:samples/tests/patternRegionA.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/patternRegionA.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/textRotateShadows.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/variation-candidate/textRotateShadows.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/textRotateShadows.png" />
     </test>
 
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/tests/Template.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/Template.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/Template.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/variation-candidate/Template.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/Template.png" />
     </test>
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/tests/clip.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/clip.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/clip.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/variation-candidate/clip.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/clip.png" />
     </test>
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/tests/colorProfile.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/colorProfile.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/colorProfile.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/variation-candidate/colorProfile.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/colorProfile.png" />
     </test>
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/tests/patternRegionB.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/patternRegionB.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/patternRegionB.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/variation-candidate/patternRegionB.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/patternRegionB.png" />
     </test>
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/tests/colors.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/colors.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/colors.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/variation-candidate/colors.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/colors.png" />
     </test>
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/tests/dataProtocol.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/dataProtocol.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/dataProtocol.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/variation-candidate/dataProtocol.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/dataProtocol.png" />
     </test>
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/tests/enableBackground.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/enableBackground.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/enableBackground.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/variation-candidate/enableBackground.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/enableBackground.png" />
     </test>
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/tests/feColorMatrix.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/feColorMatrix.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/feColorMatrix.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/variation-candidate/feColorMatrix.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/feColorMatrix.png" />
     </test>
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/tests/patternPreserveAspectRatioA.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/patternPreserveAspectRatioA.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/patternPreserveAspectRatioA.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/variation-candidate/patternPreserveAspectRatioA.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/patternPreserveAspectRatioA.png" />
     </test>
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/tests/feComponentTransfer.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/feComponentTransfer.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/feComponentTransfer.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/variation-candidate/feComponentTransfer.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/feComponentTransfer.png" />
     </test>
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/tests/patternRegions.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/patternRegions.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/patternRegions.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/variation-candidate/patternRegions.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/patternRegions.png" />
     </test>
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/tests/feComponentTransfer2.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/feComponentTransfer2.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/feComponentTransfer2.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/variation-candidate/feComponentTransfer2.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/feComponentTransfer2.png" />
     </test>
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/tests/feComposite.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/feComposite.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/feComposite.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/variation-candidate/feComposite.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/feComposite.png" />
     </test>
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/tests/feConvolveMatrix.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/feConvolveMatrix.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/feConvolveMatrix.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/variation-candidate/feConvolveMatrix.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/feConvolveMatrix.png" />
     </test>
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/tests/feDisplacementMap.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/feDisplacementMap.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/feDisplacementMap.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/variation-candidate/feDisplacementMap.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/feDisplacementMap.png" />
     </test>
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/tests/feImage.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/feImage.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/feImage.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/variation-candidate/feImage.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/feImage.png" />
     </test>
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/tests/feMerge.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/feMerge.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/feMerge.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/variation-candidate/feMerge.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/feMerge.png" />
     </test>
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/tests/feMorphology.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/feMorphology.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/feMorphology.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/variation-candidate/feMorphology.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/feMorphology.png" />
     </test>
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/tests/feTile.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/feTile.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/feTile.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/variation-candidate/feTile.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/feTile.png" />
     </test>
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/tests/feTileTarget.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/feTileTarget.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/feTileTarget.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/variation-candidate/feTileTarget.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/feTileTarget.png" />
     </test>
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/tests/feTurbulence.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/feTurbulence.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/feTurbulence.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/variation-candidate/feTurbulence.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/feTurbulence.png" />
     </test>
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/tests/filterRegions.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/filterRegions.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/filterRegions.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/variation-candidate/filterRegions.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/filterRegions.png" />
     </test>
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/tests/image-rendering.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/image-rendering.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/image-rendering.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/variation-candidate/image-rendering.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/image-rendering.png" />
     </test>
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/tests/image.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/image.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/image.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/variation-candidate/image.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/image.png" />
     </test>
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/tests/index.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/index.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/index.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/variation-candidate/index.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/index.png" />
     </test>
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/tests/index2.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/index2.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/index2.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/variation-candidate/index2.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/index2.png" />
     </test>
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/tests/markersMisc.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/markersMisc.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/markersMisc.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/variation-candidate/markersMisc.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/markersMisc.png" />
     </test>
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/tests/markersOrientA.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/markersOrientA.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/markersOrientA.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/variation-candidate/markersOrientA.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/markersOrientA.png" />
     </test>
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/tests/markersOrientB.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/markersOrientB.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/markersOrientB.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/variation-candidate/markersOrientB.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/markersOrientB.png" />
     </test>
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/tests/markersPreserveAspectRatio.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/markersPreserveAspectRatio.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/markersPreserveAspectRatio.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/variation-candidate/markersPreserveAspectRatio.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/markersPreserveAspectRatio.png" />
     </test>
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/tests/markersShapes.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/markersShapes.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/markersShapes.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/variation-candidate/markersShapes.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/markersShapes.png" />
     </test>
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/tests/maskRegions.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/maskRegions.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/maskRegions.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/variation-candidate/maskRegions.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/maskRegions.png" />
     </test>
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/tests/opacity.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/opacity.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/opacity.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/variation-candidate/opacity.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/opacity.png" />
     </test>
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/tests/opacity2.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/opacity2.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/opacity2.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/variation-candidate/opacity2.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/opacity2.png" />
     </test>
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/tests/paintOpacity.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/paintOpacity.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/paintOpacity.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/variation-candidate/paintOpacity.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/paintOpacity.png" />
     </test>
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/tests/percentagesAndUnits.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/percentagesAndUnits.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/percentagesAndUnits.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/variation-candidate/percentagesAndUnits.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/percentagesAndUnits.png" />
     </test>
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/tests/shape-rendering.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/shape-rendering.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/shape-rendering.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/variation-candidate/shape-rendering.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/shape-rendering.png" />
     </test>
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/tests/svg.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/svg.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/svg.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/variation-candidate/svg.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/svg.png" />
     </test>
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/tests/systemColors.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/systemColors.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/systemColors.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/variation-candidate/systemColors.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/systemColors.png" />
     </test>
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/tests/text-rendering.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/text-rendering.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/text-rendering.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/variation-candidate/text-rendering.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/text-rendering.png" />
     </test>
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/tests/textBiDi.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/textBiDi.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/textBiDi.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/variation-candidate/textBiDi.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/textBiDi.png" />
     </test>
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/tests/textFeatures.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/textFeatures.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/textFeatures.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/variation-candidate/textFeatures.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/textFeatures.png" />
     </test>
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/tests/textLayout.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/textLayout.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/textLayout.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/variation-candidate/textLayout.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/textLayout.png" />
     </test>
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/tests/textLayout2.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/textLayout2.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/textLayout2.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/variation-candidate/textLayout2.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/textLayout2.png" />
     </test>
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/tests/textProperties.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/textProperties.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/textProperties.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/variation-candidate/textProperties.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/textProperties.png" />
     </test>
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/tests/textStyles.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/textStyles.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/textStyles.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/variation-candidate/textStyles.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/textStyles.png" />
     </test>
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/tests/thumbnails.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/thumbnails.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/thumbnails.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/variation-candidate/thumbnails.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/thumbnails.png" />
     </test>
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/tests/visibility.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/visibility.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/visibility.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/variation-candidate/visibility.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/visibility.png" />
     </test>
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/tests/linkingTransform.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/linkingTransform.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/linkingTransform.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/variation-candidate/linkingTransform.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/linkingTransform.png" />
     </test>
 
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/tests/linkingViewBox.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/linkingViewBox.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/linkingViewBox.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/variation-candidate/linkingViewBox.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/linkingViewBox.png" />
     </test>
 
 </testSuite>
