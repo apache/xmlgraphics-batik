@@ -12,6 +12,7 @@ import java.awt.Cursor;
 import java.awt.geom.Dimension2D;
 import java.io.IOException;
 import java.io.InterruptedIOException;
+import java.lang.ref.SoftReference;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -37,6 +38,7 @@ import org.apache.batik.gvt.TextPainter;
 import org.apache.batik.script.Interpreter;
 import org.apache.batik.script.InterpreterPool;
 import org.apache.batik.util.CSSConstants;
+import org.apache.batik.util.CleanerThread;
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.Service;
@@ -883,7 +885,24 @@ public class BridgeContext implements ErrorConstants, CSSContext {
                                       String s,
                                       EventListener l,
                                       boolean b) {
-        eventListenerList.add(new EventListenerMememto(t, s, l, b));
+        eventListenerList.add(new EventListenerMememto(t, s, l, b, this));
+    }
+
+    public static class SoftReferenceMememto 
+        extends CleanerThread.SoftReferenceCleared {
+        Object mememto;
+        List   list;
+        SoftReferenceMememto(Object ref, Object mememto, List list) {
+            super(ref);
+            this.mememto = mememto;
+            this.list    = list;
+        }
+
+        public void cleared() {
+            list.remove(mememto);
+            mememto = null;
+            list    = null;
+        }
     }
 
     /**
@@ -891,21 +910,37 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      */
     protected static class EventListenerMememto {
 
-        public EventTarget target;
-        public EventListener listener;
+        public SoftReference target; // Soft ref to EventTarget
+        public SoftReference listener; // Soft ref to EventListener 
         public boolean useCapture;
         public String eventType;
 
         public EventListenerMememto(EventTarget t, 
                                     String s, 
                                     EventListener l, 
-                                    boolean b) {
-            target = t;
+                                    boolean b,
+                                    BridgeContext ctx) {
+            List list = ctx.eventListenerList;
+            target = new SoftReferenceMememto(t, this, list);
+            listener = new SoftReferenceMememto(l, this, list);
             eventType = s;
-            listener = l;
             useCapture = b;
         }
+
+        public EventListener getListener() {
+            return (EventListener)listener.get();
+        }
+        public EventTarget getTarget() {
+            return (EventTarget)target.get();
+        }
+        public boolean getUseCapture() {
+            return useCapture;
+        }
+        public String getEventType() {
+            return eventType;
+        }
     }
+
 
     /**
      * Disposes this BridgeContext.
@@ -916,9 +951,13 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         Iterator iter = eventListenerList.iterator();
         while (iter.hasNext()) {
             EventListenerMememto m = (EventListenerMememto)iter.next();
-            m.target.removeEventListener(m.eventType,
-                                         m.listener,
-                                         m.useCapture);
+            EventTarget   et = m.getTarget();
+            EventListener el = m.getListener();
+            boolean       uc = m.getUseCapture();
+            String        t  = m.getEventType();
+            if ((et == null) || (el == null) || (t == null))
+                continue;
+            et.removeEventListener(t, el, uc);
         }
 
         EventTarget evtTarget = (EventTarget)document;

@@ -251,8 +251,7 @@ public class GraphicsUtil {
                      0, 0, null);
                 
                 BufferedImage bi = new BufferedImage
-                    (srcCM, wr, 
-                     srcCM.isAlphaPremultiplied(), null);
+                    (srcCM, wr, srcCM.isAlphaPremultiplied(), null);
                 
                 // Any of the drawImage calls that take an
                 // Affine are prone to the 'CGGStackRestore: gstack 

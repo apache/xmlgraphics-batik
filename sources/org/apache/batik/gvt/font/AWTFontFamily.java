@@ -11,6 +11,7 @@ package org.apache.batik.gvt.font;
 import java.awt.font.TextAttribute;
 import java.text.AttributedCharacterIterator;
 import java.util.HashMap;
+import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
 
 /**
  * A font family class for AWT fonts.
@@ -48,9 +49,11 @@ public class AWTFontFamily implements GVTFontFamily {
      *             the derived font.  
      */
     public GVTFont deriveFont(float size, AttributedCharacterIterator aci) {
+
         HashMap fontAttributes = new HashMap(aci.getAttributes());
         fontAttributes.put(TextAttribute.SIZE, new Float(size));
         fontAttributes.put(TextAttribute.FAMILY, familyName);
+        fontAttributes.remove(GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER);
         return new AWTGVTFont(fontAttributes);
     }
 
