@@ -108,7 +108,7 @@ public class SVGGeneratorContext implements ErrorConstants {
      * Sets the {@link org.apache.batik.svggen.SVGIDGenerator}
      * to be used. It should not be <code>null</code>.
      */
-    final protected void setIDGenerator(SVGIDGenerator idGenerator) {
+    final public void setIDGenerator(SVGIDGenerator idGenerator) {
         if (idGenerator == null)
             throw new SVGGraphics2DRuntimeException(ERR_ID_GENERATOR_NULL);
         this.idGenerator = idGenerator;
@@ -126,7 +126,7 @@ public class SVGGeneratorContext implements ErrorConstants {
      * Sets the DOM Factory
      * to be used. It should not be <code>null</code>.
      */
-    final protected void setDOMFactory(Document domFactory) {
+    final public void setDOMFactory(Document domFactory) {
         if (domFactory == null)
             throw new SVGGraphics2DRuntimeException(ERR_DOM_FACTORY_NULL);
         this.domFactory = domFactory;
@@ -144,7 +144,7 @@ public class SVGGeneratorContext implements ErrorConstants {
      * Sets the {@link org.apache.batik.svggen.ExtensionHandler}
      * to be used. It should not be <code>null</code>.
      */
-    final protected void setExtensionHandler(ExtensionHandler extensionHandler) {
+    final public void setExtensionHandler(ExtensionHandler extensionHandler) {
         if (extensionHandler == null)
             throw new SVGGraphics2DRuntimeException(ERR_EXTENSION_HANDLER_NULL);
         this.extensionHandler = extensionHandler;
@@ -162,7 +162,7 @@ public class SVGGeneratorContext implements ErrorConstants {
      * Sets the {@link org.apache.batik.svggen.ImageHandler}
      * to be used. It should not be <code>null</code>.
      */
-    final protected void setImageHandler(ImageHandler imageHandler) {
+    final public void setImageHandler(ImageHandler imageHandler) {
         if (imageHandler == null)
             throw new SVGGraphics2DRuntimeException(ERR_IMAGE_HANDLER_NULL);
         this.imageHandler = imageHandler;
@@ -180,7 +180,7 @@ public class SVGGeneratorContext implements ErrorConstants {
      * Sets the {@link org.apache.batik.svggen.Stylehandler}
      * to be used. It should not be <code>null</code>.
      */
-    final protected void setStyleHandler(StyleHandler styleHandler) {
+    final public void setStyleHandler(StyleHandler styleHandler) {
         if (styleHandler == null)
             throw new SVGGraphics2DRuntimeException(ERR_STYLE_HANDLER_NULL);
         this.styleHandler = styleHandler;
@@ -197,7 +197,7 @@ public class SVGGeneratorContext implements ErrorConstants {
      * Sets the comment to be used. It can be <code>null</code> if you
      * want to disable it.
      */
-    final protected void setComment(String generatorComment) {
+    final public void setComment(String generatorComment) {
         this.generatorComment = generatorComment;
     }
 
@@ -213,7 +213,7 @@ public class SVGGeneratorContext implements ErrorConstants {
      * Sets the {@link org.apache.batik.svggen.Errorhandler}
      * to be used. It should not be <code>null</code>.
      */
-    final protected void setErrorHandler(ErrorHandler errorHandler) {
+    final public void setErrorHandler(ErrorHandler errorHandler) {
         if (errorHandler == null)
             throw new SVGGraphics2DRuntimeException(ERR_ERROR_HANDLER_NULL);
         this.errorHandler = errorHandler;
