@@ -59,6 +59,11 @@ public class SpecularLightingRable8Bit
      */
     private Rectangle2D litRegion;
 
+    /**
+     * The dx/dy to use in user space for the sobel gradient.
+     */
+    float [] kernelUnitLength = null;
+
     public SpecularLightingRable8Bit(Filter src,
                                          Rectangle2D litRegion,
                                          Light light,
@@ -164,7 +169,37 @@ public class SpecularLightingRable8Bit
         this.specularExponent = specularExponent;
     }
 
-    static final boolean SCALE_RESULT=true;
+    /**
+     * Returns the min [dx,dy] distance in user space for evalutation of 
+     * the sobel gradient.
+     */
+    public double [] getKernelUnitLength() {
+        if (kernelUnitLength == null) 
+            return null;
+
+        double [] ret = new double[2];
+        ret[0] = kernelUnitLength[0];
+        ret[1] = kernelUnitLength[1];
+        return ret;
+    }
+
+    /**
+     * Sets the min [dx,dy] distance in user space for evaluation of the 
+     * sobel gradient. If set to zero or null then device space will be used.
+     */
+    public void setKernelUnitLength(double [] kernelUnitLength) {
+        touch();
+        if (kernelUnitLength == null) {
+            this.kernelUnitLength = null;
+            return;
+        }
+
+        if (this.kernelUnitLength == null)
+            this.kernelUnitLength = new float[2];
+            
+        this.kernelUnitLength[0] = (float)kernelUnitLength[0];
+        this.kernelUnitLength[1] = (float)kernelUnitLength[1];
+    }
 
     public RenderedImage createRendering(RenderContext rc){
         Shape aoi = rc.getAreaOfInterest();
@@ -208,10 +243,16 @@ public class SpecularLightingRable8Bit
             return null;
         }
 
-        if (SCALE_RESULT) {
-            scaleX = 1;
-            scaleY = 1;
+        // These values represent the scale factor to the intermediate
+        // coordinate system where we will apply our convolution.
+        if (kernelUnitLength != null) {
+            if (scaleX >= 1/kernelUnitLength[0]) 
+                scaleX = 1/kernelUnitLength[0];
+        
+            if (scaleY >= 1/kernelUnitLength[1]) 
+                scaleY = 1/kernelUnitLength[1];
         }
+        
         AffineTransform scale =
             AffineTransform.getScaleInstance(scaleX, scaleY);
 

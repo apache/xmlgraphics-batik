@@ -79,5 +79,17 @@ public interface SpecularLightingRable extends Filter {
      * Sets the litRegion for this filter
      */
     public void setLitRegion(Rectangle2D litRegion);
+
+    /**
+     * Returns the min [dx,dy] distance in user space for evalutation of 
+     * the sobel gradient.
+     */
+    public double [] getKernelUnitLength();
+
+    /**
+     * Sets the min [dx,dy] distance in user space for evaluation of the 
+     * sobel gradient. If set to zero or null then device space will be used.
+     */
+    public void setKernelUnitLength(double [] kernelUnitLength);
 }
 
