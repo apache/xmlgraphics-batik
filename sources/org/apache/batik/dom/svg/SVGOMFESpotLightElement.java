@@ -27,44 +27,129 @@ public class SVGOMFESpotLightElement
     implements SVGFESpotLightElement {
 
     /**
+     * The DefaultAttributeValueProducer for x.
+     */
+    protected final static DefaultAttributeValueProducer X_DEFAULT_VALUE_PRODUCER =
+        new DefaultAttributeValueProducer() {
+                public String getDefaultAttributeValue() {
+                    return SVG_DEFAULT_VALUE_FE_SPOT_LIGHT_X;
+                }
+            };
+
+    /**
+     * The DefaultAttributeValueProducer for y.
+     */
+    protected final static DefaultAttributeValueProducer Y_DEFAULT_VALUE_PRODUCER =
+        new DefaultAttributeValueProducer() {
+                public String getDefaultAttributeValue() {
+                    return SVG_DEFAULT_VALUE_FE_SPOT_LIGHT_Y;
+                }
+            };
+
+    /**
+     * The DefaultAttributeValueProducer for z.
+     */
+    protected final static DefaultAttributeValueProducer Z_DEFAULT_VALUE_PRODUCER =
+        new DefaultAttributeValueProducer() {
+                public String getDefaultAttributeValue() {
+                    return SVG_DEFAULT_VALUE_FE_SPOT_LIGHT_Z;
+                }
+            };
+
+    /**
+     * The DefaultAttributeValueProducer for pointsAtX.
+     */
+    protected final static DefaultAttributeValueProducer
+        POINTS_AT_X_DEFAULT_VALUE_PRODUCER =
+        new DefaultAttributeValueProducer() {
+                public String getDefaultAttributeValue() {
+                    return SVG_DEFAULT_VALUE_FE_SPOT_LIGHT_POINTS_AT_X;
+                }
+            };
+
+    /**
+     * The DefaultAttributeValueProducer for pointsAtY.
+     */
+    protected final static DefaultAttributeValueProducer
+        POINTS_AT_Y_DEFAULT_VALUE_PRODUCER =
+        new DefaultAttributeValueProducer() {
+                public String getDefaultAttributeValue() {
+                    return SVG_DEFAULT_VALUE_FE_SPOT_LIGHT_POINTS_AT_Y;
+                }
+            };
+
+    /**
+     * The DefaultAttributeValueProducer for pointsAtZ.
+     */
+    protected final static DefaultAttributeValueProducer
+        POINTS_AT_Z_DEFAULT_VALUE_PRODUCER =
+        new DefaultAttributeValueProducer() {
+                public String getDefaultAttributeValue() {
+                    return SVG_DEFAULT_VALUE_FE_SPOT_LIGHT_POINTS_AT_Z;
+                }
+            };
+
+    /**
+     * The DefaultAttributeValueProducer for specularExponent.
+     */
+    protected final static DefaultAttributeValueProducer
+        SPECULAR_EXPONENT_DEFAULT_VALUE_PRODUCER =
+        new DefaultAttributeValueProducer() {
+                public String getDefaultAttributeValue() {
+                    return SVG_DEFAULT_VALUE_FE_SPOT_LIGHT_SPECULAR_EXPONENT;
+                }
+            };
+
+    /**
+     * The DefaultAttributeValueProducer for limitingConeAngle.
+     */
+    protected final static DefaultAttributeValueProducer
+        LIMITING_CONE_ANGLE_DEFAULT_VALUE_PRODUCER =
+        new DefaultAttributeValueProducer() {
+                public String getDefaultAttributeValue() {
+                    return SVG_DEFAULT_VALUE_FE_SPOT_LIGHT_LIMITING_CONE_ANGLE;
+                }
+            };
+
+    /**
      * The reference to the x attribute.
      */
-    protected WeakReference xReference;
+    protected transient WeakReference xReference;
 
     /**
      * The reference to the y attribute.
      */
-    protected WeakReference yReference;
+    protected transient WeakReference yReference;
 
     /**
      * The reference to the z attribute.
      */
-    protected WeakReference zReference;
+    protected transient WeakReference zReference;
 
     /**
      * The reference to the pointsAtX attribute.
      */
-    protected WeakReference pointsAtXReference;
+    protected transient WeakReference pointsAtXReference;
 
     /**
      * The reference to the pointsAtY attribute.
      */
-    protected WeakReference pointsAtYReference;
+    protected transient WeakReference pointsAtYReference;
 
     /**
      * The reference to the pointsAtZ attribute.
      */
-    protected WeakReference pointsAtZReference;
+    protected transient WeakReference pointsAtZReference;
 
     /**
      * The reference to the specularExponent attribute.
      */
-    protected WeakReference specularExponentReference;
+    protected transient WeakReference specularExponentReference;
 
     /**
      * The reference to the limitingConeAngle attribute.
      */
-    protected WeakReference limitingConeAngleReference;
+    protected transient WeakReference limitingConeAngleReference;
 
     /**
      * Creates a new SVGOMFESpotLightElement object.
@@ -97,7 +182,8 @@ public class SVGOMFESpotLightElement
 	SVGAnimatedNumber result;
 	if (xReference == null ||
 	    (result = (SVGAnimatedNumber)xReference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, ATTR_X);
+	    result = new SVGOMAnimatedNumber(this, null, ATTR_X,
+                                             X_DEFAULT_VALUE_PRODUCER);
 	    xReference = new WeakReference(result);
 	}
 	return result;
@@ -111,7 +197,8 @@ public class SVGOMFESpotLightElement
 	SVGAnimatedNumber result;
 	if (yReference == null ||
 	    (result = (SVGAnimatedNumber)yReference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, ATTR_Y);
+	    result = new SVGOMAnimatedNumber(this, null, ATTR_Y,
+                                             Y_DEFAULT_VALUE_PRODUCER);
 	    yReference = new WeakReference(result);
 	}
 	return result;
@@ -125,7 +212,8 @@ public class SVGOMFESpotLightElement
 	SVGAnimatedNumber result;
 	if (zReference == null ||
 	    (result = (SVGAnimatedNumber)zReference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, ATTR_Z);
+	    result = new SVGOMAnimatedNumber(this, null, ATTR_Z,
+                                             Z_DEFAULT_VALUE_PRODUCER);
 	    zReference = new WeakReference(result);
 	}
 	return result;
@@ -139,7 +227,8 @@ public class SVGOMFESpotLightElement
 	SVGAnimatedNumber result;
 	if (pointsAtXReference == null ||
 	    (result = (SVGAnimatedNumber)pointsAtXReference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, ATTR_POINTS_AT_X);
+	    result = new SVGOMAnimatedNumber(this, null, ATTR_POINTS_AT_X,
+                                             POINTS_AT_X_DEFAULT_VALUE_PRODUCER);
 	    pointsAtXReference = new WeakReference(result);
 	}
 	return result;
@@ -153,7 +242,8 @@ public class SVGOMFESpotLightElement
 	SVGAnimatedNumber result;
 	if (pointsAtYReference == null ||
 	    (result = (SVGAnimatedNumber)pointsAtYReference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, ATTR_POINTS_AT_Y);
+	    result = new SVGOMAnimatedNumber(this, null, ATTR_POINTS_AT_Y,
+                                             POINTS_AT_Y_DEFAULT_VALUE_PRODUCER);
 	    pointsAtYReference = new WeakReference(result);
 	}
 	return result;
@@ -167,7 +257,8 @@ public class SVGOMFESpotLightElement
 	SVGAnimatedNumber result;
 	if (pointsAtZReference == null ||
 	    (result = (SVGAnimatedNumber)pointsAtZReference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, ATTR_POINTS_AT_Z);
+	    result = new SVGOMAnimatedNumber(this, null, ATTR_POINTS_AT_Z,
+                                             POINTS_AT_Z_DEFAULT_VALUE_PRODUCER);
 	    pointsAtZReference = new WeakReference(result);
 	}
 	return result;
@@ -180,10 +271,9 @@ public class SVGOMFESpotLightElement
     public SVGAnimatedNumber getSpecularExponent() {
 	SVGAnimatedNumber result;
 	if (specularExponentReference == null ||
-	    (result = (SVGAnimatedNumber)specularExponentReference.get()) ==
-            null) {
-	    result = new SVGOMAnimatedNumber(this, null,
-                                             ATTR_SPECULAR_EXPONENT);
+	    (result = (SVGAnimatedNumber)specularExponentReference.get()) == null) {
+	    result = new SVGOMAnimatedNumber(this, null, ATTR_SPECULAR_EXPONENT,
+                                             SPECULAR_EXPONENT_DEFAULT_VALUE_PRODUCER);
 	    specularExponentReference = new WeakReference(result);
 	}
 	return result;
@@ -196,10 +286,9 @@ public class SVGOMFESpotLightElement
     public SVGAnimatedNumber getLimitingConeAngle() {
 	SVGAnimatedNumber result;
 	if (limitingConeAngleReference == null ||
-	    (result = (SVGAnimatedNumber)limitingConeAngleReference.get()) ==
-            null) {
-	    result = new SVGOMAnimatedNumber(this, null,
-                                             ATTR_LIMITING_CONE_ANGLE);
+	    (result = (SVGAnimatedNumber)limitingConeAngleReference.get()) == null) {
+	    result = new SVGOMAnimatedNumber(this, null, ATTR_LIMITING_CONE_ANGLE,
+                                             LIMITING_CONE_ANGLE_DEFAULT_VALUE_PRODUCER);
 	    limitingConeAngleReference = new WeakReference(result);
 	}
 	return result;

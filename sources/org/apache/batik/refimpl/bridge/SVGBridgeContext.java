@@ -83,10 +83,10 @@ public class SVGBridgeContext extends ConcreteBridgeContext
         putBridge(SVG_NAMESPACE_URI, SVG_FE_COLOR_MATRIX_TAG,
                   new SVGFeColorMatrixElementBridge());
 
-        putBridge(SVG_NAMESPACE_URI, TAG_FE_COMPONENT_TRANSFER,
+        putBridge(SVG_NAMESPACE_URI, SVG_FE_COMPONENT_TRANSFER_TAG,
                   new SVGFeComponentTransferElementBridge());
 
-        putBridge(SVG_NAMESPACE_URI, TAG_FE_COMPOSITE,
+        putBridge(SVG_NAMESPACE_URI, SVG_FE_COMPOSITE_TAG,
                   new SVGFeCompositeElementBridge());
 
         putBridge(SVG_NAMESPACE_URI, TAG_FE_DISPLACEMENT_MAP,

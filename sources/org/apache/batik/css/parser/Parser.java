@@ -46,7 +46,7 @@ public class Parser implements org.w3c.css.sac.Parser {
     /**
      * The document handler.
      */
-    protected DocumentHandler documentHandler;
+    protected DocumentHandler documentHandler = DefaultDocumentHandler.INSTANCE;
 
     /**
      * The selector factory.
@@ -134,40 +134,8 @@ public class Parser implements org.w3c.css.sac.Parser {
             lex = skipSpacesAndCDOCDC();
             for (;;) {
                 if (lex == LexicalUnits.IMPORT_SYMBOL) {
-                    next();
-                    lex = skipSpaces();
-                    String uri = null;
-                    switch (lex) {
-                    default:
-                        throw new CSSException("String or URI expected");
-                    case LexicalUnits.STRING:
-                    case LexicalUnits.URI:
-                        uri = scanner.currentValue();
-                        next();
-                        lex = skipSpaces();
-                    }
-                    CSSSACMediaList ml = new CSSSACMediaList();
-                    if (lex != LexicalUnits.IDENTIFIER) {
-                        throw new CSSException("Identifier expected");
-                    }
-                    ml.append(scanner.currentValue());
-                    
-                    loop: for (;;) {
-                        next();
-                        lex = skipSpaces();
-                        switch (lex) {
-                        case LexicalUnits.SEMI_COLON:
-                            next();
-                            lex = skipSpaces();
-                            break loop;
-                        default:
-                            throw new CSSException("Identifier expected");
-                        case LexicalUnits.IDENTIFIER:
-                            ml.append(scanner.currentValue());
-                        }
-                    }
-                    documentHandler.importStyle(uri, ml, null);
-                    lex = skipSpacesAndCDOCDC();
+                    parseImportRule();
+                    lex = scanner.currentType();
                 } else {
                     break;
                 }
@@ -176,6 +144,12 @@ public class Parser implements org.w3c.css.sac.Parser {
             loop: for (;;) {
                 switch (scanner.currentType()) {
                 // !!! Todo media, page
+                case LexicalUnits.FONT_FACE_SYMBOL:
+                    parseFontFaceRule();
+                    break;
+                case LexicalUnits.AT_KEYWORD:
+                    parseAtRule();
+                    break;
                 case LexicalUnits.EOF:
                     break loop;
                 default:
@@ -186,8 +160,7 @@ public class Parser implements org.w3c.css.sac.Parser {
             documentHandler.endDocument(source);
         }
     }
-    
-    
+
     /**
      * <b>SAC</b>: Implements {@link
      * org.w3c.css.sac.Parser#parseStyleSheet(String)}.
@@ -211,9 +184,147 @@ public class Parser implements org.w3c.css.sac.Parser {
      * <b>SAC</b>: Implements {@link org.w3c.css.sac.Parser#parseRule(InputSource)}.
      */
     public void parseRule(InputSource source) throws CSSException, IOException {
+        scanner = new Scanner(characterStream(source, null), null);
+        next();
+        parseRule();
+    }
+
+    /**
+     * <b>SAC</b>: Implements {@link org.w3c.css.sac.Parser#parseSelectors(InputSource)}.
+     */    
+    public SelectorList parseSelectors(InputSource source)
+        throws CSSException, IOException {
+        scanner = new Scanner(characterStream(source, null), null);
+        next();
+        skipSpaces();
+
+        return parseSelectorList();
+    }
+
+    /**
+     * <b>SAC</b>: Implements
+     * {@link org.w3c.css.sac.Parser#parsePropertyValue(InputSource)}.
+     */    
+    public LexicalUnit parsePropertyValue(InputSource source)
+        throws CSSException, IOException {
+        scanner = new Scanner(characterStream(source, null), null);
+        next();
+        
+        LexicalUnit exp = parseExpression(false);
+        skipSpaces();
+        if (scanner.currentType() != LexicalUnits.EOF) {
+            throw new CSSException("EOF expected");
+        }
+        return exp;
+    }
+    
+    /**
+     * <b>SAC</b>: Implements
+     * {@link org.w3c.css.sac.Parser#parsePriority(InputSource)}.
+     */    
+    public boolean parsePriority(InputSource source)
+        throws CSSException, IOException {
         throw new CSSException("!!! Not Implemented");
     }
 
+    /**
+     * Parses a rule.
+     */
+    protected void parseRule() {
+        switch (scanner.currentType()) {
+        case LexicalUnits.IMPORT_SYMBOL:
+            parseImportRule();
+            break;
+        case LexicalUnits.AT_KEYWORD:
+            parseAtRule();
+            break;
+        case LexicalUnits.FONT_FACE_SYMBOL:
+            parseFontFaceRule();
+            break;
+        // !!! Todo: media, page
+        default:
+            parseRuleSet();
+        }
+    }
+
+    /**
+     * Parses an unknown rule.
+     */
+    protected void parseAtRule() {
+        String text = scanner.scanAtRule();
+        documentHandler.ignorableAtRule(text);
+        next();
+    }
+
+    /**
+     * Parses an import rule. Assumes the current token is '@import'.
+     */
+    protected void parseImportRule() {
+        next();
+        int lex = skipSpaces();
+        String uri = null;
+        switch (lex) {
+        default:
+            throw new CSSException("String or URI expected");
+        case LexicalUnits.STRING:
+        case LexicalUnits.URI:
+            uri = scanner.currentValue();
+            next();
+            lex = skipSpaces();
+        }
+        CSSSACMediaList ml = new CSSSACMediaList();
+        if (lex != LexicalUnits.IDENTIFIER) {
+            throw new CSSException("Identifier expected");
+        }
+        ml.append(scanner.currentValue());
+        
+        loop: for (;;) {
+            next();
+            lex = skipSpaces();
+            switch (lex) {
+            case LexicalUnits.SEMI_COLON:
+                next();
+                lex = skipSpaces();
+                break loop;
+            default:
+                throw new CSSException("Identifier expected");
+            case LexicalUnits.IDENTIFIER:
+                ml.append(scanner.currentValue());
+            }
+        }
+        documentHandler.importStyle(uri, ml, null);
+        skipSpacesAndCDOCDC();
+    }
+
+    /**
+     * Parses a font-face rule.
+     */
+    protected void parseFontFaceRule() {
+        documentHandler.startFontFace();
+
+        try {
+            next();
+            int lex = skipSpaces();
+
+            if (lex != LexicalUnits.LEFT_CURLY_BRACE) {
+                throw new CSSException("'{' expected");
+            }
+            next();
+            skipSpaces();
+        
+            parseStyleDeclaration(true);
+
+            if (scanner.currentType() != LexicalUnits.RIGHT_CURLY_BRACE) {
+                throw new CSSException("'}' expected");
+            }
+            next();
+            skipSpaces();
+            
+        } finally {
+            documentHandler.endFontFace();
+        }
+    }
+    
     /**
      * Parses a ruleset.
      */
@@ -239,18 +350,6 @@ public class Parser implements org.w3c.css.sac.Parser {
         } finally {
             documentHandler.endSelector(sl);
         }
-    }
-
-    /**
-     * <b>SAC</b>: Implements {@link org.w3c.css.sac.Parser#parseSelectors(InputSource)}.
-     */    
-    public SelectorList parseSelectors(InputSource source)
-        throws CSSException, IOException {
-        scanner = new Scanner(characterStream(source, null), null);
-        next();
-        skipSpaces();
-
-        return parseSelectorList();
     }
 
     /**
@@ -426,32 +525,6 @@ public class Parser implements org.w3c.css.sac.Parser {
             result = selectorFactory.createConditionalSelector(result, cond);
         }
         return result;
-    }
-
-    /**
-     * <b>SAC</b>: Implements
-     * {@link org.w3c.css.sac.Parser#parsePropertyValue(InputSource)}.
-     */    
-    public LexicalUnit parsePropertyValue(InputSource source)
-        throws CSSException, IOException {
-        scanner = new Scanner(characterStream(source, null), null);
-        next();
-        
-        LexicalUnit exp = parseExpression(false);
-        skipSpaces();
-        if (scanner.currentType() != LexicalUnits.EOF) {
-            throw new CSSException("EOF expected");
-        }
-        return exp;
-    }
-    
-    /**
-     * <b>SAC</b>: Implements
-     * {@link org.w3c.css.sac.Parser#parsePriority(InputSource)}.
-     */    
-    public boolean parsePriority(InputSource source)
-        throws CSSException, IOException {
-        throw new CSSException("!!! Not Implemented");
     }
 
     /**
@@ -838,6 +911,7 @@ public class Parser implements org.w3c.css.sac.Parser {
             default:
                 break loop;
             case LexicalUnits.COMMENT:
+                documentHandler.comment(scanner.currentValue());
             case LexicalUnits.SPACE:
             case LexicalUnits.CDO:
             case LexicalUnits.CDC:
@@ -893,9 +967,14 @@ public class Parser implements org.w3c.css.sac.Parser {
      */
     protected int next() {
         int result;
-        do {
+        for (;;) {
             result = scanner.next();
-        } while (result == LexicalUnits.COMMENT);
+            if (result == LexicalUnits.COMMENT) {
+                documentHandler.comment(scanner.currentValue());
+            } else {
+                break;
+            }
+        }
         return result;
     }
 }

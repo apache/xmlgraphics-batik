@@ -27,7 +27,7 @@ public class SVGOMFEComponentTransferElement
     /**
      * The reference to the in attribute.
      */
-    protected WeakReference inReference;
+    protected transient WeakReference inReference;
 
     /**
      * Creates a new SVGOMFEComponentTransferElement object.
@@ -49,7 +49,7 @@ public class SVGOMFEComponentTransferElement
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
      */
     public String getLocalName() {
-        return "feComponentTransfer";
+        return SVG_FE_COMPONENT_TRANSFER_TAG;
     }
 
     /**

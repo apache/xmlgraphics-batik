@@ -9,6 +9,7 @@
 package org.apache.batik.dom.svg;
 
 import org.w3c.dom.DOMException;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGAnimatedNumber;
 
@@ -35,15 +36,23 @@ public class SVGOMAnimatedNumber implements SVGAnimatedNumber {
     protected String attributeName;
 
     /**
+     * The default value producer.
+     */
+    protected DefaultAttributeValueProducer defaultValueProducer;
+
+    /**
      * Creates a new SVGAnimatedNumber object.
      * @param elt The associated element.
      * @param nsURI The associated element namespace URI.
      * @param attr The associated attribute name.
+     * @param def The default value producer.
      */
-    public SVGOMAnimatedNumber(Element elt, String nsURI, String attr) {
+    public SVGOMAnimatedNumber(Element elt, String nsURI, String attr,
+                               DefaultAttributeValueProducer def) {
 	element = elt;
 	attributeNsURI = nsURI;
 	attributeName = attr;
+        defaultValueProducer = def;
     }
 
     /**
@@ -51,8 +60,12 @@ public class SVGOMAnimatedNumber implements SVGAnimatedNumber {
      * org.w3c.dom.svg.SVGAnimatedNumber#getBaseVal()}.
      */
     public float getBaseVal() {
-	return Float.parseFloat(element.getAttributeNS(attributeNsURI,
-                                                       attributeName));
+        Attr a = element.getAttributeNodeNS(attributeNsURI, attributeName);
+        if (a != null) {
+            return Float.parseFloat(a.getValue());
+        } else {
+            return Float.parseFloat(defaultValueProducer.getDefaultAttributeValue());
+        }
     }
 
     /**

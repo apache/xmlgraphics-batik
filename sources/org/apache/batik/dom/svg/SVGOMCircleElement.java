@@ -23,6 +23,29 @@ import org.w3c.dom.svg.SVGCircleElement;
 public class SVGOMCircleElement
     extends    SVGGraphicsElement
     implements SVGCircleElement {
+
+    /**
+     * The DefaultAttributeValueProducer for cx.
+     */
+    protected final static DefaultAttributeValueProducer
+        CX_DEFAULT_VALUE_PRODUCER =
+        new DefaultAttributeValueProducer() {
+                public String getDefaultAttributeValue() {
+                    return SVG_DEFAULT_VALUE_CIRCLE_CX;
+                }
+            };
+    
+    /**
+     * The DefaultAttributeValueProducer for cy.
+     */
+    protected final static DefaultAttributeValueProducer
+        CY_DEFAULT_VALUE_PRODUCER =
+        new DefaultAttributeValueProducer() {
+                public String getDefaultAttributeValue() {
+                    return SVG_DEFAULT_VALUE_CIRCLE_CY;
+                }
+            };
+    
     /**
      * The reference to the cx attribute.
      */
@@ -67,13 +90,8 @@ public class SVGOMCircleElement
 	SVGAnimatedLength result;
 	if (cxReference == null ||
 	    (result = (SVGAnimatedLength)cxReference.get()) == null) {
-            DefaultAttributeValueProducer davp;
-            davp = new DefaultAttributeValueProducer() {
-                public String getDefaultAttributeValue() {
-                    return DEFAULT_VALUE_CIRCLE_CX;
-                }
-            };
-	    result = new SVGOMAnimatedLength(this, null, SVG_CX_ATTRIBUTE, davp);
+	    result = new SVGOMAnimatedLength(this, null, SVG_CX_ATTRIBUTE,
+                                             CX_DEFAULT_VALUE_PRODUCER);
 	    cxReference = new WeakReference(result);
 	}
 	return result;
@@ -86,13 +104,8 @@ public class SVGOMCircleElement
 	SVGAnimatedLength result;
 	if (cyReference == null ||
 	    (result = (SVGAnimatedLength)cyReference.get()) == null) {
-            DefaultAttributeValueProducer davp;
-            davp = new DefaultAttributeValueProducer() {
-                public String getDefaultAttributeValue() {
-                    return DEFAULT_VALUE_CIRCLE_CY;
-                }
-            };
-	    result = new SVGOMAnimatedLength(this, null, SVG_CY_ATTRIBUTE, davp);
+	    result = new SVGOMAnimatedLength(this, null, SVG_CY_ATTRIBUTE,
+                                             CY_DEFAULT_VALUE_PRODUCER);
 	    cyReference = new WeakReference(result);
 	}
 	return result;

@@ -217,7 +217,7 @@ public class SVGFeComponentTransferElementBridge
                 case ComponentTransferFunction.TABLE:
                     {
                         String tableValuesStr =
-                            elt.getAttributeNS(null, ATTR_TABLE_VALUES);
+                            elt.getAttributeNS(null, SVG_TABLE_VALUES_ATTRIBUTE);
                         if (tableValuesStr.length() == 0) { // default is IDENTITY
                             txfFunc =
                                 ConcreteComponentTransferFunction.getIdentityTransfer();
@@ -232,7 +232,7 @@ public class SVGFeComponentTransferElementBridge
                 case ComponentTransferFunction.DISCRETE:
                     {
                         String tableValuesStr =
-                            elt.getAttributeNS(null, ATTR_TABLE_VALUES);
+                            elt.getAttributeNS(null, SVG_TABLE_VALUES_ATTRIBUTE);
                         if (tableValuesStr.length() == 0) { // default is IDENTITY
                             txfFunc =
                                 ConcreteComponentTransferFunction.getIdentityTransfer();
@@ -246,37 +246,37 @@ public class SVGFeComponentTransferElementBridge
                     break;
                 case ComponentTransferFunction.LINEAR:
                     {
-                        String slopeStr = elt.getAttributeNS(null, ATTR_SLOPE);
+                        String slopeStr = elt.getAttributeNS(null, SVG_SLOPE_ATTRIBUTE);
                         float slope = 1; // default is 1
                         if(slopeStr.length() > 0){
-                            slope = SVGUtilities.convertSVGNumber(ATTR_SLOPE, slopeStr);
+                            slope = SVGUtilities.convertSVGNumber(SVG_SLOPE_ATTRIBUTE, slopeStr);
                         }
-                        String interceptStr = elt.getAttributeNS(null, ATTR_INTERCEPT);
+                        String interceptStr = elt.getAttributeNS(null, SVG_INTERCEPT_ATTRIBUTE);
                         float intercept = 0; // default is 0
                         if (interceptStr.length() > 0) {
-                            intercept = SVGUtilities.convertSVGNumber(ATTR_INTERCEPT, interceptStr);
+                            intercept = SVGUtilities.convertSVGNumber(SVG_INTERCEPT_ATTRIBUTE, interceptStr);
                         }
                         txfFunc = ConcreteComponentTransferFunction.getLinearTransfer(slope, intercept);
                     }
                     break;
                 case ComponentTransferFunction.GAMMA:
                     {
-                        String amplitudeStr = elt.getAttributeNS(null, ATTR_AMPLITUDE);
+                        String amplitudeStr = elt.getAttributeNS(null, SVG_AMPLITUDE_ATTRIBUTE);
                         float amplitude = 1; // default is 1
                         if (amplitudeStr.length() > 0) {
-                            amplitude = SVGUtilities.convertSVGNumber(ATTR_AMPLITUDE, amplitudeStr);
+                            amplitude = SVGUtilities.convertSVGNumber(SVG_AMPLITUDE_ATTRIBUTE, amplitudeStr);
                         }
 
-                        String exponentStr = elt.getAttributeNS(null, ATTR_EXPONENT);
+                        String exponentStr = elt.getAttributeNS(null, SVG_EXPONENT_ATTRIBUTE);
                         float exponent = 1; // default is 1
                         if (exponentStr.length() > 0) {
-                            exponent = SVGUtilities.convertSVGNumber(ATTR_EXPONENT, exponentStr);
+                            exponent = SVGUtilities.convertSVGNumber(SVG_EXPONENT_ATTRIBUTE, exponentStr);
                         }
 
-                        String offsetStr = elt.getAttributeNS(null, ATTR_OFFSET);
+                        String offsetStr = elt.getAttributeNS(null, SVG_OFFSET_ATTRIBUTE);
                         float offset = 0; // default is 0
                         if (offsetStr.length() > 0) {
-                            offset = SVGUtilities.convertSVGNumber(ATTR_OFFSET, offsetStr);
+                            offset = SVGUtilities.convertSVGNumber(SVG_OFFSET_ATTRIBUTE, offsetStr);
                         }
 
                         txfFunc = ConcreteComponentTransferFunction.getGammaTransfer(amplitude,
@@ -328,15 +328,15 @@ public class SVGFeComponentTransferElementBridge
         }
 
         int type;
-        if (VALUE_TABLE.equals(value)) {
+        if (SVG_TABLE_VALUE.equals(value)) {
             type = ComponentTransferFunction.TABLE;
-        } else if (VALUE_DISCRETE.equals(value)) {
+        } else if (SVG_DISCRETE_VALUE.equals(value)) {
             type = ComponentTransferFunction.DISCRETE;
-        } else if (VALUE_LINEAR.equals(value)) {
+        } else if (SVG_LINEAR_VALUE.equals(value)) {
             type = ComponentTransferFunction.LINEAR;
-        } else if (VALUE_GAMMA.equals(value)) {
+        } else if (SVG_GAMMA_VALUE.equals(value)) {
             type = ComponentTransferFunction.GAMMA;
-        } else if (VALUE_IDENTITY.equals(value)) {
+        } else if (SVG_IDENTITY_VALUE.equals(value)) {
             type = ComponentTransferFunction.IDENTITY;
         } else {
             throw new IllegalAttributeValueException(

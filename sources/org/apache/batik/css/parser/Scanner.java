@@ -128,6 +128,48 @@ public class Scanner {
         }
         return value;
     }
+
+    /**
+     * Scans a @rule value. This method assumes that the current
+     * lexical unit is a at keyword.
+     */
+    public String scanAtRule() throws ParseException {
+        try {
+            StringBuffer result = new StringBuffer();
+            result.append('@');
+
+            // waiting for EOF, ';' or '{'
+            int c = inputBuffer.current();
+            loop: for (;;) {
+                switch (c) {
+                case '{':
+                    int brackets = 1;
+                    for (;;) {
+                        c = inputBuffer.next();
+                        switch (c) {
+                        case '}':
+                            if (--brackets > 0) {
+                                break;
+                            }
+                        case -1:
+                            break loop;
+                        case '{':
+                            brackets++;
+                        }
+                    }
+                case -1:
+                case ';':
+                    break loop;
+                }
+                c = inputBuffer.next();
+            }
+
+            result.append(currentValue());
+            return result.toString();
+        } catch (IOException e) {
+            throw new ParseException(e);
+        }
+    }
     
     /**
      * Returns the next token.

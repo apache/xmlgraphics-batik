@@ -103,7 +103,7 @@ public class SVGFeMorphologyElementBridge implements FilterPrimitiveBridge,
                 Messages.formatMessage("feMorphology.radiusY.invalid", null));
         }
 
-        String operatorStr = filterElement.getAttributeNS(null, ATTR_OPERATOR);
+        String operatorStr = filterElement.getAttributeNS(null, SVG_OPERATOR_ATTRIBUTE);
         boolean doDilation;
         if (operatorStr.length() == 0) {
             doDilation = false; // default is erode

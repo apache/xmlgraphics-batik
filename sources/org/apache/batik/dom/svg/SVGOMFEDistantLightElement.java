@@ -26,14 +26,36 @@ public class SVGOMFEDistantLightElement
     implements SVGFEDistantLightElement {
 
     /**
+     * The DefaultAttributeValueProducer for azimuth.
+     */
+    protected final static DefaultAttributeValueProducer
+        AZIMUTH_DEFAULT_VALUE_PRODUCER =
+        new DefaultAttributeValueProducer() {
+                public String getDefaultAttributeValue() {
+                    return SVG_DEFAULT_VALUE_FE_DISTANT_LIGHT_AZIMUTH;
+                }
+            };
+
+    /**
+     * The DefaultAttributeValueProducer for elevation.
+     */
+    protected final static DefaultAttributeValueProducer
+        ELEVATION_DEFAULT_VALUE_PRODUCER =
+        new DefaultAttributeValueProducer() {
+                public String getDefaultAttributeValue() {
+                    return SVG_DEFAULT_VALUE_FE_DISTANT_LIGHT_ELEVATION;
+                }
+            };
+
+    /**
      * The reference to the azimuth attribute.
      */
-    protected WeakReference azimuthReference;
+    protected transient WeakReference azimuthReference;
 
     /**
      * The reference to the elevation attribute.
      */
-    protected WeakReference elevationReference;
+    protected transient WeakReference elevationReference;
 
     /**
      * Creates a new SVGOMFEDistantLightElement object.
@@ -47,7 +69,7 @@ public class SVGOMFEDistantLightElement
      * @param owner The owner document.
      */
     public SVGOMFEDistantLightElement(String prefix,
-                                         AbstractDocument owner) {
+                                      AbstractDocument owner) {
         super(prefix, owner);
     }
 
@@ -66,7 +88,8 @@ public class SVGOMFEDistantLightElement
 	SVGAnimatedNumber result;
 	if (azimuthReference == null ||
 	    (result = (SVGAnimatedNumber)azimuthReference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, ATTR_AZIMUTH);
+	    result = new SVGOMAnimatedNumber(this, null, ATTR_AZIMUTH,
+                                             AZIMUTH_DEFAULT_VALUE_PRODUCER);
 	    azimuthReference = new WeakReference(result);
 	}
 	return result;
@@ -80,7 +103,8 @@ public class SVGOMFEDistantLightElement
 	SVGAnimatedNumber result;
 	if (elevationReference == null ||
 	    (result = (SVGAnimatedNumber)elevationReference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, ATTR_ELEVATION);
+	    result = new SVGOMAnimatedNumber(this, null, ATTR_ELEVATION,
+                                             ELEVATION_DEFAULT_VALUE_PRODUCER);
 	    elevationReference = new WeakReference(result);
 	}
 	return result;

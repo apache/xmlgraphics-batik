@@ -36,19 +36,41 @@ public class SVGOMFEDiffuseLightingElement
 	       ElementNonCSSPresentationalHints {
 
     /**
+     * The DefaultAttributeValueProducer for surfaceScale.
+     */
+    protected final static DefaultAttributeValueProducer
+        SURFACE_SCALE_DEFAULT_VALUE_PRODUCER =
+        new DefaultAttributeValueProducer() {
+                public String getDefaultAttributeValue() {
+                    return SVG_DEFAULT_VALUE_FE_DIFFUSE_LIGHTING_SURFACE_SCALE;
+                }
+            };
+
+    /**
+     * The DefaultAttributeValueProducer for diffuseConstant.
+     */
+    protected final static DefaultAttributeValueProducer
+        DIFFUSE_CONSTANT_DEFAULT_VALUE_PRODUCER =
+        new DefaultAttributeValueProducer() {
+                public String getDefaultAttributeValue() {
+                    return SVG_DEFAULT_VALUE_FE_DIFFUSE_LIGHTING_DIFFUSE_CONSTANT;
+                }
+            };
+
+    /**
      * The reference to the in attribute.
      */
-    protected WeakReference inReference;
+    protected transient WeakReference inReference;
 
     /**
      * The reference to the surfaceScale attribute.
      */
-    protected WeakReference surfaceScaleReference;
+    protected transient WeakReference surfaceScaleReference;
 
     /**
      * The reference to the diffuseConstant attribute.
      */
-    protected WeakReference diffuseConstantReference;
+    protected transient WeakReference diffuseConstantReference;
 
     /**
      * Creates a new SVGOMFEDiffuseLightingElement object.
@@ -95,7 +117,8 @@ public class SVGOMFEDiffuseLightingElement
 	SVGAnimatedNumber result;
 	if (surfaceScaleReference == null ||
 	    (result = (SVGAnimatedNumber)surfaceScaleReference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, ATTR_SURFACE_SCALE);
+	    result = new SVGOMAnimatedNumber(this, null, ATTR_SURFACE_SCALE,
+                                             SURFACE_SCALE_DEFAULT_VALUE_PRODUCER);
 	    surfaceScaleReference = new WeakReference(result);
 	}
 	return result;
@@ -108,9 +131,9 @@ public class SVGOMFEDiffuseLightingElement
     public SVGAnimatedNumber getDiffuseConstant() {
 	SVGAnimatedNumber result;
 	if (diffuseConstantReference == null ||
-	    (result = (SVGAnimatedNumber)diffuseConstantReference.get()) ==
-            null) {
-	    result = new SVGOMAnimatedNumber(this, null, ATTR_SURFACE_SCALE);
+	    (result = (SVGAnimatedNumber)diffuseConstantReference.get()) == null) {
+	    result = new SVGOMAnimatedNumber(this, null, ATTR_DIFFUSE_CONSTANT,
+                                             DIFFUSE_CONSTANT_DEFAULT_VALUE_PRODUCER);
 	    diffuseConstantReference = new WeakReference(result);
 	}
 	return result;

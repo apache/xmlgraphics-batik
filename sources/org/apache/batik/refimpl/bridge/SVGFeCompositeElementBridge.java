@@ -148,7 +148,7 @@ public class SVGFeCompositeElementBridge implements FilterPrimitiveBridge,
     }
 
     private static CompositeRule getRule(Element filterElement) {
-        String ruleStr = filterElement.getAttributeNS(null, ATTR_OPERATOR);
+        String ruleStr = filterElement.getAttributeNS(null, SVG_OPERATOR_ATTRIBUTE);
         CompositeRule rule;
 
         if (ruleStr.length() == 0) {
@@ -161,31 +161,31 @@ public class SVGFeCompositeElementBridge implements FilterPrimitiveBridge,
             String kAttr;
             float k1=0, k2=0, k3=0, k4=0;
 
-            kAttr = filterElement.getAttributeNS(null, ATTR_K1);
+            kAttr = filterElement.getAttributeNS(null, SVG_K1_ATTRIBUTE);
             if (kAttr.length() != 0) {
-                k1 = SVGUtilities.convertSVGNumber(ATTR_K1, kAttr);
+                k1 = SVGUtilities.convertSVGNumber(SVG_K1_ATTRIBUTE, kAttr);
             }
 
-            kAttr = filterElement.getAttributeNS(null, ATTR_K2);
+            kAttr = filterElement.getAttributeNS(null, SVG_K2_ATTRIBUTE);
             if (kAttr.length() != 0) {
-                k2 = SVGUtilities.convertSVGNumber(ATTR_K2, kAttr);
+                k2 = SVGUtilities.convertSVGNumber(SVG_K2_ATTRIBUTE, kAttr);
             }
 
-            kAttr = filterElement.getAttributeNS(null, ATTR_K3);
+            kAttr = filterElement.getAttributeNS(null, SVG_K3_ATTRIBUTE);
             if (kAttr.length() != 0) {
-                k3 = SVGUtilities.convertSVGNumber(ATTR_K3, kAttr);
+                k3 = SVGUtilities.convertSVGNumber(SVG_K3_ATTRIBUTE, kAttr);
             }
 
-            kAttr = filterElement.getAttributeNS(null, ATTR_K4);
+            kAttr = filterElement.getAttributeNS(null, SVG_K4_ATTRIBUTE);
             if (kAttr.length() != 0) {
-                k4 = SVGUtilities.convertSVGNumber(ATTR_K4, kAttr);
+                k4 = SVGUtilities.convertSVGNumber(SVG_K4_ATTRIBUTE, kAttr);
             }
             rule = CompositeRule.ARITHMETIC(k1, k2, k3, k4);
 
         } else if (VALUE_IN.equals(ruleStr)) {
             rule = CompositeRule.IN;
 
-        } else if (VALUE_OVER.equals(ruleStr)) {
+        } else if (SVG_OVER_VALUE.equals(ruleStr)) {
             rule = CompositeRule.OVER;
 
         } else if (VALUE_OUT.equals(ruleStr)) {

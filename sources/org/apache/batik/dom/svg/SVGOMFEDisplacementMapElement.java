@@ -31,19 +31,30 @@ public class SVGOMFEDisplacementMapElement
     implements SVGFEDisplacementMapElement {
 
     /**
+     * The DefaultAttributeValueProducer for scale.
+     */
+    protected final static DefaultAttributeValueProducer
+        SCALE_DEFAULT_VALUE_PRODUCER =
+        new DefaultAttributeValueProducer() {
+                public String getDefaultAttributeValue() {
+                    return SVG_DEFAULT_VALUE_FE_DISPLACEMENT_MAP_SCALE;
+                }
+            };
+
+    /**
      * The reference to the in attribute.
      */
-    protected WeakReference inReference;
+    protected transient WeakReference inReference;
 
     /**
      * The reference to the in2 attribute.
      */
-    protected WeakReference in2Reference;
+    protected transient WeakReference in2Reference;
 
     /**
      * The reference to the scale attribute.
      */
-    protected WeakReference scaleReference;
+    protected transient WeakReference scaleReference;
 
     /**
      * The attribute-value map map.
@@ -115,7 +126,8 @@ public class SVGOMFEDisplacementMapElement
 	SVGAnimatedNumber result;
 	if (scaleReference == null ||
 	    (result = (SVGAnimatedNumber)scaleReference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, ATTR_SCALE);
+	    result = new SVGOMAnimatedNumber(this, null, ATTR_SCALE,
+                                             SCALE_DEFAULT_VALUE_PRODUCER);
 	    scaleReference = new WeakReference(result);
 	}
 	return result;

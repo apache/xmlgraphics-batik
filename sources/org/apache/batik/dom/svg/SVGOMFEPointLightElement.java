@@ -27,19 +27,49 @@ public class SVGOMFEPointLightElement
     implements SVGFEPointLightElement {
 
     /**
+     * The DefaultAttributeValueProducer for x.
+     */
+    protected final static DefaultAttributeValueProducer X_DEFAULT_VALUE_PRODUCER =
+        new DefaultAttributeValueProducer() {
+                public String getDefaultAttributeValue() {
+                    return SVG_DEFAULT_VALUE_FE_POINT_LIGHT_X;
+                }
+            };
+
+    /**
+     * The DefaultAttributeValueProducer for y.
+     */
+    protected final static DefaultAttributeValueProducer Y_DEFAULT_VALUE_PRODUCER =
+        new DefaultAttributeValueProducer() {
+                public String getDefaultAttributeValue() {
+                    return SVG_DEFAULT_VALUE_FE_POINT_LIGHT_Y;
+                }
+            };
+
+    /**
+     * The DefaultAttributeValueProducer for z.
+     */
+    protected final static DefaultAttributeValueProducer Z_DEFAULT_VALUE_PRODUCER =
+        new DefaultAttributeValueProducer() {
+                public String getDefaultAttributeValue() {
+                    return SVG_DEFAULT_VALUE_FE_POINT_LIGHT_Z;
+                }
+            };
+
+    /**
      * The reference to the x attribute.
      */
-    protected WeakReference xReference;
+    protected transient WeakReference xReference;
 
     /**
      * The reference to the y attribute.
      */
-    protected WeakReference yReference;
+    protected transient WeakReference yReference;
 
     /**
      * The reference to the z attribute.
      */
-    protected WeakReference zReference;
+    protected transient WeakReference zReference;
 
     /**
      * Creates a new SVGOMFEPointLightElement object.
@@ -53,7 +83,7 @@ public class SVGOMFEPointLightElement
      * @param owner The owner document.
      */
     public SVGOMFEPointLightElement(String prefix,
-                                         AbstractDocument owner) {
+                                    AbstractDocument owner) {
         super(prefix, owner);
     }
 
@@ -72,7 +102,8 @@ public class SVGOMFEPointLightElement
 	SVGAnimatedNumber result;
 	if (xReference == null ||
 	    (result = (SVGAnimatedNumber)xReference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, ATTR_X);
+	    result = new SVGOMAnimatedNumber(this, null, ATTR_X,
+                                             X_DEFAULT_VALUE_PRODUCER);
 	    xReference = new WeakReference(result);
 	}
 	return result;
@@ -86,7 +117,8 @@ public class SVGOMFEPointLightElement
 	SVGAnimatedNumber result;
 	if (yReference == null ||
 	    (result = (SVGAnimatedNumber)yReference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, ATTR_Y);
+	    result = new SVGOMAnimatedNumber(this, null, ATTR_Y,
+                                             Y_DEFAULT_VALUE_PRODUCER);
 	    yReference = new WeakReference(result);
 	}
 	return result;
@@ -100,7 +132,8 @@ public class SVGOMFEPointLightElement
 	SVGAnimatedNumber result;
 	if (zReference == null ||
 	    (result = (SVGAnimatedNumber)zReference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, ATTR_Z);
+	    result = new SVGOMAnimatedNumber(this, null, ATTR_Z,
+                                             Z_DEFAULT_VALUE_PRODUCER);
 	    zReference = new WeakReference(result);
 	}
 	return result;
