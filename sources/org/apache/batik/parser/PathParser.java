@@ -831,7 +831,8 @@ public class PathParser extends NumberParser {
 	bufferize();
 	boolean eRead = false;
 	boolean eJustRead = false;
-	boolean dotRead = false;
+	boolean dotRead = current == '.';
+
         for (;;) {
 	    read();
 	    switch (current) {
