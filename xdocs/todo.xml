@@ -113,10 +113,6 @@
         </action>
 
         <action context="code" assigned-to="VH">
-        feComposite
-        </action>
-
-        <action context="code" assigned-to="VH">
         feConvolveMatrix
         </action>
 
@@ -138,18 +134,6 @@
 
         <action context="code" assigned-to="VH">
         feSpotLight
-        </action>
-
-        <action context="code" assigned-to="VH">
-        feDisplacementMap
-        </action>
-
-        <action context="code" assigned-to="VH">
-        feImage
-        </action>
-
-        <action context="code" assigned-to="VH">
-        feMerge
         </action>
 
         <action context="code" assigned-to="SH">
