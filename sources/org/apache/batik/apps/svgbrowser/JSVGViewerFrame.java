@@ -1520,6 +1520,8 @@ public class JSVGViewerFrame
         }
         stopAction.update(false);
         svgCanvas.setCursor(DEFAULT_CURSOR);
+	svgCanvas.setSelectionOverlayXORMode
+	    (application.isSelectionOverlayXORMode());
         if (autoAdjust) {
             pack();
         }
@@ -1592,8 +1594,6 @@ public class JSVGViewerFrame
         }
         statusBar.setMainMessage("");
         statusBar.setMessage(resources.getString("Message.done"));
-	svgCanvas.setSelectionOverlayXORMode
-	    (application.isSelectionOverlayXORMode());
         stopAction.update(false);
         svgCanvas.setCursor(DEFAULT_CURSOR);
 
