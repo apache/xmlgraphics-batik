@@ -29,6 +29,7 @@ import org.apache.batik.bridge.BridgeException;
 import org.apache.batik.bridge.SVGUtilities;
 
 import org.apache.batik.dom.svg.SVGOMDocument;
+import org.apache.batik.dom.svg.SVGOMElement;
 import org.apache.batik.dom.svg.XMLBaseSupport;
 
 import org.apache.batik.dom.util.XLinkSupport;
@@ -101,7 +102,7 @@ public class BatikMultiImageElementBridge extends SVGImageElementBridge
             return null;
         }
 
-        ImageNode imgNode = (ImageNode)super.createGraphicsNode(ctx, e);
+        ImageNode imgNode = (ImageNode)instantiateGraphicsNode();
         if (imgNode == null) {
             return null;
         }
@@ -144,6 +145,10 @@ public class BatikMultiImageElementBridge extends SVGImageElementBridge
 
         Rectangle2D b = getImageBounds(ctx, e);
 
+        // System.out.println("Bounds: " + bounds);
+        // System.out.println("ImgB: " + imgBounds);
+        
+
         GraphicsNode node = new MultiResGraphicsNode(e, b, uary, dary);
 
         // 'transform'
@@ -153,11 +158,36 @@ public class BatikMultiImageElementBridge extends SVGImageElementBridge
                 (SVGUtilities.convertTransform(e, SVG_TRANSFORM_ATTRIBUTE, s));
         }
         // 'visibility'
-        node.setVisible(CSSUtilities.convertVisibility(e));
+        imgNode.setVisible(CSSUtilities.convertVisibility(e));
 
         imgNode.setImage(node);
 
         return imgNode;
+    }
+
+    /**
+     * Returns false as shapes are not a container.
+     */
+    public boolean isComposite() {
+        return false;
+    }
+
+    /**
+     * This method is invoked during the build phase if the document
+     * is dynamic. The responsability of this method is to ensure that
+     * any dynamic modifications of the element this bridge is
+     * dedicated to, happen on its associated GVT product.
+     */
+    protected void initializeDynamicSupport(BridgeContext ctx,
+                                            Element e,
+                                            GraphicsNode node) {
+        this.e = e;
+        this.node = node;
+        this.ctx = ctx;
+        // HACK due to the way images are represented in GVT
+        ImageNode imgNode = (ImageNode)node;
+        ctx.bind(e, imgNode.getImage());
+        ((SVGOMElement)e).setSVGContext(this);
     }
 
     protected void addInfo(Element e, Collection dims, Collection uris) {

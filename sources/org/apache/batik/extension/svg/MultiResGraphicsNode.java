@@ -71,8 +71,6 @@ public class MultiResGraphicsNode
     Dimension     [] sizes;
     Rectangle2D      bounds;
 
-    GraphicsNode     lastSrc;
-
     UserAgent      userAgent;
     DocumentLoader loader;
     BridgeContext  ctx;
@@ -181,17 +179,17 @@ public class MultiResGraphicsNode
                 (srcURLs[idx].toString());
 
             GraphicsNode gn;
-            gn = createSVGImageNode(ctx, multiImgElem, svgDoc);
-            lastSrc = gn;
+            gn = createSVGImageNode(ctx, multiImgElem, 
+                                    bounds, svgDoc);
             srcs[idx] = new SoftReference(gn);
             return gn;
         } catch (Exception ex) { /* ex.printStackTrace(); */ }
 
         try {
             GraphicsNode gn;
-            gn = createRasterImageNode(ctx, multiImgElem, srcURLs[idx]);
+            gn = createRasterImageNode(ctx, multiImgElem, 
+                                       bounds, srcURLs[idx]);
             srcs[idx] = new SoftReference(gn);
-            lastSrc = gn;
             return gn;
         } catch (Exception ex) { /* ex.printStackTrace(); */ }
 
@@ -208,7 +206,8 @@ public class MultiResGraphicsNode
      * @param uriStr the uri of the image
      */
     protected static GraphicsNode createRasterImageNode(BridgeContext ctx,
-                                                        Element       e,
+                                                        Element e,
+                                                        Rectangle2D bounds,
                                                         ParsedURL     purl) {
 
         RasterImageNode node = new RasterImageNode();
@@ -219,11 +218,10 @@ public class MultiResGraphicsNode
             (SVGBrokenLinkProvider.SVG_BROKEN_LINK_DOCUMENT_PROPERTY);
         if ((obj != null) && (obj instanceof SVGDocument)) {
             // Ok so we are dealing with a broken link.
-            return createSVGImageNode(ctx, e, (SVGDocument)obj);
+            return createSVGImageNode(ctx, e, bounds, (SVGDocument)obj);
         }
         node.setImage(img);
         Rectangle2D imgBounds = img.getBounds2D();
-        Rectangle2D bounds = getImageBounds(ctx, e);
 
         // create the implicit viewBox for the raster image. The viewBox for a
         // raster image is the size of the image
@@ -235,9 +233,9 @@ public class MultiResGraphicsNode
 
         // System.out.println("Bounds: " + bounds);
         // System.out.println("ImgB: " + imgBounds);
-        // handles the 'preserveAspectRatio', 'overflow' and 'clip' and sets the
-        // appropriate AffineTransform to the image node
-        initializeViewport(ctx, e, node, vb, bounds);
+        // handles the 'preserveAspectRatio', 'overflow' and 'clip' and 
+        // sets the appropriate AffineTransform to the image node
+        initializeViewport(e, node, vb, bounds);
 
         return node;
     }
@@ -247,10 +245,12 @@ public class MultiResGraphicsNode
      *
      * @param ctx the bridge context
      * @param e the image element
+     * @param bounds the bounds for this graphicsNode
      * @param imgDocument the SVG document that represents the image
      */
     protected static GraphicsNode createSVGImageNode(BridgeContext ctx,
                                                      Element e,
+                                                     Rectangle2D bounds,
                                                      SVGDocument imgDocument) {
 
         CompositeGraphicsNode result = new CompositeGraphicsNode();
@@ -275,12 +275,12 @@ public class MultiResGraphicsNode
             svgElement.getAttributeNS(null, SVG_VIEW_BOX_ATTRIBUTE);
         float [] vb = ViewBox.parseViewBoxAttribute(e, viewBox);
         
-        // handles the 'preserveAspectRatio', 'overflow' and 'clip' and sets the
-        // appropriate AffineTransform to the image node
-        Rectangle2D bounds = getImageBounds(ctx, e);
+        // handles the 'preserveAspectRatio', 'overflow' and 'clip' and sets 
+        // the appropriate AffineTransform to the image node
+
         // System.out.println("Bounds: " + bounds);
         // System.out.println("ViewBox: " + viewBox);
-        initializeViewport(ctx, e, result, vb, bounds);
+        initializeViewport(e, result, vb, bounds);
 
         return result;
     }
@@ -291,14 +291,12 @@ public class MultiResGraphicsNode
      * 'viewBox', 'preserveAspectRatio', and 'clip' properties. According to
      * those properties, a AffineTransform and a clip is set.
      *
-     * @param ctx the bridge context
      * @param e the image element that defines the properties
      * @param node the graphics node
      * @param vb the implicit viewBox definition
      * @param bounds the bounds of the image element
      */
-    protected static void initializeViewport(BridgeContext ctx,
-                                             Element e,
+    protected static void initializeViewport(Element e,
                                              GraphicsNode node,
                                              float [] vb,
                                              Rectangle2D bounds) {
@@ -310,6 +308,7 @@ public class MultiResGraphicsNode
 
         AffineTransform at
             = ViewBox.getPreserveAspectRatioTransform(e, vb, w, h);
+        // System.out.println("VP Affine: " + at);
         at.preConcatenate(AffineTransform.getTranslateInstance(x, y));
         node.setTransform(at);
 
@@ -339,59 +338,6 @@ public class MultiResGraphicsNode
                 node.setClip(new ClipRable8Bit(filter, clip));
             } catch (java.awt.geom.NoninvertibleTransformException ex) {}
         }
-    }
-
-
-    /**
-     * Returns the bounds of the specified image element.
-     *
-     * @param ctx the bridge context
-     * @param element the image element
-     */
-    protected static
-        Rectangle2D getImageBounds(BridgeContext ctx, Element element) {
-
-        UnitProcessor.Context uctx = UnitProcessor.createContext(ctx, element);
-
-        // 'x' attribute - default is 0
-        String s = element.getAttributeNS(null, SVG_X_ATTRIBUTE);
-        float x = 0;
-        if (s.length() != 0) {
-            x = UnitProcessor.svgHorizontalCoordinateToUserSpace
-                (s, SVG_X_ATTRIBUTE, uctx);
-        }
-
-        // 'y' attribute - default is 0
-        s = element.getAttributeNS(null, SVG_Y_ATTRIBUTE);
-        float y = 0;
-        if (s.length() != 0) {
-            y = UnitProcessor.svgVerticalCoordinateToUserSpace
-                (s, SVG_Y_ATTRIBUTE, uctx);
-        }
-
-        // 'width' attribute - required
-        s = element.getAttributeNS(null, SVG_WIDTH_ATTRIBUTE);
-        float w;
-        if (s.length() == 0) {
-            throw new BridgeException(element, ERR_ATTRIBUTE_MISSING,
-                                      new Object[] {SVG_WIDTH_ATTRIBUTE});
-        } else {
-            w = UnitProcessor.svgHorizontalLengthToUserSpace
-                (s, SVG_WIDTH_ATTRIBUTE, uctx);
-        }
-
-        // 'height' attribute - required
-        s = element.getAttributeNS(null, SVG_HEIGHT_ATTRIBUTE);
-        float h;
-        if (s.length() == 0) {
-            throw new BridgeException(element, ERR_ATTRIBUTE_MISSING,
-                                      new Object[] {SVG_HEIGHT_ATTRIBUTE});
-        } else {
-            h = UnitProcessor.svgVerticalLengthToUserSpace
-                (s, SVG_HEIGHT_ATTRIBUTE, uctx);
-        }
-
-        return new Rectangle2D.Float(x, y, w, h);
     }
 }    
 
