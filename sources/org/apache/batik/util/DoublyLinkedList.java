@@ -146,9 +146,23 @@ public class DoublyLinkedList {
         if (head == null) return null;
 			
         Node nde = head;
-        remove(head);
+        remove(nde);
         return nde;
     }
+
+    /**
+     * Removes 'tail' from list and returns it. Returns null if list is empty.
+     * @returns current tail element.
+     */
+    public Node unpush() {
+        if (head == null) return null;
+			
+        Node nde = getTail();
+        remove(nde);
+        return nde;
+    }
+
+
 
     /**
      * Adds <tt>nde</tt> to tail of list
@@ -156,6 +170,15 @@ public class DoublyLinkedList {
     public void push(Node nde) {
         nde.insertBefore(head);
         if (head == null) head = nde;
+        size++;
+    }
+
+    /**
+     * Adds <tt>nde</tt> to head of list
+     */
+    public void unpop(Node nde) {
+        nde.insertBefore(head);
+        head = nde;
         size++;
     }
 }
