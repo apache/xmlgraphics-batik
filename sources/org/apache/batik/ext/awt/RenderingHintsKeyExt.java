@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001-2002  The Apache Software Foundation 
+   Copyright 2001-2002,2004  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -65,9 +65,21 @@ public final class RenderingHintsKeyExt {
      */
     public static final RenderingHints.Key KEY_COLORSPACE;
 
+    /**
+     * Hint for the org.apache.batik.ext.awt.image.GraphicsUtil class that
+     * tiling of a bitmap during rendering is undesired. This is primarily
+     * for the PDF and PostScript transcoders where tiling can lead to
+     * suboptimal results due to overlaps in transparency and filter effects.
+     */
+    public static final RenderingHints.Key KEY_AVOID_TILE_PAINTING;
+
+    public static final Object VALUE_AVOID_TILE_PAINTING_ON = new Object();
+    public static final Object VALUE_AVOID_TILE_PAINTING_OFF = new Object();
+    public static final Object VALUE_AVOID_TILE_PAINTING_DEFAULT = new Object();
+
     static {
         int base = 10100;
-        RenderingHints.Key trans=null, aoi=null, bi=null, cs=null;
+        RenderingHints.Key trans=null, aoi=null, bi=null, cs=null, atp=null;
         while (true) {
             int val = base;
 
@@ -76,6 +88,7 @@ public final class RenderingHintsKeyExt {
                 aoi   = new AreaOfInterestHintKey(val++);
                 bi    = new BufferedImageHintKey (val++);
                 cs    = new ColorSpaceHintKey    (val++);
+                atp   = new AvoidTilingHintKey   (val++);
             } catch (Exception e) {
                 System.err.println
                     ("You have loaded the Batik jar files more than once\n" +
@@ -87,11 +100,12 @@ public final class RenderingHintsKeyExt {
             }
             break;
         }
-        KEY_BASE              = base;
-        KEY_TRANSCODING       = trans;
-        KEY_AREA_OF_INTEREST  = aoi;
-        KEY_BUFFERED_IMAGE    = bi;
-        KEY_COLORSPACE        = cs;
+        KEY_BASE                = base;
+        KEY_TRANSCODING         = trans;
+        KEY_AREA_OF_INTEREST    = aoi;
+        KEY_BUFFERED_IMAGE      = bi;
+        KEY_COLORSPACE          = cs;
+        KEY_AVOID_TILE_PAINTING = atp;
     }
 
     /**

@@ -29,6 +29,7 @@ import org.apache.batik.css.parser.ExtendedParser;
 import org.apache.batik.css.parser.ExtendedParserWrapper;
 import org.apache.batik.dom.AbstractDOMImplementation;
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.dom.GenericDocumentType;
 import org.apache.batik.dom.GenericElement;
 import org.apache.batik.dom.GenericElementNS;
 import org.apache.batik.dom.StyleSheetFactory;
@@ -157,8 +158,7 @@ public class SVGDOMImplementation
     public DocumentType createDocumentType(String qualifiedName,
                                            String publicId,
                                            String systemId) {
-        throw new DOMException(DOMException.NOT_SUPPORTED_ERR,
-                               formatMessage("doctype.not.supported", null));
+        return new GenericDocumentType(qualifiedName, publicId, systemId);
     }
 
     /**

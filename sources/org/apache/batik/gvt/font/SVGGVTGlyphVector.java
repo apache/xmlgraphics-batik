@@ -27,6 +27,7 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.text.AttributedCharacterIterator;
 
+import org.apache.batik.gvt.text.ArabicTextHandler;
 import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
 import org.apache.batik.gvt.text.TextPaintInfo;
 
@@ -193,8 +194,6 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
 
         Shape[] tempLogicalBounds = new Shape[getNumGlyphs()];
         boolean[] rotated = new boolean[getNumGlyphs()];
-        boolean[] flippedH = new boolean[getNumGlyphs()];
-        boolean[] flippedV = new boolean[getNumGlyphs()];
 
         double maxWidth = -1;
         double maxHeight = -1;
@@ -218,12 +217,8 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
                 // the same as the previous glyph, if we have one...
                 if (i > 0) {
                     rotated[i] = rotated[i-1];
-                    flippedH[i] = flippedH[i-1];
-                    flippedV[i] = flippedV[i-1];
                 } else {
                     rotated [i] = true;
-                    flippedH[i] = false;
-                    flippedV[i] = false;
                 }
             } else {
                 // get three corner points so we can determine
@@ -234,10 +229,9 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
                                                 glyphBounds.getMinY());
                 Point2D p3 = new Point2D.Double(glyphBounds.getMinX(), 
                                                 glyphBounds.getMaxY());
-                    
+                Point2D gpos = getGlyphPosition(i);
                 AffineTransform tr = AffineTransform.getTranslateInstance
-                    (getGlyphPosition(i).getX(),
-                     getGlyphPosition(i).getY());
+                    (gpos.getX(), gpos.getY());
                     
                 if (glyphTransform != null)
                     tr.concatenate(glyphTransform);
@@ -263,8 +257,6 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
                     rotated[i] = false;
                     double dx13 = p1.getX()-p3.getX();
                     double dy12 = p1.getY()-p2.getY();
-                    if (Math.abs(tdx13+dx13) < 0.001) flippedH[i] = true;
-                    if (Math.abs(tdy12+dy12) < 0.001) flippedV[i] = true;
                         
                 } else if ((Math.abs(tdx13) < 0.001) &&
                            (Math.abs(tdy12) < 0.001)) {
@@ -273,12 +265,8 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
                     rotated[i] = false;
                     double dx12 = p1.getX()-p2.getX();
                     double dy13 = p1.getY()-p3.getY();
-                    if (Math.abs(tdx12+dx12) < 0.001) flippedH[i] = true;
-                    if (Math.abs(tdy13+dy13) < 0.001) flippedV[i] = true;
                 } else {
                     rotated [i] = true;
-                    flippedH[i] = false;
-                    flippedV[i] = false;
                 }
                     
                 Rectangle2D rectBounds;
@@ -317,58 +305,22 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
                     // make this glyph extend to the start of the next one
                     Rectangle2D nextGlyphBounds = 
                         tempLogicalBounds[i+1].getBounds2D();
+                    // make this glyph extend to the start of the next one
+                    Rectangle2D ngb = tempLogicalBounds[i+1].getBounds2D();
 
-                    if (nextGlyphBounds.getX() > x) { 
-                        // going left to right (this is pretty hoky)
-                        width = nextGlyphBounds.getX() - x;
-                    } else {
-                        double newGlyphX = (nextGlyphBounds.getX() + 
-                                            nextGlyphBounds.getWidth());
-                        width += (x - newGlyphX);
-                        x = newGlyphX;
+                    if (ngb.getX() > x) {
+                        double nw = ngb.getX() - x;
+                        if ((nw < width*1.15) && (nw > width*.85)) {
+                            double delta = (nw-width)*.5;
+                            width += delta;
+                            ngb.setRect(ngb.getX()-delta, ngb.getY(),
+                                        ngb.getWidth()+delta, ngb.getHeight());
+                        }
                     }
                 }
-
-                float x0 = (float)x;
-                float x1 = (float)(x0+width);
-                float y0 = (float)fullBounds.getMinY();
-                float y1 = (float)(y0+fullBounds.getHeight());
-                // Build the bounds rect the way things expect to see it...
-                if (flippedH[i]) {
-                    if (flippedV[i]) {
-                        GeneralPath gp = new GeneralPath();
-                        gp.moveTo(x1,y1);
-                        gp.lineTo(x0,y1);
-                        gp.lineTo(x0,y0);
-                        gp.lineTo(x1,y0);
-                        gp.lineTo(x1,y1);
-                        gp.closePath();
-                        tempLogicalBounds[i] = gp;
-                    } else {
-                        GeneralPath gp = new GeneralPath();
-                        gp.moveTo(x1,y0);
-                        gp.lineTo(x0,y0);
-                        gp.lineTo(x0,y1);
-                        gp.lineTo(x1,y1);
-                        gp.lineTo(x1,y0);
-                        gp.closePath();
-                        tempLogicalBounds[i] = gp;
-                    }
-                } else {
-                    if (flippedV[i]) {
-                        GeneralPath gp = new GeneralPath();
-                        gp.moveTo(x0,y1);
-                        gp.lineTo(x1,y1);
-                        gp.lineTo(x1,y0);
-                        gp.lineTo(x0,y0);
-                        gp.lineTo(x0,y1);
-                        gp.closePath();
-                        tempLogicalBounds[i] = gp;
-                    } else {
-                        tempLogicalBounds[i] = new Rectangle2D.Double
-                            (x0, y0, x1-x0, y1-y0);
-                    }
-                }
+                tempLogicalBounds[i] = new Rectangle2D.Double
+                    (x,     fullBounds.getMinY(),
+                     width, fullBounds.getHeight());
             }
         } else if (fullBounds.getWidth() < maxWidth*1.5) {
             // make all glyphs left and right edges the same as the full bounds
@@ -385,58 +337,20 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
                 if ((i < getNumGlyphs()-1) && 
                     (tempLogicalBounds[i+1] != null)) {
                     // make this glyph extend to the start of the next one
-                    Rectangle2D nextGlyphBounds = 
-                        tempLogicalBounds[i+1].getBounds2D();
-                    if (nextGlyphBounds.getY() > y) { // going top to bottom
-                        height = nextGlyphBounds.getY() - y;
-                    } else {
-                        double newGlyphY = (nextGlyphBounds.getY() + 
-                                            nextGlyphBounds.getHeight());
-                        height += (y - newGlyphY);
-                        y = newGlyphY;
+                    Rectangle2D ngb = tempLogicalBounds[i+1].getBounds2D();
+                    if (ngb.getY() > y) { // going top to bottom
+                        double nh = ngb.getY() - y;
+                        if ((nh < height*1.15) && (nh > height*.85)) {
+                            double delta = (nh-height)*.5;
+                            height += delta;
+                            ngb.setRect(ngb.getX(), ngb.getY()-delta,
+                                        ngb.getWidth(), ngb.getHeight()+delta);
+                        }
                     }
                 }
-
-                float x0 = (float)fullBounds.getMinX();
-                float x1 = (float)(x0+fullBounds.getWidth());
-                float y0 = (float)y;
-                float y1 = (float)(y0+height);
-                // Build the rect the way things expect to see it...
-                if (flippedH[i]) {
-                    if (flippedV[i]) {
-                        GeneralPath gp = new GeneralPath();
-                        gp.moveTo(x1,y1);
-                        gp.lineTo(x0,y1);
-                        gp.lineTo(x0,y0);
-                        gp.lineTo(x1,y0);
-                        gp.lineTo(x1,y1);
-                        gp.closePath();
-                        tempLogicalBounds[i] = gp;
-                    } else {
-                        GeneralPath gp = new GeneralPath();
-                        gp.moveTo(x1,y0);
-                        gp.lineTo(x0,y0);
-                        gp.lineTo(x0,y1);
-                        gp.lineTo(x1,y1);
-                        gp.lineTo(x1,y0);
-                        gp.closePath();
-                        tempLogicalBounds[i] = gp;
-                    }
-                } else {
-                    if (flippedV[i]) {
-                        GeneralPath gp = new GeneralPath();
-                        gp.moveTo(x0,y1);
-                        gp.lineTo(x1,y1);
-                        gp.lineTo(x1,y0);
-                        gp.lineTo(x0,y0);
-                        gp.lineTo(x0,y1);
-                        gp.closePath();
-                        tempLogicalBounds[i] = gp;
-                    } else {
-                        tempLogicalBounds[i] = new Rectangle2D.Double
-                            (x0, y0, x1-x0, y1-y0);
-                    }
-                }
+                tempLogicalBounds[i] = new Rectangle2D.Double
+                    (fullBounds.getMinX(),  y,
+                     fullBounds.getWidth(), height);
             }
         }
 
@@ -449,31 +363,30 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
      * Returns the metrics of the glyph at the specified index into this
      * GlyphVector.
      */
-    public GVTGlyphMetrics getGlyphMetrics(int glyphIndex) {
+    public GVTGlyphMetrics getGlyphMetrics(int idx) {
 
-        if (glyphIndex < 0 || (glyphIndex > glyphs.length-1)) {
-            throw new IndexOutOfBoundsException("glyphIndex: " + glyphIndex
-            + ", is out of bounds. Should be between 0 and " + (glyphs.length-1) + ".");
-        }
+        if (idx < 0 || (idx > glyphs.length-1))
+            throw new IndexOutOfBoundsException
+                ("idx: " + idx + ", is out of bounds. Should be between 0 and "
+                 + (glyphs.length-1) + ".");
 
         // check to see if we should kern this glyph
         // I return the kerning information in the glyph metrics
         // as a first pass at implementation (I don't want to
         // fiddle with layout too much right now).
-
-        if (glyphIndex < glyphs.length - 1) {
+        if (idx < glyphs.length - 1) {
             // check for kerning
             if (font != null) {
-                float hkern = font.getHKern(glyphs[glyphIndex].getGlyphCode(),
-                                            glyphs[glyphIndex+1].getGlyphCode());
-                float vkern = font.getVKern(glyphs[glyphIndex].getGlyphCode(),
-                                            glyphs[glyphIndex+1].getGlyphCode());
-                return glyphs[glyphIndex].getGlyphMetrics(hkern, vkern);
+                float hkern = font.getHKern(glyphs[idx].getGlyphCode(),
+                                            glyphs[idx+1].getGlyphCode());
+                float vkern = font.getVKern(glyphs[idx].getGlyphCode(),
+                                            glyphs[idx+1].getGlyphCode());
+                return glyphs[idx].getGlyphMetrics(hkern, vkern);
             }
         }
 
         // get a normal metrics
-        return glyphs[glyphIndex].getGlyphMetrics();
+        return glyphs[idx].getGlyphMetrics();
     }
 
     /**
@@ -670,10 +583,38 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
         float currentX = 0;
         float currentY = 0;
         for (int i = 0; i < glyphs.length; i++) {
-            glyphs[i].setPosition(new Point2D.Float(currentX, currentY));
-            glyphs[i].setTransform(null);
+            Glyph g = glyphs[i];
+            g.setTransform(null);
             glyphLogicalBounds[i] = null;
-            currentX += glyphs[i].getHorizAdvX();
+
+            String uni = g.getUnicode();
+            if ((uni != null)  && (uni.length() != 0) &&
+                ArabicTextHandler.arabicCharTransparent(uni.charAt(0))) {
+                int j;
+                for (j=i+1; j<glyphs.length; j++) {
+                    uni = glyphs[j].getUnicode();
+                    if ((uni == null)  || (uni.length() == 0)) break;
+                    char ch = uni.charAt(0);
+                    if (!ArabicTextHandler.arabicCharTransparent(ch))
+                        break;
+                }
+                if (j != glyphs.length) {
+                    Glyph bg = glyphs[j];
+                    float rEdge = (float)(currentX + bg.getHorizAdvX());
+                    for (int k=i; k<j; k++) {
+                        g = glyphs[k];
+                        g.setTransform(null);
+                        glyphLogicalBounds[i] = null;
+                        g.setPosition(new Point2D.Float(rEdge-g.getHorizAdvX(),
+                                                        currentY));
+                    }
+                    i = j;
+                    g = bg;
+                }
+            }
+
+            g.setPosition(new Point2D.Float(currentX, currentY));
+            currentX += g.getHorizAdvX();
         }
         endPos = new Point2D.Float(currentX, currentY);
     }

@@ -1059,7 +1059,6 @@ public class GlyphLayout implements TextSpanLayout {
                            logicalBounds.getMaxX() - strikethroughThickness/2.0, offset.getY()+y));
     }
 
-
     /**
      * Explicitly lays out each of the glyphs in the glyph
      * vector. This will handle any glyph position adjustments such as
@@ -1104,6 +1103,7 @@ public class GlyphLayout implements TextSpanLayout {
         float curr_y_pos = (float)offset.getY();
 
         Point2D.Float pos = new Point2D.Float();
+        boolean hasArabicTransparent = false;
 
         while (i < numGlyphs) {
             //System.out.println("limit: " + runLimit + ", " + aciIndex);
@@ -1281,8 +1281,10 @@ public class GlyphLayout implements TextSpanLayout {
             gv.setGlyphPosition(i, pos);
 
             // calculte the position of the next glyph
-            if (!ArabicTextHandler.arabicCharTransparent(ch)) {
-                // only apply the advance if the current char is not transparen
+            if (ArabicTextHandler.arabicCharTransparent(ch)) {
+                hasArabicTransparent = true;
+            } else {
+                // Apply the advance if the current char is not transparent
                 if (vertical) {
                     float advanceY = 0;
                     if (glyphOrientationAuto) {
@@ -1361,6 +1363,96 @@ public class GlyphLayout implements TextSpanLayout {
 
         advance = new Point2D.Float((float)(curr_x_pos - offset.getX()), 
                                     (float)(curr_y_pos - offset.getY()));
+
+
+        // Do a last pass positioning the transparent/mark glyphs on the
+        // base glyphs.
+        if (hasArabicTransparent) {
+            ch = aci.first();
+            aciIndex = 0;
+            i=0;
+            int transparentStart = -1;
+            while (i < numGlyphs) {
+                if (ArabicTextHandler.arabicCharTransparent(ch)) {
+                    if (transparentStart == -1) transparentStart = i;
+                } else {
+                    if (transparentStart != -1) {
+                        Point2D         loc   = gv.getGlyphPosition(i);
+                        GVTGlyphMetrics gm    = gv.getGlyphMetrics(i);
+                        int tyS=0, txS=0;
+                        float advX=0, advY=0;
+                        if (vertical) {
+                            if (glyphOrientationAuto || 
+                                (glyphOrientationAngle == 90))
+                                advY = gm.getHorizontalAdvance();
+                            else if (glyphOrientationAngle == 270)
+                                advY = 0;
+                            else if (glyphOrientationAngle == 0)
+                                advX = gm.getHorizontalAdvance();
+                            else // 180
+                                advX = -gm.getHorizontalAdvance();
+                        } else {
+                            if (glyphOrientationAngle ==   0)
+                                advX = gm.getHorizontalAdvance();
+                            else if (glyphOrientationAngle == 90)
+                                advY = gm.getHorizontalAdvance();
+                            else if (glyphOrientationAngle == 180)
+                                advX = 0;
+                            else // 270
+                                advY = -gm.getHorizontalAdvance();
+                        }
+                        float baseX = (float)(loc.getX()+advX);
+                        float baseY = (float)(loc.getY()+advY);
+                        for (int j=transparentStart; j<i; j++) {
+                            Point2D         locT = gv.getGlyphPosition(j);
+                            GVTGlyphMetrics gmT  = gv.getGlyphMetrics(j);
+                            float           locX = (float)locT.getX();
+                            float           locY = (float)locT.getY();
+                            float           tx=0, ty=0;
+                            float           advT = gmT.getHorizontalAdvance();
+                            if (vertical) {
+                                if (glyphOrientationAuto || 
+                                    (glyphOrientationAngle == 90))
+                                    locY = baseY-advT;
+                                else if (glyphOrientationAngle == 270)
+                                    locY = baseY+advT;
+                                else if (glyphOrientationAngle == 0)
+                                    locX = baseX-advT;
+                                else // 180deg
+                                    locX = baseX+advT;
+                            } else {
+                                if (glyphOrientationAngle ==   0)
+                                    locX = baseX-advT;
+                                else if (glyphOrientationAngle == 90)
+                                    locY = baseY-advT;
+                                else if (glyphOrientationAngle == 180)
+                                    locX = baseX+advT;
+                                else // 270
+                                    locY = baseY+advT;
+                            }
+                            
+                            locT = new Point2D.Double(locX, locY);
+                            gv.setGlyphPosition(j, locT);
+                            if ((txS != 0) || (tyS != 0)) {
+                                AffineTransform at;
+                                at = AffineTransform.getTranslateInstance
+                                    (tx,ty);
+                                at.concatenate(gv.getGlyphTransform(i));
+                                gv.setGlyphTransform(i, at);
+                            }
+                        }
+                        transparentStart = -1;
+                    }
+                }
+                aciIndex += gv.getCharacterCount(i,i);
+                if (aciIndex >= charMap.length)
+                    aciIndex = charMap.length-1;
+                ch = aci.setIndex(aciIndex+aciStart);
+                i++;
+            }
+            
+        }
+
 
         layoutApplied  = true;
         spacingApplied = false;
@@ -1894,12 +1986,13 @@ public class GlyphLayout implements TextSpanLayout {
             block == Character.UnicodeBlock.LATIN_1_SUPPLEMENT ||
             block == Character.UnicodeBlock.LATIN_EXTENDED_ADDITIONAL ||
             block == Character.UnicodeBlock.LATIN_EXTENDED_A ||
-            block == Character.UnicodeBlock.LATIN_EXTENDED_B) {
+            block == Character.UnicodeBlock.LATIN_EXTENDED_B ||
+            block == Character.UnicodeBlock.ARABIC ||
+            block == Character.UnicodeBlock.ARABIC_PRESENTATION_FORMS_A ||
+            block == Character.UnicodeBlock.ARABIC_PRESENTATION_FORMS_B) {
             return true;
-        } else {
-            return false;
         }
-
+        return false;
     }
 
     /**
