@@ -281,6 +281,10 @@ public class CSSUtilities implements SVGConstants {
         CSSStyleDeclaration decl = getComputedStyle(e);
         CSSValue v = decl.getPropertyCSSValue(CSS_VISIBILITY_PROPERTY);
         if (v.getCssValueType() == CSSValue.CSS_INHERIT) {
+            // workaround for the CSS2 spec which indicates that the
+            // initial value is 'inherit'. So if we get 'inherit' it
+            // means that we are on the outermost svg element and we
+            // return true.
             return true;
         } else {
             return (((CSSPrimitiveValue)v).getStringValue().charAt(0) == 'v');
@@ -309,7 +313,8 @@ public class CSSUtilities implements SVGConstants {
         CSSPrimitiveValue overflow =
             (CSSPrimitiveValue)decl.getPropertyCSSValue(CSS_OVERFLOW_PROPERTY);
         String s = overflow.getStringValue();
-        return (s.charAt(0) == 'h');
+        // clip if 'hidden' or 'scroll'
+        return (s.charAt(0) == 'h') || (s.charAt(0) == 's');
     }
 
     /**
