@@ -14,6 +14,7 @@ import java.awt.event.ActionEvent;
 
 import java.io.File;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import java.util.HashMap;
@@ -141,12 +142,28 @@ public class Main implements Application {
                 }
 
                 File file = new File(arguments[i]);
+                String uri = null;
+
                 if (file.canRead()) {
+                    uri = file.toURL().toString();
+                }
+                else{
+                    uri = arguments[i];
+                    URL url = null;
+                    try{
+                        url = new URL(arguments[i]);
+                    }catch(MalformedURLException e){
+                        // This is not a valid uri
+                        uri = null;
+                    }
+                }
+
+                if (uri != null) {
                     if (frame == null)
                         frame = createAndShowJSVGViewerFrame();
 
                     frame.getJSVGCanvas().loadSVGDocument
-                        (file.toURL().toString());
+                        (uri);
                     frame = null;
                 } else {
                     // Let the user know that we are
@@ -161,7 +178,7 @@ public class Main implements Application {
                     JOptionPane.showMessageDialog
                         (frame,
                          resources.getString("Error.skipping.file")
-                         + file.getAbsolutePath());
+                         + arguments[i]);
                 }
                 i++;
             }
