@@ -239,7 +239,8 @@ public class DOMTreeManager implements SVGSyntax {
         // Enable background if required by AlphaComposite convertion
         if (gcConverter.getCompositeConverter().
             getAlphaCompositeConverter().requiresBackgroundAccess())
-            svg.setAttributeNS(null, SVG_ENABLE_BACKGROUND_ATTRIBUTE, VALUE_NEW);
+            svg.setAttributeNS
+                (null, SVG_ENABLE_BACKGROUND_ATTRIBUTE, SVG_NEW_VALUE);
 
         Comment generatorComment = generatorContext.domFactory.
             createComment(GENERATOR_COMMENT);
