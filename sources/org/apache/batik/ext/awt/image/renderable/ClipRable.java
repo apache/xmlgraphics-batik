@@ -28,6 +28,19 @@ import java.awt.Shape;
  * @version $Id$ */
 public interface ClipRable extends Filter {
 
+    /**
+     * Set the default behaviour of anti-aliased clipping.
+     * for this clip object.
+     */
+    public void setUseAntialiasedClip(boolean useAA);
+
+    /**
+     * Resturns true if the default behaviour should be to use
+     * anti-aliased clipping.
+     */
+    public boolean getUseAntialiasedClip();
+
+
       /**
        * The source to be clipped by the outline of the clip node.
        * @param src The Image to be clipped.

@@ -36,7 +36,10 @@ public final class RenderingHintsKeyExt {
 
     public static final String VALUE_TRANSCODING_PRINTING = 
         new String("Printing");
-    
+
+    public static final String VALUE_TRANSCODING_VECTOR = 
+        new String("Vector");
+
     /**
      * Key for the AOI hint. This hint is used to propagate the AOI to Paint
      * and PaintContext instances.
@@ -84,11 +87,11 @@ public final class RenderingHintsKeyExt {
             }
             break;
         }
-        KEY_BASE             = base;
-        KEY_TRANSCODING      = trans;
-        KEY_AREA_OF_INTEREST = aoi;
-        KEY_BUFFERED_IMAGE   = bi;
-        KEY_COLORSPACE       = cs;
+        KEY_BASE              = base;
+        KEY_TRANSCODING       = trans;
+        KEY_AREA_OF_INTEREST  = aoi;
+        KEY_BUFFERED_IMAGE    = bi;
+        KEY_COLORSPACE        = cs;
     }
 
     /**

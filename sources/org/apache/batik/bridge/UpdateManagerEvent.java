@@ -41,16 +41,43 @@ public class UpdateManagerEvent extends EventObject {
     protected List dirtyAreas;
 
     /**
+     * True if before painting this update the canvas's painting
+     * transform needs to be cleared.
+     */
+    protected boolean clearPaintingTransform;
+
+    /**
      * Creates a new UpdateManagerEvent.
      * @param source the object that originated the event, ie. the
      *               UpdateManager.
      * @param bi the image to paint.
      * @param r The dirty area.
+     * @param cpt Indicates if the painting transform should be
+     *            cleared as a result of this event.
      */
-    public UpdateManagerEvent(Object source, BufferedImage bi, List das) {
+    public UpdateManagerEvent(Object source, BufferedImage bi, 
+                              List das) {
         super(source);
-        image = bi;
-        dirtyAreas = das;
+        this.image = bi;
+        this.dirtyAreas = das;
+        this.clearPaintingTransform = false;
+    }
+
+    /**
+     * Creates a new UpdateManagerEvent.
+     * @param source the object that originated the event, ie. the
+     *               UpdateManager.
+     * @param bi the image to paint.
+     * @param r The dirty area.
+     * @param cpt Indicates if the painting transform should be
+     *            cleared as a result of this event.
+     */
+    public UpdateManagerEvent(Object source, BufferedImage bi, 
+                              List das, boolean cpt) {
+        super(source);
+        this.image = bi;
+        this.dirtyAreas = das;
+        this.clearPaintingTransform = cpt;
     }
 
     /**
@@ -65,5 +92,13 @@ public class UpdateManagerEvent extends EventObject {
      */
     public List getDirtyAreas() {
         return dirtyAreas;
+    }
+
+    /**
+     * returns true if the component should clear it's painting transform
+     * before painting the associated BufferedImage.
+     */
+    public boolean getClearPaintingTransform() {
+        return clearPaintingTransform;
     }
 }

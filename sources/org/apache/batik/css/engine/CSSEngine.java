@@ -784,41 +784,41 @@ public abstract class CSSEngine {
         }
 
         Value value = sm.getValue(propidx);
-        if (!sm.isComputed(propidx)) {
-            Value result = value;
-            ValueManager vm = valueManagers[propidx];
-            CSSStylableElement p = getParentCSSStylableElement(elt);
-            if (value == null && (!vm.isInheritedProperty() || p == null)) {
+        if (sm.isComputed(propidx)) 
+            return value;
+
+        Value result = value;
+        ValueManager vm = valueManagers[propidx];
+        CSSStylableElement p = getParentCSSStylableElement(elt);
+        if (value == null) {
+            if ((p == null) || !vm.isInheritedProperty()) 
                 result = vm.getDefaultValue();
-            } else if (value != null &&
-                       (value == InheritValue.INSTANCE) &&
-                       p != null) {
-                result = null;
-            }
-            if (result == null) {
-                // Value is 'inherit' and p != null.
-                // The pseudo class is not propagated.
-                result = getComputedStyle(p, null, propidx);
-                sm.putParentRelative(propidx, true);
-            } else {
-                // Maybe is it a relative value.
-                result = vm.computeValue(elt, pseudo, this, propidx,
-                                         sm, result);
-            }
-            if (value == null) {
-                sm.putValue(propidx, result);
-                sm.putNullCascaded(propidx, true);
-            } else if (result != value) {
-                ComputedValue cv = new ComputedValue(value);
-                cv.setComputedValue(result);
-                sm.putValue(propidx, cv);
-                result = cv;
-            }
-            sm.putComputed(propidx, true);
-            value = result;
+        } else if ((p != null) && (value == InheritValue.INSTANCE)) {
+            result = null;
+        }
+        if (result == null) {
+            // Value is 'inherit' and p != null.
+            // The pseudo class is not propagated.
+            result = getComputedStyle(p, null, propidx);
+            sm.putParentRelative(propidx, true);
+            sm.putInherited     (propidx, true);
+        } else {
+            // Maybe is it a relative value.
+            result = vm.computeValue(elt, pseudo, this, propidx,
+                                     sm, result);
+        }
+        if (value == null) {
+            sm.putValue(propidx, result);
+            sm.putNullCascaded(propidx, true);
+        } else if (result != value) {
+            ComputedValue cv = new ComputedValue(value);
+            cv.setComputedValue(result);
+            sm.putValue(propidx, cv);
+            result = cv;
         }
 
-        return value;
+        sm.putComputed(propidx, true);
+        return result;
     }
 
     /**
@@ -2303,15 +2303,15 @@ public abstract class CSSEngine {
 
             Node attr = mevt.getRelatedNode();
             String attrNS = attr.getNamespaceURI();
-            String name = (attrNS == null)
-                ? attr.getNodeName()
-                : attr.getLocalName();
+            String name   = ((attrNS == null) ? 
+                             attr.getNodeName() :
+                             attr.getLocalName());
                 
             CSSStylableElement elt = (CSSStylableElement)et;
             StyleMap style = elt.getComputedStyleMap(null);
             if (style != null) {
-                if ((attrNS == null && styleNamespaceURI == null) ||
-                    (attrNS != null && attrNS.equals(styleNamespaceURI))) {
+                if ((attrNS == styleNamespaceURI) ||
+                    ((attrNS != null) && attrNS.equals(styleNamespaceURI))) {
                     if (name.equals(styleLocalName)) {
                         // The style declaration attribute has been modified.
                         inlineStyleAttributeUpdated(elt, style, mevt);
@@ -2320,9 +2320,8 @@ public abstract class CSSEngine {
                 }
 
                 if (nonCSSPresentationalHints != null) {
-                    if ((attrNS == null &&
-                         nonCSSPresentationalHintsNamespaceURI == null) ||
-                        (attrNS != null &&
+                    if ((attrNS == nonCSSPresentationalHintsNamespaceURI) ||
+                        ((attrNS != null) &&
                          attrNS.equals(nonCSSPresentationalHintsNamespaceURI))) {
                         if (nonCSSPresentationalHints.contains(name)) {
                             // The 'name' attribute which represents a non CSS

@@ -46,6 +46,8 @@ public class ClipRable8Bit
     extends    AbstractRable 
     implements ClipRable {
 
+    protected boolean useAA;
+
     /**
      * The node who's outline specifies our mask.
      */
@@ -54,6 +56,13 @@ public class ClipRable8Bit
     public ClipRable8Bit(Filter src, Shape clipPath) {
         super(src, null);
         setClipPath(clipPath);
+        setUseAntialiasedClip(false);
+    }
+
+    public ClipRable8Bit(Filter src, Shape clipPath, boolean useAA) {
+        super(src, null);
+        setClipPath(clipPath);
+        setUseAntialiasedClip(useAA);
     }
 
     /**
@@ -71,6 +80,24 @@ public class ClipRable8Bit
     public Filter getSource() {
         return (Filter)getSources().get(0);
     }
+
+    /**
+     * Set the default behaviour of anti-aliased clipping.
+     * for this clip object.
+     */
+    public void setUseAntialiasedClip(boolean useAA) {
+        touch();
+        this.useAA = useAA;
+    }
+
+    /**
+     * Resturns true if the default behaviour should be to use
+     * anti-aliased clipping.
+     */
+    public boolean getUseAntialiasedClip() {
+        return useAA;
+    }
+
 
     /**
      * Set the clip path to use.

@@ -133,19 +133,20 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
      */
     public GraphicsNode createGraphicsNode(BridgeContext ctx, Element e) {
         TextNode node = (TextNode)super.createGraphicsNode(ctx, e);
-        if (node == null) {
+        if (node == null)
             return null;
-        }
+
         // specify the text painter to use
-        if (ctx.getTextPainter() != null) {
+        if (ctx.getTextPainter() != null)
             node.setTextPainter(ctx.getTextPainter());
-        }
+
         // 'text-rendering' and 'color-rendering'
-        RenderingHints hints = CSSUtilities.convertTextRendering(e, null);
+        RenderingHints hints = null;
         hints = CSSUtilities.convertColorRendering(e, hints);
-        if (hints != null) {
+        hints = CSSUtilities.convertTextRendering (e, hints);
+        if (hints != null)
             node.setRenderingHints(hints);
-        }
+
         node.setLocation(getLocation(ctx, e));
 
         return node;

@@ -297,14 +297,16 @@ public abstract class CSSUtilities
      */
     public static RenderingHints convertShapeRendering(Element e,
                                                        RenderingHints hints) {
-        Value v = getComputedStyle(e, SVGCSSEngine.SHAPE_RENDERING_INDEX);
+        Value  v = getComputedStyle(e, SVGCSSEngine.SHAPE_RENDERING_INDEX);
         String s = v.getStringValue();
-        if (s.charAt(0) == 'a') { // auto
+        int    len = s.length();
+        if ((len == 4) && (s.charAt(0) == 'a')) // auto
             return hints;
-        }
-        if (hints == null) {
+        if (len < 10) return hints;  // Unknown.
+
+        if (hints == null)
             hints = new RenderingHints(null);
-        }
+        
         switch(s.charAt(0)) {
         case 'o': // optimizeSpeed
             hints.put(RenderingHints.KEY_RENDERING,
@@ -381,12 +383,14 @@ public abstract class CSSUtilities
                                                       RenderingHints hints) {
         Value v = getComputedStyle(e, SVGCSSEngine.TEXT_RENDERING_INDEX);
         String s = v.getStringValue();
-        if (s.charAt(0) == 'a') { // auto
+        int    len = s.length();
+        if ((len == 4) && (s.charAt(0) == 'a')) // auto
             return hints;
-        }
-        if (hints == null) {
+        if (len < 13) return hints;  // Unknown.
+
+        if (hints == null)
             hints = new RenderingHints(null);
-        }
+
         switch(s.charAt(8)) {
         case 's': // optimizeSpeed
             hints.put(RenderingHints.KEY_RENDERING,
@@ -457,12 +461,14 @@ public abstract class CSSUtilities
                                                        RenderingHints hints) {
         Value v = getComputedStyle(e, SVGCSSEngine.IMAGE_RENDERING_INDEX);
         String s = v.getStringValue();
-        if (s.charAt(0) == 'a') { // auto
+        int    len = s.length();
+        if ((len == 4) && (s.charAt(0) == 'a')) // auto
             return hints;
-        }
-        if (hints == null) {
+        if (len < 13) return hints;  // Unknown.
+
+        if (hints == null)
             hints = new RenderingHints(null);
-        }
+
         switch(s.charAt(8)) {
         case 's': // optimizeSpeed
             hints.put(RenderingHints.KEY_RENDERING,
@@ -513,12 +519,14 @@ public abstract class CSSUtilities
                                                        RenderingHints hints) {
         Value v = getComputedStyle(e, SVGCSSEngine.COLOR_RENDERING_INDEX);
         String s = v.getStringValue();
-        if (s.charAt(0) == 'a') { // auto
+        int    len = s.length();
+        if ((len == 4) && (s.charAt(0) == 'a')) // auto
             return hints;
-        }
-        if (hints == null) {
+        if (len < 13) return hints;  // Unknown.
+
+        if (hints == null)
             hints = new RenderingHints(null);
-        }
+
         switch(s.charAt(8)) {
         case 's': // optimizeSpeed
             hints.put(RenderingHints.KEY_COLOR_RENDERING,

@@ -17,6 +17,7 @@
  */
 package org.apache.batik.bridge;
 
+import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
@@ -182,6 +183,15 @@ public class SVGClipPathElementBridge extends AbstractSVGBridge
             // Make the initial source as a RenderableImage
             filter = clipedNode.getGraphicsNodeRable(true);
         }
-        return new ClipRable8Bit(filter, clipPath);
+
+        boolean useAA = false;
+        RenderingHints hints;
+        hints = CSSUtilities.convertShapeRendering(clipElement, null);
+        if (hints != null) {
+            Object o = hints.get(RenderingHints.KEY_ANTIALIASING);
+            useAA = (o == RenderingHints.VALUE_ANTIALIAS_ON);
+        }
+            
+        return new ClipRable8Bit(filter, clipPath, useAA);
     }
 }
