@@ -26,7 +26,7 @@
 
   <separator/>
 
-  <page id="whoAreWe" label="Who are we?" source="whoAreWe.xml" />
+  <page id="whoAreWe" label="Who We Are" source="whoAreWe.xml" />
 
   <faqs id="faqs" label="FAQ" source="faq.xml"/>
   <changes id="changes" label="Changes" source="changes.xml"/>

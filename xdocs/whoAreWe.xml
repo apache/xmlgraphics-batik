@@ -15,7 +15,7 @@
 <!-- ========================================================================= -->
 <document>
     <header>
-        <title>Who Are We?</title>
+        <title>Who We Are</title>
         <subtitle>Batik People</subtitle>
         <authors>
             <person name="Stephane Hillion" email="stephane@hillion.org"/>
@@ -35,16 +35,16 @@
       The following people have a commit access to the CVS repository:
       </p>
         <dl>
-          <dt>JD</dt><dd><link href="mailto:James.Davidson@eng.sun.com">James Davidson</link> (Sun)</dd>
-          <dt>TD</dt><dd><link href="mailto:Thomas.DeWeese@Kodak.com">Thomas De Weese</link> (Kodak)</dd>
-          <dt>BH</dt><dd><link href="mailto:bill.haneman@ireland.sun.com">Bill Haneman</link> (Sun)</dd>
-          <dt>VH</dt><dd><link href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</link> (Sun)</dd>
-          <dt>SH</dt><dd><link href="mailto:hillion@apache.org">Stephane Hillion</link> (INRIA)</dd>
-          <dt>DJ</dt><dd><link href="mailto:dean.jackson@cmis.csiro.au">Dean Jackson</link> (CSIRO)</dd>
-          <dt>CJ</dt><dd><link href="mailto:cjolif@ilog.fr">Christophe Jolif</link> (Ilog)</dd>
-          <dt>TK</dt><dd><link href="mailto:tkormann@apache.org">Thierry Kormann</link> (Koala/Dyade/Bull)</dd>
-          <dt>SM</dt><dd><link href="mailto:stefano@apache.org">Stefano Mazzocchi</link> (ASF)</dd>
-          <dt>ET</dt><dd><link href="mailto:tissandi@ilog.fr">Emmanuel Tissandier</link> (Ilog)</dd>
+          <dt>James Davidson</dt><dd><link href="mailto:James.Davidson@eng.sun.com">James.Davidson@eng.sun.com</link> (JD)</dd>
+          <dt>Thomas De Weese</dt><dd><link href="mailto:Thomas.DeWeese@Kodak.com">Thomas.DeWeese@Kodak.com</link> (TD)</dd>
+          <dt>Bill Haneman</dt><dd><link href="mailto:bill.haneman@ireland.sun.com">bill.haneman@ireland.sun.com</link> (BH)</dd>
+          <dt>Vincent Hardy</dt><dd><link href="mailto:vincent.hardy@eng.sun.com">vincent.hardy@eng.sun.com</link> (VH)</dd>
+          <dt>Stephane Hillion</dt><dd><link href="mailto:hillion@apache.org">hillion@apache.org</link> (SH)</dd>
+          <dt>Dean Jackson</dt><dd><link href="mailto:dean.jackson@cmis.csiro.au">dean.jackson@cmis.csiro.au</link> (DJ)</dd>
+          <dt>Christophe Jolif</dt><dd><link href="mailto:cjolif@ilog.fr">cjolif@ilog.fr</link> (CJ)</dd>
+          <dt>Thierry Kormann</dt><dd><link href="mailto:tkormann@apache.org">tkormann@apache.org</link> (TK)</dd>
+          <dt>Stefano Mazzocchi</dt><dd><link href="mailto:stefano@apache.org">stefano@apache.org</link> (SM)</dd>
+          <dt>Emmanuel Tissandier</dt><dd><link href="mailto:tissandi@ilog.fr">tissandi@ilog.fr</link> (ET)</dd>
         </dl>
       </s1>
 
