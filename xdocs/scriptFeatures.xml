@@ -39,7 +39,7 @@
       </p>
       <note>In the ECMAScript programs executed in an SVG document,
             the <code>window</code> object is the global object, so
-            its properties and methods can be accessed without qualifing
+            its properties and methods can be accessed without qualifying
             them.</note>
       <p>
       It provides the following features:
