@@ -52,6 +52,10 @@ public class ConcreteGVTFactory implements GVTFactory {
         return new ConcreteTextNode();
     }
 
+    public RootGraphicsNode createRootGraphicsNode() {
+        return new ConcreteRootGraphicsNode();
+    }
+
     public ImageNode createImageNode() {
         return new ConcreteImageNode();
     }
