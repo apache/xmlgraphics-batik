@@ -48,6 +48,7 @@ import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.event.EventDispatcher;
 import org.apache.batik.gvt.renderer.ImageRenderer;
 import org.apache.batik.gvt.renderer.ImageRendererFactory;
+import org.apache.batik.gvt.renderer.ConcreteImageRendererFactory;
 
 import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderOutput;
@@ -73,9 +74,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGAElement;
 import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.svg.SVGSVGElement;
-
-// <!> FIXME : Those import clauses will change with new design
-import org.apache.batik.gvt.renderer.StaticRendererFactory;
 
 /**
  * This class enables to transcode an input to an image of any format.
@@ -156,7 +154,7 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
 
         // build the GVT tree
         GVTBuilder builder = new GVTBuilder();
-        ImageRendererFactory rendFactory = new StaticRendererFactory();
+        ImageRendererFactory rendFactory = new ConcreteImageRendererFactory();
         BridgeContext ctx = new BridgeContext(userAgent);
         GraphicsNode gvtRoot;
         try {
@@ -238,7 +236,7 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
 
         // paint the SVG document using the bridge package
         // create the appropriate renderer
-        ImageRenderer renderer = rendFactory.createImageRenderer();
+        ImageRenderer renderer = rendFactory.createStaticImageRenderer();
         renderer.updateOffScreen(w, h);
         renderer.setTransform(Px);
         renderer.setTree(gvtRoot);

@@ -21,24 +21,31 @@ import org.apache.batik.gvt.renderer.RendererFactory;
 import org.apache.batik.gvt.filter.ConcreteGraphicsNodeRableFactory;
 
 /**
- * This class is a factory for StaticRenderers.
+ * This class provides a factory for renderers.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class StaticRendererFactory implements ImageRendererFactory {
+public class ConcreteImageRendererFactory implements ImageRendererFactory {
 
     /**
      * Creates a new renderer.
      */
     public Renderer createRenderer() {
-        return createImageRenderer();
+        return createStaticImageRenderer();
     }
 
     /**
-     * Creates a new renderer
+     * Creates a new static image renderer
      */
-    public ImageRenderer createImageRenderer(){
+    public ImageRenderer createStaticImageRenderer(){
         return new StaticRenderer();
+    }
+
+    /**
+     * Creates a new dynamic image renderer
+     */
+    public ImageRenderer createDynamicImageRenderer(){
+        return new DynamicRenderer();
     }
 }

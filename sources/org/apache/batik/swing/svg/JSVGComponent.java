@@ -56,6 +56,8 @@ import org.apache.batik.gvt.GraphicsNode;
 
 import org.apache.batik.gvt.event.EventDispatcher;
 
+import org.apache.batik.gvt.renderer.ImageRenderer;
+
 import org.apache.batik.swing.gvt.GVTTreeRendererEvent;
 import org.apache.batik.swing.gvt.JGVTComponent;
 
@@ -420,7 +422,7 @@ public class JSVGComponent extends JGVTComponent {
         updateManagerStopped = false;
 
         isDynamicDocument = UpdateManager.isDynamicDocument(doc);
-
+        
         svgDocument = doc;
 
         Element root = doc.getDocumentElement();
@@ -501,7 +503,7 @@ public class JSVGComponent extends JGVTComponent {
     /**
      * Starts a SVGLoadEventDispatcher thread.
      */
-    private void startSVGLoadEventDispatcher(GraphicsNode root) {
+    protected void startSVGLoadEventDispatcher(GraphicsNode root) {
         updateManager = new UpdateManager(bridgeContext,
                                           root,
                                           svgDocument);
@@ -522,6 +524,17 @@ public class JSVGComponent extends JGVTComponent {
         }
 
         d.start();
+    }
+
+    /**
+     * Creates a new renderer.
+     */
+    protected ImageRenderer createImageRenderer() {
+        if (isDynamicDocument) {
+            return rendererFactory.createDynamicImageRenderer();
+        } else {
+            return rendererFactory.createStaticImageRenderer();
+        }
     }
 
     /**
