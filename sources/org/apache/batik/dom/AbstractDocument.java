@@ -227,26 +227,15 @@ public abstract class AbstractDocument
      */
     public Node cloneNode(boolean deep) {
 	String message = null;
-	try {
-	    Document n = (Document)getClass().newInstance();
-	    if (deep) {
-		for (Node c = getFirstChild();
-                     c != null;
-                     c = c.getNextSibling()) {
-		    n.appendChild(n.importNode(c, deep));
-		}
-	    }
-	    return n;
-	} catch (IllegalAccessException e) {
-	    message = e.getMessage();
-	} catch (InstantiationException e) {
-	    message = e.getMessage();
-	}
-	throw createDOMException(DOMException.INVALID_STATE_ERR,
-				 "cloning.error",
-				 new Object[] { new Integer(getNodeType()),
-						getNodeName(),
-						message });
+        Document n = (Document)newNode();
+        if (deep) {
+            for (Node c = getFirstChild();
+                 c != null;
+                 c = c.getNextSibling()) {
+                n.appendChild(n.importNode(c, deep));
+            }
+        }
+        return n;
     }
 
     // DocumentEvent /////////////////////////////////////////////////////////

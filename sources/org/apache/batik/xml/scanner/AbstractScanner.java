@@ -117,27 +117,6 @@ public class AbstractScanner implements Localizable {
     }
 
     /**
-     * Tests whether the current lexical unit contains only spaces.
-     */
-    public boolean containsOnlySpaces() {
-	if (type != LexicalUnits.CHARACTER_DATA) {
-	    return false;
-	}
-
-	int size = inputBuffer.contentSize();
-	if (buffer.length < size) {
-	    buffer = new char[size];
-	}
-	inputBuffer.readContent(buffer);
-	for (int i = 0; i < size - 1; i++) {
-	    if (!XMLUtilities.isXMLSpace(buffer[i])) {
-		return false;
-	    }
-	}
-	return true;
-    }
-
-    /**
      * Reads the given identifier.
      * @param s The portion of the identifier to read.
      * @param type The lexical unit type of the identifier.
@@ -170,6 +149,7 @@ public class AbstractScanner implements Localizable {
      * @return type.
      */
     protected int readName(int type) throws IOException, LexicalException {
+        inputBuffer.resetMark();
 	int c = inputBuffer.current();
 	if (c == -1) {
 	    throw createException("eof");
@@ -181,6 +161,22 @@ public class AbstractScanner implements Localizable {
 	    c = inputBuffer.next();
 	} while (c != -1 && XMLUtilities.isXMLNameCharacter((char)c));
 	return this.type = type;
+    }
+
+    /**
+     * Reads a Nmtoken. The current character must be the first character.
+     * @return LexicalUnits.NMTOKEN.
+     */
+    protected int readNmtoken() throws IOException, LexicalException {
+        inputBuffer.resetMark();
+	int c = inputBuffer.current();
+	if (c == -1) {
+	    throw createException("eof");
+	}
+	while (XMLUtilities.isXMLNameCharacter((char)c)) {
+	    c = inputBuffer.next();
+	}
+	return type = LexicalUnits.NMTOKEN;
     }
 
     /**
@@ -272,9 +268,6 @@ public class AbstractScanner implements Localizable {
 	    inputBuffer.next();
 	    return type = LexicalUnits.CHARACTER_REFERENCE;
 	} else {
-	    inputBuffer.unsetMark();
-	    inputBuffer.setMark();
-	    inputBuffer.next();
 	    readName(LexicalUnits.ENTITY_REFERENCE);
 	    c = inputBuffer.current();
 	    if (c != ';') {

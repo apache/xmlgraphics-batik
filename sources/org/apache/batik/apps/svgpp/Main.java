@@ -9,9 +9,15 @@
 package org.apache.batik.apps.svgpp;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.batik.i18n.LocalizableSupport;
+import org.apache.batik.transcoder.Transcoder;
+import org.apache.batik.transcoder.TranscoderInput;
+import org.apache.batik.transcoder.TranscoderOutput;
+import org.apache.batik.transcoder.TranscodingHints;
+import org.apache.batik.transcoder.svg2svg.SVGTranscoder;
 
 /**
  * This class is the main class of the svgpp application.
@@ -28,7 +34,7 @@ public class Main {
      * @param args The command-line arguments.
      */
     public static void main(String[] args) {
-        new Main().run(args);
+        new Main(args).run();
     }
 
     /**
@@ -40,17 +46,73 @@ public class Main {
     /**
      * The localizable support.
      */
-    protected LocalizableSupport localizableSupport =
+    protected static LocalizableSupport localizableSupport =
         new LocalizableSupport(BUNDLE_CLASSNAME);
 
     /**
-     * Runs the pretty printer.
+     * The arguments.
+     */
+    protected String[] arguments;
+
+    /**
+     * The current index.
+     */
+    protected int index;
+
+    /**
+     * The option handlers.
+     */
+    protected Map handlers = new HashMap();
+    {
+        handlers.put("-doctype", new DoctypeHandler());
+        handlers.put("-doc-width", new DocWidthHandler());
+        handlers.put("-newline", new NewlineHandler());
+        handlers.put("-public-id", new PublicIdHandler());
+        handlers.put("-no-format", new NoFormatHandler());
+        handlers.put("-system-id", new SystemIdHandler());
+        handlers.put("-tab-width", new TabWidthHandler());
+    }
+
+    /**
+     * The transcoder.
+     */
+    protected Transcoder transcoder = new SVGTranscoder();
+
+    /**
+     * Initializes the application.
      * @param args The command-line arguments.
      */
-    public void run(String[] args) {
-        if (args.length == 0) {
+    public Main(String[] args) {
+        arguments = args;
+    }
+
+    /**
+     * Runs the pretty printer.
+     */
+    public void run() {
+        if (arguments.length == 0) {
             printUsage();
             return;
+        }
+        try {
+            for (;;) {
+                OptionHandler oh = (OptionHandler)handlers.get(arguments[index]);
+                if (oh == null) {
+                    break;
+                }
+                oh.handleOption();
+            }
+            TranscoderInput in;
+            in = new TranscoderInput(new java.io.FileReader(arguments[index++]));
+            TranscoderOutput out;
+            if (index < arguments.length) {
+                out = new TranscoderOutput(new java.io.FileWriter(arguments[index]));
+            } else {
+                out = new TranscoderOutput(new java.io.OutputStreamWriter(System.out));
+            }
+            transcoder.transcode(in, out);
+        } catch (Exception e) {
+            printUsage();
         }
     }
 
@@ -60,7 +122,13 @@ public class Main {
     protected void printUsage() {
         printHeader();
         System.out.println(localizableSupport.formatMessage("syntax", null));
+        System.out.println();
         System.out.println(localizableSupport.formatMessage("options", null));
+        Iterator it = handlers.keySet().iterator();
+        while (it.hasNext()) {
+            String s = (String)it.next();
+            System.out.println(((OptionHandler)handlers.get(s)).getDescription());
+        }
     }
 
     /**
@@ -68,5 +136,159 @@ public class Main {
      */
     protected void printHeader() {
         System.out.println(localizableSupport.formatMessage("header", null));
+    }
+
+    /**
+     * This interface represents an option handler.
+     */
+    protected interface OptionHandler {
+        /**
+         * Handles the current option.
+         */
+        void handleOption();
+
+        /**
+         * Returns the option description.
+         */
+        String getDescription();
+    }
+
+    /**
+     * To handle the '-doctype' option.
+     */
+    protected class DoctypeHandler implements OptionHandler {
+        protected final Map values = new HashMap(6);
+        {
+            values.put("remove", SVGTranscoder.VALUE_DOCTYPE_REMOVE);
+            values.put("change", SVGTranscoder.VALUE_DOCTYPE_CHANGE);
+        }
+        public void handleOption() {
+            index++;
+            if (index >= arguments.length) {
+                throw new IllegalArgumentException();
+            }
+            Object val = values.get(arguments[index++]);
+            if (val == null) {
+                throw new IllegalArgumentException();
+            }
+            transcoder.addTranscodingHint(SVGTranscoder.KEY_DOCTYPE, val);
+        }
+
+        public String getDescription() {
+            return localizableSupport.formatMessage("doctype.description", null);
+        }
+    }
+
+    /**
+     * To handle the '-newline' option.
+     */
+    protected class NewlineHandler implements OptionHandler {
+        protected final Map values = new HashMap(6);
+        {
+            values.put("cr",    SVGTranscoder.VALUE_NEWLINE_CR);
+            values.put("cr-lf", SVGTranscoder.VALUE_NEWLINE_CR_LF);
+            values.put("lf",    SVGTranscoder.VALUE_NEWLINE_LF);
+        }
+        public void handleOption() {
+            index++;
+            if (index >= arguments.length) {
+                throw new IllegalArgumentException();
+            }
+            Object val = values.get(arguments[index++]);
+            if (val == null) {
+                throw new IllegalArgumentException();
+            }
+            transcoder.addTranscodingHint(SVGTranscoder.KEY_NEWLINE, val);
+        }
+
+        public String getDescription() {
+            return localizableSupport.formatMessage("newline.description", null);
+        }
+    }
+
+    /**
+     * To handle the '-no-format' option.
+     */
+    protected class NoFormatHandler implements OptionHandler {
+        public void handleOption() {
+            index++;
+            transcoder.addTranscodingHint(SVGTranscoder.KEY_FORMAT, Boolean.FALSE);
+        }
+
+        public String getDescription() {
+            return localizableSupport.formatMessage("no-format.description", null);
+        }
+    }
+
+    /**
+     * To handle the '-public-id' option.
+     */
+    protected class PublicIdHandler implements OptionHandler {
+        public void handleOption() {
+            index++;
+            if (index >= arguments.length) {
+                throw new IllegalArgumentException();
+            }
+            String s = arguments[index++];
+            transcoder.addTranscodingHint(SVGTranscoder.KEY_PUBLIC_ID, s);
+        }
+
+        public String getDescription() {
+            return localizableSupport.formatMessage("public-id.description", null);
+        }
+    }
+
+    /**
+     * To handle the '-system-id' option.
+     */
+    protected class SystemIdHandler implements OptionHandler {
+        public void handleOption() {
+            index++;
+            if (index >= arguments.length) {
+                throw new IllegalArgumentException();
+            }
+            String s = arguments[index++];
+            transcoder.addTranscodingHint(SVGTranscoder.KEY_SYSTEM_ID, s);
+        }
+
+        public String getDescription() {
+            return localizableSupport.formatMessage("system-id.description", null);
+        }
+    }
+
+    /**
+     * To handle the '-tab-width' option.
+     */
+    protected class TabWidthHandler implements OptionHandler {
+        public void handleOption() {
+            index++;
+            if (index >= arguments.length) {
+                throw new IllegalArgumentException();
+            }
+            transcoder.addTranscodingHint(SVGTranscoder.KEY_TABULATION_WIDTH,
+                                          new Integer(arguments[index++]));
+        }
+
+        public String getDescription() {
+            return localizableSupport.formatMessage("tab-width.description", null);
+        }
+    }
+
+    /**
+     * To handle the '-doc-width' option.
+     */
+    protected class DocWidthHandler implements OptionHandler {
+        public void handleOption() {
+            index++;
+            if (index >= arguments.length) {
+                throw new IllegalArgumentException();
+            }
+            transcoder.addTranscodingHint(SVGTranscoder.KEY_DOCUMENT_WIDTH,
+                                          new Integer(arguments[index++]));
+        }
+
+        public String getDescription() {
+            return localizableSupport.formatMessage("doc-width.description", null);
+        }
     }
 }
