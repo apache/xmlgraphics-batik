@@ -30,6 +30,13 @@ public interface CSSPageRule extends CSSRule {
      *   <br>NO_MODIFICATION_ALLOWED_ERR: Raised if this rule is readonly.
      */
     public String getSelectorText();
+    /**
+     *  The parsable textual representation of the page selector for the rule. 
+     * @exception DOMException
+     *   SYNTAX_ERR: Raised if the specified CSS string value has a syntax 
+     *   error and is unparsable.
+     *   <br>NO_MODIFICATION_ALLOWED_ERR: Raised if this rule is readonly.
+     */
     public void setSelectorText(String selectorText)
                            throws DOMException;
 

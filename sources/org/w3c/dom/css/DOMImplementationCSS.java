@@ -25,9 +25,9 @@ import org.w3c.dom.DOMException;
 public interface DOMImplementationCSS extends DOMImplementation {
     /**
      * Creates a new <code>CSSStyleSheet</code>.
-     * @param title The advisory title. See also the  section. 
-     * @param media The comma-separated list of media associated with the new 
-     *   style sheet. See also the  section. 
+     * @param title  The advisory title. See also the  section. 
+     * @param media  The comma-separated list of media associated with the 
+     *   new style sheet. See also the  section. 
      * @return A new CSS style sheet.
      * @exception DOMException
      *    SYNTAX_ERR: Raised if the specified media string value has a syntax 

@@ -36,7 +36,7 @@ public interface CSSValueList extends CSSValue {
      * this collection represents the order of the values in the CSS style 
      * property. If index is greater than or equal to the number of values 
      * in the list, this returns <code>null</code>.
-     * @param indexIndex into the collection.
+     * @param index Index into the collection.
      * @return The <code>CSSValue</code> at the <code>index</code> position 
      *   in the <code>CSSValueList</code>, or <code>null</code> if that is 
      *   not a valid index.

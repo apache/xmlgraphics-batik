@@ -44,11 +44,11 @@ public interface CSSStyleSheet extends StyleSheet {
     /**
      *  Used to insert a new rule into the style sheet. The new rule now 
      * becomes part of the cascade. 
-     * @param rule The parsable text representing the rule. For rule sets 
+     * @param rule  The parsable text representing the rule. For rule sets 
      *   this contains both the selector and the style declaration. For 
      *   at-rules, this specifies both the at-identifier and the rule 
      *   content. 
-     * @param index The index within the style sheet's rule list of the rule 
+     * @param index  The index within the style sheet's rule list of the rule 
      *   before which to insert the specified rule. If the specified index 
      *   is equal to the length of the style sheet's rule collection, the 
      *   rule will be added to the end of the style sheet. 
@@ -71,7 +71,7 @@ public interface CSSStyleSheet extends StyleSheet {
 
     /**
      *  Used to delete a rule from the style sheet. 
-     * @param index The index within the style sheet's rule list of the rule 
+     * @param index  The index within the style sheet's rule list of the rule 
      *   to remove. 
      * @exception DOMException
      *   INDEX_SIZE_ERR: Raised if the specified index does not correspond to 
