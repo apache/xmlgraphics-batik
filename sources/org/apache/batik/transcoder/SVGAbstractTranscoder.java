@@ -138,9 +138,9 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
     protected GVTBuilder builder;
 
     /**
-     * Image's width and height.
+     * Image's width and height (init to 400x400).
      */
-    protected float width, height;
+    protected float width=400, height=400;
 
     /** The user agent dedicated to an SVG Transcoder. */
     protected UserAgent userAgent;
@@ -788,9 +788,8 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
          * Returns the default size of this user agent (400x400).
          */
         public Dimension2D getViewportSize() {
-            return new Dimension
-                ((int)SVGAbstractTranscoder.this.width, 
-                 (int)SVGAbstractTranscoder.this.height);
+            return new Dimension((int)SVGAbstractTranscoder.this.width, 
+                                 (int)SVGAbstractTranscoder.this.height);
         }
 
         /**
