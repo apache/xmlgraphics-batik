@@ -30,6 +30,7 @@ import org.apache.batik.dom.GenericAttrNS;
 import org.apache.batik.dom.GenericCDATASection;
 import org.apache.batik.dom.GenericComment;
 import org.apache.batik.dom.GenericDocumentFragment;
+import org.apache.batik.dom.GenericDocumentType;
 import org.apache.batik.dom.GenericElement;
 import org.apache.batik.dom.GenericEntityReference;
 import org.apache.batik.dom.GenericProcessingInstruction;
@@ -121,6 +122,11 @@ public class SVGOMDocument
     public SVGOMDocument(DocumentType dt, DOMImplementation impl) {
         super(impl);
         if (dt != null) {
+            if (dt instanceof GenericDocumentType) {
+                GenericDocumentType gdt = (GenericDocumentType)dt;
+                if (gdt.getOwnerDocument() == null) 
+                    gdt.setOwnerDocument(this);
+            }
             appendChild(dt);
         }
     }

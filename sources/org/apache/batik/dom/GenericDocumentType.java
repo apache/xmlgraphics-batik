@@ -22,7 +22,7 @@ import org.w3c.dom.DocumentType;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
-public class GenericDocumentType extends AbstractNode 
+public class GenericDocumentType extends AbstractChildNode 
     implements DocumentType {
 
     protected String qualifiedName;
