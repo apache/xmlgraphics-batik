@@ -1545,6 +1545,8 @@ public class JSVGViewerFrame
         statusBar.setMessage(resources.getString("Message.treeCancelled"));
         stopAction.update(false);
         svgCanvas.setCursor(DEFAULT_CURSOR);
+	svgCanvas.setSelectionOverlayXORMode
+	    (application.isSelectionOverlayXORMode());
     }
 
     /**
@@ -1558,6 +1560,8 @@ public class JSVGViewerFrame
         statusBar.setMessage(resources.getString("Message.treeFailed"));
         stopAction.update(false);
         svgCanvas.setCursor(DEFAULT_CURSOR);
+	svgCanvas.setSelectionOverlayXORMode
+	    (application.isSelectionOverlayXORMode());
         if (autoAdjust) {
             pack();
         }
