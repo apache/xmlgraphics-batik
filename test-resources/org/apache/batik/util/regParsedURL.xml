@@ -99,4 +99,16 @@
         <arg class="java.lang.String" value="/fop/" />
         <arg class="java.lang.String" value="http://xml.apache.org/fop/" />
     </test>
+    <test class="org.apache.batik.util.ParsedURLTest">
+        <!-- Test relative with absolute path to item -->
+        <arg class="java.lang.String" value="file:helloWorld.svg" />
+        <arg class="java.lang.String" value="file:test.svg#Foo" />
+        <arg class="java.lang.String" value="file:test.svg#Foo" />
+    </test>
+    <test class="org.apache.batik.util.ParsedURLTest">
+        <!-- Test relative with absolute path to item -->
+        <arg class="java.lang.String" value="file:" />
+        <arg class="java.lang.String" value="file:junk.svg#Bar" />
+        <arg class="java.lang.String" value="file:junk.svg#Bar" />
+    </test>
 </testSuite>

@@ -20,9 +20,11 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
+import java.awt.image.DataBufferInt;
 import java.awt.image.Raster;
 import java.awt.image.RenderedImage;
 import java.awt.image.SampleModel;
+import java.awt.image.SinglePixelPackedSampleModel;
 import java.awt.image.WritableRaster;
 import java.awt.image.renderable.RenderContext;
 
@@ -100,7 +102,9 @@ public class TileRed extends AbstractRed implements TileGenerator {
         this.hints        = hints;
         this.alphaPremult = false;
 
-        SampleModel sm = fixSampleModel(tile, xStep, yStep);
+        SampleModel sm = fixSampleModel(tile, xStep, yStep, 
+                                        tiledRegion.width,
+                                        tiledRegion.height);
         ColorModel cm  = fixColorModel(tile, alphaPremult);
 
         double smSz   = AbstractTiledRed.getDefaultTileSize();
@@ -139,62 +143,13 @@ public class TileRed extends AbstractRed implements TileGenerator {
              tile.getMinX(), tile.getMinY(), null);
 
         if (raster != null) {
-            int minX   = raster.getMinX();
-            int minY   = raster.getMinY();
-            int width  = raster.getWidth();
-            int height = raster.getHeight();
-
-            // This is a fairly expensive operation so do it once
-            // upfront.  If we wanted this to go even faster we could
-            // bypass copyData alltogeather and do the copy loops
-            // directly.
-            boolean int_pack = GraphicsUtil.is_INT_PACK_Data(sm, false);
-
             WritableRaster fromRaster = raster.createWritableChild
-                (minX, minY, xStep, yStep, minX, minY, null);
+                (tile.getMinX(), tile.getMinY(), 
+                 xStep, yStep, tile.getMinX(), tile.getMinY(), null);
 
             // Fill one 'tile' of the input....
             fillRasterFrom(fromRaster, tile);
-            this.tile = null;  // don't need it anymore (It's in the raster).
-            
-            // Now replicate that out to the rest of the 
-            // raster.  We keep growing the size of the
-            // chunk we replicate by 2x.
-
-            // Start replicating across the first row...
-            int step=xStep;
-            for (int x=xStep; x<width; x+=step, step*=2) {
-                int w = step;
-                if (x+w > width) w = width-x;
-                WritableRaster toRaster = raster.createWritableChild
-                    (minX+x, minY, w, yStep, minX, minY, null);
-
-                if (int_pack)
-                    GraphicsUtil.copyData_INT_PACK(fromRaster, toRaster);
-                else
-                    GraphicsUtil.copyData_FALLBACK(fromRaster, toRaster);
-
-                fromRaster = raster.createWritableChild
-                    (minX, minY, x+w, yStep, minX, minY, null);
-            }
-
-            // Next replicate that row down to the bottom of the raster...
-            step = yStep;
-            for (int y=yStep; y<height; y+=step, step*=2) {
-                int h = step;
-                if (y+h > height) h = height-y;
-                WritableRaster toRaster = raster.createWritableChild
-                    (minX, minY+y, width, h, minX, minY, null);
-
-                if (int_pack)
-                    GraphicsUtil.copyData_INT_PACK(fromRaster, toRaster);
-                else
-                    GraphicsUtil.copyData_FALLBACK(fromRaster, toRaster);
-
-
-                fromRaster = raster.createWritableChild
-                    (minX, minY, width, y+h, minX, minY, null);
-            }
+            fillOutRaster(raster);
         }
         else {
             this.tile        = new TileCacheRed(GraphicsUtil.wrap(tile));
@@ -330,6 +285,114 @@ public class TileRed extends AbstractRed implements TileGenerator {
         return wr;
     }
 
+    protected void fillOutRaster(WritableRaster wr) {
+        if (is_INT_PACK)
+            fillOutRaster_INT_PACK(wr);
+        else
+            fillOutRaster_FALLBACK(wr);
+        
+    }
+
+    protected void fillOutRaster_INT_PACK(WritableRaster wr) {
+        // System.out.println("Fast copyData");
+        int x0 = wr.getMinX();
+        int y0 = wr.getMinY();
+        int width  = wr.getWidth();
+        int height = wr.getHeight();
+
+        SinglePixelPackedSampleModel sppsm;
+        sppsm = (SinglePixelPackedSampleModel)wr.getSampleModel();
+
+        final int     scanStride = sppsm.getScanlineStride();
+        DataBufferInt db         = (DataBufferInt)wr.getDataBuffer();
+        final int []  pixels     = db.getBankData()[0];
+        final int     base =
+            (db.getOffset() +
+             sppsm.getOffset(x0-wr.getSampleModelTranslateX(),
+                             y0-wr.getSampleModelTranslateY()));
+        int step = xStep;
+        for (int x=xStep; x<width; x+=step, step*=2) {
+            int w = step;
+            if (x+w > width) w = width-x;
+            if (w >= 128) {
+                int srcSP = base;
+                int dstSP = base+x;
+                for(int y=0; y<yStep; y++) {
+                    System.arraycopy(pixels, srcSP, pixels, dstSP, w);
+                    srcSP += scanStride;
+                    dstSP += scanStride;
+                }
+            } else {
+                int srcSP = base;
+                int dstSP = base+x;
+                for(int y=0; y<yStep; y++) {
+                    int end = srcSP;
+                    srcSP += w-1;
+                    dstSP += w-1;
+                    while(srcSP>=end)
+                        pixels[dstSP--] = pixels[srcSP--];
+                    srcSP+=scanStride+1;
+                    dstSP+=scanStride+1;
+                }
+            }
+        }
+
+        step = yStep;
+        for (int y=yStep; y<height; y+=step, step*=2) {
+            int h = step;
+            if (y+h > height) h = height-y;
+            int dstSP = base+y*scanStride;
+            System.arraycopy(pixels, base, pixels, dstSP, h*scanStride);
+        }
+    }
+
+    protected void fillOutRaster_FALLBACK(WritableRaster wr) {
+        // System.out.println("Fast copyData");
+        int x0     = wr.getMinX();
+        int y0     = wr.getMinY();
+        int width  = wr.getWidth();
+        int height = wr.getHeight();
+
+        Object data = null;
+
+        int step = xStep;
+        for (int x=xStep; x<width; x+=step, step*=4) {
+            int w = step;
+            if (x+w > width) w = width-x;
+            data = wr.getDataElements(0, 0, w, yStep, data);
+            wr.setDataElements(x, 0, w, yStep, data);
+            x+=w;
+
+            if (x >= width) break;
+            if (x+w > width) w = width-x;
+            wr.setDataElements(x, 0, w, yStep, data);
+            x+=w;
+
+            if (x >= width) break;
+            if (x+w > width) w = width-x;
+            wr.setDataElements(x, 0, w, yStep, data);
+        }
+
+        step = yStep;
+        for (int y=yStep; y<height; y+=step, step*=4) {
+            int h = step;
+            if (y+h > height) h = height-y;
+            data = wr.getDataElements(0, 0, width, h, data);
+            wr.setDataElements(0, y, width, h, data);
+            y+=h;
+
+            if (h >= height) break;
+            if (y+h > height) h = height-y;
+            wr.setDataElements(0, y, width, h, data);
+            y+=h;
+
+            if (h >= height) break;
+            if (y+h > height) h = height-y;
+            wr.setDataElements(0, y, width, h, data);
+            y+=h;
+        }
+    }
+
     protected static ColorModel fixColorModel(RenderedImage src,
                                               boolean alphaPremult) {
         return GraphicsUtil.coerceColorModel(src.getColorModel(), 
@@ -342,15 +405,18 @@ public class TileRed extends AbstractRed implements TileGenerator {
      * much larger than my width.
      */
     protected static SampleModel fixSampleModel(RenderedImage src,
-                                                int stepX, int stepY) {
+                                                int stepX, int stepY,
+                                                int width, int height) {
         int defSz = AbstractTiledRed.getDefaultTileSize();
         SampleModel sm = src.getSampleModel();
         int w = sm.getWidth();
         if (w < defSz) w = defSz;
         if (w > stepX)  w = stepX;
+        // if (w > width)  w = width;
         int h = sm.getHeight();
         if (h < defSz) h = defSz;
         if (h > stepY) h = stepY;
+        // if (h > height) h = height;
         return sm.createCompatibleSampleModel(w, h);
     }
 }
