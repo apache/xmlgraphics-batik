@@ -61,7 +61,7 @@ public class DocumentDescriptor {
     }
     
     /**
-     * Returns the location in the source file of the end element.
+     * Returns the location line in the source file of the end element.
      * @return zero if the information is unknown.
      */
     public int getLocationLine(Element elt) {
@@ -81,9 +81,29 @@ public class DocumentDescriptor {
     }
     
     /**
+     * Returns the location column in the source file of the end element.
+     * @return zero if the information is unknown.
+     */
+    public int getLocationColumn(Element elt) {
+        synchronized (this) {
+            int hash = elt.hashCode() & 0x7FFFFFFF;
+            int index = hash % table.length;
+	
+            for (Entry e = table[index]; e != null; e = e.next) {
+                if (e.hash != hash) 
+                    continue;
+                Object o = e.get();
+                if (o == elt) 
+                    return e.locationColumn;
+            }
+        }
+        return 0;
+    }
+    
+    /**
      * Sets the location in the source file of the end element.
      */
-    public void setLocationLine(Element elt, int line) {
+    public void setLocation(Element elt, int line, int col) {
         synchronized (this) {
             int hash  = elt.hashCode() & 0x7FFFFFFF;
             int index = hash % table.length;
@@ -103,7 +123,7 @@ public class DocumentDescriptor {
                 index = hash % table.length;
             }
 	
-            Entry e = new Entry(hash, elt, line, table[index]);
+            Entry e = new Entry(hash, elt, line, col, table[index]);
             table[index] = e;
         }
     }
@@ -164,6 +184,11 @@ public class DocumentDescriptor {
 	public int locationLine;
 	
 	/**
+	 * The column number.
+	 */
+	public int locationColumn;
+	
+	/**
 	 * The next entry
 	 */
 	public Entry next;
@@ -171,11 +196,16 @@ public class DocumentDescriptor {
 	/**
 	 * Creates a new entry
 	 */
-	public Entry(int hash, Element element, int locationLine, Entry next) {
+	public Entry(int hash,
+                     Element element,
+                     int locationLine,
+                     int locationColumn,
+                     Entry next) {
             super(element);
-	    this.hash         = hash;
-	    this.locationLine = locationLine;
-	    this.next         = next;
+	    this.hash           = hash;
+	    this.locationLine   = locationLine;
+            this.locationColumn = locationColumn;
+	    this.next           = next;
 	}
 
         public void cleared() {

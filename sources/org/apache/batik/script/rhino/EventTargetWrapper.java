@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.WeakHashMap;
 
+import org.apache.batik.dom.AbstractNode;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.JavaScriptException;
@@ -284,14 +285,130 @@ class EventTargetWrapper extends NativeJavaObject {
         }
     }
 
+    static class FunctionAddNSProxy extends FunctionProxy {
+        private Map listenerMap;
+
+        FunctionAddNSProxy(Function delegate, Map listenerMap) {
+            super(delegate);
+            this.listenerMap = listenerMap;
+        }
+
+        public Object call(Context ctx, Scriptable scope,
+                           Scriptable thisObj, Object[] args)
+            throws JavaScriptException {
+            NativeJavaObject  njo = (NativeJavaObject)thisObj;
+            if (args[2] instanceof Function) {
+                EventListener evtListener = new FunctionEventListener
+                    ((Function)args[2],
+                     ((RhinoInterpreter.ExtendedContext)ctx).getInterpreter());
+                listenerMap.put(args[2], new SoftReference(evtListener));
+                // we need to marshall args
+                Class[] paramTypes = { String.class, String.class,
+                                       Function.class, Boolean.TYPE,
+                                       Object.class };
+                for (int i = 0; i < args.length; i++)
+                    args[i] = Context.toType(args[i], paramTypes[i]);
+                AbstractNode target = (AbstractNode) njo.unwrap();
+                target.addEventListenerNS
+                    ((String)args[0],
+                     (String)args[1],
+                     evtListener,
+                     ((Boolean)args[3]).booleanValue(),
+                     args[4]);
+                return Undefined.instance;
+            }
+            if (args[2] instanceof NativeObject) {
+                EventListener evtListener =
+                    new HandleEventListener((Scriptable)args[2],
+                                            ((RhinoInterpreter.ExtendedContext)
+                                             ctx).getInterpreter());
+                listenerMap.put(args[2], new SoftReference(evtListener));
+                // we need to marshall args
+                Class[] paramTypes = { String.class, String.class,
+                                       Scriptable.class, Boolean.TYPE,
+                                       Object.class };
+                for (int i = 0; i < args.length; i++)
+                    args[i] = Context.toType(args[i], paramTypes[i]);
+                AbstractNode target = (AbstractNode) njo.unwrap();
+                target.addEventListenerNS
+                    ((String)args[0],
+                     (String)args[1],
+                     evtListener,
+                     ((Boolean)args[3]).booleanValue(),
+                     args[4]);
+                return Undefined.instance;
+            }
+            return delegate.call(ctx, scope, thisObj, args);
+        }
+    }
+
+    static class FunctionRemoveNSProxy extends FunctionProxy {
+        private Map listenerMap;
+
+        FunctionRemoveNSProxy(Function delegate, Map listenerMap) {
+            super(delegate);
+            this.listenerMap = listenerMap;
+        }
+
+        public Object call(Context ctx, Scriptable scope,
+                           Scriptable thisObj, Object[] args)
+            throws JavaScriptException {
+            NativeJavaObject  njo = (NativeJavaObject)thisObj;
+            if (args[2] instanceof Function) {
+                SoftReference sr = (SoftReference)listenerMap.get(args[2]);
+                if (sr == null)
+                    return Undefined.instance;
+                EventListener el = (EventListener)sr.get();
+                if (el == null)
+                    return Undefined.instance;
+                // we need to marshall args
+                Class[] paramTypes = { String.class, String.class,
+                                       Function.class, Boolean.TYPE };
+                for (int i = 0; i < args.length; i++)
+                    args[i] = Context.toType(args[i], paramTypes[i]);
+                AbstractNode target = (AbstractNode) njo.unwrap();
+                target.removeEventListenerNS
+                    ((String)args[0],
+                     (String)args[1],
+                     el,
+                     ((Boolean)args[2]).booleanValue());
+                return Undefined.instance;
+            }
+            if (args[2] instanceof NativeObject) {
+                SoftReference sr = (SoftReference)listenerMap.get(args[2]);
+                if (sr == null)
+                    return Undefined.instance;
+                EventListener el = (EventListener)sr.get();
+                if (el == null)
+                    return Undefined.instance;
+                // we need to marshall args
+                Class[] paramTypes = { String.class, String.class,
+                                       Scriptable.class, Boolean.TYPE };
+                for (int i = 0; i < args.length; i++)
+                    args[i] = Context.toType(args[i], paramTypes[i]);
+
+                AbstractNode target = (AbstractNode) njo.unwrap();
+                target.removeEventListenerNS
+                    ((String)args[0],
+                     (String)args[1],
+                     el,
+                     ((Boolean)args[2]).booleanValue());
+                return Undefined.instance;
+            }
+            return delegate.call(ctx, scope, thisObj, args);
+        }
+    }
+
     // the keys are the underlying Java object, in order
     // to remove potential memory leaks use a WeakHashMap to allow
     // to collect entries as soon as the underlying Java object is
     // not anymore available.
     private static WeakHashMap mapOfListenerMap;
 
-    private final static String ADD_NAME    = "addEventListener";
-    private final static String REMOVE_NAME = "removeEventListener";
+    private final static String ADD_NAME      = "addEventListener";
+    private final static String ADDNS_NAME    = "addEventListenerNS";
+    private final static String REMOVE_NAME   = "removeEventListener";
+    private final static String REMOVENS_NAME = "removeEventListenerNS";
     private final static Class[] ARGS_TYPE = { String.class,
                                                EventListener.class,
                                                Boolean.TYPE };
@@ -310,11 +427,14 @@ class EventTargetWrapper extends NativeJavaObject {
             // prevent creating a Map for all JavaScript objects
             // when we need it only from time to time...
             method = new FunctionAddProxy((Function)method, initMap());
-        }
-        if (name.equals(REMOVE_NAME)) {
+        } else if (name.equals(REMOVE_NAME)) {
             // prevent creating a Map for all JavaScript objects
             // when we need it only from time to time...
             method = new FunctionRemoveProxy((Function)method, initMap());
+        } else if (name.equals(ADDNS_NAME)) {
+            method = new FunctionAddNSProxy((Function) method, initMap());
+        } else if (name.equals(REMOVENS_NAME)) {
+            method = new FunctionRemoveNSProxy((Function) method, initMap());
         }
         return method;
     }

@@ -30,7 +30,8 @@ import org.w3c.dom.ProcessingInstruction;
  */
 public abstract class AbstractProcessingInstruction
     extends    AbstractChildNode
-    implements ProcessingInstruction {
+    implements org.apache.batik.dom.dom3.ProcessingInstruction {
+
     /**
      * The data.
      */
@@ -97,6 +98,13 @@ public abstract class AbstractProcessingInstruction
 	    ((AbstractParentNode)getParentNode()).
                 fireDOMSubtreeModifiedEvent();
 	}
+    }
+
+    /**
+     * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getTextContent()}.
+     */
+    public String getTextContent() {
+        return getNodeValue();
     }
 
     /**

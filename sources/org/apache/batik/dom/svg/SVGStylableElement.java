@@ -105,7 +105,7 @@ public abstract class SVGStylableElement
      */
     public URL getCSSBase() {
         try {
-            String bu = XMLBaseSupport.getCascadedXMLBase(this);
+            String bu = getBaseURI();
             if (bu == null) {
                 return null;
             }

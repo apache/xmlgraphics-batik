@@ -30,7 +30,8 @@ import org.w3c.dom.Node;
 
 public abstract class AbstractDocumentFragment
     extends AbstractParentNode
-    implements DocumentFragment {
+    implements org.apache.batik.dom.dom3.DocumentFragment {
+
     /**
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getNodeName()}.
      * @return "#document-fragment".
