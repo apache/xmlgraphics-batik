@@ -113,8 +113,8 @@
         var stars = new Array()
         var controlPanelMoving = false;
         var showControlPanel = false
-        var helpText1 = "Click the title to show the control panel"
-        var helpText2 = "Click the title to hide the control panel"
+        var helpText1 = "Click on the title to show the control panel"
+        var helpText2 = "Click on the title to hide the control panel"
 
 
         //
