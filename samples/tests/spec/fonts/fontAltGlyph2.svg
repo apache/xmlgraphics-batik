@@ -21,7 +21,9 @@
 <svg width="450" height="500" viewBox="0 0 450 500" font-family="Arial" xmlns:xlink="http://www.w3.org/1999/xlink">
    <title>altGlyph, altGlyphItem</title>
 
-        <text class="title" x="50%" y="40">altGlyph, altGlyphItem Test</text>
+   <g id="content">
+
+   <text class="title" x="50%" y="40">altGlyph, altGlyphItem Test</text>
 
    <defs>
       <font id="Font1" horiz-adv-x="1000">
@@ -129,5 +131,6 @@
       <text x="5" y="58%">...5 glyphRefs with dx/dy/rotate : "
          <altGlyph rotate="10,10,10,10,10" dx="0,2,2,2,2" dy="0,2,2,-2,-2" fill="green" xlink:href="#MyAltGlyphDef1">No Match</altGlyph>
 "      </text>
+   </g>
    </g>
 </svg>

@@ -25,30 +25,29 @@
         </arg>
     </testReportProcessor>
 
-    <!-- ====================================================================== -->
-    <!--                     Rendering Accuracy Tests                           -->
-    <!-- ====================================================================== -->
+    <!-- ================================================================== -->
+    <!--                     Rendering Accuracy Tests                       -->
+    <!-- ================================================================== -->
 
-    <!--                                Batik                                    -->
-    <!--                               Samples                                   -->
+    <!--                                Batik                               -->
+    <!--                               Samples                              -->
     <testSuite href="file:test-resources/org/apache/batik/test/samplesRendering.xml" /> 
 
-
-    <!--                           SVG Working Group                            -->
-    <!--                           Basic Effectivity                            -->
-    <!--                               Test Suite                               -->
+    <!--                           SVG Working Group                        -->
+    <!--                           Basic Effectivity                        -->
+    <!--                               Test Suite                           -->
     <testSuite href="file:test-resources/org/apache/batik/test/beSuite.xml" />
 
 
-    <!-- ====================================================================== -->
-    <!--                         SVG Generator Tests                            -->
-    <!-- ====================================================================== -->
+    <!-- ================================================================== -->
+    <!--                         SVG Generator Tests                        -->
+    <!-- ================================================================== -->
     <testSuite href="file:test-resources/org/apache/batik/svggen/regsvggen.xml" /> 
 
 
-    <!-- ====================================================================== -->
-    <!--                              Unit Testing                              -->
-    <!-- ====================================================================== -->
+    <!-- ================================================================== -->
+    <!--                              Unit Testing                          -->
+    <!-- ================================================================== -->
     <testSuite href="file:test-resources/org/apache/batik/apps/rasterizer/unitTesting.xml" />
     <testSuite href="file:test-resources/org/apache/batik/test/unitTesting.xml" />  
     <testSuite href="file:test-resources/org/apache/batik/ext/awt/image/codec/unitTesting.xml" />

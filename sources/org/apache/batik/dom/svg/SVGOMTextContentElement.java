@@ -99,7 +99,8 @@ public abstract class SVGOMTextContentElement
      * org.w3c.dom.svg.SVGTextContentElement#getNumberOfChars()}.
      */
     public int getNumberOfChars() {
-        throw new RuntimeException(" !!! SVGOMTextContentElement.getNumberOfChars()");
+        return SVGTextContentSupport.getNumberOfChars(this);
+        //throw new RuntimeException(" !!! SVGOMTextContentElement.getNumberOfChars()");
     }
 
     /**
@@ -107,7 +108,8 @@ public abstract class SVGOMTextContentElement
      * org.w3c.dom.svg.SVGTextContentElement#getComputedTextLength()}.
      */
     public float getComputedTextLength() {
-        throw new RuntimeException(" !!! SVGOMTextContentElement.getComputedTextLength()");
+        return SVGTextContentSupport.getComputedTextLength(this);
+        //throw new RuntimeException(" !!! SVGOMTextContentElement.getComputedTextLength()");
     }
 
     /**
@@ -116,7 +118,8 @@ public abstract class SVGOMTextContentElement
      */
     public float getSubStringLength(int charnum, int nchars)
         throws DOMException {
-        throw new RuntimeException(" !!! SVGOMTextContentElement.getSubStringLength()");
+        return SVGTextContentSupport.getSubStringLength(this,charnum,nchars);
+        //throw new RuntimeException(" !!! SVGOMTextContentElement.getSubStringLength()");
     }
 
     /**
@@ -124,7 +127,8 @@ public abstract class SVGOMTextContentElement
      * org.w3c.dom.svg.SVGTextContentElement#getStartPositionOfChar(int)}.
      */
     public SVGPoint getStartPositionOfChar(int charnum) throws DOMException {
-        throw new RuntimeException(" !!! SVGOMTextContentElement.getStartPositionOfChar()");
+        //throw new RuntimeException(" !!! SVGOMTextContentElement.getStartPositionOfChar()");
+        return SVGTextContentSupport.getStartPositionOfChar(this,charnum);
     }
 
     /**
@@ -132,7 +136,8 @@ public abstract class SVGOMTextContentElement
      * org.w3c.dom.svg.SVGTextContentElement#getEndPositionOfChar(int)}.
      */
     public SVGPoint getEndPositionOfChar(int charnum) throws DOMException {
-        throw new RuntimeException(" !!! SVGOMTextContentElement.getEndPositionOfChar()");
+        //throw new RuntimeException(" !!! SVGOMTextContentElement.getEndPositionOfChar()");
+        return SVGTextContentSupport.getEndPositionOfChar(this,charnum);
     }
 
     /**
@@ -140,7 +145,8 @@ public abstract class SVGOMTextContentElement
      * org.w3c.dom.svg.SVGTextContentElement#getExtentOfChar(int)}.
      */
     public SVGRect getExtentOfChar(int charnum) throws DOMException {
-        throw new RuntimeException(" !!! SVGOMTextContentElement.getExtentOfChar()");
+        //throw new RuntimeException(" !!! SVGOMTextContentElement.getExtentOfChar()");
+        return SVGTextContentSupport.getExtentOfChar(this,charnum);
     }
 
     /**
@@ -148,7 +154,8 @@ public abstract class SVGOMTextContentElement
      * org.w3c.dom.svg.SVGTextContentElement#getRotationOfChar(int)}.
      */
     public float getRotationOfChar(int charnum) throws DOMException {
-        throw new RuntimeException(" !!! SVGOMTextContentElement.getRotationOfChar()");
+        //throw new RuntimeException(" !!! SVGOMTextContentElement.getRotationOfChar()");
+        return SVGTextContentSupport.getRotationOfChar(this,charnum);
     }
 
     /**
@@ -156,7 +163,8 @@ public abstract class SVGOMTextContentElement
      * org.w3c.dom.svg.SVGTextContentElement#getCharNumAtPosition(SVGPoint)}.
      */
     public int getCharNumAtPosition(SVGPoint point) {
-        throw new RuntimeException(" !!! SVGOMTextContentElement.getCharNumAtPosition()");
+        //throw new RuntimeException(" !!! SVGOMTextContentElement.getCharNumAtPosition()");
+        return SVGTextContentSupport.getCharNumAtPosition(this,point.getX(),point.getY());
     }
 
     /**
@@ -165,7 +173,8 @@ public abstract class SVGOMTextContentElement
      */
     public void selectSubString(int charnum, int nchars)
         throws DOMException {
-        throw new RuntimeException(" !!! SVGOMTextContentElement.getSubStringLength()");
+        SVGTextContentSupport.selectSubString(this,charnum, nchars);
+        //throw new RuntimeException(" !!! SVGOMTextContentElement.getSubStringLength()");
     }
 
     // SVGExternalResourcesRequired support /////////////////////////////

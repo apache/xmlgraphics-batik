@@ -572,6 +572,9 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
         }
 
         bounds2D = b;
+        if ( bounds2D == null ){
+            bounds2D = new Rectangle2D.Float();
+        }
         return bounds2D;
     }
 
@@ -734,8 +737,14 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
             endGlyphIndex = glyphs.length-1;
         }
         for (int i = startGlyphIndex; i <= endGlyphIndex; i++) {
-            String glyphUnicode = glyphs[i].getUnicode();
-            numChars += glyphUnicode.length();
+            Glyph glyph = glyphs[i];
+            if (glyph.getGlyphCode() == -1) {
+                // Missing glyph mapps to just one char...
+                numChars++;
+            } else {
+                String glyphUnicode = glyph.getUnicode();
+                numChars += glyphUnicode.length();
+            }
         }
         return numChars;
     }
