@@ -56,17 +56,6 @@ public class TextLayoutAdapter implements TextSpanLayout {
      * @param g2d the Graphics2D to use
      */
     public void draw(Graphics2D g2d, GraphicsNodeRenderContext ctx) {
-   /*     AffineTransform t;
-        if (transform != null) {
-            t = g2d.getTransform();
-            g2d.transform(transform);
-            layout.draw(g2d, 0f, 0f);
-            g2d.setTransform(t);
-        } else {
-            layout.draw(g2d, 0f, 0f);
-        }
-
-     */
 
         Shape outline = getOutline();
 
@@ -87,9 +76,6 @@ public class TextLayoutAdapter implements TextSpanLayout {
             g2d.setPaint(paint);
             g2d.draw(outline);
         }
-
-
-
     }
 
     /**
@@ -182,7 +168,7 @@ public class TextLayoutAdapter implements TextSpanLayout {
      * @return The index of the matching glyph in this layout's glyph vector,
      *         or -1 if a matching glyph could not be found.
      */
-    private int getGlyphIndex(int charIndex) {
+    public int getGlyphIndex(int charIndex) {
         int currentChar = aci.getBeginIndex();
         int numGlyphs = getGlyphCount();
         for (int i = 0; i < numGlyphs; i++) {
@@ -204,12 +190,10 @@ public class TextLayoutAdapter implements TextSpanLayout {
      *
      * @param beginCharIndex the index of the first char in the contiguous selection.
      * @param endCharIndex the index of the last char in the contiguous selection.
-     * @param selectionLeftToRight Indicates the selection direction.
      * @return The highlight shape or null if the spacified char range does not
      * overlap with the chars in this layout.
      */
-    public Shape getHighlightShape(int beginCharIndex, int endCharIndex,
-                                   boolean selectionLeftToRight) {
+    public Shape getHighlightShape(int beginCharIndex, int endCharIndex) {
         return transform.createTransformedShape(
             layout.getLogicalHighlightShape(Math.max(0,getGlyphIndex(beginCharIndex)),
                 Math.max(getGlyphCount()-1, getGlyphIndex(endCharIndex))));

@@ -23,6 +23,11 @@ public class TextPath {
     private PathLength pathLength;
     private float startOffset;
 
+    /**
+     * Constructs a TextPath based on the specified path.
+     *
+     * @param path The general path along which text is to be laid.
+     */
     public TextPath(GeneralPath path) {
         pathLength = new PathLength(path);
         startOffset = 0;
@@ -39,6 +44,8 @@ public class TextPath {
 
     /**
      * Returns the start offset of this text path.
+     *
+     * @return The start offset of this text path.
      */
     public float getStartOffset() {
         return startOffset;
@@ -46,13 +53,15 @@ public class TextPath {
 
     /**
      * Returns the total length of the path.
+     *
+     * @return The lenght of the path.
      */
     public float lengthOfPath() {
         return pathLength.lengthOfPath();
     }
 
     /**
-     * Return the angle at the specified length
+     * Returns the angle at the specified length
      * along the path.
      *
      * @param length The length along the path.
@@ -63,7 +72,7 @@ public class TextPath {
     }
 
     /**
-     * Return the point that is at the specified length
+     * Returns the point that is at the specified length
      * along the path.
      *
      * @param length The length along the path.
