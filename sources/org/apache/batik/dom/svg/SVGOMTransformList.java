@@ -15,7 +15,6 @@ import java.util.List;
 import org.apache.batik.parser.ParseException;
 import org.apache.batik.parser.TransformListHandler;
 import org.apache.batik.parser.TransformListParser;
-import org.apache.batik.refimpl.parser.ConcreteTransformListParser;
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.svg.SVGException;
@@ -214,7 +213,7 @@ public class SVGOMTransformList
      * Parses the given transform representation.
      */
     protected void parseTransform(String text) {
-	TransformListParser tlp = new ConcreteTransformListParser();
+	TransformListParser tlp = new TransformListParser();
 	tlp.setTransformListHandler(this);
 	try {
 	    tlp.parse(new StringReader(text));

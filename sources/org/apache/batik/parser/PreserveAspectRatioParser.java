@@ -8,14 +8,30 @@
 
 package org.apache.batik.parser;
 
+import java.io.Reader;
+
 /**
- * This interface represents an event-based parser for the SVG
- * preserveAspectRatio attribute values.
+ * This class implements an event-based parser for the SVG preserveAspectRatio
+ * attribute values.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public interface PreserveAspectRatioParser extends Parser {
+public class PreserveAspectRatioParser extends AbstractParser {
+
+    /**
+     * The PreserveAspectRatio handler used to report parse events.
+     */
+    protected PreserveAspectRatioHandler preserveAspectRatioHandler;
+
+    /**
+     * Creates a new PreserveAspectRatioParser.
+     */
+    public PreserveAspectRatioParser() {
+	preserveAspectRatioHandler =
+            DefaultPreserveAspectRatioHandler.INSTANCE;
+    }
+
     /**
      * Allows an application to register a PreserveAspectRatioParser handler.
      *
@@ -27,10 +43,356 @@ public interface PreserveAspectRatioParser extends Parser {
      * handler immediately.</p>
      * @param handler The transform list handler.
      */
-    void setPreserveAspectRatioHandler(PreserveAspectRatioHandler handler);
+    public void setPreserveAspectRatioHandler(
+            PreserveAspectRatioHandler handler) {
+	preserveAspectRatioHandler = handler;
+    }
 
     /**
      * Returns the length handler in use.
      */
-    PreserveAspectRatioHandler getPreserveAspectRatioHandler();
+    public PreserveAspectRatioHandler getPreserveAspectRatioHandler() {
+        return preserveAspectRatioHandler;
+    }
+
+    /**
+     * Parses the given reader.
+     */
+    public void parse(Reader r) throws ParseException {
+	initialize(r);
+
+	preserveAspectRatioHandler.startPreserveAspectRatio();
+
+	read();
+	skipSpaces();
+
+	s: if (current == 'n') {
+	    read();
+	    if (current != 'o') {
+		reportError("character.expected",
+			    new Object[] { new Character('o'),
+					   new Integer(current) });
+		skipIdentifier();
+		break s;
+	    }
+	    read();
+	    if (current != 'n') {
+		reportError("character.expected",
+			    new Object[] { new Character('n'),
+					   new Integer(current) });
+		skipIdentifier();
+		break s;
+	    }
+	    read();
+	    if (current != 'e') {
+		reportError("character.expected",
+			    new Object[] { new Character('e'),
+					   new Integer(current) });
+		skipIdentifier();
+		break s;
+	    }
+	    read();
+	    skipSpaces();
+	    preserveAspectRatioHandler.none();
+	} else {
+	    align: switch (current) {
+	    case 'x':
+		read();
+		if (current != 'M') {
+		    reportError("character.expected",
+				new Object[] { new Character('M'),
+					       new Integer(current) });
+		    skipIdentifier();
+		    break;
+		}
+		read();
+		switch (current) {
+		case 'a':
+		    read();
+		    if (current != 'x') {
+			reportError("character.expected",
+				    new Object[] { new Character('x'),
+						   new Integer(current) });
+			skipIdentifier();
+			break align;
+		    }
+		    read();
+		    if (current != 'Y') {
+			reportError("character.expected",
+				    new Object[] { new Character('Y'),
+						   new Integer(current) });
+			skipIdentifier();
+			break align;
+		    }
+		    read();
+		    if (current != 'M') {
+			reportError("character.expected",
+				    new Object[] { new Character('M'),
+						   new Integer(current) });
+			skipIdentifier();
+			break align;
+		    }
+		    read();
+		    switch (current) {
+		    case 'a':
+			read();
+			if (current != 'x') {
+			    reportError("character.expected",
+					new Object[] { new Character('x'),
+						       new Integer(current) });
+			    skipIdentifier();
+			    break align;
+			}
+			preserveAspectRatioHandler.xMaxYMax();
+			read();
+			break;
+		    case 'i':
+			read();
+			switch (current) {
+			case 'd':
+			    preserveAspectRatioHandler.xMaxYMid();
+			    read();
+			    break;
+			case 'n':
+			    preserveAspectRatioHandler.xMaxYMin();
+			    read();
+			    break;
+			default:
+			    reportError("character.unexpected",
+					new Object[] { new Integer(current) });
+			    skipIdentifier();
+			    break align;
+			}
+		    }
+		    break;
+		case 'i':
+		    read();
+		    switch (current) {
+		    case 'd':
+			read();
+			if (current != 'Y') {
+			    reportError("character.expected",
+					new Object[] { new Character('Y'),
+						       new Integer(current) });
+			    skipIdentifier();
+			    break align;
+			}
+			read();
+			if (current != 'M') {
+			    reportError("character.expected",
+					new Object[] { new Character('M'),
+						       new Integer(current) });
+			    skipIdentifier();
+			    break align;
+			}
+			read();
+			switch (current) {
+			case 'a':
+			    read();
+			    if (current != 'x') {
+				reportError
+                                    ("character.expected",
+                                     new Object[] { new Character('x'),
+                                                    new Integer(current) });
+			    skipIdentifier();
+			    break align;
+			    }
+			    preserveAspectRatioHandler.xMidYMax();
+			    read();
+			    break;
+			case 'i':
+			    read();
+			    switch (current) {
+			    case 'd':
+			    preserveAspectRatioHandler.xMidYMid();
+			    read();
+			    break;
+			    case 'n':
+				preserveAspectRatioHandler.xMidYMin();
+				read();
+				break;
+			default:
+			    reportError("character.unexpected",
+					new Object[] { new Integer(current) });
+			    skipIdentifier();
+			    break align;
+			    }
+			}
+			break;
+		    case 'n':
+			read();
+			if (current != 'Y') {
+			    reportError("character.expected",
+					new Object[] { new Character('Y'),
+						       new Integer(current) });
+			    skipIdentifier();
+			    break align;
+			}
+			read();
+			if (current != 'M') {
+			    reportError("character.expected",
+					new Object[] { new Character('M'),
+						       new Integer(current) });
+			    skipIdentifier();
+			    break align;
+			}
+			read();
+			switch (current) {
+			case 'a':
+			    read();
+			    if (current != 'x') {
+				reportError
+                                    ("character.expected",
+                                     new Object[] { new Character('x'),
+                                                    new Integer(current) });
+				skipIdentifier();
+				break align;
+			    }
+			    preserveAspectRatioHandler.xMinYMax();
+			    read();
+			    break;
+			case 'i':
+			    read();
+			    switch (current) {
+			    case 'd':
+				preserveAspectRatioHandler.xMinYMid();
+				read();
+				break;
+			    case 'n':
+				preserveAspectRatioHandler.xMinYMin();
+				read();
+				break;
+			    default:
+				reportError
+                                    ("character.unexpected",
+                                     new Object[] { new Integer(current) });
+				skipIdentifier();
+				break align;
+			    }
+			}
+			break;
+		    default:
+			reportError("character.unexpected",
+				    new Object[] { new Integer(current) });
+			skipIdentifier();
+			break align;
+		    }
+		    break;
+		default:
+		    reportError("character.unexpected",
+				new Object[] { new Integer(current) });
+		    skipIdentifier();
+		}
+		break;
+	    default:
+		if (current != -1) {
+		    reportError("character.unexpected",
+				new Object[] { new Integer(current) });
+		    skipIdentifier();
+		}
+	    }
+
+	    skipSpaces();
+
+	    switch (current) {
+	    case 'm':
+		read();
+		if (current != 'e') {
+		    reportError("character.expected",
+				new Object[] { new Character('e'),
+					       new Integer(current) });
+		    skipIdentifier();
+		    break;
+		}
+		read();
+		if (current != 'e') {
+		    reportError("character.expected",
+				new Object[] { new Character('e'),
+					       new Integer(current) });
+		    skipIdentifier();
+		    break;
+		}
+		read();
+		if (current != 't') {
+		    reportError("character.expected",
+				new Object[] { new Character('t'),
+					       new Integer(current) });
+		    skipIdentifier();
+		    break;
+		}
+		preserveAspectRatioHandler.meet();
+		read();
+		break;
+	    case 's':
+		read();
+		if (current != 'l') {
+		    reportError("character.expected",
+				new Object[] { new Character('l'),
+					       new Integer(current) });
+		    skipIdentifier();
+		    break;
+		}
+		read();
+		if (current != 'i') {
+		    reportError("character.expected",
+				new Object[] { new Character('i'),
+					       new Integer(current) });
+		    skipIdentifier();
+		    break;
+		}
+		read();
+		if (current != 'c') {
+		    reportError("character.expected",
+				new Object[] { new Character('c'),
+					       new Integer(current) });
+		    skipIdentifier();
+		    break;
+		}
+		read();
+		if (current != 'e') {
+		    reportError("character.expected",
+				new Object[] { new Character('e'),
+					       new Integer(current) });
+		    skipIdentifier();
+		    break;
+		}
+		preserveAspectRatioHandler.slice();
+		read();
+		break;
+	    default:
+		if (current != -1) {
+		    reportError("character.unexpected",
+				new Object[] { new Integer(current) });
+		    skipIdentifier();
+		}
+	    }
+	}
+
+	skipSpaces();
+	if (current != -1) {
+	    reportError("end.of.stream.expected",
+			new Object[] { new Integer(current) });
+	}
+
+	preserveAspectRatioHandler.endPreserveAspectRatio();
+    }
+
+    /**
+     * Skips characters in the given reader until a white space is encountered.
+     * @return the first character after the space.
+     */
+    protected void skipIdentifier() {
+	loop: for (;;) {
+	    read();
+	    switch(current) {
+	    case 0xD: case 0xA: case 0x20: case 0x9:
+		read();
+		break loop;
+	    default:
+		if (current == -1) {
+		    break loop;
+		}
+	    }
+	}
+    }
 }

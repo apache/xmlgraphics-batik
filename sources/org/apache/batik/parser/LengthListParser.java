@@ -12,13 +12,21 @@ import java.io.IOException;
 import java.io.Reader;
 
 /**
- * This interface represents an event-based parser for the SVG length
+ * This class implements an event-based parser for the SVG length
  * list values.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public interface LengthListParser extends Parser {
+public class LengthListParser extends LengthParser {
+
+    /**
+     * Creates a new LengthListParser.
+     */
+    public LengthListParser() {
+	lengthHandler = DefaultLengthListHandler.INSTANCE;
+    }
+
     /**
      * Allows an application to register a length list handler.
      *
@@ -30,10 +38,41 @@ public interface LengthListParser extends Parser {
      * handler immediately.</p>
      * @param handler The transform list handler.
      */
-    void setLengthListHandler(LengthListHandler handler);
+    public void setLengthListHandler(LengthListHandler handler) {
+	lengthHandler = handler;
+    }
 
     /**
      * Returns the length list handler in use.
      */
-    LengthListHandler getLengthListHandler();
+    public LengthListHandler getLengthListHandler() {
+	return (LengthListHandler)lengthHandler;
+    }
+
+    /**
+     * Parses the given reader.
+     */
+    public void parse(Reader r) throws ParseException {
+	initialize(r);
+
+	((LengthListHandler)lengthHandler).startLengthList();
+
+	read();
+	skipSpaces();
+	
+	try {
+	    for (;;) {
+		lengthHandler.startLength();
+		parseLength();
+		lengthHandler.endLength();
+		skipSpaces();
+		if (current == -1) {
+		    break;
+		}
+	    }
+	} catch (NumberFormatException e) {
+	    reportError("float.format", new Object[] { getBufferContent() });
+	}
+	((LengthListHandler)lengthHandler).endLengthList();
+    }
 }

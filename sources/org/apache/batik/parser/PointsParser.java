@@ -8,14 +8,34 @@
 
 package org.apache.batik.parser;
 
+import java.io.Reader;
+
 /**
- * This interface represents an event-based parser for the SVG points
+ * This class implements an event-based parser for the SVG points
  * attribute values (used with polyline and polygon elements).
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public interface PointsParser extends Parser {
+public class PointsParser extends NumberParser {
+
+    /**
+     * The points handler used to report parse events.
+     */
+    protected PointsHandler pointsHandler;
+
+    /**
+     * Whether the last character was a 'e' or 'E'.
+     */
+    protected boolean eRead;
+
+    /**
+     * Creates a new PointsParser.
+     */
+    public PointsParser() {
+	pointsHandler = DefaultPointsHandler.INSTANCE;
+    }
+
     /**
      * Allows an application to register a points handler.
      *
@@ -27,10 +47,84 @@ public interface PointsParser extends Parser {
      * handler immediately.</p>
      * @param handler The transform list handler.
      */
-    void setPointsHandler(PointsHandler handler);
+    public void setPointsHandler(PointsHandler handler) {
+	pointsHandler = handler;
+    }
 
     /**
      * Returns the points handler in use.
      */
-    PointsHandler getPointsHandler();
+    public PointsHandler getPointsHandler() {
+	return pointsHandler;
+    }
+
+    /**
+     * Parses the given reader.
+     */
+    public void parse(Reader r) throws ParseException {
+	initialize(r);
+
+	pointsHandler.startPoints();
+
+	read();
+	skipSpaces();
+
+	loop: for (;;) {
+	    if (current == -1) {
+		break loop;
+	    }
+	    try {
+		float x = parseFloat();
+		skipCommaSpaces();
+		float y = parseFloat();
+		    
+		pointsHandler.point(x, y);
+	    } catch (NumberFormatException e) {
+		reportError("float.format",
+			    new Object[] { getBufferContent() });
+	    }
+	    skipCommaSpaces();
+	}
+
+	pointsHandler.endPoints();
+    }
+
+    /**
+     * Implements {@link NumberParser#readNumber()}.
+     */
+    protected void readNumber() throws ParseException {
+	bufferSize = 0;
+	bufferize();
+	eRead = false;
+        for (;;) {
+	    read();
+	    switch (current) {
+	    case 0x20:
+	    case 0x9:
+	    case 0xD:
+	    case 0xA:
+	    case ',':
+		eRead = false;
+		return;
+	    case 'e': case 'E':
+		eRead = true;
+		bufferize();
+		break;
+	    case '+':
+	    case '-':
+		if (!eRead) {
+		    return;
+		}
+		eRead = false;
+		bufferize();
+		break;
+	    default:
+		if (current == -1) {
+		    return;
+		}
+		eRead = false;
+		bufferize();
+	    }
+	}
+    }
 }

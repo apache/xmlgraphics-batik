@@ -13,7 +13,6 @@ import java.io.StringReader;
 import org.apache.batik.parser.LengthHandler;
 import org.apache.batik.parser.LengthParser;
 import org.apache.batik.parser.ParseException;
-import org.apache.batik.refimpl.parser.ConcreteLengthParser;
 import org.apache.batik.util.UnitProcessor;
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
@@ -229,7 +228,7 @@ public class SVGOMLength
      * Parses the given length representation.
      */
     public void parseLength(String text) {
-	LengthParser lp = new ConcreteLengthParser();
+	LengthParser lp = new LengthParser();
 	lp.setLengthHandler(this);
 	try {
 	    lp.parse(new StringReader(text));

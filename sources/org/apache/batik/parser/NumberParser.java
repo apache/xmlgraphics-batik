@@ -6,7 +6,7 @@
  * the LICENSE file.                                                         *
  *****************************************************************************/
 
-package org.apache.batik.refimpl.parser;
+package org.apache.batik.parser;
 
 import java.io.IOException;
 import org.apache.batik.parser.ParseException;
@@ -18,6 +18,7 @@ import org.apache.batik.parser.ParseException;
  * @version $Id$
  */
 public abstract class NumberParser extends AbstractParser {
+
     /**
      * The buffer used for numbers.
      */
