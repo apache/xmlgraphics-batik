@@ -74,6 +74,11 @@ public class PNGTranscoder extends ImageTranscoder {
         // perceptual
         params.setSRGBIntent(PNGEncodeParam.INTENT_PERCEPTUAL);
 
+        float pixToMM = userAgent.getPixelToMM();
+        // Pixs in 1 Meter
+        int numPix      = (int)(1000/pixToMM+0.5);
+        params.setPhysicalDimension(numPix, numPix, 1); // 1 means 'pix/meter'
+
         //
         // This is a trick so that viewers which do not support the alpha
         // channel will see a white background (and not a black one).
