@@ -44,6 +44,12 @@
     <separator />
 
     <!-- ======================= -->
+    <!-- Tutorials               -->
+    <!-- ======================= -->
+    <page id="rasterizerTutorial" label="Image Transcoder Tutorial" source="rasterizerTutorial.xml"/>
+    <separator />
+
+    <!-- ======================= -->
     <!-- Status / Admin          -->
     <!-- ======================= -->
     <page id="whoAreWe" label="Who we are" source="whoAreWe.xml" />

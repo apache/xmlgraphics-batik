@@ -23,7 +23,7 @@ public class TranscoderSupport {
 
     /** The transcoding hints. */
     protected TranscodingHints hints = new TranscodingHints();
-    /** The error handler used to report warnings and error. */
+    /** The error handler used to report warnings and errors. */
     protected ErrorHandler handler = defaultErrorHandler;
 
     /**

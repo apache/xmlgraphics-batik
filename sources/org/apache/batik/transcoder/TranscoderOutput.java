@@ -11,6 +11,7 @@ package org.apache.batik.transcoder;
 import java.io.Writer;
 import java.io.OutputStream;
 import org.w3c.dom.Document;
+import org.xml.sax.XMLFilter;
 
 /**
  * This class represents a single output for a <tt>Transcoder</tt>.
@@ -19,6 +20,11 @@ import org.w3c.dom.Document;
  * @version $Id$
  */
 public class TranscoderOutput {
+
+    /**
+     * The optional XML filter where to send SAX events.
+     */
+    protected XMLFilter xmlFilter;
 
     /**
      * The optional output has a byte stream.
@@ -44,6 +50,15 @@ public class TranscoderOutput {
      * Constructs a new empty <tt>TranscoderOutput</tt>.
      */
     public TranscoderOutput() {
+    }
+
+    /**
+     * Constructs a new <tt>TranscoderOutput</tt> with the specified
+     * XML filter.
+     * @param xmlFilter the XML filter of this transcoder output
+     */
+    public TranscoderOutput(XMLFilter xmlFilter) {
+        this.xmlFilter = xmlFilter;
     }
 
     /**
@@ -79,6 +94,24 @@ public class TranscoderOutput {
     public TranscoderOutput(String uri) {
         this.uri = uri;
     }
+
+    /**
+     * Sets the output of this transcoder output with the specified
+     * XML filter.
+     * @param xmlFilter the XML filter of this transcoder output
+     */
+    public void setXMLFilter(XMLFilter xmlFilter) {
+        this.xmlFilter = xmlFilter;
+    }
+
+    /**
+     * Returns the output of this transcoder as a XML filter or null
+     * if none was supplied.
+     */
+    public XMLFilter getXMLFilter() {
+        return xmlFilter;
+    }
+
 
     /**
      * Sets the output of this transcoder output with the specified

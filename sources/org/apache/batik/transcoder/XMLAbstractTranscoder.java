@@ -20,40 +20,26 @@ import org.w3c.dom.Document;
 
 /**
  * This class may be the base class of all transcoders which take an
- * XML document as input. In order to take advantage of this class,
- * you have to set the specified TranscodingHints.
+ * XML document as input and which need to build a DOM tree. In order
+ * to take advantage of this class, you have to specify the following
+ * transcoding hints:
  *
  * <ul>
- * <li>The XML parser classname
- * <li>The DOM Implementation
- * <li>The namespace URI of the document
- * <li>The root element of the document
+ * <li><tt>KEY_XML_PARSER_CLASSNAME</tt>: the XML parser to use
+ *
+ * <li><tt>KEY_DOM_IMPLEMENTATION</tt>: the DOM Implementation to use
+ *
+ * <li><tt>KEY_DOCUMENT_ELEMENT_NAMESPACE_URI</tt>: the namespace URI of the
+ * document to create
+ *
+ * <li><tt>KEY_DOCUMENT_ELEMENT</tt>: the qualified name of the document type
+ * to create
  * </ul>
  *
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  * @version $Id$
  */
 public abstract class XMLAbstractTranscoder extends AbstractTranscoder {
-
-    /**
-     * XML parser classname key.
-     */
-    public static final TranscodingHints.Key KEY_XML_PARSER_CLASSNAME = new StringKey(0);
-
-    /**
-     * Document element key.
-     */
-    public static final TranscodingHints.Key KEY_DOCUMENT_ELEMENT = new StringKey(2);
-
-    /**
-     * Document element namespace URI key.
-     */
-    public static final TranscodingHints.Key KEY_DOCUMENT_ELEMENT_NAMESPACE_URI = new StringKey(3);
-
-    /**
-     * DOM Implementation key.
-     */
-    public static final TranscodingHints.Key KEY_DOM_IMPLEMENTATION = new DOMImplKey(0);
 
     /**
      * Constructs a new <tt>XMLAbstractTranscoder</tt>.
@@ -165,6 +151,106 @@ public abstract class XMLAbstractTranscoder extends AbstractTranscoder {
     protected abstract void transcode(Document document,
                                       TranscoderOutput output)
             throws TranscoderException;
+
+    // --------------------------------------------------------------------
+    // Keys definition
+    // --------------------------------------------------------------------
+
+    /**
+     * XML parser classname key.
+     * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Key: </TH>
+     * <TD VALIGN="TOP">KEY_XML_PARSER_CLASSNAME</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Value: </TH>
+     * <TD VALIGN="TOP">String</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Default: </TH>
+     * <TD VALIGN="TOP">null</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Required: </TH>
+     * <TD VALIGN="TOP">Yes</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Description: </TH>
+     * <TD VALIGN="TOP">Specify the XML parser classname to use.</TD></TR>
+     * </TABLE>
+     */
+    public static final TranscodingHints.Key KEY_XML_PARSER_CLASSNAME
+        = new StringKey(0);
+
+    /**
+     * Document element key.
+     * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Key: </TH>
+     * <TD VALIGN="TOP">KEY_DOCUMENT_ELEMENT</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Value: </TH>
+     * <TD VALIGN="TOP">String</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Default: </TH>
+     * <TD VALIGN="TOP">null</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Required: </TH>
+     * <TD VALIGN="TOP">Yes</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Description: </TH>
+     * <TD VALIGN="TOP">Specify the qualified name of the document
+     * type to be created.</TD></TR>
+     * </TABLE>
+     */
+    public static final TranscodingHints.Key KEY_DOCUMENT_ELEMENT
+        = new StringKey(2);
+
+    /**
+     * Document element namespace URI key.
+     * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Key: </TH>
+     * <TD VALIGN="TOP">KEY_DOCUMENT_ELEMENT_NAMESPACE_URI</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Value: </TH>
+     * <TD VALIGN="TOP">String</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Default: </TH>
+     * <TD VALIGN="TOP">null</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Required: </TH>
+     * <TD VALIGN="TOP">Yes</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Description: </TH>
+     *
+     * <TD VALIGN="TOP">Specify the namespace URI of the document
+     * element.</TD></TR>
+     * </TABLE>
+     */
+    public static final TranscodingHints.Key KEY_DOCUMENT_ELEMENT_NAMESPACE_URI
+        = new StringKey(3);
+
+    /**
+     * DOM Implementation key.
+     * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Key: </TH>
+     * <TD VALIGN="TOP">KEY_DOM_IMPLEMENTATION</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Value: </TH>
+     * <TD VALIGN="TOP">String</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Default: </TH>
+     * <TD VALIGN="TOP">null</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Required: </TH>
+     * <TD VALIGN="TOP">Yes</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Description: </TH>
+     *
+     * <TD VALIGN="TOP">Specify the DOM Implementation to use.</TD></TR>
+     * </TABLE>
+     */
+    public static final TranscodingHints.Key KEY_DOM_IMPLEMENTATION
+        = new DOMImplKey(0);
 
     /**
      * A transcoding Key represented as a string.
