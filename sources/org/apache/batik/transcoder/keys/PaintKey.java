@@ -6,20 +6,20 @@
  * the LICENSE file.                                                         *
  *****************************************************************************/
 
-package org.apache.batik.transcoder;
+package org.apache.batik.transcoder.keys;
+
+import java.awt.Paint;
+import org.apache.batik.transcoder.TranscodingHints;
 
 /**
- * This class can be the base class of a transcoder which may support
- * transcoding hints and/or error handler.
+ * A transcoding Key represented as a background paint.
  *
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  * @version $Id$
  */
-public abstract class AbstractTranscoder extends TranscoderSupport
-    implements Transcoder {
+public class PaintKey extends TranscodingHints.Key {
 
-    /**
-     * Constructs a new <tt>AbstractTranscoder</tt>.
-     */
-    protected AbstractTranscoder() {}
+    public boolean isCompatibleValue(Object v) {
+        return (v instanceof Paint);
+    }
 }

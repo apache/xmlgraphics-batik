@@ -21,6 +21,9 @@ import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.TranscodingHints;
+import org.apache.batik.transcoder.keys.BooleanKey;
+import org.apache.batik.transcoder.keys.IntegerKey;
+import org.apache.batik.transcoder.keys.StringKey;
 
 import org.apache.batik.xml.scanner.LexicalException;
 
@@ -52,7 +55,7 @@ public class SVGTranscoder extends AbstractTranscoder {
     /**
      * The key to specify the newline character sequence.
      */
-    public final static TranscodingHints.Key KEY_NEWLINE = new NewlineKey(0);
+    public final static TranscodingHints.Key KEY_NEWLINE = new NewlineKey();
 
     /**
      * The "\r" newline value.
@@ -72,7 +75,7 @@ public class SVGTranscoder extends AbstractTranscoder {
     /**
      * The key to specify whether to format the input.
      */
-    public final static TranscodingHints.Key KEY_FORMAT = new BooleanKey(0);
+    public final static TranscodingHints.Key KEY_FORMAT = new BooleanKey();
 
     /**
      * The value to turn on formatting.
@@ -87,17 +90,20 @@ public class SVGTranscoder extends AbstractTranscoder {
     /**
      * The key to specify the tabulation width.
      */
-    public final static TranscodingHints.Key KEY_TABULATION_WIDTH = new IntegerKey(0);
+    public final static TranscodingHints.Key KEY_TABULATION_WIDTH
+        = new IntegerKey();
 
     /**
      * The key to specify the document width.
      */
-    public final static TranscodingHints.Key KEY_DOCUMENT_WIDTH = new IntegerKey(1);
+    public final static TranscodingHints.Key KEY_DOCUMENT_WIDTH
+        = new IntegerKey();
 
     /**
      * The key to specify the doctype option.
      */
-    public final static TranscodingHints.Key KEY_DOCTYPE = new DoctypeKey(0);
+    public final static TranscodingHints.Key KEY_DOCTYPE
+        = new DoctypeKey();
 
     /**
      * The doctype value to change the declaration.
@@ -120,17 +126,20 @@ public class SVGTranscoder extends AbstractTranscoder {
     /**
      * The key to specify the public id.
      */
-    public final static TranscodingHints.Key KEY_PUBLIC_ID = new StringKey(0);
+    public final static TranscodingHints.Key KEY_PUBLIC_ID
+        = new StringKey();
 
     /**
      * The key to specify the system id.
      */
-    public final static TranscodingHints.Key KEY_SYSTEM_ID = new StringKey(1);
+    public final static TranscodingHints.Key KEY_SYSTEM_ID
+        = new StringKey();
 
     /**
      * The key to specify the XML declaration option.
      */
-    public final static TranscodingHints.Key KEY_XML_DECLARATION = new StringKey(2);
+    public final static TranscodingHints.Key KEY_XML_DECLARATION
+        = new StringKey();
 
     /**
      * Creates a new SVGTranscoder.
@@ -221,9 +230,6 @@ public class SVGTranscoder extends AbstractTranscoder {
      * To represent a newline key.
      */
     protected static class NewlineKey extends TranscodingHints.Key {
-        public NewlineKey(int privatekey) {
-            super(privatekey);
-        }
         public boolean isCompatibleValue(Object v) {
             return v instanceof NewlineValue;
         }
@@ -246,9 +252,6 @@ public class SVGTranscoder extends AbstractTranscoder {
      * To represent a doctype key.
      */
     protected static class DoctypeKey extends TranscodingHints.Key {
-        public DoctypeKey(int privatekey) {
-            super(privatekey);
-        }
         public boolean isCompatibleValue(Object v) {
             return v instanceof DoctypeValue;
         }
@@ -266,41 +269,4 @@ public class SVGTranscoder extends AbstractTranscoder {
             return value;
         }
     }
-
-    /**
-     * To represent a boolean key.
-     */
-    protected static class BooleanKey extends TranscodingHints.Key {
-        public BooleanKey(int privatekey) {
-            super(privatekey);
-        }
-        public boolean isCompatibleValue(Object v) {
-            return v instanceof Boolean;
-        }
-    }
-
-    /**
-     * To represent a integer key.
-     */
-    protected static class IntegerKey extends TranscodingHints.Key {
-        public IntegerKey(int privatekey) {
-            super(privatekey);
-        }
-        public boolean isCompatibleValue(Object v) {
-            return v instanceof Integer;
-        }
-    }
-
-    /**
-     * To represent a string key.
-     */
-    protected static class StringKey extends TranscodingHints.Key {
-        public StringKey(int privatekey) {
-            super(privatekey);
-        }
-        public boolean isCompatibleValue(Object v) {
-            return v instanceof String;
-        }
-    }
-
 }

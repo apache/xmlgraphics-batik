@@ -10,8 +10,8 @@ package org.apache.batik.transcoder.print;
 
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.Shape;
@@ -23,11 +23,11 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.awt.image.SinglePixelPackedSampleModel;
-import java.awt.print.Printable;
 import java.awt.print.PageFormat;
 import java.awt.print.Paper;
-import java.awt.print.PrinterJob;
+import java.awt.print.Printable;
 import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,8 +42,8 @@ import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.DocumentFactory;
 
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.TextPainter;
 
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
@@ -63,6 +63,12 @@ import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.TranscodingHints;
 import org.apache.batik.transcoder.XMLAbstractTranscoder;
+
+import org.apache.batik.transcoder.keys.BooleanKey;
+import org.apache.batik.transcoder.keys.FloatKey;
+import org.apache.batik.transcoder.keys.LengthKey;
+import org.apache.batik.transcoder.keys.Rectangle2DKey;
+import org.apache.batik.transcoder.keys.StringKey;
 
 import org.apache.batik.util.SVGConstants;
 
@@ -102,7 +108,29 @@ import org.w3c.dom.svg.SVGSVGElement;
  * @version $Id$
  */
 public class PrintTranscoder extends XMLAbstractTranscoder
-    implements Printable{
+    implements Printable {
+
+    public static final String KEY_AOI_STR = "aoi";
+    public static final String KEY_HEIGHT_STR = "height";
+    public static final String KEY_LANGUAGE_STR = "language";
+    public static final String KEY_MARGIN_BOTTOM_STR = "marginBottom";
+    public static final String KEY_MARGIN_LEFT_STR = "marginLeft";
+    public static final String KEY_MARGIN_RIGHT_STR = "marginRight";
+    public static final String KEY_MARGIN_TOP_STR = "marginTop";
+    public static final String KEY_PAGE_HEIGHT_STR = "pageHeight";
+    public static final String KEY_PAGE_ORIENTATION_STR         = "pageOrientation";
+    public static final String KEY_PAGE_WIDTH_STR = "pageWidth";
+    public static final String KEY_PIXEL_TO_MM_STR = "pixelToMm";
+    public static final String KEY_SCALE_TO_PAGE_STR         = "scaleToPage";
+    public static final String KEY_SHOW_PAGE_DIALOG_STR = "showPageDialog";
+    public static final String KEY_SHOW_PRINTER_DIALOG_STR = "showPrinterDialog";
+    public static final String KEY_USER_STYLESHEET_URI_STR = "userStylesheet";
+    public static final String KEY_WIDTH_STR = "width";
+    public static final String KEY_XML_PARSER_CLASSNAME_STR = "xmlParserClassName";
+    public static final String VALUE_PAGE_ORIENTATION_LANDSCAPE = "landscape";
+    public static final String VALUE_PAGE_ORIENTATION_PORTRAIT  = "portrait";
+    public static final String VALUE_PAGE_ORIENTATION_REVERSE_LANDSCAPE = "reverseLandscape";
+
     /**
      * Set of inputs this transcoder has been requested to
      * transcode so far
@@ -527,6 +555,150 @@ public class PrintTranscoder extends XMLAbstractTranscoder
         return nodeRenderContext;
     }
 
+    // --------------------------------------------------------------------
+    // Keys definition
+    // --------------------------------------------------------------------
+
+    /**
+     * The image width key.
+     * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Key: </TH>
+     * <TD VALIGN="TOP">KEY_WIDTH</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Value: </TH>
+     * <TD VALIGN="TOP">Float</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Default: </TH>
+     * <TD VALIGN="TOP">The width of the top most svg element</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Required: </TH>
+     * <TD VALIGN="TOP">No</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Description: </TH>
+     * <TD VALIGN="TOP">Specify the width of the image to create.</TD></TR>
+     * </TABLE> */
+    public static final TranscodingHints.Key KEY_WIDTH
+        = new LengthKey();
+
+    /**
+     * The image height key.
+     * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Key: </TH>
+     * <TD VALIGN="TOP">KEY_HEIGHT</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Value: </TH>
+     * <TD VALIGN="TOP">Float</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Default: </TH>
+     * <TD VALIGN="TOP">The height of the top most svg element</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Required: </TH>
+     * <TD VALIGN="TOP">No</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Description: </TH>
+     * <TD VALIGN="TOP">Specify the height of the image to create.</TD></TR>
+     * </TABLE> */
+    public static final TranscodingHints.Key KEY_HEIGHT
+        = new LengthKey();
+
+    /**
+     * The area of interest key.
+     * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Key: </TH>
+     * <TD VALIGN="TOP">KEY_AOI</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Value: </TH>
+     * <TD VALIGN="TOP">Rectangle2D</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Default: </TH>
+     * <TD VALIGN="TOP">The document's size</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Required: </TH>
+     * <TD VALIGN="TOP">No</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Description: </TH>
+     * <TD VALIGN="TOP">Specify the area of interest to render. The
+     * rectangle coordinates must be specified in pixels and in the
+     * document coordinates system.</TD></TR>
+     * </TABLE>
+     */
+    public static final TranscodingHints.Key KEY_AOI
+        = new Rectangle2DKey();
+
+    /**
+     * The language key.
+     * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Key: </TH>
+     * <TD VALIGN="TOP">KEY_LANGUAGE</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Value: </TH>
+     * <TD VALIGN="TOP">String</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Default: </TH>
+     * <TD VALIGN="TOP">"en"</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Required: </TH>
+     * <TD VALIGN="TOP">No</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Description: </TH>
+     * <TD VALIGN="TOP">Specify the preferred language of the document.
+     * </TD></TR>
+     * </TABLE>
+     */
+    public static final TranscodingHints.Key KEY_LANGUAGE
+        = new StringKey();
+
+    /**
+     * The user stylesheet URI key.
+     * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Key: </TH>
+     * <TD VALIGN="TOP">KEY_USER_STYLESHEET_URI</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Value: </TH>
+     * <TD VALIGN="TOP">String</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Default: </TH>
+     * <TD VALIGN="TOP">null</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Required: </TH>
+     * <TD VALIGN="TOP">No</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Description: </TH>
+     * <TD VALIGN="TOP">Specify the user style sheet.</TD></TR>
+     * </TABLE>
+     */
+    public static final TranscodingHints.Key KEY_USER_STYLESHEET_URI
+        = new StringKey();
+
+    /**
+     * The pixel to millimeter conversion factor key.
+     * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Key: </TH>
+     * <TD VALIGN="TOP">KEY_PIXEL_TO_MM</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Value: </TH>
+     * <TD VALIGN="TOP">Float</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Default: </TH>
+     * <TD VALIGN="TOP">0.33</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Required: </TH>
+     * <TD VALIGN="TOP">No</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Description: </TH>
+     * <TD VALIGN="TOP">Specify the pixel to millimeter conversion factor.
+     * </TD></TR>
+     * </TABLE>
+     */
+    public static final TranscodingHints.Key KEY_PIXEL_TO_MM
+        = new FloatKey();
+
     /**
      * The showPageDialog key.
      * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
@@ -549,8 +721,7 @@ public class PrintTranscoder extends XMLAbstractTranscoder
      *                  the page format.</TD></TR>
      * </TABLE> */
     public static final TranscodingHints.Key KEY_SHOW_PAGE_DIALOG
-        = new BooleanKey(1);
-    public static final String KEY_SHOW_PAGE_DIALOG_STR = "showPageDialog";
+        = new BooleanKey();
 
     /**
      * The showPrinterDialog key.
@@ -576,8 +747,7 @@ public class PrintTranscoder extends XMLAbstractTranscoder
      *                  printer.</TD></TR>
      * </TABLE> */
     public static final TranscodingHints.Key KEY_SHOW_PRINTER_DIALOG
-        = new BooleanKey(2);
-    public static final String KEY_SHOW_PRINTER_DIALOG_STR = "showPrinterDialog";
+        = new BooleanKey();
 
 
     /**
@@ -722,8 +892,7 @@ public class PrintTranscoder extends XMLAbstractTranscoder
      * <TD VALIGN="TOP">The width of the print page</TD></TR>
      * </TABLE> */
     public static final TranscodingHints.Key KEY_PAGE_WIDTH
-        = new LengthKey(21);
-    public static final String KEY_PAGE_WIDTH_STR = "pageWidth";
+        = new LengthKey();
 
     /**
      * The pageHeight key.
@@ -745,8 +914,7 @@ public class PrintTranscoder extends XMLAbstractTranscoder
      * <TD VALIGN="TOP">The height of the print page</TD></TR>
      * </TABLE> */
     public static final TranscodingHints.Key KEY_PAGE_HEIGHT
-        = new LengthKey(22);
-    public static final String KEY_PAGE_HEIGHT_STR = "pageHeight";
+        = new LengthKey();
 
     /**
      * The marginTop key.
@@ -768,9 +936,7 @@ public class PrintTranscoder extends XMLAbstractTranscoder
      * <TD VALIGN="TOP">The print page top margin</TD></TR>
      * </TABLE> */
     public static final TranscodingHints.Key KEY_MARGIN_TOP
-        = new LengthKey(23);
-    public static final String KEY_MARGIN_TOP_STR = "marginTop";
-
+        = new LengthKey();
 
     /**
      * The marginRight key.
@@ -792,8 +958,7 @@ public class PrintTranscoder extends XMLAbstractTranscoder
      * <TD VALIGN="TOP">The print page right margin</TD></TR>
      * </TABLE> */
     public static final TranscodingHints.Key KEY_MARGIN_RIGHT
-        = new LengthKey(24);
-    public static final String KEY_MARGIN_RIGHT_STR = "marginRight";
+        = new LengthKey();
 
     /**
      * The marginBottom key.
@@ -815,8 +980,7 @@ public class PrintTranscoder extends XMLAbstractTranscoder
      * <TD VALIGN="TOP">The print page bottom margin</TD></TR>
      * </TABLE> */
     public static final TranscodingHints.Key KEY_MARGIN_BOTTOM
-        = new LengthKey(25);
-    public static final String KEY_MARGIN_BOTTOM_STR = "marginBottom";
+        = new LengthKey();
 
     /**
      * The marginLeft key.
@@ -838,8 +1002,7 @@ public class PrintTranscoder extends XMLAbstractTranscoder
      * <TD VALIGN="TOP">The print page left margin</TD></TR>
      * </TABLE> */
     public static final TranscodingHints.Key KEY_MARGIN_LEFT
-        = new LengthKey(26);
-    public static final String KEY_MARGIN_LEFT_STR = "marginLeft";
+        = new LengthKey();
 
     /**
      * The pageOrientation key.
@@ -861,11 +1024,8 @@ public class PrintTranscoder extends XMLAbstractTranscoder
      * <TD VALIGN="TOP">The print page's orientation</TD></TR>
      * </TABLE> */
     public static final TranscodingHints.Key KEY_PAGE_ORIENTATION
-        = new StringKey(27);
-    public static final String KEY_PAGE_ORIENTATION_STR         = "pageOrientation";
-    public static final String VALUE_PAGE_ORIENTATION_PORTRAIT  = "portrait";
-    public static final String VALUE_PAGE_ORIENTATION_LANDSCAPE = "landscape";
-    public static final String VALUE_PAGE_ORIENTATION_REVERSE_LANDSCAPE = "reverseLandscape";
+        = new StringKey();
+
 
     /**
      * The scaleToPage key.
@@ -888,8 +1048,7 @@ public class PrintTranscoder extends XMLAbstractTranscoder
      *                  fit into the printed page</TD></TR>
      * </TABLE> */
     public static final TranscodingHints.Key KEY_SCALE_TO_PAGE
-        = new BooleanKey(28);
-    public static final String KEY_SCALE_TO_PAGE_STR         = "scaleToPage";
+        = new BooleanKey();
 
     public static final String USAGE = "java org.apache.batik.transcoder.print.PrintTranscoder <svgFileToPrint>";
 

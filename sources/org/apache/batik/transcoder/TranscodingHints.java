@@ -132,73 +132,19 @@ public class TranscodingHints extends HashMap {
 
     /**
      * Defines the base type of all keys used to control various
-     * aspects of the transcoding operations. Instances of this class
-     * are immutable and unique which means that tests for matches can
-     * be made using the == operator instead of the more expensive
-     * equals() method.
+     * aspects of the transcoding operations.
      */
     public abstract static class Key {
 
-        private static Map identitymap = new HashMap(17);
-
-        private String getIdentity() {
-            return "Instance("+privatekey+") of "+getClass().getName();
-        }
-
-        private synchronized static void recordIdentity(Key k) {
-            Object identity = k.getIdentity();
-            if (identitymap.containsKey(identity)) {
-                throw new IllegalArgumentException(identity+
-                                                   " already registered");
-            }
-            identitymap.put(identity, k);
-        }
-
-        private int privatekey;
-
         /**
-         * Construcst a key using the indicated private key.  Each
-         * subclass of Key maintains its own unique domain of integer
-         * keys. No two objects with the same integer key and of the
-         * same specific subclass can be constructed.  An exception
-         * will be thrown if an attempt is made to construct another
-         * object of a given class with the same integer key as a
-         * pre-existing instance of that subclass of Key.
+         * Construcst a key.
          */
-        protected Key(int privatekey) {
-            this.privatekey = privatekey;
-            recordIdentity(this);
-        }
+        protected Key() { }
 
         /**
          * Returns true if the specified object is a valid value for
          * this key, false otherwise.
          */
         public abstract boolean isCompatibleValue(Object val);
-
-        /**
-         * Returns the private integer key that the subclass
-         * instantiated this Key with.
-         */
-        protected final int intKey() {
-            return privatekey;
-        }
-
-        /**
-         * The hash code for all Key objects will be the same as the
-         * system identity code of the object as defined by the
-         * System.identityHashCode() method.
-         */
-        public final int hashCode() {
-            return System.identityHashCode(this);
-        }
-
-        /**
-         * The equals method for all Key objects will return the same
-         * result as the equality operator '=='.
-         */
-        public final boolean equals(Object o) {
-            return this == o;
-        }
     }
 }
