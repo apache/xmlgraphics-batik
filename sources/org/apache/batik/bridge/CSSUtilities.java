@@ -558,6 +558,7 @@ public class CSSUtilities implements SVGConstants {
             CSSValueList l = (CSSValueList) vv;
             int length = l.getLength();
             dashArray = new float[length];
+            float dashArraySum = 0;
             for (int i=0; i < length; ++i) {
                 v = (CSSPrimitiveValue) l.item(i);
                 type = v.getPrimitiveType();
@@ -567,18 +568,26 @@ public class CSSUtilities implements SVGConstants {
                                                  svgElement,
                                                  UnitProcessor.OTHER_LENGTH,
                                                  uctx);
+                dashArraySum += dashArray[i];
             }
 
-            // 'stroke-dashoffset'
-            v = (CSSPrimitiveValue)decl.getPropertyCSSValue
-                (CSS_STROKE_DASHOFFSET_PROPERTY);
-            type = v.getPrimitiveType();
-            dashOffset =
-                UnitProcessor.cssToUserSpace(type,
-                                             v.getFloatValue(type),
-                                             svgElement,
-                                             UnitProcessor.OTHER_LENGTH,
-                                             uctx);
+            if(dashArraySum == 0){
+                // The spec. says that if the sum is zero, the effect is 
+                // as if there was no dashes, i.e., we have a solid stroke
+                dashArray = null;
+            }
+            else{
+                // 'stroke-dashoffset'
+                v = (CSSPrimitiveValue)decl.getPropertyCSSValue
+                    (CSS_STROKE_DASHOFFSET_PROPERTY);
+                type = v.getPrimitiveType();
+                dashOffset =
+                    UnitProcessor.cssToUserSpace(type,
+                                                 v.getFloatValue(type),
+                                                 svgElement,
+                                                 UnitProcessor.OTHER_LENGTH,
+                                                 uctx);
+            }
         }
 
         BasicStroke stroke = new BasicStroke(width,
