@@ -1,0 +1,75 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN"
+"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+
+<!-- ========================================================================= -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.        -->
+<!--                                                                           -->
+<!-- This software is published under the terms of the Apache Software License -->
+<!-- version 1.1, a copy of which has been included with this distribution in  -->
+<!-- the LICENSE file.                                                         -->
+<!-- ========================================================================= -->
+
+<!-- ========================================================================= -->
+<!-- Test description here                                                     -->
+<!--                                                                           -->
+<!-- @author vincent.hardy@sun.com                                             -->
+<!-- @version $Id$                                                             -->
+<!-- ========================================================================= -->
+<?xml-stylesheet type="text/css" href="../../resources/style/test.css" ?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="450" height="500" viewBox="0 0 450 500">
+    <!-- ============================================================= -->
+    <!-- Test content                                                  -->
+    <!-- ============================================================= -->
+
+    <defs>
+        <filter id="dropShadow"  filterUnits="userSpaceOnUse" >
+            <feGaussianBlur stdDeviation="2" in="SourceAlpha" /> 
+            <feOffset dx="2" dy="2" />
+            <feMerge>
+                <feMergeNode />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+    </defs>
+
+    <g id="testContent">
+        <text x="50%" y="50%" font-size="40" text-anchor="middle" fill="white" filter="url(#dropShadow)" transform="translate(0, -40)">
+            Multi-line
+            <tspan x="50%" y="60%">Text Selection with</tspan>
+            <tspan x="50%" y="70%"><tspan font-size="25" dy="-25">ups</tspan><tspan dy="25"> and </tspan><tspan font-size="25" dy="25">downs</tspan></tspan>
+        </text>
+    </g>
+
+    <script type="text/ecmascript"><![CDATA[
+
+function onZoom() {
+    var content = document.getElementById("testContent");
+    content.setAttributeNS(null, "transform", "translate(225, 250) rotate(-30) scale(1.5, 1.5) translate(-225, -250)");
+}
+
+function onDone() {
+    if (!(regardTestInstance == null)) {
+        regardTestInstance.scriptDone();   
+    } else {
+        alert("This button only works when run in the regard framework");
+    }
+}
+    ]]></script>
+
+    <g id="zoom" transform="translate(155, 398)" cursor="pointer" onclick="onZoom()">
+        <rect rx="5" ry="5" width="60" height="25" fill="#eeeeee" stroke="black" />
+        <text x="30" y="18" font-size="14" font-weight="bold" text-anchor="middle">Zoom</text>
+    </g>
+
+    <g id="done" transform="translate(235, 398)" cursor="pointer" onmouseover="onDone()">
+        <rect rx="5" ry="5" width="60" height="25" fill="#eeeeee" stroke="black" />
+        <text x="30" y="18" font-size="14" font-weight="bold" text-anchor="middle">Done</text>
+    </g>
+
+    <!-- ============================================================= -->
+    <!-- Batik sample mark                                             -->
+    <!-- ============================================================= -->
+    <use xlink:href="../../../batikLogo.svg#Batik_Tag_Box" />
+    
+</svg>
