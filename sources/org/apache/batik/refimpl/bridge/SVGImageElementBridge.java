@@ -126,21 +126,21 @@ public class SVGImageElementBridge implements GraphicsNodeBridge,
         imgNode.setComposite(composite);
 
         // Set node filter
-        Filter filter = CSSUtilities.convertFilter(element, node, ctx);
+        Filter filter = CSSUtilities.convertFilter(element, imgNode, ctx);
         imgNode.setFilter(filter);
 
         // Set the node mask
-        Mask   mask   = CSSUtilities.convertMask(element, node, ctx);
+        Mask   mask   = CSSUtilities.convertMask(element, imgNode, ctx);
         imgNode.setMask(mask);
 
         // Set the node clip
-        Clip clip = CSSUtilities.convertClipPath(element, node, ctx);
+        Clip clip = CSSUtilities.convertClipPath(element, imgNode, ctx);
         imgNode.setClip(clip);
 
         // <!> TODO only when binding is enabled
         BridgeEventSupport.addDOMListener(ctx, element);
 
-        return node;
+        return imgNode;
     }
 
     protected GraphicsNode createBase64ImageNode(BridgeContext ctx,
@@ -198,7 +198,6 @@ public class SVGImageElementBridge implements GraphicsNodeBridge,
         float y = (float)bounds.getY();
         float w = (float)bounds.getWidth();
         float h = (float)bounds.getHeight();
-
         AffineTransform at;
         at = SVGUtilities.getPreserveAspectRatioTransform
             (element, w, h, ctx.getParserFactory());
