@@ -32,7 +32,7 @@ public interface StyleSheetList {
      *  Used to retrieve a style sheet by ordinal index. If index is greater 
      * than or equal to the number of style sheets in the list, this returns 
      * <code>null</code>. 
-     * @param indexIndex into the collection
+     * @param index Index into the collection
      * @return The style sheet at the <code>index</code> position in the 
      *   <code>StyleSheetList</code>, or <code>null</code> if that is not a 
      *   valid index. 

@@ -47,14 +47,26 @@ public interface CSSStyleDeclaration {
      *   readonly or a property is readonly.
      */
     public String getCssText();
+    /**
+     *  The parsable textual representation of the declaration block 
+     * (excluding the surrounding curly braces). Setting this attribute will 
+     * result in the parsing of the new value and resetting of all the 
+     * properties in the declaration block including the removal or addition 
+     * of properties. 
+     * @exception DOMException
+     *   SYNTAX_ERR: Raised if the specified CSS string value has a syntax 
+     *   error and is unparsable.
+     *   <br>NO_MODIFICATION_ALLOWED_ERR: Raised if this declaration is 
+     *   readonly or a property is readonly.
+     */
     public void setCssText(String cssText)
                        throws DOMException;
 
     /**
      *  Used to retrieve the value of a CSS property if it has been explicitly 
      * set within this declaration block. 
-     * @param propertyName The name of the CSS property. See the CSS property 
-     *   index. 
+     * @param propertyName  The name of the CSS property. See the CSS 
+     *   property index. 
      * @return  Returns the value of the property if it has been explicitly 
      *   set for this declaration block. Returns the empty string if the 
      *   property has not been set. 
@@ -68,8 +80,8 @@ public interface CSSStyleDeclaration {
      * property. Shorthand property values can only be accessed and modified 
      * as strings, using the <code>getPropertyValue</code> and 
      * <code>setProperty</code> methods. 
-     * @param propertyName The name of the CSS property. See the CSS property 
-     *   index. 
+     * @param propertyName  The name of the CSS property. See the CSS 
+     *   property index. 
      * @return  Returns the value of the property if it has been explicitly 
      *   set for this declaration block. Returns <code>null</code> if the 
      *   property has not been set. 
@@ -79,8 +91,8 @@ public interface CSSStyleDeclaration {
     /**
      *  Used to remove a CSS property if it has been explicitly set within 
      * this declaration block. 
-     * @param propertyName The name of the CSS property. See the CSS property 
-     *   index. 
+     * @param propertyName  The name of the CSS property. See the CSS 
+     *   property index. 
      * @return  Returns the value of the property if it has been explicitly 
      *   set for this declaration block. Returns the empty string if the 
      *   property has not been set or the property name does not correspond 
@@ -96,8 +108,8 @@ public interface CSSStyleDeclaration {
      *  Used to retrieve the priority of a CSS property (e.g. the 
      * <code>"important"</code> qualifier) if the property has been 
      * explicitly set in this declaration block. 
-     * @param propertyName The name of the CSS property. See the CSS property 
-     *   index. 
+     * @param propertyName  The name of the CSS property. See the CSS 
+     *   property index. 
      * @return  A string representing the priority (e.g. 
      *   <code>"important"</code>) if one exists. The empty string if none 
      *   exists. 
@@ -107,10 +119,10 @@ public interface CSSStyleDeclaration {
     /**
      *  Used to set a property value and priority within this declaration 
      * block. 
-     * @param propertyName The name of the CSS property. See the CSS property 
-     *   index. 
-     * @param value The new value of the property. 
-     * @param priority The new priority of the property (e.g. 
+     * @param propertyName  The name of the CSS property. See the CSS 
+     *   property index. 
+     * @param value  The new value of the property. 
+     * @param priority  The new priority of the property (e.g. 
      *   <code>"important"</code>).  
      * @exception DOMException
      *   SYNTAX_ERR: Raised if the specified value has a syntax error and is 
@@ -136,7 +148,7 @@ public interface CSSStyleDeclaration {
      * method does not have to be the order in which they were set. This 
      * method can be used to iterate over all properties in this declaration 
      * block. 
-     * @param index Index of the property name to retrieve. 
+     * @param index  Index of the property name to retrieve. 
      * @return  The name of the property at this ordinal position. The empty 
      *   string if no property exists at this position. 
      */

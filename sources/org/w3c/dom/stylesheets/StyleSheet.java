@@ -44,6 +44,14 @@ public interface StyleSheet {
      * user agent, the <code>disabled</code> attribute is ignored. 
      */
     public boolean getDisabled();
+    /**
+     *  <code>false</code> if the style sheet is applied to the document. 
+     * <code>true</code> if it is not. Modifying this attribute may cause a 
+     * new resolution of style for the document. A stylesheet only applies 
+     * if both an appropriate medium definition is present and the disabled 
+     * attribute is false. So, if the media doesn't apply to the current 
+     * user agent, the <code>disabled</code> attribute is ignored. 
+     */
     public void setDisabled(boolean disabled);
 
     /**

@@ -12,8 +12,8 @@
 
 package org.w3c.dom.css;
 
-import org.w3c.dom.stylesheets.DocumentStyle;
 import org.w3c.dom.Element;
+import org.w3c.dom.stylesheets.DocumentStyle;
 
 /**
  * This interface represents a document with a CSS view.
@@ -39,9 +39,9 @@ public interface DocumentCSS extends DocumentStyle {
     /**
      *  This method is used to retrieve the override style declaration for a 
      * specified element and a specified pseudo-element. 
-     * @param elt The element whose style is to be modified. This parameter 
+     * @param elt  The element whose style is to be modified. This parameter 
      *   cannot be null. 
-     * @param pseudoElt The pseudo-element or <code>null</code> if none. 
+     * @param pseudoElt  The pseudo-element or <code>null</code> if none. 
      * @return  The override style declaration. 
      */
     public CSSStyleDeclaration getOverrideStyle(Element elt, 

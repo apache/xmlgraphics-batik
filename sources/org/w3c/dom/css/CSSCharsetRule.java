@@ -42,6 +42,14 @@ public interface CSSCharsetRule extends CSSRule {
      *   readonly.
      */
     public String getEncoding();
+    /**
+     *  The encoding information used in this <code>@charset</code> rule. 
+     * @exception DOMException
+     *   SYNTAX_ERR: Raised if the specified encoding value has a syntax error 
+     *   and is unparsable.
+     *   <br>NO_MODIFICATION_ALLOWED_ERR: Raised if this encoding rule is 
+     *   readonly.
+     */
     public void setEncoding(String encoding)
                            throws DOMException;
 

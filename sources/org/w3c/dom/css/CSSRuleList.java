@@ -33,7 +33,7 @@ public interface CSSRuleList {
      * collection represents the order of the rules in the CSS style sheet. 
      * If index is greater than or equal to the number of rules in the list, 
      * this returns <code>null</code>. 
-     * @param indexIndex into the collection
+     * @param index Index into the collection
      * @return The style rule at the <code>index</code> position in the 
      *   <code>CSSRuleList</code>, or <code>null</code> if that is not a 
      *   valid index. 

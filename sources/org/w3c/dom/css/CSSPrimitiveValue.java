@@ -177,7 +177,7 @@ public interface CSSPrimitiveValue extends CSSValue {
      * attached with this value can not accept the specified unit or the 
      * float value, the value will be unchanged and a 
      * <code>DOMException</code> will be raised. 
-     * @param unitType A unit code as defined above. The unit code can only 
+     * @param unitType  A unit code as defined above. The unit code can only 
      *   be a float unit type (i.e. <code>CSS_NUMBER</code>, 
      *   <code>CSS_PERCENTAGE</code>, <code>CSS_EMS</code>, 
      *   <code>CSS_EXS</code>, <code>CSS_PX</code>, <code>CSS_CM</code>, 
@@ -186,7 +186,7 @@ public interface CSSPrimitiveValue extends CSSValue {
      *   <code>CSS_GRAD</code>, <code>CSS_MS</code>, <code>CSS_S</code>, 
      *   <code>CSS_HZ</code>, <code>CSS_KHZ</code>, 
      *   <code>CSS_DIMENSION</code>). 
-     * @param floatValue The new float value. 
+     * @param floatValue  The new float value. 
      * @exception DOMException
      *    INVALID_ACCESS_ERR: Raised if the attached property doesn't support 
      *   the float value or the unit type.
@@ -200,7 +200,7 @@ public interface CSSPrimitiveValue extends CSSValue {
      *  This method is used to get a float value in a specified unit. If this 
      * CSS value doesn't contain a float value or can't be converted into 
      * the specified unit, a <code>DOMException</code> is raised. 
-     * @param unitType A unit code to get the float value. The unit code can 
+     * @param unitType  A unit code to get the float value. The unit code can 
      *   only be a float unit type (i.e. <code>CSS_NUMBER</code>, 
      *   <code>CSS_PERCENTAGE</code>, <code>CSS_EMS</code>, 
      *   <code>CSS_EXS</code>, <code>CSS_PX</code>, <code>CSS_CM</code>, 
@@ -223,11 +223,11 @@ public interface CSSPrimitiveValue extends CSSValue {
      * property attached to this value can't accept the specified unit or 
      * the string value, the value will be unchanged and a 
      * <code>DOMException</code> will be raised. 
-     * @param stringType A string code as defined above. The string code can 
+     * @param stringType  A string code as defined above. The string code can 
      *   only be a string unit type (i.e. <code>CSS_STRING</code>, 
      *   <code>CSS_URI</code>, <code>CSS_IDENT</code>, and 
      *   <code>CSS_ATTR</code>). 
-     * @param stringValue The new string value. 
+     * @param stringValue  The new string value. 
      * @exception DOMException
      *    INVALID_ACCESS_ERR: Raised if the CSS value doesn't contain a string 
      *   value or if the string value can't be converted into the specified 
