@@ -10,53 +10,66 @@
 var svgns   = "http://www.w3.org/2000/svg";
 var xlinkns = "http://www.w3.org/1999/xlink";
 
-var dragNode;
-var scaleNode;
-var scaleTgt;
-var dx;
-var dy;
+var SCALE="scale";
+var DRAG="drag";
+
+var action, actionNode, actionTgt;
+var dx, dy;
 var imgGroup = document.getElementById("imgGroup")
-var filter = imgGroup.getAttribute("style");
+var filter   = imgGroup.getAttribute("style");
 var dragged=false;
 
 function dragOn(evt) {
-  dragNode = evt.target;
-  var currX = parseFloat(dragNode.getAttribute("x"));
-  var currY = parseFloat(dragNode.getAttribute("y"));
-  dx = evt.getClientX()-currX;
-  dy = evt.getClientY()-currY;
+  actionNode = evt.target;
+  action = DRAG;
+  var currX = parseFloat(actionNode.getAttribute("x"));
+  var currY = parseFloat(actionNode.getAttribute("y"));
+  var nowToX = evt.clientX;
+  var nowToY = evt.clientY;
+
+  // handle the current zoom and pan
+  var trans = document.documentElement.currentTranslate;
+  var scale = document.documentElement.currentScale;
+  nowToX = (nowToX - trans.x) / scale;
+  nowToY = (nowToY - trans.y) / scale;
+
+  dx = nowToX-currX;
+  dy = nowToY-currY;
   dragged=false;
 }
 
 function scaleOn(evt) {
-  scaleNode = scaleTgt;
-  var cW = parseFloat(scaleNode.getAttribute("width"));
-  var cH = parseFloat(scaleNode.getAttribute("height"));
-  dx = evt.getClientX()-cW;
-  dy = evt.getClientY()-cH;
+  actionNode = actionTgt;
+  action = SCALE;
+  var cW = parseFloat(actionNode.getAttribute("width"));
+  var cH = parseFloat(actionNode.getAttribute("height"));
+  var nowToX = evt.clientX;
+  var nowToY = evt.clientY;
+
+  // handle the current zoom and pan
+  var trans = document.documentElement.currentTranslate;
+  var scale = document.documentElement.currentScale;
+  nowToX = (nowToX - trans.x) / scale;
+  nowToY = (nowToY - trans.y) / scale;
+
+  dx = nowToX-cW;
+  dy = nowToY-cH;
   dragged=false;
 }
 
 function dragScaleOff() {
-  if (dragged) 
-     imgGroup.setAttribute("style",filter);
+  if (dragged) imgGroup.setAttribute("style",filter);
 
-  if (dragNode != null) {
-    if (dragNode != imgGroup.lastChild) {
-       imgGroup.appendChild(dragNode);
+  if (actionNode != null) {
+    if (actionNode != imgGroup.lastChild) {
+       imgGroup.appendChild(actionNode);
     }
-    dragNode = null;
-  }
-  if (scaleNode != null) {
-    if (scaleNode != imgGroup.lastChild) {
-       imgGroup.appendChild(scaleNode);
-    }
-    scaleNode = null;
+    actionNode = null;
   }
 }
 
 function dragScaleImgBg(evt) {
-  if ((dragNode == null) && (scaleNode == null)) {
+  if (actionNode == null) {
 	hideOverlay();
 	return;
   }
@@ -64,38 +77,41 @@ function dragScaleImgBg(evt) {
 }
 
 function dragScaleImg(evt) {
-  if ((dragNode == null) && (scaleNode == null))
-    return;
+  if (actionNode == null) return;
 
   dragged = true;
   imgGroup.setAttribute("style","");
-  if (dragNode != null) {
-    if (dragNode != imgGroup.lastChild) 
-       imgGroup.appendChild(dragNode);
-    dragNode.setAttribute("x",""+(evt.getClientX()-dx));
-    dragNode.setAttribute("y",""+(evt.getClientY()-dy));
-    updateOverlay(dragNode);
-  }
-  if (scaleNode != null) {
-    if (scaleNode != imgGroup.lastChild) 
-       imgGroup.appendChild(scaleNode);
-    var cW = parseFloat(scaleNode.getAttribute("width"));
-    var cH = parseFloat(scaleNode.getAttribute("height"));
+  if (actionNode != imgGroup.lastChild) 
+      imgGroup.appendChild(actionNode);
+
+  var nowToX = evt.clientX;
+  var nowToY = evt.clientY;
+
+  // handle the current zoom and pan
+  var trans = document.documentElement.currentTranslate;
+  var scale = document.documentElement.currentScale;
+  nowToX = (nowToX - trans.x) / scale;
+  nowToY = (nowToY - trans.y) / scale;
+
+  if (action == DRAG) {
+    actionNode.setAttribute("x",""+(nowToX-dx));
+    actionNode.setAttribute("y",""+(nowToY-dy));
+  } else {
+    var cW = parseFloat(actionNode.getAttribute("width"));
+    var cH = parseFloat(actionNode.getAttribute("height"));
 
     var ar = cW/cH; 
-    var nW = evt.getClientX()-dx;
-    var nH = evt.getClientY()-dy;
+    var nW = nowToX-dx;
+    var nH = nowToY-dy;
 
-    if (nW/nH < ar) {
-       nW = ar*nH;
-    } else {
-       nH = nW/ar;
-    }
+    if (nW/nH < ar) { nW = ar*nH; }
+    else            { nH = nW/ar; }
 
-    scaleNode.setAttribute("width", ""+nW);
-    scaleNode.setAttribute("height",""+nH);
-    updateOverlay(scaleNode);
+    actionNode.setAttribute("width", ""+nW);
+    actionNode.setAttribute("height",""+nH);
   }
+
+  updateOverlay(actionNode);
 }
 
 function updateOverlay(tgt) {
@@ -106,26 +122,21 @@ function updateOverlay(tgt) {
 
   var over = document.getElementById("overlay");
   over.setAttribute("transform","translate("+(cX+cW-1)+","+(cY+cH-1)+")");
-  scaleTgt = tgt;
+  actionTgt = tgt;
 }
 
 function showOverlay(evt) {
-  if ((dragNode != null) || (scaleNode != null))
-     return;
-  var tgt = evt.target;
-  updateOverlay(tgt);
-  var over = document.getElementById("overlay");
-  over.setAttribute("visibility","visible");
+  if (actionNode != null) return;
+  updateOverlay(evt.target);
+  document.getElementById("overlay").setAttribute("visibility","visible");
 }
 
 function hideOverlay() {
-  if ((dragNode != null) || (scaleNode != null))
-     return;
-  var over = document.getElementById("overlay");
-  over.setAttribute("visibility","hidden");
+  if (actionNode != null) return;
+  document.getElementById("overlay").setAttribute("visibility","hidden");
+  actionTgt=null;
 }
-
-]]></script>
+ ]]></script>
 
    <filter id="merge"  filterUnits="objectBoundingBox" >
        <feMorphology operator="dilate" radius="10" in="SourceAlpha" />
