@@ -157,6 +157,7 @@ public class PadRable8Bit extends AbstractRable
 
         RenderedImage ri = null;
         if (arect.intersects(srect) == true) {
+            srect = (Rectangle2D)srect.clone();
             Rectangle2D.intersect(srect, arect, srect);
             
             RenderContext srcRC = new RenderContext(usr2dev, srect, rh);
