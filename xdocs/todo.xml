@@ -34,10 +34,6 @@
     <actions priority="high">
 
         <action context="docs" assigned-to="VH">
-            Figure out how to publish documentation on web site.
-        </action>
-
-        <action context="docs" assigned-to="VH">
             Create initial version of documentation set.
         </action>
 
@@ -55,11 +51,6 @@
 
         <action context="docs" assigned-to="VH">
             SVG Generator sample page
-        </action>
-
-
-        <action context="code" assigned-to="TK">
-            objectBoundingBox, userSpaceOnUser for masks, and patterns
         </action>
 
         <action context="code" assigned-to="SH">
@@ -88,20 +79,65 @@
             Make sure we pass dom-eventListeners-BE-04.svg
         </action>
 
+        <action context="code"
+                assigned-to="TK">
+            Modify thumbnail area of interest marker so that
+            the top arrow is smaller and the area of interest
+            has a minimum size (e.g., 10px by 10px)
+        </action>
+
+        <action context="code" assigned-to="TK">
+            CSS Properties : 'visibility', 'display' and 'overflow'
+        </action>
+
+        <action context="code" assigned-to="TK">
+            Marker symbols
+        </action>
+
+        <action context="code"
+                assigned-to="VH">
+            Make sure all the filter 'in' sources are supported.
+        </action>
+
+        <action context="code" assigned-to="TK">
+            Thumbnails for documents with no viewBox should implement
+            preserveAspectRatio
+        </action>
+
     </actions>
 
     <actions priority="medium">
-
-        <action context="code" assigned-to="TK">
-        CSS Properties : 'visibility', 'display' and 'overflow'
+        <action context="code"
+                assigned-to="VH">
+            hueRotate bug in ColorMatrix.
         </action>
 
-        <action context="code" assigned-to="TK">
-        Marker symbols
+        <action context="code"
+                assigned-to="SH">
+            Use consistent naming conventions for value
+            constants in CSSConstants and SVGConstants
+        </action>
+
+        <action context="code"
+                assigned-to="SH">
+            Implement a Shift+Reload that forces reload of 
+            raster images referenced in an SVG document (i.e.,
+            do not use the one cached by the JVM).
+        </action>
+
+        <action context="code"
+                assigned-to="TD">
+            Implement LinearRGB to and from sRGB conversion 
+            routines.
+        </action>
+
+        <action context="code"
+                assigned-to="TD">
+            Antialiased-clipping
         </action>
 
         <action context="code" assigned-to="VH">
-        feTile - improve rendering with antialiasing
+            feTile - improve rendering with antialiasing
         </action>
 
         <action context="code" assigned-to="VH">
@@ -109,36 +145,46 @@
         </action>
 
         <action context="code" assigned-to="VH">
-        feBlend
+            feBlend
+        </action>
+
+        <action context="code" assigned-to="TD">
+            feConvolveMatrix
         </action>
 
         <action context="code" assigned-to="VH">
-        feConvolveMatrix
+            feDiffuseLighting
         </action>
 
         <action context="code" assigned-to="VH">
-        feDiffuseLighting
+            feDistantLight
         </action>
 
         <action context="code" assigned-to="VH">
-        feDistantLight
+            feSpecularLighting
         </action>
 
         <action context="code" assigned-to="VH">
-        feSpecularLighting
+            fePointLight
         </action>
 
         <action context="code" assigned-to="VH">
-        fePointLight
+            feSpotLight
         </action>
 
-        <action context="code" assigned-to="VH">
-        feSpotLight
+        <action context="code" assigned-to="BH">
+            Improve GUI reactivity on load (short freeze remaining)
         </action>
 
-        <action context="code" assigned-to="SH">
-            Use consistent naming conventions for value
-            constants in CSSConstants and SVGConstants
+        <action context="code" assigned-to="TK">
+            Use double buffering in repaint. Needed for dynamic 
+            behavior.
+        </action>
+
+        <action context="code" assigned-to="TK">
+            In initial paint, if thumbnail can be created by 
+            resampling main window, do that instead of re-rendering
+            GVT tree. Applies only to initial paint.
         </action>
 
     </actions>
