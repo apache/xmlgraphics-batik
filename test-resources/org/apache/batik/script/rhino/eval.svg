@@ -30,7 +30,7 @@ function checkEval(){
     var e = document.getElementById('target');
     var ecmaCode = e.getAttributeNS("http://some.company.com/", "eval");
     alert("About to evaluate: " + ecmaCode);
-    eval(ecmaCode);
+    eval(String(ecmaCode));
 }
 
 function callMe() {
