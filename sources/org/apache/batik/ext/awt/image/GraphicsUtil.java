@@ -178,7 +178,7 @@ public class GraphicsUtil {
             // If we can't find out about our device assume
             // it's not premultiplied (Just because this
             // seems to work for us!).
-            drawCM = coerceColorModel(drawCM, false);
+            drawCM = coerceColorModel(srcCM, false);
         } else if (drawCM.hasAlpha() && g2dCM.hasAlpha() &&
                    (drawCM.isAlphaPremultiplied() !=
                     g2dCM .isAlphaPremultiplied())) {

@@ -41,7 +41,7 @@ import org.apache.batik.ext.awt.image.rendered.AffineRed;
  * @version $Id$
  */
 public class DisplacementMapRable8Bit 
-    extends AbstractRable
+    extends AbstractColorInterpRable
     implements DisplacementMapRable{
     /**
      * Displacement scale factor
@@ -217,10 +217,8 @@ public class DisplacementMapRable8Bit
             return null;
         }
 
-        displacedRed = GraphicsUtil.convertToLsRGB
-            (GraphicsUtil.wrap(displacedRed));
-        mapRed = GraphicsUtil.convertToLsRGB
-            (GraphicsUtil.wrap(mapRed));
+        mapRed = convertSourceCS(mapRed);
+
         //
         // Build a BufferedImages from the two sources
         //

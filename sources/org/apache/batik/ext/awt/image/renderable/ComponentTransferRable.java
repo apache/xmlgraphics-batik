@@ -17,7 +17,7 @@ import org.apache.batik.ext.awt.image.ComponentTransferFunction;
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
-public interface ComponentTransferRable extends Filter {
+public interface ComponentTransferRable extends FilterColorInterp {
     /**
      * Returns the source to be offset.
      */

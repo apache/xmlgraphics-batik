@@ -43,7 +43,7 @@ public class JDKRegistryEntry extends AbstractRegistryEntry
     public final static float PRIORITY = 
         1000*MagicNumberRegistryEntry.PRIORITY;
 
-    JDKRegistryEntry() {
+    public JDKRegistryEntry() {
         super ("JDK", PRIORITY, new String[0]);
     }
 
@@ -126,6 +126,10 @@ public class JDKRegistryEntry extends AbstractRegistryEntry
                     // Clean up our registraction
                     mediaTracker.removeImage(img, myID);
 
+                    if ((img.getWidth(null)  == -1)||
+                        (img.getHeight(null) == -1))
+                        return null;
+
                     // Build the image to .
                     BufferedImage bi = null;
                     bi = new BufferedImage(img.getWidth(null),
@@ -141,8 +145,10 @@ public class JDKRegistryEntry extends AbstractRegistryEntry
                 public void run() {
                     Filter filt;
                     RenderedImage ri = loadImage(img);
-                    
-                    filt = new RedRable(GraphicsUtil.wrap(ri));
+                    if (ri == null)
+                        filt = ImageTagRegistry.getBrokenLinkImage();
+                    else
+                        filt = new RedRable(GraphicsUtil.wrap(ri));
                     dr.setSource(filt);
                 }
             };
@@ -151,8 +157,7 @@ public class JDKRegistryEntry extends AbstractRegistryEntry
     }
 
     // Stuff for Image Loading.
-    static Component mediaComponent = new Label() { };
+    static Component mediaComponent = new Label();
     static MediaTracker mediaTracker = new MediaTracker(mediaComponent);
     static int id = 0;
 }
-

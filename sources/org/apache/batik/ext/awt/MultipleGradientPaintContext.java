@@ -665,6 +665,58 @@ abstract class MultipleGradientPaintContext implements PaintContext {
             if (position < 0) {
                 position = position + 1; //force it to be in the range 0-1
             }
+
+            int w=0, c1=0, c2=0;
+            if (isSimpleLookup) {
+              position *= gradient.length;
+              int idx1 = (int)(position);
+              if (idx1+1 < gradient.length)
+                return gradient[idx1];
+
+              w = (int)((position-idx1)*(1<<16));
+              c1 = gradient[idx1];
+              c2 = gradient[0];
+            } else {
+              //for all the gradient interval arrays
+              for (int i = 0; i < gradientsLength; i++) {
+
+                if (position < fractions[i+1]) { //this is the array we want
+
+                  float delta = position - fractions[i];
+                  
+                  delta = ((delta / normalizedIntervals[i]) * GRADIENT_SIZE);
+                  //this is the interval we want.
+                  int index = (int)delta;
+                  if ((index+1<gradients[i].length) ||
+                      (i+1 < gradientsLength))
+                    return gradients[i][index];
+
+                  w  = (int)((delta-index)*(1<<16));
+                  c1 = gradients[i][index];
+                  c2 = gradients[0][0];
+                  break;
+                }
+              }
+            }
+
+            return 
+              ((((  (  (c1>>  8)           &0xFF0000)+
+                    ((((c2>>>24)     )-((c1>>>24)     ))*w))&0xFF0000)<< 8) |
+               
+               (((  (  (c1     )           &0xFF0000)+
+                    ((((c2>> 16)&0xFF)-((c1>> 16)&0xFF))*w))&0xFF0000)    ) |
+                    
+               (((  (  (c1<<  8)           &0xFF0000)+
+                    ((((c2>>  8)&0xFF)-((c1>>  8)&0xFF))*w))&0xFF0000)>> 8) |
+               
+               (((  (  (c1<< 16)           &0xFF0000)+
+                    ((((c2     )&0xFF)-((c1     )&0xFF))*w))&0xFF0000)>>16));
+
+            // return c1 +
+            //   ((( ((((c2>>>24)     )-((c1>>>24)     ))*w)&0xFF0000)<< 8) |
+            //    (( ((((c2>> 16)&0xFF)-((c1>> 16)&0xFF))*w)&0xFF0000)    ) |
+            //    (( ((((c2>>  8)&0xFF)-((c1>>  8)&0xFF))*w)&0xFF0000)>> 8) |
+            //    (( ((((c2     )&0xFF)-((c1     )&0xFF))*w)&0xFF0000)>>16));
         }
 
         else {  //cycleMethod == MultipleGradientPaint.REFLECT

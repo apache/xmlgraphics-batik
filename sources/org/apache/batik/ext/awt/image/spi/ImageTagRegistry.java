@@ -21,6 +21,7 @@ import java.io.StreamCorruptedException;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.color.ICCColorSpaceExt;
 import org.apache.batik.util.ParsedURL;
+import org.apache.batik.util.Service;
 
 import java.awt.Graphics2D;
 import java.awt.Color;
@@ -32,6 +33,13 @@ import org.apache.batik.ext.awt.image.renderable.RedRable;
 import org.apache.batik.ext.awt.image.renderable.ProfileRable;
 
 
+/**
+ * This class handles the registered Image tag handlers.  These are
+ * instances of RegisteryEntry in this package.
+ *
+ * @author <a href="mailto:Thomas.DeWeeese@Kodak.com">Thomas DeWeese</a>
+ * @version $Id$
+ */
 public class ImageTagRegistry {
     List entries = new LinkedList();
 
@@ -197,15 +205,27 @@ public class ImageTagRegistry {
         li.add(newRE);
     }
 
-    static ImageTagRegistry registry = new ImageTagRegistry();
+    static ImageTagRegistry registry = null;
     
-    static {
+
+
+    public synchronized static ImageTagRegistry getRegistry() { 
+        if (registry != null) 
+            return registry;
+        
+        registry = new ImageTagRegistry();
+
         registry.register(new PNGRegistryEntry());
         registry.register(new JPEGRegistryEntry());
         registry.register(new JDKRegistryEntry());
-    }
 
-    public static ImageTagRegistry getRegistry() { 
+        Iterator iter = Service.providers(RegistryEntry.class);
+        while (iter.hasNext()) {
+            RegistryEntry re = (RegistryEntry)iter.next();
+            // System.out.println("RE: " + re);
+            registry.register(re);
+        }
+
         return registry;
     }
 

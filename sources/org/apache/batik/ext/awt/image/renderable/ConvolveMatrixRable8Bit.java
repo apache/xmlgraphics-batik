@@ -49,7 +49,7 @@ import org.apache.batik.ext.awt.image.rendered.AffineRed;
  * @version $Id$
  */
 public class ConvolveMatrixRable8Bit 
-    extends    AbstractRable 
+    extends    AbstractColorInterpRable 
     implements ConvolveMatrixRable
 {
 
@@ -263,10 +263,7 @@ public class ConvolveMatrixRable8Bit
         //     ("Padded Image", ri, 
         //      new Rectangle(ri.getMinX()+22,ri.getMinY()+38,5,5));
 
-        CachableRed cr;
-        cr = GraphicsUtil.wrap(ri);
-        cr = GraphicsUtil.convertToLsRGB(cr);
-
+        CachableRed cr = convertSourceCS(ri);
 
         Shape devShape = srcAt.createTransformedShape(aoi);
         Rectangle2D devRect = devShape.getBounds2D();

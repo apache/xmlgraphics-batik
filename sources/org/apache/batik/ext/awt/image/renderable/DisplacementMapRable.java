@@ -19,7 +19,7 @@ import org.apache.batik.ext.awt.image.ARGBChannel;
  * @author <a href="mailto:sheng.pei@eng.sun.com>Sheng Pei</a>
  * @version $Id$
  */
-public interface DisplacementMapRable extends Filter {
+public interface DisplacementMapRable extends FilterColorInterp {
     public static final int CHANNEL_R = 1;
     public static final int CHANNEL_G = 2;
     public static final int CHANNEL_B = 3;

@@ -126,7 +126,8 @@ final class RadialGradientPaintContext extends MultipleGradientPaintContext {
         focusX = fx;
         focusY = fy;
         radius = r;
-	
+
+
         this.isSimpleFocus = (focusX == centerX) && (focusY == centerY);
         this.isNonCyclic = (cycleMethod == RadialGradientPaint.NO_CYCLE);
 	
@@ -139,22 +140,13 @@ final class RadialGradientPaintContext extends MultipleGradientPaintContext {
         double dist = Math.sqrt((dX * dX) + (dY * dY));
 
         //test if distance from focus to center is greater than the radius
-        if (dist > radius) { //clamp focus to radius
-
-            if (dY == 0) {  //avoid divide by zero
-                focusY = centerY;
-                focusX = centerX + (radius * SCALEBACK);
-            }
-            else {	    
-                double angle = Math.atan2(dY, dX);
+        if (dist > radius* SCALEBACK) { //clamp focus to radius
+          double angle = Math.atan2(dY, dX);
 			
-                //x = r cos theta, y = r sin theta
-                focusX = (float)Math.floor((SCALEBACK * radius * 
-                                            Math.cos(angle))) + centerX;
-
-                focusY = (float)Math.floor((SCALEBACK * radius * 
-                                            Math.sin(angle))) + centerY;
-            }	    	   
+          //x = r cos theta, y = r sin theta
+          focusX = (float)(SCALEBACK * radius * Math.cos(angle)) + centerX;
+          
+          focusY = (float)(SCALEBACK * radius * Math.sin(angle)) + centerY;
         }
 
         //calculate the solution to be used in the case where X == focusX
