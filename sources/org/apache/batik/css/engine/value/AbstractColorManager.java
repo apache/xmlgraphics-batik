@@ -242,7 +242,7 @@ public abstract class AbstractColorManager extends IdentifierManager {
             }
             return engine.getCSSContext().getSystemColor(ident);
         }
-        return value;
+        return super.computeValue(elt, pseudo, engine, idx, sm, value);
     }
 
     /**
@@ -287,4 +287,5 @@ public abstract class AbstractColorManager extends IdentifierManager {
         String s = Messages.formatMessage("invalid.rgb.component.unit", p);
         return new DOMException(DOMException.NOT_SUPPORTED_ERR, s);
     }
+
 }

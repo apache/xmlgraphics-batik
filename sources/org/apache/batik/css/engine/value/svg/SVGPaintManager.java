@@ -54,13 +54,13 @@ import org.apache.batik.css.engine.CSSEngine;
 import org.apache.batik.css.engine.CSSStylableElement;
 import org.apache.batik.css.engine.StyleMap;
 import org.apache.batik.css.engine.value.ListValue;
-import org.apache.batik.css.engine.value.StringValue;
+import org.apache.batik.css.engine.value.URIValue;
 import org.apache.batik.css.engine.value.Value;
 import org.apache.batik.util.CSSConstants;
 import org.w3c.css.sac.LexicalUnit;
-import org.w3c.dom.DOMException;
 import org.w3c.dom.css.CSSPrimitiveValue;
 import org.w3c.dom.css.CSSValue;
+import org.w3c.dom.DOMException;
 
 /**
  * This class provides a manager for the SVGPaint property values.
@@ -104,18 +104,20 @@ public class SVGPaintManager extends SVGColorManager {
                 (CSSConstants.CSS_NONE_VALUE)) {
                 return SVGValueConstants.NONE_VALUE;
             }
+            // Fall through
         default:
             return super.createValue(lu, engine);
         case LexicalUnit.SAC_URI:
         }
-        String uri = resolveURI(engine.getCSSBaseURI(), lu.getStringValue());
+        String value = lu.getStringValue();
+        String uri = resolveURI(engine.getCSSBaseURI(), value);
         lu = lu.getNextLexicalUnit();
         if (lu == null) {
-            return new StringValue(CSSPrimitiveValue.CSS_URI, uri);
+            return new URIValue(value, uri);
         }
 
         ListValue result = new ListValue(' ');
-        result.append(new StringValue(CSSPrimitiveValue.CSS_URI, uri));
+        result.append(new URIValue(value, uri));
 
 	if (lu.getLexicalUnitType() == LexicalUnit.SAC_IDENT) {
             if (lu.getStringValue().equalsIgnoreCase

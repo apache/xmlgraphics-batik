@@ -52,7 +52,7 @@ package org.apache.batik.css.engine.value.svg;
 
 import org.apache.batik.css.engine.CSSEngine;
 import org.apache.batik.css.engine.value.AbstractValueManager;
-import org.apache.batik.css.engine.value.StringValue;
+import org.apache.batik.css.engine.value.URIValue;
 import org.apache.batik.css.engine.value.Value;
 import org.apache.batik.css.engine.value.ValueConstants;
 import org.apache.batik.util.CSSConstants;
@@ -99,9 +99,9 @@ public class MaskManager extends AbstractValueManager {
 	    return ValueConstants.INHERIT_VALUE;
 
 	case LexicalUnit.SAC_URI:
-            return new StringValue(CSSPrimitiveValue.CSS_URI,
-                                   resolveURI(engine.getCSSBaseURI(),
-                                              lu.getStringValue()));
+            return new URIValue(lu.getStringValue(),
+                                resolveURI(engine.getCSSBaseURI(),
+                                           lu.getStringValue()));
 
 	case LexicalUnit.SAC_IDENT:
 	    if (lu.getStringValue().equalsIgnoreCase
@@ -126,8 +126,8 @@ public class MaskManager extends AbstractValueManager {
             break;
 
         case CSSPrimitiveValue.CSS_URI:
-            return new StringValue(CSSPrimitiveValue.CSS_URI,
-                                   resolveURI(engine.getCSSBaseURI(), value));
+            return new URIValue(value,
+                                resolveURI(engine.getCSSBaseURI(), value));
 	}
         throw createInvalidStringTypeDOMException(type);
     }

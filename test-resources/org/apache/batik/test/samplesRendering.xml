@@ -371,6 +371,7 @@
         <test id="samples/tests/spec/scripting/polyline_points1.svg" />
         <test id="samples/tests/spec/scripting/polyline_points2.svg" />
         <test id="samples/tests/spec/scripting/rect.svg" />
+        <test id="samples/tests/spec/scripting/relativeURI.svg" />
         <test id="samples/tests/spec/scripting/remove.svg" />
         <test id="samples/tests/spec/scripting/removeOnclick.svg" />
         <test id="samples/tests/spec/scripting/text.svg" />

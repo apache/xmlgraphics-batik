@@ -50,58 +50,31 @@
 
 package org.apache.batik.css.engine.value;
 
-import org.apache.batik.css.engine.CSSEngine;
-import org.apache.batik.css.engine.CSSStylableElement;
-import org.apache.batik.css.engine.StyleMap;
-import org.w3c.dom.css.CSSPrimitiveValue;
-import org.w3c.dom.css.CSSValue;
 import org.w3c.dom.DOMException;
+import org.w3c.dom.css.CSSPrimitiveValue;
 
 /**
- * This class provides an abstract implementation of the ValueManager
- * interface.
+ * This class represents uri values.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public abstract class AbstractValueManager
-    extends AbstractValueFactory
-    implements ValueManager {
-    
+public class URIValue extends StringValue {
+
+    String cssText;
+
     /**
-     * Implements {@link ValueManager#createFloatValue(short,float)}.
+     * Creates a new StringValue.
      */
-    public Value createFloatValue(short unitType, float floatValue)
-	throws DOMException {
-        throw createDOMException();
+    public URIValue(String cssText, String uri) {
+        super(CSSPrimitiveValue.CSS_URI, uri);
+        this.cssText = cssText;
     }
 
     /**
-     * Implements {@link
-     * ValueManager#createStringValue(short,String,CSSEngine)}.
+     * A string representation of the current value. 
      */
-    public Value createStringValue(short type, String value, CSSEngine engine)
-        throws DOMException {
-        throw createDOMException();
-    }
-
-    /**
-     * Implements {@link
-     * ValueManager#computeValue(CSSStylableElement,String,CSSEngine,int,StyleMap,Value)}.
-     */
-    public Value computeValue(CSSStylableElement elt,
-                              String pseudo,
-                              CSSEngine engine,
-                              int idx,
-                              StyleMap sm,
-                              Value value) {
-        
-        if ((value.getCssValueType() == CSSValue.CSS_PRIMITIVE_VALUE) &&
-            (value.getPrimitiveType() == CSSPrimitiveValue.CSS_URI)) {
-            // Reveal the absolute value as the cssText now.
-            return new URIValue(value.getStringValue(),
-                                value.getStringValue());
-        }
-        return value;
+    public String getCssText() {
+        return "url(" + cssText + ")";
     }
 }
