@@ -339,10 +339,10 @@ public class SVGGraphics2D extends AbstractGraphics2D
         } catch (IOException io) {
             generatorCtx.errorHandler.
                 handleError(new SVGGraphics2DIOException(io));
-        } catch (SVGGraphics2DIOException e) {
+        } /*catch (SVGGraphics2DIOException e) {
             generatorCtx.errorHandler.
                 handleError(e);
-        }
+                }*/
     }
 
     /**
