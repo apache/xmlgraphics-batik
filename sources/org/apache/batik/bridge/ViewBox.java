@@ -12,12 +12,17 @@ import java.awt.geom.AffineTransform;
 import java.io.StringReader;
 import java.util.StringTokenizer;
 
-import org.apache.batik.parser.PreserveAspectRatioParser;
-import org.apache.batik.parser.PreserveAspectRatioHandler;
+import org.apache.batik.parser.AWTTransformProducer;
+import org.apache.batik.parser.FragmentIdentifierHandler;
+import org.apache.batik.parser.FragmentIdentifierParser;
 import org.apache.batik.parser.ParseException;
+import org.apache.batik.parser.PreserveAspectRatioHandler;
+import org.apache.batik.parser.PreserveAspectRatioParser;
 import org.apache.batik.util.SVGConstants;
 
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGPreserveAspectRatio;
 
 /**
@@ -34,31 +39,102 @@ public abstract class ViewBox implements SVGConstants, ErrorConstants {
     protected ViewBox() { }
 
     /**
-     * Parses a viewBox attribute.
-     * @param value the viewBox
-     * @return The 4 viewbox components or null.
+     * Parses the specified reference (from a URI) and returns the appropriate
+     * transform.
+     *
+     * @param ref the reference of the URI that may specify additional attribute
+     *            values such as the viewBox, preserveAspectRatio or a transform
+     * @param e the element interested in its view transform
+     * @param w the width of the effective viewport
+     * @param h The height of the effective viewport
      */
-    public static float[] parseViewBoxAttribute(Element e, String value) {
-        if (value.length() == 0) {
-            return null;
+    public static AffineTransform getViewTransform(String ref,
+                                                   Element e,
+                                                   float w,
+                                                   float h)
+        throws ParseException {
+
+        // no reference has been specified, no extra viewBox is defined
+        if (ref == null || ref.length() == 0) {
+            return getPreserveAspectRatioTransform(e, w, h);
         }
-        int i = 0;
-        float[] result = new float[4];
-        StringTokenizer st = new StringTokenizer(value, " ,");
-        try {
-            while (i < 4 && st.hasMoreTokens()) {
-                result[i] = Float.parseFloat(st.nextToken());
-                i++;
+
+        ViewHandler vh = new ViewHandler();
+        FragmentIdentifierParser p = new FragmentIdentifierParser();
+        p.setFragmentIdentifierHandler(vh);
+        p.parse(new StringReader(ref));
+
+        Element attrDefElement = e; // the element that defines the attributes
+        if (vh.hasId) {
+            Document document = e.getOwnerDocument();
+            attrDefElement = document.getElementById(vh.id);
+        }
+        // if the referenced element is not a view, the attribute values to use
+        // are those defined on the enclosed svg element
+        if (!(attrDefElement.getNamespaceURI().equals(SVG_NAMESPACE_URI)
+              && attrDefElement.getLocalName().equals(SVG_VIEW_TAG))) {
+            attrDefElement = getClosestAncestorSVGElement(e);
+        }
+
+        // 'viewBox'
+        float [] vb;
+        if (vh.hasViewBox) {
+            vb = vh.viewBox;
+        } else {
+            String viewBoxStr = attrDefElement.getAttributeNS
+                (null, SVG_VIEW_BOX_ATTRIBUTE);
+            vb = parseViewBoxAttribute(attrDefElement, viewBoxStr);
+        }
+
+        // 'preserveAspectRatio'
+        short align;
+        boolean meet;
+        if (vh.hasPreserveAspectRatio) {
+            align = vh.align;
+            meet = vh.meet;
+        } else {
+            String aspectRatio = attrDefElement.getAttributeNS
+                (null, SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE);
+            PreserveAspectRatioParser pp = new PreserveAspectRatioParser();
+            ViewHandler ph = new ViewHandler();
+            pp.setPreserveAspectRatioHandler(ph);
+            try {
+                pp.parse(new StringReader(aspectRatio));
+            } catch (ParseException ex) {
+                throw new BridgeException
+                    (attrDefElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                     new Object[] {SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE,
+                                       aspectRatio, ex});
             }
-        } catch (NumberFormatException ex) {
-            throw new BridgeException(e, ERR_ATTRIBUTE_VALUE_MALFORMED,
-                            new Object[] {SVG_VIEW_BOX_ATTRIBUTE, value, ex});
+            align = ph.align;
+            meet = ph.meet;
         }
-        if (i != 4) {
-            throw new BridgeException(e, ERR_ATTRIBUTE_VALUE_MALFORMED,
-                                  new Object[] {SVG_VIEW_BOX_ATTRIBUTE, value});
+
+        // the additional transform that may appear on the URI
+        AffineTransform transform
+            = getPreserveAspectRatioTransform(vb, align, meet, w, h);
+        if (vh.hasTransform) {
+            transform.concatenate(vh.getAffineTransform());
         }
-        return result;
+        return transform;
+    }
+
+    /**
+     * Returns the closest svg element ancestor of the specified element.
+     *
+     * @param e the element on which to start the svg element lookup
+     */
+    private static Element getClosestAncestorSVGElement(Element e) {
+        for  (Node n = e;
+              n != null && n.getNodeType() == Node.ELEMENT_NODE;
+              n = n.getParentNode()) {
+            Element tmp = (Element)n;
+            if (tmp.getNamespaceURI().equals(SVG_NAMESPACE_URI)
+                && tmp.getLocalName().equals(SVG_SVG_TAG)) {
+                return tmp;
+            }
+        }
+        return null;
     }
 
     /**
@@ -78,6 +154,7 @@ public abstract class ViewBox implements SVGConstants, ErrorConstants {
 
         String aspectRatio
             = e.getAttributeNS(null, SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE);
+
         return getPreserveAspectRatioTransform(e, viewBox, aspectRatio, w, h);
     }
 
@@ -102,42 +179,92 @@ public abstract class ViewBox implements SVGConstants, ErrorConstants {
         if (viewBox.length() == 0) {
             return new AffineTransform();
         }
-
-        String s;
         float[] vb = parseViewBoxAttribute(e, viewBox);
+
+        // 'preserveAspectRatio' attribute
+        PreserveAspectRatioParser p = new PreserveAspectRatioParser();
+        ViewHandler ph = new ViewHandler();
+        p.setPreserveAspectRatioHandler(ph);
+        try {
+            p.parse(new StringReader(aspectRatio));
+        } catch (ParseException ex) {
+            throw new BridgeException
+                (e, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                 new Object[] {SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE,
+                                   aspectRatio, ex});
+        }
+
+        return getPreserveAspectRatioTransform(vb, ph.align, ph.meet, w, h);
+    }
+
+    /**
+     * Parses a viewBox attribute.
+     * @param value the viewBox
+     * @return The 4 viewbox components or null.
+     */
+    private static float[] parseViewBoxAttribute(Element e, String value) {
+        if (value.length() == 0) {
+            return null;
+        }
+        int i = 0;
+        float[] vb = new float[4];
+        StringTokenizer st = new StringTokenizer(value, " ,");
+        try {
+            while (i < 4 && st.hasMoreTokens()) {
+                vb[i] = Float.parseFloat(st.nextToken());
+                i++;
+            }
+        } catch (NumberFormatException ex) {
+            throw new BridgeException
+                (e, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                 new Object[] {SVG_VIEW_BOX_ATTRIBUTE, value, ex});
+        }
+        if (i != 4) {
+            throw new BridgeException
+                (e, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                 new Object[] {SVG_VIEW_BOX_ATTRIBUTE, value});
+        }
         // A negative value for <width> or <height> is an error
         if (vb[2] < 0 || vb[3] < 0) {
-            throw new BridgeException(e, ERR_ATTRIBUTE_VALUE_MALFORMED,
-                                new Object[] {SVG_VIEW_BOX_ATTRIBUTE, viewBox});
+            throw new BridgeException
+                (e, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                 new Object[] {SVG_VIEW_BOX_ATTRIBUTE, value});
         }
         // A value of zero for width or height disables rendering of the element
         if (vb[2] == 0 || vb[3] == 0) {
             return null; // <!> FIXME : must disable !
         }
+        return vb;
+    }
 
+    /**
+     * Returns the preserveAspectRatio transform according to the specified
+     * parameters.
+     *
+     * @param vb the viewBox definition
+     * @param align the alignment definition
+     * @param meet true means 'meet', false means 'slice'
+     * @param w the width of the region in which the document has to fit into
+     * @param h the height of the region in which the document has to fit into
+     */
+    private static
+        AffineTransform getPreserveAspectRatioTransform(float [] vb,
+                                                        short align,
+                                                        boolean meet,
+                                                        float w,
+                                                        float h) {
         AffineTransform result = new AffineTransform();
-        // 'preserveAspectRatio' attribute
-        PreserveAspectRatioParser p = new PreserveAspectRatioParser();
-        PreserveAspectRatio ph = new PreserveAspectRatio();
-        p.setPreserveAspectRatioHandler(ph);
-        try {
-            p.parse(new StringReader(aspectRatio));
-        } catch (ParseException ex) {
-            throw new BridgeException(e, ERR_ATTRIBUTE_VALUE_MALFORMED,
-                     new Object[] {SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE,
-                                       aspectRatio, ex});
-        }
 
         float vpar  = vb[2] / vb[3];
         float svgar = w / h;
 
-        if (ph.align == SVGPreserveAspectRatio.SVG_PRESERVEASPECTRATIO_NONE) {
+        if (align == SVGPreserveAspectRatio.SVG_PRESERVEASPECTRATIO_NONE) {
             result.scale(w / vb[2], h / vb[3]);
             result.translate(-vb[0], -vb[1]);
-        } else if (vpar < svgar && ph.meet || vpar >= svgar && !ph.meet) {
+        } else if (vpar < svgar && meet || vpar >= svgar && !meet) {
             float sf = h / vb[3];
             result.scale(sf, sf);
-            switch (ph.align) {
+            switch (align) {
             case SVGPreserveAspectRatio.SVG_PRESERVEASPECTRATIO_XMINYMIN:
             case SVGPreserveAspectRatio.SVG_PRESERVEASPECTRATIO_XMINYMID:
             case SVGPreserveAspectRatio.SVG_PRESERVEASPECTRATIO_XMINYMAX:
@@ -154,7 +281,7 @@ public abstract class ViewBox implements SVGConstants, ErrorConstants {
         } else {
             float sf = w / vb[2];
             result.scale(sf, sf);
-            switch (ph.align) {
+            switch (align) {
             case SVGPreserveAspectRatio.SVG_PRESERVEASPECTRATIO_XMINYMIN:
             case SVGPreserveAspectRatio.SVG_PRESERVEASPECTRATIO_XMIDYMIN:
             case SVGPreserveAspectRatio.SVG_PRESERVEASPECTRATIO_XMAXYMIN:
@@ -173,10 +300,129 @@ public abstract class ViewBox implements SVGConstants, ErrorConstants {
     }
 
     /**
-     * To store the preserveAspectRatio attribute values.
+     * This class can be used to store the value of the attribute viewBox or can
+     * also be used to store the various attribute value that can be specified
+     * on a SVG URI fragments.
      */
-    protected static class PreserveAspectRatio
-        implements PreserveAspectRatioHandler {
+    protected static class ViewHandler extends AWTTransformProducer
+        implements FragmentIdentifierHandler {
+
+
+        /**
+         * Constructs a new <tt>ViewHandler</tt> instance.
+         */
+        protected ViewHandler() { }
+
+        //////////////////////////////////////////////////////////////////////
+        // TransformListHandler
+        //////////////////////////////////////////////////////////////////////
+
+        public boolean hasTransform;
+
+        public void endTransformList() throws ParseException {
+            super.endTransformList();
+            hasTransform = true;
+        }
+
+        //////////////////////////////////////////////////////////////////////
+        // FragmentIdentifierHandler
+        //////////////////////////////////////////////////////////////////////
+
+        public boolean hasId;
+        public boolean hasViewBox;
+        public boolean hasViewTargetParams;
+        public boolean hasZoomAndPanParams;
+
+        public String id;
+        public float [] viewBox;
+        public String viewTargetParams;
+        public boolean isMagnify;
+
+        /**
+         * Invoked when the fragment identifier starts.
+         * @exception ParseException if an error occured while processing the
+         *                           fragment identifier
+         */
+        public void startFragmentIdentifier() throws ParseException { }
+
+        /**
+         * Invoked when an ID has been parsed.
+         * @param s The string that represents the parsed ID.
+         * @exception ParseException if an error occured while processing the
+         *                           fragment identifier
+         */
+        public void idReference(String s) throws ParseException {
+            id = s;
+            hasId = true;
+        }
+
+        /**
+         * Invoked when 'viewBox(x,y,width,height)' has been parsed.
+         * @param x&nbsp;y&nbsp;width&nbsp;height the coordinates of the
+         * viewbox.
+         * @exception ParseException if an error occured while processing the
+         *                           fragment identifier
+         */
+        public void viewBox(float x, float y, float width, float height)
+            throws ParseException {
+
+            hasViewBox = true;
+            viewBox = new float[4];
+            viewBox[0] = x;
+            viewBox[1] = y;
+            viewBox[2] = width;
+            viewBox[3] = height;
+        }
+
+        /**
+         * Invoked when a view target specification starts.
+         * @exception ParseException if an error occured while processing the
+         *                           fragment identifier
+         */
+        public void startViewTarget() throws ParseException { }
+
+        /**
+         * Invoked when a identifier has been parsed within a view target
+         * specification.
+         * @param name the target name.
+         * @exception ParseException if an error occured while processing the
+         *                           fragment identifier
+         */
+        public void viewTarget(String name) throws ParseException {
+            viewTargetParams = name;
+            hasViewTargetParams = true;
+        }
+
+        /**
+         * Invoked when a view target specification ends.
+         * @exception ParseException if an error occured while processing the
+         *                           fragment identifier
+         */
+        public void endViewTarget() throws ParseException { }
+
+        /**
+         * Invoked when a 'zoomAndPan' specification has been parsed.
+         * @param magnify true if 'magnify' has been parsed.
+         * @exception ParseException if an error occured while processing the
+         *                           fragment identifier
+         */
+        public void zoomAndPan(boolean magnify) {
+            isMagnify = magnify;
+            hasZoomAndPanParams = true;
+        }
+
+        /**
+         * Invoked when the fragment identifier ends.
+         * @exception ParseException if an error occured while processing the
+         *                           fragment identifier
+         */
+        public void endFragmentIdentifier() throws ParseException { }
+
+        //////////////////////////////////////////////////////////////////////
+        // PreserveAspectRatioHandler
+        //////////////////////////////////////////////////////////////////////
+
+        public boolean hasPreserveAspectRatio;
 
         public short align;
         public boolean meet = true;
@@ -186,8 +432,7 @@ public abstract class ViewBox implements SVGConstants, ErrorConstants {
          * @exception ParseException if an error occured while processing
          * the transform
          */
-        public void startPreserveAspectRatio() throws ParseException {
-        }
+        public void startPreserveAspectRatio() throws ParseException { }
 
         /**
          * Invoked when 'none' been parsed.
@@ -303,6 +548,7 @@ public abstract class ViewBox implements SVGConstants, ErrorConstants {
          * the transform
          */
         public void endPreserveAspectRatio() throws ParseException {
+            hasPreserveAspectRatio = true;
         }
     }
 }
