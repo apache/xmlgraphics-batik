@@ -527,6 +527,7 @@ public class RectListManager implements Collection {
         mr = new Rectangle();
         for (int j, i=1; i<size; i++) {
             r = rects[i];
+            if (r == null) continue;
             cost1 = (overhead                 + 
                      (r.height*lineOverhead) +
                      (r.height*r.width));
@@ -545,7 +546,8 @@ public class RectListManager implements Collection {
                     if (cost3 <= cost1+cost2) {
                         rects[j] = mr;
                         rects[i] = null;
-                        r = mr;
+                        i     = j; j=-1;
+                        r     = mr;
                         cost1 = cost3;
                         break;
                     }

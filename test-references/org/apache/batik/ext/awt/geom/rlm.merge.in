@@ -75,5 +75,3 @@ print
 # Should collapse (overhead overcomes)
 merge 440 11
 print
-
-
