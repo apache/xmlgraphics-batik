@@ -75,6 +75,8 @@ public class ConcreteTextLayoutFactory implements TextLayoutFactory {
         glyphPositionKeys.add(GVTAttributedCharacterIterator.TextAttribute.DY);
         glyphPositionKeys.add(
                 GVTAttributedCharacterIterator.TextAttribute.ROTATION);
+        glyphPositionKeys.add(
+                GVTAttributedCharacterIterator.TextAttribute.BASELINE_SHIFT);
         glyphPositionKeys.retainAll(keys);
         if (glyphPositionKeys.isEmpty()) {
             return new TextLayoutAdapter(new TextLayout(aci, frc), offset, aci);

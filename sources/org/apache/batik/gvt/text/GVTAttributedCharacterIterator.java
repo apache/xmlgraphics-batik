@@ -309,9 +309,25 @@ public interface GVTAttributedCharacterIterator extends
         public final static TextAttribute FONT_VARIANT =
                                           new TextAttribute("FONT_VARIANT");
 
+        /** Baseline adjustment to be applied to this character span.
+         */
+        public final static TextAttribute BASELINE_SHIFT =
+                                          new TextAttribute("BASELINE_SHIFT");
+
+        /** Directional writing mode applied to this character span.
+         */
+        public final static TextAttribute WRITING_MODE =
+                                          new TextAttribute("WRITING_MODE");
+
 
 
         // VALUES
+
+        /** Value for WRITING_MODE indicating left-to-right */
+        public final static Integer WRITING_MODE_LTR = new Integer(0x1);
+
+        /** Value for WRITING_MODE indicating right-to-left */
+        public final static Integer WRITING_MODE_RTL = new Integer(0x2);
 
         /** Value for FONT_VARIANT specifying small caps */
         public final static Integer SMALL_CAPS = new Integer(0x10);
