@@ -79,8 +79,7 @@ public class ScriptSelfTest extends SelfContainedSVGOnLoadTest {
     public TestReport runImpl() throws Exception{
         ApplicationSecurityEnforcer ase
             = new ApplicationSecurityEnforcer(this.getClass(),
-                                              "org/apache/batik/apps/svgbrowser/resources/svgbrowser.policy",
-                                              "dummy.jar");
+                                              "org/apache/batik/apps/svgbrowser/resources/svgbrowser.policy");
 
         if (secure) {
             ase.enforceSecurity(true);
