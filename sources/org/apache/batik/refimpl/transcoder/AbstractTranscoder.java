@@ -62,7 +62,9 @@ public abstract class AbstractTranscoder implements Transcoder {
             throw new TranscoderException(ex.getMessage(), ex);
         } catch (SAXException ex) {
             throw new TranscoderException(ex.getMessage(), ex);
-        }
+        } catch (InterruptedException ex) {
+	    throw new TranscoderException(ex.getMessage(), ex);
+	}
     }
 
     public TranscodingHints getTranscodingHints() {

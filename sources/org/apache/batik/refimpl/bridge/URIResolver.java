@@ -54,10 +54,10 @@ public class URIResolver {
 
     /**
      * Returns the node referenced by the given URI.
-     * @return The document or the element 
+     * @return The document or the element
      */
     public Node getNode(String uri) throws MalformedURLException,
-                                           SAXException {
+                              SAXException, InterruptedException {
         if (documentURI.equals(uri)) {
             return document;
         }
