@@ -409,7 +409,6 @@ public class Main implements Application {
         vf.setAutoAdjust(aa);
         boolean dd = preferenceManager.getBoolean
             (PreferenceDialog.PREFERENCE_KEY_SELECTION_XOR_MODE);
-	System.out.println("++++++++++++++++ "+dd);
 	vf.getJSVGCanvas().setSelectionOverlayXORMode(dd);
     }
 
