@@ -84,9 +84,6 @@ public class ConcreteGVTBuilder implements GVTBuilder, SVGConstants {
                                  ((ConcreteBridgeContext)ctx),
                              true);
 
-        RootGraphicsNode root = ctx.getGVTFactory().createRootGraphicsNode();
-        root.getChildren().add(treeRoot);
-
         EventListener listener;
         listener = new BridgeDOMInsertedRemovedListener
             ((ConcreteBridgeContext)ctx);
@@ -102,7 +99,7 @@ public class ConcreteGVTBuilder implements GVTBuilder, SVGConstants {
         BridgeEventSupport.addGVTListener(ctx, svgRoot);
         BridgeEventSupport.loadScripts(ctx, svgDocument);
 
-        return root;
+        return treeRoot;
     }
 
 
