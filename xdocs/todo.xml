@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE todo SYSTEM "./dtd/todo-v10.dtd">
+
+<todo title="Things To Do for Cocoon 1.x">
+ <devs>
+  <person name="Stefano Mazzocchi" email="stefano@apache.org" id="SM"/>
+  <!-- add the developers here using ID as IDREF (make sure they are unique) -->
+ </devs>
+
+ <actions priority="low">
+  <action context="docs">
+   Cleanup and improve documentation.
+  </action>
+ </actions>
+
+</todo>
