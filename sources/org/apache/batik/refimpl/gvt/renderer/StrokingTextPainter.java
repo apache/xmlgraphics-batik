@@ -12,6 +12,7 @@ import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.Stroke;
 import java.awt.BasicStroke;
+import java.awt.Shape;
 import java.awt.font.FontRenderContext;
 import java.awt.font.TextAttribute;
 import java.awt.font.TextLayout;
@@ -38,6 +39,24 @@ import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
  */
 public class StrokingTextPainter extends BasicTextPainter {
 
+    static Set extendedAtts = new HashSet();
+
+    static {
+        extendedAtts.add(
+                GVTAttributedCharacterIterator.TextAttribute.STROKE);
+        extendedAtts.add(
+                GVTAttributedCharacterIterator.TextAttribute.STROKE_PAINT);
+        extendedAtts.add(
+                GVTAttributedCharacterIterator.TextAttribute.UNDERLINE);
+        extendedAtts.add(
+                GVTAttributedCharacterIterator.TextAttribute.UNDERLINE_STROKE);
+        extendedAtts.add(
+                GVTAttributedCharacterIterator.TextAttribute.UNDERLINE_PAINT);
+        extendedAtts.add(
+                GVTAttributedCharacterIterator.TextAttribute.UNDERLINE_STROKE_PAINT);
+        extendedAtts.add(TextAttribute.FOREGROUND);
+    }
+
     /**
      * Paints the specified attributed character iterator using the
      * specified Graphics2D and rendering context.
@@ -52,22 +71,9 @@ public class StrokingTextPainter extends BasicTextPainter {
                Graphics2D g2d, GraphicsNodeRenderContext context) {
 
         FontRenderContext frc = context.getFontRenderContext();
-
-        Set extendedAtts = new HashSet();
         List textRuns = new ArrayList();
         double advance = 0d;
-        extendedAtts.add(
-                GVTAttributedCharacterIterator.TextAttribute.STROKE);
-	extendedAtts.add(
-		GVTAttributedCharacterIterator.TextAttribute.STROKE_PAINT);
-	extendedAtts.add(
-		GVTAttributedCharacterIterator.TextAttribute.UNDERLINE);
-	extendedAtts.add(
-		GVTAttributedCharacterIterator.TextAttribute.UNDERLINE_STROKE);
-	extendedAtts.add(
-		GVTAttributedCharacterIterator.TextAttribute.UNDERLINE_PAINT);
-	extendedAtts.add(
-		GVTAttributedCharacterIterator.TextAttribute.UNDERLINE_STROKE_PAINT);
+
         aci.first();
         /*
          * We iterate through the spans over extended attributes,
@@ -86,13 +92,24 @@ public class StrokingTextPainter extends BasicTextPainter {
 
             AttributedCharacterIterator runaci =
                     new AttributedCharacterSpanIterator(aci, start, end);
-	    
+
             TextLayout layout = new TextLayout(runaci, frc);
-	    if (layout.isVertical()) {
-		AttributedString as = new AttributedString(runaci);
-		as.addAttribute(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
-		runaci = as.getIterator();
-	    }
+
+            if (layout.isVertical()) {
+                AttributedString as = new AttributedString(runaci);
+                if (runaci.getAttribute(GVTAttributedCharacterIterator.
+                                        TextAttribute.UNDERLINE) != null) {
+                    as.addAttribute(TextAttribute.UNDERLINE,
+                                    TextAttribute.UNDERLINE_ON);
+                }
+                if (runaci.getAttribute(GVTAttributedCharacterIterator.
+                                        TextAttribute.STRIKETHROUGH) != null) {
+                    as.addAttribute(TextAttribute.STRIKETHROUGH,
+                                    TextAttribute.STRIKETHROUGH_ON);
+                }
+                runaci = as.getIterator();
+            }
+
             TextRun run = new TextRun(layout, runaci);
 
             textRuns.add(run);
@@ -122,42 +139,131 @@ public class StrokingTextPainter extends BasicTextPainter {
         for (int i=0; i<textRuns.size(); ++i) {
             TextRun textRun = (TextRun) textRuns.get(i);
             AttributedCharacterIterator runaci = textRun.getACI();
+            TextLayout layout = textRun.getLayout();
             runaci.first();
-	    System.out.println("Painting text: ("+i+") "+runaci);
-	    for (int j=runaci.getBeginIndex(); j<runaci.getEndIndex(); ++j) {
-		System.out.print(runaci.setIndex(j));
-	    }
-	    System.out.println("");
-	    runaci.first();
-	    boolean underline = 
-		(runaci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.UNDERLINE) != null);
-	    // paint underline first, then layer glyphs over it
-	    if (underline && !textRun.getLayout().isVertical()) {
-		paintUnderline(textRun, location, x, g2d);
-	    }            
-	    // check if we need to fill this glyph
+            System.out.print("Painting text: ");
+            for (int j=runaci.getBeginIndex(); j<runaci.getEndIndex(); ++j) {
+                System.out.print(runaci.setIndex(j));
+            }
+            System.out.println("");
+            runaci.first();
+            boolean underline =
+                (runaci.getAttribute(GVTAttributedCharacterIterator.
+                                     TextAttribute.UNDERLINE) != null);
+
+            // paint over-and-underlines first, then layer glyphs over them
+
+            // thickness divisor: text decoration thickness is
+            // equal to the text advance divided by this number
+            float thick_div;
+            Object textWeight = runaci.getAttribute(TextAttribute.WEIGHT);
+            if (textWeight == TextAttribute.WEIGHT_REGULAR) {
+                thick_div = 12f;
+            } else if (textWeight == TextAttribute.WEIGHT_BOLD) {
+                thick_div = 9f;
+            } else if (textWeight == TextAttribute.WEIGHT_LIGHT) {
+                thick_div = 16f;
+            } else if (textWeight == TextAttribute.WEIGHT_DEMIBOLD) {
+                thick_div = 10f;
+            } else if (textWeight == TextAttribute.WEIGHT_DEMILIGHT) {
+                thick_div = 14f;
+            } else if (textWeight == TextAttribute.WEIGHT_EXTRABOLD) {
+                thick_div = 8f;
+            } else if (textWeight == TextAttribute.WEIGHT_EXTRA_LIGHT) {
+                thick_div = 18f;
+            } else if (textWeight == TextAttribute.WEIGHT_SEMIBOLD) {
+                thick_div = 11f;
+            } else if (textWeight == TextAttribute.WEIGHT_ULTRABOLD) {
+                thick_div = 7f;
+            } else {
+                thick_div = 12f;
+            }
+
+            if (underline && !layout.isVertical()) {
+                paintUnderline(textRun, location, x, thick_div, g2d);
+            }
+            boolean overline =
+                (runaci.getAttribute(GVTAttributedCharacterIterator.
+                                     TextAttribute.OVERLINE) != null);
+
+            if (overline && !layout.isVertical()) {
+                paintOverline(textRun, location, x, thick_div, g2d);
+            }
+
+
+            AffineTransform tx = AffineTransform.getTranslateInstance(
+                                        location.getX() + x, location.getY());
+            Shape outline = layout.getOutline(tx);
+
+            // check if we need to fill this glyph
             Paint paint = (Paint) runaci.getAttribute(TextAttribute.FOREGROUND);
             if (paint != null) {
-                textRun.getLayout().draw(g2d, 
-		    (float)(location.getX() + x), (float)(location.getY()));
+                g2d.setPaint(paint);
+                g2d.fill(outline);
             }
+
             // check if we need to draw the outline of this glyph
             Stroke stroke = (Stroke) runaci.getAttribute(
                     GVTAttributedCharacterIterator.TextAttribute.STROKE);
             paint = (Paint) runaci.getAttribute(
                     GVTAttributedCharacterIterator.TextAttribute.STROKE_PAINT);
             if (stroke != null && paint != null) {
-                AffineTransform t = AffineTransform.getTranslateInstance(
-                                        location.getX() + x, location.getY());
                 g2d.setStroke(stroke);
                 g2d.setPaint(paint);
-		g2d.draw(textRun.getLayout().getOutline(t));
+                g2d.draw(outline);
+            }
+            boolean strikethrough =
+                (runaci.getAttribute(GVTAttributedCharacterIterator.
+                    TextAttribute.STRIKETHROUGH) ==
+                    GVTAttributedCharacterIterator.TextAttribute.STRIKETHROUGH_ON);
+            // paint strikethrough last
+            if (strikethrough && !layout.isVertical()) {
+                paintStrikethrough(textRun, location, x, thick_div, g2d);
             }
             x += textRun.getLayout().getAdvance();
         }
 
-        // FIXME: Finish implementation! 
-	// (Currently only understands STROKE, STROKE_PAINT, UNDERLINE stuff)
+        // FIXME: Finish implementation!
+        // (Currently only understands STROKE, STROKE_PAINT, UNDERLINE atts,
+        // FOREGROUND, OVERLINE)
+        // TODO: FONT_VARIANT, SUPERSCRIPT, SUBSCRIPT...
+    }
+
+    /**
+     * Paints the overline for a given ACI.
+     */
+    private void paintOverline(TextRun textRun, Point2D location,
+                     double xoffset, float thickness_divisor, Graphics2D g2d) {
+        AttributedCharacterIterator runaci = textRun.getACI();
+        TextLayout layout = textRun.getLayout();
+        double y = location.getY()+ layout.getBaselineOffsets()[java.awt.Font.ROMAN_BASELINE] +
+            layout.getAscent()*1.1;
+        Stroke overlineStroke =
+            new BasicStroke((float) layout.getAscent()/thickness_divisor);
+        java.awt.Shape overlineShape =
+                    overlineStroke.createStrokedShape(
+                           new java.awt.geom.Line2D.Double(
+                           location.getX()+xoffset, y,
+                           location.getX()+xoffset+layout.getAdvance(), y));
+        Paint paint = (Paint) runaci.getAttribute(
+            TextAttribute.FOREGROUND);
+        if (paint != null) {
+            g2d.setPaint(paint);
+            g2d.fill(overlineShape);
+        }
+        Stroke stroke = (Stroke) runaci.getAttribute(
+            GVTAttributedCharacterIterator.TextAttribute.STROKE);
+        paint = (Paint) runaci.getAttribute(
+            GVTAttributedCharacterIterator.TextAttribute.STROKE_PAINT);
+        if (stroke != null) {
+            g2d.setStroke(stroke);
+        }
+        if (paint != null) {
+            g2d.setPaint(paint);
+        }
+        g2d.draw(overlineShape);
+
+        // TODO: performance and concision
     }
 
     /**
@@ -166,38 +272,76 @@ public class StrokingTextPainter extends BasicTextPainter {
      * the underline fill and stroke to differ from that of the text glyphs.
      */
     private void paintUnderline(TextRun textRun, Point2D location,
-				double xoffset, Graphics2D g2d) {
-	AttributedCharacterIterator runaci = textRun.getACI();
-	TextLayout layout = textRun.getLayout();
-        double y = location.getY()+ (layout.getBaseline() 
-		    + layout.getDescent())/2;
-	Stroke underlineStroke = 
-	    new BasicStroke((float) layout.getAscent()/10f);
- 	java.awt.Shape underlineShape = 
-		    underlineStroke.createStrokedShape(
-			   new java.awt.geom.Line2D.Double(
-			   location.getX()+xoffset, y, 
-			   location.getX()+xoffset+layout.getAdvance(), y));
-	// TODO: change getAdvance to getVisibleAdvance for 
-	// ACIs which do not inherit their underline attribute
-	// (not sure how to implement this yet)
-	Paint paint = (Paint) runaci.getAttribute(
-	    GVTAttributedCharacterIterator.TextAttribute.UNDERLINE_PAINT);
-	if (paint != null) {
-	    g2d.setPaint(paint);
-	    g2d.fill(underlineShape);
-	}
-	Stroke stroke = (Stroke) runaci.getAttribute(
+                    double xoffset, float thickness_divisor, Graphics2D g2d) {
+        AttributedCharacterIterator runaci = textRun.getACI();
+        TextLayout layout = textRun.getLayout();
+        double y = location.getY()+ (layout.getBaselineOffsets()[java.awt.Font.ROMAN_BASELINE]
+                    + layout.getDescent())/2;
+        Stroke underlineStroke =
+            new BasicStroke((float) layout.getAscent()/thickness_divisor);
+        java.awt.Shape underlineShape =
+                    underlineStroke.createStrokedShape(
+                           new java.awt.geom.Line2D.Double(
+                           location.getX()+xoffset, y,
+                           location.getX()+xoffset+layout.getAdvance(), y));
+        // TODO: change getAdvance to getVisibleAdvance for
+        // ACIs which do not inherit their underline attribute
+        // (not sure how to implement this yet)
+        Paint paint = (Paint) runaci.getAttribute(
+            GVTAttributedCharacterIterator.TextAttribute.UNDERLINE_PAINT);
+        if (paint != null) {
+            g2d.setPaint(paint);
+            g2d.fill(underlineShape);
+        }
+        Stroke stroke = (Stroke) runaci.getAttribute(
             GVTAttributedCharacterIterator.TextAttribute.UNDERLINE_STROKE);
         paint = (Paint) runaci.getAttribute(
             GVTAttributedCharacterIterator.TextAttribute.UNDERLINE_STROKE_PAINT);
-	if (stroke != null) {
-	    g2d.setStroke(stroke);
-	}
-	if (paint != null) {
-	    g2d.setPaint(paint);
-	}
-	g2d.draw(underlineShape);
+        if (stroke != null) {
+            g2d.setStroke(stroke);
+        }
+        if (paint != null) {
+            g2d.setPaint(paint);
+        }
+        g2d.draw(underlineShape);
+    }
+
+    /**
+     * Paints the strikethrough line for a given ACI - does not rely on TextLayout's
+     * internal strikethrough but computes it manually.
+     */
+    private void paintStrikethrough(TextRun textRun, Point2D location,
+                     double xoffset, float thickness_divisor, Graphics2D g2d) {
+        AttributedCharacterIterator runaci = textRun.getACI();
+        TextLayout layout = textRun.getLayout();
+        double y = location.getY()+
+            (layout.getBaselineOffsets()[java.awt.Font.ROMAN_BASELINE]
+             - layout.getAscent())/1.8; // XXX: 1.8 is a hack for cosmetic reasons
+        // TODO: the strikethrough offset should be calculated from the font instead!
+        Stroke strikethroughStroke =
+            new BasicStroke((float) layout.getAscent()/thickness_divisor);
+        java.awt.Shape strikethroughShape =
+                    strikethroughStroke.createStrokedShape(
+                           new java.awt.geom.Line2D.Double(
+                           location.getX()+xoffset, y,
+                           location.getX()+xoffset+layout.getAdvance(), y));
+        Paint paint = (Paint) runaci.getAttribute(
+            TextAttribute.FOREGROUND);
+        if (paint != null) {
+            g2d.setPaint(paint);
+            g2d.fill(strikethroughShape);
+        }
+        Stroke stroke = (Stroke) runaci.getAttribute(
+            GVTAttributedCharacterIterator.TextAttribute.STROKE);
+        paint = (Paint) runaci.getAttribute(
+            GVTAttributedCharacterIterator.TextAttribute.STROKE_PAINT);
+        if (stroke != null) {
+            g2d.setStroke(stroke);
+        }
+        if (paint != null) {
+            g2d.setPaint(paint);
+        }
+        g2d.draw(strikethroughShape);
     }
 
     /**

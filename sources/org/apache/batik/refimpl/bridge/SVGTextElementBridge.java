@@ -75,16 +75,16 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
         //
         // Load all fonts. Work around
         //
-	/* Note to maintainer:  font init code should not be here!
-	 * we should not have dependencies in the Bridge
-	 * on java2d Fonts - they are not relevant to non-rasterizing
-	 * renderers!
-	 * We should instead support a list of fonts, in order of preference,
-	 * as CSS allows, and defer resolving these names to actual
-	 * implementation-dependent font names until render time.
-	 *
-	 *                -Bill Haneman
-	 */
+        /* Note to maintainer:  font init code should not be here!
+         * we should not have dependencies in the Bridge
+         * on java2d Fonts - they are not relevant to non-rasterizing
+         * renderers!
+         * We should instead support a list of fonts, in order of preference,
+         * as CSS allows, and defer resolving these names to actual
+         * implementation-dependent font names until render time.
+         *
+         *                -Bill Haneman
+         */
         GraphicsEnvironment env;
         env = GraphicsEnvironment.getLocalGraphicsEnvironment();
         // System.out.println("Initializing fonts .... please wait");
@@ -174,7 +174,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
     public boolean isContainer() {
         return false;
     }
-    
+
     /**
      * Creates the attributed string which represent the given text
      * element children.
@@ -270,7 +270,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                         s = getElementContent(ref);
                         AttributedString as;
                         Map map = getAttributeMap(ctx, (Element)n, node);
-                        as = createAttributedString(s, map, preserve, top, 
+                        as = createAttributedString(s, map, preserve, top,
                                                     first, last);
                         if (as != null) {
                             result.add(as);
@@ -343,11 +343,11 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                 case 10:
                 case 13:
                     // I don't think behavior below is correct for tspan...
-		    // including "space = false" means that newlines
-		    // cause leading whitespace on next line to turn into
-		    // a single space!
-                    //space = false;
-                    //break; shouldn't break, newlines are whitespace also
+                    // including "space = false" means that newlines
+                    // cause leading whitespace on next line to turn into
+                    // a single space!
+                    // space = false;
+                    break; // should break, newlines are not whitespace
                 case ' ':
                 case '\t':
                     if (!space) {
@@ -358,7 +358,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                 default:
                     sb.append(c);
                     space = false;
-                    
+
                 }
             }
             if (top) {
@@ -582,25 +582,26 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                 case 'u':
                     result.put(GVTAttributedCharacterIterator.TextAttribute.UNDERLINE,
                                GVTAttributedCharacterIterator.TextAttribute.UNDERLINE_ON);
-       		    if (sp != null) {
-			result.put(GVTAttributedCharacterIterator.
-				   TextAttribute.UNDERLINE_STROKE_PAINT, sp);
-		    }
-		    if (stroke != null) {
-			result.put(GVTAttributedCharacterIterator.
-				   TextAttribute.UNDERLINE_STROKE, stroke);
-		    }
-		    if (p != null) {
-			result.put(GVTAttributedCharacterIterator.
-				   TextAttribute.UNDERLINE_PAINT, p);
-		    }
+                    if (sp != null) {
+                        result.put(GVTAttributedCharacterIterator.
+                                   TextAttribute.UNDERLINE_STROKE_PAINT, sp);
+                    }
+                    if (stroke != null) {
+                        result.put(GVTAttributedCharacterIterator.
+                                   TextAttribute.UNDERLINE_STROKE, stroke);
+                    }
+                    if (p != null) {
+                        result.put(GVTAttributedCharacterIterator.
+                                   TextAttribute.UNDERLINE_PAINT, p);
+                    }
                     break;
                 case 'o':
-                    // !!! overline
+                    result.put(GVTAttributedCharacterIterator.TextAttribute.OVERLINE,
+                               GVTAttributedCharacterIterator.TextAttribute.OVERLINE_ON);
                     break;
                 case 'l':
-                    result.put(TextAttribute.STRIKETHROUGH,
-                               TextAttribute.STRIKETHROUGH_ON);
+                    result.put(GVTAttributedCharacterIterator.TextAttribute.STRIKETHROUGH,
+                               GVTAttributedCharacterIterator.TextAttribute.STRIKETHROUGH_ON);
                 }
             }
         }
