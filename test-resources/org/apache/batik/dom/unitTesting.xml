@@ -42,7 +42,7 @@
     <!-- cloneNode test                                                          -->
     <!-- ========================================================================== -->
     <test id="cloneElement"
-          class="org.apache.batik.dom.svg.CloneElementTest" >
+          class="org.apache.batik.dom.CloneElementTest" >
         <arg class="java.lang.String"
              value="test-resources/org/apache/batik/dom/dummyXML3.xml" />
         <arg class="java.lang.String" value="doc" />
