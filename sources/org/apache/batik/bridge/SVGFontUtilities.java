@@ -74,7 +74,7 @@ public abstract class SVGFontUtilities implements SVGConstants {
             currentDocument = textElement.getOwnerDocument();
         }
 
-        String fontKeyName = fontFamilyName + " " + fontWeight + " " + fontStyle;
+        String fontKeyName = fontFamilyName.toLowerCase() + " " + fontWeight + " " + fontStyle;
 
         // check fontFamilyMap to see if we have already created an FontFamily
         // that matches
@@ -96,7 +96,7 @@ public abstract class SVGFontUtilities implements SVGConstants {
             String elemFamilyName
                     = fontFaceElement.getAttribute(SVG_FONT_FAMILY_ATTRIBUTE);
 
-            if (elemFamilyName.indexOf(fontFamilyName) == 0) {  // found one
+            if (elemFamilyName.toLowerCase().indexOf(fontFamilyName.toLowerCase()) == 0) {  // found one
 
                 // find matching font element
 

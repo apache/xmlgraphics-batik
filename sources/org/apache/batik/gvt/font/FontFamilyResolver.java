@@ -45,13 +45,13 @@ public class FontFamilyResolver {
     static {
         fonts.put("sans-serif",      "SansSerif");
         fonts.put("serif",           "Serif");
-        fonts.put("Times",           "Serif");
-        fonts.put("Times New Roman", "Serif");
+        fonts.put("times",           "Serif");
+        fonts.put("times new roman", "Serif");
         fonts.put("cursive",         "Dialog");
         fonts.put("fantasy",         "Symbol");
         fonts.put("monospace",       "Monospaced");
         fonts.put("monospaced",      "Monospaced");
-        fonts.put("Courier",         "Monospaced");
+        fonts.put("courier",         "Monospaced");
 
         //
         // Load all fonts. Work around
@@ -62,7 +62,7 @@ public class FontFamilyResolver {
         String fontNames[] = env.getAvailableFontFamilyNames();
         int nFonts = fontNames != null ? fontNames.length : 0;
         for(int i=0; i<nFonts; i++){
-            fonts.put(fontNames[i], fontNames[i]);
+            fonts.put(fontNames[i].toLowerCase(), fontNames[i]);
 
             // also add the font name with the spaces removed
             StringTokenizer st = new StringTokenizer(fontNames[i]);
@@ -70,12 +70,12 @@ public class FontFamilyResolver {
             while (st.hasMoreTokens()) {
                 fontNameWithoutSpaces += st.nextToken();
             }
-            fonts.put(fontNameWithoutSpaces, fontNames[i]);
+            fonts.put(fontNameWithoutSpaces.toLowerCase(), fontNames[i]);
 
             // also add the font name with spaces replaced by dashes
             String fontNameWithDashes = fontNames[i].replace(' ', '-');
             if (!fontNameWithDashes.equals(fontNames[i])) {
-               fonts.put(fontNameWithDashes, fontNames[i]);
+               fonts.put(fontNameWithDashes.toLowerCase(), fontNames[i]);
             }
         }
 
@@ -121,16 +121,16 @@ public class FontFamilyResolver {
 
         // first see if this font family has already been resolved
         String familyName = fontFamily.getFamilyName();
-        GVTFontFamily resolvedFontFamily = (GVTFontFamily)resolvedFontFamilies.get(familyName);
+        GVTFontFamily resolvedFontFamily = (GVTFontFamily)resolvedFontFamilies.get(familyName.toLowerCase());
 
         if (resolvedFontFamily == null) { // hasn't been resolved yet
             // try to find a matching family name in the list of available fonts
-            String awtFamilyName = (String) fonts.get(familyName);
+            String awtFamilyName = (String) fonts.get(familyName.toLowerCase());
             if (awtFamilyName != null) {
                 resolvedFontFamily = new AWTFontFamily(awtFamilyName);
             }
 
-            resolvedFontFamilies.put(familyName, resolvedFontFamily);
+            resolvedFontFamilies.put(familyName.toLowerCase(), resolvedFontFamily);
         }
       //  if (resolvedFontFamily != null) {
       //      System.out.println("resolved " + fontFamily.getFamilyName() + " to " + resolvedFontFamily.getFamilyName());
@@ -149,6 +149,7 @@ public class FontFamilyResolver {
                 return fontFamily;
             }
         }
+
         return null;
     }
 
