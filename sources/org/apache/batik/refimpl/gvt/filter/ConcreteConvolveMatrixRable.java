@@ -258,10 +258,18 @@ public class ConcreteConvolveMatrixRable
         if (ri == null)
             return null;
 
-        CachableRed cr = GraphicsUtil.wrap(ri);
+        // org.apache.batik.test.gvt.ImageDisplay.printImage
+        //     ("Padded Image", ri, 
+        //      new Rectangle(ri.getMinX()+22,ri.getMinY()+38,5,5));
+
+        CachableRed cr;
+        cr = GraphicsUtil.wrap(ri);
+        cr = GraphicsUtil.convertToLsRGB(cr);
+
 
         Shape devShape = srcAt.createTransformedShape(aoi);
-        r = devShape.getBounds2D();
+        Rectangle2D devRect = devShape.getBounds2D();
+        r = devRect;
         r = new Rectangle2D.Double(Math.floor(r.getX()-kx), 
                                    Math.floor(r.getY()-ky),
                                    Math.ceil (r.getX()+r.getWidth())-
@@ -275,6 +283,10 @@ public class ConcreteConvolveMatrixRable
                     ("edgeMode=\"wrap\" is not supported by ConvolveMatrix.");
             cr = new PadRed(cr, r.getBounds(), edgeMode, rh);
         }
+
+        // org.apache.batik.test.gvt.ImageDisplay.printImage
+        //     ("Padded Image", cr, 
+        //      new Rectangle(cr.getMinX()+23,cr.getMinY()+39,5,5));
 
         if (bias != 0.0)
             throw new IllegalArgumentException
@@ -290,15 +302,8 @@ public class ConcreteConvolveMatrixRable
         // The read-only raster that getData gives us. And use it to
         // build a WritableRaster.  This avoids a copy of the data.
         Raster rr = cr.getData();
-        WritableRaster wr = Raster.createWritableRaster(rr.getSampleModel(),
-                                                        rr.getDataBuffer(),
-                                                        new Point(0,0));
+        WritableRaster wr = GraphicsUtil.makeRasterWritable(rr, 0, 0);
         
-        BufferedImage srcBI;
-        BufferedImage destBI;
-
-        srcBI = new BufferedImage(cm, wr, cm.isAlphaPremultiplied(), null);
-
         // Here we update the translate to account for the phase shift
         // (if any) introduced by setting targetX, targetY in SVG.
         int phaseShiftX = target.x - kernel.getXOrigin();
@@ -306,21 +311,21 @@ public class ConcreteConvolveMatrixRable
         int destX = (int)(r.getX() + phaseShiftX);
         int destY = (int)(r.getY() + phaseShiftY);
 
+        BufferedImage destBI;
         if (!preserveAlpha) {
+            // Force the data to be premultiplied since often the JDK
+            // code doesn't properly premultiply the values...
+            cm = GraphicsUtil.coerceData(wr, cm, true);
+
+            BufferedImage srcBI;
+            srcBI = new BufferedImage(cm, wr, cm.isAlphaPremultiplied(), null);
+
             // Easy case just apply the op...
             destBI = op.filter(srcBI, null);
 
-            // Wrap it as a CachableRed
-            cr = new ConcreteBufferedImageCachableRed(destBI, destX, destY);
-
-            // Make sure to crop junk from edges.
-            cr = new PadRed(cr, r.getBounds(), PadMode.ZERO_PAD, rh);
-
-            // If we need to scale/rotate/translate the result do so now...
-            if (!resAt.isIdentity())
-                cr = new AffineRed(cr, resAt, null);
-
         } else {
+            BufferedImage srcBI;
+            srcBI = new BufferedImage(cm, wr, cm.isAlphaPremultiplied(), null);
 
             // Construct a linear sRGB cm without alpha...
             cm = new DirectColorModel(ColorSpace.getInstance
@@ -329,21 +334,23 @@ public class ConcreteConvolveMatrixRable
                                       0x000000FF, 0x0, false, 
                                       DataBuffer.TYPE_INT);
 
+            
+
             // Create an image with that color model
             BufferedImage tmpSrcBI = new BufferedImage
                 (cm, cm.createCompatibleWritableRaster(wr.getWidth(),
-                                                       wr.getHeight()),
+                                                       wr.getHeight()), 
                  cm.isAlphaPremultiplied(), null);
 
             // Copy the color data (no alpha) to that image 
-            // (dividing out alpha).
+            // (dividing out alpha if needed).
             GraphicsUtil.copyData(srcBI, tmpSrcBI);
 
             // org.apache.batik.test.gvt.ImageDisplay.showImage
             //   ("tmpSrcBI: ", tmpSrcBI);
 
             // Get a linear sRGB Premult ColorModel
-            ColorModel dstCM = GraphicsUtil.Linear_sRGB_Pre;
+            ColorModel dstCM = GraphicsUtil.Linear_sRGB_Unpre;
             // Construct out output image around that ColorModel
             destBI = new BufferedImage
                 (dstCM, dstCM.createCompatibleWritableRaster(wr.getWidth(),
@@ -379,22 +386,25 @@ public class ConcreteConvolveMatrixRable
             GraphicsUtil.copyBand(wr, srcRect, wr.getNumBands()-1,
                                   destBI.getRaster(), dstRect,
                                   destBI.getRaster().getNumBands()-1);
-            // Premultiply the colorchannels.
-            GraphicsUtil.coerceData(destBI.getRaster(),
-                                    GraphicsUtil.Linear_sRGB_Unpre,
-                                    true);
-
-            // Wrap it as a CachableRed
-            cr = new ConcreteBufferedImageCachableRed(destBI, destX, destY);
-
-            // Make sure to crop junk from edges.   
-            cr = new PadRed(cr, r.getBounds(), PadMode.ZERO_PAD, rh);
-            
-            // If we need to scale/rotate/translate the result do so now...
-            if (!resAt.isIdentity())
-                cr = new AffineRed(cr, resAt, null);
         }
+        
+        // Wrap it as a CachableRed
+        cr = new ConcreteBufferedImageCachableRed(destBI, destX, destY);
+        
+        // org.apache.batik.test.gvt.ImageDisplay.printImage
+        //     ("Cropped Image", cr, 
+        //      new Rectangle(cr.getMinX()+22,cr.getMinY()+38,5,5));
+        // org.apache.batik.test.gvt.ImageDisplay.printImage
+        //     ("Cropped sRGB", GraphicsUtil.convertTosRGB(cr),
+        //      new Rectangle(cr.getMinX()+22,cr.getMinY()+38,5,5));
 
+        // Make sure to crop junk from edges.
+        cr = new PadRed(cr, devRect.getBounds(), PadMode.ZERO_PAD, rh);
+
+        // If we need to scale/rotate/translate the result do so now...
+        if (!resAt.isIdentity())
+            cr = new AffineRed(cr, resAt, null);
+        
         // return the result.
         return cr;
     }

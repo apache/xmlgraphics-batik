@@ -54,18 +54,54 @@ public class ImageDisplay {
 
         int [] pixel=null;
         if (text != null)
-            System.out.println("\n" + text + "\n");
-        for (int y=minY; y < maxY-1; y++) {
-            for (int x=minX; x < maxX-1; x++) {
+            System.out.println("\n" + text);
+
+        int numMaxYSz = 1;
+        for (int div=maxY; div > 10; div=div/10)
+            numMaxYSz++;
+        for (int i=0; i<numMaxYSz+2; i++) 
+            System.out.print(" ");
+
+        int colSize = ri.getSampleModel().getNumBands()*3;
+        for (int x=minX; x < maxX; x++) {
+            int numSz = 1;
+            for (int div=x; div > 10; div=div/10)
+                numSz++;
+            int preSz = (colSize-numSz)/2;
+            int postSz = (colSize-numSz)-preSz;
+            for (int i=0; i<preSz; i++) 
+                System.out.print(" ");
+            System.out.print(""+x);
+            for (int i=0; i<postSz; i++) 
+                System.out.print(" ");
+        }
+        System.out.println("");
+
+        for (int y=minY; y < maxY; y++) {
+            System.out.print(""+y);
+            int numYSz = 1;
+            for (int div=y; div > 10; div=div/10)
+                numYSz++;
+            System.out.print(": ");
+            for (int c=numYSz; c<numMaxYSz; c++)
+                System.out.print(" ");
+
+            for (int x=minX; x < maxX; x++) {
                 pixel = ras.getPixel(x,y, pixel);
-                System.out.print(Integer.toHexString(pixel[0]) + "," + 
-                                 Integer.toHexString(pixel[1]) + "," +
-                                 Integer.toHexString(pixel[2]) + "," +
-                                 Integer.toHexString(pixel[3]) + " ");
+                int b=0;
+                for (; b<pixel.length-1; b++) {
+                    if (pixel[b] < 16)
+                        System.out.print("0");
+                    System.out.print(Integer.toHexString(pixel[b]) + ",");
+                }
+                if (pixel[b] < 16)
+                    System.out.print("0");
+                System.out.print(Integer.toHexString(pixel[b]));
+                if (x < maxX-1)
+                    System.out.print(" ");
             }
             System.out.println("");
         }
-
     }
 
       /**

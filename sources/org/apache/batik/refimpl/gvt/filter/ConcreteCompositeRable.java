@@ -8,11 +8,12 @@
 
 package org.apache.batik.refimpl.gvt.filter;
 
-import org.apache.batik.util.awt.image.GraphicsUtil;
+import org.apache.batik.gvt.filter.CachableRed;
 import org.apache.batik.gvt.filter.CompositeRable;
 import org.apache.batik.gvt.filter.CompositeRule;
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.PadMode;
+import org.apache.batik.util.awt.image.GraphicsUtil;
 
 import java.util.List;
 import java.util.Iterator;
@@ -100,8 +101,8 @@ public class ConcreteCompositeRable
         AffineTransform translate = 
             AffineTransform.getTranslateInstance(-r.x, -r.y);
 
-        BufferedImage bi = new BufferedImage(r.width, r.height,
-                                             BufferedImage.TYPE_INT_ARGB_PRE);
+        BufferedImage bi = GraphicsUtil.makeLinearBufferedImage
+            (r.width, r.height, true);
 
         Graphics2D g2d = bi.createGraphics();
 
@@ -148,8 +149,12 @@ public class ConcreteCompositeRable
         if ((r.width <= 0) || (r.height <= 0))
             return null;
 
-        BufferedImage bi = new BufferedImage(r.width, r.height,
-                                             BufferedImage.TYPE_INT_ARGB_PRE);
+        // I originally had this be premultipled but someone was
+        // multiplying the alpha each time a composite was done (I'm
+        // guessing it was trying to unmultiply composite, remultiply,
+        // but the unmultiply failed to do anything...).
+        BufferedImage bi = GraphicsUtil.makeLinearBufferedImage
+            (r.width, r.height, false);
 
         Graphics2D g2d = bi.createGraphics();
         g2d.translate(-r.x, -r.y);
@@ -161,21 +166,22 @@ public class ConcreteCompositeRable
         boolean first = true;
         while (i.hasNext()) {
             // Get the source to work with...
-            Filter cr = (Filter)i.next();
+            Filter filt = (Filter)i.next();
 
             // Get our sources image...
-            RenderedImage ri = cr.createRendering(rc);
+            RenderedImage ri = filt.createRendering(rc);
             // No output image keep going...
             if (ri == null)
                 continue;
+            CachableRed cr = ConcreteRenderedImageCachableRed.wrap(ri);
+            cr = GraphicsUtil.convertToLsRGB(cr);
 
             if ((ri.getMinX()   != r.x)     || (ri.getMinY()   != r.y) ||
                 (ri.getWidth()  != r.width) || (ri.getHeight() != r.height)) {
-                ri = new PadRed(ConcreteRenderedImageCachableRed.wrap(ri), 
-                                r, PadMode.ZERO_PAD, rh);
+                cr = new PadRed(cr, r, PadMode.ZERO_PAD, rh);
             }
 
-            GraphicsUtil.drawImage(g2d, ri);
+            GraphicsUtil.drawImage(g2d, cr);
 
             if (first) {
                   // After the first image we set the composite rule.

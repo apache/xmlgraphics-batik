@@ -12,6 +12,7 @@ import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.CachableRed;
 import org.apache.batik.gvt.filter.ComponentTransferRable;
 import org.apache.batik.gvt.filter.ComponentTransferFunction;
+import org.apache.batik.util.awt.image.GraphicsUtil;
 
 import java.awt.Point;
 import java.awt.RenderingHints;
@@ -144,12 +145,14 @@ public class ConcreteComponentTransferRable
         //
         RenderedImage srcRI = getSource().createRendering(rc);
 
-        if(srcRI == null){
+        if(srcRI == null)
             return null;
-        }
 
-        final int srcMinX = srcRI.getMinX();
-        final int srcMinY = srcRI.getMinY();
+        CachableRed srcCR = GraphicsUtil.wrap(srcRI);
+        srcCR = GraphicsUtil.convertToLsRGB(srcCR);
+
+        final int srcMinX = srcCR.getMinX();
+        final int srcMinY = srcCR.getMinY();
 
         //
         // Get transfer functions. These are computed lazily,
@@ -157,24 +160,24 @@ public class ConcreteComponentTransferRable
         //
         TransferFunction funcs[] = getTransferFunctions();
 
-        RenderingHints hints = rc.getRenderingHints();
-        ComponentTransferOp op = new ComponentTransferOp(funcs,
-                                                         hints);
-
         //
         // Wrap source in buffered image
         //
-        ColorModel cm = srcRI.getColorModel();
-        Raster srcRR = srcRI.getData();
-        Point origin = new Point(0, 0);
-        WritableRaster srcWR = Raster.createWritableRaster(srcRR.getSampleModel(),
-                                                           srcRR.getDataBuffer(),
-                                                           origin);
-        BufferedImage srcBI = new BufferedImage(cm,
-                                                srcWR,
-                                                cm.isAlphaPremultiplied(),
-                                                null);
+        ColorModel cm = srcCR.getColorModel();
+        Raster srcRR = srcCR.getData();
+        WritableRaster srcWR = GraphicsUtil.makeRasterWritable(srcRR, 0, 0);
 
+        // Unpremultiply data if nessisary.
+        cm = GraphicsUtil.coerceData(srcWR, cm, false);
+
+        BufferedImage  srcBI = new BufferedImage(cm,
+                                                 srcWR,
+                                                 cm.isAlphaPremultiplied(),
+                                                 null);
+
+        RenderingHints hints = rc.getRenderingHints();
+        ComponentTransferOp op = new ComponentTransferOp(funcs,
+                                                         hints);
         BufferedImage dstBI = op.filter(srcBI, null);
 
         return new ConcreteBufferedImageCachableRed(dstBI, srcMinX, srcMinY);

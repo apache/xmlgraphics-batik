@@ -141,41 +141,9 @@ public final class TurbulencePatternGenerator{
     private boolean isFractalNoise;
 
     /**
-     * Defines whether the filter computes sRGB or linear RGB values
-     */
-    private boolean isLinearRGB = false;
-
-    /**
-     * Gamma for linear to sRGB convertion
-     */
-    private static final double GAMMA = 1./2.4;
-
-    /**
      * List of channels that the generator produces.
      */
     private int channels[];
-
-    /**
-     * Lookup tables for RGB lookups. The linearToSRGBLut is used
-     * when noise values are considered to be on a linearScale. The
-     * linearToLinear table is used when the values are considered to
-     * be on the sRGB scale to begin with.
-     */
-    private static final int linearToSRGBLut[] = new int[256];
-    private static final int sRGBTosRGBLut[] = new int[256];
-
-    static{
-        for(int i=0; i<256; i++){
-            double value = i/255.;
-            if(value <= 0.0031308)
-                value *= 12.92;
-            else
-                value = 1.055 * Math.pow(value, GAMMA) - 0.055;
-
-            linearToSRGBLut[i] = (int)Math.round(value*255.);
-            sRGBTosRGBLut[i] = i;
-        }
-    }
 
     /**
      * Produces results in the range [1, 2**31 - 2].
@@ -225,10 +193,6 @@ public final class TurbulencePatternGenerator{
 
     public boolean isFractalNoise(){
         return isFractalNoise;
-    }
-
-    public boolean isLinearRGB(){
-        return isLinearRGB;
     }
 
     public boolean[] getChannels(){
@@ -293,16 +257,18 @@ public final class TurbulencePatternGenerator{
         return ( a + t * (b - a) );
     }
 
-    private final void noise2(final double noise[], final double vec[], final int channels[]){
+    private final void noise2(final double noise[], 
+                              final double vec0, final double vec1,
+                              final int channels[]){
         int bx0=0, bx1=0, by0=0, by1=0, b00=0, b10=0, b01=0, b11=0;
         double rx0=0, rx1=0, ry0=0, ry1=0, q[], sx=0, sy=0, a=0, b=0, t=0, u=0, v=0;
         int i=0, j=0;
-        t = vec[0]  + PerlinN;
+        t = vec0 + PerlinN;
         bx0 = ((int)t) & BM;
         bx1 = (bx0+1) & BM;
         rx0 = t - (int)t;
         rx1 = rx0 - 1.0f;
-        t = vec[1] + PerlinN;
+        t = vec1 + PerlinN;
         by0 = ((int)t) & BM;
         by1 = (by0+1) & BM;
         ry0 = t - (int)t;
@@ -335,17 +301,18 @@ public final class TurbulencePatternGenerator{
      * tile, i.e., the left or right edge.
      */
     private final void noise2Stitch(final double noise[],
-                                    final double vec[], final int channels[],
+                                    final double vec0, final double vec1,
+                                    final int channels[],
                                     final StitchInfo stitchInfo){
         int bx0=0, bx1=0, by0=0, by1=0, b00=0, b10=0, b01=0, b11=0;
         double rx0=0, rx1=0, ry0=0, ry1=0, q[], sx=0, sy=0, a=0, b=0, t=0, u=0, v=0;
         int i=0, j=0;
-        t = vec[0]  + PerlinN;
+        t = vec0  + PerlinN;
         bx0 = ((int)t);
         bx1 = bx0+1;
         rx0 = t - (int)t;
         rx1 = rx0 - 1.0f;
-        t = vec[1] + PerlinN;
+        t = vec1 + PerlinN;
         by0 = ((int)t);
         by1 = by0+1;
         ry0 = t - (int)t;
@@ -396,15 +363,18 @@ public final class TurbulencePatternGenerator{
      *        half a pixel are not processed).
      * @param channels channels for which values should be computed
      */
-    private final void turbulence(final int rgb[], final double point[], final double fSum[],
+    private final void turbulence(final int rgb[], 
+                                  double pointX, 
+                                  double pointY,
+                                  final double fSum[],
                                   final double noise[], final int numOctaves, final int channels[]){
         fSum[0] = fSum[1] = fSum[2] = fSum[3] = noise[0] = noise[1] = noise[2] = noise[3] = 0;
         double ratio = 1;
         int i=0;
-        point[0] *= baseFrequencyX;
-        point[1] *= baseFrequencyY;
+        pointX *= baseFrequencyX;
+        pointY *= baseFrequencyY;
         for(int nOctave = 0; nOctave < numOctaves; nOctave++){
-            noise2(noise, point, channels);
+            noise2(noise, pointX, pointY, channels);
 
             for(i=0; i<channels.length; i++){
                 noise[channels[i]] = noise[channels[i]]<0?-noise[channels[i]]:noise[channels[i]];
@@ -412,8 +382,8 @@ public final class TurbulencePatternGenerator{
             }
 
             ratio *= 2;
-            point[0] *= 2;
-            point[1] *= 2;
+            pointX *= 2;
+            pointY *= 2;
         }
 
         rgb[0] = rgb[1] = rgb[2] = rgb[3] = 0;
@@ -435,16 +405,18 @@ public final class TurbulencePatternGenerator{
      *        half a pixel are not processed).
      * @param channels channels for which values should be computed
      */
-    private final void turbulenceStitch(final int rgb[], final double point[], final double fSum[],
+    private final void turbulenceStitch(final int rgb[], 
+                                        double pointX, double pointY,
+                                        final double fSum[],
                                         final double noise[], final int numOctaves, final int channels[]){
         fSum[0] = fSum[1] = fSum[2] = fSum[3] = noise[0] = noise[1] = noise[2] = noise[3] = 0;
         double ratio = 1;
         int i=0;
-        point[0] *= baseFrequencyX;
-        point[1] *= baseFrequencyY;
+        pointX *= baseFrequencyX;
+        pointY *= baseFrequencyY;
         StitchInfo stitchInfo = new StitchInfo(this.stitchInfo);
         for(int nOctave = 0; nOctave < numOctaves; nOctave++){
-            noise2Stitch(noise, point, channels, stitchInfo);
+            noise2Stitch(noise, pointX, pointY, channels, stitchInfo);
 
             for(i=0; i<channels.length; i++){
                 noise[channels[i]] = noise[channels[i]]<0?-noise[channels[i]]:noise[channels[i]];
@@ -452,8 +424,8 @@ public final class TurbulencePatternGenerator{
             }
 
             ratio *= 2;
-            point[0] *= 2;
-            point[1] *= 2;
+            pointX *= 2;
+            pointY *= 2;
 
             stitchInfo.doubleFrequency();
         }
@@ -477,23 +449,26 @@ public final class TurbulencePatternGenerator{
      *        half a pixel are not processed).
      * @param channels channels for which values should be computed
      */
-    private final void turbulenceFractal(final int rgb[], final double point[], final double fSum[],
+    private final void turbulenceFractal(final int rgb[], 
+                                         double pointX, 
+                                         double pointY,
+                                         final double fSum[],
                                          final double noise[], final int numOctaves, final int channels[]){
         fSum[0] = fSum[1] = fSum[2] = fSum[3] = noise[0] = noise[1] = noise[2] = noise[3] = 0;
         // double vec[] = new double[2];
         double ratio = 1;
         int i=0;
-        point[0] *= baseFrequencyX;
-        point[1] *= baseFrequencyY;
+        pointX *= baseFrequencyX;
+        pointY *= baseFrequencyY;
         for(int nOctave = 0; nOctave < numOctaves; nOctave++){
-            noise2(noise, point, channels);
+            noise2(noise, pointX, pointY, channels);
 
             for(i=0; i<channels.length; i++)
                 fSum[channels[i]] += (noise[channels[i]] / ratio);
 
             ratio *= 2;
-            point[0] *= 2;
-            point[1] *= 2;
+            pointX *= 2;
+            pointY *= 2;
         }
 
         rgb[0] = rgb[1] = rgb[2] = rgb[3] = 0;
@@ -518,25 +493,30 @@ public final class TurbulencePatternGenerator{
      *        half a pixel are not processed).
      * @param channels channels for which values should be computed
      */
-    private final void turbulenceFractalStitch(final int rgb[], final double point[], final double fSum[],
-                                               final double noise[], final int numOctaves, final int channels[]){
+    private final void turbulenceFractalStitch(final int rgb[], 
+                                               double pointX,
+                                               double pointY,
+                                               double fSum[],
+                                               final double noise[], 
+                                               final int numOctaves, 
+                                               final int channels[]){
         fSum[0] = fSum[1] = fSum[2] = fSum[3] = noise[0] = noise[1] = noise[2] = noise[3] = 0;
         // double vec[] = new double[2];
         double ratio = 1;
         int i=0;
-        point[0] *= baseFrequencyX;
-        point[1] *= baseFrequencyY;
+        pointX *= baseFrequencyX;
+        pointY *= baseFrequencyY;
         StitchInfo stitchInfo = new StitchInfo(this.stitchInfo);
 
         for(int nOctave = 0; nOctave < numOctaves; nOctave++){
-            noise2Stitch(noise, point, channels, stitchInfo);
+            noise2Stitch(noise, pointX, pointY, channels, stitchInfo);
 
             for(i=0; i<channels.length; i++)
                 fSum[channels[i]] += (noise[channels[i]] / ratio);
 
             ratio *= 2;
-            point[0] *= 2;
-            point[1] *= 2;
+            pointX *= 2;
+            pointY *= 2;
 
             stitchInfo.doubleFrequency();
         }
@@ -617,8 +597,7 @@ public final class TurbulencePatternGenerator{
         // Generate pixel pattern now
         int r=0, g=0, b=0, a=0;
         int dp=dstOff;
-        double rx=0, ry=0, point_0=0, point_1=0, tpoint_0=0, tpoint_1=0;
-        final double point[] = {0, 0};
+        double rx=0, ry=0, tpoint_0=0, tpoint_1=0;
         final int rgb[] = new int[4];
         final int rgb2[] = new int[4];
         final int rgb3[] = new int[4];
@@ -626,7 +605,6 @@ public final class TurbulencePatternGenerator{
         final int rgb5[] = new int[4];
         final double fSum[] = {0, 0, 0, 0};
         final double noise[] = {0, 0, 0, 0};
-        final int rgbLut[] = isLinearRGB ? linearToSRGBLut: sRGBTosRGBLut;
 
         // To avoid doing an inverse transform on each pixel, transform
         // the image space unit vectors and process how much of a delta
@@ -635,60 +613,61 @@ public final class TurbulencePatternGenerator{
         double ty[] = {0, 1};
         txf.deltaTransform(tx, 0, tx, 0, 1);
         txf.deltaTransform(ty, 0, ty, 0, 1);
+        double tx0 = tx[0];
+        double tx1 = tx[1];
+        double ty0 = ty[0];
+        double ty1 = ty[1];
         double p[] = {minX, minY};
         txf.transform(p, 0, p, 0, 1);
-        point_0 = p[0];
-        point_1 = p[1];
 
         if(isFractalNoise){
             if(!stitchTiles){
                 for(int i=0; i<h; i++){
-                    for(int j=0; j<w; j++){
-                        point[1] = point_1;
-                        point[0] = point_0;
+                    double point_0 = p[0];
+                    double point_1 = p[1];
 
-                        turbulenceFractal(rgb, point, fSum, noise, numOctaves, channels);
+                    for(int j=0; j<w; j++){
+                        turbulenceFractal(rgb, point_0, point_1, fSum, noise, 
+                                          numOctaves, channels);
 
                         // Modify RGB value.
                         destPixels[dp] =
-                            (rgb[3]<<24         & 0xff000000) |
-                            (rgbLut[rgb[0]]<<16 & 0xff0000) |
-                            (rgbLut[rgb[1]]<<8  & 0xff00) |
-                            (rgbLut[rgb[2]]     & 0xff);
+                            (rgb[3]<<24 & 0xff000000) |
+                            (rgb[0]<<16 & 0xff0000) |
+                            (rgb[1]<<8  & 0xff00) |
+                            (rgb[2]     & 0xff);
                         dp++;
-                        point_0 += tx[0];
-                        point_1 += tx[1];
+                        point_0 += tx0;
+                        point_1 += tx1;
                     }
-                    point_0 -= (w*tx[0]);
-                    point_1 -= (w*tx[1]);
-                    point_0 += ty[0];
-                    point_1 += ty[1];
+                    p[0] += ty0;
+                    p[1] += ty1;
                     dp += dstAdjust;
                 }
             }
 
             else{
                 for(int i=0; i<h; i++){
-                    for(int j=0; j<w; j++){
-                        point[1] = point_1;
-                        point[0] = point_0;
+                    double point_0 = p[0];
+                    double point_1 = p[1];
 
-                        turbulenceFractalStitch(rgb, point, fSum, noise, numOctaves, channels);
+                    for(int j=0; j<w; j++){
+                        turbulenceFractalStitch(rgb, point_0, point_1,
+                                                fSum, noise, 
+                                                numOctaves, channels);
 
                         // Modify RGB value.
                         destPixels[dp] =
                             (rgb[3]<<24 & 0xff000000) |
-                            (rgbLut[rgb[0]]<<16 & 0xff0000) |
-                            (rgbLut[rgb[1]]<<8 & 0xff00) |
-                            (rgbLut[rgb[2]] & 0xff);
+                            (rgb[0]<<16 & 0xff0000) |
+                            (rgb[1]<<8  & 0xff00) |
+                            (rgb[2]     & 0xff);
                         dp++;
-                        point_0 += tx[0];
-                        point_1 += tx[1];
+                        point_0 += tx0;
+                        point_1 += tx1;
                     }
-                    point_0 -= (w*tx[0]);
-                    point_1 -= (w*tx[1]);
-                    point_0 += ty[0];
-                    point_1 += ty[1];
+                    p[0] += ty0;
+                    p[1] += ty1;
                     dp += dstAdjust;
                 }
             }
@@ -696,51 +675,49 @@ public final class TurbulencePatternGenerator{
         else{ // Loop for turbulence noise
             if(!stitchTiles){
                 for(int i=0; i<h; i++){
-                    for(int j=0; j<w; j++){
-                        point[1] = point_1;
-                        point[0] = point_0;
+                    double point_0 = p[0];
+                    double point_1 = p[1];
 
-                        turbulence(rgb, point, fSum, noise, numOctaves, channels);
+                    for(int j=0; j<w; j++){
+                        turbulence(rgb, point_0, point_1, fSum, noise, 
+                                   numOctaves, channels);
 
                         // Modify RGB value.
                         destPixels[dp] =
-                            (rgb[3]<<24         & 0xff000000) |
-                            (rgbLut[rgb[0]]<<16 & 0xff0000) |
-                            (rgbLut[rgb[1]]<<8  & 0xff00) |
-                            (rgbLut[rgb[2]]     & 0xff);
+                            (rgb[3]<<24 & 0xff000000) |
+                            (rgb[0]<<16 & 0xff0000) |
+                            (rgb[1]<<8  & 0xff00) |
+                            (rgb[2]     & 0xff);
                         dp++;
-                        point_0 += tx[0];
-                        point_1 += tx[1];
+                        point_0 += tx0;
+                        point_1 += tx1;
                     }
-                    point_0 -= (w*tx[0]);
-                    point_1 -= (w*tx[1]);
-                    point_0 += ty[0];
-                    point_1 += ty[1];
+                    p[0] += ty0;
+                    p[1] += ty1;
                     dp += dstAdjust;
                 }
             }
             else{
                 for(int i=0; i<h; i++){
-                    for(int j=0; j<w; j++){
-                        point[1] = point_1;
-                        point[0] = point_0;
+                    double point_0 = p[0];
+                    double point_1 = p[1];
 
-                        turbulenceStitch(rgb, point, fSum, noise, numOctaves, channels);
+                    for(int j=0; j<w; j++){
+                        turbulenceStitch(rgb, point_0, point_1, fSum, noise, 
+                                         numOctaves, channels);
 
                         // Modify RGB value.
                         destPixels[dp] =
-                            (rgb[3]<<24         & 0xff000000) |
-                            (rgbLut[rgb[0]]<<16 & 0xff0000) |
-                            (rgbLut[rgb[1]]<<8  & 0xff00) |
-                            (rgbLut[rgb[2]]     & 0xff);
+                            (rgb[3]<<24 & 0xff000000) |
+                            (rgb[0]<<16 & 0xff0000) |
+                            (rgb[1]<<8  & 0xff00) |
+                            (rgb[2]     & 0xff);
                         dp++;
-                        point_0 += tx[0];
-                        point_1 += tx[1];
+                        point_0 += tx0;
+                        point_1 += tx1;
                     }
-                    point_0 -= (w*tx[0]);
-                    point_1 -= (w*tx[1]);
-                    point_0 += ty[0];
-                    point_1 += ty[1];
+                    p[0] += ty0;
+                    p[1] += ty1;
                     dp += dstAdjust;
                 }
             }
@@ -779,29 +756,36 @@ public final class TurbulencePatternGenerator{
     }
 
     /**
-     * @param baseFrequencyX x-axis base frequency for the noise function along the x-axis
-     * @param baseFrequencyY y-axis base frequency for the noise function along the x-axis
-     * @param numOctaves number of octaves in the noise function. Positive integral value.
+     * @param baseFrequencyX x-axis base frequency for the noise
+     * function along the x-axis
+     * @param baseFrequencyY y-axis base frequency for the noise
+     *        function along the x-axis
+     * @param numOctaves number of octaves in the noise
+     *        function. Positive integral value.
      * @param seed starting number for the pseudo random number generator
-     * @param stitchTiles defines whether frequencies should be adjusted so as to avoid
-     *        discontinuities.
-     * @param isFractalNoise defines whether the filter performs a fractal noise or a turbulence function.
-     * @param isLinearRGB defines whether the filter computes sRGB or linear RGB values.
-     * @param tile defines the tile size. May be null if stitchTiles is false. Otherwise, should
-     *        not be null.
-     * @param channels boolean array defining which of the sRGB channels should contain noise. 0 is red,
-     *        1 is green, 2 is blue and 3 is alpha.
+     * @param stitchTiles defines whether frequencies should be
+     *        adjusted so as to avoid discontinuities.
+     * @param isFractalNoise defines whether the filter performs a
+     *        fractal noise or a turbulence function.
+     * @param tile defines the tile size. May be null if stitchTiles
+     *        is false. Otherwise, should not be null.
+     * @param channels boolean array defining which of the sRGB
+     *        channels should contain noise. 0 is red, 1 is green, 2
+     *        is blue and 3 is alpha.  
      */
-    public TurbulencePatternGenerator(double baseFrequencyX, double baseFrequencyY, int numOctaves,
-                                      int seed, boolean stitchTiles, boolean isFractalNoise, boolean isLinearRGB,
-                                      Rectangle2D tile, boolean channels[]){
+    public TurbulencePatternGenerator(double baseFrequencyX, 
+                                      double baseFrequencyY, int numOctaves,
+                                      int     seed, 
+                                      boolean stitchTiles, 
+                                      boolean isFractalNoise,
+                                      Rectangle2D tile, 
+                                      boolean channels[]){
         this.baseFrequencyX = baseFrequencyX;
         this.baseFrequencyY = baseFrequencyY;
         this.numOctaves = numOctaves;
         this.seed = seed;
         this.stitchTiles = stitchTiles;
         this.isFractalNoise = isFractalNoise;
-        this.isLinearRGB = isLinearRGB;
         this.tile = tile;
 
         if((channels == null) || (channels.length == 0))

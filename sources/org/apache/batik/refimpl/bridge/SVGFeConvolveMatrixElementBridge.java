@@ -285,17 +285,25 @@ public class SVGFeConvolveMatrixElementBridge implements FilterPrimitiveBridge,
         ConvolveMatrixRable convolve;
         convolve = new ConcreteConvolveMatrixRable(pad);
 
-        // Rotate the kernel 180 deg.
-        int len2 = kernel.length/2;
-        int len1 = kernel.length-1;
-        for (int i=0; i<len2; i++) {
-            float tmp      = kernel[i];
-            kernel[i]      = kernel[len1-i];
-            kernel[len1-i] = tmp;
-        }
+        /* SVG No longer does it's kernels funny!!!
+         * And there was much rejoicing!
+           // Rotate the kernel 180 deg.
+           int len2 = kernel.length/2;
+           int len1 = kernel.length-1;
+           for (int i=0; i<len2; i++) {
+               float tmp      = kernel[i];
+               kernel[i]      = kernel[len1-i];
+               kernel[len1-i] = tmp;
+           }
+        */
 
         for (int i=0; i<kernel.length; i++)
             kernel[i] /= divisor;
+
+        // System.out.print("Kernel: ");
+        // for (int i=0; i<kernel.length; i++)
+        //     System.out.print(kernel[i] + ", ");
+        // System.out.println("");
         
         convolve.setKernel(new Kernel(orderX, orderY, kernel));
         convolve.setTarget(new Point(targetX, targetY));

@@ -12,6 +12,7 @@ import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.CachableRed;
 import org.apache.batik.gvt.filter.GaussianBlurRable;
 import org.apache.batik.gvt.filter.PadMode;
+import org.apache.batik.util.awt.image.GraphicsUtil;
 
 import java.awt.Shape;
 import java.awt.Point;
@@ -219,8 +220,12 @@ public class ConcreteGaussianBlurRable
         if (ri == null)
             return null;
 
+
         CachableRed cr;
-        cr = ConcreteRenderedImageCachableRed.wrap(ri);
+        cr = GraphicsUtil.wrap(ri);
+        // org.apache.batik.test.gvt.ImageDisplay.showImage("Wrap: ", cr);
+        cr = GraphicsUtil.convertToLsRGB(cr);
+        // org.apache.batik.test.gvt.ImageDisplay.showImage("Conv: ", cr);
 
         Shape devShape = srcAt.createTransformedShape(aoi);
         r = devShape.getBounds2D();
@@ -232,16 +237,10 @@ public class ConcreteGaussianBlurRable
             cr = new PadRed(cr, r.getBounds(), PadMode.ZERO_PAD, rh);
         
         ColorModel cm = cr.getColorModel();
-
-        // OK this is a bit of a cheat. We Pull the DataBuffer out of
-        // The read-only raster that getData gives us. And use it to
-        // build a WritableRaster.  This avoids a copy of the data.
-        Raster rr = cr.getData();
-        Point  pt = new Point(0,0);
-        WritableRaster wr = Raster.createWritableRaster(rr.getSampleModel(),
-                                                        rr.getDataBuffer(),
-                                                        pt);
         
+        Raster rr = cr.getData();
+        WritableRaster wr = GraphicsUtil.makeRasterWritable(rr, 0, 0);
+
         BufferedImage srcBI;
         srcBI = new BufferedImage(cm, wr, cm.isAlphaPremultiplied(), null);
 

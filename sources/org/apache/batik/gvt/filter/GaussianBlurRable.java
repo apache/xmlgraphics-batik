@@ -8,8 +8,6 @@
 
 package org.apache.batik.gvt.filter;
 
-import org.apache.batik.gvt.GraphicsNode;
-
 /**
  * Implements a GaussianBlur operation, where the blur size is
  * defined by standard deviations along the x and y axis.

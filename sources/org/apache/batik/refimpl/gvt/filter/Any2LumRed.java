@@ -9,6 +9,7 @@
 package org.apache.batik.refimpl.gvt.filter;
 
 import org.apache.batik.gvt.filter.CachableRed;
+import org.apache.batik.util.awt.image.GraphicsUtil;
 
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -59,8 +60,8 @@ public class Any2LumRed extends AbstractRed {
         CachableRed src = (CachableRed)getSources().get(0);
 
         SampleModel sm = src.getSampleModel();
-        ColorModel  cm = src.getColorModel();
-        if (cm == null) {
+        ColorModel  srcCM = src.getColorModel();
+        if (srcCM == null) {
             // We don't really know much about this source.
 
             float [][] matrix = null;
@@ -77,68 +78,76 @@ public class Any2LumRed extends AbstractRed {
             BandCombineOp op = new BandCombineOp(matrix, null);
             op.filter(srcRas, wr);
         } else {
-            // REVIEW: Alpha handling may not be correct through here.
-            // Since the colorconversion may not be a linear op it
-            // is probably required to divide out the alpha before
-            // doing the color conversion.
-            //
-            // This might be especially tricky since there are bugs
-            // in the ColorConvert Ops handling of alpha...
+            Raster         srcRas = src.getData(wr.getBounds());
+            WritableRaster srcWr  = (WritableRaster)srcRas;
 
-            ColorConvertOp op = new ColorConvertOp(null);
-            Raster srcRas = src.getData(wr.getBounds());
-            Point pt = new Point(srcRas.getMinX(), srcRas.getMinY());
-
-            WritableRaster srcWr = (WritableRaster)srcRas;
-            // srcWr = Raster.createWritableRaster(srcRas.getSampleModel(),
-            //                                     srcRas.getDataBuffer(),
-            //                                     pt);
+            // Divide out alpha if we have it.  We need to do this since
+            // the color convert may not be a linear operation which may 
+            // lead to out of range values.
+            ColorModel srcBICM = srcCM;
+            if (srcCM.hasAlpha())
+                srcBICM = GraphicsUtil.coerceData(srcWr, srcCM, false);
 
             BufferedImage srcBI, dstBI;
-            srcBI = new BufferedImage(cm, 
+            srcBI = new BufferedImage(srcCM, 
                                       srcWr.createWritableTranslatedChild(0,0),
-                                      cm.isAlphaPremultiplied(), 
+                                      false, 
                                       null);
+            ColorModel dstCM = getColorModel();
+            if (!dstCM.hasAlpha()) {
+                // No alpha ao we don't have to work around the bug
+                // in the color convert op.
+                dstBI = new BufferedImage
+                    (dstCM, wr.createWritableTranslatedChild(0,0),
+                     dstCM.isAlphaPremultiplied(), null);
+            } else {
+                // All this nonsense is to work around the fact that the
+                // Color convert op doesn't properly copy the Alpha from
+                // s    rc to dst.
+                PixelInterleavedSampleModel dstSM;
+                dstSM = (PixelInterleavedSampleModel)wr.getSampleModel();
+                SampleModel smna = new PixelInterleavedSampleModel
+                    (dstSM.getDataType(),    
+                     dstSM.getWidth(),       dstSM.getHeight(),
+                     dstSM.getPixelStride(), dstSM.getScanlineStride(),
+                     new int [] { 0 });
 
-            // All this nonsense is to work around the fact that the
-            // Color convert op doesn't properly copy the Alpha from
-            // src to dst.
-            PixelInterleavedSampleModel dstSM;
-            dstSM = (PixelInterleavedSampleModel)wr.getSampleModel();
-            SampleModel smna = new PixelInterleavedSampleModel
-                (dstSM.getDataType(),    
-                 dstSM.getWidth(),       dstSM.getHeight(),
-                 dstSM.getPixelStride(), dstSM.getScanlineStride(),
-                 new int [] { 0 });
+                WritableRaster dstWr;
+                dstWr = Raster.createWritableRaster(smna,
+                                                    wr.getDataBuffer(),
+                                                    new Point(0,0));
+                dstWr = dstWr.createWritableChild
+                    (wr.getMinX()-wr.getSampleModelTranslateX(),
+                     wr.getMinY()-wr.getSampleModelTranslateY(),
+                     wr.getWidth(), wr.getHeight(),
+                     0, 0, null);
+                
+                ColorModel cmna = new ComponentColorModel
+                    (ColorSpace.getInstance(ColorSpace.CS_GRAY),
+                     new int [] {8}, false, false,
+                     Transparency.OPAQUE, 
+                     DataBuffer.TYPE_BYTE);
 
-            WritableRaster dstWr;
-            dstWr = Raster.createWritableRaster(smna,
-                                                wr.getDataBuffer(),
-                                                new Point(0,0));
+                dstBI = new BufferedImage(cmna, dstWr, false, null);
+            }
 
-            ColorModel cmna = new ComponentColorModel
-                (ColorSpace.getInstance(ColorSpace.CS_GRAY),
-                 new int [] {8}, false, false,
-                 Transparency.OPAQUE, 
-                 DataBuffer.TYPE_BYTE);
-
-            dstBI = new BufferedImage(cmna, dstWr, false, null);
+            ColorConvertOp op = new ColorConvertOp(null);
             op.filter(srcBI, dstBI);
 
             // I never have to 'fix' alpha premult since I take
             // it's value from my source....
-            if (cm.hasAlpha() && getColorModel().hasAlpha())
+            if (dstCM.hasAlpha())
                 copyBand(srcWr, sm.getNumBands()-1,
-                         wr, dstSM.getNumBands()-1);
+                         wr,    getSampleModel().getNumBands()-1);
         }
         return wr;
     }
 
-        /**
-         * This function 'fixes' the source's color model.  Right now
-         * it just selects if it should have one or two bands based on
-         * if the source had an alpha channel.
-         */
+    /**
+     * This function 'fixes' the source's color model.  Right now
+     * it just selects if it should have one or two bands based on
+     * if the source had an alpha channel.
+     */
     protected static ColorModel fixColorModel(CachableRed src) {
         ColorModel  cm = src.getColorModel();
         if (cm != null) {
@@ -168,8 +177,7 @@ public class Any2LumRed extends AbstractRed {
                 return new ComponentColorModel
                     (ColorSpace.getInstance(ColorSpace.CS_GRAY),
                      new int [] {8,8}, true,
-                     cm.isAlphaPremultiplied(),
-                     Transparency.TRANSLUCENT, 
+                     true, Transparency.TRANSLUCENT, 
                      DataBuffer.TYPE_BYTE);
 
             return new ComponentColorModel
