@@ -261,9 +261,16 @@ public class DocumentLoadRunnable implements Runnable, DocumentEventSource {
 
             // Set the panel preferred size.
             SVGSVGElement elt = doc.getRootElement();
-            float w = elt.getWidth().getBaseVal().getValue();
-            float h = elt.getHeight().getBaseVal().getValue();
+            float w, h;
 
+            // <!> FIXME : use UserAgent.getDefaultViewport.
+            try {
+                w = elt.getWidth().getBaseVal().getValue();
+                h = elt.getHeight().getBaseVal().getValue();
+            } catch (IllegalArgumentException ex) {
+                w = 400;
+                h = 400;
+            }
             checkInterrupt();
             String description =
                         SVGUtilities.getDescription(doc.getRootElement());
