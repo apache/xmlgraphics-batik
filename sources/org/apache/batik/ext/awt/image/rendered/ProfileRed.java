@@ -140,23 +140,24 @@ public class ProfileRed extends AbstractRed {
              * BandedSampleModel, do the conversion now.
              */
             if(!(imgCM instanceof ComponentColorModel) ||
-               !(img.getSampleModel() instanceof BandedSampleModel)){
+               !(img.getSampleModel() instanceof BandedSampleModel) ||
+               (imgCM.hasAlpha() &&
+                imgCM.isAlphaPremultiplied() == true)) {
                 ComponentColorModel imgCompCM 
                     = new ComponentColorModel
                         (imgCS,                      // Same ColorSpace as img
                          imgCM.getComponentSize(),   // Number of bits/comp
                          imgCM.hasAlpha(),             // Same alpha as img
-                         imgCM.isAlphaPremultiplied(), // Same premult as img  
+                         false, // unpremult alpha (so we can remove it next).
                          imgCM.getTransparency(),      // Same trans as img 
                          DataBuffer.TYPE_BYTE);        // 8 bit/component.
 
-                WritableRaster wr 
-                    = Raster.createBandedRaster
+                WritableRaster wr = Raster.createBandedRaster
                     (DataBuffer.TYPE_BYTE,
                      argbWR.getWidth(), argbWR.getHeight(),
                      imgCompCM.getNumComponents(),
                      new Point(0, 0));
-                
+
                 BufferedImage imgComp = new BufferedImage
                     (imgCompCM, wr, imgCompCM.isAlphaPremultiplied(), null);
 
@@ -179,19 +180,19 @@ public class ProfileRed extends AbstractRed {
              * profile, using a ComponentColorModel as well, because
              * we know the number of components match (this was
              * checked at the begining of this routine).  */
-            ComponentColorModel newCM 
-                = new ComponentColorModel(colorSpace,                    // ****** New ColorSpace ********
-                                          imgCM.getComponentSize(),      // Array of number of bits per components
-                                          false,                         // No alpa
-                                          false,                         // Not premultiplied
-                                          Transparency.OPAQUE,           // No transparency
-                                          DataBuffer.TYPE_BYTE);         // 8 Bits
+            ComponentColorModel newCM = new ComponentColorModel
+                (colorSpace,                    // **** New ColorSpace ****
+                 imgCM.getComponentSize(),      // Array of number of bits per components
+                 false,                         // No alpa
+                 false,                         // Not premultiplied
+                 Transparency.OPAQUE,           // No transparency
+                 DataBuffer.TYPE_BYTE);         // 8 Bits
             
             // Build a raster with bands 0, 1 and 2 of img's raster
             DataBufferByte data = (DataBufferByte)srcWR.getDataBuffer();
             srcWR = Raster.createBandedRaster
-                (data, img.getWidth(), img.getHeight(), 
-                 img.getWidth(), new int[]{0, 1, 2},
+                (data, argbWR.getWidth(), argbWR.getHeight(), 
+                 argbWR.getWidth(), new int[]{0, 1, 2},
                  new int[]{0, 0, 0}, new Point(0, 0));
             BufferedImage newImg = new BufferedImage
                 (newCM, srcWR, newCM.isAlphaPremultiplied(), null);
@@ -208,7 +209,7 @@ public class ProfileRed extends AbstractRed {
                  DataBuffer.TYPE_BYTE);
 
             WritableRaster wr = Raster.createBandedRaster
-                (DataBuffer.TYPE_BYTE, img.getWidth(), img.getHeight(),
+                (DataBuffer.TYPE_BYTE, argbWR.getWidth(), argbWR.getHeight(),
                  sRGBCompCM.getNumComponents(), new Point(0, 0));
 
             BufferedImage sRGBImage = new BufferedImage
@@ -227,16 +228,17 @@ public class ProfileRed extends AbstractRed {
                 byte[][] argbBanks = {rgbBanks[0], rgbBanks[1], 
                                       rgbBanks[2], imgBanks[3]};
                 DataBufferByte argbData = new DataBufferByte(argbBanks, imgBanks[0].length);
-                srcWR = Raster.createBandedRaster(argbData, img.getWidth(), img.getHeight(),
-                                                  img.getWidth(), new int[]{0, 1, 2, 3},
-                                                  new int[]{0, 0, 0, 0}, new Point(0, 0));
-                sRGBCompCM =
-                    new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_sRGB),
-                                            new int[]{8, 8, 8, 8},
-                                            true,
-                                            false,
-                                            Transparency.TRANSLUCENT,
-                                            DataBuffer.TYPE_BYTE);
+                srcWR = Raster.createBandedRaster
+                    (argbData, argbWR.getWidth(), argbWR.getHeight(),
+                     argbWR.getWidth(), new int[]{0, 1, 2, 3},
+                     new int[]{0, 0, 0, 0}, new Point(0, 0));
+                sRGBCompCM = new ComponentColorModel
+                    (ColorSpace.getInstance(ColorSpace.CS_sRGB),
+                     new int[]{8, 8, 8, 8},
+                     true,
+                     false,
+                     Transparency.TRANSLUCENT,
+                     DataBuffer.TYPE_BYTE);
                 sRGBImage = new BufferedImage(sRGBCompCM,
                                               srcWR,
                                               false,
@@ -251,6 +253,8 @@ public class ProfileRed extends AbstractRed {
                                                      argbWR.createWritableTranslatedChild(0, 0),
                                                      false,
                                                      null);
+
+
             ///////////////////////////////////////////////
             // BUG IN ColorConvertOp: The following breaks:
             // colorConvertOp.filter(sRGBImage, result);
@@ -262,7 +266,6 @@ public class ProfileRed extends AbstractRed {
                                RenderingHints.VALUE_COLOR_RENDER_QUALITY);
             g.drawImage(sRGBImage, 0, 0, null);
             g.dispose();
-            
 
             return argbWR;
         }catch(Exception e){
