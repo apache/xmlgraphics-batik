@@ -42,10 +42,10 @@
     </defs>
 
     <g id="testContent" text-anchor="middle">
-        <text class="title" x="50%" y="10%" font-size="3%" >
+        <text class="title" x="50%" y="10%" font-size="15" >
             Text Alignment, Geometry, References, and Spans</text>
 
-        <g font-size="3%">
+        <g font-size="15">
             <line x1="50%" y1="14%" x2="50%" y2="28%" stroke="Gray" stroke-width="1"/>
             <text x="50%"  y="18%" text-anchor="start" fill="MidnightBlue">
                text-anchor="start"</text>
@@ -62,8 +62,8 @@
         </g>       
 
         <g transform="translate(225, 180)">
-            <text font-size="6%">sample</text>
-            <text y="15" style="Caption">font-size="6%"</text>
+            <text font-size="30">sample</text>
+            <text y="15" style="Caption">font-size="30"</text>
         </g>       
 
         <g transform="translate(350, 180)">
@@ -72,12 +72,12 @@
         </g>       
 
         <g transform="translate(100, 225)">
-            <text font-size="6%"><tref xlink:href="#sample"/></text>
+            <text font-size="30"><tref xlink:href="#sample"/></text>
             <text y="15" style="Caption">referenced text via &lt;tref&gt;</text>
         </g>       
 
         <g transform="translate(225, 225)">
-            <text font-size="6%">
+            <text font-size="30">
             sa<tspan font-family="Serif" font-weight="bold" fill="DarkRed"
             text-decoration="underline" >m</tspan>ple
             </text>
@@ -85,45 +85,45 @@
         </g>       
 
         <g transform="translate(350, 225)">
-            <g font-size="6%">
+            <g font-size="30">
                 <use xlink:href="#sample"/>
             </g>
             <text y="15" style="Caption">predefined text via &lt;use&gt;</text>
         </g>       
  
-        <text x="50%" y="280" font-size="3%" >
+        <text x="50%" y="280" font-size="15" >
             Text Rendering Properties</text>
 
         <g transform="translate(100, 305)">
-            <g font-size="6%" transform="rotate(180)">
+            <g font-size="30" transform="rotate(180)">
                 <use xlink:href="#sample"/>
             </g>
             <text y="30" style="Caption">transform="rotate(180)"</text>
         </g>       
 
         <g transform="translate(225, 320)">
-            <g font-size="6%" opacity="0.5">
+            <g font-size="30" opacity="0.5">
                 <use xlink:href="#sample"/>
             </g>
             <text y="15" style="Caption">opacity="0.5"</text>
         </g>       
 
         <g transform="translate(350, 320)">
-            <g font-size="6%" fill="DarkRed">
+            <g font-size="30" fill="DarkRed">
                 <use xlink:href="#sample"/>
             </g>
             <text y="15" style="Caption">fill="DarkRed"</text>
         </g>       
 
         <g transform="translate(100, 370)">
-            <g font-size="6%" filter="url(#gaussianBlur)">
+            <g font-size="30" filter="url(#gaussianBlur)">
                 <use xlink:href="#sample"/>
             </g>
             <text y="15" style="Caption">filter="url(#gaussianBlur)"</text>
         </g>       
 
         <g transform="translate(225, 370)">
-            <g font-size="6%" fill="yellow" stroke="MidnightBlue">
+            <g font-size="30" fill="yellow" stroke="MidnightBlue">
                 <use xlink:href="#sample"/>
             </g>
             <text y="15" style="Caption">fill="yellow";</text>
@@ -132,7 +132,7 @@
 
 <defs>
     <clipPath id="textClip">
-        <text font-size="6%">sample</text>
+        <text font-size="30">sample</text>
     </clipPath>
     <linearGradient id="gradient" gradientUnits="userSpaceOnUse"
      x1="-50" y1="-25" x2="50" y2="25">

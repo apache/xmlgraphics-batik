@@ -50,71 +50,71 @@
 
          <g transform="translate(150,70)">
             <use xlink:href="#Path1" style="fill:none; stroke:blue; stroke-width:2"/>
-	      <text font-size="15" style="text-anchor:middle" writing-mode="tb" glyph-orientation-vertical="0">
+	      <text font-size="15" style="text-anchor:middle" writing-mode="tb" glyph-orientation-vertical="0deg">
                 <textPath xlink:href="#Path1" startOffset="0%">Text <tspan fill="red" dx="10">on</tspan><tspan dx="-10"> a Path</tspan></textPath>
             </text>
 		<text font-size="10" x="35" y="60">startOffset="0%"</text>
             <text font-size="10" x="35" y="70">text-anchor="middle"</text>
-            <text font-size="10" x="35" y="80">glyph-orientation="0"</text>
+            <text font-size="10" x="35" y="80">glyph-orientation="0deg"</text>
          </g>
 
          <g transform="translate(300,70)">
             <use xlink:href="#Path1" style="fill:none; stroke:blue; stroke-width:2"/>
-	      <text font-size="15" style="text-anchor:end" writing-mode="tb" glyph-orientation-vertical="180">
+	      <text font-size="15" style="text-anchor:end" writing-mode="tb" glyph-orientation-vertical="180deg">
                 <textPath xlink:href="#Path1" startOffset="50%">Text <tspan fill="red" dx="10">on</tspan><tspan dx="-10"> a Path</tspan></textPath>
             </text>
 		<text font-size="10" x="35" y="60">startOffset="50%"</text>
             <text font-size="10" x="35" y="70">text-anchor="end"</text>
-            <text font-size="10" x="35" y="80">glyph-orientation="180"</text>
+            <text font-size="10" x="35" y="80">glyph-orientation="180deg"</text>
          </g>
 
 
          <g transform="translate(0,170)">
             <use xlink:href="#Path1" style="fill:none; stroke:blue; stroke-width:2"/>
-	      <text font-size="15" style="text-anchor:start" writing-mode="tb" glyph-orientation-vertical="270">
+	      <text font-size="15" style="text-anchor:start" writing-mode="tb" glyph-orientation-vertical="270deg">
                 <textPath xlink:href="#Path1" startOffset="50%">Text <tspan fill="red" dx="10">on</tspan><tspan dx="-10"> a Path</tspan></textPath>
             </text>
             <text font-size="10" x="35" y="60">startOffset="50%"</text>
             <text font-size="10" x="35" y="70">text-anchor="start"</text>
-            <text font-size="10" x="35" y="80">glyph-orientation="270"</text>
+            <text font-size="10" x="35" y="80">glyph-orientation="270deg"</text>
          </g>
 
 
          <g transform="translate(150,170)">
             <use xlink:href="#Path1" style="fill:none; stroke:blue; stroke-width:2"/>
-	      <text font-size="15" style="text-anchor:middle" writing-mode="tb" glyph-orientation-vertical="0">
+	      <text font-size="15" style="text-anchor:middle" writing-mode="tb" glyph-orientation-vertical="0deg">
                 <textPath xlink:href="#Path1" startOffset="50%">Text <tspan fill="red" dx="10">on</tspan><tspan dx="-10"> a Path</tspan></textPath>
             </text>
             <text font-size="10" x="35" y="60">startOffset="50%"</text>
             <text font-size="10" x="35" y="70">text-anchor="middle"</text>
-            <text font-size="10" x="35" y="80">glyph-orientation="0"</text>
+            <text font-size="10" x="35" y="80">glyph-orientation="0deg"</text>
          </g>
 
          <g transform="translate(300,170)">
             <use xlink:href="#Path1" style="fill:none; stroke:blue; stroke-width:2"/>
-	      <text font-size="15" style="text-anchor:end" writing-mode="tb" glyph-orientation-vertical="90">
+	      <text font-size="15" style="text-anchor:end" writing-mode="tb" glyph-orientation-vertical="90deg">
                 <textPath xlink:href="#Path1" startOffset="100%">Text <tspan fill="red" dx="10">on</tspan><tspan dx="-10"> a Path</tspan></textPath>
             </text>
             <text font-size="10" x="35" y="60">startOffset="100%"</text>
             <text font-size="10" x="35" y="70">text-anchor="end"</text>
-            <text font-size="10" x="35" y="80">glyph-orientation="90"</text>
+            <text font-size="10" x="35" y="80">glyph-orientation="90deg"</text>
          </g>
 
 
         <g transform="translate(0,270)">
             <use xlink:href="#Path1" style="fill:none; stroke:blue; stroke-width:2"/>
-	      <text font-size="15" style="text-anchor:start" writing-mode="tb" glyph-orientation-vertical="180">
+	      <text font-size="15" style="text-anchor:start" writing-mode="tb" glyph-orientation-vertical="180deg">
                 <textPath xlink:href="#Path1" startOffset="35">Text <tspan fill="red" dx="10">on</tspan><tspan dx="-10"> a Path</tspan></textPath>
             </text>
             <text font-size="10" x="35" y="60">startOffset="35"</text>
             <text font-size="10" x="35" y="70">text-anchor="start"</text>
-            <text font-size="10" x="35" y="80">glyph-orientation="180"</text>
+            <text font-size="10" x="35" y="80">glyph-orientation="180deg"</text>
          </g>
 
 
          <g transform="translate(150,270)">
             <use xlink:href="#Path1" style="fill:none; stroke:blue; stroke-width:2"/>
-	      <text font-size="15" style="text-anchor:middle" writing-mode="tb" glyph-orientation-vertical="270">
+	      <text font-size="15" style="text-anchor:middle" writing-mode="tb" glyph-orientation-vertical="270deg">
                 <textPath xlink:href="#Path1" startOffset="35">Text <tspan fill="red" dx="10">on</tspan><tspan dx="-10"> a Path</tspan></textPath>
             </text>
             <text font-size="10" x="35" y="60">startOffset="35"</text>
@@ -123,12 +123,12 @@
 
          <g transform="translate(300,270)">
             <use xlink:href="#Path1" style="fill:none; stroke:blue; stroke-width:2"/>
-	      <text font-size="15" style="text-anchor:end" writing-mode="tb" glyph-orientation-vertical="90">
+	      <text font-size="15" style="text-anchor:end" writing-mode="tb" glyph-orientation-vertical="90deg">
                 <textPath xlink:href="#Path1" startOffset="35">Text <tspan fill="red" dx="10">on</tspan><tspan dx="-10"> a Path</tspan></textPath>
             </text>
             <text font-size="10" x="35" y="60">startOffset="35"</text>
             <text font-size="10" x="35" y="70">text-anchor="end"</text>
-            <text font-size="10" x="35" y="80">glyph-orientation="90"</text>
+            <text font-size="10" x="35" y="80">glyph-orientation="90deg"</text>
          </g>
 
 

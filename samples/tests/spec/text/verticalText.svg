@@ -58,23 +58,23 @@
 
         <text x="50" y="75" writing-mode="tb" font-size="15">Writing top to bottom&#x753b;&#x50cf;</text>
         <text x="100" y="75" glyph-orientation-vertical="auto" writing-mode="tb" font-size="15">Glyph Orientation:auto&#x753b;&#x50cf;</text>
-        <text id="orient0"   x="150" y="75" glyph-orientation-vertical="0" 
+        <text id="orient0"   x="150" y="75" glyph-orientation-vertical="0deg" 
               writing-mode="tb" font-size="15">Glyph Orientation:0&#x753b;&#x50cf;</text>
-        <text id="orient90"  x="200" y="75" glyph-orientation-vertical="90" 
+        <text id="orient90"  x="200" y="75" glyph-orientation-vertical="90deg" 
               writing-mode="tb" font-size="15">Glyph Orientation:90&#x753b;&#x50cf;</text>
-        <text id="orient180" x="250" y="75" glyph-orientation-vertical="180" 
+        <text id="orient180" x="250" y="75" glyph-orientation-vertical="180deg" 
               writing-mode="tb" font-size="15">Glyph Orientation:180&#x753b;&#x50cf;</text>
-        <text id="orient270" x="300" y="75" glyph-orientation-vertical="270" 
+        <text id="orient270" x="300" y="75" glyph-orientation-vertical="270deg" 
               writing-mode="tb" font-size="15">Glyph Orientation:270&#x753b;&#x50cf;</text>
         <text x="350" y="75" writing-mode="tb" font-size="15">Embedded <tspan fill="red">&lt;tspan&gt;</tspan> element</text>
-        <text x="400" y="75" writing-mode="tb" font-size="15">Embedded <tspan fill="blue" glyph-orientation-vertical="0">orientated</tspan> element</text>
+        <text x="400" y="75" writing-mode="tb" font-size="15">Embedded <tspan fill="blue" glyph-orientation-vertical="0deg">orientated</tspan> element</text>
        
 
 
       
 	  <g transform="translate(40,450)">
             <use xlink:href="#Path1" style="fill:none; stroke:blue; stroke-width:2"/>
-	      <text font-size="12" writing-mode="tb" glyph-orientation-vertical="0">
+	      <text font-size="12" writing-mode="tb" glyph-orientation-vertical="0deg">
                 <textPath xlink:href="#Path1">Vertical text on a Path&#x753b;&#x50cf;</textPath>
             </text>
          </g>
