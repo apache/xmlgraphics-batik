@@ -88,7 +88,7 @@ public class SVGFeGaussianBlurElementBridge
             return null; // disable the filter
         }
 
-        // feMorphology is a point operation. Therefore, to take the
+        // Therefore, to take the
         // filter primitive region into account, only a pad operation
         // on the input is required.
 
@@ -96,10 +96,26 @@ public class SVGFeGaussianBlurElementBridge
         // regions unless 'in' is 'SourceGraphic' in which case the
         // default region is the filterChain's region
         Filter sourceGraphics = (Filter)filterMap.get(SVG_SOURCE_GRAPHIC_VALUE);
+        
+        // <!> HACK / TEMPORARY FIX. HANDLE SOURCE ALPHA REGION 
+        //     DEFAULT PROPERLY. THIS REQUIRES A MORE GENERIC FIX.
+        String inStr = filterElement.getAttributeNS(null, SVG_IN_ATTRIBUTE);
+        /////////////////////////////////////////////////////////////////////
+
         Rectangle2D defaultRegion;
         if (in == sourceGraphics) {
             defaultRegion = filterRegion;
-        } else {
+        }
+
+        // <!> HACK PART TWO / TEMPORARY FIX. HANDLE SOURCE ALPHA REGION 
+        //     DEFAULT PROPERLY. THIS REQUIRES A MORE GENERIC FIX.
+        /////////////////////////////////////////////////////////////////////
+        else if( SVG_SOURCE_ALPHA_VALUE.equals(inStr) ){
+            System.out.println("SourceAlpha");
+            defaultRegion = filterRegion;
+        } 
+        /////////////////////////////////////////////////////////////////////
+        else {
             defaultRegion = in.getBounds2D();
         }
 
