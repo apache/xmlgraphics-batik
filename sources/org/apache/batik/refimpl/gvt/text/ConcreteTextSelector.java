@@ -75,27 +75,25 @@ public class ConcreteTextSelector implements Selector {
 
     public void mouseEntered(GraphicsNodeMouseEvent evt) {
         currentNode = evt.getGraphicsNode();
-        //report(evt, "Entered");
+        checkSelectGesture(evt);
     }
 
     public void mouseExited(GraphicsNodeMouseEvent evt) {
         checkSelectGesture(evt);
+        currentNode = null;
     }
 
     public void mouseMoved(GraphicsNodeMouseEvent evt) {
         ;
-        //report(evt, "Moved");
     }
 
     public void mousePressed(GraphicsNodeMouseEvent evt) {
         checkSelectGesture(evt);
-        //report(evt, "Pressed");
     }
 
 
     public void mouseReleased(GraphicsNodeMouseEvent evt) {
         checkSelectGesture(evt);
-        //report(evt, "Released");
     }
 
     public void keyPressed(GraphicsNodeKeyEvent evt) {
@@ -142,7 +140,7 @@ public class ConcreteTextSelector implements Selector {
             p = t.transform(p, null);
 
             if (isSelectContinueGesture(evt)) {
-      
+
                 if (selectionNode != source) {
                      // have been dragged into new node!
                      // System.out.println("Select (Entering) at "+p);
@@ -158,15 +156,8 @@ public class ConcreteTextSelector implements Selector {
                         new SelectionEvent(null,
                                 SelectionEvent.SELECTION_CHANGED,
                                 newShape));
-                    if (evt.getID() == GraphicsNodeMouseEvent.MOUSE_EXITED) {
-                        Object selection = getSelection();
-                        dispatchSelectionEvent(
-                            new SelectionEvent(selection,
-                                SelectionEvent.SELECTION_DONE,
-                                newShape));
-                        copyToClipboard(selection);	
-                    }
-                } 
+                }
+
             } else if (isSelectStartGesture(evt)) {
 
                 selectionNode = source;
@@ -208,22 +199,24 @@ public class ConcreteTextSelector implements Selector {
                                 newShape));
                 copyToClipboard(oldSelection);
 
-            } 
+            }
         }
     }
 
     private boolean isSelectStartGesture(GraphicsNodeEvent evt) {
-        return (evt.getID() == GraphicsNodeMouseEvent.MOUSE_PRESSED);
+        return ((evt.getID() == GraphicsNodeMouseEvent.MOUSE_PRESSED)
+          || ( isMouseButton1Down(evt) &&
+             (evt.getID() == GraphicsNodeMouseEvent.MOUSE_ENTERED) ));
     }
 
     private boolean isSelectEndGesture(GraphicsNodeEvent evt) {
-        return (evt.getID() == GraphicsNodeMouseEvent.MOUSE_RELEASED);
+        return ((evt.getID() == GraphicsNodeMouseEvent.MOUSE_RELEASED)
+          || ( isMouseButton1Down(evt) &&
+             (evt.getID() == GraphicsNodeMouseEvent.MOUSE_EXITED) ));
     }
 
     private boolean isSelectContinueGesture(GraphicsNodeEvent evt) {
-        return ((evt.getID() == GraphicsNodeMouseEvent.MOUSE_DRAGGED)
-          || ( isMouseButton1Down(evt) && 
-             (evt.getID() == GraphicsNodeMouseEvent.MOUSE_EXITED) ));
+        return (evt.getID() == GraphicsNodeMouseEvent.MOUSE_DRAGGED);
     }
 
     private boolean isSelectAllGesture(GraphicsNodeEvent evt) {
@@ -232,7 +225,7 @@ public class ConcreteTextSelector implements Selector {
     }
 
     private boolean isMouseButton1Down(GraphicsNodeEvent evt) {
-        return ((((GraphicsNodeInputEvent) evt).getModifiers() 
+        return ((((GraphicsNodeInputEvent) evt).getModifiers()
                & (GraphicsNodeInputEvent.BUTTON1_MASK)) != 0 );
     }
 
