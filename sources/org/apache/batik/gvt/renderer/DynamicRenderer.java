@@ -119,7 +119,6 @@ public class DynamicRenderer extends StaticRenderer {
                 (rootCR.getColorModel(), 
                  workingRaster,
                  rootCR.getColorModel().isAlphaPremultiplied(), null);
-
         }
 
         if (!isDoubleBuffered) {
@@ -160,8 +159,8 @@ public class DynamicRenderer extends StaticRenderer {
         updateWorkingBuffers();
         if ((rootCR == null)           ||
             (workingBaseRaster == null)) {
-            // System.out.println("RootCR: " + rootCR);
-            // System.out.println("wrkBaseRaster: " + workingBaseRaster);
+            // System.err.println("RootCR: " + rootCR);
+            // System.err.println("wrkBaseRaster: " + workingBaseRaster);
             return;
         }
         cr = rootCR;

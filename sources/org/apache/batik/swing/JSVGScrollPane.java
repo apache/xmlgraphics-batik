@@ -345,12 +345,15 @@ public class JSVGScrollPane extends JPanel
 		
         public void gvtBuildPrepare  (GVTTreeBuilderEvent e) { 
             isReady = false;
+            // Start by assuming we won't need them.
+            vertical       .setVisible(false);
+            horizontalPanel.setVisible(false);
+            cornerBox      .setVisible(false);
         }
         public void gvtBuildCompleted(GVTTreeBuilderEvent e)
         {
             isReady = true;
             viewBox = null;   // new document forget old viewBox if any.
-            resizeScrollBars();
         }// gvtRenderingCompleted()
 		
         public void updateCompleted(UpdateManagerEvent e) { 
