@@ -34,6 +34,7 @@ import org.apache.batik.gvt.event.GraphicsNodeChangeEvent;
 public class UpdateTracker extends GraphicsNodeChangeAdapter {
 
     Map dirtyNodes = null;
+    Map nodeBounds = new HashMap();
 
     public UpdateTracker(){
     }
@@ -58,11 +59,19 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
         Set keys = dirtyNodes.keySet();
         Iterator i = keys.iterator();
         while (i.hasNext()) {
-            GraphicsNode gn = (GraphicsNode)((WeakReference)i.next()).get();
-            DirtyInfo di = (DirtyInfo)dirtyNodes.get(gn.getWeakReference());
+            WeakReference gnWRef = (WeakReference)i.next();
+            GraphicsNode  gn     = (GraphicsNode)gnWRef.get();
 
-            Rectangle2D srcORgn = di.getOriginalRgn().getBounds2D();
-            AffineTransform oat = di.getGn2Parent();
+            // if the weak ref has been cleared then this node is no
+            // longer part of the GVT tree (and the change should be
+            // reflected in some ancestor that should also be in the
+            // dirty list).
+            if (gn == null) continue;
+
+            AffineTransform oat;
+            oat = (AffineTransform)dirtyNodes.get(gnWRef);
+            
+            Rectangle2D srcORgn = (Rectangle2D)nodeBounds.get(gnWRef);
 
             Rectangle2D srcNRgn = gn.getBounds();
             AffineTransform nat = gn.getTransform();
@@ -82,9 +91,8 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
                 // f.invalidateCache(nRng);
 
                 gn = gn.getParent();
-                if (gn == null){
-                    break;
-                }
+                if (gn == null) break;
+                if (dirtyNodes.get(gn.getWeakReference()) != null) break;
 
                 AffineTransform at = gn.getTransform();
 
@@ -105,8 +113,7 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
                     nat = at;
                 }
 
-            } while ((gn != null) && 
-                     (dirtyNodes.get(gn.getWeakReference()) == null));
+            } while (true);
 
             if (gn == null) {
                 // We made it to the root graphics node so add them.
@@ -130,14 +137,21 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
 
         if (dirtyNodes == null) {
             dirtyNodes = new HashMap();
-            dirtyNodes.put(gnWRef, new DirtyInfo(gn, gn.getBounds()));
-            return;
+            dirtyNodes.put(gnWRef, gn.getTransform());
+        } else {
+            Object o = dirtyNodes.get(gnWRef);
+            if (o == null)
+                dirtyNodes.put(gnWRef, gn.getTransform());
         }
 
-        DirtyInfo di = (DirtyInfo)dirtyNodes.get(gnWRef);
-        if (di != null) return;
-
-        dirtyNodes.put(gnWRef, new DirtyInfo(gn, gn.getBounds()));
+        Object o = nodeBounds.get(gnWRef);
+        while (o == null) {
+            nodeBounds.put(gnWRef, gn.getBounds());
+            gn = gn.getParent();
+            if (gn == null) break;
+            gnWRef = gn.getWeakReference();
+            o = nodeBounds.get(gnWRef);
+        }
     }
 
     /**
@@ -151,26 +165,16 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
         // Always references a GraphicsNode.
         WeakReference   gn;
 
-        // The original location affected by this gn in the gn's
-        // coordinate system.
-        Shape           rgn;
-
         // The transform from gn to parent at time of construction.
         AffineTransform gn2parent;
 
-        public DirtyInfo(GraphicsNode gn, Shape rgn) {
+        public DirtyInfo(GraphicsNode gn, AffineTransform at) {
             this.gn     = gn.getWeakReference();
-            this.rgn    = rgn;
-
-            this.gn2parent = gn.getInverseTransform();
+            this.gn2parent = at;
         }
 
         public GraphicsNode getGraphicsNode() {
             return (GraphicsNode)gn.get();
-        }
-
-        public Shape getOriginalRgn() {
-            return rgn;
         }
 
         public AffineTransform getGn2Parent() {

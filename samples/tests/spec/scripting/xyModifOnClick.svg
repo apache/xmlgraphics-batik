@@ -62,6 +62,6 @@
 
         <text class="legend" x="225" y="145">Click on the Position A or Position B</text>
         <text class="legend" x="225" y="160">target (crimson circle) to move the rectangle</text>
-        <text class="legend" x="225" y="175">to anew position</text>
+        <text class="legend" x="225" y="175">to a new position</text>
     </g>
 </svg>

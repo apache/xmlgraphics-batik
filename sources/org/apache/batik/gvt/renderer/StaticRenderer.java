@@ -68,7 +68,7 @@ public class StaticRenderer implements ImageRenderer {
     /**
      * Flag for double buffering.
      */
-    private boolean isDoubleBuffered = false;
+    protected boolean isDoubleBuffered = false;
 
     /**
      * Offscreen image where the Renderer does its rendering
@@ -422,8 +422,11 @@ public class StaticRenderer implements ImageRenderer {
         if (lastCache == null) return;
         Object o = lastCache.get();
         if (o == null) return;
-        
+
         TileCacheRed tcr = (TileCacheRed)o;
+        r = (Rectangle)r.clone();
+        r.x -= Math.round((float)usr2dev.getTranslateX());
+        r.y -= Math.round((float)usr2dev.getTranslateY());
         tcr.flushCache(r);
     }
 

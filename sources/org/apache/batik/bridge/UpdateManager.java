@@ -315,18 +315,17 @@ public class UpdateManager implements RunnableQueue.RunHandler {
     public void updateRendering(List areas) {
         try {
             fireStartedEvent(renderer.getOffScreen());
-            Iterator i = areas.iterator();
             List rects = new ArrayList(areas.size());
             AffineTransform at = renderer.getTransform();
 
+            Iterator i = areas.iterator();
             while (i.hasNext()) {
                 Shape s = (Shape)i.next();
-                renderer.flush(s.getBounds());
                 Rectangle r = at.createTransformedShape(s).getBounds();
+                renderer.flush(r);
                 rects.add(r);
             }
 
-            renderer.setTransform(renderer.getTransform());
             renderer.repaint(areas);
             fireCompletedEvent(renderer.getOffScreen(), rects);
         } catch (Exception e) {
