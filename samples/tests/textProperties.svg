@@ -16,8 +16,11 @@
 <!-- @author bill.haneman@ireland.sun.com                                      -->
 <!-- @version $Id$                                                             -->
 <!-- ========================================================================= -->
+<?xml-stylesheet type="text/css" href="test.css" ?>
 
 <svg width="450" height="500" viewBox="0 0 450 500">
+<title>Text Properties</title>
+
     <!-- ============================================================= -->
     <!-- Test content                                                  -->
     <!-- ============================================================= -->
@@ -39,11 +42,11 @@
     </defs>
 
     <g id="testContent" text-anchor="middle">
-        <text x="50%" y="10%" font-size="3%" >
+        <text class="title" x="50%" y="10%" font-size="3%" >
             Text Alignment, Geometry, References, and Spans</text>
 
         <g font-size="3%">
-            <line x1="50%" y1="12%" x2="50%" y2="30%" stroke="Gray" stroke-width="1"/>
+            <line x1="50%" y1="14%" x2="50%" y2="28%" stroke="Gray" stroke-width="1"/>
             <text x="50%"  y="18%" text-anchor="start" fill="MidnightBlue">
                text-anchor="start"</text>
             <text x="50%"  y="22%" text-anchor="middle" fill="DarkRed">

@@ -16,7 +16,7 @@
 <!-- @author bill.haneman@ireland.sun.com                                      -->
 <!-- @version $Id$                                                             -->
 <!-- ========================================================================= -->
-
+<?xml-stylesheet type="text/css" href="test.css" ?>
 <svg width="450" height="500" viewBox="0 0 450 500">
     <!-- ============================================================= -->
     <!-- Test content                                                  -->
@@ -29,7 +29,7 @@
     </defs>
 
     <g id="testContent">
-        <text x="50%" y="10%" font-size="3%" text-anchor="middle" >
+        <text class="title" x="50%" y="10%" font-size="3%" text-anchor="middle" >
             Text Element Features</text>
       <g font-family="dialog" font-size="3%" 
                   text-anchor="start" fill="MidnightBlue">
@@ -49,7 +49,7 @@
             <tspan font-style="oblique">posture,</tspan> and 
             <tspan font-family="serif">typeface.</tspan>
         </text>
-        <rect x="10%" y="40%" width="45%" height="10%" fill="LightBlue"/>
+        <rect x="10%" y="40%" width="45%" height="10%" fill="DodgerBlue"/>
         <text x="10%" y="45%">
         Graphics attributes such as 
             <tspan fill="red" opacity="0.3">opacity</tspan> can be applied.

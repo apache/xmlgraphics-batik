@@ -16,8 +16,10 @@
 <!-- @author dean.jackson@cmis.csiro.au                                        -->
 <!-- @version $Id$                                                             -->
 <!-- ========================================================================= -->
+<?xml-stylesheet type="text/css" href="test.css" ?>
 
 <svg id="body" width="450" height="500" viewBox="0 0 450 500">
+<title>Text on a path</title>
     <!-- ============================================================= -->
     <!-- Test content                                                  -->
     <!-- ============================================================= -->
@@ -42,7 +44,7 @@
          </defs>
 
 
-        <text x="50%" y="10%" font-size="7%" text-anchor="middle" >Text on a Path</text>
+        <text class="title" x="50%" y="10%" text-anchor="middle" >Text on a Path</text>
 
 	<g transform="translate(25, 100)" style="text-anchor: middle; font-size:25;">
 	  <use xlink:href="#path1"/>

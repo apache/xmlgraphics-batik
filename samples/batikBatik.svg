@@ -10,8 +10,8 @@
 <!-- ========================================================================= -->
 
 <!-- ========================================================================= -->
-<!-- @author bill.haneman@ireland.sun.com                                         -->
-<!-- @version $Id$                                                             -->
+<!-- @author bill.haneman@ireland.sun.com                                      -->
+<!-- @version $Id$        -->
 <!-- ========================================================================= -->
 
 <svg  width="450" height="500" xml:space="preserve" viewBox="0 0 450 500">
@@ -31,7 +31,9 @@
                 <feFuncB type="table" tableValues="1  .4  0  0   0 0" />
                 <feFuncA type="linear" slope="1" intercept="0"/>
             </feComponentTransfer>
+            <feComposite operator="in" in2="SourceGraphic" />
         </filter>
+
         <filter id="tableBlueAquaTint" filterUnits="objectBoundingBox" 
               x="0%" y="0%" width="100%" height="100%">
             <feTurbulence type="turbulence" baseFrequency="0.01" numOctaves="2"/>
@@ -71,10 +73,6 @@
                 <feFuncA type="linear" slope="1" intercept="0" />
             </feComponentTransfer>
         </filter>
-
-<!--    <text x="50%" y="35%" text-anchor="middle" style="font-family:Serif; font-size:30%;font-weight:bold" id="logoText">
-                        Batik
-        </text>-->
 
         <clipPath id="logoClip" transform="scale(0.9)">
 	    <path transform="scale(0.9)" id="logoText" d="M64.994,178.963V77.831c0-6.188-0.57-10.773-1.707-13.754c-1.137-2.977-3.066-5.461-5.793-7.449c-1.137-0.766-2.367-1.395-3.695-1.891s-3.012-0.938-5.055-1.32c-2.125-0.371-3.488-0.781-4.094-1.23s-0.906-1.121-0.906-2.02c0-1.195,0.32-2.035,0.969-2.52
@@ -128,25 +126,24 @@ c0.523-0.648,1.613-1.434,3.27-2.355c0.375-0.227,0.789-0.492,1.242-0.797c1.273-0.
 
     <rect width="100%" height="100%" filter="url(#tableBlueAquaTint)" /> 
     <g width="100%" height="100%">
-    <rect width="100%" height="100%" filter="url(#tableRedOrangeTint)" style="clip-path:url(#logoClip)"/>    
     </g>
 
     <g x="50%" y="50%" style="fill:none; stroke:white; stroke-width:4; stroke-linecap:round; stroke-linejoin:round">
-        <use xlink:href="#logoText" stroke-width="4.5" opacity="0.7"/>
+        <use xlink:href="#logoText" stroke-width="7" opacity="0.7"/>
         <g>
         <rect width="100%" height="100%" filter="url(#tableBlueVioletTint)" style="clip-path:url(#clipLeaf2)"/>    
         <use xlink:href="#leaf2" opacity="0.7"/>
         </g>
         <g transform="rotate(25) translate(110, -165)">
-        <rect width="100%" height="100%" filter="url(#tableRedOrangeTint)" style="clip-path:url(#clipLeaf1)"/>    
+        <use xlink:href="#leaf1" stroke="none" fill="black" filter="url(#tableRedOrangeTint)" />
         <use xlink:href="#leaf1" opacity="0.7"/>
         </g>
         <g>
-        <rect width="100%" height="100%" filter="url(#tableRedOrangeTint)" style="clip-path:url(#clipLeaf1)"/>    
+        <use xlink:href="#leaf1" stroke="none" fill="black" filter="url(#tableRedOrangeTint)" />
         <use xlink:href="#leaf1" opacity="0.7"/>
         </g>
         <g transform="rotate(-25) translate(-180, 90)">
-        <rect width="100%" height="100%" filter="url(#tableRedOrangeTint)" style="clip-path:url(#clipLeaf1)"/>    
+        <use xlink:href="#leaf1" stroke="none" fill="black" filter="url(#tableRedOrangeTint)" />
         <use xlink:href="#leaf1" opacity="0.7"/>
         </g>
         <g transform="rotate(82) translate(120, -595)">
@@ -159,11 +156,4 @@ c0.523-0.648,1.613-1.434,3.27-2.355c0.375-0.227,0.789-0.492,1.242-0.797c1.273-0.
         <use xlink:href="#stalk2" opacity="0.7"/>
     </g>
 
-    <!-- ============================================================= -->
-    <!-- Batik sample mark                                             -->
-    <!-- ============================================================= -->
-
-    <rect x="1" y="1" width="446" height="496" fill="none" stroke="black" />
-    <use xlink:href="./testTemplate.svg#BatikTag" />
-    
 </svg>
