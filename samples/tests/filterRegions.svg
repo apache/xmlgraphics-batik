@@ -307,12 +307,11 @@
     <rect x="0" y="3000" width="20000000" height="25" style="filter:url(#filterRegion_1);" />
     <rect class="filterRegionControl" x="20" y="30" width="50" height="40" />
     <text x="45" y="25" class="filterRegionControlLabel">filterRegion_1</text> 
-
     <!-- ============================ -->
     <!-- filterRegion_2               -->
     <!-- ============================ -->
     <g transform="translate(100, 0)">
-        <rect x="0" y="3000" width="20000000" height="25" style="filter:url(#filterRegion_2);" />
+-       <rect x="0" y="3000" width="20000000" height="25" style="filter:url(#filterRegion_2);" />
         <rect class="filterRegionControl" x="25" y="35" width="45" height="35" />
         <text x="45" y="25" class="filterRegionControlLabel">filterRegion_2</text>
     </g>
@@ -420,17 +419,6 @@
     </g>
 
     <!-- ============================ -->
-    <!-- filterRegion_3_0             -->
-    <!-- ============================ -->
-    <g transform="translate(320, 330)" style="filter:url(#filterRegion_3_0);">
-        <rect x="0" y="0" width="40" height="50" />
-    </g>
-    <g transform="translate(320, 330)">
-        <rect class="filterRegionControl" x="-4" y="-5" width="48" height="60" />
-        <text x="45" y="25" class="filterRegionControlLabel">filterRegion_3_0</text>
-    </g>
-
-    <!-- ============================ -->
     <!-- filterRegion_3_1             -->
     <!-- ============================ -->
     <g transform="translate(0, 330)" style="filter:url(#filterRegion_3_1);">
@@ -439,6 +427,17 @@
     <g transform="translate(0, 330)">
         <rect class="filterRegionControl" x="20" y="30" width="20" height="25" />
         <text x="45" y="25" class="filterRegionControlLabel">filterRegion_3_1</text>
+    </g>
+
+    <!-- ============================ -->
+    <!-- filterRegion_3_0             -->
+    <!-- ============================ -->
+    <g transform="translate(320, 330)" style="filter:url(#filterRegion_3_0);">
+        <rect x="0" y="0" width="40" height="50" />
+    </g>
+    <g transform="translate(320, 330)">
+        <rect class="filterRegionControl" x="-4" y="-5" width="48" height="60" />
+        <text x="45" y="25" class="filterRegionControlLabel">filterRegion_3_0</text>
     </g>
 
     <!-- ============================ -->
