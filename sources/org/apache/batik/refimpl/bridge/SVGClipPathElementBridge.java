@@ -89,7 +89,6 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
         Shape clipElementClipPath =
             CSSUtilities.convertClipPath(clipElement, gn, bridgeContext);
         if (clipElementClipPath != null) {
-            System.out.println(clipElementClipPath);
             area.subtract(new Area(clipElementClipPath));
         }
         bridgeContext.setCurrentViewport(oldViewport);
