@@ -57,7 +57,7 @@ import org.apache.batik.util.gui.UserStyleDialog;
  * @author <a href="mailto:vhardy@apache.org">Vincent Hardy</a>
  * @version $Id$
  */
-public class PreferenceDialog extends JDialog 
+public class PreferenceDialog extends JDialog
     implements GridBagConstants {
 
     /**
@@ -86,7 +86,7 @@ public class PreferenceDialog extends JDialog
     public static final String ICON_NETWORK
         = "PreferenceDialog.icon.networkPref";
 
-    public static final String LABEL_USER_OPTIONS 
+    public static final String LABEL_USER_OPTIONS
         = "PreferenceDialog.label.user.options";
 
     public static final String LABEL_BEHAVIOR
@@ -95,7 +95,7 @@ public class PreferenceDialog extends JDialog
     public static final String LABEL_NETWORK
         = "PreferenceDialog.label.network";
 
-    public static final String LABEL_USER_LANGUAGE 
+    public static final String LABEL_USER_LANGUAGE
         = "PreferenceDialog.label.user.language";
 
     public static final String LABEL_USER_STYLESHEET
@@ -137,7 +137,7 @@ public class PreferenceDialog extends JDialog
     public static final String LABEL_CANCEL
         = "PreferenceDialog.label.cancel";
 
-    public static final String TITLE_BEHAVIOR 
+    public static final String TITLE_BEHAVIOR
         = "PreferenceDialog.title.behavior";
 
     public static final String TITLE_NETWORK
@@ -145,14 +145,14 @@ public class PreferenceDialog extends JDialog
 
     public static final String TITLE_DIALOG
         = "PreferenceDialog.title.dialog";
-    
-    public static final String CONFIG_HOST_TEXT_FIELD_LENGTH 
+
+    public static final String CONFIG_HOST_TEXT_FIELD_LENGTH
         = "PreferenceDialog.config.host.text.field.length";
 
     public static final String CONFIG_PORT_TEXT_FIELD_LENGTH
         = "PreferenceDialog.config.port.text.field.length";
 
-    public static final String CONFIG_OK_MNEMONIC 
+    public static final String CONFIG_OK_MNEMONIC
         = "PreferenceDialog.config.ok.mnemonic";
 
     public static final String CONFIG_CANCEL_MNEMONIC
@@ -162,10 +162,10 @@ public class PreferenceDialog extends JDialog
     // Following are the preference keys used in the
     // PreferenceManager model.
     //////////////////////////////////////////////////////////////
-    
+
     public static final String PREFERENCE_KEY_LANGUAGES
         = "preference.key.languages";
-    
+
     public static final String PREFERENCE_KEY_IS_XML_PARSER_VALIDATING
         = "preference.key.is.xml.parser.validating";
 
@@ -291,16 +291,19 @@ public class PreferenceDialog extends JDialog
 
         isXMLParserValidating.setSelected(model.getBoolean(PREFERENCE_KEY_IS_XML_PARSER_VALIDATING));
 
+        showRendering.setEnabled
+            (!model.getBoolean(PREFERENCE_KEY_ENABLE_DOUBLE_BUFFERING));
+
         //
         // Initialize the proxy options
         //
         host.setText(model.getString(PREFERENCE_KEY_PROXY_HOST));
         port.setText(model.getString(PREFERENCE_KEY_PROXY_PORT));
 
-	//
-	// Initialize the CSS media
-	//
-	cssMediaPanel.setMedia(model.getString(PREFERENCE_KEY_CSS_MEDIA));
+        //
+        // Initialize the CSS media
+        //
+        cssMediaPanel.setMedia(model.getString(PREFERENCE_KEY_CSS_MEDIA));
         //
         // Sets the dialog's title
         //
@@ -324,9 +327,9 @@ public class PreferenceDialog extends JDialog
         model.setBoolean(PREFERENCE_KEY_SHOW_DEBUG_TRACE,
                          showDebugTrace.isSelected());
         model.setBoolean(PREFERENCE_KEY_SELECTION_XOR_MODE,
-			 selectionXorMode.isSelected());
+                         selectionXorMode.isSelected());
         model.setBoolean(PREFERENCE_KEY_IS_XML_PARSER_VALIDATING,
-			 isXMLParserValidating.isSelected());
+                         isXMLParserValidating.isSelected());
 
         model.setString(PREFERENCE_KEY_PROXY_HOST,
                         host.getText());
@@ -396,7 +399,7 @@ public class PreferenceDialog extends JDialog
     }
 
     protected Component buildConfigPanelList(){
-        String[] configList 
+        String[] configList
             = { Resources.getString(LABEL_NETWORK),
                 Resources.getString(LABEL_USER_LANGUAGE),
                 Resources.getString(LABEL_BEHAVIOR),
@@ -437,16 +440,16 @@ public class PreferenceDialog extends JDialog
 
         configPanel.add(buildUserStyleSheet(),
                         Resources.getString(LABEL_USER_STYLESHEET));
-        
+
         configPanel.add(buildBehavior(),
                         Resources.getString(LABEL_BEHAVIOR));
-        
+
         configPanel.add(buildNetwork(),
                         Resources.getString(LABEL_NETWORK));
-        
+
         configPanel.add(buildApplications(),
                         Resources.getString(LABEL_APPLICATIONS));
-        
+
         configPanelSelector = new ConfigurationPanelSelector(configPanel,
                                                              cardLayout);
 
@@ -470,14 +473,14 @@ public class PreferenceDialog extends JDialog
     }
 
     protected Component buildUserStyleSheet(){
-	JPanel panel = new JPanel(new BorderLayout());
-	panel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
 
         userStylesheetPanel = new UserStyleDialog.Panel();
-	panel.add(userStylesheetPanel, BorderLayout.NORTH);
+        panel.add(userStylesheetPanel, BorderLayout.NORTH);
 
-	cssMediaPanel = new CSSMediaPanel();
-	panel.add(cssMediaPanel, BorderLayout.SOUTH);
+        cssMediaPanel = new CSSMediaPanel();
+        panel.add(cssMediaPanel, BorderLayout.SOUTH);
 
         return panel;
     }
@@ -488,12 +491,18 @@ public class PreferenceDialog extends JDialog
 
     protected Component buildBehavior(){
         JGridBagPanel p = new JGridBagPanel();
-        showRendering 
+        showRendering
             = new JCheckBox(Resources.getString(LABEL_SHOW_RENDERING));
         autoAdjustWindow
             = new JCheckBox(Resources.getString(LABEL_AUTO_ADJUST_WINDOW));
         enableDoubleBuffering
             = new JCheckBox(Resources.getString(LABEL_ENABLE_DOUBLE_BUFFERING));
+        enableDoubleBuffering.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                System.out.println("enableDoubleBuffering.actionPerformed");
+                showRendering.setEnabled(!enableDoubleBuffering.isSelected());
+            }
+        });
         showDebugTrace
             = new JCheckBox(Resources.getString(LABEL_SHOW_DEBUG_TRACE));
 
@@ -566,7 +575,7 @@ public class PreferenceDialog extends JDialog
         defaults.put(PREFERENCE_KEY_PROXY_HOST, "webcache.eng.sun.com");
         defaults.put(PREFERENCE_KEY_PROXY_PORT, "8080");
 
-        XMLPreferenceManager manager 
+        XMLPreferenceManager manager
             = new XMLPreferenceManager(args[0], defaults);
         PreferenceDialog dlg = new PreferenceDialog(manager);
         int c = dlg.showDialog();
@@ -649,42 +658,42 @@ class IconCellRenderer extends JLabel
      * in a list.
      */
     public IconCellRenderer(Map map) {
-	super();
+        super();
     this.map = map;
-       	noFocusBorder = BorderFactory.createEmptyBorder(1, 1, 1, 1);
-	setOpaque(true);
-	setBorder(noFocusBorder);
+        noFocusBorder = BorderFactory.createEmptyBorder(1, 1, 1, 1);
+        setOpaque(true);
+        setBorder(noFocusBorder);
     }
 
 
     public Component getListCellRendererComponent(
         JList list,
-	Object value,
+        Object value,
         int index,
         boolean isSelected,
         boolean cellHasFocus)
     {
-        
+
         setComponentOrientation(list.getComponentOrientation());
-        
-	if (isSelected) {
-	    setBackground(list.getSelectionBackground());
-	    setForeground(list.getSelectionForeground());
-	}
-	else {
-	    setBackground(list.getBackground());
-	    setForeground(list.getForeground());
-	}
 
-	setBorder((cellHasFocus) ? UIManager.getBorder("List.focusCellHighlightBorder") : noFocusBorder);
+        if (isSelected) {
+            setBackground(list.getSelectionBackground());
+            setForeground(list.getSelectionForeground());
+        }
+        else {
+            setBackground(list.getBackground());
+            setForeground(list.getForeground());
+        }
 
-	/*if (value instanceof Icon) {
-	    setIcon((Icon)value);
-	    setText("");
-	}
-	else {
-	    setIcon(null);
-	    setText((value == null) ? "" : value.toString());
+        setBorder((cellHasFocus) ? UIManager.getBorder("List.focusCellHighlightBorder") : noFocusBorder);
+
+        /*if (value instanceof Icon) {
+            setIcon((Icon)value);
+            setText("");
+        }
+        else {
+            setIcon(null);
+            setText((value == null) ? "" : value.toString());
         }*/
 
     setText(value.toString());
@@ -695,10 +704,10 @@ class IconCellRenderer extends JLabel
             setHorizontalTextPosition(CENTER);
             setVerticalTextPosition(BOTTOM);
         }
-	setEnabled(list.isEnabled());
-	setFont(list.getFont());
+        setEnabled(list.isEnabled());
+        setFont(list.getFont());
 
-	return this;
+        return this;
     }
 
 
@@ -735,9 +744,9 @@ class IconCellRenderer extends JLabel
     * for more information.
     */
     protected void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
-	// Strings get interned...
-	if (propertyName=="text")
-	    super.firePropertyChange(propertyName, oldValue, newValue);
+        // Strings get interned...
+        if (propertyName=="text")
+            super.firePropertyChange(propertyName, oldValue, newValue);
     }
 
    /**
