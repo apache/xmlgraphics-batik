@@ -473,8 +473,14 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
             throw new IllegalArgumentException(o+" is not a GraphicsNode");
         }
         checkRange(index);
-        fireGraphicsNodeChangeStarted();
         GraphicsNode node = (GraphicsNode) o;
+        {
+            Rectangle2D     rgn = node.getBounds();
+            AffineTransform at  = node.getTransform();
+            if ((rgn != null) && (at != null))
+                rgn = at.createTransformedShape(rgn).getBounds2D();
+            fireGraphicsNodeChangeStarted(rgn,rgn);
+        }
         // Reparent the graphics node and tidy up the tree's state
         if (node.getParent() != null) {
             node.getParent().getChildren().remove(node);
@@ -513,7 +519,13 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
             throw new IllegalArgumentException(o+" is not a GraphicsNode");
         }
         GraphicsNode node = (GraphicsNode) o;
-        fireGraphicsNodeChangeStarted();
+        {
+            Rectangle2D     rgn = node.getBounds();
+            AffineTransform at  = node.getTransform();
+            if ((rgn != null) && (at != null))
+                rgn = at.createTransformedShape(rgn).getBounds2D();
+            fireGraphicsNodeChangeStarted(rgn,rgn);
+        }
         // Reparent the graphics node and tidy up the tree's state
         if (node.getParent() != null) {
             node.getParent().getChildren().remove(node);
@@ -557,7 +569,13 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
                 "Index: "+index+", Size: "+count);
         }
         GraphicsNode node = (GraphicsNode) o;
-        fireGraphicsNodeChangeStarted();
+        {
+            Rectangle2D     rgn = node.getBounds();
+            AffineTransform at  = node.getTransform();
+            if ((rgn != null) && (at != null))
+                rgn = at.createTransformedShape(rgn).getBounds2D();
+            fireGraphicsNodeChangeStarted(rgn,rgn);
+        }
         // Reparent the graphics node and tidy up the tree's state
         if (node.getParent() != null) {
             node.getParent().getChildren().remove(node);
@@ -631,10 +649,16 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
     public Object remove(int index) {
         // Check for correct argument
         checkRange(index);
-        fireGraphicsNodeChangeStarted();
+        GraphicsNode oldNode = children[index];
+        {
+            Rectangle2D     rgn = oldNode.getBounds();
+            AffineTransform at  = oldNode.getTransform();
+            if ((rgn != null) && (at != null))
+                rgn = at.createTransformedShape(rgn).getBounds2D();
+            fireGraphicsNodeChangeStarted(rgn,rgn);
+        }
         // Remove the node at the specified index
         modCount++;
-        GraphicsNode oldNode = children[index];
         int numMoved = count - index - 1;
         if (numMoved > 0) {
             System.arraycopy(children, index+1, children, index, numMoved);

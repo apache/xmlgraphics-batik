@@ -611,11 +611,32 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     //
     // Event support methods
     //
+    public void fireGraphicsNodeChangeStarted(Rectangle2D from,
+                                              Rectangle2D to) {
+        if (changeStartedEvent == null)
+            changeStartedEvent = new GraphicsNodeChangeEvent
+                (this, GraphicsNodeChangeEvent.CHANGE_STARTED);
+        changeStartedEvent.setFrom(from);
+        changeStartedEvent.setTo(to);
+        fireGraphicsNodeChangeStarted(changeStartedEvent);
+    }
+
+    //
+    // Event support methods
+    //
     public void fireGraphicsNodeChangeStarted() {
         if (changeStartedEvent == null)
             changeStartedEvent = new GraphicsNodeChangeEvent
                 (this, GraphicsNodeChangeEvent.CHANGE_STARTED);
+        else {
+            changeStartedEvent.setFrom(null);
+            changeStartedEvent.setTo(null);
+        }
+        fireGraphicsNodeChangeStarted(changeStartedEvent);
+    }
 
+    public void fireGraphicsNodeChangeStarted
+        (GraphicsNodeChangeEvent changeStartedEvent) {
         // If we had per node listeners we would fire them here...
 
         RootGraphicsNode rootGN = getRoot();
