@@ -13,7 +13,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import org.w3c.dom.*;
-import org.apache.batik.dom.svg.SVGDOMImplementation;
+import org.apache.batik.dom.svg.ExtensibleSVGDOMImplementation;
 import org.apache.batik.dom.svg.SVGOMDocument;
 
 import org.apache.batik.util.SVGConstants;
@@ -46,7 +46,7 @@ public class SVGGraphics2DUnitTester implements SVGConstants {
 
     protected Document getDocumentPrototype() {
         return new SVGOMDocument(null,
-                                 SVGDOMImplementation.getDOMImplementation());
+                                 ExtensibleSVGDOMImplementation.getDOMImplementation());
     }
 
     protected SVGGeneratorContext getContext(Document domFactory) {

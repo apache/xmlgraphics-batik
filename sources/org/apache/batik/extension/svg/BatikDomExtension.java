@@ -86,6 +86,11 @@ public class BatikDomExtension
             (BATIK_EXT_NAMESPACE_URI,
              BATIK_EXT_HISTOGRAM_NORMALIZATION_TAG,
              new BatikHistogramNormalizationElementFactory());
+
+        di.registerCustomElementFactory
+            (BATIK_EXT_NAMESPACE_URI,
+             BATIK_EXT_SOLID_COLOR_TAG,
+             new SolidColorElementFactory());
     }
 
     /**
@@ -130,6 +135,22 @@ public class BatikDomExtension
         public Element create(String prefix, Document doc) {
             return new BatikHistogramNormalizationElement
                 (prefix, (AbstractDocument)doc);
+        }
+    }
+
+    /**
+     * To create a 'solidColor' element.
+     */
+    protected static class SolidColorElementFactory 
+        implements SVGDOMImplementation.ElementFactory {
+        public SolidColorElementFactory() {
+            System.out.println("FActory created");
+        }
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix, Document doc) {
+            return new SolidColorElement(prefix, (AbstractDocument)doc);
         }
     }
 
