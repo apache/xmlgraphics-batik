@@ -8,6 +8,7 @@
 
 package org.apache.batik.bridge;
 
+import java.awt.geom.Dimension2D;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.Collections;
@@ -17,6 +18,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.batik.css.HiddenChildElementSupport;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
@@ -114,6 +116,11 @@ public class BridgeContext implements ErrorConstants {
      * The document loader used to load/create Document.
      */
     protected DocumentLoader documentLoader;
+
+    /**
+     * The size of the document.
+     */
+    protected Dimension2D documentSize;
 
     /**
      * Constructs a new empty bridge context.
@@ -287,12 +294,33 @@ public class BridgeContext implements ErrorConstants {
     /////////////////////////////////////////////////////////////////////////
 
     /**
+     * Returns the actual size of the document or null if the document
+     * has not ben built yet.
+     */
+    public Dimension2D getDocumentSize() {
+        return documentSize;
+    }
+
+    /**
+     * Sets the size of the document to the specified dimension.
+     *
+     * @param d the actual size of the SVG document
+     */
+    protected void setDocumentSize(Dimension2D d) {
+        this.documentSize = d;
+    }
+
+    /**
      * Returns the viewport of the specified element.
      * @param e the element interested in its viewport
      */
     public Viewport getViewport(Element e) {
         if (viewportStack != null) { // building time
-            return (Viewport)viewportStack.get(0);
+            if (viewportStack.size() > 0) {
+                return (Viewport)viewportStack.get(0);
+            } else {
+                return (Viewport)viewportMap.get(userAgent);
+            }
         } else {
             // search the first parent which has defined a viewport
             e = HiddenChildElementSupport.getParentElement(e);
