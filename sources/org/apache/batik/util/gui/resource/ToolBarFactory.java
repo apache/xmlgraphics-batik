@@ -75,7 +75,7 @@ public class ToolBarFactory extends ResourceManager {
         while (it.hasNext()) {
 	    String s = (String)it.next();
 	    if (s.equals(SEPARATOR)) {
-		result.addSeparator();
+		result.add(new JToolbarSeparator());
 	    } else {
 		result.add(createJButton(s));
 	    }
@@ -97,6 +97,6 @@ public class ToolBarFactory extends ResourceManager {
 	throws MissingResourceException,
 	       ResourceFormatException,
 	       MissingListenerException {
-	return buttonFactory.createJButton(name);
+	return buttonFactory.createJToolbarButton(name);
     }
 }
