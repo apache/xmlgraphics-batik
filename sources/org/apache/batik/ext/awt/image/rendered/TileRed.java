@@ -54,6 +54,8 @@ public class TileRed extends AbstractRed implements TileGenerator {
 
     private RenderingHints  hints;
 
+    final boolean is_INT_PACK;
+
     /**
      * Tile
      */
@@ -99,14 +101,28 @@ public class TileRed extends AbstractRed implements TileGenerator {
         SampleModel sm = fixSampleModel(tile, tiledRegion);
         ColorModel cm = tile.getColorModel();
 
+        double smSz   = sm.getWidth()*sm.getHeight();
+        double stepSz = (xStep*(double)yStep);
+        if (2.0*smSz > stepSz) {
+            int xSz = xStep;
+            int ySz = yStep;
 
-        if ((2.0*sm.getWidth()*sm.getHeight()) > (xStep*(double)yStep))
-            {
-                sm = sm.createCompatibleSampleModel(xStep, yStep);
-                raster = Raster.createWritableRaster
-                    (sm, new Point(tile.getMinX(), tile.getMinY()));
+            // If the pattern size is small then have multiple copies
+            // in our tile.
+            if (4*stepSz < smSz) {
+                double mult = smSz/stepSz;
+                double sqrt = Math.sqrt(mult);
+                xSz *= (int)sqrt;
+                ySz *= (int)sqrt;
             }
+
+            sm = sm.createCompatibleSampleModel(xSz, ySz);
+            raster = Raster.createWritableRaster
+                (sm, new Point(tile.getMinX(), tile.getMinY()));
+        }
         
+        is_INT_PACK = GraphicsUtil.is_INT_PACK_Data(sm, false);
+
         // Initialize our base class We set our bounds be we will
         // respond with data for any area we cover.  This is needed
         // because the userRegion passed into PatterPaintContext
@@ -131,9 +147,6 @@ public class TileRed extends AbstractRed implements TileGenerator {
         int ty0 = getYTile(wr.getMinY());
         int tx1 = getXTile(wr.getMinX()+wr.getWidth() -1);
         int ty1 = getYTile(wr.getMinY()+wr.getHeight()-1);
-
-        final boolean is_INT_PACK = 
-            GraphicsUtil.is_INT_PACK_Data(getSampleModel(), false);
 
         for (int y=ty0; y<=ty1; y++)
             for (int x=tx0; x<=tx1; x++) {
@@ -190,9 +203,10 @@ public class TileRed extends AbstractRed implements TileGenerator {
 
         Graphics2D g = GraphicsUtil.createGraphics(bi, hints);
 
-        int minX = wr.getMinX(), minY = wr.getMinY();
-        int maxY = wr.getHeight();
+        int minX = wr.getMinX();
+        int minY = wr.getMinY();
         int maxX = wr.getWidth();
+        int maxY = wr.getHeight();
 
 
         g.setComposite(AlphaComposite.Clear);
@@ -205,23 +219,26 @@ public class TileRed extends AbstractRed implements TileGenerator {
         // Process initial translate so that tile is
         // painted to the left of the raster top-left 
         // corner on the first drawRenderedImage
-        double tileTx, tileTy;
         int x1 = src.getMinX()+src.getWidth()-1;
         int y1 = src.getMinY()+src.getHeight()-1;
 
-        tileTx = Math.ceil(((minX-x1)/xStep))*xStep;
-        tileTy = Math.ceil(((minY-y1)/yStep))*yStep;
+        int tileTx = (int)Math.ceil(((minX-x1)/xStep))*xStep;
+        int tileTy = (int)Math.ceil(((minY-y1)/yStep))*yStep;
 
         g.translate(tileTx, tileTy);
 
-        double curX = tileTx - wr.getMinX() + src.getMinX();
-        double curY = tileTy - wr.getMinY() + src.getMinY();
-        int col = 0;
+        int curX = tileTx - wr.getMinX() + src.getMinX();
+        int curY = tileTy - wr.getMinY() + src.getMinY();
 
-        // System.out.println("Src : " + src.getWidth()+"x"+src.getHeight());
+        // System.out.println("Wr: " + wr.getBounds());
+        // System.out.println("Src : [" + src.getMinX() + ", " + 
+        //                    src.getMinY()  + ", " + 
+        //                    src.getWidth() + ", " +
+        //                    src.getHeight() + "]");
         // System.out.println("tileTx/tileTy : " + tileTx + " / " + tileTy);
-        while(curY <= maxY){
-            while(curX <= maxX){
+        minX = curX;
+        while(curY <= maxY) {
+            while (curX <= maxX) {
                 // System.out.println("curX/curY : " + curX + " / " + curY);
                 // System.out.println("transform : " + 
                 //                    g.getTransform().getTranslateX() + 
@@ -230,12 +247,12 @@ public class TileRed extends AbstractRed implements TileGenerator {
                 GraphicsUtil.drawImage(g, src);
                 curX += xStep;
                 g.translate(xStep, 0);
-                col++;
+                if (Thread.currentThread().isInterrupted())
+                    return wr;
             }
             curY += yStep;
-            g.translate(-col*xStep, yStep);
-            curX -= col*xStep;
-            col = 0;
+            g.translate(minX-curX, yStep);
+            curX = minX;
         }
         
         /*g.setTransform(new AffineTransform());

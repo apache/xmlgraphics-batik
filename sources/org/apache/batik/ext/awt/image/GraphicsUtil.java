@@ -329,11 +329,13 @@ public class GraphicsUtil {
             long startTime = System.currentTimeMillis();
 
             yloc = yt0*th+cr.getTileGridYOffset();
+            int minX = xt0*tw+cr.getTileGridXOffset();
+            int xStep = tw;
+            xloc = minX;
             for (int y=yt0; y<yt1; y++, yloc += th) {
                 if (yloc > endY) break;
-                xloc = xt0*tw+cr.getTileGridXOffset();
-                for (int x=xt0; x<xt1; x++, xloc+=tw) {
-                    if (xloc > endX) break;
+                for (int x=xt0; x<xt1; x++, xloc+=xStep) {
+                    if ((xloc<minX) || (xloc > endX)) break;
                     tR.x = xloc;
                     tR.y = yloc;
                     Rectangle2D.intersect(crR, tR, iR);
@@ -359,6 +361,8 @@ public class GraphicsUtil {
                     g2d.drawImage(subBI, trans, null);
                     // big2d.fillRect(0, 0, tw, th);
                 }
+                xStep = -xStep; // Reverse directions.
+                xloc += xStep;   // Get back in bounds.
             }
 
             long endTime = System.currentTimeMillis();

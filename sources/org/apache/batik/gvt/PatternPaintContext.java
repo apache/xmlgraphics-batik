@@ -30,6 +30,7 @@ import java.awt.image.renderable.RenderContext;
 import org.apache.batik.ext.awt.image.GraphicsUtil;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.renderable.TileRable8Bit;
+import org.apache.batik.ext.awt.image.rendered.TileCacheRed;
 
 /**
  * <tt>PaintContext</tt> for the <tt>ConcretePatterPaint</tt>
