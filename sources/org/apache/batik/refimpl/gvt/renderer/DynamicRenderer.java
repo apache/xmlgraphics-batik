@@ -78,6 +78,7 @@ public class DynamicRenderer extends StaticRenderer {
 
     class UpdateListener implements PropertyChangeListener {
         public void propertyChange(PropertyChangeEvent evt) {
+            System.out.println("propertyChange " + evt.getPropertyName());
             repaint(getBoundsInRendererSpace((GraphicsNode) evt.getSource()));
         }
     }
