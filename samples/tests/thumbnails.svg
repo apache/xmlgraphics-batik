@@ -240,7 +240,6 @@
         <!-- ======================== -->
         <!-- textPath                 -->
         <!-- ======================== -->
-        <!-- 
         <g transform="translate(300, 0) scale(1.5, 1.5)">
             <symbol id="textPath" viewBox="0 0 450 500">
                 <use xlink:href="textPath.svg#body"/>
@@ -253,7 +252,6 @@
                     style="fill-opacity:0;"/>
             </a>
         </g>
-        -->
 
         </g>
     </g>
