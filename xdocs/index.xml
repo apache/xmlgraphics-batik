@@ -99,7 +99,8 @@
         </p>
         <note>
         All other libraries needed by Batik are included in the distribution.
-        After you downloaded Batik, you will not need anything else.
+        As a consequence the Batik archive is quite big, but
+        after you downloaded it, you will not need anything else.
         </note>
         </s1>
     </body>
