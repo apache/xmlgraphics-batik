@@ -119,13 +119,13 @@ public class MarkerShapePainter implements ShapePainter {
     /**
      * Returns the bounds of the area painted by this shape painter
      */
-    public Rectangle2D getPaintedBounds(){
-	Shape shape = getPaintedArea();
-	if (shape != null){
-	    return shape.getBounds2D();
-	} else {
-	    return null;
-	}
+    public Rectangle2D getPaintedBounds2D(){
+        Shape shape = getPaintedArea();
+        if (shape != null){
+            return shape.getBounds2D();
+        } else {
+            return null;
+        }
     }
 
     /**

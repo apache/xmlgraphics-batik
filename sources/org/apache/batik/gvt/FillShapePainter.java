@@ -76,7 +76,7 @@ public class FillShapePainter implements ShapePainter {
     /**
      * Returns the bounds of the area painted by this shape painter
      */
-    public Rectangle2D getPaintedBounds(){
+    public Rectangle2D getPaintedBounds2D(){
 	if (shape != null){
 	    return shape.getBounds2D();
 	} else {

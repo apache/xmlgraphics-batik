@@ -123,7 +123,7 @@ public class CompositeShapePainter implements ShapePainter {
     /**
      * Returns the bounds of the area painted by this shape painter
      */
-    public Rectangle2D getPaintedBounds(){
+    public Rectangle2D getPaintedBounds2D(){
         if (painters != null) {
             GeneralPath paintedArea = new GeneralPath();
             for (int i=0; i < count; ++i) {
