@@ -281,7 +281,7 @@ class EventTargetWrapper extends NativeJavaObject {
             throws JavaScriptException {
             NativeJavaObject  njo = (NativeJavaObject)thisObj;
             if (args[1] instanceof Function) {
-                SoftReference sr = (SoftReference)listenerMap.remove(args[1]);
+                SoftReference sr = (SoftReference)listenerMap.get(args[1]);
                 if (sr == null)
                     return Undefined.instance;
                 EventListener el = (EventListener)sr.get();
@@ -297,7 +297,7 @@ class EventTargetWrapper extends NativeJavaObject {
                 return Undefined.instance;
             }
             if (args[1] instanceof NativeObject) {
-                SoftReference sr = (SoftReference)listenerMap.remove(args[1]);
+                SoftReference sr = (SoftReference)listenerMap.get(args[1]);
                 if (sr == null)
                     return Undefined.instance;
                 EventListener el = (EventListener)sr.get();
@@ -347,7 +347,6 @@ class EventTargetWrapper extends NativeJavaObject {
         if (name.equals(REMOVE_NAME)) {
             // prevent creating a Map for all JavaScript objects
             // when we need it only from time to time...
-            Map listenerMap = initMap();
             method = new FunctionRemoveProxy((Function)method, initMap());
         }
         return method;
