@@ -1208,7 +1208,7 @@ public class Scanner {
      */
     protected int nextChar() throws IOException {
         if ((readPosition == readCount) && (!fillReadBuffer())) {
-            return (char)(current = -1);
+            return current = -1;
         }
 
         current = readBuffer[readPosition++];
@@ -1222,7 +1222,6 @@ public class Scanner {
 
         if (position == buffer.length) {
             char[] t = new char[position * 3 / 2];
-            // System.out.println("Resizing Buffer: " + t.length);
             System.arraycopy(buffer, 0, t, 0, position);
             buffer = t;
         }
