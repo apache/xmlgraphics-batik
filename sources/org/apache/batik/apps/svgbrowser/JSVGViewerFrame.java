@@ -1249,7 +1249,6 @@ public class JSVGViewerFrame
                 findDialog.setLocation(fr.x + (fr.width  - td.width) / 2,
                                        fr.y + (fr.height - td.height) / 2);
             }
-            findDialog.pack();
             findDialog.show();
         }
     }
@@ -1261,14 +1260,14 @@ public class JSVGViewerFrame
         public ThumbnailDialogAction() {}
         public void actionPerformed(ActionEvent e) {
             if (thumbnailDialog == null) {
-                thumbnailDialog = new ThumbnailDialog(JSVGViewerFrame.this, svgCanvas);
+                thumbnailDialog
+                    = new ThumbnailDialog(JSVGViewerFrame.this, svgCanvas);
                 thumbnailDialog.pack();
                 Rectangle fr = getBounds();
                 Dimension td = thumbnailDialog.getSize();
                 thumbnailDialog.setLocation(fr.x + (fr.width  - td.width) / 2,
                                             fr.y + (fr.height - td.height) / 2);
             }
-            thumbnailDialog.pack();
             thumbnailDialog.show();
         }
     }
