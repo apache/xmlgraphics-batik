@@ -32,7 +32,7 @@ public class SVGOMFEPointLightElement
     protected final static DefaultAttributeValueProducer X_DEFAULT_VALUE_PRODUCER =
         new DefaultAttributeValueProducer() {
                 public String getDefaultAttributeValue() {
-                    return SVG_DEFAULT_VALUE_FE_POINT_LIGHT_X;
+                    return SVG_FE_POINT_LIGHT_X_DEFAULT_VALUE;
                 }
             };
 
@@ -42,7 +42,7 @@ public class SVGOMFEPointLightElement
     protected final static DefaultAttributeValueProducer Y_DEFAULT_VALUE_PRODUCER =
         new DefaultAttributeValueProducer() {
                 public String getDefaultAttributeValue() {
-                    return SVG_DEFAULT_VALUE_FE_POINT_LIGHT_Y;
+                    return SVG_FE_POINT_LIGHT_Y_DEFAULT_VALUE;
                 }
             };
 
@@ -52,7 +52,7 @@ public class SVGOMFEPointLightElement
     protected final static DefaultAttributeValueProducer Z_DEFAULT_VALUE_PRODUCER =
         new DefaultAttributeValueProducer() {
                 public String getDefaultAttributeValue() {
-                    return SVG_DEFAULT_VALUE_FE_POINT_LIGHT_Z;
+                    return SVG_FE_POINT_LIGHT_Z_DEFAULT_VALUE;
                 }
             };
 
@@ -99,14 +99,14 @@ public class SVGOMFEPointLightElement
      * org.w3c.dom.svg.SVGFEPointLightElement#getX()}.
      */
     public SVGAnimatedNumber getX() {
-	SVGAnimatedNumber result;
-	if (xReference == null ||
-	    (result = (SVGAnimatedNumber)xReference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, SVG_X_ATTRIBUTE,
+        SVGAnimatedNumber result;
+        if (xReference == null ||
+            (result = (SVGAnimatedNumber)xReference.get()) == null) {
+            result = new SVGOMAnimatedNumber(this, null, SVG_X_ATTRIBUTE,
                                              X_DEFAULT_VALUE_PRODUCER);
-	    xReference = new WeakReference(result);
-	}
-	return result;
+            xReference = new WeakReference(result);
+        }
+        return result;
     }
 
     /**
@@ -114,14 +114,14 @@ public class SVGOMFEPointLightElement
      * org.w3c.dom.svg.SVGFEPointLightElement#getY()}.
      */
     public SVGAnimatedNumber getY() {
-	SVGAnimatedNumber result;
-	if (yReference == null ||
-	    (result = (SVGAnimatedNumber)yReference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, SVG_Y_ATTRIBUTE,
+        SVGAnimatedNumber result;
+        if (yReference == null ||
+            (result = (SVGAnimatedNumber)yReference.get()) == null) {
+            result = new SVGOMAnimatedNumber(this, null, SVG_Y_ATTRIBUTE,
                                              Y_DEFAULT_VALUE_PRODUCER);
-	    yReference = new WeakReference(result);
-	}
-	return result;
+            yReference = new WeakReference(result);
+        }
+        return result;
     }
 
     /**
@@ -129,14 +129,14 @@ public class SVGOMFEPointLightElement
      * org.w3c.dom.svg.SVGFEPointLightElement#getZ()}.
      */
     public SVGAnimatedNumber getZ() {
-	SVGAnimatedNumber result;
-	if (zReference == null ||
-	    (result = (SVGAnimatedNumber)zReference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, SVG_Z_ATTRIBUTE,
+        SVGAnimatedNumber result;
+        if (zReference == null ||
+            (result = (SVGAnimatedNumber)zReference.get()) == null) {
+            result = new SVGOMAnimatedNumber(this, null, SVG_Z_ATTRIBUTE,
                                              Z_DEFAULT_VALUE_PRODUCER);
-	    zReference = new WeakReference(result);
-	}
-	return result;
+            zReference = new WeakReference(result);
+        }
+        return result;
     }
 
     /**

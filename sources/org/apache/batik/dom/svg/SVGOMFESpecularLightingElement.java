@@ -32,8 +32,8 @@ public class SVGOMFESpecularLightingElement
     extends    SVGOMFilterPrimitiveStandardAttributes
     implements SVGFESpecularLightingElement,
                OverrideStyleElement,
-	       ExtendedElementCSSInlineStyle,
-	       ElementNonCSSPresentationalHints {
+               ExtendedElementCSSInlineStyle,
+               ElementNonCSSPresentationalHints {
 
     /**
      * The DefaultAttributeValueProducer for surfaceScale.
@@ -42,7 +42,7 @@ public class SVGOMFESpecularLightingElement
         SURFACE_SCALE_DEFAULT_VALUE_PRODUCER =
         new DefaultAttributeValueProducer() {
                 public String getDefaultAttributeValue() {
-                    return SVG_DEFAULT_VALUE_FE_SPECULAR_LIGHTING_SURFACE_SCALE;
+                    return SVG_FE_SPECULAR_LIGHTING_SURFACE_SCALE_DEFAULT_VALUE;
                 }
             };
 
@@ -53,7 +53,7 @@ public class SVGOMFESpecularLightingElement
         SPECULAR_CONSTANT_DEFAULT_VALUE_PRODUCER =
         new DefaultAttributeValueProducer() {
                 public String getDefaultAttributeValue() {
-                    return SVG_DEFAULT_VALUE_FE_SPECULAR_LIGHTING_SPECULAR_CONSTANT;
+                    return SVG_FE_SPECULAR_LIGHTING_SPECULAR_CONSTANT_DEFAULT_VALUE;
                 }
             };
 
@@ -64,7 +64,7 @@ public class SVGOMFESpecularLightingElement
         SPECULAR_EXPONENT_DEFAULT_VALUE_PRODUCER =
         new DefaultAttributeValueProducer() {
                 public String getDefaultAttributeValue() {
-                    return SVG_DEFAULT_VALUE_FE_SPECULAR_LIGHTING_SPECULAR_EXPONENT;
+                    return SVG_FE_SPECULAR_LIGHTING_SPECULAR_EXPONENT_DEFAULT_VALUE;
                 }
             };
 
@@ -116,28 +116,28 @@ public class SVGOMFESpecularLightingElement
      * SVGFESpecularLightingElement#getIn1()}.
      */
     public SVGAnimatedString getIn1() {
-	SVGAnimatedString result;
-	if (inReference == null ||
-	    (result = (SVGAnimatedString)inReference.get()) == null) {
-	    result = new SVGOMAnimatedString(this, null, SVG_IN_ATTRIBUTE);
-	    inReference = new WeakReference(result);
-	}
-	return result;
+        SVGAnimatedString result;
+        if (inReference == null ||
+            (result = (SVGAnimatedString)inReference.get()) == null) {
+            result = new SVGOMAnimatedString(this, null, SVG_IN_ATTRIBUTE);
+            inReference = new WeakReference(result);
+        }
+        return result;
     }
-    
+
     /**
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGFESpecularLightingElement#getSurfaceScale()}.
      */
     public SVGAnimatedNumber getSurfaceScale() {
-	SVGAnimatedNumber result;
-	if (surfaceScaleReference == null ||
-	    (result = (SVGAnimatedNumber)surfaceScaleReference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, SVG_SURFACE_SCALE_ATTRIBUTE,
+        SVGAnimatedNumber result;
+        if (surfaceScaleReference == null ||
+            (result = (SVGAnimatedNumber)surfaceScaleReference.get()) == null) {
+            result = new SVGOMAnimatedNumber(this, null, SVG_SURFACE_SCALE_ATTRIBUTE,
                                              SURFACE_SCALE_DEFAULT_VALUE_PRODUCER);
-	    surfaceScaleReference = new WeakReference(result);
-	}
-	return result;
+            surfaceScaleReference = new WeakReference(result);
+        }
+        return result;
     }
 
     /**
@@ -145,14 +145,14 @@ public class SVGOMFESpecularLightingElement
      * org.w3c.dom.svg.SVGFESpecularLightingElement#getSpecularConstant()}.
      */
     public SVGAnimatedNumber getSpecularConstant() {
-	SVGAnimatedNumber result;
-	if (specularConstantReference == null ||
-	    (result = (SVGAnimatedNumber)specularConstantReference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, SVG_SPECULAR_CONSTANT_ATTRIBUTE,
+        SVGAnimatedNumber result;
+        if (specularConstantReference == null ||
+            (result = (SVGAnimatedNumber)specularConstantReference.get()) == null) {
+            result = new SVGOMAnimatedNumber(this, null, SVG_SPECULAR_CONSTANT_ATTRIBUTE,
                                              SPECULAR_CONSTANT_DEFAULT_VALUE_PRODUCER);
-	    specularConstantReference = new WeakReference(result);
-	}
-	return result;
+            specularConstantReference = new WeakReference(result);
+        }
+        return result;
     }
 
     /**
@@ -160,14 +160,14 @@ public class SVGOMFESpecularLightingElement
      * org.w3c.dom.svg.SVGFESpecularLightingElement#getSpecularExponent()}.
      */
     public SVGAnimatedNumber getSpecularExponent() {
-	SVGAnimatedNumber result;
-	if (specularExponentReference == null ||
-	    (result = (SVGAnimatedNumber)specularExponentReference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, SVG_SPECULAR_EXPONENT_ATTRIBUTE,
+        SVGAnimatedNumber result;
+        if (specularExponentReference == null ||
+            (result = (SVGAnimatedNumber)specularExponentReference.get()) == null) {
+            result = new SVGOMAnimatedNumber(this, null, SVG_SPECULAR_EXPONENT_ATTRIBUTE,
                                              SPECULAR_EXPONENT_DEFAULT_VALUE_PRODUCER);
-	    specularExponentReference = new WeakReference(result);
-	}
-	return result;
+            specularExponentReference = new WeakReference(result);
+        }
+        return result;
     }
 
     // ElementNonCSSPresentationalHints ////////////////////////////////////
@@ -177,7 +177,7 @@ public class SVGOMFESpecularLightingElement
      * CSS rules. The result can be null.
      */
     public CSSStyleDeclaration getNonCSSPresentationalHints() {
-	return ElementNonCSSPresentationalHintsSupport.
+        return ElementNonCSSPresentationalHintsSupport.
             getNonCSSPresentationalHints(this);
     }
 
@@ -192,10 +192,10 @@ public class SVGOMFESpecularLightingElement
      * Returns stylableSupport different from null.
      */
     protected final SVGStylableSupport getStylableSupport() {
-	if (stylableSupport == null) {
-	    stylableSupport = new SVGStylableSupport();
-	}
-	return stylableSupport;
+        if (stylableSupport == null) {
+            stylableSupport = new SVGStylableSupport();
+        }
+        return stylableSupport;
     }
 
     /**
@@ -236,15 +236,15 @@ public class SVGOMFESpecularLightingElement
      * OverrideStyleElement#hasOverrideStyle(String)}.
      */
     public boolean hasOverrideStyle(String pseudoElt) {
-	return getStylableSupport().hasOverrideStyle(pseudoElt);
-    }    
+        return getStylableSupport().hasOverrideStyle(pseudoElt);
+    }
 
     /**
      * Implements {@link
      * OverrideStyleElement#getOverrideStyle(String)}.
      */
     public CSSStyleDeclaration getOverrideStyle(String pseudoElt) {
-	return getStylableSupport().getOverrideStyle(pseudoElt, this);
+        return getStylableSupport().getOverrideStyle(pseudoElt, this);
     }
 
     /**

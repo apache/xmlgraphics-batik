@@ -35,10 +35,10 @@ public class SVGOMImageElement
         X_DEFAULT_VALUE_PRODUCER =
         new DefaultAttributeValueProducer() {
                 public String getDefaultAttributeValue() {
-                    return SVG_DEFAULT_VALUE_IMAGE_X;
+                    return SVG_IMAGE_X_DEFAULT_VALUE;
                 }
             };
-    
+
     /**
      * The DefaultAttributeValueProducer for y.
      */
@@ -46,10 +46,10 @@ public class SVGOMImageElement
         Y_DEFAULT_VALUE_PRODUCER =
         new DefaultAttributeValueProducer() {
                 public String getDefaultAttributeValue() {
-                    return SVG_DEFAULT_VALUE_IMAGE_Y;
+                    return SVG_IMAGE_Y_DEFAULT_VALUE;
                 }
             };
-    
+
     /**
      * The reference to the x attribute.
      */
@@ -96,65 +96,65 @@ public class SVGOMImageElement
      * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGImageElement#getX()}.
      */
     public SVGAnimatedLength getX() {
-	SVGAnimatedLength result;
-	if (xReference == null ||
-	    (result = (SVGAnimatedLength)xReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, SVG_X_ATTRIBUTE,
+        SVGAnimatedLength result;
+        if (xReference == null ||
+            (result = (SVGAnimatedLength)xReference.get()) == null) {
+            result = new SVGOMAnimatedLength(this, null, SVG_X_ATTRIBUTE,
                                              X_DEFAULT_VALUE_PRODUCER);
-	    xReference = new WeakReference(result);
-	}
-	return result;
-    } 
+            xReference = new WeakReference(result);
+        }
+        return result;
+    }
 
     /**
      * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGImageElement#getY()}.
      */
     public SVGAnimatedLength getY() {
-	SVGAnimatedLength result;
-	if (yReference == null ||
-	    (result = (SVGAnimatedLength)yReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, SVG_Y_ATTRIBUTE,
+        SVGAnimatedLength result;
+        if (yReference == null ||
+            (result = (SVGAnimatedLength)yReference.get()) == null) {
+            result = new SVGOMAnimatedLength(this, null, SVG_Y_ATTRIBUTE,
                                              Y_DEFAULT_VALUE_PRODUCER);
-	    yReference = new WeakReference(result);
-	}
-	return result;
-    } 
+            yReference = new WeakReference(result);
+        }
+        return result;
+    }
 
     /**
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGImageElement#getWidth()}.
      */
     public SVGAnimatedLength getWidth() {
-	SVGAnimatedLength result;
-	if (widthReference == null ||
-	    (result = (SVGAnimatedLength)widthReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, SVG_WIDTH_ATTRIBUTE, null);
-	    widthReference = new WeakReference(result);
-	}
-	return result;
-    } 
+        SVGAnimatedLength result;
+        if (widthReference == null ||
+            (result = (SVGAnimatedLength)widthReference.get()) == null) {
+            result = new SVGOMAnimatedLength(this, null, SVG_WIDTH_ATTRIBUTE, null);
+            widthReference = new WeakReference(result);
+        }
+        return result;
+    }
 
     /**
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGImageElement#getHeight()}.
      */
     public SVGAnimatedLength getHeight() {
-	SVGAnimatedLength result;
-	if (heightReference == null ||
-	    (result = (SVGAnimatedLength)heightReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, SVG_HEIGHT_ATTRIBUTE, null);
-	    heightReference = new WeakReference(result);
-	}
-	return result;
-    } 
+        SVGAnimatedLength result;
+        if (heightReference == null ||
+            (result = (SVGAnimatedLength)heightReference.get()) == null) {
+            result = new SVGOMAnimatedLength(this, null, SVG_HEIGHT_ATTRIBUTE, null);
+            heightReference = new WeakReference(result);
+        }
+        return result;
+    }
 
     /**
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGImageElement#getPreserveAspectRatio()}.
      */
     public SVGAnimatedPreserveAspectRatio getPreserveAspectRatio() {
-	throw new RuntimeException
-	    (" !!! TODO: SVGOMImageElement.getPreserveAspectRatio()");
+        throw new RuntimeException
+            (" !!! TODO: SVGOMImageElement.getPreserveAspectRatio()");
     }
 
     /**

@@ -32,8 +32,8 @@ public class SVGOMFEDiffuseLightingElement
     extends    SVGOMFilterPrimitiveStandardAttributes
     implements SVGFEDiffuseLightingElement,
                OverrideStyleElement,
-	       ExtendedElementCSSInlineStyle,
-	       ElementNonCSSPresentationalHints {
+               ExtendedElementCSSInlineStyle,
+               ElementNonCSSPresentationalHints {
 
     /**
      * The DefaultAttributeValueProducer for surfaceScale.
@@ -42,7 +42,7 @@ public class SVGOMFEDiffuseLightingElement
         SURFACE_SCALE_DEFAULT_VALUE_PRODUCER =
         new DefaultAttributeValueProducer() {
                 public String getDefaultAttributeValue() {
-                    return SVG_DEFAULT_VALUE_FE_DIFFUSE_LIGHTING_SURFACE_SCALE;
+                    return SVG_FE_DIFFUSE_LIGHTING_SURFACE_SCALE_DEFAULT_VALUE;
                 }
             };
 
@@ -53,7 +53,7 @@ public class SVGOMFEDiffuseLightingElement
         DIFFUSE_CONSTANT_DEFAULT_VALUE_PRODUCER =
         new DefaultAttributeValueProducer() {
                 public String getDefaultAttributeValue() {
-                    return SVG_DEFAULT_VALUE_FE_DIFFUSE_LIGHTING_DIFFUSE_CONSTANT;
+                    return SVG_FE_DIFFUSE_LIGHTING_DIFFUSE_CONSTANT_DEFAULT_VALUE;
                 }
             };
 
@@ -100,28 +100,28 @@ public class SVGOMFEDiffuseLightingElement
      * SVGFEDiffuseLightingElement#getIn1()}.
      */
     public SVGAnimatedString getIn1() {
-	SVGAnimatedString result;
-	if (inReference == null ||
-	    (result = (SVGAnimatedString)inReference.get()) == null) {
-	    result = new SVGOMAnimatedString(this, null, SVG_IN_ATTRIBUTE);
-	    inReference = new WeakReference(result);
-	}
-	return result;
+        SVGAnimatedString result;
+        if (inReference == null ||
+            (result = (SVGAnimatedString)inReference.get()) == null) {
+            result = new SVGOMAnimatedString(this, null, SVG_IN_ATTRIBUTE);
+            inReference = new WeakReference(result);
+        }
+        return result;
     }
-    
+
     /**
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGFEDiffuseLightingElement#getSurfaceScale()}.
      */
     public SVGAnimatedNumber getSurfaceScale() {
-	SVGAnimatedNumber result;
-	if (surfaceScaleReference == null ||
-	    (result = (SVGAnimatedNumber)surfaceScaleReference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, SVG_SURFACE_SCALE_ATTRIBUTE,
+        SVGAnimatedNumber result;
+        if (surfaceScaleReference == null ||
+            (result = (SVGAnimatedNumber)surfaceScaleReference.get()) == null) {
+            result = new SVGOMAnimatedNumber(this, null, SVG_SURFACE_SCALE_ATTRIBUTE,
                                              SURFACE_SCALE_DEFAULT_VALUE_PRODUCER);
-	    surfaceScaleReference = new WeakReference(result);
-	}
-	return result;
+            surfaceScaleReference = new WeakReference(result);
+        }
+        return result;
     }
 
     /**
@@ -129,14 +129,14 @@ public class SVGOMFEDiffuseLightingElement
      * org.w3c.dom.svg.SVGFEDiffuseLightingElement#getDiffuseConstant()}.
      */
     public SVGAnimatedNumber getDiffuseConstant() {
-	SVGAnimatedNumber result;
-	if (diffuseConstantReference == null ||
-	    (result = (SVGAnimatedNumber)diffuseConstantReference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, SVG_DIFFUSE_CONSTANT_ATTRIBUTE,
+        SVGAnimatedNumber result;
+        if (diffuseConstantReference == null ||
+            (result = (SVGAnimatedNumber)diffuseConstantReference.get()) == null) {
+            result = new SVGOMAnimatedNumber(this, null, SVG_DIFFUSE_CONSTANT_ATTRIBUTE,
                                              DIFFUSE_CONSTANT_DEFAULT_VALUE_PRODUCER);
-	    diffuseConstantReference = new WeakReference(result);
-	}
-	return result;
+            diffuseConstantReference = new WeakReference(result);
+        }
+        return result;
     }
 
     // ElementNonCSSPresentationalHints ////////////////////////////////////
@@ -146,7 +146,7 @@ public class SVGOMFEDiffuseLightingElement
      * CSS rules. The result can be null.
      */
     public CSSStyleDeclaration getNonCSSPresentationalHints() {
-	return ElementNonCSSPresentationalHintsSupport.
+        return ElementNonCSSPresentationalHintsSupport.
             getNonCSSPresentationalHints(this);
     }
 
@@ -161,10 +161,10 @@ public class SVGOMFEDiffuseLightingElement
      * Returns stylableSupport different from null.
      */
     protected final SVGStylableSupport getStylableSupport() {
-	if (stylableSupport == null) {
-	    stylableSupport = new SVGStylableSupport();
-	}
-	return stylableSupport;
+        if (stylableSupport == null) {
+            stylableSupport = new SVGStylableSupport();
+        }
+        return stylableSupport;
     }
 
     /**
@@ -205,15 +205,15 @@ public class SVGOMFEDiffuseLightingElement
      * OverrideStyleElement#hasOverrideStyle(String)}.
      */
     public boolean hasOverrideStyle(String pseudoElt) {
-	return getStylableSupport().hasOverrideStyle(pseudoElt);
-    }    
+        return getStylableSupport().hasOverrideStyle(pseudoElt);
+    }
 
     /**
      * Implements {@link
      * OverrideStyleElement#getOverrideStyle(String)}.
      */
     public CSSStyleDeclaration getOverrideStyle(String pseudoElt) {
-	return getStylableSupport().getOverrideStyle(pseudoElt, this);
+        return getStylableSupport().getOverrideStyle(pseudoElt, this);
     }
 
     /**

@@ -40,7 +40,7 @@ public class SVGOMFEConvolveMatrixElement
         EDGE_MODE_DEFAULT_VALUE_PRODUCER =
         new DefaultAttributeValueProducer() {
                 public String getDefaultAttributeValue() {
-                    return SVG_DEFAULT_VALUE_FE_CONVOLVE_MATRIX_EDGE_MODE;
+                    return SVG_FE_CONVOLVE_MATRIX_EDGE_MODE_DEFAULT_VALUE;
                 }
             };
 
@@ -160,13 +160,13 @@ public class SVGOMFEConvolveMatrixElement
      * SVGFEConvolveMatrixElement#getIn1()}.
      */
     public SVGAnimatedString getIn1() {
-	SVGAnimatedString result;
-	if (inReference == null ||
-	    (result = (SVGAnimatedString)inReference.get()) == null) {
-	    result = new SVGOMAnimatedString(this, null, SVG_IN_ATTRIBUTE);
-	    inReference = new WeakReference(result);
-	}
-	return result;
+        SVGAnimatedString result;
+        if (inReference == null ||
+            (result = (SVGAnimatedString)inReference.get()) == null) {
+            result = new SVGOMAnimatedString(this, null, SVG_IN_ATTRIBUTE);
+            inReference = new WeakReference(result);
+        }
+        return result;
     }
 
     /**
@@ -208,13 +208,13 @@ public class SVGOMFEConvolveMatrixElement
      * org.w3c.dom.svg.SVGFEConvolveMatrixElement#getOrderX()}.
      */
     public SVGAnimatedInteger getOrderX() {
-	SVGAnimatedInteger result;
-	if (orderXReference == null ||
-	    (result = (SVGAnimatedInteger)orderXReference.get()) == null) {
-	    result = new SVGOMAnimatedInteger(this, null, SVG_ORDER_X_ATTRIBUTE, null);
-	    orderXReference = new WeakReference(result);
-	}
-	return result;
+        SVGAnimatedInteger result;
+        if (orderXReference == null ||
+            (result = (SVGAnimatedInteger)orderXReference.get()) == null) {
+            result = new SVGOMAnimatedInteger(this, null, SVG_ORDER_X_ATTRIBUTE, null);
+            orderXReference = new WeakReference(result);
+        }
+        return result;
     }
 
     /**
@@ -222,13 +222,13 @@ public class SVGOMFEConvolveMatrixElement
      * org.w3c.dom.svg.SVGFEConvolveMatrixElement#getOrderY()}.
      */
     public SVGAnimatedInteger getOrderY() {
-	SVGAnimatedInteger result;
-	if (orderYReference == null ||
-	    (result = (SVGAnimatedInteger)orderYReference.get()) == null) {
-	    result = new SVGOMAnimatedInteger(this, null, SVG_ORDER_Y_ATTRIBUTE, null);
-	    orderYReference = new WeakReference(result);
-	}
-	return result;
+        SVGAnimatedInteger result;
+        if (orderYReference == null ||
+            (result = (SVGAnimatedInteger)orderYReference.get()) == null) {
+            result = new SVGOMAnimatedInteger(this, null, SVG_ORDER_Y_ATTRIBUTE, null);
+            orderYReference = new WeakReference(result);
+        }
+        return result;
     }
 
     /**
@@ -236,13 +236,13 @@ public class SVGOMFEConvolveMatrixElement
      * org.w3c.dom.svg.SVGFEConvolveMatrixElement#getTargetX()}.
      */
     public SVGAnimatedInteger getTargetX() {
-	SVGAnimatedInteger result;
-	if (targetXReference == null ||
-	    (result = (SVGAnimatedInteger)targetXReference.get()) == null) {
-	    result = new SVGOMAnimatedInteger(this, null, SVG_TARGET_X_ATTRIBUTE, null);
-	    targetXReference = new WeakReference(result);
-	}
-	return result;
+        SVGAnimatedInteger result;
+        if (targetXReference == null ||
+            (result = (SVGAnimatedInteger)targetXReference.get()) == null) {
+            result = new SVGOMAnimatedInteger(this, null, SVG_TARGET_X_ATTRIBUTE, null);
+            targetXReference = new WeakReference(result);
+        }
+        return result;
     }
 
     /**
@@ -250,13 +250,13 @@ public class SVGOMFEConvolveMatrixElement
      * org.w3c.dom.svg.SVGFEConvolveMatrixElement#getTargetY()}.
      */
     public SVGAnimatedInteger getTargetY() {
-	SVGAnimatedInteger result;
-	if (targetYReference == null ||
-	    (result = (SVGAnimatedInteger)targetYReference.get()) == null) {
-	    result = new SVGOMAnimatedInteger(this, null, SVG_TARGET_Y_ATTRIBUTE, null);
-	    targetYReference = new WeakReference(result);
-	}
-	return result;
+        SVGAnimatedInteger result;
+        if (targetYReference == null ||
+            (result = (SVGAnimatedInteger)targetYReference.get()) == null) {
+            result = new SVGOMAnimatedInteger(this, null, SVG_TARGET_Y_ATTRIBUTE, null);
+            targetYReference = new WeakReference(result);
+        }
+        return result;
     }
 
     /**
@@ -264,13 +264,13 @@ public class SVGOMFEConvolveMatrixElement
      * org.w3c.dom.svg.SVGFEConvolveMatrixElement#getDivisor()}.
      */
     public SVGAnimatedNumber getDivisor() {
-	SVGAnimatedNumber result;
-	if (divisorReference == null ||
-	    (result = (SVGAnimatedNumber)divisorReference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, SVG_DIVISOR_ATTRIBUTE, null);
-	    divisorReference = new WeakReference(result);
-	}
-	return result;
+        SVGAnimatedNumber result;
+        if (divisorReference == null ||
+            (result = (SVGAnimatedNumber)divisorReference.get()) == null) {
+            result = new SVGOMAnimatedNumber(this, null, SVG_DIVISOR_ATTRIBUTE, null);
+            divisorReference = new WeakReference(result);
+        }
+        return result;
     }
 
     /**
@@ -278,13 +278,13 @@ public class SVGOMFEConvolveMatrixElement
      * org.w3c.dom.svg.SVGFEConvolveMatrixElement#getBias()}.
      */
     public SVGAnimatedNumber getBias() {
-	SVGAnimatedNumber result;
-	if (biasReference == null ||
-	    (result = (SVGAnimatedNumber)biasReference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, SVG_BIAS_ATTRIBUTE, null);
-	    biasReference = new WeakReference(result);
-	}
-	return result;
+        SVGAnimatedNumber result;
+        if (biasReference == null ||
+            (result = (SVGAnimatedNumber)biasReference.get()) == null) {
+            result = new SVGOMAnimatedNumber(this, null, SVG_BIAS_ATTRIBUTE, null);
+            biasReference = new WeakReference(result);
+        }
+        return result;
     }
 
     /**
@@ -292,15 +292,15 @@ public class SVGOMFEConvolveMatrixElement
      * org.w3c.dom.svg.SVGFEConvolveMatrixElement#getKernelUnitLengthX()}.
      */
     public SVGAnimatedLength getKernelUnitLengthX() {
-	SVGAnimatedLength result;
-	if (kernelUnitLengthXReference == null ||
-	    (result = (SVGAnimatedLength)kernelUnitLengthXReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null,
+        SVGAnimatedLength result;
+        if (kernelUnitLengthXReference == null ||
+            (result = (SVGAnimatedLength)kernelUnitLengthXReference.get()) == null) {
+            result = new SVGOMAnimatedLength(this, null,
                                              SVG_KERNEL_UNIT_LENGTH_X_ATTRIBUTE,
                                              null);
-	    kernelUnitLengthXReference = new WeakReference(result);
-	}
-	return result;
+            kernelUnitLengthXReference = new WeakReference(result);
+        }
+        return result;
     }
 
     /**
@@ -308,15 +308,15 @@ public class SVGOMFEConvolveMatrixElement
      * org.w3c.dom.svg.SVGFEConvolveMatrixElement#getKernelUnitLengthY()}.
      */
     public SVGAnimatedLength getKernelUnitLengthY() {
-	SVGAnimatedLength result;
-	if (kernelUnitLengthYReference == null ||
-	    (result = (SVGAnimatedLength)kernelUnitLengthYReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null,
+        SVGAnimatedLength result;
+        if (kernelUnitLengthYReference == null ||
+            (result = (SVGAnimatedLength)kernelUnitLengthYReference.get()) == null) {
+            result = new SVGOMAnimatedLength(this, null,
                                              SVG_KERNEL_UNIT_LENGTH_Y_ATTRIBUTE,
                                              null);
-	    kernelUnitLengthYReference = new WeakReference(result);
-	}
-	return result;
+            kernelUnitLengthYReference = new WeakReference(result);
+        }
+        return result;
     }
 
     /**
@@ -324,13 +324,13 @@ public class SVGOMFEConvolveMatrixElement
      * org.w3c.dom.svg.SVGFEConvolveMatrixElement#getPreserveAlpha()}.
      */
     public SVGAnimatedBoolean getPreserveAlpha() {
-	SVGAnimatedBoolean result;
-	if (preserveAlphaReference == null ||
-	    (result = (SVGAnimatedBoolean)preserveAlphaReference.get()) == null) {
-	    result = new SVGOMAnimatedBoolean(this, null, SVG_PRESERVE_ALPHA_ATTRIBUTE);
-	    preserveAlphaReference = new WeakReference(result);
-	}
-	return result;
+        SVGAnimatedBoolean result;
+        if (preserveAlphaReference == null ||
+            (result = (SVGAnimatedBoolean)preserveAlphaReference.get()) == null) {
+            result = new SVGOMAnimatedBoolean(this, null, SVG_PRESERVE_ALPHA_ATTRIBUTE);
+            preserveAlphaReference = new WeakReference(result);
+        }
+        return result;
     }
 
     /**

@@ -32,7 +32,7 @@ public class SVGOMFEDistantLightElement
         AZIMUTH_DEFAULT_VALUE_PRODUCER =
         new DefaultAttributeValueProducer() {
                 public String getDefaultAttributeValue() {
-                    return SVG_DEFAULT_VALUE_FE_DISTANT_LIGHT_AZIMUTH;
+                    return SVG_FE_DISTANT_LIGHT_AZIMUTH_DEFAULT_VALUE;
                 }
             };
 
@@ -43,7 +43,7 @@ public class SVGOMFEDistantLightElement
         ELEVATION_DEFAULT_VALUE_PRODUCER =
         new DefaultAttributeValueProducer() {
                 public String getDefaultAttributeValue() {
-                    return SVG_DEFAULT_VALUE_FE_DISTANT_LIGHT_ELEVATION;
+                    return SVG_FE_DISTANT_LIGHT_ELEVATION_DEFAULT_VALUE;
                 }
             };
 
@@ -85,14 +85,14 @@ public class SVGOMFEDistantLightElement
      * org.w3c.dom.svg.SVGFEDistantLightElement#getAzimuth()}.
      */
     public SVGAnimatedNumber getAzimuth() {
-	SVGAnimatedNumber result;
-	if (azimuthReference == null ||
-	    (result = (SVGAnimatedNumber)azimuthReference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, SVG_AZIMUTH_ATTRIBUTE,
+        SVGAnimatedNumber result;
+        if (azimuthReference == null ||
+            (result = (SVGAnimatedNumber)azimuthReference.get()) == null) {
+            result = new SVGOMAnimatedNumber(this, null, SVG_AZIMUTH_ATTRIBUTE,
                                              AZIMUTH_DEFAULT_VALUE_PRODUCER);
-	    azimuthReference = new WeakReference(result);
-	}
-	return result;
+            azimuthReference = new WeakReference(result);
+        }
+        return result;
     }
 
     /**
@@ -100,14 +100,14 @@ public class SVGOMFEDistantLightElement
      * org.w3c.dom.svg.SVGFEDistantLightElement#getElevation()}.
      */
     public SVGAnimatedNumber getElevation() {
-	SVGAnimatedNumber result;
-	if (elevationReference == null ||
-	    (result = (SVGAnimatedNumber)elevationReference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, SVG_ELEVATION_ATTRIBUTE,
+        SVGAnimatedNumber result;
+        if (elevationReference == null ||
+            (result = (SVGAnimatedNumber)elevationReference.get()) == null) {
+            result = new SVGOMAnimatedNumber(this, null, SVG_ELEVATION_ATTRIBUTE,
                                              ELEVATION_DEFAULT_VALUE_PRODUCER);
-	    elevationReference = new WeakReference(result);
-	}
-	return result;
+            elevationReference = new WeakReference(result);
+        }
+        return result;
     }
 
     /**

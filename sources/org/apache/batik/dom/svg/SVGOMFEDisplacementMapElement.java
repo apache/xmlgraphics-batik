@@ -37,7 +37,7 @@ public class SVGOMFEDisplacementMapElement
         SCALE_DEFAULT_VALUE_PRODUCER =
         new DefaultAttributeValueProducer() {
                 public String getDefaultAttributeValue() {
-                    return SVG_DEFAULT_VALUE_FE_DISPLACEMENT_MAP_SCALE;
+                    return SVG_FE_DISPLACEMENT_MAP_SCALE_DEFAULT_VALUE;
                 }
             };
 
