@@ -473,18 +473,21 @@ public class JSVGComponent extends JGVTComponent {
 
         if (documentLoader != null) {
             documentLoader.interrupt();
-        } else if (gvtTreeBuilder != null) {
+        }
+        if (gvtTreeBuilder != null) {
             gvtTreeBuilder.interrupt();
-        } else if (svgLoadEventDispatcher != null) {
+        } 
+        if (svgLoadEventDispatcher != null) {
             svgLoadEventDispatcher.interrupt();
-        } else if (nextUpdateManager != null) {
+        } 
+        if (nextUpdateManager != null) {
             nextUpdateManager.interrupt();
             nextUpdateManager = null;
-        } else if (updateManager != null) {
+        } 
+        if (updateManager != null) {
             updateManager.interrupt();
-        } else {
-            super.stopProcessing();
-        }
+        } 
+        super.stopProcessing();
     }
 
     /**
@@ -602,7 +605,6 @@ public class JSVGComponent extends JGVTComponent {
             afterStopRunnable = r;
             return;
         }
-
         afterStopRunnable = r;
 
         stopProcessing();

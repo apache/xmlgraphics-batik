@@ -150,14 +150,22 @@ public class DoublyLinkedList {
 
     public void add(int index, Node nde) {
         if (nde == null) return;
-        Node after = head;
-        while (index != 0) {
-            after = after.getNext();
-            index--;
+        if (index == 0) {
+              // This makes it the first element in the list.
+            nde.insertBefore(head);
+            head = nde;
+        } else if (index == size) {
+              // Because the list is circular this
+              // makes it the last element in the list.
+            nde.insertBefore(head);
+        } else {
+            Node after = head;
+            while (index != 0) {
+                after = after.getNext();
+                index--;
+            }
+            nde.insertBefore(after);
         }
-        nde.insertBefore(after);
-        if (after == head) 
-            head=nde;
         size++;
     }
 

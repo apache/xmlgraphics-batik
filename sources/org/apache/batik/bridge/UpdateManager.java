@@ -236,7 +236,7 @@ public class UpdateManager  {
                     }
                 }
             });
-        updateRunnableQueue.resumeExecution();
+        resume();
     }
 
 
@@ -312,23 +312,24 @@ public class UpdateManager  {
      * Interrupts the manager tasks.
      */
     public synchronized void interrupt() {
-        if (updateRunnableQueue.getThread() != null) {
-            // Preempt to cancel the pending tasks
-            updateRunnableQueue.preemptLater(new Runnable() {
-                    public void run() {
+        if (updateRunnableQueue.getThread() == null)
+            return;
+
+          // Preempt to cancel the pending tasks
+        updateRunnableQueue.preemptLater(new Runnable() {
+                public void run() {
+                    synchronized (UpdateManager.this) {
                         if (started) {
                             dispatchSVGUnLoadEvent();
                         } else {
-                            synchronized (UpdateManager.this) {
-                                running = false;
-                                scriptingEnvironment.interrupt();
-                                updateRunnableQueue.getThread().interrupt();
-                            }
+                            running = false;
+                            scriptingEnvironment.interrupt();
+                            updateRunnableQueue.getThread().interrupt();
                         }
                     }
-                });
-            resume();
-        }
+                }
+            });
+        resume();
     }
 
     /**
