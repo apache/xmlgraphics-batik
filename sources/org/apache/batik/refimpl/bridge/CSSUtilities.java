@@ -25,6 +25,7 @@ import org.apache.batik.bridge.IllegalAttributeValueException;
 import org.apache.batik.bridge.MaskBridge;
 import org.apache.batik.bridge.PaintBridge;
 import org.apache.batik.dom.svg.SVGOMDocument;
+import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.CompositeShapePainter;
 import org.apache.batik.gvt.FillShapePainter;
 import org.apache.batik.gvt.GVTFactory;
@@ -65,6 +66,71 @@ public class CSSUtilities implements SVGConstants {
      * No instance of this class.
      */
     protected CSSUtilities() {}
+
+    /**
+     * Returns the viewport 
+     */
+    public static Rectangle2D convertEnableBackground(SVGElement svgElement,
+                                                      CSSStyleDeclaration decl,
+                                                      UnitProcessor.Context uctx) {
+        CSSValue val;
+        val = decl.getPropertyCSSValue(CSS_ENABLE_BACKGROUND_PROPERTY);
+        
+        if (val.getCssValueType() != val.CSS_VALUE_LIST) {
+            return null; // accumulate
+        }
+        try {
+            CSSValueList lst = (CSSValueList)val;
+            int len = lst.getLength();
+            switch (len) {
+            case 1:
+                return CompositeGraphicsNode.VIEWPORT; // new
+            case 5:
+                CSSPrimitiveValue v = (CSSPrimitiveValue)lst.item(1);
+                short type = v.getPrimitiveType();
+                float x = UnitProcessor.cssToUserSpace(type,
+                                                       v.getFloatValue(type),
+                                                       svgElement,
+                                                       UnitProcessor.OTHER_LENGTH,
+                                                       uctx);
+                
+                v = (CSSPrimitiveValue)lst.item(2);
+                type = v.getPrimitiveType();
+                float y = UnitProcessor.cssToUserSpace(type,
+                                                       v.getFloatValue(type),
+                                                       svgElement,
+                                                       UnitProcessor.OTHER_LENGTH,
+                                                       uctx);
+
+                v = (CSSPrimitiveValue)lst.item(3);
+                type = v.getPrimitiveType();
+                float w = UnitProcessor.cssToUserSpace(type,
+                                                       v.getFloatValue(type),
+                                                       svgElement,
+                                                       UnitProcessor.OTHER_LENGTH,
+                                                       uctx);
+                if (w < 0) {
+                    return null;
+                }
+
+                v = (CSSPrimitiveValue)lst.item(4);
+                type = v.getPrimitiveType();
+                float h = UnitProcessor.cssToUserSpace(type,
+                                                       v.getFloatValue(type),
+                                                       svgElement,
+                                                       UnitProcessor.OTHER_LENGTH,
+                                                       uctx);
+
+                if (h < 0) {
+                    return null;
+                }
+                return new Rectangle2D.Float(x, y, w, h);
+            }
+        } catch (Exception e) {
+            // CSS errors must be silently ignored.
+        }
+        return null;
+    }
 
     /**
      * Initializes the composite corresponding to the

@@ -13,6 +13,7 @@ import java.awt.Composite;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Rectangle2D;
 
 import java.io.StringReader;
 
@@ -25,6 +26,7 @@ import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.Clip;
 import org.apache.batik.gvt.filter.Mask;
 import org.apache.batik.util.SVGConstants;
+import org.apache.batik.util.UnitProcessor;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -33,6 +35,7 @@ import org.w3c.dom.views.DocumentView;
 import org.w3c.dom.css.ViewCSS;
 import org.w3c.dom.css.CSSPrimitiveValue;
 import org.w3c.dom.css.CSSStyleDeclaration;
+import org.w3c.dom.svg.SVGElement;
 
 /**
  * A factory for the &lt;g&gt; SVG element.
@@ -55,16 +58,15 @@ public class SVGGElementBridge implements GraphicsNodeBridge, SVGConstants {
 
         CSSStyleDeclaration decl;
         decl = ctx.getViewCSS().getComputedStyle(element, null);
-        CSSPrimitiveValue val;
-        val = (CSSPrimitiveValue)
-            decl.getPropertyCSSValue(ATTR_ENABLE_BACKGROUND);
+        UnitProcessor.Context uctx
+            = new DefaultUnitProcessorContext(ctx, decl);
 
-        String enaBg = val.getStringValue();
-        // This needs mucho work since we still need to pull out
-        // the x, y, width and height if they are there...
-        if (enaBg.indexOf("new") != -1) {
+        Rectangle2D rect = CSSUtilities.convertEnableBackground((SVGElement)element,
+                                                                decl,
+                                                                uctx);
+        if (rect != null) {
             CompositeGraphicsNode cgn = (CompositeGraphicsNode)gn;
-            cgn.setBackgroundEnable(CompositeGraphicsNode.VIEWPORT);
+            cgn.setBackgroundEnable(rect);
         }
 
         return gn;
