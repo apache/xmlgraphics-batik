@@ -15,7 +15,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import org.apache.batik.dom.svg.SVGDocumentLoader;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
@@ -133,8 +132,7 @@ public class BridgeContext implements SVGConstants {
         this(userAgent,
              rc,
              sharedPool,
-             new BufferedDocumentLoader(
-                 new SVGDocumentLoader(userAgent.getXMLParserClassName())));
+             new DocumentLoader(userAgent.getXMLParserClassName()));
     }
 
     /**

@@ -61,7 +61,6 @@ import org.apache.batik.bridge.GraphicsNodeBridge;
 import org.apache.batik.bridge.UserAgent;
 import org.apache.batik.bridge.UserAgentViewport;
 
-import org.apache.batik.dom.svg.SVGDocumentLoader;
 import org.apache.batik.dom.svg.SVGOMDocument;
 
 import org.apache.batik.gvt.GraphicsNode;
@@ -78,7 +77,7 @@ import org.apache.batik.gvt.event.SelectionEvent;
 import org.apache.batik.gvt.renderer.Renderer;
 import org.apache.batik.gvt.renderer.RendererFactory;
 
-import org.apache.batik.bridge.BufferedDocumentLoader;
+import org.apache.batik.bridge.DocumentLoader;
 import org.apache.batik.bridge.ConcreteGVTBuilder;
 import org.apache.batik.bridge.DefaultUserAgent;
 import org.apache.batik.bridge.SVGUtilities;
