@@ -734,9 +734,6 @@ public class StrokingTextPainter extends BasicTextPainter {
             }
             chunk.advance = adv;
         }
-        if (true) {
-            visualAdvance = chunk.advance;
-        }
 
         float dx = 0f;
         float dy = 0f;
