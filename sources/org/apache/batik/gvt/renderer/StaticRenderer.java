@@ -420,6 +420,18 @@ public class StaticRenderer implements ImageRenderer {
         tcr.flushCache(tcr.getBounds());
     }
 
+    /**
+     * Flush a list of rectangles of cached image data.
+     */
+    public void flush(List areas) {
+        AffineTransform at = getTransform();
+        Iterator i = areas.iterator();
+        while (i.hasNext()) {
+            Shape s = (Shape)i.next();
+            Rectangle r = at.createTransformedShape(s).getBounds();
+            flush(r);
+        }
+    }
 
     /**
      * Flush a rectangle of cached image data.

@@ -74,6 +74,9 @@ public class RhinoInterpreter implements Interpreter {
      * @see org.apache.batik.script.InterpreterPool
      */
     public RhinoInterpreter() {
+        Context.setCachingEnabled(false); // reset the cache
+        Context.setCachingEnabled(true);  // enable caching again
+
         // entering a context
         Context ctx = Context.enter();
         try {
@@ -152,6 +155,7 @@ public class RhinoInterpreter implements Interpreter {
      */
     public Object evaluate(String scriptstr)
         throws InterpreterException {
+ 
         Context ctx = Context.enter();
         ctx.setWrapHandler(wrapHandler);
         Script script = null;
@@ -160,7 +164,7 @@ public class RhinoInterpreter implements Interpreter {
         // between nlog(n) and log(n) because it is
         // an AbstractSequentialList
         while (it.hasNext()) {
-            if ((et = (Entry)(it.next())).str == scriptstr) {
+            if ((et = (Entry)(it.next())).str.equals(scriptstr)) {
                 // if it is not at the end, remove it because
                 // it will change from place (it is faster
                 // to remove it now)
