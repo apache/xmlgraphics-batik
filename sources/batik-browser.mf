@@ -1,5 +1,5 @@
 Manifest-Version: $Id$
-Main-Class: org.apache.batik.apps.svgviewer.Main
+Main-Class: org.apache.batik.apps.svgbrowser.Main
 Class-Path: lib/batik-ext.jar \
             lib/batik-dom.jar \
             lib/batik-css.jar \

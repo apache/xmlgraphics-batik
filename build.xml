@@ -30,10 +30,10 @@ Then type:
 
 This action will compile the sources to the 'classes' directory.
 
-You can now launch the SVG viewer by typing:
+You can now launch the SVG browser by typing:
 
-  [unix]  ./build.sh svgviewer
-  [win32] .\build.bat svgviewer
+  [unix]  ./build.sh svgbrowser
+  [win32] .\build.bat svgbrowser
 
 
 Build Targets
@@ -118,7 +118,6 @@ To display the available targets type:
     <echo message="   dist-zip      --> build the zip distributions"/>
     <echo message="   dist-tgz      --> build the tgz distributions"/>
     <echo message="   compile       --> compiles the source code"/>
-    <echo message="   svgviewer     --> runs the SVG viewer"/>
     <echo message="   svgbrowser    --> runs the SVG browser"/>
     <echo message="   svgrasterizer --> runs the SVG rasterizer"/>
     <echo message="   svgpp         --> runs the SVG pretty-printer"/>
@@ -251,7 +250,6 @@ To display the available targets type:
                                root-jar,
                                svg-pp-jar,
                                svggen-jar,
-                               svg-viewer-jar,
                                svg-browser-jar,
                                rasterizer-jar">
     <copy todir="${build}/lib">
@@ -482,21 +480,6 @@ To display the available targets type:
     </jar>
   </target>
 
-  <!-- SVG Viewer (dependencies: all) -->
-  <target name="svg-viewer-jar" depends="compile, prepare-build">
-    <jar manifest="${src}/${project}-viewer.mf"
-         jarfile="${build}/${project}-svgviewer.jar">
-      <fileset dir="${dest}">
-        <include name="${package-prefix}/apps/svgviewer/**/*.class"/>
-        <include name="${package-prefix}/experiment/**/*.class"/>
-      </fileset>
-      <fileset dir="${resources}">
-        <include name="${package-prefix}/apps/svgviewer/**/resources/**"/>
-      </fileset>
-    </jar>
-  </target>
-
-
   <!-- SVG Browser (dependencies: all) -->
   <target name="svg-browser-jar" depends="compile, prepare-build">
     <jar manifest="${src}/${project}-browser.mf"
@@ -533,20 +516,6 @@ To display the available targets type:
 
 
   <!-- Applications ....................................................... -->
-  <target name="svgviewer"
-          depends="compile"
-          description="Runs the SVG viewer">
-    <java fork="yes"
-          classname="${class-prefix}.apps.svgviewer.Main">
-      <classpath>
-        <pathelement location="${dest}" />
-        <path refid="libs-classpath"/>
-        <pathelement location="resources" />
-      </classpath>
-      <arg value="${args}"/>
-    </java>
-  </target>
-
   <target name="svgbrowser"
           depends="compile"
           description="Runs the SVG browser">
