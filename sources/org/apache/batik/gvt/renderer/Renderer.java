@@ -65,5 +65,14 @@ public interface Renderer {
      * been made.
      */
     public void setProgressivePaintAllowed(boolean allowProgressive);
+
+    /**
+     * Cause the renderer to ask to be removed from external reference
+     * lists, de-register as a listener to events, etc. so that
+     * in the absence of other existing references, it can be
+     * removed by the garbage collector.
+     */
+    public void dispose();
+
 }
 
