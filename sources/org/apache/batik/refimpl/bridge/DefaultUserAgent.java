@@ -39,4 +39,19 @@ public class DefaultUserAgent implements UserAgent {
     public float getPixelToMM() {
         return 0.33f;
     }
+
+    /**
+     * Returns the language settings.
+     */
+    public String getLanguages() {
+        return "en";
+    }
+
+    /**
+     * Returns the user stylesheet uri.
+     * @return null if no user style sheet was specified.
+     */
+    public String getUserStyleSheetURI() {
+        return null;
+    }
 }

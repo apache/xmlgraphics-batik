@@ -15,6 +15,7 @@ import org.apache.batik.gvt.event.EventDispatcher;
  * An interface that provides access to User Agent information needed by
  * the bridge.
  * @author <a href="mailto:cjolif@ilog.fr">Christophe Jolif</a>
+ * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
 public interface UserAgent {
@@ -22,16 +23,26 @@ public interface UserAgent {
      * Returns the <code>EventDispatcher</code> used by the
      * <code>UserAgent</code> to dispatch events on GVT.
      */
-    public EventDispatcher getEventDispatcher();
+    EventDispatcher getEventDispatcher();
     
     /**
      * Displays an error message in the User Agent interface.
      */
-    public void displayError(String message);
+    void displayError(String message);
 
     /**
      * Returns the pixel to mm factor.
      */
-    public float getPixelToMM();
+    float getPixelToMM();
 
+    /**
+     * Returns the language settings.
+     */
+    String getLanguages();
+
+    /**
+     * Returns the user stylesheet uri.
+     * @return null if no user style sheet was specified.
+     */
+    String getUserStyleSheetURI();
 }

@@ -12,6 +12,7 @@ import java.awt.geom.AffineTransform;
 import java.io.StringReader;
 import java.util.StringTokenizer;
 
+import org.apache.batik.bridge.UserAgent;
 import org.apache.batik.dom.util.XMLSupport;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.FilterRegion;
@@ -467,6 +468,45 @@ public class SVGUtilities implements SVGConstants {
         return (preserve)
             ? XMLSupport.preserveXMLSpace(result)
             : XMLSupport.defaultXMLSpace(result);
+    }
+
+    /**
+     * Tests whether or not the given element.
+     */
+    public static boolean matchUserAgent(Element elt, UserAgent ua) {
+        if (elt.hasAttributeNS(null, ATTR_SYSTEM_LANGUAGE)) {
+            // Evaluates the system languages
+            String sl = elt.getAttributeNS(null, ATTR_SYSTEM_LANGUAGE);
+            StringTokenizer st = new StringTokenizer(sl, ",");
+            while (st.hasMoreTokens()) {
+                String s = st.nextToken();
+                if (matchUserLanguage(s, ua.getLanguages())) {
+                    return true;
+                }
+            }
+        }
+        // !!! TODO requiredFeatures, requiredExtensions
+        return false;
+    }
+
+    /**
+     * Tests whether the given language specification match the
+     * user preferences.
+     */
+    protected static boolean matchUserLanguage(String s, String userLanguages) {
+        StringTokenizer st = new StringTokenizer(userLanguages, ",");
+        while (st.hasMoreTokens()) {
+            String t = st.nextToken();
+            if (s.startsWith(t)) {
+                if (s.length() > t.length()) {
+                    return (s.charAt(t.length()) == '-')
+                        ? true
+                        : false;
+                }
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
