@@ -20,6 +20,7 @@ import org.apache.batik.bridge.BridgeMutationEvent;
 import org.apache.batik.bridge.FilterPrimitiveBridge;
 
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.filter.AffineRable;
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.FilterChainRable;
@@ -80,6 +81,9 @@ public class SVGFeOffsetElementBridge implements FilterPrimitiveBridge,
                          Rectangle2D filterRegion,
                          Map filterMap){
 
+        GraphicsNodeRenderContext rc = 
+                         bridgeContext.getGraphicsNodeRenderContext();
+
         // parse the dx attribute
         String dxAttr = filterElement.getAttributeNS(null, ATTR_DX);
         float dx = 0; // default is 0
@@ -134,6 +138,7 @@ public class SVGFeOffsetElementBridge implements FilterPrimitiveBridge,
                                                         filteredElement,
                                                         defaultRegion,
                                                         filteredNode,
+                                                        rc,
                                                         uctx);
 
         PadRable pad = new ConcretePadRable(in,

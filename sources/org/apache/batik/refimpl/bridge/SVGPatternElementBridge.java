@@ -23,6 +23,7 @@ import org.apache.batik.bridge.Viewport;
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GVTFactory;
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
 import org.apache.batik.parser.ParserFactory;
@@ -81,6 +82,9 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
                                 GraphicsNode paintedNode,
                                 Element paintedElement,
                                 Element paintElement) {
+
+        GraphicsNodeRenderContext rc = 
+                         ctx.getGraphicsNodeRenderContext();
 
         Viewport oldViewport = ctx.getCurrentViewport();
 
@@ -175,6 +179,7 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
             = SVGUtilities.convertPatternRegion(paintElement,
                                                 paintedElement,
                                                 paintedNode,
+                                                rc,
                                                 uctx);
         // Get the transform that will initialize the viewport for the
         // pattern's viewBox
@@ -201,7 +206,7 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
         AffineTransform patternContentTransform = null;
         if (!hasViewBox) {
             if(SVG_OBJECT_BOUNDING_BOX_VALUE.equals(patternContentUnits)){
-                Rectangle2D bounds = paintedNode.getGeometryBounds();
+                Rectangle2D bounds = paintedNode.getGeometryBounds(rc);
                 patternContentTransform = new AffineTransform();
                 patternContentTransform.translate(bounds.getX(),
                                                   bounds.getY());
@@ -231,7 +236,7 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
                     = ctx.getGraphicsNodeRableFactory();
 
                 Filter filter = gnrFactory.createGraphicsNodeRable
-                    (newPatternContentNode);
+                    (newPatternContentNode, rc);
 
                 newPatternContentNode.setClip
                     (new ConcreteClipRable(filter, viewBox));
@@ -246,6 +251,7 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
 
         // Now, build a Paint from the pattern content
         Paint paint = new ConcretePatternPaint(patternContentNode,
+                                               rc,
                                                nodeTransform,
                                                patternRegion,
                                                overflow,

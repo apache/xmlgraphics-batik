@@ -20,6 +20,7 @@ import org.apache.batik.bridge.IllegalAttributeValueException;
 import org.apache.batik.bridge.MissingAttributeException;
 
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.filter.ComponentTransferFunction;
 import org.apache.batik.gvt.filter.ComponentTransferRable;
 import org.apache.batik.gvt.filter.Filter;
@@ -75,6 +76,9 @@ public class SVGFeComponentTransferElementBridge
                          Map filterMap){
         Filter filter = null;
 
+        GraphicsNodeRenderContext rc = 
+                         bridgeContext.getGraphicsNodeRenderContext();
+
         // First, extract source
         String inAttr = filterElement.getAttributeNS(null, SVG_IN_ATTRIBUTE);
         in = CSSUtilities.getFilterSource(filteredNode,
@@ -113,6 +117,7 @@ public class SVGFeComponentTransferElementBridge
                                                         filteredElement,
                                                         defaultRegion,
                                                         filteredNode,
+                                                        rc,
                                                         uctx);
 
         //

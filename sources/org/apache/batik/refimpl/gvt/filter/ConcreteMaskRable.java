@@ -9,6 +9,7 @@
 package org.apache.batik.refimpl.gvt.filter;
 
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.GraphicsNodeRenderContext;
 
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.CachableRed;
@@ -122,10 +123,13 @@ public class ConcreteMaskRable
     }
 
     public RenderedImage createRendering(RenderContext rc) {
+
+        GraphicsNodeRenderContext gnrc = 
+               GraphicsNodeRenderContext.getGraphicsNodeRenderContext(rc);
         //
         // Get the mask content
         //
-        Filter maskSrc = new ConcreteGraphicsNodeRable(getMaskNode());
+        Filter maskSrc = new ConcreteGraphicsNodeRable(getMaskNode(), gnrc);
         PadRable maskPad = new ConcretePadRable(maskSrc, getBounds2D(),
                                                 PadMode.ZERO_PAD);
         maskSrc = new FilterAsAlphaRable(maskPad);
@@ -138,6 +142,7 @@ public class ConcreteMaskRable
         PadRable maskedPad = new ConcretePadRable(getSource(),
                                                   getBounds2D(),
                                                   PadMode.ZERO_PAD);
+
         ri = maskedPad.createRendering(rc);
         if (ri == null)
             return null;

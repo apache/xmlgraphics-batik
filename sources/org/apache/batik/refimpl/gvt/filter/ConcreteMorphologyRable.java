@@ -8,7 +8,8 @@
 
 package org.apache.batik.refimpl.gvt.filter;
 
-
+import org.apache.batik.gvt.GraphicsNodeRenderContext;
+ 
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.CachableRed;
 import org.apache.batik.gvt.filter.MorphologyRable;
@@ -182,11 +183,12 @@ public class ConcreteMorphologyRable
         resAt = new AffineTransform(sx/scaleX, shy/scaleX,
                                     shx/scaleY,  sy/scaleY,
                                     tx, ty);
-        
-        Shape aoi = rc.getAreaOfInterest();
-        if(aoi == null)
-            aoi = getBounds2D();
 
+        Shape aoi = rc.getAreaOfInterest();
+        if(aoi == null) {
+            aoi = getBounds2D();
+        }
+ 
         Rectangle2D r = aoi.getBounds2D();
         r = new Rectangle2D.Double(r.getX()-radX/scaleX, 
                                    r.getY()-radY/scaleY,
@@ -209,7 +211,7 @@ public class ConcreteMorphologyRable
                                    r.getHeight()+2*radY);
         cr = new PadRed(cr, r.getBounds(), PadMode.ZERO_PAD, rh);
         
-        // System.out.println("Src: " + cr.getBounds());
+        // System.out.println("Src: " + cr.getBounds(rc));
 
         ColorModel cm = ri.getColorModel();
 
@@ -241,7 +243,7 @@ public class ConcreteMorphologyRable
         if (!resAt.isIdentity())
             cr = new AffineRed(cr, resAt, rh);
         
-        // System.out.println("Res: " + cr.getBounds());
+        // System.out.println("Res: " + cr.getBounds(rc));
 
         return cr;
     }

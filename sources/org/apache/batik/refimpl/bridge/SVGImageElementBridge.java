@@ -30,6 +30,7 @@ import org.apache.batik.dom.util.XLinkSupport;
 
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.ImageNode;
 import org.apache.batik.gvt.RasterImageNode;
 import org.apache.batik.gvt.filter.Clip;
@@ -131,7 +132,8 @@ public class SVGImageElementBridge implements GraphicsNodeBridge,
         return imgNode;
     }
 
-    public void buildGraphicsNode(GraphicsNode node, BridgeContext ctx,
+    public void buildGraphicsNode(GraphicsNode node, 
+                                  BridgeContext ctx,
                                   Element element) {
         CSSStyleDeclaration cssDecl
             = ctx.getViewCSS().getComputedStyle(element, null);
@@ -226,7 +228,8 @@ public class SVGImageElementBridge implements GraphicsNodeBridge,
             GraphicsNodeRableFactory gnrFactory
                 = ctx.getGraphicsNodeRableFactory();
 
-            Filter filter = gnrFactory.createGraphicsNodeRable(node);
+            Filter filter = gnrFactory.createGraphicsNodeRable(node, 
+                                       ctx.getGraphicsNodeRenderContext());
 
             Shape clip = at.createTransformedShape
                 (new Rectangle2D.Float(x, y, w, h));

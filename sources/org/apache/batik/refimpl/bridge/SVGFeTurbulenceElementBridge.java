@@ -20,6 +20,7 @@ import org.apache.batik.bridge.FilterPrimitiveBridge;
 import org.apache.batik.bridge.IllegalAttributeValueException;
 
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.filter.Clip;
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.PadMode;
@@ -70,6 +71,9 @@ public class SVGFeTurbulenceElementBridge implements FilterPrimitiveBridge,
                          Filter in,
                          Rectangle2D filterRegion,
                          Map filterMap){
+
+         GraphicsNodeRenderContext rc = 
+                         bridgeContext.getGraphicsNodeRenderContext();
 
         // parse the baseFrequency attribute
         String baseFrequencyAttr =
@@ -155,6 +159,7 @@ public class SVGFeTurbulenceElementBridge implements FilterPrimitiveBridge,
                                                         filteredElement,
                                                         defaultRegion,
                                                         filteredNode,
+                                                        rc,
                                                         uctx);
 
         TurbulenceRable turbulenceRable

@@ -10,6 +10,7 @@ package org.apache.batik.bridge;
 
 import org.w3c.dom.Element;
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.GraphicsNodeRenderContext;
 
 /**
  * Factory class for vending <tt>GraphicsNode</tt> objects.
@@ -35,7 +36,8 @@ public interface GraphicsNodeBridge extends Bridge {
      * @param elem the Element that describes the GraphicsNode to build
      * @return a GraphicsNode object representing the Element
      */
-    void buildGraphicsNode(GraphicsNode node, BridgeContext ctx,
+    void buildGraphicsNode(GraphicsNode node, 
+                           BridgeContext ctx,
                            Element element);
 
     /**

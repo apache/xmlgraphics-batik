@@ -155,11 +155,11 @@ public class ConcreteCompositeGraphicsNode extends AbstractGraphicsNode
         primitiveBounds = null;
     }
 
-    public boolean contains(Point2D p) {
+    public boolean contains(Point2D p, GraphicsNodeRenderContext rc) {
         if (count == 0) {
             return false;
         }
-        if (getBounds().contains(p)) {
+        if (getBounds(rc).contains(p)) {
             for (int i=0; i < count; ++i) {
                 AffineTransform t = children[i].getTransform();
                 if (t == null) {
@@ -171,7 +171,7 @@ public class ConcreteCompositeGraphicsNode extends AbstractGraphicsNode
                     } catch (NoninvertibleTransformException ex) {}
                 }
                 Point2D pt = t.transform(p, null);
-                if (children[i].contains(pt)) {
+                if (children[i].contains(pt, rc)) {
                     return true;
                 }
             }
@@ -179,11 +179,11 @@ public class ConcreteCompositeGraphicsNode extends AbstractGraphicsNode
         return false;
     }
 
-    public GraphicsNode nodeHitAt(Point2D p) {
+    public GraphicsNode nodeHitAt(Point2D p, GraphicsNodeRenderContext rc) {
         if (count == 0) {
             return null;
         }
-        if (getBounds().contains(p)) {
+        if (getBounds(rc).contains(p)) {
             //
             // Go backward because the children are in rendering order
             //
@@ -198,7 +198,7 @@ public class ConcreteCompositeGraphicsNode extends AbstractGraphicsNode
                     } catch (NoninvertibleTransformException ex) {}
                 }
                 Point2D pt = t.transform(p, null);
-                GraphicsNode node = children[i].nodeHitAt(pt);
+                GraphicsNode node = children[i].nodeHitAt(pt, rc);
                 if (node != null) {
                     return node;
                 }
@@ -207,11 +207,11 @@ public class ConcreteCompositeGraphicsNode extends AbstractGraphicsNode
         return null;
     }
 
-    protected Rectangle2D getGlobalBounds() {
+    protected Rectangle2D getGlobalBounds(GraphicsNodeRenderContext rc) {
         if (count == 0) {
             return null;
         }
-        Rectangle2D r = getBounds();
+        Rectangle2D r = getBounds(rc);
         if (r == null) {
             return null;
         } else {
@@ -219,13 +219,13 @@ public class ConcreteCompositeGraphicsNode extends AbstractGraphicsNode
         }
     }
 
-    public Rectangle2D getPrimitiveBounds() {
+    public Rectangle2D getPrimitiveBounds(GraphicsNodeRenderContext rc) {
         if (primitiveBounds == null) {
             Rectangle2D bounds = null, nodeBounds = null;
             AffineTransform txf = null;
             if(count > 0){
                 txf = children[0].getTransform();
-                nodeBounds = children[0].getBounds();
+                nodeBounds = children[0].getBounds(rc);
                 bounds = (txf == null)
                     ? nodeBounds
                     : txf.createTransformedShape(nodeBounds).getBounds2D();
@@ -235,7 +235,7 @@ public class ConcreteCompositeGraphicsNode extends AbstractGraphicsNode
             }
             for (int i=1; i < count; ++i) {
                 GraphicsNode node = children[i];
-                nodeBounds = node.getBounds();
+                nodeBounds = node.getBounds(rc);
                 txf = children[i].getTransform();
                 if (txf != null) {
                     nodeBounds =
@@ -248,14 +248,14 @@ public class ConcreteCompositeGraphicsNode extends AbstractGraphicsNode
         return primitiveBounds;
     }
 
-    public Rectangle2D getGeometryBounds(){
+    public Rectangle2D getGeometryBounds(GraphicsNodeRenderContext rc){
         Rectangle2D b = null;
         if(geometryBounds == null){
             Rectangle2D nodeBounds = null;
             AffineTransform txf = null;
             if(count > 0){
                 txf = children[0].getTransform();
-                nodeBounds = children[0].getGeometryBounds();
+                nodeBounds = children[0].getGeometryBounds(rc);
                 geometryBounds = (txf == null)
                     ? nodeBounds
                     : txf.createTransformedShape(nodeBounds).getBounds2D();
@@ -272,7 +272,7 @@ public class ConcreteCompositeGraphicsNode extends AbstractGraphicsNode
             }
             for (int i=1; i < count; ++i) {
                 GraphicsNode node = children[i];
-                nodeBounds = node.getGeometryBounds();
+                nodeBounds = node.getGeometryBounds(rc);
                 txf = children[i].getTransform();
                 if (txf != null) {
                     nodeBounds =
@@ -288,7 +288,7 @@ public class ConcreteCompositeGraphicsNode extends AbstractGraphicsNode
         return b;
     }
 
-    public Shape getOutline() {
+    public Shape getOutline(GraphicsNodeRenderContext rc) {
         // <!> FIXME : TODO
         throw new Error("Not yet implemented");
     }

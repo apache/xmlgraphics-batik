@@ -133,7 +133,7 @@ public class ConcreteTextNode
     /**
      * Primitive bounds are in user space.
      */
-    public Rectangle2D getPrimitiveBounds(){
+    public Rectangle2D getPrimitiveBounds(GraphicsNodeRenderContext rc){
         // HACK, until we change getBounds to take GraphicsNodeRenderContext
         // We don't consider stroke and/or fill yet,
         if (primitiveBounds == null) {
@@ -203,7 +203,7 @@ public class ConcreteTextNode
     /**
      * Geometric bounds are in user space.
      */
-    public Rectangle2D getGeometryBounds(){
+    public Rectangle2D getGeometryBounds(GraphicsNodeRenderContext rc){
 
         if (geometryBounds == null){
             if (aci != null) {
@@ -239,14 +239,14 @@ public class ConcreteTextNode
     /**
      * Returns whether a given point is enclosed by the text node's bounds.
      */
-    public boolean contains(Point2D p) {
-        return getBounds().contains(p.getX(), p.getY());
+    public boolean contains(Point2D p, GraphicsNodeRenderContext rc) {
+        return getBounds(rc).contains(p.getX(), p.getY());
     }
 
     /**
      * @return a Shape which matches the text's geometry.
      */
-    public Shape getOutline() {
+    public Shape getOutline(GraphicsNodeRenderContext rc) {
 
         // HACK, until we change getBounds to take
         // GraphicsNodeRenderContext

@@ -27,6 +27,7 @@ import java.awt.image.WritableRaster;
 import java.awt.image.renderable.RenderContext;
 
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.filter.AffineRable;
 import org.apache.batik.gvt.filter.GraphicsNodeRable;
 import org.apache.batik.gvt.filter.PadMode;
@@ -86,6 +87,7 @@ public class ConcretePatternPaintContext implements PaintContext {
                                        AffineTransform usr2dev,
                                        RenderingHints hints,
                                        GraphicsNode node,
+                                       GraphicsNodeRenderContext gnrc,
                                        AffineTransform nodeTxf,
                                        Rectangle2D patternTile,
                                        boolean overflow){
@@ -109,7 +111,7 @@ public class ConcretePatternPaintContext implements PaintContext {
             nodeTxf = new AffineTransform();
         }
 
-        Rectangle2D nodeBounds = node.getBounds();
+        Rectangle2D nodeBounds = node.getBounds(gnrc);
         Rectangle2D patternBounds = patternTile;
         tileX = patternBounds.getX();
         tileY = patternBounds.getY();
@@ -127,7 +129,7 @@ public class ConcretePatternPaintContext implements PaintContext {
         adjustTxf.concatenate(nodeTxf);
 
         GraphicsNodeRable gnr
-            = new ConcreteGraphicsNodeRable(node);
+            = new ConcreteGraphicsNodeRable(node, gnrc);
 
         AffineRable atr
             = new ConcreteAffineRable(gnr, adjustTxf);
@@ -154,7 +156,7 @@ public class ConcretePatternPaintContext implements PaintContext {
                                    padBounds,
                                    PadMode.ZERO_PAD);
 
-        ConcreteTileRable tileRable 
+        ConcreteTileRable tileRable
             = new ConcreteTileRable(pad,
                                     tiledRegion,
                                     patternBounds,
@@ -163,7 +165,7 @@ public class ConcretePatternPaintContext implements PaintContext {
         RenderContext rc = new RenderContext(usr2dev,
                                              tiledRegion,
                                              hints);
-        
+
         tiled = tileRable.createRendering(rc);
 
         //System.out.println("Created rendering");
@@ -192,7 +194,7 @@ public class ConcretePatternPaintContext implements PaintContext {
         }
 
         // System.out.println("getRaster : " + x + "/" + y + "/" + width + "/" + height);
-        WritableRaster wr = raster.createWritableChild(raster.getMinX(), raster.getMinY(), 
+        WritableRaster wr = raster.createWritableChild(raster.getMinX(), raster.getMinY(),
                                                        width, height, x, y, null);
 
         return tiled.copyData(wr);

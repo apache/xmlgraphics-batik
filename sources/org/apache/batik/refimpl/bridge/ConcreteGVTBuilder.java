@@ -86,7 +86,7 @@ public class ConcreteGVTBuilder implements GVTBuilder, SVGConstants {
             treeRoot = graphicsNodeBridge.createGraphicsNode(ctx, svgRoot);
             buildComposite(ctx,
                            (CompositeGraphicsNode)treeRoot,
-                           svgRoot.getFirstChild());
+                            svgRoot.getFirstChild());
             graphicsNodeBridge.buildGraphicsNode(treeRoot, ctx, svgRoot);
 
             // <!> TODO this should be done only if we want binding !!!!

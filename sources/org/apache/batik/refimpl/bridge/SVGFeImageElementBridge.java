@@ -27,6 +27,7 @@ import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.XLinkSupport;
 
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
 import org.apache.batik.gvt.filter.PadMode;
@@ -83,6 +84,9 @@ public class SVGFeImageElementBridge implements FilterPrimitiveBridge,
                          Rectangle2D filterRegion,
                          Map filterMap){
 
+        GraphicsNodeRenderContext rc = 
+                          bridgeContext.getGraphicsNodeRenderContext();
+
         SVGElement svgElement = (SVGElement) filterElement;
 
         String uriStr = XLinkSupport.getXLinkHref(svgElement);
@@ -107,6 +111,7 @@ public class SVGFeImageElementBridge implements FilterPrimitiveBridge,
                                                         filteredElement,
                                                         defaultRegion,
                                                         filteredNode,
+                                                        rc,
                                                         uctx);
 
         Filter filter = null;
@@ -156,7 +161,7 @@ public class SVGFeImageElementBridge implements FilterPrimitiveBridge,
 
                 GraphicsNodeRableFactory gnrFactory
                     = bridgeContext.getGraphicsNodeRableFactory();
-                filter = gnrFactory.createGraphicsNodeRable(gn);
+                filter = gnrFactory.createGraphicsNodeRable(gn, rc);
 
                 //
                 // Need to translate the image to the x, y coordinate to

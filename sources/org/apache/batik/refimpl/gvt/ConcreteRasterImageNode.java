@@ -142,15 +142,15 @@ public class ConcreteRasterImageNode extends AbstractGraphicsNode
     // Geometric methods
     //
 
-    public Rectangle2D getPrimitiveBounds() {
+    public Rectangle2D getPrimitiveBounds(GraphicsNodeRenderContext rc) {
         return (Rectangle2D) imageBounds.clone();
     }
 
-    public Rectangle2D getGeometryBounds() {
+    public Rectangle2D getGeometryBounds(GraphicsNodeRenderContext rc) {
         return (Rectangle2D) imageBounds.clone();
     }
 
-    public Shape getOutline() {
+    public Shape getOutline(GraphicsNodeRenderContext rc) {
         return (Rectangle2D) imageBounds.clone();
     }
 }

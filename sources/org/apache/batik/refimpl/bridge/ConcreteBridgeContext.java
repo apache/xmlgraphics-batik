@@ -10,6 +10,7 @@ package org.apache.batik.refimpl.bridge;
 
 import org.apache.batik.gvt.GVTFactory;
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
 import org.apache.batik.parser.ParserFactory;
 import org.apache.batik.bridge.DocumentLoader;
@@ -116,6 +117,12 @@ public class ConcreteBridgeContext implements BridgeContext {
      * The factory class for vending <tt>GraphicsNodeRable</tt> objects.
      */
     private GraphicsNodeRableFactory graphicsNodeRableFactory;
+
+    /**
+     * The current <tt>GraphicsNodeRenderContext</tt>
+     * for <tt>GraphicsNode</tt>s created by this bridge.
+     */
+    private GraphicsNodeRenderContext graphicsNodeRenderContext;
 
     /**
      * The document loader used to load/create Document.
@@ -336,5 +343,13 @@ public class ConcreteBridgeContext implements BridgeContext {
 
     public void setGraphicsNodeRableFactory(GraphicsNodeRableFactory f) {
         graphicsNodeRableFactory = f;
+    }
+
+    public GraphicsNodeRenderContext getGraphicsNodeRenderContext(){
+        return graphicsNodeRenderContext;
+    }
+
+    public void setGraphicsNodeRenderContext(GraphicsNodeRenderContext rc) {
+        graphicsNodeRenderContext = rc;
     }
 }

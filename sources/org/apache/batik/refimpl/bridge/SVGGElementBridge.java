@@ -22,6 +22,7 @@ import org.apache.batik.bridge.BridgeMutationEvent;
 import org.apache.batik.bridge.GraphicsNodeBridge;
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.Clip;
 import org.apache.batik.gvt.filter.Mask;
@@ -72,7 +73,8 @@ public class SVGGElementBridge implements GraphicsNodeBridge, SVGConstants {
         return gn;
     }
 
-    public void buildGraphicsNode(GraphicsNode node, BridgeContext ctx,
+    public void buildGraphicsNode(GraphicsNode node,
+                                  BridgeContext ctx,
                                   Element element) {
         CSSStyleDeclaration decl;
         decl = ctx.getViewCSS().getComputedStyle(element, null);

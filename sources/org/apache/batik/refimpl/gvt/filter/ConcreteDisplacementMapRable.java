@@ -8,7 +8,6 @@
 
 package org.apache.batik.refimpl.gvt.filter;
 
-
 import org.apache.batik.gvt.filter.ARGBChannel;
 import org.apache.batik.gvt.filter.CachableRed;
 import org.apache.batik.gvt.filter.Filter;
@@ -181,7 +180,7 @@ public class ConcreteDisplacementMapRable
                     aoi.getY() - scale/2,
                     aoi.getWidth() + scale,
                     aoi.getHeight() + scale);
-        aoi.intersect(displaced.getBounds2D(), aoi, aoi);
+        aoi.intersect(displaced.getBounds2D(),aoi, aoi);
 
         RenderContext srcRc 
             = new RenderContext(srcAt, 

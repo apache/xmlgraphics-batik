@@ -45,6 +45,11 @@ public class ConcreteGraphicsNodeRable
     private boolean usePrimitivePaint = true;
 
     /**
+     * The current render context for the filtered GraphicsNode.
+     */
+    private GraphicsNodeRenderContext gnrc = null;
+
+    /**
      * Returns true if this Rable get's it's contents by calling
      * primitivePaint on the associated <tt>GraphicsNode</tt> or
      * false if it uses paint.
@@ -88,11 +93,13 @@ public class ConcreteGraphicsNodeRable
     /**
      * @param node The GraphicsNode this image should represent
      */
-    public ConcreteGraphicsNodeRable(GraphicsNode node){
+    public ConcreteGraphicsNodeRable(GraphicsNode node, 
+                                     GraphicsNodeRenderContext gnrc){
         if(node == null)
             throw new IllegalArgumentException();
 
         this.node = node;
+        this.gnrc = gnrc;
         this.usePrimitivePaint = true;
     }
 
@@ -115,7 +122,8 @@ public class ConcreteGraphicsNodeRable
      */
     public Rectangle2D getBounds2D(){
         if (usePrimitivePaint)
-            return (Rectangle2D)(node.getPrimitiveBounds().clone());
+            return (Rectangle2D)(node.getPrimitiveBounds(
+                                 getGraphicsNodeRenderContext()).clone());
 
         // When not using Primitive paint we return out bounds in our
         // parent's user space.  This makes sense since this is the
@@ -123,7 +131,8 @@ public class ConcreteGraphicsNodeRable
         // primitivePaint incorporates the transform from our user
         // space to our parents user space).
         AffineTransform at     = node.getTransform();
-        Rectangle2D     bounds = node.getBounds();
+        Rectangle2D     bounds = 
+                        node.getBounds(getGraphicsNodeRenderContext());
         
         return at.createTransformedShape(bounds).getBounds2D();
     }
@@ -215,16 +224,12 @@ public class ConcreteGraphicsNodeRable
         // Clip
         g.clip(renderContext.getAreaOfInterest());
             
-        GraphicsNodeRenderContext gnrc;
-        gnrc = GraphicsNodeRenderContext.
-            getGraphicsNodeRenderContext(renderContext);
-
         try {
             // Invoke primitive paint.
             if (usePrimitivePaint)
-                node.primitivePaint (g, gnrc);
+                node.primitivePaint (g, getGraphicsNodeRenderContext());
             else
-                node.paint (g, gnrc);
+                node.paint (g, getGraphicsNodeRenderContext());
         } catch (InterruptedException ie) {
             g.dispose();
             return null;
@@ -236,4 +241,13 @@ public class ConcreteGraphicsNodeRable
             (offScreen, renderedArea.x, renderedArea.y);
 
     }
+
+    protected void setGraphicsNodeRenderContext(GraphicsNodeRenderContext rc) {
+        this.gnrc = rc;
+    }
+
+    protected GraphicsNodeRenderContext getGraphicsNodeRenderContext() {
+        return gnrc;
+    }
+
 }

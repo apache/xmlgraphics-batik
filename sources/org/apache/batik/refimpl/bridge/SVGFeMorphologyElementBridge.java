@@ -17,6 +17,7 @@ import org.apache.batik.bridge.FilterPrimitiveBridge;
 import org.apache.batik.bridge.IllegalAttributeValueException;
 
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.MorphologyRable;
 import org.apache.batik.gvt.filter.PadMode;
@@ -67,6 +68,9 @@ public class SVGFeMorphologyElementBridge implements FilterPrimitiveBridge,
                          Filter in,
                          Rectangle2D filterRegion,
                          Map filterMap){
+
+        GraphicsNodeRenderContext rc = 
+                     bridgeContext.getGraphicsNodeRenderContext();
 
         // Extract the radius (or radii) for the operation.
         String radius = filterElement.getAttributeNS(null, ATTR_RADIUS);
@@ -154,6 +158,7 @@ public class SVGFeMorphologyElementBridge implements FilterPrimitiveBridge,
                                                         filteredElement,
                                                         defaultRegion,
                                                         filteredNode,
+                                                        rc,
                                                         uctx);
 
         PadRable pad = new ConcretePadRable(in,

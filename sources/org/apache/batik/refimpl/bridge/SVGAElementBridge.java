@@ -25,6 +25,7 @@ import org.apache.batik.bridge.GraphicsNodeBridge;
 import org.apache.batik.bridge.UserAgent;
 import org.apache.batik.css.HiddenChildElementSupport;
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.filter.Clip;
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.Mask;
@@ -80,7 +81,8 @@ public class SVGAElementBridge implements GraphicsNodeBridge, SVGConstants {
         return gn;
     }
 
-    public void buildGraphicsNode(GraphicsNode gn, BridgeContext ctx,
+    public void buildGraphicsNode(GraphicsNode gn, 
+                                  BridgeContext ctx,
                                   Element element) {
         CSSStyleDeclaration decl;
         decl = ctx.getViewCSS().getComputedStyle(element, null);

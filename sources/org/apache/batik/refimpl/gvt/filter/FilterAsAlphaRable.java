@@ -111,8 +111,9 @@ public class FilterAsAlphaRable
 
         // if we didn't have an aoi specify our bounds as the aoi.
         Shape aoi = rc.getAreaOfInterest();
-        if (aoi == null)
+        if (aoi == null) {
             aoi = getBounds2D();
+        }
 
         rh.put(KEY_COLORSPACE, VALUE_COLORSPACE_ALPHA_CONVERT);
 

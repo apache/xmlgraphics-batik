@@ -38,6 +38,7 @@ import org.apache.batik.bridge.GraphicsNodeBridge;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.dom.util.XMLSupport;
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.TextNode;
 import org.apache.batik.gvt.ShapeNode;
 import org.apache.batik.gvt.ShapePainter;
@@ -403,7 +404,8 @@ public class TextPathElementBridge implements GraphicsNodeBridge, SVGConstants {
         return node;
     }
 
-    public void buildGraphicsNode(GraphicsNode gn, BridgeContext ctx,
+    public void buildGraphicsNode(GraphicsNode gn, 
+                                  BridgeContext ctx,
                                   Element element) {
         ShapeNode node = (ShapeNode)gn;
 

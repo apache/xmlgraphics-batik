@@ -10,6 +10,7 @@ package org.apache.batik.bridge;
 
 import org.w3c.dom.Element;
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.filter.Mask;
 
 /**

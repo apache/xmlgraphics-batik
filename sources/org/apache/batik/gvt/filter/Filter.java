@@ -8,6 +8,8 @@
 
 package org.apache.batik.gvt.filter;
 
+import org.apache.batik.gvt.GraphicsNodeRenderContext;
+
 import java.awt.image.renderable.RenderableImage;
 import java.awt.Shape;
 import java.awt.geom.Rectangle2D;

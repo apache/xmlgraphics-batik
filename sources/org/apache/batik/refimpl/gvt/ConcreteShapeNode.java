@@ -120,8 +120,8 @@ public class ConcreteShapeNode extends AbstractGraphicsNode
         paintedArea = null;
     }
 
-    public boolean contains(Point2D p) {
-        Rectangle2D b = getBounds();
+    public boolean contains(Point2D p, GraphicsNodeRenderContext rc) {
+        Rectangle2D b = getBounds(rc);
         if (b != null) {
             return (b.contains(p) &&
                     paintedArea != null &&
@@ -130,8 +130,8 @@ public class ConcreteShapeNode extends AbstractGraphicsNode
         return false;
     }
 
-    public boolean intersects(Rectangle2D r) {
-        Rectangle2D b = getBounds();
+    public boolean intersects(Rectangle2D r, GraphicsNodeRenderContext rc) {
+        Rectangle2D b = getBounds(rc);
         if (b != null) {
             return (b.intersects(r) &&
                     paintedArea != null &&
@@ -140,7 +140,7 @@ public class ConcreteShapeNode extends AbstractGraphicsNode
         return false;
     }
 
-    public Rectangle2D getPrimitiveBounds() {
+    public Rectangle2D getPrimitiveBounds(GraphicsNodeRenderContext rc) {
         if (primitiveBounds == null) {
             if ((shape == null) || (shapePainter == null)) {
                 return null;
@@ -151,7 +151,7 @@ public class ConcreteShapeNode extends AbstractGraphicsNode
         return primitiveBounds;
     }
 
-    public Rectangle2D getGeometryBounds(){
+    public Rectangle2D getGeometryBounds(GraphicsNodeRenderContext rc){
         if (geometryBounds == null) {
             if (shape == null) {
                 return null;
@@ -161,7 +161,7 @@ public class ConcreteShapeNode extends AbstractGraphicsNode
         return geometryBounds;
     }
 
-    public Shape getOutline() {
+    public Shape getOutline(GraphicsNodeRenderContext rc) {
         return shape;
     }
 }

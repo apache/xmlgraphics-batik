@@ -19,6 +19,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.ColorModel;
 
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.PatternPaint;
 
 /**
@@ -33,6 +34,12 @@ public class ConcretePatternPaint implements PatternPaint {
      * produce the pixel pattern
      */
     private GraphicsNode node;
+
+    /**
+     * The <tt>GraphicsNodeRenderContext</tt> for rendering this 
+     * <tt>Paint</tt>'s node.
+     */
+    private GraphicsNodeRenderContext rc;
 
     /**
      * The region to which this paint is constrained
@@ -69,6 +76,7 @@ public class ConcretePatternPaint implements PatternPaint {
      *        top of the user space to device space transform.
      */
     public ConcretePatternPaint(GraphicsNode node,
+                                GraphicsNodeRenderContext rc,
                                 AffineTransform nodeTransform,
                                 Rectangle2D patternRegion,
                                 boolean overflow,
@@ -82,6 +90,7 @@ public class ConcretePatternPaint implements PatternPaint {
         }
 
         this.node = node;
+        this.rc = rc;
         this.nodeTransform = nodeTransform;
         this.patternRegion = patternRegion;
         this.overflow = overflow;
@@ -130,7 +139,7 @@ public class ConcretePatternPaint implements PatternPaint {
         }
 
         return new ConcretePatternPaintContext(cm, xform,
-                                               hints, node, 
+                                               hints, node, rc,
                                                nodeTransform,
                                                patternRegion,
                                                overflow);

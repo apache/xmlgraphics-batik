@@ -20,6 +20,7 @@ import org.apache.batik.bridge.BridgeMutationEvent;
 import org.apache.batik.bridge.GraphicsNodeBridge;
 import org.apache.batik.bridge.IllegalAttributeValueException;
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.ShapeNode;
 import org.apache.batik.gvt.ShapePainter;
 import org.apache.batik.gvt.filter.Clip;
@@ -65,7 +66,8 @@ public abstract class SVGShapeElementBridge implements GraphicsNodeBridge,
         return node;
     }
 
-    public void buildGraphicsNode(GraphicsNode gn, BridgeContext ctx,
+    public void buildGraphicsNode(GraphicsNode gn, 
+                                  BridgeContext ctx,
                                   Element element) {
         ShapeNode node = (ShapeNode)gn;
 

@@ -10,6 +10,7 @@ package org.apache.batik.bridge;
 
 import org.apache.batik.gvt.GVTFactory;
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
 import org.apache.batik.parser.ParserFactory;
 import org.apache.batik.script.InterpreterPool;
@@ -175,4 +176,15 @@ public interface BridgeContext {
      * @param f the new GraphicsNodeRableFactory
      */
     void setGraphicsNodeRableFactory(GraphicsNodeRableFactory f);
+
+    /**
+     * Returns a GraphicsNodeRenderContext
+     */
+    GraphicsNodeRenderContext getGraphicsNodeRenderContext();
+
+    /**
+     * Sets the GraphicsNodeRenderContext to use.
+     * @param rc the new GraphicsNodeRenderContext
+     */
+    void setGraphicsNodeRenderContext(GraphicsNodeRenderContext rc);
 }

@@ -19,6 +19,7 @@ import org.apache.batik.bridge.MissingAttributeException;
 import org.apache.batik.bridge.UserAgent;
 import org.apache.batik.dom.util.XMLSupport;
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.parser.AWTPathProducer;
 import org.apache.batik.parser.AWTTransformProducer;
 import org.apache.batik.parser.LengthHandler;
@@ -604,11 +605,13 @@ public class SVGUtilities implements SVGConstants {
         Rectangle2D convertFilterChainRegion(Element filterElement,
                                              Element filteredElement,
                                              GraphicsNode node,
+                                             GraphicsNodeRenderContext rc,
                                              UnitProcessor.Context uctx) {
 
         return convertRegion(filterElement,
                              filteredElement,
                              node,
+                             rc,
                              uctx,
                              ATTR_FILTER_UNITS,
                              SVG_OBJECT_BOUNDING_BOX_VALUE,
@@ -630,11 +633,13 @@ public class SVGUtilities implements SVGConstants {
         Rectangle2D convertMaskRegion(Element maskElement,
                                       Element maskedElement,
                                       GraphicsNode node,
+                                      GraphicsNodeRenderContext rc,
                                       UnitProcessor.Context uctx) {
 
         return convertRegion(maskElement,
                              maskedElement,
                              node,
+                             rc,
                              uctx,
                              ATTR_MASK_UNITS,
                              SVG_OBJECT_BOUNDING_BOX_VALUE,
@@ -656,11 +661,13 @@ public class SVGUtilities implements SVGConstants {
         Rectangle2D convertPatternRegion(Element patternElement,
                                          Element paintedElement,
                                          GraphicsNode node,
+                                         GraphicsNodeRenderContext rc,
                                          UnitProcessor.Context uctx) {
 
         return convertRegion(patternElement,
                              paintedElement,
                              node,
+                             rc,
                              uctx,
                              ATTR_PATTERN_UNITS,
                              SVG_OBJECT_BOUNDING_BOX_VALUE,
@@ -690,6 +697,7 @@ public class SVGUtilities implements SVGConstants {
     protected static Rectangle2D convertRegion(Element filterElement,
                                                Element filteredElement,
                                                GraphicsNode node,
+                                               GraphicsNodeRenderContext rc,
                                                UnitProcessor.Context uctx,
                                                String unitsAttr,
                                                String unitsDefault,
@@ -778,7 +786,7 @@ public class SVGUtilities implements SVGConstants {
                                        ATTR_HEIGHT, hStr,
                                        uctx, vd);
             // Now, take the bounds of the GraphicsNode into account
-            Rectangle2D gnBounds = node.getGeometryBounds();
+            Rectangle2D gnBounds = node.getGeometryBounds(rc);
             x = gnBounds.getX() + x*gnBounds.getWidth();
             y = gnBounds.getY() + y*gnBounds.getHeight();
             w *= gnBounds.getWidth();
@@ -832,6 +840,7 @@ public class SVGUtilities implements SVGConstants {
                                                  Element filteredElement,
                                                  Rectangle2D defaultRegion,
                                                  GraphicsNode node,
+                                                 GraphicsNodeRenderContext rc,
                                                  UnitProcessor.Context uctx) {
 
         // Get coordinate system from the parent node.
@@ -871,7 +880,7 @@ public class SVGUtilities implements SVGConstants {
 
         switch(unitsType) {
         case OBJECT_BOUNDING_BOX:
-            Rectangle2D gnBounds = node.getGeometryBounds();
+            Rectangle2D gnBounds = node.getGeometryBounds(rc);
             if (xStr.length() != 0) {
                 x = svgToObjectBoundingBox(filteredElement,
                                            ATTR_X, xStr,
@@ -1071,13 +1080,14 @@ public class SVGUtilities implements SVGConstants {
      * @param unitsType the coordinate system
      */
     public static AffineTransform convertAffineTransform(AffineTransform at,
-                                                         GraphicsNode node,
-                                                         int unitsType) {
+                                                 GraphicsNode node,
+                                                 GraphicsNodeRenderContext rc,
+                                                 int unitsType) {
         AffineTransform Mx = new AffineTransform();
         switch(unitsType) {
         case OBJECT_BOUNDING_BOX:
             // Compute the transform to be in the GraphicsNode coordinate system
-            Rectangle2D bounds = node.getGeometryBounds();
+            Rectangle2D bounds = node.getGeometryBounds(rc);
             Mx.translate(bounds.getX(), bounds.getY());
             Mx.scale(bounds.getWidth(), bounds.getHeight());
             break;

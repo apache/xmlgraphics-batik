@@ -19,6 +19,7 @@ import org.apache.batik.bridge.FilterPrimitiveBridge;
 import org.apache.batik.bridge.IllegalAttributeValueException;
 
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.filter.ColorMatrixRable;
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.PadMode;
@@ -70,7 +71,11 @@ public class SVGFeColorMatrixElementBridge implements FilterPrimitiveBridge,
                          Filter in,
                          Rectangle2D filterRegion,
                          Map filterMap){
+
         Filter filter = null;
+
+        GraphicsNodeRenderContext rc = 
+                         bridgeContext.getGraphicsNodeRenderContext();
 
         // First, extract source
         String inAttr = filterElement.getAttributeNS(null, SVG_IN_ATTRIBUTE);
@@ -110,6 +115,7 @@ public class SVGFeColorMatrixElementBridge implements FilterPrimitiveBridge,
                                                         filteredElement,
                                                         defaultRegion,
                                                         filteredNode,
+                                                        rc,
                                                         uctx);
 
         //

@@ -208,6 +208,7 @@ public class ConcreteTurbulenceRable
     }
 
     public RenderedImage createRendering(RenderContext rc){
+
         Shape aoi = rc.getAreaOfInterest();
         if(aoi == null){
             aoi = getBounds2D();
@@ -283,7 +284,8 @@ public class ConcreteTurbulenceRable
         if (aoi == null)
             aoi = getBounds2D();
 
-        Rectangle2D r = getBounds2D().createIntersection(aoi.getBounds2D());
+        Rectangle2D r = getBounds2D().createIntersection(
+                                                 aoi.getBounds2D());
 
         // update the current affine transform
         AffineTransform at = rc.getTransform();

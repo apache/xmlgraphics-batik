@@ -118,7 +118,8 @@ public class DynamicRenderer extends StaticRenderer {
             AffineTransform Gx = node.getGlobalTransform();
             Shape oldAoi = evt.getOldBounds();
             Shape newAoi =
-                Gx.createTransformedShape(node.getBounds()).getBounds();
+                Gx.createTransformedShape(
+                    node.getBounds(nodeRenderContext)).getBounds();
             repaintHandler.notifyRepaintedRegion(oldAoi, newAoi,
                                                  DynamicRenderer.this);
         }

@@ -17,6 +17,7 @@ import org.apache.batik.bridge.FilterPrimitiveBridge;
 import org.apache.batik.bridge.IllegalAttributeValueException;
 
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.GaussianBlurRable;
 import org.apache.batik.gvt.filter.PadMode;
@@ -66,6 +67,9 @@ public class SVGFeGaussianBlurElementBridge implements FilterPrimitiveBridge,
                          Filter in,
                          Rectangle2D filterRegion,
                          Map filterMap){
+
+        GraphicsNodeRenderContext rc = 
+                         bridgeContext.getGraphicsNodeRenderContext();
 
         // Extract standard deviation
         String stdDeviation =
@@ -141,6 +145,7 @@ public class SVGFeGaussianBlurElementBridge implements FilterPrimitiveBridge,
                                                         filteredElement,
                                                         defaultRegion,
                                                         filteredNode,
+                                                        rc,
                                                         uctx);
 
         PadRable pad = new ConcretePadRable(in, blurArea, PadMode.ZERO_PAD);
