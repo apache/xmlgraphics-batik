@@ -253,9 +253,6 @@ public class SVGSVGElementBridge extends SVGGElementBridge {
 
         initializeDynamicSupport(ctx, e, node);
 
-        // Handle children elements such as <title>
-        //SVGUtilities.bridgeChildren(ctx, e);
-        //super.buildGraphicsNode(ctx, e, node);
         ctx.closeViewport(e);
     }
 

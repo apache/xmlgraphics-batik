@@ -265,7 +265,7 @@ public abstract class AbstractSVGList {
         throws DOMException {
         revalidate();
 
-        if ( index < 0 || index >= itemList.size() ){
+        if ( index < 0 || itemList == null || index >= itemList.size() ){
             throw createDOMException(DOMException.INDEX_SIZE_ERR,
                     "AbstractSVGList.getItem.OutOfBoundsException",
                     null);

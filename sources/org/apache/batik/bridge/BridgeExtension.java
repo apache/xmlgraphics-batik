@@ -52,6 +52,8 @@ package org.apache.batik.bridge;
 
 import java.util.Iterator;
 
+import org.w3c.dom.Element;
+
 /**
  * This is a Service interface for classes that want to extend the
  * functionality of the Bridge, to support new tags in the rendering tree.
@@ -109,4 +111,13 @@ public interface BridgeExtension {
      * @param ctx The BridgeContext instance to be updated
      */
     public void registerTags(BridgeContext ctx);
+
+    /**
+     * Whether the presence of the specified element should cause
+     * the document to be dynamic.  If this element isn't handled
+     * by this BridgeExtension, just return false.
+     *
+     * @param e The element to check.
+     */
+    public boolean isDynamicElement(Element e);
 }

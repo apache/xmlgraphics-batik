@@ -143,7 +143,11 @@ public class GVTBuilder implements SVGConstants {
     public GraphicsNode build(BridgeContext ctx, Element e) {
         // get the appropriate bridge according to the specified element
         Bridge bridge = ctx.getBridge(e);
-        if (bridge == null || !(bridge instanceof GraphicsNodeBridge)) {
+        if (bridge instanceof GenericBridge) {
+            // If it is a GenericBridge just handle it and return.
+            ((GenericBridge) bridge).handleElement(ctx, e);
+            return null;
+        } else if (bridge == null || !(bridge instanceof GraphicsNodeBridge)) {
             return null;
         }
         // create the associated graphics node
@@ -156,6 +160,8 @@ public class GVTBuilder implements SVGConstants {
         if (gn != null) {
             if (gnBridge.isComposite()) {
                 buildComposite(ctx, e, (CompositeGraphicsNode)gn);
+            } else {
+                handleGenericBridges(ctx, e);
             }
             gnBridge.buildGraphicsNode(ctx, e, gn);
         }
@@ -207,7 +213,11 @@ public class GVTBuilder implements SVGConstants {
         }
         // get the appropriate bridge according to the specified element
         Bridge bridge = ctx.getBridge(e);
-        if (bridge == null || !(bridge instanceof GraphicsNodeBridge)) {
+        if (bridge instanceof GenericBridge) {
+            // If it is a GenericBridge just handle it and return.
+            ((GenericBridge) bridge).handleElement(ctx, e);
+            return;
+        } else if (bridge == null || !(bridge instanceof GraphicsNodeBridge)) {
             return;
         }
         // check the display property
@@ -224,6 +234,9 @@ public class GVTBuilder implements SVGConstants {
                 // check if the element has children to build
                 if (gnBridge.isComposite()) {
                     buildComposite(ctx, e, (CompositeGraphicsNode)gn);
+                } else {
+                    // if not then still handle the GenericBridges
+                    handleGenericBridges(ctx, e);
                 }
                 gnBridge.buildGraphicsNode(ctx, e, gn);
             }
@@ -241,5 +254,22 @@ public class GVTBuilder implements SVGConstants {
             throw ex;
         }
     }
-}
 
+    /**
+     * Handles any GenericBridge elements which are children of the
+     * specified element.
+     * @param ctx the bridge context
+     * @param e the element whose child elements should be handled
+     */
+    protected void handleGenericBridges(BridgeContext ctx, Element e) {
+        for (Node n = e.getFirstChild(); n != null; n = n.getNextSibling()) {
+            if (n instanceof Element) {
+                Element e2 = (Element) n;
+                Bridge b = ctx.getBridge(e2);
+                if (b instanceof GenericBridge) {
+                    ((GenericBridge) b).handleElement(ctx, e2);
+                }
+            }
+        }
+    }
+}

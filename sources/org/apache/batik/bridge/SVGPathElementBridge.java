@@ -53,6 +53,8 @@ package org.apache.batik.bridge;
 import java.awt.Shape;
 import java.awt.geom.GeneralPath;
 
+import org.apache.batik.css.engine.CSSEngineEvent;
+import org.apache.batik.css.engine.SVGCSSEngine;
 import org.apache.batik.gvt.ShapeNode;
 import org.apache.batik.parser.AWTPathProducer;
 import org.apache.batik.parser.ParseException;
@@ -142,6 +144,17 @@ public class SVGPathElementBridge extends SVGDecoratedShapeElementBridge {
             handleGeometryChanged();
         } else {
             super.handleDOMAttrModifiedEvent(evt);
+        }
+    }
+
+    protected void handleCSSPropertyChanged(int property) {
+        switch(property) {
+        case SVGCSSEngine.FILL_RULE_INDEX:
+            buildShape(ctx, e, (ShapeNode) node);
+            handleGeometryChanged();
+            break;
+        default:
+            super.handleCSSPropertyChanged(property);
         }
     }
 }
