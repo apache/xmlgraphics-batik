@@ -80,8 +80,9 @@ public class ParsedURLDataTest extends AbstractTest {
             report.setErrorCode(ERROR_CANNOT_PARSE_URL);
             report.setDescription(new TestReport.Entry[] {
                 new TestReport.Entry
-                    (Messages.formatMessage(ENTRY_KEY_ERROR_DESCRIPTION, null),
-                     Messages.formatMessage
+                    (TestMessages.formatMessage
+                     (ENTRY_KEY_ERROR_DESCRIPTION, null),
+                     TestMessages.formatMessage
                      (ERROR_CANNOT_PARSE_URL,
                       new String[]{"null", 
                                    base,
@@ -121,8 +122,8 @@ public class ParsedURLDataTest extends AbstractTest {
         report.setErrorCode(ERROR_WRONG_RESULT);
         report.setDescription(new TestReport.Entry[] {
           new TestReport.Entry
-            (Messages.formatMessage(ENTRY_KEY_ERROR_DESCRIPTION, null),
-             Messages.formatMessage
+            (TestMessages.formatMessage(ENTRY_KEY_ERROR_DESCRIPTION, null),
+             TestMessages.formatMessage
              (ERROR_WRONG_RESULT, new String[]{info, ref }))
             });
         report.setPassed(false);

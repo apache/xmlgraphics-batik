@@ -45,37 +45,35 @@ public abstract class GlyphOrientationManager extends AbstractValueManager {
      */
     public Value createValue(LexicalUnit lu, CSSEngine engine)
         throws DOMException {
-	switch (lu.getLexicalUnitType()) {
-	case LexicalUnit.SAC_INHERIT:
-	    return SVGValueConstants.INHERIT_VALUE;
+        switch (lu.getLexicalUnitType()) {
+        case LexicalUnit.SAC_INHERIT:
+            return SVGValueConstants.INHERIT_VALUE;
 
-	case LexicalUnit.SAC_DEGREE:
+        case LexicalUnit.SAC_DEGREE:
             return new FloatValue(CSSPrimitiveValue.CSS_DEG,
                                   lu.getFloatValue());
 
-	case LexicalUnit.SAC_GRADIAN:
+        case LexicalUnit.SAC_GRADIAN:
             return new FloatValue(CSSPrimitiveValue.CSS_GRAD,
                                   lu.getFloatValue());
 
-	case LexicalUnit.SAC_RADIAN:
+        case LexicalUnit.SAC_RADIAN:
             return new FloatValue(CSSPrimitiveValue.CSS_RAD,
                                   lu.getFloatValue());
-	case LexicalUnit.SAC_INTEGER:
-        { 
-            float n = lu.getIntegerValue();
-            if (n == 0f)
-                return new FloatValue(CSSPrimitiveValue.CSS_DEG, 0f);
-            break;
+
+            // For SVG angle properties unit defaults to 'deg'.
+        case LexicalUnit.SAC_INTEGER:
+            { 
+                int n = lu.getIntegerValue();
+                return new FloatValue(CSSPrimitiveValue.CSS_DEG, n);
+            }
+        case LexicalUnit.SAC_REAL:
+            { 
+                float n = lu.getFloatValue();
+                return new FloatValue(CSSPrimitiveValue.CSS_DEG, n);
+            }
         }
-	case LexicalUnit.SAC_REAL:
-        { 
-            float n = lu.getFloatValue();
-            if (n == 0f)
-                return new FloatValue(CSSPrimitiveValue.CSS_DEG, 0f);
-            break;
-        }
-    }
-        
+    
         throw createInvalidLexicalUnitDOMException(lu.getLexicalUnitType());
     }
 

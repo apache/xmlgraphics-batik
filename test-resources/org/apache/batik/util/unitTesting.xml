@@ -268,7 +268,7 @@
              value="jar:file:dir/file.jar!/p/a/t/h/init.svg" />
         <arg class="java.lang.String" value="../base.svg" />
         <arg class="java.lang.String" 
-             value="jar:file:dir/file.jar!/p/a/t/h/../base.svg" />
+             value="jar:file:dir/file.jar!/p/a/t/base.svg" />
     </test>
     <test id="ParsedURL.18" class="org.apache.batik.util.ParsedURLTest">
         <!-- Test fragment from base jar URL -->
@@ -303,6 +303,60 @@
              value="jar:file:dir/file.jar!/b/a/t/i/k/new.svg#bar" />
         <arg class="java.lang.String" 
              value="jar:file:dir/file.jar!/b/a/t/i/k/new.svg#bar" />
+    </test>
+    <test id="ParsedURL.22" class="org.apache.batik.util.ParsedURLTest">
+        <!-- Test absolute path, relative jar -->
+        <arg class="java.lang.String" 
+             value="jar:file:dir/file.jar!/p/a/t/h/init.svg" />
+        <arg class="java.lang.String" 
+             value="/b/a/t/i/k/new.svg" />
+        <arg class="java.lang.String" 
+             value="jar:file:dir/file.jar!/b/a/t/i/k/new.svg" />
+    </test>
+    <test id="ParsedURL.23" class="org.apache.batik.util.ParsedURLTest">
+        <!-- Test absolute path, relative jar -->
+        <arg class="java.lang.String" 
+             value="jar:file:dir/file.jar!/p/a/t/h/init.svg" />
+        <arg class="java.lang.String" 
+             value="/b/a/t/i/k/new.svg#bar" />
+        <arg class="java.lang.String" 
+             value="jar:file:dir/file.jar!/b/a/t/i/k/new.svg#bar" />
+    </test>
+    <test id="ParsedURL.24" class="org.apache.batik.util.ParsedURLTest">
+        <!-- Test relative path, relative jar -->
+        <arg class="java.lang.String" 
+             value="jar:file:dir/file.jar!/p/a/t/h/init.svg" />
+        <arg class="java.lang.String" 
+             value="t/o/new.svg" />
+        <arg class="java.lang.String" 
+             value="jar:file:dir/file.jar!/p/a/t/h/t/o/new.svg" />
+    </test>
+    <test id="ParsedURL.25" class="org.apache.batik.util.ParsedURLTest">
+        <!-- Test relative path, relative jar -->
+        <arg class="java.lang.String" 
+             value="jar:file:dir/file.jar!/p/a/t/h/init.svg" />
+        <arg class="java.lang.String" 
+             value="t/o/new.svg#foo" />
+        <arg class="java.lang.String" 
+             value="jar:file:dir/file.jar!/p/a/t/h/t/o/new.svg#foo" />
+    </test>
+    <test id="ParsedURL.26" class="org.apache.batik.util.ParsedURLTest">
+        <!-- Test relative path, relative jar -->
+        <arg class="java.lang.String" 
+             value="jar:file:dir/file.jar!/p/a/t/h/init.svg" />
+        <arg class="java.lang.String" 
+             value="../c/h/new.svg" />
+        <arg class="java.lang.String" 
+             value="jar:file:dir/file.jar!/p/a/t/c/h/new.svg" />
+    </test>
+    <test id="ParsedURL.27" class="org.apache.batik.util.ParsedURLTest">
+        <!-- Test relative path, relative jar -->
+        <arg class="java.lang.String" 
+             value="jar:file:dir/file.jar!/p/a/t/h/init.svg" />
+        <arg class="java.lang.String" 
+             value="../c/h/new.svg#foo" />
+        <arg class="java.lang.String" 
+             value="jar:file:dir/file.jar!/p/a/t/c/h/new.svg#foo" />
     </test>
 
     <test id="ParsedURLData.1" class="org.apache.batik.util.ParsedURLDataTest">

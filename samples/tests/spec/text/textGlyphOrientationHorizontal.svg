@@ -1,0 +1,98 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN"
+"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+
+<!-- ====================================================================== -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.     -->
+<!--                                                                        -->
+<!-- This software is published under the terms of the Apache Software      -->
+<!-- License version 1.1, a copy of which has been included with this       -->
+<!-- distribution in  the LICENSE file.                                     -->
+<!-- ====================================================================== -->
+
+<!-- ====================================================================== -->
+<!-- Test the x,dx and y,dy attributes                                      -->
+<!--                                                                        -->
+<!-- @author tkormann@ilog.fr                                               -->
+<!-- @version $Id$ -->
+<!-- ====================================================================== -->
+
+<?xml-stylesheet type="text/css" href="../../resources/style/test.css" ?>
+
+<svg width="450" height="500" viewBox="0 0 450 500"
+     xmlns="http://www.w3.org/2000/svg" 
+     xmlns:xlink="http://www.w3.org/1999/xlink" >
+   <title>Text Orientation Horizontal</title>
+
+    <!-- ============================================================= -->
+    <!-- Test content                                                  -->
+    <!-- ============================================================= -->
+
+   <defs> 
+	<path id="path" style="fill:none; stroke:blue;" 
+              d="M 20 40 C 40 20 60 0 80 20 C 100 40 120 60 140 40 
+                 C 160 20 180 20 180 20"/>
+	<path id="lpath" style="fill:none; stroke:blue;" 
+              d="M 20 40 c 40 -20 80 -40 120 -20 c 40 20 80 40 120 20
+                 c 40 -20 80 -20 80 -20"/>
+   </defs>
+
+
+   <text class="title" x="50%" y="30">Text Orientation Horizontal</text>
+
+   <g id="testContent" style="font-family:Arial; font-size:24">
+
+      <line x1="50" x2="200" y1="80" y2="80" 
+            stroke="blue" stroke-width="2"/>
+      <text x="50" y="80" glyph-orientation-horizontal="0">Batik is Good</text>
+
+      <g transform="translate(220, 60)">
+         <use xlink:href="#path" fill="none" stroke="blue" stroke-width="2"/>
+	 <text glyph-orientation-horizontal="0">
+            <textPath xlink:href="#path">Batik <tspan fill="red" dy="-10">is</tspan><tspan dy="10"> Good</tspan></textPath>
+            </text>
+      </g>
+
+      <line x1="50" x2="400" y1="130" y2="130" 
+            stroke="blue" stroke-width="2"/>
+      <text x="50" y="130" glyph-orientation-horizontal="90"
+        >Batik is Good</text>
+
+      <g transform="translate(30, 150)">
+         <use xlink:href="#lpath" fill="none" stroke="blue" stroke-width="2"/>
+	 <text glyph-orientation-horizontal="90">
+            <textPath xlink:href="#lpath">Batik <tspan fill="red" dy="-10">is</tspan><tspan dy="10"> Good</tspan></textPath>
+            </text>
+       
+      </g>
+
+      <line x1="50" x2="200" y1="240" y2="240" 
+            stroke="blue" stroke-width="2"/>
+      <text x="50" y="240" glyph-orientation-horizontal="180"
+        >Batik is Good</text>
+
+      <g transform="translate(220, 220)">
+         <use xlink:href="#path" fill="none" stroke="blue" stroke-width="2"/>
+	 <text glyph-orientation-horizontal="180">
+            <textPath xlink:href="#path">Batik <tspan fill="red" dy="-10">is</tspan><tspan dy="10"> Good</tspan></textPath>
+            </text>
+       
+      </g>
+
+      <line x1="50" x2="400" y1="320" y2="320" 
+            stroke="blue" stroke-width="2"/>
+      <text x="50" y="320" glyph-orientation-horizontal="270"
+        >Batik is Good</text>
+
+      <g transform="translate(30, 340)">
+         <use xlink:href="#lpath" fill="none" stroke="blue" stroke-width="2"/>
+	 <text glyph-orientation-horizontal="270">
+            <textPath xlink:href="#lpath">Batik <tspan fill="red" dy="-10">is</tspan><tspan dy="10"> Good</tspan></textPath>
+            </text>
+       
+      </g>
+   </g>
+
+
+
+</svg>

@@ -115,8 +115,9 @@ public class Base64Test extends AbstractTest {
             report.setErrorCode(ERROR_CANNOT_READ_IN_URL);
             report.setDescription(new TestReport.Entry[] {
                 new TestReport.Entry
-                    (Messages.formatMessage(ENTRY_KEY_ERROR_DESCRIPTION, null),
-                     Messages.formatMessage
+                    (TestMessages.formatMessage
+                     (ENTRY_KEY_ERROR_DESCRIPTION, null),
+                     TestMessages.formatMessage
                      (ERROR_CANNOT_READ_IN_URL,
                       new String[]{in.toString(), trace.toString()}))
                     });
@@ -131,8 +132,9 @@ public class Base64Test extends AbstractTest {
             report.setErrorCode(ERROR_BAD_ACTION_STRING);
             report.setDescription(new TestReport.Entry[] {
                 new TestReport.Entry
-                    (Messages.formatMessage(ENTRY_KEY_ERROR_DESCRIPTION, null),
-                     Messages.formatMessage(ERROR_BAD_ACTION_STRING, 
+                    (TestMessages.formatMessage
+                     (ENTRY_KEY_ERROR_DESCRIPTION, null),
+                     TestMessages.formatMessage(ERROR_BAD_ACTION_STRING, 
                                             new String[]{action}))
                     });
             report.setPassed(false);
@@ -148,8 +150,9 @@ public class Base64Test extends AbstractTest {
             report.setErrorCode(ERROR_CANNOT_READ_REF_URL);
             report.setDescription(new TestReport.Entry[] {
                 new TestReport.Entry
-                    (Messages.formatMessage(ENTRY_KEY_ERROR_DESCRIPTION, null),
-                     Messages.formatMessage
+                    (TestMessages.formatMessage
+                     (ENTRY_KEY_ERROR_DESCRIPTION, null),
+                     TestMessages.formatMessage
                      (ERROR_CANNOT_READ_REF_URL,
                       new String[]{ref.toString(), trace.toString()}))
                     });
@@ -187,8 +190,8 @@ public class Base64Test extends AbstractTest {
         report.setErrorCode(ERROR_WRONG_RESULT);
         report.setDescription(new TestReport.Entry[] {
           new TestReport.Entry
-            (Messages.formatMessage(ENTRY_KEY_ERROR_DESCRIPTION, null),
-             Messages.formatMessage(ERROR_WRONG_RESULT, 
+            (TestMessages.formatMessage(ENTRY_KEY_ERROR_DESCRIPTION, null),
+             TestMessages.formatMessage(ERROR_WRONG_RESULT, 
                                     new String[]{""+mismatch}))
             });
         report.setPassed(false);
