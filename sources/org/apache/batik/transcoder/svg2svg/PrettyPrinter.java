@@ -494,12 +494,11 @@ public class PrettyPrinter {
         char[] target = scanner.currentValue();
 
         int t = scanner.next();
-        if (t != LexicalUnits.S) {
-            throw fatalError("space", null);
+        char[] space = {};
+        if (t == LexicalUnits.S) {
+            space = scanner.currentValue();
+            t = scanner.next();
         }
-        char[] space = scanner.currentValue();
-        t = scanner.next();
-
         if (t != LexicalUnits.PI_DATA) {
             throw fatalError("pi.data", null);
         }
