@@ -55,12 +55,12 @@ public class RHints implements Painter {
         //
         g.translate(0, 100);
         g.setRenderingHint(antialiasKey, antialiasOn);
+				g.setRenderingHint(textAntialiasKey, textAntialiasOn);
         g.setFont(defaultFont);
         g.drawString("Shape antialiasing", 10, 20);
 
         g.translate(30, 0);
         g.setRenderingHint(antialiasKey, antialiasOff);
-        g.setRenderingHint(textAntialiasKey, textAntialiasOff);
         Ellipse2D ellipse = new Ellipse2D.Float(10, 30, 100, 30);
         g.fill(ellipse);
         g.translate(0, 40);

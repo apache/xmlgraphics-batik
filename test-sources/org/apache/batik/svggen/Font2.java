@@ -91,10 +91,10 @@ public class Font2 implements Painter {
         //
         // Font families
         //
-        String fontFamilies[] = { "Arial",
-                                  "SunSansCondensed-Heavy",
-                                  "Impact",
-                                  "Allegro BT" };
+        String fontFamilies[] = { "Lucida Sans",
+                                  "Lucida Bright",
+                                  "Lucida Console",
+                                  "Lucida Sans Typewriter" };
 
         g.setFont(defaultFont);
         g.setPaint(labelColor);
