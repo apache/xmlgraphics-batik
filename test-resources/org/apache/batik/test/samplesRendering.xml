@@ -31,14 +31,6 @@
 
 
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
-        <arg class="java.net.URL" value="file:samples/authors.svg" />
-        <arg class="java.net.URL" value="file:test-references/samples/authors.png" />
-        <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/accepted-variation/authors.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/candidate-variation/authors.png" />
-    </test>
-
-
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/barChart.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/barChart.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/accepted-variation/barChart.png" />
