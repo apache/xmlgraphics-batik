@@ -159,12 +159,6 @@ public class Main implements Application {
         "org.apache.batik.apps.svgbrowser.resources.Main";
 
     /**
-     * Name of the batik browser jar file
-     */
-    public static final String SQUIGGLE_JAR_NAME
-        = "batik-squiggle.jar";
-
-    /**
      * URL for Squiggle's security policy file
      */
     public static final String SQUIGGLE_SECURITY_POLICY
@@ -300,8 +294,7 @@ public class Main implements Application {
 	
         securityEnforcer 
             = new ApplicationSecurityEnforcer(this.getClass(),
-                                              SQUIGGLE_SECURITY_POLICY,
-                                              SQUIGGLE_JAR_NAME);
+                                              SQUIGGLE_SECURITY_POLICY);
                                               
         try {
             preferenceManager = new XMLPreferenceManager(SQUIGGLE_CONFIGURATION_FILE,

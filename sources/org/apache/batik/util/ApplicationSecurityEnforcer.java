@@ -92,11 +92,6 @@ public class ApplicationSecurityEnforcer {
     protected String securityPolicy;
 
     /**
-     * The jar file into which the application is packaged
-     */
-    protected String appJarFile;
-
-    /**
      * The resource name for the application's main class
      */
     protected String appMainClassRelativeURL;
@@ -112,13 +107,26 @@ public class ApplicationSecurityEnforcer {
      *        should be enforced for the application. 
      * @param appJarFile the Jar file into which the application is
      *        packaged.
+     * @deprecated This constructor is now deprecated. Use the two 
+     *             argument constructor instead as this version will
+     *             be removed after the 1.5beta4 release.
      */
     public ApplicationSecurityEnforcer(Class appMainClass,
                                        String securityPolicy,
                                        String appJarFile){
+        this(appMainClass, securityPolicy);
+    }
+
+
+    /**
+     * @param appClass class of the applications's main entry point
+     * @param securityPolicy resource for the security policy which 
+     *        should be enforced for the application. 
+     */
+    public ApplicationSecurityEnforcer(Class appMainClass,
+                                       String securityPolicy){
         this.appMainClass = appMainClass;
         this.securityPolicy = securityPolicy;
-        this.appJarFile = appJarFile;
         this.appMainClassRelativeURL = 
             appMainClass.getName().replace('.', '/')
             +
@@ -248,8 +256,7 @@ public class ApplicationSecurityEnforcer {
             expandedMainClassName = expandedMainClassName.substring(JAR_PROTOCOL.length());
             
             int codeBaseEnd = 
-                expandedMainClassName.indexOf(appJarFile +
-                                              JAR_URL_FILE_SEPARATOR +
+                expandedMainClassName.indexOf(JAR_URL_FILE_SEPARATOR +
                                               appMainClassRelativeURL);
             
             if (codeBaseEnd == -1){
@@ -260,6 +267,16 @@ public class ApplicationSecurityEnforcer {
             }
             
             String appCodeBase = expandedMainClassName.substring(0, codeBaseEnd);
+
+            // At this point appCodeBase contains the JAR file name
+            // Now, we extract it.
+            codeBaseEnd = appCodeBase.lastIndexOf('/');
+            if (codeBaseEnd == -1) {
+                appCodeBase = "";
+            } else {
+                appCodeBase = appCodeBase.substring(0, codeBaseEnd);
+            }
+
             System.setProperty(PROPERTY_APP_JAR_BASE, appCodeBase);
         }
     }
@@ -277,8 +294,8 @@ public class ApplicationSecurityEnforcer {
         String curAppCodeBase = System.getProperty(PROPERTY_APP_DEV_BASE);
         if (curAppCodeBase == null) {
             int codeBaseEnd = 
-                expandedMainClassName.indexOf(APP_MAIN_CLASS_DIR + 
-                                              appMainClassRelativeURL);
+                expandedMainClassName.indexOf(APP_MAIN_CLASS_DIR
+                                              + appMainClassRelativeURL);
             
             if (codeBaseEnd == -1){
                 // Something is seriously wrong. This should *never* happen

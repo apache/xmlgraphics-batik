@@ -54,12 +54,6 @@ import org.xml.sax.InputSource;
  */
 public class Main implements SVGConverterController {
     /**
-     * Name of the rasterizer jar file
-     */
-    public static final String RASTERIZER_JAR_NAME
-        = "batik-rasterizer.jar";
-
-    /**
      * URL for Squiggle's security policy file
      */
     public static final String RASTERIZER_SECURITY_POLICY
@@ -786,8 +780,7 @@ public class Main implements SVGConverterController {
         // Apply script security option
         ApplicationSecurityEnforcer securityEnforcer = 
             new ApplicationSecurityEnforcer(this.getClass(),
-                                            RASTERIZER_SECURITY_POLICY,
-                                            RASTERIZER_JAR_NAME);
+                                            RASTERIZER_SECURITY_POLICY);
 
         securityEnforcer.enforceSecurity(!c.getSecurityOff());
 

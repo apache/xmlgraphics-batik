@@ -19,7 +19,6 @@ import org.apache.batik.test.*;
 public class ApplicationSecurityEnforcerTest extends DefaultTestSuite {
     final static Class APP_MAIN_CLASS = org.apache.batik.apps.svgbrowser.Main.class;
     final static String APP_SECURITY_POLICY = "org/apache/batik/apps/svgbrowser/resources/svgbrowser.policy";
-    final static String APP_JAR = "batik-squiggle.jar";
 
     /**
      * In the constructor, append atomic tests
@@ -33,8 +32,7 @@ public class ApplicationSecurityEnforcerTest extends DefaultTestSuite {
 
     static ApplicationSecurityEnforcer buildTestTarget(){
         return new ApplicationSecurityEnforcer(APP_MAIN_CLASS,
-                                               APP_SECURITY_POLICY,
-                                               APP_JAR);
+                                               APP_SECURITY_POLICY);
     }
 
     static class CheckNoSecurityManagerOverride extends AbstractTest {
@@ -108,8 +106,7 @@ public class ApplicationSecurityEnforcerTest extends DefaultTestSuite {
         public boolean runImplBasic() {
             ApplicationSecurityEnforcer ase = 
                 new ApplicationSecurityEnforcer(APP_MAIN_CLASS,
-                                                "dont.exist.policy",
-                                                APP_JAR);
+                                                "dont.exist.policy");
 
             try {
                 ase.enforceSecurity(true);
