@@ -22,11 +22,13 @@ import org.apache.batik.dom.traversal.TraversalSupport;
 import org.apache.batik.i18n.Localizable;
 import org.apache.batik.i18n.LocalizableSupport;
 
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentType;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.events.DocumentEvent;
@@ -210,10 +212,76 @@ public abstract class AbstractDocument
      */
     public Node importNode(Node importedNode, boolean deep)
         throws DOMException {
-	AbstractNode an = (AbstractNode)importedNode;
-	return (deep)
-	    ? an.deepExport(an.cloneNode(false), this)
-	    : an.export(an.cloneNode(false), this);
+        if (importedNode instanceof AbstractNode) {
+            AbstractNode an = (AbstractNode)importedNode;
+            return (deep)
+                ? an.deepExport(an.cloneNode(false), this)
+                : an.export(an.cloneNode(false), this);
+        } else {
+            Node result;
+            switch (importedNode.getNodeType()) {
+            case ELEMENT_NODE:
+                Element e = createElementNS(importedNode.getNamespaceURI(),
+                                            importedNode.getNodeName());
+                result = e;
+                if (e.hasAttributes()) {
+                    NamedNodeMap attr = importedNode.getAttributes();
+                    int len = attr.getLength();
+                    for (int i = 0; i < len; i++) {
+                        Attr a = (Attr)attr.item(i);
+                        if (a.getSpecified()) {
+                            e.setAttributeNodeNS((Attr)importNode(a, true));
+                        }
+                    }
+                }
+                break;
+                
+            case ATTRIBUTE_NODE:
+                result = createAttributeNS(importedNode.getNamespaceURI(),
+                                           importedNode.getNodeName());
+                break;
+
+            case TEXT_NODE:
+                result = createTextNode(importedNode.getNodeValue());
+                deep = false;
+                break;
+
+            case CDATA_SECTION_NODE:
+                result = createCDATASection(importedNode.getNodeValue());
+                deep = false;
+                break;
+
+            case ENTITY_REFERENCE_NODE:
+                result = createEntityReference(importedNode.getNodeName());
+                break;
+
+            case PROCESSING_INSTRUCTION_NODE:
+                result = createProcessingInstruction(importedNode.getNodeName(),
+                                                     importedNode.getNodeValue());
+                deep = false;
+                break;
+
+            case COMMENT_NODE:
+                result = createComment(importedNode.getNodeValue());
+                deep = false;
+                break;
+
+            default:
+                throw createDOMException(DOMException.NOT_SUPPORTED_ERR,
+                                         "import.node",
+                                         new Object[] {});
+            }
+
+            if (deep) {
+                for (Node n = importedNode.getFirstChild();
+                     n != null;
+                     n = n.getNextSibling()) {
+                    result.appendChild(importNode(n, true));
+                }
+            }
+
+            return result;
+        }
     }
 
     /**
