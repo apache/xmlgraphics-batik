@@ -53,4 +53,10 @@ public interface DocumentFactory {
     Document createDocument(String ns, String root, String uri, Reader r)
         throws IOException;
 
+    /**
+     * Returns the document descriptor associated with the latest created
+     * document.
+     * @return null if no document or descriptor was previously generated.
+     */
+    DocumentDescriptor getDocumentDescriptor();
 }

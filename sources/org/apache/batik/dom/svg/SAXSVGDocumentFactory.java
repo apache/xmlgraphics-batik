@@ -60,6 +60,15 @@ public class SAXSVGDocumentFactory
     }
 
     /**
+     * Creates a new SVGDocumentFactory object.
+     * @param parser The SAX2 parser classname.
+     * @param dd Whether a document descriptor must be generated.
+     */
+    public SAXSVGDocumentFactory(String parser, boolean dd) {
+        super(SVGDOMImplementation.getDOMImplementation(), parser, dd);
+    }
+
+    /**
      * Creates a SVGOMDocument instance.<br>
      * This method supports gzipped sources.
      * @param uri The document URI.

@@ -12,13 +12,15 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.io.Reader;
 
+import org.apache.batik.dom.util.DocumentFactory;
+
 /**
  * This interface represents an object which can build a SVGDocument.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public interface SVGDocumentFactory {
+public interface SVGDocumentFactory extends DocumentFactory {
 
     /**
      * Creates a SVGOMDocument instance.
