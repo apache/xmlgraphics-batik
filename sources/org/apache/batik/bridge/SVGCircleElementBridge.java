@@ -103,9 +103,10 @@ public class SVGCircleElementBridge extends SVGShapeElementBridge {
      * @param evt the DOM mutation event
      */
     protected void handleDOMAttrModifiedEvent(MutationEvent evt) {
-        if (evt.getAttrName().equals(SVG_CX_ATTRIBUTE) ||
-            evt.getAttrName().equals(SVG_CY_ATTRIBUTE) ||
-            evt.getAttrName().equals(SVG_R_ATTRIBUTE)) {
+        String attrName = evt.getAttrName();
+        if (attrName.equals(SVG_CX_ATTRIBUTE) ||
+            attrName.equals(SVG_CY_ATTRIBUTE) ||
+            attrName.equals(SVG_R_ATTRIBUTE)) {
 
             BridgeUpdateEvent be = new BridgeUpdateEvent();
             fireBridgeUpdateStarting(be);

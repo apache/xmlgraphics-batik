@@ -89,7 +89,8 @@ public class SVGPolygonElementBridge extends SVGDecoratedShapeElementBridge {
      * @param evt the DOM mutation event
      */
     protected void handleDOMAttrModifiedEvent(MutationEvent evt) {
-        if (evt.getAttrName().equals(SVG_POINTS_ATTRIBUTE)) {
+        String attrName = evt.getAttrName();
+        if (attrName.equals(SVG_POINTS_ATTRIBUTE)) {
 
             BridgeUpdateEvent be = new BridgeUpdateEvent();
             fireBridgeUpdateStarting(be);

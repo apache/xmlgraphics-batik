@@ -46,6 +46,7 @@ import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
 import org.w3c.dom.events.MouseEvent;
+import org.w3c.dom.events.MutationEvent;
 
 /**
  * Bridge class for the &lt;image> element.
@@ -65,6 +66,13 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
      */
     public String getLocalName() {
         return SVG_IMAGE_TAG;
+    }
+
+    /**
+     * Returns a new instance of this bridge.
+     */
+    public Bridge getInstance() {
+        return new SVGImageElementBridge();
     }
 
     /**
@@ -168,6 +176,12 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
 
         // bind the specified element and its associated graphics node if needed
         if (ctx.isDynamic()) {
+            ((EventTarget)e).addEventListener("DOMAttrModified", 
+                                              new DOMAttrModifiedEventListener(),
+                                              false);
+            this.e = e;
+            this.node = node;
+            this.ctx = ctx;
             // HACK due to the way images are represented in GVT
             ImageNode imgNode = (ImageNode)node;
             if (imgNode.getImage() instanceof RasterImageNode) {
@@ -194,6 +208,34 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
     public boolean isComposite() {
         return false;
     }
+
+    // dynamic support
+
+    /**
+     * Handles DOMAttrModified events.
+     *
+     * @param evt the DOM mutation event
+     */
+    protected void handleDOMAttrModifiedEvent(MutationEvent evt) {
+        String attrName = evt.getAttrName();
+        if (attrName.equals(SVG_X_ATTRIBUTE) ||
+            attrName.equals(SVG_Y_ATTRIBUTE) ||
+            attrName.equals(SVG_WIDTH_ATTRIBUTE) ||
+            attrName.equals(SVG_HEIGHT_ATTRIBUTE)) {
+
+            BridgeUpdateEvent be = new BridgeUpdateEvent();
+            fireBridgeUpdateStarting(be);
+            
+            // <!> FIXME: Not yet implemented
+            System.err.println("Not yet implemented");
+
+            fireBridgeUpdateCompleted(be);
+        } else {
+            super.handleDOMAttrModifiedEvent(evt);
+        }
+    }
+
+    // convenient methods
 
     /**
      * Returns a GraphicsNode that represents an raster image in JPEG or PNG

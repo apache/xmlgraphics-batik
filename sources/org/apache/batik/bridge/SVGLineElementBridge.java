@@ -101,10 +101,11 @@ public class SVGLineElementBridge extends SVGDecoratedShapeElementBridge {
      * @param evt the DOM mutation event
      */
     protected void handleDOMAttrModifiedEvent(MutationEvent evt) {
-        if (evt.getAttrName().equals(SVG_X1_ATTRIBUTE) ||
-            evt.getAttrName().equals(SVG_Y1_ATTRIBUTE) ||
-            evt.getAttrName().equals(SVG_X2_ATTRIBUTE) ||
-            evt.getAttrName().equals(SVG_Y2_ATTRIBUTE)) {
+        String attrName = evt.getAttrName();
+        if (attrName.equals(SVG_X1_ATTRIBUTE) ||
+            attrName.equals(SVG_Y1_ATTRIBUTE) ||
+            attrName.equals(SVG_X2_ATTRIBUTE) ||
+            attrName.equals(SVG_Y2_ATTRIBUTE)) {
 
             BridgeUpdateEvent be = new BridgeUpdateEvent();
             fireBridgeUpdateStarting(be);
