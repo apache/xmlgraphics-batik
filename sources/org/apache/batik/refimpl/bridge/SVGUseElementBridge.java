@@ -48,22 +48,36 @@ public class SVGUseElementBridge
 
     public GraphicsNode createGraphicsNode(BridgeContext ctx,
                                            Element element){
+
         GraphicsNode gn = ctx.getGVTFactory().createCompositeGraphicsNode();
+
         CSSStyleDeclaration decl
             = ctx.getViewCSS().getComputedStyle(element, null);
+
         UnitProcessor.Context uctx
             = new DefaultUnitProcessorContext(ctx,
                                               decl);
+
+        // parse the x attribute, (default is 0)
         String s = element.getAttributeNS(null, ATTR_X);
-        float x = UnitProcessor.svgToUserSpace(s,
-                                               (SVGElement)element,
-                                               UnitProcessor.HORIZONTAL_LENGTH,
-                                               uctx);
+        float x = 0;
+        if (s.length() != 0) {
+            x= UnitProcessor.svgToUserSpace(s,
+                                            (SVGElement)element,
+                                            UnitProcessor.HORIZONTAL_LENGTH,
+                                            uctx);
+        }
+
+        // parse the y attribute, (default is 0)
         s = element.getAttributeNS(null, ATTR_Y);
-        float y = UnitProcessor.svgToUserSpace(s,
-                                               (SVGElement)element,
-                                               UnitProcessor.VERTICAL_LENGTH,
-                                               uctx);
+        float y = 0;
+        if (s.length() != 0) {
+            y = UnitProcessor.svgToUserSpace(s,
+                                             (SVGElement)element,
+                                             UnitProcessor.VERTICAL_LENGTH,
+                                             uctx);
+        }
+
         AffineTransform at = AffineTransform.getTranslateInstance(x, y);
         at.preConcatenate(AWTTransformProducer.createAffineTransform
                 (new StringReader(element.getAttributeNS(null, ATTR_TRANSFORM)),

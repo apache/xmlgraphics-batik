@@ -42,7 +42,7 @@ import java.io.EOFException;
 import java.io.IOException;
 
 /**
- * RasterRable This is used to wrap a Rendered Image back into the 
+ * RasterRable This is used to wrap a Rendered Image back into the
  * RenderableImage world.
  *
  * @author <a href="mailto:Thomas.DeWeese@Kodak.com>Thomas DeWeese</a>
@@ -84,7 +84,7 @@ public class RasterRable
         }
         return src;
     }
-    
+
     public Rectangle2D getBounds2D() {
         return getSource().getBounds();
     }
@@ -111,7 +111,7 @@ public class RasterRable
 
     public static Filter create(String dataUrl, Rectangle2D bounds){
         try{
-            // 
+            //
             // Using the data protocol
             //
             int start = dataUrl.indexOf(BASE64);
@@ -136,7 +136,7 @@ public class RasterRable
             }finally {
                 if(decodedImage!=null)
                     tracker.removeImage(decodedImage);
-                    
+
                 if(tracker.isErrorAny()){
                     throw new Error("Error loading decoded image data");
                 }
@@ -145,7 +145,7 @@ public class RasterRable
             //
             // Brute force (stupid?) conversion to ARGB image, then
             // to a CachableRed
-            // 
+            //
             BufferedImage bi = new BufferedImage(decodedImage.getWidth(null),
                                                  decodedImage.getHeight(null),
                                                  BufferedImage.TYPE_INT_ARGB);
@@ -159,7 +159,7 @@ public class RasterRable
             g.dispose();
 
             System.out.println("Decoded image " + bi.getWidth() + " by " + bi.getHeight());
-            return new RasterRable(new 
+            return new RasterRable(new
                 ConcreteBufferedImageCachableRed(bi));
         }catch(IOException e){
             return null;
@@ -182,20 +182,20 @@ public class RasterRable
         protected URLImageCache cache;
 
         public ImageLoader(URL url,
-                           URLImageCache cache) { 
-            this.url   = url; 
+                           URLImageCache cache) {
+            this.url   = url;
             this.cache = cache;
         }
 
-        public ImageLoader(URL url) { 
-            this.url   = url; 
+        public ImageLoader(URL url) {
+            this.url   = url;
             this.cache = URLImageCache.getDefaultCache();
         }
 
         public void run() {
-            
+
             BufferedImage bi = cache.request(url);
-            
+
             if (bi == null) {
                 String protocol = url.getProtocol();
                 Image img = img = tk.createImage(url);
@@ -204,7 +204,7 @@ public class RasterRable
                 synchronized (this) {
                     myID = id++;
                 }
-                    
+
                 mediaTracker.addImage(img, myID);
                 while (true) {
                     try {
@@ -213,7 +213,7 @@ public class RasterRable
                     catch(InterruptedException ie) {
                         continue;
                     };
-                    
+
                     break;
                 }
 
@@ -221,8 +221,7 @@ public class RasterRable
                 // construct an error image and return that...
 
                 mediaTracker.removeImage(img, myID);
-
-                bi = new BufferedImage(img.getWidth(null), 
+                bi = new BufferedImage(img.getWidth(null),
                                        img.getHeight(null),
                                        BufferedImage.TYPE_INT_ARGB);
                 Graphics2D g2d = bi.createGraphics();
