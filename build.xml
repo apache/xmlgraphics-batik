@@ -1225,7 +1225,7 @@ To display the available targets type:
              use="true"
              splitindex="true"
              windowtitle="${Project} Javadoc"
-             doctitle="${Project} API Specification"
+             doctitle="${Project} API Specification ${version}${revisionType}${revisionNumber}"
              bottom="Copyright &#169; ${year} Apache Software Foundation. All Rights Reserved.">
       <classpath refid="libs-classpath"/>
     </javadoc>
