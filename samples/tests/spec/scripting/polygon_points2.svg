@@ -61,6 +61,45 @@
            text = elt.getOwnerDocument().getElementById('test72_text');        
            text.getFirstChild().appendData(" ("+nb.getX()+","+nb.getY()+")");
         }
+
+    function createNextSibling(evt){
+
+      var elt = evt.target;
+      var doc = elt.getOwnerDocument();
+
+      var polygon = doc.createElementNS(elt.getNamespaceURI(),"polygon");
+      polygon.setAttribute("style","fill:#ffd700;stroke-width:4.0;stroke:#ffa500");
+      var pointsList = polygon.getPoints();
+
+      var point = doc.getDocumentElement().createSVGPoint();
+
+      point.setX(219);
+      point.setY(175);
+      pointsList.appendItem(point);
+      point.setX(255);
+      point.setY(193);
+      pointsList.appendItem(point);
+      point.setX(268);
+      point.setY(235);
+      pointsList.appendItem(point);
+      point.setX(242);
+      point.setY(269);
+      pointsList.appendItem(point);
+      point.setX(199);
+      point.setY(270);
+      pointsList.appendItem(point);
+      point.setX(171);
+      point.setY(237);
+      pointsList.appendItem(point);
+      point.setX(179);
+      point.setY(195);
+      pointsList.appendItem(point);
+
+      var text = elt.getOwnerDocument().getElementById('test8_text');        
+      text.getFirstChild().appendData(" "+pointsList.getNumberOfItems()+" points");    
+
+      elt.getParentNode().insertBefore(polygon,elt.getNextSibling());
+    }
    ]]></script>
    <g id="test-content" transform="matrix(1.0 0.0 0.0 1.0 -148.27586 -91.37931)">
 
@@ -111,6 +150,15 @@
      </text>
      <text x="160" font-size="9" y="285"  id="test72_text">
         appended point
+     </text>
+    </g>
+
+     <g transform="translate(300,0)" >
+        <!-- onload="fromScratch(evt)" -->
+        <text x="180" y="160" font-size="11"  >new Polygon</text>
+     <polygon style="opacity:0.5;fill:#eee; stroke:#aaa; stroke-width:4" points="219 175, 255 193, 268 235, 242 269, 199 270, 171 237, 179 195" onload="createNextSibling(evt)"/>
+     <text x="160" font-size="9" y="285"  id="test8_text">
+        polygon with
      </text>
     </g>
 

@@ -61,7 +61,7 @@ public class SVGOMAnimatedPoints
     public SVGOMAnimatedPoints(AbstractElement elt,
                                String ns,
                                String ln,
-                               String defultValue){
+                               String defaultValue){
 
         element = elt;
         namespaceURI = ns;
