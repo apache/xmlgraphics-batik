@@ -111,4 +111,14 @@
         <arg class="java.lang.String" value="doc"/>
     </test>
 
+    <!-- ========================================================================== -->
+    <!-- getElementsByTagNameNS test                                                -->
+    <!-- ========================================================================== -->
+    <test id="getElementsByTagNameNS" class="org.apache.batik.dom.GetElementsByTagNameNSTest" >
+        <arg class="java.lang.String"
+             value="test-resources/org/apache/batik/dom/dummyXML4.xml"/>
+        <arg class="java.lang.String" value="doc" />
+        <arg class="java.lang.String" value="elt4" />
+    </test>
+
 </testSuite>
