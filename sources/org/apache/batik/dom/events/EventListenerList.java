@@ -27,17 +27,30 @@ import org.w3c.dom.events.EventListener;
  */
 public class EventListenerList {
 
-    private Entry first;
-    private int n = 0;
+    /**
+     * Current number of entries in list.
+     */
+    protected int              n         = 0;
+    /**
+     * Simple Linked list of listeners.
+     */
+    protected Entry            first     = null;
+    /**
+     * Array of listeners retained between calls to getEventListeners if the
+     * list of listeners doesn't change.  This needs to be a copy so if the
+     * list of listeners changes during event dispatch it doesn't effect
+     * the inprogress dispatch.
+     */
+    protected EventListener [] listeners = null;
 
     /**
      * Returns an array of the event listeners of this list, or null if any.
      */
     public EventListener [] getEventListeners() {
-	if (first == null) {
-	    return null;
-	}
-	EventListener [] listeners = new EventListener[n];
+	if (first == null)     return null;
+        if (listeners != null) return listeners;
+
+	listeners = new EventListener[n];
 	Entry current = first;
 	for (int i=0; i < n; ++i, current = current.next) {
 	    listeners[i] = current.listener;
@@ -51,6 +64,7 @@ public class EventListenerList {
      */
     public void add(EventListener listener) {
 	first = new Entry(listener, first);
+        listeners = null; // Clear current listener list.
 	n++;
     }
 
@@ -59,21 +73,25 @@ public class EventListenerList {
      * @param listener the event listener to remove
      */
     public void remove(EventListener listener) {
-	if (first == null) {
-	    return;
-	} else if (first.listener == listener) {
+	if (first == null) return;
+
+
+        if (first.listener == listener) {
 	    first = first.next;
+            listeners = null; // Clear current listener list.
 	    --n;
 	} else {
 	    Entry prev = first;
 	    Entry e = first.next;
-	    while (e != null && e.listener != listener) {
+	    while (e != null) {
+                if (e.listener == listener) {
+                    prev.next = e.next;
+                    listeners = null; // Clear current listener list.
+                    --n;
+                    break;
+                }
 		prev = e;
 		e = e.next;
-	    }
-	    if (e != null) {
-		prev.next = e.next;
-		--n;
 	    }
 	}
     }
@@ -85,9 +103,8 @@ public class EventListenerList {
      */
     public boolean contains(EventListener listener) {
 	for (Entry e=first; e != null; e = e.next) {
-	    if (listener == e.listener) {
+	    if (listener == e.listener)
 		return true;
-	    }
 	}
 	return false;
     }
@@ -100,9 +117,9 @@ public class EventListenerList {
     }
 
     // simple entry for the list
-    private static class Entry {
+    protected static class Entry {
 	EventListener listener;
-	Entry next;
+	Entry         next;
 
 	public Entry(EventListener listener, Entry next) {
 	    this.listener = listener;

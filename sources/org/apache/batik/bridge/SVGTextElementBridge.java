@@ -1154,6 +1154,12 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             (!CSSUtilities.convertDisplay(element))) {
             return;
         }
+        if (element.getLocalName().equals(SVG_TEXT_PATH_TAG)) {
+            // 'textPath' doesn't support position attributes.
+            addChildGlyphPositionAttributes(as, element, ctx);
+            return;
+        }
+
         AttributedCharacterIterator aci = as.getIterator();
 
         // calculate which chars in the string belong to this element

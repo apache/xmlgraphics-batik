@@ -63,7 +63,7 @@ public class SVGOMAnimatedPreserveAspectRatio
     public void attrAdded(Attr node, String newv) {
         if (!changing) {
             preserveAspectRatio.setValueAsString(newv);
-            System.out.println("attr added: " + newv);
+            // System.out.println("attr added: " + newv);
         }
     }
     

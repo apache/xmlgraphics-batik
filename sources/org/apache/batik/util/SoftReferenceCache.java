@@ -174,10 +174,16 @@ public class SoftReferenceCache {
             if (cache == null) return; // Can't really happen.
             synchronized (cache) {
                 Object o = cache.map.remove(key);
-                if (this != o)
+                if (this == o) {
+                    // Notify other threads that they may have
+                    // to provide this resource now.
+                    cache.notifyAll(); 
+                } else {
                     // Must not have been ours put it back...
                     // Can happen if a clear is done.
                     cache.map.put(key, o);
+                }
+ 
             }
         }
     }
