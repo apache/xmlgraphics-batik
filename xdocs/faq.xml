@@ -594,4 +594,21 @@
       think the problem may be some sort of race condition in the JVM).</p>
     </answer>
 </faq>
+
+<faq>
+    <question>
+    I cannot run the Batik demo on Mac OS X (10.1.1). The Batik splash screen hangs.
+    What is happening?
+    </question>
+    <answer>
+    <p>The Batik demo (see http://xml.apache.org/batik/batikDemo.html) uses Java Web Start. Java Web Start (under the Applications/Utilities
+    folder), lets you start a Java application from a web browser. You can see the debug
+    traces by enabling the Java console for Java Web Start. If you do, you will see that
+    there is a java.lang.NoSuchMethodError execption thrown.</p>
+    <p>This is happening because the Java Web Start jar file (javaws.jar in /Applications/Utilities/Java Web Start/Content/MacOS)
+    contains an older version of the DOM bindings.</p>
+    <p>One work around is to manually patch the javaws.jar file to remove the DOM bindings
+    so that they do not take precedence over the Batik ones.</p>
+    </answer>
+</faq>
 </faqs>
