@@ -333,7 +333,8 @@ public class ConcreteTextNode
             // for now use this as the signal for select all
             o = aci;
         } else {
-            if ((ranges != null) && (ranges.length > 1)) {
+            if ((ranges != null) && (ranges.length > 1) 
+                && (ranges[1] > ranges[0])) {
                 o = new AttributedCharacterSpanIterator(
                                            aci, ranges[0], ranges[1]);
             }

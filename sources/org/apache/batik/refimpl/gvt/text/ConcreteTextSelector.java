@@ -23,6 +23,7 @@ import java.util.Iterator;
 
 import org.apache.batik.gvt.*;
 import org.apache.batik.gvt.event.GraphicsNodeMouseEvent;
+import org.apache.batik.gvt.event.GraphicsNodeInputEvent;
 import org.apache.batik.gvt.event.GraphicsNodeEvent;
 import org.apache.batik.gvt.event.GraphicsNodeKeyEvent;
 import org.apache.batik.gvt.event.GraphicsNodeMouseListener;
@@ -78,8 +79,7 @@ public class ConcreteTextSelector implements Selector {
     }
 
     public void mouseExited(GraphicsNodeMouseEvent evt) {
-        currentNode = null;
-        //report(evt, "Exited");
+        checkSelectGesture(evt);
     }
 
     public void mouseMoved(GraphicsNodeMouseEvent evt) {
@@ -142,7 +142,7 @@ public class ConcreteTextSelector implements Selector {
             p = t.transform(p, null);
 
             if (isSelectContinueGesture(evt)) {
-
+      
                 if (selectionNode != source) {
                      // have been dragged into new node!
                      // System.out.println("Select (Entering) at "+p);
@@ -158,8 +158,15 @@ public class ConcreteTextSelector implements Selector {
                         new SelectionEvent(null,
                                 SelectionEvent.SELECTION_CHANGED,
                                 newShape));
-                }
-
+                    if (evt.getID() == GraphicsNodeMouseEvent.MOUSE_EXITED) {
+                        Object selection = getSelection();
+                        dispatchSelectionEvent(
+                            new SelectionEvent(selection,
+                                SelectionEvent.SELECTION_DONE,
+                                newShape));
+                        copyToClipboard(selection);	
+                    }
+                } 
             } else if (isSelectStartGesture(evt)) {
 
                 selectionNode = source;
@@ -200,7 +207,8 @@ public class ConcreteTextSelector implements Selector {
                                 SelectionEvent.SELECTION_DONE,
                                 newShape));
                 copyToClipboard(oldSelection);
-            }
+
+            } 
         }
     }
 
@@ -213,12 +221,19 @@ public class ConcreteTextSelector implements Selector {
     }
 
     private boolean isSelectContinueGesture(GraphicsNodeEvent evt) {
-        return (evt.getID() == GraphicsNodeMouseEvent.MOUSE_DRAGGED);
+        return ((evt.getID() == GraphicsNodeMouseEvent.MOUSE_DRAGGED)
+          || ( isMouseButton1Down(evt) && 
+             (evt.getID() == GraphicsNodeMouseEvent.MOUSE_EXITED) ));
     }
 
     private boolean isSelectAllGesture(GraphicsNodeEvent evt) {
         return ((evt.getID() == GraphicsNodeMouseEvent.MOUSE_CLICKED)
             && (((GraphicsNodeMouseEvent) evt).getClickCount() == 2));
+    }
+
+    private boolean isMouseButton1Down(GraphicsNodeEvent evt) {
+        return ((((GraphicsNodeInputEvent) evt).getModifiers() 
+               & (GraphicsNodeInputEvent.BUTTON1_MASK)) != 0 );
     }
 
     /*

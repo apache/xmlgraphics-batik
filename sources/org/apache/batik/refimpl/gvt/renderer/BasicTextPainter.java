@@ -129,8 +129,28 @@ public class BasicTextPainter implements TextPainter {
             layout = begin.getLayout();
         }
         if (layout != null) {
-            return layout.getLogicalRangesForVisualSelection(begin.getHit(),
-                                                             end.getHit());
+            int[] indices = null;
+            try {
+                indices = new int[2];
+                indices[0] = begin.getHit().getCharIndex();
+                indices[1] = end.getHit().getCharIndex();
+                if (indices[0] > indices[1]) {
+                    int temp = indices[0];
+                    indices[0] = indices[1];
+                    indices[1] = 
+                        (begin.getHit().isLeadingEdge()) ? temp : temp+1;
+                } else {
+                    if (!end.getHit().isLeadingEdge()) {
+                        indices[1] += 1;   
+                    }
+                }
+            } catch (Exception e) {
+                return null;
+            }
+            // we no longer use visual selection, we use logical one
+            // return layout.getLogicalRangesForVisualSelection(begin.getHit(),
+            //                                       end.getHit());
+            return indices;
         } else {
             return null;
         }
@@ -159,12 +179,27 @@ public class BasicTextPainter implements TextPainter {
             layout = begin.getLayout();
         }
 
-        if ((end == begin) && (layout != null)) {
-	    shape = layout.getBounds();
-        } else {
-            if (layout != null) {
-                shape = layout.getVisualHighlightShape(begin.getHit(),
-                                                       end.getHit());	                   }
+        if (layout != null) {
+            int firsthit = 0;
+            int lasthit = 0;
+            if (begin != end) {
+                firsthit = begin.getHit().getCharIndex();
+                lasthit = end.getHit().getCharIndex();
+                if (firsthit > lasthit) {
+                    int temp = firsthit;
+                    firsthit = lasthit;
+                    lasthit = (begin.getHit().isLeadingEdge()) ? temp : temp+1;
+                } else {
+                    lasthit = 
+                        (end.getHit().isLeadingEdge()) ? lasthit : lasthit+1;
+                }
+            } else {
+                lasthit = layout.getCharacterCount();
+            }
+            shape = layout.getLogicalHighlightShape(
+                                    firsthit,
+                                    lasthit,
+                                    layout.getBounds());
         }
         return shape;
     }

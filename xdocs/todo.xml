@@ -61,10 +61,6 @@
             Improve patterns quality
         </action>
 
-        <action context="code" assigned-to="BH">
-            Text selection
-        </action>
-
         <action context="code" assigned-to="DJ">
             SVG Font support
         </action>
@@ -97,6 +93,11 @@
         <action context="code"
                 assigned-to="VH">
             Make sure all the filter 'in' sources are supported.
+        </action>
+
+        <action context="docs" assigned-to="BH">
+            Create sample and test files for currently
+            supported SVG text features.
         </action>
 
         <action context="code" assigned-to="TK">
@@ -174,6 +175,10 @@
 
         <action context="code" assigned-to="BH">
             Improve GUI reactivity on load (short freeze remaining)
+        </action>
+
+        <action context="code" assigned-to="BH">
+            New layout engine for tspan-x,y,dx,dy, textLength, etc.
         </action>
 
         <action context="code" assigned-to="TK">
