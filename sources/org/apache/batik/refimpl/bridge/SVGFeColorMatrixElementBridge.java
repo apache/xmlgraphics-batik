@@ -70,21 +70,21 @@ public class SVGFeColorMatrixElementBridge implements FilterBridge,
         String inAttr = filterElement.getAttributeNS(null, ATTR_IN);
 
         in = CSSUtilities.getFilterSource
-            (filteredNode, inAttr, 
+            (filteredNode, inAttr,
              bridgeContext, filteredElement,
              in, filterMap);
-    
+
         if(in != null){
             //
             // The default region is the input source's region
             // unless the source is SourceGraphics, in which
-            // case the default region is the filter chain's 
+            // case the default region is the filter chain's
             // region
             //
-            Filter sourceGraphics 
+            Filter sourceGraphics
                 = (Filter)filterMap.get(VALUE_SOURCE_GRAPHIC);
 
-            Rectangle2D defaultRegion 
+            Rectangle2D defaultRegion
                 = in.getBounds2D();
 
             if(in == sourceGraphics){
@@ -99,7 +99,7 @@ public class SVGFeColorMatrixElementBridge implements FilterBridge,
                 = new DefaultUnitProcessorContext(bridgeContext,
                                                   cssDecl);
 
-            Rectangle2D primitiveRegion 
+            Rectangle2D primitiveRegion
                 = SVGUtilities.convertFilterPrimitiveRegion2
                 (filterElement,
                  filteredElement,
@@ -122,7 +122,7 @@ public class SVGFeColorMatrixElementBridge implements FilterBridge,
                 colorMatrix = ConcreteColorMatrixRable.buildMatrix(matrix);
                 break;
             case ColorMatrixRable.TYPE_SATURATE:
-                float s = convertRatio(valuesStr);
+                float s = CSSUtilities.convertRatio(valuesStr);
                 colorMatrix = ConcreteColorMatrixRable.buildSaturate(s);
                 break;
             case ColorMatrixRable.TYPE_HUE_ROTATE:
@@ -145,7 +145,7 @@ public class SVGFeColorMatrixElementBridge implements FilterBridge,
             String result
                 = filterElement.getAttributeNS(null,
                                                ATTR_RESULT);
-            
+
             if((result != null) && (result.trim().length() > 0)){
                 filterMap.put(result, filter);
             }
@@ -180,7 +180,7 @@ public class SVGFeColorMatrixElementBridge implements FilterBridge,
     /**
      * Converts the input value to a ratio between 0 and 1
      */
-    private static float convertRatio(String value){
+/*    private static float convertRatio(String value){
         value = value.trim();
         float r = 0;
         float d = 1;
@@ -199,7 +199,7 @@ public class SVGFeColorMatrixElementBridge implements FilterBridge,
             r = 1;
         }
         return r;
-    }
+    }*/
 
     /**
      * Converts a float value
