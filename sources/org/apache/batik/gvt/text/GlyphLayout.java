@@ -1227,7 +1227,6 @@ public class GlyphLayout implements TextSpanLayout {
     protected Point2D doSpacing(Float kern,
                                 Float letterSpacing,
                                 Float wordSpacing) {
-
         boolean autoKern = true;
         boolean doWordSpacing = false;
         boolean doLetterSpacing = false;
@@ -1516,6 +1515,8 @@ public class GlyphLayout implements TextSpanLayout {
                GVTAttributedCharacterIterator.TextAttribute.TEXTPATH);
 
         int numGlyphs = gv.getNumGlyphs();
+        // System.out.println("NumGlyphs: " + numGlyphs);
+
         float[] gp = new float[numGlyphs*2];
         gp = (float[]) gv.getGlyphPositions(0, numGlyphs, gp).clone();
         float init_x_pos = (float) offset.getX();
@@ -1742,10 +1743,10 @@ public class GlyphLayout implements TextSpanLayout {
             firstChar = false;
         }
 
+        offset  = new Point2D.Float(init_x_pos, init_y_pos);
         advance = new Point2D.Float((float) (curr_x_pos - offset.getX()),
                                     (float) (curr_y_pos - offset.getY()));
 
-        offset = new Point2D.Float(init_x_pos, init_y_pos);
     }
 
 }

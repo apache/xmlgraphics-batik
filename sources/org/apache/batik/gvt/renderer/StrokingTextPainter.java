@@ -160,9 +160,8 @@ public class StrokingTextPainter extends BasicTextPainter {
 
         // create text runs for each chunk and add them to the list
         textRuns = new ArrayList();
-        TextChunk chunk;
+        TextChunk chunk, prevChunk=null;
         int beginChunk = 0;
-        Point2D lastChunkAdvance = new Point2D.Float(0,0);
         int currentChunk = 0;
         do {
 	    // Text Chunks contain one or more TextRuns, which they create from
@@ -174,7 +173,7 @@ public class StrokingTextPainter extends BasicTextPainter {
                                  chunkCharMaps[currentChunk],
                                  textRuns,
                                  beginChunk, 
-                                 lastChunkAdvance);
+                                 prevChunk);
 	    
             // Adjust according to text-anchor property value
             chunkACIs[currentChunk].first();
@@ -182,8 +181,8 @@ public class StrokingTextPainter extends BasicTextPainter {
                 adjustChunkOffsets(textRuns, chunk.advance, 
                                    chunk.begin, chunk.end);
                 beginChunk = chunk.end;
-                lastChunkAdvance = chunk.advance;
             }
+            prevChunk = chunk;
             currentChunk++;
 	    
         } while (chunk != null && currentChunk < chunkACIs.length);
@@ -265,107 +264,88 @@ public class StrokingTextPainter extends BasicTextPainter {
                                    int [] charMap,
                                    List textRuns,
                                    int beginChunk,
-                                   Point2D lastChunkAdvance) {
+                                   TextChunk prevChunk) {
         int endChunk = beginChunk;
-        AttributedCharacterIterator runaci;
-        boolean inChunk = true;
-        Point2D advance = lastChunkAdvance;
-        Point2D location = node.getLocation();
         int begin = aci.getIndex();
-        if (aci.current() != CharacterIterator.DONE) {
-            int chunkStartIndex = aci.getIndex();
-
-            // find out if this chunck is the start or end of a text
-            // path chunck if it is, then we ignore any previous
-            // advance
-            TextPath chunkTextPath = (TextPath) aci.getAttribute
-                (GVTAttributedCharacterIterator.TextAttribute.TEXTPATH);
-            TextPath prevChunkTextPath = null;
-            if (chunkStartIndex > 0) {
-                aci.setIndex(chunkStartIndex-1);
-                prevChunkTextPath = (TextPath) aci.getAttribute
-                    (GVTAttributedCharacterIterator.TextAttribute.TEXTPATH);
-                aci.setIndex(chunkStartIndex);
-            }
-
-            if (prevChunkTextPath != chunkTextPath) {
-                advance = new Point2D.Float(0,0);
-            }
-
-            boolean isChunkStart = true;
-            TextPath prevTextPath = null;
-            Point2D prevTextPathAdvance = null;
-            do {
-
-                int start = aci.getRunStart(extendedAtts);
-                int end   = aci.getRunLimit(extendedAtts);
-
-                runaci = new AttributedCharacterSpanIterator(aci, start, end);
-
-                runaci.first();
-
-                Float runX = (Float) runaci.getAttribute
-		    (GVTAttributedCharacterIterator.TextAttribute.X);
-
-                Float runY = (Float) runaci.getAttribute
-		    (GVTAttributedCharacterIterator.TextAttribute.Y);
-
-                TextPath textPath =  (TextPath) runaci.getAttribute
-		    (GVTAttributedCharacterIterator.TextAttribute.TEXTPATH);
-		
-                inChunk = ((isChunkStart) || 
-			   ((runX == null || runX.isNaN()) &&
-			    (runY == null || runY.isNaN())));
-		
-                // do additional check for the start/end of a textPath
-                if (prevTextPath == null && textPath != null && !isChunkStart) {
-                    inChunk = false;
-                }
-
-                if (inChunk) {
-                    Point2D offset;
-                    if (textPath == null) {
-                        if (prevTextPath != null && prevTextPathAdvance != null) {
-                            // this text is directly after some text on a path
-                            offset = new Point2D.Float((float)prevTextPathAdvance.getX(),
-                                                       (float)prevTextPathAdvance.getY());
-                        } else {
-                            offset = new Point2D.Float(
-                                (float) (location.getX()+advance.getX()),
-                                (float) (location.getY()+advance.getY()));
-                        }
-                    } else {
-                        // is on a text path so ignore the text node's location
-                        offset = new Point2D.Float((float)advance.getX(),
-                                                   (float)advance.getY());
-                    }
-                    
-                    int [] subCharMap = new int[end-start];
-                    for (int i=0; i<subCharMap.length; i++) {
-                        subCharMap[i] = charMap[i+start-begin];
-                    }
-                    TextSpanLayout layout = getTextLayoutFactory().
-                        createTextLayout(runaci, subCharMap, 
-                                         offset, fontRenderContext);
-                    TextRun run = new TextRun(layout, runaci, isChunkStart);
-                    textRuns.add(run);
-                    Point2D layoutAdvance = layout.getAdvance2D();
-                    advance = new Point2D.Float(
-                       (float) (advance.getX()+layoutAdvance.getX()),
-                       (float) (advance.getY()+layoutAdvance.getY()));
-                    ++endChunk;
-                    prevTextPath = textPath;
-                    prevTextPathAdvance = layout.getTextPathAdvance();
-                    if (aci.setIndex(end) == CharacterIterator.DONE) break;
-                } else {
-                    aci.setIndex(start);
-                }
-                isChunkStart = false;
-            } while (inChunk);
-            return new TextChunk(beginChunk, endChunk, advance);
-        } else {
+        // System.out.println("New Chunk");
+        if (aci.current() == CharacterIterator.DONE) 
             return null;
+
+        Point2D advance = new Point2D.Float(0,0);
+        Point2D location;
+        if (prevChunk == null) {
+            location = node.getLocation();
+        } else {
+            location = new Point2D.Float
+                ((float)(prevChunk.absLoc.getX()+prevChunk.advance.getX()),
+                 (float)(prevChunk.absLoc.getY()+prevChunk.advance.getY()));
         }
+
+        boolean  isChunkStart        = true;
+        TextPath prevTextPath        = null;
+        Point2D  prevTextPathAdvance = null;
+        do {
+            int start = aci.getRunStart(extendedAtts);
+            int end   = aci.getRunLimit(extendedAtts);
+
+            AttributedCharacterIterator runaci;
+            runaci = new AttributedCharacterSpanIterator(aci, start, end);
+            runaci.first();
+
+            Float runX = (Float) runaci.getAttribute
+                (GVTAttributedCharacterIterator.TextAttribute.X);
+
+            Float runY = (Float) runaci.getAttribute
+                (GVTAttributedCharacterIterator.TextAttribute.Y);
+
+            TextPath textPath =  (TextPath) runaci.getAttribute
+                (GVTAttributedCharacterIterator.TextAttribute.TEXTPATH);
+		
+            Point2D offset;
+            if (textPath == null) {
+                if ((prevTextPath != null) && 
+                    (prevTextPathAdvance != null)) {
+                    // this text is directly after some text on a path
+                    offset = new Point2D.Float
+                        ((float)prevTextPathAdvance.getX(),
+                         (float)prevTextPathAdvance.getY());
+                } else {
+                    offset = new Point2D.Float(
+                                               (float) (location.getX()+advance.getX()),
+                                               (float) (location.getY()+advance.getY()));
+                }
+            } else {
+                // is on a text path so ignore the text node's location
+                offset = new Point2D.Float((float)advance.getX(),
+                                           (float)advance.getY());
+            }
+                    
+            int [] subCharMap = new int[end-start];
+            for (int i=0; i<subCharMap.length; i++) {
+                subCharMap[i] = charMap[i+start-begin];
+            }
+            TextSpanLayout layout = getTextLayoutFactory().
+                createTextLayout(runaci, subCharMap, 
+                                 offset, fontRenderContext);
+            TextRun run = new TextRun(layout, runaci, isChunkStart);
+            textRuns.add(run);
+            Point2D layoutAdvance = layout.getAdvance2D();
+            if (isChunkStart)
+                location = layout.getOffset();
+
+            // System.out.println("layoutAdv: " + layoutAdvance);
+
+            advance = new Point2D.Float(
+                                        (float) (advance.getX()+layoutAdvance.getX()),
+                                        (float) (advance.getY()+layoutAdvance.getY()));
+            ++endChunk;
+            prevTextPath = textPath;
+            prevTextPathAdvance = layout.getTextPathAdvance();
+            if (aci.setIndex(end) == CharacterIterator.DONE) break;
+            isChunkStart = false;
+        } while (true);
+        // System.out.println("Adv: " + advance);
+        return new TextChunk(beginChunk, endChunk, location, advance);
     }
 
 
@@ -580,9 +560,7 @@ public class StrokingTextPainter extends BasicTextPainter {
                                     int beginChunk, 
                                     int endChunk) {
 
-        for (int n=beginChunk; n<endChunk; ++n) {
-            TextRun r = (TextRun) textRuns.get(n);
-
+        TextRun r = (TextRun) textRuns.get(beginChunk);
             int anchorType = r.getAnchorType();
             float dx = 0f;
             float dy = 0f;
@@ -601,6 +579,8 @@ public class StrokingTextPainter extends BasicTextPainter {
                 // leave untouched
             }
 
+        for (int n=beginChunk; n<endChunk; ++n) {
+            r = (TextRun) textRuns.get(n);
             TextSpanLayout layout = r.getLayout();
             Point2D        offset = layout.getOffset();
 
@@ -1373,10 +1353,13 @@ public class StrokingTextPainter extends BasicTextPainter {
         public int begin;
         public int end;
         public Point2D advance;
+        public Point2D absLoc;
 
-        public TextChunk(int begin, int end, Point2D advance) {
+        public TextChunk(int begin, int end, Point2D absLoc, Point2D advance) {
             this.begin = begin;
             this.end = end;
+            this.absLoc  = new Point2D.Float((float) absLoc.getX(),
+                                             (float) absLoc.getY());
             this.advance = new Point2D.Float((float) advance.getX(),
                                              (float) advance.getY());
         }
