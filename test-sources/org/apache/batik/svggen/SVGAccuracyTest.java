@@ -13,6 +13,8 @@ import java.awt.Dimension;
 import java.net.URL;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -80,6 +82,15 @@ public class SVGAccuracyTest extends AbstractTest
 
     public static final String ENTRY_KEY_ERROR_DESCRIPTION
         = "SVGAccuracyTest.entry.key.error.description";
+
+    public static final String ENTRY_KEY_LINE_NUMBER
+        = "SVGAccuracyTest.entry.key.line.number";
+
+    public static final String ENTRY_KEY_REFERENCE_LINE
+        = "SVGAccuracyTest.entry.key.reference.line";
+
+    public static final String ENTRY_KEY_NEW_LINE
+        = "SVGAccuracyTest.entry.key.new.line";
 
     /**
      * Canvas size for all tests
@@ -184,16 +195,38 @@ public class SVGAccuracyTest extends AbstractTest
 
         InputStream newStream = new ByteArrayInputStream(bos.toByteArray());
 
-        boolean accurate = false;
+        boolean accurate = true;
+        String refLine = null;
+        String newLine = null;
+        int ln = 1;
+
         try{
-            accurate = compare(refStream, newStream);
+            // accurate = compare(refStream, newStream);
+            BufferedReader refReader = new BufferedReader(new InputStreamReader(refStream));
+            BufferedReader newReader = new BufferedReader(new InputStreamReader(newStream));
+            while((refLine = refReader.readLine()) != null){
+                newLine = newReader.readLine();
+                if(newLine == null || !refLine.equals(newLine)){
+                    accurate = false;
+                    break;
+                }
+                ln++;
+            }
+            if(accurate){
+                // need to make sure newLine is null as well
+                newLine = refReader.readLine();
+                if(newLine != null){
+                    accurate = false;
+                }
+            }
+
         } catch(IOException e) {
             report.setErrorCode(ERROR_ERROR_WHILE_COMPARING_FILES);
             report.setDescription(new TestReport.Entry[]{
                 new TestReport.Entry(Messages.formatMessage(ENTRY_KEY_ERROR_DESCRIPTION, null),
-                          Messages.formatMessage(ERROR_ERROR_WHILE_COMPARING_FILES,
-                                                 new Object[]{refURL.toExternalForm(),
-                                                              e.getMessage()}))});
+                                     Messages.formatMessage(ERROR_ERROR_WHILE_COMPARING_FILES,
+                                                            new Object[]{refURL.toExternalForm(),
+                                                                         e.getMessage()}))});
             report.setPassed(false);
             save(bos.toByteArray());
             return report;
@@ -202,6 +235,9 @@ public class SVGAccuracyTest extends AbstractTest
         if(!accurate){
             save(bos.toByteArray());
             report.setErrorCode(ERROR_GENERATED_SVG_INACCURATE);
+            report.addDescriptionEntry(Messages.formatMessage(ENTRY_KEY_LINE_NUMBER,null), new Integer(ln));
+            report.addDescriptionEntry(Messages.formatMessage(ENTRY_KEY_REFERENCE_LINE,null), refLine);
+            report.addDescriptionEntry(Messages.formatMessage(ENTRY_KEY_NEW_LINE,null), newLine);
             report.setPassed(false);
         }
         else{
@@ -236,8 +272,8 @@ public class SVGAccuracyTest extends AbstractTest
     /**
      * Compare the two input streams
      */
-    protected boolean compare(InputStream refStream,
-                              InputStream newStream)
+    protected boolean byteCompare(InputStream refStream,
+                                  InputStream newStream)
         throws IOException{
         int b = 0;
         int nb = 0;
