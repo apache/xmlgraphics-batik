@@ -327,6 +327,13 @@ public abstract class AbstractGraphicsNode implements GraphicsNode, Cloneable {
             return;
         }
 
+        if ((composite != null) &&
+            (composite instanceof AlphaComposite)) {
+            AlphaComposite ac = (AlphaComposite)composite;
+            if (ac.getAlpha() < 0.001)
+                return;         // No point in drawing
+        }
+
         //
         // Set up graphic context. It is important to setup the
         // transform first, because the clip is defined in this

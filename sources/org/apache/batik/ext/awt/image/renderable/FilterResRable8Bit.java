@@ -10,19 +10,28 @@ package org.apache.batik.ext.awt.image.renderable;
 
 import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
+import java.util.Iterator;
+import java.util.ListIterator;
+import java.util.Vector;
 
+import java.awt.Composite;
+import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Shape;
+
+import java.awt.color.ColorSpace;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.RenderedImage;
 import java.awt.image.renderable.RenderableImage;
 import java.awt.image.renderable.RenderContext;
 
+import org.apache.batik.ext.awt.image.CompositeRule;
+import org.apache.batik.ext.awt.image.GraphicsUtil;
 import org.apache.batik.ext.awt.image.rendered.AffineRed;
 import org.apache.batik.ext.awt.image.rendered.TileCacheRed;
-import org.apache.batik.ext.awt.image.GraphicsUtil;
+import org.apache.batik.ext.awt.image.SVGComposite;
 
 /**
  * Interface for implementing filter resolution.
@@ -31,7 +40,7 @@ import org.apache.batik.ext.awt.image.GraphicsUtil;
  * @version $Id$
  */
 public class FilterResRable8Bit extends AbstractRable 
-    implements FilterResRable{
+    implements FilterResRable, PaintRable {
 
     /**
      * Filter resolution along the x-axis
@@ -47,6 +56,12 @@ public class FilterResRable8Bit extends AbstractRable
         // System.out.println("Using FilterResRable8bit...");
     }
         
+
+    public FilterResRable8Bit(Filter src, int filterResX, int filterResY) {
+        init(src, null);
+        setFilterResolutionX(filterResX);
+        setFilterResolutionY(filterResY);
+    }
 
     /**
      * Returns the source to be cropped.
@@ -100,6 +115,154 @@ public class FilterResRable8Bit extends AbstractRable
         this.filterResolutionY = filterResolutionY;
     }
     
+
+    /**
+     * This returns true if <tt>ri</tt> and all of <tt>ri</tt>'s
+     * sources implement the PaintRable interface.  This is used to
+     * indicate that the chain has a good potential for bypassing the
+     * filterRes operation entirely.  
+     * 
+     * Ideally there would be a checkPaintRable method in PaintRable
+     * that could be used to get a definate answer about a filters
+     * ability to draw directly to a Graphics2D (this can sometimes
+     * 'fail' because of the way the Graphics2D is currently
+     * configured).  
+     */
+    public boolean allPaintRable(RenderableImage ri) {
+        if (!(ri instanceof PaintRable))
+            return false;
+
+        Vector v = ri.getSources();
+        // No sources and we are PaintRable so the chain is PaintRable.
+        if (v == null) return true;
+        
+        Iterator i = v.iterator();
+        while (i.hasNext()) {
+            RenderableImage nri = (RenderableImage)i.next();
+            // A source is not paintRable so we are not 100% paintRable.
+            if (!allPaintRable(nri)) return false;
+        }
+        
+        return true;
+    }
+
+    /**
+     * This function attempts to distribute the filterRes operation
+     * across src.  Right now it knows about two operations, pad and
+     * composite.  It's main target is the composite but often pad
+     * operations are sprinked in the chain so it needs to know about
+     * them.  This list could be extended however if it gets much
+     * longer it should probably be rolled into a new 'helper interface'
+     * like PaintRable.
+     *
+     * NOTE: This is essentially a bad hack, but it is a hack that is
+     *       recomended by the SVG specification so I do it.
+     */
+    public boolean distributeAcross(RenderableImage src, Graphics2D g2d) {
+        boolean ret;
+        if (src instanceof PadRable) {
+            PadRable pad = (PadRable)src;
+            Shape clip = g2d.getClip();
+            g2d.clip(pad.getPadRect());
+            ret = distributeAcross(pad.getSource(), g2d);
+            g2d.setClip(clip);
+            return ret;
+        }
+
+        if (src instanceof CompositeRable) {
+            CompositeRable comp = (CompositeRable)src;
+            if (comp.getCompositeRule() != CompositeRule.OVER)
+                return false;
+
+            if (false) {
+                // To check colorspaces or to not check colorspaces
+                // _that_ is the question...
+                ColorSpace crCS  = comp.getOperationColorSpace();
+                ColorSpace g2dCS = GraphicsUtil.getDestinationColorSpace(g2d);
+                if ((g2dCS == null) || (g2dCS != crCS))
+                    return false;
+            }
+
+            Vector v = comp.getSources();
+            if (v == null) return true;
+            ListIterator li = v.listIterator(v.size());
+            while (li.hasPrevious()) {
+                RenderableImage csrc = (RenderableImage)li.previous();
+                if (!allPaintRable(csrc)) {
+                    li.next(); 
+                    break;
+                }
+            }
+
+            if (!li.hasPrevious()) {
+                // All inputs are PaintRable so just draw directly to
+                // the graphics ignore filter res all togeather...
+                GraphicsUtil.drawImage(g2d, comp);
+                return true;
+            }
+            
+            if (!li.hasNext())
+                // None of the trailing inputs are PaintRable so we don't
+                // distribute across this at all.
+                return false;
+
+            // Now we are in the case where some are paintRable and
+            // some aren't.  In this case we create a new
+            // CompositeRable with the first ones, to which we apply
+            // ourselves (limiting the resolution), and after that
+            // we simply draw the remainder...
+            int idx = li.nextIndex();  // index of first PaintRable...
+            Filter f = new CompositeRable8Bit(v.subList(0, idx),
+                                              comp.getCompositeRule(),
+                                              comp.isColorSpaceLinear());
+            f = new FilterResRable8Bit(f, getFilterResolutionX(),
+                                       getFilterResolutionY());
+            GraphicsUtil.drawImage(g2d, f);
+            while (li.hasNext()) {
+                PaintRable pr = (PaintRable)li.next();
+                if (!pr.paintRable(g2d)) {
+                    // Ugg it failed to paint so we need to filterRes it...
+                    Filter     prf  = (Filter)pr;
+                    prf = new FilterResRable8Bit(prf, getFilterResolutionX(),
+                                                 getFilterResolutionY());
+                    GraphicsUtil.drawImage(g2d, prf);
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Should perform the equivilent action as 
+     * createRendering followed by drawing the RenderedImage.
+     *
+     * @param g2d The Graphics2D to draw to.
+     * @return true if the paint call succeeded, false if
+     *         for some reason the paint failed (in which 
+     *         case a createRendering should be used).
+     */
+    public boolean paintRable(Graphics2D g2d) {
+        // This is a bit of a hack to implement the suggestion of SVG
+        // specification that if the last operation in a filter chain
+        // is a SRC_OVER composite and the source is SourceGraphic it
+        // should be rendered directly to the canvas (by passing
+        // filterRes).  We are actually much more aggressive in
+        // implementing this suggestion since we will bypass filterRes
+        // for all the trailing elements in a SRC_OVER composite that
+        // can be drawn directly to the canvas.
+
+        // System.out.println("Calling FilterResRable paintRable");
+
+        // This optimization only apply if we are using
+        // SrcOver.  Otherwise things break...
+        Composite c = g2d.getComposite();
+        if (!SVGComposite.OVER.equals(c))
+            return false;
+
+        Filter src = getSource();
+        return distributeAcross(src, g2d);
+    }
 
     /**
      * Cached Rendered image at filterRes.
