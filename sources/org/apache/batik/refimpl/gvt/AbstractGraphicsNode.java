@@ -21,6 +21,9 @@ import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.Point2D;
 import java.awt.image.RenderedImage;
+import java.awt.image.BufferedImage;
+import java.awt.image.WritableRaster;
+import java.awt.image.ColorModel;
 import java.awt.image.renderable.RenderContext;
 import java.awt.image.renderable.RenderableImage;
 
@@ -391,14 +394,24 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
                 // Create the render context for drawing this node.
                 AffineTransform usr2dev = g2d.getTransform();
 
-                // RenderContext context = new RenderContext(usr2dev, g2d.getClip(), rc.getRenderingHints());
                 RenderedImage renderedNodeImage = filteredImage.createRendering(rc);
                 Rectangle2D filterBounds = filteredImage.getBounds2D();
                 g2d.clip(filterBounds);
 
                 if(renderedNodeImage != null){
+                      // Draw RenderedImage has problems....
+                      // This works around them...
+                    WritableRaster wr;
+                    wr = (WritableRaster)renderedNodeImage.getData();
+                    wr = wr.createWritableTranslatedChild(0,0);
+                    ColorModel cm = renderedNodeImage.getColorModel();
+                    BufferedImage bi;
+                    bi = new BufferedImage(cm, wr,
+                                           cm.isAlphaPremultiplied(), null);
                     g2d.setTransform(IDENTITY);
-                    g2d.drawRenderedImage(renderedNodeImage, IDENTITY);
+                    g2d.drawImage(bi, null, 
+                                  renderedNodeImage.getMinX(),
+                                  renderedNodeImage.getMinY());
                 }
             }
 

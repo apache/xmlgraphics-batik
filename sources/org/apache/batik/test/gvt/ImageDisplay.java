@@ -44,11 +44,19 @@ public class ImageDisplay {
                                   RenderedImage ri,
                                   Rectangle bounds) {
         java.awt.image.Raster ras = ri.getData();
+
+        int minX = Math.max(bounds.x, ri.getMinX());
+        int minY = Math.max(bounds.y, ri.getMinY());
+        int maxX = Math.min(bounds.x + bounds.width,  
+                            ri.getMinX() + ri.getWidth());
+        int maxY = Math.min(bounds.y + bounds.height, 
+                            ri.getMinY() + ri.getHeight());
+
         int [] pixel=null;
         if (text != null)
             System.out.println("\n" + text + "\n");
-        for (int y=bounds.y; y < (bounds.y+bounds.height); y++) {
-            for (int x=bounds.x; x < (bounds.x+bounds.width); x++) {
+        for (int y=minY; y < maxY-1; y++) {
+            for (int x=minX; x < maxX-1; x++) {
                 pixel = ras.getPixel(x,y, pixel);
                 System.out.print(Integer.toHexString(pixel[0]) + "," + 
                                  Integer.toHexString(pixel[1]) + "," +

@@ -240,7 +240,7 @@ public class ConcreteGraphicsNodeRable implements GraphicsNodeRable{
         if((imageRect.width == 0) ||
                (imageRect.height == 0)) {
             renderedImage =
-                new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+                new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB_PRE);
         } else {
             float scaleX = w/imageRect.width;
             float scaleY = h/imageRect.height;
@@ -326,7 +326,7 @@ public class ConcreteGraphicsNodeRable implements GraphicsNodeRable{
             // transparent image, 1x1
             renderedImage
                 = new BufferedImage(1, 1,
-                                    BufferedImage.TYPE_INT_ARGB);
+                                    BufferedImage.TYPE_INT_ARGB_PRE);
         }
         else{
             // There is a non-empty intersection. Render into
@@ -335,7 +335,7 @@ public class ConcreteGraphicsNodeRable implements GraphicsNodeRable{
             BufferedImage offScreen
                 = new BufferedImage(renderedArea.width,
                                     renderedArea.height,
-                                    BufferedImage.TYPE_INT_ARGB);
+                                    BufferedImage.TYPE_INT_ARGB_PRE);
 
             Graphics2D g = offScreen.createGraphics();
 
