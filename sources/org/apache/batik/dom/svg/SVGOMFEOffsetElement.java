@@ -80,15 +80,7 @@ public class SVGOMFEOffsetElement
 
     /**
      * <b>DOM</b>: Implements {@link
-     * SVGFEOffsetElement#getOperator()}.
-     */
-    public SVGAnimatedEnumeration getOperator() {
-        throw new RuntimeException(" !!! TODO");
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGOffsetElement#getDx()}.
+     * org.w3c.dom.svg.SVGFEOffsetElement#getDx()}.
      */
     public SVGAnimatedLength getDx() {
 	SVGAnimatedLength result;
@@ -102,7 +94,7 @@ public class SVGOMFEOffsetElement
 
     /**
      * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGOffsetElement#getDy()}.
+     * org.w3c.dom.svg.SVGFEOffsetElement#getDy()}.
      */
     public SVGAnimatedLength getDy() {
 	SVGAnimatedLength result;

@@ -145,7 +145,7 @@ public class CSSOMSelectorFactory implements SelectorFactory {
 
     /**
      * <b>SAC</b>: Implements {@link
-     * SelectorFactory#createDirectAdjacentSelector(Selector,SimpleSelector)}.
+     * SelectorFactory#createDirectAdjacentSelector(short,Selector,SimpleSelector)}.
      */
     public SiblingSelector createDirectAdjacentSelector
         (short          nodeType,

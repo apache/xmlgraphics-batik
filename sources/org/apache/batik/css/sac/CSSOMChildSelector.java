@@ -15,7 +15,7 @@ import org.w3c.dom.Node;
 
 /**
  * This class provides an implementation of the
- * {@link org.w3c.css.sac.CombinatorSelector} interface.
+ * {@link org.w3c.css.sac.DescendantSelector} interface.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$

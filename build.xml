@@ -350,7 +350,7 @@ To display the available targets type:
   </target>
 
 
-  <!-- Transcoder (dependencies: util) -->
+  <!-- Transcoder (dependencies: all) -->
   <target name="transcoder-jar" depends="compile, prepare-build">
     <jar jarfile="${build}/lib/${project}-transcoder.jar">
       <fileset dir="${dest}">
@@ -540,5 +540,8 @@ To display the available targets type:
   <!-- Cleans everything .................................................. -->
   <target name="clean"
           depends="clean-compile, clean-docs"
-          description="Cleans everything"/>
+          description="Cleans everything">
+    <delete dir="${build}"/>
+  </target>
+
 </project>

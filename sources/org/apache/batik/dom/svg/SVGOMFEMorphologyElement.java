@@ -65,8 +65,7 @@ public class SVGOMFEMorphologyElement
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * SVGFEMorphologyElement#getIn1()}.
+     * <b>DOM</b>: Implements {@link SVGFEMorphologyElement#getIn1()}.
      */
     public SVGAnimatedString getIn1() {
 	SVGAnimatedString result;
@@ -79,16 +78,14 @@ public class SVGOMFEMorphologyElement
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * SVGFEMorphologyElement#getOperator()}.
+     * <b>DOM</b>: Implements {@link SVGFEMorphologyElement#getOperator()}.
      */
     public SVGAnimatedEnumeration getOperator() {
         throw new RuntimeException(" !!! TODO");
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGMorphologyElement#getRadiusX()}.
+     * <b>DOM</b>: Implements {@link SVGFEMorphologyElement#getRadiusX()}.
      */
     public SVGAnimatedLength getRadiusX() {
 	SVGAnimatedLength result;
@@ -101,8 +98,7 @@ public class SVGOMFEMorphologyElement
     } 
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGMorphologyElement#getRadiusY()}.
+     * <b>DOM</b>: Implements {@link SVGFEMorphologyElement#getRadiusY()}.
      */
     public SVGAnimatedLength getRadiusY() {
 	SVGAnimatedLength result;
