@@ -152,14 +152,17 @@ public class ConcreteTextSelector implements Selector {
                                                         renderContext);;
                      selectionNode = source;
                 } else {
-                    ((Selectable) source).selectTo(p.getX(), p.getY(),
+                    boolean result = ((Selectable) source).selectTo(p.getX(), p.getY(),
                                                         renderContext);
-                    Shape newShape =
-                    ((Selectable) source).getHighlightShape(renderContext);
-                    dispatchSelectionEvent(
-                        new SelectionEvent(null,
+                    if (result) {
+                        Shape newShape =
+                        ((Selectable) source).getHighlightShape(renderContext);
+
+                        dispatchSelectionEvent(
+                            new SelectionEvent(null,
                                 SelectionEvent.SELECTION_CHANGED,
                                 newShape));
+                    }
                 }
 
             } else if (isSelectStartGesture(evt)) {

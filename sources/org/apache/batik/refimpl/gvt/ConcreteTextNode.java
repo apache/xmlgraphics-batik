@@ -288,35 +288,42 @@ public class ConcreteTextNode
      * Initializes the current selection to begin with the character at (x, y).
      * @param the anchor of this node
      */
-    public void selectAt(double x, double y, GraphicsNodeRenderContext rc) {
+    public boolean selectAt(double x, double y, GraphicsNodeRenderContext rc) {
          beginMark = rc.getTextPainter().selectAt(x-location.getX(),
                                                  y-location.getY(),
                                                  aci, anchor, rc);
-        return;
+         return true; // assume this always changes selection, for now.
     }
 
     /**
      * Extends the current selection to the character at (x, y)..
      * @param the anchor of this node
      */
-    public void selectTo(double x, double y, GraphicsNodeRenderContext rc) {
-        endMark = rc.getTextPainter().selectTo(x-location.getX(),
+    public boolean selectTo(double x, double y, GraphicsNodeRenderContext rc) {
+        Mark tmpMark = rc.getTextPainter().selectTo(x-location.getX(),
                                                y-location.getY(),
                                                beginMark, aci, anchor,
                                                rc);
-        return;
+        boolean result = false;
+
+        if (tmpMark != endMark) {
+            endMark = tmpMark;
+            result = true;
+        }
+
+        return result;
     }
 
     /**
      * Extends the current selection to the character at (x, y)..
      * @param the anchor of this node
      */
-    public void selectAll(double x, double y, GraphicsNodeRenderContext rc) {
+    public boolean selectAll(double x, double y, GraphicsNodeRenderContext rc) {
         endMark = rc.getTextPainter().selectAll(x-location.getX(),
                                                 y-location.getY(),
                                                 aci, anchor, rc);
         beginMark = endMark;
-        return;
+        return true;
     }
 
     /**
