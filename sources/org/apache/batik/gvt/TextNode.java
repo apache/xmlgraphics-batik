@@ -139,9 +139,9 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
     }
 
     /**
-     * Sets the text painter of this text node. If the specified text painter is
-     * null, this text node will use its default text painter
-     * (StrokingTextPainter.getInstance()).
+     * Sets the text painter of this text node. If the specified text
+     * painter is null, this text node will use its default text
+     * painter (StrokingTextPainter.getInstance()).
      *
      * @param textPainter the text painter to use
      */

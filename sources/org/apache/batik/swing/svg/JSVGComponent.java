@@ -358,6 +358,8 @@ public class JSVGComponent extends JGVTComponent {
 
     protected Runnable afterStopRunnable = null;
 
+    protected SVGUpdateOverlay updateOverlay; // = new SVGUpdateOverlay(20, 4);
+
     /**
      * Creates a new JSVGComponent.
      */
@@ -383,6 +385,8 @@ public class JSVGComponent extends JGVTComponent {
         addSVGDocumentLoaderListener((SVGListener)listener);
         addGVTTreeBuilderListener((SVGListener)listener);
         addSVGLoadEventDispatcherListener((SVGListener)listener);
+        if (updateOverlay != null) 
+            getOverlays().add(updateOverlay);
     }
 
     public void dispose() {
@@ -1751,20 +1755,21 @@ public class JSVGComponent extends JGVTComponent {
                             List l = e.getDirtyAreas();
                             if (l != null) {
                                 Rectangle visRect = getRenderRect();
-                                List ml = mergeRectangles
-                                    (l, visRect.x, visRect.y,
-                                     visRect.width - 1, visRect.height - 1);
-                                if (ml.size() < l.size()) {
-                                    l = ml;
-                                }
                                 Iterator i = l.iterator();
                                 while (i.hasNext()) {
                                     Rectangle r = (Rectangle)i.next();
+                                    if (updateOverlay != null) {
+                                        updateOverlay.addRect(r);
+                                        r = getRenderRect();
+                                    }
+
                                     if (doubleBufferedRendering)
                                         repaint(r);
                                     else
                                         paintImmediately(r);
                                 }
+                                if (updateOverlay != null)
+                                    updateOverlay.endUpdate();
                             }
                             suspendInteractions = false;
                         }
@@ -3320,157 +3325,5 @@ public class JSVGComponent extends JGVTComponent {
         FEATURES.add(SVGConstants.SVG_ORG_W3C_SVG_FEATURE);
         FEATURES.add(SVGConstants.SVG_ORG_W3C_SVG_LANG_FEATURE);
         FEATURES.add(SVGConstants.SVG_ORG_W3C_SVG_STATIC_FEATURE);
-    }
-
-    private final static int SPLIT_THRESHOLD = 128;
-
-    /**
-     * Merges the given Rectangles.
-     */
-    protected List mergeRectangles(List rects,
-                                   int x1, int y1, int x2, int y2) {
-        if (rects.size() <= 1) {
-            return rects;
-        }
-        
-        int w = x2 - x1;
-        int h = y2 - y1;
-
-        if (w < SPLIT_THRESHOLD && h < SPLIT_THRESHOLD) {
-            // Merges all the rectangles
-            List result = new ArrayList();
-            Iterator it = rects.iterator();
-            Rectangle rect = (Rectangle)it.next();
-            while (it.hasNext()) {
-                Rectangle r = (Rectangle)it.next();
-                rect.add(r);
-            }
-            result.add(rect);
-            return result;
-        }
-
-        if (w < SPLIT_THRESHOLD) {
-            // Split horizontally
-            List h1 = new ArrayList();
-            List h2 = new ArrayList();
-            int dy = h / 2;
-            int av = y1 + dy;
-            Iterator it = rects.iterator();
-            while (it.hasNext()) {
-                Rectangle r = (Rectangle)it.next();
-                if (r.y < av) {
-                    if (r.y + r.height > av) {
-                        // The rectangle intersects the two regions
-                        h2.add(new Rectangle(r.x, av, r.width,
-                                             (r.height + r.y) - av));
-                        r = new Rectangle(r.x, r.y, r.width, av - r.y);
-                    }
-                    h1.add(r);
-                } else {
-                    h2.add(r);
-                }
-            }
-            h1 = mergeRectangles(h1, x1, y1, x2, av - 1);
-            h2 = mergeRectangles(h2, x1, av, x2, y2);
-            h1.addAll(h2);
-            return h1;
-        }
-
-        if (h < SPLIT_THRESHOLD) {
-            // Split vertically
-            List w1 = new ArrayList();
-            List w2 = new ArrayList();
-            int dx = w / 2;
-            int av = x1 + dx;
-            Iterator it = rects.iterator();
-            while (it.hasNext()) {
-                Rectangle r = (Rectangle)it.next();
-                if (r.x < av) {
-                    if (r.x + r.width > av) {
-                        // The rectangle intersects the two regions
-                        w2.add(new Rectangle(av, r.y,
-                                             (r.width + r.x) - av, r.height));
-                        r = new Rectangle(r.x, r.y, av - r.x, r.height);
-                    }
-                    w1.add(r);
-                } else {
-                    w2.add(r);
-                }
-            }
-            w1 = mergeRectangles(w1, x1, y1, av - 1, y2);
-            w2 = mergeRectangles(w2, av, y1, x2, y2);
-            w1.addAll(w2);
-            return w1;
-        }
-
-        // Split the region into four regions
-        List wh1 = new ArrayList();
-        List wh2 = new ArrayList();
-        List wh3 = new ArrayList();
-        List wh4 = new ArrayList();
-        int dx = w / 2;
-        int dy = h / 2;
-        int wav = x1 + dx;
-        int hav = y1 + dy;
-        Iterator it = rects.iterator();
-        while (it.hasNext()) {
-            Rectangle r = (Rectangle)it.next();
-            if (r.x < wav) {
-                if (r.y < hav) {
-                    boolean c1 = r.x + r.width > wav;
-                    boolean c2 = r.y + r.height > hav;
-                    if (c1 && c2) {
-                        // The rectangle intersects the four regions
-                        wh2.add(new Rectangle(wav, r.y, (r.width + r.x) - wav,
-                                              hav - r.y));
-                        wh3.add(new Rectangle(r.x, hav, wav - r.x,
-                                              (r.height + r.y) - hav));
-                        wh4.add(new Rectangle(wav, hav,
-                                              (r.width + r.x) - wav,
-                                              (r.height + r.y) - hav));
-                        r = new Rectangle(r.x, r.y, wav - r.x, hav - r.y);
-                    } else if (c1) {
-                        // The rectangle intersects two regions
-                        wh2.add(new Rectangle(wav, r.y, (r.width + r.x) - wav,
-                                              r.height));
-                        r = new Rectangle(r.x, r.y, wav - r.x, r.height);
-                    } else if (c2) {
-                        // The rectangle intersects two regions
-                        wh3.add(new Rectangle(r.x, hav, r.width,
-                                              (r.height + r.y) - hav));
-                        r = new Rectangle(r.x, r.y, r.width, hav - r.y);
-                    }
-                    wh1.add(r);
-                } else {
-                    if (r.x + r.width > wav) {
-                        // The rectangle intersects two regions
-                        wh4.add(new Rectangle(wav, r.y, (r.width + r.x) - wav,
-                                              r.height));
-                        r = new Rectangle(r.x, r.y, wav - r.x, r.height);
-                    }
-                    wh3.add(r);
-                }
-            } else {
-                if (r.y < hav) {
-                    if (r.y + r.height > hav) {
-                        // The rectangle intersects two regions
-                        wh4.add(new Rectangle(r.x, hav, r.width,
-                                              (r.height + r.y) - hav));
-                        r = new Rectangle(r.x, r.y, r.width, hav - r.y);
-                    }
-                    wh2.add(r);
-                } else {
-                    wh4.add(r);
-                }
-            }
-        }
-        wh1 = mergeRectangles(wh1, x1, y1, wav - 1, hav - 1);
-        wh2 = mergeRectangles(wh2, wav, y1, x2, y2);
-        wh3 = mergeRectangles(wh3, x1, hav, wav - 1, y2);
-        wh4 = mergeRectangles(wh4, wav, hav, x2, y2);
-        wh1.addAll(wh2);
-        wh1.addAll(wh3);
-        wh1.addAll(wh4);
-        return wh1;
     }
 }

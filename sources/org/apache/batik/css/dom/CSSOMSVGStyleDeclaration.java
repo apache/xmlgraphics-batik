@@ -87,12 +87,12 @@ public class CSSOMSVGStyleDeclaration extends CSSOMStyleDeclaration {
      */
     protected CSSValue createCSSValue(String name) {
         int idx = cssEngine.getPropertyIndex(name);
-        if (idx > SVGCSSEngine.WRITING_MODE_INDEX) {
-            if (cssEngine.getValueManagers()[idx] instanceof SVGColorManager) {
-                return new StyleDeclarationColorValue(name);
-            }
+        if (idx > SVGCSSEngine.FINAL_INDEX) {
             if (cssEngine.getValueManagers()[idx] instanceof SVGPaintManager) {
                 return new StyleDeclarationPaintValue(name);
+            }
+            if (cssEngine.getValueManagers()[idx] instanceof SVGColorManager) {
+                return new StyleDeclarationColorValue(name);
             }
         } else {
             switch (idx) {

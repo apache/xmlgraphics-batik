@@ -187,38 +187,39 @@ public abstract class SVGStylableElement
      */
     public CSSValue getPresentationAttribute(String name) {
         CSSValue result = (CSSValue)getLiveAttributeValue(null, name);
-        if (result == null) {
-            CSSEngine eng = ((SVGOMDocument)getOwnerDocument()).getCSSEngine();
-            int idx = eng.getPropertyIndex(name);
-            if (idx > SVGCSSEngine.WRITING_MODE_INDEX) {
-                if (eng.getValueManagers()[idx] instanceof SVGColorManager) {
-                    result = new PresentationAttributeColorValue(eng, name);
-                }
-                if (eng.getValueManagers()[idx] instanceof SVGPaintManager) {
-                    result = new PresentationAttributePaintValue(eng, name);
-                }
-            } else {
-                switch (idx) {
-                case -1:
-                    return null;
+        if (result != null)
+            return result;
 
-                case SVGCSSEngine.FILL_INDEX:
-                case SVGCSSEngine.STROKE_INDEX:
-                    result = new PresentationAttributePaintValue(eng, name);
-                    break;
+        CSSEngine eng = ((SVGOMDocument)getOwnerDocument()).getCSSEngine();
+        int idx = eng.getPropertyIndex(name);
+        if (idx == -1) 
+            return null;
 
-                case SVGCSSEngine.FLOOD_COLOR_INDEX:
-                case SVGCSSEngine.LIGHTING_COLOR_INDEX:
-                case SVGCSSEngine.STOP_COLOR_INDEX:
-                    result = new PresentationAttributeColorValue(eng, name);
-                    break;
-                    
-                default:
-                    result = new PresentationAttributeValue(eng, name);
-                }
+        if (idx > SVGCSSEngine.FINAL_INDEX) {
+            if (eng.getValueManagers()[idx] instanceof SVGPaintManager) {
+                result = new PresentationAttributePaintValue(eng, name);
             }
-            putLiveAttributeValue(null, name, (LiveAttributeValue)result);
+            if (eng.getValueManagers()[idx] instanceof SVGColorManager) {
+                result = new PresentationAttributeColorValue(eng, name);
+            }
+        } else {
+            switch (idx) {
+            case SVGCSSEngine.FILL_INDEX:
+            case SVGCSSEngine.STROKE_INDEX:
+                result = new PresentationAttributePaintValue(eng, name);
+                break;
+                
+            case SVGCSSEngine.FLOOD_COLOR_INDEX:
+            case SVGCSSEngine.LIGHTING_COLOR_INDEX:
+            case SVGCSSEngine.STOP_COLOR_INDEX:
+                result = new PresentationAttributeColorValue(eng, name);
+                break;
+                
+            default:
+                result = new PresentationAttributeValue(eng, name);
+            }
         }
+        putLiveAttributeValue(null, name, (LiveAttributeValue)result);
         return result;
     }
 
@@ -541,7 +542,8 @@ public abstract class SVGStylableElement
         extends CSSOMSVGStyleDeclaration
         implements LiveAttributeValue,
                    CSSOMSVGStyleDeclaration.ValueProvider,
-                   CSSOMSVGStyleDeclaration.ModificationHandler {
+                   CSSOMSVGStyleDeclaration.ModificationHandler, 
+                   CSSEngine.MainPropertyReciever {
         
         /**
          * The associated CSS object.
@@ -677,32 +679,30 @@ public abstract class SVGStylableElement
             }
         }
 
-        /**
-         * Called when a property was changed.
-         */
-        public void propertyChanged(String name, String value, String prio)
-            throws DOMException {
-            Value v = cssEngine.parsePropertyValue
-                (SVGStylableElement.this, name, value);
-
-            int i = 0;
+        public void setMainPoperty(String name, Value v, boolean important) {
             int idx = cssEngine.getPropertyIndex(name);
-            if (i == -1) {
-                i = cssEngine.getShorthandIndex(name);
-                if (i == -1) {
-                    return; // Unknown property
-                }
-                // TODO: Really need to set the short property properties.
-                return;
-            }
+            if (idx == -1) 
+                return;   // unknown property
+
+            int i=0;
             for (; i < declaration.size(); i++) {
                 if (idx == declaration.getIndex(i))
                     break;
             }
             if (i < declaration.size()) 
-                declaration.put(i, v, idx, prio.length() > 0);
+                declaration.put(i, v, idx, important);
             else
-                declaration.append(v, idx, prio.length() > 0);
+                declaration.append(v, idx, important);
+        }
+
+        /**
+         * Called when a property was changed.
+         */
+        public void propertyChanged(String name, String value, String prio)
+            throws DOMException {
+            boolean important = ((prio != null) && (prio.length() >0));
+            cssEngine.setMainProperties(SVGStylableElement.this,
+                                        this, name, value, important);
             mutate = true;
             setAttributeNS(null, SVG_STYLE_ATTRIBUTE,
                            declaration.toString(cssEngine));
@@ -710,3 +710,10 @@ public abstract class SVGStylableElement
         }
     }
 }
+
+
+
+
+
+
+

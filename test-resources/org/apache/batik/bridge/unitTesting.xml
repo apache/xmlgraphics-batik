@@ -184,10 +184,12 @@
             <property name="ExpectedErrorCode" class="java.lang.String"
                       value="css.uri.badTarget" />
         </test>
+    <!-- No longer generats exception - just user warning
         <test id="bridge/error/css-invalid">
             <property name="ExpectedExceptionClass" class="java.lang.String"
                       value="org.w3c.dom.DOMException" />
         </test>
+    -->
         <test id="bridge/error/ellipse-missing-rx">
             <property name="ExpectedExceptionClass" class="java.lang.String"
                       value="org.apache.batik.bridge.BridgeException" />

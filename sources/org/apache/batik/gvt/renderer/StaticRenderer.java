@@ -67,7 +67,7 @@ import java.awt.image.renderable.RenderContext;
 import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Collection;
 
 import org.apache.batik.ext.awt.image.GraphicsUtil;
 import org.apache.batik.ext.awt.image.PadMode;
@@ -76,6 +76,7 @@ import org.apache.batik.ext.awt.image.rendered.CachableRed;
 import org.apache.batik.ext.awt.image.rendered.PadRed;
 import org.apache.batik.ext.awt.image.rendered.TileCacheRed;
 import org.apache.batik.ext.awt.image.rendered.TranslateRed;
+import org.apache.batik.ext.awt.geom.RectListManager;
 import org.apache.batik.gvt.GraphicsNode;
 
 /**
@@ -373,9 +374,9 @@ public class StaticRenderer implements ImageRenderer {
      */
     public void repaint(Shape area) {
         if (area == null) return;
-        List l = new ArrayList(1);
-        l.add(area);
-        repaint(l);
+        RectListManager rlm = new RectListManager();
+        rlm.add(usr2dev.createTransformedShape(area).getBounds());
+        repaint(rlm);
     }
 
     /**
@@ -391,7 +392,7 @@ public class StaticRenderer implements ImageRenderer {
      * @param areas a List of regions to be repainted, in the current
      * user space coordinate system.  
      */
-    public void repaint(List areas) {
+    public void repaint(RectListManager areas) {
 
         if (areas == null)
             return;
@@ -459,7 +460,7 @@ public class StaticRenderer implements ImageRenderer {
     /**
      * Flush a list of rectangles of cached image data.
      */
-    public void flush(List areas) {
+    public void flush(Collection areas) {
         AffineTransform at = getTransform();
         Iterator i = areas.iterator();
         while (i.hasNext()) {

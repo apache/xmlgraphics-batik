@@ -54,6 +54,7 @@ import java.awt.Rectangle;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.ListIterator;
@@ -73,6 +74,8 @@ import java.util.NoSuchElementException;
 public class RectListManager implements Collection {
     Rectangle [] rects = null;
     int size = 0;
+
+    Rectangle bounds = null;
 
     /**
      * The comparator used to sort the elements of this List.
@@ -157,6 +160,29 @@ public class RectListManager implements Collection {
         this.rects = new Rectangle[capacity];
     }
 
+    public Rectangle getBounds() {
+        if (bounds != null ) 
+            return bounds;
+        if (size == 0) return null;
+        bounds = new Rectangle(rects[0]);
+        for (int i=1; i< size; i++) {
+            Rectangle r = rects[i];
+            if (r.x < bounds.x) {
+                bounds.width = bounds.x+bounds.width-r.x;
+                bounds.x = r.x;
+            }
+            if (r.y < bounds.y) {
+                bounds.height = bounds.y+bounds.height-r.y;
+                bounds.y = r.y;
+            }
+            if (r.x+r.width > bounds.x+bounds.width) 
+                bounds.width = r.x+r.width-bounds.x;
+            if (r.y+r.height > bounds.y+bounds.height) 
+                bounds.height = r.y+r.height-bounds.y;
+        }
+        return bounds;
+    }
+
     /**
      * Standard <tt>Object</tt> clone method.
      */
@@ -238,18 +264,47 @@ public class RectListManager implements Collection {
      * @param rect The rectangle to add
      */
     public void add(Rectangle rect) {
+        add(rect, 0, size-1);
+    }
+
+    /**
+     * Ensures that this collection contains the specified element
+     * l is the lower bound index for insertion r is upper
+     * bound index for insertion.
+     * @param rect The rectangle to add
+     * @param l the lowest possible index for a rect with
+     *          greater 'x' coord.
+     * @param r the highest possible index for a rect with
+     *          greater 'x' coord.
+     */
+    protected void add(Rectangle rect, int l, int r) {
         ensureCapacity(size+1);
-        int l=0, r=size-1, idx=0;
+        int idx=l;
         while (l <= r) {
             idx = (l+r)/2;
+            while ((rects[idx] == null) && (idx <r)) idx++;
+            if (rects[idx] == null) {
+                // All 'null' from center to r so skip them
+                r = (l+r)/2;
+                idx = (l+r)/2;
+                if (l>r) 
+                    idx=l;
+                while ((rects[idx] == null) && (idx > l)) idx--;
+                if (rects[idx] == null) {
+                    rects[idx] = rect;
+                    return;
+                }
+            }
             if (rect.x == rects[idx].x) break;
             if (rect.x <  rects[idx].x) {
                 if (idx == 0) break;
-                if (rect.x >= rects[idx-1].x) break;
+                if ((rects[idx-1] != null) && 
+                    (rect.x >= rects[idx-1].x)) break;
                 r = idx-1;
             } else {
                 if (idx == size-1)  {idx++; break; }
-                if (rect.x <= rects[idx+1].x) { idx++; break;}
+                if ((rects[idx+1] != null) && 
+                    (rect.x <= rects[idx+1].x)) { idx++; break;}
                 l = idx+1;
             }
         }
@@ -566,16 +621,23 @@ public class RectListManager implements Collection {
         Rectangle r, cr, mr;
         int cost1, cost2, cost3;
         mr = new Rectangle();
-        for (int j, i=1; i<size; i++) {
+        Rectangle []splits = new Rectangle[4];
+        for (int j, i=0; i<size; i++) {
             r = rects[i];
             if (r == null) continue;
             cost1 = (overhead                 + 
                      (r.height*lineOverhead) +
                      (r.height*r.width));
             do {
-                for (j=0; j<i; j++) {
+                int maxX = r.x+r.width+overhead/r.height;
+                for (j=i+1; j<size; j++) {
                     cr = rects[j];
                     if ((cr == null) || (cr == r)) continue;
+                    if (cr.x >= maxX) {
+                        // No more merges can happen.
+                        j = size;
+                        break;
+                    }
                     cost2 = (overhead                 + 
                              (cr.height*lineOverhead) +
                              (cr.height*cr.width));
@@ -585,35 +647,79 @@ public class RectListManager implements Collection {
                              (mr.height*lineOverhead) +
                              (mr.height*mr.width));
                     if (cost3 <= cost1+cost2) {
-                        rects[j] = mr;
-                        rects[i] = null;
-                        i     = j; j=-1;
-                        r     = mr;
+                        r = rects[i] = mr;
+                        rects[j] = null;
                         cost1 = cost3;
+                        j=-1;
                         break;
                     }
+
+                    if (!r.intersects(cr)) continue;
+
+                    splitRect(cr, r, splits);
+                    int splitCost=0;
+                    int l=0;
+                    for (int k=0; k<4; k++) {
+                        if (splits[k] != null) {
+                            Rectangle sr = splits[k];
+                            // Collapse null entries in first three
+                            // (That share common 'x').
+                            if (k<3) splits[l++] = sr;
+                            splitCost += (overhead                 + 
+                                          (sr.height*lineOverhead) +
+                                          (sr.height*sr.width));
+                        }
+                    }
+                    if (splitCost >= cost2) continue;
+
+                    // Insert the splits.
+                    if (l == 0) {
+                        // only third split may be left (no common 'x').
+                        rects[j] = null;
+                        if (splits[3] != null)
+                            add(splits[3], j, size-1);
+                        continue;
+                    }
+
+                    rects[j] = splits[0];
+                    if (l > 1)
+                        insertRects(splits, 1, j+1, l-1);
+                    if (splits[3] != null)
+                        add(splits[3], j, size-1);
                 }
 
                 // if we merged it with another rect then
                 // we need to check all the rects up to i again,
                 // against the merged rect.
-            } while (i != j);
+            } while (j != size);
         }
 
         // Now we will go through collapsing the nulled entries.
         int j=0, i=0;
+        float area=0;
         while (i<size) {
-            if (rects[i] != null) 
-                rects[j++] = rects[i];
+            if (rects[i] != null) {
+                r = rects[i];
+                rects[j++] = r;
+                area += overhead + (r.height*lineOverhead) +
+                    (r.height*r.width);
+            }
             i++;
         }
         size = j;
+        r = getBounds();
+        if (overhead + (r.height*lineOverhead) + (r.height*r.width) < area) {
+            rects[0] = r;
+            size=1;
+        }
     }
 
     public void subtract(RectListManager rlm, int overhead, int lineOverhead) {
         Rectangle r, sr;
         int cost;
         int jMin=0;
+        Rectangle [] splits = new Rectangle[4];
+
         for(int i=0; i<size; i++) {
             r = rects[i]; // Canidate rect...
             cost = (overhead                + 
@@ -645,55 +751,7 @@ public class RectListManager implements Collection {
                 // Now we know they intersect one another lets
                 // figure out how...
 
-                // We split the canidate rectrect into four parts.  In
-                // many cases one or more of these will be empty.
-                //
-                //    +-------------------------------------+ ry0
-                //    |                                     |
-                //    |                                     |
-                //    |          Split 0                    |
-                //    |                                     |
-                //    |                                     |
-                // ------------+-----------------+--------------- sry0
-                //    |        |                 |          |
-                //    | Split2 |   subtracted    | Split 3  |
-                //    |        |   rect          |          |
-                //    |        |                 |          |
-                // ------------+-----------------+--------------- sry1
-                //    |       srx0              srx1        |
-                //    |                                     |
-                //    |          Split 1                    |
-                //    |                                     |
-                //    +-------------------------------------+ ry1
-                //   rx0                                   rx1
-
-                int rx0 = r.x;
-                int rx1 = rx0+r.width-1;
-                int ry0 = r.y;
-                int ry1 = ry0+r.height-1;
-
-                int srx0 = sr.x;
-                int srx1 = srx0+sr.width-1;
-                int sry0 = sr.y;
-                int sry1 = sry0+sr.height-1;
-
-                Rectangle [] splits = new Rectangle[4];
-
-                if ((ry0 < sry0) && (ry1 >= sry0)) {
-                    splits[0] = new Rectangle(rx0, ry0, r.width, sry0-ry0);
-                    ry0 = sry0;
-                }
-
-                if ((ry0 <= sry1) && (ry1 > sry1)) {
-                    splits[1] = new Rectangle(rx0, sry1+1, r.width, ry1-sry1);
-                    ry1 = sry1;
-                }
-                
-                if ((rx0 < srx0) && (rx1 >= srx0))
-                    splits[2] = new Rectangle(rx0, ry0, srx0-rx0, ry1-ry0+1);
-                
-                if ((rx0 <= srx1) && (rx1 > srx1))
-                    splits[3]= new Rectangle(srx1+1, ry0, rx1-srx1, ry1-ry0+1);
+                splitRect(r, sr, splits);
 
                 int splitCost=0;
                 Rectangle tmpR;
@@ -715,7 +773,7 @@ public class RectListManager implements Collection {
                     continue;
                 
                 // Collapse null entries in first three elements
-                // split 0, 1, 2 (entries that share a common 'x'.
+                // split 0, 1, 2 (entries that share a common 'x').
                 int l = 0;
                 for (int k=0; k<3; k++) {
                     if (splits[k] != null)
@@ -729,13 +787,13 @@ public class RectListManager implements Collection {
                     // Insert the third split (if any) at the
                     // proper place in rects list.
                     if (splits[3] != null)
-                        add(splits[3]);
+                        add(splits[3], i, size-1);
                     break;
                 }
 
                 // Otherwise replace the canidate with the top of
                 // the split, since it only shrunk it didn't grow,
-                // we now that the previous subtract rects don't
+                // we know that the previous subtract rects don't
                 // intersect it.
                 r        = splits[0]; 
                 rects[i] = r;
@@ -752,7 +810,7 @@ public class RectListManager implements Collection {
                 // Insert the third split (if any) at the
                 // proper place in rects list.
                 if (splits[3] != null)
-                    add(splits[3]);
+                    add(splits[3], i+l, size-1);
             }
         }
 
@@ -766,6 +824,67 @@ public class RectListManager implements Collection {
             i++;
         }
         size = j;
+    }
+
+    protected void splitRect(Rectangle r, Rectangle sr,
+                             Rectangle []splits) {
+        // We split the canidate rectrect into four parts.  In
+        // many cases one or more of these will be empty.
+        //
+        //    +-------------------------------------+ ry0
+        //    |                                     |
+        //    |                                     |
+        //    |          Split 0                    |
+        //    |                                     |
+        //    |                                     |
+        // ------------+-----------------+--------------- sry0
+        //    |        |                 |          |
+        //    | Split2 |   subtracted    | Split 3  |
+        //    |        |   rect          |          |
+        //    |        |                 |          |
+        // ------------+-----------------+--------------- sry1
+        //    |       srx0              srx1        |
+        //    |                                     |
+        //    |          Split 1                    |
+        //    |                                     |
+        //    +-------------------------------------+ ry1
+        //   rx0                                   rx1
+
+        int rx0 = r.x;
+        int rx1 = rx0+r.width-1;
+        int ry0 = r.y;
+        int ry1 = ry0+r.height-1;
+
+        int srx0 = sr.x;
+        int srx1 = srx0+sr.width-1;
+        int sry0 = sr.y;
+        int sry1 = sry0+sr.height-1;
+
+        if ((ry0 < sry0) && (ry1 >= sry0)) {
+            splits[0] = new Rectangle(rx0, ry0, r.width, sry0-ry0);
+            ry0 = sry0;
+        } else {
+            splits[0] = null;
+        }
+
+        if ((ry0 <= sry1) && (ry1 > sry1)) {
+            splits[1] = new Rectangle(rx0, sry1+1, r.width, ry1-sry1);
+            ry1 = sry1;
+        } else {
+            splits[1] = null;
+        }
+                
+        if ((rx0 < srx0) && (rx1 >= srx0)) {
+            splits[2] = new Rectangle(rx0, ry0, srx0-rx0, ry1-ry0+1);
+        } else {
+            splits[2] = null;
+        }
+                
+        if ((rx0 <= srx1) && (rx1 > srx1)) {
+            splits[3]= new Rectangle(srx1+1, ry0, rx1-srx1, ry1-ry0+1);
+        } else {
+            splits[3] = null;
+        }
     }
 
     protected void insertRects(Rectangle[] rects, int srcPos, 

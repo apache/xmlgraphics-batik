@@ -79,6 +79,7 @@ var userspace = document.getElementById("userspace");
 var start = document.getElementById("start");
 var mid = document.getElementById("mid");
 var end = document.getElementById("end");
+var all = document.getElementById("all");
 
 function changeGeometryEvt(evt) {
   changeGeometry(evt.target);
@@ -100,6 +101,10 @@ function changeMarkerEndEvt(evt) { changeMarkerEnd(evt.target); }
 function changeMarkerEnd(tgt) { 
   changeProperty(tgt, "marker-end", "url(#markerRed)");
 }
+function changeMarkerEvt(evt) { changeMarker(evt.target); }
+function changeMarker(tgt) { 
+  changeProperty(tgt, "marker", "url(#markerRed)");
+}
 function changeProperty(tgt, prop, val) {
       tgt.style.setProperty(prop, val, "");
 }
@@ -110,6 +115,7 @@ function run() {
   changeMarkerStart(start);
   changeMarkerMid(mid);
   changeMarkerEnd(end);
+  changeMarker(all);
 }
 
 function regardStart() {
@@ -137,57 +143,69 @@ function regardStart() {
   <g id="test-content" transform="translate(0, -20)">
 
     <g id="board" style="fill:none; stroke:black">
-      <rect x="40" y="80" width="75" height="20" style="fill:#eee"/>
-      <rect x="115" y="80" width="75" height="20" style="fill:#eee"/>
-      <rect x="190" y="80" width="75" height="20" style="fill:#eee"/>
-      <rect x="265" y="80" width="75" height="20" style="fill:#eee"/>
-      <rect x="340" y="80" width="75" height="20" style="fill:#eee"/>
+      <rect x="40"  y="80"  width="65" height="20" style="fill:#eee"/>
+      <rect x="105" y="80" width="65" height="20" style="fill:#eee"/>
+      <rect x="170" y="80" width="65" height="20" style="fill:#eee"/>
+      <rect x="235" y="80" width="65" height="20" style="fill:#eee"/>
+      <rect x="300" y="80" width="65" height="20" style="fill:#eee"/>
+      <rect x="365" y="80" width="65" height="20" style="fill:#eee"/>
 
-      <rect x="20" y="100" width="20" height="380" style="fill:#eee"/>
+      <rect x="20"  y="100" width="20" height="380" style="fill:#eee"/>
 
-      <rect x="40" y="100" width="75" height="380" />
-      <rect x="115" y="100" width="75" height="380" />
-      <rect x="190" y="100" width="75" height="380" />
-      <rect x="265" y="100" width="75" height="380" />
-      <rect x="340" y="100" width="75" height="380" />
-
+      <rect x="40"  y="100" width="65" height="380" />
+      <rect x="105" y="100" width="65" height="380" />
+      <rect x="170" y="100" width="65" height="380" />
+      <rect x="235" y="100" width="65" height="380" />
+      <rect x="300" y="100" width="65" height="380" />
+      <rect x="365" y="100" width="65" height="380" />
 
       <g style="fill:black; stroke:none; text-anchor:middle">
-        <text x="77.5" y="94">strokeWidth</text>
-        <text x="154.5" y="94">userspace<desc>userSpaceOnUse</desc></text>
-        <text x="229.5" y="94">start</text>
-        <text x="304.5" y="94">mid</text>
-        <text x="379.5" y="94">end</text>
+        <text x="72.5" y="94">strokeWidth</text>
+        <text x="137.5" y="94">userspace<desc>userSpaceOnUse</desc></text>
+        <text x="202.5" y="94">start</text>
+        <text x="267.5" y="94">mid</text>
+        <text x="332.5" y="94">end</text>
+        <text x="397.5" y="94">marker</text>
 
         <text x="0" y="0" transform="translate(34 290)rotate(-90)">&lt;marker></text>
       </g>
     </g>
 
     <polyline id="stroke" 
-      transform="translate(-50, 0)" onclick="changeGeometryEvt(evt)" 
-      points="130 150 110 170 150 190 110 210 150 230 110 250 150 270 110 290 150 310 110 330 150 350 130 370" 
-      style="stroke:black; stroke-width:4; fill:none; marker:url(#markerStrokeWidth)" />
+      transform="translate(-55, 0)" onclick="changeGeometryEvt(evt)" 
+      points="130 150 130 170 130 190 130 210 130 230 130 250 130 270 130 290 
+              130 310 130 330 130 350 130 370" 
+      style="stroke:black; stroke-width:4; fill:none; 
+             marker:url(#markerStrokeWidth)" />
 
 
     <polyline id="userspace" 
-      transform="translate(25 0)" onclick="changeGeometryEvt(evt)" 
-      points="130 150 110 170 150 190 110 210 150 230 110 250 150 270 110 290 150 310 110 330 150 350 130 370" 
-      style="stroke:black; stroke-width:4; fill:none; marker:url(#markerUserSpaceOnUse)" />
+      transform="translate(10 0)" onclick="changeGeometryEvt(evt)" 
+      points="130 150 130 170 130 190 130 210 130 230 130 250 130 270 130 290 
+              130 310 130 330 130 350 130 370" 
+      style="stroke:black; stroke-width:4; fill:none; 
+             marker:url(#markerUserSpaceOnUse)" />
 
     <polyline id="start"
-      transform="translate(100 0)" onclick="changeMarkerStartEvt(evt)" 
+      transform="translate(75 0)" onclick="changeMarkerStartEvt(evt)" 
       points="130 150 110 170 150 190 110 210 150 230 110 250 150 270 110 290 150 310 110 330 150 350 130 370" 
       style="stroke:black; stroke-width:4; fill:none; marker:url(#markerUserSpaceOnUse)" />
 
     <polyline id="mid"
-      transform="translate(175 0)" onclick="changeMarkerMidEvt(evt)" 
+      transform="translate(140 0)" onclick="changeMarkerMidEvt(evt)" 
       points="130 150 110 170 150 190 110 210 150 230 110 250 150 270 110 290 150 310 110 330 150 350 130 370" 
       style="stroke:black; stroke-width:4; fill:none; marker:url(#markerUserSpaceOnUse)" />
 
     <polyline id="end"
-      transform="translate(250 0)" onclick="changeMarkerEndEvt(evt)" 
+      transform="translate(205 0)" onclick="changeMarkerEndEvt(evt)" 
       points="130 150 110 170 150 190 110 210 150 230 110 250 150 270 110 290 150 310 110 330 150 350 130 370" 
       style="stroke:black; stroke-width:4; fill:none; marker:url(#markerUserSpaceOnUse)" />
+
+    <polyline id="all"
+      transform="translate(270 0)" onclick="changeMarkerEvt(evt)" 
+      points="130 150 110 170 150 190 110 210 150 230 110 250 150 270 110 290 150 310 110 330 150 350 130 370" 
+      style="stroke:black; stroke-width:4; fill:none; 
+             marker:url(#markerUserSpaceOnUse)" />
   </g>
 
   <g id="run" transform="translate(195, 468)" cursor="pointer" onclick="run()">

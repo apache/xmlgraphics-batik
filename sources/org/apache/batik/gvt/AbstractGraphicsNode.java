@@ -218,7 +218,6 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
      */
     public void setTransform(AffineTransform newTransform) {
         fireGraphicsNodeChangeStarted();
-        invalidateGeometryCache();
         this.transform = newTransform;
         if(transform.getDeterminant() != 0){
             try{
@@ -227,12 +226,13 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
                 // Should never happen.
                 throw new Error();
             }
-        }
-        else{
+        } else {
             // The transform is not invertible. Use the same
             // transform.
             inverseTransform = transform;
         }
+        if (parent != null)
+            parent.invalidateGeometryCache();
         fireGraphicsNodeChangeCompleted();
     }
 

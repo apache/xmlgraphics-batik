@@ -923,6 +923,60 @@ public abstract class CSSEngine {
     }
 
     /**
+     * Interface for people interesting in having 'primary' properties
+     * set.  Shorthand properties will be expanded "automatically".
+     */
+    public interface MainPropertyReciever {
+        /**
+         * Called with a non-shorthand property name and it's value.
+         */
+        public void setMainPoperty(String name, Value v, boolean important);
+    };
+
+    public void setMainProperties
+        (CSSStylableElement elt, final MainPropertyReciever dst,
+         String pname, String value, boolean important){
+        try {
+            element = elt;
+            LexicalUnit lu = parser.parsePropertyValue(value);
+            ShorthandManager.PropertyHandler ph =
+                new ShorthandManager.PropertyHandler() {
+                    public void property(String pname, LexicalUnit lu,
+                                         boolean important) {
+                        int idx = getPropertyIndex(pname);
+                        if (idx != -1) {
+                            ValueManager vm = valueManagers[idx];
+                            Value v = vm.createValue(lu, CSSEngine.this);
+                            dst.setMainPoperty(pname, v, important);
+                            return;
+                        }
+                        idx = getShorthandIndex(pname);
+                        if (idx == -1)
+                            return; // Unknown property...
+                        // Shorthand value
+                        shorthandManagers[idx].setValues
+                            (CSSEngine.this, this, lu, important);
+                    }
+                };
+            ph.property(pname, lu, important);
+        } catch (Exception e) {
+            String m = e.getMessage();
+            if (m == null) m = "";
+            String u = ((documentURI == null)?"<unknown>":
+                        documentURI.toString());
+            String s = Messages.formatMessage
+                ("property.syntax.error.at",
+                 new Object[] { u, pname, value, m});
+            DOMException de = new DOMException(DOMException.SYNTAX_ERR, s);
+            if (userAgent == null) throw de;
+            userAgent.displayError(de);
+        } finally {
+            element = null;
+            cssBaseURI = null;
+        }
+    }
+
+    /**
      * Parses and creates a property value from elt.
      * @param elt  The element property is from.
      * @param prop The property name.
