@@ -103,12 +103,6 @@ public class SVGMaskElementBridge implements MaskBridge, SVGConstants {
                 continue;
             }
             Element child = (Element)node;
-            String namespaceURI = child.getNamespaceURI();
-            if (namespaceURI == null ||
-                    !namespaceURI.equals(SVG_NAMESPACE_URI)) {
-                continue; // skip element in the wrong namespace
-            }
-
             GraphicsNode gn = builder.build(bridgeContext, child) ;
             if(gn == null) {
                 throw new IllegalAttributeValueException(

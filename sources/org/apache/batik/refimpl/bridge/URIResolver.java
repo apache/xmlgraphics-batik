@@ -82,8 +82,8 @@ public class URIResolver {
             return document;
         }
         if (uri.startsWith(documentURI) &&
-            uri.length() > documentURI.length() + 1 &&
-            uri.charAt(documentURI.length()) == '#') {
+                uri.length() > documentURI.length() + 1 &&
+                uri.charAt(documentURI.length()) == '#') {
             uri = uri.substring(documentURI.length());
         }
         if (uri.startsWith("#")) {

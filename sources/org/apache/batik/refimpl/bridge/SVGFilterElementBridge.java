@@ -141,11 +141,6 @@ public class SVGFilterElementBridge implements FilterBridge, SVGConstants {
                 continue; // skip node that is not an Element
             }
             Element elt = (Element)child;
-            String namespaceURI = elt.getNamespaceURI();
-            if (namespaceURI == null ||
-                    !namespaceURI.equals(SVG_NAMESPACE_URI)) {
-                continue; // skip element in the wrong namespace
-            }
             Bridge bridge = bridgeContext.getBridge(elt);
             if (bridge == null || !(bridge instanceof FilterBridge)) {
                 throw new IllegalAttributeValueException(

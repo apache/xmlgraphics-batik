@@ -8,8 +8,6 @@
 
 package org.apache.batik.refimpl.bridge;
 
-import java.util.Map;
-
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -17,44 +15,39 @@ import java.awt.Composite;
 import java.awt.Paint;
 import java.awt.Shape;
 import java.awt.Stroke;
-
 import java.awt.geom.Rectangle2D;
+import java.util.Map;
 
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.ClipBridge;
 import org.apache.batik.bridge.FilterBridge;
+import org.apache.batik.bridge.IllegalAttributeValueException;
 import org.apache.batik.bridge.MaskBridge;
 import org.apache.batik.bridge.PaintBridge;
-
 import org.apache.batik.dom.svg.SVGOMDocument;
-
 import org.apache.batik.gvt.CompositeShapePainter;
 import org.apache.batik.gvt.FillShapePainter;
 import org.apache.batik.gvt.GVTFactory;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.ShapePainter;
 import org.apache.batik.gvt.StrokeShapePainter;
-
+import org.apache.batik.gvt.filter.Clip;
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
-import org.apache.batik.gvt.filter.Clip;
 import org.apache.batik.gvt.filter.Mask;
-
 import org.apache.batik.refimpl.bridge.resources.Messages;
-
+import org.apache.batik.refimpl.gvt.filter.ConcreteFloodRable;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.UnitProcessor;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
 import org.w3c.dom.css.CSSPrimitiveValue;
 import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.CSSValue;
 import org.w3c.dom.css.CSSValueList;
 import org.w3c.dom.css.RGBColor;
 import org.w3c.dom.css.ViewCSS;
-
 import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.svg.SVGElement;
 
@@ -132,8 +125,12 @@ public class CSSUtilities implements SVGConstants {
     }
 
      /**
-      * Returns the <tt>Shape</tt> referenced by the input
-      * element's <tt>clip</tt> attribute.
+      * Returns the <tt>Shape</tt> referenced by the input element's
+      * <tt>clip-path</tt> attribute.
+      *
+      * @param clipedElement the element with the clip-path CSS attribute
+      * @param gn the graphics node that represents the clipedElement
+      * @param ctx the context to use
       */
     public static Clip convertClipPath(Element clipedElement,
                                        GraphicsNode gn,
@@ -141,128 +138,100 @@ public class CSSUtilities implements SVGConstants {
          CSSStyleDeclaration decl
              = ctx.getViewCSS().getComputedStyle(clipedElement, null);
 
-         //
-         // Build Shape based on 'clip-path' attr.
-         //
-         CSSPrimitiveValue clipValue;
-         clipValue = (CSSPrimitiveValue)decl.getPropertyCSSValue(ATTR_CLIP_PATH);
+         CSSPrimitiveValue clipValue =
+             (CSSPrimitiveValue)decl.getPropertyCSSValue(ATTR_CLIP_PATH);
 
-         String uriString = null;
          switch(clipValue.getPrimitiveType()){
          case CSSPrimitiveValue.CSS_IDENT:
-             // NONE
-             break;
+             return null; // 'clip-path:none'
 
          case CSSPrimitiveValue.CSS_URI:
-             uriString = clipValue.getStringValue();
-             break;
+             String uriString = clipValue.getStringValue();
+             URIResolver ur =
+                 new URIResolver((SVGDocument)clipedElement.getOwnerDocument(),
+                                 ctx.getDocumentLoader());
 
+             Element clipPathElement = null;
+             try {
+                 clipPathElement = ur.getElement(uriString);
+             } catch (Exception ex) {
+                 throw new IllegalAttributeValueException(
+                     Messages.formatMessage("bad.uri",
+                                            new Object[] {uriString}));
+             }
+             // Now use the bridge to create the Clip
+             ClipBridge clipBridge = (ClipBridge)ctx.getBridge(clipPathElement);
+             if (clipBridge == null) {
+                 throw new Error(); // Should not happen
+             }
+             SVGOMDocument doc =
+                 (SVGOMDocument)clipPathElement.getOwnerDocument();
+             ViewCSS v = ctx.getViewCSS();
+             ctx.setViewCSS((ViewCSS)doc.getDefaultView());
+             Clip clip = clipBridge.createClip(ctx,
+                                               gn,
+                                               clipPathElement,
+                                               clipedElement);
+             ctx.setViewCSS(v);
+             return clip;
          default:
-             throw new Error("clipValue's primitive type is: " +
-                             clipValue.getPrimitiveType());
+             throw new Error(); // can't be reached
          }
-
-         if (uriString == null) {
-             return null;
-         }
-
-         URIResolver ur;
-         ur = new URIResolver((SVGDocument)clipedElement.getOwnerDocument(),
-                              ctx.getDocumentLoader());
-
-         Element clipPathElement = null;
-         try {
-             clipPathElement = ur.getElement(uriString);
-         } catch (Exception ex) {
-             ex.printStackTrace();
-         }
-
-         // Cannot access referenced mask
-         if(clipPathElement == null){
-             System.out.println("Could not find : "+ uriString +" in document");
-             return null;
-         }
-
-         ClipBridge clipBridge = (ClipBridge)ctx.getBridge(clipPathElement);
-
-         // No bridge understands the mask element...
-         if(clipBridge == null){
-             return null;
-         }
-
-         SVGOMDocument doc = (SVGOMDocument)clipPathElement.getOwnerDocument();
-         ViewCSS v = ctx.getViewCSS();
-         ctx.setViewCSS((ViewCSS)doc.getDefaultView());
-         Clip result = clipBridge.createClip(ctx, gn, clipPathElement,
-                                             clipedElement);
-         ctx.setViewCSS(v);
-         return result;
     }
 
      /**
-      * Returns the <tt>Mask</tt> referenced by the input
-      * element's <tt>mask</tt> attribute.
+      * Returns the <tt>Mask</tt> referenced by the input element's
+      * <tt>mask</tt> attribute.
+      *
+      * @param maskedElement the element with the mask CSS attribute
+      * @param gn the graphics node that represents the maskedElement
+      * @param ctx the context to use
       */
-     public static Mask convertMask(Element       maskedElement,
+     public static Mask convertMask(Element maskedElement,
                                     GraphicsNode  gn,
                                     BridgeContext ctx) {
          CSSStyleDeclaration decl
              = ctx.getViewCSS().getComputedStyle(maskedElement, null);
 
-         //
-         // Build Mask based on 'mask' attr.
-         //
          CSSPrimitiveValue maskValue
              = (CSSPrimitiveValue)decl.getPropertyCSSValue(ATTR_MASK);
-         String uriString = null;
 
          switch(maskValue.getPrimitiveType()){
          case CSSPrimitiveValue.CSS_IDENT:
-             // NONE
-             break;
+             return null; // 'mask:none'
+
          case CSSPrimitiveValue.CSS_URI:
-             uriString = maskValue.getStringValue();
-             break;
+             String uriString = maskValue.getStringValue();
+             URIResolver ur =
+                 new URIResolver((SVGDocument)maskedElement.getOwnerDocument(),
+                                 ctx.getDocumentLoader());
+
+             Element maskElement = null;
+             try {
+                 maskElement = ur.getElement(uriString);
+             } catch (Exception ex) {
+                 throw new IllegalAttributeValueException(
+                     Messages.formatMessage("bad.uri",
+                                            new Object[] {uriString}));
+             }
+             // Now use the bridge to create the Mask
+             MaskBridge maskBridge = (MaskBridge)ctx.getBridge(maskElement);
+             if (maskBridge == null) {
+                 throw new Error(); // Should not happen
+             }
+             SVGOMDocument doc = (SVGOMDocument)maskElement.getOwnerDocument();
+             ViewCSS v = ctx.getViewCSS();
+             ctx.setViewCSS((ViewCSS)doc.getDefaultView());
+             Mask mask =  maskBridge.createMask(gn,
+                                                ctx,
+                                                maskElement,
+                                                maskedElement);
+             ctx.setViewCSS(v);
+             return mask;
          default:
-             throw new Error("maskValue's primitive type is: " +
-                             maskValue.getPrimitiveType());
+             throw new Error(); // can't be reached
          }
 
-         if (uriString == null) {
-             return null;
-         }
-
-         URIResolver ur;
-         ur = new URIResolver((SVGDocument)maskedElement.getOwnerDocument(),
-                              ctx.getDocumentLoader());
-
-         Element maskElement = null;
-         try {
-             maskElement = ur.getElement(uriString);
-         } catch (Exception ex) {
-             ex.printStackTrace();
-         }
-
-         // Cannot access referenced mask
-         if(maskElement == null){
-             return null;
-         }
-
-         MaskBridge maskBridge = (MaskBridge)ctx.getBridge(maskElement);
-
-         // No bridge understands the mask element...
-         if(maskBridge == null){
-             return null;
-         }
-
-         SVGOMDocument doc = (SVGOMDocument)maskElement.getOwnerDocument();
-         ViewCSS v = ctx.getViewCSS();
-         ctx.setViewCSS((ViewCSS)doc.getDefaultView());
-         Mask result =  maskBridge.createMask(gn, ctx,
-                                              maskElement,
-                                              maskedElement);
-         ctx.setViewCSS(v);
-         return result;
      }
 
     /**
@@ -314,12 +283,8 @@ public class CSSUtilities implements SVGConstants {
                                              CSSStyleDeclaration decl,
                                              UnitProcessor.Context uctx) {
 
-        Stroke stroke = convertStrokeToBasicStroke(svgElement,
-                                                   ctx,
-                                                   decl,
-                                                   uctx);
+        Stroke stroke = convertStrokeToBasicStroke(svgElement, ctx, decl, uctx);
         Paint paint = convertStrokeToPaint(svgElement, node, ctx, decl, uctx);
-
         StrokeShapePainter painter =
             ctx.getGVTFactory().createStrokeShapePainter();
         painter.setStroke(stroke);
@@ -336,44 +301,40 @@ public class CSSUtilities implements SVGConstants {
                                              BridgeContext ctx,
                                              CSSStyleDeclaration decl,
                                              UnitProcessor.Context uctx) {
-        // resolve the paint of the StrokeShapePainter
-        CSSPrimitiveValue v;
-        v = (CSSPrimitiveValue)decl.getPropertyCSSValue(CSS_STROKE_PROPERTY);
+        CSSPrimitiveValue v =
+            (CSSPrimitiveValue)decl.getPropertyCSSValue(CSS_STROKE_PROPERTY);
 
         switch(v.getPrimitiveType()) {
         case CSSPrimitiveValue.CSS_IDENT:
-            return null; // stroke:'none'
+            return null; // 'stroke:none'
 
         case CSSPrimitiveValue.CSS_RGBCOLOR:
             CSSPrimitiveValue vv = (CSSPrimitiveValue)decl.getPropertyCSSValue
                 (CSS_STROKE_OPACITY_PROPERTY);
             float opacity = convertOpacity(vv);
-            Color c = convertColor(v.getRGBColorValue(), opacity);
-            return c;
-
+            return convertColor(v.getRGBColorValue(), opacity);
         case CSSPrimitiveValue.CSS_URI:
-            Paint uriPaint = convertURIStrokeToPaint(element, node, ctx, decl,
-                                                     uctx, v.getStringValue());
-            return uriPaint;
+            return convertURIToPaint(element, node, ctx, decl,
+                                     uctx, v.getStringValue());
+         default:
+             throw new Error(); // can't be reached
         }
-
-        return null;
     }
 
     /**
      * Returns a Stoke object that corresponds to the various
      * stroke attributes in the input element
      */
-    public static BasicStroke convertStrokeToBasicStroke
-        (SVGElement svgElement,
-         BridgeContext ctx,
-         CSSStyleDeclaration decl,
-         UnitProcessor.Context uctx) {
+    public static
+        BasicStroke convertStrokeToBasicStroke(SVGElement svgElement,
+                                               BridgeContext ctx,
+                                               CSSStyleDeclaration decl,
+                                               UnitProcessor.Context uctx) {
         GVTFactory f = ctx.getGVTFactory();
 
         // resolve the java.awt.Stroke of the StrokeShapePainter
-        CSSPrimitiveValue v;
-        v = (CSSPrimitiveValue)decl.getPropertyCSSValue(CSS_STROKE_WIDTH_PROPERTY);
+        CSSPrimitiveValue v =
+         (CSSPrimitiveValue)decl.getPropertyCSSValue(CSS_STROKE_WIDTH_PROPERTY);
         short type = v.getPrimitiveType();
         // 'stroke-width'
         float width
@@ -494,91 +455,35 @@ public class CSSUtilities implements SVGConstants {
     /**
      * Converts the element referenced by uri into a Paint object
      */
-    public static Paint convertURIFillToPaint(SVGElement svgElement,
-                                              GraphicsNode node,
-                                              BridgeContext ctx,
-                                              CSSStyleDeclaration decl,
-                                              UnitProcessor.Context uctx,
-                                              String fillUri){
-        //
-        // First, get a PaintBridge for the referenced value
-        //
-        URIResolver ur;
-        ur = new URIResolver((SVGDocument)svgElement.getOwnerDocument(),
-                             ctx.getDocumentLoader());
+    public static Paint convertURIToPaint(SVGElement svgElement,
+                                          GraphicsNode node,
+                                          BridgeContext ctx,
+                                          CSSStyleDeclaration decl,
+                                          UnitProcessor.Context uctx,
+                                          String strokeUri){
 
-        Element paintElement = null;
-        try {
-            paintElement = ur.getElement(fillUri);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-
-        Paint paint = null;
-        if (paintElement != null) {
-            PaintBridge paintBridge = (PaintBridge)ctx.getBridge(paintElement);
-
-            //
-            // Now, use bridge to convert paint
-            //
-            if(paintBridge != null){
-                SVGOMDocument doc =
-                    (SVGOMDocument)paintElement.getOwnerDocument();
-                ViewCSS v = ctx.getViewCSS();
-                ctx.setViewCSS((ViewCSS)doc.getDefaultView());
-                paint = paintBridge.createFillPaint(ctx, node, svgElement,
-                                                    paintElement);
-                ctx.setViewCSS(v);
-            }
-        } else {
-            System.out.println("Could not find a paint definition for : " +
-                               fillUri);
-        }
-
-        return paint;
-    }
-
-    /**
-     * Converts the element referenced by uri into a Paint object
-     */
-    public static Paint convertURIStrokeToPaint(SVGElement svgElement,
-                                                GraphicsNode node,
-                                                BridgeContext ctx,
-                                                CSSStyleDeclaration decl,
-                                                UnitProcessor.Context uctx,
-                                                String strokeUri){
-        //
-        // First, get a PaintBridge for the referenced value
-        //
-        URIResolver ur;
-        ur = new URIResolver((SVGDocument)svgElement.getOwnerDocument(),
-                             ctx.getDocumentLoader());
+        URIResolver ur =
+            new URIResolver((SVGDocument)svgElement.getOwnerDocument(),
+                            ctx.getDocumentLoader());
 
         Element paintElement = null;
         try {
             paintElement = ur.getElement(strokeUri);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            throw new IllegalAttributeValueException(
+                Messages.formatMessage("bad.uri",
+                                       new Object[] {strokeUri}));
         }
 
-        Paint paint = null;
-        if(paintElement != null){
-            PaintBridge paintBridge = (PaintBridge)ctx.getBridge(paintElement);
-
-            //
-            // Now, use bridge to convert paint
-            //
-            if(paintBridge != null){
-                SVGOMDocument doc =
-                    (SVGOMDocument)paintElement.getOwnerDocument();
-                ViewCSS v = ctx.getViewCSS();
-                ctx.setViewCSS((ViewCSS)doc.getDefaultView());
-                paint = paintBridge.createStrokePaint(ctx, node, svgElement,
-                                                      paintElement);
-                ctx.setViewCSS(v);
-            }
-        }
-
+        PaintBridge paintBridge = (PaintBridge)ctx.getBridge(paintElement);
+        SVGOMDocument doc = (SVGOMDocument)paintElement.getOwnerDocument();
+        ViewCSS v = ctx.getViewCSS();
+        ctx.setViewCSS((ViewCSS)doc.getDefaultView());
+        Paint paint = paintBridge.createStrokePaint(ctx,
+                                                    node,
+                                                    svgElement,
+                                                    paintElement);
+        ctx.setViewCSS(v);
         return paint;
     }
 
@@ -592,26 +497,23 @@ public class CSSUtilities implements SVGConstants {
                                            BridgeContext ctx,
                                            CSSStyleDeclaration decl,
                                            UnitProcessor.Context uctx) {
-        CSSPrimitiveValue v;
-        v = (CSSPrimitiveValue) decl.getPropertyCSSValue(CSS_FILL_PROPERTY);
+        CSSPrimitiveValue v =
+            (CSSPrimitiveValue) decl.getPropertyCSSValue(CSS_FILL_PROPERTY);
         switch(v.getPrimitiveType()) {
         case CSSPrimitiveValue.CSS_IDENT:
             return null; // fill:'none'
-
         case CSSPrimitiveValue.CSS_RGBCOLOR:
-            CSSPrimitiveValue vv;
-            vv = (CSSPrimitiveValue)decl.getPropertyCSSValue(CSS_FILL_OPACITY_PROPERTY);
+            CSSPrimitiveValue vv =
+                (CSSPrimitiveValue)decl.getPropertyCSSValue(CSS_FILL_OPACITY_PROPERTY);
             float opacity = convertOpacity(vv);
-            Color c = convertColor(v.getRGBColorValue(), opacity);
-            return c;
-
+            return convertColor(v.getRGBColorValue(), opacity);
         case CSSPrimitiveValue.CSS_URI:
-            Paint uriPaint = convertURIFillToPaint(element, node, ctx,
-                                              decl, uctx, v.getStringValue());
+            return convertURIToPaint(element, node, ctx,
+                                     decl, uctx, v.getStringValue());
 
-            return uriPaint;
+        default:
+            throw new Error(); // can't be reached
         }
-        throw new Error("Not yet implemented");
     }
 
     /**
@@ -620,13 +522,11 @@ public class CSSUtilities implements SVGConstants {
      * @param decl the css style declaration
      */
     public static Color convertFloodColorToPaint(CSSStyleDeclaration decl) {
-        CSSPrimitiveValue v;
-        v = (CSSPrimitiveValue) decl.getPropertyCSSValue(CSS_FLOOD_COLOR_PROPERTY);
-        CSSPrimitiveValue vv;
-        vv = (CSSPrimitiveValue)decl.getPropertyCSSValue(CSS_FLOOD_OPACITY_PROPERTY);
+        CSSPrimitiveValue v =
+            (CSSPrimitiveValue) decl.getPropertyCSSValue(CSS_FLOOD_COLOR_PROPERTY);
+        CSSPrimitiveValue vv =
+            (CSSPrimitiveValue)decl.getPropertyCSSValue(CSS_FLOOD_OPACITY_PROPERTY);
         float opacity = convertOpacity(vv);
-
-        //System.out.println("Flood color: " + v.getCssText());
         return convertColor(v.getRGBColorValue(), opacity);
     }
 
@@ -636,12 +536,11 @@ public class CSSUtilities implements SVGConstants {
      * @param decl the css style declaration
      */
     public static Color convertStopColorToPaint(CSSStyleDeclaration decl) {
-        CSSPrimitiveValue v;
-        v = (CSSPrimitiveValue) decl.getPropertyCSSValue(CSS_STOP_COLOR_PROPERTY);
-        CSSPrimitiveValue vv;
-        vv = (CSSPrimitiveValue)decl.getPropertyCSSValue(CSS_STOP_OPACITY_PROPERTY);
+        CSSPrimitiveValue v =
+            (CSSPrimitiveValue) decl.getPropertyCSSValue(CSS_STOP_COLOR_PROPERTY);
+        CSSPrimitiveValue vv =
+            (CSSPrimitiveValue)decl.getPropertyCSSValue(CSS_STOP_OPACITY_PROPERTY);
         float opacity = convertOpacity(vv);
-
         return convertColor(v.getRGBColorValue(), opacity);
     }
 
@@ -659,10 +558,7 @@ public class CSSUtilities implements SVGConstants {
             f = (f > 255f) ? 255f : (f < 0f) ? 0f : f;
             return Math.round(f);
         default:
-            throw new IllegalArgumentException
-                (Messages.formatMessage
-                 ("css.primitive.type",
-                  new Object[] { new Integer(v.getPrimitiveType()) }));
+            throw new Error(); // can't be reached
         }
     }
 
@@ -809,62 +705,46 @@ public class CSSUtilities implements SVGConstants {
         CSSStyleDeclaration decl
             = ctx.getViewCSS().getComputedStyle(element, null);
 
-        //
-        // Build filter based on filter
-        //
         CSSPrimitiveValue filterValue
             = (CSSPrimitiveValue)decl.getPropertyCSSValue(ATTR_FILTER);
-        String uriString = null;
+
         switch(filterValue.getPrimitiveType()){
         case CSSPrimitiveValue.CSS_IDENT:
-            // NONE
-            break;
+            return null; // 'filter:none'
         case CSSPrimitiveValue.CSS_URI:
-            uriString = filterValue.getStringValue();
-            break;
-        default:
-            throw new Error("filterValue's primitive type is: " +
-                            filterValue.getPrimitiveType());
-        }
-
-        Filter filter = null;
-
-        if(uriString != null){
-            URIResolver ur;
-            ur = new URIResolver((SVGDocument)element.getOwnerDocument(),
-                                 ctx.getDocumentLoader());
+            String uriString = filterValue.getStringValue();
+            URIResolver ur =
+                new URIResolver((SVGDocument)element.getOwnerDocument(),
+                                ctx.getDocumentLoader());
 
             Element filterElement = null;
             try {
                 filterElement = ur.getElement(uriString);
             } catch (Exception ex) {
-                ex.printStackTrace();
+                throw new IllegalAttributeValueException(
+                    Messages.formatMessage("bad.uri",
+                                           new Object[] {uriString}));
             }
-            if (filterElement != null) {
-                FilterBridge filterBridge
-                    = (FilterBridge)ctx.getBridge(filterElement);
-
-                if(filterBridge != null){
-                    SVGOMDocument doc =
-                        (SVGOMDocument)filterElement.getOwnerDocument();
-                    ViewCSS v = ctx.getViewCSS();
-                    ctx.setViewCSS((ViewCSS)doc.getDefaultView());
-                    filter = filterBridge.create(node,
-                                                 ctx,
-                                                 filterElement,
-                                                 element,
-                                                 null,   // in
-                                                 null,   // filterRegion
-                                                 null);  // filterMap
-                    ctx.setViewCSS(v);
-                }
-            } else {
-                System.out.println("Could not find : " + uriString +
-                                   " in document");
+            FilterBridge filterBridge =
+                (FilterBridge)ctx.getBridge(filterElement);
+            if (filterBridge == null) {
+                throw new Error(); // Should not happen
             }
+            SVGOMDocument doc = (SVGOMDocument)filterElement.getOwnerDocument();
+            ViewCSS v = ctx.getViewCSS();
+            ctx.setViewCSS((ViewCSS)doc.getDefaultView());
+            Filter filter = filterBridge.create(node,
+                                                ctx,
+                                                filterElement,
+                                                element,
+                                                null,   // in
+                                                null,   // filterRegion
+                                                null);  // filterMap
+            ctx.setViewCSS(v);
+            return filter;
+        default:
+            throw new Error(); // can't be reached
         }
-
-        return filter;
     }
 
     public static Filter getFilterSource(GraphicsNode  node,
@@ -898,12 +778,11 @@ public class CSSUtilities implements SVGConstants {
                 = new DefaultUnitProcessorContext(ctx, cssDecl);
             Paint paint = convertFillToPaint((SVGElement)filteredElement,
                                              node, ctx, cssDecl, uctx);
-            if (paint == null)
+            if (paint == null) {
                 // create a transparent flood
                 paint = new Color(0, 0, 0, 0);
-
-            return new org.apache.batik.refimpl.gvt.filter.ConcreteFloodRable
-                (infiniteFilterRegion, paint);
+            }
+            return new ConcreteFloodRable(infiniteFilterRegion, paint);
         }
 
         case SVGUtilities.STROKE_PAINT: {
@@ -913,19 +792,21 @@ public class CSSUtilities implements SVGConstants {
                 = new DefaultUnitProcessorContext(ctx, cssDecl);
             Paint paint = convertStrokeToPaint((SVGElement)filteredElement,
                                                node, ctx, cssDecl, uctx);
-            return new org.apache.batik.refimpl.gvt.filter.ConcreteFloodRable
-                (infiniteFilterRegion, paint);
+            return new ConcreteFloodRable(infiniteFilterRegion, paint);
         }
 
         case SVGUtilities.BACKGROUND_IMAGE:
-            throw new Error("BackgroundImage not implemented yet");
+            throw new IllegalAttributeValueException(
+                Messages.formatMessage("filter.in.unsupported",
+                                       new Object[] {inAttr}));
 
         case SVGUtilities.BACKGROUND_ALPHA:
-            throw new Error("BackgroundAlpha not implemented yet");
+            throw new IllegalAttributeValueException(
+                Messages.formatMessage("filter.in.unsupported",
+                                       new Object[] {inAttr}));
 
         default:
-            // Should never, ever, ever happen
-            throw new Error();
+            throw new Error(); // can't be reached
         }
     }
 
