@@ -416,7 +416,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
                */
 
                 primitivePaint(g2d, rc);
-            } else{
+            } else {
                 Filter filteredImage = null;
 
                 if(filter == null){
@@ -442,33 +442,17 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
                     filteredImage = clip;
                 }
 
-                RenderedImage renderedNodeImage = filteredImage.createRendering(rc);
-                if(renderedNodeImage != null){
-                      // Draw RenderedImage has problems....
-                      // This works around them...
-                    WritableRaster wr;
-                    wr = (WritableRaster)renderedNodeImage.getData();
-                    wr = wr.createWritableTranslatedChild(0,0);
-                    ColorModel cm = renderedNodeImage.getColorModel();
-                    BufferedImage bi;
-                    bi = new BufferedImage(cm, wr,
-                                           cm.isAlphaPremultiplied(), null);
-
-                    if(antialiasedClip){
-                        // Remove hard edged clip
-                        g2d.setClip(null);
-                    }
-
-                    Rectangle2D filterBounds = filteredImage.getBounds2D();
-                    g2d.clip(filterBounds);
-
-                    g2d.setTransform(IDENTITY);
-                    g2d.drawImage(bi, null,
-                                  renderedNodeImage.getMinX(),
-                                  renderedNodeImage.getMinY());
+                if(antialiasedClip){
+                    // Remove hard edged clip
+                    g2d.setClip(null);
                 }
+                
+                Rectangle2D filterBounds = filteredImage.getBounds2D();
+                g2d.clip(filterBounds);
+                
+                org.apache.batik.util.awt.image.GraphicsUtil.drawImage
+                    (g2d, filteredImage);
             }
-
         }
 
         // Restore default rendering attributes

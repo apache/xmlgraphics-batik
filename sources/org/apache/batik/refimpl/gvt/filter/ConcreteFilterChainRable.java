@@ -196,7 +196,7 @@ public class ConcreteFilterChainRable extends AbstractRable
      * parameters.
      */
     public Filter getSource() {
-        return (Filter)srcs.get(0);
+        return (Filter)crop;
     }
     
     /**

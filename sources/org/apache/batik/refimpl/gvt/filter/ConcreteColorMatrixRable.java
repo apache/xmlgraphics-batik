@@ -239,17 +239,7 @@ public class ConcreteColorMatrixRable
                                                 cm.isAlphaPremultiplied(),
                                                 null);
 
-        CachableRed cr = new ConcreteBufferedImageCachableRed(dstBI){
-                public int getMinX(){
-                    return srcMinX;
-                }
-
-                public int getMinY(){
-                    return srcMinY;
-                }
-            };
-
-        return cr;
+        return new ConcreteBufferedImageCachableRed(dstBI, srcMinX, srcMinY);
     }
 
 }

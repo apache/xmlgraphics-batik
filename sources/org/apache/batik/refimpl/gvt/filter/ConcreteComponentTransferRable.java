@@ -177,17 +177,7 @@ public class ConcreteComponentTransferRable
 
         BufferedImage dstBI = op.filter(srcBI, null);
 
-        CachableRed cr = new ConcreteBufferedImageCachableRed(dstBI){
-                public int getMinX(){
-                    return srcMinX;
-                }
-
-                public int getMinY(){
-                    return srcMinY;
-                }
-            };
-
-        return cr;
+        return new ConcreteBufferedImageCachableRed(dstBI, srcMinX, srcMinY);
     }
 
     /**

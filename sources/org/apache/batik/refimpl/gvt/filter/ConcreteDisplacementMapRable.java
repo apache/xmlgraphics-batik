@@ -261,15 +261,7 @@ public class ConcreteDisplacementMapRable
         final int minY = displacedRed.getMinY();
 
         CachableRed cr 
-            = new ConcreteBufferedImageCachableRed(destBI){
-                public int getMinX(){
-                    return minX;
-                }
-
-                public int getMinY(){
-                    return minY;
-                }
-            };
+            = new ConcreteBufferedImageCachableRed(destBI, minX, minY);
 
         if(!resAt.isIdentity()){
             cr = new AffineRed(cr, resAt, rh);

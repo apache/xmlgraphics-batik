@@ -44,7 +44,7 @@ public class ConcreteRenderedImageCachableRed implements CachableRed {
     private RenderedImage src;
     private Vector srcs = new Vector(0);
 
-    ConcreteRenderedImageCachableRed(RenderedImage src) {
+    public ConcreteRenderedImageCachableRed(RenderedImage src) {
         if(src == null){
             throw new IllegalArgumentException();
         }

@@ -8,12 +8,13 @@
 
 package org.apache.batik.gvt;
 
+import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.awt.geom.AffineTransform;
 import java.awt.Shape;
+import java.awt.font.FontRenderContext;
+import java.awt.geom.AffineTransform;
 import java.awt.image.renderable.RenderContext;
 import java.awt.image.renderable.RenderableImage;
-import java.awt.font.FontRenderContext;
 
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
 
@@ -138,6 +139,26 @@ public class GraphicsNodeRenderContext extends RenderContext{
         }
 
         return gnCtx;
+    }
+
+    /**
+     * Given a <tt>Graphics2D</tt>, this convenience method will build
+     * a <tt>GraphicsNodeRenderContext</tt>
+     */
+    public static GraphicsNodeRenderContext getGraphicsNodeRenderContext
+        (Graphics2D g2d) {
+        RenderingHints rh = g2d.getRenderingHints();
+        if (rh == null)
+            return  new GraphicsNodeRenderContext(g2d.getTransform(),
+                                                  g2d.getClip(),
+                                                  null, null, null, null);
+
+        return  new GraphicsNodeRenderContext
+            (g2d.getTransform(), g2d.getClip(), rh,
+             (FontRenderContext)rh.get(KEY_FONT_RENDER_CONTEXT),
+             (TextPainter)rh.get(KEY_TEXT_PAINTER),
+             (GraphicsNodeRableFactory)rh.get(KEY_GRAPHICS_NODE_RABLE_FACTORY)
+             );
     }
 
     /**

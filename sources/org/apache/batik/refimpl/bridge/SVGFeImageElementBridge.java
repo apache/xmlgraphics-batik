@@ -198,7 +198,12 @@ public class SVGFeImageElementBridge implements FilterBridge,
                                 return primitiveRegion.getRegion();
                             }
 
-                            private void computeTransform(){
+                            public AffineTransform getAffine() {
+                                computeTransform();
+                                return super.getAffine();
+                            }
+                            
+                            private void computeTransform() {
                                 Rectangle2D bounds = getSource().getBounds2D();
                                 Rectangle2D region = primitiveRegion.getRegion();
                                 AffineTransform scale = new AffineTransform();
@@ -224,6 +229,11 @@ public class SVGFeImageElementBridge implements FilterBridge,
                 public Rectangle2D getBounds2D(){
                     setPadRect(primitiveRegion.getRegion());
                     return super.getBounds2D();
+                }
+
+                public Rectangle2D getPadRect(){
+                    setPadRect(primitiveRegion.getRegion());
+                    return super.getPadRect();
                 }
                 
                 public java.awt.image.RenderedImage createRendering
