@@ -766,6 +766,9 @@ To display the available targets type:
     <mkdir dir="${test-references}/samples/tests/spec/text/candidate-variation" />
     <mkdir dir="${test-references}/samples/tests/spec/text/candidate-reference" />
     <mkdir dir="${test-references}/samples/tests/spec/text/accepted-variation" />
+    <mkdir dir="${test-references}/samples/tests/spec/scripting/candidate-variation" />
+    <mkdir dir="${test-references}/samples/tests/spec/scripting/candidate-reference" />
+    <mkdir dir="${test-references}/samples/tests/spec/scripting/accepted-variation" />
     <mkdir dir="${test-references}/samples/extensions/accepted-variation"/>
     <mkdir dir="${test-references}/samples/extensions/candidate-variation"/>
     <mkdir dir="${test-references}/samples/extensions/candidate-reference"/>
