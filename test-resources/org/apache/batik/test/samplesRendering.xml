@@ -199,9 +199,9 @@
 
         <!-- Sample tests, media test -->
         <testGroup id="media" class="org.apache.batik.test.svg.SVGMediaRenderingAccuracyTest">
-            <test id="samples/tests/spec/styling/cssMedia.svg-screen" />
-            <test id="samples/tests/spec/styling/cssMedia.svg-print" />
-            <test id="samples/tests/spec/styling/cssMedia.svg-projection" />
+            <test id="samples/tests/spec/styling/cssMedia.svg-Screen" />
+            <test id="samples/tests/spec/styling/cssMedia.svg-Print" />
+            <test id="samples/tests/spec/styling/cssMedia.svg-Projection" />
         </testGroup>
 
     </testGroup>
