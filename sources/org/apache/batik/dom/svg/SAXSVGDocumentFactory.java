@@ -11,6 +11,7 @@ package org.apache.batik.dom.svg;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.Reader;
+import java.io.ByteArrayInputStream;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -51,6 +52,11 @@ public class SAXSVGDocumentFactory
     public static final String KEY_PUBLIC_IDS = "publicIds";
 
     /**
+     * Key used for public identifiers
+     */
+    public static final String KEY_SKIPPABLE_PUBLIC_IDS = "skippablePublicIds";
+
+    /**
      * Key used for system identifiers
      */
     public static final String KEY_SYSTEM_ID = "systemId.";
@@ -70,6 +76,11 @@ public class SAXSVGDocumentFactory
      * The accepted DTD public IDs.
      */
     protected static String dtdids;
+
+    /**
+     * The DTD public IDs we know we can skip.
+     */
+    protected static String skippable_dtdids;
 
     /**
      * The ResourceBunder for the public and system ids
@@ -297,15 +308,28 @@ public class SAXSVGDocumentFactory
     public InputSource resolveEntity(String publicId, String systemId)
         throws SAXException {
         try {
-            if (dtdids == null) {
-                rb = ResourceBundle.getBundle(DTDIDS,
-                                              Locale.getDefault());
+            if (rb == null)
+                rb = ResourceBundle.getBundle(DTDIDS, Locale.getDefault());
+
+            if (dtdids == null)
                 dtdids = rb.getString(KEY_PUBLIC_IDS);
-            }
+
+            if (skippable_dtdids == null)
+                skippable_dtdids = rb.getString(KEY_SKIPPABLE_PUBLIC_IDS);
+
             if (publicId != null){
+                if (!isValidating && 
+                    (skippable_dtdids.indexOf(publicId) != -1)) {
+                    // We are not validating and this is a DTD we can
+                    // safely skip so do it...
+                    byte [] bytes = new byte[0];
+                    return new InputSource(new ByteArrayInputStream(bytes));
+                }
+
                 if (dtdids.indexOf(publicId) != -1) {
                     String localSystemId = 
-                        rb.getString(KEY_SYSTEM_ID + publicId.replace(' ', '_'));
+                        rb.getString(KEY_SYSTEM_ID + 
+                                     publicId.replace(' ', '_'));
 
                     if (localSystemId != null && !"".equals(localSystemId)){
                         return new InputSource
