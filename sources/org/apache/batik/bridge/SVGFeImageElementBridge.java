@@ -207,8 +207,7 @@ public class SVGFeImageElementBridge
             
             // Need to translate the image to the x, y coordinate to
             // have the same behavior as the <use> element
-            at.preConcatenate(AffineTransform.getTranslateInstance
-                              (primitiveRegion.getX(), primitiveRegion.getY()));
+            at.translate(primitiveRegion.getX(), primitiveRegion.getY());
         }
 
         return new AffineRable8Bit(filter, at);
