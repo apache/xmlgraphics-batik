@@ -696,6 +696,10 @@ To display the available targets type:
 
   <!-- Rasterizer (dependencies: all except GUI util) -->
   <target name="rasterizer-jar" depends="compile, prepare-build">
+    <move file="${resources}/${package-prefix}/apps/rasterizer/resources/rasterizer.policy"
+          tofile="${resources}/${package-prefix}/apps/rasterizer/resources/rasterizer.classes.policy" />
+    <move file="${resources}/${package-prefix}/apps/rasterizer/resources/rasterizer.bin.policy"
+          tofile="${resources}/${package-prefix}/apps/rasterizer/resources/rasterizer.policy" />
     <jar manifest="${src}/${project}-rasterizer.mf"
          jarfile="${build}/${project}-rasterizer.jar">
       <fileset dir="${dest}">
@@ -705,7 +709,11 @@ To display the available targets type:
         <include name="${package-prefix}/apps/rasterizer/**/resources/**"/>
       </fileset>
     </jar>
-  </target>
+     <move file="${resources}/${package-prefix}/apps/rasterizer/resources/rasterizer.policy"
+          tofile="${resources}/${package-prefix}/apps/rasterizer/resources/rasterizer.bin.policy" />
+    <move file="${resources}/${package-prefix}/apps/rasterizer/resources/rasterizer.classes.policy"
+          tofile="${resources}/${package-prefix}/apps/rasterizer/resources/rasterizer.policy" />
+ </target>
 
   <!-- batik-ttf2svg.jar (dependencies: all) -->
   <target name="ttf2svg-jar" depends="compile, prepare-build">
