@@ -324,54 +324,63 @@ public class JSVGCanvas
      * Sets the SVG document to display.
      * @param doc if null, clears the canvas.
      */
-    public void setSVGDocument(SVGDocument doc) {
-        if (document != null) {
-            // fire the unload event
-            Event evt = document.createEvent("SVGEvents");
-            evt.initEvent("SVGUnload", false, false);
-            ((EventTarget)(document.
-                           getRootElement())).
-                dispatchEvent(evt);
-        }
-        document = doc;
-        if (document == null) {
-            gvtRoot = null;
-        } else {
-            bridgeContext = createBridgeContext(doc);
-            bridgeContext.setViewCSS((ViewCSS)doc.getDocumentElement());
-            bridgeContext.setGVTBuilder(builder);
-            gvtRoot = builder.build(bridgeContext, document);
-            computeTransform();
+    public void setSVGDocument(final SVGDocument doc) {
+        new Thread() {
+            public void run() {
+                setPriority(Thread.MIN_PRIORITY);
 
-            // <!> HACK maybe not the right place to dispatch
-            // this event
-            // fire the load event
-            Event evt = document.createEvent("SVGEvents");
-            evt.initEvent("SVGLoad", false, false);
-            ((EventTarget)(document.
-                           getRootElement())).
-                dispatchEvent(evt);
+                if (document != null) {
+                    // fire the unload event
+                    Event evt = document.createEvent("SVGEvents");
+                    evt.initEvent("SVGUnload", false, false);
+                    ((EventTarget)(document.
+                                   getRootElement())).
+                        dispatchEvent(evt);
+                }
+                document = doc;
+                if (document == null) {
+                    gvtRoot = null;
+                } else {
+                    bridgeContext = createBridgeContext(doc);
+                    bridgeContext.setViewCSS((ViewCSS)doc.getDocumentElement());
+                    bridgeContext.setGVTBuilder(builder);
+                    
+                    gvtRoot = builder.build(bridgeContext, document);
+                    
+                    computeTransform();
+                    
+                    // <!> HACK maybe not the right place to dispatch
+                    // this event
+                    // fire the load event
+                    Event evt = document.createEvent("SVGEvents");
+                    evt.initEvent("SVGLoad", false, false);
+                    ((EventTarget)(document.
+                                   getRootElement())).
+                        dispatchEvent(evt);
+                    
+                    ((EventTarget)doc).addEventListener("DOMAttrModified",
+                                                        new MutationListener(),
+                                                        false);
+                }
 
-            ((EventTarget)doc).addEventListener("DOMAttrModified",
-                                                new MutationListener(),
-                                                false);
-        }
+                if (userAgent.getEventDispatcher() != null) {
+                    userAgent.getEventDispatcher().setRootNode(gvtRoot);
+                }
 
-        if (userAgent.getEventDispatcher() != null) {
-            userAgent.getEventDispatcher().setRootNode(gvtRoot);
-        }
+                rotateAngle = 0;
+                rotateCos = 1;
+                if (zoomHandler != null) {
+                    zoomHandler.zoomChanged(1);
+                }
+                repaint = true;
+                repaint();
+                
+                if (thumbnailCanvas != null) {
+                    thumbnailCanvas.fullRepaint();
+                }
 
-        rotateAngle = 0;
-        rotateCos = 1;
-        if (zoomHandler != null) {
-            zoomHandler.zoomChanged(1);
-        }
-        repaint = true;
-        repaint();
-
-        if (thumbnailCanvas != null) {
-            thumbnailCanvas.fullRepaint();
-        }
+            }
+        }.start();
     }
 
     /**

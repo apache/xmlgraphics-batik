@@ -21,7 +21,7 @@
 <!-- @version $Id$    -->
 <!-- ========================================================================= -->
 
-<svg width="450" height="450">
+<svg id="body" width="450" height="450">
     <style type="text/css">
         <![CDATA[
             .filterRegionControl {
