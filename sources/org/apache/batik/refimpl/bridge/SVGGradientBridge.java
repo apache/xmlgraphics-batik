@@ -42,21 +42,24 @@ import org.w3c.dom.svg.SVGElement;
  * @version $Id$
  */
 public abstract class SVGGradientBridge implements SVGConstants {
+
     /**
      * Used to store a gradient stop's color and interval
      */
     static class GradientStop {
+
         Color stopColor;
         float offset;
 
-        public GradientStop(Color stopColor, 
+        public GradientStop(Color stopColor,
                             float offset){
             this.stopColor = stopColor;
             this.offset = offset;
         }
     }
 
-    protected static Vector extractGradientStops(Element paintElement, BridgeContext ctx){
+    protected static Vector extractGradientStops(Element paintElement,
+                                                 BridgeContext ctx){
         Vector stops = new Vector();
         for(Node stop = paintElement.getFirstChild();
             stop != null;
@@ -72,7 +75,8 @@ public abstract class SVGGradientBridge implements SVGConstants {
         return stops;
     }
 
-    public static GradientStop convertGradientStop(Element stop, BridgeContext ctx){
+    public static GradientStop convertGradientStop(Element stop,
+                                                   BridgeContext ctx) {
         //
         // First, extract offset value
         //
@@ -82,23 +86,24 @@ public abstract class SVGGradientBridge implements SVGConstants {
         //
         // Now, extract the stop color
         //
-        CSSStyleDeclaration decl = ctx.getViewCSS().getComputedStyle(stop, null);
+        CSSStyleDeclaration decl =
+            ctx.getViewCSS().getComputedStyle(stop, null);
         Color stopColor = CSSUtilities.convertStopColorToPaint(decl);
-        
         return new GradientStop(stopColor, ratio);
     }
 
-    protected static LinearGradientPaint.CycleMethodEnum convertSpreadMethod(String spreadMethod){
-        LinearGradientPaint.CycleMethodEnum cycleMethod = LinearGradientPaint.NO_CYCLE;
-        if(spreadMethod != null){
-            if(VALUE_REFLECT.equals(spreadMethod)){
+    protected static LinearGradientPaint.CycleMethodEnum
+            convertSpreadMethod(String spreadMethod){
+        LinearGradientPaint.CycleMethodEnum cycleMethod =
+            LinearGradientPaint.NO_CYCLE;
+        if (spreadMethod != null) {
+            if (VALUE_REFLECT.equals(spreadMethod)) {
                 cycleMethod = LinearGradientPaint.REFLECT;
-            }
-            else if(VALUE_REPEAT.equals(spreadMethod)){
+            } else if (VALUE_REPEAT.equals(spreadMethod)) {
                 cycleMethod = LinearGradientPaint.REPEAT;
             }
         }
-
         return cycleMethod;
     }
 }
+
