@@ -128,6 +128,16 @@ public class BridgeContext implements ErrorConstants {
     protected TextPainter textPainter;
 
     /**
+     * Whether the bridge must support dynamic features.
+     */
+    protected boolean dynamic;
+
+    /**
+     * The update manager.
+     */
+    protected UpdateManager updateManager;
+
+    /**
      * Constructs a new empty bridge context.
      */
     protected BridgeContext() {}
@@ -361,7 +371,28 @@ public class BridgeContext implements ErrorConstants {
      * false otherwise.
      */
     public boolean isDynamic() {
-        return true;
+        return dynamic;
+    }
+
+    /**
+     * Sets the dynamic mode.
+     */
+    public void setDynamic(boolean b) {
+        dynamic = b;
+    }
+
+    /**
+     * Returns the update manager, if the bridge supports dynamic features.
+     */
+    public UpdateManager getUpdateManager() {
+        return updateManager;
+    }
+
+    /**
+     * Sets the update manager.
+     */
+    protected void setUpdateManager(UpdateManager um) {
+        updateManager = um;
     }
 
     /////////////////////////////////////////////////////////////////////////

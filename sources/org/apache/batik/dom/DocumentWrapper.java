@@ -397,6 +397,14 @@ public class DocumentWrapper
     }
 
     /**
+     * Invokes the given Runnable from the event listeners RunnableQueue
+     * thread.
+     */
+    public void invokeEventListener(Runnable r) {
+        domImplementationWrapper.invokeEventListener(r);
+    }
+
+    /**
      * Creates a wrapper for the given node.
      */
     public Node createNodeWrapper(Node n) {

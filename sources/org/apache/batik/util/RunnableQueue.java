@@ -88,7 +88,9 @@ public class RunnableQueue implements Runnable {
     public static RunnableQueue createRunnableQueue() {
         RunnableQueue result = new RunnableQueue();
         synchronized (result) {
-            new Thread(result).start();
+            Thread t = new Thread(result);
+            t.setDaemon(true);
+            t.start();
             while (result.getThread() == null) {
                 try { 
                     result.wait();

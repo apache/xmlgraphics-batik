@@ -10,11 +10,18 @@ package org.apache.batik.swing.svg;
 
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.Shape;
+
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Dimension2D;
+import java.awt.geom.NoninvertibleTransformException;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -32,11 +39,13 @@ import javax.swing.JComponent;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeException;
 import org.apache.batik.bridge.BridgeExtension;
-import org.apache.batik.bridge.BridgeMutationEvent;
 import org.apache.batik.bridge.DocumentLoader;
 import org.apache.batik.bridge.GraphicsNodeBridge;
-import org.apache.batik.bridge.ViewBox;
+import org.apache.batik.bridge.UpdateManager;
+import org.apache.batik.bridge.UpdateManagerEvent;
+import org.apache.batik.bridge.UpdateManagerListener;
 import org.apache.batik.bridge.UserAgent;
+import org.apache.batik.bridge.ViewBox;
 
 import org.apache.batik.dom.util.XLinkSupport;
 
@@ -58,11 +67,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGAElement;
 import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.svg.SVGSVGElement;
-
-import org.w3c.dom.events.Event;
-import org.w3c.dom.events.EventListener;
-import org.w3c.dom.events.EventTarget;
-import org.w3c.dom.events.MutationEvent;
 
 /**
  * This class represents a swing component that can display SVG documents. This
@@ -203,6 +207,11 @@ public class JSVGComponent extends JGVTComponent {
     protected List linkActivationListeners = new LinkedList();
 
     /**
+     * The update manager listeners.
+     */
+    protected List updateManagerListeners = new LinkedList();
+
+    /**
      * The user agent.
      */
     protected UserAgent userAgent;
@@ -216,6 +225,11 @@ public class JSVGComponent extends JGVTComponent {
      * The current bridge context.
      */
     protected BridgeContext bridgeContext;
+
+    /**
+     * The update manager.
+     */
+    protected UpdateManager updateManager;
 
     /**
      * The current document fragment identifier.
@@ -246,6 +260,25 @@ public class JSVGComponent extends JGVTComponent {
 
         addSVGDocumentLoaderListener((SVGListener)listener);
         addGVTTreeBuilderListener((SVGListener)listener);
+        addUpdateManagerListener((SVGListener)listener);
+    }
+
+    /**
+     * Resumes the processing of the current document.
+     */
+    public void resumeProcessing() {
+        if (updateManager != null) {
+            updateManager.resume();
+        }
+    }
+
+    /**
+     * Suspend the processing of the current document.
+     */
+    public void suspendProcessing() {
+        if (updateManager != null) {
+            updateManager.suspend();
+        }
     }
 
     /**
@@ -259,6 +292,12 @@ public class JSVGComponent extends JGVTComponent {
             documentLoader.interrupt();
         } else if (gvtTreeBuilder != null) {
             gvtTreeBuilder.interrupt();
+        } else if (updateManager != null) {
+            if (!updateManager.isRunning()) {
+                updateManager.resume();
+            }
+            updateManager.dispatchSVGUnLoad();
+            updateManager = null;
         } else {
             super.stopProcessing();
         }
@@ -323,11 +362,9 @@ public class JSVGComponent extends JGVTComponent {
             throw new IllegalArgumentException("Invalid DOM implementation.");
         }
 
-        if (eventsEnabled && svgDocument != null) {
-            // fire the unload event
-            Event evt = svgDocument.createEvent("SVGEvents");
-            evt.initEvent("SVGUnload", false, false);
-            ((EventTarget)(svgDocument.getRootElement())).dispatchEvent(evt);
+        if (eventsEnabled && svgDocument != null && updateManager != null) {
+            updateManager.dispatchSVGUnLoad();
+            updateManager = null;
         }
 
         svgDocument = doc;
@@ -401,7 +438,9 @@ public class JSVGComponent extends JGVTComponent {
         if (loader == null) {
             loader = new DocumentLoader(userAgent);
         }
-        return new BridgeContext(userAgent, loader);
+        BridgeContext result = new BridgeContext(userAgent, loader);
+        result.setDynamic(true);
+        return result;
     }
 
     /**
@@ -428,6 +467,39 @@ public class JSVGComponent extends JGVTComponent {
         if (initialTransform == renderingTransform) {
             computeRenderingTransform();
         }
+    }
+
+    /**
+     * Renders the GVT tree.
+     */
+    protected void renderGVTTree() {
+        if (updateManager == null || !updateManager.isRunning()) {
+            super.renderGVTTree();
+            return;
+        }
+
+        final Dimension d = getSize();
+        if (gvtRoot == null || d.width <= 0 || d.height <= 0) {
+            return;
+        }
+
+        // Area of interest computation.
+        AffineTransform inv;
+        try {
+            inv = renderingTransform.createInverse();
+        } catch (NoninvertibleTransformException e) {
+            throw new InternalError(e.getMessage());
+        }
+        final Shape s =
+            inv.createTransformedShape(new Rectangle(0, 0, d.width, d.height));
+
+        updateManager.getUpdateRunnableQueue().invokeLater(new Runnable() {
+                public void run() {
+                    updateManager.updateRendering(renderingTransform,
+                                                  doubleBufferedRendering,
+                                                  s, d.width, d.height);
+                }
+            });
     }
 
     /**
@@ -480,6 +552,20 @@ public class JSVGComponent extends JGVTComponent {
     }
 
     /**
+     * Adds a UpdateManagerListener to this component.
+     */
+    public void addUpdateManagerListener(UpdateManagerListener l) {
+        updateManagerListeners.add(l);
+    }
+
+    /**
+     * Removes a UpdateManagerListener from this component.
+     */
+    public void removeUpdateManagerListener(UpdateManagerListener l) {
+        updateManagerListeners.remove(l);
+    }
+
+    /**
      * Creates an instance of Listener.
      */
     protected Listener createListener() {
@@ -492,7 +578,8 @@ public class JSVGComponent extends JGVTComponent {
     protected class SVGListener
         extends Listener
         implements SVGDocumentLoaderListener,
-                   GVTTreeBuilderListener {
+                   GVTTreeBuilderListener,
+                   UpdateManagerListener {
 
         /**
          * Creates a new SVGListener.
@@ -655,11 +742,15 @@ public class JSVGComponent extends JGVTComponent {
             }
 
             if (JSVGComponent.this.eventsEnabled) {
-                Event evt = svgDocument.createEvent("SVGEvents");
-                evt.initEvent("SVGLoad", false, false);
-                ((EventTarget)(svgDocument.getRootElement())).dispatchEvent(evt);
-                ((EventTarget)svgDocument).addEventListener("DOMAttrModified",
-                                        new MutationListener(bridgeContext), false);
+                updateManager = new UpdateManager(bridgeContext,
+                                                  svgDocument,
+                                                  renderer);
+                Iterator it = updateManagerListeners.iterator();
+                while (it.hasNext()) {
+                    updateManager.addUpdateManagerListener
+                        ((UpdateManagerListener)it.next());
+                }
+                updateManager.dispatchSVGLoad();
             }
         }
 
@@ -695,34 +786,158 @@ public class JSVGComponent extends JGVTComponent {
             }
         }
 
+        // UpdateManagerListener //////////////////////////////////////////
+
         /**
-         * To listener to the DOM mutation events.
+         * Called when the manager was started.
          */
-        protected class MutationListener implements EventListener {
+        public void managerStarted(UpdateManagerEvent e) {
+        }
 
-            BridgeContext bridgeContext;
+        /**
+         * Called when the manager was suspended.
+         */
+        public void managerSuspended(UpdateManagerEvent e) {
+        }
 
-            public MutationListener(BridgeContext bridgeContext) {
-                this.bridgeContext = bridgeContext;
+        /**
+         * Called when the manager was resumed.
+         */
+        public void managerResumed(UpdateManagerEvent e) {
+        }
+
+        /**
+         * Called when the manager was stopped.
+         */
+        public void managerStopped(UpdateManagerEvent e) {
+        }
+
+        /**
+         * Called when an update started.
+         */
+        public void updateStarted(final UpdateManagerEvent e) {
+            EventQueue.invokeLater(new Runnable() {
+                    public void run() {
+                        paintingTransform = null;
+                        if (!doubleBufferedRendering) {
+                            image = e.getImage();
+                        }
+                    }
+                });
+        }
+
+        /**
+         * Called when an update was completed.
+         */
+        public void updateCompleted(final UpdateManagerEvent e) {
+            try {
+                EventQueue.invokeAndWait(new Runnable() {
+                        public void run() {
+                            image = e.getImage();
+                            paintImmediately(e.getDirtyArea());
+                            suspendInteractions = false;
+                        }
+                    });
+            } catch (Exception ex) {
             }
+        }
 
-            public void handleEvent(Event evt) {
-                BridgeMutationEvent bme;
-                Element target = (Element)evt.getTarget();
-                bme = new BridgeMutationEvent
-                    (target,
-                     bridgeContext,
-                     BridgeMutationEvent.PROPERTY_MUTATION_TYPE);
+        /**
+         * Called when an update failed.
+         */
+        public void updateFailed(UpdateManagerEvent e) {
+        }
 
-                MutationEvent me = (MutationEvent)evt;
+        // Event propagation to GVT ///////////////////////////////////////
 
-                bme.setAttrName(me.getAttrName());
-                bme.setAttrNewValue(me.getNewValue());
+        /**
+         * Dispatches the event to the GVT tree.
+         */
+        protected void dispatchMouseClicked(final MouseEvent e) {
+            if (updateManager != null && updateManager.isRunning()) {
+                updateManager.getUpdateRunnableQueue().invokeLater(new Runnable() {
+                        public void run() {
+                            eventDispatcher.mouseClicked(e);
+                        }
+                    });
+            }
+        }
 
-                GraphicsNodeBridge bridge;
-                bridge = (GraphicsNodeBridge)bridgeContext.getBridge(target);
+        /**
+         * Dispatches the event to the GVT tree.
+         */
+        protected void dispatchMousePressed(final MouseEvent e) {
+            if (updateManager != null && updateManager.isRunning()) {
+                updateManager.getUpdateRunnableQueue().invokeLater(new Runnable() {
+                        public void run() {
+                            eventDispatcher.mousePressed(e);
+                        }
+                    });
+            }
+        }
 
-                bridge.update(bme);
+        /**
+         * Dispatches the event to the GVT tree.
+         */
+        protected void dispatchMouseReleased(final MouseEvent e) {
+            if (updateManager != null && updateManager.isRunning()) {
+                updateManager.getUpdateRunnableQueue().invokeLater(new Runnable() {
+                        public void run() {
+                            eventDispatcher.mouseReleased(e);
+                        }
+                    });
+            }
+        }
+
+        /**
+         * Dispatches the event to the GVT tree.
+         */
+        protected void dispatchMouseEntered(final MouseEvent e) {
+            if (updateManager != null && updateManager.isRunning()) {
+                updateManager.getUpdateRunnableQueue().invokeLater(new Runnable() {
+                        public void run() {
+                            eventDispatcher.mouseEntered(e);
+                        }
+                    });
+            }
+        }
+
+        /**
+         * Dispatches the event to the GVT tree.
+         */
+        protected void dispatchMouseExited(final MouseEvent e) {
+            if (updateManager != null && updateManager.isRunning()) {
+                updateManager.getUpdateRunnableQueue().invokeLater(new Runnable() {
+                        public void run() {
+                            eventDispatcher.mouseExited(e);
+                        }
+                    });
+            }
+        }
+
+        /**
+         * Dispatches the event to the GVT tree.
+         */
+        protected void dispatchMouseDragged(final MouseEvent e) {
+            if (updateManager != null && updateManager.isRunning()) {
+                updateManager.getUpdateRunnableQueue().invokeLater(new Runnable() {
+                        public void run() {
+                            eventDispatcher.mouseDragged(e);
+                        }
+                    });
+            }
+        }
+
+        /**
+         * Dispatches the event to the GVT tree.
+         */
+        protected void dispatchMouseMoved(final MouseEvent e) {
+            if (updateManager != null && updateManager.isRunning()) {
+                updateManager.getUpdateRunnableQueue().invokeLater(new Runnable() {
+                        public void run() {
+                            eventDispatcher.mouseMoved(e);
+                        }
+                    });
             }
         }
     }

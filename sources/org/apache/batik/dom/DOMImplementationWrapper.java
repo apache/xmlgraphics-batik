@@ -34,6 +34,11 @@ public class DOMImplementationWrapper implements DOMImplementation {
     protected RunnableQueue runnableQueue;
 
     /**
+     * The RunnableQueue to use to run the event listeners.
+     */
+    protected RunnableQueue listenersQueue;
+
+    /**
      * The wrapped DOMImplementation object.
      */
     protected DOMImplementation domImplementation;
@@ -41,9 +46,16 @@ public class DOMImplementationWrapper implements DOMImplementation {
     /**
      * Creates a new DOMImplementationWrapper associated with the given
      * RunnableQueue thread.
+     * @param rq The main runnable queue.
+     * @param lq The RunnableQueue to use to run the event listeners. If
+     *           null, the listeners are called from the main thread.
+     * @param di The DOMImplementation.
      */
-    public DOMImplementationWrapper(RunnableQueue rq, DOMImplementation di) {
+    public DOMImplementationWrapper(RunnableQueue rq,
+                                    RunnableQueue lq,
+                                    DOMImplementation di) {
         runnableQueue = rq;
+        listenersQueue = lq;
         domImplementation = di;
     }
 
@@ -103,6 +115,18 @@ public class DOMImplementationWrapper implements DOMImplementation {
     public Event createEventWrapper(DocumentWrapper dw, Event ev)
         throws DOMException {
         return new EventWrapper(dw, ev);
+    }
+
+    /**
+     * Invokes the given Runnable from the event listeners RunnableQueue
+     * thread.
+     */
+    public void invokeEventListener(Runnable r) {
+        if (listenersQueue == null) {
+            r.run();
+        } else {
+            listenersQueue.invokeLater(r);
+        }
     }
 
     /**

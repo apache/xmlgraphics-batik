@@ -18,6 +18,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.HashMap;
 
+import org.apache.batik.dom.DocumentWrapper;
+import org.apache.batik.dom.events.EventWrapper;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.event.EventDispatcher;
 import org.apache.batik.gvt.event.GraphicsNodeKeyEvent;
@@ -27,6 +29,7 @@ import org.apache.batik.gvt.event.GraphicsNodeMouseListener;
 import org.apache.batik.script.Interpreter;
 import org.apache.batik.script.InterpreterException;
 import org.apache.batik.script.InterpreterPool;
+import org.apache.batik.util.RunnableQueue;
 import org.apache.batik.util.SVGConstants;
 
 import org.w3c.dom.Document;
@@ -67,10 +70,9 @@ class BridgeEventSupport implements SVGConstants {
         "onmouseover",
         "onmouseout",
         "onmousemove",
-        "onload"
     };
 
-    private static final int FIRST_SVG_EVENT = 10;
+    private static final int FIRST_SVG_EVENT = 9;
 
     private static final String[] EVENT_ATTRIBUTES_SVG = {
         // document
@@ -82,7 +84,7 @@ class BridgeEventSupport implements SVGConstants {
         "onzoom"
     };
 
-    private static final int FIRST_ANIMATION_EVENT = 16;
+    private static final int FIRST_ANIMATION_EVENT = 15;
 
     private static final String[] EVENT_ATTRIBUTES_ANIMATION = {
         // animation
@@ -102,7 +104,6 @@ class BridgeEventSupport implements SVGConstants {
         "mouseover",
         "mouseout",
         "mousemove",
-        "SVGLoad",
 
         // document
         "SVGUnload",
@@ -152,31 +153,15 @@ class BridgeEventSupport implements SVGConstants {
             }
         }
         String language = svgElement.getContentScriptType();
-        Interpreter interpret = null;
         String script = null;
         if (element.getLocalName().equals(SVG_SVG_TAG)) {
             for (int i = 0; i < EVENT_ATTRIBUTES_SVG.length; i++) {
                 if (!(script = element.getAttribute(EVENT_ATTRIBUTES_SVG[i])).
                     equals("")) {
-                    if (interpret == null) {
-                        // try to get the intepreter only if we have
-                        // a reason to do it!
-                        interpret = ctx.getInterpreterPool().
-                            getInterpreter(element.getOwnerDocument(), language);
-                        // the interpreter is not avaible => stop it now!
-                        if (interpret == null) {
-                            UserAgent ua = ctx.getUserAgent();
-                            if (ua != null)
-                                ua.displayError(new Exception("unknow language: "+
-                                                              language));
-                            break;
-                        }
-                    }
                     // <!> TODO this will stop working if someone change
                     // the content of the event attribute
                     addScriptCaller(target, EVENT_NAMES[i+FIRST_SVG_EVENT],
-                                     new ScriptCaller(ctx.getUserAgent(),
-                                                      script, interpret));
+                                    new ScriptCaller(ctx, script, language));
                 }
             }
             // continue
@@ -187,27 +172,11 @@ class BridgeEventSupport implements SVGConstants {
                     if (!(script =
                           element.getAttribute(EVENT_ATTRIBUTES_ANIMATION[i])).
                         equals("")) {
-                        if (interpret == null) {
-                            // try to get the intepreter only if we have
-                            // a reason to do it!
-                            interpret = ctx.getInterpreterPool().
-                                getInterpreter(element.getOwnerDocument(),
-                                               language);
-                            // the interpreter is not avaible => stop it now!
-                            if (interpret == null) {
-                                UserAgent ua = ctx.getUserAgent();
-                                if (ua != null)
-                                    ua.displayError(new Exception("unknow language: "+
-                                                                  language));
-                                break;
-                            }
-                        }
                         // <!> TODO this will stop working if someone change
                         // the content of the event attribute
                         addScriptCaller(target, EVENT_NAMES[i+
                                                            FIRST_ANIMATION_EVENT],
-                                        new ScriptCaller(ctx.getUserAgent(),
-                                                         script, interpret));
+                                        new ScriptCaller(ctx, script, language));
                     }
                 }
                 // not other stuff to do on this kind of events
@@ -216,29 +185,38 @@ class BridgeEventSupport implements SVGConstants {
         for (int i = 0; i < EVENT_ATTRIBUTES_GRAPHICS.length; i++) {
             if (!(script = element.getAttribute(EVENT_ATTRIBUTES_GRAPHICS[i])).
                 equals("")) {
-                if (interpret == null) {
-                    // try to get the intepreter only if we have
-                    // a reason to do it!
-                    interpret = ctx.getInterpreterPool().
-                        getInterpreter(element.getOwnerDocument(), language);
-                    // the interpreter is not avaible => stop it now!
-                    if (interpret == null) {
-                        UserAgent ua = ctx.getUserAgent();
-                        if (ua != null)
-                            ua.displayError(new Exception("unknow language: "+
-                                                          language));
-                        break;
-                    }
-                }
                 // <!> TODO this will stop working if someone change
                 // the content of the event attribute
                 addScriptCaller(target, EVENT_NAMES[i],
-                                 new ScriptCaller(ctx.getUserAgent(),
-                                                  script, interpret));
+                                 new ScriptCaller(ctx, script, language));
             }
         }
     }
 
+    /**
+     * Recursively dispatches the onload events.
+     */
+    public static void dispatchOnLoad(BridgeContext ctx,
+                                      Element root,
+                                      String language) {
+        for (Node n = root.getFirstChild(); n != null; n = n.getNextSibling()) {
+            if (n.getNodeType() == n.ELEMENT_NODE) {
+                dispatchOnLoad(ctx, (Element)n, language);
+            }
+        }
+
+        String s = root.getAttributeNS(null, "onload");
+        if (s.length() != 0) {
+            Event ev;
+            ev = ((DocumentEvent)root.getOwnerDocument()).createEvent("SVGEvents");
+            ev.initEvent("SVGLoad", false, false);
+            EventTarget t = (EventTarget)root;
+            EventListener l = new ScriptCaller(ctx, s, language);
+            t.addEventListener("SVGLoad", l, false);
+            t.dispatchEvent(ev);
+            t.removeEventListener("SVGLoad", l, false);
+        }
+    }
 
     public static void updateDOMListener(BridgeContext ctx,
                                          SVGElement element) {
@@ -327,7 +305,9 @@ class BridgeEventSupport implements SVGConstants {
     }
 
     public static void loadScripts(BridgeContext ctx, Element element) {
-        Document doc = element.getOwnerDocument();
+        UpdateManager um = ctx.getUpdateManager();
+        RunnableQueue rq = um.getScriptingRunnableQueue();
+        Document doc = um.getScriptingDocument();
         NodeList list = element.getElementsByTagNameNS(SVG_NAMESPACE_URI,
                                                        SVG_SCRIPT_TAG);
         final UserAgent ua = ctx.getUserAgent();
@@ -344,18 +324,22 @@ class BridgeEventSupport implements SVGConstants {
                      n = n.getNextSibling()) {
                     script.append(n.getNodeValue());
                 }
-                try {
-                    // use Reader mechanism => no caching
-                    // (will not be revaluated + <script> content is
-                    // generally bigger than the one in event attributes
-                    interpret.evaluate(new StringReader(script.toString()));
-                } catch (IOException io) {
-                    // will never appeared we don't use a file
-                } catch (InterpreterException e) {
-                    if (ua != null)
-                        ua.displayError(new Exception("scripting error: "+
-                                                      e.getMessage()));
-                }
+                rq.invokeLater(new Runnable() {
+                        public void run() {
+                            try {
+                                // use Reader mechanism => no caching
+                                // (will not be revaluated + <script> content is
+                                // generally bigger than the one in event attributes
+                                interpret.evaluate(new StringReader(script.toString()));
+                            } catch (IOException io) {
+                                // will never appeared we don't use a file
+                            } catch (InterpreterException e) {
+                                if (ua != null)
+                                    ua.displayError(new Exception("scripting error: "+
+                                                                  e.getMessage()));
+                            }
+                        }
+                    });
             } else {
                 if (ua != null) {
                     ua.displayError(new Exception("unknown language: "+language));
@@ -367,13 +351,17 @@ class BridgeEventSupport implements SVGConstants {
 	final Interpreter interpret =
 	    ctx.getInterpreterPool().getInterpreter(doc, language);
 	if (interpret != null) {
-	    try {
-		javax.swing.JOptionPane pane = new javax.swing.JOptionPane();
-		interpret.bindObject("pane", pane);
-		interpret.evaluate("function alert(msg) { pane.showMessageDialog(null, msg); }");
-	    } catch (Exception ex) {
-		// nothing to do
-	    }
+            rq.invokeLater(new Runnable() {
+                    public void run() {
+                        try {
+                            javax.swing.JOptionPane pane = new javax.swing.JOptionPane();
+                            interpret.bindObject("pane", pane);
+                            interpret.evaluate("function alert(msg) { pane.showMessageDialog(null, msg); }");
+                        } catch (Exception ex) {
+                            // nothing to do
+                        }
+                    }
+                });
 	}
    }
 
@@ -515,31 +503,49 @@ class BridgeEventSupport implements SVGConstants {
         }
     }
 
-
     public static class ScriptCaller implements EventListener {
         private static String EVENT_NAME = "evt";
 
         private String script = null;
-        private Interpreter interpreter = null;
         private UserAgent ua = null;
+        private BridgeContext context;
+        private String language;
 
-        public ScriptCaller(UserAgent agent,
-                            String str, Interpreter interpret) {
+        public ScriptCaller(BridgeContext ctx,
+                            String str,
+                            String lang) {
             script = str;
-            interpreter = interpret;
-            ua = agent;
+            context = ctx;
+            language = lang;
+            ua = ctx.getUserAgent();
         }
 
         public void handleEvent(Event evt) {
-            interpreter.bindObject(EVENT_NAME, evt);
-            try {
-                // use the String version to enable caching mechanism
-                interpreter.evaluate(script);
-            } catch (InterpreterException e) {
+            UpdateManager um = context.getUpdateManager();
+            final DocumentWrapper dw = um.getScriptingDocument();
+            RunnableQueue rq = um.getScriptingRunnableQueue();
+            final Interpreter interpreter = context.getInterpreterPool().
+                getInterpreter(dw, language);
+            if (interpreter == null) {
                 if (ua != null)
-                    ua.displayError(new Exception("scripting error: "+
-                                                  e.getMessage()));
+                    ua.displayError(new Exception("unknow language: "+
+                                                  language));
+                return;
             }
+            final Event ev = dw.createEventWrapper(evt);
+            rq.invokeLater(new Runnable() {
+                    public void run() {
+                        interpreter.bindObject(EVENT_NAME, ev);
+                        try {
+                            // use the String version to enable caching mechanism
+                            interpreter.evaluate(script);
+                        } catch (InterpreterException e) {
+                            if (ua != null)
+                                ua.displayError(new Exception("scripting error: "+
+                                                              e.getMessage()));
+                        }
+                    }
+                });
         }
     }
 }

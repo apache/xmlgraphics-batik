@@ -549,7 +549,7 @@ public class JGVTComponent extends JComponent {
     }
 
     /**
-     * Renders the GVT tree. Used for the initial rendering and resize only.
+     * Renders the GVT tree.
      */
     protected void renderGVTTree() {
         Dimension d = getSize();
@@ -784,7 +784,16 @@ public class JGVTComponent extends JComponent {
             if (interactor != null) {
                 interactor.keyTyped(e);
                 deselectInteractor();
+            } else if (eventDispatcher != null) {
+                dispatchKeyTyped(e);
             }
+        }
+
+        /**
+         * Dispatches the event to the GVT tree.
+         */
+        protected void dispatchKeyTyped(KeyEvent e) {
+            eventDispatcher.keyTyped(e);
         }
 
         /**
@@ -796,8 +805,15 @@ public class JGVTComponent extends JComponent {
                 interactor.keyPressed(e);
                 deselectInteractor();
             } else if (eventDispatcher != null) {
-                eventDispatcher.keyReleased(e);
+                dispatchKeyPressed(e);
             }
+        }
+        
+        /**
+         * Dispatches the event to the GVT tree.
+         */
+        protected void dispatchKeyPressed(KeyEvent e) {
+            eventDispatcher.keyPressed(e);
         }
 
         /**
@@ -809,8 +825,15 @@ public class JGVTComponent extends JComponent {
                 interactor.keyReleased(e);
                 deselectInteractor();
             } else if (eventDispatcher != null) {
-                eventDispatcher.keyReleased(e);
+                dispatchKeyReleased(e);
             }
+        }
+
+        /**
+         * Dispatches the event to the GVT tree.
+         */
+        protected void dispatchKeyReleased(KeyEvent e) {
+            eventDispatcher.keyReleased(e);
         }
 
         // MouseListener ///////////////////////////////////////////////////////
@@ -824,8 +847,15 @@ public class JGVTComponent extends JComponent {
                 interactor.mouseClicked(e);
                 deselectInteractor();
             } else if (eventDispatcher != null) {
-                eventDispatcher.mouseClicked(e);
+                dispatchMouseClicked(e);
             }
+        }
+
+        /**
+         * Dispatches the event to the GVT tree.
+         */
+        protected void dispatchMouseClicked(MouseEvent e) {
+            eventDispatcher.mouseClicked(e);
         }
 
         /**
@@ -837,8 +867,15 @@ public class JGVTComponent extends JComponent {
                 interactor.mousePressed(e);
                 deselectInteractor();
             } else if (eventDispatcher != null) {
-                eventDispatcher.mousePressed(e);
+                dispatchMousePressed(e);
             }
+        }
+
+        /**
+         * Dispatches the event to the GVT tree.
+         */
+        protected void dispatchMousePressed(MouseEvent e) {
+            eventDispatcher.mousePressed(e);
         }
 
         /**
@@ -850,8 +887,15 @@ public class JGVTComponent extends JComponent {
                 interactor.mouseReleased(e);
                 deselectInteractor();
             } else if (eventDispatcher != null) {
-                eventDispatcher.mouseReleased(e);
+                dispatchMouseReleased(e);
             }
+        }
+
+        /**
+         * Dispatches the event to the GVT tree.
+         */
+        protected void dispatchMouseReleased(MouseEvent e) {
+            eventDispatcher.mouseReleased(e);
         }
 
         /**
@@ -863,8 +907,15 @@ public class JGVTComponent extends JComponent {
                 interactor.mouseEntered(e);
                 deselectInteractor();
             } else if (eventDispatcher != null) {
-                eventDispatcher.mouseEntered(e);
+                dispatchMouseEntered(e);
             }
+        }
+
+        /**
+         * Dispatches the event to the GVT tree.
+         */
+        protected void dispatchMouseEntered(MouseEvent e) {
+            eventDispatcher.mouseEntered(e);
         }
 
         /**
@@ -876,8 +927,15 @@ public class JGVTComponent extends JComponent {
                 interactor.mouseExited(e);
                 deselectInteractor();
             } else if (eventDispatcher != null) {
-                eventDispatcher.mouseExited(e);
+                dispatchMouseExited(e);
             }
+        }
+
+        /**
+         * Dispatches the event to the GVT tree.
+         */
+        protected void dispatchMouseExited(MouseEvent e) {
+            eventDispatcher.mouseExited(e);
         }
 
         // MouseMotionListener /////////////////////////////////////////////////
@@ -895,8 +953,15 @@ public class JGVTComponent extends JComponent {
                 interactor.mouseDragged(e);
                 deselectInteractor();
             } else if (eventDispatcher != null) {
-                eventDispatcher.mouseDragged(e);
+                dispatchMouseDragged(e);
             }
+        }
+
+        /**
+         * Dispatches the event to the GVT tree.
+         */
+        protected void dispatchMouseDragged(MouseEvent e) {
+            eventDispatcher.mouseDragged(e);
         }
 
         /**
@@ -909,8 +974,15 @@ public class JGVTComponent extends JComponent {
                 interactor.mouseMoved(e);
                 deselectInteractor();
             } else if (eventDispatcher != null) {
-                eventDispatcher.mouseMoved(e);
+                dispatchMouseMoved(e);
             }
+        }
+
+        /**
+         * Dispatches the event to the GVT tree.
+         */
+        protected void dispatchMouseMoved(MouseEvent e) {
+            eventDispatcher.mouseMoved(e);
         }
 
         /**
