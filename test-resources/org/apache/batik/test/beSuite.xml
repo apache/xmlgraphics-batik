@@ -1,3 +1,15 @@
+<!-- ========================================================================= -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.        -->
+<!--                                                                           -->
+<!-- This software is published under the terms of the Apache Software License -->
+<!-- version 1.1, a copy of which has been included with this distribution in  -->
+<!-- the LICENSE file.                                                         -->
+<!-- ========================================================================= -->
+
+<!-- ========================================================================= -->
+<!-- @author vincent.hardy@eng.sun.com                                         -->
+<!-- @version $Id$ -->
+<!-- ========================================================================= -->
 <testSuite name="SVG Basic Effectivity Test Suite">
     <testReportProcessor class="org.apache.batik.test.xml.XMLTestReportProcessor" > 
         <arg class="org.apache.batik.test.xml.XSLXMLReportConsumer">
