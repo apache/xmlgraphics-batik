@@ -68,6 +68,8 @@ public class SVGGElementBridge implements GraphicsNodeBridge, SVGConstants {
         if (rect != null) {
             gn.setBackgroundEnable(rect);
         }
+        // visibility
+        gn.setVisible(CSSUtilities.convertVisibility(element));
 
         return gn;
     }

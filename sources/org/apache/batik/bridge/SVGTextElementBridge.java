@@ -145,6 +145,8 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
         }
 
         result.setLocation(new Point2D.Float(x, y));
+        // visibility
+        result.setVisible(CSSUtilities.convertVisibility(element));
 
         return result;
     }

@@ -49,6 +49,8 @@ public class SVGSVGElementBridge implements GraphicsNodeBridge, SVGConstants {
             = new DefaultUnitProcessorContext(ctx,
                                               cssDecl);
         CanvasGraphicsNode node = new CanvasGraphicsNode();
+        // visibility
+        node.setVisible(CSSUtilities.convertVisibility(element));
         float x;
         float y;
         float w;
