@@ -35,6 +35,7 @@ import org.apache.batik.ext.awt.image.GraphicsUtil;
 import org.apache.batik.ext.awt.image.PadMode;
 import org.apache.batik.ext.awt.image.rendered.CachableRed;
 import org.apache.batik.ext.awt.image.rendered.PadRed;
+import org.apache.batik.util.HaltingThread;
 
 /**
  * Simple implementation of the Renderer that supports dynamic updates.
@@ -245,7 +246,7 @@ public class DynamicRenderer extends StaticRenderer {
             }
         }
 
-        if (Thread.currentThread().isInterrupted())
+        if (HaltingThread.hasBeenHalted())
             return;
 
         // System.out.println("Dmg: "   + damagedAreas);

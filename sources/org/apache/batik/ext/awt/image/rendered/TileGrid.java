@@ -19,6 +19,8 @@ package org.apache.batik.ext.awt.image.rendered;
 
 import  java.awt.image.Raster;
 
+import org.apache.batik.util.HaltingThread;
+
 /**
  * This is a Grid based implementation of the TileStore.
  * This makes it pretty quick, but it can use a fair amount of
@@ -145,7 +147,7 @@ public class TileGrid implements TileStore {
             // In all likelyhood the contents of this tile is junk!
             // So don't cache it (returning is probably fine since it
             // won't come back to haunt us...
-            if (Thread.currentThread().isInterrupted())
+            if (HaltingThread.hasBeenHalted())
                 return ras;
 
             item.setRaster(ras);

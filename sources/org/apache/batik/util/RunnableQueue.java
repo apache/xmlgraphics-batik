@@ -88,7 +88,7 @@ public class RunnableQueue implements Runnable {
     /**
      * The current thread.
      */
-    protected Thread runnableQueueThread;
+    protected HaltingThread runnableQueueThread;
 
     /**
      * Creates a new RunnableQueue started in a new thread.
@@ -98,9 +98,10 @@ public class RunnableQueue implements Runnable {
     public static RunnableQueue createRunnableQueue() {
         RunnableQueue result = new RunnableQueue();
         synchronized (result) {
-            Thread t = new Thread(result, "RunnableQueue-" + threadCount++);
-            t.setDaemon(true);
-            t.start();
+            HaltingThread ht = new HaltingThread
+                (result, "RunnableQueue-" + threadCount++);
+            ht.setDaemon(true);
+            ht.start();
             while (result.getThread() == null) {
                 try { 
                     result.wait();
@@ -117,7 +118,7 @@ public class RunnableQueue implements Runnable {
      */
     public void run() {
         synchronized (this) {
-            runnableQueueThread = Thread.currentThread();
+            runnableQueueThread = (HaltingThread)Thread.currentThread();
             // Wake the create method so it knows we are in
             // our run and ready to go.
             notify();
@@ -126,7 +127,7 @@ public class RunnableQueue implements Runnable {
         Link l;
         Runnable rable;
         try {
-            while (!Thread.currentThread().isInterrupted()) {
+            while (!HaltingThread.hasBeenHalted()) {
 
                 // Mutex for suspention work.
                 synchronized (stateLock) {
@@ -196,7 +197,7 @@ public class RunnableQueue implements Runnable {
      * @return null if the RunnableQueue has not entered his
      *         <tt>run()</tt> method.
      */
-    public Thread getThread() {
+    public HaltingThread getThread() {
         return runnableQueueThread;
     }
 

@@ -29,6 +29,7 @@ import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
@@ -39,6 +40,8 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
+
+import org.apache.batik.util.HaltingThread;
 
 /**
  * This class contains methods for creating Document instances
@@ -464,8 +467,8 @@ public class SAXDocumentFactory
 			     String     localName,
 			     String     rawName,
 			     Attributes attributes) throws SAXException {
-        // Check for interruption.
-        if (Thread.currentThread().isInterrupted()) {
+        // Check If we should halt early.
+        if (HaltingThread.hasBeenHalted()) {
             throw new SAXException(new InterruptedIOException());
         }
 
@@ -474,22 +477,23 @@ public class SAXDocumentFactory
 	namespaces.push();
 	for (int i = 0; i < len; i++) {
 	    String aname = attributes.getQName(i);
-	    if (aname.equals("xmlns")) {
+            int slen = aname.length();
+            if (slen < 5) 
+                continue;
+            if (!aname.startsWith("xmlns"))
+                continue;
+            if (slen == 5) {
+                String ns = attributes.getValue(i);
+                if (ns.length() == 0)
+                    ns = null;
+ 		namespaces.put("", ns);
+	    } else if (aname.charAt(5) == ':') {
                 String ns = attributes.getValue(i);
                 if (ns.length() == 0) {
                     ns = null;
                 }
-		namespaces.put("", ns);
-	    } else {
-		if (aname.startsWith("xmlns:")) {
-                    String ns = attributes.getValue(i);
-                    if (ns.length() == 0) {
-                        ns = null;
-                    }
-		    int idx = aname.indexOf(':');
-		    namespaces.put(aname.substring(idx + 1), ns);
-		}
-	    }
+                namespaces.put(aname.substring(6), ns);
+            }
 	}
 
 	// Element creation

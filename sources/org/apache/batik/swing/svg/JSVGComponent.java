@@ -459,13 +459,13 @@ public class JSVGComponent extends JGVTComponent {
         nextGVTTreeBuilder = null;
 
         if (documentLoader != null) {
-            documentLoader.interrupt();
+            documentLoader.halt();
         }
         if (gvtTreeBuilder != null) {
-            gvtTreeBuilder.interrupt();
+            gvtTreeBuilder.halt();
         } 
         if (svgLoadEventDispatcher != null) {
-            svgLoadEventDispatcher.interrupt();
+            svgLoadEventDispatcher.halt();
         } 
         if (nextUpdateManager != null) {
             nextUpdateManager.interrupt();

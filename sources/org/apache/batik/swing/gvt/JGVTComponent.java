@@ -50,6 +50,7 @@ import org.apache.batik.gvt.renderer.ConcreteImageRendererFactory;
 import org.apache.batik.gvt.renderer.ImageRenderer;
 import org.apache.batik.gvt.renderer.ImageRendererFactory;
 import org.apache.batik.gvt.text.Mark;
+import org.apache.batik.util.HaltingThread;
 
 /**
  * This class represents a component which can display a GVT tree.
@@ -104,7 +105,7 @@ public class JGVTComponent extends JComponent {
     /**
      * The progressive paint thread.
      */
-    protected Thread progressivePaintThread;
+    protected HaltingThread progressivePaintThread;
 
     /**
      * The image to paint.
@@ -273,8 +274,8 @@ public class JGVTComponent extends JComponent {
     public void stopProcessing() {
         if (gvtTreeRenderer != null) {
             needRender = false;
-            gvtTreeRenderer.interrupt();
-            interruptProgressivePaintThread();
+            gvtTreeRenderer.halt();
+            haltProgressivePaintThread();
         }
     }
 
@@ -425,7 +426,7 @@ public class JGVTComponent extends JComponent {
     public void setProgressivePaint(boolean b) {
         if (progressivePaint != b) {
             progressivePaint = b;
-            interruptProgressivePaintThread();
+            haltProgressivePaintThread();
         }
     }
 
@@ -712,15 +713,15 @@ public class JGVTComponent extends JComponent {
     protected void scheduleGVTRendering() {
         if (gvtTreeRenderer != null) {
             needRender = true;
-            gvtTreeRenderer.interrupt();
+            gvtTreeRenderer.halt();
         } else {
             renderGVTTree();
         }
     }
 
-    private void interruptProgressivePaintThread() {
+    private void haltProgressivePaintThread() {
         if (progressivePaintThread != null) {
-            progressivePaintThread.interrupt();
+            progressivePaintThread.halt();
             progressivePaintThread = null;
         }
     }
@@ -773,11 +774,11 @@ public class JGVTComponent extends JComponent {
             paintingTransform = null;
             if (progressivePaint && !doubleBufferedRendering) {
                 image = e.getImage();
-                progressivePaintThread = new Thread() {
+                progressivePaintThread = new HaltingThread() {
                     public void run() {
                         final Thread thisThread = this;
                         try {
-                            while (!isInterrupted()) {
+                            while (!hasBeenHalted()) {
                                 EventQueue.invokeLater(new Runnable() {
                                     public void run() {
                                         if (progressivePaintThread ==
@@ -810,7 +811,7 @@ public class JGVTComponent extends JComponent {
          * Called when a rendering was completed.
          */
         public void gvtRenderingCompleted(GVTTreeRendererEvent e) {
-            interruptProgressivePaintThread();
+            haltProgressivePaintThread();
 
             if (doubleBufferedRendering) {
                 suspendInteractions = false;
@@ -848,7 +849,7 @@ public class JGVTComponent extends JComponent {
          * gvtRenderingFailed().
          */
         private void renderingStopped() {
-            interruptProgressivePaintThread();
+            haltProgressivePaintThread();
 
             if (doubleBufferedRendering) {
                 suspendInteractions = false;

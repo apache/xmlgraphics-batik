@@ -34,6 +34,7 @@ import java.awt.image.SinglePixelPackedSampleModel;
 import java.awt.image.WritableRaster;
 
 import org.apache.batik.ext.awt.image.GraphicsUtil;
+import org.apache.batik.util.HaltingThread;
 
 /**
  * This filter simply tiles its tile starting from the upper
@@ -260,6 +261,9 @@ public class TileRed extends AbstractRed implements TileGenerator {
         // System.out.println("tileTx/tileTy : " + tileTx + " / " + tileTy);
         minX = curX;
         while(curY < maxY) {
+            if (HaltingThread.hasBeenHalted())
+                return wr;
+
             while (curX < maxX) {
                 // System.out.println("curX/curY : " + curX + " / " + curY);
                 // System.out.println("transform : " + 
@@ -269,8 +273,6 @@ public class TileRed extends AbstractRed implements TileGenerator {
                 GraphicsUtil.drawImage(g, src);
                 curX += xStep;
                 g.translate(xStep, 0);
-                if (Thread.currentThread().isInterrupted())
-                    return wr;
             }
             curY += yStep;
             g.translate(minX-curX, yStep);

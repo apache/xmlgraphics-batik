@@ -89,7 +89,7 @@ public class StatusBar extends JPanel {
     /**
      * The current display thread.
      */
-    protected Thread displayThread;
+    protected DisplayThread displayThread;
 
     /**
      * Creates a new status bar
@@ -189,10 +189,11 @@ public class StatusBar extends JPanel {
     public void setMessage(String s) {
         setPreferredSize(new Dimension(0, getPreferredSize().height));
         if (displayThread != null) {
-            displayThread.interrupt();
+            displayThread.finish();
         }
         temporaryMessage = s;
-        displayThread = new DisplayThread();
+        Thread old = displayThread;
+        displayThread = new DisplayThread(old);
         displayThread.start();
     }
 
@@ -204,7 +205,7 @@ public class StatusBar extends JPanel {
         mainMessage = s;
         message.setText(mainMessage = s);
         if (displayThread != null) {
-            displayThread.interrupt();
+            displayThread.finish();
             displayThread = null;
         }
         setPreferredSize(new Dimension(0, getPreferredSize().height));
@@ -214,17 +215,53 @@ public class StatusBar extends JPanel {
      * To display the main message
      */
     protected class DisplayThread extends Thread {
+        static final long DEFAULT_DURATION = 5000;
+        long duration;
+        Thread toJoin;
         public DisplayThread() {
+            this(DEFAULT_DURATION, null);
+        }
+        public DisplayThread(long duration) {
+            this(duration, null);
+        }
+        public DisplayThread(Thread toJoin) {
+            this(DEFAULT_DURATION, toJoin);
+        }
+        public DisplayThread(long duration, Thread toJoin) {
+            this.duration = duration;
+            this.toJoin   = toJoin;
             setPriority(Thread.MIN_PRIORITY);
         }
 
+        public synchronized void finish() {
+            this.duration = 0;
+            this.notifyAll();
+        }
+
         public void run() {
-            message.setText(temporaryMessage);
-            try {
-                Thread.sleep(5000);
-            } catch(InterruptedException e) {
+            synchronized (this) {
+                if (toJoin != null) {
+                    while (toJoin.isAlive()) {
+                        try { toJoin.join(); }
+                        catch (InterruptedException ie) { }
+                    }
+                    toJoin = null;
+                }
+
+                message.setText(temporaryMessage);
+
+                long lTime = System.currentTimeMillis();
+
+                while (duration > 0) {
+                    try {
+                        wait(duration);
+                    } catch(InterruptedException e) { }
+                    long cTime = System.currentTimeMillis();
+                    duration -= (cTime-lTime);
+                    lTime = cTime;
+                }
+                message.setText(mainMessage);
             }
-            message.setText(mainMessage);
         }
     }
 }
