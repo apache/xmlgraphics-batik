@@ -220,12 +220,6 @@ public class SVGRenderingAccuracyTest extends AbstractTest {
         = configuration.getString("temp.file.suffix");
 
     /**
-     * Parser class name
-     */
-    public static final String PARSER_CLASS_NAME 
-        = configuration.getString("org.xml.sax.driver");
-
-    /**
      * The URL where the SVG can be found.
      */
     protected URL svgURL;
@@ -883,8 +877,6 @@ public class SVGRenderingAccuracyTest extends AbstractTest {
      */
     public ImageTranscoder getTestImageTranscoder(){
         ImageTranscoder t = new InternalPNGTranscoder();
-        t.addTranscodingHint(PNGTranscoder.KEY_XML_PARSER_CLASSNAME,
-                             PARSER_CLASS_NAME);
         t.addTranscodingHint(PNGTranscoder.KEY_FORCE_TRANSPARENT_WHITE,
                              new Boolean(false));
         t.addTranscodingHint(PNGTranscoder.KEY_BACKGROUND_COLOR,

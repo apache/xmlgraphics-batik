@@ -13,6 +13,7 @@ import org.w3c.dom.*;
 import java.io.*;
 import java.net.*;
 import org.apache.batik.dom.util.*;
+import org.apache.batik.util.*;
 
 import org.apache.batik.test.*;
 
@@ -27,7 +28,7 @@ public class SetAttributeTest extends AbstractTest {
     protected String targetAttribute;
     protected String targetValue;
 
-    protected String parserClassName = "org.apache.crimson.pars                ";
+    protected String parserClassName = XMLResourceDescriptor.getXMLParserClassName();
 
     public static String ERROR_GET_ELEMENT_BY_ID_FAILED 
         = "error.get.element.by.id.failed";

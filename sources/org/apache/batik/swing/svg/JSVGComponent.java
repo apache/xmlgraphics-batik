@@ -51,6 +51,7 @@ import org.apache.batik.swing.gvt.GVTTreeRendererEvent;
 import org.apache.batik.swing.gvt.JGVTComponent;
 
 import org.apache.batik.util.SVGConstants;
+import org.apache.batik.util.XMLResourceDescriptor;
 
 import org.w3c.dom.Element;
 
@@ -907,7 +908,7 @@ public class JSVGComponent extends JGVTComponent {
             if (svgUserAgent != null) {
                 return svgUserAgent.getXMLParserClassName();
             }
-            return "org.apache.crimson.parser.XMLReaderImpl";
+            return XMLResourceDescriptor.getXMLParserClassName();
         }
 
 	/**

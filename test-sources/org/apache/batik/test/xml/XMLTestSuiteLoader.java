@@ -31,6 +31,8 @@ import org.apache.batik.dom.util.DocumentFactory;
 import org.apache.batik.dom.util.SAXDocumentFactory;
 import org.apache.batik.dom.svg.SVGDOMImplementation;
 
+import org.apache.batik.util.XMLResourceDescriptor;
+
 import org.xml.sax.InputSource;
 
 import org.w3c.dom.Element;
@@ -46,11 +48,6 @@ import org.w3c.dom.NodeList;
  * @version $Id$
  */
 public class XMLTestSuiteLoader implements XTSConstants {
-    /**
-     * Configuration parameter. Use same parser as XMLTestSuiteRunner
-     */
-    public static final String XML_PARSER = 
-        "XMLTestSuiteRunner.config.xml.parser";
 
     /**
      * An error happened while loading a test suite document.
@@ -91,7 +88,7 @@ public class XMLTestSuiteLoader implements XTSConstants {
         throws TestException{
         DocumentFactory df 
             = new SAXDocumentFactory(SVGDOMImplementation.getDOMImplementation(), 
-                                     Messages.formatMessage(XML_PARSER, null));
+                                     XMLResourceDescriptor.getXMLParserClassName());
 
         Document doc = null;
 

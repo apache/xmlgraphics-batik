@@ -35,6 +35,8 @@ import org.apache.batik.dom.util.DocumentFactory;
 import org.apache.batik.dom.util.SAXDocumentFactory;
 import org.apache.batik.dom.svg.SVGDOMImplementation;
 
+import org.apache.batik.util.XMLResourceDescriptor;
+
 import org.xml.sax.InputSource;
 
 import org.w3c.dom.Element;
@@ -496,12 +498,6 @@ public class XMLTestSuiteRunner implements XTRunConstants, XTSConstants{
     public static final String ERROR_RUNNING_TEST_SUITE 
         = "XMLTestSuiteRunner.messages.error.running.test.suite";
 
-    /**
-     * Configuration parameter
-     */
-    public static final String XML_PARSER = 
-        "XMLTestSuiteRunner.config.xml.parser";
-
     public static void main(String[] args) {
         if(args.length < 1){
             System.err.println(Messages.formatMessage(USAGE, null));
@@ -538,7 +534,7 @@ public class XMLTestSuiteRunner implements XTRunConstants, XTSConstants{
 
         DocumentFactory df 
             = new SAXDocumentFactory(SVGDOMImplementation.getDOMImplementation(), 
-                                     Messages.formatMessage(XML_PARSER, null));
+                                     XMLResourceDescriptor.getXMLParserClassName());
 
         Document doc = null;
 

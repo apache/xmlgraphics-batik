@@ -681,7 +681,6 @@ abstract class AbstractConfigTest extends AbstractTest implements SVGConverterCo
 class TranscoderConfigTest extends AbstractConfigTest {
     static final String SOURCE_FILE = "samples/anne.svg";
     static final String DEST_FILE_NAME = "samples/anne";
-    static final String XML_PARSER = "org.apache.crimson.parser.XMLReaderImpl";
 
     protected DestinationType dstType;
     /**
@@ -705,7 +704,6 @@ class TranscoderConfigTest extends AbstractConfigTest {
         config.dest = dest;
 
         HashMap hints = new HashMap();
-        hints.put(ImageTranscoder.KEY_XML_PARSER_CLASSNAME, XML_PARSER);
         config.hints = hints;
                   
         setExpectedConfig(config);
@@ -725,13 +723,10 @@ class TranscoderConfigTest extends AbstractConfigTest {
 /**
  * Provides a simple string array constructor which allows the user to 
  * create a test checking for a specific hint configuration.
- * The KEY_XML_PARSER_CLASSNAME  hint is always added to the list
- * passed to the test.
  */
 class HintsConfigTest extends AbstractConfigTest {
     static final String SOURCE_FILE = "samples/anne.svg";
     static final String DEST_FILE_NAME = "samples/anne";
-    static final String XML_PARSER = "org.apache.crimson.parser.XMLReaderImpl";
     static final Class EXPECTED_TRANSCODER_CLASS = org.apache.batik.transcoder.image.PNGTranscoder.class;
     static final DestinationType DST_TYPE = DestinationType.PNG;
 
@@ -750,7 +745,6 @@ class HintsConfigTest extends AbstractConfigTest {
         config.dest = dest;
 
         HashMap hints = new HashMap();
-        hints.put(ImageTranscoder.KEY_XML_PARSER_CLASSNAME, XML_PARSER);
 
         //
         // Add hints from constructor argument
@@ -787,7 +781,6 @@ class HintsConfigTest extends AbstractConfigTest {
  * which ommit the ".svg" extension.
  */
 class SourcesConfigTest extends AbstractConfigTest {
-    static final String XML_PARSER = "org.apache.crimson.parser.XMLReaderImpl";
     static final Class EXPECTED_TRANSCODER_CLASS = org.apache.batik.transcoder.image.PNGTranscoder.class;
     static final DestinationType DST_TYPE = DestinationType.PNG;
     static final String SVG_EXTENSION = ".svg";
@@ -808,7 +801,6 @@ class SourcesConfigTest extends AbstractConfigTest {
         config.dest = dest;
 
         HashMap hints = new HashMap();
-        hints.put(ImageTranscoder.KEY_XML_PARSER_CLASSNAME, XML_PARSER);
         config.hints = hints;
                   
         setExpectedConfig(config);
@@ -834,7 +826,6 @@ class SourcesConfigTest extends AbstractConfigTest {
  * content.
  */
 class DestConfigTest extends AbstractConfigTest {
-    static final String XML_PARSER = "org.apache.crimson.parser.XMLReaderImpl";
     static final Class EXPECTED_TRANSCODER_CLASS = org.apache.batik.transcoder.image.PNGTranscoder.class;
     static final DestinationType DST_TYPE = DestinationType.PNG;
     String[] sourcesStrings;
@@ -860,7 +851,6 @@ class DestConfigTest extends AbstractConfigTest {
         config.dest = dest;
 
         HashMap hints = new HashMap();
-        hints.put(ImageTranscoder.KEY_XML_PARSER_CLASSNAME, XML_PARSER);
         config.hints = hints;
                   
         setExpectedConfig(config);
