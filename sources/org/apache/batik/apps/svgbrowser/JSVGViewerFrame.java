@@ -1511,8 +1511,10 @@ public class JSVGViewerFrame
          * Displays an error resulting from the specified Exception.
          */
         public void displayError(Exception ex) {
+            if (debug) {
+                ex.printStackTrace();
+            }
             displayError(ex.getMessage());
-            ex.printStackTrace();
         }
 
         /**
