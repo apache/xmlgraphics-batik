@@ -43,12 +43,13 @@ public abstract class AbstractEntityReference
      */
     protected AbstractEntityReference(String name, AbstractDocument owner)
 	throws DOMException {
+	ownerDocument = owner;
+
 	if (!DOMUtilities.isValidName(name)) {
 	    throw createDOMException(DOMException.INVALID_CHARACTER_ERR,
 				     "xml.name",
 				     new Object[] { name });
 	}
-	ownerDocument = owner;
 	nodeName = name;
     }
 

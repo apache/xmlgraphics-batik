@@ -570,7 +570,7 @@ public class OutputManager {
      * Prints a CDATA section.
      */
     public void printCDATASection(char[] data) throws IOException {
-        printString("<[CDATA[");
+        printString("<![CDATA[");
         printCharacters(data);
         printString("]]>");
     }

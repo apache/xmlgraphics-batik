@@ -78,8 +78,9 @@ public abstract class AbstractParentNode extends AbstractNode {
 	if (newChild.getNodeType() == DOCUMENT_FRAGMENT_NODE) {
 	    Node n = newChild.getFirstChild();
 	    while (n != null) {
+                Node ns = n.getNextSibling();
 		insertBefore(n, refChild);
-		n = n.getNextSibling();
+		n = ns;
 	    }
 	    return newChild;
 	} else {
@@ -182,8 +183,9 @@ public abstract class AbstractParentNode extends AbstractNode {
 	if (newChild.getNodeType() == DOCUMENT_FRAGMENT_NODE) {
 	    Node n = newChild.getFirstChild();
 	    while (n != null) {
+                Node ns = n.getNextSibling();
 		appendChild(n);
-		n = n.getNextSibling();
+		n = ns;
 	    }
 	    return newChild;
 	} else {
@@ -544,8 +546,8 @@ public abstract class AbstractParentNode extends AbstractNode {
 	    throw createDOMException
 		(DOMException.NOT_FOUND_ERR,
 		 "child.missing",
-		 new Object[] { new Integer(o.getNodeType()),
-				o.getNodeName() });
+		 new Object[] { new Integer(r.getNodeType()),
+				r.getNodeName() });
 	}
 
 	/**

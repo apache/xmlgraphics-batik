@@ -25,14 +25,21 @@ public abstract class AbstractDOMImplementation implements DOMImplementation {
      */
     protected final HashTable features = new HashTable();
     {
-	features.put("XML",            "2.0");
-	features.put("Events",         "2.0");
-	features.put("MouseEvents",    "2.0");
-	features.put("MutationEvents", "2.0");
-	features.put("Traversal",      "2.0");
-	features.put("UIEvents",       "2.0");
+	registerFeature("XML",            new String[] { "1.0", "2.0" });
+	registerFeature("Events",         "2.0");
+	registerFeature("MouseEvents",    "2.0");
+	registerFeature("MutationEvents", "2.0");
+	registerFeature("Traversal",      "2.0");
+	registerFeature("UIEvents",       "2.0");
     }
     
+    /**
+     * Registers a DOM feature.
+     */
+    protected void registerFeature(String name, Object value) {
+        features.put(name.toLowerCase(), value);
+    }
+
     /**
      * Creates a new AbstractDOMImplementation object.
      */
@@ -44,13 +51,23 @@ public abstract class AbstractDOMImplementation implements DOMImplementation {
      * org.w3c.dom.DOMImplementation#hasFeature(String,String)}.
      */
     public boolean hasFeature(String feature, String version) {
-	String v = (String)features.get(feature);
+	Object v = features.get(feature.toLowerCase());
 	if (v == null) {
 	    return false;
 	}
 	if (version == null) {
 	    return true;
 	}
-	return version.equals(v);
+        if (v instanceof String) {
+            return version.equals(v);
+        } else {
+            String[] va = (String[])v;
+            for (int i = 0; i < va.length; i++) {
+                if (v.equals(va[i])) {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }
