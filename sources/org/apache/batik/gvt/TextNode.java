@@ -125,6 +125,8 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
         invalidateGeometryCache();
         this.aci = newAci;
         text = null;
+        textRuns = null;
+        chunkACIs = null;
     }
 
     /**
@@ -161,7 +163,7 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
                                        rc.getFontRenderContext());
             } else {
                 // Don't cache if ACI is null
-                System.out.println("ACI is null for "+this);
+                System.out.println("ACI is null for " + this);
                 return new Rectangle2D.Float(0, 0, 0, 0);
             }
         }
@@ -179,6 +181,7 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
                                       rc.getFontRenderContext());
             } else {
                 // Don't cache if ACI is null
+                System.out.println("ACI is null for " + this);
                 return new Rectangle2D.Float(0, 0, 0, 0);
             }
         }
