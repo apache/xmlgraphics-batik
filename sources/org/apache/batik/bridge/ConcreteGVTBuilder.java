@@ -17,7 +17,6 @@ import java.util.List;
 
 import org.apache.batik.css.HiddenChildElement;
 import org.apache.batik.css.AbstractViewCSS;
-import org.apache.batik.css.HiddenChildElement;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.gvt.GraphicsNode;

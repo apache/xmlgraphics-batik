@@ -113,15 +113,17 @@ public class InterpreterPool {
      * example the language is not recognized by this
      * <code>InterpreterPool</code>). If the document is not <code>null</code>,
      * the variable "document" in the returned interpreter will give access
-     * to an instance of <code>Document</code> or <code>SVGDocument</code> depending
-     * on the type of the document. The interpreter will automatically be released
+     * to an instance of <code>Document</code> or <code>SVGDocument</code>
+     * depending on the type of the document. The interpreter will
+     * automatically be released
      * when the <code>Document</code> will no longer be referenced elsewhere.
      * @param document a DOM <code>Document</code> instance.
      * @param language a mimeType like string describing the language to use
      * (i.e. "text/ecmascript" for ECMAScript interpreter, "text/tcl" for Tcl
      * interpreter...).
      */
-    public synchronized Interpreter getInterpreter(Document document, String language) {
+    public synchronized Interpreter getInterpreter(Document document,
+                                                   String language) {
         // document maybe null HashMap supports null key.
         HashMap interpretersMap = (HashMap)documentsMap.get(document);
         if (interpretersMap == null) {
