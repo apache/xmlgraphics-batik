@@ -144,6 +144,11 @@ public class SVGImageElementBridge implements GraphicsNodeBridge,
         return imgNode;
     }
 
+    public void buildGraphicsNode(GraphicsNode node, BridgeContext ctx,
+                                  Element element) {
+
+    }
+
     protected GraphicsNode createBase64ImageNode(BridgeContext ctx,
                                                  SVGElement svgElement,
                                                  String uriStr) {
