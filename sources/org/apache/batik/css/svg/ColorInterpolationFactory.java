@@ -52,7 +52,7 @@ public class ColorInterpolationFactory
      * Returns the name of the property handled.
      */
     public String getPropertyName() {
-	return CSS_COLOR_INTERPOLATION_PROPERTY;
+	return property;
     }
     
     /**
