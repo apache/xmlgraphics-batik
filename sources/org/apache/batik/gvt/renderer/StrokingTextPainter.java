@@ -691,13 +691,14 @@ public class StrokingTextPainter extends BasicTextPainter {
             layout.getGlyphMetrics(layout.getGlyphCount()-1);
         Rectangle2D     lastBounds  = lastMetrics.getBounds2D();
         float lastW = (float)(lastBounds.getWidth()+lastBounds.getX());
-        float lastH = (float)(lastBounds.getHeight()+lastBounds.getY());
+        float lastH = (float)(lastBounds.getHeight());
         Point2D visualAdvance;
         
         if (!doAdjust) {
             // System.out.println("Adv: " + chunk.advance);
             // System.out.println("LastBounds: " + lastBounds);
             // System.out.println("LastMetrics.hadv: " + lastMetrics.getHorizontalAdvance());
+            // System.out.println("LastMetrics.vadv: " + lastMetrics.getVerticalAdvance());
             visualAdvance = new Point2D.Float
             ((float)(chunk.advance.getX() + lastW -
                      lastMetrics.getHorizontalAdvance()),
