@@ -57,11 +57,13 @@ public class ConcreteShapeNode extends AbstractGraphicsNode
     //
 
     public void setShape(Shape newShape) {
+        // invalidate cached values
+        primitiveBounds = null;
+        bounds = null;
+        // do setShape
         Shape oldShape = shape;
         this.shape = newShape;
         firePropertyChange("shape", oldShape, newShape);
-        primitiveBounds = null;
-        bounds = null;
     }
 
     public Shape getShape() {
@@ -69,12 +71,14 @@ public class ConcreteShapeNode extends AbstractGraphicsNode
     }
 
     public void setShapePainter(ShapePainter newShapePainter) {
+        // invalidate cached values
+        primitiveBounds = null;
+        bounds = null;
+        // do setShapePainter
         ShapePainter oldShapePainter = shapePainter;
         this.shapePainter = newShapePainter;
         firePropertyChange("shapePainter",
                                oldShapePainter, newShapePainter);
-        primitiveBounds = null;
-        bounds = null;
     }
 
     public ShapePainter getShapePainter() {
