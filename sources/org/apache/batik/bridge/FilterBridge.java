@@ -31,6 +31,7 @@ public interface FilterBridge extends Bridge {
      * @param filteredNode the GVT node to which the filter will be attached.
      * @param bridgeContext the context to use.
      * @param filterElement DOM element that represents a filter abstraction
+     * @param filteredElement DOM element that references the input filter element.
      * @param in the <tt>Filter</tt> that represents the current
      *        filter input if the filter chain.
      * @param filterRegion the filter area defined for the filter chained 
@@ -41,11 +42,12 @@ public interface FilterBridge extends Bridge {
      *        know its name.
      */
     public Filter create(GraphicsNode filteredNode,
-                                BridgeContext bridgeContext,
-                                Element filterElement,
-                                Filter in,
-                                FilterRegion filterRegion,
-                                Map filterMap);
+                         BridgeContext bridgeContext,
+                         Element filterElement,
+                         Element filteredElement,
+                         Filter in,
+                         FilterRegion filterRegion,
+                         Map filterMap);
 
     /**
      * Update the <tt>Filter</tt> object to reflect the current

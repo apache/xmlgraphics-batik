@@ -88,7 +88,7 @@ public class SVGUtilities implements SVGConstants {
      *         SOURCE_ALPHA, SOURCE_GRAPHIC, STROKE_PAINT, IDENTIFIER or
      *         EMPTY.
      */
-    public int parseInAttribute(String value) {
+    public static int parseInAttribute(String value) {
         int len = value.length();
         if (value.length() == 0) {
             return EMPTY;
@@ -466,56 +466,52 @@ public class SVGUtilities implements SVGConstants {
      * and height attributes. Uses the input <tt>GraphicsNode</tt>
      * as a default for the region bounds
      */
-    public static FilterRegion buildFilterRegion(Element filterElement,
-                                                 GraphicsNode node){
-        // Extract each of the rectangle parameters
-        Float x = buildFloat(filterElement,
-                                      null,
-                                      ATTR_X);
-        Float y = buildFloat(filterElement,
-                                      null,
-                                      ATTR_Y);
-        Float width = buildFloat(filterElement,
-                                          null,
-                                          ATTR_WIDTH);
-        Float height = buildFloat(filterElement,
-                                           null,
-                                           ATTR_HEIGHT);
+    public static FilterRegion convertFilterRegion(Element filteredElement,
+                                                   GraphicsNode node,
+                                                   UnitProcessor.Context uctx){
 
- 
-        return new ConcreteFilterRegion(node, x, y, width, height);
+        SVGElement svgElement = (SVGElement)filteredElement;
+
+        // Extract string values for x, y, width, height
+        String floatStr = filteredElement.getAttributeNS(null, ATTR_X);
+        floatStr = (floatStr.length() == 0 ? VALUE_ZERO : floatStr);
+        float x = UnitProcessor.svgToUserSpace(floatStr,
+                                               svgElement,
+                                               UnitProcessor.HORIZONTAL_LENGTH,
+                                               uctx);
+
+        floatStr = filteredElement.getAttributeNS(null, ATTR_Y);
+        floatStr = (floatStr.length() == 0 ? VALUE_ZERO : floatStr);
+        float y = UnitProcessor.svgToUserSpace(floatStr,
+                                               svgElement,
+                                               UnitProcessor.VERTICAL_LENGTH,
+                                               uctx);
+
+        floatStr = filteredElement.getAttributeNS(null, ATTR_WIDTH);
+        floatStr = (floatStr.length() == 0 ? VALUE_HUNDRED_PERCENT : floatStr);
+        float width = UnitProcessor.svgToUserSpace(floatStr,
+                                                   svgElement,
+                                                   UnitProcessor.HORIZONTAL_LENGTH,
+                                                   uctx);
+
+        floatStr = filteredElement.getAttributeNS(null, ATTR_HEIGHT);
+        floatStr = (floatStr.length() == 0 ? VALUE_HUNDRED_PERCENT : floatStr);
+        float height = UnitProcessor.svgToUserSpace(floatStr,
+                                                    svgElement,
+                                                    UnitProcessor.VERTICAL_LENGTH,
+                                                    uctx);
+
+        
+        return new ConcreteFilterRegion(node,
+                                        new Float(x), new Float(y), 
+                                        new Float(width), new Float(height));
     }
     
     /**
-     * Returns a Float object corresponding to the input
-     * attribute name. A null value is returned if the attribute
-     * could not be parsed.
-     */
-    public static Float buildFloat(Element element,
-                                   String uri,
-                                   String attrName){
-        Float value = null;
-        String attrValue = element.getAttributeNS(uri, attrName);
-        if(attrValue != null){
-            try{
-                value = new Float(Float.parseFloat(attrValue));
-            }catch(NumberFormatException e){
-            }
-        }
-
-        System.out.println("Value for : " + uri + "/" + attrName + " : " +
-                           value);
-        return value;
-    }
-
-    /**
      * Parses a Float value pair. This assumes that the input attribute
-     * value is of the form <number>, [<number>]
+     * value is of the form &lt;number&gt; [&lt;number&gt;]
      */
-    public static Float[] buildFloatPair(Element element, String uri,
-                                         String attrName) {
-        String attrValue = element.getAttributeNS(uri, attrName);
-        System.out.println("stdDeviation : " + attrValue);
+    public static Float[] buildFloatPair(String attrValue) {
         StringTokenizer st = new StringTokenizer(attrValue);
         Float pair[] = new Float[2];
         if(st.countTokens()>0){
@@ -533,8 +529,6 @@ public class SVGUtilities implements SVGConstants {
                 }catch(NumberFormatException e){}
             }
         }
-
-        System.out.println("pair : " + pair[0] + " / " + pair[1]);
         return pair;
     }
 }

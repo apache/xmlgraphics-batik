@@ -21,11 +21,13 @@ import org.apache.batik.gvt.filter.PadMode;
 import org.apache.batik.gvt.filter.PadRable;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.SVGUtilities;
+import org.apache.batik.util.UnitProcessor;
 
 import org.apache.batik.refimpl.gvt.filter.ConcreteGaussianBlurRable;
 import org.apache.batik.refimpl.gvt.filter.ConcretePadRable;
 
 import org.w3c.dom.Element;
+import org.w3c.dom.css.CSSStyleDeclaration;
 
 /**
  * This class bridges an SVG <tt>filter</tt> element with a concrete
@@ -53,18 +55,20 @@ public class SVGFeGaussianBlurElementBridge implements FilterBridge,
      *        know its name.
      */
     public Filter create(GraphicsNode filteredNode,
-                                BridgeContext bridgeContext,
-                                Element filterElement,
-                                Filter in,
-                                FilterRegion filterRegion,
-                                Map filterMap){
+                         BridgeContext bridgeContext,
+                         Element filterElement,
+                         Element filteredElement,
+                         Filter in,
+                         FilterRegion filterRegion,
+                         Map filterMap){
         // 
-        // Extract deviation
+        // Extract standard deviation
         //
+        String stdDeviation 
+            = filterElement.getAttributeNS(null,
+                                           ATTR_STD_DEVIATION);
         Float deviationPair[] 
-            = SVGUtilities.buildFloatPair(filterElement,
-                                          null,
-                                          ATTR_STD_DEVIATION);
+            = SVGUtilities.buildFloatPair(stdDeviation);
 
         //
         // Build filter only if stdDeviationX is greater than 0
@@ -80,30 +84,56 @@ public class SVGFeGaussianBlurElementBridge implements FilterBridge,
             
             if(stdDeviationY > 0){
                 // Get source
-                /*String inAttr = element.getAttributeNS(null, ATTR_IN);
-                if(inAttr != null){
-                    int inValue = SVGUtilities.parseInAttribute();
-                    switch(inValue){
-                    case SVGUtilities.IDENTIFIER:
-                        in = (Filter)filterMap.get(inAttr);
-                        break;
-                    case SVGUtilities.FILL_PAINT:
-                        
-                    }
-                    }*/
+                String inAttr = filterElement.getAttributeNS(null, ATTR_IN);
+                int inValue = SVGUtilities.parseInAttribute(inAttr);
+                switch(inValue){
+                case SVGUtilities.EMPTY:
+                    // Do not change in's value. It is correctly
+                    // set to the current chain result.
+                    break;
+                case SVGUtilities.BACKGROUND_ALPHA:
+                    throw new Error("BackgroundAlpha not implemented yet");
+                case SVGUtilities.BACKGROUND_IMAGE:
+                    throw new Error("BackgroundImage not implemented yet");
+                case SVGUtilities.FILL_PAINT:
+                    throw new Error("Not implemented yet");
+                case SVGUtilities.SOURCE_ALPHA:
+                    throw new Error("SourceAlpha not implemented yet");
+                case SVGUtilities.SOURCE_GRAPHIC:
+                    in = (Filter)filterMap.get(VALUE_SOURCE_GRAPHIC);
+                    break;
+                case SVGUtilities.STROKE_PAINT:
+                    throw new Error("Not implemented yet");
+                case SVGUtilities.IDENTIFIER:
+                    in = (Filter)filterMap.get(inAttr);
+                    break;
+                default:
+                    // Should never, ever, ever happen
+                    throw new Error();
+                }
 
-                // Build a pad
+                // feGaussianBlur is a point operation. Therefore, to take the
+                // filter primitive region into account, only a pad operation
+                // on the input is required.
+
+                CSSStyleDeclaration cssDecl
+                    = bridgeContext.getViewCSS().getComputedStyle(filterElement, 
+                                                                  null);
+                
+                UnitProcessor.Context uctx
+                    = new DefaultUnitProcessorContext(bridgeContext,
+                                                      cssDecl);
+                 
                 final FilterRegion blurArea 
-                    = SVGUtilities.buildFilterRegion(filterElement,
-                                                     filteredNode);
+                    = SVGUtilities.convertFilterRegion(filteredElement,
+                                                       filteredNode,
+                                                       uctx);
                 
                 PadRable pad = new ConcretePadRable(in, 
                                                     blurArea.getRegion(),
                                                     PadMode.ZERO_PAD){
                         public Rectangle2D getBounds2D(){
                             setPadRect(blurArea.getRegion());
-                            System.out.println("PadRable: " +
-                                               blurArea.getRegion());
                             return super.getBounds2D();
                         }
 
@@ -115,8 +145,6 @@ public class SVGFeGaussianBlurElementBridge implements FilterBridge,
 
                 // Build filter
                 filter = new ConcreteGaussianBlurRable(pad, stdDeviationX, stdDeviationY);
-
-                                                                       
 
                 // Get result attribute if any
                 String result = filterElement.getAttributeNS(null, 

@@ -489,11 +489,12 @@ public class CSSUtilities implements SVGConstants {
     }
 
     /**
-     * Sets up the filter in the input <tt>GraphicsNode</tt>
+     * Returns the <tt>Filter</tt> referenced by the input
+     * <tt>GraphicsNode</tt>.
      */
-    public static void setupFilter(Element element,
-                                   GraphicsNode node,
-                                   BridgeContext ctx){
+    public static Filter convertFilter(Element element,
+                                       GraphicsNode node,
+                                       BridgeContext ctx){
         CSSStyleDeclaration decl
             = ctx.getViewCSS().getComputedStyle(element, null);
 
@@ -515,6 +516,8 @@ public class CSSUtilities implements SVGConstants {
                             filterValue.getPrimitiveType());
         }
         
+        Filter filter = null;
+
         if(uriString != null){
             if(uriString.startsWith("#")){
                 uriString = uriString.substring(1);
@@ -524,25 +527,21 @@ public class CSSUtilities implements SVGConstants {
                     FilterBridge filterBridge
                         = (FilterBridge)ctx.getBridge(filterElement);
                     
-                    Filter filter
-                        = filterBridge.create(node,
-                                              ctx,
-                                              filterElement,
-                                              null,   // in
-                                              null,   // filterRegion
-                                              null);  // filterMap
-                    if(filter != null) {
-                        node.setFilter(filter);
-                    } else {
-                        System.out.println("Could not build filter for : " +
-                                           uriString);
-                    }
+                    filter = filterBridge.create(node,
+                                                 ctx,
+                                                 filterElement,
+                                                 element,
+                                                 null,   // in
+                                                 null,   // filterRegion
+                                                 null);  // filterMap
                 } else {
                     System.out.println("Could not find : " + uriString +
                                        " in document");
                 }
             }
         }
+
+        return filter;
     }
     
 }

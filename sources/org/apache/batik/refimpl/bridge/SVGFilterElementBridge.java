@@ -26,9 +26,11 @@ import org.apache.batik.refimpl.gvt.filter.ConcreteFilterChainRable;
 
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.SVGUtilities;
+import org.apache.batik.util.UnitProcessor;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.css.CSSStyleDeclaration;
 
 /**
  * This class bridges an SVG <tt>filter</tt> element with a concrete
@@ -45,6 +47,7 @@ public class SVGFilterElementBridge implements FilterBridge, SVGConstants {
      * @param filteredNode the node to which the filter will be attached.
      * @param bridgeContext the context to use.
      * @param filterElement DOM element that represents a filter abstraction
+     * @param filteredElement DOM element that is filtered.
      * @param in the <tt>Filter</tt> that represents the current
      *        filter input if the filter chain.
      * @param filterMap a map where the mediator can map a name to the 
@@ -53,11 +56,12 @@ public class SVGFilterElementBridge implements FilterBridge, SVGConstants {
      *        know its name.
      */
     public Filter create(GraphicsNode filteredNode,
-                                BridgeContext bridgeContext,
-                                Element filterElement,
-                                Filter in,
-                                FilterRegion filterRegion,
-                                Map filterMap){
+                         BridgeContext bridgeContext,
+                         Element filterElement,
+                         Element filteredElement,
+                         Filter in,
+                         FilterRegion filterRegion,
+                         Map filterMap){
         // Make the initial source as a RenderableImage
         GraphicsNodeRableFactory gnrFactory 
             = bridgeContext.getGraphicsNodeRableFactory();
@@ -65,9 +69,18 @@ public class SVGFilterElementBridge implements FilterBridge, SVGConstants {
             = gnrFactory.createGraphicsNodeRable(filteredNode);
 
         // Get the filter region and resolution
-        // Rectangle2D filterRegion = getFilterRegion(filterElement);
-        filterRegion = SVGUtilities.buildFilterRegion(filterElement,
-                                                      filteredNode);
+        CSSStyleDeclaration cssDecl
+            = bridgeContext.getViewCSS().getComputedStyle(filterElement, 
+                                                          null);
+        
+        UnitProcessor.Context uctx
+            = new DefaultUnitProcessorContext(bridgeContext,
+                                              cssDecl);
+        
+        filterRegion = SVGUtilities.convertFilterRegion(filterElement,
+                                                        filteredNode,
+                                                        uctx);
+
         // Build a ConcreteFilterChainRable
         FilterChainRable filterChain 
             = new ConcreteFilterChainRable(sourceGraphic, filterRegion);
@@ -107,6 +120,7 @@ public class SVGFilterElementBridge implements FilterBridge, SVGConstants {
         NodeList childList = filterElement.getChildNodes();
         if(in == null){
             in = sourceGraphic;  // For the filter element, the in parameter is overridden
+            filterNodeMap.put(VALUE_SOURCE_GRAPHIC, sourceGraphic);
         }
 
         if(childList != null){
@@ -124,6 +138,7 @@ public class SVGFilterElementBridge implements FilterBridge, SVGConstants {
                             = bridge.create(filteredNode,
                                             bridgeContext,
                                             (Element)child,
+                                            filteredElement,
                                             in,
                                             filterRegion,
                                             filterNodeMap);

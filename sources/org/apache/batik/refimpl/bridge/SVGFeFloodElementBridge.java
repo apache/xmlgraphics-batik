@@ -31,6 +31,7 @@ import org.apache.batik.refimpl.gvt.filter.ConcreteFloodRable;
 
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.SVGUtilities;
+import org.apache.batik.util.UnitProcessor;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -69,19 +70,32 @@ public class SVGFeFloodElementBridge implements FilterBridge, SVGConstants {
      *        know its name.
      */
     public Filter create(GraphicsNode filteredNode,
-                                BridgeContext bridgeContext,
-                                Element filterElement,
-                                Filter in,
-                                FilterRegion filterRegion,
-                                Map filterMap){
+                         BridgeContext bridgeContext,
+                         Element filterElement,
+                         Element filteredElement,
+                         Filter in,
+                         FilterRegion filterRegion,
+                         Map filterMap){
         // Extract flood color
         CSSStyleDeclaration decl
             = bridgeContext.getViewCSS().getComputedStyle(filterElement, null);
         Color floodColor
             = CSSUtilities.convertFloodColorToPaint(decl);
-        filterRegion = SVGUtilities.buildFilterRegion(filterElement,
-                                                      filteredNode);
 
+
+        CSSStyleDeclaration cssDecl
+            = bridgeContext.getViewCSS().getComputedStyle(filterElement, 
+                                                          null);
+        
+        UnitProcessor.Context uctx
+            = new DefaultUnitProcessorContext(bridgeContext,
+                                              cssDecl);
+        
+        final FilterRegion blurArea 
+            = SVGUtilities.convertFilterRegion(filteredElement,
+                                               filteredNode,
+                                               uctx);
+        
         // First, create the FloodRable that maps the input filter node
         FloodRable flood = new ConcreteFloodRable(filterRegion, floodColor);
 

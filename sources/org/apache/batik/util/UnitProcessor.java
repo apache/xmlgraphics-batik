@@ -137,6 +137,8 @@ public abstract class UnitProcessor {
     }
 
     /**
+     * <!> FIX ME: add a scale factor to account for ObjectBoundingBox
+     *
      * Converts a SVG length value to screen pixels.
      * @param t the unit type like specified in the SVGLength interface.
      * @param v the length value.
