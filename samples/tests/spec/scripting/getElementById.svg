@@ -107,7 +107,9 @@
          checkTest(null, svg1, "id9", "t21");
          checkTest(id9,  svg2, "id9", "t22");
 
-         
+         var id5_2 = id5.cloneNode(true);
+         g.appendChild(id5_2);
+         checkTest(id5_2, document, "id5", "t23");
       }
    </script>
 
@@ -121,9 +123,9 @@
             fill="crimson" stroke="black"
       /><svg id="svg1" x="0" y="0" width="450" height="500"
          ><rect id="id5" x="250" y="60" width="50" height="50"
-               fill="crimson" stroke="black"
-         /><rect id="id6" x="310" y="60" width="50" height="50"
                fill="gold" stroke="black"
+         /><rect id="id6" x="310" y="60" width="50" height="50"
+               fill="crimson" stroke="black"
       /></svg><rect id="id7" x="370" y="60" width="50" height="50"
                     fill="gold" stroke="black"/>
 
@@ -175,5 +177,7 @@
        >Test 21: <tspan id="t21" x="225" text-anchor="start"/></text>
       <text x="220" y="340" text-anchor="end"
        >Test 22: <tspan id="t22" x="225" text-anchor="start"/></text>
+      <text x="220" y="360" text-anchor="end"
+       >Test 23: <tspan id="t23" x="225" text-anchor="start"/></text>
    </g>
 </svg>
