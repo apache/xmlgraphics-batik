@@ -896,6 +896,9 @@ public class JSVGViewerFrame
 
             int choice = fileChooser.showSaveDialog(JSVGViewerFrame.this);
             if (choice == JFileChooser.APPROVE_OPTION) {
+		float quality = 
+		    JPEGOptionPanel.showDialog(JSVGViewerFrame.this);
+
                 final File f = fileChooser.getSelectedFile();
                 BufferedImage buffer = svgCanvas.getOffScreen();
                 if (buffer != null) {
@@ -906,8 +909,12 @@ public class JSVGViewerFrame
                     int w = buffer.getWidth();
                     int h = buffer.getHeight();
                     final ImageTranscoder trans = new JPEGTranscoder();
-                    trans.addTranscodingHint(JPEGTranscoder.KEY_XML_PARSER_CLASSNAME,
-                                             application.getXMLParserClassName());
+                    trans.addTranscodingHint
+			(JPEGTranscoder.KEY_XML_PARSER_CLASSNAME,
+			 application.getXMLParserClassName());
+                    trans.addTranscodingHint
+			(JPEGTranscoder.KEY_QUALITY, new Float(quality));
+		    
                     final BufferedImage img = trans.createImage(w, h);
 
                     // paint the buffer to the image
