@@ -17,6 +17,7 @@ import java.awt.geom.Rectangle2D;
 import org.apache.batik.ext.awt.image.renderable.ClipRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.gvt.CanvasGraphicsNode;
+import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.parser.ParseException;
 import org.apache.batik.util.SVGConstants;
@@ -204,7 +205,21 @@ public class SVGSVGElementBridge extends SVGGElementBridge {
      */
     public void handleDOMAttrModifiedEvent(MutationEvent evt) {
         // Don't call 'super' because there is no 'transform' attribute on <svg>
-   }
+        String attrName = evt.getAttrName();
+        if (attrName.equals(SVG_X_ATTRIBUTE) ||
+            attrName.equals(SVG_Y_ATTRIBUTE) ||
+            attrName.equals(SVG_WIDTH_ATTRIBUTE) ||
+            attrName.equals(SVG_HEIGHT_ATTRIBUTE) ||
+            attrName.equals(SVG_VIEW_BOX_ATTRIBUTE) ||
+            attrName.equals(SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE)) {
+            
+            CompositeGraphicsNode gn = node.getParent();
+            gn.remove(node);
+            disposeTree(e);
+
+            handleElementAdded(gn, (Element)e.getParentNode(), e);
+        }
+    }
 
     /**
      * A viewport defined an &lt;svg> element.

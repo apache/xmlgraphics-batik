@@ -97,7 +97,17 @@ public class SVGGElementBridge extends AbstractGraphicsNodeBridge {
      * Invoked when an MutationEvent of type 'DOMNodeInserted' is fired.
      */
     public void handleDOMNodeInsertedEvent(MutationEvent evt) {
-        Element childElt = (Element)evt.getTarget();
+        handleElementAdded((CompositeGraphicsNode)node, 
+                           e, 
+                           (Element)evt.getTarget());
+    }
+
+    /**
+     * Invoked when an MutationEvent of type 'DOMNodeInserted' is fired.
+     */
+    public void handleElementAdded(CompositeGraphicsNode gn, 
+                                   Element parent, 
+                                   Element childElt) {
         // build the graphics node
         GVTBuilder builder = ctx.getGVTBuilder();
         GraphicsNode childNode = builder.build(ctx, childElt);
@@ -105,14 +115,14 @@ public class SVGGElementBridge extends AbstractGraphicsNodeBridge {
             return; // the added element is not a graphic element
         }
         // add the graphics node
-        Node n = e.getFirstChild();
-        Node lastChild = e.getLastChild();
+        Node n = parent.getFirstChild();
+        Node lastChild = parent.getLastChild();
         if (n == childElt) {
             // add at the beginning
-            ((CompositeGraphicsNode)node).add(0, childNode);
+            gn.add(0, childNode);
         } else if (lastChild == childElt) {
             // append at the end
-            ((CompositeGraphicsNode)node).add(childNode);
+            gn.add(childNode);
         } else {
             // find the index of the GraphicsNode to add
             int index = 0;
@@ -125,7 +135,7 @@ public class SVGGElementBridge extends AbstractGraphicsNodeBridge {
                 n = n.getNextSibling();
             }
             // insert at the index
-            ((CompositeGraphicsNode)node).add(index, childNode);
+            gn.add(index, childNode);
         }
     }
 }
