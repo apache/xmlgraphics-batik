@@ -54,6 +54,7 @@ import java.awt.Cursor;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 
+import org.apache.batik.css.engine.CSSEngine;
 import org.apache.batik.dom.svg.SVGOMCSSImportedElementRoot;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.svg.SVGOMUseElement;
@@ -82,6 +83,8 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
      * content.
      */
     protected ReferencedElementMutationListener l;
+
+    protected BridgeContext subCtx=null;
 
     /**
      * Constructs a new bridge for the &lt;use> element.
@@ -146,6 +149,15 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
         SVGOMDocument refDocument
             = (SVGOMDocument)refElement.getOwnerDocument();
         boolean isLocal = (refDocument == document);
+
+        BridgeContext theCtx = ctx;
+        subCtx = null;
+        if (!isLocal) {
+            CSSEngine eng = refDocument.getCSSEngine();
+            subCtx = (BridgeContext)refDocument.getCSSEngine().getCSSContext();
+            theCtx = subCtx;
+        }
+            
         // import or clone the referenced element in current document
         Element localRefElement = (isLocal)
             ? (Element)refElement.cloneNode(true)
@@ -210,7 +222,7 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
         CSSUtilities.computeStyleAndURIs(refElement, localRefElement, uri);
 
         GVTBuilder builder = ctx.getGVTBuilder();
-        GraphicsNode refNode = builder.build(ctx, g);
+        GraphicsNode refNode = builder.build(theCtx, g);
 
         ///////////////////////////////////////////////////////////////////////
         boolean update = true;
@@ -263,16 +275,16 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
             l.target = target;
             
             target.addEventListener("DOMAttrModified", l, true);
-            ctx.storeEventListener(target, "DOMAttrModified", l, true);
+            theCtx.storeEventListener(target, "DOMAttrModified", l, true);
             
             target.addEventListener("DOMNodeInserted", l, true);
-            ctx.storeEventListener(target, "DOMNodeInserted", l, true);
+            theCtx.storeEventListener(target, "DOMNodeInserted", l, true);
             
             target.addEventListener("DOMNodeRemoved", l, true);
-            ctx.storeEventListener(target, "DOMNodeRemoved", l, true);
+            theCtx.storeEventListener(target, "DOMNodeRemoved", l, true);
             
             target.addEventListener("DOMCharacterDataModified", l, true);
-            ctx.storeEventListener
+            theCtx.storeEventListener
                 (target, "DOMCharacterDataModified", l, true);
         }
         
@@ -288,14 +300,16 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
 
         super.dispose();
 
-        if (l == null) 
-            return;
-        // Remove event listeners
-        EventTarget target = l.target;
-        target.removeEventListener("DOMAttrModified", l, true);
-        target.removeEventListener("DOMNodeInserted", l, true);
-        target.removeEventListener("DOMNodeRemoved", l,true);
-        target.removeEventListener("DOMCharacterDataModified", l, true);
+        if (l != null) {
+            // Remove event listeners
+            EventTarget target = l.target;
+            target.removeEventListener("DOMAttrModified", l, true);
+            target.removeEventListener("DOMNodeInserted", l, true);
+            target.removeEventListener("DOMNodeRemoved", l, true);
+            target.removeEventListener("DOMCharacterDataModified",l, true);
+        }
+
+        subCtx = null;
         l = null;
     }
 

@@ -173,31 +173,44 @@ public abstract class PaintServer
     public static ShapePainter convertFillAndStroke(Element e,
                                                     ShapeNode node,
                                                     BridgeContext ctx) {
-
-        Paint  fillPaint   = convertFillPaint  (e, node, ctx);
-        Paint  strokePaint = convertStrokePaint(e, node, ctx);
-        Stroke stroke      = convertStroke     (e);
-
         Shape shape = node.getShape();
         if (shape == null) return null;
 
-        if (stroke == null) {
-            FillShapePainter fp = new FillShapePainter(shape);
-            fp.setPaint(fillPaint);
-            return fp;
-        }
-
+        Paint  fillPaint   = convertFillPaint  (e, node, ctx);
         FillShapePainter fp = new FillShapePainter(shape);
         fp.setPaint(fillPaint);
 
+        Stroke stroke      = convertStroke     (e);
+        if (stroke == null)
+            return fp;
+
+        Paint  strokePaint = convertStrokePaint(e, node, ctx);
         StrokeShapePainter sp = new StrokeShapePainter(shape);
-        sp.setStroke(PaintServer.convertStroke(e));
+        sp.setStroke(stroke);
         sp.setPaint(strokePaint);
 
         CompositeShapePainter cp = new CompositeShapePainter(shape);
         cp.addShapePainter(fp);
         cp.addShapePainter(sp);
         return cp;
+    }
+
+
+    public static ShapePainter convertStrokePainter(Element e,
+                                                    ShapeNode node,
+                                                    BridgeContext ctx) {
+        Shape shape = node.getShape();
+        if (shape == null) return null;
+
+        Stroke stroke = convertStroke(e);
+        if (stroke == null)
+            return null;
+
+        Paint  strokePaint = convertStrokePaint(e, node, ctx);
+        StrokeShapePainter sp = new StrokeShapePainter(shape);
+        sp.setStroke(stroke);
+        sp.setPaint(strokePaint);
+        return sp;
     }
 
     /////////////////////////////////////////////////////////////////////////

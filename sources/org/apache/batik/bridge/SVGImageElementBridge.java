@@ -62,6 +62,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.batik.css.engine.CSSEngine;
 import org.apache.batik.css.engine.SVGCSSEngine;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.svg.SVGOMElement;
@@ -100,6 +101,8 @@ import org.w3c.dom.svg.SVGSVGElement;
 public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
 
     protected SVGDocument imgDocument;
+    protected EventListener listener = null;
+    protected BridgeContext subCtx = null;
     protected boolean hitCheckChildren = false;
     /**
      * Constructs a new bridge for the &lt;image> element.
@@ -305,6 +308,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
                                       new Object[] {purl});
         } catch (Exception ex) {
             /* Nothing to do */
+            ex.printStackTrace();
         } 
 
         try {
@@ -552,9 +556,9 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
      * @param e the image element
      * @param uriStr the uri of the image
      */
-    protected static GraphicsNode createRasterImageNode(BridgeContext ctx,
-                                                       Element       e,
-                                                       Filter        img) {
+    protected GraphicsNode createRasterImageNode(BridgeContext ctx,
+                                                 Element       e,
+                                                 Filter        img) {
         Rectangle2D bounds = getImageBounds(ctx, e);
         if ((bounds.getWidth() == 0) || (bounds.getHeight() == 0)) {
             ShapeNode sn = new ShapeNode();
@@ -566,7 +570,6 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
         if ((obj != null) && (obj instanceof SVGDocument)) {
             // Ok so we are dealing with a broken link.
             SVGOMDocument doc = (SVGOMDocument)obj;
-            ctx.initializeDocument(doc);
             return createSVGImageNode(ctx, e, doc);
         }
 
@@ -596,9 +599,19 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
      * @param e the image element
      * @param imgDocument the SVG document that represents the image
      */
-    protected static GraphicsNode createSVGImageNode(BridgeContext ctx,
-                                                     Element e,
-                                                     SVGDocument imgDocument) {
+    protected GraphicsNode createSVGImageNode(BridgeContext ctx,
+                                              Element e,
+                                              SVGDocument imgDocument) {
+        CSSEngine eng = ((SVGOMDocument)imgDocument).getCSSEngine();
+        if (eng != null) {
+            subCtx = (BridgeContext)eng.getCSSContext();
+        } else {
+            subCtx = new BridgeContext(ctx.getUserAgent(), 
+                                       ctx.getDocumentLoader());
+            subCtx.setGVTBuilder(ctx.getGVTBuilder());
+            subCtx.setDocument(imgDocument);
+            subCtx.initializeDocument(imgDocument);
+        }
 
         CompositeGraphicsNode result = new CompositeGraphicsNode();
         // handles the 'preserveAspectRatio', 'overflow' and 'clip' and 
@@ -619,8 +632,9 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
 
         SVGSVGElement svgElement = imgDocument.getRootElement();
         CanvasGraphicsNode node;
-        node = (CanvasGraphicsNode)ctx.getGVTBuilder().build(ctx, svgElement);
-        ctx.addUIEventListeners(imgDocument);
+        node = (CanvasGraphicsNode)subCtx.getGVTBuilder().build
+            (subCtx, svgElement);
+        subCtx.addUIEventListeners(imgDocument);
 
         // HACK: remove the clip set by the SVGSVGElement as the overflow
         // and clip properties must be ignored. The clip will be set later
@@ -644,40 +658,65 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
         // if an event occured inside the SVG image document, send it
         // to the <image> element (inside the original document).
         if (ctx.isInteractive()) {
-            EventListener listener = new ForwardEventListener(svgElement, e);
+            listener = new ForwardEventListener(svgElement, e);
             EventTarget tgt = (EventTarget)svgElement;
 
             tgt.addEventListener(SVG_EVENT_CLICK, listener, false);
-            ctx.storeEventListener(tgt, SVG_EVENT_CLICK, listener, false);
+            subCtx.storeEventListener(tgt, SVG_EVENT_CLICK, listener, false);
 
             tgt.addEventListener(SVG_EVENT_KEYDOWN, listener, false);
-            ctx.storeEventListener(tgt, SVG_EVENT_KEYDOWN, listener, false);
+            subCtx.storeEventListener(tgt, SVG_EVENT_KEYDOWN, listener, false);
 
             tgt.addEventListener(SVG_EVENT_KEYPRESS, listener, false);
-            ctx.storeEventListener(tgt, SVG_EVENT_KEYPRESS, listener, false);
+            subCtx.storeEventListener(tgt, SVG_EVENT_KEYPRESS, listener, false);
 
             tgt.addEventListener(SVG_EVENT_KEYUP, listener, false);
-            ctx.storeEventListener(tgt, SVG_EVENT_KEYUP, listener, false);
+            subCtx.storeEventListener(tgt, SVG_EVENT_KEYUP, listener, false);
 
             tgt.addEventListener(SVG_EVENT_MOUSEDOWN, listener, false);
-            ctx.storeEventListener(tgt, SVG_EVENT_MOUSEDOWN, listener,false);
+            subCtx.storeEventListener(tgt, SVG_EVENT_MOUSEDOWN, listener,false);
 
             tgt.addEventListener(SVG_EVENT_MOUSEMOVE, listener, false);
-            ctx.storeEventListener(tgt, SVG_EVENT_MOUSEMOVE, listener,false);
+            subCtx.storeEventListener(tgt, SVG_EVENT_MOUSEMOVE, listener,false);
 
             tgt.addEventListener(SVG_EVENT_MOUSEOUT, listener, false);
-            ctx.storeEventListener(tgt, SVG_EVENT_MOUSEOUT, listener, false);
+            subCtx.storeEventListener(tgt, SVG_EVENT_MOUSEOUT, listener, false);
 
             tgt.addEventListener(SVG_EVENT_MOUSEOVER, listener, false);
-            ctx.storeEventListener(tgt, SVG_EVENT_MOUSEOVER, listener,false);
+            subCtx.storeEventListener(tgt, SVG_EVENT_MOUSEOVER, listener,false);
 
             tgt.addEventListener(SVG_EVENT_MOUSEUP, listener, false);
-            ctx.storeEventListener(tgt, SVG_EVENT_MOUSEUP, listener, false);
+            subCtx.storeEventListener(tgt, SVG_EVENT_MOUSEUP, listener, false);
         }
 
         return result;
     }
 
+    public void dispose() {
+        if (imgDocument != null) {
+            SVGSVGElement svgElement = imgDocument.getRootElement();
+            disposeTree(svgElement);
+        }
+        super.dispose();
+
+        if ((imgDocument != null) && (listener != null)) {
+            EventTarget tgt = (EventTarget)imgDocument.getRootElement();
+
+            tgt.removeEventListener(SVG_EVENT_CLICK,     listener, false);
+            tgt.removeEventListener(SVG_EVENT_KEYDOWN,   listener, false);
+            tgt.removeEventListener(SVG_EVENT_KEYPRESS,  listener, false);
+            tgt.removeEventListener(SVG_EVENT_KEYUP,     listener, false);
+            tgt.removeEventListener(SVG_EVENT_MOUSEDOWN, listener, false);
+            tgt.removeEventListener(SVG_EVENT_MOUSEMOVE, listener, false);
+            tgt.removeEventListener(SVG_EVENT_MOUSEOUT,  listener, false);
+            tgt.removeEventListener(SVG_EVENT_MOUSEOVER, listener, false);
+            tgt.removeEventListener(SVG_EVENT_MOUSEUP,   listener, false);
+            listener = null;
+        }
+        subCtx.removeUIEventListeners(imgDocument);
+        imgDocument = null;
+        subCtx = null;
+    }
     /**
      * A simple DOM listener to forward events from the SVG image document to
      * the original document.
@@ -893,7 +932,6 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
 
         SVGDocument blDoc = brokenLinkProvider.getBrokenLinkDocument
             (this, ERR_URI_IO, fullparams);
-        ctx.initializeDocument(blDoc);
         hitCheckChildren = true;
         return createSVGImageNode(ctx, e, blDoc);
     }

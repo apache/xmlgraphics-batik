@@ -2116,6 +2116,7 @@ public class GlyphLayout implements TextSpanLayout {
                         if ((dy + inc <= height) &&
                             !emi.isFlowRegionBreak()) {
                             dy += inc;
+                            prevBotMargin = emi.getBottomMargin();
                         } else {
                             // Move to next flow region..
                             if (!flowRectsIter.hasNext()) {
@@ -2129,10 +2130,11 @@ public class GlyphLayout implements TextSpanLayout {
                             // start a new alignment offset for this flow rect.
                             verticalAlignOffset = new Point2D.Float(0,0);
 
-                            // New rect so no previous row to consider...
-                            dy        = emi.getTopMargin();
+                            // Don't use this paragraph info in next
+                            // flow region!
+                            dy            = 0;
+                            prevBotMargin = 0;
                         }
-                        prevBotMargin = emi.getBottomMargin();
                     }
 
                     if (currentRegion == null) break;
@@ -2183,7 +2185,7 @@ public class GlyphLayout implements TextSpanLayout {
                 // start a new alignment offset for this flow rect..
                 verticalAlignOffset = new Point2D.Float(0,0);
 
-                            // New rect so no previous row to consider...
+                // New rect so no previous row to consider...
                 dy        = mi.getTopMargin();
             }
             prevBotMargin = mi.getBottomMargin();
@@ -2360,7 +2362,7 @@ public class GlyphLayout implements TextSpanLayout {
                     prevDesc  = 0;
                     // previous flows?
 
-                    if (gi.getAdv() > oldWidth) {
+                    if ((oldWidth > width) || (lnBreaks != 0)) {
                         // need to back up to start of line...
                         gi = lineGI.copy(gi);
                     }
@@ -2401,7 +2403,11 @@ public class GlyphLayout implements TextSpanLayout {
                 if (flowRectsIter.hasNext()) {
                     currentRegion = (RegionInfo) flowRectsIter.next();
                     height = (float) currentRegion.getHeight();
-                    dy     = mi.getTopMargin();
+
+                    // Don't use this paragraph's info in next
+                    // flow region!
+                    dy            = 0;
+                    prevBotMargin = 0;
                     verticalAlignOffset = new Point2D.Float(0,0);
                 }
             }

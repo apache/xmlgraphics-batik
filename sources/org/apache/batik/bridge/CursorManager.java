@@ -466,7 +466,10 @@ public class CursorManager implements SVGConstants, ErrorConstants {
             Element rootElement = null;
             Node n = resolver.getNode(uriStr, cursorElement);
             if (n.getNodeType() == Node.DOCUMENT_NODE) {
-                rootElement = ((SVGDocument)n).getRootElement();
+                SVGDocument doc = (SVGDocument)n;
+                // FIXX: really should be subCtx here.
+                ctx.initializeDocument(doc); 
+                rootElement = doc.getRootElement();
             } else {
                 throw new BridgeException 
                     (cursorElement, ERR_URI_IMAGE_INVALID,

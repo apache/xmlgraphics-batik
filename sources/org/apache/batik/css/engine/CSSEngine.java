@@ -850,6 +850,7 @@ public abstract class CSSEngine {
             sm.putComputed(propidx, true);
             value = result;
         }
+
         return value;
     }
 
@@ -2070,14 +2071,15 @@ public abstract class CSSEngine {
 
         CSSImportedElementRoot ier = getImportedChild(node);
         if (ier != null) {
-            Node c = ier.getFirstChild();
+            Element e = (Element)ier.getFirstChild();
             // Don't recascade trees that have been imported.
             // If you do it will use the stylesheets from this
             // document instead of the original document.  Also
             // currently there isn't any supported way to modify
             // the content imported from the other document so
             // the cascade can't change.
-            invalidateProperties(c, inherited, null, ier.getIsLocal());
+            CSSEngine subEng = cssContext.getCSSEngineForElement(e);
+            subEng.invalidateProperties(e, inherited, null, recascade);
         }
         for (Node n = node.getFirstChild();
              n != null;

@@ -90,11 +90,6 @@ public class DocumentLoader {
     protected UserAgent userAgent;
 
     /**
-     * The bridge context.
-     */
-    protected BridgeContext bridgeContext;
-
-    /**
      * Constructs a new <tt>DocumentLoader</tt>.
      */
     protected DocumentLoader() { }
@@ -136,13 +131,11 @@ public class DocumentLoader {
             return ret;
 
         SVGDocument document = documentFactory.createSVGDocument(uri);
-        if (bridgeContext != null) {
-            bridgeContext.initializeDocument(document);
-        }
 
         DocumentDescriptor desc = documentFactory.getDocumentDescriptor();
         DocumentState state = new DocumentState(uri, document, desc);
         cacheMap.put(uri, state);
+
         return state.document;
     }
 
@@ -159,20 +152,12 @@ public class DocumentLoader {
             return ret;
 
         SVGDocument document = documentFactory.createSVGDocument(uri, is);
-        if (bridgeContext != null) {
-            bridgeContext.initializeDocument(document);
-        }
 
         DocumentDescriptor desc = documentFactory.getDocumentDescriptor();
         DocumentState state = new DocumentState(uri, document, desc);
         cacheMap.put(uri, state);
+
         return state.document;
-    }
-    /**
-     * Sets the bridge context.
-     */
-    public void setBridgeContext(BridgeContext bc) {
-        bridgeContext = bc;
     }
 
     /**

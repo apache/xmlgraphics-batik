@@ -136,4 +136,9 @@ public interface CSSContext {
      * Returns true if the document is interactive, false otherwise.
      */
     public boolean isInteractive();
+
+    /**
+     * Returns the CSS engine associated with given element.
+     */
+    public CSSEngine getCSSEngineForElement(Element e);
 }
