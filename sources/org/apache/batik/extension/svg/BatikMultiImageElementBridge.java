@@ -9,25 +9,32 @@
 package org.apache.batik.extension.svg;
 
 import java.awt.Dimension;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.batik.ext.awt.image.renderable.ClipRable8Bit;
+import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.bridge.Bridge;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeException;
 import org.apache.batik.bridge.CSSUtilities;
 import org.apache.batik.bridge.SVGImageElementBridge;
 import org.apache.batik.bridge.SVGUtilities;
+import org.apache.batik.bridge.Viewport;
 import org.apache.batik.dom.svg.SVGOMElement;
 import org.apache.batik.dom.svg.XMLBaseSupport;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.ImageNode;
 import org.apache.batik.util.ParsedURL;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 /**
@@ -99,7 +106,35 @@ public class BatikMultiImageElementBridge extends SVGImageElementBridge
 
         Rectangle2D b = getImageBounds(ctx, e);
 
-        List uris   = new LinkedList();
+        // 'transform'
+        AffineTransform at = null;
+        String s = e.getAttribute(SVG_TRANSFORM_ATTRIBUTE);
+        if (s.length() != 0)
+            at = SVGUtilities.convertTransform(e, SVG_TRANSFORM_ATTRIBUTE, s);
+        else
+            at = new AffineTransform();
+
+        at.translate(b.getX(), b.getY());
+        imgNode.setTransform(at);
+        
+        // 'visibility'
+        imgNode.setVisible(CSSUtilities.convertVisibility(e));
+
+        Rectangle2D clip;
+        clip = new Rectangle2D.Double(0,0,b.getWidth(), b.getHeight());
+        Filter filter = imgNode.getGraphicsNodeRable(true);
+        imgNode.setClip(new ClipRable8Bit(filter, clip));
+
+        // 'enable-background'
+        Rectangle2D r = CSSUtilities.convertEnableBackground(e);
+        if (r != null) {
+            imgNode.setBackgroundEnable(r);
+        }
+        ctx.openViewport(e, new MultiImageElementViewport
+                         ((float)b.getWidth(), (float)b.getHeight()));
+
+
+        List elems  = new LinkedList();
         List minDim = new LinkedList();
         List maxDim = new LinkedList();
 
@@ -108,19 +143,22 @@ public class BatikMultiImageElementBridge extends SVGImageElementBridge
                 continue;
             
             Element se = (Element)n;
-            if (!(se.getNamespaceURI().equals(BATIK_EXT_NAMESPACE_URI)) ||
-                !(se.getLocalName().equals(BATIK_EXT_SUB_IMAGE_REF_TAG)))
+            if (!se.getNamespaceURI().equals(BATIK_EXT_NAMESPACE_URI))
                 continue;
-
-            addInfo(se, uris, minDim, maxDim, b);
+            if (se.getLocalName().equals(BATIK_EXT_SUB_IMAGE_TAG)) {
+                addInfo(se, elems, minDim, maxDim, b);
+            }
+            if (se.getLocalName().equals(BATIK_EXT_SUB_IMAGE_REF_TAG)) {
+                addRefInfo(se, elems, minDim, maxDim, b);
+            }
         }
 
-        Dimension [] mindary = new Dimension[uris.size()];
-        Dimension [] maxdary = new Dimension[uris.size()];
-        ParsedURL [] uary = new ParsedURL[uris.size()];
+        Dimension [] mindary = new Dimension[elems.size()];
+        Dimension [] maxdary = new Dimension[elems.size()];
+        Element   [] elemary = new Element  [elems.size()];
         Iterator mindi = minDim.iterator();
         Iterator maxdi = maxDim.iterator();
-        Iterator ui = uris.iterator();
+        Iterator ei = elems.iterator();
         int n=0;
         while (mindi.hasNext()) {
             Dimension minD = (Dimension)mindi.next();
@@ -135,33 +173,20 @@ public class BatikMultiImageElementBridge extends SVGImageElementBridge
                 }
             }
             for (int j=n; j>i; j--) {
-                uary[j]    = uary[j-1];
+                elemary[j] = elemary[j-1];
                 mindary[j] = mindary[j-1];
                 maxdary[j] = maxdary[j-1];
             }
             
-            uary   [i] = (ParsedURL)ui.next();
+            elemary[i] = (Element)ei.next();
             mindary[i] = minD;
             maxdary[i] = maxD;
             n++;
         }
 
-        // System.out.println("Bounds: " + bounds);
-        // System.out.println("ImgB: " + imgBounds);
-        
-
-        GraphicsNode node = new MultiResGraphicsNode(e, b, uary, 
-                                                     mindary, maxdary);
-
-        // 'transform'
-        String s = e.getAttributeNS(null, SVG_TRANSFORM_ATTRIBUTE);
-        if (s.length() != 0) {
-            node.setTransform
-                (SVGUtilities.convertTransform(e, SVG_TRANSFORM_ATTRIBUTE, s));
-        }
-        // 'visibility'
-        imgNode.setVisible(CSSUtilities.convertVisibility(e));
-
+        GraphicsNode node = new MultiResGraphicsNode(e, clip, elemary, 
+                                                     mindary, maxdary,
+                                                     ctx);
         imgNode.setImage(node);
 
         return imgNode;
@@ -172,6 +197,18 @@ public class BatikMultiImageElementBridge extends SVGImageElementBridge
      */
     public boolean isComposite() {
         return false;
+    }
+
+    public void buildGraphicsNode(BridgeContext ctx,
+                                  Element e,
+                                  GraphicsNode node) {
+        if (ctx.isDynamic()) {
+            initializeDynamicSupport(ctx, e, node);
+        }
+        // Handle children elements such as <title>
+        //SVGUtilities.bridgeChildren(ctx, e);
+        //super.buildGraphicsNode(ctx, e, node);
+        ctx.closeViewport(e);
     }
 
     /**
@@ -192,22 +229,78 @@ public class BatikMultiImageElementBridge extends SVGImageElementBridge
         ((SVGOMElement)e).setSVGContext(this);
     }
 
-    protected void addInfo(Element e, Collection uris, 
+    /**
+     * Disposes this BridgeUpdateHandler and releases all resources.
+     */
+    public void dispose() {
+        ctx.removeViewport(e);
+        super.dispose();
+    }
+
+    protected void addInfo(Element e, Collection elems, 
                            Collection minDim, Collection maxDim,
                            Rectangle2D bounds) {
+        Document doc   = e.getOwnerDocument();
+        Element  gElem = doc.createElementNS(SVG_NAMESPACE_URI, 
+                                              SVG_G_TAG);
+        NamedNodeMap attrs = e.getAttributes();
+        int len = attrs.getLength();
+        for (int i = 0; i < len; i++) {
+            Attr attr = (Attr)attrs.item(i);
+            gElem.setAttributeNS(attr.getNamespaceURI(),
+                                 attr.getName(),
+                                 attr.getValue());
+        }
+        // move the children from <subImage> to the <g> element
+        for (Node n = e.getFirstChild();
+             n != null;
+             n = e.getFirstChild()) {
+            gElem.appendChild(n);
+        }
+        e.appendChild(gElem);
+        elems.add(gElem);
+        minDim.add(getElementMinPixel(e, bounds));
+        maxDim.add(getElementMaxPixel(e, bounds));
+    }
+
+    protected void addRefInfo(Element e, Collection elems, 
+                              Collection minDim, Collection maxDim,
+                              Rectangle2D bounds) {
         String uriStr = XLinkSupport.getXLinkHref(e);
         if (uriStr.length() == 0) {
             throw new BridgeException(e, ERR_ATTRIBUTE_MISSING,
                                       new Object[] {"xlink:href"});
         }
-
         String baseURI = XMLBaseSupport.getCascadedXMLBase(e);
         ParsedURL purl;
         if (baseURI == null) purl = new ParsedURL(uriStr);
         else                 purl = new ParsedURL(baseURI, uriStr);
-        uris.add(purl);
+        Document doc = e.getOwnerDocument();
+        Element imgElem = doc.createElementNS(SVG_NAMESPACE_URI, 
+                                              SVG_IMAGE_TAG);
+        imgElem.setAttributeNS(XLinkSupport.XLINK_NAMESPACE_URI, 
+                               "href", purl.toString());
+        // move the attributes from <subImageRef> to the <image> element
+        NamedNodeMap attrs = e.getAttributes();
+        int len = attrs.getLength();
+        for (int i = 0; i < len; i++) {
+            Attr attr = (Attr)attrs.item(i);
+            imgElem.setAttributeNS(attr.getNamespaceURI(),
+                                   attr.getName(),
+                                   attr.getValue());
+        }
+        String s;
+        s = e.getAttribute("x");
+        if (s.length() == 0) imgElem.setAttribute("x", "0");
+        s = e.getAttribute("y");
+        if (s.length() == 0) imgElem.setAttribute("y", "0");
+        s = e.getAttribute("width");
+        if (s.length() == 0) imgElem.setAttribute("width", "100%");
+        s = e.getAttribute("height");
+        if (s.length() == 0) imgElem.setAttribute("height", "100%");
+        e.appendChild(imgElem);
+        elems.add(imgElem);
 
-        
         minDim.add(getElementMinPixel(e, bounds));
         maxDim.add(getElementMaxPixel(e, bounds));
     }
@@ -240,5 +333,38 @@ public class BatikMultiImageElementBridge extends SVGImageElementBridge
         
         return new Dimension((int)(bounds.getWidth()/xPixSz+0.5), 
                              (int)(bounds.getHeight()/yPixSz+0.5)); 
+    }
+
+    /**
+     * A viewport defined an &lt;svg> element.
+     */
+    public static class MultiImageElementViewport implements Viewport {
+        private float width;
+        private float height;
+
+        /**
+         * Constructs a new viewport with the specified <tt>SVGSVGElement</tt>.
+         * @param e the SVGSVGElement that defines this viewport
+         * @param w the width of the viewport
+         * @param h the height of the viewport
+         */
+        public MultiImageElementViewport(float w, float h) {
+            this.width = w;
+            this.height = h;
+        }
+
+        /**
+         * Returns the width of this viewport.
+         */
+        public float getWidth(){
+            return width;
+        }
+
+        /**
+         * Returns the height of this viewport.
+         */
+        public float getHeight(){
+            return height;
+        }
     }
 }
