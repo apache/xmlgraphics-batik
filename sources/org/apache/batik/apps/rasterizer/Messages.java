@@ -60,4 +60,19 @@ public class Messages {
         throws MissingResourceException {
         return localizableSupport.formatMessage(key, args);
     }
+
+    public static String get(String key) 
+        throws MissingResourceException {
+        return formatMessage(key, null);
+    }
+    
+    public static String get(String key, String def){
+        String value = def;
+        try{
+            value  = get(key);
+        }catch(MissingResourceException e){
+        }
+        
+        return value;
+    }
 }

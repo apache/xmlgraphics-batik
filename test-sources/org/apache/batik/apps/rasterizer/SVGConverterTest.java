@@ -125,28 +125,27 @@ public class SVGConverterTest extends DefaultTestSuite {
         addTest(t);
         t.setId("HintsConfigTest.KEY_ALTERNATE_STYLESHEET");
 
+        t = new HintsConfigTest(new Object[][]{
+            {ImageTranscoder.KEY_XML_PARSER_VALIDATING, new Boolean(true)}}){
+                protected void deltaConfigure(SVGConverter c){
+                    c.setValidate(true);
+                }
+            };
+        addTest(t);
+        t.setId("HintsConfigTest.KEY_XML_PARSER_VALIDATING");
+
 
         //
         // Check sources
         //
         t = new SourcesConfigTest(new String[] { "samples/anne", "samples/batikFX", "samples/tests/spec/styling/smiley" }){
                 protected void setSources(SVGConverter c){
-                    c.setSourcesStrings(new String[] {"samples/anne.svg", "samples/batikFX.svg", "samples/tests/spec/styling/smiley.svg"});
+                    c.setSources(new String[] {"samples/anne.svg", "samples/batikFX.svg", "samples/tests/spec/styling/smiley.svg"});
                 }
             };
             
         addTest(t);
         t.setId("SourcesConfigTest.SimpleList");
-
-        t = new SourcesConfigTest(new String[] 
-            { "samples/tests/spec/coordinates/em", 
-              "samples/tests/spec/coordinates/percentagesAndUnits" }) {
-                protected void setSources(SVGConverter c){
-                    c.setSrcDir(new File("samples/tests/spec/coordinates"));
-                }
-            };
-        addTest(t);
-        t.setId("SourcesConfigTest.SrcDir");
 
         //
         // Check destination
@@ -154,7 +153,7 @@ public class SVGConverterTest extends DefaultTestSuite {
         t = new DestConfigTest(new String[] { "samples/anne.png" },
                                new String[] { "test-reports/anne.png"}){
                 protected void setDestination(SVGConverter c){
-                    c.setDstFile(new File("test-reports/anne.png"));
+                    c.setDst(new File("test-reports/anne.png"));
                 }
             };
         addTest(t);
@@ -163,7 +162,7 @@ public class SVGConverterTest extends DefaultTestSuite {
         t = new DestConfigTest(new String[] { "samples/anne.svg", "samples/tests/spec/styling/smiley.svg" },
                                new String[] { "test-resources/anne.png", "test-resources/smiley.png"}){
                 protected void setDestination(SVGConverter c){
-                    c.setDstDir(new File("test-resources"));
+                    c.setDst(new File("test-resources"));
                 }
             };
         addTest(t);
@@ -173,31 +172,31 @@ public class SVGConverterTest extends DefaultTestSuite {
         // Add configuration error test. These tests check that the expected
         // error gets reported for a given mis-configuration
         ///////////////////////////////////////////////////////////////////////
-        t = new ConfigErrorTest(SVGConverter.ERROR_NO_SVG_FILES_IN_SRC_DIR) {
+        t = new ConfigErrorTest(SVGConverter.ERROR_NO_SOURCES_SPECIFIED) {
                 protected void configure(SVGConverter c){
-                    c.setSourcesStrings(null);
-                    c.setSrcDir(new File("test-resources"));
+                    c.setSources(null);
                 }
             };
         addTest(t);
-        t.setId("ConfigErrorTest.ERROR_NO_FILES_IN_SRC_DIR");
-
-        t = new ConfigErrorTest(SVGConverter.ERROR_NO_SRCDIR_OR_SRCFILE_SPECIFIED){
-                protected void configure(SVGConverter c){
-                    c.setSourcesStrings(null);
-                }
-            };
-        addTest(t);
-        t.setId("ConfigErrorTest.ERROR_NO_SRCDIR_OR_SRCFILE_SPECIFIED");
+        t.setId("ConfigErrorTest.ERROR_NO_SOURCES_SPECIFIED");
 
         t = new ConfigErrorTest(SVGConverter.ERROR_CANNOT_COMPUTE_DESTINATION){
                 protected void configure(SVGConverter c){
                     // Do not set destination file or destination directory
-                    c.setSourcesStrings(new String[]{"http://xml.apache.org/batik/dummy.svg"});
+                    c.setSources(new String[]{"http://xml.apache.org/batik/dummy.svg"});
                 }
             };
         addTest(t);
         t.setId("ConfigErrorTest.ERROR_CANNOT_COMPUTE_DESTINATION");
+
+        t = new ConfigErrorTest(SVGConverter.ERROR_CANNOT_USE_DST_FILE){
+                protected void configure(SVGConverter c){
+                    c.setSources(new String[]{"samples/anne.svg", "samples/batikFX.svg"});
+                    c.setDst(new File("samples/anne.png"));
+                }
+            };
+        addTest(t);
+        t.setId("ConfigErrorTest.ERROR_CANNOT_USE_DST_FILE");
 
         t = new ConfigErrorTest(SVGConverter.ERROR_CANNOT_ACCESS_TRANSCODER){
                 protected void configure(SVGConverter c){
@@ -209,8 +208,8 @@ public class SVGConverterTest extends DefaultTestSuite {
         
         t = new ConfigErrorTest(SVGConverter.ERROR_SOURCE_SAME_AS_DESTINATION){
                 protected void configure(SVGConverter c){
-                    c.setSourcesStrings(new String[]{ "samples/anne.svg" });
-                    c.setDstFile(new File("samples/anne.svg"));
+                    c.setSources(new String[]{ "samples/anne.svg" });
+                    c.setDst(new File("samples/anne.svg"));
                 }
             };
         addTest(t);
@@ -218,8 +217,8 @@ public class SVGConverterTest extends DefaultTestSuite {
 
         t = new ConfigErrorTest(SVGConverter.ERROR_CANNOT_READ_SOURCE){
                 protected void configure(SVGConverter c){
-                    c.setSourcesStrings(new String[]{ "test-resources/org/apache/batik/apps/rasterizer/notReadable.svg" });
-                    c.setDstDir(new File("test-reports"));
+                    c.setSources(new String[]{ "test-resources/org/apache/batik/apps/rasterizer/notReadable.svg" });
+                    c.setDst(new File("test-reports"));
                 }
 
                 public boolean proceedWithSourceTranscoding(SVGConverterSource source,
@@ -240,7 +239,7 @@ public class SVGConverterTest extends DefaultTestSuite {
 
         t = new ConfigErrorTest(SVGConverter.ERROR_CANNOT_OPEN_SOURCE){
                 protected void configure(SVGConverter c){
-                    c.setSourcesStrings(new String[]{ "test-resources/org/apache/batik/apps/rasterizer/notReadable.svg" });
+                    c.setSources(new String[]{ "test-resources/org/apache/batik/apps/rasterizer/notReadable.svg" });
                 }
 
                 public boolean proceedWithComputedTask(Transcoder transcoder,
@@ -265,8 +264,8 @@ public class SVGConverterTest extends DefaultTestSuite {
 
         t = new ConfigErrorTest(SVGConverter.ERROR_OUTPUT_NOT_WRITEABLE){
                 protected void configure(SVGConverter c){
-                    c.setSourcesStrings(new String[]{ "samples/anne.svg" });
-                    c.setDstFile(new File("test-resources/org/apache/batik/apps/rasterizer/readOnly.png"));
+                    c.setSources(new String[]{ "samples/anne.svg" });
+                    c.setDst(new File("test-resources/org/apache/batik/apps/rasterizer/readOnly.png"));
                 }
             };
         addTest(t);
@@ -274,7 +273,7 @@ public class SVGConverterTest extends DefaultTestSuite {
                    
         t = new ConfigErrorTest(SVGConverter.ERROR_UNABLE_TO_CREATE_OUTPUT_DIR){
                 protected void configure(SVGConverter c){
-                    c.setDstDir(new File("samples/anne.svg"));
+                    c.setDst(new File("ZYZ::/cannotCreate"));
                 }
             };
         addTest(t);
@@ -282,7 +281,7 @@ public class SVGConverterTest extends DefaultTestSuite {
 
         t = new ConfigErrorTest(SVGConverter.ERROR_WHILE_RASTERIZING_FILE){
                 protected void configure(SVGConverter c){
-                    c.setSourcesStrings(new String[]{ "test-resources/org/apache/batik/apps/rasterizer/invalidSVG.svg"});
+                    c.setSources(new String[]{ "test-resources/org/apache/batik/apps/rasterizer/invalidSVG.svg"});
                 }
             };
         addTest(t);
@@ -459,6 +458,10 @@ abstract class AbstractConfigTest extends AbstractTest implements SVGConverterCo
         return sb.toString();
     }
 
+
+    public String getName(){
+        return getId();
+    }
 
     public TestReport runImpl() throws Exception {
         SVGConverter c = new SVGConverter(this);
@@ -678,8 +681,8 @@ class TranscoderConfigTest extends AbstractConfigTest {
      * Configures the test with the given mime type 
      */
     public void configure(SVGConverter c){
-        c.setSourcesStrings(new String[] { SOURCE_FILE });
-        c.setDstFile(new File(DEST_FILE_NAME + dstType.getExtension()));
+        c.setSources(new String[] { SOURCE_FILE });
+        c.setDst(new File(DEST_FILE_NAME + dstType.getExtension()));
         c.setDestinationType(dstType);
     }
 }
@@ -731,8 +734,8 @@ class HintsConfigTest extends AbstractConfigTest {
      * Configures the test with the given mime type 
      */
     public void configure(SVGConverter c){
-        c.setSourcesStrings(new String[] { SOURCE_FILE });
-        c.setDstFile(new File(DEST_FILE_NAME + DST_TYPE.getExtension()));
+        c.setSources(new String[] { SOURCE_FILE });
+        c.setDst(new File(DEST_FILE_NAME + DST_TYPE.getExtension()));
         c.setDestinationType(DST_TYPE);
         deltaConfigure(c);
     }
@@ -834,7 +837,7 @@ class DestConfigTest extends AbstractConfigTest {
      */
     public void configure(SVGConverter c){
         c.setDestinationType(DST_TYPE);
-        c.setSourcesStrings(sourcesStrings);
+        c.setSources(sourcesStrings);
         setDestination(c);
     }
 
@@ -877,13 +880,14 @@ class ConfigErrorTest extends AbstractTest implements SVGConverterController{
         SVGConverter c = new SVGConverter(this);
 
         c.setDestinationType(DestinationType.PNG);
-        c.setSourcesStrings(new String[]{ "samples/anne.svg" });
+        c.setSources(new String[]{ "samples/anne.svg" });
 
         configure(c);
 
         try {
             c.execute();
         } catch(SVGConverterException e){
+            e.printStackTrace();
             foundErrorCode = e.getErrorCode();
         }
 
@@ -957,8 +961,8 @@ class ConverterOutputTest extends AbstractTest {
     public TestReport runImpl() throws Exception {
         SVGConverter c = new SVGConverter();
         System.out.println("Converting : " + svgSource);
-        c.setSourcesStrings(new String[]{svgSource});
-        c.setDstFile(new File(pngDest));
+        c.setSources(new String[]{svgSource});
+        c.setDst(new File(pngDest));
 
         c.setDestinationType(DestinationType.PNG);
         
