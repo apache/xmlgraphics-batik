@@ -284,9 +284,55 @@ public class ShapeNode extends AbstractGraphicsNode {
         if (sensitiveBounds != null)
             return sensitiveBounds;
 
-        Shape sensitive = getSensitiveArea();
-        if (sensitive == null) return null;
-        sensitiveBounds = sensitive.getBounds2D();
+        if (shapePainter == null)
+            return null;
+
+        // <!> NOT REALLY NICE CODE BUT NO OTHER WAY
+        ShapePainter strokeShapePainter = null;
+        ShapePainter fillShapePainter = null;
+        if (shapePainter instanceof StrokeShapePainter) {
+            strokeShapePainter = shapePainter;
+        } else if (shapePainter instanceof FillShapePainter) {
+            fillShapePainter = shapePainter;
+        } else if (shapePainter instanceof CompositeShapePainter) {
+            CompositeShapePainter cp = (CompositeShapePainter)shapePainter;
+
+            for (int i=0; i < cp.getShapePainterCount(); ++i) {
+                ShapePainter sp = cp.getShapePainter(i);
+                if (sp instanceof StrokeShapePainter) {
+                    strokeShapePainter = sp;
+                } else if (sp instanceof FillShapePainter) {
+                    fillShapePainter = sp;
+                }
+            }
+        } else return null; // Don't know what we have...
+
+
+        switch(pointerEventType) {
+        case VISIBLE_PAINTED:
+        case PAINTED:
+            sensitiveBounds = shapePainter.getPaintedBounds2D();
+            break;
+        case VISIBLE_FILL:
+        case FILL:
+            if (fillShapePainter != null) {
+                sensitiveBounds = fillShapePainter.getSensitiveBounds2D();
+            }
+            break;
+        case VISIBLE_STROKE:
+        case STROKE:
+            if (strokeShapePainter != null) {
+                sensitiveBounds = strokeShapePainter.getSensitiveBounds2D();
+            }
+            break;
+        case VISIBLE:
+        case ALL:
+            sensitiveBounds = shapePainter.getSensitiveBounds2D();
+            break;
+        case NONE:
+        default:
+            // nothing to tdo
+        }
         return sensitiveBounds;
     }
 
