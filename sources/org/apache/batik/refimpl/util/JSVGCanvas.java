@@ -943,6 +943,13 @@ public class JSVGCanvas
     }
 
     /**
+     * Returns the current buffer.
+     */
+    public BufferedImage getBuffer() {
+        return buffer;
+    }
+
+    /**
      * Computes the value of the transform attribute.
      */
     protected void computeTransform() {
