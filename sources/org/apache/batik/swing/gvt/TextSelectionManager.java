@@ -30,6 +30,7 @@ import org.apache.batik.gvt.event.SelectionEvent;
 import org.apache.batik.gvt.event.SelectionListener;
 
 import org.apache.batik.gvt.text.ConcreteTextSelector;
+import org.apache.batik.gvt.text.Mark;
 
 /**
  * This class represents an object which manage GVT text nodes selection.
@@ -105,6 +106,13 @@ public class TextSelectionManager {
      */
     public Overlay getSelectionOverlay() {
         return selectionOverlay;
+    }
+
+    /**
+     * Sets the selected text
+     */
+    public void setSelection(Mark start, Mark end) {
+        textSelector.setSelection(start, end);
     }
 
     /**
