@@ -524,14 +524,7 @@ public abstract class AbstractTiledRed
 	if (blocks == null)
 	    return;
 
-	if (GraphicsUtil.useMacOSXHacks) 
-	    // Mac OS X doesn't properly handle child rasters that
-	    // only reference part of the parent.  In particular it
-	    // appears to draw as if the childs X & Y were located at
-	    // the parents upper left corner.
-	    drawBlockAndCopy(blocks, wr);
-	else
-	    drawBlockInPlace(blocks, wr);
+        drawBlockInPlace(blocks, wr);
     }
 
     protected void drawBlockAndCopy(TileBlock []blocks, WritableRaster wr) {

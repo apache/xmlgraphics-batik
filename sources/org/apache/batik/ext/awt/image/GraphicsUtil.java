@@ -287,16 +287,12 @@ public class GraphicsUtil {
 
             SampleModel srcSM = cr.getSampleModel();
             if ((srcSM.getWidth()*srcSM.getHeight()) >
-                (4*clipR.width*clipR.height))
-                // if srcSM tiles are 4x the clip size then just
-                // draw the renderedImage 
+                (clipR.width*clipR.height))
+                // if srcSM tiles are larger than the clip size
+                // then just draw the renderedImage 
                 useDrawRenderedImage = true;
 
             if (useDrawRenderedImage) {
-		// We use this code path on MacOSX since the tile
-		// drawing code below sometimes dies for no real
-		// reason this seems to behave better.
-
                 // org.ImageDisplay.showImage("foo: ", cr);
                 // This can be significantly faster but can also
                 // require much more memory.
