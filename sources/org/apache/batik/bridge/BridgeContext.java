@@ -713,6 +713,11 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     /**
      * The DOM EventListener to receive 'DOMCharacterDataModified' event.
      */
+    protected EventListener unloadListener;
+
+    /**
+     * The DOM EventListener to receive 'DOMCharacterDataModified' event.
+     */
     protected EventListener domCharacterDataModifiedListener;
 
     /**
@@ -739,6 +744,13 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      * The EventListener that is responsible of managing DOM focus event.
      */
     protected FocusManager focusManager;
+
+    /**
+     * Sets the unload listener.
+     */
+    protected void setUnloadListener(EventListener l) {
+        unloadListener = l;
+    }
 
     /**
      * Adds EventListeners to the DOM and CSSEngineListener to the
@@ -782,6 +794,10 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      */
     public void dispose() {
         EventTarget evtTarget = (EventTarget)document;
+
+        // remove the listener added by BridgeEventSupport
+        evtTarget.removeEventListener("SVGUnload", unloadListener, false);
+
         evtTarget.removeEventListener("DOMAttrModified",
                                       domAttrModifiedEventListener, 
                                       true);
@@ -798,6 +814,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         SVGOMDocument svgDocument = (SVGOMDocument)document;
         CSSEngine cssEngine = svgDocument.getCSSEngine();
         cssEngine.removeCSSEngineListener(cssPropertiesChangedListener);
+        cssEngine.dispose();
 
         focusManager.dispose();
     }
