@@ -39,29 +39,29 @@
         <feGaussianBlur stdDeviation="3 2" x="-10%" y="-10%" width="120%" height="120%" /> 
     </filter>
         <g opacity="1.0" transform="translate(225, 250) rotate(-260)" id="rotatedText">
-        <g x="0" y="0" transform="scale(0.9) rotate(20)">
+        <g  transform="scale(0.9) rotate(20)">
         <use xlink:href="#words"/>
-        <g x="0" y="0" transform="scale(0.9) rotate(20)">
+        <g  transform="scale(0.9) rotate(20)">
         <use xlink:href="#words"/>
-        <g x="0" y="0" transform="scale(0.9) rotate(20)">
+        <g  transform="scale(0.9) rotate(20)">
         <use xlink:href="#words"/>
-        <g x="0" y="0" transform="scale(0.9) rotate(20)">
+        <g  transform="scale(0.9) rotate(20)">
         <use xlink:href="#words"/>
-        <g x="0" y="0" transform="scale(0.9) rotate(20)">
+        <g  transform="scale(0.9) rotate(20)">
         <use xlink:href="#words"/>
-        <g x="0" y="0" transform="scale(0.9) rotate(20)">
+        <g  transform="scale(0.9) rotate(20)">
         <use xlink:href="#words"/>
-        <g x="0" y="0" transform="scale(0.9) rotate(20)">
+        <g  transform="scale(0.9) rotate(20)">
         <use xlink:href="#words"/>
-        <g x="0" y="0" transform="scale(0.9) rotate(20)">
+        <g  transform="scale(0.9) rotate(20)">
         <use xlink:href="#words"/>
-        <g x="0" y="0" transform="scale(0.9) rotate(20)">
+        <g  transform="scale(0.9) rotate(20)">
         <use xlink:href="#words"/>
-        <g x="0" y="0" transform="scale(0.9) rotate(20)">
+        <g  transform="scale(0.9) rotate(20)">
         <use xlink:href="#words"/>
-        <g x="0" y="0" transform="scale(0.9) rotate(20)">
+        <g  transform="scale(0.9) rotate(20)">
         <use xlink:href="#words"/>
-        <g x="0" y="0" transform="scale(0.9) rotate(20)">
+        <g  transform="scale(0.9) rotate(20)">
         <use xlink:href="#words"/>
         </g></g></g></g></g>
         </g></g></g></g></g>
@@ -76,7 +76,7 @@
     </g>
     <g x="0%" width="100%" y="0%" height="100%">
         <use xlink:href="#rotatedText" fill="white" stroke-width="2" stroke="black"/>
-        <g x="0" y="0" transform="translate(225, 250) scale(0.254)">
+        <g  transform="translate(225, 250) scale(0.254)">
         <use xlink:href="#text" fill="black" filter="url(#blur)" opacity="0.4" transform="translate(-10, 8)"/>
         <use xlink:href="#text" stroke="black" stroke-width="16" fill="none"/>
         <use xlink:href="#text" stroke="none" fill="white"/>
