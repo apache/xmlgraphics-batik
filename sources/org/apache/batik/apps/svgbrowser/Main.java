@@ -801,7 +801,9 @@ public class Main implements Application {
             lastVisited.removeElement(uri);
         }
 
-        lastVisited.addElement(uri);
+        if (maxVisitedURIs > 0) {
+            lastVisited.addElement(uri);
+        }
 
         // Now, save the list of visited URL into the preferences
         StringBuffer lastVisitedBuffer = new StringBuffer();
