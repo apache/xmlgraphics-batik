@@ -46,9 +46,11 @@ import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
@@ -63,6 +65,7 @@ import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -142,6 +145,8 @@ public class JSVGViewerFrame
     public final static String OPEN_LOCATION_ACTION = "OpenLocationAction";
     public final static String NEW_WINDOW_ACTION = "NewWindowAction";
     public final static String RELOAD_ACTION = "ReloadAction";
+    public final static String BACK_ACTION = "BackAction";
+    public final static String FORWARD_ACTION = "ForwardAction";
     public final static String PRINT_ACTION = "PrintAction";
     public final static String EXPORT_AS_PNG_ACTION = "ExportAsPNGAction";
     public final static String EXPORT_AS_JPG_ACTION = "ExportAsJPGAction";
@@ -211,6 +216,16 @@ public class JSVGViewerFrame
      * The current export path.
      */
     protected String currentExportPath = ".";
+
+    /**
+     * The back action
+     */
+    protected BackAction backAction = new BackAction();
+
+    /**
+     * The forward action
+     */
+    protected ForwardAction forwardAction = new ForwardAction();
 
     /**
      * The stop action
@@ -288,6 +303,11 @@ public class JSVGViewerFrame
     protected String title;
 
     /**
+     * The local history.
+     */
+    protected LocalHistory localHistory;
+
+    /**
      * Creates a new SVG viewer frame.
      */
     public JSVGViewerFrame(Application app) {
@@ -303,6 +323,8 @@ public class JSVGViewerFrame
         listeners.put(OPEN_LOCATION_ACTION, new OpenLocationAction());
         listeners.put(NEW_WINDOW_ACTION, new NewWindowAction());
         listeners.put(RELOAD_ACTION, new ReloadAction());
+        listeners.put(BACK_ACTION, backAction);
+        listeners.put(FORWARD_ACTION, forwardAction);
         listeners.put(PRINT_ACTION, new PrintAction());
         listeners.put(EXPORT_AS_PNG_ACTION, new ExportAsPNGAction());
         listeners.put(EXPORT_AS_JPG_ACTION, new ExportAsJPGAction());
@@ -322,13 +344,19 @@ public class JSVGViewerFrame
         listeners.put(MONITOR_ACTION, new MonitorAction());
         listeners.put(DOM_VIEWER_ACTION, new DOMViewerAction());
 
+        svgCanvas = new JSVGCanvas(userAgent, true, true);
+
         JPanel p = null;
         try {
             // Create the menu
             MenuFactory mf = new MenuFactory(bundle, this);
-            setJMenuBar(mf.createJMenuBar("MenuBar"));
+            JMenuBar mb = mf.createJMenuBar("MenuBar");
+            setJMenuBar(mb);
+
+            localHistory = new LocalHistory(mb, svgCanvas);
 
             p = new JPanel(new BorderLayout());
+
             // Create the toolbar
             ToolBarFactory tbf = new ToolBarFactory(bundle, this);
             JToolBar tb = tbf.createJToolBar("ToolBar");
@@ -346,8 +374,7 @@ public class JSVGViewerFrame
         JPanel p2 = new JPanel(new BorderLayout());
         p2.setBorder(BorderFactory.createEtchedBorder());
 
-        p2.add(svgCanvas = new JSVGCanvas(userAgent, true, true),
-               BorderLayout.CENTER);
+        p2.add(svgCanvas, BorderLayout.CENTER);
         p = new JPanel(new BorderLayout());
         p.add(p2, BorderLayout.CENTER);
         p.add(statusBar = new StatusBar(), BorderLayout.SOUTH);
@@ -540,7 +567,7 @@ public class JSVGViewerFrame
                     currentPath = f.getCanonicalPath();
                     svgCanvas.loadSVGDocument(f.toURL().toString());
                 } catch (IOException ex) {
-                    // !!! Error dialog
+                    userAgent.displayError(ex);
                 }
             }
         }
@@ -573,7 +600,7 @@ public class JSVGViewerFrame
                     }
                     svgCanvas.loadSVGDocument(u.toString());
                 } catch (Exception ex) {
-                    // !!! Error dialog
+                    userAgent.displayError(ex);
                 }
             }
         }
@@ -606,8 +633,57 @@ public class JSVGViewerFrame
         public ReloadAction() {}
         public void actionPerformed(ActionEvent e) {
             if (svgDocument != null) {
-                String url = ((SVGOMDocument)svgDocument).getURLObject().toString();
-                svgCanvas.loadSVGDocument(url.toString());
+                localHistory.reload();
+            }
+        }
+    }
+
+    /**
+     * To go back to the previous document
+     */
+    public class BackAction extends    AbstractAction
+                            implements JComponentModifier {
+        List components = new LinkedList();
+        public BackAction() {}
+        public void actionPerformed(ActionEvent e) {
+            localHistory.back();
+        }
+
+        public void addJComponent(JComponent c) {
+            components.add(c);
+            c.setEnabled(false);
+        }
+
+        protected void update() {
+            boolean b = localHistory.canGoBack();
+            Iterator it = components.iterator();
+            while (it.hasNext()) {
+                ((JComponent)it.next()).setEnabled(b);
+            }
+        }
+    }
+
+    /**
+     * To go forward to the previous document
+     */
+    public class ForwardAction extends    AbstractAction
+                               implements JComponentModifier {
+        List components = new LinkedList();
+        public ForwardAction() {}
+        public void actionPerformed(ActionEvent e) {
+            localHistory.forward();
+        }
+
+        public void addJComponent(JComponent c) {
+            components.add(c);
+            c.setEnabled(false);
+        }
+
+        protected void update() {
+            boolean b = localHistory.canGoForward();
+            Iterator it = components.iterator();
+            while (it.hasNext()) {
+                ((JComponent)it.next()).setEnabled(b);
             }
         }
     }
@@ -619,41 +695,43 @@ public class JSVGViewerFrame
         public PrintAction() {}
         public void actionPerformed(ActionEvent e) {
             if (svgDocument != null) {
+                final SVGDocument doc = svgDocument;
                 new Thread() {
-                        public void run(){
-                            //
-                            // Build a PrintTranscoder to handle printing 
-                            // of the svgDocument object
-                            //
-                            PrintTranscoder printTranscoder 
-                                = new PrintTranscoder();
+                    public void run(){
+                        //
+                        // Build a PrintTranscoder to handle printing 
+                        // of the svgDocument object
+                        //
+                        PrintTranscoder pt = new PrintTranscoder();
                             
-                            //
-                            // Set transcoding hints
-                            //
-                            printTranscoder.addTranscodingHint(PrintTranscoder.KEY_XML_PARSER_CLASSNAME,
-                                                               application.getXMLParserClassName());
-                            printTranscoder.addTranscodingHint(PrintTranscoder.KEY_SHOW_PAGE_DIALOG,
-                                                               new Boolean(true));
-                            printTranscoder.addTranscodingHint(PrintTranscoder.KEY_SHOW_PRINTER_DIALOG,
-                            new Boolean(true));
+                        //
+                        // Set transcoding hints
+                        //
+                        pt.addTranscodingHint(pt.KEY_XML_PARSER_CLASSNAME,
+                                              application.getXMLParserClassName());
+
+                        pt.addTranscodingHint(pt.KEY_SHOW_PAGE_DIALOG,
+                                              Boolean.TRUE);
+
+
+                        pt.addTranscodingHint(pt.KEY_SHOW_PRINTER_DIALOG,
+                                              Boolean.TRUE);
                             
-                            //
-                            // Do transcoding now
-                            //
-                            printTranscoder.transcode(new TranscoderInput(svgDocument), null);
+                        //
+                        // Do transcoding now
+                        //
+                        pt.transcode(new TranscoderInput(doc), null);
                             
-                            //
-                            // Print
-                            //
-                            try{
-                                printTranscoder.print();
-                            }catch(PrinterException ex){
-                                // <!> TEMPORARY: NEED BETTER ERROR HANDLING STRATEGY
-                                JOptionPane.showMessageDialog(JSVGViewerFrame.this, ex);
-                            }
+                        //
+                        // Print
+                        //
+                        try {
+                            pt.print();
+                        } catch (PrinterException ex) {
+                            userAgent.displayError(ex);
                         }
-                    }.start();
+                    }
+                }.start();
             }
         }
     }
@@ -830,8 +908,7 @@ public class JSVGViewerFrame
                         ta.setBackground(Color.white);
                         fr.show();
                     } catch (Exception ex) {
-                        // !!! TODO : dialog
-                        System.err.println(ex.toString());
+                        userAgent.displayError(ex);
                     }
                 }
             }.start();
@@ -1103,10 +1180,19 @@ public class JSVGViewerFrame
         }
         int i = s.lastIndexOf("/");
         if (i == -1) {
-            setTitle(title + ":" + s);
+            i = s.lastIndexOf("\\");
+            if (i == -1) {
+                setTitle(title + ":" + s);
+            } else {
+                setTitle(title + ":" + s.substring(i + 1));
+            }
         } else {
             setTitle(title + ":" + s.substring(i + 1));
         }
+
+        localHistory.update(s);
+        backAction.update();
+        forwardAction.update();
     }
 
     /**
@@ -1199,7 +1285,7 @@ public class JSVGViewerFrame
      */
     public void gvtRenderingPrepare(GVTTreeRendererEvent e) {
         if (debug) {
-            System.out.println("Rendering started...");
+            System.out.println("Rendering preparation...");
             time = System.currentTimeMillis();
         }
         stopAction.update(true);
@@ -1211,6 +1297,12 @@ public class JSVGViewerFrame
      * Called when a rendering started.
      */
     public void gvtRenderingStarted(GVTTreeRendererEvent e) {
+        if (debug) {
+            System.out.print("Rendering prepared in ");
+            System.out.println((System.currentTimeMillis() - time) + " ms");
+            time = System.currentTimeMillis();
+            System.out.println("Rendering started...");
+        }
         // Do nothing
     }
 
