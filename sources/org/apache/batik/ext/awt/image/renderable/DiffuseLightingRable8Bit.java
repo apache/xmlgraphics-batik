@@ -203,7 +203,7 @@ public class DiffuseLightingRable8Bit
                          PadMode.ZERO_PAD,
                          rh);
 
-        BumpMap bumpMap = new DefaultBumpMap(texture, surfaceScale, scaleX, scaleY);
+        BumpMap bumpMap = new BumpMap(texture, surfaceScale, scaleX, scaleY);
 
         DiffuseLightingRed diffuseRed =
             new DiffuseLightingRed(kd,
