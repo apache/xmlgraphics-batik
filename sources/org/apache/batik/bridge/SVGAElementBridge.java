@@ -11,6 +11,7 @@ package org.apache.batik.bridge;
 import java.awt.Cursor;
 
 import org.apache.batik.css.HiddenChildElementSupport;
+import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
 
@@ -134,7 +135,8 @@ public class SVGAElementBridge extends AbstractGraphicsNodeBridge {
             Cursor cursor = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR);
             userAgent.setSVGCursor(cursor);
             if (elt != null) {
-                userAgent.displayMessage(elt.getHref().getBaseVal());
+		String href = XLinkSupport.getXLinkHref(elt);
+                userAgent.displayMessage(href);
             }
         }
     }
