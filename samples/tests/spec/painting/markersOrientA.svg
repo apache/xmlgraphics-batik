@@ -41,7 +41,7 @@
 
             </g>
             
-            <g id="crossHair" marker="none" marker-start="none" marker-end="none" marker-mid="none" stroke="black">
+            <g id="crossHair" style="marker:none" stroke="black">
                 <line y1="-5" x2="0" y2="5" />
                 <line x1="-5" x2="5" y2="0" />
             </g>

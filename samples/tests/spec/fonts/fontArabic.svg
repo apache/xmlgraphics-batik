@@ -21,15 +21,12 @@
 <svg id="body" width="450" height="500" viewBox="0 0 450 500">
 <title>SVGFont - arabic shaping test</title>
 
-    <style type="text/css"><![CDATA[
-        
-    ]]></style>
-
     <g id="content">
 
         <text class="title" x="50%" y="40">Arabic shaping test</text>
 <defs>
 <font horiz-adv-x="904">
+
 <font-face
   font-family="SVGArial"
   units-per-em="2048"
@@ -37,8 +34,10 @@
   ascent="1854"
   descent="-434"
   alphabetic="0"/>
+
+
 <missing-glyph horiz-adv-x="1536" d="M256 0V1280H1280V0H256zM288 32H1248V1248H288V32z"/>
-<missing-glyph horiz-adv-x="1536" d="M256 0V1280H1280V0H256ZM288 32H1248V1248H288V32Z" />
+
 <glyph unicode=" " glyph-name="space" horiz-adv-x="569" />
 <glyph unicode="!" glyph-name="exclam" horiz-adv-x="569" d="M231 364L176 1141V1466H399V1141L347 364H231ZM184 0V205H391V0H184Z" />
 <glyph unicode="&quot;" glyph-name="quotedbl" horiz-adv-x="727" d="M144 947L94 1226V1466H299V1226L254 947H144ZM475 947L426 1226V1466H631V1226L583 947H475Z" />
@@ -660,6 +659,8 @@
 723 966 627Z" />
 <glyph unicode="&#x6f9;" glyph-name="afii57401" horiz-adv-x="1077" d="M845 506L784 293Q684 354 652 498Q626 616 626 917Q558 893 524 886T457 879Q348 879 284 924T219 1053Q219 1115 249 1206Q287 1322 351 1393Q433 1484 544 1484Q627 1484 670 1397Q705
 1327 716 1188Q723 1102 723 934Q743 704 777 611Q792 570 845 506ZM618 1092Q618 1183 595 1230Q564 1294 484 1294Q424 1294 368 1249T312 1165Q312 1123 361 1100T480 1077Q510 1077 553 1083T618 1092Z" />
+
+
 </font>
 </defs>
 

@@ -64,7 +64,7 @@
           <!-- ============================================== -->
           <g transform="translate(0 20)" class="row1"
              style="enable-background:new 19 30 403 60">
-            <g id="c1" transform="translate(20 0)"  
+            <g transform="translate(20 0)"  
                style="enable-background:new;" >
               <rect x="0" y="0" width="60" height="120" style="fill:Beige"/>
              
@@ -83,7 +83,7 @@
               </g>
             </g>
   
-            <g id="c2" transform="translate(160 0)">
+            <g transform="translate(160 0)">
               <line x1="-5" y1="20" x2="125" y2="45"
                     style="stroke-width:5; stroke:#AA3333"/>
               
@@ -113,7 +113,7 @@
               </g>
             </g>
    
-            <g id="c2" transform="translate(300 0)">
+            <g transform="translate(300 0)">
               <line x1="-5" y1="20" x2="125" y2="45"
                     style="stroke-width:5; stroke:#AA3333"/>
             
