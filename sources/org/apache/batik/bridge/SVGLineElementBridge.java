@@ -23,7 +23,7 @@ import org.w3c.dom.svg.SVGElement;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class SVGLineElementBridge extends SVGShapeElementBridge {
+public class SVGLineElementBridge extends SVGDecoratedShapeElementBridge {
 
     /**
      * Returns a <tt>Line2D.Float</tt>.

@@ -50,6 +50,7 @@ public interface CSSConstants {
     String CSS_IMAGE_RENDERING_PROPERTY = "image-rendering";
     String CSS_LETTER_SPACING_PROPERTY = "letter-spacing";
     String CSS_LIGHTING_COLOR_PROPERTY = "lighting-color";
+    String CSS_MARKER_PROPERTY = "marker";
     String CSS_MARKER_END_PROPERTY = "marker-end";
     String CSS_MARKER_MID_PROPERTY = "marker-mid";
     String CSS_MARKER_START_PROPERTY = "marker-start";

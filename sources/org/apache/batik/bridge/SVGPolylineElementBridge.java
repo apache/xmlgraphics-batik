@@ -33,7 +33,7 @@ import org.w3c.dom.svg.SVGElement;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class SVGPolylineElementBridge extends SVGShapeElementBridge {
+public class SVGPolylineElementBridge extends SVGDecoratedShapeElementBridge {
 
     /**
      * Returns an <tt>GeneralPath</tt>.

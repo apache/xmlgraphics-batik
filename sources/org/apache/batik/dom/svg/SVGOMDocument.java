@@ -87,7 +87,6 @@ public class SVGOMDocument
      */
     protected LocalizableSupport localizableSupport =
         new LocalizableSupport(RESOURCES);
-
     /**
      * The custom elements factories.
      */
@@ -231,6 +230,9 @@ public class SVGOMDocument
 
         factories.put(SVG_MASK_TAG,
                       new MaskElementFactory());
+
+        factories.put(SVG_MARKER_TAG,
+                      new MarkerElementFactory());
 
         factories.put(SVG_METADATA_TAG,
                       new MetadataElementFactory());
@@ -1235,6 +1237,21 @@ public class SVGOMDocument
          */
         public Element create(String prefix) {
             return new SVGOMMaskElement(prefix, SVGOMDocument.this);
+        }
+    }
+
+    /**
+     * To create a 'marker' element.
+     */
+    protected class MarkerElementFactory implements ElementFactory {
+        public MarkerElementFactory() {}
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix) {
+            return new SVGOMToBeImplementedElement(prefix,
+                                                   SVGOMDocument.this,
+                                                   SVG_MARKER_TAG);
         }
     }
 

@@ -140,6 +140,9 @@ public class SVGBridgeContext extends ConcreteBridgeContext
         putBridge(SVG_NAMESPACE_URI, TAG_LINEAR_GRADIENT,
                   new SVGLinearGradientBridge());
 
+        putBridge(SVG_NAMESPACE_URI, SVG_MARKER_TAG,
+                  new SVGMarkerElementBridge());
+
         putBridge(SVG_NAMESPACE_URI, SVG_MASK_TAG,
                   new SVGMaskElementBridge());
 

@@ -33,7 +33,7 @@ import org.w3c.dom.svg.SVGElement;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class SVGPolygonElementBridge extends SVGShapeElementBridge {
+public class SVGPolygonElementBridge extends SVGDecoratedShapeElementBridge {
 
     /**
      * Returns an <tt>GeneralPath</tt>.
@@ -71,5 +71,13 @@ public class SVGPolygonElementBridge extends SVGShapeElementBridge {
         } finally {
             node.setShape(ph.getShape());
         }
+    }
+
+    protected boolean hasStartMarker(){
+        return false;
+    }
+
+    protected boolean hasEndMarker(){
+        return false;
     }
 }

@@ -491,19 +491,9 @@ public class Main {
         Document domFactory = impl.createDocument(namespaceURI, "svg", null);
 
         // Second, create an instance of the generator and paint to it
-
-        ImageHandler imageHandler
-            = new ImageHandlerPNGEncoder(REGSVGGEN_DIRECTORY_NAME +
-                                         FILE_SEPARATOR +
-                                         REGSVGGEN_NEW_DIRECTORY_NAME,
-                                         "../" +
-                                         REGSVGGEN_NEW_DIRECTORY_NAME);
         ExtensionHandler extensionHandler
             = new DefaultExtensionHandler();
-        SVGGraphics2D svggen = new SVGGraphics2D(domFactory,
-                                                 imageHandler,
-                                                 extensionHandler,
-                                                 false);
+        SVGGraphics2D svggen = new SVGGraphics2D(domFactory);
         Dimension size = painter.getSize();
         svggen.setSVGCanvasSize(size);
         painter.paint(svggen);
