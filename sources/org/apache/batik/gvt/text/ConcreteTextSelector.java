@@ -172,7 +172,7 @@ public class ConcreteTextSelector implements Selector {
                                                           renderContext);
                 dispatchSelectionEvent(
                         new SelectionEvent(null,
-                                SelectionEvent.SELECTION_START,
+                                SelectionEvent.SELECTION_STARTED,
                                 null));
 
             } else if (isSelectEndGesture(evt)) {
@@ -260,8 +260,27 @@ public class ConcreteTextSelector implements Selector {
     public void dispatchSelectionEvent(SelectionEvent e) {
         if (listeners != null) {
             Iterator iter = listeners.iterator();
-            while (iter.hasNext()) {
-                ((SelectionListener)iter.next()).selectionChanged(e);
+            switch(e.getID()) {
+            case SelectionEvent.SELECTION_DONE:
+                while (iter.hasNext()) {
+                    ((SelectionListener)iter.next()).selectionDone(e);
+                }
+                break;
+            case SelectionEvent.SELECTION_CHANGED:
+                while (iter.hasNext()) {
+                    ((SelectionListener)iter.next()).selectionChanged(e);
+                }
+                break;
+            case SelectionEvent.SELECTION_CLEARED:
+                while (iter.hasNext()) {
+                    ((SelectionListener)iter.next()).selectionCleared(e);
+                }
+                break;
+            case SelectionEvent.SELECTION_STARTED:
+                while (iter.hasNext()) {
+                    ((SelectionListener)iter.next()).selectionStarted(e);
+                }
+                break;
             }
         }
     }

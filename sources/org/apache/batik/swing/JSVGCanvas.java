@@ -731,43 +731,52 @@ public class JSVGCanvas
 
     // SelectionListener /////////////////////////////////////////////
 
+    public void selectionDone(SelectionEvent e) {
+        Graphics g = getGraphics();
+        paintOverlays(g);
+        // notify user agent
+        selectionHighlightShape = e.getHighlightShape();
+        canvasSpaceHighlightShape =
+            transform.createTransformedShape(selectionHighlightShape);
+        String selectionString = getSelectionDescription(e.getSelection());
+        if (selectionString != null) {
+            userAgent.displayMessage("Selection: "+selectionString);
+        }
+        // [repaint will reset to "requested" cursor]
+        repaint(); // in case immediate-mode XORs are out of sync
+        // with the regular repaint-on-request repaints
+    }
+
+    public void selectionCleared(SelectionEvent e) {
+        Graphics g = getGraphics();
+        paintOverlays(g);
+        userAgent.displayMessage("");
+        canvasSpaceHighlightShape = null;
+        selectionHighlightShape = null;
+        // change highlight and notify user agent
+        repaint();
+    }
+
+    public void selectionStarted(SelectionEvent e) {
+        Graphics g = getGraphics();
+        paintOverlays(g);
+        setCursor(TEXT_CURSOR);
+        userAgent.displayMessage("");
+        canvasSpaceHighlightShape = null;
+        selectionHighlightShape = null;
+    }
 
     public void selectionChanged(SelectionEvent e) {
         Graphics g = getGraphics();
         paintOverlays(g);
-        if (e.getType() == SelectionEvent.SELECTION_CHANGED) {
-            selectionHighlightShape = e.getHighlightShape();
-            canvasSpaceHighlightShape =
-                transform.createTransformedShape(selectionHighlightShape);
-            paintOverlays(g);
-        } else if (e.getType() == SelectionEvent.SELECTION_DONE) {
-            // notify user agent
-            selectionHighlightShape = e.getHighlightShape();
-            canvasSpaceHighlightShape =
-                transform.createTransformedShape(selectionHighlightShape);
-            String selectionString = getSelectionDescription(e.getSelection());
-            if (selectionString != null) {
-                 userAgent.displayMessage("Selection: "+selectionString);
-            }
-            // [repaint will reset to "requested" cursor]
-            repaint(); // in case immediate-mode XORs are out of sync
-                       // with the regular repaint-on-request repaints
-        } else if (e.getType() == SelectionEvent.SELECTION_START) {
-            setCursor(TEXT_CURSOR);
-            userAgent.displayMessage("");
-            canvasSpaceHighlightShape = null;
-            selectionHighlightShape = null;
-        } else if (e.getType() == SelectionEvent.SELECTION_CLEARED) {
-            userAgent.displayMessage("");
-            canvasSpaceHighlightShape = null;
-            selectionHighlightShape = null;
-            // change highlight and notify user agent
-            repaint();
-        }
+        selectionHighlightShape = e.getHighlightShape();
+        canvasSpaceHighlightShape =
+            transform.createTransformedShape(selectionHighlightShape);
+        paintOverlays(g);
     }
 
     private void clearSelection() {
-        selectionChanged(
+        selectionCleared(
             new SelectionEvent(null, SelectionEvent.SELECTION_CLEARED, null));
     }
 
