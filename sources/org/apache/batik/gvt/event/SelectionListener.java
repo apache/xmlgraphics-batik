@@ -11,7 +11,7 @@ package org.apache.batik.gvt.event;
 import java.util.EventListener;
 
 /**
- * The listener interface for receiving graphics node paint events.
+ * The listener interface for receiving selection events.
  *
  * @author <a href="mailto:bill.haneman@ireland.sun.com">Bill Haneman</a>
  * @version $Id$
