@@ -6,7 +6,7 @@
  * the LICENSE file.                                                         *
  *****************************************************************************/
 
-package org.apache.batik.script;
+package org.apache.batik.refimpl.script;
 
 import org.apache.batik.script.*;
 import org.w3c.dom.Document;
@@ -20,7 +20,8 @@ import java.util.HashMap;
  * @author <a href="mailto:cjolif@ilog.fr">Christophe Jolif</a>
  * @version $Id$
  */
-public class ConcreteInterpreterPool implements InterpreterPool {
+public class ConcreteInterpreterPool extends InterpreterPool {
+        
     private Document document;
     private HashMap factories = new HashMap(3);
     private HashMap interpreters = new HashMap(1);
