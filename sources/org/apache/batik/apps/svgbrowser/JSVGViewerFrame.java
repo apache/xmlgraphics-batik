@@ -514,7 +514,12 @@ public class JSVGViewerFrame
                             s = null;
                         } else {
                             try {
-                                s = "file:" + f.getCanonicalPath();
+                                s = f.getCanonicalPath();
+                                if (s.startsWith("/")) {
+                                    s = "file:" + s;
+                                } else {
+                                    s = "file:/" + s;
+                                }
                             } catch (IOException ex) {
                             }
                         }
@@ -622,7 +627,12 @@ public class JSVGViewerFrame
                             s = null;
                         } else {
                             try {
-                                s = "file:" + f.getCanonicalPath();
+                                s = f.getCanonicalPath();
+                                if (s.startsWith("/")) {
+                                    s = "file:" + s;
+                                } else {
+                                    s = "file:/" + s;
+                                }
                             } catch (IOException ex) {
                             }
                         }
