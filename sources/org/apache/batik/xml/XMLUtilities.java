@@ -61,25 +61,10 @@ public class XMLUtilities extends XMLCharacters {
     }
 
     /**
-     * Tests whether the given character is usable as the
-     * first character of an XML 1.1 name.
-     */
-    public static boolean isXML11NameFirstCharacter(char c) {
-	return (NAME11_FIRST_CHARACTER[c / 32] & (1 << (c % 32))) != 0;
-    }
-
-    /**
      * Tests whether the given character is a valid XML name character.
      */
     public static boolean isXMLNameCharacter(char c) {
 	return (NAME_CHARACTER[c / 32] & (1 << (c % 32))) != 0;
-    }
-
-    /**
-     * Tests whether the given character is a valid XML 1.1 name character.
-     */
-    public static boolean isXML11NameCharacter(char c) {
-	return (NAME11_CHARACTER[c / 32] & (1 << (c % 32))) != 0;
     }
 
     /**
@@ -88,15 +73,6 @@ public class XMLUtilities extends XMLCharacters {
     public static boolean isXMLCharacter(int c) {
 	return (c >= 0x10000 && c <= 0x10ffff) ||
 	    (XML_CHARACTER[c / 32] & (1 << (c % 32))) != 0;
-    }
-
-    /**
-     * Tests whether the given 32 bit character is a valid XML 1.1 character.
-     */
-    public static boolean isXML11Character(int c) {
-        return c >= 1 && c <= 0xd7ff
-            || c >= 0xe000 && c <= 0xfffd
-            || c >= 0x10000 && c <= 0x10ffff;
     }
 
     /**
@@ -216,7 +192,7 @@ public class XMLUtilities extends XMLCharacters {
 
     /**
      * Reads an XML declaration to get the encoding declaration value.
-     * @param r a reader positioned just after '&lt;?xm'.
+     * @param r a reader positionned just after '<?xm'.
      * @param e the encoding to return by default or on error.
      */
     protected static String getXMLDeclarationEncoding(Reader r, String e)

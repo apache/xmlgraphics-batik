@@ -36,14 +36,12 @@ import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
-import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 
 import org.apache.batik.util.HaltingThread;
-import org.apache.batik.util.XMLConstants;
 
 /**
  * This class contains methods for creating Document instances
@@ -66,11 +64,6 @@ public class SAXDocumentFactory
      * The SAX2 parser classname.
      */
     protected String parserClassName;
-
-    /**
-     * The SAX2 parser object.
-     */
-    private XMLReader parser;
 
     /**
      * The created document.
@@ -105,7 +98,7 @@ public class SAXDocumentFactory
      * Indicates if stringBuffer has content, needed in case of 
      * zero sized "text" content.
      */
-    protected boolean stringContent;
+    protected boolean      stringContent;
 
     /**
      * True if the parser is currently parsing a DTD.
@@ -118,25 +111,9 @@ public class SAXDocumentFactory
     protected boolean inCDATA;
 
     /**
-     * Whether the parser still hasn't read the document element's
-     * opening tag.
-     */
-    protected boolean inProlog;
-
-    /**
      * Whether the parser is in validating mode.
      */
     protected boolean isValidating;
-
-    /**
-     * Whether the document just parsed was standalone.
-     */
-    protected boolean isStandalone;
-
-    /**
-     * XML version of the document just parsed.
-     */
-    protected String xmlVersion;
 
     /**
      * The stack used to store the namespace URIs.
@@ -395,7 +372,8 @@ public class SAXDocumentFactory
     protected Document createDocument(InputSource is)
 	throws IOException {
 	try {
-            parser = XMLReaderFactory.createXMLReader(parserClassName);
+            XMLReader parser =
+                XMLReaderFactory.createXMLReader(parserClassName);
 
             parser.setContentHandler(this);
             parser.setDTDHandler(this);
@@ -424,7 +402,6 @@ public class SAXDocumentFactory
         Document ret = document;
         document     = null;
         locator      = null;
-        parser       = null;
 	return ret;
     }
 
@@ -509,13 +486,10 @@ public class SAXDocumentFactory
 	namespaces.put("xmlns", XMLSupport.XMLNS_NAMESPACE_URI);
 	namespaces.put("", null);
 
-        inDTD        = false;
-        inCDATA      = false;
-        inProlog     = true;
-        currentNode  = null;
-        document     = null;
-        isStandalone = false;
-        xmlVersion   = XMLConstants.XML_VERSION_10;
+        inDTD       = false;
+        inCDATA     = false;
+        currentNode = null;
+        document    = null;
 
         stringBuffer.setLength(0);
         stringContent = false;
@@ -538,20 +512,6 @@ public class SAXDocumentFactory
         // Check If we should halt early.
         if (HaltingThread.hasBeenHalted()) {
             throw new SAXException(new InterruptedIOException());
-        }
-
-        if (inProlog) {
-            inProlog = false;
-            try {
-                isStandalone = parser.getFeature
-                    ("http://xml.org/sax/features/is-standalone");
-            } catch (SAXNotRecognizedException ex) {
-            }
-            try {
-                xmlVersion = (String) parser.getProperty
-                    ("http://xml.org/sax/properties/document-xml-version");
-            } catch (SAXNotRecognizedException ex) {
-            }
         }
 
 	// Namespaces resolution
@@ -612,9 +572,7 @@ public class SAXDocumentFactory
 
         // Storage of the line number.
         if (createDocumentDescriptor && locator != null) {
-            documentDescriptor.setLocation(e,
-                                           locator.getLineNumber(),
-                                           locator.getColumnNumber());
+            documentDescriptor.setLocationLine(e, locator.getLineNumber());
         }
 
 	// Attributes creation

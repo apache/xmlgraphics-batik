@@ -188,21 +188,4 @@
     <!-- DOMUtilities character escaping test                                       -->
     <!-- ========================================================================== -->
     <test id="DOMUtilities.character.escaping" class="org.apache.batik.dom.DOMUtilitiesCharacterEscaping" />
-
-    <!-- ========================================================================== -->
-    <!-- DOM 3 tests                                                                -->
-    <!-- ========================================================================== -->
-    <test id="DOM3.Attr.isId" class="org.apache.batik.dom.AttrIsIdTest"/>
-    <test id="DOM3.Document.adoptNode" class="org.apache.batik.dom.DocumentAdoptNodeTest"/>
-    <test id="DOM3.Document.renameNode" class="org.apache.batik.dom.DocumentRenameNodeTest"/>
-    <test id="DOM3.Document.normalizeDocument" class="org.apache.batik.dom.DocumentNormalizeDocumentTest"/>
-    <test id="DOM3.Element.setIdAttributeNS" class="org.apache.batik.dom.ElementSetIdAttributeNSTest"/>
-    <test id="DOM3.Node.baseURI" class="org.apache.batik.dom.NodeBaseURITest"/>
-    <test id="DOM3.Node.textContent" class="org.apache.batik.dom.NodeTextContentTest"/>
-    <test id="DOM3.Node.setUserData" class="org.apache.batik.dom.NodeGetUserDataTest"/>
-    <test id="DOM3.Node.compareDocumentPosition" class="org.apache.batik.dom.NodeCompareDocumentPositionTest"/>
-    <test id="DOM3.Text.wholeText" class="org.apache.batik.dom.TextWholeTextTest"/>
-    <test id="DOM3.Text.replaceWholeText" class="org.apache.batik.dom.TextReplaceWholeTextTest"/>
-    <test id="DOM3.EventTarget.addEventListenerNS" class="org.apache.batik.dom.EventTargetAddEventListenerNSTest"/>
-    <test id="DOM3.XPathEvaluator.evaluate" class="org.apache.batik.dom.XPathTest"/>
 </testSuite>

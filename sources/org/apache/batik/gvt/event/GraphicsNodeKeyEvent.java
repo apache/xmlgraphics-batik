@@ -57,19 +57,14 @@ public class GraphicsNodeKeyEvent extends GraphicsNodeInputEvent {
      * The symbolic name for a key code should be used rather
      * than the code value itself.
      */
-    protected int keyCode;
+    int keyCode;
 
     /**
      * <code>keyChar</code> is a valid unicode character
      * that is fired by a key or a key combination on
      * a keyboard.
      */
-    protected char keyChar;
-
-    /**
-     * The key location.
-     */
-    protected int keyLocation;
+    char keyChar;
 
     /**
      * Constructs a new graphics node key event.
@@ -77,18 +72,13 @@ public class GraphicsNodeKeyEvent extends GraphicsNodeInputEvent {
      * @param id the id of this event
      * @param when the time the event occurred
      * @param modifiers the modifier keys down while event occurred
-     * @param lockState bitmask indicating which key locks were activated
-     * @param keyCode the Java key code
-     * @param keyChar the generated character
-     * @param keyLocation the location of the key
      */
     public GraphicsNodeKeyEvent(GraphicsNode source, int id,
-                                long when, int modifiers, int lockState,
-                                int keyCode, char keyChar, int keyLocation) {
-        super(source, id, when, modifiers, lockState);
+                                long when, int modifiers, int keyCode,
+                                char keyChar) {
+        super(source, id, when, modifiers);
         this.keyCode = keyCode;
         this.keyChar = keyChar;
-        this.keyLocation = keyLocation;
     }
 
     /**
@@ -106,10 +96,4 @@ public class GraphicsNodeKeyEvent extends GraphicsNodeInputEvent {
         return keyChar;
     }
 
-    /**
-     * Returns the key location.
-     */
-    public int getKeyLocation() {
-        return keyLocation;
-    }
 }

@@ -93,13 +93,11 @@ public class HashTable implements Serializable {
      * @return the value or null
      */
     public Object get(Object key) {
-	int hash  = key == null ? 0 : key.hashCode() & 0x7FFFFFFF;
+	int hash  = key.hashCode() & 0x7FFFFFFF;
 	int index = hash % table.length;
 	
 	for (Entry e = table[index]; e != null; e = e.next) {
-            if (e.hash == hash
-                    && (e.key == null && key == null
-                        || e.key != null && e.key.equals(key))) {
+	    if ((e.hash == hash) && e.key.equals(key)) {
 		return e.value;
 	    }
 	}
@@ -111,13 +109,11 @@ public class HashTable implements Serializable {
      * @return the old value or null
      */
     public Object put(Object key, Object value) {
-	int hash  = key == null ? 0 : key.hashCode() & 0x7FFFFFFF;
+	int hash  = key.hashCode() & 0x7FFFFFFF;
 	int index = hash % table.length;
 	
 	for (Entry e = table[index]; e != null; e = e.next) {
-            if (e.hash == hash
-                    && (e.key == null && key == null
-                        || e.key != null && e.key.equals(key))) {
+	    if ((e.hash == hash) && e.key.equals(key)) {
 		Object old = e.value;
 		e.value = value;
 		return old;
@@ -141,14 +137,12 @@ public class HashTable implements Serializable {
      * @return the value or null.
      */
     public Object remove(Object key) {
-	int hash  = key == null ? 0 : key.hashCode() & 0x7FFFFFFF;
+	int hash  = key.hashCode() & 0x7FFFFFFF;
 	int index = hash % table.length;
 	
 	Entry p = null;
 	for (Entry e = table[index]; e != null; e = e.next) {
-            if (e.hash == hash
-                    && (e.key == null && key == null
-                        || e.key != null && e.key.equals(key))) {
+	    if ((e.hash == hash) && e.key.equals(key)) {
 		Object result = e.value;
 		if (p == null) {
 		    table[index] = e.next;

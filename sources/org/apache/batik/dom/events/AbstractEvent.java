@@ -27,9 +27,7 @@ import org.w3c.dom.events.EventTarget;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public abstract class AbstractEvent
-        implements org.apache.batik.dom.dom3.events.Event {
-
+public abstract class AbstractEvent implements Event {
     /**
      * The event type.
      */
@@ -66,25 +64,14 @@ public abstract class AbstractEvent
     protected long timeStamp = System.currentTimeMillis();
 
     /**
-     * Whether the event propagation must be stopped after the current
-     * event listener group has been completed.
+     * Whether the event propagation must be stopped.
      */
     protected boolean stopPropagation = false;
-
-    /**
-     * Whether the event propagation must be stopped immediately.
-     */
-    protected boolean stopImmediatePropagation = false;
 
     /**
      * Whether the default action must be processed.
      */
     protected boolean preventDefault = false;
-
-    /**
-     * Namespace URI of this event.
-     */
-    protected String namespaceURI;
 
     /**
      * DOM: The <code>type</code> property represents the event name
@@ -152,13 +139,6 @@ public abstract class AbstractEvent
     }
 
     /**
-     * Get the namespace URI of this event.
-     */
-    public String getNamespaceURI() {
-        return namespaceURI;
-    }
-
-    /**
      * DOM: The <code>stopPropagation</code> method is used prevent
      * further propagation of an event during event flow. If this
      * method is called by any <code>EventListener</code> the event
@@ -189,31 +169,6 @@ public abstract class AbstractEvent
     }
 
     /**
-     * <b>DOM</b>: Returns whether this Event implements the CustomEvent
-     * interface.
-     * @return false
-     */
-    public boolean isCustom() {
-        return false;
-    }
-
-    /**
-     * <b>DOM</b>: Returns whether <code>preventDefault</code> has been
-     * called on this object.
-     */
-    public boolean isDefaultPrevented() {
-        return preventDefault;
-    }
-
-    /**
-     * <b>DOM</b>: Stops propagation of this event immediately, even to
-     * listeners in the current group.
-     */
-    public void stopImmediatePropagation() {
-        this.stopImmediatePropagation = true;
-    }
-
-    /**
      * DOM: The <code>initEvent</code> method is used to initialize the
      * value of interface.  This method may only be called before the 
      * <code>Event</code> has been dispatched via the 
@@ -240,26 +195,12 @@ public abstract class AbstractEvent
 	this.cancelable = cancelableArg;
     }
 
-    /**
-     * <b>DOM</b>: Implements
-     * {@link org.w3c.dom.events.Event#initEventNS(String,String,boolean,boolean)}.
-     */
-    public void initEventNS(String namespaceURIArg,
-                            String eventTypeArg,
-                            boolean canBubbleArg,
-                            boolean cancelableArg) {
-        namespaceURI = namespaceURIArg;
-	type = eventTypeArg;
-	isBubbling = canBubbleArg;
-	cancelable = cancelableArg;
+    boolean getPreventDefault() {
+	return preventDefault;
     }
 
     boolean getStopPropagation() {
 	return stopPropagation;
-    }
-
-    boolean getStopImmediatePropagation() {
-	return stopImmediatePropagation;
     }
 
     void setEventPhase(short eventPhase) {
@@ -267,10 +208,6 @@ public abstract class AbstractEvent
     }
 
     void stopPropagation(boolean state) {
-	this.stopPropagation = state;
-    }
-
-    void stopImmediatePropagation(boolean state) {
 	this.stopPropagation = state;
     }
 
@@ -288,6 +225,6 @@ public abstract class AbstractEvent
 
     public static boolean getEventPreventDefault(Event evt) {
         AbstractEvent ae = (AbstractEvent)evt;
-        return ae.isDefaultPrevented();
+        return ae.getPreventDefault();
     }
 }

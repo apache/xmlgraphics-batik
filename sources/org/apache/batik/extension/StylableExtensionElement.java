@@ -24,6 +24,7 @@ import java.net.URL;
 import org.apache.batik.css.engine.CSSStylableElement;
 import org.apache.batik.css.engine.StyleMap;
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.dom.svg.XMLBaseSupport;
 import org.w3c.dom.Node;
 import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.CSSValue;
@@ -105,11 +106,11 @@ public abstract class StylableExtensionElement
     public URL getCSSBase() {
         if (cssBase == null) {
             try {
-                String bu = getBaseURI();
+                String bu = XMLBaseSupport.getCascadedXMLBase(this);
                 if (bu == null) {
                     return null;
                 }
-                cssBase = new URL(bu);
+                cssBase = new URL(XMLBaseSupport.getCascadedXMLBase(this));
             } catch (MalformedURLException e) {
                 // !!! TODO
                 e.printStackTrace();

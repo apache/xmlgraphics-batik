@@ -29,8 +29,7 @@ import org.w3c.dom.Node;
  */
 public abstract class AbstractEntity
     extends    AbstractParentNode
-    implements org.apache.batik.dom.dom3.Entity {
-
+    implements Entity {
     /**
      * The node name.
      */
@@ -112,27 +111,6 @@ public abstract class AbstractEntity
      */
     public void setNotationName(String name) {
 	setNodeName(name);
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.Entity#getInputEncoding()}.
-     */
-    public String getInputEncoding() {
-        return null;
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.Entity#getXmlEncoding()}.
-     */
-    public String getXmlEncoding() {
-        return null;
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.Entity#getXmlVersion()}.
-     */
-    public String getXmlVersion() {
-        return null;
     }
 
     /**

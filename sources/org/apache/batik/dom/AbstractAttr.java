@@ -22,7 +22,6 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.TypeInfo;
 import org.w3c.dom.events.MutationEvent;
 
 /**
@@ -31,9 +30,7 @@ import org.w3c.dom.events.MutationEvent;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public abstract class AbstractAttr extends AbstractParentNode
-        implements org.apache.batik.dom.dom3.Attr {
-
+public abstract class AbstractAttr extends AbstractParentNode implements Attr {
     /**
      * The name of this node.
      */
@@ -48,16 +45,6 @@ public abstract class AbstractAttr extends AbstractParentNode
      * The owner element.
      */
     protected AbstractElement ownerElement;
-
-    /**
-     * The attribute type information.
-     */
-    protected TypeInfo typeInfo;
-
-    /**
-     * Whether this attribute node is an ID.
-     */
-    protected boolean isIdAttribute;
 
     /**
      * Creates a new Attr object.
@@ -75,7 +62,7 @@ public abstract class AbstractAttr extends AbstractParentNode
     protected AbstractAttr(String name, AbstractDocument owner)
         throws DOMException {
 	ownerDocument = owner;
-	if (owner.getStrictErrorChecking() && !DOMUtilities.isValidName(name)) {
+	if (!DOMUtilities.isValidName(name)) {
 	    throw createDOMException(DOMException.INVALID_CHARACTER_ERR,
 				     "xml.name",
 				     new Object[] { name });
@@ -213,23 +200,6 @@ public abstract class AbstractAttr extends AbstractParentNode
     }
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.Attr#getSchemaTypeInfo()}.
-     */
-    public TypeInfo getSchemaTypeInfo() {
-        if (typeInfo == null) {
-            typeInfo = new AttrTypeInfo();
-        }
-        return typeInfo;
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.Attr#getIsId()}.
-     */
-    public boolean isId() {
-        return isIdAttribute || nodeName.equals("id");
-    }
-
-    /**
      * Called when a child node has been added.
      */
     protected void nodeAdded(Node n) {
@@ -321,32 +291,5 @@ public abstract class AbstractAttr extends AbstractParentNode
                     fireDOMSubtreeModifiedEvent();
 	    }
 	}
-    }
-
-    /**
-     * Inner class to hold type information about this attribute.
-     */
-    public class AttrTypeInfo implements TypeInfo {
-
-        /**
-         * Type namespace.
-         */
-        public String getTypeNamespace() {
-            return null;
-        }
-
-        /**
-         * Type name.
-         */
-        public String getTypeName() {
-            return null;
-        }
-
-        /**
-         * Returns whether this type derives from the given type.
-         */
-        public boolean isDerivedFrom(String ns, String name, int method) {
-            return false;
-        }
     }
 }

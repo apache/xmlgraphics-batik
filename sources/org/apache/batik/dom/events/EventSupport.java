@@ -17,13 +17,7 @@
  */
 package org.apache.batik.dom.events;
 
-import java.util.HashSet;
-
-import org.apache.batik.dom.AbstractDocument;
-import org.apache.batik.dom.AbstractNode;
 import org.apache.batik.dom.util.HashTable;
-
-import org.w3c.dom.events.CustomEvent;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventException;
 import org.w3c.dom.events.EventListener;
@@ -48,19 +42,6 @@ public class EventSupport {
      * The bubbling listeners table.
      */
     protected HashTable bubblingListeners;
-
-    /**
-     * The node for which events are being handled.
-     */
-    protected AbstractNode node;
-
-    /**
-     * Creates a new EventSupport object.
-     * @param n the node for which events are being handled
-     */
-    public EventSupport(AbstractNode n) {
-        node = n;
-    }
 
     /**
      * This method allows the registration of event listeners on the
@@ -91,18 +72,6 @@ public class EventSupport {
      */
     public void addEventListener(String type, EventListener listener, 
 				 boolean useCapture) {
-        addEventListenerNS(null, type, null, listener, useCapture);
-    }
-
-    /**
-     * Registers an event listener for the given namespaced event type
-     * in the specified group.
-     */
-    public void addEventListenerNS(String namespaceURI,
-                                   String type,
-                                   Object group,
-                                   EventListener listener,
-                                   boolean useCapture) {
 	HashTable listeners;
 	if (useCapture) {
 	    if (capturingListeners == null) {
@@ -120,7 +89,9 @@ public class EventSupport {
 	    list = new EventListenerList();
 	    listeners.put(type, list);
 	}
-        list.addListener(namespaceURI, group, listener);
+	if (!list.contains(listener)) {
+	    list.add(listener);
+	}
     }
 
     /**
@@ -152,16 +123,6 @@ public class EventSupport {
      */
     public void removeEventListener(String type, EventListener listener, 
 				    boolean useCapture) {
-        removeEventListener(null, type, listener, useCapture);
-    }
-
-    /**
-     * Deregisters an event listener.
-     */
-    public void removeEventListener(String namespaceURI,
-                                    String type,
-                                    EventListener listener,
-                                    boolean useCapture) {
 	HashTable listeners;
 	if (useCapture) {
 	    listeners = capturingListeners;
@@ -171,26 +132,13 @@ public class EventSupport {
 	if (listeners == null) {
 	    return;
 	}
-	EventListenerList list = (EventListenerList) listeners.get(type);
+	EventListenerList list = (EventListenerList)listeners.get(type);
 	if (list != null) {
-	    list.removeListener(namespaceURI, listener);
+	    list.remove(listener);
             if (list.size() == 0) {
                 listeners.remove(type);
             }
 	}
-    }
-
-    /**
-     * Moves all of the event listeners from this EventSupport object
-     * to the given EventSupport object.
-     * Used by {@link
-     * org.apache.batik.dom.AbstractDocument#renameNode(String,String,Node)}.
-     */
-    public void moveEventListeners(EventSupport other) {
-        other.capturingListeners = capturingListeners;
-        other.bubblingListeners = bubblingListeners;
-        capturingListeners = null;
-        bubblingListeners = null;
     }
 
     /**
@@ -219,158 +167,72 @@ public class EventSupport {
      *   <code>null</code> or an empty string will also trigger this
      *   exception.  
      */
-    public boolean dispatchEvent(NodeEventTarget target, Event e) 
+    public static boolean dispatchEvent(NodeEventTarget target, Event e) 
 	    throws EventException {
-	if (e == null) {
+	AbstractEvent evt = (AbstractEvent) e;
+	if (evt == null) {
 	    return false;
 	}
-        org.apache.batik.dom.dom3.events.Event ev
-            = (org.apache.batik.dom.dom3.events.Event) e;
-        org.apache.batik.dom.dom3.events.CustomEvent ce = null;
-        AbstractEvent evt = null;
-        boolean isCustom = ev.isCustom();
-        if (isCustom) {
-            ce = (org.apache.batik.dom.dom3.events.CustomEvent) e;
-        } else {
-            evt = (AbstractEvent) e;
-        }
-	String type = e.getType();
-	if (type == null || type.length() == 0) {
-            throw createEventException
-                (EventException.UNSPECIFIED_EVENT_TYPE_ERR,
-                 "unspecified.event",
-                 new Object[] {});
+	String type = evt.getType();
+	if (type == null) {
+	    throw createUnspecifiedEventTypeErr("Event type can't be null");
 	}
 	// fix event status
-        if (!isCustom) {
-            evt.setTarget(target);
-            evt.stopPropagation(false);
-            evt.stopImmediatePropagation(false);
-            evt.preventDefault(false);
-        }
+	evt.setTarget(target);
+	evt.stopPropagation(false);
+	evt.preventDefault(false);
 	// dump the tree hierarchy from top to the target
 	NodeEventTarget [] ancestors = getAncestors(target);
 	// CAPTURING_PHASE : fire event listeners from top to EventTarget
-        if (!isCustom) {
-            evt.setEventPhase(Event.CAPTURING_PHASE);
-        }
-        HashSet stoppedGroups = new HashSet();
-        HashSet toBeStoppedGroups = new HashSet();
-	for (int i = 0; i < ancestors.length && !eventStopped(ce, evt); i++) {
+	evt.setEventPhase(Event.CAPTURING_PHASE);
+	for (int i=0; i < ancestors.length && !evt.getStopPropagation();
+	     ++i) {
 	    NodeEventTarget node = ancestors[i];
-            if (isCustom) {
-                ce.setDispatchState(node, Event.CAPTURING_PHASE);
-            } else {
-                evt.setCurrentTarget(node);
-            }
-	    fireEventListeners(node, evt, true,
-                               stoppedGroups, toBeStoppedGroups, isCustom);
-            stoppedGroups.addAll(toBeStoppedGroups);
-            toBeStoppedGroups.clear();
+	    evt.setCurrentTarget(node);
+	    fireEventListeners(node, evt, true);
 	}
 	// AT_TARGET : fire local event listeners
-	if (!eventStopped(ce, evt)) {
-            if (isCustom) {
-                ce.setDispatchState(target, Event.AT_TARGET);
-            } else {
-                evt.setEventPhase(Event.AT_TARGET);
-                evt.setCurrentTarget(target);
-            }
-	    fireEventListeners(target, evt, false,
-                               stoppedGroups, toBeStoppedGroups, isCustom);
-            stoppedGroups.addAll(toBeStoppedGroups);
-            toBeStoppedGroups.clear();
+	if (!evt.getStopPropagation()) {
+	    evt.setEventPhase(Event.AT_TARGET);
+	    evt.setCurrentTarget(target);
+	    fireEventListeners(target, evt, false);
 	}
 	// BUBBLING_PHASE : fire event listeners from target to top
 	if (evt.getBubbles()) {
-            if (!isCustom) {
-                evt.setEventPhase(Event.BUBBLING_PHASE);
-            }
-	    for (int i = ancestors.length - 1;
-                    i >= 0 && !eventStopped(ce, evt);
-                    i--) {
+	    evt.setEventPhase(Event.BUBBLING_PHASE);
+	    for (int i=ancestors.length-1; 
+		     i >=0 && !evt.getStopPropagation(); --i) {
 		NodeEventTarget node = ancestors[i];
-                if (isCustom) {
-                    ce.setDispatchState(node, Event.BUBBLING_PHASE);
-                } else {
-                    evt.setCurrentTarget(node);
-                }
-		fireEventListeners(node, evt, false,
-                                   stoppedGroups, toBeStoppedGroups, isCustom);
-                stoppedGroups.addAll(toBeStoppedGroups);
-                toBeStoppedGroups.clear();
+		evt.setCurrentTarget(node);
+		fireEventListeners(node, evt, false);
 	    }
 	}
-	return !evt.isDefaultPrevented();
-    }
-
-    /**
-     * Returns true if either the CustomEvent or AbstractEvent given
-     * has been stopped.
-     */
-    protected boolean eventStopped(CustomEvent ce, AbstractEvent ae) {
-        if (ce != null) {
-            return ce.isImmediatePropagationStopped();
-        }
-        return ae.getStopImmediatePropagation();
+	return !evt.getPreventDefault();
     }
 
     private static void fireEventListeners(NodeEventTarget node, 
-					   Event evt,
-                                           boolean useCapture,
-                                           HashSet stoppedGroups,
-                                           HashSet toBeStoppedGroups,
-                                           boolean isCustom) {
+					   Event evt, boolean useCapture) {
 	String type = evt.getType();
 	EventSupport support = node.getEventSupport();
 	// check if the event support has been instantiated
 	if (support == null) {
 	    return;
 	}
-        EventListenerList list = support.getEventListeners(type, useCapture);
+	EventListenerList list=support.getEventListeners(type, useCapture);
 	// check if the event listeners list is not empty
 	if (list == null) {
 	    return;
 	}
 	// dump event listeners, we get the registered listeners NOW
-	EventListenerList.Entry[] listeners = list.getEventListeners();
+	EventListener [] listeners = list.getEventListeners();
 	// check if event listeners with the correct event type exist
 	if (listeners == null) {
 	    return;
 	}
 	// fire event listeners
-        org.apache.batik.dom.dom3.events.Event ev
-            = (org.apache.batik.dom.dom3.events.Event) evt;
-        org.apache.batik.dom.dom3.events.CustomEvent ce = null;
-        AbstractEvent aevt = null;
-        if (isCustom) {
-            ce = (org.apache.batik.dom.dom3.events.CustomEvent) evt;
-        } else {
-            aevt = (AbstractEvent) evt;
-        }
-        String eventNS = ev.getNamespaceURI();
-	for (int i = 0;
-                i < listeners.length && !aevt.getStopImmediatePropagation();
-                i++) {
+	for (int i=0; i < listeners.length; ++i) {
 	    try {
-                String listenerNS = listeners[i].getNamespaceURI();
-                if (listenerNS != null && eventNS != null
-                        && !listenerNS.equals(eventNS)) {
-                    continue;
-                }
-                Object group = listeners[i].getGroup();
-                if (!stoppedGroups.contains(group)) {
-                    listeners[i].getListener().handleEvent(evt);
-                    if (isCustom && ce.isPropagationStopped()
-                            || !isCustom && aevt.getStopPropagation()) {
-                        toBeStoppedGroups.add(group);
-                        if (isCustom) {
-                            // XXX how to not stop all subsequent groups?
-                        } else {
-                            aevt.stopPropagation(false);
-                        }
-                    }
-                }
+		listeners[i].handleEvent(evt);
             } catch (ThreadDeath td) {
                 throw td;
 	    } catch (Throwable th) {
@@ -396,30 +258,6 @@ public class EventSupport {
     }
 
     /**
-     * Returns whether this node target has an event listener for the
-     * given event namespace URI and type.
-     */
-    public boolean hasEventListenerNS(String namespaceURI, String type) {
-        if (capturingListeners != null) {
-            EventListenerList ell
-                = (EventListenerList) capturingListeners.get(type);
-            if (ell != null) {
-                if (ell.hasEventListener(namespaceURI)) {
-                    return true;
-                }
-            }
-        }
-        if (bubblingListeners != null) {
-            EventListenerList ell
-                = (EventListenerList) capturingListeners.get(type);
-            if (ell != null) {
-                return ell.hasEventListener(namespaceURI);
-            }
-        }
-        return false;
-    }
-
-    /**
      * Returns a list event listeners depending on the specified event
      * type and phase.
      * @param type the event type 
@@ -427,29 +265,26 @@ public class EventSupport {
      */
     public EventListenerList getEventListeners(String type, 
 					       boolean useCapture) {
-	HashTable listeners
-            = useCapture ? capturingListeners : bubblingListeners;
+	HashTable listeners=(useCapture)?capturingListeners:bubblingListeners;
 	if (listeners == null) {
 	    return null;
+	} else {
+	    return (EventListenerList) listeners.get(type);
 	}
-        return (EventListenerList) listeners.get(type);
     }
 
     /**
      * Creates an EventException. Overrides this method if you need to
      * create your own RangeException subclass.
      * @param code the exception code
-     * @param key the resource key
-     * @param args arguments to use when formatting the message
+     * @param message the detail message
      */
-    protected EventException createEventException(short code,
-                                                  String key,
-                                                  Object[] args) {
-        try {
-            AbstractDocument doc = (AbstractDocument) node.getOwnerDocument();
-            return new EventException(code, doc.formatMessage(key, args));
-        } catch (Exception e) {
-            return new EventException(code, key);
-        }
+    private static EventException createEventException(short code, String s) {
+	return new EventException(code, s);
+    }
+
+    private static EventException createUnspecifiedEventTypeErr(String s) {
+	return createEventException(EventException.UNSPECIFIED_EVENT_TYPE_ERR,
+				    s);
     }
 }
