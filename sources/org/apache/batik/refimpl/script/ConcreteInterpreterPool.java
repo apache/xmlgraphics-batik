@@ -18,6 +18,7 @@ import java.util.HashMap;
  * @version $Id$
  */
 public class ConcreteInterpreterPool implements InterpreterPool {
+    private Document document;
     private HashMap factories = new HashMap(3);
     private HashMap interpreters = new HashMap(1);
 
@@ -34,6 +35,14 @@ public class ConcreteInterpreterPool implements InterpreterPool {
      * Builds an instance of <code>ConcreteInterpreterPool</code>.
      */
     public ConcreteInterpreterPool() {
+    }
+
+    /**
+     * Builds an instance of <code>ConcreteInterpreterPool</code> that
+     * will deal with the given <code>Document</code>.
+     */
+    public ConcreteInterpreterPool(Document doc) {
+        document = doc;
         InterpreterFactory factory = null;
         try {
             factory =
@@ -62,38 +71,29 @@ public class ConcreteInterpreterPool implements InterpreterPool {
     }
 
     /**
-     * Should return a unique instance of an implementation of
-     * <code>Interpreter</code> interface that match the given language
-     * and that provides a "document" script object binding the given
-     * <code>Document</code> instance.
+     * Returns a unique instance of an implementation of
+     * <code>Interpreter</code> interface that match the given language.
+     * It returns <code>null</code> if the interpreter cannot be build.
      * @param language a mimeType like string describing the language to use
      * (i.e. "text/ecmascript" for ECMAScript interpreter).
      * @param document the <code>Document instance</code>.
      */
-    public Interpreter getInterpreter(String language, Document document) {
-        Interpreter interpreter = null;
-        HashMap map = (HashMap)interpreters.get(language);
-        if (map != null)
-            interpreter = (Interpreter)map.
-                get(document);
+    public Interpreter getInterpreter(String language) {
+        Interpreter interpreter = (Interpreter)interpreters.get(language);
         if (interpreter == null) {
             InterpreterFactory factory = (InterpreterFactory)factories.
                 get(language);
-            if (factory != null) {
+            if (factory != null)
                 try {
                     interpreter = factory.createInterpreter();
-                    if (document != null)
+                    if (document != null) {
                         interpreter.bindObject("document", document);
-                    if (map == null) {
-                        map = new HashMap(2);
-                        interpreters.put(language, map);
                     }
-                    map.put(document, interpreter);
+                    interpreters.put(language, interpreter);
                 } catch (Throwable t) {
                     // may append if the class is here but
                     // not the scripting engine jar
                 }
-            }
         }
         return interpreter;
     }
