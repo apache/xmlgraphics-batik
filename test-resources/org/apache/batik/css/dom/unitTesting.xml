@@ -17,6 +17,6 @@
         <test id="rgbTest" />
         <test id="rgbUpdateTest" />
         <test id="rgbPresentationTest" />
+        <test id="bug9740" />
     </testGroup>
-
 </testSuite>
