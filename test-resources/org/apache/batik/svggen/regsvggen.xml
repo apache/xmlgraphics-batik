@@ -116,10 +116,17 @@
 	<arg class="java.net.URL" value="file:test-references/org/apache/batik/svggen/ShearTest.svg"/>
         <property name="SaveSVG" class="java.io.File" value="test-references/org/apache/batik/svggen/candidate-ref/ShearTest.svg" />
     </test>
+
     <test class="org.apache.batik.svggen.SVGAccuracyTest">
         <arg class="org.apache.batik.svggen.Texture" />
-	<arg class="java.net.URL" value="file:test-references/org/apache/batik/svggen/Texture.svg"/>
+	    <arg class="java.net.URL" value="file:test-references/org/apache/batik/svggen/Texture.svg"/>
         <property name="SaveSVG" class="java.io.File" value="test-references/org/apache/batik/svggen/candidate-ref/Texture.svg" />
+    </test>
+
+    <test class="org.apache.batik.svggen.SVGAccuracyTest">
+        <arg class="org.apache.batik.svggen.TextSpacePreserve" />
+	    <arg class="java.net.URL" value="file:test-references/org/apache/batik/svggen/TextSpacePreserve.svg"/>
+        <property name="SaveSVG" class="java.io.File" value="test-references/org/apache/batik/svggen/candidate-ref/TextSpacePreserve.svg" />
     </test>
 
     
@@ -229,9 +236,17 @@
 	<arg class="java.net.URL" value="file:test-references/org/apache/batik/svggen/ContextShearTest.svg"/>
         <property name="SaveSVG" class="java.io.File" value="test-references/org/apache/batik/svggen/candidate-ref/ContextShearTest.svg" />
     </test>
+
     <test class="org.apache.batik.svggen.GeneratorContext">
         <arg class="org.apache.batik.svggen.Texture" />
-	<arg class="java.net.URL" value="file:test-references/org/apache/batik/svggen/ContextTexture.svg"/>
+	    <arg class="java.net.URL" value="file:test-references/org/apache/batik/svggen/ContextTexture.svg"/>
         <property name="SaveSVG" class="java.io.File" value="test-references/org/apache/batik/svggen/candidate-ref/ContextTexture.svg" />
     </test>
+
+    <test class="org.apache.batik.svggen.GeneratorContext">
+        <arg class="org.apache.batik.svggen.TextSpacePreserve" />
+	    <arg class="java.net.URL" value="file:test-references/org/apache/batik/svggen/ContextTextSpacePreserve.svg"/>
+        <property name="SaveSVG" class="java.io.File" value="test-references/org/apache/batik/svggen/candidate-ref/ContextTextSpacePreserve.svg" />
+    </test>
+
 </testSuite>

@@ -20,6 +20,7 @@ import java.awt.image.renderable.*;
 
 import org.w3c.dom.*;
 
+import org.apache.batik.util.XMLConstants;
 import org.apache.batik.ext.awt.g2d.AbstractGraphics2D;
 import org.apache.batik.ext.awt.g2d.GraphicContext;
 
@@ -53,7 +54,7 @@ import org.apache.batik.ext.awt.g2d.GraphicContext;
  * @see                org.w3c.dom.Document
  */
 public class SVGGraphics2D extends AbstractGraphics2D
-    implements Cloneable, SVGSyntax, ErrorConstants {
+    implements Cloneable, SVGSyntax, XMLConstants, ErrorConstants {
     /*
      * Constants definitions
      */
@@ -977,6 +978,9 @@ public class SVGGraphics2D extends AbstractGraphics2D
                                 AbstractSVGConverter.doubleString(x));
             text.setAttributeNS(null, SVG_Y_ATTRIBUTE,
                                 AbstractSVGConverter.doubleString(y));
+            text.setAttributeNS(XML_NAMESPACE_URI,
+                                XML_SPACE_ATTRIBUTE,
+                                XML_PRESERVE_VALUE);
             text.appendChild(getDOMFactory().createTextNode(s));
             domGroupManager.addElement(text, DOMGroupManager.FILL);
         } else {
