@@ -104,9 +104,12 @@ public class SVGMaskElementBridge implements MaskBridge, SVGConstants {
             Element child = (Element)node;
             GraphicsNode gn = builder.build(bridgeContext, child) ;
             if(gn == null) {
+                continue; // skip element has <mask> can contain <defs>...
+                /*
                 throw new IllegalAttributeValueException(
                     Messages.formatMessage("mask.subelement.illegal",
                                            new Object[] {node.getLocalName()}));
+                                           */
             }
             hasChildren = true;
             maskNodeContent.getChildren().add(gn);
