@@ -285,7 +285,7 @@ public interface SVGConstants extends CSSConstants {
     String VALUE_PATTERN_X_DEFAULT = "0%";
     String VALUE_PATTERN_Y_DEFAULT = "0%";
     String VALUE_PATTERN_WIDTH_DEFAULT = "100%";
-    String VALUE_PATTERN_HEIGHT_DEFAULT = "100%";    
+    String VALUE_PATTERN_HEIGHT_DEFAULT = "100%";
     String VALUE_PRESERVE = "preserve";
     String VALUE_REFLECT = "reflect";
     String VALUE_REPEAT = "repeat";
