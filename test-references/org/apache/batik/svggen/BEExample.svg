@@ -7,7 +7,9 @@
   <g>
     <g fill="rgb(103,103,152)" text-rendering="optimizeLegibility" shape-rendering="geometricPrecision" stroke="rgb(103,103,152)">
       <rect width="200" x="10" height="50" y="10" stroke="none" />
-      <text fill="white" x="40" font-size="20" y="40" stroke="none">Hello Java 2D to SVG
+    </g>
+    <g font-size="20" fill="white" text-rendering="optimizeLegibility" font-family="&apos;SunSansCondensed-Heavy&apos;" shape-rendering="geometricPrecision" stroke="white">
+      <text x="40" y="40" stroke="none">Hello Java 2D to SVG
       </text>
     </g>
   </g>
