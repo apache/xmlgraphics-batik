@@ -361,8 +361,8 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
             if (ImageTranscoder.this.hints.containsKey(KEY_PIXEL_TO_MM)) {
                 return ((Float)ImageTranscoder.this.hints.get(KEY_PIXEL_TO_MM)).floatValue();
             } else {
-                // return 0.3528f; // 72 dpi
-                return 0.26458333333333333333333333333333f; // 96dpi
+		//return 0.3528f; // 72 dpi
+		return 0.26458333333333333333333333333333f; // 96dpi
             }
         }
 
