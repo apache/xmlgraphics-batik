@@ -20,25 +20,27 @@
 
     g.setPaint(Color.black);
 
-		Dimension size = new Dimension(300, 400);
-		int w=100, h=50;
-		int vOffset = h + 20;
-		BufferedImage image = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
-		Graphics2D gi = image.createGraphics();
-		gi.setPaint(Color.white);
-		gi.fillRect(0, 0, 100, 50);
-		gi.setPaint(Color.green);
-		gi.fillRect(0, 0, 50, 25);
-		gi.setPaint(Color.black);
-		gi.fillRect(50, 0, 50, 25);
-		gi.setPaint(Color.red);
-		gi.fillRect(50, 25, 50, 25);
-		gi.dispose();
+	Dimension size = new Dimension(300, 400);
+	int w=100, h=50;
+	int vOffset = h + 20;
+	BufferedImage image = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+	Graphics2D gi = image.createGraphics();
+	gi.setPaint(Color.white);
+	gi.fillRect(0, 0, 100, 50);
+	gi.setPaint(Color.green);
+	gi.fillRect(0, 0, 50, 25);
+	gi.setPaint(Color.black);
+	gi.fillRect(50, 0, 50, 25);
+	gi.setPaint(Color.red);
+	gi.fillRect(50, 25, 50, 25);
+	gi.dispose();
 		
     // Set simple clip : does not modify the output
     g.clipRect(0, 0, size.width, size.height);
     g.drawImage(image, 0, 0, null);
-		g.drawString("Clip set to device bounds", 110, 25);
+    g.setClip(clipShape);
+
+    g.drawString("Clip set to device bounds", 110, 25);
 
     g.translate(0, vOffset);
 
