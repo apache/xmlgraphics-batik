@@ -97,8 +97,6 @@ public class MultiResGraphicsNode
             this.srcURLs[i] = srcURLs[i];
             if (i < sizes.length) 
                 this.sizes[i] = sizes[i];
-            // System.out.println("Sz: " + this.sizes[i]);
-            // System.out.println("URL: " + this.srcURLs[i]);
         }
 
         this.srcs = new SoftReference[srcURLs.length];
@@ -121,7 +119,6 @@ public class MultiResGraphicsNode
         double scx = Math.sqrt(at.getShearX()*at.getShearX()+
                                at.getScaleX()*at.getScaleX());
 
-        // System.out.println("SCX: " + scx);
         GraphicsNode gn = null;
         int idx =-1;
         double w = bounds.getWidth()*scx;
@@ -134,8 +131,6 @@ public class MultiResGraphicsNode
         if (idx == -1)
             idx = srcURLs.length-1;
         gn = getGraphicsNode(idx);
-
-        // System.out.println("GN Idx: " + idx);
 
         if (gn == null) return;
 
@@ -262,15 +257,16 @@ public class MultiResGraphicsNode
 
         SVGSVGElement svgElement = imgDocument.getRootElement();
         GVTBuilder builder = new GVTBuilder();
-        GraphicsNode node = builder.build(ctx, svgElement);
+        GraphicsNode node = builder.build(ctx, imgDocument);
         // HACK: remove the clip set by the SVGSVGElement as the overflow
         // and clip properties must be ignored. The clip will be set later
         // using the overflow and clip of the <image> element.
         node.setClip(null);
         result.getChildren().add(node);
 
-        // create the implicit viewBox for the SVG image. The viewBox for a
-        // SVG image is the viewBox of the outermost SVG element of the SVG file
+        // create the implicit viewBox for the SVG image. The viewBox
+        // for a SVG image is the viewBox of the outermost SVG element
+        // of the SVG file
         String viewBox =
             svgElement.getAttributeNS(null, SVG_VIEW_BOX_ATTRIBUTE);
         float [] vb = ViewBox.parseViewBoxAttribute(e, viewBox);
