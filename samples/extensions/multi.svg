@@ -22,23 +22,23 @@
 <svg width="450" height="500" xml:space="preserve" 
      viewBox="0 0 450 500"
      xmlns="http://www.w3.org/2000/svg" 
-     xmlns:xlink="http://www.w3.org/1999/xlink" 
-     xmlns:batikExt="http://xml.apache.org/batik/ext">
+     xmlns:xlink="http://www.w3.org/1999/xlink">
 
     <title>MultiImage Extension Tag</title>
     <defs>
        <g id="sample">
           <rect fill="#ADA" x="0" y="0" width="280" height="400"/>
-          <batikExt:multiImage id="img" xlink:href="multi1.jpg"
-                 x="20" y="20" width="240" height="360" 
-                 pixel-width="480" pixel-height="720">
-             <batikExt:subImage xlink:href="multi2.jpg" 
-                        pixel-width="240" pixel-height="360"/>
-             <batikExt:subImage xlink:href="multi3.jpg" 
-                        pixel-width="120" pixel-height="180"/>
-             <batikExt:subImage xlink:href="multi4.jpg" 
-                        pixel-width="60" pixel-height="90"/>
-          </batikExt:multiImage>
+          <multiImage id="img" x="20" y="20" width="240" height="360" 
+                 xmlns="http://xml.apache.org/batik/ext">
+             <subImageRef xlink:href="multi1.jpg" 
+                          max-pixel-size="1"/>
+             <subImageRef xlink:href="multi2.jpg" 
+                          min-pixel-size="1" max-pixel-size="2"/>
+             <subImageRef xlink:href="multi3.jpg" 
+                          min-pixel-size="2"  max-pixel-size="4"/>
+             <subImageRef xlink:href="multi4.jpg" 
+                          min-pixel-size="4"/>
+          </multiImage>
        </g>
     </defs>  
 

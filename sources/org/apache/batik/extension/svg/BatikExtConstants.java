@@ -75,6 +75,9 @@ public interface BatikExtConstants {
     /** Tag name for Batik's subImage multiImage extension. */
     public static final String BATIK_EXT_SUB_IMAGE_TAG =
         "subImage";
+    /** Tag name for Batik's subImageRef multiImage extension. */
+    public static final String BATIK_EXT_SUB_IMAGE_REF_TAG =
+        "subImageRef";
 
     /** Attribute name for dx attribute */
     public static final String BATIK_EXT_DX_ATRIBUTE =
@@ -172,12 +175,12 @@ public interface BatikExtConstants {
         "trim";
 
     /** Attribute name for pixel-width attribute */
-    public static final String BATIK_EXT_PIXEL_WIDTH_ATTRIBUTE = 
-        "pixel-width";
+    public static final String BATIK_EXT_MIN_PIXEL_SIZE_ATTRIBUTE = 
+        "min-pixel-size";
 
     /** Attribute name for pixel-height attribute */
-    public static final String BATIK_EXT_PIXEL_HEIGHT_ATTRIBUTE = 
-        "pixel-height";
+    public static final String BATIK_EXT_MAX_PIXEL_SIZE_ATTRIBUTE = 
+        "max-pixel-size";
 
     /** Attribute name for color attribute */
     public static final String BATIK_EXT_SOLID_COLOR_PROPERTY = 

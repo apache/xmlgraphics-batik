@@ -97,9 +97,11 @@ public class BatikMultiImageElementBridge extends SVGImageElementBridge
             return null;
         }
 
-        List dims = new LinkedList();
-        List uris = new LinkedList();
-        addInfo(e, dims, uris);
+        Rectangle2D b = getImageBounds(ctx, e);
+
+        List uris   = new LinkedList();
+        List minDim = new LinkedList();
+        List maxDim = new LinkedList();
 
         for (Node n = e.getFirstChild(); n != null; n = n.getNextSibling()) {
             if (n.getNodeType() != Node.ELEMENT_NODE)
@@ -107,39 +109,49 @@ public class BatikMultiImageElementBridge extends SVGImageElementBridge
             
             Element se = (Element)n;
             if (!(se.getNamespaceURI().equals(BATIK_EXT_NAMESPACE_URI)) ||
-                !(se.getLocalName().equals(BATIK_EXT_SUB_IMAGE_TAG)))
+                !(se.getLocalName().equals(BATIK_EXT_SUB_IMAGE_REF_TAG)))
                 continue;
 
-            addInfo(se, dims, uris);
+            addInfo(se, uris, minDim, maxDim, b);
         }
 
-        Dimension [] dary = new Dimension[uris.size()];
+        Dimension [] mindary = new Dimension[uris.size()];
+        Dimension [] maxdary = new Dimension[uris.size()];
         ParsedURL [] uary = new ParsedURL[uris.size()];
-        Iterator di = dims.iterator();
+        Iterator mindi = minDim.iterator();
+        Iterator maxdi = maxDim.iterator();
         Iterator ui = uris.iterator();
         int n=0;
-        while (di.hasNext()) {
-            int i;
-            Dimension d = (Dimension)di.next();
-            for (i=0; i<n; i++) {
-                if (d.width > dary[i].width) break;
+        while (mindi.hasNext()) {
+            Dimension minD = (Dimension)mindi.next();
+            Dimension maxD = (Dimension)maxdi.next();
+            int i =0;
+            if (minD != null) {
+                for (; i<n; i++) {
+                    if ((mindary[i] != null) &&
+                        (minD.width < mindary[i].width)) {
+                        break;
+                    }
+                }
             }
             for (int j=n; j>i; j--) {
-                dary[j] = dary[j-1];
-                uary[j] = uary[j-1];
+                uary[j]    = uary[j-1];
+                mindary[j] = mindary[j-1];
+                maxdary[j] = maxdary[j-1];
             }
-            dary[i] = d;
-            uary[i] = (ParsedURL)ui.next();
+            
+            uary   [i] = (ParsedURL)ui.next();
+            mindary[i] = minD;
+            maxdary[i] = maxD;
             n++;
         }
-
-        Rectangle2D b = getImageBounds(ctx, e);
 
         // System.out.println("Bounds: " + bounds);
         // System.out.println("ImgB: " + imgBounds);
         
 
-        GraphicsNode node = new MultiResGraphicsNode(e, b, uary, dary);
+        GraphicsNode node = new MultiResGraphicsNode(e, b, uary, 
+                                                     mindary, maxdary);
 
         // 'transform'
         String s = e.getAttributeNS(null, SVG_TRANSFORM_ATTRIBUTE);
@@ -180,8 +192,9 @@ public class BatikMultiImageElementBridge extends SVGImageElementBridge
         ((SVGOMElement)e).setSVGContext(this);
     }
 
-    protected void addInfo(Element e, Collection dims, Collection uris) {
-        Dimension d = getElementPixelSize(e);
+    protected void addInfo(Element e, Collection uris, 
+                           Collection minDim, Collection maxDim,
+                           Rectangle2D bounds) {
         String uriStr = XLinkSupport.getXLinkHref(e);
         if (uriStr.length() == 0) {
             throw new BridgeException(e, ERR_ATTRIBUTE_MISSING,
@@ -192,40 +205,40 @@ public class BatikMultiImageElementBridge extends SVGImageElementBridge
         ParsedURL purl;
         if (baseURI == null) purl = new ParsedURL(uriStr);
         else                 purl = new ParsedURL(baseURI, uriStr);
-
-        dims.add(d);
         uris.add(purl);
+
+        
+        minDim.add(getElementMinPixel(e, bounds));
+        maxDim.add(getElementMaxPixel(e, bounds));
     }
 
-    protected Dimension getElementPixelSize(Element e) {
-        int w=0, h=0;
+    protected Dimension getElementMinPixel(Element e, Rectangle2D bounds) {
+        return getElementPixelSize
+            (e, BATIK_EXT_MAX_PIXEL_SIZE_ATTRIBUTE, bounds);
+    }
+    protected Dimension getElementMaxPixel(Element e, Rectangle2D bounds) {
+        return getElementPixelSize
+            (e, BATIK_EXT_MIN_PIXEL_SIZE_ATTRIBUTE, bounds);
+    }
+
+    protected Dimension getElementPixelSize(Element e, 
+                                            String attr,
+                                            Rectangle2D bounds) {
         String s;
+        s = e.getAttribute(attr);
+        if (s.length() == 0) return null;
 
-        s = e.getAttributeNS(null,BATIK_EXT_PIXEL_WIDTH_ATTRIBUTE);
-        if (s.length() == 0) throw new BridgeException
-            (e, ERR_ATTRIBUTE_MISSING,
-             new Object[] {BATIK_EXT_PIXEL_WIDTH_ATTRIBUTE});
+        Float [] vals = SVGUtilities.convertSVGNumberOptionalNumber
+            (e, attr, s);
 
-        try {
-            w = (int)SVGUtilities.convertSVGNumber(s);
-        } catch (NumberFormatException ex) {
-            throw new BridgeException
-                (e, ERR_ATTRIBUTE_VALUE_MALFORMED,
-                 new Object[] {BATIK_EXT_PIXEL_WIDTH_ATTRIBUTE, s});
-        }
+        if (vals[0] == null) return null;
 
-        s = e.getAttributeNS(null,BATIK_EXT_PIXEL_HEIGHT_ATTRIBUTE);
-        if (s.length() == 0) throw new BridgeException
-            (e, ERR_ATTRIBUTE_MISSING,
-             new Object[] {BATIK_EXT_PIXEL_HEIGHT_ATTRIBUTE});
-        try {
-            h = (int)SVGUtilities.convertSVGNumber(s);
-        } catch (NumberFormatException ex) {
-            throw new BridgeException
-                (e, ERR_ATTRIBUTE_VALUE_MALFORMED,
-                 new Object[] {BATIK_EXT_PIXEL_HEIGHT_ATTRIBUTE, s});
-        }
-
-        return new Dimension(w, h);
+        float xPixSz = vals[0].floatValue();
+        float yPixSz = xPixSz;
+        if (vals[1] != null)
+            yPixSz = vals[1].floatValue();
+        
+        return new Dimension((int)(bounds.getWidth()/xPixSz+0.5), 
+                             (int)(bounds.getHeight()/yPixSz+0.5)); 
     }
 }

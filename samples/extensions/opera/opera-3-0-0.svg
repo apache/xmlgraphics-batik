@@ -2,12 +2,15 @@
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN"
 "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
 <svg width="90" height="135" viewBox="0 0 90 135" 
-xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:batikExt="http://xml.apache.org/batik/ext">
-   <batikExt:multiImage x="0" y="0" width="90" height="135"
-         xlink:href="multires/opera-3-0-0.jpg"
-         pixel-width="90" pixel-height="135">
-      <batikExt:subImage xlink:href="opera-2-0-0.svg"
-            pixel-width="180" pixel-height="270"/>
-   </batikExt:multiImage>
-   <rect class="overlay" fill="none" stroke="#00F" stroke-width="4" x="0" y="0" width="90" height="135"/>
+     xmlns="http://www.w3.org/2000/svg" 
+     xmlns:xlink="http://www.w3.org/1999/xlink">
+   <multiImage x="0" y="0" width="90" height="135"
+               xmlns="http://xml.apache.org/batik/ext">
+      <subImageRef xlink:href="multires/opera-3-0-0.jpg"
+        min-pixel-size="1"/>
+      <subImageRef xlink:href="opera-2-0-0.svg" 
+        max-pixel-size="1"/>
+   </multiImage>
+   <rect class="overlay" fill="none" stroke="#00F" stroke-width="4" 
+        x="0" y="0" width="90" height="135"/>
 </svg>
