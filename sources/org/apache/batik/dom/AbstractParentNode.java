@@ -85,6 +85,9 @@ public abstract class AbstractParentNode extends AbstractNode {
 	    return newChild;
 	} else {
 	    // Node modification
+	    if (childNodes == null) {
+	        childNodes = new ChildNodes();
+	    }
 	    ExtendedNode n = childNodes.insert((ExtendedNode)newChild,
 					       (ExtendedNode)refChild);
 	    n.setParentNode(this);
@@ -502,12 +505,12 @@ public abstract class AbstractParentNode extends AbstractNode {
 	 * The first child.
 	 */
 	protected transient ExtendedNode firstChild;
-	
+
 	/**
 	 * The last child.
 	 */
 	protected transient ExtendedNode lastChild;
-	
+
 	/**
 	 * The number of children.
 	 */
@@ -705,7 +708,7 @@ public abstract class AbstractParentNode extends AbstractNode {
          */
         private void writeObject(ObjectOutputStream s) throws IOException {
             s.defaultWriteObject();
-            
+
             for (ExtendedNode en = firstChild;
                  en != null;
                  en = (ExtendedNode)en.getNextSibling()) {
@@ -716,7 +719,7 @@ public abstract class AbstractParentNode extends AbstractNode {
         /**
          * Reads the object from the given stream.
          */
-        private void readObject(ObjectInputStream s) 
+        private void readObject(ObjectInputStream s)
             throws IOException, ClassNotFoundException {
             s.defaultReadObject();
 
@@ -736,7 +739,7 @@ public abstract class AbstractParentNode extends AbstractNode {
                 en.setOwnerDocument(doc);
                 prev.setNextSibling(en);
                 prev = en;
-            } 
+            }
             lastChild = prev;
         }
     }
