@@ -391,8 +391,8 @@
             <g id="sun" filter="url(#blur)">
                 <circle cx="140" cy="620" r="50" fill="white" />
             </g>
-            <use x="140" y="620" xlink:href="#boomingStar" transform="scale(2, 2)"/>
-            <use x="140" y="620" xlink:href="#boomingStar" transform="scale(3, 3) rotate(30)" opacity=".5"/>
+            <use xlink:href="#boomingStar" transform="translate(140 620) scale(2, 2)"/>
+            <use xlink:href="#boomingStar" transform="translate(140 620) scale(3, 3) rotate(30)" opacity=".5"/>
             <circle cx="-450" cy="1000" r="700" fill="url(#planetGradient)" fill-opacity="1"/> 
         </g>
 

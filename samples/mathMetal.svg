@@ -280,7 +280,7 @@
             <rect x="-5%" width="110%" height="185" />
             <circle cx="50%" cy="140" r="85" />
             <use xlink:href="#arrow" x="225" y="260"/>
-            <use xlink:href="#arrow" x="225" y="460" transform="rotate(180)"/>
+            <use xlink:href="#arrow" transform="translate(225 460) rotate(180)"/>
             <use xlink:href="#plate" x="225" y="360" />
             <!-- <circle cx="55" cy="328" r="10" fill="white" />
             <circle cx="55" cy="395" r="10" fill="white" />
@@ -399,6 +399,6 @@
 
     <use xlink:href="#graphics" fill="gray" filter="url(#shadow)"/> 
     <text text-anchor="middle" font-size="80" font-family="embedZeroHour" x="50%" y="120" fill="black" filter="url(#recessed)">MATH</text>
-    <use xlink:href="#formula" x="225" y="360" transform="scale(.7)" fill="black" color="black" filter="url(#carved)"/> 
+    <use xlink:href="#formula" transform="translate(225 360) scale(.7)" fill="black" color="black" filter="url(#carved)"/> 
 
 </svg>

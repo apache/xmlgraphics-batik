@@ -1,0 +1,129 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN"
+"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+
+<!-- ========================================================================= -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.        -->
+<!--                                                                           -->
+<!-- This software is published under the terms of the Apache Software License -->
+<!-- version 1.1, a copy of which has been included with this distribution in  -->
+<!-- the LICENSE file.                                                         -->
+<!-- ========================================================================= -->
+
+<!-- ========================================================================= -->
+<!-- use targets                                                               -->
+<!--                                                                           -->
+<!-- @author tkormann@ilog.fr                                                  -->
+<!-- @version $Id$ -->
+<!-- ========================================================================= -->
+
+<?xml-stylesheet type="text/css" href="../../resources/style/test.css" ?>
+
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+     width="450" height="500" viewBox="0 0 450 500">
+
+<title>&lt;use> Targets2</title>
+
+    <!-- ============================================================= -->
+    <!-- Test content                                                  -->
+    <!-- ============================================================= --> 
+    <text x="225" y="50" class="title">&lt;use> Targets 2</text>
+    <g id="testContent" transform="translate(0 40)">
+
+<defs>
+
+<symbol id="symbol" viewBox="-100 -100 200 200" style="stroke:crimson; stroke-width:8">
+	<rect x="-100" y="-100" width="100%" height="100%" style="fill:crimson; stroke:none"/>
+	<circle cx="0" cy="0" r="25%" style="fill:orange; stroke:gold"/>
+</symbol>
+
+<svg id="svg" viewBox="-100 -100 200 200" style="stroke:crimson; stroke-width:8">
+	<rect x="-100" y="-100" width="100%" height="100%" style="fill:crimson; stroke:none"/>
+	<circle cx="0" cy="0" r="25%" style="fill:orange; stroke:gold"/>
+</svg>
+
+</defs>
+
+<g id="board">
+<rect x="10" y="60" width="430" height="20" style="fill:#aaa; stroke:black" />
+<rect x="10" y="80" width="430" height="100" style="fill:#eee; stroke:black" />
+<text x="20" y="74">&lt;use> references a &lt;symbol></text>
+
+<g transform="translate(0 150)">
+<rect x="10" y="60" width="430" height="20" style="fill:#aaa; stroke:black" />
+<rect x="10" y="80" width="430" height="100" style="fill:#eee; stroke:black" />
+<text x="20" y="74">&lt;use> references a &lt;svg></text>
+</g>
+
+</g>
+
+<!-- ################################################### -->
+<!-- use references symbol -->
+<!-- ################################################### -->
+
+<!-- svg width x,y and transform -->
+<use x="1000" y="1000" width="100" height="100" xlink:href="#symbol" 
+     transform="translate(50 100) scale(.5) translate(-1000 -1000)"/>
+<rect x="48" y="98" width="4" height="4" style="fill:blue" />
+<text x="75" y="170" style="text-anchor:middle">x, y, w, h, transform</text>
+
+<!-- svg width transform -->
+<g transform="translate(150 0)">
+	<use width="100" height="100" xlink:href="#symbol" 
+     	     transform="translate(50 100) scale(.5)"/>
+	<rect x="48" y="98" width="4" height="4" style="fill:blue" />
+	<text x="75" y="170" style="text-anchor:middle">w, h, transform</text>
+</g>
+
+<!-- equivalent svg -->
+<g transform="translate(300 0)">
+   <g transform="translate(50 100) scale(.5) translate(-1000 -1000) translate(1000 1000)">
+	<svg width="100" height="100" viewBox="-100 -100 200 200" style="stroke:crimson; stroke-width:8">
+		<rect x="-100" y="-100" width="100%" height="100%" style="fill:crimson; stroke:none"/>
+		<circle cx="0" cy="0" r="25%" style="fill:orange; stroke:gold"/>
+	</svg>
+   </g>
+   <rect x="48" y="98" width="4" height="4" style="fill:blue" />
+   <text x="75" y="170" style="text-anchor:middle">equivalent svg</text>
+</g>
+
+<!-- ################################################### -->
+<!-- use references svg -->
+<!-- ################################################### -->
+
+<!-- svg width x,y and transform -->
+<g transform="translate(0 150)">
+	<use x="1000" y="1000" width="100" height="100" xlink:href="#svg" 
+     	     transform="translate(50 100) scale(.5) translate(-1000 -1000)"/>
+	<rect x="48" y="98" width="4" height="4" style="fill:blue" />
+	<text x="75" y="170" style="text-anchor:middle">x, y, w, h, transform</text>
+</g>
+
+<!-- svg width transform -->
+<g transform="translate(150 150)">
+	<use width="100" height="100" xlink:href="#svg" 
+     	     transform="translate(50 100) scale(.5)"/>
+	<rect x="48" y="98" width="4" height="4" style="fill:blue" />
+	<text x="75" y="170" style="text-anchor:middle">w, h, transform</text>
+</g>
+
+<!-- equivalent svg -->
+<g transform="translate(300 150)">
+   <g transform="translate(50 100) scale(.5) translate(-1000 -1000) translate(1000 1000)">
+	<svg width="100" height="100" viewBox="-100 -100 200 200" style="stroke:crimson; stroke-width:8">
+		<rect x="-100" y="-100" width="100%" height="100%" style="fill:crimson; stroke:none"/>
+		<circle cx="0" cy="0" r="25%" style="fill:orange; stroke:gold"/>
+	</svg>
+   </g>
+   <rect x="48" y="98" width="4" height="4" style="fill:blue" />
+   <text x="75" y="170" style="text-anchor:middle">equivalent svg</text>
+</g>
+
+    </g>
+
+    <!-- ============================================================= -->
+    <!-- Batik sample mark                                             -->
+    <!-- ============================================================= -->
+    <use xlink:href="../../../batikLogo.svg#Batik_Tag_Box" />
+    
+</svg>
