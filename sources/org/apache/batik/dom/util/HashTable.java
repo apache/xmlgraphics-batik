@@ -18,10 +18,6 @@ import java.io.Serializable;
  */
 
 public class HashTable implements Serializable {
-    /**
-     * The load factor
-     */
-    protected final static float LOAD_FACTOR = 0.75f;
 	    
     /**
      * The initial capacity
@@ -39,16 +35,18 @@ public class HashTable implements Serializable {
     protected int count;
 	    
     /**
-     * The resizing threshold
-     */
-    protected int threshold;
-	    
-    /**
      * Creates a new table.
      */
     public HashTable() {
-	table     = new Entry[INITIAL_CAPACITY];
-	threshold = (int)(INITIAL_CAPACITY * LOAD_FACTOR);
+	table = new Entry[INITIAL_CAPACITY];
+    }
+
+    /**
+     * Creates a new table.
+     * @param c The initial capacity.
+     */
+    public HashTable(int c) {
+	table = new Entry[c];
     }
 
     /**
@@ -56,7 +54,6 @@ public class HashTable implements Serializable {
      * @param t The table to copy.
      */
     public HashTable(HashTable t) {
-	threshold = t.threshold;
 	count = t.count;
 	table = new Entry[t.table.length];
 	for (int i = 0; i < table.length; i++) {
@@ -115,7 +112,8 @@ public class HashTable implements Serializable {
 	}
 	
 	// The key is not in the hash table
-	if (count++ >= threshold) {
+        int len = table.length;
+	if (count++ >= (len * 3) >>> 2) {
 	    rehash();
 	    index = hash % table.length;
 	}
@@ -200,9 +198,10 @@ public class HashTable implements Serializable {
      * Clears the map.
      */
     public void clear() {
-	table     = new Entry[INITIAL_CAPACITY];
-	threshold = (int)(INITIAL_CAPACITY * LOAD_FACTOR);
-	count     = 0;
+        for (int i = 0; i < table.length; i++) {
+            table[i] = null;
+        }
+	count = 0;
     }
 
     /**
@@ -211,8 +210,7 @@ public class HashTable implements Serializable {
     protected void rehash () {
 	Entry[] oldTable = table;
 	
-	table     = new Entry[oldTable.length * 2 + 1];
-	threshold = (int)(table.length * LOAD_FACTOR);
+	table = new Entry[oldTable.length * 2 + 1];
 	
 	for (int i = oldTable.length-1; i >= 0; i--) {
 	    for (Entry old = oldTable[i]; old != null;) {

@@ -510,7 +510,7 @@ public abstract class AbstractElement
 	/**
 	 * The place where the nodes in the anonymous namespace are stored.
 	 */
-	protected HashTable table = new HashTable();
+	protected HashTable table = new HashTable(3);
 
 	/**
 	 * The place where the the nodes that use namespaces are stored.
@@ -651,7 +651,7 @@ public abstract class AbstractElement
 	    checkNode(arg);
 
 	    if (tableNS == null) {
-		tableNS = new HashTable();
+		tableNS = new HashTable(3);
 	    }
 	    NamedNodeHashMap attr = (NamedNodeHashMap)tableNS.get(nsURI);
 	    if (attr == null) {

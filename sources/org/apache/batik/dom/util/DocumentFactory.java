@@ -174,7 +174,7 @@ public class DocumentFactory
 	    if (idx != -1 && idx != rawName.length()-1) {
 		lname = rawName.substring(idx+1);
 	    }
-	    if (e.getNamespaceURI() != null) {
+	    if (e.getNamespaceURI() != null && nsp.length() != 0) {
 		if (!e.getLocalName().equals(lname)) {
 		    throw new SAXException("Bad root element");
 		}
