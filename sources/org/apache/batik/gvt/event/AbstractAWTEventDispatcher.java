@@ -18,6 +18,7 @@
 package org.apache.batik.gvt.event;
 
 import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -45,15 +46,19 @@ import org.apache.batik.gvt.TextNode;
  * for containment are performed from the EventDispatcher's "root"
  * node.</p>
  *
- * @author <a href="bill.haneman@ireland.sun.com>Bill Haneman</a>
- * @author <a href="cjolif@ilog.fr>Christophe Jolif</a>
- * @author <a href="tkormann@ilog.fr>Thierry Kormann</a>
+ * This class is made abstract so that concrete versions can be made
+ * for different JDK versions.
+ *
+ * @author <a href="bill.haneman@ireland.sun.com">Bill Haneman</a>
+ * @author <a href="cjolif@ilog.fr">Christophe Jolif</a>
+ * @author <a href="tkormann@ilog.fr">Thierry Kormann</a>
  * @version $Id$
  */
-public class AWTEventDispatcher implements EventDispatcher,
-                                           MouseListener,
-                                           MouseMotionListener,
-                                           KeyListener {
+public abstract class AbstractAWTEventDispatcher
+        implements EventDispatcher,
+                   MouseListener,
+                   MouseMotionListener,
+                   KeyListener {
 
     /**
      * The root GraphicsNode as determined by setRootNode().
@@ -109,7 +114,7 @@ public class AWTEventDispatcher implements EventDispatcher,
     /**
      * Constructs a new event dispatcher.
      */
-    public AWTEventDispatcher() {
+    public AbstractAWTEventDispatcher() {
     }
 
     /**
@@ -275,6 +280,31 @@ public class AWTEventDispatcher implements EventDispatcher,
     }
 
     /**
+     * Adds the specified 'global' GraphicsNodeMouseWheelListener which is
+     * notified of all MouseWheelEvents dispatched.
+     * @param l the listener to add
+     */
+    public void addGraphicsNodeMouseWheelListener
+            (GraphicsNodeMouseWheelListener l) {
+        if (glisteners == null) {
+            glisteners = new EventListenerList();
+        }
+        glisteners.add(GraphicsNodeMouseWheelListener.class, l);
+    }
+
+    /**
+     * Removes the specified 'global' GraphicsNodeMouseWheelListener which is
+     * notified of all MouseWheelEvents dispatched.
+     * @param l the listener to remove
+     */
+    public void removeGraphicsNodeMouseWheelListener
+            (GraphicsNodeMouseWheelListener l) {
+        if (glisteners != null) {
+            glisteners.remove(GraphicsNodeMouseWheelListener.class, l);
+        }
+    }
+
+    /**
      * Adds the specified 'global' GraphicsNodeKeyListener which is
      * notified of all KeyEvents dispatched.
      * @param l the listener to add
@@ -369,21 +399,48 @@ public class AWTEventDispatcher implements EventDispatcher,
     }
 
     /**
+     * Returns a bitmask representing the state of the key locks.
+     */
+    protected int getCurrentLockState() {
+        Toolkit t = Toolkit.getDefaultToolkit();
+        int lockState = 0;
+        try {
+            if (t.getLockingKeyState(KeyEvent.VK_KANA_LOCK)) {
+                lockState++;
+            }
+        } catch (java.lang.UnsupportedOperationException ex) {
+        }
+        lockState <<= 1;
+        try {
+            if (t.getLockingKeyState(KeyEvent.VK_SCROLL_LOCK)) {
+                lockState++;
+            }
+        } catch (java.lang.UnsupportedOperationException ex) {
+        }
+        lockState <<= 1;
+        try {
+            if (t.getLockingKeyState(KeyEvent.VK_NUM_LOCK)) {
+                lockState++;
+            }
+        } catch (java.lang.UnsupportedOperationException ex) {
+        }
+        lockState <<= 1;
+        try {
+            if (t.getLockingKeyState(KeyEvent.VK_CAPS_LOCK)) {
+                lockState++;
+            }
+        } catch (java.lang.UnsupportedOperationException ex) {
+        }
+        return lockState;
+    }
+
+    /**
      * Dispatches the specified AWT key event.
+     * Abstract because KeyEvent.getKeyLocation() is available only in
+     * JDKs &gt;= 1.4.
      * @param evt the key event to dispatch
      */
-    protected void dispatchKeyEvent(KeyEvent evt) {
-        currentKeyEventTarget = lastHit;
-        if (currentKeyEventTarget != null) {
-            processKeyEvent
-                (new GraphicsNodeKeyEvent(currentKeyEventTarget,
-                                          evt.getID(),
-                                          evt.getWhen(),
-                                          evt.getModifiers(),
-                                          evt.getKeyCode(),
-                                          evt.getKeyChar()));
-        }
-    }
+    protected abstract void dispatchKeyEvent(KeyEvent evt);
     
     /**
      * Dispatches the specified AWT mouse event.
@@ -418,6 +475,7 @@ public class AWTEventDispatcher implements EventDispatcher,
                                                     MOUSE_EXITED,
                                                     evt.getWhen(),
                                                     evt.getModifiers(),
+                                                    getCurrentLockState(),
                                                     (float)gnp.getX(),
                                                     (float)gnp.getY(),
                                                     (int)Math.floor(p.getX()),
@@ -437,6 +495,7 @@ public class AWTEventDispatcher implements EventDispatcher,
                                                     evt.getWhen(),
                                                     evt.
                                                     getModifiers(),
+                                                    getCurrentLockState(),
                                                     (float)gnp.getX(),
                                                     (float)gnp.getY(),
                                                     (int)Math.floor(p.getX()),
@@ -455,6 +514,7 @@ public class AWTEventDispatcher implements EventDispatcher,
                                                 evt.getID(),
                                                 evt.getWhen(),
                                                 evt.getModifiers(),
+                                                getCurrentLockState(),
                                                 (float)gnp.getX(),
                                                 (float)gnp.getY(),
                                                 (int)Math.floor(p.getX()),
@@ -474,6 +534,7 @@ public class AWTEventDispatcher implements EventDispatcher,
                                                 evt.getID(),
                                                 evt.getWhen(),
                                                 evt.getModifiers(),
+                                                getCurrentLockState(),
                                                 (float)gnp.getX(),
                                                 (float)gnp.getY(),
                                                 (int)Math.floor(p.getX()),
@@ -574,7 +635,6 @@ public class AWTEventDispatcher implements EventDispatcher,
         }
         evt.consume();
     }
-
 
     private void incrementKeyTarget() {
         // <!> FIXME TODO: Not implemented.

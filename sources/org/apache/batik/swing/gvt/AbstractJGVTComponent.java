@@ -55,10 +55,14 @@ import org.apache.batik.util.HaltingThread;
 /**
  * This class represents a component which can display a GVT tree.
  *
+ * This class is made abstract so that concrete versions can be made
+ * for different JDK versions.  In particular, this is for MouseWheelEvent
+ * support, which only exists in JDKs &gt;= 1.4.
+ *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class JGVTComponent extends JComponent {
+public abstract class AbstractJGVTComponent extends JComponent {
 
     /**
      * The listener.
@@ -184,20 +188,21 @@ public class JGVTComponent extends JComponent {
     protected boolean disableInteractions;
 
     /**
-     * Creates a new JGVTComponent.
+     * Creates a new AbstractJGVTComponent.
      */
-    public JGVTComponent() {
+    public AbstractJGVTComponent() {
         this(false, false);
     }
 
     /**
-     * Creates a new JGVTComponent.
+     * Creates a new abstract JGVTComponent.
      * @param eventEnabled Whether the GVT tree should be reactive
      *        to mouse and key events.
      * @param selectableText Whether the text should be selectable.
      *        if eventEnabled is false, this flag is ignored.
      */
-    public JGVTComponent(boolean eventsEnabled, boolean selectableText) {
+    public AbstractJGVTComponent(boolean eventsEnabled,
+                                 boolean selectableText) {
         setBackground(Color.white);
         // setDoubleBuffered(false);
 
@@ -206,9 +211,7 @@ public class JGVTComponent extends JComponent {
 
         listener = createListener();
 
-        addKeyListener(listener);
-        addMouseListener(listener);
-        addMouseMotionListener(listener);
+        addAWTListeners();
 
         addGVTTreeRendererListener(listener);
 
@@ -219,6 +222,15 @@ public class JGVTComponent extends JComponent {
                 }
             });
 
+    }
+
+    /**
+     * Adds the AWT listeners.
+     */
+    protected void addAWTListeners() {
+        addKeyListener(listener);
+        addMouseListener(listener);
+        addMouseMotionListener(listener);
     }
 
     public void setDisableInteractions(boolean b) {
@@ -317,30 +329,15 @@ public class JGVTComponent extends JComponent {
         if (eventsEnabled) {
             eventDispatcher = new AWTEventDispatcher();
             if (selectableText) {
-                textSelectionManager = createTextSelectionManager();
+                textSelectionManager =
+                    new TextSelectionManager(this, eventDispatcher);
             }
         }
-    }
-
-    /**
-     *  Creates the TextSelectionManager to be used by this
-     * JGVTComponent.  Subclasses may override to provide a
-     * custom subclass.
-     */
-    protected TextSelectionManager createTextSelectionManager() {
-        return new TextSelectionManager(this, eventDispatcher);
     }
 
     ////////////////////////////////////////////////////////////////////////
     // Selection methods
     ////////////////////////////////////////////////////////////////////////
-
-    /**
-     *  Returns the current Text selection manager for the Component.
-     */
-    public TextSelectionManager getTextSelectionManager() {
-        return textSelectionManager;
-    }
 
     /**
      * Sets the color of the selection overlay to the specified color.
