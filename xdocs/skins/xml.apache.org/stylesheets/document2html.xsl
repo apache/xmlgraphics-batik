@@ -300,7 +300,7 @@
 <!-- ====================================================================== -->
 
   <xsl:template match="p">
-    <p align="justify"><xsl:apply-templates/></p>
+    <p align="left"><xsl:apply-templates/></p>
   </xsl:template>
 
   <xsl:template match="note">
