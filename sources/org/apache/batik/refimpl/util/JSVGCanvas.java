@@ -28,6 +28,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 
 import java.awt.geom.AffineTransform;
+import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.NoninvertibleTransformException;
@@ -384,6 +385,7 @@ public class JSVGCanvas
             g2d.transform(panTransform);
         }
         g2d.drawImage(buffer, null, 0, 0);
+        g2d.setXORMode(Color.white);
         if (markerTop != null) {
             g2d.setColor(Color.black);
             g2d.setStroke(markerStroke);
@@ -396,6 +398,7 @@ public class JSVGCanvas
             g2d.setStroke(markerStroke);
             g2d.draw(rotateMarker);
         }
+        g2d.setXORMode(Color.white);
     }
 
     /**
@@ -682,6 +685,7 @@ public class JSVGCanvas
             if (mouseExited) {
                 rotateMarker = null;
             } else {
+                /*
                 int dx = x - sx;
                 Dimension dim = getSize();
                 rotateTransform =
@@ -690,11 +694,35 @@ public class JSVGCanvas
                                                       dim.height / 2);
                 int w = dim.width / 5;
                 int h = dim.height / 5;
-                rotateMarker = new Rectangle(dim.width / 2 - w / 2,
-                                             dim.height / 2 - h / 2,
-                                             w, h);
-                rotateMarker =
-                    rotateTransform.createTransformedShape(rotateMarker);
+                */
+
+                Dimension dim = getSize();
+                int w = dim.width / 5;
+                int h = dim.height / 5;
+
+                GeneralPath p = new GeneralPath();
+                p.moveTo(dim.width / 2 - w / 2, dim.height / 2 - h / 2);
+                p.lineTo(dim.width / 2 - w / 2, dim.height / 2 + h / 2);
+                p.lineTo(dim.width / 2 + w / 2, dim.height / 2 + h / 2);
+                p.lineTo(dim.width / 2 + w / 2, dim.height / 2 - h / 2);
+                p.closePath();
+                p.moveTo(dim.width / 2, dim.height / 2 - h / 2);
+                p.lineTo(dim.width / 2 + 8, dim.height / 2 - h / 2 + 8);
+                p.moveTo(dim.width / 2, dim.height / 2 - h / 2);
+                p.lineTo(dim.width / 2 - 8, dim.height / 2 - h / 2 + 8);
+
+                double dx = x - dim.width / 2;
+                double dy = y - dim.height / 2;
+                double cos = -dy / Math.sqrt(dx * dx + dy * dy);
+
+                rotateTransform = 
+                    AffineTransform.getRotateInstance
+                    ((dx > 0) ? Math.acos(cos) : -Math.acos(cos),
+                     dim.width / 2,
+                     dim.height / 2);
+                
+                rotateMarker = rotateTransform.createTransformedShape(p);
+
                 Rectangle r;
                 r = markerStroke.createStrokedShape(rotateMarker).getBounds();
                 paintImmediately(r.x, r.y, r.width, r.height);
