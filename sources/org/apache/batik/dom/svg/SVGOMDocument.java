@@ -179,6 +179,9 @@ public class SVGOMDocument
         factories.put(TAG_FE_MERGE,
                       new FeMergeElementFactory());
 
+        factories.put(TAG_FE_MERGE_NODE,
+                      new FeMergeNodeElementFactory());
+
         factories.put(TAG_FE_MORPHOLOGY,
                       new FeMorphologyElementFactory());
 
@@ -260,7 +263,7 @@ public class SVGOMDocument
         factories.put(TAG_TEXT,
                       new TextElementFactory());
 
-        factories.put(TAG_TEXTPATH,
+        factories.put(TAG_TEXT_PATH,
                       new TextPathElementFactory());
 
         factories.put(TAG_TITLE,
@@ -949,9 +952,7 @@ public class SVGOMDocument
          * Creates an instance of the associated element type.
          */
         public Element create(String prefix) {
-            return new SVGOMToBeImplementedElement(prefix,
-                                                   SVGOMDocument.this,
-                                                   TAG_FE_IMAGE);
+            return new SVGOMFEImageElement(prefix, SVGOMDocument.this);
         }
     }
 
@@ -964,9 +965,20 @@ public class SVGOMDocument
          * Creates an instance of the associated element type.
          */
         public Element create(String prefix) {
-            return new SVGOMToBeImplementedElement(prefix,
-                                                   SVGOMDocument.this,
-                                                   TAG_FE_MERGE);
+            return new SVGOMFEMergeElement(prefix, SVGOMDocument.this);
+        }
+    }
+
+    /**
+     * To create a 'feMergeNode' element.
+     */
+    protected class FeMergeNodeElementFactory implements ElementFactory {
+        public FeMergeNodeElementFactory() {}
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix) {
+            return new SVGOMFEMergeNodeElement(prefix, SVGOMDocument.this);
         }
     }
 
@@ -979,9 +991,8 @@ public class SVGOMDocument
          * Creates an instance of the associated element type.
          */
         public Element create(String prefix) {
-            return new SVGOMToBeImplementedElement(prefix,
-                                                   SVGOMDocument.this,
-                                                   TAG_FE_MORPHOLOGY);
+            return new SVGOMFEMorphologyElement(prefix,
+                                                SVGOMDocument.this);
         }
     }
 
@@ -995,9 +1006,7 @@ public class SVGOMDocument
          * Creates an instance of the associated element type.
          */
         public Element create(String prefix) {
-            return new SVGOMToBeImplementedElement(prefix,
-                                                   SVGOMDocument.this,
-                                                   TAG_FE_OFFSET);
+            return new SVGOMFEOffsetElement(prefix, SVGOMDocument.this);
         }
     }
 

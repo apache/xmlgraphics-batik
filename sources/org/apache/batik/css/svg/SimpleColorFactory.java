@@ -20,14 +20,8 @@ import org.w3c.dom.css.CSSPrimitiveValue;
  * @version $Id$
  */
 public class SimpleColorFactory extends SVGColorFactory {
-    /**
-     * The 'currentColor' keyword.
-     */
-    public final static ImmutableValue CURRENT_COLOR =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, "currentcolor");
-
     static {
-	values.put("currentcolor", CURRENT_COLOR);
+	values.put("currentcolor", PaintFactory.CURRENTCOLOR_VALUE);
     }
 
     /**

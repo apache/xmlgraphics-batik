@@ -75,7 +75,7 @@ public interface SVGConstants extends CSSConstants {
     String TAG_SWITCH = "switch";
     String TAG_SYMBOL = "symbol";
     String TAG_TEXT = "text";
-    String TAG_TEXTPATH = "textPath";
+    String TAG_TEXT_PATH = "textPath";
     String TAG_TITLE = "title";
     String TAG_TREF = "tref";
     String TAG_TSPAN = "tspan";

@@ -9,46 +9,37 @@
 package org.apache.batik.dom.svg;
 
 import org.apache.batik.dom.AbstractDocument;
+import org.w3c.dom.svg.SVGFEMergeElement;
 
 /**
- * This is a development only class. It is used temporarily in the
- * SVG DOM implementation for SVG elements whose DOM support has not
- * been put in
+ * This class implements {@link org.w3c.dom.svg.SVGFEMergeElement}.
  *
- * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
+ * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class SVGOMToBeImplementedElement
-    extends SVGGraphicsElement {
-    
-    /**
-     * This element's local name
-     */
-    private String localName;
+public class SVGOMFEMergeElement
+    extends    SVGOMFilterPrimitiveStandardAttributes
+    implements SVGFEMergeElement {
 
     /**
-     * Creates a new SVGOMToBeImplementedElement object.
+     * Creates a new SVGOMFEMergeElement object.
      */
-    public SVGOMToBeImplementedElement() {
+    public SVGOMFEMergeElement() {
     }
 
     /**
-     * Creates a new SVGOMToBeImplementedElement object.
+     * Creates a new SVGOMFEMergeElement object.
      * @param prefix The namespace prefix.
      * @param owner The owner document.
-     * @param localName the local name for the element.
      */
-    public SVGOMToBeImplementedElement(String prefix, AbstractDocument owner,
-                                       String localName) {
+    public SVGOMFEMergeElement(String prefix, AbstractDocument owner) {
         super(prefix, owner);
-        this.localName = localName;
     }
 
     /**
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
      */
     public String getLocalName() {
-        return localName;
+        return TAG_FE_MERGE;
     }
-
 }
