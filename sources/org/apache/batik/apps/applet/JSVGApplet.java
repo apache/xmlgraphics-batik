@@ -136,7 +136,9 @@ public class JSVGApplet extends JApplet implements UserAgent, DocumentListener {
             if ((thread != null) && thread.isAlive()) {
                 thread.interrupt();
             }
-            Thread t = DocumentLoadRunnable.createLoaderThread(uri, this, df);
+            Thread t = DocumentLoadRunnable.createLoaderThread(uri,
+                                                               this,
+                                                               df);
             runThread(t);
         }
     }
@@ -222,6 +224,13 @@ public class JSVGApplet extends JApplet implements UserAgent, DocumentListener {
      */
     public void displayError(String message) {
         System.err.println(message);
+    }
+
+    /**
+     * Displays an error resulting from the specified Exception.
+     */
+    public void displayError(Exception ex) {
+        System.err.println(ex);
     }
 
     /**

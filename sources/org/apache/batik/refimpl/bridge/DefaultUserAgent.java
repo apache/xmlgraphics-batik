@@ -49,6 +49,13 @@ public class DefaultUserAgent implements UserAgent {
     }
 
     /**
+     * Displays an error resulting from the specified Exception.
+     */
+    public void displayError(Exception ex) {
+        System.err.println(ex);
+    }
+
+    /**
      * Displays a message in the User Agent interface.
      */
     public void displayMessage(String message) {

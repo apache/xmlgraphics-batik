@@ -43,6 +43,11 @@ public interface UserAgent {
     void displayError(String message);
 
     /**
+     * Displays an error resulting from the specified Exception.
+     */
+    void displayError(Exception ex);
+
+    /**
      * Displays a message in the User Agent interface.
      */
     void displayMessage(String message);

@@ -37,10 +37,11 @@ public class SVGRectElementBridge extends SVGShapeElementBridge {
      * <tt>RoundRectangle2D.Float</tt> depending on the 'x', 'y',
      * 'width', 'height', 'rx' and 'ry' attributes.
      */
-    protected Shape createShape(BridgeContext ctx,
-                                SVGElement svgElement,
-                                CSSStyleDeclaration decl,
-                                UnitProcessor.Context uctx) {
+    protected void buildShape(BridgeContext ctx,
+                              SVGElement svgElement,
+                              ShapeNode node,
+                              CSSStyleDeclaration decl,
+                              UnitProcessor.Context uctx) {
 
         // parse the x attribute, (default is 0)
         String s = svgElement.getAttributeNS(null, ATTR_X);
@@ -127,53 +128,32 @@ public class SVGRectElementBridge extends SVGShapeElementBridge {
             }
         }
         ry = (ry > h / 2) ? h / 2 : ry;
-
+        Shape shape = null;
         if (rxs && rys) {
             if (rx == 0 || ry == 0) {
-                return new Rectangle2D.Float(x, y, w, h);
+                shape = new Rectangle2D.Float(x, y, w, h);
             } else {
-                return new RoundRectangle2D.Float(x, y, w, h, rx*2, ry*2);
+                shape = new RoundRectangle2D.Float(x, y, w, h, rx*2, ry*2);
             }
         } else if (rxs) {
             if (rx == 0) {
-                return new Rectangle2D.Float(x, y, w, h);
+                shape = new Rectangle2D.Float(x, y, w, h);
             } else {
-                return new RoundRectangle2D.Float(x, y, w, h, rx*2, rx*2);
+                shape = new RoundRectangle2D.Float(x, y, w, h, rx*2, rx*2);
             }
         } else if (rys) {
             if (ry == 0) {
-                return new Rectangle2D.Float(x, y, w, h);
+                shape = new Rectangle2D.Float(x, y, w, h);
             } else {
-                return new RoundRectangle2D.Float(x, y, w, h, ry*2, ry*2);
+                shape = new RoundRectangle2D.Float(x, y, w, h, ry*2, ry*2);
             }
         } else {
-            return new Rectangle2D.Float(x, y, w, h);
+            shape = new Rectangle2D.Float(x, y, w, h);
         }
+        node.setShape(shape);
     }
 
     public void update(BridgeMutationEvent evt) {
-        super.update(evt);
-        BridgeContext ctx = evt.getBridgeContext();
-        SVGElement svgElement = (SVGElement) evt.getElement();
-        CSSStyleDeclaration cssDecl
-            = ctx.getViewCSS().getComputedStyle(svgElement, null);
-        UnitProcessor.Context uctx
-            = new DefaultUnitProcessorContext(ctx, cssDecl);
-        ShapeNode shapeNode = (ShapeNode) evt.getGraphicsNode();
-        switch(evt.getType()) {
-        case BridgeMutationEvent.PROPERTY_MUTATION_TYPE:
-            String attrName = evt.getAttrName();
-            if (attrName.equals(ATTR_X) ||
-                    attrName.equals(ATTR_Y) ||
-                    attrName.equals(ATTR_WIDTH) ||
-                    attrName.equals(ATTR_HEIGHT)) {
-                Shape shape = createShape(ctx, svgElement, cssDecl, uctx);
-                shapeNode.setShape(shape);
-            }
-            break;
-        case BridgeMutationEvent.STYLE_MUTATION_TYPE:
-            throw new Error("Not yet implemented");
-        }
     }
 
 }

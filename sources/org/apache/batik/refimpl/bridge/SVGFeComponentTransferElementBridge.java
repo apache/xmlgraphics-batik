@@ -206,7 +206,7 @@ public class SVGFeComponentTransferElementBridge implements FilterBridge,
                 // attributes are ignored.
                 //
                 String typeStr = elt.getAttributeNS(null, ATTR_TYPE);
-                int type = convertType(typeStr);
+                int type = convertType(elt, typeStr);
 
                 switch(type){
                 case ComponentTransferFunction.IDENTITY:
@@ -318,11 +318,11 @@ public class SVGFeComponentTransferElementBridge implements FilterBridge,
      * Converts an feFuncXX type attribute into a
      * ComponentTransferFunction type constant
      */
-    private static int convertType(String value){
+    private static int convertType(Element elt, String value){
         if (value.length() == 0) {
             throw new MissingAttributeException(
                 Messages.formatMessage("feComponentTransfer.type.required",
-                                       null));
+                                       new Object[] {elt.getLocalName()}));
 
         }
 

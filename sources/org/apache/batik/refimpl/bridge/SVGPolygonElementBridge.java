@@ -16,8 +16,10 @@ import java.io.StringReader;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.IllegalAttributeValueException;
 import org.apache.batik.bridge.MissingAttributeException;
+import org.apache.batik.gvt.ShapeNode;
 import org.apache.batik.parser.AWTPolygonProducer;
 import org.apache.batik.parser.ParseException;
+import org.apache.batik.parser.PointsParser;
 import org.apache.batik.refimpl.bridge.resources.Messages;
 import org.apache.batik.util.UnitProcessor;
 
@@ -36,10 +38,11 @@ public class SVGPolygonElementBridge extends SVGShapeElementBridge {
     /**
      * Returns an <tt>GeneralPath</tt>.
      */
-    protected Shape createShape(BridgeContext ctx,
-                                SVGElement elt,
-                                CSSStyleDeclaration decl,
-                                UnitProcessor.Context uctx) {
+    protected void buildShape(BridgeContext ctx,
+                              SVGElement elt,
+                              ShapeNode node,
+                              CSSStyleDeclaration decl,
+                              UnitProcessor.Context uctx) {
 
         // parse the fill rule CSS property
         CSSPrimitiveValue v;
@@ -54,17 +57,19 @@ public class SVGPolygonElementBridge extends SVGShapeElementBridge {
             throw new MissingAttributeException(
                 Messages.formatMessage("polygon.points.required", null));
         }
-        Shape shape = null;
+        PointsParser p = ctx.getParserFactory().createPointsParser();
+        AWTPolygonProducer ph = new AWTPolygonProducer();
+        ph.setWindingRule(wr);
+        p.setPointsHandler(ph);
         try {
-            shape = AWTPolygonProducer.createShape(new StringReader(pts),
-                                                   wr,
-                                                   ctx.getParserFactory());
+            p.parse(new StringReader(pts));
         } catch (ParseException ex) {
             throw new IllegalAttributeValueException(
                 Messages.formatMessage("polygon.points.invalid",
-                                       new Object[] {ex.getMessage()}));
-        } catch (IOException e) { /* Nothing to do */ }
-
-        return shape;
+                                       new Object[] {ex.getMessage()}),
+                node);
+        } finally {
+            node.setShape(ph.getShape());
+        }
     }
 }

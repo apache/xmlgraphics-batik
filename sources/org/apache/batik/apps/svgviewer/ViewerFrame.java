@@ -12,6 +12,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics2D;
@@ -30,14 +31,16 @@ import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 
 import java.io.BufferedOutputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.IOException;
-import java.io.InterruptedIOException;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.InterruptedIOException;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.io.Reader;
+import java.io.StringWriter;
 
 import java.net.URL;
 
@@ -60,8 +63,10 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
@@ -525,8 +530,27 @@ public class ViewerFrame
     /**
      * Displays an error message in the User Agent interface.
      */
-    public void displayError(String message) {
-        System.err.println(message);
+    public void displayError(final String msg) {
+        Runnable r = new Runnable() {
+            public void run() {
+                JOptionPane pane =
+                    new JOptionPane(msg, JOptionPane.ERROR_MESSAGE);
+                JDialog dialog = pane.createDialog(ViewerFrame.this, "ERROR");
+                dialog.show();
+            }
+        };
+        if (!EventQueue.isDispatchThread()) {
+            EventQueue.invokeLater(r);
+        } else {
+            r.run();
+        }
+    }
+
+    /**
+     * Displays an error resulting from the specified Exception.
+     */
+    public void displayError(final Exception ex) {
+        displayError(ex.getMessage());
     }
 
     /**
@@ -629,7 +653,9 @@ public class ViewerFrame
             forwardAction.update();
 
             locationBar.setText(uri);
-            Thread t = DocumentLoadRunnable.createLoaderThread(uri, this, df);
+            Thread t = DocumentLoadRunnable.createLoaderThread(uri,
+                                                               this,
+                                                               df);
             runThread(t);
         }
     }
@@ -853,7 +879,10 @@ public class ViewerFrame
         public ReloadAction() {}
         public void actionPerformed(ActionEvent e) {
             if (uri != null) {
-                Thread t = DocumentLoadRunnable.createLoaderThread(uri, ViewerFrame.this, df);
+                Thread t =
+                    DocumentLoadRunnable.createLoaderThread(uri,
+                                                            ViewerFrame.this,
+                                                            df);
                 runThread(t);
             }
         }
@@ -1167,11 +1196,12 @@ public class ViewerFrame
                 canvas.setBorder(BorderFactory.createLoweredBevelBorder());
                 panel.add(canvas);
 
-                String uri = getClass().getResource("resources/authors.svg").toString();
+                String uri =
+                    getClass().getResource("resources/authors.svg").toString();
                 Thread t = DocumentLoadRunnable.createLoaderThread(uri,
                                                                    this,
                                                                    df);
-                
+
                 t.start();
             }
             Rectangle fr = getBounds();
@@ -1219,8 +1249,10 @@ public class ViewerFrame
                 if (uri != null) {
                     locationBar.setText(uri);
                     locationBar.addToHistory(uri);
-                    Thread t = DocumentLoadRunnable.createLoaderThread(
-                                        uri, ViewerFrame.this, df);
+                    Thread t =
+                      DocumentLoadRunnable.createLoaderThread(uri,
+                                                              ViewerFrame.this,
+                                                              df);
                     runThread(t);
                 }
             }

@@ -12,9 +12,10 @@ import java.awt.Shape;
 import java.awt.geom.Line2D;
 
 import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.gvt.ShapeNode;
 import org.apache.batik.util.UnitProcessor;
-import org.w3c.dom.svg.SVGElement;
 import org.w3c.dom.css.CSSStyleDeclaration;
+import org.w3c.dom.svg.SVGElement;
 
 /**
  * A factory for the &lt;line> SVG element.
@@ -27,10 +28,11 @@ public class SVGLineElementBridge extends SVGShapeElementBridge {
     /**
      * Returns a <tt>Line2D.Float</tt>.
      */
-    protected Shape createShape(BridgeContext ctx,
-                                SVGElement svgElement,
-                                CSSStyleDeclaration decl,
-                                UnitProcessor.Context uctx) {
+    protected void buildShape(BridgeContext ctx,
+                              SVGElement svgElement,
+                              ShapeNode node,
+                              CSSStyleDeclaration decl,
+                              UnitProcessor.Context uctx) {
 
         // parse the x1 attribute, (default is 0)
         String s = svgElement.getAttributeNS(null, ATTR_X1);
@@ -72,6 +74,6 @@ public class SVGLineElementBridge extends SVGShapeElementBridge {
                                              UnitProcessor.VERTICAL_LENGTH);
         }
 
-        return new Line2D.Float(x1, y1, x2, y2);
+        node.setShape(new Line2D.Float(x1, y1, x2, y2));
     }
 }

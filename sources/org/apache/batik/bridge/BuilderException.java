@@ -8,30 +8,49 @@
 
 package org.apache.batik.bridge;
 
+import org.w3c.dom.Element;
 import org.apache.batik.gvt.GraphicsNode;
 
 /**
- * Thrown when a required attribute is missing on a specific Element.
+ * Thrown when the <tt>GVTBuilder</tt> has encountered an error.
  *
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  * @version $Id$
  */
-public class MissingAttributeException extends BridgeException {
+public class BuilderException extends RuntimeException {
+
+    protected Element element;
+    protected GraphicsNode root;
 
     /**
-     * Constructs a new <tt>MissingAttributeException</tt>.
+     * Constructs a new <tt>BuilderException</tt>.
      * @param msg the exception message
+     * @param e the element on which the error occured
      */
-    public MissingAttributeException(String msg) {
+    public BuilderException(Element e, String msg) {
         super(msg);
+        this.element = e;
     }
 
     /**
-     * Constructs a new <tt>MissingAttributeException</tt>.
-     * @param msg the exception message
-     * @param node the graphics node on which the error occured
+     * Returns the element responsible on the error.
      */
-    public MissingAttributeException(String msg, GraphicsNode node) {
-        super(msg, node);
+    public Element getElement() {
+        return element;
+    }
+
+    /**
+     * Returns the root graphics node built.
+     */
+    public GraphicsNode getRootGraphicsNode() {
+        return root;
+    }
+
+    /**
+     * Sets the current state of the GVT tree.
+     * @param root the root graphics node
+     */
+    public void setRootGraphicsNode(GraphicsNode root) {
+        this.root = root;
     }
 }
