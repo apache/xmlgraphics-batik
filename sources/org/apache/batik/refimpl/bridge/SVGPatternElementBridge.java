@@ -91,7 +91,16 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
         if(patternContentUnits.length() == 0){
             patternContentUnits = VALUE_USER_SPACE_ON_USE;
         }
-        int unitsType = SVGUtilities.parseCoordinateSystem(patternContentUnits);
+        int unitsType;
+        try {
+            unitsType = SVGUtilities.parseCoordinateSystem(patternContentUnits);
+        } catch (IllegalArgumentException ex) {
+            throw new IllegalAttributeValueException(
+                Messages.formatMessage("pattern.units.invalid",
+                                       new Object[] {patternContentUnits,
+                                                  ATTR_PATTERN_CONTENT_UNITS}));
+        }
+
         if (unitsType == SVGUtilities.OBJECT_BOUNDING_BOX) {
             ctx.setCurrentViewport(new ObjectBoundingBoxViewport());
         }

@@ -109,6 +109,10 @@ public class SVGUtilities implements SVGConstants {
 
     /**
      * Parse the given specified coordinate system.
+     *
+     * @pram value the units type to parse
+     * @exception IllegalArgumentException if the value is not
+     * 'objectBoundingBox' or 'userSpaceOnUse'
      */
     public static int parseCoordinateSystem(String value) {
         int len = value.length();
@@ -121,7 +125,7 @@ public class SVGUtilities implements SVGConstants {
         } else if (VALUE_OBJECT_BOUNDING_BOX.equals(value)) {
             return OBJECT_BOUNDING_BOX;
         } else {
-            throw new IllegalArgumentException("Bad coordinate system: "+value);
+            throw new IllegalArgumentException();
         }
     }
 
@@ -741,7 +745,17 @@ public class SVGUtilities implements SVGConstants {
             }
         }
 
-        int unitsType = parseCoordinateSystem(units);
+
+        int unitsType;
+        try {
+            unitsType = parseCoordinateSystem(units);
+        } catch (IllegalArgumentException ex) {
+            throw new IllegalAttributeValueException(
+                Messages.formatMessage("region.units.invalid",
+                                  new Object[] {units,
+                                                unitsAttr,
+                                                filterElement.getLocalName()}));
+        }
         double x, y, w, h;
         short hd = UnitProcessor.HORIZONTAL_LENGTH;
         short vd = UnitProcessor.VERTICAL_LENGTH;
@@ -834,7 +848,17 @@ public class SVGUtilities implements SVGConstants {
         String wStr = filterPrimitiveElement.getAttributeNS(null, ATTR_WIDTH);
         String hStr = filterPrimitiveElement.getAttributeNS(null, ATTR_HEIGHT);
 
-        int unitsType = parseCoordinateSystem(units);
+        int unitsType;
+        try {
+            unitsType = parseCoordinateSystem(units);
+        } catch (IllegalArgumentException ex) {
+            throw new IllegalAttributeValueException(
+                Messages.formatMessage("region.units.invalid",
+                                  new Object[] {units,
+                                                ATTR_PRIMITIVE_UNITS,
+                                       filterPrimitiveElement.getLocalName()}));
+        }
+
         double x = defaultRegion.getX();
         double y = defaultRegion.getY();
         double w = defaultRegion.getWidth();
