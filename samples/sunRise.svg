@@ -268,22 +268,6 @@
                 <stop offset="1" stop-color="rgb(0, 100, 200)" stop-opacity="0"/>
             </radialGradient>
 
-            <!-- =========================================== -->
-            <!-- Saturn gradient                             -->
-            <!-- =========================================== -->
-            <radialGradient id="saturnGradient" fx=".2" fy=".6" r=".6">
-            	<stop  offset="0" style="stop-color:#FFFFFF"/>
-            	<stop  offset="0.1292" style="stop-color:#FFFF00"/>
-            	<stop  offset="0.3483" style="stop-color:#FF9900"/>
-        	    <stop  offset="0.7303" style="stop-color:#993300"/>
-            	<stop  offset="1" style="stop-color:#000000"/>
-            </radialGradient>
-        
-            <radialGradient id="ray" fx=".5" fy=".5">
-                <stop style="stop-color:white" offset=".7"/>
-                <stop style="stop-color:rgb(20, 140, 255)" offset="1"/>
-            </radialGradient>
-
             <radialGradient id="planetGradient" fx=".2" fy=".6" r=".7">
                 <stop stop-color="white" offset="0"/>
                 <stop stop-color="rgb(40, 140, 255)" offset=".7"/>
@@ -298,15 +282,6 @@
                     <feMergeNode in="blurred" />
                     <feMergeNode in="blurred" />
                     <feMergeNode in="SourceGraphic" /> 
-                </feMerge>
-            </filter>
-
-            <filter id="saturnShadow" x="-.4" y="-.4" width="1.8" height="1.8">
-                <feGaussianBlur stdDeviation="3 3" in="SourceAlpha"/>
-                <feOffset dx="3" dy="-3" />
-                <feMerge>
-                    <feMergeNode />
-                    <feMergeNode in="SourceGraphic" />
                 </feMerge>
             </filter>
 
@@ -421,16 +396,38 @@
             <circle cx="-450" cy="1000" r="700" fill="url(#planetGradient)" fill-opacity="1"/> 
         </g>
 
-        <g id="saturn" transform="translate(370, 80)" filter="url(#saturnShadow)" visibility="visible" >
-            <g transform="scale(.25)">
-                <circle cx="0" cy="0" r="121" style="fill:url(#saturnGradient)"/>
-                <g transform="rotate(45)">
-                    <path d="M-119 -21 L-120 -14 A180 20 180 1 0 120 -14 L119 -21 A240 25 180 1 1 -119 -21" style="fill:url(#ray)"/>
-                    <path d="M-119 -24 L-120 -22 A250 28 180 1 0 120 -22 L119 -24 A300 30 180 1 1 -119 -24" style="fill:url(#ray)"/>
-                </g>
-            </g>
-        </g>
+        <g id="superNova" transform="translate(370, 80)">
+            <radialGradient id="halo" >
+                <stop offset="0" stop-color="white" />
+                <stop offset=".3" stop-color="white" />
+                <stop offset=".55" stop-color="blue" stop-opacity="0" />
+                <stop offset=".65" stop-color="white" stop-opacity="0" />
+                <stop offset=".82" stop-color="rgb(200,255,200)" stop-opacity=".2" />
+                <stop offset=".86" stop-color="rgb(200,255,200)" stop-opacity=".2" />
+                <stop offset="1" stop-color="white" stop-opacity="0" />
+            </radialGradient>
 
+            <linearGradient id="novaSpike" gradientUnits="userSpaceOnUse" x1="-120" y1="0" x2="120" y2="0">
+                <stop offset="0" stop-color="white" stop-opacity="0" />
+                <stop offset=".5" stop-color="white" stop-opacity="1" />
+                <stop offset="1" stop-color="white" stop-opacity="0" />
+            </linearGradient>
+
+            <circle r="50" fill="url(#halo)" />
+            <g id="spikes">
+                <line x1="-120" y1="0" x2="120" y2="0" stroke="url(#novaSpike)" stroke-width="2" />
+                <line x1="-120" y1="0" x2="120" y2="0" stroke="url(#novaSpike)" transform="rotate(90)" stroke-width="2" />
+            </g>
+
+            <g id="spikesGroup">
+                <use xlink:href="#spikes" transform="rotate(30) scale(.8)" opacity=".5"/>
+                <use xlink:href="#spikes" transform="rotate(20) scale(.4)" opacity=".4"/>
+                <use xlink:href="#spikes" transform="rotate(10) scale(.6)" opacity=".5"/>
+                <use xlink:href="#spikes" transform="rotate(45) scale(.7)" opacity=".8"/>
+            </g>
+
+            <use xlink:href="#spikesGroup" transform="rotate(45) scale(1)" opacity="1"/>
+        </g>
 
         <g font-size="70" text-anchor="middle" font-family="SciFiFont" transform="translate(225,200)" filter="url(#textShadow)">
             <text x="-1" y="-1" fill="black" >BATIK</text>
