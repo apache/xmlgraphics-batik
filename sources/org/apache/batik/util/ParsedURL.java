@@ -488,6 +488,9 @@ public class ParsedURL {
      * @param urlStr the sub URL string to parse.
      */
     public static ParsedURLData parseURL(String baseStr, String urlStr) {
+        if (baseStr == null)
+            return parseURL(urlStr);
+
         ParsedURL purl = new ParsedURL(baseStr);
         return parseURL(purl, urlStr);
     }
@@ -499,6 +502,9 @@ public class ParsedURL {
      * @param urlStr the sub URL string to parse.
      */
     public static ParsedURLData parseURL(ParsedURL baseURL, String urlStr) {
+        if (baseURL == null)
+            return parseURL(urlStr);
+
         String protocol = getProtocol(urlStr);
         if (protocol == null)
             protocol = baseURL.getProtocol();
