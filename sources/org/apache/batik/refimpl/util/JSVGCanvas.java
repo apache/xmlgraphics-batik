@@ -310,12 +310,12 @@ public class JSVGCanvas
      * Fires periodic repaints while buffer is rendered
      */
     protected boolean progressiveRenderingEnabled = true;
-    
+
     /**
      * Whether or not the current document was transformed.
      */
     protected boolean documentTransformed;
-                                                               
+
      /**
      * Used to draw marker
      */
@@ -1512,16 +1512,18 @@ public class JSVGCanvas
                 int w = dim.width / 3;
                 int h = dim.height / 3;
 
+                float l = Math.min(w, h);
+
                 double dx = x - dim.width / 2;
                 double dy = y - dim.height / 2;
                 double cos = -dy / Math.sqrt(dx * dx + dy * dy);
 
-                float ax = dim.width / 2 - w / 2;
-                float ay = dim.height / 2 - h / 2;
+                float ax = dim.width / 2 - l / 2;
+                float ay = dim.height / 2 - l / 2;
                 double angle = ((dx > 0) ? Math.acos(cos) : -Math.acos(cos));
 
                 float extent = (float)Math.toDegrees(-angle);
-                Arc2D.Float p = new Arc2D.Float(ax, ay, w, h,
+                Arc2D.Float p = new Arc2D.Float(ax, ay, l, l,
                                                 90f,
                                                 extent,
                                                 Arc2D.PIE);
