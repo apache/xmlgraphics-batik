@@ -1058,30 +1058,54 @@ public class ViewerFrame
             fr.getContentPane().add("Center", scroll);
 
             Document  doc = new PlainDocument();
+            InputStream is = null;
             try {
                 URL    u  = new URL(uri);
-                InputStream is = u.openStream();
+                is = u.openStream();
                 try {
                     is = new GZIPInputStream(is);
                 } catch (IOException ex) {
                     is.close();
                     is = u.openStream();
                 }
-                Reader in = new InputStreamReader(is, "Unicode");
-                int nch;
-                while ((nch = in.read(buffer, 0, buffer.length)) != -1) {
-                    doc.insertString(doc.getLength(),
+
+                try {
+                    if (is.markSupported()) {
+                        is.mark(buffer.length);
+                    }
+                    Reader in = new InputStreamReader(is, "Unicode");
+                    int nch;
+                    while ((nch = in.read(buffer, 0, buffer.length)) != -1) {
+                        doc.insertString(doc.getLength(),
                                      new String(buffer, 0, nch), null);
+                    }
+                } catch (java.io.CharConversionException ioce) {
+                    // try default encoding...
+                    doc = new PlainDocument();
+                    if (is.markSupported()) {
+                        is.reset();
+                    }
+                    try {
+                        Reader in = new InputStreamReader(is);
+                        int nch;
+                        while ((nch = in.read(buffer, 0, buffer.length))!=-1){
+                            doc.insertString(doc.getLength(),
+                                     new String(buffer, 0, nch), null);
+                        }
+                    } catch (Exception ex) {
+                        // !!! TODO : dialog
+                        System.err.println(ex.toString());
+                    }
                 }
+                ta.setDocument(doc);
+                ta.setEditable(false);
+                fr.show();
             } catch (Exception ex) {
                 // !!! TODO : dialog
                 System.err.println(ex.toString());
             }
+        }
 
-            ta.setDocument(doc);
-            ta.setEditable(false);
-            fr.show();
-       }
     }
 
     /**
