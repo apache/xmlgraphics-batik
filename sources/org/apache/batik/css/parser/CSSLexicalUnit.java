@@ -18,6 +18,25 @@ import org.w3c.css.sac.LexicalUnit;
  */
 public abstract class CSSLexicalUnit implements LexicalUnit {
 
+         public static final String UNIT_TEXT_CENTIMETER  = "cm";
+         public static final String UNIT_TEXT_DEGREE      = "deg";
+         public static final String UNIT_TEXT_EM          = "em";
+         public static final String UNIT_TEXT_EX          = "ex";
+         public static final String UNIT_TEXT_GRADIAN     = "grad";
+         public static final String UNIT_TEXT_HERTZ       = "Hz";
+         public static final String UNIT_TEXT_INCH        = "in";
+         public static final String UNIT_TEXT_KILOHERTZ   = "kHz";
+         public static final String UNIT_TEXT_MILLIMETER  = "mm";
+         public static final String UNIT_TEXT_MILLISECOND = "ms";
+         public static final String UNIT_TEXT_PERCENTAGE  = "%";
+         public static final String UNIT_TEXT_PICA        = "pc";
+         public static final String UNIT_TEXT_PIXEL       = "px";
+         public static final String UNIT_TEXT_POINT       = "pt";
+         public static final String UNIT_TEXT_RADIAN      = "rad";
+         public static final String UNIT_TEXT_REAL        = "";
+         public static final String UNIT_TEXT_SECOND      = "s";
+
+
     /**
      * The lexical unit type.
      */
@@ -97,7 +116,28 @@ public abstract class CSSLexicalUnit implements LexicalUnit {
      * <b>SAC</b>: Implements {@link LexicalUnit#getDimensionUnitText()}.
      */
     public String getDimensionUnitText() {
-        throw new IllegalStateException();
+        switch (lexicalUnitType) {
+        case LexicalUnit.SAC_CENTIMETER:  return UNIT_TEXT_CENTIMETER;
+        case LexicalUnit.SAC_DEGREE:      return UNIT_TEXT_DEGREE;
+        case LexicalUnit.SAC_EM:          return UNIT_TEXT_EM;
+        case LexicalUnit.SAC_EX:          return UNIT_TEXT_EX;
+        case LexicalUnit.SAC_GRADIAN:     return UNIT_TEXT_GRADIAN;
+        case LexicalUnit.SAC_HERTZ:       return UNIT_TEXT_HERTZ;
+        case LexicalUnit.SAC_INCH:        return UNIT_TEXT_INCH;
+        case LexicalUnit.SAC_KILOHERTZ:   return UNIT_TEXT_KILOHERTZ;
+        case LexicalUnit.SAC_MILLIMETER:  return UNIT_TEXT_MILLIMETER;
+        case LexicalUnit.SAC_MILLISECOND: return UNIT_TEXT_MILLISECOND;
+        case LexicalUnit.SAC_PERCENTAGE:  return UNIT_TEXT_PERCENTAGE;
+        case LexicalUnit.SAC_PICA:        return UNIT_TEXT_PICA;
+        case LexicalUnit.SAC_PIXEL:       return UNIT_TEXT_PIXEL;
+        case LexicalUnit.SAC_POINT:       return UNIT_TEXT_POINT;
+        case LexicalUnit.SAC_RADIAN:      return UNIT_TEXT_RADIAN;
+        case LexicalUnit.SAC_REAL:        return UNIT_TEXT_REAL;
+        case LexicalUnit.SAC_SECOND:      return UNIT_TEXT_SECOND;
+        default:
+            throw new IllegalStateException("No Unit Text for type: " + 
+                                            lexicalUnitType);
+        }
     }
     
     /**
