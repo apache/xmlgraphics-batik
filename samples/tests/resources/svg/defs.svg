@@ -178,6 +178,26 @@
 	<circle cx="0" cy="0" r="25"/>
 </g>
 
+
+<!-- ###################################################################### -->
+<!-- useMultiple.svg -->
+<!-- ###################################################################### -->
+
+
+<rect id="extR1" x="0" y="0" width="80" height="80" />
+
+<g id="u21" style="fill:orange">
+	<rect x="0" y="0" width="80" height="80" fill="crimson" />
+	<use xlink:href="#extR1" x="20" y="20" width="80" height="80" />
+	<use xlink:href="#extR1" x="40" y="40" width="80" height="80" style="fill:gold" />
+</g>
+
+<g id="u22" style="fill:orange">
+	<rect x="0" y="0" width="80" height="80" fill="crimson" />
+	<use xlink:href="../../spec/structure/useMultiple.svg#r1" x="20" y="20" width="80" height="80" />
+	<use xlink:href="../../spec/structure/useMultiple.svg#r1" x="40" y="40" width="80" height="80" style="fill:gold" />
+</g>
+
 </defs>
 
 </svg>
