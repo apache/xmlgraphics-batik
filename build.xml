@@ -66,7 +66,7 @@ To display the available targets type:
     <property name="src"             value="sources"/>
     <property name="resources"       value="resources"/>
     <property name="dest"            value="classes"/>
-    <property name="build"           value="build"/>
+    <property name="build"           value="${project}-${version}"/>
     <property name="docs"            value="${build}/docs"/>
     <property name="lib"             value="lib"/>
     <property name="package-prefix"  value="org/apache/${project}"/>
@@ -138,7 +138,7 @@ To display the available targets type:
   <!-- Build .............................................................. -->
   <target name="build" depends="jars, html">
     <zip zipfile="${project}-docs-${version}.zip" basedir="${build}"
-         includes="docs/**"/>
+         includes="docs/javadoc/**"/>
     <delete dir="${build}/docs/javadoc"/>
 
     <copy file="README" todir="${build}"/>
@@ -147,13 +147,13 @@ To display the available targets type:
     <copy todir="${build}/samples">
       <fileset dir="samples"/>
     </copy>
-    <zip zipfile="${build}/samples.zip" basedir="samples"/>
-    <zip zipfile="${project}-${version}.zip" basedir="${build}"/>
+    <zip zipfile="${build}/samples.zip" basedir="." includes="samples/**"/>
+    <zip zipfile="${project}-${version}.zip" basedir="." includes="${build}/**"/>
 
     <cvs cvsRoot=":pserver:anoncvs@xml.apache.org:/home/cvspublic"
          package="xml-batik"
-         dest="repository"/>
-    <zip zipfile="${project}-src-${version}.zip" basedir="repository"/>
+         dest="xml-${project}"/>
+    <zip zipfile="${project}-src-${version}.zip" basedir="." includes="xml-${project}"/>
   </target>
 
 
@@ -551,6 +551,7 @@ To display the available targets type:
              use="true"
              windowtitle="${Project} Javadoc"
              doctitle="${Project} API Specification"
+             link="http://java.sun.com/j2se/1.3/docs/api"
              bottom="Copyright &#169; ${year} Apache Software Foundation. All Rights Reserved.">
       <classpath refid="libs-classpath"/>
     </javadoc>
