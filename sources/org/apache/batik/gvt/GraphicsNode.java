@@ -37,6 +37,11 @@ import org.apache.batik.gvt.filter.Mask;
  */
 public interface GraphicsNode {
 
+    /**
+     * The identity affine transform matrix used to draw renderable images.
+     */
+    public static final AffineTransform IDENTITY = new AffineTransform();
+
     //
     // Properties methods
     //

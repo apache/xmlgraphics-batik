@@ -22,7 +22,7 @@ import org.apache.batik.gvt.GraphicsNode;
 public class GraphicsNodeMouseEvent extends GraphicsNodeInputEvent {
 
     /**
-     * The first number in the range of ids used for composite events.
+     * The first number in the range of ids used for mouse events.
      */
     static final int MOUSE_FIRST = 500;
 

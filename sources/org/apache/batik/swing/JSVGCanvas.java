@@ -69,7 +69,7 @@ import org.apache.batik.gvt.GraphicsNodeTreeIterator;
 import org.apache.batik.gvt.Selectable;
 import org.apache.batik.gvt.Selector;
 
-import org.apache.batik.gvt.event.AbstractEventDispatcher;
+import org.apache.batik.gvt.event.AWTEventDispatcher;
 import org.apache.batik.gvt.event.GraphicsNodeMouseListener;
 import org.apache.batik.gvt.event.SelectionListener;
 import org.apache.batik.gvt.event.SelectionEvent;
@@ -357,8 +357,8 @@ public class JSVGCanvas
         userAgent = ua;
 
         // for event dispatching inside GVT
-        AbstractEventDispatcher dispatcher =
-            (AbstractEventDispatcher)userAgent.getEventDispatcher();
+        AWTEventDispatcher dispatcher =
+            (AWTEventDispatcher)userAgent.getEventDispatcher();
         if (dispatcher != null) {
             //addMouseListener(dispatcher);
             //addMouseMotionListener(dispatcher);
@@ -1073,8 +1073,8 @@ public class JSVGCanvas
         canvasSpaceHighlightShape =
                 transform.createTransformedShape(selectionHighlightShape);
         // for event dispatching inside GVT with the right transformer
-        AbstractEventDispatcher dispatcher =
-            (AbstractEventDispatcher)userAgent.getEventDispatcher();
+        AWTEventDispatcher dispatcher =
+            (AWTEventDispatcher)userAgent.getEventDispatcher();
         if (dispatcher != null) {
             try {
                 if (gvtRoot != null) {
@@ -1370,15 +1370,15 @@ public class JSVGCanvas
         public MouseListener() {}
 
         public void mouseClicked(MouseEvent e) {
-            AbstractEventDispatcher dispatcher =
-                (AbstractEventDispatcher)userAgent.getEventDispatcher();
+            AWTEventDispatcher dispatcher =
+                (AWTEventDispatcher)userAgent.getEventDispatcher();
             clearSelection();
             dispatcher.mouseClicked(e);
         }
 
         public void mouseEntered(MouseEvent e) {
-            AbstractEventDispatcher dispatcher =
-                (AbstractEventDispatcher)userAgent.getEventDispatcher();
+            AWTEventDispatcher dispatcher =
+                (AWTEventDispatcher)userAgent.getEventDispatcher();
             dispatcher.mouseEntered(e);
         }
 
@@ -1424,8 +1424,8 @@ public class JSVGCanvas
             if (!operationPerformed) {
                 clearSelection();
                 // nothing done so forward the event to the dispatcher
-                AbstractEventDispatcher dispatcher =
-                    (AbstractEventDispatcher)userAgent.getEventDispatcher();
+                AWTEventDispatcher dispatcher =
+                    (AWTEventDispatcher)userAgent.getEventDispatcher();
                 if (dispatcher != null) {
                     dispatcher.mousePressed(e);
                 }
@@ -1458,8 +1458,8 @@ public class JSVGCanvas
             }
             if (!operationPerformed) {
                 // nothing done so forward the event to the dispatcher
-                AbstractEventDispatcher dispatcher =
-                    (AbstractEventDispatcher)userAgent.getEventDispatcher();
+                AWTEventDispatcher dispatcher =
+                    (AWTEventDispatcher)userAgent.getEventDispatcher();
                 if (dispatcher != null) {
                     dispatcher.mouseDragged(e);
                 }
@@ -1482,8 +1482,8 @@ public class JSVGCanvas
             }
             if (!operationPerformed) {
                 // nothing done so forward the event to the dispatcher
-                AbstractEventDispatcher dispatcher =
-                    (AbstractEventDispatcher)userAgent.getEventDispatcher();
+                AWTEventDispatcher dispatcher =
+                    (AWTEventDispatcher)userAgent.getEventDispatcher();
                 if (dispatcher != null) {
                     dispatcher.mouseReleased(e);
                 }
@@ -1491,8 +1491,8 @@ public class JSVGCanvas
         }
 
         public void mouseMoved(MouseEvent e) {
-            AbstractEventDispatcher dispatcher =
-                (AbstractEventDispatcher)userAgent.getEventDispatcher();
+            AWTEventDispatcher dispatcher =
+                (AWTEventDispatcher)userAgent.getEventDispatcher();
             dispatcher.mouseMoved(e);
         }
 
@@ -1504,8 +1504,8 @@ public class JSVGCanvas
             markerRight = null;
             panTransform = null;
             repaint();
-            AbstractEventDispatcher dispatcher =
-                (AbstractEventDispatcher)userAgent.getEventDispatcher();
+            AWTEventDispatcher dispatcher =
+                (AWTEventDispatcher)userAgent.getEventDispatcher();
             dispatcher.mouseExited(e);
         }
 
