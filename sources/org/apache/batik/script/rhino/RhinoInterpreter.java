@@ -75,8 +75,10 @@ public class RhinoInterpreter implements Interpreter {
         context = Context.enter();
         try {
             // init std object with an importer
+            // building the importer automatically initialize the
+            // context with it since Rhino1.5R3
             ImporterTopLevel importer = new ImporterTopLevel(context);
-            globalObject = (ScriptableObject)context.initStandardObjects(importer);
+            globalObject = importer;
             // import Java lang package & DOM Level 2 & SVG DOM packages
             NativeJavaPackage[] p= new NativeJavaPackage[TO_BE_IMPORTED.length];
             for (int i = 0; i < TO_BE_IMPORTED.length; i++) {
@@ -113,8 +115,7 @@ public class RhinoInterpreter implements Interpreter {
      * value of the last expression evaluated in the script.
      */
     public Object evaluate(Reader scriptreader)
-        throws InterpreterException, IOException
-    {
+        throws InterpreterException, IOException {
         Object rv = null;
         Context ctx = Context.enter(context);
         try {
@@ -154,8 +155,8 @@ public class RhinoInterpreter implements Interpreter {
      * value of the last expression evaluated in the script.
      */
     public Object evaluate(String scriptstr)
-        throws InterpreterException
-    {
+        throws InterpreterException {
+        System.out.println("evaluate "+scriptstr);
         Context ctx = Context.enter(context);
         Script script = null;
         Entry et = null;
@@ -198,6 +199,8 @@ public class RhinoInterpreter implements Interpreter {
         }
         Object rv = null;
         try {
+            System.out.println("ctx "+ctx);
+            System.out.println("global "+globalObject);
             rv = script.exec(ctx, globalObject);
         } catch (JavaScriptException e) {
             // exception from JavaScript (possibly wrapping a Java Ex)
@@ -214,6 +217,7 @@ public class RhinoInterpreter implements Interpreter {
                                          -1, -1);
         } catch (RuntimeException re) {
             // other RuntimeExceptions
+            re.printStackTrace();
             throw new InterpreterException(re, re.getMessage(), -1, -1);
         } finally {
             Context.exit();
