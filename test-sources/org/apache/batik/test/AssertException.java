@@ -27,7 +27,8 @@ public abstract class AssertException extends TestErrorConditionException {
         report.addDescriptionEntry(ENTRY_KEY_ASSERTION_TYPE,
                                    getAssertionType());
         addDescription(report);
-        addStackTraceDescription(report);        
+        addStackTraceDescription(report);  
+        report.setPassed(false);
         return report;
     }
 
