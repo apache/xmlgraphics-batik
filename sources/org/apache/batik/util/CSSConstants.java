@@ -269,7 +269,7 @@ public interface CSSConstants {
     String CSS_MISTYROSE_VALUE = "mistyrose";
     String CSS_MITER_VALUE = "miter";
     String CSS_MOCCASIN_VALUE = "moccasin";
-    String CSS_MONOSPACED_VALUE = "monospaced";
+    String CSS_MONOSPACE_VALUE = "monospace";
     String CSS_MOVE_VALUE = "move";
     String CSS_NARROWER_VALUE = "narrower";
     String CSS_NAVAJOWHITE_VALUE = "navajowhite";
