@@ -17,16 +17,54 @@
 <?xml-stylesheet type="text/css" href="test.css" ?>  
 
 <svg id="body" width="450" height="500" viewBox="0 0 450 500">
-<title>&lt;radialGradient&gt; Test A</title>
 
+    <title>&lt;radialGradient&gt; Test 1 (Simple)</title>
+    <text class="title" x="50%" y="40">
+        &lt;radialGradient&gt; Test 1 (Simple)
+    </text>
 
-    <text class="title" x="50%" y="40">&lt;radialGradient&gt; Test</text>
+    <style type="text/css"><![CDATA[
+        .speed   { clip-path:url(#speedClip); color-rendering:optimizeSpeed; }
+        .default { clip-path:url(#defaultClip); color-rendering:auto; }
+        .quality { clip-path:url(#qualityClip); 
+                   color-rendering:optimizeQuality; }
+        .saqLabel {  font-family: Verdana, Helvetica; 
+                     font-size: 5;
+                     text-anchor: middle; 
+                     fill:black; stroke:none;}
+        .line { fill:none; stroke:black; stroke-width:0.25; } 
+    ]]></style>
 
     <defs>
         <!-- Shape filled by radial gradients -->
         <g id="testShape">
-            <rect x="-25" y="-20" width="50" height="40" />
+            <rect x="-25" y="-20" width="50" height="40" 
+                  class="quality" />
+            <rect x="-25" y="-20" width="50" height="40" 
+                  class="default" />
+            <rect x="-25" y="-20" width="50" height="40" 
+                  class="speed" />
+
+            <text x="-16.5" y="24" class="saqLabel">Q</text>
+            <line x1="-8" x2="-8" y1="20" y2="25" class="line" />
+            <text x="0" y="24" class="saqLabel">A</text>
+            <line x1="8" x2="8" y1="20" y2="25" class="line" />
+            <text x="16.5" y="24" class="saqLabel">S</text>
         </g>
+
+        <!-- Clip paths for the various color-rendering settings... -->
+        <clipPath id="qualityClip">
+            <rect x="-25" y="-20" width="17" height="40"/>
+        </clipPath>
+
+        <clipPath id="defaultClip">
+            <rect x="-8" y="-20" width="16" height="40"/>
+        </clipPath>
+
+        <clipPath id="speedClip">
+            <rect x="8" y="-20" width="17" height="40"/>
+        </clipPath>
+
 
         <!-- ========================================== -->
         <!-- Two gradients, one with no values defined  -->
@@ -100,7 +138,7 @@
             cx="0%" cy="0%" gradientTransform="translate(.5, .5)" />
 
         <radialGradient id="rgTxfC" xlink:href="#rgDefaults"
-            cx="0%" cy="0%" gradientTransform="translate(.5, .5) scale(.25, 1.5)" />
+            cx="0%" cy="0%" gradientTransform="translate(.5, .5) scale(1.5, .25)" />
 
         <radialGradient id="rgTxfD" xlink:href="#rgFxFyD"
             gradientTransform="scale(.5, .5)" />
@@ -110,7 +148,6 @@
     <g class="legend">
  
         <g transform="translate(70, 0)">
-
         <g transform="translate(0, 100)">
             <use xlink:href="#testShape" fill="url(#rgDefaults)" />
             <text y="-30">Defaults</text>
@@ -187,7 +224,7 @@
 
         <g transform="translate(0, 240)">
             <use xlink:href="#testShape" fill="url(#rgTxfC)" />
-            <text y="-30">scale(.25,.5)</text>
+            <text y="-30">scale(1.5,.25)</text>
         </g>
 
         <g transform="translate(0, 310)">

@@ -83,9 +83,6 @@ final class LinearGradientPaintContext extends MultipleGradientPaintContext {
         super(cm, deviceBounds, userBounds, t, hints, fractions, 
               colors, cycleMethod, colorSpace);
         
-      	//call superclass method to calculate the gradients
-        calculateGradientFractions();
-
         // Use single precision floating points
         Point2D.Float start = new Point2D.Float((float)dStart.getX(),
                                                 (float)dStart.getY());

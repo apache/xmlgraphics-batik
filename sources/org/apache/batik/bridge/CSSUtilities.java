@@ -326,15 +326,16 @@ public abstract class CSSUtilities implements CSSConstants, ErrorConstants {
         if (s.charAt(0) == 'a') { // auto
             return null;
         }
+        // System.out.println("Str: " + s + "[8] = '" + s.charAt(8) + "'");
         Map hints = new HashMap();
-        switch(v.getStringValue().charAt(9)) {
-        case 'S': // optimizeSpeed
+        switch(s.charAt(8)) {
+        case 's': // optimizeSpeed
             hints.put(RenderingHints.KEY_COLOR_RENDERING,
                       RenderingHints.VALUE_COLOR_RENDER_SPEED);
             hints.put(RenderingHints.KEY_ALPHA_INTERPOLATION,
                       RenderingHints.VALUE_ALPHA_INTERPOLATION_SPEED);
             break;
-        case 'Q': // optimizeQuality
+        case 'q': // optimizeQuality
             hints.put(RenderingHints.KEY_COLOR_RENDERING,
                       RenderingHints.VALUE_COLOR_RENDER_QUALITY);
             hints.put(RenderingHints.KEY_ALPHA_INTERPOLATION,
