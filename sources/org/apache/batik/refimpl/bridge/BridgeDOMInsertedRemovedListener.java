@@ -29,6 +29,7 @@ import java.util.Iterator;
  * This class listens to DOMNodeInserted and DOMNodeRemoved
  * events in the SVG tree.
  * @author <a href="mailto:etissandier@ilog.fr">Emmanuel Tissandier</a>
+ * @author <a href="mailto:cjolif@ilog.fr">Christophe Jolif</a>
  * @version $Id$
  */
 public class BridgeDOMInsertedRemovedListener implements EventListener {
@@ -36,14 +37,12 @@ public class BridgeDOMInsertedRemovedListener implements EventListener {
     private static final String DOM_NODE_INSERTED_TYPE = "DOMNodeInserted";
     private static final String DOM_NODE_REMOVED_TYPE = "DOMNodeRemoved";
 
-
-    /** The context.*/
     private ConcreteBridgeContext context;
 
     /**
      * Creates the listener.
      */
-    public BridgeDOMInsertedRemovedListener(ConcreteBridgeContext context){
+    public BridgeDOMInsertedRemovedListener(ConcreteBridgeContext context) {
         this.context = context;
     }
 
@@ -51,37 +50,36 @@ public class BridgeDOMInsertedRemovedListener implements EventListener {
      * Handles the mutation event.
      * @param evt the DOM event
      */
-    public void handleEvent(Event evt){
-
+    public void handleEvent(Event evt) {
         MutationEvent event = (MutationEvent)evt;
 
         Node child  = (Node)event.getTarget(); // The inserted or removed elmt
         Element parent = (Element)event.getRelatedNode(); // The parent
 
         if (child.getNodeType() == Node.ELEMENT_NODE) {
-
             GraphicsNode gn = context.getGraphicsNode(parent);
 
-            if (gn != null) { // The parent is an SVG element
+            if (gn != null) {
                 // May be this should be done in the BridgeUpdateManager
 
-                if (event.getType().equals(DOM_NODE_INSERTED_TYPE)){
-
+                if (event.getType().equals(DOM_NODE_INSERTED_TYPE)) {
                     GraphicsNodeBridge graphicsNodeBridge =
                         (GraphicsNodeBridge)context.getBridge((Element)child);
-                    GraphicsNode childGVTNode =
-                        graphicsNodeBridge.createGraphicsNode(context,
-                                                              (Element)child);
-                    ((CompositeGraphicsNode)gn).getChildren().add(childGVTNode);
-
+                    // it means we know how to go from DOM to GVT for this node
+                    if (graphicsNodeBridge != null) {
+                        GraphicsNode childGVTNode =
+                            graphicsNodeBridge.
+                            createGraphicsNode(context,
+                                               (Element)child);
+                        ((CompositeGraphicsNode)gn).getChildren().
+                            add(childGVTNode);
+                    }
                 } else { // DOM_NODE_REMOVED_TYPE
-
                     GraphicsNode childGVTNode =
                         context.getGraphicsNode((Element)child);
                     ((CompositeGraphicsNode)gn).getChildren().
                         remove(childGVTNode);
                     context.unbind((Element)child);
-
                 }
             }
         }
