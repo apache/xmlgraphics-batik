@@ -16,9 +16,11 @@ import java.lang.reflect.Method;
 
 import java.util.Locale;
 import java.util.MissingResourceException;
+import java.util.WeakHashMap;
 
 import org.apache.batik.dom.events.DocumentEventSupport;
 import org.apache.batik.dom.traversal.TraversalSupport;
+import org.apache.batik.dom.util.SoftDoublyIndexedTable;
 import org.apache.batik.i18n.Localizable;
 import org.apache.batik.i18n.LocalizableSupport;
 
@@ -82,6 +84,11 @@ public abstract class AbstractDocument
      * Whether the event dispatching must be done.
      */
     protected transient boolean eventsEnabled;
+
+    /**
+     * The ElementsByTagName lists.
+     */
+    protected transient WeakHashMap elementsByTagNames;
 
     /**
      * Creates a new document.
@@ -194,20 +201,6 @@ public abstract class AbstractDocument
 
     /**
      * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.Document#getElementsByTagName(String)}.
-     */
-    public NodeList getElementsByTagName(String tagname) {
-	Element e = getDocumentElement();
-	if (e == null) {
-	    return EMPTY_NODE_LIST;
-	}
-	Nodes result = new Nodes();
-	getElementsByTagName(e, tagname, result);
-	return result;
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link
      * org.w3c.dom.Document#importNode(Node,boolean)}.
      */
     public Node importNode(Node importedNode, boolean deep)
@@ -285,21 +278,6 @@ public abstract class AbstractDocument
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.Document#getElementsByTagNameNS(String,String)}.
-     */
-    public NodeList getElementsByTagNameNS(String namespaceURI,
-                                           String localName) {
-	Element e = getDocumentElement();
-	if (e == null) {
-	    return EMPTY_NODE_LIST;
-	}
-	Nodes result = new Nodes();
-	getElementsByTagNameNS(e, namespaceURI, localName, result);
-	return result;
-    }
-
-    /**
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#cloneNode(boolean)}.
      */
     public Node cloneNode(boolean deep) {
@@ -313,6 +291,37 @@ public abstract class AbstractDocument
             }
         }
         return n;
+    }
+
+    /**
+     * Returns an ElementsByTagName object from the cache, if any.
+     */
+    public ElementsByTagName getElementsByTagName(Node n, String ns, String ln) {
+        if (elementsByTagNames == null) {
+            return null;
+        }
+        SoftDoublyIndexedTable t;
+        t = (SoftDoublyIndexedTable)elementsByTagNames.get(n);
+        if (t == null) {
+            return null;
+        }
+        return (ElementsByTagName)t.get(ns, ln);
+    }
+
+    /**
+     * Puts an ElementsByTagName object in the cache.
+     */
+    public void putElementsByTagName(Node n, String ns, String ln,
+                                     ElementsByTagName l) {
+        if (elementsByTagNames == null) {
+            elementsByTagNames = new WeakHashMap(11);
+        }
+        SoftDoublyIndexedTable t;
+        t = (SoftDoublyIndexedTable)elementsByTagNames.get(n);
+        if (t == null) {
+            elementsByTagNames.put(n, t = new SoftDoublyIndexedTable());
+        }
+        t.put(ns, ln, l);
     }
 
     // DocumentEvent /////////////////////////////////////////////////////////
