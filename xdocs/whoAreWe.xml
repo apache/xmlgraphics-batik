@@ -102,6 +102,17 @@ as a software engineer for Bull.</em>
           <br /><br />
           </dd>
 
+          <dt>Nicolas Socheleau</dt><dd><br />
+          <link href="mailto:nicolas.socheleau@bitflash.com">nicolas.socheleau@bitflash.com</link> <br />
+          <em>
+Nicolas Socheleau is a software engineer at BitFlash Inc, Ottawa, Canada 
+where he worked on different SVG related projects. He joined the Batik 
+team in June 2002. His interests include XML technologies and Graphics. He
+contributed some text functionnalities and SVG DOM interface implementations.
+</em>
+          <br /><br />
+          </dd>
+
         </dl>
 
         <p>
@@ -204,8 +215,6 @@ as a software engineer for Bull.</em>
           <li><link href="mailto:neeme.praks@one.ee">Neeme Praks</link> - Contributed patches, feedback and scripts for
             building charts from John Morrisson's XSL stylesheets</li>
           <li><link href="mailto:ruini@iki.fi">Henri Ruini</link> - Contributed to a rewrite of the rasterizer application. </li>
-          <li><link href="mailto:nicolas.socheleau@bitflash.com">Nicolas Socheleau</link> - Contributed code and tests for 
-            support of dynamic modifications on &lt;text&gt; element children (e.g., &lt;tspan&gt;) through scripting.</li>
           <li><link href="mailto:david@steadystate.co.uk">David Schweinsberg</link> - Contributed the True Type Font to 
               SVG Font converter</li>
           <li><link href="mailto:natalian@cs.brown.edu">Nicholas Talian</link> - Contributed on gradients.</li>
