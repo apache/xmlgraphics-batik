@@ -644,8 +644,10 @@ public class GlyphLayout implements TextSpanLayout {
 
         return shape;
     }
-
     public static final float eps = 0.00001f;
+    public static boolean epsEQ(double a, double b) {
+        return ((a+eps > b) && (a-eps < b));
+    }
 
     public static int makeConvexHull(Point2D.Float [] pts, int numPts) {
         // Sort the Pts in X...
@@ -1312,12 +1314,24 @@ public class GlyphLayout implements TextSpanLayout {
             }
 
             // rotate the glyph
-            if (glyphRotation != 0f) {
+            if (!epsEQ(glyphRotation,0)) {
                 AffineTransform glyphTransform = gv.getGlyphTransform(i);
                 if (glyphTransform == null) {
                     glyphTransform = new AffineTransform();
                 }
-                glyphTransform.rotate(glyphRotation);
+                AffineTransform rotAt;
+                // Make the 90Deg rotations slightly 'snap to'.
+                // Also use explicit matrix to avoid round-off.
+                if (epsEQ(glyphRotation, Math.PI/2)) {
+                    rotAt = new AffineTransform(0, 1, -1, 0, 0, 0);
+                } else if (epsEQ(glyphRotation, Math.PI)) {
+                    rotAt = new AffineTransform(-1, 0, 0, -1, 0, 0);
+                } else if (epsEQ(glyphRotation, 3*Math.PI/2)) {
+                    rotAt = new AffineTransform(0, -1, 1, 0, 0, 0);
+                } else {
+                    rotAt = AffineTransform.getRotateInstance(glyphRotation);
+                }
+                glyphTransform.concatenate(rotAt);
                 gv.setGlyphTransform(i, glyphTransform);
             }
 

@@ -11,8 +11,10 @@ package org.apache.batik.gvt.renderer;
 import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.Paint;
+import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.Stroke;
+import java.awt.font.FontRenderContext;
 import java.awt.font.TextAttribute;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
@@ -624,8 +626,21 @@ public class StrokingTextPainter extends BasicTextPainter {
                 subCharMap[i] = charMap[i+start-begin];
             }
 
+            FontRenderContext frc = fontRenderContext;
+            RenderingHints rh = node.getRenderingHints();
+            // Check for optimizeSpeed, optimizeLegibility
+            // in these cases setup hintedFRC
+            if ((rh != null) &&
+                (rh.get(RenderingHints.KEY_TEXT_ANTIALIASING) ==
+                  RenderingHints.VALUE_TEXT_ANTIALIAS_OFF)) {
+                // In both these cases we want the non-antialiased
+                // font render context.
+                frc = aaOffFontRenderContext;
+            }
+
             layout = getTextLayoutFactory().createTextLayout
-                (runaci, subCharMap, offset, fontRenderContext);
+                (runaci, subCharMap, offset, frc);
+
             textRuns.add(new TextRun(layout, runaci, isChunkStart));
             // System.out.println("TextRun: " + start +  "->" + end + 
             //                    " Start: " + isChunkStart);
