@@ -26,8 +26,7 @@
           <stop stop-opacity="1" stop-color="yellow" offset="100%" />
         </linearGradient>
         <pattern x="10" y="20" width="20" xmlns:xlink="http://www.w3.org/1999/xlink" patternUnits="userSpaceOnUse" xlink:type="simple" xlink:actuate="onRequest" id="testpattern1" height="20" preserveAspectRatio="xMidYMid meet" xlink:show="replace">
-          <image width="20" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAIAAAAC64paAAAAJUlEQVR42mP8z4AP
-MOKVZWKgAIxqHhma8Schhv//RwNsVDNFmgGllgMlNsNEOAAAAABJRU5ErkJggg==" xlink:type="simple" xlink:actuate="onRequest" height="20" preserveAspectRatio="xMidYMid meet" xlink:show="replace" />
+          <use x="0" y="0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" xlink:actuate="onRequest" xlink:show="replace" />
         </pattern>
         <font horiz-adv-x="75.0" id="testfont1">
           <font-face ascent="92.163086" descent="19.555664" units-per-em="100" font-family="Arial" font-style="normal" font-weight="normal" />
@@ -60,6 +59,8 @@ MOKVZWKgAIxqHhma8Schhv//RwNsVDNFmgGllgMlNsNEOAAAAABJRU5ErkJggg==" xlink:type="si
           <glyph unicode="x" horiz-adv-x="50.0" d="M0.734375 0 L19.671875 26.953125 L2.15625 51.859375 L13.140625 51.859375 L21.09375 39.703125 Q23.34375 36.234375 24.703125 33.890625 Q26.859375 37.109375 28.65625 39.59375 L37.40625 51.859375 L47.90625 51.859375 L29.984375 27.4375 L49.265625 0 L38.484375 0 L27.828125 16.109375 L25 20.453125 L11.375 0 L0.734375 0 Z" />
           <glyph unicode="T" horiz-adv-x="61.083984" d="M25.921875 0 L25.921875 63.140625 L2.34375 63.140625 L2.34375 71.578125 L59.078125 71.578125 L59.078125 63.140625 L35.40625 63.140625 L35.40625 0 L25.921875 0 Z" />
         </font>
+        <image width="20" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAALklEQVR42mP8z8AA
+RIQBIwNxgImBymDUwFEDB4OBoAxAVE75/380DEcNHMEGAgA9ZQUjAKh+SgAAAABJRU5ErkJggg==" xlink:type="simple" xlink:actuate="onRequest" height="20" id="testimage1" preserveAspectRatio="xMidYMid meet" xlink:show="replace" />
       </defs>
       <g class="testC1" transform="translate(0,30)">
         <text xml:space="preserve" x="10" y="10" class="testC2">Semi transparent black

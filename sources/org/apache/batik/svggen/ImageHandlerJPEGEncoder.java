@@ -64,13 +64,20 @@ public class ImageHandlerJPEGEncoder extends AbstractImageHandlerEncoder {
      * Derived classes should implement this method and encode the input
      * BufferedImage as needed
      */
-    public void encodeImage(BufferedImage buf, OutputStream os)
-        throws IOException {
-        JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(os);
-        JPEGEncodeParam param = encoder.getDefaultJPEGEncodeParam(buf);
-        param.setQuality(1, false);
-        encoder.encode(buf, param);
-     }
+    public void encodeImage(BufferedImage buf, File imageFile)
+        throws SVGGraphics2DIOException {
+        try{
+            OutputStream os = new FileOutputStream(imageFile);
+            JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(os);
+            JPEGEncodeParam param = encoder.getDefaultJPEGEncodeParam(buf);
+            param.setQuality(1, false);
+            encoder.encode(buf, param);
+            os.flush();
+            os.close();
+        } catch(IOException e) {
+            throw new SVGGraphics2DIOException(ERR_WRITE+imageFile.getName());
+        }
+    }
 
     /**
      * This method creates a BufferedImage of the right size and type

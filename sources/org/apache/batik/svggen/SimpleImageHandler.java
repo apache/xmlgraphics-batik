@@ -1,0 +1,185 @@
+/*****************************************************************************
+ * Copyright (C) The Apache Software Foundation. All rights reserved.        *
+ * ------------------------------------------------------------------------- *
+ * This software is published under the terms of the Apache Software License *
+ * version 1.1, a copy of which has been included with this distribution in  *
+ * the LICENSE file.                                                         *
+ *****************************************************************************/
+
+package org.apache.batik.svggen;
+
+import java.awt.Image;
+import java.awt.image.RenderedImage;
+import java.awt.image.renderable.RenderableImage;
+import java.awt.geom.AffineTransform;
+
+import org.w3c.dom.Element;
+
+/**
+ * Implements the <tt>GenericImageHandler</tt> interface and only
+ * uses &lt;image&gt; elements. This class delegates to the
+ * <tt>ImageHandler</tt> interface for handling the xlink:href
+ * attribute on the elements it creates.
+ *
+ * @author <a href="mailto:vincent.hardy@sun.com">Vincent Hardy</a>
+ * @version $Id$
+ */
+public class SimpleImageHandler implements GenericImageHandler, SVGSyntax, ErrorConstants {
+    // duplicate the string here to remove dependencies on
+    // org.apache.batik.dom.util.XLinkSupport
+    static final String XLINK_NAMESPACE_URI =
+        "http://www.w3.org/1999/xlink";
+
+    /**
+     * <tt>ImageHandler</tt> which handles xlink:href attribute setting
+     */
+    protected ImageHandler imageHandler;
+
+    /**
+     * @param imageHandler ImageHandler handling the xlink:href on the 
+     *        &lt;image&gt; elements this GenericImageHandler implementation
+     *        creates.
+     */
+    public SimpleImageHandler(ImageHandler imageHandler){
+        if (imageHandler == null){
+            throw new IllegalArgumentException();
+        }
+
+        this.imageHandler = imageHandler;
+    }
+
+    /**
+     * This <tt>GenericImageHandler</tt> implementation does not
+     * need to interact with the DOMTreeManager.
+     */
+    public void setDOMTreeManager(DOMTreeManager domTreeManager){
+    }
+
+    /**
+     * Creates an Element which can refer to an image.
+     * Note that no assumptions should be made by the caller about the
+     * corresponding SVG tag.
+     */
+    public Element createElement(SVGGeneratorContext generatorContext) {
+        // Create a DOM Element in SVG namespace to refer to an image
+        Element imageElement =
+            generatorContext.getDOMFactory().createElementNS
+            (SVG_NAMESPACE_URI, SVG_IMAGE_TAG);
+
+        return imageElement;
+    }
+
+    /**
+     * The handler sets the xlink:href tag and returns a transform
+     */
+    public AffineTransform handleImage(Image image,
+                                       Element imageElement,
+                                       int x, int y,
+                                       int width, int height,
+                                       SVGGeneratorContext generatorContext) {
+
+        int imageWidth      = image.getWidth(null);
+        int imageHeight     = image.getHeight(null);
+        AffineTransform af  = null;
+
+        if(imageWidth == 0 || imageHeight == 0 ||
+           width == 0 || height == 0) {
+
+            // Forget about it
+            handleEmptyImage(imageElement);
+
+        } else {
+            imageHandler.handleImage(image, imageElement, generatorContext);
+            setImageAttributes(imageElement, (double) x, (double) y,
+                               (double)width, (double)height);
+        }
+        return null;
+    }
+
+    /**
+     * The handler sets the xlink:href tag and returns a transform
+     */
+    public AffineTransform handleImage(RenderedImage image,
+                                       Element imageElement,
+                                       int x, int y,
+                                       int width, int height,
+                                       SVGGeneratorContext generatorContext) {
+
+        int imageWidth      = image.getWidth();
+        int imageHeight     = image.getHeight();
+        AffineTransform af  = null;
+
+        if(imageWidth == 0 || imageHeight == 0 ||
+           width == 0 || height == 0) {
+
+            // Forget about it
+            handleEmptyImage(imageElement);
+
+        } else {
+            imageHandler.handleImage(image, imageElement, generatorContext);
+            setImageAttributes(imageElement, (double) x, (double) y,
+                               (double)width, (double)height);
+        }
+        return null;
+    }
+
+    /**
+     * The handler sets the xlink:href tag and returns a transform
+     */
+    public AffineTransform handleImage(RenderableImage image,
+                                       Element imageElement,
+                                       double x, double y,
+                                       double width, double height,
+                                       SVGGeneratorContext generatorContext) {
+
+        double imageWidth   = image.getWidth();
+        double imageHeight  = image.getHeight();
+        AffineTransform af  = null;
+
+        if(imageWidth == 0 || imageHeight == 0 ||
+           width == 0 || height == 0) {
+
+            // Forget about it
+            handleEmptyImage(imageElement);
+
+        } else {
+            imageHandler.handleImage(image, imageElement, generatorContext);
+            setImageAttributes(imageElement, x, y, width, height);
+        }
+        return null;
+    }
+
+    /**
+     * Sets the x/y/width/height attributes on the &lt;image&gt; 
+     * element.
+     */
+    protected void setImageAttributes(Element imageElement,
+                                      double x, 
+                                      double y,
+                                      double width,
+                                      double height) {
+        imageElement.setAttributeNS(null,
+                                    SVG_X_ATTRIBUTE,
+                                    AbstractSVGConverter.doubleString(x));
+        imageElement.setAttributeNS(null,
+                                    SVG_Y_ATTRIBUTE,
+                                    AbstractSVGConverter.doubleString(y));
+        imageElement.setAttributeNS(null,
+                                    SVG_WIDTH_ATTRIBUTE,
+                                    AbstractSVGConverter.doubleString(width));
+        imageElement.setAttributeNS(null,
+                                    SVG_HEIGHT_ATTRIBUTE,
+                                    AbstractSVGConverter.doubleString(height));
+        imageElement.setAttributeNS(null,
+                                    SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE,
+                                    SVG_NONE_VALUE);
+    }
+              
+    protected void handleEmptyImage(Element imageElement) {
+        imageElement.setAttributeNS(XLINK_NAMESPACE_URI,
+                                    ATTR_XLINK_HREF, "");
+        imageElement.setAttributeNS(null, SVG_WIDTH_ATTRIBUTE, "0");
+        imageElement.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE, "0");
+    }
+
+}

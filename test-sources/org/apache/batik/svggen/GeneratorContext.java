@@ -62,7 +62,7 @@ public class GeneratorContext extends SVGAccuracyTest implements SVGConstants {
         super(painter, refURL);
     }
 
-    protected SVGGraphics2D buildSVGGraphics2D() {
+    protected SVGGraphics2D buildSVGGraphics2D(){
         // Use Batik's DOM implementation to create a Document
         DOMImplementation impl = SVGDOMImplementation.getDOMImplementation();
         String namespaceURI = SVGDOMImplementation.SVG_NAMESPACE_URI;
@@ -75,7 +75,10 @@ public class GeneratorContext extends SVGAccuracyTest implements SVGConstants {
         ctx.setIDGenerator(new TestIDGenerator());
 
         // Extension Handler to be done
+
         // Image Handler to be done
+        GenericImageHandler ihandler = new CachedImageHandlerBase64Encoder();
+        ctx.setGenericImageHandler(ihandler);
 
         // Set Style handler
         CDATASection styleSheet = domFactory.createCDATASection("");

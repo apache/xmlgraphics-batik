@@ -94,6 +94,11 @@ public class DOMTreeManager implements SVGSyntax, ErrorConstants {
     private SVGBufferedImageOp filterConverter;
 
     /**
+     * Set of definitions which can be used by custom extensions
+     */
+    private List otherDefs;
+
+    /**
      * Constructor
      * @param gc default graphic context state
      * @param domFactory used to create top level svg root node
@@ -292,12 +297,28 @@ public class DOMTreeManager implements SVGSyntax, ErrorConstants {
         List defSet = gcConverter.getDefinitionSet();
         defSet.removeAll(genericDefSet);
         defSet.addAll(filterConverter.getDefinitionSet());
+        if (otherDefs != null){
+            defSet.addAll(otherDefs);
+            otherDefs = null;
+        }
 
         // Build new converters
         filterConverter = new SVGBufferedImageOp(generatorContext);
         gcConverter = new SVGGraphicContextConverter(generatorContext);
 
         return defSet;
+    }
+
+    /**
+     * Lets custom implementations for various extensions add
+     * elements to the <defs> sections.
+     */
+    public void addOtherDef(Element definition){
+        if (otherDefs == null){
+            otherDefs = new LinkedList();
+        }
+
+        otherDefs.add(definition);
     }
 
     /**

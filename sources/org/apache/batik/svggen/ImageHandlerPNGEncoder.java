@@ -65,10 +65,16 @@ public class ImageHandlerPNGEncoder extends AbstractImageHandlerEncoder {
      * Derived classes should implement this method and encode the input
      * BufferedImage as needed
      */
-    public void encodeImage(BufferedImage buf, OutputStream os)
-        throws IOException {
-        ImageEncoder encoder = new PNGImageEncoder(os, null);
-        encoder.encode(buf);
+    public void encodeImage(BufferedImage buf, File imageFile)
+        throws SVGGraphics2DIOException {
+        try {
+            OutputStream os = new FileOutputStream(imageFile);
+            ImageEncoder encoder = new PNGImageEncoder(os, null);
+            encoder.encode(buf);
+            os.close();
+        } catch (IOException e) {
+            throw new SVGGraphics2DIOException(ERR_WRITE+imageFile.getName());
+        }
     }
 
     /**

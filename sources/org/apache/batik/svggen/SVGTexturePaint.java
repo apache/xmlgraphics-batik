@@ -120,10 +120,24 @@ public class SVGTexturePaint extends AbstractSVGConverter {
                 }
             }
 
-            generatorContext.imageHandler.
-                handleImage((RenderedImage)textureImage, imageElement,
-                            generatorContext);
-            patternDef.appendChild(imageElement);
+            // generatorContext.imageHandler.
+            // handleImage((RenderedImage)textureImage, imageElement,
+            // generatorContext);
+
+            Element patternContent 
+                = generatorContext.genericImageHandler.createElement
+                (generatorContext);
+
+            generatorContext.genericImageHandler.handleImage
+                ((RenderedImage)textureImage,
+                 patternContent,
+                 0, 
+                 0,
+                 textureImage.getWidth(),
+                 textureImage.getHeight(),
+                 generatorContext);
+
+            patternDef.appendChild(patternContent);
 
             patternDef.setAttributeNS(null, ATTR_ID,
                                       generatorContext.idGenerator.

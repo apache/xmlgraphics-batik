@@ -42,15 +42,7 @@
           <glyph unicode="e" horiz-adv-x="44.384766" d="M10.640625 27.875 Q10.59375 17.921875 15.484375 12.25 Q20.359375 6.59375 26.953125 6.59375 Q31.34375 6.59375 34.59375 9.0078125 Q37.84375 11.421875 40.046875 17.28125 L41.546875 16.3125 Q40.53125 9.625 35.6015625 4.1328125 Q30.671875 -1.359375 23.25 -1.359375 Q15.1875 -1.359375 9.453125 4.9140625 Q3.71875 11.1875 3.71875 21.78125 Q3.71875 33.25 9.6015625 39.671875 Q15.484375 46.09375 24.359375 46.09375 Q31.890625 46.09375 36.71875 41.140625 Q41.546875 36.1875 41.546875 27.875 L10.640625 27.875 ZM10.640625 30.71875 L31.34375 30.71875 Q31.109375 35.015625 30.328125 36.765625 Q29.109375 39.5 26.6875 41.0625 Q24.265625 42.625 21.625 42.625 Q17.578125 42.625 14.3828125 39.4765625 Q11.1875 36.328125 10.640625 30.71875 Z" />
           <glyph unicode="H" horiz-adv-x="72.2168" d="M20.5625 35.5 L51.3125 35.5 L51.3125 54.4375 Q51.3125 59.515625 50.6875 61.140625 Q50.203125 62.359375 48.640625 63.234375 Q46.53125 64.40625 44.1875 64.40625 L41.84375 64.40625 L41.84375 66.21875 L70.171875 66.21875 L70.171875 64.40625 L67.828125 64.40625 Q65.484375 64.40625 63.375 63.28125 Q61.8125 62.5 61.25 60.9140625 Q60.6875 59.328125 60.6875 54.4375 L60.6875 11.71875 Q60.6875 6.6875 61.328125 5.078125 Q61.8125 3.859375 63.328125 2.984375 Q65.484375 1.8125 67.828125 1.8125 L70.171875 1.8125 L70.171875 0 L41.84375 0 L41.84375 1.8125 L44.1875 1.8125 Q48.25 1.8125 50.09375 4.203125 Q51.3125 5.765625 51.3125 11.71875 L51.3125 31.890625 L20.5625 31.890625 L20.5625 11.71875 Q20.5625 6.6875 21.1875 5.078125 Q21.6875 3.859375 23.25 2.984375 Q25.34375 1.8125 27.6875 1.8125 L30.078125 1.8125 L30.078125 0 L1.703125 0 L1.703125 1.8125 L4.046875 1.8125 Q8.15625 1.8125 10.015625 4.203125 Q11.1875 5.765625 11.1875 11.71875 L11.1875 54.4375 Q11.1875 59.515625 10.546875 61.140625 Q10.0625 62.359375 8.546875 63.234375 Q6.390625 64.40625 4.046875 64.40625 L1.703125 64.40625 L1.703125 66.21875 L30.078125 66.21875 L30.078125 64.40625 L27.6875 64.40625 Q25.34375 64.40625 23.25 63.28125 Q21.734375 62.5 21.1484375 60.9140625 Q20.5625 59.328125 20.5625 54.4375 L20.5625 35.5 Z" />
         </font>
-      </defs>
-      <g class="testC1">
-        <text xml:space="preserve" x="20" y="40" class="testC2">Hello SVG drawString(...)
-        </text>
-        <circle r="30" class="testC3" cx="50" transform="translate(0,70)" cy="30" />
-        <circle r="30" class="testC4" cx="50" transform="translate(60,70)" cy="30" />
-        <circle r="30" class="testC5" cx="50" transform="translate(120,70)" cy="30" />
-        <circle r="30" class="testC6" cx="50" transform="translate(180,70)" cy="30" />
-        <image xmlns:xlink="http://www.w3.org/1999/xlink" transform="translate(0,130)" width="200" xlink:show="replace" xlink:type="simple" preserveAspectRatio="xMidYMid meet" height="150" class="testC7" x="40" y="40" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAACWCAYAAACb3McZAAACGklEQVR42u3XMQ7C
+        <image width="200" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAACWCAYAAACb3McZAAACGklEQVR42u3XMQ7C
 QBRDwYC4Yi6ZHBJ6pNchN8yUK7fWXz+u63ofX87z/H467vs+5OT+Lfc8gKQgoCCg
 IPBzL0NMTq5zLgj4YoGCgILAdKQbYnJynXNBwBcLFAQUBKYj3RCTk+ucCwK+WKAg
 oCAwHemGmJxc51wQ8MUCBQEFgelIN8Tk5DrngoAvFigIKAhMR7ohJifXORcEfLFA
@@ -62,8 +54,8 @@ QcAXCxQEFASmI90Qk5PrnAsCvligIKAgMB3phpicXOdcEPDFAgUBBYHpSDfE5OQ6
 54KALxYoCCgITEe6ISYn1zkXBHyxQEFAQWA60g0xObnOuSDgiwUKAgoC05FuiMnJ
 dc4FAV8sUBBQEJiOdENMTq5zLgj4YoGCgILAdKQbYnJynXNBwBcLFAQUBKYj3RCT
 k+ucCwK+WKAgoCAwHemGmJxc51wQ8MUCBQEFgelIN8Tk5DrngoAvFigIKAgsfQCj
-AQrLWU2b7gAAAABJRU5ErkJggg==" xlink:actuate="onRequest" />
-        <image xmlns:xlink="http://www.w3.org/1999/xlink" transform="translate(0,130)" width="200" xlink:show="replace" xlink:type="simple" preserveAspectRatio="xMidYMid meet" height="150" class="testC8" x="40" y="40" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAACWCAYAAACb3McZAAAMBUlEQVR42u3da4gk
+AQrLWU2b7gAAAABJRU5ErkJggg==" xlink:type="simple" xlink:actuate="onRequest" height="150" id="testimage1" preserveAspectRatio="xMidYMid meet" xlink:show="replace" />
+        <image width="200" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAACWCAYAAACb3McZAAAMBUlEQVR42u3da4gk
 VxXA8eqanhmyEiF+WBMQURHRoEGIDwiICIIYH/gG8YUJu0skGkFIEMFkwRf6Rf3g
 6kQUHyi6wQeIqCAoiIIEEkWiG9HoF8OCGkgMm31Ml+d23dt17q1zq6pndkiy998w
 bO+Z293V0/f0Ob8+PT2zY8e+3FRyauTk/lFfVfL/ofg+1zY+PjPWuu9NilfddY3G
@@ -128,7 +120,17 @@ R4g99NBTY6TjDtyBO6rKVQ+XHIcOPRxaLNyBO3BHaK1ccqhJOu7AHbhDu6OtIg83
 p08/bWgOgjtwR5nuCMlx+eX/HZqD4A7cUaY7XHJMmoPgDtxRojvcyVWPK6540J6D
 4A7cUbI7QnIYcxDcgTtwR4ifOnVVOgfBHbgDd7jq4ZLj8OH7+nMQ3IE7SneHS47e
 HAR34A7c8eAq7qrHyZNXd0jHHbgDd7TuCMnhKwjuwB24Q7uju7Xjzf8BxjbJhW9v
-vFkAAAAASUVORK5CYII=" xlink:actuate="onRequest" />
+vFkAAAAASUVORK5CYII=" xlink:type="simple" xlink:actuate="onRequest" height="150" id="testimage2" preserveAspectRatio="xMidYMid meet" xlink:show="replace" />
+      </defs>
+      <g class="testC1">
+        <text xml:space="preserve" x="20" y="40" class="testC2">Hello SVG drawString(...)
+        </text>
+        <circle r="30" class="testC3" cx="50" transform="translate(0,70)" cy="30" />
+        <circle r="30" class="testC4" cx="50" transform="translate(60,70)" cy="30" />
+        <circle r="30" class="testC5" cx="50" transform="translate(120,70)" cy="30" />
+        <circle r="30" class="testC6" cx="50" transform="translate(180,70)" cy="30" />
+        <use x="40" y="40" transform="translate(0,130)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC7" xlink:actuate="onRequest" xlink:show="replace" />
+        <use x="40" y="40" transform="translate(0,130)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage2" xlink:type="simple" class="testC8" xlink:actuate="onRequest" xlink:show="replace" />
       </g>
     </g>
   </g>

@@ -25,9 +25,9 @@
       <text xml:space="preserve" x="10" y="30" stroke="none">Interpolation Nearest Neighbor / Bicubic
       </text>
       <image x="10" y="50" width="40" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAIAAAD91JpzAAAAE0lEQVR42mP4/5/h
-PwMDIxADaQAq6gT93tAyKwAAAABJRU5ErkJggg==" xlink:type="simple" xlink:actuate="onRequest" height="40" preserveAspectRatio="xMidYMid meet" xlink:show="replace" />
+PwMDIxADaQAq6gT93tAyKwAAAABJRU5ErkJggg==" xlink:type="simple" xlink:actuate="onRequest" height="40" preserveAspectRatio="none" xlink:show="replace" />
       <image x="60" y="50" width="40" xmlns:xlink="http://www.w3.org/1999/xlink" image-rendering="optimizeQuality" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAIAAAD91JpzAAAAE0lEQVR42mP4/5/h
-PwMDIxADaQAq6gT93tAyKwAAAABJRU5ErkJggg==" xlink:type="simple" xlink:actuate="onRequest" height="40" preserveAspectRatio="xMidYMid meet" xlink:show="replace" />
+PwMDIxADaQAq6gT93tAyKwAAAABJRU5ErkJggg==" xlink:type="simple" xlink:actuate="onRequest" height="40" preserveAspectRatio="none" xlink:show="replace" />
     </g>
   </g>
 </svg>
