@@ -101,43 +101,47 @@
                 </p>
         
                 <source>
-                import ...;
-                import java.io.Writer;
-                import org.w3c.dom.*;
-                import org.apache.xerces.dom.*;
-        
-                public class TestSVGGen{
-                ...
-                        public void paint(Graphics ga){
-                                Graphics2D g = (Graphics2D)ga;
-                                g.setPaint(...);
-                                g.fillRect(...);
-                                ...;
-                        }
+import java.awt.Rectangle;
+import java.awt.Graphics2D;
+import java.awt.Color;
+import java.io.Writer;
+import java.io.OutputStreamWriter;
+import java.io.IOException;
+import org.apache.batik.util.awt.svg.SVGGraphics2D;
+import org.apache.batik.dom.GenericDOMImplementation;
+import org.w3c.dom.Document;
+import org.w3c.dom.DOMImplementation;
 
-                        public static void main(String args[]){
-                                ...;
-                                TestSVGGen test = new TestSVGGen();
+public class TestSVGGen {
 
-                                // First, create an instance of org.w3c.dom.Document
-                // required by the generator.
-                Document domFactory = new DocumentImpl();
+    public void paint(Graphics2D g2d) {
+        g2d.setPaint(Color.red);
+        g2d.fill(new Rectangle(10, 10, 100, 100));
+    }
 
-                // Second, create an instance of the generator. The 
-                // generator will use the domFactory to create the various
-                // SVG elements.
-                SVGGraphics2D svgGenerator = new SVGGraphics2D(domFactory);
+    public static void main(String [] args) throws IOException {
 
-                // Now, ask the our TestSVGGen object to render into
-                // our custom Graphics2D implementation
-                test.paint(svgGenerator);
+        // Get a DOMImplementation
+        DOMImplementation domImpl =
+            GenericDOMImplementation.getDOMImplementation();
 
-                                // Finally, stream out SVG to the standard output
-                                // Use UTF-8 character to byte encoding
-                                Writer outWriter = new OutputStreamWriter(System.out, "UTF-8");
-                                svgGenerator.stream(outWriter, useCss);
-                        }
-                }       
+        // Create an instance of org.w3c.dom.Document
+        Document document = domImpl.createDocument(null, "svg", null);
+
+        // Create an instance of the SVG Generator
+        SVGGraphics2D svgGenerator = new SVGGraphics2D(document);
+
+        // Ask the test to render into the SVG Graphics2D implementation
+        TestSVGGen test = new TestSVGGen();
+        test.paint(svgGenerator);
+
+        // Finally, stream out SVG to the standard output using UTF-8
+        // character to byte encoding
+        boolean useCSS = true; // we want to use CSS style attribute
+        Writer out = new OutputStreamWriter(System.out, "UTF-8");
+        svgGenerator.stream(out, useCSS);
+    }
+}
                 </source>
 
                 <p>
@@ -148,22 +152,34 @@
                 1. Create an instance of org.w3c.dom.Document that the generator will use to build its XML content;
                 create a SVG generator using the Document instance.</p>
                         <source>
-import org.w3c.dom.*;            // W3C's interfaces for the DOM API
-import org.apache.xerces.dom.*;  // Apache's implementation of the DOM API
-Document domFactory = new DocumentImpl();
-SVGGraphics2D svgGenerator = new SVGGraphics2D(domFactory);
+// Get a DOMImplementation
+DOMImplementation domImpl =
+    GenericDOMImplementation.getDOMImplementation();
+
+// Create an instance of org.w3c.dom.Document
+Document document = domImpl.createDocument(null, "svg", null);
+
+// Create an instance of the SVG Generator
+SVGGraphics2D svgGenerator = new SVGGraphics2D(document);
+
                         </source>
                 <p>
                 2. Invoke the rendering code on our SVG generator. In our example, we invoke TestSVGGen's paint method: </p>
                         <source>
+// Ask the test to render into the SVG Graphics2D implementation
+TestSVGGen test = new TestSVGGen();
 test.paint(svgGenerator);
+
                         </source>
                 <p>
                 3. Stream out the SVG content. The SVG generator can stream its content into any java.io.Writer. In our 
                         example, we stream the content to the standard output stream:   </p>
                         <source>
-Writer outWriter = new OutputStreamWriter(System.out, "UTF-8");
-svgGenerator.stream(outWriter, useCss);
+// Finally, stream out SVG to the standard output using UTF-8
+// character to byte encoding
+boolean useCSS = true; // we want to use CSS style attribute
+Writer out = new OutputStreamWriter(System.out, "UTF-8");
+svgGenerator.stream(out, useCSS);
                         </source>
                         <p>
                         SVG has two ways of expressing properties, such as the fill color: either XML attributes or CSS values. 
