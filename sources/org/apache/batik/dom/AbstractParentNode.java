@@ -480,7 +480,7 @@ public abstract class AbstractParentNode extends AbstractNode {
             if (size == -1) {
                 initialize();
             }
-	    if (table == null || index < 0 || index > size) {
+	    if (table == null || index < 0 || index >= size) {
 		return null;
 	    }
 	    return table[index];
