@@ -49,29 +49,6 @@ import org.apache.batik.gvt.text.TextSpanLayout;
  */
 public abstract class BasicTextPainter implements TextPainter {
 
-    /**
-     * Paints the specified text node using the
-     * specified Graphics2D and rendering context.
-     * @see org.apache.batik.gvt.TextPainter
-     * @param node the text node to paint
-     * @param g2d the Graphics2D to use
-     * @param context the rendering context.
-     */
-/*    public abstract void paint(TextNode node,
-                      Graphics2D g2d, GraphicsNodeRenderContext context);  {
-
-        FontRenderContext frc = context.getFontRenderContext();
-        AttributedCharacterIterator aci = node.getAttributedCharacterIterator();
-        /* XXX:  The code below only
-         *     works for J2SE base implementation of AttributeCharacterIterator
-         */
-/*
-        TextSpanLayout layout =
-            getOffsetAdjustedTextLayout(aci, node.getLocation(), frc);
-
-        layout.draw(g2d);
-    }
-*/
     private static TextLayoutFactory textLayoutFactory =
                                new ConcreteTextLayoutFactory();
 
@@ -129,115 +106,6 @@ public abstract class BasicTextPainter implements TextPainter {
         return newMark;
     }
 
-    /**
-     * Returns an array of ints representing begin/end index pairs into
-     * an AttributedCharacterIterator which represents the text
-     * selection delineated by two Mark instances.
-     * <em>Note: The Mark instances passed must have been instantiated by
-     * an instance of this enclosing TextPainter implementation.</em>
-     */
-/*    public int[] getSelected(AttributedCharacterIterator aci,
-                             org.apache.batik.gvt.text.Mark start,
-                             org.apache.batik.gvt.text.Mark finish) {
-
-        BasicTextPainter.Mark begin;
-        BasicTextPainter.Mark end;
-        try {
-            begin = (BasicTextPainter.Mark) start;
-            end = (BasicTextPainter.Mark) finish;
-        } catch (ClassCastException cce) {
-            throw new
-            Error("This Mark was not instantiated by this TextPainter class!");
-        }
-        TextSpanLayout layout = null;
-        if (begin != null) {
-            layout = begin.getLayout();
-        }
-        if (layout != null) {
-            int[] indices = null;
-            try {
-                indices = new int[2];
-                indices[0] = (begin.getHit().isLeadingEdge()) ?
-                              begin.getHit().getCharIndex() :
-                              begin.getHit().getCharIndex()+1;
-                indices[1] = (end.getHit().isLeadingEdge()) ?
-                              end.getHit().getCharIndex() :
-                              end.getHit().getCharIndex()+1;
-                if (indices[0] > indices[1]) {
-                    int temp = indices[0];
-                    indices[0] = indices[1];
-                    indices[1] = temp;
-                }
-            } catch (Exception e) {
-                return null;
-            }
-            if (indices[0] < 0) {
-                indices[0] = 0;
-            }
-
-            return indices;
-        } else {
-            return null;
-        }
-    }
-*/
-    /**
-     * Return a Shape, in the coordinate system of the text layout,
-     * which encloses the text selection delineated by two Mark instances.
-     * <em>Note: The Mark instances passed must have been instantiated by
-     * an instance of this enclosing TextPainter implementation.</em>
-     */
- /*   public Shape getHighlightShape(org.apache.batik.gvt.text.Mark beginMark,
-                                   org.apache.batik.gvt.text.Mark endMark) {
-
-        // TODO: later we can return more complex things like
-        // noncontiguous selections
-
-        BasicTextPainter.Mark begin;
-        BasicTextPainter.Mark end;
-        try {
-            begin = (BasicTextPainter.Mark) beginMark;
-            end = (BasicTextPainter.Mark) endMark;
-        } catch (ClassCastException cce) {
-            throw new
-            Error("This Mark was not instantiated by this TextPainter class!");
-        }
-
-        Shape highlightShape = null;
-        TextSpanLayout layout = null;
-        if (begin != null) {
-            layout = begin.getLayout();
-        }
-
-        if (layout != null) {
-            int firsthit = 0;
-            int lasthit = 0;
-            if (begin != end) {
-                firsthit = (begin.getHit().isLeadingEdge()) ?
-                              begin.getHit().getCharIndex() :
-                              begin.getHit().getCharIndex()+1;
-                lasthit = (end.getHit().isLeadingEdge()) ?
-                              end.getHit().getCharIndex() :
-                              end.getHit().getCharIndex()+1;
-                if (firsthit > lasthit) {
-                    int temp = firsthit;
-                    firsthit = lasthit;
-                    lasthit = temp;
-                }
-            } else {
-                lasthit = layout.getCharacterCount();
-            }
-            if (firsthit < 0) {
-                firsthit = 0;
-            }
-            highlightShape = layout.getLogicalHighlightShape(
-                                    firsthit,
-                                    lasthit);
-
-        }
-        return highlightShape;
-    }
-*/
 
     /*
      * Get a Rectangle2D in userspace coords which encloses the textnode
@@ -292,33 +160,8 @@ public abstract class BasicTextPainter implements TextPainter {
      protected abstract Rectangle2D getBounds(TextNode node,
                FontRenderContext context,
                boolean includeDecoration,
-               boolean includeStrokeWidth); // {
-/*
-         AttributedCharacterIterator aci =
-             node.getAttributedCharacterIterator();
-         TextSpanLayout layout =
-             getOffsetAdjustedTextLayout(aci, node.getLocation(), context);
+               boolean includeStrokeWidth);
 
-         Rectangle2D bounds;
-
-         if (includeStrokeWidth) {
-             Shape s = getStrokeOutline(node, context, includeDecoration);
-             if (s != null) {
-                 bounds = s.getBounds2D();
-             } else {
-                 bounds = layout.getBounds();
-             }
-         } else {
-             if (includeDecoration) {
-                 bounds = layout.getDecoratedBounds();
-             } else {
-                 bounds = layout.getBounds();
-             }
-         }
-        return bounds;
-
-     }
-*/
    /*
     * Get a Shape in userspace coords which defines the textnode glyph outlines.
     * @param node the TextNode to measure
@@ -327,43 +170,7 @@ public abstract class BasicTextPainter implements TextPainter {
     *            outlines.
     */
     protected abstract Shape getOutline(TextNode node, FontRenderContext frc,
-                                    boolean includeDecoration);// {
-/*        Shape outline;
-        AttributedCharacterIterator aci = node.getAttributedCharacterIterator();
-        TextSpanLayout layout =
-            getOffsetAdjustedTextLayout(aci, node.getLocation(), frc);
-
-        outline = layout.getOutline();
-
-        if (includeDecoration) {
-            int decorationTypes = 0;
-            if (aci.getAttribute(GVTAttributedCharacterIterator.
-                                        TextAttribute.UNDERLINE) != null) {
-                decorationTypes |= TextSpanLayout.DECORATION_UNDERLINE;
-            }
-            if (aci.getAttribute(GVTAttributedCharacterIterator.
-                                        TextAttribute.OVERLINE) != null) {
-                decorationTypes |= TextSpanLayout.DECORATION_OVERLINE;
-            }
-            if (aci.getAttribute(GVTAttributedCharacterIterator.
-                                     TextAttribute.STRIKETHROUGH) != null) {
-                decorationTypes |= TextSpanLayout.DECORATION_STRIKETHROUGH;
-            }
-            if (decorationTypes != 0) {
-                if (!(outline instanceof GeneralPath)) {
-                    outline = new GeneralPath(outline);
-                }
-                ((GeneralPath) outline).setWindingRule(
-                                           GeneralPath.WIND_NON_ZERO);
-                ((GeneralPath) outline).append(
-                    layout.getDecorationOutline(decorationTypes), false);
-            }
-
-        }
-
-        return outline;
-    }
-*/
+                                    boolean includeDecoration);
    /*
     * Get a Shape in userspace coords which defines the textnode glyph outlines.
     * @param node the TextNode to measure
@@ -391,76 +198,8 @@ public abstract class BasicTextPainter implements TextPainter {
     * @param includeDecoration whether to include text decoration
     *            outlines.
     */
-    protected Shape getStrokeOutline(TextNode node, FontRenderContext frc,
-                                    boolean includeDecoration) {
-
-        AttributedCharacterIterator aci = node.getAttributedCharacterIterator();
-        BasicStroke stroke = (BasicStroke) aci.getAttribute(
-                        GVTAttributedCharacterIterator.TextAttribute.STROKE);
-        Shape outline = getOutline(node, frc, includeDecoration);
-        if (outline != null && (stroke != null)) {
-            outline = stroke.createStrokedShape(outline);
-        } else {
-            outline = null;
-        }
-        return outline;
-    }
-
-    /*
-     * Note: this method only works if the layout is constructed
-     * from the entire "text chunk"!  If there are multiple
-     * text chunks in this node, this code will fail.
-     * TODO: fix/replace, removing dependencies on this code!
-     */
-
- /*   private TextSpanLayout getOffsetAdjustedTextLayout(
-                     AttributedCharacterIterator aci,
-                     Point2D location,
-                     FontRenderContext frc) {
-
-        TextSpanLayout layout = getTextLayoutFactory().createTextLayout(aci,
-                          location,
-                          new java.awt.font.FontRenderContext(
-                                            new AffineTransform(),
-                                                          true,
-                                                          true));
-
-        TextNode.Anchor anchor = (TextNode.Anchor) aci.getAttribute(
-                     GVTAttributedCharacterIterator.TextAttribute.ANCHOR_TYPE);
-        int anchorType = TextNode.Anchor.ANCHOR_START;
-        if (anchor != null) anchorType = anchor.getType();
-
-        Point2D advance = layout.getAdvance2D();
-
-        float dx = 0f;
-        float dy = 0f;
-
-        switch(anchorType){
-        case TextNode.Anchor.ANCHOR_MIDDLE:
-            dx = (float) (-advance.getX()/2d);
-            dy = (float) (-advance.getY()/2d);
-            break;
-        case TextNode.Anchor.ANCHOR_END:
-            dx = (float) (-advance.getX());
-            dy = (float) (-advance.getY());
-            break;
-        default:
-            // leave untouched
-        }
-
-        Point2D offset = layout.getOffset();
-
-        if (layout.isVertical()) {
-            layout.setOffset(new Point2D.Float(
-                     (float) offset.getX(), (float) offset.getY()+dy));
-        } else {
-            layout.setOffset(new Point2D.Float(
-                    (float) offset.getX()+dx, (float) offset.getY()));
-        }
-
-        return layout;
-    }
-*/
+    protected abstract Shape getStrokeOutline(TextNode node, FontRenderContext frc,
+                                    boolean includeDecoration);
 
     protected Mark cachedMark = null;
     protected AttributedCharacterIterator cachedACI = null;
@@ -470,33 +209,7 @@ public abstract class BasicTextPainter implements TextPainter {
     protected abstract org.apache.batik.gvt.text.Mark hitTest(
                          double x, double y, AttributedCharacterIterator aci,
                          TextNode node,
-                         GraphicsNodeRenderContext context); // {
-/*
-        FontRenderContext frc = context.getFontRenderContext();
-
-        TextSpanLayout layout =
-            getOffsetAdjustedTextLayout(aci, node.getLocation(),  frc);
-
-        TextHit textHit =
-            layout.hitTestChar((float) x, (float) y);
-
-        // Note that a texthit char index of -1 signals that the
-        // hit, though within the text element bounds, did not
-        // coincide with a glyph.
-        if ((aci != cachedACI) ||
-            (textHit == null) ||
-            (cachedHit == null) ||
-            ((textHit.getCharIndex() != -1) &&
-            (textHit.getInsertionIndex() != cachedHit.getInsertionIndex()))) {
-            cachedMark = new BasicTextPainter.Mark(x, y, layout, textHit);
-            cachedACI = aci;
-            cachedHit = textHit;
-        } // else old mark is still valid, return it.
-
-        return cachedMark;
-    }
-
-*/
+                         GraphicsNodeRenderContext context);
 
     /**
      * This TextPainter's implementation of the Mark interface.

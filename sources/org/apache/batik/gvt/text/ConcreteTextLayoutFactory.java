@@ -8,34 +8,13 @@
 
 package org.apache.batik.gvt.text;
 
-import java.util.Set;
-import java.util.HashSet;
-import java.util.StringTokenizer;
-import java.io.StreamTokenizer;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.FileNotFoundException;
-import java.awt.geom.Point2D;
-import java.awt.font.TextLayout;
-import java.awt.font.TextAttribute;
-import java.awt.font.FontRenderContext;
-import java.text.CharacterIterator;
 import java.text.AttributedCharacterIterator;
-import java.text.AttributedString;
-import java.lang.reflect.Array;
-import java.util.Vector;
-
-import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
-import org.apache.batik.gvt.text.TextSpanLayout;
-import org.apache.batik.gvt.text.TextLayoutFactory;
-import org.apache.batik.gvt.font.GVTFontFamily;
-import org.apache.batik.gvt.font.FontFamilyResolver;
-import org.apache.batik.gvt.font.UnresolvedFontFamily;
+import java.awt.geom.Point2D;
+import java.awt.font.FontRenderContext;
 
 /**
- * Factory instance that returns
- * TextSpanLayouts appropriate to AttributedCharacterIterator
- * instances.
+ * Factory instance that returns TextSpanLayouts appropriate to
+ * AttributedCharacterIterator instances.
  *
  * @see org.apache.batik.gvt.text.TextSpanLayout
  * @author <a href="bill.haneman@ireland.sun.com>Bill Haneman</a>
@@ -43,230 +22,18 @@ import org.apache.batik.gvt.font.UnresolvedFontFamily;
  */
 public class ConcreteTextLayoutFactory implements TextLayoutFactory {
 
-   public static final int L = 0x0002;
-   public static final int R = 0x0001;
-   public static final int AL = 0x0005;
-   public static final int RLE = 0x0011;
-   public static final int RLO = 0x0031;
-   public static final int LRE = 0x0010;
-   public static final int LRO = 0x0030;
-   public static final int B =  0x0080;
-   public static final int BN = 0x0180;
-   public static final int S =  0x000c;
-   public static final int WS = 0x0008;
-   public static final int AN = 0x0140;
-   public static final int ON = 0x0102;
-   public static final int EN = 0x0100;
-   public static final int ET = 0x0200;
-
-   public static String unicodeFileName = "UnicodeData.txt";
-
     /**
      * Returns an instance of TextSpanLayout suitable for rendering the
      * AttributedCharacterIterator.
-     * @param aci the character iterator to be laid out
+     *
+     * @param aci The character iterator to be laid out
+     * @param offset The offset position for the text layout.
+     * @param frc The font render context to use when creating the text layout.
      */
     public TextSpanLayout createTextLayout(AttributedCharacterIterator aci,
-                                                Point2D offset,
-                                                FontRenderContext frc) {
-
-        Set keys = aci.getAllAttributeKeys();
-        Set glyphPositionKeys = new HashSet();
-        glyphPositionKeys.add(TextAttribute.BIDI_EMBEDDING);
-        glyphPositionKeys.retainAll(keys);
-
-        if (glyphPositionKeys.isEmpty() ||
-            (aci.getAttribute(TextAttribute.RUN_DIRECTION) ==
-	     TextAttribute.RUN_DIRECTION_RTL)) {
-            return new TextLayoutAdapter(new TextLayout(aci, frc), offset, aci);
-        } else {
-            char ch = aci.first();
-            do {
-               if (isRTL(ch)) {
-	       // System.out.println("Using java TextLayout");
-               return new TextLayoutAdapter(new TextLayout(aci, frc), offset, aci);
-               }
-               ch = aci.next();
-            } while (ch != CharacterIterator.DONE);
-
-            return new GlyphLayout(aci, offset, frc);
-        }
-    }
-
-    private boolean isRTL(char ch) {
-        int bidiCode = UnicodeData.getBiDiCode(ch);
-        switch (bidiCode) {
-            case R:
-            case AL:
-            case RLE:
-            case RLO:
-                return true;
-            default:
-                return false;
-        }
-    }
-
-
-    public static class UnicodeData {
-
-        protected static int BIDI_CODE_NDX = 4;
-
-        protected static Object[] unicodeValues = new Object[0xFF00];
-
-        public static int getBiDiCode(char ch) {
-            int i;
-	    /*  
-            try {
-                 i = ((Integer) Array.get(getUnicodeData(ch), BIDI_CODE_NDX)).intValue();
-            } catch (Exception e) {
-		 System.out.println("Error getting BiDi code "+e);
-                 i = 0;
-	    } 
-            */
-
-            /* intermediate solution: rather than parsing the whole unicode database,
-             * we will check for known RTL codepages.  It will return incorrect values
-             * for chars that are LTR within RTL codepages (such as arabic numerals?)
-             * but should suffice for our current purpose of flagging BiDi or RTL strings.
-             *
-             * KNOWN Bug:  Alphabetic Presentation Forms (block contains RTL and LTR)
-             */                   
-
-            Character.UnicodeBlock ucb = Character.UnicodeBlock.of(ch);
-
-            if ((ucb == Character.UnicodeBlock.ARABIC_PRESENTATION_FORMS_A) ||
-                (ucb == Character.UnicodeBlock.ARABIC_PRESENTATION_FORMS_B) ||
-                (ucb == Character.UnicodeBlock.ARABIC) ||
-                (ucb == Character.UnicodeBlock.HEBREW)) {
-		i = RLO;
-            } else {
-                i = LRO;
-            }
-	    return i;
-        }
-
-        public static Array getUnicodeData(int ch) {
-             Array array = null;
-             Object data = unicodeValues[ch];
-             if (!(data instanceof Array)) {
-                 try {
-                 array = parseUnicodeDataEntry(ch);
-                 unicodeValues[ch] = array;
-                 } catch (Exception e) {
-		     System.out.println("Error parsing Unicode data "+e);
-                 }
-             } else {
-                 array = (Array) data;
-             }
-             return array;
-        }
-
-        public static Array parseUnicodeDataEntry(int ch) {
-            Array values = (Array) Array.newInstance(Object.class, 14);
-            String s = readUnicodeData(ch, unicodeFileName);
-            StringTokenizer st = new StringTokenizer(s, ";");
-            Array.set(values, 0, new Integer(st.nextToken())); // unicode value
-            Array.set(values, 1, st.nextToken()); // character name
-            Array.set(values, 2, st.nextToken()); // case
-            Array.set(values, 3, st.nextToken());  //
-            Array.set(values, 4, new Integer(getBiDiValue(st.nextToken()))); // BiDi value
-            Array.set(values, 5, new Integer(st.nextToken())); // unicode value
-            Array.set(values, 6, st.nextToken());
-            Array.set(values, 7, st.nextToken());
-            Array.set(values, 8, st.nextToken());
-            Array.set(values, 9, st.nextToken());
-            Array.set(values, 10, st.nextToken());
-            Array.set(values, 11, st.nextToken());
-            Array.set(values, 12, st.nextToken());
-            Array.set(values, 13, st.nextToken());
-            return values;
-        }
-
-        private static int getBiDiValue(String string) {
-            int val = 0;
-            char s[] = string.toCharArray();
-
-            switch (s[0]) {
-            case 'L':
-                if (s.length > 2) {
-                    switch (s[2]) {
-                    case 'E':
-                        val = LRE;
-                        break;
-                    default:
-                        val = LRO;
-                    }
-                } else {
-                   val = L;
-                }
-                break;
-            case 'R':
-                if (s.length > 2) {
-                    switch (s[2]) {
-                    case 'E':
-                        val = RLE;
-                        break;
-                    default:
-                        val = RLO;
-                    }
-                } else {
-                   val = R;
-                }
-                break;
-            case 'A':
-                switch (s[2]) {
-                case 'L':
-                    val = AL;
-                    break;
-                default:
-                    val = AN;
-                }
-                break;
-            case 'B':
-                if (s.length > 1) {
-                    val = BN;
-                } else {
-                    val = B;
-                }
-                break;
-            case 'E':
-                switch (s[1]) {
-                case 'N':
-                    val = EN;
-                    break;
-                default:
-                    val = ET;
-                }
-                break;
-            case 'O':
-                val = ON;
-                break;
-            case 'S':
-                val = S;
-            }
-            return val;
-        }
-
-        private static String readUnicodeData(int ch, String filename) {
-            String s = null;
-            try {
-                StreamTokenizer st = new StreamTokenizer(new FileReader(filename));
-                st.resetSyntax();
-                st.eolIsSignificant(true);
-                for (int i=0; i<ch; ++i) {
-                    s = st.toString();
-                    st.nextToken(); // eol token
-                    st.nextToken(); // next line
-                }
-                System.out.println("UnicodeData for "+ch+": "+s);
-            } catch (FileNotFoundException fnfe) {
-                System.out.println(fnfe);
-            } catch (IOException ioe) {
-                System.out.println("Error reading Unicode Database: "+ioe);
-            }
-            return s;
-        }
-
+                                           Point2D offset,
+                                           FontRenderContext frc) {
+        return new GlyphLayout(aci, offset, frc);
     }
 }
 

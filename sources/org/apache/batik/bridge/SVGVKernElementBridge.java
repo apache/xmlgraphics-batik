@@ -6,18 +6,26 @@
  * the LICENSE file.                                                         *
  *****************************************************************************/
 
-package org.apache.batik.gvt.font;
-
-import java.awt.font.FontRenderContext;
+package org.apache.batik.bridge;
 
 /**
- * An interface for handling altGlyphs.
+ * Bridge class for the &lt;vkern> element.
  *
- * @author <a href="mailto:bella.robinson@cmis.csiro.au">Bella Robinson</a>
+ * @author <a href="mailto:dean.jackson@cmis.csiro.au">Dean Jackson</a>
  * @version $Id$
  */
-public interface AltGlyphHandler {
+public class SVGVKernElementBridge extends SVGKernElementBridge {
 
-    GVTGlyphVector createGlyphVector(FontRenderContext frc, float fontSize);
+    /**
+     * Constructs a new bridge for the &lt;vkern> element.
+     */
+    public SVGVKernElementBridge() {}
+
+    /**
+     * Returns 'vkern'.
+     */
+    public String getLocalName() {
+        return SVG_VKERN_TAG;
+    }
 
 }

@@ -80,8 +80,16 @@ public class SVGFontElementBridge extends AbstractSVGBridge {
             hkernElementArray[i] = hkernElement;
         }
 
+        NodeList vkernElements = fontElement.getElementsByTagName(SVG_VKERN_TAG);
+        Element[] vkernElementArray = new Element[vkernElements.getLength()];
+
+        for (int i = 0; i < vkernElementArray.length; i++) {
+            Element vkernElement = (Element)vkernElements.item(i);
+            vkernElementArray[i] = vkernElement;
+        }
+
         return new SVGGVTFont(size, fontFace, glyphCodes, glyphNames, ctx,
                               glyphElementArray, missingGlyphElement,
-                              hkernElementArray, textElement);
+                              hkernElementArray, vkernElementArray, textElement);
     }
 }

@@ -8,16 +8,13 @@
 
 package org.apache.batik.bridge;
 
-import org.apache.batik.gvt.font.HKern;
-import org.w3c.dom.Element;
-
 /**
  * Bridge class for the &lt;hkern> element.
  *
  * @author <a href="mailto:dean.jackson@cmis.csiro.au">Dean Jackson</a>
  * @version $Id$
  */
-public class SVGHKernElementBridge extends AbstractSVGBridge {
+public class SVGHKernElementBridge extends SVGKernElementBridge {
 
     /**
      * Constructs a new bridge for the &lt;hkern> element.
@@ -31,22 +28,4 @@ public class SVGHKernElementBridge extends AbstractSVGBridge {
         return SVG_HKERN_TAG;
     }
 
-    public HKern createHKern(BridgeContext ctx,
-                             Element hkernElement,
-                             SVGFontFace fontFace,
-                             SVGGVTFont svgGvtFont) {
-
-        String g1 = hkernElement.getAttributeNS(null, SVG_G1_ATTRIBUTE);
-        String g2 = hkernElement.getAttributeNS(null, SVG_G2_ATTRIBUTE);
-        String k = hkernElement.getAttributeNS(null, SVG_K_ATTRIBUTE);
-        if (k.length() == 0) {
-            k = SVG_HKERN_K_DEFAULT_VALUE;
-        }
-
-        char character1 = svgGvtFont.unicodeForName(g1);
-        char character2 = svgGvtFont.unicodeForName(g2);
-        float kern = Float.valueOf(k).floatValue();
-
-        return new HKern(new char[]{character1}, new char[]{character2}, kern);
-    }
 }

@@ -72,20 +72,14 @@ public interface TextSpanLayout {
     public Rectangle2D getDecoratedBounds();
 
     /**
-     * Returns the dimension of the completed glyph layout in the
-     * primary text advance direction (e.g. width, for RTL or LTR text).
-     * (This is the dimension that should be used for positioning
-     * adjacent layouts.)
-     */
-    public float getAdvance();
-
-    /**
      * Returns the current text position at the completion
      * of glyph layout.
      * (This is the position that should be used for positioning
      * adjacent layouts.)
      */
     public Point2D getAdvance2D();
+
+    public Point2D getTextPathAdvance();
 
     /**
      * Returns the current text position at the completion beginning
@@ -108,7 +102,7 @@ public interface TextSpanLayout {
      * @param begin the index of the first glyph in the contiguous selection.
      * @param end the index of the last glyph in the contiguous selection.
      */
-    public Shape getLogicalHighlightShape(int begin, int end);
+     public Shape getHighlightShape(int beginCharIndex, int endCharIndex, boolean selectionLeftToRight);
 
     /**
      * Perform hit testing for coordinate at x, y.
@@ -126,6 +120,11 @@ public interface TextSpanLayout {
     public boolean isVertical();
 
     /**
+     * Returns true if this layout in on a text path.
+     */
+    public boolean isOnATextPath();
+
+    /**
      * Returns the number of glyphs in this layout.
      */
     public int getGlyphCount();
@@ -138,4 +137,11 @@ public interface TextSpanLayout {
      * @return The number of chars.
      */
     public int getCharacterCount(int startGlyphIndex, int endGlyphIndex);
+
+
+    /**
+     * Returns true if the text direction in this layout is from left to right.
+     */
+    public boolean isLeftToRight();
+
 }

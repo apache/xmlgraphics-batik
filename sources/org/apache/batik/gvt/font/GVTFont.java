@@ -64,7 +64,8 @@ public interface GVTFont {
      * Returns a new GlyphVector object created with the specified String and
      * the specified FontRenderContext.
      */
-    public GVTGlyphVector createGlyphVector(FontRenderContext frc, String str);
+    public GVTGlyphVector createGlyphVector(FontRenderContext frc,
+                                            String str);
 
     /**
      * Creates a new Font object by replicating the current Font object and
@@ -75,13 +76,15 @@ public interface GVTFont {
     /**
      *  Returns a GVTLineMetrics object created with the specified arguments.
      */
-    public GVTLineMetrics getLineMetrics(char[] chars, int beginIndex, int limit,
-                                      FontRenderContext frc);
+    public GVTLineMetrics getLineMetrics(char[] chars, int beginIndex,
+                                         int limit, FontRenderContext frc);
+
     /**
      * Returns a GVTLineMetrics object created with the specified arguments.
      */
     public GVTLineMetrics getLineMetrics(CharacterIterator ci, int beginIndex,
-                                      int limit, FontRenderContext frc);
+                                         int limit, FontRenderContext frc);
+
     /**
      *  Returns a GVTLineMetrics object created with the specified String and
      *  FontRenderContext.
@@ -92,7 +95,7 @@ public interface GVTFont {
      * Returns a GVTLineMetrics object created with the specified arguments.
      */
     public GVTLineMetrics getLineMetrics(String str, int beginIndex, int limit,
-                                      FontRenderContext frc);
+                                         FontRenderContext frc);
 
     /**
      * Returns the size of this font.
@@ -100,9 +103,14 @@ public interface GVTFont {
     public float getSize();
 
     /**
-     * Returns the kerning value of this character pair.
+     * Returns the horizontal kerning value of this glyph pair.
      */
-    public float getKerning(String unicode1, String unicode2);
+    public float getVKern(int glyphCode1, int glyphCode2);
+
+    /**
+     * Returns the vertical kerning value of this glyph pair.
+     */
+    public float getHKern(int glyphCode1, int glyphCode2);
 
     public String toString();
 }
