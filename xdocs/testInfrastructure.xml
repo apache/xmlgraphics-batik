@@ -44,12 +44,9 @@
 
             <p>This document describes:</p>
             <ul>
-                <li><link href="#infrastructure">Test infrastructure</link>This may be a little
-                    dry, but it helps understanding the format of the files used to run
-                    the test suites</li>
+                <li><link href="#infrastructure">Test infrastructure</link></li>
                 <li><link href="#managingATestSuite">How to describe and run a test suite</link></li>
-                <li><link href="#regardReplacement">The 'regard' replacement</link></li>
-                <li><link href="#regsvggenReplacement">The 'regsvggen' replacement</link></li>
+                <li><link href="#regard">Regard, the Batik test suite</link></li>
                 <li><link href="#writingNewTests">Writing new Tests</link></li>
             </ul>
         </s1>
@@ -144,29 +141,37 @@
             <p>Test suites can be described in XML (XML-in refered to earlier
             in this document). The general format for describing a test suite is:</p>
             <source>
-&lt;testSuite name="MyFavoriteTestSuite"&gt;
+&lt;testSuite id="testSuiteA" name="MyFavoriteTestSuite"&gt;
     &lt;!-- =================================== --&gt;
     &lt;!-- Set of tests to be run              --&gt;
     &lt;!-- =================================== --&gt;
-    &lt;test class="myFavoriteTestClassA" /&gt;
-    &lt;test class="myFavoriteTestClassB" /&gt;
-    &lt;test class="myFavoriteTestClassC" /&gt;
+    &lt;test id="t1" class="myFavoriteTestClassA" /&gt;
+    &lt;test id="t2" class="myFavoriteTestClassB" /&gt;
+    &lt;test id="t3" class="myFavoriteTestClassC" /&gt;
 &lt;/testSuite&gt;
             </source>
+
+            <p>Note that tests can be grouped in &lt;testGroup&gt; elements which
+            can have their own id and class attribute. This is useful because it
+            allows developers to run specific tests or test groups by specifying 
+            their ids. In addition, because the class attribute is inherited by 
+            &lt;test&gt; elements from its parents, &lt;testGroups&gt; allow the 
+            developers to group tests which use the same class and specify that 
+            class on the group.</p>
 
             <p>This simply list the test of <code>Test</code> instances that compose 
             a given test suite. For example: </p>
             <source>
-&lt;testSuite name="SAMPLE TEST SUITE"&gt;
+&lt;testSuite id="sampleTestSuite" name="SAMPLE TEST SUITE"&gt;
     &lt;!-- ========================================================================== --&gt;
     &lt;!-- Validates that the SVGRenderingAccuracyTest class is operating as expected --&gt;
     &lt;!-- ========================================================================== --&gt;
-    &lt;test class="org.apache.batik.test.svg.SVGRenderingAccuracyTestValidator" /&gt;
+    &lt;test id="renderingAccuracyTest" class="org.apache.batik.test.svg.SVGRenderingAccuracyTestValidator" /&gt;
 
     &lt;!-- ========================================================================== --&gt;
     &lt;!-- Rendering regression tests                                                 --&gt;
     &lt;!-- ========================================================================== --&gt;
-    &lt;test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest"&gt;
+    &lt;test id="anne.svg" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest"&gt;
         &lt;arg class="java.net.URL" 
                 value="file:samples/anne.svg" /&gt;
         &lt;arg class="java.net.URL" 
@@ -190,9 +195,7 @@
             Yet another XML file describes which test to run and how to process the 
             generated test reports. The general syntax is something like:</p>
             <source>
-&lt;testRun name="Test Run Name Here"&gt;
-
-  &lt;testRun name="REGARD"&gt;
+&lt;testRun id="regard" name="Test Run Name Here"&gt;
     &lt;!-- =================================== --&gt;
     &lt;!-- Descriptions of processors that     --&gt;
     &lt;!-- will process the results of the     --&gt;
@@ -208,7 +211,6 @@
     &lt;testSuite href="http://url.to.my.first.test.suite"/&gt;
     &lt;testSuite href="http://url.to.my.second.test.suite" /&gt;
 
-  &lt;/testRun&gt;
 &lt;/testRun&gt;
 </source>
 
@@ -245,15 +247,52 @@
             <p><code>build runtestsuite path/to/my/newly/created/testSuite.xml</code>.
             In addition, the <em>regard</em> rule runs a specific set of tests by default,
             so that you do not need to pass any testRun file argument.</p>
+            <p><strong><code>regard</code> is the project's safeguard against regressions</strong>.</p>
             </s2>
         </s1>
 
-        <anchor id="regardReplacement" />
-        <s1 title="The 'regard' replacement">
+        <anchor id="regard" />
+
+        <s1 title="regard: the Batik regression test suite">
         
-        <p>'regard' is the tool we have used so far to detect regressions in how we render SVG images</p>
-        <p>There is a <code>Test</code> implementation, <code>SVGRenderingAccuracyTest</code> which takes over
-        the responsibility that regard has and then goes beyond.</p>
+        <p>The regard test suite contains all the regression tests for the Batik project. 
+        The <code>regard</code> tool is a specific test suite description, regard.xml
+        (which you can find in the <code>test-resources/org/apache/batik/test directory</code>). That
+        file contains a set of test suite files which sould be run.</p> 
+
+        <p>The following describes how to use the regard tool and some of the most important tests 
+        in the regard test suite</p>
+
+        <s2 title="Running regard">
+
+        <p>The regard tool lets you run either all the tests or any specific test you want in the
+        test suite. To run all the tests in the regard test suite, type the following at the command
+        line:</p>
+
+        <p><code>build.sh regard</code></p>
+
+        <p>To run a specific test in the test suite, type the qualified test id or any sub-portion of that
+        id:</p>
+
+        <p><code>build.sh regard &lt;id list&gt;</code></p>
+
+        <p>For example:</p>
+
+        <p><code>build.sh regard unitTesting.ts batikFX.svg</code></p>
+
+        <p>will run all the tests with an id containing unitTesting.ts (i.e., all the test selection 
+        unit testing, see the test-resources/org/apache/batik/gvt/unitTesting.xml) and the accuracy
+        rendering test on batikFX.svg (because it is the only test with batikFX.svg it its id).</p>
+
+        </s2>
+       
+        <s2 title="Rendering Accuracy Tests">
+
+        <p>There is a <code>Test</code> implementation, <code>SVGRenderingAccuracyTest</code> which 
+        checks that Batik's rendering of SVG document stays accurate. It compares reference images
+        with the rendering Batik produces and reports any discrepency.</p>
+
+        </s2>
 
         <s2 title="The SVGRenderingAccuracyTest configuration">
 
@@ -286,10 +325,8 @@
         will allow the test to pass if that exact same variation remains constant.</p>
         </s2>
 
-        <s2 title="Day to day use of regard replacement">
-        <p>Concretely, regard is replaced by a specific test suite description, regard.xml. That
-        file contains a set of test files (the ones in the samples and samples/test directories)
-        for which rendering regressions should be checked.</p> 
+        <s2 title="Day to day use of regard">
+
 
         <p><em>Initial set up</em></p>
         <p>
@@ -299,7 +336,8 @@
             (sources, resources and references) and the build.xml file</li>
             <li>Run the regard test suite once:<code>build regard</code></li>
         </ul>
-        <p>This will generate an HTML test report in the <code>test-reports/html</code> directory.
+        <p>This will generate an HTML test report (<code>report.html</code>) in the 
+        <code>test-reports/yyyy.mm.dd-HHhMMmSSs/html/html</code> directory.
         Depending on how much different text rendering is between your work environment and the 
         environment used to create the reference images, you will get more or less test that will fail, 
         because of differences in the way text is rendered on various platforms and because of 
@@ -328,13 +366,13 @@
         because of system specific reasons or if there is a bigger problem.</p>
 
         </s2>
-        </s1>
-        <anchor id="regsvggenReplacement" />
-        <s1 title="The 'regsvggen' replacement">
 
-        <p>The regsvggen tool has been deprecated and replaced by a test suite (which you can
-        find in <code>test-resources/org/apache/batik/svggen/regsvggen.xml</code> in the 
-        source distribution.</p>
+        <s2 title="SVG Generator tests">
+
+        <p>Regard contains over a 100 tests for checking regressions on the SVG Generator. If you use 'svggen' as an argument to
+        regard, all the SVG Generator tests will be run (because regard.xml points to test-resources/org/apache/batik/svggen/regsvggen.xml
+        which is a test suite descriptio for the SVG Generator and that the root &lt;testSuite&gt; element has the 'svggen' id).</p>
+        </s2>
         </s1>
 
         <anchor id="writingNewTests" />
@@ -401,6 +439,7 @@
             configurations for the test can be added to the relevant test suite's XML description. In
             some cases, it will be interesting to create a separate test suite.</p>
         </s2>
+
         </s1>
 
     </body>
