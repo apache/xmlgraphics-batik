@@ -1688,7 +1688,7 @@ public class Parser
      * Reports a parsing error.
      */
     protected void reportError(String key) {
-        reportError(createCSSParseException(formatMessage(key, null)));
+        reportError(createCSSParseException(key));
     }
 
     /**

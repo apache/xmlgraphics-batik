@@ -66,7 +66,7 @@ public class SpacingFactory extends AbstractLengthFactory {
 	    throw CSSDOMExceptionFactory.createDOMException
 		(DOMException.INVALID_ACCESS_ERR,
 		 "invalid.identifier",
-		 new Object[] { value });
+		 new Object[] { value, getPropertyName() });
 	}
 	return NORMAL_VALUE;
     }

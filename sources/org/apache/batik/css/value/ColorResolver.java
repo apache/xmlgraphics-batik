@@ -83,6 +83,6 @@ public class ColorResolver implements RelativeValueResolver {
 			     CSSOMReadOnlyValue value,
 			     String priority,
 			     int origin) {
-	// !!! TODO: resolve color identifiers.
+        // Nothing to do
     }
 }

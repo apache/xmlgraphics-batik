@@ -78,7 +78,7 @@ public class StrokeDasharrayFactory extends AbstractValueFactory {
 	throw CSSDOMExceptionFactory.createDOMException
 	    (DOMException.INVALID_ACCESS_ERR,
 	     "invalid.identifier",
-	     new Object[] { value });
+	     new Object[] { value, getPropertyName() });
 	}
 	return NONE_VALUE;
     }
@@ -99,8 +99,9 @@ public class StrokeDasharrayFactory extends AbstractValueFactory {
             if (lu.getLexicalUnitType() != LexicalUnit.SAC_OPERATOR_COMMA) {
                 throw CSSDOMExceptionFactory.createDOMException
                     (DOMException.INVALID_ACCESS_ERR,
-                     "bad.unit.type",
-                     new Object[] { new Integer(lu.getLexicalUnitType()) });
+                     "invalid.lexical.unit",
+                     new Object[] { new Integer(lu.getLexicalUnitType()),
+                                    getPropertyName() });
             }
 	    lu = lu.getNextLexicalUnit();
             if (lu == null) {
@@ -113,7 +114,7 @@ public class StrokeDasharrayFactory extends AbstractValueFactory {
     /**
      * To manage number values.
      */
-    protected static class NumberFactory extends AbstractValueFactory {
+    protected class NumberFactory extends AbstractValueFactory {
 	/**
 	 * Creates a new NumberFactory object.
 	 */
@@ -143,7 +144,8 @@ public class StrokeDasharrayFactory extends AbstractValueFactory {
                 throw CSSDOMExceptionFactory.createDOMException
                     (DOMException.INVALID_ACCESS_ERR,
                      "invalid.lexical.unit",
-                     new Object[] { new Integer(lu.getLexicalUnitType()) });
+                     new Object[] { new Integer(lu.getLexicalUnitType()),
+                                    StrokeDasharrayFactory.this.getPropertyName() });
 	    }
 	}
 
@@ -164,7 +166,8 @@ public class StrokeDasharrayFactory extends AbstractValueFactory {
                 throw CSSDOMExceptionFactory.createDOMException
                     (DOMException.INVALID_ACCESS_ERR,
                      "invalid.unit.type",
-                     new Object[] { new Integer(unitType) });
+                     new Object[] { new Integer(unitType),
+                                    StrokeDasharrayFactory.this.getPropertyName() });
 	    }	
 	}
     }

@@ -64,7 +64,8 @@ public class OpacityFactory extends AbstractValueFactory {
 	throw CSSDOMExceptionFactory.createDOMException
 	    (DOMException.INVALID_ACCESS_ERR,
 	     "invalid.lexical.unit",
-	     new Object[] { new Integer(lu.getLexicalUnitType()) });
+	     new Object[] { new Integer(lu.getLexicalUnitType()),
+                            getPropertyName() });
     }
 
     /**
@@ -79,7 +80,7 @@ public class OpacityFactory extends AbstractValueFactory {
             throw CSSDOMExceptionFactory.createDOMException
                 (DOMException.INVALID_ACCESS_ERR,
                  "invalid.unit",
-                 new Object[] { new Integer(unitType) });
+                 new Object[] { new Integer(unitType), getPropertyName() });
 	}
 	return new ImmutableFloat(unitType, floatValue);
     }

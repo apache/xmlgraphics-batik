@@ -75,20 +75,23 @@ public class PaintFactory
                 throw CSSDOMExceptionFactory.createDOMException
                     (DOMException.INVALID_ACCESS_ERR,
                      "invalid.lexical.unit",
-                     new Object[] { new Integer(lu.getLexicalUnitType()) });
+                     new Object[] { new Integer(lu.getLexicalUnitType()),
+                                    getPropertyName() });
             }
             if (!lu.getFunctionName().toLowerCase().equals("icc-color")) {
                 throw CSSDOMExceptionFactory.createDOMException
                     (DOMException.INVALID_ACCESS_ERR,
                      "invalid.lexical.unit",
-                     new Object[] { new Integer(lu.getLexicalUnitType()) });
+                     new Object[] { new Integer(lu.getLexicalUnitType()),
+                                    getPropertyName() });
             }
             lu = lu.getParameters();
             if (lu.getLexicalUnitType() != LexicalUnit.SAC_IDENT) {
                 throw CSSDOMExceptionFactory.createDOMException
                     (DOMException.INVALID_ACCESS_ERR,
                      "invalid.lexical.unit",
-                     new Object[] { new Integer(lu.getLexicalUnitType()) });
+                     new Object[] { new Integer(lu.getLexicalUnitType()),
+                                    getPropertyName() });
             }
             String cp = lu.getStringValue();
             lu = lu.getNextLexicalUnit();
@@ -99,7 +102,7 @@ public class PaintFactory
                     throw CSSDOMExceptionFactory.createDOMException
                         (DOMException.INVALID_ACCESS_ERR,
                          "invalid.lexical.unit",
-                         new Object[] { null });
+                         new Object[] { new Integer(0), getPropertyName() });
                 }
                 nl.appendItem(new SVGCSSNumber(getColorValue(lu)));
                 lu = lu.getNextLexicalUnit();
@@ -134,20 +137,23 @@ public class PaintFactory
                     throw CSSDOMExceptionFactory.createDOMException
                         (DOMException.INVALID_ACCESS_ERR,
                          "invalid.lexical.unit",
-                         new Object[] { new Integer(lu.getLexicalUnitType()) });
+                         new Object[] { new Integer(lu.getLexicalUnitType()),
+                                        getPropertyName() });
                 }
                 if (!lu.getFunctionName().toLowerCase().equals("icc-color")) {
                     throw CSSDOMExceptionFactory.createDOMException
                         (DOMException.INVALID_ACCESS_ERR,
                          "invalid.lexical.unit",
-                         new Object[] { new Integer(lu.getLexicalUnitType()) });
+                         new Object[] { new Integer(lu.getLexicalUnitType()),
+                                        getPropertyName() });
                 }
                 lu = lu.getParameters();
                 if (lu.getLexicalUnitType() != LexicalUnit.SAC_IDENT) {
                     throw CSSDOMExceptionFactory.createDOMException
                         (DOMException.INVALID_ACCESS_ERR,
                          "invalid.lexical.unit",
-                         new Object[] { new Integer(lu.getLexicalUnitType()) });
+                         new Object[] { new Integer(lu.getLexicalUnitType()),
+                                        getPropertyName() });
                 }
                 cp = lu.getStringValue();
                 lu = lu.getNextLexicalUnit();
@@ -158,7 +164,7 @@ public class PaintFactory
                         throw CSSDOMExceptionFactory.createDOMException
                             (DOMException.INVALID_ACCESS_ERR,
                              "invalid.lexical.unit",
-                             new Object[] { null });
+                             new Object[] { new Integer(0), getPropertyName() });
                     }
                     nl.appendItem(new SVGCSSNumber(getColorValue(lu)));
                     lu = lu.getNextLexicalUnit();
@@ -180,7 +186,8 @@ public class PaintFactory
                     throw CSSDOMExceptionFactory.createDOMException
                         (DOMException.INVALID_ACCESS_ERR,
                          "invalid.lexical.unit",
-                         new Object[] { new Integer(lu.getLexicalUnitType()) });
+                         new Object[] { new Integer(lu.getLexicalUnitType()),
+                                        getPropertyName() });
                 }
             }
 	}
@@ -220,7 +227,8 @@ public class PaintFactory
 	    throw CSSDOMExceptionFactory.createDOMException
 		(DOMException.INVALID_ACCESS_ERR,
 		 "invalid.lexical.unit",
-		 new Object[] { new Integer(lu.getLexicalUnitType()) });
+		 new Object[] { new Integer(lu.getLexicalUnitType()),
+                                getPropertyName() });
 	}
     }
 
@@ -238,7 +246,8 @@ public class PaintFactory
 	    throw CSSDOMExceptionFactory.createDOMException
 		(DOMException.INVALID_ACCESS_ERR,
 		 "invalid.lexical.unit",
-		 new Object[] { new Integer(lu.getLexicalUnitType()) });
+		 new Object[] { new Integer(lu.getLexicalUnitType()),
+                                getPropertyName() });
 	}
     }
 

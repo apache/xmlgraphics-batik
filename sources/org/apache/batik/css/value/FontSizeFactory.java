@@ -68,7 +68,7 @@ public class FontSizeFactory
 		throw CSSDOMExceptionFactory.createDOMException
 		    (DOMException.INVALID_ACCESS_ERR,
 		     "invalid.identifier",
-		     new Object[] { lu.getStringValue() });
+		     new Object[] { lu.getStringValue(), getPropertyName() });
             }
             return (ImmutableValue)v;
         }
@@ -87,14 +87,14 @@ public class FontSizeFactory
 	    throw CSSDOMExceptionFactory.createDOMException
 		(DOMException.INVALID_ACCESS_ERR,
 		 "invalid.identifier",
-		 new Object[] { value });
+		 new Object[] { value, getPropertyName() });
         }
         Object v = values.get(value.toLowerCase().intern());
         if (v == null) {
 	    throw CSSDOMExceptionFactory.createDOMException
 		(DOMException.INVALID_ACCESS_ERR,
 		 "invalid.identifier",
-		 new Object[] { value });
+		 new Object[] { value, getPropertyName() });
         }
         return (ImmutableValue)v;
     }

@@ -121,7 +121,7 @@ public class ImmutableFloat extends AbstractImmutablePrimitiveValue {
 	}
 	throw CSSDOMExceptionFactory.createDOMException
 	    (DOMException.INVALID_ACCESS_ERR,
-	     "invalid.primitive.unit",
+	     "invalid.float.unit",
 	     new Object[] { new Integer(unitType) });
     }
     
@@ -136,7 +136,7 @@ public class ImmutableFloat extends AbstractImmutablePrimitiveValue {
             unitType > CSSPrimitiveValue.CSS_DIMENSION) {
             throw CSSDOMExceptionFactory.createDOMException
                 (DOMException.INVALID_ACCESS_ERR,
-                 "out.of.range.unit.type",
+                 "out.of.range.float.type",
                  new Object[] { new Integer(unitType) });
         }
         return UNITS[unitType - CSSPrimitiveValue.CSS_NUMBER];
@@ -160,7 +160,7 @@ public class ImmutableFloat extends AbstractImmutablePrimitiveValue {
 	default:
 	    throw CSSDOMExceptionFactory.createDOMException
 		(DOMException.INVALID_ACCESS_ERR,
-		 "invalid.convertion",
+		 "invalid.conversion",
 		 new Object[] { new Integer(unitType) });
 	}
     }
@@ -183,7 +183,7 @@ public class ImmutableFloat extends AbstractImmutablePrimitiveValue {
 	default:
 	    throw CSSDOMExceptionFactory.createDOMException
 		(DOMException.INVALID_ACCESS_ERR,
-		 "invalid.convertion",
+		 "invalid.conversion",
 		 new Object[] { new Integer(unitType) });
 	}
     }
@@ -206,7 +206,7 @@ public class ImmutableFloat extends AbstractImmutablePrimitiveValue {
 	default:
 	    throw CSSDOMExceptionFactory.createDOMException
 		(DOMException.INVALID_ACCESS_ERR,
-		 "invalid.convertion",
+		 "invalid.conversion",
 		 new Object[] { new Integer(unitType) });
 	}
     }
@@ -229,7 +229,7 @@ public class ImmutableFloat extends AbstractImmutablePrimitiveValue {
 	default:
 	    throw CSSDOMExceptionFactory.createDOMException
 		(DOMException.INVALID_ACCESS_ERR,
-		 "invalid.convertion",
+		 "invalid.conversion",
 		 new Object[] { new Integer(unitType) });
 	}
     }
@@ -252,7 +252,7 @@ public class ImmutableFloat extends AbstractImmutablePrimitiveValue {
 	default:
 	    throw CSSDOMExceptionFactory.createDOMException
 		(DOMException.INVALID_ACCESS_ERR,
-		 "invalid.convertion",
+		 "invalid.conversion",
 		 new Object[] { new Integer(unitType) });
 	}
     }
@@ -271,7 +271,7 @@ public class ImmutableFloat extends AbstractImmutablePrimitiveValue {
 	default:
 	    throw CSSDOMExceptionFactory.createDOMException
 		(DOMException.INVALID_ACCESS_ERR,
-		 "invalid.convertion",
+		 "invalid.conversion",
 		 new Object[] { new Integer(unitType) });
 	}
     }
@@ -290,7 +290,7 @@ public class ImmutableFloat extends AbstractImmutablePrimitiveValue {
 	default:
 	    throw CSSDOMExceptionFactory.createDOMException
 		(DOMException.INVALID_ACCESS_ERR,
-		 "invalid.convertion",
+		 "invalid.conversion",
 		 new Object[] { new Integer(unitType) });
 	}
     }
@@ -309,7 +309,7 @@ public class ImmutableFloat extends AbstractImmutablePrimitiveValue {
 	default:
 	    throw CSSDOMExceptionFactory.createDOMException
 		(DOMException.INVALID_ACCESS_ERR,
-		 "invalid.convertion",
+		 "invalid.conversion",
 		 new Object[] { new Integer(unitType) });
 	}
     }
@@ -326,7 +326,7 @@ public class ImmutableFloat extends AbstractImmutablePrimitiveValue {
 	default:
 	    throw CSSDOMExceptionFactory.createDOMException
 		(DOMException.INVALID_ACCESS_ERR,
-		 "invalid.convertion",
+		 "invalid.conversion",
 		 new Object[] { new Integer(unitType) });
 	}
     }
@@ -343,7 +343,7 @@ public class ImmutableFloat extends AbstractImmutablePrimitiveValue {
 	default:
 	    throw CSSDOMExceptionFactory.createDOMException
 		(DOMException.INVALID_ACCESS_ERR,
-		 "invalid.convertion",
+		 "invalid.conversion",
 		 new Object[] { new Integer(unitType) });
 	}
     }
@@ -360,7 +360,7 @@ public class ImmutableFloat extends AbstractImmutablePrimitiveValue {
 	default:
 	    throw CSSDOMExceptionFactory.createDOMException
 		(DOMException.INVALID_ACCESS_ERR,
-		 "invalid.convertion",
+		 "invalid.conversion",
 		 new Object[] { new Integer(unitType) });
 	}
     }
@@ -377,7 +377,7 @@ public class ImmutableFloat extends AbstractImmutablePrimitiveValue {
 	default:
 	    throw CSSDOMExceptionFactory.createDOMException
 		(DOMException.INVALID_ACCESS_ERR,
-		 "invalid.convertion",
+		 "invalid.conversion",
 		 new Object[] { new Integer(unitType) });
 	}
     }

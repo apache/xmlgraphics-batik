@@ -20,6 +20,7 @@ import org.apache.batik.css.value.ImmutableInherit;
 import org.apache.batik.css.value.RelativeValueResolver;
 
 import org.w3c.css.sac.SelectorList;
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.css.CSSImportRule;
@@ -346,23 +347,29 @@ public abstract class AbstractViewCSS implements ViewCSS {
      */
     protected void addAuthorStyleSheetProperties
         (Element e, String pe, CSSOMReadOnlyStyleDeclaration rd) {
-	CSSOMRuleList authorRules = new CSSOMRuleList();
-	StyleSheetList l = ((DocumentStyle)document).getStyleSheets();
-	for (int i = 0; i < l.getLength(); i++) {
-	    addMatchingRules(((CSSStyleSheet)l.item(i)).getCssRules(),
-			     e,
-			     pe,
-			     authorRules);
-	}
-	authorRules = sortRules(authorRules, e, pe);
-	for (int i = 0; i < authorRules.getLength(); i++) {
-	    CSSStyleRule rule = (CSSStyleRule)authorRules.item(i);
-	    CSSStyleDeclaration decl = rule.getStyle();
-	    int len = decl.getLength();
-	    for (int j = 0; j < len; j++) {
-		setAuthorProperty(decl.item(j), decl, rd);
-	    }
-	}
+        try {
+            CSSOMRuleList authorRules = new CSSOMRuleList();
+            StyleSheetList l = ((DocumentStyle)document).getStyleSheets();
+            for (int i = 0; i < l.getLength(); i++) {
+                addMatchingRules(((CSSStyleSheet)l.item(i)).getCssRules(),
+                                 e,
+                                 pe,
+                                 authorRules);
+            }
+            authorRules = sortRules(authorRules, e, pe);
+            for (int i = 0; i < authorRules.getLength(); i++) {
+                CSSStyleRule rule = (CSSStyleRule)authorRules.item(i);
+                CSSStyleDeclaration decl = rule.getStyle();
+                int len = decl.getLength();
+                for (int j = 0; j < len; j++) {
+                    setAuthorProperty(decl.item(j), decl, rd);
+                }
+            }
+	} catch (DOMException ex) {
+            throw CSSDOMExceptionFactory.createDOMException
+                (ex.code, "style.sheet",
+                 new Object[] { ex.getMessage() });
+        }
     }
 
     /**
@@ -374,21 +381,27 @@ public abstract class AbstractViewCSS implements ViewCSS {
     protected void addInlineStyleProperties(Element e,
 					    String pe,
 					    CSSOMReadOnlyStyleDeclaration rd) {
-	if (e instanceof ElementCSSInlineStyle) {
-	    boolean hasStyle = true;
-	    if (pe == null || pe.equals("") ||
-		e instanceof ExtendedElementCSSInlineStyle) {
-		hasStyle = ((ExtendedElementCSSInlineStyle)e).hasStyle();
-	    }
-	    if (hasStyle) {
-		CSSStyleDeclaration inlineDecl;
-                inlineDecl = ((ElementCSSInlineStyle)e).getStyle();
-		int len = inlineDecl.getLength();
-		for (int i = 0; i < len; i++) {
-		    setAuthorProperty(inlineDecl.item(i), inlineDecl, rd);
-		}
-	    }
-	}
+        try {
+            if (e instanceof ElementCSSInlineStyle) {
+                boolean hasStyle = true;
+                if (pe == null || pe.equals("") ||
+                    e instanceof ExtendedElementCSSInlineStyle) {
+                    hasStyle = ((ExtendedElementCSSInlineStyle)e).hasStyle();
+                }
+                if (hasStyle) {
+                    CSSStyleDeclaration inlineDecl;
+                    inlineDecl = ((ElementCSSInlineStyle)e).getStyle();
+                    int len = inlineDecl.getLength();
+                    for (int i = 0; i < len; i++) {
+                        setAuthorProperty(inlineDecl.item(i), inlineDecl, rd);
+                    }
+                }
+            }
+	} catch (DOMException ex) {
+            throw CSSDOMExceptionFactory.createDOMException
+                (ex.code, "inline.style",
+                 new Object[] { e.getTagName(), ex.getMessage() });
+        }
     }
 
     /**

@@ -73,12 +73,13 @@ public class GlyphOrientationHorizontalFactory extends AbstractValueFactory {
 	    throw CSSDOMExceptionFactory.createDOMException
 		(DOMException.INVALID_ACCESS_ERR,
 		 "invalid.number",
-		 new Object[] { new Integer(i) });
+		 new Object[] { new Integer(i), getPropertyName() });
 	default:
             throw CSSDOMExceptionFactory.createDOMException
                 (DOMException.INVALID_ACCESS_ERR,
                  "invalid.lexical.unit",
-                 new Object[] { new Integer(lu.getLexicalUnitType()) });
+                 new Object[] { new Integer(lu.getLexicalUnitType()),
+                                getPropertyName() });
 	}
     }
 
@@ -118,6 +119,6 @@ public class GlyphOrientationHorizontalFactory extends AbstractValueFactory {
 	throw CSSDOMExceptionFactory.createDOMException
 	    (DOMException.INVALID_ACCESS_ERR,
 	     "invalid.number",
-	     new Object[] { new Integer((int)floatValue) });
+	     new Object[] { new Integer((int)floatValue), getPropertyName() });
     }
 }

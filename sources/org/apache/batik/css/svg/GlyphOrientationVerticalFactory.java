@@ -50,7 +50,7 @@ public class GlyphOrientationVerticalFactory
 		throw CSSDOMExceptionFactory.createDOMException
 		    (DOMException.INVALID_ACCESS_ERR,
 		     "invalid.identifier",
-		     new Object[] { lu.getStringValue() });
+		     new Object[] { lu.getStringValue(), getPropertyName() });
 	    }
 	    return AUTO_VALUE;
 	}
@@ -72,6 +72,6 @@ public class GlyphOrientationVerticalFactory
 	throw CSSDOMExceptionFactory.createDOMException
 	    (DOMException.INVALID_ACCESS_ERR,
 	     "invalid.identifier",
-	     new Object[] { value });
+	     new Object[] { value, getPropertyName() });
     }
 }

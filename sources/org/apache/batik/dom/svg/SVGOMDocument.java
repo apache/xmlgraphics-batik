@@ -375,7 +375,7 @@ public class SVGOMDocument
     /**
      * The document context.
      */
-    protected SVGContext context;
+    protected SVGContext context = new DefaultSVGContext();
 
     /**
      * The string representing the referrer.

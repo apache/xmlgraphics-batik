@@ -81,7 +81,7 @@ public class FontWeightFactory
 	    throw CSSDOMExceptionFactory.createDOMException
 		(DOMException.INVALID_ACCESS_ERR,
 		 "invalid.number",
-		 new Object[] { new Integer(i) });
+		 new Object[] { new Integer(i), getPropertyName() });
 	}
 	return super.createValue(lu);
     }
@@ -114,7 +114,7 @@ public class FontWeightFactory
 	throw CSSDOMExceptionFactory.createDOMException
 	    (DOMException.INVALID_ACCESS_ERR,
 	     "invalid.number",
-	     new Object[] { new Integer((int)floatValue) });
+	     new Object[] { new Integer((int)floatValue), getPropertyName() });
     }
 
     /**

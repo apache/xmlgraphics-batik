@@ -80,7 +80,8 @@ public class TextDecorationFactory
 	    throw CSSDOMExceptionFactory.createDOMException
 		(DOMException.INVALID_ACCESS_ERR,
 		 "invalid.lexical.unit",
-		 new Object[] { new Integer(lu.getLexicalUnitType()) });
+		 new Object[] { new Integer(lu.getLexicalUnitType()),
+                                getPropertyName() });
 	}
     }
 
@@ -97,7 +98,7 @@ public class TextDecorationFactory
 	    throw CSSDOMExceptionFactory.createDOMException
 		(DOMException.INVALID_ACCESS_ERR,
 		 "invalid.identifier",
-		 new Object[] { value });
+		 new Object[] { value, getPropertyName() });
 	}
 	return NONE_VALUE;
     }

@@ -39,7 +39,8 @@ public abstract class AbstractRGBColorFactory extends AbstractValueFactory {
 	    throw CSSDOMExceptionFactory.createDOMException
 		(DOMException.INVALID_ACCESS_ERR,
 		 "invalid.lexical.unit",
-		 new Object[] { new Integer(lu.getLexicalUnitType()) });
+		 new Object[] { new Integer(lu.getLexicalUnitType()),
+                                getPropertyName() });
 	}
 	lu = lu.getParameters();
 	ValueFactory ph = new ColorComponentFactory(getParser());
@@ -69,8 +70,9 @@ public abstract class AbstractRGBColorFactory extends AbstractValueFactory {
 	default:
 	    throw CSSDOMExceptionFactory.createDOMException
 		(DOMException.INVALID_ACCESS_ERR,
-		 "invalid.lexical.unit",
-		 new Object[] { new Integer(lu.getLexicalUnitType()) });
+		 "invalid.rgb.lexical.unit",
+		 new Object[] { new Integer(lu.getLexicalUnitType()),
+                                getPropertyName() });
 	}
     }
 

@@ -156,7 +156,7 @@ public class ImmutableSVGColorValue
         }
         throw CSSDOMExceptionFactory.createDOMException
             (DOMException.INVALID_ACCESS_ERR,
-             "invalid.primitive.unit",
+             "invalid.svgcolor.unit",
              new Object[] { new Integer(colorType) });
     }
 
