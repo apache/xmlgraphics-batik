@@ -249,23 +249,19 @@ public class SVGDOMImplementation
         if (namespaceURI.equals(SVG_NAMESPACE_URI)) {
             String name = DOMUtilities.getLocalName(qualifiedName);
             ElementFactory ef = (ElementFactory)factories.get(name);
-            if (ef == null) {
-                throw document.createDOMException
-                    (DOMException.NOT_FOUND_ERR,
-                     "invalid.element",
-                     new Object[] { namespaceURI,
-                                    qualifiedName });
+            if (ef != null) {
+                return ef.create(DOMUtilities.getPrefix(qualifiedName),
+                                 document);
             }
-            return ef.create(DOMUtilities.getPrefix(qualifiedName), document);
-        } else {
-            return new GenericElementNS(namespaceURI.intern(),
-                                        qualifiedName.intern(),
-                                        document);
         }
+        return new GenericElementNS(namespaceURI.intern(),
+                                    qualifiedName.intern(),
+                                    document);
     }
 
     /**
-     * Creates an DocumentEventSupport object suitable for use with this implementation.
+     * Creates an DocumentEventSupport object suitable for use with
+     * this implementation.
      */
     public DocumentEventSupport createDocumentEventSupport() {
         DocumentEventSupport result =  new DocumentEventSupport();
