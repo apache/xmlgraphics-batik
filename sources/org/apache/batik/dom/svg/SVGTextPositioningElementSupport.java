@@ -33,7 +33,7 @@ public class SVGTextPositioningElementSupport {
 
     /**
      * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGTextPositionningElement#getX()}.
+     * org.w3c.dom.svg.SVGTextPositioningElement#getX()}.
      */
     public static SVGAnimatedLengthList getX(AbstractElement e){
 
@@ -53,7 +53,7 @@ public class SVGTextPositioningElementSupport {
 
     /**
      * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGTextPositionningElement#getY()}.
+     * org.w3c.dom.svg.SVGTextPositioningElement#getY()}.
      */
     public static SVGAnimatedLengthList getY(AbstractElement e){
 
@@ -73,7 +73,7 @@ public class SVGTextPositioningElementSupport {
 
     /**
      * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGTextPositionningElement#getDx()}.
+     * org.w3c.dom.svg.SVGTextPositioningElement#getDx()}.
      */
     public static SVGAnimatedLengthList getDx(AbstractElement e){
 
@@ -93,7 +93,7 @@ public class SVGTextPositioningElementSupport {
 
     /**
      * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGTextPositionningElement#getDy()}.
+     * org.w3c.dom.svg.SVGTextPositioningElement#getDy()}.
      */
     public static SVGAnimatedLengthList getDy(AbstractElement e){
 

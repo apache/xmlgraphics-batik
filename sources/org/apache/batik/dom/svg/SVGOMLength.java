@@ -15,7 +15,7 @@ package org.apache.batik.dom.svg;
  * attribute in the Document. It is used
  * by the root element to return a default SVGLength.
  *
- * @see org.w3c.dom.svg.SVGElement#createSVGLength()
+ * @see org.w3c.dom.svg.SVGSVGElement#createSVGLength()
  *
  * @author nicolas.socheleau@bitflash.com
  * @version $Id$
