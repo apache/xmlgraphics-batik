@@ -144,9 +144,11 @@ public class SVGFilterElementBridge implements FilterBridge, SVGConstants {
             Element elt = (Element)child;
             Bridge bridge = bridgeContext.getBridge(elt);
             if (bridge == null || !(bridge instanceof FilterPrimitiveBridge)) {
+                continue;
+                /*
                 throw new IllegalAttributeValueException(
                     Messages.formatMessage("filter.subelement.illegal",
-                                           new Object[] {elt.getLocalName()}));
+                                           new Object[] {elt.getLocalName()}));*/
             }
             FilterPrimitiveBridge filterBridge =
                 (FilterPrimitiveBridge)bridge;
