@@ -1746,9 +1746,8 @@ public class JSVGCanvas
             if (transform.isIdentity()) {
                 float dw = elt.getWidth().getBaseVal().getValue();
                 float dh = elt.getHeight().getBaseVal().getValue();
-
-                transform = AffineTransform.getScaleInstance(w / (float)dw,
-                                                             h / (float)dh);
+                float d = Math.max(dw, dh);
+                transform = AffineTransform.getScaleInstance(w / d, h / d);
             }
         }
 
