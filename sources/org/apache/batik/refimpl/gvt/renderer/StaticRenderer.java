@@ -58,6 +58,11 @@ public class StaticRenderer implements Renderer {
     private boolean progressivePaintAllowed;
 
     /**
+     * The Selector instance which listens to TextSelection gestures.
+     */
+    private Selector textSelector = null;
+
+    /**
      * Offscreen image where the Renderer does its rendering
      */
     protected BufferedImage offScreen;
@@ -125,7 +130,7 @@ public class StaticRenderer implements Renderer {
     public void setTree(GraphicsNode treeRoot){
         this.treeRoot = treeRoot;
         // associate selectable nodes with selector object(s)
-        initSelectors();
+        //initSelectors();
     }
 
     /**
@@ -215,14 +220,16 @@ public class StaticRenderer implements Renderer {
      */
     public void initSelectors() {
         Iterator nodeIter = new GraphicsNodeTreeIterator(treeRoot);
-        Selector selector =
-            new ConcreteTextSelector(nodeRenderContext);
+        if (textSelector == null) {
+	    textSelector =
+                new ConcreteTextSelector(nodeRenderContext);
+        }
         while (nodeIter.hasNext()) {
             GraphicsNode node = (GraphicsNode) nodeIter.next();
             if (node instanceof Selectable) {
                 node.addGraphicsNodeMouseListener(
-                             (GraphicsNodeMouseListener) selector);
-
+                             (GraphicsNodeMouseListener) textSelector);
+                // should make sure this does not add duplicates
             }
         }
     }

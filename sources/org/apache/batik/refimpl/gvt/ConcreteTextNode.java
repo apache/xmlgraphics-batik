@@ -201,8 +201,7 @@ public class ConcreteTextNode
      * @deprecated
      */
     public Shape getOutline() {
-        System.out.println("Warning: deprecated method"+
-                           " ConcreteTextNode.getOutline() has been called!");
+
         // HACK, until we change getBounds to take
         // GraphicsNodeRenderContext
         Shape outline;
