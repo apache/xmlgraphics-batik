@@ -248,6 +248,11 @@ public class BackgroundRable8Bit
     /**
      * Returns a filter that represents the background image
      * for <tt>child</tt>.
+     * @param gn    Node to get background image for.
+     * @param child Child to stop at when compositing children of gn into
+     *              the background image.
+     * @param aoi   The area of interest for rendering (used to cull
+     *              nodes that don't intersect the region to render).
      */
     public Filter getBackground(GraphicsNode gn,
                                 GraphicsNode child,
@@ -271,6 +276,8 @@ public class BackgroundRable8Bit
             if (at != null)
                 paoi = at.createTransformedShape(aoi).getBounds2D();
             Filter f = getBackground(gn.getParent(), gn, paoi);
+
+            // Don't add the nodes unless they will contribute.
             if ((f != null) && f.getBounds2D().intersects(aoi)) {
                 srcs.add(f);
             }
@@ -346,6 +353,8 @@ public class BackgroundRable8Bit
         return false;
     }
 
+    Filter background = null;
+
     /**
      * Creates a RenderedImage that represented a rendering of this image
      * using a given RenderContext.  This is the most general way to obtain a
@@ -379,12 +388,12 @@ public class BackgroundRable8Bit
             Rectangle2D.intersect(r2d, aoiR2d, r2d);
         }
 
-        Filter f = getBackground(node, null, r2d);
+        background = getBackground(node, null, r2d);
 
-        if ( f == null)
+        if ( background == null)
             return null;
 
-        RenderedImage ri = f.createRendering(renderContext);
+        RenderedImage ri = background.createRendering(renderContext);
         // org.ImageDisplay.showImage("BG: ", ri);
         return ri;
     }

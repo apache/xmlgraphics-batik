@@ -258,13 +258,18 @@ public class GlyphLayout implements TextSpanLayout {
         int currentChar = aci.getBeginIndex();
         int numGlyphs = getGlyphCount();
 
+        boolean glyphOrientationAuto = isGlyphOrientationAuto();
+        int glyphOrientationAngle = 90;
+        if (!glyphOrientationAuto) {
+            glyphOrientationAngle = getGlyphOrientationAngle();
+        }
         Point2D.Float [] topPts = new Point2D.Float[2*numGlyphs];
         Point2D.Float [] botPts = new Point2D.Float[2*numGlyphs];
 
         int ptIdx = 0;
 
         for (int i = 0; i < numGlyphs; i++) {
-            aci.setIndex(currentChar);
+            char ch = aci.setIndex(currentChar);
             int glyphCharIndex = ((Integer)aci.getAttribute(
                 GVTAttributedCharacterIterator.TextAttribute.CHAR_INDEX)).intValue();
             if (glyphCharIndex >= beginCharIndex && glyphCharIndex <= endCharIndex) {
@@ -282,6 +287,16 @@ public class GlyphLayout implements TextSpanLayout {
                     int type = -1;
 
                     PathIterator pi = gbounds.getPathIterator(null);
+                    Point2D.Float firstPt = null;
+                    if (isVertical()) {
+                        if (glyphOrientationAuto) {
+                            if (isLatinChar(ch))
+                                glyphOrientationAngle = 90;
+                            else
+                                glyphOrientationAngle = 0;
+                        }
+                    }
+
                     while (!pi.isDone()) {
                         type = pi.currentSegment(pts);
                         if ((type == PathIterator.SEG_MOVETO) ||
@@ -290,17 +305,51 @@ public class GlyphLayout implements TextSpanLayout {
                             if (count > 4) break; // too many lines...
                             if (count == 4) {
                                 // make sure we are just closing it..
-                                if ((topPts[ptIdx].x != pts[0]) ||
-                                    (topPts[ptIdx].y != pts[1]))
+                                if ((firstPt == null)     ||
+                                    (firstPt.x != pts[0]) ||
+                                    (firstPt.y != pts[1]))
                                     break;
                             } else {
                                 Point2D.Float pt;
                                 pt = new Point2D.Float(pts[0], pts[1]);
-                                switch (count) {
-                                case 0: topPts[ptIdx]   = pt; break;
-                                case 1: topPts[ptIdx+1] = pt; break;
-                                case 2: botPts[ptIdx+1] = pt; break;
-                                case 3: botPts[ptIdx]   = pt; break;
+                                if (count == 0) firstPt = pt;
+                                switch(glyphOrientationAngle) {
+                                case 0:
+                                    // Use sides of rectangle...
+                                    switch (count) {
+                                    case 0: botPts[ptIdx]   = pt; break;
+                                    case 1: topPts[ptIdx]   = pt; break;
+                                    case 2: topPts[ptIdx+1] = pt; break;
+                                    case 3: botPts[ptIdx+1] = pt; break;
+                                    }
+                                    break;
+                                case 90:
+                                    // Use "top" and "bottom"
+                                    switch (count) {
+                                    case 0: topPts[ptIdx]   = pt; break;
+                                    case 1: topPts[ptIdx+1] = pt; break;
+                                    case 2: botPts[ptIdx+1] = pt; break;
+                                    case 3: botPts[ptIdx]   = pt; break;
+                                    }
+                                    break;
+                                case 180:
+                                    // Use reverse sides of rectangle...
+                                    switch (count) {
+                                    case 0: botPts[ptIdx+1] = pt; break;
+                                    case 1: topPts[ptIdx+1] = pt; break;
+                                    case 2: topPts[ptIdx]   = pt; break;
+                                    case 3: botPts[ptIdx]   = pt; break;
+                                    }
+                                    break;
+                                case 270:
+                                    // Use "bottom" and "top"
+                                    switch (count) {
+                                    case 0: topPts[ptIdx+1] = pt; break;
+                                    case 1: topPts[ptIdx]   = pt; break;
+                                    case 2: botPts[ptIdx]   = pt; break;
+                                    case 3: botPts[ptIdx+1] = pt; break;
+                                    }
+                                    break;
                                 }
                             }
                         } else if (type == PathIterator.SEG_CLOSE) {
@@ -316,19 +365,17 @@ public class GlyphLayout implements TextSpanLayout {
                     }
                     if (pi.isDone()) {
                         // Sucessfully Expressed as a quadralateral...
-                        if ((topPts[ptIdx].x != topPts[ptIdx+1].x) ||
-                            (topPts[ptIdx].y != topPts[ptIdx+1].y))
+                        if ((botPts[ptIdx]!=null) &&
+                            ((topPts[ptIdx].x != topPts[ptIdx+1].x) ||
+                             (topPts[ptIdx].y != topPts[ptIdx+1].y)))
                             // box isn't empty so use it's points...
                             ptIdx += 2;
                     } else {
                         // System.out.println("Type: " + type +
                         //                    " count: " + count);
-                        shape.moveTo(topPts[0].x, topPts[0].y);
-                        for (int j=1; j<ptIdx; j++) 
-                            shape.lineTo(topPts[j].x, topPts[j].y);
-                        for (int j=ptIdx-1; j>=0; j--) 
-                            shape.lineTo(botPts[j].x, botPts[j].y);
-                        shape.closePath();
+                        // Wasn't a quadralateral so just add it don't try
+                        // and merge it...
+                        addPtsToPath(shape, topPts, botPts, ptIdx);
                         ptIdx = 0;
                         shape.append(gbounds, false);
                     }
@@ -336,14 +383,7 @@ public class GlyphLayout implements TextSpanLayout {
             }
             currentChar += getCharacterCount(i, i);
         }
-        if (ptIdx != 0) {
-            shape.moveTo(topPts[0].x, topPts[0].y);
-            for (int i=1; i<ptIdx; i++) 
-                shape.lineTo(topPts[i].x, topPts[i].y);
-            for (int i=ptIdx-1; i>=0; i--) 
-                shape.lineTo(botPts[i].x, botPts[i].y);
-            shape.closePath();
-        }
+        addPtsToPath(shape, topPts, botPts, ptIdx);
 
         if (transform != null) {
             return transform.createTransformedShape(shape);
@@ -351,6 +391,204 @@ public class GlyphLayout implements TextSpanLayout {
         return shape;
     }
 
+    public static int cleanPtsList(Point2D.Float [] pts, int numPts) {
+        // Can't get into trouble with only 3 points...
+        if (numPts < 4) return numPts;
+
+        Point2D.Float pt00, pt01, pt10, pt11;
+        pt01 = pts[0];
+        pt10 = pts[1];
+        pt11 = pts[2];
+        int outPts = 3;
+        Point2D.Float inter;
+        for (int i=3; i<numPts; i++) {
+            pt00 = pt01;
+            pt01 = pt10;
+            pt10 = pt11;
+            pt11 = pts[i];
+
+            inter = calcIntervalIntersection(pt00, pt01, pt10, pt11);
+            if (inter != null) {
+                // We got an intersection (lines crossed over each other...)
+                // So lets remove the cross over...
+                //        00\     __11
+                //          _\_--
+                //       10____\01
+                //
+                //  We want to replace this with 00->inter->11
+                // This means replacing 01 with inter, and replacing
+                // 10 with 11
+                pts[outPts-1] = pt11;  // replace 10
+                pts[outPts-2] = inter; // replace 01
+            } else {
+                pts[outPts] = pt11;    // clean add pt11.
+                outPts++;
+            }
+        }
+        return outPts;
+    }
+
+    public static void addPtsToPath(GeneralPath shape, 
+                                     Point2D.Float [] topPts,
+                                     Point2D.Float [] botPts,
+                                     int numPts) {
+        if (numPts < 2) return;
+
+        int nTopPts = 2;
+        int nBotPts = 2;
+
+        // Here we make sure that we aren't "intruding" on the adjacent
+        // characters box with our top and bottom lines.
+        //           10+------+11
+        //  tp00+--------+01  |      If line tp00->tp01 intersects tp10->bp10
+        //      |      | |    |      Then we drop tp01.
+        //      |      | |    |
+        //      |    10+------+11
+        //  bp00+--------+01
+        Point2D.Float tp00, tp01, tp10, tp11;
+        Point2D.Float bp00, bp01, bp10, bp11;
+        tp10 = topPts[0];
+        tp11 = topPts[1];
+        bp10 = botPts[0];
+        bp11 = botPts[1];
+        for (int i=2; i<numPts; i+=2) {
+            tp00 = tp10; tp01 = tp11;
+            bp00 = bp10; bp01 = bp11;
+            tp10 = topPts[i];
+            tp11 = topPts[i+1];
+            bp10 = botPts[i];
+            bp11 = botPts[i+1];
+            
+            Point2D.Float inter;
+            inter = calcIntervalIntersection(tp00, tp01, tp10, bp10);
+            if (inter != null) nTopPts--; // we will now overwrite tp01..
+
+            inter = calcIntervalIntersection(bp00, bp01, bp10, tp10);
+            if (inter != null) nBotPts--; // we will now overwrite bp01..
+
+            inter = calcIntervalIntersection(tp10, tp11, tp01, bp01);
+            if (inter == null) 
+                topPts[nTopPts++] = tp10;
+            topPts[nTopPts++] = tp11;
+
+            inter = calcIntervalIntersection(bp10, bp11, bp01, tp01);
+            if (inter == null) 
+                botPts[nBotPts++] = bp10;
+            botPts[nBotPts++] = bp11;
+        }
+
+        nTopPts = cleanPtsList(topPts, nTopPts);
+        shape.moveTo(topPts[0].x, topPts[0].y);
+        for (int i=1; i<nTopPts; i++) 
+            shape.lineTo(topPts[i].x, topPts[i].y);
+
+        nBotPts = cleanPtsList(botPts, nBotPts);
+        for (int i=nBotPts-1; i>=0; i--) 
+            shape.lineTo(botPts[i].x, botPts[i].y);
+        shape.closePath();
+    }
+
+    public static final float eps = 0.00001f;
+
+    /**
+     * Checks if 'check' is in the range of pt along vec.
+     * If it is it returns check otherwise it returns null.
+     * if check is null it returns null.
+     */
+    public static Point2D.Float verifyInRange
+        (Point2D.Float check, Point2D.Float pt, Point2D.Float vec) {
+        if (check == null) return null;
+        float t;
+        if ((vec.x == 0) && (vec.y == 0)) {
+            // really isn't a line just a point, so only in range if
+            // check and pt match.
+            if ((Math.abs(pt.x - check.x) < eps) &&
+                (Math.abs(pt.y - check.y) < eps))
+                return check;
+
+            return null;
+        }
+
+        // Otherwise divide by greater of two deltas...
+        if (Math.abs(vec.x) > Math.abs(vec.y))
+            t = (check.x-pt.x)/vec.x;
+        else
+            t = (check.y-pt.y)/vec.y;
+
+        // if t is out of range return null...
+        if ((t < 0) || (t > 1)) return null;
+
+        // Otherwise return check.
+        return check;
+    }
+
+    /**
+     * The most elegant line intersection alg I've seen.
+     * It returns the intersection of the line defined by
+     * pt00 and pt01, and pt10 and pt11 or null if the two lines
+     * don't intersect between the given end points.
+     */
+    public static Point2D.Float calcIntervalIntersection
+        (Point2D.Float pt00, Point2D.Float pt01,
+         Point2D.Float pt10, Point2D.Float pt11) {
+
+        Point2D.Float vec0 = new Point2D.Float(pt01.x-pt00.x, pt01.y-pt00.y);
+        Point2D.Float vec1 = new Point2D.Float(pt11.x-pt10.x, pt11.y-pt10.y);
+
+        /* I'm use the form dx*y - dy*x + c1 = 0 for the lines,
+         * So lets calculate c1 & c2 from the line specification.
+         */
+        float c0 = vec0.y*pt00.x-vec0.x*pt00.y;
+        float c1 = vec1.y*pt10.x-vec1.x*pt10.y;
+
+
+        // try plugging one pt into
+        // the others line and see which side of the line it is on,
+        // if they are always on the same sides then they don't intersect
+        // in the interval given.
+        int sign0, sign1;
+        float soln;
+        soln = (vec0.x*pt10.y-vec0.y*pt10.x+c0);
+        if      (soln < -eps) sign0 = -1;
+        else if (soln >  eps) sign0 = 1;
+        else return verifyInRange(pt10, pt00, vec0);
+
+        soln = (vec0.x*pt11.y-vec0.y*pt11.x+c0);
+        if      (soln < -eps) sign1 = -1;
+        else if (soln >  eps) sign1 = 1;
+        else return verifyInRange(pt11, pt00, vec0);
+
+        if (sign0 == sign1) {
+            // same side of line 0, check other way round...
+            soln = (vec1.x*pt00.y-vec1.y*pt00.x+c1);
+            if      (soln < -eps) sign0 = -1;
+            else if (soln >  eps) sign0 = 1;
+            else return verifyInRange(pt00, pt10, vec1);
+
+            soln = (vec1.x*pt01.y-vec1.y*pt01.x+c1);
+            if      (soln < -eps) sign1 = -1;
+            else if (soln >  eps) sign1 = 1;
+            else return verifyInRange(pt01, pt10, vec1);
+
+            if (sign0 == sign1) 
+                // Also on same side so no intersection.
+                return null;
+        }
+
+        // We now now that the lines at least span each other (and not
+        // at end points), figure out where they intersect.
+
+        Point2D.Float ret;
+
+        // Solve the equations for x & y.
+        float cross = (vec0.x*vec1.y - vec0.y*vec1.x);
+        ret = new Point2D.Float((vec0.x*c1-vec1.x*c0)/cross,
+                                (vec0.y*c1-vec1.y*c0)/cross);
+
+        ret = verifyInRange(ret, pt00, vec0);
+        ret = verifyInRange(ret, pt10, vec1);
+        return ret;
+    }
 
     /**
      * Perform hit testing for coordinate at x, y.
