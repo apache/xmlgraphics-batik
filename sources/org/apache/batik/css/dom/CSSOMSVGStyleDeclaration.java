@@ -59,12 +59,12 @@ public class CSSOMSVGStyleDeclaration extends CSSOMStyleDeclaration {
             switch (idx) {
             case SVGCSSEngine.FILL_INDEX:
             case SVGCSSEngine.STROKE_INDEX:
-                return new StyleDeclarationColorValue(name);
+                return new StyleDeclarationPaintValue(name);
 
             case SVGCSSEngine.FLOOD_COLOR_INDEX:
             case SVGCSSEngine.LIGHTING_COLOR_INDEX:
             case SVGCSSEngine.STOP_COLOR_INDEX:
-                return new StyleDeclarationPaintValue(name);
+                return new StyleDeclarationColorValue(name);
             }
         }
         return super.createCSSValue(name);
@@ -73,7 +73,7 @@ public class CSSOMSVGStyleDeclaration extends CSSOMStyleDeclaration {
     /**
      * This class represents a CSS value returned by this declaration.
      */
-    protected class StyleDeclarationColorValue
+    public class StyleDeclarationColorValue
         extends CSSOMSVGColor
         implements CSSOMSVGColor.ValueProvider {
         
@@ -93,9 +93,7 @@ public class CSSOMSVGStyleDeclaration extends CSSOMStyleDeclaration {
                         return StyleDeclarationColorValue.this.getValue();
                     }
                     public void textChanged(String text) throws DOMException {
-                        if (values == null ||
-                            values.get(this) == null ||
-                            handler == null) {
+                        if (handler == null) {
                             throw new DOMException
                                 (DOMException.NO_MODIFICATION_ALLOWED_ERR, "");
                         }
@@ -123,7 +121,7 @@ public class CSSOMSVGStyleDeclaration extends CSSOMStyleDeclaration {
     /**
      * This class represents a CSS value returned by this declaration.
      */
-    protected class StyleDeclarationPaintValue
+    public class StyleDeclarationPaintValue
         extends CSSOMSVGPaint
         implements CSSOMSVGPaint.ValueProvider {
         
@@ -143,9 +141,7 @@ public class CSSOMSVGStyleDeclaration extends CSSOMStyleDeclaration {
                         return StyleDeclarationPaintValue.this.getValue();
                     }
                     public void textChanged(String text) throws DOMException {
-                        if (values == null ||
-                            values.get(this) == null ||
-                            handler == null) {
+                        if (handler == null) {
                             throw new DOMException
                                 (DOMException.NO_MODIFICATION_ALLOWED_ERR, "");
                         }
