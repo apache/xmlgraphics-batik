@@ -61,6 +61,7 @@ public class ConcreteShapeNode extends AbstractGraphicsNode
         this.shape = newShape;
         firePropertyChange("shape", oldShape, newShape);
         primitiveBounds = null;
+        bounds = null;
     }
 
     public Shape getShape() {
@@ -73,6 +74,7 @@ public class ConcreteShapeNode extends AbstractGraphicsNode
         firePropertyChange("shapePainter",
                                oldShapePainter, newShapePainter);
         primitiveBounds = null;
+        bounds = null;
     }
 
     public ShapePainter getShapePainter() {
