@@ -79,7 +79,7 @@ public class ConcreteAffineRable extends AbstractRable
     }
 
     public RenderedImage createRendering(RenderContext rc) {
-          // Degenerate Affine no output image..
+        // Degenerate Affine no output image..
         if (invAffine == null) return null;
 
         // Just copy over the rendering hints.

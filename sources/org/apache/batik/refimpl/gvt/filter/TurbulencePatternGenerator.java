@@ -643,7 +643,6 @@ public final class TurbulencePatternGenerator{
         point_0 = p[0];
         point_1 = p[1];
 
-        System.out.println("Processing point : " + point_0 + " / " + point_1);
         if(isFractalNoise){
             if(!stitchTiles){
                 for(int i=0; i<h; i++){
