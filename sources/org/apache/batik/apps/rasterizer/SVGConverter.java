@@ -34,9 +34,6 @@ import java.util.Vector;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import java.net.URL;
-import java.net.MalformedURLException;
-
 /**
  * This application can be used to convert SVG images to raster images.
  * <br />
