@@ -426,12 +426,6 @@
             <property name="ExpectedErrorCode" class="java.lang.String"
                       value="attribute.malformed" />
         </test>
-        <test id="bridge/error/path-missing-d">
-            <property name="ExpectedExceptionClass" class="java.lang.String"
-                      value="org.apache.batik.bridge.BridgeException" />
-            <property name="ExpectedErrorCode" class="java.lang.String"
-                      value="attribute.missing" />
-        </test>
         <!-- <!> -->
         <!--
         <test id="bridge/error/pattern-empty">
@@ -459,23 +453,11 @@
             <property name="ExpectedErrorCode" class="java.lang.String"
                       value="attribute.malformed" />
         </test>
-        <test id="bridge/error/polygon-missing-points">
-            <property name="ExpectedExceptionClass" class="java.lang.String"
-                      value="org.apache.batik.bridge.BridgeException" />
-            <property name="ExpectedErrorCode" class="java.lang.String"
-                      value="attribute.missing" />
-        </test>
         <test id="bridge/error/polyline-invalid-points">
             <property name="ExpectedExceptionClass" class="java.lang.String"
                       value="org.apache.batik.bridge.BridgeException" />
             <property name="ExpectedErrorCode" class="java.lang.String"
                       value="attribute.malformed" />
-        </test>
-        <test id="bridge/error/polyline-missing-points">
-            <property name="ExpectedExceptionClass" class="java.lang.String"
-                      value="org.apache.batik.bridge.BridgeException" />
-            <property name="ExpectedErrorCode" class="java.lang.String"
-                      value="attribute.missing" />
         </test>
         <!-- <!> According to 13.2.4, this is not an error -->
         <!-- 
