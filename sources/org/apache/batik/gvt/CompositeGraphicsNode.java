@@ -451,25 +451,6 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
         }
     }
 
-    /**
-     * Returns a deep clone of this graphics node. This method clones
-     * this node and its children.
-     *
-     * <b>Warning</b>: All attributes of this graphics node are shared
-     * between the original node and its copy. This method does not
-     * perform any synchronization.
-     */
-    public GraphicsNode renderingClone() {
-        CompositeGraphicsNode n =
-            (CompositeGraphicsNode)super.renderingClone();
-        n.children = new GraphicsNode[count];
-        for (int i = 0; i < count; ++i) {
-            n.children[i] = children[i].renderingClone();
-        }
-        n.count = count;
-        return n;
-    }
-
     //
     // List implementation
     //

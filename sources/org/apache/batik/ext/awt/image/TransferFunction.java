@@ -8,12 +8,17 @@
 package org.apache.batik.ext.awt.image;
 
 /**
- * Defines the interface for all the <tt>ComponentTransferOp</tt>
- * transfer functions, which can all be converted to a lookup table
+ * Defines the interface for all the <tt>ComponentTransferOp</tt> transfer
+ * functions, which can all be converted to a lookup table
  *
  * @author <a href="mailto:sheng.pei@eng.sun.com">Sheng Pei</a>
- * @version $Id$
+ * @version $Id$ 
  */
 public interface TransferFunction {
+
+    /**
+     * Returns the lookup table.
+     */
     byte [] getLookupTable();
+
 }

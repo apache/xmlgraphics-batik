@@ -36,7 +36,7 @@ import org.apache.batik.gvt.font.AWTGVTFont;
 
 /**
  * Implementation of TextSpanLayout which uses java.awt.font.GlyphVector.
- * @see org.apache.batik.gvt.TextSpanLayout.
+ * @see org.apache.batik.gvt.text.TextSpanLayout
  *
  * @author <a href="bill.haneman@ireland.sun.com>Bill Haneman</a>
  * @version $Id$

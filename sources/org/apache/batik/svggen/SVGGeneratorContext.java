@@ -187,7 +187,7 @@ public class SVGGeneratorContext implements ErrorConstants {
     }
 
     /**
-     * Sets the {@link org.apache.batik.svggen.Stylehandler}
+     * Sets the {@link org.apache.batik.svggen.StyleHandler}
      * to be used. It should not be <code>null</code>.
      */
     final public void setStyleHandler(StyleHandler styleHandler) {
@@ -220,7 +220,7 @@ public class SVGGeneratorContext implements ErrorConstants {
     }
 
     /**
-     * Sets the {@link org.apache.batik.svggen.Errorhandler}
+     * Sets the {@link org.apache.batik.svggen.ErrorHandler}
      * to be used. It should not be <code>null</code>.
      */
     final public void setErrorHandler(ErrorHandler errorHandler) {

@@ -17,8 +17,6 @@ import java.lang.Math;
  *
  * @author <a href="mailto:sheng.pei@sun.com">Sheng Pei</a>
  * @version $Id$
- *
- * @see  org.apache.batik.gvt.filter.ComponentTransferOp
  */
 public class DiscreteTransfer implements TransferFunction {
     /**

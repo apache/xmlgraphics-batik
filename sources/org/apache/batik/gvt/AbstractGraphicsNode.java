@@ -50,7 +50,7 @@ import org.apache.batik.gvt.filter.Mask;
  * @author <a href="mailto:Thomas.DeWeeese@Kodak.com">Thomas DeWeese</a>
  * @version $Id$
  */
-public abstract class AbstractGraphicsNode implements GraphicsNode, Cloneable {
+public abstract class AbstractGraphicsNode implements GraphicsNode {
 
     /**
      * The listeners list.
@@ -933,21 +933,5 @@ public abstract class AbstractGraphicsNode implements GraphicsNode, Cloneable {
      */
     public boolean intersects(Rectangle2D r, GraphicsNodeRenderContext rc) {
         return getBounds(rc).intersects(r);
-    }
-
-    /**
-     * Returns a deep clone of this graphics node.
-     *
-     * <b>Warning</b>: All attributes of this graphics node are shared
-     * between the original node and its copy. This method does not
-     * perform any synchronization.
-     */
-    public GraphicsNode renderingClone() {
-        try {
-            return (GraphicsNode)clone();
-        } catch(CloneNotSupportedException ex) {
-            ex.printStackTrace();
-            return null;
-        }
     }
 }

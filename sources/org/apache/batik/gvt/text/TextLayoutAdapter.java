@@ -31,7 +31,7 @@ import java.awt.Paint;
  * Implementation of TextSpanLayout that uses java.awt.font.TextLayout
  * for its internals.
  * @see java.awt.font.TextLayout
- * @see org.apache.batik.gvt.TextPainter.
+ * @see org.apache.batik.gvt.TextPainter
  *
  * @author <a href="bill.haneman@ireland.sun.com>Bill Haneman</a>
  * @version $Id$

@@ -15,87 +15,64 @@ import java.io.InputStream;
 import java.io.IOException;
 
 /**
- * An abstract subclass of <code>java.io.InputStream</code> that
- * allows seeking within the input, similar to the
- * <code>RandomAccessFile</code> class.  Additionally, the
- * <code>DataInput</code> interface is supported and extended to
- * include support for little-endian representations of fundamental
- * data types.
+ * An abstract subclass of <code>java.io.InputStream</code> that allows seeking
+ * within the input, similar to the <code>RandomAccessFile</code> class.
+ * Additionally, the <code>DataInput</code> interface is supported and extended
+ * to include support for little-endian representations of fundamental data
+ * types.
  *
- * <p> In addition to the familiar methods from
- * <code>InputStream</code>, the methods
- * <code>getFilePointer()</code>, <code>seek()</code>, are defined as
- * in the <code>RandomAccessFile</code> class.  The
- * <code>canSeekBackwards()</code> method will return
- * <code>true</code> if it is permissible to seek to a position
- * earlier in the stream than the current value of
+ * <p> In addition to the familiar methods from <code>InputStream</code>, the
+ * methods <code>getFilePointer()</code>, <code>seek()</code>, are defined as in
+ * the <code>RandomAccessFile</code> class.  The <code>canSeekBackwards()</code>
+ * method will return <code>true</code> if it is permissible to seek to a
+ * position earlier in the stream than the current value of
  * <code>getFilePointer()</code>.  Some subclasses of
- * <code>SeekableStream</code> guarantee the ability to seek backwards
- * while others may not offer this feature in the interest of
- * providing greater efficiency for those users who do not require it.
+ * <code>SeekableStream</code> guarantee the ability to seek backwards while
+ * others may not offer this feature in the interest of providing greater
+ * efficiency for those users who do not require it.
  * 
- * <p> The <code>DataInput</code> interface is supported as well.
- * This included the <code>skipBytes()</code> and
- * <code>readFully()</code> methods and a variety of <code>read</code>
- * methods for various data types.
+ * <p> The <code>DataInput</code> interface is supported as well.  This included
+ * the <code>skipBytes()</code> and <code>readFully()</code> methods and a
+ * variety of <code>read</code> methods for various data types.
  *
- * <p> A number of concrete subclasses of <code>SeekableStream</code>
- * are supplied in the <code>com.sun.media.jai.codec</code> package.
+ * <p> A number of concrete subclasses of <code>SeekableStream</code> are
+ * supplied in the <code>com.sun.media.jai.codec</code> package.
  * 
- * <p> Three classes are provided for the purpose of adapting a
- * standard <code>InputStream</code> to the
- * <code>SeekableStream</code> interface.
- * <code>ForwardSeekableStream</code> does not allows seeking
- * backwards, but is inexpensive to use.
- * <code>FileCacheSeekableStream</code> maintains a copy of all of the
- * data read from the input in a temporary file; this file will be
+ * <p> Three classes are provided for the purpose of adapting a standard
+ * <code>InputStream</code> to the <code>SeekableStream</code> interface.
+ * <code>ForwardSeekableStream</code> does not allows seeking backwards, but is
+ * inexpensive to use.  <code>FileCacheSeekableStream</code> maintains a copy of
+ * all of the data read from the input in a temporary file; this file will be
  * discarded automatically when the <code>FileSeekableStream</code> is
  * finalized, or when the JVM exits normally.
- * <code>FileCacheSeekableStream</code> is intended to be reasonably
- * efficient apart from the unavoidable use of disk space.  In
- * circumstances where the creation of a temporary file is not
- * possible, <code>MemoryCacheSeekableStream</code> may be used.
- * <code>MemoryCacheSeekableStream</code> creates a potentially large
- * in-memory buffer to store the stream data and so should be
- * avoided when possible.
+ * <code>FileCacheSeekableStream</code> is intended to be reasonably efficient
+ * apart from the unavoidable use of disk space.  In circumstances where the
+ * creation of a temporary file is not possible,
+ * <code>MemoryCacheSeekableStream</code> may be used.
+ * <code>MemoryCacheSeekableStream</code> creates a potentially large in-memory
+ * buffer to store the stream data and so should be avoided when possible.
  *
- * <p> The <code>FileSeekableStream</code> class wraps a
- * <code>File</code> or <code>RandomAccessFile</code>.  It forwards
- * requests to the real underlying file.  It performs a limited amount
- * of caching in order to avoid excessive I/O costs.
+ * <p> The <code>FileSeekableStream</code> class wraps a <code>File</code> or
+ * <code>RandomAccessFile</code>. It forwards requests to the real underlying
+ * file.  It performs a limited amount of caching in order to avoid excessive
+ * I/O costs.
  *
- * <p> The <code>SegmentedSeekableStream</code> class performs a
- * different sort of function.  It creates a
- * <code>SeekableStream</code> from another
- * <code>SeekableStream</code> by selecting a series of portions or
- * "segments".  Each segment starts at a specified location within the
- * source <code>SeekableStream</code> and extends for a specified
- * number of bytes.  The <code>StreamSegmentMapper</code> interface
- * and <code>StreamSegment</code> class may be
- * used to compute the segment positions dynamically.
+ * <p> The <code>SegmentedSeekableStream</code> class performs a different sort
+ * of function.  It creates a <code>SeekableStream</code> from another
+ * <code>SeekableStream</code> by selecting a series of portions or "segments".
+ * Each segment starts at a specified location within the source
+ * <code>SeekableStream</code> and extends for a specified number of bytes.  The
+ * <code>StreamSegmentMapper</code> interface and <code>StreamSegment</code>
+ * class may be used to compute the segment positions dynamically.
  *
- * <p> A convenience methods, <code>wrapInputStream</code> is provided
- * to construct a suitable <code>SeekableStream</code> instance whose
- * data is supplied by a given <code>InputStream</code>.  The caller,
- * by means of the <code>canSeekBackwards</code> parameter, determines
- * whether support for seeking backwards is required.
- *
- * @see java.io.DataInput
- * @see java.io.InputStream
- * @see java.io.RandomAccessFile
- * @see ByteArraySeekableStream
- * @see FileCacheSeekableStream
- * @see FileSeekableStream
- * @see ForwardSeekableStream
- * @see MemoryCacheSeekableStream
- * @see SegmentedSeekableStream
- * @see StreamSegment
- * @see StreamSegmentMapper
- *
+ * <p> A convenience methods, <code>wrapInputStream</code> is provided to
+ * construct a suitable <code>SeekableStream</code> instance whose data is
+ * supplied by a given <code>InputStream</code>.  The caller, by means of the
+ * <code>canSeekBackwards</code> parameter, determines whether support for
+ * seeking backwards is required.
+ * 
  */
-public abstract class SeekableStream
-    extends InputStream
-    implements DataInput {
+public abstract class SeekableStream extends InputStream implements DataInput {
 
     /**
      * Returns a <code>SeekableStream</code> that will read from a 

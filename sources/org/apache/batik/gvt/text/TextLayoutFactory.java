@@ -29,8 +29,8 @@ public interface TextLayoutFactory {
      * @param aci the character iterator to be laid out
      * @param frc the rendering context for the fonts used.
      */
-    public TextSpanLayout createTextLayout(AttributedCharacterIterator aci,
-                                 Point2D offset,
-                                 FontRenderContext frc);
+    TextSpanLayout createTextLayout(AttributedCharacterIterator aci,
+				    Point2D offset,
+				    FontRenderContext frc);
 
 }

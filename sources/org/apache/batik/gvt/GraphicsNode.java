@@ -48,12 +48,13 @@ public interface GraphicsNode {
 
     /**
      * Sets the transform of this node.
+     *
      * @param newTransform the new transform of this node
      */
     void setTransform(AffineTransform newTransform);
 
     /**
-     * Returns the transform of this node.
+     * Returns the transform of this node or null if any.
      */
     AffineTransform getTransform();
 
@@ -70,30 +71,31 @@ public interface GraphicsNode {
 
     /**
      * Sets the composite of this node.
+     *
      * @param composite the composite of this node
      */
     void setComposite(Composite newComposite);
 
     /**
-     * Returns the composite of this node.
+     * Returns the composite of this node or null if any.
      */
     Composite getComposite();
 
     /**
      * Sets if this node is visible or not depending on the specified value.
+     *
      * @param isVisible If true this node is visible
      */
     void setVisible(boolean isVisible);
 
     /**
-     * Determines whether or not this node is visible when its parent
-     * is visible. Nodes are initially visible.
-     * @return true if this node is visible, false otherwise
+     * Returns true if this node is visible, false otherwise.
      */
     boolean isVisible();
 
     /**
-     * Sets the clipping filter for this node.
+     * Sets the clipping filter of this node.
+     *
      * @param newClipper the new clipping filter of this node
      */
     void setClip(ClipRable newClipper);
@@ -104,23 +106,26 @@ public interface GraphicsNode {
     ClipRable getClip();
 
     /**
-     * Maps the specified key to the specified value in the rendering
-     * hints of this node.
+     * Maps the specified key to the specified value in the rendering hints of
+     * this node.
+     *
      * @param key the key of the hint to be set
      * @param value the value indicating preferences for the specified
-     * hint category.
+     * hint category.  
      */
     void setRenderingHint(RenderingHints.Key key, Object value);
 
     /**
      * Copies all of the mappings from the specified Map to the
      * rendering hints of this node.
+     *
      * @param hints the rendering hints to be set
      */
     void setRenderingHints(Map hints);
 
     /**
      * Sets the rendering hints of this node.
+     *
      * @param newHints the new rendering hints of this node
      */
     void setRenderingHints(RenderingHints newHints);
@@ -132,6 +137,7 @@ public interface GraphicsNode {
 
     /**
      * Sets the mask of this node.
+     *
      * @param newMask the new mask of this node
      */
     void setMask(Mask newMask);
@@ -143,6 +149,7 @@ public interface GraphicsNode {
 
     /**
      * Sets the filter of this node.
+     *
      * @param newFilter the new filter of this node
      */
     void setFilter(Filter newFilter);
@@ -160,13 +167,14 @@ public interface GraphicsNode {
      * Paints this node.
      *
      * @param g2d the Graphics2D to use
-     * @param rc the GraphicsNodeRenderContext to use
-     * was interrupted during paint
+     * @param rc the GraphicsNodeRenderContext to use was interrupted during
+     * paint 
      */
     void paint(Graphics2D g2d, GraphicsNodeRenderContext rc);
 
     /**
-     * Paints this node without applying Filter, Mask, Composite and clip.
+     * Paints this node without applying Filter, Mask, Composite, and clip.
+     *
      * @param g2d the Graphics2D to use
      * @param rc the GraphicsNodeRenderContext to use
      */
@@ -183,35 +191,40 @@ public interface GraphicsNode {
     void dispatchEvent(GraphicsNodeEvent evt);
 
     /**
-     * Adds the specified graphics node mouse listener to receive
-     * graphics node mouse events from this node.
-     * @param l the graphics node mouse listener to add
+     * Adds the specified graphics node mouse listener to receive graphics node
+     * mouse events from this node.
+     *
+     * @param l the graphics node mouse listener to add 
      */
     void addGraphicsNodeMouseListener(GraphicsNodeMouseListener l);
 
     /**
-     * Removes the specified graphics node mouse listener so that it
-     * no longer receives graphics node mouse events from this node.
-     * @param l the graphics node mouse listener to remove
+     * Removes the specified graphics node mouse listener so that it no longer
+     * receives graphics node mouse events from this node.
+     *
+     * @param l the graphics node mouse listener to remove 
      */
     void removeGraphicsNodeMouseListener(GraphicsNodeMouseListener l);
 
     /**
-     * Adds the specified graphics node key listener to receive
-     * graphics node key events from this node.
-     * @param l the graphics node key listener to add
+     * Adds the specified graphics node key listener to receive graphics node
+     * key events from this node.
+     *
+     * @param l the graphics node key listener to add 
      */
     void addGraphicsNodeKeyListener(GraphicsNodeKeyListener l);
 
     /**
-     * Removes the specified graphics node key listener so that it
-     * no longer receives graphics node key events from this node.
-     * @param l the graphics node key listener to remove
+     * Removes the specified graphics node key listener so that it no longer
+     * receives graphics node key events from this node.
+     *
+     * @param l the graphics node key listener to remove 
      */
     void removeGraphicsNodeKeyListener(GraphicsNodeKeyListener l);
 
     /**
      * Sets the hit detector for this node.
+     *
      * @param hitDetector the new hit detector
      */
     void setGraphicsNodeHitDetector(GraphicsNodeHitDetector hitDetector);
@@ -223,20 +236,23 @@ public interface GraphicsNode {
 
     /**
      * Dispatches a graphics node mouse event to this node or one of its child.
+     *
      * @param evt the evt to dispatch
      */
     void processMouseEvent(GraphicsNodeMouseEvent evt);
 
     /**
      * Dispatches a graphics node key event to this node or one of its child.
+     *
      * @param evt the evt to dispatch
      */
     void processKeyEvent(GraphicsNodeKeyEvent evt);
 
     /**
-     * Returns an array of listeners that were added to this node and
-     * of the specified type.
-     * @param listenerType the type of the listeners to return
+     * Returns an array of listeners that were added to this node and of the
+     * specified type.
+     *
+     * @param listenerType the type of the listeners to return 
      */
     EventListener [] getListeners(Class listenerType);
 
@@ -250,8 +266,8 @@ public interface GraphicsNode {
     CompositeGraphicsNode getParent();
 
     /**
-     * Returns the root of the GVT tree or <code>null</code> if
-     * the node is not part of a GVT tree.
+     * Returns the root of the GVT tree or null if the node is not part of a GVT
+     * tree.  
      */
     RootGraphicsNode getRoot();
 
@@ -260,11 +276,8 @@ public interface GraphicsNode {
     //
 
     /**
-     * Returns the bounds of this node in user space. This includes
-     * primitive paint, filtering, clipping and masking.
-     * <b>Note</b>: The boundaries of some nodes (notably, text element nodes)
-     * cannot be precisely determined independent of their
-     * GraphicsNodeRenderContext.
+     * Returns the bounds of this node in user space. This includes primitive
+     * paint, filtering, clipping and masking.
      *
      * @param rc the GraphicsNodeRenderContext for which this dimension applies
      */
@@ -279,22 +292,18 @@ public interface GraphicsNode {
      * @param rc the GraphicsNodeRenderContext 
      */
     Rectangle2D getTransformedBounds(AffineTransform txf, 
-                                     GraphicsNodeRenderContext rc);
+				     GraphicsNodeRenderContext rc);
 
     /**
-     * Returns the bounds of the area covered by this node's
-     * primitive paint.
-     * <b>Note</b>: The boundaries of some nodes (notably, text element nodes)
-     * cannot be precisely determined independent of their
-     * GraphicsNodeRenderContext.
+     * Returns the bounds of the area covered by this node's primitive paint.
      *
      * @param rc the GraphicsNodeRenderContext for which this dimension applies
      */
     Rectangle2D getPrimitiveBounds(GraphicsNodeRenderContext rc);
 
     /**
-     * Returns the bounds of this node's primitivePaint after applying the input transform
-     * (if any), concatenated with this node's transform (if any).
+     * Returns the bounds of this node's primitivePaint after applying the input
+     * transform (if any), concatenated with this node's transform (if any).
      *
      * @param txf the affine transform with which this node's transform should
      *        be concatenated. Should not be null.
@@ -304,27 +313,20 @@ public interface GraphicsNode {
                                               GraphicsNodeRenderContext rc);
 
     /**
-     * Returns the bounds of the area covered by this node, without
-     * taking any of its rendering attribute into account, i.e., exclusive
-     * of any clipping, masking, filtering or stroking, for example.
-     * <b>Note</b>: The boundaries of some nodes (notably, text element nodes)
-     * cannot be precisely determined independent of their
-     * GraphicsNodeRenderContext.
+     * Returns the bounds of the area covered by this node, without taking any
+     * of its rendering attribute into account. i.e., exclusive of any clipping,
+     * masking, filtering or stroking, for example.
      *
      * @param rc the GraphicsNodeRenderContext for which this dimension applies
      */
     Rectangle2D getGeometryBounds(GraphicsNodeRenderContext rc);
 
     /**
-     * Returns the bounds of the area covered by this node, without
-     * taking any of its rendering attribute into account, i.e., exclusive
-     * of any clipping, masking, filtering or stroking, for example.
-     * The returned value is transformed by the concatenation of the input
-     * transform and this node's transform.
-     *
-     * <b>Note</b>: The boundaries of some nodes (notably, text element nodes)
-     * cannot be precisely determined independent of their
-     * GraphicsNodeRenderContext.
+     * Returns the bounds of the area covered by this node, without taking any
+     * of its rendering attribute into accoun. i.e., exclusive of any clipping,
+     * masking, filtering or stroking, for example. The returned value is
+     * transformed by the concatenation of the input transform and this node's
+     * transform.
      *
      * @param txf the affine transform with which this node's transform should
      *        be concatenated. Should not be null.
@@ -334,61 +336,36 @@ public interface GraphicsNode {
                                              GraphicsNodeRenderContext rc);
 
     /**
-     * Tests if the specified Point2D is inside the boundary of this node.
-     * <b>Note</b>: The boundaries of some nodes (notably, text element nodes)
-     * cannot be precisely determined independent of their
-     * GraphicsNodeRenderContext.
+     * Returns true if the specified Point2D is inside the boundary of this
+     * node, false otherwise.
      *
      * @param p the specified Point2D in the user space
      * @param rc the GraphicsNodeRenderContext for which this dimension applies
-     * @return true if the coordinates are inside, false otherwise
      */
     boolean contains(Point2D p, GraphicsNodeRenderContext rc);
 
     /**
-     * Tests if the interior of this node intersects the interior of a
-     * specified Rectangle2D.
-     * <b>Note</b>: The boundaries of some nodes (notably, text element nodes)
-     * cannot be precisely determined independent of their
-     * GraphicsNodeRenderContext.
+     * Returns true if the interior of this node intersects the interior of a
+     * specified Rectangle2D, false otherwise.
      *
      * @param r the specified Rectangle2D in the user node space
      * @param rc the GraphicsNodeRenderContext for which this dimension applies
-     * @return true if the rectangle intersects, false otherwise
      */
     boolean intersects(Rectangle2D r, GraphicsNodeRenderContext rc);
 
     /**
-     * Returns the GraphicsNode containing point p if this node or one of
-     * its children is sensitive to mouse events at p.
-     * <b>Note</b>: The boundaries of some nodes (notably, text element nodes)
-     * cannot be precisely determined independent of their
-     * GraphicsNodeRenderContext.
+     * Returns the GraphicsNode containing point p if this node or one of its
+     * children is sensitive to mouse events at p.
      *
      * @param p the specified Point2D in the user space
      * @param rc the GraphicsNodeRenderContext for which this dimension applies
-     * @return the GraphicsNode containing p on this branch of the GVT tree.
      */
     GraphicsNode nodeHitAt(Point2D p, GraphicsNodeRenderContext rc);
 
     /**
      * Returns the outline of this node.
-     * <b>Note</b>: The boundaries of some nodes (notably, text element nodes)
-     * cannot be precisely determined independent of their
-     * GraphicsNodeRenderContext.
      *
      * @param rc the GraphicsNodeRenderContext for which this dimension applies
-     * @return the outline of this node
      */
     Shape getOutline(GraphicsNodeRenderContext rc);
-
-    /**
-     * Returns a deep clone of this graphics node.
-     *
-     * <b>Warning</b>: All attributes of this graphics node are shared
-     * between the original node and its copy. This method does not
-     * perform any synchronization.
-     */
-    GraphicsNode renderingClone();
-
 }

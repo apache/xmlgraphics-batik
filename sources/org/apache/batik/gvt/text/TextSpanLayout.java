@@ -23,7 +23,7 @@ import org.apache.batik.gvt.GraphicsNodeRenderContext;
  * <tt>TextPainter</tt> implementations, conforming <tt>TextPainter</tt>s
  * are not required to use this class.
  * @see java.awt.font.TextLayout
- * @see org.apache.batik.gvt.TextPainter.
+ * @see org.apache.batik.gvt.TextPainter
  *
  * @author <a href="bill.haneman@ireland.sun.com>Bill Haneman</a>
  * @version $Id$
