@@ -8,7 +8,13 @@
 
 package org.apache.batik.dom;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+
 import org.w3c.dom.DOMException;
+import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.events.DocumentEvent;
@@ -22,6 +28,7 @@ import org.w3c.dom.events.MutationEvent;
  */
 
 public abstract class AbstractParentNode extends AbstractNode {
+
     /**
      * The children.
      */
@@ -428,16 +435,16 @@ public abstract class AbstractParentNode extends AbstractNode {
     /**
      * To manage the children of this node.
      */
-    protected class ChildNodes implements NodeList {
+    protected class ChildNodes implements NodeList, Serializable {
 	/**
 	 * The first child.
 	 */
-	protected ExtendedNode firstChild;
+	protected transient ExtendedNode firstChild;
 	
 	/**
 	 * The last child.
 	 */
-	protected ExtendedNode lastChild;
+	protected transient ExtendedNode lastChild;
 	
 	/**
 	 * The number of children.
@@ -616,5 +623,47 @@ public abstract class AbstractParentNode extends AbstractNode {
 		 new Object[] { new Integer(n.getNodeType()),
 				n.getNodeName() });
 	}
+
+        // Serialization ///////////////////////////////////////////////////
+
+        /**
+         * Writes the object to the given stream.
+         */
+        private void writeObject(ObjectOutputStream s) throws IOException {
+            s.defaultWriteObject();
+            
+            for (ExtendedNode en = firstChild;
+                 en != null;
+                 en = (ExtendedNode)en.getNextSibling()) {
+                s.writeObject(en);
+            }
+        }
+
+        /**
+         * Reads the object from the given stream.
+         */
+        private void readObject(ObjectInputStream s) 
+            throws IOException, ClassNotFoundException {
+            s.defaultReadObject();
+
+            ExtendedNode prev = null;
+            Document doc = null;
+            if (children > 0) {
+                prev = (ExtendedNode)s.readObject();
+                prev.setParentNode(AbstractParentNode.this);
+                doc = AbstractParentNode.this.getOwnerDocument();
+                prev.setOwnerDocument(doc);
+            }
+            firstChild = prev;
+            for (int i = children - 2; i >= 0; i--) {
+                ExtendedNode en = (ExtendedNode)s.readObject();
+                en.setParentNode(AbstractParentNode.this);
+                en.setPreviousSibling(prev);
+                en.setOwnerDocument(doc);
+                prev.setNextSibling(en);
+                prev = en;
+            } 
+            lastChild = prev;
+        }
     }
 }

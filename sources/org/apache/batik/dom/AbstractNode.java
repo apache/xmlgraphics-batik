@@ -8,16 +8,22 @@
 
 package org.apache.batik.dom;
 
+import java.io.Serializable;
+
 import java.util.MissingResourceException;
+
 import org.apache.batik.dom.events.EventSupport;
 import org.apache.batik.dom.events.NodeEventTarget;
+
 import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.dom.util.XMLSupport;
+
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
 import org.w3c.dom.events.DocumentEvent;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventException;
@@ -31,7 +37,10 @@ import org.w3c.dom.events.MutationEvent;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public abstract class AbstractNode implements ExtendedNode {
+public abstract class AbstractNode
+    implements ExtendedNode,
+               Serializable {
+
     /**
      * An empty instance of NodeList.
      */
@@ -43,12 +52,12 @@ public abstract class AbstractNode implements ExtendedNode {
     /**
      * The owner document.
      */
-    protected AbstractDocument ownerDocument;
+    protected transient AbstractDocument ownerDocument;
 
     /**
      * The event support.
      */
-    protected EventSupport eventSupport;
+    protected transient EventSupport eventSupport;
 
     /**
      * Sets the name of this node.
@@ -58,6 +67,13 @@ public abstract class AbstractNode implements ExtendedNode {
     }
 
     /**
+     * Sets the owner document of this node.
+     */
+    public void setOwnerDocument(Document doc) {
+        ownerDocument = (AbstractDocument)doc;
+    }
+
+     /**
      * Sets the value of the specified attribute. This method only applies
      * to Attr objects.
      */

@@ -8,14 +8,20 @@
 
 package org.apache.batik.dom;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
+
 import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.dom.util.HashTable;
+
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
 import org.w3c.dom.events.DocumentEvent;
 import org.w3c.dom.events.MutationEvent;
 
@@ -28,6 +34,7 @@ import org.w3c.dom.events.MutationEvent;
 public abstract class AbstractElement
     extends    AbstractParentChildNode
     implements Element {
+
     /**
      * The attributes of this element.
      */
@@ -497,7 +504,8 @@ public abstract class AbstractElement
     /**
      * An implementation of the {@link org.w3c.dom.NamedNodeMap}.
      */
-    public class NamedNodeHashMap implements NamedNodeMap {
+    public class NamedNodeHashMap implements NamedNodeMap, Serializable {
+
 	/**
 	 * The place where the nodes in the anonymous namespace are stored.
 	 */
@@ -726,5 +734,24 @@ public abstract class AbstractElement
 					 new Object[] { arg.getNodeName() });
 	    }
 	}
+
+        // Serialization ///////////////////////////////////////////////////
+
+        // A standard write is enough.
+
+        /**
+         * Reads the object from the given stream.
+         */
+        private void readObject(ObjectInputStream s) 
+            throws IOException, ClassNotFoundException {
+            s.defaultReadObject();
+
+            int len = getLength();
+            for (int i = len - 1; i >= 0; i--) {
+                AbstractAttr attr = (AbstractAttr)item(i);
+                attr.setOwnerDocument(AbstractElement.this.getOwnerDocument());
+                attr.setOwnerElement(AbstractElement.this);
+            }
+        }
     }
 }

@@ -116,6 +116,9 @@ public class SVGOMDocument
         factories.put(TAG_A,
                       new AElementFactory());
 
+        factories.put(TAG_ANIMATE,
+                      new AnimateElementFactory());
+
         factories.put(TAG_CIRCLE,
                       new CircleElementFactory());
 
@@ -686,6 +689,21 @@ public class SVGOMDocument
          */
         public Element create(String prefix) {
             return new SVGOMAElement(prefix, SVGOMDocument.this);
+        }
+    }
+
+    /**
+     * To create a 'animate' element.
+     */
+    protected class AnimateElementFactory implements ElementFactory {
+        public AnimateElementFactory() {}
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix) {
+            return new SVGOMToBeImplementedElement(prefix,
+                                                   SVGOMDocument.this,
+                                                   TAG_ANIMATE);
         }
     }
 

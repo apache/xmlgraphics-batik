@@ -26,6 +26,7 @@ public interface SVGConstants extends CSSConstants {
      * Tags
      */
     String TAG_A = "a";
+    String TAG_ANIMATE = "animate";
     String TAG_CIRCLE = "circle";
     String TAG_CLIP_PATH = "clipPath";
     String TAG_DEFS = "defs";
