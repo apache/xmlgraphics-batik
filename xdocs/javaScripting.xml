@@ -172,7 +172,9 @@ public class SVGApplication {
 // Returns immediately
 canvas.getUpdateManager().getUpdateRunnableQueue().
     invokeLater(new Runnable() {
-       // Insert some actions on the DOM here
+        public void run() {
+            // Insert some actions on the DOM here
+        }
     });
 
 - or -
@@ -180,13 +182,22 @@ canvas.getUpdateManager().getUpdateRunnableQueue().
 // Waits until the Runnable is invoked
 canvas.getUpdateManager().getUpdateRunnableQueue().
     invokeAndWait(new Runnable() {
-       // Insert some actions on the DOM here
+        public void run() {
+            // Insert some actions on the DOM here
+        }
     });
 </source>
-    <p>
-    Like with event listeners, when a Runnable is invoked from the update
-    thread, the graphics are updated.
+    <p>Like with event listeners, when a Runnable is invoked from the
+    update thread, the graphics are updated.
     </p>
+    <note>It is very dangerous to call 'invokeAndWait' from the
+        Swing Event thread.  This is the only thread that can be
+        used to interact with Swing components.  In some cases
+        DOM calls may need to query the canvas for information
+        (such as actual Swing component size etc).  If this
+        happens you will get a thread deadlock.  You should
+        only make invokeAndWait calls from 'third party' threads.
+    </note>
     </s1>
 
     <!-- #################################################### -->

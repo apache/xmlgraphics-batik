@@ -204,6 +204,11 @@ public class ShapeNode extends AbstractGraphicsNode {
         sensitiveArea = null;
     }
 
+    public void setPointerEventType(int pointerEventType) {
+        super.setPointerEventType(pointerEventType);
+        sensitiveBounds = null;
+        sensitiveArea = null;
+    }
     /**
      * Returns true if the specified Point2D is inside the boundary of this
      * node, false otherwise.
