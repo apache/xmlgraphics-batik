@@ -621,29 +621,11 @@ public class JSVGComponent extends JGVTComponent {
         if ((svgDocument == null) || (gvtRoot == null))
             return false;
 
-        boolean ret = false;
-        try {
-            SVGSVGElement elt = svgDocument.getRootElement();
-            Dimension d = getSize();
-            if (d.width  < 1) d.width  = 1;
-            if (d.height < 1) d.height = 1;
-            AffineTransform at = ViewBox.getViewTransform
-                (fragmentIdentifier, elt, d.width, d.height);
-            CanvasGraphicsNode cgn = getCanvasGraphicsNode();
-            if (!at.equals(cgn.getViewingTransform())) {
-                cgn.setViewingTransform(at);
-                if (renderer != null)
-                    renderer.setTree(gvtRoot);
-                ret = true;
-            }
-
-            initialTransform = new AffineTransform();
-            if (!initialTransform.equals(getRenderingTransform())) {
-                setRenderingTransform(initialTransform, false);
-                ret = true;
-            }
-        } catch (BridgeException e) {
-            userAgent.displayError(e);
+        boolean ret = updateRenderingTransform();
+        initialTransform = new AffineTransform();
+        if (!initialTransform.equals(getRenderingTransform())) {
+            setRenderingTransform(initialTransform, false);
+            ret = true;
         }
         return ret;
     }
@@ -941,13 +923,15 @@ public class JSVGComponent extends JGVTComponent {
             setMySize(new Dimension((int)dim.getWidth(),
                                     (int)dim.getHeight()));
             SVGSVGElement elt = svgDocument.getRootElement();
-            Dimension sz = getSize();
-            if (sz.width  < 1) sz.width  = 1;
-            if (sz.height < 1) sz.height = 1;
-            AffineTransform vt = ViewBox.getViewTransform
-                (fragmentIdentifier, elt, sz.width, sz.height);
+            Dimension d = getSize();
+            if (d.width  < 1) d.width  = 1;
+            if (d.height < 1) d.height = 1;
+            AffineTransform at = ViewBox.getViewTransform
+                (fragmentIdentifier, elt, d.width, d.height);
             CanvasGraphicsNode cgn = getCanvasGraphicsNode(e.getGVTRoot());
-            cgn.setViewingTransform(vt);
+            cgn.setViewingTransform(at);
+            initialTransform = new AffineTransform();
+            setRenderingTransform(initialTransform, false);
             gvtRoot = null;
 
             if (isDynamicDocument && JSVGComponent.this.eventsEnabled) {
