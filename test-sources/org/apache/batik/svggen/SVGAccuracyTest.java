@@ -140,7 +140,7 @@ public class SVGAccuracyTest extends AbstractTest
         // Generate SVG content
         //
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        OutputStreamWriter osw = new OutputStreamWriter(bos);
+        OutputStreamWriter osw = new OutputStreamWriter(bos, "UTF-8");
         try{
             painter.paint(g2d);
             g2d.stream(osw);
