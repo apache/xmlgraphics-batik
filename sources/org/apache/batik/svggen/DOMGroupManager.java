@@ -46,6 +46,7 @@ import org.apache.batik.ext.awt.g2d.TransformStackElement;
  * is added to the current group. This is needed to let the
  * DOMTreeManager handle group managers that would be used concurrently.
  *
+ * @author <a href="mailto:cjolif@ilog.fr">Christophe Jolif</a>
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
@@ -53,6 +54,9 @@ public class DOMGroupManager implements SVGSyntax {
     private static final String ERROR_GC_NULL = "gc should not be null";
     private static final String ERROR_DOMTREEMANAGER_NULL =
         "domTreeManager should not be null";
+
+    public final static short DRAW = 0x01;
+    public final static short FILL = 0x10;
 
     /**
      * Reference to the GraphicContext this manager will use to
@@ -82,11 +86,11 @@ public class DOMGroupManager implements SVGSyntax {
      * @param domTreeManager DOMTreeManager instance this group manager
      *        cooperates with.
      */
-    public DOMGroupManager(GraphicContext gc, DOMTreeManager domTreeManager){
-        if(gc == null)
+    public DOMGroupManager(GraphicContext gc, DOMTreeManager domTreeManager) {
+        if (gc == null)
             throw new IllegalArgumentException(ERROR_GC_NULL);
 
-        if(domTreeManager == null)
+        if (domTreeManager == null)
             throw new IllegalArgumentException(ERROR_DOMTREEMANAGER_NULL);
 
         this.gc = gc;
@@ -102,28 +106,51 @@ public class DOMGroupManager implements SVGSyntax {
     /**
      * Reset the state of this object to handle a new currentGroup
      */
-    void recycleCurrentGroup(){
+    void recycleCurrentGroup() {
         // Create new initial current group node
-        currentGroup = domTreeManager.getDOMFactory().createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
+        currentGroup = domTreeManager.getDOMFactory().
+            createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
     }
 
     /**
-     * Add a node to the current group, if possible
+     * Adds a node to the current group, if possible
      * @param element child Element to add to the group
      */
     public void addElement(Element element) {
+        addElement(element, (short)(DRAW|FILL));
+
+}
+    /**
+     * Adds a node to the current group, if possible
+     * @param element child Element to add to the group
+     */
+    public void addElement(Element element, short method) {
         //
         // If this is the first child to be added to the
         // currentGroup, 'freeze' the style attributes.
         //
-        if(!currentGroup.hasChildNodes()){
+        if (!currentGroup.hasChildNodes()) {
             currentGroup.appendChild(element);
 
             groupGC = domTreeManager.gcConverter.toSVG(gc);
             SVGGraphicContext deltaGC = processDeltaGC(groupGC,
                                                        domTreeManager.defaultGC);
-            setAttributes(currentGroup, deltaGC.getGroupContext());
-            setAttributes(element, deltaGC.getGraphicElementContext());
+            domTreeManager.getStyleHandler().
+                setStyle(currentGroup, deltaGC.getGroupContext(),
+                         domTreeManager.getGeneratorContext());
+            if ((method & DRAW) == 0) {
+                // force stroke:none
+                deltaGC.getGraphicElementContext().put(SVG_STROKE_ATTRIBUTE,
+                                                       SVG_NONE_VALUE);
+            }
+            if ((method & FILL) == 0) {
+                // force fill:none
+                deltaGC.getGraphicElementContext().put(SVG_FILL_ATTRIBUTE,
+                                                       SVG_NONE_VALUE);
+            }
+            domTreeManager.getStyleHandler().
+                setStyle(element, deltaGC.getGraphicElementContext(),
+                         domTreeManager.getGeneratorContext());
             setTransform(currentGroup, deltaGC.getTransformStack());
             domTreeManager.appendGroup(currentGroup, this);
         } else {
@@ -133,17 +160,31 @@ public class DOMGroupManager implements SVGSyntax {
                 // out delta between current gc and group
                 // context
                 //
-                SVGGraphicContext elementGC = domTreeManager.gcConverter.toSVG(gc);
+                SVGGraphicContext elementGC =
+                    domTreeManager.gcConverter.toSVG(gc);
                 SVGGraphicContext deltaGC = processDeltaGC(elementGC, groupGC);
 
                 // If there are less than the maximum number
                 // of differences, then add the node to the current
                 // group and set its attributes
                 trimContextForElement(deltaGC, element);
-                if(countOverrides(deltaGC) <= domTreeManager.maxGCOverrides) {
+                if (countOverrides(deltaGC) <= domTreeManager.maxGCOverrides) {
                     currentGroup.appendChild(element);
-                    setAttributes(element, deltaGC.getGroupContext());
-                    setAttributes(element, deltaGC.getGraphicElementContext());
+                    // as there already are children we put all
+                    // attributes (group + element) on the element itself.
+                    if ((method & DRAW) == 0) {
+                        // force stroke:none
+                        deltaGC.getContext().
+                            put(SVG_STROKE_ATTRIBUTE, SVG_NONE_VALUE);
+                    }
+                    if ((method & FILL) == 0) {
+                        // force fill:none
+                        deltaGC.getContext().
+                            put(SVG_FILL_ATTRIBUTE, SVG_NONE_VALUE);
+                    }
+                    domTreeManager.getStyleHandler().
+                        setStyle(element, deltaGC.getContext(),
+                                 domTreeManager.getGeneratorContext());
                     setTransform(element, deltaGC.getTransformStack());
                 } else {
                     //
@@ -152,7 +193,7 @@ public class DOMGroupManager implements SVGSyntax {
                     currentGroup =
                         domTreeManager.getDOMFactory().
                         createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
-                    addElement(element);
+                    addElement(element, method);
                 }
             } else {
                 //
@@ -163,7 +204,7 @@ public class DOMGroupManager implements SVGSyntax {
                     domTreeManager.getDOMFactory().
                     createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
                 gc.validateTransformStack();
-                addElement(element);
+                addElement(element, method);
             }
         }
     }
@@ -173,17 +214,17 @@ public class DOMGroupManager implements SVGSyntax {
      * overrides. Only differences in the group context are considered
      * overrides.
      */
-    private int countOverrides(SVGGraphicContext deltaGC){
+    private int countOverrides(SVGGraphicContext deltaGC) {
         return deltaGC.getGroupContext().size();
     }
 
     /**
      * Removes properties that do not apply for a specific element
      */
-    private void trimContextForElement(SVGGraphicContext svgGC, Element element){
+    private void trimContextForElement(SVGGraphicContext svgGC, Element element) {
         String tag = element.getTagName();
         Map groupAttrMap = svgGC.getGroupContext();
-        if(tag != null){
+        if (tag != null) {
             // For each attribute, check if there is an attribute
             // descriptor. If there is, check if the attribute
             // applies to the input element. If there is none,
@@ -202,25 +243,12 @@ public class DOMGroupManager implements SVGSyntax {
      * Processes the transform attribute value corresponding to a
      * given transform stack
      */
-    private void setTransform(Element element, TransformStackElement transformStack[]){
-        String transform = domTreeManager.gcConverter.toSVG(transformStack).trim();
-        if(transform.length() > 0)
+    private void setTransform(Element element,
+                              TransformStackElement transformStack[]) {
+        String transform = domTreeManager.gcConverter.
+            toSVG(transformStack).trim();
+        if (transform.length() > 0)
             element.setAttributeNS(null, SVG_TRANSFORM_ATTRIBUTE, transform);
-    }
-
-    /**
-     * Implementation helper: sets attributes in input attrMap
-     * into input element. If the element's attribute is already
-     * specified, it is *not* overridden.
-     */
-    private void setAttributes(Element element, Map attrMap){
-        String tagName = element.getTagName();
-        Iterator iter = attrMap.keySet().iterator();
-        while(iter.hasNext()){
-            String attrName = (String)iter.next();
-            if(element.getAttributeNS(null, attrName).length() == 0)
-                element.setAttributeNS(null, attrName, (String)attrMap.get(attrName));
-        }
     }
 
     /**
@@ -240,11 +268,18 @@ public class DOMGroupManager implements SVGSyntax {
         TransformStackElement deltaTransformStack[] =
             new TransformStackElement[deltaStackLength];
 
-        System.arraycopy(gcTransformStack, referenceStack.length, deltaTransformStack, 0, deltaStackLength);
+        System.arraycopy(gcTransformStack, referenceStack.length,
+                         deltaTransformStack, 0, deltaStackLength);
 
-        // System.err.println("gc transform stack length: " + gc.getTransformStack().length);
-        // System.err.println("reference stack length   : " + referenceGc.getTransformStack().length);
-        // System.err.println("delta stack length       : " + deltaTransformStack.length);
+        /**
+           System.err.println("gc transform stack length: " +
+           gc.getTransformStack().length);
+           System.err.println("reference stack length   : " +
+           referenceGc.getTransformStack().length);
+           System.err.println("delta stack length       : " +
+           deltaTransformStack.length);
+        */
+
         /*
           TransformStackElement gcStack[] = gc.getTransformStack();
           for(int i=0; i<gcStack.length; i++)
@@ -255,15 +290,14 @@ public class DOMGroupManager implements SVGSyntax {
           System.err.println("refStack[" + i + "] = " + refStack[i].toString());
 
           for(int i=0; i<deltaTransformStack.length; i++)
-          System.err.println("deltaStack[" + i + "] = " + deltaTransformStack[i].toString());
+          System.err.println("deltaStack[" + i + "] = " +
+          deltaTransformStack[i].toString());
         */
 
-        SVGGraphicContext deltaGC = new SVGGraphicContext(groupDelta, graphicElementDelta, deltaTransformStack);
-        // System.out.println("===>>> Reference GC");
-        // SVGGraphicContextConverter.traceSVGGC(referenceGc, domTreeManager.gcConverter);
+        SVGGraphicContext deltaGC = new SVGGraphicContext(groupDelta,
+                                                          graphicElementDelta,
+                                                          deltaTransformStack);
 
-        // System.out.println("===>>> Delta GC");
-        // SVGGraphicContextConverter.traceSVGGC(deltaGC, domTreeManager.gcConverter);
         return deltaGC;
     }
 
@@ -273,14 +307,15 @@ public class DOMGroupManager implements SVGSyntax {
      * are different from values in referenceMap are place in the
      * returned delta Map.
      */
-    private Map processDeltaMap(Map map, Map referenceMap){
-        Map mapDelta = new Hashtable();
+    private Map processDeltaMap(Map map, Map referenceMap) {
+        // no need to be synch => HashMap
+        Map mapDelta = new HashMap();
         Iterator iter = map.keySet().iterator();
-        while(iter.hasNext()){
+        while (iter.hasNext()){
             String key = (String)iter.next();
             String value = (String)map.get(key);
             String refValue = (String)referenceMap.get(key);
-            if(!value.equals(refValue)) {
+            if (!value.equals(refValue)) {
                 /*if(key.equals(SVG_TRANSFORM_ATTRIBUTE)){
                   // Special handling for the transform attribute.
                   // At this point in the processing, the transform
@@ -291,7 +326,6 @@ public class DOMGroupManager implements SVGSyntax {
                 mapDelta.put(key, value);
             }
         }
-
         return mapDelta;
     }
 }

@@ -20,7 +20,7 @@ import org.w3c.dom.Document;
  * @author <a href="mailto:cjolif@ilog.fr>Christophe Jolif</a>
  * @version $Id$
  */
-final public class SVGGeneratorContext {
+public class SVGGeneratorContext {
     /**
      * Error messages.
      */
@@ -32,6 +32,8 @@ final public class SVGGeneratorContext {
         "extensionHandler should not be null";
     private static final String ERROR_ID_GENERATOR_NULL =
         "idGenerator should not be null";
+    private static final String ERROR_STYLE_HANDLER_NULL =
+        "styleHandler should not be null";
 
     // this fields are package access for read-only purpose
 
@@ -63,6 +65,11 @@ final public class SVGGeneratorContext {
     SVGIDGenerator idGenerator;
 
     /**
+     * To set style.
+     */
+    StyleHandler styleHandler;
+
+    /**
      * Builds an instance of <code>SVGGeneratorContext</code> with the given
      * <code>domFactory</code> but let the user set later the other contextual
      * information.
@@ -87,6 +94,7 @@ final public class SVGGeneratorContext {
         ctx.setIDGenerator(new SVGIDGenerator());
         ctx.setExtensionHandler(new DefaultExtensionHandler());
         ctx.setImageHandler(new ImageHandlerBase64Encoder());
+        ctx.setStyleHandler(new DefaultStyleHandler());
         return ctx;
     }
 
@@ -94,7 +102,7 @@ final public class SVGGeneratorContext {
      * Returns the {@link org.apache.batik.svggen.SVGIDGenerator} that
      * has been set.
      */
-    public SVGIDGenerator getIDGenerator() {
+    final public SVGIDGenerator getIDGenerator() {
         return idGenerator;
     }
 
@@ -102,7 +110,7 @@ final public class SVGGeneratorContext {
      * Sets the {@link org.apache.batik.svggen.SVGIDGenerator}
      * to be used. It should not be <code>null</code>.
      */
-    protected void setIDGenerator(SVGIDGenerator idGenerator) {
+    final protected void setIDGenerator(SVGIDGenerator idGenerator) {
         if (idGenerator == null)
             throw new IllegalArgumentException(ERROR_ID_GENERATOR_NULL);
         this.idGenerator = idGenerator;
@@ -112,7 +120,7 @@ final public class SVGGeneratorContext {
      * Returns the DOM Factory that
      * has been set.
      */
-    public Document getDOMFactory() {
+    final public Document getDOMFactory() {
         return domFactory;
     }
 
@@ -120,7 +128,7 @@ final public class SVGGeneratorContext {
      * Sets the DOM Factory
      * to be used. It should not be <code>null</code>.
      */
-    protected void setDOMFactory(Document domFactory) {
+    final protected void setDOMFactory(Document domFactory) {
         if (domFactory == null)
             throw new IllegalArgumentException(ERROR_DOM_FACTORY_NULL);
         this.domFactory = domFactory;
@@ -130,7 +138,7 @@ final public class SVGGeneratorContext {
      * Returns the {@link org.apache.batik.svggen.ExtensionHandler} that
      * has been set.
      */
-    public ExtensionHandler getExtensionHandler() {
+    final public ExtensionHandler getExtensionHandler() {
         return extensionHandler;
     }
 
@@ -138,7 +146,7 @@ final public class SVGGeneratorContext {
      * Sets the {@link org.apache.batik.svggen.ExtensionHandler}
      * to be used. It should not be <code>null</code>.
      */
-    protected void setExtensionHandler(ExtensionHandler extensionHandler) {
+    final protected void setExtensionHandler(ExtensionHandler extensionHandler) {
         if (extensionHandler == null)
             throw new IllegalArgumentException(ERROR_EXTENSION_HANDLER_NULL);
         this.extensionHandler = extensionHandler;
@@ -148,7 +156,7 @@ final public class SVGGeneratorContext {
      * Returns the {@link org.apache.batik.svggen.ImageHandler} that
      * has been set.
      */
-    public ImageHandler getImageHandler() {
+    final public ImageHandler getImageHandler() {
         return imageHandler;
     }
 
@@ -156,9 +164,27 @@ final public class SVGGeneratorContext {
      * Sets the {@link org.apache.batik.svggen.ImageHandler}
      * to be used. It should not be <code>null</code>.
      */
-    protected void setImageHandler(ImageHandler imageHandler) {
+    final protected void setImageHandler(ImageHandler imageHandler) {
         if (imageHandler == null)
             throw new IllegalArgumentException(ERROR_IMAGE_HANDLER_NULL);
         this.imageHandler = imageHandler;
+    }
+
+    /**
+     * Returns the {@link org.apache.batik.svggen.StyleHandler} that
+     * has been set.
+     */
+    final public StyleHandler getStyleHandler() {
+        return styleHandler;
+    }
+
+    /**
+     * Sets the {@link org.apache.batik.svggen.Stylehandler}
+     * to be used. It should not be <code>null</code>.
+     */
+    final protected void setStyleHandler(StyleHandler styleHandler) {
+        if (styleHandler == null)
+            throw new IllegalArgumentException(ERROR_STYLE_HANDLER_NULL);
+        this.styleHandler = styleHandler;
     }
 }

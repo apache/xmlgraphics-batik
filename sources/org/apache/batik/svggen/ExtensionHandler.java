@@ -33,7 +33,7 @@ public interface ExtensionHandler {
      * @return an SVGPaintDescriptor
      */
     public SVGPaintDescriptor handlePaint(Paint paint,
-                                          SVGGeneratorContext geneartorContext);
+                                          SVGGeneratorContext generatorContext);
 
     /**
      * @param composite Custom Composite to be converted to SVG.

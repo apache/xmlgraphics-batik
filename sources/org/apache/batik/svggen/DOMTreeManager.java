@@ -292,10 +292,6 @@ public class DOMTreeManager implements SVGSyntax {
      */
     void setExtensionHandler(ExtensionHandler extensionHandler) {
         generatorContext.setExtensionHandler(extensionHandler);
-        // we have change the context, this automatically change
-        // handler for converters
-        //      gcConverter.setExtensionHandler(extensionHandler);
-        // filterConverter.setExtensionHandler(extensionHandler);
     }
 
     /**
@@ -395,7 +391,15 @@ public class DOMTreeManager implements SVGSyntax {
         return gcConverter;
     }
 
+    SVGGeneratorContext getGeneratorContext() {
+        return generatorContext;
+    }
+
     Document getDOMFactory() {
         return generatorContext.domFactory;
+    }
+
+    StyleHandler getStyleHandler() {
+        return generatorContext.styleHandler;
     }
 }
