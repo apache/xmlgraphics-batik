@@ -59,7 +59,7 @@ public class SVGMaskElementBridge implements MaskBridge, SVGConstants {
                            Element maskElement,
                            Element maskedElement) {
 
-        GraphicsNodeRenderContext rc = 
+        GraphicsNodeRenderContext rc =
                    bridgeContext.getGraphicsNodeRenderContext();
 
         //
@@ -75,7 +75,7 @@ public class SVGMaskElementBridge implements MaskBridge, SVGConstants {
             = SVGUtilities.convertMaskRegion(maskElement,
                                              maskedElement,
                                              maskedNode,
-                                             rc,             
+                                             rc,
                                              uctx);
 
         //
@@ -103,10 +103,8 @@ public class SVGMaskElementBridge implements MaskBridge, SVGConstants {
         }
 
         GVTBuilder builder = bridgeContext.getGVTBuilder();
-        CompositeGraphicsNode maskNode
-            = bridgeContext.getGVTFactory().createCompositeGraphicsNode();
-        CompositeGraphicsNode maskNodeContent
-            = bridgeContext.getGVTFactory().createCompositeGraphicsNode();
+        CompositeGraphicsNode maskNode = new CompositeGraphicsNode();
+        CompositeGraphicsNode maskNodeContent = new CompositeGraphicsNode();
         maskNode.getChildren().add(maskNodeContent);
         boolean hasChildren = false;
         for(Node node=maskElement.getFirstChild();
@@ -138,10 +136,7 @@ public class SVGMaskElementBridge implements MaskBridge, SVGConstants {
 
         // Get the mask transform
         AffineTransform at =
-            SVGUtilities.convertAffineTransform(maskElement,
-                                                ATTR_TRANSFORM,
-                                              bridgeContext.getParserFactory());
-
+            SVGUtilities.convertAffineTransform(maskElement, ATTR_TRANSFORM);
 
         at = SVGUtilities.convertAffineTransform(at,
                                                  maskedNode,

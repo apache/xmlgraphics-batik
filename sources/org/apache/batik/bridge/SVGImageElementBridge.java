@@ -118,13 +118,11 @@ public class SVGImageElementBridge implements GraphicsNodeBridge,
             throw new IllegalAttributeValueException(
                 Messages.formatMessage("image.xlinkHref.badImageType", null));
         }
-        ImageNode imgNode = ctx.getGVTFactory().createImageNode();
+        ImageNode imgNode = new ImageNode();
         imgNode.setImage(node);
         // initialize the transform
         AffineTransform at =
-            SVGUtilities.convertAffineTransform(element,
-                                                ATTR_TRANSFORM,
-                                                ctx.getParserFactory());
+            SVGUtilities.convertAffineTransform(element, ATTR_TRANSFORM);
         imgNode.setTransform(at);
         // bind it as soon as it's available...
         ctx.bind(element, imgNode);
@@ -163,7 +161,7 @@ public class SVGImageElementBridge implements GraphicsNodeBridge,
     protected GraphicsNode createBase64ImageNode(BridgeContext ctx,
                                                  SVGElement svgElement,
                                                  String uriStr) {
-        RasterImageNode node = ctx.getGVTFactory().createRasterImageNode();
+        RasterImageNode node = new RasterImageNode();
         // create the image
         Rectangle2D bounds = getImageBounds(ctx, svgElement);
         node.setImage(RasterRable.create(uriStr, bounds));
@@ -174,7 +172,7 @@ public class SVGImageElementBridge implements GraphicsNodeBridge,
     protected GraphicsNode createRasterImageNode(BridgeContext ctx,
                                                  SVGElement svgElement,
                                                  URL url) {
-        RasterImageNode node = ctx.getGVTFactory().createRasterImageNode();
+        RasterImageNode node = new RasterImageNode();
         // create the image
         Rectangle2D bounds = getImageBounds(ctx, svgElement);
         node.setImage(RasterRable.create(url, bounds));
@@ -193,8 +191,7 @@ public class SVGImageElementBridge implements GraphicsNodeBridge,
         ctx.setViewCSS((ViewCSS)((SVGOMDocument)imgDocument).getDefaultView());
         SVGSVGElement svgElement = imgDocument.getRootElement();
 
-        CompositeGraphicsNode result =
-            ctx.getGVTFactory().createCompositeGraphicsNode();
+        CompositeGraphicsNode result = new CompositeGraphicsNode();
 
         CSSStyleDeclaration decl;
         decl = ctx.getViewCSS().getComputedStyle(element, null);

@@ -10,7 +10,6 @@ package org.apache.batik.bridge;
 
 import java.io.StringReader;
 import org.apache.batik.parser.LengthParser;
-import org.apache.batik.parser.ParserFactory;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.UnitProcessor;
 import org.w3c.dom.svg.SVGSVGElement;
@@ -42,7 +41,7 @@ public class SVGViewport implements Viewport, SVGConstants {
      */
     public float getWidth() {
         String s = svgSvgElement.getAttributeNS(null, SVG_WIDTH_ATTRIBUTE);
-        LengthParser p = uctx.getParserFactory().createLengthParser();
+        LengthParser p = new LengthParser();
         UnitProcessor.UnitResolver ur = new UnitProcessor.UnitResolver();
         p.setLengthHandler(ur);
         p.parse(new StringReader(s));
@@ -58,7 +57,7 @@ public class SVGViewport implements Viewport, SVGConstants {
      */
     public float getHeight() {
         String s = svgSvgElement.getAttributeNS(null, SVG_HEIGHT_ATTRIBUTE);
-        LengthParser p = uctx.getParserFactory().createLengthParser();
+        LengthParser p = new LengthParser();
         UnitProcessor.UnitResolver ur = new UnitProcessor.UnitResolver();
         p.setLengthHandler(ur);
         p.parse(new StringReader(s));

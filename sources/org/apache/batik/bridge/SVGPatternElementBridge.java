@@ -21,12 +21,10 @@ import org.apache.batik.bridge.ObjectBoundingBoxViewport;
 import org.apache.batik.bridge.PaintBridge;
 import org.apache.batik.bridge.Viewport;
 import org.apache.batik.gvt.CompositeGraphicsNode;
-import org.apache.batik.gvt.GVTFactory;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
-import org.apache.batik.parser.ParserFactory;
 import org.apache.batik.bridge.resources.Messages;
 import org.apache.batik.gvt.PatternPaint;
 import org.apache.batik.ext.awt.image.renderable.ClipRable8Bit;
@@ -112,8 +110,7 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
         // Build pattern content
         GVTBuilder builder = ctx.getGVTBuilder();
 
-        CompositeGraphicsNode patternContentNode
-            = ctx.getGVTFactory().createCompositeGraphicsNode();
+        CompositeGraphicsNode patternContentNode = new CompositeGraphicsNode();
 
         // build the GVT tree that represents the pattern
         boolean hasChildren = false;
@@ -148,8 +145,7 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
         // Get the patternTransfrom
         AffineTransform patternTransform =
             SVGUtilities.convertAffineTransform(paintElement,
-                                                ATTR_PATTERN_TRANSFORM,
-                                                ctx.getParserFactory());
+                                                ATTR_PATTERN_TRANSFORM);
 
         // Get the overflow property on the pattern element
         CSSStyleDeclaration cssDecl
@@ -220,14 +216,13 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
         // depending on overflow)
         //  + one for the viewBox to patternRegion transform
         //
-        GVTFactory gvtFactory = ctx.getGVTFactory();
         AffineTransform nodeTransform = null;
         if(hasViewBox){
             nodeTransform = preserveAspectRatioTransform;
             if(!overflow){
                 // Need to do clipping
                 CompositeGraphicsNode newPatternContentNode
-                    = gvtFactory.createCompositeGraphicsNode();
+                    = new CompositeGraphicsNode();
 
                 newPatternContentNode.getChildren().add(patternContentNode);
 

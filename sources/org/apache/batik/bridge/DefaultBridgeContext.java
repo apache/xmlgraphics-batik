@@ -8,8 +8,6 @@
 
 package org.apache.batik.bridge;
 
-import org.apache.batik.gvt.GVTFactory;
-import org.apache.batik.parser.ParserFactory;
 import org.apache.batik.dom.svg.SVGDocumentLoader;
 import org.apache.batik.bridge.BufferedDocumentLoader;
 import org.apache.batik.bridge.BufferedDocumentLoader;
@@ -36,8 +34,6 @@ public class DefaultBridgeContext extends SVGBridgeContext {
     public DefaultBridgeContext(UserAgent userAgent, SVGDocument svgDocument) {
         setDocumentLoader(new BufferedDocumentLoader
                     (new SVGDocumentLoader(userAgent.getXMLParserClassName())));
-        setGVTFactory(GVTFactory.getGVTFactoryImplementation());
-        setParserFactory(new ParserFactory());
         setGraphicsNodeRableFactory(new ConcreteGraphicsNodeRableFactory());
         setUserAgent(userAgent);
         setGVTBuilder(new ConcreteGVTBuilder());
@@ -51,8 +47,6 @@ public class DefaultBridgeContext extends SVGBridgeContext {
         // <!> deprecated
         setDocumentLoader(new BufferedDocumentLoader
                           (new SVGDocumentLoader(parser)));
-        setGVTFactory(GVTFactory.getGVTFactoryImplementation());
-        setParserFactory(new ParserFactory());
         setGraphicsNodeRableFactory(new ConcreteGraphicsNodeRableFactory());
         setGVTBuilder(new ConcreteGVTBuilder());
         setUserAgent(new DefaultUserAgent(parser));

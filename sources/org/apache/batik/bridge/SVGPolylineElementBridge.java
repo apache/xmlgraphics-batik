@@ -57,7 +57,7 @@ public class SVGPolylineElementBridge extends SVGShapeElementBridge {
             throw new MissingAttributeException(
                 Messages.formatMessage("polyline.points.required", null));
         }
-        PointsParser p = ctx.getParserFactory().createPointsParser();
+        PointsParser p = new PointsParser();
         AWTPolylineProducer ph = new AWTPolylineProducer();
         ph.setWindingRule(wr);
         p.setPointsHandler(ph);

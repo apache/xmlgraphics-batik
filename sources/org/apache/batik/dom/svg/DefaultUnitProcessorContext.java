@@ -12,7 +12,6 @@ import java.io.StringReader;
 
 import org.apache.batik.css.HiddenChildElementSupport;
 import org.apache.batik.parser.LengthParser;
-import org.apache.batik.parser.ParserFactory;
 import org.apache.batik.util.UnitProcessor;
 import org.apache.batik.util.SVGConstants;
 
@@ -47,13 +46,6 @@ public class DefaultUnitProcessorContext
     }
 
     /**
-     * Returns the parser factory.
-     */
-    public ParserFactory getParserFactory() {
-        return context.getParserFactory();
-    }
-
-    /**
      * Returns the font-size medium value in pt.
      */
     public float getMediumFontSize() {
@@ -84,7 +76,7 @@ public class DefaultUnitProcessorContext
             return (float)context.getViewportWidth();
         }
         String s = svg.getAttributeNS(null, SVG_WIDTH_ATTRIBUTE);
-        LengthParser p = getParserFactory().createLengthParser();
+        LengthParser p = new LengthParser();
         UnitProcessor.UnitResolver ur = new UnitProcessor.UnitResolver();
         p.setLengthHandler(ur);
         p.parse(new StringReader(s));
@@ -104,7 +96,7 @@ public class DefaultUnitProcessorContext
             return (float)context.getViewportHeight();
         }
         String s = svg.getAttributeNS(null, SVG_HEIGHT_ATTRIBUTE);
-        LengthParser p = getParserFactory().createLengthParser();
+        LengthParser p = new LengthParser();
         UnitProcessor.UnitResolver ur = new UnitProcessor.UnitResolver();
         p.setLengthHandler(ur);
         p.parse(new StringReader(s));

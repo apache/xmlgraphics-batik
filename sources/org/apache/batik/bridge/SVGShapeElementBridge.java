@@ -53,12 +53,10 @@ public abstract class SVGShapeElementBridge implements GraphicsNodeBridge,
         UnitProcessor.Context uctx
             = new DefaultUnitProcessorContext(ctx,
                                               cssDecl);
-        ShapeNode node = ctx.getGVTFactory().createShapeNode();
+        ShapeNode node = new ShapeNode();
         // Initialize the transform
         AffineTransform at =
-            SVGUtilities.convertAffineTransform(element,
-                                                ATTR_TRANSFORM,
-                                                ctx.getParserFactory());
+            SVGUtilities.convertAffineTransform(element, ATTR_TRANSFORM);
         node.setTransform(at);
         // Initialize the shape of the ShapeNode
         buildShape(ctx, svgElement, node, cssDecl, uctx);
@@ -66,7 +64,7 @@ public abstract class SVGShapeElementBridge implements GraphicsNodeBridge,
         return node;
     }
 
-    public void buildGraphicsNode(GraphicsNode gn, 
+    public void buildGraphicsNode(GraphicsNode gn,
                                   BridgeContext ctx,
                                   Element element) {
         ShapeNode node = (ShapeNode)gn;

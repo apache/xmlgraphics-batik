@@ -29,7 +29,6 @@ import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.CompositeShapePainter;
 import org.apache.batik.gvt.FillShapePainter;
-import org.apache.batik.gvt.GVTFactory;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.ShapePainter;
@@ -326,7 +325,6 @@ public class CSSUtilities implements SVGConstants {
                                                 CSSStyleDeclaration decl,
                                                 UnitProcessor.Context uctx){
 
-        GVTFactory f = ctx.getGVTFactory();
         // resolve fill
         ShapePainter fillPainter = convertFill(svgElement, node, ctx,
                                                decl, uctx);
@@ -335,7 +333,7 @@ public class CSSUtilities implements SVGConstants {
                                                    decl, uctx);
         ShapePainter painter = null;
         if (fillPainter != null && strokePainter != null) {
-            CompositeShapePainter comp = f.createCompositeShapePainter();
+            CompositeShapePainter comp = new CompositeShapePainter();
             comp.addShapePainter(fillPainter);
             comp.addShapePainter(strokePainter);
             painter = comp;
@@ -364,8 +362,7 @@ public class CSSUtilities implements SVGConstants {
 
         Stroke stroke = convertStrokeToBasicStroke(svgElement, ctx, decl, uctx);
         Paint paint = convertStrokeToPaint(svgElement, node, ctx, decl, uctx);
-        StrokeShapePainter painter =
-            ctx.getGVTFactory().createStrokeShapePainter();
+        StrokeShapePainter painter = new StrokeShapePainter();
         painter.setStroke(stroke);
         painter.setPaint(paint);
         return painter;
@@ -409,8 +406,6 @@ public class CSSUtilities implements SVGConstants {
                                                BridgeContext ctx,
                                                CSSStyleDeclaration decl,
                                                UnitProcessor.Context uctx) {
-        GVTFactory f = ctx.getGVTFactory();
-
         // resolve the java.awt.Stroke of the StrokeShapePainter
         CSSPrimitiveValue v =
          (CSSPrimitiveValue)decl.getPropertyCSSValue(CSS_STROKE_WIDTH_PROPERTY);
@@ -517,7 +512,6 @@ public class CSSUtilities implements SVGConstants {
                                            CSSStyleDeclaration decl,
                                            UnitProcessor.Context uctx) {
 
-        GVTFactory f = ctx.getGVTFactory();
         FillShapePainter painter = null;
         Paint fillPaint = convertFillToPaint(svgElement,
                                              node,
@@ -525,7 +519,7 @@ public class CSSUtilities implements SVGConstants {
                                              decl,
                                              uctx);
         if(fillPaint != null){
-            painter = f.createFillShapePainter();
+            painter = new FillShapePainter();
             painter.setPaint(fillPaint);
         }
 

@@ -9,7 +9,6 @@
 package org.apache.batik.dom.svg;
 
 import org.apache.batik.css.svg.SVGCSSContext;
-import org.apache.batik.parser.ParserFactory;
 
 /**
  * This interface is the placeholder for SVG application informations.
@@ -18,10 +17,6 @@ import org.apache.batik.parser.ParserFactory;
  * @version $Id$
  */
 public interface SVGContext extends SVGCSSContext {
-    /**
-     * Returns the parser factory.
-     */
-    ParserFactory getParserFactory();
 
     /**
      * Return the pixel to millimeters factor.

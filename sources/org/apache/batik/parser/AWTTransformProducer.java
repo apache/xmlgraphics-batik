@@ -28,14 +28,12 @@ public class AWTTransformProducer implements TransformListHandler {
     /**
      * Utility method for creating an AffineTransform.
      * @param r The reader used to read the transform specification.
-     * @param pf The parser factory to use.
      */
-    public static AffineTransform createAffineTransform(Reader r,
-                                                        ParserFactory pf)
+    public static AffineTransform createAffineTransform(Reader r)
         throws ParseException {
-        TransformListParser p = pf.createTransformListParser();
+        TransformListParser p = new TransformListParser();
         AWTTransformProducer th = new AWTTransformProducer();
-        
+
         p.setTransformListHandler(th);
         p.parse(r);
 
@@ -63,7 +61,7 @@ public class AWTTransformProducer implements TransformListHandler {
      * TransformListHandler#matrix(float,float,float,float,float,float)}.
      */
     public void matrix(float a, float b, float c, float d, float e, float f)
-	throws ParseException {
+        throws ParseException {
         affineTransform.concatenate(new AffineTransform(a, b, c, d, e, f));
     }
 
@@ -79,7 +77,7 @@ public class AWTTransformProducer implements TransformListHandler {
      * Implements {@link TransformListHandler#rotate(float,float,float)}.
      */
     public void rotate(float theta, float cx, float cy) throws ParseException {
-        AffineTransform at 
+        AffineTransform at
             = AffineTransform.getRotateInstance(Math.PI * theta / 180, cx, cy);
         affineTransform.concatenate(at);
     }

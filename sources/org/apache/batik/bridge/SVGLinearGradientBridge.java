@@ -152,8 +152,7 @@ public class SVGLinearGradientBridge extends SVGGradientBridge
         // Extract gradient transform
         AffineTransform at =
             SVGUtilities.convertAffineTransform(paintElement,
-                                                ATTR_GRADIENT_TRANSFORM,
-                                                ctx.getParserFactory());
+                                                ATTR_GRADIENT_TRANSFORM);
 
         at  = SVGUtilities.convertAffineTransform(at, paintedNode,
                                                   rc, unitsType);

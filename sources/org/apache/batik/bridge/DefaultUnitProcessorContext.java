@@ -9,7 +9,6 @@
 package org.apache.batik.bridge;
 
 import org.apache.batik.bridge.BridgeContext;
-import org.apache.batik.parser.ParserFactory;
 import org.apache.batik.util.UnitProcessor;
 import org.apache.batik.bridge.Viewport;
 
@@ -40,13 +39,6 @@ public class DefaultUnitProcessorContext implements UnitProcessor.Context {
      */
     public float getPixelToMM() {
         return ctx.getUserAgent().getPixelToMM();
-    }
-
-    /**
-     * Returns the parser factory.
-     */
-    public ParserFactory getParserFactory() {
-        return ctx.getParserFactory();
     }
 
     /**

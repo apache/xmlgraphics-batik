@@ -49,8 +49,7 @@ public class SVGSVGElementBridge implements GraphicsNodeBridge, SVGConstants {
         UnitProcessor.Context uctx
             = new DefaultUnitProcessorContext(ctx,
                                               cssDecl);
-        CanvasGraphicsNode node
-            = ctx.getGVTFactory().createCanvasGraphicsNode();
+        CanvasGraphicsNode node = new CanvasGraphicsNode();
         float x;
         float y;
         float w;

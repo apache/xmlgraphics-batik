@@ -51,8 +51,7 @@ public class SVGUseElementBridge
     public GraphicsNode createGraphicsNode(BridgeContext ctx,
                                            Element element){
 
-        CompositeGraphicsNode gn;
-        gn = ctx.getGVTFactory().createCompositeGraphicsNode();
+        CompositeGraphicsNode gn = new CompositeGraphicsNode();
 
         CSSStyleDeclaration decl
             = ctx.getViewCSS().getComputedStyle(element, null);
@@ -83,15 +82,14 @@ public class SVGUseElementBridge
 
         AffineTransform at = AffineTransform.getTranslateInstance(x, y);
         at.preConcatenate(
-                 SVGUtilities.convertAffineTransform(element,
-                                                     ATTR_TRANSFORM,
-                                                     ctx.getParserFactory()));
+                 SVGUtilities.convertAffineTransform(element, ATTR_TRANSFORM));
 
         gn.setTransform(at);
 
-        Rectangle2D rect = CSSUtilities.convertEnableBackground((SVGElement)element,
-                                                                decl,
-                                                                uctx);
+        Rectangle2D rect =
+        CSSUtilities.convertEnableBackground((SVGElement)element,
+                                             decl,
+                                             uctx);
         if (rect != null) {
             gn.setBackgroundEnable(rect);
         }
@@ -99,7 +97,7 @@ public class SVGUseElementBridge
         return gn;
     }
 
-    public void buildGraphicsNode(GraphicsNode gn, 
+    public void buildGraphicsNode(GraphicsNode gn,
                                   BridgeContext ctx,
                                   Element element) {
         CSSStyleDeclaration decl

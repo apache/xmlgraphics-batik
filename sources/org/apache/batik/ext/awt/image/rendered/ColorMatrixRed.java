@@ -20,7 +20,7 @@ import java.awt.image.WritableRaster;
 import org.apache.batik.ext.awt.image.GraphicsUtil;
 
 /**
- * 
+ *
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
@@ -75,17 +75,17 @@ public class ColorMatrixRed extends AbstractRed{
 
         ColorModel cm = GraphicsUtil.Linear_sRGB_Unpre;
 
-        SampleModel sm = 
+        SampleModel sm =
             cm.createCompatibleSampleModel(src.getWidth(),
                                            src.getHeight());
-             
+
         init(src, src.getBounds(), cm, sm,
              src.getTileGridXOffset(), src.getTileGridYOffset(), null);
     }
 
 
     public WritableRaster copyData(WritableRaster wr){
-        System.out.println("Getting data for : " + wr.getWidth() + "/" + wr.getHeight() + "/" + wr.getMinX() + "/" + wr.getMinY());
+        //System.out.println("Getting data for : " + wr.getWidth() + "/" + wr.getHeight() + "/" + wr.getMinX() + "/" + wr.getMinY());
 
         //
         // First, get source data
@@ -96,7 +96,7 @@ public class ColorMatrixRed extends AbstractRed{
         // System.out.println("this : " + this);
         wr = src.copyData(wr);
         // System.out.println("Hi");
-        System.out.println("Source was : " + wr.getWidth() + "/" + wr.getHeight()+ "/" + wr.getMinX() + "/" + wr.getMinY());
+        //System.out.println("Source was : " + wr.getWidth() + "/" + wr.getHeight()+ "/" + wr.getMinX() + "/" + wr.getMinY());
 
         // Unpremultiply data if required
         ColorModel cm = src.getColorModel();
@@ -115,14 +115,14 @@ public class ColorMatrixRed extends AbstractRed{
         SinglePixelPackedSampleModel sppsm;
         sppsm = (SinglePixelPackedSampleModel)wr.getSampleModel();
 
-        final int offset = 
+        final int offset =
             (dbf.getOffset() +
-             sppsm.getOffset(minX-wr.getSampleModelTranslateX(), 
+             sppsm.getOffset(minX-wr.getSampleModelTranslateX(),
                              minY-wr.getSampleModelTranslateY()));
 
         // final int offset = dbf.getOffset();
 
-        final int scanStride = 
+        final int scanStride =
             ((SinglePixelPackedSampleModel)wr.getSampleModel())
             .getScanlineStride();
         final int adjust = scanStride - w;
@@ -179,8 +179,8 @@ public class ColorMatrixRed extends AbstractRed{
             }
             p += adjust;
         }
-        
-        System.out.println("Result is : " + wr.getWidth() + "/" + wr.getHeight()+ "/" + wr.getMinX() + "/" + wr.getMinY());
+
+        //System.out.println("Result is : " + wr.getWidth() + "/" + wr.getHeight()+ "/" + wr.getMinX() + "/" + wr.getMinY());
         return wr;
     }
 
