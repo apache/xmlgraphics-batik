@@ -257,12 +257,13 @@ public class ShapeNode extends AbstractGraphicsNode {
      */
     public Rectangle2D getPrimitiveBounds() {
         if (primitiveBounds == null) {
-            if ((shape == null) || (shapePainter == null)) {
+            if (shape == null)
                 return null;
-            }
-            // paintedArea = shapePainter.getPaintedArea();
-            // primitiveBounds = paintedArea.getBounds2D();
-            primitiveBounds = shapePainter.getPaintedBounds2D();
+
+            if (shapePainter == null)
+                primitiveBounds = shape.getBounds2D();
+            else
+                primitiveBounds = shapePainter.getPaintedBounds2D();
 
             // Make sure we haven't been interrupted
             if (Thread.currentThread().isInterrupted()) {

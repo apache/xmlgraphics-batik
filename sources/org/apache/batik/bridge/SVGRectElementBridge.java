@@ -55,6 +55,8 @@ import java.awt.geom.Rectangle2D;
 import java.awt.geom.RoundRectangle2D;
 
 import org.apache.batik.gvt.ShapeNode;
+import org.apache.batik.gvt.ShapePainter;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.events.MutationEvent;
 
@@ -125,11 +127,6 @@ public class SVGRectElementBridge extends SVGShapeElementBridge {
             throw new BridgeException(e, ERR_ATTRIBUTE_MISSING,
                                       new Object[] {SVG_WIDTH_ATTRIBUTE, s});
         }
-	// A value of zero disables rendering of the element
-	if (w == 0) {
-            shapeNode.setShape(null);
-	    return;
-	}
 
         // 'height' attribute - required
         s = e.getAttributeNS(null, SVG_HEIGHT_ATTRIBUTE);
@@ -141,11 +138,6 @@ public class SVGRectElementBridge extends SVGShapeElementBridge {
             throw new BridgeException(e, ERR_ATTRIBUTE_MISSING,
                                       new Object[] {SVG_HEIGHT_ATTRIBUTE, s});
         }
-	// A value of zero disables rendering of the element
-	if (h == 0) {
-            shapeNode.setShape(null);
-	    return;
-	}
 
         // 'rx' attribute - default is 0
         s = e.getAttributeNS(null, SVG_RX_ATTRIBUTE);
@@ -211,5 +203,16 @@ public class SVGRectElementBridge extends SVGShapeElementBridge {
         } else {
             super.handleDOMAttrModifiedEvent(evt);
         }
+    }
+
+
+    protected ShapePainter createShapePainter(BridgeContext ctx,
+                                              Element e,
+                                              ShapeNode shapeNode) {
+        Shape shape = shapeNode.getShape();
+        Rectangle2D r2d = shape.getBounds2D();
+        if ((r2d.getWidth() == 0) || (r2d.getHeight() == 0))
+            return null;
+        return super.createShapePainter(ctx, e, shapeNode);
     }
 }
