@@ -268,6 +268,10 @@ final class LinearGradientPaintContext extends MultipleGradientPaintContext {
             final int rowLimit = off+w;  // end of row iteration
 
             if (dgdX == 0) {
+                if (g<0) 
+                    g = 0;
+                else if (g>fastGradientArraySize) 
+                    g = fastGradientArraySize;
                 final int val = gradient[(int)g];
                 while (off < rowLimit) {
                     pixels[off++] = val;
