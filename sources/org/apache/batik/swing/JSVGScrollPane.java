@@ -605,7 +605,7 @@ public class JSVGScrollPane extends JPanel
         float[] rect = ViewBox.parseViewBoxAttribute(el, viewBoxStr);
         viewBox = new Rectangle2D.Float(rect[0], rect[1], rect[2], rect[3]); 
         
-        System.out.println("  ** viewBox rect set: "+viewBox);
+        // System.out.println("  ** viewBox rect set: "+viewBox);
         // System.out.println("  ** doc size: "+
         //                    canvas.getSVGDocumentSize());
     }// checkAndSetViewBoxRect()
@@ -621,51 +621,6 @@ public class JSVGScrollPane extends JPanel
     {
         // do nothing
     }
-
-
-    static class JSVGScrollCanvas extends JSVGCanvas {
-        /**
-         * Implements our new resizing behavior. This
-         * prevents scaling from changing all the time
-         * when the window size changes.  <p>
-         * Updates the value of the transform used for rendering.
-         * Return true if a repaint is required, otherwise false.
-         */
-        protected boolean updateRenderingTransform()  {
-            if((svgDocument == null) || (gvtRoot == null))
-                return false;
-                    
-            // Code provided by Mark Claassen
-            try {
-                SVGSVGElement elt = svgDocument.getRootElement();
-                Dimension d;
-                Dimension2D d2 = getSVGDocumentSize();
-                d = new Dimension((int)d2.getWidth(),
-                                  (int)d2.getHeight());
-
-                Dimension oldD = prevComponentSize;
-                if (oldD == null) { oldD = d; }
-                prevComponentSize = d;
-			
-                if (d.width  < 1) { d.width  = 1; }
-                if (d.height < 1) { d.height = 1; }
-                        
-                AffineTransform at = ViewBox.getViewTransform
-                    (fragmentIdentifier, elt, d.width, d.height);
-                CanvasGraphicsNode cgn = getCanvasGraphicsNode();
-                AffineTransform vt = cgn.getViewingTransform();
-                if(at.equals(vt))
-                    // No new transform
-                    // Only repaint if size really changed.
-                    return ((oldD.width != d.width) || 
-                            (oldD.height != d.height));
-            } catch (BridgeException e) {
-                userAgent.displayError(e);
-            }
-            return true;
-        }// updateRenderingTransform()
-    }
-	
 }// class JSVGScrollPane
 
 
