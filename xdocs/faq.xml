@@ -436,7 +436,7 @@
         </p>
         <p>
         Beyond the use and mix with other XML syntaxes, being an XML grammar
-        lets SVG benefit from the pletora of XML tools that make it so easy
+        lets SVG benefit from the plethora of XML tools that make it so easy
         to manipulate, generate, search and edit SVG files.
         </p>
     </answer>
@@ -555,6 +555,65 @@
 </faq>
 
 <faq>
+    <question>When I change the document in Java it doesn't update the
+    display, even if I call repaint?</question>
+    <answer>
+    <p>There are two common causes for this.  The first is that
+    the JSVGCanvas doesn't know it's a dynamic document.  Normally
+    Batik detects this by looking for script elements but when you
+    modify the document from Java it can't tell.  So call
+    JSVGCanvas.setDocumentState(JSVGCanvas.ALWAYS_DYNAMIC) before
+    loading the document.</p>
+    <p>The second common reason is that the changes aren't made in
+    The UpdateManager's thread.  You can run code in the UpdateManager's
+    thread with the following:
+    </p>
+    <code>UpdateManager um = JSVGCanvas.getUpdateManager();</code>
+    <code>um.getUpdateRunnableQueue().invokeLater(Runnable);</code>
+    <p><strong>NOTE:</strong> The update manager only becomes
+    available after the first rendering completes.  You can
+    be notified when this happens by registering a 
+    GVTTreeRendererListener.
+    </p>
+    </answer>
+</faq>
+
+<faq>
+    <question>When I get the UpdateManager from the canvas sometimes
+    it is null, why?</question>
+    <answer>
+    <p>The JSVGCanvs is highly asynchronous so when you call
+    setURI or setDocument they return essentially immediately.
+    Behind the scenes the Canvas sets up the rendering tree and
+    does a first rendering after running 'onload' scripts. Only
+    after this first rendering does the UpdateManger become
+    available.
+    </p>
+    </answer>
+</faq>
+
+<faq>
+    <question>Why do I have to go through the UpdateManager to
+    run my code? Can't you just synchronize the DOM?</question>
+    <answer>
+    <p>It would be possible to synchronize individual calls to
+    the DOM, however in general this is almost useless for the
+    way DOM works.  For example creating a single rectangle
+    element takes approximately 6 individual DOM calls.  So
+    higher level synchronization is needed.
+    </p>
+    <p>The use of a Runnable is a common way of accomplishing
+    synchronization for a block of code. This is essentially the
+    approach that Swing takes (all Swing modification should take
+    place in the Swing thread).  It was considered to use the Swing
+    event thread, but this would lock the user interface while scripts
+    were working.
+    </p>
+    </answer>
+</faq>
+
+
+<faq>
     <question>
     I can use the Batik extension tags with the source distribution
     but not with the binary distribution.  What am I missing?
@@ -597,7 +656,7 @@
     </question>
 
     <answer>
-        <p>For efficeny if Batik Loads a static document it doesn't
+        <p>For efficiency if Batik Loads a static document it doesn't
         setup all the dynamic support.  Batik normally decides a
         document is not dynamic by checking if it contains any
         'script' elements.  However if your Java Application is
@@ -693,7 +752,7 @@
     <p>The Batik <link href="http://xml.apache.org/batik/batikDemo.html">demo</link> uses Java Web Start. Java Web Start (under the Applications/Utilities
     folder), lets you start a Java application from a web browser. You can see the debug
     traces by enabling the Java console for Java Web Start. If you do, you will see that
-    there is a <code>java.lang.NoSuchMethodError</code> execption thrown.</p>
+    there is a <code>java.lang.NoSuchMethodError</code> exception thrown.</p>
     <p>This is happening because the Java Web Start jar file (<code>javaws.jar in /Applications/Utilities/Java Web Start/Content/MacOS)</code>
     contains an older version of the DOM bindings.</p>
     <p>One work around is to manually patch the javaws.jar file to remove the DOM bindings
