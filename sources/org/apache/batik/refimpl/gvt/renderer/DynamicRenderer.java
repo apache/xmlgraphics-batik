@@ -71,6 +71,7 @@ public class DynamicRenderer extends StaticRenderer {
             AffineTransform GxInv = Gx.createInverse();
             return GxInv.createTransformedShape(bounds);
         } catch(NoninvertibleTransformException ex) {
+            ex.printStackTrace();
             return null;
         }
     }
@@ -96,8 +97,9 @@ public class DynamicRenderer extends StaticRenderer {
         public void propertyChange(PropertyChangeEvent evt) {
             GraphicsNode node = (GraphicsNode) evt.getSource();
             Shape aoi = getBoundsInRendererSpace(node);
-            System.out.println(node+" propertyChange " +
-                               evt.getPropertyName()+
+            System.out.println("+-+-+-+-+-+-+-+-+ "+node+" propertyChange "+" "+
+                               node.getBounds()+" "+
+                               evt.getPropertyName()+" "+
                                aoi);
             repaintHandler.notifyRepaintedRegion(aoi);
         }
