@@ -12,9 +12,12 @@ import org.apache.batik.gvt.TextPainter;
 import org.apache.batik.gvt.TextNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
-import org.apache.batik.gvt.text.refimpl.AttributedCharacterSpanIterator;
+import org.apache.batik.gvt.text.AttributedCharacterSpanIterator;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
+import java.awt.geom.AffineTransform;
+
+import java.awt.Paint;
 import java.awt.Stroke;
 import java.text.CharacterIterator;
 import java.text.AttributedCharacterIterator;
@@ -22,6 +25,8 @@ import java.awt.font.TextLayout;
 import java.awt.font.FontRenderContext;
 import java.util.Set;
 import java.util.HashSet;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Renders the attributed character iterator of a <tt>TextNode</tt>.
@@ -41,35 +46,102 @@ public class StrokingTextPainter extends BasicTextPainter {
      * @param g2d the Graphics2D to use
      * @param context rendering context.
      */
-    public void paint(AttributedCharacterIterator aci, TextNode.Anchor anchor, 
+    public void paint(AttributedCharacterIterator aci, TextNode.Anchor anchor,
                Graphics2D g2d, GraphicsNodeRenderContext context) {
 
         FontRenderContext frc = context.getFontRenderContext();
         Set extendedAtts = new HashSet();
+        List textRuns = new ArrayList();
+        float advance = 0f;
         extendedAtts.add(
                 GVTAttributedCharacterIterator.TextAttribute.STROKE);
         aci.first();
+        /*
+         * We iterate through the spans over extended attributes,
+         * instantiating TextLayout elements as we go, and 
+         * accumulate an overall advance for the text display.
+         */
         while (aci.current() != CharacterIterator.DONE) {
             float x = 0f;
             float y = 0f;
-            /* 
-             * note that these can be superseded by X, Y attributes 
+            /*
+             * note that these can be superseded by X, Y attributes
              * but this hasn't been implemented yet
              */
             int start = aci.getRunStart(extendedAtts);
             int end = aci.getRunLimit(extendedAtts);
-            Stroke stroke = (Stroke) aci.getAttribute( 
-                    GVTAttributedCharacterIterator.TextAttribute.STROKE);
-            AttributedCharacterIterator runaci = 
-                    new AttributedCharacterSpanIterator(aci, start, end); 
+
+            AttributedCharacterIterator runaci =
+                    new AttributedCharacterSpanIterator(aci, start, end);
             TextLayout layout = new TextLayout(runaci, frc);
-            g2d.setStroke(stroke);
-            layout.draw(g2d, x, y);
-            x += layout.getBounds().getWidth();
+            TextRun run = new TextRun(layout, runaci);
+            textRuns.add(run);
+
+            advance += layout.getAdvance();
+
             // FIXME: not BIDI compliant yet!
+
             aci.setIndex(end);
         }
-        // FIXME: Finish implementation! (Currently only understands STROKE)
+
+        float x = 0f;
+
+        switch(anchor.getType()){
+        case TextNode.Anchor.ANCHOR_MIDDLE:
+            x = -advance/2;
+            break;
+        case TextNode.Anchor.ANCHOR_END:
+            x = -advance;
+        }
+
+        /*
+         * Adjust for Anchor (above), then
+         * we render each of the TextLayout glyphsets 
+         * in turn.
+         */
+        for (int i=0; i<textRuns.size(); ++i) {
+            TextRun textRun = (TextRun) textRuns.get(i);
+            AttributedCharacterIterator runaci = textRun.getACI();
+            runaci.first();
+            Stroke stroke = (Stroke) runaci.getAttribute(
+                    GVTAttributedCharacterIterator.TextAttribute.STROKE);
+            Paint paint = (Paint) runaci.getAttribute(
+                    GVTAttributedCharacterIterator.TextAttribute.STROKE_PAINT);
+            if (paint != null) {
+                AffineTransform t = AffineTransform.getTranslateInstance(x, 0f);
+                //Stroke oldStroke = g2d.getStroke();
+                Paint oldPaint = g2d.getPaint();
+                g2d.setStroke(stroke);
+                g2d.setPaint(paint);
+                g2d.draw(textRun.getLayout().getOutline(t));
+                //g2d.setStroke(oldStroke);
+                g2d.setPaint(oldPaint);
+            }
+            textRun.getLayout().draw(g2d, x, 0f);
+            x += textRun.getLayout().getAdvance();
+        }
+
+        // FIXME: Finish implementation! (Currently only understands STROKE, STROKE_PAINT)
     }
 
+    /**
+     * Inner convenience class for associating a TextLayout for
+     * sub-spans, and the ACI which iterates over that subspan.
+     */
+    class TextRun {
+        private AttributedCharacterIterator aci;
+        private TextLayout layout;
+
+        public TextRun(TextLayout layout, AttributedCharacterIterator aci) {
+            this.layout = layout;
+            this.aci = aci;
+        }
+        public AttributedCharacterIterator getACI() {
+            return aci;
+        }
+        public TextLayout getLayout() {
+            return layout;
+        }
+
+    }
 }

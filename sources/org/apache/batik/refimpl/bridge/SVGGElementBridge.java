@@ -20,6 +20,7 @@ import org.apache.batik.bridge.GraphicsNodeBridge;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.Filter;
+import org.apache.batik.gvt.filter.Mask;
 import org.apache.batik.parser.AWTTransformProducer;
 import org.apache.batik.util.SVGConstants;
 
@@ -56,6 +57,9 @@ public class SVGGElementBridge implements GraphicsNodeBridge, SVGConstants {
 
         Filter filter = CSSUtilities.convertFilter(element, gn, ctx);
         gn.setFilter(filter);
+
+        Mask mask = CSSUtilities.convertMask(element, gn, ctx);
+        gn.setMask(mask);
 
         return gn;
     }

@@ -38,7 +38,6 @@ import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.RootGraphicsNode;
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
-import org.apache.batik.gvt.Mask;
 import org.apache.batik.gvt.GraphicsNodeHitDetector;
 import org.apache.batik.gvt.event.GraphicsNodeEvent;
 import org.apache.batik.gvt.event.GraphicsNodeMouseEvent;
@@ -49,6 +48,7 @@ import org.apache.batik.gvt.event.GraphicsNodeEventFilter;
 import org.apache.batik.gvt.event.CompositeGraphicsNodeEvent;
 import org.apache.batik.gvt.event.CompositeGraphicsNodeListener;
 import org.apache.batik.gvt.filter.Filter;
+import org.apache.batik.gvt.filter.Mask;
 import org.apache.batik.gvt.filter.PadMode;
 
 /**
@@ -304,6 +304,10 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
             g2d.addRenderingHints(hints);
         }
 
+        rc.setTransform(g2d.getTransform());
+        rc.setAreaOfInterest(g2d.getClip());
+        rc.setRenderingHints(g2d.getRenderingHints());
+
         //
         // Check if any painting is needed at all. Get the clip (in user space)
         // and see if it intersects with this node's bounds (in user space).
@@ -345,10 +349,19 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
                     // filteredImage = nodeImage;
                 }
                 
+                if (mask != null) {
+                    if (mask.getSource() != filteredImage){
+                        mask.setSource(filteredImage);
+                    }
+                    filteredImage = mask;
+                    System.out.println("YYYYYYYY Masking.... ");
+                }
+
                 // Create the render context for drawing this node.
                 AffineTransform usr2dev = g2d.getTransform();
-                RenderContext context = new RenderContext(usr2dev, g2d.getClip(), rc.getRenderingHints());
-                RenderedImage renderedNodeImage = filteredImage.createRendering(context);
+
+                // RenderContext context = new RenderContext(usr2dev, g2d.getClip(), rc.getRenderingHints());
+                RenderedImage renderedNodeImage = filteredImage.createRendering(rc);
                 Rectangle2D filterBounds = filteredImage.getBounds2D();
                 g2d.clip(filterBounds);
 
@@ -366,7 +379,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
         g2d.setClip(defaultClip);
         g2d.setComposite(defaultComposite);
     }
-        
+
     /**
      * DEBUG: Trace filter chain
      */

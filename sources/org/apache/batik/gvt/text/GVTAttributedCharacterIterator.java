@@ -198,37 +198,40 @@ public interface GVTAttributedCharacterIterator extends
      * We duplicate the features of java.awt.font.TextAttribute rather than   
      * subclassing because java.awt.font.TextAttribute is <em>final</em>.
      */
-     public static class TextAttribute extends 
-                               AttributedCharacterIterator.Attribute {
+    public static class TextAttribute extends 
+                                                                            AttributedCharacterIterator.Attribute {
 
-	/** Construct a TextAttribute key with name s */
-	public TextAttribute(String s) {
-	    super(s);
-	}
+        /** Construct a TextAttribute key with name s */
+        public TextAttribute(String s) {
+            super(s);
+        }
 
-	/** User-space X coordinate for character.*/
-	public final static TextAttribute X = new TextAttribute("X");
+        /** User-space X coordinate for character.*/
+        public final static TextAttribute X = new TextAttribute("X");
 
-	/** User-space Y coordinate for character.*/
-	public final static TextAttribute Y = new TextAttribute("Y");
+        /** User-space Y coordinate for character.*/
+        public final static TextAttribute Y = new TextAttribute("Y");
 
-	/** Rotation for character, in degrees.*/
-	public final static TextAttribute ROTATION = new TextAttribute("ROTATION");
+        /** Rotation for character, in degrees.*/
+        public final static TextAttribute ROTATION = new TextAttribute("ROTATION");
 
-	/** Stroke used to paint character outline.*/
-	public final static TextAttribute STROKE = new TextAttribute("STROKE");
+        /** Stroke used to paint character outline.*/
+        public final static TextAttribute STROKE = new TextAttribute("STROKE");
 
-	/** Author-expected width for bounding box containing all text string glyphs.*/
-	public final static TextAttribute BBOX_WIDTH = new TextAttribute("BBOX_WIDTH");
+        /** Paint used to stroke character outline */
+        public final static TextAttribute STROKE_PAINT = new TextAttribute("STROKE_PAINT");
 
-	/** Font variant to be used for this character span.
+        /** Author-expected width for bounding box containing all text string glyphs.*/
+        public final static TextAttribute BBOX_WIDTH = new TextAttribute("BBOX_WIDTH");
+
+        /** Font variant to be used for this character span.
          * @see org.apache.batik.gvt.text.GVTAttributedCharacterIterator.TextAttribute#SMALL_CAPS
          */
-	public final static TextAttribute FONT_VARIANT = 
-                                        new TextAttribute("FONT_VARIANT");
+        public final static TextAttribute FONT_VARIANT = 
+            new TextAttribute("FONT_VARIANT");
 
-	/** Value for FONT_VARIANT specifying small caps */
-	public final static Integer SMALL_CAPS = new Integer(0x10);
+        /** Value for FONT_VARIANT specifying small caps */
+        public final static Integer SMALL_CAPS = new Integer(0x10);
 
     }
 
@@ -241,7 +244,7 @@ public interface GVTAttributedCharacterIterator extends
      */
     public interface AttributeFilter {
 
-	/**
+        /**
          * Modify an AttributedCharacterIterator's attributes systematically.
          * Usually returns a copy since AttributedCharacterIterator instances
          * are often immutable.  The effect of the attribute modification
@@ -251,8 +254,8 @@ public interface GVTAttributedCharacterIterator extends
          * @return an instance of AttributedCharacterIterator with mutated 
          *     attributes.
          */
-	public AttributedCharacterIterator 
-                     mutateAttributes(AttributedCharacterIterator aci);
+        public AttributedCharacterIterator 
+            mutateAttributes(AttributedCharacterIterator aci);
 
     }
 }

@@ -534,6 +534,33 @@ public class SVGUtilities implements SVGConstants {
                                  Element filteredElement,
                                  GraphicsNode node,
                                  UnitProcessor.Context uctx){
+        return convertRegion(filterElement, filteredElement, node, uctx, ATTR_FILTER_UNITS);
+    }
+
+    /**
+     * Creates a <tt>FilterRegion</tt> for the input mask
+     * element.
+     */
+    public static FilterRegion 
+        convertMaskRegion(Element maskElement,
+                          Element maskedElement,
+                          GraphicsNode node,
+                          UnitProcessor.Context uctx){
+        return convertRegion(maskElement, maskedElement, node, uctx, ATTR_MASK_UNITS);
+    }
+
+    /**
+     * Creates a <tt>FilterRegion</tt> for the input filter
+     * element, processing the element as the top one in 
+     * the filter chain (i.e., a &lt;filter&gt; element or
+     * custom element equivalent).
+     */
+    protected static FilterRegion 
+        convertRegion(Element filterElement,
+                      Element filteredElement,
+                      GraphicsNode node,
+                      UnitProcessor.Context uctx,
+                      String unitsAttr){
         SVGElement svgElement = (SVGElement)filteredElement;
 
         // x, y, width and height will hold the filter
@@ -545,7 +572,7 @@ public class SVGUtilities implements SVGConstants {
         FilterRegionTransformer txf = null;
 
         // Extract filterUnits value
-        String units = filterElement.getAttributeNS(null, ATTR_FILTER_UNITS);
+        String units = filterElement.getAttributeNS(null, unitsAttr);
 
         if(VALUE_OBJECT_BOUNDING_BOX.equals(units)){
             // 

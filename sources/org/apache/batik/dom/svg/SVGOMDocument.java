@@ -193,6 +193,9 @@ public class SVGOMDocument
         factories.put(TAG_LINE,
                       new LineElementFactory());
 
+        factories.put(TAG_MASK,
+                      new MaskElementFactory());
+
         factories.put(TAG_PATH,
                       new PathElementFactory());
 
@@ -991,6 +994,20 @@ public class SVGOMDocument
          */
         public Element create(String prefix) {
             return new SVGOMLineElement(prefix, SVGOMDocument.this);
+        }
+    }
+
+    /**
+     * To create a 'mask' element.
+     */
+    protected class MaskElementFactory implements ElementFactory {
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix) {
+            return new SVGOMToBeImplementedElement(prefix,
+                                                   SVGOMDocument.this,
+                                                   TAG_MASK);
         }
     }
 

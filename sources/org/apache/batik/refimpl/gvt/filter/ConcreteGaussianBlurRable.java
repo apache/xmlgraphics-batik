@@ -137,8 +137,8 @@ public class ConcreteGaussianBlurRable
         double ty = at.getTranslateY();
 
         // The Scale is the "hypotonose" of the matrix vectors.
-        double scaleX = Math.sqrt(sx*sx + shx*shx);
-        double scaleY = Math.sqrt(sy*sy + shy*shy);
+        double scaleX = Math.sqrt(sx*sx + shy*shy);
+        double scaleY = Math.sqrt(sy*sy + shx*shx);
 
         AffineTransform srcAt;
         srcAt = AffineTransform.getScaleInstance(scaleX, scaleY);
@@ -153,8 +153,8 @@ public class ConcreteGaussianBlurRable
         AffineTransform resAt;
         // The shear/rotation simply divides out the
         // common scale factor in the matrix.
-        resAt = new AffineTransform( sx/scaleX, shy/scaleY,
-                                    shx/scaleX,  sy/scaleY,
+        resAt = new AffineTransform(sx/scaleX, shy/scaleX,
+                                    shx/scaleY,  sy/scaleY,
                                     tx, ty);
         
         Shape aoi = rc.getAreaOfInterest();

@@ -72,7 +72,8 @@ public class ConcreteBufferedImageCachableRed extends AbstractRed {
     public Raster getData(Rectangle rect) {
         Rectangle r = (Rectangle)rect.clone();
         r.translate(-getMinX(), - getMinY());
-        return bi.getData(r);
+        Raster ret = bi.getData(r);
+        return ret.createTranslatedChild(rect.x, rect.y);
     }
 
     public WritableRaster copyData(WritableRaster wr) {
