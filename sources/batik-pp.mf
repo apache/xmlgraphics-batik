@@ -1,0 +1,8 @@
+Manifest-Version: $Id$
+Main-Class: org.apache.batik.apps.svgpp.Main
+Class-Path: lib/batik-ext.jar \
+            lib/batik-dom.jar \
+            lib/batik-parser.jar \
+            lib/batik-transcoder.jar \
+            lib/batik-xml.jar \
+            lib/batik-util.jar
