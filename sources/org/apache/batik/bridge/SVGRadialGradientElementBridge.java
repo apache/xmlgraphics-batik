@@ -116,34 +116,36 @@ public class SVGRadialGradientElementBridge
         UnitProcessor.Context uctx
             = UnitProcessor.createContext(ctx, paintElement);
 
-        Point2D c = SVGUtilities.convertPoint(cxStr,
-                                              SVG_CX_ATTRIBUTE,
-                                              cyStr,
-                                              SVG_CY_ATTRIBUTE,
-                                              coordSystemType,
-                                              uctx);
-
         float r = SVGUtilities.convertLength(rStr,
                                              SVG_R_ATTRIBUTE,
                                              coordSystemType,
                                              uctx);
+        if (r == 0) {
+            return colors[colors.length-1];
+        } else {
+            Point2D c = SVGUtilities.convertPoint(cxStr,
+                                                  SVG_CX_ATTRIBUTE,
+                                                  cyStr,
+                                                  SVG_CY_ATTRIBUTE,
+                                                  coordSystemType,
+                                                  uctx);
 
-        Point2D f = SVGUtilities.convertPoint(fxStr,
-                                              SVG_FX_ATTRIBUTE,
-                                              fyStr,
-                                              SVG_FY_ATTRIBUTE,
-                                              coordSystemType,
-                                              uctx);
+            Point2D f = SVGUtilities.convertPoint(fxStr,
+                                                  SVG_FX_ATTRIBUTE,
+                                                  fyStr,
+                                                  SVG_FY_ATTRIBUTE,
+                                                  coordSystemType,
+                                                  uctx);
 
-        // <!> FIXME: colorSpace ignored for radial gradient at this time
-        return new RadialGradientPaint(c,
-                                       r,
-                                       f,
-                                       offsets,
-                                       colors,
-                                       spreadMethod,
-                                       RadialGradientPaint.SRGB,
-                                       transform);
-
+            // <!> FIXME: colorSpace ignored for radial gradient at this time
+            return new RadialGradientPaint(c,
+                                           r,
+                                           f,
+                                           offsets,
+                                           colors,
+                                           spreadMethod,
+                                           RadialGradientPaint.SRGB,
+                                           transform);
+        }
     }
 }
