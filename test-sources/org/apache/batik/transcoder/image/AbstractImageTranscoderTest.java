@@ -11,7 +11,11 @@ package org.apache.batik.transcoder.image;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 
+import java.io.FileOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
@@ -68,7 +72,7 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
 
 	try {
 	    DiffImageTranscoder transcoder = 
-		new DiffImageTranscoder(getReferenceImage());
+		new DiffImageTranscoder(getReferenceImageData());
 
 	    Map hints = createTranscodingHints();
 	    if (hints != null) {
@@ -83,7 +87,7 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
 		report.addDescriptionEntry(ERROR_IMAGE_DIFFER, "");
 		report.setPassed(false);
 	    }
-	} catch (TranscoderException ex) {
+	} catch (Exception ex) {
 	    report.setErrorCode(ERROR_TRANSCODING);
 	    report.addDescriptionEntry(ERROR_TRANSCODING, toString(ex));
             ex.printStackTrace();
@@ -108,7 +112,7 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
     /**
      * Returns the reference image for this test.
      */
-    protected abstract BufferedImage getReferenceImage();
+    protected abstract byte [] getReferenceImageData();
 
     //////////////////////////////////////////////////////////////////////////
     // Convenient methods
@@ -149,26 +153,48 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
         }
     }
 
+    static String filename;
+
     /**
      * Loads an image from a URL
      */
-    public static BufferedImage createBufferedImage(URL url) {
-        ImageTagRegistry reg = ImageTagRegistry.getRegistry();
-        Filter filt = reg.readURL(new ParsedURL(url));
-        if (filt == null) {
+    public static byte [] createBufferedImageData(URL url) {
+        try {
+            filename = url.toString();
+            //System.out.println(url.toString());
+            InputStream istream = url.openStream();
+            byte [] imgData = null;
+            byte [] buf = new byte[1024];
+            int length;
+            while ((length = istream.read(buf, 0, buf.length)) == buf.length) {
+                if (imgData != null) {
+                    byte [] imgDataTmp = new byte[imgData.length + length];
+                    System.arraycopy
+                        (imgData, 0, imgDataTmp, 0, imgData.length);
+                    System.arraycopy
+                        (buf, 0, imgDataTmp, imgData.length, length);
+                    imgData = imgDataTmp;
+                } else {
+                    imgData = new byte[length];
+                    System.arraycopy(buf, 0, imgData, 0, length);
+                }
+            }
+            if (imgData != null) {
+                byte [] imgDataTmp = new byte[imgData.length + length];
+                System.arraycopy
+                    (imgData, 0, imgDataTmp, 0, imgData.length);
+                System.arraycopy
+                    (buf, 0, imgDataTmp, imgData.length, length);
+                imgData = imgDataTmp;
+            } else {
+                imgData = new byte[length];
+                System.arraycopy(buf, 0, imgData, 0, length);
+            }
+            istream.close();
+            return imgData;
+        } catch (IOException ex) {
             return null;
         }
-	
-        RenderedImage red = filt.createDefaultRendering();
-        if (red == null) {
-            return null;
-        }
-        
-        BufferedImage img = new BufferedImage(red.getWidth(),
-                                              red.getHeight(),
-                                              BufferedImage.TYPE_INT_ARGB);
-        red.copyData(img.getRaster());
-        return img;
     }
 
     /**
@@ -180,7 +206,7 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
 	protected boolean state;
 
 	/** The reference image. */
-	protected BufferedImage refImg;
+	protected byte [] refImgData;
 
 	/**
 	 * Constructs a new <tt>DiffImageTranscoder</tt>.
@@ -188,8 +214,8 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
 	 * @param refImg the reference image
 	 * @param report the test report into which errors have been sent
 	 */
-	public DiffImageTranscoder(BufferedImage refImg) {
-	    this.refImg = refImg;
+	public DiffImageTranscoder(byte [] refImgData) {
+	    this.refImgData = refImgData;
 	}
 
 	/**
@@ -216,54 +242,52 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
 	    compareImage(img);
 	}
 
+        protected void writeCandidateReference(byte [] imgData) {
+            try {
+                String s = new File(filename).getName();
+                s = "test-references/org/apache/batik/transcoder/image/candidate-reference/"+s;
+                System.out.println(s);
+                FileOutputStream ostream = new FileOutputStream(s);
+                ostream.write(imgData, 0, imgData.length);
+                ostream.flush();
+                ostream.close();
+            } catch (Exception ex) {}
+        }
+
 	/**
 	 * Compares both source and result images and set the state flag.
 	 */
-	protected void compareImage(BufferedImage img) {
+	protected void compareImage(BufferedImage img) 
+            throws TranscoderException {
 	    // compare the resulting image with the reference image
 	    // state = true if refImg is the same than img
 
-	    if ((img.getType() != BufferedImage.TYPE_INT_ARGB) ||
-		(refImg.getType() != BufferedImage.TYPE_INT_ARGB)) {
-		throw new IllegalArgumentException("Different Image type");
-	    }
-	    int minX = refImg.getMinX();
-	    int minY = refImg.getMinY();
-	    int w = refImg.getWidth();
-	    int h = refImg.getHeight();
-	    if ((img.getMinX() != minX) ||
-		(img.getMinY() != minY) ||
-		(img.getWidth() != w) ||
-		(img.getHeight() != h)) {
-		//showDiff(img);
-		state = false;
-		return;
-	    }
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            TranscoderOutput output = new TranscoderOutput(out);
+            PNGTranscoder t = new PNGTranscoder();
+            t.writeImage(img, output);
+            byte [] imgData = out.toByteArray();
 
-	    for (int y = minY; y < minY+h; ++y) {
-		for (int x = minX; x < minX+w; ++x) {
-		    if (img.getRGB(x, y) != refImg.getRGB(x, y)) {
-			//showDiff(img);
-			state = false;
-			return;
-		    }
-		}
-	    }
+            if (refImgData == null) {
+                writeCandidateReference(imgData);
+                state = false;
+                return;
+            }
+            
+            if (refImgData.length != imgData.length) {
+                writeCandidateReference(imgData);
+                state = false;
+                return;
+            }
+
+            for (int i = 0; i < refImgData.length; ++i) {
+                if (refImgData[i] != imgData[i]) {
+                    writeCandidateReference(imgData);
+                    state = false;
+                    return;
+                }
+            }
 	    state = true;
-	}
-
-	private void showDiff(BufferedImage img) {
-	    javax.swing.JFrame frame = new javax.swing.JFrame();
-
-	    frame.getContentPane().add
-		(new javax.swing.JLabel(new javax.swing.ImageIcon(img)),
-		 java.awt.BorderLayout.EAST);
-	    frame.getContentPane().add
-		(new javax.swing.JLabel(new javax.swing.ImageIcon(refImg)),
-		 java.awt.BorderLayout.WEST);
-	    
-	    frame.pack();
-	    frame.show();
 	}
 
 	/**

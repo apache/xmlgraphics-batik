@@ -11,8 +11,8 @@ package org.apache.batik.transcoder.image;
 import java.awt.image.BufferedImage;
 
 import java.util.Map;
-import java.util.HashMap
-;
+import java.util.HashMap;
+
 import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
@@ -80,7 +80,7 @@ public class DimensionTest extends AbstractImageTranscoderTest {
     /**
      * Returns the reference image for this test.
      */
-    protected BufferedImage getReferenceImage() {
-	return createBufferedImage(resolveURL(refImageURI));
+    protected byte [] getReferenceImageData() {
+	return createBufferedImageData(resolveURL(refImageURI));
     }
 }

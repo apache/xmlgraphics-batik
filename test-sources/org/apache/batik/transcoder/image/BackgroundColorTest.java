@@ -12,6 +12,8 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
+import java.io.ByteArrayOutputStream;
+
 import java.util.Map;
 import java.util.HashMap;
 
@@ -75,14 +77,22 @@ public class BackgroundColorTest extends AbstractImageTranscoderTest {
     /**
      * Returns the reference image for this test.
      */
-    protected BufferedImage getReferenceImage() {
-	BufferedImage img = new BufferedImage
-	    (400, 400, BufferedImage.TYPE_INT_ARGB);
-	Graphics2D g2d = img.createGraphics();
-	g2d.setColor(Color.blue);
-	g2d.fillRect(0, 0, 400, 400);
-	g2d.setColor(Color.red);
-	g2d.fillRect(100, 50, 100, 50);
-	return img;
+    protected byte [] getReferenceImageData() {
+        try {
+            BufferedImage img = new BufferedImage
+                (400, 400, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g2d = img.createGraphics();
+            g2d.setColor(Color.blue);
+            g2d.fillRect(0, 0, 400, 400);
+            g2d.setColor(Color.red);
+            g2d.fillRect(100, 50, 100, 50);
+            ByteArrayOutputStream ostream = new ByteArrayOutputStream();
+            PNGTranscoder t = new PNGTranscoder();
+            TranscoderOutput output = new TranscoderOutput(ostream);
+            t.writeImage(img, output);
+            return ostream.toByteArray();
+        } catch (Exception ex) {
+            throw new RuntimeException("BackgroundColorTest error");
+        }
     }
 }
