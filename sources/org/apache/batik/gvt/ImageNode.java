@@ -68,6 +68,12 @@ public class ImageNode extends CompositeGraphicsNode {
      */
     public ImageNode() {}
 
+    public void setVisible(boolean isVisible) {
+        fireGraphicsNodeChangeStarted();
+        this.isVisible = isVisible;
+        fireGraphicsNodeChangeCompleted();
+    }
+
     /**
      * If hitCheckChildren is true then nodeHitAt will return
      * child nodes of this image. Otherwise it will only
