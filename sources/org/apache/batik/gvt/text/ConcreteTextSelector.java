@@ -259,9 +259,7 @@ public class ConcreteTextSelector implements Selector {
     }
 
     private boolean isSelectEndGesture(GraphicsNodeEvent evt) {
-        return ((evt.getID() == GraphicsNodeMouseEvent.MOUSE_RELEASED)
-          || ( isMouseButton1Down(evt) &&
-             (evt.getID() == GraphicsNodeMouseEvent.MOUSE_EXITED) ));
+        return ((evt.getID() == GraphicsNodeMouseEvent.MOUSE_RELEASED));
     }
 
     private boolean isSelectContinueGesture(GraphicsNodeEvent evt) {
@@ -271,11 +269,6 @@ public class ConcreteTextSelector implements Selector {
     private boolean isSelectAllGesture(GraphicsNodeEvent evt) {
         return ((evt.getID() == GraphicsNodeMouseEvent.MOUSE_CLICKED)
             && (((GraphicsNodeMouseEvent) evt).getClickCount() == 2));
-    }
-
-    private boolean isMouseButton1Down(GraphicsNodeEvent evt) {
-        return ((((GraphicsNodeInputEvent) evt).getModifiers()
-               & (GraphicsNodeInputEvent.BUTTON1_MASK)) != 0 );
     }
 
     /*
