@@ -91,14 +91,24 @@ public class SAXDocumentFactory
     protected Locator locator;
 
     /**
-     * Whether the parser currently parses a CDATA section.
+     * Contains collected string data.  May be Text, CDATA or Comment.
      */
-    protected StringBuffer cdataBuffer;
+    protected StringBuffer stringBuffer = new StringBuffer();
+    /**
+     * Indicates if stringBuffer has content, needed in case of 
+     * zero sized "text" content.
+     */
+    protected boolean      stringContent;
 
     /**
-     * Whether the parser currently parses a DTD.
+     * True if the parser is currently parsing a DTD.
      */
     protected boolean inDTD;
+
+    /**
+     * True if the parser is currently parsing a CDATA section.
+     */
+    protected boolean inCDATA;
 
     /**
      * Whether the parser is in validating mode.
@@ -388,9 +398,10 @@ public class SAXDocumentFactory
             throw new IOException(e.getMessage());
 	}
 
-        currentNode = null;
+        currentNode  = null;
         Document ret = document;
-        document = null;
+        document     = null;
+        locator      = null;
 	return ret;
     }
 
@@ -437,6 +448,33 @@ public class SAXDocumentFactory
         errorHandler = eh;
     }
 
+    public DOMImplementation getDOMImplementation(String ver) {
+        return implementation;
+    }
+
+    /**
+     * <b>SAX</b>: Implements {@link
+     * org.xml.sax.ErrorHandler#fatalError(SAXParseException)}.
+     */
+    public void fatalError(SAXParseException ex) throws SAXException {
+        throw ex;
+    }
+
+    /**
+     * <b>SAX</b>: Implements {@link
+     * org.xml.sax.ErrorHandler#error(SAXParseException)}.
+     */
+    public void error(SAXParseException ex) throws SAXException {
+	throw ex;
+    }
+
+    /**
+     * <b>SAX</b>: Implements {@link
+     * org.xml.sax.ErrorHandler#warning(SAXParseException)}.
+     */
+    public void warning(SAXParseException ex) throws SAXException {
+    }
+
     /**
      * <b>SAX</b>: Implements {@link
      * org.xml.sax.ContentHandler#startDocument()}.
@@ -448,9 +486,13 @@ public class SAXDocumentFactory
 	namespaces.put("xmlns", XMLSupport.XMLNS_NAMESPACE_URI);
 	namespaces.put("", null);
 
-        cdataBuffer = null;
-        inDTD = false;
+        inDTD       = false;
+        inCDATA     = false;
         currentNode = null;
+        document    = null;
+
+        stringBuffer.setLength(0);
+        stringContent = false;
 
         if (createDocumentDescriptor) {
             documentDescriptor = new DocumentDescriptor();
@@ -501,6 +543,9 @@ public class SAXDocumentFactory
             }
 	}
 
+        // Add any collected String Data before element.
+        appendStringData();
+
 	// Element creation
 	Element e;
 	int idx = rawName.indexOf(':');
@@ -547,42 +592,34 @@ public class SAXDocumentFactory
 	}
     }
 
-    public DOMImplementation getDOMImplementation(String ver) {
-        return implementation;
-    }
-
-    /**
-     * <b>SAX</b>: Implements {@link
-     * org.xml.sax.ErrorHandler#fatalError(SAXParseException)}.
-     */
-    public void fatalError(SAXParseException ex) throws SAXException {
-        throw ex;
-    }
-
-    /**
-     * <b>SAX</b>: Implements {@link
-     * org.xml.sax.ErrorHandler#error(SAXParseException)}.
-     */
-    public void error(SAXParseException ex) throws SAXException {
-	throw ex;
-    }
-
-    /**
-     * <b>SAX</b>: Implements {@link
-     * org.xml.sax.ErrorHandler#warning(SAXParseException)}.
-     */
-    public void warning(SAXParseException ex) throws SAXException {
-    }
-
     /**
      * <b>SAX</b>: Implements {@link
      * org.xml.sax.ContentHandler#endElement(String,String,String)}.
      */
     public void endElement(String uri, String localName, String rawName)
 	throws SAXException {
+        appendStringData(); // add string data if any.
+
         if (currentNode != null)
             currentNode = currentNode.getParentNode();
 	namespaces.pop();
+    }
+
+    public void appendStringData() {
+        if (!stringContent) return;
+
+        String str = stringBuffer.toString();
+        stringBuffer.setLength(0); // reuse buffer.
+        stringContent = false;
+        if (currentNode == null) {
+            if (inCDATA) preInfo.add(new CDataInfo(str));
+            else         preInfo.add(new TextInfo(str));
+        } else {
+            Node n;
+            if (inCDATA) n = document.createCDATASection(str);
+            else         n = document.createTextNode(str);
+            currentNode.appendChild(n);
+        }
     }
     
     /**
@@ -591,18 +628,23 @@ public class SAXDocumentFactory
      */
     public void characters(char ch[], int start, int length)
         throws SAXException {
-        if (cdataBuffer != null) 
-            cdataBuffer.append(ch, start, length);
-        else {
-            String data = new String(ch, start, length);
-            if (currentNode == null) {
-                preInfo.add(new TextInfo(data));
-            } else {
-                currentNode.appendChild(document.createTextNode(data));
-            }
-        }
+        stringBuffer.append(ch, start, length);
+        stringContent = true;
     }
-    
+
+
+    /**
+     * <b>SAX</b>: Implements {@link
+     * org.xml.sax.ContentHandler#ignorableWhitespace(char[],int,int)}.
+     */
+    public void ignorableWhitespace(char[] ch,
+                                    int start,
+                                    int length)
+        throws SAXException {
+        stringBuffer.append(ch, start, length);
+        stringContent = true;
+    }
+
     /**
      * <b>SAX</b>: Implements {@link
      * org.xml.sax.ContentHandler#processingInstruction(String,String)}.
@@ -611,6 +653,9 @@ public class SAXDocumentFactory
         throws SAXException {
 	if (inDTD)
             return;
+        
+        appendStringData(); // Add any collected String Data before PI
+
         if (currentNode == null)
             preInfo.add(new ProcessingInstructionInfo(target, data));
         else
@@ -626,6 +671,7 @@ public class SAXDocumentFactory
      */
     public void startDTD(String name, String publicId, String systemId)
 	throws SAXException {
+        appendStringData(); // Add collected string data before entering DTD
 	inDTD = true;
     }
 
@@ -655,7 +701,9 @@ public class SAXDocumentFactory
      * org.xml.sax.ext.LexicalHandler#startCDATA()}.
      */
     public void startCDATA() throws SAXException {
-        cdataBuffer = new StringBuffer();
+        appendStringData(); // Add any collected String Data before CData
+        inCDATA       = true;
+        stringContent = true; // always create CDATA even if empty.
     }
 
     /**
@@ -663,13 +711,8 @@ public class SAXDocumentFactory
      * org.xml.sax.ext.LexicalHandler#endCDATA()}.
      */
     public void endCDATA() throws SAXException {
-        String data = cdataBuffer.toString();
-        if (currentNode == null) {
-            preInfo.add(new CDataInfo(data));
-        } else {
-            currentNode.appendChild(document.createCDATASection(data));
-        }
-        cdataBuffer = null;
+        appendStringData(); // Add the CDATA section
+        inCDATA = false;
     }
 
     /**
@@ -677,14 +720,13 @@ public class SAXDocumentFactory
      * {@link org.xml.sax.ext.LexicalHandler#comment(char[],int,int)}.
      */
     public void comment(char ch[], int start, int length) throws SAXException {
-	if (inDTD) 
-            return;
+	if (inDTD) return;
+
         String str = new String(ch, start, length);
         if (currentNode == null) {
             preInfo.add(new CommentInfo(str));
         } else {
-            currentNode.appendChild
-                (document.createComment(str));
+            currentNode.appendChild(document.createComment(str));
         }
     }
 }

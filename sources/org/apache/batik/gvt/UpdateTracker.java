@@ -19,6 +19,7 @@
 package org.apache.batik.gvt;
 
 import java.awt.Shape;
+import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.lang.ref.WeakReference;
@@ -42,6 +43,7 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
 
     Map dirtyNodes = null;
     Map fromBounds = new HashMap();
+    protected static Rectangle2D NULL_RECT = new Rectangle();
 
     public UpdateTracker(){
     }
@@ -142,7 +144,7 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
                 //       srcORgn + "\n" + srcNRgn + "\n");
                 // <!>
                 Shape oRgn = srcORgn;
-                if (oRgn != null) {
+                if ((oRgn != null) && (oRgn != NULL_RECT)) {
                     if (oat != null)
                         oRgn = oat.createTransformedShape(srcORgn);
                     // System.err.println("GN: " + srcGN);
@@ -188,7 +190,7 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
                 GraphicsNode childGN = (GraphicsNode)iter.next();
                 Rectangle2D r2d = getNodeDirtyRegion(childGN, at);
                 if (r2d != null) {
-                    if (ret == null) ret = r2d;
+                    if ((ret == null) || (ret == NULL_RECT)) ret = r2d;
                     else ret = ret.createUnion(r2d);
                 }
             }
@@ -196,6 +198,8 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
             ret = (Rectangle2D)fromBounds.remove(gnWRef);
             if (ret == null) 
                 ret = gn.getBounds();
+            else if (ret == NULL_RECT) 
+                ret = null;
             if (ret != null)
                 ret = at.createTransformedShape(ret).getBounds2D();
         }
@@ -244,7 +248,7 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
         // Add this dirty region to any existing dirty region.
         Rectangle2D r2d = (Rectangle2D)fromBounds.remove(gnWRef);
         if (rgn != null) {
-            if (r2d != null) {
+            if ((r2d != null) && (r2d != NULL_RECT)) {
                 // System.err.println("GN: " + gn);
                 // System.err.println("R2d: " + r2d);
                 // System.err.println("Rgn: " + rgn);
@@ -260,6 +264,8 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
         // }
 
         // Store the bounds for the future.
+        if (r2d == null)
+            r2d = NULL_RECT;
         fromBounds.put(gnWRef, r2d);
     }
 

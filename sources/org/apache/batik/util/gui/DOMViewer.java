@@ -22,6 +22,9 @@ import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -33,6 +36,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -98,6 +102,8 @@ public class DOMViewer extends JFrame implements ActionMap {
      */
     protected Panel panel = new Panel();
 
+    protected boolean showWhitespace = true;
+
     /**
      * Creates a new DOMViewer panel.
      */
@@ -110,10 +116,29 @@ public class DOMViewer extends JFrame implements ActionMap {
 	
 	getContentPane().add(panel);
 
-        JPanel p = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JPanel p = new JPanel(new BorderLayout());
+        
+        JCheckBox cb = new JCheckBox("Show Whitespace Text Nodes");
+        cb.setSelected(showWhitespace);
+        cb.addItemListener(new ItemListener() {
+                public void itemStateChanged(ItemEvent ie) {
+                    setShowWhitespace
+                        (ie.getStateChange() == ItemEvent.SELECTED);
+                }
+            });
+
+        p.add(cb, BorderLayout.WEST);
+        
+
         ButtonFactory bf = new ButtonFactory(bundle, this);
-        p.add(bf.createJButton("CloseButton"));
+        p.add(bf.createJButton("CloseButton"), BorderLayout.EAST);
 	getContentPane().add("South", p);
+    }
+
+    public void setShowWhitespace(boolean state) {
+        showWhitespace = state;
+        if (panel.document != null)
+            panel.setDocument(panel.document);
     }
 
     /**
@@ -152,7 +177,7 @@ public class DOMViewer extends JFrame implements ActionMap {
     /**
      * The panel that contains the viewer.
      */
-    public static class Panel extends JPanel {
+    public class Panel extends JPanel {
 	/**
 	 * The DOM document.
 	 */
@@ -314,7 +339,7 @@ public class DOMViewer extends JFrame implements ActionMap {
 	public void setDocument(Document doc, ViewCSS view) {
 	    document = doc;
 	    viewCSS  = view;
-	    TreeNode root = createTree(doc);
+	    TreeNode root = createTree(doc, showWhitespace);
 	    ((DefaultTreeModel)tree.getModel()).setRoot(root);
 	    if (rightPanel.getComponentCount() != 0) {
 		rightPanel.remove(0);
@@ -326,13 +351,19 @@ public class DOMViewer extends JFrame implements ActionMap {
 	/**
 	 * Creates a swing tree from a DOM document.
 	 */
-	protected static MutableTreeNode createTree(Node node) {
+	protected MutableTreeNode createTree(Node node, 
+                                             boolean showWhitespace) {
 	    DefaultMutableTreeNode result;
 	    result = new DefaultMutableTreeNode(new NodeInfo(node));
 	    for (Node n = node.getFirstChild();
                  n != null;
                  n = n.getNextSibling()) {
-		result.add(createTree(n));
+                if (!showWhitespace && (n instanceof org.w3c.dom.Text)) {
+                    String txt = n.getNodeValue();
+                    if (txt.trim().length() == 0)
+                        continue;
+                }
+                    result.add(createTree(n, showWhitespace));
 	    }
 	    return result;
 	}
@@ -630,35 +661,42 @@ public class DOMViewer extends JFrame implements ActionMap {
 	    }
 	}
     
-	/**
-	 * To store the nodes informations
-	 */
-	protected static class NodeInfo {
-	    /**
-	     * The DOM node.
-	     */
-	    protected Node node;
-
-	    /**
-	     * Creates a new NodeInfo object.
-	     */
-	    public NodeInfo(Node n) {
-		node = n;
-	    }
-
-	    /**
-	     * Returns the DOM Node associated with this node info.
-	     */
-	    public Node getNode() {
-		return node;
-	    }
-
-	    /**
-	     * Returns a printable representation of the object.
-	     */
-	    public String toString() {
-		return node.getNodeName();
-	    }
-	}
     } // class Panel
+
+    /**
+     * To store the nodes informations
+     */
+    protected static class NodeInfo {
+        /**
+         * The DOM node.
+         */
+        protected Node node;
+
+        /**
+         * Creates a new NodeInfo object.
+         */
+        public NodeInfo(Node n) {
+            node = n;
+        }
+
+        /**
+         * Returns the DOM Node associated with this node info.
+         */
+        public Node getNode() {
+            return node;
+        }
+
+        /**
+         * Returns a printable representation of the object.
+         */
+        public String toString() {
+            if (node instanceof Element) {
+                String id = ((Element)node).getAttribute("id");
+                if (id.length() != 0) {
+                    return node.getNodeName() + " \""+id+"\"";
+                }
+            }
+            return node.getNodeName();
+        }
+    }
 }

@@ -39,9 +39,21 @@
     <script type="text/ecmascript">
 
     var svgNamespaceURI = "http://www.w3.org/2000/svg";
+    var TEXT_NODE = 3;
 
     function remove(evt) {
         var g = evt.currentTarget;
+        // First remove any text node children.
+        var fc = g.firstChild;
+        while (fc) {
+          if (fc.getNodeType() == TEXT_NODE) {
+            var x = fc;
+            fc = fc.nextSibling;
+            g.removeChild(x);
+          } else {
+            fc = fc.nextSibling;
+          }
+        }
         g.removeChild(g.firstChild); // remove grey
         g.removeChild(g.firstChild.nextSibling); // remove crimson
         g.removeChild(g.firstChild.nextSibling); // remove orange

@@ -87,7 +87,7 @@ public class GraphicsNodeRed8Bit extends AbstractRed {
         Rectangle   bounds = at.createTransformedShape(bounds2D).getBounds();
         // System.out.println("Bounds: " + bounds);
 
-        ColorModel cm = GraphicsUtil.sRGB_Unpre;
+        ColorModel cm = createColorModel();
 
         int defSz = AbstractTiledRed.getDefaultTileSize();
 
@@ -143,6 +143,18 @@ public class GraphicsNodeRed8Bit extends AbstractRed {
         }
 
         g.dispose();
+    }
+
+    static final boolean onMacOSX;
+    static {
+        // This should be OK for applets.
+        onMacOSX = ("Mac OS X".equals(System.getProperty("os.name")));
+    }
+
+    public ColorModel createColorModel() {
+        if (onMacOSX)
+            return GraphicsUtil.sRGB_Pre;
+        return GraphicsUtil.sRGB_Unpre;
     }
 }
 
