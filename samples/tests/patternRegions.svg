@@ -62,9 +62,9 @@
         <!-- ============================================== -->
         <pattern id="pattern3" 
                  patternUnits="userSpaceOnUse" 
-                 x="0" y="0" width="30" height="15">
+                 x="0" y="0" width="30" height="15" overflow="visible">
             <circle cx="10" cy="10" r="10" style="fill:red" />
-            <rect x="10" y="10" width="15" height="15" style="fill:green"/>
+            <rect x="2.22222%" y="10" width="15" height="3%" style="fill:green"/>
         </pattern>
 
         <!-- ============================================== -->
@@ -74,8 +74,8 @@
         <!-- ============================================== -->
         <pattern id="pattern4" 
                  patternContentUnits="objectBoundingBox"
-                 x="0" y="0" width=".75" height=".5">
-            <circle cx=".25" cy=".33333333" r=".25" style="fill:red" />
+                 x="0" y="0" width=".75" height=".5" overflow="visible">
+            <circle cx="25%" cy=".33333333" r=".25" style="fill:red" />
             <rect x=".25" y=".33333333" width="0.375" height=".5" style="fill:green"/>
         </pattern>
 
@@ -141,7 +141,7 @@
         <!-- ============================================== -->
         <pattern id="pattern9" 
                  patternUnits="userSpaceOnUse" 
-                 patternContentUnits="objectBoundingBox"
+                 patternContentUnits="objectBoundingBox" overflow="visible"
                  x="0" y="0" width="30" height="15" viewBox="10 10 40 40" preserveAspectRatio="xMinYMin slice">
             <circle cx="30" cy="30" r="25" style="fill:url(#redToYellow)" />
         </pattern>
@@ -151,7 +151,7 @@
     <g transform="translate(-5, 100)">
 
     <g id="p1" transform="translate(20, 20)">
-        <rect x="0" y="0" width="40" height="30" style="fill:url(#pattern1); stroke:black; overflow:hidden;"/>
+        <rect x="0" y="0" width="40" height="30" style="fill:url(#pattern1); stroke:black;"/>
         <text y="-2">#pattern1</text>
         <g transform="translate(50, 9)">
             <text x="0" y="0">patternUnits=default</text>
@@ -161,7 +161,7 @@
     </g>
 
     <g id="p2" transform="translate(20, 70)">
-        <rect x="0" y="0" width="40" height="30" style="fill:url(#pattern2); stroke:black; overflow:hidden;"/>
+        <rect x="0" y="0" width="40" height="30" style="fill:url(#pattern2); stroke:black;"/>
         <text y="-2">#pattern2</text>
         <g transform="translate(50, 9)">
             <text x="0" y="0">patternUnits=objectBoundingBox</text>
@@ -170,7 +170,7 @@
     </g>
 
     <g id="p3" transform="translate(20, 120)">
-        <rect x="0" y="0" width="40" height="30" style="fill:url(#pattern3); stroke:black; overflow:visible;"/>
+        <rect x="0" y="0" width="40" height="30" style="fill:url(#pattern3); stroke:black;"/>
         <text y="-2">#pattern3</text>
         <g transform="translate(50, 9)">
             <text>patternUnits=userSpaceOnUse</text>
@@ -180,7 +180,7 @@
     </g>
 
     <g id="p4" transform="translate(20, 170)"> 
-        <rect x="0" y="0" width="40" height="30" style="fill:url(#pattern4); stroke:black; overflow:visible;"/>
+        <rect x="0" y="0" width="40" height="30" style="fill:url(#pattern4); stroke:black;"/>
         <text y="-2">#pattern4</text>
         <g transform="translate(50, 9)">
             <text>patternUnits=default</text>
@@ -190,7 +190,7 @@
     </g>
 
     <g id="p5" transform="translate(20, 220)">
-        <rect x="0" y="0" width="40" height="30" style="fill:url(#pattern5); stroke:black; overflow:hidden;"/>
+        <rect x="0" y="0" width="40" height="30" style="fill:url(#pattern5); stroke:black;"/>
         <text y="-2">#pattern5</text>
         <g transform="translate(50, 9)">
             <text>patternUnits=objectBoundingBox</text>
@@ -199,7 +199,7 @@
     </g>
 
     <g id="p6" transform="translate(20, 270)">
-        <rect x="0" y="0" width="40" height="30" style="fill:url(#pattern6); stroke:black; overflow:hidden;"/>
+        <rect x="0" y="0" width="40" height="30" style="fill:url(#pattern6); stroke:black;"/>
         <text y="-2">#pattern6</text>
         <g transform="translate(50, 9)">
             <text>patternUnits=userSpaceOnUse</text>
@@ -208,7 +208,7 @@
     </g>
 
     <g id="p7" transform="translate(225, 20)">
-        <rect x="0" y="0" width="40" height="30" style="fill:url(#pattern7); stroke:black; overflow:hidden;"/>
+        <rect x="0" y="0" width="40" height="30" style="fill:url(#pattern7); stroke:black;"/>
         <text y="-2">#pattern7</text>
         <g transform="translate(50, 9)">
             <text>patternUnits=userSpaceOnUse</text>
@@ -218,7 +218,7 @@
     </g>
 
     <g id="p8" transform="translate(225, 70)">
-        <rect x="0" y="0" width="40" height="30" style="fill:url(#pattern8); stroke:black; overflow:hidden;"/>
+        <rect x="0" y="0" width="40" height="30" style="fill:url(#pattern8); stroke:black;"/>
         <text y="-2" >#pattern8</text>
         <g transform="translate(50, 9)">
             <text>same as pattern#7 with</text>
@@ -227,7 +227,7 @@
     </g>
 
     <g id="p9" transform="translate(225, 120)">
-        <rect x="0" y="0" width="40" height="30" style="fill:url(#pattern9); stroke:black; overflow:visible;"/>
+        <rect x="0" y="0" width="40" height="30" style="fill:url(#pattern9); stroke:black;"/>
         <text y="-2" >#pattern9</text>
         <g transform="translate(50, 9)">
             <text y="0">preserveAspectRatio=xMinYmin slice</text>
