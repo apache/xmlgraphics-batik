@@ -1,0 +1,110 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN"
+"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+
+<!-- ========================================================================= -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.        -->
+<!--                                                                           -->
+<!-- This software is published under the terms of the Apache Software License -->
+<!-- version 1.1, a copy of which has been included with this distribution in  -->
+<!-- the LICENSE file.                                                         -->
+<!-- ========================================================================= -->
+
+<!-- ========================================================================= -->
+<!-- This test checks that the various RGB values read from the SVGColor       -->
+<!-- interface return accurate values.                                         -->
+<!--                                                                           -->
+<!-- @author vincent.hardy@sun.com                                             -->
+<!-- @author shillion@ilog.fr                                                  -->
+<!-- @version $Id$            -->
+<!-- ========================================================================= -->
+
+<svg xmlns="http://www.w3.org/2000/svg" 
+     xmlns:xlink="http://www.w3.org/1999/xlink" 
+     xmlns:test="http://xml.apache.org/batik/test"
+     width="450" height="500" viewBox="0 0 450 500"
+     onload="runTest(evt)">
+
+  <test:testResult id="testResult" />
+
+  <script type="text/ecmascript"><![CDATA[
+   var testNS = "http://xml.apache.org/batik/test";
+
+   function runTest() {
+     var result = document.getElementById("testResult");
+
+     var elt = document.getElementById("targetElement");
+     result.setAttributeNS(null, "result", "failed");
+
+     if (elt == null){
+        result.setAttributeNS(null, "errorCode", "cannot.find.test.element");
+        var entry = document.createElementNS(testNS, "errorDescriptionEntry");
+        entry.setAttributeNS(null, "id", "missing.element.id");
+        entry.setAttributeNS(null, "value", "targetElement");
+        result.appendChild(entry);
+        return;
+     }
+
+     var decl = elt.getStyle();
+
+     if (decl == null){
+        result.setAttributeNS(null, "errorCode", "getStyle() returned null");
+        return;
+     }
+
+     var val = decl.getPropertyCSSValue("fill");
+
+     if ( val == null ){
+        result.setAttributeNS(null, "errorCode", "CSSStyleDeclaration.getPropertyCSSValue returned null");
+        return;
+     }
+
+     if (val.red != 1){
+        result.setAttributeNS(null, "errorCode", "invalid red component");
+        var entry = document.createElementNS(testNS, "errorDescriptionEntry");
+        entry.setAttributeNS(null, "id", "expected.red");
+        entry.setAttributeNS(null, "value", "1");
+        result.appendChild(entry);
+        entry = document.createElementNS(testNS, "errorDescriptionEntry");
+        entry.setAttributeNS(null, "id", "found.red");
+        entry.setAttributeNS(null, "value", "" + val.red);
+        result.appendChild(entry);
+        return;
+     }
+
+     if (val.green != 1){
+        result.setAttributeNS(null, "errorCode", "invalid green component");
+        var entry = document.createElementNS(testNS, "errorDescriptionEntry");
+        entry.setAttributeNS(null, "id", "expected.green");
+        entry.setAttributeNS(null, "value", "1");
+        result.appendChild(entry);
+        entry = document.createElementNS(testNS, "errorDescriptionEntry");
+        entry.setAttributeNS(null, "id", "found.green");
+        entry.setAttributeNS(null, "value", "" + val.green);
+        result.appendChild(entry);
+        return;
+     }
+
+     if (val.blue != 1){
+        result.setAttributeNS(null, "errorCode", "invalid blue component");
+        var entry = document.createElementNS(testNS, "errorDescriptionEntry");
+        entry.setAttributeNS(null, "id", "expected.blue");
+        entry.setAttributeNS(null, "value", "1");
+        result.appendChild(entry);
+        entry = document.createElementNS(testNS, "errorDescriptionEntry");
+        entry.setAttributeNS(null, "id", "found.blue");
+        entry.setAttributeNS(null, "value", "" + val.blue);
+        result.appendChild(entry);
+        return;
+     }
+
+    result.setAttributeNS(null, "result", "passed");
+   }
+  ]]></script>
+
+  <g fill="blue">
+    <rect x="10%" y="10%" width="80%" height="80%"
+          style="opacity:0.5; fill: rgb(1,2,3)" id="targetElement" onclick="f()"/>
+  </g>
+</svg>
+
