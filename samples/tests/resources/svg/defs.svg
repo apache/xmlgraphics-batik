@@ -183,7 +183,6 @@
 <!-- useMultiple.svg -->
 <!-- ###################################################################### -->
 
-
 <rect id="extR1" x="0" y="0" width="80" height="80" />
 
 <g id="u21" style="fill:orange">
@@ -196,6 +195,41 @@
 	<rect x="0" y="0" width="80" height="80" fill="crimson" />
 	<use xlink:href="../../spec/structure/useMultiple.svg#r1" x="20" y="20" width="80" height="80" />
 	<use xlink:href="../../spec/structure/useMultiple.svg#r1" x="40" y="40" width="80" height="80" style="fill:gold" />
+</g>
+
+<!-- ###################################################################### -->
+<!-- useMultipleURI.svg -->
+<!-- ###################################################################### -->
+
+<linearGradient id="extOrange">
+	<stop style="stop-color:orange" offset="0" />
+	<stop style="stop-color:white" offset="1" />
+</linearGradient>
+
+<linearGradient id="extCrimson">
+	<stop style="stop-color:crimson" offset="0" />
+	<stop style="stop-color:white" offset="1" />
+</linearGradient>
+
+<linearGradient id="extGold">
+	<stop style="stop-color:gold" offset="0" />
+	<stop style="stop-color:white" offset="1" />
+</linearGradient>
+
+<rect id="extRR1" x="0" y="0" width="80" height="80" />
+
+<g id="uu21" style="fill:url(#extOrange)">
+	<rect x="0" y="0" width="80" height="80" fill="url(#extCrimson)" />
+	<use xlink:href="#extRR1" x="20" y="20" width="80" height="80" />
+	<use xlink:href="#extRR1" x="40" y="40" width="80" height="80" 
+             style="fill:url(../../spec/structure/useMultipleURI.svg#gold)" />
+</g>
+
+<g id="uu22" style="fill:url(#extOrange)">
+	<rect x="0" y="0" width="80" height="80" fill="url(#extCrimson)" />
+	<use xlink:href="../../spec/structure/useMultipleURI.svg#r1" x="20" y="20" width="80" height="80" />
+	<use xlink:href="../../spec/structure/useMultipleURI.svg#r1" x="40" y="40" width="80" height="80" 
+             style="fill:url(../../spec/structure/useMultipleURI.svg#gold)" />
 </g>
 
 </defs>
