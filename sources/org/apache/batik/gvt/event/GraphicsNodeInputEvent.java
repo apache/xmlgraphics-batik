@@ -70,6 +70,26 @@ public abstract class GraphicsNodeInputEvent extends GraphicsNodeEvent {
     public static final int BUTTON3_MASK = InputEvent.META_MASK;
 
     /**
+     * The caps lock constant.
+     */
+    public static final int CAPS_LOCK_MASK = 0x01;
+
+    /**
+     * The num lock constant.
+     */
+    public static final int NUM_LOCK_MASK = 0x02;
+
+    /**
+     * The scroll lock constant.
+     */
+    public static final int SCROLL_LOCK_MASK = 0x04;
+
+    /**
+     * The kana lock constant.
+     */
+    public static final int KANA_LOCK_MASK = 0x08;
+
+    /**
      * The graphics node input events Time stamp. The time stamp is in
      * UTC format that indicates when the input event was
      * created.
@@ -83,6 +103,12 @@ public abstract class GraphicsNodeInputEvent extends GraphicsNodeEvent {
     int modifiers;
 
     /**
+     * The state of the key locks at the time the graphics node input
+     * event was fired.
+     */
+    int lockState;
+
+    /**
      * Constructs a new graphics node input event.
      * @param source the graphics node where the event originated
      * @param id the id of this event
@@ -90,10 +116,11 @@ public abstract class GraphicsNodeInputEvent extends GraphicsNodeEvent {
      * @param modifiers the modifier keys down while event occurred
      */
     protected GraphicsNodeInputEvent(GraphicsNode source, int id,
-                                     long when, int modifiers) {
+                                     long when, int modifiers, int lockState) {
         super(source, id);
         this.when = when;
         this.modifiers = modifiers;
+        this.lockState = lockState;
     }
 
     /**
@@ -101,10 +128,13 @@ public abstract class GraphicsNodeInputEvent extends GraphicsNodeEvent {
      * @param source the graphics node where the event originated
      * @param evt the AWT InputEvent triggering this event's creation
      */
-    protected GraphicsNodeInputEvent(GraphicsNode source, InputEvent evt) {
+    protected GraphicsNodeInputEvent(GraphicsNode source,
+                                     InputEvent evt,
+                                     int lockState) {
         super(source, evt.getID());
         this.when = evt.getWhen();
         this.modifiers = evt.getModifiers();
+        this.lockState = lockState;
     }
 
     /**
@@ -154,5 +184,12 @@ public abstract class GraphicsNodeInputEvent extends GraphicsNodeEvent {
      */
     public int getModifiers() {
         return modifiers;
+    }
+
+    /**
+     * Returns the lock state flags for this event.
+     */
+    public int getLockState() {
+        return lockState;
     }
 }

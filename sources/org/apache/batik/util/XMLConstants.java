@@ -24,41 +24,26 @@ package org.apache.batik.util;
  * @version $Id$
  */
 public interface XMLConstants {
-    /**
-     * The XML namespace URI.
-     */
-    String XML_NAMESPACE_URI =
-        "http://www.w3.org/XML/1998/namespace";
 
-    /**
-     * The xmlns namespace URI.
-     */
-    String XMLNS_NAMESPACE_URI =
-        "http://www.w3.org/2000/xmlns/";
+    // Namespace URIs
+    String XML_NAMESPACE_URI = "http://www.w3.org/XML/1998/namespace";
+    String XMLNS_NAMESPACE_URI = "http://www.w3.org/2000/xmlns/";
+    String XLINK_NAMESPACE_URI = "http://www.w3.org/1999/xlink";
+    String XML_EVENTS_NAMESPACE_URI = "http://www.w3.org/2001/xml-events";
 
-    /**
-     * The xmlns prefix
-     */
+    // Namespace prefixes
+    String XML_PREFIX = "xml";
     String XMLNS_PREFIX = "xmlns";
-
-    /**
-     * The xlink namespace URI
-     */
-    String XLINK_NAMESPACE_URI
-        = "http://www.w3.org/1999/xlink";
-    
-    /**
-     * The xlink prefix
-     */
     String XLINK_PREFIX = "xlink";
 
-    String XML_PREFIX = "xml";
+    // xml:{lang,space,base} attributes
     String XML_LANG_ATTRIBUTE  = XML_PREFIX + ":lang";
     String XML_SPACE_ATTRIBUTE = XML_PREFIX + ":space";
-
     String XML_DEFAULT_VALUE = "default";
     String XML_PRESERVE_VALUE = "preserve";
-    
+    String XML_BASE_ATTRIBUTE = "base";
+
+    // Serialization constants
     String XML_TAB = "    ";
     String XML_OPEN_TAG_END_CHILDREN = " >";
     String XML_OPEN_TAG_END_NO_CHILDREN = " />";
@@ -79,7 +64,13 @@ public interface XMLConstants {
     String XML_ENTITY_GT = "&gt;";
     String XML_ENTITY_APOS = "&apos;";
     String XML_ENTITY_AMP = "&amp;";
-
     String XML_CHAR_REF_PREFIX = "&#x";
     String XML_CHAR_REF_SUFFIX = ";";
+    String XML_CDATA_END = "]]>";
+    String XML_DOUBLE_DASH = "--";
+    String XML_PROCESSING_INSTRUCTION_END = "?>";
+
+    // XML versions
+    String XML_VERSION_10 = "1.0";
+    String XML_VERSION_11 = "1.1";
 }

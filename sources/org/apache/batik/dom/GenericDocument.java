@@ -125,44 +125,6 @@ public class GenericDocument
 
     /**
      * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.Document#getElementById(String)}.
-     */
-    public Element getElementById(String elementId) {
-        if (elementId == null || elementId.equals("")) {
-            return null;
-        }
-        Element e = getDocumentElement();
-        if (e == null) {
-            return null;
-        }
-        return getById(elementId, e);
-    }
-
-    /**
-     * An auxiliary method used by getElementById.
-     */
-    protected static Element getById(String id, Node node) {
-        if (!(node instanceof Element)) {
-            return null;
-        }
-        
-        Element e = (Element)node;
-        if (e.getAttribute("id").equals(id)) {
-            return e;
-        }
-        for (Node n = node.getFirstChild();
-             n != null;
-             n = n.getNextSibling()) {
-            Element result = getById(id, n);
-            if (result != null) {
-                return result;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link
      * org.w3c.dom.Document#createAttribute(String)}.
      */
     public Attr createAttribute(String name) throws DOMException {

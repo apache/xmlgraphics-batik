@@ -18,11 +18,15 @@
 package org.apache.batik.dom.svg;
 
 import org.apache.batik.css.engine.CSSEngine;
+import org.apache.batik.css.engine.CSSImportedElementRoot;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.DOMUtilities;
+import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLConstants;
+import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedEnumeration;
@@ -80,21 +84,26 @@ public abstract class SVGOMElement
      * <b>DOM</b>: Implements {@link SVGElement#getId()}.
      */
     public String getId() {
-        return getAttributeNS(null, "id");
+        return super.getId();
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGElement#setId(String)}.
      */
     public void setId(String id) {
-        setAttributeNS(null, "id", id);
+        Attr a = getIdAttribute();
+        if (a == null) {
+            setAttributeNS(null, "id", id);
+        } else {
+            a.setNodeValue(id);
+        }
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGElement#getXMLbase()}.
      */
     public String getXMLbase() {
-        return XMLBaseSupport.getXMLBase(this);
+        return getAttributeNS(XMLConstants.XML_NAMESPACE_URI, "base");
     }
 
     /**
@@ -172,6 +181,53 @@ public abstract class SVGOMElement
 						    prefix });
         }
         this.prefix = prefix;
+    }
+
+    /**
+     * Returns the xml:base attribute value of the given element,
+     * resolving any dependency on parent bases if needed.
+     * Follows shadow trees when moving to parent nodes.
+     */
+    protected String getCascadedXMLBase(Node node) {
+        String base = null;
+        Node n = node.getParentNode();
+        while (n != null) {
+            if (n.getNodeType() == Node.ELEMENT_NODE) {
+                base = getCascadedXMLBase((Element) n);
+                break;
+            }
+            if (n instanceof CSSImportedElementRoot) {
+                n = ((CSSImportedElementRoot) n).getCSSParentElement();
+            } else {
+                n = n.getParentNode();
+            }
+        }
+        if (base == null) {
+            AbstractDocument doc;
+            if (node.getNodeType() == Node.DOCUMENT_NODE) {
+                doc = (AbstractDocument) node;
+            } else {
+                doc = (AbstractDocument) node.getOwnerDocument();
+            }
+            base = doc.getDocumentURI();
+        }
+        while (node != null && node.getNodeType() != Node.ELEMENT_NODE) {
+            node = node.getParentNode();
+        }
+        if (node == null) {
+            return base;
+        }
+        Element e = (Element) node;
+        Attr attr = e.getAttributeNodeNS(XMLConstants.XML_NAMESPACE_URI,
+                                         XMLConstants.XML_BASE_ATTRIBUTE);
+        if (attr != null) {
+            if (base == null) {
+                base = attr.getNodeValue();
+            } else {
+                base = new ParsedURL(base, attr.getNodeValue()).toString();
+            }
+        }
+        return base;
     }
 
     // SVGContext ////////////////////////////////////////////////////
