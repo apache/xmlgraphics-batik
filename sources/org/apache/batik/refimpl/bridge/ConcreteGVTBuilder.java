@@ -99,7 +99,10 @@ public class ConcreteGVTBuilder implements GVTBuilder, SVGConstants {
         BridgeEventSupport.addGVTListener(ctx, svgRoot);
         BridgeEventSupport.loadScripts(ctx, svgDocument);
 
-        return treeRoot;
+        RootGraphicsNode root = ctx.getGVTFactory().createRootGraphicsNode();
+        root.getChildren().add(treeRoot);
+
+        return root;
     }
 
 

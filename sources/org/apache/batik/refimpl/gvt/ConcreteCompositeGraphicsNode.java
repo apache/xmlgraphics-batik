@@ -169,7 +169,9 @@ public class ConcreteCompositeGraphicsNode extends AbstractGraphicsNode
         if(count > 0){
             txf = children[0].getTransform();
             nodeBounds = children[0].getBounds();
-            bounds = txf.createTransformedShape(nodeBounds).getBounds2D();
+            bounds = (txf == null)
+                ? nodeBounds
+                : txf.createTransformedShape(nodeBounds).getBounds2D();
         } else {
             // With the following empty groups may have bad side effects.
             bounds = new Rectangle(0, 0, 0, 0);
@@ -178,7 +180,10 @@ public class ConcreteCompositeGraphicsNode extends AbstractGraphicsNode
             GraphicsNode node = children[i];
             nodeBounds = node.getBounds();
             txf = children[i].getTransform();
-            nodeBounds = txf.createTransformedShape(nodeBounds).getBounds2D();
+            if (txf != null) {
+                nodeBounds =
+                    txf.createTransformedShape(nodeBounds).getBounds2D();
+            }
             bounds.add(nodeBounds);
         }
         return bounds;
