@@ -35,7 +35,7 @@ public interface ShapePainter {
     /**
      * Returns the bounds of the area painted by this shape painter
      */
-    Rectangle2D getPaintedBounds();
+    Rectangle2D getPaintedBounds2D();
 
     /**
      * Sets the Shape this shape painter is associated with.

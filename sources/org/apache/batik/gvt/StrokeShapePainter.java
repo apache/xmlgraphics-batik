@@ -96,13 +96,13 @@ public class StrokeShapePainter implements ShapePainter {
     /**
      * Returns the bounds of the area painted by this shape painter
      */
-    public Rectangle2D getPaintedBounds(){
-	Shape painted = getPaintedArea();
-	if (painted != null){
-	    return painted.getBounds2D();
-	} else {
-	    return null;
-	}
+    public Rectangle2D getPaintedBounds2D(){
+        Shape painted = getPaintedArea();
+        if (painted != null){
+            return painted.getBounds2D();
+        } else {
+            return null;
+        }
     }
 
 
