@@ -8,6 +8,7 @@
 
 package org.apache.batik.bridge;
 
+import java.awt.Dimension;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
@@ -128,6 +129,7 @@ public class SVGSVGElementBridge implements GraphicsNodeBridge,
                 }
             }
         } else {
+            ctx.setDocumentSize(new Dimension((int)w, (int)h));
             clip = new Rectangle2D.Float(x, y, w, h);
         }
 
