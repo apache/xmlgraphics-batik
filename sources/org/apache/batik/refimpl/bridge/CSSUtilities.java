@@ -520,7 +520,7 @@ public class CSSUtilities implements SVGConstants {
         GVTFactory f = ctx.getGVTFactory();
         FillShapePainter painter = null;
         Paint fillPaint = convertFillToPaint(svgElement,
-                                             node,   
+                                             node,
                                              ctx,
                                              decl,
                                              uctx);
@@ -887,10 +887,12 @@ public class CSSUtilities implements SVGConstants {
         }
 
         case SVGUtilities.BACKGROUND_IMAGE:
-            return new ConcreteBackgroundRable(node);
+            return new ConcreteBackgroundRable(node,
+                                 ctx.getGraphicsNodeRenderContext());
 
         case SVGUtilities.BACKGROUND_ALPHA:
-            in = new ConcreteBackgroundRable(node);
+            in = new ConcreteBackgroundRable(node,
+                                 ctx.getGraphicsNodeRenderContext());
             in = new FilterAlphaRable(in);
             return in;
 

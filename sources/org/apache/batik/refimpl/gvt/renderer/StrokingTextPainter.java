@@ -80,13 +80,15 @@ public class StrokingTextPainter extends BasicTextPainter {
      * @see org.apache.batik.gvt.GraphicsNodeRenderContext
      * @param shape the shape to paint
      * @param g2d the Graphics2D to use
-     * @param context rendering context.
+     * @param context the rendering context.
      */
-    public void paint(AttributedCharacterIterator aci, Point2D location,
-               TextNode.Anchor anchor, Graphics2D g2d,
-                   GraphicsNodeRenderContext context) {
+    public void paint(TextNode node, Graphics2D g2d,
+                           GraphicsNodeRenderContext context) {
 
         FontRenderContext frc = context.getFontRenderContext();
+        AttributedCharacterIterator aci = node.getAttributedCharacterIterator();
+        Point2D location = node.getLocation();
+        TextNode.Anchor anchor = node.getAnchor();
         List textRuns = new ArrayList();
         double advance = 0d;
 
@@ -177,17 +179,15 @@ public class StrokingTextPainter extends BasicTextPainter {
 
             // paint over-and-underlines first, then layer glyphs over them
 
-            float thickness = getDecorationThickness(runaci, layout);
-
             if (underline && !layout.isVertical()) {
-                paintUnderline(textRun, location, x, thickness, g2d);
+                paintUnderline(textRun, location, x, g2d);
             }
             boolean overline =
                 (runaci.getAttribute(GVTAttributedCharacterIterator.
                                      TextAttribute.OVERLINE) != null);
 
             if (overline && !layout.isVertical()) {
-                paintOverline(textRun, location, x, thickness, g2d);
+                paintOverline(textRun, location, x, g2d);
             }
 
 
@@ -220,7 +220,7 @@ public class StrokingTextPainter extends BasicTextPainter {
                             TextAttribute.STRIKETHROUGH_ON);
             // paint strikethrough last
             if (strikethrough && !layout.isVertical()) {
-                paintStrikethrough(textRun, location, x, thickness, g2d);
+                paintStrikethrough(textRun, location, x, g2d);
             }
             x += textRun.getLayout().getAdvance();
         }
@@ -235,19 +235,13 @@ public class StrokingTextPainter extends BasicTextPainter {
      * Paints the overline for a given ACI.
      */
     private void paintOverline(TextRun textRun, Point2D location,
-                     double xoffset, float thickness, Graphics2D g2d) {
+                     double xoffset, Graphics2D g2d) {
         AttributedCharacterIterator runaci = textRun.getACI();
         TextLayout layout = textRun.getLayout();
-        double y = location.getY() +
-            layout.getBaselineOffsets()[java.awt.Font.ROMAN_BASELINE] -
-                layout.getAscent();
-        Stroke overlineStroke =
-            new BasicStroke(thickness);
         java.awt.Shape overlineShape =
-                    overlineStroke.createStrokedShape(
-                           new java.awt.geom.Line2D.Double(
-                           location.getX()+xoffset, y,
-                           location.getX()+xoffset+layout.getAdvance(), y));
+               getOverlineShape(runaci, layout,
+                   new Point2D.Double(location.getX()+xoffset, location.getY()));
+
         Paint paint = (Paint) runaci.getAttribute(
             TextAttribute.FOREGROUND);
         if (paint != null) {
@@ -272,19 +266,14 @@ public class StrokingTextPainter extends BasicTextPainter {
      * the underline fill and stroke to differ from that of the text glyphs.
      */
     private void paintUnderline(TextRun textRun, Point2D location,
-                    double xoffset, float thickness, Graphics2D g2d) {
+                    double xoffset, Graphics2D g2d) {
+
         AttributedCharacterIterator runaci = textRun.getACI();
         TextLayout layout = textRun.getLayout();
-        double y = location.getY() +
-                   (layout.getBaselineOffsets()[java.awt.Font.ROMAN_BASELINE]
-                        + layout.getDescent())/2;
-        Stroke underlineStroke =
-            new BasicStroke(thickness);
+
         java.awt.Shape underlineShape =
-                    underlineStroke.createStrokedShape(
-                           new java.awt.geom.Line2D.Double(
-                           location.getX()+xoffset, y,
-                           location.getX()+xoffset+layout.getAdvance(), y));
+               getUnderlineShape(runaci, layout,
+                   new Point2D.Double(location.getX()+xoffset, location.getY()));
 
         // TODO: change getAdvance to getVisibleAdvance for
         // ACIs which do not inherit their underline attribute
@@ -316,22 +305,15 @@ public class StrokingTextPainter extends BasicTextPainter {
      * internal strikethrough but computes it manually.
      */
     private void paintStrikethrough(TextRun textRun, Point2D location,
-                     double xoffset, float thickness, Graphics2D g2d) {
+                     double xoffset, Graphics2D g2d) {
+
         AttributedCharacterIterator runaci = textRun.getACI();
         TextLayout layout = textRun.getLayout();
-        double y = location.getY()+
-            (layout.getBaselineOffsets()[java.awt.Font.ROMAN_BASELINE]
-             - layout.getAscent())/3;
-                     // XXX: 3 is a hack for cosmetic reasons
-        // TODO: the strikethrough offset should be calculated
-        // from the font instead!
-        Stroke strikethroughStroke =
-            new BasicStroke(thickness);
+
         java.awt.Shape strikethroughShape =
-                    strikethroughStroke.createStrokedShape(
-                           new java.awt.geom.Line2D.Double(
-                           location.getX()+xoffset, y,
-                           location.getX()+xoffset+layout.getAdvance(), y));
+               getStrikethroughShape(runaci, layout,
+                   new Point2D.Double(location.getX()+xoffset, location.getY()));
+
         Paint paint = (Paint) runaci.getAttribute(
             TextAttribute.FOREGROUND);
         if (paint != null) {
@@ -347,37 +329,6 @@ public class StrokingTextPainter extends BasicTextPainter {
             g2d.setPaint(paint);
             g2d.draw(strikethroughShape);
         }
-    }
-
-
-    private float getDecorationThickness(AttributedCharacterIterator aci,
-                                                         TextLayout layout) {
-            // thickness divisor: text decoration thickness is
-            // equal to the text advance divided by this number
-            float thick_div;
-            Object textWeight = aci.getAttribute(TextAttribute.WEIGHT);
-            if (textWeight == TextAttribute.WEIGHT_REGULAR) {
-                thick_div = 14f;
-            } else if (textWeight == TextAttribute.WEIGHT_BOLD) {
-                thick_div = 11f;
-            } else if (textWeight == TextAttribute.WEIGHT_LIGHT) {
-                thick_div = 18f;
-            } else if (textWeight == TextAttribute.WEIGHT_DEMIBOLD) {
-                thick_div = 12f;
-            } else if (textWeight == TextAttribute.WEIGHT_DEMILIGHT) {
-                thick_div = 16f;
-            } else if (textWeight == TextAttribute.WEIGHT_EXTRABOLD) {
-                thick_div = 10f;
-            } else if (textWeight == TextAttribute.WEIGHT_EXTRA_LIGHT) {
-                thick_div = 20f;
-            } else if (textWeight == TextAttribute.WEIGHT_SEMIBOLD) {
-                thick_div = 13f;
-            } else if (textWeight == TextAttribute.WEIGHT_ULTRABOLD) {
-                thick_div = 9f;
-            } else {
-                thick_div = 14f;
-            }
-        return layout.getAscent()/thick_div;
     }
 
     /**

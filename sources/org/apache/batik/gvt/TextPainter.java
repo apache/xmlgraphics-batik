@@ -11,9 +11,9 @@ package org.apache.batik.gvt;
 import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.text.AttributedCharacterIterator;
-import java.awt.image.renderable.RenderContext;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 
 import org.apache.batik.gvt.text.Mark;
 
@@ -28,13 +28,11 @@ public interface TextPainter {
     /**
      * Paints the specified attributed character iterator using the
      * specified Graphics2D and context and font context.
-     * @param shape the shape to paint
+     * @param node the TextNode to paint
      * @param g2d the Graphics2D to use
-     * @param context rendering context.
+     * @param context the rendering context.
      */
-    void paint(AttributedCharacterIterator aci,
-               Point2D location,
-               TextNode.Anchor anchor,
+    void paint(TextNode node,
                Graphics2D g2d,
                GraphicsNodeRenderContext context);
 
@@ -116,5 +114,32 @@ public interface TextPainter {
      public Shape getHighlightShape(Mark beginMark, Mark endMark,
                                     Point2D location,
                                     TextNode.Anchor anchor);
+    /*
+     * Get a Shape in userspace coords which defines the textnode glyph outlines.
+     * @param node the TextNode to measure
+     * @param frc the font rendering context.
+     * @param includeDecoration whether to include text decoration
+     *            outlines.
+     * @param includeStroke whether to create the "stroke shape outlines"
+     *            instead of glyph outlines.
+     */
+     public Shape getOutline(TextNode node, FontRenderContext frc,
+                                    boolean includeDecoration);
+
+    /*
+     * Get a Rectangle2D in userspace coords which encloses the textnode
+     * glyphs composed from an AttributedCharacterIterator.
+     * @param node the TextNode to measure
+     * @param g2d the Graphics2D to use
+     * @param context rendering context.
+     * @param includeDecoration whether to include text decoration
+     *            in bounds computation.
+     * @param includeStroke whether to include the effect of stroke width
+     *            in bounds computation.
+     */
+     public Rectangle2D getBounds(TextNode node,
+               FontRenderContext frc,
+               boolean includeDecoration,
+               boolean includeStroke);
 
 }

@@ -35,20 +35,25 @@ import org.apache.batik.gvt.filter.CompositeRule;
 import org.apache.batik.gvt.filter.PadMode;
 
 /**
- * This implementation of RenderableImage will render its input
+* This implementation of RenderableImage will render its input
  * GraphicsNode into a BufferedImage upon invokation of one of its
  * createRendering methods.
  *
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
-public class ConcreteBackgroundRable 
+public class ConcreteBackgroundRable
     extends    AbstractRable {
 
     /**
      * GraphicsNode this image can render
      */
     private GraphicsNode node;
+
+    /**
+     * GraphicsNodeRenderContext currently associated with above GraphicsNode.
+     */
+    private GraphicsNodeRenderContext gnrc;
 
     /**
      * Returns the <tt>GraphicsNode</tt> rendered by this image
@@ -71,10 +76,11 @@ public class ConcreteBackgroundRable
     /**
      * @param node The GraphicsNode this image should represent
      */
-    public ConcreteBackgroundRable(GraphicsNode node){
+    public ConcreteBackgroundRable(GraphicsNode node, GraphicsNodeRenderContext rc){
         if(node == null)
             throw new IllegalArgumentException();
 
+        this.gnrc = rc;
         this.node = node;
     }
 
@@ -91,7 +97,7 @@ public class ConcreteBackgroundRable
         Rectangle2D r2d = null;
         while (i.hasNext()) {
             GraphicsNode gn = (GraphicsNode)i.next();
-            if (gn == child) 
+            if (gn == child)
                 break;
 
             Rectangle2D cr2d = gn.getBounds(rc);
@@ -108,7 +114,7 @@ public class ConcreteBackgroundRable
                 return init;
         } else if (init ==null)
             return r2d;
-        
+
         init.add(r2d);
         return init;
     }
@@ -155,7 +161,7 @@ public class ConcreteBackgroundRable
             // Degenerate case return null;
             r2d = null;
         }
-        
+
         if (child != null) {
             // Add our childrens bounds to it...
             CompositeGraphicsNode cgn = (CompositeGraphicsNode)gn;
@@ -169,9 +175,9 @@ public class ConcreteBackgroundRable
     // This does the leg work for getBounds().
     // It traverses the tree figuring out the bounds of the
     // background image.
-    static Rectangle2D getBoundsRecursive(GraphicsNode gn, 
+    static Rectangle2D getBoundsRecursive(GraphicsNode gn,
                                           GraphicsNode child) {
-        
+
         Rectangle2D r2d = null;
         if (gn == null)
             return null;
@@ -183,7 +189,7 @@ public class ConcreteBackgroundRable
         }
 
         // background has definite bounds so return them.
-        if (r2d != null) 
+        if (r2d != null)
             return  r2d;
 
         // No background enable so check our parent's value.
@@ -195,7 +201,7 @@ public class ConcreteBackgroundRable
 
         // Our parent has background but no bounds (and we must
         // have been the first child so build the new bounds...
-        if (r2d == CompositeGraphicsNode.VIEWPORT) 
+        if (r2d == CompositeGraphicsNode.VIEWPORT)
             return r2d;
 
         try {
@@ -208,7 +214,7 @@ public class ConcreteBackgroundRable
             // Degenerate case return null;
             r2d = null;
         }
-            
+
         return r2d;
     }
 
@@ -219,18 +225,16 @@ public class ConcreteBackgroundRable
         Rectangle2D r2d = getBoundsRecursive(node, null);
 
         if (r2d == CompositeGraphicsNode.VIEWPORT)
-            r2d = getViewportBounds(node, null, null);
-            // FIXME: XXX: may fail for when null GraphicsNodeRenderContext
-            // is passed if child is TextNode!
+            r2d = getViewportBounds(node, null, getGraphicsNodeRenderContext());
 
         return r2d;
     }
 
     /**
      * Returns a filter that represents the background image
-     * for <tt>child</tt>.  
+     * for <tt>child</tt>.
      */
-    public Filter getBackground(GraphicsNode gn, 
+    public Filter getBackground(GraphicsNode gn,
                                 GraphicsNode child,
                                 GraphicsNodeRenderContext rc) {
         Rectangle2D r2d = null;
@@ -324,15 +328,25 @@ public class ConcreteBackgroundRable
         Filter f = getBackground(node, null, gnrc);
         if ( f == null)
             return null;
-        
+
         // org.apache.batik.test.gvt.ImageDisplay.showImage
         //     ("PrePad", f.createRendering(renderContext));
 
         Rectangle2D r2d = getBounds2D();
         f = new ConcretePadRable(f, r2d, PadMode.ZERO_PAD);
         // System.out.println("Bounds: " + r2d);
-        
+
         RenderedImage ri = f.createRendering(renderContext);
         return ri;
     }
+
+    protected void setGraphicsNodeRenderContext(GraphicsNodeRenderContext rc) {
+        this.gnrc = rc;
+    }
+
+    protected GraphicsNodeRenderContext getGraphicsNodeRenderContext() {
+        return gnrc;
+    }
+
+
 }
