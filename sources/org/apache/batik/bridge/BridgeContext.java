@@ -472,9 +472,23 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         }
         Interpreter interpreter = (Interpreter)interpreterMap.get(language);
         if (interpreter == null) {
-            interpreter = interpreterPool.createInterpreter(document, language);
-            interpreterMap.put(language, interpreter);
+            try {
+                interpreter = interpreterPool.createInterpreter(document, language);
+                interpreterMap.put(language, interpreter);
+            } catch (Exception e) {
+                if (userAgent != null) {
+                    userAgent.displayError(e);
+                    return null;
+                }
+            }
         }
+
+        if (interpreter == null) {
+            if (userAgent != null) {
+                userAgent.displayError(new Exception("Unknown language: " + language));
+            }
+        }
+
         return interpreter;
     }
 

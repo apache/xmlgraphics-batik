@@ -149,17 +149,12 @@ public class InterpreterPool {
         InterpreterFactory factory = (InterpreterFactory)factories.get(language);
         Interpreter interpreter = null;
         if (factory != null)
-            try {
-                interpreter = factory.createInterpreter
-                    (((SVGOMDocument)document).getURLObject());
-                if (document != null) {
-                    interpreter.bindObject(BIND_NAME_DOCUMENT, document);
-                }
-            } catch (Exception t) {
-                // may happen if the batik interpreters class is here but
-                // not the scripting engine jar
-                t.printStackTrace();
-            }
+            interpreter = factory.createInterpreter
+                (((SVGOMDocument)document).getURLObject());
+        if (document != null) {
+            interpreter.bindObject(BIND_NAME_DOCUMENT, document);
+        }
+
         return interpreter;
     }
 
