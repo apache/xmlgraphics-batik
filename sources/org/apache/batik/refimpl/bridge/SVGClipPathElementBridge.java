@@ -75,29 +75,7 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
         Area area = new Area();
         GVTBuilder builder = bridgeContext.getGVTBuilder();
         Viewport oldViewport = bridgeContext.getCurrentViewport();
-
         bridgeContext.setCurrentViewport(new ObjectBoundingBoxViewport());
-        for(Node child=clipElement.getFirstChild();
-            child != null;
-            child = child.getNextSibling()){
-            if(child.getNodeType() == child.ELEMENT_NODE){
-                GraphicsNode node
-                    = builder.build(bridgeContext, (Element)child) ;
-                if(node != null){
-                    // Apply the child clip if any...
-                    Area outline = new Area(node.getOutline());
-                    Clip clip = node.getClip();
-                    if (clip != null) {
-                        Shape clipPath = clip.getClipPath();
-                        if (clipPath != null) {
-                            outline.subtract(new Area(clipPath));
-                        }
-                    }
-                    area.add(outline);
-
-                }
-            }
-        }
 
         // Compute the transform matrix of this clipPath Element
         AffineTransform at = AWTTransformProducer.createAffineTransform
@@ -110,7 +88,32 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
         }
         AffineTransformSource ats =
             SVGUtilities.convertAffineTransformSource(at, gn, units);
-        Shape childrenClipPath = new TransformedShape(area, ats);
+
+        for(Node child=clipElement.getFirstChild();
+            child != null;
+            child = child.getNextSibling()){
+            if(child.getNodeType() == child.ELEMENT_NODE){
+                GraphicsNode node
+                    = builder.build(bridgeContext, (Element)child) ;
+                if(node != null){
+                    Area outline = new Area(new TransformedShape(node.getOutline(), ats));
+                    // compute clip-path on the child
+                    ShapeNode outlineNode = bridgeContext.getGVTFactory().createShapeNode();
+                    outlineNode.setShape(outline);
+                    Clip clip = CSSUtilities.convertClipPath((Element)child, outlineNode, bridgeContext);
+                    if (clip != null) {
+                        Shape clipPath = clip.getClipPath();
+                        if (clipPath != null) {
+                            outline.subtract(new Area(clipPath));
+                        }
+                    }
+                    area.add(outline);
+                }
+            }
+        }
+
+
+        Shape childrenClipPath = area; //new TransformedShape(area, ats);
 
         //
         // Now clipPath represents the current clip path defined by the
