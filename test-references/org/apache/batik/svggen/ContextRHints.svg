@@ -24,23 +24,23 @@
     </style>
     <g>
       <g class="testC1">
-        <text x="10" y="20" class="testC2">Text antialiasing
+        <text xml:space="preserve" x="10" y="20" class="testC2">Text antialiasing
         </text>
-        <text x="30" y="60" class="testC3">HELLO antialiased
+        <text xml:space="preserve" x="30" y="60" class="testC3">HELLO antialiased
         </text>
       </g>
       <g class="testC4">
-        <text x="30" y="90" class="testC5">HELLO aliased
+        <text xml:space="preserve" x="30" y="90" class="testC5">HELLO aliased
         </text>
       </g>
       <g class="testC6" transform="translate(0,100)">
-        <text x="10" y="20" class="testC7">Shape antialiasing
+        <text xml:space="preserve" x="10" y="20" class="testC7">Shape antialiasing
         </text>
         <ellipse transform="translate(30,0)" rx="50" cx="60" class="testC8" ry="15" cy="45" />
         <ellipse transform="translate(30,40)" rx="50" cx="60" class="testC9" ry="15" cy="45" />
       </g>
       <g class="testC10" transform="translate(0,200)">
-        <text x="10" y="30" class="testC11">Interpolation Nearest Neighbor / Bicubic
+        <text xml:space="preserve" x="10" y="30" class="testC11">Interpolation Nearest Neighbor / Bicubic
         </text>
         <image x="10" y="50" width="40" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAIAAAD91JpzAAAAE0lEQVR42mP4/5/h
 PwMDIxADaQAq6gT93tAyKwAAAABJRU5ErkJggg==" xlink:type="simple" class="testC12" xlink:actuate="onRequest" height="40" preserveAspectRatio="xMidYMid meet" xlink:show="replace" />

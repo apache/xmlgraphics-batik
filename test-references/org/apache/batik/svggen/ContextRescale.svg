@@ -20,7 +20,7 @@
     </style>
     <g>
       <g class="testC1">
-        <text x="10" y="20" class="testC2">Brighter / Normal / Darker
+        <text xml:space="preserve" x="10" y="20" class="testC2">Brighter / Normal / Darker
         </text>
         <image x="10" y="30" width="50" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAA/CAIAAAAtwww4AAATsUlEQVR42p1a348b
 x33/cmd3uUPucck9kscjJZ7Od5YUWbJlCZHtxvlhJK7TBmibIkCBoEXRh/Y1KFD0
@@ -441,7 +441,7 @@ eCIND7txkry54PDEyPIQ2rvNALrGdoehg7f6+af36AxvBsoAtwik+yJmFCTB/PHt
 LWKIMJBmQaE/l2fQ9WaAHQTIrW7OghFswrzTcUjs6ewfH3aAL/bvrDp8ucAvOaEW
 5d0gy8rHTQdFSAc0BB0c9mbzLGl0FAM6c6N6uNsePlwOh3Uz9jnk7//sFlEUQ7O7
 R3hVvYEDogfquT0fMjRklPJ/AZxwEDt45/8SAAAAAElFTkSuQmCC" xlink:type="simple" class="testC5" xlink:actuate="onRequest" height="63" preserveAspectRatio="xMidYMid meet" xlink:show="replace" />
-        <text x="10" y="20" class="testC6" transform="translate(0,113)">Rescale Red / Green / Blue
+        <text xml:space="preserve" x="10" y="20" class="testC6" transform="translate(0,113)">Rescale Red / Green / Blue
         </text>
         <image xmlns:xlink="http://www.w3.org/1999/xlink" transform="translate(0,113)" width="50" xlink:show="replace" xlink:type="simple" preserveAspectRatio="xMidYMid meet" height="63" class="testC7" x="10" y="30" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAA/CAIAAAAtwww4AAAY7UlEQVR42jV6WY9k
 6Vnmc/YTESfWjNxqyarKrq5uu9tu22BzMR5gQLYQizSLBBIXcMENF/wIbrlH4hoJ

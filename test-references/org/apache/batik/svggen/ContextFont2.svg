@@ -43,67 +43,67 @@
     </style>
     <g>
       <g class="testC1">
-        <text x="10" y="30" class="testC2">Font size
+        <text xml:space="preserve" x="10" y="30" class="testC2">Font size
         </text>
       </g>
       <g class="testC3" transform="translate(0,20)">
-        <text x="10" y="40" class="testC4">aA
+        <text xml:space="preserve" x="10" y="40" class="testC4">aA
         </text>
-        <text x="10" y="40" class="testC5" transform="translate(9.6,0)">aA
+        <text xml:space="preserve" x="10" y="40" class="testC5" transform="translate(9.6,0)">aA
         </text>
-        <text x="10" y="40" class="testC6" transform="translate(21.6,0)">aA
+        <text xml:space="preserve" x="10" y="40" class="testC6" transform="translate(21.6,0)">aA
         </text>
-        <text x="10" y="40" class="testC7" transform="translate(37.2,0)">aA
+        <text xml:space="preserve" x="10" y="40" class="testC7" transform="translate(37.2,0)">aA
         </text>
-        <text x="10" y="40" class="testC8" transform="translate(55.2,0)">aA
+        <text xml:space="preserve" x="10" y="40" class="testC8" transform="translate(55.2,0)">aA
         </text>
-        <text x="10" y="40" class="testC9" transform="translate(82.8,0)">aA
+        <text xml:space="preserve" x="10" y="40" class="testC9" transform="translate(82.8,0)">aA
         </text>
-        <text x="10" y="40" class="testC10" transform="translate(135.6,0)">aA
+        <text xml:space="preserve" x="10" y="40" class="testC10" transform="translate(135.6,0)">aA
         </text>
       </g>
       <g class="testC11" transform="translate(0,60)">
-        <text x="10" y="30" class="testC12">Font Styles
+        <text xml:space="preserve" x="10" y="30" class="testC12">Font Styles
         </text>
       </g>
       <g class="testC13" transform="translate(0,80)">
-        <text x="10" y="40" class="testC14">Plain
+        <text xml:space="preserve" x="10" y="40" class="testC14">Plain
         </text>
-        <text x="10" y="40" class="testC15" transform="translate(51.6,0)">Bold
+        <text xml:space="preserve" x="10" y="40" class="testC15" transform="translate(51.6,0)">Bold
         </text>
-        <text x="10" y="40" class="testC16" transform="translate(105.6,0)">Italic
+        <text xml:space="preserve" x="10" y="40" class="testC16" transform="translate(105.6,0)">Italic
         </text>
-        <text x="10" y="40" class="testC17" transform="translate(157.2,0)">Bold Italic
+        <text xml:space="preserve" x="10" y="40" class="testC17" transform="translate(157.2,0)">Bold Italic
         </text>
       </g>
       <g class="testC18" transform="translate(0,120)">
-        <text x="10" y="30" class="testC19">Font Families
+        <text xml:space="preserve" x="10" y="30" class="testC19">Font Families
         </text>
       </g>
       <g class="testC20" transform="translate(0,141)">
-        <text x="10" y="40" class="testC21">Lucida Sans
+        <text xml:space="preserve" x="10" y="40" class="testC21">Lucida Sans
         </text>
-        <text x="10" y="40" class="testC22" transform="translate(0,25.2)">Lucida Bright
+        <text xml:space="preserve" x="10" y="40" class="testC22" transform="translate(0,25.2)">Lucida Bright
         </text>
-        <text x="10" y="40" class="testC23" transform="translate(0,46.2)">Lucida Console
+        <text xml:space="preserve" x="10" y="40" class="testC23" transform="translate(0,46.2)">Lucida Console
         </text>
-        <text x="10" y="40" class="testC24" transform="translate(0,71.4)">Lucida Sans Typewriter
+        <text xml:space="preserve" x="10" y="40" class="testC24" transform="translate(0,71.4)">Lucida Sans Typewriter
         </text>
       </g>
       <g class="testC25" transform="translate(0,282.4)">
-        <text x="10" y="0" class="testC26">Logical Fonts
+        <text xml:space="preserve" x="10" y="0" class="testC26">Logical Fonts
         </text>
       </g>
       <g class="testC27" transform="translate(0,302)">
-        <text x="10" y="0" class="testC28">dialog
+        <text xml:space="preserve" x="10" y="0" class="testC28">dialog
         </text>
-        <text x="10" y="0" class="testC29" transform="translate(0,16.799999999999997)">dialoginput
+        <text xml:space="preserve" x="10" y="0" class="testC29" transform="translate(0,16.799999999999997)">dialoginput
         </text>
-        <text x="10" y="0" class="testC30" transform="translate(0,33.599999999999994)">monospaced
+        <text xml:space="preserve" x="10" y="0" class="testC30" transform="translate(0,33.599999999999994)">monospaced
         </text>
-        <text x="10" y="0" class="testC31" transform="translate(0,48.99999999999999)">serif
+        <text xml:space="preserve" x="10" y="0" class="testC31" transform="translate(0,48.99999999999999)">serif
         </text>
-        <text x="10" y="0" class="testC32" transform="translate(0,65.79999999999998)">sansserif
+        <text xml:space="preserve" x="10" y="0" class="testC32" transform="translate(0,65.79999999999998)">sansserif
         </text>
       </g>
     </g>

@@ -15,7 +15,7 @@
     </style>
     <g>
       <g class="testC1">
-        <text x="10" y="20" class="testC2">Normal / Inverted
+        <text xml:space="preserve" x="10" y="20" class="testC2">Normal / Inverted
         </text>
         <image x="10" y="30" width="50" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAA/CAYAAACioZtvAAAgAElEQVR42iWaWa8d
 15me3xp37Xk4A3k4kxJlyZNsp+3uiw6QAd0IMgBBGkiA3OQit/kR/T9ylbskCBAg

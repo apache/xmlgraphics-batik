@@ -19,7 +19,7 @@
     </style>
     <g>
       <g class="testC1">
-        <text x="20" y="40" class="testC2">Hello SVG drawString(...)
+        <text xml:space="preserve" x="20" y="40" class="testC2">Hello SVG drawString(...)
         </text>
         <circle r="30" class="testC3" cx="50" transform="translate(0,70)" cy="30" />
         <circle r="30" class="testC4" cx="50" transform="translate(60,70)" cy="30" />
