@@ -74,7 +74,7 @@ public class SVGAElementBridge extends AbstractGraphicsNodeBridge {
 
         target.addEventListener(SVG_EVENT_MOUSEOUT,
                                 new CursorMouseOutListener(ctx.getUserAgent()),
-                                false);    
+                                false);
     }
 
     /**
@@ -108,6 +108,7 @@ public class SVGAElementBridge extends AbstractGraphicsNodeBridge {
             Cursor cursor = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
             userAgent.setSVGCursor(cursor);
             userAgent.openLink(elt);
+            evt.stopPropagation();
         }
     }
 
@@ -135,9 +136,10 @@ public class SVGAElementBridge extends AbstractGraphicsNodeBridge {
             Cursor cursor = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR);
             userAgent.setSVGCursor(cursor);
             if (elt != null) {
-		String href = XLinkSupport.getXLinkHref(elt);
+                String href = XLinkSupport.getXLinkHref(elt);
                 userAgent.displayMessage(href);
             }
+            evt.stopPropagation();
         }
     }
 
@@ -165,6 +167,7 @@ public class SVGAElementBridge extends AbstractGraphicsNodeBridge {
             Cursor cursor = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
             userAgent.setSVGCursor(cursor);
             userAgent.displayMessage("");
+            evt.stopPropagation();
         }
     }
 }
