@@ -313,6 +313,11 @@ public class JSVGCanvas
     protected boolean progressiveRenderingEnabled = true;
 
     /**
+     * Whether or not the current document was transformed.
+     */
+    protected boolean documentTransformed;
+
+    /**
      * Used to draw marker
      */
     protected BasicStroke markerStroke
@@ -453,6 +458,7 @@ public class JSVGCanvas
             evt.initEvent("SVGUnload", false, false);
             ((EventTarget)(document.getRootElement())).dispatchEvent(evt);
         }
+        documentTransformed = false;
         if (doc == null) {
             document = doc;
             setRootNode(null, null, null);
@@ -1177,16 +1183,18 @@ public class JSVGCanvas
             if (gvtRoot == null) {
                 return;
             }
-            computeTransform();
-            rotateAngle = 0;
-            rotateCos = 1;
-            previousRotateTransform = null;
-            rotateTransform = null;
-            if (zoomHandler != null) {
-                zoomHandler.zoomChanged(1);
-            }
-            if (thumbnailCanvas != null) {
-                thumbnailCanvas.repaint();
+            if (!documentTransformed) {
+                computeTransform();
+                rotateAngle = 0;
+                rotateCos = 1;
+                previousRotateTransform = null;
+                rotateTransform = null;
+                if (zoomHandler != null) {
+                    zoomHandler.zoomChanged(1);
+                }
+                if (thumbnailCanvas != null) {
+                    thumbnailCanvas.repaint();
+                }
             }
         }
     }
@@ -1197,6 +1205,7 @@ public class JSVGCanvas
     public class UnzoomAction extends AbstractAction {
         public UnzoomAction() {}
         public void actionPerformed(ActionEvent e) {
+            documentTransformed = false;
             computeTransform();
             rotateAngle = 0;
             rotateCos = 1;
@@ -1221,6 +1230,7 @@ public class JSVGCanvas
         public void actionPerformed(ActionEvent e) {
             transform.preConcatenate
                 (AffineTransform.getScaleInstance(2, 2));
+            documentTransformed = true;
             updateBaseTransform();
             if (zoomHandler != null) {
                 zoomHandler.zoomChanged((float)(transform.getScaleX() /
@@ -1242,6 +1252,7 @@ public class JSVGCanvas
         public void actionPerformed(ActionEvent e) {
             transform.preConcatenate
                 (AffineTransform.getScaleInstance(0.5, 0.5));
+            documentTransformed = true;
             updateBaseTransform();
             if (zoomHandler != null) {
                 zoomHandler.zoomChanged((float)(transform.getScaleX() /
@@ -1423,6 +1434,7 @@ public class JSVGCanvas
             if (panTransform != null) {
                 panTransform.translate(x - sx, y - sy);
                 transform.preConcatenate(panTransform);
+                documentTransformed = true;
                 updateBaseTransform();
                 bufferNeedsRendering = true;
                 repaint();
@@ -1456,6 +1468,7 @@ public class JSVGCanvas
                 at.translate(-sx, -sy);
 
                 transform.preConcatenate(at);
+                documentTransformed = true;
                 updateBaseTransform();
                 if (zoomHandler != null) {
                     zoomHandler.zoomChanged((float)(transform.getScaleX() /
@@ -1476,6 +1489,7 @@ public class JSVGCanvas
                     previousRotateTransform = null;
                 }
                 transform.preConcatenate(rotateTransform);
+                documentTransformed = true;
                 updateBaseTransform();
                 if (zoomHandler != null) {
                     zoomHandler.zoomChanged((float)(transform.getScaleX() /
