@@ -55,11 +55,13 @@ import java.io.FilePermission;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.security.AccessController;
 import java.security.AccessControlContext;
 import java.security.CodeSource;
 import java.security.Permission;
 import java.security.PermissionCollection;
 import java.security.ProtectionDomain;
+import java.security.PrivilegedAction;
 
 import org.mozilla.javascript.GeneratedClassLoader;
 
@@ -113,6 +115,22 @@ public class RhinoClassLoader extends URLClassLoader implements GeneratedClassLo
         rhinoAccessControlContext
             = new AccessControlContext(new ProtectionDomain[]{
                 rhinoProtectionDomain});
+    }
+
+    /**
+     * Helper, returns the URL array from the parent loader
+     */
+    static URL[] getURL(ClassLoader parent) {
+        if (parent instanceof RhinoClassLoader) {
+            URL documentURL = ((RhinoClassLoader)parent).documentURL;
+            if (documentURL != null) {
+                return new URL[] {documentURL};
+            } else {
+                return new URL[] {};
+            }
+        } else {
+            return new URL[] {};
+        } 
     }
 
     /**

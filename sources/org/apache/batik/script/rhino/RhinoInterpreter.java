@@ -218,6 +218,7 @@ public class RhinoInterpreter implements Interpreter {
             ctx = new ExtendedContext();
             ctx.setWrapFactory(wrapFactory);
             ctx.setSecurityController(securityController);
+            ctx.setClassShutter(new RhinoClassShutter());
         }
         ctx = Context.enter(ctx);
 
@@ -225,7 +226,8 @@ public class RhinoInterpreter implements Interpreter {
     }
 
     /**
-     * This method returns the ECMAScript global object used by this interpreter.
+     * This method returns the ECMAScript global object used by this
+     * interpreter.
      */
     protected ScriptableObject getGlobalObject() {
         return globalObject;

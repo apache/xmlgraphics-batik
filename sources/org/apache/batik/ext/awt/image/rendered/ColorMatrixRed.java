@@ -50,6 +50,7 @@
 
 package org.apache.batik.ext.awt.image.rendered;
 
+import java.awt.color.ColorSpace;
 import java.awt.image.ColorModel;
 import java.awt.image.DataBufferInt;
 import java.awt.image.SampleModel;
@@ -111,7 +112,19 @@ public class ColorMatrixRed extends AbstractRed{
     public ColorMatrixRed(CachableRed src, float[][] matrix){
         setMatrix(matrix);
 
-        ColorModel cm = GraphicsUtil.Linear_sRGB_Unpre;
+        ColorModel srcCM = src.getColorModel();
+        ColorSpace srcCS = null;
+        if (srcCM != null)
+            srcCS = srcCM.getColorSpace();
+        ColorModel cm;
+        if (srcCS == null)
+            cm = GraphicsUtil.Linear_sRGB_Unpre;
+        else {
+            if (srcCS == ColorSpace.getInstance(ColorSpace.CS_LINEAR_RGB))
+                cm = GraphicsUtil.Linear_sRGB_Unpre;
+            else
+                cm = GraphicsUtil.sRGB_Unpre;
+        }
 
         SampleModel sm =
             cm.createCompatibleSampleModel(src.getWidth(),
