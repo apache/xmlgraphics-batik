@@ -703,7 +703,6 @@ public class Parser
             case LexicalUnits.DOT:
             case LexicalUnits.LEFT_BRACKET:
             case LexicalUnits.COLON:
-                nextIgnoreSpaces();
                 result = selectorFactory.createDescendantSelector
                     (result,
                      parseSimpleSelector());
