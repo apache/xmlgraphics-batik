@@ -14,7 +14,7 @@ import org.w3c.dom.events.EventListener;
  * A simple list of EventListener. Listeners are always added at the
  * head of the list.
  *
- * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
+ * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  */
 public class EventListenerList {
 

@@ -44,9 +44,8 @@ public class SVGDocumentLoader implements DocumentLoader {
         this.documentFactory = new SAXSVGDocumentFactory(parser);
     }
 
-    public Document loadDocument(String uri)
-        throws DOMException, SAXException, IOException {
-        return documentFactory.createDocument(uri, (InputStream)null);
+    public Document loadDocument(String uri) throws IOException {
+        return documentFactory.createDocument(uri);
     }
 
     public void dispose() {

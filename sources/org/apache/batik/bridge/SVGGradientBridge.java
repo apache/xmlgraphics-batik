@@ -105,8 +105,6 @@ public abstract class SVGGradientBridge implements SVGConstants {
                 refs.add(url);
             } catch(MalformedURLException ex) {
                 throw new IllegalAttributeValueException("bad url on "+uriStr);
-            } catch(SAXException ex) {
-                throw new IllegalAttributeValueException("bad document on "+uriStr);
             } catch(IOException ex) {
                 throw new IllegalAttributeValueException("I/O error on "+uriStr);
             }

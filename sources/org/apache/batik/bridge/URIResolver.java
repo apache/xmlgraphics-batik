@@ -64,7 +64,7 @@ public class URIResolver {
      * @param uri The element URI.
      */
     public Element getElement(String uri)
-        throws MalformedURLException, SAXException, IOException {
+        throws MalformedURLException, IOException {
         Node n = getNode(uri);
         if (n.getNodeType() == n.DOCUMENT_NODE) {
             throw new Error("Documents not allowed");
@@ -77,7 +77,7 @@ public class URIResolver {
      * @return The document or the element
      */
     public Node getNode(String uri) throws MalformedURLException,
-                              SAXException, IOException {
+                               IOException {
         if (documentURI.equals(uri)) {
             return document;
         }

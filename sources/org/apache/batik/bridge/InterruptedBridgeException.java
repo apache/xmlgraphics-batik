@@ -8,27 +8,19 @@
 
 package org.apache.batik.bridge;
 
-import java.io.IOException;
-import org.w3c.dom.Document;
-import org.w3c.dom.DOMException;
-import org.xml.sax.SAXException;
-
 /**
- * Defines a class that is responsible of loading (creating) a Document.
+ * This class represents the exception thrown by the bridge when the
+ * current thread was interrupted.
  *
- * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
+ * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public interface DocumentLoader {
-
+public class InterruptedBridgeException extends BridgeException {
+    
     /**
-     * Returns a document from the specified uri.
-     * @param uri the uri of the document
+     * Creates a new InterruptedBridgeException.
      */
-    Document loadDocument(String uri) throws IOException;
-
-    /**
-     * Disposes and releases all resources allocated by this document loader.
-     */
-    void dispose();
+    public InterruptedBridgeException() {
+        super("");
+    }
 }
