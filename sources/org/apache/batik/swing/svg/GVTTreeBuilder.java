@@ -151,6 +151,10 @@ public class GVTTreeBuilder extends Thread {
         } catch (Exception e) {
             exception = e;
             fireEvent(failedDispatcher, ev);
+        } catch (ThreadDeath td) {
+            exception = new Exception(td.getMessage());
+            fireEvent(failedDispatcher, ev);
+            throw td;
         } catch (Throwable t) {
             t.printStackTrace();
             exception = new Exception(t.getMessage());

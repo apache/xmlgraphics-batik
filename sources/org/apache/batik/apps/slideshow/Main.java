@@ -172,10 +172,9 @@ public class Main extends JComponent {
                     System.out.println("Painting: " + files[i]);
                     image = renderer.getOffScreen();
                     setTransition(image);
-                } catch (Throwable t) {
-                    t.printStackTrace();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
                 }
-            
             }
             if (transitionThread != null) {
                 try {
@@ -441,8 +440,8 @@ public class Main extends JComponent {
         for (int i=0; i<fileVec.size(); i++) {
             try {
                 files[i] = new File((String)fileVec.get(i));
-            } catch (Throwable t) {
-                t.printStackTrace();
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
         }
 

@@ -85,6 +85,8 @@ public class EventDispatcher {
             } catch (InterruptedException e) {
                 // Assume they will get delivered????
                 // be nice to wait on List but how???
+            } catch (ThreadDeath td) {
+                throw td;
             } catch (Throwable t) {
                 t.printStackTrace();
             }
@@ -120,6 +122,7 @@ public class EventDispatcher {
     protected static void dispatchEvent(final Dispatcher dispatcher,
                                         final Object [] ll,
                                         final Object evt) {
+        ThreadDeath td = null;
         try {
             for (int i = 0; i < ll.length; i++) {
                 try {
@@ -130,14 +133,21 @@ public class EventDispatcher {
                         ll[i] = null;
                     }
                     dispatcher.dispatch(l, evt);
+                } catch (ThreadDeath t) {
+                    // Keep delivering messages but remember to throw later.
+                    td = t;
                 } catch (Throwable t) {
                     t.printStackTrace();
                 }
             }
+        } catch (ThreadDeath t) {
+            // Remember to throw later.
+            td = t;
         } catch (Throwable t) {
             if (ll[ll.length-1] != null)
                 dispatchEvent(dispatcher, ll, evt);
             t.printStackTrace();
         }
+        if (td != null) throw td;
     }
 }

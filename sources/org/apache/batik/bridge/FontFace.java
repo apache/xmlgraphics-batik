@@ -162,7 +162,7 @@ public abstract class FontFace extends GVTFontFace
                     // the user but keep going.
                     if (ERR_URI_UNSECURE.equals(ex.getCode())) 
                         ctx.getUserAgent().displayError(ex);
-                } catch (Throwable t) {
+                } catch (Exception ex) {
                     // Do nothing couldn't get Referenced URL.
                 }
             }   
@@ -251,7 +251,7 @@ public abstract class FontFace extends GVTFontFace
             Font font = Font.createFont(Font.TRUETYPE_FONT,
                                         purl.openStream());
             return new AWTFontFamily(this, font);
-        } catch (Throwable t) {
+        } catch (Exception ex) {
         }
         return null;
     }

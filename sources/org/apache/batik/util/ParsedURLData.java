@@ -104,7 +104,7 @@ public class ParsedURLData {
                 is.mark(2);
                 is.read(data);
                 is.reset();
-            } catch (Throwable t) {
+            } catch (Exception ex) {
                 is.reset();
                 return is;
             }

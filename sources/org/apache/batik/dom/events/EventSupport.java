@@ -266,9 +266,10 @@ public class EventSupport {
 	for (int i=0; i < listeners.length; ++i) {
 	    try {
 		listeners[i].handleEvent(evt);
+            } catch (ThreadDeath td) {
+                throw td;
 	    } catch (Throwable th) {
-                System.err.println("In Event");
-                th.printStackTrace(System.err);
+                th.printStackTrace();
 	    }
 	}
     }

@@ -391,6 +391,10 @@ public class UpdateManager implements RunnableQueue.RunHandler {
 
             fireEvent(updateCompletedDispatcher,new UpdateManagerEvent
                       (this, repaintManager.getOffScreen(), l));
+        } catch (ThreadDeath td) {
+            fireEvent(updateFailedDispatcher,
+                      new UpdateManagerEvent(this, null, null));
+            throw td;
         } catch (Throwable t) {
             fireEvent(updateFailedDispatcher,
                       new UpdateManagerEvent(this, null, null));

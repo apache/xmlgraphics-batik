@@ -228,6 +228,12 @@ public class JSVGViewerFrame
                 ("go", null);
             setExitAction = debuggerClass.getMethod
                 ("setExitAction", new Class[] {Runnable.class});
+        } catch (ThreadDeath td) {
+            debuggerClass = null;
+            clearAllBreakpoints = null;
+            scriptGo = null;
+            setExitAction = null;
+            throw td;
         } catch (Throwable t) {
             debuggerClass = null;
             clearAllBreakpoints = null;
@@ -267,8 +273,8 @@ public class JSVGViewerFrame
                                                  hideDebugger();
                                              }}});
                 debuggerFrame.addWindowListener(wa);
-            } catch (Throwable t) {
-                t.printStackTrace();
+            } catch (Exception ex) {
+                ex.printStackTrace();
                 return;
             }
         }
@@ -286,7 +292,8 @@ public class JSVGViewerFrame
         try {
             clearAllBreakpoints.invoke(debuggerFrame, null);
             scriptGo.invoke(debuggerFrame, null);
-        } catch (Throwable t) {
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 
