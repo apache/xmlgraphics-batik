@@ -102,11 +102,11 @@ public class SVGFilterElementBridge implements FilterBridge, SVGConstants {
             if (filterResolutionX == 0) {
                 return null; // zero value disable rendering of the filter
             }
-        }
-        if (filterResolutionX < 0) {
-            // A negative value is an error
-            throw new IllegalAttributeValueException(
-                Messages.formatMessage("filter.filterResX.invalid", null));
+            if (filterResolutionX < 0) {
+                // A negative value is an error
+                throw new IllegalAttributeValueException(
+                    Messages.formatMessage("filter.filterResX.invalid", null));
+            }
         }
         float filterResolutionY = filterResolutionX; // default is filterResX
         if (filterResolution[1] != null) {
@@ -114,11 +114,11 @@ public class SVGFilterElementBridge implements FilterBridge, SVGConstants {
             if (filterResolutionY == 0) {
                 return null; // zero value disable rendering of the filter
             }
-        }
-        if (filterResolutionY < 0) {
-            // A negative value is an error
-            throw new IllegalAttributeValueException(
-                Messages.formatMessage("filter.filterResY.invalid", null));
+            if (filterResolutionY < 0) {
+                // A negative value is an error
+                throw new IllegalAttributeValueException(
+                    Messages.formatMessage("filter.filterResY.invalid", null));
+            }
         }
 
         // Set resolution in filterChain
