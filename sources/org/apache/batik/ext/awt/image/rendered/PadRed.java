@@ -316,10 +316,10 @@ public class PadRed extends AbstractRed {
         // Draw #1
         if (y < srcR.y) {
             int repW = r.width;
-            int repX = srcR.x;
-            int wrX  = srcR.x;
+            int repX = r.x;
+            int wrX  = r.x;
             int wrY  = y;
-            if (x+width <= srcR.x) {
+            if (x+width-1 <= srcR.x) {
                 // we are off to the left of src. so set repX to the
                 // left most pixel...
                 repW = 1;
@@ -358,10 +358,10 @@ public class PadRed extends AbstractRed {
         // Draw #2
         if ((y+height) > (srcR.y+srcR.height)) {
             int repW = r.width;
-            int repX = srcR.x;
+            int repX = r.x;
             int repY = srcR.y+srcR.height-1;
 
-            int wrX  = srcR.x;
+            int wrX  = r.x;
             int wrY  = srcR.y+srcR.height;
             if (wrY < y) wrY = y;
 
@@ -378,6 +378,10 @@ public class PadRed extends AbstractRed {
                 repX = srcR.x+srcR.width-1;
                 wrX  = x;
             }
+
+            System.out.println("wr: "  + wr.getBounds());
+            System.out.println("req: [" + wrX + ", " + wrY + ", " + 
+                               repW + ", 1]");
 
             // First we get the top row of pixels from src. (we
             // go to src instead of getting the data from wr because
