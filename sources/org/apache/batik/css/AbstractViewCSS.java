@@ -198,7 +198,7 @@ public abstract class AbstractViewCSS implements ViewCSS {
 
             if (val == null &&
                 (!rvr.isInheritedProperty() ||
-                 getParentElement(e) == null)) {
+                 HiddenChildElementSupport.getParentElement(e) == null)) {
                 val = rvr.getDefaultValue();
                 rd.setPropertyCSSValue(prop, val, "",
                               CSSOMReadOnlyStyleDeclaration.USER_AGENT_ORIGIN);
@@ -207,21 +207,6 @@ public abstract class AbstractViewCSS implements ViewCSS {
                 rvr.resolveValue(e, pe, this, rd, val, prio, orig);
             }
 	}
-    }
-
-    /**
-     * Returns the parent element of the given one, or null.
-     */
-    protected Element getParentElement(Element e) {
-	for (Node n = e.getParentNode(); n != null; n = n.getParentNode()) {
-	    if (n.getNodeType() == Node.ELEMENT_NODE) {
-		return (Element)n;
-	    }
-	}
-        if (e instanceof HiddenChildElement) {
-            return ((HiddenChildElement)e).getParentElement();
-        }
-	return null;
     }
 
     /**

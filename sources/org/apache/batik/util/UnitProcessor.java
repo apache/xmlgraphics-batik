@@ -15,6 +15,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.Locale;
 import java.util.MissingResourceException;
+import org.apache.batik.css.HiddenChildElementSupport;
 import org.apache.batik.i18n.Localizable;
 import org.apache.batik.i18n.LocalizableSupport;
 import org.apache.batik.parser.AWTTransformProducer;
@@ -189,18 +190,20 @@ public abstract class UnitProcessor {
                                           Context c) {
         // Compute the current transformation matrix (CTM).
         AffineTransform ctm = null;
-        for (Node n = e; n != null; n = n.getParentNode()) {
-            if (n instanceof SVGTransformable) {
+        for (Element t = e;
+             t != null;
+             t = HiddenChildElementSupport.getParentElement(t)) {
+            if (t instanceof SVGTransformable) {
                 if (ctm == null) {
                     ctm = new AffineTransform();
                 }
-                String s = ((Element)n).getAttributeNS(null, "transform");
+                String s = t.getAttributeNS(null, "transform");
                 Reader r = new StringReader(s);
                 ParserFactory pf = c.getParserFactory();
                 AffineTransform at;
                 at = AWTTransformProducer.createAffineTransform(r, pf);
                 ctm.preConcatenate(at);
-            } else if (n instanceof SVGSVGElement) {
+            } else if (t instanceof SVGSVGElement) {
                 break;
             }
         }
@@ -271,12 +274,12 @@ public abstract class UnitProcessor {
         }
         CSSPrimitiveValue val = c.getFontSize(e);
         short type = val.getPrimitiveType();
-        return v * cssToUserSpace(type,
-                                  val.getFloatValue(type),
-                                  // !!! DOM.getParentElement(e)
-                                  (SVGElement)e.getParentNode(),
-                                  d,
-                                  c);
+        return v * cssToUserSpace
+            (type,
+             val.getFloatValue(type),
+             (SVGElement)HiddenChildElementSupport.getParentElement(e),
+             d,
+             c);
     }
 
     /**
@@ -295,12 +298,12 @@ public abstract class UnitProcessor {
         }
         CSSPrimitiveValue val = c.getFontSize(e);
         short type = val.getPrimitiveType();
-        float fs = cssToUserSpace(type,
-                                  val.getFloatValue(type),
-                                  // !!! DOM.getParentElement(e)
-                                  (SVGElement)e.getParentNode(),
-                                  d,
-                                  c);
+        float fs = cssToUserSpace
+            (type,
+             val.getFloatValue(type),
+             (SVGElement)HiddenChildElementSupport.getParentElement(e),
+             d,
+             c);
         float xh = c.getXHeight(e);
         return v * xh * fs;
     }

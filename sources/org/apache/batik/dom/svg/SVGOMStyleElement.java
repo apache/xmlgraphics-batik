@@ -8,10 +8,14 @@
 
 package org.apache.batik.dom.svg;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.batik.css.CSSDocumentHandler;
 import org.apache.batik.css.CSSOMStyleSheet;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.XMLSupport;
+
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
 import org.w3c.dom.css.DOMImplementationCSS;
@@ -28,28 +32,16 @@ import org.w3c.dom.svg.SVGStyleElement;
 public class SVGOMStyleElement
     extends    SVGOMElement
     implements SVGStyleElement,
-	       LinkStyle {
+	       LinkStyle
+{
     /**
-     * The "type" attribute name.
+     * The attribute-value map map.
      */
-    public final static String TYPE = "type";
-
-    /**
-     * The "media" attribute name.
-     */
-    public final static String MEDIA = "media";
-
-    /**
-     * The "title" attribute name.
-     */
-    public final static String TITLE = "title";
-
-    // The default attribute values registration.
+    protected static Map attributeValues = new HashMap(3);
     static {
-	registerDefaultAttributeValue("style",
-                                      XMLSupport.XML_NAMESPACE_URI,
-				      "space",
-				      "preserve");
+        Map values = new HashMap(2);
+        values.put(ATTR_SPACE, VALUE_PRESERVE);
+        attributeValues.put(XMLSupport.XML_NAMESPACE_URI, values);
     }
 
     /**
@@ -78,14 +70,6 @@ public class SVGOMStyleElement
      */
     public String getLocalName() {
         return "style";
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGStyleElement#getXMLspace()}.
-     */
-    public String getXMLspace() {
-	return XMLSupport.getXMLSpace(this);
     }
 
     /**
@@ -121,6 +105,14 @@ public class SVGOMStyleElement
 
     /**
      * <b>DOM</b>: Implements {@link
+     * org.w3c.dom.svg.SVGStyleElement#getXMLspace()}.
+     */
+    public String getXMLspace() {
+	return XMLSupport.getXMLSpace(this);
+    }
+
+    /**
+     * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGStyleElement#setXMLspace(String)}.
      */
     public void setXMLspace(String xmlspace) throws DOMException {
@@ -132,7 +124,7 @@ public class SVGOMStyleElement
      * org.w3c.dom.svg.SVGStyleElement#getType()}.
      */
     public String getType() {
-	return getAttribute(TYPE);
+	return getAttribute(ATTR_TYPE);
     }
  
     /**
@@ -140,7 +132,7 @@ public class SVGOMStyleElement
      * org.w3c.dom.svg.SVGStyleElement#setType(String)}.
      */
     public void setType(String type) throws DOMException {
-	setAttribute(TYPE, type);
+	setAttribute(ATTR_TYPE, type);
     }
 
     /**
@@ -148,7 +140,7 @@ public class SVGOMStyleElement
      * org.w3c.dom.svg.SVGStyleElement#getMedia()}.
      */
     public String getMedia() {
-	return getAttribute(MEDIA);
+	return getAttribute(ATTR_MEDIA);
     }
  
     /**
@@ -156,7 +148,7 @@ public class SVGOMStyleElement
      * org.w3c.dom.svg.SVGStyleElement#setMedia(String)}.
      */
     public void setMedia(String media) throws DOMException {
-	setAttribute(MEDIA, media);
+	setAttribute(ATTR_MEDIA, media);
     }
 
     /**
@@ -164,7 +156,7 @@ public class SVGOMStyleElement
      * org.w3c.dom.svg.SVGStyleElement#getTitle()}.
      */
     public String getTitle() {
-	return getAttribute(TITLE);
+	return getAttribute(ATTR_TITLE);
     }
  
     /**
@@ -172,6 +164,14 @@ public class SVGOMStyleElement
      * org.w3c.dom.svg.SVGStyleElement#setTitle(String)}.
      */
     public void setTitle(String title) throws DOMException {
-	setAttribute(TITLE, title);
+	setAttribute(ATTR_TITLE, title);
+    }
+
+    /**
+     * Returns the default attribute values in a map.
+     * @return null if this element has no attribute with a default value.
+     */
+    protected Map getDefaultAttributeValues() {
+        return attributeValues;
     }
 }
