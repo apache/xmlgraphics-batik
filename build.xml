@@ -120,6 +120,10 @@ To display the available targets type:
       <include name="stylebook*.jar"/>
       <include name="xalan*.jar"/>
     </fileset>
+    <fileset dir="lib">
+      <include name="xerces*.jar"/>
+      <include name="xml-apis.jar"/>
+    </fileset>
   </path>
 
 
