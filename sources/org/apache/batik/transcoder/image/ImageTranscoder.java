@@ -25,6 +25,9 @@ import java.awt.image.BufferedImage;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeException;
 import org.apache.batik.bridge.GVTBuilder;
@@ -411,6 +414,29 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
         public Point getClientAreaLocationOnScreen() {
             return new Point();
         }
+
+        /**
+         * Tells whether the given feature is supported by this
+         * user agent.
+         */
+        public boolean hasFeature(String s) {
+            return FEATURES.contains(s);
+        }
+
+        /**
+         * Tells whether the given extension is supported by this
+         * user agent.
+         */
+        public boolean supportExtension(String s) {
+            return false;
+        }
+    }
+
+    protected final static Set FEATURES = new HashSet();
+    static {
+        FEATURES.add(SVGConstants.SVG_ORG_W3C_SVG_FEATURE);
+        FEATURES.add(SVGConstants.SVG_ORG_W3C_SVG_LANG_FEATURE);
+        FEATURES.add(SVGConstants.SVG_ORG_W3C_SVG_STATIC_FEATURE);
     }
 
     // --------------------------------------------------------------------

@@ -19,9 +19,11 @@ import java.awt.geom.Dimension2D;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.JComponent;
 
@@ -659,5 +661,31 @@ public class JSVGComponent extends JGVTComponent {
         public Point getClientAreaLocationOnScreen() {
             return getLocationOnScreen();
         }
+
+        /**
+         * Tells whether the given feature is supported by this
+         * user agent.
+         */
+        public boolean hasFeature(String s) {
+            return FEATURES.contains(s);
+        }
+
+        /**
+         * Tells whether the given extension is supported by this
+         * user agent.
+         */
+        public boolean supportExtension(String s) {
+            if (svgUserAgent != null) {
+                return svgUserAgent.supportExtension(s);
+            }
+            return false;
+        }
+    }
+
+    protected final static Set FEATURES = new HashSet();
+    static {
+        FEATURES.add(SVGConstants.SVG_ORG_W3C_SVG_FEATURE);
+        FEATURES.add(SVGConstants.SVG_ORG_W3C_SVG_LANG_FEATURE);
+        FEATURES.add(SVGConstants.SVG_ORG_W3C_SVG_STATIC_FEATURE);
     }
 }
