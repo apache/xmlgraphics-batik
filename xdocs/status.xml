@@ -65,18 +65,18 @@
 	      <td ><link href="http://xml.apache.org/batik/images/BE/color-property-BE-02.png">color-property-BE-02.svg</link></td>
 	      <td >&nbsp;</td>
 	    </tr>
-	    <tr>
-	      <td ><link href="http://xml.apache.org/batik/images/BE/color-transforms-BE-02.png">coords-transforms-BE-02.svg</link></td>
-	      <td >&nbsp;</td>
-	    </tr>
 
             <!-- ############################################################## -->
+	    <tr>
+	      <td ><link href="http://xml.apache.org/batik/images/BE/coords-transforms-BE-02.png">coords-transforms-BE-02.svg</link></td>
+	      <td >&nbsp;</td>
+	    </tr>
 	    <tr>
 	      <td ><link href="http://xml.apache.org/batik/images/BE/coords-units-BE-01.png">coords-units-BE-01.svg</link></td>
 	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
-	      <td ><link href="http://xml.apache.org/batik/images/BE/coords-unitsProc-BE-04.png">coords-unitsProc-BE-04.svg</link></td>
+	      <td ><link href="http://xml.apache.org/batik/images/BE/coords-unitsProc-BE-05.png">coords-unitsProc-BE-05.svg</link></td>
 	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
