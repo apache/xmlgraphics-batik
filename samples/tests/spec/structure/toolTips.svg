@@ -300,20 +300,20 @@
 
                 <g id="imageSamples" stroke="black" fill="orange">
                     <!-- No info -->
-                    <image transform="translate(60, 0)" x="8" y="2" width="43" height="18" xlink:href="tde.jpg"/>
+                    <image transform="translate(60, 0)" x="8" y="2" width="43" height="18" xlink:href="../../resources/images/tde.jpg"/>
 
                     <!-- title -->
-                    <image transform="translate(120, 0)" x="8" y="2" width="43" height="18" xlink:href="tke.jpg">
+                    <image transform="translate(120, 0)" x="8" y="2" width="43" height="18" xlink:href="../../resources/images/tde.jpg">
                         <title>&lt;image&gt; with &lt;title&gt; only</title>
                     </image>
 
                     <!-- desc -->
-                    <image transform="translate(180, 0)" x="8" y="2" width="43" height="18" xlink:href="tde.jpg"> 
+                    <image transform="translate(180, 0)" x="8" y="2" width="43" height="18" xlink:href="../../resources/images/tde.jpg"> 
                         <desc>&lt;image&gt; with &lt;desc&gt; only</desc>
                     </image>
 
                     <!-- title and desc -->
-                    <image transform="translate(240, 0)" x="8" y="2" width="43" height="18" xlink:href="tke.jpg"> 
+                    <image transform="translate(240, 0)" x="8" y="2" width="43" height="18" xlink:href="../../resources/images/tde.jpg"> 
                         <title>Title: &lt;image&gt; with &lt;title&gt; and &lt;desc&gt;</title>
                         <desc>Description: &lt;image&gt; with &lt;desc&gt; and &lt;desc&gt;</desc>
                     </image>
