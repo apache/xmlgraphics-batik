@@ -124,7 +124,7 @@ public class FloodRable8Bit extends AbstractRable
             userAOI = imageRect;
         }
         else{
-            userAOI = userAOI.getBounds2D();
+            userAOI = userAOIShape.getBounds2D();
         }
 
         // No intersection with the area of interest so return null..
