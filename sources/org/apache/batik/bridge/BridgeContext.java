@@ -284,7 +284,6 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         this.viewportMap.put(userAgent, new UserAgentViewport(userAgent));
         this.interpreterPool = interpreterPool;
         this.documentLoader = documentLoader;
-        documentLoader.setBridgeContext(this);
         registerSVGBridges(this);
     }
 
@@ -313,6 +312,14 @@ public class BridgeContext implements ErrorConstants, CSSContext {
             }
             eng.setAlternateStyleSheet(userAgent.getAlternateStyleSheet());
         }
+    }
+
+    /**
+     * Returns the CSS engine associated with given element.
+     */
+    public CSSEngine getCSSEngineForElement(Element e) {
+        SVGOMDocument doc = (SVGOMDocument)e.getOwnerDocument();
+        return doc.getCSSEngine();
     }
 
     // properties ////////////////////////////////////////////////////////////
@@ -605,6 +612,25 @@ public class BridgeContext implements ErrorConstants, CSSContext {
                 throw new BridgeException(e, ERR_URI_BAD_TARGET,
                                           new Object[] {uri});
             } else {
+                SVGOMDocument refDoc = (SVGOMDocument)ref.getOwnerDocument();
+                // This is new rather than attaching this BridgeContext
+                // with the new document we now create a whole new 
+                // BridgeContext to go with the new document.
+                // This means that the new document has it's own
+                // world of stuff and it should avoid memory leaks
+                // since the new document isn't 'tied into' this
+                // bridge context.
+                if (refDoc != document) {
+                    CSSEngine eng = refDoc.getCSSEngine();
+                    if (eng == null) {
+                        BridgeContext subCtx;
+                        subCtx = new BridgeContext(getUserAgent(),
+                                                   getDocumentLoader());
+                        subCtx.setGVTBuilder(getGVTBuilder());
+                        subCtx.setDocument(refDoc);
+                        subCtx.initializeDocument(refDoc);
+                    }
+                }
                 return ref;
             }
         } catch (MalformedURLException ex) {
@@ -946,6 +972,27 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         storeEventListener(evtTarget, SVGConstants.SVG_EVENT_MOUSEOUT, 
                            domMouseOutListener, true);
 
+    }
+
+
+    public void removeUIEventListeners(Document doc) {
+        EventTarget evtTarget = (EventTarget)doc.getDocumentElement();
+        synchronized (eventListenerSet) {
+            Iterator i = eventListenerSet.iterator();
+            while (i.hasNext()) {
+                EventListenerMememto elm = (EventListenerMememto)i.next();
+                EventTarget   et = elm.getTarget();
+                if (et == evtTarget) {
+                    EventListener el = elm.getListener();
+                    boolean       uc = elm.getUseCapture();
+                    String        t  = elm.getEventType();
+                    if ((et == null) || (el == null) || (t == null))
+                        continue;
+                    et.removeEventListener(t, el, uc);
+                }
+            }
+        }
+        
     }
 
     /**
@@ -1450,16 +1497,36 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         return checkInteractiveElement(root);
     }
 
+    /**
+     * used by isInteractiveDocument to check if document
+     * contains any 'interactive' elements.
+     */
     public static boolean checkInteractiveElement(Element e) {
-        String tag = e.getNodeName();
+        return checkInteractiveElement
+            ((SVGDocument)e.getOwnerDocument(), e);
+    }
 
+    /**
+     * used by isInteractiveDocument to check if document
+     * contains any 'interactive' elements.
+     */
+    public static boolean checkInteractiveElement(SVGDocument doc,
+                                                  Element e) {
+        String tag = e.getNodeName();
+        
         // Check if it's one of our important element.
         if (SVGConstants.SVG_A_TAG.equals(tag))
             return true;
-        if (SVGConstants.SVG_TITLE_TAG.equals(tag))
-            return true;
-        if (SVGConstants.SVG_DESC_TAG.equals(tag))
-            return true;
+
+        // This is a bit of a hack but don't count
+        // title and desc as children of root SVG since
+        // we don't show tool tips for them anyways.
+        if (SVGConstants.SVG_TITLE_TAG.equals(tag)) {
+            return (e.getParentNode() != doc.getRootElement());
+        }
+        if (SVGConstants.SVG_DESC_TAG.equals(tag)) {
+            return (e.getParentNode() != doc.getRootElement());
+        }
         if (SVGConstants.SVG_CURSOR_TAG.equals(tag))
             return true;
 

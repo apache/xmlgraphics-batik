@@ -206,77 +206,80 @@ function PileClickHandler(pile) {
   this.clickX   =0;
   this.clickY   =0;
   this.clickCnt =0;
+}
 
-  this.handleEvent = function(evt) {
-    if (this.tgt != evt.target) {
-      this.tgt = evt.target;
-      this.clickX = evt.clientX;
-      this.clickY = evt.clientY;
-      this.clickCnt = 1;
-      if (this.pile.click)
-        this.pile.click(this.pile, evt);
-      return;
-    }
-    
-    var dx = evt.clientX-this.clickX;
-    var dy = evt.clientY-this.clickY;
-    if (dx*dx+dy*dy > 9) {
-      this.clickX = evt.clientX;
-      this.clickY = evt.clientY;
-      this.clickCnt = 1;
-      if (this.pile.click)
-        this.pile.click(this.pile, evt);
-      return;
-    }
-    
+PileClickHandler.prototype.handleEvent = function(evt) {
+  if (this.tgt != evt.target) {
+    this.tgt = evt.target;
     this.clickX = evt.clientX;
     this.clickY = evt.clientY;
-    this.clickCnt++;
-
-    if (this.clickCnt > 2) {
-      this.clickCnt = 1;
-      if (this.pile.click)
-        this.pile.click(this.pile, evt);
-      return;
-    }
-
-    if (this.pile.doubleClick) {
-      this.pile.doubleClick(this.pile, evt);
-    }
+    this.clickCnt = 1;
+    if (this.pile.click)
+      this.pile.click(this.pile, evt);
+    return;
   }
-}
+    
+  var dx = evt.clientX-this.clickX;
+  var dy = evt.clientY-this.clickY;
+  if (dx*dx+dy*dy > 9) {
+    this.clickX = evt.clientX;
+    this.clickY = evt.clientY;
+    this.clickCnt = 1;
+    if (this.pile.click)
+      this.pile.click(this.pile, evt);
+    return;
+  }
+    
+  this.clickX = evt.clientX;
+  this.clickY = evt.clientY;
+  this.clickCnt++;
+
+  if (this.clickCnt > 2) {
+    this.clickCnt = 1;
+    if (this.pile.click)
+      this.pile.click(this.pile, evt);
+    return;
+  }
+
+  if (this.pile.doubleClick) {
+    this.pile.doubleClick(this.pile, evt);
+  }
+};
 
 function PileMouseDownHandler(pile) {
   this.pile = pile;
-  this.handleEvent = function(evt) {
-    if (!pile.dragCheck) return;
-    var tgt = evt.target;
-    var e = tgt;
-    var p = e.parentNode;
-    while (p && (p != pile.g)) {
-      e = p;
-      p = e.parentNode;
-    }
-
-    if (!p) return;
-    var c, i;
-    var num = pile.cards.length;
-    for (i=num-1; i>=0; i--) {
-      c = pile.cards[i];
-      if (e == c.elem)
-        break;
-      c = null;
-    }
-    if (!c) return;
-    
-    var g = pile.dragCheck(pile, c, i);
-    if (!g) return;
-    var cards = pile.cards.splice(i, num-i);
-
-    new CardMoveManager(g, this.pile, cards, 
-                        evt.clientX, evt.clientY);
-  }
 }
+
+PileMouseDownHandler.prototype.handleEvent = function(evt) {
+  if (!this.pile.dragCheck) return;
+  var tgt = evt.target;
+  var e = tgt;
+  var p = e.parentNode;
+  while (p && (p != this.pile.g)) {
+    e = p;
+    p = e.parentNode;
+  }
+
+  if (!p) return;
+  var c, i;
+  var num = this.pile.cards.length;
+  for (i=num-1; i>=0; i--) {
+    c = this.pile.cards[i];
+    if (e == c.elem)
+      break;
+    c = null;
+  }
+  if (!c) return;
+    
+  var g = this.pile.dragCheck(this.pile, c, i);
+  if (!g) return;
+  var cards = this.pile.cards.splice(i, num-i);
+
+  new CardMoveManager(g, this.pile, cards, 
+                      evt.clientX, evt.clientY);
+}
+
+
 /**
  * Finds the pile associated with elem, if any.
  * returns null if elem is not associated with a pile.
@@ -312,66 +315,66 @@ function CardMoveManager(group, pile, cards, x, y) {
   this.root.addEventListener("mousemove", this.fmm, false);
   this.root.addEventListener("mouseup", this.fmu, false);
   this.moved = false;
+};
 
-  this.mousemove = function(evt) {
-    var pt = localPt(this.parent, evt.clientX, evt.clientY);
-    var dx = pt.x-this.startPt.x;
-    var dy = pt.y-this.startPt.y;
-    if (!this.moved && ((dx*dx+dy*dy) < 4))
-      return;
+CardMoveManager.prototype.mousemove = function(evt) {
+  var pt = localPt(this.parent, evt.clientX, evt.clientY);
+  var dx = pt.x-this.startPt.x;
+  var dy = pt.y-this.startPt.y;
+  if (!this.moved && ((dx*dx+dy*dy) < 4))
+    return;
 
-    if (!this.moved) {
-      this.moved = true;
-      // Now move cards 
-      for (var i=0; i<this.cards.length; i++) {
-        this.cards[i].pile = null;
-        this.cards[i].rect.style.removeProperty("pointer-events");
-        this.group.appendChild(this.cards[i].elem);
-      }
-    }
-        
-    this.group.setAttribute("transform", "translate(" + dx + ", " + dy + ")");
-  };
-
-  this.mouseup = function(evt) {
-    this.root.removeEventListener("mousemove", this.fmm, false);
-    this.root.removeEventListener("mouseup", this.fmu, false);
-    this.group.setAttribute("transform","");
-    if (!this.moved) {
-      for (var i=0; i<this.cards.length; i++) {
-        this.pile.cards.push(this.cards[i]);
-      }
-      return;
-    }
-
-    var pt = localPt(this.parent, evt.clientX, evt.clientY);
-    var dx = pt.x-this.startPt.x;
-    var dy = pt.y-this.startPt.y;
-
-    var moveInfo = false;
-    var destPile = findPile(this.board, evt.target);
-    if (destPile && destPile.dropCheck) {
-      moveInfo = destPile.dropCheck(this.pile, destPile, this.cards);
-    }
-
-    switch(moveInfo) {
-    case true:
-      // Drop succeeded but no move info.
-      this.pile.board.notifyMoveDone();
-      return;
-    case false:
-      // Drop failed move back to original.
-      for (var i=0; i<this.cards.length; i++) {
-        var c = this.cards[i];
-        c.setPos(c.x+dx, c.y+dy);
-      }
-      this.pile.moveCardsTo(cards, 40);
-      return;
-    default:
-      // Drop succeed record move info.
-      this.pile.board.saveMove(moveInfo);
-      this.pile.board.notifyMoveDone();
-      return;
+  if (!this.moved) {
+    this.moved = true;
+    // Now move cards 
+    for (var i=0; i<this.cards.length; i++) {
+      this.cards[i].pile = null;
+      this.cards[i].rect.style.removeProperty("pointer-events");
+      this.group.appendChild(this.cards[i].elem);
     }
   }
-}
+        
+  this.group.setAttribute("transform", "translate(" + dx + ", " + dy + ")");
+};
+
+CardMoveManager.prototype.mouseup = function(evt) {
+  this.root.removeEventListener("mousemove", this.fmm, false);
+  this.root.removeEventListener("mouseup", this.fmu, false);
+  this.group.setAttribute("transform","");
+  if (!this.moved) {
+    for (var i=0; i<this.cards.length; i++) {
+      this.pile.cards.push(this.cards[i]);
+    }
+    return;
+  }
+
+  var pt = localPt(this.parent, evt.clientX, evt.clientY);
+  var dx = pt.x-this.startPt.x;
+  var dy = pt.y-this.startPt.y;
+
+  var moveInfo = false;
+  var destPile = findPile(this.board, evt.target);
+  if (destPile && destPile.dropCheck) {
+    moveInfo = destPile.dropCheck(this.pile, destPile, this.cards);
+  }
+
+  switch(moveInfo) {
+    case true:
+    // Drop succeeded but no move info.
+    this.pile.board.notifyMoveDone();
+    return;
+    case false:
+    // Drop failed move back to original.
+    for (var i=0; i<this.cards.length; i++) {
+      var c = this.cards[i];
+      c.setPos(c.x+dx, c.y+dy);
+    }
+    this.pile.moveCardsTo(this.cards, 40);
+    return;
+    default:
+    // Drop succeed record move info.
+    this.pile.board.saveMove(moveInfo);
+    this.pile.board.notifyMoveDone();
+    return;
+  }
+};

@@ -222,8 +222,6 @@
 function cursorMoved(evt) {
     if (evt.target.nodeName == "rect") {
         evt.target.setAttribute("fill", "gold");
-    } else {
-        System.err.println(">>>>>>>> Not a rect : " + evt.target.nodeName);
     }
 }
 

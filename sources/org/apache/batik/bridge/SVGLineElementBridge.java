@@ -53,6 +53,7 @@ package org.apache.batik.bridge;
 import java.awt.geom.Line2D;
 
 import org.apache.batik.gvt.ShapeNode;
+import org.apache.batik.gvt.ShapePainter;
 import org.w3c.dom.Element;
 import org.w3c.dom.events.MutationEvent;
 
@@ -81,6 +82,31 @@ public class SVGLineElementBridge extends SVGDecoratedShapeElementBridge {
      */
     public Bridge getInstance() {
         return new SVGLineElementBridge();
+    }
+
+    /**
+     * Creates the shape painter associated to the specified element.
+     * This implementation creates a shape painter considering the
+     * various fill and stroke properties.
+     *
+     * @param ctx the bridge context to use
+     * @param e the element that describes the shape painter to use
+     * @param shapeNode the shape node that is interested in its shape painter
+     */
+    protected ShapePainter createFillStrokePainter(BridgeContext ctx,
+                                                   Element e,
+                                                   ShapeNode shapeNode) {
+        // 'fill'           - ignored
+        // 'fill-opacity'   - ignored
+        // 'stroke'
+        // 'stroke-opacity',
+        // 'stroke-width'
+        // 'stroke-linecap'
+        // 'stroke-linejoin'
+        // 'stroke-miterlimit'
+        // 'stroke-dasharray'
+        // 'stroke-dashoffset'
+        return PaintServer.convertStrokePainter(e, shapeNode, ctx);
     }
 
     /**

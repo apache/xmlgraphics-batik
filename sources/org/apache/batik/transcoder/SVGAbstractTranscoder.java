@@ -247,44 +247,44 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
 
         // compute the preserveAspectRatio matrix
         AffineTransform Px;
-        String ref = new ParsedURL(uri).getRef();
 
-        try {
-            Px = ViewBox.getViewTransform(ref, root, width, height);
-            
-        } catch (BridgeException ex) {
-            throw new TranscoderException(ex);
-        }
-
-        if (Px.isIdentity() && (width != docWidth || height != docHeight)) {
-            // The document has no viewBox, we need to resize it by hand.
-            // we want to keep the document size ratio
-            float xscale, yscale;
-            xscale = width/docWidth;
-            yscale = height/docHeight;
-            float scale = Math.min(xscale,yscale);
-            Px = AffineTransform.getScaleInstance(scale, scale);
-        }
         // take the AOI into account if any
         if (hints.containsKey(KEY_AOI)) {
             Rectangle2D aoi = (Rectangle2D)hints.get(KEY_AOI);
             // transform the AOI into the image's coordinate system
-            aoi = Px.createTransformedShape(aoi).getBounds2D();
-            AffineTransform Mx = new AffineTransform();
+            Px = new AffineTransform();
             double sx = width / aoi.getWidth();
             double sy = height / aoi.getHeight();
-            Mx.scale(sx, sy);
-            double tx = -aoi.getX();
-            double ty = -aoi.getY();
-            Mx.translate(tx, ty);
+            double scale = Math.min(sx,sy);
+            Px.scale(scale, scale);
+            double tx = -aoi.getX() + (width/scale - aoi.getWidth())/2;
+            double ty = -aoi.getY() + (height/scale -aoi.getHeight())/2;;
+            Px.translate(tx, ty);
             // take the AOI transformation matrix into account
             // we apply first the preserveAspectRatio matrix
-            Px.preConcatenate(Mx);
             curAOI = aoi;
         } else {
+            String ref = new ParsedURL(uri).getRef();
+
+            try {
+                Px = ViewBox.getViewTransform(ref, root, width, height);
+            } catch (BridgeException ex) {
+                throw new TranscoderException(ex);
+            }
+
+            if (Px.isIdentity() && (width != docWidth || height != docHeight)) {
+                // The document has no viewBox, we need to resize it by hand.
+                // we want to keep the document size ratio
+                float xscale, yscale;
+                xscale = width/docWidth;
+                yscale = height/docHeight;
+                float scale = Math.min(xscale,yscale);
+                Px = AffineTransform.getScaleInstance(scale, scale);
+            }
+
             curAOI = new Rectangle2D.Float(0, 0, width, height);
         }
-        
+
         CanvasGraphicsNode cgn = getCanvasGraphicsNode(gvtRoot);
         if (cgn != null) {
             cgn.setViewingTransform(Px);

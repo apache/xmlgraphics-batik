@@ -73,6 +73,32 @@ public abstract class SVGDecoratedShapeElementBridge
      */
     protected SVGDecoratedShapeElementBridge() {}
 
+
+    ShapePainter createFillStrokePainter(BridgeContext ctx, 
+                                         Element e,
+                                         ShapeNode shapeNode) {
+        // 'fill'
+        // 'fill-opacity'
+        // 'stroke'
+        // 'stroke-opacity',
+        // 'stroke-width'
+        // 'stroke-linecap'
+        // 'stroke-linejoin'
+        // 'stroke-miterlimit'
+        // 'stroke-dasharray'
+        // 'stroke-dashoffset'
+        return super.createShapePainter(ctx, e, shapeNode);
+    }
+
+    ShapePainter createMarkerPainter(BridgeContext ctx, 
+                                     Element e,
+                                     ShapeNode shapeNode) {
+        // marker-start
+        // marker-mid
+        // marker-end
+        return PaintServer.convertMarkers(e, shapeNode, ctx);
+    }
+
     /**
      * Creates the shape painter associated to the specified element.
      * This implementation creates a shape painter considering the
@@ -86,24 +112,10 @@ public abstract class SVGDecoratedShapeElementBridge
     protected ShapePainter createShapePainter(BridgeContext ctx,
                                               Element e,
                                               ShapeNode shapeNode) {
-        // 'fill'
-        // 'fill-opacity'
-        // 'stroke'
-        // 'stroke-opacity',
-        // 'stroke-width'
-        // 'stroke-linecap'
-        // 'stroke-linejoin'
-        // 'stroke-miterlimit'
-        // 'stroke-dasharray'
-        // 'stroke-dashoffset'
-        ShapePainter fillAndStroke
-            = super.createShapePainter(ctx, e, shapeNode);
+        ShapePainter fillAndStroke;
+        fillAndStroke = createFillStrokePainter(ctx, e, shapeNode);
 
-        // marker-start
-        // marker-mid
-        // marker-end
-        ShapePainter markerPainter =
-            PaintServer.convertMarkers(e, shapeNode, ctx);
+        ShapePainter markerPainter = createMarkerPainter(ctx, e, shapeNode);
 
         Shape shape = shapeNode.getShape();
         ShapePainter painter;

@@ -347,8 +347,16 @@ public class JSVGScrollPane extends JPanel
 			
         public synchronized void mouseReleased(MouseEvent e)
         {
-            if(inDrag)
-                setScrollPosition(); // This is the 'end' of a drag
+            if(inDrag) {
+                int newValue;
+                if (isVertical) newValue = vertical.getValue();
+                else            newValue = horizontal.getValue();
+                
+                if (newValue != startValue)
+                    setScrollPosition(); // This is the 'end' of a drag
+                else
+                    canvas.setPaintingTransform(new AffineTransform());
+            }
 				
             // reset drag indicator
             inDrag = false;

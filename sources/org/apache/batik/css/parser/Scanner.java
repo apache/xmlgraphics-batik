@@ -818,8 +818,7 @@ public class Scanner {
      * Scans a single quoted string.
      */
     protected int string1() throws IOException {
-        nextChar();
-        start = position - 1;
+        start = position;  // fix bug #29416
         loop: for (;;) {
             switch (nextChar()) {
             case -1:
@@ -855,8 +854,7 @@ public class Scanner {
      * Scans a double quoted string.
      */
     protected int string2() throws IOException {
-        nextChar();
-        start = position - 1;
+        start = position;  // fix bug #29416
         loop: for (;;) {
             switch (nextChar()) {
             case -1:

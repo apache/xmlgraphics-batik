@@ -191,7 +191,7 @@ Card.prototype.moveTo = function(x, y, step) {
   this.moving = true;
   MOVING.push(this);
   if (MOVING.length == 1) {
-    setTimeout("moveCards()", 10);
+    setTimeout("moveCards()", 50);
   }
 }
 
@@ -261,6 +261,6 @@ function moveCards() {
     }
   }
   if (register) {
-    setTimeout("moveCards()", 10);
+    setTimeout("moveCards()", 50);
   }
 }

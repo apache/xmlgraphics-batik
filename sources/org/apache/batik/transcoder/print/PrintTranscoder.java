@@ -65,8 +65,10 @@ import java.io.File;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
+import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.ext.awt.RenderingHintsKeyExt;
 import org.apache.batik.transcoder.SVGAbstractTranscoder;
+import org.apache.batik.transcoder.XMLAbstractTranscoder;
 import org.apache.batik.transcoder.Transcoder;
 import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderInput;
@@ -75,6 +77,8 @@ import org.apache.batik.transcoder.TranscodingHints;
 import org.apache.batik.transcoder.keys.BooleanKey;
 import org.apache.batik.transcoder.keys.LengthKey;
 import org.apache.batik.transcoder.keys.StringKey;
+
+import org.w3c.dom.Document;
 
 /**
  * This class is a <tt>Transcoder</tt> that prints SVG images.
@@ -147,6 +151,13 @@ public class PrintTranscoder extends SVGAbstractTranscoder
     private int curIndex = -1;
 
     /**
+     * Place to cache BridgeContext so we can dispose of it when
+     * it is appropriate.  The Baseclass would dispose of it too
+     * soon.
+     */
+    private BridgeContext theCtx;
+
+    /**
      * Constructs a new transcoder that prints images.
      */
     public PrintTranscoder() {
@@ -163,6 +174,26 @@ public class PrintTranscoder extends SVGAbstractTranscoder
         }
     }
 
+    /**
+     * Transcodes the specified Document as an image in the specified output.
+     *
+     * @param document the document to transcode
+     * @param uri the uri of the document or null if any
+     * @param output the ouput where to transcode
+     * @exception TranscoderException if an error occured while transcoding
+     */
+    protected void transcode(Document document,
+                             String uri,
+                             TranscoderOutput output)
+            throws TranscoderException {
+        super.transcode(document, uri, output);
+
+        // We do this to hide 'ctx' from the SVGAbstractTranscoder
+        // otherwise it will dispose of the context before we can
+        // print the document.
+        theCtx = ctx;
+        ctx = null;
+    }
     /**
      * Convenience method
      */
@@ -273,7 +304,7 @@ public class PrintTranscoder extends SVGAbstractTranscoder
         // On the first page, take a snapshot of the vector of
         // TranscodeInputs.
         //
-        if(pageIndex == 0){
+        if(printedInputs == null){
             printedInputs = (Vector)inputs.clone();
         }
 
@@ -282,7 +313,9 @@ public class PrintTranscoder extends SVGAbstractTranscoder
         //
         if(pageIndex >= printedInputs.size()){
             curIndex = -1;
-            System.out.println("Done");
+            if (theCtx != null) 
+                theCtx.dispose();
+            userAgent.displayMessage("Done");
             return NO_SUCH_PAGE;
         }
 
@@ -290,12 +323,17 @@ public class PrintTranscoder extends SVGAbstractTranscoder
         // Load a new document now if we are printing a new page
         //
         if(curIndex != pageIndex){
+            if (theCtx != null) 
+                theCtx.dispose();
+
             // The following call will invoke this class' transcode
             // method which takes a document as an input. That method
             // builds the GVT root tree.{
             try{
-                super.transcode((TranscoderInput)printedInputs.elementAt(pageIndex),
-                                null);
+                width  = (int)(pageFormat.getImageableWidth()+0.5);
+                height = (int)(pageFormat.getImageableHeight()+0.5);
+                super.transcode
+                    ((TranscoderInput)printedInputs.elementAt(pageIndex),null);
                 curIndex = pageIndex;
             }catch(TranscoderException e){
                 drawError(_g, e);
@@ -318,37 +356,10 @@ public class PrintTranscoder extends SVGAbstractTranscoder
         AffineTransform t = g.getTransform();
         Shape clip = g.getClip();
 
-        Rectangle2D bounds = curAOI;
-
-        double scaleX = pageFormat.getImageableWidth() / bounds.getWidth();
-        double scaleY = pageFormat.getImageableHeight() / bounds.getHeight();
-        double scale = scaleX < scaleY ? scaleX : scaleY;
-
-        // Check hint to know if scaling is really needed
-        Boolean scaleToPage = (Boolean)hints.get(KEY_SCALE_TO_PAGE);
-        if(scaleToPage != null && !scaleToPage.booleanValue()) {
-            // Printing Graphics is always set up for 72dpi, so scale
-            // according to what user agent thinks it should be.
-            double pixSzMM = userAgent.getPixelUnitToMillimeter();
-            double pixSzInch = (25.4/pixSzMM);
-            scale = 72/pixSzInch;
-        }
-
-        double xMargin = (pageFormat.getImageableWidth() - 
-                          bounds.getWidth()*scale)/2;
-        double yMargin = (pageFormat.getImageableHeight() - 
-                          bounds.getHeight()*scale)/2;
-        g.translate(pageFormat.getImageableX() + xMargin,
-                    pageFormat.getImageableY() + yMargin);
-        g.scale(scale, scale);
-
-
         //
         // Append transform to selected area
         //
         g.transform(curTxf);
-
-        g.clip(curAOI);
 
         //
         // Delegate rendering to painter
@@ -378,10 +389,33 @@ public class PrintTranscoder extends SVGAbstractTranscoder
     }
 
     /**
+     * Sets document size according to the hints.
+     * Global variables width and height are modified.
+     *
+     * @param docWidth Width of the document.
+     * @param docHeight Height of the document.
+     */
+    protected void setImageSize(float docWidth, float docHeight) {
+        // Check hint to know if scaling is really needed
+        Boolean scaleToPage = (Boolean)hints.get(KEY_SCALE_TO_PAGE);
+        if(scaleToPage != null && !scaleToPage.booleanValue()) {
+            float w = docWidth;
+            float h = docHeight;
+            if (hints.containsKey(KEY_AOI)) {
+                Rectangle2D aoi = (Rectangle2D)hints.get(KEY_AOI);
+                w = (float)aoi.getWidth();
+                h = (float)aoi.getHeight();
+            }
+            super.setImageSize(w, h);
+        }
+    }
+
+    /**
      * Prints an error on the output page
      */
     private void drawError(Graphics g, Exception e){
-        // Do nothing now.
+        userAgent.displayError(e);
+        // Should also probably draw exception on page.
     }
 
     // --------------------------------------------------------------------
@@ -722,6 +756,8 @@ public class PrintTranscoder extends SVGAbstractTranscoder
         // Now, print...
         //
         transcoder.print();
+
+        System.exit(0);
     }
 
     public static void setTranscoderFloatHint(Transcoder transcoder,

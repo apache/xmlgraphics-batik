@@ -73,7 +73,6 @@
     var xlinkns = "http://www.w3.org/1999/xlink";
     var cg = document.getElementById("cards");
     var dragGroup = document.getElementById("drag");
-    var winGroup = document.getElementById("win");
     var root     = document.getRootElement();
 
     var BOARD = new Board(cg, dragGroup);
@@ -328,11 +327,9 @@
         return;
       if ((dealUp.size() == 0) &&
           (dealDown.size() == 0)) {
-        winGroup.style.setProperty("display", "inline", "");
+        BOARD.won();
       }
     }
-
-
 ]]></script>
 
     <g id="background" style="pointer-events:none;">

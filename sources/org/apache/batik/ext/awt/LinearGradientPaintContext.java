@@ -228,25 +228,28 @@ final class LinearGradientPaintContext extends MultipleGradientPaintContext {
                 int gradSteps;
                 int preGradSteps;
                 final int preVal, postVal;
+
+                float gradStepsF;
+                float preGradStepsF;
                 if (dgdX >= 0) {
-                    gradSteps    = (int)         ((1-g)/dgdX);
-                    preGradSteps = (int)Math.ceil((0-g)/dgdX);
+                    gradStepsF    =          ((1-g)/dgdX);
+                    preGradStepsF = (float)Math.ceil((0-g)/dgdX);
                     preVal  = gradientUnderflow;
                     postVal = gradientOverflow;
                 } else { // dgdX < 0
-                    gradSteps    = (int)         ((0-g)/dgdX);
-                    preGradSteps = (int)Math.ceil((1-g)/dgdX);
+                    gradStepsF    =          ((0-g)/dgdX);
+                    preGradStepsF = (float)Math.ceil((1-g)/dgdX);
                     preVal  = gradientOverflow;
                     postVal = gradientUnderflow;
                 }
 
-                if (gradSteps > w) 
-                    gradSteps = w;
+                if (gradStepsF > w)    gradSteps = w;
+                else                   gradSteps = (int)gradStepsF;
+                if (preGradStepsF > w) preGradSteps = w;
+                else                   preGradSteps = (int)preGradStepsF;
 
                 final int gradLimit    = off + gradSteps;
                 if (preGradSteps > 0) {
-                    if (preGradSteps > w)
-                        preGradSteps = w;
                     final int preGradLimit = off + preGradSteps;
 
                     while (off < preGradLimit) {
@@ -268,8 +271,11 @@ final class LinearGradientPaintContext extends MultipleGradientPaintContext {
                         float delta = (g-fractions[gradIdx]);
                         final int [] grad = gradients[gradIdx];
 
-                        int steps = 
-                            (int)Math.ceil((fractions[gradIdx+1]-g)/dgdX);
+                        double stepsD = Math.ceil
+                            ((fractions[gradIdx+1]-g)/dgdX);
+                        int steps;
+                        if (stepsD > w) steps = w;
+                        else            steps = (int)stepsD;
                         int subGradLimit = off + steps;
                         if (subGradLimit > gradLimit)
                             subGradLimit = gradLimit;
@@ -284,7 +290,7 @@ final class LinearGradientPaintContext extends MultipleGradientPaintContext {
                             pixels[off++] = grad[idx>>16];
                             idx += step;
                         }
-                        g+=dgdX*steps;
+                        g+=dgdX*stepsD;
                         gradIdx++;
                     }
                 } else {
@@ -300,7 +306,10 @@ final class LinearGradientPaintContext extends MultipleGradientPaintContext {
                         float delta = (g-fractions[gradIdx]);
                         final int [] grad = gradients[gradIdx];
 
-                        int steps        = (int)Math.ceil(delta/-dgdX);
+                        double stepsD     = Math.ceil(delta/-dgdX);
+                        int    steps;
+                        if (stepsD > w) steps = w;
+                        else            steps = (int)stepsD;
                         int subGradLimit = off + steps;
                         if (subGradLimit > gradLimit)
                             subGradLimit = gradLimit;
@@ -315,7 +324,7 @@ final class LinearGradientPaintContext extends MultipleGradientPaintContext {
                             pixels[off++] = grad[idx>>16];
                             idx += step;
                         }
-                        g+=dgdX*steps;
+                        g+=dgdX*stepsD;
                         gradIdx--;
                     }
                 }
@@ -345,7 +354,9 @@ final class LinearGradientPaintContext extends MultipleGradientPaintContext {
 
             final int rowLimit = off+w;  // end of row iteration
 
-            if (dgdX == 0) {
+            float check = dgdX*fastGradientArraySize*w;
+            if (check < 0) check = -check;
+            if (check < .3) {
                 // System.out.println("In fillSimpleNC: " + g);
                 final int val;
                 if (g<=0) 

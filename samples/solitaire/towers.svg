@@ -15,11 +15,12 @@
     var svgns   = "http://www.w3.org/2000/svg";
     var xlinkns = "http://www.w3.org/1999/xlink";
     var cg = document.getElementById("cards");
+    var moveGroup = document.getElementById("move");
     var dragGroup = document.getElementById("drag");
-    var winGroup = document.getElementById("win");
     var root     = document.getRootElement();
+    var allowDrag = true;
 
-    var BOARD = new Board(cg, dragGroup);
+    var BOARD = new Board(cg, moveGroup);
     BOARD.setNotifyMoveDone(towersMoveDone);
 
     var DECK_PILES = new Array();
@@ -97,6 +98,8 @@
     }
 
     function dragCheck(pile, card, index) {
+      if (!allowDrag) return false;
+
       var sz = pile.size();
       // Not enough free hold spots for drag.
       if ((sz - index) > (freeHold()+1))
@@ -138,6 +141,7 @@
     }
 
     function holdDragCheck(pile, card, index) {
+      if (!allowDrag) return false;
       return dragGroup;
     }
 
@@ -184,7 +188,6 @@
           pile = HOLD_PILES[i-10];
         }
         var c = pile.checkTopCard();
-        var move = false;
         while (c != null) {
           var suite = c.getSuite();
           var suitePile = DECK_PILES[suite-1];
@@ -195,7 +198,6 @@
           } else if (!spc.valueOneHigher(c)) {
             break;
           }
-          move = true;
           var mi1 = BOARD.getMoveInfo();
           var cs = new Array();
           cs.push(c);
@@ -204,13 +206,13 @@
           BOARD.setMoveInfo(mi);
 
           suitePile.moveCardTo(c, 40);
-          c = pile.checkTopCard();
-        }
-        if (move) {
-          i=-1;
-          continue;
+          setTimeout("towersMoveDone()", 150);
+          allowDrag = false;
+          return;
         }
       }
+
+      allowDrag = true;
 
       for (var i=0; i<10; i++) {
         var pile = piles[i];
@@ -219,7 +221,7 @@
         }
       }
       
-      winGroup.style.setProperty("display", "inline", "");
+      BOARD.won();
     }
 
 function showMore() {
@@ -490,13 +492,15 @@ function hideMore() {
     <text x="790" y="580" fill="white" font-size="20" text-anchor="end"
          >? - Get Help</text>
     <rect fill="none" stroke="none" 
-      pointer-events="fill" onclick="showHelp()"
+      pointer-events="fill" onclick="BOARD.showHelp()"
       x="675" y="560" width="125" height="25"/>
   </g>
 
   <g id="cards"/>
 
-  <g id="drag" style="pointer-events:none; opacity: 0.75;"/>
+  <g id="move" style="pointer-events:none; opacity: 0.75;">
+    <g id="drag" style="pointer-events:none; opacity: 0.75;"/>
+  </g>
 
   <g id="win" style="display:none; pointer-events:none; ">
     <rect x="0" y="115" width="800" height="485" fill="#008"
