@@ -38,10 +38,16 @@ import org.w3c.css.sac.SimpleSelector;
  * @version $Id$
  */
 public class Parser implements org.w3c.css.sac.Parser {
+
     /**
      * The scanner used to scan the input source.
      */
     protected Scanner scanner;
+
+    /**
+     * The current lexical unit.
+     */
+    protected int current;
 
     /**
      * The document handler.
@@ -111,43 +117,52 @@ public class Parser implements org.w3c.css.sac.Parser {
      */
     public void parseStyleSheet(InputSource source) 
         throws CSSException, IOException {
-        documentHandler.startDocument(source);
+        scanner = new Scanner(characterStream(source, null), null);
 
         try {
-            scanner = new Scanner(characterStream(source, null), null);
+            documentHandler.startDocument(source);
 
-            int lex = scanner.next();
-            if (lex == LexicalUnits.CHARSET_SYMBOL) {
-                next();
-                lex = skipSpaces();
-                if (lex != LexicalUnits.STRING) {
+            current = scanner.next();
+            switch (current) {
+            case LexicalUnits.CHARSET_SYMBOL:
+                if (nextIgnoreSpaces() != LexicalUnits.STRING) {
                     throw new CSSException("String expected");
                 }
-                next();
-                lex = skipSpaces();
-                if (lex != LexicalUnits.SEMI_COLON) {
+                if (nextIgnoreSpaces() != LexicalUnits.SEMI_COLON) {
                     throw new CSSException("';' expected");
                 }
                 next();
+                break;
+            case LexicalUnits.COMMENT:
+                documentHandler.comment(scanner.currentValue());
             }
             
-            lex = skipSpacesAndCDOCDC();
+            skipSpacesAndCDOCDC();
             for (;;) {
-                if (lex == LexicalUnits.IMPORT_SYMBOL) {
+                if (current == LexicalUnits.IMPORT_SYMBOL) {
+                    nextIgnoreSpaces();
                     parseImportRule();
-                    lex = scanner.currentType();
                 } else {
                     break;
                 }
             }
             
             loop: for (;;) {
-                switch (scanner.currentType()) {
-                // !!! Todo media, page
+                switch (current) {
+                case LexicalUnits.PAGE_SYMBOL:
+                    nextIgnoreSpaces();
+                    parsePageRule();
+                    break;
+                case LexicalUnits.MEDIA_SYMBOL:
+                    nextIgnoreSpaces();
+                    parseMediaRule();
+                    break;
                 case LexicalUnits.FONT_FACE_SYMBOL:
+                    nextIgnoreSpaces();
                     parseFontFaceRule();
                     break;
                 case LexicalUnits.AT_KEYWORD:
+                    nextIgnoreSpaces();
                     parseAtRule();
                     break;
                 case LexicalUnits.EOF:
@@ -155,6 +170,7 @@ public class Parser implements org.w3c.css.sac.Parser {
                 default:
                     parseRuleSet();
                 }
+                skipSpacesAndCDOCDC();
             }
         } finally {
             documentHandler.endDocument(source);
@@ -176,7 +192,7 @@ public class Parser implements org.w3c.css.sac.Parser {
     public void parseStyleDeclaration(InputSource source) 
         throws CSSException, IOException {
         scanner = new Scanner(characterStream(source, null), null);
-        next();
+        nextIgnoreSpaces();
         parseStyleDeclaration(false);
     }
 
@@ -185,7 +201,7 @@ public class Parser implements org.w3c.css.sac.Parser {
      */
     public void parseRule(InputSource source) throws CSSException, IOException {
         scanner = new Scanner(characterStream(source, null), null);
-        next();
+        nextIgnoreSpaces();
         parseRule();
     }
 
@@ -195,8 +211,7 @@ public class Parser implements org.w3c.css.sac.Parser {
     public SelectorList parseSelectors(InputSource source)
         throws CSSException, IOException {
         scanner = new Scanner(characterStream(source, null), null);
-        next();
-        skipSpaces();
+        nextIgnoreSpaces();
 
         return parseSelectorList();
     }
@@ -208,11 +223,11 @@ public class Parser implements org.w3c.css.sac.Parser {
     public LexicalUnit parsePropertyValue(InputSource source)
         throws CSSException, IOException {
         scanner = new Scanner(characterStream(source, null), null);
-        next();
+        nextIgnoreSpaces();
         
         LexicalUnit exp = parseExpression(false);
-        skipSpaces();
-        if (scanner.currentType() != LexicalUnits.EOF) {
+
+        if (current != LexicalUnits.EOF) {
             throw new CSSException("EOF expected");
         }
         return exp;
@@ -233,15 +248,25 @@ public class Parser implements org.w3c.css.sac.Parser {
     protected void parseRule() {
         switch (scanner.currentType()) {
         case LexicalUnits.IMPORT_SYMBOL:
+            nextIgnoreSpaces();
             parseImportRule();
             break;
         case LexicalUnits.AT_KEYWORD:
+            nextIgnoreSpaces();
             parseAtRule();
             break;
         case LexicalUnits.FONT_FACE_SYMBOL:
+            nextIgnoreSpaces();
             parseFontFaceRule();
             break;
-        // !!! Todo: media, page
+        case LexicalUnits.MEDIA_SYMBOL:
+            nextIgnoreSpaces();
+            parseMediaRule();
+            break;
+        case LexicalUnits.PAGE_SYMBOL:
+            nextIgnoreSpaces();
+            parsePageRule();
+            break;
         default:
             parseRuleSet();
         }
@@ -253,100 +278,176 @@ public class Parser implements org.w3c.css.sac.Parser {
     protected void parseAtRule() {
         String text = scanner.scanAtRule();
         documentHandler.ignorableAtRule(text);
-        next();
+        nextIgnoreSpaces();
     }
 
     /**
      * Parses an import rule. Assumes the current token is '@import'.
      */
     protected void parseImportRule() {
-        next();
-        int lex = skipSpaces();
         String uri = null;
-        switch (lex) {
+        switch (current) {
         default:
             throw new CSSException("String or URI expected");
         case LexicalUnits.STRING:
         case LexicalUnits.URI:
             uri = scanner.currentValue();
-            next();
-            lex = skipSpaces();
+            nextIgnoreSpaces();
         }
-        CSSSACMediaList ml = new CSSSACMediaList();
-        if (lex != LexicalUnits.IDENTIFIER) {
-            throw new CSSException("Identifier expected");
+
+        CSSSACMediaList ml;
+        if (current != LexicalUnits.IDENTIFIER) {
+            ml = new CSSSACMediaList();
+            ml.append("all");
+        } else {
+            ml = parseMediaList();
         }
-        ml.append(scanner.currentValue());
+
+        documentHandler.importStyle(uri, ml, null);
+
+        if (current != LexicalUnits.SEMI_COLON) {
+            throw new CSSException("';' expected");
+        }
+
+        next();
+    }
+
+    /**
+     * Parses a media list.
+     */
+    protected CSSSACMediaList parseMediaList() {
+        CSSSACMediaList result = new CSSSACMediaList();
+        result.append(scanner.currentValue());
+        nextIgnoreSpaces();
         
-        loop: for (;;) {
-            next();
-            lex = skipSpaces();
-            switch (lex) {
-            case LexicalUnits.SEMI_COLON:
-                next();
-                lex = skipSpaces();
-                break loop;
+        while (current == LexicalUnits.COMMA) {
+            nextIgnoreSpaces();
+
+            switch (current) {
             default:
                 throw new CSSException("Identifier expected");
             case LexicalUnits.IDENTIFIER:
-                ml.append(scanner.currentValue());
+                result.append(scanner.currentValue());
+                nextIgnoreSpaces();
             }
         }
-        documentHandler.importStyle(uri, ml, null);
-        skipSpacesAndCDOCDC();
+        return result;
     }
 
     /**
      * Parses a font-face rule.
      */
     protected void parseFontFaceRule() {
-        documentHandler.startFontFace();
-
         try {
-            next();
-            int lex = skipSpaces();
+            documentHandler.startFontFace();
 
-            if (lex != LexicalUnits.LEFT_CURLY_BRACE) {
+            if (current != LexicalUnits.LEFT_CURLY_BRACE) {
                 throw new CSSException("'{' expected");
             }
-            next();
-            skipSpaces();
+            nextIgnoreSpaces();
         
             parseStyleDeclaration(true);
 
-            if (scanner.currentType() != LexicalUnits.RIGHT_CURLY_BRACE) {
+            if (current != LexicalUnits.RIGHT_CURLY_BRACE) {
                 throw new CSSException("'}' expected");
             }
-            next();
-            skipSpaces();
+            nextIgnoreSpaces();
             
         } finally {
             documentHandler.endFontFace();
         }
     }
+
+    /**
+     * Parses a page rule.
+     */
+    protected void parsePageRule() {
+        String page = null;
+        String ppage = null;
+
+        if (current == LexicalUnits.IDENTIFIER) {
+            page = scanner.currentValue();
+            nextIgnoreSpaces();
+
+            if (current == LexicalUnits.COLON) {
+                nextIgnoreSpaces();
+
+                if (current != LexicalUnits.IDENTIFIER) {
+                    throw new CSSException("identifier expected");
+                }
+                ppage = scanner.currentValue();
+                nextIgnoreSpaces();
+            }
+        }
+
+        try {
+            documentHandler.startPage(page, ppage);
+            
+            if (current != LexicalUnits.LEFT_CURLY_BRACE) {
+                throw new CSSException("'{' expected");
+            }
+            nextIgnoreSpaces();
+        
+            parseStyleDeclaration(true);
+
+            if (current != LexicalUnits.RIGHT_CURLY_BRACE) {
+                throw new CSSException("'}' expected");
+            }
+            nextIgnoreSpaces();
+
+        } finally {
+            documentHandler.endPage(page, ppage);
+        }
+    }
     
+    /**
+     * Parses a media rule.
+     */
+    protected void parseMediaRule() {
+        if (current != LexicalUnits.IDENTIFIER) {
+            throw new CSSException("identifier expected");
+        }
+
+        CSSSACMediaList ml = parseMediaList();
+        try {
+            documentHandler.startMedia(ml);
+
+            if (current != LexicalUnits.LEFT_CURLY_BRACE) {
+                throw new CSSException("'{' expected");
+            }
+            nextIgnoreSpaces();
+            
+            while (current != LexicalUnits.RIGHT_CURLY_BRACE) {
+                parseRuleSet();
+            }
+
+            nextIgnoreSpaces();
+        } finally {
+            documentHandler.endMedia(ml);
+        }
+    }
+
     /**
      * Parses a ruleset.
      */
     protected void parseRuleSet() {
         SelectorList sl = parseSelectorList();
 
-        documentHandler.startSelector(sl);
-
         try {
-            if (scanner.currentType() != LexicalUnits.LEFT_CURLY_BRACE) {
+            documentHandler.startSelector(sl);
+
+            if (current != LexicalUnits.LEFT_CURLY_BRACE) {
                 throw new CSSException("'{' expected");
             }
-            next();
-            skipSpaces();
+            nextIgnoreSpaces();
         
             parseStyleDeclaration(true);
 
-            if (scanner.currentType() != LexicalUnits.RIGHT_CURLY_BRACE) {
+            if (current != LexicalUnits.RIGHT_CURLY_BRACE) {
                 throw new CSSException("'}' expected");
             }
-            next();
-            skipSpaces();
+            nextIgnoreSpaces();
+
         } finally {
             documentHandler.endSelector(sl);
         }
@@ -360,11 +461,10 @@ public class Parser implements org.w3c.css.sac.Parser {
         result.append(parseSelector());
 
         for (;;) {
-            if (scanner.currentType() != LexicalUnits.COMMA) {
+            if (current != LexicalUnits.COMMA) {
                 return result;
             }
-            next();
-            skipSpaces();
+            nextIgnoreSpaces();
             result.append(parseSelector());
         }
     }
@@ -377,8 +477,7 @@ public class Parser implements org.w3c.css.sac.Parser {
         Selector result = ss;
 
         loop: for (;;) {
-            int comb = scanner.currentType();
-            switch (comb) {
+            switch (current) {
             default:
                 break loop;
             case LexicalUnits.IDENTIFIER:
@@ -387,23 +486,20 @@ public class Parser implements org.w3c.css.sac.Parser {
             case LexicalUnits.DOT:
             case LexicalUnits.LEFT_BRACKET:
             case LexicalUnits.COLON:
-                next();
-                skipSpaces();
+                nextIgnoreSpaces();
                 result = selectorFactory.createDescendantSelector
                     (result,
                      parseSimpleSelector());
                 break;
             case LexicalUnits.PLUS:
-                next();
-                skipSpaces();
+                nextIgnoreSpaces();
                 result = selectorFactory.createDirectAdjacentSelector
                     ((short)1,
                      result, 
                      parseSimpleSelector());
                 break;
             case LexicalUnits.PRECEDE:
-                next();
-                skipSpaces();
+                nextIgnoreSpaces();
                 result = selectorFactory.createChildSelector
                     (result, 
                      parseSimpleSelector());
@@ -416,44 +512,39 @@ public class Parser implements org.w3c.css.sac.Parser {
      * Parses a simple selector.
      */
     protected SimpleSelector parseSimpleSelector() {
-        int lex = scanner.currentType();
         SimpleSelector result;
-        switch (lex) {
+        switch (current) {
         case LexicalUnits.IDENTIFIER:
             result = selectorFactory.createElementSelector(null,
                                                            scanner.currentValue());
-            lex = next();
+            next();
             break;
         case LexicalUnits.ANY:
-            lex = next();
+            next();
         default:
             result = selectorFactory.createElementSelector(null, null);
         }
         Condition cond = null;
         loop: for (;;) {
             Condition c;
-            switch (lex) {
+            switch (current) {
             case LexicalUnits.HASH:
                 c = conditionFactory.createIdCondition(scanner.currentValue());
-                lex = next();
+                next();
                 break;
             case LexicalUnits.DOT:
-                lex = next();
-                if (lex != LexicalUnits.IDENTIFIER) {
+                if (next() != LexicalUnits.IDENTIFIER) {
                     throw new CSSException("Identifier expected");
                 }
                 c = conditionFactory.createClassCondition(null, scanner.currentValue());
-                lex = next();
+                next();
                 break;
             case LexicalUnits.LEFT_BRACKET:
-                next();
-                lex = skipSpaces();
-                if (lex != LexicalUnits.IDENTIFIER) {
+                if (nextIgnoreSpaces() != LexicalUnits.IDENTIFIER) {
                     throw new CSSException("Identifier expected");
                 }
                 String name = scanner.currentValue();
-                next();
-                int op = skipSpaces();
+                int op = nextIgnoreSpaces();
                 switch (op) {
                 default:
                     c = conditionFactory.createAttributeCondition(name, null, false,
@@ -462,22 +553,20 @@ public class Parser implements org.w3c.css.sac.Parser {
                 case LexicalUnits.EQUAL:
                 case LexicalUnits.INCLUDES:
                 case LexicalUnits.DASHMATCH:
-                    next();
-                    lex = skipSpaces();
                     String val = null;
-                    switch (lex) {
+                    switch (nextIgnoreSpaces()) {
                     default:
-                        throw new CSSException("Identifier or string expected" + lex);
+                        throw new CSSException("Identifier or string expected" +
+                                               current);
                     case LexicalUnits.STRING:
                     case LexicalUnits.IDENTIFIER:
                         val = scanner.currentValue();
-                        next();
-                        lex = skipSpaces();
+                        nextIgnoreSpaces();
                     }
-                    if (lex != LexicalUnits.RIGHT_BRACKET) {
+                    if (current != LexicalUnits.RIGHT_BRACKET) {
                         throw new CSSException("']' expected");
                     }
-                    lex = next();
+                    next();
                     switch (op) {
                     case LexicalUnits.EQUAL:
                         c = conditionFactory.createAttributeCondition(name, null, false, 
@@ -496,10 +585,7 @@ public class Parser implements org.w3c.css.sac.Parser {
                 }
                 break;
             case LexicalUnits.COLON:
-                next();
-                lex = skipSpaces();
-                
-                switch (lex) {
+                switch (nextIgnoreSpaces()) {
                 case LexicalUnits.IDENTIFIER:
                     // !!! Todo pseudo element.
                     c = conditionFactory.createPseudoClassCondition(null,
@@ -533,9 +619,7 @@ public class Parser implements org.w3c.css.sac.Parser {
     protected void parseStyleDeclaration(boolean inSheet)
         throws CSSException {
         for (;;) {
-            int lex = skipSpaces();
-
-            switch (lex) {
+            switch (current) {
             case LexicalUnits.EOF:
                 if (inSheet) {
                     throw new CSSException("Unexpected eof");
@@ -547,7 +631,7 @@ public class Parser implements org.w3c.css.sac.Parser {
                 }
                 return;
             case LexicalUnits.SEMI_COLON:
-                next();
+                nextIgnoreSpaces();
                 continue;
             default:
                 throw new CSSException("Identifier expected");
@@ -555,21 +639,18 @@ public class Parser implements org.w3c.css.sac.Parser {
             }
 
             String name = scanner.currentValue();
-            next();
-
-            lex = skipSpaces();
         
-            if (lex != LexicalUnits.COLON) {
+            if (nextIgnoreSpaces() != LexicalUnits.COLON) {
                 throw new CSSException("':' expected");
             }
-            next();
+            nextIgnoreSpaces();
         
             LexicalUnit exp = parseExpression(false);
 
             boolean important = false;
-            if (scanner.currentType() == LexicalUnits.IMPORTANT_SYMBOL) {
+            if (current == LexicalUnits.IMPORTANT_SYMBOL) {
                 important = true;
-                next();
+                nextIgnoreSpaces();
             }
 
             documentHandler.property(name, exp, important);
@@ -581,37 +662,34 @@ public class Parser implements org.w3c.css.sac.Parser {
      * @param lex The type of the current lexical unit.
      */
     protected LexicalUnit parseExpression(boolean param) {
-        LexicalUnit result = parseTerm(skipSpaces(), null);
-        LexicalUnit current = result;
+        LexicalUnit result = parseTerm(null);
+        LexicalUnit curr = result;
 
         for (;;) {
-            int lex = skipSpaces();
             boolean op = false;
-            switch (scanner.currentType()) {
+            switch (current) {
             case LexicalUnits.COMMA:
                 op = true;
-                current = CSSLexicalUnit.createSimple(LexicalUnit.SAC_OPERATOR_COMMA,
-                                                      current);
-                next();
-                skipSpaces();
+                curr = CSSLexicalUnit.createSimple(LexicalUnit.SAC_OPERATOR_COMMA,
+                                                   curr);
+                nextIgnoreSpaces();
                 break;
             case LexicalUnits.DIVIDE:
                 op = true;
-                current = CSSLexicalUnit.createSimple(LexicalUnit.SAC_OPERATOR_SLASH,
-                                                      current);
-                next();
-                skipSpaces();
+                curr = CSSLexicalUnit.createSimple(LexicalUnit.SAC_OPERATOR_SLASH,
+                                                   curr);
+                nextIgnoreSpaces();
             }
             if (param) {
-                if ((lex = scanner.currentType()) == LexicalUnits.RIGHT_BRACE) {
+                if (current == LexicalUnits.RIGHT_BRACE) {
                     if (op) {
                         throw new CSSException("Unexpected token 2");
                     }
                     return result;
                 }
-                current = parseTerm(lex, current);
+                curr = parseTerm(curr);
             } else {
-                switch (lex = scanner.currentType()) {
+                switch (current) {
                 case LexicalUnits.IMPORTANT_SYMBOL:
                 case LexicalUnits.SEMI_COLON:
                 case LexicalUnits.RIGHT_CURLY_BRACE:
@@ -621,7 +699,7 @@ public class Parser implements org.w3c.css.sac.Parser {
                     }
                     return result;
                 default:
-                    current = parseTerm(lex, current);
+                    curr = parseTerm(curr);
                 }
             }
         }
@@ -630,19 +708,24 @@ public class Parser implements org.w3c.css.sac.Parser {
     /**
      * Parses a CSS2 term.
      */
-    protected LexicalUnit parseTerm(int lex, LexicalUnit prev) {
+    protected LexicalUnit parseTerm(LexicalUnit prev) {
         boolean plus = true;
         boolean sgn = false;
 
-        switch (lex) {
+        switch (current) {
         case LexicalUnits.MINUS:
             plus = false;
         case LexicalUnits.PLUS:
-            lex = next();
+            next();
             sgn = true;
         default:
-            switch (lex) {
-            case LexicalUnits.NUMBER:
+            switch (current) {
+            case LexicalUnits.INTEGER:
+                int s = (plus) ? 1 : -1;
+                int val = s * Integer.parseInt(scanner.currentValue());
+                nextIgnoreSpaces();
+                return CSSLexicalUnit.createInteger(val, prev);
+            case LexicalUnits.REAL:
                 return CSSLexicalUnit.createFloat(LexicalUnit.SAC_REAL,
                                                   number(plus), prev);
             case LexicalUnits.PERCENTAGE:
@@ -702,15 +785,15 @@ public class Parser implements org.w3c.css.sac.Parser {
                 throw new CSSException("Unexpected token 4");
             }
         }
-        switch (lex) {
+        switch (current) {
         case LexicalUnits.STRING:
             String val = scanner.currentValue();
-            next();
+            nextIgnoreSpaces();
             return CSSLexicalUnit.createString(LexicalUnit.SAC_STRING_VALUE,
                                                val, prev);
         case LexicalUnits.IDENTIFIER:
             val = scanner.currentValue();
-            next();
+            nextIgnoreSpaces();
             if (val.equalsIgnoreCase("inherit")) {
                 return CSSLexicalUnit.createSimple(LexicalUnit.SAC_INHERIT,
                                                    prev);
@@ -720,14 +803,14 @@ public class Parser implements org.w3c.css.sac.Parser {
             }
         case LexicalUnits.URI:
             val = scanner.currentValue();
-            next();
+            nextIgnoreSpaces();
             return CSSLexicalUnit.createString(LexicalUnit.SAC_URI,
                                                val, prev);
         case LexicalUnits.HASH:
             return hexcolor(prev);
         default:
             new Exception().printStackTrace();
-            throw new CSSException("Unexpected token 5 " + lex);
+            throw new CSSException("Unexpected token 5 " + current);
         }
     }
 
@@ -736,22 +819,21 @@ public class Parser implements org.w3c.css.sac.Parser {
      */
     protected LexicalUnit parseFunction(boolean positive, LexicalUnit prev) {
         String name = scanner.currentValue();
-        next();
-        skipSpaces();
+        nextIgnoreSpaces();
         
         LexicalUnit params = parseExpression(true);
 
         if (name.equalsIgnoreCase("rgb")) {
-            if (scanner.currentType() != LexicalUnits.RIGHT_BRACE) {
+            if (current != LexicalUnits.RIGHT_BRACE) {
                 throw new CSSException("Unexpected token 6");
             }
-            next();
+            nextIgnoreSpaces();
             return CSSLexicalUnit.createPredefinedFunction(LexicalUnit.SAC_RGBCOLOR,
                                                            params,
                                                            prev);
         }
         // !!! Todo counters...
-        next();
+        nextIgnoreSpaces();
         return CSSLexicalUnit.createFunction(name, params, prev);
     }
 
@@ -822,7 +904,7 @@ public class Parser implements org.w3c.css.sac.Parser {
         default:
             throw new CSSException("Malformed RGB color");
         }
-        next();
+        nextIgnoreSpaces();
         return CSSLexicalUnit.createPredefinedFunction(LexicalUnit.SAC_RGBCOLOR,
                                                        params,
                                                        prev);
@@ -905,20 +987,18 @@ public class Parser implements org.w3c.css.sac.Parser {
      * Skips the white spaces and CDO/CDC untis.
      */
     protected int skipSpacesAndCDOCDC() {
-        int lex = scanner.currentType();
         loop: for (;;) {
-            switch (lex) {
+            switch (current) {
             default:
                 break loop;
             case LexicalUnits.COMMENT:
-                documentHandler.comment(scanner.currentValue());
             case LexicalUnits.SPACE:
             case LexicalUnits.CDO:
             case LexicalUnits.CDC:
             }
-            lex = next();
+            next();
         }
-        return lex;
+        return current;
     }
 
     /**
@@ -928,7 +1008,7 @@ public class Parser implements org.w3c.css.sac.Parser {
         try {
             float sgn = (positive) ? 1 : -1;
             String val = scanner.currentValue();
-            next();
+            nextIgnoreSpaces();
             return sgn * Float.parseFloat(val);
         } catch (NumberFormatException e) {
             throw new CSSException(e);
@@ -952,7 +1032,7 @@ public class Parser implements org.w3c.css.sac.Parser {
                 case '.':
                 }
             }
-            next();
+            nextIgnoreSpaces();
             return CSSLexicalUnit.createDimension
                 (sgn * Float.parseFloat(val.substring(0, i)),
                  val.substring(i),
@@ -966,15 +1046,32 @@ public class Parser implements org.w3c.css.sac.Parser {
      * Advances to the next token, ignoring comments.
      */
     protected int next() {
-        int result;
         for (;;) {
-            result = scanner.next();
-            if (result == LexicalUnits.COMMENT) {
+            current = scanner.next();
+            if (current == LexicalUnits.COMMENT) {
                 documentHandler.comment(scanner.currentValue());
             } else {
                 break;
             }
         }
-        return result;
+        return current;
+    }
+
+    /**
+     * Advances to the next token and skip the spaces, ignoring comments.
+     */
+    protected int nextIgnoreSpaces() {
+        loop: for (;;) {
+            current = scanner.next();
+            switch (current) {
+            case LexicalUnits.COMMENT:
+                documentHandler.comment(scanner.currentValue());
+                break;
+            default:
+                break loop;
+            case LexicalUnits.SPACE:
+            }
+        }
+        return current;
     }
 }

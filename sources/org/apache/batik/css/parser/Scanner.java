@@ -719,7 +719,7 @@ public class Scanner {
             case '5': case '6': case '7': case '8': case '9':
             }
         }
-        return numberUnit(c);
+        return numberUnit(c, true);
     }        
 
     /**
@@ -735,13 +735,13 @@ public class Scanner {
             case '5': case '6': case '7': case '8': case '9':
             }
         }
-        return numberUnit(c);
+        return numberUnit(c, false);
     }
 
     /**
      * Scans the unit of a number.
      */
-    protected int numberUnit(int c) throws IOException {
+    protected int numberUnit(int c, boolean integer) throws IOException {
         switch (c) {
         case '%':
             inputBuffer.next();
@@ -1037,7 +1037,7 @@ public class Scanner {
                          ScannerUtilities.isCSSNameCharacter((char)c));
                 return LexicalUnits.DIMENSION;
             }
-            return LexicalUnits.NUMBER;
+            return (integer) ? LexicalUnits.INTEGER : LexicalUnits.FLOAT;
         }
     }
 

@@ -137,9 +137,9 @@ public interface LexicalUnits {
     int IMPORTANT_SYMBOL = 23;
 
     /**
-     * Represents a number.
+     * Represents an integer.
      */
-    int NUMBER = 24;
+    int INTEGER = 24;
 
     /**
      * Represents the '|=' lexical unit.
@@ -287,6 +287,11 @@ public interface LexicalUnits {
     int UNICODE_RANGE = 53;
 
     /**
+     * represents a real number.
+     */
+    int REAL = 54;
+
+    /**
      * The lexical units values.
      */
     String[] VALUES = {
@@ -341,6 +346,7 @@ public interface LexicalUnits {
         null,
         null,
         null, // 50
+        null,
         null,
         null,
         null,
