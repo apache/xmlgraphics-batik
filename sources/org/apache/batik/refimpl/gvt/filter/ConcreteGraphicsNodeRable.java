@@ -85,7 +85,7 @@ public class ConcreteGraphicsNodeRable implements GraphicsNodeRable{
     /**
      * Always throws an exception.
      */
-    public Shape getDependencyRegion(int srcIndex, 
+    public Shape getDependencyRegion(int srcIndex,
                                      Rectangle2D outputRgn) {
         throw new IndexOutOfBoundsException
             ("Nonexistant source requested.");
@@ -94,12 +94,12 @@ public class ConcreteGraphicsNodeRable implements GraphicsNodeRable{
     /**
      * Always throws an exception
      */
-    public Shape getDirtyRegion(int srcIndex, 
+    public Shape getDirtyRegion(int srcIndex,
                                 Rectangle2D inputRgn) {
         throw new IndexOutOfBoundsException
             ("Nonexistant source requested.");
     }
-    
+
 
     /**
      * @param GraphicsNode this image should represent
@@ -121,7 +121,7 @@ public class ConcreteGraphicsNodeRable implements GraphicsNodeRable{
         return imageRect;
     }
 
-    /** 
+    /**
      * Returns a vector of RenderableImages that are the sources of
      * image data for this RenderableImage. Note that this method may
      * return an empty vector, to indicate that the image has no sources,
@@ -132,7 +132,7 @@ public class ConcreteGraphicsNodeRable implements GraphicsNodeRable{
     public Vector getSources(){
         return null;
     }
-    
+
     /**
      * Gets a property from the property set of this image.
      * If the property name is not recognized, java.awt.Image.UndefinedProperty
@@ -146,13 +146,13 @@ public class ConcreteGraphicsNodeRable implements GraphicsNodeRable{
         return Image.UndefinedProperty;
     }
 
-    /** 
-     * Returns a list of names recognized by getProperty. 
+    /**
+     * Returns a list of names recognized by getProperty.
      */
     public String[] getPropertyNames(){
         return null;
     }
-    
+
     /**
      * Returns true if successive renderings (that is, calls to
      * createRendering() or createScaledRendering()) with the same arguments
@@ -164,7 +164,7 @@ public class ConcreteGraphicsNodeRable implements GraphicsNodeRable{
         return false;
     }
 
-    /** 
+    /**
      * Gets the width in user coordinate space.  By convention, the
      * usual width of a RenderableImage is equal to the image's aspect
      * ratio (width divided by height).
@@ -174,7 +174,7 @@ public class ConcreteGraphicsNodeRable implements GraphicsNodeRable{
     public float getWidth(){
         return (float)getBounds2D().getWidth();
     }
-  
+
     /**
      * Gets the height in user coordinate space.  By convention, the
      * usual height of a RenderedImage is equal to 1.0F.
@@ -184,15 +184,15 @@ public class ConcreteGraphicsNodeRable implements GraphicsNodeRable{
     public float getHeight(){
         return (float)getBounds2D().getHeight();
     }
-    
-    /** 
+
+    /**
      * Gets the minimum X coordinate of the rendering-independent image data.
      */
     public float getMinX(){
         return (float)getBounds2D().getX();
     }
-  
-    /** 
+
+    /**
      * Gets the minimum Y coordinate of the rendering-independent image data.
      */
     public float getMinY(){
@@ -210,7 +210,7 @@ public class ConcreteGraphicsNodeRable implements GraphicsNodeRable{
      * Math.round(h*(getWidth()/getHeight())).
      * Similarly, if h == 0, it will be taken to equal
      * Math.round(w*(getHeight()/getWidth())).  One of
-     * w or h must be non-zero or else an IllegalArgumentException 
+     * w or h must be non-zero or else an IllegalArgumentException
      * will be thrown.
      *
      * <p> The created RenderedImage may have a property identified
@@ -224,36 +224,34 @@ public class ConcreteGraphicsNodeRable implements GraphicsNodeRable{
      * @param hints a RenderingHints object containg hints.
      * @return a RenderedImage containing the rendered data.
      */
-    public RenderedImage createScaledRendering(int w, int h, RenderingHints hints){
+    public RenderedImage createScaledRendering(int w, int h,
+                                               RenderingHints hints) {
         RenderedImage renderedImage = null;
         Rectangle2D imageRect2D = getBounds2D();
-        Rectangle2D.Float imageRect = new Rectangle2D.Float((float)imageRect2D.getX(),
-                                                            (float)imageRect2D.getY(),
-                                                            (float)imageRect2D.getWidth(),
-                                                            (float)imageRect2D.getHeight());
-        if((imageRect.width == 0)
-           ||
-           (imageRect.height == 0)){
-            renderedImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
-            
-        }
-
-        else{
+        Rectangle2D.Float imageRect =
+            new Rectangle2D.Float((float)imageRect2D.getX(),
+                                  (float)imageRect2D.getY(),
+                                  (float)imageRect2D.getWidth(),
+                                  (float)imageRect2D.getHeight());
+        if((imageRect.width == 0) ||
+               (imageRect.height == 0)) {
+            renderedImage =
+                new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+        } else {
             float scaleX = w/imageRect.width;
             float scaleY = h/imageRect.height;
 
-            AffineTransform scale 
+            AffineTransform scale
                 = AffineTransform.getScaleInstance(scaleX,
                                                    scaleY);
 
             RenderContext context = new RenderContext(scale, hints);
             renderedImage = createRendering(context);
         }
-
         return renderedImage;
     }
-  
-    /** 
+
+    /**
      * Returnd a RenderedImage instance of this image with a default
      * width and height in pixels.  The RenderContext is built
      * automatically with an appropriate usr2dev transform and an area
@@ -268,8 +266,8 @@ public class ConcreteGraphicsNodeRable implements GraphicsNodeRable{
                                      (int)getBounds2D().getHeight(),
                                      null);
     }
-  
-    /** 
+
+    /**
      * Creates a RenderedImage that represented a rendering of this image
      * using a given RenderContext.  This is the most general way to obtain a
      * rendering of a RenderableImage.
@@ -287,31 +285,32 @@ public class ConcreteGraphicsNodeRable implements GraphicsNodeRable{
     public RenderedImage createRendering(RenderContext renderContext){
         // Get user space to device space transform
         AffineTransform usr2dev = renderContext.getTransform();
-        if(usr2dev == null){
+        if (usr2dev == null) {
             usr2dev = new AffineTransform();
         }
 
         // Find out the renderable area
         Rectangle2D imageRect2D = getBounds2D();
-        Rectangle2D.Float imageRect = new Rectangle2D.Float((float)imageRect2D.getX(),
-                                                            (float)imageRect2D.getY(),
-                                                            (float)imageRect2D.getWidth(),
-                                                            (float)imageRect2D.getHeight());
-        Rectangle renderableArea 
+        Rectangle2D.Float imageRect =
+            new Rectangle2D.Float((float)imageRect2D.getX(),
+                                  (float)imageRect2D.getY(),
+                                  (float)imageRect2D.getWidth(),
+                                  (float)imageRect2D.getHeight());
+        Rectangle renderableArea
             = usr2dev.createTransformedShape(imageRect).getBounds();
-        
-        // Now, take area of interest into account. It is 
-        // defined in user space. 
+
+        // Now, take area of interest into account. It is
+        // defined in user space.
         Shape usrAOI = renderContext.getAreaOfInterest();
         if(usrAOI == null)
             usrAOI = imageRect;
 
-        Rectangle devAOI 
+        Rectangle devAOI
             = usr2dev.createTransformedShape(usrAOI).getBounds();
 
-        // The rendered area is the interesection of the 
+        // The rendered area is the interesection of the
         // renderable area and the device AOI bounds
-        final Rectangle renderedArea 
+        final Rectangle renderedArea
             = renderableArea.createIntersection(devAOI).getBounds();
 
         RenderedImage renderedImage = null;
@@ -319,17 +318,17 @@ public class ConcreteGraphicsNodeRable implements GraphicsNodeRable{
            ||
            (renderedArea.height == 0)){
             // CHANGE: RETURN NULL
-            // If there is no intersection, return a fully 
+            // If there is no intersection, return a fully
             // transparent image, 1x1
-            renderedImage 
-                = new BufferedImage(1, 1, 
+            renderedImage
+                = new BufferedImage(1, 1,
                                     BufferedImage.TYPE_INT_ARGB);
         }
         else{
             // There is a non-empty intersection. Render into
             // that image
             System.out.println("rendered area: " + renderedArea);
-            BufferedImage offScreen 
+            BufferedImage offScreen
                 = new BufferedImage(renderedArea.width,
                                     renderedArea.height,
                                     BufferedImage.TYPE_INT_ARGB);
@@ -338,22 +337,22 @@ public class ConcreteGraphicsNodeRable implements GraphicsNodeRable{
 
             g.translate(-renderedArea.x, -renderedArea.y);
 
-            // Set hints. Use the one of the GraphicsNodeRenderContext, not 
+            // Set hints. Use the one of the GraphicsNodeRenderContext, not
             // those of this invocation.
             // CHANGE : GET HINTS FROM renderContext.
             RenderingHints hints = renderContext.getRenderingHints();
             if(hints != null){
                 g.setRenderingHints(hints);
             }
-            
+
             // Set transform
             g.transform(usr2dev);
 
-            // Clip 
+            // Clip
             g.clip(renderContext.getAreaOfInterest());
 
             // Invoke primitive paint.
-            node.primitivePaint(g, 
+            node.primitivePaint(g,
                                 GraphicsNodeRenderContext.getGraphicsNodeRenderContext(renderContext));
 
             g.dispose();
@@ -362,12 +361,12 @@ public class ConcreteGraphicsNodeRable implements GraphicsNodeRable{
                         public int getMinX(){
                             return renderedArea.x;
                         }
-                        
+
                         public int getMinY(){
                             return renderedArea.y;
                         }
             };
-            
+
 
         }
 
