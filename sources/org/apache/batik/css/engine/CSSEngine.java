@@ -213,6 +213,16 @@ public abstract class CSSEngine {
     protected String styleLocalName;
     
     /**
+     * The class attribute namespace URI.
+     */
+    protected String classNamespaceURI;
+
+    /**
+     * The class attribute local name.
+     */
+    protected String classLocalName;
+    
+    /**
      * The non CSS presentational hints.
      */
     protected Set nonCSSPresentationalHints;
@@ -288,6 +298,8 @@ public abstract class CSSEngine {
      *           elements is required.
      * @param sns The namespace URI of the style attribute.
      * @param sln The local name of the style attribute.
+     * @param cns The namespace URI of the class attribute.
+     * @param cln The local name of the class attribute.
      * @param hints Whether the CSS engine should support non CSS
      *              presentational hints.
      * @param hintsNS The hints namespace URI.
@@ -301,6 +313,8 @@ public abstract class CSSEngine {
                         String[] pe,
                         String sns,
                         String sln,
+                        String cns,
+                        String cln,
                         boolean hints,
                         String hintsNS,
                         CSSContext ctx) {
@@ -310,6 +324,8 @@ public abstract class CSSEngine {
         pseudoElementNames = pe;
         styleNamespaceURI = sns;
         styleLocalName = sln;
+        classNamespaceURI = cns;
+        classLocalName = cln;
         cssContext = ctx;
 
         int len = vm.length;
@@ -1840,9 +1856,6 @@ public abstract class CSSEngine {
                 return;
             }
 
-            // !!! TODO: class mutation
-            // !!! TODO: id mutation
-
             MutationEvent mevt = (MutationEvent)evt;
             Node attr = mevt.getRelatedNode();
             String attrNS = attr.getNamespaceURI();
@@ -1855,6 +1868,32 @@ public abstract class CSSEngine {
                     // The style declaration attribute has been modified.
 
                     inlineStyleAttributeUpdated(elt, style, mevt);
+
+                    return;
+                }
+            }
+            if ((attrNS == null && classNamespaceURI == null) ||
+                (attrNS != null && attrNS.equals(classNamespaceURI))) {
+                String name = (attrNS == null)
+                    ? attr.getNodeName()
+                    : attr.getLocalName();
+                if (name.equals(classLocalName)) {
+                    // The class attribute has been modified...
+                    // ...invalidate all the properties.
+
+                    elt.setComputedStyleMap(null, null);
+
+                    firePropertiesChangedEvent(elt, ALL_PROPERTIES);
+                    
+                    for (Node n = elt.getFirstChild();
+                         n != null;
+                         n = n.getNextSibling()) {
+                        propagateChanges(n, ALL_PROPERTIES);
+                        Node c = getImportedChild(n);
+                        if (c != null) {
+                            propagateChanges(c, ALL_PROPERTIES);
+                        }
+                    }
 
                     return;
                 }
