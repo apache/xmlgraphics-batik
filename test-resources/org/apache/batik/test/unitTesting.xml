@@ -50,6 +50,11 @@
     <!-- ========================================================================== -->
     <test id="PerformanceTestValidator" class="org.apache.batik.test.PerformanceTestValidator" /> 
 
+    <!-- In the OnePerformanceTest, runOp is the same as runref. Therefore, the -->
+    <!-- score should be 1.                                                     -->
+    <test id="PerformanceTestSanity" class="org.apache.batik.test.OnePerformanceTest">
+        <property name="ReferenceScore" class="java.lang.Double" value="1" />
+    </test>
     
 
 </testSuite>
