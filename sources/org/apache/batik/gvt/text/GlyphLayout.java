@@ -107,7 +107,7 @@ public class GlyphLayout implements TextSpanLayout {
      * (e.g. if the aci has multiple X or Y values).
      */
     public void setOffset(Point2D offset) {
-        System.out.println("Offset set to "+offset);
+        //System.out.println("Offset set to "+offset);
         this.offset = offset;
     }
 
@@ -310,14 +310,14 @@ public class GlyphLayout implements TextSpanLayout {
             lbox = (Rectangle2D.Double) glyphLogicalBounds[begin];
             float miny = (float) lbox.getY();
             float maxy = (float) (lbox.getY() + lbox.getHeight());
+            float epsilon = (float) lbox.getHeight()/8f;
             float currY = y;
             float currX = x;
             while (end<c) {
                 lbox = (Rectangle2D.Double) glyphLogicalBounds[end];
                 currY = (float) gv.getGlyphPosition(end).getY();
                 currX = (float) gv.getGlyphPosition(end).getX();
-                if ((currX < x) || (currY != y)) {
-                    if (end > begin) --end;
+                if ((currX < x) || (Math.abs(currY - y) > epsilon)) {
                     break;
                 }
                 miny =
@@ -327,7 +327,7 @@ public class GlyphLayout implements TextSpanLayout {
                   Math.max(h, maxy);
                 ++end;
             }
-            i = end;
+            i = (end > begin) ? end-1 : end;
 
             Rectangle2D.Double lboxPrev = null;
 
@@ -535,7 +535,7 @@ public class GlyphLayout implements TextSpanLayout {
         gp = (float[]) gv.getGlyphPositions(0, gv.getNumGlyphs(), gp).clone();
         float curr_x_pos = gp[0] + (float) offset.getX();
         float curr_y_pos = gp[1] + (float) offset.getY();
-        //System.out.print("Explicit layout for: ");
+
         while ((ch != CharacterIterator.DONE) && (i < gp.length/2)) {
             Float x = (Float) aci.getAttribute(
                              GVTAttributedCharacterIterator.TextAttribute.X);
@@ -545,17 +545,15 @@ public class GlyphLayout implements TextSpanLayout {
                              GVTAttributedCharacterIterator.TextAttribute.Y);
             Float dy = (Float) aci.getAttribute(
                              GVTAttributedCharacterIterator.TextAttribute.DY);
-            if (x != null) {
-                //System.out.println("X explicit");
+            if (x!= null && !x.isNaN()) {
                 curr_x_pos = x.floatValue();
-            } else if (dx != null) {
-                //System.out.println("DX explicit");
+            } else if (dx != null && !dx.isNaN()) {
                 curr_x_pos += dx.floatValue();
             }
 
-            if (y != null) {
+            if (y != null && !y.isNaN()) {
                 curr_y_pos = y.floatValue();
-            } else if (dy != null) {
+            } else if (dy != null && !dy.isNaN()) {
                 curr_y_pos += dy.floatValue();
             } else if (i>0) {
                 curr_y_pos += gp[i*2 + 1]-gp[i*2 - 1];
