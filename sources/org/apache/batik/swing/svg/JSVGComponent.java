@@ -256,7 +256,7 @@ public class JSVGComponent extends JGVTComponent {
 
         svgUserAgent = ua;
 
-        userAgent = createUserAgent();
+        userAgent = new BridgeUserAgentWrapper(createUserAgent());
 
         addSVGDocumentLoaderListener((SVGListener)listener);
         addGVTTreeBuilderListener((SVGListener)listener);
@@ -741,7 +741,7 @@ public class JSVGComponent extends JGVTComponent {
                 return;
             }
 
-            if (JSVGComponent.this.eventsEnabled) {
+            if (JSVGComponent.this.eventsEnabled && updateManager == null) {
                 updateManager = new UpdateManager(bridgeContext,
                                                   svgDocument,
                                                   renderer);
@@ -950,6 +950,368 @@ public class JSVGComponent extends JGVTComponent {
     }
 
     /**
+     * The user-agent wrapper, which call the methods in the event thread.
+     */
+    protected static class BridgeUserAgentWrapper implements UserAgent {
+
+        /**
+         * The wrapped user agent.
+         */
+        protected UserAgent userAgent;
+
+        /**
+         * Creates a new BridgeUserAgentWrapper.
+         */
+        public BridgeUserAgentWrapper(UserAgent ua) {
+            userAgent = ua;
+        }
+
+        /**
+         * Returns the event dispatcher to use.
+         */
+        public EventDispatcher getEventDispatcher() {
+            if (EventQueue.isDispatchThread()) {
+                return userAgent.getEventDispatcher();
+            } else {
+                class Query implements Runnable {
+                    EventDispatcher result;
+                    public void run() {
+                        result = userAgent.getEventDispatcher();
+                    }
+                }
+                Query q = new Query();
+                invokeAndWait(q);
+                return q.result;
+            }
+        }
+
+        /**
+         * Returns the default size of the viewport.
+         */
+        public Dimension2D getViewportSize() {
+            if (EventQueue.isDispatchThread()) {
+                return userAgent.getViewportSize();
+            } else {
+                class Query implements Runnable {
+                    Dimension2D result;
+                    public void run() {
+                        result = userAgent.getViewportSize();
+                    }
+                }
+                Query q = new Query();
+                invokeAndWait(q);
+                return q.result;
+            }
+        }
+
+        /**
+         * Displays an error resulting from the specified Exception.
+         */
+        public void displayError(final Exception ex) {
+            if (EventQueue.isDispatchThread()) {
+                userAgent.displayError(ex);
+            } else {
+                EventQueue.invokeLater(new Runnable() {
+                        public void run() {
+                            userAgent.displayError(ex);
+                        }
+                    });
+            }
+        }
+
+        /**
+         * Displays a message in the User Agent interface.
+         */
+        public void displayMessage(final String message) {
+            if (EventQueue.isDispatchThread()) {
+                userAgent.displayMessage(message);
+            } else {
+                EventQueue.invokeLater(new Runnable() {
+                        public void run() {
+                            userAgent.displayMessage(message);
+                        }
+                    });
+            }
+        }
+
+        /**
+         * Returns the pixel to mm factor.
+         */
+        public float getPixelToMM() {
+            if (EventQueue.isDispatchThread()) {
+                return userAgent.getPixelToMM();
+            } else {
+                class Query implements Runnable {
+                    float result;
+                    public void run() {
+                        result = userAgent.getPixelToMM();
+                    }
+                }
+                Query q = new Query();
+                invokeAndWait(q);
+                return q.result;
+            }
+        }
+
+        /**
+         * Returns the language settings.
+         */
+        public String getLanguages() {
+            if (EventQueue.isDispatchThread()) {
+                return userAgent.getLanguages();
+            } else {
+                class Query implements Runnable {
+                    String result;
+                    public void run() {
+                        result = userAgent.getLanguages();
+                    }
+                }
+                Query q = new Query();
+                invokeAndWait(q);
+                return q.result;
+            }
+        }
+
+        /**
+         * Returns the user stylesheet uri.
+         * @return null if no user style sheet was specified.
+         */
+        public String getUserStyleSheetURI() {
+            if (EventQueue.isDispatchThread()) {
+                return userAgent.getUserStyleSheetURI();
+            } else {
+                class Query implements Runnable {
+                    String result;
+                    public void run() {
+                        result = userAgent.getUserStyleSheetURI();
+                    }
+                }
+                Query q = new Query();
+                invokeAndWait(q);
+                return q.result;
+            }
+        }
+
+        /**
+         * Opens a link.
+         * @param elt The activated link element.
+         */
+        public void openLink(final SVGAElement elt) {
+            System.out.println("AAA" + Thread.currentThread());
+            if (EventQueue.isDispatchThread()) {
+                userAgent.openLink(elt);
+            } else {
+                EventQueue.invokeLater(new Runnable() {
+                        public void run() {
+                            userAgent.openLink(elt);
+                        }
+                    });
+            }
+        }
+        
+        /**
+         * Informs the user agent to change the cursor.
+         * @param cursor the new cursor
+         */
+        public void setSVGCursor(final Cursor cursor) {
+            if (EventQueue.isDispatchThread()) {
+                userAgent.setSVGCursor(cursor);
+            } else {
+                EventQueue.invokeLater(new Runnable() {
+                        public void run() {
+                            userAgent.setSVGCursor(cursor);
+                        }
+                    });
+            }
+        }
+        
+        /**
+         * Returns the class name of the XML parser.
+         */
+        public String getXMLParserClassName() {
+            if (EventQueue.isDispatchThread()) {
+                return userAgent.getXMLParserClassName();
+            } else {
+                class Query implements Runnable {
+                    String result;
+                    public void run() {
+                        result = userAgent.getXMLParserClassName();
+                    }
+                }
+                Query q = new Query();
+                invokeAndWait(q);
+                return q.result;
+            }
+        }
+
+        /**
+         * Returns true if the XML parser must be in validation mode, false
+         * otherwise.
+         */
+        public boolean isXMLParserValidating() {
+            if (EventQueue.isDispatchThread()) {
+                return userAgent.isXMLParserValidating();
+            } else {
+                class Query implements Runnable {
+                    boolean result;
+                    public void run() {
+                        result = userAgent.isXMLParserValidating();
+                    }
+                }
+                Query q = new Query();
+                invokeAndWait(q);
+                return q.result;
+            }
+        }
+        
+        /**
+         * Returns the <code>AffineTransform</code> currently
+         * applied to the drawing by the UserAgent.
+         */
+        public AffineTransform getTransform() {
+            if (EventQueue.isDispatchThread()) {
+                return userAgent.getTransform();
+            } else {
+                class Query implements Runnable {
+                    AffineTransform result;
+                    public void run() {
+                        result = userAgent.getTransform();
+                    }
+                }
+                Query q = new Query();
+                invokeAndWait(q);
+                return q.result;
+            }
+        }
+
+        /**
+         * Returns this user agent's CSS media.
+         */
+        public String getMedia() {
+            if (EventQueue.isDispatchThread()) {
+                return userAgent.getMedia();
+            } else {
+                class Query implements Runnable {
+                    String result;
+                    public void run() {
+                        result = userAgent.getMedia();
+                    }
+                }
+                Query q = new Query();
+                invokeAndWait(q);
+                return q.result;
+            }
+        }
+        
+        /**
+         * Returns the location on the screen of the
+         * client area in the UserAgent.
+         */
+        public Point getClientAreaLocationOnScreen() {
+            if (EventQueue.isDispatchThread()) {
+                return userAgent.getClientAreaLocationOnScreen();
+            } else {
+                class Query implements Runnable {
+                    Point result;
+                    public void run() {
+                        result = userAgent.getClientAreaLocationOnScreen();
+                    }
+                }
+                Query q = new Query();
+                invokeAndWait(q);
+                return q.result;
+            }
+        }
+
+        /**
+         * Tells whether the given feature is supported by this
+         * user agent.
+         */
+        public boolean hasFeature(final String s) {
+            if (EventQueue.isDispatchThread()) {
+                return userAgent.hasFeature(s);
+            } else {
+                class Query implements Runnable {
+                    boolean result;
+                    public void run() {
+                        result = userAgent.hasFeature(s);
+                    }
+                }
+                Query q = new Query();
+                invokeAndWait(q);
+                return q.result;
+            }
+        }
+        
+        /**
+         * Tells whether the given extension is supported by this
+         * user agent.
+         */
+        public boolean supportExtension(final String s) {
+            if (EventQueue.isDispatchThread()) {
+                return userAgent.supportExtension(s);
+            } else {
+                class Query implements Runnable {
+                    boolean result;
+                    public void run() {
+                        result = userAgent.supportExtension(s);
+                    }
+                }
+                Query q = new Query();
+                invokeAndWait(q);
+                return q.result;
+            }
+        }
+
+        /**
+         * Lets the bridge tell the user agent that the following
+         * extension is supported by the bridge.
+         */
+        public void registerExtension(final BridgeExtension ext) {
+            if (EventQueue.isDispatchThread()) {
+                userAgent.registerExtension(ext);
+            } else {
+                EventQueue.invokeLater(new Runnable() {
+                        public void run() {
+                            userAgent.registerExtension(ext);
+                        }
+                    });
+            }
+        }
+        
+        /**
+         * Notifies the UserAgent that the input element 
+         * has been found in the document. This is sometimes
+         * called, for example, to handle &lt;a&gt; or
+         * &lt;title&gt; elements in a UserAgent-dependant
+         * way.
+         */
+        public void handleElement(final Element elt, final Object data) {
+            if (EventQueue.isDispatchThread()) {
+                userAgent.handleElement(elt, data);
+            } else {
+                EventQueue.invokeLater(new Runnable() {
+                        public void run() {
+                            userAgent.handleElement(elt, data);
+                        }
+                    });
+            }
+        }
+
+        /**
+         * Invokes the given runnable from the event thread, and wait
+         * for the run method to terminate.
+         */
+        protected void invokeAndWait(Runnable r) {
+            try {
+                EventQueue.invokeAndWait(r);
+            } catch (Exception e) {
+                throw new RuntimeException(e.getMessage());
+            }
+        }
+    }
+
+    /**
      * To hide the user-agent methods.
      */
     protected class BridgeUserAgent implements UserAgent {
@@ -1038,6 +1400,7 @@ public class JSVGComponent extends JGVTComponent {
          * @param elt The activated link element.
          */
         public void openLink(SVGAElement elt) {
+            System.out.println("XXX" + Thread.currentThread());
             String show = XLinkSupport.getXLinkShow(elt);
             String href = XLinkSupport.getXLinkHref(elt);
             if (show.equals("new")) {
@@ -1079,7 +1442,7 @@ public class JSVGComponent extends JGVTComponent {
 		    }
                     newURI = new URL(oldURI, href);
                 } catch (MalformedURLException e) {
-                    userAgent.displayError(e);
+                    displayError(e);
                     return;
                 }
                 String s = newURI.getRef();
