@@ -61,6 +61,7 @@ public class StrokingTextPainter extends BasicTextPainter {
                 GVTAttributedCharacterIterator.
                                       TextAttribute.UNDERLINE_STROKE_PAINT);
         extendedAtts.add(TextAttribute.FOREGROUND);
+        extendedAtts.add(TextAttribute.SUPERSCRIPT);
         extendedAtts.add(GVTAttributedCharacterIterator.TextAttribute.OPACITY);
     }
 
@@ -233,7 +234,7 @@ public class StrokingTextPainter extends BasicTextPainter {
         TextLayout layout = textRun.getLayout();
         double y = location.getY() +
             layout.getBaselineOffsets()[java.awt.Font.ROMAN_BASELINE] -
-                layout.getAscent()*1.1;
+                layout.getAscent();
         Stroke overlineStroke =
             new BasicStroke(thickness);
         java.awt.Shape overlineShape =
@@ -251,14 +252,11 @@ public class StrokingTextPainter extends BasicTextPainter {
             GVTAttributedCharacterIterator.TextAttribute.STROKE);
         paint = (Paint) runaci.getAttribute(
             GVTAttributedCharacterIterator.TextAttribute.STROKE_PAINT);
-        if (stroke != null) {
+        if ((stroke != null) && (paint != null)) {
             g2d.setStroke(stroke);
-        }
-        if (paint != null) {
             g2d.setPaint(paint);
+            g2d.draw(overlineShape);
         }
-        g2d.draw(overlineShape);
-
         // TODO: performance and concision
     }
 
@@ -317,8 +315,8 @@ public class StrokingTextPainter extends BasicTextPainter {
         TextLayout layout = textRun.getLayout();
         double y = location.getY()+
             (layout.getBaselineOffsets()[java.awt.Font.ROMAN_BASELINE]
-             - layout.getAscent())/2.8;
-                     // XXX: 2.8 is a hack for cosmetic reasons
+             - layout.getAscent())/3;
+                     // XXX: 3 is a hack for cosmetic reasons
         // TODO: the strikethrough offset should be calculated
         // from the font instead!
         Stroke strikethroughStroke =
@@ -338,7 +336,7 @@ public class StrokingTextPainter extends BasicTextPainter {
             GVTAttributedCharacterIterator.TextAttribute.STROKE);
         paint = (Paint) runaci.getAttribute(
             GVTAttributedCharacterIterator.TextAttribute.STROKE_PAINT);
-        if ((stroke != null) || (paint != null)) {
+        if ((stroke != null) && (paint != null)) {
             g2d.setStroke(stroke);
             g2d.setPaint(paint);
             g2d.draw(strikethroughShape);
