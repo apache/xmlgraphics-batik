@@ -131,7 +131,7 @@ public class AboutDialog extends JWindow
         //
         // Add exact revision information
         //
-        panel.add(new JLabel("$Name"),
+        panel.add(new JLabel("$Name$"),
                   0, 2, 1, 1, EAST, NONE, 0, 0);
 
         setBackground(Color.white);
