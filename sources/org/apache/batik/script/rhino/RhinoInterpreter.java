@@ -12,9 +12,13 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import java.io.StringReader;
+
+import java.net.URL;
+
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Locale;
+import java.util.Vector;
 
 import org.w3c.dom.events.EventTarget;
 
@@ -27,6 +31,7 @@ import org.mozilla.javascript.Function;
 import org.mozilla.javascript.ImporterTopLevel;
 import org.mozilla.javascript.JavaScriptException;
 import org.mozilla.javascript.NativeJavaPackage;
+import org.mozilla.javascript.SecuritySupport;
 import org.mozilla.javascript.Script;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
@@ -69,17 +74,50 @@ public class RhinoInterpreter implements Interpreter {
         new EventTargetWrapHandler(this);
 
     /**
+     * The SecuritySupport implementation for Batik,
+     * which ensures scripts have access to the 
+     * server they were downloaded from
+     */
+    private SecuritySupport securitySupport 
+        = new BatikSecuritySupport();
+
+    /**
+     * The Rhino 'security domain'. We use the RhinoClassLoader
+     * which will grant permissions to connect to the document
+     * URL.
+     */
+    protected RhinoClassLoader rhinoClassLoader;
+
+    /**
+     * Default Context for scripts
+     */
+    protected Context defaultContext;
+
+    /**
+     * Context vector, to make sure we are not 
+     * setting the security context too many times
+     */
+    protected Vector contexts;
+
+    /**
      * Build a <code>Interpreter</code> for ECMAScript using Rhino.
+     * 
+     * @param documentURL the URL for the document which references
+     *        
      * @see org.apache.batik.script.Interpreter
      * @see org.apache.batik.script.InterpreterPool
      */
-    public RhinoInterpreter() {
+    public RhinoInterpreter(URL documentURL) {
+        rhinoClassLoader = new RhinoClassLoader(documentURL);
+
         Context.setCachingEnabled(false); // reset the cache
         Context.setCachingEnabled(true);  // enable caching again
-
         // entering a context
-        Context ctx = Context.enter();
+        defaultContext = new Context(securitySupport);
+        Context ctx = enterContext();
+            
         try {
+
             // init std object with an importer
             // building the importer automatically initialize the
             // context with it since Rhino1.5R3
@@ -95,6 +133,23 @@ public class RhinoInterpreter implements Interpreter {
         } finally {
             Context.exit();
         }
+    }
+
+    /**
+     * Implementation helper. Makes sure the proper security is set 
+     * on the context.
+     */
+    public Context enterContext(){
+        Context ctx = Context.enter(defaultContext);
+        if (ctx != defaultContext){
+            // Set the SecuritySupport the Context should
+            // use.
+            if (!contexts.contains(ctx)) {
+                ctx.setSecuritySupport(securitySupport);
+                contexts.add(ctx);
+            }
+        }
+        return ctx;
     }
 
     /**
@@ -115,13 +170,14 @@ public class RhinoInterpreter implements Interpreter {
     public Object evaluate(Reader scriptreader)
         throws InterpreterException, IOException {
         Object rv = null;
-        Context ctx = Context.enter();
+        Context ctx = enterContext();
+
         ctx.setWrapHandler(wrapHandler);
         try {
             rv = ctx.evaluateReader(globalObject,
                                     scriptreader,
                                     "<SVG>",
-                                    1, null);
+                                    1, rhinoClassLoader);
         } catch (JavaScriptException e) {
             // exception from JavaScript (possibly wrapping a Java Ex)
             if (e.getValue() instanceof Exception) {
@@ -156,7 +212,8 @@ public class RhinoInterpreter implements Interpreter {
     public Object evaluate(String scriptstr)
         throws InterpreterException {
  
-        Context ctx = Context.enter();
+        Context ctx = enterContext();
+
         ctx.setWrapHandler(wrapHandler);
         Script script = null;
         Entry et = null;
@@ -182,7 +239,7 @@ public class RhinoInterpreter implements Interpreter {
                 script = ctx.compileReader(globalObject,
                                            new StringReader(scriptstr),
                                            "<SVG>",
-                                           1, null);
+                                           1, rhinoClassLoader);
             } catch (IOException io) {
                 // can't happen because we use a String...
             }
@@ -236,7 +293,8 @@ public class RhinoInterpreter implements Interpreter {
      * @param object the Java object
      */
     public void bindObject(String name, Object object) {
-        Context ctx = Context.enter();
+        Context ctx = enterContext();
+
         ctx.setWrapHandler(wrapHandler);
         try {
             Scriptable jsObject =  Context.toObject(object, globalObject);
@@ -269,7 +327,8 @@ public class RhinoInterpreter implements Interpreter {
     void callHandler(Function handler,
                      Object arg)
         throws JavaScriptException {
-        Context ctx = Context.enter();
+        Context ctx = enterContext();
+
         ctx.setWrapHandler(wrapHandler);
         try {
             arg = Context.toObject(arg, globalObject);
@@ -286,7 +345,8 @@ public class RhinoInterpreter implements Interpreter {
     void callHandler(Function handler,
                      Object[] args)
         throws JavaScriptException {
-        Context ctx = Context.enter();
+        Context ctx = enterContext();
+
         ctx.setWrapHandler(wrapHandler);
         try {
             handler.call(ctx, globalObject, globalObject, args);
@@ -301,7 +361,8 @@ public class RhinoInterpreter implements Interpreter {
     void callHandler(Function handler,
                      ArgumentsBuilder ab)
         throws JavaScriptException {
-        Context ctx = Context.enter();
+        Context ctx = enterContext();
+
         ctx.setWrapHandler(wrapHandler);
         try {
             handler.call(ctx, globalObject, globalObject, ab.buildArguments());
@@ -355,7 +416,7 @@ public class RhinoInterpreter implements Interpreter {
     }
 
     /**
-     * Creates and returns a localized message, given the key of the message
+     * Creates and returns a localized message, given the key of the message, 0, data.length
      * in the resource bundle and the message parameters.
      * The messages in the resource bundle must have the syntax described in
      * the java.text.MessageFormat class documentation.

@@ -68,5 +68,6 @@ grant codeBase "${squiggle.jar.base}/lib/batik-xml.jar" {
 
 grant codeBase "${squiggle.jar.base}/lib/js.jar" {
   permission java.lang.RuntimePermission "createClassLoader";
+  permission java.net.SocketPermission "*", "listen, connect, resolve, accept";
 };
 
