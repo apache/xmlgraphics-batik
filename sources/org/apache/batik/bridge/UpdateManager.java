@@ -122,6 +122,11 @@ public class UpdateManager implements RunnableQueue.RunHandler {
     protected UpdateTracker updateTracker;
 
     /**
+     * The GraphicsNode whose updates are to be tracked.
+     */
+    protected GraphicsNode graphicsNode;
+
+    /**
      * Creates a new update manager.
      * @param ctx The bridge context.
      * @param gn GraphicsNode whose updates are to be tracked.
@@ -141,16 +146,8 @@ public class UpdateManager implements RunnableQueue.RunHandler {
         updateRunnableQueue = RunnableQueue.createRunnableQueue();
         updateRunnableQueue.setRunHandler(this);
 
-        /*
-        DOMImplementationWrapper iw;
-        iw = new DOMImplementationWrapper(updateRunnableQueue,
-                                          scriptingRunnableQueue,
-                                          document.getImplementation());
-
-        scriptingDocument = new DocumentWrapper(iw, document);
-        */
-
         updateTracker = new UpdateTracker();
+        graphicsNode = gn;
 
         RootGraphicsNode root = gn.getRoot();
         if (root != null){
@@ -286,6 +283,8 @@ public class UpdateManager implements RunnableQueue.RunHandler {
                         dispatchEvent(evt);
                     running = false;
                     
+                    repaintRateManager.interrupt();
+                    updateRunnableQueue.getThread().interrupt();
                     fireManagerStoppedEvent();
                 }
             });
@@ -391,8 +390,6 @@ public class UpdateManager implements RunnableQueue.RunHandler {
                 ((UpdateManagerListener)dll[i]).managerStopped(ev);
             }
         }
-        repaintRateManager.interrupt();
-        updateRunnableQueue.getThread().interrupt();
     }
 
     /**
