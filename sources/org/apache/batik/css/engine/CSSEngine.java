@@ -1425,9 +1425,6 @@ public abstract class CSSEngine {
      * Fires a CSSEngineEvent, given a list of modified properties.
      */
     protected void firePropertiesChangedEvent(Element target, int[] props) {
-        //System.out.println("EVT props.length: " + props.length);
-        //System.out.println("    target      : " + target);
-
         CSSEngineListener[] ll =
             (CSSEngineListener[])listeners.toArray(LISTENER_ARRAY);
 
@@ -1448,8 +1445,6 @@ public abstract class CSSEngine {
     protected void inlineStyleAttributeUpdated(CSSStylableElement elt,
                                                StyleMap style,
                                                MutationEvent evt) {
-        // !!! Fixed style maps not taken into account
-
         boolean[] updated = styleDeclarationUpdateHandler.updatedProperties;
         for (int i = getNumberOfProperties() - 1; i >= 0; --i) {
             updated[i] = false;
@@ -1506,11 +1501,15 @@ public abstract class CSSEngine {
 
                 firePropertiesChangedEvent(elt, ALL_PROPERTIES);
                     
+                Node c = getImportedChild(elt);
+                if (c != null) {
+                    propagateChanges(c, ALL_PROPERTIES);
+                }
                 for (Node n = elt.getFirstChild();
                      n != null;
                      n = n.getNextSibling()) {
                     propagateChanges(n, ALL_PROPERTIES);
-                    Node c = getImportedChild(n);
+                    c = getImportedChild(n);
                     if (c != null) {
                         propagateChanges(c, ALL_PROPERTIES);
                     }
@@ -1564,11 +1563,15 @@ public abstract class CSSEngine {
                     }
                     firePropertiesChangedEvent(elt, props);
                     
+                    Node c = getImportedChild(elt);
+                    if (c != null) {
+                        propagateChanges(c, ALL_PROPERTIES);
+                    }
                     for (Node n = elt.getFirstChild();
                          n != null;
                          n = n.getNextSibling()) {
                         propagateChanges(n, props);
-                        Node c = getImportedChild(n);
+                        c = getImportedChild(n);
                         if (c != null) {
                             propagateChanges(c, props);
                         }
@@ -1670,11 +1673,15 @@ public abstract class CSSEngine {
             }
         }
         if (props != null) {
+            Node c = getImportedChild(node);
+            if (c != null) {
+                propagateChanges(c, ALL_PROPERTIES);
+            }
             for (Node n = node.getFirstChild();
                  n != null;
                  n = n.getNextSibling()) {
                 propagateChanges(n, props);
-                Node c = getImportedChild(n);
+                c = getImportedChild(n);
                 if (c != null) {
                     propagateChanges(c, props);
                 }
@@ -1825,11 +1832,15 @@ public abstract class CSSEngine {
         }
         firePropertiesChangedEvent(elt, props);
 
+        Node c = getImportedChild(elt);
+        if (c != null) {
+            propagateChanges(c, ALL_PROPERTIES);
+        }
         for (Node n = elt.getFirstChild();
              n != null;
              n = n.getNextSibling()) {
             propagateChanges(n, props);
-            Node c = getImportedChild(n);
+            c = getImportedChild(n);
             if (c != null) {
                 propagateChanges(c, props);
             }
@@ -1885,11 +1896,15 @@ public abstract class CSSEngine {
 
                     firePropertiesChangedEvent(elt, ALL_PROPERTIES);
                     
+                    Node c = getImportedChild(elt);
+                    if (c != null) {
+                        propagateChanges(c, ALL_PROPERTIES);
+                    }
                     for (Node n = elt.getFirstChild();
                          n != null;
                          n = n.getNextSibling()) {
                         propagateChanges(n, ALL_PROPERTIES);
-                        Node c = getImportedChild(n);
+                        c = getImportedChild(n);
                         if (c != null) {
                             propagateChanges(c, ALL_PROPERTIES);
                         }
