@@ -197,6 +197,14 @@
     <!-- ======================================================================= -->
     <!-- Samples tests files                                                     -->
     <!-- ======================================================================= -->
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:samples/tests/display.svg" />
+        <arg class="java.net.URL" value="file:test-references/samples/tests/display.png" />
+        <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/display.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/display.png" />
+    </test>
+
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/tests/patternRegionA.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/patternRegionA.png" />
@@ -204,12 +212,6 @@
         <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/textRotateShadows.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
-        <arg class="java.net.URL" value="file:samples/tests/Template.svg" />
-        <arg class="java.net.URL" value="file:test-references/samples/tests/Template.png" />
-        <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/Template.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/Template.png" />
-    </test>
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/tests/clip.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/clip.png" />

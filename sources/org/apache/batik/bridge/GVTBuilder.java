@@ -108,10 +108,12 @@ public class GVTBuilder implements SVGConstants {
         // create the associated graphics node
         GraphicsNodeBridge gnBridge = (GraphicsNodeBridge)bridge;
         GraphicsNode gn = gnBridge.createGraphicsNode(ctx, e);
-        if (gnBridge.isComposite()) {
-            buildComposite(ctx, e, (CompositeGraphicsNode)gn);
+        if (gn != null) {
+            if (gnBridge.isComposite()) {
+                buildComposite(ctx, e, (CompositeGraphicsNode)gn);
+            }
+            gnBridge.buildGraphicsNode(ctx, e, gn);
         }
-        gnBridge.buildGraphicsNode(ctx, e, gn);
         return gn;
     }
 
@@ -165,13 +167,15 @@ public class GVTBuilder implements SVGConstants {
         try {
             // create the associated graphics node
             GraphicsNode gn = gnBridge.createGraphicsNode(ctx, e);
-            // attach the graphics node to the GVT tree now !
-            parentNode.getChildren().add(gn);
-            // check if the element has children to build
-            if (gnBridge.isComposite()) {
-                buildComposite(ctx, e, (CompositeGraphicsNode)gn);
+            if (gn != null) {
+                // attach the graphics node to the GVT tree now !
+                parentNode.getChildren().add(gn);
+                // check if the element has children to build
+                if (gnBridge.isComposite()) {
+                    buildComposite(ctx, e, (CompositeGraphicsNode)gn);
+                }
+                gnBridge.buildGraphicsNode(ctx, e, gn);
             }
-            gnBridge.buildGraphicsNode(ctx, e, gn);
         } catch (BridgeException ex) {
             // some bridge may decide that the node in error can be
             // displayed (e.g. polyline, path...)
