@@ -1220,9 +1220,7 @@ public class JSVGViewerFrame
             AffineTransform at = svgCanvas.getRenderingTransform();
             transformDialog.setTransform(at);
 
-            System.out.println("AT : " + at);
             AffineTransform txf = transformDialog.showDialog();
-            System.out.println("TXF : " + txf);
             if(txf != null){
                 svgCanvas.setRenderingTransform(txf);
             }
