@@ -15,7 +15,8 @@
 <!-- This test shows that JPEG, PNG and TIF formats are supported. It also     -->
 <!-- shows that SVG images are not supported for cursors and that BMP images   -->
 <!-- are not either. Unsupported image formats result in the same bahavior as  -->
-<!-- 'broken images'. The cursor displays a broken image.                      -->
+<!-- 'broken images'. The cursor falls back to the built in cursor specified   -->
+<!-- at the end of the cursor list values.                                     -->
 <!--                                                                           -->
 <!-- @author vhardy@apache.org                                                 -->
 <!-- @version $Id$             -->
@@ -103,7 +104,7 @@ function changeCursor(evt) {
 
     <g transform="translate(337.5, 394)" visibility="hidden" >
         <g id="refbrokenImage" visibility="visible">
-            <text class="label" text-anchor="middle" y="40">Broken Image</text>
+            <text class="label" text-anchor="middle" y="40">Broken Image<tspan dy="1.5em" x="0">defaults to crosshair</tspan></text>
             <use xlink:href="#brokenImage"  />
         </g>
         <g id="reftiffImage">
@@ -119,11 +120,11 @@ function changeCursor(evt) {
             <use xlink:href="#jpegImage"  />
         </g>
         <g id="refunsupportedImage">
-            <text class="label" text-anchor="middle" y="40">Unsupported Image (BMP)</text>
+            <text class="label" text-anchor="middle" y="40">Unsupported Image (BMP)<tspan dy="1.5em" x="0">defaults to crosshair</tspan></text>
             <use xlink:href="#unsupportedImage"  />
         </g>
         <g id="refsvgImage">
-            <text class="label" text-anchor="middle" y="40">SVG Image</text>
+            <text class="label" text-anchor="middle" y="40">SVG Image<tspan dy="1.5em" x="0">defaults to crosshair</tspan></text>
             <use xlink:href="#svgImage"  />
         </g>
 
