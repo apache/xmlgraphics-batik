@@ -103,8 +103,7 @@ public class SVGGraphics2D extends AbstractGraphics2D
     /**
      * SVG Canvas size
      */
-    private Dimension svgCanvasSize =
-        new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE);
+    private Dimension svgCanvasSize;
 
     /**
      * Used to create proper font metrics
@@ -126,13 +125,9 @@ public class SVGGraphics2D extends AbstractGraphics2D
     }
 
     /**
-     * @param SVG Canvas size
+     * @param SVG Canvas size. May be null (equivalent to 100%, 100%)
      */
     public final void setSVGCanvasSize(Dimension svgCanvasSize) {
-        if (svgCanvasSize == null)
-            generatorCtx.errorHandler.
-                handleError(new SVGGraphics2DRuntimeException(ERR_CANVAS_SIZE_NULL));
-
         this.svgCanvasSize = new Dimension(svgCanvasSize);
     }
 
