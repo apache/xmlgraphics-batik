@@ -105,18 +105,23 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
 
         // build the GVT tree that represents the pattern
         boolean hasChildren = false;
-        for(Node child=paintElement.getFirstChild();
-            child != null;
-            child = child.getNextSibling()) {
-            if (child.getNodeType() == child.ELEMENT_NODE) {
-                Element e = (Element)child;
-                GraphicsNode node
-                    = builder.build(ctx, e) ;
-                if (node != null){
-                    hasChildren = true;
-                    patternContentNode.getChildren().add(node);
-                }
+        for(Node node=paintElement.getFirstChild();
+                 node != null;
+                 node = node.getNextSibling()) {
+
+            // check if the node is a valid Element
+            if (node.getNodeType() != node.ELEMENT_NODE) {
+                throw new Error("Bad node type "+node.getNodeName());
             }
+            Element child = (Element) node;
+
+            GraphicsNode patternNode = builder.build(ctx, child) ;
+            // check if a GVT node has been created
+            if (patternNode == null) {
+                throw new Error("Bad node type "+node.getNodeName());
+            }
+            hasChildren = true;
+            patternContentNode.getChildren().add(patternNode);
         }
         ctx.setCurrentViewport(oldViewport);
         if (!hasChildren) {

@@ -82,6 +82,7 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
         if (units.length() == 0) {
             units = VALUE_USER_SPACE_ON_USE;
         }
+
         if (VALUE_OBJECT_BOUNDING_BOX.equals(units)) {
             // units are resolved using objectBoundingBox
             ctx.setCurrentViewport(new ObjectBoundingBoxViewport());
@@ -89,23 +90,23 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
         Tx = SVGUtilities.convertAffineTransform(Tx, gn, units);
 
         // build the clipPath according to the clipPath's children
+        boolean hasChildren = false;
         for(Node node=clipElement.getFirstChild();
                 node != null;
                 node = node.getNextSibling()){
 
-            Element child = (Element)node;
-
             // check if the node is a valid Element
             if (node.getNodeType() != node.ELEMENT_NODE) {
-                throw new Error("Bad node type "+child.getNodeName());
+                throw new Error("Bad node type "+node.getNodeName());
             }
+            Element child = (Element)node;
 
             GraphicsNode clipNode = builder.build(ctx, child) ;
             // check if a GVT node has been created
             if (clipNode == null) {
-                throw new Error("Bad node type "+child.getNodeName());
+                throw new Error("Bad node type "+node.getNodeName());
             }
-
+            hasChildren = true;
             // compute the outline of the current Element
             CSSStyleDeclaration c =
                 ctx.getViewCSS().getComputedStyle(child, null);
@@ -130,6 +131,9 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
                 outline = area;
             }
             clipPath.add(new Area(outline));
+        }
+        if (!hasChildren) {
+            return null; // no clipPath defined
         }
 
         // apply the clip-path of this clipPath Element (already in user space)
