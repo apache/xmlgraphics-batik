@@ -75,3 +75,16 @@ print
 # Should collapse (overhead overcomes)
 merge 440 11
 print
+
+# This reproduces a bug in the original merge code.
+# The tricky bit is that Rect 1 & 2 won't merge but
+# rects 1 & 4 will the result will merge with 2.
+# This caused an infinate loop.
+RectListManger rlm8-1
+rect  194 218   1  1
+rect  200  10   1  1
+rect  226 246   1  1
+rect  227 228   1  1
+print
+merge 1000 10
+print
