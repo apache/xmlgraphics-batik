@@ -1004,7 +1004,8 @@ public class JGVTComponent extends JComponent {
         protected void selectInteractor(InputEvent ie) {
             if (!disableInteractions &&
                 !suspendInteractions &&
-                interactor == null) {
+                interactor == null &&
+                gvtRoot != null) {
                 Iterator it = interactors.iterator();
                 while (it.hasNext()) {
                     Interactor i = (Interactor)it.next();
