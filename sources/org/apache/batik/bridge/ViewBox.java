@@ -143,13 +143,12 @@ public abstract class ViewBox implements SVGConstants, ErrorConstants {
     }
 
     /**
-     * Returns the transformation matrix to apply to initalize a
-     * viewport or null if the specified viewBox disables the
-     * rendering of the element.
+     * Returns the transformation matrix to apply to initalize a viewport or
+     * null if the specified viewBox disables the rendering of the element.
      *
      * @param e the element with a viewbox
      * @param w the width of the effective viewport
-     * @param h The height of the effective viewport
+     * @param h The height of the effective viewport 
      */
     public static AffineTransform getPreserveAspectRatioTransform(Element e,
                                                                   float w,
@@ -164,14 +163,13 @@ public abstract class ViewBox implements SVGConstants, ErrorConstants {
     }
 
     /**
-     * Returns the transformation matrix to apply to initalize a
-     * viewport or null if the specified viewBox disables the
-     * rendering of the element.
+     * Returns the transformation matrix to apply to initalize a viewport or
+     * null if the specified viewBox disables the rendering of the element.
      *
      * @param e the element with a viewbox
      * @param viewBox the viewBox definition
      * @param w the width of the effective viewport
-     * @param h The height of the effective viewport
+     * @param h The height of the effective viewport 
      */
     public static
         AffineTransform getPreserveAspectRatioTransform(Element e,
@@ -203,11 +201,46 @@ public abstract class ViewBox implements SVGConstants, ErrorConstants {
     }
 
     /**
+     * Returns the transformation matrix to apply to initalize a viewport or
+     * null if the specified viewBox disables the rendering of the element.
+     *
+     * @param e the element with a viewbox
+     * @param vb the viewBox definition as float
+     * @param w the width of the effective viewport
+     * @param h The height of the effective viewport 
+     */
+    public static
+        AffineTransform getPreserveAspectRatioTransform(Element e,
+							float [] vb,
+							float w,
+							float h) {
+
+        String aspectRatio
+            = e.getAttributeNS(null, SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE);
+
+        // 'preserveAspectRatio' attribute
+        PreserveAspectRatioParser p = new PreserveAspectRatioParser();
+        ViewHandler ph = new ViewHandler();
+        p.setPreserveAspectRatioHandler(ph);
+        try {
+            p.parse(new StringReader(aspectRatio));
+        } catch (ParseException ex) {
+            throw new BridgeException
+                (e, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                 new Object[] {SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE,
+                                   aspectRatio, ex});
+        }
+
+        return getPreserveAspectRatioTransform(vb, ph.align, ph.meet, w, h);
+    }
+
+    /**
      * Parses a viewBox attribute.
+     *
      * @param value the viewBox
      * @return The 4 viewbox components or null.
      */
-    private static float[] parseViewBoxAttribute(Element e, String value) {
+    public static float[] parseViewBoxAttribute(Element e, String value) {
         if (value.length() == 0) {
             return null;
         }
