@@ -1446,74 +1446,88 @@ public class SVGGraphics2D extends Graphics2D implements Cloneable, SVGSyntax{
                           int x,
                           int y){
         //
-        // There are two special cases: AffineTransformOp and
-        // ColorConvertOp. If the input op is not one of these
-        // two, then SVGBufferedImageOp is requested to map the
-        // filter to an SVG equivalent.
+        // Only convert if the input image is of type sRGB 
+        // non-premultiplied
         //
-        if(op instanceof AffineTransformOp){
-            AffineTransformOp transformOp = (AffineTransformOp)op;
-            AffineTransform transform = transformOp.getTransform();
-
-            if(transform.getDeterminant() != 0){
-                AffineTransform inverseTransform = null;
-                try{
-                    inverseTransform = transform.createInverse();
-                }catch(NoninvertibleTransformException e){
-                    // This should never happen since we checked the
-                    // matrix determinant
-                    throw new Error();
+        /*if(img.getType() == BufferedImage.TYPE_INT_ARGB){
+            //
+            // There are two special cases: AffineTransformOp and
+            // ColorConvertOp. If the input op is not one of these
+            // two, then SVGBufferedImageOp is requested to map the
+            // filter to an SVG equivalent.
+            //
+            if(op instanceof AffineTransformOp){
+                AffineTransformOp transformOp = (AffineTransformOp)op;
+                AffineTransform transform = transformOp.getTransform();
+                
+                if(transform.getDeterminant() != 0){
+                    AffineTransform inverseTransform = null;
+                    try{
+                        inverseTransform = transform.createInverse();
+                    }catch(NoninvertibleTransformException e){
+                        // This should never happen since we checked the
+                        // matrix determinant
+                        throw new Error();
+                    }
+                    gc.transform(transform);
+                    drawImage(img, x, y, null);
+                    gc.transform(inverseTransform);
                 }
-                gc.transform(transform);
-                drawImage(img, x, y, null);
-                gc.transform(inverseTransform);
+                else{
+                    AffineTransform savTransform = new AffineTransform(gc.getTransform());
+                    gc.transform(transform);
+                    drawImage(img, x, y, null);
+                    gc.setTransform(savTransform);
+                }
             }
-            else{
-                AffineTransform savTransform = new AffineTransform(gc.getTransform());
-                gc.transform(transform);
-                drawImage(img, x, y, null);
-                gc.setTransform(savTransform);
-            }
-        }
-        else if(op instanceof ColorConvertOp){
-            img = op.filter(img, null);
-            drawImage(img, x, y, null);
-        }
-        else{
-            //
-            // Try and convert to an SVG filter
-            //
-            SVGFilterDescriptor filterDesc = domTreeManager.getFilterConverter().toSVG(op, null);
-            if(filterDesc != null){
-                                //
-                                // Because other filters may be needed to represent the
-                                // composite that applies to this image, a group is created that
-                                // contains the image element.
-                                //
-                Element imageElement = domFactory.createElement(SVG_IMAGE_TAG);
-                imageHandler.handleImage((Image)img, imageElement);
-                imageElement.setAttributeNS(SVG_NAMESPACE_URI, SVG_X_ATTRIBUTE, Integer.toString(x));
-                imageElement.setAttributeNS(SVG_NAMESPACE_URI, SVG_Y_ATTRIBUTE, Integer.toString(y));
-                imageElement.setAttributeNS(SVG_NAMESPACE_URI, SVG_WIDTH_ATTRIBUTE,
-                                          Integer.toString(img.getWidth(null)));
-                imageElement.setAttributeNS(SVG_NAMESPACE_URI, SVG_HEIGHT_ATTRIBUTE,
-                                          Integer.toString(img.getHeight(null)));
-                imageElement.setAttributeNS(SVG_NAMESPACE_URI, SVG_FILTER_ATTRIBUTE,
-                                          filterDesc.getFilterValue());
-                Element imageGroup = domFactory.createElement(SVG_G_TAG);
-                imageGroup.appendChild(imageElement);
-
-                domGroupManager.addElement(imageGroup);
-            }
-            else{
-                                //
-                                // Could not convert to an equivalent SVG filter:
-                                // filter now and draw resulting image
-                                //
+            else if(op instanceof ColorConvertOp){
                 img = op.filter(img, null);
                 drawImage(img, x, y, null);
             }
+            else{
+                //
+                // Try and convert to an SVG filter
+                //
+                SVGFilterDescriptor filterDesc = domTreeManager.getFilterConverter().toSVG(op, null);
+                if(filterDesc != null){
+                    //
+                    // Because other filters may be needed to represent the
+                    // composite that applies to this image, a group is created that
+                    // contains the image element.
+                    //
+                    Element imageElement = domFactory.createElement(SVG_IMAGE_TAG);
+                    imageHandler.handleImage((Image)img, imageElement);
+                    imageElement.setAttributeNS(SVG_NAMESPACE_URI, SVG_X_ATTRIBUTE, Integer.toString(x));
+                    imageElement.setAttributeNS(SVG_NAMESPACE_URI, SVG_Y_ATTRIBUTE, Integer.toString(y));
+                    imageElement.setAttributeNS(SVG_NAMESPACE_URI, SVG_WIDTH_ATTRIBUTE,
+                                                Integer.toString(img.getWidth(null)));
+                    imageElement.setAttributeNS(SVG_NAMESPACE_URI, SVG_HEIGHT_ATTRIBUTE,
+                                                Integer.toString(img.getHeight(null)));
+                    imageElement.setAttributeNS(SVG_NAMESPACE_URI, SVG_FILTER_ATTRIBUTE,
+                                                filterDesc.getFilterValue());
+                    Element imageGroup = domFactory.createElement(SVG_G_TAG);
+                    imageGroup.appendChild(imageElement);
+                    
+                    domGroupManager.addElement(imageGroup);
+                }
+                else{
+                    //
+                    // Could not convert to an equivalent SVG filter:
+                    // filter now and draw resulting image
+                    //
+                    img = op.filter(img, null);
+                    drawImage(img, x, y, null);
+                }
+            }
         }
+        else{*/
+            // 
+            // Input image is not sRGB non premultiplied. 
+            // Do not try conversion: apply filter and paint
+            //
+            img = op.filter(img, null);
+            drawImage(img, x, y, null);
+            // }
     }
 
 
