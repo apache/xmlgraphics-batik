@@ -11,6 +11,7 @@ package org.apache.batik.script.rhino;
 import java.net.URL;
 import java.net.URLClassLoader;
 
+import org.apache.batik.util.BatikSecurityManager;
 import org.mozilla.javascript.SecuritySupport;
 
 /**
@@ -41,10 +42,24 @@ public class BatikSecuritySupport implements SecuritySupport {
 
     /**
      * Get the current class Context.
-     * This implementation always returns null.
+     * This relies on the <tt>BatikSecurityManager</tt> class.
      */
     public Class[] getClassContext(){
-        return null;
+        SecurityManager sm = System.getSecurityManager();
+        if (sm == null 
+            ||
+            !(sm instanceof BatikSecurityManager)){
+            return null;
+        } else {
+            BatikSecurityManager bsm = (BatikSecurityManager)sm;
+            Class[] cc = bsm.getClassContext();
+            Class[] result = cc;
+            if (cc != null && cc.length > 0){
+                result = new Class[cc.length -1];
+                System.arraycopy(cc, 1, result, 0, cc.length - 1);
+            }
+            return result;
+        }
     }
 
     /**
