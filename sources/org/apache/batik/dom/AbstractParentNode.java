@@ -66,7 +66,7 @@ public abstract class AbstractParentNode extends AbstractNode {
      */
     public Node insertBefore(Node newChild, Node refChild)
         throws DOMException {
-	if (childNodes == null) {
+	if (refChild != null && childNodes == null) {
 	    throw createDOMException
 		(DOMException.NOT_FOUND_ERR,
 		 "child.missing",
