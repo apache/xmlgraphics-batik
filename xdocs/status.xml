@@ -257,6 +257,10 @@
 	      <td >text-whiteSpace-BE-06.svg</td>
 	      <td >&nbsp;</td>
 	    </tr>
+	    <tr>
+	      <td >text-font-BE-15.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
         </table>
 
         <p>
@@ -300,6 +304,14 @@
 	    <tr>
 	      <td >masking-mask-BE-06.svg</td>
 	      <td >objectBoundingBox and userSpaceOnUse not yet implemented</td>
+	    </tr>
+	    <tr>
+	      <td >text-decoration-BE-12.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >text-font-BE-16.svg</td>
+	      <td >&nbsp;</td>
 	    </tr>
         </table>
 
@@ -419,14 +431,6 @@
 	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
-	      <td >text-decoration-BE-12.svg</td>
-	      <td >&nbsp;</td>
-	    </tr>
-	    <tr>
-	      <td >text-font-BE-16.svg</td>
-	      <td >&nbsp;</td>
-	    </tr>
-	    <tr>
 	      <td >text-glyphRun-BE-08.svg</td>
 	      <td >&nbsp;</td>
 	    </tr>
@@ -456,10 +460,6 @@
 	    </tr>
 	    <tr>
 	      <td >text-tref-BE-04.svg</td>
-	      <td >&nbsp;</td>
-	    </tr>
-	    <tr>
-	      <td >text-trefBE04-aux.svg</td>
 	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>

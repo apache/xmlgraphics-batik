@@ -76,6 +76,16 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
         //
         // Load all fonts. Work around
         //
+        /* Note to maintainer:  font init code should not be here!
+         * we should not have dependencies in the Bridge
+         * on java2d Fonts - they are not relevant to non-rasterizing
+         * renderers!
+         * We should instead support a list of fonts, in order of preference,
+         * as CSS allows, and defer resolving these names to actual
+         * implementation-dependent font names until render time.
+         *
+         *                -Bill Haneman
+         */
         GraphicsEnvironment env;
         env = GraphicsEnvironment.getLocalGraphicsEnvironment();
         // System.out.println("Initializing fonts .... please wait");
@@ -84,6 +94,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
         // System.out.println("Done initializing " + nFonts + " fonts");
         for(int i=0; i<nFonts; i++){
             fonts.put(fontNames[i], fontNames[i]);
+            //System.out.println(fontNames[i]);
         }
     }
 
@@ -437,12 +448,17 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
         result.put(TextAttribute.FAMILY, s);
 
         // Font weight
+        // TODO: improve support for relative values
+        // (e.g. "lighter", "bolder")
         v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue
             (FONT_WEIGHT_PROPERTY);
         if (v.getPrimitiveType() == CSSPrimitiveValue.CSS_IDENT) {
             if (v.getStringValue().charAt(0) == 'n') {
                 result.put(TextAttribute.WEIGHT,
                            TextAttribute.WEIGHT_REGULAR);
+            } else if (v.getStringValue().charAt(0) == 'l') {
+                result.put(TextAttribute.WEIGHT,
+                           TextAttribute.WEIGHT_LIGHT);
             } else {
                 result.put(TextAttribute.WEIGHT,
                            TextAttribute.WEIGHT_BOLD);
@@ -487,6 +503,98 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                            //TextAttribute.WEIGHT_ULTRABOLD);
                            TextAttribute.WEIGHT_BOLD);
             }
+        }
+
+        // Text baseline adjustment.
+        // TODO: support for <percentage> and <length> values.
+        v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue
+            (BASELINE_SHIFT_PROPERTY);
+        if (v.getPrimitiveType() == CSSPrimitiveValue.CSS_IDENT) {
+            s = v.getStringValue();
+            switch (s.charAt(2)) {
+            case 'p': //suPerscript
+                result.put(TextAttribute.SUPERSCRIPT,
+                       TextAttribute.SUPERSCRIPT_SUPER);
+                break;
+            case 'b': //suBscript
+                result.put(TextAttribute.SUPERSCRIPT,
+                       TextAttribute.SUPERSCRIPT_SUB);
+                break;
+            case 's': //baSeline
+                result.put(TextAttribute.SUPERSCRIPT,
+                       new Integer(0)); // XXX: jdk1.2 doesn't define
+                                        // SUPERSCRIPT_NONE, 1.3 does
+                break;
+            }
+        } else {
+            // TODO
+            float f = v.getFloatValue(CSSPrimitiveValue.CSS_NUMBER);
+            // result.put(TextAttribute.TRANSFORM,
+            //           CSSUtilities.convertFloatToTranslation(0f, f));
+        }
+
+        // Unicode-bidi mode
+        // XXX: below supports single override level only,
+        // full support requires revision: see comments
+        // below regarding 'direction'
+
+        v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue
+            (UNICODE_BIDI_PROPERTY);
+        s = v.getStringValue();
+        switch (s.charAt(0)) {
+        case 'e':
+            result.put(TextAttribute.BIDI_EMBEDDING,
+                       new Integer(1));
+            break;
+        case 'b':
+            result.put(TextAttribute.BIDI_EMBEDDING,
+                       new Integer(-1));
+            break;
+        case 'n':
+            result.put(TextAttribute.BIDI_EMBEDDING,
+                       new Integer(0));
+        }
+
+        // Text direction
+        // XXX: this needs to coordinate with the unicode-bidi
+        // property, so that when an explicit reversal
+        // occurs, the BIDI_EMBEDDING level is
+        // appropriately incremented or decremented.
+        // Note that direction is implicitly handled by unicode
+        // BiDI algorithm in most cases, this property
+        // is only needed when one wants to override the
+        // normal writing direction for a string/substring.
+
+        v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue
+            (DIRECTION_PROPERTY);
+        s = v.getStringValue();
+        switch (s.charAt(0)) {
+        case 'l':
+            result.put(TextAttribute.RUN_DIRECTION,
+                       TextAttribute.RUN_DIRECTION_LTR);
+            break;
+        case 'r':
+            result.put(TextAttribute.RUN_DIRECTION,
+                       TextAttribute.RUN_DIRECTION_RTL);
+            break;
+        }
+
+        // Writing mode
+
+        v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue
+            (WRITING_MODE_PROPERTY);
+        s = v.getStringValue();
+        switch (s.charAt(0)) {
+        case 'l':
+            result.put(TextAttribute.RUN_DIRECTION,
+                       TextAttribute.RUN_DIRECTION_LTR);
+            break;
+        case 'r':
+            result.put(TextAttribute.RUN_DIRECTION,
+                       TextAttribute.RUN_DIRECTION_RTL);
+            break;
+        case 't':
+            break;
         }
 
         // Font style

@@ -35,6 +35,11 @@ public interface CSSConstants {
 
     String OVERFLOW_PROPERTY = "overflow";
 
+    String DIRECTION_PROPERTY = "direction";
+    String WRITING_MODE_PROPERTY = "writing-mode";
+    String UNICODE_BIDI_PROPERTY = "unicode-bidi";
+    String BASELINE_SHIFT_PROPERTY = "baseline-shift";
+
     String STOP_COLOR_PROPERTY = "stop-color";
     String STOP_OPACITY_PROPERTY = "stop-opacity";
     String STROKE_DASHARRAY_PROPERTY = "stroke-dasharray";
