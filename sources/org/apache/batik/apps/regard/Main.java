@@ -31,19 +31,18 @@ import java.awt.image.DataBufferInt;
 import java.net.MalformedURLException;
 import java.net.URL;
 import org.apache.batik.refimpl.transcoder.ConcreteTranscoderFactory;
+import org.apache.batik.refimpl.transcoder.ImageTranscoder;
 import org.apache.batik.transcoder.Transcoder;
 import org.apache.batik.transcoder.TranscoderFactory;
 import org.apache.batik.util.awt.image.ImageLoader;
 import org.xml.sax.InputSource;
-
-import com.sun.image.codec.jpeg.*;
 
 /**
  * A diffing tool.
  *
  * @author <a href="mailto:spei@cs.uiowa.edu">Sheng Pei</a>
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
- * @version $Id$
+ * @version  $Id$
  */
 public class Main {
 
@@ -197,8 +196,10 @@ public class Main {
                   svgDir.getAbsolutePath());
             exit(2);
         }
+        System.out.println("Generating images for " + samples.length + " samples");
         for (int i=0; i < samples.length; ++i) {
             File src = samples[i];
+            if (!src.getName().endsWith(".svg")){continue;}
             File dest = new File(destDir, getImageName(src.getName()));
             display("Generating "+desc+" "+src.getName());
             try {
@@ -322,8 +323,8 @@ public class Main {
             File refImg = refImages[badIndex[i]];
             File newImg = new File(newDir, refImg.getName());
             File diffImg = new File(diffDir, refImg.getName());
-            BufferedImage bfRef = ImageLoader.loadImage(refImg, BufferedImage.TYPE_INT_RGB);
-            BufferedImage bfNew = ImageLoader.loadImage(newImg, BufferedImage.TYPE_INT_RGB);
+            BufferedImage bfRef = ImageLoader.loadImage(refImg, BufferedImage.TYPE_INT_ARGB);
+            BufferedImage bfNew = ImageLoader.loadImage(newImg, BufferedImage.TYPE_INT_ARGB);
             if ((bfRef.getWidth() != bfNew.getWidth()) ||
                  (bfRef.getHeight() != bfNew.getHeight())){
                 display("Fatal error, image size changed!");
@@ -331,21 +332,25 @@ public class Main {
                 content += s;
                 break;
             }
-            BufferedImage bfDiff = new BufferedImage(2*bfRef.getWidth(), 2*bfRef.getHeight(), BufferedImage.TYPE_INT_RGB);
+            
+            ImageTranscoder transcoder 
+                = (ImageTranscoder)getTranscoder();
+            BufferedImage bfDiff = transcoder.createImage(2*bfRef.getWidth(), 2*bfRef.getHeight());
+
             Graphics2D g = bfDiff.createGraphics();
-            g.setPaint(Color.white);
-            g.fillRect(0, 0, bfDiff.getWidth(), bfDiff.getHeight());
+            // g.setPaint(transcoder.getBackgroundPaint());
+            // g.fillRect(0, 0, bfDiff.getWidth(), bfDiff.getHeight());
             g.dispose();
             diffBufferedImage(bfRef.getRaster(), bfNew.getRaster(), bfDiff.getRaster());
             try{
-                encode(bfDiff, new FileOutputStream(diffImg));
+                transcoder.writeImage(bfDiff, new FileOutputStream(diffImg));
             }
             catch(Exception e){
             }
             display(String.valueOf(i+1) + ". " + "Creating the difference image file of " + refImg.getName());
             try{
                 String s = diffImg.toURL().toString();
-                content += "<br>" + String.valueOf(i+1) + ". " + "<a href=" + "\"" + s + "\"" +">" + diffImg.getName() + "</a>";
+                content += "<br>" + String.valueOf(i+1) + ". " + "<a href=" + "\"" + s + "\"" +">" + "<img border=\"0\" hspace=\"0\" vspace=\"0\" align=\"middle\" src=" + "\"" + s + "\"" + " height=100 width=90" + " />" + "</a>";
             }
             catch(MalformedURLException e){
             }
@@ -361,19 +366,6 @@ public class Main {
         catch (IOException e){}
 
         display("Report finished");
-    }
-
-    /**
-     * Image encoding method
-     * @param image the image to be saved into file
-     * @param out the stream where the image data should be saved
-     */
-    public static void encode(BufferedImage image, OutputStream out) throws IOException{
-        // JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out, JPEGCodec.getDefaultJPEGEncodeParam(image));
-        JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
-        JPEGEncodeParam param = encoder.getDefaultJPEGEncodeParam(image);
-        param.setQuality(1, false);
-        encoder.encode(image, param);
     }
 
     /**
@@ -521,7 +513,7 @@ public class Main {
     public static Transcoder getTranscoder() {
         TranscoderFactory factory =
             ConcreteTranscoderFactory.getTranscoderFactoryImplementation();
-        return factory.createTranscoder("image/jpg");
+        return factory.createTranscoder("image/png");
     }
 
     /**

@@ -30,11 +30,11 @@ public class JpegTranscoder extends ImageTranscoder {
                   Color.white);
     }
 
-    protected BufferedImage createImage(int w, int h){
+    public BufferedImage createImage(int w, int h){
         return new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
     }
 
-    protected void writeImage(BufferedImage img, OutputStream ostream)
+    public void writeImage(BufferedImage img, OutputStream ostream)
             throws IOException {
         JPEGImageEncoder jpegEncoder = JPEGCodec.createJPEGEncoder(ostream);
         JPEGEncodeParam params = JPEGCodec.getDefaultJPEGEncodeParam(img);
