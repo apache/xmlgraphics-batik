@@ -9,15 +9,19 @@
 package org.apache.batik.bridge;
 
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Rectangle2D;
 
-import org.apache.batik.gvt.CompositeGraphicsNode;
+import org.apache.batik.css.engine.CSSEngineEvent;
+import org.apache.batik.css.engine.SVGCSSEngine;
+
+import org.apache.batik.dom.svg.SVGContext;
+import org.apache.batik.dom.svg.SVGOMElement;
+
 import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.parser.ParseException;
+import org.apache.batik.gvt.CompositeGraphicsNode;
 
 import org.w3c.dom.Element;
-import org.w3c.dom.events.Event;
-import org.w3c.dom.events.EventListener;
-import org.w3c.dom.events.EventTarget;
+import org.w3c.dom.Node;
 import org.w3c.dom.events.MutationEvent;
 
 /**
@@ -42,7 +46,10 @@ import org.w3c.dom.events.MutationEvent;
  * @version $Id$
  */
 public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
-    implements BridgeUpdateHandler, GraphicsNodeBridge, ErrorConstants {
+    implements SVGContext, 
+               BridgeUpdateHandler, 
+               GraphicsNodeBridge, 
+               ErrorConstants {
 
     /**
      * The element that has been handled by this bridge.
@@ -106,12 +113,6 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
     public void buildGraphicsNode(BridgeContext ctx,
                                   Element e,
                                   GraphicsNode node) {
-
-        // push 'this' as the current BridgeUpdateHandler for subbridges
-        if (ctx.isDynamic()) {
-            ctx.pushBridgeUpdateHandler(this);
-        }
-
         // 'opacity'
         node.setComposite(CSSUtilities.convertOpacity(e));
         // 'filter'
@@ -124,19 +125,11 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
         node.setPointerEventType(CSSUtilities.convertPointerEvents(e));
 
         if (ctx.isDynamic()) {
-            this.e = e;
-            this.node = node;
-            this.ctx = ctx;
-            initializeDynamicSupport();
-            // 'this' is no more the current BridgeUpdateHandler
-            ctx.popBridgeUpdateHandler();
+            initializeDynamicSupport(ctx, e, node);
         }
-
         // Handle children elements such as <title>
         SVGUtilities.bridgeChildren(ctx, e);
     }
-
-    // dynamic support
 
     /**
      * This method is invoked during the build phase if the document
@@ -144,44 +137,24 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
      * any dynamic modifications of the element this bridge is
      * dedicated to, happen on its associated GVT product.
      */
-    protected void initializeDynamicSupport() {
-        ((EventTarget)e).addEventListener("DOMAttrModified", 
-                                          new DOMAttrModifiedEventListener(),
-                                          false);
+    protected void initializeDynamicSupport(BridgeContext ctx,
+                                            Element e,
+                                            GraphicsNode node) {
+        this.e = e;
+        this.node = node;
+        this.ctx = ctx;
         ctx.bind(e, node);
+        ((SVGOMElement)e).setSVGContext(this);
     }
 
-    /**
-     * Invoked when a bridge update is starting.
-     *
-     * @param evt the evt that describes the incoming update
-     */
-    public void bridgeUpdateStarting(BridgeUpdateEvent evt) {
-        System.out.println("("+e.getLocalName()+" "+node+") update started "+
-                           evt.getHandlerKey());
-    }
+    // BridgeUpdateHandler implementation //////////////////////////////////
 
     /**
-     * Invoked when a bridge update is completed.
-     *
-     * @param evt the evt that describes the update
+     * Invoked when an MutationEvent of type 'DOMAttrModified' is fired.
      */
-    public void bridgeUpdateCompleted(BridgeUpdateEvent evt) {
-        System.out.println("("+e.getLocalName()+" "+node+") update completed "+
-                           evt.getHandlerKey());
-    }
-
-    /**
-     * Handles DOMAttrModified events.
-     *
-     * @param evt the DOM mutation event
-     */
-    protected void handleDOMAttrModifiedEvent(MutationEvent evt) {
+    public void handleDOMAttrModifiedEvent(MutationEvent evt) {
         String attrName = evt.getAttrName();
         if (attrName.equals(SVG_TRANSFORM_ATTRIBUTE)) {
-            BridgeUpdateEvent be = new BridgeUpdateEvent(this);
-            fireBridgeUpdateStarting(be);
-            
             String s = evt.getNewValue();
             AffineTransform at = GraphicsNode.IDENTITY;
             if (s.length() != 0) {
@@ -189,30 +162,100 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
                     (e, SVG_TRANSFORM_ATTRIBUTE, s);
             }
             node.setTransform(at);
-            fireBridgeUpdateCompleted(be);
-        } else {
-            System.out.println("Unsupported attribute modification: "+attrName+
-                               " on "+e.getLocalName());
         }
     }
 
     /**
-     * The listener class for 'DOMAttrModified' event.
+     * Invoked when an MutationEvent of type 'DOMNodeInserted' is fired.
      */
-    protected class DOMAttrModifiedEventListener implements EventListener {
+    public void handleDOMNodeInsertedEvent(MutationEvent evt) {
+        // never called. The global listener on the document will
+        // invoke this method on the parent element.
+    }
 
-        /**
-         * Handles 'DOMAttrModfied' events and deleguates to the
-         * 'handleDOMAttrModifiedEvent' method any changes to the
-         * GraphicsNode if any.
-         *
-         * @param evt the DOM event
-         */
-        public void handleEvent(Event evt) {
-            if (evt.getTarget() != e) {
-                return;
-            }
-            handleDOMAttrModifiedEvent((MutationEvent)evt);
+    /**
+     * Invoked when an MutationEvent of type 'DOMNodeRemoved' is fired.
+     */
+    public void handleDOMNodeRemovedEvent(MutationEvent evt) {
+        CompositeGraphicsNode gn = node.getParent();
+        gn.remove(node);
+        disposeTree(e);
+    }
+
+    /**
+     * Disposes all resources related to the specified node and its subtree
+     */
+    protected void disposeTree(Node node) {
+        if (node instanceof SVGOMElement) {
+            ((SVGOMElement)node).setSVGContext(null);
+            ctx.unbind((Element)node);
         }
+        for (Node n = node.getFirstChild(); n != null; n = n.getNextSibling()) {
+            disposeTree(n);
+        }
+    }
+
+    /**
+     * Invoked when an CSSEngineEvent is fired.
+     */
+    public void handleCSSEngineEvent(CSSEngineEvent evt) {
+        int [] properties = evt.getProperties();
+        for (int i=0; i < properties.length; ++i) {
+            handleCSSPropertyChanged(properties[i]);
+        }
+    }
+
+    /**
+     * Invoked for each CSS property that has changed.
+     */
+    protected void handleCSSPropertyChanged(int property) {
+        switch(property) {
+        case SVGCSSEngine.VISIBILITY_INDEX:
+            node.setVisible(CSSUtilities.convertVisibility(e));
+            break;
+        case SVGCSSEngine.OPACITY_INDEX:
+            node.setComposite(CSSUtilities.convertOpacity(e));
+            break;
+        case SVGCSSEngine.FILTER_INDEX:
+            node.setFilter(CSSUtilities.convertFilter(e, node, ctx));
+            break;
+        case SVGCSSEngine.MASK_INDEX:
+            node.setMask(CSSUtilities.convertMask(e, node, ctx));
+            break;
+        case SVGCSSEngine.CLIP_PATH_INDEX:
+            node.setClip(CSSUtilities.convertClipPath(e, node, ctx));
+            break;
+        case SVGCSSEngine.POINTER_EVENTS_INDEX:
+            node.setPointerEventType(CSSUtilities.convertPointerEvents(e));
+            break;
+        }
+    }
+
+    // SVGContext implementation ///////////////////////////////////////////
+
+    /**
+     * Return the pixel to millimeters factor.
+     */
+    public float getPixelToMM() {
+        return ctx.getUserAgent().getPixelToMM();
+    }
+
+    /**
+     * Returns the tight bounding box in current user space (i.e.,
+     * after application of the transform attribute, if any) on the
+     * geometry of all contained graphics elements, exclusive of
+     * stroke-width and filter effects).
+     */
+    public Rectangle2D getBBox() {
+        return node.getTransformedPrimitiveBounds(null);
+    }
+
+    /**
+     * Returns the transformation matrix from current user units
+     * (i.e., after application of the transform attribute, if any) to
+     * the viewport coordinate system for the nearestViewportElement.
+     */
+    public AffineTransform getCTM() {
+        throw new Error("Not yet implemented");
     }
 }

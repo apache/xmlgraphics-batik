@@ -152,14 +152,12 @@ public class SVGRectElementBridge extends SVGShapeElementBridge {
         shapeNode.setShape(shape);
     }
 
-    // dynamic support
+    // BridgeUpdateHandler implementation //////////////////////////////////
 
     /**
-     * Handles DOMAttrModified events.
-     *
-     * @param evt the DOM mutation event
+     * Invoked when an MutationEvent of type 'DOMAttrModified' is fired.
      */
-    protected void handleDOMAttrModifiedEvent(MutationEvent evt) {
+    public void handleDOMAttrModifiedEvent(MutationEvent evt) {
         String attrName = evt.getAttrName();
         if (attrName.equals(SVG_X_ATTRIBUTE) ||
             attrName.equals(SVG_Y_ATTRIBUTE) ||
@@ -168,13 +166,10 @@ public class SVGRectElementBridge extends SVGShapeElementBridge {
             attrName.equals(SVG_RX_ATTRIBUTE) ||
             attrName.equals(SVG_RY_ATTRIBUTE)) {
 
-            BridgeUpdateEvent be = new BridgeUpdateEvent(this);
-            fireBridgeUpdateStarting(be);
             buildShape(ctx, e, (ShapeNode)node);
             if (((ShapeNode)node).getShape() == null) {
                 // <!> FIXME: disable the rendering
             }
-            fireBridgeUpdateCompleted(be);
         } else {
             super.handleDOMAttrModifiedEvent(evt);
         }

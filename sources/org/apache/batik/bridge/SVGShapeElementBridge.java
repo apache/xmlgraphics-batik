@@ -11,20 +11,20 @@ package org.apache.batik.bridge;
 import java.awt.RenderingHints;
 import java.util.Map;
 
+import org.apache.batik.css.engine.CSSEngineEvent;
+import org.apache.batik.css.engine.SVGCSSEngine;
+
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.ShapeNode;
 import org.apache.batik.gvt.ShapePainter;
 
 import org.w3c.dom.Element;
 
-
 import org.apache.batik.gvt.CompositeShapePainter;
 import org.apache.batik.gvt.FillShapePainter;
 import org.apache.batik.gvt.StrokeShapePainter;
 import java.awt.Paint;
 import java.awt.Shape;
-
-
 
 /**
  * The base bridge class for shapes. Subclasses bridge <tt>ShapeNode</tt>.
@@ -85,19 +85,8 @@ public abstract class SVGShapeElementBridge
     public void buildGraphicsNode(BridgeContext ctx,
                                   Element e,
                                   GraphicsNode node) {
-        // push 'this' as the current BridgeUpdateHandler for subbridges
-        if (ctx.isDynamic()) {
-            ctx.pushBridgeUpdateHandler(this);
-        }
-
         ShapeNode shapeNode = (ShapeNode)node;
         shapeNode.setShapePainter(createShapePainter(ctx, e, shapeNode));
-
-        // 'this' is no more the current BridgeUpdateHandler
-        if (ctx.isDynamic()) {
-            ctx.popBridgeUpdateHandler();
-        }
-
         super.buildGraphicsNode(ctx, e, node);
     }
 
@@ -145,60 +134,64 @@ public abstract class SVGShapeElementBridge
         return false;
     }
 
-    // dynamic support
+    // BridgeUpdateHandler implementation //////////////////////////////////
 
     /**
-     * Invoked when a bridge update is starting.
-     *
-     * @param evt the evt that describes the incoming update
+     * This flag bit indicates if a new shape painter has already been created.
+     * Avoid creating one ShapePainter per CSS property change
      */
-    public void bridgeUpdateStarting(BridgeUpdateEvent evt) {
-        //        System.out.println("("+e.getLocalName()+" "+node+") update started "+evt.getHandlerKey());
+    private boolean hasNewShapePainter;
+
+    /**
+     * Invoked when CSS properties have changed on an element.
+     *
+     * @param evt the CSSEngine event that describes the update
+     */
+    public void handleCSSEngineEvent(CSSEngineEvent evt) {
+        hasNewShapePainter = false;
+        super.handleCSSEngineEvent(evt);
     }
 
     /**
-     * Invoked when a bridge update is completed.
-     *
-     * @param evt the evt that describes the update
+     * Invoked for each CSS property that has changed.
      */
-    public void bridgeUpdateCompleted(BridgeUpdateEvent evt) {
-        //        System.out.println(">>> ("+e.getLocalName()+" "+node+") update completed "+ evt.getHandlerKey());
-        switch(evt.getHandlerKey()) {
-        case PaintServer.KEY_FILL: {
-            Paint paint = (Paint)evt.getNewValue();
-            ShapeNode shapeNode = (ShapeNode)node;
-            Shape shape = shapeNode.getShape();
-            ShapePainter painter = shapeNode.getShapePainter();
-            if (painter instanceof FillShapePainter) {
-                FillShapePainter fp = (FillShapePainter)painter;
-                fp.setPaint(paint);
-                shapeNode.setShapePainter(fp);
-            } else if (painter instanceof CompositeShapePainter) {
-                CompositeShapePainter cp = (CompositeShapePainter)painter;
-                FillShapePainter fp = (FillShapePainter)cp.getShapePainter(0);
-                fp.setPaint(paint);
-                shapeNode.setShapePainter(cp);
+    protected void handleCSSPropertyChanged(int property) {
+        switch(property) {
+        case SVGCSSEngine.FILL_INDEX:
+        case SVGCSSEngine.FILL_OPACITY_INDEX:
+        case SVGCSSEngine.STROKE_INDEX:
+        case SVGCSSEngine.STROKE_OPACITY_INDEX:
+        case SVGCSSEngine.STROKE_WIDTH_INDEX:
+        case SVGCSSEngine.STROKE_LINECAP_INDEX:
+        case SVGCSSEngine.STROKE_LINEJOIN_INDEX:
+        case SVGCSSEngine.STROKE_MITERLIMIT_INDEX:
+        case SVGCSSEngine.STROKE_DASHARRAY_INDEX:
+        case SVGCSSEngine.STROKE_DASHOFFSET_INDEX: {
+            if (!hasNewShapePainter) {
+                hasNewShapePainter = true;
+                ShapeNode shapeNode = (ShapeNode)node;
+                ShapePainter painter = 
+                    PaintServer.convertFillAndStroke(e, shapeNode, ctx);
+                shapeNode.setShapePainter(createShapePainter(ctx, e, shapeNode));
             }
             break;
-        } case PaintServer.KEY_STROKE: {
-              Paint paint = (Paint)evt.getNewValue();
-              ShapeNode shapeNode = (ShapeNode)node;
-              Shape shape = shapeNode.getShape();
-              ShapePainter painter = shapeNode.getShapePainter();
-              if (painter instanceof StrokeShapePainter) {
-                  StrokeShapePainter sp = (StrokeShapePainter)painter;
-                  sp.setPaint(paint);
-                  shapeNode.setShapePainter(sp);
-              } else if (painter instanceof CompositeShapePainter) {
-                  CompositeShapePainter cp = (CompositeShapePainter)painter;
-                  StrokeShapePainter sp = 
-                      (StrokeShapePainter)cp.getShapePainter(1);
-                  sp.setPaint(paint);
-                shapeNode.setShapePainter(cp);
+        } case SVGCSSEngine.SHAPE_RENDERING_INDEX: {
+              RenderingHints hints = node.getRenderingHints();
+              hints = CSSUtilities.convertShapeRendering(e, hints);
+              if (hints != null) {
+                  node.setRenderingHints(hints);
               }
               break;
-          }
+          } case SVGCSSEngine.COLOR_RENDERING_INDEX: {
+                RenderingHints hints = node.getRenderingHints();
+                hints = CSSUtilities.convertColorRendering(e, hints);
+                if (hints != null) {
+                    node.setRenderingHints(hints);
+                }
+                break;
+            } default: {
+                  super.handleCSSPropertyChanged(property);
+              }
         }
-        //        System.out.println("<<< ("+e.getLocalName()+" "+node+") update completed "+ evt.getHandlerKey());
     }
 }

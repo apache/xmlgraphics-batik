@@ -43,13 +43,6 @@ public class SVGLinearGradientElementBridge
     }
 
     /**
-     * Returns a new instance of this bridge.
-     */
-    public Bridge getInstance() {
-        return new SVGLinearGradientElementBridge();
-    }
-
-    /**
      * Builds a linear gradient according to the specified parameters.
      *
      * @param paintElement the element that defines a Paint
@@ -146,33 +139,5 @@ public class SVGLinearGradientElementBridge
 					   colorSpace,
 					   transform);
 	}
-    }
-
-    // dynamic support
-
-    /**
-     * Handles DOMAttrModified events.
-     *
-     * @param evt the DOM mutation event
-     */
-    protected void handleDOMAttrModifiedEvent(MutationEvent evt) {
-        String attrName = evt.getAttrName();
-        if (attrName.equals(SVG_X1_ATTRIBUTE) ||
-            attrName.equals(SVG_Y1_ATTRIBUTE) ||
-            attrName.equals(SVG_X2_ATTRIBUTE) ||
-            attrName.equals(SVG_Y2_ATTRIBUTE) ||
-            attrName.equals(SVG_GRADIENT_UNITS_ATTRIBUTE)) {
-            
-            BridgeUpdateEvent be = new BridgeUpdateEvent(this);
-            be.setOldValue(paint);
-            fireBridgeUpdateStarting(be);
-            // <!> FIXME: create a new paint each time
-            this.paint = createPaint
-                (ctx, paintElement, paintedElement, paintedNode, opacity);
-            be.setNewValue(paint);
-            fireBridgeUpdateCompleted(be);
-        } else {
-            super.handleDOMAttrModifiedEvent(evt);
-        }
     }
 }

@@ -44,13 +44,6 @@ public class SVGRadialGradientElementBridge
     }
 
     /**
-     * Returns a new instance of this bridge.
-     */
-    public Bridge getInstance() {
-        return new SVGRadialGradientElementBridge();
-    }
-
-    /**
      * Builds a radial gradient according to the specified parameters.
      *
      * @param paintElement the element that defines a Paint
@@ -160,37 +153,6 @@ public class SVGRadialGradientElementBridge
                                            spreadMethod,
                                            RadialGradientPaint.SRGB,
                                            transform);
-        }
-    }
-
-    // dynamic support
-
-    /**
-     * Handles DOMAttrModified events.
-     *
-     * @param evt the DOM mutation event
-     */
-    protected void handleDOMAttrModifiedEvent(MutationEvent evt) {
-        String attrName = evt.getAttrName();
-        if (attrName.equals(SVG_CX_ATTRIBUTE) ||
-            attrName.equals(SVG_CY_ATTRIBUTE) ||
-            attrName.equals(SVG_R_ATTRIBUTE) ||
-            attrName.equals(SVG_FX_ATTRIBUTE) ||
-            attrName.equals(SVG_FY_ATTRIBUTE) ||
-            attrName.equals(SVG_GRADIENT_UNITS_ATTRIBUTE)) {
-            //long t0 = System.currentTimeMillis();
-            BridgeUpdateEvent be = new BridgeUpdateEvent(this);
-            be.setOldValue(paint);
-            fireBridgeUpdateStarting(be);
-            // <!> FIXME: create a new paint each time
-            this.paint = createPaint
-                (ctx, paintElement, paintedElement, paintedNode, opacity);
-            be.setNewValue(paint);
-            fireBridgeUpdateCompleted(be);
-            //long t1 = System.currentTimeMillis();
-            //System.out.println("new grad: "+(t1-t0));
-        } else {
-            super.handleDOMAttrModifiedEvent(evt);
         }
     }
 }

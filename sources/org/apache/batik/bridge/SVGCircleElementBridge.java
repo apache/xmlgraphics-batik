@@ -95,26 +95,21 @@ public class SVGCircleElementBridge extends SVGShapeElementBridge {
         shapeNode.setShape(new Ellipse2D.Float(x, y, w, w));
     }
 
-    // dynamic support
+    // BridgeUpdateHandler implementation //////////////////////////////////
 
     /**
-     * Handles DOMAttrModified events.
-     *
-     * @param evt the DOM mutation event
+     * Invoked when an MutationEvent of type 'DOMAttrModified' is fired.
      */
-    protected void handleDOMAttrModifiedEvent(MutationEvent evt) {
+    public void handleDOMAttrModifiedEvent(MutationEvent evt) {
         String attrName = evt.getAttrName();
         if (attrName.equals(SVG_CX_ATTRIBUTE) ||
             attrName.equals(SVG_CY_ATTRIBUTE) ||
             attrName.equals(SVG_R_ATTRIBUTE)) {
 
-            BridgeUpdateEvent be = new BridgeUpdateEvent(this);
-            fireBridgeUpdateStarting(be);
             buildShape(ctx, e, (ShapeNode)node);
             if (((ShapeNode)node).getShape() == null) {
                 // <!> FIXME: disable the rendering
             }
-            fireBridgeUpdateCompleted(be);
         } else {
             super.handleDOMAttrModifiedEvent(evt);
         }

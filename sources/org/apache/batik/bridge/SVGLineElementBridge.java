@@ -93,27 +93,22 @@ public class SVGLineElementBridge extends SVGDecoratedShapeElementBridge {
         shapeNode.setShape(new Line2D.Float(x1, y1, x2, y2));
     }
 
-    // dynamic support
+    // BridgeUpdateHandler implementation //////////////////////////////////
 
     /**
-     * Handles DOMAttrModified events.
-     *
-     * @param evt the DOM mutation event
+     * Invoked when an MutationEvent of type 'DOMAttrModified' is fired.
      */
-    protected void handleDOMAttrModifiedEvent(MutationEvent evt) {
+    public void handleDOMAttrModifiedEvent(MutationEvent evt) {
         String attrName = evt.getAttrName();
         if (attrName.equals(SVG_X1_ATTRIBUTE) ||
             attrName.equals(SVG_Y1_ATTRIBUTE) ||
             attrName.equals(SVG_X2_ATTRIBUTE) ||
             attrName.equals(SVG_Y2_ATTRIBUTE)) {
 
-            BridgeUpdateEvent be = new BridgeUpdateEvent(this);
-            fireBridgeUpdateStarting(be);
             buildShape(ctx, e, (ShapeNode)node);
             if (((ShapeNode)node).getShape() == null) {
                 // <!> FIXME: disable the rendering
             }
-            fireBridgeUpdateCompleted(be);
         } else {
             super.handleDOMAttrModifiedEvent(evt);
         }

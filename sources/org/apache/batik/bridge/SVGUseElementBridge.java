@@ -28,12 +28,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.css.ViewCSS;
-import org.w3c.dom.events.Event;
-import org.w3c.dom.events.EventListener;
-import org.w3c.dom.events.EventTarget;
 import org.w3c.dom.events.MutationEvent;
-import org.w3c.dom.svg.SVGSVGElement;
-import org.w3c.dom.svg.SVGSymbolElement;
 
 /**
  * Bridge class for the &lt;use> element.
@@ -41,23 +36,7 @@ import org.w3c.dom.svg.SVGSymbolElement;
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
-public class SVGUseElementBridge extends AbstractSVGBridge
-    implements GraphicsNodeBridge, ErrorConstants {
-
-    /**
-     * The element that has been handled by this bridge.
-     */
-    protected Element e;
-
-    /**
-     * The graphics node constructed by this bridge.
-     */
-    protected GraphicsNode node;
-
-    /**
-     * The bridge context to use for dynamic updates.
-     */
-    protected BridgeContext ctx;
+public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
 
     /**
      * Constructs a new bridge for the &lt;use> element.
@@ -216,36 +195,11 @@ public class SVGUseElementBridge extends AbstractSVGBridge
     }
 
     /**
-     * Builds using the specified BridgeContext and element, the
-     * specified graphics node.
-     *
-     * @param ctx the bridge context to use
-     * @param e the element that describes the graphics node to build
-     * @param node the graphics node to build
+     * Creates the GraphicsNode depending on the GraphicsNodeBridge
+     * implementation.
      */
-    public void buildGraphicsNode(BridgeContext ctx,
-                                  Element e,
-                                  GraphicsNode node) {
-
-        // 'opacity'
-        node.setComposite(CSSUtilities.convertOpacity(e));
-        // 'filter'
-        node.setFilter(CSSUtilities.convertFilter(e, node, ctx));
-        // 'mask'
-        node.setMask(CSSUtilities.convertMask(e, node, ctx));
-        // 'clip-path'
-        node.setClip(CSSUtilities.convertClipPath(e, node, ctx));
-
-        // bind the specified element and its associated graphics node if needed
-        if (ctx.isDynamic()) {
-            this.e = e;
-            this.node = node;
-            this.ctx = ctx;
-            initializeDynamicSupport();
-        }
-
-        // Handle children elements such as <title>
-        SVGUtilities.bridgeChildren(ctx, e);
+    protected GraphicsNode instantiateGraphicsNode() {
+        return null; // nothing to do, createGraphicsNode is fully overriden
     }
 
     /**
@@ -255,54 +209,12 @@ public class SVGUseElementBridge extends AbstractSVGBridge
         return false;
     }
 
-    // dynamic support
+    // BridgeUpdateHandler implementation //////////////////////////////////
 
     /**
-     * This method is invoked during the build phase if the document
-     * is dynamic. The responsability of this method is to ensure that
-     * any dynamic modifications of the element this bridge is
-     * dedicated to, happen on its associated GVT product.
+     * Invoked when an MutationEvent of type 'DOMAttrModified' is fired.
      */
-    protected void initializeDynamicSupport() {
-        ((EventTarget)e).addEventListener("DOMAttrModified", 
-                                          new DOMAttrModifiedEventListener(),
-                                          false);
-        ctx.bind(e, node);
-    }
-
-    /**
-     * Handles DOMAttrModified events.
-     *
-     * @param evt the DOM mutation event
-     */
-    protected void handleDOMAttrModifiedEvent(MutationEvent evt) {
-        String attrName = evt.getAttrName();
-
-        BridgeUpdateEvent be = new BridgeUpdateEvent(this);
-        fireBridgeUpdateStarting(be);
-        System.out.println("Unsupported attribute modification: "+attrName+
-                           " on "+e.getLocalName());
-        fireBridgeUpdateCompleted(be);
-    }
-
-
-    /**
-     * The listener class for 'DOMAttrModified' event.
-     */
-    protected class DOMAttrModifiedEventListener implements EventListener {
-
-        /**
-         * Handles 'DOMAttrModfied' events and deleguates to the
-         * 'handleDOMAttrModifiedEvent' method any changes to the
-         * GraphicsNode if any.
-         *
-         * @param evt the DOM event
-         */
-        public void handleEvent(Event evt) {
-            if (evt.getTarget() != e) {
-                return;
-            }
-            handleDOMAttrModifiedEvent((MutationEvent)evt);
-        }
+    public void handleDOMAttrModifiedEvent(MutationEvent evt) {
+        super.handleDOMAttrModifiedEvent(evt);
     }
 }

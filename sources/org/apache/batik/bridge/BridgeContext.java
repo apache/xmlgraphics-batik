@@ -26,11 +26,15 @@ import java.util.Map;
 
 import org.apache.batik.css.engine.CSSContext;
 import org.apache.batik.css.engine.CSSEngine;
+import org.apache.batik.css.engine.CSSEngineEvent;
+import org.apache.batik.css.engine.CSSEngineListener;
 import org.apache.batik.css.engine.SystemColorSupport;
 import org.apache.batik.css.engine.value.Value;
 
+import org.apache.batik.dom.svg.SVGContext;
 import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.apache.batik.dom.svg.SVGOMDocument;
+import org.apache.batik.dom.svg.SVGOMElement;
 
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.TextPainter;
@@ -41,6 +45,11 @@ import org.apache.batik.util.SVGConstants;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.events.Event;
+import org.w3c.dom.events.EventListener;
+import org.w3c.dom.events.EventTarget;
+import org.w3c.dom.events.MutationEvent;
 import org.w3c.dom.svg.SVGDocument;
 
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
@@ -96,11 +105,6 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      * The viewport stack. Used in building time.
      */
     protected List viewportStack = new LinkedList();
-
-    /**
-     * The BridgeUpdateHandler stack. Used in building time.
-     */
-    protected List bridgeUpdateHandlerStack = new LinkedList();
 
     /**
      * The user agent.
@@ -704,45 +708,147 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         }
     }
 
-    // dynamic support
+    // dynamic support /////////////////////////////////////////////////////////
 
-    public void pushBridgeUpdateHandler(BridgeUpdateHandler handler) {
-        bridgeUpdateHandlerStack.add(0, new BridgeUpdateHandlerInfo(handler));
+    protected EventListener domAttrModifiedEventListener;
+    protected EventListener domNodeInsertedEventListener;
+    protected EventListener domNodeRemovedEventListener;
+    protected CSSEngineListener cssPropertiesChangedListener;
+
+    /**
+     * Adds EventListeners to the DOM and CSSEngineListener to the
+     * CSSEngine to handle any modifications on the DOM tree or style
+     * properties and update the GVT tree in response.
+     */
+    public void addDOMListeners() {
+        domAttrModifiedEventListener = new DOMAttrModifiedEventListener();
+        EventTarget evtTarget = (EventTarget)document;
+        evtTarget.addEventListener("DOMAttrModified",
+                                   domAttrModifiedEventListener,
+                                   true);
+        domNodeInsertedEventListener = new DOMNodeInsertedEventListener();
+        evtTarget.addEventListener("DOMNodeInserted",
+                                   domNodeInsertedEventListener,
+                                   true);
+        domNodeRemovedEventListener = new DOMNodeRemovedEventListener();
+        evtTarget.addEventListener("DOMNodeRemoved",
+                                   domNodeRemovedEventListener,
+                                   true);
+        SVGOMDocument svgDocument = (SVGOMDocument)document;
+        CSSEngine cssEngine = svgDocument.getCSSEngine();
+        cssPropertiesChangedListener = new CSSPropertiesChangedListener();
+        cssEngine.addCSSEngineListener(cssPropertiesChangedListener);
     }
 
-    public void setCurrentBridgeUpdateHandlerKey(int handlerKey) {
-        BridgeUpdateHandlerInfo info = 
-            (BridgeUpdateHandlerInfo)bridgeUpdateHandlerStack.get(0);
-        info.handlerKey = handlerKey;
+    /**
+     * Disposes this BridgeContext.
+     */
+    public void dispose() {
+        EventTarget evtTarget = (EventTarget)document;
+        evtTarget.removeEventListener("DOMAttrModified",
+                                      domAttrModifiedEventListener, 
+                                      true);
+        evtTarget.removeEventListener("DOMNodeInserted",
+                                      domNodeInsertedEventListener, 
+                                      true);
+        evtTarget.removeEventListener("DOMNodeRemoved",
+                                      domNodeRemovedEventListener, 
+                                      true);
+
+        SVGOMDocument svgDocument = (SVGOMDocument)document;
+        CSSEngine cssEngine = svgDocument.getCSSEngine();
+        cssEngine.removeCSSEngineListener(cssPropertiesChangedListener);
     }
 
-    public BridgeUpdateHandler getCurrentBridgeUpdateHandler() {
-        BridgeUpdateHandlerInfo info = 
-            (BridgeUpdateHandlerInfo)bridgeUpdateHandlerStack.get(0);
-        return info.handler;
-    }
-
-    public int getCurrentBridgeUpdateHandlerKey() {
-        BridgeUpdateHandlerInfo info = 
-            (BridgeUpdateHandlerInfo)bridgeUpdateHandlerStack.get(0);
-        return info.handlerKey;
-    }
-
-    public void popBridgeUpdateHandler() {
-        bridgeUpdateHandlerStack.remove(0);
-    }
-
-    protected static class BridgeUpdateHandlerInfo {
-
-        protected BridgeUpdateHandler handler;
-        protected int handlerKey;
-
-        public BridgeUpdateHandlerInfo(BridgeUpdateHandler handler) {
-            this.handler = handler;
+    /**
+     * Returns the SVGContext associated to the specified Node or null if any.
+     */
+    protected static SVGContext getSVGContext(Node node) {
+        if (node instanceof SVGOMElement) {
+            return ((SVGOMElement)node).getSVGContext();
+        } else {
+            return null;
         }
     }
 
-    // CSS context //////////////////////////////////
+    /**
+     * Returns the SVGContext associated to the specified Node or null if any.
+     */
+    protected static BridgeUpdateHandler getBridgeUpdateHandler(Node node) {
+        SVGContext ctx = getSVGContext(node);
+        return (ctx == null) ? null : (BridgeUpdateHandler)ctx;
+    }
+
+    /**
+     * The DOM EventListener invoked when an attribute is modified.
+     */
+    protected class DOMAttrModifiedEventListener implements EventListener {
+
+        /**
+         * Handles 'DOMAttrModified' event type.
+         */
+        public void handleEvent(Event evt) {
+            Node node = (Node)evt.getTarget();
+            BridgeUpdateHandler h = getBridgeUpdateHandler(node);
+            if (h != null) {
+                h.handleDOMAttrModifiedEvent((MutationEvent)evt);
+            }
+        }
+    }
+
+    /**
+     * The DOM EventListener invoked when a node is added.
+     */
+    protected class DOMNodeInsertedEventListener implements EventListener {
+
+        /**
+         * Handles 'DOMNodeInserted' event type.
+         */
+        public void handleEvent(Event evt) {
+            MutationEvent me = (MutationEvent)evt;
+            BridgeUpdateHandler h = getBridgeUpdateHandler(me.getRelatedNode());
+            if (h != null) {
+                h.handleDOMNodeInsertedEvent(me);
+            }
+        }
+    }
+
+    /**
+     * The DOM EventListener invoked when a node is removed.
+     */
+    protected class DOMNodeRemovedEventListener implements EventListener {
+
+        /**
+         * Handles 'DOMNodeRemoved' event type.
+         */
+        public void handleEvent(Event evt) {
+            Node node = (Node)evt.getTarget();
+            BridgeUpdateHandler h = getBridgeUpdateHandler(node);
+            if (h != null) {
+                h.handleDOMNodeRemovedEvent((MutationEvent)evt);
+            }
+        }
+    }
+
+    /**
+     * The CSSEngineListener invoked when CSS properties are modified
+     * on a particular element.
+     */
+    protected class CSSPropertiesChangedListener implements CSSEngineListener {
+
+        /**
+         * Handles CSSEngineEvent that describes the CSS properties
+         * that have changed on a particular element.
+         */
+        public void propertiesChanged(CSSEngineEvent evt) {
+            SVGContext ctx = getSVGContext(evt.getElement());
+            if (ctx != null && (ctx instanceof BridgeUpdateHandler)) {
+                ((BridgeUpdateHandler)ctx).handleCSSEngineEvent(evt);
+            }
+        }
+    }
+
+    // CSS context ////////////////////////////////////////////////////////////
 
     /**
      * Returns the Value corresponding to the given system color.

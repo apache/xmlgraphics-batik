@@ -57,10 +57,6 @@ import org.w3c.dom.svg.SVGPaint;
 public abstract class PaintServer
     implements SVGConstants, CSSConstants, ErrorConstants {
 
-    public static final int KEY_STROKE = 1;
-
-    public static final int KEY_FILL = 2;
-
     /**
      * No instance of this class is required.
      */
@@ -148,13 +144,7 @@ public abstract class PaintServer
                                                     ShapeNode node,
                                                     BridgeContext ctx) {
 
-        if (ctx.isDynamic()) {
-            ctx.setCurrentBridgeUpdateHandlerKey(KEY_FILL);
-        }
         Paint fillPaint = convertFillPaint(e, node, ctx);
-        if (ctx.isDynamic()) {
-            ctx.setCurrentBridgeUpdateHandlerKey(KEY_STROKE);
-        }
         Paint strokePaint = convertStrokePaint(e, node, ctx);
 
         Shape shape = node.getShape();

@@ -264,7 +264,9 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
      * @param isVisible If true this node is visible
      */
     public void setVisible(boolean isVisible) {
+        fireGraphicsNodeChangeStarted();
         this.isVisible = isVisible;
+        fireGraphicsNodeChangeCompleted();
     }
 
     /**
@@ -297,11 +299,13 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
      * hint category.
      */
     public void setRenderingHint(RenderingHints.Key key, Object value) {
+        fireGraphicsNodeChangeStarted();
         if (this.hints == null) {
             this.hints = new RenderingHints(key, value);
         } else {
             hints.put(key, value);
         }
+        fireGraphicsNodeChangeCompleted();
     }
 
     /**
@@ -311,11 +315,13 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
      * @param hints the rendering hints to be set
      */
     public void setRenderingHints(Map hints) {
+        fireGraphicsNodeChangeStarted();
         if (this.hints == null) {
             this.hints = new RenderingHints(hints);
         } else {
             this.hints.putAll(hints);
         }
+        fireGraphicsNodeChangeCompleted();
     }
 
     /**
@@ -324,7 +330,9 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
      * @param newHints the new rendering hints of this node
      */
     public void setRenderingHints(RenderingHints newHints) {
+        fireGraphicsNodeChangeStarted();
         this.hints = newHints;
+        fireGraphicsNodeChangeCompleted();
     }
 
     /**

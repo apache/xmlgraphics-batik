@@ -35,23 +35,7 @@ import org.w3c.dom.svg.SVGSVGElement;
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
-public class SVGSVGElementBridge extends AbstractSVGBridge
-    implements GraphicsNodeBridge, ErrorConstants {
-
-    /**
-     * The element that has been handled by this bridge.
-     */
-    protected Element e;
-
-    /**
-     * The graphics node constructed by this bridge.
-     */
-    protected GraphicsNode node;
-
-    /**
-     * The bridge context to use for dynamic updates.
-     */
-    protected BridgeContext ctx;
+public class SVGSVGElementBridge extends SVGGElementBridge {
 
     /**
      * Constructs a new bridge for the &lt;svg> element.
@@ -204,79 +188,26 @@ public class SVGSVGElementBridge extends AbstractSVGBridge
     public void buildGraphicsNode(BridgeContext ctx,
                                   Element e,
                                   GraphicsNode node) {
-        // <!> FIXME: no clip, filter, mask or opacity ???
-
-        // we have built all children, we can close the viewport
-        ctx.closeViewport(e);
-
         if (ctx.isDynamic()) {
-            this.e = e;
-            this.node = node;
-            this.ctx = ctx;
-            initializeDynamicSupport();
+            initializeDynamicSupport(ctx, e, node);
         }
+        // Handle children elements such as <title>
+        SVGUtilities.bridgeChildren(ctx, e);
+        //super.buildGraphicsNode(ctx, e, node);
+        ctx.closeViewport(e);
     }
 
+    // BridgeUpdateHandler implementation //////////////////////////////////
+
     /**
-     * Returns true as the &lt;svg> element is a container.
+     * Invoked when an MutationEvent of type 'DOMAttrModified' is fired.
      */
-    public boolean isComposite() {
-        return true;
-    }
-
-    // dynamic support
+    public void handleDOMAttrModifiedEvent(MutationEvent evt) {
+        // Don't call 'super' because there is no 'transform' attribute on <svg>
+   }
 
     /**
-     * This method is invoked during the build phase if the document
-     * is dynamic. The responsability of this method is to ensure that
-     * any dynamic modifications of the element this bridge is
-     * dedicated to, happen on its associated GVT product.
-     */
-    protected void initializeDynamicSupport() {
-        ((EventTarget)e).addEventListener("DOMAttrModified", 
-                                          new DOMAttrModifiedEventListener(),
-                                          false);
-        ctx.bind(e, node);
-    }
-
-    /**
-     * Handles DOMAttrModified events.
-     *
-     * @param evt the DOM mutation event
-     */
-    protected void handleDOMAttrModifiedEvent(MutationEvent evt) {
-        String attrName = evt.getAttrName();
-
-        BridgeUpdateEvent be = new BridgeUpdateEvent(this);
-        fireBridgeUpdateStarting(be);
-        System.out.println("Unsupported attribute modification: "+attrName+
-                           " on "+e.getLocalName());
-        fireBridgeUpdateCompleted(be);
-    }
-
-
-    /**
-     * The listener class for 'DOMAttrModified' event.
-     */
-    protected class DOMAttrModifiedEventListener implements EventListener {
-
-        /**
-         * Handles 'DOMAttrModfied' events and deleguates to the
-         * 'handleDOMAttrModifiedEvent' method any changes to the
-         * GraphicsNode if any.
-         *
-         * @param evt the DOM event
-         */
-        public void handleEvent(Event evt) {
-            if (evt.getTarget() != e) {
-                return;
-            }
-            handleDOMAttrModifiedEvent((MutationEvent)evt);
-        }
-    }
-
-    /**
-     * A viewport for a SVGSVGElement.
+     * A viewport defined an &lt;svg> element.
      */
     public static class SVGSVGElementViewport implements Viewport {
 
