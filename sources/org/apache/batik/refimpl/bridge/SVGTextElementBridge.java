@@ -117,7 +117,9 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                                                 ctx,
                                                 cssDecl,
                                                 uctx);
-        fs *= 0.92; // Font size correction
+
+        fs = fs * ctx.getUserAgent().getPixelToMM() * 72f / 25.4f;
+        //fs *= 0.92; // Font size correction
 
         as.addAttribute(TextAttribute.SIZE, new Float(fs));
 
