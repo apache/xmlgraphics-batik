@@ -28,7 +28,19 @@
 
     </script>
 
-   <rect onclick="remove(evt)" 
+   <rect onclick="remove(evt); onDone();" 
          x="100" y="100" width="100" height="100" style="fill:#eee"/>
+
+
+
+    <script type="text/ecmascript"><![CDATA[
+function onDone() {
+    if (!(regardTestInstance == null)) {
+        regardTestInstance.scriptDone();   
+    } else {
+        alert("This button only works when run in the regard framework");
+    }
+}
+    ]]></script>
 
 </svg>

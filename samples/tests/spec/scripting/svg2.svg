@@ -39,4 +39,22 @@
     <g id="test-content">
                 <rect x="25%" y="25%" width="50%" height="50%" fill="crimson" />
     </g>
+
+
+
+    <script type="text/ecmascript"><![CDATA[
+function onDone() {
+    if (!(regardTestInstance == null)) {
+        regardTestInstance.scriptDone();   
+    } else {
+        alert("This button only works when run in the regard framework");
+    }
+}
+    ]]></script>
+    <g id="done" transform="translate(195, 80)" cursor="pointer" onclick="onDone()">
+        <rect rx="5" ry="5" width="60" height="25" fill="#eeeeee" stroke="black" />
+        <text x="30" y="18" font-size="14" font-weight="bold" text-anchor="middle">Done</text>
+    </g>
+
+
 </svg>

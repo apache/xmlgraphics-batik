@@ -19,7 +19,8 @@
 
 <?xml-stylesheet type="text/css" href="../../resources/style/test.css" ?>
 
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="450" height="500" viewBox="0 0 450 500">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+    width="450" height="500" viewBox="0 0 450 500" onmouseover="alert('Hello')">
 <title>Alert on mouse events</title>
 
 <defs>
@@ -35,7 +36,7 @@
     <!-- ============================================================= -->
     <!-- Test content                                                  -->
     <!-- ============================================================= -->
-    <g id="testContent">
+    <g id="testContent" onmouseover="alert('Hello')">
         <text x="225" y="30" class="title">Alert on mouse events</text>
     </g>
 

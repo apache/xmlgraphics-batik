@@ -14,6 +14,7 @@
 <!-- Tests support for the DOMFocusIn, DOMFocusOut, DOMActivate                -->
 <!--                                                                           -->
 <!-- @author tkormann@ilog.fr                                                  -->
+<!-- @author vincent.hardy@sun.com                                             -->
 <!-- @version $Id$ -->
 <!-- ========================================================================= -->
 
@@ -25,32 +26,77 @@
 
     <text class="title" x="50%" y="50">DOMFocusIn, DOMFocusOut, and DOMActivate test</text>
 
-  <script type="text/ecmascript"><![CDATA[
-
-        var elementWithFocus;
-
-        function show(msg) {
-                alert(msg);
-        }
-  ]]></script>
-
 <g id="body-content">
 
-<rect onactivate="show('activate orange')" onfocusin="show('focusin orange')" onfocusout="show('focusout orange')" 
+<rect onactivate="set('orange', 'activate')" onfocusin="set('orange', 'focusin')" onfocusout="set('orange', 'focusout')" 
       x="100" y="100" width="100" height="100" style="fill:orange" />
 
-<rect onactivate="show('activate crimson')" onfocusin="show('focusin crimson')" onfocusout="show('focusout crimson')" 
+<rect onactivate="set('crimson', 'activate')" onfocusin="set('crimson', 'focusin')" onfocusout="set('crimson', 'focusout')" 
       x="250" y="100" width="100" height="100" style="fill:crimson" />
 
-<rect onactivate="show('activate gold')" onfocusin="show('focusin gold')" onfocusout="show('focusout gold')" 
+<rect onactivate="set('gold', 'activate')" onfocusin="set('gold', 'focusin')" onfocusout="set('gold', 'focusout')" 
       x="100" y="250" width="100" height="100" style="fill:gold" />
 
-<rect onactivate="show('activate #aaa')" onfocusin="show('focusin #aaa')" onfocusout="show('focusout #aaa')" 
+<rect onactivate="set('aaa', 'activate')" onfocusin="set('aaa', 'focusin')" onfocusout="set('aaa', 'focusout')" 
       x="250" y="250" width="100" height="100" style="fill:#aaa" />
 
-<circle onactivate="show('activate #eee')" onfocusin="show('focusin #eee')" onfocusout="show('focusout #eee')" 
+<circle onactivate="set('eee', 'activate')" onfocusin="set('eee', 'focusin')" onfocusout="set('eee', 'focusout')" 
         cx="225" cy="225" r="75" style="fill:#eee" />
 
 </g>
+
+    <script type="text/ecmascript"><![CDATA[
+function set(color, state) {
+    var elt = document.getElementById(color + "." + state);
+    elt.setAttribute("fill", "green");
+}
+
+function onDone() {
+    if (!(regardTestInstance == null)) {
+        regardTestInstance.scriptDone();   
+    } else {
+        alert("This button only works when run in the regard framework");
+    }
+}
+    ]]></script>
+
+    <g fill="red" stroke="black" transform="translate(40, 420)">
+        <g transform="translate(0,0)">
+            <rect id="orange.focusin" width="20" height="20" />
+            <rect id="orange.focusout" x="25" width="20" height="20" />
+            <rect id="orange.activate" x="50" width="20" height="20" />
+        </g>
+
+        <g transform="translate(75,0)">
+            <rect id="crimson.focusin" width="20" height="20" />
+            <rect id="crimson.focusout" x="25" width="20" height="20" />
+            <rect id="crimson.activate" x="50" width="20" height="20" />
+        </g>
+
+        <g transform="translate(150,0)">
+            <rect id="gold.focusin" width="20" height="20" />
+            <rect id="gold.focusout" x="25" width="20" height="20" />
+            <rect id="gold.activate" x="50" width="20" height="20" />
+        </g>
+
+        <g transform="translate(225,0)">
+            <rect id="aaa.focusin" width="20" height="20" />
+            <rect id="aaa.focusout" x="25" width="20" height="20" />
+            <rect id="aaa.activate" x="50" width="20" height="20" />
+        </g>
+
+        <g transform="translate(300,0)">
+            <rect id="eee.focusin" width="20" height="20" />
+            <rect id="eee.focusout" x="25" width="20" height="20" />
+            <rect id="eee.activate" x="50" width="20" height="20" />
+        </g>
+
+
+    </g>
+    <g id="done" transform="translate(195, 458)" cursor="pointer" onclick="onDone()">
+        <rect rx="5" ry="5" width="60" height="25" fill="#eeeeee" stroke="black" />
+        <text x="30" y="18" font-size="14" font-weight="bold" text-anchor="middle">Done</text>
+    </g>
+
 
 </svg>

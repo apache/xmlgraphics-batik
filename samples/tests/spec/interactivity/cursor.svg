@@ -40,7 +40,7 @@
 
     </defs>
 
-    <g transform="translate(120, 120)" class="label" text-anchor="middle">
+    <g transform="translate(120, 120)" class="label" text-anchor="middle" onmouseover="cursorMoved(evt)">
         <use xlink:href="#oddRow" cursor="auto"/>
         <text>auto</text>
         <g transform="translate(0,20)" cursor="crosshair">
@@ -106,7 +106,7 @@
     </g>
 
 
-    <g transform="translate(330, 120)" class="label" text-anchor="middle">
+    <g transform="translate(330, 120)" class="label" text-anchor="middle"  onmouseover="cursorMoved(evt)">
         <g transform="translate(0,0)" cursor="e-resize">
           <use xlink:href="#oddRow"/>
           <text>e-resize</text>
@@ -176,9 +176,28 @@
         </g>
     </g>
 
-    <!-- ============================================================= -->
-    <!-- Batik sample mark                                             -->
-    <!-- ============================================================= -->
-    <!-- <use xlink:href="../../../batikLogo.svg#Batik_Tag_Box" /> -->
- 
+    <script type="text/ecmascript"><![CDATA[
+function cursorMoved(evt) {
+    if (evt.target.nodeName == "rect") {
+        evt.target.setAttribute("fill", "gold");
+    } else {
+        System.err.println(">>>>>>>> Not a rect : " + evt.target.nodeName);
+    }
+}
+
+function onDone() {
+    if (!(regardTestInstance == null)) {
+        regardTestInstance.scriptDone();   
+    } else {
+        alert("This button only works when run in the regard framework");
+    }
+}
+    ]]></script>
+
+    <rect x="25" y="460" width="20" height="20" shape-rendering="crispEdges" fill="red" onclick="evt.target.setAttribute('fill', 'green')" stroke="black"/>
+    <g id="done" transform="translate(70, 458)" cursor="pointer" onclick="onDone()">
+        <rect rx="5" ry="5" width="60" height="25" fill="#eeeeee" stroke="black" />
+        <text x="30" y="18" font-size="14" font-weight="bold" text-anchor="middle">Done</text>
+    </g>
+
 </svg>

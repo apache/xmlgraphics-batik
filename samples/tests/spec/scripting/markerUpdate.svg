@@ -26,7 +26,7 @@
 
     <title>Marker with geometry updates</title>
 
-    <text x="50%" y="45" class="title">Marker with geometry updates
+    <text x="50%" y="25" class="title">Marker with geometry updates
 <tspan x="50%" dy="1.1em" style="font-style:italic; font-size:12">(click on all shapes and see 
 <a style="fill:blue" xlink:href="markerUpdateRef.svg">markerUpdateRef.svg</a>)</tspan></text>
 
@@ -54,7 +54,7 @@
 </defs>
 
 
-<g id="test-content">
+<g id="test-content" transform="translate(0, -20)">
 
 <g id="board" style="fill:none; stroke:black">
         <rect x="40" y="80" width="200" height="20" style="fill:#eee"/>
@@ -82,6 +82,22 @@
           style="stroke:black; stroke-width:4; fill:none; marker:url(#markerUserSpaceOnUse)" />
 
 </g>
+
+
+
+    <script type="text/ecmascript"><![CDATA[
+function onDone() {
+    if (!(regardTestInstance == null)) {
+        regardTestInstance.scriptDone();   
+    } else {
+        alert("This button only works when run in the regard framework");
+    }
+}
+    ]]></script>
+    <g id="done" transform="translate(195, 468)" cursor="pointer" onclick="onDone()">
+        <rect rx="5" ry="5" width="60" height="25" fill="#eeeeee" stroke="black" />
+        <text x="30" y="18" font-size="14" font-weight="bold" text-anchor="middle">Done</text>
+    </g>
 
 
 
