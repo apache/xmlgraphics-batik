@@ -19,7 +19,15 @@
 <?xml-stylesheet type="text/css" href="test.css" ?>  
 
 <svg id="body" width="450" height="500" viewBox="0 0 450 500">
-<title>Vertical Text Test</title>
+
+    <title>Vertical Text Test</title>
+
+    <defs>
+        <path id="Path1" style="fill:none; stroke:blue;" transform="scale(0.15,0.15)"
+                  d="M 100 200 C 200 100 300 0 400 100 C 500 200 600 300 700 200 C 800 100 900 0 1000 100
+                     C 1100 200 1200 300 1300 200 C 1400 100 1500 0 1600 100
+                     C 1700 200 1800 300 1900 200 C 2000 100 2100 0 2200 100"/>
+    </defs>
 
     <g id="content">
 
@@ -57,6 +65,15 @@
         <text x="350" y="75" writing-mode="tb" font-size="15">Embedded <tspan fill="red">&lt;tspan&gt;</tspan> element</text>
         <text x="400" y="75" writing-mode="tb" font-size="15">Embedded <tspan fill="blue" glyph-orientation-vertical="0">orientated</tspan> element</text>
        
+
+
+      
+	  <g transform="translate(40,450)">
+            <use xlink:href="#Path1" style="fill:none; stroke:blue; stroke-width:2"/>
+	      <text font-size="12" writing-mode="tb" glyph-orientation-vertical="0">
+                <textPath xlink:href="#Path1">Vertical text on a Path&#x753b;&#x50cf;</textPath>
+            </text>
+         </g>
 
     </g>
 
