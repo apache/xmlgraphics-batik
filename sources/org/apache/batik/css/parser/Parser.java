@@ -16,6 +16,10 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Locale;
+import java.util.MissingResourceException;
+
+import org.apache.batik.i18n.Localizable;
+import org.apache.batik.i18n.LocalizableSupport;
 
 import org.w3c.css.sac.ConditionFactory;
 import org.w3c.css.sac.Condition;
@@ -37,7 +41,21 @@ import org.w3c.css.sac.SimpleSelector;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class Parser implements org.w3c.css.sac.Parser {
+public class Parser
+    implements org.w3c.css.sac.Parser,
+               Localizable {
+
+    /**
+     * The default resource bundle base name.
+     */
+    public final static String BUNDLE_CLASSNAME =
+        "org.apache.batik.css.parser.resources.Messages";
+
+    /**
+     * The localizable support.
+     */
+    protected LocalizableSupport localizableSupport =
+        new LocalizableSupport(BUNDLE_CLASSNAME);
 
     /**
      * The scanner used to scan the input source.
@@ -65,6 +83,11 @@ public class Parser implements org.w3c.css.sac.Parser {
     protected ConditionFactory conditionFactory;
 
     /**
+     * The error handler.
+     */
+    protected ErrorHandler errorHandler = DefaultErrorHandler.INSTANCE;
+
+    /**
      * <b>SAC</b>: Implements {@link org.w3c.css.sac.Parser#getParserVersion()}.
      * @return "CSS2".
      */
@@ -76,9 +99,25 @@ public class Parser implements org.w3c.css.sac.Parser {
      * <b>SAC</b>: Implements {@link org.w3c.css.sac.Parser#setLocale(Locale)}.
      */
     public void setLocale(Locale locale) throws CSSException {
-        throw new CSSException("!!! Not Implemented");
+        localizableSupport.setLocale(locale);
     }
     
+    /**
+     * Implements {@link org.apache.batik.i18n.Localizable#getLocale()}.
+     */
+    public Locale getLocale() {
+        return localizableSupport.getLocale();
+    }
+
+    /**
+     * Implements {@link
+     * org.apache.batik.i18n.Localizable#formatMessage(String,Object[])}.
+     */
+    public String formatMessage(String key, Object[] args)
+        throws MissingResourceException {
+        return localizableSupport.formatMessage(key, args);
+    }
+
     /**
      * <b>SAC</b>: Implements {@link
      * org.w3c.css.sac.Parser#setDocumentHandler(DocumentHandler)}.
@@ -108,7 +147,7 @@ public class Parser implements org.w3c.css.sac.Parser {
      * org.w3c.css.sac.Parser#setErrorHandler(ErrorHandler)}.
      */
     public void setErrorHandler(ErrorHandler handler) {
-        throw new CSSException("!!! Not Implemented");
+        errorHandler = handler;
     }
     
     /**
@@ -126,12 +165,13 @@ public class Parser implements org.w3c.css.sac.Parser {
             switch (current) {
             case LexicalUnits.CHARSET_SYMBOL:
                 if (nextIgnoreSpaces() != LexicalUnits.STRING) {
-                    throw new CSSException("String expected");
+                    reportError("charset.string");
+                } else {
+                    if (nextIgnoreSpaces() != LexicalUnits.SEMI_COLON) {
+                        reportError("semicolon");
+                    }
+                    next();
                 }
-                if (nextIgnoreSpaces() != LexicalUnits.SEMI_COLON) {
-                    throw new CSSException("';' expected");
-                }
-                next();
                 break;
             case LexicalUnits.COMMENT:
                 documentHandler.comment(scanner.currentValue());
@@ -228,7 +268,10 @@ public class Parser implements org.w3c.css.sac.Parser {
         LexicalUnit exp = parseExpression(false);
 
         if (current != LexicalUnits.EOF) {
-            throw new CSSException("EOF expected");
+            errorHandler.fatalError(new CSSParseException("eof.expected",
+                                                          null,
+                                                          scanner.getLine(),
+                                                          scanner.getColumn()));
         }
         return exp;
     }
@@ -288,7 +331,8 @@ public class Parser implements org.w3c.css.sac.Parser {
         String uri = null;
         switch (current) {
         default:
-            throw new CSSException("String or URI expected");
+            reportError("string.or.uri");
+            return;
         case LexicalUnits.STRING:
         case LexicalUnits.URI:
             uri = scanner.currentValue();
@@ -306,10 +350,10 @@ public class Parser implements org.w3c.css.sac.Parser {
         documentHandler.importStyle(uri, ml, null);
 
         if (current != LexicalUnits.SEMI_COLON) {
-            throw new CSSException("';' expected");
+            reportError("semicolon");
+        } else {
+            next();
         }
-
-        next();
     }
 
     /**
@@ -325,7 +369,8 @@ public class Parser implements org.w3c.css.sac.Parser {
 
             switch (current) {
             default:
-                throw new CSSException("Identifier expected");
+                reportError("identifier");
+                break;
             case LexicalUnits.IDENTIFIER:
                 result.append(scanner.currentValue());
                 nextIgnoreSpaces();
@@ -342,17 +387,18 @@ public class Parser implements org.w3c.css.sac.Parser {
             documentHandler.startFontFace();
 
             if (current != LexicalUnits.LEFT_CURLY_BRACE) {
-                throw new CSSException("'{' expected");
-            }
-            nextIgnoreSpaces();
+                reportError("left.curly.brace");
+            } else {
+                nextIgnoreSpaces();
         
-            parseStyleDeclaration(true);
+                parseStyleDeclaration(true);
 
-            if (current != LexicalUnits.RIGHT_CURLY_BRACE) {
-                throw new CSSException("'}' expected");
+                if (current != LexicalUnits.RIGHT_CURLY_BRACE) {
+                    reportError("right.curly.brace");
+                } else {
+                    nextIgnoreSpaces();
+                }
             }
-            nextIgnoreSpaces();
-            
         } finally {
             documentHandler.endFontFace();
         }
@@ -373,7 +419,8 @@ public class Parser implements org.w3c.css.sac.Parser {
                 nextIgnoreSpaces();
 
                 if (current != LexicalUnits.IDENTIFIER) {
-                    throw new CSSException("identifier expected");
+                    reportError("identifier");
+                    return;
                 }
                 ppage = scanner.currentValue();
                 nextIgnoreSpaces();
@@ -384,17 +431,18 @@ public class Parser implements org.w3c.css.sac.Parser {
             documentHandler.startPage(page, ppage);
             
             if (current != LexicalUnits.LEFT_CURLY_BRACE) {
-                throw new CSSException("'{' expected");
-            }
-            nextIgnoreSpaces();
+                reportError("left.curly.brace");
+            } else {
+                nextIgnoreSpaces();
         
-            parseStyleDeclaration(true);
+                parseStyleDeclaration(true);
 
-            if (current != LexicalUnits.RIGHT_CURLY_BRACE) {
-                throw new CSSException("'}' expected");
+                if (current != LexicalUnits.RIGHT_CURLY_BRACE) {
+                    reportError("right.curly.brace");
+                } else {
+                    nextIgnoreSpaces();
+                }
             }
-            nextIgnoreSpaces();
-
         } finally {
             documentHandler.endPage(page, ppage);
         }
@@ -405,7 +453,8 @@ public class Parser implements org.w3c.css.sac.Parser {
      */
     protected void parseMediaRule() {
         if (current != LexicalUnits.IDENTIFIER) {
-            throw new CSSException("identifier expected");
+            reportError("identifier");
+            return;
         }
 
         CSSSACMediaList ml = parseMediaList();
@@ -413,15 +462,16 @@ public class Parser implements org.w3c.css.sac.Parser {
             documentHandler.startMedia(ml);
 
             if (current != LexicalUnits.LEFT_CURLY_BRACE) {
-                throw new CSSException("'{' expected");
-            }
-            nextIgnoreSpaces();
+                reportError("left.curly.brace");
+            } else {
+                nextIgnoreSpaces();
             
-            while (current != LexicalUnits.RIGHT_CURLY_BRACE) {
-                parseRuleSet();
-            }
+                while (current != LexicalUnits.RIGHT_CURLY_BRACE) {
+                    parseRuleSet();
+                }
 
-            nextIgnoreSpaces();
+                nextIgnoreSpaces();
+            }
         } finally {
             documentHandler.endMedia(ml);
         }
@@ -437,17 +487,18 @@ public class Parser implements org.w3c.css.sac.Parser {
             documentHandler.startSelector(sl);
 
             if (current != LexicalUnits.LEFT_CURLY_BRACE) {
-                throw new CSSException("'{' expected");
-            }
-            nextIgnoreSpaces();
+                reportError("left.curly.brace");
+            } else {
+                nextIgnoreSpaces();
         
-            parseStyleDeclaration(true);
+                parseStyleDeclaration(true);
 
-            if (current != LexicalUnits.RIGHT_CURLY_BRACE) {
-                throw new CSSException("'}' expected");
+                if (current != LexicalUnits.RIGHT_CURLY_BRACE) {
+                    reportError("right.curly.brace");
+                } else {
+                    nextIgnoreSpaces();
+                }
             }
-            nextIgnoreSpaces();
-
         } finally {
             documentHandler.endSelector(sl);
         }
@@ -534,14 +585,14 @@ public class Parser implements org.w3c.css.sac.Parser {
                 break;
             case LexicalUnits.DOT:
                 if (next() != LexicalUnits.IDENTIFIER) {
-                    throw new CSSException("Identifier expected");
+                    throw new CSSException("identifier");
                 }
                 c = conditionFactory.createClassCondition(null, scanner.currentValue());
                 next();
                 break;
             case LexicalUnits.LEFT_BRACKET:
                 if (nextIgnoreSpaces() != LexicalUnits.IDENTIFIER) {
-                    throw new CSSException("Identifier expected");
+                    throw new CSSException("identifier");
                 }
                 String name = scanner.currentValue();
                 int op = nextIgnoreSpaces();
@@ -556,15 +607,14 @@ public class Parser implements org.w3c.css.sac.Parser {
                     String val = null;
                     switch (nextIgnoreSpaces()) {
                     default:
-                        throw new CSSException("Identifier or string expected" +
-                                               current);
+                        throw new CSSException("identifier.or.string");
                     case LexicalUnits.STRING:
                     case LexicalUnits.IDENTIFIER:
                         val = scanner.currentValue();
                         nextIgnoreSpaces();
                     }
                     if (current != LexicalUnits.RIGHT_BRACKET) {
-                        throw new CSSException("']' expected");
+                        throw new CSSException("right.bracket");
                     }
                     next();
                     switch (op) {
@@ -594,7 +644,7 @@ public class Parser implements org.w3c.css.sac.Parser {
                     break;
                 // !!! Todo lang(l)
                 default:
-                    throw new CSSException("Identifier expected");
+                    throw new CSSException("identifier");
                 }
                 break;
             default:
@@ -622,26 +672,26 @@ public class Parser implements org.w3c.css.sac.Parser {
             switch (current) {
             case LexicalUnits.EOF:
                 if (inSheet) {
-                    throw new CSSException("Unexpected eof");
+                    throw new CSSException("eof");
                 }
                 return;
             case LexicalUnits.RIGHT_CURLY_BRACE:
                 if (!inSheet) {
-                    throw new CSSException("Unexpected token 1");
+                    throw new CSSException("eof.expected");
                 }
                 return;
             case LexicalUnits.SEMI_COLON:
                 nextIgnoreSpaces();
                 continue;
             default:
-                throw new CSSException("Identifier expected");
+                throw new CSSException("identifier");
             case LexicalUnits.IDENTIFIER:
             }
 
             String name = scanner.currentValue();
         
             if (nextIgnoreSpaces() != LexicalUnits.COLON) {
-                throw new CSSException("':' expected");
+                throw new CSSException("colon");
             }
             nextIgnoreSpaces();
         
@@ -683,7 +733,7 @@ public class Parser implements org.w3c.css.sac.Parser {
             if (param) {
                 if (current == LexicalUnits.RIGHT_BRACE) {
                     if (op) {
-                        throw new CSSException("Unexpected token 2");
+                        throw new CSSException("token");
                     }
                     return result;
                 }
@@ -695,7 +745,7 @@ public class Parser implements org.w3c.css.sac.Parser {
                 case LexicalUnits.RIGHT_CURLY_BRACE:
                 case LexicalUnits.EOF:
                     if (op) {
-                        throw new CSSException("Unexpected token 3");
+                        throw new CSSException("token");
                     }
                     return result;
                 default:
@@ -782,7 +832,7 @@ public class Parser implements org.w3c.css.sac.Parser {
                 return parseFunction(plus, prev);
             }
             if (sgn) {
-                throw new CSSException("Unexpected token 4");
+                throw new CSSException("token");
             }
         }
         switch (current) {
@@ -810,7 +860,7 @@ public class Parser implements org.w3c.css.sac.Parser {
             return hexcolor(prev);
         default:
             new Exception().printStackTrace();
-            throw new CSSException("Unexpected token 5 " + current);
+            throw new CSSException("token" + current);
         }
     }
 
@@ -825,7 +875,7 @@ public class Parser implements org.w3c.css.sac.Parser {
 
         if (name.equalsIgnoreCase("rgb")) {
             if (current != LexicalUnits.RIGHT_BRACE) {
-                throw new CSSException("Unexpected token 6");
+                throw new CSSException("token");
             }
             nextIgnoreSpaces();
             return CSSLexicalUnit.createPredefinedFunction(LexicalUnit.SAC_RGBCOLOR,
@@ -852,7 +902,7 @@ public class Parser implements org.w3c.css.sac.Parser {
             if (!ScannerUtilities.isCSSHexadecimalCharacter(rc) ||
                 !ScannerUtilities.isCSSHexadecimalCharacter(gc) ||
                 !ScannerUtilities.isCSSHexadecimalCharacter(bc)) {
-                throw new CSSException("Malformed RGB color");
+                throw new CSSException("rgb.color");
             }
             int t;
             int r = t = (rc >= '0' && rc <= '9') ? rc - '0' : rc - 'a' + 10;
@@ -884,7 +934,7 @@ public class Parser implements org.w3c.css.sac.Parser {
                 !ScannerUtilities.isCSSHexadecimalCharacter(gc2) ||
                 !ScannerUtilities.isCSSHexadecimalCharacter(bc1) ||
                 !ScannerUtilities.isCSSHexadecimalCharacter(bc2)) {
-                throw new CSSException("Malformed RGB color");
+                throw new CSSException("rgb.color");
             }
             r = (rc1 >= '0' && rc1 <= '9') ? rc1 - '0' : rc1 - 'a' + 10;
             r <<= 4;
@@ -902,7 +952,7 @@ public class Parser implements org.w3c.css.sac.Parser {
             tmp = CSSLexicalUnit.createInteger(b, tmp);
             break;
         default:
-            throw new CSSException("Malformed RGB color");
+            throw new CSSException("rgb.color");
         }
         nextIgnoreSpaces();
         return CSSLexicalUnit.createPredefinedFunction(LexicalUnit.SAC_RGBCOLOR,
@@ -960,7 +1010,7 @@ public class Parser implements org.w3c.css.sac.Parser {
                 return new InputStreamReader(is);
             } else if (encoding != null && enc != null) {
                 if (!javaEncoding(encoding).equals(javaEncoding(enc))) {
-                    throw new CSSException("Wrong encoding");
+                    throw new CSSException("encoding");
                     }
                 return new InputStreamReader(is, javaEncoding(encoding));
             } else {
@@ -1046,32 +1096,68 @@ public class Parser implements org.w3c.css.sac.Parser {
      * Advances to the next token, ignoring comments.
      */
     protected int next() {
-        for (;;) {
-            current = scanner.next();
-            if (current == LexicalUnits.COMMENT) {
-                documentHandler.comment(scanner.currentValue());
-            } else {
-                break;
+        try {
+            for (;;) {
+                current = scanner.next();
+                if (current == LexicalUnits.COMMENT) {
+                    documentHandler.comment(scanner.currentValue());
+                } else {
+                    break;
+                }
             }
+            return current;
+        } catch (ParseException e) {
+            reportError(e.getMessage());
+            return current;
         }
-        return current;
     }
 
     /**
      * Advances to the next token and skip the spaces, ignoring comments.
      */
     protected int nextIgnoreSpaces() {
-        loop: for (;;) {
-            current = scanner.next();
-            switch (current) {
-            case LexicalUnits.COMMENT:
-                documentHandler.comment(scanner.currentValue());
-                break;
-            default:
-                break loop;
-            case LexicalUnits.SPACE:
+        try {
+            loop: for (;;) {
+                current = scanner.next();
+                switch (current) {
+                case LexicalUnits.COMMENT:
+                    documentHandler.comment(scanner.currentValue());
+                    break;
+                default:
+                    break loop;
+                case LexicalUnits.SPACE:
+                }
             }
+            return current;
+        } catch (ParseException e) {
+            reportError(e.getMessage());
+            return current;
         }
-        return current;
+    }
+
+    /**
+     * Reports a parsing error.
+     */
+    protected void reportError(String key) {
+        errorHandler.error(new CSSParseException(formatMessage(key, null),
+                                                 null, // !!! Todo set the URI
+                                                 scanner.getLine(),
+                                                 scanner.getColumn()));
+        int brackets = 1;
+        for (;;) {
+            switch (current) {
+            case LexicalUnits.EOF:
+                return;
+            case LexicalUnits.SEMI_COLON:
+            case LexicalUnits.RIGHT_BRACKET:
+                if (--brackets == 0) {
+                    nextIgnoreSpaces();
+                    return;
+                }
+            case LexicalUnits.LEFT_BRACKET:
+                brackets++;
+            }
+            nextIgnoreSpaces();
+        }
     }
 }

@@ -18,6 +18,7 @@ import org.apache.batik.i18n.LocalizableSupport;
 import org.apache.batik.parser.ErrorHandler;
 import org.apache.batik.parser.ParseException;
 import org.apache.batik.parser.Parser;
+import org.apache.batik.util.InputBuffer;
 
 /**
  * This class is the superclass of all parsers. It provides localization
@@ -45,24 +46,9 @@ public abstract class AbstractParser implements Parser {
         new LocalizableSupport(BUNDLE_CLASSNAME);
 
     /**
-     * The current line number.
+     * The current input buffer.
      */
-    protected int line;
-
-    /**
-     * The current column number.
-     */
-    protected int column;
-
-    /**
-     * Whether the last character read was a newline.
-     */
-    protected boolean newlineRead;
-
-    /**
-     * The current input reader.
-     */
-    protected Reader reader;
+    protected InputBuffer inputBuffer;
 
     /**
      * The current character.
@@ -119,10 +105,14 @@ public abstract class AbstractParser implements Parser {
      * Initializes the parser.
      */
     protected void initialize(Reader r) {
-	reader = r;
-	newlineRead = false;
-	line = 1;
-	column = 0;
+        try {
+            inputBuffer = new InputBuffer(r);
+        } catch (IOException e) {
+            errorHandler.error
+                (new ParseException
+                    (createErrorMessage("io.exception", null),
+                     e));
+        }
     }
 
     /**
@@ -131,24 +121,8 @@ public abstract class AbstractParser implements Parser {
      */
     protected void read() {
         try {
-            current = reader.read();
-            switch (current) {
-            case 0xD:
-                line++;
-                newlineRead = true;
-                break;
-            case 0xA:
-                if (!newlineRead) {
-                    line++;
-                    column = 0;
-                } else {
-                    newlineRead = false;
-                }
-                break;
-            default:
-                newlineRead = false;
-                column++;
-            }
+            current = inputBuffer.current();
+            inputBuffer.next();
         } catch (IOException e) {
             errorHandler.error
                 (new ParseException
@@ -165,7 +139,8 @@ public abstract class AbstractParser implements Parser {
     protected void reportError(String key, Object[] args)
         throws ParseException {
 	errorHandler.error(new ParseException(createErrorMessage(key, args),
-					      line, column));
+					      inputBuffer.getLine(),
+                                              inputBuffer.getColumn()));
     }
 
     /**
@@ -208,7 +183,6 @@ public abstract class AbstractParser implements Parser {
 
     /**
      * Skips the whitespaces and an optional comma.
-     * @param r The parsed reader.
      */
     protected void skipCommaSpaces() {
         wsp1: for (;;) {
