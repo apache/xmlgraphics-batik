@@ -74,21 +74,21 @@ public class CachedImageHandlerBase64Encoder extends DefaultCachedImageHandler {
         // If scaling is necessary, create a transform, since "width" and "height"
         // have no effect on a <use> element referring to an <image> element.
 
-        AffineTransform af  = null;
+        AffineTransform af  = new AffineTransform();
         double hRatio = dstWidth / srcWidth;
         double vRatio = dstHeight / srcHeight;
 
+        af.translate(x,y);
+
         if(hRatio != 1 || vRatio != 1) {
-            af = AffineTransform.getScaleInstance(hRatio, vRatio);
+            af.scale(hRatio, vRatio);
+        } 
+
+        if (!af.isIdentity()){
+            return af;
+        } else {
+            return null;
         }
-        imageElement.setAttributeNS(null,
-                                    SVG_X_ATTRIBUTE,
-                                    AbstractSVGConverter.doubleString(x));
-        imageElement.setAttributeNS(null,
-                                    SVG_Y_ATTRIBUTE,
-                                    AbstractSVGConverter.doubleString(y));
-            
-        return af;
     }
 
     /**
