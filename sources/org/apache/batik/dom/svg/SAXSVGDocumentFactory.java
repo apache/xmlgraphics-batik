@@ -46,6 +46,16 @@ public class SAXSVGDocumentFactory
     implements SVGDocumentFactory {
 
     /**
+     * Key used for public identifiers
+     */
+    public static final String KEY_PUBLIC_IDS = "publicIds";
+
+    /**
+     * Key used for system identifiers
+     */
+    public static final String KEY_SYSTEM_ID = "systemId.";
+
+    /**
      * The dtd public IDs resource bundle class name.
      */
     protected final static String DTDIDS =
@@ -60,6 +70,11 @@ public class SAXSVGDocumentFactory
      * The accepted DTD public IDs.
      */
     protected static String dtdids;
+
+    /**
+     * The ResourceBunder for the public and system ids
+     */
+    protected static ResourceBundle rb;
 
     /**
      * Creates a new SVGDocumentFactory object.
@@ -283,15 +298,20 @@ public class SAXSVGDocumentFactory
         throws SAXException {
         try {
             if (dtdids == null) {
-                ResourceBundle rb;
                 rb = ResourceBundle.getBundle(DTDIDS,
                                               Locale.getDefault());
-                dtdids = rb.getString("publicIds");
+                dtdids = rb.getString(KEY_PUBLIC_IDS);
             }
-            if (publicId != null && dtdids.indexOf(publicId) != -1) {
-                return new InputSource
-                    (getClass().getResource
-                     ("resources/svg10.dtd").toString());
+            if (publicId != null){
+                if (dtdids.indexOf(publicId) != -1) {
+                    String localSystemId = 
+                        rb.getString(KEY_SYSTEM_ID + publicId.replace(' ', '_'));
+
+                    if (localSystemId != null && !"".equals(localSystemId)){
+                        return new InputSource
+                            (getClass().getResource(localSystemId).toString());
+                    }
+                }
             }
         } catch (MissingResourceException e) {
             throw new SAXException(e);
