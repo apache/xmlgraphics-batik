@@ -14,6 +14,11 @@
 <testSuite id="util.unitTesting" name="org.apache.batik.util Unit Testing">
 
     <!-- ====================================================================== -->
+    <!--                        Security Tests                                  -->
+    <!-- ====================================================================== -->
+    <test id="securityEnforcerTest" class="org.apache.batik.util.ApplicationSecurityEnforcerTest" />
+
+    <!-- ====================================================================== -->
     <!--                         Base64 Tests                                   -->
     <!-- ====================================================================== -->
 
