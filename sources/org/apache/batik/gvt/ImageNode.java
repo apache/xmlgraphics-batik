@@ -88,6 +88,7 @@ public class ImageNode extends CompositeGraphicsNode {
         if (count == 0) ensureCapacity(1);
         children[0] = newImage;
         ((AbstractGraphicsNode)newImage).setParent(this);
+        ((AbstractGraphicsNode)newImage).setRoot(getRoot());
         count=1;
         fireGraphicsNodeChangeCompleted();
     }
