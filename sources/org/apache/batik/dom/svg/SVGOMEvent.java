@@ -6,30 +6,20 @@
  * the LICENSE file.                                                         *
  *****************************************************************************/
 
-package org.apache.batik.css.value;
+package org.apache.batik.dom.svg;
 
-import org.apache.batik.css.CSSOMReadOnlyValue;
+import org.apache.batik.dom.events.AbstractEvent;
+
+import org.w3c.dom.svg.SVGEvent;
 
 /**
- * This interface represents the context the application must provides
- * to the CSS engine in order to resolve the relative CSS values.
+ * This class provides an implementation of the SVGEvent interface.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public interface CommonCSSContext {
-    /**
-     * The default color.
-     */
-    CSSOMReadOnlyValue getDefaultColorValue();
-
-    /**
-     * The font-family value.
-     */
-    CSSOMReadOnlyValue getDefaultFontFamilyValue();
-
-    /**
-     * The user style sheet URI.
-     */
-    String getUserStyleSheetURI();
+public class SVGOMEvent
+    extends    AbstractEvent
+    implements SVGEvent {
+    
 }

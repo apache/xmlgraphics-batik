@@ -10,7 +10,10 @@ package org.apache.batik.css.value;
 
 import org.apache.batik.css.CSSOMReadOnlyStyleDeclaration;
 import org.apache.batik.css.CSSOMReadOnlyValue;
+import org.apache.batik.css.value.ImmutableValue;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.css.CSSPrimitiveValue;
 import org.w3c.dom.css.ViewCSS;
 
 /**
@@ -65,6 +68,80 @@ public class FontSizeResolver implements RelativeValueResolver {
 			     CSSOMReadOnlyValue value,
 			     String priority,
 			     int origin) {
-	// Nothing to do
+	ImmutableValue im = value.getImmutableValue();
+	boolean b = im == FontSizeFactory.SMALLER_VALUE;
+        CSSOMReadOnlyValue val = null;
+        if (b || im == FontSizeFactory.LARGER_VALUE) {
+            Element p = getParentElement(element);
+            if (p == null) {
+                val = new CSSOMReadOnlyValue((b)
+                                             ? FontSizeFactory.SMALL_VALUE
+                                             : FontSizeFactory.LARGE_VALUE);
+            } else {
+		CSSOMReadOnlyStyleDeclaration sd;
+		sd = (CSSOMReadOnlyStyleDeclaration)view.getComputedStyle
+                    (p, null);
+		CSSOMReadOnlyValue prop;
+		prop = (CSSOMReadOnlyValue)sd.getPropertyCSSValue
+                    (getPropertyName());
+		im = prop.getImmutableValue();
+                if (im == FontSizeFactory.LARGE_VALUE) {
+                    val = new CSSOMReadOnlyValue((b)
+                                             ? FontSizeFactory.MEDIUM_VALUE
+                                             : FontSizeFactory.X_LARGE_VALUE);
+                } else if (im == FontSizeFactory.MEDIUM_VALUE) {
+                    val = new CSSOMReadOnlyValue((b)
+                                             ? FontSizeFactory.SMALL_VALUE
+                                             : FontSizeFactory.LARGE_VALUE);
+                } else if (im == FontSizeFactory.SMALL_VALUE) {
+                    val = new CSSOMReadOnlyValue((b)
+                                             ? FontSizeFactory.MEDIUM_VALUE
+                                             : FontSizeFactory.X_LARGE_VALUE);
+                } else if (im == FontSizeFactory.X_LARGE_VALUE) {
+                    val = new CSSOMReadOnlyValue((b)
+                                             ? FontSizeFactory.LARGE_VALUE
+                                             : FontSizeFactory.XX_LARGE_VALUE);
+                } else if (im == FontSizeFactory.X_SMALL_VALUE) {
+                    val = new CSSOMReadOnlyValue((b)
+                                             ? FontSizeFactory.XX_SMALL_VALUE
+                                             : FontSizeFactory.SMALL_VALUE);
+                } else if (im == FontSizeFactory.XX_LARGE_VALUE) {
+                    val = new CSSOMReadOnlyValue((b)
+                                             ? FontSizeFactory.X_LARGE_VALUE
+                                             : FontSizeFactory.XX_LARGE_VALUE);
+                } else if (im == FontSizeFactory.XX_SMALL_VALUE) {
+                    val = new CSSOMReadOnlyValue((b)
+                                             ? FontSizeFactory.XX_SMALL_VALUE
+                                             : FontSizeFactory.X_SMALL_VALUE);
+                } else if (im instanceof ImmutableFloat) {
+                    short t = ((ImmutableFloat)im).getPrimitiveType();
+                    float f = ((ImmutableFloat)im).getFloatValue(t);
+                    if (t == CSSPrimitiveValue.CSS_PERCENTAGE) {
+                        throw new RuntimeException("!!! %");
+                    } else {
+                        val = new CSSOMReadOnlyValue
+                            (new ImmutableFloat(t, (b) ? f / 1.2f : f * 1.2f));
+                    }
+                }
+                if (val != null) {
+                    styleDeclaration.setPropertyCSSValue(getPropertyName(),
+                                                         val,
+                                                         priority,
+                                                         origin);
+                }
+            }
+        }
+    }
+
+    /**
+     * Returns the parent element of the given one, or null.
+     */
+    protected Element getParentElement(Element e) {
+	for (Node n = e.getParentNode(); n != null; n = n.getParentNode()) {
+	    if (n.getNodeType() == Node.ELEMENT_NODE) {
+		return (Element)n;
+	    }
+	}
+	return null;
     }
 }

@@ -103,7 +103,7 @@ public class XMLSupport {
      * attribute recommended behaviour when it has the 'default' value.
      */
     public static String defaultXMLSpace(String data) {
-	String result = "";
+	StringBuffer result = new StringBuffer();
 	boolean space = false;
 	for (int i = 0; i < data.length(); i++) {
 	    char c = data.charAt(i);
@@ -114,16 +114,16 @@ public class XMLSupport {
 	    case ' ':
 	    case '\t':
 		if (!space) {
-		    result += ' ';
+		    result.append(' ');
 		    space = true;
 		}
 		break;
 	    default:
-		result += c;
+		result.append(c);
 		space = false;
 	    }
 	}
-	return result.trim();
+	return result.toString().trim();
     }
 
     /**
@@ -131,19 +131,19 @@ public class XMLSupport {
      * attribute recommended behaviour when it has the 'preserve' value.
      */
     public static String preserveXMLSpace(String data) {
-	String result = "";
+	StringBuffer result = new StringBuffer();
 	for (int i = 0; i < data.length(); i++) {
 	    char c = data.charAt(i);
 	    switch (c) {
 	    case 10:
 	    case 13:
 	    case '\t':
-		result += ' ';
+		result.append(' ');
 		break;
 	    default:
-		result += c;
+		result.append(c);
 	    }
 	}
-	return result;
+	return result.toString();
     }
 }

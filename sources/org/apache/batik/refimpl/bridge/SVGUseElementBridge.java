@@ -22,6 +22,7 @@ import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.parser.AWTTransformProducer;
 import org.apache.batik.util.SVGConstants;
+import org.apache.batik.util.UnitProcessor;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -30,25 +31,42 @@ import org.w3c.dom.views.DocumentView;
 import org.w3c.dom.css.ViewCSS;
 import org.w3c.dom.css.CSSPrimitiveValue;
 import org.w3c.dom.css.CSSStyleDeclaration;
+import org.w3c.dom.svg.SVGElement;
 
 /**
- * A factory for the &lt;g&gt; SVG element.
+ * A factory for the &lt;use&gt; SVG element.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class SVGGElementBridge implements GraphicsNodeBridge, SVGConstants {
+public class SVGUseElementBridge
+    implements GraphicsNodeBridge,
+               SVGConstants {
 
     public GraphicsNode createGraphicsNode(BridgeContext ctx,
                                            Element element){
         GraphicsNode gn = ctx.getGVTFactory().createCompositeGraphicsNode();
-        AffineTransform at = AWTTransformProducer.createAffineTransform
-            (new StringReader(element.getAttributeNS(null, ATTR_TRANSFORM)),
-             ctx.getParserFactory());
+        CSSStyleDeclaration decl
+            = ctx.getViewCSS().getComputedStyle(element, null);
+        UnitProcessor.Context uctx
+            = new DefaultUnitProcessorContext(ctx,
+                                              decl);
+        String s = element.getAttributeNS(null, ATTR_X);
+        float x = UnitProcessor.svgToUserSpace(s,
+                                               (SVGElement)element,
+                                               UnitProcessor.HORIZONTAL_LENGTH,
+                                               uctx);
+        s = element.getAttributeNS(null, ATTR_Y);
+        float y = UnitProcessor.svgToUserSpace(s,
+                                               (SVGElement)element,
+                                               UnitProcessor.VERTICAL_LENGTH,
+                                               uctx);
+        AffineTransform at = AffineTransform.getTranslateInstance(x, y);
+        at.preConcatenate(AWTTransformProducer.createAffineTransform
+                (new StringReader(element.getAttributeNS(null, ATTR_TRANSFORM)),
+                 ctx.getParserFactory()));
         gn.setTransform(at);
 
-        CSSStyleDeclaration decl;
-        decl = ctx.getViewCSS().getComputedStyle(element, null);
         CSSPrimitiveValue val =
             (CSSPrimitiveValue)decl.getPropertyCSSValue(ATTR_OPACITY);
         Composite composite = CSSUtilities.convertOpacityToComposite(val);
@@ -65,6 +83,6 @@ public class SVGGElementBridge implements GraphicsNodeBridge, SVGConstants {
     }
 
     public boolean isContainer() {
-        return true;
+        return false;
     }
 }

@@ -23,8 +23,8 @@ public abstract class AbstractDOMImplementation implements DOMImplementation {
     /**
      * The supported features.
      */
-    protected final static HashTable features = new HashTable();
-    static {
+    protected final HashTable features = new HashTable();
+    {
 	features.put("XML",            "2.0");
 	features.put("Events",         "2.0");
 	features.put("MouseEvents",    "2.0");

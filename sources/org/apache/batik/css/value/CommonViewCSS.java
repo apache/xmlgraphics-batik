@@ -9,6 +9,10 @@
 package org.apache.batik.css.value;
 
 import org.apache.batik.css.AbstractViewCSS;
+import org.apache.batik.css.CSSDocumentHandler;
+import org.apache.batik.css.CSSOMStyleSheet;
+import org.w3c.dom.Document;
+import org.w3c.dom.css.DOMImplementationCSS;
 import org.w3c.dom.views.DocumentView;
 
 /**
@@ -44,5 +48,22 @@ public abstract class CommonViewCSS extends AbstractViewCSS {
 	addRelativeValueResolver(new UnicodeBidiResolver());
 	addRelativeValueResolver(new VisibilityResolver());
 	addRelativeValueResolver(new SpacingResolver("word-spacing"));
-   }
+
+        Document document = (Document)doc;
+        DOMImplementationCSS impl =
+            (DOMImplementationCSS)document.getImplementation();
+        
+
+        String uri  = ctx.getUserStyleSheetURI();
+        if (uri != null) {
+            userAgentStyleSheet =
+                impl.createCSSStyleSheet("User Style Sheet", "all");
+            try {
+                CSSDocumentHandler.parseStyleSheet
+                    ((CSSOMStyleSheet)userAgentStyleSheet, uri);
+            } catch (Exception e) {
+                System.err.println(e.getMessage());
+            }
+        }
+    }
 }

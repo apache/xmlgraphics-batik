@@ -49,6 +49,11 @@ public class DefaultCommonCSSContext implements CommonCSSContext {
     }
 
     /**
+     * The user style sheet.
+     */
+    protected String userStyleSheetURI;
+
+    /**
      * The default color.
      */
     public CSSOMReadOnlyValue getDefaultColorValue() {
@@ -60,5 +65,19 @@ public class DefaultCommonCSSContext implements CommonCSSContext {
      */
     public CSSOMReadOnlyValue getDefaultFontFamilyValue() {
 	return DEFAULT_FONT_FAMILY;
+    }
+
+    /**
+     * The user style sheet URI.
+     */
+    public String getUserStyleSheetURI() {
+        return userStyleSheetURI;
+    }
+
+    /**
+     * Sets the user style sheet URI.
+     */
+    public void setUserStyleSheetURI(String s) {
+        userStyleSheetURI = s;
     }
 }
