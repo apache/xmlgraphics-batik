@@ -161,15 +161,22 @@ public class PNGTranscoder extends ImageTranscoder {
                 (new int [] { 255, 255, 255 });
         }
 
-        // If they specify GAMMA key then use it otherwise don't
-        // write a gAMA chunk, (default Gamma=2.2).
+        // If they specify GAMMA key with a value of '0' then omit
+        // gamma chunk.  If they do not provide a GAMMA then just
+        // generate an sRGB chunk. Otherwise supress the sRGB chunk
+        // and just generate gamma and chroma chunks.
         if (hints.containsKey(KEY_GAMMA)) {
-            params.setGamma(((Float)hints.get(KEY_GAMMA)).floatValue());
-        } 
+            float gamma = ((Float)hints.get(KEY_GAMMA)).floatValue();
+            if (gamma > 0) {
+                params.setGamma(gamma);
+            }
+            params.setChromaticity(DEFAULT_CHROMA);
+        }  else {
+            // We generally want an sRGB chunk and our encoding intent
+            // is perceptual
+            params.setSRGBIntent(PNGEncodeParam.INTENT_PERCEPTUAL);
+        }
 
-        // We always want an sRGB chunk and Our encoding intent is
-        // perceptual
-        params.setSRGBIntent(PNGEncodeParam.INTENT_PERCEPTUAL);
 
         float PixSzMM = userAgent.getPixelUnitToMillimeter();
         // num Pixs in 1 Meter
@@ -207,12 +214,23 @@ public class PNGTranscoder extends ImageTranscoder {
      * <TD VALIGN="TOP">No</TD></TR>
      * <TR>
      * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Description: </TH>
-     * <TD VALIGN="TOP">Controls the gamma correction of the png image.</TD>
+     * <TD VALIGN="TOP">Controls the gamma correction of the png image. 
+     *                  A value of zero for gamma disables the generation 
+     *                  of a gamma chunk.  No value or a value of 2.2
+     *                  also causes an sRGB chunk to be generated.</TD>
      * </TR>
      * </TABLE>
      */
     public static final TranscodingHints.Key KEY_GAMMA
         = new FloatKey();
+
+    /**
+     * The default Primary Chromaticities for sRGB imagery.
+     */
+    public static final float[] DEFAULT_CHROMA = {
+        0.31270F, 0.329F, 0.64F, 0.33F, 0.3F, 0.6F, 0.15F, 0.06F
+    };
+
 
     /**
      * The color indexed image key to specify number of colors used in

@@ -202,6 +202,9 @@ public class RunnableQueue implements Runnable {
 
                 try {
                     rable.run();
+                } catch (ThreadDeath td) {
+                    // Let it kill us...
+                    throw td;
                 } catch (Throwable t) {
                     // Might be nice to notify someone directly.
                     // But this is more or less what Swing does.

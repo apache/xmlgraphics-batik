@@ -104,6 +104,8 @@ public class InterpreterPool {
             factory =
                 (InterpreterFactory)Class.forName(RHINO).newInstance();
             defaultFactories.put("text/ecmascript", factory);
+        } catch (ThreadDeath td) {
+            throw td;
         } catch (Throwable t1) {
             // may append if the class is not in the CLASSPATH
         }
@@ -111,6 +113,8 @@ public class InterpreterPool {
             factory =
                 (InterpreterFactory)Class.forName(JPYTHON).newInstance();
             defaultFactories.put("text/python", factory);
+        } catch (ThreadDeath td) {
+            throw td;
         } catch (Throwable t2) {
             // may append if the class is not in the CLASSPATH
         }
@@ -118,6 +122,8 @@ public class InterpreterPool {
             factory =
                 (InterpreterFactory)Class.forName(JACL).newInstance();
             defaultFactories.put("text/tcl", factory);
+        } catch (ThreadDeath td) {
+            throw td;
         } catch (Throwable t3) {
             // may append if the class is not in the CLASSPATH
         }

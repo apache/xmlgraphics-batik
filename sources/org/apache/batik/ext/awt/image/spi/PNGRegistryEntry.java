@@ -133,6 +133,8 @@ public class PNGRegistryEntry
                     } catch (IOException ioe) {
                         filt = ImageTagRegistry.getBrokenLinkImage
                             (this, errCode, errParam);
+                    } catch (ThreadDeath td) {
+                        throw td;
                     } catch (Throwable t) {
                         filt = ImageTagRegistry.getBrokenLinkImage
                             (this, errCode, errParam);

@@ -108,6 +108,8 @@ public abstract class AbstractImageHandlerEncoder extends DefaultImageHandler {
                 Class clazz = Class.forName("org.apache.batik.ext.awt.image.GraphicsUtil");
                 createGraphics = clazz.getMethod("createGraphics", paramc);
                 paramo = new Object[1];
+            } catch (ThreadDeath td) {
+                throw td;
             } catch (Throwable t) {
                 // happen only if Batik extensions are not their
             } finally {

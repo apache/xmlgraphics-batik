@@ -94,7 +94,7 @@ public class SVGBrokenLinkProvider
         try {
             svgDoc  = (SVGDocument)loader.loadDocument(blURL.toString());
             gvtRoot = builder.build(ctx, svgDoc);
-        } catch (Throwable t) {
+        } catch (Exception ex) {
             // t.printStackTrace();
         }
     }

@@ -142,6 +142,8 @@ public class CleanerThread extends Thread {
                     ReferenceCleared rc = (ReferenceCleared)ref;
                     rc.cleared();
                 }
+            } catch (ThreadDeath td) {
+                throw td;
             } catch (Throwable t) {
                 t.printStackTrace();
             }

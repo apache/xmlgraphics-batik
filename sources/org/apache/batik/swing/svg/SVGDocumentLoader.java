@@ -135,6 +135,10 @@ public class SVGDocumentLoader extends Thread {
         } catch (Exception e) {
             exception = e;
             fireEvent(failedDispatcher, evt);
+        } catch (ThreadDeath td) {
+            exception = new Exception(td.getMessage());
+            fireEvent(failedDispatcher, evt);
+            throw td;
         } catch (Throwable t) {
             t.printStackTrace();
             exception = new Exception(t.getMessage());
