@@ -8,6 +8,8 @@
 
 package org.apache.batik.refimpl.bridge;
 
+import java.awt.AlphaComposite;
+import java.awt.Composite;
 import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 
@@ -20,7 +22,13 @@ import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.parser.AWTTransformProducer;
 import org.apache.batik.util.SVGConstants;
 
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import org.w3c.dom.views.DocumentView;
+import org.w3c.dom.css.ViewCSS;
+import org.w3c.dom.css.CSSPrimitiveValue;
+import org.w3c.dom.css.CSSStyleDeclaration;
 
 /**
  * A factory for the &lt;g&gt; SVG element.
@@ -37,6 +45,13 @@ public class SVGGElementBridge implements GraphicsNodeBridge, SVGConstants {
             (new StringReader(element.getAttributeNS(null, ATTR_TRANSFORM)),
              ctx.getParserFactory());
         gn.setTransform(at);
+
+        Document document = element.getOwnerDocument();
+        ViewCSS viewCSS = (ViewCSS) ((DocumentView) document).getDefaultView();
+        CSSStyleDeclaration decl = viewCSS.getComputedStyle(element, null);
+        CSSPrimitiveValue val = (CSSPrimitiveValue)decl.getPropertyCSSValue(ATTR_OPACITY);
+        Composite composite = CSSUtilities.convertOpacityToComposite(val);
+        gn.setComposite(composite);
 
         CSSUtilities.setupFilter(element, gn, ctx);
 
