@@ -256,10 +256,10 @@ public abstract class AbstractParentNode extends AbstractNode {
 	    return EMPTY_NODE_LIST;
 	}
         AbstractDocument ad = getCurrentDocument();
-        ElementsByTagName result = ad.getElementsByTagName(this, null, name);
+        ElementsByTagName result = ad.getElementsByTagName(this, name);
         if (result == null) {
-            result = new ElementsByTagName(null, name);
-            ad.putElementsByTagName(this, null, name, result);
+            result = new ElementsByTagName(name);
+            ad.putElementsByTagName(this, name, result);
         }
         return result;
     }
@@ -274,11 +274,12 @@ public abstract class AbstractParentNode extends AbstractNode {
 	    return EMPTY_NODE_LIST;
 	}
         AbstractDocument ad = getCurrentDocument();
-        ElementsByTagName result = ad.getElementsByTagName(this, namespaceURI,
-                                                           localName);
+        ElementsByTagNameNS result =
+            ad.getElementsByTagNameNS(this, namespaceURI,
+                                      localName);
         if (result == null) {
-            result = new ElementsByTagName(namespaceURI, localName);
-            ad.putElementsByTagName(this, namespaceURI, localName, result);
+            result = new ElementsByTagNameNS(namespaceURI, localName);
+            ad.putElementsByTagNameNS(this, namespaceURI, localName, result);
         }
         return result;
     }
@@ -461,6 +462,107 @@ public abstract class AbstractParentNode extends AbstractNode {
 	protected int size = -1;
 
         /**
+         * The name identifier.
+         */
+        protected String name;
+
+	/**
+	 * Creates a new ElementsByTagName object.
+	 */
+	public ElementsByTagName(String n) {
+            name = n;
+	}
+
+	/**
+	 * <b>DOM</b>: Implements {@link NodeList#item(int)}.
+	 */
+	public Node item(int index) {
+            if (size == -1) {
+                initialize();
+            }
+	    if (table == null || index < 0 || index > size) {
+		return null;
+	    }
+	    return table[index];
+	}
+
+	/**
+	 * <b>DOM</b>: Implements {@link NodeList#getLength()}.
+	 * @return {@link #size}.
+	 */
+	public int getLength() {
+            if (size == -1) {
+                initialize();
+            }
+	    return size;
+	}
+
+        /**
+         * Invalidates the list.
+         */
+        public void invalidate() {
+            size = -1;
+        }
+
+	/**
+	 * Appends a node to the list.
+	 */
+	protected void append(Node n) {
+	    if (table == null) {
+		table = new Node[11];
+	    } else if (size == table.length - 1) {
+		Node[] t = new Node[table.length * 2 + 1];
+		for (int i = 0; i < size; i++) {
+		    t[i] = table[i];
+		}
+		table = t;
+	    }
+	    table[size++] = n;
+	}
+
+        /**
+         * Initializes the list.
+         */
+        protected void initialize() {
+            size = 0;
+            for (Node n = AbstractParentNode.this.getFirstChild();
+                 n != null;
+                 n = n.getNextSibling()) {
+                initialize(n);
+            }
+        }
+
+        private void initialize(Node node) {
+            if (node.getNodeType() == ELEMENT_NODE) {
+                String nm = node.getNodeName();
+                if (name.equals("*") || name.equals(nm)) {
+                    append(node);
+                }
+            }
+            for (Node n = node.getFirstChild();
+                 n != null;
+                 n = n.getNextSibling()) {
+                initialize(n);
+            }
+        } 
+    }
+
+    /**
+     * To manage a list of nodes.
+     */
+    protected class ElementsByTagNameNS implements NodeList {
+
+	/**
+	 * The table.
+	 */
+	protected Node[] table;
+
+	/**
+	 * The number of nodes.
+	 */
+	protected int size = -1;
+
+        /**
          * The namespace URI identifier.
          */
         protected String namespaceURI;
@@ -471,9 +573,9 @@ public abstract class AbstractParentNode extends AbstractNode {
         protected String localName;
 
 	/**
-	 * Creates a new Nodes object.
+	 * Creates a new ElementsByTagNameNS object.
 	 */
-	public ElementsByTagName(String ns, String ln) {
+	public ElementsByTagNameNS(String ns, String ln) {
             namespaceURI = ns;
             localName = ln;
 	}

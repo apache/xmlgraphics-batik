@@ -95,15 +95,7 @@ public class SVGAElementBridge extends AbstractGraphicsNodeBridge {
         }
 
         public void handleEvent(Event evt) {
-            SVGAElement elt = null;
-            for (Element e = (Element)evt.getTarget();
-                 e != null;
-                 e = SVGUtilities.getParentElement(e)) {
-                if (e instanceof SVGAElement) {
-                    elt = (SVGAElement)e;
-                    break;
-                }
-            }
+            SVGAElement elt = (SVGAElement)evt.getCurrentTarget();
             Cursor cursor = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
             userAgent.setSVGCursor(cursor);
             userAgent.openLink(elt);
@@ -123,15 +115,7 @@ public class SVGAElementBridge extends AbstractGraphicsNodeBridge {
         }
 
         public void handleEvent(Event evt) {
-            SVGAElement elt = null;
-            for (Element e = (Element)evt.getTarget();
-                 e != null;
-                 e = SVGUtilities.getParentElement(e)) {
-                if (e instanceof SVGAElement) {
-                    elt = (SVGAElement)e;
-                    break;
-                }
-            }
+            SVGAElement elt = (SVGAElement)evt.getCurrentTarget();
             Cursor cursor = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR);
             userAgent.setSVGCursor(cursor);
             if (elt != null) {
@@ -154,15 +138,7 @@ public class SVGAElementBridge extends AbstractGraphicsNodeBridge {
         }
 
         public void handleEvent(Event evt) {
-            SVGAElement elt = null;
-            for (Element e = (Element)evt.getTarget();
-                 e != null;
-                 e = SVGUtilities.getParentElement(e)) {
-                if (e instanceof SVGAElement) {
-                    elt = (SVGAElement)e;
-                    break;
-                }
-            }
+            SVGAElement elt = (SVGAElement)evt.getCurrentTarget();
             Cursor cursor = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
             userAgent.setSVGCursor(cursor);
             userAgent.displayMessage("");

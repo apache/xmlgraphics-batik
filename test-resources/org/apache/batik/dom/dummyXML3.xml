@@ -1,0 +1,6 @@
+<doc id="root" attr="value1">
+  <elt1/>
+  <elt2 id="elt2" attr2="value2" xmlns="">
+    Content
+  </elt2>
+</doc>

@@ -302,26 +302,35 @@ public abstract class AbstractElement
         }
         AbstractDocument ad = getCurrentDocument();
         String ns = node.getNamespaceURI();
+        String nm = node.getNodeName();
         String ln = (ns == null) ? node.getNodeName() : node.getLocalName();
         for (Node n = this; n != null; n = n.getParentNode()) {
             switch (n.getNodeType()) {
             case ELEMENT_NODE:
             case DOCUMENT_NODE:
-                ElementsByTagName l = ad.getElementsByTagName(n, ns, ln);
+                ElementsByTagName l = ad.getElementsByTagName(n, nm);
                 if (l != null) {
                     l.invalidate();
                 }
-                l = ad.getElementsByTagName(n, "*", ln);
+                l = ad.getElementsByTagName(n, "*");
                 if (l != null) {
                     l.invalidate();
                 }
-                l = ad.getElementsByTagName(n, ns, "*");
-                if (l != null) {
-                    l.invalidate();
+                ElementsByTagNameNS lns = ad.getElementsByTagNameNS(n, ns, ln);
+                if (lns != null) {
+                    lns.invalidate();
                 }
-                l = ad.getElementsByTagName(n, "*", "*");
-                if (l != null) {
-                    l.invalidate();
+                lns = ad.getElementsByTagNameNS(n, "*", ln);
+                if (lns != null) {
+                    lns.invalidate();
+                }
+                lns = ad.getElementsByTagNameNS(n, ns, "*");
+                if (lns != null) {
+                    lns.invalidate();
+                }
+                lns = ad.getElementsByTagNameNS(n, "*", "*");
+                if (lns != null) {
+                    lns.invalidate();
                 }
             }
         }

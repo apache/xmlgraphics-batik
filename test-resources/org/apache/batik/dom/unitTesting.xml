@@ -29,6 +29,23 @@
     </test>
 
     <!-- ========================================================================== -->
+    <!-- null namespace test                                                        -->
+    <!-- ========================================================================== -->
+    <test id="nullNamespace1" class="org.apache.batik.dom.NullNamespaceTest" >
+        <arg class="java.lang.String"
+             value="test-resources/org/apache/batik/dom/dummyXML3.xml" />
+        <arg class="java.lang.String" value="doc" />
+        <arg class="java.lang.String" value="root" />
+    </test>
+
+    <test id="nullNamespace2" class="org.apache.batik.dom.NullNamespaceTest" >
+        <arg class="java.lang.String"
+             value="test-resources/org/apache/batik/dom/dummyXML3.xml" />
+        <arg class="java.lang.String" value="doc" />
+        <arg class="java.lang.String" value="elt2" />
+    </test>
+
+    <!-- ========================================================================== -->
     <!-- Serialization test                                                         -->
     <!-- ========================================================================== -->
     <test id="serialization1" class="org.apache.batik.dom.SerializationTest">
