@@ -16,9 +16,11 @@ import java.awt.Frame;
 import java.awt.Graphics2D;
 import java.awt.Graphics;
 import java.awt.Shape;
+import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.NoninvertibleTransformException;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
 import java.awt.event.ComponentAdapter;
@@ -30,6 +32,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import javax.swing.JDialog;
+import javax.swing.event.MouseInputAdapter;
 
 import org.apache.batik.bridge.ViewBox;
 
@@ -111,6 +114,9 @@ public class ThumbnailDialog extends JDialog {
         svgThumbnailCanvas.getOverlays().add(overlay);
         svgThumbnailCanvas.setPreferredSize(new Dimension(150, 150));
         svgThumbnailCanvas.addComponentListener(new ThumbnailComponentListener());
+        AreaOfInterestListener listener = new AreaOfInterestListener();
+        svgThumbnailCanvas.addMouseListener(listener);
+        svgThumbnailCanvas.addMouseMotionListener(listener);
         getContentPane().add(svgThumbnailCanvas, BorderLayout.CENTER);
     }
 
@@ -120,10 +126,6 @@ public class ThumbnailDialog extends JDialog {
     protected void updateThumbnailGraphicsNode() {
         svgThumbnailCanvas.setGraphicsNode(svgCanvas.getGraphicsNode());
         updateThumbnailRenderingTransform();
-        if (svgCanvas.getSVGDocument() != null) {
-            overlay.updateAreaOfInterest();
-            svgThumbnailCanvas.repaint();
-        }
     }
 
     /**
@@ -146,6 +148,7 @@ public class ThumbnailDialog extends JDialog {
                 Tx = AffineTransform.getScaleInstance(s, s);
             }
             svgThumbnailCanvas.setRenderingTransform(Tx);
+            overlay.synchronizeAreaOfInterest();
         }
     }
 
@@ -161,6 +164,55 @@ public class ThumbnailDialog extends JDialog {
     }
 
     /**
+     * Used to perform a translation using the area of interest.
+     */
+    protected class AreaOfInterestListener extends MouseInputAdapter {
+
+        protected int sx, sy;
+        protected boolean in;
+
+        public void mousePressed(MouseEvent evt) {
+            sx = evt.getX();
+            sy = evt.getY();
+            in = overlay.contains(sx, sy);
+            overlay.setPaintingTransform(new AffineTransform());
+        }
+
+        public void mouseDragged(MouseEvent evt) {
+            if (in) {
+                int dx = evt.getX() - sx;
+                int dy = evt.getY() - sy;
+                overlay.setPaintingTransform
+                    (AffineTransform.getTranslateInstance(dx, dy));
+                svgThumbnailCanvas.repaint();
+            }
+        }
+
+        public void mouseReleased(MouseEvent evt) {
+            if (in) {
+                in = false;
+
+                int dx = evt.getX() - sx;
+                int dy = evt.getY() - sy;
+                AffineTransform at = overlay.getOverlayTransform();
+                Point2D pt0 = new Point2D.Float(0, 0);
+                Point2D pt = new Point2D.Float(dx, dy);
+
+                try {
+                    at.inverseTransform(pt0, pt0);
+                    at.inverseTransform(pt, pt);
+                    double tx = pt0.getX() - pt.getX();
+                    double ty = pt0.getY() - pt.getY();
+                    at = svgCanvas.getRenderingTransform();
+                    at.preConcatenate
+                        (AffineTransform.getTranslateInstance(tx, ty));
+                    svgCanvas.setRenderingTransform(at);
+                } catch (NoninvertibleTransformException ex) { }
+            }
+        }
+    }
+
+    /**
      * Used to update the overlay and/or the GVT tree of the thumbnail.
      */
     protected class ThumbnailGVTListener extends GVTTreeRendererAdapter {
@@ -169,9 +221,10 @@ public class ThumbnailDialog extends JDialog {
             if (documentChanged) {
                 updateThumbnailGraphicsNode();
                 documentChanged = false;
+            } else {
+                overlay.synchronizeAreaOfInterest();
+                svgThumbnailCanvas.repaint();
             }
-            overlay.updateAreaOfInterest();
-            svgThumbnailCanvas.repaint();
         }
 
         public void gvtRenderingCancelled(GVTTreeRendererEvent e) {
@@ -213,24 +266,43 @@ public class ThumbnailDialog extends JDialog {
     protected class AreaOfInterestOverlay implements Overlay {
 
         protected Shape s;
+        protected AffineTransform at;
+        protected AffineTransform paintingTransform = new AffineTransform();
 
-        public void updateAreaOfInterest() {
+        public boolean contains(int x, int y) {
+            return (s != null) ? s.contains(x, y) : false;
+        }
+
+        public AffineTransform getOverlayTransform() {
+            return at;
+        }
+
+        public void setPaintingTransform(AffineTransform rt) {
+            this.paintingTransform = rt;
+        }
+
+        public AffineTransform getPaintingTransform() {
+            return paintingTransform;
+        }
+
+        public void synchronizeAreaOfInterest() {
+            paintingTransform = new AffineTransform();
             Dimension dim = svgCanvas.getSize();
             s = new Rectangle2D.Float(0, 0, dim.width, dim.height);
             try {
-                AffineTransform at
-                    = svgCanvas.getRenderingTransform().createInverse();
-
+                at = svgCanvas.getRenderingTransform().createInverse();
                 at.preConcatenate(svgThumbnailCanvas.getRenderingTransform());
                 s = at.createTransformedShape(s);
             } catch (NoninvertibleTransformException ex) {
-                s = null;
+                dim = svgThumbnailCanvas.getSize();
+                s = new Rectangle2D.Float(0, 0, dim.width, dim.height);
             }
         }
 
         public void paint(Graphics g) {
             if (s != null) {
                 Graphics2D g2d = (Graphics2D)g;
+                g2d.transform(paintingTransform);
                 g2d.setColor(new Color(255, 255, 255, 128));
                 g2d.fill(s);
                 g2d.setColor(Color.black);
