@@ -716,8 +716,9 @@ public class JSVGComponent extends JGVTComponent {
         }  else {
             stopProcessing();
             synchronized (this) {
-                EventQueue.invokeLater(afterStopRunnable);
+                Runnable asr = afterStopRunnable;
                 afterStopRunnable = null;
+                asr.run();
             }
         }
     }
