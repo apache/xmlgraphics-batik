@@ -12,6 +12,8 @@ package org.apache.batik.gvt.filter;
 
 import org.apache.batik.gvt.GraphicsNode;
 
+import java.awt.geom.Rectangle2D;
+
 /**
  * Implements a masking operation.  This masks the source by the result
  * of converting the GraphicsNode to a mask image.
@@ -23,12 +25,12 @@ public interface Mask extends Filter {
     /**
      * The region to which this mask applies
      */
-    public FilterRegion getFilterRegion();
+    public Rectangle2D getFilterRegion();
 
     /**
      * Returns the filter region to which this mask applies
      */
-    public void setFilterRegion(FilterRegion filterRegion);
+    public void setFilterRegion(Rectangle2D filterRegion);
 
     /**
      * The source to be masked by the mask node.

@@ -13,6 +13,7 @@ import java.awt.Composite;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Rectangle2D;
 
 import java.io.StringReader;
 
@@ -23,7 +24,6 @@ import org.apache.batik.bridge.GVTBuilder;
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.Filter;
-import org.apache.batik.gvt.filter.FilterRegion;
 import org.apache.batik.gvt.filter.GraphicsNodeRable;
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
 import org.apache.batik.gvt.filter.Mask;
@@ -61,16 +61,19 @@ public class SVGMaskElementBridge
                            Element maskedElement) {
 
         CSSStyleDeclaration cssDecl
-            = bridgeContext.getViewCSS().getComputedStyle(maskElement, null);
+            = bridgeContext.getViewCSS().getComputedStyle
+            (maskElement, null);
 
         UnitProcessor.Context uctx
-            = new DefaultUnitProcessorContext(bridgeContext, cssDecl);
+            = new DefaultUnitProcessorContext(bridgeContext, 
+                                              cssDecl);
 
         // Get the mask region
-        FilterRegion maskRegion = SVGUtilities.convertMaskRegion(maskElement,
-                                                                 maskedElement,
-                                                                 maskedNode,
-                                                                 uctx);
+        Rectangle2D maskRegion 
+            = SVGUtilities.convertMaskRegion(maskElement,
+                                             maskedElement,
+                                             maskedNode,
+                                             uctx);
 
         if(maskRegion == null) {
             throw new Error();

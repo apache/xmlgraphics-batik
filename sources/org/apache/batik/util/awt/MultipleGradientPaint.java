@@ -12,8 +12,6 @@ import java.awt.*;
 import java.awt.geom.*;
 import java.awt.image.*;
 
-import org.apache.batik.util.awt.geom.AffineTransformSource;
-
 /** This is the superclass for Paints which use a multiple color 
  * gradient to fill in their raster.  It provides storage for variables and
  * enumerated values common to LinearGradientPaint and RadialGradientPaint.
@@ -37,7 +35,7 @@ abstract class MultipleGradientPaint implements Paint {
     protected Color[] colors;
 
     /** Transform to apply to gradient. */
-    protected AffineTransformSource gradientTransform;
+    protected AffineTransform gradientTransform;
 
     /** The method to use when painting out of the gradient bounds. */
     protected CycleMethodEnum cycleMethod;
@@ -108,7 +106,7 @@ abstract class MultipleGradientPaint implements Paint {
 				 Color[] colors, 
 				 CycleMethodEnum cycleMethod, 
 				 ColorSpaceEnum colorSpace,
-				 AffineTransformSource gradientTransform) {	
+				 AffineTransform gradientTransform) {	
 	
 	if (fractions == null) {
 	    throw new IllegalArgumentException("Fractions array cannot be " +
@@ -159,7 +157,7 @@ abstract class MultipleGradientPaint implements Paint {
 	this.cycleMethod = cycleMethod;	
 
 	//copy the gradient transform
-	this.gradientTransform = (AffineTransformSource)gradientTransform.clone();
+	this.gradientTransform = (AffineTransform)gradientTransform.clone();
 
 	// Process transparency
 	boolean opaque = true;

@@ -19,11 +19,9 @@ import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.CompositeRable;
 import org.apache.batik.gvt.filter.CompositeRule;
 import org.apache.batik.gvt.filter.Filter;
-import org.apache.batik.gvt.filter.FilterRegion;
 import org.apache.batik.gvt.filter.PadMode;
 import org.apache.batik.refimpl.gvt.filter.ConcreteCompositeRable;
 import org.apache.batik.refimpl.gvt.filter.ConcretePadRable;
-import org.apache.batik.refimpl.gvt.filter.FilterSourceRegion;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.SVGUtilities;
 import org.apache.batik.util.UnitProcessor;
@@ -63,7 +61,7 @@ public class SVGFeMergeElementBridge implements FilterBridge,
                          Element filterElement,
                          Element filteredElement,
                          Filter in,
-                         FilterRegion filterRegion,
+                         Rectangle2D filterRegion,
                          Map filterMap){
 
         // Extract sources, they are defined in the filterElement's
@@ -100,20 +98,15 @@ public class SVGFeMergeElementBridge implements FilterBridge,
             srcs=tmp;
         }
 
-        FilterRegion defaultRegion = new FilterSourceRegion(srcs);
-        
-          // Get unit. Comes from parent node.
-        Node parentNode = filterElement.getParentNode();
-        String units = VALUE_USER_SPACE_ON_USE;
-        if((parentNode != null)
-           && (parentNode.getNodeType() == parentNode.ELEMENT_NODE)) {
-            units = ((Element)parentNode).
-                getAttributeNS(null, ATTR_PRIMITIVE_UNITS);
+        //
+        // The default region is the input sources regions union
+        //
+        Rectangle2D defaultRegion = srcs[0].getBounds2D();
+        for(int i=1; i<srcs.length; i++){
+            defaultRegion.add(srcs[i].getBounds2D());
         }
-        
-          //
-          // Now, extraact filter region
-          //
+
+
         CSSStyleDeclaration cssDecl
             = bridgeContext.getViewCSS().getComputedStyle(filterElement,
                                                           null);
@@ -122,15 +115,15 @@ public class SVGFeMergeElementBridge implements FilterBridge,
             = new DefaultUnitProcessorContext(bridgeContext,
                                               cssDecl);
         
-        final FilterRegion compositeArea
-            = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
-                                                        filteredElement,
-                                                        defaultRegion,
-                                                        units,
-                                                        filteredNode,
-                                                        uctx);
+        Rectangle2D primitiveRegion 
+            = SVGUtilities.convertFilterPrimitiveRegion2
+            (filterElement,
+             filteredElement,
+             defaultRegion,
+             filteredNode,
+             uctx);
         
-          // Now, do the Merge.
+        // Now, do the Merge.
         Vector srcsVec = new Vector(count);
         for (int i=0; i<count; i++)
             srcsVec.add(srcs[i]);
@@ -139,26 +132,13 @@ public class SVGFeMergeElementBridge implements FilterBridge,
         filter = new ConcreteCompositeRable(srcsVec, CompositeRule.OVER);
         
         filter = new ConcretePadRable(filter,
-                                      compositeArea.getRegion(),
-                                      PadMode.ZERO_PAD) {
-                public Rectangle2D getBounds2D(){
-                    setPadRect(compositeArea.getRegion());
-                    return super.getBounds2D();
-                }
-                
-                public java.awt.image.RenderedImage createRendering
-                    (java.awt.image.renderable.RenderContext rc){
-                    setPadRect(compositeArea.getRegion());
-                    return super.createRendering(rc);
-                }
-            };
+                                      primitiveRegion,
+                                      PadMode.ZERO_PAD);;
         
         
-          // Get result attribute and update map
+        // Get result attribute and update map
         String result = filterElement.getAttributeNS(null, ATTR_RESULT);
         if((result != null) && (result.trim().length() > 0)){
-              // The filter will be added to the filter map. Before
-              // we do that, append the filter region crop
             filterMap.put(result, filter);
         }
 

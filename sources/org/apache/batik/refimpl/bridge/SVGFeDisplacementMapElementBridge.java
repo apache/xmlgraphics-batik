@@ -18,7 +18,6 @@ import org.apache.batik.bridge.FilterBridge;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.ARGBChannel;
 import org.apache.batik.gvt.filter.Filter;
-import org.apache.batik.gvt.filter.FilterRegion;
 import org.apache.batik.gvt.filter.DisplacementMapRable;
 import org.apache.batik.gvt.filter.PadMode;
 import org.apache.batik.gvt.filter.PadRable;
@@ -62,7 +61,7 @@ public class SVGFeDisplacementMapElementBridge implements FilterBridge,
                          Element filterElement,
                          Element filteredElement,
                          Filter in,
-                         FilterRegion filterRegion,
+                         Rectangle2D filterRegion,
                          Map filterMap){
         //
         // Extract standard deviation
@@ -109,52 +108,44 @@ public class SVGFeDisplacementMapElementBridge implements FilterBridge,
                                           filteredElement,
                                           in, filterMap);
 
-        FilterRegion defaultRegion = new FilterSourceRegion(in);
-
-        // Get unit. Comes from parent node.
-        Node parentNode = filterElement.getParentNode();
-        String units = VALUE_USER_SPACE_ON_USE;
-        if((parentNode != null)
-           &&
-           (parentNode.getNodeType() == parentNode.ELEMENT_NODE)){
-            units = ((Element)parentNode).getAttributeNS
-                (null, ATTR_PRIMITIVE_UNITS);
+        //
+        // The default region is the union of the 
+        // input sources bounds unless in in is
+        // SourceGraphic, in which case the default
+        // is the filter chain's region
+        //
+        Filter sourceGraphics 
+            = (Filter)filterMap.get(VALUE_SOURCE_GRAPHIC);
+        
+        Rectangle2D defaultRegion 
+            = in1.getBounds2D();
+        defaultRegion.add(in2.getBounds2D());
+        
+        if(in1 == sourceGraphics){
+            defaultRegion = filterRegion;
         }
 
-        // Compute primitive region
         CSSStyleDeclaration cssDecl
             = bridgeContext.getViewCSS().getComputedStyle
             (filterElement,
              null);
-
+        
         UnitProcessor.Context uctx
-            = new DefaultUnitProcessorContext(bridgeContext,
-                                              cssDecl);
+            = new DefaultUnitProcessorContext
+                (bridgeContext,
+                 cssDecl);
 
-        final FilterRegion dispArea
-            = SVGUtilities.convertFilterPrimitiveRegion
+        Rectangle2D dispArea
+            = SVGUtilities.convertFilterPrimitiveRegion2
             (filterElement,
              filteredElement,
              defaultRegion,
-             units,
              filteredNode,
              uctx);
 
         PadRable pad 
             = new ConcretePadRable
-                (in,
-                 new Rectangle2D.Double(0, 0, 0, 0),
-                 PadMode.ZERO_PAD){
-            public Rectangle2D getBounds2D(){
-                setPadRect(dispArea.getRegion());
-                return super.getBounds2D();
-            }
-
-            public java.awt.image.RenderedImage createRendering(java.awt.image.renderable.RenderContext rc){
-                setPadRect(dispArea.getRegion());
-                return super.createRendering(rc);
-            }
-        };
+                (in, dispArea, PadMode.ZERO_PAD);
 
         // Build filter
         Vector sources = new Vector();
@@ -170,8 +161,6 @@ public class SVGFeDisplacementMapElementBridge implements FilterBridge,
             = filterElement.getAttributeNS(null,
                                            ATTR_RESULT);
         if((result != null) && (result.trim().length() > 0)){
-            // The filter will be added to the filter map. Before
-            // we do that, append the filter region crop
             filterMap.put(result, filter);
         }
 

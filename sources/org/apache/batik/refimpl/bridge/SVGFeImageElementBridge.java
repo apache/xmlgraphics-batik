@@ -25,12 +25,10 @@ import org.apache.batik.bridge.BridgeMutationEvent;
 import org.apache.batik.bridge.FilterBridge;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.Filter;
-import org.apache.batik.gvt.filter.FilterRegion;
 import org.apache.batik.gvt.filter.PadMode;
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
 import org.apache.batik.refimpl.gvt.filter.ConcreteAffineRable;
 import org.apache.batik.refimpl.gvt.filter.ConcretePadRable;
-import org.apache.batik.refimpl.gvt.filter.FilterSourceRegion;
 import org.apache.batik.refimpl.gvt.filter.RasterRable;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.SVGUtilities;
@@ -77,7 +75,7 @@ public class SVGFeImageElementBridge implements FilterBridge,
                          Element filterElement,
                          Element filteredElement,
                          Filter in,
-                         FilterRegion filterRegion,
+                         Rectangle2D filterRegion,
                          Map filterMap){
         SVGElement svgElement = (SVGElement) filterElement;
 
@@ -87,36 +85,28 @@ public class SVGFeImageElementBridge implements FilterBridge,
             return null;
         }
 
+        //
         // feImage's default region is that of the filter chain.
-        FilterRegion defaultRegion = filterRegion;
-        
-        // Get unit. Comes from parent node.
-        Node parentNode = filterElement.getParentNode();
-        String units = VALUE_USER_SPACE_ON_USE;
-        if((parentNode != null)
-           && (parentNode.getNodeType() == parentNode.ELEMENT_NODE)) {
-            units = ((Element)parentNode).
-                getAttributeNS(null, ATTR_PRIMITIVE_UNITS);
-        }
-        
         //
-        // Now, extraact filter region
-        //
+        Rectangle2D defaultRegion = filterRegion;
+
         CSSStyleDeclaration cssDecl
-            = bridgeContext.getViewCSS().getComputedStyle(filterElement,
-                                                          null);
+            = bridgeContext.getViewCSS().getComputedStyle
+            (filterElement,
+             null);
         
         UnitProcessor.Context uctx
             = new DefaultUnitProcessorContext(bridgeContext,
                                               cssDecl);
         
-        final FilterRegion primitiveRegion
-            = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
-                                                        filteredElement,
-                                                        defaultRegion,
-                                                        units,
-                                                        filteredNode,
-                                                        uctx);
+        Rectangle2D primitiveRegion 
+            = SVGUtilities.convertFilterPrimitiveRegion2
+            (filterElement,
+             filteredElement,
+             defaultRegion,
+             filteredNode,
+             uctx);
+
         Filter filter = null;
         if (uriStr.startsWith(PROTOCOL_DATA))
             filter = RasterRable.create(uriStr, null);
@@ -164,25 +154,11 @@ public class SVGFeImageElementBridge implements FilterBridge,
                 // have the same behavior as the <use> element
                 // <!> FIX ME? I THINK THIS IS ONLY PARTIALLY IMPLEMENTING THE
                 //     SPEC. 
-                filter
-                    = new ConcreteAffineRable(filter, new AffineTransform()){
-                            public Rectangle2D getBounds2D(){
-                                return primitiveRegion.getRegion();
-                            }
+                // <!> TO DO : HANDLE TRANSFORM
+                AffineTransform at = new AffineTransform();
+                at.translate(primitiveRegion.getX(), primitiveRegion.getY());
 
-                            private void computeTransform(){
-                                Rectangle2D bounds = getSource().getBounds2D();
-                                Rectangle2D region = primitiveRegion.getRegion();
-                                AffineTransform at = new AffineTransform();
-                                at.translate(region.getX(), region.getY());
-                                setAffine(at);
-                            }
-                                
-                            public RenderedImage createRendering(RenderContext rc){
-                                computeTransform();
-                                return super.createRendering(rc);
-                            }
-                        };
+                filter = new ConcreteAffineRable(filter, at);
                 
             } catch (Exception ex) {
                 // 
@@ -192,63 +168,25 @@ public class SVGFeImageElementBridge implements FilterBridge,
                 //
                 filter = RasterRable.create(url, null);
 
-                filter
-                    = new ConcreteAffineRable(filter, new AffineTransform()){
-                            public Rectangle2D getBounds2D(){
-                                return primitiveRegion.getRegion();
-                            }
+                Rectangle2D bounds = filter.getBounds2D();
+                AffineTransform scale = new AffineTransform();
+                scale.translate(primitiveRegion.getX(), primitiveRegion.getY());
+                scale.scale(primitiveRegion.getWidth()/bounds.getWidth(),
+                            primitiveRegion.getHeight()/bounds.getHeight());
+                scale.translate(-bounds.getX(), -bounds.getY());
 
-                            public AffineTransform getAffine() {
-                                computeTransform();
-                                return super.getAffine();
-                            }
-                            
-                            private void computeTransform() {
-                                Rectangle2D bounds = getSource().getBounds2D();
-                                Rectangle2D region = primitiveRegion.getRegion();
-                                AffineTransform scale = new AffineTransform();
-                                scale.translate(region.getX(), region.getY());
-                                scale.scale(region.getWidth()/bounds.getWidth(),
-                                            region.getHeight()/bounds.getHeight());
-                                scale.translate(-bounds.getX(), -bounds.getY());
-
-                                setAffine(scale);
-                            }
-                                
-                            public RenderedImage createRendering(RenderContext rc){
-                                computeTransform();
-                                return super.createRendering(rc);
-                            }
-                        };
+                filter = new ConcreteAffineRable(filter, scale);
             }
         }
         
         filter = new ConcretePadRable(filter,
-                                      new Rectangle2D.Double(0, 0, 0, 0),
-                                      PadMode.ZERO_PAD) {
-                public Rectangle2D getBounds2D(){
-                    setPadRect(primitiveRegion.getRegion());
-                    return super.getBounds2D();
-                }
-
-                public Rectangle2D getPadRect(){
-                    setPadRect(primitiveRegion.getRegion());
-                    return super.getPadRect();
-                }
-                
-                public java.awt.image.RenderedImage createRendering
-                    (java.awt.image.renderable.RenderContext rc){
-                    setPadRect(primitiveRegion.getRegion());
-                    return super.createRendering(rc);
-                }
-            };
+                                      primitiveRegion,
+                                      PadMode.ZERO_PAD);
         
         
         // Get result attribute and update map
         String result = filterElement.getAttributeNS(null, ATTR_RESULT);
         if((result != null) && (result.trim().length() > 0)){
-            // The filter will be added to the filter map. Before
-            // we do that, append the filter region crop
             filterMap.put(result, filter);
         }
 

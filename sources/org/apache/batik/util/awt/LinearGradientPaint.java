@@ -12,9 +12,6 @@ import java.awt.*;
 import java.awt.geom.*;
 import java.awt.image.*;
 
-import org.apache.batik.util.awt.geom.AffineTransformSource;
-import org.apache.batik.util.awt.geom.DefaultAffineTransformSource;
-
 /**
  * The <code>LinearGradientPaint</code> class provides a way to fill
  * a {@link Shape} with a linear color gradient pattern.  The user may
@@ -250,42 +247,6 @@ public final class LinearGradientPaint extends MultipleGradientPaint {
                                CycleMethodEnum cycleMethod, 
                                ColorSpaceEnum colorSpace, 
                                AffineTransform gradientTransform) {
-        this(start, end, fractions, colors, cycleMethod, colorSpace, new DefaultAffineTransformSource(gradientTransform));
-    }
-
-
-    /**<p>
-     * Constructs a <code>LinearGradientPaint</code>.
-     *
-     * @param start the gradient axis start <code>Point</code> in user space
-     *
-     * @param end the gradient axis end <code>Point</code> in user space
-     *
-     * @param fractions numbers ranging from 0.0 to 1.0 specifying the 
-     * distribution of colors along the gradient
-     *
-     * @param colors array of colors corresponding to each fractional value
-     *
-     * @param cycleMethod either NO_CYCLE, REFLECT, or REPEAT
-     *
-     * @param colorSpace which colorspace to use for interpolation, 
-     * either SRGB or LINEAR_RGB
-     *
-     * @param gradientTransform transform to apply to the gradient
-     *     
-     * @throws NullPointerException if one of the points is null, 
-     * or gradientTransform is null
-     *
-     * @throws IllegalArgumentException if start and end points are the 
-     * same points, or if fractions.length != colors.length, or if colors 
-     * is less than 2 in size.
-     *
-     */
-    public LinearGradientPaint(Point2D start, Point2D end, float[] fractions,
-                               Color[] colors,
-                               CycleMethodEnum cycleMethod, 
-                               ColorSpaceEnum colorSpace, 
-                               AffineTransformSource gradientTransform) {
         super(fractions, colors, cycleMethod, colorSpace, gradientTransform);
 
         //
@@ -338,7 +299,7 @@ public final class LinearGradientPaint extends MultipleGradientPaint {
                                       RenderingHints hints) {
 
         //incorporate the gradient transform
-        transform.concatenate(gradientTransform.getTransform()); 
+        transform.concatenate(gradientTransform); 
 
         try {
             return new LinearGradientPaintContext(cm, 

@@ -22,7 +22,6 @@ import org.apache.batik.bridge.FilterBridge;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.Clip;
 import org.apache.batik.gvt.filter.Filter;
-import org.apache.batik.gvt.filter.FilterRegion;
 import org.apache.batik.gvt.filter.PadMode;
 import org.apache.batik.gvt.filter.PadRable;
 import org.apache.batik.gvt.filter.TurbulenceRable;
@@ -65,7 +64,7 @@ public class SVGFeTurbulenceElementBridge implements FilterBridge,
                          Element filterElement,
                          Element filteredElement,
                          Filter in,
-                         FilterRegion filterRegion,
+                         Rectangle2D filterRegion,
                          Map filterMap){
         // System.out.println("In SVGFeTurbulenceElementBridge" );
 
@@ -143,28 +142,23 @@ public class SVGFeTurbulenceElementBridge implements FilterBridge,
         // Now, build a ConcreteTurbulenceRable from the parameters
         //
 
-        // Turbulence region is defined by the filter region
+        // Default region is the filter chain region
+        Rectangle2D defaultRegion = filterRegion;
+
         CSSStyleDeclaration cssDecl
-            = bridgeContext.getViewCSS().getComputedStyle(filterElement, null);
+            = bridgeContext.getViewCSS().getComputedStyle(filterElement,
+                                                          null);
+        
         UnitProcessor.Context uctx
-            = new DefaultUnitProcessorContext(bridgeContext, cssDecl);
+            = new DefaultUnitProcessorContext(bridgeContext,
+                                              cssDecl);
 
-        // Get unit. Comes from parent node.
-        Node parentNode = filterElement.getParentNode();
-        String units = VALUE_USER_SPACE_ON_USE;
-        if((parentNode != null)
-           &&
-           (parentNode.getNodeType() == parentNode.ELEMENT_NODE)){
-            units = ((Element)parentNode).getAttributeNS(null, ATTR_PRIMITIVE_UNITS);
-        }
-
-        final FilterRegion turbulenceRegion
-            = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
-                                                        filteredElement,
-                                                        filterRegion,
-                                                        units,
-                                                        filteredNode,
-                                                        uctx);
+        Rectangle2D turbulenceRegion
+            = SVGUtilities.convertFilterPrimitiveRegion2(filterElement,
+                                                         filteredElement,
+                                                         defaultRegion,
+                                                         filteredNode,
+                                                         uctx);
 
         TurbulenceRable turbulenceRable
             = new ConcreteTurbulenceRable(turbulenceRegion);
@@ -176,16 +170,15 @@ public class SVGFeTurbulenceElementBridge implements FilterBridge,
         turbulenceRable.setStitched(stitchTiles);
         turbulenceRable.setFractalNoise(feTurbulenceType);
 
-        /*Clip clip 
-            = new ConcreteClipRable(turbulenceRable,
-                                    new Rectangle(0, 0, 0, 0)){
-                    public RenderedImage createRendering(RenderContext rc){
-                        setClipPath(turbulenceRegion.getRegion());
-                        return super.createRendering(rc);
-                    }
-                };
+        // Get result attribute and update map
+        String result
+            = filterElement.getAttributeNS(null,
+                                           ATTR_RESULT);
+        
+        if((result != null) && (result.trim().length() > 0)){
+            filterMap.put(result, turbulenceRable);
+        }
 
-                return clip;*/
         return turbulenceRable;
     }
 

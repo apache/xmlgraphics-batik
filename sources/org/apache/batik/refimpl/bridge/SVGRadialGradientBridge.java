@@ -23,7 +23,6 @@ import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.SVGUtilities;
 import org.apache.batik.util.UnitProcessor;
 import org.apache.batik.util.awt.RadialGradientPaint;
-import org.apache.batik.util.awt.geom.AffineTransformSource;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.css.CSSPrimitiveValue;
@@ -87,6 +86,9 @@ public class SVGRadialGradientBridge extends SVGGradientBridge
         // Get gradient units
         //
         String units = paintElement.getAttributeNS(null, ATTR_GRADIENT_UNITS);
+        if(units.length() == 0){
+            units = VALUE_OBJECT_BOUNDING_BOX;
+        }
 
         //
         // Extract cx, cy, fx, fy and r
@@ -148,10 +150,9 @@ public class SVGRadialGradientBridge extends SVGGradientBridge
         // System.out.println("gradientTransform : " + at);
         // System.out.println("shearX            : " + at.getShearX());
 
-        AffineTransformSource ats 
-            = SVGUtilities.convertAffineTransformSource(at, 
-                                                        paintedNode, 
-                                                        units);
+        at = SVGUtilities.convertAffineTransform(at, 
+                                                 paintedNode, 
+                                                 units);
 
         //
         // Extract stop colors and intervals
@@ -186,7 +187,6 @@ public class SVGRadialGradientBridge extends SVGGradientBridge
         //
         // Extract the color interpolation property
         //
-        cssDecl = ctx.getViewCSS().getComputedStyle(paintedElement, null);
         CSSPrimitiveValue colorInterpolation
             = (CSSPrimitiveValue) cssDecl.getPropertyCSSValue(COLOR_INTERPOLATION_PROPERTY);
         
@@ -215,7 +215,7 @@ public class SVGRadialGradientBridge extends SVGGradientBridge
             paint = new RadialGradientPaint(c, radius, f, offsets, colors,
                                             cycleMethod,
                                             RadialGradientPaint.SRGB,
-                                            ats);
+                                            at);
         }
         return paint;
     }

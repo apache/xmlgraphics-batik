@@ -20,7 +20,6 @@ import java.awt.image.ColorModel;
 
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.PatternPaint;
-import org.apache.batik.gvt.filter.FilterRegion;
 
 import org.apache.batik.util.awt.geom.AffineTransformSource;
 
@@ -40,7 +39,7 @@ public class ConcretePatternPaint implements PatternPaint {
     /**
      * The region to which this paint is constrained
      */
-    private FilterRegion patternRegion;
+    private Rectangle2D patternRegion;
 
     /**
      * Additional pattern transform, added on top of the
@@ -59,11 +58,11 @@ public class ConcretePatternPaint implements PatternPaint {
      * Source for an addition transform to apply to the 
      * pattern content node
      */
-    private AffineTransformSource nodeTransformSource;
+    private AffineTransform nodeTransform;
 
     /**
      * @param node Used to generate the paint pixel pattern
-     * @param nodeTransformSource Source for an additional transform to 
+     * @param nodeTransform Additional transform to 
      *        set on the pattern content node.
      * @param patternRegion Region to which this paint is constrained
      * @param overflow controls whether or not the patternRegion
@@ -72,8 +71,8 @@ public class ConcretePatternPaint implements PatternPaint {
      *        top of the user space to device space transform.
      */
     public ConcretePatternPaint(GraphicsNode node,
-                                AffineTransformSource nodeTransformSource,
-                                FilterRegion patternRegion,
+                                AffineTransform nodeTransform,
+                                Rectangle2D patternRegion,
                                 boolean overflow,
                                 AffineTransform patternTransform){
         if(node == null){
@@ -85,7 +84,7 @@ public class ConcretePatternPaint implements PatternPaint {
         }
 
         this.node = node;
-        this.nodeTransformSource = nodeTransformSource;
+        this.nodeTransform = nodeTransform;
         this.patternRegion = patternRegion;
         this.overflow = overflow;
         this.patternTransform = patternTransform;
@@ -96,7 +95,7 @@ public class ConcretePatternPaint implements PatternPaint {
     }
 
     public Rectangle2D getPatternRect(){
-        return patternRegion.getRegion();
+        return (Rectangle2D)patternRegion.clone();
     }
 
     public boolean isOverflow(){
@@ -112,8 +111,6 @@ public class ConcretePatternPaint implements PatternPaint {
                                       Rectangle2D userBounds, 
                                       AffineTransform xform,
                                       RenderingHints hints) {
-        System.out.println("deviceBounds   : " + deviceBounds);
-
         //
         // Concatenate the patternTransform to xform
         //
@@ -136,7 +133,7 @@ public class ConcretePatternPaint implements PatternPaint {
 
         return new ConcretePatternPaintContext(cm, xform,
                                                hints, node, 
-                                               nodeTransformSource,
+                                               nodeTransform,
                                                patternRegion,
                                                overflow);
     }

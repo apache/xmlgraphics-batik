@@ -21,14 +21,12 @@ import org.apache.batik.util.awt.geom.AffineTransformSource;
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GVTFactory;
-import org.apache.batik.gvt.filter.FilterRegion;
 import org.apache.batik.parser.AWTTransformProducer;
 import org.apache.batik.parser.ParserFactory;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.SVGUtilities;
 import org.apache.batik.util.UnitProcessor;
 
-import org.apache.batik.refimpl.gvt.AffineTransformSourceBoundingBox;
 import org.apache.batik.refimpl.gvt.ConcretePatternPaint;
 
 import org.apache.batik.gvt.filter.Filter;
@@ -151,17 +149,11 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
         //
         // Get pattern region
         //
-        FilterRegion patternRegion 
+        Rectangle2D patternRegion 
             = SVGUtilities.convertPatternRegion(paintElement,
                                                 paintedElement,
                                                 paintedNode,
                                                 uctx);
-
-        if(patternRegion == null) {
-            throw new Error();
-        } else {
-            // System.out.println("Pattern region : " + patternRegion);
-        }
 
         //
         // Get the transform that will initialize the 
@@ -170,7 +162,7 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
         boolean hasViewBox = false;
 
         // viewBox -> patterRegion (viewport)
-        AffineTransformSource preserveAspectRatioTransformSource
+        AffineTransform preserveAspectRatioTransform
             = null;
 
         String viewBoxAttr 
@@ -179,11 +171,12 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
 
         Rectangle2D viewBox = null;
         if(viewBoxAttr.length() > 0){
-            preserveAspectRatioTransformSource
-                = new PreserveAspectRatioTransformSource(patternRegion,
-                                                         (SVGElement)paintElement,
-                                                         ctx.getParserFactory()
-                                                         );
+            preserveAspectRatioTransform
+                = SVGUtilities.getPreserveAspectRatioTransform
+                ((SVGElement)paintElement,
+                 (float)patternRegion.getWidth(),
+                 (float)patternRegion.getHeight(),
+                 ctx.getParserFactory());
 
             float vb[] = SVGUtilities.parseViewBoxAttribute(viewBoxAttr);
             viewBox = new Rectangle2D.Float(vb[0], vb[1],
@@ -195,13 +188,18 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
         // Compute transform on pattern content. This is only necessary if there
         // is no viewBox
         //
-        AffineTransformSource patternContentTransformSource = null;
+        AffineTransform patternContentTransform = null;
 
         if(!hasViewBox){
             String patternContentUnits 
                 = paintElement.getAttributeNS(null, ATTR_PATTERN_CONTENT_UNITS);
             if(VALUE_OBJECT_BOUNDING_BOX.equals(patternContentUnits)){
-                patternContentTransformSource = new AffineTransformSourceBoundingBox(paintedNode);
+                Rectangle2D bounds = paintedNode.getGeometryBounds();
+                patternContentTransform = new AffineTransform();
+                patternContentTransform.translate(bounds.getX(),
+                                                  bounds.getY());
+                patternContentTransform.scale(bounds.getWidth(),
+                                              bounds.getHeight());
             }
         }
 
@@ -212,9 +210,9 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
         //  + one for the viewBox to patternRegion transform
         //
         GVTFactory gvtFactory = ctx.getGVTFactory();
-        AffineTransformSource nodeTransformSource = null;
+        AffineTransform nodeTransform = null;
         if(hasViewBox){
-            nodeTransformSource = preserveAspectRatioTransformSource;
+            nodeTransform = preserveAspectRatioTransform;
             if(!overflow){
                 // Need to do clipping
                 CompositeGraphicsNode newPatternContentNode 
@@ -238,15 +236,14 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
             // There may be an additional boundingBoxSpace to 
             // user space transform needed.
             //
-            nodeTransformSource = patternContentTransformSource;
+            nodeTransform = patternContentTransform;
         }
 
         //
         // Now, build a Paint from the pattern content
         //
-
         Paint paint = new ConcretePatternPaint(patternContentNode, 
-                                               nodeTransformSource,
+                                               nodeTransform,
                                                patternRegion, 
                                                overflow,
                                                patternTransform);
@@ -254,68 +251,4 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
         return paint;
 
     }
-
-    //
-    // Lazily evaluates the preserveAspectRatio transform based on the
-    // input FilterRegion's size.
-    //
-    static class PreserveAspectRatioTransformSource implements AffineTransformSource {
-        /**
-         * Region to which the input region
-         * should be fitted
-         */
-        FilterRegion region;
-
-        /**
-         * Element for which the transform is computed
-         */
-        SVGElement element;
-
-        /**
-         * ParserFactor
-         */
-        ParserFactory parserFactory;
-
-        public PreserveAspectRatioTransformSource(FilterRegion region,
-                                                  SVGElement element,
-                                                  ParserFactory parserFactory){
-            if(region == null){
-                throw new IllegalArgumentException();
-            }
-
-            if(element == null){
-                throw new IllegalArgumentException();
-            }
-
-            if(parserFactory == null){
-                throw new IllegalArgumentException();
-            }
-
-            this.region = region;
-            this.element = element;
-            this.parserFactory = parserFactory;
-        }
-
-        public AffineTransform getTransform(){
-            Rectangle2D b = region.getRegion();
-            AffineTransform txf 
-                = SVGUtilities.getPreserveAspectRatioTransform
-                (element,
-                 (float)b.getWidth(),
-                 (float)b.getHeight(),
-                 parserFactory);
-
-            // System.out.println("PAR Txf Tx : " + txf.getTranslateX());
-            // System.out.println("PAR Txf Ty : " + txf.getTranslateY());
-            // System.out.println("PAR Txf Sx : " + txf.getScaleX());
-            // System.out.println("PAR Txf Sy : " + txf.getScaleY());
-
-            return txf;
-        }
-
-        public Object clone(){
-            return new PreserveAspectRatioTransformSource(region, element, parserFactory);
-        }
-    }
-
 }

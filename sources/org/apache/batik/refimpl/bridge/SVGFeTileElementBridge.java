@@ -8,11 +8,12 @@
 
 package org.apache.batik.refimpl.bridge;
 
+import java.awt.geom.Rectangle2D;
+
 import java.util.Map;
 
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.Filter;
-import org.apache.batik.gvt.filter.FilterRegion;
 import org.apache.batik.gvt.filter.TileRable;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeMutationEvent;
@@ -27,7 +28,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.css.CSSStyleDeclaration;
 
 import org.apache.batik.refimpl.gvt.filter.ConcreteTileRable;
-import org.apache.batik.refimpl.gvt.filter.FilterSourceRegion;
 
 /**
  * This class bridges an SVG <tt>feTile</tt> filter element 
@@ -58,7 +58,7 @@ public class SVGFeTileElementBridge implements FilterBridge, SVGConstants {
                          Element filterElement,
                          Element filteredElement,
                          Filter in,
-                         FilterRegion filterRegion,
+                         Rectangle2D filterRegion,
                          Map filterMap){
         //
         // Tile region is defined by the filter region
@@ -75,26 +75,14 @@ public class SVGFeTileElementBridge implements FilterBridge, SVGConstants {
         // Get the tiled region. For feTile, the default for the 
         // filter primitive subregion is the parent filter region.
         //
-        // Get unit. Comes from parent node.
-        Node parentNode = filterElement.getParentNode();
-        String units = VALUE_USER_SPACE_ON_USE;
-        if((parentNode != null)
-           &&
-           (parentNode.getNodeType() == parentNode.ELEMENT_NODE)){
-            units = ((Element)parentNode).getAttributeNS(null, ATTR_PRIMITIVE_UNITS);
-            if(units.length() == 0){
-                units = VALUE_USER_SPACE_ON_USE;
-            }
-        }
+        Rectangle2D defaultRegion = filterRegion;
 
-
-        final FilterRegion tiledRegion 
-            = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
-                                                        filteredElement,
-                                                        filterRegion,
-                                                        units,
-                                                        filteredNode,
-                                                        uctx);
+        Rectangle2D tiledRegion 
+            = SVGUtilities.convertFilterPrimitiveRegion2(filterElement,
+                                                         filteredElement,
+                                                         defaultRegion,
+                                                         filteredNode,
+                                                         uctx);
         //
         // Get the tile source
         //
@@ -115,7 +103,7 @@ public class SVGFeTileElementBridge implements FilterBridge, SVGConstants {
             tileRable 
                 = new ConcreteTileRable(in, 
                                         tiledRegion, 
-                                        new FilterSourceRegion(in), 
+                                        in.getBounds2D(),
                                         false);
         }
 
