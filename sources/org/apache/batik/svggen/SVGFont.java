@@ -207,7 +207,7 @@ public class SVGFont extends AbstractSVGConverter {
      */
     public SVGFontDescriptor toSVG(Font font, FontRenderContext frc) {
 
-        String fontSize = "" + font.getSize();
+        String fontSize = "" + doubleString(font.getSize2D());
         String fontWeight = weightToSVG(font);
         String fontStyle = styleToSVG(font);
         String fontFamilyStr = familyToSVG(font);
