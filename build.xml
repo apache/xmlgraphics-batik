@@ -116,7 +116,8 @@ To display the available targets type:
     <echo message=""/>
     <echo message=" Available targets are:"/>
     <echo message=""/>
-    <echo message="   build      --> build the distributions"/>
+    <echo message="   dist-zip   --> build the zip distributions"/>
+    <echo message="   dist-tgz   --> build the tgz distributions"/>
     <echo message="   compile    --> compiles the source code"/>
     <echo message="   svgviewer  --> runs the SVG viewer"/>
     <echo message="   regard     --> runs the regard regression utility"/>
