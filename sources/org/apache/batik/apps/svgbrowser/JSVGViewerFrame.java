@@ -89,6 +89,8 @@ import org.apache.batik.swing.JSVGCanvas;
 
 import org.apache.batik.swing.svg.GVTTreeBuilderEvent;
 import org.apache.batik.swing.svg.GVTTreeBuilderListener;
+import org.apache.batik.swing.svg.LinkActivationEvent;
+import org.apache.batik.swing.svg.LinkActivationListener;
 import org.apache.batik.swing.svg.SVGDocumentLoaderEvent;
 import org.apache.batik.swing.svg.SVGDocumentLoaderListener;
 import org.apache.batik.swing.svg.SVGFileFilter;
@@ -138,7 +140,8 @@ public class JSVGViewerFrame
     implements ActionMap,
                SVGDocumentLoaderListener,
                GVTTreeBuilderListener,
-               GVTTreeRendererListener {
+               GVTTreeRendererListener,
+               LinkActivationListener {
 
     /**
      * The gui resources file name
@@ -430,6 +433,7 @@ public class JSVGViewerFrame
         svgCanvas.addSVGDocumentLoaderListener(this);
         svgCanvas.addGVTTreeBuilderListener(this);
         svgCanvas.addGVTTreeRendererListener(this);
+        svgCanvas.addLinkActivationListener(this);
 
         svgCanvas.addMouseMotionListener(new MouseMotionAdapter() {
                 public void mouseMoved(MouseEvent e) {
@@ -1591,6 +1595,24 @@ public class JSVGViewerFrame
         statusBar.setMainMessage("");
         stopAction.update(false);
         svgCanvas.setCursor(DEFAULT_CURSOR);
+    }
+
+    // LinkActivationListener /////////////////////////////////////////
+
+    /**
+     * Called when a link was activated.
+     */
+    public void linkActivated(LinkActivationEvent e) {
+        String s = e.getReferencedURI();
+        if (s.indexOf("#") != -1) {
+            localHistory.update(e.getReferencedURI());
+            backAction.update();
+            forwardAction.update();
+
+            transformHistory = new TransformHistory();
+            previousTransformAction.update();
+            nextTransformAction.update();
+        }
     }
 
     /**

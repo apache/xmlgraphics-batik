@@ -107,6 +107,11 @@ public class JSVGComponent extends JGVTComponent {
     protected List gvtTreeBuilderListeners = new LinkedList();
 
     /**
+     * The link activation listeners.
+     */
+    protected List linkActivationListeners = new LinkedList();
+
+    /**
      * The user agent.
      */
     protected UserAgent userAgent;
@@ -362,6 +367,20 @@ public class JSVGComponent extends JGVTComponent {
      */
     public void removeGVTTreeBuilderListener(GVTTreeBuilderListener l) {
         gvtTreeBuilderListeners.remove(l);
+    }
+
+    /**
+     * Adds a LinkActivationListener to this component.
+     */
+    public void addLinkActivationListener(LinkActivationListener l) {
+        linkActivationListeners.add(l);
+    }
+
+    /**
+     * Removes a LinkActivationListener from this component.
+     */
+    public void removeLinkActivationListener(LinkActivationListener l) {
+        linkActivationListeners.remove(l);
     }
 
     /**
@@ -725,6 +744,7 @@ public class JSVGComponent extends JGVTComponent {
                     href = newURI.toString();
 
                     svgUserAgent.openLink(href);
+                    fireLinkActivatedEvent(elt, href);
                     return;
                 }
             }
@@ -747,10 +767,29 @@ public class JSVGComponent extends JGVTComponent {
                         fragmentIdentifier = s;
                         computeRenderingTransform();
                     }
+                    fireLinkActivatedEvent(elt, newURI.toString());
                     return;
                 }
             }
+            fireLinkActivatedEvent(elt, href);
             JSVGComponent.this.loadSVGDocument(href);
+        }
+
+        /**
+         * Fires a LinkActivatedEvent.
+         */
+        protected void fireLinkActivatedEvent(SVGAElement elt, String href) {
+            Object[] ll = linkActivationListeners.toArray();
+            
+            if (ll.length > 0) {
+                LinkActivationEvent ev;
+                ev = new LinkActivationEvent(JSVGComponent.this, elt, href);
+
+                for (int i = 0; i < ll.length; i++) {
+                    LinkActivationListener l = (LinkActivationListener)ll[i];
+                    l.linkActivated(ev);
+                }
+            }
         }
 
         /**
