@@ -46,7 +46,7 @@ public interface GraphicsNode {
      * and PaintContext instances.
      */
     public static final RenderingHints.Key KEY_AREA_OF_INTEREST =
-        new AreaOfInterestKey();
+        new AreaOfInterestHintKey();
 
     //
     // Properties methods
