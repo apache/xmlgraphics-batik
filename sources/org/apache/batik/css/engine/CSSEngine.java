@@ -2153,47 +2153,37 @@ public abstract class CSSEngine {
                 return;
             }
 
-            CSSStylableElement elt = (CSSStylableElement)et;
-            StyleMap style = elt.getComputedStyleMap(null);
-            if (style == null) {
-                // Nobody ever asked for the computed style of the
-                // element, so it does not require an update...
-                return;
-            }
-
             MutationEvent mevt = (MutationEvent)evt;
             Node attr = mevt.getRelatedNode();
             String attrNS = attr.getNamespaceURI();
-            if ((attrNS == null && styleNamespaceURI == null) ||
-                (attrNS != null && attrNS.equals(styleNamespaceURI))) {
-                String name = (attrNS == null)
-                    ? attr.getNodeName()
-                    : attr.getLocalName();
-                if (name.equals(styleLocalName)) {
-                    // The style declaration attribute has been modified.
-
-                    inlineStyleAttributeUpdated(elt, style, mevt);
-
-                    return;
-                }
-            }
-
             String name = (attrNS == null)
                 ? attr.getNodeName()
                 : attr.getLocalName();
-                    
-            if (nonCSSPresentationalHints != null) {
-                if ((attrNS == null &&
-                     nonCSSPresentationalHintsNamespaceURI == null) ||
-                    (attrNS != null &&
-                     attrNS.equals(nonCSSPresentationalHintsNamespaceURI))) {
-                    if (nonCSSPresentationalHints.contains(name)) {
-                        // The 'name' attribute which represents a non CSS
-                        // presentational hint has been modified.
-
-                        nonCSSPresentationalHintUpdated(elt, style, name,
-                                                        mevt);
+                
+            CSSStylableElement elt = (CSSStylableElement)et;
+            StyleMap style = elt.getComputedStyleMap(null);
+            if (style != null) {
+                if ((attrNS == null && styleNamespaceURI == null) ||
+                    (attrNS != null && attrNS.equals(styleNamespaceURI))) {
+                    if (name.equals(styleLocalName)) {
+                        // The style declaration attribute has been modified.
+                        inlineStyleAttributeUpdated(elt, style, mevt);
                         return;
+                    }
+                }
+
+                if (nonCSSPresentationalHints != null) {
+                    if ((attrNS == null &&
+                         nonCSSPresentationalHintsNamespaceURI == null) ||
+                        (attrNS != null &&
+                         attrNS.equals(nonCSSPresentationalHintsNamespaceURI))) {
+                        if (nonCSSPresentationalHints.contains(name)) {
+                            // The 'name' attribute which represents a non CSS
+                            // presentational hint has been modified.
+                            nonCSSPresentationalHintUpdated(elt, style, name,
+                                                            mevt);
+                            return;
+                        }
                     }
                 }
             }
@@ -2203,6 +2193,11 @@ public abstract class CSSEngine {
                 // An attribute has been modified, invalidate all the
                 // properties to correctly match attribute selectors.
                 invalidateProperties(elt, null);
+                for (Node n = elt.getNextSibling();
+                     n != null;
+                     n = n.getNextSibling()) {
+                    invalidateProperties(n, null);
+                }
             }
         }
     }
