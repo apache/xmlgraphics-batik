@@ -144,9 +144,9 @@ public class LocalHistory {
         if (++currentURI < visitedURIs.size()) {
             if (!visitedURIs.get(currentURI).equals(uri)) {
                 for (int i = currentURI + 1; i < visitedURIs.size(); i++) {
-                    JMenuItem mi = menu.getItem(index + i);
+                    JMenuItem mi = menu.getItem(index + i - 1);
                     group.remove(mi);
-                    menu.remove(index + i);
+                    menu.remove(index + i - 1);
                 }
                 visitedURIs = visitedURIs.subList(0, currentURI + 1);
             }
