@@ -93,7 +93,6 @@ public class SVGCircleElementBridge extends SVGShapeElementBridge {
     protected void buildShape(BridgeContext ctx,
                               Element e,
                               ShapeNode shapeNode) {
-
         UnitProcessor.Context uctx = UnitProcessor.createContext(ctx, e);
         String s;
 

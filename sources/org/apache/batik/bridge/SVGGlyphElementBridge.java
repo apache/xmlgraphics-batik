@@ -62,6 +62,7 @@ import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.font.Glyph;
 import org.apache.batik.gvt.font.GVTFontFace;
+import org.apache.batik.gvt.text.TextPaintInfo;
 import org.apache.batik.parser.AWTPathProducer;
 import org.apache.batik.parser.ParseException;
 import org.apache.batik.parser.PathParser;
@@ -111,9 +112,7 @@ public class SVGGlyphElementBridge extends AbstractSVGBridge
                              int glyphCode,
                              float fontSize,
                              GVTFontFace fontFace,
-                             Paint fillPaint,
-                             Paint strokePaint,
-                             Stroke stroke) {
+                             TextPaintInfo tpi) {
 
 
 
@@ -356,7 +355,6 @@ public class SVGGlyphElementBridge extends AbstractSVGBridge
         return new Glyph(unicode, names, orientation,
                          arabicForm, lang, horizOrigin, vertOrigin,
                          horizAdvX, vertAdvY, glyphCode, scale,
-                         fillPaint, strokePaint, stroke,
-                         dShape, glyphContentNode);
+                         tpi, dShape, glyphContentNode);
     }
 }

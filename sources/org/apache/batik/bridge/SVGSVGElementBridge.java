@@ -94,6 +94,13 @@ public class SVGSVGElementBridge extends SVGGElementBridge {
     }
 
     /**
+     * Creates a <tt>CompositeGraphicsNode</tt>.
+     */
+    protected GraphicsNode instantiateGraphicsNode() {
+        return new CanvasGraphicsNode();
+    }
+
+    /**
      * Creates a <tt>GraphicsNode</tt> according to the specified parameters.
      *
      * @param ctx the bridge context to use
@@ -106,7 +113,8 @@ public class SVGSVGElementBridge extends SVGGElementBridge {
 	    return null;
 	}
 
-        CanvasGraphicsNode cgn = new CanvasGraphicsNode();
+        CanvasGraphicsNode cgn;
+        cgn = (CanvasGraphicsNode)instantiateGraphicsNode();
 
         UnitProcessor.Context uctx = UnitProcessor.createContext(ctx, e);
         String s;
@@ -236,6 +244,16 @@ public class SVGSVGElementBridge extends SVGGElementBridge {
     public void buildGraphicsNode(BridgeContext ctx,
                                   Element e,
                                   GraphicsNode node) {
+
+        // 'opacity'
+        node.setComposite(CSSUtilities.convertOpacity(e));
+        // 'filter'
+        node.setFilter(CSSUtilities.convertFilter(e, node, ctx));
+        // 'mask'
+        node.setMask(CSSUtilities.convertMask(e, node, ctx));
+        // 'pointer-events'
+        node.setPointerEventType(CSSUtilities.convertPointerEvents(e));
+
         initializeDynamicSupport(ctx, e, node);
 
         // Handle children elements such as <title>

@@ -76,6 +76,7 @@ import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
 import org.apache.batik.gvt.text.MarginInfo;
 import org.apache.batik.gvt.text.RegionInfo;
 import org.apache.batik.gvt.text.TextPath;
+import org.apache.batik.gvt.text.TextPaintInfo;
 import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -228,22 +229,17 @@ public class SVGFlowTextElementBridge extends SVGTextElementBridge
         }
     }
 
-    /**
-     * Adds painting attributes to an AttributedString.
-     */
-    protected void addPaintAttributes(AttributedString as,
-                                      Element element,
-                                      TextNode node,
-                                      TextDecoration textDecoration,
-                                      BridgeContext ctx) {
-        if (element.getNodeType()     != Node.ELEMENT_NODE) return;
+    protected void addNullPaintAttributes(AttributedString as, 
+                                          Element element,
+                                          BridgeContext ctx) {
+        if (element.getNodeType() != Node.ELEMENT_NODE) return;
         String eNS = element.getNamespaceURI();
         if ((!eNS.equals(getNamespaceURI())) &&
             (!eNS.equals(SVG_NAMESPACE_URI)))
             return;
         if (element.getLocalName()    != BATIK_EXT_FLOW_TEXT_TAG) {
             // System.out.println("Elem: " + element);
-            super.addPaintAttributes(as, element, node, textDecoration, ctx);
+            super.addNullPaintAttributes(as, element, ctx);
             return;
         }
 
@@ -255,7 +251,69 @@ public class SVGFlowTextElementBridge extends SVGTextElementBridge
             String ln = e.getLocalName();
             if (ln.equals(BATIK_EXT_FLOW_DIV_TAG)) {
                 // System.out.println("D Elem: " + e);
-                super.addPaintAttributes(as, e, node, textDecoration, ctx);
+                super.addNullPaintAttributes(as, e, ctx);
+                return;
+            }
+        }
+    }
+
+
+    protected void addChildNullPaintAttributes(AttributedString as,
+                                               Element element,
+                                               BridgeContext ctx) {
+        // Add Paint attributres for children of text element
+        for (Node child = element.getFirstChild();
+             child != null;
+             child = child.getNextSibling()) {
+            if (child.getNodeType() != Node.ELEMENT_NODE) {
+                continue;
+            }
+            String cNS = child.getNamespaceURI();
+            if ((!getNamespaceURI().equals(cNS)) &&
+                (!SVG_NAMESPACE_URI.equals(cNS))) {
+                continue;
+            }
+            String ln = child.getLocalName();
+            if (ln.equals(BATIK_EXT_FLOW_PARA_TAG) ||
+                ln.equals(BATIK_EXT_FLOW_REGION_BREAK_TAG) ||
+                ln.equals(BATIK_EXT_FLOW_LINE_TAG) ||
+                ln.equals(BATIK_EXT_FLOW_SPAN_TAG) ||
+                ln.equals(SVG_A_TAG) ||
+                ln.equals(SVG_TREF_TAG)) {
+                Element childElement = (Element)child;
+                addNullPaintAttributes(as, childElement, ctx);
+            }
+        }
+    }
+
+    /**
+     * Adds painting attributes to an AttributedString.
+     */
+    protected void addPaintAttributes(AttributedString as,
+                                      Element element,
+                                      TextNode node,
+                                      TextPaintInfo parentPI,
+                                      BridgeContext ctx) {
+        if (element.getNodeType() != Node.ELEMENT_NODE) return;
+        String eNS = element.getNamespaceURI();
+        if ((!eNS.equals(getNamespaceURI())) &&
+            (!eNS.equals(SVG_NAMESPACE_URI)))
+            return;
+        if (element.getLocalName()    != BATIK_EXT_FLOW_TEXT_TAG) {
+            // System.out.println("Elem: " + element);
+            super.addPaintAttributes(as, element, node, parentPI, ctx);
+            return;
+        }
+
+        for (Node n = element.getFirstChild();
+             n != null; n = n.getNextSibling()) {
+            if (n.getNodeType()     != Node.ELEMENT_NODE) continue;
+            if (!getNamespaceURI().equals(n.getNamespaceURI())) continue;
+            Element e = (Element)n;
+            String ln = e.getLocalName();
+            if (ln.equals(BATIK_EXT_FLOW_DIV_TAG)) {
+                // System.out.println("D Elem: " + e);
+                super.addPaintAttributes(as, e, node, parentPI, ctx);
                 return;
             }
         }
@@ -264,7 +322,7 @@ public class SVGFlowTextElementBridge extends SVGTextElementBridge
     protected void addChildPaintAttributes(AttributedString as,
                                            Element element,
                                            TextNode node,
-                                           TextDecoration textDecoration,
+                                           TextPaintInfo parentPI,
                                            BridgeContext ctx) {
         // Add Paint attributres for children of text element
         for (Node child = element.getFirstChild();
@@ -286,9 +344,9 @@ public class SVGFlowTextElementBridge extends SVGTextElementBridge
                 ln.equals(SVG_A_TAG) ||
                 ln.equals(SVG_TREF_TAG)) {
                 Element childElement = (Element)child;
-                TextDecoration td = getTextDecoration(childElement, node,
-                                                      textDecoration, ctx);
-                addPaintAttributes(as, childElement, node, td, ctx);
+                TextPaintInfo pi = getTextPaintInfo(childElement, node,
+                                                    parentPI, ctx);
+                addPaintAttributes(as, childElement, node, pi, ctx);
             }
         }
     }

@@ -151,7 +151,6 @@ public class MultiResGraphicsNode
         gn = getGraphicsNode(idx);
 
         if (gn == null) return;
-
         // This makes sure that the image 'pushes out' to it's pixel
         // bounderies.
         Rectangle2D gnBounds = gn.getBounds();

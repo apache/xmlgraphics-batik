@@ -73,6 +73,7 @@ import javax.swing.KeyStroke;
 import javax.swing.ToolTipManager;
 
 import org.apache.batik.bridge.UserAgent;
+import org.apache.batik.dom.svg.ExtensibleSVGDOMImplementation;
 import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.apache.batik.swing.gvt.AbstractImageZoomInteractor;
 import org.apache.batik.swing.gvt.AbstractPanInteractor;
@@ -520,10 +521,7 @@ public class JSVGCanvas extends JSVGComponent {
         if (uri != null) {
             loadSVGDocument(uri);
         } else {
-            DOMImplementation impl = SVGDOMImplementation.getDOMImplementation();
-            SVGDocument doc = (SVGDocument)impl.createDocument(SVGConstants.SVG_NAMESPACE_URI, 
-                                                               SVGConstants.SVG_SVG_TAG, null);
-            setSVGDocument(doc);
+            setSVGDocument(null);
         }
 
         pcs.firePropertyChange("URI", oldValue, uri);

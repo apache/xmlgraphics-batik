@@ -116,7 +116,6 @@ public class ConcreteTextSelector implements Selector {
         checkSelectGesture(evt);
     }
 
-
     public void mouseReleased(GraphicsNodeMouseEvent evt) {
         checkSelectGesture(evt);
     }
@@ -161,6 +160,7 @@ public class ConcreteTextSelector implements Selector {
         dispatchSelectionEvent(new SelectionEvent
             (null, SelectionEvent.SELECTION_CLEARED, null));
         copyToClipboard(null);
+        selectionNode = null;
     }
 
     /*
@@ -179,7 +179,13 @@ public class ConcreteTextSelector implements Selector {
 
         GraphicsNode source = evt.getGraphicsNode();
 
-        if ((source instanceof Selectable) && (mevt != null)) {
+        if (isDeselectGesture(evt)) {
+            if (selectionNode != null)
+                selectionNode.getRoot()
+                    .removeTreeGraphicsNodeChangeListener(this);
+
+            clearSelection();
+        } else if ((source instanceof Selectable) && (mevt != null)) {
 
             Point2D p = new Point2D.Double(mevt.getX(), mevt.getY());
             AffineTransform t = source.getGlobalTransform();
@@ -194,18 +200,7 @@ public class ConcreteTextSelector implements Selector {
             }
             p = t.transform(p, null);
 
-            if (isDeselectGesture(evt)) {
-                if (selectionNode != null)
-                    selectionNode.getRoot()
-                        .removeTreeGraphicsNodeChangeListener(this);
-
-                dispatchSelectionEvent(
-                        new SelectionEvent(null,
-                                SelectionEvent.SELECTION_CLEARED,
-                                null));
-                copyToClipboard(null);
-                selectionNode = null;
-            } else if (isSelectStartGesture(evt)) {
+            if (isSelectStartGesture(evt)) {
                 if (selectionNode != source) {
                     if (selectionNode != null)
                         selectionNode.getRoot()

@@ -107,6 +107,13 @@ public class NullSetSVGDocumentTest extends JSVGMemoryLeakTest {
             };
     }
 
+    public Runnable getRunnable(final JSVGCanvas canvas) {
+        return new Runnable () {
+                public void run() {
+                    canvas.setSVGDocument(null);
+                }};
+            }
+
     /* JSVGCanvasHandler.Delegate Interface */
     public boolean canvasInit(JSVGCanvas canvas) {
         theCanvas = canvas;
@@ -122,12 +129,8 @@ public class NullSetSVGDocumentTest extends JSVGMemoryLeakTest {
 
     public void canvasRendered(JSVGCanvas canvas) {
         super.canvasRendered(canvas);
-        final JSVGCanvas c = canvas;
         try {
-            EventQueue.invokeAndWait(new Runnable () {
-                    public void run() {
-                        c.setSVGDocument(null);
-                    }});
+            EventQueue.invokeAndWait(getRunnable(canvas));
         } catch (Throwable t) {
             t.printStackTrace();
             StringWriter trace = new StringWriter();

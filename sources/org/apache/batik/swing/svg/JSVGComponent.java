@@ -88,6 +88,7 @@ import org.apache.batik.bridge.UpdateManagerEvent;
 import org.apache.batik.bridge.UpdateManagerListener;
 import org.apache.batik.bridge.UserAgent;
 import org.apache.batik.bridge.ViewBox;
+import org.apache.batik.dom.svg.ExtensibleSVGDOMImplementation;
 import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.dom.util.XLinkSupport;
@@ -541,7 +542,7 @@ public class JSVGComponent extends JGVTComponent {
         if ((doc != null) && 
             !(doc.getImplementation() instanceof SVGDOMImplementation)) {
             DOMImplementation impl;
-            impl = SVGDOMImplementation.getDOMImplementation();
+            impl = ExtensibleSVGDOMImplementation.getDOMImplementation();
             Document d = DOMUtilities.deepCloneDocument(doc, impl);
             doc = d;
         }
@@ -569,7 +570,7 @@ public class JSVGComponent extends JGVTComponent {
         if ((doc != null) &&
             !(doc.getImplementation() instanceof SVGDOMImplementation)) {
             DOMImplementation impl;
-            impl = SVGDOMImplementation.getDOMImplementation();
+            impl = ExtensibleSVGDOMImplementation.getDOMImplementation();
             Document d = DOMUtilities.deepCloneDocument(doc, impl);
             doc = (SVGDocument)d;
         }
