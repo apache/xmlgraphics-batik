@@ -68,9 +68,12 @@ public interface BatikExtConstants {
     /** Attribute name for first-line-right-margin attribute */
     public static final String BATIK_EXT_FIRST_LINE_RIGHT_MARGIN_ATTRIBUTE = 
         "first-line-right-margin";
-    /** Attribute name for margine psudo-attribute */
+    /** Attribute name for justification */
     public static final String BATIK_EXT_JUSTIFICATION_ATTRIBUTE = 
         "justification";
+    /** Attribute name for preformated data */
+    public static final String BATIK_EXT_PREFORMATTED_ATTRIBUTE = 
+        "preformatted";
 
 
     /** Tag name for Batik's flowText extension div element SVG 1.1). */
