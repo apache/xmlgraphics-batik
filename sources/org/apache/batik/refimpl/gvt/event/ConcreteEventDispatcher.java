@@ -323,12 +323,10 @@ public class ConcreteEventDispatcher extends AbstractEventDispatcher {
 
     protected boolean isModalEvent(MouseEvent evt, GraphicsNode node) {
         int type = evt.getID();
-        boolean isModal = 
-            ((type == MouseEvent.MOUSE_RELEASED) && (node == null));
-        isModal = isModal || 
+        boolean isModal = (type == MouseEvent.MOUSE_RELEASED) ||
             ((type != MouseEvent.MOUSE_PRESSED) && 
              ((evt.getModifiers() & 
-              InputEvent.BUTTON2_MASK) != 0) ); 
+              InputEvent.BUTTON1_MASK) != 0) ); 
         return isModal;
     }
 
