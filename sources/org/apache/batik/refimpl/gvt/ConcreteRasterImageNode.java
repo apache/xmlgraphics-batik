@@ -10,11 +10,14 @@ package org.apache.batik.refimpl.gvt;
 
 import java.awt.Graphics2D;
 import java.awt.Shape;
+import java.awt.RenderingHints;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Dimension2D;
+import java.awt.geom.AffineTransform;
 
 import java.awt.image.renderable.RenderableImage;
+import java.awt.image.RenderedImage;
 
 import org.apache.batik.gvt.RasterImageNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
@@ -94,7 +97,14 @@ public class ConcreteRasterImageNode extends AbstractGraphicsNode
     }
 
     public void primitivePaint(Graphics2D g2d, GraphicsNodeRenderContext rc) {
-        // <!> FIXME : TODO
+        float x = (float) location.getX();
+        float y = (float) location.getY();
+        int w = (int) size.getWidth();
+        int h = (int) size.getHeight();
+        RenderingHints hints = g2d.getRenderingHints();
+        RenderedImage scaledImg = image.createScaledRendering(w, h, hints);
+        AffineTransform xform = AffineTransform.getTranslateInstance(x, y);
+        g2d.drawRenderedImage(scaledImg, xform);
     }
 
     //
@@ -102,12 +112,14 @@ public class ConcreteRasterImageNode extends AbstractGraphicsNode
     //
 
     public Rectangle2D getPrimitiveBounds() {
-        // <!> FIXME : TODO
-        return null;
+        float x = (float) location.getX();
+        float y = (float) location.getY();
+        float w = (float) size.getWidth();
+        float h = (float) size.getHeight();
+        return new Rectangle2D.Float(x, y, w, h);
     }
 
     public Shape getOutline() {
-        // <!> FIXME : TODO
-        return null;
+        return getBounds();
     }
 }
