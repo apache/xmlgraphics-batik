@@ -97,11 +97,13 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
         destPt.setLocation(srcPt.getX(), srcPt.getY());
         return destPt;
     }
-    private void checkCompatible(ColorModel colorModel){
+
+    private void checkCompatible(ColorModel colorModel,
+                                 SampleModel sampleModel){
         ColorSpace cs = colorModel.getColorSpace();
 
         // Check that model is sRGB or linear RGB
-        if((cs != sRGB) || (cs != lRGB))
+        if((!cs .equals (sRGB)) && (!cs .equals( lRGB)))
             throw new IllegalArgumentException("Expected CS_sRGB or CS_LINEAR_RGB color model");
 
         // Check ColorModel is of type DirectColorModel
@@ -109,26 +111,27 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
             throw new IllegalArgumentException("colorModel should be an instance of DirectColorModel");
 
         // Check transfer type
-        if(colorModel.getTransferType() != DataBuffer.TYPE_INT)
+        if(sampleModel.getDataType() != DataBuffer.TYPE_INT)
             throw new IllegalArgumentException("colorModel's transferType should be DataBuffer.TYPE_INT");
 
         // Check red, green, blue and alpha mask
         DirectColorModel dcm = (DirectColorModel)colorModel;
         if(dcm.getRedMask() != 0x00ff0000)
-            throw new IllegalArgumentException("red mask in source should be 0xff000000");
+            throw new IllegalArgumentException("red mask in source should be 0x00ff0000");
         if(dcm.getGreenMask() != 0x0000ff00)
-            throw new IllegalArgumentException("green mask in source should be 0xff000000");
+            throw new IllegalArgumentException("green mask in source should be 0x0000ff00");
         if(dcm.getBlueMask() != 0x000000ff)
-            throw new IllegalArgumentException("blue mask in source should be 0xff000000");
+            throw new IllegalArgumentException("blue mask in source should be 0x000000ff");
         if(dcm.getAlphaMask() != 0xff000000)
             throw new IllegalArgumentException("alpha mask in source should be 0xff000000");
     }
 
-    private boolean isCompatible(ColorModel colorModel){
+    private boolean isCompatible(ColorModel colorModel,
+				 SampleModel sampleModel){
         ColorSpace cs = colorModel.getColorSpace();
         // Check that model is sRGB or linear RGB
         if((cs != ColorSpace.getInstance(ColorSpace.CS_sRGB))
-           ||
+           &&
            (cs != ColorSpace.getInstance(ColorSpace.CS_LINEAR_RGB)))
             return false;
 
@@ -137,7 +140,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
             return false;
 
         // Check transfer type
-        if(colorModel.getTransferType() != DataBuffer.TYPE_INT)
+        if(sampleModel.getDataType() != DataBuffer.TYPE_INT)
             return false;
 
         // Check red, green, blue and alpha mask
@@ -156,19 +159,26 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
     private void checkCompatible(SampleModel model){
         // Check model is ok: should be SinglePixelPackedSampleModel
         if(!(model instanceof SinglePixelPackedSampleModel))
-            throw new IllegalArgumentException("TurbulenceOp only works with Rasters using SinglePixelPackedSampleModels");
+            throw new IllegalArgumentException
+                ("MorphologyOp only works with Rasters " + 
+                 "using SinglePixelPackedSampleModels");
         // Check number of bands
         int nBands = model.getNumBands();
         if(nBands!=4)
-            throw new IllegalArgumentException("TurbulenceOp only words with Rasters having 4 bands");
+            throw new IllegalArgumentException
+                ("MorphologyOp only words with Rasters having 4 bands");
         // Check that integer packed.
         if(model.getDataType()!=DataBuffer.TYPE_INT)
-            throw new IllegalArgumentException("TurbulenceOp only works with Rasters using DataBufferInts");
+            throw new IllegalArgumentException
+                ("MorphologyOp only works with Rasters using DataBufferInt");
+
         // Check bit masks
-        int bitOffsets[] = ((SinglePixelPackedSampleModel)model).getBitOffsets();
+        int bitOffsets[]=((SinglePixelPackedSampleModel)model).getBitOffsets();
         for(int i=0; i<bitOffsets.length; i++){
             if(bitOffsets[i]%8 != 0)
-                throw new IllegalArgumentException("MorphologyOp only works with Rasters using 8 bits per band : " + i + " : " + bitOffsets[i]);
+                throw new IllegalArgumentException
+                    ("MorphologyOp only works with Rasters using 8 bits " +
+                     "per band : " + i + " : " + bitOffsets[i]);
         }
     }
 
@@ -182,14 +192,19 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
         return src.createCompatibleWritableRaster();
     }
 
-    public BufferedImage createCompatibleDestImage(BufferedImage src, ColorModel destCM){
+    public BufferedImage createCompatibleDestImage(BufferedImage src, 
+                                                   ColorModel destCM){
         BufferedImage dest = null;
-        if(destCM==null){
+        if(destCM==null)
             destCM = ColorModel.getRGBdefault();
-        }
-        else
-            checkCompatible(destCM);
-        dest = new BufferedImage(destCM, destCM.createCompatibleWritableRaster(src.getWidth(), src.getHeight()),destCM.isAlphaPremultiplied(), null);
+
+        WritableRaster wr;
+        wr = destCM.createCompatibleWritableRaster(src.getWidth(),
+                                                   src.getHeight());
+        checkCompatible(destCM, wr.getSampleModel());
+
+        dest = new BufferedImage(destCM, wr, 
+                                 destCM.isAlphaPremultiplied(), null);
         return dest;
     }
 
@@ -1487,31 +1502,78 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
 
     public BufferedImage filter(BufferedImage src, BufferedImage dest){
         if (src == null && dest == null)
-            throw new NullPointerException("src image should not be null if dest is null");
+            throw new NullPointerException("Source image should not be null");
 
-        // Now, check destination. If compatible, it is used as is. Otherwise
-        // a temporary image is used.
+        BufferedImage origSrc   = src;
         BufferedImage finalDest = dest;
-        if(dest==null){
-            dest = createCompatibleDestImage(src, null);
-            finalDest = dest;
+
+        if (!isCompatible(src.getColorModel(), src.getSampleModel())) {
+            BufferedImage newSrc;
+            src = new BufferedImage(src.getWidth(), src.getHeight(),
+                                    BufferedImage.TYPE_INT_ARGB_PRE);
+            java.awt.Graphics2D g2d = src.createGraphics();
+            g2d.setComposite(java.awt.AlphaComposite.Src);
+            g2d.drawImage(origSrc, null, 0, 0);
         }
-        else{
-            // Check that the destination ColorModel is compatible
-            if(!isCompatible(dest.getColorModel()))
-                dest = createCompatibleDestImage(src, null);
+        else if (!src.isAlphaPremultiplied()) {
+            // Easiest way to get a Premultipled CM.
+            WritableRaster wr;
+            wr = src.getRaster().createCompatibleWritableRaster(1,1);
+            ColorModel    srcCM = src.getColorModel();
+            ColorModel srcCMPre = srcCM.coerceData(src.getRaster(), true);
+
+            src = new BufferedImage(srcCMPre, src.getRaster(),
+                                    true, null);
+            
+            java.awt.Graphics2D g2d = src.createGraphics();
+            g2d.setComposite(java.awt.AlphaComposite.Src);
+
+            g2d.drawImage(origSrc, null, 0, 0);
+        }
+
+
+        if (dest == null) {
+            dest = new BufferedImage(src.getWidth(), src.getHeight(),
+                                          BufferedImage.TYPE_INT_ARGB_PRE);
+            finalDest = dest;
+        } else if (!isCompatible(dest.getColorModel(),
+                                 dest.getSampleModel())) {
+            dest = new BufferedImage(src.getWidth(), src.getHeight(),
+                                     BufferedImage.TYPE_INT_ARGB_PRE);
+        } else if (!dest.isAlphaPremultiplied()) {
+            WritableRaster wr;
+            wr = dest.getRaster().createCompatibleWritableRaster(1,1);
+            ColorModel    dstCM = dest.getColorModel();
+            ColorModel dstCMPre = dstCM.coerceData(wr, true);
+            dest = new BufferedImage(dstCMPre, finalDest.getRaster(),
+                                     true, null);
         }
 
         // We now have two compatible images. We can safely filter the rasters
         filter(src.getRaster(), dest.getRaster());
 
-        // If we had to use a temporary destination, copy the result into the
-        // real output image
-        if(dest != finalDest){
-            ColorConvertOp toDestCM = new ColorConvertOp(null);
-            toDestCM.filter(dest, finalDest);
+        // Check to see if we need to 'fix' our source (divide out alpha).
+        if ((src.getRaster() == origSrc.getRaster()) &&
+            (src.isAlphaPremultiplied() != origSrc.isAlphaPremultiplied())) {
+            // Coerce our source back the way it was...
+            java.awt.Graphics2D g2d = origSrc.createGraphics();
+            g2d.setComposite(java.awt.AlphaComposite.Src);
+            g2d.drawImage(src, null, 0, 0);
         }
-        return dest;
+
+        // Check to see if we need to store our result...
+        if ((dest.getRaster() != finalDest.getRaster()) ||
+            (dest.isAlphaPremultiplied() != finalDest.isAlphaPremultiplied())){
+            // Coerce our source back the way it was...
+            //org.apache.batik.refimpl.gvt.AbstractGraphicsNode.showImage
+            // (dest, "Dest");
+            System.out.println("Dest: " + dest.isAlphaPremultiplied() +
+                               " finalDest: " + 
+                               finalDest.isAlphaPremultiplied());
+            
+            GaussianBlurOp.copyData(dest, finalDest);
+        }
+        return finalDest;
     }
 }
 

@@ -379,20 +379,27 @@ public class GaussianBlurOp implements BufferedImageOp, RasterOp {
         if (w < (2*skipX)+boxSz) return dest;
         if (h < (2*skipY))       return dest;
 
+        final SinglePixelPackedSampleModel srcSPPSM = 
+            (SinglePixelPackedSampleModel)src.getSampleModel();
+
+        final SinglePixelPackedSampleModel dstSPPSM = 
+            (SinglePixelPackedSampleModel)dest.getSampleModel();
+        
+        // Stride is the distance between two consecutive column elements,
+        // in the one-dimention dataBuffer
+        final int srcScanStride = srcSPPSM.getScanlineStride();
+        final int dstScanStride = dstSPPSM.getScanlineStride();
+
         // Access the integer buffer for each image.
         DataBufferInt srcDB = (DataBufferInt)src.getDataBuffer();
         DataBufferInt dstDB = (DataBufferInt)dest.getDataBuffer();
 
         // Offset defines where in the stack the real data begin
-        final int srcOff = srcDB.getOffset();
-        final int dstOff = dstDB.getOffset();
-
-        // Stride is the distance between two consecutive column elements,
-        // in the one-dimention dataBuffer
-        final int srcScanStride = ((SinglePixelPackedSampleModel)
-                                   src.getSampleModel()).getScanlineStride();
-        final int dstScanStride = ((SinglePixelPackedSampleModel)
-                                   dest.getSampleModel()).getScanlineStride();
+        final int srcOff = (srcDB.getOffset() + 
+                            srcSPPSM.getOffset(src.getMinX(), src.getMinY()));
+        final int dstOff = (dstDB.getOffset() +
+                            dstSPPSM.getOffset(dest.getMinX(), 
+                                               dest.getMinY()));;
 
         // Access the pixel value array
         final int srcPixels[] = srcDB.getBankData()[0];
@@ -403,7 +410,18 @@ public class GaussianBlurOp implements BufferedImageOp, RasterOp {
         final int [] bufferG = new int [boxSz];
         final int [] bufferB = new int [boxSz];
 
+          // Fixed point normalization factor (8.24)
         int scale = (1<<24)/boxSz;
+        
+        /*
+         * System.out.println("Info: srcOff: " + srcOff + 
+         *                    " x: " + skipX +
+         *                    " y: " + skipY +
+         *                    " w: " + w +
+         *                    " h: " + h +
+         *                    " boxSz " + boxSz +
+         *                    " srcStride: " + srcScanStride);
+         */
 
         for (int y=skipY; y<(h-skipY); y++) {
             int sp = srcOff + y*srcScanStride;
@@ -474,23 +492,31 @@ public class GaussianBlurOp implements BufferedImageOp, RasterOp {
         if (w < (2*skipX))       return dest;
         if (h < (2*skipY)+boxSz) return dest;
 
+        final SinglePixelPackedSampleModel srcSPPSM = 
+            (SinglePixelPackedSampleModel)src.getSampleModel();
+
+        final SinglePixelPackedSampleModel dstSPPSM = 
+            (SinglePixelPackedSampleModel)dest.getSampleModel();
+        
+        // Stride is the distance between two consecutive column elements,
+        // in the one-dimention dataBuffer
+        final int srcScanStride = srcSPPSM.getScanlineStride();
+        final int dstScanStride = dstSPPSM.getScanlineStride();
+
         // Access the integer buffer for each image.
         DataBufferInt srcDB = (DataBufferInt)src.getDataBuffer();
         DataBufferInt dstDB = (DataBufferInt)dest.getDataBuffer();
 
         // Offset defines where in the stack the real data begin
-        final int srcOff = srcDB.getOffset();
-        final int dstOff = dstDB.getOffset();
+        final int srcOff = (srcDB.getOffset() + 
+                            srcSPPSM.getOffset(src.getMinX(), src.getMinY()));
+        final int dstOff = (dstDB.getOffset() +
+                            dstSPPSM.getOffset(dest.getMinX(), 
+                                               dest.getMinY()));;
 
-        // Stride is the distance between two consecutive column elements,
-        // in the one-dimention dataBuffer
-        final int srcScanStride = ((SinglePixelPackedSampleModel)
-                                   src.getSampleModel()).getScanlineStride();
-        final int dstScanStride = ((SinglePixelPackedSampleModel)
-                                   dest.getSampleModel()).getScanlineStride();
 
         // Access the pixel value array
-        final int srcPixels[] = srcDB.getBankData()[0];
+        final int srcPixels [] = srcDB.getBankData()[0];
         final int destPixels[] = dstDB.getBankData()[0];
 
         final int [] bufferA = new int [boxSz];
@@ -498,7 +524,18 @@ public class GaussianBlurOp implements BufferedImageOp, RasterOp {
         final int [] bufferG = new int [boxSz];
         final int [] bufferB = new int [boxSz];
 
+          // Fixed point normalization factor (8.24)
         final int scale = (1<<24)/boxSz;
+
+        /*
+         * System.out.println("Info: srcOff: " + srcOff + 
+         *                    " x: " + skipX +
+         *                    " y: " + skipY +
+         *                    " w: " + w +
+         *                    " h: " + h +
+         *                    " boxSz " + boxSz +
+         *                    " srcStride: " + srcScanStride);
+         */
 
         for (int x=skipX; x<(w-skipX); x++) {
             int sp = srcOff + x;
@@ -578,8 +615,14 @@ public class GaussianBlurOp implements BufferedImageOp, RasterOp {
         if (conv[1] == null) 
             tmpR = dest;
 
+
+          // this lets the Vertical conv know how much is junk, so it
+          // doesn't bother to convolve the edges
+        int skipX;
+
         if (conv[0] != null) {
             tmpR = conv[0].filter(src, tmpR);
+            skipX = radiusX;
         } else {
             if (tmpR == null)
                 tmpR = createCompatibleDestRaster(src);
@@ -593,20 +636,21 @@ public class GaussianBlurOp implements BufferedImageOp, RasterOp {
                 tmpR = boxFilterH(tmpR, tmpR, dX/2, 0,   dX, dX/2);
                 tmpR = boxFilterH(tmpR, tmpR, dX-1, 0,   dX, dX/2);
             }
+            skipX = 3*(dX/2)-1;
         }
 
         if (conv[1] != null) {
             dest = conv[1].filter(tmpR, dest);
         } else {
             if (dY%2 == 0){
-                dest = boxFilterV(tmpR, dest, 3*(dX/2)-1, 0,    dY,   dY/2);
-                dest = boxFilterV(dest, dest, 3*(dX/2)-1, dY/2, dY,   dY/2-1);
-                dest = boxFilterV(dest, dest, 3*(dX/2)-1, dY-1, dY+1, dY/2);
+                dest = boxFilterV(tmpR, dest, skipX, 0,    dY,   dY/2);
+                dest = boxFilterV(dest, dest, skipX, dY/2, dY,   dY/2-1);
+                dest = boxFilterV(dest, dest, skipX, dY-1, dY+1, dY/2);
             }
             else {
-                dest = boxFilterV(tmpR, dest, 3*(dX/2)-1, 0,    dY, dY/2);
-                dest = boxFilterV(dest, dest, 3*(dX/2)-1, dY/2, dY, dY/2);
-                dest = boxFilterV(dest, dest, 3*(dX/2)-1, dY-1, dY, dY/2);
+                dest = boxFilterV(tmpR, dest, skipX, 0,    dY, dY/2);
+                dest = boxFilterV(dest, dest, skipX, dY/2, dY, dY/2);
+                dest = boxFilterV(dest, dest, skipX, dY-1, dY, dY/2);
             }
         }
         return dest;
@@ -614,8 +658,7 @@ public class GaussianBlurOp implements BufferedImageOp, RasterOp {
 
     public BufferedImage filter(BufferedImage src, BufferedImage dest){
         if (src == null)
-            throw new NullPointerException
-                ("Source image should not be null");
+            throw new NullPointerException("Source image should not be null");
 
         BufferedImage origSrc   = src;
         BufferedImage finalDest = dest;
@@ -683,7 +726,7 @@ public class GaussianBlurOp implements BufferedImageOp, RasterOp {
                                " finalDest: " + 
                                finalDest.isAlphaPremultiplied());
 
-            copyData(dest, finalDest);
+            GaussianBlurOp.copyData(dest, finalDest);
 
             /*
             byte [] array = new byte [256];
