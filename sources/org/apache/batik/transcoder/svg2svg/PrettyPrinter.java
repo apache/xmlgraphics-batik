@@ -18,9 +18,9 @@ import java.util.List;
 import org.apache.batik.transcoder.ErrorHandler;
 import org.apache.batik.transcoder.TranscoderException;
 
-import org.apache.batik.xml.scanner.DocumentScanner;
-import org.apache.batik.xml.scanner.LexicalException;
-import org.apache.batik.xml.scanner.LexicalUnits;
+import org.apache.batik.xml.LexicalUnits;
+import org.apache.batik.xml.XMLException;
+import org.apache.batik.xml.XMLScanner;
 
 import org.apache.batik.util.SVGConstants;
 
@@ -40,7 +40,7 @@ public class PrettyPrinter {
     /**
      * The document scanner.
      */
-    protected DocumentScanner scanner;
+    protected XMLScanner scanner;
 
     /**
      * The output manager.
@@ -96,6 +96,11 @@ public class PrettyPrinter {
      * The XML declaration.
      */
     protected String xmlDeclaration;
+
+    /**
+     * The type of the current lexical unit.
+     */
+    protected int type;
 
     /**
      * Sets the XML declaration text.
@@ -184,29 +189,30 @@ public class PrettyPrinter {
     /**
      * Prints an SVG document from the given reader to the given writer.
      */
-    public void print(Reader r, Writer w) throws TranscoderException, IOException {
+    public void print(Reader r, Writer w) throws TranscoderException,
+                                                 IOException {
         try {
-            scanner = new DocumentScanner(r);
+            scanner = new XMLScanner(r);
             output = new OutputManager(this, w);
             writer = w;
-            scanner.next();
+            type = scanner.next();
 
             printXMLDecl();
 
-            int t = scanner.currentType();
             misc1: for (;;) {
-                switch (t) {
+                switch (type) {
                 case LexicalUnits.S:
-                    output.printTopSpaces(scanner.currentValue());
-                    t = scanner.next();
+                    output.printTopSpaces(getCurrentValue());
+                    scanner.clearBuffer();
+                    type = scanner.next();
                     break;
                 case LexicalUnits.COMMENT:
-                    output.printComment(scanner.currentValue());
-                    t = scanner.next();
+                    output.printComment(getCurrentValue());
+                    scanner.clearBuffer();
+                    type = scanner.next();
                     break;
                 case LexicalUnits.PI_START:
                     printPI();
-                    t = scanner.currentType();
                     break;
                 default:
                     break misc1;
@@ -215,52 +221,53 @@ public class PrettyPrinter {
 
             printDoctype();
 
-            t = scanner.currentType();
             misc2: for (;;) {
-                switch (t) {
+                scanner.clearBuffer();
+                switch (type) {
                 case LexicalUnits.S:
-                    output.printTopSpaces(scanner.currentValue());
-                    t = scanner.next();
+                    output.printTopSpaces(getCurrentValue());
+                    scanner.clearBuffer();
+                    type = scanner.next();
                     break;
                 case LexicalUnits.COMMENT:
-                    output.printComment(scanner.currentValue());
-                    t = scanner.next();
+                    output.printComment(getCurrentValue());
+                    scanner.clearBuffer();
+                    type = scanner.next();
                     break;
                 case LexicalUnits.PI_START:
                     printPI();
-                    t = scanner.currentType();
                     break;
                 default:
                     break misc2;
                 }
             }
 
-            if (t != LexicalUnits.START_TAG) {
+            if (type != LexicalUnits.START_TAG) {
                 throw fatalError("element", null);
             }
             
             printElement();
 
-            t = scanner.currentType();
             misc3: for (;;) {
-                switch (t) {
+                switch (type) {
                 case LexicalUnits.S:
-                    output.printTopSpaces(scanner.currentValue());
-                    t = scanner.next();
+                    output.printTopSpaces(getCurrentValue());
+                    scanner.clearBuffer();
+                    type = scanner.next();
                     break;
                 case LexicalUnits.COMMENT:
-                    output.printComment(scanner.currentValue());
-                    t = scanner.next();
+                    output.printComment(getCurrentValue());
+                    scanner.clearBuffer();
+                    type = scanner.next();
                     break;
                 case LexicalUnits.PI_START:
                     printPI();
-                    t = scanner.currentType();
                     break;
                 default:
                     break misc3;
                 }
             }
-        } catch (LexicalException e) {
+        } catch (XMLException e) {
             errorHandler.fatalError(new TranscoderException(e.getMessage()));
         }
     }
@@ -270,42 +277,41 @@ public class PrettyPrinter {
      */
     protected void printXMLDecl()
         throws TranscoderException,
-               LexicalException,
+               XMLException,
                IOException {
         if (xmlDeclaration == null) {
-            int t = scanner.currentType();
-            if (t == LexicalUnits.XML_DECL_START) {
+            if (type == LexicalUnits.XML_DECL_START) {
                 if (scanner.next() != LexicalUnits.S) {
                     throw fatalError("space", null);
                 }
-                char[] space1 = scanner.currentValue();
+                char[] space1 = getCurrentValue();
                 
                 if (scanner.next() != LexicalUnits.VERSION_IDENTIFIER) {
                     throw fatalError("token", new Object[] { "version" });
                 }
-                t = scanner.next();
+                type = scanner.next();
             
                 char[] space2 = null;
-                if (t == LexicalUnits.S) {
-                    space2 = scanner.currentValue();
-                    t = scanner.next();
+                if (type == LexicalUnits.S) {
+                    space2 = getCurrentValue();
+                    type = scanner.next();
                 }
-                if (t != LexicalUnits.EQ) {
+                if (type != LexicalUnits.EQ) {
                     throw fatalError("token", new Object[] { "=" });
                 }
-                t = scanner.next();
+                type = scanner.next();
                 
                 char[] space3 = null;
-                if (t == LexicalUnits.S) {
-                    space3 = scanner.currentValue();
-                    t = scanner.next();
+                if (type == LexicalUnits.S) {
+                    space3 = getCurrentValue();
+                    type = scanner.next();
                 }
                 
-                if (t != LexicalUnits.STRING) {
+                if (type != LexicalUnits.STRING) {
                     throw fatalError("string", null);
                 }
 
-                char[] version = scanner.currentValue();
+                char[] version = getCurrentValue();
                 char versionDelim = scanner.getStringDelimiter();
 
                 char[] space4 = null;
@@ -320,68 +326,68 @@ public class PrettyPrinter {
                 char standaloneDelim = 0;
                 char[] space10 = null;
                 
-                t = scanner.next();
-                if (t == LexicalUnits.S) {
-                    space4 = scanner.currentValue();
-                    t = scanner.next();
+                type = scanner.next();
+                if (type == LexicalUnits.S) {
+                    space4 = getCurrentValue();
+                    type = scanner.next();
                     
-                    if (t == LexicalUnits.ENCODING_IDENTIFIER) {
-                        t = scanner.next();
-                        if (t == LexicalUnits.S) {
-                            space5 = scanner.currentValue();
-                            t = scanner.next();
+                    if (type == LexicalUnits.ENCODING_IDENTIFIER) {
+                        type = scanner.next();
+                        if (type == LexicalUnits.S) {
+                            space5 = getCurrentValue();
+                            type = scanner.next();
                         }
-                        if (t != LexicalUnits.EQ) {
+                        if (type != LexicalUnits.EQ) {
                             throw fatalError("token", new Object[] { "=" });
                         }
-                        t = scanner.next();
-                        if (t == LexicalUnits.S) {
-                            space6 = scanner.currentValue();
-                            t = scanner.next();
+                        type = scanner.next();
+                        if (type == LexicalUnits.S) {
+                            space6 = getCurrentValue();
+                            type = scanner.next();
                         }
-                        if (t != LexicalUnits.STRING) {
+                        if (type != LexicalUnits.STRING) {
                             throw fatalError("string", null);
                         }
 
-                        encoding = scanner.currentValue();
+                        encoding = getCurrentValue();
                         encodingDelim = scanner.getStringDelimiter();
 
-                        t = scanner.next();
-                        if (t == LexicalUnits.S) {
-                            space7 = scanner.currentValue();
-                            t = scanner.next();
+                        type = scanner.next();
+                        if (type == LexicalUnits.S) {
+                            space7 = getCurrentValue();
+                            type = scanner.next();
                         }
                     }
             
-                    if (t == LexicalUnits.STANDALONE_IDENTIFIER) {
-                        t = scanner.next();
-                        if (t == LexicalUnits.S) {
-                            space8 = scanner.currentValue();
-                            t = scanner.next();
+                    if (type == LexicalUnits.STANDALONE_IDENTIFIER) {
+                        type = scanner.next();
+                        if (type == LexicalUnits.S) {
+                            space8 = getCurrentValue();
+                            type = scanner.next();
                         }
-                        if (t != LexicalUnits.EQ) {
+                        if (type != LexicalUnits.EQ) {
                             throw fatalError("token", new Object[] { "=" });
                         }
-                        t = scanner.next();
-                        if (t == LexicalUnits.S) {
-                            space9 = scanner.currentValue();
-                            t = scanner.next();
+                        type = scanner.next();
+                        if (type == LexicalUnits.S) {
+                            space9 = getCurrentValue();
+                            type = scanner.next();
                         }
-                        if (t != LexicalUnits.STRING) {
+                        if (type != LexicalUnits.STRING) {
                             throw fatalError("string", null);
                         }
                         
-                        standalone = scanner.currentValue();
+                        standalone = getCurrentValue();
                         standaloneDelim = scanner.getStringDelimiter();
                         
-                        t = scanner.next();
-                        if (t == LexicalUnits.S) {
-                            space10 = scanner.currentValue();
-                            t = scanner.next();
+                        type = scanner.next();
+                        if (type == LexicalUnits.S) {
+                            space10 = getCurrentValue();
+                            type = scanner.next();
                         }
                     }
                 }
-                if (t != LexicalUnits.PI_END) {
+                if (type != LexicalUnits.PI_END) {
                     throw fatalError("pi.end", null);
                 }
 
@@ -393,14 +399,13 @@ public class PrettyPrinter {
                                     standalone, standaloneDelim,
                                     space10);
 
-                scanner.next();
+                type = scanner.next();
             }
         } else {
             output.printString(xmlDeclaration);
             output.printNewline();
 
-            int t = scanner.currentType();
-            if (t == LexicalUnits.XML_DECL_START) {
+            if (type == LexicalUnits.XML_DECL_START) {
                 // Skip the XML declaraction.
                 if (scanner.next() != LexicalUnits.S) {
                     throw fatalError("space", null);
@@ -409,77 +414,77 @@ public class PrettyPrinter {
                 if (scanner.next() != LexicalUnits.VERSION_IDENTIFIER) {
                     throw fatalError("token", new Object[] { "version" });
                 }
-                t = scanner.next();
+                type = scanner.next();
             
-                if (t == LexicalUnits.S) {
-                    t = scanner.next();
+                if (type == LexicalUnits.S) {
+                    type = scanner.next();
                 }
-                if (t != LexicalUnits.EQ) {
+                if (type != LexicalUnits.EQ) {
                     throw fatalError("token", new Object[] { "=" });
                 }
-                t = scanner.next();
+                type = scanner.next();
                 
-                if (t == LexicalUnits.S) {
-                    t = scanner.next();
+                if (type == LexicalUnits.S) {
+                    type = scanner.next();
                 }
                 
-                if (t != LexicalUnits.STRING) {
+                if (type != LexicalUnits.STRING) {
                     throw fatalError("string", null);
                 }
 
-                t = scanner.next();
-                if (t == LexicalUnits.S) {
-                    t = scanner.next();
+                type = scanner.next();
+                if (type == LexicalUnits.S) {
+                    type = scanner.next();
                     
-                    if (t == LexicalUnits.ENCODING_IDENTIFIER) {
-                        t = scanner.next();
-                        if (t == LexicalUnits.S) {
-                            t = scanner.next();
+                    if (type == LexicalUnits.ENCODING_IDENTIFIER) {
+                        type = scanner.next();
+                        if (type == LexicalUnits.S) {
+                            type = scanner.next();
                         }
-                        if (t != LexicalUnits.EQ) {
+                        if (type != LexicalUnits.EQ) {
                             throw fatalError("token", new Object[] { "=" });
                         }
-                        t = scanner.next();
-                        if (t == LexicalUnits.S) {
-                            t = scanner.next();
+                        type = scanner.next();
+                        if (type == LexicalUnits.S) {
+                            type = scanner.next();
                         }
-                        if (t != LexicalUnits.STRING) {
+                        if (type != LexicalUnits.STRING) {
                             throw fatalError("string", null);
                         }
 
-                        t = scanner.next();
-                        if (t == LexicalUnits.S) {
-                            t = scanner.next();
+                        type = scanner.next();
+                        if (type == LexicalUnits.S) {
+                            type = scanner.next();
                         }
                     }
             
-                    if (t == LexicalUnits.STANDALONE_IDENTIFIER) {
-                        t = scanner.next();
-                        if (t == LexicalUnits.S) {
-                            t = scanner.next();
+                    if (type == LexicalUnits.STANDALONE_IDENTIFIER) {
+                        type = scanner.next();
+                        if (type == LexicalUnits.S) {
+                            type = scanner.next();
                         }
-                        if (t != LexicalUnits.EQ) {
+                        if (type != LexicalUnits.EQ) {
                             throw fatalError("token", new Object[] { "=" });
                         }
-                        t = scanner.next();
-                        if (t == LexicalUnits.S) {
-                            t = scanner.next();
+                        type = scanner.next();
+                        if (type == LexicalUnits.S) {
+                            type = scanner.next();
                         }
-                        if (t != LexicalUnits.STRING) {
+                        if (type != LexicalUnits.STRING) {
                             throw fatalError("string", null);
                         }
                         
-                        t = scanner.next();
-                        if (t == LexicalUnits.S) {
-                            t = scanner.next();
+                        type = scanner.next();
+                        if (type == LexicalUnits.S) {
+                            type = scanner.next();
                         }
                     }
                 }
-                if (t != LexicalUnits.PI_END) {
+                if (type != LexicalUnits.PI_END) {
                     throw fatalError("pi.end", null);
                 }
 
-                scanner.next();
+                type = scanner.next();
             }
         }
     }
@@ -489,29 +494,29 @@ public class PrettyPrinter {
      */
     protected void printPI()
         throws TranscoderException,
-               LexicalException,
+               XMLException,
                IOException {
-        char[] target = scanner.currentValue();
+        char[] target = getCurrentValue();
 
-        int t = scanner.next();
+        type = scanner.next();
         char[] space = {};
-        if (t == LexicalUnits.S) {
-            space = scanner.currentValue();
-            t = scanner.next();
+        if (type == LexicalUnits.S) {
+            space = getCurrentValue();
+            type = scanner.next();
         }
-        if (t != LexicalUnits.PI_DATA) {
+        if (type != LexicalUnits.PI_DATA) {
             throw fatalError("pi.data", null);
         }
-        char[] data = scanner.currentValue();
+        char[] data = getCurrentValue();
 
-        t = scanner.next();
-        if (t != LexicalUnits.PI_END) {
+        type = scanner.next();
+        if (type != LexicalUnits.PI_END) {
             throw fatalError("pi.end", null);
         }
 
         output.printPI(target, space, data);
 
-        scanner.next();
+        type = scanner.next();
     }
 
     /**
@@ -519,25 +524,24 @@ public class PrettyPrinter {
      */
     protected void printDoctype()
         throws TranscoderException,
-               LexicalException,
+               XMLException,
                IOException {
-        int t = scanner.currentType();
         switch (doctypeOption) {
         default:
-            if (t == LexicalUnits.DOCTYPE_START) {
-                t = scanner.next();
+            if (type == LexicalUnits.DOCTYPE_START) {
+                type = scanner.next();
 
-                if (t != LexicalUnits.S) {
+                if (type != LexicalUnits.S) {
                     throw fatalError("space", null);
                 }
-                char[] space1 = scanner.currentValue();
-                t = scanner.next();
+                char[] space1 = getCurrentValue();
+                type = scanner.next();
                 
-                if (t != LexicalUnits.NAME) {
+                if (type != LexicalUnits.NAME) {
                     throw fatalError("name", null);
                 }
 
-                char[] root = scanner.currentValue();
+                char[] root = getCurrentValue();
                 char[] space2 = null;
                 String externalId = null;
                 char[] space3 = null;
@@ -548,70 +552,70 @@ public class PrettyPrinter {
                 char string2Delim = 0;
                 char[] space5 = null;
 
-                t = scanner.next();
-                if (t == LexicalUnits.S) {
-                    space2 = scanner.currentValue();
-                    t = scanner.next();
+                type = scanner.next();
+                if (type == LexicalUnits.S) {
+                    space2 = getCurrentValue();
+                    type = scanner.next();
                     
-                    switch (t) {
+                    switch (type) {
                     case LexicalUnits.PUBLIC_IDENTIFIER:
                         externalId = "PUBLIC";
                         
-                        t = scanner.next();
-                        if (t != LexicalUnits.S) {
+                        type = scanner.next();
+                        if (type != LexicalUnits.S) {
                             throw fatalError("space", null);
                         }
-                        space3 = scanner.currentValue();
-                        t = scanner.next();
+                        space3 = getCurrentValue();
+                        type = scanner.next();
                         
-                        if (t != LexicalUnits.STRING) {
+                        if (type != LexicalUnits.STRING) {
                             throw fatalError("string", null);
                         }
                     
-                        string1 = scanner.currentValue();
+                        string1 = getCurrentValue();
                         string1Delim = scanner.getStringDelimiter();
 
-                        t = scanner.next();
-                        if (t != LexicalUnits.S) {
+                        type = scanner.next();
+                        if (type != LexicalUnits.S) {
                             throw fatalError("space", null);
                         }
-                        space4 = scanner.currentValue();
-                        t = scanner.next();
+                        space4 = getCurrentValue();
+                        type = scanner.next();
                         
-                        if (t != LexicalUnits.STRING) {
+                        if (type != LexicalUnits.STRING) {
                             throw fatalError("string", null);
                         }
 
-                        string2 = scanner.currentValue();
+                        string2 = getCurrentValue();
                         string2Delim = scanner.getStringDelimiter();
 
-                        t = scanner.next();
-                        if (t == LexicalUnits.S) {
-                            space5 = scanner.currentValue();
-                            t = scanner.next();
+                        type = scanner.next();
+                        if (type == LexicalUnits.S) {
+                            space5 = getCurrentValue();
+                            type = scanner.next();
                         }
                         break;
                     case LexicalUnits.SYSTEM_IDENTIFIER:
                         externalId = "SYSTEM";
                         
-                        t = scanner.next();
-                        if (t != LexicalUnits.S) {
+                        type = scanner.next();
+                        if (type != LexicalUnits.S) {
                             throw fatalError("space", null);
                         }
-                        space3 = scanner.currentValue();
-                        t = scanner.next();
+                        space3 = getCurrentValue();
+                        type = scanner.next();
 
-                        if (t != LexicalUnits.STRING) {
+                        if (type != LexicalUnits.STRING) {
                             throw fatalError("string", null);
                         }
 
-                        string1 = scanner.currentValue();
+                        string1 = getCurrentValue();
                         string1Delim = scanner.getStringDelimiter();
 
-                        t = scanner.next();
-                        if (t == LexicalUnits.S) {
-                            space4 = scanner.currentValue();
-                            t = scanner.next();
+                        type = scanner.next();
+                        if (type == LexicalUnits.S) {
+                            space4 = getCurrentValue();
+                            type = scanner.next();
                         }
                     }
                 }
@@ -639,47 +643,50 @@ public class PrettyPrinter {
                                          string2, string2Delim,
                                          space5);
 
-                if (t == LexicalUnits.LSQUARE_BRACKET) {
+                if (type == LexicalUnits.LSQUARE_BRACKET) {
                     output.printCharacter('[');
-                    t = scanner.next();
+                    type = scanner.next();
                     
                     dtd: for (;;) {
-                        switch (t) {
+                        switch (type) {
                         case LexicalUnits.S:
-                            output.printSpaces(scanner.currentValue(), true);
-                            t = scanner.next();
+                            output.printSpaces(getCurrentValue(), true);
+                            scanner.clearBuffer();
+                            type = scanner.next();
                             break;
                         case LexicalUnits.COMMENT:
-                            output.printComment(scanner.currentValue());
-                            t = scanner.next();
+                            output.printComment(getCurrentValue());
+                            scanner.clearBuffer();
+                            type = scanner.next();
                             break;
                         case LexicalUnits.PI_START:
                             printPI();
-                            t = scanner.currentType();
                             break;
                         case LexicalUnits.PARAMETER_ENTITY_REFERENCE:
-                            output.printParameterEntityReference(scanner.currentValue());
-                            t = scanner.next();
+                            output.printParameterEntityReference(getCurrentValue());
+                            scanner.clearBuffer();
+                            type = scanner.next();
                             break;
                         case LexicalUnits.ELEMENT_DECLARATION_START:
+                            scanner.clearBuffer();
                             printElementDeclaration();
-                            t = scanner.currentType();
                             break;
                         case LexicalUnits.ATTLIST_START:
+                            scanner.clearBuffer();
                             printAttlist();
-                            t = scanner.currentType();
                             break;
                         case LexicalUnits.NOTATION_START:
+                            scanner.clearBuffer();
                             printNotation();
-                            t = scanner.currentType();
                             break;
                         case LexicalUnits.ENTITY_START:
+                            scanner.clearBuffer();
                             printEntityDeclaration();
-                            t = scanner.currentType();
                             break;
                         case LexicalUnits.RSQUARE_BRACKET:
                             output.printCharacter(']');
-                            t = scanner.next();
+                            scanner.clearBuffer();
+                            type = scanner.next();
                             break dtd;
                         default:
                             throw fatalError("xml", null);
@@ -687,15 +694,15 @@ public class PrettyPrinter {
                     }
                 }
                 char[] endSpace = null;
-                if (t == LexicalUnits.S) {
-                    endSpace = scanner.currentValue();
-                    t = scanner.next();
+                if (type == LexicalUnits.S) {
+                    endSpace = getCurrentValue();
+                    type = scanner.next();
                 }
 
-                if (t != LexicalUnits.END_CHAR) {
+                if (type != LexicalUnits.END_CHAR) {
                     throw fatalError("end", null);
                 }
-                scanner.next();
+                type = scanner.next();
                 output.printDoctypeEnd(endSpace);
             } else {
                 if (doctypeOption == DOCTYPE_CHANGE) {
@@ -728,83 +735,83 @@ public class PrettyPrinter {
             break;
 
         case DOCTYPE_REMOVE:
-            if (t == LexicalUnits.DOCTYPE_START) {
-                t = scanner.next();
+            if (type == LexicalUnits.DOCTYPE_START) {
+                type = scanner.next();
 
-                if (t != LexicalUnits.S) {
+                if (type != LexicalUnits.S) {
                     throw fatalError("space", null);
                 }
-                t = scanner.next();
+                type = scanner.next();
                 
-                if (t != LexicalUnits.NAME) {
+                if (type != LexicalUnits.NAME) {
                     throw fatalError("name", null);
                 }
 
-                t = scanner.next();
-                if (t == LexicalUnits.S) {
-                    t = scanner.next();
+                type = scanner.next();
+                if (type == LexicalUnits.S) {
+                    type = scanner.next();
                     
-                    switch (t) {
+                    switch (type) {
                     case LexicalUnits.PUBLIC_IDENTIFIER:
                         
-                        t = scanner.next();
-                        if (t != LexicalUnits.S) {
+                        type = scanner.next();
+                        if (type != LexicalUnits.S) {
                             throw fatalError("space", null);
                         }
-                        t = scanner.next();
+                        type = scanner.next();
                         
-                        if (t != LexicalUnits.STRING) {
+                        if (type != LexicalUnits.STRING) {
                             throw fatalError("string", null);
                         }
                     
-                        t = scanner.next();
-                        if (t != LexicalUnits.S) {
+                        type = scanner.next();
+                        if (type != LexicalUnits.S) {
                             throw fatalError("space", null);
                         }
-                        t = scanner.next();
+                        type = scanner.next();
                         
-                        if (t != LexicalUnits.STRING) {
+                        if (type != LexicalUnits.STRING) {
                             throw fatalError("string", null);
                         }
 
-                        t = scanner.next();
-                        if (t == LexicalUnits.S) {
-                            t = scanner.next();
+                        type = scanner.next();
+                        if (type == LexicalUnits.S) {
+                            type = scanner.next();
                         }
                         break;
                     case LexicalUnits.SYSTEM_IDENTIFIER:
                         
-                        t = scanner.next();
-                        if (t != LexicalUnits.S) {
+                        type = scanner.next();
+                        if (type != LexicalUnits.S) {
                             throw fatalError("space", null);
                         }
-                        t = scanner.next();
+                        type = scanner.next();
 
-                        if (t != LexicalUnits.STRING) {
+                        if (type != LexicalUnits.STRING) {
                             throw fatalError("string", null);
                         }
 
-                        t = scanner.next();
-                        if (t == LexicalUnits.S) {
-                            t = scanner.next();
+                        type = scanner.next();
+                        if (type == LexicalUnits.S) {
+                            type = scanner.next();
                         }
                     }
                 }
 
-                if (t == LexicalUnits.LSQUARE_BRACKET) {
+                if (type == LexicalUnits.LSQUARE_BRACKET) {
                     do {
-                        t = scanner.next();
-                    } while (t != LexicalUnits.RSQUARE_BRACKET);
+                        type = scanner.next();
+                    } while (type != LexicalUnits.RSQUARE_BRACKET);
                 }
-                if (t == LexicalUnits.S) {
-                    t = scanner.next();
+                if (type == LexicalUnits.S) {
+                    type = scanner.next();
                 }
 
-                if (t != LexicalUnits.END_CHAR) {
+                if (type != LexicalUnits.END_CHAR) {
                     throw fatalError("end", null);
                 }
             }
-            scanner.next();
+            type = scanner.next();
         }
     }
 
@@ -813,37 +820,38 @@ public class PrettyPrinter {
      */
     protected void printElement()
         throws TranscoderException,
-               LexicalException,
+               XMLException,
                IOException {
-        char[] name = scanner.currentValue();
+        char[] name = getCurrentValue();
         List attributes = new LinkedList();
         char[] space = null;
 
-        int t = scanner.next();
-        while (t == LexicalUnits.S) {
-            space = scanner.currentValue();
+        type = scanner.next();
+        while (type == LexicalUnits.S) {
+            space = getCurrentValue();
 
-            t = scanner.next();
-            if (t == LexicalUnits.NAME) {
-                char[] attName = scanner.currentValue();
+            type = scanner.next();
+            if (type == LexicalUnits.NAME) {
+                char[] attName = getCurrentValue();
                 char[] space1 = null;
 
-                t = scanner.next();
-                if (t == LexicalUnits.S) {
-                    space1 = scanner.currentValue();
-                    t = scanner.next();
+                type = scanner.next();
+                if (type == LexicalUnits.S) {
+                    space1 = getCurrentValue();
+                    type = scanner.next();
                 }
-                if (t != LexicalUnits.EQ) {
+                if (type != LexicalUnits.EQ) {
                     throw fatalError("token", new Object[] { "=" });
                 }
-                t = scanner.next();
+                type = scanner.next();
 
                 char[] space2 = null;
-                if (t == LexicalUnits.S) {
-                    space2 = scanner.currentValue();
-                    t = scanner.next();
+                if (type == LexicalUnits.S) {
+                    space2 = getCurrentValue();
+                    type = scanner.next();
                 }
-                if (t != LexicalUnits.STRING_FRAGMENT) {
+                if (type != LexicalUnits.STRING &&
+                    type != LexicalUnits.FIRST_ATTRIBUTE_FRAGMENT) {
                     throw fatalError("string", null);
                 }
 
@@ -851,23 +859,27 @@ public class PrettyPrinter {
                 boolean hasEntityRef = false;
 
                 StringBuffer sb = new StringBuffer();
-                sb.append(scanner.currentValue());
+                sb.append(getCurrentValue());
                 loop: for (;;) {
-                    t = scanner.next();
-                    switch (t) {
-                    case LexicalUnits.STRING_FRAGMENT:
-                        sb.append(scanner.currentValue());
+                    scanner.clearBuffer();
+                    type = scanner.next();
+                    switch (type) {
+                    case LexicalUnits.STRING:
+                    case LexicalUnits.FIRST_ATTRIBUTE_FRAGMENT:
+                    case LexicalUnits.LAST_ATTRIBUTE_FRAGMENT:
+                    case LexicalUnits.ATTRIBUTE_FRAGMENT:
+                        sb.append(getCurrentValue());
                         break;
                     case LexicalUnits.CHARACTER_REFERENCE:
                         hasEntityRef = true;
                         sb.append("&#");
-                        sb.append(scanner.currentValue());
+                        sb.append(getCurrentValue());
                         sb.append(";");
                         break;
                     case LexicalUnits.ENTITY_REFERENCE:
                         hasEntityRef = true;
                         sb.append("&");
-                        sb.append(scanner.currentValue());
+                        sb.append(getCurrentValue());
                         sb.append(";");
                         break;
                     default:
@@ -886,7 +898,7 @@ public class PrettyPrinter {
         }
         output.printElementStart(name, attributes, space);
         
-        switch (t) {
+        switch (type) {
         default:
             throw fatalError("xml", null);
         case LexicalUnits.EMPTY_ELEMENT_END:
@@ -894,28 +906,28 @@ public class PrettyPrinter {
             break;
         case LexicalUnits.END_CHAR:
             output.printCharacter('>');
-            scanner.next();
+            type = scanner.next();
             printContent();
-            if (scanner.currentType() != LexicalUnits.END_TAG) {
+            if (type != LexicalUnits.END_TAG) {
                 throw fatalError("end.tag", null);
             }
-            name = scanner.currentValue();
+            name = getCurrentValue();
 
-            t = scanner.next();
+            type = scanner.next();
             space = null;
-            if (t == LexicalUnits.S) {
-                space = scanner.currentValue();
-                t = scanner.next();
+            if (type == LexicalUnits.S) {
+                space = getCurrentValue();
+                type = scanner.next();
             }
 
             output.printElementEnd(name, space);
 
-            if (t != LexicalUnits.END_CHAR) {
+            if (type != LexicalUnits.END_CHAR) {
                 throw fatalError("end", null);
             }
         }
 
-        scanner.next();
+        type = scanner.next();
     }
 
     /**
@@ -923,46 +935,47 @@ public class PrettyPrinter {
      */
     protected void printContent()
         throws TranscoderException,
-               LexicalException,
+               XMLException,
                IOException {
-        int t = scanner.currentType();
         content: for (;;) {
-            switch (t) {
+            switch (type) {
             case LexicalUnits.COMMENT:
-                output.printComment(scanner.currentValue());
-                t = scanner.next();
+                output.printComment(getCurrentValue());
+                scanner.clearBuffer();
+                type = scanner.next();
                 break;
             case LexicalUnits.PI_START:
                 printPI();
-                t = scanner.currentType();
                 break;
             case LexicalUnits.CHARACTER_DATA:
-                output.printCharacterData(scanner.currentValue());
-                t = scanner.next();
+                output.printCharacterData(getCurrentValue());
+                scanner.clearBuffer();
+                type = scanner.next();
                 break;
             case LexicalUnits.CDATA_START:
-                t = scanner.next();
-                if (t != LexicalUnits.CHARACTER_DATA) {
+                type = scanner.next();
+                if (type != LexicalUnits.CHARACTER_DATA) {
                     throw fatalError("character.data", null);
                 }
-                output.printCDATASection(scanner.currentValue());
-                t = scanner.next();
-                if (t != LexicalUnits.SECTION_END) {
+                output.printCDATASection(getCurrentValue());
+                if (scanner.next() != LexicalUnits.SECTION_END) {
                     throw fatalError("section.end", null);
                 }
-                t = scanner.next();
+                scanner.clearBuffer();
+                type = scanner.next();
                 break;
             case LexicalUnits.START_TAG:
                 printElement();
-                t = scanner.currentType();
                 break;
             case LexicalUnits.CHARACTER_REFERENCE:
-                output.printCharacterEntityReference(scanner.currentValue());
-                t = scanner.next();
+                output.printCharacterEntityReference(getCurrentValue());
+                scanner.clearBuffer();
+                type = scanner.next();
                 break;
             case LexicalUnits.ENTITY_REFERENCE:
-                output.printEntityReference(scanner.currentValue());
-                t = scanner.next();
+                output.printEntityReference(getCurrentValue());
+                scanner.clearBuffer();
+                type = scanner.next();
                 break;
             default:
                 break content;
@@ -975,25 +988,25 @@ public class PrettyPrinter {
      */
     protected void printNotation()
         throws TranscoderException,
-               LexicalException,
+               XMLException,
                IOException {
         int t = scanner.next();
         if (t != LexicalUnits.S) {
             throw fatalError("space", null);
         }
-        char[] space1 = scanner.currentValue();
+        char[] space1 = getCurrentValue();
         t = scanner.next();
 
         if (t != LexicalUnits.NAME) {
             throw fatalError("name", null);
         }
-        char[] name = scanner.currentValue();
+        char[] name = getCurrentValue();
         t = scanner.next();
 
         if (t != LexicalUnits.S) {
             throw fatalError("space", null);
         }
-        char[] space2 = scanner.currentValue();
+        char[] space2 = getCurrentValue();
         t = scanner.next();
 
         String externalId = null;
@@ -1014,22 +1027,22 @@ public class PrettyPrinter {
             if (t != LexicalUnits.S) {
                 throw fatalError("space", null);
             }
-            space3 = scanner.currentValue();
+            space3 = getCurrentValue();
             t = scanner.next();
 
             if (t != LexicalUnits.STRING) {
                 throw fatalError("string", null);
             }
-            string1 = scanner.currentValue();
+            string1 = getCurrentValue();
             string1Delim = scanner.getStringDelimiter();
             t = scanner.next();
             
             if (t == LexicalUnits.S) {
-                space4 = scanner.currentValue();
+                space4 = getCurrentValue();
                 t = scanner.next();
 
                 if (t == LexicalUnits.STRING) {
-                    string2 = scanner.currentValue();
+                    string2 = getCurrentValue();
                     string2Delim = scanner.getStringDelimiter();
                     t = scanner.next();
                 }
@@ -1043,20 +1056,20 @@ public class PrettyPrinter {
             if (t != LexicalUnits.S) {
                 throw fatalError("space", null);
             }
-            space3 = scanner.currentValue();
+            space3 = getCurrentValue();
             t = scanner.next();
 
             if (t != LexicalUnits.STRING) {
                 throw fatalError("string", null);
             }
-            string1 = scanner.currentValue();
+            string1 = getCurrentValue();
             string1Delim = scanner.getStringDelimiter();
             t = scanner.next();
         }
 
         char[] space5 = null;
         if (t == LexicalUnits.S) {
-            space5 = scanner.currentValue();
+            space5 = getCurrentValue();
             t = scanner.next();
         }
         if (t != LexicalUnits.END_CHAR) {
@@ -1074,42 +1087,42 @@ public class PrettyPrinter {
      */
     protected void printAttlist()
         throws TranscoderException,
-               LexicalException,
+               XMLException,
                IOException {
-        int t = scanner.next();
-        if (t != LexicalUnits.S) {
+        type = scanner.next();
+        if (type != LexicalUnits.S) {
             throw fatalError("space", null);
         }
-        char[] space = scanner.currentValue();
-        t = scanner.next();
+        char[] space = getCurrentValue();
+        type = scanner.next();
 
-        if (t != LexicalUnits.NAME) {
+        if (type != LexicalUnits.NAME) {
             throw fatalError("name", null);
         }
-        char[] name = scanner.currentValue();
-        t = scanner.next();
+        char[] name = getCurrentValue();
+        type = scanner.next();
 
         output.printAttlistStart(space, name);
 
-        while (t == LexicalUnits.S) {
-            space = scanner.currentValue();
-            t = scanner.next();
+        while (type == LexicalUnits.S) {
+            space = getCurrentValue();
+            type = scanner.next();
             
-            if (t != LexicalUnits.NAME) {
+            if (type != LexicalUnits.NAME) {
                 break;
             }
-            name = scanner.currentValue();
-            t = scanner.next();
+            name = getCurrentValue();
+            type = scanner.next();
 
-            if (t != LexicalUnits.S) {
+            if (type != LexicalUnits.S) {
                 throw fatalError("space", null);
             }
-            char[] space2 = scanner.currentValue();
-            t = scanner.next();
+            char[] space2 = getCurrentValue();
+            type = scanner.next();
 
             output.printAttName(space, name, space2);
 
-            switch (t) {
+            switch (type) {
             case LexicalUnits.CDATA_IDENTIFIER:
             case LexicalUnits.ID_IDENTIFIER:
             case LexicalUnits.IDREF_IDENTIFIER:
@@ -1118,186 +1131,191 @@ public class PrettyPrinter {
             case LexicalUnits.ENTITIES_IDENTIFIER:
             case LexicalUnits.NMTOKEN_IDENTIFIER:
             case LexicalUnits.NMTOKENS_IDENTIFIER:
-                output.printCharacters(scanner.currentValue());
-                t = scanner.next();
+                output.printCharacters(getCurrentValue());
+                type = scanner.next();
                 break;
             case LexicalUnits.NOTATION_IDENTIFIER:
-                output.printCharacters(scanner.currentValue());
-                t = scanner.next();
+                output.printCharacters(getCurrentValue());
+                type = scanner.next();
 
-                if (t != LexicalUnits.S) {
+                if (type != LexicalUnits.S) {
                     throw fatalError("space", null);
                 }
-                output.printSpaces(scanner.currentValue(), false);
-                t = scanner.next();
+                output.printSpaces(getCurrentValue(), false);
+                type = scanner.next();
             
-                if (t != LexicalUnits.LEFT_BRACE) {
+                if (type != LexicalUnits.LEFT_BRACE) {
                     throw fatalError("left.brace", null);
                 }
-                t = scanner.next();
+                type = scanner.next();
 
                 List names = new LinkedList();
                 space = null;
 
-                if (t == LexicalUnits.S) {
-                    space = scanner.currentValue();
-                    t = scanner.next();
+                if (type == LexicalUnits.S) {
+                    space = getCurrentValue();
+                    type = scanner.next();
                 }
 
-                if (t != LexicalUnits.NAME) {
+                if (type != LexicalUnits.NAME) {
                     throw fatalError("name", null);
                 }
-                name = scanner.currentValue();
-                t = scanner.next();
+                name = getCurrentValue();
+                type = scanner.next();
 
                 space2 = null;
-                if (t == LexicalUnits.S) {
-                    space2 = scanner.currentValue();
-                    t = scanner.next();
+                if (type == LexicalUnits.S) {
+                    space2 = getCurrentValue();
+                    type = scanner.next();
                 }
 
                 names.add(new OutputManager.NameInfo(space, name, space2));
 
                 loop: for (;;) {
-                    switch (t) {
+                    switch (type) {
                     default:
                         break loop;
                     case LexicalUnits.PIPE:
-                        t = scanner.next();
+                        type = scanner.next();
                         
                         space = null;
-                        if (t == LexicalUnits.S) {
-                            space = scanner.currentValue();
-                            t = scanner.next();
+                        if (type == LexicalUnits.S) {
+                            space = getCurrentValue();
+                            type = scanner.next();
                         }
 
-                        if (t != LexicalUnits.NAME) {
+                        if (type != LexicalUnits.NAME) {
                             throw fatalError("name", null);
                         }
-                        name = scanner.currentValue();
-                        t = scanner.next();
+                        name = getCurrentValue();
+                        type = scanner.next();
 
                         space2 = null;
-                        if (t == LexicalUnits.S) {
-                            space2 = scanner.currentValue();
-                            t = scanner.next();
+                        if (type == LexicalUnits.S) {
+                            space2 = getCurrentValue();
+                            type = scanner.next();
                         }
                         
                         names.add(new OutputManager.NameInfo(space, name, space2));
                     }
                 }
-                if (t != LexicalUnits.RIGHT_BRACE) {
+                if (type != LexicalUnits.RIGHT_BRACE) {
                     throw fatalError("right.brace", null);
                 }
 
                 output.printEnumeration(names);
-                t = scanner.next();
+                type = scanner.next();
                 break;
             case LexicalUnits.LEFT_BRACE:
-                t = scanner.next();
+                type = scanner.next();
 
                 names = new LinkedList();
                 space = null;
 
-                if (t == LexicalUnits.S) {
-                    space = scanner.currentValue();
-                    t = scanner.next();
+                if (type == LexicalUnits.S) {
+                    space = getCurrentValue();
+                    type = scanner.next();
                 }
 
-                if (t != LexicalUnits.NMTOKEN) {
+                if (type != LexicalUnits.NMTOKEN) {
                     throw fatalError("nmtoken", null);
                 }
-                name = scanner.currentValue();
-                t = scanner.next();
+                name = getCurrentValue();
+                type = scanner.next();
 
                 space2 = null;
-                if (t == LexicalUnits.S) {
-                    space2 = scanner.currentValue();
-                    t = scanner.next();
+                if (type == LexicalUnits.S) {
+                    space2 = getCurrentValue();
+                    type = scanner.next();
                 }
 
                 names.add(new OutputManager.NameInfo(space, name, space2));
 
                 loop: for (;;) {
-                    switch (t) {
+                    switch (type) {
                     default:
                         break loop;
                     case LexicalUnits.PIPE:
-                        t = scanner.next();
+                        type = scanner.next();
                         
                         space = null;
-                        if (t == LexicalUnits.S) {
-                            space = scanner.currentValue();
-                            t = scanner.next();
+                        if (type == LexicalUnits.S) {
+                            space = getCurrentValue();
+                            type = scanner.next();
                         }
 
-                        if (t != LexicalUnits.NMTOKEN) {
+                        if (type != LexicalUnits.NMTOKEN) {
                             throw fatalError("nmtoken", null);
                         }
-                        name = scanner.currentValue();
-                        t = scanner.next();
+                        name = getCurrentValue();
+                        type = scanner.next();
 
                         space2 = null;
-                        if (t == LexicalUnits.S) {
-                            space2 = scanner.currentValue();
-                            t = scanner.next();
+                        if (type == LexicalUnits.S) {
+                            space2 = getCurrentValue();
+                            type = scanner.next();
                         }
                         
                         names.add(new OutputManager.NameInfo(space, name, space2));
                     }
                 }
-                if (t != LexicalUnits.RIGHT_BRACE) {
+                if (type != LexicalUnits.RIGHT_BRACE) {
                     throw fatalError("right.brace", null);
                 }
 
                 output.printEnumeration(names);
-                t = scanner.next();
+                type = scanner.next();
                 
             }
 
-            if (t == LexicalUnits.S) {
-                output.printSpaces(scanner.currentValue(), true);
-                t = scanner.next();
+            if (type == LexicalUnits.S) {
+                output.printSpaces(getCurrentValue(), true);
+                type = scanner.next();
             }
 
-            switch (t) {
+            switch (type) {
             default:
                 throw fatalError("default.decl", null);                
             case LexicalUnits.REQUIRED_IDENTIFIER:
             case LexicalUnits.IMPLIED_IDENTIFIER:
-                output.printCharacters(scanner.currentValue());
-                t = scanner.next();
+                output.printCharacters(getCurrentValue());
+                type = scanner.next();
                 break;
             case LexicalUnits.FIXED_IDENTIFIER:
-                output.printCharacters(scanner.currentValue());
-                t = scanner.next();
+                output.printCharacters(getCurrentValue());
+                type = scanner.next();
                 
-                if (t != LexicalUnits.S) {
+                if (type != LexicalUnits.S) {
                     throw fatalError("space", null);
                 }
-                output.printSpaces(scanner.currentValue(), false);
-                t = scanner.next();
+                output.printSpaces(getCurrentValue(), false);
+                type = scanner.next();
 
-                if (t != LexicalUnits.STRING_FRAGMENT) {
+                if (type != LexicalUnits.STRING &&
+                    type != LexicalUnits.FIRST_ATTRIBUTE_FRAGMENT) {
                     throw fatalError("space", null);
                 }
-            case LexicalUnits.STRING_FRAGMENT:
+            case LexicalUnits.STRING:
+            case LexicalUnits.FIRST_ATTRIBUTE_FRAGMENT:
                 output.printCharacter(scanner.getStringDelimiter());
-                output.printCharacters(scanner.currentValue());
+                output.printCharacters(getCurrentValue());
                 loop: for (;;) {
-                    t = scanner.next();
-                    switch (t) {
-                    case LexicalUnits.STRING_FRAGMENT:
-                        output.printCharacters(scanner.currentValue());
+                    type = scanner.next();
+                    switch (type) {
+                    case LexicalUnits.STRING:
+                    case LexicalUnits.ATTRIBUTE_FRAGMENT:
+                    case LexicalUnits.FIRST_ATTRIBUTE_FRAGMENT:
+                    case LexicalUnits.LAST_ATTRIBUTE_FRAGMENT:
+                        output.printCharacters(getCurrentValue());
                         break;
                     case LexicalUnits.CHARACTER_REFERENCE:
                         output.printString("&#");
-                        output.printCharacters(scanner.currentValue());
+                        output.printCharacters(getCurrentValue());
                         output.printCharacter(';');
                         break;
                     case LexicalUnits.ENTITY_REFERENCE:
                         output.printCharacter('&');
-                        output.printCharacters(scanner.currentValue());
+                        output.printCharacters(getCurrentValue());
                         output.printCharacter(';');
                         break;
                     default:
@@ -1309,11 +1327,11 @@ public class PrettyPrinter {
             space = null;
         }
 
-        if (t != LexicalUnits.END_CHAR) {
+        if (type != LexicalUnits.END_CHAR) {
             throw fatalError("end", null);
         }
         output.printAttlistEnd(space);
-        scanner.next();
+        type = scanner.next();
     }
 
     /**
@@ -1321,158 +1339,163 @@ public class PrettyPrinter {
      */
     protected void printEntityDeclaration()
         throws TranscoderException,
-               LexicalException,
+               XMLException,
                IOException {
         writer.write("<!ENTITY");
 
-        int t = scanner.next();
-        if (t != LexicalUnits.S) {
+        type = scanner.next();
+        if (type != LexicalUnits.S) {
             throw fatalError("space", null);
         }
-        writer.write(scanner.currentValue());
-        t = scanner.next();
+        writer.write(getCurrentValue());
+        type = scanner.next();
 
         boolean pe = false;
 
-        switch (t) {
+        switch (type) {
         default:
             throw fatalError("xml", null);
         case LexicalUnits.NAME:
-            writer.write(scanner.currentValue());
-            t = scanner.next();
+            writer.write(getCurrentValue());
+            type = scanner.next();
             break;
         case LexicalUnits.PERCENT:
             pe = true;
             writer.write('%');
-            t = scanner.next();
+            type = scanner.next();
 
-            if (t != LexicalUnits.S) {
+            if (type != LexicalUnits.S) {
                 throw fatalError("space", null);
             }
-            writer.write(scanner.currentValue());
-            t = scanner.next();
+            writer.write(getCurrentValue());
+            type = scanner.next();
 
-            if (t != LexicalUnits.NAME) {
+            if (type != LexicalUnits.NAME) {
                 throw fatalError("name", null);
             }
-            writer.write(scanner.currentValue());
-            t = scanner.next();
+            writer.write(getCurrentValue());
+            type = scanner.next();
         }
 
-        if (t != LexicalUnits.S) {
+        if (type != LexicalUnits.S) {
             throw fatalError("space", null);
         }
-        writer.write(scanner.currentValue());
-        t = scanner.next();
+        writer.write(getCurrentValue());
+        type = scanner.next();
 
-        switch (t) {
-        case LexicalUnits.STRING_FRAGMENT:
-            writer.write("\"");
+        switch (type) {
+        case LexicalUnits.STRING:
+        case LexicalUnits.FIRST_ATTRIBUTE_FRAGMENT:
+            char sd = scanner.getStringDelimiter();
+            writer.write(sd);
             loop: for (;;) {
-                switch (t) {
-                case LexicalUnits.STRING_FRAGMENT:
-                    writer.write(scanner.currentValue());
+                switch (type) {
+                case LexicalUnits.STRING:
+                case LexicalUnits.ATTRIBUTE_FRAGMENT:
+                case LexicalUnits.FIRST_ATTRIBUTE_FRAGMENT:
+                case LexicalUnits.LAST_ATTRIBUTE_FRAGMENT:
+                    writer.write(getCurrentValue());
                     break;
                 case LexicalUnits.ENTITY_REFERENCE:
                     writer.write('&');
-                    writer.write(scanner.currentValue());
+                    writer.write(getCurrentValue());
                     writer.write(';');
                     break;
                 case LexicalUnits.PARAMETER_ENTITY_REFERENCE:
                     writer.write('&');
-                    writer.write(scanner.currentValue());
+                    writer.write(getCurrentValue());
                     writer.write(';');
                     break;
                 default:
                     break loop;
                 }
-                t = scanner.next();
+                type = scanner.next();
             }
-            writer.write("\"");
+            writer.write(sd);
 
-            if (t == LexicalUnits.S) {
-                writer.write(scanner.currentValue());
-                t = scanner.next();
+            if (type == LexicalUnits.S) {
+                writer.write(getCurrentValue());
+                type = scanner.next();
             }
             
-            if (t != LexicalUnits.END_CHAR) {
+            if (type != LexicalUnits.END_CHAR) {
                 throw fatalError("end", null);
             }
             writer.write(">");
-            scanner.next();
+            type = scanner.next();
             return;
         case LexicalUnits.PUBLIC_IDENTIFIER:
             writer.write("PUBLIC");
-            t = scanner.next();
-            if (t != LexicalUnits.S) {
+            type = scanner.next();
+            if (type != LexicalUnits.S) {
                 throw fatalError("space", null);
             }
-            t = scanner.next();
-            if (t != LexicalUnits.STRING_FRAGMENT) {
+            type = scanner.next();
+            if (type != LexicalUnits.STRING) {
                 throw fatalError("string", null);
             }
 
             writer.write(" \"");
-            writer.write(scanner.currentValue());
+            writer.write(getCurrentValue());
             writer.write("\" \"");
 
-            t = scanner.next();
-            if (t != LexicalUnits.S) {
+            type = scanner.next();
+            if (type != LexicalUnits.S) {
                 throw fatalError("space", null);
             }
-            t = scanner.next();
-            if (t != LexicalUnits.STRING_FRAGMENT) {
+            type = scanner.next();
+            if (type != LexicalUnits.STRING) {
                 throw fatalError("string", null);
             }
 
-            writer.write(scanner.currentValue());
+            writer.write(getCurrentValue());
             writer.write('"');
             break;
             
         case LexicalUnits.SYSTEM_IDENTIFIER:
             writer.write("SYSTEM");
-            t = scanner.next();
-            if (t != LexicalUnits.S) {
+            type = scanner.next();
+            if (type != LexicalUnits.S) {
                 throw fatalError("space", null);
             }
-            t = scanner.next();
-            if (t != LexicalUnits.STRING_FRAGMENT) {
-                throw fatalError("string"+t, null);
+            type = scanner.next();
+            if (type != LexicalUnits.STRING) {
+                throw fatalError("string", null);
             }
             writer.write(" \"");
-            writer.write(scanner.currentValue());
+            writer.write(getCurrentValue());
             writer.write('"');
         }
 
-        t = scanner.next();
-        if (t == LexicalUnits.S) {
-            writer.write(scanner.currentValue());
-            t = scanner.next();
-            if (!pe && t == LexicalUnits.NDATA_IDENTIFIER) {
+        type = scanner.next();
+        if (type == LexicalUnits.S) {
+            writer.write(getCurrentValue());
+            type = scanner.next();
+            if (!pe && type == LexicalUnits.NDATA_IDENTIFIER) {
                 writer.write("NDATA");
-                t = scanner.next();
-                if (t != LexicalUnits.S) {
+                type = scanner.next();
+                if (type != LexicalUnits.S) {
                     throw fatalError("space", null);
                 }
-                writer.write(scanner.currentValue());
-                t = scanner.next();
-                if (t != LexicalUnits.NAME) {
+                writer.write(getCurrentValue());
+                type = scanner.next();
+                if (type != LexicalUnits.NAME) {
                     throw fatalError("name", null);
                 }
-                writer.write(scanner.currentValue());
-                t = scanner.next();
+                writer.write(getCurrentValue());
+                type = scanner.next();
             }
-            if (t == LexicalUnits.S) {
-                writer.write(scanner.currentValue());
-                t = scanner.next();
+            if (type == LexicalUnits.S) {
+                writer.write(getCurrentValue());
+                type = scanner.next();
             }
         }
         
-        if (t != LexicalUnits.END_CHAR) {
+        if (type != LexicalUnits.END_CHAR) {
             throw fatalError("end", null);
         }
         writer.write('>');
-        scanner.next();
+        type = scanner.next();
     }
 
     /**
@@ -1480,72 +1503,72 @@ public class PrettyPrinter {
      */
     protected void printElementDeclaration()
         throws TranscoderException,
-               LexicalException,
+               XMLException,
                IOException {
         writer.write("<!ELEMENT");
 
-        int t = scanner.next();
-        if (t != LexicalUnits.S) {
+        type = scanner.next();
+        if (type != LexicalUnits.S) {
             throw fatalError("space", null);
         }
-        writer.write(scanner.currentValue());
-        t = scanner.next();
-        switch (t) {
+        writer.write(getCurrentValue());
+        type = scanner.next();
+        switch (type) {
         default:
             throw fatalError("name", null);
         case LexicalUnits.NAME:
-            writer.write(scanner.currentValue());
+            writer.write(getCurrentValue());
         }
 
-        t = scanner.next();
-        if (t != LexicalUnits.S) {
+        type = scanner.next();
+        if (type != LexicalUnits.S) {
             throw fatalError("space", null);
         }
-        writer.write(scanner.currentValue());
+        writer.write(getCurrentValue());
 
-        switch (t = scanner.next()) {
+        switch (type = scanner.next()) {
         case LexicalUnits.EMPTY_IDENTIFIER:
             writer.write("EMPTY");
-            t = scanner.next();
+            type = scanner.next();
             break;
         case LexicalUnits.ANY_IDENTIFIER:
             writer.write("ANY");
-            t = scanner.next();
+            type = scanner.next();
             break;
         case LexicalUnits.LEFT_BRACE:
             writer.write('(');
-            t = scanner.next();
-            if (t == LexicalUnits.S) {
-                writer.write(scanner.currentValue());
-                t = scanner.next();
+            type = scanner.next();
+            if (type == LexicalUnits.S) {
+                writer.write(getCurrentValue());
+                type = scanner.next();
             }
-            mixed: switch (t) {
+            mixed: switch (type) {
             case LexicalUnits.PCDATA_IDENTIFIER:
                 writer.write("#PCDATA");
-                t = scanner.next();
+                type = scanner.next();
 
                 for (;;) {
-                    switch (t) {
+                    switch (type) {
                     case LexicalUnits.S:
-                        writer.write(scanner.currentValue());
-                        t = scanner.next();
+                        writer.write(getCurrentValue());
+                        type = scanner.next();
                         break;
                     case LexicalUnits.PIPE:
                         writer.write('|');
-                        t = scanner.next();
-                        if (t == LexicalUnits.S) {
-                            writer.write(scanner.currentValue());
-                            t = scanner.next();
+                        type = scanner.next();
+                        if (type == LexicalUnits.S) {
+                            writer.write(getCurrentValue());
+                            type = scanner.next();
                         }
-                        if (t != LexicalUnits.NAME) {
+                        if (type != LexicalUnits.NAME) {
                             throw fatalError("name", null);
                         }
-                        writer.write(scanner.currentValue());
-                        t = scanner.next();
+                        writer.write(getCurrentValue());
+                        type = scanner.next();
                         break;
                     case LexicalUnits.RIGHT_BRACE:
                         writer.write(')');
-                        t = scanner.next();
+                        type = scanner.next();
                         break mixed;
                     }
                 }
@@ -1553,39 +1576,38 @@ public class PrettyPrinter {
             case LexicalUnits.NAME:
             case LexicalUnits.LEFT_BRACE:
                 printChildren();
-                t = scanner.currentType();
-                if (t != LexicalUnits.RIGHT_BRACE) {
+                if (type != LexicalUnits.RIGHT_BRACE) {
                     throw fatalError("right.brace", null);
                 }
                 writer.write(')');
-                t = scanner.next();
-                if (t == LexicalUnits.S) {
-                    writer.write(scanner.currentValue());
-                    t = scanner.next();
+                type = scanner.next();
+                if (type == LexicalUnits.S) {
+                    writer.write(getCurrentValue());
+                    type = scanner.next();
                 }
-                switch (t) {
+                switch (type) {
                 case LexicalUnits.QUESTION:
                     writer.write('?');
-                    t = scanner.next();
+                    type = scanner.next();
                     break;
                 case LexicalUnits.STAR:
                     writer.write('*');
-                    t = scanner.next();
+                    type = scanner.next();
                     break;
                 case LexicalUnits.PLUS:
                     writer.write('+');
-                    t = scanner.next();
+                    type = scanner.next();
                 }
             }
         }
         
-        if (t == LexicalUnits.S) {
-            writer.write(scanner.currentValue());
-            t = scanner.next();
+        if (type == LexicalUnits.S) {
+            writer.write(getCurrentValue());
+            type = scanner.next();
         }
 
-        if (t != LexicalUnits.END_CHAR) {
-            throw fatalError("end"+t, null);
+        if (type != LexicalUnits.END_CHAR) {
+            throw fatalError("end", null);
         }
         writer.write('>');
         scanner.next();
@@ -1596,84 +1618,96 @@ public class PrettyPrinter {
      */
     protected void printChildren()
         throws TranscoderException,
-               LexicalException,
+               XMLException,
                IOException {
         int op = 0;
-        int t = scanner.currentType();
         loop: for (;;) {
-            switch (t) {
+            switch (type) {
             default:
                 throw new RuntimeException("Invalid XML");
             case LexicalUnits.NAME:
-                writer.write(scanner.currentValue());
-                t = scanner.next();
+                writer.write(getCurrentValue());
+                type = scanner.next();
                 break;
             case LexicalUnits.LEFT_BRACE:
                 writer.write('(');
-                t = scanner.next();
-                if (t == LexicalUnits.S) {
-                    writer.write(scanner.currentValue());
-                    t = scanner.next();
+                type = scanner.next();
+                if (type == LexicalUnits.S) {
+                    writer.write(getCurrentValue());
+                    type = scanner.next();
                 }
                 printChildren();
-                t = scanner.currentType();
-                if (t != LexicalUnits.RIGHT_BRACE) {
+                if (type != LexicalUnits.RIGHT_BRACE) {
                     throw fatalError("right.brace", null);
                 }
                 writer.write(')');
-                t = scanner.next();
+                type = scanner.next();
             }
 
-            if (t == LexicalUnits.S) {
-                writer.write(scanner.currentValue());
-                t = scanner.next();
+            if (type == LexicalUnits.S) {
+                writer.write(getCurrentValue());
+                type = scanner.next();
             }
 
-            switch (t) {
+            switch (type) {
             case LexicalUnits.RIGHT_BRACE:
                 break loop;
             case LexicalUnits.STAR:
                 writer.write('*');
-                t = scanner.next();
+                type = scanner.next();
                 break;
             case LexicalUnits.QUESTION:
                 writer.write('?');
-                t = scanner.next();
+                type = scanner.next();
                 break;
             case LexicalUnits.PLUS:
                 writer.write('+');
-                t = scanner.next();
+                type = scanner.next();
                 break;
             }
 
-            if (t == LexicalUnits.S) {
-                writer.write(scanner.currentValue());
-                t = scanner.next();
+            if (type == LexicalUnits.S) {
+                writer.write(getCurrentValue());
+                type = scanner.next();
             }
 
-            switch (t) {
+            switch (type) {
             case LexicalUnits.PIPE:
-                if (op != 0 && op != t) {
+                if (op != 0 && op != type) {
                     throw new RuntimeException("Invalid XML");
                 }
                 writer.write('|');
-                op = t;
-                t = scanner.next();
+                op = type;
+                type = scanner.next();
                 break;
             case LexicalUnits.COMMA:
-                if (op != 0 && op != t) {
+                if (op != 0 && op != type) {
                     throw new RuntimeException("Invalid XML");
                 }
                 writer.write(',');
-                op = t;
-                t = scanner.next();
+                op = type;
+                type = scanner.next();
             }
 
-            if (t == LexicalUnits.S) {
-                writer.write(scanner.currentValue());
-                t = scanner.next();
+            if (type == LexicalUnits.S) {
+                writer.write(getCurrentValue());
+                type = scanner.next();
             }
         }
+    }
+
+    /**
+     * Returns the current lexical unit value.
+     */
+    protected char[] getCurrentValue() {
+        int off = scanner.getStart() + scanner.getStartOffset();
+        int len = scanner.getEnd() + scanner.getEndOffset() - off;
+        char[] result = new char[len];
+        char[] buffer = scanner.getBuffer();
+        for (int i = 0; i < len; i++) {
+            result[i] = buffer[off + i];
+        }
+        return result;
     }
 
     /**

@@ -240,7 +240,7 @@ public class BaseScriptingEnvironment {
             //
             // Java code invocation.
             //
-            if (type.equals("application/x-java-jar-file")) {
+            if (type.equals("application/java-archive")) {
                 try {
                     String href = XLinkSupport.getXLinkHref(script);
                     URL url;

@@ -27,8 +27,11 @@ public class XMLStreamNormalizingReader extends StreamNormalizingReader {
     
     /**
      * Creates a new XMLStreamNormalizingReader.
+     * @param is The input stream to read.
+     * @param encod The character encoding to use if the auto-detection fail.
      */
-    public XMLStreamNormalizingReader(InputStream is) throws IOException {
+    public XMLStreamNormalizingReader(InputStream is, String encod)
+        throws IOException {
         PushbackInputStream pbis = new PushbackInputStream(is, 128);
         byte[] buf = new byte[4];
 
@@ -95,6 +98,7 @@ public class XMLStreamNormalizingReader extends StreamNormalizingReader {
             }
         }
 
-        charDecoder = createCharDecoder(pbis, "UTF-8");
+        encod = (encod == null) ? "UTF-8" : encod;
+        charDecoder = createCharDecoder(pbis, encod);
     }
 }

@@ -25,8 +25,6 @@ import org.apache.batik.transcoder.keys.BooleanKey;
 import org.apache.batik.transcoder.keys.IntegerKey;
 import org.apache.batik.transcoder.keys.StringKey;
 
-import org.apache.batik.xml.scanner.LexicalException;
-
 import org.w3c.dom.Document;
 
 /**

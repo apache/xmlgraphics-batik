@@ -15,7 +15,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.batik.xml.XMLUtilities;
-import org.apache.batik.xml.scanner.DocumentScanner;
 
 /**
  * This class is responsible of the output of XML constructs.
