@@ -20,14 +20,16 @@
     <question>What is Batik?</question>
     <answer>
         <p>
-        The goal of the Batik project is to provide a framework for Java language applications 
-        which manipulate SVG (Scalable Vector Graphics) content for various purposes, such as 
-        generation, manipulation or viewing. 
+        Batik is a Java based toolkit for applications which
+        images in the Scalable Vector Graphics (SVG) format for
+        various purposes, such as viewing, generation or manipulation.
         </p>
         <p>
         The project's ambition is to give developers a set of core modules which can be used together 
         or individually to support specific SVG solutions. Examples of modules are SVG parsers, SVG 
-        generators and SVG DOM implementations. Even though the goal of the project is to provide a set 
+        generators and SVG DOM implementations. Another ambition of the Batik project is to make 
+        it highly extensible (for example, Batik allows the developer to handle custom SVG tags).
+        Even though the goal of the project is to provide a set 
         of core modules, one of the deliveries is a full fledged SVG Viewer implementation which 
         validates the various modules and their inter-operability. 
         </p>
@@ -68,8 +70,8 @@
         </p>
         <ul>
             <li><link href="http://www.csiro.au/">CSIRO</link></li>
-            <li><link href="http://www.ilog.fr/">ILOG</link></li>
-            <li><link href="http://www-sop.inria.fr/koala/jackaroo/">Jackaroo Team</link></li>
+            <li><link href="http://www.ilog.com/">ILOG</link></li>
+            <li><link href="http://www-sop.inria.fr/koala/jackaroo/">Koala Team</link></li>
             <li><link href="http://www.kodak.com/">Eastman Kodak Company</link></li>
             <li><link href="http://www.sun.com">Sun Microsystems, Inc.</link></li>
         </ul>
@@ -97,7 +99,9 @@
         participation (coding, documenting, answering questions,
         proposing ideas, reporting bugs, suggesting bug-fixes, etc..)
         or by resource donation (publicity, hardware, software,
-        conference presentations, speeches, etc...).
+        conference presentations, speeches, etc...). Applications that
+        use the Batik modules, such as tools or extensions, are of special 
+        interest to the project.
         </p>
         <p>
         The process for contributing to Batik is the same as for other
@@ -135,7 +139,9 @@
         <p>
         The SVG viewer can display SVG documents and lets the user zoom, pan 
         and rotate any SVG document, view the SVG source, link between SVG 
-        documents, view a tree representation of the SVG DOM and more.
+        documents, view a tree representation of the SVG DOM and more. One
+        important component of the SVG viewer is the JSVGCanvas component that
+        can be plugged in any Java application to provide SVG viewing capability.
         </p>
         <p>
         The SVG rasterizer lets the user convert SVG files to raster formats such
@@ -182,10 +188,11 @@
     <answer>
         <p>
         Well, you can always use vi or xemacs, but there are many graphic
-        authoring packages that can export SVG documents, such as Adobe Illustrator 9.
+        authoring packages that can export SVG documents.
         You can get a list of tools that can export SVG from the 
         <link href="http://www.w3.org/Graphics/SVG/SVG-Implementations#edit">implementation</link>
-        section of the SVG Home page on the W3C web site.
+        section of the SVG Home page on the W3C web site. You can also 
+        imagine building a tool on top of Batik: feel free to contribute!
         </p>
         <p>
         Authoring is one way of creating SVG content, and graphic authoring
@@ -283,12 +290,16 @@
         SVG images and will likely be used in <link href="">FOP</link> for converting
         SVG images to PDF.
         </p>
+        <p>
+        Note that Batik uses Xalan for its support of XSL transformations (have a look
+        at the xsltest.svg file in the distribution.
+        </p>
     </answer>
 
 </faq>
 
 <faq>
-    <question>What is coming next?</question>
+    <question>Where is Batik going? What is next?</question>
     <answer>
         <p>
         The SVG implementation is not complete, and there is more work to do to 

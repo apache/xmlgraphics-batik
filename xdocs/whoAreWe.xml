@@ -32,10 +32,9 @@
 
       <s1 title="Batik Commiters">
       <p>
-      The following people have a commit access to the CVS repository:
+      The following people are active Batik developers and are the project's commiters:
       </p>
         <dl>
-          <dt>James Davidson</dt><dd><link href="mailto:James.Davidson@eng.sun.com">James.Davidson@eng.sun.com</link> (JD)</dd>
           <dt>Thomas De Weese</dt><dd><link href="mailto:Thomas.DeWeese@Kodak.com">Thomas.DeWeese@Kodak.com</link> (TD)</dd>
           <dt>Bill Haneman</dt><dd><link href="mailto:bill.haneman@ireland.sun.com">bill.haneman@ireland.sun.com</link> (BH)</dd>
           <dt>Vincent Hardy</dt><dd><link href="mailto:vincent.hardy@eng.sun.com">vincent.hardy@eng.sun.com</link> (VH)</dd>
@@ -43,9 +42,14 @@
           <dt>Dean Jackson</dt><dd><link href="mailto:dean.jackson@cmis.csiro.au">dean.jackson@cmis.csiro.au</link> (DJ)</dd>
           <dt>Christophe Jolif</dt><dd><link href="mailto:cjolif@ilog.fr">cjolif@ilog.fr</link> (CJ)</dd>
           <dt>Thierry Kormann</dt><dd><link href="mailto:tkormann@apache.org">tkormann@apache.org</link> (TK)</dd>
-          <dt>Stefano Mazzocchi</dt><dd><link href="mailto:stefano@apache.org">stefano@apache.org</link> (SM)</dd>
           <dt>Emmanuel Tissandier</dt><dd><link href="mailto:tissandi@ilog.fr">tissandi@ilog.fr</link> (ET)</dd>
         </dl>
+
+        <p>
+        In addition, <link href="mailto:James.Davidson@eng.sun.com">James Davidson</link> and 
+        <link href="mailto:stefano@apache.org">Stefanon Mazzochi</link> two Apache veterans who helped the
+        Batik team start the project at Apache, also have commit access to the CVS repository.
+        </p>        
       </s1>
 
       <s1 title="Batik Contributors">
@@ -54,7 +58,7 @@
       </p>
         <ul>
           <li>Nicholas Talian</li>
-          <li>Sheng Pei</li>
+          <li><link href="mailto:spei@cs.uiowa.edu">Sheng Pei</link></li>
         </ul>
       </s1>
 
@@ -70,7 +74,11 @@
                  <th>DJ</th><th>CJ</th><th>TK</th><th>SM</th><th>ET</th>
           </tr>
           <tr>
-            <td>Apache Contacts</td><td>X</td><td/><td/><td/><td/>
+            <td>Team Contact</td><td/><td/><td/><td>X</td><td/>
+                               <td/><td/><td/><td></td><td/>
+          </tr>
+          <tr>
+            <td>Apache Consultant</td><td>X</td><td/><td/><td/><td/>
                                <td/><td/><td/><td>X</td><td/>
           </tr>
           <tr>
