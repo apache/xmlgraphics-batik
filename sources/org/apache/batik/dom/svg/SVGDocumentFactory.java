@@ -12,6 +12,8 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.io.Reader;
 
+import org.w3c.dom.svg.SVGDocument;
+
 import org.apache.batik.dom.util.DocumentFactory;
 
 /**
@@ -23,26 +25,27 @@ import org.apache.batik.dom.util.DocumentFactory;
 public interface SVGDocumentFactory extends DocumentFactory {
 
     /**
-     * Creates a SVGOMDocument instance.
+     * Creates a SVG Document instance.
      * @param uri The document URI.
      * @exception IOException if an error occured while reading the document.
      */
-    SVGOMDocument createDocument(String uri) throws IOException;
+    SVGDocument createSVGDocument(String uri) throws IOException;
 
     /**
-     * Creates a SVGOMDocument instance.
+     * Creates a SVG Document instance.
      * @param uri The document URI.
      * @param is The document input stream.
      * @exception IOException if an error occured while reading the document.
      */
-    SVGOMDocument createDocument(String uri, InputStream is) throws IOException;
+    SVGDocument createSVGDocument(String uri, InputStream is) 
+        throws IOException;
 
     /**
-     * Creates a SVGOMDocument instance.
+     * Creates a SVG Document instance.
      * @param uri The document URI.
      * @param r The document reader.
      * @exception IOException if an error occured while reading the document.
      */
-    SVGOMDocument createDocument(String uri, Reader r) throws IOException;
+    SVGDocument createSVGDocument(String uri, Reader r) throws IOException;
 
 }

@@ -147,10 +147,10 @@
 
         </g>
 
-        <a onclick="runTest()">
+        <g onclick="runTest()">
             <use class="button" xlink:href="#button" x="60" y="200" />
             <text class="button" x="60" y="200">Run Test</text>
-        </a>
+        </g>
     </g>
  
 <!--

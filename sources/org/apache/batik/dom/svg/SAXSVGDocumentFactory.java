@@ -29,6 +29,7 @@ import org.apache.batik.util.MimeTypeConstants;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.DOMException;
+import org.w3c.dom.svg.SVGDocument;
 
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -78,13 +79,39 @@ public class SAXSVGDocumentFactory
               parser, dd);
     }
 
+    public SVGDocument createSVGDocument(String uri) throws IOException {
+        return (SVGDocument)createDocument(uri);
+    }
+
     /**
-     * Creates a SVGOMDocument instance.<br>
+     * Creates a SVG Document instance.
+     * @param uri The document URI.
+     * @param inp The document input stream.
+     * @exception IOException if an error occured while reading the document.
+     */
+    public SVGDocument createSVGDocument(String uri, InputStream inp) 
+        throws IOException {
+        return (SVGDocument)createDocument(uri, inp);
+    }
+
+    /**
+     * Creates a SVG Document instance.
+     * @param uri The document URI.
+     * @param r The document reader.
+     * @exception IOException if an error occured while reading the document.
+     */
+    public SVGDocument createSVGDocument(String uri, Reader r)
+        throws IOException {
+        return (SVGDocument)createDocument(uri, r);
+    }
+
+    /**
+     * Creates a SVG Document instance.<br>
      * This method supports gzipped sources.
      * @param uri The document URI.
      * @exception IOException if an error occured while reading the document.
      */
-    public SVGOMDocument createDocument(String uri) throws IOException {
+    public Document createDocument(String uri) throws IOException {
         ParsedURL purl = new ParsedURL(uri);
 
         InputStream is = purl.openStream(MimeTypeConstants.MIME_TYPES_SVG);
@@ -128,10 +155,10 @@ public class SAXSVGDocumentFactory
 
         isrc.setSystemId(uri);
 
-        SVGOMDocument doc = (SVGOMDocument)super.createDocument
+        Document doc = super.createDocument
             (SVGDOMImplementation.SVG_NAMESPACE_URI, "svg", uri, isrc);
         try {
-            doc.setURLObject(new URL(purl.toString()));
+            ((SVGOMDocument)doc).setURLObject(new URL(purl.toString()));
         } catch (MalformedURLException mue) {
             // Not very likely to happen given we already opened the stream.
             throw new IOException("Malformed URL: " + uri);
@@ -141,22 +168,22 @@ public class SAXSVGDocumentFactory
     }
 
     /**
-     * Creates a SVGOMDocument instance.
+     * Creates a SVG Document instance.
      * @param uri The document URI.
-     * @param is The document input stream.
+     * @param inp The document input stream.
      * @exception IOException if an error occured while reading the document.
      */
-    public SVGOMDocument createDocument(String uri, InputStream inp)
+    public Document createDocument(String uri, InputStream inp)
         throws IOException {
-        SVGOMDocument doc;
+        Document doc;
         InputSource is = new InputSource(inp);
         is.setSystemId(uri);
 
         try {
-            doc = (SVGOMDocument)super.createDocument
+            doc = super.createDocument
                 (SVGDOMImplementation.SVG_NAMESPACE_URI, "svg", uri, is);
             if (uri != null) {
-                doc.setURLObject(new URL(uri));
+                ((SVGOMDocument)doc).setURLObject(new URL(uri));
             }
         } catch (MalformedURLException e) {
             throw new IOException(e.getMessage());
@@ -165,22 +192,22 @@ public class SAXSVGDocumentFactory
     }
 
     /**
-     * Creates a SVGOMDocument instance.
+     * Creates a SVG Document instance.
      * @param uri The document URI.
      * @param r The document reader.
      * @exception IOException if an error occured while reading the document.
      */
-    public SVGOMDocument createDocument(String uri, Reader r)
+    public Document createDocument(String uri, Reader r)
         throws IOException {
-        SVGOMDocument doc;
+        Document doc;
         InputSource is = new InputSource(r);
         is.setSystemId(uri);
 
         try {
-            doc = (SVGOMDocument)super.createDocument
+            doc = super.createDocument
                 (SVGDOMImplementation.SVG_NAMESPACE_URI, "svg", uri, is);
             if (uri != null) {
-                doc.setURLObject(new URL(uri));
+                ((SVGOMDocument)doc).setURLObject(new URL(uri));
             }
         } catch (MalformedURLException e) {
             throw new IOException(e.getMessage());

@@ -89,7 +89,7 @@ public class DocumentLoader {
         }
         DocumentState state = (DocumentState)cacheMap.get(uri);
         if (state == null) {
-            Document document = documentFactory.createDocument(uri);
+            SVGDocument document = documentFactory.createSVGDocument(uri);
             if (bridgeContext != null) {
                 bridgeContext.initializeDocument(document);
             }
