@@ -210,7 +210,7 @@ public class DisplacementMapRed extends AbstractRed {
             return ret;
 
         SinglePixelPackedSampleModel sppsm;
-        sppsm = (SinglePixelPackedSampleModel)image.getSampleModel();
+        sppsm = (SinglePixelPackedSampleModel)getSampleModel();
         int base  = sppsm.getOffset(0, 0);
         int tw    = sppsm.getWidth();
 
@@ -243,7 +243,7 @@ public class DisplacementMapRed extends AbstractRed {
             return ret;
 
         SinglePixelPackedSampleModel sppsm;
-        sppsm = (SinglePixelPackedSampleModel)image.getSampleModel();
+        sppsm = (SinglePixelPackedSampleModel)getSampleModel();
         int stride  = sppsm.getScanlineStride();
         int th      = sppsm.getHeight();
 
@@ -319,13 +319,10 @@ public class DisplacementMapRed extends AbstractRed {
         int dp = dstOff, ip = offOff;
 
         // Fixed point representation of scale factor.
-        final int fpScaleX = (int)((scaleX/255.0)*(1<<15));
-        final int fpScaleY = (int)((scaleY/255.0)*(1<<15));
-
-        final int maxDx       = maxOffX;
-        final int dangerZoneX = w-maxDx;
-        final int maxDy       = maxOffY;
-        final int dangerZoneY = h-maxDy;
+        final int fpScaleX = (int)((scaleX/255.0)*(1<<15)+0.5);
+        final int fpAdjX   = (int)(-127.5*fpScaleX-0.5);
+        final int fpScaleY = (int)((scaleY/255.0)*(1<<15)+0.5);
+        final int fpAdjY   = (int)(-127.5*fpScaleY-0.5);
 
         long start = System.currentTimeMillis();
 
@@ -341,8 +338,8 @@ public class DisplacementMapRed extends AbstractRed {
             for (x=xStart; x<xEnd; x++, dp++, ip++) {
                 dPel = offPixels[ip];
                 
-                xDisplace = fpScaleX*(((dPel>>xShift)&0xff) - 127);
-                yDisplace = fpScaleY*(((dPel>>yShift)&0xff) - 127);
+                xDisplace = (fpScaleX*((dPel>>xShift)&0xff))+fpAdjX;
+                yDisplace = (fpScaleY*((dPel>>yShift)&0xff))+fpAdjY;
                 
                 x0 = x+(xDisplace>>15);
                 y0 = y+(yDisplace>>15);
@@ -408,40 +405,40 @@ public class DisplacementMapRed extends AbstractRed {
                 // Combine the alpha channels.
                 sp0  = (pel00>>>16) & 0xFF00;
                 sp1  = (pel10>>>16) & 0xFF00;
-                pel0 = (sp0 + (((sp1-sp0)*xFrac)>>15)) & 0xFFFF;
+                pel0 = (sp0 + (((sp1-sp0)*xFrac+0x4000)>>15)) & 0xFFFF;
                 sp0  = (pel01>>>16) & 0xFF00;
                 sp1  = (pel11>>>16) & 0xFF00;
-                pel1 = (sp0 + (((sp1-sp0)*xFrac)>>15)) & 0xFFFF;
+                pel1 = (sp0 + (((sp1-sp0)*xFrac+0x4000)>>15)) & 0xFFFF;
                 newPel = (((pel0<<15) + (pel1-pel0)*yFrac + 0x00400000)
                           &0x7F800000)<<  1;
 
                 // Combine the red channels.
                 sp0  = (pel00>>  8) & 0xFF00;
                 sp1  = (pel10>>  8) & 0xFF00;
-                pel0 = (sp0 + (((sp1-sp0)*xFrac)>>15)) & 0xFFFF;
+                pel0 = (sp0 + (((sp1-sp0)*xFrac+0x4000)>>15)) & 0xFFFF;
                 sp0  = (pel01>>  8) & 0xFF00;
                 sp1  = (pel11>>  8) & 0xFF00;
-                pel1 = (sp0 + (((sp1-sp0)*xFrac)>>15)) & 0xFFFF;
+                pel1 = (sp0 + (((sp1-sp0)*xFrac+0x4000)>>15)) & 0xFFFF;
                 newPel |= (((pel0<<15) + (pel1-pel0)*yFrac + 0x00400000)
                            &0x7F800000)>>> 7;
 
                 // Combine the green channels.
                 sp0  = (pel00     ) & 0xFF00;
                 sp1  = (pel10     ) & 0xFF00;
-                pel0 = (sp0 + (((sp1-sp0)*xFrac)>>15)) & 0xFFFF;
+                pel0 = (sp0 + (((sp1-sp0)*xFrac+0x4000)>>15)) & 0xFFFF;
                 sp0  = (pel01     ) & 0xFF00;
                 sp1  = (pel11     ) & 0xFF00;
-                pel1 = (sp0 + (((sp1-sp0)*xFrac)>>15)) & 0xFFFF;
+                pel1 = (sp0 + (((sp1-sp0)*xFrac+0x4000)>>15)) & 0xFFFF;
                 newPel |= (((pel0<<15) + (pel1-pel0)*yFrac + 0x00400000)
                            &0x7F800000)>>>15;
 
                 // Combine the blue channels.
                 sp0  = (pel00<<  8) & 0xFF00;
                 sp1  = (pel10<<  8) & 0xFF00;
-                pel0 = (sp0 + (((sp1-sp0)*xFrac)>>15)) & 0xFFFF;
+                pel0 = (sp0 + (((sp1-sp0)*xFrac+0x4000)>>15)) & 0xFFFF;
                 sp0  = (pel01<<  8) & 0xFF00;
                 sp1  = (pel11<<  8) & 0xFF00;
-                pel1 = (sp0 + (((sp1-sp0)*xFrac)>>15)) & 0xFFFF;
+                pel1 = (sp0 + (((sp1-sp0)*xFrac+0x4000)>>15)) & 0xFFFF;
                 newPel |= (((pel0<<15) + (pel1-pel0)*yFrac + 0x00400000)
                            &0x7F800000)>>>23;
 
@@ -507,13 +504,11 @@ public class DisplacementMapRed extends AbstractRed {
         int dp = dstOff, ip = offOff;
 
         // Fixed point representation of scale factor.
-        final int fpScaleX = (int)((scaleX/255.0)*(1<<15));
-        final int fpScaleY = (int)((scaleY/255.0)*(1<<15));
-
-        final int maxDx       = maxOffX;
-        final int dangerZoneX = w-maxDx;
-        final int maxDy       = maxOffY;
-        final int dangerZoneY = h-maxDy;
+        // Fixed point representation of scale factor.
+        final int fpScaleX = (int)((scaleX/255.0)*(1<<15)+0.5);
+        final int fpAdjX   = (int)(-127.5*fpScaleX-0.5);
+        final int fpScaleY = (int)((scaleY/255.0)*(1<<15)+0.5);
+        final int fpAdjY   = (int)(-127.5*fpScaleY-0.5);
 
         long start = System.currentTimeMillis();
 
@@ -530,8 +525,8 @@ public class DisplacementMapRed extends AbstractRed {
             for (x=xStart; x<xEnd; x++, dp++, ip++) {
                 dPel = offPixels[ip];
                 
-                xDisplace = fpScaleX*(((dPel>>xShift)&0xff) - 127);
-                yDisplace = fpScaleY*(((dPel>>yShift)&0xff) - 127);
+                xDisplace = (fpScaleX*((dPel>>xShift)&0xff))+fpAdjX;
+                yDisplace = (fpScaleY*((dPel>>yShift)&0xff))+fpAdjY;
                 
                 x0 = x+(xDisplace>>15);
                 y0 = y+(yDisplace>>15);
@@ -597,45 +592,45 @@ public class DisplacementMapRed extends AbstractRed {
                 // Combine the alpha channels.
                 sp0  = (pel00>>>16) & 0xFF00;
                 sp1  = (pel10>>>16) & 0xFF00;
-                pel0 = (sp0 + (((sp1-sp0)*xFrac)>>15)) & 0xFFFF;
+                pel0 = (sp0 + (((sp1-sp0)*xFrac+0x4000)>>15)) & 0xFFFF;
                 a00 = ((sp0>>8)*norm + 0x80)>>8;
                 a10 = ((sp1>>8)*norm + 0x80)>>8;
 
                 sp0  = (pel01>>>16) & 0xFF00;
                 sp1  = (pel11>>>16) & 0xFF00;
-                pel1 = (sp0 + (((sp1-sp0)*xFrac)>>15)) & 0xFFFF;
+                pel1 = (sp0 + (((sp1-sp0)*xFrac+0x4000)>>15)) & 0xFFFF;
                 a01 = ((sp0>>8)*norm + 0x80)>>8;
                 a11 = ((sp1>>8)*norm + 0x80)>>8;
                 newPel = (((pel0<<15) + (pel1-pel0)*yFrac + 0x00400000)
                           &0x7F800000)<<  1;
 
                 // Combine the red channels.
-                sp0  = ((((pel00>> 16) & 0xFF)*a00)>>8) & 0xFF00;
-                sp1  = ((((pel10>> 16) & 0xFF)*a10)>>8) & 0xFF00;
-                pel0 = (sp0 + (((sp1-sp0)*xFrac)>>15)) & 0xFFFF;
-                sp0  = ((((pel01>> 16) & 0xFF)*a01)>>8) & 0xFF00;
-                sp1  = ((((pel11>> 16) & 0xFF)*a11)>>8) & 0xFF00;
-                pel1 = (sp0 + (((sp1-sp0)*xFrac)>>15)) & 0xFFFF;
+                sp0  = ((((pel00>> 16) & 0xFF)*a00) + 0x80)>>8;
+                sp1  = ((((pel10>> 16) & 0xFF)*a10) + 0x80)>>8;
+                pel0 = (sp0 + (((sp1-sp0)*xFrac+0x4000)>>15)) & 0xFFFF;
+                sp0  = ((((pel01>> 16) & 0xFF)*a01) + 0x80)>>8;
+                sp1  = ((((pel11>> 16) & 0xFF)*a11) + 0x80)>>8;
+                pel1 = (sp0 + (((sp1-sp0)*xFrac+0x4000)>>15)) & 0xFFFF;
                 newPel |= (((pel0<<15) + (pel1-pel0)*yFrac + 0x00400000)
                            &0x7F800000)>>> 7;
 
                 // Combine the green channels.
-                sp0  = ((((pel00>> 8) & 0xFF)*a00)>>8) & 0xFF00;
-                sp1  = ((((pel10>> 8) & 0xFF)*a10)>>8) & 0xFF00;
-                pel0 = (sp0 + (((sp1-sp0)*xFrac)>>15)) & 0xFFFF;
-                sp0  = ((((pel01>> 8) & 0xFF)*a01)>>8) & 0xFF00;
-                sp1  = ((((pel11>> 8) & 0xFF)*a11)>>8) & 0xFF00;
-                pel1 = (sp0 + (((sp1-sp0)*xFrac)>>15)) & 0xFFFF;
+                sp0  = ((((pel00>> 8) & 0xFF)*a00) + 0x80)>>8;
+                sp1  = ((((pel10>> 8) & 0xFF)*a10) + 0x80)>>8;
+                pel0 = (sp0 + (((sp1-sp0)*xFrac+0x4000)>>15)) & 0xFFFF;
+                sp0  = ((((pel01>> 8) & 0xFF)*a01) + 0x80)>>8;
+                sp1  = ((((pel11>> 8) & 0xFF)*a11) + 0x80)>>8;
+                pel1 = (sp0 + (((sp1-sp0)*xFrac+0x4000)>>15)) & 0xFFFF;
                 newPel |= (((pel0<<15) + (pel1-pel0)*yFrac + 0x00400000)
                            &0x7F800000)>>>15;
 
                 // Combine the blue channels.
-                sp0  = (((pel00 & 0xFF)*a00)>>8) & 0xFF00;
-                sp1  = (((pel10 & 0xFF)*a10)>>8) & 0xFF00;
-                pel0 = (sp0 + (((sp1-sp0)*xFrac)>>15)) & 0xFFFF;
-                sp0  = (((pel01 & 0xFF)*a01)>>8) & 0xFF00;
-                sp1  = (((pel11 & 0xFF)*a11)>>8) & 0xFF00;
-                pel1 = (sp0 + (((sp1-sp0)*xFrac)>>15)) & 0xFFFF;
+                sp0  = (((pel00 & 0xFF)*a00) + 0x80)>>8;
+                sp1  = (((pel10 & 0xFF)*a10) + 0x80)>>8;
+                pel0 = (sp0 + (((sp1-sp0)*xFrac+0x4000)>>15)) & 0xFFFF;
+                sp0  = (((pel01 & 0xFF)*a01) + 0x80)>>8;
+                sp1  = (((pel11 & 0xFF)*a11) + 0x80)>>8;
+                pel1 = (sp0 + (((sp1-sp0)*xFrac+0x4000)>>15)) & 0xFFFF;
                 newPel |= (((pel0<<15) + (pel1-pel0)*yFrac + 0x00400000)
                            &0x7F800000)>>>23;
 
@@ -705,8 +700,13 @@ public class DisplacementMapRed extends AbstractRed {
         final int xShift = xChannel.toInt()*8;
         final int yShift = yChannel.toInt()*8;
 
-        final int fpScaleX = (int)(scaleX*(1<<16)/255 + 0.5f);
-        final int fpScaleY = (int)(scaleY*(1<<16)/255 + 0.5f);
+        final int fpScaleX = (int)((scaleX/255.0)*(1<<15)+0.5);
+        final int fpScaleY = (int)((scaleY/255.0)*(1<<15)+0.5);
+
+        // Calculate the shift to make '.5' no movement.
+        // This also includes rounding factor (0x4000) for Fixed Point stuff.
+        final int fpAdjX   = (int)(-127.5*fpScaleX-0.5) + 0x4000;
+        final int fpAdjY   = (int)(-127.5*fpScaleY-0.5) + 0x4000;
 
         // The pointer of img and dst indicating where the pixel values are
         int dp = dstOff, ip = offOff;
@@ -715,16 +715,17 @@ public class DisplacementMapRed extends AbstractRed {
         int y=yStart, xt=xTile[0]-1, yt=yTile[0]-1;
         int [] imgPix = null;
 
+        int x0, y0, xDisplace, yDisplace, dPel;
         while (y<yEnd) {
             int x=xStart;
             while (x<xEnd) {
-                int pel = offPixels[ip];
+                dPel = offPixels[ip];
                 
-                final int xDisplace = fpScaleX*(((pel>>xShift)&0xff) - 127);
-                final int yDisplace = fpScaleY*(((pel>>yShift)&0xff) - 127);
+                xDisplace = (fpScaleX*((dPel>>xShift)&0xff))+fpAdjX;
+                yDisplace = (fpScaleY*((dPel>>yShift)&0xff))+fpAdjY;
 
-                final int x0 = x+(xDisplace>>16);
-                final int y0 = y+(yDisplace>>16);
+                x0 = x+(xDisplace>>15);
+                y0 = y+(yDisplace>>15);
 
                 if ((xt != xTile[x0]) ||
                     (yt != yTile[y0])) {
