@@ -197,9 +197,20 @@ public class SVGImageElementBridge implements GraphicsNodeBridge,
      */
     protected ICCColorSpaceExt extractColorSpace(SVGElement svgElement,
                                                  BridgeContext ctx){
-        String colorProfileProperty 
-            = svgElement.getAttributeNS(null, CSS_COLOR_PROFILE_PROPERTY);
+        CSSStyleDeclaration cssDecl = CSSUtilities.getComputedStyle(svgElement);
+        CSSPrimitiveValue val
+            = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue(CSS_COLOR_PROFILE_PROPERTY);
 
+        if(val.getPrimitiveType() != CSSPrimitiveValue.CSS_IDENT){
+            throw new Error(); // Should never happen
+        }
+
+        
+        String colorProfileProperty 
+            = val.getStringValue();
+
+        // System.out.println("color-profile : " + colorProfileProperty);
+        // System.out.println("         attr : " + svgElement.getAttributeNS(null, CSS_COLOR_PROFILE_PROPERTY));
         /**
          * The only cases that need special handling are
          * 'sRGB' and 'name'
