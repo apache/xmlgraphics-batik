@@ -13,7 +13,7 @@
 
   <!-- Launch the SVG viewer 1 -->
   <target name="viewer" depends="init">
-    <java classpath="classes:lib/xerces.jar:resources"
+    <java classpath="classes:lib/crimson.jar:resources"
           classname="${class-prefix}.refimpl.gvt.renderer.util.SwingStaticViewerPanel"
           fork="yes"/>
   </target>
