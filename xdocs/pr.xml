@@ -24,108 +24,159 @@
     </header>
 
     <body>
-        <s1 title="Batik Press Release">
-        <p>
-<strong>CONTACT:</strong><br />
+        <s1 title="Batik 1.0 Press Releases">
+<p><strong>CONTACT</strong><br />
 <em>Roderic Olvera Young</em><br />
-<em>ZOT Group</em><br />
-<em>+1.617.542.5335 ext/202</em><br />
-<em>press@apache.org</em><br />
-</p><p>
-APACHE SOFTWARE FOUNDATION RELEASES SCALABLE VECTOR GRAPHICS TOOLKIT
-Future of Web Graphics Available as Open Source, 
-Java Technology-based Application -- Beta Release of Batik 1.0
-</p><p>
-http://xml.apache.org/batik/ -- 4 December 2000 -- The Apache Software 
-Foundation's XML Project today announced the beta release of Batik 1.0, 
-the first cooperatively developed, open source Scalable Vector Graphics (SVG) 
-Toolkit based on the Java(tm) platform. The SVG 1.0 specification 
-is currently in the W3C Candidate Recommendation review period. Over the 
-past few months, contributors from CSIRO Australia, Eastman Kodak Company, 
-ILOG, and Sun Microsystems have helped produce the freely-downloadable 
-toolkit.
-</p><p>
-
-"Apache's Batik provides building blocks that allow developers to generate, 
-parse, view and convert SVG content in their Java Technology applications. 
-Batik makes it easy for application developers to handle SVG content for 
-many purposes both client-side and server-side. Applications can use Batik's 
-pluggable GUI component to easily support SVG viewing capabilities and even 
-export graphics drawn with the core Java 2D API classes to the SVG format, 
-as well as convert SVG content into other formats such as JPEG or PNG," the
- Batik team stated. "In addition, Batik is designed to be extensible. Developers 
-can add custom SVG extensions, graphic implementations and converters, such as 
-their own custom filter elements, gradient paint implementations or an SVG to 
-PDF converter."
-</p><p>
-   
-"W3C's Scalable Vector Graphics (SVG) will transform the Web as we know it, 
-by combining the full force of XML with the visual strengths of dynamic, 
-well-internationalized, and accessible vector graphic capabilities," enthused 
-Chris Lilley, W3C Graphics Activity Lead. "We're pleased to see the arrival 
-of Batik, as the combined efforts of a number of seasoned SVG implementers 
-will lead towards a fully conforming, open-source SVG implementation which can 
-then be embedded in other software solutions."
-</p><p>
-
-With Batik's SVG Toolkit, Web developers and designers gain two critical 
-qualities for graphical representations: precision and quality. Unlike bitmap 
-representations which represent data with pixels, SVG describes graphics 
-using shapes, paths and other 2D descriptors. The result is rich, sophisticated 
-2D graphic shapes (including expanded fonts, panning, zooming, and dynamic 
-or interactive drawings) that can download and stream more quickly. Because 
-SVG is XML-based, searching for text in and about the graphic becomes much 
-simpler and it can easily integrate older graphic formats. Batik is built 
-completely with Java technology code, which means development can be done 
-on any operating system that supports the Java platform, including Linux, 
-Windows, the Solaris (tm) Operating Environment, and other UNIX based systems. 
-The Batik project is working within the software development community to make 
-SVG the standard for Web-based graphics.
-</p><p>
-
-The Batik team aims to give developers worldwide an easy-to-use set of modules 
-that can be used together or individually to support SVG solutions, including 
-a full-fledged SVG Viewer Implementation, which validates the various modules 
-and their interoperability.
-
-</p><p>
-"Batik 1.0 beta represents a significant milestone in solidifying SVG as the 
-Web graphics standard," said Jon Ferraiolo, Adobe Systems Senior Computer Scientist, and editor of the SVG specification. "With the Batik toolkit developers can now integrate much of SVG's rich feature set into their offerings and begin empowering professional Web designers with the tools they need to build more compelling, graphically rich sites that truly leverage the benefits of XML. We fully endorse SVG and are working diligently to support it throughout our line of professional Web design and authoring products including Adobe Photoshop, LiveMotion, GoLive, Illustrator and the freely downloadable Adobe SVG Viewer."
-
-</p><p>
-"We're proud to participate in the Batik project and see this collaborative initiative as the best way to progress implementations that can exploit the power of SVG. This will
-hopefully encourage other developers to adopt SVG across a diverse range of
-applications, as the dominant industry standard for 2D graphics," said Ross Ackland, Science and Industry Manager, CSIRO Australia.
-
-</p><p>
-"IBM continues to participate in evolving the Internet into a much more dynamic tool for e-business," said Rod Smith, vice president Emerging Technology, IBM. "The Batik open source implementation of the SVG specification underscores the importance of bringing emerging technologies into use at a very rapid pace."
-
-</p><p>
-"ILOG believes SVG is the vehicle for creating a richer, more compelling Web experience. With Batik, Apache and the open source community will be making an important contribution toward accelerating the adoption of SVG," said Jean-Fran&#231;ois Abramatic, senior vice president, ILOG research and development. "We're pleased to be an active partner in this effort - a culmination of our involvement in XML and SVG standardization, both as a W3C working group member and implementer with the first commercial graphical user interface toolkit supporting the emerging standard, ILOG JViews."
-
-</p><p>
-"Kodak congratulates the Apache Foundation and the Batik project on the first release of its SVG toolkit," said Stephen Shaffer, CTO, Print@Kodak, Eastman Kodak Company.  "Batik will significantly advance SVG as an important element for enabling both graphical and image-intensive creative web-based applications. Because of its open source nature, ISV's will be able to leverage the powerful and extensible framework it provides to develop new classes of creative applications and to deploy SVG in environments not previously possible. Such applications and systems are fundamental to delivering new products and services through our Print@Kodak Internet photofinishing service."  
-
-</p><p>
-"The Apache Software Foundation has an excellent track record in bringing to market solid tools and technology implementations required by today's network-centric developers," stated George Paolini, vice president, Technology Evangelism, Sun Microsystems. "Sun has been proud to work closely with this open source group on the Batik project - which is a great example of the synergies between the Java platform's portable code and XML's portable data - as well as other Apache initiatives, and we congratulate everyone involved on so quickly delivering a state-of-the-art toolkit for SVG-based graphics."
-
-</p><p>
-The project's name comes from the famous and highly developed art traditions of the Indonesian island of Java. The quintessentially Indonesian textile and its geometric patterns and colorful designs embody high quality graphics -- the thrust behind the Apache-XML-Batik Project.
-
-</p><p>
-The Batik Project encourages participation through its mailing list:
-http://xml.apache.org/mail.html
-
-</p><p>
-For more information about the Batik project please see
-<strong>http://xml.apache.org/batik/</strong>
-
-</p><p><em>
-About the Apache Software Foundation</em><br /><br />
-<em>
-The Apache Software Foundation provides organizational, legal and financial support for the Apache open-source software projects. Formed by members of the Apache group, the group still exists beyond the participation of individual volunteers, to enable contributions on intellectual property and financial support, and to provide a vehicle for limiting legal exposure while participating in open-source software projects. For more information on the Apache Software Foundation, please see http://www.apache.org/
-</em>
+<em>Camelot Media</em><br />
+<em>+1.617.877.1043</em><br />
+<em>press@camelot-com.com</em><br />
 </p>
+<p>
+<strong>SCALABLE VECTOR GRAPHICS (SVG) SOFTWARE RELEASED FROM THE APACHE SOFTWARE FOUNDATION</strong><br/>
+<em>Apache XML's Batik Project Delivers High Quality Static SVG Toolkit</em><br />
+<link href="http://www.apache.org/batik/">http://www.apache.org/batik/</link> <em>- The Apache Software Foundation's (ASF) </em></p>
+
+<p>XML Project's Batik Team today announced the release of Batik 1.0, a
+sophisticated open source, Java-based toolkit for SVG (scalable vector graphics). </p>
+ 
+<p>SVG is an XML syntax for rich 2D graphics and Batik allows developers 
+to view, generate and manipulate SVG images with unprecedented
+precision, detail and functionality. Since the release of the W3C candidate 
+recommendation of the SVG specification, Batik continues to set new high-water 
+marks for the implementation of this maturing specification. </p>
+ 
+<p>"In the past months the Batik team has moved quickly toward realizing
+its goal of providing a full implementation of the W3C's SVG specification," 
+said Vincent Hardy of the Batik team. "The latest Batik release provides a 
+high quality implementation of many of the high-end SVG features. With the
+highly modular tool, developers can cut down the cost of creating, viewing 
+and exchanging graphical content between applications or across the Internet, 
+and easily generate, manipulate or view SVG content. The contribution, 
+experience and expertise of companies and individuals has helped create a 
+team dedicated to the success of the project."</p>
+ 
+<p>By leveraging the force of XML and the visual strengths of dynamic and
+easily accessible vector graphics, the Apache XML Project's Batik team
+lead the drive in building an industrial-grade embeddable Web graphics
+software solution. Batik delivers core components for three main purposes:</p>
+<ul>
+<li>generating SVG content from any Java applications, </li>
+<li>viewing SVG content, and </li>
+<li>converting SVG to and from other formats. </li>
+</ul>
+
+<p>The vision is to help make SVG the central format for exchanging and viewing 
+any type of 2D graphical information while still making it easy to convert SVG 
+images to other formats, for environments that do not yet support SVG natively.</p>
+ 
+<p>SVG combines two of computer graphic's great practices, vector graphics and 
+raster graphics, in a resolution independent framework, enabling SVG images 
+to be rendered with high quality on any screen or printer.  The SVG framework 
+also includes many sophisticated graphics features such as gradient paints, 
+filter effects, and sophisticated text support.  This unique combination of 
+graphical features in one standard format makes it ideal for describing any 
+rich image content, from CAD diagrams to postcards to Grandma. Furthermore, 
+by using an XML syntax, SVG is extremely easy to generate, search, transform 
+and manipulate. Unlike other formats, SVG becomes a powerful tool for anybody 
+managing image content for the Web or other environments.</p>
+ 
+<p>New features in Batik 1.0 release:</p>
+<ul>
+<li>filter effects such as drop shadows and lighting effects</li>
+<li>internal and external use - allows developers to create
+         highly structured SVG images where common components are 
+         easily reused.</li>
+<li>masking and clipping.</li>
+<li>markers</li>
+<li>linking - the ability to define SVG graphical 
+         elements as 'links' (similar to HTML hyperlinks) which 
+         can point to other graphical elements in an SVG image
+         (for example allowing you to zoom in a portion of a map)
+         either in the same SVG image, in another SVG image or
+         in another document (such as an HTML page).</li>
+<li>sophisticated text support - Batik now supports control over
+	   complex text layout (such as individual glyph advance).</li>
+<li> Run-time extensibilty - Much of Batik can now be extended at
+	   run-time, providing among other things new graphics
+   primitives, and support for new image file formats.</li>
+</ul>
+         
+<p>With this release, Batik provides extensive support of most static 
+SVG features and includes:</p>
+<ul>
+<li>Improved SVG generator - allows all applications to easily export 
+their graphics in the SVG format. This generator has been extended 
+and made more flexible.</li>
+ 
+<li>Improved packaging of the Batik modules - making them easier to 
+   integrate into applications. For example, developers
+      can plug in the Batik's viewing component to add SVG viewing 
+      capability into their applications without having to know 
+      anything about SVG.</li>
+</ul>
+
+<p>Batik delivers a number of sample applications that leverage its core
+components, such as an SVG browser. Screenshots of that browser can
+be seen at: <link href="http://xml.apache.org/batik/svgviewer.html">http://xml.apache.org/batik/svgviewer.html</link></p>
+ 
+<p>In the near future, the Batik team aims to provide developers worldwide
+support for full dynamic behavior, including scripting and SMIL
+(synchronized multimedia integration language) for animations.</p>
+ 
+<p>"Our relationship with the Apache Software Foundation allows Sun 
+engineers to develop technology implementations in a collaborative
+environment and better enables Sun to deliver robust products based
+on open standards. The Batik project demonstrates the synergy between 
+the Java platform's portable code and XML's portable data. We are 
+proud to have worked in cooperation with Kodak and ILOG on this 
+remarkable toolkit for SVG-based graphics."<br />
+<em>-- Jon Bosak, Distinguished Engineer, Sun Microsystems</em></p>
+ 
+<p>"Kodak congratulates the Apache Software Foundation and the Batik 
+project on the 1.0 release of the SVG toolkit. Batik will significantly 
+advance SVG as an important element for enabling both graphical and 
+image-intensive creative Web-based applications. Because of its open 
+source nature, ISV's will be able to leverage the powerful and extensible 
+framework it provides to develop new classes of creative applications 
+and to deploy SVG in environments not previously possible. Such applications 
+and systems could prove fundamental to delivering new products and 
+services through our Internet photofinishing services."<br />
+<em>-- Daryl Hunt, Director of Strategic Standards, Eastman Kodak Company</em></p>
+ 
+<p>"The goal of the Batik project complements ILOG's goal of creating and
+delivering the richer, more compelling online experience that Web content 
+providers and users want, and we congratulate the Apache Foundation and 
+the Batik team for this important milestone. A supporter of SVG since its 
+inception, ILOG will continue its commitment to the standard in our roles 
+as a W3C working group member, Batik technical 
+committee member, and with real products, such as ILOG JViews, one of the 
+first SVG products on the market."<br />
+<em>-- Jean-Fran&ccedil;ois Abramatic, Senior Vice President of ILOG Research and Development.</em></p>
+ 
+<p>The Batik project's name comes from the famous and highly developed art
+traditions of the Indonesian island of Java. The Apache XML team seeks
+to honor and capture Java's rich history of creating geometric patterned 
+and colorfully designed textiles through Batik's high quality graphical 
+representation capabilities.</p>
+ 
+<p>The Batik Project encourages participation through its mailing list:
+<link href="http://xml.apache.org/mail.html">http://xml.apache.org/mail.html</link></p>
+ 
+<p>For more information about the Batik project please see
+<link href="http://xml.apache.org/batik/">http://xml.apache.org/batik/</link></p>
+ 
+<p><em>ABOUT THE APACHE SOFTWARE FOUNDATION</em><br /><br />
+ 
+About the Apache Software Foundation
+The Apache Software Foundation provides organizational, legal and financial 
+support for the Apache open source software projects. The Foundation was 
+established as a nonprofit corporation in order to ensure continuation of the 
+Apache projects beyond the participation of individual volunteers, to enable 
+contributions of intellectual property and financial support, and to provide 
+a vehicle for limiting legal exposure while participating in open source 
+software projects.  For more information on the Apache Software Foundation, 
+please see <link href="http://www.apache.org/">http://www.apache.org/</link>.
+</p>        
         </s1>
     </body>
 </document>
