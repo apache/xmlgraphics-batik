@@ -119,7 +119,6 @@ To display the available targets type:
     <fileset dir="lib/build">
       <include name="stylebook*.jar"/>
       <include name="xalan*.jar"/>
-      <include name="xerces*.jar"/>
     </fileset>
   </path>
 
@@ -431,7 +430,7 @@ To display the available targets type:
        including the XML parser -->
   <target name="bean" depends="compile, prepare-build">
     <mkdir dir="${build}/tmp"/>
-    <unjar src="lib/crimson-parser.jar" dest="${build}/tmp"/>
+    <unjar src="lib/xerces_2_3_0.jar" dest="${build}/tmp"/>
     <jar jarfile="${build}/lib/${project}-bean.jar"
          manifest="${src}/${project}-bean.mf">
       <fileset dir="${dest}">

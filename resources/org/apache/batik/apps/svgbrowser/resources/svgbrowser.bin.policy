@@ -1,7 +1,7 @@
 /* AUTOMATICALLY GENERATED */
 /* DO NOT EDIT */
 
-grant codeBase "${app.jar.base}/lib/crimson-parser.jar" {
+grant codeBase "${app.jar.base}/lib/xerces_2_3_0.jar" {
   permission java.security.AllPermission;
 };
 
