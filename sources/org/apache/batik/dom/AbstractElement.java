@@ -313,6 +313,7 @@ public abstract class AbstractElement
                     l.invalidate();
                 }
                 ElementsByTagNameNS lns = ad.getElementsByTagNameNS(n, ns, ln);
+
                 if (lns != null) {
                     lns.invalidate();
                 }
@@ -330,6 +331,16 @@ public abstract class AbstractElement
                 }
             }
         }
+
+        //
+        // Invalidate children
+        //
+        Node c = node.getFirstChild();
+        while (c != null) {
+            invalidateElementsByTagName(c);
+            c = c.getNextSibling();
+        }
+            
     }
 
     /**
