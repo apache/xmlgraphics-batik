@@ -163,7 +163,17 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
                     (e, SVG_TRANSFORM_ATTRIBUTE, s);
             }
             node.setTransform(at);
+            handleGeometryChanged();
         }
+    }
+
+    /**
+     * Invoked when the geometry of an graphical element has changed.
+     */
+    protected  void handleGeometryChanged() {
+        node.setFilter(CSSUtilities.convertFilter(e, node, ctx));
+        node.setMask(CSSUtilities.convertMask(e, node, ctx));
+        node.setClip(CSSUtilities.convertClipPath(e, node, ctx));
     }
 
     /**

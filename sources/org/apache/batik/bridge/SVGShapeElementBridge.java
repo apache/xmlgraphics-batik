@@ -136,6 +136,17 @@ public abstract class SVGShapeElementBridge extends AbstractGraphicsNodeBridge {
     // BridgeUpdateHandler implementation //////////////////////////////////
 
     /**
+     * Invoked when the geometry of an graphical element has changed.
+     */
+    protected  void handleGeometryChanged() {
+        super.handleGeometryChanged();
+        ShapeNode shapeNode = (ShapeNode)node;
+        ShapePainter painter = 
+            PaintServer.convertFillAndStroke(e, shapeNode, ctx);
+        shapeNode.setShapePainter(createShapePainter(ctx, e, shapeNode));
+    }
+
+    /**
      * This flag bit indicates if a new shape painter has already been created.
      * Avoid creating one ShapePainter per CSS property change
      */

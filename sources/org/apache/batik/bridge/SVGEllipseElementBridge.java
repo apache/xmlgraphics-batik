@@ -123,6 +123,7 @@ public class SVGEllipseElementBridge extends SVGShapeElementBridge {
             attrName.equals(SVG_RY_ATTRIBUTE)) {
 
             buildShape(ctx, e, (ShapeNode)node);
+            handleGeometryChanged();
         } else {
             super.handleDOMAttrModifiedEvent(evt);
         }
