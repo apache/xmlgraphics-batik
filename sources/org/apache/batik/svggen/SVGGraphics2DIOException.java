@@ -44,8 +44,7 @@ public class SVGGraphics2DIOException extends IOException {
      * @param s the detail message of this exception
      * @param ex the original exception
      */
-    public SVGGraphics2DIOException(String s,
-                                                 IOException ex) {
+    public SVGGraphics2DIOException(String s, IOException ex) {
         super(s);
         embedded = ex;
     }

@@ -142,27 +142,34 @@ public class SVGFont extends AbstractSVGConverter {
         String fontSize = "" + font.getSize();
         String fontWeight = weightToSVG(font);
         String fontStyle = styleToSVG(font);
-        String fontFamilyStr = font.getFamily();
-        StringBuffer fontFamily = new StringBuffer("'");
-        fontFamily.append(fontFamilyStr);
-        fontFamily.append("'");
-
-        fontFamilyStr = fontFamily.toString();
-
-        String logicalFontFamily =
-            (String)logicalFontMap.get(font.getName().toLowerCase());
-        if(logicalFontFamily != null)
-            fontFamilyStr = logicalFontFamily;
-
+        String fontFamilyStr = familtyToSVG(font);
         return new SVGFontDescriptor(fontSize, fontWeight,
                                      fontStyle, fontFamilyStr);
+    }
+
+    /**
+     * @param font whose family should be converted to an SVG string
+     *   value.
+     */
+    public static String familyToSVG(Font font) {
+        String fontFamilyStr = font.getFamily();
+        String logicalFontFamily =
+            (String)logicalFontMap.get(font.getName().toLowerCase());
+        if (logicalFontFamily() != null)
+            fontFamilyStr = logicalFontFamily;
+        else {
+            StringBuffer fontFamily = new StringBuffer("'");
+            fontFamily.append(fontFamilyStr);
+            fontFamily.append("'");
+            fontFamilyStr = fontFamily.toString();
+        }
     }
 
     /**
      * @param font whose style should be converted to an SVG string
      *        value.
      */
-    private static String styleToSVG(Font font) {
+    public static String styleToSVG(Font font) {
         Map attrMap = font.getAttributes();
         Float styleValue = (Float)attrMap.get(TextAttribute.POSTURE);
 
@@ -189,7 +196,7 @@ public class SVGFont extends AbstractSVGConverter {
      *        value. Note that there is loss of precision for
      *        semibold and extrabold.
      */
-    private static String weightToSVG(Font font) {
+    public static String weightToSVG(Font font) {
         Map attrMap = font.getAttributes();
         Float weightValue = (Float)attrMap.get(TextAttribute.WEIGHT);
         if(weightValue==null){
