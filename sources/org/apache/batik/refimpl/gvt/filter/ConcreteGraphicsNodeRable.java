@@ -116,7 +116,7 @@ public class ConcreteGraphicsNodeRable implements GraphicsNodeRable{
      * Initializes this image's members
      */
     public Rectangle2D getBounds2D(){
-        Rectangle2D imageRect = node.getPrimitiveBounds();
+        Rectangle2D imageRect = (Rectangle2D)(node.getPrimitiveBounds().clone());
 
         return imageRect;
     }
