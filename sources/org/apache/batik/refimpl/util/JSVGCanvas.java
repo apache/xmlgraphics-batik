@@ -939,7 +939,11 @@ public class JSVGCanvas
                 paintPanRegions(g2d, tx, ty, w, h);
                 g2d.transform(panTransform);
             }
-            g2d.drawImage(buffer, null, 0, 0);
+
+            g2d.drawRenderedImage(buffer, new AffineTransform());
+
+            // Changed to support printing (possible bug in jdk's PeekGraphics)
+            //g2d.drawImage(buffer, null, 0, 0);
 
             // Note that the above assumes that read access to buffer
             // is safe while background threads may still be working...

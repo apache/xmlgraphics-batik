@@ -24,6 +24,7 @@ import java.awt.Toolkit;
 import java.awt.print.PrinterJob;
 import java.awt.print.Printable;
 import java.awt.print.PageFormat;
+import java.awt.print.PrinterException;
 
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Dimension2D;
@@ -1192,10 +1193,16 @@ public class ViewerFrame
                     if (i > 0) {
                         return Printable.NO_SUCH_PAGE;
                     } else {
+
                         canvas.paintComponent(g);
                         return Printable.PAGE_EXISTS;
                     }
                 }});
+            if (job.printDialog()) {
+                try {
+                    job.print();
+                } catch (PrinterException pe) {;}
+            }
         }
     }
 
