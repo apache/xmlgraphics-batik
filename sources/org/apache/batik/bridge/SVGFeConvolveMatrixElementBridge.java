@@ -141,14 +141,14 @@ public class SVGFeConvolveMatrixElementBridge
         convolve.setKernelUnitLength(kernelUnitLength);
         convolve.setPreserveAlpha(preserveAlpha);
 
+        // handle the 'color-interpolation-filters' property
+        handleColorInterpolationFilters(convolve, filterElement);
+
         PadRable filter = new PadRable8Bit
             (convolve, primitiveRegion, PadMode.ZERO_PAD);
 
         // update the filter Map
         updateFilterMap(filterElement, filter, filterMap);
-
-        // handle the 'color-interpolation-filters' property
-        handleColorInterpolationFilters(filter, filterElement);
 
         return filter;
     }

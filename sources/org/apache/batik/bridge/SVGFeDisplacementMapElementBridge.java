@@ -137,14 +137,14 @@ public class SVGFeDisplacementMapElementBridge
         Filter displacementMap = new DisplacementMapRable8Bit
             (srcs, scale, xChannelSelector, yChannelSelector);
 
+        // handle the 'color-interpolation-filters' property
+        handleColorInterpolationFilters(displacementMap, filterElement);
+
         PadRable filter = new PadRable8Bit
             (displacementMap, primitiveRegion, PadMode.ZERO_PAD);
 
         // update the filter Map
         updateFilterMap(filterElement, filter, filterMap);
-
-        // handle the 'color-interpolation-filters' property
-        handleColorInterpolationFilters(filter, filterElement);
 
         return filter;
     }

@@ -119,11 +119,11 @@ public class SVGFeDiffuseLightingElementBridge
                                                      surfaceScale,
                                                      kernelUnitLength);
 
-        // update the filter Map
-        updateFilterMap(filterElement, filter, filterMap);
-
         // handle the 'color-interpolation-filters' property
         handleColorInterpolationFilters(filter, filterElement);
+
+        // update the filter Map
+        updateFilterMap(filterElement, filter, filterMap);
 
         return filter;
     }

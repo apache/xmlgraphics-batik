@@ -93,11 +93,11 @@ public class SVGFeTileElementBridge
         Filter filter
             = new TileRable8Bit(in, primitiveRegion, in.getBounds2D(), false);
 
-        // update the filter Map
-        updateFilterMap(filterElement, filter, filterMap);
-
         // handle the 'color-interpolation-filters' property
         handleColorInterpolationFilters(filter, filterElement);
+
+        // update the filter Map
+        updateFilterMap(filterElement, filter, filterMap);
 
         return filter;
     }

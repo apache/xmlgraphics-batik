@@ -122,14 +122,14 @@ public class SVGFeColorMatrixElementBridge
         }
         colorMatrix.setSource(in);
 
+        // handle the 'color-interpolation-filters' property
+        handleColorInterpolationFilters(colorMatrix, filterElement);
+
         Filter filter
             = new PadRable8Bit(colorMatrix, primitiveRegion, PadMode.ZERO_PAD);
 
         // update the filter Map
         updateFilterMap(filterElement, filter, filterMap);
-
-        // handle the 'color-interpolation-filters' property
-        handleColorInterpolationFilters(filter, filterElement);
 
         return filter;
     }
