@@ -190,7 +190,7 @@ public interface SVGConstants extends CSSConstants {
     String ATTR_STROKE_WIDTH = CSS_STROKE_WIDTH_PROPERTY;
     String ATTR_STYLE = "style";
     String ATTR_SURFACE_SCALE = "surfaceScale";
-    String ATTR_SYSTEM_LANGUAGE = "systemLanguage";
+    String SVG_SYSTEM_LANGUAGE_ATTRIBUTE = "systemLanguage";
     String ATTR_TABLE = "table";
     String SVG_TARGET_ATTRIBUTE = "target";
     String ATTR_TARGET_X = "targetX";
