@@ -32,7 +32,7 @@
     function highlight(evt, onOrOff) {
         var h = document.getElementById("highlight");
         var x = 175;
-        var y = 280;
+        var y = 130;
 
         if (onOrOff) {
             var t = evt.getTarget();
@@ -55,24 +55,45 @@
 
     <defs>
         <g id="useDef">
-            <rect x="0" y="0" width="100" height="30" fill="gold" stroke="none" />
+            <rect id="rectInUse" x="0" y="0" width="100" height="30" fill="gold" stroke="none" />
         </g>
 
+        <g id="useDef2">
+            <rect x="0" y="0" width="100" height="30" fill="crimson" stroke="none" />
+        </g>
+
+        <use id="useUseDef" xlink:href="#useDef2" />
     </defs>
 
 
-    <text x="50%" y="140" class="label">
-        <tspan x="50%" y="140">Use Target:</tspan>
+    <text x="50%" y="210" class="label">
+        <tspan x="50%" y="210">Use Target:</tspan>
         <tspan dy="1.1em" x="50%">move your mouse over the gold</tspan>
         <tspan dy="1.1em" x="50%">rectangle. This should move the </tspan>
         <tspan dy="1.1em" x="50%">black highlight over the gold rectangle</tspan>
     </text>
 
-    <use xlink:href="#useDef" x="175" y="190" 
+    <use xlink:href="#useDef" x="175" y="270" 
          onmouseover="highlight(evt, true)" 
          onmouseout="highlight(evt, false)"/>
 
-    <text x="50%" y="270" class="label">Black highlight</text>
-    <rect id="highlight" x="175" y="280" width="100" height="30" fill="none" stroke="black" />
+    <g transform="translate(0,210)">
+        <text x="50%" y="140" class="label">
+            <tspan x="50%" y="140">Use Target: &lt;use&gt; referencing a &lt;use&gt;</tspan>
+            <tspan dy="1.1em" x="50%">move your mouse over the crimson</tspan>
+            <tspan dy="1.1em" x="50%">rectangle. This should move the </tspan>
+            <tspan dy="1.1em" x="50%">black highlight over the crimson rectangle</tspan>
+        </text>
+    </g>
 
+    <use xlink:href="#useUseDef" x="175" y="410" 
+         onmouseover="highlight(evt, true)" 
+         onmouseout="highlight(evt, false)"/>
+
+    <text x="50%" y="120" class="label">Black highlight</text>
+    <rect id="highlight" x="175" y="130" width="100" height="30" fill="none" 
+          stroke="black" shape-rendering="crispEdges"/>
+
+
+    
 </svg>
