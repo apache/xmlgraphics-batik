@@ -127,6 +127,7 @@ To display the available targets type:
     <echo message="   svgbrowser    --> runs the SVG browser"/>
     <echo message="   svgrasterizer --> runs the SVG rasterizer"/>
     <echo message="   svgpp         --> runs the SVG pretty-printer"/>
+    <echo message="   ttf2svg       --> converts selected glyphs from a True Type Font file to the SVG Font format"/>
     <echo message="   regard        --> runs the regard regression utility"/>
     <echo message="   runtestsuite  --> runs a TestSuite, given an XML test suite document" />
     <echo message="   javadoc       --> generates the API documentation"/>
@@ -587,6 +588,21 @@ To display the available targets type:
     <mkdir dir="${test-references}/svgbe/accepted-variation"/>
     <mkdir dir="${test-references}/svgbe/candidate-variation"/>
     <mkdir dir="${test-references}/org/apache/batik/svggen/candidate-ref" />
+  </target>
+
+  <target name="ttf2svg"
+          depends="compile, testdirs"
+          description="converts selected glyphs from a True Type Font file to the SVG Font format" >
+    <java fork="yes"
+          classname="${class-prefix}.apps.ttf2svg.Main"
+          jvmargs="-DproxyHost=webcache.eng.sun.com -DproxyPort=8080">
+      <classpath>
+        <pathelement location="${dest}" />
+        <path refid="libs-classpath"/>
+        <pathelement location="resources" />
+      </classpath>
+      <arg line="${args}"/>
+    </java>
   </target>
 
   <target name="regard"
