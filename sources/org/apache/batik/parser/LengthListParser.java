@@ -69,7 +69,8 @@ public class LengthListParser extends LengthParser {
 		}
 	    }
 	} catch (NumberFormatException e) {
-	    reportError("float.format", new Object[] { getBufferContent() });
+        reportError("character.unexpected",
+                    new Object[] { new Integer(current) });
 	}
 	((LengthListHandler)lengthHandler).endLengthList();
     }

@@ -193,7 +193,8 @@ public class TransformListParser extends NumberParser {
 
 	    transformListHandler.matrix(a, b, c, d, e, f);
 	} catch (NumberFormatException ex) {
-	    reportError("float.format", new Object[] { getBufferContent() });
+        reportError("character.unexpected",
+                    new Object[] { new Integer(current) });
 	    skipTransform();
 	}
     }
@@ -287,7 +288,8 @@ public class TransformListParser extends NumberParser {
 
 	    transformListHandler.rotate(theta, cx, cy);
 	} catch (NumberFormatException e) {
-	    reportError("float.format", new Object[] { getBufferContent() });
+        reportError("character.unexpected",
+                    new Object[] { new Integer(current) });
 	    skipTransform();
 	}
     }
@@ -403,7 +405,8 @@ public class TransformListParser extends NumberParser {
 
 	    transformListHandler.translate(tx, ty);
 	} catch (NumberFormatException e) {
-	    reportError("float.format", new Object[] { getBufferContent() });
+        reportError("character.unexpected",
+                    new Object[] { new Integer(current) });
 	    skipTransform();
 	}
     }
@@ -478,7 +481,8 @@ public class TransformListParser extends NumberParser {
 
 	    transformListHandler.scale(sx, sy);
 	} catch (NumberFormatException e) {
-	    reportError("float.format", new Object[] { getBufferContent() });
+        reportError("character.unexpected",
+                    new Object[] { new Integer(current) });
 	    skipTransform();
 	}
     }
@@ -552,7 +556,8 @@ public class TransformListParser extends NumberParser {
 		transformListHandler.skewY(sk);
 	    }
 	} catch (NumberFormatException e) {
-	    reportError("float.format", new Object[] { getBufferContent() });
+        reportError("character.unexpected",
+                    new Object[] { new Integer(current) });
 	    skipTransform();
 	}
     }
@@ -571,33 +576,6 @@ public class TransformListParser extends NumberParser {
 		if (current == -1) {
 		    break loop;
 		}
-	    }
-	}
-    }
-
-    /**
-     * Implements {@link NumberParser#readNumber()}.
-     */
-    protected void readNumber() throws ParseException {
-	bufferSize = 0;
-	bufferize();
-        for (;;) {
-	    read();
-	    switch (current) {
-	    case 0x20:
-	    case 0x9:
-	    case 0xD:
-	    case 0xA:
-	    case ',':
-	    case ')':
-		return;
-	    default:
-		if (current == -1) {
-		    reportError("end.of.stream",  new Object[] {});
-		    skipTransform();
-		    return;
-		}
-		bufferize();
 	    }
 	}
     }

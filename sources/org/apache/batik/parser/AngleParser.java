@@ -141,34 +141,9 @@ public class AngleParser extends NumberParser {
 			    new Object[] { new Integer(current) });
 	    }
 	} catch (NumberFormatException e) {
-	    reportError("float.format", new Object[] { getBufferContent() });
+            reportError("character.unexpected",
+                        new Object[] { new Integer(current) });
 	}
 	angleHandler.endAngle();
-    }
-
-    /**
-     * Implements {@link NumberParser#readNumber()}.
-     */
-    protected void readNumber() throws ParseException {
-	bufferSize = 0;
-	bufferize();
-        for (;;) {
-	    read();
-	    switch (current) {
-	    case 0x20:
-	    case 0x9:
-	    case 0xD:
-	    case 0xA:
-	    case 'd':
-	    case 'g':
-	    case 'r':
-		return;
-	    default:
-		if (current == -1) {
-		    return;
-		}
-		bufferize();
-	    }
-	}
     }
 }

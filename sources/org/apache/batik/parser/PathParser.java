@@ -139,7 +139,7 @@ public class PathParser extends NumberParser {
 	}
 
 	pathHandler.endPath();
-    }    
+    }
 
     /**
      * Parses a 'm' command.
@@ -155,7 +155,8 @@ public class PathParser extends NumberParser {
 
 	    pathHandler.movetoRel(x, y);
 	} catch (NumberFormatException e) {
-	    reportError("float.format", new Object[] { getBufferContent() });
+        reportError("character.unexpected",
+                    new Object[] { new Integer(current) });
 	    skipSubPath();
 	}
         skipCommaSpaces();
@@ -181,9 +182,9 @@ public class PathParser extends NumberParser {
 
 		    pathHandler.linetoRel(x, y);
 		} catch (NumberFormatException e) {
-		    reportError("float.format",
-				new Object[] { getBufferContent() });
-		    skipSubPath();
+            reportError("character.unexpected",
+                        new Object[] { new Integer(current) });
+            skipSubPath();
 		    return;
 		}
 		break;
@@ -208,7 +209,8 @@ public class PathParser extends NumberParser {
 	    
 	    pathHandler.movetoAbs(x, y);
 	} catch (NumberFormatException e) {
-	    reportError("float.format", new Object[] { getBufferContent() });
+        reportError("character.unexpected",
+                    new Object[] { new Integer(current) });
 	    skipSubPath();
 	}	
         skipCommaSpaces();
@@ -234,8 +236,8 @@ public class PathParser extends NumberParser {
 
 		    pathHandler.linetoAbs(x, y);
 		} catch (NumberFormatException e) {
-		    reportError("float.format",
-                                new Object[] { getBufferContent() });
+            reportError("character.unexpected",
+                        new Object[] { new Integer(current) });
 		    skipSubPath();
 		    return;
 		}
@@ -263,8 +265,8 @@ public class PathParser extends NumberParser {
 		    float x = parseFloat();
 		    pathHandler.linetoHorizontalRel(x);
 		} catch (NumberFormatException e) {
-		    reportError("float.format",
-				new Object[] { getBufferContent() });
+            reportError("character.unexpected",
+                        new Object[] { new Integer(current) });
 		    skipSubPath();
 		    return;
 		}
@@ -292,8 +294,8 @@ public class PathParser extends NumberParser {
 		    float x = parseFloat();
 		    pathHandler.linetoHorizontalAbs(x);
 		} catch (NumberFormatException e) {
-		    reportError("float.format",
-				new Object[] { getBufferContent() });
+            reportError("character.unexpected",
+                        new Object[] { new Integer(current) });
 		    skipSubPath();
 		    return;
 		}
@@ -321,8 +323,8 @@ public class PathParser extends NumberParser {
 		    float x = parseFloat();
 		    pathHandler.linetoVerticalRel(x);
 		} catch (NumberFormatException e) {
-		    reportError("float.format",
-				new Object[] { getBufferContent() });
+            reportError("character.unexpected",
+                        new Object[] { new Integer(current) });
 		    skipSubPath();
 		    return;
 		}
@@ -350,8 +352,8 @@ public class PathParser extends NumberParser {
 		    float x = parseFloat();
 		    pathHandler.linetoVerticalAbs(x);
 		} catch (NumberFormatException e) {
-		    reportError("float.format",
-				new Object[] { getBufferContent() });
+            reportError("character.unexpected",
+                        new Object[] { new Integer(current) });
 		    skipSubPath();
 		    return;
 		}
@@ -394,10 +396,10 @@ public class PathParser extends NumberParser {
 
 		pathHandler.curvetoCubicRel(x1, y1, x2, y2, x, y);
 	    } catch (NumberFormatException e) {
-		reportError("float.format",
-			    new Object[] { getBufferContent() });
-		skipSubPath();
-		return;
+            reportError("character.unexpected",
+                        new Object[] { new Integer(current) });
+            skipSubPath();
+            return;
 	    }
 	    skipCommaSpaces();
 	}
@@ -434,10 +436,10 @@ public class PathParser extends NumberParser {
 
 		pathHandler.curvetoCubicAbs(x1, y1, x2, y2, x, y);
 	    } catch (NumberFormatException e) {
-		reportError("float.format",
-			    new Object[] { getBufferContent() });
-		skipSubPath();
-		return;
+            reportError("character.unexpected",
+                        new Object[] { new Integer(current) });
+            skipSubPath();
+            return;
 	    }
 	    skipCommaSpaces();
 	}
@@ -470,9 +472,9 @@ public class PathParser extends NumberParser {
 
 		pathHandler.curvetoQuadraticRel(x1, y1, x, y);
 	    } catch (NumberFormatException e) {
-		reportError("float.format",
-			    new Object[] { getBufferContent() });
-		skipSubPath();
+            reportError("character.unexpected",
+                        new Object[] { new Integer(current) });
+            skipSubPath();
 		return;
 	    }
 	    skipCommaSpaces();
@@ -506,8 +508,8 @@ public class PathParser extends NumberParser {
 
 		pathHandler.curvetoQuadraticAbs(x1, y1, x, y);
 	    } catch (NumberFormatException e) {
-		reportError("float.format",
-			    new Object[] { getBufferContent() });
+            reportError("character.unexpected",
+                        new Object[] { new Integer(current) });
 		skipSubPath();
 		return;
 	    }
@@ -542,9 +544,9 @@ public class PathParser extends NumberParser {
 
 		pathHandler.curvetoCubicSmoothRel(x2, y2, x, y);
 	    } catch (NumberFormatException e) {
-		reportError("float.format",
-			    new Object[] { getBufferContent() });
-		skipSubPath();
+            reportError("character.unexpected",
+                        new Object[] { new Integer(current) });
+            skipSubPath();
 		return;
 	    }
 	    skipCommaSpaces();
@@ -578,8 +580,8 @@ public class PathParser extends NumberParser {
 
 		pathHandler.curvetoCubicSmoothAbs(x2, y2, x, y);
 	    } catch (NumberFormatException e) {
-		reportError("float.format",
-			    new Object[] { getBufferContent() });
+            reportError("character.unexpected",
+                        new Object[] { new Integer(current) });
 		skipSubPath();
 		return;
 	    }
@@ -610,9 +612,9 @@ public class PathParser extends NumberParser {
 
 		pathHandler.curvetoQuadraticSmoothRel(x, y);
 	    } catch (NumberFormatException e) {
-		reportError("float.format",
-			    new Object[] { getBufferContent() });
-		skipSubPath();
+            reportError("character.unexpected",
+                        new Object[] { new Integer(current) });
+            skipSubPath();
 		return;
 	    }
 	    skipCommaSpaces();
@@ -642,10 +644,10 @@ public class PathParser extends NumberParser {
 
 		pathHandler.curvetoQuadraticSmoothAbs(x, y);
 	    } catch (NumberFormatException e) {
-		reportError("float.format",
-			    new Object[] { getBufferContent() });
-		skipSubPath();
-		return;
+            reportError("character.unexpected",
+                        new Object[] { new Integer(current) });
+            skipSubPath();
+            return;
 	    }
 	    skipCommaSpaces();
 	}		
@@ -717,10 +719,10 @@ public class PathParser extends NumberParser {
 
 		pathHandler.arcRel(rx, ry, ax, laf, sf, x, y);
 	    } catch (NumberFormatException e) {
-		reportError("float.format",
-                            new Object[] { getBufferContent() });
-		skipSubPath();
-		return;
+            reportError("character.unexpected",
+                        new Object[] { new Integer(current) });
+            skipSubPath();
+            return;
 	    }
 	    skipCommaSpaces();
 	}
@@ -791,10 +793,10 @@ public class PathParser extends NumberParser {
 
 		pathHandler.arcAbs(rx, ry, ax, laf, sf, x, y);
 	    } catch (NumberFormatException e) {
-		reportError("float.format",
-			    new Object[] { getBufferContent() });
-		skipSubPath();
-		return;
+            reportError("character.unexpected",
+                        new Object[] { new Integer(current) });
+            skipSubPath();
+            return;
 	    }
 	    skipCommaSpaces();
 	}
@@ -814,63 +816,6 @@ public class PathParser extends NumberParser {
 		    return;
 		}
 		read();
-	    }
-	}
-    }
-
-    /**
-     * Implements {@link NumberParser#readNumber()}.
-     */
-    protected void readNumber() throws ParseException {
-	bufferSize = 0;
-	bufferize();
-	boolean eRead = false;
-	boolean eJustRead = false;
-	boolean dotRead = current == '.';
-
-        for (;;) {
-	    read();
-	    switch (current) {
-	    case 0x20:
-	    case 0x9:
-	    case 0xD:
-	    case 0xA:
-	    case 'm': case 'M':
-	    case 'c': case 'C':
-	    case 's': case 'S':
-	    case 'q': case 'Q':
-	    case 't': case 'T':
-	    case 'l': case 'L':
-	    case 'h': case 'H':
-	    case 'v': case 'V':
-	    case 'a': case 'A':
-	    case 'z': case 'Z':
-	    case ',':
-            case -1:
-		return;
-	    case 'e': case 'E':
-                if (eRead) {
-                    return;
-                }
-		eJustRead = true;
-		eRead = true;
-		bufferize();
-		break;
-            case '.':
-                if (eRead || dotRead) {
-                    return;
-                }
-                dotRead = true;
-                bufferize();
-                break;
-	    case '+':
-	    case '-':
-		if (!eJustRead) {
-		    return;
-		}
-	    default:
-		eJustRead = false;
-		bufferize();
 	    }
 	}
     }

@@ -78,51 +78,12 @@ public class PointsParser extends NumberParser {
 		    
 		pointsHandler.point(x, y);
 	    } catch (NumberFormatException e) {
-		reportError("float.format",
-			    new Object[] { getBufferContent() });
+            reportError("character.unexpected",
+                        new Object[] { new Integer(current) });
 	    }
 	    skipCommaSpaces();
 	}
 
 	pointsHandler.endPoints();
-    }
-
-    /**
-     * Implements {@link NumberParser#readNumber()}.
-     */
-    protected void readNumber() throws ParseException {
-	bufferSize = 0;
-	bufferize();
-	eRead = false;
-        for (;;) {
-	    read();
-	    switch (current) {
-	    case 0x20:
-	    case 0x9:
-	    case 0xD:
-	    case 0xA:
-	    case ',':
-		eRead = false;
-		return;
-	    case 'e': case 'E':
-		eRead = true;
-		bufferize();
-		break;
-	    case '+':
-	    case '-':
-		if (!eRead) {
-		    return;
-		}
-		eRead = false;
-		bufferize();
-		break;
-	    default:
-		if (current == -1) {
-		    return;
-		}
-		eRead = false;
-		bufferize();
-	    }
-	}
     }
 }

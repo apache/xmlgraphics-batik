@@ -17,17 +17,12 @@ import java.io.Reader;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class LengthParser extends NumberParser {
+public class LengthParser extends AbstractParser {
 
     /**
      * The length handler used to report parse events.
      */
     protected LengthHandler lengthHandler;
-
-    /**
-     * Whether the last character was a 'e' or 'E'.
-     */
-    protected boolean eRead;
 
     /**
      * Creates a new LengthParser.
@@ -59,23 +54,24 @@ public class LengthParser extends NumberParser {
     }
 
     protected void doParse() throws ParseException {
-	lengthHandler.startLength();
+        lengthHandler.startLength();
 
-	read();
-	skipSpaces();
+        read();
+        skipSpaces();
 	
-	try {
-	    parseLength();
+        try {
+            parseLength();
 
-	    skipSpaces();
-	    if (current != -1) {
-		reportError("end.of.stream.expected",
-			    new Object[] { new Integer(current) });
-	    }
-	} catch (NumberFormatException e) {
-	    reportError("float.format", new Object[] { getBufferContent() });
-	}
-	lengthHandler.endLength();
+            skipSpaces();
+            if (current != -1) {
+                reportError("end.of.stream.expected",
+                            new Object[] { new Integer(current) });
+            }
+        } catch (NumberFormatException e) {
+            reportError("character.unexpected", 
+                        new Object[] { new Integer(current) });
+        }
+        lengthHandler.endLength();
     }
 
     /**
@@ -84,142 +80,194 @@ public class LengthParser extends NumberParser {
     protected void parseLength()
 	throws ParseException,
 	       NumberFormatException {
-	float f = parseFloat();
+        // readNumber();
+        // float ret = Float.parseFloat(getBufferContent());
 
-	lengthHandler.lengthValue(f);
+        int mant       =0;
+        int mantDig    =0;
+        boolean mantPos=true;
+        boolean mantRead=false;
+        int exp        =0;
+        int expDig     =0;
+        int expAdj     =0;
+        boolean expPos =true;
+
+        int     eRead     = 0;
+        boolean eJustRead = false;
+        boolean first     = true;
+        boolean done      = false;
+        boolean unitDone  = false;
+        boolean dotRead   = false;
+
+        while (!done) {
+            switch (current) {
+            case '0': case '1': case '2': case '3': case '4': 
+            case '5': case '6': case '7': case '8': case '9': 
+                if (eRead==0) {
+                    // Still creating mantisa
+                    mantRead = true;
+                    // Only keep first 9 digits rest won't count anyway...
+                    if (mantDig >= 9) {
+                        if (!dotRead)
+                            expAdj++;
+                        break;
+                    }
+                    if (dotRead) expAdj--;
+                    if ((mantDig != 0) || (current != '0')) {
+                                // Ignore leading zeros.
+                        mantDig++;
+                        mant = mant*10+(current-'0');
+                    }
+                } else {
+                    // Working on exp.
+                    if (expDig >= 3) break;
+                    if ((expDig != 0) || (current != '0')) {
+                                // Ignore leading zeros.
+                        expDig++;
+                        expDig = expDig*10+(current-'0');
+                    }
+                }
+                eJustRead = false;
+                break;
+            case 'e': case 'E':
+                if (eRead > 1) {
+                    done = true;
+                    break;
+                }
+                eJustRead = true;
+                eRead++;
+                break;
+            case 'm': // Confusing case between 10e5 and 10em
+            case 'x':
+                if (!eJustRead) {
+                    done = true;
+                    break;
+                }
+                if (current == 'm')
+                    lengthHandler.em();
+                else 
+                    lengthHandler.ex();
+                done     = true;
+                unitDone = true;
+                read(); // eat the 'm' or 'x' char.
+                break;
+            case '.':
+                if ((eRead!=0) || dotRead) {
+                    done=true;
+                    break;
+                }
+                dotRead = true;
+                break;
+            case '+': 
+                if ((!first) && (!eJustRead))
+                    done=true;
+                eJustRead = false;
+                break;
+            case '-':
+                if      (first)     mantPos = false;
+                else if (eJustRead) expPos  = false;
+                else                done    = true;
+                eJustRead = false;
+                break;
+
+            case 10:
+                line++;
+                column =1;
+                done = true;
+                break;
+                
+            default:
+                done=true;
+                break;
+            }
+            if (!done) {
+                first = false;
+                if ((position == count) && (!fillBuffer())) {
+                    current = -1;
+                    break;
+                }
+                current = buffer[position++];
+                column++;
+            }
+        }
+
+        if (!mantRead)
+            throw new NumberFormatException
+                ("No digits where number expected '" + ((char)current) + "'");
+
+        if (!expPos) exp = -exp;
+        exp += expAdj; // account for digits after 'dot'.
+        if (!mantPos) mant = -mant;
+
+        lengthHandler.lengthValue(NumberParser.buildFloat(mant, exp));
 	
-	s: if (eRead || current != -1) {
-	    switch (current) {
-	    case 0xD: case 0xA: case 0x20: case 0x9:
-		break s;
-	    }
-	    
-	    if (eRead) {
-		switch (current) {
-		case 'm':
-		    lengthHandler.em();
-		    read();
-		    break;
-		case 'x':
-		    lengthHandler.ex();
-		    read();
-		    break;
-		default:
-		    reportError("character.unexpected",
-				new Object[] { new Integer(current) });
-		}
-	    } else {
-		switch (current) {
-		case 'p':
-		    read();
-		    switch (current) {
-		    case 'c':
-			lengthHandler.pc();
-			read();
-			break;
-		    case 't':
-			lengthHandler.pt();
-			read();
-			break;
-		    case 'x':
-			lengthHandler.px();
-			read();
-			break;
-		    default:
-			reportError("character.unexpected",
-				    new Object[] { new Integer(current) });
-		    }
-		    break;
-		case 'i':
-		    read();
-		    if (current != 'n') {
-			reportError("character.expected",
-				    new Object[] { new Character('n'),
-						   new Integer(current) });
-			break;
-		    }
-		    lengthHandler.in();
-		    read();
-		    break;
-		case 'c':
-		    read();
-		    if (current != 'm') {
-			reportError("character.expected",
-				    new Object[] { new Character('m'),
-						   new Integer(current) });
-			break;
-		    }
-		    lengthHandler.cm();
-		    read();
-		    break;
-		case 'm':
-		    read();
-		    if (current != 'm') {
-			reportError("character.expected",
-				    new Object[] { new Character('m'),
-						   new Integer(current) });
-			break;
-		    }
-		    lengthHandler.mm();
-		    read();
-		    break;
-		case '%':
-		    lengthHandler.percentage();
-		    read();
-		    break;
-		default:
-		    reportError("character.unexpected",
-				new Object[] { new Integer(current) });
-		}
-	    }
-	}
-    }
+        if(unitDone)
+            return;
 
-    /**
-     * Implements {@link NumberParser#readNumber()}.
-     */
-    protected void readNumber() throws ParseException {
-	bufferSize = 0;
-	bufferize();
-	eRead = false;
-        for (;;) {
-	    read();
-	    switch (current) {
-	    case 0x20:
-	    case 0x9:
-	    case 0xD:
-	    case 0xA:
-	    case 'c':
-	    case 'i':
-	    case 'p':
-	    case '%':
-		return;
-	    case 'e': case 'E':
-		eRead = true;
-		bufferize();
-		break;
-	    case 'm':
-		if (!eRead) {
-		    return;
-		}
-	    case 'x':
-		bufferSize--;
-		return;
-	    case '+':
-	    case '-':
-		if (!eRead) {
-		    return;
-		}
-		eRead = false;
-		bufferize();
-		break;
-	    default:
-		if (current == -1) {
-		    return;
-		}
-		eRead = false;
-		bufferize();
-	    }
-	}
+        switch (current) {
+	    case -1: case 0xD: case 0xA: case 0x20: case 0x9:
+            return;
+        case 'p':
+            read();
+            switch (current) {
+            case 'c':
+                lengthHandler.pc();
+                read();
+                break;
+            case 't':
+                lengthHandler.pt();
+                read();
+                break;
+            case 'x':
+                lengthHandler.px();
+                read();
+                break;
+            default:
+                reportError("character.unexpected",
+                            new Object[] { new Integer(current) });
+            }
+            break;
+
+        case 'i':
+            read();
+            if (current != 'n') {
+                reportError("character.expected",
+                            new Object[] { new Character('n'),
+                                           new Integer(current) });
+                break;
+            }
+            lengthHandler.in();
+            read();
+            break;
+        case 'c':
+            read();
+            if (current != 'm') {
+                reportError("character.expected",
+                            new Object[] { new Character('m'),
+                                           new Integer(current) });
+                break;
+            }
+            lengthHandler.cm();
+            read();
+            break;
+        case 'm':
+            read();
+            if (current != 'm') {
+                reportError("character.expected",
+                            new Object[] { new Character('m'),
+                                           new Integer(current) });
+                break;
+            }
+            lengthHandler.mm();
+            read();
+            break;
+        case '%':
+            lengthHandler.percentage();
+            read();
+            break;
+        default:
+            reportError("character.unexpected",
+                        new Object[] { new Integer(current) });
+        }
     }
 }
