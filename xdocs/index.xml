@@ -178,7 +178,7 @@
         <li><link href="http://www.isacat.net/2002/svolgo/index.htm">Svolgo</link>,a Graph Visualisation/Transformation Framework for the
                 Semantic Web Cross-model transformation, node and arc diagrams, representation in SVG. This project uses Batik's SVG DOM implementation.</li>
         <li><link href="http://www.throneworld.com/lords/gms/dev.html">Lords Map</link>, a program to allow players and visitors to view the current map
-                of varoius campaigns. Lord Map uses Batik's SVG DOM and SVG Generator.</li>
+                of various campaigns. Lord Map uses Batik's SVG DOM and SVG Generator.</li>
         <li><link href="http://bitflux.ch/developer/misc/70/">XML_svg2image, </link> is a PHP class which translates svg files to png or jpeg using Batik</li>
         </ul>
         </s1>
