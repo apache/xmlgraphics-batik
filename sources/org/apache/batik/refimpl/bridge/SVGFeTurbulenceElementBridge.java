@@ -12,12 +12,12 @@ import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.RenderedImage;
 import java.awt.image.renderable.RenderContext;
-
 import java.util.Map;
 
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeMutationEvent;
 import org.apache.batik.bridge.FilterBridge;
+import org.apache.batik.bridge.IllegalAttributeValueException;
 
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.Clip;
@@ -25,11 +25,15 @@ import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.PadMode;
 import org.apache.batik.gvt.filter.PadRable;
 import org.apache.batik.gvt.filter.TurbulenceRable;
+
+import org.apache.batik.refimpl.bridge.resources.Messages;
 import org.apache.batik.refimpl.gvt.filter.ConcreteClipRable;
 import org.apache.batik.refimpl.gvt.filter.ConcreteTurbulenceRable;
+
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.SVGUtilities;
 import org.apache.batik.util.UnitProcessor;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.css.CSSStyleDeclaration;
@@ -66,76 +70,70 @@ public class SVGFeTurbulenceElementBridge implements FilterBridge,
                          Filter in,
                          Rectangle2D filterRegion,
                          Map filterMap){
-        // System.out.println("In SVGFeTurbulenceElementBridge" );
 
-        //
-        // Get baseFrequency along each of the user space axis
-        //
+        // parse the baseFrequency attribute
         String baseFrequencyAttr =
             filterElement.getAttributeNS(null, ATTR_BASE_FREQUENCY);
+
         Float baseFrequencies[] =
             SVGUtilities.buildFloatPair(baseFrequencyAttr);
-        float baseFrequencyX = DEFAULT_VALUE_BASE_FREQUENCY;
-        if(baseFrequencies[0] != null){
+
+        float baseFrequencyX = 0; // default is 0
+        if (baseFrequencies[0] != null) {
             baseFrequencyX = baseFrequencies[0].floatValue();
         }
 
-        float baseFrequencyY = baseFrequencyX;
-        if(baseFrequencies[1] != null){
+        float baseFrequencyY = baseFrequencyX; // default is baseFrequencyX
+        if (baseFrequencies[1] != null) {
             baseFrequencyY = baseFrequencies[1].floatValue();
         }
 
-        //
-        // Get number of octaves
-        //
+        // parse the numOctaves attribute
         String numOctavesAttr =
             filterElement.getAttributeNS(null, ATTR_NUM_OCTAVES);
-        int numOctaves = DEFAULT_VALUE_NUM_OCTAVES;
-        try {
+        int numOctaves = 1; // default is 1
+        if (numOctavesAttr.length() != 0) {
             numOctaves = SVGUtilities.convertSVGInteger(numOctavesAttr);
-        } catch(NumberFormatException e) {
         }
 
-        //
-        // Get seed
-        //
+        // parse the seed attribute
         String seedAttr = filterElement.getAttributeNS(null, ATTR_SEED);
-        int seed = DEFAULT_VALUE_SEED;
-        try {
-            seed = SVGUtilities.convertSVGInteger(seedAttr);
-        } catch(NumberFormatException e) {
+        int seed = 0;
+        if (seedAttr.length() != 0) {
+            seed = (int) SVGUtilities.convertSVGNumber(seedAttr);
         }
 
-        //
-        // Get Stitch procedure
-        //
+        // parse the stitchTiles attribute
         String stitchTilesAttr =
             filterElement.getAttributeNS(null, ATTR_STITCH_TILES);
-        boolean stitchTiles = DEFAULT_VALUE_STITCH_TILES;
-        if(VALUE_STITCH.equals(stitchTilesAttr)){
+        boolean stitchTiles;
+        if (stitchTilesAttr.length() == 0) {
+            stitchTiles = false; // default is noStitch
+        } else if (VALUE_STITCH.equals(stitchTilesAttr)) {
             stitchTiles = true;
-        }
-        else if(VALUE_NO_STITCH.equals(stitchTilesAttr)){
-            // This second if is required to make sure value is
-            // properly set to noStitch value. Otherwise, default
-            // has to be used.
+        } else if (VALUE_NO_STITCH.equals(stitchTilesAttr)) {
             stitchTiles = false;
+        } else {
+            throw new IllegalAttributeValueException(
+                Messages.formatMessage("feTurbulence.stitchTiles.invalid",
+                                       new Object[] { stitchTilesAttr }));
         }
 
-        //
-        // Get Type
-        //
-        String feTurbulenceTypeAttr = filterElement.getAttributeNS(null,
-                                                                   ATTR_TYPE);
-        boolean feTurbulenceType = DEFAULT_VALUE_FE_TURBULENCE_TYPE;
-        if(VALUE_FRACTAL_NOISE.equals(feTurbulenceTypeAttr)){
+        // parse the type attribute
+        String feTurbulenceTypeAttr =
+            filterElement.getAttributeNS(null, ATTR_TYPE);
+
+        boolean feTurbulenceType;
+        if (feTurbulenceTypeAttr.length() == 0) {
+            feTurbulenceType = false; // default is turbulence
+        } else if(VALUE_FRACTAL_NOISE.equals(feTurbulenceTypeAttr)){
             feTurbulenceType = true;
-        }
-        else if(VALUE_TURBULENCE.equals(feTurbulenceTypeAttr)){
-            // This second if is required to make sure the value
-            // is properly set to turbulence. Otherwise, default
-            // value has to be used.
+        } else if(VALUE_TURBULENCE.equals(feTurbulenceTypeAttr)){
             feTurbulenceType = false;
+        } else {
+            throw new IllegalAttributeValueException(
+                Messages.formatMessage("feTurbulence.type.invalid",
+                                       new Object[] { feTurbulenceTypeAttr }));
         }
 
         //
@@ -146,12 +144,10 @@ public class SVGFeTurbulenceElementBridge implements FilterBridge,
         Rectangle2D defaultRegion = filterRegion;
 
         CSSStyleDeclaration cssDecl
-            = bridgeContext.getViewCSS().getComputedStyle(filterElement,
-                                                          null);
+            = bridgeContext.getViewCSS().getComputedStyle(filterElement, null);
 
         UnitProcessor.Context uctx
-            = new DefaultUnitProcessorContext(bridgeContext,
-                                              cssDecl);
+            = new DefaultUnitProcessorContext(bridgeContext, cssDecl);
 
         Rectangle2D turbulenceRegion
             = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
@@ -171,10 +167,7 @@ public class SVGFeTurbulenceElementBridge implements FilterBridge,
         turbulenceRable.setFractalNoise(feTurbulenceType);
 
         // Get result attribute and update map
-        String result
-            = filterElement.getAttributeNS(null,
-                                           ATTR_RESULT);
-
+        String result = filterElement.getAttributeNS(null, ATTR_RESULT);
         if((result != null) && (result.trim().length() > 0)){
             filterMap.put(result, turbulenceRable);
         }

@@ -9,7 +9,6 @@
 package org.apache.batik.refimpl.bridge;
 
 import java.awt.geom.Rectangle2D;
-
 import java.util.Map;
 import java.util.Vector;
 

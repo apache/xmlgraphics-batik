@@ -13,19 +13,24 @@ import java.awt.geom.Rectangle2D;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.StringTokenizer;
+
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeMutationEvent;
 import org.apache.batik.bridge.FilterBridge;
+
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.FilterChainRable;
 import org.apache.batik.gvt.filter.FloodRable;
 import org.apache.batik.gvt.filter.GraphicsNodeRable;
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
+
 import org.apache.batik.refimpl.gvt.filter.ConcreteFloodRable;
+
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.SVGUtilities;
 import org.apache.batik.util.UnitProcessor;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -69,20 +74,18 @@ public class SVGFeFloodElementBridge implements FilterBridge, SVGConstants {
                          Filter in,
                          Rectangle2D filterRegion,
                          Map filterMap){
+
         // Extract flood color
         CSSStyleDeclaration decl
-            = bridgeContext.getViewCSS().getComputedStyle
-            (filterElement, null);
-        Color floodColor
-            = CSSUtilities.convertFloodColorToPaint(decl);
+            = bridgeContext.getViewCSS().getComputedStyle(filterElement, null);
+
+        Color floodColor = CSSUtilities.convertFloodColorToPaint(decl);
 
         CSSStyleDeclaration cssDecl
-            = bridgeContext.getViewCSS().getComputedStyle
-            (filterElement, null);
+            = bridgeContext.getViewCSS().getComputedStyle(filterElement, null);
 
         UnitProcessor.Context uctx
-            = new DefaultUnitProcessorContext(bridgeContext,
-                                              cssDecl);
+            = new DefaultUnitProcessorContext(bridgeContext, cssDecl);
 
         Rectangle2D floodRegion
             = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
@@ -95,8 +98,7 @@ public class SVGFeFloodElementBridge implements FilterBridge, SVGConstants {
         FloodRable flood = new ConcreteFloodRable(floodRegion, floodColor);
 
         // Get result attribute if any
-        String result = filterElement.getAttributeNS(null,
-                                                     ATTR_RESULT);
+        String result = filterElement.getAttributeNS(null, ATTR_RESULT);
         if((result != null) && (result.trim().length() > 0)){
             filterMap.put(result, flood);
         }

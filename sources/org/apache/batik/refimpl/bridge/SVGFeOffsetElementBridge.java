@@ -14,9 +14,11 @@ import java.awt.geom.Rectangle2D;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.StringTokenizer;
+
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeMutationEvent;
 import org.apache.batik.bridge.FilterBridge;
+
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.AffineRable;
 import org.apache.batik.gvt.filter.Filter;
@@ -25,11 +27,14 @@ import org.apache.batik.gvt.filter.GraphicsNodeRable;
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
 import org.apache.batik.gvt.filter.PadMode;
 import org.apache.batik.gvt.filter.PadRable;
+
 import org.apache.batik.refimpl.gvt.filter.ConcreteAffineRable;
 import org.apache.batik.refimpl.gvt.filter.ConcretePadRable;
+
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.SVGUtilities;
 import org.apache.batik.util.UnitProcessor;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -49,6 +54,7 @@ import org.w3c.dom.views.DocumentView;
  * @version $Id$
  */
 public class SVGFeOffsetElementBridge implements FilterBridge, SVGConstants {
+
     /**
      * Returns the <tt>Filter</tt> that implements the filter
      * operation modeled by the input DOM element
@@ -73,26 +79,18 @@ public class SVGFeOffsetElementBridge implements FilterBridge, SVGConstants {
                          Rectangle2D filterRegion,
                          Map filterMap){
 
-        System.out.println("In Offset Bridge");
-
-        // Extract dx attribute
-        String dxAttr = filterElement.getAttributeNS(null,
-                                                     ATTR_DX);
-        float dx = DEFAULT_VALUE_DX;
-        try {
+        // parse the dx attribute
+        String dxAttr = filterElement.getAttributeNS(null, ATTR_DX);
+        float dx = 0; // default is 0
+        if (dxAttr.length() != 0) {
             dx = SVGUtilities.convertSVGNumber(dxAttr);
-        } catch (NumberFormatException e) {
-            // use default
         }
 
-        // Extract dy attribute
-        String dyAttr = filterElement.getAttributeNS(null,
-                                                     ATTR_DY);
-        float dy = DEFAULT_VALUE_DY;
-        try {
+        // parse the dy attribute
+        String dyAttr = filterElement.getAttributeNS(null, ATTR_DY);
+        float dy = 0; // default is 0
+        if (dyAttr.length() != 0) {
             dy = SVGUtilities.convertSVGNumber(dyAttr);
-        } catch (NumberFormatException e) {
-            // use default
         }
 
         AffineTransform offsetTransform =
@@ -100,38 +98,35 @@ public class SVGFeOffsetElementBridge implements FilterBridge, SVGConstants {
 
         // Get source
         String inAttr = filterElement.getAttributeNS(null, ATTR_IN);
-        in = CSSUtilities.getFilterSource(filteredNode, inAttr, bridgeContext,
+        in = CSSUtilities.getFilterSource(filteredNode,
+                                          inAttr,
+                                          bridgeContext,
                                           filteredElement,
-                                          in, filterMap);
+                                          in,
+                                          filterMap);
 
-        System.out.println("In: " + in);
         // feOffset is a point operation. Therefore, to take the
         // filter primitive region into account, only a pad operation
         // on the input is required.
 
         //
-        // The default region is the input source's region
-        // unless the source is SourceGraphics, in which
-        // case the default region is the filter chain's
-        // region
+        // The default region is the input source's region unless the
+        // source is SourceGraphics, in which case the default region
+        // is the filter chain's region
         //
-        Filter sourceGraphics
-            = (Filter)filterMap.get(VALUE_SOURCE_GRAPHIC);
+        Filter sourceGraphics = (Filter)filterMap.get(VALUE_SOURCE_GRAPHIC);
 
-        Rectangle2D defaultRegion
-            = in.getBounds2D();
+        Rectangle2D defaultRegion = in.getBounds2D();
 
-        if(in == sourceGraphics){
+        if (in == sourceGraphics) {
             defaultRegion = filterRegion;
         }
 
         CSSStyleDeclaration cssDecl
-            = bridgeContext.getViewCSS().getComputedStyle(filterElement,
-                                                          null);
+            = bridgeContext.getViewCSS().getComputedStyle(filterElement, null);
 
         UnitProcessor.Context uctx
-            = new DefaultUnitProcessorContext(bridgeContext,
-                                              cssDecl);
+            = new DefaultUnitProcessorContext(bridgeContext, cssDecl);
 
         Rectangle2D offsetArea
             = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
@@ -148,8 +143,7 @@ public class SVGFeOffsetElementBridge implements FilterBridge, SVGConstants {
         AffineRable offset = new ConcreteAffineRable(pad, offsetTransform);
 
         // Get result attribute if any
-        String result = filterElement.getAttributeNS(null,
-                                                     ATTR_RESULT);
+        String result = filterElement.getAttributeNS(null, ATTR_RESULT);
         if((result != null) && (result.trim().length() > 0)){
             filterMap.put(result, offset);
         }

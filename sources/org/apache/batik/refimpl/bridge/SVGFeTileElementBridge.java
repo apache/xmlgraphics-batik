@@ -9,15 +9,17 @@
 package org.apache.batik.refimpl.bridge;
 
 import java.awt.geom.Rectangle2D;
-
 import java.util.Map;
+
+import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.bridge.BridgeMutationEvent;
+import org.apache.batik.bridge.FilterBridge;
 
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.TileRable;
-import org.apache.batik.bridge.BridgeContext;
-import org.apache.batik.bridge.BridgeMutationEvent;
-import org.apache.batik.bridge.FilterBridge;
+
+import org.apache.batik.refimpl.gvt.filter.ConcreteTileRable;
 
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.SVGUtilities;
@@ -27,8 +29,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.css.CSSStyleDeclaration;
 
-import org.apache.batik.refimpl.gvt.filter.ConcreteTileRable;
-
 /**
  * This class bridges an SVG <tt>feTile</tt> filter element
  * with <tt>ConcreteTileRable</tt>.
@@ -37,6 +37,7 @@ import org.apache.batik.refimpl.gvt.filter.ConcreteTileRable;
  * @version $Id$
  */
 public class SVGFeTileElementBridge implements FilterBridge, SVGConstants {
+
     /**
      * Returns the <tt>Filter</tt> that implements the filter
      * operation modeled by the input DOM element
@@ -64,12 +65,10 @@ public class SVGFeTileElementBridge implements FilterBridge, SVGConstants {
         // Tile region is defined by the filter region
         //
         CSSStyleDeclaration cssDecl
-            = bridgeContext.getViewCSS().getComputedStyle(filterElement,
-                                                          null);
+            = bridgeContext.getViewCSS().getComputedStyle(filterElement, null);
 
         UnitProcessor.Context uctx
-            = new DefaultUnitProcessorContext(bridgeContext,
-                                              cssDecl);
+            = new DefaultUnitProcessorContext(bridgeContext, cssDecl);
 
         //
         // Get the tiled region. For feTile, the default for the
@@ -86,8 +85,7 @@ public class SVGFeTileElementBridge implements FilterBridge, SVGConstants {
         //
         // Get the tile source
         //
-        String inAttr
-            = filterElement.getAttributeNS(null, ATTR_IN);
+        String inAttr = filterElement.getAttributeNS(null, ATTR_IN);
         in = CSSUtilities.getFilterSource(filteredNode,
                                           inAttr,
                                           bridgeContext,
@@ -99,12 +97,11 @@ public class SVGFeTileElementBridge implements FilterBridge, SVGConstants {
         //
         TileRable tileRable = null;
 
-        if(in != null){
-            tileRable
-                = new ConcreteTileRable(in,
-                                        tiledRegion,
-                                        in.getBounds2D(),
-                                        false);
+        if (in != null){
+            tileRable = new ConcreteTileRable(in,
+                                              tiledRegion,
+                                              in.getBounds2D(),
+                                              false);
         }
 
         return tileRable;

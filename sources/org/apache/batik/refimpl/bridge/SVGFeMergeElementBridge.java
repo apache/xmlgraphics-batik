@@ -10,24 +10,31 @@ package org.apache.batik.refimpl.bridge;
 
 import java.awt.geom.Rectangle2D;
 import java.util.Map;
-import java.util.Vector;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeMutationEvent;
 import org.apache.batik.bridge.FilterBridge;
+import org.apache.batik.bridge.IllegalAttributeValueException;
+
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.CompositeRable;
 import org.apache.batik.gvt.filter.CompositeRule;
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.PadMode;
+
+import org.apache.batik.refimpl.bridge.resources.Messages;
 import org.apache.batik.refimpl.gvt.filter.ConcreteCompositeRable;
 import org.apache.batik.refimpl.gvt.filter.ConcretePadRable;
+
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.SVGUtilities;
 import org.apache.batik.util.UnitProcessor;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.w3c.dom.css.CSSStyleDeclaration;
 
 /**
@@ -37,8 +44,7 @@ import org.w3c.dom.css.CSSStyleDeclaration;
  * @author <a href="mailto:Thomas.DeWeeese@Kodak.com">Thomas DeWeese</a>
  * @version $Id$
  */
-public class SVGFeMergeElementBridge implements FilterBridge,
-                                                SVGConstants{
+public class SVGFeMergeElementBridge implements FilterBridge, SVGConstants {
 
     /**
      * Returns the <tt>Filter</tt> that implements the filter
@@ -64,56 +70,58 @@ public class SVGFeMergeElementBridge implements FilterBridge,
                          Rectangle2D filterRegion,
                          Map filterMap){
 
-        // Extract sources, they are defined in the filterElement's
-        // children.
-        NodeList children = filterElement.getChildNodes();
-        int nChildren = children.getLength();
-        Filter [] srcs = new Filter[nChildren];
+        // Extract sources, they are defined in the filterElement's children.
+        List srcs = new LinkedList();
+        for(Node child=filterElement.getFirstChild();
+                 child != null;
+                 child = child.getNextSibling()) {
 
-        int count = 0;
-        for (int i=0; i<nChildren; i++) {
-            Node child = children.item(i);
-            if (child.getNodeType() != Node.ELEMENT_NODE)
-                continue;
+            if (child.getNodeType() != Node.ELEMENT_NODE) {
+                continue; // skip node that is not an Element
+            }
 
             Element elt = (Element)child;
-            if (!elt.getNodeName().equals(TAG_FE_MERGE_NODE))
-                continue;
+            String namespaceURI = elt.getNamespaceURI();
+            if (namespaceURI == null ||
+                    !namespaceURI.equals(SVG_NAMESPACE_URI)) {
+                continue; // skip element in the wrong namespace
+            }
+            if (!elt.getLocalName().equals(TAG_FE_MERGE_NODE)) {
+                throw new IllegalAttributeValueException(
+                    Messages.formatMessage("feMerge.subelement.invalid",
+                                           new Object[] {elt.getLocalName()}));
+            }
 
             String inAttr = elt.getAttributeNS(null, ATTR_IN);
-            Filter tmp;
-            tmp = CSSUtilities.getFilterSource(filteredNode, inAttr,
-                                               bridgeContext,
-                                               elt, in, filterMap);
-            if (tmp == null) continue;
-            srcs[count++] = in = tmp;
+            Filter tmp = CSSUtilities.getFilterSource(filteredNode,
+                                                      inAttr,
+                                                      bridgeContext,
+                                                      elt,
+                                                      in,
+                                                      filterMap);
+            if (tmp == null) {
+                continue;
+            }
+            in = tmp;
+            srcs.add(in);
         }
 
-        if (count == 0)
+        if (srcs.size() == 0) { // no subelement found
             return null;
-
-        if (count != nChildren) {
-            Filter [] tmp = new Filter[count];
-            System.arraycopy(srcs, 0, tmp, 0, count);
-            srcs=tmp;
         }
 
-        //
         // The default region is the input sources regions union
-        //
-        Rectangle2D defaultRegion = srcs[0].getBounds2D();
-        for(int i=1; i<srcs.length; i++){
-            defaultRegion.add(srcs[i].getBounds2D());
+        Iterator iter = srcs.iterator();
+        Rectangle2D defaultRegion = ((Filter) iter.next()).getBounds2D();
+        while (iter.hasNext()) {
+            defaultRegion.add(((Filter) iter.next()).getBounds2D());
         }
-
 
         CSSStyleDeclaration cssDecl
-            = bridgeContext.getViewCSS().getComputedStyle(filterElement,
-                                                          null);
+            = bridgeContext.getViewCSS().getComputedStyle(filterElement, null);
 
         UnitProcessor.Context uctx
-            = new DefaultUnitProcessorContext(bridgeContext,
-                                              cssDecl);
+            = new DefaultUnitProcessorContext(bridgeContext, cssDecl);
 
         Rectangle2D primitiveRegion
             = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
@@ -122,13 +130,8 @@ public class SVGFeMergeElementBridge implements FilterBridge,
                                                         filteredNode,
                                                         uctx);
 
-        // Now, do the Merge.
-        Vector srcsVec = new Vector(count);
-        for (int i=0; i<count; i++)
-            srcsVec.add(srcs[i]);
-
         Filter filter = null;
-        filter = new ConcreteCompositeRable(srcsVec, CompositeRule.OVER);
+        filter = new ConcreteCompositeRable(srcs, CompositeRule.OVER);
 
         filter = new ConcretePadRable(filter,
                                       primitiveRegion,

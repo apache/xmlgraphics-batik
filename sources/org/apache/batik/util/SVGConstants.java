@@ -232,6 +232,7 @@ public interface SVGConstants extends CSSConstants {
     String VALUE_EDGE_DUPLICATE = "duplicate";
     String VALUE_EDGE_NONE = "none";
     String VALUE_END = "end";
+    String VALUE_ERODE = "erode";
     String VALUE_EVEN_ODD = "evenodd";
     String VALUE_EXACT = "exact";
     String VALUE_FILTER_X_DEFAULT = "-10%";

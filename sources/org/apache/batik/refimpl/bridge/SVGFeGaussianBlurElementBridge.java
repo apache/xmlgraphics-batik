@@ -10,19 +10,26 @@ package org.apache.batik.refimpl.bridge;
 
 import java.awt.geom.Rectangle2D;
 import java.util.Map;
+
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeMutationEvent;
 import org.apache.batik.bridge.FilterBridge;
+import org.apache.batik.bridge.IllegalAttributeValueException;
+
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.GaussianBlurRable;
 import org.apache.batik.gvt.filter.PadMode;
 import org.apache.batik.gvt.filter.PadRable;
+
+import org.apache.batik.refimpl.bridge.resources.Messages;
 import org.apache.batik.refimpl.gvt.filter.ConcreteGaussianBlurRable;
 import org.apache.batik.refimpl.gvt.filter.ConcretePadRable;
+
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.SVGUtilities;
 import org.apache.batik.util.UnitProcessor;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.css.CSSStyleDeclaration;
@@ -59,65 +66,73 @@ public class SVGFeGaussianBlurElementBridge implements FilterBridge,
                          Filter in,
                          Rectangle2D filterRegion,
                          Map filterMap){
-        //
+
         // Extract standard deviation
-        //
-        String stdDeviation
-            = filterElement.getAttributeNS(null,
-                                           ATTR_STD_DEVIATION);
-        Float deviationPair[]
-            = SVGUtilities.buildFloatPair(stdDeviation);
+        String stdDeviation =
+            filterElement.getAttributeNS(null, ATTR_STD_DEVIATION);
 
-        //
-        // Build filter only if stdDeviationX is greater than 0
-        //
-        if ((deviationPair[0] == null)
-            || (deviationPair[0].floatValue() <= 0))
+        Float deviationPair[] = SVGUtilities.buildFloatPair(stdDeviation);
+
+        // parse the stdDeviationX
+        float stdDeviationX = 0; // default is 0
+        if (deviationPair[0] != null) {
+            stdDeviationX = deviationPair[0].floatValue();
+        }
+        if (stdDeviationX == 0) {
+            // A value of zero disables the effect of the filter primitive
             return null;
+        } else if (stdDeviationX < 0) {
+            // A negative value is an error
+            throw new IllegalAttributeValueException(
+                Messages.formatMessage("feGaussianBlur.stdDeviationX.invalid",
+                                       null));
+        }
 
-        float stdDeviationX = deviationPair[0].floatValue();
-        float stdDeviationY = stdDeviationX;
+        // parse the stdDeviationY
+        float stdDeviationY = stdDeviationX; // default is the stdDeviationX
         if (deviationPair[1] != null) {
             stdDeviationY = deviationPair[1].floatValue();
         }
-
-        if (stdDeviationY <= 0)
+        if (stdDeviationY == 0) {
+            // A value of zero disables the effect of the filter primitive
             return null;
+        } else if (stdDeviationY < 0) {
+            // A negative value is an error
+            throw new IllegalAttributeValueException(
+                Messages.formatMessage("feGaussianBlur.stdDeviationY.invalid",
+                                       null));
+        }
 
-          // Get source
+        // Get source
         String inAttr = filterElement.getAttributeNS(null, ATTR_IN);
-        in = CSSUtilities.getFilterSource(filteredNode, inAttr,
+        in = CSSUtilities.getFilterSource(filteredNode,
+                                          inAttr,
                                           bridgeContext,
                                           filteredElement,
-                                          in, filterMap);
+                                          in,
+                                          filterMap);
 
-        if (in == null){
+        if (in == null) {
             return null;
         }
 
         //
-        // The default region is the input source's region
-        // unless the source is SourceGraphics, in which
-        // case the default region is the filter chain's
-        // region
+        // The default region is the input source's region unless the
+        // source is SourceGraphics, in which case the default region
+        // is the filter chain's region
         //
-        Filter sourceGraphics
-            = (Filter)filterMap.get(VALUE_SOURCE_GRAPHIC);
+        Filter sourceGraphics = (Filter)filterMap.get(VALUE_SOURCE_GRAPHIC);
 
-        Rectangle2D defaultRegion
-            = in.getBounds2D();
-
-        if(in == sourceGraphics){
+        Rectangle2D defaultRegion = in.getBounds2D();
+        if (in == sourceGraphics) {
             defaultRegion = filterRegion;
         }
 
         CSSStyleDeclaration cssDecl
-            = bridgeContext.getViewCSS().getComputedStyle(filterElement,
-                                                          null);
+            = bridgeContext.getViewCSS().getComputedStyle(filterElement, null);
 
         UnitProcessor.Context uctx
-            = new DefaultUnitProcessorContext(bridgeContext,
-                                              cssDecl);
+            = new DefaultUnitProcessorContext(bridgeContext, cssDecl);
 
         Rectangle2D blurArea
             = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
@@ -126,12 +141,12 @@ public class SVGFeGaussianBlurElementBridge implements FilterBridge,
                                                         filteredNode,
                                                         uctx);
 
-        PadRable pad = new ConcretePadRable
-            (in, blurArea, PadMode.ZERO_PAD);
+        PadRable pad = new ConcretePadRable(in, blurArea, PadMode.ZERO_PAD);
 
         // Build filter
         Filter filter = null;
-        filter = new ConcreteGaussianBlurRable(pad, stdDeviationX,
+        filter = new ConcreteGaussianBlurRable(pad,
+                                               stdDeviationX,
                                                stdDeviationY);
 
         // Get result attribute if any
