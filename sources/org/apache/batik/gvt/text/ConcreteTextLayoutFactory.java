@@ -67,6 +67,10 @@ public class ConcreteTextLayoutFactory implements TextLayoutFactory {
         Set glyphPositionKeys = new HashSet();
         glyphPositionKeys.add(
               GVTAttributedCharacterIterator.TextAttribute.EXPLICIT_LAYOUT);
+        glyphPositionKeys.add(
+              GVTAttributedCharacterIterator.TextAttribute.CUSTOM_SPACING);
+        glyphPositionKeys.add(
+              GVTAttributedCharacterIterator.TextAttribute.BBOX_WIDTH);
         glyphPositionKeys.add(GVTAttributedCharacterIterator.TextAttribute.DX);
         glyphPositionKeys.add(GVTAttributedCharacterIterator.TextAttribute.DY);
         glyphPositionKeys.add(

@@ -137,6 +137,8 @@ public interface SVGConstants extends CSSConstants {
     String SVG_KERNEL_UNIT_LENGTH_ATTRIBUTE = "kernelUnitLength";
     String SVG_KERNEL_UNIT_LENGTH_X_ATTRIBUTE = "kernelUnitLengthX";
     String SVG_KERNEL_UNIT_LENGTH_Y_ATTRIBUTE = "kernelUnitLengthY";
+    String ATTR_KERNING = "kerning";
+    String ATTR_LENGTH_ADJUST = "lengthAdjust";
     String ATTR_LIGHT_COLOR = "lightColor";
     String SVG_LIMITING_CONE_ANGLE_ATTRIBUTE = "limitingConeAngle";
     String SVG_NUM_OCTAVES_ATTRIBUTE = "numOctaves";
@@ -297,6 +299,8 @@ public interface SVGConstants extends CSSConstants {
     String VALUE_REPEAT = "repeat";
     String SVG_SATURATE_VALUE = "saturate";
     String SVG_SCREEN_VALUE = "screen";
+    String VALUE_ADJUST_SPACING = "spacing";
+    String VALUE_ADJUST_SPACINGANDGLYPHS = "spacingAndGlyphs";
     String VALUE_SOURCE_GRAPHIC = "SourceGraphic";
     String VALUE_SRGB = "sRGB";
     String VALUE_START = "start";
