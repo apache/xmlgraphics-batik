@@ -1049,10 +1049,10 @@ public class SVGTextElementBridge extends AbstractSVGBridge
                        TextAttribute.WRITING_MODE_RTL);
             break;
         case 't':
-	        result.put(GVTAttributedCharacterIterator.
-		       TextAttribute.WRITING_MODE,
-		       GVTAttributedCharacterIterator.
-		       TextAttribute.WRITING_MODE_TTB);
+                result.put(GVTAttributedCharacterIterator.
+                       TextAttribute.WRITING_MODE,
+                       GVTAttributedCharacterIterator.
+                       TextAttribute.WRITING_MODE_TTB);
             horizontal = false;
             break;
         }
