@@ -62,7 +62,92 @@ import org.w3c.dom.events.EventTarget;
 import org.w3c.dom.events.MutationEvent;
 
 /**
- * This class represents a Swing component which can display SVG.
+ * This class represents a swing component that can display SVG documents. This
+ * component also lets you translate, zoom and rotate the document being
+ * displayed. This is the fundamental class for rendering SVG documents in a
+ * swing application.
+ *
+ * <h2>Rendering Process</h2>
+ *
+ * <p>The rendering process can be broken down into three phases. Not all of
+ * those steps are required - depending on the method used to specify the SVG
+ * document to display, but basically the steps in the rendering process
+ * are:</p>
+ *
+ * <ol>
+ *
+ * <li><b>Building a DOM tree</b>
+ *
+ * <blockquote>If the <tt>{@link #loadSVGDocument(String)}</tt> method is used,
+ * the SVG file is parsed and an SVG DOM Tree is built.</blockquote></li>
+ *
+ * <li><b>Building a GVT tree</b>
+ *
+ * <blockquote>Once an SVGDocument is created (using the step 1 or if the
+ * <tt>{@link #setSVGDocument(SVGDocument)}</tt> method has been used) - a GVT
+ * tree is constructed. The GVT tree is the data structure used internally to
+ * render an SVG document. see the <tt>{@link org.apache.batik.gvt}
+ * package.</tt></blockquote></li>
+ *
+ * <li><b>Rendering the GVT tree</b>
+ *
+ * <blockquote>Then the GVT tree is rendered. see the <tt>{@link
+ * org.apache.batik.gvt.renderer}</tt> package.</blockquote></li>
+ *
+ * </ol>
+ *
+ * <p>Those steps are performed in a separate thread. To be notified to what
+ * happens and eventually perform some operations - such as resizing the window
+ * to the size of the document or get the SVGDocument built via a URI, three
+ * different listeners are provided (one per step): <tt>{@link
+ * SVGDocumentLoaderListener}</tt>, <tt>{@link GVTTreeBuilderListener}</tt>, and
+ * <tt>{@link org.apache.batik.swing.gvt.GVTTreeRendererListener}</tt>.</p>
+ *
+ * <p>The following example shows how you can get the size of an SVG
+ * document. Note that due to how SVG is designed (units, percentages...), the
+ * size of an SVG document can be known only once the SVGDocument has been
+ * analyzed (ie. the GVT tree has been constructed).</p>
+ *
+ * <pre>
+ * final JSVGComponent svgComp = new JSVGComponent();
+ * svgComp.loadSVGDocument("foo.svg");
+ * svgComp.addGVTTreeBuilderListener(new GVTTreeBuilderAdapter() {
+ *     public void gvtBuildCompleted(GVTTreeBuilderEvent evt) {
+ *         Dimension2D size = svgComp.getSVGDocumentSize();
+ *         // ...
+ *     }
+ * });
+ * </pre>
+ *
+ * <p>The second example shows how you can access to the DOM tree when a URI has
+ * been used to display an SVG document.
+ *
+ * <pre>
+ * final JSVGComponent svgComp = new JSVGComponent();
+ * svgComp.loadSVGDocument("foo.svg");
+ * svgComp.addSVGDocumentLoaderListener(new SVGDocumentLoaderAdapter() {
+ *     public void documentLoadingCompleted(SVGDocumentLoaderEvent evt) {
+ *         SVGDocument svgDoc = svgComp.getSVGDocument();
+ *         //...
+ *     }
+ * });
+ * </pre>
+ *
+ * <p>Conformed to the <a
+ * href="http://java.sun.com/docs/books/tutorial/uiswing/overview/threads.html">single
+ * thread rule of swing</a>, the listeners are executed in the swing thread. The
+ * sequence of the method calls for a particular listener and the order of the
+ * listeners themselves are <em>guaranteed</em>.</p>
+ *
+ * <h2>User Agent</h2>
+ *
+ * <p>The <tt>JSVGComponent</tt> can pick up some informations to a user
+ * agent. The <tt>{@link SVGUserAgent}</tt> provides a way to control the
+ * resolution used to display an SVG document (controling the pixel to
+ * millimeter conversion factor), perform an operation in respond to a click on
+ * an hyperlink, control the default language to use, or specify a user
+ * stylesheet, or how to display errors when an error occured while
+ * building/rendering a document (invalid XML file, missing attributes...).</p>
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
