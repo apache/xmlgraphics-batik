@@ -960,6 +960,7 @@ To display the available targets type:
     <mkdir dir="${test-references}/org/apache/batik/ext/awt/geom/candidate" />
     <mkdir dir="${test-references}/org/apache/batik/ext/awt/geom/variation" />
     <mkdir dir="${test-references}/org/apache/batik/transcoder/image/candidate-reference" />
+    <mkdir dir="${test-references}/org/apache/batik/transcoder/image/candidate-variation" />
   </target>
 
   <target name="ttf2svg"
