@@ -116,8 +116,7 @@ public abstract class AbstractElement
     }
 
     /**
-     * Implements {@link
-     * org.apache.batik.dom.events.NodeEventTarget#getParentNodeEventTarget()}.
+     * Implements {@link NodeEventTarget#getParentNodeEventTarget()}.
      */
     public NodeEventTarget getParentNodeEventTarget() {
         return (NodeEventTarget)
@@ -178,7 +177,7 @@ public abstract class AbstractElement
     }
 
     /**
-     * An implementation of the {@link org.w3c.dom.NamedNodeMap}.
+     * An implementation of the {@link NamedNodeMap}.
      */
     protected class ExtendedNamedNodeHashMap extends NamedNodeHashMap {
 
@@ -202,8 +201,7 @@ public abstract class AbstractElement
 	}
 
  	/**
-	 * <b>DOM</b>: Implements {@link
-	 * org.w3c.dom.NamedNodeMap#removeNamedItemNS(String,String)}.
+	 * <b>DOM</b>: Implements {@link NamedNodeMap#removeNamedItemNS(String,String)}.
 	 */
 	public Node removeNamedItemNS(String namespaceURI, String localName)
 	    throws DOMException {

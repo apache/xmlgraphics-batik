@@ -69,7 +69,7 @@ public class SVGStylableSupport implements SVGConstants {
 
     /**
      * To implements {@link
-     * OverrideStyleElement#hasOverrideStyle(String)}.
+     * org.apache.batik.dom.util.OverrideStyleElement#hasOverrideStyle(String)}.
      */
     public static boolean hasOverrideStyle(String pseudoElt) {
         // !!! TODO: hasOverrideStyle()
@@ -78,7 +78,7 @@ public class SVGStylableSupport implements SVGConstants {
 
     /**
      * To implements {@link
-     * OverrideStyleElement#getOverrideStyle(String)}.
+     * org.apache.batik.dom.util.OverrideStyleElement#getOverrideStyle(String)}.
      */
     public static CSSStyleDeclaration getOverrideStyle(String pseudoElt, Element elt) {
 	// !!! TODO: getOverrideStyle()

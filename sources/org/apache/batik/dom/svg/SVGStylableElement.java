@@ -59,8 +59,7 @@ public abstract class SVGStylableElement
     // SVGStylable support ///////////////////////////////////////////////////
 
     /**
-     * Implements {@link
-     * org.apache.batik.css.ExtendedElementCSSInlineStyle#hasStyle()}.
+     * Implements {@link ExtendedElementCSSInlineStyle#hasStyle()}.
      */
     public boolean hasStyle() {
         return SVGStylableSupport.hasStyle(this);
@@ -93,7 +92,7 @@ public abstract class SVGStylableElement
 
     /**
      * Implements {@link
-     * OverrideStyleElement#hasOverrideStyle(String)}.
+     * org.apache.batik.dom.util.OverrideStyleElement#hasOverrideStyle(String)}.
      */
     public boolean hasOverrideStyle(String pseudoElt) {
 	return SVGStylableSupport.hasOverrideStyle(pseudoElt);
@@ -101,7 +100,7 @@ public abstract class SVGStylableElement
 
     /**
      * Implements {@link
-     * OverrideStyleElement#getOverrideStyle(String)}.
+     * org.apache.batik.dom.util.OverrideStyleElement#getOverrideStyle(String)}.
      */
     public CSSStyleDeclaration getOverrideStyle(String pseudoElt) {
 	return SVGStylableSupport.getOverrideStyle(pseudoElt, this);

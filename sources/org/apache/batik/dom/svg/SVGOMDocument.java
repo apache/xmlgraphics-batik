@@ -66,7 +66,7 @@ import org.w3c.dom.views.AbstractView;
 import org.w3c.dom.views.DocumentView;
 
 /**
- * This class implements {@link org.w3c.dom.svg.SVGDocument}.
+ * This class implements {@link SVGDocument}.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
@@ -234,7 +234,7 @@ public class SVGOMDocument
     }
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGDocument#getURL()}
+     * <b>DOM</b>: Implements {@link SVGDocument#getURL()}
      */
     public String getURL() {
         return (url == null) ? null : url.toString();
@@ -255,40 +255,35 @@ public class SVGOMDocument
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.Document#createElement(String)}.
+     * <b>DOM</b>: Implements {@link Document#createElement(String)}.
      */
     public Element createElement(String tagName) throws DOMException {
         return new GenericElement(tagName.intern(), this);
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.Document#createDocumentFragment()}.
+     * <b>DOM</b>: Implements {@link Document#createDocumentFragment()}.
      */
     public DocumentFragment createDocumentFragment() {
         return new GenericDocumentFragment(this);
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.Document#createTextNode(String)}.
+     * <b>DOM</b>: Implements {@link Document#createTextNode(String)}.
      */
     public Text createTextNode(String data) {
         return new GenericText(data, this);
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.Document#createComment(String)}.
+     * <b>DOM</b>: Implements {@link Document#createComment(String)}.
      */
     public Comment createComment(String data) {
         return new GenericComment(data, this);
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.Document#createCDATASection(String)}
+     * <b>DOM</b>: Implements {@link Document#createCDATASection(String)}
      */
     public CDATASection createCDATASection(String data) throws DOMException {
         return new GenericCDATASection(data, this);
@@ -296,7 +291,7 @@ public class SVGOMDocument
 
     /**
      * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.Document#createProcessingInstruction(String,String)}.
+     * Document#createProcessingInstruction(String,String)}.
      * @return a StyleSheetProcessingInstruction if target is
      *         "xml-stylesheet" or a GenericProcessingInstruction otherwise.
      */
@@ -311,16 +306,14 @@ public class SVGOMDocument
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.Document#createAttribute(String)}.
+     * <b>DOM</b>: Implements {@link Document#createAttribute(String)}.
      */
     public Attr createAttribute(String name) throws DOMException {
         return new GenericAttr(name.intern(), this);
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.Document#createEntityReference(String)}.
+     * <b>DOM</b>: Implements {@link Document#createEntityReference(String)}.
      */
     public EntityReference createEntityReference(String name)
         throws DOMException {
@@ -328,8 +321,7 @@ public class SVGOMDocument
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.Document#createAttributeNS(String,String)}.
+     * <b>DOM</b>: Implements {@link Document#createAttributeNS(String,String)}.
      */
     public Attr createAttributeNS(String namespaceURI, String qualifiedName)
         throws DOMException {
@@ -343,8 +335,7 @@ public class SVGOMDocument
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.Document#createElementNS(String,String)}.
+     * <b>DOM</b>: Implements {@link Document#createElementNS(String,String)}.
      */
     public Element createElementNS(String namespaceURI, String qualifiedName)
         throws DOMException {
@@ -353,7 +344,7 @@ public class SVGOMDocument
     }
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.Document#getElementById(String)}.
+     * <b>DOM</b>: Implements {@link Document#getElementById(String)}.
      */
     public Element getElementById(String elementId) {
         if (elementId == null || elementId.equals("")) {

@@ -49,8 +49,7 @@ public class SVGOMClipPathElement
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGGradientElement#getGradientUnits()}.
+     * <b>DOM</b>: Implements {@link SVGClipPathElement#getClipPathUnits()}.
      */
     public SVGAnimatedEnumeration getClipPathUnits() {
         throw new RuntimeException("!!! TODO: getClipPathUnits()");

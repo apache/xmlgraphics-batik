@@ -121,14 +121,15 @@ public class SVGOMSymbolElement
     // SVGFitToViewBox support ////////////////////////////////////////////
 
     /**
-     * <b>DOM</b>: Implements {@link SVGFitToViewBox#getViewBox()}.
+     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGFitToViewBox#getViewBox()}.
      */
     public SVGAnimatedRect getViewBox() {
 	throw new RuntimeException(" !!! TODO: getViewBox()");
     }
 
     /**
-     * <b>DOM</b>: Implements {@link SVGFitToViewBox#getPreserveAspectRatio()}.
+     * <b>DOM</b>: Implements {@link
+     * org.w3c.dom.svg.SVGFitToViewBox#getPreserveAspectRatio()}.
      */
     public SVGAnimatedPreserveAspectRatio getPreserveAspectRatio() {
 	throw new RuntimeException(" !!! TODO: getPreserveAspectRatio()");

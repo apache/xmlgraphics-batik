@@ -52,7 +52,7 @@ public class SVGOMFontElement
 
     /**
      * <b>DOM</b>: Implements {@link
-     * SVGExternalResourcesRequired#getExternalResourcesRequired()}.
+     * org.w3c.dom.svg.SVGExternalResourcesRequired#getExternalResourcesRequired()}.
      */
     public SVGAnimatedBoolean getExternalResourcesRequired() {
         return SVGExternalResourcesRequiredSupport.

@@ -41,7 +41,7 @@ public abstract class SVGURIReferenceTextPositioningElement
     }
 
     /**
-     * <b>DOM</b>: Implements {@link SVGURIReference#getHref()}.
+     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGURIReference#getHref()}.
      */
     public SVGAnimatedString getHref() {
         return SVGURIReferenceSupport.getHref(this);

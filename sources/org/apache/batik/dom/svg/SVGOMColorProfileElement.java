@@ -92,7 +92,7 @@ public class SVGOMColorProfileElement
     }
 
     /**
-     * <b>DOM</b>: Implements {@link SVGColorProfileElement#getName(String)}.
+     * <b>DOM</b>: Implements {@link SVGColorProfileElement#getName()}.
      */
     public String getName() {
         throw new RuntimeException("!!! TODO: getName()");
@@ -113,7 +113,7 @@ public class SVGOMColorProfileElement
     }
 
     /**
-     * <b>DOM</b>: Implements {@link SVGColorProfileElement#setRenderingIntent(String)}.
+     * <b>DOM</b>: Implements {@link SVGColorProfileElement#setRenderingIntent(short)}.
      */
     public void setRenderingIntent(short renderingIntent) throws DOMException {
         throw new RuntimeException("!!! TODO: setRenderingIntent()");
