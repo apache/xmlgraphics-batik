@@ -1086,6 +1086,28 @@ public class SVGGraphics2D extends AbstractGraphics2D
                 SVGFont.recordFontUsage(s, getFont());
             }
 
+            Font font = getFont();
+
+            // Account for the font transform if there is one
+            AffineTransform txtTxf = null;
+            AffineTransform savTxf = getTransform();
+
+            if (font != null){
+                txtTxf = font.getTransform();
+                if (txtTxf != null && !txtTxf.isIdentity()){
+                    // 
+                    // The additional transform applies about the text's origin
+                    //
+                    AffineTransform t = new AffineTransform();
+                    t.translate(x, y);
+                    t.concatenate(txtTxf);
+                    t.translate(-x, -y);
+                    this.transform(t);
+                } else {
+                    txtTxf = null;
+                }
+            }
+
             Element text =
                 getDOMFactory().createElementNS(SVG_NAMESPACE_URI, SVG_TEXT_TAG);
             text.setAttributeNS(null, SVG_X_ATTRIBUTE,
@@ -1097,6 +1119,11 @@ public class SVGGraphics2D extends AbstractGraphics2D
                                 XML_PRESERVE_VALUE);
             text.appendChild(getDOMFactory().createTextNode(s));
             domGroupManager.addElement(text, DOMGroupManager.FILL);
+
+            if (txtTxf != null){
+                this.setTransform(savTxf);
+            }
+                
         } else {
             GlyphVector gv = getFont().
                 createGlyphVector(getFontRenderContext(), s);
