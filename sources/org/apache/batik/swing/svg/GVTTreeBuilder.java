@@ -16,7 +16,6 @@ import java.util.List;
 
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeException;
-import org.apache.batik.bridge.ConcreteGVTBuilder;
 import org.apache.batik.bridge.GVTBuilder;
 import org.apache.batik.bridge.InterruptedBridgeException;
 
@@ -32,7 +31,7 @@ import org.w3c.dom.svg.SVGDocument;
  * @version $Id$
  */
 public class GVTTreeBuilder extends Thread {
-    
+
     /**
      * The SVG document to give to the bridge.
      */
@@ -61,7 +60,7 @@ public class GVTTreeBuilder extends Thread {
         svgDocument = doc;
         bridgeContext = bc;
     }
-    
+
     /**
      * Runs this builder.
      */
@@ -69,7 +68,7 @@ public class GVTTreeBuilder extends Thread {
         try {
             fireStartedEvent();
 
-            GVTBuilder builder = new ConcreteGVTBuilder();
+            GVTBuilder builder = new GVTBuilder();
             GraphicsNode gvtRoot = builder.build(bridgeContext, svgDocument);
 
             fireCompletedEvent(gvtRoot);

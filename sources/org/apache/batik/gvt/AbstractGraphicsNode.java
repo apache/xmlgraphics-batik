@@ -771,9 +771,9 @@ public abstract class AbstractGraphicsNode implements GraphicsNode, Cloneable {
      *
      * @param txf the affine transform with which this node's transform should
      *        be concatenated. Should not be null.
-     * @param rc the GraphicsNodeRenderContext 
+     * @param rc the GraphicsNodeRenderContext
      */
-    public Rectangle2D getTransformedBounds(AffineTransform txf, 
+    public Rectangle2D getTransformedBounds(AffineTransform txf,
                                             GraphicsNodeRenderContext rc){
         // System.out.println("getTransformedBounds A:" + this.getClass().getName());
         AffineTransform t = txf;
@@ -802,7 +802,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode, Cloneable {
                                   t.createTransformedShape(clip.getClipPath()).getBounds2D(),
                                   tBounds);
             }
-            
+
             // Factor in the mask, if any
             if(mask != null) {
                 tBounds.intersect(tBounds,
@@ -817,26 +817,32 @@ public abstract class AbstractGraphicsNode implements GraphicsNode, Cloneable {
     public Rectangle2D getTransformedPrimitiveBounds(AffineTransform txf,
                                                      GraphicsNodeRenderContext rc){
         Rectangle2D tpBounds = getPrimitiveBounds(rc);
-        AffineTransform t = txf; 
-        if(transform != null){
-            t = new AffineTransform(txf);
-            t.concatenate(transform);
+        if (tpBounds == null) {
+            return null;
         }
-
-        return t.createTransformedShape(tpBounds).getBounds2D();
-    }        
-
-    public Rectangle2D getTransformedGeometryBounds(AffineTransform txf,
-                                                    GraphicsNodeRenderContext rc){
-        Rectangle2D tpBounds = getGeometryBounds(rc);
         AffineTransform t = txf;
         if(transform != null){
             t = new AffineTransform(txf);
             t.concatenate(transform);
         }
-        
+
         return t.createTransformedShape(tpBounds).getBounds2D();
-    }        
+    }
+
+    public Rectangle2D getTransformedGeometryBounds(AffineTransform txf,
+                                                    GraphicsNodeRenderContext rc){
+        Rectangle2D tpBounds = getGeometryBounds(rc);
+        if (tpBounds == null) {
+            return null;
+        }
+        AffineTransform t = txf;
+        if(transform != null){
+            t = new AffineTransform(txf);
+            t.concatenate(transform);
+        }
+
+        return t.createTransformedShape(tpBounds).getBounds2D();
+    }
 
     /**
      * Compute the rendered bounds of this node based on it's

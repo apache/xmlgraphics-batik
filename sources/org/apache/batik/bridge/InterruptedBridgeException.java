@@ -15,12 +15,10 @@ package org.apache.batik.bridge;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class InterruptedBridgeException extends BridgeException {
-    
+public class InterruptedBridgeException extends RuntimeException {
+
     /**
-     * Creates a new InterruptedBridgeException.
+     * Constructs a new InterruptedBridgeException.
      */
-    public InterruptedBridgeException() {
-        super("");
-    }
+    public InterruptedBridgeException() { }
 }

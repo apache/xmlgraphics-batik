@@ -28,7 +28,7 @@ import javax.swing.JComponent;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeMutationEvent;
 import org.apache.batik.bridge.GraphicsNodeBridge;
-import org.apache.batik.bridge.SVGUtilities;
+import org.apache.batik.bridge.ViewBox;
 import org.apache.batik.bridge.UserAgent;
 
 import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
@@ -58,7 +58,7 @@ import org.w3c.dom.events.MutationEvent;
  * @version $Id$
  */
 public class JSVGComponent extends JGVTComponent {
-    
+
     /**
      * The document loader.
      */
@@ -153,7 +153,7 @@ public class JSVGComponent extends JGVTComponent {
                 userAgent.displayError(e);
                 return;
             }
-        
+
             url = newURI.toString();
         }
 
@@ -166,7 +166,7 @@ public class JSVGComponent extends JGVTComponent {
             documentLoader.addSVGDocumentLoaderListener
                 ((SVGDocumentLoaderListener)it.next());
         }
-        
+
         documentLoader.start();
     }
 
@@ -188,10 +188,10 @@ public class JSVGComponent extends JGVTComponent {
             gvtTreeBuilder.addGVTTreeBuilderListener
                 ((GVTTreeBuilderListener)it.next());
         }
-        
+
         releaseRenderingReferences();
         initializeEventHandling();
-        
+
         gvtTreeBuilder.start();
     }
 
@@ -209,7 +209,7 @@ public class JSVGComponent extends JGVTComponent {
         if (svgDocument != null) {
             SVGSVGElement elt = svgDocument.getRootElement();
             Dimension d = getSize();
-            setRenderingTransform(SVGUtilities.getPreserveAspectRatioTransform
+            setRenderingTransform(ViewBox.getPreserveAspectRatioTransform
                                   (elt, d.width, d.height));
             initialTransform = renderingTransform;
         }
@@ -308,7 +308,7 @@ public class JSVGComponent extends JGVTComponent {
         public void documentLoadingCancelled(SVGDocumentLoaderEvent e) {
             documentLoader = null;
         }
-        
+
         /**
          * Called when the loading of a document has failed.
          */
@@ -326,7 +326,7 @@ public class JSVGComponent extends JGVTComponent {
         public void gvtBuildStarted(GVTTreeBuilderEvent e) {
             computeRenderingTransform();
         }
-        
+
         /**
          * Called when a build was completed.
          */
@@ -361,7 +361,7 @@ public class JSVGComponent extends JGVTComponent {
          */
         public void gvtRenderingCompleted(GVTTreeRendererEvent e) {
             super.gvtRenderingCompleted(e);
-            
+
             if (eventsEnabled) {
                 Event evt = svgDocument.createEvent("SVGEvents");
                 evt.initEvent("SVGLoad", false, false);
@@ -377,7 +377,7 @@ public class JSVGComponent extends JGVTComponent {
         protected class MutationListener implements EventListener {
 
             BridgeContext bridgeContext;
-            
+
             public MutationListener(BridgeContext bridgeContext) {
                 this.bridgeContext = bridgeContext;
             }
@@ -389,15 +389,15 @@ public class JSVGComponent extends JGVTComponent {
                     (target,
                      bridgeContext,
                      BridgeMutationEvent.PROPERTY_MUTATION_TYPE);
-                
+
                 MutationEvent me = (MutationEvent)evt;
-                
+
                 bme.setAttrName(me.getAttrName());
                 bme.setAttrNewValue(me.getNewValue());
-                
+
                 GraphicsNodeBridge bridge;
                 bridge = (GraphicsNodeBridge)bridgeContext.getBridge(target);
-                
+
                 bridge.update(bme);
             }
         }
@@ -512,7 +512,7 @@ public class JSVGComponent extends JGVTComponent {
                         userAgent.displayError(e);
                         return;
                     }
-                    
+
                     href = newURI.toString();
 
                     svgUserAgent.openLink(href);

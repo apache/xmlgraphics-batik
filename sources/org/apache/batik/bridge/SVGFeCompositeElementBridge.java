@@ -9,207 +9,153 @@
 package org.apache.batik.bridge;
 
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
-import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
+import org.apache.batik.ext.awt.image.renderable.CompositeRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.CompositeRable;
 import org.apache.batik.ext.awt.image.renderable.CompositeRule;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.renderable.PadMode;
-
-import org.apache.batik.bridge.resources.Messages;
-import org.apache.batik.ext.awt.image.renderable.CompositeRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.PadRable8Bit;
-
-import org.apache.batik.util.SVGConstants;
-import org.apache.batik.util.UnitProcessor;
+import org.apache.batik.gvt.GraphicsNode;
 
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.css.CSSStyleDeclaration;
 
 /**
- * This class bridges an SVG <tt>feComposite</tt> element with
- * a concrete <tt>Filter</tt> filter implementation
+ * Bridge class for the &lt;feComposite> element.
  *
- * @author <a href="mailto:Thomas.DeWeeese@Kodak.com">Thomas DeWeese</a>
- * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
+ * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
-public class SVGFeCompositeElementBridge implements FilterPrimitiveBridge,
-                                                    SVGConstants {
+public class SVGFeCompositeElementBridge
+    extends SVGAbstractFilterPrimitiveElementBridge {
 
 
     /**
-     * Returns the <tt>Filter</tt> that implements the filter
-     * operation modeled by the input DOM element
+     * Constructs a new bridge for the &lt;feComposite> element.
+     */
+    public SVGFeCompositeElementBridge() {}
+
+    /**
+     * Creates a <tt>Filter</tt> primitive according to the specified
+     * parameters.
      *
-     * @param filteredNode the node to which the filter will be attached.
-     * @param bridgeContext the context to use.
-     * @param filterElement DOM element that represents a filter abstraction
-     * @param in the <tt>Filter</tt> that represents the current
+     * @param ctx the bridge context to use
+     * @param filterElement the element that defines a filter
+     * @param filteredElement the element that references the filter
+     * @param filteredNode the graphics node to filter
+     *
+     * @param inputFilter the <tt>Filter</tt> that represents the current
      *        filter input if the filter chain.
-     * @param filterRegion the filter area defined for the filter chained
+     * @param filterRegion the filter area defined for the filter chain
      *        the new node will be part of.
      * @param filterMap a map where the mediator can map a name to the
      *        <tt>Filter</tt> it creates. Other <tt>FilterBridge</tt>s
      *        can then access a filter node from the filterMap if they
      *        know its name.
      */
-    public Filter create(GraphicsNode filteredNode,
-                         BridgeContext bridgeContext,
-                         Element filterElement,
-                         Element filteredElement,
-                         Filter in,
-                         Rectangle2D filterRegion,
-                         Map filterMap){
+    public Filter createFilter(BridgeContext ctx,
+                               Element filterElement,
+                               Element filteredElement,
+                               GraphicsNode filteredNode,
+                               Filter inputFilter,
+                               Rectangle2D filterRegion,
+                               Map filterMap) {
 
-        GraphicsNodeRenderContext rc =
-                         bridgeContext.getGraphicsNodeRenderContext();
+        // 'operator' attribute - default is 'over'
+        CompositeRule rule = convertOperator(filterElement);
 
-        DocumentLoader loader = bridgeContext.getDocumentLoader();
-        // Extract Composite operation
-        CompositeRule rule = getRule(filterElement);
-
-        // Extract sources
-        String in1Attr = filterElement.getAttributeNS(null, SVG_IN_ATTRIBUTE);
-        Filter in1;
-        in1 = CSSUtilities.getFilterSource(filteredNode,
-                                           in1Attr,
-                                           bridgeContext,
-                                           filteredElement,
-                                           in,
-                                           filterMap);
-
-        String in2Attr = filterElement.getAttributeNS(null, SVG_IN2_ATTRIBUTE);
-        if (in2Attr.length() == 0) {
-            throw new MissingAttributeException(
-                Messages.formatMessage("feComposite.in2.required", null));
-        }
-        Filter in2;
-        in2 = CSSUtilities.getFilterSource(filteredNode,
-                                           in2Attr,
-                                           bridgeContext,
-                                           filteredElement,
-                                           in,
-                                           filterMap);
-
-        if ((in1 == null) || (in2 == null)) {
-            return null;
+        // 'in' attribute
+        Filter in = getIn(filterElement,
+                          filteredElement,
+                          filteredNode,
+                          inputFilter,
+                          filterMap,
+                          ctx);
+        if (in == null) {
+            return null; // disable the filter
         }
 
-        //
+        // 'in2' attribute - required
+        Filter in2 = getIn2(filterElement,
+                            filteredElement,
+                            filteredNode,
+                            inputFilter,
+                            filterMap,
+                            ctx);
+        if (in2 == null) {
+            return null; // disable the filter
+        }
+
         // The default region is the union of the input sources
         // regions unless 'in' is 'SourceGraphic' in which case the
         // default region is the filterChain's region
-        //
         Filter sourceGraphics = (Filter)filterMap.get(VALUE_SOURCE_GRAPHIC);
-
-        Rectangle2D defaultRegion = in1.getBounds2D();
-        defaultRegion.add(in2.getBounds2D());
-
-        if(in1 == sourceGraphics) {
+        Rectangle2D defaultRegion;
+        if (in == sourceGraphics) {
             defaultRegion = filterRegion;
+        } else {
+            defaultRegion = in.getBounds2D();
+            defaultRegion.add(in2.getBounds2D());
         }
 
-        CSSStyleDeclaration cssDecl =
-            CSSUtilities.getComputedStyle(filterElement);
-
-        UnitProcessor.Context uctx
-            = new DefaultUnitProcessorContext(bridgeContext, cssDecl);
-
-        Rectangle2D compositeArea
+        // get filter primitive chain region
+        Rectangle2D primitiveRegion
             = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
                                                         filteredElement,
+                                                        filteredNode,
                                                         defaultRegion,
                                                         filterRegion,
-                                                        filteredNode,
-                                                        rc,
-                                                        uctx,
-                                                        loader);
+                                                        ctx);
 
-        // Now, do the composite.
-        Filter filter = null;
-        Vector srcs = new Vector(2);
+        List srcs = new ArrayList(2);
         srcs.add(in2);
-        srcs.add(in1);
-        filter = new CompositeRable8Bit(srcs, rule, true);
+        srcs.add(in);
+        Filter filter = new CompositeRable8Bit(srcs, rule, true);
+        filter = new PadRable8Bit(filter, primitiveRegion, PadMode.ZERO_PAD);
 
-        filter = new PadRable8Bit(filter, compositeArea, PadMode.ZERO_PAD);
-
-        // Get result attribute and update map
-        String result = filterElement.getAttributeNS(null, ATTR_RESULT);
-        if((result != null) && (result.trim().length() > 0)){
-            filterMap.put(result, filter);
-        }
+        // update the filter Map
+        updateFilterMap(filterElement, filter, filterMap);
 
         return filter;
     }
 
-    private static CompositeRule getRule(Element filterElement) {
-        String ruleStr = filterElement.getAttributeNS(null, SVG_OPERATOR_ATTRIBUTE);
-        CompositeRule rule;
-
-        if (ruleStr.length() == 0) {
-            rule = CompositeRule.OVER; // default value
-
-        } else if (SVG_ATOP_VALUE.equals(ruleStr)) {
-            rule = CompositeRule.ATOP;
-
-        } else if (SVG_ARITHMETIC_VALUE.equals(ruleStr)) {
-            String kAttr;
-            float k1=0, k2=0, k3=0, k4=0;
-
-            kAttr = filterElement.getAttributeNS(null, SVG_K1_ATTRIBUTE);
-            if (kAttr.length() != 0) {
-                k1 = SVGUtilities.convertSVGNumber(SVG_K1_ATTRIBUTE, kAttr);
-            }
-
-            kAttr = filterElement.getAttributeNS(null, SVG_K2_ATTRIBUTE);
-            if (kAttr.length() != 0) {
-                k2 = SVGUtilities.convertSVGNumber(SVG_K2_ATTRIBUTE, kAttr);
-            }
-
-            kAttr = filterElement.getAttributeNS(null, SVG_K3_ATTRIBUTE);
-            if (kAttr.length() != 0) {
-                k3 = SVGUtilities.convertSVGNumber(SVG_K3_ATTRIBUTE, kAttr);
-            }
-
-            kAttr = filterElement.getAttributeNS(null, SVG_K4_ATTRIBUTE);
-            if (kAttr.length() != 0) {
-                k4 = SVGUtilities.convertSVGNumber(SVG_K4_ATTRIBUTE, kAttr);
-            }
-            rule = CompositeRule.ARITHMETIC(k1, k2, k3, k4);
-
-        } else if (SVG_IN_VALUE.equals(ruleStr)) {
-            rule = CompositeRule.IN;
-
-        } else if (SVG_OVER_VALUE.equals(ruleStr)) {
-            rule = CompositeRule.OVER;
-
-        } else if (SVG_OUT_VALUE.equals(ruleStr)) {
-            rule = CompositeRule.OUT;
-
-        } else if (SVG_XOR_VALUE.equals(ruleStr)) {
-            rule = CompositeRule.XOR;
-
-        } else {
-            throw new IllegalAttributeValueException(
-                Messages.formatMessage("feComposite.operator.invalid",
-                                       new Object[] { ruleStr }));
-        }
-        return rule;
-    }
-
     /**
-     * Update the <tt>Filter</tt> object to reflect the current
-     * configuration in the <tt>Element</tt> that models the filter.
+     * Converts the 'operator' attribute of the specified feComposite
+     * filter primitive element.
+     *
+     * @param filterElement the feComposite filter element
      */
-    public void update(BridgeMutationEvent evt) {
-        // <!> FIXME : TODO
+    protected static CompositeRule convertOperator(Element filterElement) {
+        String s = filterElement.getAttributeNS(null, SVG_OPERATOR_ATTRIBUTE);
+        if (s.length() == 0) {
+            return CompositeRule.OVER; // default is over
+        }
+        if (SVG_ATOP_VALUE.equals(s)) {
+            return CompositeRule.ATOP;
+        }
+        if (SVG_IN_VALUE.equals(s)) {
+            return CompositeRule.IN;
+        }
+        if (SVG_OVER_VALUE.equals(s)) {
+            return CompositeRule.OVER;
+        }
+        if (SVG_OUT_VALUE.equals(s)) {
+            return CompositeRule.OUT;
+        }
+        if (SVG_XOR_VALUE.equals(s)) {
+            return CompositeRule.XOR;
+        }
+        if (SVG_ARITHMETIC_VALUE.equals(s)) {
+            float k1 = convertNumber(filterElement, SVG_K1_ATTRIBUTE, 0);
+            float k2 = convertNumber(filterElement, SVG_K2_ATTRIBUTE, 0);
+            float k3 = convertNumber(filterElement, SVG_K3_ATTRIBUTE, 0);
+            float k4 = convertNumber(filterElement, SVG_K4_ATTRIBUTE, 0);
+            return CompositeRule.ARITHMETIC(k1, k2, k3, k4);
+        }
+        throw new BridgeException(filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                                  new Object[] {SVG_OPERATOR_ATTRIBUTE, s});
     }
-
 }

@@ -8,10 +8,10 @@
 
 package org.apache.batik.bridge;
 
-import org.w3c.dom.Element;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.filter.Mask;
+import org.w3c.dom.Element;
 
 /**
  * Factory class for vending <tt>Mask</tt> objects.
@@ -22,19 +22,22 @@ import org.apache.batik.gvt.filter.Mask;
 public interface MaskBridge extends Bridge {
 
     /**
-     * Creates a <tt>Mask</tt> using the specified context and element.
-     * @param maskedNode node defining the mask
-     * @param ctx the context to use
-     * @param maskElement element containing the mask definition
-     * @param maskedElement the Element with the 'mask' attribute
+     * Creates a <tt>Mask</tt> according to the specified parameters.
+     *
+     * @param ctx the bridge context to use
+     * @param maskElement the element that defines the mask
+     * @param maskedElement the element that references the mask element
+     * @param maskedNode the graphics node to mask
      */
-    Mask createMask(GraphicsNode maskedNode,
-                    BridgeContext ctx, 
+    Mask createMask(BridgeContext ctx,
                     Element maskElement,
-                    Element maskedElement);
+                    Element maskedElement,
+                    GraphicsNode maskedNode);
 
     /**
-     * Updates an Element coresponding to the specified BridgeMutationEvent.
+     * Updates the <tt>Mask</tt> object to reflect the current
+     * configuration in the <tt>Element</tt> that models the mask.
+     *
      * @param evt the event that describes the modification to perform
      */
     void update(BridgeMutationEvent evt);

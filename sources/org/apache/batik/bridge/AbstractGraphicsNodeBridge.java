@@ -8,27 +8,42 @@
 
 package org.apache.batik.bridge;
 
-import java.awt.geom.Rectangle2D;
+import java.awt.geom.AffineTransform;
 
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.parser.ParseException;
+import org.apache.batik.util.SVGConstants;
 
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.svg.SVGTests;
 
 /**
- * Bridge class for the &lt;switch> element.
+ * The base bridge class for SVG graphics node.
+ *
+ * <p>This class handles various attributes that are defined on most
+ * of the SVG graphic elements as described in the SVG
+ * specification.</p>
+ *
+ * <ul>
+ * <li>clip-path</li>
+ * <li>filter</li>
+ * <li>mask</li>
+ * <li>opacity</li>
+ * <li>transform</li>
+ * <li>visibility</li>
+ * </ul>
  *
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
-public class SVGSwitchElementBridge implements GraphicsNodeBridge {
+public abstract class AbstractGraphicsNodeBridge implements GraphicsNodeBridge,
+                                                            SVGConstants,
+                                                            ErrorConstants {
 
     /**
-     * Constructs a new bridge for the &lt;switch> element.
+     * Constructs a new abstract bridge.
      */
-    public SVGSwitchElementBridge() {}
+    protected AbstractGraphicsNodeBridge() {}
 
     /**
      * Creates a <tt>GraphicsNode</tt> according to the specified parameters.
@@ -38,19 +53,23 @@ public class SVGSwitchElementBridge implements GraphicsNodeBridge {
      * @return a graphics node that represents the specified element
      */
     public GraphicsNode createGraphicsNode(BridgeContext ctx, Element e) {
-        GraphicsNode refNode = null;
-        GVTBuilder builder = ctx.getGVTBuilder();
-        for (Node n = e.getFirstChild(); n != null; n = n.getNextSibling()) {
-            if (n.getNodeType() == Node.ELEMENT_NODE) {
-                Element ref = (Element)n;
-                if (n instanceof SVGTests
-                    && SVGUtilities.matchUserAgent(ref, ctx.getUserAgent())) {
-                    return builder.build(ctx, ref);
-                }
-            }
+        GraphicsNode node = instantiateGraphicsNode();
+        // 'transform'
+        String s = e.getAttributeNS(null, SVG_TRANSFORM_ATTRIBUTE);
+        if (s.length() != 0) {
+            node.setTransform
+                (SVGUtilities.convertTransform(e, SVG_TRANSFORM_ATTRIBUTE, s));
         }
-        return null;
+        // 'visibility'
+        node.setVisible(CSSUtilities.convertVisibility(e));
+        return node;
     }
+
+    /**
+     * Creates the GraphicsNode depending on the GraphicsNodeBridge
+     * implementation.
+     */
+    protected abstract GraphicsNode instantiateGraphicsNode();
 
     /**
      * Builds using the specified BridgeContext and element, the
@@ -63,6 +82,15 @@ public class SVGSwitchElementBridge implements GraphicsNodeBridge {
     public void buildGraphicsNode(BridgeContext ctx,
                                   Element e,
                                   GraphicsNode node) {
+        // 'opacity'
+        node.setComposite(CSSUtilities.convertOpacity(e));
+        // 'filter'
+        node.setFilter(CSSUtilities.convertFilter(e, node, ctx));
+        // 'mask'
+        node.setMask(CSSUtilities.convertMask(e, node, ctx));
+        // 'clip-path'
+        node.setClip(CSSUtilities.convertClipPath(e, node, ctx));
+
         // bind the specified element and its associated graphics node if needed
         if (ctx.isDynamic()) {
             ctx.bind(e, node);
@@ -76,12 +104,5 @@ public class SVGSwitchElementBridge implements GraphicsNodeBridge {
      */
     public void update(BridgeMutationEvent evt) {
         throw new Error("Not implemented");
-    }
-
-    /**
-     * Returns false as the &lt;switch> element is not a container.
-     */
-    public boolean isComposite() {
-        return false;
     }
 }

@@ -20,8 +20,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGAElement;
 
 /**
- * An interface that provides access to User Agent information needed by
- * the bridge.
+ * An interface that provides access to the User Agent informations
+ * needed by the bridge.
+ *
  * @author <a href="mailto:cjolif@ilog.fr">Christophe Jolif</a>
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
@@ -32,17 +33,6 @@ public interface UserAgent {
      * Returns the default size of the viewport.
      */
     Dimension2D getViewportSize();
-
-    /**
-     * Returns the <code>EventDispatcher</code> used by the
-     * <code>UserAgent</code> to dispatch events on GVT.
-     */
-    EventDispatcher getEventDispatcher();
-
-    /**
-     * Displays an error message in the User Agent interface.
-     */
-    void displayError(String message);
 
     /**
      * Displays an error resulting from the specified Exception.

@@ -9,26 +9,26 @@
 package org.apache.batik.bridge;
 
 import org.apache.batik.gvt.GraphicsNode;
-
 import org.w3c.dom.Element;
 
 /**
- * A style reference describes which GraphicsNode and which property
- * of this GraphicsNode should be updated when a style element (for
- * example a filter) changes due to a modification of the DOM.
+ * A style reference represents a graphics node, CSS property pair. It
+ * describes which GraphicsNode and which property of this
+ * GraphicsNode should be updated when a style element (for example a
+ * filter) changes due to a modification of the DOM.
  *
  * @author <a href="mailto:etissandier@ilog.fr">Emmanuel Tissandier</a>
- * @version $Id$ */
+ * @version $Id$
+ */
 public class StyleReference {
 
     private GraphicsNode node;
     private String styleAttribute;
 
     /**
-     * Creates a style reference.
-     * @param node the graphics node inpacted.
-     * @param styleAttribute the name of the style attribute that is
-     * impacted.
+     * Creates a new <tt>StyleReference</tt>.
+     * @param node the graphics node impacted.
+     * @param styleAttribute the name of the style attribute that is impacted.
      */
     public StyleReference(GraphicsNode node, String styleAttribute) {
         this.node = node;
@@ -48,5 +48,4 @@ public class StyleReference {
     public String getStyleAttribute(){
         return styleAttribute;
     }
-
 }

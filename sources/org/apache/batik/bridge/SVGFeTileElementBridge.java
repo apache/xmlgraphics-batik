@@ -11,39 +11,38 @@ package org.apache.batik.bridge;
 import java.awt.geom.Rectangle2D;
 import java.util.Map;
 
-import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.ext.awt.image.renderable.Filter;
-import org.apache.batik.ext.awt.image.renderable.TileRable;
-
 import org.apache.batik.ext.awt.image.renderable.TileRable8Bit;
-
-import org.apache.batik.util.SVGConstants;
-import org.apache.batik.util.UnitProcessor;
+import org.apache.batik.ext.awt.image.renderable.TileRable;
+import org.apache.batik.gvt.GraphicsNode;
 
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.css.CSSStyleDeclaration;
 
 /**
- * This class bridges an SVG <tt>feTile</tt> filter element
- * with <tt>TileRable8Bit</tt>.
+ * Bridge class for the &lt;feTile> element.
  *
- * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
- * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
+ * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
-public class SVGFeTileElementBridge implements FilterPrimitiveBridge,
-                                               SVGConstants {
+public class SVGFeTileElementBridge
+    extends SVGAbstractFilterPrimitiveElementBridge {
+
 
     /**
-     * Returns the <tt>Filter</tt> that implements the filter
-     * operation modeled by the input DOM element
+     * Constructs a new bridge for the &lt;feTile> element.
+     */
+    public SVGFeTileElementBridge() {}
+
+    /**
+     * Creates a <tt>Filter</tt> primitive according to the specified
+     * parameters.
      *
-     * @param filteredNode the node to which the filter will be attached.
-     * @param bridgeContext the context to use.
-     * @param filterElement DOM element that represents a filter abstraction
-     * @param in the <tt>Filter</tt> that represents the current
+     * @param ctx the bridge context to use
+     * @param filterElement the element that defines a filter
+     * @param filteredElement the element that references the filter
+     * @param filteredNode the graphics node to filter
+     *
+     * @param inputFilter the <tt>Filter</tt> that represents the current
      *        filter input if the filter chain.
      * @param filterRegion the filter area defined for the filter chain
      *        the new node will be part of.
@@ -52,74 +51,44 @@ public class SVGFeTileElementBridge implements FilterPrimitiveBridge,
      *        can then access a filter node from the filterMap if they
      *        know its name.
      */
-    public Filter create(GraphicsNode filteredNode,
-                         BridgeContext bridgeContext,
-                         Element filterElement,
-                         Element filteredElement,
-                         Filter in,
-                         Rectangle2D filterRegion,
-                         Map filterMap){
+    public Filter createFilter(BridgeContext ctx,
+                               Element filterElement,
+                               Element filteredElement,
+                               GraphicsNode filteredNode,
+                               Filter inputFilter,
+                               Rectangle2D filterRegion,
+                               Map filterMap) {
 
-        GraphicsNodeRenderContext rc =
-                         bridgeContext.getGraphicsNodeRenderContext();
-        DocumentLoader loader = bridgeContext.getDocumentLoader();
 
-        //
-        // Tile region is defined by the filter region
-        //
-        CSSStyleDeclaration cssDecl
-            = CSSUtilities.getComputedStyle(filterElement);
-
-        UnitProcessor.Context uctx
-            = new DefaultUnitProcessorContext(bridgeContext, cssDecl);
-
-        //
         // Get the tiled region. For feTile, the default for the
         // filter primitive subregion is the parent filter region.
-        //
         Rectangle2D defaultRegion = filterRegion;
 
-        Rectangle2D tiledRegion
+        Rectangle2D primitiveRegion
             = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
                                                         filteredElement,
+                                                        filteredNode,
                                                         defaultRegion,
                                                         filterRegion,
-                                                        filteredNode,
-                                                        rc,
-                                                        uctx,
-                                                        loader);
+                                                        ctx);
 
-        //
-        // Get the tile source
-        //
-        String inAttr = filterElement.getAttributeNS(null, SVG_IN_ATTRIBUTE);
-        in = CSSUtilities.getFilterSource(filteredNode,
-                                          inAttr,
-                                          bridgeContext,
-                                          filteredElement,
-                                          in, filterMap);
-
-        //
-        // For feTile, the source defines the tile size
-        //
-        TileRable tileRable = null;
-
-        if (in != null){
-            tileRable = new TileRable8Bit(in,
-                                          tiledRegion,
-                                          in.getBounds2D(),
-                                          false);
+        // 'in' attribute
+        Filter in = getIn(filterElement,
+                          filteredElement,
+                          filteredNode,
+                          inputFilter,
+                          filterMap,
+                          ctx);
+        if (in == null) {
+            return null; // disable the filter
         }
 
-        return tileRable;
-    }
+        Filter filter
+            = new TileRable8Bit(in, primitiveRegion, in.getBounds2D(), false);
 
-   /**
-     * Update the <tt>Filter</tt> object to reflect the current
-     * configuration in the <tt>Element</tt> that models the filter.
-     */
-    public void update(BridgeMutationEvent evt) {
-        // <!> FIXME : TODO
+        // update the filter Map
+        updateFilterMap(filterElement, filter, filterMap);
+
+        return filter;
     }
 }
-

@@ -8,72 +8,72 @@
 
 package org.apache.batik.bridge;
 
-import java.awt.Shape;
 import java.awt.geom.Line2D;
 
-import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.parser.ParseException;
 import org.apache.batik.gvt.ShapeNode;
-import org.apache.batik.util.UnitProcessor;
-import org.w3c.dom.css.CSSStyleDeclaration;
-import org.w3c.dom.svg.SVGElement;
+
+import org.w3c.dom.Element;
 
 /**
- * A factory for the &lt;line> SVG element.
+ * Bridge class for the &lt;line> element.
  *
- * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
+ * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
 public class SVGLineElementBridge extends SVGDecoratedShapeElementBridge {
 
     /**
-     * Returns a <tt>Line2D.Float</tt>.
+     * Constructs a new bridge for the &lt;line> element.
+     */
+    public SVGLineElementBridge() {}
+
+    /**
+     * Constructs a line according to the specified parameters.
+     *
+     * @param ctx the bridge context to use
+     * @param e the element that describes a rect element
+     * @param shapeNode the shape node to initialize
      */
     protected void buildShape(BridgeContext ctx,
-                              SVGElement svgElement,
-                              ShapeNode node,
-                              CSSStyleDeclaration decl,
-                              UnitProcessor.Context uctx) {
+                              Element e,
+                              ShapeNode shapeNode) {
 
-        // parse the x1 attribute, (default is 0)
-        String s = svgElement.getAttributeNS(null, ATTR_X1);
+        UnitProcessor.Context uctx = UnitProcessor.createContext(ctx, e);
+        String s;
+
+        // 'x1' attribute - default is 0
+        s = e.getAttributeNS(null, SVG_X1_ATTRIBUTE);
         float x1 = 0;
         if (s.length() != 0) {
-            x1 = SVGUtilities.svgToUserSpace(svgElement,
-                                             ATTR_X1, s,
-                                             uctx,
-                                             UnitProcessor.HORIZONTAL_LENGTH);
+            x1 = UnitProcessor.svgHorizontalCoordinateToUserSpace
+                (s, SVG_X1_ATTRIBUTE, uctx);
         }
 
-        // parse the y1 attribute, (default is 0)
-        s = svgElement.getAttributeNS(null, ATTR_Y1);
+        // 'y1' attribute - default is 0
+        s = e.getAttributeNS(null, SVG_Y1_ATTRIBUTE);
         float y1 = 0;
         if (s.length() != 0) {
-            y1 = SVGUtilities.svgToUserSpace(svgElement,
-                                             ATTR_Y1, s,
-                                             uctx,
-                                             UnitProcessor.VERTICAL_LENGTH);
+            y1 = UnitProcessor.svgVerticalCoordinateToUserSpace
+                (s, SVG_Y1_ATTRIBUTE, uctx);
         }
 
-        // parse the x2 attribute, (default is 0)
-        s = svgElement.getAttributeNS(null, ATTR_X2);
+        // 'x2' attribute - default is 0
+        s = e.getAttributeNS(null, SVG_X2_ATTRIBUTE);
         float x2 = 0;
         if (s.length() != 0) {
-            x2 = SVGUtilities.svgToUserSpace(svgElement,
-                                             ATTR_X2, s,
-                                             uctx,
-                                             UnitProcessor.HORIZONTAL_LENGTH);
+            x2 = UnitProcessor.svgHorizontalCoordinateToUserSpace
+                (s, SVG_X2_ATTRIBUTE, uctx);
         }
 
-        // parse the y2 attribute, (default is 0)
-        s = svgElement.getAttributeNS(null, ATTR_Y2);
+        // 'y2' attribute - default is 0
+        s = e.getAttributeNS(null, SVG_Y2_ATTRIBUTE);
         float y2 = 0;
         if (s.length() != 0) {
-            y2 = SVGUtilities.svgToUserSpace(svgElement,
-                                             ATTR_Y2, s,
-                                             uctx,
-                                             UnitProcessor.VERTICAL_LENGTH);
+            y2 = UnitProcessor.svgVerticalCoordinateToUserSpace
+                (s, SVG_Y2_ATTRIBUTE, uctx);
         }
 
-        node.setShape(new Line2D.Float(x1, y1, x2, y2));
+        shapeNode.setShape(new Line2D.Float(x1, y1, x2, y2));
     }
 }

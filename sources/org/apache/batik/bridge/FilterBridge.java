@@ -8,14 +8,39 @@
 
 package org.apache.batik.bridge;
 
-/**
- * A tagging interface for the &lt;filter> element. Implementations of
- * this interface are able to bridge a specific filter, modeled by a
- * DOM element, to a concrete <tt>Filter<tt>.
+import org.apache.batik.ext.awt.image.renderable.Filter;
+import org.apache.batik.gvt.GraphicsNode;
 
+import org.w3c.dom.Element;
+
+/**
+ * Bridge class for vending <tt>Filter</tt> objects.
+ *
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
+ * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
-public interface FilterBridge extends FilterPrimitiveBridge {
+public interface FilterBridge extends Bridge {
+
+    /**
+     * Creates a <tt>Filter</tt> according to the specified parameters.
+     *
+     * @param ctx the bridge context to use
+     * @param filterElement the element that defines the filter
+     * @param filteredElement the element that references the filter element
+     * @param filteredNode the graphics node to filter
+     */
+    Filter createFilter(BridgeContext ctx,
+                        Element filterElement,
+                        Element filteredElement,
+                        GraphicsNode filteredNode);
+
+    /**
+     * Update the <tt>Filter</tt> object to reflect the current
+     * configuration in the <tt>Element</tt> that models the filter.
+     *
+     * @param evt the event that describes the modification to perform
+     */
+    void update(BridgeMutationEvent evt);
 
 }

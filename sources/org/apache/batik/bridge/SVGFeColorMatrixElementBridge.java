@@ -9,232 +9,226 @@
 package org.apache.batik.bridge;
 
 import java.awt.geom.Rectangle2D;
-
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
+import org.apache.batik.ext.awt.image.renderable.ColorMatrixRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.ColorMatrixRable;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.renderable.PadMode;
-import org.apache.batik.ext.awt.image.renderable.PadRable;
-
-import org.apache.batik.bridge.resources.Messages;
-import org.apache.batik.ext.awt.image.renderable.ColorMatrixRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.PadRable8Bit;
-
-import org.apache.batik.util.SVGConstants;
-import org.apache.batik.util.UnitProcessor;
+import org.apache.batik.gvt.GraphicsNode;
 
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.css.CSSStyleDeclaration;
 
 /**
- * This class bridges an SVG <tt>feColorMatrix</tt> element with
- * a concrete <tt>Filter</tt> filter implementation
+ * Bridge class for the &lt;feColorMatrix> element.
  *
- * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
- * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
+ * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
-public class SVGFeColorMatrixElementBridge implements FilterPrimitiveBridge,
-                                                      SVGConstants {
+public class SVGFeColorMatrixElementBridge
+    extends SVGAbstractFilterPrimitiveElementBridge {
 
     /**
-     * Returns the <tt>Filter</tt> that implements the filter
-     * operation modeled by the input DOM element
+     * Constructs a new bridge for the &lt;feColorMatrix> element.
+     */
+    public SVGFeColorMatrixElementBridge() {}
+
+    /**
+     * Creates a <tt>Filter</tt> primitive according to the specified
+     * parameters.
      *
-     * @param filteredNode the node to which the filter will be attached.
-     * @param bridgeContext the context to use.
-     * @param filterElement DOM element that represents a filter abstraction
-     * @param in the <tt>Filter</tt> that represents the current
+     * @param ctx the bridge context to use
+     * @param filterElement the element that defines a filter
+     * @param filteredElement the element that references the filter
+     * @param filteredNode the graphics node to filter
+     *
+     * @param inputFilter the <tt>Filter</tt> that represents the current
      *        filter input if the filter chain.
-     * @param filterRegion the filter area defined for the filter chained
+     * @param filterRegion the filter area defined for the filter chain
      *        the new node will be part of.
      * @param filterMap a map where the mediator can map a name to the
      *        <tt>Filter</tt> it creates. Other <tt>FilterBridge</tt>s
      *        can then access a filter node from the filterMap if they
      *        know its name.
      */
-    public Filter create(GraphicsNode filteredNode,
-                         BridgeContext bridgeContext,
-                         Element filterElement,
-                         Element filteredElement,
-                         Filter in,
-                         Rectangle2D filterRegion,
-                         Map filterMap){
+    public Filter createFilter(BridgeContext ctx,
+                               Element filterElement,
+                               Element filteredElement,
+                               GraphicsNode filteredNode,
+                               Filter inputFilter,
+                               Rectangle2D filterRegion,
+                               Map filterMap) {
 
-        Filter filter = null;
-
-        GraphicsNodeRenderContext rc =
-                         bridgeContext.getGraphicsNodeRenderContext();
-        DocumentLoader loader = bridgeContext.getDocumentLoader();
-
-        // First, extract source
-        String inAttr = filterElement.getAttributeNS(null, SVG_IN_ATTRIBUTE);
-        in = CSSUtilities.getFilterSource(filteredNode,
-                                          inAttr,
-                                          bridgeContext,
-                                          filteredElement,
-                                          in,
-                                          filterMap);
-
-        // Exit if no 'in' found
+        // 'in' attribute
+        Filter in = getIn(filterElement,
+                          filteredElement,
+                          filteredNode,
+                          inputFilter,
+                          filterMap,
+                          ctx);
         if (in == null) {
-            return null;
+            return null; // disable the filter
         }
 
-        //
-        // The default region is the input source's region unless the
-        // source is SourceGraphics, in which case the default region
-        // is the filter chain's region
-        //
+        // The default region is the union of the input sources
+        // regions unless 'in' is 'SourceGraphic' in which case the
+        // default region is the filterChain's region
         Filter sourceGraphics = (Filter)filterMap.get(VALUE_SOURCE_GRAPHIC);
-
-        Rectangle2D defaultRegion = in.getBounds2D();
-
-        if (in == sourceGraphics){
+        Rectangle2D defaultRegion;
+        if (in == sourceGraphics) {
             defaultRegion = filterRegion;
+        } else {
+            defaultRegion = in.getBounds2D();
         }
-
-        CSSStyleDeclaration cssDecl =
-            CSSUtilities.getComputedStyle(filterElement);
-
-        UnitProcessor.Context uctx
-            = new DefaultUnitProcessorContext(bridgeContext, cssDecl);
 
         Rectangle2D primitiveRegion
             = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
                                                         filteredElement,
+                                                        filteredNode,
                                                         defaultRegion,
                                                         filterRegion,
-                                                        filteredNode,
-                                                        rc,
-                                                        uctx,
-                                                        loader);
+                                                        ctx);
 
-        //
-        // Extract the matrix type. Interpret the values accordingly.
-        //
-        String typeStr = filterElement.getAttributeNS(null, SVG_TYPE_ATTRIBUTE);
-        int type = convertType(typeStr);
-        String valuesStr = filterElement.getAttributeNS(null, SVG_VALUES_ATTRIBUTE);
+        int type = convertType(filterElement);
         ColorMatrixRable colorMatrix;
-        switch(type){
-        case ColorMatrixRable.TYPE_MATRIX:
-            float matrix[][] = convertValuesToMatrix(valuesStr);
-            colorMatrix = ColorMatrixRable8Bit.buildMatrix(matrix);
-            break;
-        case ColorMatrixRable.TYPE_SATURATE:
-            float s = 1;
-            if (valuesStr.length() > 0) {
-                s = CSSUtilities.convertRatio(valuesStr);
-            }
-            colorMatrix = ColorMatrixRable8Bit.buildSaturate(s);
-            break;
+        switch (type) {
         case ColorMatrixRable.TYPE_HUE_ROTATE:
-            float a = 0; // default is 0
-            if (valuesStr.length() > 0) {
-                a = (float)(SVGUtilities.convertSVGNumber
-                            (SVG_VALUES_ATTRIBUTE, valuesStr) * Math.PI/180);
-            }
+            float a = convertValuesToHueRotate(filterElement);
             colorMatrix = ColorMatrixRable8Bit.buildHueRotate(a);
             break;
         case ColorMatrixRable.TYPE_LUMINANCE_TO_ALPHA:
             colorMatrix = ColorMatrixRable8Bit.buildLuminanceToAlpha();
             break;
+        case ColorMatrixRable.TYPE_MATRIX:
+            float [][] matrix = convertValuesToMatrix(filterElement);
+            colorMatrix = ColorMatrixRable8Bit.buildMatrix(matrix);
+            break;
+        case ColorMatrixRable.TYPE_SATURATE:
+            float s = convertValuesToSaturate(filterElement);
+            colorMatrix = ColorMatrixRable8Bit.buildSaturate(s);
+            break;
         default:
-            /* Never happen: Bad type is catched previously */
-            throw new Error();
+            throw new Error(); // can't be reached
         }
-
         colorMatrix.setSource(in);
 
-        filter = new PadRable8Bit(colorMatrix,
-                                      primitiveRegion,
-                                      PadMode.ZERO_PAD);
+        Filter filter
+            = new PadRable8Bit(colorMatrix, primitiveRegion, PadMode.ZERO_PAD);
 
-
-        // Get result attribute and update map
-        String result = filterElement.getAttributeNS(null, ATTR_RESULT);
-
-        if ((result != null) && (result.trim().length() > 0)) {
-            filterMap.put(result, filter);
-        }
+        // update the filter Map
+        updateFilterMap(filterElement, filter, filterMap);
 
         return filter;
     }
 
     /**
-     * Converts the set of values to a matrix
+     * Converts the 'values' attribute of the specified feColorMatrix
+     * filter primitive element for the 'matrix' type.
+     *
+     * @param filterElement the filter element
      */
-    private static float[][] convertValuesToMatrix(String value){
-        StringTokenizer st = new StringTokenizer(value, " ,");
-        float matrix[][] = new float[4][5];
-        if(st.countTokens() != 20){
-            throw new IllegalAttributeValueException(
-                Messages.formatMessage("feColorMatrix.values.invalid",
-                                       new Object[] { value }));
+    protected static float[][] convertValuesToMatrix(Element filterElement) {
+        String s = filterElement.getAttributeNS(null, SVG_VALUES_ATTRIBUTE);
+        if (s.length() == 0) {
+            throw new BridgeException(filterElement, ERR_ATTRIBUTE_MISSING,
+                                      new Object[] {SVG_VALUES_ATTRIBUTE});
         }
-        int i = 0;
-        String v = "";
+        StringTokenizer tokens = new StringTokenizer(s, " ,");
+        float [][] matrix = new float[4][5];
+        int n = 0;
         try {
-            while(st.hasMoreTokens()){
-                v = st.nextToken();
-                matrix[i/5][i%5] = Float.parseFloat(v);
-                i++;
+            while (n < 20 && tokens.hasMoreTokens()) {
+                matrix[n/5][n%5]
+                    = SVGUtilities.convertSVGNumber(tokens.nextToken());
+                n++;
             }
         } catch (NumberFormatException ex) {
-            throw new IllegalAttributeValueException(
-                Messages.formatMessage("feColorMatrix.value.invalid",
-                                       new Object[] { v }));
-
+            throw new BridgeException
+                (filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                 new Object[] {SVG_VALUES_ATTRIBUTE, s, ex});
+        }
+        if (n != 20 || tokens.hasMoreTokens()) {
+            throw new BridgeException
+                (filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                 new Object[] {SVG_VALUES_ATTRIBUTE, s});
         }
 
-        for(i=0; i<4; i++){
+        for (int i = 0; i < 4; ++i) {
             matrix[i][4] *= 255;
         }
         return matrix;
     }
 
     /**
-     * Converts an feFuncXX type attribute into a
-     * ComponentTransferFunction type constant
+     * Converts the 'values' attribute of the specified feColorMatrix
+     * filter primitive element for the 'saturate' type.
+     *
+     * @param filterElement the filter element
      */
-    private static int convertType(String typeStr){
-        int type;
-        if (typeStr.length() == 0) {
-            type = ColorMatrixRable.TYPE_MATRIX; // default value
-
-        } else if (SVG_SATURATE_VALUE.equals(typeStr)) {
-            type = ColorMatrixRable.TYPE_SATURATE;
-
-        } else if (SVG_HUE_ROTATE_VALUE.equals(typeStr)) {
-            type = ColorMatrixRable.TYPE_HUE_ROTATE;
-
-        } else if (SVG_LUMINANCE_TO_ALPHA_VALUE.equals(typeStr)) {
-            type = ColorMatrixRable.TYPE_LUMINANCE_TO_ALPHA;
-
-        } else if (SVG_MATRIX_VALUE.equals(typeStr)) {
-            type = ColorMatrixRable.TYPE_MATRIX;
-
+    protected static float convertValuesToSaturate(Element filterElement) {
+        String s = filterElement.getAttributeNS(null, SVG_VALUES_ATTRIBUTE);
+        int length = s.length();
+        if (s.length() == 0) {
+            return 0; // default is 0
         } else {
-            throw new IllegalAttributeValueException(
-                Messages.formatMessage("feColorMatrix.type.invalid",
-                                       new Object[] { typeStr }));
+            try {
+                return SVGUtilities.convertSVGNumber(s);
+            } catch (NumberFormatException ex) {
+                throw new BridgeException
+                    (filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                     new Object [] {SVG_VALUES_ATTRIBUTE, s});
+            }
         }
-        return type;
     }
 
     /**
-     * Update the <tt>Filter</tt> object to reflect the current
-     * configuration in the <tt>Element</tt> that models the filter.
+     * Converts the 'values' attribute of the specified feColorMatrix
+     * filter primitive element for the 'hueRotate' type.
+     *
+     * @param filterElement the filter element
      */
-    public void update(BridgeMutationEvent evt) {
-        // <!> FIXME : TODO
+    protected static float convertValuesToHueRotate(Element filterElement) {
+        String s = filterElement.getAttributeNS(null, SVG_VALUES_ATTRIBUTE);
+        int length = s.length();
+        if (s.length() == 0) {
+            return 1; // default is 1
+        } else {
+            try {
+                return (float)(SVGUtilities.convertSVGNumber(s)*Math.PI)/180f;
+            } catch (NumberFormatException ex) {
+                throw new BridgeException
+                    (filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                     new Object [] {SVG_VALUES_ATTRIBUTE, s});
+            }
+        }
     }
 
+    /**
+     * Converts the type of the specified color matrix filter primitive.
+     *
+     * @param filterElement the filter element
+     */
+    protected static int convertType(Element filterElement) {
+        String s = filterElement.getAttributeNS(null, SVG_TYPE_ATTRIBUTE);
+        int length = s.length();
+        if (s.length() == 0) {
+            return ColorMatrixRable.TYPE_MATRIX;
+        }
+        if (SVG_HUE_ROTATE_VALUE.equals(s)) {
+            return ColorMatrixRable.TYPE_HUE_ROTATE;
+        }
+        if (SVG_LUMINANCE_TO_ALPHA_VALUE.equals(s)) {
+            return ColorMatrixRable.TYPE_LUMINANCE_TO_ALPHA;
+        }
+        if (SVG_MATRIX_VALUE.equals(s)) {
+            return ColorMatrixRable.TYPE_MATRIX;
+        }
+        if (SVG_SATURATE_VALUE.equals(s)) {
+            return ColorMatrixRable.TYPE_SATURATE;
+        }
+        throw new BridgeException(filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                                  new Object[] {SVG_TYPE_ATTRIBUTE, s});
+    }
 }

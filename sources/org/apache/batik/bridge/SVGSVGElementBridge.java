@@ -8,112 +8,115 @@
 
 package org.apache.batik.bridge;
 
-import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Rectangle2D;
+
 import org.apache.batik.ext.awt.image.renderable.ClipRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.gvt.CanvasGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
-import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
+import org.apache.batik.gvt.filter.GraphicsNodeRable8Bit;
+import org.apache.batik.parser.ParseException;
 import org.apache.batik.util.SVGConstants;
-import org.apache.batik.util.UnitProcessor;
+
 import org.w3c.dom.Element;
-import org.w3c.dom.css.CSSPrimitiveValue;
-import org.w3c.dom.css.CSSStyleDeclaration;
-import org.w3c.dom.css.Rect;
 import org.w3c.dom.svg.SVGElement;
 import org.w3c.dom.svg.SVGSVGElement;
 
 /**
- * A factory for the &lt;svg&gt; SVG element.
+ * Bridge class for the &lt;svg> element.
  *
- * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
- * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
+ * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
-public class SVGSVGElementBridge implements GraphicsNodeBridge, SVGConstants {
+public class SVGSVGElementBridge implements GraphicsNodeBridge,
+                                            SVGConstants,
+                                            ErrorConstants {
 
-    public GraphicsNode createGraphicsNode(BridgeContext ctx,
-                                           Element element){
-        SVGSVGElement svgElement = (SVGSVGElement) element;
-        CSSStyleDeclaration cssDecl = CSSUtilities.getComputedStyle(element);
-        UnitProcessor.Context uctx
-            = new DefaultUnitProcessorContext(ctx,
-                                              cssDecl);
-        CanvasGraphicsNode node = new CanvasGraphicsNode();
-        // visibility
-        node.setVisible(CSSUtilities.convertVisibility(element));
-        float x;
-        float y;
-        float w;
-        float h;
+    /**
+     * Constructs a new bridge for the &lt;svg> element.
+     */
+    public SVGSVGElementBridge() {}
+
+    /**
+     * Creates a <tt>GraphicsNode</tt> according to the specified parameters.
+     *
+     * @param ctx the bridge context to use
+     * @param e the element that describes the graphics node to build
+     * @return a graphics node that represents the specified element
+     */
+    public GraphicsNode createGraphicsNode(BridgeContext ctx, Element e) {
+        CanvasGraphicsNode gn = new CanvasGraphicsNode();
+
+        UnitProcessor.Context uctx = UnitProcessor.createContext(ctx, e);
         String s;
-        if (svgElement.getOwnerSVGElement() != null) {
-            // parse the x attribute, (default is 0)
-            s = svgElement.getAttributeNS(null, SVG_X_ATTRIBUTE);
-            x = 0;
-            if (s.length() != 0) {
-               x = SVGUtilities.svgToUserSpace(svgElement,
-                                               SVG_X_ATTRIBUTE, s,
-                                               uctx,
-                                               UnitProcessor.HORIZONTAL_LENGTH);
-            }
 
-            // parse the y attribute, (default is 0)
-            s = svgElement.getAttributeNS(null, SVG_Y_ATTRIBUTE);
-            y = 0;
+        boolean isOutermost = (((SVGElement)e).getOwnerSVGElement() == null);
+        float x = 0;
+        float y = 0;
+        // x and y have no meaning on the outermost 'svg' element
+        if (!isOutermost) {
+            // 'x' attribute - default is 0
+            s = e.getAttributeNS(null, SVG_X_ATTRIBUTE);
             if (s.length() != 0) {
-                y = SVGUtilities.svgToUserSpace(svgElement,
-                                                SVG_Y_ATTRIBUTE, s,
-                                                uctx,
-                                                UnitProcessor.VERTICAL_LENGTH);
+                x = UnitProcessor.svgHorizontalCoordinateToUserSpace
+                    (s, SVG_X_ATTRIBUTE, uctx);
             }
-        } else {
-            x = 0;
-            y = 0;
+            // 'y' attribute - default is 0
+            s = e.getAttributeNS(null, SVG_Y_ATTRIBUTE);
+            if (s.length() != 0) {
+                y = UnitProcessor.svgVerticalCoordinateToUserSpace
+                    (s, SVG_Y_ATTRIBUTE, uctx);
+            }
         }
 
-        // parse the width attribute (default is 100%)
-        s = svgElement.getAttributeNS(null, SVG_WIDTH_ATTRIBUTE);
+        // 'width' attribute - default is 100%
+        s = e.getAttributeNS(null, SVG_WIDTH_ATTRIBUTE);
         if (s.length() == 0) {
             s = "100%";
         }
-        w = SVGUtilities.svgToUserSpace(svgElement,
-                                        SVG_WIDTH_ATTRIBUTE, s,
-                                        uctx,
-                                        UnitProcessor.HORIZONTAL_LENGTH);
+        float w = UnitProcessor.svgHorizontalLengthToUserSpace
+            (s, SVG_WIDTH_ATTRIBUTE, uctx);
 
-        // parse the height attribute (default is 100%)
-        s = svgElement.getAttributeNS(null, SVG_HEIGHT_ATTRIBUTE);
+        // 'height' attribute - default is 100%
+        s = e.getAttributeNS(null, SVG_HEIGHT_ATTRIBUTE);
         if (s.length() == 0) {
             s = "100%";
         }
-        h = SVGUtilities.svgToUserSpace(svgElement,
-                                        SVG_HEIGHT_ATTRIBUTE, s,
-                                        uctx,
-                                        UnitProcessor.VERTICAL_LENGTH);
+        float h = UnitProcessor.svgVerticalLengthToUserSpace
+            (s, SVG_HEIGHT_ATTRIBUTE, uctx);
 
-        // parse the tranform attribute
-        AffineTransform at;
-        at = SVGUtilities.getPreserveAspectRatioTransform
-            (svgElement, w, h);
+        // 'visibility'
+        gn.setVisible(CSSUtilities.convertVisibility(e));
+
+        // 'viewBox' and "preserveAspectRatio' attributes
+        AffineTransform at =
+            ViewBox.getPreserveAspectRatioTransform(e, w, h);
+
+        float actualWidth = w;
+        float actualHeight = h;
+        try {
+            AffineTransform atInv = at.createInverse();
+            actualWidth = (float) (w*atInv.getScaleX());
+            actualHeight = (float) (h*atInv.getScaleY());
+        } catch (NoninvertibleTransformException ex) {}
+
         at.preConcatenate(AffineTransform.getTranslateInstance(x, y));
 
+        // 'overflow' and 'clip'
+        // The outermost preserveAspectRatio matrix is set by the user
+        // agent, so we don't need to set the transform for outermost svg
         Shape clip = null;
-        if (svgElement.getOwnerSVGElement() != null) {
-            // <!> as it is already done in the JSVGCanvas, we don't have to
-            // do it for the top most svg element
-            node.setTransform(at);
-            // Get the overflow property on the svg element
-            if (CSSUtilities.convertOverflow(svgElement)) { // hidden
-                float [] offsets = CSSUtilities.convertClip(svgElement);
-                if (offsets == null) { // auto
+        if (!isOutermost) {
+            gn.setTransform(at);
+            if (CSSUtilities.convertOverflow(e)) { // overflow:hidden
+                float [] offsets = CSSUtilities.convertClip(e);
+                if (offsets == null) { // clip:auto
                     clip = new Rectangle2D.Float(x, y, w, h);
-                } else { // clip
+                } else { // clip:rect(<x> <y> <w> <h>)
                     // offsets[0] = top
                     // offsets[1] = right
                     // offsets[2] = bottom
@@ -127,38 +130,96 @@ public class SVGSVGElementBridge implements GraphicsNodeBridge, SVGConstants {
         } else {
             clip = new Rectangle2D.Float(x, y, w, h);
         }
+
         if (clip != null) {
             try {
                 at = at.createInverse(); // clip in user space
                 clip = at.createTransformedShape(clip);
-                GraphicsNodeRableFactory gnrFactory
-                    = ctx.getGraphicsNodeRableFactory();
-                Filter filter =
-                    gnrFactory.createGraphicsNodeRable(node,
-                                     ctx.getGraphicsNodeRenderContext());
-                node.setClip(new ClipRable8Bit(filter, clip));
+                Filter filter = new GraphicsNodeRable8Bit
+                    (gn, ctx.getGraphicsNodeRenderContext());
+                gn.setClip(new ClipRable8Bit(filter, clip));
             } catch (NoninvertibleTransformException ex) {}
         }
 
-        // <!> TODO only when binding is enabled
-        BridgeEventSupport.addDOMListener(ctx, svgElement);
-        ctx.bind(element, node);
-
-        ctx.setViewport(new SVGViewport(svgElement, uctx));
-        return node;
+        ctx.openViewport
+            (e, new SVGSVGElementViewport((SVGSVGElement)e,
+                                          actualWidth,
+                                          actualHeight));
+        return gn;
     }
 
-    public void buildGraphicsNode(GraphicsNode node,
-                                  BridgeContext ctx,
-                                  Element element) {
-
-    }
-
+    /**
+     * Performs an update according to the specified event.
+     *
+     * @param evt the event describing the update to perform
+     */
     public void update(BridgeMutationEvent evt) {
-        // <!> FIXME : TODO
+        throw new Error("Not implemented");
     }
 
-    public boolean isContainer() {
+    /**
+     * Builds using the specified BridgeContext and element, the
+     * specified graphics node.
+     *
+     * @param ctx the bridge context to use
+     * @param e the element that describes the graphics node to build
+     * @param node the graphics node to build
+     */
+    public void buildGraphicsNode(BridgeContext ctx,
+                                  Element e,
+                                  GraphicsNode node) {
+        // <!> FIXME: no clip, filter, mask or opacity ???
+
+        // we have built all children, we can close the viewport
+        ctx.closeViewport(e);
+
+        // bind the specified element and its associated graphics node if needed
+        if (ctx.isDynamic()) {
+            ctx.bind(e, node);
+        }
+    }
+
+    /**
+     * Returns true as the &lt;svg> element is a container.
+     */
+    public boolean isComposite() {
         return true;
+    }
+
+
+    /**
+     * A viewport for a SVGSVGElement.
+     */
+    public static class SVGSVGElementViewport implements Viewport {
+
+        private SVGSVGElement e;
+        private float width;
+        private float height;
+
+        /**
+         * Constructs a new viewport with the specified <tt>SVGSVGElement</tt>.
+         * @param e the SVGSVGElement that defines this viewport
+         * @param w the width of the viewport
+         * @param h the height of the viewport
+         */
+        public SVGSVGElementViewport(SVGSVGElement e, float w, float h) {
+            this.e = e;
+            this.width = w;
+            this.height = h;
+        }
+
+        /**
+         * Returns the width of this viewport.
+         */
+        public float getWidth(){
+            return width;
+        }
+
+        /**
+         * Returns the height of this viewport.
+         */
+        public float getHeight(){
+            return height;
+        }
     }
 }

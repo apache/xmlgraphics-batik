@@ -18,7 +18,7 @@ import org.apache.batik.dom.svg.SVGDocumentFactory;
 import org.apache.batik.dom.util.DocumentDescriptor;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
+import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 /**
@@ -89,7 +89,7 @@ public class DocumentLoader {
      * @param size the size of the cache
      */
     public DocumentLoader(String parser, int size) {
-        this.documentFactory = new SAXSVGDocumentFactory(parser);
+        this.documentFactory = new SAXSVGDocumentFactory(parser, true);
         this.size = size;
     }
 
@@ -116,8 +116,9 @@ public class DocumentLoader {
             //System.out.println("loading: "+uri);
             // load the document
             document = documentFactory.createDocument(uri);
+            DocumentDescriptor desc = documentFactory.getDocumentDescriptor();
             // update the cache
-            int num = getNodeCount(document.getDocumentElement());
+            int num = desc.getNumberOfElements();
             while ((currentCachedNodeCount + num) > size &&
                     cachedDocs.size() > 0) {
                 // remove the oldest document loaded
@@ -129,7 +130,6 @@ public class DocumentLoader {
             }
             currentCachedNodeCount += num;
             // add the new loaded document to the cache
-            DocumentDescriptor desc = documentFactory.getDocumentDescriptor();
             DocumentState state = new DocumentState(uri, document, num, desc);
             currentDocs.add(0, state);
             documentMap.put(uri, document);
@@ -149,7 +149,7 @@ public class DocumentLoader {
     public void dispose(Document document) {
         DocumentState state = getDocumentState(currentDocs, document);
         if (state != null) {
-            //System.out.println("disposing "+state.document);
+            //System.out.println("disposing: "+state.uri);
             // allow GC of the DocumentDescriptor
             state.desc = null;
             // remove the state from the 'in progress' list
@@ -167,7 +167,8 @@ public class DocumentLoader {
     public void dispose() {
         if (currentDocs.size() > 0) {
             System.err.println(
-                "WARNING: The loader still has "+currentDocs.size()+" documents marked in progress.");
+                "WARNING: The loader still has "+currentDocs.size()+
+                " documents marked in progress.");
         }
         //System.out.println("purge the cache");
         documentMap.clear();
@@ -175,10 +176,29 @@ public class DocumentLoader {
     }
 
     /**
+     * Returns the line in the source code of the specified element or
+     * -1 if not found.
+     *
+     * @param e the element
+     * @return -1 the document has been removed from the cache or has not
+     * been loaded by this document loader.
+     */
+    public int getLineNumber(Element e) {
+        DocumentState state = getDocumentState(currentDocs,
+                                               e.getOwnerDocument());
+        if (state == null || state.desc == null) {
+            System.err.println("line number not available.");
+            return -1;
+        } else {
+            return state.desc.getLocationLine(e);
+        }
+    }
+
+    /**
      * Returns the <tt>DocumentState</tt> of the specified Document.
      * @param document the document
      */
-    protected DocumentState getDocumentState(List l, Document document) {
+    private DocumentState getDocumentState(List l, Document document) {
         for (Iterator i = l.iterator(); i.hasNext();) {
             DocumentState state = (DocumentState) i.next();
             if (state.document == document) {
@@ -186,17 +206,6 @@ public class DocumentLoader {
             }
         }
         return null;
-    }
-
-    /**
-     * Returns the number of nodes in the specified document.
-     */
-    protected int getNodeCount(Node n) {
-        int num = 1;
-        for (Node c = n.getFirstChild(); c != null; c = c.getNextSibling()) {
-            num += getNodeCount(c);
-        }
-        return num;
     }
 
     /**

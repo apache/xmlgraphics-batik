@@ -9,352 +9,319 @@
 package org.apache.batik.bridge;
 
 import java.awt.geom.Rectangle2D;
-
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.ext.awt.image.renderable.ComponentTransferFunction;
-import org.apache.batik.ext.awt.image.renderable.ComponentTransferRable;
+import org.apache.batik.ext.awt.image.renderable.ComponentTransferRable8Bit;
+import org.apache.batik.ext.awt.image.renderable.ConcreteComponentTransferFunction;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.renderable.PadMode;
-import org.apache.batik.ext.awt.image.renderable.PadRable;
-
-import org.apache.batik.bridge.resources.Messages;
-import org.apache.batik.ext.awt.image.renderable.ConcreteComponentTransferFunction;
-import org.apache.batik.ext.awt.image.renderable.ComponentTransferRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.PadRable8Bit;
-
-import org.apache.batik.util.SVGConstants;
-import org.apache.batik.util.UnitProcessor;
+import org.apache.batik.gvt.GraphicsNode;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.css.CSSStyleDeclaration;
 
 /**
- * This class bridges an SVG <tt>feCompoentTransfer</tt> element with
- * a concrete <tt>Filter</tt> filter implementation
+ * Bridge class for the &lt;feComponentTransfer> element.
  *
- * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
- * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
+ * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
 public class SVGFeComponentTransferElementBridge
-        implements FilterPrimitiveBridge, SVGConstants {
+    extends SVGAbstractFilterPrimitiveElementBridge {
 
     /**
-     * Returns the <tt>Filter</tt> that implements the filter
-     * operation modeled by the input DOM element
+     * Constructs a new bridge for the &lt;feComponentTransfer> element.
+     */
+    public SVGFeComponentTransferElementBridge() {}
+
+    /**
+     * Creates a <tt>Filter</tt> primitive according to the specified
+     * parameters.
      *
-     * @param filteredNode the node to which the filter will be attached.
-     * @param bridgeContext the context to use.
-     * @param filterElement DOM element that represents a filter abstraction
-     * @param in the <tt>Filter</tt> that represents the current
+     * @param ctx the bridge context to use
+     * @param filterElement the element that defines a filter
+     * @param filteredElement the element that references the filter
+     * @param filteredNode the graphics node to filter
+     *
+     * @param inputFilter the <tt>Filter</tt> that represents the current
      *        filter input if the filter chain.
-     * @param filterRegion the filter area defined for the filter chained
+     * @param filterRegion the filter area defined for the filter chain
      *        the new node will be part of.
      * @param filterMap a map where the mediator can map a name to the
      *        <tt>Filter</tt> it creates. Other <tt>FilterBridge</tt>s
      *        can then access a filter node from the filterMap if they
      *        know its name.
      */
-    public Filter create(GraphicsNode filteredNode,
-                         BridgeContext bridgeContext,
-                         Element filterElement,
-                         Element filteredElement,
-                         Filter in,
-                         Rectangle2D filterRegion,
-                         Map filterMap){
-        Filter filter = null;
+    public Filter createFilter(BridgeContext ctx,
+                               Element filterElement,
+                               Element filteredElement,
+                               GraphicsNode filteredNode,
+                               Filter inputFilter,
+                               Rectangle2D filterRegion,
+                               Map filterMap) {
 
-        GraphicsNodeRenderContext rc =
-                         bridgeContext.getGraphicsNodeRenderContext();
-        DocumentLoader loader = bridgeContext.getDocumentLoader();
-
-        // First, extract source
-        String inAttr = filterElement.getAttributeNS(null, SVG_IN_ATTRIBUTE);
-        in = CSSUtilities.getFilterSource(filteredNode,
-                                          inAttr,
-                                          bridgeContext,
-                                          filteredElement,
-                                          in,
-                                          filterMap);
-
-        // Exit if no 'in' found
+        // 'in' attribute
+        Filter in = getIn(filterElement,
+                          filteredElement,
+                          filteredNode,
+                          inputFilter,
+                          filterMap,
+                          ctx);
         if (in == null) {
-            return null;
+            return null; // disable the filter
         }
 
-        //
-        // The default region is the input source's region unless the
-        // source is SourceGraphics, in which case the default region
-        // is the filter chain's region
-        //
+        // The default region is the union of the input sources
+        // regions unless 'in' is 'SourceGraphic' in which case the
+        // default region is the filterChain's region
         Filter sourceGraphics = (Filter)filterMap.get(VALUE_SOURCE_GRAPHIC);
-
-        Rectangle2D defaultRegion = in.getBounds2D();
-
-        if (in == sourceGraphics){
+        Rectangle2D defaultRegion;
+        if (in == sourceGraphics) {
             defaultRegion = filterRegion;
+        } else {
+            defaultRegion = in.getBounds2D();
         }
-
-        CSSStyleDeclaration cssDecl
-            = CSSUtilities.getComputedStyle(filterElement);
-
-        UnitProcessor.Context uctx
-            = new DefaultUnitProcessorContext(bridgeContext, cssDecl);
 
         Rectangle2D primitiveRegion
             = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
                                                         filteredElement,
+                                                        filteredNode,
                                                         defaultRegion,
                                                         filterRegion,
-                                                        filteredNode,
-                                                        rc,
-                                                        uctx,
-                                                        loader);
+                                                        ctx);
 
-        //
-        // Now, extract the various transfer functions. They
-        // are defined in the filterElement's children. Functions
-        // are ordered as follow: r, g, b, a. We start by the
-        // last child.
-        //
-        NodeList children = filterElement.getChildNodes();
-        int nChildren = children.getLength();
-        int curChild = nChildren - 1;
+        // Now, extract the various transfer functions. They are
+        // defined in the filterElement's children.
+        // Functions are ordered as follow: r, g, b, a.
+        ComponentTransferFunction funcR = null;
+        ComponentTransferFunction funcG = null;
+        ComponentTransferFunction funcB = null;
+        ComponentTransferFunction funcA = null;
 
-        ComponentTransferFunction alphaFunction = null;
-        ComponentTransferFunction redFunction = null;
-        ComponentTransferFunction greenFunction = null;
-        ComponentTransferFunction blueFunction = null;
+        for (Node n = filterElement.getFirstChild();
+             n != null;
+             n = n.getNextSibling()) {
 
-        if(curChild >= 0){
-            alphaFunction
-                = createComponentTransferFunction(filterElement,
-                                                  children.item(curChild),
-                                                  SVG_FE_FUNC_A_TAG);
-            if(alphaFunction != null){
-                curChild--;
+            if (n.getNodeType() != Node.ELEMENT_NODE) {
+                continue;
+            }
+
+            Element e = (Element)n;
+            Bridge bridge = ctx.getBridge(e);
+            if (bridge == null || !(bridge instanceof SVGFeFuncElementBridge)) {
+                continue;
+            }
+            SVGFeFuncElementBridge funcBridge
+                = (SVGFeFuncElementBridge)bridge;
+            ComponentTransferFunction func
+                = funcBridge.createComponentTransferFunction(filterElement, e);
+            if (funcBridge instanceof SVGFeFuncRElementBridge) {
+                funcR = func;
+            } else if (funcBridge instanceof SVGFeFuncGElementBridge) {
+                funcG = func;
+            } else if (funcBridge instanceof SVGFeFuncBElementBridge) {
+                funcB = func;
+            } else if (funcBridge instanceof SVGFeFuncAElementBridge) {
+                funcA = func;
             }
         }
 
-        if(curChild >= 0){
-            blueFunction
-                = createComponentTransferFunction(filterElement,
-                                                  children.item(curChild),
-                                                  SVG_FE_FUNC_B_TAG);
-            if(blueFunction != null){
-                curChild--;
-            }
-        }
+        Filter filter = new ComponentTransferRable8Bit
+            (in, funcA, funcR, funcG, funcB);
+        filter = new PadRable8Bit(filter, primitiveRegion, PadMode.ZERO_PAD);
 
-        if(curChild >= 0){
-            greenFunction
-                = createComponentTransferFunction(filterElement,
-                                                  children.item(curChild),
-                                                  SVG_FE_FUNC_G_TAG);
-            if(greenFunction != null){
-                curChild--;
-            }
-        }
-
-        if(curChild >= 0){
-            redFunction
-                = createComponentTransferFunction(filterElement,
-                                                  children.item(curChild),
-                                                  SVG_FE_FUNC_R_TAG);
-        }
-
-
-        filter = new ComponentTransferRable8Bit(in,
-                                                    alphaFunction,
-                                                    redFunction,
-                                                    greenFunction,
-                                                    blueFunction);
-
-        filter = new PadRable8Bit(filter,
-                                      primitiveRegion,
-                                      PadMode.ZERO_PAD);
-
-
-        // Get result attribute and update map
-        String result = filterElement.getAttributeNS(null, ATTR_RESULT);
-        if ((result != null) && (result.trim().length() > 0)) {
-            filterMap.put(result, filter);
-        }
+        // update the filter Map
+        updateFilterMap(filterElement, filter, filterMap);
 
         return filter;
     }
 
     /**
-     * Creates a ComponentTransferFunction corresponding to the
-     * input tag (i.e., feFuncXX, where XX can be A, R, G or B).
+     * Bridge class for the &lt;feFuncA> element.
      */
-    private static
-        ComponentTransferFunction createComponentTransferFunction(
-                                                          Element filterElement,
-                                                          Node node,
-                                                          String tag) {
-        ComponentTransferFunction txfFunc = null;
+    public static class SVGFeFuncAElementBridge extends SVGFeFuncElementBridge {
 
-        if(node.getNodeType() == Node.ELEMENT_NODE){
-            Element elt = (Element)node;
-            if(elt.getNodeName().equals(tag)){
-                //
-                // Get type. Depending on the type, some of the
-                // attributes are ignored.
-                //
-                String typeStr = elt.getAttributeNS(null, SVG_TYPE_ATTRIBUTE);
-                int type = convertType(elt, typeStr);
+        /**
+         * Constructs a new bridge for the <tt>feFuncA</tt> element.
+         */
+        public SVGFeFuncAElementBridge() {}
 
-                switch(type){
-                case ComponentTransferFunction.IDENTITY:
-                    txfFunc =
-                        ConcreteComponentTransferFunction.getIdentityTransfer();
-                    break;
-                case ComponentTransferFunction.TABLE:
-                    {
-                        String tableValuesStr =
-                            elt.getAttributeNS(null, SVG_TABLE_VALUES_ATTRIBUTE);
-                        if (tableValuesStr.length() == 0) { // default is IDENTITY
-                            txfFunc =
-                                ConcreteComponentTransferFunction.getIdentityTransfer();
-                        } else {
-                            float tableValues[] =
-                                convertTableValues(tableValuesStr);
+    }
 
-                            txfFunc = ConcreteComponentTransferFunction.getTableTransfer(tableValues);
-                        }
-                    }
-                    break;
-                case ComponentTransferFunction.DISCRETE:
-                    {
-                        String tableValuesStr =
-                            elt.getAttributeNS(null, SVG_TABLE_VALUES_ATTRIBUTE);
-                        if (tableValuesStr.length() == 0) { // default is IDENTITY
-                            txfFunc =
-                                ConcreteComponentTransferFunction.getIdentityTransfer();
-                        } else {
-                            float tableValues[] =
-                                convertTableValues(tableValuesStr);
+    /**
+     * Bridge class for the &lt;feFuncR> element.
+     */
+    public static class SVGFeFuncRElementBridge extends SVGFeFuncElementBridge {
 
-                            txfFunc = ConcreteComponentTransferFunction.getDiscreteTransfer(tableValues);
-                        }
-                    }
-                    break;
-                case ComponentTransferFunction.LINEAR:
-                    {
-                        String slopeStr = elt.getAttributeNS(null, SVG_SLOPE_ATTRIBUTE);
-                        float slope = 1; // default is 1
-                        if(slopeStr.length() > 0){
-                            slope = SVGUtilities.convertSVGNumber(SVG_SLOPE_ATTRIBUTE, slopeStr);
-                        }
-                        String interceptStr = elt.getAttributeNS(null, SVG_INTERCEPT_ATTRIBUTE);
-                        float intercept = 0; // default is 0
-                        if (interceptStr.length() > 0) {
-                            intercept = SVGUtilities.convertSVGNumber(SVG_INTERCEPT_ATTRIBUTE, interceptStr);
-                        }
-                        txfFunc = ConcreteComponentTransferFunction.getLinearTransfer(slope, intercept);
-                    }
-                    break;
-                case ComponentTransferFunction.GAMMA:
-                    {
-                        String amplitudeStr = elt.getAttributeNS(null, SVG_AMPLITUDE_ATTRIBUTE);
-                        float amplitude = 1; // default is 1
-                        if (amplitudeStr.length() > 0) {
-                            amplitude = SVGUtilities.convertSVGNumber(SVG_AMPLITUDE_ATTRIBUTE, amplitudeStr);
-                        }
+        /**
+         * Constructs a new bridge for the <tt>feFuncR</tt> element.
+         */
+        public SVGFeFuncRElementBridge() {}
 
-                        String exponentStr = elt.getAttributeNS(null, SVG_EXPONENT_ATTRIBUTE);
-                        float exponent = 1; // default is 1
-                        if (exponentStr.length() > 0) {
-                            exponent = SVGUtilities.convertSVGNumber(SVG_EXPONENT_ATTRIBUTE, exponentStr);
-                        }
+    }
 
-                        String offsetStr = elt.getAttributeNS(null, SVG_OFFSET_ATTRIBUTE);
-                        float offset = 0; // default is 0
-                        if (offsetStr.length() > 0) {
-                            offset = SVGUtilities.convertSVGNumber(SVG_OFFSET_ATTRIBUTE, offsetStr);
-                        }
+    /**
+     * Bridge class for the &lt;feFuncG> element.
+     */
+    public static class SVGFeFuncGElementBridge extends SVGFeFuncElementBridge {
 
-                        txfFunc = ConcreteComponentTransferFunction.getGammaTransfer(amplitude,
-                                                                                     exponent,
-                                                                                     offset);
-                    }
-                    break;
-                default:
-                    /* Never happen: Bad type is catched previously */
-                    throw new Error();
+        /**
+         * Constructs a new bridge for the <tt>feFuncG</tt> element.
+         */
+        public SVGFeFuncGElementBridge() {}
+
+    }
+
+    /**
+     * Bridge class for the &lt;feFuncB> element.
+     */
+    public static class SVGFeFuncBElementBridge extends SVGFeFuncElementBridge {
+
+        /**
+         * Constructs a new bridge for the <tt>feFuncB</tt> element.
+         */
+        public SVGFeFuncBElementBridge() {}
+
+    }
+
+    /**
+     * The base bridge class for component transfer function.
+     */
+    protected static abstract class SVGFeFuncElementBridge implements Bridge {
+
+        /**
+         * Constructs a new bridge for component transfer function.
+         */
+        protected SVGFeFuncElementBridge() {}
+
+        /**
+         * Creates a <tt>ComponentTransferFunction</tt> according to
+         * the specified parameters.
+         *
+         * @param filterElement the feComponentTransfer filter primitive element
+         * @param funcElement the feFuncX element
+         */
+        public ComponentTransferFunction createComponentTransferFunction
+            (Element filterElement, Element funcElement) {
+
+            int type = convertType(funcElement);
+            switch (type) {
+            case ComponentTransferFunction.DISCRETE: {
+                float [] v = convertTableValues(funcElement);
+                if (v == null) {
+                    return ConcreteComponentTransferFunction.getIdentityTransfer();
+                } else {
+                    return ConcreteComponentTransferFunction.getDiscreteTransfer(v);
                 }
-
             }
-        }
-        return txfFunc;
-    }
-
-    /**
-     * Converts a table value
-     */
-    private static float[] convertTableValues(String value){
-        StringTokenizer st = new StringTokenizer(value, " ,");
-        float tableValues[] = new float[st.countTokens()];
-        int i = 0;
-        String v = "";
-        try {
-            while(st.hasMoreTokens()){
-                v = st.nextToken();
-                tableValues[i++] = Float.parseFloat(v);
+            case ComponentTransferFunction.IDENTITY: {
+                return ConcreteComponentTransferFunction.getIdentityTransfer();
             }
-        } catch(NumberFormatException ex) {
-            throw new IllegalAttributeValueException(
-                Messages.formatMessage("feComponentTransfer.value.invalid",
-                                       new Object[] { v }));
+            case ComponentTransferFunction.GAMMA: {
+                // 'amplitude' attribute - default is 1
+                float amplitude
+                    = convertNumber(funcElement, SVG_AMPLITUDE_ATTRIBUTE, 1);
+                // 'exponent' attribute - default is 1
+                float exponent
+                    = convertNumber(funcElement, SVG_EXPONENT_ATTRIBUTE, 1);
+                // 'offset' attribute - default is 0
+                float offset
+                    = convertNumber(funcElement, SVG_OFFSET_ATTRIBUTE, 0);
+
+                return ConcreteComponentTransferFunction.getGammaTransfer
+                    (amplitude, exponent, offset);
+            }
+            case ComponentTransferFunction.LINEAR: {
+                // 'slope' attribute - default is 1
+                float slope
+                    = convertNumber(funcElement, SVG_SLOPE_ATTRIBUTE, 1);
+                // 'intercept' attribute - default is 0
+                float intercept
+                    = convertNumber(funcElement, SVG_INTERCEPT_ATTRIBUTE, 0);
+
+                return ConcreteComponentTransferFunction.getLinearTransfer
+                    (slope, intercept);
+            }
+            case ComponentTransferFunction.TABLE: {
+                float [] v = convertTableValues(funcElement);
+                if (v == null) {
+                    return ConcreteComponentTransferFunction.getIdentityTransfer();
+                } else {
+                    return ConcreteComponentTransferFunction.getTableTransfer(v);
+                }
+            }
+            default:
+                throw new Error(); // can't be reached
+            }
+
         }
-        return tableValues;
-    }
 
-    /**
-     * Converts an feFuncXX type attribute into a
-     * ComponentTransferFunction type constant
-     */
-    private static int convertType(Element elt, String value){
-        if (value.length() == 0) {
-            throw new MissingAttributeException(
-                Messages.formatMessage("feComponentTransfer.type.required",
-                                       new Object[] {elt.getLocalName()}));
-
+        /**
+         * Performs an update according to the specified event.
+         *
+         * @param evt the event describing the update to perform
+         */
+        public void update(BridgeMutationEvent evt) {
+            throw new Error("Not implemented");
         }
 
-        int type;
-        if (SVG_TABLE_VALUE.equals(value)) {
-            type = ComponentTransferFunction.TABLE;
-        } else if (SVG_DISCRETE_VALUE.equals(value)) {
-            type = ComponentTransferFunction.DISCRETE;
-        } else if (SVG_LINEAR_VALUE.equals(value)) {
-            type = ComponentTransferFunction.LINEAR;
-        } else if (SVG_GAMMA_VALUE.equals(value)) {
-            type = ComponentTransferFunction.GAMMA;
-        } else if (SVG_IDENTITY_VALUE.equals(value)) {
-            type = ComponentTransferFunction.IDENTITY;
-        } else {
-            throw new IllegalAttributeValueException(
-                Messages.formatMessage("feComponentTransfer.type.invalid",
-                                       new Object[] { value }));
+        /**
+         * Converts the 'tableValues' attribute of the specified component
+         * transfer function element.
+         *
+         * @param e the element that represents a component transfer function
+         */
+        protected static float [] convertTableValues(Element e) {
+            String s = e.getAttributeNS(null, SVG_TABLE_VALUES_ATTRIBUTE);
+            if (s.length() == 0) {
+                return null;
+            }
+            StringTokenizer tokens = new StringTokenizer(s, " ,");
+            float [] v = new float[tokens.countTokens()];
+            try {
+                for (int i = 0; tokens.hasMoreTokens(); ++i) {
+                    v[i] = SVGUtilities.convertSVGNumber(tokens.nextToken());
+                }
+            } catch (NumberFormatException ex) {
+                throw new BridgeException
+                    (e, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                     new Object[] {SVG_TABLE_VALUES_ATTRIBUTE, s});
         }
-        return type;
+            return v;
+        }
+
+        /**
+         * Converts the type of the specified component transfert
+         * function element.
+         *
+         * @param e the element that represents a component transfer function
+         */
+        protected static int convertType(Element e) {
+            String s = e.getAttributeNS(null, SVG_TYPE_ATTRIBUTE);
+            if (s.length() == 0) {
+                throw new BridgeException(e, ERR_ATTRIBUTE_MISSING,
+                                          new Object[] {SVG_TYPE_ATTRIBUTE});
+            }
+            if (SVG_DISCRETE_VALUE.equals(s)) {
+                return ComponentTransferFunction.DISCRETE;
+            }
+            if (SVG_IDENTITY_VALUE.equals(s)) {
+                return ComponentTransferFunction.IDENTITY;
+            }
+            if (SVG_GAMMA_VALUE.equals(s)) {
+                return ComponentTransferFunction.GAMMA;
+            }
+            if (SVG_LINEAR_VALUE.equals(s)) {
+                return ComponentTransferFunction.LINEAR;
+            }
+            if (SVG_TABLE_VALUE.equals(s)) {
+                return ComponentTransferFunction.TABLE;
+            }
+            throw new BridgeException(e, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                                      new Object[] {SVG_TYPE_ATTRIBUTE, s});
+        }
     }
-
-
-    /**
-     * Update the <tt>Filter</tt> object to reflect the current
-     * configuration in the <tt>Element</tt> that models the filter.
-     */
-    public void update(BridgeMutationEvent evt) {
-        // <!> FIXME : TODO
-    }
-
 }

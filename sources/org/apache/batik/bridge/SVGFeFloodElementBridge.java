@@ -10,115 +10,69 @@ package org.apache.batik.bridge;
 
 import java.awt.Color;
 import java.awt.geom.Rectangle2D;
-import java.util.Hashtable;
 import java.util.Map;
-import java.util.StringTokenizer;
 
-import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.ext.awt.image.renderable.Filter;
-import org.apache.batik.ext.awt.image.renderable.FilterChainRable;
-import org.apache.batik.ext.awt.image.renderable.FloodRable;
-import org.apache.batik.gvt.filter.GraphicsNodeRable;
-import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
-
 import org.apache.batik.ext.awt.image.renderable.FloodRable8Bit;
+import org.apache.batik.gvt.GraphicsNode;
 
-import org.apache.batik.util.SVGConstants;
-import org.apache.batik.util.UnitProcessor;
-
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.css.CSSPrimitiveValue;
-import org.w3c.dom.css.CSSStyleDeclaration;
-import org.w3c.dom.css.CSSValue;
-import org.w3c.dom.css.RGBColor;
-import org.w3c.dom.css.ViewCSS;
-import org.w3c.dom.views.DocumentView;
 
 /**
- * This class bridges an SVG <tt>filter</tt> element with a concrete
- * <tt>Filter</tt>.
+ * Bridge class for the &lt;feFlood> element.
  *
- * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
- * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
+ * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
-public class SVGFeFloodElementBridge implements FilterPrimitiveBridge,
-                                                SVGConstants {
+public class SVGFeFloodElementBridge
+    extends SVGAbstractFilterPrimitiveElementBridge {
 
     /**
-     * Returns the <tt>Filter</tt> that implements the filter
-     * operation modeled by the input DOM element
+     * Constructs a new bridge for the &lt;feFlood> element.
+     */
+    public SVGFeFloodElementBridge() {}
+
+    /**
+     * Creates a <tt>Filter</tt> primitive according to the specified
+     * parameters.
      *
-     * @param filteredNode the node to which the filter will be attached.
-     * @param bridgeContext the context to use.
-     * @param filterElement DOM element that represents a filter abstraction
-     * @param in the <tt>Filter</tt> that represents the current
+     * @param ctx the bridge context to use
+     * @param filterElement the element that defines a filter
+     * @param filteredElement the element that references the filter
+     * @param filteredNode the graphics node to filter
+     *
+     * @param inputFilter the <tt>Filter</tt> that represents the current
      *        filter input if the filter chain.
-     * @param filterRegion the filter area defined for the filter chained
+     * @param filterRegion the filter area defined for the filter chain
      *        the new node will be part of.
      * @param filterMap a map where the mediator can map a name to the
      *        <tt>Filter</tt> it creates. Other <tt>FilterBridge</tt>s
      *        can then access a filter node from the filterMap if they
      *        know its name.
      */
-    public Filter create(GraphicsNode filteredNode,
-                         BridgeContext bridgeContext,
-                         Element filterElement,
-                         Element filteredElement,
-                         Filter in,
-                         Rectangle2D filterRegion,
-                         Map filterMap){
+    public Filter createFilter(BridgeContext ctx,
+                               Element filterElement,
+                               Element filteredElement,
+                               GraphicsNode filteredNode,
+                               Filter inputFilter,
+                               Rectangle2D filterRegion,
+                               Map filterMap) {
 
-        GraphicsNodeRenderContext rc =
-                         bridgeContext.getGraphicsNodeRenderContext();
-
-        DocumentLoader loader = bridgeContext.getDocumentLoader();
-        // Extract flood color
-        CSSStyleDeclaration decl
-            = CSSUtilities.getComputedStyle(filterElement);
-
-        Color floodColor 
-            = CSSUtilities.convertFloodColorToPaint(filterElement, 
-                                                    decl, 
-                                                    bridgeContext);
-
-        CSSStyleDeclaration cssDecl
-            = CSSUtilities.getComputedStyle(filterElement);
-
-        UnitProcessor.Context uctx
-            = new DefaultUnitProcessorContext(bridgeContext, cssDecl);
-
-        Rectangle2D floodRegion
+        Rectangle2D primitiveRegion
             = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
                                                         filteredElement,
-                                                        filterRegion,
-                                                        filterRegion,
                                                         filteredNode,
-                                                        rc,
-                                                        uctx,
-                                                        loader);
+                                                        filterRegion,
+                                                        filterRegion,
+                                                        ctx);
 
-        // First, create the FloodRable that maps the input filter node
-        FloodRable flood = new FloodRable8Bit(floodRegion, floodColor);
+        Color color = CSSUtilities.convertFloodColor(filterElement, ctx);
 
-        // Get result attribute if any
-        String result = filterElement.getAttributeNS(null, ATTR_RESULT);
-        if((result != null) && (result.trim().length() > 0)){
-            filterMap.put(result, flood);
-        }
+        Filter filter = new FloodRable8Bit(primitiveRegion, color);
 
-        return flood;
-    }
+        // update the filter Map
+        updateFilterMap(filterElement, filter, filterMap);
 
-    /**
-     * Update the <tt>Filter</tt> object to reflect the current
-     * configuration in the <tt>Element</tt> that models the filter.
-     */
-    public void update(BridgeMutationEvent evt) {
-        // <!> FIXME : TODO
+        return filter;
     }
 }

@@ -8,95 +8,82 @@
 
 package org.apache.batik.bridge;
 
-import java.awt.AlphaComposite;
-import java.awt.Composite;
 import java.awt.Shape;
-
 import java.awt.color.ColorSpace;
 import java.awt.color.ICC_Profile;
-
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
-import java.io.StringReader;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.apache.batik.bridge.BridgeContext;
-import org.apache.batik.bridge.BridgeMutationEvent;
-import org.apache.batik.bridge.DocumentLoader;
-import org.apache.batik.bridge.GraphicsNodeBridge;
-import org.apache.batik.bridge.IllegalAttributeValueException;
-import org.apache.batik.bridge.MissingAttributeException;
-import org.apache.batik.bridge.Viewport;
-
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.XLinkSupport;
-
-import org.apache.batik.gvt.CompositeGraphicsNode;
-import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
-import org.apache.batik.gvt.ImageNode;
-import org.apache.batik.gvt.RasterImageNode;
 import org.apache.batik.ext.awt.color.ICCColorSpaceExt;
 import org.apache.batik.ext.awt.image.renderable.Clip;
-import org.apache.batik.ext.awt.image.renderable.Filter;
-import org.apache.batik.ext.awt.image.renderable.Filter;
-import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
-import org.apache.batik.gvt.filter.Mask;
-
-import org.apache.batik.bridge.resources.Messages;
 import org.apache.batik.ext.awt.image.renderable.ClipRable8Bit;
+import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.renderable.RasterRable;
-
-import org.apache.batik.util.SVGConstants;
-import org.apache.batik.util.UnitProcessor;
+import org.apache.batik.gvt.CompositeGraphicsNode;
+import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.ImageNode;
+import org.apache.batik.gvt.RasterImageNode;
+import org.apache.batik.gvt.filter.GraphicsNodeRable8Bit;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.css.CSSPrimitiveValue;
 import org.w3c.dom.css.CSSStyleDeclaration;
-import org.w3c.dom.css.ViewCSS;
 import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.svg.SVGElement;
 import org.w3c.dom.svg.SVGSVGElement;
 
 /**
- * A factory for the &lt;Image&gt; SVG element.
+ * Bridge class for the &lt;image> element.
  *
- * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
- * @author <a href="mailto:Thomas.DeWeeese@Kodak.com">Thomas DeWeese</a>
+ * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
-public class SVGImageElementBridge implements GraphicsNodeBridge,
-                                              SVGConstants {
+public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
 
     public final static String PROTOCOL_DATA = "data:";
 
-    public GraphicsNode createGraphicsNode(BridgeContext ctx, Element element){
-        SVGElement svgElement = (SVGElement) element;
+    /**
+     * Constructs a new bridge for the &lt;image> element.
+     */
+    public SVGImageElementBridge() {}
 
-        CSSStyleDeclaration cssDecl = CSSUtilities.getComputedStyle(element);
+    /**
+     * Creates a graphics node using the specified BridgeContext and
+     * for the specified element.
+     *
+     * @param ctx the bridge context to use
+     * @param e the element that describes the graphics node to build
+     * @return a graphics node that represents the specified element
+     */
+    public GraphicsNode createGraphicsNode(BridgeContext ctx, Element e) {
 
-        String uriStr = XLinkSupport.getXLinkHref(svgElement);
-        // nothing referenced.
+        ImageNode imageNode = (ImageNode)super.createGraphicsNode(ctx, e);
+
+        // 'xlink:href' attribute - required
+        String uriStr = XLinkSupport.getXLinkHref(e);
         if (uriStr.length() == 0) {
-            throw new MissingAttributeException(
-                Messages.formatMessage("image.xlinkHref.required", null));
+            throw new BridgeException(e, ERR_ATTRIBUTE_MISSING,
+                                      new Object[] {"xlink:href"});
         }
-        // bad URL type
         if (uriStr.indexOf('#') != -1) {
-            throw new IllegalAttributeValueException(
-                Messages.formatMessage("image.xlinkHref.invalid", null));
+            throw new BridgeException(e, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                                      new Object[] {"xlink:href", uriStr});
         }
-
         GraphicsNode node = null;
         try {
             if (uriStr.startsWith(PROTOCOL_DATA)) {
                 // load the image as a base 64 encoded image
-                node = createBase64ImageNode(ctx, svgElement, uriStr);
+                node = createBase64ImageNode(ctx, e, uriStr);
             } else {
-                SVGDocument svgDoc = (SVGDocument)element.getOwnerDocument();
+                // try to load the image as an svg document
+                SVGDocument svgDoc = (SVGDocument)e.getOwnerDocument();
                 URL baseURL = ((SVGOMDocument)svgDoc).getURLObject();
                 URL url = new URL(baseURL, uriStr);
                 // try to load an SVG document
@@ -106,162 +93,106 @@ public class SVGImageElementBridge implements GraphicsNodeBridge,
                     Node n = resolver.getNode(url.toString());
                     if (n.getNodeType() == n.DOCUMENT_NODE) {
                         SVGDocument imgDocument = (SVGDocument)n;
-                        node=createSVGImageNode(ctx, svgElement, imgDocument);
+                        node = createSVGImageNode(ctx, e, imgDocument);
                     }
+                } catch (BridgeException ex) {
+                    throw ex;
                 } catch (Exception ex) { /* Nothing to do */ }
                 if (node == null) {
                     // try to load the image as a raster image (JPG or PNG)
-                    node = createRasterImageNode(ctx, svgElement, url);
+                    node = createRasterImageNode(ctx, e, url);
                 }
             }
-        } catch(MalformedURLException ex) {
-            throw new IllegalAttributeValueException(
-                Messages.formatMessage("image.xlinkHref.badURL", null));
+        } catch (MalformedURLException ex) {
+            throw new BridgeException(e, ERR_URI_MALFORMED,
+                                      new Object[] {uriStr});
+        } catch (IOException ex) {
+            throw new BridgeException(e, ERR_URI_IO,
+                                      new Object[] {uriStr});
         }
         if (node == null) {
-            throw new IllegalAttributeValueException(
-                Messages.formatMessage("image.xlinkHref.badImageType", null));
+            throw new BridgeException(e, ERR_URI_IMAGE_INVALID,
+                                      new Object[] {uriStr});
         }
-        ImageNode imgNode = new ImageNode();
-        imgNode.setImage(node);
-        // visibility
-        imgNode.setVisible(CSSUtilities.convertVisibility(element));
-        // initialize the transform
-        String transformStr = element.getAttributeNS(null, ATTR_TRANSFORM);
-        if (transformStr.length() > 0) {
-            AffineTransform at = SVGUtilities.convertAffineTransform(transformStr);
-            imgNode.setTransform(at);
-        }
-        // bind it as soon as it's available...
-        ctx.bind(element, imgNode);
-
-        return imgNode;
+        imageNode.setImage(node);
+        return imageNode;
     }
 
-    public void buildGraphicsNode(GraphicsNode node,
-                                  BridgeContext ctx,
-                                  Element element) {
-        CSSStyleDeclaration cssDecl = CSSUtilities.getComputedStyle(element);
-
-        // Set node composite
-        CSSPrimitiveValue val
-            = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue(ATTR_OPACITY);
-        Composite composite = CSSUtilities.convertOpacityToComposite(val);
-        node.setComposite(composite);
-
-        // Set node filter
-        Filter filter = CSSUtilities.convertFilter(element, node, ctx);
-        node.setFilter(filter);
-
-        // Set the node mask
-        Mask   mask   = CSSUtilities.convertMask(element, node, ctx);
-        node.setMask(mask);
-
-        // Set the node clip
-        Clip clip = CSSUtilities.convertClipPath(element, node, ctx);
-        node.setClip(clip);
-
-        // <!> TODO only when binding is enabled
-        BridgeEventSupport.addDOMListener(ctx, (SVGElement)element);
+    /**
+     * Creates an <tt>ImageNode</tt>.
+     */
+    protected GraphicsNode instantiateGraphicsNode() {
+        return new ImageNode();
     }
 
-    protected GraphicsNode createBase64ImageNode(BridgeContext ctx,
-                                                 SVGElement svgElement,
-                                                 String uriStr) {
+    /**
+     * Returns false as image is not a container.
+     */
+    public boolean isComposite() {
+        return false;
+    }
+
+    /**
+     * Returns a GraphicsNode that represents an raster image encoded
+     * in the base 64 format.
+     *
+     * @param ctx the bridge context
+     * @param e the image element
+     * @param uriStr the uri of the image
+     */
+    protected static GraphicsNode createBase64ImageNode(BridgeContext ctx,
+                                                        Element e,
+                                                        String uriStr) {
         RasterImageNode node = new RasterImageNode();
         // create the image
-        Rectangle2D bounds = getImageBounds(ctx, svgElement);
-        node.setImage(RasterRable.create(uriStr, 
-                                         bounds,
-                                         extractColorSpace(svgElement, ctx)));
-        node.setImageBounds(bounds);
-        return node;
-    }
-
-    protected GraphicsNode createRasterImageNode(BridgeContext ctx,
-                                                 SVGElement svgElement,
-                                                 URL url) {
-        RasterImageNode node = new RasterImageNode();
-        // create the image
-        Rectangle2D bounds = getImageBounds(ctx, svgElement);
-        node.setImage(RasterRable.create(url, 
-                                         bounds, 
-                                         extractColorSpace(svgElement, ctx)));
+        Rectangle2D bounds = getImageBounds(ctx, e);
+        node.setImage
+            (RasterRable.create(uriStr, bounds, extractColorSpace(e, ctx)));
         node.setImageBounds(bounds);
         return node;
     }
 
     /**
-     * Analyzes the color-profile property and builds an ICCColorSpaceExt
-     * object from it.
+     * Returns a GraphicsNode that represents an raster image in JPEG
+     * or PNG format.
+     *
+     * @param ctx the bridge context
+     * @param e the image element
+     * @param uriStr the uri of the image
      */
-    protected ICCColorSpaceExt extractColorSpace(SVGElement svgElement,
-                                                 BridgeContext ctx){
-        CSSStyleDeclaration cssDecl = CSSUtilities.getComputedStyle(svgElement);
-        CSSPrimitiveValue val
-            = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue(CSS_COLOR_PROFILE_PROPERTY);
-
-        if(val.getPrimitiveType() != CSSPrimitiveValue.CSS_IDENT){
-            throw new Error(); // Should never happen
-        }
-
-        
-        String colorProfileProperty 
-            = val.getStringValue();
-
-        /**
-         * The only cases that need special handling are
-         * 'sRGB' and 'name'
-         */
-        ICCColorSpaceExt colorSpace = null;
-        if(CSS_SRGB_VALUE.equalsIgnoreCase(colorProfileProperty)){
-            colorSpace 
-                = new ICCColorSpaceExt(ICC_Profile.getInstance(ColorSpace.CS_sRGB),
-                                       ICCColorSpaceExt.AUTO);
-        }
-        else if(!CSS_AUTO_VALUE.equalsIgnoreCase(colorProfileProperty)
-                &&
-                !"".equalsIgnoreCase(colorProfileProperty)){
-            /*
-             * The value is neither 'sRGB' nor 'auto': it is 
-             * a profile name.
-             */
-            SVGColorProfileElementBridge profileBridge =
-                (SVGColorProfileElementBridge)
-                ctx.getBridge(SVG_NAMESPACE_URI,
-                              SVG_COLOR_PROFILE_TAG);
-            
-            if(profileBridge != null){
-                colorSpace
-                    = profileBridge.build(colorProfileProperty,
-                                          ctx, svgElement);
-
-            }
-        }
-              
-        return colorSpace;
+    protected static GraphicsNode createRasterImageNode(BridgeContext ctx,
+                                                        Element e,
+                                                        URL url) {
+        RasterImageNode node = new RasterImageNode();
+        // create the image
+        Rectangle2D bounds = getImageBounds(ctx, e);
+        node.setImage
+            (RasterRable.create(url, bounds, extractColorSpace(e, ctx)));
+        node.setImageBounds(bounds);
+        return node;
     }
 
-    protected GraphicsNode createSVGImageNode(BridgeContext ctx,
-                                              SVGElement element,
-                                              SVGDocument imgDocument) {
+    /**
+     * Returns a GraphicsNode that represents a svg document as an image.
+     *
+     * @param ctx the bridge context
+     * @param element the image element
+     * @param imgDocument the SVG document that represents the image
+     */
+    protected static GraphicsNode createSVGImageNode(BridgeContext ctx,
+                                                     Element element,
+                                                     SVGDocument imgDocument) {
 
-        Viewport oldViewport = ctx.getViewport();
-
-        ctx.setViewport(null);
+        // viewport is automatically created by the svg element of the image
         SVGSVGElement svgElement = imgDocument.getRootElement();
-
         CompositeGraphicsNode result = new CompositeGraphicsNode();
-
         CSSStyleDeclaration decl = CSSUtilities.getComputedStyle(element);
-        UnitProcessor.Context uctx
-            = new DefaultUnitProcessorContext(ctx, decl);
+        UnitProcessor.Context uctx = UnitProcessor.createContext(ctx, element);
 
-        Rectangle2D rect = CSSUtilities.convertEnableBackground((SVGElement)element,
-                                                                decl,
-                                                                uctx);
-        if (rect != null) {
-            result.setBackgroundEnable(rect);
+        Rectangle2D r
+            = CSSUtilities.convertEnableBackground(element, uctx);
+        if (r != null) {
+            result.setBackgroundEnable(r);
         }
 
         GraphicsNode node = ctx.getGVTBuilder().build(ctx, svgElement);
@@ -273,101 +204,111 @@ public class SVGImageElementBridge implements GraphicsNodeBridge,
         float y = (float)bounds.getY();
         float w = (float)bounds.getWidth();
         float h = (float)bounds.getHeight();
-        AffineTransform at;
-        at = SVGUtilities.getPreserveAspectRatioTransform
-            (element, w, h);
+        AffineTransform at
+            = ViewBox.getPreserveAspectRatioTransform(element, w, h);
         at.preConcatenate(AffineTransform.getTranslateInstance(x, y));
         result.setTransform(at);
         try {
             at = at.createInverse(); // clip in user space
-
-            GraphicsNodeRableFactory gnrFactory
-                = ctx.getGraphicsNodeRableFactory();
-
-            Filter filter = gnrFactory.createGraphicsNodeRable(node,
-                                       ctx.getGraphicsNodeRenderContext());
-
+            Filter filter = new GraphicsNodeRable8Bit
+                (node, ctx.getGraphicsNodeRenderContext());
             Shape clip = at.createTransformedShape
                 (new Rectangle2D.Float(x, y, w, h));
             result.setClip(new ClipRable8Bit(filter, clip));
-
         } catch (java.awt.geom.NoninvertibleTransformException ex) {}
 
-        // restore viewport and current CSS view
-        ctx.setViewport(oldViewport);
         return result;
     }
 
-    protected Rectangle2D getImageBounds(BridgeContext ctx,
-                                         SVGElement svgElement) {
+    /**
+     * Analyzes the color-profile property and builds an ICCColorSpaceExt
+     * object from it.
+     *
+     * @param element the element with the color-profile property
+     * @param ctx the bridge context
+     */
+    protected static ICCColorSpaceExt extractColorSpace(Element element,
+                                                        BridgeContext ctx) {
 
-        CSSStyleDeclaration cssDecl = CSSUtilities.getComputedStyle(svgElement);
+        CSSStyleDeclaration decl = CSSUtilities.getComputedStyle(element);
+        String colorProfileProperty
+            = ((CSSPrimitiveValue)decl.getPropertyCSSValue
+               (CSS_COLOR_PROFILE_PROPERTY)).getStringValue();
 
-        UnitProcessor.Context uctx
-            = new DefaultUnitProcessorContext(ctx, cssDecl);
+        // The only cases that need special handling are 'sRGB' and 'name'
+        ICCColorSpaceExt colorSpace = null;
+        if (CSS_SRGB_VALUE.equalsIgnoreCase(colorProfileProperty)) {
 
-        // parse the x attribute, (default is 0)
-        String s = svgElement.getAttributeNS(null, SVG_X_ATTRIBUTE);
+            colorSpace = new ICCColorSpaceExt
+                (ICC_Profile.getInstance(ColorSpace.CS_sRGB),
+                 ICCColorSpaceExt.AUTO);
+
+        } else if (!CSS_AUTO_VALUE.equalsIgnoreCase(colorProfileProperty)
+                   && !"".equalsIgnoreCase(colorProfileProperty)){
+
+            // The value is neither 'sRGB' nor 'auto': it is a profile name.
+            SVGColorProfileElementBridge profileBridge =
+                (SVGColorProfileElementBridge) ctx.getBridge
+                (SVG_NAMESPACE_URI, SVG_COLOR_PROFILE_TAG);
+            if (profileBridge != null) {
+                colorSpace = profileBridge.createICCColorSpaceExt
+                    (ctx, element, colorProfileProperty);
+
+            }
+        }
+        return colorSpace;
+    }
+
+    /**
+     * Returns the bounds of the specified image element.
+     *
+     * @param ctx the bridge context
+     * @param element the image element
+     */
+    protected static
+        Rectangle2D getImageBounds(BridgeContext ctx, Element element) {
+
+        UnitProcessor.Context uctx = UnitProcessor.createContext(ctx, element);
+
+        // 'x' attribute - default is 0
+        String s = element.getAttributeNS(null, SVG_X_ATTRIBUTE);
         float x = 0;
         if (s.length() != 0) {
-            x = SVGUtilities.svgToUserSpace(svgElement,
-                                            SVG_X_ATTRIBUTE, s,
-                                            uctx,
-                                            UnitProcessor.HORIZONTAL_LENGTH);
+            x = UnitProcessor.svgHorizontalCoordinateToUserSpace
+                (s, SVG_X_ATTRIBUTE, uctx);
         }
 
-        // parse the x attribute, (default is 0)
-        s = svgElement.getAttributeNS(null, SVG_Y_ATTRIBUTE);
+        // 'y' attribute - default is 0
+        s = element.getAttributeNS(null, SVG_Y_ATTRIBUTE);
         float y = 0;
         if (s.length() != 0) {
-            y = SVGUtilities.svgToUserSpace(svgElement,
-                                            SVG_Y_ATTRIBUTE, s,
-                                            uctx,
-                                            UnitProcessor.VERTICAL_LENGTH);
+            y = UnitProcessor.svgVerticalCoordinateToUserSpace
+                (s, SVG_Y_ATTRIBUTE, uctx);
         }
 
-        // parse the width attribute, (required and must be positive)
-        s = svgElement.getAttributeNS(null, SVG_WIDTH_ATTRIBUTE);
+        // 'width' attribute - required
+        s = element.getAttributeNS(null, SVG_WIDTH_ATTRIBUTE);
         float w;
         if (s.length() == 0) {
-            throw new MissingAttributeException(
-                Messages.formatMessage("image.width.required", null));
+            throw new BridgeException(element, ERR_ATTRIBUTE_MISSING,
+                                      new Object[] {SVG_WIDTH_ATTRIBUTE});
         } else {
-            w = SVGUtilities.svgToUserSpace(svgElement,
-                                            SVG_WIDTH_ATTRIBUTE, s,
-                                            uctx,
-                                            UnitProcessor.HORIZONTAL_LENGTH);
-            if (w < 0) {
-                throw new IllegalAttributeValueException(
-                    Messages.formatMessage("image.width.negative", null));
-            }
+            w = UnitProcessor.svgHorizontalLengthToUserSpace
+                (s, SVG_WIDTH_ATTRIBUTE, uctx);
         }
 
-        // parse the height attribute, (required and must be positive)
-        s = svgElement.getAttributeNS(null, SVG_HEIGHT_ATTRIBUTE);
+        // 'height' attribute - required
+        s = element.getAttributeNS(null, SVG_HEIGHT_ATTRIBUTE);
         float h;
         if (s.length() == 0) {
-            throw new MissingAttributeException(
-                Messages.formatMessage("image.height.required", null));
+            throw new BridgeException(element, ERR_ATTRIBUTE_MISSING,
+                                      new Object[] {SVG_HEIGHT_ATTRIBUTE});
         } else {
-            h = SVGUtilities.svgToUserSpace(svgElement,
-                                            SVG_HEIGHT_ATTRIBUTE, s,
-                                            uctx,
-                                            UnitProcessor.VERTICAL_LENGTH);
-            if (h < 0) {
-                throw new IllegalAttributeValueException(
-                    Messages.formatMessage("image.height.negative", null));
-            }
+            h = UnitProcessor.svgVerticalLengthToUserSpace
+                (s, SVG_HEIGHT_ATTRIBUTE, uctx);
         }
 
         return new Rectangle2D.Float(x, y, w, h);
     }
 
-    public void update(BridgeMutationEvent evt) {
-        // <!> FIXME : TODO
-    }
-
-    public boolean isContainer() {
-        return false;
-    }
 }

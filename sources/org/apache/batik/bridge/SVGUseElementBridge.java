@@ -8,130 +8,232 @@
 
 package org.apache.batik.bridge;
 
-import java.awt.AlphaComposite;
-import java.awt.Composite;
-import java.awt.RenderingHints;
-import java.awt.Shape;
+import java.net.MalformedURLException;
+
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 
-import java.io.StringReader;
-
-import org.apache.batik.bridge.BridgeContext;
-import org.apache.batik.bridge.BridgeMutationEvent;
-import org.apache.batik.bridge.GraphicsNodeBridge;
+import org.apache.batik.css.CSSOMReadOnlyStyleDeclaration;
+import org.apache.batik.css.HiddenChildElement;
+import org.apache.batik.dom.svg.SVGOMDocument;
+import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
-import org.apache.batik.ext.awt.image.renderable.Filter;
-import org.apache.batik.ext.awt.image.renderable.Clip;
-import org.apache.batik.gvt.filter.Mask;
 import org.apache.batik.util.SVGConstants;
-import org.apache.batik.util.UnitProcessor;
 
-import org.w3c.dom.Document;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
-
-import org.w3c.dom.views.DocumentView;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 import org.w3c.dom.css.ViewCSS;
-import org.w3c.dom.css.CSSPrimitiveValue;
-import org.w3c.dom.css.CSSStyleDeclaration;
-import org.w3c.dom.svg.SVGElement;
+import org.w3c.dom.svg.SVGSVGElement;
+import org.w3c.dom.svg.SVGSymbolElement;
 
 /**
- * A factory for the &lt;use&gt; SVG element.
+ * Bridge class for the &lt;use> element.
  *
- * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
+ * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
-public class SVGUseElementBridge
-    implements GraphicsNodeBridge,
-               SVGConstants {
+public class SVGUseElementBridge implements GraphicsNodeBridge,
+                                            SVGConstants,
+                                            ErrorConstants {
 
-    public GraphicsNode createGraphicsNode(BridgeContext ctx,
-                                           Element element){
+    /**
+     * Constructs a new bridge for the &lt;use> element.
+     */
+    public SVGUseElementBridge() {}
+
+    /**
+     * Creates a <tt>GraphicsNode</tt> according to the specified parameters.
+     *
+     * @param ctx the bridge context to use
+     * @param e the element that describes the graphics node to build
+     * @return a graphics node that represents the specified element
+     */
+    public GraphicsNode createGraphicsNode(BridgeContext ctx, Element e) {
+
+        // get the referenced element
+        String uri = XLinkSupport.getXLinkHref(e);
+        Element refElement = ctx.getReferencedElement(e, uri);
+        SVGOMDocument document
+            = (SVGOMDocument)e.getOwnerDocument();
+        SVGOMDocument refDocument
+            = (SVGOMDocument)refElement.getOwnerDocument();
+        boolean isLocal = (refDocument == document);
+        // import or clone the referenced element in current document
+        Element localRefElement = (isLocal)
+            ? (Element)refElement.cloneNode(true)
+            : (Element)document.importNode(refElement, true);
+
+        // create a <g> with all the attribute of the <use> element
+        // except x, y, width, height and xlink:href
+
+        Element g = document.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
+        NamedNodeMap attrs = e.getAttributes();
+        int len = attrs.getLength();
+
+        for (int i = 0; i < len; i++) {
+            Attr attr = (Attr)attrs.item(i);
+            String ns = attr.getNamespaceURI();
+            if (ns == null) {
+                String n = attr.getNodeName();
+                if (SVG_X_ATTRIBUTE.equals(n)
+                    || SVG_Y_ATTRIBUTE.equals(n)
+                    || SVG_WIDTH_ATTRIBUTE.equals(n)
+                    || SVG_HEIGHT_ATTRIBUTE.equals(n)) {
+                    continue;
+                } else {
+                    g.setAttributeNS(null, n, attr.getValue());
+                }
+            } else {
+                String n = attr.getLocalName();
+                if (ns.equals(XLinkSupport.XLINK_NAMESPACE_URI)) {
+                    if ("href".equals(n)) {
+                        continue;
+                    } else {
+                        g.setAttributeNS(ns, n, attr.getValue());
+                    }
+                } else {
+                    g.setAttributeNS(ns, n, attr.getValue());
+                }
+            }
+        }
+
+        if (SVG_SYMBOL_TAG.equals(localRefElement.getLocalName())) {
+            // The referenced 'symbol' and its contents are deep-cloned into
+            // the generated tree, with the exception that the 'symbol'  is
+            // replaced by an 'svg'.
+            Element svgElement
+                = document.createElementNS(SVG_NAMESPACE_URI, SVG_SVG_TAG);
+            // move the attributes from <symbol> to the <svg> element
+            attrs = localRefElement.getAttributes();
+            len = attrs.getLength();
+            for (int i = 0; i < len; i++) {
+                Attr attr = (Attr)attrs.item(i);
+                svgElement.setAttributeNS(attr.getNamespaceURI(),
+                                          attr.getName(),
+                                          attr.getValue());
+            }
+            // move the children from <symbol> to the <svg> element
+            for (Node n = localRefElement.getFirstChild();
+                 n != null;
+                 n = localRefElement.getFirstChild()) {
+                svgElement.appendChild(n);
+            }
+            localRefElement = svgElement;
+        }
+
+        if (SVG_SVG_TAG.equals(localRefElement.getLocalName())) {
+            // The referenced 'svg' and its contents are deep-cloned into the
+            // generated tree. If attributes width and/or height are provided
+            // on the 'use' element, then these values will override the
+            // corresponding attributes on the 'svg' in the generated tree.
+            String wStr = e.getAttributeNS(null, SVG_WIDTH_ATTRIBUTE);
+            if (wStr.length() != 0) {
+                localRefElement.setAttributeNS
+                    (null, SVG_WIDTH_ATTRIBUTE, wStr);
+            }
+            String hStr = e.getAttributeNS(null, SVG_HEIGHT_ATTRIBUTE);
+            if (hStr.length() != 0) {
+                localRefElement.setAttributeNS
+                    (null, SVG_HEIGHT_ATTRIBUTE, hStr);
+            }
+        }
+
+        g.appendChild(localRefElement);
+
+        // attach the referenced element to the current document
+        ((HiddenChildElement)g).setParentElement(e);
+        // compute the style of the <g> as it may have local
+        // references we have to update
+        ViewCSS viewCSS = (ViewCSS)document.getDefaultView();
+        CSSOMReadOnlyStyleDeclaration decl =
+            (CSSOMReadOnlyStyleDeclaration)(viewCSS).getComputedStyle(g, null);
+        try {
+            CSSUtilities.updateURIs(decl, refDocument.getURLObject());
+        } catch (MalformedURLException ex) {
+        }
+
+        // compute URIs and style sheets for external reference
+        if (!isLocal) {
+            CSSUtilities.computeStyleAndURIs(refElement, localRefElement);
+        }
+
+        GVTBuilder builder = ctx.getGVTBuilder();
+        GraphicsNode refNode = builder.build(ctx, g);
+
+        ///////////////////////////////////////////////////////////////////////
 
         CompositeGraphicsNode gn = new CompositeGraphicsNode();
+        gn.getChildren().add(refNode);
 
-        CSSStyleDeclaration decl = CSSUtilities.getComputedStyle(element);
+        UnitProcessor.Context uctx = UnitProcessor.createContext(ctx, g);
+        String s;
 
-        UnitProcessor.Context uctx
-            = new DefaultUnitProcessorContext(ctx,
-                                              decl);
-
-        // parse the x attribute, (default is 0)
-        String s = element.getAttributeNS(null, SVG_X_ATTRIBUTE);
+        // 'x' attribute - default is 0
         float x = 0;
+        s = e.getAttributeNS(null, SVG_X_ATTRIBUTE);
         if (s.length() != 0) {
-            x = SVGUtilities.svgToUserSpace(element,
-                                            SVG_X_ATTRIBUTE, s,
-                                            uctx,
-                                            UnitProcessor.HORIZONTAL_LENGTH);
+            x = UnitProcessor.svgHorizontalCoordinateToUserSpace
+                (s, SVG_X_ATTRIBUTE, uctx);
         }
 
-        // parse the y attribute, (default is 0)
-        s = element.getAttributeNS(null, SVG_Y_ATTRIBUTE);
+        // 'y' attribute - default is 0
         float y = 0;
+        s = e.getAttributeNS(null, SVG_Y_ATTRIBUTE);
         if (s.length() != 0) {
-            y = SVGUtilities.svgToUserSpace(element,
-                                            SVG_Y_ATTRIBUTE, s,
-                                            uctx,
-                                            UnitProcessor.VERTICAL_LENGTH);
+            y = UnitProcessor.svgVerticalCoordinateToUserSpace
+                (s, SVG_Y_ATTRIBUTE, uctx);
         }
 
-        AffineTransform at = AffineTransform.getTranslateInstance(x, y);
-        String transformStr = element.getAttributeNS(null, ATTR_TRANSFORM);
-        if (transformStr.length() > 0) {
-            at.preConcatenate(SVGUtilities.convertAffineTransform(transformStr));
+        // set an affine transform to take into account the (x, y)
+        // coordinates of the <use> element
+        gn.setTransform(AffineTransform.getTranslateInstance(x, y));
+
+        // 'visibility'
+        gn.setVisible(CSSUtilities.convertVisibility(e));
+
+        // 'enable-background'
+        Rectangle2D r
+            = CSSUtilities.convertEnableBackground(e, uctx);
+        if (r != null) {
+            gn.setBackgroundEnable(r);
         }
-
-        gn.setTransform(at);
-
-        Rectangle2D rect =
-        CSSUtilities.convertEnableBackground((SVGElement)element,
-                                             decl,
-                                             uctx);
-        if (rect != null) {
-            gn.setBackgroundEnable(rect);
-        }
-
-        // visibility
-        gn.setVisible(CSSUtilities.convertVisibility(element));
-
         return gn;
     }
 
-    public void buildGraphicsNode(GraphicsNode gn,
-                                  BridgeContext ctx,
-                                  Element element) {
-        CSSStyleDeclaration decl = CSSUtilities.getComputedStyle(element);
+    /**
+     * Builds using the specified BridgeContext and element, the
+     * specified graphics node.
+     *
+     * @param ctx the bridge context to use
+     * @param e the element that describes the graphics node to build
+     * @param node the graphics node to build
+     */
+    public void buildGraphicsNode(BridgeContext ctx,
+                                  Element e,
+                                  GraphicsNode node) {
 
-        CSSPrimitiveValue val =
-            (CSSPrimitiveValue)decl.getPropertyCSSValue(ATTR_OPACITY);
-        Composite composite = CSSUtilities.convertOpacityToComposite(val);
-        gn.setComposite(composite);
-
-        // Set the node filter
-        Filter filter = CSSUtilities.convertFilter(element, gn, ctx);
-        gn.setFilter(filter);
-
-        // Set the node mask
-        Mask mask = CSSUtilities.convertMask(element, gn, ctx);
-        gn.setMask(mask);
-
-        // Set the node clip
-        Clip clip = CSSUtilities.convertClipPath(element, gn, ctx);
-        gn.setClip(clip);
-
-        // <!> TODO only when binding is enabled
-        BridgeEventSupport.addDOMListener(ctx, (SVGElement)element);
+        // bind the specified element and its associated graphics node if needed
+        if (ctx.isDynamic()) {
+            ctx.bind(e, node);
+        }
     }
 
+    /**
+     * Performs an update according to the specified event.
+     *
+     * @param evt the event describing the update to perform
+     */
     public void update(BridgeMutationEvent evt) {
-        // <!> FIXME : TODO
+        throw new Error("Not implemented");
     }
 
-    public boolean isContainer() {
+    /**
+     * Returns false as the &lt;use> element is a not container.
+     */
+    public boolean isComposite() {
         return false;
     }
 }

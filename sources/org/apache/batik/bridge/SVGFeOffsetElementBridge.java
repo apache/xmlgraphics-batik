@@ -8,158 +8,103 @@
 
 package org.apache.batik.bridge;
 
-import java.awt.Color;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
-import java.util.Hashtable;
 import java.util.Map;
-import java.util.StringTokenizer;
-
-import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
-import org.apache.batik.ext.awt.image.renderable.AffineRable;
-import org.apache.batik.ext.awt.image.renderable.Filter;
-import org.apache.batik.ext.awt.image.renderable.FilterChainRable;
-import org.apache.batik.ext.awt.image.renderable.PadMode;
-import org.apache.batik.ext.awt.image.renderable.PadRable;
 
 import org.apache.batik.ext.awt.image.renderable.AffineRable8Bit;
+import org.apache.batik.ext.awt.image.renderable.Filter;
+import org.apache.batik.ext.awt.image.renderable.PadMode;
 import org.apache.batik.ext.awt.image.renderable.PadRable8Bit;
+import org.apache.batik.ext.awt.image.renderable.PadRable;
+import org.apache.batik.gvt.GraphicsNode;
 
-import org.apache.batik.util.SVGConstants;
-import org.apache.batik.util.UnitProcessor;
-
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.css.CSSPrimitiveValue;
-import org.w3c.dom.css.CSSStyleDeclaration;
-import org.w3c.dom.css.CSSValue;
-import org.w3c.dom.css.RGBColor;
-import org.w3c.dom.css.ViewCSS;
-import org.w3c.dom.views.DocumentView;
 
 /**
- * This class bridges an SVG <tt>filter</tt> element with a concrete
- * <tt>Filter</tt>.
+ * Bridge class for the &lt;feOffset> element.
  *
- * @author <a href="mailto:dean@w3.org">Dean Jackson</a>
- * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
+ * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
-public class SVGFeOffsetElementBridge implements FilterPrimitiveBridge,
-                                                 SVGConstants {
+public class SVGFeOffsetElementBridge
+    extends SVGAbstractFilterPrimitiveElementBridge {
 
     /**
-     * Returns the <tt>Filter</tt> that implements the filter
-     * operation modeled by the input DOM element
+     * Constructs a new bridge for the &lt;feOffset> element.
+     */
+    public SVGFeOffsetElementBridge() {}
+
+    /**
+     * Creates a <tt>Filter</tt> primitive according to the specified
+     * parameters.
      *
-     * @param filteredNode the node to which the filter will be attached.
-     * @param bridgeContext the context to use.
-     * @param filterElement DOM element that represents a filter abstraction
-     * @param in the <tt>Filter</tt> that represents the current
+     * @param ctx the bridge context to use
+     * @param filterElement the element that defines a filter
+     * @param filteredElement the element that references the filter
+     * @param filteredNode the graphics node to filter
+     *
+     * @param inputFilter the <tt>Filter</tt> that represents the current
      *        filter input if the filter chain.
-     * @param filterRegion the filter area defined for the filter chained
+     * @param filterRegion the filter area defined for the filter chain
      *        the new node will be part of.
      * @param filterMap a map where the mediator can map a name to the
      *        <tt>Filter</tt> it creates. Other <tt>FilterBridge</tt>s
      *        can then access a filter node from the filterMap if they
      *        know its name.
      */
-    public Filter create(GraphicsNode filteredNode,
-                         BridgeContext bridgeContext,
-                         Element filterElement,
-                         Element filteredElement,
-                         Filter in,
-                         Rectangle2D filterRegion,
-                         Map filterMap){
+    public Filter createFilter(BridgeContext ctx,
+                               Element filterElement,
+                               Element filteredElement,
+                               GraphicsNode filteredNode,
+                               Filter inputFilter,
+                               Rectangle2D filterRegion,
+                               Map filterMap) {
 
-        GraphicsNodeRenderContext rc =
-                         bridgeContext.getGraphicsNodeRenderContext();
 
-        DocumentLoader loader = bridgeContext.getDocumentLoader();
-
-        // parse the dx attribute
-        String dxAttr = filterElement.getAttributeNS(null, SVG_DX_ATTRIBUTE);
-        float dx = 0; // default is 0
-        if (dxAttr.length() != 0) {
-            dx = SVGUtilities.convertSVGNumber(SVG_DX_ATTRIBUTE, dxAttr);
+        // 'in' attribute
+        Filter in = getIn(filterElement,
+                          filteredElement,
+                          filteredNode,
+                          inputFilter,
+                          filterMap,
+                          ctx);
+        if (in == null) {
+            return null; // disable the filter
         }
 
-        // parse the dy attribute
-        String dyAttr = filterElement.getAttributeNS(null, SVG_DY_ATTRIBUTE);
-        float dy = 0; // default is 0
-        if (dyAttr.length() != 0) {
-            dy = SVGUtilities.convertSVGNumber(SVG_DY_ATTRIBUTE, dyAttr);
+        // The default region is the union of the input sources
+        // regions unless 'in' is 'SourceGraphic' in which case the
+        // default region is the filterChain's region
+        Filter sourceGraphics = (Filter)filterMap.get(VALUE_SOURCE_GRAPHIC);
+        Rectangle2D defaultRegion;
+        if (in == sourceGraphics) {
+            defaultRegion = filterRegion;
+        } else {
+            defaultRegion = in.getBounds2D();
         }
 
-        AffineTransform offsetTransform =
-            AffineTransform.getTranslateInstance(dx, dy);
+        Rectangle2D primitiveRegion
+            = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
+                                                        filteredElement,
+                                                        filteredNode,
+                                                        defaultRegion,
+                                                        filterRegion,
+                                                        ctx);
 
-        // Get source
-        String inAttr = filterElement.getAttributeNS(null, SVG_IN_ATTRIBUTE);
-        in = CSSUtilities.getFilterSource(filteredNode,
-                                          inAttr,
-                                          bridgeContext,
-                                          filteredElement,
-                                          in,
-                                          filterMap);
+        float dx = convertNumber(filterElement, SVG_DX_ATTRIBUTE, 0);
+        float dy = convertNumber(filterElement, SVG_DY_ATTRIBUTE, 0);
+        AffineTransform at = AffineTransform.getTranslateInstance(dx, dy);
 
         // feOffset is a point operation. Therefore, to take the
         // filter primitive region into account, only a pad operation
         // on the input is required.
+        PadRable pad = new PadRable8Bit(in, primitiveRegion, PadMode.ZERO_PAD);
+        Filter filter = new AffineRable8Bit(pad, at);
 
-        //
-        // The default region is the input source's region unless the
-        // source is SourceGraphics, in which case the default region
-        // is the filter chain's region
-        //
-        Filter sourceGraphics = (Filter)filterMap.get(VALUE_SOURCE_GRAPHIC);
+        // update the filter Map
+        updateFilterMap(filterElement, filter, filterMap);
 
-        Rectangle2D defaultRegion = in.getBounds2D();
-
-        if (in == sourceGraphics) {
-            defaultRegion = filterRegion;
-        }
-
-        CSSStyleDeclaration cssDecl
-            = CSSUtilities.getComputedStyle(filterElement);
-
-        UnitProcessor.Context uctx
-            = new DefaultUnitProcessorContext(bridgeContext, cssDecl);
-
-        Rectangle2D offsetArea
-            = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
-                                                        filteredElement,
-                                                        defaultRegion,
-                                                        filterRegion,
-                                                        filteredNode,
-                                                        rc,
-                                                        uctx,
-                                                        loader);
-
-        PadRable pad = new PadRable8Bit(in,
-                                            offsetArea,
-                                            PadMode.ZERO_PAD);
-
-        // Create the AffineRable that maps the input filter node
-        AffineRable offset = new AffineRable8Bit(pad, offsetTransform);
-
-        // Get result attribute if any
-        String result = filterElement.getAttributeNS(null, ATTR_RESULT);
-        if((result != null) && (result.trim().length() > 0)){
-            filterMap.put(result, offset);
-        }
-
-        return offset;
-    }
-
-    /**
-     * Update the <tt>Filter</tt> object to reflect the current
-     * configuration in the <tt>Element</tt> that models the filter.
-     */
-    public void update(BridgeMutationEvent evt) {
-        // <!> FIXME : TODO
+        return filter;
     }
 }

@@ -16,6 +16,11 @@ package org.apache.batik.util;
  * @version $Id$
  */
 public interface SVGConstants extends CSSConstants {
+
+    /////////////////////////////////////////////////////////////////////////
+    // SVG general
+    /////////////////////////////////////////////////////////////////////////
+
     String SVG_PUBLIC_ID =
         "-//W3C//DTD SVG 20001102//EN";
     String SVG_SYSTEM_ID =
@@ -23,11 +28,12 @@ public interface SVGConstants extends CSSConstants {
     String SVG_NAMESPACE_URI =
         "http://www.w3.org/2000/svg";
 
-    //
-    // Tags
-    //
-    String SVG_A_TAG = "a";
+    /////////////////////////////////////////////////////////////////////////
+    // SVG tags
+    /////////////////////////////////////////////////////////////////////////
+
     String SVG_ANIMATE_TAG = "animate";
+    String SVG_A_TAG = "a";
     String SVG_CIRCLE_TAG = "circle";
     String SVG_CLIP_PATH_TAG = "clipPath";
     String SVG_COLOR_PROFILE_TAG = "color-profile";
@@ -49,8 +55,8 @@ public interface SVGConstants extends CSSConstants {
     String SVG_FE_FUNC_R_TAG = "feFuncR";
     String SVG_FE_GAUSSIAN_BLUR_TAG = "feGaussianBlur";
     String SVG_FE_IMAGE_TAG = "feImage";
-    String SVG_FE_MERGE_TAG = "feMerge";
     String SVG_FE_MERGE_NODE_TAG = "feMergeNode";
+    String SVG_FE_MERGE_TAG = "feMerge";
     String SVG_FE_MORPHOLOGY_TAG = "feMorphology";
     String SVG_FE_OFFSET_TAG = "feOffset";
     String SVG_FE_POINT_LIGHT_TAG = "fePointLight";
@@ -61,8 +67,8 @@ public interface SVGConstants extends CSSConstants {
     String SVG_FILTER_TAG = "filter";
     String SVG_G_TAG = "g";
     String SVG_IMAGE_TAG = "image";
-    String SVG_LINE_TAG = "line";
     String SVG_LINEAR_GRADIENT_TAG = "linearGradient";
+    String SVG_LINE_TAG = "line";
     String SVG_MARKER_TAG = "marker";
     String SVG_MASK_TAG = "mask";
     String SVG_METADATA_TAG = "metadata";
@@ -78,19 +84,17 @@ public interface SVGConstants extends CSSConstants {
     String SVG_SVG_TAG = "svg";
     String SVG_SWITCH_TAG = "switch";
     String SVG_SYMBOL_TAG = "symbol";
-    String SVG_TEXT_TAG = "text";
     String SVG_TEXT_PATH_TAG = "textPath";
+    String SVG_TEXT_TAG = "text";
     String SVG_TITLE_TAG = "title";
     String SVG_TREF_TAG = "tref";
     String SVG_TSPAN_TAG = "tspan";
     String SVG_USE_TAG = "use";
 
-    // custom tag
-    String TAG_TEXT_PATH = "textPath";
+    /////////////////////////////////////////////////////////////////////////
+    // SVG attributes
+    /////////////////////////////////////////////////////////////////////////
 
-    //
-    // Attribute names
-    //
     String SVG_AMPLITUDE_ATTRIBUTE = "amplitude";
     String SVG_AZIMUTH_ATTRIBUTE = "azimuth";
     String SVG_BASE_FREQUENCY_ATTRIBUTE = "baseFrequency";
@@ -101,11 +105,11 @@ public interface SVGConstants extends CSSConstants {
     String SVG_COLOR_RENDERING_ATTRIBUTE = CSS_COLOR_RENDERING_PROPERTY;
     String SVG_CX_ATTRIBUTE = "cx";
     String SVG_CY_ATTRIBUTE = "cy";
-    String SVG_D_ATTRIBUTE = "d";
     String SVG_DIFFUSE_CONSTANT_ATTRIBUTE = "diffuseConstant";
     String SVG_DIVISOR_ATTRIBUTE = "divisor";
     String SVG_DX_ATTRIBUTE = "dx";
     String SVG_DY_ATTRIBUTE = "dy";
+    String SVG_D_ATTRIBUTE = "d";
     String SVG_EDGE_MODE_ATTRIBUTE = "edgeMode";
     String SVG_ELEVATION_ATTRIBUTE = "elevation";
     String SVG_ENABLE_BACKGROUND_ATTRIBUTE = CSS_ENABLE_BACKGROUND_PROPERTY;
@@ -122,17 +126,17 @@ public interface SVGConstants extends CSSConstants {
     String SVG_FONT_SIZE_ATTRIBUTE = CSS_FONT_SIZE_PROPERTY;
     String SVG_FONT_STYLE_ATTRIBUTE = CSS_FONT_STYLE_PROPERTY;
     String SVG_FONT_WEIGHT_ATTRIBUTE = CSS_FONT_WEIGHT_PROPERTY;
-    String ATTR_FX = "fx";
-    String ATTR_FY = "fy";
-    String ATTR_GRADIENT_TRANSFORM = "gradientTransform";
-    String ATTR_GRADIENT_UNITS = "gradientUnits";
+    String SVG_FX_ATTRIBUTE = "fx";
+    String SVG_FY_ATTRIBUTE = "fy";
+    String SVG_GRADIENT_TRANSFORM_ATTRIBUTE = "gradientTransform";
+    String SVG_GRADIENT_UNITS_ATTRIBUTE = "gradientUnits";
     String SVG_HEIGHT_ATTRIBUTE = "height";
-    String ATTR_HREF = "href";
-    String ATTR_ID = "id";
-    String ATTR_IMAGE_RENDERING = CSS_IMAGE_RENDERING_PROPERTY;
-    String SVG_IN_ATTRIBUTE = "in";
+    String SVG_HREF_ATTRIBUTE = "href";
+    String SVG_ID_ATTRIBUTE = "id";
+    String SVG_IMAGE_RENDERING_ATTRIBUTE = CSS_IMAGE_RENDERING_PROPERTY;
     String SVG_IN2_ATTRIBUTE = "in2";
     String SVG_INTERCEPT_ATTRIBUTE = "intercept";
+    String SVG_IN_ATTRIBUTE = "in";
     String SVG_K1_ATTRIBUTE = "k1";
     String SVG_K2_ATTRIBUTE = "k2";
     String SVG_K3_ATTRIBUTE = "k3";
@@ -141,95 +145,173 @@ public interface SVGConstants extends CSSConstants {
     String SVG_KERNEL_UNIT_LENGTH_ATTRIBUTE = "kernelUnitLength";
     String SVG_KERNEL_UNIT_LENGTH_X_ATTRIBUTE = "kernelUnitLengthX";
     String SVG_KERNEL_UNIT_LENGTH_Y_ATTRIBUTE = "kernelUnitLengthY";
-    String ATTR_KERNING = "kerning";
-    String ATTR_LENGTH_ADJUST = "lengthAdjust";
-    String ATTR_LIGHT_COLOR = "lightColor";
+    String SVG_KERNING_ATTRIBUTE = "kerning";
+    String SVG_LENGTH_ADJUST_ATTRIBUTE = "lengthAdjust";
+    String SVG_LIGHT_COLOR_ATTRIBUTE = "lightColor";
     String SVG_LIMITING_CONE_ANGLE_ATTRIBUTE = "limitingConeAngle";
     String SVG_MARKER_HEIGHT_ATTRIBUTE = "markerHeight";
-    String SVG_MARKER_WIDTH_ATTRIBUTE = "markerWidth";
     String SVG_MARKER_UNITS_ATTRIBUTE = "markerUnits";
-    String ATTR_MASK = CSS_MASK_PROPERTY;
-    String ATTR_MASK_CONTENT_UNITS = "maskContentUnits";
+    String SVG_MARKER_WIDTH_ATTRIBUTE = "markerWidth";
+    String SVG_MASK_ATTRIBUTE = CSS_MASK_PROPERTY;
+    String SVG_MASK_CONTENT_UNITS_ATTRIBUTE = "maskContentUnits";
     String SVG_MASK_UNITS_ATTRIBUTE = "maskUnits";
-    String ATTR_MEDIA = "media";
-    String ATTR_METHOD = "method";
+    String SVG_MEDIA_ATTRIBUTE = "media";
+    String SVG_METHOD_ATTRIBUTE = "method";
     String SVG_MODE_ATTRIBUTE = "mode";
     String SVG_NAME_ATTRIBUTE = "name";
     String SVG_NUM_OCTAVES_ATTRIBUTE = "numOctaves";
     String SVG_OFFSET_ATTRIBUTE = "offset";
-    String ATTR_OPACITY = CSS_OPACITY_PROPERTY;
+    String SVG_OPACITY_ATTRIBUTE = CSS_OPACITY_PROPERTY;
     String SVG_OPERATOR_ATTRIBUTE = "operator";
     String SVG_ORDER_ATTRIBUTE = "order";
     String SVG_ORDER_X_ATTRIBUTE = "orderX";
     String SVG_ORDER_Y_ATTRIBUTE = "orderY";
     String SVG_ORIENT_ATTRIBUTE = "orient";
-    String ATTR_PATTERN_CONTENT_UNITS = "patternContentUnits";
-    String ATTR_PATTERN_TRANSFORM = "patternTransform";
-    String ATTR_PATTERN_UNITS = "patternUnits";
+    String SVG_PATTERN_CONTENT_UNITS_ATTRIBUTE = "patternContentUnits";
+    String SVG_PATTERN_TRANSFORM_ATTRIBUTE = "patternTransform";
+    String SVG_PATTERN_UNITS_ATTRIBUTE = "patternUnits";
+    String SVG_POINTS_ATTRIBUTE = "points";
     String SVG_POINTS_AT_X_ATTRIBUTE = "pointsAtX";
     String SVG_POINTS_AT_Y_ATTRIBUTE = "pointsAtY";
     String SVG_POINTS_AT_Z_ATTRIBUTE = "pointsAtZ";
-    String ATTR_POINTS = "points";
     String SVG_PRESERVE_ALPHA_ATTRIBUTE = "preserveAlpha";
-    String ATTR_PRESERVE_ASPECT_RATIO = "preserveAspectRatio";
+    String SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE = "preserveAspectRatio";
     String SVG_PRIMITIVE_UNITS_ATTRIBUTE = "primitiveUnits";
-    String SVG_R_ATTRIBUTE = "r";
-    String ATTR_RADIUS = "radius";
+    String SVG_RADIUS_ATTRIBUTE = "radius";
     String SVG_REFX_ATTRIBUTE = "refX";
     String SVG_REFY_ATTRIBUTE = "refY";
     String SVG_RENDERING_INTENT_ATTRIBUTE = "rendering-intent";
-    String ATTR_RESULT = "result";
-    String ATTR_RESULT_SCALE = "resultScale";
+    String SVG_RESULT_ATTRIBUTE = "result";
+    String SVG_RESULT_SCALE_ATTRIBUTE = "resultScale";
     String SVG_RX_ATTRIBUTE = "rx";
     String SVG_RY_ATTRIBUTE = "ry";
-    String ATTR_SCALE = "scale";
+    String SVG_R_ATTRIBUTE = "r";
+    String SVG_SCALE_ATTRIBUTE = "scale";
     String SVG_SEED_ATTRIBUTE = "seed";
-    String ATTR_SHAPE_RENDERING = CSS_SHAPE_RENDERING_PROPERTY;
+    String SVG_SHAPE_RENDERING_ATTRIBUTE = CSS_SHAPE_RENDERING_PROPERTY;
     String SVG_SLOPE_ATTRIBUTE = "slope";
-    String ATTR_SPACE = "space";
-    String ATTR_SPACING = "spacing";
+    String SVG_SPACE_ATTRIBUTE = "space";
+    String SVG_SPACING_ATTRIBUTE = "spacing";
     String SVG_SPECULAR_CONSTANT_ATTRIBUTE = "specularConstant";
     String SVG_SPECULAR_EXPONENT_ATTRIBUTE = "specularExponent";
+    String SVG_SPREAD_METHOD_ATTRIBUTE = "spreadMethod";
+    String SVG_START_OFFSET_ATTRIBUTE = "startOffset";
+    String SVG_STD_DEVIATION_ATTRIBUTE = "stdDeviation";
+    String SVG_STITCH_TILES_ATTRIBUTE = "stitchTiles";
+    String SVG_STOP_COLOR_ATTRIBUTE = "stop-color";
+    String SVG_STOP_OPACITY_ATTRIBUTE = CSS_STOP_OPACITY_PROPERTY;
+    String SVG_STROKE_ATTRIBUTE = CSS_STROKE_PROPERTY;
+    String SVG_STROKE_DASHARRAY_ATTRIBUTE = CSS_STROKE_DASHARRAY_PROPERTY;
+    String SVG_STROKE_DASHOFFSET_ATTRIBUTE = CSS_STROKE_DASHOFFSET_PROPERTY;
+    String SVG_STROKE_LINECAP_ATTRIBUTE = CSS_STROKE_LINECAP_PROPERTY;
+    String SVG_STROKE_LINEJOIN_ATTRIBUTE = CSS_STROKE_LINEJOIN_PROPERTY;
+    String SVG_STROKE_MITERLIMIT_ATTRIBUTE = CSS_STROKE_MITERLIMIT_PROPERTY;
+    String SVG_STROKE_OPACITY_ATTRIBUTE = CSS_STROKE_OPACITY_PROPERTY;
+    String SVG_STROKE_WIDTH_ATTRIBUTE = CSS_STROKE_WIDTH_PROPERTY;
+    String SVG_STYLE_ATTRIBUTE = "style";
+    String SVG_SURFACE_SCALE_ATTRIBUTE = "surfaceScale";
+    String SVG_SYSTEM_LANGUAGE_ATTRIBUTE = "systemLanguage";
+    String SVG_TABLE_ATTRIBUTE = "table";
+    String SVG_TABLE_VALUES_ATTRIBUTE = "tableValues";
+    String SVG_TARGET_ATTRIBUTE = "target";
+    String SVG_TARGET_X_ATTRIBUTE = "targetX";
+    String SVG_TARGET_Y_ATTRIBUTE = "targetY";
+    String SVG_TEXT_ANCHOR_ATTRIBUTE = CSS_TEXT_ANCHOR_PROPERTY;
+    String SVG_TEXT_LENGTH_ATTRIBUTE = "textLength";
+    String SVG_TEXT_RENDERING_ATTRIBUTE = CSS_TEXT_RENDERING_PROPERTY;
+    String SVG_TITLE_ATTRIBUTE = "title";
+    String SVG_TRANSFORM_ATTRIBUTE = "transform";
+    String SVG_TYPE_ATTRIBUTE = "type";
+    String SVG_VALUES_ATTRIBUTE = "values";
+    String SVG_VIEW_BOX_ATTRIBUTE = "viewBox";
+    String SVG_WIDTH_ATTRIBUTE = "width";
+    String SVG_X1_ATTRIBUTE = "x1";
+    String SVG_X2_ATTRIBUTE = "x2";
+    String SVG_X_ATTRIBUTE = "x";
+    String SVG_X_CHANNEL_SELECTOR_ATTRIBUTE = "xChannelSelector";
+    String SVG_Y1_ATTRIBUTE = "y1";
+    String SVG_Y2_ATTRIBUTE = "y2";
+    String SVG_Y_ATTRIBUTE = "y";
+    String SVG_Y_CHANNEL_SELECTOR_ATTRIBUTE = "yChannelSelector";
+    String SVG_Z_ATTRIBUTE = "z";
+
+    /////////////////////////////////////////////////////////////////////////
+    // SVG attribute value
+    /////////////////////////////////////////////////////////////////////////
+
+    String SVG_BACKGROUND_ALPHA_VALUE = "BackgroundAlpha";
+    String SVG_BACKGROUND_IMAGE_VALUE = "BackgroundImage";
+    String SVG_DILATE_VALUE = "dilate";
+    String SVG_ERODE_VALUE = "erode";
+    String SVG_FALSE_VALUE = "false";
+    String SVG_FILL_PAINT_VALUE = "FillPaint";
+    String SVG_SOURCE_ALPHA_VALUE = "SourceAlpha";
+    String SVG_SOURCE_GRAPHIC_VALUE = "SourceGraphic";
+    String SVG_STROKE_PAINT_VALUE = "StrokePaint";
+    String SVG_TRUE_VALUE = "true";
+
+
+
+
+    // custom tag
+    String TAG_TEXT_PATH = "textPath";
+
+    //
+    // Attribute names
+    //
+
+    String ATTR_FX = "fx";
+    String ATTR_FY = "fy";
+    String ATTR_GRADIENT_TRANSFORM = "gradientTransform";
+    String ATTR_GRADIENT_UNITS = "gradientUnits";
+    String ATTR_HREF = "href";
+    String ATTR_ID = "id";
+    String ATTR_IMAGE_RENDERING = CSS_IMAGE_RENDERING_PROPERTY;
+    String ATTR_KERNING = "kerning";
+    String ATTR_LENGTH_ADJUST = "lengthAdjust";
+    String ATTR_LIGHT_COLOR = "lightColor";
+    String ATTR_MASK = CSS_MASK_PROPERTY;
+    String ATTR_MASK_CONTENT_UNITS = "maskContentUnits";
+    String ATTR_MEDIA = "media";
+    String ATTR_METHOD = "method";
+    String ATTR_OPACITY = CSS_OPACITY_PROPERTY;
+    String ATTR_PATTERN_CONTENT_UNITS = "patternContentUnits";
+    String ATTR_PATTERN_TRANSFORM = "patternTransform";
+    String ATTR_PATTERN_UNITS = "patternUnits";
+    String ATTR_POINTS = "points";
+    String ATTR_PRESERVE_ASPECT_RATIO = "preserveAspectRatio";
+    String ATTR_RADIUS = "radius";
+    String ATTR_RESULT = "result";
+    String ATTR_RESULT_SCALE = "resultScale";
+    String ATTR_SCALE = "scale";
+    String ATTR_SHAPE_RENDERING = CSS_SHAPE_RENDERING_PROPERTY;
+    String ATTR_SPACE = "space";
+    String ATTR_SPACING = "spacing";
     String ATTR_SPREAD_METHOD = "spreadMethod";
     String ATTR_START_OFFSET = "startOffset";
     String ATTR_STD_DEVIATION = "stdDeviation";
     String ATTR_STOP_COLOR = "stop-color";
-    String SVG_STITCH_TILES_ATTRIBUTE = "stitchTiles";
     String ATTR_STOP_OPACITY = CSS_STOP_OPACITY_PROPERTY;
     String ATTR_STROKE = CSS_STROKE_PROPERTY;
-    String ATTR_STROKE_OPACITY = CSS_STROKE_OPACITY_PROPERTY;
     String ATTR_STROKE_DASHARRAY = CSS_STROKE_DASHARRAY_PROPERTY;
     String ATTR_STROKE_DASHOFFSET = CSS_STROKE_DASHOFFSET_PROPERTY;
     String ATTR_STROKE_LINECAP = CSS_STROKE_LINECAP_PROPERTY;
     String ATTR_STROKE_LINEJOIN = CSS_STROKE_LINEJOIN_PROPERTY;
     String ATTR_STROKE_MITERLIMIT = CSS_STROKE_MITERLIMIT_PROPERTY;
+    String ATTR_STROKE_OPACITY = CSS_STROKE_OPACITY_PROPERTY;
     String ATTR_STROKE_WIDTH = CSS_STROKE_WIDTH_PROPERTY;
     String ATTR_STYLE = "style";
-    String SVG_SURFACE_SCALE_ATTRIBUTE = "surfaceScale";
-    String SVG_SYSTEM_LANGUAGE_ATTRIBUTE = "systemLanguage";
     String ATTR_TABLE = "table";
-    String SVG_TARGET_ATTRIBUTE = "target";
-    String SVG_TARGET_X_ATTRIBUTE = "targetX";
-    String SVG_TARGET_Y_ATTRIBUTE = "targetY";
-    String SVG_TABLE_VALUES_ATTRIBUTE = "tableValues";
     String ATTR_TEXT_ANCHOR = CSS_TEXT_ANCHOR_PROPERTY;
     String ATTR_TEXT_LENGTH = "textLength";
     String ATTR_TEXT_RENDERING = CSS_TEXT_RENDERING_PROPERTY;
     String ATTR_TITLE = "title";
     String ATTR_TRANSFORM = "transform";
-    String SVG_TYPE_ATTRIBUTE = "type";
-    String SVG_VALUES_ATTRIBUTE = "values";
     String ATTR_VIEW_BOX = "viewBox";
-    String SVG_X_ATTRIBUTE = "x";
-    String SVG_X_CHANNEL_SELECTOR_ATTRIBUTE = "xChannelSelector";
     String ATTR_X1 = "x1";
     String ATTR_X2 = "x2";
-    String SVG_Y_ATTRIBUTE = "y";
-    String SVG_Y_CHANNEL_SELECTOR_ATTRIBUTE = "yChannelSelector";
     String ATTR_Y1 = "y1";
     String ATTR_Y2 = "y2";
-    String SVG_WIDTH_ATTRIBUTE = "width";
-    String SVG_Z_ATTRIBUTE = "z";
 
     //
     // Attribute values

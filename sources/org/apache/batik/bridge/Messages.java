@@ -6,7 +6,7 @@
  * the LICENSE file.                                                         *
  *****************************************************************************/
 
-package org.apache.batik.bridge.resources;
+package org.apache.batik.bridge;
 
 import java.util.Locale;
 import java.util.MissingResourceException;
@@ -20,24 +20,23 @@ import org.apache.batik.i18n.LocalizableSupport;
  * @version $Id$
  */
 public class Messages {
+
     /**
      * This class does not need to be instantiated.
      */
-    protected Messages() {
-    }
+    protected Messages() { }
 
     /**
      * The error messages bundle class name.
      */
     protected final static String RESOURCES =
-        "org.apache.batik.bridge.resources.Messages";
+        "org.apache.batik.bridge.Messages";
 
     /**
      * The localizable support for the error messages.
      */
     protected static LocalizableSupport localizableSupport =
         new LocalizableSupport(RESOURCES);
-
 
     /**
      * Implements {@link org.apache.batik.i18n.Localizable#setLocale(Locale)}.

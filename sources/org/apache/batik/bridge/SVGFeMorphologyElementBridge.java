@@ -10,177 +10,166 @@ package org.apache.batik.bridge;
 
 import java.awt.geom.Rectangle2D;
 import java.util.Map;
+import java.util.StringTokenizer;
 
-import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.ext.awt.image.renderable.Filter;
+import org.apache.batik.ext.awt.image.renderable.MorphologyRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.MorphologyRable;
 import org.apache.batik.ext.awt.image.renderable.PadMode;
-import org.apache.batik.ext.awt.image.renderable.PadRable;
-
-import org.apache.batik.bridge.resources.Messages;
-import org.apache.batik.ext.awt.image.renderable.MorphologyRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.PadRable8Bit;
-
-import org.apache.batik.util.SVGConstants;
-import org.apache.batik.util.UnitProcessor;
+import org.apache.batik.ext.awt.image.renderable.PadRable;
+import org.apache.batik.gvt.GraphicsNode;
 
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.css.CSSStyleDeclaration;
 
 /**
- * This class bridges an SVG <tt>filter</tt> element with a concrete
- * <tt>Filter</tt>
+ * Bridge class for the &lt;feMorphology> element.
  *
- * @author <a href="mailto:sheng.pei@eng.sun.com">Sheng Pei</a>
- * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
+ * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
-public class SVGFeMorphologyElementBridge implements FilterPrimitiveBridge,
-                                                     SVGConstants {
+public class SVGFeMorphologyElementBridge
+    extends SVGAbstractFilterPrimitiveElementBridge {
+
 
     /**
-     * Returns the <tt>Filter</tt> that implements the filter
-     * operation modeled by the input DOM element
+     * Constructs a new bridge for the &lt;feMorphology> element.
+     */
+    public SVGFeMorphologyElementBridge() {}
+
+    /**
+     * Creates a <tt>Filter</tt> primitive according to the specified
+     * parameters.
      *
-     * @param filteredNode the node to which the filter will be attached.
-     * @param bridgeContext the context to use.
-     * @param filterElement DOM element that represents a filter abstraction
-     * @param in the <tt>Filter</tt> that represents the current
+     * @param ctx the bridge context to use
+     * @param filterElement the element that defines a filter
+     * @param filteredElement the element that references the filter
+     * @param filteredNode the graphics node to filter
+     *
+     * @param inputFilter the <tt>Filter</tt> that represents the current
      *        filter input if the filter chain.
-     * @param filterRegion the filter area defined for the filter chained
+     * @param filterRegion the filter area defined for the filter chain
      *        the new node will be part of.
      * @param filterMap a map where the mediator can map a name to the
      *        <tt>Filter</tt> it creates. Other <tt>FilterBridge</tt>s
      *        can then access a filter node from the filterMap if they
      *        know its name.
      */
-    public Filter create(GraphicsNode filteredNode,
-                         BridgeContext bridgeContext,
-                         Element filterElement,
-                         Element filteredElement,
-                         Filter in,
-                         Rectangle2D filterRegion,
-                         Map filterMap){
+    public Filter createFilter(BridgeContext ctx,
+                               Element filterElement,
+                               Element filteredElement,
+                               GraphicsNode filteredNode,
+                               Filter inputFilter,
+                               Rectangle2D filterRegion,
+                               Map filterMap) {
 
-        GraphicsNodeRenderContext rc =
-                     bridgeContext.getGraphicsNodeRenderContext();
-        DocumentLoader loader = bridgeContext.getDocumentLoader();
-
-        // Extract the radius (or radii) for the operation.
-        String radius = filterElement.getAttributeNS(null, ATTR_RADIUS);
-
-        Float radiusPair[] = SVGUtilities.buildFloatPair(radius);
-
-        // parse the radiusX
-        float radiusX = 0; // default is 0
-        if (radiusPair[0] != null) {
-            radiusX = radiusPair[0].floatValue();
-        }
-        if (radiusX == 0) {
-            // <!> FIXME :  the result is a fully transparent image
-            // A value of zero disables the effect of the filter primitive
-            return null;
-        } else if (radiusX < 0) {
-            // A negative value is an error
-            throw new IllegalAttributeValueException(
-                Messages.formatMessage("feMorphology.radiusX.invalid", null));
+        // 'radius' attribute - default is [0, 0]
+        float [] radii = convertRadius(filterElement);
+        if (radii[0] == 0 || radii[1] == 0) {
+            return null; // disable the filter
         }
 
-        // parse the radiusY
-        float radiusY = radiusX; // default is the radiusX
-        if (radiusPair[1] != null) {
-            radiusY = radiusPair[1].floatValue();
-        }
-        if (radiusY == 0) {
-            // <!> FIXME :  the result is a fully transparent image
-            // A value of zero disables the effect of the filter primitive
-            return null;
-        } else if (radiusY < 0) {
-            // A negative value is an error
-            throw new IllegalAttributeValueException(
-                Messages.formatMessage("feMorphology.radiusY.invalid", null));
-        }
+        // 'operator' attribute - default is 'erode'
+        boolean isDilate = convertOperator(filterElement);
 
-        String operatorStr = filterElement.getAttributeNS(null, SVG_OPERATOR_ATTRIBUTE);
-        boolean doDilation;
-        if (operatorStr.length() == 0) {
-            doDilation = false; // default is erode
-        } else if (VALUE_DILATE.equals(operatorStr)) {
-            doDilation = true;
-        } else if (VALUE_ERODE.equals(operatorStr)) {
-            doDilation = false;
-        } else {
-            throw new IllegalAttributeValueException(
-                Messages.formatMessage("feMorphology.operator.invalid",
-                                       new Object[] { operatorStr }));
+        // 'in' attribute
+        Filter in = getIn(filterElement,
+                          filteredElement,
+                          filteredNode,
+                          inputFilter,
+                          filterMap,
+                          ctx);
+        if (in == null) {
+            return null; // disable the filter
         }
-
-        // Get source
-        String inAttr = filterElement.getAttributeNS(null, SVG_IN_ATTRIBUTE);
-        in = CSSUtilities.getFilterSource(filteredNode,
-                                          inAttr,
-                                          bridgeContext,
-                                          filteredElement,
-                                          in,
-                                          filterMap);
 
         // feMorphology is a point operation. Therefore, to take the
         // filter primitive region into account, only a pad operation
         // on the input is required.
 
-        //
-        // The default region is the input source's region unless the
-        // source is SourceGraphics, in which case the default region
-        // is the filter chain's region
-        //
+        // The default region is the union of the input sources
+        // regions unless 'in' is 'SourceGraphic' in which case the
+        // default region is the filterChain's region
         Filter sourceGraphics = (Filter)filterMap.get(VALUE_SOURCE_GRAPHIC);
-
-        Rectangle2D defaultRegion = in.getBounds2D();
-
+        Rectangle2D defaultRegion;
         if (in == sourceGraphics) {
             defaultRegion = filterRegion;
+        } else {
+            defaultRegion = in.getBounds2D();
         }
-
-        CSSStyleDeclaration cssDecl
-            = CSSUtilities.getComputedStyle(filterElement);
-
-        UnitProcessor.Context uctx
-            = new DefaultUnitProcessorContext(bridgeContext, cssDecl);
 
         Rectangle2D primitiveRegion
             = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
                                                         filteredElement,
+                                                        filteredNode,
                                                         defaultRegion,
                                                         filterRegion,
-                                                        filteredNode,
-                                                        rc,
-                                                        uctx,
-                                                        loader);
+                                                        ctx);
 
-        PadRable pad = new PadRable8Bit(in,
-                                            primitiveRegion,
-                                            PadMode.ZERO_PAD);
+        PadRable pad = new PadRable8Bit(in, primitiveRegion, PadMode.ZERO_PAD);
 
-        // Build filter
-        Filter filter =
-            new MorphologyRable8Bit(pad, radiusX, radiusY, doDilation);
+        // build tfilter
+        Filter filter
+            = new MorphologyRable8Bit(pad, radii[0], radii[1], isDilate);
 
-        // Get result attribute if any
-        String result = filterElement.getAttributeNS(null, ATTR_RESULT);
-        if((result != null) && (result.trim().length() > 0)){
-            filterMap.put(result, filter);
-        }
+        // update the filter Map
+        updateFilterMap(filterElement, filter, filterMap);
 
         return filter;
     }
 
     /**
-     * Update the <tt>Filter</tt> object to reflect the current
-     * configuration in the <tt>Element</tt> that models the filter.
+     * Returns the radius (or radii) of the specified feMorphology
+     * filter primitive.
+     *
+     * @param filterElement the feMorphology filter primitive
      */
-    public void update(BridgeMutationEvent evt) {
-        // <!> FIXME : TODO
+    protected static float [] convertRadius(Element filterElement) {
+        String s = filterElement.getAttributeNS(null, SVG_RADIUS_ATTRIBUTE);
+        if (s.length() == 0) {
+            return new float[] {0, 0};
+        }
+        float [] radii = new float[2];
+        StringTokenizer tokens = new StringTokenizer(s, " ,");
+        try {
+            radii[0] = SVGUtilities.convertSVGNumber(tokens.nextToken());
+            if (tokens.hasMoreTokens()) {
+                radii[1] = SVGUtilities.convertSVGNumber(tokens.nextToken());
+            } else {
+                radii[1] = radii[0];
+            }
+        } catch (NumberFormatException ex) {
+            throw new BridgeException
+                (filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                 new Object[] {SVG_RADIUS_ATTRIBUTE, s, ex});
+        }
+        if (tokens.hasMoreTokens() || radii[0] < 0 || radii[1] < 0) {
+            throw new BridgeException
+                (filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                 new Object[] {SVG_RADIUS_ATTRIBUTE, s});
+        }
+        return radii;
     }
+
+    /**
+     * Returns the 'operator' of the specified feMorphology filter
+     * primitive.
+     *
+     * @param filterElement the feMorphology filter primitive
+     */
+    protected static boolean convertOperator(Element filterElement) {
+        String s = filterElement.getAttributeNS(null, SVG_OPERATOR_ATTRIBUTE);
+        if (s.length() == 0) {
+            return false;
+        }
+        if (SVG_ERODE_VALUE.equals(s)) {
+            return false;
+        }
+        if (SVG_DILATE_VALUE.equals(s)) {
+            return true;
+        }
+        throw new BridgeException(filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                                  new Object[] {SVG_OPERATOR_ATTRIBUTE, s});
+    }
+
 }

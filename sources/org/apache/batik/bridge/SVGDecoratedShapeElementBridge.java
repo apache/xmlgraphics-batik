@@ -8,95 +8,76 @@
 
 package org.apache.batik.bridge;
 
-import java.awt.AlphaComposite;
-import java.awt.Composite;
 import java.awt.Shape;
-import java.awt.geom.AffineTransform;
 
-import java.io.StringReader;
-
-import org.apache.batik.bridge.BridgeContext;
-import org.apache.batik.bridge.BridgeMutationEvent;
-import org.apache.batik.bridge.GraphicsNodeBridge;
-import org.apache.batik.bridge.IllegalAttributeValueException;
 import org.apache.batik.gvt.CompositeShapePainter;
-import org.apache.batik.gvt.MarkerShapePainter;
-import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
-import org.apache.batik.gvt.Marker;
 import org.apache.batik.gvt.ShapeNode;
 import org.apache.batik.gvt.ShapePainter;
-import org.apache.batik.ext.awt.image.renderable.Clip;
-import org.apache.batik.ext.awt.image.renderable.Filter;
-import org.apache.batik.gvt.filter.Mask;
-import org.apache.batik.parser.ParseException;
-import org.apache.batik.bridge.resources.Messages;
-import org.apache.batik.util.SVGConstants;
-import org.apache.batik.util.UnitProcessor;
 
 import org.w3c.dom.Element;
-import org.w3c.dom.svg.SVGElement;
-import org.w3c.dom.css.CSSStyleDeclaration;
-import org.w3c.dom.css.CSSPrimitiveValue;
 
 /**
- * A factory for the SVG elements that represents a shape.
+ * The base bridge class for decorated shapes. Decorated shapes can be
+ * filled, stroked and can have markers.
  *
- * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
+ * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
-public abstract class SVGDecoratedShapeElementBridge 
-    extends SVGShapeElementBridge {
-    
-    protected ShapePainter convertPainter(SVGElement svgElement,
-                                          ShapeNode node,
-                                          CSSStyleDeclaration cssDecl,
-                                          UnitProcessor.Context uctx,
-                                          BridgeContext ctx){
-        ShapePainter strokeAndFill =
-            super.convertPainter(svgElement, node, cssDecl,
-                                 uctx, ctx);
+public abstract class SVGDecoratedShapeElementBridge
+        extends SVGShapeElementBridge {
 
-        //
-        // Extract the marker properties
-        //
-        
+    /**
+     * Constructs a new bridge for SVG decorated shapes.
+     */
+    protected SVGDecoratedShapeElementBridge() {}
 
-        // Extract start, middle and end markers
-        Marker startMarker 
-            = CSSUtilities.convertMarker(svgElement,
-                                         CSS_MARKER_START_PROPERTY,
-                                         ctx, cssDecl, uctx);
-        Marker endMarker 
-            = CSSUtilities.convertMarker(svgElement,
-                                         CSS_MARKER_END_PROPERTY,
-                                         ctx, cssDecl, uctx);
-        Marker middleMarker 
-            = CSSUtilities.convertMarker(svgElement,
-                                         CSS_MARKER_MID_PROPERTY,
-                                         ctx, cssDecl, uctx);
-        
-        ShapePainter painter = strokeAndFill;
+    /**
+     * Creates the shape painter associated to the specified element.
+     * This implementation creates a shape painter considering the
+     * various fill and stroke properties in addition to the marker
+     * properties.
+     *
+     * @param ctx the bridge context to use
+     * @param e the element that describes the shape painter to use
+     * @param shapeNode the shape node that is interested in its shape painter
+     */
+    protected ShapePainter createShapePainter(BridgeContext ctx,
+                                              Element e,
+                                              ShapeNode shapeNode) {
+        // 'fill'
+        // 'fill-opacity'
+        // 'stroke'
+        // 'stroke-opacity',
+        // 'stroke-width'
+        // 'stroke-linecap'
+        // 'stroke-linejoin'
+        // 'stroke-miterlimit'
+        // 'stroke-dasharray'
+        // 'stroke-dashoffset'
+        ShapePainter fillAndStroke
+            = super.createShapePainter(ctx, e, shapeNode);
 
-        if(startMarker  != null  ||
-           middleMarker != null  ||
-           endMarker    != null) {
-            MarkerShapePainter markerPainter = new MarkerShapePainter(node.getShape());
-            markerPainter.setStartMarker(startMarker);
-            markerPainter.setEndMarker(endMarker);
-            markerPainter.setMiddleMarker(middleMarker);
-            if(strokeAndFill != null){
-                CompositeShapePainter compositePainter 
-                    = new CompositeShapePainter(node.getShape());
-                compositePainter.addShapePainter(strokeAndFill);
-                compositePainter.addShapePainter(markerPainter);
-                painter = compositePainter;
-            }
-            else{
+        // marker-start
+        // marker-mid
+        // marker-end
+        ShapePainter markerPainter =
+            PaintServer.convertMarkers(e, shapeNode, ctx);
+
+        Shape shape = shapeNode.getShape();
+        ShapePainter painter;
+
+        if (markerPainter != null) {
+            if (fillAndStroke != null) {
+                CompositeShapePainter cp = new CompositeShapePainter(shape);
+                cp.addShapePainter(fillAndStroke);
+                cp.addShapePainter(markerPainter);
+                painter = cp;
+            } else {
                 painter = markerPainter;
             }
+        } else {
+            painter = fillAndStroke;
         }
-
         return painter;
     }
 }

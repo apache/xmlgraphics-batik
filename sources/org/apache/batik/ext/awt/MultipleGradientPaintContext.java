@@ -302,11 +302,11 @@ abstract class MultipleGradientPaintContext implements PaintContext {
             dataModel = lrgbmodel_A;
         else if (cm.getColorSpace() == srgbmodel_A.getColorSpace())
             dataModel = srgbmodel_A;
-        else 
+        else
             throw new IllegalArgumentException
                 ("Unsupported ColorSpace for interpolation");
-        
-        model = GraphicsUtil.coerceColorModel(dataModel, 
+
+        model = GraphicsUtil.coerceColorModel(dataModel,
                                               cm.isAlphaPremultiplied());
     }
 
@@ -446,18 +446,18 @@ abstract class MultipleGradientPaintContext implements PaintContext {
         //if interpolation occurred in Linear RGB space, convert the
         //gradients back to SRGB using the lookup table
         if (colorSpace == LinearGradientPaint.LINEAR_RGB) {
-            if (dataModel.getColorSpace() == 
+            if (dataModel.getColorSpace() ==
                 ColorSpace.getInstance(ColorSpace.CS_sRGB)) {
                 for (int i = 0; i < gradient.length; i++) {
-                    gradient[i] = 
+                    gradient[i] =
                         convertEntireColorLinearRGBtoSRGB(gradient[i]);
                 }
             }
         } else {
-            if (dataModel.getColorSpace() == 
+            if (dataModel.getColorSpace() ==
                 ColorSpace.getInstance(ColorSpace.CS_LINEAR_RGB)) {
                 for (int i = 0; i < gradient.length; i++) {
-                    gradient[i] = 
+                    gradient[i] =
                         convertEntireColorSRGBtoLinearRGB(gradient[i]);
                 }
             }
@@ -515,7 +515,7 @@ abstract class MultipleGradientPaintContext implements PaintContext {
         //if interpolation occurred in Linear RGB space, convert the
         //gradients back to SRGB using the lookup table
         if (colorSpace == LinearGradientPaint.LINEAR_RGB) {
-            if (dataModel.getColorSpace() == 
+            if (dataModel.getColorSpace() ==
                 ColorSpace.getInstance(ColorSpace.CS_sRGB)) {
                 for (int j = 0; j < gradients.length; j++) {
                     for (int i = 0; i < gradients[j].length; i++) {
@@ -525,7 +525,7 @@ abstract class MultipleGradientPaintContext implements PaintContext {
                 }
             }
         } else {
-            if (dataModel.getColorSpace() == 
+            if (dataModel.getColorSpace() ==
                 ColorSpace.getInstance(ColorSpace.CS_LINEAR_RGB)) {
                 for (int j = 0; j < gradients.length; j++) {
                     for (int i = 0; i < gradients[j].length; i++) {
@@ -780,7 +780,7 @@ abstract class MultipleGradientPaintContext implements PaintContext {
 
         fillRaster(pixels, off, adjust, x, y, w, h); //delegate to subclass.
 
-        GraphicsUtil.coerceData(raster, dataModel, 
+        GraphicsUtil.coerceData(raster, dataModel,
                                 model.isAlphaPremultiplied());
 
 
@@ -819,7 +819,7 @@ abstract class MultipleGradientPaintContext implements PaintContext {
      * large.
      */
     protected final
-    static synchronized void putCachedRaster(ColorModel cm, 
+    static synchronized void putCachedRaster(ColorModel cm,
                                              WritableRaster ras) {
         if (cached != null) {
             WritableRaster cras = (WritableRaster) cached.get();

@@ -8,322 +8,369 @@
 
 package org.apache.batik.bridge;
 
-import java.awt.geom.Rectangle2D;
 import java.awt.Point;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.Kernel;
-
+import java.util.Map;
 import java.util.StringTokenizer;
 
-import java.util.Map;
-
-import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
-import org.apache.batik.ext.awt.image.renderable.Filter;
-import org.apache.batik.ext.awt.image.renderable.ConvolveMatrixRable;
-import org.apache.batik.ext.awt.image.renderable.PadMode;
-import org.apache.batik.ext.awt.image.renderable.PadRable;
-
-import org.apache.batik.bridge.resources.Messages;
 import org.apache.batik.ext.awt.image.renderable.ConvolveMatrixRable8Bit;
+import org.apache.batik.ext.awt.image.renderable.ConvolveMatrixRable;
+import org.apache.batik.ext.awt.image.renderable.Filter;
+import org.apache.batik.ext.awt.image.renderable.PadMode;
 import org.apache.batik.ext.awt.image.renderable.PadRable8Bit;
-
-import org.apache.batik.util.SVGConstants;
-import org.apache.batik.util.UnitProcessor;
+import org.apache.batik.ext.awt.image.renderable.PadRable;
+import org.apache.batik.gvt.GraphicsNode;
 
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.css.CSSStyleDeclaration;
 
 /**
- * This class bridges an SVG <tt>feConvolveMatrix</tt> element with a concrete
- * <tt>ConvolveMatrixRable</tt>
+ * Bridge class for the &lt;feConvolveMatrix> element.
  *
- * @author <a href="mailto:Thomas.DeWeese@Kodak.com">Thomas DeWeese</a>
+ * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
-public class SVGFeConvolveMatrixElementBridge implements FilterPrimitiveBridge,
-                                                       SVGConstants {
+public class SVGFeConvolveMatrixElementBridge
+    extends SVGAbstractFilterPrimitiveElementBridge {
+
+
     /**
-     * Returns the <tt>Filter</tt> that implements the filter
-     * operation modeled by the input DOM element
+     * Constructs a new bridge for the &lt;feConvolveMatrix> element.
+     */
+    public SVGFeConvolveMatrixElementBridge() {}
+
+    /**
+     * Creates a <tt>Filter</tt> primitive according to the specified
+     * parameters.
      *
-     * @param filteredNode the node to which the filter will be attached.
-     * @param bridgeContext the context to use.
-     * @param filterElement DOM element that represents a filter abstraction
-     * @param in the <tt>Filter</tt> that represents the current
+     * @param ctx the bridge context to use
+     * @param filterElement the element that defines a filter
+     * @param filteredElement the element that references the filter
+     * @param filteredNode the graphics node to filter
+     *
+     * @param inputFilter the <tt>Filter</tt> that represents the current
      *        filter input if the filter chain.
-     * @param filterRegion the filter area defined for the filter chained
+     * @param filterRegion the filter area defined for the filter chain
      *        the new node will be part of.
      * @param filterMap a map where the mediator can map a name to the
      *        <tt>Filter</tt> it creates. Other <tt>FilterBridge</tt>s
      *        can then access a filter node from the filterMap if they
      *        know its name.
      */
-    public Filter create(GraphicsNode filteredNode,
-                         BridgeContext bridgeContext,
-                         Element filterElement,
-                         Element filteredElement,
-                         Filter in,
-                         Rectangle2D filterRegion,
-                         Map filterMap){
+    public Filter createFilter(BridgeContext ctx,
+                               Element filterElement,
+                               Element filteredElement,
+                               GraphicsNode filteredNode,
+                               Filter inputFilter,
+                               Rectangle2D filterRegion,
+                               Map filterMap) {
 
-        DocumentLoader loader = bridgeContext.getDocumentLoader();
-        // Extract kernel Order (Size)
-        String attrStr;
-        attrStr = filterElement.getAttributeNS(null, SVG_ORDER_ATTRIBUTE);
+        // 'order' attribute - default is [3, 3]
+        int [] orderXY = convertOrder(filterElement);
 
-        Float orderPair[] = SVGUtilities.buildFloatPair(attrStr);
+        // 'kernelMatrix' attribute - required
+        float [] kernelMatrix = convertKernelMatrix(filterElement, orderXY);
 
-        int orderX=0, orderY=0;
-        if (orderPair[0] != null) {
-            orderX = (int)orderPair[0].floatValue();
-            if (orderX != (int)orderPair[0].floatValue())
-                throw new IllegalAttributeValueException
-                    (Messages.formatMessage
-                     ("feConvolveMatrix.order.notPosInt", null));
+        // 'divisor' attribute - default is kernel matrix sum or 1 if sum is 0
+        float divisor = convertDivisor(filterElement, kernelMatrix);
+
+        // 'bias' attribute - default is 0
+        float bias = convertNumber(filterElement, SVG_BIAS_ATTRIBUTE, 0);
+
+        // 'targetX' and 'targetY' attribute
+        int [] targetXY = convertTarget(filterElement, orderXY);
+
+        // 'edgeMode' attribute - default is 'duplicate'
+        PadMode padMode = convertEdgeMode(filterElement);
+
+        // 'kernelUnitLength' attribute
+        double [] kernelUnitLength = convertKernelUnitLength(filterElement);
+
+        // 'preserveAlpha' attribute - default is 'false'
+        boolean preserveAlpha = convertPreserveAlpha(filterElement);
+
+        // 'in' attribute
+        Filter in = getIn(filterElement,
+                          filteredElement,
+                          filteredNode,
+                          inputFilter,
+                          filterMap,
+                          ctx);
+        if (in == null) {
+            return null; // disable the filter
         }
 
-        if (orderX <= 0)
-            throw new IllegalAttributeValueException
-                (Messages.formatMessage
-                 ("feConvolveMatrix.order.notPosInt", null));
-
-        if (orderPair[1] == null)
-            orderY = orderX;
-        else {
-            orderY = (int)orderPair[1].floatValue();
-            if (orderY != (int)orderPair[1].floatValue())
-                throw new IllegalAttributeValueException
-                    (Messages.formatMessage
-                     ("feConvolveMatrix.order.notPosInt", null));
-        }
-        if (orderY <= 0)
-            throw new IllegalAttributeValueException
-                (Messages.formatMessage
-                 ("feConvolveMatrix.order.notPosInt", null));
-
-
-        float [] kernel = new float[orderX*orderY];
-        attrStr = filterElement.getAttributeNS
-            (null, SVG_KERNEL_MATRIX_ATTRIBUTE);
-        {
-            StringTokenizer st = new StringTokenizer(attrStr);
-            int i=0;
-            while (st.hasMoreTokens()) {
-                kernel[i++] = SVGUtilities.convertSVGNumber
-                    (SVG_KERNEL_MATRIX_ATTRIBUTE, st.nextToken());
-                if (i == orderX*orderY) break;
-            }
-
-            if (st.hasMoreTokens())
-                throw new IllegalAttributeValueException
-                    (Messages.formatMessage
-                     ("feConvolveMatrix.kernelMatrix.tooMany", null));
-
-            if (i != orderX*orderY)
-                throw new IllegalAttributeValueException
-                    (Messages.formatMessage
-                     ("feConvolveMatrix.kernelMatrix.notEnough", null));
-        }
-
-        attrStr = filterElement.getAttributeNS(null, SVG_DIVISOR_ATTRIBUTE);
-        float divisor = 0;
-        if (attrStr.length() != 0) {
-            divisor = SVGUtilities.convertSVGNumber
-                (SVG_DIVISOR_ATTRIBUTE, attrStr);
-        } else {
-            // Default is sum of kernel values (if sum is zero then 1.0).
-            for (int i=0; i<kernel.length; i++)
-                divisor += kernel[i];
-            if (divisor == 0.0f) divisor = 1.0f;
-        }
-        if (divisor == 0.0f)
-            throw new IllegalAttributeValueException
-                (Messages.formatMessage
-                     ("feConvolveMatrix.divisor.zero", null));
-
-        attrStr = filterElement.getAttributeNS(null, SVG_BIAS_ATTRIBUTE);
-        float bias = 0.0f;
-        if (attrStr.length() != 0) {
-            bias = SVGUtilities.convertSVGNumber(SVG_BIAS_ATTRIBUTE, attrStr);
-        }
-
-
-        attrStr = filterElement.getAttributeNS(null, SVG_TARGET_X_ATTRIBUTE);
-        int targetX=orderX/2;
-        if (attrStr.length() != 0) {
-            targetX = SVGUtilities.convertSVGInteger
-                (SVG_TARGET_X_ATTRIBUTE, attrStr);
-        }
-        if ((targetX < 0) || (targetX >= orderX))
-            throw new IllegalAttributeValueException
-                (Messages.formatMessage
-                 ("feConvolveMatrix.targetX.invalid", null));
-
-
-        attrStr = filterElement.getAttributeNS(null, SVG_TARGET_Y_ATTRIBUTE);
-        int targetY=orderY/2;
-        if (attrStr.length() != 0) {
-            targetY = SVGUtilities.convertSVGInteger
-                (SVG_TARGET_Y_ATTRIBUTE, attrStr);
-        }
-        if ((targetY < 0) || (targetY >= orderY))
-            throw new IllegalAttributeValueException
-                (Messages.formatMessage
-                 ("feConvolveMatrix.targetY.invalid", null));
-
-
-        attrStr = filterElement.getAttributeNS(null, SVG_EDGE_MODE_ATTRIBUTE);
-        PadMode padMode = PadMode.REPLICATE;
-        if (attrStr.length() != 0) {
-            attrStr = attrStr.toLowerCase();
-
-            if (attrStr.equals(SVG_DUPLICATE_VALUE))
-                padMode = PadMode.REPLICATE;
-            else if (attrStr.equals(SVG_WRAP_VALUE))
-                padMode = PadMode.WRAP;
-            else if (attrStr.equals(SVG_NONE_VALUE))
-                padMode = PadMode.ZERO_PAD;
-            else
-                throw new IllegalAttributeValueException
-                    (Messages.formatMessage
-                     ("feConvolveMatrix.edgeMode.invalid",
-                                       new Object[] { attrStr }));
-        }
-
-        attrStr = filterElement.getAttributeNS
-            (null, SVG_KERNEL_UNIT_LENGTH_ATTRIBUTE);
-        double [] kernelUnitLength = null;
-        if (attrStr.length() != 0) {
-            Float [] fp = SVGUtilities.buildFloatPair(attrStr);
-            kernelUnitLength = new double[2];
-
-            if (fp[0] != null)
-                kernelUnitLength[0] = fp[0].floatValue();
-
-            if (fp[1] != null)
-                kernelUnitLength[1] = fp[1].floatValue();
-            else
-                kernelUnitLength[1] = kernelUnitLength[0];
-        }
-
-        if (kernelUnitLength != null) {
-            if (kernelUnitLength[0] <= 0)
-                throw new IllegalAttributeValueException
-                    (Messages.formatMessage
-                     ("feConvolveMatrix.kernelUnitLength.notPositive", null));
-            if (kernelUnitLength[1] <= 0)
-                throw new IllegalAttributeValueException
-                    (Messages.formatMessage
-                     ("feConvolveMatrix.kernelUnitLength.notPositive", null));
-        }
-
-        attrStr = filterElement.getAttributeNS
-            (null, SVG_PRESERVE_ALPHA_ATTRIBUTE);
-        boolean preserveAlpha = false;
-        if (attrStr.length() != 0) {
-            attrStr = attrStr.toLowerCase();
-            if (attrStr.equals("false"))
-                preserveAlpha = false;
-            else if (attrStr.equals("true"))
-                preserveAlpha = true;
-            else
-                throw new IllegalAttributeValueException
-                    (Messages.formatMessage
-                     ("feConvolveMatrix.preserveAlpha.invalid",
-                                       new Object[] { attrStr }));
-        }
-
-        // Get source
-        String inAttr = filterElement.getAttributeNS(null, SVG_IN_ATTRIBUTE);
-        in = CSSUtilities.getFilterSource(filteredNode,
-                                          inAttr,
-                                          bridgeContext,
-                                          filteredElement,
-                                          in,
-                                          filterMap);
-
-        if (in == null)
-            return null;
-
-        //
-        // The default region is the input source's region unless the
-        // source is SourceGraphics, in which case the default region
-        // is the filter chain's region
-        //
+        // The default region is the union of the input sources
+        // regions unless 'in' is 'SourceGraphic' in which case the
+        // default region is the filterChain's region
         Filter sourceGraphics = (Filter)filterMap.get(VALUE_SOURCE_GRAPHIC);
-
-        Rectangle2D defaultRegion = in.getBounds2D();
+        Rectangle2D defaultRegion;
         if (in == sourceGraphics) {
             defaultRegion = filterRegion;
+        } else {
+            defaultRegion = in.getBounds2D();
         }
 
-        CSSStyleDeclaration cssDecl
-            = CSSUtilities.getComputedStyle(filterElement);
-
-        UnitProcessor.Context uctx
-            = new DefaultUnitProcessorContext(bridgeContext, cssDecl);
-
-        GraphicsNodeRenderContext rc =
-                         bridgeContext.getGraphicsNodeRenderContext();
-        Rectangle2D convolveArea
+        Rectangle2D primitiveRegion
             = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
                                                         filteredElement,
+                                                        filteredNode,
                                                         defaultRegion,
                                                         filterRegion,
-                                                        filteredNode,
-                                                        rc,
-                                                        uctx,
-                                                        loader);
+                                                        ctx);
 
-        PadRable pad;
-        pad = new PadRable8Bit(in, convolveArea, PadMode.ZERO_PAD);
-
-        // Build filter
-        ConvolveMatrixRable convolve;
-        convolve = new ConvolveMatrixRable8Bit(pad);
-
-        /* SVG No longer does it's kernels funny!!!
-         * And there was much rejoicing!
-           // Rotate the kernel 180 deg.
-           int len2 = kernel.length/2;
-           int len1 = kernel.length-1;
-           for (int i=0; i<len2; i++) {
-               float tmp      = kernel[i];
-               kernel[i]      = kernel[len1-i];
-               kernel[len1-i] = tmp;
-           }
-        */
-
-        for (int i=0; i<kernel.length; i++)
-            kernel[i] /= divisor;
-
-        // System.out.print("Kernel: ");
-        // for (int i=0; i<kernel.length; i++)
-        //     System.out.print(kernel[i] + ", ");
-        // System.out.println("");
-
-        convolve.setKernel(new Kernel(orderX, orderY, kernel));
-        convolve.setTarget(new Point(targetX, targetY));
+        PadRable pad = new PadRable8Bit(in, primitiveRegion, PadMode.ZERO_PAD);
+        // build the convolve filter
+        ConvolveMatrixRable convolve = new ConvolveMatrixRable8Bit(pad);
+        for (int i = 0; i < kernelMatrix.length; i++) {
+            kernelMatrix[i] /= divisor;
+        }
+        convolve.setKernel(new Kernel(orderXY[0], orderXY[1], kernelMatrix));
+        convolve.setTarget(new Point(targetXY[0], targetXY[1]));
         convolve.setBias(bias);
         convolve.setEdgeMode(padMode);
         convolve.setKernelUnitLength(kernelUnitLength);
         convolve.setPreserveAlpha(preserveAlpha);
 
-        // Get result attribute if any
-        String result = filterElement.getAttributeNS(null,ATTR_RESULT);
-        if((result != null) && (result.trim().length() > 0)){
-            filterMap.put(result, convolve);
-        }
+        // update the filter Map
+        updateFilterMap(filterElement, convolve, filterMap);
 
         return convolve;
     }
 
     /**
-     * Update the <tt>Filter</tt> object to reflect the current
-     * configuration in the <tt>Element</tt> that models the filter.
+     * Convert the 'order' attribute of the specified feConvolveMatrix
+     * filter primitive element.
+     *
+     * @param filterElement the feConvolveMatrix filter primitive element
      */
-    public void update(BridgeMutationEvent evt) {
-        // <!> FIXME : TODO
+    protected static int [] convertOrder(Element filterElement) {
+        String s = filterElement.getAttributeNS(null, SVG_ORDER_ATTRIBUTE);
+        if (s.length() == 0) {
+            return new int[] {3, 3};
+        }
+        int [] orderXY = new int[2];
+        StringTokenizer tokens = new StringTokenizer(s, " ,");
+        try {
+            orderXY[0] = SVGUtilities.convertSVGInteger(tokens.nextToken());
+            if (tokens.hasMoreTokens()) {
+                orderXY[1] = SVGUtilities.convertSVGInteger(tokens.nextToken());
+            } else {
+                orderXY[1] = orderXY[0];
+            }
+        } catch (NumberFormatException ex) {
+            throw new BridgeException
+                (filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                 new Object[] {SVG_ORDER_ATTRIBUTE, s, ex});
+        }
+        if (tokens.hasMoreTokens() || orderXY[0] <= 0 || orderXY[1] <= 0) {
+            throw new BridgeException
+                (filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                 new Object[] {SVG_ORDER_ATTRIBUTE, s});
+        }
+        return orderXY;
+    }
+
+    /**
+     * Convert the 'kernelMatrix' attribute of the specified feConvolveMatrix
+     * filter primitive element.
+     *
+     * @param filterElement the feConvolveMatrix filter primitive element
+     * @param orderXY the value of the 'order' attribute
+     */
+    protected static
+        float [] convertKernelMatrix(Element filterElement, int [] orderXY) {
+
+        String s =
+            filterElement.getAttributeNS(null, SVG_KERNEL_MATRIX_ATTRIBUTE);
+        if (s.length() == 0) {
+            throw new BridgeException
+                (filterElement, ERR_ATTRIBUTE_MISSING,
+                 new Object[] {SVG_KERNEL_MATRIX_ATTRIBUTE});
+        }
+        int size = orderXY[0]*orderXY[1];
+        float [] kernelMatrix = new float[size];
+        StringTokenizer tokens = new StringTokenizer(s, " ,");
+        int i = 0;
+        try {
+            while (tokens.hasMoreTokens() && i < size) {
+                kernelMatrix[i++]
+                    = SVGUtilities.convertSVGNumber(tokens.nextToken());
+            }
+        } catch (NumberFormatException ex) {
+            throw new BridgeException
+                (filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                 new Object[] {SVG_KERNEL_MATRIX_ATTRIBUTE, s, ex});
+        }
+        if (i != size) {
+            throw new BridgeException
+                (filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                 new Object[] {SVG_KERNEL_MATRIX_ATTRIBUTE, s});
+        }
+        return kernelMatrix;
+    }
+
+    /**
+     * Convert the 'divisor' attribute of the specified feConvolveMatrix
+     * filter primitive element.
+     *
+     * @param filterElement the feConvolveMatrix filter primitive element
+     * @param kernelMatrix the value of the 'kernelMatrix' attribute
+     */
+    protected static
+        float convertDivisor(Element filterElement, float [] kernelMatrix) {
+
+        String s = filterElement.getAttributeNS(null, SVG_DIVISOR_ATTRIBUTE);
+        if (s.length() == 0) {
+            // default is sum of kernel values (if sum is zero then 1.0)
+            float sum = 0;
+            for (int i=0; i < kernelMatrix.length; ++i) {
+                sum += kernelMatrix[i];
+            }
+            return (sum == 0) ? 1f : sum;
+        } else {
+            try {
+                return SVGUtilities.convertSVGNumber(s);
+            } catch (NumberFormatException ex) {
+                throw new BridgeException
+                    (filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                     new Object[] {SVG_DIVISOR_ATTRIBUTE, s, ex});
+            }
+        }
+    }
+
+    /**
+     * Convert the 'targetX' and 'targetY' attributes of the specified
+     * feConvolveMatrix filter primitive element.
+     *
+     * @param filterElement the feConvolveMatrix filter primitive element
+     * @param orderXY the value of the 'order' attribute
+     */
+    protected static
+        int [] convertTarget(Element filterElement, int [] orderXY) {
+
+        int [] targetXY = new int[2];
+        // 'targetX' attribute - default is floor(orderX / 2)
+        String s = filterElement.getAttributeNS(null, SVG_TARGET_X_ATTRIBUTE);
+        if (s.length() == 0) {
+            targetXY[0] = orderXY[0] / 2;
+        } else {
+            try {
+                int v = SVGUtilities.convertSVGInteger(s);
+                if (v < 0 || v >= orderXY[0]) {
+                    throw new BridgeException
+                        (filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                         new Object[] {SVG_TARGET_X_ATTRIBUTE, s});
+                }
+                targetXY[0] = v;
+            } catch (NumberFormatException ex) {
+                throw new BridgeException
+                    (filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                     new Object[] {SVG_TARGET_X_ATTRIBUTE, s, ex});
+            }
+        }
+        // 'targetY' attribute - default is floor(orderY / 2)
+        s = filterElement.getAttributeNS(null, SVG_TARGET_Y_ATTRIBUTE);
+        if (s.length() == 0) {
+            targetXY[1] = orderXY[1] / 2;
+        } else {
+            try {
+                int v = SVGUtilities.convertSVGInteger(s);
+                if (v < 0 || v >= orderXY[1]) {
+                    throw new BridgeException
+                        (filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                         new Object[] {SVG_TARGET_Y_ATTRIBUTE, s});
+                }
+                targetXY[1] = v;
+            } catch (NumberFormatException ex) {
+                throw new BridgeException
+                    (filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                     new Object[] {SVG_TARGET_Y_ATTRIBUTE, s, ex});
+            }
+        }
+        return targetXY;
+    }
+
+    /**
+     * Convert the 'kernelUnitLength' attribute of the specified
+     * feConvolveMatrix filter primitive element.
+     *
+     * @param filterElement the feConvolveMatrix filter primitive element
+     */
+    protected static double [] convertKernelUnitLength(Element filterElement) {
+        String s = filterElement.getAttributeNS
+            (null, SVG_KERNEL_UNIT_LENGTH_ATTRIBUTE);
+        if (s.length() == 0) {
+            return null;
+        }
+        double [] units = new double[2];
+        StringTokenizer tokens = new StringTokenizer(s, " ,");
+        try {
+            units[0] = SVGUtilities.convertSVGNumber(tokens.nextToken());
+            if (tokens.hasMoreTokens()) {
+                units[1] = SVGUtilities.convertSVGNumber(tokens.nextToken());
+            } else {
+                units[1] = units[0];
+            }
+        } catch (NumberFormatException ex) {
+            throw new BridgeException
+                (filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                 new Object[] {SVG_KERNEL_UNIT_LENGTH_ATTRIBUTE, s});
+
+        }
+        if (tokens.hasMoreTokens() || units[0] <= 0 || units[1] <= 0) {
+            throw new BridgeException
+                (filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                 new Object[] {SVG_KERNEL_UNIT_LENGTH_ATTRIBUTE, s});
+        }
+        return units;
+    }
+
+    /**
+     * Convert the 'edgeMode' attribute of the specified feConvolveMatrix
+     * filter primitive element.
+     *
+     * @param filterElement the feConvolveMatrix filter primitive element
+     */
+    protected static PadMode convertEdgeMode(Element filterElement) {
+        String s = filterElement.getAttributeNS(null, SVG_EDGE_MODE_ATTRIBUTE);
+        if (s.length() == 0) {
+            return PadMode.REPLICATE;
+        }
+        if (SVG_DUPLICATE_VALUE.equals(s)) {
+            return PadMode.REPLICATE;
+        }
+        if (SVG_WRAP_VALUE.equals(s)) {
+            return PadMode.WRAP;
+        }
+        if (SVG_NONE_VALUE.equals(s)) {
+            return PadMode.ZERO_PAD;
+        }
+        throw new BridgeException
+            (filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+             new Object[] {SVG_EDGE_MODE_ATTRIBUTE, s});
+    }
+
+    /**
+     * Convert the 'preserveAlpha' attribute of the specified feConvolveMatrix
+     * filter primitive element.
+     *
+     * @param filterElement the feConvolveMatrix filter primitive element
+     */
+    protected static boolean convertPreserveAlpha(Element filterElement) {
+        String s
+            = filterElement.getAttributeNS(null, SVG_PRESERVE_ALPHA_ATTRIBUTE);
+        if (s.length() == 0) {
+            return false;
+        }
+        if (SVG_TRUE_VALUE.equals(s)) {
+            return true;
+        }
+        if (SVG_FALSE_VALUE.equals(s)) {
+            return false;
+        }
+        throw new BridgeException
+            (filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+             new Object[] {SVG_PRESERVE_ALPHA_ATTRIBUTE, s});
     }
 }

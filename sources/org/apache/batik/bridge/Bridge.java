@@ -9,7 +9,8 @@
 package org.apache.batik.bridge;
 
 /**
- * A tagging interface that all bridges must implement.
+ * A tagging interface that all bridges must implement. A bridge is
+ * responsible on creating an appropriate object according to an Element.
  *
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  * @version $Id$

@@ -9,67 +9,56 @@
 package org.apache.batik.bridge;
 
 import java.awt.Shape;
-import java.awt.geom.PathIterator;
-import java.io.IOException;
 import java.io.StringReader;
 
-import org.apache.batik.bridge.BridgeContext;
-import org.apache.batik.bridge.IllegalAttributeValueException;
-import org.apache.batik.bridge.MissingAttributeException;
 import org.apache.batik.gvt.ShapeNode;
 import org.apache.batik.parser.AWTPolylineProducer;
 import org.apache.batik.parser.ParseException;
 import org.apache.batik.parser.PointsParser;
-import org.apache.batik.bridge.resources.Messages;
-import org.apache.batik.util.UnitProcessor;
 
-import org.w3c.dom.css.CSSPrimitiveValue;
-import org.w3c.dom.css.CSSStyleDeclaration;
-import org.w3c.dom.svg.SVGElement;
+import org.w3c.dom.Element;
 
 /**
- * A factory for the &ltpolyline> element.
+ * Bridge class for the &lt;polyline> element.
  *
- * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
+ * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
 public class SVGPolylineElementBridge extends SVGDecoratedShapeElementBridge {
 
     /**
-     * Returns an <tt>GeneralPath</tt>.
+     * Constructs a new bridge for the &lt;polyline> element.
+     */
+    public SVGPolylineElementBridge() {}
+
+    /**
+     * Constructs a polyline according to the specified parameters.
+     *
+     * @param ctx the bridge context to use
+     * @param e the element that describes a rect element
+     * @param shapeNode the shape node to initialize
      */
     protected void buildShape(BridgeContext ctx,
-                              SVGElement elt,
-                              ShapeNode node,
-                              CSSStyleDeclaration decl,
-                              UnitProcessor.Context uctx) {
+                              Element e,
+                              ShapeNode shapeNode) {
 
-        // parse the fill rule CSS property
-        CSSPrimitiveValue v;
-        v = (CSSPrimitiveValue)decl.getPropertyCSSValue(CSS_FILL_RULE_PROPERTY);
-        int wr = (CSSUtilities.rule(v) == CSSUtilities.RULE_NONZERO)
-            ? PathIterator.WIND_NON_ZERO
-            : PathIterator.WIND_EVEN_ODD;
-
-        // parse the points attribute, (required)
-        String pts = elt.getAttributeNS(null, ATTR_POINTS);
-        if (pts.length() == 0) {
-            throw new MissingAttributeException(
-                Messages.formatMessage("polyline.points.required", null));
-        }
-        PointsParser p = new PointsParser();
-        AWTPolylineProducer ph = new AWTPolylineProducer();
-        ph.setWindingRule(wr);
-        p.setPointsHandler(ph);
-        try {
-            p.parse(new StringReader(pts));
-        } catch (ParseException ex) {
-            throw new IllegalAttributeValueException(
-                Messages.formatMessage("polyline.points.invalid",
-                                       new Object[] {ex.getMessage()}),
-                node);
-        } finally {
-            node.setShape(ph.getShape());
+        String s = e.getAttributeNS(null, SVG_POINTS_ATTRIBUTE);
+        if (s.length() != 0) {
+            AWTPolylineProducer app = new AWTPolylineProducer();
+            app.setWindingRule(CSSUtilities.convertFillRule(e));
+            try {
+                PointsParser pp = new PointsParser();
+                pp.setPointsHandler(app);
+                pp.parse(new StringReader(s));
+            } catch (ParseException ex) {
+                throw new BridgeException(e, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                                      new Object[] {SVG_POINTS_ATTRIBUTE});
+            } finally {
+                shapeNode.setShape(app.getShape());
+            }
+        } else {
+            throw new BridgeException(e, ERR_ATTRIBUTE_MISSING,
+                                  new Object[] {SVG_POINTS_ATTRIBUTE});
         }
     }
 }

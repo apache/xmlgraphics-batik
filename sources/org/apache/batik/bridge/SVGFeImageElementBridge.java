@@ -10,58 +10,51 @@ package org.apache.batik.bridge;
 
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
-import java.awt.image.RenderedImage;
-import java.awt.image.renderable.RenderContext;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
-import java.util.Vector;
 
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.XLinkSupport;
-
-import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
-import org.apache.batik.ext.awt.image.renderable.Filter;
-import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
-import org.apache.batik.ext.awt.image.renderable.PadMode;
-
-import org.apache.batik.bridge.resources.Messages;
 import org.apache.batik.ext.awt.image.renderable.AffineRable8Bit;
+import org.apache.batik.ext.awt.image.renderable.Filter;
+import org.apache.batik.ext.awt.image.renderable.PadMode;
 import org.apache.batik.ext.awt.image.renderable.PadRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.RasterRable;
-
-import org.apache.batik.util.SVGConstants;
-import org.apache.batik.util.UnitProcessor;
+import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.filter.GraphicsNodeRable8Bit;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.svg.SVGDocument;
-import org.w3c.dom.svg.SVGElement;
 
 /**
- * This class bridges an SVG <tt>feImage</tt> element with
- * a concrete <tt>Filter</tt> filter implementation
+ * Bridge class for the &lt;feImage> element.
  *
- * @author <a href="mailto:Thomas.DeWeeese@Kodak.com">Thomas DeWeese</a>
- * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
- * @version $Id $
+ * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
+ * @version $Id$
  */
-public class SVGFeImageElementBridge implements FilterPrimitiveBridge,
-                                                SVGConstants {
+public class SVGFeImageElementBridge
+    extends SVGAbstractFilterPrimitiveElementBridge {
 
-    public final static String PROTOCOL_DATA = "data:";
+    final static String PROTOCOL_DATA = "data:";
 
     /**
-     * Returns the <tt>Filter</tt> that implements the filter
-     * operation modeled by the input DOM element
+     * Constructs a new bridge for the &lt;feImage> element.
+     */
+    public SVGFeImageElementBridge() {}
+
+    /**
+     * Creates a <tt>Filter</tt> primitive according to the specified
+     * parameters.
      *
-     * @param filteredNode the node to which the filter will be attached.
-     * @param bridgeContext the context to use.
-     * @param filterElement DOM element that represents a filter abstraction
-     * @param in the <tt>Filter</tt> that represents the current
+     * @param ctx the bridge context to use
+     * @param filterElement the element that defines a filter
+     * @param filteredElement the element that references the filter
+     * @param filteredNode the graphics node to filter
+     *
+     * @param inputFilter the <tt>Filter</tt> that represents the current
      *        filter input if the filter chain.
      * @param filterRegion the filter area defined for the filter chain
      *        the new node will be part of.
@@ -70,146 +63,161 @@ public class SVGFeImageElementBridge implements FilterPrimitiveBridge,
      *        can then access a filter node from the filterMap if they
      *        know its name.
      */
-    public Filter create(GraphicsNode filteredNode,
-                         BridgeContext bridgeContext,
-                         Element filterElement,
-                         Element filteredElement,
-                         Filter in,
-                         Rectangle2D filterRegion,
-                         Map filterMap){
+    public Filter createFilter(BridgeContext ctx,
+                               Element filterElement,
+                               Element filteredElement,
+                               GraphicsNode filteredNode,
+                               Filter inputFilter,
+                               Rectangle2D filterRegion,
+                               Map filterMap) {
 
-        GraphicsNodeRenderContext rc =
-                          bridgeContext.getGraphicsNodeRenderContext();
-        DocumentLoader loader = bridgeContext.getDocumentLoader();
-
-        SVGElement svgElement = (SVGElement) filterElement;
-
-        String uriStr = XLinkSupport.getXLinkHref(svgElement);
-        if (uriStr == null) {
-            throw new MissingAttributeException(
-                Messages.formatMessage("feImage.xlinkHref.required", null));
+        // 'xlink:href' attribute
+        String uriStr = XLinkSupport.getXLinkHref(filterElement);
+        if (uriStr.length() == 0) {
+            throw new BridgeException(filterElement, ERR_ATTRIBUTE_MISSING,
+                                      new Object[] {"xlink:href"});
         }
 
-        //
         // feImage's default region is that of the filter chain.
-        //
         Rectangle2D defaultRegion = filterRegion;
 
-        CSSStyleDeclaration cssDecl
-            = CSSUtilities.getComputedStyle(filterElement);
-
-        UnitProcessor.Context uctx
-            = new DefaultUnitProcessorContext(bridgeContext, cssDecl);
-
+        // get filter primitive chain region
         Rectangle2D primitiveRegion
             = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
                                                         filteredElement,
+                                                        filteredNode,
                                                         defaultRegion,
                                                         filterRegion,
-                                                        filteredNode,
-                                                        rc,
-                                                        uctx,
-                                                        loader);
+                                                        ctx);
 
         Filter filter = null;
-        if (uriStr.startsWith(PROTOCOL_DATA)) {
-            filter = RasterRable.create(uriStr, null, null);
-        } else {
-            SVGDocument svgDoc;
-            svgDoc = (SVGDocument)filterElement.getOwnerDocument();
-            URL baseURL = ((SVGOMDocument)svgDoc).getURLObject();
-            URL url = null;
-            try {
-                url = new URL(baseURL, uriStr);
-            } catch (MalformedURLException mue) {
-                throw new IllegalAttributeValueException(
-                    Messages.formatMessage("feImage.xlinkHref.badURL", null));
+        try {
+            if (uriStr.startsWith(PROTOCOL_DATA)) {
+                filter = createBase64FeImage(ctx, primitiveRegion, uriStr);
+            } else {
+                // try to load the image as an svg document
+                SVGDocument svgDoc
+                    = (SVGDocument)filterElement.getOwnerDocument();
+                URL baseURL = ((SVGOMDocument)svgDoc).getURLObject();
+                URL url = new URL(baseURL, uriStr);
+                // try to load an SVG document
+                DocumentLoader loader = ctx.getDocumentLoader();
+                URIResolver resolver = new URIResolver(svgDoc, loader);
+                try {
+                    Element refElement = null;
+                    Node n = resolver.getNode(url.toString());
+                    if (n.getNodeType() == n.DOCUMENT_NODE) {
+                        refElement = ((SVGDocument)n).getRootElement();
+                    } else if (n.getNodeType() == Node.ELEMENT_NODE) {
+                        refElement = (Element)n;
+                    } else {
+                        throw new BridgeException
+                            (filterElement, ERR_URI_IMAGE_INVALID,
+                             new Object[] {uriStr});
+                    }
+                    filter = createSVGFeImage
+                        (ctx, primitiveRegion, refElement);
+                } catch (BridgeException ex) {
+                    throw ex;
+                } catch (Exception ex) { /* Nothing to do */ }
+                if (filter == null) {
+                    // try to load the image as a raster image (JPG or PNG)
+                    filter = createRasterFeImage(ctx, primitiveRegion, url);
+                }
             }
-
-            try {
-
-                URIResolver ur =
-                    new URIResolver(svgDoc, bridgeContext.getDocumentLoader());
-
-                Node refNode = ur.getNode(url.toString());
-                if (refNode == null) {
-                    throw new IllegalAttributeValueException(
-                        Messages.formatMessage("feImage.xlinkHref.badURL",
-                                               null));
-                }
-
-                Element refElement;
-                if (refNode.getNodeType() == refNode.DOCUMENT_NODE) {
-                    refElement = ((SVGDocument)refNode).getRootElement();
-                } else {
-                    refElement = (Element)refNode;
-                }
-
-                // Cannot access referenced file...
-                if(refElement == null){
-                    throw new IllegalAttributeValueException(
-                        Messages.formatMessage("feImage.xlinkHref.badURL",
-                                               null));
-                }
-
-                GraphicsNode gn =
-                    bridgeContext.getGVTBuilder().build(bridgeContext,
-                                                        refElement);
-
-                GraphicsNodeRableFactory gnrFactory
-                    = bridgeContext.getGraphicsNodeRableFactory();
-                filter = gnrFactory.createGraphicsNodeRable(gn, rc);
-
-                //
-                // Need to translate the image to the x, y coordinate to
-                // have the same behavior as the <use> element
-                // <!> FIX ME? I THINK THIS IS ONLY PARTIALLY IMPLEMENTING THE
-                //     SPEC.
-                // <!> TO DO : HANDLE TRANSFORM
-                AffineTransform at = new AffineTransform();
-                at.translate(primitiveRegion.getX(), primitiveRegion.getY());
-
-                filter = new AffineRable8Bit(filter, at);
-
-            } catch (Exception ex) {
-                //
-                // Need to fit the raster image to the filter region
-                // so that we have the same behavior as raster images
-                // in the <image> element.
-                //
-                filter = RasterRable.create(url, null, null);
-
-                Rectangle2D bounds = filter.getBounds2D();
-                AffineTransform scale = new AffineTransform();
-                scale.translate(primitiveRegion.getX(), primitiveRegion.getY());
-                scale.scale(primitiveRegion.getWidth()/bounds.getWidth(),
-                            primitiveRegion.getHeight()/bounds.getHeight());
-                scale.translate(-bounds.getX(), -bounds.getY());
-
-                filter = new AffineRable8Bit(filter, scale);
-            }
+        } catch (MalformedURLException ex) {
+            throw new BridgeException(filterElement, ERR_URI_MALFORMED,
+                                      new Object[] {"xlink:href", uriStr});
+        } catch (IOException ex) {
+            throw new BridgeException(filterElement, ERR_URI_IO,
+                                      new Object[] {"xlink:href", uriStr});
+        }
+        if (filter == null) {
+            throw new BridgeException(filterElement, ERR_URI_IMAGE_INVALID,
+                                      new Object[] {"xlink:href", uriStr});
         }
 
-        filter = new PadRable8Bit(filter,
-                                      primitiveRegion,
-                                      PadMode.ZERO_PAD);
+        filter = new PadRable8Bit(filter, primitiveRegion, PadMode.ZERO_PAD);
 
-
-        // Get result attribute and update map
-        String result = filterElement.getAttributeNS(null, ATTR_RESULT);
-        if((result != null) && (result.trim().length() > 0)){
-            filterMap.put(result, filter);
-        }
+        // update the filter Map
+        updateFilterMap(filterElement, filter, filterMap);
 
         return filter;
     }
 
     /**
-     * Update the <tt>Filter</tt> object to reflect the current
-     * configuration in the <tt>Element</tt> that models the filter.
+     * Returns a Filter that represents a svg document or element as an image.
+     *
+     * @param ctx the bridge context
+     * @param primitiveRegion the primitive region
+     * @param Element the referenced element
      */
-    public void update(BridgeMutationEvent evt) {
-        // <!> FIXME : TODO
+    protected static Filter createSVGFeImage(BridgeContext ctx,
+                                             Rectangle2D primitiveRegion,
+                                             Element refElement) {
+
+        GraphicsNode node = ctx.getGVTBuilder().build(ctx, refElement);
+        Filter filter = new GraphicsNodeRable8Bit
+            (node, ctx.getGraphicsNodeRenderContext());
+
+        // Need to translate the image to the x, y coordinate to
+        // have the same behavior as the <use> element
+        // <!> FIX ME? I THINK THIS IS ONLY PARTIALLY IMPLEMENTING THE SPEC.
+        // <!> TO DO : HANDLE TRANSFORM
+        AffineTransform at = new AffineTransform();
+        at.translate(primitiveRegion.getX(), primitiveRegion.getY());
+        return new AffineRable8Bit(filter, at);
     }
 
+    /**
+     * Returns a Filter that represents an raster image encoded in the
+     * base 64 format.
+     *
+     * @param ctx the bridge context
+     * @param primitiveRegion the primitive region
+     * @param uriStr the uri of the image
+     */
+    protected static Filter createBase64FeImage(BridgeContext ctx,
+                                                Rectangle2D primitiveRegion,
+                                                String uri) {
+
+
+        // Need to fit the raster image to the filter region so that
+        // we have the same behavior as raster images in the <image> element.
+        Filter filter = RasterRable.create(uri, null, null);
+
+        Rectangle2D bounds = filter.getBounds2D();
+        AffineTransform scale = new AffineTransform();
+        scale.translate(primitiveRegion.getX(), primitiveRegion.getY());
+        scale.scale(primitiveRegion.getWidth()/bounds.getWidth(),
+                    primitiveRegion.getHeight()/bounds.getHeight());
+        scale.translate(-bounds.getX(), -bounds.getY());
+
+        return new AffineRable8Bit(filter, scale);
+    }
+
+    /**
+     * Returns a Filter that represents an raster image (JPG or PNG).
+     *
+     * @param ctx the bridge context
+     * @param primitiveRegion the primitive region
+     * @param url the url of the image
+     */
+    protected static Filter createRasterFeImage(BridgeContext ctx,
+                                                Rectangle2D primitiveRegion,
+                                                URL url) {
+
+        // Need to fit the raster image to the filter region so that
+        // we have the same behavior as raster images in the <image> element.
+        Filter filter = RasterRable.create(url, null, null);
+
+        Rectangle2D bounds = filter.getBounds2D();
+        AffineTransform scale = new AffineTransform();
+        scale.translate(primitiveRegion.getX(), primitiveRegion.getY());
+        scale.scale(primitiveRegion.getWidth()/bounds.getWidth(),
+                    primitiveRegion.getHeight()/bounds.getHeight());
+        scale.translate(-bounds.getX(), -bounds.getY());
+
+        return new AffineRable8Bit(filter, scale);
+    }
 }
