@@ -10,6 +10,7 @@ package org.apache.batik.ext.awt.image;
 
 import java.awt.color.ColorSpace;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.Point;
@@ -40,7 +41,10 @@ import java.util.Vector;
 import java.util.Iterator;
 
 import org.apache.batik.ext.awt.image.renderable.AffineRable;
+import org.apache.batik.ext.awt.image.rendered.AffineRed;
 import org.apache.batik.ext.awt.image.rendered.CachableRed;
+import org.apache.batik.ext.awt.image.rendered.MultiplyAlphaRed;
+import org.apache.batik.ext.awt.image.rendered.PadRed;
 import org.apache.batik.ext.awt.image.renderable.CompositeRable;
 import org.apache.batik.ext.awt.image.renderable.CompositeRule;
 import org.apache.batik.ext.awt.image.renderable.Filter;
@@ -65,11 +69,27 @@ import org.apache.batik.ext.awt.image.rendered.Any2sRGBRed;
  */
 public class GraphicsUtil {
 
+    /**
+     * Draws <tt>ri</tt> into <tt>g2d</tt>.  It does this be
+     * requesting tiles from <tt>ri</tt> and drawing them individually
+     * in <tt>g2d</tt> it also takes care of some colorspace and alpha
+     * issues.
+     * @param g2d The Graphics2D to draw into.
+     * @param ri  The image to be drawn.
+     */
     public static void drawImage(Graphics2D g2d,
                                  RenderedImage ri) {
         drawImage(g2d, wrap(ri));
     }
 
+    /**
+     * Draws <tt>cr</tt> into <tt>g2d</tt>.  It does this be
+     * requesting tiles from <tt>ri</tt> and drawing them individually
+     * in <tt>g2d</tt> it also takes care of some colorspace and alpha
+     * issues.
+     * @param g2d The Graphics2D to draw into.
+     * @param cr  The image to be drawn.
+     */
     public static void drawImage(Graphics2D g2d,
                                  CachableRed cr) {
         ColorModel  srcCM = cr.getColorModel();
@@ -92,9 +112,91 @@ public class GraphicsUtil {
                 cr = convertTosRGB(cr);
             else if (g2dCS == ColorSpace.getInstance(ColorSpace.CS_LINEAR_RGB))
                 cr = convertToLsRGB(cr);
-            srcCM = cr.getColorModel();
         }
 
+        AffineTransform at = g2d.getTransform();
+        Shape clip = g2d.getClip();
+
+        if ( false) {
+            // There has been a problem where the render tries to
+            // request a zero pixel high region (due to a bug in the
+            // complex clip handling).  I have at least temporarily
+            // worked around this by changing the alpha state in
+            // CompositeRable which changes code paths enough that the
+            // renderer doesn't try to construct a zero height
+            // SampleModel (which dies).
+            //
+            // However I suspect that this fix is fragile (other code
+            // paths may trigger the bug), eventually we may need to
+            // reinstate this code, which handles the clipping for the
+            // Graphics2D.
+            if ((clip != null) &&
+                !(clip instanceof Rectangle2D)) {
+
+                // Let's work in device space...
+                cr = new AffineRed(cr, at, g2d.getRenderingHints());
+
+                g2d.setTransform(new AffineTransform());
+
+            // This is now the clip in device space...
+                clip = g2d.getClip();
+
+                Rectangle clipR = clip.getBounds();
+
+                if (clip instanceof Rectangle2D)
+                    // Simple clip rect...
+                    cr = new PadRed(cr, clipR, PadMode.ZERO_PAD, null);
+                else {
+                    // Complex clip...
+                    /*
+                 * System.out.println("Clip:" + clip);
+                 * System.out.println("ClipR: " + clipR);
+                 * System.out.println("crR: " + cr.getBounds());
+                 * System.out.println("at: " + at);
+                 */
+
+                    if (clipR.intersects(cr.getBounds()) == false)
+                        return; // Nothing to draw...
+                    clipR = clipR.intersection(cr.getBounds());
+
+                    BufferedImage bi = new BufferedImage
+                        (clipR.width, clipR.height,
+                         BufferedImage.TYPE_BYTE_GRAY);
+
+                    Graphics2D big2d = bi.createGraphics();
+                    big2d.setRenderingHints(g2d.getRenderingHints());
+
+                    big2d.translate(-clipR.x, -clipR.y);
+                    big2d.setPaint(Color.white);
+                    big2d.fill(clip);
+                    big2d.dispose();
+                
+                    CachableRed cCr;
+                    cCr = new BufferedImageCachableRed(bi, clipR.x, clipR.y);
+                    cr     = new MultiplyAlphaRed     (cr, cCr);
+                }
+                g2d.setClip(null);
+            }
+
+            if (false) {
+                Rectangle    clipR = clip.getBounds();
+                BufferedImage bi   = new BufferedImage
+                    (clipR.width, clipR.height,
+                     BufferedImage.TYPE_BYTE_GRAY);
+
+                Graphics2D big2d = bi.createGraphics();
+                big2d.setRenderingHints(g2d.getRenderingHints());
+
+                big2d.translate(-clipR.x, -clipR.y);
+                big2d.setPaint(Color.white);
+                big2d.fill(clip);
+                big2d.dispose();
+                org.apache.batik.test.gvt.ImageDisplay.showImage
+                    ("Big2d: ", bi);
+            }
+        }
+
+        srcCM = cr.getColorModel();
         ColorModel drawCM = srcCM;
         if ((drawCM.hasAlpha()) && (g2dCM.hasAlpha())) {
             if (drawCM.isAlphaPremultiplied() != 
@@ -109,13 +211,6 @@ public class GraphicsUtil {
         BufferedImage bi = new BufferedImage
             (drawCM, wr, drawCM.isAlphaPremultiplied(), null);
 
-        /*
-        Graphics2D big2d = bi.createGraphics();
-        // Fully transparent black.
-        big2d.setColor(new java.awt.Color(0,0,0,0));
-        big2d.setComposite(java.awt.AlphaComposite.Src);
-        */
-
         int xt0 = cr.getMinTileX();
         int xt1 = xt0+cr.getNumXTiles();
         int yt0 = cr.getMinTileY();
@@ -127,7 +222,7 @@ public class GraphicsUtil {
         Rectangle tR  = new Rectangle(0,0,tw,th);
         Rectangle iR  = new Rectangle(0,0,0,0);
 
-        if (false) {
+        if (false)
             System.out.println("CRR: " + crR + " TG: [" +
                                xt0 +"," +
                                yt0 +"," +
@@ -135,37 +230,69 @@ public class GraphicsUtil {
                                yt1 +"] Off: " +
                                cr.getTileGridXOffset() +"," +
                                cr.getTileGridXOffset());
-        }
 
         DataBuffer db = wr.getDataBuffer();
         int yloc = yt0*th+cr.getTileGridYOffset();
-        for (int y=yt0; y<yt1; y++) {
+        for (int y=yt0; y<yt1; y++, yloc += th) {
             int xloc = xt0*tw+cr.getTileGridXOffset();
-            for (int x=xt0; x<xt1; x++) {
+            for (int x=xt0; x<xt1; x++, xloc+=tw) {
+                tR.x = xloc;
+                tR.y = yloc;
+                Rectangle2D.intersect(crR, tR, iR);
+
                 wr = Raster.createWritableRaster(srcSM, db,
                                                  new Point(xloc, yloc));
                 cr.copyData(wr);
                 coerceData(wr, srcCM, drawCM.isAlphaPremultiplied());
 
-                tR.x = xloc;
-                tR.y = yloc;
-                Rectangle2D.intersect(crR, tR, iR);
-
-                // Make sure we only draw the region that was writting...
+                // Make sure we only draw the region that was written...
                 BufferedImage subBI;
                 subBI = bi.getSubimage(iR.x-xloc, iR.y-yloc,
                                        iR.width,  iR.height);
-                if (false)
-                    System.out.println("IR: " + iR);
+                if (false) {
+                    System.out.println("Drawing: " + tR);
+                    System.out.println("IR: "      + iR);
+                    subBI = new BufferedImage(subBI.getColorModel(),
+                                              subBI.getRaster(),
+                                              subBI.isAlphaPremultiplied(),
+                                              null) {
+                            public BufferedImage getSubimage(int x, int y,
+                                                             int w, int h) {
+                                Exception e = new Exception
+                                    ("Sub: [" + x + ", " + y + ", " +
+                                     w + ", " + h + "]");
+                                e.printStackTrace();
+                                if (w<=0) w= 1;
+                                if (h<=0) h= 1;
+                                return super.getSubimage(x,y,w,h);
+                            }
+                        };
+                }
 
                 g2d.drawImage(subBI, null, iR.x, iR.y);
                 // big2d.fillRect(0, 0, tw, th);
-                xloc += tw;
             }
-            yloc += th;
         }
+
+        g2d.setClip(clip);
+        g2d.setTransform(at);
     }
 
+    /**
+     * Draws a <tt>Filter</tt> (<tt>RenderableImage</tt>) into a
+     * Graphics 2D after taking into account a particular
+     * <tt>RenderContext</tt>.<p>
+     *
+     * This method also attempts to unwind the rendering chain a bit.
+     * So it knows about certain operations (like affine, pad,
+     * composite), rather than applying each of these operations in
+     * turn it accounts for there affects through modifications to the
+     * Graphics2D. This avoids generating lots of intermediate images.
+     *
+     * @param g2d    The Graphics to draw into.
+     * @param filter The filter to draw
+     * @param rc The render context that controls the drawing operation.  
+     */
     public static void drawImage(Graphics2D    g2d,
                                  Filter        filter,
                                  RenderContext rc) {
@@ -185,6 +312,19 @@ public class GraphicsUtil {
         g2d.setRenderingHints(origRH);
     }
 
+    /**
+     * Draws a <tt>Filter</tt> (<tt>RenderableImage</tt>) into a
+     * Graphics 2D.<p>
+     *
+     * This method also attempts to unwind the rendering chain a bit.
+     * So it knows about certain operations (like affine, pad,
+     * composite), rather than applying each of these operations in
+     * turn it accounts for there affects through modifications to the
+     * Graphics2D.  This avoids generating lots of intermediate images.
+     *
+     * @param g2d    The Graphics to draw into.
+     * @param filter The filter to draw
+     */
     public static void drawImage(Graphics2D g2d,
                                  Filter     filter) {
         if (filter instanceof AffineRable) {
@@ -278,18 +418,27 @@ public class GraphicsUtil {
         g2d.setTransform(at);
     }
 
+    /**
+     * Standard prebuilt Linear_sRGB color model with no alpha
+     */
     public final static ColorModel Linear_sRGB =
         new DirectColorModel(ColorSpace.getInstance
                              (ColorSpace.CS_LINEAR_RGB), 24,
                              0x00FF0000, 0x0000FF00,
                              0x000000FF, 0x0, false,
                              DataBuffer.TYPE_INT);
+    /**
+     * Standard prebuilt Linear_sRGB color model with premultiplied alpha.
+     */
     public final static ColorModel Linear_sRGB_Pre =
         new DirectColorModel(ColorSpace.getInstance
                              (ColorSpace.CS_LINEAR_RGB), 32,
                              0x00FF0000, 0x0000FF00,
                              0x000000FF, 0xFF000000, true,
                              DataBuffer.TYPE_INT);
+    /**
+     * Standard prebuilt Linear_sRGB color model with unpremultiplied alpha.
+     */
     public final static ColorModel Linear_sRGB_Unpre =
         new DirectColorModel(ColorSpace.getInstance
                              (ColorSpace.CS_LINEAR_RGB), 32,
@@ -297,18 +446,27 @@ public class GraphicsUtil {
                              0x000000FF, 0xFF000000, false,
                              DataBuffer.TYPE_INT);
 
+    /**
+     * Standard prebuilt sRGB color model with no alpha.
+     */
     public final static ColorModel sRGB =
         new DirectColorModel(ColorSpace.getInstance
                              (ColorSpace.CS_sRGB), 24,
                              0x00FF0000, 0x0000FF00,
                              0x000000FF, 0x0, false,
                              DataBuffer.TYPE_INT);
+    /**
+     * Standard prebuilt sRGB color model with premultiplied alpha.
+     */
     public final static ColorModel sRGB_Pre =
         new DirectColorModel(ColorSpace.getInstance
                              (ColorSpace.CS_sRGB), 32,
                              0x00FF0000, 0x0000FF00,
                              0x000000FF, 0xFF000000, true,
                              DataBuffer.TYPE_INT);
+    /**
+     * Standard prebuilt sRGB color model with unpremultiplied alpha.
+     */
     public final static ColorModel sRGB_Unpre =
         new DirectColorModel(ColorSpace.getInstance
                              (ColorSpace.CS_sRGB), 32,
@@ -316,12 +474,27 @@ public class GraphicsUtil {
                              0x000000FF, 0xFF000000, false,
                              DataBuffer.TYPE_INT);
 
+    /**
+     * Method that returns either Linear_sRGB_Pre or Linear_sRGB_UnPre
+     * based on premult flag.
+     * @param premult True if the ColorModel should have premultiplied alpha.
+     * @return        a ColorMdoel with Linear sRGB colorSpace and
+     *                the alpha channel set in accordance with 
+     *                <tt>premult</tt>
+     */
     public static ColorModel makeLinear_sRGBCM(boolean premult) {
         if (premult)
             return Linear_sRGB_Pre;
         return Linear_sRGB_Unpre;
     }
 
+    /**
+     * Constructs a BufferedImage with a linear sRGB colorModel, and alpha.
+     * @param width   The desired width of the BufferedImage
+     * @param height  The desired height of the BufferedImage
+     * @param premult The desired state of alpha premultiplied
+     * @return        The requested BufferedImage.
+     */
     public static BufferedImage makeLinearBufferedImage(int width,
                                                         int height,
                                                         boolean premult) {
@@ -330,6 +503,17 @@ public class GraphicsUtil {
         return new BufferedImage(cm, wr, premult, null);
     }
 
+    /**
+     * This method will return a CacheableRed that has it's data in
+     * the linear sRGB colorspace. If <tt>src</tt> is already in
+     * linear sRGB then this method does nothing and returns <tt>src</tt>.
+     * Otherwise it creates a transform that will convert
+     * <tt>src</tt>'s output to linear sRGB and returns that CacheableRed.
+     *
+     * @param src The image to convert to linear sRGB.
+     * @return    An equivilant image to <tt>src</tt> who's data is in 
+     *            linear sRGB.
+     */
     public static CachableRed convertToLsRGB(CachableRed src) {
         ColorModel cm = src.getColorModel();
         ColorSpace cs = cm.getColorSpace();
@@ -339,6 +523,16 @@ public class GraphicsUtil {
         return new Any2LsRGBRed(src);
     }
 
+    /**
+     * This method will return a CacheableRed that has it's data in
+     * the sRGB colorspace. If <tt>src</tt> is already in
+     * sRGB then this method does nothing and returns <tt>src</tt>.
+     * Otherwise it creates a transform that will convert
+     * <tt>src</tt>'s output to sRGB and returns that CacheableRed.
+     *
+     * @param src The image to convert to sRGB.
+     * @return    An equivilant image to <tt>src</tt> who's data is in sRGB.
+     */
     public static CachableRed convertTosRGB(CachableRed src) {
         ColorModel cm = src.getColorModel();
         ColorSpace cs = cm.getColorSpace();
@@ -348,6 +542,19 @@ public class GraphicsUtil {
         return new Any2sRGBRed(src);
     }
 
+    /**
+     * Convertes any RenderedImage to a CacheableRed.  <p>
+     * If <tt>ri</tt> is already a CacheableRed it casts it down and
+     * returns it.<p>
+     *
+     * In cases where <tt>ri</tt> is not already a CacheableRed it
+     * wraps <tt>ri</tt> with a helper class.  The wrapped
+     * CacheableRed "Pretends" that it has no sources since it has no
+     * way of inteligently handling the dependency/dirty region calls 
+     * if it exposed the source.
+     * @param ri The RenderedImage to convert.
+     * @return   a CacheableRed that contains the same data as ri.  
+     */
     public static CachableRed wrap(RenderedImage ri) {
         if (ri instanceof CachableRed)
             return (CachableRed) ri;
@@ -356,6 +563,14 @@ public class GraphicsUtil {
         return new RenderedImageCachableRed(ri);
     }
 
+    /**
+     * An internal optimized version of copyData designed to work on
+     * Integer packed data with a SinglePixelPackedSampleModel.  Only
+     * the region of overlap between src and dst is copied.
+     *
+     * @param src The source of the data
+     * @param dst The destination for the data.
+     */
     protected static void copyData_INT_PACK(Raster src, WritableRaster dst) {
         // System.out.println("Fast copyData");
         int x0 = dst.getMinX();
@@ -422,13 +637,21 @@ public class GraphicsUtil {
         }
     }
 
+    /**
+     * Copies data from one raster to another. Only the region of
+     * overlap between src and dst is copied.  <tt>Src</tt> and
+     * <tt>Dst</tt> must have compatible SampleModels.
+     *
+     * @param src The source of the data
+     * @param dst The destination for the data.  
+     */
     public static void copyData(Raster src, WritableRaster dst) {
         if (is_INT_PACK_Data(src.getSampleModel(), false) &&
             is_INT_PACK_Data(dst.getSampleModel(), false)) {
             copyData_INT_PACK(src, dst);
             return;
         }
-        System.out.println("Slow copyData");
+        // System.out.println("Slow copyData");
 
         int x0 = dst.getMinX();
         if (x0 < src.getMinX()) x0 = src.getMinX();
@@ -455,10 +678,42 @@ public class GraphicsUtil {
         }
     }
 
+    /**
+     * Creates a new raster that has a <b>copy</b> of the data in
+     * <tt>ras</tt>.  This is highly optimized for speed.  There is
+     * no provision for changing any aspect of the SampleModel.
+     *
+     * This method should be used when you need to change the contents
+     * of a Raster that you do not "own" (ie the result of a
+     * <tt>getData</tt> call).
+     * @param ras The Raster to copy.
+     * @return    A writable copy of <tt>ras</tt>
+     */
     public static WritableRaster copyRaster(Raster ras) {
         return copyRaster(ras, ras.getMinX(), ras.getMinY());
     }
 
+    
+    /**
+     * Creates a new raster that has a <b>copy</b> of the data in
+     * <tt>ras</tt>.  This is highly optimized for speed.  There is
+     * no provision for changing any aspect of the SampleModel.
+     * However you can specify a new location for the returned raster.
+     *
+     * This method should be used when you need to change the contents
+     * of a Raster that you do not "own" (ie the result of a
+     * <tt>getData</tt> call).
+     *
+     * @param ras The Raster to copy.
+     *
+     * @param minX The x location for the upper left corner of the
+     *             returned WritableRaster.
+     *
+     * @param minY The y location for the upper left corner of the
+     *             returned WritableRaster.
+     *
+     * @return    A writable copy of <tt>ras</tt>
+     */
     public static WritableRaster copyRaster(Raster ras, int minX, int minY) {
         WritableRaster newSrcWR;
         WritableRaster ret = Raster.createWritableRaster
@@ -512,10 +767,51 @@ public class GraphicsUtil {
         return ret;
     }
 
+    /**
+     * Coerces <tt>ras</tt> to be writable.  The returned Raster continues to 
+     * reference the DataBuffer from ras, so modifications to the returned
+     * WritableRaster will be seen in ras.<p>
+     *
+     * This method should only be used if you need a WritableRaster due to
+     * an interface (such as to construct a BufferedImage), but have no
+     * intention of modifying the contents of the returned Raster.  If
+     * you have any doubt about other users of the data in <tt>ras</tt>,
+     * use copyRaster (above).
+     * @param ras The raster to make writable.
+     * @return    A Writable version of ras (shares DataBuffer with 
+     *            <tt>ras</tt>).
+     */
     public static WritableRaster makeRasterWritable(Raster ras) {
         return makeRasterWritable(ras, ras.getMinX(), ras.getMinY());
     }
 
+    /**
+     * Coerces <tt>ras</tt> to be writable.  The returned Raster continues to 
+     * reference the DataBuffer from ras, so modifications to the returned
+     * WritableRaster will be seen in ras.<p>
+     *
+     * You can specify a new location for the returned WritableRaster, this
+     * is especially useful for constructing BufferedImages which require
+     * the Raster to be at (0,0).
+     *
+     * This method should only be used if you need a WritableRaster due to
+     * an interface (such as to construct a BufferedImage), but have no
+     * intention of modifying the contents of the returned Raster.  If
+     * you have any doubt about other users of the data in <tt>ras</tt>,
+     * use copyRaster (above).
+     *
+     * @param ras The raster to make writable.
+     *
+     * @param minX The x location for the upper left corner of the
+     *             returned WritableRaster.
+     *
+     * @param minY The y location for the upper left corner of the
+     *             returned WritableRaster.
+     *
+     * @return A Writable version of <tT>ras</tt> with it's upper left
+     *         hand coordinate set to minX, minY (shares it's DataBuffer 
+     *         with <tt>ras</tt>).  
+     */
     public static WritableRaster makeRasterWritable(Raster ras,
                                                     int minX, int minY) {
         WritableRaster ret = Raster.createWritableRaster
@@ -530,6 +826,14 @@ public class GraphicsUtil {
         return ret;
     }
 
+    /**
+     * Create a new ColorModel with it's alpha premultiplied state matching
+     * newAlphaPreMult.
+     * @param cm The ColorModel to change the alpha premult state of.
+     * @param newAlphaPreMult The new state of alpha premult.
+     * @return   A new colorModel that has isAlphaPremultiplied()
+     *           equal to newAlphaPreMult.
+     */
     public static ColorModel
         coerceColorModel(ColorModel cm, boolean newAlphaPreMult) {
         if (cm.isAlphaPremultiplied() == newAlphaPreMult)
