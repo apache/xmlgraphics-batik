@@ -62,20 +62,20 @@ import java.util.StringTokenizer;
  */
 public class PreferenceManager
 {
-    private Properties internal = null;
-    private Map defaults = null;
-    private String prefFileName = null;
-    private String fullName = null;
+    protected Properties internal = null;
+    protected Map defaults = null;
+    protected String prefFileName = null;
+    protected String fullName = null;
 
-    private final static String USER_HOME = System.getProperty("user.home");
-    private final static String USER_DIR  = System.getProperty("user.dir");
-    private final static String FILE_SEP  = System.getProperty("file.separator");
+    protected final static String USER_HOME = System.getProperty("user.home");
+    protected final static String USER_DIR  = System.getProperty("user.dir");
+    protected final static String FILE_SEP  = System.getProperty("file.separator");
 
     private static String PREF_DIR = null;
 
     /**
      * Creates a preference manager.
-     * @prefFileName the name of the preference file.
+     * @param prefFileName the name of the preference file.
      */
     public PreferenceManager(String prefFileName)
     {
@@ -85,8 +85,8 @@ public class PreferenceManager
     /**
      * Creates a preference manager with a default values
      * initialization map.
-     * @prefFileName the name of the preference file.
-     * @defaults where to get defaults value if the value is
+     * @param prefFileName the name of the preference file.
+     * @param defaults where to get defaults value if the value is
      * not specified in the file.
      */
     public PreferenceManager(String prefFileName, Map defaults)
