@@ -228,6 +228,11 @@ public class JSVGCanvas
     protected AffineTransform rotateTransform;
 
     /**
+     * The transform representing the previous rotation.
+     */
+    protected AffineTransform previousRotateTransform;
+
+    /**
      * The pan bounding box.
      */
     protected Shape docBBox = null;
@@ -541,6 +546,7 @@ public class JSVGCanvas
         }
         rotateAngle = 0;
         rotateCos = 1;
+        previousRotateTransform = null;
         if (zoomHandler != null) {
             zoomHandler.zoomChanged(1);
         }
@@ -1173,6 +1179,7 @@ public class JSVGCanvas
             computeTransform();
             rotateAngle = 0;
             rotateCos = 1;
+            previousRotateTransform = null;
             if (zoomHandler != null) {
                 zoomHandler.zoomChanged(1);
             }
@@ -1191,6 +1198,7 @@ public class JSVGCanvas
             computeTransform();
             rotateAngle = 0;
             rotateCos = 1;
+            previousRotateTransform = null;
             if (zoomHandler != null) {
                 zoomHandler.zoomChanged(1);
             }
@@ -1303,6 +1311,7 @@ public class JSVGCanvas
                     }
                     requestCursor(ROTATE_CURSOR);
                     setCursor(ROTATE_CURSOR);
+                    previousRotateTransform = rotateTransform;
                     rotateTransform = new AffineTransform();
                     paintRotateMarker(sx, sy);
                     operationPerformed = true;
@@ -1456,6 +1465,13 @@ public class JSVGCanvas
                 }
             } else if (rotateMarker != null) {
                 clearRotateMarker();
+                if (previousRotateTransform != null) {
+                    try {
+                        transform.preConcatenate(
+                                       previousRotateTransform.createInverse());
+                    } catch(NoninvertibleTransformException ex) {}
+                    previousRotateTransform = null;
+                }
                 transform.preConcatenate(rotateTransform);
                 updateBaseTransform();
                 if (zoomHandler != null) {
