@@ -67,6 +67,17 @@ public class LocalHistory {
     protected ActionListener actionListener = new RadioListener();
 
     /**
+     * The current state.
+     */
+    protected int state;
+
+    // States
+    protected final static int STABLE_STATE = 0;
+    protected final static int BACK_PENDING_STATE = 1;
+    protected final static int FORWARD_PENDING_STATE = 2;
+    protected final static int RELOAD_PENDING_STATE = 3;
+
+    /**
      * Creates a new local history.
      * @param mb The menubar used to display the history. It must
      *        contains one '@@@' item used as marker to place the
@@ -102,6 +113,8 @@ public class LocalHistory {
      * Assumes that <tt>canGoBack()</tt> is true.
      */
     public void back() {
+        update();
+        state = BACK_PENDING_STATE;
         currentURI -= 2;
         svgCanvas.loadSVGDocument((String)visitedURIs.get(currentURI + 1));
     }
@@ -118,6 +131,8 @@ public class LocalHistory {
      * Assumes that <tt>canGoForward()</tt> is true.
      */
     public void forward() {
+        update();
+        state = FORWARD_PENDING_STATE;
         svgCanvas.loadSVGDocument((String)visitedURIs.get(currentURI + 1));
     }
 
@@ -132,9 +147,8 @@ public class LocalHistory {
      * Reloads the current document.
      */
     public void reload() {
-        if (currentURI < 0) {
-            currentURI = 0;
-        }
+        update();
+        state = RELOAD_PENDING_STATE;
         currentURI--;
         svgCanvas.loadSVGDocument((String)visitedURIs.get(currentURI + 1));
     }
@@ -145,8 +159,9 @@ public class LocalHistory {
      */
     public void update(String uri) {
         if (currentURI < -1) {
-            currentURI = -1;
+            throw new InternalError();
         }
+        state = STABLE_STATE;
         if (++currentURI < visitedURIs.size()) {
             if (!visitedURIs.get(currentURI).equals(uri)) {
                 for (int i = currentURI + 1; i + index <= menu.getItemCount(); i++) {
@@ -182,6 +197,21 @@ public class LocalHistory {
         group.add(mi);
         mi.setSelected(true);
         menu.insert(mi, index + currentURI);
+    }
+
+    /**
+     * Updates the state of this history.
+     */
+    protected void update() {
+        switch (state) {
+        case BACK_PENDING_STATE:
+            currentURI += 2;
+            break;
+        case RELOAD_PENDING_STATE:
+            currentURI++;
+        case FORWARD_PENDING_STATE:
+        case STABLE_STATE:
+        }
     }
 
     /**
