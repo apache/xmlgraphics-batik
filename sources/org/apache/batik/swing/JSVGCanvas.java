@@ -512,6 +512,9 @@ public class JSVGCanvas extends JSVGComponent {
      */
     protected class ZoomInAction extends AbstractAction {
         public void actionPerformed(ActionEvent evt) {
+            if (gvtRoot == null) {
+                return;
+            }
             AffineTransform at = getRenderingTransform();
             if (at != null) {
                 Dimension dim = getSize();
@@ -531,6 +534,9 @@ public class JSVGCanvas extends JSVGComponent {
      */
     protected class ZoomOutAction extends AbstractAction {
         public void actionPerformed(ActionEvent evt) {
+            if (gvtRoot == null) {
+                return;
+            }
             AffineTransform at = getRenderingTransform();
             if (at != null) {
                 Dimension dim = getSize();
@@ -558,6 +564,9 @@ public class JSVGCanvas extends JSVGComponent {
         }
 
         public void actionPerformed(ActionEvent evt) {
+            if (gvtRoot == null) {
+                return;
+            }
             AffineTransform at = new AffineTransform(getRenderingTransform());
             at.translate(-inc, 0);
             setRenderingTransform(at);
@@ -577,6 +586,9 @@ public class JSVGCanvas extends JSVGComponent {
         }
 
         public void actionPerformed(ActionEvent evt) {
+            if (gvtRoot == null) {
+                return;
+            }
             AffineTransform at = new AffineTransform(getRenderingTransform());
             at.translate(inc, 0);
             setRenderingTransform(at);
@@ -596,6 +608,9 @@ public class JSVGCanvas extends JSVGComponent {
         }
 
         public void actionPerformed(ActionEvent evt) {
+            if (gvtRoot == null) {
+                return;
+            }
             AffineTransform at = new AffineTransform(getRenderingTransform());
             at.translate(0, inc);
             setRenderingTransform(at);
@@ -615,6 +630,9 @@ public class JSVGCanvas extends JSVGComponent {
         }
 
         public void actionPerformed(ActionEvent evt) {
+            if (gvtRoot == null) {
+                return;
+            }
             AffineTransform at = new AffineTransform(getRenderingTransform());
             at.translate(0, -inc);
             setRenderingTransform(at);
