@@ -169,7 +169,6 @@ public class DecoratedShapeNode extends ShapeNode {
 
         segType = iter.currentSegment(coords);
         if(segType != iter.SEG_MOVETO){
-            System.err.println("Segments starts with a : " + segType);
             return null;
         }
         iter.next();
