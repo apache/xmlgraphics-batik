@@ -79,10 +79,10 @@ public class ShapeNode extends AbstractGraphicsNode {
     }
 
     /**
-     * Sets the <tt>ShapePainter</tt> used by this shape node to
-     * render its shape.
+     * Sets the <tt>ShapePainter</tt> used by this shape node to render its
+     * shape.
      *
-     * @param newShapePainter the new ShapePainter to use
+     * @param newShapePainter the new ShapePainter to use 
      */
     public void setShapePainter(ShapePainter newShapePainter) {
         invalidateGeometryCache();
@@ -93,8 +93,8 @@ public class ShapeNode extends AbstractGraphicsNode {
     }
 
     /**
-     * Returns the <tt>ShapePainter</tt> used by this shape node to
-     * render its shape.
+     * Returns the <tt>ShapePainter</tt> used by this shape node to render its
+     * shape.
      */
     public ShapePainter getShapePainter() {
         return shapePainter;
@@ -105,10 +105,9 @@ public class ShapeNode extends AbstractGraphicsNode {
     //
 
     /**
-     * Paints this node if visible.
+     * Paints this node.
      *
      * @param g2d the Graphics2D to use
-     * @param rc the GraphicsNodeRenderContext to use
      */
     public void paint(Graphics2D g2d, GraphicsNodeRenderContext rc) {
         if (isVisible) {
@@ -118,10 +117,9 @@ public class ShapeNode extends AbstractGraphicsNode {
     }
 
     /**
-     * Paints this node without applying Filter, Mask, Composite and clip.
+     * Paints this node without applying Filter, Mask, Composite, and clip.
      *
      * @param g2d the Graphics2D to use
-     * @param rc the GraphicsNodeRenderContext to use
      */
     public void primitivePaint(Graphics2D g2d, GraphicsNodeRenderContext rc) {
         if (shapePainter != null) {
@@ -134,9 +132,9 @@ public class ShapeNode extends AbstractGraphicsNode {
     //
 
     /**
-     * Invalidates this <tt>ShapeNode</tt>. This node and all its
-     * ancestors have been informed that all its cached values related
-     * to its bounds must be recomputed.
+     * Invalidates this <tt>ShapeNode</tt>. This node and all its ancestors have
+     * been informed that all its cached values related to its bounds must be
+     * recomputed.  
      */
     protected void invalidateGeometryCache() {
         super.invalidateGeometryCache();
@@ -146,14 +144,10 @@ public class ShapeNode extends AbstractGraphicsNode {
     }
 
     /**
-     * Tests if the specified Point2D is inside the boundary of this node.
-     * <b>Note</b>: The boundaries of some nodes (notably, text element nodes)
-     * cannot be precisely determined independent of their
-     * GraphicsNodeRenderContext.
+     * Returns true if the specified Point2D is inside the boundary of this
+     * node, false otherwise.
      *
      * @param p the specified Point2D in the user space
-     * @param rc the GraphicsNodeRenderContext for which this dimension applies
-     * @return true if the coordinates are inside, false otherwise
      */
     public boolean contains(Point2D p, GraphicsNodeRenderContext rc) {
         Rectangle2D b = getBounds(rc);
@@ -166,15 +160,10 @@ public class ShapeNode extends AbstractGraphicsNode {
     }
 
     /**
-     * Tests if the interior of this node intersects the interior of a
-     * specified Rectangle2D.
-     * <b>Note</b>: The boundaries of some nodes (notably, text element nodes)
-     * cannot be precisely determined independent of their
-     * GraphicsNodeRenderContext.
+     * Returns true if the interior of this node intersects the interior of a
+     * specified Rectangle2D, false otherwise.
      *
      * @param r the specified Rectangle2D in the user node space
-     * @param rc the GraphicsNodeRenderContext for which this dimension applies
-     * @return true if the rectangle intersects, false otherwise
      */
     public boolean intersects(Rectangle2D r, GraphicsNodeRenderContext rc) {
         Rectangle2D b = getBounds(rc);
@@ -188,11 +177,6 @@ public class ShapeNode extends AbstractGraphicsNode {
 
     /**
      * Returns the bounds of the area covered by this node's primitive paint.
-     * <b>Note</b>: The boundaries of some nodes (notably, text element nodes)
-     * cannot be precisely determined independent of their
-     * GraphicsNodeRenderContext.
-     *
-     * @param rc the GraphicsNodeRenderContext for which this dimension applies
      */
     public Rectangle2D getPrimitiveBounds(GraphicsNodeRenderContext rc) {
         if (primitiveBounds == null) {
@@ -213,14 +197,9 @@ public class ShapeNode extends AbstractGraphicsNode {
     }
 
     /**
-     * Returns the bounds of the area covered by this <tt>ShapeNode</tt>,
-     * without taking any of its rendering attribute into account.
-     * (i.e., exclusive of any clipping, masking, filtering or stroking...)
-     * <b>Note</b>: The boundaries of some nodes (notably, text element nodes)
-     * cannot be precisely determined independent of their
-     * GraphicsNodeRenderContext.
-     *
-     * @param rc the GraphicsNodeRenderContext for which this dimension applies
+     * Returns the bounds of the area covered by this node, without taking any
+     * of its rendering attribute into account. i.e., exclusive of any clipping,
+     * masking, filtering or stroking, for example.
      */
     public Rectangle2D getGeometryBounds(GraphicsNodeRenderContext rc){
         if (geometryBounds == null) {
@@ -233,10 +212,7 @@ public class ShapeNode extends AbstractGraphicsNode {
     }
 
     /**
-     * Returns the outline of this <tt>ShapeNode</tt>.
-     *
-     * @param rc the GraphicsNodeRenderContext for which this dimension applies
-     * @return the outline of this node
+     * Returns the outline of this node.
      */
     public Shape getOutline(GraphicsNodeRenderContext rc) {
         return shape;
