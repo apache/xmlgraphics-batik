@@ -30,6 +30,7 @@ import org.w3c.dom.Element;
  * than the default. Otherwise, the attribute would have
  * to be specified in the majority of path elements.
  *
+ * @author <a href="mailto:cjolif@ilog.fr">Christophe Jolif</a>
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
@@ -47,17 +48,10 @@ public class SVGPath extends SVGGraphicObjectConverter {
      * @return a path Element.
      */
     public Element toSVG(Shape path) {
-        // Convert input path to GeneralPath if necessary
-        GeneralPath shape = null;
-        if (path instanceof GeneralPath)
-            shape = (GeneralPath)path;
-        else
-            shape = new GeneralPath(path);
-
         // Create the path element and process its
         // d attribute.
-        String dAttr = toSVGPathData(shape);
-        if (dAttr==null || dAttr.trim().length() == 0){
+        String dAttr = toSVGPathData(path);
+        if (dAttr==null || dAttr.length() == 0){
             // be careful not to append null to the DOM tree
             // because it will crash
             return null;
@@ -69,18 +63,17 @@ public class SVGPath extends SVGGraphicObjectConverter {
         svgPath.setAttributeNS(null, SVG_D_ATTRIBUTE, dAttr);
 
         // Set winding rule if different than SVG's default
-        if(shape.getWindingRule() == GeneralPath.WIND_EVEN_ODD)
+        if (path.getPathIterator(null).getWindingRule() == GeneralPath.WIND_EVEN_ODD)
             svgPath.setAttributeNS(null, SVG_FILL_RULE_ATTRIBUTE, SVG_EVEN_ODD_VALUE);
 
         return svgPath;
-
     }
 
     /**
      * @param path the GeneralPath to convert
      * @return the value of the corresponding d attribute
      */
-    static String toSVGPathData(GeneralPath path) {
+    static String toSVGPathData(Shape path) {
         StringBuffer d = new StringBuffer("");
         PathIterator pi = path.getPathIterator(null);
         float seg[] = new float[6];
@@ -125,7 +118,7 @@ public class SVGPath extends SVGGraphicObjectConverter {
     /**
      * Appends a coordinate to the path data
      */
-    private static void appendPoint(StringBuffer d, float x, float y){
+    private static void appendPoint(StringBuffer d, float x, float y) {
         d.append(doubleString(x));
         d.append(SPACE);
         d.append(doubleString(y));

@@ -77,15 +77,19 @@ public class SVGClip extends AbstractSVGConverter {
 
             if (clipDesc == null) {
                 Element clipDef = clipToSVG(clip);
-                clipPathAttrBuf.append(SIGN_POUND);
-                clipPathAttrBuf.append(clipDef.getAttributeNS(null, ATTR_ID));
-                clipPathAttrBuf.append(URL_SUFFIX);
+                if (clipDef == null)
+                    clipDesc = NO_CLIP;
+                else {
+                    clipPathAttrBuf.append(SIGN_POUND);
+                    clipPathAttrBuf.append(clipDef.getAttributeNS(null, ATTR_ID));
+                    clipPathAttrBuf.append(URL_SUFFIX);
 
-                clipDesc = new SVGClipDescriptor(clipPathAttrBuf.toString(),
-                                                 clipDef);
+                    clipDesc = new SVGClipDescriptor(clipPathAttrBuf.toString(),
+                                                     clipDef);
 
-                descMap.put(clipKey, clipDesc);
-                defSet.add(clipDef);
+                    descMap.put(clipKey, clipDesc);
+                    defSet.add(clipDef);
+                }
             }
         } else
             clipDesc = NO_CLIP;
@@ -112,8 +116,13 @@ public class SVGClip extends AbstractSVGConverter {
                                idGenerator.generateID(ID_PREFIX_CLIP_PATH));
 
         Element clipPath = shapeConverter.toSVG(clip);
-        clipDef.appendChild(clipPath);
-        return clipDef;
+        // unfortunately it may be null because of SVGPath that may produce null
+        // SVG elements.
+        if (clipPath != null) {
+            clipDef.appendChild(clipPath);
+            return clipDef;
+        } else
+            return null; // what means the shape return null ?
     }
 }
 
