@@ -50,13 +50,13 @@
 
         <!-- ======================================================== -->
         <!-- filterRegion_0                                           -->
-        <!--   chain region: [userSpaceOnUse], undefined              -->
+        <!--   chain region: [objectBoundingBox], undefined           -->
         <!--   flood region: [userSpaceOnUse], undefined              -->
         <!--                                                          -->
         <!-- Expected fill region: (0, 0, 450, 450) in user space     -->
         <!-- ======================================================== -->
         <filter id="filterRegion_0" >
-            <feFlood style="flood-color:orange;" />
+            <feFlood style="flood-color:red;" />
         </filter>
 
         <!-- ======================================================== -->
@@ -147,13 +147,13 @@
 
         <!-- ======================================================== -->
         <!-- filterRegion_2_0                                         -->
-        <!--   chain region: [userSpaceOnUse], undefined              -->
-        <!--   flood region: objectBoundingBox, undefined             -->
+        <!--   chain region: [objectBoundingBox], undefined           -->
+        <!--   flood region: undefined                                -->
         <!--                                                          -->
         <!-- Expected fill region: (0, 0, 450, 450) in user space     -->
         <!-- ======================================================== -->
         <filter id="filterRegion_2_0" primitiveUnits="objectBoundingBox">
-            <feFlood style="flood-color:white; flood-opacity:.5;" />
+            <feFlood style="flood-color:red;" />
         </filter>
 
         <!-- ======================================================== -->
@@ -235,7 +235,7 @@
         <!-- Expected fill region: (0, 0, 1, 1) in object bbox space  -->
         <!-- ======================================================== -->
         <filter id="filterRegion_3_0" filterUnits="objectBoundingBox" >
-            <feFlood style="flood-color:blue; flood-opacity:.25" />
+            <feFlood style="flood-color:red;" />
         </filter>
 
         <!-- ======================================================== -->
@@ -285,8 +285,11 @@
     <!-- ============================ -->
     <!-- filterRegion_0               -->
     <!-- ============================ -->
-    <rect x="0" y="3000" width="20000000" height="25" style="filter:url(#filterRegion_0);" /> 
-    <rect class="filterRegionControl" x="0" y="0" width="450" height="450" /> 
+    <g transform="translate(240, 95)">
+        <rect x="0" y="0" width="100" height="50" style="filter:url(#filterRegion_0);" /> 
+        <rect class="filterRegionControl" x="-10" y="-5" width="120" height="60" /> 
+        <text x="45" y="-10" class="filterRegionControlLabel">filterRegion_0</text>
+    </g>
 
     <!-- ============================ -->
     <!-- filterRegion_1               -->
@@ -345,9 +348,10 @@
     <!-- ============================ -->
     <!-- filterRegion_2_0             -->
     <!-- ============================ -->
-    <g transform="translate(0, 160)">
-        <rect x="0" y="3000" width="20000000" height="25" style="filter:url(#filterRegion_2_0);" />
-        <rect class="filterRegionControl" x="0" y="0" width="450" height="450" />
+    <g transform="translate(120, 280)">
+        <rect x="0" y="0" width="50" height="25" style="filter:url(#filterRegion_2_0);" />
+        <rect class="filterRegionControl" x="-5" y="-2.5" width="60" height="30" />
+        <text x="25" y="-20" class="filterRegionControlLabel">filterRegion_2_0</text>
     </g>
 
     <!-- ============================ -->
@@ -408,11 +412,12 @@
     <!-- ============================ -->
     <!-- filterRegion_3_0             -->
     <!-- ============================ -->
-    <g transform="translate(0, 330)" style="filter:url(#filterRegion_3_0);">
-        <rect x="0" y="0" width="450" height="450" />
+    <g transform="translate(320, 330)" style="filter:url(#filterRegion_3_0);">
+        <rect x="0" y="0" width="40" height="50" />
     </g>
-    <g transform="translate(0, 330)">
-        <rect class="filterRegionControl" x="0" y="0" width="450" height="450" />
+    <g transform="translate(320, 330)">
+        <rect class="filterRegionControl" x="-4" y="-5" width="48" height="60" />
+        <text x="45" y="25" class="filterRegionControlLabel">filterRegion_3_0</text>
     </g>
 
     <!-- ============================ -->

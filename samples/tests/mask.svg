@@ -26,7 +26,7 @@
     <!-- ============================================================= -->
     <g id="testContent">
   <text x="225" y="50" class="title">
-    Filter Effect: feTurbulence
+        Masking Example
   </text>
     <defs>
       <filter id="Turb1" filterUnits="objectBoundingBox" 
@@ -34,13 +34,13 @@
         <feTurbulence type="turbulence" baseFrequency="0.05" numOctaves="2"/>
       </filter>
     </defs>
-    <mask id="circleMask" x="10" y="20" width="200" height="150" >
+    <mask id="circleMask" maskUnits="userSpaceOnUse" x="10" y="20" width="200" height="150" >
         <circle cx="75" cy="75" r="75" style="fill:white" />
         <circle transform="translate(150, 0)" cx="75" cy="75" r="75" style="fill:#cccccc" />
         <circle transform="translate(0, 150)" cx="75" cy="75" r="75" style="fill:#aaaaaa" />
         <circle transform="translate(150, 150)" cx="75" cy="75" r="75" style="fill:#888888" />
     </mask>
-    <mask id="circleMask2">
+    <mask id="circleMask2" maskUnits="userSpaceOnUse">
       <circle cx="150" cy="150" r="50" 
 	      style="fill:lightgrey; stroke:white; stroke-width:5" />
     </mask>
