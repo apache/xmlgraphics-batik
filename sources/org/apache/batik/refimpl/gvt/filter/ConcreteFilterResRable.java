@@ -100,25 +100,6 @@ public class ConcreteFilterResRable extends AbstractRable
             usr2dev = new AffineTransform();
         }
         
-        // Find out the renderable area
-        Rectangle2D imageRect = getBounds2D();
-        Rectangle renderableArea 
-            = usr2dev.createTransformedShape(imageRect).getBounds();
-        
-        // Now, take area of interest into account. It is 
-        // defined in user space. 
-        Shape usrAOI = renderContext.getAreaOfInterest();
-        if(usrAOI == null)
-            usrAOI = imageRect;
-        
-        Rectangle devAOI 
-            = usr2dev.createTransformedShape(usrAOI).getBounds();
-        
-        // The rendered area is the interesection of the 
-        // renderable area and the device AOI bounds
-        final Rectangle renderedArea 
-            = renderableArea.createIntersection(devAOI).getBounds();
-        
         // As per specification, a value of zero for the 
         // x-axis or y-axis causes the filter to produce
         // nothing.
@@ -133,22 +114,28 @@ public class ConcreteFilterResRable extends AbstractRable
         //   Else, return the source as is.
         float filterResolutionX = this.filterResolutionX;
         float filterResolutionY = this.filterResolutionY;
+
+        // Find out the renderable area
+        Rectangle2D imageRect = getBounds2D();
+        Rectangle   devRect;
+        devRect = usr2dev.createTransformedShape(imageRect).getBounds();
+
         if(filterResolutionX > 1) {
-            // Now, compare the renderedArea with the filter
+            // Now, compare the devRect with the filter
             // resolution hints
             float scaleX = 1;
             float scaleY = 1;
-            if(filterResolutionX < renderedArea.width){
-                scaleX = filterResolutionX / (float)renderedArea.width;
+            if(filterResolutionX < devRect.width){
+                scaleX = filterResolutionX / (float)devRect.width;
             }
 
             if(filterResolutionY != 0){
                 if(filterResolutionY < 0){
-                    filterResolutionY = scaleX*renderedArea.height;
+                    filterResolutionY = scaleX*(float)devRect.height;
                 }
 
-                if(filterResolutionY < renderedArea.height){
-                    scaleY = filterResolutionY / (float)renderedArea.height;
+                if(filterResolutionY < devRect.height) {
+                    scaleY = filterResolutionY / (float)devRect.height;
                 }
                 
                 // Only resample if either scaleX or scaleY is
@@ -157,7 +144,8 @@ public class ConcreteFilterResRable extends AbstractRable
                 RenderContext localRenderContext = renderContext;
                 
                 if((scaleX < 1) || (scaleY < 1)){
-                    System.out.println("filterResolution X " + filterResolutionX + " Y : " + filterResolutionY);
+                    // System.out.println("filterRes X " + filterResolutionX + 
+                    //                    " Y : " + filterResolutionY);
 
                     scaleX = scaleX < scaleY ? scaleX : scaleY;
                     scaleY = scaleX;

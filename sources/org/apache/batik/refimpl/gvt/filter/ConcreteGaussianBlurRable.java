@@ -175,10 +175,15 @@ public class ConcreteGaussianBlurRable
 
         Rectangle2D r = aoi.getBounds2D();
 
-        r = new Rectangle2D.Double(r.getX()-blurRadX, 
-                                   r.getY()-blurRadY,
-                                   r.getWidth() +2*blurRadX, 
-                                   r.getHeight()+2*blurRadY);
+        System.out.println("Rect: " + r);
+
+        // Grow the region in usr space.
+        r = new Rectangle2D.Double(r.getX()-blurRadX/scaleX, 
+                                   r.getY()-blurRadY/scaleY,
+                                   r.getWidth() +2*blurRadX/scaleX, 
+                                   r.getHeight()+2*blurRadY/scaleY);
+
+        System.out.println("Rect2: " + r);
 
         RenderedImage ri;
         ri = getSource().createRendering(new RenderContext(srcAt, r, rh));
