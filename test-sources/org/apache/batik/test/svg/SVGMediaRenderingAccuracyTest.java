@@ -50,7 +50,7 @@ public class SVGMediaRenderingAccuracyTest extends SVGRenderingAccuracyTest {
     protected Document manipulateSVGDocument(Document doc) {
         // set the media type
         AbstractViewCSS view;
-        view = (AbstractViewCSS)((DocumentView)document).getDefaultView();
+        view = (AbstractViewCSS)((DocumentView)doc).getDefaultView();
         view.setMedia(media);
         
         return doc;

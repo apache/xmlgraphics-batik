@@ -33,9 +33,9 @@ public class SVGAlternateStyleSheetRenderingAccuracyTest
      * @param refImgURL the URL for the reference image.
      * @param t The stylesheet title to use.
      */
-    public SVGMediaRenderingAccuracyTest(String svgURL,
-                                         String refImgURL,
-                                         String t) {
+    public SVGAlternateStyleSheetRenderingAccuracyTest(String svgURL,
+                                                       String refImgURL,
+                                                       String t) {
         super(svgURL, refImgURL);
         title = t;
     }
