@@ -125,25 +125,25 @@
 
         <g id="testCases" transform="translate(90, 90)">
             <defs>
-                <rect id="viewBox" x="5" y="2" width="50" height="36" transform="translate(25,0)" stroke="red" fill="none"/>                
+                <rect id="viewBox" x="30" y="10" width="50" height="20" stroke="red" fill="none"/>                
             </defs>
 
             <!-- xMinYXXX XXX -->
             <g>
                 <!-- ... YMin XXX -->
                 <use xlink:href="#viewBox" />
-                <image x="25" y="0" width="43" height="18" xlink:href="png.png" viewBox="5 2 50 36" 
+                <image x="30" y="10" width="50" height="20" xlink:href="png.png" viewBox="0 0 35 14.5" 
                        preserveAspectRatio="xMinYMin meet" />
 
                 <g transform="translate(110, 0)">
                     <use xlink:href="#viewBox" />
-                    <image x="25" y="0" width="43" height="18" xlink:href="png.png" viewBox="5 2 50 36" 
+                    <image x="30" y="10" width="50" height="20" xlink:href="png.png" viewBox="0 0 35 14.5"
                            preserveAspectRatio="xMinYMin slice" />
                 </g>
 
                 <g transform="translate(220, 0)">
                     <use xlink:href="#viewBox" />
-                    <image x="25" y="0" width="43" height="18" xlink:href="png.png" viewBox="5 2 50 36" 
+                    <image x="30" y="10" width="50" height="20" xlink:href="png.png" viewBox="0 0 35 14.5"
                            preserveAspectRatio="xMinYMin" />
                 </g>
 
@@ -151,18 +151,18 @@
                 <!-- ... YMid XXX -->
                 <g transform="translate(0,40)">
                     <use xlink:href="#viewBox" />
-                    <image x="25" y="0" width="43" height="18" xlink:href="png.png" viewBox="5 2 50 36" 
+                    <image x="30" y="10" width="50" height="20" xlink:href="png.png" viewBox="0 0 35 14.5"
                            preserveAspectRatio="xMinYMid meet" />
 
                     <g transform="translate(110, 0)">
                         <use xlink:href="#viewBox" />
-                        <image x="25" y="0" width="43" height="18" xlink:href="png.png" viewBox="5 2 50 36" 
+                        <image x="30" y="10" width="50" height="20" xlink:href="png.png" viewBox="0 0 35 14.5"
                                preserveAspectRatio="xMinYMid slice" />
                     </g>
 
                     <g transform="translate(220, 0)">
                         <use xlink:href="#viewBox" />
-                        <image x="25" y="0" width="43" height="18" xlink:href="png.png" viewBox="5 2 50 36" 
+                        <image x="30" y="10" width="50" height="20" xlink:href="png.png" viewBox="0 0 35 14.5"
                                preserveAspectRatio="xMinYMid" />
                     </g>
                 </g>
@@ -170,18 +170,18 @@
                 <!-- ... YMax XXX -->
                 <g transform="translate(0,80)">
                     <use xlink:href="#viewBox" />
-                    <image x="25" y="0" width="43" height="18" xlink:href="png.png" viewBox="5 2 50 36" 
+                    <image x="30" y="10" width="50" height="20" xlink:href="png.png" viewBox="0 0 35 14.5"
                            preserveAspectRatio="xMinYMax meet" />
 
                     <g transform="translate(110, 0)">
                         <use xlink:href="#viewBox" />
-                        <image x="25" y="0" width="43" height="18" xlink:href="png.png" viewBox="5 2 50 36" 
+                        <image x="30" y="10" width="50" height="20" xlink:href="png.png" viewBox="0 0 35 14.5"
                                preserveAspectRatio="xMinYMax slice" />
                     </g>
 
                     <g transform="translate(220, 0)">
                         <use xlink:href="#viewBox" />
-                        <image x="25" y="0" width="43" height="18" xlink:href="png.png" viewBox="5 2 50 36" 
+                        <image x="30" y="10" width="50" height="20" xlink:href="png.png" viewBox="0 0 35 14.5"
                                preserveAspectRatio="xMinYMax" />
                     </g>
                 </g>
@@ -190,18 +190,18 @@
             <g transform="translate(0,120)">
                 <!-- ... YMin XXX -->
                 <use xlink:href="#viewBox" />
-                <image x="25" y="0" width="43" height="18" xlink:href="png.png" viewBox="5 2 50 36" 
+                <image x="30" y="10" width="50" height="20" xlink:href="png.png" viewBox="0 0 35 14.5"
                        preserveAspectRatio="xMidYMin meet" />
 
                 <g transform="translate(110, 0)">
                     <use xlink:href="#viewBox" />
-                    <image x="25" y="0" width="43" height="18" xlink:href="png.png" viewBox="5 2 50 36" 
+                    <image x="30" y="10" width="50" height="20" xlink:href="png.png" viewBox="0 0 35 14.5"
                            preserveAspectRatio="xMidYMin slice" />
                 </g>
 
                 <g transform="translate(220, 0)">
                     <use xlink:href="#viewBox" />
-                    <image x="25" y="0" width="43" height="18" xlink:href="png.png" viewBox="5 2 50 36" 
+                    <image x="30" y="10" width="50" height="20" xlink:href="png.png" viewBox="0 0 35 14.5"
                            preserveAspectRatio="xMidYMin" />
                 </g>
 
@@ -209,18 +209,18 @@
                 <!-- ... YMid XXX -->
                 <g transform="translate(0,40)">
                     <use xlink:href="#viewBox" />
-                    <image x="25" y="0" width="43" height="18" xlink:href="png.png" viewBox="5 2 50 36" 
+                    <image x="30" y="10" width="50" height="20" xlink:href="png.png" viewBox="0 0 35 14.5"
                            preserveAspectRatio="xMidYMid meet" />
 
                     <g transform="translate(110, 0)">
                         <use xlink:href="#viewBox" />
-                        <image x="25" y="0" width="43" height="18" xlink:href="png.png" viewBox="5 2 50 36" 
+                        <image x="30" y="10" width="50" height="20" xlink:href="png.png" viewBox="0 0 35 14.5"
                                preserveAspectRatio="xMidYMid slice" />
                     </g>
 
                     <g transform="translate(220, 0)">
                         <use xlink:href="#viewBox" />
-                        <image x="25" y="0" width="43" height="18" xlink:href="png.png" viewBox="5 2 50 36" 
+                        <image x="30" y="10" width="50" height="20" xlink:href="png.png" viewBox="0 0 35 14.5"
                                preserveAspectRatio="xMidYMid" />
                     </g>
                 </g>
@@ -228,18 +228,18 @@
                 <!-- ... YMax XXX -->
                 <g transform="translate(0,80)">
                     <use xlink:href="#viewBox" />
-                    <image x="25" y="0" width="43" height="18" xlink:href="png.png" viewBox="5 2 50 36" 
+                    <image x="30" y="10" width="50" height="20" xlink:href="png.png" viewBox="0 0 35 14.5"
                            preserveAspectRatio="xMidYMax meet" />
 
                     <g transform="translate(110, 0)">
                         <use xlink:href="#viewBox" />
-                        <image x="25" y="0" width="43" height="18" xlink:href="png.png" viewBox="5 2 50 36" 
+                        <image x="30" y="10" width="50" height="20" xlink:href="png.png" viewBox="0 0 35 14.5"
                                preserveAspectRatio="xMidYMax slice" />
                     </g>
 
                     <g transform="translate(220, 0)">
                         <use xlink:href="#viewBox" />
-                        <image x="25" y="0" width="43" height="18" xlink:href="png.png" viewBox="5 2 50 36" 
+                        <image x="30" y="10" width="50" height="20" xlink:href="png.png" viewBox="0 0 35 14.5"
                                preserveAspectRatio="xMidYMax" />
                     </g>
                 </g>
@@ -250,18 +250,18 @@
             <g transform="translate(0,240)">
                 <!-- ... YMin XXX -->
                 <use xlink:href="#viewBox" />
-                <image x="25" y="0" width="43" height="18" xlink:href="png.png" viewBox="5 2 50 36" 
+                <image x="30" y="10" width="50" height="20" xlink:href="png.png" viewBox="0 0 35 14.5"
                        preserveAspectRatio="xMaxYMin meet" />
 
                 <g transform="translate(110, 0)">
                     <use xlink:href="#viewBox" />
-                    <image x="25" y="0" width="43" height="18" xlink:href="png.png" viewBox="5 2 50 36" 
+                    <image x="30" y="10" width="50" height="20" xlink:href="png.png" viewBox="0 0 35 14.5"
                            preserveAspectRatio="xMaxYMin slice" />
                 </g>
 
                 <g transform="translate(220, 0)">
                     <use xlink:href="#viewBox" />
-                    <image x="25" y="0" width="43" height="18" xlink:href="png.png" viewBox="5 2 50 36" 
+                    <image x="30" y="10" width="50" height="20" xlink:href="png.png" viewBox="0 0 35 14.5"
                            preserveAspectRatio="xMaxYMin" />
                 </g>
 
@@ -269,18 +269,18 @@
                 <!-- ... YMid XXX -->
                 <g transform="translate(0,40)">
                     <use xlink:href="#viewBox" />
-                    <image x="25" y="0" width="43" height="18" xlink:href="png.png" viewBox="5 2 50 36" 
+                    <image x="30" y="10" width="50" height="20" xlink:href="png.png" viewBox="0 0 35 14.5"
                            preserveAspectRatio="xMaxYMid meet" />
 
                     <g transform="translate(110, 0)">
                         <use xlink:href="#viewBox" />
-                        <image x="25" y="0" width="43" height="18" xlink:href="png.png" viewBox="5 2 50 36" 
+                        <image x="30" y="10" width="50" height="20" xlink:href="png.png" viewBox="0 0 35 14.5"
                                preserveAspectRatio="xMaxYMid slice" />
                     </g>
 
                     <g transform="translate(220, 0)">
                         <use xlink:href="#viewBox" />
-                        <image x="25" y="0" width="43" height="18" xlink:href="png.png" viewBox="5 2 50 36" 
+                        <image x="30" y="10" width="50" height="20" xlink:href="png.png" viewBox="0 0 35 14.5"
                                preserveAspectRatio="xMaxYMid" />
                     </g>
                 </g>
@@ -288,18 +288,18 @@
                 <!-- ... YMax XXX -->
                 <g transform="translate(0,80)">
                     <use xlink:href="#viewBox" />
-                    <image x="25" y="0" width="43" height="18" xlink:href="png.png" viewBox="5 2 50 36" 
+                    <image x="30" y="10" width="50" height="20" xlink:href="png.png" viewBox="0 0 35 14.5"
                            preserveAspectRatio="xMaxYMax meet" />
 
                     <g transform="translate(110, 0)">
                         <use xlink:href="#viewBox" />
-                        <image x="25" y="0" width="43" height="18" xlink:href="png.png" viewBox="5 2 50 36" 
+                        <image x="30" y="10" width="50" height="20" xlink:href="png.png" viewBox="0 0 35 14.5"
                                preserveAspectRatio="xMaxYMax slice" />
                     </g>
 
                     <g transform="translate(220, 0)">
                         <use xlink:href="#viewBox" />
-                        <image x="25" y="0" width="43" height="18" xlink:href="png.png" viewBox="5 2 50 36" 
+                        <image x="30" y="10" width="50" height="20" xlink:href="png.png" viewBox="0 0 35 14.5"
                                preserveAspectRatio="xMaxYMax" />
                     </g>
                 </g>
