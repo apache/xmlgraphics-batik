@@ -128,10 +128,22 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
 
         result.setLocation(new Point2D.Float(x, y));
 
+        return result;
+    }
+
+    public void buildGraphicsNode(GraphicsNode node, BridgeContext ctx,
+                                  Element element) {
+        TextNode result = (TextNode)node;
+
+        CSSStyleDeclaration cssDecl
+            = ctx.getViewCSS().getComputedStyle(element, null);
+        UnitProcessor.Context uctx
+            = new DefaultUnitProcessorContext(ctx, cssDecl);
+
         // Text-anchor
         CSSPrimitiveValue v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue
             (TEXT_ANCHOR_PROPERTY);
-        s = v.getStringValue();
+        String s = v.getStringValue();
         TextNode.Anchor a;
         switch (s.charAt(0)) {
         case 's':
@@ -167,12 +179,6 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
         // <!> TODO only when binding is enabled
         BridgeEventSupport.addDOMListener(ctx, element);
         ctx.bind(element, result);
-
-        return result;
-    }
-
-    public void buildGraphicsNode(GraphicsNode node, BridgeContext ctx,
-                                  Element elt) {
     }
 
     public void update(BridgeMutationEvent evt) {

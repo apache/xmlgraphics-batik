@@ -70,6 +70,14 @@ public class SVGUseElementBridge
                  ctx.getParserFactory()));
         gn.setTransform(at);
 
+        return gn;
+    }
+
+    public void buildGraphicsNode(GraphicsNode gn, BridgeContext ctx,
+                                  Element element) {
+        CSSStyleDeclaration decl
+            = ctx.getViewCSS().getComputedStyle(element, null);
+
         CSSPrimitiveValue val =
             (CSSPrimitiveValue)decl.getPropertyCSSValue(ATTR_OPACITY);
         Composite composite = CSSUtilities.convertOpacityToComposite(val);
@@ -89,12 +97,6 @@ public class SVGUseElementBridge
 
         // <!> TODO only when binding is enabled
         BridgeEventSupport.addDOMListener(ctx, element);
-
-        return gn;
-    }
-
-    public void buildGraphicsNode(GraphicsNode node, BridgeContext ctx,
-                                  Element elt) {
     }
 
     public void update(BridgeMutationEvent evt) {

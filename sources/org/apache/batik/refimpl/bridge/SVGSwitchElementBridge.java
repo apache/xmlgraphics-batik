@@ -52,6 +52,11 @@ public class SVGSwitchElementBridge
              ctx.getParserFactory());
         gn.setTransform(at);
 
+        return gn;
+    }
+
+    public void buildGraphicsNode(GraphicsNode gn, BridgeContext ctx,
+                                  Element element) {
         Document document = element.getOwnerDocument();
         ViewCSS viewCSS = (ViewCSS) ((DocumentView) document).getDefaultView();
         CSSStyleDeclaration decl = viewCSS.getComputedStyle(element, null);
@@ -72,12 +77,6 @@ public class SVGSwitchElementBridge
         // <!> TODO only when binding is enabled
         BridgeEventSupport.addDOMListener(ctx, element);
         ctx.bind(element, gn);
-
-        return gn;
-    }
-
-    public void buildGraphicsNode(GraphicsNode node, BridgeContext ctx,
-                                  Element elt) {
     }
 
     public void update(BridgeMutationEvent evt) {
