@@ -74,7 +74,7 @@ import org.apache.batik.gvt.event.GraphicsNodeMouseListener;
 import org.apache.batik.gvt.event.SelectionListener;
 import org.apache.batik.gvt.event.SelectionEvent;
 
-import org.apache.batik.gvt.renderer.Renderer;
+import org.apache.batik.gvt.renderer.ImageRenderer;
 import org.apache.batik.gvt.renderer.RendererFactory;
 
 import org.apache.batik.bridge.DocumentLoader;
@@ -178,7 +178,7 @@ public class JSVGCanvas
     /**
      * The current renderer.
      */
-    protected Renderer renderer;
+    protected ImageRenderer renderer;
 
     /**
      * The GVT builder.
@@ -485,10 +485,10 @@ public class JSVGCanvas
                         }
                         bridgeContext.getDocumentLoader().dispose();
                         long t2 = System.currentTimeMillis();
-/*
+
                         System.out.println("---- GVT tree construction ---- " +
                                        (t2 - t1) + " ms");
-*/
+
                         if (Thread.currentThread().isInterrupted()) {
                             throw new InterruptedException();
                         } else {
@@ -861,7 +861,7 @@ public class JSVGCanvas
 
         if (bufferNeedsRendering) {
             if (renderer == null)
-                renderer = rendererFactory.createRenderer();
+                renderer = (ImageRenderer)rendererFactory.createRenderer();
         }
         
         if (renderer != null && gvtRoot != null &&
@@ -1088,7 +1088,7 @@ public class JSVGCanvas
     /**
      * Initiates the repainting of the offscreen buffer in a background thread.
      */
-    protected void repaintAOI(Renderer renderer, Dimension size) {
+    protected void repaintAOI(ImageRenderer renderer, Dimension size) {
 
         Shape aoi = getAreaOfInterest(
                         new Rectangle(0, 0, size.width, size.height));
@@ -1138,7 +1138,7 @@ public class JSVGCanvas
     class RenderBufferAOIRunnable implements Runnable {
 
         private Shape aoi;
-        private Renderer renderer;
+        private ImageRenderer renderer;
         private Dimension size;
         private Component component;
 
@@ -1149,7 +1149,7 @@ public class JSVGCanvas
          * @param size the size of the offscreen buffer area
          * @param component the component to notify when repaint is done.
          */
-        RenderBufferAOIRunnable(Renderer renderer,
+        RenderBufferAOIRunnable(ImageRenderer renderer,
                                 Shape aoi,
                                 Dimension size,
                                 Component component) {
@@ -1206,8 +1206,8 @@ public class JSVGCanvas
             }
             if (!Thread.currentThread().isInterrupted()) {
                 long t2 = System.currentTimeMillis();
-/*                System.out.println("----------- Rendering --------- " +
-                               (t2 - t1) + " ms");*/
+                System.out.println("----------- Rendering --------- " +
+                               (t2 - t1) + " ms");
                 if (!isLoadPending()) {
                     requestCursor(NORMAL_CURSOR);
                 }
@@ -1706,7 +1706,7 @@ public class JSVGCanvas
         /**
          * The current renderer.
          */
-        protected Renderer renderer;
+        protected ImageRenderer renderer;
 
         /**
          * The repaint thread.
@@ -1796,7 +1796,7 @@ public class JSVGCanvas
 
             if (bufferNeedsRendering) {
                 if (renderer == null)
-                    renderer = rendererFactory.createRenderer();
+                    renderer = (ImageRenderer)rendererFactory.createRenderer();
             }
 
             if (renderer != null && gvtRoot != null &&
@@ -1868,7 +1868,7 @@ public class JSVGCanvas
         /**
          * To repaint the buffer.
          */
-        protected void repaintAOI(Renderer renderer, Dimension size) {
+        protected void repaintAOI(ImageRenderer renderer, Dimension size) {
 
             Shape aoi = getAreaOfInterest(
                         new Rectangle(0, 0, size.width, size.height));
@@ -1913,7 +1913,7 @@ public class JSVGCanvas
          * @param aoi the area of interest to repaint
          */
 /*        public void notifyRepaintedRegion(Shape oldAoi, Shape newAoi,
-                                          Renderer renderer) {
+                                          ImageRenderer renderer) {
 
             // TODO: thread this (it's used by DynamicRenderer)
 
