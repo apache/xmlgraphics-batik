@@ -49,6 +49,12 @@
                     <!-- Plain Status -->
                     <xsl:value-of select="@status" />
 
+                    <xsl:choose>
+                        <xsl:when test="@status='failed'">
+                            &#160;(<xsl:value-of select="@errorCode" />)
+                        </xsl:when>
+                    </xsl:choose>
+
                     <!-- If this is a composite report, add counts of success/failures -->
                     <xsl:choose>
                         <xsl:when test="$childrenTestsCount &gt; 0" >
