@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.net.URL;
 import java.net.MalformedURLException;
+
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.image.ImageTranscoder;
@@ -35,6 +36,9 @@ import org.apache.batik.transcoder.Transcoder;
 import org.apache.batik.transcoder.image.JPEGTranscoder;
 import org.apache.batik.transcoder.image.PNGTranscoder;
 import org.apache.batik.transcoder.image.TIFFTranscoder;
+
+import org.apache.batik.util.ApplicationSecurityEnforcer;
+
 import org.xml.sax.InputSource;
 
 /**
@@ -49,6 +53,18 @@ import org.xml.sax.InputSource;
  * @version $Id$
  */
 public class Main implements SVGConverterController {
+    /**
+     * Name of the rasterizer jar file
+     */
+    public static final String RASTERIZER_JAR_NAME
+        = "batik-rasterizer.jar";
+
+    /**
+     * URL for Squiggle's security policy file
+     */
+    public static final String RASTERIZER_SECURITY_POLICY
+        = "org/apache/batik/apps/rasterizer/resources/rasterizer.policy"; 
+
     /**
      * Interface for handling one command line option
      */
@@ -629,11 +645,24 @@ public class Main implements SVGConverterController {
      */
     protected Vector args;
 
+    /**
+     * Script security enforcement is delegated to the 
+     * security utility 
+     */
+    protected ApplicationSecurityEnforcer securityEnforcer;
+
     public Main(String[] args){
         this.args = new Vector();
         for (int i=0; i<args.length; i++){
             this.args.addElement(args[i]);
         }
+
+        securityEnforcer = 
+            new ApplicationSecurityEnforcer(this.getClass(),
+                                            RASTERIZER_SECURITY_POLICY,
+                                            RASTERIZER_JAR_NAME);
+
+        securityEnforcer.enforceSecurity(true);
     }
 
     protected void error(String errorCode,
