@@ -126,6 +126,9 @@ public class BidiAttributedCharacterIterator implements AttributedCharacterItera
                 if (newBiDi > maxBiDi) maxBiDi = newBiDi;
             }
         }
+        as.addAttribute
+            (GVTAttributedCharacterIterator.TextAttribute.BIDI_LEVEL,
+             new Integer(currBiDi), runStart, numChars);
 
         if ((runStart == 0) && (currBiDi==0)) {
             // This avoids all the mucking about we need to do when
@@ -137,10 +140,6 @@ public class BidiAttributedCharacterIterator implements AttributedCharacterItera
                 newCharOrder[i] = chunkStart+i;
             return;
         }
-
-        as.addAttribute
-            (GVTAttributedCharacterIterator.TextAttribute.BIDI_LEVEL,
-             new Integer(currBiDi), runStart, numChars);
 
         this.aci = as.getIterator();
 

@@ -107,7 +107,7 @@ public class BackgroundRable8Bit
                 cr2d = at.createTransformedShape(cr2d).getBounds2D();
 
             if (r2d == null) r2d = (Rectangle2D)cr2d.clone();
-            r2d.add(cr2d);
+            else             r2d.add(cr2d);
         }
 
         if (r2d == null) {
@@ -147,7 +147,7 @@ public class BackgroundRable8Bit
         if (r2d == CompositeGraphicsNode.VIEWPORT) {
             // If we don't have a child then just use our bounds.
             if (child == null)
-                return gn.getPrimitiveBounds();
+                return (Rectangle2D)gn.getPrimitiveBounds().clone();
 
             // gn must be composite so add all it's children's bounds
             // up to child.
@@ -308,10 +308,8 @@ public class BackgroundRable8Bit
 
 
                 if (aoi.intersects(cbounds)) {
-                    GraphicsNodeRable gnr;
-                    gnr  = new GraphicsNodeRable8Bit(childGN);
-                    gnr.setUsePrimitivePaint(false);
-                    srcs.add(gnr);
+                    srcs.add(childGN.getEnableBackgroundGraphicsNodeRable
+                             (true));
                 }
             }
         }
@@ -379,17 +377,17 @@ public class BackgroundRable8Bit
         Shape aoi = renderContext.getAreaOfInterest();
         if (aoi != null) {
             Rectangle2D aoiR2d = aoi.getBounds2D();
-            if (r2d.intersects(aoiR2d) == false)
-                return null;
-
             // System.out.println("R2d: " + r2d);
             // System.out.println("AOI: " + aoiR2d);
+
+            if (r2d.intersects(aoiR2d) == false)
+                return null;
 
             Rectangle2D.intersect(r2d, aoiR2d, r2d);
         }
 
         Filter background = getBackground(node, null, r2d);
-        
+        // System.out.println("BG: " + background);
         if ( background == null)
             return null;
         
