@@ -136,6 +136,7 @@ public class ApplicationSecurityEnforcer {
      */
     public void enforceSecurity(boolean enforce){
         SecurityManager sm = System.getSecurityManager();
+
         if (sm != null && sm != lastSecurityManagerInstalled) {
             // Throw a Security exception: we do not want to override
             // an 'alien' SecurityManager with either null or 
@@ -169,13 +170,13 @@ public class ApplicationSecurityEnforcer {
         // it takes precedence over the one passed to this object.
         // Otherwise, we default to the one passed to the constructor
         //
+        ClassLoader cl = appMainClass.getClassLoader();
         String securityPolicyProperty 
             = System.getProperty(PROPERTY_JAVA_SECURITY_POLICY);
 
-        if (securityPolicyProperty == null) {
+        if (securityPolicyProperty == null || securityPolicyProperty.equals("")) {
             // Specify app's security policy in the
             // system property. 
-            ClassLoader cl = appMainClass.getClassLoader();
             URL policyURL = cl.getResource(securityPolicy);
             
             if (policyURL == null) {
@@ -186,38 +187,42 @@ public class ApplicationSecurityEnforcer {
             
             System.setProperty(PROPERTY_JAVA_SECURITY_POLICY,
                                policyURL.toString());
-            
-            // 
-            // The following detects whether the application is running in the
-            // development environment, in which case it will set the 
-            // app.dev.base property or if it is running in the binary
-            // distribution, in which case it will set the app.jar.base
-            // property. These properties are expanded in the security 
-            // policy files.
-            // Property expansion is used to provide portability of the 
-            // policy files between various code bases (e.g., file base,
-            // server base, etc..).
-            //
-            URL mainClassURL = cl.getResource(appMainClassRelativeURL);
-            if (mainClassURL == null){
-                // Something is really wrong: we would be running a class
-                // which can't be found....
-                throw new Error(appMainClassRelativeURL);
-            }
-            
-            String expandedMainClassName = mainClassURL.toString();
-            if (expandedMainClassName.startsWith(JAR_PROTOCOL) ) {
-                setJarBase(expandedMainClassName);
-            } else {
-                setDevBase(expandedMainClassName);
-            }
-            
-            // Install new security manager
-            System.setSecurityManager(securityManager);
-            lastSecurityManagerInstalled = securityManager;
-            
-            // Forces re-loading of the security policy
-            policy.refresh();
+        }
+        
+        // 
+        // The following detects whether the application is running in the
+        // development environment, in which case it will set the 
+        // app.dev.base property or if it is running in the binary
+        // distribution, in which case it will set the app.jar.base
+        // property. These properties are expanded in the security 
+        // policy files.
+        // Property expansion is used to provide portability of the 
+        // policy files between various code bases (e.g., file base,
+        // server base, etc..).
+        //
+        URL mainClassURL = cl.getResource(appMainClassRelativeURL);
+        if (mainClassURL == null){
+            // Something is really wrong: we would be running a class
+            // which can't be found....
+            throw new Error(appMainClassRelativeURL);
+        }
+        
+        String expandedMainClassName = mainClassURL.toString();
+        if (expandedMainClassName.startsWith(JAR_PROTOCOL) ) {
+            setJarBase(expandedMainClassName);
+        } else {
+            setDevBase(expandedMainClassName);
+        }
+        
+        // Install new security manager
+        System.setSecurityManager(securityManager);
+        lastSecurityManagerInstalled = securityManager;
+        
+        // Forces re-loading of the security policy
+        policy.refresh();
+
+        if (securityPolicyProperty == null || securityPolicyProperty.equals("")) {
+            System.setProperty(PROPERTY_JAVA_SECURITY_POLICY, "");
         }
     }
 
