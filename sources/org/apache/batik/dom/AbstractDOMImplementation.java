@@ -8,7 +8,9 @@
 
 package org.apache.batik.dom;
 
+import org.apache.batik.dom.events.DocumentEventSupport;
 import org.apache.batik.dom.util.HashTable;
+
 import org.w3c.dom.DOMImplementation;
 
 /**
@@ -69,5 +71,12 @@ public abstract class AbstractDOMImplementation implements DOMImplementation {
             }
             return false;
         }
+    }
+
+    /**
+     * Creates an DocumentEventSupport object suitable for use with this implementation.
+     */
+    public DocumentEventSupport createDocumentEventSupport() {
+        return new DocumentEventSupport();
     }
 }

@@ -17,7 +17,7 @@ import java.lang.reflect.Method;
 import java.util.Locale;
 import java.util.MissingResourceException;
 
-import org.apache.batik.dom.events.EventSupport;
+import org.apache.batik.dom.events.DocumentEventSupport;
 import org.apache.batik.dom.traversal.TraversalSupport;
 import org.apache.batik.i18n.Localizable;
 import org.apache.batik.i18n.LocalizableSupport;
@@ -72,9 +72,14 @@ public abstract class AbstractDocument
     protected transient TraversalSupport traversalSupport;
 
     /**
+     * The DocumentEventSupport.
+     */
+    protected transient DocumentEventSupport documentEventSupport;
+
+    /**
      * Whether the event dispatching must be done.
      */
-    protected boolean eventsEnabled;
+    protected transient boolean eventsEnabled;
 
     /**
      * Creates a new document.
@@ -249,7 +254,11 @@ public abstract class AbstractDocument
      * org.w3c.dom.events.DocumentEvent#createEvent(String)}.
      */
     public Event createEvent(String eventType) throws DOMException {
-	return EventSupport.createEvent(eventType);
+        if (documentEventSupport == null) {
+            documentEventSupport =
+                ((AbstractDOMImplementation)implementation).createDocumentEventSupport();
+        }
+	return documentEventSupport.createEvent(eventType);
     }
 
     // DocumentTraversal /////////////////////////////////////////////////////

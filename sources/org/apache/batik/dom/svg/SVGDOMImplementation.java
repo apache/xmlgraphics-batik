@@ -18,7 +18,7 @@ import org.apache.batik.css.value.ValueFactoryMap;
 import org.apache.batik.dom.AbstractDOMImplementation;
 import org.apache.batik.dom.AbstractNode;
 import org.apache.batik.dom.StyleSheetFactory;
-import org.apache.batik.dom.events.EventSupport;
+import org.apache.batik.dom.events.DocumentEventSupport;
 import org.apache.batik.dom.util.CSSStyleDeclarationFactory;
 import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.dom.util.HashTable;
@@ -58,15 +58,6 @@ public class SVGDOMImplementation
      */
     protected final static DOMImplementation DOM_IMPLEMENTATION =
         new SVGDOMImplementation();
-
-    static {
-        EventSupport.registerEventFactory("SVGEvents",
-            new EventSupport.EventFactory() {
-                    public Event createEvent() {
-                        return new SVGOMEvent();
-                    }
-                });
-    }
 
     {
         registerFeature("CSS",            "2.0");
@@ -212,5 +203,19 @@ public class SVGDOMImplementation
         }
         //throw new RuntimeException("'" + type + "' not supported");
         return null;
+    }
+
+    /**
+     * Creates an DocumentEventSupport object suitable for use with this implementation.
+     */
+    public DocumentEventSupport createDocumentEventSupport() {
+        DocumentEventSupport result =  new DocumentEventSupport();
+        result.registerEventFactory("SVGEvents",
+                                    new DocumentEventSupport.EventFactory() {
+                                            public Event createEvent() {
+                                                return new SVGOMEvent();
+                                            }
+                                        });
+        return result;
     }
 }
