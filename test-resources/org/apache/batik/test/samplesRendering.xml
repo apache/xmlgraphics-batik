@@ -376,4 +376,7 @@
         <test id="samples/tests/spec/scripting/zeroSize.svg" />
     </testGroup>
 
+    <testGroup id="test-resources.bugs">
+        <test id="test-resources/org/apache/batik/test/svg/bug19363.svg" />
+    </testGroup>
 </testSuite>
