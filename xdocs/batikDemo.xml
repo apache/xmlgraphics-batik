@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<!DOCTYPE document SYSTEM "./dtd/document-v10.dtd">
+
+<!-- ========================================================================= -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.        -->
+<!--                                                                           -->
+<!-- This software is published under the terms of the Apache Software License -->
+<!-- version 1.1, a copy of which has been included with this distribution in  -->
+<!-- the LICENSE file.                                                         -->
+<!-- ========================================================================= -->
+
+<!-- ========================================================================= -->
+<!-- author vincent.hardy@sun.com                                              -->
+<!-- version $Id$ -->      
+<!-- ========================================================================= -->
+<document>
+  <header>
+    <title>Batik Demo</title>
+    <authors>
+      <person name="Vincent Hardy" email="vincent.hardy@sun.com"/>
+    </authors>
+  </header>
+
+  <body>
+    <s1 title="Trying The Batik Squiggle Browser">
+        <p>
+            You can experiment with the Batik browser by clicking on one of the following links.
+            Note that you need to install <link href="http://java.sun.com/products/javawebstart/">Java(tm) Web Start</link> on your system
+            to run these demos.
+        </p>
+
+        <ul>
+            <li><link href="http://nagoya.apache.org/batik_1.1/batikNagoya.jnlp">SVG Demos</link>.  An on-line demo of the Batik SVG Browser showing various demos</li>
+            <li><link href="http://nagoya.apache.org/batik_1.1/batikNagoyaFontsDemo.jnlp">SVG Fonts Demo</link>. An on-line demo of the Batik SVG Browser showing SVG Fonts at work"</li>
+        </ul>
+
+            <note>This version of the Batik browser is running from your browser and is subject to the same
+            restrictions as an applet. For example, it does not have the ability to load SVG files from arbitrary
+            locations. However, it does offer all the main features that the viewer has to offer, as explained in 
+            the <link href="svgviewer.html">Browser tutorial</link>.</note>
+
+    </s1>
+  </body>
+</document>
