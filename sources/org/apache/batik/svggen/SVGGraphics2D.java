@@ -275,6 +275,10 @@ public class SVGGraphics2D extends AbstractGraphics2D
             stream(writer, useCss);
             writer.flush();
             writer.close();
+        } catch (SVGGraphics2DIOException io) {
+            // this one as already been handled in stream(Writer, boolean)
+            // method => rethrow it in all cases
+            throw io;
         } catch (IOException e) {
             generatorCtx.errorHandler.
                 handleError(new SVGGraphics2DIOException(e));
@@ -336,13 +340,17 @@ public class SVGGraphics2D extends AbstractGraphics2D
 
             XmlWriter.writeXml(svgDocument, writer);
             writer.flush();
+        } catch (SVGGraphics2DIOException e) {
+            // this catch prevents from catching an SVGGraphics2DIOException
+            // and wrapping it again in another SVGGraphics2DIOException
+            // as would do the second catch (XmlWriter throws SVGGraphics2DIO
+            // Exception but flush throws IOException)
+            generatorCtx.errorHandler.
+                handleError(e);
         } catch (IOException io) {
             generatorCtx.errorHandler.
                 handleError(new SVGGraphics2DIOException(io));
-        } /*catch (SVGGraphics2DIOException e) {
-            generatorCtx.errorHandler.
-                handleError(e);
-                }*/
+        }
     }
 
     /**
