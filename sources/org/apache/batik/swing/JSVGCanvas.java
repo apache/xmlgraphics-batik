@@ -511,134 +511,118 @@ public class JSVGCanvas extends JSVGComponent {
     }
 
     /**
-     * A swing action to zoom in the canvas.
+     * A swing action to append an affine transform to the current
+     * rendering transform.  Before the rendering transform is
+     * applied the method translates the center of the display to
+     * 0,0 so scale and rotate occur around the middle of
+     * the display.
      */
-    protected class ZoomInAction extends AbstractAction {
+    protected class AffineAction extends AbstractAction {
+        AffineTransform at;
+        public AffineAction(AffineTransform at) {
+            this.at = at;
+        }
+
         public void actionPerformed(ActionEvent evt) {
             if (gvtRoot == null) {
                 return;
             }
-            AffineTransform at = getRenderingTransform();
+            AffineTransform rat = getRenderingTransform();
             if (at != null) {
                 Dimension dim = getSize();
                 int x = dim.width / 2;
                 int y = dim.height / 2;
                 AffineTransform t = AffineTransform.getTranslateInstance(x, y);
-                t.scale(2, 2);
-                t.translate(-x, -y);
                 t.concatenate(at);
+                t.translate(-x, -y);
+                t.concatenate(rat);
                 setRenderingTransform(t);
             }
         }
+    }
+
+    /**
+     * A swing action to apply a zoom factor to the canvas.
+     * This can be used to zoom in (scale > 1) and out (scale <1).
+     */
+    protected class ZoomAction extends AffineAction {
+        public ZoomAction(double scale) {
+            super(AffineTransform.getScaleInstance(scale, scale));
+        }
+        public ZoomAction(double scaleX, double scaleY) {
+            super(AffineTransform.getScaleInstance(scaleX, scaleY));
+        }
+    }
+
+    /**
+     * A swing action to zoom in the canvas.
+     */
+    protected class ZoomInAction extends ZoomAction {
+        ZoomInAction() { super(2); }
     }
 
     /**
      * A swing action to zoom out the canvas.
      */
-    protected class ZoomOutAction extends AbstractAction {
-        public void actionPerformed(ActionEvent evt) {
-            if (gvtRoot == null) {
-                return;
-            }
-            AffineTransform at = getRenderingTransform();
-            if (at != null) {
-                Dimension dim = getSize();
-                int x = dim.width / 2;
-                int y = dim.height / 2;
-                AffineTransform t = AffineTransform.getTranslateInstance(x, y);
-                t.scale(.5, .5);
-                t.translate(-x, -y);
-                t.concatenate(at);
-                setRenderingTransform(t);
-            }
+    protected class ZoomOutAction extends ZoomAction {
+        ZoomOutAction() { super(.5); }
+    }
+
+    /**
+     * A swing action to Rotate the canvas.
+     */
+    protected class RotateAction extends AffineAction {
+        public RotateAction(double theta) {
+            super(AffineTransform.getRotateInstance(theta));
         }
     }
 
     /**
-     * A swing action to scroll the canvas to the right.
+     * A swing action to Pan/scroll the canvas.
      */
-    protected class ScrollRightAction extends AbstractAction {
+    protected class ScrollAction extends AffineAction {
+        public ScrollAction(double tx, double ty) {
+            super(AffineTransform.getTranslateInstance(tx, ty));
+        }
+    }
 
-        /** The scroll increment. */
-        protected int inc;
-
+    /**
+     * A swing action to scroll the canvas to the right,
+     * by a fixed amount
+     */
+    protected class ScrollRightAction extends ScrollAction {
         public ScrollRightAction(int inc) {
-            this.inc = inc;
-        }
-
-        public void actionPerformed(ActionEvent evt) {
-            if (gvtRoot == null) {
-                return;
-            }
-            AffineTransform at = new AffineTransform(getRenderingTransform());
-            at.translate(-inc, 0);
-            setRenderingTransform(at);
+            super(-inc, 0);
         }
     }
 
     /**
-     * A swing action to scroll the canvas to the left.
+     * A swing action to scroll the canvas to the left,
+     * by a fixed amount
      */
-    protected class ScrollLeftAction extends AbstractAction {
-
-        /** The scroll increment. */
-        protected int inc;
-
+    protected class ScrollLeftAction extends ScrollAction {
         public ScrollLeftAction(int inc) {
-            this.inc = inc;
-        }
-
-        public void actionPerformed(ActionEvent evt) {
-            if (gvtRoot == null) {
-                return;
-            }
-            AffineTransform at = new AffineTransform(getRenderingTransform());
-            at.translate(inc, 0);
-            setRenderingTransform(at);
+            super(inc, 0);
         }
     }
 
     /**
-     * A swing action to scroll the canvas up.
+     * A swing action to scroll the canvas up,
+     * by a fixed amount
      */
-    protected class ScrollUpAction extends AbstractAction {
-
-        /** The scroll increment. */
-        protected int inc;
-
+    protected class ScrollUpAction extends ScrollAction {
         public ScrollUpAction(int inc) {
-            this.inc = inc;
-        }
-
-        public void actionPerformed(ActionEvent evt) {
-            if (gvtRoot == null) {
-                return;
-            }
-            AffineTransform at = new AffineTransform(getRenderingTransform());
-            at.translate(0, inc);
-            setRenderingTransform(at);
+            super(0, inc);
         }
     }
 
     /**
-     * A swing action to scroll the canvas down.
+     * A swing action to scroll the canvas down,
+     * by a fixed amount
      */
-    protected class ScrollDownAction extends AbstractAction {
-
-        /** The scroll increment. */
-        protected int inc;
-
+    protected class ScrollDownAction extends ScrollAction {
         public ScrollDownAction(int inc) {
-            this.inc = inc;
-        }
-
-        public void actionPerformed(ActionEvent evt) {
-            if (gvtRoot == null) {
-                return;
-            }
-            AffineTransform at = new AffineTransform(getRenderingTransform());
-            at.translate(0, -inc);
-            setRenderingTransform(at);
+            super(0, -inc);
         }
     }
 

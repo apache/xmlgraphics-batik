@@ -703,21 +703,25 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
             break;
         case OBJECT_BOUNDING_BOX:
             Rectangle2D bounds = filteredNode.getGeometryBounds();
-            dx = UnitProcessor.svgHorizontalCoordinateToObjectBoundingBox
-                (dxStr, BatikExtConstants.BATIK_EXT_DX_ATRIBUTE, uctx);
-            dx *= bounds.getWidth();
+            if (bounds == null) {
+                dx = dy = dw = dh = 0;
+            } else {
+                dx = UnitProcessor.svgHorizontalCoordinateToObjectBoundingBox
+                    (dxStr, BatikExtConstants.BATIK_EXT_DX_ATRIBUTE, uctx);
+                dx *= bounds.getWidth();
 
-            dy = UnitProcessor.svgVerticalCoordinateToObjectBoundingBox
-                (dyStr, BatikExtConstants.BATIK_EXT_DY_ATRIBUTE, uctx);
-            dy *= bounds.getHeight();
+                dy = UnitProcessor.svgVerticalCoordinateToObjectBoundingBox
+                    (dyStr, BatikExtConstants.BATIK_EXT_DY_ATRIBUTE, uctx);
+                dy *= bounds.getHeight();
 
-            dw = UnitProcessor.svgHorizontalCoordinateToObjectBoundingBox
-                (dwStr, BatikExtConstants.BATIK_EXT_DW_ATRIBUTE, uctx);
-            dw *= bounds.getWidth();
+                dw = UnitProcessor.svgHorizontalCoordinateToObjectBoundingBox
+                    (dwStr, BatikExtConstants.BATIK_EXT_DW_ATRIBUTE, uctx);
+                dw *= bounds.getWidth();
 
-            dh = UnitProcessor.svgVerticalCoordinateToObjectBoundingBox
-                (dhStr, BatikExtConstants.BATIK_EXT_DH_ATRIBUTE, uctx);
-            dh *= bounds.getHeight();
+                dh = UnitProcessor.svgVerticalCoordinateToObjectBoundingBox
+                    (dhStr, BatikExtConstants.BATIK_EXT_DH_ATRIBUTE, uctx);
+                dh *= bounds.getHeight();
+            }
             break;
         default:
             throw new Error(); // can't be reached
@@ -798,25 +802,27 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
         switch (unitsType) {
         case OBJECT_BOUNDING_BOX:
             Rectangle2D bounds = filteredNode.getGeometryBounds();
-            if (xStr.length() != 0) {
-                x = UnitProcessor.svgHorizontalCoordinateToObjectBoundingBox
-                    (xStr, SVG_X_ATTRIBUTE, uctx);
-                x = bounds.getX() + x*bounds.getWidth();
-            }
-            if (yStr.length() != 0) {
-                y = UnitProcessor.svgVerticalCoordinateToObjectBoundingBox
-                    (yStr, SVG_Y_ATTRIBUTE, uctx);
-                y = bounds.getY() + y*bounds.getHeight();
-            }
-            if (wStr.length() != 0) {
-                w = UnitProcessor.svgHorizontalLengthToObjectBoundingBox
-                    (wStr, SVG_WIDTH_ATTRIBUTE, uctx);
-                w *= bounds.getWidth();
-            }
-            if (hStr.length() != 0) {
-                h = UnitProcessor.svgVerticalLengthToObjectBoundingBox
-                    (hStr, SVG_HEIGHT_ATTRIBUTE, uctx);
-                h *= bounds.getHeight();
+            if (bounds != null) {
+                if (xStr.length() != 0) {
+                    x = UnitProcessor.svgHorizontalCoordinateToObjectBoundingBox
+                        (xStr, SVG_X_ATTRIBUTE, uctx);
+                    x = bounds.getX() + x*bounds.getWidth();
+                }
+                if (yStr.length() != 0) {
+                    y = UnitProcessor.svgVerticalCoordinateToObjectBoundingBox
+                        (yStr, SVG_Y_ATTRIBUTE, uctx);
+                    y = bounds.getY() + y*bounds.getHeight();
+                }
+                if (wStr.length() != 0) {
+                    w = UnitProcessor.svgHorizontalLengthToObjectBoundingBox
+                        (wStr, SVG_WIDTH_ATTRIBUTE, uctx);
+                    w *= bounds.getWidth();
+                }
+                if (hStr.length() != 0) {
+                    h = UnitProcessor.svgVerticalLengthToObjectBoundingBox
+                        (hStr, SVG_HEIGHT_ATTRIBUTE, uctx);
+                    h *= bounds.getHeight();
+                }
             }
             break;
         case USER_SPACE_ON_USE:
@@ -1061,8 +1067,10 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
 
         AffineTransform Mx = new AffineTransform();
         Rectangle2D bounds = node.getGeometryBounds();
-        Mx.translate(bounds.getX(), bounds.getY());
-        Mx.scale(bounds.getWidth(), bounds.getHeight());
+        if (bounds != null) {
+            Mx.translate(bounds.getX(), bounds.getY());
+            Mx.scale(bounds.getWidth(), bounds.getHeight());
+        }
         Mx.concatenate(Tx);
         return Mx;
     }
