@@ -44,7 +44,7 @@ import javax.swing.JComponent;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.event.AWTEventDispatcher;
 
-import org.apache.batik.gvt.renderer.DynamicRendererFactory;
+import org.apache.batik.gvt.renderer.ConcreteImageRendererFactory;
 import org.apache.batik.gvt.renderer.ImageRenderer;
 import org.apache.batik.gvt.renderer.ImageRendererFactory;
 
@@ -77,7 +77,7 @@ public class JGVTComponent extends JComponent {
      * The renderer factory.
      */
     protected ImageRendererFactory rendererFactory =
-        new DynamicRendererFactory();
+        new ConcreteImageRendererFactory();
 
     /**
      * The current renderer.
@@ -552,6 +552,13 @@ public class JGVTComponent extends JComponent {
     }
 
     /**
+     * Creates a new renderer.
+     */
+    protected ImageRenderer createImageRenderer() {
+        return rendererFactory.createStaticImageRenderer();
+    }
+
+    /**
      * Renders the GVT tree.
      */
     protected void renderGVTTree() {
@@ -562,7 +569,7 @@ public class JGVTComponent extends JComponent {
 
         // Renderer setup.
         if (renderer == null || renderer.getTree() != gvtRoot) {
-            renderer = rendererFactory.createImageRenderer();
+            renderer = createImageRenderer();
             renderer.setTree(gvtRoot);
         }
 

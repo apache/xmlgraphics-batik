@@ -16,7 +16,12 @@ package org.apache.batik.gvt.renderer;
  */
 public interface ImageRendererFactory extends RendererFactory{
     /**
-     * Creates a new renderer.
+     * Creates a new static renderer.
      */
-    ImageRenderer createImageRenderer();
+    ImageRenderer createStaticImageRenderer();
+
+    /**
+     * Creates a new dynamic renderer.
+     */
+    ImageRenderer createDynamicImageRenderer();
 }
