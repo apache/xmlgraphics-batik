@@ -699,9 +699,7 @@ public class SVGOMDocument
          * Creates an instance of the associated element type.
          */
         public Element create(String prefix) {
-            return new SVGOMToBeImplementedElement(prefix,
-                                                   SVGOMDocument.this,
-                                                   TAG_FE_BLEND);
+            return new SVGOMFEBlendElement(prefix, SVGOMDocument.this);
         }
     }
 
@@ -713,9 +711,7 @@ public class SVGOMDocument
          * Creates an instance of the associated element type.
          */
         public Element create(String prefix) {
-            return new SVGOMToBeImplementedElement(prefix,
-                                                   SVGOMDocument.this,
-                                                   TAG_FE_COLOR_MATRIX);
+            return new SVGOMFEColorMatrixElement(prefix, SVGOMDocument.this);
         }
     }
 
@@ -728,9 +724,8 @@ public class SVGOMDocument
          * Creates an instance of the associated element type.
          */
         public Element create(String prefix) {
-            return new SVGOMToBeImplementedElement(prefix,
-                                                   SVGOMDocument.this,
-                                                   TAG_FE_COMPONENT_TRANSFER);
+            return new SVGOMFEComponentTransferElement(prefix,
+                                                       SVGOMDocument.this);
         }
     }
 

@@ -21,6 +21,9 @@ public class SVGBridgeContext extends ConcreteBridgeContext
         implements SVGConstants {
 
     public SVGBridgeContext() {
+        putBridge(SVG_NAMESPACE_URI, TAG_A,
+                  new SVGAElementBridge());
+
         putBridge(SVG_NAMESPACE_URI, TAG_CIRCLE,
                   new SVGCircleElementBridge());
 
@@ -54,7 +57,7 @@ public class SVGBridgeContext extends ConcreteBridgeContext
         putBridge(SVG_NAMESPACE_URI, TAG_IMAGE,
                   new SVGImageElementBridge());
 
-       putBridge(SVG_NAMESPACE_URI, TAG_LINE,
+        putBridge(SVG_NAMESPACE_URI, TAG_LINE,
                   new SVGLineElementBridge());
 
         putBridge(SVG_NAMESPACE_URI, TAG_MASK,

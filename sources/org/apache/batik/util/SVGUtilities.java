@@ -471,7 +471,7 @@ public class SVGUtilities implements SVGConstants {
     }
 
     /**
-     * Tests whether or not the given element.
+     * Tests whether or not the given element match a user agent.
      */
     public static boolean matchUserAgent(Element elt, UserAgent ua) {
         if (elt.hasAttributeNS(null, ATTR_SYSTEM_LANGUAGE)) {
