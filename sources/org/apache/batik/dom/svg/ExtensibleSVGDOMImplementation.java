@@ -93,6 +93,7 @@ public class ExtensibleSVGDOMImplementation extends SVGDOMImplementation {
      */
     public void registerCustomCSSValueFactory(ValueFactory vf) {
         String name = vf.getPropertyName();
+        vf.setParser(parser);
         presentationAttributeSet.add(name);
         valueFactoryMap.put(name, vf);
     }

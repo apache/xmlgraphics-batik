@@ -39,6 +39,8 @@ import org.apache.batik.i18n.LocalizableSupport;
 
 import org.apache.batik.util.SVGConstants;
 
+import org.w3c.css.sac.Parser;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentType;
 import org.w3c.dom.DOMException;
@@ -86,10 +88,15 @@ public class SVGDOMImplementation
         "org.apache.batik.dom.svg.resources.Messages";
 
     /**
+     * The parser used for the CSS values.
+     */
+    protected Parser parser = CSSDocumentHandler.createParser();
+
+    /**
      * The CSS value factory map for SVG.
      */
     protected SVGValueFactoryMap valueFactoryMap =
-        new SVGValueFactoryMap(CSSDocumentHandler.createParser());
+        new SVGValueFactoryMap(parser);
 
     /**
      * The localizable support for the error messages.
