@@ -53,7 +53,7 @@ public class GraphicContext implements Cloneable{
     /**
      * Default Transform to be used for creating FontRenderContext.
      */
-    private AffineTransform defaultTransform = new AffineTransform();
+    protected AffineTransform defaultTransform = new AffineTransform();
 
     /**
      * Current AffineTransform. This is the concatenation
@@ -61,12 +61,12 @@ public class GraphicContext implements Cloneable{
      * invocation) and the following transform invocations,
      * as captured by originalTransform and the transformStack.
      */
-    private AffineTransform transform = new AffineTransform();
+    protected AffineTransform transform = new AffineTransform();
 
     /**
      * Transform stack
      */
-    private Vector transformStack = new Vector();
+    protected Vector transformStack = new Vector();
 
     /**
      * Defines whether the transform stack is valide or not.
@@ -77,47 +77,47 @@ public class GraphicContext implements Cloneable{
      * @see #isTransformStackValid
      * @see #setTransform
      */
-    private boolean transformStackValid = true;
+    protected boolean transformStackValid = true;
 
     /**
      * Current Paint
      */
-    private Paint paint = Color.black;
+    protected Paint paint = Color.black;
 
     /**
      * Current Stroke
      */
-    private Stroke stroke = new BasicStroke();
+    protected Stroke stroke = new BasicStroke();
 
     /**
      * Current Composite
      */
-    private Composite composite = AlphaComposite.SrcOver;
+    protected Composite composite = AlphaComposite.SrcOver;
 
     /**
      * Current clip
      */
-    private Shape clip = null;
+    protected Shape clip = null;
 
     /**
      * Current set of RenderingHints
      */
-    private RenderingHints hints = new RenderingHints(null);
+    protected RenderingHints hints = new RenderingHints(null);
 
     /**
      * Current Font
      */
-    private Font font = new Font("sanserif", Font.PLAIN, 12);
+    protected Font font = new Font("sanserif", Font.PLAIN, 12);
 
     /**
      * Current background color.
      */
-    private Color background = new Color(0, 0, 0, 0);
+    protected Color background = new Color(0, 0, 0, 0);
 
     /**
      * Current foreground color
      */
-    private Color foreground = Color.black;
+    protected Color foreground = Color.black;
 
     /**
      * Default constructor

@@ -1417,4 +1417,11 @@ public abstract class AbstractGraphics2D extends Graphics2D implements Cloneable
     public FontRenderContext getFontRenderContext(){
         return gc.getFontRenderContext();
     }
+
+    /**
+     * @return the {@link GraphicContext} of this <code>Graphics2D</code>.
+     */    
+    public GraphicContext getGraphicContext() {
+        return gc;
+    }
 }

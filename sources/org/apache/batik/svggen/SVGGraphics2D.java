@@ -103,7 +103,7 @@ public class SVGGraphics2D extends AbstractGraphics2D
      * the DOMTreeManager to process attributes based on the
      * GraphicContext state and create groups when needed.
      */
-    private DOMTreeManager domTreeManager;
+    protected DOMTreeManager domTreeManager;
 
     /**
      * The DOMGroupManager manages additions to the current group
@@ -115,28 +115,28 @@ public class SVGGraphics2D extends AbstractGraphics2D
      * originating from the same SVGGraphics2D through various
      * createGraphics calls share the same DOMTreeManager.
      */
-    private DOMGroupManager domGroupManager;
+    protected DOMGroupManager domGroupManager;
 
     /**
      * Contains some information for SVG generation.
      */
-    private SVGGeneratorContext generatorCtx;
+    protected SVGGeneratorContext generatorCtx;
 
     /**
      * Used to convert Java 2D API Shape objects to equivalent SVG
      * elements
      */
-    private SVGShape shapeConverter;
+    protected SVGShape shapeConverter;
 
     /**
      * SVG Canvas size
      */
-    private Dimension svgCanvasSize;
+    protected Dimension svgCanvasSize;
 
     /**
      * Used to create proper font metrics
      */
-    private Graphics2D fmg;
+    protected Graphics2D fmg;
 
     {
         BufferedImage bi
@@ -153,7 +153,10 @@ public class SVGGraphics2D extends AbstractGraphics2D
     }
 
     /**
-     * @param svgCanvasSize SVG Canvas size. May be null (equivalent to 100%, 100%)
+     * Set the Canvas size, this is used to set the width and
+     * height attributes on the outermost 'svg' element.
+     * @param svgCanvasSize SVG Canvas size. May be null (equivalent
+     * to 100%, 100%)
      */
     public final void setSVGCanvasSize(Dimension svgCanvasSize) {
         this.svgCanvasSize = new Dimension(svgCanvasSize);
@@ -167,10 +170,27 @@ public class SVGGraphics2D extends AbstractGraphics2D
     }
 
     /**
+     * @return the SVGShape used by this SVGGraphics2D instance to
+     *         turn Java2D shapes into SVG Shape objects.
+     */ 
+    public final SVGShape getShapeConverter() {
+        return shapeConverter;
+    }
+
+    /**
      * @return the DOMTreeManager used by this SVGGraphics2D instance
      */
     public final DOMTreeManager getDOMTreeManager(){
         return domTreeManager;
+    }
+
+    /** 
+     * Set a DOM Tree manager for the SVGGraphics2D.
+     * @param treeMgr the new DOM Tree manager this SVGGraphics2D should use
+     */
+     protected final void setDOMTreeManager(DOMTreeManager treeMgr) {
+        this.domTreeManager = treeMgr;
+        generatorCtx.genericImageHandler.setDOMTreeManager(domTreeManager);
     }
 
      /**
@@ -178,6 +198,14 @@ public class SVGGraphics2D extends AbstractGraphics2D
      */
     protected final DOMGroupManager getDOMGroupManager(){
         return domGroupManager;
+    }
+
+    /** 
+     * Set a new DOM Group manager for this SVGGraphics2D.
+     * @param groupMgr the new DOM Group manager this SVGGraphics2D should use
+     */
+     protected final void setDOMGroupManager(DOMGroupManager groupMgr) {
+	this.domGroupManager = groupMgr;
     }
 
     /**
@@ -291,7 +319,7 @@ public class SVGGraphics2D extends AbstractGraphics2D
     /**
      * Sets an non null <code>SVGGeneratorContext</code>.
      */
-    private void setGeneratorContext(SVGGeneratorContext generatorCtx) {
+    protected void setGeneratorContext(SVGGeneratorContext generatorCtx) {
         this.generatorCtx = generatorCtx;
 
         this.gc = new GraphicContext(new AffineTransform());
@@ -333,7 +361,7 @@ public class SVGGraphics2D extends AbstractGraphics2D
     }
 
     /**
-     * This private constructor is used in create
+     * This constructor is used in create()
      *
      * @see #create
      */
