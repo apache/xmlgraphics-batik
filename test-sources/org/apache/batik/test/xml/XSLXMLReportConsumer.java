@@ -9,12 +9,20 @@
 package org.apache.batik.test.xml;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
-import org.apache.xalan.xslt.XSLTProcessorFactory;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerConfigurationException;
+
+/*import org.apache.xalan.xslt.XSLTProcessorFactory;
 import org.apache.xalan.xslt.XSLTInputSource;
 import org.apache.xalan.xslt.XSLTResultTarget;
-import org.apache.xalan.xslt.XSLTProcessor;
+import org.apache.xalan.xslt.XSLTProcessor;*/
 
 import org.apache.batik.test.TestException;
 
@@ -79,11 +87,12 @@ public class XSLXMLReportConsumer
      */
     public void onNewReport(File xmlReport)
         throws Exception{
-        XSLTProcessor processor = XSLTProcessorFactory.getProcessor();
+
+        TransformerFactory tFactory = TransformerFactory.newInstance();
+        Transformer transformer = tFactory.newTransformer(new StreamSource(stylesheet));
         
-        processor.process(new XSLTInputSource(xmlReport.toURL().toString()),
-                          new XSLTInputSource(stylesheet),
-                          new XSLTResultTarget(createNewReportOutput().getAbsolutePath()));
+        transformer.transform(new StreamSource(xmlReport.toURL().toString()), 
+                              new StreamResult(new FileOutputStream(createNewReportOutput().getAbsolutePath())));
     }
     
     /**
