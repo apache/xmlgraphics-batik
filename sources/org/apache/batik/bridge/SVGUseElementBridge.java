@@ -121,7 +121,7 @@ public class SVGUseElementBridge
         gn.setClip(clip);
 
         // <!> TODO only when binding is enabled
-        BridgeEventSupport.addDOMListener(ctx, element);
+        BridgeEventSupport.addDOMListener(ctx, (SVGElement)element);
     }
 
     public void update(BridgeMutationEvent evt) {

@@ -155,7 +155,7 @@ public class SVGImageElementBridge implements GraphicsNodeBridge,
         node.setClip(clip);
 
         // <!> TODO only when binding is enabled
-        BridgeEventSupport.addDOMListener(ctx, element);
+        BridgeEventSupport.addDOMListener(ctx, (SVGElement)element);
     }
 
     protected GraphicsNode createBase64ImageNode(BridgeContext ctx,

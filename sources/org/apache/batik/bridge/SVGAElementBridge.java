@@ -107,7 +107,7 @@ public class SVGAElementBridge implements GraphicsNodeBridge, SVGConstants {
                             false);
 
         // <!> TODO only when binding is enabled
-        BridgeEventSupport.addDOMListener(ctx, element);
+        BridgeEventSupport.addDOMListener(ctx, (SVGElement)element);
         ctx.bind(element, gn);
     }
 

@@ -126,7 +126,7 @@ public class SVGSVGElementBridge implements GraphicsNodeBridge, SVGConstants {
         } catch (java.awt.geom.NoninvertibleTransformException ex) {}
 
         // <!> TODO only when binding is enabled
-        BridgeEventSupport.addDOMListener(ctx, element);
+        BridgeEventSupport.addDOMListener(ctx, svgElement);
         ctx.bind(element, node);
 
         ctx.setViewport(new SVGViewport(svgElement, uctx));

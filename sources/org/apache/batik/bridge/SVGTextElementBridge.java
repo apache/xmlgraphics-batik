@@ -179,7 +179,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
         result.setClip(clip);
 
         // <!> TODO only when binding is enabled
-        BridgeEventSupport.addDOMListener(ctx, element);
+        BridgeEventSupport.addDOMListener(ctx, (SVGElement)element);
         ctx.bind(element, result);
     }
 
