@@ -32,10 +32,11 @@
         </html>
     </xsl:template>
 
-    <xsl:template match="testReport">
+    <xsl:template match="testReport | testSuiteReport">
         <xsl:param name="prefix" />
         <xsl:variable name="childrenTests" select="description/testReport" />
-        <xsl:variable name="childrenTestsCount" select="count($childrenTests)" />
+        <xsl:variable name="childrenTestSuites" select="description/testSuiteReport" />
+        <xsl:variable name="childrenTestsCount" select="count($childrenTests) + count($childrenTestSuites)" />
 
         <xsl:choose>
         <xsl:when test="$childrenTestsCount &gt; 0 or @status='failed'">
@@ -60,7 +61,10 @@
                         <xsl:when test="$childrenTestsCount &gt; 0" >
                             <xsl:variable name="passedChildrenTests" 
                                           select="description/testReport[attribute::status='passed']" />
-                            -- Success Rate :&#160;<xsl:value-of select=" count($passedChildrenTests)" /> / 
+                            <xsl:variable name="passedChildrenTestSuites" 
+                                          select="description/testSuiteReport[attribute::status='passed']" />
+
+                            -- Success Rate :&#160;<xsl:value-of select=" count($passedChildrenTests) + count($passedChildrenTestSuites)" /> / 
                             <xsl:value-of select="$childrenTestsCount" />
                         </xsl:when>
                     </xsl:choose>
@@ -81,7 +85,7 @@
         <xsl:apply-templates select="genericEntry | uriEntry | fileEntry">
             <xsl:with-param name="prefix" select="$prefix" />
         </xsl:apply-templates>
-        <xsl:apply-templates select="testReport">
+        <xsl:apply-templates select="testReport | testSuiteReport">
             <xsl:with-param name="prefix">
                 <xsl:value-of select="$prefix"/>&#160;&#160;&#160;
             </xsl:with-param>

@@ -36,7 +36,15 @@ public class DefaultTestSuite extends AbstractTest implements TestSuite {
             throw new IllegalArgumentException();
         }
 
+        test.setParent(this);
         tests.addElement(test);
+    }
+
+    /**
+     * Removes a <tt>Test</tt> from the suite.
+     */
+    public void removeTest(Test test){
+        tests.remove(test);
     }
 
     /**
@@ -67,6 +75,19 @@ public class DefaultTestSuite extends AbstractTest implements TestSuite {
         }
 
         this.name = name;
+    }
+
+    public Test[] getChildrenTests(){
+        Test[] children = new Test[tests.size()];
+        tests.copyInto(children);
+        return children;
+    }
+
+    /**
+     * Returns the number of child tests
+     */
+    public int getChildrenCount(){
+        return tests.size();
     }
 
 }

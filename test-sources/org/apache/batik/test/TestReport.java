@@ -27,6 +27,13 @@ public interface TestReport {
         = "TestReport.error.internal.test.failure";
 
     /**
+     * Very generic error code which can be used to report
+     * that the test failed.
+     */
+    public static final String ERROR_TEST_FAILED 
+        = "DefaultTestSuiteReport.error.test.failed";
+
+    /**
      * Entry describing the class of the internal exception 
      * that caused the test's internal failure
      */
@@ -94,8 +101,25 @@ public interface TestReport {
     public Entry[] getDescription();
 
     /**
+     * Appends <tt>entry</tt> to the array of description entry.
+     */
+    public void addDescriptionEntry(String key,
+                                    Object value);
+
+    /**
      * Returns the <tt>Test</tt> object that generated this 
      * <tt>TestReport</tt>
      */
     public Test getTest();
+
+    /**
+     * Returns the parent report in case this <tt>TestReport</tt> is
+     * part of a <tt>TestSuiteReport</tt>. This may be null.
+     */
+    public TestSuiteReport getParentReport();
+
+    /**
+     * Set this report's parent.
+     */
+    public void setParentReport(TestSuiteReport parent);
 }

@@ -730,7 +730,7 @@ To display the available targets type:
         <pathelement location="resources" />
         <pathelement location="test-resources" />
       </classpath>
-      <arg line="test-resources/org/apache/batik/test/regard.xml"/>
+      <arg line="test-resources/org/apache/batik/test/regard.xml ${args}"/>
     </java>
   </target>
 

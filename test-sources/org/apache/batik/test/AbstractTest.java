@@ -20,6 +20,17 @@ import java.io.PrintWriter;
  */
 public abstract class AbstractTest implements Test {
     /**
+     * This test's id.
+     */
+    protected String id = "";
+
+    /**
+     * This test's parent, in case this test is part of 
+     * a suite.
+     */
+    protected TestSuite parent;
+
+    /**
      * TestReport
      */
     private DefaultTestReport report 
@@ -38,6 +49,42 @@ public abstract class AbstractTest implements Test {
     }
 
     /**
+     * Return this <tt>Test</tt>'s id.
+     */
+    public String getId(){
+        return id;
+    }
+
+    /**
+     * Return this <tt>Test</tt>'s qualified id.
+     */
+    public String getQualifiedId(){
+        if(parent == null){
+            return getId();
+        }
+        return getParent().getQualifiedId() + "." + getId();
+    }
+
+    /**
+     * Set this <tt>Test</tt>'s id. Null is not allowed.
+     */
+    public void setId(String id){
+        if(id == null){
+            throw new IllegalArgumentException();
+        }
+
+        this.id = id;
+    }
+
+    public TestSuite getParent(){
+        return parent;
+    }
+
+    public void setParent(TestSuite parent){
+        this.parent = parent;
+    }
+
+    /**
      * This default implementation of the run method
      * catches any Exception or Error throw from the 
      * runImpl method and creates a <tt>TestReport</tt>
@@ -46,7 +93,7 @@ public abstract class AbstractTest implements Test {
      * simply returns the <tt>TestReport</tt> generated
      * by the <tt>runImpl</tt> method.
      */
-    public final TestReport run(){
+    public TestReport run(){
         try{
             return runImpl();
         }catch(Exception e){
@@ -88,6 +135,34 @@ public abstract class AbstractTest implements Test {
      * are looking for in the code they exercise but will let 
      * exceptions due to their own processing propagate. 
      */
-    public abstract TestReport runImpl() throws Exception;
+    public TestReport runImpl() throws Exception {
+        boolean passed = runImplBasic();
 
+        // No exception was thrown if we get to this 
+        // portion of rumImpl. The test result is 
+        // given by passed.
+        DefaultTestReport report = new DefaultTestReport(this);
+        if(!passed){
+            report.setErrorCode(TestReport.ERROR_TEST_FAILED);
+        }
+        report.setPassed(passed);
+        return report;
+    }
+
+    /**
+     * In the simplest test implementation, developers can 
+     * simply implement the following method.
+     */
+    public boolean runImplBasic() throws Exception {
+        return true;
+    }
+
+    /**
+     * Convenience method.
+     */
+    public TestReport reportSuccess() {
+        DefaultTestReport report = new DefaultTestReport(this);
+        report.setPassed(true);
+        return report;
+    }
 }

@@ -48,6 +48,7 @@ import org.apache.batik.transcoder.image.PNGTranscoder;
 
 import org.apache.batik.util.ParsedURL;
 
+import org.apache.batik.test.AbstractTest;
 import org.apache.batik.test.DefaultTestReport;
 import org.apache.batik.test.Test;
 import org.apache.batik.test.TestReport;
@@ -63,7 +64,7 @@ import org.apache.batik.test.TestReport;
  * @author <a href="mailto:vhardy@apache.lorg">Vincent Hardy</a>
  * @version $Id$
  */
-public class SVGRenderingAccuracyTest implements Test{
+public class SVGRenderingAccuracyTest extends AbstractTest {
     /**
      * Error when temp file cannot be created
      * {0} = IOException message

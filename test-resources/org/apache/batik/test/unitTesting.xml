@@ -10,15 +10,20 @@
 <!-- @author vincent.hardy@eng.sun.com                                         -->
 <!-- @version $Id$ -->
 <!-- ========================================================================= -->
-<testSuite name="Test Module - Unit Testing">
+<testSuite id="unitTesting" name="Test Module - Unit Testing">
+    <!-- ========================================================================== -->
+    <!-- Validates that the XMLTestSuiteRunner class is operating as expected       -->
+    <!-- ========================================================================== -->
+    <test id="xmlTestSuiteRunnerValidator" class="org.apache.batik.test.xml.XMLTestSuiteRunnerValidator" />
+
     <!-- ========================================================================== -->
     <!-- Validates that the SVGRenderingAccuracyTest class is operating as expected -->
     <!-- ========================================================================== -->
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTestValidator" />
+    <test id="svgRenderingAccuracyTestValidator" class="org.apache.batik.test.svg.SVGRenderingAccuracyTestValidator" />
 
     <!-- ========================================================================== -->
     <!-- Validates that the SVGAccuracyTest class is operating as expected          -->
     <!-- ========================================================================== -->
-    <test class="org.apache.batik.svggen.SVGAccuracyTestValidator" />
+    <test id="svgAccuracyTestValidator" class="org.apache.batik.svggen.SVGAccuracyTestValidator" /> 
 
 </testSuite>

@@ -13,49 +13,46 @@
 <!-- @author vincent.hardy@eng.sun.com                                         -->
 <!-- @version $Id$  -->
 <!-- ========================================================================= -->
-<testRun name="Batik Standard Regression Test Run">
-    <testRun name="REGARD">
-        <testReportProcessor class="org.apache.batik.test.xml.XMLTestReportProcessor" > 
-            <arg class="org.apache.batik.test.xml.XSLXMLReportConsumer">
-                <!-- Stylesheet -->
-                <arg class="java.lang.String" value="file:test-resources/org/apache/batik/test/svg/HTMLReport.xsl" />
-                <!-- Ouput Directory -->
-                <arg class="java.lang.String" value="test-reports/html" />
-                <!-- Output file prefix -->
-                <arg class="java.lang.String" value="RegardResult" />
-                <!-- Output file suffix -->
-                <arg class="java.lang.String" value=".html" />
-            </arg>
-        </testReportProcessor>
+<testRun id="regard" name="Batik Standard Regression Test Run">
+    <testReportProcessor class="org.apache.batik.test.xml.XMLTestReportProcessor" > 
+        <arg class="org.apache.batik.test.xml.XSLXMLReportConsumer">
+            <!-- Stylesheet -->
+        <arg class="java.lang.String" value="file:test-resources/org/apache/batik/test/svg/HTMLReport.xsl" />
+            <!-- Ouput Directory -->
+        <arg class="java.lang.String" value="test-reports/html" />
+            <!-- Output file prefix -->
+        <arg class="java.lang.String" value="RegardResult" />
+            <!-- Output file suffix -->
+        <arg class="java.lang.String" value=".html" />
+        </arg>
+    </testReportProcessor>
 
-        <!-- ====================================================================== -->
-        <!--                     Rendering Accuracy Tests                           -->
-        <!-- ====================================================================== -->
+    <!-- ====================================================================== -->
+    <!--                     Rendering Accuracy Tests                           -->
+    <!-- ====================================================================== -->
 
-        <!--                           SVG Working Group                            -->
-        <!--                           Basic Effectivity                            -->
-        <!--                               Test Suite                               -->
-        <testSuite href="file:test-resources/org/apache/batik/test/samplesRendering.xml" />  
-
-
-        <!--                                Batik                                    -->
-        <!--                               Samples                                   -->
-        <testSuite href="file:test-resources/org/apache/batik/test/beSuite.xml" />  
+    <!--                           SVG Working Group                            -->
+    <!--                           Basic Effectivity                            -->
+    <!--                               Test Suite                               -->
+    <testSuite href="file:test-resources/org/apache/batik/test/samplesRendering.xml" /> 
 
 
-        <!-- ====================================================================== -->
-        <!--                         SVG Generator Tests                            -->
-        <!-- ====================================================================== -->
-        <testSuite href="file:test-resources/org/apache/batik/svggen/regsvggen.xml" /> 
+    <!--                                Batik                                    -->
+    <!--                               Samples                                   -->
+    <testSuite href="file:test-resources/org/apache/batik/test/beSuite.xml" /> 
 
 
-        <!-- ====================================================================== -->
-        <!--                              Unit Testing                              -->
-        <!-- ====================================================================== -->
-        <testSuite href="file:test-resources/org/apache/batik/test/unitTesting.xml" />
-        <testSuite href="file:test-resources/org/apache/batik/ext/awt/image/codec/unitTesting.xml" />
-        <testSuite href="file:test-resources/org/apache/batik/util/unitTesting.xml" />
+    <!-- ====================================================================== -->
+    <!--                         SVG Generator Tests                            -->
+    <!-- ====================================================================== -->
+    <testSuite href="file:test-resources/org/apache/batik/svggen/regsvggen.xml" />
 
-    </testRun>
+
+    <!-- ====================================================================== -->
+    <!--                              Unit Testing                              -->
+    <!-- ====================================================================== -->
+    <testSuite href="file:test-resources/org/apache/batik/test/unitTesting.xml" />  
+    <testSuite href="file:test-resources/org/apache/batik/ext/awt/image/codec/unitTesting.xml" />
+    <testSuite href="file:test-resources/org/apache/batik/util/unitTesting.xml" />
 
 </testRun>

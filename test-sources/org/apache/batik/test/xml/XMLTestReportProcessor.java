@@ -25,6 +25,7 @@ import java.net.URL;
 
 import org.apache.batik.test.TestReport;
 import org.apache.batik.test.TestReportProcessor;
+import org.apache.batik.test.TestSuite;
 import org.apache.batik.test.TestException;
 
 import org.apache.batik.util.XMLConstants;
@@ -153,9 +154,17 @@ public class XMLTestReportProcessor
             DOMImplementation impl 
                 = SVGDOMImplementation.getDOMImplementation();
             
-            Document document =
-                impl.createDocument(XTR_NAMESPACE_URI, 
-                                    XTR_TEST_REPORT_TAG, null);
+            Document document = null;
+
+            if(report.getTest() instanceof TestSuite){
+                document = impl.createDocument(XTR_NAMESPACE_URI, 
+                                               XTR_TEST_SUITE_REPORT_TAG, null);
+            }
+            else {
+                document = impl.createDocument(XTR_NAMESPACE_URI, 
+                                               XTR_TEST_REPORT_TAG, null);
+            }
+
             Element root = document.getDocumentElement();
             
             processReport(report, root, document);
@@ -236,6 +245,14 @@ public class XMLTestReportProcessor
                                      XTR_TEST_NAME_ATTRIBUTE,
                                      report.getTest().getName());
 
+        String id = report.getTest().getId();
+        if( !"".equals(id) ){
+            reportElement.setAttributeNS(null,
+                                         XTR_ID_ATTRIBUTE,
+                                         id
+                                         );
+        }
+
         String status = report.hasPassed() 
             ? XTR_PASSED_VALUE
             : XTR_FAILED_VALUE;
@@ -277,9 +294,20 @@ public class XMLTestReportProcessor
         String key   = entry.getKey();
 
         if(value instanceof TestReport){
-            Element reportElement 
-                = reportDocument.createElementNS(XTR_NAMESPACE_URI,
-                                                 XTR_TEST_REPORT_TAG);
+            TestReport report = (TestReport)value;
+            
+            Element reportElement = null;
+
+            if(report.getTest() instanceof TestSuite){
+                reportElement 
+                    = reportDocument.createElementNS(XTR_NAMESPACE_URI,
+                                                     XTR_TEST_SUITE_REPORT_TAG);
+            }
+            else{
+                reportElement 
+                    = reportDocument.createElementNS(XTR_NAMESPACE_URI,
+                                                     XTR_TEST_REPORT_TAG);
+            }
 
             descriptionElement.appendChild(reportElement);
             processReport((TestReport)entry.getValue(),

@@ -76,10 +76,12 @@ public class XMLTestSuiteLoader implements XTSConstants {
     /**
      * Load the test suite defined by the input URI
      */
-    public static TestSuite loadTestSuite(String testSuiteURI) 
+    public static TestSuite loadTestSuite(String testSuiteURI, 
+                                          TestSuite parent) 
         throws TestException{
+        // System.out.println("loading test suite: " + testSuiteURI);
         Document testSuiteDocument = loadTestSuiteDocument(testSuiteURI);
-        return buildTestSuite(testSuiteDocument.getDocumentElement());
+        return buildTestSuite(testSuiteDocument.getDocumentElement(), parent);
     }
 
     /**
@@ -121,7 +123,8 @@ public class XMLTestSuiteLoader implements XTSConstants {
      * instance, as the input document should have been
      * validated when loaded.
      */
-    protected static TestSuite buildTestSuite(Element element) 
+    protected static TestSuite buildTestSuite(Element element,
+                                              TestSuite parent) 
         throws TestException {
         DefaultTestSuite testSuite 
             = new DefaultTestSuite();
@@ -132,6 +135,12 @@ public class XMLTestSuiteLoader implements XTSConstants {
 
         testSuite.setName(suiteName + " -- " + testSuite.getName());
 
+        String suiteId 
+            = element.getAttributeNS(null,
+                                     XTS_ID_ATTRIBUTE);
+
+        testSuite.setId(suiteId);
+
         NodeList children = element.getChildNodes();
         if(children != null && children.getLength() > 0){
             int n = children.getLength();
@@ -140,6 +149,7 @@ public class XMLTestSuiteLoader implements XTSConstants {
                 if(child.getNodeType() == Node.ELEMENT_NODE){
                     Element childElement = (Element)child;
                     String tagName = childElement.getTagName().intern();
+                    // System.out.println("Processing child : " + tagName);
                     if(tagName == XTS_TEST_TAG){
                         Test t = buildTest(childElement);
                         testSuite.addTest(t);
@@ -153,8 +163,13 @@ public class XMLTestSuiteLoader implements XTSConstants {
 
     protected static Test buildTest(Element element) throws TestException {
         try{
-            return (Test)XMLReflect.buildObject(element);
+            Test t = (Test)XMLReflect.buildObject(element);
 
+            String id 
+                = element.getAttributeNS(null,
+                                         XTS_ID_ATTRIBUTE);
+            t.setId(id);
+            return t;
         }catch (Exception e) {
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);

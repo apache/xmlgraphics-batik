@@ -26,6 +26,7 @@ public interface XTRConstants extends XMLReflectConstants{
     String XTR_FILE_ENTRY_TAG = "fileEntry";
     String XTR_GENERIC_ENTRY_TAG = "genericEntry";
     String XTR_TEST_REPORT_TAG = "testReport";
+    String XTR_TEST_SUITE_REPORT_TAG = "testSuiteReport";
     String XTR_URI_ENTRY_TAG = "uriEntry";
     
     /////////////////////////////////////////////////////////////////////////
@@ -33,6 +34,7 @@ public interface XTRConstants extends XMLReflectConstants{
     /////////////////////////////////////////////////////////////////////////
     String XTR_KEY_ATTRIBUTE = "key";
     String XTR_ERROR_CODE_ATTRIBUTE = "errorCode";
+    String XTR_ID_ATTRIBUTE = "id";
     String XTR_STATUS_ATTRIBUTE = "status";
     String XTR_TEST_NAME_ATTRIBUTE = "testName";
     String XTR_VALUE_ATTRIBUTE     = "value";
