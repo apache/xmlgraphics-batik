@@ -58,6 +58,23 @@
 
         insertionPoint.appendChild(svgContentRoot);
     }
+
+    function insertLocalContentAt(uri, insertAt) {
+        var g = document.getElementById(insertAt);
+        if (g == null) {
+            alert("Could not find : " + insertAt);
+        }
+
+        var svgNS = "http://www.w3.org/2000/svg";
+        var xlinkNS = "http://www.w3.org/1999/xlink" ;
+        var use = document.createElementNS(svgNS, "use");
+        use.setAttributeNS(null, "x", "0");
+        use.setAttributeNS(null, "y", "0");
+        use.setAttributeNS(null, "width", "100%");
+        use.setAttributeNS(null, "height", "100%");
+        use.setAttributeNS(xlinkNS, "href", uri);
+        g.appendChild(use);
+    }
     ]]></script>
 
     <g id="insertionPoint">
@@ -87,6 +104,8 @@
 
         <defs>
             <rect class="testButton" id="testButton" x="-60" y="-20" width="120" height="30" />
+
+            <rect id="testRect" x="0" y="0" width="100%" height="100%" fill="gold" />
         </defs>
 
         <text transform="translate(0,0)" class="title" y="-40">Click on one of the following buttons 
@@ -101,6 +120,11 @@
         <g transform="translate(0,160)">
             <use xlink:href="#testButton" onclick="insertContentAt('../../../../../samples/batikFX.svg', 'insertionPoint')" />
             <text class="buttonLabel">File System Access</text>
+        </g>
+        
+        <g transform="translate(0,200)">
+            <use xlink:href="#testButton" onclick="insertLocalContentAt('#testRect', 'insertionPoint')" />
+            <text class="buttonLabel">Internal Use</text>
         </g>
         
     </g>
