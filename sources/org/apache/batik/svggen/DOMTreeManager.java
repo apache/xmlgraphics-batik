@@ -233,18 +233,17 @@ public class DOMTreeManager implements SVGSyntax, ErrorConstants {
         }
 
         // Set default rendering context attributes in node
-        Map groupDefaults = defaultGC.getGroupContext();
-        Iterator iter = groupDefaults.keySet().iterator();
-        while(iter.hasNext()){
-            String attrName = (String)iter.next();
-            svg.setAttributeNS(null, attrName,
-                               (String)groupDefaults.get(attrName));
-        }
+        applyDefaultRenderingStyle(svg);
 
         svg.appendChild(getGenericDefinitions());
         svg.appendChild(getTopLevelGroup());
 
         return svg;
+    }
+
+    public void applyDefaultRenderingStyle(Element element) {
+        Map groupDefaults = defaultGC.getGroupContext();
+        generatorContext.styleHandler.setStyle(element, groupDefaults, generatorContext);
     }
 
     /**
