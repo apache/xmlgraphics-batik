@@ -290,7 +290,7 @@ public class DocumentLoadRunnable implements Runnable, DocumentEventSource {
             fireAsyncDocumentEvent(new DocumentLoadingEvent(
                         DocumentLoadingEvent.LOAD_CANCELLED, null), false);
         } catch (InterruptedIOException iioe) {
-            System.out.println("Interrupted during document I/O.");
+            System.out.println("Loading interrupted during document I/O.");
             fireAsyncDocumentEvent(new DocumentLoadingEvent(
                         DocumentLoadingEvent.LOAD_CANCELLED, null), false);
         } catch (IOException e) {

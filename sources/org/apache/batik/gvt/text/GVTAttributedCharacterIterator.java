@@ -206,6 +206,10 @@ public interface GVTAttributedCharacterIterator extends
             super(s);
         }
 
+        /** Attribute span delimiter - new tspan, tref, or textelement.*/
+        public final static TextAttribute TEXT_COMPOUND_DELIMITER = 
+                              new TextAttribute("TEXT_COMPOUND_DELIMITER");
+
         /** User-space X coordinate for character.*/
         public final static TextAttribute X = new TextAttribute("X");
 

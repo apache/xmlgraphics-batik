@@ -38,7 +38,7 @@ import java.awt.font.FontRenderContext;
  * @see java.awt.font.TextAttribute
  *
  * @author <a href="bill.haneman@ireland.sun.com>Bill Haneman</a>
- * @author <a href="vincent.hardy@sun.com>>Vincent Hardy</a>
+ * @author <a href="vincent.hardy@sun.com>Vincent Hardy</a>
  * @version $Id$
  */
 public class BasicTextPainter implements TextPainter {
@@ -79,7 +79,7 @@ public class BasicTextPainter implements TextPainter {
                          (float)location.getY());
     }
 
-    private static TextLayoutFactory textLayoutFactory = 
+    private static TextLayoutFactory textLayoutFactory =
                                new ConcreteTextLayoutFactory();
 
     protected TextLayoutFactory getTextLayoutFactory() {
@@ -97,7 +97,11 @@ public class BasicTextPainter implements TextPainter {
                          AttributedCharacterIterator aci,
                          TextNode.Anchor anchor,
                          GraphicsNodeRenderContext context) {
-        return hitTest(x, y, aci, anchor, context);
+
+        org.apache.batik.gvt.text.Mark
+              newMark = hitTest(x, y, aci, anchor, context);
+        cachedHit = null;
+        return newMark;
     }
 
     /**
@@ -115,15 +119,6 @@ public class BasicTextPainter implements TextPainter {
         org.apache.batik.gvt.text.Mark newMark =
              hitTest(x, y, aci, anchor, context);
 
-        BasicTextPainter.Mark begin;
-        BasicTextPainter.Mark end;
-        try {
-            begin = (BasicTextPainter.Mark) beginMark;
-            end = (BasicTextPainter.Mark) newMark;
-        } catch (ClassCastException cce) {
-            throw new
-            Error("This Mark was not instantiated by this TextPainter class!");
-        }
         return newMark;
     }
 
@@ -333,50 +328,36 @@ public class BasicTextPainter implements TextPainter {
                 tx -= layout.getAdvance();
          }
 
-         Rectangle2D layoutBounds = layout.getBounds();
-         Rectangle2D bounds = new Rectangle2D.Float(
+         Rectangle2D layoutBounds;
+         Rectangle2D bounds;
+
+         if (includeStrokeWidth) {
+             Shape s = getStrokeOutline(node, context, includeDecoration);
+             if (s != null) {
+                 bounds = s.getBounds2D();
+             } else {
+                 layoutBounds = layout.getBounds();
+                 bounds = new Rectangle2D.Float(
                               (float) (tx+layoutBounds.getX()),
                               (float) (ty+layoutBounds.getY()),
                               (float) layout.getAdvance(),
                               (float) layoutBounds.getHeight());
-
-         if (includeDecoration) {
-
-             double decorationThickness = getDecorationThickness(aci, layout);
-
-             if (aci.getAttribute(GVTAttributedCharacterIterator.
-                                        TextAttribute.UNDERLINE) != null) {
-                 double y =
-                    layout.getDescent()/2 + decorationThickness/2f;
-                 bounds.setRect(bounds.getX(), bounds.getY(),
-                              bounds.getWidth(), bounds.getHeight()+y);
+              }
+         } else {
+             if (includeDecoration) {
+                 layoutBounds = layout.getDecoratedBounds();
+             } else {
+                 layoutBounds = layout.getBounds();
              }
 
-             if (aci.getAttribute(GVTAttributedCharacterIterator.
-                                     TextAttribute.OVERLINE) != null) {
-
-                 double dy =
-                      layout.getAscent()*0.1 + decorationThickness/2f;
-                 bounds.setRect(bounds.getX(), bounds.getY(),
-                       bounds.getWidth(), bounds.getHeight()+dy);
-             }
+             bounds = new Rectangle2D.Float(
+                              (float) (tx+layoutBounds.getX()),
+                              (float) (ty+layoutBounds.getY()),
+                              (float) layout.getAdvance(),
+                              (float) layoutBounds.getHeight());
          }
 
-         if (includeStrokeWidth) {
-             BasicStroke stroke = (BasicStroke) aci.getAttribute(
-                        GVTAttributedCharacterIterator.TextAttribute.STROKE);
-             if (stroke != null) {
-                  float strokeHalfThickness = stroke.getLineWidth();
-                  // XXX: sometimes half width is not enough to add (ex: miters!)
-                  bounds.setRect(
-                      bounds.getX()-strokeHalfThickness,
-                      bounds.getY()-strokeHalfThickness,
-                      bounds.getWidth()+strokeHalfThickness,
-                      bounds.getHeight()+strokeHalfThickness);
-             }
-         }
-
-         return bounds;
+        return bounds;
 
      }
 
@@ -387,7 +368,7 @@ public class BasicTextPainter implements TextPainter {
     * @param includeDecoration whether to include text decoration
     *            outlines.
     */
-    public Shape getOutline(TextNode node, FontRenderContext frc,
+    protected Shape getOutline(TextNode node, FontRenderContext frc,
                                     boolean includeDecoration) {
         Shape outline;
         AttributedCharacterIterator aci = node.getAttributedCharacterIterator();
@@ -410,20 +391,30 @@ public class BasicTextPainter implements TextPainter {
         outline = layout.getOutline(t);
 
         if (includeDecoration) {
-            if (!(outline instanceof GeneralPath)) {
-                outline = new GeneralPath(outline);
+            int decorationTypes = 0;
+            if (aci.getAttribute(GVTAttributedCharacterIterator.
+                                        TextAttribute.UNDERLINE) != null) {
+                decorationTypes |= TextSpanLayout.DECORATION_UNDERLINE;
+            }
+            if (aci.getAttribute(GVTAttributedCharacterIterator.
+                                        TextAttribute.OVERLINE) != null) {
+                decorationTypes |= TextSpanLayout.DECORATION_OVERLINE;
+            }
+            if (aci.getAttribute(GVTAttributedCharacterIterator.
+                                     TextAttribute.STRIKETHROUGH) != null) {
+                decorationTypes |= TextSpanLayout.DECORATION_STRIKETHROUGH;
+            }
+            if (decorationTypes != 0) {
+                if (!(outline instanceof GeneralPath)) {
+                    outline = new GeneralPath(outline);
+                }
+                ((GeneralPath) outline).setWindingRule(
+                                           GeneralPath.WIND_NON_ZERO);
+                ((GeneralPath) outline).append(
+                    layout.getDecorationOutline(decorationTypes, t), false);
             }
 
-            if (aci.getAttribute(GVTAttributedCharacterIterator.
-                                         TextAttribute.UNDERLINE) != null) {
-                ((GeneralPath) outline).append(getUnderlineShape(aci, layout, location), false);
-            }
-
-            if (aci.getAttribute(GVTAttributedCharacterIterator.
-                                     TextAttribute.OVERLINE) != null) {
-                ((GeneralPath) outline).append(getOverlineShape(aci, layout, location), false);
-            }
-        } 
+        }
 
         return outline;
     }
@@ -470,99 +461,6 @@ public class BasicTextPainter implements TextPainter {
         return outline;
     }
 
-    /**
-     * Returns a shape describing the overline decoration for a given ACI.
-     * Does not rely on TextLayout's
-     * internal strikethrough but computes it manually.
-     */
-    protected Shape getOverlineShape(AttributedCharacterIterator runaci,
-                                          TextSpanLayout layout,
-                                          Point2D location) {
-        double y = location.getY() +
-            layout.getBaselineOffsets()[java.awt.Font.ROMAN_BASELINE] -
-                layout.getAscent();
-        Stroke overlineStroke =
-            new BasicStroke(getDecorationThickness(runaci, layout));
-        return overlineStroke.createStrokedShape(
-                           new java.awt.geom.Line2D.Double(
-                           location.getX(), y,
-                           location.getX()+layout.getAdvance(), y));
-    }
-
-    /**
-     * Returns a shape describing the strikethrough line for a given ACI.
-     * Does not rely on TextLayout's
-     * internal strikethrough but computes it manually.
-     */
-    protected Shape getUnderlineShape(AttributedCharacterIterator runaci,
-                                          TextSpanLayout layout,
-                                          Point2D location) {
-        double y = location.getY() +
-                   (layout.getBaselineOffsets()[java.awt.Font.ROMAN_BASELINE]
-                        + layout.getDescent())/2;
-        Stroke underlineStroke =
-            new BasicStroke(getDecorationThickness(runaci, layout));
-
-        return underlineStroke.createStrokedShape(
-                           new java.awt.geom.Line2D.Double(
-                           location.getX(), y,
-                           location.getX()+layout.getAdvance(), y));
-    }
-
-    /**
-     * Returns a shape describing the strikethrough line for a given ACI.
-     * Does not rely on TextLayout's
-     * internal strikethrough but computes it manually.
-     */
-    protected Shape getStrikethroughShape(AttributedCharacterIterator runaci,
-                                          TextSpanLayout layout,
-                                          Point2D location) {
-        double y = location.getY()+
-            (layout.getBaselineOffsets()[java.awt.Font.ROMAN_BASELINE]
-             - layout.getAscent())/3;
-                     // XXX: 3 is a hack for cosmetic reasons
-        // TODO: the strikethrough offset should be calculated
-        // from the font instead!
-        Stroke strikethroughStroke =
-            new BasicStroke(getDecorationThickness(runaci, layout));
-
-        return strikethroughStroke.createStrokedShape(
-                           new java.awt.geom.Line2D.Double(
-                           location.getX(), y,
-                           location.getX()+layout.getAdvance(), y));
-    }
-
-
-    protected float getDecorationThickness(AttributedCharacterIterator aci,
-                                                         TextSpanLayout layout) {
-            // thickness divisor: text decoration thickness is
-            // equal to the text advance divided by this number
-            float thick_div;
-            Object textWeight = aci.getAttribute(TextAttribute.WEIGHT);
-            if (textWeight == TextAttribute.WEIGHT_REGULAR) {
-                thick_div = 14f;
-            } else if (textWeight == TextAttribute.WEIGHT_BOLD) {
-                thick_div = 11f;
-            } else if (textWeight == TextAttribute.WEIGHT_LIGHT) {
-                thick_div = 18f;
-            } else if (textWeight == TextAttribute.WEIGHT_DEMIBOLD) {
-                thick_div = 12f;
-            } else if (textWeight == TextAttribute.WEIGHT_DEMILIGHT) {
-                thick_div = 16f;
-            } else if (textWeight == TextAttribute.WEIGHT_EXTRABOLD) {
-                thick_div = 10f;
-            } else if (textWeight == TextAttribute.WEIGHT_EXTRA_LIGHT) {
-                thick_div = 20f;
-            } else if (textWeight == TextAttribute.WEIGHT_SEMIBOLD) {
-                thick_div = 13f;
-            } else if (textWeight == TextAttribute.WEIGHT_ULTRABOLD) {
-                thick_div = 9f;
-            } else {
-                thick_div = 14f;
-            }
-        return layout.getAscent()/thick_div;
-    }
-
     private Mark cachedMark = null;
     private AttributedCharacterIterator cachedACI = null;
     private TextHit cachedHit = null;
@@ -573,7 +471,7 @@ public class BasicTextPainter implements TextPainter {
                          GraphicsNodeRenderContext context) {
 
         FontRenderContext frc = context.getFontRenderContext();
-        TextSpanLayout layout = 
+        TextSpanLayout layout =
                getTextLayoutFactory().createTextLayout(aci, frc);
         float advance = layout.getAdvance();
         float tx = 0f;
@@ -589,13 +487,9 @@ public class BasicTextPainter implements TextPainter {
         TextHit textHit =
             layout.hitTestChar((float) (x+tx), (float) y);
 
-        //System.out.println("Testing point: "+(x+tx)+",; "+y);
-        //System.out.println("    in layout "+layout.getBounds());
-        //System.out.println("    with advance: "+layout.getAdvance());
-        //if (textHit != null) System.out.println("HIT : "+textHit);
-
         if ((aci != cachedACI) ||
             (textHit == null) ||
+            (cachedHit == null) ||
             (textHit.getInsertionIndex() != cachedHit.getInsertionIndex())) {
             cachedMark = new BasicTextPainter.Mark(x, y, layout, textHit);
             cachedACI = aci;
