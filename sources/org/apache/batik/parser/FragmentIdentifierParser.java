@@ -71,7 +71,7 @@ public class FragmentIdentifierParser extends AbstractParser {
      */
     public void parse(Reader r) throws ParseException {
 	initialize(r);
-        inputBuffer.setMark();
+        bufferSize = 0;
                 
 	read();
 
@@ -82,46 +82,55 @@ public class FragmentIdentifierParser extends AbstractParser {
 
             switch (current) {
             case 'x':
+                bufferize();
                 read();
                 if (current != 'p') {
                     parseIdentifier();
                     break;
                 }
+                bufferize();
                 read();
                 if (current != 'o') {
                     parseIdentifier();
                     break;
                 }
+                bufferize();
                 read();
                 if (current != 'i') {
                     parseIdentifier();
                     break;
                 }
+                bufferize();
                 read();
                 if (current != 'n') {
                     parseIdentifier();
                     break;
                 }
+                bufferize();
                 read();
                 if (current != 't') {
                     parseIdentifier();
                     break;
                 }
+                bufferize();
                 read();
                 if (current != 'e') {
                     parseIdentifier();
                     break;
                 }
+                bufferize();
                 read();
                 if (current != 'r') {
                     parseIdentifier();
                     break;
                 }
+                bufferize();
                 read();
                 if (current != '(') {
                     parseIdentifier();
                     break;
                 }
+                bufferSize = 0;
                 read();
                 if (current != 'i') {
                     reportError("character.expected",
@@ -151,14 +160,11 @@ public class FragmentIdentifierParser extends AbstractParser {
                     break ident;
                 }
                 char q = (char)current;
-                inputBuffer.resetMark();
                 read();
                 parseIdentifier();
 
-                char[] c = new char[inputBuffer.contentSize()];
-                inputBuffer.readContent(c);
-
-                id = new String(c, 0, c.length - 2);
+                id = getBufferContent();
+                bufferSize = 0;
                 fragmentIdentifierHandler.idReference(id);
 
                 if (current != q) {
@@ -183,47 +189,50 @@ public class FragmentIdentifierParser extends AbstractParser {
                 break ident;
 
             case 's':
-
+                bufferize();
                 read();
                 if (current != 'v') {
                     parseIdentifier();
                     break;
                 }
+                bufferize();
                 read();
                 if (current != 'g') {
                     parseIdentifier();
                     break;
                 }
+                bufferize();
                 read();
                 if (current != 'V') {
                     parseIdentifier();
                     break;
                 }
+                bufferize();
                 read();
                 if (current != 'i') {
                     parseIdentifier();
                     break;
                 }
+                bufferize();
                 read();
                 if (current != 'e') {
                     parseIdentifier();
                     break;
                 }
+                bufferize();
                 read();
                 if (current != 'w') {
                     parseIdentifier();
                     break;
                 }
+                bufferize();
                 read();
                 if (current != '(') {
-                    reportError("character.expected",
-                                new Object[] { new Character('('),
-                                               new Integer(current) });
-                    break ident;
+                    parseIdentifier();
+                    break;
                 }
-                inputBuffer.unsetMark();
+                bufferSize = 0;
                 read();
-
                 parseViewAttributes();
 
                 if (current != ')') {
@@ -232,18 +241,17 @@ public class FragmentIdentifierParser extends AbstractParser {
                                                new Integer(current) });
                 }
                 break ident;
+
             default:
                 if (current == -1 ||
                     !XMLUtilities.isXMLNameFirstCharacter((char)current)) {
                     break ident;
                 }
+                bufferize();
                 read();
                 parseIdentifier();
             }
-            char[] c = new char[inputBuffer.contentSize()];
-            inputBuffer.readContent(c);
-
-            id = new String(c);
+            id = getBufferContent();
             fragmentIdentifierHandler.idReference(id);
         }
 
@@ -411,27 +419,26 @@ public class FragmentIdentifierParser extends AbstractParser {
                                                    new Integer(current) });
                         break loop;
                     }
-                    inputBuffer.setMark();
                     read();
 
                     fragmentIdentifierHandler.startViewTarget();
 
                     id: for (;;) {
+                        bufferSize = 0;
                         if (current == -1 ||
                             !XMLUtilities.isXMLNameFirstCharacter((char)current)) {
                             reportError("character.unexpected",
                                         new Object[] { new Integer(current) });
                             break loop;
                         }
+                        bufferize();
                         read();
                         parseIdentifier();
-                        char[] c = new char[inputBuffer.contentSize()];
-                        inputBuffer.readContent(c);
-                        String s = new String(c, 0, c.length - 2);
+                        String s = getBufferContent();
 
                         fragmentIdentifierHandler.viewTarget(s);
 
-                        inputBuffer.resetMark();
+                        bufferSize = 0;
                         switch (current) {
                         case ')':
                             read();
@@ -446,7 +453,6 @@ public class FragmentIdentifierParser extends AbstractParser {
                             break loop;
                         }
                     }
-                    inputBuffer.unsetMark();
 
                     fragmentIdentifierHandler.endViewTarget();
                     break;
@@ -900,10 +906,11 @@ public class FragmentIdentifierParser extends AbstractParser {
      * Parses an identifier.
      */
     protected void parseIdentifier() throws ParseException {
-        loop: for (;;) {
+        for (;;) {
             if (current == -1 || !XMLUtilities.isXMLNameCharacter((char)current)) {
                 break;
             }
+            bufferize();
             read();
         }
     }

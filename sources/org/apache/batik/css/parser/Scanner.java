@@ -11,8 +11,6 @@ package org.apache.batik.css.parser;
 import java.io.IOException;
 import java.io.Reader;
 
-import org.apache.batik.util.InputBuffer;
-
 /**
  * This class represents a CSS scanner - an object which decodes CSS lexical
  * units.
@@ -21,30 +19,71 @@ import org.apache.batik.util.InputBuffer;
  * @version $Id$
  */
 public class Scanner {
-    /**
-     * The input buffer.
-     */
-    protected InputBuffer inputBuffer;
 
     /**
-     * The document uri.
+     * The reader.
      */
-    protected String uri;
+    protected Reader reader;
 
     /**
-     * The buffer used to store the value of the current lexical unit.
+     * The current line.
+     */
+    protected int line = 1;
+
+    /**
+     * The current column.
+     */
+    protected int column = 1;
+
+    /**
+     * The previous char.
+     */
+    protected int previous;
+
+    /**
+     * The current char.
+     */
+    protected int current;
+
+    /**
+     * The reading buffer.
+     */
+    protected char[] readBuffer = new char[4096];
+
+    /**
+     * The current position in the read buffer.
+     */
+    protected int readPosition;
+
+    /**
+     * The current read buffer count.
+     */
+    protected int readCount;
+
+    /**
+     * The recording buffer.
      */
     protected char[] buffer = new char[4096];
 
     /**
-     * The value of the current lexical unit.
+     * The current position in the buffer.
      */
-    protected String value;
+    protected int position;
 
     /**
      * The type of the current lexical unit.
      */
     protected int type;
+
+    /**
+     * The start offset of the last lexical unit.
+     */
+    protected int start;
+
+    /**
+     * The end offset of the last lexical unit.
+     */
+    protected int end;
 
     /**
      * The characters to skip to create the string which represents the
@@ -55,112 +94,87 @@ public class Scanner {
     /**
      * Creates a new Scanner object.
      * @param r The reader to scan.
-     * @param uri The document URI, or null.
      */
-    public Scanner(Reader r, String uri) throws ParseException {
+    public Scanner(Reader r) throws ParseException {
         try {
-            this.uri = (uri == null) ? "" : uri;
-            inputBuffer = new InputBuffer(r);
-            inputBuffer.setMark();
+            reader = r;
+            current = nextChar();
         } catch (IOException e) {
             throw new ParseException(e);
         }
     }
 
     /**
-     * Returns the input buffer.
-     */
-    public InputBuffer getInputBuffer() {
-        return inputBuffer;
-    }
-
-    /**
-     * Returns the current line number.
+     * Returns the current line.
      */
     public int getLine() {
-        return inputBuffer.getLine();
+        return line;
     }
 
     /**
-     * Returns the current column number.
+     * Returns the current column.
      */
     public int getColumn() {
-        return inputBuffer.getColumn();
+        return column;
+    }
+
+    /**
+     * Returns the buffer used to store the chars.
+     */
+    public char[] getBuffer() {
+        return buffer;
+    }
+
+    /**
+     * Returns the start offset of the last lexical unit.
+     */
+    public int getStart() {
+        return start;
+    }
+
+    /**
+     * Returns the end offset of the last lexical unit.
+     */
+    public int getEnd() {
+        return end;
+    }
+
+    /**
+     * Clears the buffer.
+     */
+    public void clearBuffer() {
+        position = 1;
+        buffer[0] = (char)previous;
     }
 
     /**
      * The current lexical unit type like defined in LexicalUnits.
      */
-    public int currentType() {
+    public int getType() {
         return type;
     }
 
     /**
-     * Returns the current lexical unit value.
+     * Returns the string representation of the current lexical unit.
      */
-    public String currentValue() {
-        if (value == null) {
-            value = LexicalUnits.VALUES[type];
-            if (value == null) {
-                int size = inputBuffer.contentSize();
-                if (buffer.length < size) {
-                    buffer = new char[size];
-                }
-                inputBuffer.readContent(buffer);
-                int c = inputBuffer.current();
-                int ds = (c == -1) ? 0 : 1;
-                switch (type) {
-                case LexicalUnits.FUNCTION:
-                case LexicalUnits.STRING:
-                case LexicalUnits.S:
-                case LexicalUnits.PERCENTAGE:
-                    ds += 1;
-                    break;
-                case LexicalUnits.COMMENT:
-                case LexicalUnits.HZ:
-                case LexicalUnits.EM:
-                case LexicalUnits.EX:
-                case LexicalUnits.PC:
-                case LexicalUnits.PT:
-                case LexicalUnits.PX:
-                case LexicalUnits.CM:
-                case LexicalUnits.MM:
-                case LexicalUnits.IN:
-                case LexicalUnits.MS:
-                    ds += 2;
-                    break;
-                case LexicalUnits.KHZ:
-                case LexicalUnits.DEG:
-                case LexicalUnits.RAD:
-                    ds += 3;
-                    break;
-                case LexicalUnits.GRAD:
-                    ds += 4;
-                }
-                value = new String(buffer, 0, size - ds - blankCharacters);
-            }
-        }
-        return value;
+    public String getStringValue() {
+        return new String(buffer, start, end - start);
     }
 
     /**
      * Scans a @rule value. This method assumes that the current
      * lexical unit is a at keyword.
      */
-    public String scanAtRule() throws ParseException {
+    public void scanAtRule() throws ParseException {
         try {
-            StringBuffer result = new StringBuffer();
-            result.append('@');
-
             // waiting for EOF, ';' or '{'
-            int c = inputBuffer.current();
             loop: for (;;) {
-                switch (c) {
+                switch (current) {
                 case '{':
                     int brackets = 1;
                     for (;;) {
-                        c = inputBuffer.next();
-                        switch (c) {
+                        nextChar();
+                        switch (current) {
                         case '}':
                             if (--brackets > 0) {
                                 break;
@@ -175,11 +189,9 @@ public class Scanner {
                 case ';':
                     break loop;
                 }
-                c = inputBuffer.next();
+                nextChar();
             }
-
-            result.append(currentValue());
-            return result.toString();
+            end = position;
         } catch (IOException e) {
             throw new ParseException(e);
         }
@@ -189,447 +201,508 @@ public class Scanner {
      * Returns the next token.
      */
     public int next() throws ParseException {
-        try {
-            blankCharacters = 0;
-            inputBuffer.resetMark();
-            value = null;
+        blankCharacters = 0;
+        start = position - 1;
+        nextToken();
+        end = position - endGap();
+        return type;
+    }
 
-            int c = inputBuffer.current();
-            switch (c) {
+    /**
+     * Returns the end gap of the current lexical unit.
+     */
+    protected int endGap() {
+        int result = (current == -1) ? 0 : 1;
+        switch (type) {
+        case LexicalUnits.FUNCTION:
+        case LexicalUnits.STRING:
+        case LexicalUnits.S:
+        case LexicalUnits.PERCENTAGE:
+            result += 1;
+            break;
+        case LexicalUnits.COMMENT:
+        case LexicalUnits.HZ:
+        case LexicalUnits.EM:
+        case LexicalUnits.EX:
+        case LexicalUnits.PC:
+        case LexicalUnits.PT:
+        case LexicalUnits.PX:
+        case LexicalUnits.CM:
+        case LexicalUnits.MM:
+        case LexicalUnits.IN:
+        case LexicalUnits.MS:
+            result += 2;
+            break;
+        case LexicalUnits.KHZ:
+        case LexicalUnits.DEG:
+        case LexicalUnits.RAD:
+            result += 3;
+            break;
+        case LexicalUnits.GRAD:
+            result += 4;
+        }
+        return result + blankCharacters;
+    }
+
+    /**
+     * Returns the next token.
+     */
+    protected void nextToken() throws ParseException {
+        try {
+            switch (current) {
             case -1:
-                return type = LexicalUnits.EOF;
+                type = LexicalUnits.EOF;
+                return;
             case '{':
-                inputBuffer.next();
-                return type = LexicalUnits.LEFT_CURLY_BRACE;
+                nextChar();
+                type = LexicalUnits.LEFT_CURLY_BRACE;
+                return;
             case '}':
-                inputBuffer.next();
-                return type = LexicalUnits.RIGHT_CURLY_BRACE;
+                nextChar();
+                type = LexicalUnits.RIGHT_CURLY_BRACE;
+                return;
             case '=':
-                inputBuffer.next();
-                return type = LexicalUnits.EQUAL;
+                nextChar();
+                type = LexicalUnits.EQUAL;
+                return;
             case '+':
-                inputBuffer.next();
-                return type = LexicalUnits.PLUS;
+                nextChar();
+                type = LexicalUnits.PLUS;
+                return;
             case ',':
-                inputBuffer.next();
-                return type = LexicalUnits.COMMA;
+                nextChar();
+                type = LexicalUnits.COMMA;
+                return;
             case ';':
-                inputBuffer.next();
-                return type = LexicalUnits.SEMI_COLON;
+                nextChar();
+                type = LexicalUnits.SEMI_COLON;
+                return;
             case '>':
-                inputBuffer.next();
-                return type = LexicalUnits.PRECEDE;
+                nextChar();
+                type = LexicalUnits.PRECEDE;
+                return;
             case '[':
-                inputBuffer.next();
-                return type = LexicalUnits.LEFT_BRACKET;
+                nextChar();
+                type = LexicalUnits.LEFT_BRACKET;
+                return;
             case ']':
-                inputBuffer.next();
-                return type = LexicalUnits.RIGHT_BRACKET;
+                nextChar();
+                type = LexicalUnits.RIGHT_BRACKET;
+                return;
             case '*':
-                inputBuffer.next();
-                return type = LexicalUnits.ANY;
+                nextChar();
+                type = LexicalUnits.ANY;
+                return;
             case '(':
-                inputBuffer.next();
-                return type = LexicalUnits.LEFT_BRACE;
+                nextChar();
+                type = LexicalUnits.LEFT_BRACE;
+                return;
             case ')':
-                inputBuffer.next();
-                return type = LexicalUnits.RIGHT_BRACE;
+                nextChar();
+                type = LexicalUnits.RIGHT_BRACE;
+                return;
             case ':':
-                inputBuffer.next();
-                return type = LexicalUnits.COLON;
+                nextChar();
+                type = LexicalUnits.COLON;
+                return;
             case ' ':
             case '\t':
             case '\r':
             case '\n':
             case '\f':
                 do {
-                    c = inputBuffer.next();
-                } while (ScannerUtilities.isCSSSpace((char)c));
-                return type = LexicalUnits.SPACE;
+                    nextChar();
+                } while (ScannerUtilities.isCSSSpace((char)current));
+                type = LexicalUnits.SPACE;
+                return;
             case '/':
-                c = inputBuffer.next();
-                if (c != '*') {
-                    return type = LexicalUnits.DIVIDE;
+                nextChar();
+                if (current != '*') {
+                    type = LexicalUnits.DIVIDE;
+                    return;
                 }
                 // Comment
-                c = inputBuffer.next();
-                inputBuffer.resetMark();
+                nextChar();
+                start = position - 1;
                 do {
-                    c = inputBuffer.next();
-                } while (c != -1 && c == '*');
-                if (c == '/') {
-                    inputBuffer.next();
-                    return type = LexicalUnits.COMMENT;
+                    nextChar();
+                } while (current != -1 && current == '*');
+                if (current == '/') {
+                    nextChar();
+                    type = LexicalUnits.COMMENT;
+                    return;
                 }
                 do {
                     do {
-                        c = inputBuffer.next();
-                    } while (c != -1 && c != '*');
+                        nextChar();
+                    } while (current != -1 && current != '*');
                     do {
-                        c = inputBuffer.next();
-                    } while (c != -1 && c == '*');
-                } while (c != -1 && c != '/');
-                if (c == -1) {
-                    throw new ParseException("eof",
-                                             inputBuffer.getLine(),
-                                             inputBuffer.getColumn());
+                        nextChar();
+                    } while (current != -1 && current == '*');
+                } while (current != -1 && current != '/');
+                if (current == -1) {
+                    throw new ParseException("eof", line, column);
                 }
-                inputBuffer.next();
-                return type = LexicalUnits.COMMENT; 
+                nextChar();
+                type = LexicalUnits.COMMENT; 
+                return;
             case '\'': // String1
-                return type = string1();
+                type = string1();
+                return;
             case '"': // String2
-                return type = string2();
+                type = string2();
+                return;
             case '<':
-                c = inputBuffer.next();
-                if (c != '!') {
-                    throw new ParseException("character",
-                                             inputBuffer.getLine(),
-                                             inputBuffer.getColumn());
+                nextChar();
+                if (current != '!') {
+                    throw new ParseException("character", line, column);
                 }
-                c = inputBuffer.next();
-                if (c == '-') {
-                    c = inputBuffer.next();
-                    if (c == '-') {
-                        inputBuffer.next();
-                        return type = LexicalUnits.CDO;
+                nextChar();
+                if (current == '-') {
+                    nextChar();
+                    if (current == '-') {
+                        nextChar();
+                        type = LexicalUnits.CDO;
+                        return;
                     }
                 }
-                throw new ParseException("character",
-                                         inputBuffer.getLine(),
-                                         inputBuffer.getColumn());
+                throw new ParseException("character", line, column);
             case '-':
-                c = inputBuffer.next();
-                if (c != '-') {
-                    return type = LexicalUnits.MINUS;
+                nextChar();
+                if (current != '-') {
+                    type = LexicalUnits.MINUS;
+                    return;
                 }
-                c = inputBuffer.next();
-                if (c == '>') {
-                    inputBuffer.next();
-                    return type = LexicalUnits.CDC;
+                nextChar();
+                if (current == '>') {
+                    nextChar();
+                    type = LexicalUnits.CDC;
+                    return;
                 }
-                throw new ParseException("character",
-                                         inputBuffer.getLine(),
-                                         inputBuffer.getColumn());
+                throw new ParseException("character", line, column);
             case '|':
-                c = inputBuffer.next();
-                if (c == '=') {
-                    inputBuffer.next();
-                    return type = LexicalUnits.DASHMATCH;
+                nextChar();
+                if (current == '=') {
+                    nextChar();
+                    type = LexicalUnits.DASHMATCH;
+                    return;
                 }
-                throw new ParseException("character",
-                                         inputBuffer.getLine(),
-                                         inputBuffer.getColumn());
+                throw new ParseException("character", line, column);
             case '~':
-                c = inputBuffer.next();
-                if (c == '=') {
-                    inputBuffer.next();
-                    return type = LexicalUnits.INCLUDES;
+                nextChar();
+                if (current == '=') {
+                    nextChar();
+                    type = LexicalUnits.INCLUDES;
+                    return;
                 }
-                throw new ParseException("character",
-                                         inputBuffer.getLine(),
-                                         inputBuffer.getColumn());
+                throw new ParseException("character", line, column);
             case '#':
-                c = inputBuffer.next();
-                if (ScannerUtilities.isCSSNameCharacter((char)c)) {
-                    inputBuffer.resetMark();
+                nextChar();
+                if (ScannerUtilities.isCSSNameCharacter((char)current)) {
+                    start = position - 1;
                     do {
-                        c = inputBuffer.next();
-                        if (c == '\\') {
-                            c = escape(inputBuffer.next());
+                        nextChar();
+                        if (current == '\\') {
+                            nextChar();
+                            escape();
                         }
-                    } while (c != -1 && ScannerUtilities.isCSSNameCharacter((char)c));
-                    return type = LexicalUnits.HASH;
+                    } while (current != -1 &&
+                             ScannerUtilities.isCSSNameCharacter((char)current));
+                    type = LexicalUnits.HASH;
+                    return;
                 }
-                throw new ParseException("character",
-                                         inputBuffer.getLine(),
-                                         inputBuffer.getColumn());
+                throw new ParseException("character", line, column);
             case '@':
-                c = inputBuffer.next();
-                switch (c) {
+                nextChar();
+                switch (current) {
                 case 'c':
                 case 'C':
-                    inputBuffer.resetMark();
-                    if (isEqualIgnoreCase(c = inputBuffer.next(), 'h') &&
-                        isEqualIgnoreCase(c = inputBuffer.next(), 'a') &&
-                        isEqualIgnoreCase(c = inputBuffer.next(), 'r') &&
-                        isEqualIgnoreCase(c = inputBuffer.next(), 's') &&
-                        isEqualIgnoreCase(c = inputBuffer.next(), 'e') &&
-                        isEqualIgnoreCase(c = inputBuffer.next(), 't')) {
-                        inputBuffer.next();
-                        return type = LexicalUnits.CHARSET_SYMBOL;
+                    start = position - 1;
+                    if (isEqualIgnoreCase(nextChar(), 'h') &&
+                        isEqualIgnoreCase(nextChar(), 'a') &&
+                        isEqualIgnoreCase(nextChar(), 'r') &&
+                        isEqualIgnoreCase(nextChar(), 's') &&
+                        isEqualIgnoreCase(nextChar(), 'e') &&
+                        isEqualIgnoreCase(nextChar(), 't')) {
+                        nextChar();
+                        type = LexicalUnits.CHARSET_SYMBOL;
+                        return;
                     }
                     break;
                 case 'f':
                 case 'F':
-                    inputBuffer.resetMark();
-                    if (isEqualIgnoreCase(c = inputBuffer.next(), 'o') &&
-                        isEqualIgnoreCase(c = inputBuffer.next(), 'n') &&
-                        isEqualIgnoreCase(c = inputBuffer.next(), 't') &&
-                        isEqualIgnoreCase(c = inputBuffer.next(), '-') &&
-                        isEqualIgnoreCase(c = inputBuffer.next(), 'f') &&
-                        isEqualIgnoreCase(c = inputBuffer.next(), 'a') &&
-                        isEqualIgnoreCase(c = inputBuffer.next(), 'c') &&
-                        isEqualIgnoreCase(c = inputBuffer.next(), 'e')) {
-                        inputBuffer.next();
-                        return type = LexicalUnits.FONT_FACE_SYMBOL;
+                    start = position - 1;
+                    if (isEqualIgnoreCase(nextChar(), 'o') &&
+                        isEqualIgnoreCase(nextChar(), 'n') &&
+                        isEqualIgnoreCase(nextChar(), 't') &&
+                        isEqualIgnoreCase(nextChar(), '-') &&
+                        isEqualIgnoreCase(nextChar(), 'f') &&
+                        isEqualIgnoreCase(nextChar(), 'a') &&
+                        isEqualIgnoreCase(nextChar(), 'c') &&
+                        isEqualIgnoreCase(nextChar(), 'e')) {
+                        nextChar();
+                        type = LexicalUnits.FONT_FACE_SYMBOL;
+                        return;
                     }
                     break;
                 case 'i':
                 case 'I':
-                    inputBuffer.resetMark();
-                    if (isEqualIgnoreCase(c = inputBuffer.next(), 'm') &&
-                        isEqualIgnoreCase(c = inputBuffer.next(), 'p') &&
-                        isEqualIgnoreCase(c = inputBuffer.next(), 'o') &&
-                        isEqualIgnoreCase(c = inputBuffer.next(), 'r') &&
-                        isEqualIgnoreCase(c = inputBuffer.next(), 't')) {
-                        inputBuffer.next();
-                        return type = LexicalUnits.IMPORT_SYMBOL;
+                    start = position - 1;
+                    if (isEqualIgnoreCase(nextChar(), 'm') &&
+                        isEqualIgnoreCase(nextChar(), 'p') &&
+                        isEqualIgnoreCase(nextChar(), 'o') &&
+                        isEqualIgnoreCase(nextChar(), 'r') &&
+                        isEqualIgnoreCase(nextChar(), 't')) {
+                        nextChar();
+                        type = LexicalUnits.IMPORT_SYMBOL;
+                        return;
                     }
                     break;
                 case 'm':
                 case 'M':
-                    inputBuffer.resetMark();
-                    if (isEqualIgnoreCase(c = inputBuffer.next(), 'e') &&
-                        isEqualIgnoreCase(c = inputBuffer.next(), 'd') &&
-                        isEqualIgnoreCase(c = inputBuffer.next(), 'i') &&
-                        isEqualIgnoreCase(c = inputBuffer.next(), 'a')) {
-                        inputBuffer.next();
-                        return type = LexicalUnits.MEDIA_SYMBOL;
+                    start = position - 1;
+                    if (isEqualIgnoreCase(nextChar(), 'e') &&
+                        isEqualIgnoreCase(nextChar(), 'd') &&
+                        isEqualIgnoreCase(nextChar(), 'i') &&
+                        isEqualIgnoreCase(nextChar(), 'a')) {
+                        nextChar();
+                        type = LexicalUnits.MEDIA_SYMBOL;
+                        return;
                     }
                     break;
                 case 'p':
                 case 'P':
-                    inputBuffer.resetMark();
-                    if (isEqualIgnoreCase(c = inputBuffer.next(), 'a') &&
-                        isEqualIgnoreCase(c = inputBuffer.next(), 'g') &&
-                        isEqualIgnoreCase(c = inputBuffer.next(), 'e')) {
-                        inputBuffer.next();
-                        return type = LexicalUnits.PAGE_SYMBOL;
+                    start = position - 1;
+                    if (isEqualIgnoreCase(nextChar(), 'a') &&
+                        isEqualIgnoreCase(nextChar(), 'g') &&
+                        isEqualIgnoreCase(nextChar(), 'e')) {
+                        nextChar();
+                        type = LexicalUnits.PAGE_SYMBOL;
+                        return;
                     }
                     break;
                 default:
-                    if (!ScannerUtilities.isCSSIdentifierStartCharacter((char)c)) {
-                        throw new ParseException("character",
-                                                 inputBuffer.getLine(),
-                                                 inputBuffer.getColumn());
+                    if (!ScannerUtilities.isCSSIdentifierStartCharacter((char)current)) {
+                        throw new ParseException("character", line, column);
                     }
-                    inputBuffer.resetMark();
+                    start = position - 1;
                 }
                 do {
-                    c = inputBuffer.next();
-                    if (c == '\\') {
-                        c = escape(inputBuffer.next());
+                    nextChar();
+                    if (current == '\\') {
+                        nextChar();
+                        escape();
                     }
-                } while (c != -1 && ScannerUtilities.isCSSNameCharacter((char)c));
-                return LexicalUnits.AT_KEYWORD;
+                } while (current != -1 &&
+                         ScannerUtilities.isCSSNameCharacter((char)current));
+                type = LexicalUnits.AT_KEYWORD;
+                return;
             case '!':
                 do {
-                    c = inputBuffer.next();
-                } while (c != -1 && ScannerUtilities.isCSSSpace((char)c));
-                if (isEqualIgnoreCase(c, 'i') &&
-                    isEqualIgnoreCase(c = inputBuffer.next(), 'm') &&
-                    isEqualIgnoreCase(c = inputBuffer.next(), 'p') &&
-                    isEqualIgnoreCase(c = inputBuffer.next(), 'o') &&
-                    isEqualIgnoreCase(c = inputBuffer.next(), 'r') &&
-                    isEqualIgnoreCase(c = inputBuffer.next(), 't') &&
-                    isEqualIgnoreCase(c = inputBuffer.next(), 'a') &&
-                    isEqualIgnoreCase(c = inputBuffer.next(), 'n') &&
-                    isEqualIgnoreCase(c = inputBuffer.next(), 't')) {
-                    inputBuffer.next();
-                    return type = LexicalUnits.IMPORTANT_SYMBOL;
+                    nextChar();
+                } while (current != -1 && ScannerUtilities.isCSSSpace((char)current));
+                if (isEqualIgnoreCase(current, 'i') &&
+                    isEqualIgnoreCase(nextChar(), 'm') &&
+                    isEqualIgnoreCase(nextChar(), 'p') &&
+                    isEqualIgnoreCase(nextChar(), 'o') &&
+                    isEqualIgnoreCase(nextChar(), 'r') &&
+                    isEqualIgnoreCase(nextChar(), 't') &&
+                    isEqualIgnoreCase(nextChar(), 'a') &&
+                    isEqualIgnoreCase(nextChar(), 'n') &&
+                    isEqualIgnoreCase(nextChar(), 't')) {
+                    nextChar();
+                    type = LexicalUnits.IMPORTANT_SYMBOL;
+                    return;
                 }
-                if (c == -1) {
-                    throw new ParseException("eof",
-                                             inputBuffer.getLine(),
-                                             inputBuffer.getColumn());
+                if (current == -1) {
+                    throw new ParseException("eof", line, column);
                 } else {
-                    throw new ParseException("character",
-                                             inputBuffer.getLine(),
-                                             inputBuffer.getColumn());
+                    throw new ParseException("character", line, column);
                 }
             case '0': case '1': case '2': case '3': case '4':
             case '5': case '6': case '7': case '8': case '9':
-                return type = number();
+                type = number();
+                return;
             case '.':
-                switch (inputBuffer.next()) {
+                switch (nextChar()) {
                 case '0': case '1': case '2': case '3': case '4':
                 case '5': case '6': case '7': case '8': case '9':
-                    return type = dotNumber();
+                    type = dotNumber();
+                    return;
                 default:
-                    return type = LexicalUnits.DOT;
+                    type = LexicalUnits.DOT;
+                    return;
                 }
             case 'u':
             case 'U':
-                c = inputBuffer.next();
-                switch (c) {
+                nextChar();
+                switch (current) {
                 case '+':
                     boolean range = false;
                     for (int i = 0; i < 6; i++) {
-                        c = inputBuffer.next();
-                        switch (c) {
+                        nextChar();
+                        switch (current) {
                         case '?':
                             range = true;
                             break;
                         default:
                             if (range &&
-                                !ScannerUtilities.isCSSHexadecimalCharacter((char)c)) {
-                                throw new ParseException("character",
-                                                         inputBuffer.getLine(),
-                                                         inputBuffer.getColumn());
+                            !ScannerUtilities.isCSSHexadecimalCharacter((char)current)) {
+                                throw new ParseException("character", line, column);
                             }
                         }
                     }
-                    c = inputBuffer.next();
+                    nextChar();
                     if (range) {
-                        return LexicalUnits.UNICODE_RANGE;
+                        type = LexicalUnits.UNICODE_RANGE;
+                        return;
                     }
-                    if (c == '-') {
-                        c = inputBuffer.next();
-                        if (!ScannerUtilities.isCSSHexadecimalCharacter((char)c)) {
+                    if (current == '-') {
+                        nextChar();
+                        if (!ScannerUtilities.isCSSHexadecimalCharacter((char)current)) {
                             throw new ParseException("character",
-                                                     inputBuffer.getLine(),
-                                                     inputBuffer.getColumn());
+                                                     line,
+                                                     column);
                         }
-                        c = inputBuffer.next();
-                        if (!ScannerUtilities.isCSSHexadecimalCharacter((char)c)) {
-                            return LexicalUnits.UNICODE_RANGE;
+                        nextChar();
+                        if (!ScannerUtilities.isCSSHexadecimalCharacter((char)current)) {
+                            type = LexicalUnits.UNICODE_RANGE;
+                            return;
                         }
-                        c = inputBuffer.next();
-                        if (!ScannerUtilities.isCSSHexadecimalCharacter((char)c)) {
-                            return LexicalUnits.UNICODE_RANGE;
+                        nextChar();
+                        if (!ScannerUtilities.isCSSHexadecimalCharacter((char)current)) {
+                            type = LexicalUnits.UNICODE_RANGE;
+                            return;
                         }
-                        c = inputBuffer.next();
-                        if (!ScannerUtilities.isCSSHexadecimalCharacter((char)c)) {
-                            return LexicalUnits.UNICODE_RANGE;
+                        nextChar();
+                        if (!ScannerUtilities.isCSSHexadecimalCharacter((char)current)) {
+                            type = LexicalUnits.UNICODE_RANGE;
+                            return;
                         }
-                        c = inputBuffer.next();
-                        if (!ScannerUtilities.isCSSHexadecimalCharacter((char)c)) {
-                            return LexicalUnits.UNICODE_RANGE;
+                        nextChar();
+                        if (!ScannerUtilities.isCSSHexadecimalCharacter((char)current)) {
+                            type = LexicalUnits.UNICODE_RANGE;
+                            return;
                         }
-                        c = inputBuffer.next();
-                        if (!ScannerUtilities.isCSSHexadecimalCharacter((char)c)) {
-                            return LexicalUnits.UNICODE_RANGE;
+                        nextChar();
+                        if (!ScannerUtilities.isCSSHexadecimalCharacter((char)current)) {
+                            type = LexicalUnits.UNICODE_RANGE;
+                            return;
                         }
-                        inputBuffer.next();
-                        return LexicalUnits.UNICODE_RANGE;
+                        nextChar();
+                        type = LexicalUnits.UNICODE_RANGE;
+                        return;
                     }
                 case 'r':
                 case 'R':
-                    c = inputBuffer.next();
-                    switch (c) {
+                    nextChar();
+                    switch (current) {
                     case 'l':
                     case 'L':
-                        c = inputBuffer.next();
-                        switch (c) {
+                        nextChar();
+                        switch (current) {
                         case '(':
                             do {
-                                c = inputBuffer.next();
-                            } while (c != -1 && ScannerUtilities.isCSSSpace((char)c));
-                            switch (c) {
+                                nextChar();
+                            } while (current != -1 &&
+                                     ScannerUtilities.isCSSSpace((char)current));
+                            switch (current) {
                             case '\'':
                                 string1();
                                 blankCharacters += 2;
-                                c = inputBuffer.current();
-                                while (c != -1 && ScannerUtilities.isCSSSpace((char)c)) {
+                                while (current != -1 &&
+                                       ScannerUtilities.isCSSSpace((char)current)) {
                                     blankCharacters++;
-                                    c = inputBuffer.next();
+                                    nextChar();
                                 }
-                                if (c == -1) {
-                                    throw new ParseException("eof",
-                                                             inputBuffer.getLine(),
-                                                             inputBuffer.getColumn());
+                                if (current == -1) {
+                                    throw new ParseException("eof", line, column);
                                 }
-                                if (c != ')') {
-                                    throw new ParseException("character",
-                                                             inputBuffer.getLine(),
-                                                             inputBuffer.getColumn());
+                                if (current != ')') {
+                                    throw new ParseException("character", line, column);
                                 }
-                                inputBuffer.next();
-                                return type = LexicalUnits.URI;
+                                nextChar();
+                                type = LexicalUnits.URI;
+                                return;
                             case '"':
                                 string2();
-                                c = inputBuffer.current();
                                 blankCharacters += 2;
-                                while (c != -1 && ScannerUtilities.isCSSSpace((char)c)) {
+                                while (current != -1 &&
+                                       ScannerUtilities.isCSSSpace((char)current)) {
                                     blankCharacters++;
-                                    c = inputBuffer.next();
+                                    nextChar();
                                 }
-                                if (c == -1) {
-                                    throw new ParseException("eof",
-                                                             inputBuffer.getLine(),
-                                                             inputBuffer.getColumn());
+                                if (current == -1) {
+                                    throw new ParseException("eof", line, column);
                                 }
-                                if (c != ')') {
-                                    throw new ParseException("character",
-                                                             inputBuffer.getLine(),
-                                                             inputBuffer.getColumn());
+                                if (current != ')') {
+                                    throw new ParseException("character", line, column);
                                 }
-                                inputBuffer.next();
-                                return type = LexicalUnits.URI;
+                                nextChar();
+                                type = LexicalUnits.URI;
+                                return;
                             case ')':
-                                throw new ParseException("character",
-                                                         inputBuffer.getLine(),
-                                                         inputBuffer.getColumn());
+                                throw new ParseException("character", line, column);
                             default:
-                                if (!ScannerUtilities.isCSSURICharacter((char)c)) {
-                                    throw new ParseException("character",
-                                                             inputBuffer.getLine(),
-                                                             inputBuffer.getColumn());
+                                if (!ScannerUtilities.isCSSURICharacter((char)current)) {
+                                    throw new ParseException("character", line, column);
                                 }
-                                inputBuffer.resetMark();
+                                start = position - 1;
                                 do {
-                                    c = inputBuffer.next();
-                                } while (c != -1 &&
-                                         ScannerUtilities.isCSSURICharacter((char)c));
-                                blankCharacters += 1;
-                                while (c != -1 && ScannerUtilities.isCSSSpace((char)c)) {
+                                    nextChar();
+                                } while (current != -1 &&
+                                      ScannerUtilities.isCSSURICharacter((char)current));
+                                blankCharacters++;
+                                while (current != -1 &&
+                                       ScannerUtilities.isCSSSpace((char)current)) {
                                     blankCharacters++;
-                                    c = inputBuffer.next();
+                                    nextChar();
                                 }
-                                if (c == -1) {
-                                    throw new ParseException("eof",
-                                                             inputBuffer.getLine(),
-                                                             inputBuffer.getColumn());
+                                if (current == -1) {
+                                    throw new ParseException("eof", line, column);
                                 }
-                                if (c != ')') {
-                                    throw new ParseException("character",
-                                                             inputBuffer.getLine(),
-                                                             inputBuffer.getColumn());
+                                if (current != ')') {
+                                    throw new ParseException("character", line, column);
                                 }
-                                inputBuffer.next();
-                                return type = LexicalUnits.URI;
+                                nextChar();
+                                type = LexicalUnits.URI;
+                                return;
                             }
                         }
                     }
                 }
-                while (c != -1 && ScannerUtilities.isCSSNameCharacter((char)c)) {
-                    c = inputBuffer.next();
+                while (current != -1 &&
+                       ScannerUtilities.isCSSNameCharacter((char)current)) {
+                    nextChar();
                 }
-                if (c == '(') {
-                    inputBuffer.next();
-                    return type = LexicalUnits.FUNCTION;
+                if (current == '(') {
+                    nextChar();
+                    type = LexicalUnits.FUNCTION;
+                    return;
                 }
-                return type = LexicalUnits.IDENTIFIER;
+                type = LexicalUnits.IDENTIFIER;
+                return;
             default:
-                if (ScannerUtilities.isCSSIdentifierStartCharacter((char)c)) {
+                if (ScannerUtilities.isCSSIdentifierStartCharacter((char)current)) {
                     // Identifier
                     do {
-                        c = inputBuffer.next();
-                        if (c == '\\') {
-                            c = escape(inputBuffer.next());
+                        nextChar();
+                        if (current == '\\') {
+                            nextChar();
+                            escape();
                         }
-                    } while (c != -1 && ScannerUtilities.isCSSNameCharacter((char)c));
-                    if (c == '(') {
-                        inputBuffer.next();
-                        return type = LexicalUnits.FUNCTION;
+                    } while (current != -1 && 
+                             ScannerUtilities.isCSSNameCharacter((char)current));
+                    if (current == '(') {
+                        nextChar();
+                        type = LexicalUnits.FUNCTION;
+                        return;
                     }
-                    return type = LexicalUnits.IDENTIFIER;
+                    type = LexicalUnits.IDENTIFIER;
+                    return;
                 }
-                inputBuffer.next();
-                throw new ParseException("character",
-                                         inputBuffer.getLine(),
-                                         inputBuffer.getColumn());
+                nextChar();
+                throw new ParseException("character", line, column);
             }
         } catch (IOException e) {
             throw new ParseException(e);
@@ -640,37 +713,32 @@ public class Scanner {
      * Scans a single quoted string.
      */
     protected int string1() throws IOException {
-        int c = inputBuffer.next();
-        inputBuffer.resetMark();
+        nextChar();
+        start = position - 1;
         loop: for (;;) {
-            switch (c = inputBuffer.next()) {
+            switch (nextChar()) {
             case -1:
-                throw new ParseException("eof",
-                                         inputBuffer.getLine(),
-                                         inputBuffer.getColumn());
+                throw new ParseException("eof", line, column);
             case '\'':
                 break loop;
             case '"':
                 break;
             case '\\':
-                c = inputBuffer.next();
-                switch (c) {
+                switch (nextChar()) {
                 case '\n':
                 case '\f':
                     break;
                 default:
-                    c = escape(c);
+                    escape();
                 }
                 break;
             default:
-                if (!ScannerUtilities.isCSSStringCharacter((char)c)) {
-                    throw new ParseException("character",
-                                             inputBuffer.getLine(),
-                                             inputBuffer.getColumn());
+                if (!ScannerUtilities.isCSSStringCharacter((char)current)) {
+                    throw new ParseException("character", line, column);
                 }
             }
         }
-        inputBuffer.next();
+        nextChar();
         return LexicalUnits.STRING;
     }
 
@@ -678,37 +746,32 @@ public class Scanner {
      * Scans a double quoted string.
      */
     protected int string2() throws IOException {
-        int c = inputBuffer.next();
-        inputBuffer.resetMark();
+        nextChar();
+        start = position - 1;
         loop: for (;;) {
-            switch (c = inputBuffer.next()) {
+            switch (nextChar()) {
             case -1:
-                throw new ParseException("eof",
-                                         inputBuffer.getLine(),
-                                         inputBuffer.getColumn());
+                throw new ParseException("eof", line, column);
             case '\'':
                 break;
             case '"':
                 break loop;
             case '\\':
-                c = inputBuffer.next();
-                switch (c) {
+                switch (nextChar()) {
                 case '\n':
                 case '\f':
                     break;
                 default:
-                    c = escape(c);
+                    escape();
                 }
                 break;
             default:
-                if (!ScannerUtilities.isCSSStringCharacter((char)c)) {
-                    throw new ParseException("character",
-                                             inputBuffer.getLine(),
-                                             inputBuffer.getColumn());
+                if (!ScannerUtilities.isCSSStringCharacter((char)current)) {
+                    throw new ParseException("character", line, column);
                 }
             }
         }
-        inputBuffer.next();
+        nextChar();
         return LexicalUnits.STRING;
     }
 
@@ -716,340 +779,347 @@ public class Scanner {
      * Scans a number.
      */
     protected int number() throws IOException {
-        int c;
         loop: for (;;) {
-            switch (c = inputBuffer.next()) {
+            switch (nextChar()) {
             case '.':
-                switch (inputBuffer.next()) {
+                switch (nextChar()) {
                 case '0': case '1': case '2': case '3': case '4':
                 case '5': case '6': case '7': case '8': case '9':
                     return dotNumber();
                 }
-                throw new ParseException("character",
-                                         inputBuffer.getLine(),
-                                         inputBuffer.getColumn());
+                throw new ParseException("character", line, column);
             default:
                 break loop;
             case '0': case '1': case '2': case '3': case '4':
             case '5': case '6': case '7': case '8': case '9':
             }
         }
-        return numberUnit(c, true);
+        return numberUnit(true);
     }        
 
     /**
      * Scans the decimal part of a number.
      */
     protected int dotNumber() throws IOException {
-        int c;
         loop: for (;;) {
-            switch (c = inputBuffer.next()) {
+            switch (nextChar()) {
             default:
                 break loop;
             case '0': case '1': case '2': case '3': case '4':
             case '5': case '6': case '7': case '8': case '9':
             }
         }
-        return numberUnit(c, false);
+        return numberUnit(false);
     }
 
     /**
      * Scans the unit of a number.
      */
-    protected int numberUnit(int c, boolean integer) throws IOException {
-        switch (c) {
+    protected int numberUnit(boolean integer) throws IOException {
+        switch (current) {
         case '%':
-            inputBuffer.next();
+            nextChar();
             return LexicalUnits.PERCENTAGE;
         case 'c':
         case 'C':
-            c = inputBuffer.next();
-            switch(c) {
+            switch(nextChar()) {
             case 'm':
             case 'M':
-                c = inputBuffer.next();
-                if (c != -1 && ScannerUtilities.isCSSNameCharacter((char)c)) {
+                nextChar();
+                if (current != -1 &&
+                    ScannerUtilities.isCSSNameCharacter((char)current)) {
                     do {
-                        c = inputBuffer.next();
-                    } while (c != -1 &&
-                             ScannerUtilities.isCSSNameCharacter((char)c));
+                        nextChar();
+                    } while (current != -1 &&
+                             ScannerUtilities.isCSSNameCharacter((char)current));
                     return LexicalUnits.DIMENSION;
                 }
                 return LexicalUnits.CM;
             default:
-                while (c != -1 && ScannerUtilities.isCSSNameCharacter((char)c)) {
-                    c = inputBuffer.next();
+                while (current != -1 &&
+                       ScannerUtilities.isCSSNameCharacter((char)current)) {
+                    nextChar();
                 }
                 return LexicalUnits.DIMENSION;
             }
         case 'd':
         case 'D':
-            c = inputBuffer.next();
-            switch(c) {
+            switch(nextChar()) {
             case 'e':
             case 'E':
-                c = inputBuffer.next();
-                switch(c) {
+                switch(nextChar()) {
                 case 'g':
                 case 'G':
-                    c = inputBuffer.next();
-                    if (c != -1 && ScannerUtilities.isCSSNameCharacter((char)c)) {
+                    nextChar();
+                    if (current != -1 &&
+                        ScannerUtilities.isCSSNameCharacter((char)current)) {
                         do {
-                            c = inputBuffer.next();
-                        } while (c != -1 &&
-                                 ScannerUtilities.isCSSNameCharacter((char)c));
+                            nextChar();
+                        } while (current != -1 &&
+                                 ScannerUtilities.isCSSNameCharacter((char)current));
                         return LexicalUnits.DIMENSION;
                     }
                     return LexicalUnits.DEG;
                 }
             default:
-                while (c != -1 && ScannerUtilities.isCSSNameCharacter((char)c)) {
-                    c = inputBuffer.next();
+                while (current != -1 &&
+                       ScannerUtilities.isCSSNameCharacter((char)current)) {
+                    nextChar();
                 }
                 return LexicalUnits.DIMENSION;
             }
         case 'e':
         case 'E':
-            c = inputBuffer.next();
-            switch(c) {
+            switch(nextChar()) {
             case 'm':
             case 'M':
-                c = inputBuffer.next();
-                if (c != -1 && ScannerUtilities.isCSSNameCharacter((char)c)) {
+                nextChar();
+                if (current != -1 &&
+                    ScannerUtilities.isCSSNameCharacter((char)current)) {
                     do {
-                        c = inputBuffer.next();
-                    } while (c != -1 &&
-                             ScannerUtilities.isCSSNameCharacter((char)c));
+                        nextChar();
+                    } while (current != -1 &&
+                             ScannerUtilities.isCSSNameCharacter((char)current));
                     return LexicalUnits.DIMENSION;
                 }
                 return LexicalUnits.EM;
             case 'x':
             case 'X':
-                c = inputBuffer.next();
-                if (c != -1 && ScannerUtilities.isCSSNameCharacter((char)c)) {
+                nextChar();
+                if (current != -1 &&
+                    ScannerUtilities.isCSSNameCharacter((char)current)) {
                     do {
-                        c = inputBuffer.next();
-                    } while (c != -1 &&
-                             ScannerUtilities.isCSSNameCharacter((char)c));
+                        nextChar();
+                    } while (current != -1 &&
+                             ScannerUtilities.isCSSNameCharacter((char)current));
                     return LexicalUnits.DIMENSION;
                 }
                 return LexicalUnits.EX;
             default:
-                while (c != -1 && ScannerUtilities.isCSSNameCharacter((char)c)) {
-                    c = inputBuffer.next();
+                while (current != -1 &&
+                       ScannerUtilities.isCSSNameCharacter((char)current)) {
+                    nextChar();
                 }
                 return LexicalUnits.DIMENSION;
             }
         case 'g':
         case 'G':
-            c = inputBuffer.next();
-            switch(c) {
+            switch(nextChar()) {
             case 'r':
             case 'R':
-                c = inputBuffer.next();
-                switch(c) {
+                switch(nextChar()) {
                 case 'a':
                 case 'A':
-                    c = inputBuffer.next();
-                    switch(c) {
+                    switch(nextChar()) {
                     case 'd':
                     case 'D':
-                        c = inputBuffer.next();
-                        if (c != -1 && ScannerUtilities.isCSSNameCharacter((char)c)) {
+                        nextChar();
+                        if (current != -1 &&
+                            ScannerUtilities.isCSSNameCharacter((char)current)) {
                             do {
-                                c = inputBuffer.next();
-                            } while (c != -1 &&
-                                     ScannerUtilities.isCSSNameCharacter((char)c));
+                                nextChar();
+                            } while (current != -1 &&
+                                     ScannerUtilities.isCSSNameCharacter((char)current));
                             return LexicalUnits.DIMENSION;
                         }
                         return LexicalUnits.GRAD;
                     }
                 }
             default:
-                while (c != -1 && ScannerUtilities.isCSSNameCharacter((char)c)) {
-                    c = inputBuffer.next();
+                while (current != -1 &&
+                       ScannerUtilities.isCSSNameCharacter((char)current)) {
+                    nextChar();
                 }
                 return LexicalUnits.DIMENSION;
             }
         case 'h':
         case 'H':
-            c = inputBuffer.next();
-            switch(c) {
+            nextChar();
+            switch(current) {
             case 'z':
             case 'Z':
-                c = inputBuffer.next();
-                if (c != -1 && ScannerUtilities.isCSSNameCharacter((char)c)) {
+                nextChar();
+                if (current != -1 &&
+                    ScannerUtilities.isCSSNameCharacter((char)current)) {
                     do {
-                        c = inputBuffer.next();
-                    } while (c != -1 &&
-                             ScannerUtilities.isCSSNameCharacter((char)c));
+                        nextChar();
+                    } while (current != -1 &&
+                             ScannerUtilities.isCSSNameCharacter((char)current));
                     return LexicalUnits.DIMENSION;
                 }
                 return LexicalUnits.HZ;
             default:
-                while (c != -1 && ScannerUtilities.isCSSNameCharacter((char)c)) {
-                    c = inputBuffer.next();
+                while (current != -1 &&
+                       ScannerUtilities.isCSSNameCharacter((char)current)) {
+                    nextChar();
                 }
                 return LexicalUnits.DIMENSION;
             }
         case 'i':
         case 'I':
-            c = inputBuffer.next();
-            switch(c) {
+            switch(nextChar()) {
             case 'n':
             case 'N':
-                c = inputBuffer.next();
-                if (c != -1 && ScannerUtilities.isCSSNameCharacter((char)c)) {
+                nextChar();
+                if (current != -1 &&
+                    ScannerUtilities.isCSSNameCharacter((char)current)) {
                     do {
-                        c = inputBuffer.next();
-                    } while (c != -1 &&
-                             ScannerUtilities.isCSSNameCharacter((char)c));
+                        nextChar();
+                    } while (current != -1 &&
+                             ScannerUtilities.isCSSNameCharacter((char)current));
                     return LexicalUnits.DIMENSION;
                 }
                 return LexicalUnits.IN;
             default:
-                while (c != -1 && ScannerUtilities.isCSSNameCharacter((char)c)) {
-                    c = inputBuffer.next();
+                while (current != -1 &&
+                       ScannerUtilities.isCSSNameCharacter((char)current)) {
+                    nextChar();
                 }
                 return LexicalUnits.DIMENSION;
             }
         case 'k':
         case 'K':
-            c = inputBuffer.next();
-            switch(c) {
+            switch(nextChar()) {
             case 'h':
             case 'H':
-                c = inputBuffer.next();
-                switch(c) {
+                switch(nextChar()) {
                 case 'z':
                 case 'Z':
-                    c = inputBuffer.next();
-                    if (c != -1 && ScannerUtilities.isCSSNameCharacter((char)c)) {
+                    nextChar();
+                    if (current != -1 &&
+                        ScannerUtilities.isCSSNameCharacter((char)current)) {
                         do {
-                            c = inputBuffer.next();
-                        } while (c != -1 &&
-                                 ScannerUtilities.isCSSNameCharacter((char)c));
+                            nextChar();
+                        } while (current != -1 &&
+                                 ScannerUtilities.isCSSNameCharacter((char)current));
                         return LexicalUnits.DIMENSION;
                     }
                     return LexicalUnits.KHZ;
                 }
             default:
-                while (c != -1 && ScannerUtilities.isCSSNameCharacter((char)c)) {
-                    c = inputBuffer.next();
+                while (current != -1 &&
+                       ScannerUtilities.isCSSNameCharacter((char)current)) {
+                    nextChar();
                 }
                 return LexicalUnits.DIMENSION;
             }
         case 'm':
         case 'M':
-            c = inputBuffer.next();
-            switch(c) {
+            switch(nextChar()) {
             case 'm':
             case 'M':
-                c = inputBuffer.next();
-                if (c != -1 && ScannerUtilities.isCSSNameCharacter((char)c)) {
+                nextChar();
+                if (current != -1 &&
+                    ScannerUtilities.isCSSNameCharacter((char)current)) {
                     do {
-                        c = inputBuffer.next();
-                    } while (c != -1 &&
-                             ScannerUtilities.isCSSNameCharacter((char)c));
+                        nextChar();
+                    } while (current != -1 &&
+                             ScannerUtilities.isCSSNameCharacter((char)current));
                     return LexicalUnits.DIMENSION;
                 }
                 return LexicalUnits.MM;
             case 's':
             case 'S':
-                c = inputBuffer.next();
-                if (c != -1 && ScannerUtilities.isCSSNameCharacter((char)c)) {
+                nextChar();
+                if (current != -1 &&
+                    ScannerUtilities.isCSSNameCharacter((char)current)) {
                     do {
-                        c = inputBuffer.next();
-                    } while (c != -1 &&
-                             ScannerUtilities.isCSSNameCharacter((char)c));
+                        nextChar();
+                    } while (current != -1 &&
+                             ScannerUtilities.isCSSNameCharacter((char)current));
                     return LexicalUnits.DIMENSION;
                 }
                 return LexicalUnits.MS;
             default:
-                while (c != -1 && ScannerUtilities.isCSSNameCharacter((char)c)) {
-                    c = inputBuffer.next();
+                while (current != -1 &&
+                       ScannerUtilities.isCSSNameCharacter((char)current)) {
+                    nextChar();
                 }
                 return LexicalUnits.DIMENSION;
             }
         case 'p':
         case 'P':
-            c = inputBuffer.next();
-            switch(c) {
+            switch(nextChar()) {
             case 'c':
             case 'C':
-                c = inputBuffer.next();
-                if (c != -1 && ScannerUtilities.isCSSNameCharacter((char)c)) {
+                nextChar();
+                if (current != -1 &&
+                    ScannerUtilities.isCSSNameCharacter((char)current)) {
                     do {
-                        c = inputBuffer.next();
-                    } while (c != -1 &&
-                             ScannerUtilities.isCSSNameCharacter((char)c));
+                        nextChar();
+                    } while (current != -1 &&
+                             ScannerUtilities.isCSSNameCharacter((char)current));
                     return LexicalUnits.DIMENSION;
                 }
                 return LexicalUnits.PC;
             case 't':
             case 'T':
-                c = inputBuffer.next();
-                if (c != -1 && ScannerUtilities.isCSSNameCharacter((char)c)) {
+                nextChar();
+                if (current != -1 &&
+                    ScannerUtilities.isCSSNameCharacter((char)current)) {
                     do {
-                        c = inputBuffer.next();
-                    } while (c != -1 &&
-                             ScannerUtilities.isCSSNameCharacter((char)c));
+                        nextChar();
+                    } while (current != -1 &&
+                             ScannerUtilities.isCSSNameCharacter((char)current));
                     return LexicalUnits.DIMENSION;
                 }
                 return LexicalUnits.PT;
             case 'x':
             case 'X':
-                c = inputBuffer.next();
-                if (c != -1 && ScannerUtilities.isCSSNameCharacter((char)c)) {
+                nextChar();
+                if (current != -1 &&
+                    ScannerUtilities.isCSSNameCharacter((char)current)) {
                     do {
-                        c = inputBuffer.next();
-                    } while (c != -1 &&
-                             ScannerUtilities.isCSSNameCharacter((char)c));
+                        nextChar();
+                    } while (current != -1 &&
+                             ScannerUtilities.isCSSNameCharacter((char)current));
                     return LexicalUnits.DIMENSION;
                 }
                 return LexicalUnits.PX;
             default:
-                while (c != -1 && ScannerUtilities.isCSSNameCharacter((char)c)) {
-                    c = inputBuffer.next();
+                while (current != -1 &&
+                       ScannerUtilities.isCSSNameCharacter((char)current)) {
+                    nextChar();
                 }
                 return LexicalUnits.DIMENSION;
             }            
         case 'r':
         case 'R':
-            c = inputBuffer.next();
-            switch(c) {
+            switch(nextChar()) {
             case 'a':
             case 'A':
-                c = inputBuffer.next();
-                switch(c) {
+                switch(nextChar()) {
                 case 'd':
                 case 'D':
-                    c = inputBuffer.next();
-                    if (c != -1 && ScannerUtilities.isCSSNameCharacter((char)c)) {
+                    nextChar();
+                    if (current != -1 &&
+                        ScannerUtilities.isCSSNameCharacter((char)current)) {
                         do {
-                            c = inputBuffer.next();
-                        } while (c != -1 &&
-                                 ScannerUtilities.isCSSNameCharacter((char)c));
+                            nextChar();
+                        } while (current != -1 &&
+                                 ScannerUtilities.isCSSNameCharacter((char)current));
                         return LexicalUnits.DIMENSION;
                     }
                     return LexicalUnits.RAD;
                 }
             default:
-                while (c != -1 && ScannerUtilities.isCSSNameCharacter((char)c)) {
-                    c = inputBuffer.next();
+                while (current != -1 &&
+                       ScannerUtilities.isCSSNameCharacter((char)current)) {
+                    nextChar();
                 }
                 return LexicalUnits.DIMENSION;
             }
         case 's':
         case 'S':
-            inputBuffer.next();
+            nextChar();
             return LexicalUnits.S;
         default:
-            if (c != -1 && ScannerUtilities.isCSSIdentifierStartCharacter((char)c)) {
+            if (current != -1 &&
+                ScannerUtilities.isCSSIdentifierStartCharacter((char)current)) {
                 do {
-                    c = inputBuffer.next();
-                } while (c != -1 &&
-                         ScannerUtilities.isCSSNameCharacter((char)c));
+                    nextChar();
+                } while (current != -1 &&
+                         ScannerUtilities.isCSSNameCharacter((char)current));
                 return LexicalUnits.DIMENSION;
             }
             return (integer) ? LexicalUnits.INTEGER : LexicalUnits.REAL;
@@ -1059,51 +1129,49 @@ public class Scanner {
     /**
      * Scans an escape sequence, if one.
      */
-    protected int escape(int c) throws IOException {
-        if (ScannerUtilities.isCSSHexadecimalCharacter((char)c)) {
-            c = inputBuffer.next();
-            if (!ScannerUtilities.isCSSHexadecimalCharacter((char)c)) {
-                if (ScannerUtilities.isCSSSpace((char)c)) {
-                    c = inputBuffer.next();
+    protected void escape() throws IOException {
+        if (ScannerUtilities.isCSSHexadecimalCharacter((char)current)) {
+            nextChar();
+            if (!ScannerUtilities.isCSSHexadecimalCharacter((char)current)) {
+                if (ScannerUtilities.isCSSSpace((char)current)) {
+                    nextChar();
                 }
-                return c;
+                return;
             }
-            c = inputBuffer.next();
-            if (!ScannerUtilities.isCSSHexadecimalCharacter((char)c)) {
-                if (ScannerUtilities.isCSSSpace((char)c)) {
-                    c = inputBuffer.next();
+            nextChar();
+            if (!ScannerUtilities.isCSSHexadecimalCharacter((char)current)) {
+                if (ScannerUtilities.isCSSSpace((char)current)) {
+                    nextChar();
                 }
-                return c;
+                return;
             }
-            c = inputBuffer.next();
-            if (!ScannerUtilities.isCSSHexadecimalCharacter((char)c)) {
-                if (ScannerUtilities.isCSSSpace((char)c)) {
-                    c = inputBuffer.next();
+            nextChar();
+            if (!ScannerUtilities.isCSSHexadecimalCharacter((char)current)) {
+                if (ScannerUtilities.isCSSSpace((char)current)) {
+                    nextChar();
                 }
-                return c;
+                return;
             }
-            c = inputBuffer.next();
-            if (!ScannerUtilities.isCSSHexadecimalCharacter((char)c)) {
-                if (ScannerUtilities.isCSSSpace((char)c)) {
-                    c = inputBuffer.next();
+            nextChar();
+            if (!ScannerUtilities.isCSSHexadecimalCharacter((char)current)) {
+                if (ScannerUtilities.isCSSSpace((char)current)) {
+                    nextChar();
                 }
-                return c;
+                return;
             }
-            c = inputBuffer.next();
-            if (!ScannerUtilities.isCSSHexadecimalCharacter((char)c)) {
-                if (ScannerUtilities.isCSSSpace((char)c)) {
-                    c = inputBuffer.next();
+            nextChar();
+            if (!ScannerUtilities.isCSSHexadecimalCharacter((char)current)) {
+                if (ScannerUtilities.isCSSSpace((char)current)) {
+                    nextChar();
                 }
-                return c;
+                return;
             }
         }
-        if ((c >= ' ' && c <= '~') || c >= 128) {
-            c = inputBuffer.next();
-            return c;
+        if ((current >= ' ' && current <= '~') || current >= 128) {
+            nextChar();
+            return;
         }
-        throw new ParseException("character",
-                                 inputBuffer.getLine(),
-                                 inputBuffer.getColumn());
+        throw new ParseException("character", line, column);
     }
 
     /**
@@ -1111,5 +1179,64 @@ public class Scanner {
      */
     protected static boolean isEqualIgnoreCase(int i, char c) {
         return (i == -1) ? false : Character.toLowerCase((char)i) == c;
+    }
+
+    /**
+     * Sets the value of the current char to the next character or -1 if the
+     * end of stream has been reached.
+     */
+    protected int nextChar() throws IOException {
+        int c = readChar();
+
+        // Line break normalization.
+        switch (c) {
+        case -1:
+            return current = previous = -1;
+
+        case 10:
+            if (previous == 13) {
+                previous = 10;
+                return current = nextChar();
+            }
+            line++;
+            column = 1;
+            previous = c;
+            break;
+
+        case 13:
+            previous = c;
+            c = 10;
+            line++;
+            column = 1;
+            break;
+
+        default:
+            previous = c;
+            column++;
+        }
+        if (position == buffer.length) {
+            char[] t = new char[position * 3 / 2];
+            for (int i = position - 1; i >= 0; --i) {
+                t[i] = buffer[i];
+            }
+            buffer = t;
+        }
+        buffer[position++] = (char)c;
+        return current = c;
+    }
+
+    /**
+     * Reads a single char from the reader.
+     */
+    protected int readChar() throws IOException {
+        if (readPosition == readCount) {
+            readPosition = 0;
+            readCount = reader.read(readBuffer, 0, readBuffer.length);
+            if (readCount == -1) {
+                readCount = 0;
+                return -1;
+            }
+        }
+        return readBuffer[readPosition++];
     }
 }

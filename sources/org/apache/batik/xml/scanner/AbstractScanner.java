@@ -17,8 +17,7 @@ import java.util.MissingResourceException;
 import org.apache.batik.i18n.Localizable;
 import org.apache.batik.i18n.LocalizableSupport;
 
-import org.apache.batik.util.InputBuffer;
-
+import org.apache.batik.xml.InputBuffer;
 import org.apache.batik.xml.XMLUtilities;
 
 /**

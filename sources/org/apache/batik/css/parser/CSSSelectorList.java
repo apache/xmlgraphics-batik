@@ -8,9 +8,6 @@
 
 package org.apache.batik.css.parser;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.w3c.css.sac.Selector;
 import org.w3c.css.sac.SelectorList;
 
@@ -21,16 +18,22 @@ import org.w3c.css.sac.SelectorList;
  * @version $Id$
  */
 public class CSSSelectorList implements SelectorList {
+
     /**
      * The list.
      */
-    protected List list = new ArrayList(3);
+    protected Selector[] list = new Selector[3];
+
+    /**
+     * The list length.
+     */
+    protected int length;
 
     /**
      * <b>SAC</b>: Returns the length of this selector list
      */    
     public int getLength() {
-        return list.size();
+        return length;
     }
 
     /**
@@ -38,13 +41,23 @@ public class CSSSelectorList implements SelectorList {
      * <code>null</code> if this is not a valid index.  
      */
     public Selector item(int index) {
-        return (Selector)list.get(index);
+        if (index < 0 || index >= length) {
+            return null;
+        }
+        return list[index];
     }
 
     /**
      * Appends an item to the list.
      */
     public void append(Selector item) {
-        list.add(item);
+        if (length == list.length) {
+            Selector[] tmp = list;
+            list = new Selector[list.length * 3 / 2];
+            for (int i = 0; i < tmp.length; i++) {
+                list[i] = tmp[i];
+            }
+        }
+        list[length++] = item;
     }
 }

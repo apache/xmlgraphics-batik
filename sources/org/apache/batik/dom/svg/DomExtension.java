@@ -48,14 +48,14 @@ public interface DomExtension {
     public String getDescription();
 
     /**
-     * This method should update the SVGOMDocument with support
+     * This method should update the DOMImplementation with support
      * for the tags in this extension.  In some rare cases it may
      * be necessary to replace existing tag handlers, although this
      * is discouraged.
      *
-     * This is called before the document starts.
+     * This is called before the DOMImplementation starts.
      *
-     * @param doc The SVGOMDocument instance to be updated
+     * @param di The DOMImplementation instance to be updated
      */
-    public void registerTags(SVGOMDocument doc);
+    public void registerTags(ExtensibleSVGDOMImplementation di);
 }

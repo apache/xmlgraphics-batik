@@ -21,6 +21,7 @@ import org.apache.batik.css.value.CommonCSSContext.Color;
  * @version $Id$
  */
 public interface CommonCSSContext {
+    
     /**
      * The default color.
      */

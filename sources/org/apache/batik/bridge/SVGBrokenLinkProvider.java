@@ -18,7 +18,7 @@ import org.apache.batik.gvt.renderer.StaticRenderer;
 import org.apache.batik.gvt.filter.GraphicsNodeRable8Bit;
 import org.apache.batik.i18n.LocalizableSupport;
 
-import org.apache.batik.dom.svg.SVGDOMImplementation;
+import org.apache.batik.dom.svg.ExtensibleSVGDOMImplementation;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.svg.SVGOMDescElement;
 
@@ -83,7 +83,7 @@ public class SVGBrokenLinkProvider extends DefaultBrokenLinkProvider {
         if (gvtRoot != null) {
             String message = formatMessage(base, code, params);
             SVGOMDocument doc = new SVGOMDocument
-                (null, SVGDOMImplementation.getDOMImplementation());
+                (null, ExtensibleSVGDOMImplementation.getDOMImplementation());
             doc.appendChild(doc.importNode(svgDoc.getRootElement(), true));
 
             Element infoE = doc.getElementById("More_About");

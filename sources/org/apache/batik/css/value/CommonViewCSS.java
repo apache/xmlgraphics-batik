@@ -11,6 +11,7 @@ package org.apache.batik.css.value;
 import org.apache.batik.css.AbstractViewCSS;
 import org.apache.batik.css.CSSDocumentHandler;
 import org.apache.batik.css.CSSOMStyleSheet;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.css.DOMImplementationCSS;
 import org.w3c.dom.views.DocumentView;
