@@ -8,8 +8,6 @@
 
 package org.apache.batik.ext.awt.image.renderable;
 
-import org.apache.batik.ext.awt.image.GraphicsUtil;
-
 import java.awt.image.RenderedImage;
 import java.awt.image.renderable.RenderContext;
 
@@ -24,7 +22,7 @@ import org.apache.batik.ext.awt.image.rendered.ColorMatrixRed;
  * @version $Id$
  */
 public class ColorMatrixRable8Bit
-    extends  AbstractRable
+    extends  AbstractColorInterpRable
     implements ColorMatrixRable {
     /**
      * Predefined luminanceToAlpha matrix
@@ -203,37 +201,6 @@ public class ColorMatrixRable8Bit
         if(srcRI == null)
             return null;
 
-        CachableRed srcCR = GraphicsUtil.wrap(srcRI);
-        srcCR = GraphicsUtil.convertToLsRGB(srcCR);
-
-        /*final int srcMinX = srcCR.getMinX();
-        final int srcMinY = srcCR.getMinY();
-
-        //
-        // Wrap source in buffered image
-        //
-        Shape aoi = rc.getAreaOfInterest();
-        if(aoi == null)
-            aoi = getBounds2D();
-
-        ColorModel cm = srcCR.getColorModel();
-        Raster srcRR  = srcCR.getData();
-        WritableRaster srcWR = GraphicsUtil.makeRasterWritable(srcRR, 0, 0);
-        
-        // Unpremultiply data if nessisary.
-        cm = GraphicsUtil.coerceData(srcWR, cm, false);
-
-        BandCombineOp op = new BandCombineOp(matrix, null);
-        WritableRaster dstWR = op.filter(srcWR, srcWR);
-
-        BufferedImage  dstBI = new BufferedImage(cm,
-                                                 dstWR,
-                                                 cm.isAlphaPremultiplied(),
-                                                 null);
-
-
-                                                 return new ConcreteBufferedImageCachableRed(dstBI, srcMinX, srcMinY);*/
-
-        return new ColorMatrixRed(matrix, srcCR);
+        return new ColorMatrixRed(convertSourceCS(srcRI), matrix);
     }
 }

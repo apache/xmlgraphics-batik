@@ -19,6 +19,8 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 
+import java.awt.color.ColorSpace;
+
 import java.awt.geom.Area;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.AffineTransform;
@@ -27,6 +29,7 @@ import java.awt.geom.NoninvertibleTransformException;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
+import java.awt.image.DirectColorModel;
 import java.awt.image.DataBuffer;
 import java.awt.image.Raster;
 import java.awt.image.RenderedImage;
@@ -43,7 +46,7 @@ import org.apache.batik.ext.awt.image.rendered.BufferedImageCachableRed;
  * @version $Id$
  */
 public class TurbulenceRable8Bit
-    extends    AbstractRable
+    extends    AbstractColorInterpRable
     implements TurbulenceRable {
     
     /**
@@ -236,7 +239,10 @@ public class TurbulenceRable8Bit
             (rasterRect.height <= 0))
             return null;
 
-        ColorModel cm = GraphicsUtil.Linear_sRGB_Unpre;
+        ColorSpace cs = getOperationColorSpace();
+        ColorModel cm = new DirectColorModel
+            (cs, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000, 
+             false, DataBuffer.TYPE_INT);
 
         // Create a raster for the turbulence pattern
         WritableRaster wr, twr;

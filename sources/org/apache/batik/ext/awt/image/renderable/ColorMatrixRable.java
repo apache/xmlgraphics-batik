@@ -15,7 +15,7 @@ package org.apache.batik.ext.awt.image.renderable;
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
-public interface ColorMatrixRable extends Filter {
+public interface ColorMatrixRable extends FilterColorInterp {
     /**
      * Identifier used to refer to predefined matrices
      */

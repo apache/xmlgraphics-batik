@@ -39,7 +39,7 @@ import org.apache.batik.ext.awt.image.rendered.GaussianBlurRed8Bit;
  * @version $Id$
  */
 public class GaussianBlurRable8Bit
-    extends    AbstractRable
+    extends    AbstractColorInterpRable
     implements GaussianBlurRable {
     /**
      * Deviation along the x-axis
@@ -260,11 +260,7 @@ public class GaussianBlurRable8Bit
         if (ri == null)
             return null;
 
-        CachableRed cr;
-        cr = GraphicsUtil.wrap(ri);
-        // org.apache.batik.test.gvt.ImageDisplay.showImage("Wrap: ", cr);
-        cr = GraphicsUtil.convertToLsRGB(cr);
-        // org.apache.batik.test.gvt.ImageDisplay.showImage("Conv: ", cr);
+        CachableRed cr = convertSourceCS(ri);
 
         // System.out.println("DevRect: " + devRect);
 

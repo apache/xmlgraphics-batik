@@ -19,7 +19,7 @@ import org.apache.batik.ext.awt.image.PadMode;
  * @author <a href="mailto:Thomas.DeWeeese@Kodak.com">Thomas DeWeese</a>
  * @version $Id$
  */
-public interface ConvolveMatrixRable extends Filter {
+public interface ConvolveMatrixRable extends FilterColorInterp {
 
     /**
      * Returns the source to be Convolved

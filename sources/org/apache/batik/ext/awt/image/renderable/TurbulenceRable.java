@@ -16,7 +16,7 @@ import java.awt.geom.Rectangle2D;
  * @author <a href="mailto:Thomas.DeWeeese@Kodak.com">Thomas DeWeese</a>
  * @version $Id$
  */
-public interface TurbulenceRable extends Filter {
+public interface TurbulenceRable extends FilterColorInterp {
 
     /**
      * Sets the turbulence region

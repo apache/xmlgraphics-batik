@@ -69,8 +69,7 @@ public class ColorMatrixRed extends AbstractRed{
         return cm;
     }
 
-    public ColorMatrixRed(float[][] matrix,
-                          CachableRed src){
+    public ColorMatrixRed(CachableRed src, float[][] matrix){
         setMatrix(matrix);
 
         ColorModel cm = GraphicsUtil.Linear_sRGB_Unpre;

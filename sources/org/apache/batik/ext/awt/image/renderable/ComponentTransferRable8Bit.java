@@ -13,16 +13,10 @@ import org.apache.batik.ext.awt.image.GraphicsUtil;
 import java.awt.Point;
 import java.awt.RenderingHints;
 
-import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
-import java.awt.image.Raster;
-import java.awt.image.WritableRaster;
-import java.awt.image.ColorModel;
 import java.awt.image.renderable.RenderContext;
 
-import org.apache.batik.ext.awt.image.rendered.CachableRed;
-import org.apache.batik.ext.awt.image.rendered.ComponentTransferOp;
-import org.apache.batik.ext.awt.image.rendered.BufferedImageCachableRed;
+import org.apache.batik.ext.awt.image.rendered.ComponentTransferRed;
 
 import org.apache.batik.ext.awt.image.ComponentTransferFunction;
 import org.apache.batik.ext.awt.image.TransferFunction;
@@ -40,8 +34,9 @@ import org.apache.batik.ext.awt.image.GammaTransfer;
  * @version $Id$
  */
 public class ComponentTransferRable8Bit 
-    extends AbstractRable
+    extends AbstractColorInterpRable
     implements ComponentTransferRable {
+
     public static final int ALPHA = 0;
     public static final int RED   = 1;
     public static final int GREEN = 2;
@@ -62,10 +57,10 @@ public class ComponentTransferRable8Bit
         txfFunc[] = new TransferFunction[4];
 
     public ComponentTransferRable8Bit(Filter src,
-                                          ComponentTransferFunction alphaFunction,
-                                          ComponentTransferFunction redFunction,
-                                          ComponentTransferFunction greenFunction,
-                                          ComponentTransferFunction blueFunction){
+                                      ComponentTransferFunction alphaFunction,
+                                      ComponentTransferFunction redFunction,
+                                      ComponentTransferFunction greenFunction,
+                                      ComponentTransferFunction blueFunction){
         super(src, null);
         setAlphaFunction(alphaFunction);
         setRedFunction(redFunction);
@@ -156,40 +151,9 @@ public class ComponentTransferRable8Bit
         if(srcRI == null)
             return null;
 
-        CachableRed srcCR = GraphicsUtil.wrap(srcRI);
-        srcCR = GraphicsUtil.convertToLsRGB(srcCR);
-
-        final int srcMinX = srcCR.getMinX();
-        final int srcMinY = srcCR.getMinY();
-
-        //
-        // Get transfer functions. These are computed lazily,
-        // i.e., the first time they are requested
-        //
-        TransferFunction funcs[] = getTransferFunctions();
-
-        //
-        // Wrap source in buffered image
-        //
-        ColorModel cm = srcCR.getColorModel();
-        Raster srcRR = srcCR.getData();
-        WritableRaster srcWR = GraphicsUtil.makeRasterWritable(srcRR, 0, 0);
-
-        // Unpremultiply data if nessisary.
-        cm = GraphicsUtil.coerceData(srcWR, cm, false);
-
-        BufferedImage  srcBI = new BufferedImage(cm,
-                                                 srcWR,
-                                                 cm.isAlphaPremultiplied(),
-                                                 null);
-
-        RenderingHints hints = rc.getRenderingHints();
-        ComponentTransferOp op = new ComponentTransferOp(funcs,
-                                                         hints);
-
-        BufferedImage dstBI = op.filter(srcBI, srcBI);
-
-        return new BufferedImageCachableRed(dstBI, srcMinX, srcMinY);
+        return new ComponentTransferRed(convertSourceCS(srcRI), 
+                                        getTransferFunctions(),
+                                        rc.getRenderingHints());
     }
 
     /**
@@ -203,7 +167,9 @@ public class ComponentTransferRable8Bit
         //
         TransferFunction txfFunc[] = new TransferFunction[4];
         System.arraycopy(this.txfFunc, 0, txfFunc, 0, 4);
-        ComponentTransferFunction functions[] = new ComponentTransferFunction[4];
+
+        ComponentTransferFunction functions[];
+        functions = new ComponentTransferFunction[4];
         System.arraycopy(this.functions, 0, functions, 0, 4);
 
         for(int i=0; i<4; i++){
@@ -223,7 +189,9 @@ public class ComponentTransferRable8Bit
     /**
      * Converts a ComponentTransferFunction to a TransferFunction
      */
-    private static TransferFunction getTransferFunction(ComponentTransferFunction function){
+    private static TransferFunction getTransferFunction
+        (ComponentTransferFunction function){
+
         TransferFunction txfFunc = null;
         if(function == null){
             txfFunc = new IdentityTransfer();
