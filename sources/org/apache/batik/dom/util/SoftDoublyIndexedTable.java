@@ -160,7 +160,7 @@ public class SoftDoublyIndexedTable {
             if (t == e) {
                 table[index] = e.next;
             } else {
-                loop: for (;;) {
+                loop: for (;t!=null;) {
                     Entry c = t.next;
                     if (c == e) {
                         t.next = e.next;

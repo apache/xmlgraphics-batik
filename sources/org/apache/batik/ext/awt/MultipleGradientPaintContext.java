@@ -117,6 +117,14 @@ abstract class MultipleGradientPaintContext implements PaintContext {
      */
     protected int gradientAverage;
 
+    /** This holds the color to use when we are off the bottom of the
+     * gradient */
+    protected int gradientUnderflow;
+
+    /** This holds the color to use when we are off the top of the
+     * gradient */
+    protected int gradientOverflow;
+
     /** Length of the 2D slow lookup gradients array. */
     protected int gradientsLength;
 
@@ -203,6 +211,9 @@ abstract class MultipleGradientPaintContext implements PaintContext {
         Color [] hiColors   = new Color[len-1];
         normalizedIntervals = new float[len-1];
 
+        gradientUnderflow = colors[0].getRGB();
+        gradientOverflow  = colors[colors.length-1].getRGB();
+
         int idx = 0;
         if (fixFirst) {
             this.fractions[0] = 0;
@@ -282,12 +293,14 @@ abstract class MultipleGradientPaintContext implements PaintContext {
                 loColors[i] = 
                     new Color(SRGBtoLinearRGB[loColors[i].getRed()],
                               SRGBtoLinearRGB[loColors[i].getGreen()],
-                              SRGBtoLinearRGB[loColors[i].getBlue()]);
+                              SRGBtoLinearRGB[loColors[i].getBlue()],
+                              loColors[i].getAlpha());
                 
                 hiColors[i] = 
                     new Color(SRGBtoLinearRGB[hiColors[i].getRed()],
                               SRGBtoLinearRGB[hiColors[i].getGreen()],
-                              SRGBtoLinearRGB[hiColors[i].getBlue()]);
+                              SRGBtoLinearRGB[hiColors[i].getBlue()],
+                              hiColors[i].getAlpha());
             }
         }
 
@@ -445,6 +458,8 @@ abstract class MultipleGradientPaintContext implements PaintContext {
                     gradient[i] =
                         convertEntireColorLinearRGBtoSRGB(gradient[i]);
                 }
+                gradientAverage = 
+                    convertEntireColorLinearRGBtoSRGB(gradientAverage);
             }
         } else {
             if (dataModel.getColorSpace() ==
@@ -453,6 +468,8 @@ abstract class MultipleGradientPaintContext implements PaintContext {
                     gradient[i] =
                         convertEntireColorSRGBtoLinearRGB(gradient[i]);
                 }
+                gradientAverage = 
+                    convertEntireColorSRGBtoLinearRGB(gradientAverage);
             }
         }
 
@@ -540,6 +557,8 @@ abstract class MultipleGradientPaintContext implements PaintContext {
                             convertEntireColorLinearRGBtoSRGB(gradients[j][i]);
                     }
                 }
+                gradientAverage = 
+                    convertEntireColorLinearRGBtoSRGB(gradientAverage);
             }
         } else {
             if (dataModel.getColorSpace() ==
@@ -550,6 +569,8 @@ abstract class MultipleGradientPaintContext implements PaintContext {
                             convertEntireColorSRGBtoLinearRGB(gradients[j][i]);
                     }
                 }
+                gradientAverage = 
+                    convertEntireColorSRGBtoLinearRGB(gradientAverage);
             }
         }
     }
@@ -663,12 +684,12 @@ abstract class MultipleGradientPaintContext implements PaintContext {
 
         if (cycleMethod == MultipleGradientPaint.NO_CYCLE) {
 
-            if (position > 1) { //upper bound is 1
-                position = 1;
+            if (position >= 1) { //upper bound is 1
+                return gradientOverflow;
             }
 
-            else if (position < 0) { //lower bound is 0
-                position = 0;
+            else if (position <= 0) { //lower bound is 0
+                return gradientUnderflow;
             }
         }
 
@@ -776,7 +797,7 @@ abstract class MultipleGradientPaintContext implements PaintContext {
 
         }
 
-        return gradients[gradients.length - 1][GRADIENT_SIZE_INDEX];
+        return gradientOverflow;
     }
 
 
@@ -799,21 +820,17 @@ abstract class MultipleGradientPaintContext implements PaintContext {
             float p1 = position-(sz/2);
             float p2 = position+(sz/2);
 
-            if (p1 > 1) {
-                if (isSimpleLookup)
-                    return gradient[fastGradientArraySize];
-                else 
-                    return gradients[gradients.length-1][GRADIENT_SIZE_INDEX];
-            }
-            if (p2 < 0) {
-                if (isSimpleLookup) return gradient[0];
-                else                return gradients[0][0];
-            }
+            if (p1 >= 1) 
+                return gradientOverflow;
+
+            if (p2 <= 0) 
+                return gradientUnderflow;
+
             int interior;
             float top_weight=0, bottom_weight=0, frac;
-            if (p2 > 1) {
+            if (p2 >= 1) {
                 top_weight = (p2-1)/sz;
-                if (p1 <0) {
+                if (p1 <= 0) {
                     bottom_weight = -p1/sz;
                     frac=1;
                     interior = gradientAverage;
@@ -821,7 +838,7 @@ abstract class MultipleGradientPaintContext implements PaintContext {
                     frac=1-p1;
                     interior = getAntiAlias(p1, true, 1, false, 1-p1, 1);
                 }
-            } else if (p1 < 0) {
+            } else if (p1 <= 0) {
                 bottom_weight = -p1/sz;
                 frac = p2;
                 interior = getAntiAlias(0, true, p2, false, p2, 1);
@@ -835,10 +852,7 @@ abstract class MultipleGradientPaintContext implements PaintContext {
             int pB = (((interior<<  4)&0xFF0)*norm)>>16;
 
             if (bottom_weight != 0) {
-                int bPix;
-                if (isSimpleLookup) bPix = gradient[0];
-                else                bPix = gradients[0][0];
-
+                int bPix = gradientUnderflow;
                 // System.out.println("ave: " + gradientAverage);
                 norm = (int)((1<<16)*bottom_weight);
                 pA += (((bPix>>>20) & 0xFF0)*norm)>>16;
@@ -848,11 +862,7 @@ abstract class MultipleGradientPaintContext implements PaintContext {
             }
 
             if (top_weight != 0) {
-                int tPix;
-                if (isSimpleLookup)
-                    tPix = gradient[fastGradientArraySize];
-                else 
-                    tPix = gradients[gradients.length-1][GRADIENT_SIZE_INDEX];
+                int tPix = gradientOverflow;
 
                 norm = (int)((1<<16)*top_weight);
                 pA += (((tPix>>>20) & 0xFF0)*norm)>>16;

@@ -94,7 +94,7 @@
             <text class="legend" x="75" y="150">&lt;linearGradient&gt;</text>
         </g>
 
-        <!--<g id="smallRadiusRadial" transform="translate(300, 100)">
+        <g id="smallRadiusRadial" transform="translate(300, 100)">
             <title>Small radius on radialGradient</title>
             <desc>The radialGradient has a very small
                   (0.00000001) radius</desc>
@@ -105,7 +105,7 @@
             <rect fill="url(#smallRadiusRadialGradient)" x=".35" y=".8" width=".8" height=".4" transform="scale(100)"/>
             <text class="legend" x="75" y="135">Small Radius</text>
             <text class="legend" x="75" y="150">&lt;radialGradient&gt;</text>
-        </g>-->
+        </g>
     </g>
 
     <!-- ============================================================= -->
