@@ -258,7 +258,7 @@ public class CSSOMStyleDeclaration implements CSSStyleDeclaration {
     /**
      * This class represents a CSS value returned by this declaration.
      */
-    protected class StyleDeclarationValue
+    public class StyleDeclarationValue
         extends CSSOMValue
         implements CSSOMValue.ValueProvider {
         

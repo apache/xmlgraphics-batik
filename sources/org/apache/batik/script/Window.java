@@ -93,7 +93,7 @@ public interface Window {
     public interface GetURLHandler {
         
         /**
-         * Called when 'getURL()' returns.
+         * Called before 'getURL()' returns.
          * @param success Whether the data was successfully retreived.
          * @param mime The data MIME type.
          * @param content The data.
