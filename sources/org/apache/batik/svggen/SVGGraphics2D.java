@@ -168,7 +168,7 @@ public class SVGGraphics2D extends AbstractGraphics2D
      /**
      * @return the DOMGroupManager used by this SVGGraphics2D instance
      */
-    final DOMGroupManager getDOMGroupManager(){
+    protected final DOMGroupManager getDOMGroupManager(){
         return domGroupManager;
     }
 
