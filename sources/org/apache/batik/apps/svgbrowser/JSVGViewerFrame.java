@@ -216,12 +216,12 @@ public class JSVGViewerFrame
     /**
      * The current path.
      */
-    protected String currentPath = ".";
+    protected File currentPath = new File("");;
 
     /**
      * The current export path.
      */
-    protected String currentExportPath = ".";
+    protected File currentExportPath = new File("");
 
     /**
      * The back action
@@ -564,23 +564,36 @@ public class JSVGViewerFrame
     }
 
     /**
+     * Needed to work-around JFileChooser bug with abstract Files
+     */
+    public File makeAbsolute(File f){
+        if(!f.isAbsolute()){
+            return f.getAbsoluteFile();
+        }
+        return f;
+    }
+
+
+    /**
      * To open a new file.
      */
     public class OpenAction extends AbstractAction {
-        public OpenAction() {}
+
+        public OpenAction() {
+        }
         public void actionPerformed(ActionEvent e) {
-            JFileChooser fileChooser =
-                new JFileChooser(currentPath);
+            JFileChooser fileChooser = new JFileChooser(makeAbsolute(currentPath));
             fileChooser.setFileHidingEnabled(false);
             fileChooser.setFileSelectionMode
-                (JFileChooser.FILES_AND_DIRECTORIES);
-            fileChooser.setFileFilter(new SVGFileFilter());
+                (JFileChooser.FILES_ONLY);
+            fileChooser.addChoosableFileFilter(new SVGFileFilter());
 
             int choice = fileChooser.showOpenDialog(JSVGViewerFrame.this);
             if (choice == JFileChooser.APPROVE_OPTION) {
                 File f = fileChooser.getSelectedFile();
+
                 try {
-                    currentPath = f.getCanonicalPath();
+                    currentPath = f;
                     svgCanvas.loadSVGDocument(f.toURL().toString());
                 } catch (IOException ex) {
                     userAgent.displayError(ex);
@@ -814,10 +827,11 @@ public class JSVGViewerFrame
         public ExportAsPNGAction() {}
         public void actionPerformed(ActionEvent e) {
             JFileChooser fileChooser =
-                new JFileChooser(currentExportPath);
+                new JFileChooser(makeAbsolute(currentExportPath));
+            fileChooser.setDialogTitle(resources.getString("ExportAsPNG.title"));
             fileChooser.setFileHidingEnabled(false);
             fileChooser.setFileSelectionMode
-                (JFileChooser.FILES_AND_DIRECTORIES);
+                (JFileChooser.FILES_ONLY);
 
             int choice = fileChooser.showSaveDialog(JSVGViewerFrame.this);
             if (choice == JFileChooser.APPROVE_OPTION) {
@@ -841,7 +855,7 @@ public class JSVGViewerFrame
                     new Thread() {
                         public void run() {
                             try {
-                                currentExportPath = f.getCanonicalPath();
+                                currentExportPath = f;
                                 OutputStream ostream =
                                     new BufferedOutputStream(new FileOutputStream(f));
                                 trans.writeImage(img,
@@ -864,10 +878,11 @@ public class JSVGViewerFrame
         public ExportAsJPGAction() {}
         public void actionPerformed(ActionEvent e) {
             JFileChooser fileChooser =
-                new JFileChooser(currentExportPath);
+                new JFileChooser(makeAbsolute(currentExportPath));
+            fileChooser.setDialogTitle(resources.getString("ExportAsJPG.title"));
             fileChooser.setFileHidingEnabled(false);
             fileChooser.setFileSelectionMode
-                (JFileChooser.FILES_AND_DIRECTORIES);
+                (JFileChooser.FILES_ONLY);
 
             int choice = fileChooser.showSaveDialog(JSVGViewerFrame.this);
             if (choice == JFileChooser.APPROVE_OPTION) {
@@ -893,7 +908,7 @@ public class JSVGViewerFrame
                     new Thread() {
                         public void run() {
                             try {
-                                currentExportPath = f.getCanonicalPath();
+                                currentExportPath = f;
                                 OutputStream ostream =
                                     new BufferedOutputStream(new FileOutputStream(f));
                                 trans.writeImage(img, new TranscoderOutput(ostream));
