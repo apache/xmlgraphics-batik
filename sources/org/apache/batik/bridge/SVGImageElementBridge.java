@@ -194,9 +194,74 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
      * Invoked when an MutationEvent of type 'DOMAttrModified' is fired.
      */
     public void handleDOMAttrModifiedEvent(MutationEvent evt) {
-        super.handleDOMAttrModifiedEvent(evt);
-    }
 
+	    String attrName = evt.getAttrName();
+        if (attrName.equals(SVG_X_ATTRIBUTE) ||
+            attrName.equals(SVG_Y_ATTRIBUTE) ||
+            attrName.equals(SVG_WIDTH_ATTRIBUTE) ||
+            attrName.equals(SVG_HEIGHT_ATTRIBUTE) ||
+	    attrName.equals(SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE)){
+
+            //retrieve the new bounds of the image tag
+	    Rectangle2D	bounds = getImageBounds(ctx, e);
+	    GraphicsNode imageNode = ((ImageNode)node).getImage();
+	    float [] vb = null;
+
+	    if (((ImageNode)node).getImage() instanceof RasterImageNode) {
+                //Raster image
+		Rectangle2D imgBounds = 
+                    ((RasterImageNode)imageNode).getImageBounds();
+		// create the implicit viewBox for the raster
+		// image. The viewBox for a raster image is the size
+		// of the image
+		vb = new float[4];
+		vb[0] = 0; // x
+		vb[1] = 0; // y
+		vb[2] = (float)imgBounds.getWidth(); // width
+		vb[3] = (float)imgBounds.getHeight(); // height
+	    } else {
+                // svg image need the viewbox of the embedded
+		String uriStr = XLinkSupport.getXLinkHref(e);
+                if ( uriStr == null || uriStr.length() == 0 ){
+                    throw new BridgeException(e, ERR_ATTRIBUTE_MISSING,
+                                              new Object[] {"xlink:href"});
+                }
+		// try to load the image as an svg document
+		SVGDocument svgDoc = (SVGDocument)e.getOwnerDocument();
+		// try to load an SVG document
+		DocumentLoader loader = ctx.getDocumentLoader();
+		URIResolver resolver = new URIResolver(svgDoc, loader);
+		SVGDocument imgDocument = null;
+		try {
+		    Node n = resolver.getNode(uriStr, e);
+		    if (n.getNodeType() == n.DOCUMENT_NODE) {
+			imgDocument = (SVGDocument)n;
+		    }
+		} catch (BridgeException ex) {
+		    throw ex;
+		} catch (Exception ex) {
+		    /* Nothing to do */
+		}
+		if (imgDocument != null) {
+		    Element svgElement = imgDocument.getRootElement();
+		    String viewBox =
+			svgElement.getAttributeNS(null, SVG_VIEW_BOX_ATTRIBUTE);
+		    vb = ViewBox.parseViewBoxAttribute(e, viewBox);
+		} else {
+		    imageNode = null;
+		}
+	    }
+	    if (imageNode != null) {
+		// handles the 'preserveAspectRatio', 'overflow' and
+		// 'clip' and sets the appropriate AffineTransform to
+		// the image node
+		initializeViewport(ctx, e, imageNode, vb, bounds);
+	    }
+	} else {
+	    super.handleDOMAttrModifiedEvent(evt);
+	}
+    }
+    
     // convenient methods //////////////////////////////////////////////////
 
     /**
@@ -286,9 +351,15 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
         if (ctx.isDynamic()) {
             EventListener listener = new ForwardEventListener(svgElement, e);
             EventTarget target = (EventTarget)svgElement;
+
             target.addEventListener(SVG_EVENT_CLICK, listener, false);
+            ctx.storeEventListener(target, SVG_EVENT_CLICK, listener, false);
+
             target.addEventListener(SVG_EVENT_MOUSEOVER, listener, false);
+            ctx.storeEventListener(target, SVG_EVENT_MOUSEOVER, listener,false);
+
             target.addEventListener(SVG_EVENT_MOUSEOUT, listener, false);
+            ctx.storeEventListener(target, SVG_EVENT_MOUSEOUT, listener, false);
         }
 
         return result;
