@@ -46,6 +46,7 @@ public class SVGPolylineElementBridge extends SVGShapeElementBridge {
         int wr = (CSSUtilities.rule(v) == CSSUtilities.RULE_NONZERO)
             ? PathIterator.WIND_NON_ZERO
             : PathIterator.WIND_EVEN_ODD;
+
         // parse the points attribute, (required)
         String pts = elt.getAttributeNS(null, ATTR_POINTS);
         if (pts.length() == 0) {

@@ -15,7 +15,9 @@ import java.io.IOException;
 import java.io.StringReader;
 
 import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.bridge.MissingAttributeException;
 import org.apache.batik.parser.AWTPathProducer;
+import org.apache.batik.refimpl.bridge.resources.Messages;
 import org.apache.batik.util.UnitProcessor;
 
 import org.w3c.dom.css.CSSPrimitiveValue;
@@ -29,6 +31,7 @@ import org.w3c.dom.svg.SVGElement;
  * @version $Id$
  */
 public class SVGPathElementBridge extends SVGShapeElementBridge {
+
     /**
      * Returns an <tt>ExtendedGeneralPath</tt>.
      */
@@ -36,19 +39,27 @@ public class SVGPathElementBridge extends SVGShapeElementBridge {
                                 SVGElement elt,
                                 CSSStyleDeclaration decl,
                                 UnitProcessor.Context uctx) {
-        String d = elt.getAttributeNS(null, ATTR_D);
 
+        // parse the fill rule CSS property
         CSSPrimitiveValue v;
         v = (CSSPrimitiveValue)decl.getPropertyCSSValue(FILL_RULE_PROPERTY);
         int wr = (CSSUtilities.rule(v) == CSSUtilities.RULE_NONZERO)
             ? PathIterator.WIND_NON_ZERO
             : PathIterator.WIND_EVEN_ODD;
-        try {
-            return AWTPathProducer.createShape(new StringReader(d),
-                                               wr,
-                                               ctx.getParserFactory());
-        } catch (IOException e) {
-            throw new RuntimeException(e.getMessage());
+
+        // parse the d attribute, (required)
+        String d = elt.getAttributeNS(null, ATTR_D);
+        if (d.length() == 0) {
+            throw new MissingAttributeException(
+                Messages.formatMessage("path.d.required", null));
         }
+        Shape shape = null;
+        try {
+            shape = AWTPathProducer.createShape(new StringReader(d),
+                                                wr,
+                                                ctx.getParserFactory());
+        } catch (IOException e) { /* Nothing to do */ }
+
+        return shape;
     }
 }
