@@ -37,6 +37,8 @@ import javax.swing.ToolTipManager;
 
 import org.apache.batik.bridge.UserAgent;
 
+import org.apache.batik.dom.svg.SVGDOMImplementation;
+
 import org.apache.batik.swing.gvt.AbstractImageZoomInteractor;
 import org.apache.batik.swing.gvt.AbstractPanInteractor;
 import org.apache.batik.swing.gvt.AbstractResetTransformInteractor;
@@ -51,6 +53,7 @@ import org.apache.batik.util.gui.JErrorPane;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLConstants;
 
+import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -58,6 +61,7 @@ import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
 
+import org.w3c.dom.svg.SVGDocument;
 
 /**
  * This class represents a general-purpose swing SVG component. The
@@ -453,14 +457,24 @@ public class JSVGCanvas extends JSVGComponent {
     }
 
     /**
-     * Sets the URI to the specified uri.
+     * Sets the URI to the specified uri. If the input 'newURI'
+     * string is null, then the canvas will display an empty
+     * document.
      *
      * @param newURI the new uri of the document to display
      */
     public void setURI(String newURI) {
         String oldValue = uri;
         this.uri = newURI;
-        loadSVGDocument(uri);
+        if (uri != null) {
+            loadSVGDocument(uri);
+        } else {
+            DOMImplementation impl = SVGDOMImplementation.getDOMImplementation();
+            SVGDocument doc = (SVGDocument)impl.createDocument(SVGConstants.SVG_NAMESPACE_URI, 
+                                                               SVGConstants.SVG_SVG_TAG, null);
+            setSVGDocument(doc);
+        }
+
         pcs.firePropertyChange("URI", oldValue, uri);
     }
 
