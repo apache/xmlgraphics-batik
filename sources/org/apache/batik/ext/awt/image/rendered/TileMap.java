@@ -77,6 +77,13 @@ public class TileMap implements TileStore {
                                           (y) + ")");
             if (COUNT) synchronized (TileMap.class) { misses++; }
             ras = source.genTile(x, y);
+
+            // In all likelyhood the contents of this tile is junk!
+            // So don't cache it (returning is probably fine since it
+            // shouldn't come back to haunt us...)
+            if (Thread.currentThread().isInterrupted())
+                return ras;
+
             item.setRaster(ras);
         }
 

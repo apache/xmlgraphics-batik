@@ -55,17 +55,18 @@ public interface Renderer {
     public AffineTransform getTransform();
 
     /**
-     * Returns true if the Renderer is currently allowed to do
-     * progressive painting, false otherwise.
+     * Returns true if the Renderer is currently doubleBuffering is
+     * rendering requests.  If it is then getOffscreen will only
+     * return completed renderings (or null if nothing is available).  
      */
-    public boolean isProgressivePaintAllowed();
+    public boolean isDoubleBuffered();
 
     /**
-     * Turns on/off progressive painting. Turning off progressive
-     * painting will cause a repaint if any progressive painting has
-     * been made.
-     */
-    public void setProgressivePaintAllowed(boolean allowProgressive);
+     * Turns on/off double buffering in renderer.  Turning off
+     * double buffering makes it possible to see the ongoing results
+     * of a render operation.
+     .  */
+    public void setDoubleBuffered(boolean isDoubleBuffered);
 
     /**
      * Cause the renderer to ask to be removed from external reference
