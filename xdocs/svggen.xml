@@ -258,7 +258,7 @@ SVGGraphics2D g2d = new SVGGraphics2D(ctx, false);
   <p>
         With the caching image handlers, it is even possible to reuse the same copy of your image data across
         several different SVG documents. Just keep a reference to the image handler, and pass it to the
-        <code>CachedImageSVGGraphics2D</code> instance used for generating the SVG DOM tree. The following
+        <code>SVGGraphics2D</code> instance used for generating the SVG DOM tree. The following
         simplified example shows how different SVG trees might be created by separate SVG generators,
         efficiently storing any common images just once.
   </p>
