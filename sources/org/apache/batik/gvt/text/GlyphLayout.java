@@ -292,11 +292,12 @@ public class GlyphLayout implements TextSpanLayout {
      * Returns a Shape which encloses the currently selected glyphs
      * as specified by the character indices.
      *
-     * @param beginCharIndex the index of the first char in the contiguous selection.
-     * @param endCharIndex the index of the last char in the contiguous selection.
-     * @return The highlight shape or null if the spacified char range does not
-     * overlap with the chars in this layout.
-     */
+     * @param beginCharIndex the index of the first char in the
+     * contiguous selection.
+     * @param endCharIndex the index of the last char in the
+     * contiguous selection.
+     * @return The highlight shape or null if the spacified char range
+     * does not overlap with the chars in this layout.  */
     public Shape getHighlightShape(int beginCharIndex, int endCharIndex) {
 
         if (beginCharIndex > endCharIndex) {
@@ -1117,7 +1118,6 @@ public class GlyphLayout implements TextSpanLayout {
             }
             Point2D startPos = gv.getGlyphPosition(0);
             for (int i = 0; i < gv.getNumGlyphs(); i++) {
-
                 // transform the glyph position
                 Point2D glyphPos = gv.getGlyphPosition(i);
                 AffineTransform t = AffineTransform.getTranslateInstance
@@ -1139,6 +1139,8 @@ public class GlyphLayout implements TextSpanLayout {
                         (i, AffineTransform.getScaleInstance(xscale, yscale));
                 }
             }
+            advance = new Point2D.Float((float)(advance.getX()*xscale),
+                                        (float)(advance.getY()*yscale));
         }
     }
 
@@ -1147,12 +1149,12 @@ public class GlyphLayout implements TextSpanLayout {
      * Adjusts the spacing according to the specified parameters.
      *
      * @param length The required text length.
-     * @param lengthAdjust Indicates the method to use when adjusting the text
-     * length.
-     * @param kern The kerning adjustment to apply to the space between each char.
+     * @param lengthAdjust Indicates the method to use when adjusting
+     * the text length.
+     * @param kern The kerning adjustment to apply to the space
+     * between each char.
      * @param letterSpacing The amount of spacing required between each char.
-     * @param wordSpacing The amount of spacing required between each word.
-     */
+     * @param wordSpacing The amount of spacing required between each word. */
     protected void applySpacingParams(Float length,
                                       Integer lengthAdjust,
                                       Float kern,
@@ -1173,13 +1175,19 @@ public class GlyphLayout implements TextSpanLayout {
             float xscale = 1f;
             float yscale = 1f;
             if (!vertical) {
-                float lastCharWidth =
-                    (float) (gv.getGlyphMetrics(
-                        gv.getNumGlyphs()-1).getBounds2D().getWidth());
-                xscale = (length.floatValue()-lastCharWidth)/
-                         (float) (gv.getVisualBounds().getWidth()-lastCharWidth);
+                float gvWidth = (float)gv.getVisualBounds().getWidth();
+                float lastCharWidth = (float)gv.getGlyphMetrics
+                    (gv.getNumGlyphs()-1).getBounds2D().getWidth();
+                if (gvWidth > lastCharWidth) {
+                    // System.out.println("Len: " + length.floatValue() +
+                    //                    " LCW: " + lastCharWidth + 
+                    //                    " Wid: " + gvWidth);
+                    xscale = ((length.floatValue()-lastCharWidth)/
+                              (gvWidth-lastCharWidth));
+                }
             } else {
-                yscale = length.floatValue()/(float) gv.getVisualBounds().getHeight();
+                yscale = (length.floatValue()/
+                          (float) gv.getVisualBounds().getHeight());
             }
             rescaleSpacing(xscale, yscale);
         }
@@ -1388,8 +1396,15 @@ public class GlyphLayout implements TextSpanLayout {
             gv.setGlyphPosition(i, new Point2D.Float(initX+dx*xscale,
                                                      initY+dy*yscale));
         }
-        advance = new Point2D.Float((float)(initX+dx*xscale-offset.getX()),
-                                    (float)(initY+dy*yscale-offset.getY()));
+        Rectangle2D glyphB = gv.getGlyphMetrics(numGlyphs-1).getBounds2D();
+        float xAdj = 0;
+        float yAdj = 0;
+        if (vertical) yAdj = (float)glyphB.getHeight();
+        else          xAdj = (float)glyphB.getWidth();
+
+        advance = new Point2D.Float
+            ((float)(initX+dx*xscale-offset.getX()+xAdj),
+             (float)(initY+dy*yscale-offset.getY()+yAdj));
     }
 
     /**

@@ -550,6 +550,7 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
             throw new IllegalArgumentException(o+" is not a GraphicsNode");
         }
         checkRange(index);
+        fireGraphicsNodeChangeStarted();
         GraphicsNode node = (GraphicsNode) o;
         // Reparent the graphics node and tidy up the tree's state
         if (node.getParent() != null) {
@@ -571,6 +572,7 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
         dispatchEvent(new CompositeGraphicsNodeEvent(this, id, oldNode));
         id = CompositeGraphicsNodeEvent.GRAPHICS_NODE_ADDED;
         dispatchEvent(new CompositeGraphicsNodeEvent(this, id, node));
+        fireGraphicsNodeChangeCompleted();
         return oldNode;
      }
 
@@ -588,6 +590,7 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
             throw new IllegalArgumentException(o+" is not a GraphicsNode");
         }
         GraphicsNode node = (GraphicsNode) o;
+        fireGraphicsNodeChangeStarted();
         // Reparent the graphics node and tidy up the tree's state
         if (node.getParent() != null) {
             node.getParent().getChildren().remove(node);
@@ -604,6 +607,7 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
         // Create and dispatch event
         int id = CompositeGraphicsNodeEvent.GRAPHICS_NODE_ADDED;
         dispatchEvent(new CompositeGraphicsNodeEvent(this, id, node));
+        fireGraphicsNodeChangeCompleted();
         return true;
     }
 
@@ -630,6 +634,7 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
                 "Index: "+index+", Size: "+count);
         }
         GraphicsNode node = (GraphicsNode) o;
+        fireGraphicsNodeChangeStarted();
         // Reparent the graphics node and tidy up the tree's state
         if (node.getParent() != null) {
             node.getParent().getChildren().remove(node);
@@ -648,6 +653,7 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
         // Create and dispatch event
         int id = CompositeGraphicsNodeEvent.GRAPHICS_NODE_ADDED;
         dispatchEvent(new CompositeGraphicsNodeEvent(this, id, node));
+        fireGraphicsNodeChangeCompleted();
     }
 
     /**
@@ -702,6 +708,7 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
     public Object remove(int index) {
         // Check for correct argument
         checkRange(index);
+        fireGraphicsNodeChangeStarted();
         // Remove the node at the specified index
         modCount++;
         GraphicsNode oldNode = children[index];
@@ -722,6 +729,7 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
         // Create and dispatch event
         int id = CompositeGraphicsNodeEvent.GRAPHICS_NODE_REMOVED;
         dispatchEvent(new CompositeGraphicsNodeEvent(this, id, oldNode));
+        fireGraphicsNodeChangeCompleted();
         return oldNode;
     }
 

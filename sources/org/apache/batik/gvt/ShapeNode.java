@@ -69,11 +69,13 @@ public class ShapeNode extends AbstractGraphicsNode {
      * @param newShape the new shape of this shape node
      */
     public void setShape(Shape newShape) {
+        fireGraphicsNodeChangeStarted();
         invalidateGeometryCache();
         this.shape = newShape;
         if(this.shapePainter != null){
             this.shapePainter.setShape(newShape);
         }
+        fireGraphicsNodeChangeCompleted();
     }
 
     /**
@@ -90,11 +92,13 @@ public class ShapeNode extends AbstractGraphicsNode {
      * @param newShapePainter the new ShapePainter to use
      */
     public void setShapePainter(ShapePainter newShapePainter) {
+        fireGraphicsNodeChangeStarted();
         invalidateGeometryCache();
         this.shapePainter = newShapePainter;
         if(shapePainter != null && shape != this.shapePainter.getShape()){
             shapePainter.setShape(shape);
         }
+        fireGraphicsNodeChangeCompleted();
     }
 
     /**

@@ -67,9 +67,11 @@ public class RasterImageNode extends AbstractGraphicsNode {
      * @param newImage the new raster image of this raster image node
      */
     public void setImage(Filter newImage) {
+        fireGraphicsNodeChangeStarted();
         invalidateGeometryCache();
         this.image = newImage;
         calcAffine = true;
+        fireGraphicsNodeChangeCompleted();
     }
 
     /**
@@ -87,9 +89,11 @@ public class RasterImageNode extends AbstractGraphicsNode {
      * @param newBounds the new bounds of this raster image node
      */
     public void setImageBounds(Rectangle2D newImageBounds) {
+        fireGraphicsNodeChangeStarted();
         invalidateGeometryCache();
         this.imageBounds = newImageBounds;
         calcAffine = true;
+        fireGraphicsNodeChangeCompleted();
     }
 
     /**

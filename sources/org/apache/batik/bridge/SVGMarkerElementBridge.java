@@ -205,7 +205,7 @@ public class SVGMarkerElementBridge extends AbstractSVGBridge
 
             CompositeGraphicsNode comp = new CompositeGraphicsNode();
             comp.getChildren().add(markerContentNode);
-            Filter clipSrc = comp.getGraphicsNodeRable();
+            Filter clipSrc = comp.getGraphicsNodeRable(true);
             comp.setClip(new ClipRable8Bit(clipSrc, markerClip));
             markerContentNode = comp;
         }

@@ -74,6 +74,10 @@ public class SVGTextElementBridge extends AbstractSVGBridge
         return SVG_TEXT_TAG;
     }
 
+    public Bridge getInstance(){
+        return this;
+    }
+
     /**
      * Creates a <tt>GraphicsNode</tt> according to the specified parameters.
      *

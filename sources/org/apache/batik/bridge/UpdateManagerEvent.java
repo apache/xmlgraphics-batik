@@ -8,11 +8,10 @@
 
 package org.apache.batik.bridge;
 
-import java.awt.Rectangle;
-
 import java.awt.image.BufferedImage;
 
 import java.util.EventObject;
+import java.util.List;
 
 /**
  * This class represents an event which indicate an event originated
@@ -29,9 +28,9 @@ public class UpdateManagerEvent extends EventObject {
     protected BufferedImage image;
     
     /**
-     * The dirty area.
+     * The dirty areas, as a List of Rectangles.
      */
-    protected Rectangle dirtyArea;
+    protected List dirtyAreas;
 
     /**
      * Creates a new UpdateManagerEvent.
@@ -40,10 +39,10 @@ public class UpdateManagerEvent extends EventObject {
      * @param bi the image to paint.
      * @param r The dirty area.
      */
-    public UpdateManagerEvent(Object source, BufferedImage bi, Rectangle r) {
+    public UpdateManagerEvent(Object source, BufferedImage bi, List das) {
         super(source);
         image = bi;
-        dirtyArea = r;
+        dirtyAreas = das;
     }
 
     /**
@@ -54,9 +53,9 @@ public class UpdateManagerEvent extends EventObject {
     }
 
     /**
-     * Returns the dirty area.
+     * Returns the dirty areas (list of rectangles)
      */
-    public Rectangle getDirtyArea() {
-        return dirtyArea;
+    public List getDirtyAreas() {
+        return dirtyAreas;
     }
 }

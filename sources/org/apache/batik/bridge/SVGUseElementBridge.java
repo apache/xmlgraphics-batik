@@ -50,6 +50,10 @@ public class SVGUseElementBridge extends AbstractSVGBridge
         return SVG_USE_TAG;
     }
 
+    public Bridge getInstance(){
+        return this;
+    }
+
     /**
      * Creates a <tt>GraphicsNode</tt> according to the specified parameters.
      *

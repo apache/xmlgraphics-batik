@@ -38,6 +38,10 @@ public class SVGSwitchElementBridge extends AbstractSVGBridge
         return SVG_SWITCH_TAG;
     }
 
+    public Bridge getInstance(){
+        return this;
+    }
+
     /**
      * Creates a <tt>GraphicsNode</tt> according to the specified parameters.
      *

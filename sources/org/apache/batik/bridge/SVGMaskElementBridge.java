@@ -119,7 +119,7 @@ public class SVGMaskElementBridge extends AbstractSVGBridge
         Filter filter = maskedNode.getFilter();
         if (filter == null) {
             // Make the initial source as a RenderableImage
-            filter = maskedNode.getGraphicsNodeRable();
+            filter = maskedNode.getGraphicsNodeRable(true);
         }
 
         return new MaskRable8Bit(filter, maskNode, maskRegion);

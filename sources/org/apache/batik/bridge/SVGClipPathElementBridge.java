@@ -156,7 +156,7 @@ public class SVGClipPathElementBridge extends AbstractSVGBridge
         Filter filter = clipedNode.getFilter();
         if (filter == null) {
             // Make the initial source as a RenderableImage
-            filter = clipedNode.getGraphicsNodeRable();
+            filter = clipedNode.getGraphicsNodeRable(true);
         }
         return new ClipRable8Bit(filter, clipPath);
     }

@@ -32,16 +32,22 @@ public class RepaintManager extends Thread {
     }
 
     /**
-     * The main method of this thread.
-     */
+     * The main method of this thread.  This needs to have a target
+     * frame rate, and it needs to ensure that it changes it target
+     * frame rate to ensure that it sleeps for at least a few 10s of
+     * millisecs per loop (it should also see if it can increase
+     * framerate because it's made the last few frames with the
+     * current frame-rate easily) */
     public void run() {
         try {
             while (!Thread.currentThread().isInterrupted()) {
                 final UpdateTracker ut = updateManager.getUpdateTracker();
                 if (ut.hasChanged()) {
-                    updateManager.getUpdateRunnableQueue().invokeAndWait(new Runnable() {
+                    updateManager.getUpdateRunnableQueue().invokeAndWait
+                        (new Runnable() {
                             public void run() {
-                                updateManager.updateRendering(ut.getDirtyArea());
+                                    updateManager.updateRendering
+                                        (ut.getDirtyAreas());
                                 ut.clear();
                             }
                         });

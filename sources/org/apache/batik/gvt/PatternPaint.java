@@ -101,7 +101,7 @@ public class PatternPaint implements Paint {
         // into account.
         CompositeGraphicsNode comp = new CompositeGraphicsNode();
         comp.getChildren().add(node);
-        GraphicsNodeRable gnr = new GraphicsNodeRable8Bit(comp);
+        Filter gnr = comp.getGraphicsNodeRable(true);
 
         Rectangle2D padBounds = (Rectangle2D)patternRegion.clone();
 

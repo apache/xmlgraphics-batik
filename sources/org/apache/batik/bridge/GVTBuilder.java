@@ -72,6 +72,8 @@ public class GVTBuilder implements SVGConstants {
             if (topNode == null) {
                 return null;
             }
+            rootNode.getChildren().add(topNode);
+
             buildComposite(ctx, svgElement, (CompositeGraphicsNode)topNode);
             gnBridge.buildGraphicsNode(ctx, svgElement, topNode);
         } catch (BridgeException ex) {
@@ -81,11 +83,8 @@ public class GVTBuilder implements SVGConstants {
             ex.setLineNumber(ctx.getDocumentLoader().getLineNumber(errElement));
             //ex.printStackTrace();
             throw ex; // re-throw the udpated exception
-        } finally {
-            if (topNode != null) {
-                rootNode.getChildren().add(topNode);
-            }
         }
+
         // <!> FIXME: TO BE REMOVED
         if (ctx.isDynamic()) {
             BridgeEventSupport.addGVTListener(ctx, svgElement);
