@@ -44,9 +44,9 @@ public class GVTGlyphMetrics {
      * @param glyphType The type of the glyph.
      */
     public GVTGlyphMetrics(float horizontalAdvance, 
-			   float verticalAdvance,
+                           float verticalAdvance,
                            Rectangle2D bounds, 
-			   byte glyphType) {
+                           byte glyphType) {
         this.gm = new GlyphMetrics(horizontalAdvance, bounds, glyphType);
         this.verticalAdvance = verticalAdvance;
     }

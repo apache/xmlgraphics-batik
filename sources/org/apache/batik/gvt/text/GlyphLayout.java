@@ -442,67 +442,7 @@ public class GlyphLayout implements TextSpanLayout {
         return shape;
     }
 
-    /**
-     * This checks for simple self-intersections in the poly-line
-     * described by the array of points in <tt>pts</tt>.
-     * @param pts array of points to visit (modified by function).
-     * @param numPts The number of points to use out of pts.
-     * @param numPrev The number of previous segments to check
-     *        note that 1 will never find anything.
-     * @return the number of points to use remaining in <tt>pts</tt>.
-     */
-    public static int cleanPtsList(Point2D.Float [] pts, int numPts,
-                                   int numPrev) {
-        // Can't get into trouble with only 3 points...
-        if (numPts < 4) return numPts;
-
-        Point2D.Float pt00, pt01, pt10, pt11;
-        pt01 = pts[0];
-        pt10 = pts[1];
-        pt11 = pts[2];
-        int outPts = 3;
-        Point2D.Float inter;
-        for (int i=3; i<numPts; i++) {
-            pt10 = pts[outPts-1];
-            pt11 = pts[i];
-
-            int oldest = (outPts-1)-numPrev;
-            if (oldest < 0) oldest = 0;
-            while (oldest < outPts-2) {
-                pt00 = pts[oldest];
-                pt01 = pts[oldest+1];
-
-                inter = calcIntervalIntersection(pt00, pt01, pt10, pt11);
-                if (inter != null) {
-                    // We got an intersection (lines crossed over each other)
-                    // So lets remove the cross over...
-                    //        00\     __11
-                    //          _\_--
-                    //       10____\01
-                    //
-                    //  We want to replace this with 00->inter->11
-                    // This means replacing 01 with inter, and replacing
-                    // 10 with 11
-                    pts[oldest+1] = inter;  
-                    pts[oldest+2] = pt11; 
-                    outPts = oldest+3;
-                    break;
-                }
-                oldest++;
-            }
-            if (oldest == outPts-2) {
-                // clean add pt11.
-                pts[outPts] = pt11;
-                outPts++;
-            }
-        }
-
-        // If we removed points clean the list again...
-        if (outPts != numPts)
-            return cleanPtsList(pts, outPts, numPrev);
-
-        return outPts;
-    }
+    public static final float eps = 0.00001f;
 
     public static int makeConvexHull(Point2D.Float [] pts, int numPts) {
         // Sort the Pts in X...
@@ -765,108 +705,6 @@ public class GlyphLayout implements TextSpanLayout {
             shape.append(shapes[0], false);
     }
 
-    public static final float eps = 0.00001f;
-
-    /**
-     * Checks if 'check' is in the range of pt along vec.
-     * If it is it returns check otherwise it returns null.
-     * if check is null it returns null.
-     */
-    public static Point2D.Float verifyInRange
-        (Point2D.Float check, Point2D.Float pt, Point2D.Float vec) {
-        if (check == null) return null;
-        float t;
-        if ((vec.x == 0) && (vec.y == 0)) {
-            // really isn't a line just a point, so only in range if
-            // check and pt match.
-            if ((Math.abs(pt.x - check.x) < eps) &&
-                (Math.abs(pt.y - check.y) < eps))
-                return check;
-
-            return null;
-        }
-
-        // Otherwise divide by greater of two deltas...
-        if (Math.abs(vec.x) > Math.abs(vec.y))
-            t = (check.x-pt.x)/vec.x;
-        else
-            t = (check.y-pt.y)/vec.y;
-
-        // if t is out of range return null...
-        if ((t < 0) || (t > 1)) return null;
-
-        // Otherwise return check.
-        return check;
-    }
-
-    /**
-     * The most elegant line intersection alg I've seen.
-     * It returns the intersection of the line defined by
-     * pt00 and pt01, and pt10 and pt11 or null if the two lines
-     * don't intersect between the given end points.
-     */
-    public static Point2D.Float calcIntervalIntersection
-        (Point2D.Float pt00, Point2D.Float pt01,
-         Point2D.Float pt10, Point2D.Float pt11) {
-
-        Point2D.Float vec0 = new Point2D.Float(pt01.x-pt00.x, pt01.y-pt00.y);
-        Point2D.Float vec1 = new Point2D.Float(pt11.x-pt10.x, pt11.y-pt10.y);
-
-        /* I'm use the form dx*y - dy*x + c1 = 0 for the lines,
-         * So lets calculate c1 & c2 from the line specification.
-         */
-        float c0 = vec0.y*pt00.x-vec0.x*pt00.y;
-        float c1 = vec1.y*pt10.x-vec1.x*pt10.y;
-
-
-        // try plugging one pt into
-        // the others line and see which side of the line it is on,
-        // if they are always on the same sides then they don't intersect
-        // in the interval given.
-        int sign0, sign1;
-        float soln;
-        soln = (vec0.x*pt10.y-vec0.y*pt10.x+c0);
-        if      (soln < -eps) sign0 = -1;
-        else if (soln >  eps) sign0 = 1;
-        else return verifyInRange(pt10, pt00, vec0);
-
-        soln = (vec0.x*pt11.y-vec0.y*pt11.x+c0);
-        if      (soln < -eps) sign1 = -1;
-        else if (soln >  eps) sign1 = 1;
-        else return verifyInRange(pt11, pt00, vec0);
-
-        if (sign0 == sign1) {
-            // same side of line 0, check other way round...
-            soln = (vec1.x*pt00.y-vec1.y*pt00.x+c1);
-            if      (soln < -eps) sign0 = -1;
-            else if (soln >  eps) sign0 = 1;
-            else return verifyInRange(pt00, pt10, vec1);
-
-            soln = (vec1.x*pt01.y-vec1.y*pt01.x+c1);
-            if      (soln < -eps) sign1 = -1;
-            else if (soln >  eps) sign1 = 1;
-            else return verifyInRange(pt01, pt10, vec1);
-
-            if (sign0 == sign1) 
-                // Also on same side so no intersection.
-                return null;
-        }
-
-        // We now now that the lines at least span each other (and not
-        // at end points), figure out where they intersect.
-
-        Point2D.Float ret;
-
-        // Solve the equations for x & y.
-        float cross = (vec0.x*vec1.y - vec0.y*vec1.x);
-        ret = new Point2D.Float((vec0.x*c1-vec1.x*c0)/cross,
-                                (vec0.y*c1-vec1.y*c0)/cross);
-
-        ret = verifyInRange(ret, pt00, vec0);
-        ret = verifyInRange(ret, pt10, vec1);
-        return ret;
-    }
-
     /**
      * Perform hit testing for coordinate at x, y.
      *
@@ -896,7 +734,8 @@ public class GlyphLayout implements TextSpanLayout {
             Shape gbounds = gv.getGlyphLogicalBounds(i);
             if (gbounds != null) {
                 Rectangle2D gbounds2d = gbounds.getBounds2D();
-
+                // System.out.println("Hit Test: [" + x + ", " + y + "] - " +
+                //                    gbounds2d);
                 if (gbounds.contains(x, y)) {
                     boolean isRightHalf =
                         (x > (gbounds2d.getX()+(gbounds2d.getWidth()/2d)));

@@ -85,8 +85,8 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
         GVTLineMetrics lineMetrics = gvtFont.getLineMetrics
             ("By", awtGlyphVector.getFontRenderContext());
 
-        ascent  = lineMetrics.getAscent() *scaleFactor;
-        descent = lineMetrics.getDescent()*scaleFactor;
+        ascent  = lineMetrics.getAscent();
+        descent = lineMetrics.getDescent();
 
 
         int numGlyphs = glyphVector.getNumGlyphs();
@@ -181,9 +181,11 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
             GVTGlyphMetrics glyphMetrics   = getGlyphMetrics(i);
                 
             float glyphX      = 0;
-            float glyphY      = -ascent;
-            float glyphWidth  = glyphMetrics.getHorizontalAdvance();
-            float glyphHeight = glyphMetrics.getVerticalAdvance();
+            float glyphY      = -ascent/scaleFactor;
+            float glyphWidth  = (glyphMetrics.getHorizontalAdvance()/
+                                 scaleFactor);
+            float glyphHeight = (glyphMetrics.getVerticalAdvance()/
+                                 scaleFactor);
                 
             Rectangle2D glyphBounds = new Rectangle2D.Double(glyphX, 
                                                              glyphY,
@@ -214,6 +216,7 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
                     
                 if (glyphTransform != null)
                     tr.concatenate(glyphTransform);
+                tr.scale(scaleFactor, scaleFactor);
 
                 tempLogicalBounds[i] = tr.createTransformedShape(glyphBounds);
                     
