@@ -98,7 +98,13 @@ public class JSVGCanvas
      * The cursor for zooming.
      */
     public final static Cursor ZOOM_CURSOR =
-        new Cursor(Cursor.SE_RESIZE_CURSOR);
+        new Cursor(Cursor.DEFAULT_CURSOR);
+
+    /**
+     * The cursor for rotating.
+     */
+    public final static Cursor ROTATE_CURSOR =
+        new Cursor(Cursor.DEFAULT_CURSOR);
 
     /**
      * The global offscreen buffer.
@@ -161,6 +167,11 @@ public class JSVGCanvas
     protected AffineTransform panTransform;
 
     /**
+     * The tranform representing the rotation.
+     */
+    protected AffineTransform rotateTransform;
+
+    /**
      * The zoom marker top line.
      */
     protected Line2D markerTop;
@@ -179,6 +190,11 @@ public class JSVGCanvas
      * The zoom marker right line.
      */
     protected Line2D markerRight;
+
+    /**
+     * The rotate marker.
+     */
+    protected Shape rotateMarker;
 
     /**
      * The repaint thread.
@@ -317,6 +333,12 @@ public class JSVGCanvas
             return;
         }
         
+        if (repaintThread != null) {
+            Graphics2D g2d = (Graphics2D)g;
+            g2d.drawImage(buffer, null, 0, 0);
+            return;
+        }
+
         updateBuffer(w, h);
         if (repaint) {
             renderer = rendererFactory.createRenderer(buffer);
@@ -328,20 +350,37 @@ public class JSVGCanvas
             repaint = true;
         }
         if (repaint) {
+            Graphics2D g2d = (Graphics2D)g;
+            if (panTransform != null) {
+                int tx = (int)panTransform.getTranslateX();
+                int ty = (int)panTransform.getTranslateY();
+                paintPanRegions(g2d, tx, ty, w, h);
+                g2d.transform(panTransform);
+                panTransform = null;
+                g2d.drawImage(buffer, null, 0, 0);
+            } else {
+                g2d.setComposite(AlphaComposite.SrcOver);
+                g2d.setClip(0, 0, w, h);
+                g2d.setPaint(Color.white);
+                g2d.fillRect(0, 0, w, h);
+            }
+
             clearBuffer(w, h);
             renderer.setTransform(transform);
        
-            if (repaintThread != null) {
-                repaintThread.stop();
-            }
             repaintThread = new RepaintThread();
             repaintThread.start();
+            repaint = false;
+            return;
         }
         repaint = false;
         Graphics2D g2d = (Graphics2D)g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                              RenderingHints.VALUE_ANTIALIAS_ON);
         if (panTransform != null) {
+            int tx = (int)panTransform.getTranslateX();
+            int ty = (int)panTransform.getTranslateY();
+            paintPanRegions(g2d, tx, ty, w, h);
             g2d.transform(panTransform);
         }
         g2d.drawImage(buffer, null, 0, 0);
@@ -352,6 +391,36 @@ public class JSVGCanvas
             g2d.draw(markerLeft);
             g2d.draw(markerBottom);
             g2d.draw(markerRight);
+        } else if (rotateMarker != null) {
+            g2d.setColor(Color.black);
+            g2d.setStroke(markerStroke);
+            g2d.draw(rotateMarker);
+        }
+    }
+
+    /**
+     * Repaints the pan blank regions.
+     */
+    protected void paintPanRegions(Graphics2D g2d, int tx, int ty,
+                                   int w, int h) {
+        g2d.setComposite(AlphaComposite.SrcOver);
+        g2d.setPaint(Color.white);
+        if (tx > 0) {
+            if (ty > 0) {
+                g2d.fillRect(0, 0, w, ty);
+                g2d.fillRect(0, ty, tx, h - ty);
+            } else {
+                g2d.fillRect(0, 0, tx, h);
+                g2d.fillRect(tx, h + ty, w - tx, -ty);
+            }
+        } else {
+            if (ty > 0) {
+                g2d.fillRect(0, 0, w, ty);
+                g2d.fillRect(w + tx, ty, -tx, h - ty);
+            } else {
+                g2d.fillRect(0, h + ty, w, -ty);
+                g2d.fillRect(w + tx, 0, -tx, h + ty);
+            }
         }
     }
 
@@ -405,8 +474,8 @@ public class JSVGCanvas
             Dimension size = getSize();
             renderer.repaint(getAreaOfInterest
                              (new Rectangle(0, 0, size.width, size.height)));
-            repaint();
             repaintThread = null;
+            repaint();
         }
     }
 
@@ -471,12 +540,14 @@ public class JSVGCanvas
         protected Cursor cursor;
         protected int sx;
         protected int sy;
+        protected boolean mouseExited;
 
         public MouseListener() {}
         public void mousePressed(MouseEvent e) {
             int mods = e.getModifiers();
 
             if ((mods & e.BUTTON1_MASK) != 0) {
+                mouseExited = false;
                 sx = e.getX();
                 sy = e.getY();
                 if ((mods & e.SHIFT_MASK) != 0) {
@@ -491,6 +562,18 @@ public class JSVGCanvas
                     }
                     setCursor(ZOOM_CURSOR);
                 }
+            } else if ((mods & e.BUTTON3_MASK) != 0) {
+                mouseExited = false;
+                sx = e.getX();
+                sy = e.getY();
+                if ((mods & e.CTRL_MASK) != 0) {
+                    if (cursor == null) {
+                        cursor = getCursor();
+                    }
+                    setCursor(ROTATE_CURSOR);
+                    rotateTransform = new AffineTransform();
+                    paintRotateMarker(sx, sy);
+                }
             }
         }
         public void mouseDragged(MouseEvent e) {
@@ -498,18 +581,25 @@ public class JSVGCanvas
 
             if ((mods & e.BUTTON1_MASK) != 0) {
                 if ((mods & e.SHIFT_MASK) != 0 && panTransform != null) {
-                    int x = e.getX();
-                    int y = e.getY();
-                    panTransform.translate(x - sx, y - sy);
-                    sx = x;
-                    sy = y;
-                    repaint();
+                    if (!mouseExited) {
+                        int x = e.getX();
+                        int y = e.getY();
+                        panTransform.translate(x - sx, y - sy);
+                        sx = x;
+                        sy = y;
+                        repaint();
+                    }
                 } else if ((mods & e.CTRL_MASK) != 0) {
                     paintZoomMarker(e.getX(), e.getY());
                 } else {
                     endOperation(e.getX(), e.getY());
                 }
+            } else if ((mods & e.BUTTON3_MASK) != 0) {
+                if ((mods & e.CTRL_MASK) != 0) {
+                    paintRotateMarker(e.getX(), e.getY());
+                }
             }
+
         }
         public void mouseReleased(MouseEvent e) {
             int mods = e.getModifiers();
@@ -518,25 +608,53 @@ public class JSVGCanvas
                 if (cursor != null) {
                     endOperation(e.getX(), e.getY());
                 }
+            } else if ((mods & e.BUTTON3_MASK) != 0) {
+                if (cursor != null) {
+                    endOperation(e.getX(), e.getY());
+                }
             }
+
         }
         public void mouseMoved(MouseEvent e) {
+        }
+        public void mouseExited(MouseEvent e) {
+            mouseExited = true;
+            markerTop = null;
+            markerLeft = null;
+            markerBottom = null;
+            markerRight = null;
+            panTransform = null;
+            repaint();
         }
         protected void endOperation(int x, int y) {
             setCursor(cursor);
             cursor = null;
+            
+            if (mouseExited) {
+                repaint();
+                return;
+            }
+
             if (panTransform != null) {
                 panTransform.translate(x - sx, y - sy);
                 transform.preConcatenate(panTransform);
-                panTransform = null;
                 repaint = true;
                 repaint();
             } else if (markerTop != null) {
-                markerTop = null;
-                markerLeft = null;
-                markerBottom = null;
-                markerRight = null;
+                clearZoomMarker();
                 Dimension size = getSize();
+
+                if (x < sx) {
+                    int tmp = x;
+                    x = sx;
+                    sx = tmp;
+                }
+
+                if (y < sy) {
+                    int tmp = y;
+                    y = sy;
+                    sy = tmp;
+                }
 
                 // Process zoom factor
                 float scaleX = size.width / (float)(x - sx);
@@ -551,9 +669,74 @@ public class JSVGCanvas
                 transform.preConcatenate(at);
                 repaint = true;
                 repaint();
+            } else if (rotateMarker != null) {
+                clearRotateMarker();
+                transform.preConcatenate(rotateTransform);
+                repaint = true;
+                repaint();
+            }
+        }
+        protected void paintRotateMarker(int x, int y) {
+            clearRotateMarker();
+            
+            if (mouseExited) {
+                rotateMarker = null;
+            } else {
+                int dx = x - sx;
+                Dimension dim = getSize();
+                rotateTransform =
+                    AffineTransform.getRotateInstance(dx / 30.0,
+                                                      dim.width / 2,
+                                                      dim.height / 2);
+                int w = dim.width / 5;
+                int h = dim.height / 5;
+                rotateMarker = new Rectangle(dim.width / 2 - w / 2,
+                                             dim.height / 2 - h / 2,
+                                             w, h);
+                rotateMarker =
+                    rotateTransform.createTransformedShape(rotateMarker);
+                Rectangle r;
+                r = markerStroke.createStrokedShape(rotateMarker).getBounds();
+                paintImmediately(r.x, r.y, r.width, r.height);
+            }
+        }
+        protected void clearRotateMarker() {
+            if (rotateMarker != null) {
+                Rectangle r;
+                r = markerStroke.createStrokedShape(rotateMarker).getBounds();
+                rotateMarker = null;
+                paintImmediately(r.x, r.y, r.width, r.height);
             }
         }
         protected void paintZoomMarker(int x, int y) {
+            clearZoomMarker();
+
+            if (mouseExited) {
+                markerTop = null;
+                markerLeft = null;
+                markerBottom = null;
+                markerRight = null;
+            } else {
+                markerTop    = new Line2D.Float(sx, sy, x,  sy);
+                markerLeft   = new Line2D.Float(sx, sy, sx, y);
+                markerBottom = new Line2D.Float(sx, y,  x,  y);
+                markerRight  = new Line2D.Float(x,  y,  x,  sy);
+
+                Rectangle r;
+                r = markerStroke.createStrokedShape(markerTop).getBounds();
+                paintImmediately(r.x, r.y, r.width, r.height);
+            
+                r = markerStroke.createStrokedShape(markerLeft).getBounds();
+                paintImmediately(r.x, r.y, r.width, r.height);
+            
+                r = markerStroke.createStrokedShape(markerBottom).getBounds();
+                paintImmediately(r.x, r.y, r.width, r.height);
+                
+                r = markerStroke.createStrokedShape(markerRight).getBounds();
+                paintImmediately(r.x, r.y, r.width, r.height);
+            }
+        }
+        protected void clearZoomMarker() {
             if (markerTop != null) {
                 Rectangle r;
                 r = markerStroke.createStrokedShape(markerTop).getBounds();
@@ -570,26 +753,6 @@ public class JSVGCanvas
 
                 r = markerStroke.createStrokedShape(markerRight).getBounds();
                 markerRight = null;
-                paintImmediately(r.x, r.y, r.width, r.height);
-            }
-
-            if (x - sx > 0 && y - sy > 0) {
-                markerTop    = new Line2D.Float(sx, sy, x,  sy);
-                markerLeft   = new Line2D.Float(sx, sy, sx, y);
-                markerBottom = new Line2D.Float(sx, y,  x,  y);
-                markerRight  = new Line2D.Float(x,  y,  x,  sy);
-
-                Rectangle r;
-                r = markerStroke.createStrokedShape(markerTop).getBounds();
-                paintImmediately(r.x, r.y, r.width, r.height);
-
-                r = markerStroke.createStrokedShape(markerLeft).getBounds();
-                paintImmediately(r.x, r.y, r.width, r.height);
-
-                r = markerStroke.createStrokedShape(markerBottom).getBounds();
-                paintImmediately(r.x, r.y, r.width, r.height);
-                
-                r = markerStroke.createStrokedShape(markerRight).getBounds();
                 paintImmediately(r.x, r.y, r.width, r.height);
             }
         }
