@@ -35,7 +35,7 @@ import org.w3c.dom.Element;
  * @see             org.apache.batik.svggen.SVGGraphics2D
  */
 public abstract class DefaultCachedImageHandler 
-    implements GenericImageHandler, 
+    implements CachedImageHandler, 
                SVGSyntax,
                ErrorConstants {
 
