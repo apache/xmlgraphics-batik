@@ -48,7 +48,8 @@ public class MultiResGraphicsNode
 
     SoftReference [] srcs;
     ParsedURL     [] srcURLs;
-    Dimension     [] sizes;
+    Dimension     [] minSz;
+    Dimension     [] maxSz;
     Rectangle2D      bounds;
 
     UserAgent      userAgent;
@@ -66,17 +67,19 @@ public class MultiResGraphicsNode
 
 
     public MultiResGraphicsNode(Element multiImgElem,
-                                Rectangle2D bounds,
-                               ParsedURL []srcURLs,
-                               Dimension [] sizes) {
+                                Rectangle2D  bounds,
+                                ParsedURL [] srcURLs,
+                                Dimension [] minSz,
+                                Dimension [] maxSz) {
         this.multiImgElem = multiImgElem;
         this.srcURLs     = new ParsedURL[srcURLs.length];
-        this.sizes       = new Dimension[srcURLs.length];
+        this.minSz       = new Dimension[srcURLs.length];
+        this.maxSz       = new Dimension[srcURLs.length];
 
         for (int i=0; i<srcURLs.length; i++) {
             this.srcURLs[i] = srcURLs[i];
-            if (i < sizes.length) 
-                this.sizes[i] = sizes[i];
+            this.minSz[i]   = minSz[i];
+            this.maxSz[i]   = maxSz[i];
         }
 
         this.srcs = new SoftReference[srcURLs.length];
@@ -92,7 +95,7 @@ public class MultiResGraphicsNode
      * @param g2d the Graphics2D to use
      */
     public void primitivePaint(Graphics2D g2d) {
-        // System.out.println("PrimPaint: " + this);
+        // System.err.println("PrimPaint: " + this);
         // get the current affine transform
         AffineTransform at = g2d.getTransform();
 
@@ -102,25 +105,67 @@ public class MultiResGraphicsNode
         GraphicsNode gn = null;
         int idx =-1;
         double w = bounds.getWidth()*scx;
-        for (int i=1; i<sizes.length; i++) {
-            if (w > sizes[i].width) {
-                idx = i-1;
-                break;
+        double minDist = calcDist(w, minSz[0], maxSz[0]);
+        int    minIdx = 0;
+        // System.err.println("Width: " + w);
+        for (int i=0; i<minSz.length; i++) {
+            double dist = calcDist(w, minSz[i], maxSz[i]);
+            // System.err.println("Dist: " + dist);
+            if (dist < minDist) {
+                minDist = dist;
+                minIdx = i;
+            } 
+                
+            if (((minSz[i] == null) || (w >= minSz[i].width)) &&
+                ((maxSz[i] == null) || (w <= maxSz[i].width))) {
+                // We have a range match
+                // System.err.println("Match: " + i + " " + 
+                //                    minSz[i] + " -> " + maxSz[i]);
+                if ((idx == -1) || (minIdx == i)) {
+                    idx = i;
+                }
             }
         }
+
         if (idx == -1)
-            idx = srcURLs.length-1;
+            idx = minIdx;
         gn = getGraphicsNode(idx);
 
         if (gn == null) return;
 
-        Rectangle2D gnBounds = gn.getBounds();
-        double sx = bounds.getWidth()/sizes[idx].getWidth();
-        double sy = bounds.getHeight()/sizes[idx].getHeight();
-        
-        // System.out.println("Scale: [" + sx + ", " + sy + "]");
-        // g2d.scale(sx, sy);
+        // Rectangle2D gnBounds = gn.getBounds();
+        // double sx = bounds.getWidth()/sizes[idx].getWidth();
+        // double sy = bounds.getHeight()/sizes[idx].getHeight();
+        // System.err.println("Scale: [" + sx + ", " + sy + "]");
+
         gn.paint(g2d);
+    }
+
+    // This function can be tweaked to any extent.  This is a very
+    // simple measure of 'goodness'.  It has two main flaws as is,
+    // mostly in regards to distance calc with 'unbounded' ranges.
+    // First it doesn't punish if the distance is the wrong way on the
+    // unbounded range (so over a max by 10 is the same as under a max
+    // by 10) this is compensated by the absolute preference for
+    // matches 'in range' above.  The other issue is that unbounded
+    // ranages tend to 'win' when the value is near the boundry point
+    // since they use distance from the boundry point rather than the
+    // middle of the range.  As it is this seems to meet all the
+    // requirements of the SVG specification however.
+    public double calcDist(double loc, Dimension min, Dimension max) {
+        if (min == null) {
+            if (max == null) 
+                return 10E10; // very large number.
+            else
+                return Math.abs(loc-max.width);
+        } else {
+            if (max == null) 
+                return Math.abs(loc-min.width);
+            else {
+                double mid = (max.width+min.width)/2.0;
+                return Math.abs(loc-mid);
+            }
+        }
     }
 
     /**
@@ -142,7 +187,7 @@ public class MultiResGraphicsNode
     }
 
     public GraphicsNode getGraphicsNode(int idx) {
-        // System.out.println("Getting: " + idx);
+        // System.err.println("Getting: " + idx);
         if (srcs[idx] != null) {
             Object o = srcs[idx].get();
             if (o != null) 
@@ -206,8 +251,8 @@ public class MultiResGraphicsNode
         vb[2] = (float)imgBounds.getWidth(); // width
         vb[3] = (float)imgBounds.getHeight(); // height
 
-        // System.out.println("Bounds: " + bounds);
-        // System.out.println("ImgB: " + imgBounds);
+        // System.err.println("Bounds: " + bounds);
+        // System.err.println("ImgB: " + imgBounds);
         // handles the 'preserveAspectRatio', 'overflow' and 'clip' and 
         // sets the appropriate AffineTransform to the image node
         initializeViewport(e, node, vb, bounds);
@@ -254,8 +299,8 @@ public class MultiResGraphicsNode
         // handles the 'preserveAspectRatio', 'overflow' and 'clip' and sets 
         // the appropriate AffineTransform to the image node
 
-        // System.out.println("Bounds: " + bounds);
-        // System.out.println("ViewBox: " + viewBox);
+        // System.err.println("Bounds: " + bounds);
+        // System.err.println("ViewBox: " + viewBox);
         initializeViewport(e, result, vb, bounds);
 
         return result;
@@ -284,7 +329,7 @@ public class MultiResGraphicsNode
 
         AffineTransform at
             = ViewBox.getPreserveAspectRatioTransform(e, vb, w, h);
-        // System.out.println("VP Affine: " + at);
+        // System.err.println("VP Affine: " + at);
         at.preConcatenate(AffineTransform.getTranslateInstance(x, y));
         node.setTransform(at);
 

@@ -589,30 +589,6 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     // Bridge management /////////////////////////////////////////////////////
  
     /**
-     * Returns the bridge associated with the specified element.
-     *
-     * @param element the element
-     */
-    public Bridge getBridge(Element element) {
-        if (namespaceURIMap == null || element == null) {
-            return null;
-        }
-        String namespaceURI = element.getNamespaceURI();
-        String localName = element.getLocalName();
-        namespaceURI = ((namespaceURI == null)? "" : namespaceURI);
-        HashMap localNameMap = (HashMap) namespaceURIMap.get(namespaceURI);
-        if (localNameMap == null) {
-            return null;
-        }
-        Bridge bridge = (Bridge)localNameMap.get(localName);
-        if (dynamic) {
-            return bridge == null ? null : bridge.getInstance();
-        } else {
-            return bridge;
-        }
-    }
-
-    /**
      * Returns true if the specified element has a GraphicsNodeBridge
      * associated to it, false otherwise.
      *
@@ -622,14 +598,29 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         if (namespaceURIMap == null || element == null) {
             return false;
         }
-        String namespaceURI = element.getNamespaceURI();
         String localName = element.getLocalName();
+        String namespaceURI = element.getNamespaceURI();
         namespaceURI = ((namespaceURI == null)? "" : namespaceURI);
         HashMap localNameMap = (HashMap) namespaceURIMap.get(namespaceURI);
         if (localNameMap == null) {
             return false;
         }
         return (localNameMap.get(localName) instanceof GraphicsNodeBridge);
+    }
+
+    /**
+     * Returns the bridge associated with the specified element.
+     *
+     * @param element the element
+     */
+    public Bridge getBridge(Element element) {
+        if (namespaceURIMap == null || element == null) {
+            return null;
+        }
+        String localName = element.getLocalName();
+        String namespaceURI = element.getNamespaceURI();
+        namespaceURI = ((namespaceURI == null)? "" : namespaceURI);
+        return getBridge(namespaceURI, localName);
     }
 
     /**

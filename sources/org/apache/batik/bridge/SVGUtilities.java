@@ -487,39 +487,71 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
         float [] filterRes = new float[2];
         String s = getChainableAttributeNS
             (filterElement, null, SVG_FILTER_RES_ATTRIBUTE, ctx);
-        if (s.length() == 0) {
-            filterRes[0] = -1;
-            filterRes[1] = -1;
+        Float [] vals = convertSVGNumberOptionalNumber
+            (filterElement, SVG_FILTER_RES_ATTRIBUTE, s);
 
-        } else {
-            try {
-                filterRes[0] = -1; // -1 means unspecified
-                StringTokenizer tokens = new StringTokenizer(s, " ");
-                filterRes[0] = Float.parseFloat(tokens.nextToken());
-                if (tokens.hasMoreTokens()) {
-                    filterRes[1] = Float.parseFloat(tokens.nextToken());
-                } else {
-                    // if only one value is specified, resY = resX
-                    filterRes[1] = filterRes[0];
-                }
-                if (tokens.hasMoreTokens()) {
-                    throw new BridgeException
-                        (filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
-                         new Object[] {SVG_FILTER_RES_ATTRIBUTE, s});
-                }
-            } catch (NumberFormatException ex) {
-                throw new BridgeException
-                    (filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
-                     new Object[] {SVG_FILTER_RES_ATTRIBUTE, s, ex});
-            }
-            if (filterRes[0] < 0 || filterRes[1] < 0) {
+        if (filterRes[0] < 0 || filterRes[1] < 0) {
+            throw new BridgeException
+                (filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                 new Object[] {SVG_FILTER_RES_ATTRIBUTE, s});
+        }
+        
+        if (vals[0] == null)
+            filterRes[0] = -1;
+        else {
+            filterRes[0] = vals[0].floatValue();
+            if (filterRes[0] < 0)
                 throw new BridgeException
                     (filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
                      new Object[] {SVG_FILTER_RES_ATTRIBUTE, s});
-            }
+        }
+
+        if (vals[1] == null)
+            filterRes[1] = filterRes[0];
+        else {
+            filterRes[1] = vals[1].floatValue();
+            if (filterRes[1] < 0)
+                throw new BridgeException
+                    (filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                     new Object[] {SVG_FILTER_RES_ATTRIBUTE, s});
         }
         return filterRes;
     }
+
+    /**
+     * This function parses attrValue for a number followed by an optional
+     * second Number. It always returns an array of two Floats.  If either
+     * or both values are not provided the entries are set to null
+     */
+    public static Float [] 
+        convertSVGNumberOptionalNumber(Element elem, 
+                                       String attrName,
+                                       String attrValue) {
+
+        Float [] ret = new Float[2];
+        if (attrValue.length() == 0)
+            return ret;
+
+        try {
+            StringTokenizer tokens = new StringTokenizer(attrValue, " ");
+            ret[0] = new Float(Float.parseFloat(tokens.nextToken()));
+            if (tokens.hasMoreTokens()) {
+                ret[1] = new Float(Float.parseFloat(tokens.nextToken()));
+            }
+
+            if (tokens.hasMoreTokens()) {
+                throw new BridgeException
+                    (elem, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                     new Object[] {attrName, attrValue});
+            }
+        } catch (NumberFormatException ex) {
+            throw new BridgeException
+                (elem, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                 new Object[] {attrName, attrValue, ex});
+        }
+        return ret;
+    }
+
 
    /**
     * Returns the filter region according to the x, y, width, height,
