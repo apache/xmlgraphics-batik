@@ -65,8 +65,8 @@ public class SVGMaskElementBridge implements MaskBridge, SVGConstants {
         //
         // Get the mask region
         //
-        CSSStyleDeclaration cssDecl
-            = bridgeContext.getViewCSS().getComputedStyle(maskElement, null);
+        CSSStyleDeclaration cssDecl =
+            CSSUtilities.getComputedStyle(maskElement);
 
         UnitProcessor.Context uctx
             = new DefaultUnitProcessorContext(bridgeContext, cssDecl);

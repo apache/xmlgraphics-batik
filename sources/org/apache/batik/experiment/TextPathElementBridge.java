@@ -95,8 +95,7 @@ public class TextPathElementBridge implements GraphicsNodeBridge, SVGConstants {
 
         //System.out.println("creating Text Path node");
 
-        CSSStyleDeclaration cssDecl
-            = ctx.getViewCSS().getComputedStyle(element, null);
+        CSSStyleDeclaration cssDecl = CSSUtilities.getComputedStyle(element);
         UnitProcessor.Context uctx
             = new DefaultUnitProcessorContext(ctx,
                                               cssDecl);
@@ -409,8 +408,7 @@ public class TextPathElementBridge implements GraphicsNodeBridge, SVGConstants {
 
         SVGElement svgElement = (SVGElement) element;
 
-        CSSStyleDeclaration cssDecl
-            = ctx.getViewCSS().getComputedStyle(element, null);
+        CSSStyleDeclaration cssDecl = CSSUtilities.getComputedStyle(element);
 
         UnitProcessor.Context uctx
             = new DefaultUnitProcessorContext(ctx,

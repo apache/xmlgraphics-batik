@@ -73,6 +73,22 @@ public class CSSUtilities implements SVGConstants {
     protected CSSUtilities() {}
 
     /**
+     * Returns the View CSS associated to the specified element.
+     * @param e the element
+     */
+    public static ViewCSS getViewCSS(Element e) {
+        return (ViewCSS)((SVGOMDocument)e.getOwnerDocument()).getDefaultView();
+    }
+
+    /**
+     * Returns the computed style of the specified element.
+     * @param e the element
+     */
+    public static CSSStyleDeclaration getComputedStyle(Element e) {
+        return getViewCSS(e).getComputedStyle(e, null);
+    }
+
+    /**
      * Partially computes the style in the use tree and set it in
      * the target tree.
      * Note: This method must be called only when 'def' has been added
@@ -81,17 +97,17 @@ public class CSSUtilities implements SVGConstants {
     public static void computeStyleAndURIs(Element use, ViewCSS uv,
                                     Element def, ViewCSS dv, URL url) {
         String href = XLinkSupport.getXLinkHref(def);
-        
+
         if (!href.equals("")) {
             try {
                 XLinkSupport.setXLinkHref(def, new URL(url, href).toString());
             } catch (MalformedURLException e) {
             }
         }
-        
+
         CSSOMReadOnlyStyleDeclaration usd;
         AbstractViewCSS uview = (AbstractViewCSS)uv;
-        
+
         usd = (CSSOMReadOnlyStyleDeclaration)uview.computeStyle(use, null);
         try {
             updateURIs(usd, url);
@@ -99,7 +115,7 @@ public class CSSUtilities implements SVGConstants {
             e.printStackTrace();
         }
         ((AbstractViewCSS)dv).setComputedStyle(def, null, usd);
-        
+
         for (Node un = use.getFirstChild(), dn = def.getFirstChild();
              un != null;
              un = un.getNextSibling(), dn = dn.getNextSibling()) {
@@ -108,7 +124,7 @@ public class CSSUtilities implements SVGConstants {
             }
         }
     }
-    
+
     /**
      * Updates the URIs in the given style declaration.
      */
@@ -272,8 +288,7 @@ public class CSSUtilities implements SVGConstants {
                                        GraphicsNode gn,
                                        BridgeContext ctx) {
 
-        CSSStyleDeclaration decl
-             = ctx.getViewCSS().getComputedStyle(clipedElement, null);
+        CSSStyleDeclaration decl = getComputedStyle(clipedElement);
 
          CSSPrimitiveValue clipValue =
              (CSSPrimitiveValue)decl.getPropertyCSSValue(CSS_CLIP_PATH_PROPERTY);
@@ -306,13 +321,10 @@ public class CSSUtilities implements SVGConstants {
              ClipBridge clipBridge = (ClipBridge)bridge;
              SVGOMDocument doc =
                  (SVGOMDocument)clipPathElement.getOwnerDocument();
-             ViewCSS v = ctx.getViewCSS();
-             ctx.setViewCSS((ViewCSS)doc.getDefaultView());
              Clip clip = clipBridge.createClip(ctx,
                                                gn,
                                                clipPathElement,
                                                clipedElement);
-             ctx.setViewCSS(v);
              return clip;
          default:
              throw new Error(); // can't be reached
@@ -331,8 +343,7 @@ public class CSSUtilities implements SVGConstants {
                                     GraphicsNode  gn,
                                      BridgeContext ctx) {
 
-         CSSStyleDeclaration decl
-             = ctx.getViewCSS().getComputedStyle(maskedElement, null);
+         CSSStyleDeclaration decl = getComputedStyle(maskedElement);
 
          CSSPrimitiveValue maskValue
              = (CSSPrimitiveValue)decl.getPropertyCSSValue(CSS_MASK_PROPERTY);
@@ -364,13 +375,10 @@ public class CSSUtilities implements SVGConstants {
              }
              MaskBridge maskBridge = (MaskBridge)bridge;
              SVGOMDocument doc = (SVGOMDocument)maskElement.getOwnerDocument();
-             ViewCSS v = ctx.getViewCSS();
-             ctx.setViewCSS((ViewCSS)doc.getDefaultView());
              Mask mask =  maskBridge.createMask(gn,
                                                 ctx,
                                                 maskElement,
                                                 maskedElement);
-             ctx.setViewCSS(v);
              return mask;
          default:
              throw new Error(); // can't be reached
@@ -387,7 +395,7 @@ public class CSSUtilities implements SVGConstants {
      * @param decl the css style declaration
      * @param uctx the UnitProcessor context
      */
-    public static ShapePainter convertStrokeAndFill(Shape shape, 
+    public static ShapePainter convertStrokeAndFill(Shape shape,
                                                     SVGElement svgElement,
                                                     GraphicsNode node,
                                                     BridgeContext ctx,
@@ -630,13 +638,10 @@ public class CSSUtilities implements SVGConstants {
         }
         PaintBridge paintBridge = (PaintBridge)bridge;
         SVGOMDocument doc = (SVGOMDocument)paintElement.getOwnerDocument();
-        ViewCSS v = ctx.getViewCSS();
-        ctx.setViewCSS((ViewCSS)doc.getDefaultView());
         Paint paint = paintBridge.createStrokePaint(ctx,
                                                     node,
                                                     svgElement,
                                                     paintElement);
-        ctx.setViewCSS(v);
         return paint;
     }
 
@@ -691,7 +696,7 @@ public class CSSUtilities implements SVGConstants {
             return null;
         case CSSPrimitiveValue.CSS_URI:
             return convertURIToMarker(v.getStringValue(),
-                                      paintedElement, 
+                                      paintedElement,
                                       ctx, decl, uctx);
         default:
             throw new Error(); // can't be reached.
@@ -727,15 +732,11 @@ public class CSSUtilities implements SVGConstants {
         }
 
         MarkerBridge markerBridge = (MarkerBridge)bridge;
-        //SVGOMDocument doc = (SVGOMDocument)markerElement.getOwnerDocument();
-        ViewCSS v = ctx.getViewCSS();
-        // ctx.setViewCSS((ViewCSS)doc.getDefaultView());
-        Marker marker = markerBridge.buildMarker(ctx, 
+        Marker marker = markerBridge.buildMarker(ctx,
                                                  markerElement,
                                                  paintedElement);
-        ctx.setViewCSS(v);
         return marker;
-                                                 
+
     }
 
     /**
@@ -936,8 +937,7 @@ public class CSSUtilities implements SVGConstants {
                                        GraphicsNode node,
                                        BridgeContext ctx){
 
-        CSSStyleDeclaration decl
-            = ctx.getViewCSS().getComputedStyle(element, null);
+        CSSStyleDeclaration decl = getComputedStyle(element);
 
         CSSPrimitiveValue filterValue
             = (CSSPrimitiveValue)decl.getPropertyCSSValue(CSS_FILTER_PROPERTY);
@@ -967,8 +967,6 @@ public class CSSUtilities implements SVGConstants {
             }
             FilterBridge filterBridge = (FilterBridge)bridge;
             SVGOMDocument doc = (SVGOMDocument)filterElement.getOwnerDocument();
-            ViewCSS v = ctx.getViewCSS();
-            ctx.setViewCSS((ViewCSS)doc.getDefaultView());
             Filter filter = filterBridge.create(node,
                                                 ctx,
                                                 filterElement,
@@ -976,7 +974,6 @@ public class CSSUtilities implements SVGConstants {
                                                 null,   // in
                                                 null,   // filterRegion
                                                 null);  // filterMap
-            ctx.setViewCSS(v);
             return filter;
         default:
             throw new Error(); // can't be reached
@@ -1008,8 +1005,7 @@ public class CSSUtilities implements SVGConstants {
             return in;
 
         case SVGUtilities.FILL_PAINT: {
-            CSSStyleDeclaration cssDecl;
-            cssDecl = ctx.getViewCSS().getComputedStyle(filteredElement, null);
+            CSSStyleDeclaration cssDecl = getComputedStyle(filteredElement);
             UnitProcessor.Context uctx
                 = new DefaultUnitProcessorContext(ctx, cssDecl);
             Paint paint = convertFillToPaint((SVGElement)filteredElement,
@@ -1022,8 +1018,7 @@ public class CSSUtilities implements SVGConstants {
         }
 
         case SVGUtilities.STROKE_PAINT: {
-            CSSStyleDeclaration cssDecl;
-            cssDecl = ctx.getViewCSS().getComputedStyle(filteredElement, null);
+            CSSStyleDeclaration cssDecl = getComputedStyle(filteredElement);
             UnitProcessor.Context uctx
                 = new DefaultUnitProcessorContext(ctx, cssDecl);
             Paint paint = convertStrokeToPaint((SVGElement)filteredElement,

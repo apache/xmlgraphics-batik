@@ -81,8 +81,7 @@ public abstract class SVGGradientBridge implements SVGConstants {
         }
         float ratio = CSSUtilities.convertRatio(offsetStr);
         // parse the stop-color CSS properties
-        CSSStyleDeclaration decl =
-            ctx.getViewCSS().getComputedStyle(stop, null);
+        CSSStyleDeclaration decl = CSSUtilities.getComputedStyle(stop);
         Color stopColor = CSSUtilities.convertStopColorToPaint(decl);
 
         return new GradientStop(stopColor, ratio);

@@ -71,8 +71,7 @@ public class SVGImageElementBridge implements GraphicsNodeBridge,
     public GraphicsNode createGraphicsNode(BridgeContext ctx, Element element){
         SVGElement svgElement = (SVGElement) element;
 
-        CSSStyleDeclaration cssDecl
-            = ctx.getViewCSS().getComputedStyle(element, null);
+        CSSStyleDeclaration cssDecl = CSSUtilities.getComputedStyle(element);
 
         String uriStr = XLinkSupport.getXLinkHref(svgElement);
         // nothing referenced.
@@ -133,8 +132,7 @@ public class SVGImageElementBridge implements GraphicsNodeBridge,
     public void buildGraphicsNode(GraphicsNode node,
                                   BridgeContext ctx,
                                   Element element) {
-        CSSStyleDeclaration cssDecl
-            = ctx.getViewCSS().getComputedStyle(element, null);
+        CSSStyleDeclaration cssDecl = CSSUtilities.getComputedStyle(element);
 
         // Set node composite
         CSSPrimitiveValue val
@@ -185,16 +183,13 @@ public class SVGImageElementBridge implements GraphicsNodeBridge,
                                               SVGDocument imgDocument) {
 
         Viewport oldViewport = ctx.getViewport();
-        ViewCSS oldViewCSS = ctx.getViewCSS();
 
         ctx.setViewport(null);
-        ctx.setViewCSS((ViewCSS)((SVGOMDocument)imgDocument).getDefaultView());
         SVGSVGElement svgElement = imgDocument.getRootElement();
 
         CompositeGraphicsNode result = new CompositeGraphicsNode();
 
-        CSSStyleDeclaration decl;
-        decl = ctx.getViewCSS().getComputedStyle(element, null);
+        CSSStyleDeclaration decl = CSSUtilities.getComputedStyle(element);
         UnitProcessor.Context uctx
             = new DefaultUnitProcessorContext(ctx, decl);
 
@@ -236,15 +231,13 @@ public class SVGImageElementBridge implements GraphicsNodeBridge,
 
         // restore viewport and current CSS view
         ctx.setViewport(oldViewport);
-        ctx.setViewCSS(oldViewCSS);
         return result;
     }
 
     protected Rectangle2D getImageBounds(BridgeContext ctx,
                                          SVGElement svgElement) {
 
-        CSSStyleDeclaration cssDecl
-            = ctx.getViewCSS().getComputedStyle(svgElement, null);
+        CSSStyleDeclaration cssDecl = CSSUtilities.getComputedStyle(svgElement);
 
         UnitProcessor.Context uctx
             = new DefaultUnitProcessorContext(ctx, cssDecl);

@@ -57,7 +57,7 @@ public class ConcreteGVTBuilder implements GVTBuilder, SVGConstants {
      * @param svgDocument the DOM tree that represents an SVG document
      */
     public GraphicsNode build(BridgeContext ctx, Document svgDocument){
-        ctx.initialize((SVGDocument)svgDocument, this);
+        ctx.initialize(this);
         RootGraphicsNode root = new RootGraphicsNode();
         Element svgRoot = svgDocument.getDocumentElement();
 

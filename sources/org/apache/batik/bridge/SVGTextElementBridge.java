@@ -113,8 +113,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                                 RenderingHints.VALUE_ANTIALIAS_ON);
 
 
-        CSSStyleDeclaration cssDecl
-            = ctx.getViewCSS().getComputedStyle(element, null);
+        CSSStyleDeclaration cssDecl = CSSUtilities.getComputedStyle(element);
         UnitProcessor.Context uctx
             = new DefaultUnitProcessorContext(ctx, cssDecl);
 
@@ -154,8 +153,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
 
         TextNode result = (TextNode)node;
 
-        CSSStyleDeclaration cssDecl
-            = ctx.getViewCSS().getComputedStyle(element, null);
+        CSSStyleDeclaration cssDecl = CSSUtilities.getComputedStyle(element);
         UnitProcessor.Context uctx
             = new DefaultUnitProcessorContext(ctx, cssDecl);
 
@@ -506,8 +504,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                                   BridgeContext ctx,
                                   Element element) {
 
-        CSSStyleDeclaration cssDecl
-            = ctx.getViewCSS().getComputedStyle(element, null);
+        CSSStyleDeclaration cssDecl = CSSUtilities.getComputedStyle(element);
         UnitProcessor.Context uctx
             = new DefaultUnitProcessorContext(ctx, cssDecl);
 
@@ -616,8 +613,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                                   Element element,
                                   GraphicsNode node) {
 
-        CSSStyleDeclaration cssDecl
-            = ctx.getViewCSS().getComputedStyle(element, null);
+        CSSStyleDeclaration cssDecl = CSSUtilities.getComputedStyle(element);
         UnitProcessor.Context uctx
             = new DefaultUnitProcessorContext(ctx, cssDecl);
 
@@ -752,7 +748,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
             result.put(GVTAttributedCharacterIterator.TextAttribute.BASELINE_SHIFT,
                        new Float(f*fs/100f));
         } else {
-            // TODO 
+            // TODO
             t = v.getPrimitiveType();
             f = UnitProcessor.cssToUserSpace(t,
                                             v.getFloatValue(t),
@@ -800,7 +796,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                 result.put(TextAttribute.RUN_DIRECTION,
                        TextAttribute.RUN_DIRECTION_RTL);
                 switch (s.charAt(0)) {
-		case 'b': // bidi-override
+                case 'b': // bidi-override
                     result.put(TextAttribute.BIDI_EMBEDDING,
                                new Integer(-1));
                     break;

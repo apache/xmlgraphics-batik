@@ -48,8 +48,7 @@ public abstract class SVGShapeElementBridge implements GraphicsNodeBridge,
 
     public GraphicsNode createGraphicsNode(BridgeContext ctx, Element element){
         SVGElement svgElement = (SVGElement) element;
-        CSSStyleDeclaration cssDecl
-            = ctx.getViewCSS().getComputedStyle(element, null);
+        CSSStyleDeclaration cssDecl = CSSUtilities.getComputedStyle(element);
         UnitProcessor.Context uctx
             = new DefaultUnitProcessorContext(ctx,
                                               cssDecl);
@@ -70,8 +69,7 @@ public abstract class SVGShapeElementBridge implements GraphicsNodeBridge,
         ShapeNode node = (ShapeNode)gn;
 
         SVGElement svgElement = (SVGElement) element;
-        CSSStyleDeclaration cssDecl
-            = ctx.getViewCSS().getComputedStyle(element, null);
+        CSSStyleDeclaration cssDecl = CSSUtilities.getComputedStyle(element);
         UnitProcessor.Context uctx
             = new DefaultUnitProcessorContext(ctx,
                                               cssDecl);

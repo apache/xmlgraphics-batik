@@ -73,7 +73,7 @@ public class SVGFeCompositeElementBridge implements FilterPrimitiveBridge,
                          Rectangle2D filterRegion,
                          Map filterMap){
 
-        GraphicsNodeRenderContext rc = 
+        GraphicsNodeRenderContext rc =
                          bridgeContext.getGraphicsNodeRenderContext();
 
         // Extract Composite operation
@@ -120,8 +120,8 @@ public class SVGFeCompositeElementBridge implements FilterPrimitiveBridge,
             defaultRegion = filterRegion;
         }
 
-        CSSStyleDeclaration cssDecl
-            = bridgeContext.getViewCSS().getComputedStyle(filterElement, null);
+        CSSStyleDeclaration cssDecl =
+            CSSUtilities.getComputedStyle(filterElement);
 
         UnitProcessor.Context uctx
             = new DefaultUnitProcessorContext(bridgeContext, cssDecl);

@@ -76,7 +76,7 @@ public class SVGFeSpecularLightingElementBridge
                          Map filterMap){
         Filter filter = null;
 
-        GraphicsNodeRenderContext rc = 
+        GraphicsNodeRenderContext rc =
                          bridgeContext.getGraphicsNodeRenderContext();
 
         // First, extract source
@@ -106,8 +106,8 @@ public class SVGFeSpecularLightingElementBridge
             defaultRegion = filterRegion;
         }
 
-        CSSStyleDeclaration cssDecl
-            = bridgeContext.getViewCSS().getComputedStyle(filterElement, null);
+        CSSStyleDeclaration cssDecl =
+            CSSUtilities.getComputedStyle(filterElement);
 
         UnitProcessor.Context uctx
             = new DefaultUnitProcessorContext(bridgeContext, cssDecl);
@@ -135,7 +135,7 @@ public class SVGFeSpecularLightingElementBridge
         }
 
         Node lightNode = children.item(0);
-        if((lightNode == null) || 
+        if((lightNode == null) ||
            !(lightNode.getNodeType() == Node.ELEMENT_NODE)){
             throw new IllegalAttributeValueException(
                 Messages.formatMessage("feSpecularLighting.child.missing",
@@ -148,9 +148,9 @@ public class SVGFeSpecularLightingElementBridge
         String ksStr =
             filterElement.getAttributeNS(null, SVG_SPECULAR_CONSTANT_ATTRIBUTE);
 
-        double ks = 
+        double ks =
             SVGUtilities.convertSVGNumber(SVG_SPECULAR_CONSTANT_ATTRIBUTE, ksStr);
-        
+
         // Extract specular exponent
         String nsStr =
             filterElement.getAttributeNS(null, SVG_SPECULAR_EXPONENT_ATTRIBUTE);
@@ -162,8 +162,8 @@ public class SVGFeSpecularLightingElementBridge
         String surfaceScaleStr =
             filterElement.getAttributeNS(null, SVG_SURFACE_SCALE_ATTRIBUTE);
 
-        double surfaceScale = 
-            SVGUtilities.convertSVGNumber(SVG_SURFACE_SCALE_ATTRIBUTE, 
+        double surfaceScale =
+            SVGUtilities.convertSVGNumber(SVG_SURFACE_SCALE_ATTRIBUTE,
                                           surfaceScaleStr);
 
         filter = new SpecularLightingRable8Bit(in,

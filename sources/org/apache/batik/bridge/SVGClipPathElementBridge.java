@@ -46,8 +46,7 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
                             Element clipElement,
                             Element clippedElement) {
 
-        CSSStyleDeclaration decl
-            = ctx.getViewCSS().getComputedStyle(clipElement, null);
+        CSSStyleDeclaration decl = CSSUtilities.getComputedStyle(clipElement);
 
         // Build the GVT tree that represents the clip path
         //
@@ -109,8 +108,7 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
             }
             hasChildren = true;
             // compute the outline of the current Element
-            CSSStyleDeclaration c =
-                ctx.getViewCSS().getComputedStyle(child, null);
+            CSSStyleDeclaration c = CSSUtilities.getComputedStyle(child);
             CSSPrimitiveValue v = (CSSPrimitiveValue)c.getPropertyCSSValue
                 (CSS_CLIP_RULE_PROPERTY);
             int wr = (CSSUtilities.rule(v) == CSSUtilities.RULE_NONZERO)
