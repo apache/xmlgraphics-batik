@@ -11,16 +11,28 @@ package org.apache.batik.apps.svgbrowser;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Frame;
+import java.awt.geom.AffineTransform;
+
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
 
 import javax.swing.JDialog;
 
+import org.apache.batik.bridge.ViewBox;
 import org.apache.batik.swing.JSVGCanvas;
+import org.apache.batik.swing.gvt.GVTTreeRendererAdapter;
 import org.apache.batik.swing.gvt.GVTTreeRendererEvent;
-import org.apache.batik.swing.gvt.GVTTreeRendererListener;
+import org.apache.batik.swing.svg.SVGDocumentLoaderAdapter;
+import org.apache.batik.swing.svg.SVGDocumentLoaderEvent;
 import org.apache.batik.util.gui.resource.ResourceManager;
+
+import org.w3c.dom.svg.SVGDocument;
+import org.w3c.dom.svg.SVGSVGElement;
 
 /**
  * This class represents a Dialog that displays a Thumbnail of the current SVG
@@ -29,7 +41,7 @@ import org.apache.batik.util.gui.resource.ResourceManager;
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
-public class ThumbnailDialog extends JDialog implements GVTTreeRendererListener {
+public class ThumbnailDialog extends JDialog {
 
     /**
      * The resource file name
@@ -58,6 +70,9 @@ public class ThumbnailDialog extends JDialog implements GVTTreeRendererListener 
     /** The canvas that displays the thumbnail. */
     protected JSVGCanvas svgThumbnailCanvas;
 
+    /** A flag bit that indicates a document has been loaded. */
+    protected boolean documentChanged;
+
     /**
      * Constructs a new <tt>ThumbnailDialog</tt> for the specified canvas.
      *
@@ -65,51 +80,105 @@ public class ThumbnailDialog extends JDialog implements GVTTreeRendererListener 
      */
     public ThumbnailDialog(Frame owner, JSVGCanvas svgCanvas) {
         super(owner, resources.getString("Dialog.title"));
+
+        addWindowListener(new ThumbnailListener());
+
+        // register listeners to maintain consistency
         this.svgCanvas = svgCanvas;
-        svgThumbnailCanvas = new JSVGCanvas();
+        svgCanvas.addGVTTreeRendererListener(new ThumbnailGVTListener());
+        svgCanvas.addSVGDocumentLoaderListener(new ThumbnailDocumentListener());
+
+        // create the thumbnail
+        svgThumbnailCanvas = new JSVGCanvas(null, false, false);
         svgThumbnailCanvas.setPreferredSize(new Dimension(150, 150));
+
+        svgThumbnailCanvas.setEnableZoomInteractor(false);
+        svgThumbnailCanvas.setEnableImageZoomInteractor(false);
+        svgThumbnailCanvas.setEnablePanInteractor(false);
+        svgThumbnailCanvas.setEnableRotateInteractor(false);
+
+        svgThumbnailCanvas.addComponentListener(new ThumbnailComponentListener());
+
         getContentPane().add(svgThumbnailCanvas, BorderLayout.CENTER);
 
-        svgCanvas.addGVTTreeRendererListener(this);
     }
 
     /**
-     * Called when a rendering is in its preparing phase.
+     * Updates the thumbnail component.
      */
-    public void gvtRenderingPrepare(GVTTreeRendererEvent e) {
-        System.out.println("gvtRenderingPrepare");
+    protected void updateThumbnailGraphicsNode() {
         svgThumbnailCanvas.setGraphicsNode(svgCanvas.getGraphicsNode());
+        updateThumbnailRenderingTransform();
     }
 
     /**
-     * Called when a rendering started.
+     * Updates the thumbnail component rendering transform.
      */
-    public void gvtRenderingStarted(GVTTreeRendererEvent e) {
-        System.out.println("gvtRenderingStarted");
-        svgThumbnailCanvas.setGraphicsNode(svgCanvas.getGraphicsNode());
+    protected void updateThumbnailRenderingTransform() {
+        SVGDocument svgDocument = svgCanvas.getSVGDocument();
+        if (svgDocument != null) {
+            SVGSVGElement elt = svgDocument.getRootElement();
+            Dimension dim = svgThumbnailCanvas.getSize();
+
+            AffineTransform Tx
+                = ViewBox.getViewTransform(null, elt, dim.width, dim.height);
+            svgThumbnailCanvas.setRenderingTransform(Tx);
+        }
     }
 
     /**
-     * Called when a rendering was completed.
+     * Used to determine whether or not the GVT tree of the thumbnail has to be
+     * updated.
      */
-    public void gvtRenderingCompleted(GVTTreeRendererEvent e) {
-        System.out.println("gvtRenderingCompleted");
-        svgThumbnailCanvas.setGraphicsNode(svgCanvas.getGraphicsNode());
+    protected class ThumbnailDocumentListener extends SVGDocumentLoaderAdapter {
+
+        public void documentLoadingStarted(SVGDocumentLoaderEvent e) {
+            documentChanged = true;
+        }
     }
 
     /**
-     * Called when a rendering was cancelled.
+     * Used to update the overlay and/or the GVT tree of the thumbnail.
      */
-    public void gvtRenderingCancelled(GVTTreeRendererEvent e) {
-        System.out.println("gvtRenderingCancelled");
-        svgThumbnailCanvas.setGraphicsNode(svgCanvas.getGraphicsNode());
+    protected class ThumbnailGVTListener extends GVTTreeRendererAdapter {
+
+        public void gvtRenderingCompleted(GVTTreeRendererEvent e) {
+            if (documentChanged) {
+                updateThumbnailGraphicsNode();
+                documentChanged = false;
+            }
+        }
+
+        public void gvtRenderingCancelled(GVTTreeRendererEvent e) {
+            svgThumbnailCanvas.setGraphicsNode(null);
+            svgThumbnailCanvas.setRenderingTransform(new AffineTransform());
+        }
+
+        public void gvtRenderingFailed(GVTTreeRendererEvent e) {
+            svgThumbnailCanvas.setGraphicsNode(null);
+            svgThumbnailCanvas.setRenderingTransform(new AffineTransform());
+        }
     }
 
     /**
-     * Called when a rendering failed.
+     * Used the first time the thumbnail dialog is shown to make visible the
+     * current GVT tree being displayed by the original SVG component.
      */
-    public void gvtRenderingFailed(GVTTreeRendererEvent e) {
-        System.out.println("gvtRenderingFailed");
-        svgThumbnailCanvas.setGraphicsNode(svgCanvas.getGraphicsNode());
+    protected class ThumbnailListener extends WindowAdapter {
+
+        public void windowOpened(WindowEvent evt) {
+            updateThumbnailGraphicsNode();
+        }
+    }
+
+    /**
+     * Used to allow the SVG document being displayed by the thumbnail to be
+     * resized properly.
+     */
+    protected class ThumbnailComponentListener extends ComponentAdapter {
+
+        public void componentResized(ComponentEvent e) {
+            updateThumbnailRenderingTransform();
+        }
     }
 }
