@@ -15,4 +15,5 @@ Class-Path: lib/batik-ext.jar \
             lib/batik-util.jar \
             lib/batik-xml.jar \
             lib/crimson-parser.jar \
+            lib/xml-apis.jar \
             lib/js.jar
