@@ -570,38 +570,14 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         case SVGCSSEngine.STROKE_MITERLIMIT_INDEX:
         case SVGCSSEngine.STROKE_DASHARRAY_INDEX:
         case SVGCSSEngine.STROKE_DASHOFFSET_INDEX:
-        case SVGCSSEngine.TEXT_DECORATION_INDEX: {
-            if (!hasNewACI) {
-                hasNewACI = true;
-                TextNode tn = (TextNode)node;
-                AttributedString as;
-
-                TextDecoration parentDecoration;
-
-                if ( cssProceedElement == e ){
-                    parentDecoration = new TextDecoration();
-                    as = new AttributedString(layoutedText.getIterator());
-                }
-                else{
-                    //if a child CSS property has changed, then
-                    //retrieve the parent text decoration
-                    //and only update the section of the AtrtibutedString of
-                    //the child
-                    parentDecoration = getParentTextDecoration
-                        (tn.getAttributedCharacterIterator(), 
-                         cssProceedElement);
-                    as = new AttributedString
-                        (tn.getAttributedCharacterIterator());
-                }
-                tn.setAttributedCharacterIterator(as.getIterator());
-                TextDecoration textDecoration = getTextDecoration
-                    (cssProceedElement, tn, parentDecoration, ctx);
-                addPaintAttributes
-                    (as, cssProceedElement, tn, textDecoration, ctx);
-                tn.setAttributedCharacterIterator(as.getIterator());
-            }
+        case SVGCSSEngine.TEXT_DECORATION_INDEX:
+            rebuildACI();
             break;
-        }
+ 
+        case SVGCSSEngine.VISIBILITY_INDEX: 
+            rebuildACI();
+            super.handleCSSPropertyChanged(property);
+            break;
         case SVGCSSEngine.TEXT_RENDERING_INDEX: {
             RenderingHints hints = node.getRenderingHints();
             hints = CSSUtilities.convertTextRendering(e, hints);
@@ -621,6 +597,39 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         default:
             super.handleCSSPropertyChanged(property);
         }
+    }
+
+    protected void rebuildACI() {
+        if (hasNewACI)
+            return;
+
+        hasNewACI = true;
+        TextNode tn = (TextNode)node;
+        AttributedString as;
+
+        TextDecoration parentDecoration;
+
+        if ( cssProceedElement == e ){
+            parentDecoration = new TextDecoration();
+            as = new AttributedString(layoutedText.getIterator());
+        }
+        else{
+            //if a child CSS property has changed, then
+            //retrieve the parent text decoration
+            //and only update the section of the AtrtibutedString of
+            //the child
+            parentDecoration = getParentTextDecoration
+                (tn.getAttributedCharacterIterator(), 
+                 cssProceedElement);
+            as = new AttributedString
+                (tn.getAttributedCharacterIterator());
+        }
+        tn.setAttributedCharacterIterator(as.getIterator());
+        TextDecoration textDecoration = getTextDecoration
+            (cssProceedElement, tn, parentDecoration, ctx);
+        addPaintAttributes
+            (as, cssProceedElement, tn, textDecoration, ctx);
+        tn.setAttributedCharacterIterator(as.getIterator());
     }
 
     // -----------------------------------------------------------------------
@@ -1206,7 +1215,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
 
         // Fill
         Paint p = PaintServer.convertFillPaint(element, node, ctx);
-        // System.out.println("Fore: " + p + " [" + firstChar + "," +
+        // System.err.println("Fore: " + p + " [" + firstChar + "," +
         //                    (lastChar+1) + "]");
         as.addAttribute(TextAttribute.FOREGROUND, p,
                         firstChar, lastChar+1);
