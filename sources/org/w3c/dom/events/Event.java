@@ -21,7 +21,7 @@ package org.w3c.dom.events;
  * <code>Event</code> which contain information directly relating to the 
  * type of event they accompany. These derived interfaces are also 
  * implemented by the object passed to the event listener. 
- * <p>See also the <a href='http://www.w3.org/TR/2000/PR-DOM-Level-2-Events-20000927'>Document Object Model (DOM) Level 2 Events Specification</a>.
+ * <p>See also the <a href='http://www.w3.org/TR/2000/REC-DOM-Level-2-Events-20001113'>Document Object Model (DOM) Level 2 Events Specification</a>.
  * @since DOM Level 2
  */
 public interface Event {

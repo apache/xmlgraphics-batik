@@ -22,7 +22,7 @@ package org.w3c.dom;
  * to create these objects. The <code>Node</code> objects created have a 
  * <code>ownerDocument</code> attribute which associates them with the 
  * <code>Document</code> within whose context they were created.
- * <p>See also the <a href='http://www.w3.org/TR/2000/PR-DOM-Level-2-Core-20000927'>Document Object Model (DOM) Level 2 Core Specification</a>.
+ * <p>See also the <a href='http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113'>Document Object Model (DOM) Level 2 Core Specification</a>.
  */
 public interface Document extends Node {
     /**

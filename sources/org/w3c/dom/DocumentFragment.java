@@ -46,7 +46,7 @@ package org.w3c.dom;
  * <code>DocumentFragment</code> acts as the parent of these nodes so that 
  * the user can use the standard methods from the <code>Node</code> 
  * interface, such as <code>insertBefore</code> and <code>appendChild</code>.
- * <p>See also the <a href='http://www.w3.org/TR/2000/PR-DOM-Level-2-Core-20000927'>Document Object Model (DOM) Level 2 Core Specification</a>.
+ * <p>See also the <a href='http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113'>Document Object Model (DOM) Level 2 Core Specification</a>.
  */
 public interface DocumentFragment extends Node {
 }

@@ -24,6 +24,7 @@ public class DOMMutationEvent extends AbstractEvent implements MutationEvent {
     private String prevValue;
     private String newValue;
     private String attrName;
+    private short attrChange;
 
     /**
      * DOM: <code>relatedNode</code> is used to identify a secondary
@@ -68,13 +69,7 @@ public class DOMMutationEvent extends AbstractEvent implements MutationEvent {
      * Implements {@link org.w3c.dom.events.MutationEvent#getAttrChange()}.
      */
     public short getAttrChange() {
-        if (newValue == null) {
-            return REMOVAL;
-        }
-        if (prevValue == null) {
-            return ADDITION;
-        }
-        return MODIFICATION;
+        return attrChange;
     }
 
     /**
@@ -105,11 +100,13 @@ public class DOMMutationEvent extends AbstractEvent implements MutationEvent {
 				  Node relatedNodeArg, 
 				  String prevValueArg, 
 				  String newValueArg, 
-				  String attrNameArg) {
+				  String attrNameArg,
+                                  short attrChangeArg) {
 	initEvent(typeArg, canBubbleArg, cancelableArg);
 	this.relatedNode = relatedNodeArg;
 	this.prevValue = prevValueArg;
 	this.newValue = newValueArg;
 	this.attrName = attrNameArg;
+        this.attrChange = attrChangeArg;
     }
 }

@@ -18,7 +18,7 @@ package org.w3c.dom;
  * <code>&lt;!--</code>' and ending '<code>--&gt;</code>'. Note that this is 
  * the definition of a comment in XML, and, in practice, HTML, although some 
  * HTML tools may implement the full SGML comment structure.
- * <p>See also the <a href='http://www.w3.org/TR/2000/PR-DOM-Level-2-Core-20000927'>Document Object Model (DOM) Level 2 Core Specification</a>.
+ * <p>See also the <a href='http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113'>Document Object Model (DOM) Level 2 Core Specification</a>.
  */
 public interface Comment extends CharacterData {
 }

@@ -16,7 +16,7 @@ package org.w3c.dom;
  * The <code>DOMImplementation</code> interface provides a number of methods 
  * for performing operations that are independent of any particular instance 
  * of the document object model.
- * <p>See also the <a href='http://www.w3.org/TR/2000/PR-DOM-Level-2-Core-20000927'>Document Object Model (DOM) Level 2 Core Specification</a>.
+ * <p>See also the <a href='http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113'>Document Object Model (DOM) Level 2 Core Specification</a>.
  */
 public interface DOMImplementation {
     /**

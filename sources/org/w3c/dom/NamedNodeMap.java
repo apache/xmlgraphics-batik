@@ -22,7 +22,7 @@ package org.w3c.dom;
  * convenient enumeration of the contents of a <code>NamedNodeMap</code>, 
  * and does not imply that the DOM specifies an order to these Nodes. 
  * <p><code>NamedNodeMap</code> objects in the DOM are live.
- * <p>See also the <a href='http://www.w3.org/TR/2000/PR-DOM-Level-2-Core-20000927'>Document Object Model (DOM) Level 2 Core Specification</a>.
+ * <p>See also the <a href='http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113'>Document Object Model (DOM) Level 2 Core Specification</a>.
  */
 public interface NamedNodeMap {
     /**

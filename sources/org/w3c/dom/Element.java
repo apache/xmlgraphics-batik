@@ -27,7 +27,7 @@ package org.w3c.dom;
  * directly access an attribute value can safely be used as a convenience.In 
  * DOM Level 2, the method <code>normalize</code> is inherited from the 
  * <code>Node</code> interface where it was moved.
- * <p>See also the <a href='http://www.w3.org/TR/2000/PR-DOM-Level-2-Core-20000927'>Document Object Model (DOM) Level 2 Core Specification</a>.
+ * <p>See also the <a href='http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113'>Document Object Model (DOM) Level 2 Core Specification</a>.
  */
 public interface Element extends Node {
     /**

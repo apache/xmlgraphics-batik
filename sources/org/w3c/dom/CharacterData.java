@@ -24,7 +24,7 @@ package org.w3c.dom;
  * the DOM are represented in UTF-16, i.e. as a sequence of 16-bit units. In 
  * the following, the term 16-bit units is used whenever necessary to 
  * indicate that indexing on CharacterData is done in 16-bit units.
- * <p>See also the <a href='http://www.w3.org/TR/2000/PR-DOM-Level-2-Core-20000927'>Document Object Model (DOM) Level 2 Core Specification</a>.
+ * <p>See also the <a href='http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113'>Document Object Model (DOM) Level 2 Core Specification</a>.
  */
 public interface CharacterData extends Node {
     /**

@@ -33,7 +33,7 @@ package org.w3c.dom;
  * different namespace URIs.
  * <p>As for <code>Entity</code> nodes, <code>EntityReference</code> nodes and 
  * all their descendants are readonly.
- * <p>See also the <a href='http://www.w3.org/TR/2000/PR-DOM-Level-2-Core-20000927'>Document Object Model (DOM) Level 2 Core Specification</a>.
+ * <p>See also the <a href='http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113'>Document Object Model (DOM) Level 2 Core Specification</a>.
  */
 public interface EntityReference extends Node {
 }

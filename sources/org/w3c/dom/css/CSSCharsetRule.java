@@ -29,7 +29,7 @@ import org.w3c.dom.DOMException;
  * document actually came in; character encoding information e.g. in an HTTP 
  * header, has priority (see CSS document representation) but this is not 
  * reflected in the <code>CSSCharsetRule</code>. 
- * <p>See also the <a href='http://www.w3.org/TR/2000/PR-DOM-Level-2-Style-20000927'>Document Object Model (DOM) Level 2 Style Specification</a>.
+ * <p>See also the <a href='http://www.w3.org/TR/2000/REC-DOM-Level-2-Style-20001113'>Document Object Model (DOM) Level 2 Style Specification</a>.
  * @since DOM Level 2
  */
 public interface CSSCharsetRule extends CSSRule {
