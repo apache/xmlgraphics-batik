@@ -118,7 +118,7 @@
         <p>
         Finally, Batik comes with <link href="toolsAndApps.html">packaged applications</link> to help developers get
         familiar with the code and be quickly able to use the various modules: an 
-        <link href="svgviewer.html">SVG browser</link> (in the 
+        <link href="svgviewer.html">Squiggle</link> (in the 
         <code>org.apache.batik.apps.svgbrowser</code> package) an 
         <link href="svgrasterizer.html">SVG rasterizer</link> (in the 
         <code>org.apache.batik.apps.rasterizer</code> package), a
@@ -127,58 +127,71 @@
         <link href="svgpp.html">SVG pretty printer</link> (in the 
         <code>org.apache.batik.apps.svgpp package</code>).</p>
         <p>
-        The <strong>Squiggle SVG browser</strong> <link href="svgviewer.html">(here)</link> can display SVG documents and lets the user zoom, pan 
-        and rotate any SVG document, view the SVG source, link between SVG 
-        documents, view a tree representation of the SVG DOM and more. One
-        important component of the SVG viewer is the <code>org.apache.batik.swing.JSVGCanvas</code>  
-        component which can be plugged in any Java application or applet to provide SVG viewing capability.
+        <strong>Squiggle</strong> the SVG browser <link
+        href="svgviewer.html">(here)</link> can display SVG documents
+        and lets the user zoom, pan and rotate any SVG document, view
+        the SVG source, link between SVG documents, view a tree
+        representation of the SVG DOM and more. One important
+        component of the SVG viewer is the
+        <code>org.apache.batik.swing.JSVGCanvas</code> component which
+        can be plugged in any Java application or applet to provide
+        SVG viewing capability.
         </p>
         <p>
-        The <strong>SVG rasterizer</strong> <link href="svgrasterizer.html">(here)</link> 
-        lets the user convert SVG files to raster formats such
-        as JPEG, PNG or Tiff . It contains an extensible mechanism so that arbitrary
-        raster formats can be added. For example, the rasterizer lets you create 
-        one SVG file with a special effect (e.g., shadows, gradients, etc...), 
-        turn it into an PNG image, then modify the SVG source (e.g., modify
-        a piece of text or a color), and generate another PNG image from it. This
-        way, you can easily generate a series of images sharing a common
-        theme or look and feel to post on a web site (note that the rasterizer
-        can also be used on a web server to do this conversion automatically).
+        The <strong>SVG rasterizer</strong> <link
+        href="svgrasterizer.html">(here)</link> lets the user convert
+        SVG files to raster formats such as JPEG, PNG or Tiff . It
+        contains an extensible mechanism so that arbitrary raster
+        formats can be added. For example, the rasterizer lets you
+        create one SVG file with a special effect (e.g., shadows,
+        gradients, etc...), turn it into an PNG image, then modify the
+        SVG source (e.g., modify a piece of text or a color), and
+        generate another PNG image from it. This way, you can easily
+        generate a series of images sharing a common theme or look and
+        feel to post on a web site (note that the rasterizer can also
+        be used on a web server to do this conversion automatically).
         </p>
         <p>
-        The <strong>SVG Font Converter</strong><link href="ttf2svg.html">(here)</link> lets the user easily create
-        an <link href="http://www.w3.org/TR/SVG/fonts.html">SVG Font</link> for a set of characters from a True Type Font file. That
-        SVG Font definition can be embedded in a document using the
-        characters. This allows users to create SVG documents that are self contained and 
-        do not rely on system fonts, and guarantees that the SVG file will
-        be displayed exactly as it was authored on all platforms.
+        The <strong>SVG Font Converter</strong><link
+        href="ttf2svg.html">(here)</link> lets the user easily create
+        an <link href="http://www.w3.org/TR/SVG/fonts.html">SVG
+        Font</link> for a set of characters from a True Type Font
+        file. That SVG Font definition can be embedded in a document
+        using the characters. This allows users to create SVG
+        documents that are self contained and do not rely on system
+        fonts, and guarantees that the SVG file will be displayed
+        exactly as it was authored on all platforms.
         </p>
 
         <p>
-        The <strong>SVG Pretty Printer</strong><link href="svgpp.html">(here)</link> is a convenience tool to 
-        pretty print an SVG document, which means that you can reformat any
-        existing SVG document to produce a properly formatted and highly legible 
-        version.</p>
+        The <strong>SVG Pretty Printer</strong><link
+        href="svgpp.html">(here)</link> is a convenience tool to
+        pretty print an SVG document, which means that you can
+        reformat any existing SVG document to produce a properly
+        formatted and highly legible version.</p>
 
-        <!-- <p>The SVG Generator 
-        (in the <code>org.apache.batik.util.awt.svg</code> package) that allows
-        all Java applications or applets to export their graphics to the SVG format. 
+        <!-- <p>The SVG Generator (in the
+        <code>org.apache.batik.util.awt.svg</code> package) that
+        allows all Java applications or applets to export their
+        graphics to the SVG format.
         
-        The SVG generator lets all Java application or applets export their graphics
-        as SVG, using the same code used for drawing to the screen or for
-        printing. For example, an application that displays a pie chart in
-        a window, can use the SVG generator to easily export the sequence
-        of Java2D drawing calls for the pie chart to a SVG format.
+        The SVG generator lets all Java application or applets export
+        their graphics as SVG, using the same code used for drawing to
+        the screen or for printing. For example, an application that
+        displays a pie chart in a window, can use the SVG generator to
+        easily export the sequence of Java2D drawing calls for the pie
+        chart to a SVG format.
         </p>
         -->
 
         <p>
-        These applications show that Batik can be used client side (the browser
-        can be used on any client machine) and server side (the rasterizer can be
-        used to serve SVG images to client machines that do not have SVG support).
+        These applications show that Batik can be used client side
+        (the browser can be used on any client machine) and server
+        side (the rasterizer can be used to serve SVG images to client
+        machines that do not have SVG support).
         </p>
         <p>
-        The <link href="svgviewer.html">Squiggle SVG Browser</link> and the
+        <link href="svgviewer.html">Squiggle</link> the SVG browser and the
         <link href="svgrasterizer.html">rasterizer</link> are examples
         of some of the types of applications Batik allows. Batik's
         <link href="architecture.html">architecture</link> allows the
@@ -197,7 +210,7 @@
     <question>How can I see a demo?</question>
     <answer>
         <p>
-        You can see an online demonstration of the Squiggle SVG browser
+        You can see an online demonstration of Squiggle the SVG browser
         on the <link href="batikDemo.html">demo page</link>. Alternatively,
         you can <link href="dist">download</link>
         Batik or see 
