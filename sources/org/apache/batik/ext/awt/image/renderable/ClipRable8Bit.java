@@ -25,6 +25,8 @@ import java.awt.image.BufferedImage;
 
 import java.awt.image.renderable.RenderContext;
 
+import org.apache.batik.ext.awt.image.GraphicsUtil;
+
 import org.apache.batik.ext.awt.image.rendered.CachableRed;
 import org.apache.batik.ext.awt.image.rendered.RenderedImageCachableRed;
 import org.apache.batik.ext.awt.image.rendered.BufferedImageCachableRed;
@@ -129,8 +131,8 @@ public class ClipRable8Bit
         Rectangle devAOIR;
         devAOIR = usr2dev.createTransformedShape(aoi).getBounds();
 
-        Graphics2D g2d = bi.createGraphics();
-        g2d.setRenderingHints(rh);
+        Graphics2D g2d = GraphicsUtil.createGraphics(bi, rh);
+
         if (false) {
             java.util.Set s = rh.keySet();
             java.util.Iterator i = s.iterator();

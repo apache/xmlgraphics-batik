@@ -21,11 +21,11 @@ import java.awt.image.RenderedImage;
 import java.awt.image.renderable.RenderContext;
 
 import org.apache.batik.ext.awt.RenderingHintsKeyExt;
+import org.apache.batik.ext.awt.image.GraphicsUtil;
 import org.apache.batik.ext.awt.image.rendered.AffineRed;
 import org.apache.batik.ext.awt.image.rendered.BufferedImageCachableRed;
-import org.apache.batik.ext.awt.image.rendered.TileRed;
 import org.apache.batik.ext.awt.image.rendered.CachableRed;
-import org.apache.batik.ext.awt.image.rendered.RenderedImageCachableRed;
+import org.apache.batik.ext.awt.image.rendered.TileRed;
 
 /**
  * 8 bit TileRable implementation
@@ -102,9 +102,9 @@ public class TileRable8Bit extends AbstractRable implements TileRable{
      * Default constructor
      */
     public TileRable8Bit(Filter source, 
-                             Rectangle2D tiledRegion,
-                             Rectangle2D tileRegion,
-                             boolean overflow){
+                         Rectangle2D tiledRegion,
+                         Rectangle2D tileRegion,
+                         boolean overflow){
         super(source);
 
         setTileRegion(tileRegion);
@@ -154,6 +154,9 @@ public class TileRable8Bit extends AbstractRable implements TileRable{
         double scaleX = Math.sqrt(sx*sx + shy*shy);
         double scaleY = Math.sqrt(sy*sy + shx*shx);
 
+        // System.out.println("AT: " + at);
+        // System.out.println("Scale: " + scaleX + "x" + scaleY);
+
         //
         // Compute the actual tiled area (intersection of AOI
         // and bounds) and the actual tile (anchored in the
@@ -162,20 +165,25 @@ public class TileRable8Bit extends AbstractRable implements TileRable{
 
         // tiledRect
         Rectangle2D tiledRect = getBounds2D();
+        Rectangle2D aoiRect;
         Shape       aoiShape  = rc.getAreaOfInterest();
-        Rectangle2D aoiRect   = aoiShape.getBounds2D();
+        if (aoiShape == null)
+            aoiRect = tiledRect;
+        else {
+            aoiRect = aoiShape.getBounds2D();
 
-        if (tiledRect.intersects(aoiRect) == false) 
-            return null;
-        Rectangle2D.intersect(tiledRect, aoiRect, tiledRect);
+            if (tiledRect.intersects(aoiRect) == false) 
+                return null;
+            Rectangle2D.intersect(tiledRect, aoiRect, tiledRect);
+        }
 
         // tileRect
-        Rectangle2D tileRect = getActualTileBounds(tiledRect);
+        Rectangle2D tileRect = tileRegion;
         
         // Adjust the scale so that the tiling happens on pixel
         // boundaries on both axis.
         // Desired pixel rect width
-        int dw = (int)(Math.ceil(tileRect.getWidth()*scaleX));
+        int dw = (int)(Math.ceil(tileRect.getWidth() *scaleX));
         int dh = (int)(Math.ceil(tileRect.getHeight()*scaleY));
 
         double tileScaleX = dw/tileRect.getWidth();
@@ -186,62 +194,84 @@ public class TileRable8Bit extends AbstractRable implements TileRable{
 
         // Adjust the translation so that the tile's origin falls on
         // pixel boundary
-        int dx = (int)(Math.floor(tileRect.getX()*tileScaleX));
-        int dy = (int)(Math.floor(tileRect.getY()*tileScaleY));
+        int dx = (int)Math.floor(tileRect.getX()*tileScaleX);
+        int dy = (int)Math.floor(tileRect.getY()*tileScaleY);
 
-        double ttx = dx - tileRect.getX()*tileScaleX;
-        double tty = dy - tileRect.getY()*tileScaleY;
+        double ttx = dx - (tileRect.getX()*tileScaleX);
+        double tty = dy - (tileRect.getY()*tileScaleY);
 
         // System.out.println("ttx/tty : " + ttx + " / " + tty);
 
         // Get result unsheared or rotated
-        AffineTransform tileAt = 
-            AffineTransform.getTranslateInstance(ttx, tty);
+        AffineTransform tileAt;
+        // tileAt = AffineTransform.getScaleInstance(tileScaleX, tileScaleY);
+        // tileAt.translate(ttx, tty);
+        // System.out.println("Pt: " + tileAt.transform
+        //                    (new Point2D.Double(aoiRect.getX(),
+        //                                        aoiRect.getY()), null));
+
+
+        tileAt = AffineTransform.getTranslateInstance(ttx, tty);
         tileAt.scale(tileScaleX, tileScaleY);
 
+        // System.out.println("Pt: " + tileAt.transform
+        //                    (new Point2D.Double(aoiRect.getX(),
+        //                                        aoiRect.getY()), null));
+
         // System.out.println("tileRect in userSpace   : " + tileRect);
-        // System.out.println("tileRect in deviceSpace : " + tileAt.createTransformedShape(tileRect).getBounds2D());
+        // System.out.println("tileRect in deviceSpace : " + 
+        //                    tileAt.createTransformedShape(tileRect).
+        //                    getBounds2D());
+        Filter        source  = getSource();
 
-        RenderContext tileRc 
-            = new RenderContext(tileAt,
-                                rc.getAreaOfInterest(),
-                                rh);
+        Rectangle2D srcRect;
+        if (overflow)
+            srcRect = source.getBounds2D();
+        else
+            srcRect = tileRect;
 
-        RenderedImage tileRed = createTile(tileRc);
+        // System.out.println("SrcRect: " + srcRect);
+
+        RenderContext tileRc  = new RenderContext(tileAt, srcRect, rh);
+        // RenderedImage tileRed = new DemandRed(source, tileRc);
+        RenderedImage tileRed = source.createRendering(tileRc);
+
+        // System.out.println("TileRed: " + 
+        //                    GraphicsUtil.wrap(tileRed).getBounds());
+
+        // RenderedImage tileRed = createTile(tileRc);
         // System.out.println("tileRed : " + tileRed.getMinX() + "/" + tileRed.getMinY() + "/" 
         // + tileRed.getWidth() + "/" + tileRed.getHeight());
-        if(tileRed == null){
+        if(tileRed == null)
             return null;
-        }
 
-        Rectangle tiledArea = tileAt.createTransformedShape(rc.getAreaOfInterest()).getBounds();
-        if(tiledArea.width <= 0 || tiledArea.height <= 0){
-            return null;
-        }
 
-        RenderedImage tiledRed 
-            = new TileRed(tiledArea, tileRed);
+        // System.out.println("aoiRect: " + aoiRect);
 
-        /*org.apache.batik.test.gvt.ImageDisplay.showImage("Tile",
-          tileRed);*/
+        Rectangle tiledArea = tileAt.createTransformedShape
+            (aoiRect).getBounds();
+
+        // System.out.println("tiledArea: " + tiledArea);
+
+        TileRed tiledRed = new TileRed(tileRed, tiledArea, dw, dh);
+
+        // org.apache.batik.test.gvt.ImageDisplay.showImage("Tile", tiledRed);
+        // System.out.println("TileR: " + tiledRed.getBounds());
 
         // Return sheared/rotated tiled image
         AffineTransform shearAt =
             new AffineTransform(sx/scaleX, shy/scaleX,
                                 shx/scaleY, sy/scaleY,
                                 tx, ty);
-        
         shearAt.scale(scaleX/tileScaleX, scaleY/tileScaleY);
-        shearAt.translate(-ttx, -tty);
         
-        if(shearAt.isIdentity()){
-            return tiledRed;
-        }
-       
-        CachableRed cr 
-            = new RenderedImageCachableRed(tiledRed);
+        shearAt.translate(-ttx, -tty);
 
-        cr = new AffineRed(cr, shearAt, rh);
+        CachableRed cr = tiledRed;
+        if(!shearAt.isIdentity())
+            cr = new AffineRed(tiledRed, shearAt, rh);
+
+        // System.out.println("AffineR: " + cr.getBounds());
 
         return cr;
     }
@@ -270,8 +300,8 @@ public class TileRable8Bit extends AbstractRable implements TileRable{
         double h = Math.min(tileHeight, tiledHeight);
 
         Rectangle2D realTileRect 
-            = new Rectangle2D.Double(tiledRect.getX(),
-                                     tiledRect.getY(),
+            = new Rectangle2D.Double(tileRect.getX(),
+                                     tileRect.getY(),
                                      w, h);
 
         return realTileRect;
@@ -302,9 +332,9 @@ public class TileRable8Bit extends AbstractRable implements TileRable{
         RenderingHints hints = rc.getRenderingHints();
         if(hints == null){
             hints = new RenderingHints(null);
+        } else {
+            hints = new RenderingHints(hints);
         }
-
-        hints = new RenderingHints(hints);
 
         // The region actually tiles is the intersection
         // of the tiledRegion and the area of interest
@@ -563,7 +593,8 @@ public class TileRable8Bit extends AbstractRable implements TileRable{
                                 realTileRectDev.height,
                                 BufferedImage.TYPE_INT_ARGB);
         
-        Graphics2D g = realTileBI.createGraphics();
+        Graphics2D g = GraphicsUtil.createGraphics(realTileBI,
+                                                   rc.getRenderingHints());
         // g.setPaint(new java.awt.Color(0, 255, 0, 64));
         // g.fillRect(0, 0, realTileBI.getWidth(), realTileBI.getHeight());
         g.translate(-realTileRectDev.x,

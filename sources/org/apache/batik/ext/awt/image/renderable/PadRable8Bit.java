@@ -13,11 +13,13 @@ import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.RenderedImage;
+import java.awt.image.BufferedImage;
 import java.awt.image.renderable.RenderContext;
 
 import org.apache.batik.ext.awt.image.rendered.CachableRed;
 import org.apache.batik.ext.awt.image.rendered.RenderedImageCachableRed;
 import org.apache.batik.ext.awt.image.rendered.PadRed;
+import org.apache.batik.ext.awt.image.GraphicsUtil;
 
 /**
  * Concrete implementation of the PadRable interface.
@@ -103,6 +105,8 @@ public class PadRable8Bit extends AbstractRable
             aoi = getBounds2D();
         }
 
+        AffineTransform usr2dev = rc.getTransform();
+
         // We only depend on our source for stuff that is inside
         // our bounds and his bounds (remember our bounds may be
         // tighter than his in one or both directions).
@@ -117,25 +121,27 @@ public class PadRable8Bit extends AbstractRable
             return null;
         Rectangle2D.intersect(arect, rect, arect);
 
-        if (arect.intersects(srect) == false)
-            return null;
-        Rectangle2D.intersect(srect, arect, srect);
-
-        if((srect.getWidth()  <= 0) ||
-           (srect.getHeight() <= 0))
-            return null;
-
-        AffineTransform at = rc.getTransform();
+        RenderedImage ri = null;
+        if (arect.intersects(srect) == true) {
+            Rectangle2D.intersect(srect, arect, srect);
             
-        RenderContext srcRC = new RenderContext(at, srect, rh);
-        RenderedImage ri = src.createRendering(srcRC);
-        
-        if(ri == null)
-            return null;
+            RenderContext srcRC = new RenderContext(usr2dev, srect, rh);
+            ri = src.createRendering(srcRC);
 
-        CachableRed cr = RenderedImageCachableRed.wrap(ri);
+            // System.out.println("Pad filt: " + src + " R: " +
+            //                    src.getBounds2D());
+        }
+
+        // No source image so create a 1,1 transparent one...
+        if (ri == null)
+            ri = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+
+        // org.apache.batik.test.gvt.ImageDisplay.showImage("Paded: ", ri);
+        // System.out.println("RI: " + ri + " R: " + srect);
+
+        CachableRed cr = GraphicsUtil.wrap(ri);
             
-        arect = at.createTransformedShape(arect).getBounds2D();
+        arect = usr2dev.createTransformedShape(arect).getBounds2D();
             
         // System.out.println("Pad rect : " + arect);
         // Use arect (my bounds intersect area of interest)

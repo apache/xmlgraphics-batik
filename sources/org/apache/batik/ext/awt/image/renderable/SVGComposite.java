@@ -33,6 +33,8 @@ public class SVGComposite
 
     CompositeRule rule;
 
+    public CompositeRule getRule() { return rule; }
+
     public SVGComposite(CompositeRule rule) {
         this.rule = rule;
     }
@@ -162,10 +164,14 @@ public class SVGComposite
                 int end = w*4;
                 while(sp<end) {
                     final int dstM = (255-srcPix[sp+3])*norm;
-                    dstPix[sp] =(srcPix[sp] + dstPix[sp]*dstM +pt5)>>>24; ++sp;
-                    dstPix[sp] =(srcPix[sp] + dstPix[sp]*dstM +pt5)>>>24; ++sp;
-                    dstPix[sp] =(srcPix[sp] + dstPix[sp]*dstM +pt5)>>>24; ++sp;
-                    dstPix[sp] =(srcPix[sp] + dstPix[sp]*dstM +pt5)>>>24; ++sp;
+                    dstPix[sp] = srcPix[sp] + ((dstPix[sp]*dstM +pt5)>>>24);
+                    ++sp;
+                    dstPix[sp] = srcPix[sp] + ((dstPix[sp]*dstM +pt5)>>>24);
+                    ++sp;
+                    dstPix[sp] = srcPix[sp] + ((dstPix[sp]*dstM +pt5)>>>24);
+                    ++sp;
+                    dstPix[sp] = srcPix[sp] + ((dstPix[sp]*dstM +pt5)>>>24);
+                    ++sp;
                 }
                 dstOut.setPixels(x, y, w, 1, dstPix);
             }

@@ -10,16 +10,11 @@ package org.apache.batik.ext.awt.image.renderable;
 
 import java.awt.RenderingHints;
 import java.awt.Rectangle;
+import java.awt.Point;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.Point2D;
-import java.awt.color.ColorSpace;
-import java.awt.image.BufferedImage;
-import java.awt.image.BufferedImageOp;
-import java.awt.image.ColorConvertOp;
-import java.awt.image.ColorModel;
 import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferInt;
-import java.awt.image.DirectColorModel;
 import java.awt.image.Raster;
 import java.awt.image.RasterOp;
 import java.awt.image.SampleModel;
@@ -35,7 +30,11 @@ import java.awt.image.WritableRaster;
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
-public class DisplacementMapOp implements BufferedImageOp, RasterOp {
+public class DisplacementMapOp implements RasterOp {
+    // Use these to control timing and Nearest Neighbot vs. Bilinear Interp.
+    static private final boolean TIME   = false;
+    static private final boolean USE_NN = false;
+
     /**
      * The displacement scale factor along the x axis
      */
@@ -60,17 +59,7 @@ public class DisplacementMapOp implements BufferedImageOp, RasterOp {
      * The bufferedImage that provides pixel values for displacement
      * of the image needed to be filtered
      */
-    BufferedImage in2;
-    Raster in2Raster;
-    /*
-     * sRGB ColorSpace instance used for compatibility checking
-     */
-    private final ColorSpace sRGB = ColorSpace.getInstance(ColorSpace.CS_sRGB);
-
-    /*
-     * Linear RGB ColorSpace instance used for compatibility checking
-     */
-    private final ColorSpace lRGB = ColorSpace.getInstance(ColorSpace.CS_LINEAR_RGB);
+    Raster in2;
 
     /**
      * @param scaleX defines the scale factor of the filter operation on the X axis.
@@ -83,7 +72,8 @@ public class DisplacementMapOp implements BufferedImageOp, RasterOp {
      *            displacment operation
      */
     public DisplacementMapOp (ARGBChannel xChannel, ARGBChannel yChannel, 
-                              int scaleX, int scaleY, BufferedImage in2){
+                              int scaleX, int scaleY, 
+                              Raster in2){
         if(xChannel == null){
             throw new IllegalArgumentException();
         }
@@ -101,11 +91,8 @@ public class DisplacementMapOp implements BufferedImageOp, RasterOp {
 
     public Rectangle2D getBounds2D(Raster src){
         checkCompatible(src.getSampleModel());
-        return new Rectangle(src.getMinX(), src.getMinY(), src.getWidth(), src.getHeight());
-    }
-
-    public Rectangle2D getBounds2D(BufferedImage src){
-        return new Rectangle(0, 0, src.getWidth(), src.getHeight());
+        return new Rectangle(in2.getMinX(), in2.getMinY(), 
+                             in2.getWidth(), in2.getHeight());
     }
 
     public Point2D getPoint2D(Point2D srcPt, Point2D destPt){
@@ -116,70 +103,7 @@ public class DisplacementMapOp implements BufferedImageOp, RasterOp {
         return destPt;
     }
 
-    private void checkCompatible(ColorModel  colorModel,
-                                 SampleModel sampleModel){
-        ColorSpace cs = colorModel.getColorSpace();
 
-        // Check that model is sRGB or linear RGB
-        if((!cs.equals(sRGB)) && (!cs.equals(lRGB)))
-            throw new IllegalArgumentException
-                ("Expected CS_sRGB or CS_LINEAR_RGB color model");
-
-        // Check ColorModel is of type DirectColorModel
-        if(!(colorModel instanceof DirectColorModel))
-            throw new IllegalArgumentException
-                ("colorModel should be an instance of DirectColorModel");
-
-        // Check transfer type
-        if(sampleModel.getDataType() != DataBuffer.TYPE_INT)
-            throw new IllegalArgumentException
-                ("colorModel's transferType should be DataBuffer.TYPE_INT");
-
-        // Check red, green, blue and alpha mask
-        DirectColorModel dcm = (DirectColorModel)colorModel;
-        if(dcm.getRedMask() != 0x00ff0000)
-            throw new IllegalArgumentException
-                ("red mask in source should be 0x00ff0000");
-        if(dcm.getGreenMask() != 0x0000ff00)
-            throw new IllegalArgumentException
-                ("green mask in source should be 0x0000ff00");
-        if(dcm.getBlueMask() != 0x000000ff)
-            throw new IllegalArgumentException
-                ("blue mask in source should be 0x000000ff");
-        if(dcm.getAlphaMask() != 0xff000000)
-            throw new IllegalArgumentException
-                ("alpha mask in source should be 0xff000000");
-    }
-
-    private boolean isCompatible(ColorModel  colorModel,
-				 SampleModel sampleModel){
-        ColorSpace cs = colorModel.getColorSpace();
-        // Check that model is sRGB or linear RGB
-        if((cs != ColorSpace.getInstance(ColorSpace.CS_sRGB))
-           &&
-           (cs != ColorSpace.getInstance(ColorSpace.CS_LINEAR_RGB)))
-            return false;
-
-        // Check ColorModel is of type DirectColorModel
-        if(!(colorModel instanceof DirectColorModel))
-            return false;
-
-        // Check transfer type
-        if(sampleModel.getDataType() != DataBuffer.TYPE_INT)
-            return false;
-
-        // Check red, green, blue and alpha mask
-        DirectColorModel dcm = (DirectColorModel)colorModel;
-        if(dcm.getRedMask() != 0x00ff0000)
-            return false;
-        if(dcm.getGreenMask() != 0x0000ff00)
-            return false;
-        if(dcm.getBlueMask() != 0x000000ff)
-            return false;
-        if(dcm.getAlphaMask() != 0xff000000)
-            return false;
-        return true;
-    }
 
     private void checkCompatible(SampleModel model){
         // Check model is ok: should be SinglePixelPackedSampleModel
@@ -203,27 +127,13 @@ public class DisplacementMapOp implements BufferedImageOp, RasterOp {
     public RenderingHints getRenderingHints(){
         return null;
     }
-
-    public WritableRaster createCompatibleDestRaster(Raster src){
-        checkCompatible(src.getSampleModel());
-        // Src Raster is OK: create a similar Raster for destination.
-        return src.createCompatibleWritableRaster();
+    public WritableRaster createCompatibleDestRaster(Raster src) {
+        SampleModel sm = 
+            src.getSampleModel().createCompatibleSampleModel
+            (in2.getWidth(), in2.getHeight());
+        return Raster.createWritableRaster
+            (sm, new Point(in2.getMinX(), in2.getMinY()));
     }
-
-    public BufferedImage createCompatibleDestImage(BufferedImage src, ColorModel destCM){
-        BufferedImage dest = null;
-        if(destCM==null)
-            destCM = ColorModel.getRGBdefault();
-
-
-        WritableRaster wr;
-        wr = destCM.createCompatibleWritableRaster(src.getWidth(),
-                                                   src.getHeight());
-        checkCompatible(destCM, wr.getSampleModel());
-        return new BufferedImage(destCM, wr,
-                                 destCM.isAlphaPremultiplied(), null);
-    }
-
     /**
      * @param src the Raster to be filtered
      * @param dest stores the filtered image. If null, a destination will
@@ -231,32 +141,30 @@ public class DisplacementMapOp implements BufferedImageOp, RasterOp {
      *        which situation the src will be modified.
      */
     public WritableRaster filter(Raster src, WritableRaster dest){
+        if(dest!=null) 
+            checkCompatible(dest.getSampleModel());
+        else 
+            dest = createCompatibleDestRaster(src);
 
-        //check destation
-        if(dest!=null) checkCompatible(dest.getSampleModel());
-        else {
-            if(src==null)
-                throw new IllegalArgumentException("src should not be null when dest is null");
-            else dest = createCompatibleDestRaster(src);
-        }
+        if (USE_NN)
+            return filterNN(src,dest);
+        else
+            return filterBL(src,dest);
+    }
 
-        final int w = src.getWidth();
-        final int h = src.getHeight();
-        final int mw = in2Raster.getWidth();
-        final int mh = in2Raster.getHeight();
+    public WritableRaster filterBL(Raster src, WritableRaster dest){
 
-        if (mw < w){
-            throw new IllegalArgumentException();
-        }
-
-        if (mh < h) {
-            throw new IllegalArgumentException();
-        }
+        final int w      = in2.getWidth();
+        final int h      = in2.getHeight();
+        final int xStart = in2.getMinX()-src.getMinX();
+        final int yStart = in2.getMinY()-src.getMinY();
+        final int xEnd   = xStart+w;
+        final int yEnd   = yStart+h;
 
         // Access the integer buffer for each image.
         DataBufferInt srcDB = (DataBufferInt)src.getDataBuffer();
         DataBufferInt dstDB = (DataBufferInt)dest.getDataBuffer();
-        DataBufferInt in2DB = (DataBufferInt)in2Raster.getDataBuffer();
+        DataBufferInt in2DB = (DataBufferInt)in2.getDataBuffer();
 
         // Offset defines where in the stack the real data begin
         SinglePixelPackedSampleModel sppsm;
@@ -268,13 +176,13 @@ public class DisplacementMapOp implements BufferedImageOp, RasterOp {
 
         sppsm = (SinglePixelPackedSampleModel)dest.getSampleModel();
         final int dstOff = dstDB.getOffset() +
-            sppsm.getOffset(dest.getMinX() - dest.getSampleModelTranslateX(),
-                            dest.getMinY() - dest.getSampleModelTranslateY());
+            sppsm.getOffset(in2.getMinX() - dest.getSampleModelTranslateX(),
+                            in2.getMinY() - dest.getSampleModelTranslateY());
 
         sppsm = (SinglePixelPackedSampleModel)in2.getSampleModel();
         final int in2Off = in2DB.getOffset() +
-            sppsm.getOffset(in2.getMinX() - dest.getSampleModelTranslateX(),
-                            in2.getMinY() - dest.getSampleModelTranslateY());
+            sppsm.getOffset(in2.getMinX() - in2.getSampleModelTranslateX(),
+                            in2.getMinY() - in2.getSampleModelTranslateY());
 
         // Stride is the distance between two consecutive column elements,
         // in the one-dimention dataBuffer
@@ -282,14 +190,13 @@ public class DisplacementMapOp implements BufferedImageOp, RasterOp {
         final int dstScanStride = ((SinglePixelPackedSampleModel)dest.getSampleModel()).getScanlineStride();
         final int in2ScanStride = ((SinglePixelPackedSampleModel)in2.getSampleModel()).getScanlineStride();
 
-        final int srcAdjust = srcScanStride - w;
         final int dstAdjust = dstScanStride - w;
         final int in2Adjust = in2ScanStride - w;
 
         // Access the pixel value array
-        final int srcPixels[] = srcDB.getBankData()[0];
+        final int srcPixels[]  = srcDB.getBankData()[0];
         final int destPixels[] = dstDB.getBankData()[0];
-        final int in2Pixels[] = in2DB.getBankData()[0];
+        final int in2Pixels[]  = in2DB.getBankData()[0];
 
         // Below is the number of shifts for each axis
         // e.g when xChannel is ALPHA, the pixel needs
@@ -299,93 +206,409 @@ public class DisplacementMapOp implements BufferedImageOp, RasterOp {
 
         // The pointer of src and dest indicating where the pixel values are
         int sp = srcOff, dp = dstOff, ip = in2Off;
-        int sdp = 0;
 
-        // The temporary variable to calculate the displacement of the coordinates
-        int xDisplace, yDisplace;
-        int pel;
-        for (int i=0; i<h; i++){
-            for (int j=0; j<w; j++){
-                pel = in2Pixels[ip];
+        // Fixed point representation of scale factor.
+        final int fpScaleX = scaleX*(1<<16)/255;
+        final int fpScaleY = scaleY*(1<<16)/255;
 
-                xDisplace = (scaleX*((int)(((pel>>xShift)&0xff) - 127)))/255;
-                yDisplace = (scaleY*((int)(((pel>>yShift)&0xff) - 127)))/255;
+        final int maxDx       = (scaleX/2)+1;
+        final int dangerZoneX = w-maxDx;
+        final int maxDy       = (scaleY/2)+1;
+        final int dangerZoneY = h-maxDy;
 
-                if ((j+xDisplace < 0) ||
-                    (j+xDisplace > w-1) ||
-                    (i+yDisplace < 0) ||
-                    (i+yDisplace > h-1)){
-                    // System.out.println("Overflow : " + i + " / " + j + " / " + xDisplace + " / " + yDisplace);
+        long start = System.currentTimeMillis();
+
+        final int srcXExt  = src.getWidth()-1;
+        final int srcYExt = src.getHeight()-1;
+        
+        for (int y=yStart; y<yEnd; y++) {
+            for (int x=xStart; x<xEnd; x++){
+                final int dPel = in2Pixels[ip];
+
+                final int xDisplace = fpScaleX*(((dPel>>xShift)&0xff) - 127);
+                final int yDisplace = fpScaleY*(((dPel>>yShift)&0xff) - 127);
+
+                final int x0 = x+(xDisplace>>16);
+                final int y0 = y+(yDisplace>>16);
+
+                if ((x0 < 0) || (x0 > srcXExt) ||
+                    (y0 < 0) || (y0 > srcYExt)){
                     destPixels[dp] = 0xffffffff;
                 }
                 else {
-                    // sdp = sp + xDisplace*srcScanStride + yDisplace;
-                    try{
-                        sdp = srcOff + (i + yDisplace)*srcScanStride + j + xDisplace;
-                        int newPel = srcPixels[sdp];
-                        destPixels[dp] = newPel;
-                    }catch(ArrayIndexOutOfBoundsException e){
-                        System.out.println("srcPixels.length : " + srcPixels.length);
-                        System.out.println("srcOff           : " + srcOff);
-                        System.out.println("w / h            : " + w + " / " + h);
-                        System.out.println("srcScanStride    : " + srcScanStride);
-                        System.out.println("xDisp / yDisp    : " + xDisplace + " / " + yDisplace);
-                        System.out.println("i / j            : " + i + " / " + j);
-                        System.out.println("sdp              : " + sdp);
-                        System.out.flush();
-                        e.printStackTrace();
-                        System.out.flush();
-                        throw new Error();
-                    }
+                    int sdp  = srcOff + y0*srcScanStride + x0;
+                    int pel  = srcPixels[sdp];
+                    int sp0A = (pel>>>16) & 0xFF00;
+                    int sp0R = (pel>>  8) & 0xFF00;
+                    int sp0G = (pel     ) & 0xFF00;
+                    int sp0B = (pel<<  8) & 0xFF00;
+
+                    if (x0 != srcXExt)
+                        pel = srcPixels[sdp+1];
+                    int sp1A = (pel>>>16) & 0xFF00;
+                    int sp1R = (pel>>  8) & 0xFF00;
+                    int sp1G = (pel     ) & 0xFF00;
+                    int sp1B = (pel<<  8) & 0xFF00;
+
+                    int frac = xDisplace&0xFFFF;
+                    int pel0A = (sp0A + (((sp1A-sp0A)*frac)>>16)) & 0xFFFF;
+                    int pel0R = (sp0R + (((sp1R-sp0R)*frac)>>16)) & 0xFFFF;
+                    int pel0G = (sp0G + (((sp1G-sp0G)*frac)>>16)) & 0xFFFF;
+                    int pel0B = (sp0B + (((sp1B-sp0B)*frac)>>16)) & 0xFFFF;
+
+                    if (y0 != srcYExt)
+                        sdp+=srcScanStride;
+                    pel = srcPixels[sdp];
+                    sp0A  = (pel>>>16) & 0xFF00;
+                    sp0R  = (pel>>  8) & 0xFF00;
+                    sp0G  = (pel     ) & 0xFF00;
+                    sp0B  = (pel<<  8) & 0xFF00;
+
+                    if (x0 != srcXExt)
+                        pel = srcPixels[sdp+1];
+                    sp1A  = (pel>>>16) & 0xFF00;
+                    sp1R  = (pel>>  8) & 0xFF00;
+                    sp1G  = (pel     ) & 0xFF00;
+                    sp1B  = (pel<<  8) & 0xFF00;
+
+                    int pel1A = (sp0A + (((sp1A-sp0A)*frac)>>16)) & 0xFFFF;
+                    int pel1R = (sp0R + (((sp1R-sp0R)*frac)>>16)) & 0xFFFF;
+                    int pel1G = (sp0G + (((sp1G-sp0G)*frac)>>16)) & 0xFFFF;
+                    int pel1B = (sp0B + (((sp1B-sp0B)*frac)>>16)) & 0xFFFF;
+
+                    frac = yDisplace&0xFFFF;
+                    int newPel = 
+                        (((((pel0A<<16) + 
+                            (pel1A-pel0A)*frac)&0xFF000000)   ) |
+                         ((((pel0R<<16) + 
+                            (pel1R-pel0R)*frac)&0xFF000000)>>>8) |
+                         ((((pel0G<<16) + 
+                            (pel1G-pel0G)*frac)&0xFF000000)>>>16)|
+                         ((((pel0B<<16) + 
+                            (pel1B-pel0B)*frac))           >>>24));
+
+                    destPixels[dp] = newPel;
                 }
                 
-                sp++;
                 dp++;
                 ip++;
             }
 
-            sp += srcAdjust;
             dp += dstAdjust;
             ip += in2Adjust;
+        }
+
+        if (TIME) {
+            long end = System.currentTimeMillis();
+            System.out.println("Time: " + (end-start));
         }
         return dest;
     }// end of the filter() method for Raster
 
-    public BufferedImage filter(BufferedImage src, BufferedImage dest){
-        if (src == null)
-            throw new NullPointerException("src image should not be null if dest is null");
+    /**
+     * Does displacement map using Nearest neighbor interpolation
+     *
+     * @param src the Raster to be filtered
+     * @param dest stores the filtered image. If null, a destination will
+     *        be created. src and dest can refer to the same Raster, in
+     *        which situation the src will be modified.
+     */
+    public WritableRaster filterNN(Raster src, WritableRaster dest) {
+        final int w      = in2.getWidth();
+        final int h      = in2.getHeight();
+        final int xStart = in2.getMinX()-src.getMinX();
+        final int yStart = in2.getMinY()-src.getMinY();
+        final int xEnd   = xStart+w;
+        final int yEnd   = yStart+h;
 
-        // Now, check destination. If compatible, it is used as is. Otherwise
-        // a temporary image is used.
-        BufferedImage finalDest = dest;
-        if(dest==null){
-            dest = createCompatibleDestImage(src, null);
-            finalDest = dest;
-        }
-        else{
-            // Check that the destination ColorModel is compatible
-            if(!isCompatible(dest.getColorModel(), dest.getSampleModel()))
-                dest = createCompatibleDestImage(src, null);
+        // Access the integer buffer for each image.
+        DataBufferInt srcDB = (DataBufferInt)src.getDataBuffer();
+        DataBufferInt dstDB = (DataBufferInt)dest.getDataBuffer();
+        DataBufferInt in2DB = (DataBufferInt)in2.getDataBuffer();
+
+        // Offset defines where in the stack the real data begin
+        SinglePixelPackedSampleModel sppsm;
+        sppsm = (SinglePixelPackedSampleModel)src.getSampleModel();
+
+        final int srcOff = srcDB.getOffset() +
+            sppsm.getOffset(src.getMinX() - src.getSampleModelTranslateX(),
+                            src.getMinY() - src.getSampleModelTranslateY());
+
+        sppsm = (SinglePixelPackedSampleModel)dest.getSampleModel();
+        final int dstOff = dstDB.getOffset() +
+            sppsm.getOffset(in2.getMinX() - dest.getSampleModelTranslateX(),
+                            in2.getMinY() - dest.getSampleModelTranslateY());
+
+        sppsm = (SinglePixelPackedSampleModel)in2.getSampleModel();
+        final int in2Off = in2DB.getOffset() +
+            sppsm.getOffset(in2.getMinX() - in2.getSampleModelTranslateX(),
+                            in2.getMinY() - in2.getSampleModelTranslateY());
+
+        // Stride is the distance between two consecutive column elements,
+        // in the one-dimention dataBuffer
+        final int srcScanStride = ((SinglePixelPackedSampleModel)src.getSampleModel()).getScanlineStride();
+        final int dstScanStride = ((SinglePixelPackedSampleModel)dest.getSampleModel()).getScanlineStride();
+        final int in2ScanStride = ((SinglePixelPackedSampleModel)in2.getSampleModel()).getScanlineStride();
+
+        final int dstAdjust = dstScanStride - w;
+        final int in2Adjust = in2ScanStride - w;
+
+        // Access the pixel value array
+        final int srcPixels[]  = srcDB.getBankData()[0];
+        final int destPixels[] = dstDB.getBankData()[0];
+        final int in2Pixels[]  = in2DB.getBankData()[0];
+
+        // Below is the number of shifts for each axis
+        // e.g when xChannel is ALPHA, the pixel needs
+        // to be shifted 24, RED 16, GREEN 8 and BLUE 0
+        final int xShift = xChannel.toInt()*8;
+        final int yShift = yChannel.toInt()*8;
+
+        final int fpScaleX = scaleX*(1<<16)/255;
+        final int fpScaleY = scaleY*(1<<16)/255;
+
+        final int srcXExt = src.getWidth()-1;
+        final int srcYExt = src.getHeight()-1;
+
+        int delta = (scaleX/2)+1;
+        int dz = srcXExt-delta;
+        if (delta > xEnd) delta = xEnd;
+        if (dz    > xEnd) dz    = xEnd;
+        final int maxDx       = delta; 
+        final int dangerZoneX = dz;
+
+        delta = (scaleY/2)+1;
+        dz = srcYExt-delta;
+        if (delta > yEnd) delta = yEnd;
+        if (dz    > yEnd) dz    = yEnd;
+        final int maxDy       = delta;
+        final int dangerZoneY = dz;
+
+
+        // The pointer of src and dest indicating where the pixel values are
+        int dp = dstOff, ip = in2Off;
+
+        long start = System.currentTimeMillis();
+        int y=yStart;
+        while (y<maxDy) {
+            int x=xStart;
+            while (x<maxDx) {
+                int pel = in2Pixels[ip];
+                
+                final int xDisplace = fpScaleX*(((pel>>xShift)&0xff) - 127);
+                final int yDisplace = fpScaleY*(((pel>>yShift)&0xff) - 127);
+
+                final int x0 = x+(xDisplace>>16);
+                final int y0 = y+(yDisplace>>16);
+
+                if ((x0 < 0) || (x0 > srcXExt) ||
+                    (y0 < 0) || (y0 > srcYExt)){
+                    destPixels[dp] = 0xffffffff;
+                }
+                else {
+                    int sdp = srcOff + y0*srcScanStride + x0;
+                    destPixels[dp] = srcPixels[sdp];
+                }
+                
+                dp++;
+                ip++;
+                x++;
+            }
+
+            while (x<dangerZoneX) {
+                int pel = in2Pixels[ip];
+
+                final int xDisplace = fpScaleX*(((pel>>xShift)&0xff) - 127);
+                final int yDisplace = fpScaleY*(((pel>>yShift)&0xff) - 127);
+
+                final int x0 = x+(xDisplace>>16);
+                final int y0 = y+(yDisplace>>16);
+
+                if ((y0 < 0) || (y0 > srcYExt)) {
+                    destPixels[dp] = 0xffffffff;
+                }
+                else {
+                    int sdp = srcOff + y0*srcScanStride + x0;
+                    destPixels[dp] = srcPixels[sdp];
+                }
+                
+                dp++;
+                ip++;
+                x++;
+            }
+
+            while (x<xEnd) {
+                int pel = in2Pixels[ip];
+
+                final int xDisplace = fpScaleX*(((pel>>xShift)&0xff) - 127);
+                final int yDisplace = fpScaleY*(((pel>>yShift)&0xff) - 127);
+
+                final int x0 = x+(xDisplace>>16);
+                final int y0 = y+(yDisplace>>16);
+
+                if ((x0 > srcXExt) ||
+                    (y0 < 0) || (y0 > srcYExt)){
+                    destPixels[dp] = 0xffffffff;
+                }
+                else {
+                    int sdp = srcOff + y0*srcScanStride + x0;
+                    destPixels[dp] = srcPixels[sdp];
+                }
+                
+                dp++;
+                ip++;
+                x++;
+            }
+            dp += dstAdjust;
+            ip += in2Adjust;
+            y++;
         }
 
-        if(in2 == null){
-            in2 = src;
-            in2Raster = src.getRaster();
-        }
-        else {
-            in2Raster = in2.getRaster();
-        }
-        // We now have two compatible images. We can safely filter the rasters
-        filter(src.getRaster(), dest.getRaster());
+        while (y<dangerZoneY) {
+            int x=xStart;
+            while (x<maxDx) {
+                int pel = in2Pixels[ip];
 
-        // If we had to use a temporary destination, copy the result into the
-        // real output image
-        if(dest != finalDest){
-            ColorConvertOp toDestCM = new ColorConvertOp(null);
-            toDestCM.filter(dest, finalDest);
+                final int xDisplace = fpScaleX*(((pel>>xShift)&0xff) - 127);
+                final int yDisplace = fpScaleY*(((pel>>yShift)&0xff) - 127);
+
+                final int x0 = x+(xDisplace>>16);
+                final int y0 = y+(yDisplace>>16);
+
+                if ((x0 < 0) || (x0 > srcXExt)){
+                    destPixels[dp] = 0xffffffff;
+                }
+                else {
+                    int sdp = srcOff + y0*srcScanStride + x0;
+                    destPixels[dp] = srcPixels[sdp];
+                }
+                
+                dp++;
+                ip++;
+                x++;
+            }
+
+            while (x<dangerZoneX) {
+                int pel = in2Pixels[ip];
+
+                final int xDisplace = fpScaleX*(((pel>>xShift)&0xff) - 127);
+                final int yDisplace = fpScaleY*(((pel>>yShift)&0xff) - 127);
+
+                int sdp = (srcOff + x+(xDisplace>>16) + 
+                       (y+(yDisplace>>16))*srcScanStride);
+                destPixels[dp] = srcPixels[sdp];
+                
+                dp++;
+                ip++;
+                x++;
+            }
+
+            while (x<xEnd) {
+                int pel = in2Pixels[ip];
+
+                final int xDisplace = fpScaleX*(((pel>>xShift)&0xff) - 127);
+                final int yDisplace = fpScaleY*(((pel>>yShift)&0xff) - 127);
+
+                final int x0 = x+(xDisplace>>16);
+                final int y0 = y+(yDisplace>>16);
+
+                if (x0 > srcXExt) {
+                    destPixels[dp] = 0xffffffff;
+                }
+                else {
+                    int sdp = srcOff + y0*srcScanStride + x0;
+                    destPixels[dp] = srcPixels[sdp];
+                }
+                
+                dp++;
+                ip++;
+                x++;
+            }
+            dp += dstAdjust;
+            ip += in2Adjust;
+            y++;
+        }
+
+        while (y<yEnd) {
+            int x=xStart;
+            while (x<maxDx) {
+                int pel = in2Pixels[ip];
+
+                final int xDisplace = fpScaleX*(((pel>>xShift)&0xff) - 127);
+                final int yDisplace = fpScaleY*(((pel>>yShift)&0xff) - 127);
+
+                final int x0 = x+(xDisplace>>16);
+                final int y0 = y+(yDisplace>>16);
+
+                if ((x0 < 0) || (x0 > srcXExt) ||
+                    (y0 > srcYExt)){
+                    destPixels[dp] = 0xffffffff;
+                }
+                else {
+                    int sdp = srcOff + y0*srcScanStride + x0;
+                    destPixels[dp] = srcPixels[sdp];
+                }
+                
+                dp++;
+                ip++;
+                x++;
+            }
+
+            while (x<dangerZoneX) {
+                int pel = in2Pixels[ip];
+
+                final int xDisplace = fpScaleX*(((pel>>xShift)&0xff) - 127);
+                final int yDisplace = fpScaleY*(((pel>>yShift)&0xff) - 127);
+
+                final int x0 = x+(xDisplace>>16);
+                final int y0 = y+(yDisplace>>16);
+
+                if (y0 > srcYExt) {
+                    destPixels[dp] = 0xffffffff;
+                }
+                else {
+                    int sdp = srcOff + y0*srcScanStride + x0;
+                    destPixels[dp] = srcPixels[sdp];
+                }
+                
+                dp++;
+                ip++;
+                x++;
+            }
+
+            while (x<xEnd) {
+                int pel = in2Pixels[ip];
+
+                final int xDisplace = fpScaleX*(((pel>>xShift)&0xff) - 127);
+                final int yDisplace = fpScaleY*(((pel>>yShift)&0xff) - 127);
+
+                final int x0 = x+(xDisplace>>16);
+                final int y0 = y+(yDisplace>>16);
+
+                if ((x0 > srcXExt) || (y0 > srcYExt)){
+                    destPixels[dp] = 0xffffffff;
+                }
+                else {
+                    int sdp = srcOff + y0*srcScanStride + x0;
+                    destPixels[dp] = srcPixels[sdp];
+                }
+                
+                dp++;
+                ip++;
+                x++;
+            }
+            dp += dstAdjust;
+            ip += in2Adjust;
+            y++;
+        }
+        
+        if (TIME) {
+            long end = System.currentTimeMillis();
+            System.out.println("Time: " + (end-start));
         }
         return dest;
-    }
+    }// end of the filter() method for Raster
+
 }
 
 

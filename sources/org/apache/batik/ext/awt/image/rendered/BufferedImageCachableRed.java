@@ -84,9 +84,15 @@ public class BufferedImageCachableRed extends AbstractRed {
 
     public Raster getData(Rectangle rect) {
         Rectangle r = (Rectangle)rect.clone();
+
+        if (r.intersects(getBounds()) == false)
+            return null;
+        r = r.intersection(getBounds());
         r.translate(-getMinX(), - getMinY());
+
         Raster ret = bi.getData(r);
-        return ret.createTranslatedChild(rect.x, rect.y);
+        return ret.createTranslatedChild(ret.getMinX()+getMinX(), 
+                                         ret.getMinY()+getMinY());
     }
 
     public WritableRaster copyData(WritableRaster wr) {

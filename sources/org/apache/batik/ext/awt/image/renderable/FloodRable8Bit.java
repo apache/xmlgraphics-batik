@@ -21,6 +21,7 @@ import java.awt.geom.NoninvertibleTransformException;
 import java.awt.image.RenderedImage;
 import java.awt.image.renderable.RenderContext;
 
+import org.apache.batik.ext.awt.image.GraphicsUtil;
 import org.apache.batik.ext.awt.image.rendered.BufferedImageCachableRed;
 
 /**
@@ -117,22 +118,21 @@ public class FloodRable8Bit extends AbstractRable
 
         // Now, take area of interest into account. It is
         // defined in user space.
-
-        Shape userAOIShape = rc.getAreaOfInterest();
-        Rectangle2D userAOI = null;
-        if (userAOIShape == null) {
+        Rectangle2D userAOI;
+        Shape aoi = rc.getAreaOfInterest();
+        if (aoi == null) {
+            aoi     = imageRect;
             userAOI = imageRect;
-        }
-        else{
-            userAOI = userAOIShape.getBounds2D();
-        }
+        } else {
+            userAOI = aoi.getBounds2D();
 
-        // No intersection with the area of interest so return null..
-        if (imageRect.intersects(userAOI) == false) 
-            return null;
+            // No intersection with the area of interest so return null..
+            if (imageRect.intersects(userAOI) == false) 
+                return null;
 
-        // intersect the filter area and the AOI in user space
-        Rectangle2D.intersect(imageRect, userAOI, userAOI);
+            // intersect the filter area and the AOI in user space
+            Rectangle2D.intersect(imageRect, userAOI, userAOI);
+        }
 
         // The rendered area is the interesection of the
         // user space renderable area and the user space AOI bounds
@@ -152,14 +152,8 @@ public class FloodRable8Bit extends AbstractRable
                                 BufferedImage.TYPE_INT_ARGB);
 
         // System.out.println("renderedArea x/y/w/h: " + renderedArea.x + " / " + renderedArea.y + " / " + renderedArea.width + " / " + renderedArea.height);
-        Graphics2D g = offScreen.createGraphics();
-
-        // a simple fill such as this probably doesn't consider
-        // rendering hints, but I'll set them anyway
-        RenderingHints hints = rc.getRenderingHints();
-        if (hints != null) {
-            g.setRenderingHints(hints);
-        }
+        Graphics2D g = GraphicsUtil.createGraphics(offScreen,
+                                                   rc.getRenderingHints());
 
         // do the usr2dev transform - just in case this becomes a
         // flood paint rather than the simple paint fill

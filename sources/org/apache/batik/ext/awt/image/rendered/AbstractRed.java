@@ -35,6 +35,8 @@ import java.awt.image.SampleModel;
 import java.awt.image.ColorModel;
 import java.awt.image.ComponentColorModel;
 
+import org.apache.batik.ext.awt.image.GraphicsUtil;
+
 /**
  * This is an abstract base class that takes care of most of the
  * normal issues surrounding the implementation of the CachableRed
@@ -567,12 +569,19 @@ public abstract class AbstractRed implements CachableRed {
         if (tx1 >= minTileX+numXTiles) tx1 = minTileX+numXTiles-1;
         if (ty1 >= minTileY+numYTiles) ty1 = minTileY+numYTiles-1;
 
+        final boolean is_INT_PACK = 
+            GraphicsUtil.is_INT_PACK_Data(getSampleModel(), false);
+
         for (int y=ty0; y<=ty1; y++)
             for (int x=tx0; x<=tx1; x++) {
                 Raster r = getTile(x, y);
-                wr.setRect(r);
+                if (is_INT_PACK)
+                    GraphicsUtil.copyData_INT_PACK(r, wr);
+                else
+                    GraphicsUtil.copyData_FALLBACK(r, wr);
             }
     }
+
 
     /**
      * This is a helper function that will create the tile requested

@@ -24,6 +24,7 @@ class NullOp implements BufferedImageOp {
     public BufferedImage filter(BufferedImage src, BufferedImage dest){
         java.awt.Graphics2D g = dest.createGraphics();
         g.drawImage(src, 0, 0, null);
+        g.dispose();
         return dest;
     }
 
