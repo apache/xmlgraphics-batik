@@ -28,7 +28,7 @@
             <p>This document briefly describes the Batik architecture and the role of each of 
             its modules. For detailed module design, you can refer to the 
             <link href="http://opensource.objectsbydesign.com/batik/index.html">Batik UML diagrams.</link></p>
-            <p>There are three types of modules in the Batik archtitecture:</p>
+            <p>The Batik modules are of one of three types:</p>
             <ul>
                 <li><link href="#applicationComponents">Application Modules</link></li>
                 <li><link href="#coreComponents">Core Modules</link></li>
@@ -37,10 +37,10 @@
             <p>The following figure illustrates these three module types. </p>
             <figure src="images/HighLevelArchitecture.png" alt="Batik Architecture" />
             <p>Application Modules illustrate how to use
-            the Core Modules and let users evaluate the Batik software easily by experimenting
+            the Core Modules and let users evaluate the Batik software by experimenting
             with its features.</p>
             <p>The Core Modules are the heart of Batik and the primary deliverables for the 
-            projects. These are the modules that developers use to manipulate, generate, create, 
+            projects. These are the modules developers use to manipulate, generate, create, 
             convert and render SVG content</p>
             <p>Finally, the Low Level Modules are used internally by the Core Modules to 
             accomplish their work. These modules are not typically used by developers directly.</p> 
@@ -48,17 +48,17 @@
 
         <anchor id="applicationComponents" />
         <s1 title="Application Modules">
-            <p>As mentioned earlier, the Application Modules illustrate the functionalities that Batik
+            <p>As mentioned earlier, the Application Modules illustrate the functionality that Batik
             offers. </p>
             <p>For example, the <link href="svgviewer.html">SVG Browser</link> is built using several
-            Batik Core Modules (such as the <code>JSVGCanvas</code> GUI component or the <code>ImageTranscoder</code>s)
-            and illustrates how Batik lets you view, zoom, pan and rotate SVG documents, but also search them
-            and convert them to other formats (such as JPEG or PNG).</p>
+            Batik Core Modules (such as the <code>JSVGCanvas</code> GUI component and the <code>ImageTranscoder</code>s)
+            and illustrates how Batik lets you not only view, zoom, pan and rotate SVG documents, but also search them
+            and convert them to other formats (such as JPEG, TIFF or PNG).</p>
             <p>The <link href="svgpp">SVG Pretty Printer</link> is another example that shows how Batik
             lets you manipulate and transform SVG content, here for the purposed of tidying up potentially
             disorganized SVG files</p>
             <p>The <link href="ttf2svg">SVG Font Converter</link> illustrates how Batik can help you embed
-            SVG Font definitions in SVG file by providing an application that converts ranges of characters
+            SVG Font definitions in an SVG file by providing an application that converts ranges of characters
             from a True Type Font format to the SVG Font format.</p>
             <p>Finally, the <link href="svgrasterizer.html">SVG Rasterizer</link> shows how to leverage the     
             <link href="rasterizerTutorial">Transcoder API</link> to convert to and from SVG content</p> 
@@ -76,7 +76,7 @@
             </p>
             <ul>
                 <li><link href="svggen.html"><code>SVGGraphics2D</code></link> is a modules that lets all
-                Java technology application easily convert their graphics to the SVG format, as easily as
+                Java technology applications easily convert their graphics to the SVG format, as easily as
                 they draw to a screen or a printer, by leveraging the Java 2D API's extensible design.</li>
                 <li><link href="domapi.html"><code>SVG DOM</code></link> an implementation of the SVG DOM API defined
                 in the SVG recommendation. It lets the programmer manipulate SVG documents in a Java program.</li>
@@ -96,8 +96,8 @@
             <ul>
                 <li>The <code>Graphic Vector Toolkit</code> (GVT), which represents a view of the DOM tree
                 that is more suitable for for rendering and event handling purposes. </li>
-                <li>The <code>Renderer</code> is responsible for rendering a GVT tree and perform any 
-                type of task that may be necessary. For example, a raster based Renderer may perform
+                <li>The <code>Renderer</code> is responsible for rendering a GVT tree and  any 
+                related task. For example, a raster based Renderer may perform
                 some caching (the default Renderer in Batik does that). However, a Renderer could perform
                 any task it deems necessary and does not have to be raster based.</li>
                 <li>The <code>Micro Parsers</code>. These are parsers for complex SVG attributes such as
