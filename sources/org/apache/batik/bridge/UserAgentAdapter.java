@@ -31,7 +31,7 @@ import org.w3c.dom.svg.SVGAElement;
 public class UserAgentAdapter implements UserAgent {
     protected Set FEATURES = new HashSet();
 
-    UserAgentAdapter() {
+    public UserAgentAdapter() {
     };
 
     public void addStdFeatures() {

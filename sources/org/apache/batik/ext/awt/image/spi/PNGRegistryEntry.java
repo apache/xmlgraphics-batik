@@ -72,7 +72,7 @@ public class PNGRegistryEntry
                             param.setPerformGammaCorrection(false);
                         else {
                             param.setPerformGammaCorrection(true);
-                            param.setDisplayExponent(2.4f); // sRGB gamma
+                            param.setDisplayExponent(2.2f); // sRGB gamma
                         }
                         CachableRed cr = new PNGRed(is, param);
                         cr = new Any2sRGBRed(cr);

@@ -59,8 +59,8 @@ public class PNGTranscoder extends ImageTranscoder {
         PNGEncodeParam.RGB params =
             (PNGEncodeParam.RGB)PNGEncodeParam.getDefaultEncodeParam(img);
         params.setBackgroundRGB(new int [] { 255, 255, 255 });
-        // We are using sRGB (gamma 2.4).
-        params.setGamma(2.4f);
+        // We are using sRGB (gamma 2.2).
+        params.setSRGBIntent(PNGEncodeParam.INTENT_PERCEPTUAL);
 
         //
         // This is a trick so that viewers which do not support
