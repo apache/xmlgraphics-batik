@@ -1144,15 +1144,16 @@ public class StrokingTextPainter extends BasicTextPainter {
         for (int i = 0; i < textRuns.size(); ++i) {
             TextRun textRun = (TextRun)textRuns.get(i);
             AttributedCharacterIterator textRunACI = textRun.getACI();
-            textRunACI.first();
-
             TextSpanLayout textRunLayout = textRun.getLayout();
-
-            if (bounds == null)
-                bounds = textRunLayout.getBounds2D();
-            else
-                bounds = bounds.createUnion(textRunLayout.getBounds2D());
+            Rectangle2D runBounds = textRunLayout.getBounds2D();
+            if (runBounds != null) {
+                if (bounds == null)
+                    bounds = runBounds;
+                else
+                    bounds = bounds.createUnion(runBounds);
+            }
         }
+
 
         // append any stroked decoration outlines
         Shape underline = getDecorationStrokeOutline
@@ -1182,7 +1183,6 @@ public class StrokingTextPainter extends BasicTextPainter {
             else
                 bounds = bounds.createUnion(overline.getBounds2D());
         }
-
         return bounds;
     }
 
