@@ -31,8 +31,8 @@ public interface BatikExtConstants {
     public static final String BATIK_EXT_FLOW_REGION_TAG = 
         "flowRegion";
     /** Tag name for Batik's flowText extension Region element (SVG 1.1). */
-    public static final String BATIK_EXT_FLOW_RECT_TAG = 
-        "rect";
+    public static final String BATIK_EXT_REGION_TAG = 
+        "region";
 
     /** Attribute name for x attribute */
     public static final String BATIK_EXT_X_ATTRIBUTE = 
