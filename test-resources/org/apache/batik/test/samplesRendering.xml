@@ -176,6 +176,7 @@
         <test id="samples/tests/spec/painting/markersOrientB.svg" />
         <test id="samples/tests/spec/painting/markersPreserveAspectRatio.svg" />
         <test id="samples/tests/spec/painting/markersShapes.svg" />
+        <test id="samples/tests/spec/painting/stroke-rendering.svg" />
         <test id="samples/tests/spec/painting/shape-rendering.svg" />
         <test id="samples/tests/spec/painting/text-rendering.svg" />
         <test id="samples/tests/spec/painting/text-rendering2.svg" />
@@ -290,6 +291,8 @@
         <test id="samples/tests/spec/text/textLayout2.svg" />
         <test id="samples/tests/spec/text/textLength.svg" />
         <test id="samples/tests/spec/text/textOnPath.svg" />
+        <test id="samples/tests/spec/text/textOnPath2.svg" />
+        <test id="samples/tests/spec/text/textOnPath3.svg" />
         <test id="samples/tests/spec/text/textOnPathSpaces.svg" />
         <test id="samples/tests/spec/text/textPCDATA.svg" />
         <test id="samples/tests/spec/text/textProperties.svg" />

@@ -958,14 +958,21 @@ public abstract class CSSEngine {
      * @param uri The base URI.
      */
     public void parseStyleSheet(StyleSheet ss, URL uri) throws DOMException {
+        if (uri == null) {
+            String s = Messages.formatMessage("syntax.error.at",
+                                              new Object[] { "Null Document reference", 
+                                                             "" });
+            throw new DOMException(DOMException.SYNTAX_ERR, s);
+        }
+
 	try {
             // Check that access to the uri is allowed
              ParsedURL pDocURL = null;
              if (documentURI != null) {
                  pDocURL = new ParsedURL(documentURI);
              }
-
-             ParsedURL pURL = new ParsedURL(uri);
+             ParsedURL pURL = null;
+                 pURL = new ParsedURL(uri);
              cssContext.checkLoadExternalResource(pURL, pDocURL);
              
              parseStyleSheet(ss, new InputSource(uri.toString()), uri);

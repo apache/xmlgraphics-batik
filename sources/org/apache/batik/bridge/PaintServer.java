@@ -455,6 +455,9 @@ public abstract class PaintServer
         v = CSSUtilities.getComputedStyle
             (e, SVGCSSEngine.STROKE_WIDTH_INDEX);
         float width = v.getFloatValue();
+        if (width == 0.0f)
+            return null; // Stop here no stroke should be painted.
+
         v = CSSUtilities.getComputedStyle
             (e, SVGCSSEngine.STROKE_LINECAP_INDEX);
         int linecap = convertStrokeLinecap(v);
@@ -473,6 +476,26 @@ public abstract class PaintServer
             v =  CSSUtilities.getComputedStyle
                 (e, SVGCSSEngine.STROKE_DASHOFFSET_INDEX);
             dashoffset = v.getFloatValue();
+
+            // make the dashoffset positive since BasicStroke cannot handle
+            // negative values
+            if ( dashoffset < 0 ) {
+                float dashpatternlength = 0;
+                for ( int i=0; i<dasharray.length; i++ ) {
+                    dashpatternlength += dasharray[i];
+                }
+                // if the dash pattern consists of an odd number of elements,
+                // the pattern length must be doubled
+                if ( (dasharray.length % 2) != 0 )
+                    dashpatternlength *= 2;
+
+                if (dashpatternlength ==0) {
+                    dashoffset=0;
+                } else {
+                    while (dashoffset < 0)
+                        dashoffset += dashpatternlength;
+                }
+            }
         }
         return new BasicStroke(width,
                                linecap,

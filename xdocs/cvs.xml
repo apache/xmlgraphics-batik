@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<!DOCTYPE document SYSTEM "./dtd/document-v10.dtd">
+
+<!-- ====================================================================== -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.     -->
+<!--                                                                        -->
+<!-- This software is published under the terms of the Apache Software      -->
+<!-- License version 1.1, a copy of which has been included with this       -->
+<!-- distribution in the LICENSE file.                                      -->
+<!-- ====================================================================== -->
+
+<!-- ====================================================================== -->
+<!-- author deweese@apache.org                                              -->
+<!-- author vincent.hardy@eng.sun.com                                       -->
+<!-- version $Id$ -->
+<!-- ====================================================================== -->
+<document>
+    <header>
+        <title>Batik CVS Repository</title>
+        <subtitle>How to access Batik from CVS</subtitle>
+        <authors>
+            <person name="Thomas DeWeese" email="deweese@apache.org" />
+        </authors>
+    </header>
+
+    <body>
+        <s1 title="Introduction">
+            <p>
+            This page provides information about how to access Batik's
+            source code.  There are three main ways:
+            </p>
+            <ul>
+              <li>The first and easiest is by downloading a <link
+              href="http://xml.apache.org/batik/dist">source
+              distribution</link>.  These are the packages that start
+              with 'batik-src'.
+              </li>
+
+              <li>The second is through <link
+              href="http://cvs.apache.org/viewcvs.cgi/xml-batik"
+              >viewcvs</link>.  This provides the ability to traverse
+              the CVS repository over the web, and check differences
+              between versions.
+              </li>
+              <li>The third is through AnonCVS. Anyone can checkout
+              source code from our anonymous CVS server. To do so,
+              simply use the following commands (if you are using a
+              GUI CVS client, configure it appropriately):<br/>
+	      <code>cvs -d :pserver:anoncvs@cvs.apache.org:/home/cvspublic</code><br/>
+	      <code>login</code><br/>
+	      <code>password: anoncvs</code><br/>
+<br/>
+	      <code>cvs -d :pserver:anoncvs@cvs.apache.org:/home/cvspublic</code><br/>
+	      <code>checkout xml-batik</code><br/>
+              </li>
+            </ul>
+        </s1>
+    </body>
+</document>

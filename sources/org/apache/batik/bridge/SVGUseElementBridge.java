@@ -153,7 +153,7 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
         CompositeGraphicsNode gn = new CompositeGraphicsNode();
         gn.getChildren().add(refNode);
 
-        gn.setTransform(computeTransform(e));
+        gn.setTransform(computeTransform(e, ctx));
 
         // set an affine transform to take into account the (x, y)
         // coordinates of the <use> element
@@ -172,7 +172,7 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
     /**
      * Computes the AffineTransform for the node
      */
-    protected AffineTransform computeTransform(Element e) {
+    protected AffineTransform computeTransform(Element e, BridgeContext ctx) {
         UnitProcessor.Context uctx = UnitProcessor.createContext(ctx, e);
 
         // 'x' attribute - default is 0
@@ -280,7 +280,7 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
             attrName.equals(SVG_Y_ATTRIBUTE) ||
             attrName.equals(SVG_TRANSFORM_ATTRIBUTE)) {
             String s = evt.getNewValue();
-            node.setTransform(computeTransform(e));
+            node.setTransform(computeTransform(e, ctx));
             handleGeometryChanged();
         }
     }
