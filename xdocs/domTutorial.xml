@@ -95,7 +95,8 @@ String svgNS = SVGDOMImplementation.SVG_NAMESPACE_URI;
 
 <p>
 As we have created a SVG <code>Document</code>, we can cast this document to an
-<code>SVGDocument</code> (defined in the <code>org.w3c.dom.svg</code> package).
+<code>SVGDocument</code> (defined in the <code>org.w3c.dom.svg</code> package)
+if needed.
 </p>
 
 </s1>
