@@ -24,12 +24,11 @@ public class AWTPolygonProducer extends AWTPolylineProducer {
      * Utility method for creating an ExtendedGeneralPath.
      * @param r The reader used to read the path specification.
      * @param wr The winding rule to use for creating the path.
-     * @param pf The parser factory to use.
      */
-    public static Shape createShape(Reader r, int wr, ParserFactory pf)
+    public static Shape createShape(Reader r, int wr)
         throws IOException,
                ParseException {
-        PointsParser p = pf.createPointsParser();
+        PointsParser p = new PointsParser();
         AWTPolygonProducer ph = new AWTPolygonProducer();
 
         ph.setWindingRule(wr);

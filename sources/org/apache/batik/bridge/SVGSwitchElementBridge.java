@@ -50,11 +50,9 @@ public class SVGSwitchElementBridge
     public GraphicsNode createGraphicsNode(BridgeContext ctx,
                                            Element element){
         CompositeGraphicsNode gn;
-        gn = ctx.getGVTFactory().createCompositeGraphicsNode();
+        gn = new CompositeGraphicsNode();
         AffineTransform at =
-            SVGUtilities.convertAffineTransform(element,
-                                                ATTR_TRANSFORM,
-                                                ctx.getParserFactory());
+            SVGUtilities.convertAffineTransform(element, ATTR_TRANSFORM);
 
         gn.setTransform(at);
 
@@ -73,7 +71,7 @@ public class SVGSwitchElementBridge
         return gn;
     }
 
-    public void buildGraphicsNode(GraphicsNode gn, 
+    public void buildGraphicsNode(GraphicsNode gn,
                                   BridgeContext ctx,
                                   Element element) {
 

@@ -19,7 +19,6 @@ import org.apache.batik.parser.AWTTransformProducer;
 import org.apache.batik.parser.LengthHandler;
 import org.apache.batik.parser.LengthParser;
 import org.apache.batik.parser.ParseException;
-import org.apache.batik.parser.ParserFactory;
 import org.apache.batik.util.resources.Messages;
 
 import org.w3c.dom.Element;
@@ -492,7 +491,7 @@ public abstract class UnitProcessor {
         if (value.length() == 0) {
             return 0;
         }
-        LengthParser p = c.getParserFactory().createLengthParser();
+        LengthParser p = new LengthParser();
         UnitResolver ur = new UnitResolver();
         p.setLengthHandler(ur);
         p.parse(new StringReader(value));
@@ -601,11 +600,6 @@ public abstract class UnitProcessor {
          * Returns the pixel to mm factor.
          */
         float getPixelToMM();
-
-        /**
-         * Returns the parser factory.
-         */
-        ParserFactory getParserFactory();
 
         /**
          * Returns the font-size medium value in pt.

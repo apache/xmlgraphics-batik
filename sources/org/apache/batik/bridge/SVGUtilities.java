@@ -26,7 +26,6 @@ import org.apache.batik.parser.AWTTransformProducer;
 import org.apache.batik.parser.LengthHandler;
 import org.apache.batik.parser.LengthParser;
 import org.apache.batik.parser.ParseException;
-import org.apache.batik.parser.ParserFactory;
 import org.apache.batik.parser.PreserveAspectRatioHandler;
 import org.apache.batik.parser.PreserveAspectRatioParser;
 import org.apache.batik.parser.PreserveAspectRatioParser;
@@ -1061,11 +1060,10 @@ public class SVGUtilities implements SVGConstants {
      * @param pf the parser factory to use
      */
     public static AffineTransform convertAffineTransform(Element e,
-                                                         String attrName,
-                                                         ParserFactory pf) {
+                                                         String attrName) {
         try {
             StringReader r = new StringReader(e.getAttributeNS(null, attrName));
-            return AWTTransformProducer.createAffineTransform(r, pf);
+            return AWTTransformProducer.createAffineTransform(r);
         } catch (ParseException ex) {
             throw new IllegalAttributeValueException(
                 Messages.formatMessage("transform.invalid",
@@ -1162,7 +1160,7 @@ public class SVGUtilities implements SVGConstants {
             throw new Error("The value is null or empty");
         }
 
-        LengthParser p = uctx.getParserFactory().createLengthParser();
+        LengthParser p = new LengthParser();
         UnitProcessor.UnitResolver ur = new UnitProcessor.UnitResolver();
         p.setLengthHandler(ur);
         try {
@@ -1200,7 +1198,7 @@ public class SVGUtilities implements SVGConstants {
             throw new Error("The value is null or empty");
         }
 
-        LengthParser p = uctx.getParserFactory().createLengthParser();
+        LengthParser p = new LengthParser();
         UnitProcessor.UnitResolver ur = new UnitProcessor.UnitResolver();
         p.setLengthHandler(ur);
         ArrayList values = new ArrayList();
@@ -1261,7 +1259,7 @@ public class SVGUtilities implements SVGConstants {
         //
         // b. Otherwise, the value is used as is
         //
-        LengthParser p = uctx.getParserFactory().createLengthParser();
+        LengthParser p = new LengthParser();
         UnitProcessor.UnitResolver ur = new UnitProcessor.UnitResolver();
         p.setLengthHandler(ur);
         try {

@@ -8,11 +8,9 @@
 
 package org.apache.batik.bridge;
 
-import org.apache.batik.gvt.GVTFactory;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
-import org.apache.batik.parser.ParserFactory;
 import org.apache.batik.script.InterpreterPool;
 
 import org.w3c.dom.Element;
@@ -141,30 +139,6 @@ public interface BridgeContext {
      * @param localName the local name
      */
     void removeBridge(String namespaceURI, String localName);
-
-    /**
-     * Returns the GVT Factory that can be used to create <tt>GraphicsNode</tt>
-     * objects.
-     */
-    GVTFactory getGVTFactory();
-
-    /**
-     * Sets the GVT factory to use to create <tt>GraphicsNode</tt>
-     * @param gvtFactory the new gvt factory to use
-     */
-    void setGVTFactory(GVTFactory gvtFactory);
-
-    /**
-     * Returns the Parser factory that can be used to parse the
-     * attributes of an <tt>Element</tt>.
-     */
-    ParserFactory getParserFactory();
-
-    /**
-     * Sets the Parser factory to use to parse XML attributes.
-     * @param parserFactory the new parser factory to use
-     */
-    void setParserFactory(ParserFactory parserFactory);
 
     /**
      * Returns a GraphicsNodeRable factory

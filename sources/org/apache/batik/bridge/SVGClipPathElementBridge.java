@@ -21,7 +21,6 @@ import org.apache.batik.bridge.GVTBuilder;
 import org.apache.batik.bridge.IllegalAttributeValueException;
 import org.apache.batik.bridge.ObjectBoundingBoxViewport;
 import org.apache.batik.bridge.Viewport;
-import org.apache.batik.gvt.GVTFactory;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.ShapeNode;
@@ -71,13 +70,11 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
         GraphicsNodeRenderContext rc = ctx.getGraphicsNodeRenderContext();
         Area clipPath = new Area();
         GVTBuilder builder = ctx.getGVTBuilder();
-        GVTFactory gvtFactory = ctx.getGVTFactory();
 
         // parse the transform attribute
         AffineTransform Tx =
             SVGUtilities.convertAffineTransform(clipElement,
-                                                ATTR_TRANSFORM,
-                                                ctx.getParserFactory());
+                                                ATTR_TRANSFORM);
 
         // parse the clipPathUnits attribute
         Viewport oldViewport = ctx.getCurrentViewport();
@@ -133,7 +130,7 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
             Shape outline = Tx.createTransformedShape(path);
 
             // apply the clip-path of the current Element
-            ShapeNode outlineNode = gvtFactory.createShapeNode();
+            ShapeNode outlineNode = new ShapeNode();
             outlineNode.setShape(outline);
             Clip clip = CSSUtilities.convertClipPath(child,
                                                      outlineNode,
@@ -152,7 +149,7 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
         }
 
         // apply the clip-path of this clipPath Element (already in user space)
-        ShapeNode clipPathNode = gvtFactory.createShapeNode();
+        ShapeNode clipPathNode = new ShapeNode();
         clipPathNode.setShape(clipPath);
         Clip clipElementClipPath =
             CSSUtilities.convertClipPath(clipElement, clipPathNode, ctx);

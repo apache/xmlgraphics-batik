@@ -49,13 +49,11 @@ public class SVGGElementBridge implements GraphicsNodeBridge, SVGConstants {
     public GraphicsNode createGraphicsNode(BridgeContext ctx, Element element) {
 
         CompositeGraphicsNode gn;
-        gn = ctx.getGVTFactory().createCompositeGraphicsNode();
+        gn = new CompositeGraphicsNode();
 
         // Initialize the transform
         AffineTransform at =
-            SVGUtilities.convertAffineTransform(element,
-                                                ATTR_TRANSFORM,
-                                                ctx.getParserFactory());
+            SVGUtilities.convertAffineTransform(element, ATTR_TRANSFORM);
         gn.setTransform(at);
 
         CSSStyleDeclaration decl;
@@ -63,9 +61,10 @@ public class SVGGElementBridge implements GraphicsNodeBridge, SVGConstants {
         UnitProcessor.Context uctx
             = new DefaultUnitProcessorContext(ctx, decl);
 
-        Rectangle2D rect = CSSUtilities.convertEnableBackground((SVGElement)element,
-                                                                decl,
-                                                                uctx);
+        Rectangle2D rect =
+            CSSUtilities.convertEnableBackground((SVGElement)element,
+                                                 decl,
+                                                 uctx);
         if (rect != null) {
             gn.setBackgroundEnable(rect);
         }

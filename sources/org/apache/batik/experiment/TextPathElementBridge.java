@@ -101,13 +101,11 @@ public class TextPathElementBridge implements GraphicsNodeBridge, SVGConstants {
             = new DefaultUnitProcessorContext(ctx,
                                               cssDecl);
 
-        ShapeNode node = ctx.getGVTFactory().createShapeNode();
+        ShapeNode node = new ShapeNode();
 
         // Transform
         AffineTransform at =
-            SVGUtilities.convertAffineTransform(element,
-                                                ATTR_TRANSFORM,
-                                                ctx.getParserFactory());
+            SVGUtilities.convertAffineTransform(element, ATTR_TRANSFORM);
         node.setTransform(at);
 
         // <!> TODO only when binding is enabled
@@ -373,9 +371,9 @@ public class TextPathElementBridge implements GraphicsNodeBridge, SVGConstants {
 
                     // add the transform for the path as well
 
-                    path = AWTPathProducer.createShape(new StringReader(d),
-                                                       PathIterator.WIND_NON_ZERO,
-                                                       ctx.getParserFactory());
+                    path =
+                        AWTPathProducer.createShape(new StringReader(d),
+                                                    PathIterator.WIND_NON_ZERO);
                 } catch (IOException e) {
                     throw new RuntimeException(e.getMessage());
                 }

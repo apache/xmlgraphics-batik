@@ -57,7 +57,7 @@ public class SVGPolygonElementBridge extends SVGShapeElementBridge {
             throw new MissingAttributeException(
                 Messages.formatMessage("polygon.points.required", null));
         }
-        PointsParser p = ctx.getParserFactory().createPointsParser();
+        PointsParser p = new PointsParser();
         AWTPolygonProducer ph = new AWTPolygonProducer();
         ph.setWindingRule(wr);
         p.setPointsHandler(ph);

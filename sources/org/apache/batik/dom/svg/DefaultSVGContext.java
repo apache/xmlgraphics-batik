@@ -11,7 +11,6 @@ package org.apache.batik.dom.svg;
 import org.apache.batik.bridge.UserAgent;
 import org.apache.batik.css.svg.DefaultSVGCSSContext;
 import org.apache.batik.css.svg.SVGCSSContext;
-import org.apache.batik.parser.ParserFactory;
 
 
 /**
@@ -25,28 +24,9 @@ public class DefaultSVGContext
     implements SVGContext {
 
     /**
-     * The parser factory.
-     */
-    protected ParserFactory parserFactory;
-
-    /**
      * The pixel to mm conversion factor.
      */
     protected float pixelToMM;
-
-    /**
-     * Returns the parser factory.
-     */
-    public ParserFactory getParserFactory() {
-        return parserFactory;
-    }
-
-    /**
-     * Sets the parser factory.
-     */
-    public void setParserFactory(ParserFactory pf) {
-        parserFactory = pf;
-    }
 
     /**
      * Return the pixel to millimeters factor.

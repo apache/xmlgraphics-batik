@@ -57,7 +57,7 @@ public class SVGPathElementBridge extends SVGShapeElementBridge {
             throw new MissingAttributeException(
                 Messages.formatMessage("path.d.required", null));
         }
-        PathParser p = ctx.getParserFactory().createPathParser();
+        PathParser p = new PathParser();
         AWTPathProducer ph = new AWTPathProducer();
         ph.setWindingRule(wr);
         p.setPathHandler(ph);

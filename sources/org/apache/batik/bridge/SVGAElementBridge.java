@@ -53,17 +53,14 @@ import org.w3c.dom.views.DocumentView;
  */
 public class SVGAElementBridge implements GraphicsNodeBridge, SVGConstants {
 
-    public GraphicsNode createGraphicsNode(BridgeContext ctx, Element element){
+    public GraphicsNode createGraphicsNode(BridgeContext ctx, Element element) {
 
         CompositeGraphicsNode gn;
-        gn = ctx.getGVTFactory().createCompositeGraphicsNode();
+        gn = new CompositeGraphicsNode();
 
         // Initialize the transform
         AffineTransform at =
-            SVGUtilities.convertAffineTransform(element,
-                                                ATTR_TRANSFORM,
-                                                ctx.getParserFactory());
-
+            SVGUtilities.convertAffineTransform(element, ATTR_TRANSFORM);
         gn.setTransform(at);
 
         CSSStyleDeclaration decl;
@@ -81,7 +78,7 @@ public class SVGAElementBridge implements GraphicsNodeBridge, SVGConstants {
         return gn;
     }
 
-    public void buildGraphicsNode(GraphicsNode gn, 
+    public void buildGraphicsNode(GraphicsNode gn,
                                   BridgeContext ctx,
                                   Element element) {
         CSSStyleDeclaration decl;

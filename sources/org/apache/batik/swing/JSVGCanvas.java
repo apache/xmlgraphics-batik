@@ -83,15 +83,11 @@ import org.apache.batik.bridge.DefaultUserAgent;
 import org.apache.batik.bridge.SVGBridgeContext;
 import org.apache.batik.bridge.SVGUtilities;
 
-import org.apache.batik.gvt.GVTFactory;
-
 import org.apache.batik.gvt.text.ConcreteTextSelector;
 
 import org.apache.batik.gvt.filter.ConcreteGraphicsNodeRableFactory;
 import org.apache.batik.gvt.renderer.DynamicRenderer;
 import org.apache.batik.gvt.renderer.DynamicRendererFactory;
-
-import org.apache.batik.parser.ParserFactory;
 
 import org.apache.batik.script.ConcreteInterpreterPool;
 
@@ -277,11 +273,6 @@ public class JSVGCanvas
      * The thumbnail canvas.
      */
     protected ThumbnailCanvas thumbnailCanvas = null;
-
-    /**
-     * The parser factory.
-     */
-    protected ParserFactory parserFactory = new ParserFactory();
 
     /**
      * The text selector.
@@ -683,8 +674,6 @@ public class JSVGCanvas
         result.setDocumentLoader
             (new BufferedDocumentLoader
              (new SVGDocumentLoader(userAgent.getXMLParserClassName())));
-        result.setGVTFactory(GVTFactory.getGVTFactoryImplementation());
-        result.setParserFactory(parserFactory);
         result.setUserAgent(userAgent);
         result.setGraphicsNodeRableFactory
             (new ConcreteGraphicsNodeRableFactory());

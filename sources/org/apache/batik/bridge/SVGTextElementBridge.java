@@ -108,7 +108,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
 
     public GraphicsNode createGraphicsNode(BridgeContext ctx,
                                            Element element){
-        TextNode result = ctx.getGVTFactory().createTextNode();
+        TextNode result = new TextNode();
         result.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                                 RenderingHints.VALUE_ANTIALIAS_ON);
 
@@ -120,9 +120,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
 
         // Transform
         AffineTransform at =
-            SVGUtilities.convertAffineTransform(element,
-                                                ATTR_TRANSFORM,
-                                                ctx.getParserFactory());
+            SVGUtilities.convertAffineTransform(element, ATTR_TRANSFORM);
         result.setTransform(at);
 
         // parse the x attribute, (default is 0)

@@ -56,12 +56,11 @@ public class AWTPathProducer implements PathHandler, ShapeProducer {
      * Utility method for creating an ExtendedGeneralPath.
      * @param r The reader used to read the path specification.
      * @param wr The winding rule to use for creating the path.
-     * @param pf The parser factory to use.
      */
-    public static Shape createShape(Reader r, int wr, ParserFactory pf)
+    public static Shape createShape(Reader r, int wr)
         throws IOException,
                ParseException {
-        PathParser p = pf.createPathParser();
+        PathParser p = new PathParser();
         AWTPathProducer ph = new AWTPathProducer();
 
         ph.setWindingRule(wr);

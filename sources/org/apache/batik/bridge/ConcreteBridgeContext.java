@@ -8,11 +8,9 @@
 
 package org.apache.batik.bridge;
 
-import org.apache.batik.gvt.GVTFactory;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
-import org.apache.batik.parser.ParserFactory;
 import org.apache.batik.bridge.DocumentLoader;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.StyleReference;
@@ -77,16 +75,6 @@ public class ConcreteBridgeContext implements BridgeContext {
      * value is list of styleElement.
      */
     private HashMap nodeStyleMap;
-
-    /**
-     * The factory that creates GVT objects.
-     */
-    private GVTFactory gvtFactory;
-
-    /**
-     * The factory that creates parsers.
-     */
-    private ParserFactory parserFactory;
 
     /**
      * The pool that contains all bridges.
@@ -319,22 +307,6 @@ public class ConcreteBridgeContext implements BridgeContext {
             else
                 return Collections.EMPTY_LIST;
         }
-    }
-
-    public GVTFactory getGVTFactory(){
-        return gvtFactory;
-    }
-
-    public void setGVTFactory(GVTFactory gvtFactory){
-        this.gvtFactory = gvtFactory;
-    }
-
-    public void setParserFactory(ParserFactory parserFactory){
-        this.parserFactory = parserFactory;
-    }
-
-    public ParserFactory getParserFactory(){
-        return parserFactory;
     }
 
     public GraphicsNodeRableFactory getGraphicsNodeRableFactory(){
