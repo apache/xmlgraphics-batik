@@ -359,8 +359,8 @@ public class GraphicContext implements Cloneable{
      * @param comp the <code>Composite</code> object to be used for rendering
      * @see java.awt.Graphics#setXORMode
      * @see java.awt.Graphics#setPaintMode
-     * @see AlphaComposite
-     * @see SecurityManager#checkPermission
+     * @see java.awt.AlphaComposite
+     * @see java.lang.SecurityManager#checkPermission(java.awt.Permission)
      * @see java.awt.AWTPermission
      */
     public void setComposite(Composite comp){

@@ -138,7 +138,7 @@ public class SVGGraphics2D extends Graphics2D implements Cloneable, SVGSyntax{
     private Graphics2D fmg;
 
     {
-        BufferedImage bi 
+        BufferedImage bi
             = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
 
         fmg = bi.createGraphics();
@@ -1706,7 +1706,7 @@ public class SVGGraphics2D extends Graphics2D implements Cloneable, SVGSyntax{
      * @param x,&nbsp;y the position in User Space where the glyphs should
      * be rendered
      *
-     * @see java.awt.font#createGlyphVector
+     * @see java.awt.Font#createGlyphVector
      * @see java.awt.font.GlyphVector
      * @see #setPaint
      * @see java.awt.Graphics#setColor
@@ -1817,8 +1817,8 @@ public class SVGGraphics2D extends Graphics2D implements Cloneable, SVGSyntax{
      * @param comp the <code>Composite</code> object to be used for rendering
      * @see java.awt.Graphics#setXORMode
      * @see java.awt.Graphics#setPaintMode
-     * @see AlphaComposite
-     * @see SecurityManager#checkPermission
+     * @see java.awt.AlphaComposite
+     * @see java.lang.SecurityManager#checkPermission(java.awt.Permission)
      * @see java.awt.AWTPermission
      */
     public void setComposite(Composite comp){

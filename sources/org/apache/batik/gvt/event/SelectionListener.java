@@ -22,7 +22,7 @@ public interface SelectionListener extends EventListener {
      * Invoked when a selection has changed
      * @param evt the selection change event
      * @see org.apache.batik.gvt.Selector
-     * @see org.apache.batik.gvt.event.SelectionChangeEvent
+     * @see org.apache.batik.gvt.event.SelectionEvent
      * @see org.apache.batik.gvt.Selectable
      */
     void selectionChanged(SelectionEvent e);

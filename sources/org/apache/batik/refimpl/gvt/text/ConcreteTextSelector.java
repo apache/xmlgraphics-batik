@@ -61,6 +61,10 @@ public class ConcreteTextSelector implements Selector {
         this.g2d = g2d;
     }
 
+    /**
+     * Not used.
+     * @deprecated.
+     */
     public void setBaseTransform(AffineTransform t) {
         this.baseTransform = t;
     }

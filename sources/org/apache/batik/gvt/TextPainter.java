@@ -32,21 +32,63 @@ public interface TextPainter {
      * @param g2d the Graphics2D to use
      * @param context rendering context.
      */
-    void paint(AttributedCharacterIterator aci, Point2D location, TextNode.Anchor anchor,
-               Graphics2D g2d, GraphicsNodeRenderContext context);
+    void paint(AttributedCharacterIterator aci,
+               Point2D location,
+               TextNode.Anchor anchor,
+               Graphics2D g2d,
+               GraphicsNodeRenderContext context);
 
-    public Mark selectAt(double x, double y, AttributedCharacterIterator aci, 
-                         TextNode.Anchor anchor, 
+    /**
+     * Initiates a text selection on a particular AttributedCharacterIterator,
+     * using the text/font metrics employed by this TextPainter instance.
+     * @param x the x coordinate, in the text layout's coordinate system,
+     *       of the selection event.
+     * @param y the y coordinate, in the text layout's coordinate system,
+     *       of the selection event.
+     * @param aci the AttributedCharacterIterator describing the text
+     * @param anchor the text anchor (alignment) type of this text
+     * @param context the GraphicsNodeRenderContext to use when doing text layout.
+     * @return an instance of Mark which encapsulates the state necessary to
+     * implement hit testing and text selection.
+     */
+    public Mark selectAt(double x, double y, AttributedCharacterIterator aci,
+                         TextNode.Anchor anchor,
                          GraphicsNodeRenderContext context);
 
-    public Mark selectTo(double x, double y, Mark beginMark, 
-                            AttributedCharacterIterator aci, 
-                            TextNode.Anchor anchor, 
+    /**
+     * Continues a text selection on a particular AttributedCharacterIterator,
+     * using the text/font metrics employed by this TextPainter instance.
+     * @param x the x coordinate, in the text layout's coordinate system,
+     *       of the selection event.
+     * @param y the y coordinate, in the text layout's coordinate system,
+     *       of the selection event.
+     * @param aci the AttributedCharacterIterator describing the text
+     * @param anchor the text anchor (alignment) type of this text
+     * @param context the GraphicsNodeRenderContext to use when doing text layout.
+     * @return an instance of Mark which encapsulates the state necessary to
+     * implement hit testing and text selection.
+     */
+    public Mark selectTo(double x, double y, Mark beginMark,
+                            AttributedCharacterIterator aci,
+                            TextNode.Anchor anchor,
                             GraphicsNodeRenderContext context);
 
-    public Mark selectAll(double x, double y,  
-                            AttributedCharacterIterator aci, 
-                            TextNode.Anchor anchor, 
+    /**
+     * Select all of the text represented by an AttributedCharacterIterator,
+     * using the text/font metrics employed by this TextPainter instance.
+     * @param x the x coordinate, in the text layout's coordinate system,
+     *       of the selection event.
+     * @param y the y coordinate, in the text layout's coordinate system,
+     *       of the selection event.
+     * @param aci the AttributedCharacterIterator describing the text
+     * @param anchor the text anchor (alignment) type of this text
+     * @param context the GraphicsNodeRenderContext to use when doing text layout.
+     * @return an instance of Mark which encapsulates the state necessary to
+     * implement hit testing and text selection.
+     */
+    public Mark selectAll(double x, double y,
+                            AttributedCharacterIterator aci,
+                            TextNode.Anchor anchor,
                             GraphicsNodeRenderContext context);
 
     /*
@@ -54,7 +96,7 @@ public interface TextPainter {
      * AttributedCharacterIterator regions bounded by two Marks.
      * Note that the instances of Mark passed to this function
      * <em>must come</em>
-     * from the same TextPainter that generated them via selectAt() and 
+     * from the same TextPainter that generated them via selectAt() and
      * selectTo(), since the TextPainter implementation may rely on hidden
      * implementation details of its own Mark implementation.
      */
@@ -66,7 +108,7 @@ public interface TextPainter {
      * Get a Shape which encloses the textnode glyphs bounded by two Marks.
      * Note that the instances of Mark passed to this function
      * <em>must come</em>
-     * from the same TextPainter that generated them via selectAt() and 
+     * from the same TextPainter that generated them via selectAt() and
      * selectTo(), since the TextPainter implementation may rely on hidden
      * implementation details of its own Mark implementation.
      */
