@@ -162,7 +162,8 @@ To display the available targets type:
     <echo message="   printerdoc    --> generates the printable documentation in"/>
     <echo message="                     ${build}/docs/print"/>
     <echo message="   clean         --> cleans up the directory"/>
-    <echo message="   splash        --> updates documentation and browser splash screens"/>
+    <echo message="   splash        --> Updates documentation and browser splash screens"/>
+    <echo message="   jarDepend     --> Updates jar files dependency image"/>
     <echo message=""/>
     <echo message=" See the comments in the build.xml file for more details."/>
     <echo message=""/>
@@ -183,8 +184,12 @@ To display the available targets type:
   <target name="bin-zip" depends="jars">
     <copy file="README" todir="${build}"/>
     <copy file="LICENSE" todir="${build}"/>
-    <copy file="lib/LICENSE.js.txt" todir="${build}/lib"/>
-    <copy file="lib/README.js.txt" todir="${build}/lib"/>
+    <copy todir="${build}/lib">
+       <fileset dir="lib">
+           <include name="LICENSE.*.txt"/>
+           <include name="README.*.txt"/>
+       </fileset>
+    </copy>
     <copy todir="${build}/samples">
       <fileset dir="samples"/>
     </copy>
@@ -215,8 +220,14 @@ To display the available targets type:
 
     <copy file="README" todir="${build}"/>
     <copy file="LICENSE" todir="${build}"/>
-    <copy file="lib/LICENSE.js.txt" todir="${build}/lib"/>
-    <copy file="lib/README.js.txt" todir="${build}/lib"/>
+    <copy todir="${build}/lib">
+       <fileset dir="lib">
+           <include name="LICENSE.*.txt"/>
+           <include name="README.*.txt"/>
+       </fileset>
+    </copy>
+    <copy file="${resources}/${package-prefix}/extensions/README.txt" 
+	  todir="${build}/extensions"/>
     <copy todir="${build}/samples">
       <fileset dir="samples"/>
     </copy>
@@ -387,10 +398,12 @@ To display the available targets type:
                                xml-jar,
                                root-jar,
                                svg-pp-jar,
-                               svg-slideshow-jar,
                                svggen-jar,
+                               svg-slideshow-jar,
                                squiggle-jar,
+                               squiggle-ext-jar,
                                rasterizer-jar,
+                               rasterizer-ext-jar,
                                ttf2svg-jar">
     <copy todir="${build}/lib">
       <fileset dir="${lib}">
@@ -437,6 +450,11 @@ To display the available targets type:
     <unjar src="lib/xerces_2_3_0.jar" dest="${build}/tmp"/>
     <jar jarfile="${build}/lib/${project}-bean.jar"
          manifest="${src}/${project}-bean.mf">
+      <manifest>
+        <attribute name="Implementation-Title" value="Batik Java Bean"/>
+        <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}"/>
+        <attribute name="Implementation-Vendor" value="Apache Software Foundation (http://xml.apache.org/batik/)"/>
+      </manifest>
       <fileset dir="${dest}">
         <include name="org/w3c/**"/>
         <include name="${package-prefix}/bridge/*.class"/>
@@ -716,6 +734,11 @@ To display the available targets type:
   <target name="svg-pp-jar" depends="compile, prepare-build">
     <jar manifest="${src}/${project}-pp.mf"
          jarfile="${build}/${project}-svgpp.jar">
+      <manifest>
+        <attribute name="Implementation-Title" value="Batik XML Pretty Printer"/>
+        <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}"/>
+        <attribute name="Implementation-Vendor" value="Apache Software Foundation (http://xml.apache.org/batik/)"/>
+      </manifest>
       <fileset dir="${dest}">
         <include name="${package-prefix}/apps/svgpp/**/*.class"/>
       </fileset>
@@ -729,6 +752,11 @@ To display the available targets type:
   <target name="svg-slideshow-jar" depends="compile, prepare-build">
     <jar manifest="${src}/${project}-slideshow.mf"
          jarfile="${build}/${project}-slideshow.jar">
+      <manifest>
+        <attribute name="Implementation-Title" value="Batik SVG Slide Show Tool"/>
+        <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}"/>
+        <attribute name="Implementation-Vendor" value="Apache Software Foundation (http://xml.apache.org/batik/)"/>
+      </manifest>
       <fileset dir="${dest}">
         <include name="${package-prefix}/apps/slideshow/**/*.class"/>
       </fileset>
@@ -747,6 +775,11 @@ To display the available targets type:
           tofile="${resources}/${package-prefix}/apps/svgbrowser/resources/svgbrowser.policy" />
     <jar manifest="${src}/${project}-browser.mf"
          jarfile="${build}/${project}-squiggle.jar">
+      <manifest>
+        <attribute name="Implementation-Title" value="Batik Squiggle Viewer"/>
+        <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}"/>
+        <attribute name="Implementation-Vendor" value="Apache Software Foundation (http://xml.apache.org/batik/)"/>
+      </manifest>
       <fileset dir="${dest}">
         <include name="${package-prefix}/apps/svgbrowser/**/*.class"/>
         <include name="${package-prefix}/experiment/**/*.class"/>
@@ -763,6 +796,21 @@ To display the available targets type:
           tofile="${resources}/${package-prefix}/apps/svgbrowser/resources/svgbrowser.policy" />
   </target>
 
+  <target name="squiggle-ext-jar" depends="squiggle-jar">
+     <mkdir dir="${build}/extensions"/>
+     <jar manifest="${src}/${project}-browser-ext.mf"
+	  jarfile="${build}/extensions/${project}-squiggle-ext.jar">
+      <manifest>
+        <attribute name="Implementation-Title" value="Batik Squiggle Viewer With Extensions"/>
+        <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}"/>
+        <attribute name="Implementation-Vendor" value="Apache Software Foundation (http://xml.apache.org/batik/)"/>
+      </manifest>
+        <fileset dir="${resources}" excludes="${resources}/**/CVS">
+            <include name="META-INF/services/**"/>
+        </fileset>
+     </jar>
+  </target>
+
   <!-- Squiggle - SVG Browser (dependencies: all) -->
   <target name="svg-browser-jar" depends="squiggle-jar"/>
 
@@ -774,6 +822,11 @@ To display the available targets type:
           tofile="${resources}/${package-prefix}/apps/rasterizer/resources/rasterizer.policy" />
     <jar manifest="${src}/${project}-rasterizer.mf"
          jarfile="${build}/${project}-rasterizer.jar">
+      <manifest>
+        <attribute name="Implementation-Title" value="Batik SVG Rasterizer"/>
+        <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}"/>
+        <attribute name="Implementation-Vendor" value="Apache Software Foundation (http://xml.apache.org/batik/)"/>
+      </manifest>
       <fileset dir="${dest}">
         <include name="${package-prefix}/apps/rasterizer/**/*.class"/>
       </fileset>
@@ -787,10 +840,30 @@ To display the available targets type:
           tofile="${resources}/${package-prefix}/apps/rasterizer/resources/rasterizer.policy" />
  </target>
 
+  <target name="rasterizer-ext-jar" depends="rasterizer-jar">
+     <mkdir dir="${build}/extensions"/>
+     <jar manifest="${src}/${project}-rasterizer-ext.mf"
+	  jarfile="${build}/extensions/${project}-rasterizer-ext.jar">
+      <manifest>
+        <attribute name="Implementation-Title" value="Batik SVG Rasterizer With Extensions"/>
+        <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}"/>
+        <attribute name="Implementation-Vendor" value="Apache Software Foundation (http://xml.apache.org/batik/)"/>
+      </manifest>
+        <fileset dir="${resources}" excludes="${resources}/**/CVS">
+            <include name="META-INF/services/**"/>
+        </fileset>
+     </jar>
+  </target>
+
   <!-- batik-ttf2svg.jar (dependencies: all) -->
   <target name="ttf2svg-jar" depends="compile, prepare-build">
     <jar manifest="${src}/${project}-ttf2svg.mf"
          jarfile="${build}/${project}-ttf2svg.jar">
+      <manifest>
+        <attribute name="Implementation-Title" value="Batik TrueType to SVG Font Converter"/>
+        <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}"/>
+        <attribute name="Implementation-Vendor" value="Apache Software Foundation (http://xml.apache.org/batik/)"/>
+      </manifest>
       <fileset dir="${dest}">
         <include name="${package-prefix}/apps/ttf2svg/**/*.class"/>
       </fileset>
@@ -800,7 +873,13 @@ To display the available targets type:
   <!-- batik.jar (dependencies: all) -->
   <target name="root-jar" depends="compile, prepare-build">
     <jar manifest="${src}/${project}.mf"
-         jarfile="${build}/${project}.jar"/>
+         jarfile="${build}/${project}.jar">
+      <manifest>
+        <attribute name="Implementation-Title" value="Batik All Jar"/>
+        <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}"/>
+        <attribute name="Implementation-Vendor" value="Apache Software Foundation (http://xml.apache.org/batik/)"/>
+      </manifest>
+    </jar>
   </target>
 
   <!-- regard.jar : A jar containing the regard test infrastructure. -->
@@ -1159,6 +1238,18 @@ To display the available targets type:
 
   </target>
 
+  <target name="jarDependImg" depends="compile"
+	  description="Updates jarDependImg PNG">
+    <java fork="yes"
+          classname="${class-prefix}.apps.rasterizer.Main">
+      <classpath>
+        <pathelement location="${dest}" />
+        <path refid="libs-classpath"/>
+        <pathelement location="resources" />
+      </classpath>
+      <arg line="${xdocs}/images/jarDependImg.svg"/>
+    </java>
+  </target>
 
   <!-- Cleans everything .................................................. -->
   <target name="clean"

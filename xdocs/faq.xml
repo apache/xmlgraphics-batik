@@ -1,17 +1,17 @@
 <?xml version="1.0"?>
-<!-- ========================================================================= -->
-<!-- Copyright (C) The Apache Software Foundation. All rights reserved.        -->
-<!--                                                                           -->
-<!-- This software is published under the terms of the Apache Software License -->
-<!-- version 1.1, a copy of which has been included with this distribution in  -->
-<!-- the LICENSE file.                                                         -->
-<!-- ========================================================================= -->
+<!-- ====================================================================== -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.     -->
+<!--                                                                        -->
+<!-- This software is published under the terms of the Apache Software      -->
+<!-- License version 1.1, a copy of which has been included with this       -->
+<!-- distribution in the LICENSE file.                                      -->
+<!-- ====================================================================== -->
 
-<!-- ========================================================================= -->
-<!-- author vincent.hardy@eng.sun.com                                          -->
-<!-- author cjolif@ilog.fr                                                     -->
+<!-- ====================================================================== -->
+<!-- author vincent.hardy@eng.sun.com                                       -->
+<!-- author cjolif@ilog.fr                                                  -->
 <!-- version $Id$ -->
-<!-- ========================================================================= -->
+<!-- ====================================================================== -->
 
 <!DOCTYPE faqs SYSTEM "./dtd/faq-v10.dtd">
 
@@ -320,16 +320,22 @@
 <faq>
     <question>Where is Batik going? What is next?</question>
     <answer>
-        <p>The SVG implementation is not complete <link href="status.html">(status)</link>, and there is more work to do to 
-        achieve a fully functional viewer.</p>
-        <p>Batik 1.1 supports all the <link href="status.html#beSuiteStatus">static SVG features</link>, linking and a limited
-        support for <link href="scripting.html">scripting</link>. Work has 
-        started on <link href="status.html#DynamicTest">dynamic features</link>. Scripting support with the 1.5 beta releases,
-        and declarative animation (known as SMIL animation) will be supported in the 2.0 release.
+        <p>The SVG implementation is not complete <link
+        href="status.html">(status)</link>, and there is more work to
+        do to achieve a fully functional viewer.</p>
+
+        <p>Batik 1.1 supports all the <link
+        href="status.html#beSuiteStatus">static SVG features</link>,
+        linking and a limited support for <link
+        href="scripting.html">scripting</link>. Work has started on
+        <link href="status.html#DynamicTest">dynamic
+        features</link>. Scripting support with the 1.5 beta releases,
+        and declarative animation (known as SMIL animation) will be
+        supported in the 2.0 release.
         </p>
-        <p>
-        The type of applications (e.g., transcoding applications) that can or will
-        be added to Batik depends on contributions and feedback.
+        <p>The type of applications (e.g., transcoding applications)
+        that can or will be added to Batik depends on contributions
+        and feedback.
         </p>
     </answer>
 
@@ -339,27 +345,32 @@
     <question>How can I create and author SVG content?</question>
     <answer>
         <p>
-        Well, you can always use a plain text editor such as vi or 
-        xemacs, but there are many graphic authoring packages that can export SVG documents 
-        and that will let you author SVG content visually.</p>
-        <p>
-        You can get a list of tools exporting SVG from the 
-        <link href="http://www.w3.org/Graphics/SVG/SVG-Implementations#edit">SVG implementation</link>
-        section of the SVG Home page on the W3C web site. You can also 
-        imagine building a tool on top of Batik: feel free to contribute!
+        Well, you can always use a plain text editor such as vi or
+        xemacs, but there are many graphic authoring packages that can
+        export SVG documents and that will let you author SVG content
+        visually.
         </p>
         <p>
-        Authoring is one way of creating SVG content, and graphic authoring
-        packages are useful for that purpose. However, there are many types
-        of graphics which can be generated, such as stock quotes, statistical
-        data, etc. For these types of graphics, there are many ways to generate
-        SVG content. For example, if your data (say stock information) is contained
-        in an XML document, you could use XSLT to transform your XML data into
-        SVG. If your data comes from a database and you retrieve that data
-        in a servlet on a Web server (e.g., using JDBC), you could use the 
-        Java binding for the DOM API to generate an SVG document from the 
-        data base data. You could also use Batik's SVG generator and use the
-        Java 2D API to generate that graphic.
+        You can get a list of tools exporting SVG from the <link
+        href="http://www.w3.org/Graphics/SVG/SVG-Implementations#edit">SVG
+        implementation</link> section of the SVG Home page on the W3C
+        web site. You can also imagine building a tool on top of
+        Batik: feel free to contribute!
+        </p>
+        <p>
+        Authoring is one way of creating SVG content, and graphic
+        authoring packages are useful for that purpose. However, there
+        are many types of graphics which can be generated, such as
+        stock quotes, statistical data, etc. For these types of
+        graphics, there are many ways to generate SVG content. For
+        example, if your data (say stock information) is contained in
+        an XML document, you could use XSLT to transform your XML data
+        into SVG. If your data comes from a database and you retrieve
+        that data in a servlet on a Web server (e.g., using JDBC), you
+        could use the Java binding for the DOM API to generate an SVG
+        document from the data base data. You could also use Batik's
+        SVG generator and use the Java 2D API to generate that
+        graphic.
         </p>
         <p>
         The following URLs will be useful to learn more about each of 
@@ -403,23 +414,24 @@
     <answer>
         <p>
         The following <link href="status.html">status page</link>
-        shows how much of the SVG specification Batik implements by showing which 
-        of the tests in the <link href="status.html#beSuiteStatus">SVG Basic Effectivity test suite</link> 
-        Batik successfully passes.
+        shows how much of the SVG specification Batik implements by
+        showing which of the tests in the <link
+        href="status.html#beSuiteStatus">SVG Basic Effectivity test
+        suite</link> Batik successfully passes.
         </p>
     </answer>
 
 </faq>
 
 <faq>
-
     <question>What are the benefits of SVG being an XML grammar?</question>
     <answer>
         <p>
-        Being an XML grammar means SVG can leverage work done around XML, 
-        and SVG actually leverages other grammars such as 
-        <link href="http://www.w3.org/TR/2001/REC-xlink-20010627/">XLink</link>, for linking and 
-        <link href="http://www.w3.org/TR/2001/REC-smil-animation-20010904/#AnimationFramework">SMIL</link>
+        Being an XML grammar means SVG can leverage work done around
+        XML, and SVG actually leverages other grammars such as <link
+        href="http://www.w3.org/TR/2001/REC-xlink-20010627/">XLink</link>,
+        for linking and <link
+        href="http://www.w3.org/TR/2001/REC-smil-animation-20010904/#AnimationFramework">SMIL</link>
         for the animation.
         </p>
         <p>
@@ -470,13 +482,16 @@
     <question>How do I install Batik?</question>
     <answer>
         <p>
-        You will need the <link href="http://java.sun.com/">JDK 1.3</link> to run Batik. 
+        You will need the <link href="http://java.sun.com/">JDK
+        1.3</link> to run Batik.
         </p>
         <p>
         To install Batik you need to <link href="dist">download</link>
         the binary or source distribution and unzip it on your computer.
         </p>
-	<p>You can have a look at the <link href="install.html">installation instructions</link> for more information.
+	<p>You can have a look at the <link
+	href="install.html">installation instructions</link> for more
+	information.
 	</p>
     </answer>
 
@@ -486,9 +501,10 @@
     <question>How do I submit patches or bug fixes?</question>
     <answer>
         <p>
-        You can submit bug fixes and patches to the 
-        <link href="mailto:batik-dev@xml.apache.org">Batik developers</link>
-        mailing list and you can enter bugs in <link href="http://nagoya.apache.org/bugzilla/">Bugzilla</link>.
+        You can submit bug fixes and patches to the <link
+        href="mailto:batik-dev@xml.apache.org">Batik developers</link>
+        mailing list and you can enter bugs in <link
+        href="http://nagoya.apache.org/bugzilla/">Bugzilla</link>.
         </p>
     </answer>
 
@@ -498,53 +514,63 @@
     <question>What scripting languages can I use in my SVG files?</question>
     <answer>
         <p>
-        A limited support of scripting in SVG files is provided with the
-        current version of Batik (script are executed but dynamic
+        A limited support of scripting in SVG files is provided with
+        the current version of Batik (script are executed but dynamic
         update is not supported).
     	</p>
 	    <p>
 	    Batik can recognize the following scripting languages:
 	    </p>
 	    <ul>
-	        <li>ECMAScript thanks to the <link href="http://www.mozilla.org/rhino">Mozilla Rhino</link> JavaScript engine included in the distribution.
+	        <li>ECMAScript thanks to the <link
+	        href="http://www.mozilla.org/rhino">Mozilla
+	        Rhino</link> JavaScript engine included in the
+	        distribution.
 	        </li>
-	        <li>Python for which you need to download the <link href="http://www.jython.org">Jython</link> engine.
+	        <li>Python for which you need to download the <link
+	        href="http://www.jython.org">Jython</link> engine.
 	        </li>
-	        <li>Tcl for which you need to download the <link href="http://dev.scriptics.com/software/java/">Jacl</link> engine.
+	        <li>Tcl for which you need to download the <link
+	        href="http://dev.scriptics.com/software/java/">Jacl</link>
+	        engine.
 	        </li>
 	    </ul>
 	    <p>
-	    To get more information on how to install optional scripting languages
-	    you can have a look at the <link href="install.html">installation instructions</link>.
+	    To get more information on how to install optional
+	    scripting languages you can have a look at the <link
+	    href="install.html">installation instructions</link>.
 	    </p>
     </answer>
 </faq>
 <faq>
-    <question>When I try to run Batik it results in a NoSuchMethodException.
-              What is the problem?</question>
-    <answer><p>There is certainly something wrong with your classpath. Clear your
-            CLASSPATH environment variable and be sure to remove all the libraries
-            which use the W3C's DOM bindings from <code>jre/lib/ext</code>before running
-            any of the Batik's applications.</p></answer>
+    <question>When I try to run Batik it results in a
+    NoSuchMethodException.  What is the problem?</question>
+    <answer>
+        <p>There is certainly something wrong with your
+        classpath. Clear your CLASSPATH environment variable and be
+        sure to remove all the libraries which use the W3C's DOM
+        bindings from <code>jre/lib/ext</code>before running any of
+        the Batik's applications.</p>
+    </answer>
 </faq>
 
 <faq>
     <question>
-    I can use the Batik extension tags with the source 
-    distribution but not with the binary distribution.
-    What am I missing?
+    I can use the Batik extension tags with the source distribution
+    but not with the binary distribution.  What am I missing?
     </question>
-    <answer><p>
-    When running from the <link href="install.html#distributions">source distribution</link> you automatically get
-    the service provider entries for the Batik extension tags
-    (regularPolygon, and star for example).  We chose not to include
-    these by default in the <link href="install.html#distributions">binary distribution</link> for the Batik
-    applications.
-    </p>
-    <p> 
-    You can make the Batik extension tags available by putting the
-    <code>'lib/batik-extensions.jar'</code> file on the java class path.
-    </p></answer>
+    <answer>
+    	<p> When running from the <link
+    	href="install.html#distributions">source distribution</link>
+    	you automatically get the service provider entries for the
+    	Batik extension tags (regularPolygon, and star for example).
+    	We chose not to include these by default in the <link
+    	href="install.html#distributions">binary distribution</link>
+    	for the Batik applications.
+    	</p>
+    	<p> There is a subdirectory called 'extensions' that has jar files
+    	that enable the extended elements from Batik.  </p>
+    </answer>
 </faq>
 
 <faq>
@@ -552,17 +578,38 @@
     Why do I get red circles when I view the samples/extensions files?
     </question>
     <answer><p>
-    You are using the <link href="install.html#distributions">binary distribution</link>.  
-    This distribution does not include support for our example extensions (they are just
-    examples and other people can do more sophisticated things).
+    You are using the <link href="install.html#distributions">binary 
+    distribution</link>. This distribution does not include support for 
+    our example extensions (they are just examples and other people can 
+    do more sophisticated things).
     </p>
     
     <p>
-    If you want to view these examples you need to add <code>lib/batik-extensions.jar</code> to 
-    your class path.
+    If you want to view these examples you need to use the extension
+    enabled versions of the applications in the 'extensions' subdirectory.
     </p></answer>
 </faq>
 
+<faq>
+    <question>
+        I am modifying the DOM after displaying it in the JSVGCanvas,
+        but my changes aren't shown (even if I call repaint).
+    </question>
+
+    <answer>
+        <p>For efficeny if Batik Loads a static document it doesn't
+        setup all the dynamic support.  Batik normally decides a
+        document is not dynamic by checking if it contains any
+        'script' elements.  However if your Java Application is
+        modifying the DOM directly there may be no script elements.
+        In this case you need to tell Batik to setup dynamic
+        support anyways.</p>
+
+        <p>The easiest way to do this is to call
+        org.apache.batik.swing.JSVGCanvas.setDocumentState() with the
+        constant JSVGCanvas.ALWAYS_DYNAMIC.</p>
+    </answer>
+</faq>
 <faq>
     <question>
     I am trying to use Batik and FOP together but Batik does not work and
@@ -570,20 +617,24 @@
     </question>
 
     <answer>
-        <p>Both FOP and Batik use the <code>org.w3c.xxx packages</code>. Depending on the 
-        version of FOP and Batik, Batik has been using a version of these
-        packages which is more recent than the one in the w3c.jar file FOP 
-        uses. However, if the <code>w3c.jar</code>, file which comes with the FOP distribution
-        is loaded before the Batik jar files, then, the version coming with 
-        FOP takes precedence (i.e., that is the version the Java Virtual Machine
-        loads). Because that version is incompatible with Batik, you get a 
-        failure.</p>
-        <p>The solution is to either repackage the <code>w3c.jar</code> file with the 
-        classes in the Batik distribution (you will need the Batik source
-        distrib to do that), or you will need to make sure the Batik jars are
-        loaded before the <code>w3c.jar</code>, for example by putting them before the
-        <code>w3c.jar</code> file in your classpath. If you are copying your jar files to
-        <code>..jre/lib/ext</code>, you can simply remove the FOP <code>w3c.jar</code> file from that
+        <p>Both FOP and Batik use the <code>org.w3c.xxx
+        packages</code>.  Depending on the version of FOP and Batik,
+        Batik has been using a version of these packages which is more
+        recent than the one in the w3c.jar file FOP uses. However, if
+        the <code>w3c.jar</code>, file which comes with the FOP
+        distribution is loaded before the Batik jar files, then, the
+        version coming with FOP takes precedence (i.e., that is the
+        version the Java Virtual Machine loads). Because that version
+        is incompatible with Batik, you get a failure.</p>
+
+        <p>The solution is to either repackage the
+        <code>w3c.jar</code> file with the classes in the Batik
+        distribution (you will need the Batik source distrib to do
+        that), or you will need to make sure the Batik jars are loaded
+        before the <code>w3c.jar</code>, for example by putting them
+        before the <code>w3c.jar</code> file in your classpath. If you
+        are copying your jar files to <code>..jre/lib/ext</code>, you
+        can simply remove the FOP <code>w3c.jar</code> file from that
         directory.</p>
     </answer>
 </faq>
@@ -603,31 +654,33 @@
     appear clipped or out of place).  What do I need to do to fix this?
     </question> 
     <answer>
-      <p>As of Mac OS X release 10.1.1 there still appear to be problems in the
-      Apple implementation of the Java 2D API's. The true source of 
-      these problems and/or work arounds have yet to be identified (although 
-      the problems appear to be closely tied to a 'gstack underflow' error 
-      messages from the Apple JVM). We are interested in finding the source 
-      of these problems and reasonable work arounds, so if you know what 
-      causes these errors the Batik team would be very interested in hearing 
-      from you (either directly or through the user/developer mailing lists).
+      <p>As of Mac OS X release 10.1.1 there still appear to be
+      problems in the Apple implementation of the Java 2D API's. The
+      true source of these problems and/or work arounds have yet to be
+      identified (although the problems appear to be closely tied to a
+      'gstack underflow' error messages from the Apple JVM). We are
+      interested in finding the source of these problems and
+      reasonable work arounds, so if you know what causes these errors
+      the Batik team would be very interested in hearing from you
+      (either directly or through the user/developer mailing lists).
       </p>
 
-      <p>Other things to be aware of on Mac OS X, due to fixes for other 
-      problems with Java 2D under Mac OS X, you may find that some filtering 
-      operations take significantly more memory than on other platforms.  
-      This will be especially true for deeply nested filter trees (where the 
-      result of one filtering operation is filtered by another filtering 
-      operation).</p>
+      <p>Other things to be aware of on Mac OS X, due to fixes for
+      other problems with Java 2D under Mac OS X, you may find that
+      some filtering operations take significantly more memory than on
+      other platforms.  This will be especially true for deeply nested
+      filter trees (where the result of one filtering operation is
+      filtered by another filtering operation).</p>
 
-      <p>Finally a few hints on avoiding problems under Mac OS X. The bugs 
-      seems to be triggered by filters (I've never seen a pure raster SVG 
-      document 'mess up').  The use of the 'filterRes' attribute on the 
-      'filter' element seems especially problematic.  The bug isn't 100% 
-      reproducible, so while some content has the problem a lot if you play 
-      with the document enough it will often 'fix' it's self for a while, 
-      then after a while it will go back to being broken (this makes me
-      think the problem may be some sort of race condition in the JVM).</p>
+      <p>Finally a few hints on avoiding problems under Mac OS X. The
+      bugs seems to be triggered by filters (I've never seen a pure
+      raster SVG document 'mess up').  The use of the 'filterRes'
+      attribute on the 'filter' element seems especially problematic.
+      The bug isn't 100% reproducible, so while some content has the
+      problem a lot if you play with the document enough it will often
+      'fix' it's self for a while, then after a while it will go back
+      to being broken (this makes me think the problem may be some
+      sort of race condition in the JVM).</p>
     </answer>
 </faq>
 

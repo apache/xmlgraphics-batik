@@ -15,7 +15,7 @@
 <!-- version $Id$        -->
 <!-- ========================================================================= -->
 
-<book title="Apache Batik documentation" copyright="2000-2002 The Apache Software Foundation">
+<book title="Apache Batik documentation" copyright="2000-2003 The Apache Software Foundation">
     <!-- ======================= -->
     <!-- Home                    -->
     <!-- ======================= -->
@@ -85,6 +85,8 @@
     <external                     label="Bug Database"             href="http://nagoya.apache.org/bugzilla"/>
     <separator/>
     <page id="status"             label="Status"                   source="status.xml" />
+    <!-- status of the SVG DOM implementation -->
+    <hidden id="SVGDOMstatus"  source="svgdom.xml"/>
 
     <!-- <external label="Mail Archive" href="http://mail-archives.apache.org/"/> -->
     <!-- <external label="Snapshots" href="http://xml.apache.org/from-cvs/xml-batik/"/> -->

@@ -129,5 +129,47 @@
 	    distribution.
 	    </p>
         </s1>
+        <anchor id="jarFiles" />
+        <s1 title="Jar File Dependency Graph">
+	    <p>The Batik Distribution comes with many Jar files.  Not
+	    all of them are needed in every case (although the
+	    provided applications tend to use most of them).  The
+	    following is a diagram showing the dependencies between
+	    the various jar files in the Batik binary distribution (it
+	    also shows the major package interdependencies for source
+	    developers).
+            </p>
+	    <p>Jar files in white boxes are library jar files that
+	    Batik includes from external sources.  The light blue
+	    boxes correspond to library jar files (those found in the
+	    'lib' directory of a binary distribution) built from Batik
+	    source code.  The dark blue boxes represent the
+	    application jar files.
+            </p>
+	    <p>When boxes touch, the box on top depends on the box
+	    below it (there is no horizontal touching).  Arrows also
+	    indicate dependencies (the source of the arrow depends on
+	    the destination). In some cases a thick underline with an
+	    arrow is used to indicate that a large number of jar files
+	    share a common dependency, this however does not indicate
+	    any dependency between the jar files underlined.
+            </p>
+            <figure src="images/jarDependImg.png" 
+		    alt="Batik Jar File Dependency Graph" />
+            <note>  Some jar file names are shortend for clarity.<br/>
+
+                    All 'batik' package references are short for
+	            'org.apache.batik'.<br/>
+            </note>
+	    <p>It is worth pointing out that a determined/clever
+	    programmer may be able to pair down some of these
+	    dependencies.  For example the 'batik-dom.jar' depends on
+	    'xerces.jar' because of the SAXDocumentFactory class in
+	    'org.apache.batik.dom.util'.  If you didn't need to parse
+	    XML it would be possible to ignore or break this
+	    dependency and still use the 'batik-dom.jar' file for it's
+	    DOM implementation.
+            </p>
+        </s1>
     </body>
 </document>

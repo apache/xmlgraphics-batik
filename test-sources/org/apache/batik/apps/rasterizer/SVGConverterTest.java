@@ -52,6 +52,14 @@ public class SVGConverterTest extends DefaultTestSuite {
         addTest(t);
         t.setId("TranscoderConfigTest.TIFF");
 
+        try {
+            Class pdfClass = Class.forName("org.apache.fop.svg.PDFTranscoder");
+            t = new TranscoderConfigTest(DestinationType.PDF, pdfClass);
+            t.setId("TranscoderConfigTest.PDF");
+            addTest(t);
+        } catch (Exception e) {
+        }
+
         //
         // Checks that the proper hints are used
         //

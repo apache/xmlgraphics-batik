@@ -6,7 +6,7 @@
  * the LICENSE file.                                                         *
  *****************************************************************************/
 
-package org.apache.batik.util;
+package org.apache.batik.parser;
 
 import java.io.StringReader;
 
