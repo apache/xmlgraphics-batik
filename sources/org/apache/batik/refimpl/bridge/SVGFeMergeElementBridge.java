@@ -20,6 +20,7 @@ import org.apache.batik.bridge.FilterPrimitiveBridge;
 import org.apache.batik.bridge.IllegalAttributeValueException;
 
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.filter.CompositeRable;
 import org.apache.batik.gvt.filter.CompositeRule;
 import org.apache.batik.gvt.filter.Filter;
@@ -70,6 +71,9 @@ public class SVGFeMergeElementBridge implements FilterPrimitiveBridge,
                          Filter in,
                          Rectangle2D filterRegion,
                          Map filterMap){
+
+        GraphicsNodeRenderContext rc = 
+                     bridgeContext.getGraphicsNodeRenderContext();
 
         // Extract sources, they are defined in the filterElement's children.
         List srcs = new LinkedList();
@@ -130,6 +134,7 @@ public class SVGFeMergeElementBridge implements FilterPrimitiveBridge,
                                                         filteredElement,
                                                         defaultRegion,
                                                         filteredNode,
+                                                        rc,
                                                         uctx);
 
         Filter filter = null;

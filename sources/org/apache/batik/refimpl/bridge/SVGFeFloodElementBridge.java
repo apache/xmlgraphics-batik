@@ -19,6 +19,7 @@ import org.apache.batik.bridge.BridgeMutationEvent;
 import org.apache.batik.bridge.FilterPrimitiveBridge;
 
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.FilterChainRable;
 import org.apache.batik.gvt.filter.FloodRable;
@@ -76,6 +77,9 @@ public class SVGFeFloodElementBridge implements FilterPrimitiveBridge,
                          Rectangle2D filterRegion,
                          Map filterMap){
 
+        GraphicsNodeRenderContext rc = 
+                         bridgeContext.getGraphicsNodeRenderContext();
+
         // Extract flood color
         CSSStyleDeclaration decl
             = bridgeContext.getViewCSS().getComputedStyle(filterElement, null);
@@ -93,6 +97,7 @@ public class SVGFeFloodElementBridge implements FilterPrimitiveBridge,
                                                         filteredElement,
                                                         filterRegion,
                                                         filteredNode,
+                                                        rc,
                                                         uctx);
 
         // First, create the FloodRable that maps the input filter node

@@ -27,6 +27,8 @@ import java.awt.image.RenderedImage;
 import java.awt.image.renderable.RenderableImage;
 import java.awt.image.renderable.RenderContext;
 
+import org.apache.batik.gvt.GraphicsNodeRenderContext;
+
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.CachableRed;
 import org.apache.batik.gvt.filter.PadMode;
@@ -202,8 +204,8 @@ public abstract class AbstractRable implements Filter {
         return createScaledRendering(100, 100, null);
     }
 
-    public RenderedImage createScaledRendering(int w, int h,
-                                               RenderingHints hints) {
+    public RenderedImage createScaledRendering(int w, int h, 
+                                           RenderingHints hints) {
         float sX = w/getWidth();
         float sY = h/getHeight();
         float scale = Math.min(sX, sY);
@@ -271,7 +273,8 @@ public abstract class AbstractRable implements Filter {
 
     public boolean isDynamic() { return false; }
 
-    public Shape getDependencyRegion(int srcIndex, Rectangle2D outputRgn) {
+    public Shape getDependencyRegion(int srcIndex, 
+                                     Rectangle2D outputRgn) {
         if ((srcIndex < 0) || (srcIndex > srcs.size()))
             throw new IndexOutOfBoundsException
                 ("Nonexistant source requested.");
@@ -283,7 +286,8 @@ public abstract class AbstractRable implements Filter {
         return srect;
     }
 
-    public Shape getDirtyRegion(int srcIndex, Rectangle2D inputRgn) {
+    public Shape getDirtyRegion(int srcIndex, 
+                                Rectangle2D inputRgn) {
         if ((srcIndex < 0) || (srcIndex > srcs.size()))
             throw new IndexOutOfBoundsException
                 ("Nonexistant source requested.");

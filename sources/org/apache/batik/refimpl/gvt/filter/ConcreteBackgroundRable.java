@@ -84,6 +84,7 @@ public class ConcreteBackgroundRable
     // It unions them with init if provided.
     static Rectangle2D addBounds(CompositeGraphicsNode cgn,
                                  GraphicsNode child,
+                                 GraphicsNodeRenderContext rc,
                                  Rectangle2D  init) {
         List children = cgn.getChildren();
         Iterator i = children.iterator();
@@ -93,7 +94,7 @@ public class ConcreteBackgroundRable
             if (gn == child) 
                 break;
 
-            Rectangle2D cr2d = gn.getBounds();
+            Rectangle2D cr2d = gn.getBounds(rc);
             AffineTransform at = gn.getTransform();
             cr2d = at.createTransformedShape(cr2d).getBounds2D();
             if (r2d == null) r2d = cr2d;
@@ -114,7 +115,8 @@ public class ConcreteBackgroundRable
 
 
     static Rectangle2D getViewportBounds(GraphicsNode gn,
-                                         GraphicsNode child) {
+                                         GraphicsNode child,
+                                         GraphicsNodeRenderContext rc) {
         // See if background is enabled.
         Rectangle2D r2d = null;
         if (gn instanceof CompositeGraphicsNode) {
@@ -124,7 +126,7 @@ public class ConcreteBackgroundRable
 
         if (r2d == null)
             // No background enable so check our parent's value.
-            r2d = getViewportBounds(gn.getParent(), gn);
+            r2d = getViewportBounds(gn.getParent(), gn, rc);
 
 
         // No background for any ancester (error) return null
@@ -135,12 +137,12 @@ public class ConcreteBackgroundRable
         if (r2d == CompositeGraphicsNode.VIEWPORT) {
             // If we don't have a child then just use our bounds.
             if (child == null)
-                return gn.getPrimitiveBounds();
+                return gn.getPrimitiveBounds(rc);
 
             // gn must be composite so add all it's children's bounds
             // up to child.
             CompositeGraphicsNode cgn = (CompositeGraphicsNode)gn;
-            return addBounds(cgn, child, null);
+            return addBounds(cgn, child, rc, null);
         }
 
         try {
@@ -157,9 +159,9 @@ public class ConcreteBackgroundRable
         if (child != null) {
             // Add our childrens bounds to it...
             CompositeGraphicsNode cgn = (CompositeGraphicsNode)gn;
-            r2d = addBounds(cgn, child, r2d);
+            r2d = addBounds(cgn, child, rc, r2d);
         } else
-            r2d.add(gn.getPrimitiveBounds());
+            r2d.add(gn.getPrimitiveBounds(rc));
 
         return r2d;
     }
@@ -217,7 +219,9 @@ public class ConcreteBackgroundRable
         Rectangle2D r2d = getBoundsRecursive(node, null);
 
         if (r2d == CompositeGraphicsNode.VIEWPORT)
-            r2d = getViewportBounds(node, null);
+            r2d = getViewportBounds(node, null, null);
+            // FIXME: XXX: may fail for when null GraphicsNodeRenderContext
+            // is passed if child is TextNode!
 
         return r2d;
     }
@@ -254,7 +258,7 @@ public class ConcreteBackgroundRable
                 GraphicsNodeRable gnr;
                 GraphicsNodeRableFactory gnrf;
                 gnrf = rc.getGraphicsNodeRableFactory();
-                gnr  = gnrf.createGraphicsNodeRable(childGN);
+                gnr  = gnrf.createGraphicsNodeRable(childGN, rc);
                 gnr.setUsePrimitivePaint(false);
                 srcs.add(gnr);
             }

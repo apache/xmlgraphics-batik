@@ -77,7 +77,7 @@ public class JSVGApplet extends JApplet implements UserAgent, DocumentListener {
     /**
      * The event dispatcher.
      */
-    protected EventDispatcher eventDispatcher = new ConcreteEventDispatcher();
+    protected EventDispatcher eventDispatcher;
 
     /**
      * The default cursor.
@@ -95,6 +95,10 @@ public class JSVGApplet extends JApplet implements UserAgent, DocumentListener {
         CSSDocumentHandler.setParserClassName("org.w3c.flute.parser.Parser");
         df = new SVGDocumentFactory(getXMLParserClassName());
         canvas = new JSVGCanvas(this);
+        eventDispatcher = 
+            new ConcreteEventDispatcher(
+                canvas.getRendererFactory().getRenderContext());
+
         canvas.setPreferredSize(new Dimension(600, 400));
         getContentPane().add(canvas, BorderLayout.CENTER);
         String uri = getParameter("svg");

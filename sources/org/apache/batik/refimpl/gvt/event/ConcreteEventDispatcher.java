@@ -9,6 +9,7 @@
 package org.apache.batik.refimpl.gvt.event;
 
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.event.*;
 
 import java.awt.event.InputEvent;
@@ -40,8 +41,15 @@ public class ConcreteEventDispatcher extends AbstractEventDispatcher {
 
     private EventListenerList glisteners;
 
-    public ConcreteEventDispatcher() {
+    /*
+     * The GraphicsNodeRenderContext which this event dispatcher uses for
+     * context-dependent dispatches (such as TextNode hit testing).
+     */
+    protected GraphicsNodeRenderContext nodeRenderContext = null;
+
+    public ConcreteEventDispatcher(GraphicsNodeRenderContext rc) {
         super();
+        this.nodeRenderContext = rc;
     }
 
     public void mousePressed(MouseEvent evt) {
@@ -266,7 +274,7 @@ public class ConcreteEventDispatcher extends AbstractEventDispatcher {
             p = baseTransform.transform(p, null);
         }
 
-        GraphicsNode node = root.nodeHitAt(p);
+        GraphicsNode node = root.nodeHitAt(p, nodeRenderContext);
 
         if (isModalEvent(evt, node) && (lastHit != null)) { 
             // modal if either button release on null node, or

@@ -25,6 +25,7 @@ import org.apache.batik.bridge.ObjectBoundingBoxViewport;
 import org.apache.batik.bridge.Viewport;
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.GraphicsNodeRable;
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
@@ -57,6 +58,10 @@ public class SVGMaskElementBridge implements MaskBridge, SVGConstants {
                            BridgeContext bridgeContext,
                            Element maskElement,
                            Element maskedElement) {
+
+        GraphicsNodeRenderContext rc = 
+                   bridgeContext.getGraphicsNodeRenderContext();
+
         //
         // Get the mask region
         //
@@ -70,6 +75,7 @@ public class SVGMaskElementBridge implements MaskBridge, SVGConstants {
             = SVGUtilities.convertMaskRegion(maskElement,
                                              maskedElement,
                                              maskedNode,
+                                             rc,             
                                              uctx);
 
         //
@@ -139,6 +145,7 @@ public class SVGMaskElementBridge implements MaskBridge, SVGConstants {
 
         at = SVGUtilities.convertAffineTransform(at,
                                                  maskedNode,
+                                                 rc,
                                                  maskContentUnitsType);
         maskNodeContent.setTransform(at);
 
@@ -147,7 +154,7 @@ public class SVGMaskElementBridge implements MaskBridge, SVGConstants {
             // Make the initial source as a RenderableImage
             GraphicsNodeRableFactory gnrFactory
                 = bridgeContext.getGraphicsNodeRableFactory();
-            filter = gnrFactory.createGraphicsNodeRable(maskedNode);
+            filter = gnrFactory.createGraphicsNodeRable(maskedNode, rc);
         }
 
         return new ConcreteMaskRable(filter, maskNode, maskRegion);

@@ -510,6 +510,8 @@ public class JSVGCanvas
                         BridgeContext bridgeContext = createBridgeContext(doc);
                         bridgeContext.setViewCSS(
                            (ViewCSS)((SVGOMDocument)doc).getDefaultView());
+                        bridgeContext.setGraphicsNodeRenderContext(
+                          getRendererFactory().getRenderContext());
                         bridgeContext.setGVTBuilder(builder);
                         long t1 = System.currentTimeMillis();
                         if (Thread.currentThread().isInterrupted()) {
@@ -748,6 +750,8 @@ public class JSVGCanvas
         result.setUserAgent(userAgent);
         result.setGraphicsNodeRableFactory
             (new ConcreteGraphicsNodeRableFactory());
+        result.setGraphicsNodeRenderContext(
+            getRendererFactory().getRenderContext());
         ((SVGBridgeContext)result).setInterpreterPool
             (new ConcreteInterpreterPool(doc));
         result.setCurrentViewport(new UserAgentViewport(userAgent));
@@ -1149,7 +1153,11 @@ public class JSVGCanvas
             try {
                 if (gvtRoot != null) {
                     docBBox = transform.createTransformedShape(
-                                            gvtRoot.getBounds());
+                                            gvtRoot.getBounds(null));
+
+                    // XXX: relies on fact that gvtRoot is not a text node
+                    // and therefore does not use the GraphicsNodeRenderContext
+                    // parameter
                 }
                 dispatcher.setBaseTransform(transform.createInverse());
             } catch (NoninvertibleTransformException e) {

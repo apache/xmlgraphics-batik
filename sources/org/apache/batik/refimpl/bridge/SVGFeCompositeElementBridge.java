@@ -19,6 +19,7 @@ import org.apache.batik.bridge.IllegalAttributeValueException;
 import org.apache.batik.bridge.MissingAttributeException;
 
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.filter.CompositeRable;
 import org.apache.batik.gvt.filter.CompositeRule;
 import org.apache.batik.gvt.filter.Filter;
@@ -71,6 +72,9 @@ public class SVGFeCompositeElementBridge implements FilterPrimitiveBridge,
                          Filter in,
                          Rectangle2D filterRegion,
                          Map filterMap){
+
+        GraphicsNodeRenderContext rc = 
+                         bridgeContext.getGraphicsNodeRenderContext();
 
         // Extract Composite operation
         CompositeRule rule = getRule(filterElement);
@@ -127,6 +131,7 @@ public class SVGFeCompositeElementBridge implements FilterPrimitiveBridge,
                                                         filteredElement,
                                                         defaultRegion,
                                                         filteredNode,
+                                                        rc,
                                                         uctx);
 
         // Now, do the composite.

@@ -23,6 +23,7 @@ import org.apache.batik.bridge.ObjectBoundingBoxViewport;
 import org.apache.batik.bridge.Viewport;
 import org.apache.batik.gvt.GVTFactory;
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.ShapeNode;
 import org.apache.batik.gvt.filter.Clip;
 import org.apache.batik.gvt.filter.Filter;
@@ -53,7 +54,7 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
     public Clip createClip(BridgeContext ctx,
                             GraphicsNode gn,
                             Element clipElement,
-                            Element clipedElement) {
+                            Element clippedElement) {
 
         CSSStyleDeclaration decl
             = ctx.getViewCSS().getComputedStyle(clipElement, null);
@@ -67,6 +68,7 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
         // The 'clipPath' element or any of its children can specify
         // property 'clip-path'.
         //
+        GraphicsNodeRenderContext rc = ctx.getGraphicsNodeRenderContext();
         Area clipPath = new Area();
         GVTBuilder builder = ctx.getGVTBuilder();
         GVTFactory gvtFactory = ctx.getGVTFactory();
@@ -97,7 +99,7 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
             ctx.setCurrentViewport(new ObjectBoundingBoxViewport());
         }
         // compute an additional transform related the clipPathUnits
-        Tx = SVGUtilities.convertAffineTransform(Tx, gn, unitsType);
+        Tx = SVGUtilities.convertAffineTransform(Tx, gn, rc, unitsType);
 
         // build the clipPath according to the clipPath's children
         boolean hasChildren = false;
@@ -126,7 +128,7 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
             int wr = (CSSUtilities.rule(v) == CSSUtilities.RULE_NONZERO)
                 ? GeneralPath.WIND_NON_ZERO
                 : GeneralPath.WIND_EVEN_ODD;
-            GeneralPath path = new GeneralPath(clipNode.getOutline());
+            GeneralPath path = new GeneralPath(clipNode.getOutline(rc));
             path.setWindingRule(wr);
             Shape outline = Tx.createTransformedShape(path);
 
@@ -164,7 +166,7 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
               // Make the initial source as a RenderableImage
             GraphicsNodeRableFactory gnrFactory
                 = ctx.getGraphicsNodeRableFactory();
-            filter = gnrFactory.createGraphicsNodeRable(gn);
+            filter = gnrFactory.createGraphicsNodeRable(gn, rc);
         }
         return new ConcreteClipRable(filter, clipPath);
 

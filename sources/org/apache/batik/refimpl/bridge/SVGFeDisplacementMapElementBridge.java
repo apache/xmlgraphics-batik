@@ -20,6 +20,7 @@ import org.apache.batik.bridge.IllegalAttributeValueException;
 import org.apache.batik.bridge.MissingAttributeException;
 
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.filter.ARGBChannel;
 import org.apache.batik.gvt.filter.DisplacementMapRable;
 import org.apache.batik.gvt.filter.Filter;
@@ -70,6 +71,10 @@ public class SVGFeDisplacementMapElementBridge implements FilterPrimitiveBridge,
                          Filter in,
                          Rectangle2D filterRegion,
                          Map filterMap){
+
+        GraphicsNodeRenderContext rc = 
+                         bridgeContext.getGraphicsNodeRenderContext();
+
         //
         // Extract standard deviation
         //
@@ -145,6 +150,7 @@ public class SVGFeDisplacementMapElementBridge implements FilterPrimitiveBridge,
                                                         filteredElement,
                                                         defaultRegion,
                                                         filteredNode,
+                                                        rc,
                                                         uctx);
 
         PadRable pad = new ConcretePadRable(in, dispArea, PadMode.ZERO_PAD);

@@ -12,6 +12,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.Map;
 
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.filter.Filter;
 
 import org.w3c.dom.Element;

@@ -377,7 +377,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
         // and see if it intersects with this node's bounds (in user space).
         //
         boolean paintNeeded = true;
-        Rectangle2D bounds = getBounds();
+        Rectangle2D bounds = getBounds(rc);
         Shape g2dClip = g2d.getClip();
         if(g2dClip != null){
             Rectangle2D clipBounds = g2dClip.getBounds2D();
@@ -421,7 +421,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
 
                 if(filter == null){
                     filteredImage = rc.getGraphicsNodeRableFactory().
-                        createGraphicsNodeRable(this);
+                        createGraphicsNodeRable(this, rc);
                 }
                 else {
                     // traceFilter(filter, "=====>> ");
@@ -666,8 +666,8 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
         bounds = null;
     }
 
-    protected Rectangle2D getGlobalBounds() {
-        Rectangle2D r = getBounds();
+    protected Rectangle2D getGlobalBounds(GraphicsNodeRenderContext rc) {
+        Rectangle2D r = getBounds(rc);
         if (r == null) {
             return null;
         } else {
@@ -681,7 +681,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
      * method. This is used in addition to the mask, clip and filter
      * to compute the area actually rendered by this node.
      */
-    public Rectangle2D getBounds(){
+    public Rectangle2D getBounds(GraphicsNodeRenderContext rc){
         // Get the primitive bounds
         // Rectangle2D bounds = null;
         if(bounds == null){
@@ -690,7 +690,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
             // by the primitive paint or the area painted
             // by the filter.
             if(filter == null){
-                bounds = getPrimitiveBounds();
+                bounds = getPrimitiveBounds(rc);
             } else {
                 bounds = filter.getBounds2D();
             }
@@ -710,11 +710,11 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
         return bounds;
     }
 
-    public boolean contains(Point2D p) {
-        return getBounds().contains(p);
+    public boolean contains(Point2D p, GraphicsNodeRenderContext rc) {
+        return getBounds(rc).contains(p);
     }
 
-    public GraphicsNode nodeHitAt(Point2D p) {
+    public GraphicsNode nodeHitAt(Point2D p, GraphicsNodeRenderContext rc) {
         if (hitDetector != null) {
             if (hitDetector.isHit(this, p)) {
                 return this;
@@ -722,12 +722,12 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
                 return null;
             }
         } else {
-            return (contains(p) ? this : null);
+            return (contains(p, rc) ? this : null);
         }
     }
 
-    public boolean intersects(Rectangle2D r) {
-        return getBounds().intersects(r);
+    public boolean intersects(Rectangle2D r, GraphicsNodeRenderContext rc) {
+        return getBounds(rc).intersects(r);
     }
 
     public void processMouseEvent(GraphicsNodeMouseEvent evt) {

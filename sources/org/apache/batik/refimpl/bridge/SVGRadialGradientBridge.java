@@ -20,6 +20,7 @@ import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.IllegalAttributeValueException;
 import org.apache.batik.bridge.PaintBridge;
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.refimpl.bridge.resources.Messages;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.UnitProcessor;
@@ -75,6 +76,10 @@ public class SVGRadialGradientBridge extends SVGGradientBridge
                                 GraphicsNode paintedNode,
                                 Element paintedElement,
                                 Element paintElement){
+ 
+       GraphicsNodeRenderContext rc = 
+                         ctx.getGraphicsNodeRenderContext();
+
         //
         // Get unit processor to compute gradient control points
         //
@@ -161,7 +166,8 @@ public class SVGRadialGradientBridge extends SVGGradientBridge
                                                 ATTR_GRADIENT_TRANSFORM,
                                                 ctx.getParserFactory());
 
-        at = SVGUtilities.convertAffineTransform(at, paintedNode, unitsType);
+        at = SVGUtilities.convertAffineTransform(at, paintedNode, rc, 
+                                                 unitsType);
 
         // Extract stop colors and intervals
         Vector stopVector = extractGradientStops(paintElement, ctx);

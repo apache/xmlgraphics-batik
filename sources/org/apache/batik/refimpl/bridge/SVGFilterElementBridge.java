@@ -22,6 +22,7 @@ import org.apache.batik.bridge.FilterPrimitiveBridge;
 import org.apache.batik.bridge.IllegalAttributeValueException;
 
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.FilterChainRable;
 import org.apache.batik.gvt.filter.GraphicsNodeRable;
@@ -70,12 +71,15 @@ public class SVGFilterElementBridge implements FilterBridge, SVGConstants {
                          Rectangle2D filterRegion,
                          Map filterMap){
 
+         GraphicsNodeRenderContext rc = 
+                     bridgeContext.getGraphicsNodeRenderContext();
+
         // Make the initial source as a RenderableImage
         GraphicsNodeRableFactory gnrFactory
             = bridgeContext.getGraphicsNodeRableFactory();
 
         GraphicsNodeRable sourceGraphic
-            = gnrFactory.createGraphicsNodeRable(filteredNode);
+            = gnrFactory.createGraphicsNodeRable(filteredNode, rc);
 
         // Get the filter region and resolution
         CSSStyleDeclaration cssDecl
@@ -87,6 +91,7 @@ public class SVGFilterElementBridge implements FilterBridge, SVGConstants {
         filterRegion = SVGUtilities.convertFilterChainRegion(filterElement,
                                                              filteredElement,
                                                              filteredNode,
+                                                             rc,
                                                              uctx);
 
         // Build a ConcreteFilterChainRable

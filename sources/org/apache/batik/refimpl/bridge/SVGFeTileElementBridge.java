@@ -16,6 +16,7 @@ import org.apache.batik.bridge.BridgeMutationEvent;
 import org.apache.batik.bridge.FilterPrimitiveBridge;
 
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.TileRable;
 
@@ -62,6 +63,10 @@ public class SVGFeTileElementBridge implements FilterPrimitiveBridge,
                          Filter in,
                          Rectangle2D filterRegion,
                          Map filterMap){
+
+        GraphicsNodeRenderContext rc = 
+                         bridgeContext.getGraphicsNodeRenderContext();
+
         //
         // Tile region is defined by the filter region
         //
@@ -82,6 +87,7 @@ public class SVGFeTileElementBridge implements FilterPrimitiveBridge,
                                                         filteredElement,
                                                         defaultRegion,
                                                         filteredNode,
+                                                        rc,
                                                         uctx);
         //
         // Get the tile source

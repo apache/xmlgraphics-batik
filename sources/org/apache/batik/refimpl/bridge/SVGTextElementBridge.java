@@ -37,6 +37,7 @@ import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.dom.util.XMLSupport;
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.TextNode;
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.Clip;
@@ -142,8 +143,10 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
         return result;
     }
 
-    public void buildGraphicsNode(GraphicsNode node, BridgeContext ctx,
+    public void buildGraphicsNode(GraphicsNode node, 
+                                  BridgeContext ctx,
                                   Element element) {
+
         TextNode result = (TextNode)node;
 
         CSSStyleDeclaration cssDecl
@@ -205,8 +208,10 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
      * element children.
      */
     protected AttributedString buildAttributedString(BridgeContext ctx,
-                                                     Element element,
-                                                     GraphicsNode node) {
+                                             Element element,
+                                             GraphicsNode node) {
+
+
         AttributedString result = null;
         List l = buildAttributedStrings(ctx,
                                         element,
@@ -266,6 +271,8 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                                           Element element,
                                           GraphicsNode node,
                                           boolean top) {
+
+
         // !!! return two lists
 
         List result = new LinkedList();
@@ -420,6 +427,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
     protected Map getAttributeMap(BridgeContext ctx,
                                   Element element,
                                   GraphicsNode node) {
+
         CSSStyleDeclaration cssDecl
             = ctx.getViewCSS().getComputedStyle(element, null);
         UnitProcessor.Context uctx

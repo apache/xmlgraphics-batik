@@ -31,6 +31,7 @@ import org.apache.batik.gvt.CompositeShapePainter;
 import org.apache.batik.gvt.FillShapePainter;
 import org.apache.batik.gvt.GVTFactory;
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.ShapePainter;
 import org.apache.batik.gvt.StrokeShapePainter;
 import org.apache.batik.gvt.filter.Clip;
@@ -204,7 +205,8 @@ public class CSSUtilities implements SVGConstants {
     public static Clip convertClipPath(Element clipedElement,
                                        GraphicsNode gn,
                                        BridgeContext ctx) {
-         CSSStyleDeclaration decl
+
+        CSSStyleDeclaration decl
              = ctx.getViewCSS().getComputedStyle(clipedElement, null);
 
          CSSPrimitiveValue clipValue =
@@ -261,7 +263,8 @@ public class CSSUtilities implements SVGConstants {
       */
      public static Mask convertMask(Element maskedElement,
                                     GraphicsNode  gn,
-                                    BridgeContext ctx) {
+                                     BridgeContext ctx) {
+
          CSSStyleDeclaration decl
              = ctx.getViewCSS().getComputedStyle(maskedElement, null);
 
@@ -318,10 +321,11 @@ public class CSSUtilities implements SVGConstants {
      * @param uctx the UnitProcessor context
      */
     public static ShapePainter convertStrokeAndFill(SVGElement svgElement,
-                                                    GraphicsNode node,
-                                                    BridgeContext ctx,
-                                                    CSSStyleDeclaration decl,
-                                                    UnitProcessor.Context uctx){
+                                                GraphicsNode node,
+                                                BridgeContext ctx,
+                                                CSSStyleDeclaration decl,
+                                                UnitProcessor.Context uctx){
+
         GVTFactory f = ctx.getGVTFactory();
         // resolve fill
         ShapePainter fillPainter = convertFill(svgElement, node, ctx,
@@ -512,10 +516,11 @@ public class CSSUtilities implements SVGConstants {
                                            BridgeContext ctx,
                                            CSSStyleDeclaration decl,
                                            UnitProcessor.Context uctx) {
+
         GVTFactory f = ctx.getGVTFactory();
         FillShapePainter painter = null;
         Paint fillPaint = convertFillToPaint(svgElement,
-                                             node,
+                                             node,   
                                              ctx,
                                              decl,
                                              uctx);
@@ -579,6 +584,7 @@ public class CSSUtilities implements SVGConstants {
                                            BridgeContext ctx,
                                            CSSStyleDeclaration decl,
                                            UnitProcessor.Context uctx) {
+
         CSSPrimitiveValue v =
             (CSSPrimitiveValue) decl.getPropertyCSSValue(CSS_FILL_PROPERTY);
         switch(v.getPrimitiveType()) {
@@ -784,6 +790,7 @@ public class CSSUtilities implements SVGConstants {
     public static Filter convertFilter(Element element,
                                        GraphicsNode node,
                                        BridgeContext ctx){
+
         CSSStyleDeclaration decl
             = ctx.getViewCSS().getComputedStyle(element, null);
 

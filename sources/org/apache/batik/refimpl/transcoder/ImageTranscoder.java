@@ -24,6 +24,7 @@ import org.apache.batik.dom.svg.DefaultSVGContext;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.renderer.Renderer;
+import org.apache.batik.gvt.renderer.RendererFactory;
 import org.apache.batik.parser.ParserFactory;
 import org.apache.batik.refimpl.bridge.DefaultBridgeContext;
 import org.apache.batik.refimpl.bridge.SVGUtilities;
@@ -46,10 +47,12 @@ public abstract class ImageTranscoder extends AbstractTranscoder {
     public void transcodeToStream(Document document, OutputStream ostream)
             throws TranscoderException {
         SVGDocument svgDocument = (SVGDocument) document;
+        RendererFactory rendererFactory = new StaticRendererFactory();
         BridgeContext ctx =
             new DefaultBridgeContext(getParserClassName(), svgDocument);
         ctx.setGVTBuilder(getGVTBuilder());
         ctx.setCurrentViewport(getDefaultViewport());
+        ctx.setGraphicsNodeRenderContext(rendererFactory.getRenderContext());
 
         UserAgent ua = ctx.getUserAgent();
         DefaultSVGContext svgCtx = new DefaultSVGContext();
@@ -80,7 +83,8 @@ public abstract class ImageTranscoder extends AbstractTranscoder {
         }
         g2d.setComposite(AlphaComposite.SrcOver);
 
-        Renderer renderer = new StaticRendererFactory().createRenderer(img);
+        Renderer renderer = rendererFactory.createRenderer(img);
+
         AffineTransform t = SVGUtilities.getPreserveAspectRatioTransform
             (elt, w, h, parserFactory);
         renderer.setTransform(t);

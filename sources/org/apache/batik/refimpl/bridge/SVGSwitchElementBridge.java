@@ -73,8 +73,10 @@ public class SVGSwitchElementBridge
         return gn;
     }
 
-    public void buildGraphicsNode(GraphicsNode gn, BridgeContext ctx,
+    public void buildGraphicsNode(GraphicsNode gn, 
+                                  BridgeContext ctx,
                                   Element element) {
+
         Document document = element.getOwnerDocument();
         ViewCSS viewCSS = (ViewCSS) ((DocumentView) document).getDefaultView();
         CSSStyleDeclaration decl = viewCSS.getComputedStyle(element, null);

@@ -324,8 +324,7 @@ public class ViewerFrame
     /**
      * The event dispatcher.
      */
-    private ConcreteEventDispatcher eventDispatcher =
-        new ConcreteEventDispatcher();
+    private ConcreteEventDispatcher eventDispatcher;
 
     /**
      * The user languages.
@@ -383,6 +382,10 @@ public class ViewerFrame
 
         // Create the SVG canvas.
         canvas = new JSVGCanvas(this);
+
+        eventDispatcher = 
+            new ConcreteEventDispatcher(
+                canvas.getRendererFactory().getRenderContext());
 
         listeners.put(OPEN_ACTION,        new OpenAction());
         listeners.put(OPEN_PAGE_ACTION,   new OpenPageAction());

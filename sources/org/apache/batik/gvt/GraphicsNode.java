@@ -350,49 +350,77 @@ public interface GraphicsNode {
     /**
      * Returns the bounds of this node in user space. This includes
      * primitive paint, filtering, clipping and masking.
+     * Note: The boundaries of some nodes (notably, text element nodes)
+     * cannot be precisely determined independent of their 
+     * GraphicsNodeRenderContext.
+     * @param rc the GraphicsNodeRenderContext for which this dimension applies
      */
-    Rectangle2D getBounds();
+    Rectangle2D getBounds(GraphicsNodeRenderContext rc);
 
     /**
      * Returns the bounds of the area covered by this node's
      * primitive paint.
-     */
-    Rectangle2D getPrimitiveBounds();
+     * Note: The boundaries of some nodes (notably, text element nodes)
+     * cannot be precisely determined independent of their 
+     * GraphicsNodeRenderContext.
+     * @param rc the GraphicsNodeRenderContext for which this dimension applies
+      */
+    Rectangle2D getPrimitiveBounds(GraphicsNodeRenderContext rc);
 
     /**
      * Returns the bounds of the area covered by this node, without
      * taking any of its rendering attribute into account, i.e., exclusive
      * of any clipping, masking, filtering or stroking, for example.
-     */
-    Rectangle2D getGeometryBounds();
+     * Note: The boundaries of some nodes (notably, text element nodes)
+     * cannot be precisely determined independent of their 
+     * GraphicsNodeRenderContext.
+     * @param rc the GraphicsNodeRenderContext for which this dimension applies
+      */
+    Rectangle2D getGeometryBounds(GraphicsNodeRenderContext rc);
 
     /**
      * Tests if the specified Point2D is inside the boundary of this
      * node.
+     * Note: The boundaries of some nodes (notably, text element nodes)
+     * cannot be precisely determined independent of their 
+     * GraphicsNodeRenderContext.
      * @param p the specified Point2D in the user space
+     * @param rc the GraphicsNodeRenderContext for which this dimension applies
      * @return true if the coordinates are inside, false otherwise
      */
-    boolean contains(Point2D p);
+    boolean contains(Point2D p, GraphicsNodeRenderContext rc);
 
     /**
      * Tests if the interior of this node intersects the interior of a
      * specified Rectangle2D.
+     * Note: The boundaries of some nodes (notably, text element nodes)
+     * cannot be precisely determined independent of their 
+     * GraphicsNodeRenderContext.
      * @param r the specified Rectangle2D in the user node space
+     * @param rc the GraphicsNodeRenderContext for which this dimension applies
      * @return true if the rectangle intersects, false otherwise
      */
-    boolean intersects(Rectangle2D r);
+    boolean intersects(Rectangle2D r, GraphicsNodeRenderContext rc);
 
     /**
      * Returns the GraphicsNode containing point p if this node or one of
      * its children is sensitive to mouse events at p.
+     * Note: The boundaries of some nodes (notably, text element nodes)
+     * cannot be precisely determined independent of their 
+     * GraphicsNodeRenderContext.
      * @param p the specified Point2D in the user space
+     * @param rc the GraphicsNodeRenderContext for which this dimension applies
      * @return the GraphicsNode containing p on this branch of the GVT tree.
      */
-    GraphicsNode nodeHitAt(Point2D p);
+    GraphicsNode nodeHitAt(Point2D p, GraphicsNodeRenderContext rc);
 
     /**
      * Returns the outline of this node.
+     * Note: The boundaries of some nodes (notably, text element nodes)
+     * cannot be precisely determined independent of their 
+     * GraphicsNodeRenderContext.
+     * @param rc the GraphicsNodeRenderContext for which this dimension applies
      * @return the outline of this node
      */
-    Shape getOutline();
+    Shape getOutline(GraphicsNodeRenderContext rc);
 }

@@ -18,6 +18,7 @@ import org.apache.batik.bridge.GraphicsNodeBridge;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.SVGViewport;
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.CanvasGraphicsNode;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.UnitProcessor;
@@ -116,7 +117,8 @@ public class SVGSVGElementBridge implements GraphicsNodeBridge, SVGConstants {
             GraphicsNodeRableFactory gnrFactory
                 = ctx.getGraphicsNodeRableFactory();
 
-            Filter filter = gnrFactory.createGraphicsNodeRable(node);
+            Filter filter = gnrFactory.createGraphicsNodeRable(node,
+                                       ctx.getGraphicsNodeRenderContext());
 
             Shape clip = at.createTransformedShape
                 (new Rectangle2D.Float(x, y, w, h));
@@ -133,7 +135,8 @@ public class SVGSVGElementBridge implements GraphicsNodeBridge, SVGConstants {
         return node;
     }
 
-    public void buildGraphicsNode(GraphicsNode node, BridgeContext ctx,
+    public void buildGraphicsNode(GraphicsNode node, 
+                                  BridgeContext ctx,
                                   Element element) {
 
     }
