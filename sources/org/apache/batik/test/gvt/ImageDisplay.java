@@ -125,6 +125,7 @@ public class ImageDisplay {
             };
         comp.setPreferredSize(new Dimension(bi.getWidth(), bi.getHeight()));
         f.getContentPane().add("Center", comp);
+        f.getContentPane().setBackground(java.awt.Color.white);
 
         f.pack();
         f.show();

@@ -35,6 +35,8 @@ import org.apache.batik.gvt.filter.PadRable;
 import org.apache.batik.refimpl.gvt.filter.ConcreteAffineRable;
 import org.apache.batik.refimpl.gvt.filter.ConcreteGraphicsNodeRable;
 import org.apache.batik.refimpl.gvt.filter.ConcretePadRable;
+import org.apache.batik.refimpl.gvt.filter.ConcreteTileRable;
+import org.apache.batik.refimpl.gvt.filter.TileRed;
 
 /**
  * <tt>PaintContext</tt> for the <tt>ConcretePatterPaint</tt>
@@ -57,7 +59,7 @@ public class ConcretePatternPaintContext implements PaintContext {
     /**
      * Tile
      */
-    private RenderedImage tile;
+    private RenderedImage tiled;
 
     /**
      * Tile info
@@ -76,6 +78,7 @@ public class ConcretePatternPaintContext implements PaintContext {
      * @param nodeTransform additional transform to apply to the
      *        pattern content node.
      * @param patternTile region to which the pattern is constrained
+     * @param maximumExtenet of the region tiled by this paint. In user space.
      * @param overflow controls whether the pattern region clips the
      *        pattern tile
      */
@@ -113,11 +116,6 @@ public class ConcretePatternPaintContext implements PaintContext {
         tileWidth = patternBounds.getWidth();
         tileHeight = patternBounds.getHeight();
 
-        Shape aoiShape = (Shape)hints.get(GraphicsNode.KEY_AREA_OF_INTEREST);
-        Rectangle2D aoi = (aoiShape == null? null : aoiShape.getBounds2D());
-        //System.out.println("nodeBounds    : " + nodeBounds);
-        //System.out.println("patternBounds : " + patternBounds);
-
         //
         // adjustTxf applies the nodeTransform first, then
         // the translation to move the node rendering into
@@ -134,6 +132,10 @@ public class ConcretePatternPaintContext implements PaintContext {
         AffineRable atr
             = new ConcreteAffineRable(gnr, adjustTxf);
 
+
+        Shape aoiShape = (Shape)hints.get(GraphicsNode.KEY_AREA_OF_INTEREST);
+        Rectangle2D tiledRegion = (aoiShape == null? null : aoiShape.getBounds2D());
+
         Rectangle2D padBounds = (Rectangle2D)patternBounds.clone();
         if(overflow){
             //
@@ -147,42 +149,28 @@ public class ConcretePatternPaintContext implements PaintContext {
             padBounds.add(adjustedNodeBounds);
         }
 
-        // Take area of interest into account
-        if(aoi != null){
-            //System.out.println("padBounds : " + padBounds);
-            //System.out.println("aoi           : " + aoi);
-            // Rectangle2D.intersect(padBounds, aoi, padBounds);
-            //System.out.println("padBounds : " + padBounds);
-        }
-
-        // System.out.println("padBounds : " + padBounds);
-
         PadRable pad
             = new ConcretePadRable(atr,
                                    padBounds,
                                    PadMode.ZERO_PAD);
 
-        //System.out.println("Created PadRable");
+        ConcreteTileRable tileRable 
+            = new ConcreteTileRable(pad,
+                                    tiledRegion,
+                                    patternBounds,
+                                    overflow);
 
-        padTxf = new AffineTransform(usr2dev);
-
-        RenderContext rc = new RenderContext(padTxf,
-                                             padBounds,
+        RenderContext rc = new RenderContext(usr2dev,
+                                             tiledRegion,
                                              hints);
-        tile = pad.createRendering(rc);
+        
+        tiled = tileRable.createRendering(rc);
 
         //System.out.println("Created rendering");
-        if(tile == null){
+        if(tiled == null){
             //System.out.println("Tile was null");
             WritableRaster wr = rasterCM.createCompatibleWritableRaster(32, 32);
-            tile = new BufferedImage(rasterCM, wr, false, null);
-        }
-
-        try{
-            dev2usr = padTxf.createInverse();
-        }catch(NoninvertibleTransformException e){
-            // Degenerate case. Use identity
-            dev2usr = new AffineTransform();
+            tiled = new BufferedImage(rasterCM, wr, false, null);
         }
     }
 
@@ -204,109 +192,9 @@ public class ConcretePatternPaintContext implements PaintContext {
         }
 
         // System.out.println("getRaster : " + x + "/" + y + "/" + width + "/" + height);
-        WritableRaster wr = raster.createWritableChild(0, 0, width, height, 0, 0, null);
-        BufferedImage bi = new BufferedImage(rasterCM, wr, false, null);
-        Graphics2D g = bi.createGraphics();
-        g.setPaint(new Color(0, 0, 0, 0));
-        g.setComposite(AlphaComposite.Src);
-        g.fillRect(0, 0, width, height);
-        g.setComposite(AlphaComposite.SrcOver);
-        g.translate(-x, -y);
+        WritableRaster wr = raster.createWritableChild(raster.getMinX(), raster.getMinY(), 
+                                                       width, height, x, y, null);
 
-        Rectangle rasterBounds = new Rectangle(x, y, width, height);
-        Rectangle2D rasterBounds2D = dev2usr.createTransformedShape(rasterBounds).getBounds();
-
-        //
-        // Do tiling in user space
-        //
-        double fx = rasterBounds2D.getX();
-        double fy = rasterBounds2D.getY();
-        double fw = rasterBounds2D.getWidth();
-        double fh = rasterBounds2D.getHeight();
-
-        // System.out.println("rasterBounds in user space : " + fx + "/" + fy
-        //+ "/" + fw + "/" + fh);
-
-        // (rx, ry) is the current tile's origin, in translated user space,
-        // (i.e., translated by (-fx, -fy).
-        // It will be moved to different location to cover the whole
-        // raster.
-        double rx = (fx - tileX)%tileWidth;
-        double ry = (fy - tileY)%tileHeight;
-
-        if(rx > 0){
-            rx *= -1;
-        }
-        else if(rx < 0){
-            rx = -tileWidth - rx;
-        }
-
-        if(ry > 0){
-            ry *= -1;
-        }
-        else if(ry < 0){
-            ry = -tileHeight - ry;
-        }
-
-        Point2D.Double tileOrigin
-            = new Point2D.Double(tileWidth, 0);
-
-        padTxf.deltaTransform(tileOrigin, tileOrigin);
-        int txx = (int)Math.floor(tileOrigin.x);
-        int txy = (int)Math.floor(tileOrigin.y);
-
-        tileOrigin.x = 0;
-        tileOrigin.y = tileHeight;
-
-        padTxf.deltaTransform(tileOrigin, tileOrigin);
-        int tyx = (int)Math.floor(tileOrigin.x);
-        int tyy = (int)Math.floor(tileOrigin.y);
-
-        double curX = rx, curY = ry;
-        // System.out.println("tileWidth/tileHeight - txx/txy/tyx/tyy : " + tileWidth + "/" + tileHeight + " - " + txx + "/" + txy + "/" + tyx + "/" + tyy);
-
-        while(curY < fh){
-            while(curX < fw){
-                // Paint a tile with upper left corner in
-                // (fx + curX, fy + curY) in user space.
-                tileOrigin.x = fx + curX;
-                tileOrigin.y = fy + curY;
-
-                tileOrigin.x = tileOrigin.x - tileX;
-                tileOrigin.y = tileOrigin.y - tileY;
-
-                double nTileX = Math.round(tileOrigin.x / tileWidth);
-                double nTileY = Math.round(tileOrigin.y / tileHeight);
-
-                // System.out.println("Tile : " + nTileX + "/" + nTileY);
-
-                AffineTransform tileTxfBad
-                = AffineTransform.getTranslateInstance(txx*nTileX + tyx*nTileY,
-                                                       txy*nTileX + tyy*nTileY);
-
-                padTxf.deltaTransform(tileOrigin, tileOrigin);
-
-                AffineTransform tileTxf
-                    = AffineTransform.getTranslateInstance(Math.floor(tileOrigin.x),
-                                                           Math.floor(tileOrigin.y));
-
-
-                // System.out.println("Good : " + tileTxf.getTranslateX() + "/" + tileTxf.getTranslateY());
-                // System.out.println("Bad  : " + tileTxfBad.getTranslateX() + "/" + tileTxfBad.getTranslateY());
-                /*double nTileX = Math.floor(tileOrigin.x / tileWidth);
-                double nTileY = Math.floor(tileOrigin.y / tileHeight);
-                AffineTransform tileTxf
-                = AffineTransform.getTranslateInstance(nTileX*tx, nTileY*ty);*/
-
-                g.drawRenderedImage(tile, tileTxf);
-
-                curX += tileWidth;
-            }
-            curY += tileHeight;
-            curX = rx;
-        }
-
-        return wr;
-
+        return tiled.copyData(wr);
     }
 }
