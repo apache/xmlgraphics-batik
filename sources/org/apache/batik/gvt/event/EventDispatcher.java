@@ -99,20 +99,6 @@ public interface EventDispatcher {
     void removeGraphicsNodeKeyListener(GraphicsNodeKeyListener l);
 
     /**
-     * Adds the specified 'global' GraphicsNodeFocusListener which is
-     * notified of all FocusEvents dispatched.
-     * @param l the listener to add
-     */
-    void addGraphicsNodeFocusListener(GraphicsNodeFocusListener l);
-
-    /**
-     * Removes the specified 'global' GraphicsNodeFocusListener which is
-     * notified of all FocusEvents dispatched.
-     * @param l the listener to remove
-     */
-    void removeGraphicsNodeFocusListener(GraphicsNodeFocusListener l);
-
-    /**
      * Returns an array of listeners that were added to this event
      * dispatcher and of the specified type.
      * @param listenerType the type of the listeners to return

@@ -50,8 +50,6 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
      * Returns the list of dirty areas on GVT.
      */
     public List getDirtyAreas() {
-        // System.out.println("Getting dirty areas");
-
         if (dirtyNodes == null) 
             return null;
 
@@ -75,6 +73,11 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
 
             Rectangle2D srcNRgn = gn.getBounds();
             AffineTransform nat = gn.getTransform();
+
+            if (nat != null){
+                nat = (nat == null) ? null : new AffineTransform(nat);
+            }
+
             nodeBounds.put(gnWRef, srcNRgn); // remember the new bounds...
             // System.out.println("Rgns: " + srcORgn + " - " + srcNRgn);
             // System.out.println("ATs: " + oat + " - " + nat);
@@ -82,37 +85,43 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
             Shape nRgn = srcNRgn;
 
             do {
-                Filter f;
-                f = gn.getGraphicsNodeRable(false);
+                // Filter f;
+                // f = gn.getGraphicsNodeRable(false);
                 // f.invalidateCache(oRng);
                 // f.invalidateCache(nRng);
 
-                f = gn.getEnableBackgroundGraphicsNodeRable(false);
+                // f = gn.getEnableBackgroundGraphicsNodeRable(false);
                 // (need to push rgn through filter chain if any...)
                 // f.invalidateCache(oRng);
                 // f.invalidateCache(nRng);
 
                 gn = gn.getParent();
-                if (gn == null) break;
-                if (dirtyNodes.get(gn.getWeakReference()) != null) break;
+                if (gn == null)
+                    break; // We reached the top of the tree
+
+                if (dirtyNodes.get(gn.getWeakReference()) != null) 
+                    break; // We already have the parent in the list of
+                           // dirty nodes. The following if (gn == null)
+                           // makes sure we do not add this child's 
+                           // dirty areas.
 
                 AffineTransform at = gn.getTransform();
 
                 if (oat != null){
-                    oRgn = oat.createTransformedShape(srcORgn);
+                    // oRgn = oat.createTransformedShape(srcORgn);
                     if (at != null){
                         oat.preConcatenate(at);
                     }
                 } else {
-                    oat = at;
+                    oat = (at == null) ? null : new AffineTransform(at);
                 }
                 if (nat != null){
-                    nRgn = nat.createTransformedShape(srcNRgn);
+                    //  nRgn = nat.createTransformedShape(srcNRgn);
                     if (at != null){
                         nat.preConcatenate(at);
                     }
                 } else {
-                    nat = at;
+                    nat = (at == null) ? null : new AffineTransform(at);
                 }
 
             } while (true);
@@ -123,7 +132,16 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
                 //     ("Adding: " + oat + " - " + nat + "\n" +
                 //      org.ImageDisplay.stringShape(oRgn) + "\n" +
                 //      org.ImageDisplay.stringShape(nRgn) + "\n");
+                // <!>
+                if (oat != null){
+                    oRgn = oat.createTransformedShape(srcORgn);
+                }
+                if (nat != null){
+                    nRgn = nat.createTransformedShape(srcNRgn);
+                }
+
                 ret.add(oRgn);
+
                 if (nRgn != null) {
                     ret.add(nRgn);
                 }

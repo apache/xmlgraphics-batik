@@ -10,6 +10,7 @@ package org.apache.batik.svggen;
 
 import java.awt.*;
 import java.awt.geom.*;
+import java.awt.image.*;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 
@@ -31,7 +32,9 @@ public class JPainterComponent extends JComponent {
      */
     public void paint(Graphics _g){
         Graphics2D g = (Graphics2D)_g;
-        painter.paint(g);
+        BufferedImage buf = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
+        painter.paint(buf.createGraphics());
+        g.drawImage(buf, 0, 0, null);
     }
 
     /**

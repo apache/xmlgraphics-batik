@@ -276,7 +276,7 @@ public interface GraphicsNode {
      * Dispatches the specified event to the interested registered listeners.
      * @param evt the event to dispatch
      */
-    void dispatchEvent(GraphicsNodeEvent evt);
+    // void dispatchEvent(GraphicsNodeEvent evt);
 
     /**
      * Adds the specified graphics node mouse listener to receive graphics node
@@ -284,7 +284,7 @@ public interface GraphicsNode {
      *
      * @param l the graphics node mouse listener to add
      */
-    void addGraphicsNodeMouseListener(GraphicsNodeMouseListener l);
+    // void addGraphicsNodeMouseListener(GraphicsNodeMouseListener l);
 
     /**
      * Removes the specified graphics node mouse listener so that it no longer
@@ -292,7 +292,7 @@ public interface GraphicsNode {
      *
      * @param l the graphics node mouse listener to remove
      */
-    void removeGraphicsNodeMouseListener(GraphicsNodeMouseListener l);
+    // void removeGraphicsNodeMouseListener(GraphicsNodeMouseListener l);
 
     /**
      * Adds the specified graphics node key listener to receive graphics node
@@ -300,7 +300,7 @@ public interface GraphicsNode {
      *
      * @param l the graphics node key listener to add
      */
-    void addGraphicsNodeKeyListener(GraphicsNodeKeyListener l);
+    // void addGraphicsNodeKeyListener(GraphicsNodeKeyListener l);
 
     /**
      * Removes the specified graphics node key listener so that it no longer
@@ -308,21 +308,21 @@ public interface GraphicsNode {
      *
      * @param l the graphics node key listener to remove
      */
-    void removeGraphicsNodeKeyListener(GraphicsNodeKeyListener l);
+    // void removeGraphicsNodeKeyListener(GraphicsNodeKeyListener l);
 
     /**
      * Dispatches a graphics node mouse event to this node or one of its child.
      *
      * @param evt the evt to dispatch
      */
-    void processMouseEvent(GraphicsNodeMouseEvent evt);
+    // void processMouseEvent(GraphicsNodeMouseEvent evt);
 
     /**
      * Dispatches a graphics node key event to this node or one of its child.
      *
      * @param evt the evt to dispatch
      */
-    void processKeyEvent(GraphicsNodeKeyEvent evt);
+    // void processKeyEvent(GraphicsNodeKeyEvent evt);
 
     /**
      * Returns an array of listeners that were added to this node and of the
@@ -330,7 +330,7 @@ public interface GraphicsNode {
      *
      * @param listenerType the type of the listeners to return
      */
-    EventListener [] getListeners(Class listenerType);
+    // EventListener [] getListeners(Class listenerType);
 
     //
     // Structural methods

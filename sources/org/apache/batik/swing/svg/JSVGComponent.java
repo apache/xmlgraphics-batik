@@ -1170,6 +1170,17 @@ public class JSVGComponent extends JGVTComponent {
          */
         public void updateCompleted(final UpdateManagerEvent e) {
             try {
+                //
+                // IMPORTANT:
+                // ==========
+                //
+                // The following call is 'invokeAndWait' and not 'invokeLater'
+                // because it is essential that the UpdateManager thread (which
+                // invokes this 'updateCompleted' method, blocks until the 
+                // repaint has completed. Otherwise, there is a possibility that
+                // internal buffers would get updated in the middle of a swing
+                // repaint.
+                //
                 EventQueue.invokeAndWait(new Runnable() {
                         public void run() {
                             image = e.getImage();

@@ -270,29 +270,6 @@ public class AWTEventDispatcher implements EventDispatcher,
     }
 
     /**
-     * Adds the specified 'global' GraphicsNodeFocusListener which is
-     * notified of all FocusEvents dispatched.
-     * @param l the listener to add
-     */
-    public void addGraphicsNodeFocusListener(GraphicsNodeFocusListener l) {
-        if (glisteners == null) {
-            glisteners = new EventListenerList();
-        }
-        glisteners.add(GraphicsNodeFocusListener.class, l);
-    }
-
-    /**
-     * Removes the specified 'global' GraphicsNodeFocusListener which is
-     * notified of all FocusEvents dispatched.
-     * @param l the listener to remove
-     */
-    public void removeGraphicsNodeFocusListener(GraphicsNodeFocusListener l) {
-        if (glisteners != null) {
-            glisteners.remove(GraphicsNodeFocusListener.class, l);
-        }
-    }
-
-    /**
      * Returns an array of listeners that were added to this event
      * dispatcher and of the specified type.
      * @param listenerType the type of the listeners to return
@@ -342,7 +319,7 @@ public class AWTEventDispatcher implements EventDispatcher,
      */
     protected void dispatchKeyEvent(KeyEvent evt) {
         if (currentKeyEventTarget != null) {
-            currentKeyEventTarget.processKeyEvent
+            processKeyEvent
                 (new GraphicsNodeKeyEvent(currentKeyEventTarget,
                                           evt.getID(),
                                           evt.getWhen(),
@@ -351,7 +328,7 @@ public class AWTEventDispatcher implements EventDispatcher,
                                           evt.getKeyChar()));
         }
     }
-
+    
     /**
      * Dispatches the specified AWT mouse event.
      * @param evt the mouse event to dispatch
@@ -389,7 +366,7 @@ public class AWTEventDispatcher implements EventDispatcher,
                                                     evt.getClickCount(),
                                                     node);
                 processMouseEvent(gvtevt);
-                lastHit.processMouseEvent(gvtevt);
+                // lastHit.processMouseEvent(gvtevt);
             }
             // post an MOUSE_ENTERED
             if (node != null) {
@@ -405,7 +382,7 @@ public class AWTEventDispatcher implements EventDispatcher,
                                                     getClickCount(),
                                                     lastHit);
                 processMouseEvent(gvtevt);
-                node.processMouseEvent(gvtevt);
+                // node.processMouseEvent(gvtevt);
             }
         }
         // In all cases, dispatch the original event
@@ -419,7 +396,7 @@ public class AWTEventDispatcher implements EventDispatcher,
                                                 evt.getClickCount(),
                                                 relatedNode);
 
-            node.processMouseEvent(gvtevt);
+            // node.processMouseEvent(gvtevt);
             processMouseEvent(gvtevt);
 
         } else if (node == null && evt.getID() == evt.MOUSE_CLICKED
@@ -510,6 +487,42 @@ public class AWTEventDispatcher implements EventDispatcher,
             }
         }
     }
+
+    /**
+     * Dispatches a graphics node key event to by firing the 'global'
+     * listeners attached to this event dispatcher.
+     *
+     * @param evt the evt to dispatch
+     */
+    public void processKeyEvent(GraphicsNodeKeyEvent evt) {
+        if ((glisteners != null)) {
+            GraphicsNodeKeyListener[] listeners =
+                (GraphicsNodeKeyListener[])
+                getListeners(GraphicsNodeKeyListener.class);
+
+            switch (evt.getID()) {
+            case GraphicsNodeKeyEvent.KEY_PRESSED:
+                for (int i=0; i<listeners.length; ++i) {
+                    listeners[i].keyPressed(evt);
+                }
+                break;
+            case GraphicsNodeKeyEvent.KEY_RELEASED:
+                for (int i=0; i<listeners.length; ++i) {
+                    listeners[i].keyReleased(evt);
+                }
+                break;
+            case GraphicsNodeKeyEvent.KEY_TYPED:
+                for (int i=0; i<listeners.length; ++i) {
+                    listeners[i].keyTyped(evt);
+                }
+                break;
+            default:
+                throw new Error("Unknown Key Event type: "+evt.getID());
+            }
+        }
+        evt.consume();
+    }
+
 
     private void incrementKeyTarget() {
         // <!> FIXME TODO: Not implemented.
