@@ -37,7 +37,7 @@ public class GlyphOrientationVerticalFactory
      * Returns the name of the property handled.
      */
     public String getPropertyName() {
-	return "glyph-orientation-vertical";
+	return SVGValueConstants.CSS_GLYPH_ORIENTATION_VERTICAL_PROPERTY;
     }
     
     /**
@@ -46,7 +46,7 @@ public class GlyphOrientationVerticalFactory
      */
     public ImmutableValue createValue(LexicalUnit lu) throws DOMException {
 	if (lu.getLexicalUnitType() == LexicalUnit.SAC_IDENT) {
-	    if (!lu.getStringValue().equalsIgnoreCase(AUTO)) {
+	    if (!lu.getStringValue().equalsIgnoreCase(CSS_AUTO_VALUE)) {
 		throw CSSDOMExceptionFactory.createDOMException
 		    (DOMException.INVALID_ACCESS_ERR,
 		     "invalid.identifier",
@@ -66,7 +66,7 @@ public class GlyphOrientationVerticalFactory
     public ImmutableValue createStringValue(short type, String value)
 	throws DOMException {
 	if (type == CSSPrimitiveValue.CSS_IDENT &&
-	    value.equalsIgnoreCase(AUTO)) {
+	    value.equalsIgnoreCase(CSS_AUTO_VALUE)) {
 	    return AUTO_VALUE;
 	}
 	throw CSSDOMExceptionFactory.createDOMException

@@ -18,65 +18,133 @@ import org.w3c.css.sac.Parser;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class SVGValueFactoryMap extends CommonValueFactoryMap {
+public class SVGValueFactoryMap
+    extends    CommonValueFactoryMap
+    implements SVGValueConstants {
     /**
      * Creates a new ValueFactoryMap object.
      */
     public SVGValueFactoryMap(Parser p) {
 	super(p);
 
-	put("alignment-baseline",           new AlignmentBaselineFactory(p));
-	put("baseline-shift",               new BaselineShiftFactory(p));
-	put("clip-path",                    new ClipPathFactory(p));
-	put("clip-rule",                    new ClipRuleFactory(p));
-	put("color",                        new SVGColorFactory(p, "color"));
-	put("color-interpolation",          new ColorInterpolationFactory(p));
-	put("color-rendering",              new ColorRenderingFactory(p));
-	put("dominant-baseline",            new DominantBaselineFactory(p));
-	put("enable-background",            new EnableBackgroundFactory(p));
-	put("fill",
-            new PaintFactory(p, "fill"));
-	put("fill-opacity",
-            new OpacityFactory(p, "fill-opacity"));
-	put("fill-rule",                    new FillRuleFactory(p));
-	put("filter",                       new FilterFactory(p));
-	put("flood-color",
-            new SimpleColorFactory(p, "flood-color"));
-	put("flood-opacity",
-            new OpacityFactory(p, "flood-opacity"));
-	put("font-size",                    new SVGFontSizeFactory(p));
-	put("glyph-orientation-horizontal",
+	put(CSS_ALIGNMENT_BASELINE_PROPERTY,
+            new AlignmentBaselineFactory(p));
+
+	put(CSS_BASELINE_SHIFT_PROPERTY,
+            new BaselineShiftFactory(p));
+
+	put(CSS_CLIP_PATH_PROPERTY,
+            new ClipPathFactory(p));
+
+	put(CSS_CLIP_RULE_PROPERTY,
+            new ClipRuleFactory(p));
+
+	put(CSS_COLOR_PROPERTY,
+            new SVGColorFactory(p, CSS_COLOR_PROPERTY));
+
+	put(CSS_COLOR_INTERPOLATION_PROPERTY,
+            new ColorInterpolationFactory(p));
+
+	put(CSS_COLOR_RENDERING_PROPERTY,
+            new ColorRenderingFactory(p));
+
+	put(CSS_DOMINANT_BASELINE_PROPERTY,
+            new DominantBaselineFactory(p));
+
+	put(CSS_ENABLE_BACKGROUND_PROPERTY,
+            new EnableBackgroundFactory(p));
+
+	put(CSS_FILL_PROPERTY,
+            new PaintFactory(p, CSS_FILL_PROPERTY));
+
+	put(CSS_FILL_OPACITY_PROPERTY,
+            new OpacityFactory(p, CSS_FILL_OPACITY_PROPERTY));
+
+	put(CSS_FILL_RULE_PROPERTY,
+            new FillRuleFactory(p));
+
+	put(CSS_FILTER_PROPERTY,
+            new FilterFactory(p));
+
+	put(CSS_FLOOD_COLOR_PROPERTY,
+            new SimpleColorFactory(p, CSS_FLOOD_COLOR_PROPERTY));
+
+	put(CSS_FLOOD_OPACITY_PROPERTY,
+            new OpacityFactory(p, CSS_FLOOD_OPACITY_PROPERTY));
+
+	put(CSS_FONT_SIZE_PROPERTY,
+            new SVGFontSizeFactory(p));
+
+	put(CSS_GLYPH_ORIENTATION_HORIZONTAL_PROPERTY,
             new GlyphOrientationHorizontalFactory(p));
-	put("glyph-orientation-vertical",
+        
+	put(CSS_GLYPH_ORIENTATION_VERTICAL_PROPERTY,
             new GlyphOrientationVerticalFactory(p));
-	put("image-rendering",              new ImageRenderingFactory(p));
-	put("lighting-color",
-            new SimpleColorFactory(p, "lighting-color"));
-	put("marker-end",
-            new MarkerFactory(p, "marker-end"));
-	put("marker-mid",
-            new MarkerFactory(p, "marker-mid"));
-	put("marker-start",
-            new MarkerFactory(p, "marker-start"));
-	put("mask",                         new MaskFactory(p));
-	put("opacity",                      new OpacityFactory(p, "opacity"));
-	put("pointer-events",               new PointerEventsFactory(p));
-	put("shape-rendering",              new ShapeRenderingFactory(p));
-	put("stop-color",
-            new SimpleColorFactory(p, "stop-color"));
-	put("stop-opacity",
-            new OpacityFactory(p, "stop-opacity"));
-	put("stroke",                       new PaintFactory(p, "stroke"));
-	put("stroke-dasharray",             new StrokeDasharrayFactory(p));
-	put("stroke-dashoffset",            new StrokeDashoffsetFactory(p));
-	put("stroke-linecap",               new StrokeLinecapFactory(p));
-	put("stroke-linejoin",              new StrokeLinejoinFactory(p));
-	put("stroke-miterlimit",            new StrokeMiterlimitFactory(p));
-	put("stroke-opacity",
-            new OpacityFactory(p, "stroke-opacity"));
-	put("stroke-width",                 new StrokeWidthFactory(p));
-	put("text-anchor",                  new TextAnchorFactory(p));
-	put("text-rendering",               new TextRenderingFactory(p));
-	put("writing-mode",                 new WritingModeFactory(p));
+
+	put(CSS_IMAGE_RENDERING_PROPERTY,
+            new ImageRenderingFactory(p));
+
+	put(CSS_LIGHTING_COLOR_PROPERTY,
+            new SimpleColorFactory(p, CSS_LIGHTING_COLOR_PROPERTY));
+
+	put(CSS_MARKER_END_PROPERTY,
+            new MarkerFactory(p, CSS_MARKER_END_PROPERTY));
+
+	put(CSS_MARKER_MID_PROPERTY,
+            new MarkerFactory(p, CSS_MARKER_MID_PROPERTY));
+
+	put(CSS_MARKER_START_PROPERTY,
+            new MarkerFactory(p, CSS_MARKER_START_PROPERTY));
+
+	put(CSS_MASK_PROPERTY,
+            new MaskFactory(p));
+
+	put(CSS_OPACITY_PROPERTY,
+            new OpacityFactory(p, CSS_OPACITY_PROPERTY));
+
+	put(CSS_POINTER_EVENTS_PROPERTY,
+            new PointerEventsFactory(p));
+
+	put(CSS_SHAPE_RENDERING_PROPERTY,
+            new ShapeRenderingFactory(p));
+
+	put(CSS_STOP_COLOR_PROPERTY,
+            new SimpleColorFactory(p, CSS_STOP_COLOR_PROPERTY));
+
+	put(CSS_STOP_OPACITY_PROPERTY,
+            new OpacityFactory(p, CSS_STOP_OPACITY_PROPERTY));
+
+	put(CSS_STROKE_PROPERTY,
+            new PaintFactory(p, CSS_STROKE_PROPERTY));
+
+	put(CSS_STROKE_DASHARRAY_PROPERTY,
+            new StrokeDasharrayFactory(p));
+
+	put(CSS_STROKE_DASHOFFSET_PROPERTY,
+            new StrokeDashoffsetFactory(p));
+
+	put(CSS_STROKE_LINECAP_PROPERTY,
+            new StrokeLinecapFactory(p));
+
+	put(CSS_STROKE_LINEJOIN_PROPERTY,
+            new StrokeLinejoinFactory(p));
+
+	put(CSS_STROKE_MITERLIMIT_PROPERTY,
+            new StrokeMiterlimitFactory(p));
+
+	put(CSS_STROKE_OPACITY_PROPERTY,
+            new OpacityFactory(p, CSS_STROKE_OPACITY_PROPERTY));
+
+	put(CSS_STROKE_WIDTH_PROPERTY,
+            new StrokeWidthFactory(p));
+
+	put(CSS_TEXT_ANCHOR_PROPERTY,
+            new TextAnchorFactory(p));
+
+	put(CSS_TEXT_RENDERING_PROPERTY,
+            new TextRenderingFactory(p));
+
+	put(CSS_WRITING_MODE_PROPERTY,
+            new WritingModeFactory(p));
     }
 }

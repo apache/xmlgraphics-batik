@@ -21,120 +21,24 @@ import org.w3c.dom.css.CSSPrimitiveValue;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class FontSizeFactory extends AbstractLengthFactory {
-    /**
-     * The 'large' string.
-     */
-    public final static String LARGE = "large";
-
-    /**
-     * The 'large' identifier value.
-     */
-    public final static ImmutableValue LARGE_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, LARGE);
-
-    /**
-     * The 'larger' string.
-     */
-    public final static String LARGER = "larger";
-
-    /**
-     * The 'larger' identifier value.
-     */
-    public final static ImmutableValue LARGER_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, LARGER);
-
-    /**
-     * The 'medium' string.
-     */
-    public final static String MEDIUM = "medium";
-
-    /**
-     * The 'medium' identifier value.
-     */
-    public final static ImmutableValue MEDIUM_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, MEDIUM);
-
-    /**
-     * The 'small' string.
-     */
-    public final static String SMALL = "small";
-
-    /**
-     * The 'small' identifier value.
-     */
-    public final static ImmutableValue SMALL_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, SMALL);
-
-    /**
-     * The 'smaller' string.
-     */
-    public final static String SMALLER = "smaller";
-
-    /**
-     * The 'smaller' identifier value.
-     */
-    public final static ImmutableValue SMALLER_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, SMALLER);
-
-    /**
-     * The 'x-large' string.
-     */
-    public final static String X_LARGE = "x-large";
-
-    /**
-     * The 'x-large' identifier value.
-     */
-    public final static ImmutableValue X_LARGE_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, X_LARGE);
-
-    /**
-     * The 'x-small' string.
-     */
-    public final static String X_SMALL = "x-small";
-
-    /**
-     * The 'x-small' identifier value.
-     */
-    public final static ImmutableValue X_SMALL_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, X_SMALL);
-
-    /**
-     * The 'xx-large' string.
-     */
-    public final static String XX_LARGE = "xx-large";
-
-    /**
-     * The 'xx-large' identifier value.
-     */
-    public final static ImmutableValue XX_LARGE_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, XX_LARGE);
-
-    /**
-     * The 'xx-small' string.
-     */
-    public final static String XX_SMALL = "xx-small";
-
-    /**
-     * The 'xx-small' identifier value.
-     */
-    public final static ImmutableValue XX_SMALL_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, XX_SMALL);
+public class FontSizeFactory
+    extends    AbstractLengthFactory
+    implements ValueConstants {
 
     /**
      * The identifier values.
      */
     protected final static PropertyMap values = new PropertyMap();
     static {
-        values.put(LARGE,    LARGE_VALUE);
-        values.put(LARGER,   LARGER_VALUE);
-        values.put(MEDIUM,   MEDIUM_VALUE);
-        values.put(SMALL,    SMALL_VALUE);
-        values.put(SMALLER,  SMALLER_VALUE);
-        values.put(X_LARGE,  X_LARGE_VALUE);
-        values.put(X_SMALL,  X_SMALL_VALUE);
-        values.put(XX_LARGE, XX_LARGE_VALUE);
-        values.put(XX_SMALL, XX_SMALL_VALUE);
+        values.put(CSS_LARGE_VALUE,    LARGE_VALUE);
+        values.put(CSS_LARGER_VALUE,   LARGER_VALUE);
+        values.put(CSS_MEDIUM_VALUE,   MEDIUM_VALUE);
+        values.put(CSS_SMALL_VALUE,    SMALL_VALUE);
+        values.put(CSS_SMALLER_VALUE,  SMALLER_VALUE);
+        values.put(CSS_X_LARGE_VALUE,  X_LARGE_VALUE);
+        values.put(CSS_X_SMALL_VALUE,  X_SMALL_VALUE);
+        values.put(CSS_XX_LARGE_VALUE, XX_LARGE_VALUE);
+        values.put(CSS_XX_SMALL_VALUE, XX_SMALL_VALUE);
     }
 
     /**
@@ -149,7 +53,7 @@ public class FontSizeFactory extends AbstractLengthFactory {
      * Returns the name of the property handled.
      */
     public String getPropertyName() {
-	return "font-size";
+	return CSS_FONT_SIZE_PROPERTY;
     }
     
     /**

@@ -19,7 +19,9 @@ import org.w3c.dom.views.DocumentView;
  * @version $Id$
  */
 
-public class SVGViewCSS extends CommonViewCSS {
+public class SVGViewCSS
+    extends    CommonViewCSS
+    implements SVGValueConstants {
     /**
      * Creates a new ViewCSS object.
      * @param doc The document view associated with this abstract view.
@@ -38,22 +40,22 @@ public class SVGViewCSS extends CommonViewCSS {
 	addRelativeValueResolver(new FillResolver());
 	addRelativeValueResolver(new FillRuleResolver());
 	addRelativeValueResolver(new FilterResolver());
-	addRelativeValueResolver(new OpacityResolver("fill-opacity", true));
-	addRelativeValueResolver(new SimpleColorResolver("flood-color"));
-	addRelativeValueResolver(new OpacityResolver("flood-opacity", false));
+	addRelativeValueResolver(new OpacityResolver(CSS_FILL_OPACITY_PROPERTY, true));
+	addRelativeValueResolver(new SimpleColorResolver(CSS_FLOOD_COLOR_PROPERTY));
+	addRelativeValueResolver(new OpacityResolver(CSS_FLOOD_OPACITY_PROPERTY, false));
 	addRelativeValueResolver(new GlyphOrientationHorizontalResolver());
 	addRelativeValueResolver(new GlyphOrientationVerticalResolver());
 	addRelativeValueResolver(new ImageRenderingResolver());
 	addRelativeValueResolver(new LightingColorResolver());
-	addRelativeValueResolver(new MarkerResolver("marker-end"));
-	addRelativeValueResolver(new MarkerResolver("marker-mid"));
-	addRelativeValueResolver(new MarkerResolver("marker-start"));
+	addRelativeValueResolver(new MarkerResolver(CSS_MARKER_END_PROPERTY));
+	addRelativeValueResolver(new MarkerResolver(CSS_MARKER_MID_PROPERTY));
+	addRelativeValueResolver(new MarkerResolver(CSS_MARKER_START_PROPERTY));
 	addRelativeValueResolver(new MaskResolver());
-	addRelativeValueResolver(new OpacityResolver("opacity", false));
+	addRelativeValueResolver(new OpacityResolver(CSS_OPACITY_PROPERTY, false));
 	addRelativeValueResolver(new PointerEventsResolver());
 	addRelativeValueResolver(new ShapeRenderingResolver());
-	addRelativeValueResolver(new SimpleColorResolver("stop-color"));
-	addRelativeValueResolver(new OpacityResolver("stop-opacity", false));
+	addRelativeValueResolver(new SimpleColorResolver(CSS_STOP_COLOR_PROPERTY));
+	addRelativeValueResolver(new OpacityResolver(CSS_STOP_OPACITY_PROPERTY, false));
 	addRelativeValueResolver(new StrokeResolver());
 	addRelativeValueResolver(new StrokeDasharrayResolver());
 	addRelativeValueResolver(new StrokeDashoffsetResolver());
@@ -61,7 +63,7 @@ public class SVGViewCSS extends CommonViewCSS {
 	addRelativeValueResolver(new StrokeLinejoinResolver());
 	addRelativeValueResolver(new StrokeMiterlimitResolver());
 	addRelativeValueResolver(new StrokeWidthResolver());
-	addRelativeValueResolver(new OpacityResolver("stroke-opacity", true));
+	addRelativeValueResolver(new OpacityResolver(CSS_STROKE_OPACITY_PROPERTY, true));
 	addRelativeValueResolver(new TextAnchorResolver());
 	addRelativeValueResolver(new TextRenderingResolver());
 	addRelativeValueResolver(new WritingModeResolver());

@@ -23,6 +23,7 @@ import org.w3c.dom.css.ViewCSS;
  * @version $Id$
  */
 public class FontStretchResolver implements RelativeValueResolver {
+
     /**
      * The medium CSS value.
      */
@@ -40,14 +41,14 @@ public class FontStretchResolver implements RelativeValueResolver {
      * Returns the name of the handled property.
      */
     public String getPropertyName() {
-	return "font-stretch";
+	return ValueConstants.CSS_FONT_STRETCH_PROPERTY;
     }
 
     /**
      * Returns the default value for the handled property.
      */
     public CSSOMReadOnlyValue getDefaultValue() {
-	return NORMAL;
+	return new CSSOMReadOnlyValue(ValueConstants.NORMAL_VALUE);
     }
     
     /**
@@ -68,14 +69,14 @@ public class FontStretchResolver implements RelativeValueResolver {
 			     String priority,
 			     int origin) {
 	ImmutableValue im = value.getImmutableValue();
-	boolean b = im == FontStretchFactory.NARROWER_VALUE;
-	if (b || im == FontStretchFactory.WIDER_VALUE) {
+	boolean b = im == ValueConstants.NARROWER_VALUE;
+	if (b || im == ValueConstants.WIDER_VALUE) {
 	    Element p = HiddenChildElementSupport.getParentElement(element);
 	    CSSOMReadOnlyValue val;
 	    if (p == null) {
 		val = new CSSOMReadOnlyValue((b)
-				      ? FontStretchFactory.SEMI_CONDENSED_VALUE
-				      : FontStretchFactory.SEMI_EXPANDED_VALUE);
+				      ? ValueConstants.SEMI_CONDENSED_VALUE
+				      : ValueConstants.SEMI_EXPANDED_VALUE);
 	    } else {
 		CSSOMReadOnlyStyleDeclaration sd;
 		sd = (CSSOMReadOnlyStyleDeclaration)view.getComputedStyle
@@ -84,38 +85,38 @@ public class FontStretchResolver implements RelativeValueResolver {
 		prop = (CSSOMReadOnlyValue)sd.getPropertyCSSValue
                     (getPropertyName());
 		im = prop.getImmutableValue();
-                if (im == FontStretchFactory.NORMAL_VALUE) {
+                if (im == ValueConstants.NORMAL_VALUE) {
                     val = new CSSOMReadOnlyValue((b)
-                                   ? FontStretchFactory.SEMI_CONDENSED_VALUE
-                                   : FontStretchFactory.SEMI_EXPANDED_VALUE);
-                } else if (im == FontStretchFactory.CONDENSED_VALUE) {
+                                   ? ValueConstants.SEMI_CONDENSED_VALUE
+                                   : ValueConstants.SEMI_EXPANDED_VALUE);
+                } else if (im == ValueConstants.CONDENSED_VALUE) {
                     val = new CSSOMReadOnlyValue((b)
-                                   ? FontStretchFactory.EXTRA_CONDENSED_VALUE
-                                   : FontStretchFactory.SEMI_CONDENSED_VALUE);
-                } else if (im == FontStretchFactory.SEMI_EXPANDED_VALUE) {
+                                   ? ValueConstants.EXTRA_CONDENSED_VALUE
+                                   : ValueConstants.SEMI_CONDENSED_VALUE);
+                } else if (im == ValueConstants.SEMI_EXPANDED_VALUE) {
                     val = new CSSOMReadOnlyValue((b)
-                                   ? FontStretchFactory.NORMAL_VALUE
-                                   : FontStretchFactory.EXPANDED_VALUE);
-                } else if (im == FontStretchFactory.SEMI_CONDENSED_VALUE) {
+                                   ? ValueConstants.NORMAL_VALUE
+                                   : ValueConstants.EXPANDED_VALUE);
+                } else if (im == ValueConstants.SEMI_CONDENSED_VALUE) {
                     val = new CSSOMReadOnlyValue((b)
-                                   ? FontStretchFactory.CONDENSED_VALUE
-                                   : FontStretchFactory.NORMAL_VALUE);
-                } else if (im == FontStretchFactory.EXTRA_CONDENSED_VALUE) {
+                                   ? ValueConstants.CONDENSED_VALUE
+                                   : ValueConstants.NORMAL_VALUE);
+                } else if (im == ValueConstants.EXTRA_CONDENSED_VALUE) {
                     val = new CSSOMReadOnlyValue((b)
-                                   ? FontStretchFactory.ULTRA_CONDENSED_VALUE
-                                   : FontStretchFactory.CONDENSED_VALUE);
-                } else if (im == FontStretchFactory.EXTRA_EXPANDED_VALUE) {
+                                   ? ValueConstants.ULTRA_CONDENSED_VALUE
+                                   : ValueConstants.CONDENSED_VALUE);
+                } else if (im == ValueConstants.EXTRA_EXPANDED_VALUE) {
                     val = new CSSOMReadOnlyValue((b)
-                                   ? FontStretchFactory.EXPANDED_VALUE
-                                   : FontStretchFactory.ULTRA_EXPANDED_VALUE);
-                } else if (im == FontStretchFactory.ULTRA_CONDENSED_VALUE) {
+                                   ? ValueConstants.EXPANDED_VALUE
+                                   : ValueConstants.ULTRA_EXPANDED_VALUE);
+                } else if (im == ValueConstants.ULTRA_CONDENSED_VALUE) {
                     val = new CSSOMReadOnlyValue((b)
-                                   ? FontStretchFactory.ULTRA_CONDENSED_VALUE
-                                   : FontStretchFactory.EXTRA_CONDENSED_VALUE);
-                } else {//if (im == FontStretchFactory.ULTRA_EXPANDED_VALUE) {
+                                   ? ValueConstants.ULTRA_CONDENSED_VALUE
+                                   : ValueConstants.EXTRA_CONDENSED_VALUE);
+                } else {//if (im == ValueConstants.ULTRA_EXPANDED_VALUE) {
                     val = new CSSOMReadOnlyValue((b)
-                                   ? FontStretchFactory.EXTRA_EXPANDED_VALUE
-                                   : FontStretchFactory.ULTRA_EXPANDED_VALUE);
+                                   ? ValueConstants.EXTRA_EXPANDED_VALUE
+                                   : ValueConstants.ULTRA_EXPANDED_VALUE);
                 }
             }
 	    styleDeclaration.setPropertyCSSValue(getPropertyName(),

@@ -87,7 +87,8 @@ public class MarkerResolver implements RelativeValueResolver {
         if (im == PaintFactory.CURRENTCOLOR_VALUE) {
 	    styleDeclaration.setPropertyCSSValue
                 (getPropertyName(),
-                 styleDeclaration.getPropertyCSSValue("color"),
+                 styleDeclaration.getPropertyCSSValue
+                     (SVGValueConstants.CSS_COLOR_PROPERTY),
                  priority,
                  origin);
         }

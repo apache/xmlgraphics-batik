@@ -10,7 +10,6 @@ package org.apache.batik.css.svg;
 
 import org.apache.batik.css.CSSOMReadOnlyStyleDeclaration;
 import org.apache.batik.css.CSSOMReadOnlyValue;
-import org.apache.batik.css.value.AbstractValueFactory;
 import org.apache.batik.css.value.ImmutableValue;
 import org.apache.batik.css.value.RelativeValueResolver;
 import org.w3c.dom.Element;
@@ -24,11 +23,6 @@ import org.w3c.dom.css.ViewCSS;
  * @version $Id$
  */
 public class TextRenderingResolver implements RelativeValueResolver {
-    /**
-     * The auto CSS value.
-     */
-    public final static CSSOMReadOnlyValue AUTO =
-        new CSSOMReadOnlyValue(AbstractValueFactory.AUTO_VALUE);
 
     /**
      * Whether the handled property is inherited or not.
@@ -41,14 +35,14 @@ public class TextRenderingResolver implements RelativeValueResolver {
      * Returns the name of the handled property.
      */
     public String getPropertyName() {
-	return "text-rendering";
+	return SVGValueConstants.CSS_TEXT_RENDERING_PROPERTY;
     }
 
     /**
      * Returns the default value for the handled property.
      */
     public CSSOMReadOnlyValue getDefaultValue() {
-	return AUTO;
+	return new CSSOMReadOnlyValue(SVGValueConstants.AUTO_VALUE);
     }
     
     /**

@@ -24,11 +24,6 @@ import org.w3c.dom.css.ViewCSS;
  * @version $Id$
  */
 public class TextAnchorResolver implements RelativeValueResolver {
-    /**
-     * The start CSS value.
-     */
-    public final static CSSOMReadOnlyValue START =
-        new CSSOMReadOnlyValue(TextAnchorFactory.START_VALUE);
 
     /**
      * Whether the handled property is inherited or not.
@@ -41,14 +36,14 @@ public class TextAnchorResolver implements RelativeValueResolver {
      * Returns the name of the handled property.
      */
     public String getPropertyName() {
-	return "text-anchor";
+	return SVGValueConstants.CSS_TEXT_ANCHOR_PROPERTY;
     }
 
     /**
      * Returns the default value for the handled property.
      */
     public CSSOMReadOnlyValue getDefaultValue() {
-	return START;
+	return new CSSOMReadOnlyValue(SVGValueConstants.START_VALUE);
     }
     
     /**

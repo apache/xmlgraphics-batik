@@ -37,7 +37,7 @@ public class GlyphOrientationHorizontalFactory extends AbstractValueFactory {
      * Returns the name of the property handled.
      */
     public String getPropertyName() {
-	return "glyph-orientation-horizontal";
+	return SVGValueConstants.CSS_GLYPH_ORIENTATION_HORIZONTAL_PROPERTY;
     }
     
     /**
@@ -52,15 +52,23 @@ public class GlyphOrientationHorizontalFactory extends AbstractValueFactory {
 	    int i = lu.getIntegerValue();
 	    switch (i) {
 	    case -360:
+                return SVGValueConstants.NUMBER_MINUS_360;
 	    case -270:
+                return SVGValueConstants.NUMBER_MINUS_270;
 	    case -180:
+                return SVGValueConstants.NUMBER_MINUS_180;
 	    case -90:
+                return SVGValueConstants.NUMBER_MINUS_90;
 	    case 0:
+                return SVGValueConstants.NUMBER_0;
 	    case 90:
+                return SVGValueConstants.NUMBER_90;
 	    case 180:
+                return SVGValueConstants.NUMBER_180;
 	    case 270:
+                return SVGValueConstants.NUMBER_270;
 	    case 360:
-		return new ImmutableFloat(CSSPrimitiveValue.CSS_NUMBER, i);
+                return SVGValueConstants.NUMBER_360;
 	    }
 	    throw CSSDOMExceptionFactory.createDOMException
 		(DOMException.INVALID_ACCESS_ERR,
@@ -87,15 +95,23 @@ public class GlyphOrientationHorizontalFactory extends AbstractValueFactory {
 	    if (floatValue == i) {
 		switch (i) {
 		case -360:
+                    return SVGValueConstants.NUMBER_MINUS_360;
 		case -270:
+                    return SVGValueConstants.NUMBER_MINUS_270;
 		case -180:
+                    return SVGValueConstants.NUMBER_MINUS_180;
 		case -90:
+                    return SVGValueConstants.NUMBER_MINUS_90;
 		case 0:
+                    return SVGValueConstants.NUMBER_0;
 		case 90:
+                    return SVGValueConstants.NUMBER_90;
 		case 180:
+                    return SVGValueConstants.NUMBER_180;
 		case 270:
+                    return SVGValueConstants.NUMBER_270;
 		case 360:
-		    return new ImmutableFloat(unitType, floatValue);
+                    return SVGValueConstants.NUMBER_360;
 		}
 	    }
 	}

@@ -18,25 +18,17 @@ import org.w3c.dom.css.CSSPrimitiveValue;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class FontVariantFactory extends AbstractIdentifierFactory {
-    /**
-     * The 'small-caps' string.
-     */
-    public final static String SMALL_CAPS = "small-caps";
-
-    /**
-     * The 'small-caps' identifier value.
-     */
-    public final static ImmutableValue SMALL_CAPS_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, SMALL_CAPS);
+public class FontVariantFactory
+    extends    AbstractIdentifierFactory
+    implements ValueConstants {
 
     /**
      * The identifier values.
      */
     protected final static PropertyMap values = new PropertyMap();
     static {
-	values.put(NORMAL,     NORMAL_VALUE);
-	values.put(SMALL_CAPS, SMALL_CAPS_VALUE);
+	values.put(CSS_NORMAL_VALUE,     NORMAL_VALUE);
+	values.put(CSS_SMALL_CAPS_VALUE, SMALL_CAPS_VALUE);
     }
 
     /**
@@ -51,7 +43,7 @@ public class FontVariantFactory extends AbstractIdentifierFactory {
      * Returns the name of the property handled.
      */
     public String getPropertyName() {
-	return "font-variant";
+	return CSS_FONT_VARIANT_PROPERTY;
     }
     
     /**

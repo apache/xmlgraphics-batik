@@ -150,7 +150,7 @@ public class Main implements ViewerFrame.Application {
             mainFrame.loadDocument
                 (Main.class.getResource("resources/usage.svg").toString());
             try {
-                Thread.sleep(3000);
+                Thread.sleep(5000);
             } catch (InterruptedException e) {
             }
             mainFrame.setFixedSize(false);

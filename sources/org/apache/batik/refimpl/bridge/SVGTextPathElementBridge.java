@@ -172,7 +172,7 @@ public class SVGTextPathElementBridge implements GraphicsNodeBridge, SVGConstant
 
         // Text-anchor
         CSSPrimitiveValue v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue
-            (TEXT_ANCHOR_PROPERTY);
+            (CSS_TEXT_ANCHOR_PROPERTY);
         s = v.getStringValue();
         int align;
         switch (s.charAt(0)) {
@@ -190,7 +190,7 @@ public class SVGTextPathElementBridge implements GraphicsNodeBridge, SVGConstant
 
         // Font family
         CSSValueList ff = (CSSValueList)cssDecl.getPropertyCSSValue
-            (FONT_FAMILY_PROPERTY);
+            (CSS_FONT_FAMILY_PROPERTY);
         s = null;
         for (int i = 0; s == null && i < ff.getLength(); i++) {
             v = (CSSPrimitiveValue)ff.item(i);
@@ -201,7 +201,7 @@ public class SVGTextPathElementBridge implements GraphicsNodeBridge, SVGConstant
 
         // Font weight
         v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue
-            (FONT_WEIGHT_PROPERTY);
+            (CSS_FONT_WEIGHT_PROPERTY);
         if (v.getPrimitiveType() == CSSPrimitiveValue.CSS_IDENT) {
             if (v.getStringValue().charAt(0) == 'n') {
                 attrs.put(TextAttribute.WEIGHT,
@@ -254,7 +254,7 @@ public class SVGTextPathElementBridge implements GraphicsNodeBridge, SVGConstant
 
         // Font style
         v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue
-            (FONT_STYLE_PROPERTY);
+            (CSS_FONT_STYLE_PROPERTY);
         s = v.getStringValue();
         switch (s.charAt(0)) {
         case 'n':
@@ -269,7 +269,7 @@ public class SVGTextPathElementBridge implements GraphicsNodeBridge, SVGConstant
 
         // Font stretch
         v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue
-            (FONT_STRETCH_PROPERTY);
+            (CSS_FONT_STRETCH_PROPERTY);
         s = v.getStringValue();
         switch (s.charAt(0)) {
         case 'u':
@@ -311,7 +311,7 @@ public class SVGTextPathElementBridge implements GraphicsNodeBridge, SVGConstant
 
         // Text decoration
         CSSValue cssVal = cssDecl.getPropertyCSSValue
-            (TEXT_DECORATION_PROPERTY);
+            (CSS_TEXT_DECORATION_PROPERTY);
         short t = cssVal.getCssValueType();
         if (t == CSSValue.CSS_VALUE_LIST) {
             CSSValueList lst = (CSSValueList)cssVal;

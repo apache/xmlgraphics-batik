@@ -27,13 +27,7 @@ import org.w3c.dom.css.ViewCSS;
  * @version $Id$
  */
 public class FontSizeResolver
-    implements RelativeValueResolver,
-               CSSConstants {
-    /**
-     * The medium CSS value.
-     */
-    public final static CSSOMReadOnlyValue MEDIUM =
-	new CSSOMReadOnlyValue(FontSizeFactory.MEDIUM_VALUE);
+    implements RelativeValueResolver {
 
     /**
      * Whether the handled property is inherited or not.
@@ -46,14 +40,14 @@ public class FontSizeResolver
      * Returns the name of the handled property.
      */
     public String getPropertyName() {
-	return FONT_SIZE_PROPERTY;
+	return ValueConstants.CSS_FONT_SIZE_PROPERTY;
     }
 
     /**
      * Returns the default value for the handled property.
      */
     public CSSOMReadOnlyValue getDefaultValue() {
-	return MEDIUM;
+	return new CSSOMReadOnlyValue(FontSizeFactory.MEDIUM_VALUE);
     }
     
     /**
@@ -74,14 +68,14 @@ public class FontSizeResolver
 			     String priority,
 			     int origin) {
 	ImmutableValue im = value.getImmutableValue();
-	boolean b = im == FontSizeFactory.SMALLER_VALUE;
+	boolean b = im == ValueConstants.SMALLER_VALUE;
         CSSOMReadOnlyValue val = null;
-        if (b || im == FontSizeFactory.LARGER_VALUE) {
+        if (b || im == ValueConstants.LARGER_VALUE) {
             Element p = HiddenChildElementSupport.getParentElement(element);
             if (p == null) {
                 val = new CSSOMReadOnlyValue((b)
-                                             ? FontSizeFactory.SMALL_VALUE
-                                             : FontSizeFactory.LARGE_VALUE);
+                                             ? ValueConstants.SMALL_VALUE
+                                             : ValueConstants.LARGE_VALUE);
             } else {
 		CSSOMReadOnlyStyleDeclaration sd;
 		sd = (CSSOMReadOnlyStyleDeclaration)view.getComputedStyle
@@ -90,39 +84,39 @@ public class FontSizeResolver
 		prop = (CSSOMReadOnlyValue)sd.getPropertyCSSValue
                     (getPropertyName());
 		im = prop.getImmutableValue();
-                if (im == FontSizeFactory.LARGE_VALUE) {
+                if (im == ValueConstants.LARGE_VALUE) {
                     val = new CSSOMReadOnlyValue((b)
-                                             ? FontSizeFactory.MEDIUM_VALUE
-                                             : FontSizeFactory.X_LARGE_VALUE);
-                } else if (im == FontSizeFactory.MEDIUM_VALUE) {
+                                             ? ValueConstants.MEDIUM_VALUE
+                                             : ValueConstants.X_LARGE_VALUE);
+                } else if (im == ValueConstants.MEDIUM_VALUE) {
                     val = new CSSOMReadOnlyValue((b)
-                                             ? FontSizeFactory.SMALL_VALUE
-                                             : FontSizeFactory.LARGE_VALUE);
-                } else if (im == FontSizeFactory.SMALL_VALUE) {
+                                             ? ValueConstants.SMALL_VALUE
+                                             : ValueConstants.LARGE_VALUE);
+                } else if (im == ValueConstants.SMALL_VALUE) {
                     val = new CSSOMReadOnlyValue((b)
-                                             ? FontSizeFactory.MEDIUM_VALUE
-                                             : FontSizeFactory.X_LARGE_VALUE);
-                } else if (im == FontSizeFactory.X_LARGE_VALUE) {
+                                             ? ValueConstants.MEDIUM_VALUE
+                                             : ValueConstants.X_LARGE_VALUE);
+                } else if (im == ValueConstants.X_LARGE_VALUE) {
                     val = new CSSOMReadOnlyValue((b)
-                                             ? FontSizeFactory.LARGE_VALUE
-                                             : FontSizeFactory.XX_LARGE_VALUE);
-                } else if (im == FontSizeFactory.X_SMALL_VALUE) {
+                                             ? ValueConstants.LARGE_VALUE
+                                             : ValueConstants.XX_LARGE_VALUE);
+                } else if (im == ValueConstants.X_SMALL_VALUE) {
                     val = new CSSOMReadOnlyValue((b)
-                                             ? FontSizeFactory.XX_SMALL_VALUE
-                                             : FontSizeFactory.SMALL_VALUE);
-                } else if (im == FontSizeFactory.XX_LARGE_VALUE) {
+                                             ? ValueConstants.XX_SMALL_VALUE
+                                             : ValueConstants.SMALL_VALUE);
+                } else if (im == ValueConstants.XX_LARGE_VALUE) {
                     val = new CSSOMReadOnlyValue((b)
-                                             ? FontSizeFactory.X_LARGE_VALUE
-                                             : FontSizeFactory.XX_LARGE_VALUE);
-                } else if (im == FontSizeFactory.XX_SMALL_VALUE) {
+                                             ? ValueConstants.X_LARGE_VALUE
+                                             : ValueConstants.XX_LARGE_VALUE);
+                } else if (im == ValueConstants.XX_SMALL_VALUE) {
                     val = new CSSOMReadOnlyValue((b)
-                                             ? FontSizeFactory.XX_SMALL_VALUE
-                                             : FontSizeFactory.X_SMALL_VALUE);
+                                             ? ValueConstants.XX_SMALL_VALUE
+                                             : ValueConstants.X_SMALL_VALUE);
                 } else if (im instanceof ImmutableFloat) {
                     short t = ((ImmutableFloat)im).getPrimitiveType();
                     float f = ((ImmutableFloat)im).getFloatValue(t);
                     if (t == CSSPrimitiveValue.CSS_PERCENTAGE) {
-                        throw new RuntimeException("!!! %");
+                        throw new RuntimeException("!!! TODO %");
                     } else {
                         val = new CSSOMReadOnlyValue
                             (new ImmutableFloat(t, (b) ? f / 1.2f : f * 1.2f));

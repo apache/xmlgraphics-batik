@@ -21,37 +21,18 @@ import org.w3c.dom.css.CSSPrimitiveValue;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class ColorInterpolationFactory extends AbstractIdentifierFactory {
-    /**
-     * The 'linearRGB' string.
-     */
-    public final static String LINEARRGB = "linearrgb";
-
-    /**
-     * The 'linearRGB' keyword.
-     */
-    public final static ImmutableValue LINEARRGB_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, LINEARRGB);
-
-    /**
-     * The 'sRGB' string.
-     */
-    public final static String SRGB = "srgb";
-
-    /**
-     * The 'sRGB' keyword.
-     */
-    public final static ImmutableValue SRGB_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, SRGB);
+public class ColorInterpolationFactory
+    extends    AbstractIdentifierFactory
+    implements SVGValueConstants {
 
     /**
      * The identifier values.
      */
     protected final static PropertyMap values = new PropertyMap();
     static {
-	values.put(AUTO,      AUTO_VALUE);
-	values.put(LINEARRGB, LINEARRGB_VALUE);
-	values.put(SRGB,      SRGB_VALUE);
+	values.put(CSS_AUTO_VALUE,      AUTO_VALUE);
+	values.put(CSS_LINEARRGB_VALUE, LINEARRGB_VALUE);
+	values.put(CSS_SRGB_VALUE,      SRGB_VALUE);
     }
 
     /**
@@ -65,7 +46,7 @@ public class ColorInterpolationFactory extends AbstractIdentifierFactory {
      * Returns the name of the property handled.
      */
     public String getPropertyName() {
-	return "color-interpolation";
+	return CSS_COLOR_INTERPOLATION_PROPERTY;
     }
     
     /**

@@ -24,11 +24,6 @@ import org.w3c.dom.css.CSSPrimitiveValue;
  * @version $Id$
  */
 public class OpacityFactory extends AbstractValueFactory {
-    /**
-     * The 1 value.
-     */
-    public final static ImmutableValue ONE =
-        new ImmutableFloat(CSSPrimitiveValue.CSS_NUMBER, 1);
 
     /**
      * The handled property.
@@ -50,13 +45,6 @@ public class OpacityFactory extends AbstractValueFactory {
      */
     public String getPropertyName() {
         return property;
-    }
-
-    /**
-     * Creates the default value for the handled property.
-     */
-    public ImmutableValue createDefaultValue() throws DOMException {
-        return ONE;
     }
 
     /**

@@ -45,7 +45,7 @@ public class ColorResolver implements RelativeValueResolver {
      * Returns the name of the handled property.
      */
     public String getPropertyName() {
-	return "color";
+	return ValueConstants.CSS_COLOR_PROPERTY;
     }
 
     /**
@@ -72,6 +72,6 @@ public class ColorResolver implements RelativeValueResolver {
 			     CSSOMReadOnlyValue value,
 			     String priority,
 			     int origin) {
-	// Nothing to do
+	// !!! TODO: resolve color identifiers.
     }
 }

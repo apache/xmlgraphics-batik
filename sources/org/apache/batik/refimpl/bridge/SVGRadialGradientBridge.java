@@ -185,12 +185,13 @@ public class SVGRadialGradientBridge extends SVGGradientBridge
 
         // Extract the color interpolation property
         CSSPrimitiveValue colorInterpolation =
-            (CSSPrimitiveValue) cssDecl.getPropertyCSSValue(COLOR_INTERPOLATION_PROPERTY);
+            (CSSPrimitiveValue)cssDecl.getPropertyCSSValue
+            (CSS_COLOR_INTERPOLATION_PROPERTY);
 
         RadialGradientPaint.ColorSpaceEnum colorSpace =
             RadialGradientPaint.SRGB;
 
-        if(LINEAR_RGB.equals(colorInterpolation.getStringValue())){
+        if(CSS_LINEARRGB_VALUE.equals(colorInterpolation.getStringValue())){
             colorSpace = RadialGradientPaint.LINEAR_RGB;
         }
 

@@ -21,168 +21,28 @@ import org.w3c.dom.css.CSSPrimitiveValue;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class AlignmentBaselineFactory extends AbstractIdentifierFactory {
-    /**
-     * The 'after-edge' string.
-     */
-    public final static String AFTER_EDGE = "after-edge";
-
-    /**
-     * The 'after-edge' keyword.
-     */
-    public final static ImmutableValue AFTER_EDGE_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, AFTER_EDGE);
-
-    /**
-     * The 'baseline' string.
-     */
-    public final static String BASELINE = "baseline";
-
-    /**
-     * The 'baseline' keyword.
-     */
-    public final static ImmutableValue BASELINE_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, BASELINE);
-
-    /**
-     * The 'before-edge' string.
-     */
-    public final static String BEFORE_EDGE = "before-edge";
-
-    /**
-     * The 'before-edge' keyword.
-     */
-    public final static ImmutableValue BEFORE_EDGE_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, BEFORE_EDGE);
-
-    /**
-     * The 'bottom' string.
-     */
-    public final static String BOTTOM = "bottom";
-
-    /**
-     * The 'bottom' keyword.
-     */
-    public final static ImmutableValue BOTTOM_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, BOTTOM);
-
-    /**
-     * The 'hanging' string.
-     */
-    public final static String HANGING = "hanging";
-
-    /**
-     * The 'hanging' keyword.
-     */
-    public final static ImmutableValue HANGING_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, HANGING);
-
-    /**
-     * The 'ideographic' string.
-     */
-    public final static String IDEOGRAPHIC = "ideographic";
-
-    /**
-     * The 'ideographic' keyword.
-     */
-    public final static ImmutableValue IDEOGRAPHIC_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, IDEOGRAPHIC);
-
-    /**
-     * The 'mathematical' string.
-     */
-    public final static String MATHEMATICAL = "mathematical";
-
-    /**
-     * The 'mathematical' keyword.
-     */
-    public final static ImmutableValue MATHEMATICAL_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, MATHEMATICAL);
-
-    /**
-     * The 'middle' string.
-     */
-    public final static String MIDDLE = "middle";
-
-    /**
-     * The 'middle' keyword.
-     */
-    public final static ImmutableValue MIDDLE_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, MIDDLE);
-
-    /**
-     * The 'text-after-edge' string.
-     */
-    public final static String TEXT_AFTER_EDGE = "text-after-edge";
-
-    /**
-     * The 'text-after-edge' keyword.
-     */
-    public final static ImmutableValue TEXT_AFTER_EDGE_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, TEXT_AFTER_EDGE);
-
-    /**
-     * The 'text-before-edge' string.
-     */
-    public final static String TEXT_BEFORE_EDGE = "text-before-edge";
-
-    /**
-     * The 'text-before-edge' keyword.
-     */
-    public final static ImmutableValue TEXT_BEFORE_EDGE_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, TEXT_BEFORE_EDGE);
-
-    /**
-     * The 'text-bottom' string.
-     */
-    public final static String TEXT_BOTTOM = "text-bottom";
-
-    /**
-     * The 'text-bottom' keyword.
-     */
-    public final static ImmutableValue TEXT_BOTTOM_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, TEXT_BOTTOM);
-
-    /**
-     * The 'text-top' string.
-     */
-    public final static String TEXT_TOP = "text-top";
-
-    /**
-     * The 'text-top' keyword.
-     */
-    public final static ImmutableValue TEXT_TOP_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, TEXT_TOP);
-
-    /**
-     * The 'top' string.
-     */
-    public final static String TOP = "top";
-
-    /**
-     * The 'top' keyword.
-     */
-    public final static ImmutableValue TOP_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, TOP);
+public class AlignmentBaselineFactory
+    extends    AbstractIdentifierFactory
+    implements SVGValueConstants {
 
     /**
      * The identifier values.
      */
     protected final static PropertyMap values = new PropertyMap();
     static {
-	values.put(AFTER_EDGE,        AFTER_EDGE_VALUE);
-	values.put(BASELINE,          BASELINE_VALUE);
-	values.put(BEFORE_EDGE,       BEFORE_EDGE_VALUE);
-	values.put(BOTTOM,            BOTTOM_VALUE);
-	values.put(HANGING,           HANGING_VALUE);
-	values.put(IDEOGRAPHIC,       IDEOGRAPHIC_VALUE);
-	values.put(MATHEMATICAL,      MATHEMATICAL_VALUE);
-	values.put(MIDDLE,            MIDDLE_VALUE);
-	values.put(TEXT_AFTER_EDGE,   TEXT_AFTER_EDGE_VALUE);
-	values.put(TEXT_BEFORE_EDGE,  TEXT_BEFORE_EDGE_VALUE);
-	values.put(TEXT_BOTTOM,       TEXT_BOTTOM_VALUE);
-	values.put(TEXT_TOP,          TEXT_TOP_VALUE);
-	values.put(TOP,               TOP_VALUE);
+	values.put(CSS_AFTER_EDGE_VALUE,        AFTER_EDGE_VALUE);
+	values.put(CSS_BASELINE_VALUE,          BASELINE_VALUE);
+	values.put(CSS_BEFORE_EDGE_VALUE,       BEFORE_EDGE_VALUE);
+	values.put(CSS_BOTTOM_VALUE,            BOTTOM_VALUE);
+	values.put(CSS_HANGING_VALUE,           HANGING_VALUE);
+	values.put(CSS_IDEOGRAPHIC_VALUE,       IDEOGRAPHIC_VALUE);
+	values.put(CSS_MATHEMATICAL_VALUE,      MATHEMATICAL_VALUE);
+	values.put(CSS_MIDDLE_VALUE,            MIDDLE_VALUE);
+	values.put(CSS_TEXT_AFTER_EDGE_VALUE,   TEXT_AFTER_EDGE_VALUE);
+	values.put(CSS_TEXT_BEFORE_EDGE_VALUE,  TEXT_BEFORE_EDGE_VALUE);
+	values.put(CSS_TEXT_BOTTOM_VALUE,       TEXT_BOTTOM_VALUE);
+	values.put(CSS_TEXT_TOP_VALUE,          TEXT_TOP_VALUE);
+	values.put(CSS_TOP_VALUE,               TOP_VALUE);
     }
 
     /**
@@ -196,7 +56,7 @@ public class AlignmentBaselineFactory extends AbstractIdentifierFactory {
      * Returns the name of the property handled.
      */
     public String getPropertyName() {
-	return "alignment-baseline";
+	return CSS_ALIGNMENT_BASELINE_PROPERTY;
     }
     
     /**

@@ -41,7 +41,7 @@ public class MaskFactory extends AbstractValueFactory {
      * Returns the name of the property handled.
      */
     public String getPropertyName() {
-	return "mask";
+	return SVGValueConstants.CSS_MASK_PROPERTY;
     }
     
     /**
@@ -55,7 +55,7 @@ public class MaskFactory extends AbstractValueFactory {
 	    return new ImmutableString(CSSPrimitiveValue.CSS_URI,
                                        lu.getStringValue());
 	case LexicalUnit.SAC_IDENT:
-	    if (lu.getStringValue().equalsIgnoreCase(NONE)) {
+	    if (lu.getStringValue().equalsIgnoreCase(CSS_NONE_VALUE)) {
 		return NONE_VALUE;
 	    }
 	default:
@@ -75,7 +75,7 @@ public class MaskFactory extends AbstractValueFactory {
     public ImmutableValue createStringValue(short type, String value)
 	throws DOMException {
 	if (type == CSSPrimitiveValue.CSS_IDENT &&
-	    value.equalsIgnoreCase(NONE)) {
+	    value.equalsIgnoreCase(CSS_NONE_VALUE)) {
 	    return NONE_VALUE;
 	}
 	if (type == CSSPrimitiveValue.CSS_URI) {

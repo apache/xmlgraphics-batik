@@ -21,48 +21,18 @@ import org.w3c.dom.css.CSSPrimitiveValue;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class StrokeLinecapFactory extends AbstractIdentifierFactory {
-    /**
-     * The 'butt' keyword.
-     */
-    public final static String BUTT = "butt";
-
-    /**
-     * The 'butt' keyword.
-     */
-    public final static ImmutableValue BUTT_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, BUTT);
-
-    /**
-     * The 'round' keyword.
-     */
-    public final static String ROUND = "round";
-
-    /**
-     * The 'round' keyword.
-     */
-    public final static ImmutableValue ROUND_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, ROUND);
-
-    /**
-     * The 'square' keyword.
-     */
-    public final static String SQUARE = "square";
-
-    /**
-     * The 'square' keyword.
-     */
-    public final static ImmutableValue SQUARE_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, SQUARE);
+public class StrokeLinecapFactory
+    extends    AbstractIdentifierFactory
+    implements SVGValueConstants {
 
     /**
      * The identifier values.
      */
     protected final static PropertyMap values = new PropertyMap();
     static {
-	values.put(BUTT,   BUTT_VALUE);
-	values.put(ROUND,  ROUND_VALUE);
-	values.put(SQUARE, SQUARE_VALUE);
+	values.put(CSS_BUTT_VALUE,   BUTT_VALUE);
+	values.put(CSS_ROUND_VALUE,  ROUND_VALUE);
+	values.put(CSS_SQUARE_VALUE, SQUARE_VALUE);
     }
 
     /**
@@ -76,7 +46,7 @@ public class StrokeLinecapFactory extends AbstractIdentifierFactory {
      * Returns the name of the property handled.
      */
     public String getPropertyName() {
-	return "stroke-linecap";
+	return CSS_STROKE_LINECAP_PROPERTY;
     }
     
     /**

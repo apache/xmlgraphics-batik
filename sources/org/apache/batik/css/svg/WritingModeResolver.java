@@ -24,11 +24,6 @@ import org.w3c.dom.css.ViewCSS;
  * @version $Id$
  */
 public class WritingModeResolver implements RelativeValueResolver {
-    /**
-     * The auto CSS value.
-     */
-    public final static CSSOMReadOnlyValue LR_TB =
-        new CSSOMReadOnlyValue(WritingModeFactory.LR_TB_VALUE);
 
     /**
      * Whether the handled property is inherited or not.
@@ -41,14 +36,14 @@ public class WritingModeResolver implements RelativeValueResolver {
      * Returns the name of the handled property.
      */
     public String getPropertyName() {
-	return "writing-mode";
+	return SVGValueConstants.CSS_WRITING_MODE_PROPERTY;
     }
 
     /**
      * Returns the default value for the handled property.
      */
     public CSSOMReadOnlyValue getDefaultValue() {
-	return LR_TB;
+	return new CSSOMReadOnlyValue(SVGValueConstants.LR_TB_VALUE);
     }
     
     /**

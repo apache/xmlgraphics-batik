@@ -21,11 +21,6 @@ import org.w3c.dom.css.ViewCSS;
  * @version $Id$
  */
 public class DisplayResolver implements RelativeValueResolver {
-    /**
-     * The inline CSS value.
-     */
-    public final static CSSOMReadOnlyValue INLINE =
-	new CSSOMReadOnlyValue(DisplayFactory.INLINE_VALUE);
 
     /**
      * Whether the handled property is inherited or not.
@@ -38,14 +33,14 @@ public class DisplayResolver implements RelativeValueResolver {
      * Returns the name of the handled property.
      */
     public String getPropertyName() {
-	return "display";
+	return ValueConstants.CSS_DISPLAY_PROPERTY;
     }
 
     /**
      * Returns the default value for the handled property.
      */
     public CSSOMReadOnlyValue getDefaultValue() {
-	return INLINE;
+	return new CSSOMReadOnlyValue(ValueConstants.INLINE_VALUE);
     }
     
     /**

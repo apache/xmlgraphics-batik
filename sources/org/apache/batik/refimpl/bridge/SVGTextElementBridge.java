@@ -151,7 +151,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
 
         // Text-anchor
         CSSPrimitiveValue v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue
-            (TEXT_ANCHOR_PROPERTY);
+            (CSS_TEXT_ANCHOR_PROPERTY);
         String s = v.getStringValue();
         TextNode.Anchor a;
         switch (s.charAt(0)) {
@@ -438,7 +438,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
 
         // Font family
         CSSValueList ff = (CSSValueList)cssDecl.getPropertyCSSValue
-            (FONT_FAMILY_PROPERTY);
+            (CSS_FONT_FAMILY_PROPERTY);
         String s = null;
         for (int i = 0; s == null && i < ff.getLength(); i++) {
             v = (CSSPrimitiveValue)ff.item(i);
@@ -451,7 +451,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
         // TODO: improve support for relative values
         // (e.g. "lighter", "bolder")
         v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue
-            (FONT_WEIGHT_PROPERTY);
+            (CSS_FONT_WEIGHT_PROPERTY);
         if (v.getPrimitiveType() == CSSPrimitiveValue.CSS_IDENT) {
             if (v.getStringValue().charAt(0) == 'n') {
                 result.put(TextAttribute.WEIGHT,
@@ -508,7 +508,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
         // Text baseline adjustment.
         // TODO: support for <percentage> and <length> values.
         v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue
-            (BASELINE_SHIFT_PROPERTY);
+            (CSS_BASELINE_SHIFT_PROPERTY);
         if (v.getPrimitiveType() == CSSPrimitiveValue.CSS_IDENT) {
             s = v.getStringValue();
             switch (s.charAt(2)) {
@@ -539,7 +539,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
         // below regarding 'direction'
 
         v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue
-            (UNICODE_BIDI_PROPERTY);
+            (CSS_UNICODE_BIDI_PROPERTY);
         s = v.getStringValue();
         switch (s.charAt(0)) {
         case 'e':
@@ -566,7 +566,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
         // normal writing direction for a string/substring.
 
         v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue
-            (DIRECTION_PROPERTY);
+            (CSS_DIRECTION_PROPERTY);
         s = v.getStringValue();
         switch (s.charAt(0)) {
         case 'l':
@@ -582,7 +582,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
         // Writing mode
 
         v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue
-            (WRITING_MODE_PROPERTY);
+            (CSS_WRITING_MODE_PROPERTY);
         s = v.getStringValue();
         switch (s.charAt(0)) {
         case 'l':
@@ -599,7 +599,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
 
         // Font style
         v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue
-            (FONT_STYLE_PROPERTY);
+            (CSS_FONT_STYLE_PROPERTY);
         s = v.getStringValue();
         switch (s.charAt(0)) {
         case 'n':
@@ -614,7 +614,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
 
         // Font stretch
         v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue
-            (FONT_STRETCH_PROPERTY);
+            (CSS_FONT_STRETCH_PROPERTY);
         s = v.getStringValue();
         switch (s.charAt(0)) {
         case 'u':
@@ -691,7 +691,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
 
         // Text decoration
         CSSValue cssVal = cssDecl.getPropertyCSSValue
-            (TEXT_DECORATION_PROPERTY);
+            (CSS_TEXT_DECORATION_PROPERTY);
         short t = cssVal.getCssValueType();
         if (t == CSSValue.CSS_VALUE_LIST) {
             CSSValueList lst = (CSSValueList)cssVal;

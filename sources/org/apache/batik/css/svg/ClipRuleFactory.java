@@ -21,36 +21,17 @@ import org.w3c.dom.css.CSSPrimitiveValue;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class ClipRuleFactory extends AbstractIdentifierFactory {
-    /**
-     * The 'evenodd' string.
-     */
-    public final static String EVENODD = "evenodd";
-
-    /**
-     * The 'evenodd' keyword.
-     */
-    public final static ImmutableValue EVENODD_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, EVENODD);
-
-    /**
-     * The 'nonzero' string.
-     */
-    public final static String NONZERO = "nonzero";
-
-    /**
-     * The 'nonzero' keyword.
-     */
-    public final static ImmutableValue NONZERO_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, NONZERO);
+public class ClipRuleFactory
+    extends    AbstractIdentifierFactory
+    implements SVGValueConstants {
 
     /**
      * The identifier values.
      */
     protected final static PropertyMap values = new PropertyMap();
     static {
-	values.put(EVENODD,        EVENODD_VALUE);
-	values.put(NONZERO,        NONZERO_VALUE);
+	values.put(CSS_EVENODD_VALUE,        EVENODD_VALUE);
+	values.put(CSS_NONZERO_VALUE,        NONZERO_VALUE);
     }
 
     /**
@@ -64,7 +45,7 @@ public class ClipRuleFactory extends AbstractIdentifierFactory {
      * Returns the name of the property handled.
      */
     public String getPropertyName() {
-	return "clip-rule";
+	return CSS_CLIP_RULE_PROPERTY;
     }
     
     /**

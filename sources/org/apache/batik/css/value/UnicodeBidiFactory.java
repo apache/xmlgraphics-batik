@@ -18,48 +18,18 @@ import org.w3c.dom.css.CSSPrimitiveValue;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class UnicodeBidiFactory extends AbstractIdentifierFactory {
-    /**
-     * The 'bidi-override' string.
-     */
-    public final static String BIDI_OVERRIDE = "bidi-override";
-
-    /**
-     * The 'bidi-override' identifier value.
-     */
-    public final static ImmutableValue BIDI_OVERRIDE_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, BIDI_OVERRIDE);
-
-    /**
-     * The 'embed' string.
-     */
-    public final static String EMBED = "embed";
-
-    /**
-     * The 'embed' identifier value.
-     */
-    public final static ImmutableValue EMBED_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, EMBED);
-
-    /**
-     * The 'normal' string.
-     */
-    public final static String NORMAL = "normal";
-
-    /**
-     * The 'normal' identifier value.
-     */
-    public final static ImmutableValue NORMAL_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, NORMAL);
+public class UnicodeBidiFactory
+    extends    AbstractIdentifierFactory
+    implements ValueConstants {
 
     /**
      * The identifier values.
      */
     protected final static PropertyMap values = new PropertyMap();
     static {
-	values.put(BIDI_OVERRIDE, BIDI_OVERRIDE_VALUE);
-	values.put(EMBED,         EMBED_VALUE);
-	values.put(NORMAL,        NORMAL_VALUE);
+	values.put(CSS_BIDI_OVERRIDE_VALUE, BIDI_OVERRIDE_VALUE);
+	values.put(CSS_EMBED_VALUE,         EMBED_VALUE);
+	values.put(CSS_NORMAL_VALUE,        NORMAL_VALUE);
     }
 
     /**
@@ -74,7 +44,7 @@ public class UnicodeBidiFactory extends AbstractIdentifierFactory {
      * Returns the name of the property handled.
      */
     public String getPropertyName() {
-	return "unicode-bidi";
+	return CSS_UNICODE_BIDI_PROPERTY;
     }
     
     /**

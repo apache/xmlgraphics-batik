@@ -113,8 +113,8 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
             // compute the outline of the current Element
             CSSStyleDeclaration c =
                 ctx.getViewCSS().getComputedStyle(child, null);
-            CSSPrimitiveValue v =
-                (CSSPrimitiveValue)c.getPropertyCSSValue(CLIP_RULE_PROPERTY);
+            CSSPrimitiveValue v = (CSSPrimitiveValue)c.getPropertyCSSValue
+                (CSS_CLIP_RULE_PROPERTY);
             int wr = (CSSUtilities.rule(v) == CSSUtilities.RULE_NONZERO)
                 ? GeneralPath.WIND_NON_ZERO
                 : GeneralPath.WIND_EVEN_ODD;

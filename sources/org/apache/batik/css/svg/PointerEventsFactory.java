@@ -21,133 +21,26 @@ import org.w3c.dom.css.CSSPrimitiveValue;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class PointerEventsFactory extends AbstractIdentifierFactory {
-    /**
-     * The 'all' string.
-     */
-    public final static String ALL = "all";
-
-    /**
-     * The 'all' keyword.
-     */
-    public final static ImmutableValue ALL_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, ALL);
-
-    /**
-     * The 'fill' string.
-     */
-    public final static String FILL = "fill";
-
-    /**
-     * The 'fill' keyword.
-     */
-    public final static ImmutableValue FILL_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, FILL);
-
-    /**
-     * The 'fillstroke' string.
-     */
-    public final static String FILLSTROKE = "fillstroke";
-
-    /**
-     * The 'fillstroke' keyword.
-     */
-    public final static ImmutableValue FILLSTROKE_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, FILLSTROKE);
-
-    /**
-     * The 'painted' string.
-     */
-    public final static String PAINTED = "painted";
-
-    /**
-     * The 'painted' keyword.
-     */
-    public final static ImmutableValue PAINTED_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, PAINTED);
-
-    /**
-     * The 'stroke' string.
-     */
-    public final static String STROKE = "stroke";
-
-    /**
-     * The 'stroke' keyword.
-     */
-    public final static ImmutableValue STROKE_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, STROKE);
-
-    /**
-     * The 'visible' string.
-     */
-    public final static String VISIBLE = "visible";
-
-    /**
-     * The 'visible' keyword.
-     */
-    public final static ImmutableValue VISIBLE_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, VISIBLE);
-
-    /**
-     * The 'visiblefill' string.
-     */
-    public final static String VISIBLEFILL = "visiblefill";
-
-    /**
-     * The 'visiblefill' keyword.
-     */
-    public final static ImmutableValue VISIBLEFILL_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, VISIBLEFILL);
-
-    /**
-     * The 'visiblefillstroke' string.
-     */
-    public final static String VISIBLEFILLSTROKE = "visiblefillstroke";
-
-    /**
-     * The 'visiblefillstroke' keyword.
-     */
-    public final static ImmutableValue VISIBLEFILLSTROKE_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, VISIBLEFILLSTROKE);
-
-    /**
-     * The 'visiblepainted' string.
-     */
-    public final static String VISIBLEPAINTED = "visiblepainted";
-
-    /**
-     * The 'visiblepainted' keyword.
-     */
-    public final static ImmutableValue VISIBLEPAINTED_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, VISIBLEPAINTED);
-
-    /**
-     * The 'visiblestroke' string.
-     */
-    public final static String VISIBLESTROKE = "visiblestroke";
-
-    /**
-     * The 'visiblestroke' keyword.
-     */
-    public final static ImmutableValue VISIBLESTROKE_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, VISIBLESTROKE);
+public class PointerEventsFactory
+    extends    AbstractIdentifierFactory
+    implements SVGValueConstants {
 
     /**
      * The identifier values.
      */
     protected final static PropertyMap values = new PropertyMap();
     static {
-	values.put(ALL,                ALL_VALUE);
-	values.put(FILL,               FILL_VALUE);
-	values.put(FILLSTROKE,         FILLSTROKE_VALUE);
-	values.put(NONE,               NONE_VALUE);
-	values.put(PAINTED,            PAINTED_VALUE);
-	values.put(STROKE,             STROKE_VALUE);
-	values.put(VISIBLE,            VISIBLE_VALUE);
-	values.put(VISIBLEFILL,        VISIBLEFILL_VALUE);
-	values.put(VISIBLEFILLSTROKE,  VISIBLEFILLSTROKE_VALUE);
-	values.put(VISIBLEPAINTED,     VISIBLEPAINTED_VALUE);
-	values.put(VISIBLESTROKE,      VISIBLESTROKE_VALUE);
+	values.put(CSS_ALL_VALUE,                ALL_VALUE);
+	values.put(CSS_FILL_VALUE,               FILL_VALUE);
+	values.put(CSS_FILLSTROKE_VALUE,         FILLSTROKE_VALUE);
+	values.put(CSS_NONE_VALUE,               NONE_VALUE);
+	values.put(CSS_PAINTED_VALUE,            PAINTED_VALUE);
+	values.put(CSS_STROKE_VALUE,             STROKE_VALUE);
+	values.put(CSS_VISIBLE_VALUE,            VISIBLE_VALUE);
+	values.put(CSS_VISIBLEFILL_VALUE,        VISIBLEFILL_VALUE);
+	values.put(CSS_VISIBLEFILLSTROKE_VALUE,  VISIBLEFILLSTROKE_VALUE);
+	values.put(CSS_VISIBLEPAINTED_VALUE,     VISIBLEPAINTED_VALUE);
+	values.put(CSS_VISIBLESTROKE_VALUE,      VISIBLESTROKE_VALUE);
     }
 
     /**
@@ -161,7 +54,7 @@ public class PointerEventsFactory extends AbstractIdentifierFactory {
      * Returns the name of the property handled.
      */
     public String getPropertyName() {
-	return "pointer-events";
+	return CSS_POINTER_EVENTS_PROPERTY;
     }
     
     /**

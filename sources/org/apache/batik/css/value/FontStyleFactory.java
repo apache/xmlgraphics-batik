@@ -18,37 +18,18 @@ import org.w3c.dom.css.CSSPrimitiveValue;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class FontStyleFactory extends AbstractIdentifierFactory {
-    /**
-     * The 'italic' string.
-     */
-    public final static String ITALIC = "italic";
-
-    /**
-     * The 'italic' identifier value.
-     */
-    public final static ImmutableValue ITALIC_VALUE =
-        new ImmutableString(CSSPrimitiveValue.CSS_IDENT, ITALIC);
-
-    /**
-     * The 'oblique' string.
-     */
-    public final static String OBLIQUE = "oblique";
-
-    /**
-     * The 'oblique' identifier value.
-     */
-    public final static ImmutableValue OBLIQUE_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, OBLIQUE);
+public class FontStyleFactory
+    extends    AbstractIdentifierFactory
+    implements ValueConstants {
 
     /**
      * The identifier values.
      */
     protected final static PropertyMap values = new PropertyMap();
     static {
-	values.put(ITALIC,  ITALIC_VALUE);
-	values.put(NORMAL,  NORMAL_VALUE);
-	values.put(OBLIQUE, OBLIQUE_VALUE);
+	values.put(CSS_ITALIC_VALUE,  ITALIC_VALUE);
+	values.put(CSS_NORMAL_VALUE,  NORMAL_VALUE);
+	values.put(CSS_OBLIQUE_VALUE, OBLIQUE_VALUE);
     }
 
     /**
@@ -63,7 +44,7 @@ public class FontStyleFactory extends AbstractIdentifierFactory {
      * Returns the name of the property handled.
      */
     public String getPropertyName() {
-	return "font-style";
+	return CSS_FONT_STYLE_PROPERTY;
     }
     
     /**

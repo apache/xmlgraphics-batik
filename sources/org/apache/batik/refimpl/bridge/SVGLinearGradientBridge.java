@@ -169,12 +169,13 @@ public class SVGLinearGradientBridge extends SVGGradientBridge
 
         // Extract the color interpolation property
         CSSPrimitiveValue colorInterpolation =
-            (CSSPrimitiveValue) cssDecl.getPropertyCSSValue(COLOR_INTERPOLATION_PROPERTY);
+            (CSSPrimitiveValue)cssDecl.getPropertyCSSValue
+            (CSS_COLOR_INTERPOLATION_PROPERTY);
 
         LinearGradientPaint.ColorSpaceEnum colorSpace
             = LinearGradientPaint.SRGB;
 
-        if(LINEAR_RGB.equals(colorInterpolation.getStringValue())){
+        if(CSS_LINEARRGB_VALUE.equals(colorInterpolation.getStringValue())){
             colorSpace = LinearGradientPaint.LINEAR_RGB;
         }
 

@@ -27,36 +27,17 @@ import org.w3c.dom.css.CSSPrimitiveValue;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class EnableBackgroundFactory extends AbstractValueFactory {
-    /**
-     * The 'accumulate' string.
-     */
-    public final static String ACCUMULATE = "accumulate";
-
-    /**
-     * The 'accumulate' keyword.
-     */
-    public final static ImmutableValue ACCUMULATE_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, ACCUMULATE);
-
-    /**
-     * The 'new' string.
-     */
-    public final static String NEW = "new";
-
-    /**
-     * The 'new' keyword.
-     */
-    public final static ImmutableValue NEW_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, NEW);
+public class EnableBackgroundFactory
+    extends    AbstractValueFactory
+    implements SVGValueConstants {
 
     /**
      * The identifier values.
      */
     protected final static PropertyMap values = new PropertyMap();
     static {
-	values.put(ACCUMULATE, ACCUMULATE_VALUE);
-	values.put(NEW,        NEW_VALUE);
+	values.put(CSS_ACCUMULATE_VALUE, ACCUMULATE_VALUE);
+	values.put(CSS_NEW_VALUE,        NEW_VALUE);
     }
 
     /**
@@ -75,7 +56,7 @@ public class EnableBackgroundFactory extends AbstractValueFactory {
      * Returns the name of the property handled.
      */
     public String getPropertyName() {
-	return "enable-background";
+	return CSS_ENABLE_BACKGROUND_PROPERTY;
     }
 
     /**
@@ -99,18 +80,13 @@ public class EnableBackgroundFactory extends AbstractValueFactory {
 	    }
 	    ImmutableValueList list = new ImmutableValueList(' ');
 	    list.append(new CSSOMValue(this, (ImmutableValue)v));
-	    return list;
-	case LexicalUnit.SAC_FUNCTION:
-	    if (!lu.getFunctionName().equalsIgnoreCase("new")) {
-		throw CSSDOMExceptionFactory.createDOMException
-		    (DOMException.INVALID_ACCESS_ERR,
-		     "invalid.identifier",
-		     new Object[] { lu.getFunctionName() });
-	    }
-	    list = new ImmutableValueList(' ');
-	    list.append(new CSSOMValue(this, NEW_VALUE));
 	    for (int i = 0; i < 4; i++) {
 		lu = lu.getNextLexicalUnit();
+                if (lu == null) {
+                    throw CSSDOMExceptionFactory.createDOMException
+                        (DOMException.INVALID_ACCESS_ERR,
+                         "unexpected.end.of.list", null);
+                }
 		list.append(new CSSOMValue(lengthFactory,
 					   lengthFactory.createValue(lu)));
 	    }
@@ -137,14 +113,13 @@ public class EnableBackgroundFactory extends AbstractValueFactory {
 		 "invalid.identifier",
 		 new Object[] { value });
 	}
-	Object v = values.get(value.toLowerCase().intern());
-	if (v == null) {
+	if (!value.equalsIgnoreCase(CSS_ACCUMULATE_VALUE)) {
 	    throw CSSDOMExceptionFactory.createDOMException
 		(DOMException.INVALID_ACCESS_ERR,
 		 "invalid.identifier",
 		 new Object[] { value });
 	}
-	return (ImmutableValue)v;
+	return ACCUMULATE_VALUE;
     }
 
     /**

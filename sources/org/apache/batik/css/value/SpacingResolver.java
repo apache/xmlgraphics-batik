@@ -14,18 +14,13 @@ import org.w3c.dom.Element;
 import org.w3c.dom.css.ViewCSS;
 
 /**
- * This class provides a relative value resolver for the 'spacing' CSS
- * property.
+ * This class provides a relative value resolver for the '*-spacing' CSS
+ * properties.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
 public class SpacingResolver implements RelativeValueResolver {
-    /**
-     * The normal CSS value.
-     */
-    public final static CSSOMReadOnlyValue NORMAL =
-	new CSSOMReadOnlyValue(AbstractValueFactory.NORMAL_VALUE);
 
     /**
      * The property name.
@@ -59,7 +54,7 @@ public class SpacingResolver implements RelativeValueResolver {
      * Returns the default value for the handled property.
      */
     public CSSOMReadOnlyValue getDefaultValue() {
-	return NORMAL;
+	return new CSSOMReadOnlyValue(ValueConstants.NORMAL_VALUE);
     }
     
     /**
@@ -79,6 +74,6 @@ public class SpacingResolver implements RelativeValueResolver {
 			     CSSOMReadOnlyValue value,
 			     String priority,
 			     int origin) {
-	// !!! TODO
+	// !!! TODO relative lengths
     }
 }

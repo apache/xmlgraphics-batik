@@ -21,48 +21,18 @@ import org.w3c.dom.css.CSSPrimitiveValue;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class TextAnchorFactory extends AbstractIdentifierFactory {
-    /**
-     * The 'start' keyword.
-     */
-    public final static String START = "start";
-
-    /**
-     * The 'start' keyword.
-     */
-    public final static ImmutableValue START_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, START);
-
-    /**
-     * The 'middle' keyword.
-     */
-    public final static String MIDDLE = "middle";
-
-    /**
-     * The 'middle' keyword.
-     */
-    public final static ImmutableValue MIDDLE_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, MIDDLE);
-
-    /**
-     * The 'end' keyword.
-     */
-    public final static String END = "end";
-
-    /**
-     * The 'end' keyword.
-     */
-    public final static ImmutableValue END_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, END);
+public class TextAnchorFactory
+    extends    AbstractIdentifierFactory
+    implements SVGValueConstants {
 
     /**
      * The identifier values.
      */
     protected final static PropertyMap values = new PropertyMap();
     static {
-	values.put(START,  START_VALUE);
-	values.put(MIDDLE, MIDDLE_VALUE);
-	values.put(END,    END_VALUE);
+	values.put(CSS_START_VALUE,  START_VALUE);
+	values.put(CSS_MIDDLE_VALUE, MIDDLE_VALUE);
+	values.put(CSS_END_VALUE,    END_VALUE);
     }
 
     /**
@@ -76,7 +46,7 @@ public class TextAnchorFactory extends AbstractIdentifierFactory {
      * Returns the name of the property handled.
      */
     public String getPropertyName() {
-	return "text-anchor";
+	return CSS_TEXT_ANCHOR_PROPERTY;
     }
     
     /**

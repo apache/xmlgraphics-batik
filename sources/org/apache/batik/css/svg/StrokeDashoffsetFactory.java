@@ -23,11 +23,6 @@ import org.w3c.dom.css.CSSPrimitiveValue;
  * @version $Id$
  */
 public class StrokeDashoffsetFactory extends AbstractLengthFactory {
-    /**
-     * The 0 number.
-     */
-    public final static ImmutableValue ZERO_VALUE =
-        new ImmutableFloat(CSSPrimitiveValue.CSS_NUMBER, 0);
 
     /**
      * Creates a new LengthFactory object.
@@ -40,7 +35,7 @@ public class StrokeDashoffsetFactory extends AbstractLengthFactory {
      * Returns the name of the property handled.
      */
     public String getPropertyName() {
-	return "stroke-dashoffset";
+	return SVGValueConstants.CSS_STROKE_DASHOFFSET_PROPERTY;
     }
     
     /**

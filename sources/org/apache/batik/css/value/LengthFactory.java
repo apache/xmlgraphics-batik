@@ -50,7 +50,7 @@ public class LengthFactory extends AbstractLengthFactory {
 	    return createFloatValue(CSSPrimitiveValue.CSS_PERCENTAGE,
 				    lu.getFloatValue());
 	case LexicalUnit.SAC_IDENT:
-	    if (lu.getStringValue().equalsIgnoreCase(AUTO)) {
+	    if (lu.getStringValue().equalsIgnoreCase(CSS_AUTO_VALUE)) {
 		return AUTO_VALUE;
 	    }
 	}
@@ -66,7 +66,7 @@ public class LengthFactory extends AbstractLengthFactory {
     public ImmutableValue createStringValue(short type, String value)
 	throws DOMException {
 	if (type != CSSPrimitiveValue.CSS_IDENT ||
-            !value.equalsIgnoreCase(AUTO)) {
+            !value.equalsIgnoreCase(CSS_AUTO_VALUE)) {
 	    throw CSSDOMExceptionFactory.createDOMException
 		(DOMException.INVALID_ACCESS_ERR,
 		 "invalid.identifier",

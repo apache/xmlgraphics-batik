@@ -24,11 +24,6 @@ import org.w3c.dom.css.ViewCSS;
  * @version $Id$
  */
 public class StrokeWidthResolver implements RelativeValueResolver {
-    /**
-     * The accumulate CSS value.
-     */
-    public final static CSSOMReadOnlyValue N_1 =
-        new CSSOMReadOnlyValue(OpacityFactory.ONE);
 
     /**
      * Whether the handled property is inherited or not.
@@ -41,14 +36,14 @@ public class StrokeWidthResolver implements RelativeValueResolver {
      * Returns the name of the handled property.
      */
     public String getPropertyName() {
-	return "stroke-width";
+	return SVGValueConstants.CSS_STROKE_WIDTH_PROPERTY;
     }
 
     /**
      * Returns the default value for the handled property.
      */
     public CSSOMReadOnlyValue getDefaultValue() {
-	return N_1;
+	return new CSSOMReadOnlyValue(SVGValueConstants.NUMBER_1);
     }
     
     /**

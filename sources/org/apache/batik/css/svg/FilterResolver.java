@@ -24,11 +24,6 @@ import org.w3c.dom.css.ViewCSS;
  * @version $Id$
  */
 public class FilterResolver implements RelativeValueResolver {
-    /**
-     * The none CSS value.
-     */
-    public final static CSSOMReadOnlyValue NONE =
-        new CSSOMReadOnlyValue(AbstractValueFactory.NONE_VALUE);
 
     /**
      * Whether the handled property is inherited or not.
@@ -41,14 +36,14 @@ public class FilterResolver implements RelativeValueResolver {
      * Returns the name of the handled property.
      */
     public String getPropertyName() {
-	return "filter";
+	return SVGValueConstants.CSS_FILTER_PROPERTY;
     }
 
     /**
      * Returns the default value for the handled property.
      */
     public CSSOMReadOnlyValue getDefaultValue() {
-	return NONE;
+	return new CSSOMReadOnlyValue(SVGValueConstants.NONE_VALUE);
     }
     
     /**

@@ -22,60 +22,19 @@ import org.w3c.dom.css.CSSPrimitiveValue;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class TextDecorationFactory extends AbstractValueFactory {
-    /**
-     * The 'blink' string.
-     */
-    public final static String BLINK = "blink";
-
-    /**
-     * The 'blink' identifier value.
-     */
-    public final static ImmutableValue BLINK_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, BLINK);
-
-    /**
-     * The 'line-through' string.
-     */
-    public final static String LINE_THROUGH = "line-through";
-
-    /**
-     * The 'line-through' identifier value.
-     */
-    public final static ImmutableValue LINE_THROUGH_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, LINE_THROUGH);
-
-    /**
-     * The 'overline' string.
-     */
-    public final static String OVERLINE = "overline";
-
-    /**
-     * The 'overline' identifier value.
-     */
-    public final static ImmutableValue OVERLINE_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, OVERLINE);
-
-    /**
-     * The 'underline' string.
-     */
-    public final static String UNDERLINE = "underline";
-
-    /**
-     * The 'underline' identifier value.
-     */
-    public final static ImmutableValue UNDERLINE_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, UNDERLINE);
+public class TextDecorationFactory
+    extends    AbstractValueFactory
+    implements ValueConstants {
 
     /**
      * The identifier values.
      */
     protected final static PropertyMap values = new PropertyMap();
     static {
-	values.put(BLINK,        BLINK_VALUE);
-	values.put(LINE_THROUGH, LINE_THROUGH_VALUE);
-	values.put(OVERLINE,     OVERLINE_VALUE);
-	values.put(UNDERLINE,    UNDERLINE_VALUE);
+	values.put(CSS_BLINK_VALUE,        BLINK_VALUE);
+	values.put(CSS_LINE_THROUGH_VALUE, LINE_THROUGH_VALUE);
+	values.put(CSS_OVERLINE_VALUE,     OVERLINE_VALUE);
+	values.put(CSS_UNDERLINE_VALUE,    UNDERLINE_VALUE);
     }
 
     /**
@@ -95,7 +54,7 @@ public class TextDecorationFactory extends AbstractValueFactory {
      * Returns the name of the property handled.
      */
     public String getPropertyName() {
-	return "text-decoration";
+	return CSS_TEXT_DECORATION_PROPERTY;
     }
     
     /**
@@ -107,7 +66,7 @@ public class TextDecorationFactory extends AbstractValueFactory {
 	case LexicalUnit.SAC_INHERIT:
 	    return INHERIT;
 	case LexicalUnit.SAC_IDENT:
-	    if (lu.getStringValue().equalsIgnoreCase(NONE)) {
+	    if (lu.getStringValue().equalsIgnoreCase(CSS_NONE_VALUE)) {
 		return NONE_VALUE;
 	    }
 	    ImmutableValueList list = new ImmutableValueList(' ');
@@ -134,7 +93,7 @@ public class TextDecorationFactory extends AbstractValueFactory {
     public ImmutableValue createStringValue(short type, String value)
 	throws DOMException {
 	if (type != CSSPrimitiveValue.CSS_IDENT ||
-	    !value.equalsIgnoreCase(NONE)) {
+	    !value.equalsIgnoreCase(CSS_NONE_VALUE)) {
 	    throw CSSDOMExceptionFactory.createDOMException
 		(DOMException.INVALID_ACCESS_ERR,
 		 "invalid.identifier",

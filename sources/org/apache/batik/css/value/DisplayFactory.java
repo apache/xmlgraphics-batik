@@ -18,205 +18,32 @@ import org.w3c.dom.css.CSSPrimitiveValue;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class DisplayFactory extends AbstractIdentifierFactory {
-    /**
-     * The 'block' string.
-     */
-    public final static String BLOCK = "block";
-
-    /**
-     * The 'block' identifier value.
-     */
-    public final static ImmutableValue BLOCK_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, BLOCK);
-
-    /**
-     * The 'compact' string.
-     */
-    public final static String COMPACT = "compact";
-
-    /**
-     * The 'compact' identifier value.
-     */
-    public final static ImmutableValue COMPACT_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, COMPACT);
-
-    /**
-     * The 'inline' string.
-     */
-    public final static String INLINE = "inline";
-
-    /**
-     * The 'inline' identifier value.
-     */
-    public final static ImmutableValue INLINE_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, INLINE);
-
-    /**
-     * The 'inline-table' string.
-     */
-    public final static String INLINE_TABLE = "inline-table";
-
-    /**
-     * The 'inline-table' identifier value.
-     */
-    public final static ImmutableValue INLINE_TABLE_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, INLINE_TABLE);
-
-    /**
-     * The 'list-item' string.
-     */
-    public final static String LIST_ITEM = "list-item";
-
-    /**
-     * The 'list-item' identifier value.
-     */
-    public final static ImmutableValue LIST_ITEM_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, LIST_ITEM);
-
-    /**
-     * The 'marker' string.
-     */
-    public final static String MARKER = "marker";
-
-    /**
-     * The 'marker' identifier value.
-     */
-    public final static ImmutableValue MARKER_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, MARKER);
-
-    /**
-     * The 'run-in' string.
-     */
-    public final static String RUN_IN = "run-in";
-
-    /**
-     * The 'run-in' identifier value.
-     */
-    public final static ImmutableValue RUN_IN_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, RUN_IN);
-
-    /**
-     * The 'table' string.
-     */
-    public final static String TABLE = "table";
-
-    /**
-     * The 'table' identifier value.
-     */
-    public final static ImmutableValue TABLE_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, TABLE);
-
-    /**
-     * The 'table-caption' string.
-     */
-    public final static String TABLE_CAPTION = "table-caption";
-
-    /**
-     * The 'table-caption' identifier value.
-     */
-    public final static ImmutableValue TABLE_CAPTION_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, TABLE_CAPTION);
-
-    /**
-     * The 'table-cell' string.
-     */
-    public final static String TABLE_CELL = "table-cell";
-
-    /**
-     * The 'table-cell' identifier value.
-     */
-    public final static ImmutableValue TABLE_CELL_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, TABLE_CELL);
-
-    /**
-     * The 'table-column' string.
-     */
-    public final static String TABLE_COLUMN = "table-column";
-
-    /**
-     * The 'table-column' identifier value.
-     */
-    public final static ImmutableValue TABLE_COLUMN_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, TABLE_COLUMN);
-
-    /**
-     * The 'table-column-group' string.
-     */
-    public final static String TABLE_COLUMN_GROUP = "table-column-group";
-
-    /**
-     * The 'table-column-group' identifier value.
-     */
-    public final static ImmutableValue TABLE_COLUMN_GROUP_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, TABLE_COLUMN_GROUP);
-
-    /**
-     * The 'table-footer-group' string.
-     */
-    public final static String TABLE_FOOTER_GROUP = "table-footer-group";
-
-    /**
-     * The 'table-footer-group' identifier value.
-     */
-    public final static ImmutableValue TABLE_FOOTER_GROUP_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, TABLE_FOOTER_GROUP);
-
-    /**
-     * The 'table-header-group' string.
-     */
-    public final static String TABLE_HEADER_GROUP = "table-header-group";
-
-    /**
-     * The 'table-header-group' identifier value.
-     */
-    public final static ImmutableValue TABLE_HEADER_GROUP_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, TABLE_HEADER_GROUP);
-
-    /**
-     * The 'table-row' string.
-     */
-    public final static String TABLE_ROW = "table-row";
-
-    /**
-     * The 'table-row' identifier value.
-     */
-    public final static ImmutableValue TABLE_ROW_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, TABLE_ROW);
-
-    /**
-     * The 'table-row-group' string.
-     */
-    public final static String TABLE_ROW_GROUP = "table-row-group";
-
-    /**
-     * The 'table-row-group' identifier value.
-     */
-    public final static ImmutableValue TABLE_ROW_GROUP_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, TABLE_ROW_GROUP);
+public class DisplayFactory
+    extends    AbstractIdentifierFactory
+    implements ValueConstants {
 
     /**
      * The identifier values.
      */
     protected final static PropertyMap values = new PropertyMap();
     static {
-	values.put(BLOCK,                BLOCK_VALUE);
-	values.put(COMPACT,              COMPACT_VALUE);
-	values.put(INLINE,               INLINE_VALUE);
-	values.put(INLINE_TABLE,         INLINE_TABLE_VALUE);
-	values.put(LIST_ITEM,            LIST_ITEM_VALUE);
-	values.put(MARKER,               MARKER_VALUE);
-	values.put(NONE,                 NONE_VALUE);
-	values.put(RUN_IN,               RUN_IN_VALUE);
-	values.put(TABLE,                TABLE_VALUE);
-	values.put(TABLE_CAPTION,        TABLE_CAPTION_VALUE);
-	values.put(TABLE_CELL,           TABLE_CELL_VALUE);
-	values.put(TABLE_COLUMN,         TABLE_COLUMN_VALUE);
-	values.put(TABLE_COLUMN_GROUP,   TABLE_COLUMN_GROUP_VALUE);
-	values.put(TABLE_FOOTER_GROUP,   TABLE_FOOTER_GROUP_VALUE);
-	values.put(TABLE_HEADER_GROUP,   TABLE_HEADER_GROUP_VALUE);
-	values.put(TABLE_ROW,            TABLE_ROW_VALUE);
-	values.put(TABLE_ROW_GROUP,      TABLE_ROW_GROUP_VALUE);
+	values.put(CSS_BLOCK_VALUE,                BLOCK_VALUE);
+	values.put(CSS_COMPACT_VALUE,              COMPACT_VALUE);
+	values.put(CSS_INLINE_VALUE,               INLINE_VALUE);
+	values.put(CSS_INLINE_TABLE_VALUE,         INLINE_TABLE_VALUE);
+	values.put(CSS_LIST_ITEM_VALUE,            LIST_ITEM_VALUE);
+	values.put(CSS_MARKER_VALUE,               MARKER_VALUE);
+	values.put(CSS_NONE_VALUE,                 NONE_VALUE);
+	values.put(CSS_RUN_IN_VALUE,               RUN_IN_VALUE);
+	values.put(CSS_TABLE_VALUE,                TABLE_VALUE);
+	values.put(CSS_TABLE_CAPTION_VALUE,        TABLE_CAPTION_VALUE);
+	values.put(CSS_TABLE_CELL_VALUE,           TABLE_CELL_VALUE);
+	values.put(CSS_TABLE_COLUMN_VALUE,         TABLE_COLUMN_VALUE);
+	values.put(CSS_TABLE_COLUMN_GROUP_VALUE,   TABLE_COLUMN_GROUP_VALUE);
+	values.put(CSS_TABLE_FOOTER_GROUP_VALUE,   TABLE_FOOTER_GROUP_VALUE);
+	values.put(CSS_TABLE_HEADER_GROUP_VALUE,   TABLE_HEADER_GROUP_VALUE);
+	values.put(CSS_TABLE_ROW_VALUE,            TABLE_ROW_VALUE);
+	values.put(CSS_TABLE_ROW_GROUP_VALUE,      TABLE_ROW_GROUP_VALUE);
     }
 
     /**

@@ -140,15 +140,15 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
             = ctx.getViewCSS().getComputedStyle(paintElement, null);
 
         CSSPrimitiveValue vbOverflow
-            = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue(OVERFLOW_PROPERTY);
+            = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue(CSS_OVERFLOW_PROPERTY);
 
         String overFlowValue = vbOverflow.getStringValue();
         if(overFlowValue.length() == 0){
-            overFlowValue = HIDDEN;
+            overFlowValue = CSS_HIDDEN_VALUE;
         }
 
         boolean overflow = true;
-        if(HIDDEN.equals(overFlowValue)){
+        if(CSS_HIDDEN_VALUE.equals(overFlowValue)){
             overflow = false;
         }
 

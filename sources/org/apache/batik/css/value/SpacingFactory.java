@@ -47,7 +47,7 @@ public class SpacingFactory extends AbstractLengthFactory {
      */
     public ImmutableValue createValue(LexicalUnit lu) throws DOMException {
 	if (lu.getLexicalUnitType() == LexicalUnit.SAC_IDENT &&
-	    lu.getStringValue().equalsIgnoreCase(NORMAL)) {
+	    lu.getStringValue().equalsIgnoreCase(CSS_NORMAL_VALUE)) {
 	    return NORMAL_VALUE;
 	}
 	return super.createValue(lu);
@@ -62,7 +62,7 @@ public class SpacingFactory extends AbstractLengthFactory {
     public ImmutableValue createStringValue(short type, String value)
 	throws DOMException {
 	if (type != CSSPrimitiveValue.CSS_IDENT ||
-            !value.equalsIgnoreCase(NORMAL)) {
+            !value.equalsIgnoreCase(CSS_NORMAL_VALUE)) {
 	    throw CSSDOMExceptionFactory.createDOMException
 		(DOMException.INVALID_ACCESS_ERR,
 		 "invalid.identifier",

@@ -358,7 +358,7 @@ public abstract class UnitProcessor {
     public static CSSPrimitiveValue getFontSize(SVGElement e,
                                                 CSSStyleDeclaration d) {
         return(CSSPrimitiveValue)d.getPropertyCSSValue
-            (CSSConstants.FONT_SIZE_PROPERTY);
+            (CSSConstants.CSS_FONT_SIZE_PROPERTY);
     }
 
     /**

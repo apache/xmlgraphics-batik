@@ -18,7 +18,7 @@ import org.w3c.css.sac.Parser;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class CommonValueFactoryMap implements ValueFactoryMap {
+public class CommonValueFactoryMap implements ValueFactoryMap, ValueConstants {
     /**
      * The implementation of the map.
      */
@@ -28,24 +28,26 @@ public class CommonValueFactoryMap implements ValueFactoryMap {
      * Creates a new ValueFactoryMap object.
      */
     public CommonValueFactoryMap(Parser p) {
-	put("clip",                  new ClipFactory(p));
-	put("color",                 new ColorFactory(p, "color"));
-	put("cursor",                new CursorFactory(p));
-	put("direction",             new DirectionFactory(p));
-	put("display",               new DisplayFactory(p));
-	put("font-family",           new FontFamilyFactory(p));
-	put("font-size",             new FontSizeFactory(p));
-	put("font-size-adjust",      new FontSizeAdjustFactory(p));
-	put("font-stretch",          new FontStretchFactory(p));
-	put("font-style",            new FontStyleFactory(p));
-	put("font-variant",          new FontVariantFactory(p));
-	put("font-weight",           new FontWeightFactory(p));
-	put("letter-spacing",        new SpacingFactory(p, "letter-spacing"));
-	put("overflow",              new OverflowFactory(p));
-	put("text-decoration",       new TextDecorationFactory(p));
-	put("unicode-bidi",          new UnicodeBidiFactory(p));
-	put("visibility",            new VisibilityFactory(p));
-	put("word-spacing",          new SpacingFactory(p, "word-spacing"));
+	put(CSS_CLIP_PROPERTY,               new ClipFactory(p));
+	put(CSS_COLOR_PROPERTY,              new ColorFactory(p, CSS_COLOR_PROPERTY));
+	put(CSS_CURSOR_PROPERTY,             new CursorFactory(p));
+	put(CSS_DIRECTION_PROPERTY,          new DirectionFactory(p));
+	put(CSS_DISPLAY_PROPERTY,            new DisplayFactory(p));
+	put(CSS_FONT_FAMILY_PROPERTY,        new FontFamilyFactory(p));
+	put(CSS_FONT_SIZE_PROPERTY,          new FontSizeFactory(p));
+	put(CSS_FONT_SIZE_ADJUST_PROPERTY,   new FontSizeAdjustFactory(p));
+	put(CSS_FONT_STRETCH_PROPERTY,       new FontStretchFactory(p));
+	put(CSS_FONT_STYLE_PROPERTY,         new FontStyleFactory(p));
+	put(CSS_FONT_VARIANT_PROPERTY,       new FontVariantFactory(p));
+	put(CSS_FONT_WEIGHT_PROPERTY,        new FontWeightFactory(p));
+	put(CSS_LETTER_SPACING_PROPERTY,     new SpacingFactory(p,
+                                                       CSS_LETTER_SPACING_PROPERTY));
+	put(CSS_OVERFLOW_PROPERTY,           new OverflowFactory(p));
+	put(CSS_TEXT_DECORATION_PROPERTY,    new TextDecorationFactory(p));
+	put(CSS_UNICODE_BIDI_PROPERTY,       new UnicodeBidiFactory(p));
+	put(CSS_VISIBILITY_PROPERTY,         new VisibilityFactory(p));
+	put(CSS_WORD_SPACING_PROPERTY,       new SpacingFactory(p,
+                                                         CSS_WORD_SPACING_PROPERTY));
     }
 
     /**

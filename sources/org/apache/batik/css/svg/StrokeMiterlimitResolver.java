@@ -24,11 +24,6 @@ import org.w3c.dom.css.ViewCSS;
  * @version $Id$
  */
 public class StrokeMiterlimitResolver implements RelativeValueResolver {
-    /**
-     * The 4 CSS value.
-     */
-    public final static CSSOMReadOnlyValue N_4 =
-        new CSSOMReadOnlyValue(StrokeMiterlimitFactory.FOUR_VALUE);
 
     /**
      * Whether the handled property is inherited or not.
@@ -41,14 +36,14 @@ public class StrokeMiterlimitResolver implements RelativeValueResolver {
      * Returns the name of the handled property.
      */
     public String getPropertyName() {
-	return "stroke-miterlimit";
+	return SVGValueConstants.CSS_STROKE_MITERLIMIT_PROPERTY;
     }
 
     /**
      * Returns the default value for the handled property.
      */
     public CSSOMReadOnlyValue getDefaultValue() {
-	return N_4;
+	return new CSSOMReadOnlyValue(SVGValueConstants.NUMBER_4);
     }
     
     /**

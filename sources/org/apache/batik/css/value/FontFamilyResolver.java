@@ -45,7 +45,7 @@ public class FontFamilyResolver implements RelativeValueResolver {
      * Returns the name of the handled property.
      */
     public String getPropertyName() {
-	return "font-family";
+	return ValueConstants.CSS_FONT_FAMILY_PROPERTY;
     }
 
     /**

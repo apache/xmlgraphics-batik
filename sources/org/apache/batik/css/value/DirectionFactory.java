@@ -18,36 +18,17 @@ import org.w3c.dom.css.CSSPrimitiveValue;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class DirectionFactory extends AbstractIdentifierFactory {
-    /**
-     * The 'ltr' string.
-     */
-    public final static String LTR = "ltr";
-
-    /**
-     * The 'ltr' keyword.
-     */
-    public final static ImmutableValue LTR_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, LTR);
-
-    /**
-     * The 'rtl' string.
-     */
-    public final static String RTL = "rtl";
-
-    /**
-     * The 'rtl' keyword.
-     */
-    public final static ImmutableValue RTL_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, RTL);
+public class DirectionFactory
+    extends    AbstractIdentifierFactory
+    implements ValueConstants {
 
     /**
      * The identifier values.
      */
     protected final static PropertyMap values = new PropertyMap();
     static {
-	values.put(LTR, LTR_VALUE);
-	values.put(RTL, RTL_VALUE);
+	values.put(CSS_LTR_VALUE, LTR_VALUE);
+	values.put(CSS_RTL_VALUE, RTL_VALUE);
     }
 
     /**
@@ -62,7 +43,7 @@ public class DirectionFactory extends AbstractIdentifierFactory {
      * Returns the name of the property handled.
      */
     public String getPropertyName() {
-	return "direction";
+	return CSS_DIRECTION_PROPERTY;
     }
     
     /**

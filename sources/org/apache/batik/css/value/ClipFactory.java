@@ -33,7 +33,7 @@ public class ClipFactory extends AbstractRectFactory {
      * Returns the name of the property handled.
      */
     public String getPropertyName() {
-	return "clip";
+	return CSS_CLIP_PROPERTY;
     }
     
     /**
@@ -45,7 +45,7 @@ public class ClipFactory extends AbstractRectFactory {
 	case LexicalUnit.SAC_INHERIT:
 	    return INHERIT;
 	case LexicalUnit.SAC_IDENT:
-	    if (!lu.getStringValue().equalsIgnoreCase(AUTO)) {
+	    if (!lu.getStringValue().equalsIgnoreCase(CSS_AUTO_VALUE)) {
 		throw CSSDOMExceptionFactory.createDOMException
 		    (DOMException.INVALID_ACCESS_ERR,
 		     "invalid.identifier",
@@ -66,7 +66,7 @@ public class ClipFactory extends AbstractRectFactory {
     public ImmutableValue createStringValue(short type, String value)
 	throws DOMException {
 	if (type != CSSPrimitiveValue.CSS_IDENT ||
-	    !value.equalsIgnoreCase(AUTO)) {
+	    !value.equalsIgnoreCase(CSS_AUTO_VALUE)) {
 	    throw CSSDOMExceptionFactory.createDOMException
 		(DOMException.INVALID_ACCESS_ERR,
 		 "invalid.identifier",

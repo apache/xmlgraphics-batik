@@ -42,7 +42,7 @@ public class SVGPathElementBridge extends SVGShapeElementBridge {
 
         // parse the fill rule CSS property
         CSSPrimitiveValue v;
-        v = (CSSPrimitiveValue)decl.getPropertyCSSValue(FILL_RULE_PROPERTY);
+        v = (CSSPrimitiveValue)decl.getPropertyCSSValue(CSS_FILL_RULE_PROPERTY);
         int wr = (CSSUtilities.rule(v) == CSSUtilities.RULE_NONZERO)
             ? PathIterator.WIND_NON_ZERO
             : PathIterator.WIND_EVEN_ODD;

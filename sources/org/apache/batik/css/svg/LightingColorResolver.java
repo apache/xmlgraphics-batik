@@ -26,20 +26,6 @@ import org.w3c.dom.css.ViewCSS;
  * @version $Id$
  */
 public class LightingColorResolver implements RelativeValueResolver {
-    /**
-     * 255.
-     */
-    protected final static ImmutableValue N_255 =
-        new ImmutableFloat(CSSPrimitiveValue.CSS_NUMBER, 255);
-
-    /**
-     * The white CSS value.
-     */
-    public final static CSSOMReadOnlyValue WHITE;
-    static {
-        CSSPrimitiveValue v = new CSSOMReadOnlyValue(N_255);
-        WHITE = new CSSOMReadOnlyValue(new ImmutableRGBColor(v, v, v));
-    }
 
     /**
      * Whether the handled property is inherited or not.
@@ -52,14 +38,17 @@ public class LightingColorResolver implements RelativeValueResolver {
      * Returns the name of the handled property.
      */
     public String getPropertyName() {
-	return "lighting-color";
+	return SVGValueConstants.CSS_LIGHTING_COLOR_PROPERTY;
     }
 
     /**
      * Returns the default value for the handled property.
      */
     public CSSOMReadOnlyValue getDefaultValue() {
-	return WHITE;
+	return new CSSOMReadOnlyValue(new ImmutableRGBColor
+                              (new CSSOMReadOnlyValue(SVGValueConstants.NUMBER_255),
+                               new CSSOMReadOnlyValue(SVGValueConstants.NUMBER_255),
+                               new CSSOMReadOnlyValue(SVGValueConstants.NUMBER_255)));
     }
     
     /**
@@ -83,7 +72,8 @@ public class LightingColorResolver implements RelativeValueResolver {
         if (im == PaintFactory.CURRENTCOLOR_VALUE) {
 	    styleDeclaration.setPropertyCSSValue
                 (getPropertyName(),
-                 styleDeclaration.getPropertyCSSValue("color"),
+                 styleDeclaration.getPropertyCSSValue
+                     (SVGValueConstants.CSS_COLOR_PROPERTY),
                  priority,
                  origin);
         }

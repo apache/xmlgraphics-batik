@@ -10,7 +10,6 @@ package org.apache.batik.css.svg;
 
 import org.apache.batik.css.CSSOMReadOnlyStyleDeclaration;
 import org.apache.batik.css.CSSOMReadOnlyValue;
-import org.apache.batik.css.value.AbstractValueFactory;
 import org.apache.batik.css.value.ImmutableValue;
 import org.apache.batik.css.value.RelativeValueResolver;
 import org.w3c.dom.Element;
@@ -24,11 +23,6 @@ import org.w3c.dom.css.ViewCSS;
  * @version $Id$
  */
 public class StrokeResolver implements RelativeValueResolver {
-    /**
-     * The none CSS value.
-     */
-    public final static CSSOMReadOnlyValue NONE =
-        new CSSOMReadOnlyValue(AbstractValueFactory.NONE_VALUE);
 
     /**
      * Whether the handled property is inherited or not.
@@ -41,14 +35,14 @@ public class StrokeResolver implements RelativeValueResolver {
      * Returns the name of the handled property.
      */
     public String getPropertyName() {
-	return "stroke";
+	return SVGValueConstants.CSS_STROKE_PROPERTY;
     }
 
     /**
      * Returns the default value for the handled property.
      */
     public CSSOMReadOnlyValue getDefaultValue() {
-	return NONE;
+	return new CSSOMReadOnlyValue(SVGValueConstants.NONE_VALUE);
     }
     
     /**
@@ -69,10 +63,11 @@ public class StrokeResolver implements RelativeValueResolver {
 			     String priority,
 			     int origin) {
         ImmutableValue im = value.getImmutableValue();
-        if (im == PaintFactory.CURRENTCOLOR_VALUE) {
+        if (im == SVGValueConstants.CURRENTCOLOR_VALUE) {
 	    styleDeclaration.setPropertyCSSValue
                 (getPropertyName(),
-                 styleDeclaration.getPropertyCSSValue("color"),
+                 styleDeclaration.getPropertyCSSValue
+                     (SVGValueConstants.CSS_COLOR_PROPERTY),
                  priority,
                  origin);
         }

@@ -19,9 +19,12 @@ import org.w3c.dom.css.CSSPrimitiveValue;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class SimpleColorFactory extends SVGColorFactory {
+public class SimpleColorFactory
+    extends    SVGColorFactory
+    implements SVGValueConstants {
+
     static {
-	values.put("currentcolor", PaintFactory.CURRENTCOLOR_VALUE);
+	values.put(CSS_CURRENTCOLOR_VALUE, CURRENTCOLOR_VALUE);
     }
 
     /**

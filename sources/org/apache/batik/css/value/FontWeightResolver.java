@@ -23,11 +23,6 @@ import org.w3c.dom.css.ViewCSS;
  * @version $Id$
  */
 public class FontWeightResolver implements RelativeValueResolver {
-    /**
-     * The medium CSS value.
-     */
-    public final static CSSOMReadOnlyValue NORMAL =
-	new CSSOMReadOnlyValue(FontWeightFactory.NORMAL_VALUE);
 
     /**
      * Whether the handled property is inherited or not.
@@ -40,14 +35,14 @@ public class FontWeightResolver implements RelativeValueResolver {
      * Returns the name of the handled property.
      */
     public String getPropertyName() {
-	return "font-weight";
+	return ValueConstants.CSS_FONT_WEIGHT_PROPERTY;
     }
 
     /**
      * Returns the default value for the handled property.
      */
     public CSSOMReadOnlyValue getDefaultValue() {
-	return NORMAL;
+	return new CSSOMReadOnlyValue(ValueConstants.NORMAL_VALUE);
     }
     
     /**
@@ -68,14 +63,14 @@ public class FontWeightResolver implements RelativeValueResolver {
 			     String priority,
 			     int origin) {
 	ImmutableValue im = value.getImmutableValue();
-	boolean b = im == FontWeightFactory.BOLDER_VALUE;
-	if (b || im == FontWeightFactory.LIGHTER_VALUE) {
+	boolean b = im == ValueConstants.BOLDER_VALUE;
+	if (b || im == ValueConstants.LIGHTER_VALUE) {
 	    Element p = HiddenChildElementSupport.getParentElement(element);
 	    CSSOMReadOnlyValue val;
 	    if (p == null) {
 		val = new CSSOMReadOnlyValue((b)
-					     ? FontWeightFactory.VALUE_500
-					     : FontWeightFactory.VALUE_300);
+					     ? ValueConstants.NUMBER_500
+					     : ValueConstants.NUMBER_300);
 	    } else {
 		CSSOMReadOnlyStyleDeclaration sd;
 		sd = (CSSOMReadOnlyStyleDeclaration)view.getComputedStyle
@@ -84,53 +79,53 @@ public class FontWeightResolver implements RelativeValueResolver {
 		prop = (CSSOMReadOnlyValue)sd.getPropertyCSSValue
                     (getPropertyName());
 		im = prop.getImmutableValue();
-		if (im == FontWeightFactory.VALUE_100) {
+		if (im == ValueConstants.NUMBER_100) {
 		    val = new CSSOMReadOnlyValue
                         ((b)
-                         ? FontWeightFactory.VALUE_200
-                         : FontWeightFactory.VALUE_100);
-		} else if (im == FontWeightFactory.VALUE_200) {
+                         ? ValueConstants.NUMBER_200
+                         : ValueConstants.NUMBER_100);
+		} else if (im == ValueConstants.NUMBER_200) {
 		    val = new CSSOMReadOnlyValue
                         ((b)
-                         ? FontWeightFactory.VALUE_300
-                         : FontWeightFactory.VALUE_100);
-		} else if (im == FontWeightFactory.VALUE_300) {
+                         ? ValueConstants.NUMBER_300
+                         : ValueConstants.NUMBER_100);
+		} else if (im == ValueConstants.NUMBER_300) {
 		    val = new CSSOMReadOnlyValue
                         ((b)
-                         ? FontWeightFactory.VALUE_400
-                         : FontWeightFactory.VALUE_200);
-		} else if (im == FontWeightFactory.VALUE_400 ||
-			   im == FontWeightFactory.NORMAL_VALUE) {
+                         ? ValueConstants.NUMBER_400
+                         : ValueConstants.NUMBER_200);
+		} else if (im == ValueConstants.NUMBER_400 ||
+			   im == ValueConstants.NORMAL_VALUE) {
 		    val = new CSSOMReadOnlyValue
                         ((b)
-                         ? FontWeightFactory.VALUE_500
-                         : FontWeightFactory.VALUE_300);
-		} else if (im == FontWeightFactory.VALUE_500) {
+                         ? ValueConstants.NUMBER_500
+                         : ValueConstants.NUMBER_300);
+		} else if (im == ValueConstants.NUMBER_500) {
 		    val = new CSSOMReadOnlyValue
                         ((b)
-                         ? FontWeightFactory.VALUE_600
-                         : FontWeightFactory.VALUE_400);
-		} else if (im == FontWeightFactory.VALUE_600) {
+                         ? ValueConstants.NUMBER_600
+                         : ValueConstants.NUMBER_400);
+		} else if (im == ValueConstants.NUMBER_600) {
 		    val = new CSSOMReadOnlyValue
                         ((b)
-                         ? FontWeightFactory.VALUE_700
-                         : FontWeightFactory.VALUE_500);
-		} else if (im == FontWeightFactory.VALUE_700 ||
-			   im == FontWeightFactory.BOLD_VALUE) {
+                         ? ValueConstants.NUMBER_700
+                         : ValueConstants.NUMBER_500);
+		} else if (im == ValueConstants.NUMBER_700 ||
+			   im == ValueConstants.BOLD_VALUE) {
 		    val = new CSSOMReadOnlyValue
                         ((b)
-                         ? FontWeightFactory.VALUE_800
-                         : FontWeightFactory.VALUE_600);
-		} else if (im == FontWeightFactory.VALUE_800) {
+                         ? ValueConstants.NUMBER_800
+                         : ValueConstants.NUMBER_600);
+		} else if (im == ValueConstants.NUMBER_800) {
 		    val = new CSSOMReadOnlyValue
                         ((b)
-                         ? FontWeightFactory.VALUE_900
-                         : FontWeightFactory.VALUE_700);
+                         ? ValueConstants.NUMBER_900
+                         : ValueConstants.NUMBER_700);
 		} else {
 		    val = new CSSOMReadOnlyValue
                         ((b)
-                         ? FontWeightFactory.VALUE_900
-                         : FontWeightFactory.VALUE_800);
+                         ? ValueConstants.NUMBER_900
+                         : ValueConstants.NUMBER_800);
 		}
 	    }
 	    styleDeclaration.setPropertyCSSValue(getPropertyName(),

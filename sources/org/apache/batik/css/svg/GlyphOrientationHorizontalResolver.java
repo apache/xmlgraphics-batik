@@ -27,17 +27,6 @@ import org.w3c.dom.css.ViewCSS;
  */
 public class GlyphOrientationHorizontalResolver
     implements RelativeValueResolver {
-    /**
-     * 0.
-     */
-    protected final static ImmutableValue N_0 =
-        new ImmutableFloat(CSSPrimitiveValue.CSS_NUMBER, 0);
-
-    /**
-     * The black CSS value.
-     */
-    public final static CSSOMReadOnlyValue BLACK =
-        new CSSOMReadOnlyValue(N_0);
 
     /**
      * Whether the handled property is inherited or not.
@@ -50,14 +39,14 @@ public class GlyphOrientationHorizontalResolver
      * Returns the name of the handled property.
      */
     public String getPropertyName() {
-	return "glyph-orientation-horizontal";
+	return SVGValueConstants.CSS_GLYPH_ORIENTATION_HORIZONTAL_PROPERTY;
     }
 
     /**
      * Returns the default value for the handled property.
      */
     public CSSOMReadOnlyValue getDefaultValue() {
-	return BLACK;
+	return new CSSOMReadOnlyValue(SVGValueConstants.NUMBER_0);
     }
     
     /**
