@@ -128,6 +128,11 @@ public class SVGTranscoder extends AbstractTranscoder {
     public final static TranscodingHints.Key KEY_SYSTEM_ID = new StringKey(1);
 
     /**
+     * The key to specify the XML declaration option.
+     */
+    public final static TranscodingHints.Key KEY_XML_DECLARATION = new StringKey(2);
+
+    /**
      * Creates a new SVGTranscoder.
      */
     public SVGTranscoder() {
@@ -198,6 +203,11 @@ public class SVGTranscoder extends AbstractTranscoder {
             s = (String)hints.get(KEY_SYSTEM_ID);
             if (s != null) {
                 pp.setSystemId(s);
+            }
+
+            s = (String)hints.get(KEY_XML_DECLARATION);
+            if (s != null) {
+                pp.setXMLDeclaration(s);
             }
 
             pp.print(in, out);

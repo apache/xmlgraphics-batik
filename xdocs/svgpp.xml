@@ -76,6 +76,7 @@
                         <li><em>-tab-width &lt;number&gt;</em> lets you select the tabulation width. The default value is 4.</li>
                         <li><em>-doc-width &lt;number&gt;</em> lets you select the document preferred number of columns. The default value is 80.</li>
                         <li><em>-no-format</em> lets you preserve the actual indentation. This option is useful to perform doctype or newline substitutions.</li>
+                        <li><em>-xml-decl &lt;string&gt;</em> lets you set the XML declaration.</li>
                         <li><em>-doctype &lt;change | remove&gt;</em> lets you change or remove the doctype of the document.</li>
                         <li><em>-public-id &lt;string&gt;</em> lets you specify a public id to use when writing the document. This option is ignored unless '-doctype change' is specified.</li>
                         <li><em>-system-id &lt;string&gt;</em> lets you specify a system id to use when writing the document. This option is ignored unless '-doctype change' is specified.</li>

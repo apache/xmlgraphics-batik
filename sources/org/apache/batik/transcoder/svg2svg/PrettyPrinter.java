@@ -93,6 +93,18 @@ public class PrettyPrinter {
     protected String systemId;
 
     /**
+     * The XML declaration.
+     */
+    protected String xmlDeclaration;
+
+    /**
+     * Sets the XML declaration text.
+     */
+    public void setXMLDeclaration(String s) {
+        xmlDeclaration = s;
+    }
+
+    /**
      * Sets the doctype option.
      */
     public void setDoctypeOption(int i) {
@@ -260,127 +272,215 @@ public class PrettyPrinter {
         throws TranscoderException,
                LexicalException,
                IOException {
-        int t = scanner.currentType();
-        if (t == LexicalUnits.XML_DECL_START) {
-            if (scanner.next() != LexicalUnits.S) {
-                throw fatalError("space", null);
-            }
-            char[] space1 = scanner.currentValue();
-
-            if (scanner.next() != LexicalUnits.VERSION_IDENTIFIER) {
-                throw fatalError("token", new Object[] { "version" });
-            }
-            t = scanner.next();
-
-            char[] space2 = null;
-            if (t == LexicalUnits.S) {
-                space2 = scanner.currentValue();
-                t = scanner.next();
-            }
-            if (t != LexicalUnits.EQ) {
-                throw fatalError("token", new Object[] { "=" });
-            }
-            t = scanner.next();
-
-            char[] space3 = null;
-            if (t == LexicalUnits.S) {
-                space3 = scanner.currentValue();
-                t = scanner.next();
-            }
-
-            if (t != LexicalUnits.STRING) {
-                throw fatalError("string", null);
-            }
-
-            char[] version = scanner.currentValue();
-            char versionDelim = scanner.getStringDelimiter();
-
-            char[] space4 = null;
-            char[] space5 = null;
-            char[] space6 = null;
-            char[] encoding = null;
-            char encodingDelim = 0;
-            char[] space7 = null;
-            char[] space8 = null;
-            char[] space9 = null;
-            char[] standalone = null;
-            char standaloneDelim = 0;
-            char[] space10 = null;
-
-            t = scanner.next();
-            if (t == LexicalUnits.S) {
-                space4 = scanner.currentValue();
-                t = scanner.next();
-
-                if (t == LexicalUnits.ENCODING_IDENTIFIER) {
-                    t = scanner.next();
-                    if (t == LexicalUnits.S) {
-                        space5 = scanner.currentValue();
-                        t = scanner.next();
-                    }
-                    if (t != LexicalUnits.EQ) {
-                        throw fatalError("token", new Object[] { "=" });
-                    }
-                    t = scanner.next();
-                    if (t == LexicalUnits.S) {
-                        space6 = scanner.currentValue();
-                        t = scanner.next();
-                    }
-                    if (t != LexicalUnits.STRING) {
-                        throw fatalError("string", null);
-                    }
-
-                    encoding = scanner.currentValue();
-                    encodingDelim = scanner.getStringDelimiter();
-
-                    t = scanner.next();
-                    if (t == LexicalUnits.S) {
-                        space7 = scanner.currentValue();
-                        t = scanner.next();
-                    }
+        if (xmlDeclaration == null) {
+            int t = scanner.currentType();
+            if (t == LexicalUnits.XML_DECL_START) {
+                if (scanner.next() != LexicalUnits.S) {
+                    throw fatalError("space", null);
                 }
+                char[] space1 = scanner.currentValue();
+                
+                if (scanner.next() != LexicalUnits.VERSION_IDENTIFIER) {
+                    throw fatalError("token", new Object[] { "version" });
+                }
+                t = scanner.next();
             
-                if (t == LexicalUnits.STANDALONE_IDENTIFIER) {
+                char[] space2 = null;
+                if (t == LexicalUnits.S) {
+                    space2 = scanner.currentValue();
                     t = scanner.next();
-                    if (t == LexicalUnits.S) {
-                        space8 = scanner.currentValue();
-                        t = scanner.next();
-                    }
-                    if (t != LexicalUnits.EQ) {
-                        throw fatalError("token", new Object[] { "=" });
-                    }
+                }
+                if (t != LexicalUnits.EQ) {
+                    throw fatalError("token", new Object[] { "=" });
+                }
+                t = scanner.next();
+                
+                char[] space3 = null;
+                if (t == LexicalUnits.S) {
+                    space3 = scanner.currentValue();
                     t = scanner.next();
-                    if (t == LexicalUnits.S) {
-                        space9 = scanner.currentValue();
-                        t = scanner.next();
-                    }
-                    if (t != LexicalUnits.STRING) {
-                        throw fatalError("string", null);
-                    }
+                }
+                
+                if (t != LexicalUnits.STRING) {
+                    throw fatalError("string", null);
+                }
 
-                    standalone = scanner.currentValue();
-                    standaloneDelim = scanner.getStringDelimiter();
+                char[] version = scanner.currentValue();
+                char versionDelim = scanner.getStringDelimiter();
 
+                char[] space4 = null;
+                char[] space5 = null;
+                char[] space6 = null;
+                char[] encoding = null;
+                char encodingDelim = 0;
+                char[] space7 = null;
+                char[] space8 = null;
+                char[] space9 = null;
+                char[] standalone = null;
+                char standaloneDelim = 0;
+                char[] space10 = null;
+                
+                t = scanner.next();
+                if (t == LexicalUnits.S) {
+                    space4 = scanner.currentValue();
                     t = scanner.next();
-                    if (t == LexicalUnits.S) {
-                        space10 = scanner.currentValue();
+                    
+                    if (t == LexicalUnits.ENCODING_IDENTIFIER) {
                         t = scanner.next();
+                        if (t == LexicalUnits.S) {
+                            space5 = scanner.currentValue();
+                            t = scanner.next();
+                        }
+                        if (t != LexicalUnits.EQ) {
+                            throw fatalError("token", new Object[] { "=" });
+                        }
+                        t = scanner.next();
+                        if (t == LexicalUnits.S) {
+                            space6 = scanner.currentValue();
+                            t = scanner.next();
+                        }
+                        if (t != LexicalUnits.STRING) {
+                            throw fatalError("string", null);
+                        }
+
+                        encoding = scanner.currentValue();
+                        encodingDelim = scanner.getStringDelimiter();
+
+                        t = scanner.next();
+                        if (t == LexicalUnits.S) {
+                            space7 = scanner.currentValue();
+                            t = scanner.next();
+                        }
+                    }
+            
+                    if (t == LexicalUnits.STANDALONE_IDENTIFIER) {
+                        t = scanner.next();
+                        if (t == LexicalUnits.S) {
+                            space8 = scanner.currentValue();
+                            t = scanner.next();
+                        }
+                        if (t != LexicalUnits.EQ) {
+                            throw fatalError("token", new Object[] { "=" });
+                        }
+                        t = scanner.next();
+                        if (t == LexicalUnits.S) {
+                            space9 = scanner.currentValue();
+                            t = scanner.next();
+                        }
+                        if (t != LexicalUnits.STRING) {
+                            throw fatalError("string", null);
+                        }
+                        
+                        standalone = scanner.currentValue();
+                        standaloneDelim = scanner.getStringDelimiter();
+                        
+                        t = scanner.next();
+                        if (t == LexicalUnits.S) {
+                            space10 = scanner.currentValue();
+                            t = scanner.next();
+                        }
                     }
                 }
-            }
-            if (t != LexicalUnits.PI_END) {
-                throw fatalError("pi.end", null);
-            }
+                if (t != LexicalUnits.PI_END) {
+                    throw fatalError("pi.end", null);
+                }
 
-            output.printXMLDecl(space1, space2, space3,
-                                version, versionDelim,
-                                space4, space5, space6,
-                                encoding, encodingDelim,
-                                space7, space8, space9,
-                                standalone, standaloneDelim,
-                                space10);
+                output.printXMLDecl(space1, space2, space3,
+                                    version, versionDelim,
+                                    space4, space5, space6,
+                                    encoding, encodingDelim,
+                                    space7, space8, space9,
+                                    standalone, standaloneDelim,
+                                    space10);
 
-            scanner.next();
+                scanner.next();
+            }
+        } else {
+            output.printString(xmlDeclaration);
+            output.printNewline();
+
+            int t = scanner.currentType();
+            if (t == LexicalUnits.XML_DECL_START) {
+                // Skip the XML declaraction.
+                if (scanner.next() != LexicalUnits.S) {
+                    throw fatalError("space", null);
+                }
+                
+                if (scanner.next() != LexicalUnits.VERSION_IDENTIFIER) {
+                    throw fatalError("token", new Object[] { "version" });
+                }
+                t = scanner.next();
+            
+                if (t == LexicalUnits.S) {
+                    t = scanner.next();
+                }
+                if (t != LexicalUnits.EQ) {
+                    throw fatalError("token", new Object[] { "=" });
+                }
+                t = scanner.next();
+                
+                if (t == LexicalUnits.S) {
+                    t = scanner.next();
+                }
+                
+                if (t != LexicalUnits.STRING) {
+                    throw fatalError("string", null);
+                }
+
+                t = scanner.next();
+                if (t == LexicalUnits.S) {
+                    t = scanner.next();
+                    
+                    if (t == LexicalUnits.ENCODING_IDENTIFIER) {
+                        t = scanner.next();
+                        if (t == LexicalUnits.S) {
+                            t = scanner.next();
+                        }
+                        if (t != LexicalUnits.EQ) {
+                            throw fatalError("token", new Object[] { "=" });
+                        }
+                        t = scanner.next();
+                        if (t == LexicalUnits.S) {
+                            t = scanner.next();
+                        }
+                        if (t != LexicalUnits.STRING) {
+                            throw fatalError("string", null);
+                        }
+
+                        t = scanner.next();
+                        if (t == LexicalUnits.S) {
+                            t = scanner.next();
+                        }
+                    }
+            
+                    if (t == LexicalUnits.STANDALONE_IDENTIFIER) {
+                        t = scanner.next();
+                        if (t == LexicalUnits.S) {
+                            t = scanner.next();
+                        }
+                        if (t != LexicalUnits.EQ) {
+                            throw fatalError("token", new Object[] { "=" });
+                        }
+                        t = scanner.next();
+                        if (t == LexicalUnits.S) {
+                            t = scanner.next();
+                        }
+                        if (t != LexicalUnits.STRING) {
+                            throw fatalError("string", null);
+                        }
+                        
+                        t = scanner.next();
+                        if (t == LexicalUnits.S) {
+                            t = scanner.next();
+                        }
+                    }
+                }
+                if (t != LexicalUnits.PI_END) {
+                    throw fatalError("pi.end", null);
+                }
+
+                scanner.next();
+            }
         }
     }
 
