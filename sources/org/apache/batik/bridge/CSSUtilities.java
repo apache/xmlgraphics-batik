@@ -659,7 +659,7 @@ public class CSSUtilities implements SVGConstants {
         MarkerBridge markerBridge = (MarkerBridge)bridge;
         SVGOMDocument doc = (SVGOMDocument)markerElement.getOwnerDocument();
         ViewCSS v = ctx.getViewCSS();
-        ctx.setViewCSS((ViewCSS)doc.getDefaultView());
+        // ctx.setViewCSS((ViewCSS)doc.getDefaultView());
         Marker marker = markerBridge.buildMarker(ctx, 
                                                  markerElement,
                                                  paintedElement);
