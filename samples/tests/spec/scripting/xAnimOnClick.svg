@@ -26,16 +26,26 @@
 
     <script type="text/ecmascript">
 
+    var r;
+    var doc;
+    var t;
+    var start;
+    var end;
+    var inc;
+    var frac;    
+
     function moveToX(evt, target, val){
-        var r = evt.getTarget();
-        var doc = r.getOwnerDocument();
-        var t = doc.getElementById(target);
-        var start = parseInt(t.getAttribute('x'));
-        cyclopse(t, start, val, 1, 1);
+        r = evt.target;
+        doc = r.ownerDocument;
+        t = doc.getElementById(target);
+        start = parseInt(t.getAttribute('x'));
+        end = val;
+        inc = 1;
+        frac = 1;
+        cyclopse();
     }
 
-    function cyclopse(t, start, end, frac, inc) {
-        while (1) {
+    function cyclopse() {
         t.setAttribute('x', (end-start)*frac/100+start);
         if (frac == 100) {
           inc = -1;
@@ -43,7 +53,7 @@
           inc = 1;
         }
         frac += inc;
-        }
+        setTimeout('cyclopse()', 50);
     }
 
     </script>

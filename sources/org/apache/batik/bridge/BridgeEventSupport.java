@@ -306,13 +306,32 @@ class BridgeEventSupport implements SVGConstants {
 
     public static void loadScripts(BridgeContext ctx, Element element) {
         UpdateManager um = ctx.getUpdateManager();
-        RunnableQueue rq = um.getScriptingRunnableQueue();
-        Document doc = um.getScriptingDocument();
+        Document doc = um.getDocument();
         NodeList list = element.getElementsByTagNameNS(SVG_NAMESPACE_URI,
                                                        SVG_SCRIPT_TAG);
         final UserAgent ua = ctx.getUserAgent();
         String language = null;
         Element selement = null;
+        final ScriptingEnvironment se = ctx.getUpdateManager().
+            getScriptingEnvironment();
+
+	// add a function definition 'alert'
+	final Interpreter inter =
+	    ctx.getInterpreterPool().getInterpreter(doc, "text/ecmascript");
+	if (inter != null) {
+            try {
+                javax.swing.JOptionPane pane = new javax.swing.JOptionPane();
+                inter.bindObject("pane", pane);
+                inter.evaluate("function alert(msg) { pane.showMessageDialog(null, msg); }");
+                
+                inter.bindObject("scriptEnv", se);
+                inter.evaluate("function setTimeout(s, t) { scriptEnv.pauseScript(t); scriptEnv.runScript(s, 'text/ecmascript', null); }");
+            } catch (Exception ex) {
+                // nothing to do
+                ex.printStackTrace();
+            }
+	}
+
         for (int i = 0; i < list.getLength(); i++) {
             language = (selement = (Element)list.item(i)).
                 getAttribute("type");
@@ -324,22 +343,18 @@ class BridgeEventSupport implements SVGConstants {
                      n = n.getNextSibling()) {
                     script.append(n.getNodeValue());
                 }
-                rq.invokeLater(new Runnable() {
-                        public void run() {
-                            try {
-                                // use Reader mechanism => no caching
-                                // (will not be revaluated + <script> content is
-                                // generally bigger than the one in event attributes
-                                interpret.evaluate(new StringReader(script.toString()));
-                            } catch (IOException io) {
-                                // will never appeared we don't use a file
-                            } catch (InterpreterException e) {
-                                if (ua != null)
-                                    ua.displayError(new Exception("scripting error: "+
-                                                                  e.getMessage()));
-                            }
-                        }
-                    });
+                try {
+                    // use Reader mechanism => no caching
+                    // (will not be revaluated + <script> content is
+                    // generally bigger than the one in event attributes
+                    interpret.evaluate(new StringReader(script.toString()));
+                } catch (IOException io) {
+                    // will never appeared we don't use a file
+                } catch (InterpreterException e) {
+                    if (ua != null)
+                        ua.displayError(new Exception("scripting error: "+
+                                                      e.getMessage()));
+                }
             } else {
                 if (ua != null) {
                     ua.displayError(new Exception("unknown language: "+language));
@@ -347,22 +362,6 @@ class BridgeEventSupport implements SVGConstants {
 	    }
 	}
 
-	// add a function definition 'alert'
-	final Interpreter interpret =
-	    ctx.getInterpreterPool().getInterpreter(doc, language);
-	if (interpret != null) {
-            rq.invokeLater(new Runnable() {
-                    public void run() {
-                        try {
-                            javax.swing.JOptionPane pane = new javax.swing.JOptionPane();
-                            interpret.bindObject("pane", pane);
-                            interpret.evaluate("function alert(msg) { pane.showMessageDialog(null, msg); }");
-                        } catch (Exception ex) {
-                            // nothing to do
-                        }
-                    }
-                });
-	}
    }
 
     private static class GVTUnloadListener
@@ -507,7 +506,6 @@ class BridgeEventSupport implements SVGConstants {
         private static String EVENT_NAME = "evt";
 
         private String script = null;
-        private UserAgent ua = null;
         private BridgeContext context;
         private String language;
 
@@ -515,38 +513,14 @@ class BridgeEventSupport implements SVGConstants {
                             String str,
                             String lang) {
             script = str;
-            context = ctx;
             language = lang;
-            ua = ctx.getUserAgent();
+            context = ctx;
         }
 
         public void handleEvent(Event evt) {
-            UpdateManager um = context.getUpdateManager();
-            final DocumentWrapper dw = um.getScriptingDocument();
-            RunnableQueue rq = um.getScriptingRunnableQueue();
-            final Interpreter interpreter = context.getInterpreterPool().
-                getInterpreter(dw, language);
-            if (interpreter == null) {
-                if (ua != null)
-                    ua.displayError(new Exception("unknow language: "+
-                                                  language));
-                return;
-            }
-            final Event ev = dw.createEventWrapper(evt);
-            rq.invokeLater(new Runnable() {
-                    public void run() {
-                        interpreter.bindObject(EVENT_NAME, ev);
-                        try {
-                            // use the String version to enable caching mechanism
-                            interpreter.evaluate(script);
-                        } catch (InterpreterException e) {
-                            Exception ex = e.getException();
-                            if (ua != null) {
-                                ua.displayError((ex != null) ? ex : e);
-                            }
-                        }
-                    }
-                });
+            ScriptingEnvironment se =
+                context.getUpdateManager().getScriptingEnvironment();
+            se.runScript(script, language, evt);
         }
     }
 }

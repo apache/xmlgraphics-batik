@@ -67,19 +67,9 @@ public class UpdateManager implements RunnableQueue.RunHandler {
     protected ImageRenderer renderer;
 
     /**
-     * The document usable from the scripting thread.
-     */
-    protected DocumentWrapper scriptingDocument;
-
-    /**
      * The update RunnableQueue.
      */
     protected RunnableQueue updateRunnableQueue;
-
-    /**
-     * The scripting RunnableQueue.
-     */
-    protected RunnableQueue scriptingRunnableQueue;
 
     /**
      * The initial time.
@@ -99,7 +89,7 @@ public class UpdateManager implements RunnableQueue.RunHandler {
     /**
      * Whether the update manager is running.
      */
-    protected boolean running;
+    protected volatile boolean running;
 
     /**
      * The listeners.
@@ -112,9 +102,19 @@ public class UpdateManager implements RunnableQueue.RunHandler {
     protected long startingTime;
 
     /**
+     * The scripting environment.
+     */
+    protected ScriptingEnvironment scriptingEnvironment;
+
+    /**
      * The repaint manager.
      */
     protected RepaintManager repaintManager;
+
+    /**
+     * The repaint-rate manager.
+     */
+    protected RepaintRateManager repaintRateManager;
 
     /**
      * The update tracker.
@@ -139,15 +139,16 @@ public class UpdateManager implements RunnableQueue.RunHandler {
         renderer = r;
 
         updateRunnableQueue = RunnableQueue.createRunnableQueue();
-        scriptingRunnableQueue = RunnableQueue.createRunnableQueue();
-
         updateRunnableQueue.setRunHandler(this);
 
+        /*
         DOMImplementationWrapper iw;
         iw = new DOMImplementationWrapper(updateRunnableQueue,
                                           scriptingRunnableQueue,
                                           document.getImplementation());
+
         scriptingDocument = new DocumentWrapper(iw, document);
+        */
 
         updateTracker = new UpdateTracker();
 
@@ -157,7 +158,16 @@ public class UpdateManager implements RunnableQueue.RunHandler {
         }
 
         repaintManager = new RepaintManager(this);
-        repaintManager.start();
+        repaintRateManager = new RepaintRateManager(this);
+        repaintRateManager.start();
+        scriptingEnvironment = new ScriptingEnvironment(this);
+    }
+
+    /**
+     * Returns the bridge context.
+     */
+    public BridgeContext getBridgeContext() {
+        return bridgeContext;
     }
 
     /**
@@ -165,13 +175,6 @@ public class UpdateManager implements RunnableQueue.RunHandler {
      */
     public RunnableQueue getUpdateRunnableQueue() {
         return updateRunnableQueue;
-    }
-
-    /**
-     * Returns the scripting RunnableQueue.
-     */
-    public RunnableQueue getScriptingRunnableQueue() {
-        return scriptingRunnableQueue;
     }
 
     /**
@@ -189,10 +192,17 @@ public class UpdateManager implements RunnableQueue.RunHandler {
     }
 
     /**
-     * Returns a Document usable from the scripting thread.
+     * Returns the current Document.
      */
-    public DocumentWrapper getScriptingDocument() {
-        return scriptingDocument;
+    public Document getDocument() {
+        return document;
+    }
+
+    /**
+     * Returns the scripting environment.
+     */
+    public ScriptingEnvironment getScriptingEnvironment() {
+        return scriptingEnvironment;
     }
 
     /**
@@ -217,20 +227,20 @@ public class UpdateManager implements RunnableQueue.RunHandler {
      * Suspends the update manager.
      */
     public void suspend() {
-        scriptingRunnableQueue.suspendExecution(true);
-        updateRunnableQueue.suspendExecution(true);
-        running = false;
-        suspendStartTime = System.currentTimeMillis();
+        if (running) {
+            running = false;
+            updateRunnableQueue.suspendExecution(false);
+        }
     }
 
     /**
      * Resumes the update manager.
      */
     public void resume() {
-        scriptingRunnableQueue.resumeExecution();
-        updateRunnableQueue.resumeExecution();
-        running = true;
-        suspendedTime = System.currentTimeMillis() - suspendStartTime;
+        if (!running) {
+            running = true;
+            updateRunnableQueue.resumeExecution();
+        }
     }
 
     /**
@@ -240,7 +250,6 @@ public class UpdateManager implements RunnableQueue.RunHandler {
      */
     public void dispatchSVGLoad() {
         updateRunnableQueue.resumeExecution();
-        scriptingRunnableQueue.resumeExecution();
 
         updateRunnableQueue.invokeLater(new Runnable() {
                 public void run() {
@@ -268,23 +277,18 @@ public class UpdateManager implements RunnableQueue.RunHandler {
      * NOTE: this method must be called outside the update thread.
      */
     public void dispatchSVGUnLoad() {
-        try {
-            updateRunnableQueue.invokeAndWait(new Runnable() {
-                    public void run() {
-                        Event evt = ((DocumentEvent)document).createEvent("SVGEvents");
-                        evt.initEvent("SVGUnload", false, false);
-                        ((EventTarget)(document.getDocumentElement())).
-                            dispatchEvent(evt);
-                        running = false;
-
-                        fireManagerStoppedEvent();
-                    }
-                });
-        } catch (InterruptedException e) {
-        }
-        repaintManager.interrupt();
-        scriptingRunnableQueue.getThread().interrupt();
-        updateRunnableQueue.getThread().interrupt();
+        resume();
+        updateRunnableQueue.invokeLater(new Runnable() {
+                public void run() {
+                    Event evt = ((DocumentEvent)document).createEvent("SVGEvents");
+                    evt.initEvent("SVGUnload", false, false);
+                    ((EventTarget)(document.getDocumentElement())).
+                        dispatchEvent(evt);
+                    running = false;
+                    
+                    fireManagerStoppedEvent();
+                }
+            });
     }
 
     /**
@@ -340,6 +344,7 @@ public class UpdateManager implements RunnableQueue.RunHandler {
             }
 
             renderer.repaint(areas);
+
             fireCompletedEvent(renderer.getOffScreen(), rects);
         } catch (Exception e) {
             fireFailedEvent();
@@ -386,6 +391,8 @@ public class UpdateManager implements RunnableQueue.RunHandler {
                 ((UpdateManagerListener)dll[i]).managerStopped(ev);
             }
         }
+        repaintRateManager.interrupt();
+        updateRunnableQueue.getThread().interrupt();
     }
 
     /**
@@ -406,6 +413,7 @@ public class UpdateManager implements RunnableQueue.RunHandler {
      * Fires a UpdateManagerEvent to notify that the manager was resumed.
      */
     protected void fireManagerResumedEvent() {
+        suspendedTime = System.currentTimeMillis() - suspendStartTime;
         Object[] dll = listeners.toArray();
 
         if (dll.length > 0) {
@@ -471,14 +479,26 @@ public class UpdateManager implements RunnableQueue.RunHandler {
      * Called when the execution of the queue has been suspended.
      */
     public void executionSuspended(RunnableQueue rq) {
-        fireManagerSuspendedEvent();
+        if (!running) {
+            suspendStartTime = System.currentTimeMillis();
+            if (scriptingEnvironment != null) {
+                scriptingEnvironment.suspendScripts();
+            }
+            fireManagerSuspendedEvent();
+        }
     }
 
     /**
      * Called when the execution of the queue has been resumed.
      */
     public void executionResumed(RunnableQueue rq) {
-        fireManagerResumedEvent();
+        if (running) {
+            suspendedTime = System.currentTimeMillis() - suspendStartTime;
+            fireManagerResumedEvent();
+            if (scriptingEnvironment != null) {
+                scriptingEnvironment.resumeScripts();
+            }
+        }
     }
 
     //

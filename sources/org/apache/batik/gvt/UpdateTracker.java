@@ -28,7 +28,7 @@ import org.apache.batik.gvt.event.GraphicsNodeChangeEvent;
 /**
  * This class tracks the changes on a GVT tree
  *
- * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
+ * @author <a href="mailto:Thomas.DeWeeese@Kodak.com">Thomas DeWeese</a>
  * @version $Id$
  */
 public class UpdateTracker extends GraphicsNodeChangeAdapter {

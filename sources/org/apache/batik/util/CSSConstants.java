@@ -57,6 +57,7 @@ public interface CSSConstants {
     String CSS_GLYPH_ORIENTATION_HORIZONTAL_PROPERTY = "glyph-orientation-horizontal";
     String CSS_GLYPH_ORIENTATION_VERTICAL_PROPERTY = "glyph-orientation-vertical";
     String CSS_IMAGE_RENDERING_PROPERTY = "image-rendering";
+    String CSS_KERNING_PROPERTY = "kerning";
     String CSS_LETTER_SPACING_PROPERTY = "letter-spacing";
     String CSS_LIGHTING_COLOR_PROPERTY = "lighting-color";
     String CSS_MARKER_PROPERTY = "marker";
