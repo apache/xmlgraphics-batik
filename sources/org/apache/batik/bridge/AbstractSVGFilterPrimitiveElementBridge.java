@@ -17,6 +17,8 @@ import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.renderable.FilterAlphaRable;
 import org.apache.batik.ext.awt.image.renderable.FilterColorInterpolation;
 import org.apache.batik.ext.awt.image.renderable.FloodRable8Bit;
+import org.apache.batik.ext.awt.image.PadMode;
+import org.apache.batik.ext.awt.image.renderable.PadRable8Bit;
 
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.BackgroundRable8Bit;
@@ -153,20 +155,24 @@ public abstract class AbstractSVGFilterPrimitiveElementBridge
                                   Map filterMap,
                                   BridgeContext ctx) {
 
+        // SourceGraphic
+        Filter srcG = (Filter)filterMap.get(SVG_SOURCE_GRAPHIC_VALUE);
+        Rectangle2D filterRegion = srcG.getBounds2D();
+
         int length = s.length();
         Filter source = null;
         switch (length) {
         case 13:
             if (SVG_SOURCE_GRAPHIC_VALUE.equals(s)) {
                 // SourceGraphic
-                source = (Filter)filterMap.get(SVG_SOURCE_GRAPHIC_VALUE);
+                source = srcG;
             }
             break;
         case 11:
             if (s.charAt(1) == SVG_SOURCE_ALPHA_VALUE.charAt(1)) {
                 if (SVG_SOURCE_ALPHA_VALUE.equals(s)) {
                     // SourceAlpha
-                    source = (Filter)filterMap.get(SVG_SOURCE_GRAPHIC_VALUE);
+                    source = srcG;
                     source = new FilterAlphaRable(source);
                 }
             } else if (SVG_STROKE_PAINT_VALUE.equals(s)) {
@@ -174,7 +180,7 @@ public abstract class AbstractSVGFilterPrimitiveElementBridge
                     Paint paint = PaintServer.convertStrokePaint
                         (filteredElement,filteredNode, ctx);
                     // <!> FIXME: Should we create a transparent flood ???
-                    source = new FloodRable8Bit(INFINITE_FILTER_REGION, paint);
+                    source = new FloodRable8Bit(filterRegion, paint);
             }
             break;
         case 15:
@@ -182,11 +188,15 @@ public abstract class AbstractSVGFilterPrimitiveElementBridge
                 if (SVG_BACKGROUND_IMAGE_VALUE.equals(s)) {
                     // BackgroundImage
                     source = new BackgroundRable8Bit(filteredNode);
+                    source = new PadRable8Bit(source, filterRegion, 
+                                              PadMode.ZERO_PAD);
                 }
             } else if (SVG_BACKGROUND_ALPHA_VALUE.equals(s)) {
                 // BackgroundAlpha
                 source = new BackgroundRable8Bit(filteredNode);
                 source = new FilterAlphaRable(source);
+                source = new PadRable8Bit(source, filterRegion, 
+                                          PadMode.ZERO_PAD);
             }
             break;
         case 9:
@@ -197,7 +207,7 @@ public abstract class AbstractSVGFilterPrimitiveElementBridge
                 if (paint == null) {
                     paint = new Color(0, 0, 0, 0); // create a transparent flood
                 }
-                source = new FloodRable8Bit(INFINITE_FILTER_REGION, paint);
+                source = new FloodRable8Bit(filterRegion, paint);
             }
             break;
         }
