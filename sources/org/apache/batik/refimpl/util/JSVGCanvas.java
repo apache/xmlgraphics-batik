@@ -547,6 +547,7 @@ public class JSVGCanvas
         rotateAngle = 0;
         rotateCos = 1;
         previousRotateTransform = null;
+        rotateTransform = null;
         if (zoomHandler != null) {
             zoomHandler.zoomChanged(1);
         }
@@ -1180,6 +1181,7 @@ public class JSVGCanvas
             rotateAngle = 0;
             rotateCos = 1;
             previousRotateTransform = null;
+            rotateTransform = null;
             if (zoomHandler != null) {
                 zoomHandler.zoomChanged(1);
             }
@@ -1199,6 +1201,7 @@ public class JSVGCanvas
             rotateAngle = 0;
             rotateCos = 1;
             previousRotateTransform = null;
+            rotateTransform = null;
             if (zoomHandler != null) {
                 zoomHandler.zoomChanged(1);
             }
