@@ -40,6 +40,7 @@ import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.TextNode;
 import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
+import org.apache.batik.gvt.text.TextPath;
 import org.apache.batik.gvt.font.GVTFontFamily;
 import org.apache.batik.gvt.font.UnresolvedFontFamily;
 
@@ -63,6 +64,7 @@ public class SVGTextElementBridge extends AbstractSVGBridge
      * Constructs a new bridge for the &lt;text> element.
      */
     public SVGTextElementBridge() {}
+
 
     /**
      * Returns 'text'.
@@ -198,7 +200,7 @@ public class SVGTextElementBridge extends AbstractSVGBridge
 
         AttributedString result = null;
         List l = buildAttributedStrings
-            (ctx, element, node, true, new LinkedList());
+            (ctx, element, node, true, null, new LinkedList());
 
         // Simple cases
         switch (l.size()) {
@@ -264,10 +266,11 @@ public class SVGTextElementBridge extends AbstractSVGBridge
                                           Element element,
                                           GraphicsNode node,
                                           boolean top,
+                                          TextPath textPath,
                                           LinkedList result) {
 
         // !!! return two lists
-        Map m = getAttributeMap(ctx, element, node);
+        Map m = getAttributeMap(ctx, element, node, textPath);
         String s = XMLSupport.getXMLSpace(element);
         boolean preserve = s.equals(SVG_PRESERVE_VALUE);
         boolean first = true;
@@ -306,14 +309,28 @@ public class SVGTextElementBridge extends AbstractSVGBridge
                                            nodeElement,
                                            node,
                                            false,
+                                           textPath,
                                            result);
+
+                } else if (n.getLocalName().equals(SVG_TEXT_PATH_TAG)) {
+
+                    SVGTextPathElementBridge textPathBridge = (SVGTextPathElementBridge)ctx.getBridge(nodeElement);
+                    TextPath newTextPath = textPathBridge.createTextPath(ctx, nodeElement);
+                    if (newTextPath != null) {
+                        buildAttributedStrings(ctx,
+                                           nodeElement,
+                                           node,
+                                           false,
+                                           newTextPath,
+                                           result);
+                    }
 
                 } else if (n.getLocalName().equals(SVG_TREF_TAG)) {
 
                     String uriStr = XLinkSupport.getXLinkHref((Element)n);
                     Element ref = ctx.getReferencedElement((Element)n, uriStr);
                     s = getElementContent(ref);
-                    Map map = getAttributeMap(ctx, nodeElement, node);
+                    Map map = getAttributeMap(ctx, nodeElement, node, textPath);
                     int[] indexMap = new int[s.length()];
                     as = createAttributedString(s, map, indexMap, preserve,
                                                 stripFirst, last && top);
@@ -575,7 +592,8 @@ public class SVGTextElementBridge extends AbstractSVGBridge
      */
     protected Map getAttributeMap(BridgeContext ctx,
                                   Element element,
-                                  GraphicsNode node) {
+                                  GraphicsNode node,
+                                  TextPath textPath) {
 
         CSSOMReadOnlyStyleDeclaration cssDecl
             = CSSUtilities.getComputedStyle(element);
@@ -588,6 +606,15 @@ public class SVGTextElementBridge extends AbstractSVGBridge
         short t;
 
         result.put(GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER, element);
+
+        if (element.getTagName().equals(SVG_ALT_GLYPH_TAG)) {
+            result.put(GVTAttributedCharacterIterator.TextAttribute.ALT_GLYPH_HANDLER,
+                       new SVGAltGlyphHandler(ctx, element));
+        }
+
+        if (textPath != null) {
+            result.put(GVTAttributedCharacterIterator.TextAttribute.TEXTPATH, textPath);
+        }
 
         // Text-anchor
         v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValueInternal
@@ -750,12 +777,6 @@ public class SVGTextElementBridge extends AbstractSVGBridge
                 = SVGFontUtilities.getFontFamily(element, ctx, fontFamilyName,
                    fontWeightString, fontStyleString);
             fontFamilyList.add(fontFamily);
-         /*  if (fontFamily instanceof SVGFontFamily) {
-                System.out.println(fontFamilyName + " : SVGGVTFontFamily");
-            } else {
-                System.out.println(fontFamilyName + " : UnresolvedFontFamily");
-            }
-*/
         }
         result.put(GVTAttributedCharacterIterator.TextAttribute.GVT_FONT_FAMILIES,
                    fontFamilyList);

@@ -25,18 +25,18 @@ import java.awt.font.FontRenderContext;
  */
 public class TextHit {
 
-    private int charIndex;
+    private int glyphIndex;
     private boolean leadingEdge;
     private TextNode textNode;
     private FontRenderContext frc;
 
-    public TextHit(int charIndex, boolean leadingEdge) {
-        this.charIndex = charIndex;
+    public TextHit(int glyphIndex, boolean leadingEdge) {
+        this.glyphIndex = glyphIndex;
         this.leadingEdge = leadingEdge;
     }
 
-    public int getCharIndex() {
-        return charIndex;
+    public int getGlyphIndex() {
+        return glyphIndex;
     }
 
     public boolean isLeadingEdge() {
@@ -44,7 +44,7 @@ public class TextHit {
     }
 
     public int getInsertionIndex() {
-        int i = getCharIndex();
+        int i = getGlyphIndex();
         if (!leadingEdge) {
             ++i;
         }

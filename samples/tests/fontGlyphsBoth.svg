@@ -62,7 +62,7 @@
              units-per-em="2048"
              panose-1="3 15 7 2 3 3 2 2 2 4"
              ascent="2257"
-             descent="-597"
+             descent="597"
              baseline="0"/>
            <missing-glyph horiz-adv-x="1024" d="M128 0V1638H896V0H128zM256 128H768V1510H256V128z"> 
            <path fill="red" fill-opacity="0.5" stroke="none" d="M256,256 L768,256 L768,1024 L256,1024z"/> 

@@ -28,9 +28,6 @@ import java.text.AttributedCharacterIterator;
  */
 public interface GVTGlyphVector {
 
-
- public GlyphVector getAWTGlyphVector();
-
     /**
      * Returns the Font associated with this GlyphVector.
      */
@@ -80,6 +77,12 @@ public interface GVTGlyphVector {
      * Returns the position of the specified glyph within this GlyphVector.
      */
     public Point2D getGlyphPosition(int glyphIndex);
+
+    /**
+     * Returns the default position of the glyph. This will be the position that
+     * is set when the performDefaultLayout method is run.
+     */
+    public Point2D getDefaultGlyphPosition(int glyphIndex);
 
     /**
      * Returns an array of glyph positions for the specified glyphs
@@ -140,6 +143,20 @@ public interface GVTGlyphVector {
      * Sets the transform of the specified glyph within this GlyphVector.
      */
     public void setGlyphTransform(int glyphIndex, AffineTransform newTX);
+
+    /**
+     * Tells the glyph vector whether or not to draw the specified glyph.
+     */
+    public void setGlyphVisible(int glyphIndex, boolean visible);
+
+    /**
+     * Returns the number of chars represented by the glyphs within the
+     * specified range.
+     * @param startGlyphIndex The index of the first glyph in the range.
+     * @param endGlyphIndex The index of the last glyph in the range.
+     * @return The number of chars.
+     */
+    public int getCharacterCount(int startGlyphIndex, int endGlyphIndex);
 
     /**
      * Draws the glyph vector.

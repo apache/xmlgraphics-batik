@@ -94,5 +94,10 @@ public interface GVTFont {
     public GVTLineMetrics getLineMetrics(String str, int beginIndex, int limit,
                                       FontRenderContext frc);
 
+    /**
+     * Returns the size of this font.
+     */
+    public float getSize();
+
     public String toString();
 }

@@ -83,6 +83,24 @@ public interface TextPainter {
                             AttributedCharacterIterator aci,
                             TextNode node, GraphicsNodeRenderContext context);
 
+
+    /**
+     * Selects the first glyph in the text node.
+     */
+    public Mark selectFirst(double x, double y,
+                            AttributedCharacterIterator aci,
+                            TextNode node,
+                            GraphicsNodeRenderContext context);
+
+
+    /**
+     * Selects the last glyph in the text node.
+     */
+    public Mark selectLast(double x, double y,
+                            AttributedCharacterIterator aci,
+                            TextNode node,
+                            GraphicsNodeRenderContext context);
+
     /*
      * Get an array of index pairs corresponding to the indices within an
      * AttributedCharacterIterator regions bounded by two Marks.

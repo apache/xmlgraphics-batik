@@ -22,6 +22,7 @@ import java.util.EventObject;
 import javax.swing.event.EventListenerList;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
+import org.apache.batik.gvt.TextNode;
 
 /**
  * An EventDispatcher implementation based on AWT events.
@@ -67,6 +68,12 @@ public class AWTEventDispatcher implements EventDispatcher,
      * The lastest node which has been targeted by an event.
      */
     protected GraphicsNode lastHit;
+
+    /**
+     * A dummy graphics node to dispacth "deselect" mouse events to. ie.
+     * when the mouse is clicked outside any nodes.
+     */
+    protected GraphicsNode dummyNode = new TextNode();
 
     /**
      * The current GraphicsNode targeted by an key events.
@@ -415,7 +422,22 @@ public class AWTEventDispatcher implements EventDispatcher,
                                                 (float)p.getY(),
                                                 evt.getClickCount(),
                                                 relatedNode);
+
             node.processMouseEvent(gvtevt);
+            processMouseEvent(gvtevt);
+
+        } else if (node == null && evt.getID() == evt.MOUSE_CLICKED
+              && evt.getClickCount() == 1) {
+            // this is a deselect event, dispatch it to dummy node
+            gvtevt = new GraphicsNodeMouseEvent(dummyNode,
+                                                evt.getID(),
+                                                evt.getWhen(),
+                                                evt.getModifiers(),
+                                                (float)p.getX(),
+                                                (float)p.getY(),
+                                                evt.getClickCount(),
+                                                relatedNode);
+
             processMouseEvent(gvtevt);
         }
         lastHit = node;

@@ -29,27 +29,26 @@ import java.text.AttributedString;
  * @version $Id$
  */
 
-public class AttributedCharacterSpanIterator implements 
+public class AttributedCharacterSpanIterator implements
                                    AttributedCharacterIterator {
 
-    private AttributedCharacterIterator aci; 
+    private AttributedCharacterIterator aci;
     private int begin;
     private int end;
 
     /**
      * Construct a AttributedCharacterSpanIterator from a subinterval of
      * an existing AttributedCharacterIterator.
-     * @param aci The source AttributedCharacterIterator  
+     * @param aci The source AttributedCharacterIterator
      * @param start the first index of the subinterval
      * @param stop the index of the first character after the subinterval
      */
     public AttributedCharacterSpanIterator(AttributedCharacterIterator aci, int start, int stop) {
-	this.aci = aci;
+    this.aci = aci;
         end = Math.min(aci.getEndIndex(), stop);
         begin = Math.max(aci.getBeginIndex(), start);
-        this.aci.setIndex(begin); 
+        this.aci.setIndex(begin);
     }
-
 
     //From java.text.AttributedCharacterIterator
 
@@ -115,7 +114,7 @@ public class AttributedCharacterSpanIterator implements
     /**
      * Get the index of the first character of the run with
      *      respect to the given attribute containing the current character.
-     * @param attribute The attribute for whose appearance the first offset 
+     * @param attribute The attribute for whose appearance the first offset
      *      is requested.
      */
     public int getRunStart(AttributedCharacterIterator.Attribute attribute) {
@@ -229,7 +228,7 @@ public class AttributedCharacterSpanIterator implements
         ndx = Math.min(ndx, end);
         char c = aci.setIndex(ndx);
 	if (ndx == end) {
-            c = CharacterIterator.DONE; 
+            c = CharacterIterator.DONE;
 	}
 	return c;
     }

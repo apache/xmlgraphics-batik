@@ -230,23 +230,6 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
     public GVTGlyphVector createGlyphVector(FontRenderContext frc,
                                             CharacterIterator ci) {
 
-      /*  System.out.print("creating SVGGVTGlyphVector for: ");
-        for (char c = ci.first(); c != ci.DONE; c = ci.next()) {
-            System.out.print(c);
-        }
-        System.out.println();
-*/
-
-        // first look to see if we are creating an altGlyph glyph vector
-        if (textElement.getTagName().equals(SVG_ALT_GLYPH_TAG)) {
-            SVGAltGlyphElementBridge altGlyphBridge = (SVGAltGlyphElementBridge)ctx.getBridge(textElement);
-            Glyph[] glyphArray = altGlyphBridge.createAltGlyphArray(ctx, textElement, fontSize);
-            if (glyphArray != null) {
-                return new SVGGVTGlyphVector(this, glyphArray, frc);
-            }
-        }
-
-        // not alt-glyph or alt-glyph could not find referenced glyphs
         Vector glyphs = new Vector();
         char c = ci.first();
         while (c != ci.DONE) {
@@ -417,6 +400,13 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
                                       FontRenderContext frc) {
         StringCharacterIterator sci = new StringCharacterIterator(str);
         return getLineMetrics(sci, beginIndex, limit, frc);
+    }
+
+    /**
+     * Returns the size of this font.
+     */
+    public float getSize() {
+        return fontSize;
     }
 
     public String toString() {

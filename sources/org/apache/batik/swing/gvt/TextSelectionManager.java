@@ -223,7 +223,7 @@ public class TextSelectionManager {
      * The selection overlay.
      */
     protected class SelectionOverlay implements Overlay {
-            
+
         /**
          * Paints this overlay.
          */
@@ -231,9 +231,9 @@ public class TextSelectionManager {
             if (selectionHighlight != null) {
                 AffineTransform at = component.getRenderingTransform();
                 Shape s = at.createTransformedShape(selectionHighlight);
-                
+
                 Graphics2D g2d = (Graphics2D)g;
-                
+
                 g2d.setXORMode(Color.white);
                 g2d.setColor(Color.black);
 

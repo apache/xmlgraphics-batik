@@ -39,16 +39,22 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
     private GVTFont font;
     private Glyph[] glyphs;
     private FontRenderContext frc;
-
-     public GlyphVector getAWTGlyphVector() {
-        return null;
-    }
+    private GeneralPath outline;
+    private Point2D[] defaultGlyphPositions;
+    private Shape[] glyphLogicalBounds;
+    private boolean[] glyphVisible;
 
     public SVGGVTGlyphVector(GVTFont font, Glyph[] glyphs, FontRenderContext frc) {
-       this.font = font;
-       this.glyphs = glyphs;
-     //  System.out.println("glyph vector has " + glyphs.length + " glyphs");
-       this.frc = frc;
+        this.font = font;
+        this.glyphs = glyphs;
+        this.frc = frc;
+        outline = null;
+        defaultGlyphPositions = new Point2D.Float[glyphs.length];
+        glyphLogicalBounds = new Shape[glyphs.length];
+        glyphVisible = new boolean[glyphs.length];
+        for (int i = 0; i < glyphs.length; i++) {
+            glyphVisible[i] = true;
+        }
     }
 
     /**
@@ -119,17 +125,64 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
         return null;
     }
 
-    /**
+     /**
      *  Returns the logical bounds of the specified glyph within this
      *  GlyphVector.
      */
     public Shape getGlyphLogicalBounds(int glyphIndex) {
-        // get outline of glyph and translate so that it is relative to the
-        // positon of the first glyph
-        Shape glyphOutline = getGlyphOutline(glyphIndex);
-        Point2D firstPos = glyphs[0].getPosition();
-        AffineTransform tr = AffineTransform.getTranslateInstance(-firstPos.getX(), -firstPos.getY());
-        return tr.createTransformedShape(glyphOutline);
+        if (glyphLogicalBounds[glyphIndex] == null && glyphVisible[glyphIndex]) {
+            computeGlyphLogicalBounds();
+        }
+        return glyphLogicalBounds[glyphIndex];
+    }
+
+
+    private void computeGlyphLogicalBounds() {
+
+        float ascent = 0;
+        float descent = 0;
+
+        if (font != null) {
+            // font will only be null if this glyph vector is for an altGlyph
+            GVTLineMetrics lineMetrics = font.getLineMetrics("By", frc);
+            ascent = lineMetrics.getAscent();
+            descent = lineMetrics.getDescent();
+            if (descent < 0) {
+                // make descent a positive value
+                descent = -descent;
+            }
+        }
+
+        for (int i = 0; i < getNumGlyphs(); i++) {
+
+            if (glyphVisible[i]) {
+                AffineTransform glyphTransform = getGlyphTransform(i);
+                GlyphMetrics glyphMetrics = getGlyphMetrics(i);
+
+                if (glyphTransform == null && ascent != 0) {
+
+                    float glyphX = (float)getGlyphPosition(i).getX();
+                    float glyphY =  (float)getGlyphPosition(i).getY() - ascent;
+                    float glyphWidth = glyphMetrics.getAdvance();
+                    float glyphHeight = ascent + descent;
+
+                    glyphLogicalBounds[i] = new Rectangle2D.Double(glyphX, glyphY, glyphWidth, glyphHeight);
+
+                } else {
+                    Shape glyphBounds = glyphMetrics.getBounds2D();
+                    AffineTransform tr = AffineTransform.getTranslateInstance(getGlyphPosition(i).getX(),
+                                                                          getGlyphPosition(i).getY());
+                    if (glyphTransform != null) {
+                        tr.concatenate(glyphTransform);
+                    }
+                    glyphLogicalBounds[i] = tr.createTransformedShape(glyphBounds);
+                }
+            } else {
+                // the glyph is not drawn
+                glyphLogicalBounds[i] = null;
+            }
+        }
+
     }
 
     /**
@@ -149,7 +202,7 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
 
         if (glyphIndex < glyphs.length - 1) {
             // check for kerning
-            if (font instanceof SVGGVTFont) {
+            if (font != null && font instanceof SVGGVTFont) {
                 float kern = ((SVGGVTFont)font).getKerning(glyphs[glyphIndex].getUnicode(),
                                                            glyphs[glyphIndex+1].getUnicode());
                 return glyphs[glyphIndex].getGlyphMetrics(kern);
@@ -183,6 +236,18 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
         }
         return glyphs[glyphIndex].getPosition();
     }
+
+    /**
+     * Returns the default position of the glyph. This will be the position that
+     * is set when the performDefaultLayout method is run.
+     */
+    public Point2D getDefaultGlyphPosition(int glyphIndex) {
+        if (defaultGlyphPositions[glyphIndex] == null) {
+            performDefaultLayout();
+        }
+        return defaultGlyphPositions[glyphIndex];
+    }
+
 
     /**
      * Returns an array of glyph positions for the specified glyphs
@@ -263,11 +328,15 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
      * of this GlyphVector.
      */
     public Shape getOutline() {
-        GeneralPath outline = new GeneralPath();
-        for (int i = 0; i < glyphs.length; i++) {
-            Shape glyphOutline = glyphs[i].getOutline();
-            if (glyphOutline != null) {
-                outline.append(glyphOutline, false);
+        if (outline == null) {
+            outline = new GeneralPath();
+            for (int i = 0; i < glyphs.length; i++) {
+                if (glyphVisible[i]) {
+                    Shape glyphOutline = glyphs[i].getOutline();
+                    if (glyphOutline != null) {
+                        outline.append(glyphOutline, false);
+                    }
+                }
             }
         }
         return outline;
@@ -301,6 +370,9 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
         float currentY = 0;
         for (int i = 0; i < glyphs.length; i++) {
             glyphs[i].setPosition(new Point2D.Float(currentX, currentY));
+            glyphs[i].setTransform(null);
+            defaultGlyphPositions[i] = getGlyphPosition(i);
+            glyphLogicalBounds[i] = null;
             currentX += glyphs[i].getHorizAdvX();
           //  currentY += glyphs[i].getVertAdvY();  // only do this for vertical text
         }
@@ -316,6 +388,8 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
             + ", is out of bounds. Should be between 0 and " + (glyphs.length-1) + ".");
         }
         glyphs[glyphIndex].setPosition(newPos);
+        glyphLogicalBounds[glyphIndex] = null;
+        outline = null;
     }
 
     /**
@@ -327,6 +401,39 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
             + ", is out of bounds. Should be between 0 and " + (glyphs.length-1) + ".");
         }
         glyphs[glyphIndex].setTransform(newTX);
+        glyphLogicalBounds[glyphIndex] = null;
+        outline = null;
+    }
+
+    /**
+     * Tells the glyph vector whether or not to draw the specified glyph.
+     */
+    public void setGlyphVisible(int glyphIndex, boolean visible) {
+        glyphVisible[glyphIndex] = visible;
+        outline = null;
+        glyphLogicalBounds[glyphIndex] = null;
+    }
+
+    /**
+     * Returns the number of chars represented by the glyphs within the
+     * specified range.
+     * @param startGlyphIndex The index of the first glyph in the range.
+     * @param endGlyphIndex The index of the last glyph in the range.
+     * @return The number of chars.
+     */
+    public int getCharacterCount(int startGlyphIndex, int endGlyphIndex) {
+        int numChars = 0;
+        if (startGlyphIndex < 0) {
+            startGlyphIndex = 0;
+        }
+        if (endGlyphIndex > glyphs.length-1) {
+            endGlyphIndex = glyphs.length-1;
+        }
+        for (int i = startGlyphIndex; i <= endGlyphIndex; i++) {
+            String glyphUnicode = glyphs[i].getUnicode();
+            numChars += glyphUnicode.length();
+        }
+        return numChars;
     }
 
     /**
@@ -334,15 +441,10 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
      */
     public void draw(Graphics2D graphics2D, GraphicsNodeRenderContext context,
                      AttributedCharacterIterator aci) {
-
-   /*     System.out.print("drawing SVGGVTGlyphVector for: '");
-         for (char c = aci.first(); c != aci.DONE; c = aci.next()) {
-            System.out.print(c);
-        }
-        System.out.println("'");
-     */
         for (int i = 0; i < glyphs.length; i++) {
-            glyphs[i].draw(graphics2D, context);
+            if (glyphVisible[i]) {
+                glyphs[i].draw(graphics2D, context);
+            }
         }
     }
 }

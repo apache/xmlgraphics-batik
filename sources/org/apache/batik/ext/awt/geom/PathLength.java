@@ -44,32 +44,32 @@ public class PathLength {
 	setPath(path);
     }
 
-    
+
     private Shape path = null;
 
     /**
      * Get the path to use in calculations.
      * @return Path used in calculations.
      */
-    
+
     public Shape getPath() {
 	return path;
     }
-    
+
     /**
      * Set the path to use in calculations.
      * @param v  Path to be used in calculations.
      */
-    
+
     public void setPath(Shape v) {
 	this.path = v;
 	initialised = false;
     }
-    
+
     /**
      * The list of flattened path segments.
      */
-    
+
     private Vector segments = null;
 
     /**
@@ -111,60 +111,60 @@ public class PathLength {
 	float currentY = 0f;
 	float seg[] = new float[6];
 	int segType;
-    
+
 	segments.add(new PathSegment(PathIterator.SEG_MOVETO, 0f, 0f, 0f));
 
 	while (!fpi.isDone()) {
-	    
+
 	    segType = fpi.currentSegment(seg);
-	    
+
 	    switch (segType) {
-		
+
 	    case PathIterator.SEG_MOVETO:
-		
+
 		//System.out.println("== MOVE TO " + seg[0] + " " + seg[1]);
-		
+
 		segments.add(new PathSegment(segType, seg[0], seg[1], pathLength));
 		currentX = seg[0];
 		currentY = seg[1];
 		lastMoveX = currentX;
 		lastMoveY = currentY;
-		
+
 		break;
-		
+
 	    case PathIterator.SEG_LINETO:
-		
+
 		//System.out.println("== LINE TO " + seg[0] + " " + seg[1]);
-		
+
 		pathLength += Point2D.distance(currentX, currentY, seg[0], seg[1]);
 		segments.add(new PathSegment(segType, seg[0], seg[1], pathLength));
 
 		currentX = seg[0];
 		currentY = seg[1];
-		
+
 		break;
-		
+
 	    case PathIterator.SEG_CLOSE:
-		
+
 		//System.out.println("== CLOSE TO " + lastMoveX + " " + lastMoveY);
 
 		pathLength += Point2D.distance(currentX, currentY, lastMoveX, lastMoveY);
 		segments.add(new PathSegment(PathIterator.SEG_LINETO, lastMoveX, lastMoveY, pathLength));
-		    
+
 		currentX = lastMoveX;
 		currentY = lastMoveY;
-		    
+
 		break;
 
 	    default:
-		    
+
 		// ouch, where have these come from
 		System.out.println("Bad path segment types");
-		
+
 	    }
-	    
+
 	    fpi.next();
-	    
+
 	}
 
 	initialised = true;
@@ -181,7 +181,7 @@ public class PathLength {
      */
 
     public Point2D pointAtLength(float length) {
-	
+
 	int upperIndex = findUpperIndex(length);
 
 	if (upperIndex == -1) {
@@ -245,7 +245,11 @@ public class PathLength {
 	if (!initialised) {
 	    initialise();
 	}
-	
+	if (length < 0) {
+        // length is before the start of the path
+        return -1;
+    }
+
 	// find the two segments that are each side of the length
 
 	int upperIndex = -1;
@@ -254,7 +258,7 @@ public class PathLength {
 	int currentIndex = 0;
 
 	while (upperIndex <= 0 && currentIndex < numSegments) {
-	    
+
 	    PathSegment ps = (PathSegment) segments.elementAt(currentIndex);
 
 	    if (ps.getLength() >= length && ps.getSegType() != PathIterator.SEG_MOVETO) {
@@ -268,7 +272,7 @@ public class PathLength {
 
 
     public static void main(String args[]) {
-	
+
 	GeneralPath path = new GeneralPath();
 	path.moveTo(100f, 100f);
 	path.lineTo(200f, 150f);
@@ -308,85 +312,85 @@ public class PathLength {
 	}
 
 	int segType;
-	
+
 	/**
 	 * Get the value of segType.
 	 * @return Value of segType.
 	 */
-	
+
 	public int getSegType() {
 	    return segType;
 	}
-	
+
 	/**
 	 * Set the value of segType.
 	 * @param v  Value to assign to segType.
 	 */
-	
+
 	public void setSegType(int v) {
 	    this.segType = v;
 	}
-	
+
 	float X;
-	
+
 	/**
 	 * Get the value of X.
 	 * @return Value of X.
 	 */
-	
+
 	public float getX() {
 	    return X;
 	}
-	
+
 	/**
 	 * Set the value of X.
 	 * @param v  Value to assign to X.
 	 */
-	
+
 	public void setX(float v) {
 	    this.X = v;
 	}
 
 	float Y;
-	
+
 	/**
 	 * Get the value of Y.
 	 * @return Value of Y.
 	 */
-	
+
 	public float getY() {
 	    return Y;
 	}
-	
+
 	/**
 	 * Set the value of Y.
 	 * @param v  Value to assign to Y.
 	 */
-	
+
 	public void setY(float v) {
 	    this.Y = v;
 	}
 
 	float length;
-	
+
 	/**
 	 * Get the value of Length.
 	 * @return Value of Length.
 	 */
-	
+
 	public float getLength() {
 	    return length;
 	}
-	
+
 	/**
 	 * Set the value of Length.
 	 * @param v  Value to assign to Length.
 	 */
-	
+
 	public void setLength(float v) {
 	    this.length = v;
 	}
-	
+
 
 
     }

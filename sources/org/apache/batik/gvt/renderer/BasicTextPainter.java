@@ -57,9 +57,9 @@ public abstract class BasicTextPainter implements TextPainter {
      * @param g2d the Graphics2D to use
      * @param context the rendering context.
      */
-    public abstract void paint(TextNode node,
-                      Graphics2D g2d, GraphicsNodeRenderContext context); // {
-/*
+/*    public abstract void paint(TextNode node,
+                      Graphics2D g2d, GraphicsNodeRenderContext context);  {
+
         FontRenderContext frc = context.getFontRenderContext();
         AttributedCharacterIterator aci = node.getAttributedCharacterIterator();
         /* XXX:  The code below only
@@ -136,9 +136,10 @@ public abstract class BasicTextPainter implements TextPainter {
      * <em>Note: The Mark instances passed must have been instantiated by
      * an instance of this enclosing TextPainter implementation.</em>
      */
-    public int[] getSelected(AttributedCharacterIterator aci,
+/*    public int[] getSelected(AttributedCharacterIterator aci,
                              org.apache.batik.gvt.text.Mark start,
                              org.apache.batik.gvt.text.Mark finish) {
+
         BasicTextPainter.Mark begin;
         BasicTextPainter.Mark end;
         try {
@@ -179,20 +180,20 @@ public abstract class BasicTextPainter implements TextPainter {
             return null;
         }
     }
-
+*/
     /**
      * Return a Shape, in the coordinate system of the text layout,
      * which encloses the text selection delineated by two Mark instances.
      * <em>Note: The Mark instances passed must have been instantiated by
      * an instance of this enclosing TextPainter implementation.</em>
      */
-    public abstract Shape getHighlightShape(org.apache.batik.gvt.text.Mark beginMark,
-                                   org.apache.batik.gvt.text.Mark endMark);// {
+ /*   public Shape getHighlightShape(org.apache.batik.gvt.text.Mark beginMark,
+                                   org.apache.batik.gvt.text.Mark endMark) {
 
         // TODO: later we can return more complex things like
         // noncontiguous selections
 
-   /*     BasicTextPainter.Mark begin;
+        BasicTextPainter.Mark begin;
         BasicTextPainter.Mark end;
         try {
             begin = (BasicTextPainter.Mark) beginMark;
@@ -291,7 +292,7 @@ public abstract class BasicTextPainter implements TextPainter {
      protected abstract Rectangle2D getBounds(TextNode node,
                FontRenderContext context,
                boolean includeDecoration,
-               boolean includeStrokeWidth); //{
+               boolean includeStrokeWidth); // {
 /*
          AttributedCharacterIterator aci =
              node.getAttributedCharacterIterator();
@@ -326,7 +327,7 @@ public abstract class BasicTextPainter implements TextPainter {
     *            outlines.
     */
     protected abstract Shape getOutline(TextNode node, FontRenderContext frc,
-                                    boolean includeDecoration); // {
+                                    boolean includeDecoration);// {
 /*        Shape outline;
         AttributedCharacterIterator aci = node.getAttributedCharacterIterator();
         TextSpanLayout layout =
@@ -469,7 +470,7 @@ public abstract class BasicTextPainter implements TextPainter {
     protected abstract org.apache.batik.gvt.text.Mark hitTest(
                          double x, double y, AttributedCharacterIterator aci,
                          TextNode node,
-                         GraphicsNodeRenderContext context);// {
+                         GraphicsNodeRenderContext context); // {
 /*
         FontRenderContext frc = context.getFontRenderContext();
 

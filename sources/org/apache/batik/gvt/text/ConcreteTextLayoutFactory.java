@@ -70,7 +70,7 @@ public class ConcreteTextLayoutFactory implements TextLayoutFactory {
     public TextSpanLayout createTextLayout(AttributedCharacterIterator aci,
                                                 Point2D offset,
                                                 FontRenderContext frc) {
-
+/*
         Set keys = aci.getAllAttributeKeys();
         Set glyphPositionKeys = new HashSet();
         glyphPositionKeys.add(
@@ -130,7 +130,7 @@ public class ConcreteTextLayoutFactory implements TextLayoutFactory {
                 aci = as.getIterator();
             }
 */
-
+/*
 	if (!containsSVGFont) {
 
             // the folowing code does what the old font code used to do
@@ -180,7 +180,7 @@ public class ConcreteTextLayoutFactory implements TextLayoutFactory {
                 } while (ch != CharacterIterator.DONE);
             }
         }
-	//  System.out.println("Using GlyphLayout");
+	//  System.out.println("Using GlyphLayout"); */
         return new GlyphLayout(aci, offset, frc);
     }
 
