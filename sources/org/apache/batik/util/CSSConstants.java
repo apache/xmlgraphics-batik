@@ -18,6 +18,7 @@ public interface CSSConstants {
     // The CSS property names.
     //
     String CLIP_RULE_PROPERTY = "clip-rule";
+    String COLOR_INTERPOLATION_PROPERTY = "color-interpolation";
 
     String FILL_PROPERTY = "fill";
     String FILL_OPACITY_PROPERTY = "fill-opacity";
@@ -60,6 +61,7 @@ public interface CSSConstants {
     String NW_RESIZE  = "nw-resize";
     String POINTER  = "pointer";
     String SE_RESIZE  = "se-resize";
+    String LINEAR_RGB = "linearrgb";
 
 
 }

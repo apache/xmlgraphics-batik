@@ -26,6 +26,7 @@ import org.apache.batik.util.awt.RadialGradientPaint;
 import org.apache.batik.util.awt.geom.AffineTransformSource;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.css.CSSPrimitiveValue;
 import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.svg.SVGElement;
 
@@ -177,6 +178,19 @@ public class SVGRadialGradientBridge extends SVGGradientBridge
                 stop.offset = curOffset;
             }
             curOffset = stop.offset;
+        }
+
+        //
+        // Extract the color interpolation property
+        //
+        cssDecl = ctx.getViewCSS().getComputedStyle(paintedElement, null);
+        CSSPrimitiveValue colorInterpolation
+            = (CSSPrimitiveValue) cssDecl.getPropertyCSSValue(COLOR_INTERPOLATION_PROPERTY);
+        
+        RadialGradientPaint.ColorSpaceEnum colorSpace 
+            = RadialGradientPaint.SRGB;
+        if(LINEAR_RGB.equals(colorInterpolation.getStringValue())){
+            colorSpace = RadialGradientPaint.LINEAR_RGB;
         }
 
         //
