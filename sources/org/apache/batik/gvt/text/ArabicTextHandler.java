@@ -374,15 +374,16 @@ public class ArabicTextHandler {
     }
 
     /**
-     * Where possible substitues plain arabic glyphs with their shaped forms.
-     * This is needed when the arabic text is rendered using an AWT font.
-     * Simple arabic ligatures will also be recognised and replaced by a single
-     * character so the length of the resulting string may be shorter than the number
-     * of characters in the aci.
+     * Where possible substitues plain arabic glyphs with their shaped
+     * forms.  This is needed when the arabic text is rendered using
+     * an AWT font.  Simple arabic ligatures will also be recognised
+     * and replaced by a single character so the length of the
+     * resulting string may be shorter than the number of characters
+     * in the aci.
      *
      * @param aci Contains the text to process. Arabic form attributes
      * should already be assigned to each arabic character.
-     * @return A String containing the shaped versions of the arabic characters.
+     * @return A String containing the shaped versions of the arabic characters
      */
     public static String createSubstituteString(AttributedCharacterIterator aci) {
 
@@ -451,7 +452,8 @@ public class ArabicTextHandler {
     }
 
     /**
-     * Returns true if a ligature exists that starts with the specified character.
+     * Returns true if a ligature exists that starts with the
+     * specified character.
      *
      * @param c The character to test.
      * @return True if there is a ligature that starts with c, false otherwise.

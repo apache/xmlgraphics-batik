@@ -663,6 +663,10 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
      * layout is horizontal.
      */
     public void performDefaultLayout() {
+        logicalBounds = null;
+        outline       = null;
+        bounds2D      = null;
+
         float currentX = 0;
         float currentY = 0;
         for (int i = 0; i < glyphs.length; i++) {
@@ -670,9 +674,6 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
             glyphs[i].setTransform(null);
             glyphLogicalBounds[i] = null;
             currentX += glyphs[i].getHorizAdvX();
-            logicalBounds = null;
-            outline = null;
-            bounds2D = null;
         }
         endPos = new Point2D.Float(currentX, currentY);
     }

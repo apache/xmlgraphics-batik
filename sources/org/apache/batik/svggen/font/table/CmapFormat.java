@@ -64,6 +64,9 @@ public abstract class CmapFormat {
 
     public abstract int mapCharCode(int charCode);
 
+    public abstract int getFirst();
+    public abstract int getLast();
+
     public String toString() {
         return new StringBuffer()
         .append("format: ")

@@ -37,6 +37,7 @@ public class CmapFormat4 extends CmapFormat {
     private int[] idRangeOffset;
     private int[] glyphIdArray;
     private int segCount;
+    private int first, last;
 
     protected CmapFormat4(RandomAccessFile raf) throws IOException {
         super(raf);
@@ -50,12 +51,15 @@ public class CmapFormat4 extends CmapFormat {
         searchRange = raf.readUnsignedShort();
         entrySelector = raf.readUnsignedShort();
         rangeShift = raf.readUnsignedShort();
+        last = -1;
         for (int i = 0; i < segCount; i++) {
             endCode[i] = raf.readUnsignedShort();
+            if (endCode[i] > last) last = endCode[i];
         }
         raf.readUnsignedShort(); // reservePad
         for (int i = 0; i < segCount; i++) {
             startCode[i] = raf.readUnsignedShort();
+            if ((i==0 ) || (startCode[i] < first)) first = startCode[i];
         }
         for (int i = 0; i < segCount; i++) {
             idDelta[i] = raf.readUnsignedShort();
@@ -71,6 +75,9 @@ public class CmapFormat4 extends CmapFormat {
             glyphIdArray[i] = raf.readUnsignedShort();
         }
     }
+
+    public int getFirst() { return first; }
+    public int getLast()  { return last; }
 
     public int mapCharCode(int charCode) {
         try {

@@ -19,7 +19,9 @@ package org.apache.batik.gvt.font;
 
 
 /**
- * A class that represents a CSS unicode range.
+ * A class that represents a CSS unicode range.  This only handles
+ * a single range of contigous chars, to handle multiple ranges
+ * (comma seperated) use a list of these.
  *
  * @author <a href="mailto:bella.robinson@cmis.csiro.au">Bella Robinson</a>
  * @version $Id$
@@ -73,11 +75,14 @@ public class UnicodeRange {
     public boolean contains(String unicode) {
         if (unicode.length() == 1) {
             int unicodeVal = unicode.charAt(0);
-            if (unicodeVal >= firstUnicodeValue
-                 && unicodeVal <= lastUnicodeValue) {
-                return true;
-            }
+            return contains(unicodeVal);
         }
         return false;
     }
+
+    public boolean contains(int unicodeVal) {
+        return ((unicodeVal >= firstUnicodeValue) &&
+                (unicodeVal <= lastUnicodeValue));
+    }
+
 }

@@ -77,6 +77,7 @@ public class JAuthenticator extends Authenticator {
     Object lock = new Object();
 
     private boolean result;
+    private boolean wasNotified;
     private String  userID;
     private char [] password;
 
@@ -192,9 +193,12 @@ public class JAuthenticator extends Authenticator {
                         window.setVisible(true);
                     }
                 });
-            try {
-                lock.wait();
-            } catch(InterruptedException ie) { }
+            wasNotified = false;
+            while (!wasNotified) {
+                try {
+                    lock.wait();
+                } catch(InterruptedException ie) { }
+            }
             if (!result)
                 return null;
 
@@ -211,6 +215,7 @@ public class JAuthenticator extends Authenticator {
                     password = JPassword.getPassword();
                     JPassword.setText("");
                     result = true;
+                    wasNotified = true;
                     lock.notifyAll();
                 }
             }
@@ -226,7 +231,7 @@ public class JAuthenticator extends Authenticator {
                     password = null;
                     JPassword.setText("");
                     result = false;
-                
+                    wasNotified = true;
                     lock.notifyAll();
                 }
             }

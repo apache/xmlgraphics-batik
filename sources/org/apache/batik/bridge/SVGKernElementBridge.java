@@ -18,7 +18,8 @@
 package org.apache.batik.bridge;
 
 import java.util.StringTokenizer;
-import java.util.Vector;
+import java.util.List;
+import java.util.ArrayList;
 
 import org.apache.batik.gvt.font.Kern;
 import org.apache.batik.gvt.font.UnicodeRange;
@@ -55,16 +56,17 @@ public abstract class SVGKernElementBridge extends AbstractSVGBridge {
         if (k.length() == 0) {
             k = SVG_KERN_K_DEFAULT_VALUE;
         }
-
+        
         // get the kern float value
         float kernValue = Float.parseFloat(k);
-
+        
         // set up the first and second glyph sets and unicode ranges
-        Vector firstGlyphSet = new Vector();
-        Vector secondGlyphSet = new Vector();
-        Vector firstUnicodeRanges = new Vector();
-        Vector secondUnicodeRanges = new Vector();
-
+        int firstGlyphLen = 0, secondGlyphLen = 0;
+        int [] firstGlyphSet = null;
+        int [] secondGlyphSet = null;
+        List firstUnicodeRanges = new ArrayList();
+        List secondUnicodeRanges = new ArrayList();
+        
         // process the u1 attribute
         StringTokenizer st = new StringTokenizer(u1, ",");
         while (st.hasMoreTokens()) {
@@ -73,12 +75,22 @@ public abstract class SVGKernElementBridge extends AbstractSVGBridge {
                 firstUnicodeRanges.add(new UnicodeRange(token));
             } else {
                 int[] glyphCodes = font.getGlyphCodesForUnicode(token);
-                for (int i = 0; i < glyphCodes.length; i++) {
-                    firstGlyphSet.add(new Integer(glyphCodes[i]));
+                if (firstGlyphSet == null)
+                    firstGlyphSet = glyphCodes;
+                else if ((firstGlyphLen + glyphCodes.length) > 
+                         firstGlyphSet.length) {
+                    int sz = firstGlyphSet.length*2;
+                    if (sz <firstGlyphLen + glyphCodes.length)
+                        sz = firstGlyphLen + glyphCodes.length;
+                    int [] tmp = new int[sz];
+                    for (int i = 0; i < glyphCodes.length; i++)
+                        tmp[i] = firstGlyphSet[i];
                 }
+                for (int i = 0; i < glyphCodes.length; i++)
+                    firstGlyphSet[firstGlyphLen++] = glyphCodes[i];
             }
         }
-
+        
         // process the u2 attrbute
         st = new StringTokenizer(u2, ",");
         while (st.hasMoreTokens()) {
@@ -87,51 +99,91 @@ public abstract class SVGKernElementBridge extends AbstractSVGBridge {
                 secondUnicodeRanges.add(new UnicodeRange(token));
             } else {
                 int[] glyphCodes = font.getGlyphCodesForUnicode(token);
-                for (int i = 0; i < glyphCodes.length; i++) {
-                    secondGlyphSet.add(new Integer(glyphCodes[i]));
+                if (secondGlyphSet == null)
+                    secondGlyphSet = glyphCodes;
+                else if ((secondGlyphLen + glyphCodes.length) > 
+                         secondGlyphSet.length) {
+                    int sz = secondGlyphSet.length*2;
+                    if (sz <secondGlyphLen + glyphCodes.length)
+                        sz = secondGlyphLen + glyphCodes.length;
+                    int [] tmp = new int[sz];
+                    for (int i = 0; i < glyphCodes.length; i++)
+                        tmp[i] = secondGlyphSet[i];
                 }
+                for (int i = 0; i < glyphCodes.length; i++)
+                    secondGlyphSet[secondGlyphLen++] = glyphCodes[i];
             }
         }
-
+        
         // process the g1 attribute
         st = new StringTokenizer(g1, ",");
         while (st.hasMoreTokens()) {
             String token = st.nextToken();
             int[] glyphCodes = font.getGlyphCodesForName(token);
-            for (int i = 0; i < glyphCodes.length; i++) {
-                firstGlyphSet.add(new Integer(glyphCodes[i]));
+            if (firstGlyphSet == null)
+                firstGlyphSet = glyphCodes;
+            else if ((firstGlyphLen + glyphCodes.length) > 
+                     firstGlyphSet.length) {
+                int sz = firstGlyphSet.length*2;
+                if (sz <firstGlyphLen + glyphCodes.length)
+                    sz = firstGlyphLen + glyphCodes.length;
+                int [] tmp = new int[sz];
+                for (int i = 0; i < glyphCodes.length; i++)
+                    tmp[i] = firstGlyphSet[i];
             }
+            for (int i = 0; i < glyphCodes.length; i++)
+                firstGlyphSet[firstGlyphLen++] = glyphCodes[i];
         }
-
+        
         // process the g2 attribute
         st = new StringTokenizer(g2, ",");
         while (st.hasMoreTokens()) {
             String token = st.nextToken();
             int[] glyphCodes = font.getGlyphCodesForName(token);
-            for (int i = 0; i < glyphCodes.length; i++) {
-                secondGlyphSet.add(new Integer(glyphCodes[i]));
+            if (secondGlyphSet == null)
+                secondGlyphSet = glyphCodes;
+            else if ((secondGlyphLen + glyphCodes.length) > 
+                     secondGlyphSet.length) {
+                int sz = secondGlyphSet.length*2;
+                if (sz <secondGlyphLen + glyphCodes.length)
+                    sz = secondGlyphLen + glyphCodes.length;
+                int [] tmp = new int[sz];
+                for (int i = 0; i < glyphCodes.length; i++)
+                    tmp[i] = secondGlyphSet[i];
             }
+            for (int i = 0; i < glyphCodes.length; i++)
+                secondGlyphSet[secondGlyphLen++] = glyphCodes[i];
         }
 
         // construct the arrays
-        int[] firstGlyphs = new int[firstGlyphSet.size()];
-        int[] secondGlyphs = new int[secondGlyphSet.size()];
-        UnicodeRange[] firstRanges = new UnicodeRange[firstUnicodeRanges.size()];
-        UnicodeRange[] secondRanges = new UnicodeRange[secondUnicodeRanges.size()];
-        for (int i = 0; i < firstGlyphSet.size(); i++) {
-            firstGlyphs[i] = ((Integer)firstGlyphSet.elementAt(i)).intValue();
+        int[] firstGlyphs;
+        if ((firstGlyphLen == 0) || 
+            (firstGlyphLen == firstGlyphSet.length)) {
+            firstGlyphs = firstGlyphSet;
+        } else {
+            firstGlyphs = new int[firstGlyphLen];
+            System.arraycopy(firstGlyphSet, 0, firstGlyphs, 0, firstGlyphLen);
         }
-        for (int i = 0; i < secondGlyphSet.size(); i++) {
-            secondGlyphs[i] = ((Integer)secondGlyphSet.elementAt(i)).intValue();
-        }
-        for (int i = 0; i < firstUnicodeRanges.size(); i++) {
-            firstRanges[i] = (UnicodeRange)firstUnicodeRanges.elementAt(i);
-        }
-        for (int i = 0; i < secondUnicodeRanges.size(); i++) {
-            secondRanges[i] = (UnicodeRange)secondUnicodeRanges.elementAt(i);
+        int[] secondGlyphs;
+        if ((secondGlyphLen == 0) || 
+            (secondGlyphLen == secondGlyphSet.length)) {
+            secondGlyphs = secondGlyphSet;
+        } else {
+            secondGlyphs = new int[secondGlyphLen];
+            System.arraycopy(secondGlyphSet, 0, secondGlyphs, 0, 
+                             secondGlyphLen);
         }
 
+        UnicodeRange[] firstRanges;
+        firstRanges = new UnicodeRange[firstUnicodeRanges.size()];
+        firstUnicodeRanges.toArray(firstRanges);
+
+        UnicodeRange[] secondRanges;
+        secondRanges = new UnicodeRange[secondUnicodeRanges.size()];
+        secondUnicodeRanges.toArray(secondRanges);
+
         // return the new Kern object
-        return new Kern(firstGlyphs, secondGlyphs, firstRanges, secondRanges, kernValue);
+        return new Kern(firstGlyphs, secondGlyphs, 
+                        firstRanges, secondRanges, kernValue);
     }
 }
