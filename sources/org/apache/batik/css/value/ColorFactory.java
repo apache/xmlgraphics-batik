@@ -39,13 +39,6 @@ public class ColorFactory
     public String property;
 
     /**
-     * The identifier values.
-     */
-    protected final static PropertyMap values = new PropertyMap();
-    static {
-    }
-
-    /**
      * The identifier factories.
      */
     protected final PropertyMap factories = new PropertyMap();
@@ -184,10 +177,6 @@ public class ColorFactory
 	    if (v != null) {
 		return ((RGBColorFactory)v).create();
 	    }
-	    v = values.get(s);
-	    if (v != null) {
-		return (ImmutableValue)v;
-	    }
 	    throw CSSDOMExceptionFactory.createDOMException
 		(DOMException.INVALID_ACCESS_ERR,
 		 "invalid.identifier",
@@ -216,14 +205,10 @@ public class ColorFactory
 	if (v != null) {
 	    return ((RGBColorFactory)v).create();
 	}
-	v = values.get(s);
-	if (v == null) {
-	    throw CSSDOMExceptionFactory.createDOMException
-		(DOMException.INVALID_ACCESS_ERR,
-		 "invalid.identifier",
-		 new Object[] { value });
-	}
-	return (ImmutableValue)v;
+        throw CSSDOMExceptionFactory.createDOMException
+            (DOMException.INVALID_ACCESS_ERR,
+             "invalid.identifier",
+             new Object[] { value });
     }
 
     /**

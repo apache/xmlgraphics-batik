@@ -335,6 +335,7 @@ public class JSVGComponent extends JGVTComponent {
             setGraphicsNode(e.getGVTRoot(), false);
             Dimension2D dim = bridgeContext.getDocumentSize();
             setPreferredSize(new Dimension((int)dim.getWidth(), (int)dim.getHeight()));
+            invalidate();
         }
 
         /**
