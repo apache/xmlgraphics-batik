@@ -89,4 +89,5 @@ public abstract class AbstractTest implements Test {
      * exceptions due to their own processing propagate. 
      */
     public abstract TestReport runImpl() throws Exception;
+
 }

@@ -28,12 +28,33 @@
             </arg>
         </testReportProcessor>
 
-        <testSuite href="file:test-resources/org/apache/batik/util/regParsedURL.xml" /> 
-        <testSuite href="file:test-resources/org/apache/batik/util/regBase64.xml" />
+        <!-- ====================================================================== -->
+        <!--                     Rendering Accuracy Tests                           -->
+        <!-- ====================================================================== -->
+
+        <!--                           SVG Working Group                            -->
+        <!--                           Basic Effectivity                            -->
+        <!--                               Test Suite                               -->
         <testSuite href="file:test-resources/org/apache/batik/test/samplesRendering.xml" />  
-        <testSuite href="file:test-resources/org/apache/batik/svggen/regsvggen.xml" /> 
-        <testSuite href="file:test-resources/org/apache/batik/test/unitTesting.xml" />
+
+
+        <!--                                Batik                                    -->
+        <!--                               Samples                                   -->
         <testSuite href="file:test-resources/org/apache/batik/test/beSuite.xml" />  
+
+
+        <!-- ====================================================================== -->
+        <!--                         SVG Generator Tests                            -->
+        <!-- ====================================================================== -->
+        <testSuite href="file:test-resources/org/apache/batik/svggen/regsvggen.xml" /> 
+
+
+        <!-- ====================================================================== -->
+        <!--                              Unit Testing                              -->
+        <!-- ====================================================================== -->
+        <testSuite href="file:test-resources/org/apache/batik/test/unitTesting.xml" />
+        <testSuite href="file:test-resources/org/apache/batik/ext/awt/image/codec/unitTesting.xml" />
+        <testSuite href="file:test-resources/org/apache/batik/util/unitTesting.xml" />
 
     </testRun>
 
