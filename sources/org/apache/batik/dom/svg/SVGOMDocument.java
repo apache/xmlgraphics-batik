@@ -217,6 +217,9 @@ public class SVGOMDocument
         factories.put(SVG_FE_TURBULENCE_TAG,
                       new FeTurbulenceElementFactory());
 
+        factories.put(SVG_FILTER_TAG,
+                      new FilterElementFactory());
+
         factories.put(SVG_FONT_TAG,
                       new FontElementFactory());
 
@@ -237,9 +240,6 @@ public class SVGOMDocument
 
         factories.put(SVG_FOREIGN_OBJECT_TAG,
                       new ForeignObjectElementFactory());
-
-        factories.put(SVG_FILTER_TAG,
-                      new FilterElementFactory());
 
         factories.put(SVG_G_TAG,
                       new GElementFactory());
@@ -1907,5 +1907,4 @@ public class SVGOMDocument
                                                    SVG_VKERN_TAG);
         }
     }
-
 }

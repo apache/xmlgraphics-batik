@@ -17,14 +17,21 @@ import java.io.IOException;
 import java.io.FileNotFoundException;
 import java.awt.geom.Point2D;
 import java.awt.font.TextLayout;
+import java.awt.font.TextAttribute;
 import java.awt.font.FontRenderContext;
 import java.text.CharacterIterator;
 import java.text.AttributedCharacterIterator;
+import java.text.AttributedString;
 import java.lang.reflect.Array;
+import java.util.Vector;
 
 import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
 import org.apache.batik.gvt.text.TextSpanLayout;
 import org.apache.batik.gvt.text.TextLayoutFactory;
+import org.apache.batik.bridge.SVGFontFamily;   // don't like having to import this
+import org.apache.batik.gvt.font.GVTFontFamily;
+import org.apache.batik.gvt.font.FontFamilyResolver;
+import org.apache.batik.gvt.font.UnresolvedFontFamily;
 
 /**
  * Factory instance that returns
@@ -63,6 +70,7 @@ public class ConcreteTextLayoutFactory implements TextLayoutFactory {
     public TextSpanLayout createTextLayout(AttributedCharacterIterator aci,
                                                 Point2D offset,
                                                 FontRenderContext frc) {
+
         Set keys = aci.getAllAttributeKeys();
         Set glyphPositionKeys = new HashSet();
         glyphPositionKeys.add(
@@ -80,19 +88,100 @@ public class ConcreteTextLayoutFactory implements TextLayoutFactory {
         glyphPositionKeys.add(
                 GVTAttributedCharacterIterator.TextAttribute.TEXTPATH);
         glyphPositionKeys.retainAll(keys);
-        if (glyphPositionKeys.isEmpty()) {
-            return new TextLayoutAdapter(new TextLayout(aci, frc), offset, aci);
-        } else {
-            char ch = aci.first();
-            do {
-                if (isRTL(ch)) {
-                  return new TextLayoutAdapter(new TextLayout(aci, frc), offset, aci);
-                }
-                ch = aci.next();
-            } while (ch != CharacterIterator.DONE);
-            //System.out.println("Using GlyphLayout");
-            return new GlyphLayout(aci, offset, frc);
+
+        Vector fontFamilies = (Vector)aci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.GVT_FONT_FAMILIES);
+
+        if (fontFamilies == null) {
+            fontFamilies = new Vector();
         }
+
+        // need to see if any of the fontFamilies are for SVGFonts
+        boolean containsSVGFont = false;
+        for (int i = 0; i < fontFamilies.size(); i++) {
+            if (fontFamilies.get(i) instanceof SVGFontFamily) {
+                containsSVGFont = true;
+            }
+        }
+
+	    // We really want to use the new GlyphLayout to layout
+	    // the text. At the moment, use the old code if there is
+	    // only one resolved font and it isn't an SVG Font.
+	    // Of course, we shouldn't explicitly test for SVG here
+	    // (don't want SVG mentioned in GVT :) but we'll try to
+	    // use GlyphLayout for everything soon!
+
+  /*      if (fontFamilies.size() <= 1 && !containsSVGFont) {
+
+            if (fontFamilies.size() == 1) {
+
+                // need to add the awt font back into the aci attributes, otherwise
+                // it uses the default font.
+
+                AttributedString as = new AttributedString(aci);
+
+                GVTFontFamily fontFamily = (GVTFontFamily)fontFamilies.get(0);
+                GVTFontFamily resolvedFontFamily;
+                if (fontFamily instanceof UnresolvedFontFamily) {
+                    resolvedFontFamily = FontFamilyResolver.resolve((UnresolvedFontFamily)fontFamily);
+                } else {
+                    resolvedFontFamily = fontFamily;
+                }
+                as.addAttribute(TextAttribute.FAMILY, resolvedFontFamily.getFamilyName());
+                aci = as.getIterator();
+            }
+*/
+
+	if (!containsSVGFont) {
+
+            // the folowing code does what the old font code used to do
+            // using this will prevent any font switching within the text
+            if (fontFamilies.size() > 0) {
+
+                // need to add the awt font back into the aci attributes, otherwise
+                // it uses the default font.
+
+                AttributedString as = new AttributedString(aci);
+                boolean fontAssigned = false;
+                // find the first font family in the list that is not the
+                // default font (the default font indicates that a matching font
+                // could not be found) and assign that
+                for (int i = 0; i < fontFamilies.size(); i++) {
+
+                    GVTFontFamily fontFamily = (GVTFontFamily)fontFamilies.get(i);
+                    GVTFontFamily resolvedFontFamily;
+                    if (fontFamily instanceof UnresolvedFontFamily) {
+                        resolvedFontFamily = FontFamilyResolver.resolve((UnresolvedFontFamily)fontFamily);
+                    } else {
+                        resolvedFontFamily = fontFamily;
+                    }
+                    if (resolvedFontFamily != null) {
+                        as.addAttribute(TextAttribute.FAMILY, resolvedFontFamily.getFamilyName());
+                        aci = as.getIterator();
+                        fontAssigned = true;
+                        break;
+                    }
+                }
+                if (!fontAssigned) {
+                    // could not match any of the fonts, use the default font
+                    as.addAttribute(TextAttribute.FAMILY, FontFamilyResolver.defaultFont.getFamilyName());
+                    aci = as.getIterator();
+                }
+            }
+
+            if (glyphPositionKeys.isEmpty()) {
+                return new TextLayoutAdapter(new TextLayout(aci, frc), offset, aci);
+            } else {
+                char ch = aci.first();
+                do {
+                    if (isRTL(ch)) {
+                      return new TextLayoutAdapter(new TextLayout(aci, frc), offset, aci);
+                    }
+                    ch = aci.next();
+                } while (ch != CharacterIterator.DONE);
+            }
+        }
+	//  System.out.println("Using GlyphLayout");
+        return new GlyphLayout(aci, offset, frc);
     }
 
     private boolean isRTL(char ch) {

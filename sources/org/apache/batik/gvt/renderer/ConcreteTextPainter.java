@@ -25,7 +25,7 @@ import org.apache.batik.gvt.GraphicsNodeRenderContext;
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
-public class ConcreteTextPainter extends BasicTextPainter {
+public abstract class ConcreteTextPainter extends BasicTextPainter {
     /**
      * Paints the specified attributed character iterator using the
      * specified Graphics2D and context and font context.
@@ -33,7 +33,7 @@ public class ConcreteTextPainter extends BasicTextPainter {
      * @param g2d the Graphics2D to use
      * @param context rendering context.
      */
-    public void paint(AttributedCharacterIterator aci, Point2D location, TextNode.Anchor anchor, 
+    public void paint(AttributedCharacterIterator aci, Point2D location, TextNode.Anchor anchor,
                       Graphics2D g2d, GraphicsNodeRenderContext context){
         // Compute aci size to be able to draw it
         TextLayout layout = new TextLayout(aci, context.getFontRenderContext());

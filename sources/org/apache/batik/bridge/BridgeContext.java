@@ -725,6 +725,10 @@ public class BridgeContext implements ErrorConstants {
                       new SVGGElementBridge());
 
         ctx.putBridge(SVGConstants.SVG_NAMESPACE_URI,
+                      SVGConstants.SVG_HKERN_TAG,
+                      new SVGHKernElementBridge());
+
+        ctx.putBridge(SVGConstants.SVG_NAMESPACE_URI,
                       SVGConstants.SVG_IMAGE_TAG,
                       new SVGImageElementBridge());
 
@@ -799,6 +803,28 @@ public class BridgeContext implements ErrorConstants {
         ctx.putBridge(SVGConstants.SVG_NAMESPACE_URI,
                       SVGConstants.SVG_FE_DISTANT_LIGHT_TAG,
                       new SVGFeAbstractLightingElementBridge.SVGFeDistantLightElementBridge());
+
+        ctx.putBridge(SVGConstants.SVG_NAMESPACE_URI,
+                      SVGConstants.SVG_FONT_TAG,
+                      new SVGFontElementBridge());
+
+        ctx.putBridge(SVGConstants.SVG_NAMESPACE_URI,
+                      SVGConstants.SVG_FONT_FACE_TAG,
+                      new SVGFontFaceElementBridge());
+
+        ctx.putBridge(SVGConstants.SVG_NAMESPACE_URI,
+                      SVGConstants.SVG_GLYPH_TAG,
+                      new SVGGlyphElementBridge());
+
+        // just use the glyph bridge for missing glyph
+        ctx.putBridge(SVGConstants.SVG_NAMESPACE_URI,
+                      SVGConstants.SVG_MISSING_GLYPH_TAG,
+                      new SVGGlyphElementBridge());
+
+
+        ctx.putBridge(SVGConstants.SVG_NAMESPACE_URI,
+                      SVGConstants.SVG_ALT_GLYPH_TAG,
+                      new SVGAltGlyphElementBridge());
 
     }
 }

@@ -12,6 +12,8 @@ import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.AffineTransform;
+import org.apache.batik.gvt.TextNode;
+import java.awt.font.FontRenderContext;
 
 /**
  * Class that encapsulates information returned from hit testing
@@ -25,6 +27,8 @@ public class TextHit {
 
     private int charIndex;
     private boolean leadingEdge;
+    private TextNode textNode;
+    private FontRenderContext frc;
 
     public TextHit(int charIndex, boolean leadingEdge) {
         this.charIndex = charIndex;
@@ -45,6 +49,20 @@ public class TextHit {
             ++i;
         }
         return i;
+    }
+
+    public void setTextNode(TextNode textNode) {
+        this.textNode = textNode;
+    }
+    public void setFontRenderContext(FontRenderContext frc) {
+        this.frc = frc;
+    }
+
+    public TextNode getTextNode() {
+        return textNode;
+    }
+    public FontRenderContext getFontRenderContext() {
+        return frc;
     }
 }
 
