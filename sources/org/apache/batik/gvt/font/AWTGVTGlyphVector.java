@@ -53,6 +53,7 @@ package org.apache.batik.gvt.font;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Paint;
+import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.font.FontRenderContext;
@@ -832,7 +833,8 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
             return;
 
         boolean useHinting = drawGlyphVectorWorks;
-        if ((stroke != null) && (strokePaint != null))
+        if (useHinting && (stroke != null) && (strokePaint != null))
+            // Can't stroke with drawGlyphVector.
             useHinting = false;
 
         if (useHinting && 
@@ -840,6 +842,17 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
             // The coordinate system is different for drawGlyphVector.
             // So complex paints aren't positioned properly.
             useHinting = false;
+
+        if (useHinting) {
+            Object v1 = graphics2D.getRenderingHint
+                (RenderingHints.KEY_TEXT_ANTIALIASING);
+            Object v2 = graphics2D.getRenderingHint
+                (RenderingHints.KEY_STROKE_CONTROL);
+            // text-rendering = geometricPrecision so fill shapes.
+            if ((v1 == RenderingHints.VALUE_TEXT_ANTIALIAS_ON) &&
+                (v2 == RenderingHints.VALUE_STROKE_PURE))
+                useHinting = false;
+        }
 
         final int typeGRot   = AffineTransform.TYPE_GENERAL_ROTATION;
         final int typeGTrans = AffineTransform.TYPE_GENERAL_TRANSFORM;
@@ -918,19 +931,19 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
             }
 
         } else {
-        Shape outline = getOutline();
+            Shape outline = getOutline();
 
-        // check if we need to fill this glyph
+            // check if we need to fill this glyph
             if (fillPaint != null) {
                 graphics2D.setPaint(fillPaint);
-            graphics2D.fill(outline);
-        }
+                graphics2D.fill(outline);
+            }
 
-        // check if we need to draw the outline of this glyph
+            // check if we need to draw the outline of this glyph
             if (stroke != null && strokePaint != null) {
-            graphics2D.setStroke(stroke);
+                graphics2D.setStroke(stroke);
                 graphics2D.setPaint(strokePaint);
-            graphics2D.draw(outline);
+                graphics2D.draw(outline);
             }
         }
     }
