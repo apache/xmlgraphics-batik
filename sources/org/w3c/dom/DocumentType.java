@@ -20,7 +20,7 @@ package org.w3c.dom;
  * else because the effect of namespaces and the various XML schema efforts 
  * on DTD representation are not clearly understood as of this writing.
  * <p>The DOM Level 2 doesn't support editing <code>DocumentType</code> nodes.
- * <p>See also the <a href='http://www.w3.org/TR/2000/PR-DOM-Level-2-Core-20000927'>Document Object Model (DOM) Level 2 Core Specification</a>.
+ * <p>See also the <a href='http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113'>Document Object Model (DOM) Level 2 Core Specification</a>.
  */
 public interface DocumentType extends Node {
     /**

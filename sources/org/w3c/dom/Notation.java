@@ -22,7 +22,7 @@ package org.w3c.dom;
  * <p>The DOM Level 1 does not support editing <code>Notation</code> nodes; 
  * they are therefore readonly.
  * <p>A <code>Notation</code> node does not have any parent.
- * <p>See also the <a href='http://www.w3.org/TR/2000/PR-DOM-Level-2-Core-20000927'>Document Object Model (DOM) Level 2 Core Specification</a>.
+ * <p>See also the <a href='http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113'>Document Object Model (DOM) Level 2 Core Specification</a>.
  */
 public interface Notation extends Node {
     /**

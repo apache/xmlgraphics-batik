@@ -18,7 +18,7 @@ package org.w3c.dom;
  * is implemented. <code>NodeList</code> objects in the DOM are live.
  * <p>The items in the <code>NodeList</code> are accessible via an integral 
  * index, starting from 0.
- * <p>See also the <a href='http://www.w3.org/TR/2000/PR-DOM-Level-2-Core-20000927'>Document Object Model (DOM) Level 2 Core Specification</a>.
+ * <p>See also the <a href='http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113'>Document Object Model (DOM) Level 2 Core Specification</a>.
  */
 public interface NodeList {
     /**

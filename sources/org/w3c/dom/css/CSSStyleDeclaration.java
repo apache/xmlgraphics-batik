@@ -30,16 +30,16 @@ import org.w3c.dom.DOMException;
  * computed values of an element. See also the <code>ViewCSS</code> 
  * interface.  The CSS Object Model doesn't provide an access to the 
  * specified or actual values of the CSS cascade. 
- * <p>See also the <a href='http://www.w3.org/TR/2000/PR-DOM-Level-2-Style-20000927'>Document Object Model (DOM) Level 2 Style Specification</a>.
+ * <p>See also the <a href='http://www.w3.org/TR/2000/REC-DOM-Level-2-Style-20001113'>Document Object Model (DOM) Level 2 Style Specification</a>.
  * @since DOM Level 2
  */
 public interface CSSStyleDeclaration {
     /**
      *  The parsable textual representation of the declaration block 
      * (excluding the surrounding curly braces). Setting this attribute will 
-     * result in the parsing of the new value and resetting of the 
-     * properties in the declaration block. It also allows the insertion of 
-     * additional properties and their values into the block. 
+     * result in the parsing of the new value and resetting of all the 
+     * properties in the declaration block including the removal or addition 
+     * of properties. 
      * @exception DOMException
      *   SYNTAX_ERR: Raised if the specified CSS string value has a syntax 
      *   error and is unparsable.

@@ -43,13 +43,13 @@ package org.w3c.dom;
  * on the <code>Attr</code> instance can also be used to retrieve the string 
  * version of the attribute's value(s). 
  * <p>In XML, where the value of an attribute can contain entity references, 
- * the child nodes of the <code>Attr</code> node provide a representation in 
- * which entity references are not expanded. These child nodes may be either 
- * <code>Text</code> or <code>EntityReference</code> nodes. Because the DOM 
- * Core is not aware of attribute types, it treats all attribute values as 
- * simple strings, even if the DTD or schema declares them as having 
- * tokenized types. 
- * <p>See also the <a href='http://www.w3.org/TR/2000/PR-DOM-Level-2-Core-20000927'>Document Object Model (DOM) Level 2 Core Specification</a>.
+ * the child nodes of the <code>Attr</code> node may be either 
+ * <code>Text</code> or <code>EntityReference</code> nodes (when these are 
+ * in use; see the description of <code>EntityReference</code> for 
+ * discussion). Because the DOM Core is not aware of attribute types, it 
+ * treats all attribute values as simple strings, even if the DTD or schema 
+ * declares them as having tokenized types. 
+ * <p>See also the <a href='http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113'>Document Object Model (DOM) Level 2 Core Specification</a>.
  */
 public interface Attr extends Node {
     /**

@@ -18,7 +18,7 @@ import org.w3c.dom.DOMException;
  *  The <code>CSSValue</code> interface represents a simple or a complex 
  * value. A <code>CSSValue</code> object only occurs in a context of a CSS 
  * property. 
- * <p>See also the <a href='http://www.w3.org/TR/2000/PR-DOM-Level-2-Style-20000927'>Document Object Model (DOM) Level 2 Style Specification</a>.
+ * <p>See also the <a href='http://www.w3.org/TR/2000/REC-DOM-Level-2-Style-20001113'>Document Object Model (DOM) Level 2 Style Specification</a>.
  * @since DOM Level 2
  */
 public interface CSSValue {

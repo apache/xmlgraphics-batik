@@ -19,15 +19,15 @@ package org.w3c.dom;
  * In general, DOM methods return specific error values in ordinary 
  * processing situations, such as out-of-bound errors when using 
  * <code>NodeList</code>. 
- * <p>Implementations may raise other exceptions under other circumstances. 
- * For example, implementations may raise an implementation-dependent 
+ * <p>Implementations should raise other exceptions under other circumstances. 
+ * For example, implementations should raise an implementation-dependent 
  * exception if a <code>null</code> argument is passed. 
  * <p>Some languages and object systems do not support the concept of 
  * exceptions. For such systems, error conditions may be indicated using 
  * native error reporting mechanisms. For some bindings, for example, 
  * methods may return error codes similar to those listed in the 
  * corresponding method descriptions.
- * <p>See also the <a href='http://www.w3.org/TR/2000/PR-DOM-Level-2-Core-20000927'>Document Object Model (DOM) Level 2 Core Specification</a>.
+ * <p>See also the <a href='http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113'>Document Object Model (DOM) Level 2 Core Specification</a>.
  */
 public class DOMException extends RuntimeException {
     public DOMException(short code, String message) {
@@ -75,7 +75,8 @@ public class DOMException extends RuntimeException {
      */
     public static final short NOT_FOUND_ERR             = 8;
     /**
-     * If the implementation does not support the type of object requested
+     * If the implementation does not support the requested type of object or 
+     * operation.
      */
     public static final short NOT_SUPPORTED_ERR         = 9;
     /**

@@ -16,7 +16,7 @@ package org.w3c.dom;
  * The <code>ProcessingInstruction</code> interface represents a "processing 
  * instruction", used in XML as a way to keep processor-specific information 
  * in the text of the document.
- * <p>See also the <a href='http://www.w3.org/TR/2000/PR-DOM-Level-2-Core-20000927'>Document Object Model (DOM) Level 2 Core Specification</a>.
+ * <p>See also the <a href='http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113'>Document Object Model (DOM) Level 2 Core Specification</a>.
  */
 public interface ProcessingInstruction extends Node {
     /**

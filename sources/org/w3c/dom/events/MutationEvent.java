@@ -17,7 +17,7 @@ import org.w3c.dom.Node;
 /**
  * The <code>MutationEvent</code> interface provides specific contextual 
  * information associated with Mutation events. 
- * <p>See also the <a href='http://www.w3.org/TR/2000/PR-DOM-Level-2-Events-20000927'>Document Object Model (DOM) Level 2 Events Specification</a>.
+ * <p>See also the <a href='http://www.w3.org/TR/2000/REC-DOM-Level-2-Events-20001113'>Document Object Model (DOM) Level 2 Events Specification</a>.
  * @since DOM Level 2
  */
 public interface MutationEvent extends Event {
@@ -86,13 +86,15 @@ public interface MutationEvent extends Event {
      * @param canBubbleArgSpecifies whether or not the event can bubble.
      * @param cancelableArgSpecifies whether or not the event's default 
      *   action can be prevented.
-     * @param relatedNodeArgSpecifies the <code>Event</code>'s related Node
+     * @param relatedNodeArgSpecifies the <code>Event</code>'s related Node.
      * @param prevValueArgSpecifies the <code>Event</code>'s 
-     *   <code>prevValue</code> attribute
+     *   <code>prevValue</code> attribute. This value may be null.
      * @param newValueArgSpecifies the <code>Event</code>'s 
-     *   <code>newValue</code> attribute
+     *   <code>newValue</code> attribute. This value may be null.
      * @param attrNameArgSpecifies the <code>Event</code>'s 
-     *   <code>attrName</code> attribute
+     *   <code>attrName</code> attribute. This value may be null.
+     * @param attrChangeArgSpecifies the <code>Event</code>'s 
+     *   <code>attrChange</code> attribute
      */
     public void initMutationEvent(String typeArg, 
                                   boolean canBubbleArg, 
@@ -100,6 +102,7 @@ public interface MutationEvent extends Event {
                                   Node relatedNodeArg, 
                                   String prevValueArg, 
                                   String newValueArg, 
-                                  String attrNameArg);
+                                  String attrNameArg, 
+                                  short attrChangeArg);
 
 }

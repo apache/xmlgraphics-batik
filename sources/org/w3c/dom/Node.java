@@ -29,7 +29,7 @@ package org.w3c.dom;
  * ), this returns <code>null</code>. Note that the specialized interfaces 
  * may contain additional and more convenient mechanisms to get and set the 
  * relevant information.
- * <p>See also the <a href='http://www.w3.org/TR/2000/PR-DOM-Level-2-Core-20000927'>Document Object Model (DOM) Level 2 Core Specification</a>.
+ * <p>See also the <a href='http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113'>Document Object Model (DOM) Level 2 Core Specification</a>.
  */
 public interface Node {
     // NodeType

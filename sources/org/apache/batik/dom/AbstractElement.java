@@ -495,11 +495,11 @@ public abstract class AbstractElement
 				 null,  // relatedNodeArg
 				 oldv,  // prevValueArg
 				 newv,  // newValueArg
-				 name); // attrNameArg
+				 name,  // attrNameArg
+                                 ev.MODIFICATION);
 	    dispatchEvent(ev);
 	}
     }
-
 
     /**
      * An implementation of the {@link org.w3c.dom.NamedNodeMap}.

@@ -24,9 +24,9 @@ import org.w3c.dom.DOMException;
  * <code>CSSStyleDeclaration</code> interface. Setting an attribute of this 
  * interface is equivalent to calling the <code>setProperty</code> method of 
  * the <code>CSSStyleDeclaration</code> interface. 
- * <p> A compliant implementation is not required to implement the 
- * <code>CSS2Properties</code> interface. If an implementation does 
- * implement this interface, the expectation is that language-specific 
+ * <p> A conformant implementation of the CSS module is not required to 
+ * implement the <code>CSS2Properties</code> interface. If an implementation 
+ * does implement this interface, the expectation is that language-specific 
  * methods can be used to cast from an instance of the 
  * <code>CSSStyleDeclaration</code> interface to the 
  * <code>CSS2Properties</code> interface. 
@@ -62,7 +62,7 @@ import org.w3c.dom.DOMException;
  * component longhand properties, as is the case for the <code>font</code> 
  * property with a value of "menu", querying for the values of the component 
  * longhand properties should return the empty string. 
- * <p>See also the <a href='http://www.w3.org/TR/2000/PR-DOM-Level-2-Style-20000927'>Document Object Model (DOM) Level 2 Style Specification</a>.
+ * <p>See also the <a href='http://www.w3.org/TR/2000/REC-DOM-Level-2-Style-20001113'>Document Object Model (DOM) Level 2 Style Specification</a>.
  * @since DOM Level 2
  */
 public interface CSS2Properties {

@@ -20,7 +20,7 @@ import org.w3c.dom.DOMException;
  * implementation is expected to preserve all rules specified in a CSS style 
  * sheet, even if the rule is not recognized by the parser. Unrecognized 
  * rules are represented using the <code>CSSUnknownRule</code> interface. 
- * <p>See also the <a href='http://www.w3.org/TR/2000/PR-DOM-Level-2-Style-20000927'>Document Object Model (DOM) Level 2 Style Specification</a>.
+ * <p>See also the <a href='http://www.w3.org/TR/2000/REC-DOM-Level-2-Style-20001113'>Document Object Model (DOM) Level 2 Style Specification</a>.
  * @since DOM Level 2
  */
 public interface CSSRule {

@@ -42,7 +42,7 @@ package org.w3c.dom;
  * an error or exception when a character is missing from the encoding, 
  * making the task of ensuring that data is not corrupted on serialization 
  * more difficult.
- * <p>See also the <a href='http://www.w3.org/TR/2000/PR-DOM-Level-2-Core-20000927'>Document Object Model (DOM) Level 2 Core Specification</a>.
+ * <p>See also the <a href='http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113'>Document Object Model (DOM) Level 2 Core Specification</a>.
  */
 public interface CDATASection extends Text {
 }
