@@ -41,6 +41,12 @@ import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.svg.SVGSVGElement;
 
+import org.w3c.dom.events.DocumentEvent;
+import org.w3c.dom.events.Event;
+import org.w3c.dom.events.EventListener;
+import org.w3c.dom.events.EventTarget;
+import org.w3c.dom.events.MouseEvent;
+
 /**
  * Bridge class for the &lt;image> element.
  *
@@ -139,6 +145,41 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
     }
 
     /**
+     * Builds using the specified BridgeContext and element, the
+     * specified graphics node.
+     *
+     * @param ctx the bridge context to use
+     * @param e the element that describes the graphics node to build
+     * @param node the graphics node to build
+     */
+    public void buildGraphicsNode(BridgeContext ctx,
+                                  Element e,
+                                  GraphicsNode node) {
+        // 'opacity'
+        node.setComposite(CSSUtilities.convertOpacity(e));
+        // 'filter'
+        node.setFilter(CSSUtilities.convertFilter(e, node, ctx));
+        // 'mask'
+        node.setMask(CSSUtilities.convertMask(e, node, ctx));
+        // 'clip-path'
+        node.setClip(CSSUtilities.convertClipPath(e, node, ctx));
+
+        // bind the specified element and its associated graphics node if needed
+        if (ctx.isDynamic()) {
+	    // HACK due to the way images are represented in GVT
+	    ImageNode imgNode = (ImageNode)node;
+	    if (imgNode.getImage() instanceof RasterImageNode) {
+		// register the RasterImageNode instead
+		ctx.bind(e, imgNode.getImage());
+	    } else {
+		ctx.bind(e, node);
+	    }
+            BridgeEventSupport.addDOMListener(ctx, e);
+        }
+        SVGUtilities.bridgeChildren(ctx, e);
+    }
+
+    /**
      * Creates an <tt>ImageNode</tt>.
      */
     protected GraphicsNode instantiateGraphicsNode() {
@@ -233,7 +274,67 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
 	// appropriate AffineTransform to the image node
         Rectangle2D bounds = getImageBounds(ctx, e);
 	initializeViewport(ctx, e, result, vb, bounds);
+
+	// add a listener on the outermost svg element of the SVG image.
+	// if an event occured inside the SVG image document, send it
+	// to the <image> element (inside the original document).
+	if (ctx.isDynamic()) {
+	    EventListener listener = new ForwardEventListener(svgElement, e);
+	    EventTarget target = (EventTarget)svgElement;
+	    target.addEventListener(SVG_EVENT_CLICK, listener, false);
+	    target.addEventListener(SVG_EVENT_MOUSEOVER, listener, false);
+	    target.addEventListener(SVG_EVENT_MOUSEOUT, listener, false);
+	}
+
         return result;
+    }
+
+    /**
+     * A simple DOM listener to forward events from the SVG image document to
+     * the original document.  
+     */
+    protected static class ForwardEventListener implements EventListener {
+
+	/**
+	 * The root element of the SVG image.
+	 */
+	protected Element svgElement;
+
+	/**
+	 * The image element.
+	 */
+	protected Element imgElement;
+
+	/**
+	 * Constructs a new <tt>ForwardEventListener</tt>
+	 */
+	public ForwardEventListener(Element svgElement, Element imgElement) {
+	    this.svgElement = svgElement;
+	    this.imgElement = imgElement;
+	}
+	
+        public void handleEvent(Event e) {
+            MouseEvent evt = (MouseEvent) e;
+            MouseEvent newMouseEvent = (MouseEvent)
+                // DOM Level 2 6.5 cast from Document to DocumentEvent is ok
+                ((DocumentEvent)imgElement.getOwnerDocument()).createEvent("MouseEvents");
+            newMouseEvent.initMouseEvent(evt.getType(), 
+					 evt.getBubbles(), 
+					 evt.getCancelable(), 
+					 evt.getView(),
+					 evt.getDetail(),
+					 evt.getScreenX(), 
+					 evt.getScreenY(),
+					 evt.getClientX(),
+					 evt.getClientY(),
+					 evt.getCtrlKey(), 
+					 evt.getAltKey(),
+					 evt.getShiftKey(), 
+					 evt.getMetaKey(),
+					 evt.getButton(), 
+					 (EventTarget)imgElement);
+	    ((EventTarget)imgElement).dispatchEvent(newMouseEvent);
+	}
     }
 
     /**

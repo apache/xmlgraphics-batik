@@ -1326,7 +1326,7 @@ public class SVGTextElementBridge extends AbstractSVGBridge
     }
 
 
-    private class TextDecoration {
+    protected static class TextDecoration {
 
         Paint underlinePaint;
         Paint underlineStrokePaint;
@@ -1361,11 +1361,7 @@ public class SVGTextElementBridge extends AbstractSVGBridge
             strikethroughStrokePaint = td.strikethroughStrokePaint;
             strikethroughStroke = td.strikethroughStroke;
         }
-
-
     }
-
-
 }
 
 
