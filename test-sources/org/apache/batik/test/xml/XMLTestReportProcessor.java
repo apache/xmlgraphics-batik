@@ -500,7 +500,6 @@ public class XMLTestReportProcessor
         int i = v.length();
 
         while( (i=v.lastIndexOf(c, --i)) != -1 ){
-            System.out.println("replacing " + c + " at index " + i);
             s.deleteCharAt(i);
             s.insert(i, r);
         }
