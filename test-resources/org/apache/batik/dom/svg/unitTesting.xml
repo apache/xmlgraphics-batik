@@ -36,10 +36,11 @@
     <!-- ================================================================ -->
     <!-- Self contained tests                                             -->
     <!-- ================================================================ -->
-    <testGroup id="basic" name="Basic SVG DOM Testing"
+    <testGroup id="dom.svg.basic" name="Basic SVG DOM Testing"
                class="org.apache.batik.dom.svg.EcmaScriptSVGDOMTest">
         <test id="lengthTest"/>
         <test id="locatableTest"/>
+        <test id="presentationAttrRemovalTest"/>
     </testGroup>
 
 </testSuite>
