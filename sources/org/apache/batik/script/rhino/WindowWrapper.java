@@ -41,16 +41,6 @@ public class WindowWrapper extends ImporterTopLevel {
     private final static Object[] EMPTY_ARGUMENTS = new Object[0];
 
     /**
-     * The rhino interpreter.
-     */
-    protected RhinoInterpreter interpreter;
-
-    /**
-     * The wrapped window.
-     */
-    protected Window window;
-
-    /**
      * Creates a new WindowWrapper.
      */
     public WindowWrapper(Context context) {
@@ -82,8 +72,7 @@ public class WindowWrapper extends ImporterTopLevel {
                                      Function funObj)
         throws JavaScriptException {
         int len = args.length;
-        WindowWrapper ww = (WindowWrapper)thisObj;
-        Window window = ww.window;
+        Window window = ((RhinoInterpreter.ExtendedContext)cx).getWindow();
         if (len < 2) {
             throw Context.reportRuntimeError("invalid argument count");
         }
@@ -110,8 +99,7 @@ public class WindowWrapper extends ImporterTopLevel {
                                     Function funObj)
         throws JavaScriptException {
         int len = args.length;
-        WindowWrapper ww = (WindowWrapper)thisObj;
-        Window window = ww.window;
+        Window window = ((RhinoInterpreter.ExtendedContext)cx).getWindow();
         if (len < 2) {
             throw Context.reportRuntimeError("invalid argument count");
         }
@@ -138,8 +126,7 @@ public class WindowWrapper extends ImporterTopLevel {
                                      Function funObj)
         throws JavaScriptException {
         int len = args.length;
-        WindowWrapper ww = (WindowWrapper)thisObj;
-        Window window = ww.window;
+        Window window = ((RhinoInterpreter.ExtendedContext)cx).getWindow();
         if (len >= 1) {
             window.clearInterval(Context.toType(args[0], Object.class));
         }
@@ -154,8 +141,7 @@ public class WindowWrapper extends ImporterTopLevel {
                                     Function funObj)
         throws JavaScriptException {
         int len = args.length;
-        WindowWrapper ww = (WindowWrapper)thisObj;
-        Window window = ww.window;
+        Window window = ((RhinoInterpreter.ExtendedContext)cx).getWindow();
         if (len >= 1) {
             window.clearTimeout(Context.toType(args[0], Object.class));
         }
@@ -170,8 +156,8 @@ public class WindowWrapper extends ImporterTopLevel {
                                   Function funObj)
         throws JavaScriptException {
         int len = args.length;
-        WindowWrapper ww = (WindowWrapper)thisObj;
-        final Window window = ww.window;
+        final Window window = 
+            ((RhinoInterpreter.ExtendedContext)cx).getWindow();
         if (len < 2) {
             throw Context.reportRuntimeError("invalid argument count");
         }
@@ -197,8 +183,8 @@ public class WindowWrapper extends ImporterTopLevel {
                               Function funObj)
         throws JavaScriptException {
         int len = args.length;
-        WindowWrapper ww = (WindowWrapper)thisObj;
-        final Window window = ww.window;
+        final Window window = ((RhinoInterpreter.ExtendedContext)cx).getWindow();
+        final ScriptableObject go = ((RhinoInterpreter.ExtendedContext)cx).getGlobalObject();
         if (len < 2) {
             throw Context.reportRuntimeError("invalid argument count");
         }
@@ -207,9 +193,11 @@ public class WindowWrapper extends ImporterTopLevel {
         final String uri = (String)Context.toType(args[0], String.class);
         Window.GetURLHandler urlHandler = null;
         if (args[1] instanceof Function) {
-          urlHandler = new GetURLFunctionWrapper(interp, (Function)args[1], ww);
+            urlHandler = new GetURLFunctionWrapper
+                (interp, (Function)args[1], go);
         } else {
-          urlHandler = new GetURLObjectWrapper(interp, (NativeObject)args[1], ww);
+            urlHandler = new GetURLObjectWrapper
+                (interp, (NativeObject)args[1], go);
         }
         final Window.GetURLHandler fw = urlHandler;
 
@@ -244,8 +232,7 @@ public class WindowWrapper extends ImporterTopLevel {
                              Function funObj)
         throws JavaScriptException {
         int len = args.length;
-        WindowWrapper ww = (WindowWrapper)thisObj;
-        Window window = ww.window;
+        Window window = ((RhinoInterpreter.ExtendedContext)cx).getWindow();
         if (len >= 1) {
             String message =
                 (String)Context.toType(args[0], String.class);
@@ -262,8 +249,7 @@ public class WindowWrapper extends ImporterTopLevel {
                                   Function funObj)
         throws JavaScriptException {
         int len = args.length;
-        WindowWrapper ww = (WindowWrapper)thisObj;
-        Window window = ww.window;
+        Window window = ((RhinoInterpreter.ExtendedContext)cx).getWindow();
         if (len >= 1) {
             String message =
                 (String)Context.toType(args[0], String.class);
@@ -281,8 +267,7 @@ public class WindowWrapper extends ImporterTopLevel {
                                 Function funObj)
         throws JavaScriptException {
         int len = args.length;
-        WindowWrapper ww = (WindowWrapper)thisObj;
-        Window window = ww.window;
+        Window window = ((RhinoInterpreter.ExtendedContext)cx).getWindow();
         switch (len) {
         case 0:
             return "";
@@ -361,18 +346,18 @@ public class WindowWrapper extends ImporterTopLevel {
         protected Function function;
 
         /**
-         * The WindowWrapper.
+         * The Scope for callback
          */
-        protected WindowWrapper windowWrapper;
+        protected ScriptableObject scope;
 
         /**
          * Creates a wrapper.
          */
         public GetURLFunctionWrapper(RhinoInterpreter ri, Function fct,
-                                     WindowWrapper ww) {
+                                     ScriptableObject sc) {
             interpreter = ri;
             function = fct;
-            windowWrapper = ww;
+            scope = sc;
         }
 
         /**
@@ -398,13 +383,11 @@ public class WindowWrapper extends ImporterTopLevel {
                                        Boolean.TRUE : Boolean.FALSE);
                                 if (mime != null) {
                                     so.put("contentType", so,
-                                           Context.toObject(mime,
-                                                            windowWrapper));
+                                           Context.toObject(mime, scope));
                                 }
                                 if (content != null) {
                                     so.put("content", so,
-                                           Context.toObject(content,
-                                                            windowWrapper));
+                                           Context.toObject(content, scope));
                                 }
                                 arguments[0] = so;
                                 return arguments;
@@ -438,9 +421,9 @@ public class WindowWrapper extends ImporterTopLevel {
         private ScriptableObject object;
 
         /**
-         * The WindowWrapper.
+         * The Scope for the callback.
          */
-        private WindowWrapper windowWrapper;
+        private ScriptableObject scope;
 
         private Object[] array = new Object[1];
         private static final String COMPLETE = "operationComplete";
@@ -450,10 +433,10 @@ public class WindowWrapper extends ImporterTopLevel {
          */
         public GetURLObjectWrapper(RhinoInterpreter ri,
                                    ScriptableObject obj,
-                                   WindowWrapper ww) {
+                                   ScriptableObject sc) {
             interpreter = ri;
             object = obj;
-            windowWrapper = ww;
+            scope = sc;
         }
 
         /**
@@ -466,29 +449,28 @@ public class WindowWrapper extends ImporterTopLevel {
                                final String mime,
                                final String content) {
             try {
-                interpreter.callMethod(object, COMPLETE,
-                                       new RhinoInterpreter.ArgumentsBuilder() {
-                                           public Object[] buildArguments() {
-                                               Object[] arguments = new Object[1];
-                                               ScriptableObject so =
-                                                   new NativeObject();
-                                               so.put("success", so,
-                                                      (success) ?
-                                                      Boolean.TRUE : Boolean.FALSE);
-                                               if (mime != null) {
-                                                   so.put("contentType", so,
-                                                          Context.toObject(mime,
-                                                                           windowWrapper));
-                                               }
-                                               if (content != null) {
-                                                   so.put("content", so,
-                                                          Context.toObject(content,
-                                                                           windowWrapper));
-                                               }
-                                               arguments[0] = so;
-                                               return arguments;
-                                           }
-                                       });
+                interpreter.callMethod
+                    (object, COMPLETE,
+                     new RhinoInterpreter.ArgumentsBuilder() {
+                         public Object[] buildArguments() {
+                             Object[] arguments = new Object[1];
+                             ScriptableObject so =
+                                 new NativeObject();
+                             so.put("success", so,
+                                    (success) ?
+                                    Boolean.TRUE : Boolean.FALSE);
+                             if (mime != null) {
+                                 so.put("contentType", so,
+                                        Context.toObject(mime, scope));
+                             }
+                             if (content != null) {
+                                 so.put("content", so,
+                                        Context.toObject(content, scope));
+                             }
+                             arguments[0] = so;
+                             return arguments;
+                         }
+                     });
             } catch (JavaScriptException e) {
                 Context.exit();
                 throw new WrappedException(e);

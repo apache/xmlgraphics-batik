@@ -818,25 +818,8 @@ public class CSSOMSVGPaint extends CSSOMSVGColor implements SVGPaint {
         /**
          * Called when the URI has been modified.
          */
-        public void uriChanged(String uri) { 
-            switch (getPaintType()) {
-            case SVG_PAINTTYPE_URI_NONE:
-            case SVG_PAINTTYPE_URI_CURRENTCOLOR:
-            case SVG_PAINTTYPE_URI_RGBCOLOR:
-                textChanged("url(" + uri + ") " +
-                            getValue().item(1).getCssText());
-                break;
-
-            case SVG_PAINTTYPE_URI_RGBCOLOR_ICCCOLOR:
-                textChanged("url(" + uri + ") " +
-                            getValue().item(1).getCssText() + " " +
-                            getValue().item(2).getCssText());
-                break;
-
-            default:
-                throw new DOMException
-                    (DOMException.NO_MODIFICATION_ALLOWED_ERR, "");
-            }
+        public void uriChanged(String uri) {
+            textChanged("url(" + uri + ") none");
         }
 
         /**
@@ -844,7 +827,7 @@ public class CSSOMSVGPaint extends CSSOMSVGColor implements SVGPaint {
          */
         public void paintChanged(short type, String uri,
                                  String rgb, String icc) {
-            switch (getPaintType()) {
+            switch (type) {
             case SVG_PAINTTYPE_NONE:
                 textChanged("none");
                 break;
@@ -859,6 +842,10 @@ public class CSSOMSVGPaint extends CSSOMSVGColor implements SVGPaint {
 
             case SVG_PAINTTYPE_RGBCOLOR_ICCCOLOR:
                 textChanged(rgb + " " + icc);
+                break;
+
+            case SVG_PAINTTYPE_URI:
+                textChanged("url(" + uri + ")");
                 break;
 
             case SVG_PAINTTYPE_URI_NONE:
@@ -877,7 +864,6 @@ public class CSSOMSVGPaint extends CSSOMSVGColor implements SVGPaint {
                 textChanged("url(" + uri + ") " + rgb + " " + icc);
             }
         }
-
     }
 
 }

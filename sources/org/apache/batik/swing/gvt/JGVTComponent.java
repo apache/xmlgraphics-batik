@@ -633,6 +633,7 @@ public class JGVTComponent extends JComponent {
         if (eventDispatcher != null) {
             eventDispatcher.setRootNode(null);
         }
+
         gvtTreeRenderer.start();
     }
 

@@ -982,10 +982,10 @@ public class GlyphLayout implements TextSpanLayout {
         y += overlineThickness;
 
         // Not certain what should be done here...
-        // aci.first();
-        // Float dy = (Float) aci.getAttribute(DY);
-        // if (dy != null)
-        //     y += dy.floatValue();
+        aci.first();
+        Float dy = (Float) aci.getAttribute(DY);
+        if (dy != null)
+            y += dy.floatValue();
 
         Stroke overlineStroke =
             new BasicStroke(overlineThickness);
@@ -1013,10 +1013,10 @@ public class GlyphLayout implements TextSpanLayout {
             new BasicStroke(underlineThickness);
 
         // Not certain what should be done here...
-        // aci.first();
-        // Float dy = (Float) aci.getAttribute(DY);
-        // if (dy != null)
-        //     y += dy.floatValue();
+        aci.first();
+        Float dy = (Float) aci.getAttribute(DY);
+        if (dy != null)
+            y += dy.floatValue();
 
         Rectangle2D logicalBounds = gv.getLogicalBounds();
 
@@ -1037,10 +1037,10 @@ public class GlyphLayout implements TextSpanLayout {
             new BasicStroke(strikethroughThickness);
 
         // Not certain what should be done here...
-        // aci.first();
-        // Float dy = (Float) aci.getAttribute(DY);
-        // if (dy != null)
-        //     y += dy.floatValue();
+        aci.first();
+        Float dy = (Float) aci.getAttribute(DY);
+        if (dy != null)
+            y += dy.floatValue();
 
         Rectangle2D logicalBounds = gv.getLogicalBounds();
         return strikethroughStroke.createStrokedShape(

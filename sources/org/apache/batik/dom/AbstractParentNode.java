@@ -755,20 +755,27 @@ public abstract class AbstractParentNode extends AbstractNode {
 		children++;
 		return n;
 	    }
-
-	    ExtendedNode o = firstChild;
-	    while (o != null) {
-		if (o == r) {
-		    ExtendedNode ps = (ExtendedNode)r.getPreviousSibling();
-		    ps.setNextSibling(n);
-		    r.setPreviousSibling(n);
-		    n.setNextSibling(r);
-		    n.setPreviousSibling(ps);
-		    children++;
-		    return n;
-		}
-		o = (ExtendedNode)o.getNextSibling();
+	    if (r == lastChild) {
+                ExtendedNode ps = (ExtendedNode)r.getPreviousSibling();
+                ps.setNextSibling(n);
+                r.setPreviousSibling(n);
+                n.setNextSibling(r);
+                n.setPreviousSibling(ps);
+                children++;
+                return n;
 	    }
+
+            ExtendedNode ps = (ExtendedNode)r.getPreviousSibling();
+            if ((ps.getNextSibling() == r) &&
+                (ps.getParentNode() == r.getParentNode())) {
+                ps.setNextSibling(n);
+                n.setPreviousSibling(ps);
+                n.setNextSibling(r);
+                r.setPreviousSibling(n);
+                children++;
+                return n;
+            }
+
 	    throw createDOMException
 		(DOMException.NOT_FOUND_ERR,
 		 "child.missing",
@@ -802,21 +809,21 @@ public abstract class AbstractParentNode extends AbstractNode {
 		return o;
 	    }
 
-	    ExtendedNode cn = firstChild;
-	    while (cn != null) {
-		if (cn == o) {
-                    ExtendedNode t = (ExtendedNode)o.getPreviousSibling();
-		    n.setPreviousSibling(t);
-                    t.setNextSibling(n);
-                    t = (ExtendedNode)o.getNextSibling();
-		    n.setNextSibling(t);
-                    t.setPreviousSibling(n);
-		    o.setPreviousSibling(null);
-		    o.setNextSibling(null);
-		    return o;
-		}
-		cn = (ExtendedNode)cn.getNextSibling();
-	    }
+            ExtendedNode ps = (ExtendedNode)o.getPreviousSibling();
+            ExtendedNode ns = (ExtendedNode)o.getNextSibling();
+            if ((ps.getNextSibling()     == o) &&
+                (ns.getPreviousSibling() == o) &&
+                (ps.getParentNode()      == o.getParentNode()) &&
+                (ns.getParentNode()      == o.getParentNode())) {
+
+                ps.setNextSibling(n);
+                n.setPreviousSibling(ps);
+                n.setNextSibling(ns);
+                ns.setPreviousSibling(n);
+                o.setPreviousSibling(null);
+                o.setNextSibling(null);
+                return o;
+            }
 	    throw createDOMException
 		(DOMException.NOT_FOUND_ERR,
 		 "child.missing",
@@ -850,20 +857,19 @@ public abstract class AbstractParentNode extends AbstractNode {
 		return n;
 	    }
 
-	    ExtendedNode o = firstChild;
-	    while (o != null) {
-		if (o == n) {
-		    ExtendedNode ps = (ExtendedNode)n.getPreviousSibling();
-		    ExtendedNode ns = (ExtendedNode)n.getNextSibling();
-		    ps.setNextSibling(ns);
-		    ns.setPreviousSibling(ps);
-		    n.setPreviousSibling(null);
-		    n.setNextSibling(null);
-		    children--;
-		    return n;
-		}
-		o = (ExtendedNode)o.getNextSibling();
-	    }
+            ExtendedNode ps = (ExtendedNode)n.getPreviousSibling();
+            ExtendedNode ns = (ExtendedNode)n.getNextSibling();
+            if ((ps.getNextSibling()     == n) &&
+                (ns.getPreviousSibling() == n) &&
+                (ps.getParentNode()      == n.getParentNode()) &&
+                (ns.getParentNode()      == n.getParentNode())) {
+                ps.setNextSibling(ns);
+                ns.setPreviousSibling(ps);
+                n.setPreviousSibling(null);
+                n.setNextSibling(null);
+                children--;
+                return n;
+            }
 	    throw createDOMException
 		(DOMException.NOT_FOUND_ERR,
 		 "child.missing",

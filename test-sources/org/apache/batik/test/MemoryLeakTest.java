@@ -85,6 +85,7 @@ public abstract class MemoryLeakTest  extends AbstractTest {
                 }
             }
             if (passed) return true;
+            Thread.yield();
         }
 
         StringBuffer sb = new StringBuffer();

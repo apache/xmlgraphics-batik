@@ -490,8 +490,6 @@ public class JSVGComponent extends JGVTComponent {
      * interface.
      */
     public void setSVGDocument(SVGDocument doc) {
-        stopProcessing();
-
         if ((doc != null) &&
             !(doc.getImplementation() instanceof SVGDOMImplementation)) {
             DOMImplementation impl;
@@ -501,6 +499,8 @@ public class JSVGComponent extends JGVTComponent {
         }
 
         if (updateManager == null) {
+            stopProcessing();
+        
             // No update manager just install new document.
             installSVGDocument(doc);
         } else {
@@ -529,6 +529,7 @@ public class JSVGComponent extends JGVTComponent {
                         public void updateCompleted(UpdateManagerEvent e) { }
                         public void updateFailed(UpdateManagerEvent e) { }
                     });
+            stopProcessing();
         }
             
     }

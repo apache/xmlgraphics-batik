@@ -9,6 +9,7 @@
 package org.apache.batik.script.rhino;
 
 import java.lang.reflect.Method;
+import java.util.Map;
 import java.util.HashMap;
 
 import org.mozilla.javascript.Context;
@@ -16,6 +17,7 @@ import org.mozilla.javascript.Function;
 import org.mozilla.javascript.JavaScriptException;
 import org.mozilla.javascript.NativeJavaMethod;
 import org.mozilla.javascript.NativeJavaObject;
+import org.mozilla.javascript.NativeObject;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.Undefined;
@@ -41,11 +43,12 @@ class EventTargetWrapper extends NativeJavaObject {
     /**
      * The Java function object calling the Rhino function.
      */
-    class FunctionEventListener implements EventListener {
+    static class FunctionEventListener implements EventListener {
         private Function function;
-
-        FunctionEventListener(Function f) {
+        private RhinoInterpreter interpreter;
+        FunctionEventListener(Function f, RhinoInterpreter i) {
             function = f;
+            interpreter = i;
         }
         public void handleEvent(Event evt) {
             try {
@@ -83,113 +86,124 @@ class EventTargetWrapper extends NativeJavaObject {
         }
     }
 
-    class RhinoNativeJavaMethod extends NativeJavaMethod {
-        RhinoNativeJavaMethod(Method method, String name) {
+    class RhinoNativeJavaAddMethod extends NativeJavaMethod {
+        Map listenerMap;
+        RhinoNativeJavaAddMethod(Method method, String name,
+                              Map listenerMap) {
             super(method, name);
+            this.listenerMap = listenerMap;
+        }
+
+        public Object call(Context ctx, Scriptable scope,
+                           Scriptable thisObj, Object[] args)
+            throws JavaScriptException {
+            NativeJavaObject  njo = (NativeJavaObject)thisObj;
+            if (args[1] instanceof Function) {
+                
+                EventListener evtListener = new FunctionEventListener
+                    ((Function)args[1],
+                     ((RhinoInterpreter.ExtendedContext)ctx).getInterpreter());
+                listenerMap.put(args[1], evtListener);
+                // we need to marshall args
+                Class[] paramTypes = { String.class, Function.class,
+                                       Boolean.TYPE };
+                for (int i = 0; i < args.length; i++)
+                    args[i] = Context.toType(args[i], paramTypes[i]);
+
+                
+                ((EventTarget)njo.unwrap()).addEventListener
+                    ((String)args[0], evtListener,
+                     ((Boolean)args[2]).booleanValue());
+                return Undefined.instance;
+            } 
+            if (args[1] instanceof NativeObject) {
+                EventListener evtListener =
+                    new HandleEventListener((Scriptable)args[1]);
+                listenerMap.put(args[1], evtListener);
+                // we need to marshall args
+                Class[] paramTypes = { String.class, Scriptable.class,
+                                       Boolean.TYPE };
+                for (int i = 0; i < args.length; i++)
+                    args[i] = Context.toType(args[i], paramTypes[i]);
+
+                ((EventTarget)njo.unwrap()).addEventListener
+                    ((String)args[0], evtListener,
+                     ((Boolean)args[2]).booleanValue());
+                return Undefined.instance;
+            }
+
+            return super.call(ctx, scope, thisObj, args);
+        }
+    }
+
+    static class RhinoNativeJavaRemoveMethod extends NativeJavaMethod {
+        Map listenerMap; 
+        RhinoNativeJavaRemoveMethod(Method method, String name,
+                                    Map listenerMap) {
+            super(method, name);
+            this.listenerMap = listenerMap;
         }
         public Object call(Context ctx, Scriptable scope,
                            Scriptable thisObj, Object[] args)
             throws JavaScriptException {
+            NativeJavaObject  njo = (NativeJavaObject)thisObj;
             if (args[1] instanceof Function) {
-                if (this.get(NAME, this).equals(ADD_NAME)) {
-                    EventListener evtListener =
-                        new FunctionEventListener((Function)args[1]);
-                    if (listenerMap == null)
-                        listenerMap = new HashMap(2);
-                    listenerMap.put(args[1], evtListener);
-                    // we need to marshall args
-                    Class[] paramTypes = { String.class, Function.class,
-                                           Boolean.TYPE };
-                    for (int i = 0; i < args.length; i++)
-  		        args[i] = Context.toType(args[i], paramTypes[i]);
-                    ((EventTarget)unwrap()).
-                        addEventListener((String)args[0],
-                                         evtListener,
-                                         ((Boolean)args[2]).booleanValue());
+                EventListener el;
+                el = (EventListener)listenerMap.remove(args[1]);
+                if (el == null) 
                     return Undefined.instance;
-                } else {
-                    if (listenerMap != null) {
-                        // we need to marshall args
-                        Class[] paramTypes = { String.class, Function.class,
-                                               Boolean.TYPE };
-                        for (int i = 0; i < args.length; i++)
-			    args[i] = Context.toType(args[i], paramTypes[i]);
-                        ((EventTarget)unwrap()).
-                            removeEventListener((String)args[0],
-                                                (EventListener)listenerMap.
-                                                remove(args[1]),
-                                                ((Boolean)args[2]).
-                                                booleanValue());
-                    }
+
+                // we need to marshall args
+                Class[] paramTypes = { String.class, Function.class,
+                                       Boolean.TYPE };
+                for (int i = 0; i < args.length; i++)
+                    args[i] = Context.toType(args[i], paramTypes[i]);
+
+                ((EventTarget)njo.unwrap()).removeEventListener
+                    ((String)args[0], el, ((Boolean)args[2]).booleanValue());
+                return Undefined.instance;
+            }
+
+            if (args[1] instanceof NativeObject) {
+                EventListener el;
+                el = (EventListener)listenerMap.remove(args[1]);
+                if (el == null) 
                     return Undefined.instance;
-                }
-            } else {
-                if (args[1] instanceof  org.mozilla.javascript.NativeObject) {
-                    if (this.get(NAME, this).equals(ADD_NAME)) {
-                        EventListener evtListener =
-                            new HandleEventListener((Scriptable)args[1]);
-                        if (listenerMap == null)
-                            listenerMap = new HashMap(2);
-                        listenerMap.put(args[1], evtListener);
-                        // we need to marshall args
-                        Class[] paramTypes = { String.class, Scriptable.class,
-                                               Boolean.TYPE };
-                        for (int i = 0; i < args.length; i++)
-			    args[i] = Context.toType(args[i], paramTypes[i]);
-                        ((EventTarget)unwrap()).
-                            addEventListener((String)args[0],
-                                             evtListener,
-                                             ((Boolean)args[2]).booleanValue());
-                        return Undefined.instance;
-                    } else {
-                        if (listenerMap != null) {
-                            // we need to marshall args
-                            Class[] paramTypes = { String.class, Scriptable.class,
-                                                   Boolean.TYPE };
-                            for (int i = 0; i < args.length; i++)
-			        args[i] = Context.toType(args[i], paramTypes[i]);
-                            ((EventTarget)unwrap()).
-                                removeEventListener((String)args[0],
-                                                    (EventListener)listenerMap.
-                                                    remove(args[1]),
-                                                    ((Boolean)args[2]).
-                                                    booleanValue());
-                        }
-                        return Undefined.instance;
-                    }
-                }
+
+                // we need to marshall args
+                Class[] paramTypes = { String.class, Scriptable.class,
+                                       Boolean.TYPE };
+                for (int i = 0; i < args.length; i++)
+                    args[i] = Context.toType(args[i], paramTypes[i]);
+
+                ((EventTarget)njo.unwrap()).removeEventListener
+                    ((String)args[0], el, ((Boolean)args[2]).booleanValue());
+                return Undefined.instance;
             }
             return super.call(ctx, scope, thisObj, args);
         }
     }
 
-    private RhinoInterpreter interpreter;
     private NativeJavaMethod methodadd;
     private NativeJavaMethod methodremove;
-    private HashMap listenerMap;
 
-    private final static String ADD_NAME = "addEventListener";
+    private final static String ADD_NAME    = "addEventListener";
     private final static String REMOVE_NAME = "removeEventListener";
     private final static Class[] ARGS_TYPE = { String.class,
                                                EventListener.class,
                                                Boolean.TYPE };
     private final static String NAME = "name";
 
-    EventTargetWrapper(Scriptable scope, EventTarget object,
-                       RhinoInterpreter interp) {
+    EventTargetWrapper(Scriptable scope, EventTarget object) {
         super(scope, object, (Class)null);
-        interpreter = interp;
         try {
-            methodadd =
-                new RhinoNativeJavaMethod(object.getClass().
-                                          getMethod(ADD_NAME,
-                                                    ARGS_TYPE),
-                                          ADD_NAME);
-            methodremove =
-                new RhinoNativeJavaMethod(object.getClass().
-                                          getMethod(REMOVE_NAME,
-                                                    ARGS_TYPE),
-                                          REMOVE_NAME);
+            HashMap listenerMap = new HashMap(2);;
+            methodadd = new RhinoNativeJavaAddMethod
+                (object.getClass().getMethod(ADD_NAME,ARGS_TYPE), 
+                 ADD_NAME, listenerMap);
+            methodremove = new RhinoNativeJavaRemoveMethod
+                (object.getClass().getMethod(REMOVE_NAME,ARGS_TYPE), 
+                 REMOVE_NAME, listenerMap);
         } catch (NoSuchMethodException e) {
             // should not happened
             // we are sure the method are there as we
@@ -201,14 +215,10 @@ class EventTargetWrapper extends NativeJavaObject {
      * Overriden Rhino method.
      */
     public Object get(String name, Scriptable start) {
-        Object method = null;
         if (name.equals(ADD_NAME))
-            method = methodadd;
-        else
-            if (name.equals(REMOVE_NAME))
-                method = methodremove;
-            else
-                method = super.get(name, start);
-        return method;
+            return methodadd;
+        if (name.equals(REMOVE_NAME))
+            return methodremove;
+        return super.get(name, start);
     }
 }

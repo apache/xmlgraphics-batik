@@ -227,7 +227,8 @@ public abstract class SVGStylableElement
                         return PresentationAttributeValue.this.getValue();
                     }
                     public void textChanged(String text) throws DOMException {
-                        value = cssEngine.parsePropertyValue(property, text);
+                        value = cssEngine.parsePropertyValue
+                            (SVGStylableElement.this, property, text);
                         mutate = true;
                         setAttributeNS(null, property, text);
                         mutate = false;
@@ -239,7 +240,8 @@ public abstract class SVGStylableElement
 
             Attr attr = getAttributeNodeNS(null, prop);
             if (attr != null) {
-                value = cssEngine.parsePropertyValue(prop, attr.getValue());
+                value = cssEngine.parsePropertyValue
+                    (SVGStylableElement.this, prop, attr.getValue());
             }
         }
 
@@ -262,7 +264,8 @@ public abstract class SVGStylableElement
          */
         public void attrAdded(Attr node, String newv) {
             if (!mutate) {
-                value = cssEngine.parsePropertyValue(property, newv);
+                value = cssEngine.parsePropertyValue
+                    (SVGStylableElement.this, property, newv);
             }
         }
 
@@ -271,7 +274,8 @@ public abstract class SVGStylableElement
          */
         public void attrModified(Attr node, String oldv, String newv) {
             if (!mutate) {
-                value = cssEngine.parsePropertyValue(property, newv);
+                value = cssEngine.parsePropertyValue
+                    (SVGStylableElement.this, property, newv);
             }
         }
 
@@ -324,7 +328,8 @@ public abstract class SVGStylableElement
                         return PresentationAttributeColorValue.this.getValue();
                     }
                     public void textChanged(String text) throws DOMException {
-                        value = cssEngine.parsePropertyValue(property, text);
+                        value = cssEngine.parsePropertyValue
+                            (SVGStylableElement.this, property, text);
                         mutate = true;
                         setAttributeNS(null, property, text);
                         mutate = false;
@@ -336,7 +341,8 @@ public abstract class SVGStylableElement
 
             Attr attr = getAttributeNodeNS(null, prop);
             if (attr != null) {
-                value = cssEngine.parsePropertyValue(prop, attr.getValue());
+                value = cssEngine.parsePropertyValue
+                    (SVGStylableElement.this, prop, attr.getValue());
             }
         }
 
@@ -359,7 +365,8 @@ public abstract class SVGStylableElement
          */
         public void attrAdded(Attr node, String newv) {
             if (!mutate) {
-                value = cssEngine.parsePropertyValue(property, newv);
+                value = cssEngine.parsePropertyValue
+                    (SVGStylableElement.this, property, newv);
             }
         }
 
@@ -368,7 +375,8 @@ public abstract class SVGStylableElement
          */
         public void attrModified(Attr node, String oldv, String newv) {
             if (!mutate) {
-                value = cssEngine.parsePropertyValue(property, newv);
+                value = cssEngine.parsePropertyValue
+                    (SVGStylableElement.this, property, newv);
             }
         }
 
@@ -421,7 +429,8 @@ public abstract class SVGStylableElement
                         return PresentationAttributePaintValue.this.getValue();
                     }
                     public void textChanged(String text) throws DOMException {
-                        value = cssEngine.parsePropertyValue(property, text);
+                        value = cssEngine.parsePropertyValue
+                            (SVGStylableElement.this, property, text);
                         mutate = true;
                         setAttributeNS(null, property, text);
                         mutate = false;
@@ -434,7 +443,8 @@ public abstract class SVGStylableElement
 
             Attr attr = getAttributeNodeNS(null, prop);
             if (attr != null) {
-                value = cssEngine.parsePropertyValue(prop, attr.getValue());
+                value = cssEngine.parsePropertyValue
+                    (SVGStylableElement.this, prop, attr.getValue());
             }
         }
 
@@ -457,7 +467,8 @@ public abstract class SVGStylableElement
          */
         public void attrAdded(Attr node, String newv) {
             if (!mutate) {
-                value = cssEngine.parsePropertyValue(property, newv);
+                value = cssEngine.parsePropertyValue
+                    (SVGStylableElement.this, property, newv);
             }
         }
 
@@ -466,7 +477,8 @@ public abstract class SVGStylableElement
          */
         public void attrModified(Attr node, String oldv, String newv) {
             if (!mutate) {
-                value = cssEngine.parsePropertyValue(property, newv);
+                value = cssEngine.parsePropertyValue
+                    (SVGStylableElement.this, property, newv);
             }
         }
 
@@ -627,7 +639,8 @@ public abstract class SVGStylableElement
             int idx = cssEngine.getPropertyIndex(name);
             for (int i = 0; i < declaration.size(); i++) {
                 if (idx == declaration.getIndex(i)) {
-                    Value v = cssEngine.parsePropertyValue(name, value);
+                    Value v = cssEngine.parsePropertyValue
+                        (SVGStylableElement.this, name, value);
                     declaration.put(i, v, idx, prio.length() > 0);
                     mutate = true;
                     setAttributeNS(null, SVG_STYLE_ATTRIBUTE,
@@ -636,7 +649,8 @@ public abstract class SVGStylableElement
                     return;
                 }
             }
-            Value v = cssEngine.parsePropertyValue(name, value);
+            Value v = cssEngine.parsePropertyValue
+                (SVGStylableElement.this, name, value);
             declaration.append(v, idx, prio.length() > 0);
             mutate = true;
             setAttributeNS(null, SVG_STYLE_ATTRIBUTE,

@@ -27,11 +27,14 @@ import org.apache.batik.test.TestReport;
 
 
 import org.w3c.dom.Document;
+import org.w3c.dom.DOMImplementation;
 
-import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
-import org.apache.batik.util.XMLResourceDescriptor;
+import org.apache.batik.dom.GenericDOMImplementation;
 import org.apache.batik.dom.svg.ExtensibleSVGDOMImplementation;
+import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
+import org.apache.batik.dom.util.SAXDocumentFactory;
 import org.apache.batik.util.SVGConstants;
+import org.apache.batik.util.XMLResourceDescriptor;
 
 /**
  * This test validates that the various configurations of TranscoderInput 
@@ -49,46 +52,69 @@ public class TranscoderInputTest extends AbstractTest {
         TranscoderOutput out = new TranscoderOutput(new StringWriter());
 
         // XMLReader
-        XMLReader xmlReader = XMLReaderFactory.createXMLReader();
-        TranscoderInput ti = new TranscoderInput(xmlReader);
-        ti.setURI(TEST_URI);
-        t.transcode(ti, out);
-        assertTrue(t.passed);
+        {
+            XMLReader xmlReader = XMLReaderFactory.createXMLReader();
+            TranscoderInput ti = new TranscoderInput(xmlReader);
+            ti.setURI(TEST_URI);
+            t.transcode(ti, out);
+            assertTrue(t.passed);
+        }
         
         // Input Stream
-        URL uri = new URL(TEST_URI);
-        InputStream is = uri.openStream();
-        ti = new TranscoderInput(is);
-        ti.setURI(TEST_URI);
-        t = new TestTranscoder();
-        t.transcode(ti, out);
-        assertTrue(t.passed);
+        {
+            URL uri = new URL(TEST_URI);
+            InputStream is = uri.openStream();
+            TranscoderInput ti = new TranscoderInput(is);
+            ti.setURI(TEST_URI);
+            t = new TestTranscoder();
+            t.transcode(ti, out);
+            assertTrue(t.passed);
+        }
 
         // Reader
-        uri = new URL(TEST_URI);
-        is = uri.openStream();
-        Reader r = new InputStreamReader(is);
-        ti = new TranscoderInput(r);
-        ti.setURI(TEST_URI);
-        t = new TestTranscoder();
-        t.transcode(ti, out);
-        assertTrue(t.passed);
-
+        {
+            URL uri = new URL(TEST_URI);
+            InputStream is = uri.openStream();
+            Reader r = new InputStreamReader(is);
+            TranscoderInput ti = new TranscoderInput(r);
+            ti.setURI(TEST_URI);
+            t = new TestTranscoder();
+            t.transcode(ti, out);
+            assertTrue(t.passed);
+        }
         // Document
-        String parser = XMLResourceDescriptor.getXMLParserClassName();
-        SAXSVGDocumentFactory f = new SAXSVGDocumentFactory(parser);
-        Document doc = f.createDocument(TEST_URI);        
-        ti = new TranscoderInput(doc);
-        ti.setURI(TEST_URI);
-        t = new TestTranscoder();
-        t.transcode(ti, out);
-        assertTrue(t.passed);
+        {
+            String parser = XMLResourceDescriptor.getXMLParserClassName();
+            SAXSVGDocumentFactory f = new SAXSVGDocumentFactory(parser);
+            Document doc = f.createDocument(TEST_URI);        
+            TranscoderInput ti = new TranscoderInput(doc);
+            ti.setURI(TEST_URI);
+            t = new TestTranscoder();
+            t.transcode(ti, out);
+            assertTrue(t.passed);
+        }
+
+        // Generic Document
+        {
+            String parser = XMLResourceDescriptor.getXMLParserClassName();
+            DOMImplementation impl = 
+                GenericDOMImplementation.getDOMImplementation();
+            SAXDocumentFactory f = new SAXDocumentFactory(impl, parser);
+            Document doc = f.createDocument(TEST_URI);
+            TranscoderInput ti = new TranscoderInput(doc);
+            ti.setURI(TEST_URI);
+            t = new TestTranscoder();
+            t.transcode(ti, out);
+            assertTrue(t.passed);
+        }
 
         // URI only
-        ti = new TranscoderInput(TEST_URI);
-        t = new TestTranscoder();
-        t.transcode(ti, out);
-        assertTrue(t.passed);
+        {
+            TranscoderInput ti = new TranscoderInput(TEST_URI);
+            t = new TestTranscoder();
+            t.transcode(ti, out);
+            assertTrue(t.passed);
+        }
         
         return reportSuccess();
     }
