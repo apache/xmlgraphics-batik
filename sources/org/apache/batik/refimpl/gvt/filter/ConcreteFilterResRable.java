@@ -175,8 +175,11 @@ public class ConcreteFilterResRable extends AbstractRable
                     
                     RenderedImage result = null;
                     result = localSource.createRendering(newRenderContext);
-                    result = new AffineRed(ConcreteRenderedImageCachableRed.wrap(result),
-                                           resampleTxf, renderContext.getRenderingHints());
+                    if (result != null)
+                        result = new AffineRed
+                            (ConcreteRenderedImageCachableRed.wrap(result),
+                             resampleTxf, renderContext.getRenderingHints());
+
                     return result;
                 }
 
