@@ -122,6 +122,8 @@ public class SVGAElementBridge implements GraphicsNodeBridge, SVGConstants {
                     break;
                 }
             }
+            Cursor cursor = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
+            userAgent.setSVGCursor(cursor);
             userAgent.openLink(elt);
         }
     }

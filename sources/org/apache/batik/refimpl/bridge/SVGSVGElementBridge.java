@@ -74,7 +74,7 @@ public class SVGSVGElementBridge implements GraphicsNodeBridge, SVGConstants {
         AffineTransform at;
         at = SVGUtilities.getPreserveAspectRatioTransform
             (svgElement, w, h, ctx.getParserFactory());
-        at.translate(x, y);
+        at.preConcatenate(AffineTransform.getTranslateInstance(x, y));
         if (svgElement.getOwnerSVGElement() != null) {
             // <!> as it is already done in the JSVGCanvas, we don't have to
             // do it for the top most svg element
