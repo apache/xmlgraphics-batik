@@ -60,6 +60,7 @@
 
     <testGroup id="tests.spec.coordinates">
         <test id="samples/tests/spec/coordinates/percentagesAndUnits.svg" />
+        <test id="samples/tests/spec/coordinates/em.svg" />
     </testGroup>
 
     <testGroup id="tests.spec.filters">
