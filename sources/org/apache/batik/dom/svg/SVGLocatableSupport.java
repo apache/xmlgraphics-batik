@@ -8,6 +8,7 @@
 
 package org.apache.batik.dom.svg;
 
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGElement;
 import org.w3c.dom.svg.SVGException;
@@ -48,7 +49,37 @@ public class SVGLocatableSupport {
      * org.w3c.dom.svg.SVGLocatable#getBBox()}.
      */
     public static SVGRect getBBox(Element elt) {
-	throw new RuntimeException(" !!! TODO: getBBox()");
+        final SVGOMElement svgelt = (SVGOMElement)elt;
+        return new SVGRect() {
+                public float getX() {
+                    return (float)svgelt.getSVGContext().getBBox().getX();
+                }
+                public void setX(float x) throws DOMException {
+                    throw new DOMException
+                        (DOMException.NO_MODIFICATION_ALLOWED_ERR, "");
+                }
+                public float getY() {
+                    return (float)svgelt.getSVGContext().getBBox().getY();
+                }
+                public void setY(float y) throws DOMException {
+                    throw new DOMException
+                        (DOMException.NO_MODIFICATION_ALLOWED_ERR, "");
+                }
+                public float getWidth() {
+                    return (float)svgelt.getSVGContext().getBBox().getWidth();
+                }
+                public void setWidth(float width) throws DOMException {
+                    throw new DOMException
+                        (DOMException.NO_MODIFICATION_ALLOWED_ERR, "");
+                }
+                public float getHeight() {
+                    return (float)svgelt.getSVGContext().getBBox().getHeight();
+                }
+                public void setHeight(float height) throws DOMException {
+                    throw new DOMException
+                        (DOMException.NO_MODIFICATION_ALLOWED_ERR, "");
+                }
+            };
     }
 
     /**

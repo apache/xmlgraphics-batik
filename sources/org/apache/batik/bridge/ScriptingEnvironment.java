@@ -403,11 +403,19 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
             script = s;
         }
         public void run() {
+            if (error) {
+                return;
+            }
             count--;
             try {
                 interpreter.evaluate(script);
             } catch (InterpreterException ie) {
                 handleInterpreterException(ie);
+                error = true;
+            } catch (Exception e) {
+                if (userAgent != null) {
+                    userAgent.displayError(e);
+                }
                 error = true;
             }
         }
@@ -429,6 +437,9 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
             runnable = r;
         }
         public void run() {
+            if (error) {
+                return;
+            }
             count--;
             try {
                 runnable.run();

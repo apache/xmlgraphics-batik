@@ -101,8 +101,7 @@ public class InterpreterPool {
             try {
                 interpreter = factory.createInterpreter();
                 if (document != null) {
-                    interpreter.bindObject("document",
-                                           createDocumentProxy(document));
+                    interpreter.bindObject("document", document);
                 }
             } catch (Throwable t) {
                 // may append if the batik interpreters class is here but
