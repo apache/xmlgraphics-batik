@@ -1741,7 +1741,7 @@ public class JSVGViewerFrame
          * Returns this user agent's CSS media.
          */
         public String getMedia() {
-            return "screen";
+	    return application.getMedia();
         }
 
         /**

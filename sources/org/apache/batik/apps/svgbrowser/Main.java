@@ -141,6 +141,8 @@ public class Main implements Application {
                      "");
         defaults.put(PreferenceDialog.PREFERENCE_KEY_PROXY_PORT,
                      "");
+        defaults.put(PreferenceDialog.PREFERENCE_KEY_CSS_MEDIA,
+                     "screen");
 
         try {
             preferenceManager = new XMLPreferenceManager("preferences.xml",
@@ -426,5 +428,17 @@ public class Main implements Application {
         }
         return preferenceDialog.getPreferenceManager().getString
             (PreferenceDialog.PREFERENCE_KEY_USER_STYLESHEET);
+    }
+
+    /**
+     * Returns the CSS media to use.
+     * @return empty string if no CSS media was specified.
+     */
+    public String getMedia() {
+        if (preferenceDialog == null) {
+            return "";
+        }
+        return preferenceDialog.getPreferenceManager().getString
+            (PreferenceDialog.PREFERENCE_KEY_CSS_MEDIA);
     }
 }
