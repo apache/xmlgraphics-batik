@@ -790,6 +790,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
          * org.apache.batik.script.Window#clearInterval(Object)}.
          */
         public void clearInterval(Object interval) {
+            if (interval == null) return;
             ((TimerTask)interval).cancel();
         }
 
@@ -839,6 +840,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
          * org.apache.batik.script.Window#clearTimeout(Object)}.
          */
         public void clearTimeout(Object timeout) {
+            if (timeout == null) return;
             ((TimerTask)timeout).cancel();
         }
 
