@@ -24,14 +24,14 @@
     </style>
     <g>
       <defs id="testdefs1">
-        <pattern x="0" y="0" width="20" xmlns:xlink="http://www.w3.org/1999/xlink" patternUnits="userSpaceOnUse" xlink:type="simple" xlink:actuate="onRequest" id="testpattern1" height="20" preserveAspectRatio="xMidYMid meet" xlink:show="replace">
-          <use xlink:type="simple" xlink:actuate="onRequest" xlink:show="replace" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" />
+        <pattern x="0" y="0" width="20" xmlns:xlink="http://www.w3.org/1999/xlink" patternUnits="userSpaceOnUse" xlink:type="simple" xlink:actuate="onLoad" id="testpattern1" height="20" preserveAspectRatio="xMidYMid meet" xlink:show="other">
+          <use xlink:type="simple" xlink:actuate="onLoad" xlink:show="embed" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" />
         </pattern>
-        <pattern x="10" y="10" width="20" xmlns:xlink="http://www.w3.org/1999/xlink" patternUnits="userSpaceOnUse" xlink:type="simple" xlink:actuate="onRequest" id="testpattern2" height="20" preserveAspectRatio="xMidYMid meet" xlink:show="replace">
-          <use xlink:type="simple" xlink:actuate="onRequest" xlink:show="replace" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" />
+        <pattern x="10" y="10" width="20" xmlns:xlink="http://www.w3.org/1999/xlink" patternUnits="userSpaceOnUse" xlink:type="simple" xlink:actuate="onLoad" id="testpattern2" height="20" preserveAspectRatio="xMidYMid meet" xlink:show="other">
+          <use xlink:type="simple" xlink:actuate="onLoad" xlink:show="embed" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" />
         </pattern>
-        <pattern x="0" y="0" width="10" xmlns:xlink="http://www.w3.org/1999/xlink" patternUnits="userSpaceOnUse" xlink:type="simple" xlink:actuate="onRequest" id="testpattern3" height="10" preserveAspectRatio="xMidYMid meet" xlink:show="replace">
-          <use xlink:type="simple" xlink:actuate="onRequest" xlink:show="replace" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage2" />
+        <pattern x="0" y="0" width="10" xmlns:xlink="http://www.w3.org/1999/xlink" patternUnits="userSpaceOnUse" xlink:type="simple" xlink:actuate="onLoad" id="testpattern3" height="10" preserveAspectRatio="xMidYMid meet" xlink:show="other">
+          <use xlink:type="simple" xlink:actuate="onLoad" xlink:show="embed" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage2" />
         </pattern>
         <font horiz-adv-x="75.0" id="testfont1">
           <font-face ascent="92.163086" descent="19.555664" units-per-em="100" font-family="Arial" font-style="normal" font-weight="normal" />
@@ -57,9 +57,9 @@
           <glyph unicode="l" horiz-adv-x="22.216797" d="M6.3906 0 L6.3906 71.5781 L15.1875 71.5781 L15.1875 0 L6.3906 0 Z" />
         </font>
         <image width="20" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAALklEQVR42mP8z8AA
-RIQBIwNxgImBymDUwFEDB4OBoAxAVE75/380DEcNHMEGAgA9ZQUjAKh+SgAAAABJRU5ErkJggg==" xlink:type="simple" xlink:actuate="onRequest" height="20" id="testimage1" preserveAspectRatio="xMidYMid meet" xlink:show="replace" />
+RIQBIwNxgImBymDUwFEDB4OBoAxAVE75/380DEcNHMEGAgA9ZQUjAKh+SgAAAABJRU5ErkJggg==" xlink:type="simple" xlink:actuate="onLoad" height="20" id="testimage1" preserveAspectRatio="xMidYMid meet" xlink:show="embed" />
         <image width="10" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAI0lEQVR42mP8z8AA
-RKiAkQETMDEQCQZQIcjdGJ75/39oegYAdDoFDw5zppEAAAAASUVORK5CYII=" xlink:type="simple" xlink:actuate="onRequest" height="10" id="testimage2" preserveAspectRatio="xMidYMid meet" xlink:show="replace" />
+RKiAkQETMDEQCQZQIcjdGJ75/39oegYAdDoFDw5zppEAAAAASUVORK5CYII=" xlink:type="simple" xlink:actuate="onLoad" height="10" id="testimage2" preserveAspectRatio="xMidYMid meet" xlink:show="embed" />
       </defs>
       <g class="testC1" transform="translate(0,20)">
         <rect width="80" x="0" height="80" y="0" class="testC2" />

@@ -54,7 +54,7 @@ QcAXCxQEFASmI90Qk5PrnAsCvligIKAgMB3phpicXOdcEPDFAgUBBYHpSDfE5OQ6
 54KALxYoCCgITEe6ISYn1zkXBHyxQEFAQWA60g0xObnOuSDgiwUKAgoC05FuiMnJ
 dc4FAV8sUBBQEJiOdENMTq5zLgj4YoGCgILAdKQbYnJynXNBwBcLFAQUBKYj3RCT
 k+ucCwK+WKAgoCAwHemGmJxc51wQ8MUCBQEFgelIN8Tk5DrngoAvFigIKAgsfQCj
-AQrLWU2b7gAAAABJRU5ErkJggg==" xlink:type="simple" xlink:actuate="onRequest" height="150" id="testimage1" preserveAspectRatio="xMidYMid meet" xlink:show="replace" />
+AQrLWU2b7gAAAABJRU5ErkJggg==" xlink:type="simple" xlink:actuate="onLoad" height="150" id="testimage1" preserveAspectRatio="xMidYMid meet" xlink:show="embed" />
         <image width="200" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAACWCAYAAACb3McZAAAMBUlEQVR42u3da4gk
 VxXA8eqanhmyEiF+WBMQURHRoEGIDwiICIIYH/gG8YUJu0skGkFIEMFkwRf6Rf3g
 6kQUHyi6wQeIqCAoiIIEEkWiG9HoF8OCGkgMm31Ml+d23dt17q1zq6pndkiy998w
@@ -120,7 +120,7 @@ R4g99NBTY6TjDtyBO6rKVQ+XHIcOPRxaLNyBO3BHaK1ccqhJOu7AHbhDu6OtIg83
 p08/bWgOgjtwR5nuCMlx+eX/HZqD4A7cUaY7XHJMmoPgDtxRojvcyVWPK6540J6D
 4A7cUbI7QnIYcxDcgTtwR4ifOnVVOgfBHbgDd7jq4ZLj8OH7+nMQ3IE7SneHS47e
 HAR34A7c8eAq7qrHyZNXd0jHHbgDd7TuCMnhKwjuwB24Q7uju7Xjzf8BxjbJhW9v
-vFkAAAAASUVORK5CYII=" xlink:type="simple" xlink:actuate="onRequest" height="150" id="testimage2" preserveAspectRatio="xMidYMid meet" xlink:show="replace" />
+vFkAAAAASUVORK5CYII=" xlink:type="simple" xlink:actuate="onLoad" height="150" id="testimage2" preserveAspectRatio="xMidYMid meet" xlink:show="embed" />
       </defs>
       <g class="testC1">
         <text xml:space="preserve" x="20" y="40" class="testC2">Hello SVG drawString(...)</text>
@@ -128,8 +128,8 @@ vFkAAAAASUVORK5CYII=" xlink:type="simple" xlink:actuate="onRequest" height="150"
         <circle r="30" class="testC4" cx="50" transform="translate(60,70)" cy="30" />
         <circle r="30" class="testC5" cx="50" transform="translate(120,70)" cy="30" />
         <circle r="30" class="testC6" cx="50" transform="translate(180,70)" cy="30" />
-        <use transform="translate(0,130) matrix(1,0,0,1,40,40)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC7" xlink:actuate="onRequest" xlink:show="replace" />
-        <use transform="translate(0,130) matrix(1,0,0,1,40,40)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage2" xlink:type="simple" class="testC8" xlink:actuate="onRequest" xlink:show="replace" />
+        <use transform="translate(0,130) matrix(1,0,0,1,40,40)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC7" xlink:actuate="onLoad" xlink:show="embed" />
+        <use transform="translate(0,130) matrix(1,0,0,1,40,40)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage2" xlink:type="simple" class="testC8" xlink:actuate="onLoad" xlink:show="embed" />
       </g>
     </g>
   </g>

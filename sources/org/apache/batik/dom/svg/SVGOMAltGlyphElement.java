@@ -74,21 +74,14 @@ public class SVGOMAltGlyphElement
     static {
         attributeInitializer = new AttributeInitializer(4);
         attributeInitializer.addAttribute(XMLSupport.XMLNS_NAMESPACE_URI,
-                                          null,
-                                          "xmlns:xlink",
+                                          null, "xmlns:xlink",
                                           XLinkSupport.XLINK_NAMESPACE_URI);
         attributeInitializer.addAttribute(XLinkSupport.XLINK_NAMESPACE_URI,
-                                          "xlink",
-                                          "type",
-                                          "simple");
+                                          "xlink", "type", "simple");
         attributeInitializer.addAttribute(XLinkSupport.XLINK_NAMESPACE_URI,
-                                          "xlink",
-                                          "show",
-                                          "replace");
+                                          "xlink", "show", "other");
         attributeInitializer.addAttribute(XLinkSupport.XLINK_NAMESPACE_URI,
-                                          "xlink",
-                                          "actuate",
-                                          "onRequest");
+                                          "xlink", "actuate", "onLoad");
     }
 
     /**

@@ -74,26 +74,18 @@ public class SVGOMImageElement
     protected final static AttributeInitializer attributeInitializer;
     static {
         attributeInitializer = new AttributeInitializer(5);
-        attributeInitializer.addAttribute(null,
-                                          null,
+        attributeInitializer.addAttribute(null, null,
                                           SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE,
                                           "xMidYMid meet");
         attributeInitializer.addAttribute(XMLSupport.XMLNS_NAMESPACE_URI,
-                                          null,
-                                          "xmlns:xlink",
+                                          null, "xmlns:xlink",
                                           XLinkSupport.XLINK_NAMESPACE_URI);
         attributeInitializer.addAttribute(XLinkSupport.XLINK_NAMESPACE_URI,
-                                          "xlink",
-                                          "type",
-                                          "simple");
+                                          "xlink", "type", "simple");
         attributeInitializer.addAttribute(XLinkSupport.XLINK_NAMESPACE_URI,
-                                          "xlink",
-                                          "show",
-                                          "replace");
+                                          "xlink", "show", "embed");
         attributeInitializer.addAttribute(XLinkSupport.XLINK_NAMESPACE_URI,
-                                          "xlink",
-                                          "actuate",
-                                          "onRequest");
+                                          "xlink", "actuate", "onLoad");
     }
 
     /**

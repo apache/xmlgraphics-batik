@@ -210,7 +210,7 @@ iEaekRkMVppcSQfPJ24xCISLilp0Px3fPYjdPeG7d490cmtEVhqNbvZ0uj3Xap27
 I0NWlP50hV7LfYycr+M7gTujScPuFZ+wjrzMrNR8DdMDDH/p7vp2YN9BdwQMd5Wx
 iQBfbSAwQjZ0OjCKN6SiSG/SUh9N9BwiHBJJM0lzsjtAUthFtsMjFogUz16uHVGm
 3YFupUdXt1Y7vnOEGb59gIR/9+41Pf/iVM9ezHXNrguimj/++7c1newQjmudPBhr
-0ENZp2arI3rHZFLl7ifblZIUJP3/xKLSFlvxD0QAAAAASUVORK5CYII=" xlink:type="simple" xlink:actuate="onRequest" height="63" id="testimage1" preserveAspectRatio="xMidYMid meet" xlink:show="replace" />
+0ENZp2arI3rHZFLl7ifblZIUJP3/xKLSFlvxD0QAAAAASUVORK5CYII=" xlink:type="simple" xlink:actuate="onLoad" height="63" id="testimage1" preserveAspectRatio="xMidYMid meet" xlink:show="embed" />
         <image width="50" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAA/CAYAAACioZtvAAAgAElEQVR42iWaSY8l
 15me35jjzmMONWQNZLE4iJS6RQ2thhttuCEY8sKAARv2zhv/EP0VL+2F4YUNGN1w
 2wsbbrUEURRFkWKRNVdlVU53jhs34kaEn+8khYIqs+6NOOcb3uE7x/sP/+LfNGW8
@@ -388,12 +388,12 @@ PMW3ZHgZQ7GrSzgKDfWTv/gEM2XTmkxtenDHInNkSI/SH/fQa0mNkat19rxyZzTZ
 fn3NJ6wjiRC3hu/z7BLDH7m7vhvYd7GeAcNrpWyiwlcbCMyQDZsNjNLMqSjSm++0
 RBPdhQjnRNJM0pDsLpAUdpHt4pwFIsXTk64jSrv69DI7v761uqmdI0zx7Qsk/LfP
 3urux8e6d2eot3ZdENX82f95ofGkhXDs6vTxlZtAzjOz1Xa+bzIpdPeT7UpJBpL+
-fybudeoweVphAAAAAElFTkSuQmCC" xlink:type="simple" xlink:actuate="onRequest" height="63" id="testimage2" preserveAspectRatio="xMidYMid meet" xlink:show="replace" />
+fybudeoweVphAAAAAElFTkSuQmCC" xlink:type="simple" xlink:actuate="onLoad" height="63" id="testimage2" preserveAspectRatio="xMidYMid meet" xlink:show="embed" />
       </defs>
       <g class="testC1">
         <text xml:space="preserve" x="10" y="20" class="testC2">Normal / Inverted</text>
-        <use transform="matrix(1,0,0,1,10,30)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC3" xlink:actuate="onRequest" xlink:show="replace" />
-        <use transform="matrix(1,0,0,1,70,30)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage2" xlink:type="simple" class="testC4" xlink:actuate="onRequest" xlink:show="replace" />
+        <use transform="matrix(1,0,0,1,10,30)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC3" xlink:actuate="onLoad" xlink:show="embed" />
+        <use transform="matrix(1,0,0,1,70,30)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage2" xlink:type="simple" class="testC4" xlink:actuate="onLoad" xlink:show="embed" />
       </g>
     </g>
   </g>
