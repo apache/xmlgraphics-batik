@@ -20,7 +20,7 @@
     <question>What is Batik?</question>
     <answer>
         <p>
-        Batik is a Java based toolkit for applications which
+        Batik is a Java based toolkit for applications which handle
         images in the Scalable Vector Graphics (SVG) format for
         various purposes, such as viewing, generation or manipulation.
         </p>
@@ -44,8 +44,6 @@
         Batik is one of Java's famous and highly developed art traditions.
         Batik is generally thought of as the most quintessentially Indonesian
         textile.
-        </p>
-        <p>
         Motifs of flowers, twinning plants, leaves buds, flowers, birds,
         butterflies, fish, insects and geometric forms are rich in symbolic
         association and variety; there are about three thousand recorded batik
