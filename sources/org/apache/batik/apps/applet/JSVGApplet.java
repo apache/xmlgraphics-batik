@@ -91,7 +91,36 @@ public class JSVGApplet extends JApplet implements UserAgent, DocumentListener {
      */
     protected final static Cursor WAIT_CURSOR =
         new Cursor(Cursor.WAIT_CURSOR);
+    /**
+     * Returns information about this applet.
+     * @return a string containing information about the
+     * author, version and copyright of the applet.
+     */
+    public String getAppletInfo() {
+        return
+            "$Id$\n"+
+            "Copyright (C) The Apache Software Foundation. All rights reserved.\n"+
+            "This software is published under the terms of the Apache Software License\n"+
+            "version 1.1, a copy of which has been included with this distribution in\n"+
+            "the LICENSE file.";
+    }
 
+    /**
+     * Returns information about the parameters that are
+     * understood by this applet.
+     * @return an array describing the parameters this applet looks for.
+     */
+    public String[][] getParameterInfo() {
+        final String[][] pinfo = {
+
+            {"svg", "url", "image to display"}
+        };
+        return pinfo;
+    }
+
+    /**
+     * Initialize the applet.
+     */
     public void init() {
         CSSDocumentHandler.setParserClassName("org.w3c.flute.parser.Parser");
         df = new SAXSVGDocumentFactory(getXMLParserClassName());
@@ -205,7 +234,7 @@ public class JSVGApplet extends JApplet implements UserAgent, DocumentListener {
         case (DocumentLoadingEvent.LOAD_CANCELLED):
             break;
         case (DocumentLoadingEvent.LOAD_FAILED):
-            displayError("Document.failed");
+            displayError("Document.failed: " + e.getException().toString());
         }
     }
 
