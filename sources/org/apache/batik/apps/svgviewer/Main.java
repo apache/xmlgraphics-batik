@@ -20,6 +20,7 @@ import java.util.ResourceBundle;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.UIManager;
 
 import org.apache.batik.css.CSSDocumentHandler;
 
@@ -72,12 +73,31 @@ public class Main implements ViewerFrame.Application {
      * @param args The command-line arguments.
      */
     public static void main(String[] args) {
-        if (args.length > 0 && args[0].equals("-sf")) {
-            Font font = new Font("Dialog", Font.PLAIN, 10);
-            SwingInitializer.swingDefaultsFontInit(font);
-            String[] t = new String[args.length - 1];
-            for (int i = 0; i < t.length; i++) {
-                t[i] = args[i + 1];
+        int i = 0;
+        while (i < args.length) {
+            if (args[i].equals("-sf")) {
+                i++;
+                Font font = new Font("Dialog", Font.PLAIN, 10);
+                SwingInitializer.swingDefaultsFontInit(font);
+            } else if (args[i].equals("-lnf")) {
+                i++;
+                if (i >= args.length) {
+                    break;
+                }
+                try {
+                    UIManager.setLookAndFeel(args[i]);
+                } catch (Exception exc) {
+                    System.err.println("Error loading L&F: " + exc);
+                }
+                i++;
+            } else {
+                break;
+            }
+        }
+        if (i > 0) {
+            String[] t = new String[args.length - i];
+            for (int n = i; n < t.length; n++) {
+                t[n] = args[n + 1];
             }
             args = t;
         }

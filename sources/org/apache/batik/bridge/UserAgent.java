@@ -65,4 +65,9 @@ public interface UserAgent {
      * @param cursor the new cursor
      */
     void setSVGCursor(Cursor cursor);
+
+    /**
+     * Runs the given thread.
+     */
+    void runThread(Thread t);
 }

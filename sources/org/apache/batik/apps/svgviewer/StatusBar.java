@@ -59,6 +59,11 @@ public class StatusBar extends JPanel {
     protected JLabel yPosition;
     
     /**
+     * The zoom label.
+     */
+    protected JLabel zoom;
+    
+    /**
      * The message label
      */
     protected JLabel message;
@@ -86,13 +91,18 @@ public class StatusBar extends JPanel {
                              getBackground().darker().darker(),
                              getBackground());
         xPosition.setBorder(bb);
-        xPosition.setPreferredSize(new Dimension(75, 16));
+        xPosition.setPreferredSize(new Dimension(70, 16));
         p.add("West", xPosition);
 
         yPosition = new JLabel();
         yPosition.setBorder(bb);
-        yPosition.setPreferredSize(new Dimension(75, 16));
-        p.add("East", yPosition);
+        yPosition.setPreferredSize(new Dimension(70, 16));
+        p.add("Center", yPosition);
+
+        zoom = new JLabel();
+        zoom.setBorder(bb);
+        zoom.setPreferredSize(new Dimension(70, 16));
+        p.add("East", zoom);
 
         p = new JPanel(new BorderLayout(0, 0));
         message = new JLabel();
@@ -130,6 +140,28 @@ public class StatusBar extends JPanel {
     public void setHeight(int h) {
         yPosition.setText(rManager.getString("Position.height_letters") +
                           " " + h);
+    }
+
+    /**
+     * Sets the zoom factor.
+     */
+    public void setZoom(float f) {
+        f = (f > 0) ? f : -f;
+        if (f == 1) {
+            zoom.setText("1:1");
+        } else if (f >= 1) {
+            String s = Float.toString(f);
+            if (s.length() > 6) {
+                s = s.substring(0, 6);
+            }
+            zoom.setText("1:" + s);
+        } else {
+            String s = Float.toString(1 / f);
+            if (s.length() > 6) {
+                s = s.substring(0, 6);
+            }
+            zoom.setText(s + ":1");
+        }
     }
 
     /**

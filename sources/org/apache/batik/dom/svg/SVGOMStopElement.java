@@ -18,49 +18,39 @@ import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.CSSValue;
 import org.w3c.dom.svg.SVGAnimatedNumber;
 import org.w3c.dom.svg.SVGAnimatedString;
-import org.w3c.dom.svg.SVGFEDiffuseLightingElement;
+import org.w3c.dom.svg.SVGStopElement;
 
 /**
- * This class implements {@link org.w3c.dom.svg.SVGFEDiffuseLightingElement}.
+ * This class implements {@link org.w3c.dom.svg.SVGStopElement}.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class SVGOMFEDiffuseLightingElement
-    extends    SVGOMFilterPrimitiveStandardAttributes
-    implements SVGFEDiffuseLightingElement,
+public class SVGOMStopElement
+    extends    SVGOMElement
+    implements SVGStopElement,
                OverrideStyleElement,
 	       ExtendedElementCSSInlineStyle,
 	       ElementNonCSSPresentationalHints {
 
     /**
-     * The reference to the in attribute.
+     * The reference to the offset attribute.
      */
-    protected WeakReference inReference;
+    protected WeakReference offsetReference;
 
     /**
-     * The reference to the surfaceScale attribute.
+     * Creates a new SVGOMStopElement object.
      */
-    protected WeakReference surfaceScaleReference;
-
-    /**
-     * The reference to the diffuseConstant attribute.
-     */
-    protected WeakReference diffuseConstantReference;
-
-    /**
-     * Creates a new SVGOMFEDiffuseLightingElement object.
-     */
-    public SVGOMFEDiffuseLightingElement() {
+    public SVGOMStopElement() {
     }
 
     /**
-     * Creates a new SVGOMFEDiffuseLightingElement object.
+     * Creates a new SVGOMStopElement object.
      * @param prefix The namespace prefix.
      * @param owner The owner document.
      */
-    public SVGOMFEDiffuseLightingElement(String prefix,
-                                         AbstractDocument owner) {
+    public SVGOMStopElement(String prefix,
+                            AbstractDocument owner) {
         super(prefix, owner);
     }
 
@@ -68,52 +58,23 @@ public class SVGOMFEDiffuseLightingElement
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
      */
     public String getLocalName() {
-        return TAG_FE_DIFFUSE_LIGHTING;
+        return TAG_STOP;
     }
 
     /**
      * <b>DOM</b>: Implements {@link
-     * SVGFEDiffuseLightingElement#getIn1()}.
+     * org.w3c.dom.svg.SVGStopElement#getOffset()}.
      */
-    public SVGAnimatedString getIn1() {
-	SVGAnimatedString result;
-	if (inReference == null ||
-	    (result = (SVGAnimatedString)inReference.get()) == null) {
-	    result = new SVGOMAnimatedString(this, null, ATTR_IN);
-	    inReference = new WeakReference(result);
+    public SVGAnimatedNumber getOffset() {
+	SVGAnimatedNumber result;
+	if (offsetReference == null ||
+	    (result = (SVGAnimatedNumber)offsetReference.get()) == null) {
+	    result = new SVGOMAnimatedNumber(this, null, ATTR_OFFSET);
+	    offsetReference = new WeakReference(result);
 	}
 	return result;
     }
     
-    /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGFEDiffuseLightingElement#getSurfaceScale()}.
-     */
-    public SVGAnimatedNumber getSurfaceScale() {
-	SVGAnimatedNumber result;
-	if (surfaceScaleReference == null ||
-	    (result = (SVGAnimatedNumber)surfaceScaleReference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, ATTR_SURFACE_SCALE);
-	    surfaceScaleReference = new WeakReference(result);
-	}
-	return result;
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGFEDiffuseLightingElement#getDiffuseConstant()}.
-     */
-    public SVGAnimatedNumber getDiffuseConstant() {
-	SVGAnimatedNumber result;
-	if (diffuseConstantReference == null ||
-	    (result = (SVGAnimatedNumber)diffuseConstantReference.get()) ==
-            null) {
-	    result = new SVGOMAnimatedNumber(this, null, ATTR_SURFACE_SCALE);
-	    diffuseConstantReference = new WeakReference(result);
-	}
-	return result;
-    }
-
     // ElementNonCSSPresentationalHints ////////////////////////////////////
 
     /**
@@ -199,5 +160,5 @@ public class SVGOMFEDiffuseLightingElement
     public CSSStyleDeclaration getOverrideStyle(String pseudoElt) {
 	return getStylableSupport().getOverrideStyle(pseudoElt, this);
     }
-
+    
 }

@@ -109,7 +109,9 @@ public class ViewerFrame
     implements ActionMap,
                UserAgent,
                LanguageChangeHandler,
-               UserStyleDialog.ChangeHandler {
+               UserStyleDialog.ChangeHandler,
+               JSVGCanvas.ZoomHandler {
+
     // The actions names.
     public final static String OPEN_ACTION        = "OpenAction";
     public final static String OPEN_PAGE_ACTION   = "OpenPageAction";
@@ -393,6 +395,7 @@ public class ViewerFrame
         panel.add("Center", canvas);
         panel.revalidate();
         panel.repaint();
+        canvas.setZoomHandler(this);
         canvas.addMouseMotionListener(new MouseMotionAdapter() {
                 public void mouseMoved(MouseEvent e) {
                     statusBar.setXPosition(e.getX());
@@ -450,6 +453,10 @@ public class ViewerFrame
      */
     public void userStyleSheetURIChanged(String s) {
         userStyleSheetURI = s;
+    }
+
+    public void zoomChanged(float f) {
+        statusBar.setZoom(f);
     }
 
     // UserAgent ///////////////////////////////////////////////////
@@ -512,6 +519,13 @@ public class ViewerFrame
      */
     public void setSVGCursor(Cursor cursor) {
         canvas.setCursor(cursor);
+    }
+
+    /**
+     * Runs the given thread.
+     */
+    public void runThread(Thread t) {
+        t.start();
     }
 
     /**

@@ -223,6 +223,9 @@ public class SVGOMDocument
         factories.put(TAG_PATH,
                       new PathElementFactory());
 
+        factories.put(TAG_PATTERN,
+                      new PatternElementFactory());
+
         factories.put(TAG_POLYGON,
                       new PolygonElementFactory());
 
@@ -258,6 +261,9 @@ public class SVGOMDocument
 
         factories.put(TAG_TITLE,
                       new TitleElementFactory());
+
+        factories.put(TAG_TREF,
+                      new TrefElementFactory());
 
         factories.put(TAG_TSPAN,
                       new TspanElementFactory());
@@ -699,9 +705,7 @@ public class SVGOMDocument
          * Creates an instance of the associated element type.
          */
         public Element create(String prefix) {
-            return new SVGOMToBeImplementedElement(prefix,
-                                                   SVGOMDocument.this,
-                                                   TAG_CLIP_PATH);
+            return new SVGOMClipPathElement(prefix, SVGOMDocument.this);
         }
     }
 
@@ -1126,9 +1130,7 @@ public class SVGOMDocument
          * Creates an instance of the associated element type.
          */
         public Element create(String prefix) {
-            return new SVGOMToBeImplementedElement(prefix,
-                                                   SVGOMDocument.this,
-                                                   TAG_LINEAR_GRADIENT);
+            return new SVGOMLinearGradientElement(prefix, SVGOMDocument.this);
         }
     }
 
@@ -1141,9 +1143,7 @@ public class SVGOMDocument
          * Creates an instance of the associated element type.
          */
         public Element create(String prefix) {
-            return new SVGOMToBeImplementedElement(prefix,
-                                                   SVGOMDocument.this,
-                                                   TAG_MASK);
+            return new SVGOMMaskElement(prefix, SVGOMDocument.this);
         }
     }
 
@@ -1170,6 +1170,19 @@ public class SVGOMDocument
          */
         public Element create(String prefix) {
             return new SVGOMPathElement(prefix, SVGOMDocument.this);
+        }
+    }
+
+    /**
+     * To create a 'pattern' element.
+     */
+    protected class PatternElementFactory implements ElementFactory {
+        public PatternElementFactory() {}
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix) {
+            return new SVGOMPatternElement(prefix, SVGOMDocument.this);
         }
     }
 
@@ -1208,9 +1221,7 @@ public class SVGOMDocument
          * Creates an instance of the associated element type.
          */
         public Element create(String prefix) {
-            return new SVGOMToBeImplementedElement(prefix,
-                                                   SVGOMDocument.this,
-                                                   TAG_RADIAL_GRADIENT);
+            return new SVGOMRadialGradientElement(prefix, SVGOMDocument.this);
         }
     }
 
@@ -1249,9 +1260,7 @@ public class SVGOMDocument
          * Creates an instance of the associated element type.
          */
         public Element create(String prefix) {
-            return new SVGOMToBeImplementedElement(prefix,
-                                                   SVGOMDocument.this,
-                                                   TAG_STOP);
+            return new SVGOMStopElement(prefix, SVGOMDocument.this);
         }
     }
 
@@ -1330,6 +1339,19 @@ public class SVGOMDocument
          */
         public Element create(String prefix) {
             return new SVGOMTitleElement(prefix, SVGOMDocument.this);
+        }
+    }
+
+    /**
+     * To create a 'tref' element.
+     */
+    protected class TrefElementFactory implements ElementFactory {
+        public TrefElementFactory() {}
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix) {
+            return new SVGOMTRefElement(prefix, SVGOMDocument.this);
         }
     }
 

@@ -81,4 +81,11 @@ public class DefaultUserAgent implements UserAgent {
     public void setSVGCursor(Cursor cursor) {
         System.out.println("UnsupportedOperationException");
     }
+
+    /**
+     * Runs the given thread.
+     */
+    public void runThread(Thread t) {
+        t.start();
+    }
 }
