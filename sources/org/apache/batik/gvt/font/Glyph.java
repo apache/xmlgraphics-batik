@@ -85,7 +85,7 @@ public class Glyph {
     private float vertAdvY;
     private int glyphCode;
     private AffineTransform transform;
-    private Point2D position;
+    private Point2D.Float position;
     private GVTGlyphMetrics metrics;
     private float kernScale;
 
@@ -281,7 +281,8 @@ public class Glyph {
      * @param position The new glyph position.
      */
     public void setPosition(Point2D position) {
-        this.position = position;
+        this.position.x = (float)position.getX();
+        this.position.y = (float)position.getY();
         outline = null;
         bounds = null;
     }

@@ -443,7 +443,6 @@ public class AWTEventDispatcher implements EventDispatcher,
             screenPos.y += evt.getY();
         }
 
-
         if (lastHit != node) {
             // post an MOUSE_EXITED
             if (lastHit != null) {

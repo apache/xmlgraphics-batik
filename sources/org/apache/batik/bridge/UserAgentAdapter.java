@@ -60,6 +60,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.apache.batik.gvt.event.EventDispatcher;
+import org.apache.batik.gvt.text.Mark;
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLResourceDescriptor;
@@ -246,6 +247,11 @@ public class UserAgentAdapter implements UserAgent {
      * Unsupported operation.
      */
     public void setSVGCursor(Cursor cursor) { }
+
+    /**
+     * This user agent doesn't display text selections.
+     */
+    public void setTextSelection(Mark start, Mark end) { }
 
     /**
      * Unsupported operation.

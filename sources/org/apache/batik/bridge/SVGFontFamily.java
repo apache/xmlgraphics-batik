@@ -56,7 +56,11 @@ import org.apache.batik.gvt.font.GVTFont;
 import org.apache.batik.gvt.font.GVTFontFace;
 import org.apache.batik.gvt.font.GVTFontFamily;
 import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
+import org.apache.batik.util.SVGConstants;
+
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * A font family class for SVG fonts.
@@ -69,6 +73,9 @@ public class SVGFontFamily implements GVTFontFamily {
     protected GVTFontFace fontFace;
     protected Element fontElement;
     protected BridgeContext ctx;
+    protected Boolean complex = null;
+    
+
 
     /**
      * Constructs an SVGFontFamily.
@@ -120,5 +127,40 @@ public class SVGFontFamily implements GVTFontFamily {
             (GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER);
         return fontBridge.createFont(ctx, fontElement, textElement, 
                                      size, fontFace);
+    }
+
+    /**
+     * This method looks at the SVG font and checks if any of
+     * the glyphs use renderable child elements.  If so this
+     * is a complex font in that full CSS inheritance needs to
+     * be applied.  Otherwise if it only uses the 'd' attribute
+     * it does not need CSS treatment.
+     */
+    public boolean isComplex() {
+        if (complex != null) return complex.booleanValue();
+        boolean ret = isComplex(fontElement, ctx);
+        complex = new Boolean(ret);
+        return ret;
+    }
+
+    public static boolean isComplex(Element fontElement, BridgeContext ctx) {
+        NodeList glyphElements = fontElement.getElementsByTagNameNS
+	    (SVGConstants.SVG_NAMESPACE_URI, SVGConstants.SVG_GLYPH_TAG);
+
+        int numGlyphs = glyphElements.getLength();
+        for (int i = 0; i < numGlyphs; i++) {
+            Element glyph = (Element)glyphElements.item(i);
+            Node child    = glyph.getFirstChild();
+            for (;child != null; child = child.getNextSibling()) {
+                if (child.getNodeType() != Node.ELEMENT_NODE)
+                    continue;
+                Element e = (Element)child;
+                Bridge b = ctx.getBridge(e);
+                if ((b != null) && (b instanceof GraphicsNodeBridge)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

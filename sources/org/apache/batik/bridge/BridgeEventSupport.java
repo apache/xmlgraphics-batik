@@ -304,7 +304,8 @@ public class BridgeEventSupport implements SVGConstants {
                                           boolean cancelable) {
             Point clientXY = evt.getClientPoint();
             GraphicsNode node = evt.getGraphicsNode();
-            Element targetElement = getEventTarget(node, clientXY);
+            Element targetElement = getEventTarget(node, 
+                                                   (Point)clientXY.clone());
             Element relatedElement = getRelatedElement(evt);
             dispatchMouseEvent(eventType, 
                                targetElement,
@@ -421,9 +422,10 @@ public class BridgeEventSupport implements SVGConstants {
             if (target != null && node instanceof TextNode) {
 		TextNode textNode = (TextNode)node;
 		List list = textNode.getTextRuns();
+                Point pt = (Point)coords.clone();
                 // place coords in text node coordinate system
                 try {
-                    node.getGlobalTransform().createInverse().transform(coords, coords);
+                    node.getGlobalTransform().createInverse().transform(pt, pt);
                 } catch (NoninvertibleTransformException ex) {
                 }
                 if (list != null){
@@ -432,8 +434,8 @@ public class BridgeEventSupport implements SVGConstants {
                             (StrokingTextPainter.TextRun)list.get(i);
                         AttributedCharacterIterator aci = run.getACI();
                         TextSpanLayout layout = run.getLayout();
-                        float x = (float)coords.getX();
-                        float y = (float)coords.getY();
+                        float x = (float)pt.getX();
+                        float y = (float)pt.getY();
                         TextHit textHit = layout.hitTestChar(x, y);
                         if (textHit != null && layout.getBounds2D().contains(x, y)) {
                             Object delimiter = aci.getAttribute

@@ -113,8 +113,14 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
     implements SVGTextContent {
 
     protected final static Integer ZERO = new Integer(0);
+    public static final 
+        AttributedCharacterIterator.Attribute TEXT_COMPOUND_DELIMITER 
+        = GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER;
+
 
     protected AttributedString layoutedText;
+
+    protected boolean usingComplexSVGFont = false;
 
     /**
      * Constructs a new bridge for the &lt;text> element.
@@ -1213,7 +1219,12 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                                       TextNode node,
                                       TextDecoration textDecoration,
                                       BridgeContext ctx) {
-
+        // TODO: All paint properties for an element should be 
+        //       bundled into one 'PaintProperty' object and only
+        //       the one object should be associated with the ACI.
+        //       This would also allow fill/stroke/underline etc
+        //       changes to just update the PaintProperty object
+        //       and trigger a repaint (avoiding relayout).
 
         // 'requiredFeatures', 'requiredExtensions' and 'systemLanguage'
         if (!SVGUtilities.matchUserAgent(element, ctx.getUserAgent())) {
@@ -1223,15 +1234,15 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
 
         // calculate which chars in the string belong to this element
         int firstChar = -1;
-        for (int i = 0; i < aci.getEndIndex(); i++) {
+        for (int i = 0; i < aci.getEndIndex();) {
             aci.setIndex(i);
-            Element delimeter = (Element)aci.getAttribute(
-            GVTAttributedCharacterIterator.
-            TextAttribute.TEXT_COMPOUND_DELIMITER);
+            Element delimeter = (Element)aci.getAttribute
+                (TEXT_COMPOUND_DELIMITER);
             if (delimeter == element || nodeAncestorOf(element, delimeter)) {
                 firstChar = i;
                 break;
             }
+            i = aci.getRunLimit(TEXT_COMPOUND_DELIMITER);
         }
         if (firstChar == -1)
             return; // Element not part of aci (no chars in elem usually)
@@ -1239,13 +1250,13 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         int lastChar = aci.getEndIndex()-1;
         for (int i = aci.getEndIndex()-1; i >= 0; i--) {
             aci.setIndex(i);
-            Element delimeter = (Element)aci.getAttribute(
-                GVTAttributedCharacterIterator.
-                TextAttribute.TEXT_COMPOUND_DELIMITER);
+            Element delimeter = (Element)aci.getAttribute
+                (TEXT_COMPOUND_DELIMITER);
             if (delimeter == element || nodeAncestorOf(element, delimeter)) {
                 lastChar = i;
                 break;
             }
+            i = aci.getRunStart(TEXT_COMPOUND_DELIMITER);
         }
 
         // Opacity
@@ -1418,6 +1429,12 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             GVTFontFamily fontFamily
                 = SVGFontUtilities.getFontFamily(element, ctx, fontFamilyName,
                    fontWeightString, fontStyleString);
+            if (fontFamily instanceof SVGFontFamily) {
+                SVGFontFamily svgFF = (SVGFontFamily)fontFamily;
+                if (svgFF.isComplex()) {
+                    usingComplexSVGFont = true;
+                }
+            }
             fontFamilyList.add(fontFamily);
         }
 
@@ -2680,8 +2697,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             lastMark = textNode.getMarkerForChar(lastChar,false);
         }
 
-        textNode.setSelection(firstMark,lastMark);
-        
+        ctx.getUserAgent().setTextSelection(firstMark,lastMark);
     }
 
     protected int getCharNumAtPosition(Element e, float x, float y){
