@@ -99,7 +99,7 @@ public class SVGComposite implements SVGConverter {
      *         equivalent of the input Composite
      */
     public SVGCompositeDescriptor toSVG(Composite composite) {
-        if(composite instanceof AlphaComposite)
+        if (composite instanceof AlphaComposite)
             return svgAlphaComposite.toSVG((AlphaComposite)composite);
         else
             return svgCustomComposite.toSVG(composite);
