@@ -601,6 +601,8 @@ public class JSVGComponent extends JGVTComponent {
             if (svgDocument != null) {
                 SVGSVGElement elt = svgDocument.getRootElement();
                 Dimension d = getSize();
+                if (d.width  < 1) d.width  = 1;
+                if (d.height < 1) d.height = 1;
                 setRenderingTransform
                     (ViewBox.getViewTransform
                      (fragmentIdentifier, elt, d.width, d.height));

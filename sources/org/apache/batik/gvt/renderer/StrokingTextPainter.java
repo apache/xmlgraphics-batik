@@ -807,7 +807,9 @@ public class StrokingTextPainter extends BasicTextPainter {
             tpShiftY  = 0;
         }
 
-        // System.out.println("ABS: [" + absX + "," + absY + "]");
+        // System.out.println("ABS: [" + absX + "," + absY + "," + 
+        //                    visualAdvance.getX() + "," + 
+        //                    visualAdvance.getY() + "]");
         for (int n=chunk.begin; n<chunk.end; ++n) {
             r = (TextRun) textRuns.get(n);
             layout = r.getLayout();

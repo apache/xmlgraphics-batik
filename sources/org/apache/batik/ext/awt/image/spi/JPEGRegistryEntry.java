@@ -10,6 +10,7 @@ package org.apache.batik.ext.awt.image.spi;
 
 import com.sun.image.codec.jpeg.JPEGImageDecoder;
 import com.sun.image.codec.jpeg.JPEGCodec;
+import com.sun.image.codec.jpeg.TruncatedFileException;
 
 import java.io.InputStream;
 import java.io.IOException;
@@ -70,7 +71,16 @@ public class JPEGRegistryEntry
                         JPEGImageDecoder decoder;
                         decoder = JPEGCodec.createJPEGDecoder(is);
                         BufferedImage image;
-                        image   = decoder.decodeAsBufferedImage();
+                        try { 
+                            image   = decoder.decodeAsBufferedImage();
+                        } catch (TruncatedFileException tfe) {
+                            image = tfe.getBufferedImage();
+                            // Should probably draw some indication
+                            // that this is a partial image....
+                            if (image == null)
+                                throw new IOException
+                                    ("JPEG File was truncated");
+                        }
                         CachableRed cr;
                         cr = GraphicsUtil.wrap(image);
                         cr = new Any2sRGBRed(cr);
