@@ -122,7 +122,7 @@ public abstract class DefaultCachedImageHandler
      * Creates an Element which can refer to an image.
      * Note that no assumptions should be made by the caller about the
      * corresponding SVG tag. By default, an &lt;image&gt; tag is 
-     * used, but the {@link CachecImageHandlerBase64Encoder}, for
+     * used, but the {@link CachedImageHandlerBase64Encoder}, for
      * example, overrides this method to use a different tag.
      */
     public Element createElement(SVGGeneratorContext generatorContext) {

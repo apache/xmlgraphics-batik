@@ -328,8 +328,8 @@ public class SVGConverter {
     }
 
     /**
-     * Sets the user language. If the value is null, then the default
-     * (see {@link org.apache.batik.transcoder.image.ImageTranscoder#getLanguage})
+     * Sets the user language. If the value is null, then the default (see 
+     * {@link org.apache.batik.bridge.UserAgent#getLanguages})
      * is used.
      */
     public void setLanguage(String language){
@@ -354,7 +354,7 @@ public class SVGConverter {
     /**
      * Sets the pixel to millimeter conversion constant. A negative
      * value will cause the default value 
-     * (see {@link org.apache.batik.transcoder.image.ImageTranscoder#getPixelToMM})
+     * (see {@link org.apache.batik.bridge.UserAgent#getPixelToMM})
      * to be used.
      */
     public void setPixelToMillimeter(float pixelToMillimeter){
@@ -816,11 +816,9 @@ public class SVGConverter {
     /**
      * Get the name of the result image file.
      *
-     * <P>This method differs from the other 
-     * {@link #getDestinationFile(File) getDestinationFile} method as this
-     * method modifies the result filename. It changes the existing suffix 
-     * to correspong the result file type. It also adds the suffix if the file
-     * doesn't have one.</P>
+     * <P>This method modifies the result filename, it changes the existing 
+     * suffix to correspong the result file type. It also adds the suffix 
+     * if the file doesn't have one.</P>
      *
      * @param file Result file name as a String object.
      *
