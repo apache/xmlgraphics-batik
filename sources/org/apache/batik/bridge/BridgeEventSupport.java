@@ -128,9 +128,10 @@ class BridgeEventSupport implements SVGConstants {
      */
     public static void addDOMListener(BridgeContext ctx,
                                       Element eee) {
-        SVGElement element = (SVGElement)eee;
+        SVGElement element = null;
         EventTarget target = null;
         try {
+            element = (SVGElement)eee;
             // ability for scripts to be called
             target = (EventTarget)element;
         } catch (ClassCastException e) {

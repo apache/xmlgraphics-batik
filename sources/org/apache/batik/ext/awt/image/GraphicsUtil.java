@@ -528,7 +528,9 @@ public class GraphicsUtil {
         if (gc.getDevice().getType() == GraphicsDevice.TYPE_IMAGE_BUFFER)
             return null;
 
-        return gc.getBounds();
+        // This is a JDK 1.3ism, so we will just return null...
+        // return gc.getBounds();
+        return null;
     }
 
 
@@ -1045,10 +1047,6 @@ public class GraphicsUtil {
 
         return coerceColorModel(cm, newAlphaPreMult);
     }
-
-
-
-
 
     /**
      * Copies data from one bufferedImage to another paying attention

@@ -226,14 +226,21 @@ public class ImageTagRegistry implements ErrorConstants {
         return registry;
     }
 
+    static BrokenLinkProvider defaultProvider 
+        = new DefaultBrokenLinkProvider();
+
     static BrokenLinkProvider brokenLinkProvider = null;
 
     public synchronized static Filter 
         getBrokenLinkImage(String code, Object [] params) {
-        if (brokenLinkProvider == null)
-            brokenLinkProvider = new DefaultBrokenLinkProvider();
+        Filter ret = null;
+        if (brokenLinkProvider != null)
+            ret = brokenLinkProvider.getBrokenLinkImage(code, params);
 
-        return brokenLinkProvider.getBrokenLinkImage(code, params);
+        if (ret == null)
+            ret = defaultProvider.getBrokenLinkImage(code, params);
+
+        return ret;
     }
 
 

@@ -9,6 +9,10 @@
 package org.apache.batik.dom.svg;
 
 import java.net.URL;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
 import java.util.Locale;
 import java.util.MissingResourceException;
 
@@ -38,6 +42,7 @@ import org.apache.batik.i18n.Localizable;
 import org.apache.batik.i18n.LocalizableSupport;
 
 import org.apache.batik.util.SVGConstants;
+import org.apache.batik.util.Service;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.CDATASection;
@@ -87,10 +92,6 @@ public class SVGOMDocument
      */
     protected LocalizableSupport localizableSupport =
         new LocalizableSupport(RESOURCES);
-    /**
-     * The custom elements factories.
-     */
-    protected HashTable customFactories;
 
     /**
      * The SVG element factories.
@@ -342,6 +343,20 @@ public class SVGOMDocument
     }
 
     /**
+     * The custom elements factories.
+     */
+    protected HashTable customFactories;
+
+    protected void registerExtensions() {
+        Iterator iter = getDomExtensions().iterator();
+
+        while(iter.hasNext()) {
+            DomExtension de = (DomExtension)iter.next();
+            de.registerTags(this);
+        }
+    }
+
+    /**
      * Allows the user to register a new element factory.
      */
     public void registerCustomElementFactory(String namespaceURI,
@@ -386,6 +401,7 @@ public class SVGOMDocument
      * Creates a new uninitialized document.
      */
     protected SVGOMDocument() {
+        registerExtensions();
     }
 
     /**
@@ -397,6 +413,7 @@ public class SVGOMDocument
         if (dt != null) {
             appendChild(dt);
         }
+        registerExtensions();
     }
 
     /**
@@ -672,16 +689,20 @@ public class SVGOMDocument
                 HashTable ht = (HashTable)customFactories.get(namespaceURI);
                 if (ht != null) {
                     String name = DOMUtilities.getLocalName(qualifiedName);
+                    // System.out.println("Name: " + name);
                     ElementFactory cef = (ElementFactory)ht.get(name);
                     if (cef != null) {
                         return cef.create(DOMUtilities.getPrefix(qualifiedName), this);
                     }
                 }
             }
+            // System.out.println("Creating: " + namespaceURI+ ", " + 
+            //                    qualifiedName);
             return new GenericElementNS(namespaceURI.intern(),
                                         qualifiedName.intern(),
                                         this);
         } else {
+            // System.out.println("Creating: " + qualifiedName);
             return new GenericElement(qualifiedName.intern(), this);
         }
     }
@@ -789,7 +810,7 @@ public class SVGOMDocument
     /**
      * This interface represents a factory of elements.
      */
-    protected interface ElementFactory {
+    public interface ElementFactory {
         /**
          * Creates an instance of the associated element type.
          */
@@ -1907,4 +1928,36 @@ public class SVGOMDocument
                                                    SVG_VKERN_TAG);
         }
     }
+
+    static List extensions = null;
+
+    public synchronized static List getDomExtensions() {
+        if (extensions != null)
+            return extensions;
+
+        extensions = new LinkedList();
+
+        Iterator iter = Service.providers(DomExtension.class);
+
+        while (iter.hasNext()) {
+            DomExtension de = (DomExtension)iter.next();
+            float priority  = de.getPriority();
+            ListIterator li = extensions.listIterator();
+            for (;;) {
+                if (!li.hasNext()) {
+                    li.add(de);
+                    break;
+                }
+                DomExtension lde = (DomExtension)li.next();
+                if (lde.getPriority() > priority) {
+                    li.previous();
+                    li.add(de);
+                    break;
+                }
+            }
+        }
+
+        return extensions;
+    }
+
 }

@@ -93,6 +93,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
         else
             purl = new ParsedURL(uriStr);
 
+
         // try to load an SVG document
         DocumentLoader loader = ctx.getDocumentLoader();
         URIResolver resolver = new URIResolver(svgDoc, loader);
@@ -326,6 +327,10 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
         }
 
         return new Rectangle2D.Float(x, y, w, h);
+    }
+
+    static {
+        ImageTagRegistry.setBrokenLinkProvider(new SVGBrokenLinkProvider());
     }
 
 }

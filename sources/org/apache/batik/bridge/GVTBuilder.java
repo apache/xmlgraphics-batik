@@ -73,6 +73,7 @@ public class GVTBuilder implements SVGConstants {
             ex.setGraphicsNode(rootNode);
             Element errElement = ex.getElement();
             ex.setLineNumber(ctx.getDocumentLoader().getLineNumber(errElement));
+            ex.printStackTrace();
             throw ex; // re-throw the udpated exception
         } finally {
             if (topNode != null) {
@@ -186,6 +187,7 @@ public class GVTBuilder implements SVGConstants {
                 gnBridge.buildGraphicsNode(ctx, e, errNode);
                 ex.setGraphicsNode(null);
             }
+            ex.printStackTrace();
             throw ex;
         }
     }

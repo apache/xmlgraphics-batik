@@ -19,16 +19,19 @@ import java.awt.geom.Dimension2D;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.swing.JComponent;
 
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeException;
+import org.apache.batik.bridge.BridgeExtension;
 import org.apache.batik.bridge.BridgeMutationEvent;
 import org.apache.batik.bridge.DocumentLoader;
 import org.apache.batik.bridge.GraphicsNodeBridge;
@@ -834,15 +837,29 @@ public class JSVGComponent extends JGVTComponent {
             return FEATURES.contains(s);
         }
 
+        protected Map extensions = new HashMap();
+
         /**
          * Tells whether the given extension is supported by this
          * user agent.
          */
         public boolean supportExtension(String s) {
-            if (svgUserAgent != null) {
-                return svgUserAgent.supportExtension(s);
-            }
-            return false;
+            boolean ret = false;
+            if ((svgUserAgent != null) &&
+                (svgUserAgent.supportExtension(s)))
+                return true;
+
+            return extensions.containsKey(s);
+        }
+
+        /**
+         * Lets the bridge tell the user agent that the following
+         * extension is supported by the bridge.  
+         */
+        public void registerExtension(BridgeExtension ext) {
+            Iterator i = ext.getImplementedExtensions();
+            while (i.hasNext())
+                extensions.put(i.next(), ext);
         }
     }
 
