@@ -439,7 +439,7 @@ public class ParsedURL {
             return null;
 
         // May have a protocol spec...
-        String protocol = urlStr.substring(0, idx);
+        String protocol = urlStr.substring(0, idx).toLowerCase();
         if (protocol.indexOf('/') != -1)
             // Got a slash in protocol probably means 
             // no protocol given.
@@ -465,11 +465,6 @@ public class ParsedURL {
      * @param urlStr the sub URL string to parse.
      */
     public static ParsedURLData parseURL(String baseStr, String urlStr) {
-        String protocol = getProtocol(urlStr);
-        if (protocol != null)
-            // Protocol given, ignore base...
-            return parseURL(urlStr);
-
         ParsedURL purl = new ParsedURL(baseStr);
         return parseURL(purl, urlStr);
     }
@@ -482,10 +477,6 @@ public class ParsedURL {
      */
     public static ParsedURLData parseURL(ParsedURL baseURL, String urlStr) {
         String protocol = getProtocol(urlStr);
-        if (protocol != null)
-            // Protocol given, ignore base...
-            return parseURL(urlStr);
-
         ParsedURLProtocolHandler handler = getHandler(protocol);
         return handler.parseURL(baseURL, urlStr);        
     }
