@@ -67,8 +67,8 @@
             <p>The True Type Font converter application is helpful to be able to embed font definitions in SVG files. This will
             ensure that the SVG document will look exactly the same on all platform by not relying on system fonts.</p>
             <p>Note that users of the tool should make sure that they have the right to embed the font before embedding it
-            in an SVG file. True Type Font files contain a flag that defines the 'embeddability' of a font and there are 
-            tools for checking that flag.</p>
+            in an SVG file and should refer to the font license for information. Note that True Type Font files contain a flag 
+            that defines the 'embeddability' of a font and there are tools for checking that flag.</p>
         </s1>
     </body>
 </document>
