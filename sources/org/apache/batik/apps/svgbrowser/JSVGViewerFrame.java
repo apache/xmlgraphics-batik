@@ -343,6 +343,9 @@ public class JSVGViewerFrame
             }
         });
 
+        svgCanvas = new JSVGCanvas(userAgent, true, true);
+        svgCanvas.setDoubleBufferedRendering(true);
+
         listeners.put(ABOUT_ACTION, new AboutAction());
         listeners.put(OPEN_ACTION, new OpenAction());
         listeners.put(OPEN_LOCATION_ACTION, new OpenLocationAction());
@@ -358,9 +361,15 @@ public class JSVGViewerFrame
         listeners.put(CLOSE_ACTION, new CloseAction());
         listeners.put(EXIT_ACTION, application.createExitAction(this));
         listeners.put(VIEW_SOURCE_ACTION, new ViewSourceAction());
-        listeners.put(RESET_TRANSFORM_ACTION, new ResetTransformAction());
-        listeners.put(ZOOM_IN_ACTION, new ZoomInAction());
-        listeners.put(ZOOM_OUT_ACTION, new ZoomOutAction());
+
+	javax.swing.ActionMap cMap = svgCanvas.getActionMap();
+        listeners.put(RESET_TRANSFORM_ACTION, 
+		      cMap.get(JSVGCanvas.RESET_TRANSFORM_ACTION));
+        listeners.put(ZOOM_IN_ACTION, 
+		      cMap.get(JSVGCanvas.ZOOM_IN_ACTION));
+        listeners.put(ZOOM_OUT_ACTION,
+		      cMap.get(JSVGCanvas.ZOOM_OUT_ACTION));
+ 
         listeners.put(PREVIOUS_TRANSFORM_ACTION, previousTransformAction);
         listeners.put(NEXT_TRANSFORM_ACTION, nextTransformAction);
         listeners.put(STOP_ACTION, stopAction);
@@ -370,10 +379,6 @@ public class JSVGViewerFrame
         listeners.put(FIND_DIALOG_ACTION, new FindDialogAction());
         listeners.put(THUMBNAIL_DIALOG_ACTION, new ThumbnailDialogAction());
         listeners.put(FLUSH_ACTION, new FlushAction());
-
-        svgCanvas = new JSVGCanvas(userAgent, true, true);
-
-        svgCanvas.setDoubleBufferedRendering(true);
 
         JPanel p = null;
         try {
@@ -1071,57 +1076,6 @@ public class JSVGViewerFrame
             svgCanvas.flush();
             // Force redraw...
             svgCanvas.setRenderingTransform(svgCanvas.getRenderingTransform());
-        }
-    }
-
-    /**
-     * To reset the document transform.
-     */
-    public class ResetTransformAction extends AbstractAction {
-        public ResetTransformAction() {}
-        public void actionPerformed(ActionEvent e) {
-            svgCanvas.setFragmentIdentifier(null);
-            svgCanvas.resetRenderingTransform();
-        }
-    }
-
-    /**
-     * To zoom in.
-     */
-    public class ZoomInAction extends AbstractAction {
-        public ZoomInAction() {}
-        public void actionPerformed(ActionEvent e) {
-            AffineTransform at = svgCanvas.getRenderingTransform();
-            if (at != null) {
-                Dimension dim = getSize();
-                int x = dim.width / 2;
-                int y = dim.height / 2;
-                AffineTransform t = AffineTransform.getTranslateInstance(x, y);
-                t.scale(2, 2);
-                t.translate(-x, -y);
-                t.concatenate(at);
-                svgCanvas.setRenderingTransform(t);
-            }
-        }
-    }
-
-    /**
-     * To zoom out.
-     */
-    public class ZoomOutAction extends AbstractAction {
-        public ZoomOutAction() {}
-        public void actionPerformed(ActionEvent e) {
-            AffineTransform at = svgCanvas.getRenderingTransform();
-            if (at != null) {
-                Dimension dim = getSize();
-                int x = dim.width / 2;
-                int y = dim.height / 2;
-                AffineTransform t = AffineTransform.getTranslateInstance(x, y);
-                t.scale(0.5, 0.5);
-                t.translate(-x, -y);
-                t.concatenate(at);
-                svgCanvas.setRenderingTransform(t);
-            }
         }
     }
 
