@@ -45,7 +45,7 @@
       }
       text.link {
           fill: white;
-          font-size: 22pt;
+          font-size: 18pt;
           font-family: SunSansCondensed-Heavy;
       }
   ]]>
@@ -92,24 +92,66 @@
     Test Files 2
   </text>
 
-  <a xlink:href="index.svg">
-    <text class="link" x="50" y="0"
+  <a xlink:href="clip.svg" xlink:show="new">
+    <text class="link" x="70" y="0"
           transform="translate(0, 250) rotate(-45)">
-      Linking (index.svg)
+      Clip Path (clip.svg)
     </text>
   </a> 
 
   <a xlink:href="xsltest.svg" xlink:show="new">
-    <text class="link" x="50" y="0"
-          transform="translate(0, 250) rotate(-25)">
+    <text class="link" x="70" y="0"
+          transform="translate(0, 250) rotate(-35)">
       XSL Stylesheets (xsltest.svg)
     </text>
   </a> 
 
-  <a xlink:href="index.svg">
-    <text class="link" x="50" y="0"
+  <a xlink:href="dataProtocol.svg" xlink:show="new">
+    <text class="link" x="70" y="0"
+          transform="translate(0, 250) rotate(-25)">
+      Data Protocol (dataProtocol.svg)
+    </text>
+  </a> 
+
+  <a xlink:href="feComposite.svg" xlink:show="new">
+    <text class="link" x="70" y="0"
+          transform="translate(0, 250) rotate(-15)">
+      feComposite (feComposite.svg)
+    </text>
+  </a> 
+
+  <a xlink:href="feTileTarget.svg" xlink:show="new">
+    <text class="link" x="70" y="0"
           transform="translate(0, 250) rotate(-5)">
-      Linking (index.svg)
+      feTileTarget (feTileTarget.svg)
+    </text>
+  </a> 
+
+  <a xlink:href="image.svg" xlink:show="new">
+    <text class="link" x="70" y="0"
+          transform="translate(0, 250) rotate(5)">
+      SVG Images (image.svg)
+    </text>
+  </a> 
+
+  <a xlink:href="thumbnails.svg" xlink:show="new">
+    <text class="link" x="70" y="0"
+          transform="translate(0, 250) rotate(15)">
+      External References (thumbnails.svg)
+    </text>
+  </a> 
+
+  <a xlink:href="feDisplacementMap.svg" xlink:show="new">
+    <text class="link" x="70" y="0"
+          transform="translate(0, 250) rotate(25)">
+      feDisplacementMap (feDisplacementMap.svg)
+    </text>
+  </a> 
+
+  <a xlink:href="feTile.svg" xlink:show="new">
+    <text class="link" x="70" y="0"
+          transform="translate(0, 250) rotate(35)">
+      feTile (feTile.svg)
     </text>
   </a> 
 
