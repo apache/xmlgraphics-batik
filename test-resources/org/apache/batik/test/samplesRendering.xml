@@ -204,6 +204,13 @@
         <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/batikFont.png" />
     </test>
 
+    <test id="samples/tests/useStylingURI.svg" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.lang.String" value="samples/tests/useStylingURI.svg" />
+        <arg class="java.lang.String" value="test-references/samples/tests/useStylingURI.png" />
+        <property name="VariationURL" class="java.lang.String" value="test-references/samples/tests/accepted-variation/useStylingURI.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/useStylingURI.png" />
+    </test>
+
     <test id="samples/tests/bboxOnText.svg" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="samples/tests/bboxOnText.svg" />
         <arg class="java.lang.String" value="test-references/samples/tests/bboxOnText.png" />
