@@ -196,7 +196,7 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
 
         // attach the referenced element to the current document
         SVGOMCSSImportedElementRoot root;
-        root = new SVGOMCSSImportedElementRoot(document, e);
+        root = new SVGOMCSSImportedElementRoot(document, e, isLocal);
         root.appendChild(localRefElement);
 
         SVGOMUseElement ue = (SVGOMUseElement)e;

@@ -73,6 +73,12 @@ public class SVGOMCSSImportedElementRoot
     protected Element cssParentElement;
 
     /**
+     * Indicates if the imported css element is from
+     * this document.
+     */
+    protected boolean isLocal;
+
+    /**
      * Creates a new DocumentFragment object.
      */
     protected SVGOMCSSImportedElementRoot() {
@@ -82,9 +88,11 @@ public class SVGOMCSSImportedElementRoot
      * Creates a new DocumentFragment object.
      */
     public SVGOMCSSImportedElementRoot(AbstractDocument owner,
-                                       Element parent) {
+                                       Element parent,
+                                       boolean isLocal) {
 	ownerDocument = owner;
         cssParentElement = parent;
+        this.isLocal = isLocal;
     }
 
     /**
@@ -108,6 +116,15 @@ public class SVGOMCSSImportedElementRoot
      */
     public Element getCSSParentElement() {
         return cssParentElement;
+    }
+
+
+    /**
+     * Returns true if the imported CSS tree is from this
+     * 'owner' document.
+     */
+    public boolean getIsLocal() {
+        return isLocal;
     }
 
     /**

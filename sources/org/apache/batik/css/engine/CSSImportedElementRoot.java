@@ -69,4 +69,9 @@ public interface CSSImportedElementRoot extends DocumentFragment {
      */
     Element getCSSParentElement();
 
+    /**
+     * Returns true if the imported element is local to
+     * the owning document.
+     */
+    boolean getIsLocal();
 }
