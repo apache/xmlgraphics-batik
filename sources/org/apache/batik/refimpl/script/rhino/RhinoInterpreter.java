@@ -60,8 +60,10 @@ public class RhinoInterpreter implements org.apache.batik.script.Interpreter {
                                     "<SVG>",
                                     1, null);
         } catch (JavaScriptException e) {
+            e.printStackTrace();
             throw new InterpreterException(e, e.getMessage(), -1, -1);
         } catch (RuntimeException re) {
+            re.printStackTrace();
             throw new InterpreterException(re, re.getMessage(), -1, -1);
         }
         Context.exit();
