@@ -12,7 +12,7 @@
 -->
 <!-- ===================================================================== -->
 
-<svg width="800" height="600">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="800" height="600">
 <title>SVG Color Identifiers</title>
   <style type="text/css"><![CDATA[
     text {

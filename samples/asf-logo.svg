@@ -39,7 +39,7 @@
 	<!ENTITY st22 "fill:url(#AIgd72);">
 	<!ENTITY st23 "fill:#000000;stroke-width:0.5956;">
 ]>
-<svg id="body" xml:space="preserve" width="168.743" height="51.066">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="body" xml:space="preserve" width="168.743" height="51.066">
 <g id="Feather_x0020_shadow">
 	<path style="&st0;" d="M0.281,44.304c13.561-1.867,63.613-4.392,85.943-8.05c17.961-2.937,35.502-8.285,52.242-13.9c4.328-1.453,11.991-4.434,16.896-7.07c3.104-2.373,10.571-5.889,12.606-9.222c-32.45,15.407-45.513,19.649-83.582,27.354
 		c-15.436,3.169-71.617,7.72-84.105,10.888z"/>
