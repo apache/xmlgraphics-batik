@@ -103,6 +103,10 @@ public class GraphicsNodeRed8Bit extends AbstractTiledRed
         if (tw > defSz) tw = defSz;
         int th  = (bounds.y+bounds.height)-tgY;
         if (th > defSz) th = defSz;
+        if ((tw <= 0) || (th <= 0)) {
+            tw = 1;
+            th = 1;
+        }
 
         // fix my sample model so it makes sense given my size.
         SampleModel sm = cm.createCompatibleSampleModel(tw, th);

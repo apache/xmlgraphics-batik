@@ -297,7 +297,9 @@ public abstract class AbstractTiledRed
             if (occupied.length != w*h)
                 throw new IllegalArgumentException
                     ("Occupied array must be equal to widthxheight");
-            
+            // System.out.println("Block: [" + 
+            //                    xloc + "," + yloc + ","  + 
+            //                    w + "," + h + "]");
             for (int i=0; i<occupied.length; i++)
                 if (!occupied[i])
                     benefit++;
@@ -359,18 +361,21 @@ public abstract class AbstractTiledRed
             for (int y=0; y<h; y++) {
                 boolean prevOcc = false;
                 for (int x=0; x<w; x++) {
+                    if (Thread.currentThread().isInterrupted())
+                        return null;
+
                     if (!occupied[x+y*w]) 
-                        prevOcc = false;
-                    else if (!prevOcc) {
-                        // Don't bother doing this again if the previous x
-                        // was occupied, we get the same splits...
-                        TileBlock [] split = getBestSplitAt(x+xloc, y+yloc);
-                        int cWork = getWork(split);
-                        if (cWork < bestWork) {
-                            bestSplit = split;
-                            bestWork = cWork;
-                        }
-                        prevOcc = true;
+                        continue;
+
+                    TileBlock [] split = getBestSplitAt(x+xloc, y+yloc);
+                    if (split == null) continue;
+
+                    int cWork = getWork(split);
+                    if (cWork < bestWork) {
+                        bestSplit = split;
+                        bestWork  = cWork;
+                        if (bestWork <= (benefit+2)*1.1)
+                            return bestSplit;
                     }
                 }
             }
@@ -388,6 +393,9 @@ public abstract class AbstractTiledRed
             int workH =0;
             for (int i=0; i<split.length; i++) {
                 bestSplits[i]  =     split [i].getBestSplit();
+                if (bestSplits[i] == null)
+                    return null;
+
                 count         += bestSplits[i].length;
                 workH         += getWork(bestSplits[i]);
             }
@@ -400,6 +408,9 @@ public abstract class AbstractTiledRed
                 int workV =0;
                 for (int i=0; i<splitV.length; i++) {
                     bestSplitsV[i]  =     splitV [i].getBestSplit();
+                    if (bestSplitsV[i] == null)
+                        return null;
+
                     countV         += bestSplitsV[i].length;
                     workV          += getWork(bestSplitsV[i]);
                 }
@@ -650,7 +661,8 @@ public abstract class AbstractTiledRed
                     int idx=0;
                     for (int j=startRow; j<= endRow; j++)
                         occ[idx++] = occupied[j*w+x];
-                    block3 = new TileBlock(x+xloc, yloc, 1, rows, occ);
+                    block3 = new TileBlock(x+xloc, yloc+startRow, 
+                                           1, rows, occ);
                     splits++;
                 }
             }
@@ -670,7 +682,8 @@ public abstract class AbstractTiledRed
                     int idx=0;
                     for (int j=startRow; j<= endRow; j++)
                         occ[idx++] = occupied[j*w+x];
-                    block4 = new TileBlock(x+xloc, yloc, 1, rows, occ);
+                    block4 = new TileBlock(x+xloc, yloc+startRow, 
+                                           1, rows, occ);
                     splits++;
                 }
             }
@@ -739,51 +752,30 @@ public abstract class AbstractTiledRed
         int xtiles = insideTx1-insideTx0+1;
         int ytiles = insideTy1-insideTy0+1;
         boolean [] occupied = null;
-        if ((xtiles > 0) && (ytiles > 0)) {
-            // Collect all the tiles that we currently have...
+        if ((xtiles > 0) && (ytiles > 0))
             occupied = new boolean[xtiles*ytiles];
-            for (int y=0; y<ytiles; y++)
-                for (int x=0; x<xtiles; x++) {
-                    Raster ras = tiles.getTileNoCompute(x+insideTx0,
-                                                        y+insideTy0);
-                    if (ras == null) {
-                        occupied[x+y*xtiles] = false;
-                        continue;
-                    } else {
-                        occupied[x+y*xtiles] = true;
-                        
-                        if (is_INT_PACK)
-                            GraphicsUtil.copyData_INT_PACK(ras, wr);
-                        else
-                            GraphicsUtil.copyData_FALLBACK(ras, wr);
-                    }
-                }
-        }
 
         boolean [] got = new boolean[2*(tx1-tx0+1) + 2*(ty1-ty0+1)];
         int idx = 0;
-        // Get the ones from the cache.
+        // Collect all the tiles that we currently have in cache...
         for (int y=ty0; y<=ty1; y++) {
             for (int x=tx0; x<=tx1; x++) {
+                Raster ras = tiles.getTileNoCompute(x, y);
+                boolean found = (ras != null);
                 if ((y>=insideTy0) && (y<=insideTy1) &&
-                    (x>=insideTx0) && (x<=insideTx1)) 
-                    continue;
-
-                // System.out.println("Computing : " + x + "," + y);
-                Raster r = tiles.getTileNoCompute(x, y);
-                if (r == null) {
-                    got[idx++] = false;
-                    continue;
-                }
-
-                got[idx++] = true;
-                if (is_INT_PACK)
-                    GraphicsUtil.copyData_INT_PACK(r, wr);
+                    (x>=insideTx0) && (x<=insideTx1))
+                    occupied[(x-insideTx0)+(y-insideTy0)*xtiles] = found;
                 else
-                    GraphicsUtil.copyData_FALLBACK(r, wr);
+                    got[idx++] = found;
+
+                if (!found) continue;
+
+                if (is_INT_PACK)
+                    GraphicsUtil.copyData_INT_PACK(ras, wr);
+                else
+                    GraphicsUtil.copyData_FALLBACK(ras, wr);
             }
         }
-
 
         // Compute the stuff from the middle in the largest possible Chunks.
         if ((xtiles > 0) && (ytiles > 0)) {
@@ -794,28 +786,25 @@ public abstract class AbstractTiledRed
             // System.out.println("Ending Splits: " + blocks.length);
 
             // System.out.println("Starting Computation: " + this);
-            for (int i=0; i<blocks.length; i++) {
-                TileBlock curr = blocks[i];
-                if (curr.getXLoc() < insideTx0)
-                    System.out.println("Curr: " + curr + 
-                                       " X: " + curr.getXLoc() +
-                                       " inside: " + insideTx0);
-                int xloc = curr.getXLoc()*tileWidth +tileGridXOff;
-                int yloc = curr.getYLoc()*tileHeight+tileGridYOff;
-                Rectangle tb = new Rectangle(xloc, yloc,
-                                             curr.getWidth()*tileWidth,
-                                             curr.getHeight()*tileHeight);
-                tb = tb.intersection(bounds);
+            if (blocks != null)
+                for (int i=0; i<blocks.length; i++) {
+                    TileBlock curr = blocks[i];
+                    int xloc = curr.getXLoc()*tileWidth +tileGridXOff;
+                    int yloc = curr.getYLoc()*tileHeight+tileGridYOff;
+                    Rectangle tb = new Rectangle(xloc, yloc,
+                                                 curr.getWidth()*tileWidth,
+                                                 curr.getHeight()*tileHeight);
+                    tb = tb.intersection(bounds);
 
-                WritableRaster child = 
-                    wr.createWritableChild(tb.x, tb.y, tb.width, tb.height,
-                                           tb.x, tb.y, null);
-                // System.out.println("Computing : " + child);
-                genRect(child);
+                    WritableRaster child = 
+                        wr.createWritableChild(tb.x, tb.y, tb.width, tb.height,
+                                               tb.x, tb.y, null);
+                    // System.out.println("Computing : " + child);
+                    genRect(child);
 
-                if (Thread.currentThread().isInterrupted())
-                    return;
-            }
+                    if (Thread.currentThread().isInterrupted())
+                        return;
+                }
             // Exception e= new Exception("Foo");
             // e.printStackTrace();
         }
@@ -823,9 +812,6 @@ public abstract class AbstractTiledRed
         idx = 0;
         // Fill in the ones that weren't in the cache.
         for (ty=ty0; ty<=ty1; ty++) {
-
-            if (Thread.currentThread().isInterrupted())
-                break;
 
             for (tx=tx0; tx<=tx1; tx++) {
                 // At least touch the tile...
@@ -852,6 +838,9 @@ public abstract class AbstractTiledRed
                     // System.out.println("Computing : " + x + "," + y);
                 
                     ras = getTile(tx, ty);// Compute the tile..
+                    if (Thread.currentThread().isInterrupted())
+                        return;
+
                     if (is_INT_PACK)
                         GraphicsUtil.copyData_INT_PACK(ras, wr);
                     else

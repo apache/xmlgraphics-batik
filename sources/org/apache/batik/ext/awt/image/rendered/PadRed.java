@@ -462,7 +462,7 @@ public class PadRed extends AbstractRed {
         SampleModel sm = src.getSampleModel();
         int w = sm.getWidth();
         if (w < defSz) w = defSz;
-        if      (w > bounds.width)  w = bounds.width;
+        if (w > bounds.width)  w = bounds.width;
         int h = sm.getHeight();
         if (h < defSz) h = defSz;
         if (h > bounds.height) h = bounds.height;

@@ -82,8 +82,9 @@ public class StaticRenderer implements Renderer {
     /**
      * Offscreen image where the Renderer does its rendering
      */
+    protected WritableRaster baseRaster;
+    protected WritableRaster raster;
     protected BufferedImage offScreen;
-    protected BufferedImage baseOffScreen;
 
     protected int offScreenWidth;
     protected int offScreenHeight;
@@ -142,10 +143,11 @@ public class StaticRenderer implements Renderer {
      */
     public void setRenderContext(GraphicsNodeRenderContext rc) {
         this.nodeRenderContext = rc;
-        rootGNR       = null;
-        rootCR        = null;
-        offScreen     = null;
-        baseOffScreen = null;
+        rootGNR    = null;
+        rootCR     = null;
+        offScreen  = null;
+        baseRaster = null;
+        raster     = null;
     }
 
     /**
@@ -179,44 +181,59 @@ public class StaticRenderer implements Renderer {
             
             rootCR = GraphicsUtil.wrap(rootGNR.createRendering(rc));
             rootCR = GraphicsUtil.convertTosRGB(rootCR);
-            offScreen = null;
         }
 
-        if ((offScreen == null) ||
-            (offScreen.getWidth()  != offScreenWidth) ||
-            (offScreen.getHeight() != offScreenHeight)) {
-            if ((baseOffScreen == null)                      ||
-                (baseOffScreen.getWidth()  < offScreenWidth) ||
-                (baseOffScreen.getHeight() < offScreenHeight))
-                baseOffScreen = makeOffscreen(rootCR, 
-                                              offScreenWidth,
-                                              offScreenHeight);
-            offScreen = baseOffScreen.getSubimage
-                (0, 0, offScreenWidth, offScreenHeight);
-        }
+        updateRaster(rootCR, offScreenWidth, offScreenHeight);
+
+        offScreen =  new BufferedImage
+            (rootCR.getColorModel(), 
+             raster.createWritableChild (0, 0, offScreenWidth,
+                                         offScreenHeight, 0, 0, null),
+             rootCR.getColorModel().isAlphaPremultiplied(), null);
 
         return offScreen;
     }
 
-    protected BufferedImage makeOffscreen(CachableRed cr, int w, int h) {
+    protected void updateRaster(CachableRed cr, int w, int h) {
         SampleModel sm = cr.getSampleModel();
         int tw = sm.getWidth();
         int th = sm.getHeight();
-        w = ((w+tw-1)/tw)*tw;
-        h = ((h+th-1)/th)*th;
-        sm = sm.createCompatibleSampleModel(w, h);
-        WritableRaster wr;
-        wr = Raster.createWritableRaster(sm, new Point(0,0));
-        return new BufferedImage
-            (cr.getColorModel(), wr, 
-             cr.getColorModel().isAlphaPremultiplied(), null);
+        w = (((w+tw-1)/tw)+1)*tw;
+        h = (((h+th-1)/th)+1)*th;
+
+        if ((baseRaster == null) ||
+            (baseRaster.getWidth()  < w) ||
+            (baseRaster.getHeight() < h)) {
+            sm = sm.createCompatibleSampleModel(w, h);
+            baseRaster = Raster.createWritableRaster(sm, new Point(0,0));
+        }
+
+        int tgx = -cr.getTileGridXOffset();
+        int tgy = -cr.getTileGridYOffset();
+        int xt, yt;
+        if (tgx>=0) xt = tgx/tw;
+        else        xt = (tgx-tw+1)/tw;
+        if (tgy>=0) yt = tgy/th;
+        else        yt = (tgy-th+1)/th;
+
+        int xloc = xt*tw - tgx;
+        int yloc = yt*th - tgy;
+        
+        // System.out.println("Info: [" + 
+        //                    xloc + "," + yloc + "] [" + 
+        //                    tgx  + "," + tgy  + "] [" +
+        //                    xt   + "," + yt   + "] [" +
+        //                    tw   + "," + th   + "]");
+        // This raster should be aligned with cr's tile grid.
+        raster = baseRaster.createWritableChild(0, 0, w, h, xloc, yloc, null);
     }
 
     /**
      * Disposes all resources of this renderer.
      */
     public void dispose() {
-        baseOffScreen = null;
+        baseRaster = null;
+        raster = null;
         offScreen = null;
         treeRoot = null;
         rootGNR  = null;
@@ -234,7 +251,8 @@ public class StaticRenderer implements Renderer {
         rootGNR = null;
         rootCR    = null;
         offScreen = null;
-        baseOffScreen = null;
+        baseRaster = null;
+        raster = null;
     }
 
     /**
@@ -247,10 +265,12 @@ public class StaticRenderer implements Renderer {
 
     public void clearOffScreen() {
         getOffScreen();
-        Graphics2D g2d = baseOffScreen.createGraphics();
+        BufferedImage bi = new BufferedImage
+            (rootCR.getColorModel(), baseRaster,
+             rootCR.getColorModel().isAlphaPremultiplied(), null);
+        Graphics2D g2d = bi.createGraphics();
         g2d.setComposite(AlphaComposite.Clear);
-        g2d.fillRect(0, 0, baseOffScreen.getWidth(), 
-                     baseOffScreen.getHeight());
+        g2d.fillRect(0, 0, bi.getWidth(), bi.getHeight());
         g2d.dispose();
     }
 
@@ -276,9 +296,7 @@ public class StaticRenderer implements Renderer {
         if(treeRoot != null) {
             getOffScreen();
             Rectangle srcR = rootCR.getBounds();
-            Rectangle dstR = new Rectangle(0,0, 
-                                           baseOffScreen.getWidth(),
-                                           baseOffScreen.getHeight());
+            Rectangle dstR = raster.getBounds();
             CachableRed cr = rootCR;
             if ((dstR.x < srcR.x) ||
                 (dstR.y < srcR.y) ||
@@ -286,7 +304,7 @@ public class StaticRenderer implements Renderer {
                 (dstR.y+dstR.height > srcR.y+srcR.height))
                 cr = new PadRed(cr, dstR, PadMode.ZERO_PAD, null);
 
-            cr.copyData(baseOffScreen.getRaster());
+            cr.copyData(raster);
 
 /*            long t1 = System.currentTimeMillis();
             GraphicsNode copy = treeRoot.renderingClone();
@@ -340,20 +358,3 @@ public class StaticRenderer implements Renderer {
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
