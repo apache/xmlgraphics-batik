@@ -259,6 +259,7 @@ public class Main implements Application {
     public void run() {
         try {
             int i = 0;
+
             for (; i < arguments.length; i++) {
                 OptionHandler oh = (OptionHandler)handlers.get(arguments[i]);
                 if (oh == null) {
@@ -266,6 +267,7 @@ public class Main implements Application {
                 }
                 i = oh.handleOption(i);
             }
+
             JSVGViewerFrame frame = createAndShowJSVGViewerFrame();
             while (i < arguments.length) {
                 if (arguments[i].length() == 0) {
@@ -384,6 +386,7 @@ public class Main implements Application {
             UIManager.put("MenuBar.font", fontRes);
             UIManager.put("ToolBar.font", fontRes);
             UIManager.put("RadioButton.font", fontRes);
+            UIManager.put("RadioButtonMenuItem.font", fontRes);
             UIManager.put("ToggleButton.font", fontRes);
             UIManager.put("ToolTip.font", fontRes);
             UIManager.put("ProgressBar.font", fontRes);
