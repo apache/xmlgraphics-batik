@@ -117,4 +117,11 @@
             <text class="link" y="28em">ContextTexture.svg</text>
         </a>
     </g>
+
+    <g transform="translate(255, 80)">
+        <a xlink:href="ContextNegativeLengths.svg" xlink:show="new">
+            <text class="link" y="1em">ContextNegativeLengths.svg</text>
+        </a>
+    </g>
+
 </svg>
