@@ -14,7 +14,6 @@ import java.io.Reader;
 import java.io.StringReader;
 
 import java.net.URL;
-import java.net.URLClassLoader;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -247,8 +246,10 @@ public class BaseScriptingEnvironment {
                     url = new URL(url, href);
 
                     checkCompatibleScriptURL(type, url);
+                    URL docURL = ((SVGOMDocument)document).getURLObject();
 
-                    URLClassLoader cll = new URLClassLoader(new URL[] { url });
+                    DocumentJarClassLoader cll 
+                        = new DocumentJarClassLoader(url, docURL);
                     
                     // Get the 'Script-Handler' entry in the manifest.
                     url = cll.findResource("META-INF/MANIFEST.MF");
