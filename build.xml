@@ -147,6 +147,8 @@ To display the available targets type:
     <echo message="   ttf2svg       --> converts selected glyphs from a True Type"/>
     <echo message="                     Font file to the SVG Font format"/>
     <echo message="   regard        --> runs the regard regression utility"/>
+    <echo message="   regard.manual --> runs regard tests that require user"/>
+    <echo message="                     interaction."/>
     <echo message="   runtestsuite  --> runs a TestSuite, given an XML test suite"/>
     <echo message="                     document"/>
     <echo message="   runtest       --> runs a test whose class name is given at the command line"/>
