@@ -88,7 +88,7 @@
                 <text x="30" y="15" class="label">&lt;circle&gt;</text>
 
                 <a xlink:href="#svgView(viewBox(3,2.5,4,4))">
-                   <circle id="testCircle" cx="90" cy="10" r="8" fill="crimson" width="20" height="14" />
+                   <circle id="testCircle" cx="90" cy="10" r="8" fill="crimson" />
                 </a>
 
             </g> <!-- "circleRow" -->
