@@ -293,8 +293,8 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
         // Stroke Paint
         p = CSSUtilities.convertStrokeToPaint(cssDecl);
         if (p != null) {
-            as.addAttribute(GVTAttributedCharacterIterator.TextAttribute.STROKE_PAINT,
-                            p);
+            as.addAttribute
+                (GVTAttributedCharacterIterator.TextAttribute.STROKE_PAINT, p);
         }
 
         // Stroke

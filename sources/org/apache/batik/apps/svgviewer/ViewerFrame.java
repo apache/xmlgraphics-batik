@@ -736,29 +736,7 @@ public class ViewerFrame
                     (resources.getInteger("Thumbnail.width"),
                      resources.getInteger("Thumbnail.height"));
 
-                JPanel p;
-                /*
-                listeners.put("ThumbnailCloseButtonAction",
-                              new CloseButtonAction());
-                JPanel p = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-                ButtonFactory bf = new ButtonFactory(bundle, ViewerFrame.this);
-                p.add(bf.createJButton("ThumbnailCloseButton"));
-                thumbnailFrame.getContentPane().add("South", p);
-                */
-
-                p = new JPanel(new BorderLayout());
-                thumbnailFrame.getContentPane().add(p);
-                /*
-                p.setBorder(BorderFactory.createCompoundBorder
-                            (BorderFactory.createCompoundBorder
-                             (BorderFactory.createTitledBorder
-                              (BorderFactory.createEtchedBorder(),
-                               resources.getString("Thumbnail.border_title")),
-                              BorderFactory.createEmptyBorder(5, 5, 5, 5)),
-                             BorderFactory.createLoweredBevelBorder()));
-                             */
-
-                p.add("Center", canvas.getThumbnail());
+                thumbnailFrame.getContentPane().add(canvas.getThumbnail());
 
                 URL url =
                     getClass().getResource(resources.getString("Frame.icon"));
@@ -769,15 +747,6 @@ public class ViewerFrame
             thumbnailFrame.setLocation(fr.x + (fr.width  - td.width) / 2,
                                        fr.y + (fr.height - td.height) / 2);
             thumbnailFrame.show();
-        }
-
-        /**
-         * The action associated with the 'Close' button of the memory monitor.
-         */
-        protected class CloseButtonAction extends AbstractAction {
-            public void actionPerformed(ActionEvent e) {
-                thumbnailFrame.dispose();
-            }
         }
     }
 
