@@ -176,9 +176,18 @@ public class JSVGApplet extends JApplet implements UserAgent, DocumentListener {
             break;
         case (DocumentLoadingEvent.LOADED):
             // New doc has been loaded, prepare for new view
-            DefaultSVGContext dc = new DefaultSVGContext();
+            DefaultSVGContext dc = new DefaultSVGContext() {
+                    public float getPixelToMM() {
+                        return JSVGApplet.this.getPixelToMM();
+                    }
+                    public float getViewportWidth() {
+                        return (float)canvas.getSize().getWidth();
+                    }
+                    public float getViewportHeight() {
+                        return (float)canvas.getSize().getHeight();
+                    }
+                };
             SVGOMDocument doc = (SVGOMDocument) e.getValue();
-            dc.setUserAgent(this);
             dc.setUserStyleSheetURI(userStyleSheetURI);
             doc.setSVGContext(dc);
             canvas.setSVGDocument(null);

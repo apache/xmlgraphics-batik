@@ -98,7 +98,7 @@ public class SVGFeOffsetElementBridge implements FilterPrimitiveBridge,
             AffineTransform.getTranslateInstance(dx, dy);
 
         // Get source
-        String inAttr = filterElement.getAttributeNS(null, ATTR_IN);
+        String inAttr = filterElement.getAttributeNS(null, SVG_IN_ATTRIBUTE);
         in = CSSUtilities.getFilterSource(filteredNode,
                                           inAttr,
                                           bridgeContext,

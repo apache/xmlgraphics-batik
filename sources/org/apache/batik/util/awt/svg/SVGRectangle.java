@@ -42,8 +42,8 @@ public class SVGRectangle extends SVGGraphicObjectConverter{
      */
     public Element toSVG(RoundRectangle2D rect){
         Element svgRect = toSVG((RectangularShape)rect);
-        svgRect.setAttribute(ATTR_RX, doubleString(rect.getArcWidth()/2));
-        svgRect.setAttribute(ATTR_RY, doubleString(rect.getArcHeight()/2));
+        svgRect.setAttribute(SVG_RX_ATTRIBUTE, doubleString(rect.getArcWidth()/2));
+        svgRect.setAttribute(SVG_RY_ATTRIBUTE, doubleString(rect.getArcHeight()/2));
         return svgRect;
     }
 

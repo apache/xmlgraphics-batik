@@ -10,6 +10,7 @@ package org.apache.batik.dom.svg;
 
 import org.apache.batik.dom.AbstractDocument;
 
+import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGPointList;
 import org.w3c.dom.svg.SVGPolygonElement;
 
@@ -22,10 +23,11 @@ import org.w3c.dom.svg.SVGPolygonElement;
 public class SVGOMPolygonElement
     extends    SVGGraphicsElement
     implements SVGPolygonElement {
+
     /**
      * Creates a new SVGOMPolygonElement object.
      */
-    public SVGOMPolygonElement() {
+    protected SVGOMPolygonElement() {
     }
 
     /**
@@ -58,5 +60,12 @@ public class SVGOMPolygonElement
      */
     public SVGPointList getAnimatedPoints() {
         throw new RuntimeException(" !!! TODO");
+    }
+
+    /**
+     * Returns a new uninitialized instance of this object's class.
+     */
+    protected Node newNode() {
+        return new SVGOMPolygonElement();
     }
 }

@@ -32,8 +32,8 @@ import org.w3c.dom.svg.SVGStyleElement;
 public class SVGOMStyleElement
     extends    SVGOMElement
     implements SVGStyleElement,
-	       LinkStyle
-{
+	       LinkStyle {
+
     /**
      * The attribute-value map map.
      */
@@ -52,7 +52,7 @@ public class SVGOMStyleElement
     /**
      * Creates a new SVGOMStyleElement object.
      */
-    public SVGOMStyleElement() {
+    protected SVGOMStyleElement() {
     }
 
     /**
@@ -121,7 +121,7 @@ public class SVGOMStyleElement
      * org.w3c.dom.svg.SVGStyleElement#getType()}.
      */
     public String getType() {
-	return getAttribute(ATTR_TYPE);
+	return getAttributeNS(null, SVG_TYPE_ATTRIBUTE);
     }
  
     /**
@@ -129,7 +129,7 @@ public class SVGOMStyleElement
      * org.w3c.dom.svg.SVGStyleElement#setType(String)}.
      */
     public void setType(String type) throws DOMException {
-	setAttribute(ATTR_TYPE, type);
+	setAttributeNS(null, SVG_TYPE_ATTRIBUTE, type);
     }
 
     /**
@@ -170,5 +170,12 @@ public class SVGOMStyleElement
      */
     protected Map getDefaultAttributeValues() {
         return attributeValues;
+    }
+
+    /**
+     * Returns a new uninitialized instance of this object's class.
+     */
+    protected Node newNode() {
+        return new SVGOMStyleElement();
     }
 }

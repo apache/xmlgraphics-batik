@@ -10,6 +10,8 @@ package org.apache.batik.dom.svg;
 
 import java.lang.ref.WeakReference;
 import org.apache.batik.dom.AbstractDocument;
+
+import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedLength;
 import org.w3c.dom.svg.SVGAnimatedPreserveAspectRatio;
 import org.w3c.dom.svg.SVGAnimatedString;
@@ -48,7 +50,7 @@ public class SVGOMImageElement
     /**
      * Creates a new SVGOMImageElement object.
      */
-    public SVGOMImageElement() {
+    protected SVGOMImageElement() {
     }
 
     /**
@@ -74,7 +76,7 @@ public class SVGOMImageElement
 	SVGAnimatedLength result;
 	if (xReference == null ||
 	    (result = (SVGAnimatedLength)xReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "x");
+	    result = new SVGOMAnimatedLength(this, null, "x", null);
 	    xReference = new WeakReference(result);
 	}
 	return result;
@@ -87,7 +89,7 @@ public class SVGOMImageElement
 	SVGAnimatedLength result;
 	if (yReference == null ||
 	    (result = (SVGAnimatedLength)yReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "y");
+	    result = new SVGOMAnimatedLength(this, null, "y", null);
 	    yReference = new WeakReference(result);
 	}
 	return result;
@@ -101,7 +103,7 @@ public class SVGOMImageElement
 	SVGAnimatedLength result;
 	if (widthReference == null ||
 	    (result = (SVGAnimatedLength)widthReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "width");
+	    result = new SVGOMAnimatedLength(this, null, "width", null);
 	    widthReference = new WeakReference(result);
 	}
 	return result;
@@ -115,7 +117,7 @@ public class SVGOMImageElement
 	SVGAnimatedLength result;
 	if (heightReference == null ||
 	    (result = (SVGAnimatedLength)heightReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "height");
+	    result = new SVGOMAnimatedLength(this, null, "height", null);
 	    heightReference = new WeakReference(result);
 	}
 	return result;
@@ -130,4 +132,10 @@ public class SVGOMImageElement
 	    (" !!! TODO: SVGOMImageElement.getPreserveAspectRatio()");
     }
 
+    /**
+     * Returns a new uninitialized instance of this object's class.
+     */
+    protected Node newNode() {
+        return new SVGOMImageElement();
+    }
 }

@@ -8,11 +8,15 @@
 
 package org.apache.batik.dom.svg;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.batik.css.ElementNonCSSPresentationalHints;
 import org.apache.batik.css.ExtendedElementCSSInlineStyle;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.OverrideStyleElement;
 import org.apache.batik.dom.util.XMLSupport;
+
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
 import org.w3c.dom.css.CSSStyleDeclaration;
@@ -39,6 +43,21 @@ public abstract class SVGClippingMaskingElement
     implements OverrideStyleElement,
 	       ExtendedElementCSSInlineStyle,
 	       ElementNonCSSPresentationalHints {
+    // The enumeration maps
+    protected final static Map STRING_TO_SHORT_UNITS = new HashMap(3);
+    protected final static Map SHORT_TO_STRING_UNITS = new HashMap(3);
+    static {
+        STRING_TO_SHORT_UNITS.put(SVG_USER_SPACE_ON_USE_VALUE,
+                                  SVGOMAnimatedEnumeration.createShort((short)1));
+        STRING_TO_SHORT_UNITS.put(SVG_OBJECT_BOUNDING_BOX_VALUE,
+                                  SVGOMAnimatedEnumeration.createShort((short)2));
+
+        SHORT_TO_STRING_UNITS.put(SVGOMAnimatedEnumeration.createShort((short)1),
+                                  SVG_USER_SPACE_ON_USE_VALUE);
+        SHORT_TO_STRING_UNITS.put(SVGOMAnimatedEnumeration.createShort((short)2),
+                                  SVG_OBJECT_BOUNDING_BOX_VALUE);
+    }
+
     /**
      * Creates a new SVGClippingMaskingElement.
      */

@@ -14,6 +14,8 @@ import org.apache.batik.css.ElementNonCSSPresentationalHints;
 import org.apache.batik.css.ExtendedElementCSSInlineStyle;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.OverrideStyleElement;
+
+import org.w3c.dom.Node;
 import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.CSSValue;
 import org.w3c.dom.svg.SVGAnimatedNumber;
@@ -41,7 +43,7 @@ public class SVGOMStopElement
     /**
      * Creates a new SVGOMStopElement object.
      */
-    public SVGOMStopElement() {
+    protected SVGOMStopElement() {
     }
 
     /**
@@ -151,5 +153,11 @@ public class SVGOMStopElement
     public CSSStyleDeclaration getOverrideStyle(String pseudoElt) {
 	return getStylableSupport().getOverrideStyle(pseudoElt, this);
     }
-    
+
+    /**
+     * Returns a new uninitialized instance of this object's class.
+     */
+    protected Node newNode() {
+        return new SVGOMStopElement();
+    }    
 }

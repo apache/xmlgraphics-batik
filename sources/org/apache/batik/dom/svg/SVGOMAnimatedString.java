@@ -37,6 +37,7 @@ public class SVGOMAnimatedString implements SVGAnimatedString {
     /**
      * Creates a new SVGAnimatedString object.
      * @param elt The associated element.
+     * @param nsURI The attribute namespace URI.
      * @param attr The associated attribute name.
      */
     public SVGOMAnimatedString(Element elt, String nsURI, String attr) {

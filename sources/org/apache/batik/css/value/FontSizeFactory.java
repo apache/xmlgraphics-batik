@@ -62,9 +62,6 @@ public class FontSizeFactory
      */
     public ImmutableValue createValue(LexicalUnit lu) throws DOMException {
         switch (lu.getLexicalUnitType()) {
-	case LexicalUnit.SAC_PERCENTAGE:
-	    return createFloatValue(CSSPrimitiveValue.CSS_PERCENTAGE,
-				    lu.getFloatValue());
         case LexicalUnit.SAC_IDENT:
             Object v = values.get(lu.getStringValue().toLowerCase().intern());
             if (v == null) {

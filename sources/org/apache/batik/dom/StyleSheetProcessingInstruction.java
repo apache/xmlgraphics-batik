@@ -10,6 +10,7 @@ package org.apache.batik.dom;
 
 import org.apache.batik.dom.util.HashTable;
 import org.w3c.dom.DOMException;
+import org.w3c.dom.Node;
 import org.w3c.dom.stylesheets.LinkStyle;
 import org.w3c.dom.stylesheets.StyleSheet;
 
@@ -43,7 +44,7 @@ public class StyleSheetProcessingInstruction
     /**
      * Creates a new ProcessingInstruction object.
      */
-    public StyleSheetProcessingInstruction() {
+    protected StyleSheetProcessingInstruction() {
     }
 
     /**
@@ -103,5 +104,12 @@ public class StyleSheetProcessingInstruction
     public void setData(String data) throws DOMException {
 	super.setData(data);
 	sheet = null;
+    }
+
+    /**
+     * Returns a new uninitialized instance of this object's class.
+     */
+    protected Node newNode() {
+        return new GenericAttr();
     }
 }

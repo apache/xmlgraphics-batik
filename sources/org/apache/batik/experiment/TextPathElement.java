@@ -14,6 +14,7 @@ import org.apache.batik.dom.svg.SVGGraphicsElement;
 import org.apache.batik.dom.svg.SVGURIReferenceSupport;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedEnumeration;
 import org.w3c.dom.svg.SVGAnimatedLength;
 import org.w3c.dom.svg.SVGAnimatedLengthList;
@@ -36,7 +37,7 @@ public class TextPathElement
     /**
      * Creates a new TextPathElement object.
      */
-    public TextPathElement() {
+    protected TextPathElement() {
     }
 
     /**
@@ -193,5 +194,12 @@ public class TextPathElement
      */
     public SVGAnimatedString getHref() {
         return getSVGURIReferenceSupport().getHref(this);
+    }
+
+    /**
+     * Returns a new uninitialized instance of this object's class.
+     */
+    protected Node newNode() {
+        return new TextPathElement();
     }
 }

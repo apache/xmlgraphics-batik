@@ -64,7 +64,7 @@ public class SVGLinearGradient extends AbstractSVGConverter{
         if(gradientDesc == null){
             Element gradientDef = domFactory.createElement(TAG_LINEAR_GRADIENT);
             gradientDef.setAttribute(ATTR_GRADIENT_UNITS,
-                                     VALUE_USER_SPACE_ON_USE);
+                                     SVG_USER_SPACE_ON_USE_VALUE);
 
             //
             // Process gradient vector
@@ -156,7 +156,7 @@ public class SVGLinearGradient extends AbstractSVGConverter{
         SVGLinearGradient converter = new SVGLinearGradient(domFactory);
 
         Element group = domFactory.createElement(TAG_G);
-        Element defs = domFactory.createElement(TAG_DEFS);
+        Element defs = domFactory.createElement(SVG_DEFS_TAG);
 
         SVGPaintDescriptor gradientDesc = converter.toSVG(gradient);
 

@@ -8,6 +8,8 @@
 
 package org.apache.batik.dom;
 
+import org.w3c.dom.Node;
+
 /**
  * This class implements the {@link org.w3c.dom.Notation} interface.
  *
@@ -23,7 +25,7 @@ public class GenericNotation extends AbstractNotation {
     /**
      * Creates a new Notation object.
      */
-    public GenericNotation() {
+    protected GenericNotation() {
     }
 
     /**
@@ -51,5 +53,12 @@ public class GenericNotation extends AbstractNotation {
      */
     public void setReadonly(boolean v) {
 	readonly = v;
+    }
+
+    /**
+     * Returns a new uninitialized instance of this object's class.
+     */
+    protected Node newNode() {
+        return new GenericNotation();
     }
 }

@@ -89,7 +89,7 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
             = paintElement.getAttributeNS(null, ATTR_PATTERN_CONTENT_UNITS);
 
         if(patternContentUnits.length() == 0){
-            patternContentUnits = VALUE_USER_SPACE_ON_USE;
+            patternContentUnits = SVG_USER_SPACE_ON_USE_VALUE;
         }
         int unitsType;
         try {
@@ -200,7 +200,7 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
         // is no viewBox
         AffineTransform patternContentTransform = null;
         if (!hasViewBox) {
-            if(VALUE_OBJECT_BOUNDING_BOX.equals(patternContentUnits)){
+            if(SVG_OBJECT_BOUNDING_BOX_VALUE.equals(patternContentUnits)){
                 Rectangle2D bounds = paintedNode.getGeometryBounds();
                 patternContentTransform = new AffineTransform();
                 patternContentTransform.translate(bounds.getX(),

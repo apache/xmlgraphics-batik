@@ -11,6 +11,7 @@ package org.apache.batik.dom.svg;
 import java.lang.ref.WeakReference;
 import org.apache.batik.dom.AbstractDocument;
 
+import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedEnumeration;
 import org.w3c.dom.svg.SVGAnimatedLength;
 import org.w3c.dom.svg.SVGMaskElement;
@@ -48,7 +49,7 @@ public class SVGOMMaskElement
     /**
      * Creates a new SVGOMMaskElement object.
      */
-    public SVGOMMaskElement() {
+    protected SVGOMMaskElement() {
     }
 
     /**
@@ -82,7 +83,7 @@ public class SVGOMMaskElement
 	SVGAnimatedLength result;
 	if (xReference == null ||
 	    (result = (SVGAnimatedLength)xReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "x");
+	    result = new SVGOMAnimatedLength(this, null, "x", null);
 	    xReference = new WeakReference(result);
 	}
 	return result;
@@ -95,7 +96,7 @@ public class SVGOMMaskElement
 	SVGAnimatedLength result;
 	if (yReference == null ||
 	    (result = (SVGAnimatedLength)yReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "y");
+	    result = new SVGOMAnimatedLength(this, null, "y", null);
 	    yReference = new WeakReference(result);
 	}
 	return result;
@@ -109,7 +110,7 @@ public class SVGOMMaskElement
 	SVGAnimatedLength result;
 	if (widthReference == null ||
 	    (result = (SVGAnimatedLength)widthReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "width");
+	    result = new SVGOMAnimatedLength(this, null, "width", null);
 	    widthReference = new WeakReference(result);
 	}
 	return result;
@@ -123,10 +124,16 @@ public class SVGOMMaskElement
 	SVGAnimatedLength result;
 	if (heightReference == null ||
 	    (result = (SVGAnimatedLength)heightReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "height");
+	    result = new SVGOMAnimatedLength(this, null, "height", null);
 	    heightReference = new WeakReference(result);
 	}
 	return result;
     } 
 
+    /**
+     * Returns a new uninitialized instance of this object's class.
+     */
+    protected Node newNode() {
+        return new SVGOMMaskElement();
+    }
 }

@@ -9,6 +9,7 @@
 package org.apache.batik.dom.svg;
 
 import org.apache.batik.dom.AbstractDocument;
+import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGDefsElement;
 
 /**
@@ -20,10 +21,11 @@ import org.w3c.dom.svg.SVGDefsElement;
 public class SVGOMDefsElement
     extends    SVGGraphicsElement
     implements SVGDefsElement {
+
     /**
      * Creates a new SVGOMDefsElement object.
      */
-    public SVGOMDefsElement() {
+    protected SVGOMDefsElement() {
     }
 
     /**
@@ -40,6 +42,13 @@ public class SVGOMDefsElement
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
      */
     public String getLocalName() {
-        return TAG_DEFS;
+        return SVG_DEFS_TAG;
+    }
+
+    /**
+     * Returns a new uninitialized instance of this object's class.
+     */
+    protected Node newNode() {
+        return new SVGOMDefsElement();
     }
 }

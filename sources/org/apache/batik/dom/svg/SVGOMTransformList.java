@@ -41,15 +41,15 @@ public class SVGOMTransformList
     protected List list = new ArrayList();
 
     /**
-     * The attribute modifier.
+     * The modification handler.
      */
-    protected AttributeModifier attributeModifier;
+    protected ModificationHandler modificationHandler;
 
     /**
-     * Sets the associated attribute modifier.
+     * Sets the associated modification handler.
      */
-    public void setAttributeModifier(AttributeModifier am) {
-	attributeModifier = am;
+    public void setModificationHandler(ModificationHandler mh) {
+	modificationHandler = mh;
     }
 
     /**
@@ -73,8 +73,8 @@ public class SVGOMTransformList
      */
     public void clear() {
         list.clear();
-        if (attributeModifier != null) {
-            attributeModifier.setAttributeValue(toString());
+        if (modificationHandler != null) {
+            modificationHandler.valueChanged(toString());
         }
     }
 
@@ -100,8 +100,8 @@ public class SVGOMTransformList
         throws SVGException {
         list.clear();
         list.add(newItem);
-        if (attributeModifier != null) {
-            attributeModifier.setAttributeValue(toString());
+        if (modificationHandler != null) {
+            modificationHandler.valueChanged(toString());
         }
         return newItem;
      }
@@ -133,8 +133,8 @@ public class SVGOMTransformList
         } else {
             list.add(index, newItem);
         }
-        if (attributeModifier != null) {
-            attributeModifier.setAttributeValue(toString());
+        if (modificationHandler != null) {
+            modificationHandler.valueChanged(toString());
         }
         return newItem;
     }
@@ -152,8 +152,8 @@ public class SVGOMTransformList
                                      new Object[] { new Integer(index) });
         }
         list.set(index, newItem);
-        if (attributeModifier != null) {
-            attributeModifier.setAttributeValue(toString());
+        if (modificationHandler != null) {
+            modificationHandler.valueChanged(toString());
         }
         return newItem;
     }
@@ -169,8 +169,8 @@ public class SVGOMTransformList
                                      new Object[] { new Integer(index) });
         }
         Object result = list.remove(index);
-        if (attributeModifier != null) {
-            attributeModifier.setAttributeValue(toString());
+        if (modificationHandler != null) {
+            modificationHandler.valueChanged(toString());
         }
         return (SVGTransform)result;
     }
@@ -180,8 +180,8 @@ public class SVGOMTransformList
      */
     public SVGTransform appendItem(SVGTransform np) throws SVGException {
         list.add(np);
-        if (attributeModifier != null) {
-            attributeModifier.setAttributeValue(toString());
+        if (modificationHandler != null) {
+            modificationHandler.valueChanged(toString());
         }
         return np;
     }
@@ -207,8 +207,8 @@ public class SVGOMTransformList
      */
     protected DOMException createDOMException(short type, String key,
                                               Object[] args) {
-        if (attributeModifier != null) {
-            return attributeModifier.createDOMException(type, key, args);
+        if (modificationHandler != null) {
+            return modificationHandler.createDOMException(type, key, args);
         } else {
             return new DOMException(type, key);
         }

@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.batik.dom.AbstractDocument;
+import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedEnumeration;
 import org.w3c.dom.svg.SVGAnimatedNumber;
 import org.w3c.dom.svg.SVGAnimatedString;
@@ -26,8 +27,8 @@ import org.w3c.dom.svg.SVGFECompositeElement;
  */
 public class SVGOMFECompositeElement
     extends    SVGOMFilterPrimitiveStandardAttributes
-    implements SVGFECompositeElement
-{
+    implements SVGFECompositeElement {
+
     /**
      * The reference to the in attribute.
      */
@@ -71,7 +72,7 @@ public class SVGOMFECompositeElement
     /**
      * Creates a new SVGOMFECompositeElement object.
      */
-    public SVGOMFECompositeElement() {
+    protected SVGOMFECompositeElement() {
     }
 
     /**
@@ -98,7 +99,7 @@ public class SVGOMFECompositeElement
 	SVGAnimatedString result;
 	if (inReference == null ||
 	    (result = (SVGAnimatedString)inReference.get()) == null) {
-	    result = new SVGOMAnimatedString(this, null, ATTR_IN);
+	    result = new SVGOMAnimatedString(this, null, SVG_IN_ATTRIBUTE);
 	    inReference = new WeakReference(result);
 	}
 	return result;
@@ -112,7 +113,7 @@ public class SVGOMFECompositeElement
 	SVGAnimatedString result;
 	if (in2Reference == null ||
 	    (result = (SVGAnimatedString)in2Reference.get()) == null) {
-	    result = new SVGOMAnimatedString(this, null, ATTR_IN2);
+	    result = new SVGOMAnimatedString(this, null, SVG_IN2_ATTRIBUTE);
 	    in2Reference = new WeakReference(result);
 	}
 	return result;
@@ -188,5 +189,12 @@ public class SVGOMFECompositeElement
      */
     protected Map getDefaultAttributeValues() {
         return attributeValues;
+    }
+
+    /**
+     * Returns a new uninitialized instance of this object's class.
+     */
+    protected Node newNode() {
+        return new SVGOMFECompositeElement();
     }
 }

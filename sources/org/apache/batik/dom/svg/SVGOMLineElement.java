@@ -10,6 +10,8 @@ package org.apache.batik.dom.svg;
 
 import java.lang.ref.WeakReference;
 import org.apache.batik.dom.AbstractDocument;
+
+import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedLength;
 import org.w3c.dom.svg.SVGLineElement;
 
@@ -22,6 +24,7 @@ import org.w3c.dom.svg.SVGLineElement;
 public class SVGOMLineElement
     extends    SVGGraphicsElement
     implements SVGLineElement {
+
     /**
      * The reference to the x1 attribute.
      */
@@ -45,7 +48,7 @@ public class SVGOMLineElement
     /**
      * Creates a new SVGOMLineElement object.
      */
-    public SVGOMLineElement() {
+    protected SVGOMLineElement() {
     }
 
     /**
@@ -71,7 +74,7 @@ public class SVGOMLineElement
 	SVGAnimatedLength result;
 	if (x1Reference == null ||
 	    (result = (SVGAnimatedLength)x1Reference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "x1");
+	    result = new SVGOMAnimatedLength(this, null, "x1", null);
 	    x1Reference = new WeakReference(result);
 	}
 	return result;
@@ -84,7 +87,7 @@ public class SVGOMLineElement
 	SVGAnimatedLength result;
 	if (y1Reference == null ||
 	    (result = (SVGAnimatedLength)y1Reference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "y1");
+	    result = new SVGOMAnimatedLength(this, null, "y1", null);
 	    y1Reference = new WeakReference(result);
 	}
 	return result;
@@ -97,7 +100,7 @@ public class SVGOMLineElement
 	SVGAnimatedLength result;
 	if (x2Reference == null ||
 	    (result = (SVGAnimatedLength)x2Reference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "x2");
+	    result = new SVGOMAnimatedLength(this, null, "x2", null);
 	    x2Reference = new WeakReference(result);
 	}
 	return result;
@@ -110,9 +113,16 @@ public class SVGOMLineElement
 	SVGAnimatedLength result;
 	if (y2Reference == null ||
 	    (result = (SVGAnimatedLength)y2Reference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "y2");
+	    result = new SVGOMAnimatedLength(this, null, "y2", null);
 	    y2Reference = new WeakReference(result);
 	}
 	return result;
     } 
+
+    /**
+     * Returns a new uninitialized instance of this object's class.
+     */
+    protected Node newNode() {
+        return new SVGOMLineElement();
+    }
 }

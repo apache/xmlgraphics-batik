@@ -14,6 +14,8 @@ import org.apache.batik.css.ElementNonCSSPresentationalHints;
 import org.apache.batik.css.ExtendedElementCSSInlineStyle;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.OverrideStyleElement;
+
+import org.w3c.dom.Node;
 import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.CSSValue;
 import org.w3c.dom.svg.SVGAnimatedNumber;
@@ -51,7 +53,7 @@ public class SVGOMFEDiffuseLightingElement
     /**
      * Creates a new SVGOMFEDiffuseLightingElement object.
      */
-    public SVGOMFEDiffuseLightingElement() {
+    protected SVGOMFEDiffuseLightingElement() {
     }
 
     /**
@@ -79,7 +81,7 @@ public class SVGOMFEDiffuseLightingElement
 	SVGAnimatedString result;
 	if (inReference == null ||
 	    (result = (SVGAnimatedString)inReference.get()) == null) {
-	    result = new SVGOMAnimatedString(this, null, ATTR_IN);
+	    result = new SVGOMAnimatedString(this, null, SVG_IN_ATTRIBUTE);
 	    inReference = new WeakReference(result);
 	}
 	return result;
@@ -191,4 +193,10 @@ public class SVGOMFEDiffuseLightingElement
 	return getStylableSupport().getOverrideStyle(pseudoElt, this);
     }
 
+    /**
+     * Returns a new uninitialized instance of this object's class.
+     */
+    protected Node newNode() {
+        return new SVGOMFEDiffuseLightingElement();
+    }
 }

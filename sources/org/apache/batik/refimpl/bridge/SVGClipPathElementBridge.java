@@ -79,9 +79,9 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
 
         // parse the clipPathUnits attribute
         Viewport oldViewport = ctx.getCurrentViewport();
-        String units = clipElement.getAttributeNS(null, ATTR_CLIP_PATH_UNITS);
+        String units = clipElement.getAttributeNS(null, SVG_CLIP_PATH_UNITS_ATTRIBUTE);
         if (units.length() == 0) {
-            units = VALUE_USER_SPACE_ON_USE;
+            units = SVG_USER_SPACE_ON_USE_VALUE;
         }
         int unitsType;
         try {
@@ -90,7 +90,7 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
             throw new IllegalAttributeValueException(
                 Messages.formatMessage("clipPath.units.invalid",
                                        new Object[] {units,
-                                                     ATTR_CLIP_PATH_UNITS}));
+                                                     SVG_CLIP_PATH_UNITS_ATTRIBUTE}));
         }
         if (unitsType == SVGUtilities.OBJECT_BOUNDING_BOX) {
             // units are resolved using objectBoundingBox

@@ -9,6 +9,7 @@
 package org.apache.batik.dom.svg;
 
 import org.apache.batik.dom.AbstractDocument;
+import org.w3c.dom.Node;
 
 /**
  * This is a development only class. It is used temporarily in the
@@ -29,7 +30,7 @@ public class SVGOMToBeImplementedElement
     /**
      * Creates a new SVGOMToBeImplementedElement object.
      */
-    public SVGOMToBeImplementedElement() {
+    protected SVGOMToBeImplementedElement() {
     }
 
     /**
@@ -51,4 +52,10 @@ public class SVGOMToBeImplementedElement
         return localName;
     }
 
+    /**
+     * Returns a new uninitialized instance of this object's class.
+     */
+    protected Node newNode() {
+        return new SVGOMToBeImplementedElement();
+    }
 }

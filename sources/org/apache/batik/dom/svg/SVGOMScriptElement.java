@@ -12,6 +12,7 @@ import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.XLinkSupport;
 
 import org.w3c.dom.DOMException;
+import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedBoolean;
 import org.w3c.dom.svg.SVGAnimatedString;
 import org.w3c.dom.svg.SVGScriptElement;
@@ -25,10 +26,11 @@ import org.w3c.dom.svg.SVGScriptElement;
 public class SVGOMScriptElement
     extends    SVGOMElement
     implements SVGScriptElement {
+
     /**
      * Creates a new SVGOMScriptElement object.
      */
-    public SVGOMScriptElement() {
+    protected SVGOMScriptElement() {
     }
 
     /**
@@ -53,7 +55,7 @@ public class SVGOMScriptElement
      * org.w3c.dom.svg.SVGScriptElement#getType()}.
      */
     public String getType() {
-	return getAttribute(ATTR_TYPE);
+	return getAttributeNS(null, SVG_TYPE_ATTRIBUTE);
     }
  
     /**
@@ -61,7 +63,7 @@ public class SVGOMScriptElement
      * org.w3c.dom.svg.SVGScriptElement#setType(String)}.
      */
     public void setType(String type) throws DOMException {
-	setAttribute(ATTR_TYPE, type);
+	setAttributeNS(null, SVG_TYPE_ATTRIBUTE, type);
     }
 
     // XLink support //////////////////////////////////////////////////////
@@ -228,4 +230,10 @@ public class SVGOMScriptElement
             getExternalResourcesRequired(this);
     }
 
+    /**
+     * Returns a new uninitialized instance of this object's class.
+     */
+    protected Node newNode() {
+        return new SVGOMScriptElement();
+    }
 }

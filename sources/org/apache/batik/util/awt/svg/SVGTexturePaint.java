@@ -80,7 +80,7 @@ public class SVGTexturePaint extends AbstractSVGConverter{
             Rectangle2D anchorRect = texture.getAnchorRect();
             Element patternDef = domFactory.createElement(TAG_PATTERN);
             patternDef.setAttribute(ATTR_PATTERN_UNITS,
-                                    VALUE_USER_SPACE_ON_USE);
+                                    SVG_USER_SPACE_ON_USE_VALUE);
 
             //
             // First, set the pattern anchor
@@ -131,7 +131,7 @@ public class SVGTexturePaint extends AbstractSVGConverter{
 
         SVGTexturePaint converter = new SVGTexturePaint(domFactory, new DefaultImageHandler());
         Element group = domFactory.createElement(TAG_G);
-        Element defs = domFactory.createElement(TAG_DEFS);
+        Element defs = domFactory.createElement(SVG_DEFS_TAG);
 
         SVGPaintDescriptor patternDesc = converter.toSVG(paint);
         Iterator iter = converter.getDefinitionSet().iterator();

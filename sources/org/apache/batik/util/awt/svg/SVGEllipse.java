@@ -43,10 +43,12 @@ public class SVGEllipse extends SVGGraphicObjectConverter{
      * @param ellipse the Ellipse2D object to be converted to a circle
      */
     private Element toSVGCircle(Ellipse2D ellipse){
-        Element svgCircle = domFactory.createElement(TAG_CIRCLE);
-        svgCircle.setAttribute(ATTR_CX, doubleString(ellipse.getX() + ellipse.getWidth()/2));
-        svgCircle.setAttribute(ATTR_CY, doubleString(ellipse.getY() + ellipse.getHeight()/2));
-        svgCircle.setAttribute(ATTR_R, doubleString(ellipse.getWidth()/2));
+        Element svgCircle = domFactory.createElement(SVG_CIRCLE_TAG);
+        svgCircle.setAttribute(SVG_CX_ATTRIBUTE,
+                               doubleString(ellipse.getX() + ellipse.getWidth()/2));
+        svgCircle.setAttribute(SVG_CY_ATTRIBUTE,
+                               doubleString(ellipse.getY() + ellipse.getHeight()/2));
+        svgCircle.setAttribute(SVG_R_ATTRIBUTE, doubleString(ellipse.getWidth()/2));
         return svgCircle;
     }
 
@@ -54,11 +56,15 @@ public class SVGEllipse extends SVGGraphicObjectConverter{
      * @param ellipse the Ellipse2D object to be converted to an ellipse
      */
     private Element toSVGEllipse(Ellipse2D ellipse){
-        Element svgCircle = domFactory.createElement(TAG_ELLIPSE);
-        svgCircle.setAttribute(ATTR_CX, doubleString(ellipse.getX() + ellipse.getWidth()/2));
-        svgCircle.setAttribute(ATTR_CY, doubleString(ellipse.getY() + ellipse.getHeight()/2));
-        svgCircle.setAttribute(ATTR_RX, doubleString(ellipse.getWidth()/2));
-        svgCircle.setAttribute(ATTR_RY, doubleString(ellipse.getHeight()/2));
+        Element svgCircle = domFactory.createElement(SVG_ELLIPSE_TAG);
+        svgCircle.setAttribute(SVG_CX_ATTRIBUTE,
+                               doubleString(ellipse.getX() + ellipse.getWidth()/2));
+        svgCircle.setAttribute(SVG_CY_ATTRIBUTE,
+                               doubleString(ellipse.getY() + ellipse.getHeight()/2));
+        svgCircle.setAttribute(SVG_RX_ATTRIBUTE,
+                               doubleString(ellipse.getWidth()/2));
+        svgCircle.setAttribute(SVG_RY_ATTRIBUTE,
+                               doubleString(ellipse.getHeight()/2));
         return svgCircle;
     }
 

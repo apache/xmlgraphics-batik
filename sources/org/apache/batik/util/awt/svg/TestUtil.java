@@ -10,6 +10,7 @@ package org.apache.batik.util.awt.svg;
 
 import java.io.*;
 import org.w3c.dom.*;
+import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.apache.batik.dom.svg.SVGOMDocument;
 
 /**
@@ -19,7 +20,7 @@ import org.apache.batik.dom.svg.SVGOMDocument;
  */
 public class TestUtil{
     public static Document getDocumentPrototype(){
-        return new SVGOMDocument();
+        return new SVGOMDocument(null, SVGDOMImplementation.getDOMImplementation());
     }
 
     public static void trace(Element element, OutputStream out)

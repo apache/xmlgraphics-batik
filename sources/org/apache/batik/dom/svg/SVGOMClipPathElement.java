@@ -8,8 +8,11 @@
 
 package org.apache.batik.dom.svg;
 
+import java.lang.ref.WeakReference;
+
 import org.apache.batik.dom.AbstractDocument;
 
+import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedEnumeration;
 import org.w3c.dom.svg.SVGClipPathElement;
 
@@ -24,9 +27,14 @@ public class SVGOMClipPathElement
     implements SVGClipPathElement {
     
     /**
+     * The clipPathUnits attribute reference.
+     */
+    protected transient WeakReference clipPathUnitsReference;
+
+    /**
      * Creates a new SVGOMClipPathElement object.
      */
-    public SVGOMClipPathElement() {
+    protected SVGOMClipPathElement() {
     }
 
     /**
@@ -42,7 +50,7 @@ public class SVGOMClipPathElement
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
      */
     public String getLocalName() {
-        return TAG_CLIP_PATH;
+        return SVG_CLIP_PATH_TAG;
     }
 
     /**
@@ -50,7 +58,23 @@ public class SVGOMClipPathElement
      * org.w3c.dom.svg.SVGGradientElement#getGradientUnits()}.
      */
     public SVGAnimatedEnumeration getClipPathUnits() {
-	throw new RuntimeException(" !!! TODO: SVGOMClipPathElement.getClipPathUnits()");
+        SVGAnimatedEnumeration result;
+        if (clipPathUnitsReference == null ||
+            (result = (SVGAnimatedEnumeration)clipPathUnitsReference.get()) == null) {
+            result = new SVGOMAnimatedEnumeration(this, null,
+                                                  SVG_CLIP_PATH_UNITS_ATTRIBUTE,
+                                                  STRING_TO_SHORT_UNITS,
+                                                  SHORT_TO_STRING_UNITS,
+                                               DEFAULT_VALUE_CLIP_PATH_CLIP_PATH_UNITS);
+            clipPathUnitsReference = new WeakReference(result);
+        }
+        return result;
     }
- 
+
+    /**
+     * Returns a new uninitialized instance of this object's class.
+     */
+    protected Node newNode() {
+        return new SVGOMClipPathElement();
+    }
 }

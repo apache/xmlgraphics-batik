@@ -71,9 +71,16 @@ public class DefaultUnitProcessorContext implements UnitProcessor.Context {
     }
 
     /**
-     * Returns the viewport to use to compute the percentages and the units.
+     * Returns the viewport width used to compute units.
      */
-    public Viewport getViewport() {
-        return ctx.getCurrentViewport();
+    public float getViewportWidth() {
+        return ctx.getCurrentViewport().getWidth();
+    }
+
+    /**
+     * Returns the viewport height used to compute units.
+     */
+    public float getViewportHeight() {
+        return ctx.getCurrentViewport().getHeight();
     }
 }

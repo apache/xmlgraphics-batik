@@ -76,7 +76,7 @@ public class SVGFeCompositeElementBridge implements FilterPrimitiveBridge,
         CompositeRule rule = getRule(filterElement);
 
         // Extract sources
-        String in1Attr = filterElement.getAttributeNS(null, ATTR_IN);
+        String in1Attr = filterElement.getAttributeNS(null, SVG_IN_ATTRIBUTE);
         Filter in1;
         in1 = CSSUtilities.getFilterSource(filteredNode,
                                            in1Attr,
@@ -85,7 +85,7 @@ public class SVGFeCompositeElementBridge implements FilterPrimitiveBridge,
                                            in,
                                            filterMap);
 
-        String in2Attr = filterElement.getAttributeNS(null, ATTR_IN2);
+        String in2Attr = filterElement.getAttributeNS(null, SVG_IN2_ATTRIBUTE);
         if (in2Attr.length() == 0) {
             throw new MissingAttributeException(
                 Messages.formatMessage("feComposite.in2.required", null));

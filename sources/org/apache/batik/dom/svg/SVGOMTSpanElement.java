@@ -9,6 +9,8 @@
 package org.apache.batik.dom.svg;
 
 import org.apache.batik.dom.AbstractDocument;
+
+import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGTSpanElement;
 
 /**
@@ -20,10 +22,11 @@ import org.w3c.dom.svg.SVGTSpanElement;
 public class SVGOMTSpanElement
     extends    SVGOMTextPositioningElement
     implements SVGTSpanElement {
+
     /**
      * Creates a new SVGOMTSpanElement object.
      */
-    public SVGOMTSpanElement() {
+    protected SVGOMTSpanElement() {
     }
 
     /**
@@ -41,5 +44,12 @@ public class SVGOMTSpanElement
      */
     public String getLocalName() {
         return TAG_TSPAN;
+    }
+
+    /**
+     * Returns a new uninitialized instance of this object's class.
+     */
+    protected Node newNode() {
+        return new SVGOMTSpanElement();
     }
 }

@@ -12,19 +12,16 @@ import org.w3c.dom.DOMException;
 import org.w3c.dom.svg.SVGElement;
 
 /**
- * This interface represents objects that own a reference to an attribute.
- * Implementing this interface and using the created objects has the side
- * effect to keep a reference on the created objects and avoid collection
- * of weak references.
+ * This interface represents objects that handle the modifications of a value.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public interface AttributeModifier {
+public interface ModificationHandler {
     /**
-     * Sets the value of the referenced attribute.
+     * Called when the handled value has been modified.
      */
-    void setAttributeValue(String value);
+    void valueChanged(String value);
 
     /**
      * Returns the associated element.

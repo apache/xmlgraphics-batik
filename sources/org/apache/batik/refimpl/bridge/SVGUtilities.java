@@ -120,9 +120,9 @@ public class SVGUtilities implements SVGConstants {
         if (len == 0) {
             throw new Error("Can't accept empty coordinate system");
         }
-        if (VALUE_USER_SPACE_ON_USE.equals(value)) {
+        if (SVG_USER_SPACE_ON_USE_VALUE.equals(value)) {
             return USER_SPACE_ON_USE;
-        } else if (VALUE_OBJECT_BOUNDING_BOX.equals(value)) {
+        } else if (SVG_OBJECT_BOUNDING_BOX_VALUE.equals(value)) {
             return OBJECT_BOUNDING_BOX;
         } else {
             throw new IllegalArgumentException();
@@ -491,7 +491,7 @@ public class SVGUtilities implements SVGConstants {
             String name = (n.getPrefix() == null)
                 ? n.getNodeName()
                 : n.getLocalName();
-            if (name.equals(TAG_DESC)) {
+            if (name.equals(SVG_DESC_TAG)) {
                 preserve
                     = ((SVGLangSpace)n).getXMLspace().equals(VALUE_PRESERVE);
                 for (n = n.getFirstChild();
@@ -608,7 +608,7 @@ public class SVGUtilities implements SVGConstants {
                              node,
                              uctx,
                              ATTR_FILTER_UNITS,
-                             VALUE_OBJECT_BOUNDING_BOX,
+                             SVG_OBJECT_BOUNDING_BOX_VALUE,
                              DEFAULT_VALUE_FILTER_X,
                              DEFAULT_VALUE_FILTER_Y,
                              DEFAULT_VALUE_FILTER_WIDTH,
@@ -634,7 +634,7 @@ public class SVGUtilities implements SVGConstants {
                              node,
                              uctx,
                              ATTR_MASK_UNITS,
-                             VALUE_OBJECT_BOUNDING_BOX,
+                             SVG_OBJECT_BOUNDING_BOX_VALUE,
                              DEFAULT_VALUE_MASK_X,
                              DEFAULT_VALUE_MASK_Y,
                              DEFAULT_VALUE_MASK_WIDTH,
@@ -660,7 +660,7 @@ public class SVGUtilities implements SVGConstants {
                              node,
                              uctx,
                              ATTR_PATTERN_UNITS,
-                             VALUE_OBJECT_BOUNDING_BOX,
+                             SVG_OBJECT_BOUNDING_BOX_VALUE,
                              DEFAULT_VALUE_PATTERN_X,
                              DEFAULT_VALUE_PATTERN_Y,
                              DEFAULT_VALUE_PATTERN_WIDTH,
@@ -840,7 +840,7 @@ public class SVGUtilities implements SVGConstants {
             units = parent.getAttributeNS(null, ATTR_PRIMITIVE_UNITS);
         }
         if(units.length() == 0){
-            units = VALUE_USER_SPACE_ON_USE;
+            units = SVG_USER_SPACE_ON_USE_VALUE;
         }
 
         String xStr = filterPrimitiveElement.getAttributeNS(null, ATTR_X);

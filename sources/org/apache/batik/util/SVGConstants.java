@@ -12,6 +12,7 @@ package org.apache.batik.util;
  * Define SVG constants, such as tag names, attribute names and URI
  *
  * @author <a href="vincent.hardy@eng.sun.com">Vincent Hardy</a>
+ * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
 public interface SVGConstants extends CSSConstants {
@@ -25,15 +26,15 @@ public interface SVGConstants extends CSSConstants {
     /**
      * Tags
      */
-    String TAG_A = "a";
-    String TAG_ANIMATE = "animate";
-    String TAG_CIRCLE = "circle";
-    String TAG_CLIP_PATH = "clipPath";
-    String TAG_DEFS = "defs";
-    String TAG_DESC = "desc";
-    String TAG_ELLIPSE = "ellipse";
-    String TAG_FE_BLEND = "feBlend";
-    String TAG_FE_COLOR_MATRIX = "feColorMatrix";
+    String SVG_A_TAG = "a";
+    String SVG_ANIMATE_TAG = "animate";
+    String SVG_CIRCLE_TAG = "circle";
+    String SVG_CLIP_PATH_TAG = "clipPath";
+    String SVG_DEFS_TAG = "defs";
+    String SVG_DESC_TAG = "desc";
+    String SVG_ELLIPSE_TAG = "ellipse";
+    String SVG_FE_BLEND_TAG = "feBlend";
+    String SVG_FE_COLOR_MATRIX_TAG = "feColorMatrix";
     String TAG_FE_COMPONENT_TRANSFER = "feComponentTransfer";
     String TAG_FE_COMPOSITE = "feComposite";
     String TAG_FE_CONVOLVE_MATRIX = "feConvolveMatrix";
@@ -90,11 +91,11 @@ public interface SVGConstants extends CSSConstants {
     String ATTR_BASE_FREQUENCY = "baseFrequency";
     String ATTR_BIAS = "bias";
     String ATTR_CLIP_PATH = CSS_CLIP_PATH_PROPERTY;
-    String ATTR_CLIP_PATH_UNITS = "clipPathUnits";
+    String SVG_CLIP_PATH_UNITS_ATTRIBUTE = "clipPathUnits";
     String ATTR_COLOR_INTERPOLATION = CSS_COLOR_INTERPOLATION_PROPERTY;
     String ATTR_COLOR_RENDERING = CSS_COLOR_RENDERING_PROPERTY;
-    String ATTR_CX = "cx";
-    String ATTR_CY = "cy";
+    String SVG_CX_ATTRIBUTE = "cx";
+    String SVG_CY_ATTRIBUTE = "cy";
     String ATTR_D = "d";
     String ATTR_DIFFUSE_CONSTANT = "diffuseConstant";
     String ATTR_DIVISOR = "divisor";
@@ -124,8 +125,8 @@ public interface SVGConstants extends CSSConstants {
     String ATTR_HREF = "href";
     String ATTR_ID = "id";
     String ATTR_IMAGE_RENDERING = CSS_IMAGE_RENDERING_PROPERTY;
-    String ATTR_IN = "in";
-    String ATTR_IN2 = "in2";
+    String SVG_IN_ATTRIBUTE = "in";
+    String SVG_IN2_ATTRIBUTE = "in2";
     String ATTR_INTERCEPT = "intercept";
     String ATTR_K1 = "k1";
     String ATTR_K2 = "k2";
@@ -142,7 +143,7 @@ public interface SVGConstants extends CSSConstants {
     String ATTR_MASK_UNITS = "maskUnits";
     String ATTR_MEDIA = "media";
     String ATTR_METHOD = "method";
-    String ATTR_MODE = "mode";
+    String SVG_MODE_ATTRIBUTE = "mode";
     String ATTR_OFFSET = "offset";
     String ATTR_OPACITY = CSS_OPACITY_PROPERTY;
     String ATTR_OPERATOR = "operator";
@@ -159,12 +160,12 @@ public interface SVGConstants extends CSSConstants {
     String ATTR_PRESERVE_ALPHA = "preserveAlpha";
     String ATTR_PRESERVE_ASPECT_RATIO = "preserveAspectRatio";
     String ATTR_PRIMITIVE_UNITS = "primitiveUnits";
-    String ATTR_R = "r";
+    String SVG_R_ATTRIBUTE = "r";
     String ATTR_RADIUS = "radius";
     String ATTR_RESULT = "result";
     String ATTR_RESULT_SCALE = "resultScale";
-    String ATTR_RX = "rx";
-    String ATTR_RY = "ry";
+    String SVG_RX_ATTRIBUTE = "rx";
+    String SVG_RY_ATTRIBUTE = "ry";
     String ATTR_SCALE = "scale";
     String ATTR_SEED = "seed";
     String ATTR_SHAPE_RENDERING = CSS_SHAPE_RENDERING_PROPERTY;
@@ -191,7 +192,7 @@ public interface SVGConstants extends CSSConstants {
     String ATTR_SURFACE_SCALE = "surfaceScale";
     String ATTR_SYSTEM_LANGUAGE = "systemLanguage";
     String ATTR_TABLE = "table";
-    String ATTR_TARGET = "target";
+    String SVG_TARGET_ATTRIBUTE = "target";
     String ATTR_TARGET_X = "targetX";
     String ATTR_TARGET_Y = "targetY";
     String ATTR_TABLE_VALUES = "tableValues";
@@ -200,8 +201,8 @@ public interface SVGConstants extends CSSConstants {
     String ATTR_TEXT_RENDERING = "text-rendering";
     String ATTR_TITLE = "title";
     String ATTR_TRANSFORM = "transform";
-    String ATTR_TYPE = "type";
-    String ATTR_VALUES = "values";
+    String SVG_TYPE_ATTRIBUTE = "type";
+    String SVG_VALUES_ATTRIBUTE = "values";
     String ATTR_VIEW_BOX = "viewBox";
     String ATTR_X = "x";
     String ATTR_X_CHANNEL_SELECTOR = "xChannelSelector";
@@ -226,7 +227,7 @@ public interface SVGConstants extends CSSConstants {
     String VALUE_BACKGROUND_IMAGE = "BackgroundImage";
     String VALUE_COMPOSITE = "composite";
     String VALUE_CRISP_EDGES = "crispEdges";
-    String VALUE_DARKEN = "darken";
+    String SVG_DARKEN_VALUE = "darken";
     String VALUE_DIGIT_ONE = "1";
     String VALUE_DILATE = "dilate";
     String VALUE_DISCRETE = "discrete";
@@ -257,11 +258,11 @@ public interface SVGConstants extends CSSConstants {
     String VALUE_G = "G";
     String VALUE_GAMMA = "gamma";
     String VALUE_GEOMETRIC_PRECISION = "geometricPrecision";
-    String VALUE_HUE_ROTATE = "hueRotate";
+    String SVG_HUE_ROTATE_VALUE = "hueRotate";
     String VALUE_HUNDRED_PERCENT = "100%";
     String VALUE_IN = "in";
     String VALUE_IDENTITY = "identity";
-    String VALUE_LIGHTEN = "lighten";
+    String SVG_LIGHTEN_VALUE = "lighten";
     String VALUE_LINEAR = "linear";
     String VALUE_LINE_CAP_BUTT = "butt";
     String VALUE_LINE_CAP_SQUARE = "square";
@@ -270,17 +271,17 @@ public interface SVGConstants extends CSSConstants {
     String VALUE_LINE_JOIN_BEVEL = "bevel";
     String VALUE_LINE_JOIN_MITER = "miter";
     String VALUE_LINEAR_RGB = "linearRGB";
-    String VALUE_LUMINANCE_TO_ALPHA = "luminanceToAlpha";
-    String VALUE_MATRIX = "matrix";
+    String SVG_LUMINANCE_TO_ALPHA_VALUE = "luminanceToAlpha";
+    String SVG_MATRIX_VALUE = "matrix";
     String VALUE_MIDDLE = "middle";
-    String VALUE_MULTIPLY = "multiply";
+    String SVG_MULTIPLY_VALUE = "multiply";
     String VALUE_NEW = "new";
     String VALUE_NINETY = "90";
-    String VALUE_NORMAL = "normal";
+    String SVG_NORMAL_VALUE = "normal";
     String VALUE_NO_STITCH = "noStitch";
     String VALUE_NON_ZERO = "nonzero";
     String VALUE_NONE = "none";
-    String VALUE_OBJECT_BOUNDING_BOX = "objectBoundingBox";
+    String SVG_OBJECT_BOUNDING_BOX_VALUE = "objectBoundingBox";
     String VALUE_ONE = "1";
     String VALUE_OPAQUE = "1";
     String VALUE_OPTIMIZE_LEGIBILITY = "optimizeLegibility";
@@ -293,8 +294,8 @@ public interface SVGConstants extends CSSConstants {
     String VALUE_R = "R";
     String VALUE_REFLECT = "reflect";
     String VALUE_REPEAT = "repeat";
-    String VALUE_SATURATE = "saturate";
-    String VALUE_SCREEN = "screen";
+    String SVG_SATURATE_VALUE = "saturate";
+    String SVG_SCREEN_VALUE = "screen";
     String VALUE_SOURCE_GRAPHIC = "SourceGraphic";
     String VALUE_SRGB = "sRGB";
     String VALUE_START = "start";
@@ -304,7 +305,7 @@ public interface SVGConstants extends CSSConstants {
     String VALUE_TURBULENCE = "turbulence";
     String VALUE_TYPE_LINEAR = "linear";
     String VALUE_TYPE_TABLE = "table";
-    String VALUE_USER_SPACE_ON_USE = "userSpaceOnUse";
+    String SVG_USER_SPACE_ON_USE_VALUE = "userSpaceOnUse";
     String VALUE_USER_SPACE = "userSpace";
     String VALUE_XOR = "xor";
     String VALUE_ZERO = "0";
@@ -332,6 +333,14 @@ public interface SVGConstants extends CSSConstants {
     /**
      * Default values for attributes
      */
+    String DEFAULT_VALUE_CIRCLE_CX = "0";
+    String DEFAULT_VALUE_CIRCLE_CY = "0";
+
+    String DEFAULT_VALUE_ELLIPSE_CX = "0";
+    String DEFAULT_VALUE_ELLIPSE_CY = "0";
+
+    String DEFAULT_VALUE_CLIP_PATH_CLIP_PATH_UNITS = SVG_USER_SPACE_ON_USE_VALUE;
+
     String DEFAULT_VALUE_FILTER_X = "-10%";
     String DEFAULT_VALUE_FILTER_Y = "-10%";
     String DEFAULT_VALUE_FILTER_WIDTH = "120%";

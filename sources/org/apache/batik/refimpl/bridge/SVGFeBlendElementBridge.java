@@ -76,7 +76,7 @@ public class SVGFeBlendElementBridge implements FilterPrimitiveBridge,
         CompositeRule rule = getRule(filterElement);
 
         // Extract sources
-        String in1Attr = filterElement.getAttributeNS(null, ATTR_IN);
+        String in1Attr = filterElement.getAttributeNS(null, SVG_IN_ATTRIBUTE);
         Filter in1;
         in1 = CSSUtilities.getFilterSource(filteredNode,
                                            in1Attr,
@@ -85,7 +85,7 @@ public class SVGFeBlendElementBridge implements FilterPrimitiveBridge,
                                            in,
                                            filterMap);
 
-        String in2Attr = filterElement.getAttributeNS(null, ATTR_IN2);
+        String in2Attr = filterElement.getAttributeNS(null, SVG_IN2_ATTRIBUTE);
         if (in2Attr.length() == 0) {
             throw new MissingAttributeException(
                 Messages.formatMessage("feBlend.in2.required", null));
@@ -148,25 +148,25 @@ public class SVGFeBlendElementBridge implements FilterPrimitiveBridge,
     }
 
     private static CompositeRule getRule(Element filterElement) {
-        String ruleStr = filterElement.getAttributeNS(null, ATTR_MODE);
+        String ruleStr = filterElement.getAttributeNS(null, SVG_MODE_ATTRIBUTE);
         CompositeRule rule;
 
         if (ruleStr.length() == 0) {
             rule = CompositeRule.OVER; // default value
 
-        } else if (VALUE_NORMAL.equals(ruleStr)) {
+        } else if (SVG_NORMAL_VALUE.equals(ruleStr)) {
             rule = CompositeRule.OVER;  // Same rule
 
-        } else if (VALUE_MULTIPLY.equals(ruleStr)) {
+        } else if (SVG_MULTIPLY_VALUE.equals(ruleStr)) {
             rule = CompositeRule.MULTIPLY;
 
-        }  else if (VALUE_SCREEN.equals(ruleStr)) {
+        }  else if (SVG_SCREEN_VALUE.equals(ruleStr)) {
             rule = CompositeRule.SCREEN;
 
-        } else if (VALUE_DARKEN.equals(ruleStr)) {
+        } else if (SVG_DARKEN_VALUE.equals(ruleStr)) {
             rule = CompositeRule.DARKEN;
 
-        } else if (VALUE_LIGHTEN.equals(ruleStr)) {
+        } else if (SVG_LIGHTEN_VALUE.equals(ruleStr)) {
             rule = CompositeRule.LIGHTEN;
 
         } else {

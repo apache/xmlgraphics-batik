@@ -9,6 +9,8 @@
 package org.apache.batik.dom.svg;
 
 import org.apache.batik.dom.AbstractDocument;
+
+import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGFEMergeElement;
 
 /**
@@ -41,5 +43,12 @@ public class SVGOMFEMergeElement
      */
     public String getLocalName() {
         return TAG_FE_MERGE;
+    }
+
+    /**
+     * Returns a new uninitialized instance of this object's class.
+     */
+    protected Node newNode() {
+        return new SVGOMFEMergeElement();
     }
 }

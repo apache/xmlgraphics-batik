@@ -9,6 +9,8 @@
 package org.apache.batik.dom.svg;
 
 import org.apache.batik.dom.AbstractDocument;
+
+import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGTitleElement;
 
 /**
@@ -20,10 +22,11 @@ import org.w3c.dom.svg.SVGTitleElement;
 public class SVGOMTitleElement
     extends    SVGDescriptiveElement
     implements SVGTitleElement {
+
     /**
      * Creates a new SVGOMTitleElement object.
      */
-    public SVGOMTitleElement() {
+    protected SVGOMTitleElement() {
     }
 
     /**
@@ -41,5 +44,12 @@ public class SVGOMTitleElement
      */
     public String getLocalName() {
         return "title";
+    }
+
+    /**
+     * Returns a new uninitialized instance of this object's class.
+     */
+    protected Node newNode() {
+        return new SVGOMTitleElement();
     }
 }

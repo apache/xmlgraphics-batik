@@ -13,11 +13,13 @@ import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Dimension2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
 
 import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.bridge.UserAgent;
 import org.apache.batik.dom.svg.DefaultSVGContext;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.gvt.GraphicsNode;
@@ -49,8 +51,12 @@ public abstract class ImageTranscoder extends AbstractTranscoder {
         ctx.setGVTBuilder(getGVTBuilder());
         ctx.setCurrentViewport(getDefaultViewport());
 
+        UserAgent ua = ctx.getUserAgent();
         DefaultSVGContext svgCtx = new DefaultSVGContext();
-        svgCtx.setUserAgent(ctx.getUserAgent());
+        svgCtx.setPixelToMM(ua.getPixelToMM());
+        //Dimension2D dim = ua.getViewportSize();
+        //svgCtx.setViewportWidth((float)dim.getWidth());
+        //svgCtx.setViewportHeight((float)dim.getHeight());
         //svgCtx.setUserStyleSheetURI(null);
         ((SVGOMDocument) svgDocument).setSVGContext(svgCtx);
 

@@ -10,7 +10,9 @@ package org.apache.batik.dom.svg;
 
 import java.lang.ref.WeakReference;
 import org.apache.batik.dom.AbstractDocument;
+
 import org.w3c.dom.DOMException;
+import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedLength;
 import org.w3c.dom.svg.SVGAnimatedTransformList;
 import org.w3c.dom.svg.SVGElement;
@@ -28,6 +30,7 @@ import org.w3c.dom.svg.SVGTextElement;
 public class SVGOMTextElement
     extends    SVGOMTextContentElement
     implements SVGTextElement {
+
     /**
      * The reference to the x attribute.
      */
@@ -41,7 +44,7 @@ public class SVGOMTextElement
     /**
      * Creates a new SVGOMTextElement object.
      */
-    public SVGOMTextElement() {
+    protected SVGOMTextElement() {
     }
 
     /**
@@ -67,7 +70,7 @@ public class SVGOMTextElement
 	SVGAnimatedLength result;
 	if (xReference == null ||
 	    (result = (SVGAnimatedLength)xReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "x");
+	    result = new SVGOMAnimatedLength(this, null, "x", null);
 	    xReference = new WeakReference(result);
 	}
 	return result;
@@ -80,7 +83,7 @@ public class SVGOMTextElement
 	SVGAnimatedLength result;
 	if (yReference == null ||
 	    (result = (SVGAnimatedLength)yReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "y");
+	    result = new SVGOMAnimatedLength(this, null, "y", null);
 	    yReference = new WeakReference(result);
 	}
 	return result;
@@ -158,5 +161,12 @@ public class SVGOMTextElement
     public SVGMatrix getTransformToElement(SVGElement element)
 	throws SVGException {
 	return getTransformableSupport().getTransformToElement(element, this);
+    }
+
+    /**
+     * Returns a new uninitialized instance of this object's class.
+     */
+    protected Node newNode() {
+        return new SVGOMTextElement();
     }
 }

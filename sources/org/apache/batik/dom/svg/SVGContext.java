@@ -8,7 +8,6 @@
 
 package org.apache.batik.dom.svg;
 
-import org.apache.batik.bridge.UserAgent;
 import org.apache.batik.css.svg.SVGCSSContext;
 import org.apache.batik.parser.ParserFactory;
 
@@ -25,7 +24,8 @@ public interface SVGContext extends SVGCSSContext {
     ParserFactory getParserFactory();
 
     /**
-     * Returns the user agent.
+     * Return the pixel to millimeters factor.
      */
-    UserAgent getUserAgent();
+    float getPixelToMM();
+
 }

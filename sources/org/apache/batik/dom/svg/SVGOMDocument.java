@@ -118,31 +118,31 @@ public class SVGOMDocument
      */
     protected HashTable factories = new HashTable();
     {
-        factories.put(TAG_A,
+        factories.put(SVG_A_TAG,
                       new AElementFactory());
 
-        factories.put(TAG_ANIMATE,
+        factories.put(SVG_ANIMATE_TAG,
                       new AnimateElementFactory());
 
-        factories.put(TAG_CIRCLE,
+        factories.put(SVG_CIRCLE_TAG,
                       new CircleElementFactory());
 
-        factories.put(TAG_CLIP_PATH,
+        factories.put(SVG_CLIP_PATH_TAG,
                       new ClipPathElementFactory());
 
-        factories.put(TAG_DEFS,
+        factories.put(SVG_DEFS_TAG,
                       new DefsElementFactory());
 
-        factories.put(TAG_DESC,
+        factories.put(SVG_DESC_TAG,
                       new DescElementFactory());
 
-        factories.put(TAG_ELLIPSE,
+        factories.put(SVG_ELLIPSE_TAG,
                       new EllipseElementFactory());
 
-        factories.put(TAG_FE_BLEND,
+        factories.put(SVG_FE_BLEND_TAG,
                       new FeBlendElementFactory());
 
-        factories.put(TAG_FE_COLOR_MATRIX,
+        factories.put(SVG_FE_COLOR_MATRIX_TAG,
                       new FeColorMatrixElementFactory());
 
         factories.put(TAG_FE_COMPONENT_TRANSFER,
@@ -306,7 +306,7 @@ public class SVGOMDocument
     /**
      * Creates a new uninitialized document.
      */
-    public SVGOMDocument() {
+    protected SVGOMDocument() {
     }
 
     /**
@@ -318,6 +318,13 @@ public class SVGOMDocument
         if (dt != null) {
             appendChild(dt);
         }
+    }
+
+    /**
+     * Returns a new uninitialized instance of this object's class.
+     */
+    protected Node newNode() {
+        return new SVGOMDocument();
     }
 
     /**
@@ -744,7 +751,7 @@ public class SVGOMDocument
         public Element create(String prefix) {
             return new SVGOMToBeImplementedElement(prefix,
                                                    SVGOMDocument.this,
-                                                   TAG_ANIMATE);
+                                                   SVG_ANIMATE_TAG);
         }
     }
 

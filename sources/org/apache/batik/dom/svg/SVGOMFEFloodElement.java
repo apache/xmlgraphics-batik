@@ -16,6 +16,7 @@ import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.OverrideStyleElement;
 import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.CSSValue;
+import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedString;
 import org.w3c.dom.svg.SVGFEFloodElement;
 
@@ -40,7 +41,7 @@ public class SVGOMFEFloodElement
     /**
      * Creates a new SVGOMFEFloodElement object.
      */
-    public SVGOMFEFloodElement() {
+    protected SVGOMFEFloodElement() {
     }
 
     /**
@@ -68,7 +69,7 @@ public class SVGOMFEFloodElement
 	SVGAnimatedString result;
 	if (inReference == null ||
 	    (result = (SVGAnimatedString)inReference.get()) == null) {
-	    result = new SVGOMAnimatedString(this, null, ATTR_IN);
+	    result = new SVGOMAnimatedString(this, null, SVG_IN_ATTRIBUTE);
 	    inReference = new WeakReference(result);
 	}
 	return result;
@@ -151,5 +152,10 @@ public class SVGOMFEFloodElement
 	return getStylableSupport().getOverrideStyle(pseudoElt, this);
     }
 
+    /**
+     * Returns a new uninitialized instance of this object's class.
+     */
+    protected Node newNode() {
+        return new SVGOMFEFloodElement();
+    }
 }
-

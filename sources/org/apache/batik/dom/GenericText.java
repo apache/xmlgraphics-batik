@@ -8,6 +8,7 @@
 
 package org.apache.batik.dom;
 
+import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 
 /**
@@ -27,7 +28,7 @@ public class GenericText extends AbstractText {
     /**
      * Creates a new uninitialized Text object.
      */
-    public GenericText() {
+    protected GenericText() {
     }
 
     /**
@@ -73,5 +74,12 @@ public class GenericText extends AbstractText {
      */
     protected Text createTextNode(String text) {
 	return getOwnerDocument().createTextNode(text);
+    }
+
+    /**
+     * Returns a new uninitialized instance of this object's class.
+     */
+    protected Node newNode() {
+        return new GenericText();
     }
 }

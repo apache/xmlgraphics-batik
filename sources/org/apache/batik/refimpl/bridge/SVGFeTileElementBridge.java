@@ -86,7 +86,7 @@ public class SVGFeTileElementBridge implements FilterPrimitiveBridge,
         //
         // Get the tile source
         //
-        String inAttr = filterElement.getAttributeNS(null, ATTR_IN);
+        String inAttr = filterElement.getAttributeNS(null, SVG_IN_ATTRIBUTE);
         in = CSSUtilities.getFilterSource(filteredNode,
                                           inAttr,
                                           bridgeContext,

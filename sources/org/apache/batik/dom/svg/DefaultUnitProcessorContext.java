@@ -8,12 +8,13 @@
 
 package org.apache.batik.dom.svg;
 
-import org.apache.batik.bridge.BridgeContext;
-import org.apache.batik.bridge.SVGViewport;
-import org.apache.batik.bridge.Viewport;
+import java.io.StringReader;
+
 import org.apache.batik.css.HiddenChildElementSupport;
+import org.apache.batik.parser.LengthParser;
 import org.apache.batik.parser.ParserFactory;
 import org.apache.batik.util.UnitProcessor;
+import org.apache.batik.util.SVGConstants;
 
 import org.w3c.dom.css.CSSPrimitiveValue;
 import org.w3c.dom.css.ViewCSS;
@@ -26,13 +27,14 @@ import org.w3c.dom.svg.SVGSVGElement;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class DefaultUnitProcessorContext implements UnitProcessor.Context {
+public class DefaultUnitProcessorContext
+    implements UnitProcessor.Context,
+               SVGConstants {
 
     protected SVGContext context;
     protected SVGElement element;
 
-    public DefaultUnitProcessorContext(SVGContext ctx,
-                                       SVGElement elt) {
+    public DefaultUnitProcessorContext(SVGContext ctx, SVGElement elt) {
         context = ctx;
         element = elt;
     }
@@ -41,7 +43,7 @@ public class DefaultUnitProcessorContext implements UnitProcessor.Context {
      * Returns the pixel to mm factor.
      */
     public float getPixelToMM() {
-        return context.getUserAgent().getPixelToMM();
+        return context.getPixelToMM();
     }
 
     /**
@@ -74,11 +76,42 @@ public class DefaultUnitProcessorContext implements UnitProcessor.Context {
     }
 
     /**
-     * Returns the viewport to use to compute the percentages and the units.
+     * Returns the viewport width used to compute units.
      */
-    public Viewport getViewport() {
-        return new SVGViewport((SVGSVGElement)
-            HiddenChildElementSupport.getParentElement(element),
-                               this);
+    public float getViewportWidth() {
+        SVGSVGElement svg = element.getOwnerSVGElement();
+        if (svg == null) {
+            return (float)context.getViewportWidth();
+        }
+        String s = svg.getAttributeNS(null, ATTR_WIDTH);
+        LengthParser p = getParserFactory().createLengthParser();
+        UnitProcessor.UnitResolver ur = new UnitProcessor.UnitResolver();
+        p.setLengthHandler(ur);
+        p.parse(new StringReader(s));
+        return UnitProcessor.svgToUserSpace(ur.unit,
+                                            ur.value,
+                                            svg,
+                                            UnitProcessor.HORIZONTAL_LENGTH,
+                                            this);
+    }
+
+    /**
+     * Returns the viewport height used to compute units.
+     */
+    public float getViewportHeight() {
+        SVGSVGElement svg = element.getOwnerSVGElement();
+        if (svg == null) {
+            return (float)context.getViewportHeight();
+        }
+        String s = svg.getAttributeNS(null, ATTR_HEIGHT);
+        LengthParser p = getParserFactory().createLengthParser();
+        UnitProcessor.UnitResolver ur = new UnitProcessor.UnitResolver();
+        p.setLengthHandler(ur);
+        p.parse(new StringReader(s));
+        return UnitProcessor.svgToUserSpace(ur.unit,
+                                            ur.value,
+                                            svg,
+                                            UnitProcessor.VERTICAL_LENGTH,
+                                            this);
     }
 }

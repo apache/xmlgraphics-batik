@@ -97,7 +97,7 @@ public class SVGFeDisplacementMapElementBridge implements FilterPrimitiveBridge,
         Filter filter = null;
 
         // Get source 1
-        String inAttr = filterElement.getAttributeNS(null, ATTR_IN);
+        String inAttr = filterElement.getAttributeNS(null, SVG_IN_ATTRIBUTE);
         Filter in1 = CSSUtilities.getFilterSource(filteredNode,
                                                   inAttr,
                                                   bridgeContext,
@@ -108,7 +108,7 @@ public class SVGFeDisplacementMapElementBridge implements FilterPrimitiveBridge,
         Filter in2 = null;
 
         // Get source 2
-        String in2Attr = filterElement.getAttributeNS(null, ATTR_IN2);
+        String in2Attr = filterElement.getAttributeNS(null, SVG_IN2_ATTRIBUTE);
         if (in2Attr.length() == 0) {
             throw new MissingAttributeException(
                 Messages.formatMessage("feDisplacementMap.in2.required", null));

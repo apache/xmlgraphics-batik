@@ -104,8 +104,8 @@ public class SVGClip extends AbstractSVGConverter{
      *        element
      */
     private Element clipToSVG(Shape clip){
-        Element clipDef = domFactory.createElement(TAG_CLIP_PATH);
-        clipDef.setAttribute(ATTR_CLIP_PATH_UNITS, VALUE_USER_SPACE_ON_USE);
+        Element clipDef = domFactory.createElement(SVG_CLIP_PATH_TAG);
+        clipDef.setAttribute(SVG_CLIP_PATH_UNITS_ATTRIBUTE, SVG_USER_SPACE_ON_USE_VALUE);
         clipDef.setAttribute(ATTR_ID, SVGIDGenerator.generateID(ID_PREFIX_CLIP_PATH));
 
         Element clipPath = shapeConverter.toSVG(clip);
@@ -183,7 +183,7 @@ public class SVGClip extends AbstractSVGConverter{
         SVGClip converter = new SVGClip(domFactory);
 
         Element topLevelGroup = domFactory.createElement(TAG_G);
-        Element defs = domFactory.createElement(TAG_DEFS);
+        Element defs = domFactory.createElement(SVG_DEFS_TAG);
 
         Element groupOne = domFactory.createElement(TAG_G);
         for(int i=0; i<clips.length; i++){

@@ -40,34 +40,34 @@ public class SVGCircleElementBridge extends SVGShapeElementBridge {
                               UnitProcessor.Context uctx) {
 
         // parse the cx attribute, (default is 0)
-        String s = svgElement.getAttributeNS(null, ATTR_CX);
+        String s = svgElement.getAttributeNS(null, SVG_CX_ATTRIBUTE);
         float cx = 0;
         if (s.length() != 0) {
             cx = SVGUtilities.svgToUserSpace(svgElement,
-                                             ATTR_CX, s,
+                                             SVG_CX_ATTRIBUTE, s,
                                              uctx,
                                              UnitProcessor.HORIZONTAL_LENGTH);
         }
 
         // parse the cy attribute, (default is 0)
-        s = svgElement.getAttributeNS(null, ATTR_CY);
+        s = svgElement.getAttributeNS(null, SVG_CY_ATTRIBUTE);
         float cy = 0;
         if (s.length() != 0) {
             cy = SVGUtilities.svgToUserSpace(svgElement,
-                                             ATTR_CY, s,
+                                             SVG_CY_ATTRIBUTE, s,
                                              uctx,
                                              UnitProcessor.VERTICAL_LENGTH);
         }
 
         // parse the r attribute, (required and must be positive)
-        s = svgElement.getAttributeNS(null, ATTR_R);
+        s = svgElement.getAttributeNS(null, SVG_R_ATTRIBUTE);
         float r;
         if (s.length() == 0) {
             throw new MissingAttributeException(
                 Messages.formatMessage("circle.r.required", null));
         } else {
             r = SVGUtilities.svgToUserSpace(svgElement,
-                                            ATTR_R, s,
+                                            SVG_R_ATTRIBUTE, s,
                                             uctx,
                                             UnitProcessor.OTHER_LENGTH);
             if (r < 0) {

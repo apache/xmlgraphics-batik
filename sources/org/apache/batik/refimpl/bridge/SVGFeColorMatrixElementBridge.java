@@ -73,7 +73,7 @@ public class SVGFeColorMatrixElementBridge implements FilterPrimitiveBridge,
         Filter filter = null;
 
         // First, extract source
-        String inAttr = filterElement.getAttributeNS(null, ATTR_IN);
+        String inAttr = filterElement.getAttributeNS(null, SVG_IN_ATTRIBUTE);
         in = CSSUtilities.getFilterSource(filteredNode,
                                           inAttr,
                                           bridgeContext,
@@ -115,9 +115,9 @@ public class SVGFeColorMatrixElementBridge implements FilterPrimitiveBridge,
         //
         // Extract the matrix type. Interpret the values accordingly.
         //
-        String typeStr = filterElement.getAttributeNS(null, ATTR_TYPE);
+        String typeStr = filterElement.getAttributeNS(null, SVG_TYPE_ATTRIBUTE);
         int type = convertType(typeStr);
-        String valuesStr = filterElement.getAttributeNS(null, ATTR_VALUES);
+        String valuesStr = filterElement.getAttributeNS(null, SVG_VALUES_ATTRIBUTE);
         ColorMatrixRable colorMatrix;
         switch(type){
         case ColorMatrixRable.TYPE_MATRIX:
@@ -134,7 +134,8 @@ public class SVGFeColorMatrixElementBridge implements FilterPrimitiveBridge,
         case ColorMatrixRable.TYPE_HUE_ROTATE:
             float a = 0; // default is 0
             if (valuesStr.length() > 0) {
-                a = (float) (SVGUtilities.convertSVGNumber(ATTR_VALUES, valuesStr) * Math.PI/180);
+                a = (float)(SVGUtilities.convertSVGNumber
+                            (SVG_VALUES_ATTRIBUTE, valuesStr) * Math.PI/180);
             }
             colorMatrix = ConcreteColorMatrixRable.buildHueRotate(a);
             break;
@@ -204,16 +205,16 @@ public class SVGFeColorMatrixElementBridge implements FilterPrimitiveBridge,
         if (typeStr.length() == 0) {
             type = ColorMatrixRable.TYPE_MATRIX; // default value
 
-        } else if (VALUE_SATURATE.equals(typeStr)) {
+        } else if (SVG_SATURATE_VALUE.equals(typeStr)) {
             type = ColorMatrixRable.TYPE_SATURATE;
 
-        } else if (VALUE_HUE_ROTATE.equals(typeStr)) {
+        } else if (SVG_HUE_ROTATE_VALUE.equals(typeStr)) {
             type = ColorMatrixRable.TYPE_HUE_ROTATE;
 
-        } else if (VALUE_LUMINANCE_TO_ALPHA.equals(typeStr)) {
+        } else if (SVG_LUMINANCE_TO_ALPHA_VALUE.equals(typeStr)) {
             type = ColorMatrixRable.TYPE_LUMINANCE_TO_ALPHA;
 
-        } else if (VALUE_MATRIX.equals(typeStr)) {
+        } else if (SVG_MATRIX_VALUE.equals(typeStr)) {
             type = ColorMatrixRable.TYPE_MATRIX;
 
         } else {

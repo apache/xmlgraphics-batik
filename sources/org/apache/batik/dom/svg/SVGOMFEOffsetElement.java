@@ -11,6 +11,8 @@ package org.apache.batik.dom.svg;
 import java.lang.ref.WeakReference;
 
 import org.apache.batik.dom.AbstractDocument;
+
+import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedEnumeration;
 import org.w3c.dom.svg.SVGAnimatedLength;
 import org.w3c.dom.svg.SVGAnimatedNumber;
@@ -45,7 +47,7 @@ public class SVGOMFEOffsetElement
     /**
      * Creates a new SVGOMFEOffsetElement object.
      */
-    public SVGOMFEOffsetElement() {
+    protected SVGOMFEOffsetElement() {
     }
 
     /**
@@ -72,7 +74,7 @@ public class SVGOMFEOffsetElement
 	SVGAnimatedString result;
 	if (inReference == null ||
 	    (result = (SVGAnimatedString)inReference.get()) == null) {
-	    result = new SVGOMAnimatedString(this, null, ATTR_IN);
+	    result = new SVGOMAnimatedString(this, null, SVG_IN_ATTRIBUTE);
 	    inReference = new WeakReference(result);
 	}
 	return result;
@@ -86,7 +88,7 @@ public class SVGOMFEOffsetElement
 	SVGAnimatedLength result;
 	if (dxReference == null ||
 	    (result = (SVGAnimatedLength)dxReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "dx");
+	    result = new SVGOMAnimatedLength(this, null, "dx", null);
 	    dxReference = new WeakReference(result);
 	}
 	return result;
@@ -100,9 +102,16 @@ public class SVGOMFEOffsetElement
 	SVGAnimatedLength result;
 	if (dyReference == null ||
 	    (result = (SVGAnimatedLength)dyReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "dy");
+	    result = new SVGOMAnimatedLength(this, null, "dy", null);
 	    dyReference = new WeakReference(result);
 	}
 	return result;
     } 
+
+    /**
+     * Returns a new uninitialized instance of this object's class.
+     */
+    protected Node newNode() {
+        return new SVGOMFEOffsetElement();
+    }
 }

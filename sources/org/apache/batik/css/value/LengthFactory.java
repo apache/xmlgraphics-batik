@@ -46,9 +46,6 @@ public class LengthFactory extends AbstractLengthFactory {
      */
     public ImmutableValue createValue(LexicalUnit lu) throws DOMException {
 	switch (lu.getLexicalUnitType()) {
-	case LexicalUnit.SAC_PERCENTAGE:
-	    return createFloatValue(CSSPrimitiveValue.CSS_PERCENTAGE,
-				    lu.getFloatValue());
 	case LexicalUnit.SAC_IDENT:
 	    if (lu.getStringValue().equalsIgnoreCase(CSS_AUTO_VALUE)) {
 		return AUTO_VALUE;

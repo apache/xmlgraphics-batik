@@ -76,7 +76,7 @@ public class SVGFeComponentTransferElementBridge
         Filter filter = null;
 
         // First, extract source
-        String inAttr = filterElement.getAttributeNS(null, ATTR_IN);
+        String inAttr = filterElement.getAttributeNS(null, SVG_IN_ATTRIBUTE);
         in = CSSUtilities.getFilterSource(filteredNode,
                                           inAttr,
                                           bridgeContext,
@@ -206,7 +206,7 @@ public class SVGFeComponentTransferElementBridge
                 // Get type. Depending on the type, some of the
                 // attributes are ignored.
                 //
-                String typeStr = elt.getAttributeNS(null, ATTR_TYPE);
+                String typeStr = elt.getAttributeNS(null, SVG_TYPE_ATTRIBUTE);
                 int type = convertType(elt, typeStr);
 
                 switch(type){

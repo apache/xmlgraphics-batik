@@ -31,7 +31,7 @@ public class GenericElement extends AbstractElement {
     /**
      * Creates a new Element object.
      */
-    public GenericElement() {
+    protected GenericElement() {
     }
 
     /**
@@ -116,5 +116,12 @@ public class GenericElement extends AbstractElement {
 	GenericElement ge = (GenericElement)super.deepCopyInto(n);
 	ge.nodeName = nodeName;
 	return n;
+    }
+
+    /**
+     * Returns a new uninitialized instance of this object's class.
+     */
+    protected Node newNode() {
+        return new GenericElement();
     }
 }

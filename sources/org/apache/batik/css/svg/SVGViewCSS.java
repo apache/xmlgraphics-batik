@@ -62,7 +62,7 @@ public class SVGViewCSS
 	addRelativeValueResolver(new StrokeLinecapResolver());
 	addRelativeValueResolver(new StrokeLinejoinResolver());
 	addRelativeValueResolver(new StrokeMiterlimitResolver());
-	addRelativeValueResolver(new StrokeWidthResolver());
+	addRelativeValueResolver(new StrokeWidthResolver(ctx));
 	addRelativeValueResolver(new OpacityResolver(CSS_STROKE_OPACITY_PROPERTY, true));
 	addRelativeValueResolver(new TextAnchorResolver());
 	addRelativeValueResolver(new TextRenderingResolver());

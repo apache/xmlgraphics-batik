@@ -10,6 +10,7 @@ package org.apache.batik.dom.svg;
 
 import java.lang.ref.WeakReference;
 import org.apache.batik.dom.AbstractDocument;
+import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedString;
 import org.w3c.dom.svg.SVGAElement;
 
@@ -25,12 +26,12 @@ public class SVGOMAElement
     /**
      * The reference to the target attribute.
      */
-    protected WeakReference targetReference;
+    protected transient WeakReference targetReference;
 
     /**
      * Creates a new SVGOMAElement object.
      */
-    public SVGOMAElement() {
+    protected SVGOMAElement() {
     }
 
     /**
@@ -46,7 +47,7 @@ public class SVGOMAElement
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
      */
     public String getLocalName() {
-        return "a";
+        return SVG_A_TAG;
     }
 
     /**
@@ -56,9 +57,16 @@ public class SVGOMAElement
 	SVGAnimatedString result;
 	if (targetReference == null ||
 	    (result = (SVGAnimatedString)targetReference.get()) == null) {
-	    result = new SVGOMAnimatedString(this, null, ATTR_TARGET);
+	    result = new SVGOMAnimatedString(this, null, SVG_TARGET_ATTRIBUTE);
 	    targetReference = new WeakReference(result);
 	}
 	return result;
     } 
+
+    /**
+     * Returns a new uninitialized instance of this object's class.
+     */
+    protected Node newNode() {
+        return new SVGOMAElement();
+    }
 }

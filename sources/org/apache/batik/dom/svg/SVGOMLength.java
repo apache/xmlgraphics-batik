@@ -30,6 +30,7 @@ public class SVGOMLength
     implements SVGLength,
 	       LiveAttributeValue,
                LengthHandler {
+
     /**
      * The units representations.
      */
@@ -49,7 +50,7 @@ public class SVGOMLength
     /**
      * The associated attribute modifier.
      */
-    protected AttributeModifier attributeModifier;
+    protected ModificationHandler modificationHandler;
 
     /**
      * This length direction.
@@ -59,8 +60,8 @@ public class SVGOMLength
     /**
      * Sets the associated attribute modifier.
      */
-    public void setAttributeModifier(AttributeModifier am) {
-	attributeModifier = am;
+    public void setModificationHandler(ModificationHandler mh) {
+        modificationHandler = mh;
     }
 
     /**
@@ -92,15 +93,30 @@ public class SVGOMLength
      * org.w3c.dom.svg.SVGLength#getValue()}.
      */
     public float getValue() {
-        SVGElement elt = attributeModifier.getSVGElement();
-        SVGOMDocument doc = (SVGOMDocument)elt.getOwnerDocument();
-        UnitProcessor.Context ctx;
-        ctx = new DefaultUnitProcessorContext(doc.getSVGContext(), elt);
-        return UnitProcessor.svgToUserSpace(unitType,
-                                            valueInSpecifiedUnits,
-                                            elt,
-                                            direction,
-                                            ctx);
+        try {
+            if (modificationHandler == null) {
+                switch (unitType) {
+                case SVGLength.SVG_LENGTHTYPE_NUMBER:
+                case SVGLength.SVG_LENGTHTYPE_PX:
+                    return valueInSpecifiedUnits;
+                default:
+                    throw new RuntimeException("Invalid Unit");
+                }
+            } else {
+                SVGElement elt = modificationHandler.getSVGElement();
+                SVGOMDocument doc = (SVGOMDocument)elt.getOwnerDocument();
+                UnitProcessor.Context ctx;
+                ctx = new DefaultUnitProcessorContext(doc.getSVGContext(), elt);
+                return UnitProcessor.svgToUserSpace(unitType,
+                                                    valueInSpecifiedUnits,
+                                                    elt,
+                                                    direction,
+                                                    ctx);
+            }
+        } catch (RuntimeException e) {
+            throw new DOMException(DOMException.INVALID_STATE_ERR,
+                                   e.getMessage());
+        }
     }
 
     /**
@@ -108,7 +124,31 @@ public class SVGOMLength
      * org.w3c.dom.svg.SVGLength#setValue(float)}.
      */
     public void setValue(float value) throws DOMException {
-	throw new RuntimeException(" !!! TODO: SVGLength.setValue()");
+        try {
+            if (modificationHandler == null) {
+                switch (unitType) {
+                case SVGLength.SVG_LENGTHTYPE_NUMBER:
+                case SVGLength.SVG_LENGTHTYPE_PX:
+                    valueInSpecifiedUnits = value;
+                    break;
+                default:
+                    throw new RuntimeException("Invalid Unit");
+                }
+            } else {
+                SVGElement elt = modificationHandler.getSVGElement();
+                SVGOMDocument doc = (SVGOMDocument)elt.getOwnerDocument();
+                UnitProcessor.Context ctx;
+                ctx = new DefaultUnitProcessorContext(doc.getSVGContext(), elt);
+                valueInSpecifiedUnits = UnitProcessor.userSpaceToSVG(unitType,
+                                                                     value,
+                                                                     elt,
+                                                                     direction,
+                                                                     ctx);
+            }
+        } catch (RuntimeException e) {
+            throw new DOMException(DOMException.INVALID_STATE_ERR,
+                                   e.getMessage());
+        }
     }
 
     /**
@@ -125,10 +165,10 @@ public class SVGOMLength
      */
     public void setValueInSpecifiedUnits(float value)
 	throws DOMException {
-	if (attributeModifier == null) {
+	if (modificationHandler == null) {
 	    parseLength(value + UNITS[unitType]);
 	} else {
-	    attributeModifier.setAttributeValue(value + UNITS[unitType]);
+	    modificationHandler.valueChanged(value + UNITS[unitType]);
 	}
     }
 
@@ -145,10 +185,10 @@ public class SVGOMLength
      * org.w3c.dom.svg.SVGLength#setValueAsString(String)}.
      */
     public void setValueAsString(String valueAsString) throws DOMException {
-	if (attributeModifier == null) {
+	if (modificationHandler == null) {
 	    parseLength(valueAsString);
 	} else {
-	    attributeModifier.setAttributeValue(valueAsString);
+	    modificationHandler.valueChanged(valueAsString);
 	}
     }
 
@@ -172,7 +212,7 @@ public class SVGOMLength
     /**
      * Parses the given length representation.
      */
-    protected void parseLength(String text) {
+    public void parseLength(String text) {
 	LengthParser lp = new ConcreteLengthParser();
 	lp.setLengthHandler(this);
 	try {

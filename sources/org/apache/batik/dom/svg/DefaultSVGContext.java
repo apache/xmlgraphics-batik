@@ -23,8 +23,26 @@ import org.apache.batik.parser.ParserFactory;
 public class DefaultSVGContext
     extends    DefaultSVGCSSContext
     implements SVGContext {
+
+    /**
+     * The parser factory.
+     */
     protected ParserFactory parserFactory;
-    protected UserAgent userAgent;
+
+    /**
+     * The pixel to mm conversion factor.
+     */
+    protected float pixelToMM;
+
+    /**
+     * The viewport width.
+     */
+    protected float viewportWidth;
+
+    /**
+     * The viewport height.
+     */
+    protected float viewportHeight;
 
     /**
      * Returns the parser factory.
@@ -41,16 +59,16 @@ public class DefaultSVGContext
     }
 
     /**
-     * Returns the user agent.
+     * Return the pixel to millimeters factor.
      */
-    public UserAgent getUserAgent() {
-        return userAgent;
+    public float getPixelToMM() {
+        return pixelToMM;
     }
 
     /**
-     * Sets the user agent.
+     * Sets the pixel to millimeters factor.
      */
-    public void setUserAgent(UserAgent ua) {
-        userAgent = ua;
+    public void setPixelToMM(float f) {
+        pixelToMM = f;
     }
 }

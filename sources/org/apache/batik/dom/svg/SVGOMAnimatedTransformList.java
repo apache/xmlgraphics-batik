@@ -22,7 +22,7 @@ import org.w3c.dom.svg.SVGTransformList;
  */
 public class SVGOMAnimatedTransformList
     implements SVGAnimatedTransformList,
-               AttributeModifier {
+               ModificationHandler {
     /**
      * The element this transform list is attached to.
      */
@@ -72,7 +72,7 @@ public class SVGOMAnimatedTransformList
 	    baseVal = new SVGOMTransformList();
 	    element.putLiveAttributeValue(attributeNsURI, attributeName,
                                           baseVal);
-	    baseVal.setAttributeModifier(this);
+	    baseVal.setModificationHandler(this);
 	    Attr a = element.getAttributeNodeNS(attributeNsURI, attributeName);
 	    if (a != null) {
 		baseVal.valueChanged(null, a);
@@ -90,9 +90,9 @@ public class SVGOMAnimatedTransformList
     }
 
     /**
-     * Implements {@link AttributeModifier#setAttributeValue(String)}.
+     * Implements {@link ModificationHandler#valueChanged(String)}.
      */
-    public void setAttributeValue(String value) {
+    public void valueChanged(String value) {
 	element.setAttributeNS(attributeNsURI, attributeName, value);
     }
 

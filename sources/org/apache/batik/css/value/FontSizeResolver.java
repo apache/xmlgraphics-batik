@@ -116,7 +116,7 @@ public class FontSizeResolver
                     short t = ((ImmutableFloat)im).getPrimitiveType();
                     float f = ((ImmutableFloat)im).getFloatValue(t);
                     if (t == CSSPrimitiveValue.CSS_PERCENTAGE) {
-                        throw new RuntimeException("!!! TODO %");
+                       throw new RuntimeException("!!! TODO %");
                     } else {
                         val = new CSSOMReadOnlyValue
                             (new ImmutableFloat(t, (b) ? f / 1.2f : f * 1.2f));
