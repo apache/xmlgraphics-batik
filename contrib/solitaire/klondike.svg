@@ -125,20 +125,18 @@
          pileUp[i]   = new Pile(BOARD, 80*(i+1), 75, 75, 105, 0, 25, 0, 0);
          pileUp[i].setDragCheck(dragCheck);
          pileUp[i].setDropCheck(dropCheck);
-         pileUp[i].g.addEventListener("click", doubleClick, false);
+         pileUp[i].setDoubleClick(handleDoubleClick);
       }
 
       dealDown = new Pile(BOARD, 640, 105, 75, 105, 0, 5, 0, -5);
       dealDown.setDragCheck(dealDownDragCheck);
       dealDown.setDropCheck(dealDownDropCheck);
-      dealDown.g.addEventListener
-      ("click", dealDownClick, false);
+      dealDown.setClick(dealDownClick);
 
       dealUp   = new Pile(BOARD, 640, 220, 80, 105, 0, 5, 0, 0);
       dealUp.setDragCheck(dealUpDragCheck);
       dealUp.setDropCheck(dealUpDropCheck);
-      dealUp.g.addEventListener
-      ("click", doubleClick, false);
+      dealUp.setDoubleClick(handleDoubleClick);
 
       for (var i=0; i<6; i++) {
         for (var j=6-i; j<7; j++) {
@@ -156,37 +154,7 @@
       }
     }
 
-var DOUBLE_CLICK_TGT;
-var DOUBLE_CLICK_X;
-var DOUBLE_CLICK_Y;
-var DOUBLE_CLICK_CNT;
-    function doubleClick(evt) {
-      if (DOUBLE_CLICK_TGT != evt.target) {
-         DOUBLE_CLICK_TGT = evt.target;
-         DOUBLE_CLICK_X = evt.clientX;
-         DOUBLE_CLICK_Y = evt.clientY;
-         DOUBLE_CLICK_CNT = 1;
-         return;
-      }
-
-      var dx = evt.clientX-DOUBLE_CLICK_X;
-      var dy = evt.clientY-DOUBLE_CLICK_Y;
-      if (dx*dx+dy*dy > 9) {
-         DOUBLE_CLICK_X = evt.clientX;
-         DOUBLE_CLICK_Y = evt.clientY;
-         DOUBLE_CLICK_CNT = 1;
-         return;
-      }
-      
-      DOUBLE_CLICK_X = evt.clientX;
-      DOUBLE_CLICK_Y = evt.clientY;
-      DOUBLE_CLICK_CNT++;
-      if (DOUBLE_CLICK_CNT > 2) {
-        DOUBLE_CLICK_CNT = 1;
-        return;
-      }
-
-      var pile = findPile(BOARD, evt.target);
+    function handleDoubleClick(pile, evt) {
       if (!pile) return;
 
       var c = pile.checkTopCard();
@@ -314,8 +282,14 @@ var DOUBLE_CLICK_CNT;
     function dealDownDropCheck(fromPile, toPile, cards) {
       return false;
     }
-    function dealDownClick(evt) {
+
+    function dealDownClick(pile, evt) {
+      if (pile != dealDown) return;
+
       if (dealDown.size() == 0) {
+        if (dealUp.size() <= 3) // No point in flipping.
+          return;
+
         var len = dealUp.size();
         for (var i=0; i<len; i++) {
          var c = dealUp.getTopCard(c);
@@ -323,6 +297,10 @@ var DOUBLE_CLICK_CNT;
          dealDown.addCard(c);
         }
       }
+
+      if (dealUp.size() != 0)
+        dealUp.checkTopCard().flipCard(false);
+
       for (var i=0; i<3; i++) {
         if (dealDown.size() == 0) break;
         var c = dealDown.getTopCard();

@@ -10,6 +10,7 @@ function Pile(board, x, y, w, h, dx, dy, pdx, pdy) {
   this.g = this.doc.createElementNS(svgns, "g");
   this.g.setAttribute("id", "pile-"+this.index);
   this.g.addEventListener("mousedown", new PileMouseDownHandler(this), false);
+  this.g.addEventListener("click", new PileClickHandler(this), false);
 
   this.base = this.doc.createElementNS(svgns, "rect");
   this.base.setAttribute("x", ""+x);
@@ -189,6 +190,60 @@ Pile.prototype.setDragCheck = function(dragCheck) {
 
 Pile.prototype.setDropCheck = function(dropCheck) {
   this.dropCheck = dropCheck;
+}
+
+Pile.prototype.setClick = function(click) {
+  this.click = click;
+}
+
+Pile.prototype.setDoubleClick = function(doubleClick) {
+  this.doubleClick = doubleClick;
+}
+
+function PileClickHandler(pile) {
+  this.pile = pile;
+  this.tgt = null;
+  this.clickX   =0;
+  this.clickY   =0;
+  this.clickCnt =0;
+
+  this.handleEvent = function(evt) {
+    if (this.tgt != evt.target) {
+      this.tgt = evt.target;
+      this.clickX = evt.clientX;
+      this.clickY = evt.clientY;
+      this.clickCnt = 1;
+      if (this.pile.click)
+        this.pile.click(this.pile, evt);
+      return;
+    }
+    
+    var dx = evt.clientX-this.clickX;
+    var dy = evt.clientY-this.clickY;
+    if (dx*dx+dy*dy > 9) {
+      this.clickX = evt.clientX;
+      this.clickY = evt.clientY;
+      this.clickCnt = 1;
+      if (this.pile.click)
+        this.pile.click(this.pile, evt);
+      return;
+    }
+    
+    this.clickX = evt.clientX;
+    this.clickY = evt.clientY;
+    this.clickCnt++;
+
+    if (this.clickCnt > 2) {
+      this.clickCnt = 1;
+      if (this.pile.click)
+        this.pile.click(this.pile, evt);
+      return;
+    }
+
+    if (this.pile.doubleClick) {
+      this.pile.doubleClick(this.pile, evt);
+    }
+  }
 }
 
 function PileMouseDownHandler(pile) {
