@@ -1,0 +1,30 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20000802//EN"
+"http://www.w3.org/TR/2000/CR-SVG-20000802/DTD/svg-20000802.dtd">
+
+<!-- ========================================================================= -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.        -->
+<!--                                                                           -->
+<!-- This software is published under the terms of the Apache Software License -->
+<!-- version 1.1, a copy of which has been included with this distribution in  -->
+<!-- the LICENSE file.                                                         -->
+<!-- ========================================================================= -->
+
+<!-- ========================================================================= -->
+<!-- Referenced from svgImageXXX.svg                                           -->
+<!-- @author vincent.hardy@eng.sun.com                                         -->
+<!-- @version $Id$   -->
+<!-- ========================================================================= -->
+<svg width="30" height="50" viewBox="-10 -10 20 20">
+    <g id="smilley">
+        <g transform="translate(-15,-15)">
+            <rect x="5" y="5" width="20" height="20" fill="black" />
+            <!-- <circle cx="10" cy="25" r="4" fill="crimson" />
+            <circle cx="20" cy="25" r="4" fill="crimson" /> -->
+            <circle cx="15" cy="15" r="10" fill="yellow"/>
+            <circle cx="12" cy="12" r="1.5" fill="black"/>
+            <circle cx="17" cy="12" r="1.5" fill="black"/>
+            <path d="M 10 19 A 8 8 0 0 0 20 19" stroke="black" stroke-width="1" fill="none"/>
+        </g>
+    </g>
+</svg>

@@ -31,12 +31,13 @@
 
     <g id="content">
 
-        <text class="title" x="50%" y="40">viewBox &amp; preserveAspectRatio on &lt;symbol&gt;
+        <text class="title" x="50%" y="30">viewBox &amp; preserveAspectRatio
             <title>viewBox &amp; preserveAspectRatio on &lt;symbol&gt;</title>
             <desc>This test validates the processing of viewBox and preserveAspectRatio
                   on &lt;symbol&gt; elements in conjunction with the overflow property.
                   In this test, there should be no clipping around the viewBox boundaries
                   and the smilley&apos;s ears and feet should show.</desc></text>
+        <text class="title" x="50%" y="50">on &lt;symbol&gt;, overflow="visible"</text>
 
         <g id="table" class="label" transform="translate(80, 60)">
             <rect         width="110" height="20" class="oddRow" />
