@@ -62,24 +62,19 @@
         </font>
       </defs>
       <g class="testC1" transform="translate(0,30)">
-        <text xml:space="preserve" x="10" y="12" class="testC2">Default transform
-        </text>
+        <text xml:space="preserve" x="10" y="12" class="testC2">Default transform</text>
         <rect width="50" x="10" height="30" y="20" class="testC3" />
-        <text xml:space="preserve" x="10" y="12" class="testC4" transform="translate(0,90)">Translate applied
-        </text>
+        <text xml:space="preserve" x="10" y="12" class="testC4" transform="translate(0,90)">Translate applied</text>
         <rect x="10" y="20" transform="translate(0,90)" width="50" class="testC5" height="30" />
-        <text xml:space="preserve" x="10" y="12" class="testC6" transform="translate(35,215) rotate(90) translate(-35,-35)">Rotate about center
-        </text>
+        <text xml:space="preserve" x="10" y="12" class="testC6" transform="translate(35,215) rotate(90) translate(-35,-35)">Rotate about center</text>
         <rect x="10" y="20" transform="translate(35,215) rotate(90) translate(-35,-35)" width="50" class="testC7" height="30" />
       </g>
       <g class="testC8" transform="matrix(1,0,0,1,0,30) translate(150,0)">
-        <text xml:space="preserve" x="10" y="12" class="testC9">Scale (sx=2, sy=1)
-        </text>
+        <text xml:space="preserve" x="10" y="12" class="testC9">Scale (sx=2, sy=1)</text>
         <rect x="10" y="20" transform="scale(2,1)" width="50" class="testC10" height="30" />
       </g>
       <g class="testC11" transform="matrix(1,0,0,1,0,30) translate(150,90)">
-        <text xml:space="preserve" x="10" y="12" class="testC12">Shear
-        </text>
+        <text xml:space="preserve" x="10" y="12" class="testC12">Shear</text>
         <rect x="10" y="20" transform="matrix(1,1,0.2,1,0,0)" width="50" class="testC13" height="30" />
       </g>
       <g class="testC14">

@@ -83,36 +83,27 @@ ASIgAgJEQIBos0n5k0v5lHMhQAQEiIAAERAgAgJEQAQEiIAAERAgAgJEQAQEiIAA
       </defs>
       <g class="testC1">
         <use x="0" y="0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC2" xlink:actuate="onRequest" xlink:show="replace" />
-        <text xml:space="preserve" x="110" y="25" class="testC3">Clip set to device bounds
-        </text>
-        <text xml:space="preserve" x="110" y="25" class="testC4" transform="translate(0,70)">Clip set to upper right quarter
-        </text>
+        <text xml:space="preserve" x="110" y="25" class="testC3">Clip set to device bounds</text>
+        <text xml:space="preserve" x="110" y="25" class="testC4" transform="translate(0,70)">Clip set to upper right quarter</text>
         <use x="0" y="0" transform="translate(0,70)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC5" xlink:actuate="onRequest" xlink:show="replace" />
       </g>
       <g class="testC6" transform="translate(0,140)">
-        <text xml:space="preserve" x="110" y="15" class="testC7">Clip set to upper right quarter
-        </text>
-        <text xml:space="preserve" x="110" y="30" class="testC8">after .5 scale
-        </text>
+        <text xml:space="preserve" x="110" y="15" class="testC7">Clip set to upper right quarter</text>
+        <text xml:space="preserve" x="110" y="30" class="testC8">after .5 scale</text>
         <use x="0" y="0" transform="scale(0.5,0.5)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC9" xlink:actuate="onRequest" xlink:show="replace" />
       </g>
       <g class="testC10" transform="translate(0,210)">
-        <text xml:space="preserve" x="110" y="25" class="testC11">Non-Rectagular clip
-        </text>
+        <text xml:space="preserve" x="110" y="25" class="testC11">Non-Rectagular clip</text>
         <use x="0" y="0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC12" xlink:actuate="onRequest" xlink:show="replace" />
       </g>
       <g class="testC13" transform="translate(0,280)">
-        <text xml:space="preserve" x="110" y="15" class="testC14">Non-Rectagular clip after
-        </text>
-        <text xml:space="preserve" x="110" y="30" class="testC15">.5 scale
-        </text>
+        <text xml:space="preserve" x="110" y="15" class="testC14">Non-Rectagular clip after</text>
+        <text xml:space="preserve" x="110" y="30" class="testC15">.5 scale</text>
         <use x="0" y="0" transform="scale(0.5,0.5)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC16" xlink:actuate="onRequest" xlink:show="replace" />
       </g>
       <g class="testC17" transform="translate(0,350)">
-        <text xml:space="preserve" x="110" y="15" class="testC18">Non-Rectagular clip before
-        </text>
-        <text xml:space="preserve" x="110" y="30" class="testC19">.5 scale
-        </text>
+        <text xml:space="preserve" x="110" y="15" class="testC18">Non-Rectagular clip before</text>
+        <text xml:space="preserve" x="110" y="30" class="testC19">.5 scale</text>
         <use x="0" y="0" transform="scale(0.5,0.5)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC20" xlink:actuate="onRequest" xlink:show="replace" />
       </g>
     </g>

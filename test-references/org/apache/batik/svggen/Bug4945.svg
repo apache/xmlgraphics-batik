@@ -6,21 +6,17 @@
   <defs id="genericDefs" />
   <g>
     <g text-rendering="optimizeLegibility" shape-rendering="geometricPrecision" transform="matrix(1.5,0,0,3,-10,-80)">
-      <text xml:space="preserve" x="20" y="40" stroke="none">Scaled Font
-      </text>
+      <text xml:space="preserve" x="20" y="40" stroke="none">Scaled Font</text>
     </g>
     <g text-rendering="optimizeLegibility" shape-rendering="geometricPrecision" transform="matrix(1,0,0,1,50,20)">
-      <text xml:space="preserve" x="20" y="80" stroke="none">Translated Font
-      </text>
+      <text xml:space="preserve" x="20" y="80" stroke="none">Translated Font</text>
     </g>
     <g text-rendering="optimizeLegibility" shape-rendering="geometricPrecision">
       <line y2="80" fill="none" x1="20" x2="120" y1="80" />
-      <text xml:space="preserve" x="20" y="120" transform="matrix(1,0.5,0.5,1,-60,-10)" stroke="none">Sheared Font
-      </text>
+      <text xml:space="preserve" x="20" y="120" transform="matrix(1,0.5,0.5,1,-60,-10)" stroke="none">Sheared Font</text>
     </g>
     <g text-rendering="optimizeLegibility" shape-rendering="geometricPrecision" transform="matrix(0.7071067811865476,0.7071067811865475,-0.7071067811865475,0.7071067811865476,149.28932188134524,-120.41630560342614)">
-      <text xml:space="preserve" x="220" y="120" stroke="none">Rotated Font
-      </text>
+      <text xml:space="preserve" x="220" y="120" stroke="none">Rotated Font</text>
     </g>
   </g>
 </svg>

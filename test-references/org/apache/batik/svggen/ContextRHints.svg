@@ -72,24 +72,19 @@
 PwMjAwMTiAAyGQAyFwQCULgtXgAAAABJRU5ErkJggg==" xlink:type="simple" xlink:actuate="onRequest" height="2" id="testimage1" preserveAspectRatio="xMidYMid meet" xlink:show="replace" />
       </defs>
       <g class="testC1">
-        <text xml:space="preserve" x="10" y="20" class="testC2">Text antialiasing
-        </text>
-        <text xml:space="preserve" x="30" y="60" class="testC3">HELLO antialiased
-        </text>
+        <text xml:space="preserve" x="10" y="20" class="testC2">Text antialiasing</text>
+        <text xml:space="preserve" x="30" y="60" class="testC3">HELLO antialiased</text>
       </g>
       <g class="testC4">
-        <text xml:space="preserve" x="30" y="90" class="testC5">HELLO aliased
-        </text>
+        <text xml:space="preserve" x="30" y="90" class="testC5">HELLO aliased</text>
       </g>
       <g class="testC6" transform="translate(0,100)">
-        <text xml:space="preserve" x="10" y="20" class="testC7">Shape antialiasing
-        </text>
+        <text xml:space="preserve" x="10" y="20" class="testC7">Shape antialiasing</text>
         <ellipse transform="translate(30,0)" rx="50" cx="60" class="testC8" ry="15" cy="45" />
         <ellipse transform="translate(30,40)" rx="50" cx="60" class="testC9" ry="15" cy="45" />
       </g>
       <g class="testC10" transform="translate(0,200)">
-        <text xml:space="preserve" x="10" y="30" class="testC11">Interpolation Nearest Neighbor / Bicubic
-        </text>
+        <text xml:space="preserve" x="10" y="30" class="testC11">Interpolation Nearest Neighbor / Bicubic</text>
         <use x="10" y="50" transform="matrix(20,0,0,20,0,0)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC12" xlink:actuate="onRequest" xlink:show="replace" />
         <use x="60" y="50" transform="matrix(20,0,0,20,0,0)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC13" xlink:actuate="onRequest" xlink:show="replace" />
       </g>

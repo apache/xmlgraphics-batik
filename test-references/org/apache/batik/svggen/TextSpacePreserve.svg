@@ -6,13 +6,12 @@
   <defs id="genericDefs" />
   <g>
     <g text-rendering="optimizeLegibility" shape-rendering="geometricPrecision" transform="translate(0,30)">
-      <text xml:space="preserve" x="10" y="12" stroke="none">     space before.
-      </text>
-      <text xml:space="preserve" x="10" y="32" stroke="none">Multiple spaces between A and B: A    B
-      </text>
+      <text xml:space="preserve" x="10" y="12" stroke="none">Hello Java</text>
+      <text xml:space="preserve" x="10" y="12" stroke="none">     space before.</text>
+      <text xml:space="preserve" x="10" y="32" stroke="none">Multiple spaces between A and B: A    B</text>
       <text xml:space="preserve" x="10" y="52" stroke="none">This is a first line
-     and this is a second line starting with spaces
-      </text>
+     and this is a second line starting with spaces</text>
+      <text xml:space="preserve" x="10" y="72" stroke="none">Should have no trailing spaces</text>
     </g>
   </g>
 </svg>

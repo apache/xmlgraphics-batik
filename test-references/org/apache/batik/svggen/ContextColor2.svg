@@ -51,13 +51,11 @@
         </font>
       </defs>
       <g class="testC1">
-        <text xml:space="preserve" x="10" y="30" class="testC2">Opaque Colors, Half Transparent AlphaComposite
-        </text>
+        <text xml:space="preserve" x="10" y="30" class="testC2">Opaque Colors, Half Transparent AlphaComposite</text>
         <rect width="100" x="10" height="50" y="40" class="testC3" />
         <rect width="100" x="10" height="50" y="40" class="testC4" />
         <rect width="100" x="10" height="50" y="40" class="testC5" />
-        <text xml:space="preserve" x="10" y="30" class="testC6" transform="translate(0,90)">Transparent Colors, Opaque AlphaComposite SrcOver
-        </text>
+        <text xml:space="preserve" x="10" y="30" class="testC6" transform="translate(0,90)">Transparent Colors, Opaque AlphaComposite SrcOver</text>
       </g>
       <g class="testC7" transform="translate(0,90)">
         <rect width="100" x="10" height="50" y="40" class="testC8" />

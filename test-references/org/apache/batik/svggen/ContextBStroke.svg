@@ -65,37 +65,32 @@
         </font>
       </defs>
       <g class="testC1">
-        <text xml:space="preserve" x="10" y="10" class="testC2">Varying width
-        </text>
+        <text xml:space="preserve" x="10" y="10" class="testC2">Varying width</text>
         <line y2="80" x1="10" class="testC3" x2="10" y1="30" />
         <line transform="translate(20,0)" x1="10" x2="10" y1="30" y2="80" class="testC4" />
         <line transform="translate(40,0)" x1="10" x2="10" y1="30" y2="80" class="testC5" />
         <line transform="translate(60,0)" x1="10" x2="10" y1="30" y2="80" class="testC6" />
       </g>
       <g class="testC7" transform="translate(0,120)">
-        <text xml:space="preserve" x="10" y="10" class="testC8">Varying end caps
-        </text>
+        <text xml:space="preserve" x="10" y="10" class="testC8">Varying end caps</text>
         <line y2="80" x1="15" class="testC9" x2="15" y1="30" />
         <line transform="translate(30,0)" x1="15" x2="15" y1="30" y2="80" class="testC10" />
         <line transform="translate(60,0)" x1="15" x2="15" y1="30" y2="80" class="testC11" />
       </g>
       <g class="testC12" transform="translate(0,240)">
-        <text xml:space="preserve" x="10" y="10" class="testC13">Varying line joins
-        </text>
+        <text xml:space="preserve" x="10" y="10" class="testC13">Varying line joins</text>
         <path d="M0 60 L10 20 L20 60" class="testC14" transform="translate(20,20)" />
         <path d="M0 60 L10 20 L20 60" class="testC15" transform="translate(55,20)" />
         <path d="M0 60 L10 20 L20 60" class="testC16" transform="translate(90,20)" />
       </g>
       <g class="testC17" transform="translate(150,120)">
-        <text xml:space="preserve" x="10" y="10" class="testC18">Varying miter limit
-        </text>
+        <text xml:space="preserve" x="10" y="10" class="testC18">Varying miter limit</text>
         <path d="M0 0 L30 0 L30 60 L0 30" class="testC19" transform="translate(10,30)" />
         <path d="M0 0 L30 0 L30 60 L0 30" class="testC20" transform="translate(50,30)" />
         <path d="M0 0 L30 0 L30 60 L0 30" class="testC21" transform="translate(90,30)" />
       </g>
       <g class="testC22" transform="translate(150,0)">
-        <text xml:space="preserve" x="10" y="10" class="testC23">Varying dash patterns
-        </text>
+        <text xml:space="preserve" x="10" y="10" class="testC23">Varying dash patterns</text>
       </g>
       <g class="testC24" transform="translate(170,0)">
         <line y2="80" x1="10" class="testC25" x2="10" y1="20" />
