@@ -47,6 +47,15 @@ public abstract class PreconfiguredRenderingTest extends SVGRenderingAccuracyTes
     }
 
     /**
+     * Make the name as simple as possible. For preconfigured SVG files, 
+     * we use the test id, which is the relevant identifier for the test
+     * user.
+     */
+    public String getName(){
+        return getId();
+    }
+
+    /**
      * Gives a chance to the subclass to prepend a prefix to the 
      * svgFile name.
      * The svgURL is built as:
