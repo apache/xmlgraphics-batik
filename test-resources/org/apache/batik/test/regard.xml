@@ -49,11 +49,11 @@
     <!-- ====================================================================== -->
     <!--                              Unit Testing                              -->
     <!-- ====================================================================== -->
+    <testSuite href="file:test-resources/org/apache/batik/apps/rasterizer/unitTesting.xml" />
     <testSuite href="file:test-resources/org/apache/batik/test/unitTesting.xml" />  
     <testSuite href="file:test-resources/org/apache/batik/ext/awt/image/codec/unitTesting.xml" />
     <testSuite href="file:test-resources/org/apache/batik/util/unitTesting.xml" />
     <testSuite href="file:test-resources/org/apache/batik/dom/unitTesting.xml" /> 
-
     <testSuite href="file:test-resources/org/apache/batik/gvt/unitTesting.xml" /> 
 
 </testRun>
