@@ -135,10 +135,8 @@ public abstract class AbstractElement
      * org.w3c.dom.Element#removeAttribute(String)}.
      */
     public void removeAttribute(String name) throws DOMException {
-	if (attributes == null) {
-	    throw createDOMException(DOMException.NOT_FOUND_ERR,
-				     "attribute.missing",
-				     new Object[] { name });
+	if (!hasAttribute(name)) {
+            return;
 	}
 	attributes.removeNamedItem(name);
     }
@@ -245,10 +243,8 @@ public abstract class AbstractElement
      */
     public void removeAttributeNS(String namespaceURI, 
 				  String localName) throws DOMException {
-	if (attributes == null) {
-	    throw createDOMException(DOMException.NOT_FOUND_ERR,
-				     "attribute.missing",
-				     new Object[] { localName });
+	if (!hasAttributeNS(namespaceURI, localName)) {
+            return;
 	}
 	attributes.removeNamedItemNS(namespaceURI, localName);
     }

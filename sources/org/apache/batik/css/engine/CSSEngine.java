@@ -992,7 +992,9 @@ public abstract class CSSEngine {
                 i = getShorthandIndex(name);
                 if (i == -1) {
                     String s = Messages.formatMessage("invalid.property",
-                                                  new Object[] { name });
+                                                  new Object[] {
+                                                      documentURI,
+                                                      name });
                     throw new DOMException(DOMException.SYNTAX_ERR, s);
                 }
                 shorthandManagers[i].setValues(CSSEngine.this,
@@ -1142,7 +1144,9 @@ public abstract class CSSEngine {
                 i = getShorthandIndex(name);
                 if (i == -1) {
                     String s = Messages.formatMessage("invalid.property",
-                                                      new Object[] { name });
+                                                      new Object[] {
+                                                          documentURI,
+                                                          name });
                     throw new DOMException(DOMException.SYNTAX_ERR, s);
                 }
                 shorthandManagers[i].setValues(CSSEngine.this,
@@ -1578,7 +1582,9 @@ public abstract class CSSEngine {
                 i = getShorthandIndex(name);
                 if (i == -1) {
                     String s = Messages.formatMessage("invalid.property",
-                                                  new Object[] { name });
+                                                  new Object[] {
+                                                      documentURI,
+                                                      name });
                     throw new DOMException(DOMException.SYNTAX_ERR, s);
                 }
                 shorthandManagers[i].setValues(CSSEngine.this,
