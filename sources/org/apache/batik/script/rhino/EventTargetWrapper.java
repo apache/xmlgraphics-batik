@@ -68,13 +68,16 @@ class EventTargetWrapper extends NativeJavaObject {
 
         private Scriptable scriptable;
         private Object[] array = new Object[1];
+        private RhinoInterpreter interpreter;
 
-        HandleEventListener(Scriptable s) {
+        HandleEventListener(Scriptable s, RhinoInterpreter interpreter) {
             scriptable = s;
+            this.interpreter = interpreter;
         }
         public void handleEvent(Event evt) {
             try {
                 array[0] = evt;
+                interpreter.enterContext();
                 ScriptableObject.callMethod(scriptable, HANDLE_EVENT, array);
             } catch (JavaScriptException e) {
                 // the only simple solution is to forward it as a
@@ -82,6 +85,8 @@ class EventTargetWrapper extends NativeJavaObject {
                 // in BridgeEventSupport.java
                 // another solution will to give UserAgent to interpreters
                 throw new WrappedException(e);
+            } finally {
+                Context.exit();
             }
         }
     }
@@ -118,7 +123,8 @@ class EventTargetWrapper extends NativeJavaObject {
             } 
             if (args[1] instanceof NativeObject) {
                 EventListener evtListener =
-                    new HandleEventListener((Scriptable)args[1]);
+                    new HandleEventListener((Scriptable)args[1], 
+                                             ((RhinoInterpreter.ExtendedContext)ctx).getInterpreter());
                 listenerMap.put(args[1], evtListener);
                 // we need to marshall args
                 Class[] paramTypes = { String.class, Scriptable.class,
