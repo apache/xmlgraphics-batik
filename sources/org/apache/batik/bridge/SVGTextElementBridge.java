@@ -319,8 +319,9 @@ public class SVGTextElementBridge extends AbstractSVGBridge
 
                 nodeElement = (Element)n;
 
-                if (n.getLocalName().equals(SVG_TSPAN_TAG)
-                    || n.getLocalName().equals(SVG_ALT_GLYPH_TAG)) {
+                if (n.getLocalName().equals(SVG_TSPAN_TAG) ||
+                    n.getLocalName().equals(SVG_ALT_GLYPH_TAG) ||
+		    n.getLocalName().equals(SVG_A_TAG)) {
 
                     buildAttributedStrings(ctx,
                                            nodeElement,
