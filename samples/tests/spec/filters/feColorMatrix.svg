@@ -39,7 +39,7 @@
       <filter id="luminanceToAlpha" filterUnits="objectBoundingBox" 
               x="0%" y="0%" width="100%" height="100%">
         <feTurbulence type="turbulence" baseFrequency="0.05" numOctaves="2"/>
-        <feColorMatrix filterUnits="objectBoundingBox" 
+        <feColorMatrix
               x="0%" y="0%" width="100%" height="100%" 
               type="luminanceToAlpha" />
       </filter>
@@ -47,7 +47,7 @@
       <filter id="hueRotate" filterUnits="objectBoundingBox" 
               x="0%" y="0%" width="100%" height="100%">
         <feTurbulence type="turbulence" baseFrequency="0.05" numOctaves="2"/>
-        <feColorMatrix filterUnits="objectBoundingBox" 
+        <feColorMatrix
               x="0%" y="0%" width="100%" height="100%" 
               type="hueRotate" values="90"/>
       </filter>
@@ -55,7 +55,7 @@
       <filter id="saturate" filterUnits="objectBoundingBox" 
               x="0%" y="0%" width="100%" height="100%">
         <feTurbulence type="turbulence" baseFrequency="0.05" numOctaves="2"/>
-        <feColorMatrix filterUnits="objectBoundingBox" 
+        <feColorMatrix
               x="0%" y="0%" width="100%" height="100%" 
               type="saturate" values="6"/>
       </filter>

@@ -74,7 +74,7 @@
     <g transform="translate(-40,-30)" filter="url(#blur)" fill="black" opacity="0.2">
          <use xlink:href="#rotatedText"/>
     </g>
-    <g x="0%" width="100%" y="0%" height="100%">
+    <g>
         <use xlink:href="#rotatedText" fill="white" stroke-width="2" stroke="black"/>
         <g  transform="translate(225, 250) scale(0.254)">
         <use xlink:href="#text" fill="black" filter="url(#blur)" opacity="0.4" transform="translate(-10, 8)"/>
