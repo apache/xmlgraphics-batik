@@ -16,6 +16,7 @@ import java.awt.font.FontRenderContext;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Set;
+import java.util.Iterator;
 
 /**
  * An attributed character iterator that does the reordering of the characters
@@ -53,14 +54,55 @@ public class BidiAttributedCharacterIterator implements AttributedCharacterItera
         this.frc = frc;
         this.chunkStart = chunkStart;
         aci.first();
-        AttributedString as = new AttributedString(aci);
+        int   numChars    = aci.getEndIndex()-aci.getBeginIndex();
+        AttributedString as;
 
+         // Ideally we would do a 'quick' check on chars and
+         // attributes to decide if we really need to do bidi or not.
+        boolean needsBIDI = true;
+
+        if (false) {
+            // Believe it or not this is much slower than the else case
+            // but the two are exactly equivilent (including the stripping
+            // of null keys/values).
+            as = new AttributedString(aci);
+        } else {
+            StringBuffer strB = new StringBuffer();
+            char c = aci.first();
+            for (int i = 0; i < numChars; i++) {
+                strB.append(c);
+                c = aci.next();
+            }
+            as = new AttributedString(strB.toString());
+            int start=aci.getBeginIndex();
+            int end  =aci.getEndIndex();
+            int index = start;
+            while (index < end) {
+                aci.setIndex(index);
+                Map attrMap = aci.getAttributes();
+                int extent  = aci.getRunLimit();
+                Map destMap = new HashMap(attrMap.size());
+                Iterator i  = attrMap.keySet().iterator();
+                while (i.hasNext()) {
+                    // Font doesn't like getting attribute sets with
+                    // null keys or values so we strip them here.
+                    Object key = i.next();
+                    if (key == null) continue;
+                    Object value = attrMap.get(key);
+                    if (value == null) continue;
+                    destMap.put(key, value);
+                }
+                // System.out.println("Run: " + (index-start) + "->" +
+                //                    (extent-start) + " of " + numChars);
+                as.addAttributes (destMap, index-start, extent-start);
+                index = extent;
+            }
+        }
 
         // We Just want it to do BIDI for us...
         // In 1.4 we might be able to use the BIDI class...
         TextLayout tl = new TextLayout(as.getIterator(), frc);
 
-        int   numChars    = tl.getCharacterCount();
         int[] charIndices = new int[numChars];
         int[] charLevels  = new int[numChars];
 
@@ -84,6 +126,18 @@ public class BidiAttributedCharacterIterator implements AttributedCharacterItera
                 if (newBiDi > maxBiDi) maxBiDi = newBiDi;
             }
         }
+
+        if ((runStart == 0) && (currBiDi==0)) {
+            // This avoids all the mucking about we need to do when
+            // bidi is actually performed for cases where it
+            // is not actually needed.
+            this.aci = this.reorderedACI = as.getIterator();
+            newCharOrder = new int[numChars];
+            for (int i=0; i<numChars; i++)
+                newCharOrder[i] = chunkStart+i;
+            return;
+        }
+
         as.addAttribute
             (GVTAttributedCharacterIterator.TextAttribute.BIDI_LEVEL,
              new Integer(currBiDi), runStart, numChars);
@@ -104,12 +158,9 @@ public class BidiAttributedCharacterIterator implements AttributedCharacterItera
             int bidiLevel = tl.getCharacterLevel(newCharOrder[i]);
             if ((bidiLevel & 0x01) != 0) {
                 // bidi level is odd so writing dir is right to left
-                Integer mirrorChar = 
-                    (Integer)mirroredGlyphs.get(new Integer((int)c));
-                if (mirrorChar != null) {
-                    // replace with the mirror char
-                    c = (char)mirrorChar.intValue();
-                }
+                // So get the mirror version of the char if there
+                // is one.
+                c = (char)mirrorChar(c);
             }
 
             reorderedString.append(c);
@@ -390,149 +441,152 @@ public class BidiAttributedCharacterIterator implements AttributedCharacterItera
        return reorderedACI.setIndex(position);
     }
 
-    static {
-        // set up the mirrored glyph hash map
-        mirroredGlyphs.put(new Integer(0x0028), new Integer(0x0029)); //LEFT PARENTHESIS
-        mirroredGlyphs.put(new Integer(0x0029), new Integer(0x0028)); //RIGHT PARENTHESIS
-        mirroredGlyphs.put(new Integer(0x003C), new Integer(0x003E)); //LESS-THAN SIGN
-        mirroredGlyphs.put(new Integer(0x003E), new Integer(0x003C)); //GREATER-THAN SIGN
-        mirroredGlyphs.put(new Integer(0x005B), new Integer(0x005D)); //LEFT SQUARE BRACKET
-        mirroredGlyphs.put(new Integer(0x005D), new Integer(0x005B)); //RIGHT SQUARE BRACKET
-        mirroredGlyphs.put(new Integer(0x007B), new Integer(0x007D)); //LEFT CURLY BRACKET
-        mirroredGlyphs.put(new Integer(0x007D), new Integer(0x007B)); //RIGHT CURLY BRACKET
-        mirroredGlyphs.put(new Integer(0x00AB), new Integer(0x00BB)); //LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
-        mirroredGlyphs.put(new Integer(0x00BB), new Integer(0x00AB)); //RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK
-        mirroredGlyphs.put(new Integer(0x2039), new Integer(0x203A)); //SINGLE LEFT-POINTING ANGLE QUOTATION MARK
-        mirroredGlyphs.put(new Integer(0x203A), new Integer(0x2039)); //SINGLE RIGHT-POINTING ANGLE QUOTATION MARK
-        mirroredGlyphs.put(new Integer(0x2045), new Integer(0x2046)); //LEFT SQUARE BRACKET WITH QUILL
-        mirroredGlyphs.put(new Integer(0x2046), new Integer(0x2045)); //RIGHT SQUARE BRACKET WITH QUILL
-        mirroredGlyphs.put(new Integer(0x207D), new Integer(0x207E)); //SUPERSCRIPT LEFT PARENTHESIS
-        mirroredGlyphs.put(new Integer(0x207E), new Integer(0x207D)); //SUPERSCRIPT RIGHT PARENTHESIS
-        mirroredGlyphs.put(new Integer(0x208D), new Integer(0x208E)); //SUBSCRIPT LEFT PARENTHESIS
-        mirroredGlyphs.put(new Integer(0x208E), new Integer(0x208D)); //SUBSCRIPT RIGHT PARENTHESIS
-        mirroredGlyphs.put(new Integer(0x2208), new Integer(0x220B)); //ELEMENT OF
-        mirroredGlyphs.put(new Integer(0x2209), new Integer(0x220C)); //NOT AN ELEMENT OF
-        mirroredGlyphs.put(new Integer(0x220A), new Integer(0x220D)); //SMALL ELEMENT OF
-        mirroredGlyphs.put(new Integer(0x220B), new Integer(0x2208)); //CONTAINS AS MEMBER
-        mirroredGlyphs.put(new Integer(0x220C), new Integer(0x2209)); //DOES NOT CONTAIN AS MEMBER
-        mirroredGlyphs.put(new Integer(0x220D), new Integer(0x220A)); //SMALL CONTAINS AS MEMBER
-        mirroredGlyphs.put(new Integer(0x223C), new Integer(0x223D)); //TILDE OPERATOR
-        mirroredGlyphs.put(new Integer(0x223D), new Integer(0x223C)); //REVERSED TILDE
-        mirroredGlyphs.put(new Integer(0x2243), new Integer(0x22CD)); //ASYMPTOTICALLY EQUAL TO
-        mirroredGlyphs.put(new Integer(0x2252), new Integer(0x2253)); //APPROXIMATELY EQUAL TO OR THE IMAGE OF
-        mirroredGlyphs.put(new Integer(0x2253), new Integer(0x2252)); //IMAGE OF OR APPROXIMATELY EQUAL TO
-        mirroredGlyphs.put(new Integer(0x2254), new Integer(0x2255)); //COLON EQUALS
-        mirroredGlyphs.put(new Integer(0x2255), new Integer(0x2254)); //EQUALS COLON
-        mirroredGlyphs.put(new Integer(0x2264), new Integer(0x2265)); //LESS-THAN OR EQUAL TO
-        mirroredGlyphs.put(new Integer(0x2265), new Integer(0x2264)); //GREATER-THAN OR EQUAL TO
-        mirroredGlyphs.put(new Integer(0x2266), new Integer(0x2267)); //LESS-THAN OVER EQUAL TO
-        mirroredGlyphs.put(new Integer(0x2267), new Integer(0x2266)); //GREATER-THAN OVER EQUAL TO
-        mirroredGlyphs.put(new Integer(0x2268), new Integer(0x2269)); //[BEST FIT] LESS-THAN BUT NOT EQUAL TO
-        mirroredGlyphs.put(new Integer(0x2269), new Integer(0x2268)); //[BEST FIT] GREATER-THAN BUT NOT EQUAL TO
-        mirroredGlyphs.put(new Integer(0x226A), new Integer(0x226B)); //MUCH LESS-THAN
-        mirroredGlyphs.put(new Integer(0x226B), new Integer(0x226A)); //MUCH GREATER-THAN
-        mirroredGlyphs.put(new Integer(0x226E), new Integer(0x226F)); //[BEST FIT] NOT LESS-THAN
-        mirroredGlyphs.put(new Integer(0x226F), new Integer(0x226E)); //[BEST FIT] NOT GREATER-THAN
-        mirroredGlyphs.put(new Integer(0x2270), new Integer(0x2271)); //[BEST FIT] NEITHER LESS-THAN NOR EQUAL TO
-        mirroredGlyphs.put(new Integer(0x2271), new Integer(0x2270)); //[BEST FIT] NEITHER GREATER-THAN NOR EQUAL TO
-        mirroredGlyphs.put(new Integer(0x2272), new Integer(0x2273)); //[BEST FIT] LESS-THAN OR EQUIVALENT TO
-        mirroredGlyphs.put(new Integer(0x2273), new Integer(0x2272)); //[BEST FIT] GREATER-THAN OR EQUIVALENT TO
-        mirroredGlyphs.put(new Integer(0x2274), new Integer(0x2275)); //[BEST FIT] NEITHER LESS-THAN NOR EQUIVALENT TO
-        mirroredGlyphs.put(new Integer(0x2275), new Integer(0x2274)); //[BEST FIT] NEITHER GREATER-THAN NOR EQUIVALENT TO
-        mirroredGlyphs.put(new Integer(0x2276), new Integer(0x2277)); //LESS-THAN OR GREATER-THAN
-        mirroredGlyphs.put(new Integer(0x2277), new Integer(0x2276)); //GREATER-THAN OR LESS-THAN
-        mirroredGlyphs.put(new Integer(0x2278), new Integer(0x2279)); //NEITHER LESS-THAN NOR GREATER-THAN
-        mirroredGlyphs.put(new Integer(0x2279), new Integer(0x2278)); //NEITHER GREATER-THAN NOR LESS-THAN
-        mirroredGlyphs.put(new Integer(0x227A), new Integer(0x227B)); //PRECEDES
-        mirroredGlyphs.put(new Integer(0x227B), new Integer(0x227A)); //SUCCEEDS
-        mirroredGlyphs.put(new Integer(0x227C), new Integer(0x227D)); //PRECEDES OR EQUAL TO
-        mirroredGlyphs.put(new Integer(0x227D), new Integer(0x227C)); //SUCCEEDS OR EQUAL TO
-        mirroredGlyphs.put(new Integer(0x227E), new Integer(0x227F)); //[BEST FIT] PRECEDES OR EQUIVALENT TO
-        mirroredGlyphs.put(new Integer(0x227F), new Integer(0x227E)); //[BEST FIT] SUCCEEDS OR EQUIVALENT TO
-        mirroredGlyphs.put(new Integer(0x2280), new Integer(0x2281)); //[BEST FIT] DOES NOT PRECEDE
-        mirroredGlyphs.put(new Integer(0x2281), new Integer(0x2280)); //[BEST FIT] DOES NOT SUCCEED
-        mirroredGlyphs.put(new Integer(0x2282), new Integer(0x2283)); //SUBSET OF
-        mirroredGlyphs.put(new Integer(0x2283), new Integer(0x2282)); //SUPERSET OF
-        mirroredGlyphs.put(new Integer(0x2284), new Integer(0x2285)); //[BEST FIT] NOT A SUBSET OF
-        mirroredGlyphs.put(new Integer(0x2285), new Integer(0x2284)); //[BEST FIT] NOT A SUPERSET OF
-        mirroredGlyphs.put(new Integer(0x2286), new Integer(0x2287)); //SUBSET OF OR EQUAL TO
-        mirroredGlyphs.put(new Integer(0x2287), new Integer(0x2286)); //SUPERSET OF OR EQUAL TO
-        mirroredGlyphs.put(new Integer(0x2288), new Integer(0x2289)); //[BEST FIT] NEITHER A SUBSET OF NOR EQUAL TO
-        mirroredGlyphs.put(new Integer(0x2289), new Integer(0x2288)); //[BEST FIT] NEITHER A SUPERSET OF NOR EQUAL TO
-        mirroredGlyphs.put(new Integer(0x228A), new Integer(0x228B)); //[BEST FIT] SUBSET OF WITH NOT EQUAL TO
-        mirroredGlyphs.put(new Integer(0x228B), new Integer(0x228A)); //[BEST FIT] SUPERSET OF WITH NOT EQUAL TO
-        mirroredGlyphs.put(new Integer(0x228F), new Integer(0x2290)); //SQUARE IMAGE OF
-        mirroredGlyphs.put(new Integer(0x2290), new Integer(0x228F)); //SQUARE ORIGINAL OF
-        mirroredGlyphs.put(new Integer(0x2291), new Integer(0x2292)); //SQUARE IMAGE OF OR EQUAL TO
-        mirroredGlyphs.put(new Integer(0x2292), new Integer(0x2291)); //SQUARE ORIGINAL OF OR EQUAL TO
-        mirroredGlyphs.put(new Integer(0x22A2), new Integer(0x22A3)); //RIGHT TACK
-        mirroredGlyphs.put(new Integer(0x22A3), new Integer(0x22A2)); //LEFT TACK
-        mirroredGlyphs.put(new Integer(0x22B0), new Integer(0x22B1)); //PRECEDES UNDER RELATION
-        mirroredGlyphs.put(new Integer(0x22B1), new Integer(0x22B0)); //SUCCEEDS UNDER RELATION
-        mirroredGlyphs.put(new Integer(0x22B2), new Integer(0x22B3)); //NORMAL SUBGROUP OF
-        mirroredGlyphs.put(new Integer(0x22B3), new Integer(0x22B2)); //CONTAINS AS NORMAL SUBGROUP
-        mirroredGlyphs.put(new Integer(0x22B4), new Integer(0x22B5)); //NORMAL SUBGROUP OF OR EQUAL TO
-        mirroredGlyphs.put(new Integer(0x22B5), new Integer(0x22B4)); //CONTAINS AS NORMAL SUBGROUP OR EQUAL TO
-        mirroredGlyphs.put(new Integer(0x22B6), new Integer(0x22B7)); //ORIGINAL OF
-        mirroredGlyphs.put(new Integer(0x22B7), new Integer(0x22B6)); //IMAGE OF
-        mirroredGlyphs.put(new Integer(0x22C9), new Integer(0x22CA)); //LEFT NORMAL FACTOR SEMIDIRECT PRODUCT
-        mirroredGlyphs.put(new Integer(0x22CA), new Integer(0x22C9)); //RIGHT NORMAL FACTOR SEMIDIRECT PRODUCT
-        mirroredGlyphs.put(new Integer(0x22CB), new Integer(0x22CC)); //LEFT SEMIDIRECT PRODUCT
-        mirroredGlyphs.put(new Integer(0x22CC), new Integer(0x22CB)); //RIGHT SEMIDIRECT PRODUCT
-        mirroredGlyphs.put(new Integer(0x22CD), new Integer(0x2243)); //REVERSED TILDE EQUALS
-        mirroredGlyphs.put(new Integer(0x22D0), new Integer(0x22D1)); //DOUBLE SUBSET
-        mirroredGlyphs.put(new Integer(0x22D1), new Integer(0x22D0)); //DOUBLE SUPERSET
-        mirroredGlyphs.put(new Integer(0x22D6), new Integer(0x22D7)); //LESS-THAN WITH DOT
-        mirroredGlyphs.put(new Integer(0x22D7), new Integer(0x22D6)); //GREATER-THAN WITH DOT
-        mirroredGlyphs.put(new Integer(0x22D8), new Integer(0x22D9)); //VERY MUCH LESS-THAN
-        mirroredGlyphs.put(new Integer(0x22D9), new Integer(0x22D8)); //VERY MUCH GREATER-THAN
-        mirroredGlyphs.put(new Integer(0x22DA), new Integer(0x22DB)); //LESS-THAN EQUAL TO OR GREATER-THAN
-        mirroredGlyphs.put(new Integer(0x22DB), new Integer(0x22DA)); //GREATER-THAN EQUAL TO OR LESS-THAN
-        mirroredGlyphs.put(new Integer(0x22DC), new Integer(0x22DD)); //EQUAL TO OR LESS-THAN
-        mirroredGlyphs.put(new Integer(0x22DD), new Integer(0x22DC)); //EQUAL TO OR GREATER-THAN
-        mirroredGlyphs.put(new Integer(0x22DE), new Integer(0x22DF)); //EQUAL TO OR PRECEDES
-        mirroredGlyphs.put(new Integer(0x22DF), new Integer(0x22DE)); //EQUAL TO OR SUCCEEDS
-        mirroredGlyphs.put(new Integer(0x22E0), new Integer(0x22E1)); //[BEST FIT] DOES NOT PRECEDE OR EQUAL
-        mirroredGlyphs.put(new Integer(0x22E1), new Integer(0x22E0)); //[BEST FIT] DOES NOT SUCCEED OR EQUAL
-        mirroredGlyphs.put(new Integer(0x22E2), new Integer(0x22E3)); //[BEST FIT] NOT SQUARE IMAGE OF OR EQUAL TO
-        mirroredGlyphs.put(new Integer(0x22E3), new Integer(0x22E2)); //[BEST FIT] NOT SQUARE ORIGINAL OF OR EQUAL TO
-        mirroredGlyphs.put(new Integer(0x22E4), new Integer(0x22E5)); //[BEST FIT] SQUARE IMAGE OF OR NOT EQUAL TO
-        mirroredGlyphs.put(new Integer(0x22E5), new Integer(0x22E4)); //[BEST FIT] SQUARE ORIGINAL OF OR NOT EQUAL TO
-        mirroredGlyphs.put(new Integer(0x22E6), new Integer(0x22E7)); //[BEST FIT] LESS-THAN BUT NOT EQUIVALENT TO
-        mirroredGlyphs.put(new Integer(0x22E7), new Integer(0x22E6)); //[BEST FIT] GREATER-THAN BUT NOT EQUIVALENT TO
-        mirroredGlyphs.put(new Integer(0x22E8), new Integer(0x22E9)); //[BEST FIT] PRECEDES BUT NOT EQUIVALENT TO
-        mirroredGlyphs.put(new Integer(0x22E9), new Integer(0x22E8)); //[BEST FIT] SUCCEEDS BUT NOT EQUIVALENT TO
-        mirroredGlyphs.put(new Integer(0x22EA), new Integer(0x22EB)); //[BEST FIT] NOT NORMAL SUBGROUP OF
-        mirroredGlyphs.put(new Integer(0x22EB), new Integer(0x22EA)); //[BEST FIT] DOES NOT CONTAIN AS NORMAL SUBGROUP
-        mirroredGlyphs.put(new Integer(0x22EC), new Integer(0x22ED)); //[BEST FIT] NOT NORMAL SUBGROUP OF OR EQUAL TO
-        mirroredGlyphs.put(new Integer(0x22ED), new Integer(0x22EC)); //[BEST FIT] DOES NOT CONTAIN AS NORMAL SUBGROUP OR EQUAL
-        mirroredGlyphs.put(new Integer(0x22F0), new Integer(0x22F1)); //UP RIGHT DIAGONAL ELLIPSIS
-        mirroredGlyphs.put(new Integer(0x22F1), new Integer(0x22F0)); //DOWN RIGHT DIAGONAL ELLIPSIS
-        mirroredGlyphs.put(new Integer(0x2308), new Integer(0x2309)); //LEFT CEILING
-        mirroredGlyphs.put(new Integer(0x2309), new Integer(0x2308)); //RIGHT CEILING
-        mirroredGlyphs.put(new Integer(0x230A), new Integer(0x230B)); //LEFT FLOOR
-        mirroredGlyphs.put(new Integer(0x230B), new Integer(0x230A)); //RIGHT FLOOR
-        mirroredGlyphs.put(new Integer(0x2329), new Integer(0x232A)); //LEFT-POINTING ANGLE BRACKET
-        mirroredGlyphs.put(new Integer(0x232A), new Integer(0x2329)); //RIGHT-POINTING ANGLE BRACKET
-        mirroredGlyphs.put(new Integer(0x3008), new Integer(0x3009)); //LEFT ANGLE BRACKET
-        mirroredGlyphs.put(new Integer(0x3009), new Integer(0x3008)); //RIGHT ANGLE BRACKET
-        mirroredGlyphs.put(new Integer(0x300A), new Integer(0x300B)); //LEFT DOUBLE ANGLE BRACKET
-        mirroredGlyphs.put(new Integer(0x300B), new Integer(0x300A)); //RIGHT DOUBLE ANGLE BRACKET
-        mirroredGlyphs.put(new Integer(0x300C), new Integer(0x300D)); //[BEST FIT] LEFT CORNER BRACKET
-        mirroredGlyphs.put(new Integer(0x300D), new Integer(0x300C)); //[BEST FIT] RIGHT CORNER BRACKET
-        mirroredGlyphs.put(new Integer(0x300E), new Integer(0x300F)); //[BEST FIT] LEFT WHITE CORNER BRACKET
-        mirroredGlyphs.put(new Integer(0x300F), new Integer(0x300E)); //[BEST FIT] RIGHT WHITE CORNER BRACKET
-        mirroredGlyphs.put(new Integer(0x3010), new Integer(0x3011)); //LEFT BLACK LENTICULAR BRACKET
-        mirroredGlyphs.put(new Integer(0x3011), new Integer(0x3010)); //RIGHT BLACK LENTICULAR BRACKET
-        mirroredGlyphs.put(new Integer(0x3014), new Integer(0x3015)); //[BEST FIT] LEFT TORTOISE SHELL BRACKET
-        mirroredGlyphs.put(new Integer(0x3015), new Integer(0x3014)); //[BEST FIT] RIGHT TORTOISE SHELL BRACKET
-        mirroredGlyphs.put(new Integer(0x3016), new Integer(0x3017)); //LEFT WHITE LENTICULAR BRACKET
-        mirroredGlyphs.put(new Integer(0x3017), new Integer(0x3016)); //RIGHT WHITE LENTICULAR BRACKET
-        mirroredGlyphs.put(new Integer(0x3018), new Integer(0x3019)); //LEFT WHITE TORTOISE SHELL BRACKET
-        mirroredGlyphs.put(new Integer(0x3019), new Integer(0x3018)); //RIGHT WHITE TORTOISE SHELL BRACKET
-        mirroredGlyphs.put(new Integer(0x301A), new Integer(0x301B)); //LEFT WHITE SQUARE BRACKET
-        mirroredGlyphs.put(new Integer(0x301B), new Integer(0x301A)); //RIGHT WHITE SQUARE BRACKET
+
+    public static int mirrorChar(int c) {
+        switch(c) {
+            // set up the mirrored glyph case statement;
+        case 0x0028: return 0x0029;  //LEFT PARENTHESIS
+        case 0x0029: return 0x0028;  //RIGHT PARENTHESIS
+        case 0x003C: return 0x003E;  //LESS-THAN SIGN
+        case 0x003E: return 0x003C;  //GREATER-THAN SIGN
+        case 0x005B: return 0x005D;  //LEFT SQUARE BRACKET
+        case 0x005D: return 0x005B;  //RIGHT SQUARE BRACKET
+        case 0x007B: return 0x007D;  //LEFT CURLY BRACKET
+        case 0x007D: return 0x007B;  //RIGHT CURLY BRACKET
+        case 0x00AB: return 0x00BB;  //LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
+        case 0x00BB: return 0x00AB;  //RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK
+        case 0x2039: return 0x203A;  //SINGLE LEFT-POINTING ANGLE QUOTATION MARK
+        case 0x203A: return 0x2039;  //SINGLE RIGHT-POINTING ANGLE QUOTATION MARK
+        case 0x2045: return 0x2046;  //LEFT SQUARE BRACKET WITH QUILL
+        case 0x2046: return 0x2045;  //RIGHT SQUARE BRACKET WITH QUILL
+        case 0x207D: return 0x207E;  //SUPERSCRIPT LEFT PARENTHESIS
+        case 0x207E: return 0x207D;  //SUPERSCRIPT RIGHT PARENTHESIS
+        case 0x208D: return 0x208E;  //SUBSCRIPT LEFT PARENTHESIS
+        case 0x208E: return 0x208D;  //SUBSCRIPT RIGHT PARENTHESIS
+        case 0x2208: return 0x220B;  //ELEMENT OF
+        case 0x2209: return 0x220C;  //NOT AN ELEMENT OF
+        case 0x220A: return 0x220D;  //SMALL ELEMENT OF
+        case 0x220B: return 0x2208;  //CONTAINS AS MEMBER
+        case 0x220C: return 0x2209;  //DOES NOT CONTAIN AS MEMBER
+        case 0x220D: return 0x220A;  //SMALL CONTAINS AS MEMBER
+        case 0x223C: return 0x223D;  //TILDE OPERATOR
+        case 0x223D: return 0x223C;  //REVERSED TILDE
+        case 0x2243: return 0x22CD;  //ASYMPTOTICALLY EQUAL TO
+        case 0x2252: return 0x2253;  //APPROXIMATELY EQUAL TO OR THE IMAGE OF
+        case 0x2253: return 0x2252;  //IMAGE OF OR APPROXIMATELY EQUAL TO
+        case 0x2254: return 0x2255;  //COLON EQUALS
+        case 0x2255: return 0x2254;  //EQUALS COLON
+        case 0x2264: return 0x2265;  //LESS-THAN OR EQUAL TO
+        case 0x2265: return 0x2264;  //GREATER-THAN OR EQUAL TO
+        case 0x2266: return 0x2267;  //LESS-THAN OVER EQUAL TO
+        case 0x2267: return 0x2266;  //GREATER-THAN OVER EQUAL TO
+        case 0x2268: return 0x2269;  //[BEST FIT] LESS-THAN BUT NOT EQUAL TO
+        case 0x2269: return 0x2268;  //[BEST FIT] GREATER-THAN BUT NOT EQUAL TO
+        case 0x226A: return 0x226B;  //MUCH LESS-THAN
+        case 0x226B: return 0x226A;  //MUCH GREATER-THAN
+        case 0x226E: return 0x226F;  //[BEST FIT] NOT LESS-THAN
+        case 0x226F: return 0x226E;  //[BEST FIT] NOT GREATER-THAN
+        case 0x2270: return 0x2271;  //[BEST FIT] NEITHER LESS-THAN NOR EQUAL TO
+        case 0x2271: return 0x2270;  //[BEST FIT] NEITHER GREATER-THAN NOR EQUAL TO
+        case 0x2272: return 0x2273;  //[BEST FIT] LESS-THAN OR EQUIVALENT TO
+        case 0x2273: return 0x2272;  //[BEST FIT] GREATER-THAN OR EQUIVALENT TO
+        case 0x2274: return 0x2275;  //[BEST FIT] NEITHER LESS-THAN NOR EQUIVALENT TO
+        case 0x2275: return 0x2274;  //[BEST FIT] NEITHER GREATER-THAN NOR EQUIVALENT TO
+        case 0x2276: return 0x2277;  //LESS-THAN OR GREATER-THAN
+        case 0x2277: return 0x2276;  //GREATER-THAN OR LESS-THAN
+        case 0x2278: return 0x2279;  //NEITHER LESS-THAN NOR GREATER-THAN
+        case 0x2279: return 0x2278;  //NEITHER GREATER-THAN NOR LESS-THAN
+        case 0x227A: return 0x227B;  //PRECEDES
+        case 0x227B: return 0x227A;  //SUCCEEDS
+        case 0x227C: return 0x227D;  //PRECEDES OR EQUAL TO
+        case 0x227D: return 0x227C;  //SUCCEEDS OR EQUAL TO
+        case 0x227E: return 0x227F;  //[BEST FIT] PRECEDES OR EQUIVALENT TO
+        case 0x227F: return 0x227E;  //[BEST FIT] SUCCEEDS OR EQUIVALENT TO
+        case 0x2280: return 0x2281;  //[BEST FIT] DOES NOT PRECEDE
+        case 0x2281: return 0x2280;  //[BEST FIT] DOES NOT SUCCEED
+        case 0x2282: return 0x2283;  //SUBSET OF
+        case 0x2283: return 0x2282;  //SUPERSET OF
+        case 0x2284: return 0x2285;  //[BEST FIT] NOT A SUBSET OF
+        case 0x2285: return 0x2284;  //[BEST FIT] NOT A SUPERSET OF
+        case 0x2286: return 0x2287;  //SUBSET OF OR EQUAL TO
+        case 0x2287: return 0x2286;  //SUPERSET OF OR EQUAL TO
+        case 0x2288: return 0x2289;  //[BEST FIT] NEITHER A SUBSET OF NOR EQUAL TO
+        case 0x2289: return 0x2288;  //[BEST FIT] NEITHER A SUPERSET OF NOR EQUAL TO
+        case 0x228A: return 0x228B;  //[BEST FIT] SUBSET OF WITH NOT EQUAL TO
+        case 0x228B: return 0x228A;  //[BEST FIT] SUPERSET OF WITH NOT EQUAL TO
+        case 0x228F: return 0x2290;  //SQUARE IMAGE OF
+        case 0x2290: return 0x228F;  //SQUARE ORIGINAL OF
+        case 0x2291: return 0x2292;  //SQUARE IMAGE OF OR EQUAL TO
+        case 0x2292: return 0x2291;  //SQUARE ORIGINAL OF OR EQUAL TO
+        case 0x22A2: return 0x22A3;  //RIGHT TACK
+        case 0x22A3: return 0x22A2;  //LEFT TACK
+        case 0x22B0: return 0x22B1;  //PRECEDES UNDER RELATION
+        case 0x22B1: return 0x22B0;  //SUCCEEDS UNDER RELATION
+        case 0x22B2: return 0x22B3;  //NORMAL SUBGROUP OF
+        case 0x22B3: return 0x22B2;  //CONTAINS AS NORMAL SUBGROUP
+        case 0x22B4: return 0x22B5;  //NORMAL SUBGROUP OF OR EQUAL TO
+        case 0x22B5: return 0x22B4;  //CONTAINS AS NORMAL SUBGROUP OR EQUAL TO
+        case 0x22B6: return 0x22B7;  //ORIGINAL OF
+        case 0x22B7: return 0x22B6;  //IMAGE OF
+        case 0x22C9: return 0x22CA;  //LEFT NORMAL FACTOR SEMIDIRECT PRODUCT
+        case 0x22CA: return 0x22C9;  //RIGHT NORMAL FACTOR SEMIDIRECT PRODUCT
+        case 0x22CB: return 0x22CC;  //LEFT SEMIDIRECT PRODUCT
+        case 0x22CC: return 0x22CB;  //RIGHT SEMIDIRECT PRODUCT
+        case 0x22CD: return 0x2243;  //REVERSED TILDE EQUALS
+        case 0x22D0: return 0x22D1;  //DOUBLE SUBSET
+        case 0x22D1: return 0x22D0;  //DOUBLE SUPERSET
+        case 0x22D6: return 0x22D7;  //LESS-THAN WITH DOT
+        case 0x22D7: return 0x22D6;  //GREATER-THAN WITH DOT
+        case 0x22D8: return 0x22D9;  //VERY MUCH LESS-THAN
+        case 0x22D9: return 0x22D8;  //VERY MUCH GREATER-THAN
+        case 0x22DA: return 0x22DB;  //LESS-THAN EQUAL TO OR GREATER-THAN
+        case 0x22DB: return 0x22DA;  //GREATER-THAN EQUAL TO OR LESS-THAN
+        case 0x22DC: return 0x22DD;  //EQUAL TO OR LESS-THAN
+        case 0x22DD: return 0x22DC;  //EQUAL TO OR GREATER-THAN
+        case 0x22DE: return 0x22DF;  //EQUAL TO OR PRECEDES
+        case 0x22DF: return 0x22DE;  //EQUAL TO OR SUCCEEDS
+        case 0x22E0: return 0x22E1;  //[BEST FIT] DOES NOT PRECEDE OR EQUAL
+        case 0x22E1: return 0x22E0;  //[BEST FIT] DOES NOT SUCCEED OR EQUAL
+        case 0x22E2: return 0x22E3;  //[BEST FIT] NOT SQUARE IMAGE OF OR EQUAL TO
+        case 0x22E3: return 0x22E2;  //[BEST FIT] NOT SQUARE ORIGINAL OF OR EQUAL TO
+        case 0x22E4: return 0x22E5;  //[BEST FIT] SQUARE IMAGE OF OR NOT EQUAL TO
+        case 0x22E5: return 0x22E4;  //[BEST FIT] SQUARE ORIGINAL OF OR NOT EQUAL TO
+        case 0x22E6: return 0x22E7;  //[BEST FIT] LESS-THAN BUT NOT EQUIVALENT TO
+        case 0x22E7: return 0x22E6;  //[BEST FIT] GREATER-THAN BUT NOT EQUIVALENT TO
+        case 0x22E8: return 0x22E9;  //[BEST FIT] PRECEDES BUT NOT EQUIVALENT TO
+        case 0x22E9: return 0x22E8;  //[BEST FIT] SUCCEEDS BUT NOT EQUIVALENT TO
+        case 0x22EA: return 0x22EB;  //[BEST FIT] NOT NORMAL SUBGROUP OF
+        case 0x22EB: return 0x22EA;  //[BEST FIT] DOES NOT CONTAIN AS NORMAL SUBGROUP
+        case 0x22EC: return 0x22ED;  //[BEST FIT] NOT NORMAL SUBGROUP OF OR EQUAL TO
+        case 0x22ED: return 0x22EC;  //[BEST FIT] DOES NOT CONTAIN AS NORMAL SUBGROUP OR EQUAL
+        case 0x22F0: return 0x22F1;  //UP RIGHT DIAGONAL ELLIPSIS
+        case 0x22F1: return 0x22F0;  //DOWN RIGHT DIAGONAL ELLIPSIS
+        case 0x2308: return 0x2309;  //LEFT CEILING
+        case 0x2309: return 0x2308;  //RIGHT CEILING
+        case 0x230A: return 0x230B;  //LEFT FLOOR
+        case 0x230B: return 0x230A;  //RIGHT FLOOR
+        case 0x2329: return 0x232A;  //LEFT-POINTING ANGLE BRACKET
+        case 0x232A: return 0x2329;  //RIGHT-POINTING ANGLE BRACKET
+        case 0x3008: return 0x3009;  //LEFT ANGLE BRACKET
+        case 0x3009: return 0x3008;  //RIGHT ANGLE BRACKET
+        case 0x300A: return 0x300B;  //LEFT DOUBLE ANGLE BRACKET
+        case 0x300B: return 0x300A;  //RIGHT DOUBLE ANGLE BRACKET
+        case 0x300C: return 0x300D;  //[BEST FIT] LEFT CORNER BRACKET
+        case 0x300D: return 0x300C;  //[BEST FIT] RIGHT CORNER BRACKET
+        case 0x300E: return 0x300F;  //[BEST FIT] LEFT WHITE CORNER BRACKET
+        case 0x300F: return 0x300E;  //[BEST FIT] RIGHT WHITE CORNER BRACKET
+        case 0x3010: return 0x3011;  //LEFT BLACK LENTICULAR BRACKET
+        case 0x3011: return 0x3010;  //RIGHT BLACK LENTICULAR BRACKET
+        case 0x3014: return 0x3015;  //[BEST FIT] LEFT TORTOISE SHELL BRACKET
+        case 0x3015: return 0x3014;  //[BEST FIT] RIGHT TORTOISE SHELL BRACKET
+        case 0x3016: return 0x3017;  //LEFT WHITE LENTICULAR BRACKET
+        case 0x3017: return 0x3016;  //RIGHT WHITE LENTICULAR BRACKET
+        case 0x3018: return 0x3019;  //LEFT WHITE TORTOISE SHELL BRACKET
+        case 0x3019: return 0x3018;  //RIGHT WHITE TORTOISE SHELL BRACKET
+        case 0x301A: return 0x301B;  //LEFT WHITE SQUARE BRACKET
+        case 0x301B: return 0x301A;  //RIGHT WHITE SQUARE BRACKET
+        default: break;
+        }
+        return  c;
     }
-
-
 }

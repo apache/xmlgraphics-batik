@@ -120,17 +120,17 @@ public class FontFamilyResolver {
         }
 
         // first see if this font family has already been resolved
-        GVTFontFamily resolvedFontFamily = (GVTFontFamily)resolvedFontFamilies.get(fontFamily);
+        String familyName = fontFamily.getFamilyName();
+        GVTFontFamily resolvedFontFamily = (GVTFontFamily)resolvedFontFamilies.get(familyName);
 
         if (resolvedFontFamily == null) { // hasn't been resolved yet
             // try to find a matching family name in the list of available fonts
-            String familyName = fontFamily.getFamilyName();
             String awtFamilyName = (String) fonts.get(familyName);
-
             if (awtFamilyName != null) {
                 resolvedFontFamily = new AWTFontFamily(awtFamilyName);
             }
-            resolvedFontFamilies.put(fontFamily, resolvedFontFamily);
+
+            resolvedFontFamilies.put(familyName, resolvedFontFamily);
         }
       //  if (resolvedFontFamily != null) {
       //      System.out.println("resolved " + fontFamily.getFamilyName() + " to " + resolvedFontFamily.getFamilyName());
