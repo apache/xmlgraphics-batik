@@ -17,6 +17,9 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.DocumentBuilder;
+
 import org.w3c.dom.Document;
 
 import org.apache.batik.test.DefaultTestReport;
@@ -25,12 +28,6 @@ import org.apache.batik.test.AbstractTest;
 import org.apache.batik.test.Test;
 import org.apache.batik.test.TestReport;
 import org.apache.batik.test.TestSuiteReport;
-
-import org.apache.batik.dom.util.DocumentFactory;
-import org.apache.batik.dom.util.SAXDocumentFactory;
-import org.apache.batik.dom.svg.SVGDOMImplementation;
-
-import org.apache.batik.util.XMLResourceDescriptor;
 
 /**
  * Validates the operation of the <tt>XMLTestSuireRunner</tt> by checking
@@ -294,15 +291,11 @@ public class XMLTestSuiteRunnerValidator extends DefaultTestSuite {
          * Loads the dummy testRun description
          */
         protected Document loadDummyTestRun() throws Exception{
-            DocumentFactory df 
-                = new SAXDocumentFactory(SVGDOMImplementation.getDOMImplementation(), 
-                                         XMLResourceDescriptor.getXMLParserClassName());
-            
+            DocumentBuilder docBuilder
+                = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+
             URL url = (new File(XMLTestSuiteRunnerValidator.dummyTestRun)).toURL();
-            return df.createDocument(null,
-                                     XTRunConstants.XTRun_TEST_RUN_TAG,
-                                     url.toString(),
-                                     url.openStream());
+            return docBuilder.parse(url.toString());
 
         }
 

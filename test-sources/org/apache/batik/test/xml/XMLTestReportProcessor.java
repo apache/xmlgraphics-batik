@@ -25,13 +25,15 @@ import java.net.URL;
 
 import java.util.Calendar;
 
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.DocumentBuilder;
+
 import org.apache.batik.test.TestReport;
 import org.apache.batik.test.TestReportProcessor;
 import org.apache.batik.test.TestSuite;
 import org.apache.batik.test.TestException;
 
 import org.apache.batik.util.XMLConstants;
-import org.apache.batik.dom.svg.SVGDOMImplementation;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -168,8 +170,10 @@ public class XMLTestReportProcessor
              * <testReport> element. Then, process the 
              * TestReports recursively.
              */
+            DocumentBuilder docBuilder 
+                = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             DOMImplementation impl 
-                = SVGDOMImplementation.getDOMImplementation();
+                = docBuilder.getDOMImplementation();
             
             Document document = null;
 
@@ -184,7 +188,7 @@ public class XMLTestReportProcessor
 
             Element root = document.getDocumentElement();
             
-            root.setAttributeNS(null, XTR_DATE_ATTRIBUTE,
+            root.setAttribute(XTR_DATE_ATTRIBUTE,
                                 reportDate);
 
             processReport(report, root, document);
@@ -311,30 +315,26 @@ public class XMLTestReportProcessor
             throw new IllegalArgumentException();
         }
 
-        reportElement.setAttributeNS(null,
-                                     XTR_TEST_NAME_ATTRIBUTE,
-                                     report.getTest().getName());
+        reportElement.setAttribute(XTR_TEST_NAME_ATTRIBUTE,
+                                   report.getTest().getName());
 
         String id = report.getTest().getQualifiedId();
         if( !"".equals(id) ){
-            reportElement.setAttributeNS(null,
-                                         XTR_ID_ATTRIBUTE,
-                                         id
-                                         );
+            reportElement.setAttribute(XTR_ID_ATTRIBUTE,
+                                       id
+                                       );
         }
 
         String status = report.hasPassed() 
             ? XTR_PASSED_VALUE
             : XTR_FAILED_VALUE;
         
-        reportElement.setAttributeNS(null,
-                                     XTR_STATUS_ATTRIBUTE,
-                                     status);
+        reportElement.setAttribute(XTR_STATUS_ATTRIBUTE,
+                                   status);
 
         if(!report.hasPassed()){
-            reportElement.setAttributeNS(null,
-                                         XTR_ERROR_CODE_ATTRIBUTE,
-                                         report.getErrorCode());
+            reportElement.setAttribute(XTR_ERROR_CODE_ATTRIBUTE,
+                                       report.getErrorCode());
         }
         
         TestReport.Entry[] entries = report.getDescription();
@@ -391,13 +391,11 @@ public class XMLTestReportProcessor
 
             descriptionElement.appendChild(entryElement);
             
-            entryElement.setAttributeNS(null,
-                                        XTR_KEY_ATTRIBUTE,
-                                        key.toString());
+            entryElement.setAttribute(XTR_KEY_ATTRIBUTE,
+                                      key.toString());
             
-            entryElement.setAttributeNS(null, 
-                                        XTR_VALUE_ATTRIBUTE,
-                                        value.toString());
+            entryElement.setAttribute(XTR_VALUE_ATTRIBUTE,
+                                      value.toString());
 
         }
         else if(value instanceof File){
@@ -418,13 +416,11 @@ public class XMLTestReportProcessor
 
             descriptionElement.appendChild(entryElement);
             
-            entryElement.setAttributeNS(null,
-                                        XTR_KEY_ATTRIBUTE,
-                                        key.toString());
+            entryElement.setAttribute(XTR_KEY_ATTRIBUTE,
+                                      key.toString());
             
-            entryElement.setAttributeNS(null, 
-                                        XTR_VALUE_ATTRIBUTE,
-                                        tmpFileCopy.toURL().toString());
+            entryElement.setAttribute(XTR_VALUE_ATTRIBUTE,
+                                      tmpFileCopy.toURL().toString());
 
         }
         else {
@@ -435,15 +431,12 @@ public class XMLTestReportProcessor
 
             descriptionElement.appendChild(entryElement);
             
-            entryElement.setAttributeNS(null,
-                                        XTR_KEY_ATTRIBUTE,
-                                        key.toString());
+            entryElement.setAttribute(XTR_KEY_ATTRIBUTE,
+                                      key.toString());
             
-            Attr a = reportDocument.createAttributeNS(null,
-                                                      XTR_VALUE_ATTRIBUTE);
+            Attr a = reportDocument.createAttribute(XTR_VALUE_ATTRIBUTE);
             a.setValue(value!=null?value.toString():"null");
-            entryElement.setAttributeNodeNS(a);
-
+            entryElement.setAttributeNode(a);
         }
     }
 

@@ -90,7 +90,7 @@ public class XMLReflect implements XMLReflectConstants{
                     if(tagName == XR_PROPERTY_TAG){
                         Object arg = buildArgument(childElement);
                         String propertyName
-                            = childElement.getAttributeNS(null, XR_NAME_ATTRIBUTE);
+                            = childElement.getAttribute(XR_NAME_ATTRIBUTE);
                         setObjectProperty(obj, propertyName, arg);
                     }
                 }
@@ -162,9 +162,8 @@ public class XMLReflect implements XMLReflectConstants{
             // String based argument
             Class cl = Class.forName(classAttr);
 
-            if(element.hasAttributeNS(null, XR_VALUE_ATTRIBUTE)){
-                String value = element.getAttributeNS(null,
-                                                      XR_VALUE_ATTRIBUTE);
+            if(element.hasAttribute(XR_VALUE_ATTRIBUTE)){
+                String value = element.getAttribute(XR_VALUE_ATTRIBUTE);
 
 
                 Constructor constructor
@@ -189,9 +188,8 @@ public class XMLReflect implements XMLReflectConstants{
      */
     public static String getInheritedClassAttribute(Element element){
         if(element != null){
-            String classAttr = element.getAttributeNS(null,
-                                                      XR_CLASS_ATTRIBUTE);
-        
+            String classAttr = element.getAttribute(XR_CLASS_ATTRIBUTE);
+
             if(classAttr == null || "".equals(classAttr)){
                 Node parent = element.getParentNode();
                 if(parent != null && parent.getNodeType() == Node.ELEMENT_NODE){
