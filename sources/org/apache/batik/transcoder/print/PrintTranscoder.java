@@ -42,7 +42,6 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
-import org.apache.batik.dom.svg.DefaultSVGContext;
 import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
 import org.apache.batik.dom.svg.ExtensibleSVGDOMImplementation;
 import org.apache.batik.dom.svg.SVGOMDocument;
@@ -443,10 +442,6 @@ public class PrintTranscoder extends XMLAbstractTranscoder
         }
         SVGDocument svgDoc = (SVGDocument)document;
         SVGSVGElement root = svgDoc.getRootElement();
-        // initialize the SVG document with the appropriate context
-        DefaultSVGContext svgCtx = new DefaultSVGContext();
-        svgCtx.setPixelToMM(userAgent.getPixelToMM());
-        ((SVGOMDocument)document).setSVGContext(svgCtx);
 
         // build the GVT tree
         GVTBuilder builder = new GVTBuilder();

@@ -114,11 +114,6 @@ public class SVGOMDocument
     protected transient AbstractView defaultView;
 
     /**
-     * The document context.
-     */
-    protected transient SVGContext context;
-
-    /**
      * The CSS engine.
      */
     protected transient CSSEngine cssEngine;
@@ -137,23 +132,6 @@ public class SVGOMDocument
         if (dt != null) {
             appendChild(dt);
         }
-    }
-
-    /**
-     * Returns this document context.
-     */
-    public SVGContext getSVGContext() {
-        if (context == null) {
-            context = new DefaultSVGContext();
-        }
-        return context;
-    }
-
-    /**
-     * Sets the document context.
-     */
-    public void setSVGContext(SVGContext ctx) {
-        context = ctx;
     }
 
     /**

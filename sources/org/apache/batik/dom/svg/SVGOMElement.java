@@ -47,6 +47,11 @@ public abstract class SVGOMElement
     protected String prefix;
 
     /**
+     * The SVG context to get SVG specific informations.
+     */
+    protected transient SVGContext svgContext;
+
+    /**
      * Creates a new Element object.
      */
     protected SVGOMElement() {
@@ -157,6 +162,24 @@ public abstract class SVGOMElement
 						    prefix });
         }
         this.prefix = prefix;
+    }
+
+    // SVGContext ////////////////////////////////////////////////////
+
+    /**
+     * Sets the SVG context to use to get SVG specific informations.
+     *
+     * @param ctx the SVG context
+     */
+    public void setSVGContext(SVGContext ctx) {
+        svgContext = ctx;
+    }
+
+    /**
+     * Returns the SVG context used to get SVG specific informations.
+     */
+    public SVGContext getSVGContext() {
+        return svgContext;
     }
 
     // ExtendedNode //////////////////////////////////////////////////

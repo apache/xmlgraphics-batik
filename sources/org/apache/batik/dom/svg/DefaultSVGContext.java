@@ -14,24 +14,6 @@ package org.apache.batik.dom.svg;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class DefaultSVGContext implements SVGContext {
+public class DefaultSVGContext {
 
-    /**
-     * The pixel to mm conversion factor.
-     */
-    protected float pixelToMM;
-
-    /**
-     * Return the pixel to millimeters factor.
-     */
-    public float getPixelToMM() {
-        return pixelToMM;
-    }
-
-    /**
-     * Sets the pixel to millimeters factor.
-     */
-    public void setPixelToMM(float f) {
-        pixelToMM = f;
-    }
 }
