@@ -23,16 +23,27 @@ import org.w3c.dom.Element;
  */
 public class SVGEllipse extends SVGGraphicObjectConverter {
     /**
+     * Line converter used for degenerate cases
+     */
+    private SVGLine svgLine;
+
+    /**
      * @param generatorContext used to build Elements
      */
     public SVGEllipse(SVGGeneratorContext generatorContext) {
         super(generatorContext);
+
+        svgLine = new SVGLine(generatorContext);
     }
 
     /**
      * @param ellipse the Ellipse2D object to be converted
      */
     public Element toSVG(Ellipse2D ellipse) {
+        if(ellipse.getWidth() < 0 || ellipse.getHeight() < 0){
+            return null;
+        }
+
         if(ellipse.getWidth() == ellipse.getHeight())
             return toSVGCircle(ellipse);
         else
@@ -61,19 +72,35 @@ public class SVGEllipse extends SVGGraphicObjectConverter {
      * @param ellipse the Ellipse2D object to be converted to an ellipse
      */
     private Element toSVGEllipse(Ellipse2D ellipse){
-        Element svgCircle =
-            generatorContext.domFactory.createElementNS(SVG_NAMESPACE_URI,
-                                                        SVG_ELLIPSE_TAG);
-        svgCircle.setAttributeNS(null, SVG_CX_ATTRIBUTE,
-                               doubleString(ellipse.getX() +
-                                            ellipse.getWidth()/2));
-        svgCircle.setAttributeNS(null, SVG_CY_ATTRIBUTE,
-                               doubleString(ellipse.getY() +
-                                            ellipse.getHeight()/2));
-        svgCircle.setAttributeNS(null, SVG_RX_ATTRIBUTE,
-                                 doubleString(ellipse.getWidth()/2));
-        svgCircle.setAttributeNS(null, SVG_RY_ATTRIBUTE,
-                                 doubleString(ellipse.getHeight()/2));
-        return svgCircle;
+        if(ellipse.getWidth() > 0 && ellipse.getHeight() > 0){
+            Element svgCircle =
+                generatorContext.domFactory.createElementNS(SVG_NAMESPACE_URI,
+                                                            SVG_ELLIPSE_TAG);
+            svgCircle.setAttributeNS(null, SVG_CX_ATTRIBUTE,
+                                     doubleString(ellipse.getX() +
+                                                  ellipse.getWidth()/2));
+            svgCircle.setAttributeNS(null, SVG_CY_ATTRIBUTE,
+                                     doubleString(ellipse.getY() +
+                                                  ellipse.getHeight()/2));
+            svgCircle.setAttributeNS(null, SVG_RX_ATTRIBUTE,
+                                     doubleString(ellipse.getWidth()/2));
+            svgCircle.setAttributeNS(null, SVG_RY_ATTRIBUTE,
+                                     doubleString(ellipse.getHeight()/2));
+            return svgCircle;
+        }
+        else if(ellipse.getWidth() == 0 && ellipse.getHeight() > 0){
+            // Degenerate to a line
+            Line2D line = new Line2D.Double(ellipse.getX(), ellipse.getY(), ellipse.getX(), 
+                                            ellipse.getY() + ellipse.getHeight());
+            return svgLine.toSVG(line);
+        }
+        else if(ellipse.getWidth() > 0 && ellipse.getHeight() == 0){
+            // Degenerate to a line
+            Line2D line = new Line2D.Double(ellipse.getX(), ellipse.getY(),
+                                            ellipse.getX() + ellipse.getWidth(),
+                                            ellipse.getY());
+            return svgLine.toSVG(line);
+        }
+        return null;
     }
 }

@@ -23,10 +23,16 @@ import org.w3c.dom.Element;
  */
 public class SVGRectangle extends SVGGraphicObjectConverter {
     /**
+     * Line converter used for degenerate cases
+     */
+    private SVGLine svgLine;
+
+    /**
      * @param generatorContext used to build Elements
      */
     public SVGRectangle(SVGGeneratorContext generatorContext) {
         super(generatorContext);
+        svgLine = new SVGLine(generatorContext);
     }
 
     /**
@@ -38,14 +44,20 @@ public class SVGRectangle extends SVGGraphicObjectConverter {
 
 
     /**
+     * In the Java 2D API, arc width/height are used
+     * as absolute values.
+     *
      * @param rect rectangle object to convert to SVG
      */
     public Element toSVG(RoundRectangle2D rect) {
         Element svgRect = toSVG((RectangularShape)rect);
-        svgRect.setAttributeNS(null, SVG_RX_ATTRIBUTE,
-                               doubleString(rect.getArcWidth()/2));
-        svgRect.setAttributeNS(null, SVG_RY_ATTRIBUTE,
-                               doubleString(rect.getArcHeight()/2));
+        if(svgRect != null && svgRect.getTagName() == SVG_RECT_TAG){
+            svgRect.setAttributeNS(null, SVG_RX_ATTRIBUTE,
+                                   doubleString(Math.abs(rect.getArcWidth()/2)));
+            svgRect.setAttributeNS(null, SVG_RY_ATTRIBUTE,
+                                   doubleString(Math.abs(rect.getArcHeight()/2)));
+        }
+
         return svgRect;
     }
 
@@ -54,16 +66,35 @@ public class SVGRectangle extends SVGGraphicObjectConverter {
      * @param rect rectangle object to convert to SVG
      */
     private Element toSVG(RectangularShape rect) {
-        Element svgRect =
-            generatorContext.domFactory.createElementNS(SVG_NAMESPACE_URI,
-                                                        SVG_RECT_TAG);
-        svgRect.setAttributeNS(null, SVG_X_ATTRIBUTE, doubleString(rect.getX()));
-        svgRect.setAttributeNS(null, SVG_Y_ATTRIBUTE, doubleString(rect.getY()));
-        svgRect.setAttributeNS(null, SVG_WIDTH_ATTRIBUTE,
-                               doubleString(rect.getWidth()));
-        svgRect.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE,
-                               doubleString(rect.getHeight()));
-
-        return svgRect;
+        if(rect.getWidth() > 0 && rect.getHeight() > 0){
+            Element svgRect =
+                generatorContext.domFactory.createElementNS(SVG_NAMESPACE_URI,
+                                                            SVG_RECT_TAG);
+            svgRect.setAttributeNS(null, SVG_X_ATTRIBUTE, doubleString(rect.getX()));
+            svgRect.setAttributeNS(null, SVG_Y_ATTRIBUTE, doubleString(rect.getY()));
+            svgRect.setAttributeNS(null, SVG_WIDTH_ATTRIBUTE,
+                                   doubleString(rect.getWidth()));
+            svgRect.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE,
+                                   doubleString(rect.getHeight()));
+            
+            return svgRect;
+        }
+        else{
+            // Handle degenerate cases
+            if(rect.getWidth() == 0 && rect.getHeight() > 0){
+                // Degenerate to a line
+                Line2D line = new Line2D.Double(rect.getX(), rect.getY(), rect.getX(), 
+                                                rect.getY() + rect.getHeight());
+                return svgLine.toSVG(line);
+            }
+            else if(rect.getWidth() > 0 && rect.getHeight() == 0){
+                // Degenerate to a line
+                Line2D line = new Line2D.Double(rect.getX(), rect.getY(),
+                                                rect.getX() + rect.getWidth(),
+                                                rect.getY());
+                return svgLine.toSVG(line);
+            }
+            return null;
+        }
     }
 }
