@@ -55,6 +55,8 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.awt.geom.GeneralPath;
 
+import org.apache.batik.css.engine.CSSImportNode;
+import org.apache.batik.dom.svg.SVGOMCSSImportedElementRoot;
 import org.apache.batik.ext.awt.image.renderable.ClipRable;
 import org.apache.batik.ext.awt.image.renderable.ClipRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.Filter;
@@ -151,6 +153,21 @@ public class SVGClipPathElementBridge extends AbstractSVGBridge
                 continue;
             }
             hasChildren = true;
+
+            // if this is a 'use' element, get the actual shape used
+            if (child instanceof CSSImportNode) {
+                SVGOMCSSImportedElementRoot shadow =
+                    (SVGOMCSSImportedElementRoot)
+                    ((CSSImportNode) child).getCSSImportedElementRoot();
+                
+                if (shadow != null) {
+                    Node shadowChild = shadow.getFirstChild();
+                    if (shadowChild != null
+                            && shadowChild.getNodeType() == Node.ELEMENT_NODE) {
+                        child = (Element) shadowChild;
+                    }
+                }
+            }
 
             // compute the outline of the current clipPath's child
             int wr = CSSUtilities.convertClipRule(child);
