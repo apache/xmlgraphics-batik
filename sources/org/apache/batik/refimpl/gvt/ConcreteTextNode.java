@@ -85,7 +85,8 @@ public class ConcreteTextNode
      * Sets the attributed character iterator of this text node.
      * @param newAci the new attributed character iterator
      */
-    public void setAttributedCharacterIterator(AttributedCharacterIterator newAci){
+    public void setAttributedCharacterIterator(AttributedCharacterIterator
+                                               newAci) {
         invalidateGeometryCache();
         AttributedCharacterIterator oldAci = this.aci;
         this.aci = newAci;
@@ -135,9 +136,10 @@ public class ConcreteTextNode
             if (aci != null) {
                 java.awt.font.TextLayout layout
                     = new java.awt.font.TextLayout(aci,
-                      new java.awt.font.FontRenderContext(new AffineTransform(),
-                                                          true,
-                                                          true));
+                      new java.awt.font.FontRenderContext(
+                                            new AffineTransform(),
+                                                true, true));
+
                 primitiveBounds = layout.getBounds();
                 double tx = location.getX();
                 double ty = location.getY();
@@ -195,14 +197,20 @@ public class ConcreteTextNode
         return getBounds().contains(p.getX(), p.getY());
     }
 
-    public Shape getOutline(){
+    /**
+     * @deprecated
+     */
+    public Shape getOutline() {
+        System.out.println("Warning: deprecated method"+
+                           " ConcreteTextNode.getOutline() has been called!");
         // HACK, until we change getBounds to take
         // GraphicsNodeRenderContext
         Shape outline;
         if (aci != null) {
             java.awt.font.TextLayout layout
                 = new java.awt.font.TextLayout(aci,
-                      new java.awt.font.FontRenderContext(new AffineTransform(),
+                      new java.awt.font.FontRenderContext(
+                                            new AffineTransform(),
                                                           true,
                                                           true));
             Rectangle2D bounds = layout.getBounds();
@@ -262,19 +270,26 @@ public class ConcreteTextNode
      * @return an object containing the selected content.
      */
     public Object getSelection(GraphicsNodeRenderContext rc) {
-        int[] ranges = rc.getTextPainter().getSelected(aci, beginMark, endMark);
+        int[] ranges = rc.getTextPainter().getSelected(
+                                               aci, beginMark, endMark);
         Object o = null;
-        // later we can return more complex things like noncontiguous selections
+
+        // TODO: later we can return more complex things like
+        // noncontiguous selections
+
         if (endMark == beginMark) {
             // XXX HACK WARNING we should do this better;:
             // for now use this as the signal for select all
             o = aci;
         } else {
             if ((ranges != null) && (ranges.length > 1)) {
-                o = new AttributedCharacterSpanIterator(aci, ranges[0], ranges[1]);
+                o = new AttributedCharacterSpanIterator(
+                                           aci, ranges[0], ranges[1]);
             }
         }
-        // later we will replace with AttributedCharacterMultiSpanIterator(aci, ranges);
+        // TODO: later we will replace with
+        // AttributedCharacterMultiSpanIterator(aci, ranges);
+
         return o;
     }
 
