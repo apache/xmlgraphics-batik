@@ -165,7 +165,7 @@ public class AboutDialog extends JWindow {
 
         JTextArea contributors 
             = new JTextArea(Resources.getString(LABEL_CONTRIBUTORS)){ 
-                    {setLineWrap(true); setWrapStyleWord(true); setEnabled(false); setRows(7); }
+                    {setLineWrap(true); setWrapStyleWord(true); setEnabled(false); setRows(10); }
                 };
 
         contributors.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
