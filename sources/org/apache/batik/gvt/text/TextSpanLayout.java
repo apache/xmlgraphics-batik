@@ -102,7 +102,7 @@ public interface TextSpanLayout {
      * @param begin the index of the first glyph in the contiguous selection.
      * @param end the index of the last glyph in the contiguous selection.
      */
-     public Shape getHighlightShape(int beginCharIndex, int endCharIndex, boolean selectionLeftToRight);
+     public Shape getHighlightShape(int beginCharIndex, int endCharIndex);
 
     /**
      * Perform hit testing for coordinate at x, y.
@@ -138,6 +138,15 @@ public interface TextSpanLayout {
      */
     public int getCharacterCount(int startGlyphIndex, int endGlyphIndex);
 
+    /**
+     * Returns the glyph index of the glyph that has the specified char index.
+     *
+     * @param charIndex The original index of the character in the text node's
+     * text string.
+     * @return The index of the matching glyph in this layout's glyph vector,
+     *         or -1 if a matching glyph could not be found.
+     */
+    public int getGlyphIndex(int charIndex);
 
     /**
      * Returns true if the text direction in this layout is from left to right.
