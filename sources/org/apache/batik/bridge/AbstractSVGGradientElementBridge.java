@@ -181,6 +181,7 @@ public abstract class AbstractSVGGradientElementBridge extends AbstractSVGBridge
     protected void handleDOMAttrModifiedEvent(MutationEvent evt) {
         String attrName = evt.getAttrName();
         if (attrName.equals(SVG_GRADIENT_TRANSFORM_ATTRIBUTE) ||
+            attrName.equals(SVG_OFFSET_ATTRIBUTE) || // <stop> attribute
             attrName.equals(SVG_SPREAD_METHOD_ATTRIBUTE)) {
 
             BridgeUpdateEvent be = new BridgeUpdateEvent(this);
