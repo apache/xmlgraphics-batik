@@ -6,7 +6,7 @@
  * the LICENSE file.                                                         *
  *****************************************************************************/
 
-package org.apache.batik.gvt;
+package org.apache.batik.refimpl.gvt;
 
 import java.awt.geom.Dimension2D;
 

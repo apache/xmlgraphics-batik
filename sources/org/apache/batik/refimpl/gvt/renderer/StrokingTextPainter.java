@@ -8,25 +8,25 @@
 
 package org.apache.batik.refimpl.gvt.renderer;
 
-import org.apache.batik.gvt.TextPainter;
-import org.apache.batik.gvt.TextNode;
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
-import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
-import org.apache.batik.gvt.text.AttributedCharacterSpanIterator;
 import java.awt.Graphics2D;
-import java.awt.geom.Point2D;
-import java.awt.geom.AffineTransform;
-
 import java.awt.Paint;
 import java.awt.Stroke;
-import java.text.CharacterIterator;
-import java.text.AttributedCharacterIterator;
-import java.awt.font.TextLayout;
 import java.awt.font.FontRenderContext;
-import java.util.Set;
+import java.awt.font.TextAttribute;
+import java.awt.font.TextLayout;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
+import java.text.AttributedCharacterIterator;
+import java.text.CharacterIterator;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.ArrayList;
+import java.util.Set;
+import org.apache.batik.gvt.GraphicsNodeRenderContext;
+import org.apache.batik.gvt.TextNode;
+import org.apache.batik.gvt.TextPainter;
+import org.apache.batik.gvt.text.AttributedCharacterSpanIterator;
+import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
 
 /**
  * Renders the attributed character iterator of a <tt>TextNode</tt>.
@@ -104,20 +104,21 @@ public class StrokingTextPainter extends BasicTextPainter {
             AttributedCharacterIterator runaci = textRun.getACI();
             runaci.first();
 
-            textRun.getLayout().draw(g2d, x, 0f);
+            // check if we need to fill this glyph
+            Paint paint = (Paint) runaci.getAttribute(TextAttribute.FOREGROUND);
+            if (paint != null) {
+                textRun.getLayout().draw(g2d, x, 0f);
+            }
+            // check if we need to draw the outline of this glyph
             Stroke stroke = (Stroke) runaci.getAttribute(
                     GVTAttributedCharacterIterator.TextAttribute.STROKE);
-            Paint paint = (Paint) runaci.getAttribute(
+            paint = (Paint) runaci.getAttribute(
                     GVTAttributedCharacterIterator.TextAttribute.STROKE_PAINT);
-            if (paint != null) {
+            if (stroke != null && paint != null) {
                 AffineTransform t = AffineTransform.getTranslateInstance(x, 0f);
-                // Stroke oldStroke = g2d.getStroke();
-                // Paint oldPaint = g2d.getPaint();
                 g2d.setStroke(stroke);
                 g2d.setPaint(paint);
                 g2d.draw(textRun.getLayout().getOutline(t));
-                // g2d.setStroke(oldStroke);
-                // g2d.setPaint(oldPaint);
             }
             x += textRun.getLayout().getAdvance();
         }

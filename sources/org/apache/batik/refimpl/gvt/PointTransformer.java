@@ -6,25 +6,27 @@
  * the LICENSE file.                                                         *
  *****************************************************************************/
 
-package org.apache.batik.gvt;
+package org.apache.batik.refimpl.gvt;
 
-import java.awt.geom.Dimension2D;
+import java.awt.geom.Point2D;
 
 /**
- * Used to transform dimensions into user space coordinates.
+ * A <tt>PointTransfomer</tt> is used by a <tt>TransformedPoint</tt>
+ * to transform its coordinates. This is used when a point is defined
+ * relative to a <tt>GraphicsNode</tt>'s bounding box.
  *
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
-public interface DimensionTransformer {
+public interface PointTransformer {
 
     /**
-     * Converts the input width to a width in user space
+     * Converts the input point to the point space
      */
-    float widthToUserSpace(float width);
+    Point2D toPointSpace(Point2D point);
 
     /**
-     * Converts the input height to a height in user space
+     * Converts the input point to user space
      */
-    float heightToUserSpace(float height);
+    Point2D toUserSpace(Point2D point);
 }
