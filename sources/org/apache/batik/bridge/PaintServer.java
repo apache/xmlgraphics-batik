@@ -496,12 +496,11 @@ public abstract class PaintServer
     public static float [] convertStrokeDasharray(Value v) {
         float [] dasharray = null;
         if (v.getCssValueType() == CSSValue.CSS_VALUE_LIST) {
-            ListValue l = (ListValue)v;
-            int length = l.getLength();
+            int length = v.getLength();
             dasharray = new float[length];
             float sum = 0;
             for (int i = 0; i < dasharray.length; ++i) {
-                dasharray[i] = l.item(i).getFloatValue();
+                dasharray[i] = v.item(i).getFloatValue();
                 sum += dasharray[i];
             }
             if (sum == 0) {
