@@ -301,55 +301,55 @@ public class JGVTComponent extends JComponent {
      * @param color the new color of the selection overlay
      */
     public void setSelectionOverlayColor(Color color) {
-	if (textSelectionManager != null) {
-	    textSelectionManager.setSelectionOverlayColor(color);
-	}
+        if (textSelectionManager != null) {
+            textSelectionManager.setSelectionOverlayColor(color);
+        }
     }
 
     /**
      * Returns the color of the selection overlay.
      */
     public Color getSelectionOverlayColor() {
-	if (textSelectionManager != null) {
-	    return textSelectionManager.getSelectionOverlayColor();
-	} else {
-	    throw new IllegalArgumentException("Selection is disabled");
-	}
+        if (textSelectionManager != null) {
+            return textSelectionManager.getSelectionOverlayColor();
+        } else {
+            return null;
+        }
     }
 
     /**
      * Sets the color of the outline of the selection overlay to the specified
      * color.
      *
-     * @param color the new color of the outline of the selection overlay 
+     * @param color the new color of the outline of the selection overlay
      */
     public void setSelectionOverlayStrokeColor(Color color) {
-	if (textSelectionManager != null) {
-	    textSelectionManager.setSelectionOverlayStrokeColor(color);
-	}
+        if (textSelectionManager != null) {
+            textSelectionManager.setSelectionOverlayStrokeColor(color);
+        }
     }
 
     /**
      * Returns the color of the outline of the selection overlay.
      */
     public Color getSelectionOverlayStrokeColor() {
-	if (textSelectionManager != null) {
-	    return textSelectionManager.getSelectionOverlayStrokeColor();
-	} else {
-	    throw new IllegalArgumentException("Selection is disabled");
-	}
+        if (textSelectionManager != null) {
+            return textSelectionManager.getSelectionOverlayStrokeColor();
+        } else {
+            return null;
+        }
     }
 
     /**
      * Sets whether or not the selection overlay will be painted in XOR mode,
      * depending on the specified parameter.
      *
-     * @param state true implies the selection overlay will be in XOR mode 
+     * @param state true implies the selection overlay will be in XOR mode
      */
     public void setSelectionOverlayXORMode(boolean state) {
-	if (textSelectionManager != null) {
-	    textSelectionManager.setSelectionOverlayXORMode(state);
-	}
+        if (textSelectionManager != null) {
+            textSelectionManager.setSelectionOverlayXORMode(state);
+        }
     }
 
     /**
@@ -357,11 +357,11 @@ public class JGVTComponent extends JComponent {
      * otherwise.
      */
     public boolean isSelectionOverlayXORMode() {
-	if (textSelectionManager != null) {
-	    return textSelectionManager.isSelectionOverlayXORMode();
-	} else {
-	    throw new IllegalArgumentException("Selection is disabled");
-	}
+        if (textSelectionManager != null) {
+            return textSelectionManager.isSelectionOverlayXORMode();
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -371,18 +371,18 @@ public class JGVTComponent extends JComponent {
      * @param end the mark used to define where the selection ends
      */
     public void select(Mark start, Mark end) {
-	if (textSelectionManager != null) {
-	    textSelectionManager.setSelection(start, end);
-	}
+        if (textSelectionManager != null) {
+            textSelectionManager.setSelection(start, end);
+        }
     }
 
     /**
      * Deselects all.
      */
     public void deselectAll() {
-	if (textSelectionManager != null) {
-	    textSelectionManager.clearSelection();
-	}
+        if (textSelectionManager != null) {
+            textSelectionManager.clearSelection();
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -491,7 +491,7 @@ public class JGVTComponent extends JComponent {
      * Returns the initial transform.
      */
     public AffineTransform getInitialTransform() {
-	return initialTransform;
+        return initialTransform;
     }
 
     /**
@@ -808,7 +808,7 @@ public class JGVTComponent extends JComponent {
                 dispatchKeyPressed(e);
             }
         }
-        
+
         /**
          * Dispatches the event to the GVT tree.
          */
