@@ -17,7 +17,7 @@
 <!-- @version $Id$         -->
 <!-- ========================================================================= -->
 
-<svg width="450" height="500" viewBox="0 0 450 500">
+<svg id="body" width="450" height="500" viewBox="0 0 450 500">
   <style type="text/css"><![CDATA[
       .c1 {
 	  fill: url(#ballGradientA); /*rgb(203, 203, 255);*/

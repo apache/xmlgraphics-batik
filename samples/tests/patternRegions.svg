@@ -20,7 +20,7 @@
 
 <?xml-stylesheet type="text/css" href="test.css" ?>
 
-<svg width="450" height="500" viewBox="0 0 450 500">
+<svg id="body" width="450" height="500" viewBox="0 0 450 500">
 <title>Pattern Tests</title>
 
     <text x="225" y="50" class="title">
@@ -33,14 +33,14 @@
     <!-- ============================================================= -->
     <!-- Test content                                                  -->
     <!-- ============================================================= -->
-    <g id="testContent">
+    <g id="testContent" style="font-size:10">
         <defs>
         <!-- ============================================== -->
         <!-- patternUnits : default (objectBoundingBox)     -->
         <!-- patternContentUnits : default (userSpaceOnUse) -->
         <!-- viewBox : default (none)                       -->
         <!-- ============================================== -->
-        <pattern id="pattern1" x="0" y="0" width=".75" height=".5">
+        <pattern id="pattern1" x="0" y="0" width=".75" height="50%">
             <circle cx="10" cy="10" r="10" style="fill:red" />
             <rect x="10" y="10" width="15" height="15" style="fill:green"/>
         </pattern>

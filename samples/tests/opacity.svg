@@ -19,7 +19,7 @@
 
 <?xml-stylesheet type="text/css" href="test.css" ?>
 
-<svg width="450" height="500" viewBox="0 0 450 500">
+<svg id="body" width="450" height="500" viewBox="0 0 450 500">
 <title>Opacity: stroke-opacity, fill-opacity, opacity </title>
     <!-- ============================================================= -->
     <!-- Test content                                                  -->
