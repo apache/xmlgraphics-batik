@@ -1432,7 +1432,6 @@ public class JSVGComponent extends JGVTComponent {
                                 if (ml.size() < l.size()) {
                                     l = ml;
                                 }
-
                                 Iterator i = l.iterator();
                                 while (i.hasNext()) {
                                     Rectangle r = (Rectangle)i.next();

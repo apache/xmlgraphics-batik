@@ -1,0 +1,66 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20000802//EN"
+"http://www.w3.org/TR/2000/CR-SVG-20000802/DTD/svg-20000802.dtd">
+
+<!-- ====================================================================== -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.     -->
+<!--                                                                        -->
+<!-- This software is published under the terms of the Apache Software      -->
+<!-- License version 1.1, a copy of which has been included with this       -->
+<!-- distribution in the LICENSE file.                                      -->
+<!-- ====================================================================== -->
+
+<!-- ====================================================================== -->
+<!-- Modification of a circle attributes                                    -->
+<!--                                                                        -->
+<!-- @author tkormann@ilog.fr                                               -->
+<!-- @version $Id$ -->
+<!-- ====================================================================== -->
+
+<?xml-stylesheet type="text/css" href="../../resources/style/test.css" ?>  
+
+<svg id="body" width="450" height="500" viewBox="0 0 450 500"
+     onload="updateGroup1(); updateGroup2()">
+    <title>Testing Update engine when root changes size/location.</title>
+
+    <desc>To ensure proper test results you may need to turn off
+    double buffering and pause the animation and force a repaint, if
+    you see lots of junk then the repaint engine is not working
+    properly.</desc>
+    <script type="text/ecmascript">
+	var time1 = 90;
+	function updateGroup1() {
+            var elt = document.getElementById("g1");
+	    var x = Math.cos(time1*3.1415926/180)*150 + 225;
+	    var y = Math.sin(.5*(time1+90)*3.1415926/180)*150 + 250;
+            elt.setAttributeNS(null, "transform", 
+	                       "translate("+x+","+y+")");
+	    time1 += 5;
+	    setTimeout('updateGroup1()', 100);
+	}
+	var time2 = 90;
+	function updateGroup2() {
+            var elt = document.getElementById("g2");
+	    var x = Math.cos(time2*3.1415926/180)*150 + 225;
+	    var y = Math.sin(.5*(time2+90)*3.1415926/180)*150 + 250;
+            elt.setAttributeNS(null, "transform", 
+	                       "translate("+x+","+y+")");
+	    time2 -= 5;
+	    setTimeout('updateGroup2()', 100);
+	}
+    </script>
+
+    <g id="test-content">
+       <g id="g1">
+           <rect x="-15" y="-25" width="30" height="50" 
+                 fill="none" stroke="black"/>
+           <circle cx="0" cy="0" r="10" fill="red"/>
+       </g> 
+       <g id="g2">
+           <rect x="-15" y="-25" width="30" height="50" 
+                 fill="none" stroke="black"/>
+           <circle cx="0" cy="0" r="10" fill="blue"/>
+       </g> 
+    </g>
+</svg>
+
