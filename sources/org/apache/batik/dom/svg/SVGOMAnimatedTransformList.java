@@ -83,17 +83,6 @@ public class SVGOMAnimatedTransformList
 
     /**
      * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGAnimatedTransformList#setBaseVal(SVGTransformList)}.
-     */
-    public void setBaseVal(SVGTransformList bv) throws DOMException {
-	baseVal = (SVGOMTransformList)bv;
-	element.putLiveAttributeValue(attributeNsURI, attributeName, baseVal);
-	baseVal.setAttributeModifier(this);
-	setAttributeValue(baseVal.toString());
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGAnimatedTransformList#getAnimVal()}.
      */
     public SVGTransformList getAnimVal() {

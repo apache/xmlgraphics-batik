@@ -48,15 +48,6 @@ public class SVGTestsSupport {
     }
 
     /**
-     * To implements {@link
-     * org.w3c.dom.svg.SVGTests#setRequiredFeatures(SVGStringList)}.
-     */
-    public void setRequiredFeatures(SVGStringList requiredFeatures, Element elt)
-	throws DOMException {
-	throw new RuntimeException(" !!! TODO: SVGTestsSupport.setRequiredFeatures()");
-    }
-
-    /**
      * To implements {@link org.w3c.dom.svg.SVGTests#getRequiredExtensions()}.
      */
     public SVGStringList getRequiredExtensions(Element elt) {
@@ -64,29 +55,10 @@ public class SVGTestsSupport {
     }
 
     /**
-     * To implements {@link
-     * org.w3c.dom.svg.SVGTests#setRequiredExtensions(SVGStringList)}.
-     */
-    public void setRequiredExtensions(SVGStringList requiredExtensions,
-                                      Element elt)
-	throws DOMException {
-	throw new RuntimeException(" !!! TODO: SVGTestsSupport.setRequiredExtensions()");
-    }
-
-    /**
      * To implements {@link org.w3c.dom.svg.SVGTests#getSystemLanguage()}.
      */
     public SVGStringList getSystemLanguage(Element elt) {
 	throw new RuntimeException(" !!! TODO: SVGTestsSupport.getSystemLanguage()");
-    }
-
-    /**
-     * To implements {@link
-     * org.w3c.dom.svg.SVGTests#setRequiredExtensions(SVGStringList)}.
-     */
-    public void setSystemLanguage(SVGStringList systemLanguage, Element elt)
-	throws DOMException {
-	throw new RuntimeException(" !!! TODO: SVGTestsSupport.setSystemLanguage()");
     }
 
     /**

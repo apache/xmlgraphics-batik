@@ -94,7 +94,7 @@ public class SVGOMTransformList
     }
 
     /**
-     * <b>DOM</b>: Implements {@link SVGTransformList#initialize(Object)}.
+     * <b>DOM</b>: Implements {@link SVGTransformList#initialize(SVGTransform)}.
      */
     public SVGTransform initialize(SVGTransform newItem)
         throws SVGException {
@@ -121,7 +121,7 @@ public class SVGOMTransformList
 
     /**
      * <b>DOM</b>: Implements {@link
-     * SVGTransformList#insertItemBefore(Object,int)}.
+     * SVGTransformList#insertItemBefore(SVGTransform,int)}.
      */
     public SVGTransform insertItemBefore(SVGTransform newItem, int index)
         throws SVGException {
@@ -140,7 +140,8 @@ public class SVGOMTransformList
     }
 
     /**
-     * <b>DOM</b>: Implements {@link SVGTransformList#replaceItem(Object,int)}.
+     * <b>DOM</b>: Implements {@link
+     * SVGTransformList#replaceItem(SVGTransform,int)}.
      */
     public SVGTransform replaceItem(SVGTransform newItem, int index)
         throws DOMException, SVGException {
@@ -175,7 +176,7 @@ public class SVGOMTransformList
     }
     
     /**
-     * <b>DOM</b>: Implements {@link SVGTransformList#appendItem(Object)}.
+     * <b>DOM</b>: Implements {@link SVGTransformList#appendItem(SVGTransform)}.
      */
     public SVGTransform appendItem(SVGTransform np) throws SVGException {
         list.add(np);

@@ -86,15 +86,6 @@ public class SVGStylableSupport {
 
     /**
      * To implement {@link
-     * org.w3c.dom.svg.SVGStylable#getAnimatedPresentationAttribute(String)}.
-     */
-    public CSSValue getAnimatedPresentationAttribute(String name,
-                                                     Element elt) {
-	throw new RuntimeException(" !!! TODO: SVGStylableSupport.getAnimatedPresentationAttribute()");
-    }
-
-    /**
-     * To implement {@link
      * org.w3c.dom.svg.SVGStylable#getClassName()}.
      */
     public SVGAnimatedString getClassName(Element elt) {

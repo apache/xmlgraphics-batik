@@ -358,14 +358,6 @@ public class SVGOMDocument
 
     /**
      * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGDocument#setTitle(String)}.
-     */
-    public void setTitle(String s) {
-        throw new RuntimeException(" !!! TODO: SVGOMDocument.setTitle()");
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGDocument#getReferrer()}.
      */
     public String getReferrer() {

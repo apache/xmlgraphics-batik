@@ -127,15 +127,6 @@ public class SVGOMFEFloodElement
 
     /**
      * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGStylable#getAnimatedPresentationAttribute(String)}.
-     */
-    public CSSValue getAnimatedPresentationAttribute(String name) {
-        return getStylableSupport().getAnimatedPresentationAttribute(name,
-                                                                     this);
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGStylable#getClassName()}.
      */
     public SVGAnimatedString getClassName() {
