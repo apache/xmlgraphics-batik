@@ -29,10 +29,11 @@
         <figure src="images/splash.png" alt="Batik release 1.5beta3" />
 
         <p>
-        Batik is a Java(tm) technology based toolkit for applications or applets that want 
-        to use images in the <link href="http://www.w3.org/TR/SVG/">Scalable Vector
-        Graphics (SVG)</link> format for various purposes, such as
-        viewing, generation or manipulation.
+        Batik is a Java(tm) technology based toolkit for applications
+        or applets that want to use images in the <link
+        href="http://www.w3.org/TR/SVG/">Scalable Vector Graphics
+        (SVG)</link> format for various purposes, such as viewing,
+        generation or manipulation.
         </p>
 	 <ul>
 		<li><link href="#BatikApplications">Applications of Batik</link></li>
@@ -41,6 +42,18 @@
             		<li><link href="#DownloadBatik">Downloading the Batik distribution (source and binary)</link></li>
 		<li><link href="#projectAndProductExamples">Examples of projects and products using Batik</link></li>
 	</ul>
+      <p>
+       This is a warning that a security issue was reported in the
+       Batik Squiggle browser. Squiggle uses the Rhino scripting
+       engine and some features of that engine can be leveraged by
+       malicious scripts to gain access to otherwise protected
+       resources (like the file system).
+
+       The Batik team has worked with the Rhino team to fix the isssue
+       that was reported and the Batik 1.5.1 patch release addresses
+       the issue:
+       </p>
+
         <p>
         The project's ambition is to give developers a set of 
         <link href="architecture.html#coreComponents">core 

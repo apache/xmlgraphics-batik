@@ -57,6 +57,12 @@ import org.mozilla.javascript.Script;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.SecurityController;
 
+import java.security.AccessController;
+import java.security.AccessControlContext;
+import java.security.PrivilegedAction;
+import java.security.PrivilegedExceptionAction;
+import java.security.PrivilegedActionException;
+
 /**
  * This implementation of the Rhino <tt>SecurityController</tt> interface is
  * meant for use within the context of Batik only. It is a partial
@@ -71,9 +77,15 @@ public class BatikSecurityController extends SecurityController {
     /**
      * Default constructor
      */
-    public GeneratedClassLoader createClassLoader(final ClassLoader parentLoader,
-                                                  Object securityDomain) {
-        return (RhinoClassLoader)securityDomain;
+    public GeneratedClassLoader createClassLoader
+        (final ClassLoader parentLoader, Object securityDomain) {
+        if (securityDomain instanceof RhinoClassLoader) {
+            return (RhinoClassLoader)securityDomain;
+        }
+		
+        // FIXX: This should be supported by intersecting perms.
+        // Calling var script = Script(source); script(); is not supported
+        throw new RuntimeException("NOT SUPPORTED");
     }
 
     /**
@@ -83,7 +95,16 @@ public class BatikSecurityController extends SecurityController {
      * allowed by the current stack.
      */
     public Object getDynamicSecurityDomain(Object securityDomain) {
-        return securityDomain;
+        ClassLoader loader = (RhinoClassLoader)securityDomain;
+        // Already have a rhino loader in place no need to
+        // do anything (normally you would want to union the
+        // the current stack with the loader's context but
+        // in our case no one has lower privledges than a
+        // rhino class loader).
+        if (loader != null) 
+            return loader;
+
+        return AccessController.getContext();
     }
 
     /**
@@ -99,6 +120,25 @@ public class BatikSecurityController extends SecurityController {
     public Object execWithDomain(final Context cx, final Scriptable scope,
                                  final Script script, Object securityDomain)
         throws JavaScriptException {
-        return script.exec(cx, scope);
+        
+        AccessControlContext acc;
+        if (securityDomain instanceof AccessControlContext)
+            acc = (AccessControlContext)securityDomain;
+        else {
+            RhinoClassLoader loader = (RhinoClassLoader)securityDomain;
+            acc = loader.rhinoAccessControlContext;
+        }
+
+        try {
+            return AccessController.doPrivileged
+                (new PrivilegedExceptionAction() {
+                        public Object run() throws JavaScriptException {
+                            return script.exec(cx, scope);
+                        }
+                    }, acc );
+        } catch (Exception e) {
+            throw new JavaScriptException(e);
+        }
+
     }
 }
