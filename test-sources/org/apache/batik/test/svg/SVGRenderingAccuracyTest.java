@@ -673,6 +673,8 @@ public class SVGRenderingAccuracyTest implements Test{
         ImageTranscoder t = new PNGTranscoder();
         t.addTranscodingHint(PNGTranscoder.KEY_XML_PARSER_CLASSNAME,
                              PARSER_CLASS_NAME);
+        t.addTranscodingHint(PNGTranscoder.KEY_FORCE_TRANSPARENT_WHITE,
+                             new Boolean(false));
         return t;
     }
 }
