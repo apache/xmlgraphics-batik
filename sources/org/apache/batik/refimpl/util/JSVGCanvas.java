@@ -19,6 +19,7 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.Stroke;
+import java.awt.EventQueue;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
@@ -127,6 +128,18 @@ public class JSVGCanvas
         new Cursor(Cursor.DEFAULT_CURSOR);
 
     /**
+     * The default cursor.
+     */
+    public final static Cursor NORMAL_CURSOR =
+        new Cursor(Cursor.DEFAULT_CURSOR);
+
+    /**
+     * The cursor indicating that an operation is pending.
+     */
+    public final static Cursor WAIT_CURSOR =
+        new Cursor(Cursor.WAIT_CURSOR);
+
+    /**
      * The global offscreen buffer.
      */
     protected BufferedImage globalBuffer;
@@ -157,11 +170,6 @@ public class JSVGCanvas
     protected GVTBuilder builder;
 
     /**
-     * The bridge context.
-     */
-    protected BridgeContext bridgeContext;
-
-    /**
      * The SVG document to render.
      */
     protected SVGDocument document;
@@ -169,7 +177,7 @@ public class JSVGCanvas
     /**
      * Must the buffer be updated?
      */
-    protected boolean repaint;
+    protected boolean bufferNeedsRendering;
 
     /**
      * The user agent.
@@ -215,11 +223,6 @@ public class JSVGCanvas
      * The rotate marker.
      */
     protected Shape rotateMarker;
-
-    /**
-     * The repaint thread.
-     */
-    protected Thread repaintThread;
 
     /**
      * The thumbnail canvas.
@@ -326,69 +329,85 @@ public class JSVGCanvas
      * @param doc if null, clears the canvas.
      */
     public void setSVGDocument(final SVGDocument doc) {
-        new Thread() {
-            public void run() {
-                setPriority(Thread.MIN_PRIORITY);
 
-                if (document != null) {
-                    // fire the unload event
-                    Event evt = document.createEvent("SVGEvents");
-                    evt.initEvent("SVGUnload", false, false);
-                    ((EventTarget)(document.
-                                   getRootElement())).
-                        dispatchEvent(evt);
-                }
-                document = doc;
-                if (document == null) {
-                    gvtRoot = null;
-                } else {
-                    bridgeContext = createBridgeContext(doc);
+        if (document != null) {
+            // fire the unload event
+            Event evt = document.createEvent("SVGEvents");
+            evt.initEvent("SVGUnload", false, false);
+            ((EventTarget)(document.getRootElement())).dispatchEvent(evt);
+        }
+        document = doc;
+        if (document == null) {
+            setRootNode(null, null);
+        } else {
+            setCursor(WAIT_CURSOR);
+            Thread t = new Thread() {
+                public void run() {
+                    GraphicsNode root;
+                    BridgeContext bridgeContext = createBridgeContext(doc);
                     bridgeContext.setViewCSS((ViewCSS)doc.getDocumentElement());
                     bridgeContext.setGVTBuilder(builder);
-
                     long t1 = System.currentTimeMillis();
-
-                    gvtRoot = builder.build(bridgeContext, document);
-
+                    root = builder.build(bridgeContext, document);
                     long t2 = System.currentTimeMillis();
 
                     System.out.println("---- GVT tree construction ---- " +
                                        (t2 - t1) + " ms");
 
-                    computeTransform();
-
-                    // <!> HACK maybe not the right place to dispatch
-                    // this event
-                    // fire the load event
-                    Event evt = document.createEvent("SVGEvents");
-                    evt.initEvent("SVGLoad", false, false);
-                    ((EventTarget)(document.
-                                   getRootElement())).
-                        dispatchEvent(evt);
-
-                    ((EventTarget)doc).addEventListener("DOMAttrModified",
-                                                        new MutationListener(),
-                                                        false);
+                    EventQueue.invokeLater
+                        (new RootNodeChangedRunnable(root, bridgeContext));
                 }
+            };
+            t.setPriority(Thread.MIN_PRIORITY);
+            t.start();
+        }
 
-                if (userAgent.getEventDispatcher() != null) {
-                    userAgent.getEventDispatcher().setRootNode(gvtRoot);
-                }
+    }
 
-                rotateAngle = 0;
-                rotateCos = 1;
-                if (zoomHandler != null) {
-                    zoomHandler.zoomChanged(1);
-                }
-                repaint = true;
-                repaint();
+    class RootNodeChangedRunnable implements Runnable {
 
-                if (thumbnailCanvas != null) {
-                    thumbnailCanvas.fullRepaint();
-                }
+        GraphicsNode root;
+        BridgeContext bridgeContext;
 
+        public RootNodeChangedRunnable(GraphicsNode newRoot,
+                                       BridgeContext bridgeContext) {
+            this.root = newRoot;
+            this.bridgeContext = bridgeContext;
+        }
+
+        public void run() {
+            setRootNode(root, bridgeContext);
+            setCursor(NORMAL_CURSOR);
+        }
+    }
+
+    public void setRootNode(GraphicsNode root, BridgeContext bridgeContext) {
+        gvtRoot = root;  // based on event notification
+
+        if (root != null) {
+            computeTransform();
+            // <!> HACK maybe not the right place to dispatch
+            // this event
+            // fire the load event
+            Event evt = document.createEvent("SVGEvents");
+            evt.initEvent("SVGLoad", false, false);
+            ((EventTarget)(document.getRootElement())).dispatchEvent(evt);
+            ((EventTarget)document).addEventListener("DOMAttrModified",
+                                       new MutationListener(bridgeContext), false);
+            if (userAgent.getEventDispatcher() != null) {
+                userAgent.getEventDispatcher().setRootNode(gvtRoot);
             }
-        }.start();
+        }
+        rotateAngle = 0;
+        rotateCos = 1;
+        if (zoomHandler != null) {
+            zoomHandler.zoomChanged(1);
+        }
+        bufferNeedsRendering = true;
+        repaint();
+        if (thumbnailCanvas != null) {
+             thumbnailCanvas.fullRepaint();
+        }
     }
 
     /**
@@ -406,6 +425,13 @@ public class JSVGCanvas
      * To listener to the DOM mutation events.
      */
     protected class MutationListener implements EventListener {
+
+        BridgeContext bridgeContext;
+
+        public MutationListener(BridgeContext bridgeContext) {
+            this.bridgeContext = bridgeContext;
+        }
+
         public void handleEvent(Event evt) {
             BridgeMutationEvent bme;
             Element target = (Element)evt.getTarget();
@@ -491,7 +517,7 @@ public class JSVGCanvas
             dev2usr = transform.createInverse();
         } catch(NoninvertibleTransformException e){
             // This should not happen. See setTransform
-            throw new Error();
+            throw new Error(e.getMessage());
         }
 
         //System.out.println("devAOI : " + devAOI);
@@ -500,11 +526,13 @@ public class JSVGCanvas
         return dev2usr.createTransformedShape(devAOI);
     }
 
-
     /**
      * Paints this component.
      */
     protected void paintComponent(Graphics g) {
+
+        // TODO: simplify and clean up this code
+
         super.paintComponent(g);
 
         Dimension size = getSize();
@@ -515,14 +543,8 @@ public class JSVGCanvas
             return;
         }
 
-        if (repaintThread != null) {
-            Graphics2D g2d = (Graphics2D)g;
-            g2d.drawImage(buffer, null, 0, 0);
-            return;
-        }
-
         updateBuffer(w, h);
-        if (repaint) {
+        if (bufferNeedsRendering) {
             renderer = rendererFactory.createRenderer(buffer);
             ((DynamicRenderer)renderer).setRepaintHandler(this);
             renderer.setTransform(transform);
@@ -530,9 +552,9 @@ public class JSVGCanvas
         if (renderer != null && gvtRoot != null &&
             renderer.getTree() != gvtRoot) {
             renderer.setTree(gvtRoot);
-            repaint = true;
+            bufferNeedsRendering = true;
         }
-        if (repaint) {
+        if (bufferNeedsRendering) {
             Graphics2D g2d = (Graphics2D)g;
             if (panTransform != null) {
                 int tx = (int)panTransform.getTranslateX();
@@ -550,23 +572,33 @@ public class JSVGCanvas
 
             clearBuffer(w, h);
             renderer.setTransform(transform);
-
-            repaintThread = new RepaintThread();
-            repaintThread.start();
-            repaint = false;
+            repaintAOI();
+            bufferNeedsRendering = false;
             return;
-        }
-        repaint = false;
-        Graphics2D g2d = (Graphics2D)g;
-        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+        } else { // buffer is current, just transform and draw it
+
+            Graphics2D g2d = (Graphics2D)g;
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                              RenderingHints.VALUE_ANTIALIAS_ON);
-        if (panTransform != null) {
-            int tx = (int)panTransform.getTranslateX();
-            int ty = (int)panTransform.getTranslateY();
-            paintPanRegions(g2d, tx, ty, w, h);
-            g2d.transform(panTransform);
+            if (panTransform != null) {
+                int tx = (int)panTransform.getTranslateX();
+                int ty = (int)panTransform.getTranslateY();
+                paintPanRegions(g2d, tx, ty, w, h);
+                g2d.transform(panTransform);
+            }
+            g2d.drawImage(buffer, null, 0, 0);
+
+            paintOverlays(g);
         }
-        g2d.drawImage(buffer, null, 0, 0);
+    }
+
+    /**
+     * Paints the canvas "overlay" primitives
+     * (rotation box, zoom AOI box, highlight [not yet implemented], etc.
+     */
+    protected void paintOverlays(Graphics g) {
+        Graphics2D g2d = (Graphics2D) g;
+
         g2d.setXORMode(Color.white);
         if (markerTop != null) {
             g2d.setColor(Color.black);
@@ -582,6 +614,7 @@ public class JSVGCanvas
         }
         g2d.setXORMode(Color.white);
     }
+
 
     /**
      * Repaints the pan blank regions.
@@ -620,11 +653,11 @@ public class JSVGCanvas
             globalBuffer.getHeight() < h) {
             globalBuffer = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
             buffer = globalBuffer;
-            repaint = true;
+            bufferNeedsRendering = true;
         } else if (buffer.getWidth() != w ||
                    buffer.getHeight() != h) {
             buffer = globalBuffer.getSubimage(0, 0, w, h);
-            repaint = true;
+            bufferNeedsRendering = true;
         }
     }
 
@@ -661,33 +694,28 @@ public class JSVGCanvas
     /**
      * To repaint the buffer.
      */
-    protected class RepaintThread extends Thread {
-        /**
-         * Creates a new thread.
+    protected void repaintAOI() {
+
+        Dimension size = getSize();
+
+        long t1 = System.currentTimeMillis();
+        setCursor(WAIT_CURSOR);
+
+        /* TODO: make sure renderer.repaint is
+         *  thread safe, and never called until the document is
+         *  initialized, etc., make sure there are no race conditions
+         *  on size, etc... then put this call in a background thread
+         *  (as it was previously).
          */
-        public RepaintThread() {
-            setPriority(Thread.MIN_PRIORITY);
-        }
-
-        /**
-         * The thread main method.
-         */
-        public void run() {
-
-            Dimension size = getSize();
-
-            long t1 = System.currentTimeMillis();
-
-            renderer.repaint(getAreaOfInterest
+        renderer.repaint(getAreaOfInterest
                              (new Rectangle(0, 0, size.width, size.height)));
 
-            long t2 = System.currentTimeMillis();
-            System.out.println("----------- Rendering --------- " +
+        long t2 = System.currentTimeMillis();
+        System.out.println("----------- Rendering --------- " +
                                (t2 - t1) + " ms");
 
-            repaintThread = null;
-            repaint();
-        }
+        setCursor(NORMAL_CURSOR);
+        repaint();
     }
 
     /**
@@ -723,7 +751,7 @@ public class JSVGCanvas
             if (zoomHandler != null) {
                 zoomHandler.zoomChanged(1);
             }
-            repaint = true;
+            bufferNeedsRendering = true;
             repaint();
             if (thumbnailCanvas != null) {
                 thumbnailCanvas.repaint();
@@ -744,7 +772,7 @@ public class JSVGCanvas
                 zoomHandler.zoomChanged((float)(transform.getScaleX() /
                                                 rotateCos / initialScale));
             }
-            repaint = true;
+            bufferNeedsRendering = true;
             repaint();
             if (thumbnailCanvas != null) {
                 thumbnailCanvas.repaint();
@@ -765,7 +793,7 @@ public class JSVGCanvas
                 zoomHandler.zoomChanged((float)(transform.getScaleX() /
                                                 rotateCos / initialScale));
             }
-            repaint = true;
+            bufferNeedsRendering = true;
             repaint();
             if (thumbnailCanvas != null) {
                 thumbnailCanvas.repaint();
@@ -933,7 +961,7 @@ public class JSVGCanvas
                 panTransform.translate(x - sx, y - sy);
                 transform.preConcatenate(panTransform);
                 updateBaseTransform();
-                repaint = true;
+                bufferNeedsRendering = true;
                 repaint();
                 if (thumbnailCanvas != null) {
                     thumbnailCanvas.repaint();
@@ -970,7 +998,7 @@ public class JSVGCanvas
                     zoomHandler.zoomChanged((float)(transform.getScaleX() /
                                                     rotateCos / initialScale));
                 }
-                repaint = true;
+                bufferNeedsRendering = true;
                 repaint();
                 if (thumbnailCanvas != null) {
                     thumbnailCanvas.repaint();
@@ -983,7 +1011,7 @@ public class JSVGCanvas
                     zoomHandler.zoomChanged((float)(transform.getScaleX() /
                                                     rotateCos / initialScale));
                 }
-                repaint = true;
+                bufferNeedsRendering = true;
                 repaint();
                 if (thumbnailCanvas != null) {
                     thumbnailCanvas.repaint();
@@ -1119,7 +1147,7 @@ public class JSVGCanvas
         /**
          * Must the buffer be updated?
          */
-        protected boolean repaint;
+        protected boolean bufferNeedsRendering;
 
         /**
          * An additional transform for the marker.
@@ -1148,7 +1176,7 @@ public class JSVGCanvas
          * Recomputes the offscreen buffer and repaint.
          */
         public void fullRepaint() {
-            repaint = true;
+            bufferNeedsRendering = true;
             computeTransform();
             repaint();
         }
@@ -1174,7 +1202,7 @@ public class JSVGCanvas
             }
 
             updateBuffer(w, h);
-            if (repaint) {
+            if (bufferNeedsRendering) {
                 renderer = rendererFactory.createRenderer(offscreenBuffer);
                 ((DynamicRenderer)renderer).setRepaintHandler(this);
                 renderer.setTransform(transform);
@@ -1182,15 +1210,13 @@ public class JSVGCanvas
             if (renderer != null && gvtRoot != null &&
                 renderer.getTree() != gvtRoot) {
                 renderer.setTree(gvtRoot);
-                repaint = true;
+                bufferNeedsRendering = true;
             }
-            if (repaint) {
+            if (bufferNeedsRendering) {
                 clearBuffer(w, h);
                 renderer.setTransform(transform);
-
-                repaintThread = new ThumbnailRepaintThread();
-                repaintThread.start();
-                repaint = false;
+                repaintThumbnail();
+                bufferNeedsRendering = false;
                 return;
             }
             Graphics2D g2d = (Graphics2D)g;
@@ -1247,11 +1273,11 @@ public class JSVGCanvas
                 offscreenBuffer.getHeight() < h) {
                 offscreenBuffer =
                     new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
-                repaint = true;
+                bufferNeedsRendering = true;
             } else if (offscreenBuffer.getWidth() != w ||
                        offscreenBuffer.getHeight() != h) {
                 offscreenBuffer = offscreenBuffer.getSubimage(0, 0, w, h);
-                repaint = true;
+                bufferNeedsRendering = true;
             }
         }
 
@@ -1305,26 +1331,13 @@ public class JSVGCanvas
         }
 
         /**
-         * To repaint the buffer.
+         * Repaint the thumbnail view.
          */
-        protected class ThumbnailRepaintThread extends Thread {
-            /**
-             * Creates a new thread.
-             */
-            public ThumbnailRepaintThread() {
-                setPriority(Thread.MIN_PRIORITY);
-            }
-
-            /**
-             * The thread main method.
-             */
-            public void run() {
-                Dimension size = getSize();
-                renderer.repaint(getAreaOfInterest
+        public void repaintThumbnail() {
+            Dimension size = getSize();
+            renderer.repaint(getAreaOfInterest
                                (new Rectangle(0, 0, size.width, size.height)));
-                repaintThread = null;
-                repaint();
-            }
+            repaint();
         }
 
         /**
@@ -1394,7 +1407,7 @@ public class JSVGCanvas
                              pt0.getY() - pt.getY());
                     JSVGCanvas.this.transform.concatenate(markerTransform);
                     JSVGCanvas.this.updateBaseTransform();
-                    JSVGCanvas.this.repaint = true;
+                    JSVGCanvas.this.bufferNeedsRendering = true;
                     JSVGCanvas.this.repaint();
 
                     markerTransform = new AffineTransform();
