@@ -249,7 +249,7 @@ public class SAXSVGDocumentFactory
             if (uris.indexOf(systemId) != -1) {
                 return new InputSource
                     (getClass().getResource
-                     ("resources/svg-20001102.dtd").toString());
+                     ("resources/svg10.dtd").toString());
             }
         } catch (MissingResourceException e) {
             throw new SAXException(e);
