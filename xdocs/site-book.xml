@@ -11,36 +11,57 @@
 <!-- ========================================================================= -->
 <!-- author stephane@hillion.org                                               -->
 <!-- author tkormann@apache.org                                                -->
-<!-- version $Id$ -->
+<!-- author vincent.hardy@eng.sun.com                                          -->
+<!-- version $Id$        -->
 <!-- ========================================================================= -->
 
 <book title="Apache Batik documentation" copyright="2000 The Apache Software Foundation">
-  <external label="Home" href="http://xml.apache.org/"/>
-  <separator/>
-  <page id="index"    label="Overview" source="index.xml"/>
-  <page id="status"   label="Status" source="status.xml" />
-  <page id="demo"   label="Demo" source="demo.xml" />
-  <separator/>
-  <page id="license"  label="License" source="license.xml"/>
-  <external href="dist" label="Download"/>
-  <page id="install"  label="Install" source="installing.xml"/>
+    <!-- ======================= -->
+    <!-- Home                    -->
+    <!-- ======================= -->
+    <external label="Home" href="http://xml.apache.org/"/>
+    <separator/>
 
-  <separator/>
+    <!-- ======================= -->
+    <!-- Top Level               -->
+    <!-- ======================= -->
+    <page id="index"    label="Overview" source="index.xml"/>
+    <faqs id="faqs" label="FAQ" source="faq.xml"/>
+    <page id="demo"     label="Demo" source="demo.xml" />
+    <page id="license"  label="License" source="license.xml"/>
+    <external href="dist" label="Download"/>
+    <page id="install"  label="Install" source="installing.xml"/>
+    <separator/>
 
-  <page id="whoAreWe" label="Who We Are" source="whoAreWe.xml" />
+    <!-- ======================= -->
+    <!-- Demos                   -->
+    <!-- ======================= -->
+    <page id="svgviewer" label="Viewer" source="svgviewer.xml"/>
+    <page id="svgrasterizer" label="Rasterizer" source="svgrasterizer.xml" />
+    <page id="svgapplet" label="SVG Applet" source="svgapplet.xml" />
+    <page id="svggen" label="Generator" source="svggen.xml" />
+    <separator />
 
-  <faqs id="faqs" label="FAQ" source="faq.xml"/>
-  <changes id="changes" label="Changes" source="changes.xml"/>
-  <todo id="todo" label="Todo" source="todo.xml"/>
+    <!-- ======================= -->
+    <!-- Status / Admin          -->
+    <!-- ======================= -->
+    <page id="whoAreWe" label="Who we are" source="whoAreWe.xml" />
+    <page id="status"   label="Status" source="status.xml" />
+    <changes id="changes" label="Changes" source="changes.xml"/>
+    <todo id="todo" label="Todo" source="todo.xml"/>
+    <external label="CVS Repository" href="http://xml.apache.org/websrc/index.cgi/xml-batik/"/>
+    <external label="Snapshots" href="http://xml.apache.org/from-cvs/xml-batik/"/>
+    <external label="Mail Archive" href="http://mail-archives.apache.org/"/>
+    <external label="Bug Database" href="http://xml.apache.org/bugs/"/>
+    <separator/>
 
-  <separator/>
+    <!-- ======================= -->
+    <!-- Documentation           -->
+    <!-- ======================= -->
+    <page id="glossary" label="Glossary" source="glossary.xml" />
+    <page id="regard" label="Regression tool" source="regardIntro.xml" />
+    <external label="API (Javadoc)" href="javadoc/index.html"/>
+    <separator />
 
-  <external label="API (Javadoc)" href="javadoc/index.html"/>
 
-  <separator/>
-
-  <external label="CVS Repository" href="http://xml.apache.org/websrc/index.cgi/xml-batik/"/>
-  <external label="Snapshots" href="http://xml.apache.org/from-cvs/xml-batik/"/>
-  <external label="Mail Archive" href="http://mail-archives.apache.org/"/>
-  <external label="Bug Database" href="http://xml.apache.org/bugs/"/>
 </book>

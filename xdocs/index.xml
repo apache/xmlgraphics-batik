@@ -46,7 +46,7 @@
         </s1>
 
         <s1 title="Applications of Batik">
-        <p>
+        <p><img src="images/batikUses.jpg" alt="Batik use cases" />
         With Batik, you can manipulate SVG documents on all platforms where
         Java is available. You can also use the various Batik modules to
         generate, manipulate, transcode and search SVG images in your 
