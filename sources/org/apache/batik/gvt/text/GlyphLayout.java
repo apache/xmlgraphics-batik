@@ -1429,6 +1429,7 @@ public class GlyphLayout implements TextSpanLayout {
         float dy = 0f;
         Point2D newPositions[] = new Point2D[numGlyphs+1];
         Point2D prevPos = gv.getGlyphPosition(0);
+        int prevCode    = gv.getGlyphCode(0);
         float x = (float) prevPos.getX();
         float y = (float) prevPos.getY();
 
@@ -1437,32 +1438,38 @@ public class GlyphLayout implements TextSpanLayout {
                                  advance.getY() - (gv.getGlyphPosition(numGlyphs-1).getY() - y));
 
         try {
+            GVTFont font = gv.getFont();
             // do letter spacing first
             if ((numGlyphs > 1) && (doLetterSpacing || !autoKern)) {
                 for (int i=1; i<=numGlyphs; ++i) {
                     Point2D gpos = gv.getGlyphPosition(i);
+                    int     currCode;
+                    currCode = (i == numGlyphs)?-1:gv.getGlyphCode(i);
                     dx = (float)gpos.getX()-(float)prevPos.getX();
                     dy = (float)gpos.getY()-(float)prevPos.getY();
                     if (autoKern) {
                         if (vertical) dy += letterSpacingVal;
-                        else dx += letterSpacingVal;
+                        else          dx += letterSpacingVal;
                     } else {
                         // apply explicit kerning adjustments,
-                        // discarding any auto-kern dx values
+                        // removing any auto-kern values
                         if (vertical) {
-                            dy = (float)
-                            gv.getGlyphMetrics(i-1).getBounds2D().getHeight()+
-                                kernVal + letterSpacingVal;
+                            float vKern = 0;
+                            if (currCode != -1) 
+                                vKern = font.getVKern(prevCode, currCode);
+                            dy += kernVal - vKern + letterSpacingVal;
                         } else {
-                            dx = (float)
-                            gv.getGlyphMetrics(i-1).getBounds2D().getWidth()+
-                                kernVal + letterSpacingVal;
+                            float hKern = 0;
+                            if (currCode != -1) 
+                                hKern = font.getHKern(prevCode, currCode);
+                            dx += kernVal - hKern + letterSpacingVal;
                         }
                     }
                     x += dx;
                     y += dy;
                     newPositions[i] = new Point2D.Float(x, y);
                     prevPos = gpos;
+                    prevCode = currCode;
                 }
 
                 for (int i=1; i<=numGlyphs; ++i) { // assign the new positions
@@ -1473,26 +1480,15 @@ public class GlyphLayout implements TextSpanLayout {
             }
 
              // adjust the advance of the last character
-            if (autoKern) {
-                if (vertical) {
-                    lastCharAdvance.setLocation(lastCharAdvance.getX(),
-                            lastCharAdvance.getY() + letterSpacingVal);
-                } else {
-                    lastCharAdvance.setLocation(lastCharAdvance.getX()
-                            + letterSpacingVal, lastCharAdvance.getY());
-                }
+            if (vertical) {
+                lastCharAdvance.setLocation
+                    (lastCharAdvance.getX(),
+                     lastCharAdvance.getY() + kernVal + letterSpacingVal);
             } else {
-                if (vertical) {
-                    lastCharAdvance.setLocation(lastCharAdvance.getX(),
-                        gv.getGlyphMetrics(numGlyphs-2).getBounds2D().getHeight()+
-                                kernVal + letterSpacingVal);
-                } else {
-                    lastCharAdvance.setLocation(
-                        gv.getGlyphMetrics(numGlyphs-2).getBounds2D().getWidth()+
-                                kernVal + letterSpacingVal, lastCharAdvance.getY());
-                }
+                lastCharAdvance.setLocation
+                    (lastCharAdvance.getX() + kernVal + letterSpacingVal, 
+                     lastCharAdvance.getY());
             }
-
 
             // now do word spacing
             dx = 0f;

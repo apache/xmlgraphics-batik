@@ -174,6 +174,7 @@ public class RhinoInterpreter implements Interpreter {
             if (!contexts.contains(ctx)) {
                 ctx.setWrapFactory(wrapFactory);
                 ctx.setSecurityController(securityController);
+                ctx.setCachingEnabled(false);
                 contexts.add(ctx);
 
                 // Hopefully, we are not switching threads too

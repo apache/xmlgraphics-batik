@@ -1074,6 +1074,7 @@ To display the available targets type:
           description="Runs test suite whose file or uri is passed as an input">
     <java fork="yes"
           classname="${class-prefix}.test.xml.XMLTestSuiteRunner">
+<!--      <jvmarg value="-Xrunhprof:format=b" /> -->
       <classpath>
         <pathelement location="${dest}" />
         <path refid="libs-classpath"/>
