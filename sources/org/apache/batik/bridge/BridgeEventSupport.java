@@ -305,8 +305,8 @@ public class BridgeEventSupport implements SVGConstants {
                                           boolean cancelable) {
             Point clientXY = evt.getClientPoint();
             GraphicsNode node = evt.getGraphicsNode();
-            Element targetElement = getEventTarget(node, 
-                                                   (Point)clientXY.clone());
+            Element targetElement = getEventTarget
+                (node, new Point2D.Float(evt.getX(), evt.getY()));
             Element relatedElement = getRelatedElement(evt);
             dispatchMouseEvent(eventType, 
                                targetElement,
@@ -423,7 +423,7 @@ public class BridgeEventSupport implements SVGConstants {
             if (target != null && node instanceof TextNode) {
 		TextNode textNode = (TextNode)node;
 		List list = textNode.getTextRuns();
-                Point pt = (Point)coords.clone();
+                Point2D pt = (Point2D)coords.clone();
                 // place coords in text node coordinate system
                 try {
                     node.getGlobalTransform().createInverse().transform(pt, pt);
