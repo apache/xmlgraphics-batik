@@ -114,6 +114,16 @@ public class DocumentScanner extends AbstractScanner {
     public final static int END_TAG_CONTEXT = 18;
 
     /**
+     * The notation type context.
+     */
+    public final static int NOTATION_TYPE_CONTEXT = 19;
+
+    /**
+     * The enumeration context.
+     */
+    public final static int ENUMERATION_CONTEXT = 20;
+
+    /**
      * The current scanning context.
      */
     protected int context;
@@ -141,7 +151,7 @@ public class DocumentScanner extends AbstractScanner {
     /**
      * The last attribute delimiter encountered.
      */
-    protected char attributeDelimiter;
+    protected char stringDelimiter;
 
     /**
      * Creates a new DocumentScanner object.
@@ -183,8 +193,8 @@ public class DocumentScanner extends AbstractScanner {
     /**
      * Returns the last attribute delimiter encountered.
      */
-    public char getAttributeDelimiter() {
-	return attributeDelimiter;
+    public char getStringDelimiter() {
+	return stringDelimiter;
     }
 
     /**
@@ -296,6 +306,10 @@ public class DocumentScanner extends AbstractScanner {
 		return nextInEntityValue('"');
 	    case SQUOTED_ENTITY_VALUE_CONTEXT:
 		return nextInEntityValue('\'');
+            case NOTATION_TYPE_CONTEXT:
+                return nextInNotationType();
+            case ENUMERATION_CONTEXT:
+                return nextInEnumeration();
 	    default:
 		throw new RuntimeException("Internal error: Invalid Context");
 	    }
@@ -324,8 +338,9 @@ public class DocumentScanner extends AbstractScanner {
 	    context = DTD_DECLARATIONS_CONTEXT;
 	    return type = LexicalUnits.END_CHAR;
 	case '%':
+            inputBuffer.next();
 	    readName(LexicalUnits.PARAMETER_ENTITY_REFERENCE);
-	    if (c != ';') {
+	    if (inputBuffer.current() != ';') {
 		throw createException("parameter.entity");
 	    }
 	    inputBuffer.next();
@@ -455,80 +470,87 @@ public class DocumentScanner extends AbstractScanner {
 	    return type = LexicalUnits.NAME; 
 	case 'N':
 	    c = inputBuffer.next();
-	    if (c != 'M') {
+            switch (c) {
+            default:
 		do {
 		    c = inputBuffer.next();
 		} while (c != -1 && XMLUtilities.isXMLNameCharacter((char)c));
 		return type = LexicalUnits.NAME; 
-	    }
-	    c = inputBuffer.next();
-	    if (c == -1 || !XMLUtilities.isXMLNameCharacter((char)c)) {
-		return LexicalUnits.NAME;
-	    }
-	    if (c != 'T') {
-		do {
-		    c = inputBuffer.next();
-		} while (c != -1 && XMLUtilities.isXMLNameCharacter((char)c));
-		return type = LexicalUnits.NAME; 
-	    }
-	    c = inputBuffer.next();
-	    if (c == -1 || !XMLUtilities.isXMLNameCharacter((char)c)) {
-		return LexicalUnits.NAME;
-	    }
-	    if (c != 'O') {
-		do {
-		    c = inputBuffer.next();
-		} while (c != -1 && XMLUtilities.isXMLNameCharacter((char)c));
-		return type = LexicalUnits.NAME; 
-	    }
-	    c = inputBuffer.next();
-	    if (c == -1 || !XMLUtilities.isXMLNameCharacter((char)c)) {
-		return LexicalUnits.NAME;
-	    }
-	    if (c != 'K') {
-		do {
-		    c = inputBuffer.next();
-		} while (c != -1 && XMLUtilities.isXMLNameCharacter((char)c));
-		return type = LexicalUnits.NAME; 
-	    }
-	    c = inputBuffer.next();
-	    if (c == -1 || !XMLUtilities.isXMLNameCharacter((char)c)) {
-		return LexicalUnits.NAME;
-	    }
-	    if (c != 'E') {
-		do {
-		    c = inputBuffer.next();
-		} while (c != -1 && XMLUtilities.isXMLNameCharacter((char)c));
-		return type = LexicalUnits.NAME; 
-	    }
-	    c = inputBuffer.next();
-	    if (c == -1 || !XMLUtilities.isXMLNameCharacter((char)c)) {
-		return LexicalUnits.NAME;
-	    }
-	    if (c != 'N') {
-		do {
-		    c = inputBuffer.next();
-		} while (c != -1 && XMLUtilities.isXMLNameCharacter((char)c));
-		return type = LexicalUnits.NAME; 
-	    }
-	    c = inputBuffer.next();
-	    if (c == -1 || !XMLUtilities.isXMLNameCharacter((char)c)) {
-		return LexicalUnits.NMTOKEN_IDENTIFIER;
-	    }
-	    if (c != 'S') {
-		do {
-		    c = inputBuffer.next();
-		} while (c != -1 && XMLUtilities.isXMLNameCharacter((char)c));
-		return type = LexicalUnits.NAME; 
-	    }
-	    c = inputBuffer.next();
-	    if (c == -1 || !XMLUtilities.isXMLNameCharacter((char)c)) {
-		return LexicalUnits.NMTOKENS_IDENTIFIER;
-	    }
-	    do {
-		c = inputBuffer.next();
-	    } while (c != -1 && XMLUtilities.isXMLNameCharacter((char)c));
-	    return type = LexicalUnits.NAME; 
+            case 'O':
+                context = NOTATION_TYPE_CONTEXT;
+                return readIdentifier("TATION",
+                                      LexicalUnits.NOTATION_IDENTIFIER,
+                                      LexicalUnits.NAME);
+            case 'M':
+                c = inputBuffer.next();
+                if (c == -1 || !XMLUtilities.isXMLNameCharacter((char)c)) {
+                    return LexicalUnits.NAME;
+                }
+                if (c != 'T') {
+                    do {
+                        c = inputBuffer.next();
+                    } while (c != -1 && XMLUtilities.isXMLNameCharacter((char)c));
+                    return type = LexicalUnits.NAME; 
+                }
+                c = inputBuffer.next();
+                if (c == -1 || !XMLUtilities.isXMLNameCharacter((char)c)) {
+                    return LexicalUnits.NAME;
+                }
+                if (c != 'O') {
+                    do {
+                        c = inputBuffer.next();
+                    } while (c != -1 && XMLUtilities.isXMLNameCharacter((char)c));
+                    return type = LexicalUnits.NAME; 
+                }
+                c = inputBuffer.next();
+                if (c == -1 || !XMLUtilities.isXMLNameCharacter((char)c)) {
+                    return LexicalUnits.NAME;
+                }
+                if (c != 'K') {
+                    do {
+                        c = inputBuffer.next();
+                    } while (c != -1 && XMLUtilities.isXMLNameCharacter((char)c));
+                    return type = LexicalUnits.NAME; 
+                }
+                c = inputBuffer.next();
+                if (c == -1 || !XMLUtilities.isXMLNameCharacter((char)c)) {
+                    return LexicalUnits.NAME;
+                }
+                if (c != 'E') {
+                    do {
+                        c = inputBuffer.next();
+                    } while (c != -1 && XMLUtilities.isXMLNameCharacter((char)c));
+                    return type = LexicalUnits.NAME; 
+                }
+                c = inputBuffer.next();
+                if (c == -1 || !XMLUtilities.isXMLNameCharacter((char)c)) {
+                    return LexicalUnits.NAME;
+                }
+                if (c != 'N') {
+                    do {
+                        c = inputBuffer.next();
+                    } while (c != -1 && XMLUtilities.isXMLNameCharacter((char)c));
+                    return type = LexicalUnits.NAME; 
+                }
+                c = inputBuffer.next();
+                if (c == -1 || !XMLUtilities.isXMLNameCharacter((char)c)) {
+                    return LexicalUnits.NMTOKEN_IDENTIFIER;
+                }
+                if (c != 'S') {
+                    do {
+                        c = inputBuffer.next();
+                    } while (c != -1 && XMLUtilities.isXMLNameCharacter((char)c));
+                    return type = LexicalUnits.NAME; 
+                }
+                c = inputBuffer.next();
+                if (c == -1 || !XMLUtilities.isXMLNameCharacter((char)c)) {
+                    return LexicalUnits.NMTOKENS_IDENTIFIER;
+                }
+                do {
+                    c = inputBuffer.next();
+                } while (c != -1 && XMLUtilities.isXMLNameCharacter((char)c));
+                return type = LexicalUnits.NAME;
+            }
 	case 'E':
 	    c = inputBuffer.next();
 	    if (c != 'N') {
@@ -613,6 +635,7 @@ public class DocumentScanner extends AbstractScanner {
 		return type = LexicalUnits.NAME; 
 	    }
 	case '"':
+            stringDelimiter = '"';
 	    c = inputBuffer.next();
 	    if (c == -1) {
 		throw createException("eof");
@@ -638,6 +661,7 @@ public class DocumentScanner extends AbstractScanner {
 	    }
 	    return type = LexicalUnits.STRING_FRAGMENT;
 	case '\'':
+            stringDelimiter = '\'';
 	    c = inputBuffer.next();
 	    if (c == -1) {
 		throw createException("eof");
@@ -674,9 +698,70 @@ public class DocumentScanner extends AbstractScanner {
 	    default:
 		throw createException("character");
 	    }
+	case '(':
+	    inputBuffer.next();
+            context = ENUMERATION_CONTEXT;
+	    return type = LexicalUnits.LEFT_BRACE;
 	default:
 	    return readName(LexicalUnits.NAME);
 	}
+    }
+
+    /**
+     * Returns the next lexical unit in the context of a notation type.
+     */
+    protected int nextInNotationType() throws IOException, LexicalException {
+	int c = inputBuffer.current();
+
+        switch (c) {
+	case 0x9:
+	case 0xA:
+	case 0xD:
+	case 0x20:
+	    do {
+		c = inputBuffer.next();
+	    } while (c != -1 && XMLUtilities.isXMLSpace((char)c));
+	    return type = LexicalUnits.S;
+	case '|':
+	    inputBuffer.next();
+	    return type = LexicalUnits.PIPE;
+	case '(':
+	    inputBuffer.next();
+	    return type = LexicalUnits.LEFT_BRACE;
+	case ')':
+	    inputBuffer.next();
+            context = ATTLIST_CONTEXT;
+	    return type = LexicalUnits.RIGHT_BRACE;
+        default:
+            return readName(LexicalUnits.NAME);
+        }
+    }
+
+    /**
+     * Returns the next lexical unit in the context of an enumeration.
+     */
+    protected int nextInEnumeration() throws IOException, LexicalException {
+	int c = inputBuffer.current();
+
+        switch (c) {
+	case 0x9:
+	case 0xA:
+	case 0xD:
+	case 0x20:
+	    do {
+		c = inputBuffer.next();
+	    } while (c != -1 && XMLUtilities.isXMLSpace((char)c));
+	    return type = LexicalUnits.S;
+	case '|':
+	    inputBuffer.next();
+	    return type = LexicalUnits.PIPE;
+	case ')':
+	    inputBuffer.next();
+            context = ATTLIST_CONTEXT;
+	    return type = LexicalUnits.RIGHT_BRACE;
+        default:
+            return readNmtoken();
+        }
     }
 
     /**
@@ -714,7 +799,10 @@ public class DocumentScanner extends AbstractScanner {
 				  LexicalUnits.PUBLIC_IDENTIFIER,
 				  LexicalUnits.NAME);
 	case '"':
+            stringDelimiter = '"';
+	    return readString();
 	case '\'':
+            stringDelimiter = '\'';
 	    return readString();
 	default:
 	    return readName(LexicalUnits.NAME);
@@ -756,6 +844,7 @@ public class DocumentScanner extends AbstractScanner {
 				  LexicalUnits.NDATA_IDENTIFIER,
 				  LexicalUnits.NAME);
 	case '"':
+            stringDelimiter = '"';
 	    c = inputBuffer.next();
 	    if (c == -1) {
 		throw createException("eof");
@@ -781,6 +870,7 @@ public class DocumentScanner extends AbstractScanner {
 	    }
 	    return type = LexicalUnits.STRING_FRAGMENT;
 	case '\'':
+            stringDelimiter = '\'';
 	    c = inputBuffer.next();
 	    if (c == -1) {
 		throw createException("eof");
@@ -1050,7 +1140,7 @@ public class DocumentScanner extends AbstractScanner {
 	    c = inputBuffer.next();
 	    return type = LexicalUnits.EQ;
 	case '"':
-	    attributeDelimiter = '"';
+	    stringDelimiter = '"';
 	    c = inputBuffer.next();
 	    inputBuffer.unsetMark();
 	    inputBuffer.setMark();
@@ -1081,7 +1171,7 @@ public class DocumentScanner extends AbstractScanner {
 	    }
 	    return type = LexicalUnits.STRING_FRAGMENT;
 	case '\'':
-	    attributeDelimiter = '\'';
+	    stringDelimiter = '\'';
 	    c = inputBuffer.next();
 	    inputBuffer.unsetMark();
 	    inputBuffer.setMark();
@@ -1308,7 +1398,10 @@ public class DocumentScanner extends AbstractScanner {
 	    context = TOP_LEVEL_CONTEXT;
 	    return type = LexicalUnits.PI_END;
 	case '"':
+            stringDelimiter = '"';
+	    return readString();
 	case '\'':
+            stringDelimiter = '\'';
 	    return readString();
 	default:
 	    throw createException("character");
@@ -1343,7 +1436,10 @@ public class DocumentScanner extends AbstractScanner {
 				  LexicalUnits.PUBLIC_IDENTIFIER,
 				  LexicalUnits.NAME);
 	case '"':
+            stringDelimiter = '"';
+	    return readString();
 	case '\'':
+            stringDelimiter = '\'';
 	    return readString();
 	case '[':
 	    inputBuffer.next();

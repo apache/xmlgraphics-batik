@@ -82,6 +82,11 @@ public class InputBuffer {
     protected int column;
 
     /**
+     * The number of removed chars.
+     */
+    protected int removedChars;
+
+    /**
      * Creates a new InputBuffer object.
      * @param r The reader used to read the document.
      */
@@ -130,6 +135,7 @@ public class InputBuffer {
 	    next(true);
 	    switch (current) {
 	    case 10:
+                removedChars++;
                 break;
 	    default:
 		if (position == 0) {
@@ -211,6 +217,7 @@ public class InputBuffer {
 	}
 	markSet = true;
 	mark = position;
+        removedChars = 0;
     }
 
     /**
@@ -227,6 +234,7 @@ public class InputBuffer {
 	}
 	markSet = true;
 	mark = position;
+        removedChars = 0;
     }
 
     /**
@@ -257,7 +265,9 @@ public class InputBuffer {
 	if (!markSet) {
 	    throw new IllegalStateException("Mark not set");
 	}
-	return (bufferIndex * BUFFER_SIZE) + position - mark + ((current != -1) ? 1 : 0);
+	return (bufferIndex * BUFFER_SIZE) +
+            position - mark + ((current != -1) ? 1 : 0) -
+            removedChars;
     }
 
     /**
@@ -275,33 +285,104 @@ public class InputBuffer {
 	if (a.length < size) {
 	    throw new IllegalArgumentException("a.length < contentSize()");
 	}
-	if (bufferIndex == 0) {
-	    //System.arraycopy(buffers[0], mark, a, 0, size);
-            char[] buffer = buffers[0];
-            for (int i = size - 1; i >= 0; i--) {
-                a[i] = buffer[i + mark];
-            }
-	} else {
-	    int offset = BUFFER_SIZE - mark;
-	    //System.arraycopy(buffers[0], mark, a, 0, offset);
-            char[] buffer = buffers[0];
-            for (int i = offset - 1; i >= 0; i--) {
-                a[i] = buffer[i + mark];
-            }
-	    for (int i = 1; i < bufferIndex; i++) {
-		//System.arraycopy(buffers[i], 0, a, offset, BUFFER_SIZE);
-                buffer = buffers[i];
-                for (int j = BUFFER_SIZE - 1; j >= 0; j--) {
-                    a[j + offset] = buffer[j];
+        if (removedChars == 0) {
+            if (bufferIndex == 0) {
+                char[] buffer = buffers[0];
+                for (int i = size - 1; i >= 0; i--) {
+                    a[i] = buffer[i + mark];
                 }
-		offset += BUFFER_SIZE;
-	    }
-	    size = position + ((current != -1) ? 1 : 0);
-	    //System.arraycopy(buffers[bufferIndex], 0, a, offset, size);
-            buffer = buffers[bufferIndex];
-            for (int i = size - 1; i >= 0; i--) {
-                a[i + offset] = buffer[i];
+            } else {
+                int offset = BUFFER_SIZE - mark;
+                char[] buffer = buffers[0];
+                for (int i = offset - 1; i >= 0; i--) {
+                    a[i] = buffer[i + mark];
+                }
+                for (int i = 1; i < bufferIndex; i++) {
+                    buffer = buffers[i];
+                    for (int j = BUFFER_SIZE - 1; j >= 0; j--) {
+                        a[j + offset] = buffer[j];
+                    }
+                    offset += BUFFER_SIZE;
+                }
+                size = position + ((current != -1) ? 1 : 0);
+                buffer = buffers[bufferIndex];
+                for (int i = size - 1; i >= 0; i--) {
+                    a[i + offset] = buffer[i];
+                }
             }
-	}
+        } else {
+            if (bufferIndex == 0) {
+                int rm = removedChars;
+                char[] buffer = buffers[0];
+                for (int i = size - 1; i >= 0; i--) {
+                    char c = a[i] = buffer[i + mark + rm];
+                    switch (c) {
+                    case 10:
+                        if (i > 0 && buffer[i + mark + rm - 1] == 13) {
+                            rm--;
+                        }
+                        break;
+                    case 13:
+                        a[i] = 10;
+                    }
+                }
+            } else {
+                int i = 0;
+                int rm = 0;
+                char[] buffer = buffers[0];
+                for (; i + mark + rm < BUFFER_SIZE; i++) {
+                    char c = a[i] = buffer[i + mark + rm];
+                    if (c == 13) {
+                        if (i + mark + rm == BUFFER_SIZE - 1) {
+                            if (buffers[1][0] == 10) {
+                                i--;
+                                rm++;
+                            }
+                        } else {
+                            a[i] = 10;
+                            if (buffer[i + mark + rm + 1] == 10) {
+                                rm++;
+                            }
+                        }
+                    }
+                }
+
+                rm = 0;
+                for (int b = 1; b < bufferIndex; b++) {
+                    buffer = buffers[b];
+                    for (int j = 0; j + rm < BUFFER_SIZE; i++, j++) {
+                        char c = a[i] = buffer[j + rm];
+                        if (c == 13) {
+                            if (j + rm == BUFFER_SIZE - 1) {
+                                if (buffers[b + 1][0] == 10) {
+                                    i--;
+                                    rm++;
+                                }
+                            } else {
+                                a[i] = 10;
+                                if (buffer[j + rm + 1] == 10) {
+                                    rm++;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                rm = 0;
+                buffer = buffers[bufferIndex];
+                size = position + ((current != -1) ? 1 : 0);
+                for (int j = 0; j + rm < size; i++, j++) {
+                    char c = a[i] = buffer[j + rm];
+                    if (c == 13) {
+                        a[i] = 10;
+                        if (j + rm < size - 1) {
+                            if (buffer[j + rm + 1] == 10) {
+                                rm++;
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }

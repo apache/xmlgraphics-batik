@@ -39,6 +39,7 @@
     <!-- ======================= -->
     <page id="svgviewer" label="Viewer" source="svgviewer.xml"/>
     <page id="svgrasterizer" label="Rasterizer" source="svgrasterizer.xml" />
+    <page id="svgpp" label="Pretty-printer" source="svgpp.xml" />
     <!-- <page id="svgapplet" label="SVG Applet" source="svgapplet.xml" />-->
     <page id="svggen" label="Generator" source="svggen.xml" />
     <separator />

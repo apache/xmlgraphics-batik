@@ -297,6 +297,16 @@ public interface LexicalUnits {
     int FIXED_IDENTIFIER = 55;
 
     /**
+     * Represents a Nmtoken lexical unit.
+     */
+    int NMTOKEN = 56;
+
+    /**
+     * Represents a 'NOTATION' lexical unit.
+     */
+    int NOTATION_IDENTIFIER = 57;
+
+    /**
      * The lexical units values.
      */
     char[][] VALUES = {
@@ -343,7 +353,7 @@ public interface LexicalUnits {
 	"(".toCharArray(),
 	")".toCharArray(),
 	"|".toCharArray(),
-	".toCharArray(),".toCharArray(),
+	",".toCharArray(),
 	"#PCDATA".toCharArray(),
 	"CDATA".toCharArray(),
 	"ID".toCharArray(),
@@ -355,6 +365,8 @@ public interface LexicalUnits {
 	"ENTITIES".toCharArray(),
 	"#REQUIRED".toCharArray(),
 	"#IMPLIED".toCharArray(),
-	"#FIXED".toCharArray()
+	"#FIXED".toCharArray(),
+        null,
+	"NOTATION".toCharArray(),
     };
 }
