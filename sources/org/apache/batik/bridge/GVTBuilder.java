@@ -103,13 +103,13 @@ public class GVTBuilder implements SVGConstants {
      * the GVT tree
      */
     public GraphicsNode build(BridgeContext ctx, Element e) {
-        // check the display property
-        if (!CSSUtilities.convertDisplay(e)) {
-            return null;
-        }
         // get the appropriate bridge according to the specified element
         Bridge bridge = ctx.getBridge(e);
         if (bridge == null || !(bridge instanceof GraphicsNodeBridge)) {
+            return null;
+        }
+        // check the display property
+        if (!CSSUtilities.convertDisplay(e)) {
             return null;
         }
         // create the associated graphics node
@@ -167,15 +167,13 @@ public class GVTBuilder implements SVGConstants {
         if (Thread.currentThread().isInterrupted()) {
             throw new InterruptedBridgeException();
         }
-
-        // check the display property
-        if (e instanceof CSSStylableElement &&
-            !CSSUtilities.convertDisplay(e)) {
-            return;
-        }
         // get the appropriate bridge according to the specified element
         Bridge bridge = ctx.getBridge(e);
         if (bridge == null || !(bridge instanceof GraphicsNodeBridge)) {
+            return;
+        }
+        // check the display property
+        if (!CSSUtilities.convertDisplay(e)) {
             return;
         }
         GraphicsNodeBridge gnBridge = (GraphicsNodeBridge)bridge;
