@@ -191,8 +191,15 @@ public class SVGConverterTest extends DefaultTestSuite {
 
         t = new ConfigErrorTest(SVGConverter.ERROR_CANNOT_USE_DST_FILE){
                 protected void configure(SVGConverter c){
+                    File dummy = null;
+                    try {
+                        dummy = File.createTempFile("dummyPNG", ".png");
+                    } catch(IOException e){
+                        throw new Error();
+                    }
                     c.setSources(new String[]{"samples/anne.svg", "samples/batikFX.svg"});
-                    c.setDst(new File("samples/anne.png"));
+                    c.setDst(dummy);
+                    dummy.deleteOnExit();
                 }
             };
         addTest(t);
