@@ -110,11 +110,13 @@
 
           <dt>Thierry Kormann (TK)</dt><dd><br />
           <link href="mailto:tkormann@apache.org">tkormann@apache.org</link> <br />
-          <em>Thierry is a research software engineer, at the Koala project of Dyade located 
-          at INRIA Sophia Antipolis, France. Thierry has developed an SVG engine 
-          presented at the SVG BOF session at JavaOne 2000. Since then, he co-founded the 
-          Apache Batik project. His work is focused on Graphics and XML related 
-          technologies. Thierry has been programming in Java since the end of year 1996.</em>
+          <em>Thierry is a software engineer, at the Koala project of
+          ILOG located at INRIA Sophia Antipolis, France. Thierry has
+          contributed to most of the Koala's projects involving Java
+          and XML. Since then, he co-founded the Apache Batik project.
+          His daytime job is focused on Graphics and XML related
+          technologies. Prior to joining ILOG, Thierry worked as a
+          software engineer for Bull.</em>
           <br /><br />
           </dd>
 
