@@ -91,8 +91,6 @@ function setAttribute(id, attr, value){
     }
 }
 
-
-
 /**
  * Sets the content of a text node
  */
