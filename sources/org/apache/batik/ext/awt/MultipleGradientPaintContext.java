@@ -1297,6 +1297,10 @@ abstract class MultipleGradientPaintContext implements PaintContext {
 
     /** Superclass getRaster... */
     public final Raster getRaster(int x, int y, int w, int h) {
+        if (w == 0 || h == 0) {
+            return null;
+        }
+
         //
         // If working raster is big enough, reuse it. Otherwise,
         // build a large enough new one.
@@ -1327,7 +1331,7 @@ abstract class MultipleGradientPaintContext implements PaintContext {
                                 model.isAlphaPremultiplied());
 
 
-        return raster.createTranslatedChild(x, y);
+        return raster;
     }
 
     /** Subclasses should implement this. */

@@ -50,7 +50,7 @@
               fill-opacity:0.3
           }
           .star {
-              fill: url(#star-fill)
+              fill: white /*url(#star-fill)*/
           }
           .stop-c1 {
               stop-color: white
