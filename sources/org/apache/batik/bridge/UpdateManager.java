@@ -76,7 +76,7 @@ import org.w3c.dom.events.EventTarget;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class UpdateManager implements RunnableQueue.RunHandler {
+public class UpdateManager  {
 
     static final long MIN_REPAINT_TIME;
     static {
@@ -169,7 +169,8 @@ public class UpdateManager implements RunnableQueue.RunHandler {
         document = doc;
 
         updateRunnableQueue = RunnableQueue.createRunnableQueue();
-        updateRunnableQueue.setRunHandler(this);
+        RunnableQueue.RunHandler runHandler = createRunHandler();
+        updateRunnableQueue.setRunHandler(runHandler);
 
         graphicsNode = gn;
 
@@ -361,7 +362,8 @@ public class UpdateManager implements RunnableQueue.RunHandler {
     }
 
     /**
-     * Updates the rendering buffer.
+     * Updates the rendering buffer.  Only to be called from the
+     * update thread.
      * @param u2d The user to device transform.
      * @param dbr Whether the double buffering should be used.
      * @param aoi The area of interest in the renderer space units.
@@ -382,7 +384,7 @@ public class UpdateManager implements RunnableQueue.RunHandler {
      * Updates the rendering buffer.
      * @param aoi The area of interest in the renderer space units.
      */
-    public void updateRendering(List areas) {
+    protected void updateRendering(List areas) {
         try {
             fireEvent(updateStartedDispatcher,new UpdateManagerEvent
                       (this, repaintManager.getOffScreen(), null));
@@ -406,12 +408,14 @@ public class UpdateManager implements RunnableQueue.RunHandler {
     /**
      * Repaints the dirty areas, if needed.
      */
-    public void repaint() {
+    protected void repaint() {
+        if (!updateTracker.hasChanged()) 
+            return;
         long ctime = System.currentTimeMillis();
-        if (updateTracker.hasChanged()) {
-            if (ctime-lastRepaint < MIN_REPAINT_TIME) {
-                // We very recently did a repaint check if other 
-                // repaint runnables are pending.
+        if (ctime-lastRepaint < MIN_REPAINT_TIME) {
+            // We very recently did a repaint check if other 
+            // repaint runnables are pending.
+            synchronized (updateRunnableQueue.getIteratorLock()) {
                 Iterator i = updateRunnableQueue.iterator();
                 while (i.hasNext())
                     if (!(i.next() instanceof NoRepaintRunnable))
@@ -419,15 +423,16 @@ public class UpdateManager implements RunnableQueue.RunHandler {
                         // will skip this repaint and we will let 
                         // the next one pick it up.
                         return;
+                
             }
-               
-            List dirtyAreas = updateTracker.getDirtyAreas();
-            if (dirtyAreas != null) {
-                updateRendering(dirtyAreas);
-            }
-            updateTracker.clear();
-            lastRepaint = System.currentTimeMillis();
         }
+        
+        List dirtyAreas = updateTracker.getDirtyAreas();
+        updateTracker.clear();
+        if (dirtyAreas != null) {
+            updateRendering(dirtyAreas);
+        }
+        lastRepaint = System.currentTimeMillis();
     }
 
 
@@ -445,7 +450,7 @@ public class UpdateManager implements RunnableQueue.RunHandler {
         listeners.remove(l);
     }
 
-    public void fireEvent(Dispatcher dispatcher, Object event) {
+    protected void fireEvent(Dispatcher dispatcher, Object event) {
         EventDispatcher.fireEvent(dispatcher, listeners, event, false);
     }
 
@@ -535,39 +540,47 @@ public class UpdateManager implements RunnableQueue.RunHandler {
         };
 
 
+
     // RunnableQueue.RunHandler /////////////////////////////////////////
-
-    /**
-     * Called when the given Runnable has just been invoked and
-     * has returned.
-     */
-    public void runnableInvoked(RunnableQueue rq, Runnable r) {
-        if (running && !(r instanceof NoRepaintRunnable)) {
-            repaint();
-        }
+    protected RunnableQueue.RunHandler createRunHandler() {
+        return new UpdateManagerRunHander();
     }
 
-    /**
-     * Called when the execution of the queue has been suspended.
-     */
-    public void executionSuspended(RunnableQueue rq) {
-        if (suspendCalled) {
-            running = false;
-            fireEvent(suspendedDispatcher, 
-                      new UpdateManagerEvent(this, null, null));
+    protected class UpdateManagerRunHander 
+        implements RunnableQueue.RunHandler {
+
+        /**
+         * Called when the given Runnable has just been invoked and
+         * has returned.
+         */
+        public void runnableInvoked(RunnableQueue rq, Runnable r) {
+            if (running && !(r instanceof NoRepaintRunnable)) {
+                repaint();
+            }
         }
-    }
-
-    /**
-     * Called when the execution of the queue has been resumed.
-     */
-    public void executionResumed(RunnableQueue rq) {
-        if (suspendCalled && !running) {
-            running = true;
-
-            suspendCalled = false;
-            fireEvent(resumedDispatcher, 
-                      new UpdateManagerEvent(this, null, null));
+        
+        /**
+         * Called when the execution of the queue has been suspended.
+         */
+        public void executionSuspended(RunnableQueue rq) {
+            if (suspendCalled) {
+                running = false;
+                fireEvent(suspendedDispatcher, 
+                          new UpdateManagerEvent(this, null, null));
+            }
+        }
+        
+        /**
+         * Called when the execution of the queue has been resumed.
+         */
+        public void executionResumed(RunnableQueue rq) {
+            if (suspendCalled && !running) {
+                running = true;
+                
+                suspendCalled = false;
+                fireEvent(resumedDispatcher, 
+                          new UpdateManagerEvent(this, null, null));
+            }
         }
     }
 }

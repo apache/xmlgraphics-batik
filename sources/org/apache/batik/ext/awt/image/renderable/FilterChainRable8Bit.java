@@ -243,7 +243,7 @@ public class FilterChainRable8Bit extends AbstractRable
      */
     public void setSource(Filter chainSource) {
         if(chainSource == null){
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Null Source for Filter Chain");
         }
         touch();
         this.chainSource = chainSource;

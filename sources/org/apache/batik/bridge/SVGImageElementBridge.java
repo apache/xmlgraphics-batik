@@ -179,10 +179,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
                                       new Object[] {"xlink:href", uriStr});
         }
 
-        // try to load the image as an svg document
-        SVGDocument svgDoc = (SVGDocument)e.getOwnerDocument();
-
-        // try to load an SVG document
+        // Build the URL.
         String baseURI = XMLBaseSupport.getCascadedXMLBase(e);
         ParsedURL purl;
         if (baseURI == null)
@@ -190,6 +187,21 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
         else
             purl = new ParsedURL(baseURI, uriStr);
 
+        return createImageGraphicsNode(ctx, e, purl);
+    }
+
+    protected GraphicsNode createImageGraphicsNode(BridgeContext ctx, 
+                                                   Element e,
+                                                   ParsedURL purl)
+    {
+        Rectangle2D bounds = getImageBounds(ctx, e);
+        if ((bounds.getWidth() == 0) || (bounds.getHeight() == 0)) {
+            ShapeNode sn = new ShapeNode();
+            sn.setShape(bounds);
+            return sn;
+        }
+
+        SVGDocument svgDoc = (SVGDocument)e.getOwnerDocument();
         String docURL = svgDoc.getURL();
         ParsedURL pDocURL = null;
         if (docURL != null)
@@ -201,7 +213,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
             userAgent.checkLoadExternalResource(purl, pDocURL);
         } catch (SecurityException ex) {
             throw new BridgeException(e, ERR_URI_UNSECURE,
-                                      new Object[] {uriStr});
+                                      new Object[] {purl});
         }
 
         DocumentLoader loader = ctx.getDocumentLoader();
@@ -244,7 +256,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
             reference = openStream(e, purl);
         } catch (SecurityException ex) {
             throw new BridgeException(e, ERR_URI_UNSECURE,
-                                      new Object[] {uriStr});
+                                      new Object[] {purl});
         }
 
         {
@@ -281,7 +293,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
             throw ex;
         } catch (SecurityException ex) {
             throw new BridgeException(e, ERR_URI_UNSECURE,
-                                      new Object[] {uriStr});
+                                      new Object[] {purl});
         } catch (Exception ex) {
             /* Nothing to do */
         } 

@@ -216,8 +216,8 @@ public class PNGTranscoder extends ImageTranscoder {
      * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Description: </TH>
      * <TD VALIGN="TOP">Controls the gamma correction of the png image. 
      *                  A value of zero for gamma disables the generation 
-     *                  of a gamma chunk.  No value or a value of 2.2
-     *                  also causes an sRGB chunk to be generated.</TD>
+     *                  of a gamma chunk.  No value causes an sRGB chunk 
+     *                  to be generated.</TD>
      * </TR>
      * </TABLE>
      */

@@ -142,7 +142,7 @@ public class SpecularLightingRed extends AbstractTiledRed{
     }
 
     public void genRect(WritableRaster wr) {
-        // Copy variable on stack for faster access in thight loop
+        // Copy variable on stack for faster access in tight loop
         final double scaleX = this.scaleX;
         final double scaleY = this.scaleY;
 

@@ -79,7 +79,7 @@ public class GVTFontFace implements SVGConstants {
     protected float overlineThickness;
 
     /**
-     * Constructes an SVGFontFace with the specfied font-face attributes.
+     * Constructes an GVTFontFace with the specfied font-face attributes.
      */
     public GVTFontFace
         (String familyName, float unitsPerEm, String fontWeight,

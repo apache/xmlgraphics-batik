@@ -68,6 +68,7 @@ import org.apache.batik.dom.svg.XMLBaseSupport;
 import org.apache.batik.gvt.font.GVTFontFamily;
 import org.apache.batik.gvt.font.GVTFontFace;
 import org.apache.batik.gvt.font.AWTFontFamily;
+import org.apache.batik.gvt.font.FontFamilyResolver;
 
 /**
  * This class represents a &lt;font-face> element or @font-face rule
@@ -77,17 +78,6 @@ import org.apache.batik.gvt.font.AWTFontFamily;
  */
 public abstract class FontFace extends GVTFontFace
     implements ErrorConstants  {
-
-    static Set fontSet;
-    static {
-        GraphicsEnvironment ge;
-        ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        String [] fonts = ge.getAvailableFontFamilyNames();
-        fontSet = new HashSet(fonts.length);
-        for(int i=0; i<fonts.length; i++) {
-            fontSet.add(fonts[i]);
-        }
-    }
 
     /**
      * List of ParsedURL's referencing SVGFonts or TrueType fonts,
@@ -118,8 +108,7 @@ public abstract class FontFace extends GVTFontFace
     /**
      * Constructes an SVGFontFace with the specfied fontName.
      */
-    protected FontFace
-        (String familyName) {
+    protected FontFace(String familyName) {
         super(familyName);
     }
 
@@ -139,16 +128,22 @@ public abstract class FontFace extends GVTFontFace
      * Returns the font associated with this rule or element.
      */
     public GVTFontFamily getFontFamily(BridgeContext ctx) {
-        if (fontSet.contains(familyName)) {
-            return new AWTFontFamily(this);
+        String name = FontFamilyResolver.lookup(familyName);
+        if (name != null) {
+            GVTFontFace ff = createFontFace(name, this);
+            return new AWTFontFamily(ff);
         }
 
         Iterator iter = srcs.iterator(); 
         while (iter.hasNext()) {
             Object o = iter.next();
             if (o instanceof String) {
-                if (fontSet.contains(o))
-                    return new AWTFontFamily(createFontFace((String)o, this));
+                String str = (String)o;
+                name = FontFamilyResolver.lookup(str);
+                if (name != null) {
+                    GVTFontFace ff = createFontFace(str, this);
+                    return new AWTFontFamily(ff);
+                }
             } else if (o instanceof ParsedURL) {
                 try {
                     GVTFontFamily ff = getFontFamily(ctx, (ParsedURL)o);
