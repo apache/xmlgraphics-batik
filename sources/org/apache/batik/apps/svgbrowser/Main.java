@@ -97,11 +97,6 @@ public class Main implements Application {
     protected String[] arguments;
 
     /**
-     * The current index.
-     */
-    protected int index;
-
-    /**
      * The option handlers.
      */
     protected Map handlers = new HashMap();
@@ -134,22 +129,22 @@ public class Main implements Application {
      */
     public void run() {
         try {
-            while (index < arguments.length) {
-                OptionHandler oh = (OptionHandler)handlers.get(arguments[index]);
+            int i = 0;
+            for (; i < arguments.length; i++) {
+                OptionHandler oh = (OptionHandler)handlers.get(arguments[i]);
                 if (oh == null) {
                     break;
                 }
-                oh.handleOption();
-                index++;
+                i = oh.handleOption(i);
             }
             JSVGViewerFrame frame = createAndShowJSVGViewerFrame();
-            while (index < arguments.length) {
-                if (arguments[index].length() == 0) {
-                    index++;
+            while (i < arguments.length) {
+                if (arguments[i].length() == 0) {
+                    i++;
                     continue;
                 }
 
-                File file = new File(arguments[index]);
+                File file = new File(arguments[i]);
                 if (file.canRead()) {
                     if (frame == null) 
                         frame = createAndShowJSVGViewerFrame();
@@ -161,7 +156,7 @@ public class Main implements Application {
                     // Should let the user know that we are
                     // skipping this file...
                 }
-                index++;
+                i++;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -192,8 +187,9 @@ public class Main implements Application {
     protected interface OptionHandler {
         /**
          * Handles the current option.
+         * @return the index of argument just before the next one to handle.
          */
-        void handleOption();
+        int handleOption(int i);
 
         /**
          * Returns the option description.
@@ -205,9 +201,8 @@ public class Main implements Application {
      * To handle the '-font-size' option.
      */
     protected class FontSizeHandler implements OptionHandler {
-        public void handleOption() {
-            index++;
-            int size = Integer.parseInt(arguments[index++]);
+        public int handleOption(int i) {
+            int size = Integer.parseInt(arguments[++i]);
 
             Font font = new Font("Dialog", Font.PLAIN, size);
             FontUIResource fontRes = new FontUIResource(font);
@@ -242,6 +237,8 @@ public class Main implements Application {
             UIManager.put("Label.font", fontRes);
             UIManager.put("InternalFrameTitlePane.font", fontRes);
             UIManager.put("CheckBoxMenuItem.font", fontRes);
+
+            return i;
         }
         public String getDescription() {
             return resources.getString("Command.font-size");

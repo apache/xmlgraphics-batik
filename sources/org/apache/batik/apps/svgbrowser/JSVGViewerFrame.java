@@ -63,6 +63,7 @@ import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
@@ -1305,6 +1306,9 @@ public class JSVGViewerFrame
         statusBar.setMessage(resources.getString("Message.treeFailed"));
         stopAction.update(false);
         svgCanvas.setCursor(DEFAULT_CURSOR);
+        if (autoAdjust) {
+            pack();
+        }
     }
 
     // GVTTreeRendererListener /////////////////////////////////////////////
@@ -1391,14 +1395,18 @@ public class JSVGViewerFrame
          * Displays an error message.
          */
         public void displayError(String message) {
-            System.err.println(message);
+            JOptionPane pane;
+            pane = new JOptionPane(message, JOptionPane.ERROR_MESSAGE);
+            JDialog dialog = pane.createDialog(JSVGViewerFrame.this, "ERROR");
+            dialog.setModal(false);
+            dialog.show(); // Safe to be called from any thread
         }
 
         /**
          * Displays an error resulting from the specified Exception.
          */
         public void displayError(Exception ex) {
-            ex.printStackTrace(System.err);
+            displayError(ex.getMessage());
         }
 
         /**

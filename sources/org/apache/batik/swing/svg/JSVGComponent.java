@@ -35,6 +35,8 @@ import org.apache.batik.bridge.UserAgent;
 import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.apache.batik.dom.svg.SVGOMDocument;
 
+import org.apache.batik.gvt.GraphicsNode;
+
 import org.apache.batik.gvt.event.EventDispatcher;
 
 import org.apache.batik.swing.gvt.GVTTreeRendererEvent;
@@ -368,8 +370,17 @@ public class JSVGComponent extends JGVTComponent {
             loader = null;
 
             gvtTreeBuilder = null;
-            image = null;
-            repaint();
+            GraphicsNode gn = e.getGVTRoot();
+            Dimension2D dim = bridgeContext.getDocumentSize();
+            if (gn == null || dim == null) {
+                image = null;
+                repaint();
+            } else {
+                setGraphicsNode(gn, false);
+                setPreferredSize(new Dimension((int)dim.getWidth(),
+                                               (int)dim.getHeight()));
+                invalidate();
+            }
             userAgent.displayError(((GVTTreeBuilder)e.getSource()).getException());
         }
 
