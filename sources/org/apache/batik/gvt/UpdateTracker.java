@@ -56,6 +56,7 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
         while (i.hasNext()) {
             WeakReference gnWRef = (WeakReference)i.next();
             GraphicsNode  gn     = (GraphicsNode)gnWRef.get();
+            //GraphicsNode  srcGN  = gn;
 
             // if the weak ref has been cleared then this node is no
             // longer part of the GVT tree (and the change should be
@@ -131,6 +132,8 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
                 //       srcORgn + "\n" + srcNRgn + "\n");
                 // <!>
                 Shape oRgn = srcORgn;
+                // System.err.println("src: " + srcORgn);
+                // System.err.println("GN: " + srcGN);
                 if (oat != null){
                     oRgn = oat.createTransformedShape(srcORgn);
                 }
@@ -218,11 +221,13 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
         }
 
         GraphicsNode chngSrc = gnce.getChangeSrc();
-        Rectangle2D rgn;
+        Rectangle2D rgn = null;
         if (chngSrc != null) {
             // A child node is moving in the tree so assign it's dirty
             // regions to this node before it moves.
-            rgn = new ChngSrcRect(getNodeDirtyRegion(chngSrc));
+            Rectangle2D drgn = getNodeDirtyRegion(chngSrc);
+            if (drgn != null)
+                rgn = new ChngSrcRect(drgn);
         } else {
             // Otherwise just use gn's current region.
             rgn = gn.getBounds();
@@ -233,6 +238,12 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
             if (r2d != null) r2d = r2d.createUnion(rgn);
             else             r2d = rgn;
         }
+
+        // if ((gn instanceof CompositeGraphicsNode) && 
+        //     (r2d.getWidth() > 200)) {
+        //     new Exception("Adding Large: " + gn).printStackTrace();
+        // }
+
         // Store the bounds for the future.
         fromBounds.put(gnWRef, r2d);
     }

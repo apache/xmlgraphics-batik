@@ -253,10 +253,18 @@
          <test id="samples/tests/spec/styling/alternateStylesheet.svg" />
          <test id="samples/tests/spec/styling/cssMedia.svg" />
          <test id="samples/tests/spec/styling/cssMediaList.svg" />
-         <test id="samples/tests/spec/styling/smiley.svg" />
          <test id="samples/tests/spec/styling/emptyStyle.svg" />
+         <test id="samples/tests/spec/styling/smiley.svg" />
+         <test id="samples/tests/spec/styling/styleElement.svg" />
 
         <!-- Alternate stylesheet tests -->
+        <!-- Sample tests, media test -->
+        <testGroup id="media" class="org.apache.batik.test.svg.SVGMediaRenderingAccuracyTest">
+            <test id="samples/tests/spec/styling/cssMedia.svg-Screen" />
+            <test id="samples/tests/spec/styling/cssMedia.svg-Print" />
+            <test id="samples/tests/spec/styling/cssMedia.svg-Projection" />
+        </testGroup>
+
         <testGroup id="alternate" class="org.apache.batik.test.svg.SVGAlternateStyleSheetRenderingAccuracyTest">
             <test id="samples/tests/spec/styling/alternateStylesheet.svg-Hot" />
             <test id="samples/tests/spec/styling/alternateStylesheet.svg-Cold" />
@@ -265,13 +273,6 @@
             <test id="samples/tests/spec/styling/smiley.svg-Wow!" />
             <test id="samples/tests/spec/styling/smiley.svg-Grim" />
             <test id="samples/tests/spec/styling/smiley.svg-Oups" />
-        </testGroup>
-
-        <!-- Sample tests, media test -->
-        <testGroup id="media" class="org.apache.batik.test.svg.SVGMediaRenderingAccuracyTest">
-            <test id="samples/tests/spec/styling/cssMedia.svg-Screen" />
-            <test id="samples/tests/spec/styling/cssMedia.svg-Print" />
-            <test id="samples/tests/spec/styling/cssMedia.svg-Projection" />
         </testGroup>
 
     </testGroup>
@@ -369,5 +370,6 @@
         <test id="samples/tests/spec/scripting/rootSizeChange.svg" />
         <test id="samples/tests/spec/scripting/rectResizeOnClick.svg" />
         <test id="samples/tests/spec/scripting/setProperty.svg" />
+        <test id="samples/tests/spec/scripting/styling.svg" />
     </testGroup>
 </testSuite>
