@@ -38,8 +38,7 @@
     units-per-em="2048"
     panose-1="2 11 6 4 2 2 2 2 2 4"
     ascent="1854"
-    descent="-434"
-    baseline="0" />
+    descent="-434" />
 
 <missing-glyph horiz-adv-x="1536" d="M256 0V1280H1280V0H256ZM288 32H1248V1248H288V32Z" />
 
