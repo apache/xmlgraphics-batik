@@ -34,8 +34,8 @@ This action will compile the sources to the 'classes' directory.
 
 You can now launch the SVG browser by typing:
 
-  [unix]  ./build.sh svgbrowser
-  [win32] .\build.bat svgbrowser
+  [unix]  ./build.sh squiggle
+  [win32] .\build.bat squiggle
 
 
 Build Targets
@@ -138,7 +138,8 @@ To display the available targets type:
     <echo message="   dist-tgz      --> build the tgz distributions"/>
     <echo message="   compile       --> compiles the source code"/>
     <echo message="   compiletest   --> compiles the tests source code"/>
-    <echo message="   svgbrowser    --> runs the SVG browser"/>
+    <echo message="   squiggle      --> runs Squiggle the SVG browser"/>
+    <echo message="   svgbrowser    --> runs Squiggle the SVG browser"/>
     <echo message="   svgrasterizer --> runs the SVG rasterizer"/>
     <echo message="   svgpp         --> runs the SVG pretty-printer"/>
     <echo message="   ttf2svg       --> converts selected glyphs from a True Type"/>
@@ -388,7 +389,7 @@ To display the available targets type:
                                svg-pp-jar,
                                svg-slideshow-jar,
                                svggen-jar,
-                               svg-browser-jar,
+                               squiggle-jar,
                                rasterizer-jar,
                                ttf2svg-jar">
     <copy todir="${build}/lib">
@@ -725,14 +726,15 @@ To display the available targets type:
     </jar>
   </target>
 
-  <!-- SVG Browser (dependencies: all) -->
-  <target name="svg-browser-jar" depends="compile, prepare-build">
+
+  <!-- Squiggle (dependencies: all) -->
+  <target name="squiggle-jar" depends="compile, prepare-build">
     <move file="${resources}/${package-prefix}/apps/svgbrowser/resources/svgbrowser.policy"
           tofile="${resources}/${package-prefix}/apps/svgbrowser/resources/svgbrowser.classes.policy" />
     <move file="${resources}/${package-prefix}/apps/svgbrowser/resources/svgbrowser.bin.policy"
           tofile="${resources}/${package-prefix}/apps/svgbrowser/resources/svgbrowser.policy" />
     <jar manifest="${src}/${project}-browser.mf"
-         jarfile="${build}/${project}-svgbrowser.jar">
+         jarfile="${build}/${project}-squiggle.jar">
       <fileset dir="${dest}">
         <include name="${package-prefix}/apps/svgbrowser/**/*.class"/>
         <include name="${package-prefix}/experiment/**/*.class"/>
@@ -749,6 +751,8 @@ To display the available targets type:
           tofile="${resources}/${package-prefix}/apps/svgbrowser/resources/svgbrowser.policy" />
   </target>
 
+  <!-- Squiggle - SVG Browser (dependencies: all) -->
+  <target name="svg-browser-jar" depends="squiggle-jar"/>
 
   <!-- Rasterizer (dependencies: all except GUI util) -->
   <target name="rasterizer-jar" depends="compile, prepare-build">
@@ -789,9 +793,8 @@ To display the available targets type:
 
 
   <!-- Applications ....................................................... -->
-  <target name="svgbrowser"
-          depends="compile"
-          description="Runs the SVG browser">
+  <target name="squiggle" depends="compile"
+          description="Runs Squiggle - the SVG browser">
     <java fork="yes"
           classname="${class-prefix}.apps.svgbrowser.Main">
       <classpath>
@@ -809,6 +812,9 @@ To display the available targets type:
       -->
     </java>
   </target>
+
+  <target name="svgbrowser" depends="squiggle"
+          description="Runs Squiggle - the SVG browser"/>
 
   <target name="svgrasterizer"
           depends="compile"

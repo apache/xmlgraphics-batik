@@ -143,6 +143,72 @@ public final class BumpMap {
 
         // Top edge extend filters...
         if (yloc == srcRect.y) {
+            if (yloc == yEnd) {
+                // Only one row of pixels...
+                final double [][] NRow = N[yloc-y];
+                int xloc=x;
+                if (xloc < srcRect.x)
+                    xloc = srcRect.x;
+                int p  = (offset + (xloc-srcRect.x) + 
+                          scanStride*(yloc-srcRect.y));
+
+                crcc = (pixels[p] >>> 24)*pixelScale;
+
+                if (xloc != srcRect.x) {
+                    crpc = (pixels[p - 1] >>> 24)*pixelScale;
+                } 
+                else if (xloc < xEnd) {
+                    // Top left pixel, in src (0, 0);
+                    crnc = (pixels[p+1] >>> 24)*pixelScale;
+
+                    final double [] n = NRow[xloc-x];
+        
+                    n[0] = 2*surfaceScaleX*(crcc - crnc);
+                    invNorm = 1.0/Math.sqrt(n[0]*n[0] + 1);
+                    n[0] *= invNorm;
+                    n[1]  = 0;
+                    n[2]  = invNorm;
+                    n[3]  = crcc*surfaceScale;
+                    p++;
+                    xloc++;
+                    crpc = crcc;
+                    crcc = crnc;
+                } else {
+                    // Single pix.
+                    crpc = crcc;
+                }
+
+                for (; xloc<xEnd; xloc++) {
+                    // Middle Top row...
+                    crnc = (pixels[p+1] >>> 24)*pixelScale;
+                    final double [] n = NRow[xloc-x];
+
+                    n[0] = surfaceScaleX * (crpc - crnc );
+                    invNorm = 1.0/Math.sqrt(n[0]*n[0] + 1);
+                    n[0] *= invNorm;
+                    n[1]  = 0;
+                    n[2]  = invNorm;
+                    n[3]  = crcc*surfaceScale;
+                    p++;
+                    crpc = crcc;
+                    crcc = crnc;
+                }
+
+                if ((xloc < x+w) && 
+                    (xloc == srcRect.x+srcRect.width-1)) {
+                    // Last pixel of top row
+                    final double [] n = NRow[xloc-x];
+
+                    n[0] = 2*surfaceScaleX*(crpc - crcc);
+                    invNorm = 1.0/Math.sqrt(n[0]*n[0] + n[1]*n[1] + 1);
+                    n[0] *= invNorm;
+                    n[1] *= invNorm;
+                    n[2]  = invNorm;
+                    n[3]  = crcc*surfaceScale;
+                }
+                return N;
+            }
+
             final double [][] NRow = N[yloc-y];
             int p  = offset + scanStride*(yloc-srcRect.y);
             int xloc=x;
@@ -179,6 +245,10 @@ public final class BumpMap {
                 nrpc = nrcc;
                 crcc = crnc;
                 nrcc = nrnc;
+            } else {
+                // Single pix
+                crpc = crcc;
+                nrpc = nrcc;
             }
 
             for (; xloc<xEnd; xloc++) {
@@ -242,7 +312,7 @@ public final class BumpMap {
                 prpc = (pixels[p - scanStridePP] >>> 24)*pixelScale;
                 crpc = (pixels[p - 1] >>> 24)*pixelScale;
                 nrpc = (pixels[p + scanStrideMM] >>> 24)*pixelScale;
-            }
+            } 
             else if (xloc < xEnd) {
                 // Now, process left column, from (0, 1) to (0, h-1)
                 crnc = (pixels[p+1] >>> 24)*pixelScale;
@@ -271,6 +341,11 @@ public final class BumpMap {
                 prcc = prnc;
                 crcc = crnc;
                 nrcc = nrnc;
+            } else {
+                // Single pix
+                prpc = prcc;
+                crpc = crcc;
+                nrpc = nrcc;
             }
 
             for (; xloc<xEnd; xloc++) {
@@ -357,6 +432,10 @@ public final class BumpMap {
                 prpc = prcc;
                 crcc = crnc;
                 prcc = prnc;
+            } else {
+                // Single pix
+                crpc = crcc;
+                prpc = prcc;
             }
             
             for (; xloc<xEnd; xloc++) {
