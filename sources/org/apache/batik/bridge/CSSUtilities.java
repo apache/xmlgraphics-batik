@@ -66,7 +66,7 @@ import org.w3c.dom.svg.SVGPaint;
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
-public abstract class CSSUtilities 
+public abstract class CSSUtilities
     implements CSSConstants, ErrorConstants, XMLConstants {
 
     /**
@@ -93,6 +93,60 @@ public abstract class CSSUtilities
      */
     public static CSSOMReadOnlyStyleDeclaration getComputedStyle(Element e) {
         return getViewCSS(e).getComputedStyleInternal(e, null);
+    }
+
+    /////////////////////////////////////////////////////////////////////////
+    // 'pointer-events'
+    /////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Returns the type that describes how this graphics node reacts to events.
+     *
+     * @return GraphicsNode.VISIBLE_PAINTED |
+     *         GraphicsNode.VISIBLE_FILL |
+     *         GraphicsNode.VISIBLE_STROKE |
+     *         GraphicsNode.VISIBLE |
+     *         GraphicsNode.PAINTED |
+     *         GraphicsNode.FILL |
+     *         GraphicsNode.STROKE |
+     *         GraphicsNode.ALL |
+     *         GraphicsNode.NONE
+     */
+    public static int convertPointerEvents(Element e) {
+        CSSOMReadOnlyStyleDeclaration decl = getComputedStyle(e);
+        CSSPrimitiveValue v
+            = (CSSPrimitiveValue) decl.getPropertyCSSValueInternal
+            (CSS_POINTER_EVENTS_PROPERTY);
+        String s = v.getStringValue();
+        switch(s.charAt(0)) {
+        case 'v':
+            if (s.length() == 7) {
+                return GraphicsNode.VISIBLE;
+            } else {
+                switch(s.charAt(7)) {
+                case 'p':
+                    return GraphicsNode.VISIBLE_PAINTED;
+                case 'f':
+                    return GraphicsNode.VISIBLE_FILL;
+                case 's':
+                    return GraphicsNode.VISIBLE_STROKE;
+                default:
+                    throw new Error(); // can't be reached
+                }
+            }
+        case 'p':
+            return GraphicsNode.PAINTED;
+        case 'f':
+            return GraphicsNode.FILL;
+        case 's':
+            return GraphicsNode.STROKE;
+        case 'a':
+            return GraphicsNode.ALL;
+        case 'n':
+            return GraphicsNode.NONE;
+        default:
+            throw new Error(); // can't be reached
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -841,7 +895,7 @@ public abstract class CSSUtilities
         SVGOMDocument refDocument
             = (SVGOMDocument)refElement.getOwnerDocument();
         AbstractViewCSS refView = (AbstractViewCSS)refDocument.getDefaultView();
-        
+
         HiddenChildElementSupport.setStyle(localRefElement,
                                            view,
                                            refElement,

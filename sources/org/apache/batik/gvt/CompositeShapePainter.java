@@ -29,7 +29,7 @@ public class CompositeShapePainter implements ShapePainter {
      */
     protected Shape shape;
 
-    /** 
+    /**
      * The enclosed <tt>ShapePainter</tt>s of this composite shape painter.
      */
     protected ShapePainter [] painters;
@@ -73,6 +73,22 @@ public class CompositeShapePainter implements ShapePainter {
     }
 
     /**
+     * Returns the shape painter at the specified index.
+     *
+     * @param index the index of the shape painter to return
+     */
+    public ShapePainter getShapePainter(int index) {
+        return painters[index];
+    }
+
+    /**
+     * Returns the number of shape painter of this composite shape painter.
+     */
+    public int getShapePainterCount() {
+        return count;
+    }
+
+    /**
      * Paints the specified shape using the specified Graphics2D.
      *
      * @param g2d the Graphics2D to use
@@ -91,11 +107,11 @@ public class CompositeShapePainter implements ShapePainter {
     public Shape getPaintedArea(){
         // <!> FIX ME: Use of GeneralPath is a work around Area problems.
         if (painters != null) {
-            GeneralPath paintedArea = new GeneralPath();
+            Area paintedArea = new Area();
             for (int i=0; i < count; ++i) {
                 Shape s = painters[i].getPaintedArea();
                 if (s != null) {
-                    paintedArea.append(s, false);
+                    paintedArea.add(new Area(s));
                 }
             }
             return paintedArea;
@@ -103,7 +119,7 @@ public class CompositeShapePainter implements ShapePainter {
             return null;
         }
     }
-    
+
     /**
      * Sets the Shape this shape painter is associated with.
      *
