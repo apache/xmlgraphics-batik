@@ -773,6 +773,12 @@ public class JGVTComponent extends JComponent {
                    KeyListener,
                    MouseListener,
                    MouseMotionListener {
+        boolean checkClick = false;
+        boolean hadDrag = false;
+        int startX, startY;
+        long startTime;
+        int MAX_DISP = 4*4;
+        long CLICK_TIME = 200;
 
         /**
          * Creates a new Listener.
@@ -983,6 +989,11 @@ public class JGVTComponent extends JComponent {
          * Invoked when a mouse button has been pressed on a component.
          */
         public void mousePressed(MouseEvent e) {
+            startX = e.getX();
+            startY = e.getY();
+            startTime = System.currentTimeMillis();
+            checkClick = true;
+
             selectInteractor(e);
             if (interactor != null) {
                 interactor.mousePressed(e);
@@ -1002,7 +1013,31 @@ public class JGVTComponent extends JComponent {
         /**
          * Invoked when a mouse button has been released on a component.
          */
-        public void mouseReleased(MouseEvent e) {
+        public void mouseReleased(java.awt.event.MouseEvent e) {
+            if ((checkClick) && hadDrag) {
+                int dx = startX-e.getX();
+                int dy = startY-e.getY();
+                long cTime = System.currentTimeMillis();
+                if ((dx*dx+dy*dy < MAX_DISP) &&
+                    (cTime-startTime) < CLICK_TIME) {
+                    // our drag was short! dispatch a CLICK event.
+                    //
+                    MouseEvent click = new MouseEvent
+                        (e.getComponent(),
+                         MouseEvent.MOUSE_CLICKED,
+                         e.getWhen(),
+                         e.getModifiers(),		// modifiers
+                         e.getX(),
+                         e.getY(),
+                         e.getClickCount(),
+                         e.isPopupTrigger());
+							
+                    mouseClicked(click);
+                }
+            }
+            checkClick = false;
+            hadDrag = false;
+
             selectInteractor(e);
             if (interactor != null) {
                 interactor.mouseReleased(e);
@@ -1070,6 +1105,12 @@ public class JGVTComponent extends JComponent {
          * bounds of the component).
          */
         public void mouseDragged(MouseEvent e) {
+            hadDrag = true;
+            int dx = startX-e.getX();
+            int dy = startY-e.getY();
+            if (dx*dx+dy*dy > MAX_DISP)
+                checkClick = false;
+
             selectInteractor(e);
             if (interactor != null) {
                 interactor.mouseDragged(e);

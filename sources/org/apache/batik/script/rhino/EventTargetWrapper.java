@@ -50,6 +50,7 @@
 
 package org.apache.batik.script.rhino;
 
+import java.lang.ref.SoftReference;
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.HashMap;
@@ -236,7 +237,7 @@ class EventTargetWrapper extends NativeJavaObject {
                 EventListener evtListener = new FunctionEventListener
                     ((Function)args[1],
                      ((RhinoInterpreter.ExtendedContext)ctx).getInterpreter());
-                listenerMap.put(args[1], evtListener);
+                listenerMap.put(args[1], new SoftReference(evtListener));
                 // we need to marshall args
                 Class[] paramTypes = { String.class, Function.class,
                                        Boolean.TYPE };
@@ -252,7 +253,7 @@ class EventTargetWrapper extends NativeJavaObject {
                     new HandleEventListener((Scriptable)args[1],
                                             ((RhinoInterpreter.ExtendedContext)
                                              ctx).getInterpreter());
-                listenerMap.put(args[1], evtListener);
+                listenerMap.put(args[1], new SoftReference(evtListener));
                 // we need to marshall args
                 Class[] paramTypes = { String.class, Scriptable.class,
                                        Boolean.TYPE };
@@ -280,8 +281,10 @@ class EventTargetWrapper extends NativeJavaObject {
             throws JavaScriptException {
             NativeJavaObject  njo = (NativeJavaObject)thisObj;
             if (args[1] instanceof Function) {
-                EventListener el;
-                el = (EventListener)listenerMap.remove(args[1]);
+                SoftReference sr = (SoftReference)listenerMap.remove(args[1]);
+                if (sr == null)
+                    return Undefined.instance;
+                EventListener el = (EventListener)sr.get();
                 if (el == null)
                     return Undefined.instance;
                 // we need to marshall args
@@ -294,8 +297,10 @@ class EventTargetWrapper extends NativeJavaObject {
                 return Undefined.instance;
             }
             if (args[1] instanceof NativeObject) {
-                EventListener el;
-                el = (EventListener)listenerMap.remove(args[1]);
+                SoftReference sr = (SoftReference)listenerMap.remove(args[1]);
+                if (sr == null)
+                    return Undefined.instance;
+                EventListener el = (EventListener)sr.get();
                 if (el == null)
                     return Undefined.instance;
                 // we need to marshall args
@@ -356,7 +361,7 @@ class EventTargetWrapper extends NativeJavaObject {
         if (mapOfListenerMap == null)
             mapOfListenerMap = new WeakHashMap(10);
         if ((map = (Map)mapOfListenerMap.get(unwrap())) == null) {
-            mapOfListenerMap.put(unwrap(), map = new HashMap(2));
+            mapOfListenerMap.put(unwrap(), map = new WeakHashMap(2));
         }
         return map;
     }
