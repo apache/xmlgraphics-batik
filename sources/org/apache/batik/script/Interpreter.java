@@ -23,6 +23,19 @@ import org.w3c.dom.Document;
  */
 public interface Interpreter extends org.apache.batik.i18n.Localizable {
     /**
+     * This method should evaluate a piece of script associated to a given 
+     * description.
+     *
+     * @param scriptreader a <code>java.io.Reader</code> on the piece of script
+     * @param description description which can be later used (e.g., for error 
+     *        messages).
+     * @return if no exception is thrown during the call, should return the
+     * value of the last expression evaluated in the script
+     */
+    public Object evaluate(Reader scriptreader, String description)
+        throws InterpreterException, IOException;
+
+    /**
      * This method should evaluate a piece of script.
      *
      * @param scriptreader a <code>java.io.Reader</code> on the piece of script

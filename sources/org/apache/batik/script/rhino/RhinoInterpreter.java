@@ -130,7 +130,8 @@ public class RhinoInterpreter implements Interpreter {
      * @see org.apache.batik.script.InterpreterPool
      */
     public RhinoInterpreter(URL documentURL) {
-        rhinoClassLoader = new RhinoClassLoader(documentURL);
+        rhinoClassLoader = new RhinoClassLoader(documentURL,
+                                                getClass().getClassLoader());
 
         Context.setCachingEnabled(false); // reset the cache
         Context.setCachingEnabled(true);  // enable caching again
@@ -203,6 +204,20 @@ public class RhinoInterpreter implements Interpreter {
      */
     public Object evaluate(Reader scriptreader)
         throws InterpreterException, IOException {
+        return evaluate(scriptreader, SOURCE_NAME_SVG);
+    }
+
+    /**
+     * This method evaluates a piece of ECMAScript.
+     * @param scriptreader a <code>java.io.Reader</code> on the piece of script
+     * @param description description which can be later used (e.g., for error 
+     *        messages).
+     * @return if no exception is thrown during the call, should return the
+     * value of the last expression evaluated in the script.
+     */
+    public Object evaluate(Reader scriptreader, String description)
+        throws InterpreterException, IOException {
+
         Object rv = null;
         Context ctx = enterContext();
 
@@ -210,7 +225,7 @@ public class RhinoInterpreter implements Interpreter {
         try {
             rv = ctx.evaluateReader(globalObject,
                                     scriptreader,
-                                    SOURCE_NAME_SVG,
+                                    description,
                                     1, rhinoClassLoader);
         } catch (JavaScriptException e) {
             // exception from JavaScript (possibly wrapping a Java Ex)

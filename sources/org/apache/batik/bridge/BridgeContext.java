@@ -8,6 +8,8 @@
 
 package org.apache.batik.bridge;
 
+import java.awt.Cursor;
+
 import java.awt.geom.Dimension2D;
 import java.io.InterruptedIOException;
 import java.io.IOException;
@@ -16,7 +18,6 @@ import java.net.URL;
 import java.net.MalformedURLException;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -751,6 +752,39 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     protected FocusManager focusManager;
 
     /**
+     * Adds EventListeners to the input document to handle the cursor 
+     * property.
+     * This is not done in the addDOMListeners method because 
+     * addDOMListeners is only used for dynamic content whereas 
+     * cursor support is provided for all content.
+     * Also note that it is very important that the listeners be
+     * registered for the capture phase as the 'default' behavior
+     * for cursors is handled by the BridgeContext during the 
+     * capture phase and the 'custom' behavior (handling of 'auto'
+     * on anchors, for example), is handled during the bubling phase.
+     */
+    public void addUIEventListeners(Document doc) {
+        EventTarget evtTarget = (EventTarget)doc.getDocumentElement();
+
+        DOMMouseOverEventListener domMouseOverListener =
+            new DOMMouseOverEventListener();
+        evtTarget.addEventListener(SVGConstants.SVG_EVENT_MOUSEOVER, 
+                                   domMouseOverListener,
+                                   true);
+        storeEventListener(evtTarget, SVGConstants.SVG_EVENT_MOUSEOVER, 
+                           domMouseOverListener, true);
+
+        DOMMouseOutEventListener domMouseOutListener =
+            new DOMMouseOutEventListener();
+        evtTarget.addEventListener(SVGConstants.SVG_EVENT_MOUSEOUT,
+                                   domMouseOutListener,
+                                   true);
+        storeEventListener(evtTarget, SVGConstants.SVG_EVENT_MOUSEOUT, 
+                           domMouseOutListener, true);
+
+    }
+
+    /**
      * Adds EventListeners to the DOM and CSSEngineListener to the
      * CSSEngine to handle any modifications on the DOM tree or style
      * properties and update the GVT tree in response.
@@ -778,6 +812,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         evtTarget.addEventListener("DOMCharacterDataModified",
                                    domCharacterDataModifiedListener,
                                    true);
+
 
         focusManager = new FocusManager(document);
 
@@ -899,6 +934,76 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         }
     }
 
+    /**
+     * The DOM EventListener invoked when the mouse exits an element
+     */
+    protected class DOMMouseOutEventListener implements EventListener {
+        public void handleEvent(Event evt) {
+            userAgent.setSVGCursor(CursorManager.DEFAULT_CURSOR);
+        }
+    }
+
+
+    /**
+     * The DOM EventListener invoked when the mouse mouves over a new 
+     * element.
+     * 
+     * Here is how cursors are handled:
+     * 
+     */
+    protected class DOMMouseOverEventListener implements EventListener {
+        /**
+         * Handles 'mouseover' MouseEvent event type.
+         */
+        public void handleEvent(Event evt) {
+            Element target = (Element)evt.getTarget();
+            String tag = target.getNodeName();
+            String cursorStr = CSSUtilities.convertCursor(target);
+            Cursor cursor = null;
+
+            if (SVGConstants.SVG_AUTO_VALUE.equalsIgnoreCase(cursorStr)) {
+                // Handle 'auto' value.
+                //
+                // - <a> The following sets the cursor for <a> element enclosing
+                //   text nodes. Setting the proper cursor (i.e., depending on the
+                //   children's 'cursor' property, is handled in the SVGAElementBridge
+                //   so as to avoid going up the tree on mouseover events (looking for
+                //   an anchor ancestor.
+                // - <image> The following does not change the cursor if the 
+                //   element's cursor property is set to 'auto'. Otherwise, it takes
+                //   precedence over any child (in case of SVG content) cursor setting.
+                //   This means that for images referencing SVG content, a cursor 
+                //   property set to 'auto' on the <image> element will not override 
+                //   the cursor settings inside the SVG image. Any other cursor property
+                //   will take precedence.
+                // - <use> Same behavior as for <image> except that the behavior 
+                //   is controlled from the <use> element bridge (SVGUseElementBridge).
+                // - <text>, <tref> and <tspan> : a cursor value of auto will cause the
+                //   cursor to be set to a text cursor. Note that text content with an
+                //   'auto' cursor and descendant of an anchor will have its cursor
+                //   set to the anchor cursor through the SVGAElementBridge.
+                //
+                if (SVGConstants.SVG_A_TAG.equalsIgnoreCase(tag)) {
+                    cursor = CursorManager.ANCHOR_CURSOR;
+                } else if (SVGConstants.SVG_TEXT_TAG.equalsIgnoreCase(tag) ||
+                           SVGConstants.SVG_TSPAN_TAG.equalsIgnoreCase(tag) ||
+                           SVGConstants.SVG_TREF_TAG.equalsIgnoreCase(tag) ) {
+                    cursor = CursorManager.TEXT_CURSOR;
+                } else if (SVGConstants.SVG_IMAGE_TAG.equalsIgnoreCase(tag)) {
+                    // Do not change the cursor 
+                    return;
+                } else {
+                    cursor = CursorManager.DEFAULT_CURSOR;
+                }
+            } else {
+                // Specific, logical cursor
+                cursor = CursorManager.getCursor(cursorStr);
+            }
+
+            userAgent.setSVGCursor(cursor);
+        }
+    }
+    
     /**
      * The DOM EventListener invoked when a node is added.
      */

@@ -60,6 +60,11 @@ import org.w3c.dom.svg.SVGDocument;
  * @version $Id$
  */
 public class BaseScriptingEnvironment {
+    /**
+     * Constant used to describe inline scripts
+     */
+    public static final String INLINE_SCRIPT_DESCRIPTION 
+        = "BaseScriptingEnvironment.constant.inline.script.description";
 
     /**
      * Tells whether the given SVG document is dynamic.
@@ -330,8 +335,11 @@ public class BaseScriptingEnvironment {
 
             try {
                 String href = XLinkSupport.getXLinkHref(script);
+                String desc = Messages.getMessage(INLINE_SCRIPT_DESCRIPTION);
                 Reader reader;
                 if (href.length() > 0) {
+                    desc = href;
+
                     // External script.
                     ParsedURL purl = new ParsedURL
                         (XMLBaseSupport.getCascadedXMLBase(script), href);
@@ -352,7 +360,7 @@ public class BaseScriptingEnvironment {
                     }
                 }
 
-                interpreter.evaluate(reader);
+                interpreter.evaluate(reader, desc);
 
             } catch (IOException e) {
                 if (userAgent != null) {
