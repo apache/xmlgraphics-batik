@@ -480,6 +480,11 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
                     (filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
                      new Object[] {SVG_FILTER_RES_ATTRIBUTE, s, ex});
             }
+            if (filterRes[0] < 0 || filterRes[1] < 0) {
+                throw new BridgeException
+                    (filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                     new Object[] {SVG_FILTER_RES_ATTRIBUTE, s});
+            }
         }
         return filterRes;
     }
