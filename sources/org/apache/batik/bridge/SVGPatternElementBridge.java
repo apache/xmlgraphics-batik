@@ -296,7 +296,6 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
         CSSPrimitiveValue v =
             (CSSPrimitiveValue)paintedCssDecl.getPropertyCSSValue(paintOpacityProperty);
         float opacity = CSSUtilities.convertOpacity(v);
-        System.out.println("Pattern on " + paintOpacityProperty + " = " + opacity);
         if(opacity != 1){
             float[][] matrix = {{1, 0, 0, 0, 0},
                                 {0, 1, 0, 0, 0},

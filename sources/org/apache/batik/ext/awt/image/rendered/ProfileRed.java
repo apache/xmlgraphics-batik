@@ -102,7 +102,6 @@ public class ProfileRed extends AbstractRed {
      * any bug as of JDK 1.3.
      */
     public WritableRaster copyData(WritableRaster argbWR){
-        System.err.println("Applying color profile .....");
         try{
             RenderedImage img = getSource();
 
