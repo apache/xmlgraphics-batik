@@ -11,7 +11,14 @@ package org.apache.batik.ext.awt.image.rendered;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
 import java.awt.image.IndexColorModel;
+import java.awt.image.SampleModel;
+import java.awt.image.MultiPixelPackedSampleModel;
+import java.awt.image.DataBuffer;
+import java.awt.image.Raster;
+import java.awt.image.WritableRaster;
+import java.awt.Point;
 import java.util.Comparator;
 import java.util.Vector;
 import java.util.Iterator;
@@ -406,11 +413,43 @@ public class IndexImage{
             r[i] = (byte)((val>>16)&0xFF);
             g[i] = (byte)((val>> 8)&0xFF);
             b[i] = (byte)((val    )&0xFF);
-        }
 
-	IndexColorModel model=new IndexColorModel(4,256,r,g,b);
-	BufferedImage indexed=new BufferedImage
-            (w, h, BufferedImage.TYPE_BYTE_INDEXED,model);
+            // System.out.println("Color [" + i + "]: #" + 
+            //                    (((val>>16)<16)?"0":"") +
+            //                    Integer.toHexString(val));
+        }
+        BufferedImage indexed;
+
+        IndexColorModel icm=new IndexColorModel(8,nCubes,r,g,b);
+        indexed =new BufferedImage
+            (w, h, BufferedImage.TYPE_BYTE_INDEXED, icm);
+
+        /*
+            // The JDK doesn't seem to dither the image correctly if
+            // I go below 8bits per pixel.  Otherwise this code should
+            // work.
+        int bits;
+        for (bits=1; bits <=8; bits++) {
+            if ((1<<bits) >= nCubes) break;
+        }
+        System.out.println("Bits: " + bits + " Cubes: " + nCubes);
+        if (bits > 4) {
+            bits = 8;
+            IndexColorModel icm=new IndexColorModel(8,nCubes,r,g,b);
+            indexed =new BufferedImage
+                (w, h, BufferedImage.TYPE_BYTE_INDEXED, icm);
+        } else {
+            if (bits ==3) bits = 4;
+            ColorModel cm=new IndexColorModel(bits,nCubes,r,g,b);
+            SampleModel sm = new MultiPixelPackedSampleModel
+                (DataBuffer.TYPE_BYTE, w, h, bits);
+            WritableRaster ras = Raster.createWritableRaster
+                (sm, new Point(0,0));
+            indexed = new BufferedImage(cm, ras, 
+                                        bi.isAlphaPremultiplied(), null);
+        }
+        */
+
 	Graphics2D g2d=indexed.createGraphics();
 	g2d.setRenderingHint
             (RenderingHints.KEY_DITHERING,RenderingHints.VALUE_DITHER_ENABLE);
