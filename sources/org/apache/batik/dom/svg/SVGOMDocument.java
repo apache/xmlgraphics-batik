@@ -90,13 +90,13 @@ public class SVGOMDocument
     /**
      * The custom elements factories.
      */
-    protected static HashTable customFactories;
+    protected HashTable customFactories;
 
     /**
      * The SVG element factories.
      */
-    protected static HashTable factories = new HashTable();
-    static {
+    protected HashTable factories = new HashTable();
+    {
         factories.put(SVG_A_TAG,
                       new AElementFactory());
 
@@ -344,9 +344,9 @@ public class SVGOMDocument
     /**
      * Allows the user to register a new element factory.
      */
-    public static void registerCustomElementFactory(String namespaceURI,
-                                                    String localName,
-                                                    ElementFactory factory) {
+    public void registerCustomElementFactory(String namespaceURI,
+                                             String localName,
+                                             ElementFactory factory) {
         if (customFactories == null) {
             customFactories = new HashTable();
         }
