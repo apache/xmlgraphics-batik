@@ -135,6 +135,11 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     protected Filter filter;
 
     /**
+     * Cached node bounds
+     */
+    protected Rectangle2D bounds;
+
+    /**
      * Constructs a new graphics node.
      */
     public AbstractGraphicsNode() {}
@@ -528,31 +533,32 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
      */
     public Rectangle2D getBounds(){
         // Get the primitive bounds
-        Rectangle2D bounds = null;
-
-        // The painted region, before cliping, masking
-        // and compositing is either the area painted
-        // by the primitive paint or the area painted 
-        // by the filter.
-        if(filter == null){
-            bounds = getPrimitiveBounds();
-        }
-        else{
-            bounds = filter.getBounds2D();
-        }
-
-        // Factor in the clipping area, if any
-        if(clip != null){
-            bounds.intersect(bounds, 
-                             clip.getBounds2D(),
-                             bounds);
-        }
-
-        // Factor in the mask, if any
-        if(mask != null){
-            bounds.intersect(bounds,
-                             mask.getBounds2D(),
-                             bounds);
+        // Rectangle2D bounds = null;
+        if(bounds == null){
+            // The painted region, before cliping, masking
+            // and compositing is either the area painted
+            // by the primitive paint or the area painted 
+            // by the filter.
+            if(filter == null){
+                bounds = getPrimitiveBounds();
+            }
+            else{
+                bounds = filter.getBounds2D();
+            }
+            
+            // Factor in the clipping area, if any
+            if(clip != null){
+                bounds.intersect(bounds, 
+                                 clip.getBounds2D(),
+                                 bounds);
+            }
+            
+            // Factor in the mask, if any
+            if(mask != null){
+                bounds.intersect(bounds,
+                                 mask.getBounds2D(),
+                                 bounds);
+            }
         }
 
         return bounds;
