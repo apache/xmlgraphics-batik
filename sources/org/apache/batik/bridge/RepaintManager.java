@@ -18,55 +18,71 @@ import org.apache.batik.gvt.UpdateTracker;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class RepaintManager extends Thread {
+public class RepaintManager {
     
     /**
      * The associated UpdateManager.
      */
     protected UpdateManager updateManager;
 
-    long targetFrameTime = 50;
+    /**
+     * Whether or not the manager is active.
+     */
+    protected boolean enabled;
 
     /**
      * Creates a new repaint manager.
      */
     public RepaintManager(UpdateManager um) {
         updateManager = um;
-        setDaemon(true);
     }
-
+    
     /**
-     * The main method of this thread.  This needs to have a target
-     * frame rate, and it needs to ensure that it changes it target
-     * frame rate to ensure that it sleeps for at least a few 10s of
-     * millisecs per loop (it should also see if it can increase
-     * framerate because it's made the last few frames with the
-     * current frame-rate easily) */
-    public void run() {
-        long lastFrameTime, currentTime, tm, sleepTime;
-        try {
-            while (!Thread.currentThread().isInterrupted()) {
-                lastFrameTime = System.currentTimeMillis();
-                final UpdateTracker ut = updateManager.getUpdateTracker();
-                if (ut.hasChanged()) {
-                    updateManager.getUpdateRunnableQueue().invokeAndWait
-                        (new Runnable() {
-                            public void run() {
-                                List dirtyAreas = ut.getDirtyAreas();
-                                updateManager.modifiedAreas(dirtyAreas);
-                                updateManager.updateRendering(dirtyAreas);
-                                ut.clear();
-                            }
-                        });
+     * Provokes a repaint, if needed.
+     * @param b If true, waits until the repaint has finished.
+     */
+    public void repaint(boolean b) {
+        if (!enabled) {
+            return;
+        }
+        final UpdateTracker ut = updateManager.getUpdateTracker();
+        Runnable r = new Runnable() {
+                public void run() {
+                    if (ut.hasChanged()) {
+                        List dirtyAreas = ut.getDirtyAreas();
+                        if (dirtyAreas != null) {
+                            updateManager.modifiedAreas(dirtyAreas);
+                            updateManager.updateRendering(dirtyAreas);
+                        }
+                        ut.clear();
+                    }
                 }
-                currentTime = System.currentTimeMillis();
-                tm = currentTime - lastFrameTime;
-                sleepTime = targetFrameTime-tm;
-                if (sleepTime > 0)
-                    sleep(sleepTime);
+            };
+        if (updateManager.getUpdateRunnableQueue().getThread() == null) {
+            return;
+        }
+        if (b) {
+            try {
+                updateManager.getUpdateRunnableQueue().invokeAndWait(r);
+            } catch (InterruptedException e) {
             }
-        } catch (InterruptedException e) {
+        } else {
+            updateManager.getUpdateRunnableQueue().invokeLater(r);
         }
     }
 
+    /**
+     * Suspends the repaint management.
+     */
+    public void disable() {
+        enabled = false;
+    }
+
+    /**
+     * Suspends the repaint management.
+     */
+    public void enable() {
+        enabled = true;
+    }
+    
 }

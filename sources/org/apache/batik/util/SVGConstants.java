@@ -205,7 +205,7 @@ public interface SVGConstants extends CSSConstants {
     String SVG_KERNEL_UNIT_LENGTH_ATTRIBUTE = "kernelUnitLength";
     String SVG_KERNEL_UNIT_LENGTH_X_ATTRIBUTE = "kernelUnitLengthX";
     String SVG_KERNEL_UNIT_LENGTH_Y_ATTRIBUTE = "kernelUnitLengthY";
-    String SVG_KERNING_ATTRIBUTE = "kerning";
+    String SVG_KERNING_ATTRIBUTE = CSS_KERNING_PROPERTY;
     String SVG_LANG_ATTRIBUTE = "lang";
     String SVG_LENGTH_ADJUST_ATTRIBUTE = "lengthAdjust";
     String SVG_LIGHT_COLOR_ATTRIBUTE = "lightColor";

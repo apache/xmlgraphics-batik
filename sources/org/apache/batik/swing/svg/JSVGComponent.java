@@ -298,9 +298,6 @@ public class JSVGComponent extends JGVTComponent {
         } else if (gvtTreeBuilder != null) {
             gvtTreeBuilder.interrupt();
         } else if (updateManager != null) {
-            if (!updateManager.isRunning()) {
-                updateManager.resume();
-            }
             updateManager.dispatchSVGUnLoad();
             updateManager = null;
             updateManagerStopped = true;

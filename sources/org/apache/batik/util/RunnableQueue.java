@@ -116,7 +116,7 @@ public class RunnableQueue implements Runnable {
         Runnable rable;
         try {
             while (!Thread.currentThread().isInterrupted()) {
-                
+
                 // Mutex for suspention work.
                 synchronized (stateLock) {
                     if (state != RUNNING) {
@@ -148,6 +148,7 @@ public class RunnableQueue implements Runnable {
 
                     rable = l.runnable;
                 }
+
                 rable.run();
                 l.unlock();
                 runnableInvoked(rable);
