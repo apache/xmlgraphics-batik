@@ -1,0 +1,12 @@
+#
+# Author  : Vincent Hardy
+# Version : $Id$
+#
+This directory contains XSL stylesheets to create charts from XML data. 
+This has been contributed by John Morrison (john.r.morrison@ntlworld.com).
+
+The <xsl> directory contains stylesheets for different kinds of charts,
+such as bar charts and pie charts. The <xml> directory contains an example
+of XML document that can be processed by the XSL stylesheets. The DTD has
+not been contributed yet but will be added shortly.
+

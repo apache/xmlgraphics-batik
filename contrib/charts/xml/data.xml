@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ *****************************************************************************
+ * Copyright (C) The Apache Software Foundation. All rights reserved.        *
+ *                                                                           *
+ * This software is published under the terms of the Apache Software License *
+ * version 1.1, a copy of which has been included with this distribution in  *
+ * the LICENSE file.                                                         *
+ *****************************************************************************
+-->
+
+<graph>
+  <data>
+    <set>
+      <colour>
+        <red>255</red>
+        <green>0</green>
+        <blue>0</blue>
+      </colour>
+      <label>England &amp; Wales</label>
+      <values>
+        <value><x>0</x><y>74778.12</y></value>
+        <value><x>1</x><y>76895.72</y></value>
+        <value><x>2</x><y>79491.88</y></value>
+        <value><x>3</x><y>82136.99</y></value>
+        <value><x>4</x><y>83806.98</y></value>
+        <value><x>5</x><y>85052.68</y></value>
+        <value><x>6</x><y>87249.84</y></value>
+        <value><x>7</x><y>91087.80</y></value>
+        <value><x>8</x><y>94992.48</y></value>
+        <value><x>9</x><y>97919.13</y></value>
+        <value><x>10</x><y>101212.15</y></value>
+        <value><x>11</x><y>103540.02</y></value>
+      </values>
+    </set>
+    <set>
+      <colour>
+        <red>0</red>
+        <green>255</green>
+        <blue>0</blue>
+      </colour>
+      <label>Leicestershire</label>
+      <values>
+        <value><x>0</x><y>55073.23</y></value>
+        <value><x>1</x><y>56523.02</y></value>
+        <value><x>2</x><y>58513.11</y></value>
+        <value><x>3</x><y>60394.70</y></value>
+        <value><x>4</x><y>61359.47</y></value>
+        <value><x>5</x><y>62228.44</y></value>
+        <value><x>6</x><y>63341.27</y></value>
+        <value><x>7</x><y>65208.29</y></value>
+        <value><x>8</x><y>67718.87</y></value>
+        <value><x>9</x><y>68927.73</y></value>
+        <value><x>10</x><y>70599.73</y></value>
+        <value><x>11</x><y>72210.70</y></value>
+      </values>
+    </set>
+    <set>
+      <colour>
+        <red>0</red>
+        <green>0</green>
+        <blue>255</blue>
+      </colour>
+      <label>LE14 4</label>
+      <values>
+        <value><x>0</x><y>96667.00</y></value>
+        <value><x>1</x><y>99930.00</y></value>
+        <value><x>2</x><y>100449.00</y></value>
+        <value><x>3</x><y>114722.00</y></value>
+        <value><x>4</x><y>107342.00</y></value>
+        <value><x>5</x><y>105519.00</y></value>
+        <value><x>6</x><y>105411.00</y></value>
+        <value><x>7</x><y>97556.00</y></value>
+        <value><x>8</x><y>114184.00</y></value>
+        <value><x>9</x><y>121402.00</y></value>
+        <value><x>10</x><y>127240.00</y></value>
+        <value><x>11</x><y>133445.00</y></value>
+      </values>
+    </set>
+  </data>
+  <meta>
+    <line>
+      <height>200</height>
+      <width>500</width>
+    </line>
+    <column>
+      <height>200</height>
+      <width>500</width>
+    </column>
+    <bar>
+      <height>500</height>
+      <width>500</width>
+    </bar>
+    <pie>
+      <height>200</height>
+      <width>200</width>
+    </pie>
+    <axis>
+      <x>
+        <value>Q4/97</value>
+        <value>Q1/98</value>
+        <value>Q2/98</value>
+        <value>Q3/98</value>
+        <value>Q4/98</value>
+        <value>Q1/99</value>
+        <value>Q2/99</value>
+        <value>Q3/99</value>
+        <value>Q4/99</value>
+        <value>Q1/00</value>
+        <value>Q2/00</value>
+        <value>Q3/00</value>
+      </x>
+      <y>
+        <value>Q4/97</value>
+        <value>Q1/98</value>
+        <value>Q2/98</value>
+        <value>Q3/98</value>
+        <value>Q4/98</value>
+        <value>Q1/99</value>
+        <value>Q2/99</value>
+        <value>Q3/99</value>
+        <value>Q4/99</value>
+        <value>Q1/00</value>
+        <value>Q2/00</value>
+        <value>Q3/00</value>
+      </y>
+    </axis>
+  </meta>
+</graph>
