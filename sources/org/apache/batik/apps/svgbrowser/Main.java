@@ -786,13 +786,13 @@ public class Main implements Application {
             maxVisitedURIs = 0;
         }
 
-        while (lastVisited.size() > maxVisitedURIs) {
-            lastVisited.removeElementAt(0);
-        } 
-
         if (lastVisited.contains(uri)) {
             lastVisited.removeElement(uri);
         }
+
+        while (lastVisited.size() > 0 && lastVisited.size() > (maxVisitedURIs-1)) {
+            lastVisited.removeElementAt(0);
+        } 
 
         if (maxVisitedURIs > 0) {
             lastVisited.addElement(uri);
