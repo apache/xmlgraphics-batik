@@ -119,7 +119,7 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
         // Paint children
         for (int i=0; i < count; ++i) {
             GraphicsNode node = children[i];
-            if (node == null || !node.isVisible()) {
+            if (node == null) {
                 continue;
             }
             try {
@@ -302,9 +302,9 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
      *
      * @param rc the GraphicsNodeRenderContext for which this dimension applies
       */
-    public Rectangle2D getTransformedPrimitiveBounds(AffineTransform txf, 
+    public Rectangle2D getTransformedPrimitiveBounds(AffineTransform txf,
                                                      GraphicsNodeRenderContext rc) {
-        AffineTransform t = txf; 
+        AffineTransform t = txf;
         if(transform != null){
             t = new AffineTransform(txf);
             t.concatenate(transform);
@@ -325,7 +325,7 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
                 tpb.add(ctb);
             }
         }
-        
+
         return tpb;
     }
 
@@ -368,14 +368,14 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
      * cannot be precisely determined independent of their
      * GraphicsNodeRenderContext.
      *
-     * The returned Rectangle2D is transformed through the contenation of the 
+     * The returned Rectangle2D is transformed through the contenation of the
      * input transform and this node's transform.
      *
      * @param rc the GraphicsNodeRenderContext for which this dimension applies
       */
     public Rectangle2D getTransformedGeometryBounds(AffineTransform txf,
                                                     GraphicsNodeRenderContext rc){
-        AffineTransform t = txf; 
+        AffineTransform t = txf;
         if(transform != null){
             t = new AffineTransform(txf);
             t.concatenate(transform);
@@ -387,7 +387,7 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
             // System.out.println("XX44");
             gb = children[i++].getTransformedGeometryBounds(t, rc);
         }
-        
+
         Rectangle2D cgb = null;
         while(i < count){
             // System.out.println("YY44");

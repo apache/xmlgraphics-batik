@@ -105,6 +105,22 @@ public class ShapeNode extends AbstractGraphicsNode {
     //
 
     /**
+     * Paints this node if visible.
+     *
+     * @param g2d the Graphics2D to use
+     * @param rc the GraphicsNodeRenderContext to use
+     * @exception InterruptedException thrown if the current thread
+     * was interrupted during paint
+     */
+    public void paint(Graphics2D g2d, GraphicsNodeRenderContext rc)
+            throws InterruptedException {
+        if (isVisible) {
+            super.paint(g2d, rc);
+        }
+
+    }
+
+    /**
      * Paints this node without applying Filter, Mask, Composite and clip.
      *
      * @param g2d the Graphics2D to use

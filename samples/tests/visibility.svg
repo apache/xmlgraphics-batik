@@ -11,7 +11,7 @@
 <!-- ========================================================================= -->
 
 <!-- ========================================================================= -->
-<!-- Test visibility                                                           -->
+<!--  Test 'visibility' property inheritance                                   -->
 <!--                                                                           -->
 <!-- @author tkormann@apache.com                                               -->
 <!-- @version $Id$ -->
@@ -19,85 +19,94 @@
 
 <?xml-stylesheet type="text/css" href="test.css" ?>
 
+
 <svg id="body" width="450" height="500" viewBox="0 0 450 500">
-<title>Test visibility</title>
+<title> Test 'visibility' property inheritance</title>
     <!-- ============================================================= -->
     <!-- Test content                                                  -->
     <!-- ============================================================= -->
 <g id="testContent">
   <text x="225" y="50" class="title">
-    Test 'visibility' property
+    Test 'visibility' property inheritance
   </text>
-
-  <g transform="translate(40 80)">
-    <g id="table" style="fill:none; stroke:black">
-      <rect x="20" y="20" width="340" height="350"/>
-      <g style="fill:#EEEEEE">
-        <rect x="20"  y="0" width="85" height="20"/>
-        <rect x="105" y="0" width="85" height="20"/>
-        <rect x="190" y="0" width="85" height="20"/>
-        <rect x="275" y="0" width="85" height="20"/>
-
-        <rect x="0" y="20" width="20" height="175"/>
-        <rect x="0" y="195" width="20" height="175"/>
-
-      </g>
-      <line x1="105" y1="20" x2="105" y2="370"/>
-      <line x1="190" y1="20" x2="190" y2="370"/>
-      <line x1="275" y1="20" x2="275" y2="370"/>
-      <line x1="20" y1="195" x2="360" y2="195"/>
-    </g>
-    <g id="legend" style="font-size:10pt; text-anchor:middle;fill:black;">
-      <text x="62.5" y="14">inherit</text>
-      <text x="147.5" y="14">collapse</text>
-      <text x="232.5" y="14">hidden</text>
-      <text x="318.5" y="14">visible</text>
-      <text transform="translate(14 110) rotate(-90)">orange &lt;rect></text>
-      <text transform="translate(14 280) rotate(-90)">&lt;g></text>
-    </g>
-    <!-- ############### -->
-    <g transform="translate(20 20)">
+<g transform="translate(0 10)" style="font-size:12">
+    <g transform="translate(160 40)">
       <g>
-         <rect x="15" y="45" width="40" height="50" style="fill:#FFEE88"/>
-         <rect x="35" y="70" width="40" height="50" style="visibility:inherit;fill:orange"/>
+         <rect x="0"  y="45" width="40" height="50" style="fill:#eee"/>
+         <rect x="40" y="45" width="40" height="50" style="fill:#aaa"/>
+         <rect x="80" y="45" width="40" height="50" style="fill:#444"/>
+	 <text x="60" y="120" style="text-anchor:middle">inherit | inherit | inherit</text>
+	 <text x="60" y="136" style="text-anchor:middle">&lt;g> inherit</text>
       </g>
-      <g transform="translate(85 0)">
-         <rect x="15" y="45" width="40" height="50" style="fill:#FFEE88"/>
-         <rect x="35" y="70" width="40" height="50" style="visibility:collapse;fill:orange"/>
+      <g transform="translate(0 10)">
+      <g style="visibility:inherit">
+         <rect x="0"  y="45" width="40" height="50" style="fill:gold"/>
+         <rect x="40" y="45" width="40" height="50" style="fill:orange"/>
+         <rect x="80" y="45" width="40" height="50" style="fill:crimson"/>
       </g>
-      <g transform="translate(170 0)">
-         <rect x="15" y="45" width="40" height="50" style="fill:#FFEE88"/>
-         <rect x="35" y="70" width="40" height="50" style="visibility:hidden;fill:orange"/>
       </g>
-      <g transform="translate(255 0)">
-         <rect x="15" y="45" width="40" height="50" style="fill:#FFEE88"/>
-         <rect x="35" y="70" width="40" height="50" style="visibility:visible;fill:orange"/>
-      </g>
-
-      <g transform="translate(0 175)">
-        <g style="visibility:inherit">
-         <rect x="15" y="45" width="40" height="50" style="fill:#FFEE88"/>
-         <rect x="35" y="70" width="40" height="50" style="fill:orange"/>
-        </g>
-        <g style="visibility:collapse" transform="translate(85 0)">
-         <rect x="15" y="45" width="40" height="50" style="fill:#FFEE88"/>
-         <rect x="35" y="70" width="40" height="50" style="fill:orange"/>
-        </g>
-        <g style="visibility:hidden" transform="translate(170 0)">
-         <rect x="15" y="45" width="40" height="50" style="fill:#FFEE88"/>
-         <rect x="35" y="70" width="40" height="50" style="fill:orange"/>
-        </g>
-        <g style="visibility:visible" transform="translate(255 0)">
-         <rect x="15" y="45" width="40" height="50" style="fill:#FFEE88"/>
-         <rect x="35" y="70" width="40" height="50" style="fill:orange"/>
-        </g>
-     </g>
-   </g>
   </g>
 
+<!-- ########################################################################### -->
+    <g transform="translate(80 160)">
+      <g>
+         <rect x="0"  y="45" width="40" height="50" style="fill:#eee"/>
+         <rect x="40" y="45" width="40" height="50" style="fill:#aaa"/>
+         <rect x="80" y="45" width="40" height="50" style="fill:#444"/>
+	 <text x="60" y="120" style="text-anchor:middle">inherit | hidden | visible</text>
+	 <text x="60" y="136" style="text-anchor:middle">&lt;g> inherit</text>
+      </g>
+      <g transform="translate(160, 0)">
+         <rect x="0"  y="45" width="40" height="50" style="fill:#eee"/>
+         <rect x="40" y="45" width="40" height="50" style="fill:#aaa"/>
+         <rect x="80" y="45" width="40" height="50" style="fill:#444"/>
+	 <text x="60" y="120" style="text-anchor:middle">inherit | hidden | visible</text>
+	 <text x="60" y="136" style="text-anchor:middle">&lt;g> visible</text>
+      </g>
+      <g transform="translate(0 10)">
+      <g style="visibility:inherit">
+         <rect x="0"  y="45" width="40" height="50" style="visibility:inherit; fill:gold"/>
+         <rect x="40" y="45" width="40" height="50" style="visibility:hidden; fill:orange"/>
+         <rect x="80" y="45" width="40" height="50" style="visibility:visible; fill:crimson"/>
+      </g>
+      <g style="visibility:visible" transform="translate(160, 0)">
+         <rect x="0"  y="45"  width="40" height="50" style="visibility:inherit; fill:gold"/>
+         <rect x="40" y="45" width="40" height="50" style="visibility:hidden; fill:orange"/>
+         <rect x="80" y="45" width="40" height="50" style="visibility:visible; fill:crimson"/>
+      </g>
+      </g>
+    </g>
 
+    <g transform="translate(80 280)">
+      <g>
+         <rect x="0"  y="45" width="40" height="50" style="fill:#eee"/>
+         <rect x="40" y="45" width="40" height="50" style="fill:#aaa"/>
+         <rect x="80" y="45" width="40" height="50" style="fill:#444"/>
+	 <text x="60" y="120" style="text-anchor:middle">inherit | hidden | visible</text>
+	 <text x="60" y="136" style="text-anchor:middle">&lt;g> collapse</text>
+      </g>
+      <g transform="translate(160, 0)">
+         <rect x="0"  y="45" width="40" height="50" style="fill:#eee"/>
+         <rect x="40" y="45" width="40" height="50" style="fill:#aaa"/>
+         <rect x="80" y="45" width="40" height="50" style="fill:#444"/>
+	 <text x="60" y="120" style="text-anchor:middle">inherit | hidden | visible</text>
+	 <text x="60" y="136" style="text-anchor:middle">&lt;g> hidden</text>
+      </g>
+      <g transform="translate(0 10)">
+      <g style="visibility:collapse">
+         <rect x="0"  y="45" width="40" height="50" style="visibility:inherit; fill:gold"/>
+         <rect x="40" y="45" width="40" height="50" style="visibility:hidden; fill:orange"/>
+         <rect x="80" y="45" width="40" height="50" style="visibility:visible; fill:crimson"/>
+      </g>
+      <g style="visibility:hidden" transform="translate(160, 0)">
+         <rect x="0"  y="45"  width="40" height="50" style="visibility:inherit; fill:gold"/>
+         <rect x="40" y="45" width="40" height="50" style="visibility:hidden; fill:orange"/>
+         <rect x="80" y="45" width="40" height="50" style="visibility:visible; fill:crimson"/>
+      </g>
+      </g>
+    </g>
 
-
+</g>
 </g>
 
     <!-- ============================================================= -->
