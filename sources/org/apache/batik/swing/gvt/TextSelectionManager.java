@@ -224,8 +224,8 @@ public class TextSelectionManager {
         return outset(s.getBounds(), 1);
     }
 
-    static final Color fillColor   = new Color(200, 200, 200, 100);
-    static final Color strokeColor = new Color(0,     0,   0, 255);
+    static final Color fillColor   = new Color(200, 200, 255, 100);
+    static final Color strokeColor = new Color(255, 255, 255, 255);
 
     /**
      * The selection overlay.
@@ -247,7 +247,7 @@ public class TextSelectionManager {
                 g2d.setColor(fillColor);
                 g2d.fill(s);
 
-                g2d.setStroke(new java.awt.BasicStroke(2.0f));
+                g2d.setStroke(new java.awt.BasicStroke(1.0f));
                 g2d.setColor(strokeColor);
                 g2d.draw(s);
             }
