@@ -8,6 +8,7 @@
 
 package org.apache.batik.parser;
 
+import java.io.IOException;
 import java.io.Reader;
 
 /**
@@ -43,7 +44,8 @@ public class PreserveAspectRatioParser extends AbstractParser {
      * handler immediately.</p>
      * @param handler The transform list handler.
      */
-    public void setPreserveAspectRatioHandler(PreserveAspectRatioHandler handler) {
+    public void
+        setPreserveAspectRatioHandler(PreserveAspectRatioHandler handler) {
 	preserveAspectRatioHandler = handler;
     }
 
@@ -57,8 +59,8 @@ public class PreserveAspectRatioParser extends AbstractParser {
     /**
      * Parses the current stream.
      */
-    protected void doParse() throws ParseException {
-	read();
+    protected void doParse() throws ParseException, IOException {
+	current = reader.read();
 	skipSpaces();
 
         parsePreserveAspectRatio();
@@ -67,12 +69,13 @@ public class PreserveAspectRatioParser extends AbstractParser {
     /**
      * Parses a PreserveAspectRatio attribute.
      */
-    protected void parsePreserveAspectRatio() throws ParseException {
+    protected void parsePreserveAspectRatio()
+        throws ParseException, IOException {
 	preserveAspectRatioHandler.startPreserveAspectRatio();
 
         align: switch (current) {
         case 'n':
-	    read();
+	    current = reader.read();
 	    if (current != 'o') {
 		reportError("character.expected",
 			    new Object[] { new Character('o'),
@@ -80,7 +83,7 @@ public class PreserveAspectRatioParser extends AbstractParser {
 		skipIdentifier();
 		break align;
 	    }
-	    read();
+	    current = reader.read();
 	    if (current != 'n') {
 		reportError("character.expected",
 			    new Object[] { new Character('n'),
@@ -88,7 +91,7 @@ public class PreserveAspectRatioParser extends AbstractParser {
 		skipIdentifier();
 		break align;
 	    }
-	    read();
+	    current = reader.read();
 	    if (current != 'e') {
 		reportError("character.expected",
 			    new Object[] { new Character('e'),
@@ -96,13 +99,13 @@ public class PreserveAspectRatioParser extends AbstractParser {
 		skipIdentifier();
 		break align;
 	    }
-	    read();
+	    current = reader.read();
 	    skipSpaces();
 	    preserveAspectRatioHandler.none();
             break;
                 
         case 'x':
-            read();
+            current = reader.read();
             if (current != 'M') {
                 reportError("character.expected",
                             new Object[] { new Character('M'),
@@ -110,10 +113,10 @@ public class PreserveAspectRatioParser extends AbstractParser {
                 skipIdentifier();
                 break;
             }
-            read();
+            current = reader.read();
             switch (current) {
             case 'a':
-                read();
+                current = reader.read();
                 if (current != 'x') {
                     reportError("character.expected",
                                 new Object[] { new Character('x'),
@@ -121,7 +124,7 @@ public class PreserveAspectRatioParser extends AbstractParser {
                     skipIdentifier();
                     break align;
                 }
-                read();
+                current = reader.read();
                 if (current != 'Y') {
                     reportError("character.expected",
                                 new Object[] { new Character('Y'),
@@ -129,7 +132,7 @@ public class PreserveAspectRatioParser extends AbstractParser {
                     skipIdentifier();
                     break align;
                 }
-                read();
+                current = reader.read();
                 if (current != 'M') {
                     reportError("character.expected",
                                 new Object[] { new Character('M'),
@@ -137,10 +140,10 @@ public class PreserveAspectRatioParser extends AbstractParser {
                     skipIdentifier();
                     break align;
                 }
-                read();
+                current = reader.read();
                 switch (current) {
                 case 'a':
-                    read();
+                    current = reader.read();
                     if (current != 'x') {
                         reportError("character.expected",
                                     new Object[] { new Character('x'),
@@ -149,18 +152,18 @@ public class PreserveAspectRatioParser extends AbstractParser {
                         break align;
                     }
                     preserveAspectRatioHandler.xMaxYMax();
-                    read();
+                    current = reader.read();
                     break;
                 case 'i':
-                    read();
+                    current = reader.read();
                     switch (current) {
                     case 'd':
                         preserveAspectRatioHandler.xMaxYMid();
-                        read();
+                        current = reader.read();
                         break;
                     case 'n':
                         preserveAspectRatioHandler.xMaxYMin();
-                        read();
+                        current = reader.read();
                         break;
                     default:
                         reportError("character.unexpected",
@@ -171,10 +174,10 @@ public class PreserveAspectRatioParser extends AbstractParser {
                 }
                 break;
             case 'i':
-                read();
+                current = reader.read();
                 switch (current) {
                 case 'd':
-                    read();
+                    current = reader.read();
                     if (current != 'Y') {
                         reportError("character.expected",
                                     new Object[] { new Character('Y'),
@@ -182,7 +185,7 @@ public class PreserveAspectRatioParser extends AbstractParser {
                         skipIdentifier();
                         break align;
                     }
-                    read();
+                    current = reader.read();
                     if (current != 'M') {
                         reportError("character.expected",
                                     new Object[] { new Character('M'),
@@ -190,10 +193,10 @@ public class PreserveAspectRatioParser extends AbstractParser {
                         skipIdentifier();
                         break align;
                     }
-                    read();
+                    current = reader.read();
                     switch (current) {
                     case 'a':
-                        read();
+                        current = reader.read();
                         if (current != 'x') {
                             reportError
                                 ("character.expected",
@@ -203,18 +206,18 @@ public class PreserveAspectRatioParser extends AbstractParser {
 			    break align;
                         }
                         preserveAspectRatioHandler.xMidYMax();
-                        read();
+                        current = reader.read();
                         break;
                     case 'i':
-                        read();
+                        current = reader.read();
                         switch (current) {
                         case 'd':
 			    preserveAspectRatioHandler.xMidYMid();
-			    read();
+			    current = reader.read();
 			    break;
                         case 'n':
                             preserveAspectRatioHandler.xMidYMin();
-                            read();
+                            current = reader.read();
                             break;
 			default:
 			    reportError("character.unexpected",
@@ -225,7 +228,7 @@ public class PreserveAspectRatioParser extends AbstractParser {
                     }
                     break;
                 case 'n':
-                    read();
+                    current = reader.read();
                     if (current != 'Y') {
                         reportError("character.expected",
                                     new Object[] { new Character('Y'),
@@ -233,7 +236,7 @@ public class PreserveAspectRatioParser extends AbstractParser {
                         skipIdentifier();
                         break align;
                     }
-                    read();
+                    current = reader.read();
                     if (current != 'M') {
                         reportError("character.expected",
                                     new Object[] { new Character('M'),
@@ -241,10 +244,10 @@ public class PreserveAspectRatioParser extends AbstractParser {
                         skipIdentifier();
                         break align;
                     }
-                    read();
+                    current = reader.read();
                     switch (current) {
                     case 'a':
-                        read();
+                        current = reader.read();
                         if (current != 'x') {
                             reportError
                                 ("character.expected",
@@ -254,18 +257,18 @@ public class PreserveAspectRatioParser extends AbstractParser {
                             break align;
                         }
                         preserveAspectRatioHandler.xMinYMax();
-                        read();
+                        current = reader.read();
                         break;
                     case 'i':
-                        read();
+                        current = reader.read();
                         switch (current) {
                         case 'd':
                             preserveAspectRatioHandler.xMinYMid();
-                            read();
+                            current = reader.read();
                             break;
                         case 'n':
                             preserveAspectRatioHandler.xMinYMin();
-                            read();
+                            current = reader.read();
                             break;
                         default:
                             reportError
@@ -301,7 +304,7 @@ public class PreserveAspectRatioParser extends AbstractParser {
 
         switch (current) {
         case 'm':
-            read();
+            current = reader.read();
             if (current != 'e') {
                 reportError("character.expected",
                             new Object[] { new Character('e'),
@@ -309,7 +312,7 @@ public class PreserveAspectRatioParser extends AbstractParser {
                 skipIdentifier();
                 break;
             }
-            read();
+            current = reader.read();
             if (current != 'e') {
                 reportError("character.expected",
                             new Object[] { new Character('e'),
@@ -317,7 +320,7 @@ public class PreserveAspectRatioParser extends AbstractParser {
                 skipIdentifier();
                 break;
             }
-            read();
+            current = reader.read();
             if (current != 't') {
                 reportError("character.expected",
                             new Object[] { new Character('t'),
@@ -326,10 +329,10 @@ public class PreserveAspectRatioParser extends AbstractParser {
                 break;
             }
             preserveAspectRatioHandler.meet();
-            read();
+            current = reader.read();
             break;
         case 's':
-            read();
+            current = reader.read();
             if (current != 'l') {
                 reportError("character.expected",
                             new Object[] { new Character('l'),
@@ -337,7 +340,7 @@ public class PreserveAspectRatioParser extends AbstractParser {
                 skipIdentifier();
                 break;
             }
-            read();
+            current = reader.read();
             if (current != 'i') {
                 reportError("character.expected",
                             new Object[] { new Character('i'),
@@ -345,7 +348,7 @@ public class PreserveAspectRatioParser extends AbstractParser {
                 skipIdentifier();
                 break;
             }
-            read();
+            current = reader.read();
             if (current != 'c') {
                 reportError("character.expected",
                             new Object[] { new Character('c'),
@@ -353,7 +356,7 @@ public class PreserveAspectRatioParser extends AbstractParser {
                 skipIdentifier();
                 break;
             }
-            read();
+            current = reader.read();
             if (current != 'e') {
                 reportError("character.expected",
                             new Object[] { new Character('e'),
@@ -362,7 +365,7 @@ public class PreserveAspectRatioParser extends AbstractParser {
                 break;
             }
             preserveAspectRatioHandler.slice();
-            read();
+            current = reader.read();
             break;
         default:
             if (current != -1) {
@@ -385,12 +388,12 @@ public class PreserveAspectRatioParser extends AbstractParser {
      * Skips characters in the given reader until a white space is encountered.
      * @return the first character after the space.
      */
-    protected void skipIdentifier() {
+    protected void skipIdentifier() throws IOException {
 	loop: for (;;) {
-	    read();
+	    current = reader.read();
 	    switch(current) {
 	    case 0xD: case 0xA: case 0x20: case 0x9:
-		read();
+		current = reader.read();
 		break loop;
 	    default:
 		if (current == -1) {

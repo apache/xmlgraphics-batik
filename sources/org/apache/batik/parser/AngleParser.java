@@ -8,6 +8,7 @@
 
 package org.apache.batik.parser;
 
+import java.io.IOException;
 import java.io.Reader;
 
 /**
@@ -48,12 +49,12 @@ public class AngleParser extends NumberParser {
     }
 
     /**
-     * Parses the given reader representing an angle.
+     * Parses the current reader representing an angle.
      */
-    protected void doParse() throws ParseException {
+    protected void doParse() throws ParseException, IOException {
 	angleHandler.startAngle();
 
-	read();
+	current = reader.read();
 	skipSpaces();
 	
 	try {
@@ -69,14 +70,14 @@ public class AngleParser extends NumberParser {
 		
 		switch (current) {
 		case 'd':
-		    read();
+		    current = reader.read();
 		    if (current != 'e') {
 			reportError("character.expected",
 				    new Object[] { new Character('e'),
 						   new Integer(current) });
 			break;
 		    }
-		    read();
+		    current = reader.read();
 		    if (current != 'g') {
 			reportError("character.expected",
 				    new Object[] { new Character('g'),
@@ -84,24 +85,24 @@ public class AngleParser extends NumberParser {
 			break;
 		    }
 		    angleHandler.deg();
-		    read();
+		    current = reader.read();
 		    break;
 		case 'g':
-		    read();
+		    current = reader.read();
 		    if (current != 'r') {
 			reportError("character.expected",
 				    new Object[] { new Character('r'),
 						   new Integer(current) });
 			break;
 		    }
-		    read();
+		    current = reader.read();
 		    if (current != 'a') {
 			reportError("character.expected",
 				    new Object[] { new Character('a'),
 						   new Integer(current) });
 			break;
 		    }
-		    read();
+		    current = reader.read();
 		    if (current != 'd') {
 			reportError("character.expected",
 				    new Object[] { new Character('d'),
@@ -109,17 +110,17 @@ public class AngleParser extends NumberParser {
 			break;
 		    }
 		    angleHandler.grad();
-		    read();
+		    current = reader.read();
 		    break;
 		case 'r':
-		    read();
+		    current = reader.read();
 		    if (current != 'a') {
 			reportError("character.expected",
 				    new Object[] { new Character('a'),
 						   new Integer(current) });
 			break;
 		    }
-		    read();
+		    current = reader.read();
 		    if (current != 'd') {
 			reportError("character.expected",
 				    new Object[] { new Character('d'),
@@ -127,7 +128,7 @@ public class AngleParser extends NumberParser {
 			break;
 		    }
 		    angleHandler.rad();
-		    read();
+		    current = reader.read();
 		    break;
 		default:
 		    reportError("character.unexpected",

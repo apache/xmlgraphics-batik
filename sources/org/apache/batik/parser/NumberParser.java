@@ -22,7 +22,7 @@ public abstract class NumberParser extends AbstractParser {
     /**
      * Parses the content of the buffer and converts it to a float.
      */
-    protected float parseFloat() throws ParseException {
+    protected float parseFloat() throws ParseException, IOException {
         int     mant     = 0;
         int     mantDig  = 0;
         boolean mantPos  = true;
@@ -37,12 +37,7 @@ public abstract class NumberParser extends AbstractParser {
         case '-':
             mantPos = false;
         case '+':
-            if (position == count && !fillBuffer()) {
-                current = -1;
-                break;
-            }
-            column++;
-            current = buffer[position++];
+            current = reader.read();
         }
 
         m1: switch (current) {
@@ -57,12 +52,7 @@ public abstract class NumberParser extends AbstractParser {
         case '0':
             mantRead = true;
             l: for (;;) {
-                if (position == count && !fillBuffer()) {
-                    current = -1;
-                } else {
-                    column++;
-                    current = buffer[position++];
-                }
+                current = reader.read();
                 switch (current) {
                 case '1': case '2': case '3': case '4': 
                 case '5': case '6': case '7': case '8': case '9': 
@@ -85,12 +75,7 @@ public abstract class NumberParser extends AbstractParser {
                 } else {
                     expAdj++;
                 }
-                if (position == count && !fillBuffer()) {
-                    current = -1;
-                } else {
-                    column++;
-                    current = buffer[position++];
-                }
+                current = reader.read();
                 switch (current) {
                 default:
                     break l;
@@ -101,12 +86,7 @@ public abstract class NumberParser extends AbstractParser {
         }
         
         if (current == '.') {
-            if (position == count && !fillBuffer()) {
-                current = -1;
-            } else {
-                column++;
-                current = buffer[position++];
-            }
+            current = reader.read();
             m2: switch (current) {
             default:
             case 'e': case 'E':
@@ -120,12 +100,7 @@ public abstract class NumberParser extends AbstractParser {
             case '0':
                 if (mantDig == 0) {
                     l: for (;;) {
-                        if (position == count && !fillBuffer()) {
-                            current = -1;
-                        } else {
-                            column++;
-                            current = buffer[position++];
-                        }
+                        current = reader.read();
                         expAdj--;
                         switch (current) {
                         case '1': case '2': case '3': case '4': 
@@ -148,12 +123,7 @@ public abstract class NumberParser extends AbstractParser {
                         mant = mant * 10 + (current - '0');
                         expAdj--;
                     }
-                    if (position == count && !fillBuffer()) {
-                        current = -1;
-                    } else {
-                        column++;
-                        current = buffer[position++];
-                    }
+                    current = reader.read();
                     switch (current) {
                     default:
                         break l;
@@ -166,12 +136,7 @@ public abstract class NumberParser extends AbstractParser {
 
         switch (current) {
         case 'e': case 'E':
-            if (position == count && !fillBuffer()) {
-                current = -1;
-            } else {
-                column++;
-                current = buffer[position++];
-            }
+            current = reader.read();
             switch (current) {
             default:
                 reportError("character.unexpected",
@@ -180,12 +145,7 @@ public abstract class NumberParser extends AbstractParser {
             case '-':
                 expPos = false;
             case '+':
-                if (position == count && !fillBuffer()) {
-                    current = -1;
-                } else {
-                    column++;
-                    current = buffer[position++];
-                }
+                current = reader.read();
                 switch (current) {
                 default:
                     reportError("character.unexpected",
@@ -201,12 +161,7 @@ public abstract class NumberParser extends AbstractParser {
             en: switch (current) {
             case '0':
                 l: for (;;) {
-                    if (position == count && !fillBuffer()) {
-                        current = -1;
-                    } else {
-                        column++;
-                        current = buffer[position++];
-                    }
+                    current = reader.read();
                     switch (current) {
                     case '1': case '2': case '3': case '4': 
                     case '5': case '6': case '7': case '8': case '9': 
@@ -224,12 +179,7 @@ public abstract class NumberParser extends AbstractParser {
                         expDig++;
                         exp = exp * 10 + (current - '0');
                     }
-                    if (position == count && !fillBuffer()) {
-                        current = -1;
-                    } else {
-                        column++;
-                        current = buffer[position++];
-                    }
+                    current = reader.read();
                     switch (current) {
                     default:
                         break l;

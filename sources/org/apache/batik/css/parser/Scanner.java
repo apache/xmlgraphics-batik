@@ -8,8 +8,13 @@
 
 package org.apache.batik.css.parser;
 
+import java.io.InputStream;
 import java.io.IOException;
 import java.io.Reader;
+
+import org.apache.batik.util.io.NormalizingReader;
+import org.apache.batik.util.io.StreamNormalizingReader;
+import org.apache.batik.util.io.StringNormalizingReader;
 
 /**
  * This class represents a CSS scanner - an object which decodes CSS lexical
@@ -23,37 +28,12 @@ public class Scanner {
     /**
      * The reader.
      */
-    protected Reader reader;
-
-    /**
-     * The current line.
-     */
-    protected int line = 1;
-
-    /**
-     * The current column.
-     */
-    protected int column;
+    protected NormalizingReader reader;
 
     /**
      * The current char.
      */
     protected int current;
-
-    /**
-     * The reading buffer.
-     */
-    protected char[] readBuffer;
-
-    /**
-     * The current position in the read buffer.
-     */
-    protected int readPosition;
-
-    /**
-     * The current read buffer count.
-     */
-    protected int readCount;
 
     /**
      * The recording buffer.
@@ -92,8 +72,21 @@ public class Scanner {
      */
     public Scanner(Reader r) throws ParseException {
         try {
-            reader = r;
-            readBuffer = new char[4096];
+            reader = new StreamNormalizingReader(r);
+            current = nextChar();
+        } catch (IOException e) {
+            throw new ParseException(e);
+        }
+    }
+
+    /**
+     * Creates a new Scanner object.
+     * @param is The input stream to scan.
+     * @param enc The encoding to use to decode the input stream, or null.
+     */
+    public Scanner(InputStream is, String enc) throws ParseException {
+        try {
+            reader = new StreamNormalizingReader(is, enc);
             current = nextChar();
         } catch (IOException e) {
             throw new ParseException(e);
@@ -106,16 +99,8 @@ public class Scanner {
      */
     public Scanner(String s) throws ParseException {
         try {
-            reader       = null;
-            readBuffer   = s.toCharArray();
-            readPosition = 0;
-            readCount    = readBuffer.length;
-            collapseCRNL(0);
-            if (readCount == 0) {
-                current = -1; 
-            } else {
-                current = nextChar();
-            }
+            reader = new StringNormalizingReader(s);
+            current = nextChar(); 
         } catch (IOException e) {
             throw new ParseException(e);
         }
@@ -125,14 +110,14 @@ public class Scanner {
      * Returns the current line.
      */
     public int getLine() {
-        return line;
+        return reader.getLine();
     }
 
     /**
      * Returns the current column.
      */
     public int getColumn() {
-        return column;
+        return reader.getColumn();
     }
 
     /**
@@ -354,7 +339,9 @@ public class Scanner {
                     } while (current != -1 && current == '*');
                 } while (current != -1 && current != '/');
                 if (current == -1) {
-                    throw new ParseException("eof", line, column);
+                    throw new ParseException("eof",
+                                             reader.getLine(),
+                                             reader.getColumn());
                 }
                 nextChar();
                 type = LexicalUnits.COMMENT; 
@@ -368,7 +355,9 @@ public class Scanner {
             case '<':
                 nextChar();
                 if (current != '!') {
-                    throw new ParseException("character", line, column);
+                    throw new ParseException("character",
+                                             reader.getLine(),
+                                             reader.getColumn());
                 }
                 nextChar();
                 if (current == '-') {
@@ -379,7 +368,9 @@ public class Scanner {
                         return;
                     }
                 }
-                throw new ParseException("character", line, column);
+                throw new ParseException("character",
+                                         reader.getLine(),
+                                         reader.getColumn());
             case '-':
                 nextChar();
                 if (current != '-') {
@@ -392,7 +383,9 @@ public class Scanner {
                     type = LexicalUnits.CDC;
                     return;
                 }
-                throw new ParseException("character", line, column);
+                throw new ParseException("character",
+                                         reader.getLine(),
+                                         reader.getColumn());
             case '|':
                 nextChar();
                 if (current == '=') {
@@ -400,7 +393,9 @@ public class Scanner {
                     type = LexicalUnits.DASHMATCH;
                     return;
                 }
-                throw new ParseException("character", line, column);
+                throw new ParseException("character",
+                                         reader.getLine(),
+                                         reader.getColumn());
             case '~':
                 nextChar();
                 if (current == '=') {
@@ -408,7 +403,9 @@ public class Scanner {
                     type = LexicalUnits.INCLUDES;
                     return;
                 }
-                throw new ParseException("character", line, column);
+                throw new ParseException("character",
+                                         reader.getLine(),
+                                         reader.getColumn());
             case '#':
                 nextChar();
                 if (ScannerUtilities.isCSSNameCharacter((char)current)) {
@@ -420,11 +417,14 @@ public class Scanner {
                             escape();
                         }
                     } while (current != -1 &&
-                             ScannerUtilities.isCSSNameCharacter((char)current));
+                             ScannerUtilities.isCSSNameCharacter
+                                 ((char)current));
                     type = LexicalUnits.HASH;
                     return;
                 }
-                throw new ParseException("character", line, column);
+                throw new ParseException("character",
+                                         reader.getLine(),
+                                         reader.getColumn());
             case '@':
                 nextChar();
                 switch (current) {
@@ -495,8 +495,11 @@ public class Scanner {
                     }
                     break;
                 default:
-                    if (!ScannerUtilities.isCSSIdentifierStartCharacter((char)current)) {
-                        throw new ParseException("character", line, column);
+                    if (!ScannerUtilities.isCSSIdentifierStartCharacter
+                        ((char)current)) {
+                        throw new ParseException("character",
+                                                 reader.getLine(),
+                                                 reader.getColumn());
                     }
                     start = position - 1;
                 }
@@ -513,7 +516,8 @@ public class Scanner {
             case '!':
                 do {
                     nextChar();
-                } while (current != -1 && ScannerUtilities.isCSSSpace((char)current));
+                } while (current != -1 &&
+                         ScannerUtilities.isCSSSpace((char)current));
                 if (isEqualIgnoreCase(current, 'i') &&
                     isEqualIgnoreCase(nextChar(), 'm') &&
                     isEqualIgnoreCase(nextChar(), 'p') &&
@@ -528,9 +532,13 @@ public class Scanner {
                     return;
                 }
                 if (current == -1) {
-                    throw new ParseException("eof", line, column);
+                    throw new ParseException("eof",
+                                             reader.getLine(),
+                                             reader.getColumn());
                 } else {
-                    throw new ParseException("character", line, column);
+                    throw new ParseException("character",
+                                             reader.getLine(),
+                                             reader.getColumn());
                 }
             case '0': case '1': case '2': case '3': case '4':
             case '5': case '6': case '7': case '8': case '9':
@@ -560,8 +568,11 @@ public class Scanner {
                             break;
                         default:
                             if (range &&
-                            !ScannerUtilities.isCSSHexadecimalCharacter((char)current)) {
-                                throw new ParseException("character", line, column);
+                            !ScannerUtilities.isCSSHexadecimalCharacter
+                                ((char)current)) {
+                                throw new ParseException("character",
+                                                         reader.getLine(),
+                                                         reader.getColumn());
                             }
                         }
                     }
@@ -572,33 +583,39 @@ public class Scanner {
                     }
                     if (current == '-') {
                         nextChar();
-                        if (!ScannerUtilities.isCSSHexadecimalCharacter((char)current)) {
+                        if (!ScannerUtilities.isCSSHexadecimalCharacter
+                            ((char)current)) {
                             throw new ParseException("character",
-                                                     line,
-                                                     column);
+                                                     reader.getLine(),
+                                                     reader.getColumn());
                         }
                         nextChar();
-                        if (!ScannerUtilities.isCSSHexadecimalCharacter((char)current)) {
+                        if (!ScannerUtilities.isCSSHexadecimalCharacter
+                            ((char)current)) {
                             type = LexicalUnits.UNICODE_RANGE;
                             return;
                         }
                         nextChar();
-                        if (!ScannerUtilities.isCSSHexadecimalCharacter((char)current)) {
+                        if (!ScannerUtilities.isCSSHexadecimalCharacter
+                            ((char)current)) {
                             type = LexicalUnits.UNICODE_RANGE;
                             return;
                         }
                         nextChar();
-                        if (!ScannerUtilities.isCSSHexadecimalCharacter((char)current)) {
+                        if (!ScannerUtilities.isCSSHexadecimalCharacter
+                            ((char)current)) {
                             type = LexicalUnits.UNICODE_RANGE;
                             return;
                         }
                         nextChar();
-                        if (!ScannerUtilities.isCSSHexadecimalCharacter((char)current)) {
+                        if (!ScannerUtilities.isCSSHexadecimalCharacter
+                            ((char)current)) {
                             type = LexicalUnits.UNICODE_RANGE;
                             return;
                         }
                         nextChar();
-                        if (!ScannerUtilities.isCSSHexadecimalCharacter((char)current)) {
+                        if (!ScannerUtilities.isCSSHexadecimalCharacter
+                            ((char)current)) {
                             type = LexicalUnits.UNICODE_RANGE;
                             return;
                         }
@@ -618,21 +635,29 @@ public class Scanner {
                             do {
                                 nextChar();
                             } while (current != -1 &&
-                                     ScannerUtilities.isCSSSpace((char)current));
+                                     ScannerUtilities.isCSSSpace
+                                     ((char)current));
                             switch (current) {
                             case '\'':
                                 string1();
                                 blankCharacters += 2;
                                 while (current != -1 &&
-                                       ScannerUtilities.isCSSSpace((char)current)) {
+                                       ScannerUtilities.isCSSSpace
+                                       ((char)current)) {
                                     blankCharacters++;
                                     nextChar();
                                 }
                                 if (current == -1) {
-                                    throw new ParseException("eof", line, column);
+                                    throw new ParseException
+                                        ("eof",
+                                         reader.getLine(),
+                                         reader.getColumn());
                                 }
                                 if (current != ')') {
-                                    throw new ParseException("character", line, column);
+                                    throw new ParseException
+                                        ("character",
+                                         reader.getLine(),
+                                         reader.getColumn());
                                 }
                                 nextChar();
                                 type = LexicalUnits.URI;
@@ -641,41 +666,62 @@ public class Scanner {
                                 string2();
                                 blankCharacters += 2;
                                 while (current != -1 &&
-                                       ScannerUtilities.isCSSSpace((char)current)) {
+                                       ScannerUtilities.isCSSSpace
+                                       ((char)current)) {
                                     blankCharacters++;
                                     nextChar();
                                 }
                                 if (current == -1) {
-                                    throw new ParseException("eof", line, column);
+                                    throw new ParseException
+                                        ("eof",
+                                         reader.getLine(),
+                                         reader.getColumn());
                                 }
                                 if (current != ')') {
-                                    throw new ParseException("character", line, column);
+                                    throw new ParseException
+                                        ("character",
+                                         reader.getLine(),
+                                         reader.getColumn());
                                 }
                                 nextChar();
                                 type = LexicalUnits.URI;
                                 return;
                             case ')':
-                                throw new ParseException("character", line, column);
+                                throw new ParseException("character",
+                                                         reader.getLine(),
+                                                         reader.getColumn());
                             default:
-                                if (!ScannerUtilities.isCSSURICharacter((char)current)) {
-                                    throw new ParseException("character", line, column);
+                                if (!ScannerUtilities.isCSSURICharacter
+                                    ((char)current)) {
+                                    throw new ParseException
+                                        ("character",
+                                         reader.getLine(),
+                                         reader.getColumn());
                                 }
                                 start = position - 1;
                                 do {
                                     nextChar();
                                 } while (current != -1 &&
-                                      ScannerUtilities.isCSSURICharacter((char)current));
+                                      ScannerUtilities.isCSSURICharacter
+                                         ((char)current));
                                 blankCharacters++;
                                 while (current != -1 &&
-                                       ScannerUtilities.isCSSSpace((char)current)) {
+                                       ScannerUtilities.isCSSSpace
+                                       ((char)current)) {
                                     blankCharacters++;
                                     nextChar();
                                 }
                                 if (current == -1) {
-                                    throw new ParseException("eof", line, column);
+                                    throw new ParseException
+                                        ("eof",
+                                         reader.getLine(),
+                                         reader.getColumn());
                                 }
                                 if (current != ')') {
-                                    throw new ParseException("character", line, column);
+                                    throw new ParseException
+                                        ("character",
+                                         reader.getLine(),
+                                         reader.getColumn());
                                 }
                                 nextChar();
                                 type = LexicalUnits.URI;
@@ -696,7 +742,8 @@ public class Scanner {
                 type = LexicalUnits.IDENTIFIER;
                 return;
             default:
-                if (ScannerUtilities.isCSSIdentifierStartCharacter((char)current)) {
+                if (ScannerUtilities.isCSSIdentifierStartCharacter
+                    ((char)current)) {
                     // Identifier
                     do {
                         nextChar();
@@ -705,7 +752,8 @@ public class Scanner {
                             escape();
                         }
                     } while (current != -1 && 
-                             ScannerUtilities.isCSSNameCharacter((char)current));
+                             ScannerUtilities.isCSSNameCharacter
+                             ((char)current));
                     if (current == '(') {
                         nextChar();
                         type = LexicalUnits.FUNCTION;
@@ -715,7 +763,9 @@ public class Scanner {
                     return;
                 }
                 nextChar();
-                throw new ParseException("character", line, column);
+                throw new ParseException("character",
+                                         reader.getLine(),
+                                         reader.getColumn());
             }
         } catch (IOException e) {
             throw new ParseException(e);
@@ -731,7 +781,9 @@ public class Scanner {
         loop: for (;;) {
             switch (nextChar()) {
             case -1:
-                throw new ParseException("eof", line, column);
+                throw new ParseException("eof",
+                                         reader.getLine(),
+                                         reader.getColumn());
             case '\'':
                 break loop;
             case '"':
@@ -747,7 +799,9 @@ public class Scanner {
                 break;
             default:
                 if (!ScannerUtilities.isCSSStringCharacter((char)current)) {
-                    throw new ParseException("character", line, column);
+                    throw new ParseException("character",
+                                             reader.getLine(),
+                                             reader.getColumn());
                 }
             }
         }
@@ -764,7 +818,9 @@ public class Scanner {
         loop: for (;;) {
             switch (nextChar()) {
             case -1:
-                throw new ParseException("eof", line, column);
+                throw new ParseException("eof",
+                                         reader.getLine(),
+                                         reader.getColumn());
             case '\'':
                 break;
             case '"':
@@ -780,7 +836,9 @@ public class Scanner {
                 break;
             default:
                 if (!ScannerUtilities.isCSSStringCharacter((char)current)) {
-                    throw new ParseException("character", line, column);
+                    throw new ParseException("character",
+                                             reader.getLine(),
+                                             reader.getColumn());
                 }
             }
         }
@@ -800,7 +858,9 @@ public class Scanner {
                 case '5': case '6': case '7': case '8': case '9':
                     return dotNumber();
                 }
-                throw new ParseException("character", line, column);
+                throw new ParseException("character",
+                                         reader.getLine(),
+                                         reader.getColumn());
             default:
                 break loop;
             case '0': case '1': case '2': case '3': case '4':
@@ -844,7 +904,8 @@ public class Scanner {
                     do {
                         nextChar();
                     } while (current != -1 &&
-                             ScannerUtilities.isCSSNameCharacter((char)current));
+                             ScannerUtilities.isCSSNameCharacter
+                             ((char)current));
                     return LexicalUnits.DIMENSION;
                 }
                 return LexicalUnits.CM;
@@ -869,7 +930,8 @@ public class Scanner {
                         do {
                             nextChar();
                         } while (current != -1 &&
-                                 ScannerUtilities.isCSSNameCharacter((char)current));
+                                 ScannerUtilities.isCSSNameCharacter
+                                 ((char)current));
                         return LexicalUnits.DIMENSION;
                     }
                     return LexicalUnits.DEG;
@@ -892,7 +954,8 @@ public class Scanner {
                     do {
                         nextChar();
                     } while (current != -1 &&
-                             ScannerUtilities.isCSSNameCharacter((char)current));
+                             ScannerUtilities.isCSSNameCharacter
+                             ((char)current));
                     return LexicalUnits.DIMENSION;
                 }
                 return LexicalUnits.EM;
@@ -904,7 +967,8 @@ public class Scanner {
                     do {
                         nextChar();
                     } while (current != -1 &&
-                             ScannerUtilities.isCSSNameCharacter((char)current));
+                             ScannerUtilities.isCSSNameCharacter
+                             ((char)current));
                     return LexicalUnits.DIMENSION;
                 }
                 return LexicalUnits.EX;
@@ -928,11 +992,13 @@ public class Scanner {
                     case 'D':
                         nextChar();
                         if (current != -1 &&
-                            ScannerUtilities.isCSSNameCharacter((char)current)) {
+                            ScannerUtilities.isCSSNameCharacter
+                            ((char)current)) {
                             do {
                                 nextChar();
                             } while (current != -1 &&
-                                     ScannerUtilities.isCSSNameCharacter((char)current));
+                                     ScannerUtilities.isCSSNameCharacter
+                                     ((char)current));
                             return LexicalUnits.DIMENSION;
                         }
                         return LexicalUnits.GRAD;
@@ -957,7 +1023,8 @@ public class Scanner {
                     do {
                         nextChar();
                     } while (current != -1 &&
-                             ScannerUtilities.isCSSNameCharacter((char)current));
+                             ScannerUtilities.isCSSNameCharacter
+                             ((char)current));
                     return LexicalUnits.DIMENSION;
                 }
                 return LexicalUnits.HZ;
@@ -979,7 +1046,8 @@ public class Scanner {
                     do {
                         nextChar();
                     } while (current != -1 &&
-                             ScannerUtilities.isCSSNameCharacter((char)current));
+                             ScannerUtilities.isCSSNameCharacter
+                             ((char)current));
                     return LexicalUnits.DIMENSION;
                 }
                 return LexicalUnits.IN;
@@ -1004,7 +1072,8 @@ public class Scanner {
                         do {
                             nextChar();
                         } while (current != -1 &&
-                                 ScannerUtilities.isCSSNameCharacter((char)current));
+                                 ScannerUtilities.isCSSNameCharacter
+                                 ((char)current));
                         return LexicalUnits.DIMENSION;
                     }
                     return LexicalUnits.KHZ;
@@ -1027,7 +1096,8 @@ public class Scanner {
                     do {
                         nextChar();
                     } while (current != -1 &&
-                             ScannerUtilities.isCSSNameCharacter((char)current));
+                             ScannerUtilities.isCSSNameCharacter
+                             ((char)current));
                     return LexicalUnits.DIMENSION;
                 }
                 return LexicalUnits.MM;
@@ -1039,7 +1109,8 @@ public class Scanner {
                     do {
                         nextChar();
                     } while (current != -1 &&
-                             ScannerUtilities.isCSSNameCharacter((char)current));
+                             ScannerUtilities.isCSSNameCharacter
+                             ((char)current));
                     return LexicalUnits.DIMENSION;
                 }
                 return LexicalUnits.MS;
@@ -1061,7 +1132,8 @@ public class Scanner {
                     do {
                         nextChar();
                     } while (current != -1 &&
-                             ScannerUtilities.isCSSNameCharacter((char)current));
+                             ScannerUtilities.isCSSNameCharacter
+                             ((char)current));
                     return LexicalUnits.DIMENSION;
                 }
                 return LexicalUnits.PC;
@@ -1073,7 +1145,8 @@ public class Scanner {
                     do {
                         nextChar();
                     } while (current != -1 &&
-                             ScannerUtilities.isCSSNameCharacter((char)current));
+                             ScannerUtilities.isCSSNameCharacter
+                             ((char)current));
                     return LexicalUnits.DIMENSION;
                 }
                 return LexicalUnits.PT;
@@ -1085,7 +1158,8 @@ public class Scanner {
                     do {
                         nextChar();
                     } while (current != -1 &&
-                             ScannerUtilities.isCSSNameCharacter((char)current));
+                             ScannerUtilities.isCSSNameCharacter
+                             ((char)current));
                     return LexicalUnits.DIMENSION;
                 }
                 return LexicalUnits.PX;
@@ -1110,7 +1184,8 @@ public class Scanner {
                         do {
                             nextChar();
                         } while (current != -1 &&
-                                 ScannerUtilities.isCSSNameCharacter((char)current));
+                                 ScannerUtilities.isCSSNameCharacter
+                                 ((char)current));
                         return LexicalUnits.DIMENSION;
                     }
                     return LexicalUnits.RAD;
@@ -1128,7 +1203,8 @@ public class Scanner {
             return LexicalUnits.S;
         default:
             if (current != -1 &&
-                ScannerUtilities.isCSSIdentifierStartCharacter((char)current)) {
+                ScannerUtilities.isCSSIdentifierStartCharacter
+                ((char)current)) {
                 do {
                     nextChar();
                 } while (current != -1 &&
@@ -1184,7 +1260,9 @@ public class Scanner {
             nextChar();
             return;
         }
-        throw new ParseException("character", line, column);
+        throw new ParseException("character",
+                                 reader.getLine(),
+                                 reader.getColumn());
     }
 
     /**
@@ -1199,101 +1277,20 @@ public class Scanner {
      * end of stream has been reached.
      */
     protected int nextChar() throws IOException {
-        if (readPosition == readCount && !fillReadBuffer()) {
-            return current = -1;
-        }
+        current = reader.read();
 
-        if (current != 10) {
-            column++;
-        } else {
-            line++;
-            column = 1;
+        if (current == -1) {
+            return current;
         }
-
-        current = readBuffer[readPosition++];
 
         if (position == buffer.length) {
             char[] t = new char[position * 3 / 2];
-            System.arraycopy(buffer, 0, t, 0, position);
+            for (int i = 0; i < position; i++) {
+                t[i] = buffer[i];
+            }
             buffer = t;
         }
 
         return buffer[position++] = (char)current;
-    }
-
-    private boolean fillReadBuffer() throws IOException {
-        if (readCount != 0) {
-            if (readPosition == readCount) {
-                readBuffer[0] = readBuffer[readCount-1];
-                readCount = 1;
-                readPosition = 1;
-            } else {
-                // we keep the last char in our readBuffer.
-                System.arraycopy(readBuffer, readPosition-1, readBuffer, 0, 
-                                 readCount-readPosition+1);
-                readCount = (readCount-readPosition)+1;
-                readPosition = 1;
-            }
-        }
-
-        // No reader so can't extend...
-        if (reader == null) {
-            return (readCount != readPosition);
-        }
-                    
-        // remember where the fill starts...
-        int src = readCount - 1;
-        if (src < 0) {
-            src = 0;
-        }
-
-        // Refill the readBuffer...
-        int read = reader.read(readBuffer, readCount, 
-                               readBuffer.length-readCount);
-        if (read == -1) {
-            return readCount != readPosition;
-        }
-
-        readCount += read; // add in chars read.
-        collapseCRNL(src); // Now collapse cr/nl...
-
-        return readCount != readPosition;
-    }
-
-    private void collapseCRNL(int src) {
-        // Now collapse cr/nl...
-        while (src < readCount) {
-            if (readBuffer[src] != 13) {
-                src++;
-            } else {
-                readBuffer[src] = 10;
-                src++;
-                if (src >= readCount) {
-                    break;
-                }
-                if (readBuffer[src] == 10) {
-                    // We now need to collapse some of the chars to
-                    // eliminate cr/nl pairs.  This is where we do it...
-                    int dst = src; // start writing where this 10 is
-                    src++; // skip reading this 10.
-                    while (src < readCount) {
-                        if (readBuffer[src] == 13) {
-                            readBuffer[dst++] = 10;
-                            src++;
-                            if (src >= readCount) {
-                                break;
-                            }
-                            if (readBuffer[src] == 10) {
-                                src++;
-                            }
-                            continue;
-                        }
-                        readBuffer[dst++] = readBuffer[src++];
-                    }
-                    readCount = dst;
-                    break;
-                }
-            }
-        }
     }
 }

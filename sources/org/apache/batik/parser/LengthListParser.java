@@ -52,10 +52,10 @@ public class LengthListParser extends LengthParser {
     /**
      * Parses the given reader.
      */
-    protected void doParse() throws ParseException {
+    protected void doParse() throws ParseException, IOException {
 	((LengthListHandler)lengthHandler).startLengthList();
 
-	read();
+	current = reader.read();
 	skipSpaces();
 	
 	try {

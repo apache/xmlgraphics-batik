@@ -8,6 +8,7 @@
 
 package org.apache.batik.parser;
 
+import java.io.IOException;
 import java.io.Reader;
 
 /**
@@ -56,12 +57,12 @@ public class TransformListParser extends NumberParser {
     /**
      * Parses the current reader.
      */
-    protected void doParse() throws ParseException {
+    protected void doParse() throws ParseException, IOException {
 	transformListHandler.startTransformList();
 
 	loop: for (;;) {
             try {
-                read();
+                current = reader.read();
                 switch (current) {
                 case 0xD:
                 case 0xA:
@@ -79,7 +80,7 @@ public class TransformListParser extends NumberParser {
                     parseTranslate();
                     break;
                 case 's':
-                    read();
+                    current = reader.read();
                     switch (current) {
                     case 'c':
                         parseScale();
@@ -117,8 +118,8 @@ public class TransformListParser extends NumberParser {
     /**
      * Parses a matrix transform. 'm' is assumed to be the current character.
      */
-    protected void parseMatrix() throws ParseException {
-	read();
+    protected void parseMatrix() throws ParseException, IOException {
+	current = reader.read();
 
 	// Parse 'atrix wsp? ( wsp?'
 	if (current != 'a') {
@@ -128,7 +129,7 @@ public class TransformListParser extends NumberParser {
 	    skipTransform();
 	    return;
 	}
-	read();
+	current = reader.read();
 	if (current != 't') {
 	    reportError("character.expected",
 			new Object[] { new Character('t'),
@@ -136,7 +137,7 @@ public class TransformListParser extends NumberParser {
 	    skipTransform();
 	    return;
 	}
-	read();
+	current = reader.read();
 	if (current != 'r') {
 	    reportError("character.expected",
 			new Object[] { new Character('r'),
@@ -144,7 +145,7 @@ public class TransformListParser extends NumberParser {
 	    skipTransform();
 	    return;
 	}
-	read();
+	current = reader.read();
 	if (current != 'i') {
 	    reportError("character.expected",
 			new Object[] { new Character('i'),
@@ -152,7 +153,7 @@ public class TransformListParser extends NumberParser {
 	    skipTransform();
 	    return;
 	}
-	read();
+	current = reader.read();
 	if (current != 'x') {
 	    reportError("character.expected",
 			new Object[] { new Character('x'),
@@ -160,7 +161,7 @@ public class TransformListParser extends NumberParser {
 	    skipTransform();
 	    return;
 	}
-	read();
+	current = reader.read();
 	skipSpaces();
 	if (current != '(') {
 	    reportError("character.expected",
@@ -169,7 +170,7 @@ public class TransformListParser extends NumberParser {
 	    skipTransform();
 	    return;
 	}
-	read();
+	current = reader.read();
 	skipSpaces();
 
         float a = parseFloat();
@@ -200,8 +201,8 @@ public class TransformListParser extends NumberParser {
      * Parses a rotate transform. 'r' is assumed to be the current character.
      * @return the current character.
      */
-    protected void parseRotate() throws ParseException {
-	read();
+    protected void parseRotate() throws ParseException, IOException {
+	current = reader.read();
 
 	// Parse 'otate wsp? ( wsp?'
 	if (current != 'o') {
@@ -211,7 +212,7 @@ public class TransformListParser extends NumberParser {
 	    skipTransform();
 	    return;
 	}
-	read();
+	current = reader.read();
 	if (current != 't') {
 	    reportError("character.expected",
 			new Object[] { new Character('t'),
@@ -219,7 +220,7 @@ public class TransformListParser extends NumberParser {
 	    skipTransform();
 	    return;
 	}
-	read();
+	current = reader.read();
 	if (current != 'a') {
 	    reportError("character.expected",
 			new Object[] { new Character('a'),
@@ -227,7 +228,7 @@ public class TransformListParser extends NumberParser {
 	    skipTransform();
 	    return;
 	}
-	read();
+	current = reader.read();
 	if (current != 't') {
 	    reportError("character.expected",
 			new Object[] { new Character('t'),
@@ -235,7 +236,7 @@ public class TransformListParser extends NumberParser {
 	    skipTransform();
 	    return;
 	}
-	read();
+	current = reader.read();
 	if (current != 'e') {
 	    reportError("character.expected",
 			new Object[] { new Character('e'),
@@ -243,7 +244,7 @@ public class TransformListParser extends NumberParser {
 	    skipTransform();
 	    return;
 	}
-	read();
+	current = reader.read();
 	skipSpaces();
 
 	if (current != '(') {
@@ -253,7 +254,7 @@ public class TransformListParser extends NumberParser {
 	    skipTransform();
 	    return;
 	}
-	read();
+	current = reader.read();
 	skipSpaces();
 
         float theta = parseFloat();
@@ -264,7 +265,7 @@ public class TransformListParser extends NumberParser {
             transformListHandler.rotate(theta);
             return;
         case ',':
-            read();
+            current = reader.read();
             skipSpaces();
         }
         
@@ -289,8 +290,8 @@ public class TransformListParser extends NumberParser {
      * the current character.
      * @return the current character.
      */
-    protected void parseTranslate() throws ParseException {
-	read();
+    protected void parseTranslate() throws ParseException, IOException {
+	current = reader.read();
 
 	// Parse 'ranslate wsp? ( wsp?'
 	if (current != 'r') {
@@ -300,7 +301,7 @@ public class TransformListParser extends NumberParser {
 	    skipTransform();
 	    return;
 	}
-	read();
+	current = reader.read();
 	if (current != 'a') {
 	    reportError("character.expected",
 			new Object[] { new Character('a'),
@@ -308,7 +309,7 @@ public class TransformListParser extends NumberParser {
 	    skipTransform();
 	    return;
 	}
-	read();
+	current = reader.read();
 	if (current != 'n') {
 	    reportError("character.expected",
 			new Object[] { new Character('n'),
@@ -316,7 +317,7 @@ public class TransformListParser extends NumberParser {
 	    skipTransform();
 	    return;
 	}
-	read();
+	current = reader.read();
 	if (current != 's') {
 	    reportError("character.expected",
 			new Object[] { new Character('s'),
@@ -324,7 +325,7 @@ public class TransformListParser extends NumberParser {
 	    skipTransform();
 	    return;
 	}
-	read();
+	current = reader.read();
 	if (current != 'l') {
 	    reportError("character.expected",
 			new Object[] { new Character('l'),
@@ -332,7 +333,7 @@ public class TransformListParser extends NumberParser {
 	    skipTransform();
 	    return;
 	}
-	read();
+	current = reader.read();
 	if (current != 'a') {
 	    reportError("character.expected",
 			new Object[] { new Character('a'),
@@ -340,7 +341,7 @@ public class TransformListParser extends NumberParser {
 	    skipTransform();
 	    return;
 	}
-	read();
+	current = reader.read();
 	if (current != 't') {
 	    reportError("character.expected",
 			new Object[] { new Character('t'),
@@ -348,7 +349,7 @@ public class TransformListParser extends NumberParser {
 	    skipTransform();
 	    return;
 	}
-	read();
+	current = reader.read();
 	if (current != 'e') {
 	    reportError("character.expected",
 			new Object[] { new Character('e'),
@@ -356,7 +357,7 @@ public class TransformListParser extends NumberParser {
 	    skipTransform();
 	    return;
 	}
-	read();
+	current = reader.read();
 	skipSpaces();
 	if (current != '(') {
 	    reportError("character.expected",
@@ -365,7 +366,7 @@ public class TransformListParser extends NumberParser {
 	    skipTransform();
 	    return;
 	}
-	read();
+	current = reader.read();
 	skipSpaces();
 
         float tx = parseFloat();
@@ -376,7 +377,7 @@ public class TransformListParser extends NumberParser {
             transformListHandler.translate(tx);
             return;
         case ',':
-            read();
+            current = reader.read();
             skipSpaces();
         }
 
@@ -398,8 +399,8 @@ public class TransformListParser extends NumberParser {
      * Parses a scale transform. 'c' is assumed to be the current character.
      * @return the current character.
      */
-    protected void parseScale() throws ParseException {
-	read();
+    protected void parseScale() throws ParseException, IOException {
+	current = reader.read();
 
 	// Parse 'ale wsp? ( wsp?'
 	if (current != 'a') {
@@ -409,7 +410,7 @@ public class TransformListParser extends NumberParser {
 	    skipTransform();
 	    return;
 	}
-	read();
+	current = reader.read();
 	if (current != 'l') {
 	    reportError("character.expected",
 			new Object[] { new Character('l'),
@@ -417,7 +418,7 @@ public class TransformListParser extends NumberParser {
 	    skipTransform();
 	    return;
 	}
-	read();
+	current = reader.read();
 	if (current != 'e') {
 	    reportError("character.expected",
 			new Object[] { new Character('e'),
@@ -425,7 +426,7 @@ public class TransformListParser extends NumberParser {
 	    skipTransform();
 	    return;
 	}
-	read();
+	current = reader.read();
 	skipSpaces();
 	if (current != '(') {
 	    reportError("character.expected",
@@ -434,7 +435,7 @@ public class TransformListParser extends NumberParser {
 	    skipTransform();
 	    return;
 	}
-	read();
+	current = reader.read();
 	skipSpaces();
 
         float sx = parseFloat();
@@ -445,7 +446,7 @@ public class TransformListParser extends NumberParser {
             transformListHandler.scale(sx);
             return;
         case ',':
-            read();
+            current = reader.read();
             skipSpaces();
         }
 
@@ -467,8 +468,8 @@ public class TransformListParser extends NumberParser {
      * Parses a skew transform. 'e' is assumed to be the current character.
      * @return the current character.
      */
-    protected void parseSkew() throws ParseException {
-	read();
+    protected void parseSkew() throws ParseException, IOException {
+	current = reader.read();
 
 	// Parse 'ew[XY] wsp? ( wsp?'
 	if (current != 'e') {
@@ -478,7 +479,7 @@ public class TransformListParser extends NumberParser {
 	    skipTransform();
 	    return;
 	}
-	read();
+	current = reader.read();
 	if (current != 'w') {
 	    reportError("character.expected",
 			new Object[] { new Character('w'),
@@ -486,7 +487,7 @@ public class TransformListParser extends NumberParser {
 	    skipTransform();
 	    return;
 	}
-	read();
+	current = reader.read();
 
 	boolean skewX = false;
 	switch (current) {
@@ -501,7 +502,7 @@ public class TransformListParser extends NumberParser {
 	    skipTransform();
 	    return;
 	}
-	read();
+	current = reader.read();
 	skipSpaces();
 	if (current != '(') {
 	    reportError("character.expected",
@@ -510,7 +511,7 @@ public class TransformListParser extends NumberParser {
 	    skipTransform();
 	    return;
 	}
-	read();
+	current = reader.read();
 	skipSpaces();
 
         float sk = parseFloat();
@@ -535,9 +536,9 @@ public class TransformListParser extends NumberParser {
      * Skips characters in the given reader until a ')' is encountered.
      * @return the first character after the ')'.
      */
-    protected void skipTransform() {
+    protected void skipTransform() throws IOException {
 	loop: for (;;) {
-	    read();
+	    current = reader.read();
 	    switch (current) {
 	    case ')':
 		break loop;
