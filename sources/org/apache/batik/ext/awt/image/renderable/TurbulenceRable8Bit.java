@@ -36,7 +36,7 @@ import java.awt.image.RenderedImage;
 import java.awt.image.WritableRaster;
 import java.awt.image.renderable.RenderContext;
 
-import org.apache.batik.ext.awt.image.rendered.TurbulencePatternRed8Bit;
+import org.apache.batik.ext.awt.image.rendered.TurbulencePatternRed;
 
 /**
  * Creates a sourceless image from a turbulence function.
@@ -245,7 +245,7 @@ public class TurbulenceRable8Bit
         }catch(NoninvertibleTransformException e){
         }
 
-        return new TurbulencePatternRed8Bit
+        return new TurbulencePatternRed
             (baseFreqX, baseFreqY, numOctaves, seed, fractalNoise, 
              tile, patternTxf, devRect, cs, true);
     }

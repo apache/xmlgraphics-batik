@@ -111,6 +111,7 @@ public class FilterChainRable8Bit extends AbstractRable
      * then the filter resolution is applied.
      */
     public void setFilterResolutionX(int filterResolutionX){
+        touch();
         this.filterResolutionX = filterResolutionX;
 
         setupFilterRes();
@@ -130,6 +131,7 @@ public class FilterChainRable8Bit extends AbstractRable
      * filterResolutionX is used.
      */
     public void setFilterResolutionY(int filterResolutionY){
+        touch();
         this.filterResolutionY = filterResolutionY;
         setupFilterRes();
     }
@@ -172,7 +174,7 @@ public class FilterChainRable8Bit extends AbstractRable
         if(filterRegion == null){
             throw new IllegalArgumentException();
         }
-
+        touch();
         this.filterRegion = filterRegion;
      }
 
@@ -201,6 +203,7 @@ public class FilterChainRable8Bit extends AbstractRable
         if(chainSource == null){
             throw new IllegalArgumentException();
         }
+        touch();
         this.chainSource = chainSource;
         
         if(filterRes == null){

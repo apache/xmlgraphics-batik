@@ -22,7 +22,7 @@ import java.util.List;
 import org.apache.batik.ext.awt.image.ARGBChannel;
 import org.apache.batik.ext.awt.image.GraphicsUtil;
 import org.apache.batik.ext.awt.image.rendered.CachableRed;
-import org.apache.batik.ext.awt.image.rendered.DisplacementMapRed8Bit;
+import org.apache.batik.ext.awt.image.rendered.DisplacementMapRed;
 import org.apache.batik.ext.awt.image.rendered.AffineRed;
 
 /**
@@ -72,6 +72,7 @@ public class DisplacementMapRable8Bit
      * @param scale can be any number.
      */
     public void setScale(double scale){
+        touch();
         this.scale = scale;
     }
 
@@ -102,7 +103,7 @@ public class DisplacementMapRable8Bit
         if(xChannelSelector == null){
             throw new IllegalArgumentException();
         }
-
+        touch();
         this.xChannelSelector = xChannelSelector;
     }
 
@@ -123,7 +124,7 @@ public class DisplacementMapRable8Bit
         if(yChannelSelector == null){
             throw new IllegalArgumentException();
         }
-
+        touch();
         this.yChannelSelector = yChannelSelector;
     }
 
@@ -212,7 +213,7 @@ public class DisplacementMapRable8Bit
         // Build a Displacement Map Red from the two sources
         //
 
-        CachableRed cr = new DisplacementMapRed8Bit
+        CachableRed cr = new DisplacementMapRed
             (GraphicsUtil.wrap(displacedRed),
              GraphicsUtil.wrap(mapRed),
              xChannelSelector, yChannelSelector,

@@ -63,7 +63,6 @@ public class DeferRable implements Filter {
     public synchronized void setSource(Filter src) {
         // Only let them set Source once.
         if (this.src != null) return;
-
         this.src = src;
         notifyAll();
     }

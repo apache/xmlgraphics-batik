@@ -59,6 +59,7 @@ public class FloodRable8Bit extends AbstractRable
      * @param paint The paint to use when flood filling the input image
      */
     public void setFloodPaint(Paint paint) {
+        touch();
         if (paint == null) {
             // create a transparent flood fill
             floodPaint = new Color(0, 0, 0, 0);
@@ -96,6 +97,7 @@ public class FloodRable8Bit extends AbstractRable
             throw new IllegalArgumentException();
         }
 
+        touch();
         this.floodRegion = floodRegion;
     }
 
