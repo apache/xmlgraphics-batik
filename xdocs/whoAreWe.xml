@@ -68,8 +68,11 @@
 
           <dt>Vincent Hardy (VH)</dt><dd><br />
           <link href="mailto:vincent.hardy@eng.sun.com">vincent.hardy@eng.sun.com</link><br />
-          <em>Vincent is one of the founders of the SVG Batik project at Apache and he represents Sun
-          in the W3C's SVG Working Group (his daytime job is to be a member of Sun's XML Technology Center). 
+          <em>Vincent is one of the founders of the SVG Batik project at Apache and the Batik 
+          team contact. He is a Senior Staff Engineer at Sun Microsystems Inc., where he 
+          is part of the XML technology center.
+          Vincent represents Sun in the W3C's SVG Working Group and is currently a W3C fellow in
+          the W3C office in Sophia Antipolis, France.
           Vincent is the author of papers and a book on the Java 2D API.</em>
           <br /><br />
           </dd>
@@ -148,6 +151,9 @@
           <li><link href="mailto:carnold@houston.rr.com">Curt Arnold</link> - Contributed many bug reports and fixes</li>
           <li><link href="mailto:r_diblasi@hotmail.com">Robert DiBlasi</link> - Contributed a lot of feedback on the 
             Batik documentation and suggestions on how to improve the it</li>
+          <li><link href="mailto:Paul_Evenblij@nl.compuware.com">Paul Evenblij</link> - Contributed an improvement to 
+            the way images are handled by the SVGGraphics2D component. Also contributed bug fixes on the SVGGraphics2D
+            component. </li>
           <li><link href="mailto:pier.fumagalli@eng.sun.com">Pier Fumagalli</link>- is helping us with the Batik web site and
               mailing lists.</li>
           <li><link href="mailto:keiron@aftexsw.com">Keiron Liddle</link> - A <link href="http://xml.apache.org/fop">FOP</link>
@@ -159,7 +165,7 @@
           <li><link href="mailto:spei@cs.uiowa.edu">Sheng Pei</link> - Contributed on filters and the Regard tool.</li>
           <li><link href="mailto:neeme.praks@one.ee">Neeme Praks</link> - Contributed patches, feedback and scripts for
             building charts from John Morrisson's XSL stylesheets</li>
-          <li><link href="mailto:ruini@iki.fi">Henri Ruini</link> - Contributed improvements to the rasterizer task.</li>
+          <li><link href="mailto:ruini@iki.fi">Henri Ruini</link> - Contributed to a rewrite of the rasterizer application. </li>
           <li><link href="mailto:david@steadystate.co.uk">David Schweinsberg</link> - Contributed the True Type Font to 
               SVG Font converter</li>
           <li><link href="mailto:natalian@cs.brown.edu">Nicholas Talian</link> - Contributed on gradients.</li>
