@@ -53,8 +53,8 @@
   </style>
 
   <defs>
-    <filter id="blur" filterUnits="objectBoundingBox" primitiveUnits="objectBoundingBox" x="-10%" y="-10%" width="120%" height="120%" > 
-        <feGaussianBlur stdDeviation="4 3" x="-10%" y="-10%" width="120%" height="120%" /> 
+    <filter id="blur" filterUnits="objectBoundingBox" primitiveUnits="objectBoundingBox" x="-10%" y="-25%" width="120%" height="150%" > 
+        <feGaussianBlur stdDeviation="4 3" x="-10%" y="-25%" width="120%" height="150%" /> 
         <feColorMatrix type="matrix" values="1.1 0 0 0 0   0 1.1 0 0 0   0 0 1.1 0 0   0 0 0 1.1 0" /> 
     </filter>
 
