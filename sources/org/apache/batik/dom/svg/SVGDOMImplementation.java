@@ -125,7 +125,7 @@ public class SVGDOMImplementation
      * The localizable support for the error messages.
      */
     protected LocalizableSupport localizableSupport =
-        new LocalizableSupport(RESOURCES);
+        new LocalizableSupport(RESOURCES, getClass().getClassLoader());
 
     /**
      * Returns the default instance of this class.

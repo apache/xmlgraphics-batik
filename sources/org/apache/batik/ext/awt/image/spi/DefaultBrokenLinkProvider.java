@@ -64,7 +64,6 @@ public class DefaultBrokenLinkProvider
     implements BrokenLinkProvider {
 
     static Filter brokenLinkImg = null;
-        
 
     public static String formatMessage(Object base,
                                        String code,
@@ -72,7 +71,16 @@ public class DefaultBrokenLinkProvider
         String res = (base.getClass().getPackage().getName() + 
                       ".resources.Messages");
         // Should probably cache these...
-        LocalizableSupport ls = new LocalizableSupport(res);
+        ClassLoader cl = null;
+        try {
+            // Should work always
+            cl = DefaultBrokenLinkProvider.class.getClassLoader();
+            // may not work (depends on security and relationship
+            // of base's class loader to this class's class loader. 
+            cl = base.getClass().getClassLoader();
+        } catch (SecurityException se) {
+        }
+        LocalizableSupport ls = new LocalizableSupport(res, cl);
         return ls.formatMessage(code, params);
     }
 

@@ -79,7 +79,7 @@ public class Messages {
      * The localizable support for the error messages.
      */
     protected static LocalizableSupport localizableSupport =
-        new LocalizableSupport(RESOURCES);
+        new LocalizableSupport(RESOURCES, Messages.class.getClassLoader());
 
     /**
      * Implements {@link org.apache.batik.i18n.Localizable#setLocale(Locale)}.

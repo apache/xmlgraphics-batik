@@ -93,7 +93,8 @@ public class Parser implements ExtendedParser, Localizable {
      * The localizable support.
      */
     protected LocalizableSupport localizableSupport =
-        new LocalizableSupport(BUNDLE_CLASSNAME);
+        new LocalizableSupport(BUNDLE_CLASSNAME, 
+                               Parser.class.getClassLoader());
 
     /**
      * The scanner used to scan the input source.

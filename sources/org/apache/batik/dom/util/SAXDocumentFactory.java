@@ -628,13 +628,13 @@ public class SAXDocumentFactory
      */
     public void processingInstruction(String target, String data)
         throws SAXException {
-	if (!inDTD) {
-            if (currentNode == null)
-                preInfo.add(new ProcessingInstructionInfo(target, data));
-            else
-                currentNode.appendChild
-                    (document.createProcessingInstruction(target, data));
-	}
+	if (inDTD)
+            return;
+        if (currentNode == null)
+            preInfo.add(new ProcessingInstructionInfo(target, data));
+        else
+            currentNode.appendChild
+                (document.createProcessingInstruction(target, data));
     }
 
     // LexicalHandler /////////////////////////////////////////////////////////
@@ -696,14 +696,14 @@ public class SAXDocumentFactory
      * {@link org.xml.sax.ext.LexicalHandler#comment(char[],int,int)}.
      */
     public void comment(char ch[], int start, int length) throws SAXException {
-	if (!inDTD) {
-            String str = new String(ch, start, length);
-            if (currentNode == null) {
-                preInfo.add(new CommentInfo(str));
-            } else {
-                currentNode.appendChild
-                    (document.createComment(str));
-            }
-	}
+	if (inDTD) 
+            return;
+        String str = new String(ch, start, length);
+        if (currentNode == null) {
+            preInfo.add(new CommentInfo(str));
+        } else {
+            currentNode.appendChild
+                (document.createComment(str));
+        }
     }
 }

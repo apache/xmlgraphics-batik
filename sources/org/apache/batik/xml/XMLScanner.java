@@ -170,7 +170,8 @@ public class XMLScanner implements Localizable {
      * The localizable support.
      */
     protected LocalizableSupport localizableSupport =
-        new LocalizableSupport(BUNDLE_CLASSNAME);
+        new LocalizableSupport(BUNDLE_CLASSNAME, 
+                               XMLScanner.class.getClassLoader());
 
     /**
      * The reader.
