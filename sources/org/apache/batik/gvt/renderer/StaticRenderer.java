@@ -300,15 +300,13 @@ public class StaticRenderer implements ImageRenderer {
         if (isDoubleBuffered) 
             return;
 
-        WritableRaster syncRaster;
-        ColorModel     cm;
         updateWorkingBuffers();
         if ((rootCR == null)           ||
             (workingBaseRaster == null))
             return;
         
-        cm         = rootCR.getColorModel();
-        syncRaster = workingBaseRaster;
+        ColorModel     cm         = rootCR.getColorModel();
+        WritableRaster syncRaster = workingBaseRaster;
 
         // Ensure only one thread works on baseRaster at a time...
         synchronized (syncRaster) {

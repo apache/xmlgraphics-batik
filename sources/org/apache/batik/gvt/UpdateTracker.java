@@ -99,11 +99,16 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
                 if (gn == null)
                     break; // We reached the top of the tree
 
-                if (dirtyNodes.get(gn.getWeakReference()) != null) 
+                gnWRef = gn.getWeakReference();
+
+                if (dirtyNodes.containsKey(gnWRef))
                     break; // We already have the parent in the list of
-                           // dirty nodes. The following if (gn == null)
-                           // makes sure we do not add this child's 
-                           // dirty areas.
+                           // dirty nodes. so let it handle this...
+
+                if (nodeBounds.containsKey(gnWRef)) {
+                    // Update the bounds in the nodeBounds array
+                    nodeBounds.put(gnWRef, gn.getBounds());
+                }
 
                 AffineTransform at = gn.getTransform();
 
