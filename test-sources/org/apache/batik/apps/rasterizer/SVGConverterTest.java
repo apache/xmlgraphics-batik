@@ -13,6 +13,7 @@ import org.apache.batik.test.util.ImageCompareTest;
 import org.apache.batik.transcoder.Transcoder;
 import org.apache.batik.transcoder.image.ImageTranscoder;
 import org.apache.batik.transcoder.image.JPEGTranscoder;
+import org.apache.batik.transcoder.image.PNGTranscoder;
 
 import java.awt.*;
 import java.io.*;
@@ -73,6 +74,15 @@ public class SVGConverterTest extends DefaultTestSuite {
 
         addTest(t);
         t.setId("HintsConfigTest.KEY_QUALITY");
+
+        t = new HintsConfigTest(new Object[][]{
+            {PNGTranscoder.KEY_INDEXED, Boolean.TRUE}}){
+                protected void deltaConfigure(SVGConverter c){
+                    c.setIndexed(true);
+                }
+            };
+        addTest(t);
+        t.setId("HintsConfigTest.KEY_INDEXED");
 
         t = new HintsConfigTest(new Object[][]{
             {ImageTranscoder.KEY_BACKGROUND_COLOR, Color.pink}}){

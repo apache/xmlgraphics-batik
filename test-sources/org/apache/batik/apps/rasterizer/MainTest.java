@@ -375,6 +375,19 @@ public class MainTest extends DefaultTestSuite {
         addTest(t);
         t.setId("MainConfigTest.quality");
 
+        t = new MainConfigTest("-indexed"){
+                public TestReport validate(SVGConverter c){
+                    if(c.getIndexed()){
+                        return reportSuccess();
+                    } else {
+                        return reportError("-indexed", "true", 
+                                           "" + c.getIndexed());
+                    }
+                }
+            };
+        addTest(t);
+        t.setId("MainConfigTest.indexed");
+
         t = new MainConfigErrorTest("-d", "hello.svg -d");
         addTest(t);
         t.setId("MainConfigErrorTest.output");
