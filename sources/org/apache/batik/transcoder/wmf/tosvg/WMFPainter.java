@@ -447,7 +447,8 @@ public class WMFPainter {
                             Graphics2D g2 = (Graphics2D)g;
                             int x, y;
                             x = (int)( scaleX * ( vpX + mr.ElementAt( 0 ).intValue()));
-                            y = (int)( fontHeight + scaleY * ( vpY + mr.ElementAt( 1 ).intValue()));
+                            //y = (int)( fontHeight + scaleY * ( vpY + mr.ElementAt( 1 ).intValue()));
+                            y = (int)( scaleY * ( vpY + mr.ElementAt( 1 ).intValue()));
                             if ( frgdColor != null )
                                 g.setColor( frgdColor );
                             else
