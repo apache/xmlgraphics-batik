@@ -785,6 +785,16 @@ public class JSVGCanvas extends JSVGComponent {
             = "JSVGCanvas.CanvasUserAgent.ToolTip.titleAndDesc";
 
         /**
+         * The time of the last tool tip event.
+         */
+        protected long lastToolTipEventTimeStamp;
+
+        /**
+         * The target for which the last tool tip event was fired.
+         */
+        protected EventTarget lastToolTipEventTarget;
+
+        /**
          * The handleElement method builds a tool tip from the
          * content of a &lt;title&gt; element, a &lt;desc&gt;
          * element or both. <br/>
@@ -810,6 +820,12 @@ public class JSVGCanvas extends JSVGComponent {
             
             if (!SVGConstants.SVG_NAMESPACE_URI.equals(elt.getNamespaceURI()))
                 return;
+
+            // Don't handle tool tips for the root SVG element.
+            if (elt.getParentNode() == 
+                    elt.getOwnerDocument().getDocumentElement()) {
+                return;
+            }
 
             if (elt.getLocalName().equals(SVGConstants.SVG_TITLE_TAG)) {
                 // If there is a <desc> peer, do nothing as the tooltip will
@@ -941,12 +957,12 @@ public class JSVGCanvas extends JSVGComponent {
 
             // On mouseover, set the tooltip to the title value
             target.addEventListener(SVGConstants.SVG_EVENT_MOUSEOVER,
-                                    new ToolTipModifier(toolTip),
+                                    new ToolTipModifier(toolTip, this),
                                     false);
 
             // On mouseout, remove the tooltip
             target.addEventListener(SVGConstants.SVG_EVENT_MOUSEOUT,
-                                    new ToolTipModifier(null),
+                                    new ToolTipModifier(null, this),
                                     false);
 
             if (locationListener == null) {
@@ -984,6 +1000,23 @@ public class JSVGCanvas extends JSVGComponent {
                 dialog.setModal(false);
                 dialog.show(); // Safe to be called from any thread
             }
+        }
+
+        /**
+         * Sets the time and element of the last tool tip event handled.
+         */
+        public void setLastToolTipEvent(long t, EventTarget et) {
+            lastToolTipEventTimeStamp = t;
+            lastToolTipEventTarget = et;
+        }
+
+        /**
+         * Checks if the specified event time and element are the same
+         * as the last tool tip event.
+         */
+        public boolean matchLastToolTipEvent(long t, EventTarget et) {
+            return lastToolTipEventTimeStamp == t
+                && lastToolTipEventTarget == et;
         }
     }
 
@@ -1029,14 +1062,32 @@ public class JSVGCanvas extends JSVGComponent {
         protected String toolTip;
 
         /**
+         * The CanvasUserAgent used to track the last tool tip event.
+         */
+        protected CanvasUserAgent canvasUserAgent;
+
+        /**
          * @param toolTip value to which the JSVGCanvas should be
          *        set when the event occurs.
+         * @param cua the CanvasUserAgent which will be used to track
+         *        the last tool tip event.
          */
-        public ToolTipModifier(String toolTip){
+        public ToolTipModifier(String toolTip, CanvasUserAgent cua) {
             this.toolTip = toolTip;
+            canvasUserAgent = cua;
         }
 
         public void handleEvent(Event evt){
+            // Don't set the tool tip if another ToolTipModifier
+            // has already handled this event (as it will have been
+            // a higher priority tool tip).
+            if (canvasUserAgent.matchLastToolTipEvent(evt.getTimeStamp(),
+                                                     evt.getTarget())) {
+                return;
+            }
+            canvasUserAgent.setLastToolTipEvent(evt.getTimeStamp(), 
+                                                evt.getTarget());
+
             EventQueue.invokeLater(new Runnable() {
                     public void run() {
                         setToolTipText(toolTip);

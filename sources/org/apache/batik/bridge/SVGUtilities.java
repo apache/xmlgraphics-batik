@@ -1140,31 +1140,4 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
             return new Rectangle2D.Double();
         }
     }
-
-    /**
-     * Scans the children of the input <tt>e</tt> element and
-     * invokes any registered bridge found for the children.
-     *
-     * @param ctx active BridgeContext
-     * @param e element to be scanned
-     */
-    public static void bridgeChildren(BridgeContext ctx,
-                                      Element elt){
-        for (Node n = elt.getFirstChild();
-             n != null;
-             n = n.getNextSibling()) {
-
-            if ((n.getNodeType() != Node.ELEMENT_NODE)) {
-                continue;
-            }
-
-            Element e = (Element)n;
-            Bridge bridge = ctx.getBridge(e);
-            if (bridge == null || !(bridge instanceof GenericBridge)) {
-                continue;
-            }
-
-            ((GenericBridge)bridge).handleElement(ctx, e);
-        }
-    }
 }

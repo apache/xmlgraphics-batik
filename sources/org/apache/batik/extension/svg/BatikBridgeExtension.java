@@ -56,6 +56,7 @@ import java.util.Vector;
 
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeExtension;
+import org.w3c.dom.Element;
 
 /**
  * This is a Service interface for classes that want to extend the
@@ -142,5 +143,16 @@ public class BatikBridgeExtension implements BridgeExtension {
         ctx.putBridge(new SolidColorBridge());
         ctx.putBridge(new ColorSwitchBridge());
         ctx.putBridge(new SVGFlowTextElementBridge());
+    }
+
+    /**
+     * Whether the presence of the specified element should cause
+     * the document to be dynamic.  If this element isn't handled
+     * by this BridgeExtension, just return false.
+     *
+     * @param e The element to check.
+     */
+    public boolean isDynamicElement(Element e) {
+        return false;
     }
 }

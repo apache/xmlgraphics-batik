@@ -251,9 +251,6 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         node.setPointerEventType(CSSUtilities.convertPointerEvents(e));
 
         initializeDynamicSupport(ctx, e, node);
-
-        // Handle children elements such as <title>
-        SVGUtilities.bridgeChildren(ctx, e);
     }
 
     /**
@@ -2399,6 +2396,10 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
     protected float getSubStringLength(Element element,
                                        int charnum, 
                                        int nchars){
+        if (nchars == 0) {
+            return 0;
+        }
+
         float length = 0;
 
         AttributedCharacterIterator aci;

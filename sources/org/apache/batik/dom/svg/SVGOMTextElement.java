@@ -51,7 +51,9 @@
 package org.apache.batik.dom.svg;
 
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Node;
+import org.w3c.dom.svg.SVGAnimatedLengthList;
 import org.w3c.dom.svg.SVGAnimatedTransformList;
 import org.w3c.dom.svg.SVGElement;
 import org.w3c.dom.svg.SVGException;
@@ -68,6 +70,10 @@ import org.w3c.dom.svg.SVGTextElement;
 public class SVGOMTextElement
     extends    SVGOMTextPositioningElement
     implements SVGTextElement {
+
+    // Default values for attributes on a text element
+    public static final String X_DEFAULT_VALUE = "0";
+    public static final String Y_DEFAULT_VALUE = "0";
 
     /**
      * Creates a new SVGOMTextElement object.
@@ -155,5 +161,43 @@ public class SVGOMTextElement
      */
     protected Node newNode() {
         return new SVGOMTextElement();
+    }
+
+    // SVGTextPositioningElement support ////////////////////////////////////
+
+    /**
+     * <b>DOM</b>: Implements {@link
+     * org.w3c.dom.svg.SVGTextPositioningElement#getX()}.
+     */
+    public SVGAnimatedLengthList getX() {
+        SVGOMAnimatedLengthList result = (SVGOMAnimatedLengthList)
+            getLiveAttributeValue(null, SVGConstants.SVG_X_ATTRIBUTE);
+        if (result == null) {
+            result = new SVGOMAnimatedLengthList(this, null,
+                                                 SVGConstants.SVG_X_ATTRIBUTE,
+                                                 X_DEFAULT_VALUE,
+                                                 AbstractSVGLength.HORIZONTAL_LENGTH);
+            putLiveAttributeValue(null,
+                                  SVGConstants.SVG_X_ATTRIBUTE, result);
+        }
+        return result;
+    }
+
+    /**
+     * <b>DOM</b>: Implements {@link
+     * org.w3c.dom.svg.SVGTextPositioningElement#getY()}.
+     */
+    public SVGAnimatedLengthList getY() {
+        SVGOMAnimatedLengthList result = (SVGOMAnimatedLengthList)
+            getLiveAttributeValue(null, SVGConstants.SVG_Y_ATTRIBUTE);
+        if (result == null) {
+            result = new SVGOMAnimatedLengthList(this, null,
+                                                 SVGConstants.SVG_Y_ATTRIBUTE,
+                                                 Y_DEFAULT_VALUE,
+                                                 AbstractSVGLength.VERTICAL_LENGTH);
+            putLiveAttributeValue(null,
+                                  SVGConstants.SVG_Y_ATTRIBUTE, result);
+        }
+        return result;
     }
 }

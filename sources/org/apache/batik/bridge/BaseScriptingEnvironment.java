@@ -57,6 +57,8 @@ import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.jar.Manifest;
 
@@ -144,14 +146,15 @@ public class BaseScriptingEnvironment {
      * Tells whether the given SVG element is dynamic.
      */
     public static boolean isDynamicElement(Element elt) {
+        List bridgeExtensions = BridgeContext.getBridgeExtensions();
+        Iterator i = bridgeExtensions.iterator();
+        while (i.hasNext()) {
+            BridgeExtension bridgeExtension = (BridgeExtension) i.next();
+            if (bridgeExtension.isDynamicElement(elt)) {
+                return true;
+            }
+        }
         if (SVGConstants.SVG_NAMESPACE_URI.equals(elt.getNamespaceURI())) {
-            String name = elt.getLocalName();
-            if (name.equals(SVGConstants.SVG_SCRIPT_TAG)) {
-                return true;
-            }
-            if (name.startsWith("animate") || name.equals("set")) {
-                return true;
-            }
             if (elt.getAttributeNS
                 (null, SVGConstants.SVG_ONKEYUP_ATTRIBUTE).length() > 0) {
                 return true;
@@ -208,14 +211,14 @@ public class BaseScriptingEnvironment {
                 (null, SVGConstants.SVG_ONMOUSEUP_ATTRIBUTE).length() > 0) {
                 return true;
             }
+        }
 
-            for (Node n = elt.getFirstChild();
-                 n != null;
-                 n = n.getNextSibling()) {
-                if (n.getNodeType() == Node.ELEMENT_NODE) {
-                    if (isDynamicElement((Element)n)) {
-                        return true;
-                    }
+        for (Node n = elt.getFirstChild();
+             n != null;
+             n = n.getNextSibling()) {
+            if (n.getNodeType() == Node.ELEMENT_NODE) {
+                if (isDynamicElement((Element)n)) {
+                    return true;
                 }
             }
         }

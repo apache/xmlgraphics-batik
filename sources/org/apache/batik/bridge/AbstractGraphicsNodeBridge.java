@@ -166,9 +166,6 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
         node.setPointerEventType(CSSUtilities.convertPointerEvents(e));
 
         initializeDynamicSupport(ctx, e, node);
-
-        // Handle children elements such as <title>
-        SVGUtilities.bridgeChildren(ctx, e);
     }
 
     /**

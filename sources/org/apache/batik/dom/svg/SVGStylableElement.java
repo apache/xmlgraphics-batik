@@ -542,7 +542,7 @@ public abstract class SVGStylableElement
         extends CSSOMSVGStyleDeclaration
         implements LiveAttributeValue,
                    CSSOMSVGStyleDeclaration.ValueProvider,
-                   CSSOMSVGStyleDeclaration.ModificationHandler, 
+                   CSSOMSVGStyleDeclaration.ModificationHandler,
                    CSSEngine.MainPropertyReceiver {
         
         /**
@@ -710,10 +710,3 @@ public abstract class SVGStylableElement
         }
     }
 }
-
-
-
-
-
-
-

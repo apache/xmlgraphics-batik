@@ -53,6 +53,9 @@ package org.apache.batik.bridge;
 import java.util.Collections;
 import java.util.Iterator;
 
+import org.apache.batik.util.SVGConstants;
+import org.w3c.dom.Element;
+
 /**
  * This is a Service interface for classes that want to extend the
  * functionality of the Bridge, to support new tags in the rendering tree.
@@ -191,5 +194,26 @@ public class SVGBridgeExtension implements BridgeExtension {
         ctx.putBridge(new SVGUseElementBridge());
         ctx.putBridge(new SVGVKernElementBridge());
 
+    }
+
+    /**
+     * Whether the presence of the specified element should cause
+     * the document to be dynamic.  If this element isn't handled
+     * by this BridgeExtension, just return false.
+     *
+     * @param e The element to check.
+     */
+    public boolean isDynamicElement(Element e) {
+        String ns = e.getNamespaceURI();
+        if (!SVGConstants.SVG_NAMESPACE_URI.equals(ns)) {
+            return false;
+        }
+        String ln = e.getLocalName();
+        if (ln.equals(SVGConstants.SVG_SCRIPT_TAG)
+                || ln.startsWith("animate")
+                || ln.equals("set")) {
+            return true;
+        }
+        return false;
     }
 }
