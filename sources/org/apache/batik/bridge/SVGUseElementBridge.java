@@ -154,11 +154,10 @@ public class SVGUseElementBridge extends AbstractSVGBridge
         // references we have to update
         ViewCSS viewCSS = (ViewCSS)document.getDefaultView();
         CSSOMReadOnlyStyleDeclaration decl =
-            (CSSOMReadOnlyStyleDeclaration)(viewCSS).getComputedStyle(g, null);
+            (CSSOMReadOnlyStyleDeclaration)(viewCSS).getComputedStyle(localRefElement, null);
         try {
             CSSUtilities.updateURIs(decl, refDocument.getURLObject());
-        } catch (MalformedURLException ex) {
-        }
+        } catch (MalformedURLException ex) { }
 
         // compute URIs and style sheets for external reference
         if (!isLocal) {
