@@ -42,15 +42,14 @@ import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.image.ImageTranscoder;
 import org.apache.batik.transcoder.image.PNGTranscoder;
+import org.apache.batik.dom.GenericDOMImplementation;
+import org.apache.batik.dom.util.SAXDocumentFactory;
 import org.apache.batik.ext.awt.image.ImageLoader;
 import org.apache.batik.ext.awt.image.GraphicsUtil;
 import org.apache.batik.svggen.*;
 
 import org.apache.batik.css.CSSDocumentHandler;
 import org.apache.batik.dom.svg.SVGDOMImplementation;
-
-import org.apache.crimson.tree.*;
-import org.apache.crimson.parser.*;
 
 import org.xml.sax.InputSource;
 
@@ -135,7 +134,7 @@ public class Main {
      * The CSS parser class name key.
      */
     public final static String CSS_PARSER_CLASS_NAME =
-        "org.w3c.flute.parser.Parser";
+        "org.apache.batik.css.parser.Parser";
 
     /**
      * MAIN
@@ -277,6 +276,21 @@ public class Main {
             }
         }
     }
+
+    /**
+     * The gui resources file name
+     */
+    public final static String RESOURCES =
+        "org.apache.batik.apps.regsvggen.resources.Messages";
+
+    /**
+     * The resource bundle
+     */
+    protected static ResourceBundle bundle;
+    static {
+        bundle = ResourceBundle.getBundle(RESOURCES, Locale.getDefault());
+    }
+
     /**
      * This method will do the following:
      * 1. Load the test case XML file specified by testFileName
@@ -286,23 +300,23 @@ public class Main {
     public static String compileTestClass(String testFileName)
     throws Exception{
         //
-        // Load xml test file, using crimson
+        // Load xml test file
         //
 
-        XMLReaderImpl parser = new XMLReaderImpl();
-        XmlDocumentBuilder builder = new XmlDocumentBuilder();
-        parser.setContentHandler(builder);
+        SAXDocumentFactory df = new SAXDocumentFactory
+            (GenericDOMImplementation.getDOMImplementation(),
+             bundle.getString("org.xml.sax.driver"));
 
+        Document testDoc = null;
         try {
-            FileReader xmlReader = new FileReader(testFileName);
-            InputSource is = new InputSource(xmlReader);
-            parser.parse(is);
+            testDoc = df.createDocument(null, "text",
+                                        new File(testFileName).toURL().toString());
         }
         catch (Exception e){
+            e.printStackTrace();
             display("Error: " + e.toString());
+            throw e;
         }
-        // Get document DOM
-        Document testDoc = builder.getDocument();
 
         //
         // Get Test Title
