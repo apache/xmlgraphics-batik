@@ -635,7 +635,6 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
          * org.apache.batik.script.Window#parseXML(String,Document)}.
          */
         public DocumentFragment parseXML(String text, Document doc) {
-            text = "<svg>" + text + "</svg>";
             SAXSVGDocumentFactory df = new SAXSVGDocumentFactory
                 (XMLResourceDescriptor.getXMLParserClassName());
             String uri = ((SVGOMDocument)bridgeContext.getDocument()).
@@ -654,7 +653,23 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
                     }
                 }
             } catch (Exception ex) {
-                // !!! TODO: warning
+                text = "<svg>" + text + "</svg>";
+                try {
+                    Document d = df.createDocument(uri,
+                                                   new StringReader(text));
+                    for (Node n = d.getDocumentElement().getFirstChild();
+                         n != null;
+                         n = n.getNextSibling()) {
+                        if (n.getNodeType() == n.ELEMENT_NODE) {
+                            n = doc.importNode(n, true);
+                            result = doc.createDocumentFragment();
+                            result.appendChild(n);
+                            break;
+                        }
+                    }
+                } catch (Exception exc) {
+                    // !!! TODO: warning
+                }
             }
             return result;
         }
