@@ -84,6 +84,7 @@ public interface SVGConstants extends CSSConstants {
     String SVG_FE_SPOT_LIGHT_TAG = "feSpotLight";
     String SVG_FE_TILE_TAG = "feTile";
     String SVG_FE_TURBULENCE_TAG = "feTurbulence";
+    String SVG_FILTER_TAG = "filter";
     String SVG_FONT_TAG = "font";
     String SVG_FONT_FACE_TAG = "font-face";
     String SVG_FONT_FACE_FORMAT_TAG = "font-face-format";
@@ -91,7 +92,6 @@ public interface SVGConstants extends CSSConstants {
     String SVG_FONT_FACE_SRC_TAG = "font-face-src";
     String SVG_FONT_FACE_URI_TAG = "font-face-uri";
     String SVG_FOREIGN_OBJECT_TAG = "foreignObject";
-    String SVG_FILTER_TAG = "filter";
     String SVG_G_TAG = "g";
     String SVG_GLYPH_TAG = "glyph";
     String SVG_GLYPH_REF_TAG = "glyphRef";
@@ -130,10 +130,17 @@ public interface SVGConstants extends CSSConstants {
     // SVG attributes
     /////////////////////////////////////////////////////////////////////////
 
+    String SVG_ACCENT_HEIGHT_ATTRIBUTE = "accent-height";
+    String SVG_ALPHABETIC_ATTRIBUTE = "alphabetic";
     String SVG_AMPLITUDE_ATTRIBUTE = "amplitude";
+    String SVG_ARABIC_FORM_ATTRIBUTE = "arabic-form";
+    String SVG_ASCENT_ATTRIBUTE = "ascent";
     String SVG_AZIMUTH_ATTRIBUTE = "azimuth";
+    String SVG_BASELINE_ATTRIBUTE = "baseline";
     String SVG_BASE_FREQUENCY_ATTRIBUTE = "baseFrequency";
+    String SVG_BBOX_ATTRIBUTE = "bbox";
     String SVG_BIAS_ATTRIBUTE = "bias";
+    String SVG_CAP_HEIGHT_ATTRIBUTE = "cap-height";
     String SVG_CLIP_PATH_ATTRIBUTE = CSS_CLIP_PATH_PROPERTY;
     String SVG_CLIP_PATH_UNITS_ATTRIBUTE = "clipPathUnits";
     String SVG_COLOR_INTERPOLATION_ATTRIBUTE = CSS_COLOR_INTERPOLATION_PROPERTY;
@@ -142,6 +149,7 @@ public interface SVGConstants extends CSSConstants {
     String SVG_CONTENT_STYLE_TYPE_ATTRIBUTE = "contentStyleType";
     String SVG_CX_ATTRIBUTE = "cx";
     String SVG_CY_ATTRIBUTE = "cy";
+    String SVG_DESCENT_ATTRIBUTE = "descent";
     String SVG_DIFFUSE_CONSTANT_ATTRIBUTE = "diffuseConstant";
     String SVG_DIVISOR_ATTRIBUTE = "divisor";
     String SVG_DX_ATTRIBUTE = "dx";
@@ -161,19 +169,30 @@ public interface SVGConstants extends CSSConstants {
     String SVG_FLOOD_OPACITY_ATTRIBUTE = CSS_FLOOD_OPACITY_PROPERTY;
     String SVG_FONT_FAMILY_ATTRIBUTE = CSS_FONT_FAMILY_PROPERTY;
     String SVG_FONT_SIZE_ATTRIBUTE = CSS_FONT_SIZE_PROPERTY;
+    String SVG_FONT_STRETCH_ATTRIBUTE = CSS_FONT_STRETCH_PROPERTY;
     String SVG_FONT_STYLE_ATTRIBUTE = CSS_FONT_STYLE_PROPERTY;
+    String SVG_FONT_VARIANT_ATTRIBUTE = CSS_FONT_VARIANT_PROPERTY;
     String SVG_FONT_WEIGHT_ATTRIBUTE = CSS_FONT_WEIGHT_PROPERTY;
     String SVG_FX_ATTRIBUTE = "fx";
     String SVG_FY_ATTRIBUTE = "fy";
+    String SVG_G1_ATTRIBUTE = "g1";
+    String SVG_G2_ATTRIBUTE = "g2";
+    String SVG_GLYPH_NAME_ATTRIBUTE = "glyph-name";
     String SVG_GRADIENT_TRANSFORM_ATTRIBUTE = "gradientTransform";
     String SVG_GRADIENT_UNITS_ATTRIBUTE = "gradientUnits";
+    String SVG_HANGING_ATTRIBUTE = "hanging";
     String SVG_HEIGHT_ATTRIBUTE = "height";
+    String SVG_HORIZ_ADV_X_ATTRIBUTE = "horiz-adv-x";
+    String SVG_HORIZ_ORIGIN_X_ATTRIBUTE = "horiz-origin-x";
+    String SVG_HORIZ_ORIGIN_Y_ATTRIBUTE = "horiz-origin-y";
     String SVG_HREF_ATTRIBUTE = "href";
     String SVG_ID_ATTRIBUTE = "id";
+    String SVG_IDEOGRAPHIC_ATTRIBUTE = "ideographic";
     String SVG_IMAGE_RENDERING_ATTRIBUTE = CSS_IMAGE_RENDERING_PROPERTY;
     String SVG_IN2_ATTRIBUTE = "in2";
     String SVG_INTERCEPT_ATTRIBUTE = "intercept";
     String SVG_IN_ATTRIBUTE = "in";
+    String SVG_K_ATTRIBUTE = "k";
     String SVG_K1_ATTRIBUTE = "k1";
     String SVG_K2_ATTRIBUTE = "k2";
     String SVG_K3_ATTRIBUTE = "k3";
@@ -183,6 +202,7 @@ public interface SVGConstants extends CSSConstants {
     String SVG_KERNEL_UNIT_LENGTH_X_ATTRIBUTE = "kernelUnitLengthX";
     String SVG_KERNEL_UNIT_LENGTH_Y_ATTRIBUTE = "kernelUnitLengthY";
     String SVG_KERNING_ATTRIBUTE = "kerning";
+    String SVG_LANG_ATTRIBUTE = "lang";
     String SVG_LENGTH_ADJUST_ATTRIBUTE = "lengthAdjust";
     String SVG_LIGHT_COLOR_ATTRIBUTE = "lightColor";
     String SVG_LIMITING_CONE_ANGLE_ATTRIBUTE = "limitingConeAngle";
@@ -192,6 +212,7 @@ public interface SVGConstants extends CSSConstants {
     String SVG_MASK_ATTRIBUTE = CSS_MASK_PROPERTY;
     String SVG_MASK_CONTENT_UNITS_ATTRIBUTE = "maskContentUnits";
     String SVG_MASK_UNITS_ATTRIBUTE = "maskUnits";
+    String SVG_MATHEMATICAL_ATTRIBUTE = "mathematical";
     String SVG_MEDIA_ATTRIBUTE = "media";
     String SVG_METHOD_ATTRIBUTE = "method";
     String SVG_MODE_ATTRIBUTE = "mode";
@@ -204,6 +225,10 @@ public interface SVGConstants extends CSSConstants {
     String SVG_ORDER_X_ATTRIBUTE = "orderX";
     String SVG_ORDER_Y_ATTRIBUTE = "orderY";
     String SVG_ORIENT_ATTRIBUTE = "orient";
+    String SVG_ORIENTATION_ATTRIBUTE = "orientation";
+    String SVG_OVERLINE_POSITION = "overline-position";
+    String SVG_OVERLINE_THICKNESS = "overline-thickness";
+    String SVG_PANOSE_1_ATTRIBUTE = "panose-1";
     String SVG_PATTERN_CONTENT_UNITS_ATTRIBUTE = "patternContentUnits";
     String SVG_PATTERN_TRANSFORM_ATTRIBUTE = "patternTransform";
     String SVG_PATTERN_UNITS_ATTRIBUTE = "patternUnits";
@@ -236,9 +261,13 @@ public interface SVGConstants extends CSSConstants {
     String SVG_SPREAD_METHOD_ATTRIBUTE = "spreadMethod";
     String SVG_START_OFFSET_ATTRIBUTE = "startOffset";
     String SVG_STD_DEVIATION_ATTRIBUTE = "stdDeviation";
+    String SVG_STEMH_ATTRIBUTE = "stemh";
+    String SVG_STEMV_ATTRIBUTE = "stemv";
     String SVG_STITCH_TILES_ATTRIBUTE = "stitchTiles";
     String SVG_STOP_COLOR_ATTRIBUTE = "stop-color";
     String SVG_STOP_OPACITY_ATTRIBUTE = CSS_STOP_OPACITY_PROPERTY;
+    String SVG_STRIKETHROUGH_POSITION_ATTRIBUTE = "strikethrough-position";
+    String SVG_STRIKETHROUGH_THICKNESS_ATTRIBUTE = "strikethrough-thickness";
     String SVG_STROKE_ATTRIBUTE = CSS_STROKE_PROPERTY;
     String SVG_STROKE_DASHARRAY_ATTRIBUTE = CSS_STROKE_DASHARRAY_PROPERTY;
     String SVG_STROKE_DASHOFFSET_ATTRIBUTE = CSS_STROKE_DASHOFFSET_PROPERTY;
@@ -261,13 +290,29 @@ public interface SVGConstants extends CSSConstants {
     String SVG_TITLE_ATTRIBUTE = "title";
     String SVG_TRANSFORM_ATTRIBUTE = "transform";
     String SVG_TYPE_ATTRIBUTE = "type";
+    String SVG_U1_ATTRIBUTE = "u1";
+    String SVG_U2_ATTRIBUTE = "u2";
+    String SVG_UNDERLINE_POSITION_ATTRIBUTE = "underline-position";
+    String SVG_UNDERLINE_THICKNESS_ATTRIBUTE = "underline-thickness";
+    String SVG_UNICODE_ATTRIBUTE = "unicode";
+    String SVG_UNICODE_RANGE_ATTRIBUTE = "unicode-range";
+    String SVG_UNITS_PER_EM_ATTRIBUTE = "units-per-em";
+    String SVG_V_ALPHABETIC_ATTRIBUTE = "v-alphabetic";
+    String SVG_V_HANGING_ATTRIBUTE = "v-hanging";
+    String SVG_V_IDEOGRAPHIC_ATTRIBUTE = "v-ideographic";
+    String SVG_V_MATHEMATICAL_ATTRIBUTE = "v-mathematical";
     String SVG_VALUES_ATTRIBUTE = "values";
+    String SVG_VERT_ADV_Y_ATTRIBUTE = "vert-adv-y";
+    String SVG_VERT_ORIGIN_X_ATTRIBUTE = "vert-origin-x";
+    String SVG_VERT_ORIGIN_Y_ATTRIBUTE = "vert-origin-y";
     String SVG_VIEW_BOX_ATTRIBUTE = "viewBox";
     String SVG_WIDTH_ATTRIBUTE = "width";
+    String SVG_WIDTHS_ATTRIBUTE = "widths";
     String SVG_X1_ATTRIBUTE = "x1";
     String SVG_X2_ATTRIBUTE = "x2";
     String SVG_X_ATTRIBUTE = "x";
     String SVG_X_CHANNEL_SELECTOR_ATTRIBUTE = "xChannelSelector";
+    String SVG_X_HEIGHT_ATTRIBUTE = "xHeight";
     String SVG_Y1_ATTRIBUTE = "y1";
     String SVG_Y2_ATTRIBUTE = "y2";
     String SVG_Y_ATTRIBUTE = "y";
@@ -290,6 +335,7 @@ public interface SVGConstants extends CSSConstants {
     String SVG_900_VALUE = "900";
     String SVG_ABSOLUTE_COLORIMETRIC_VALUE = "absolute-colorimetric";
     String SVG_ALIGN_VALUE = "align";
+    String SVG_ALL_VALUE = "all";
     String SVG_ARITHMETIC_VALUE = "arithmetic";
     String SVG_ATOP_VALUE = "atop";
     String SVG_AUTO_VALUE = "auto";
@@ -320,10 +366,13 @@ public interface SVGConstants extends CSSConstants {
     String SVG_GAMMA_VALUE = "gamma";
     String SVG_GEOMETRIC_PRECISION_VALUE = "geometricPrecision";
     String SVG_G_VALUE = "G";
+    String SVG_H_VALUE = "h";
     String SVG_HUE_ROTATE_VALUE = "hueRotate";
     String SVG_HUNDRED_PERCENT_VALUE = "100%";
     String SVG_IDENTITY_VALUE = "identity";
     String SVG_IN_VALUE = "in";
+    String SVG_INITIAL_VALUE = "initial";
+    String SVG_ISOLATED_VALUE = "isolated";
     String SVG_ITALIC_VALUE = "italic";
     String SVG_LIGHTEN_VALUE = "lighten";
     String SVG_LIGHTER_VALUE = "lighter";
@@ -332,6 +381,7 @@ public interface SVGConstants extends CSSConstants {
     String SVG_LUMINANCE_TO_ALPHA_VALUE = "luminanceToAlpha";
     String SVG_MAGNIFY_VALUE = "magnify";
     String SVG_MATRIX_VALUE = "matrix";
+    String SVG_MEDIAL_VALUE = "medial";
     String SVG_MIDDLE_VALUE = "middle";
     String SVG_MITER_VALUE = "miter";
     String SVG_MULTIPLY_VALUE = "multiply";
@@ -373,9 +423,11 @@ public interface SVGConstants extends CSSConstants {
     String SVG_STROKE_PAINT_VALUE = "StrokePaint";
     String SVG_STROKE_WIDTH_VALUE = "strokeWidth";
     String SVG_TABLE_VALUE = "table";
+    String SVG_TERMINAL_VALUE = "terminal";
     String SVG_TRUE_VALUE = "true";
     String SVG_TURBULENCE_VALUE = "turbulence";
     String SVG_USER_SPACE_ON_USE_VALUE = "userSpaceOnUse";
+    String SVG_V_VALUE = "v";
     String SVG_WRAP_VALUE = "wrap";
     String SVG_XOR_VALUE = "xor";
     String SVG_ZERO_PERCENT_VALUE = "0%";
@@ -430,6 +482,14 @@ public interface SVGConstants extends CSSConstants {
     String SVG_FILTER_WIDTH_DEFAULT_VALUE = "120%";
     String SVG_FILTER_X_DEFAULT_VALUE = "-10%";
     String SVG_FILTER_Y_DEFAULT_VALUE = "-10%";
+    String SVG_FONT_FACE_FONT_STRETCH_DEFAULT_VALUE = SVG_NORMAL_VALUE;
+    String SVG_FONT_FACE_FONT_STYLE_DEFAULT_VALUE = SVG_ALL_VALUE;
+    String SVG_FONT_FACE_FONT_VARIANT_DEFAULT_VALUE = SVG_NORMAL_VALUE;
+    String SVG_FONT_FACE_FONT_WEIGHT_DEFAULT_VALUE = SVG_ALL_VALUE;
+    String SVG_FONT_FACE_PANOSE_1_DEFAULT_VALUE = "0 0 0 0 0 0 0 0 0 0";
+    String SVG_FONT_FACE_SLOPE_DEFAULT_VALUE = "0";
+    String SVG_FONT_FACE_UNITS_PER_EM_DEFAULT_VALUE = "1000";
+    String SVG_HKERN_K_DEFAULT_VALUE = "0";
     String SVG_IMAGE_X_DEFAULT_VALUE = "0";
     String SVG_IMAGE_Y_DEFAULT_VALUE = "0";
     String SVG_LINEAR_GRADIENT_X1_DEFAULT_VALUE = "0%";
@@ -437,7 +497,7 @@ public interface SVGConstants extends CSSConstants {
     String SVG_LINEAR_GRADIENT_Y1_DEFAULT_VALUE = "0%";
     String SVG_LINEAR_GRADIENT_Y2_DEFAULT_VALUE = "0%";
     String SVG_MARKER_MARKER_HEIGHT_DEFAULT_VALUE = "3";
-    String SVG_MARKER_MARKER_UNITS_DEFAULT_VALUE = "strokeWidth";
+    String SVG_MARKER_MARKER_UNITS_DEFAULT_VALUE = SVG_STROKE_WIDTH_VALUE;
     String SVG_MARKER_MARKER_WIDTH_DEFAULT_VALUE = "3";
     String SVG_MARKER_ORIENT_DEFAULT_VALUE = "0";
     String SVG_MARKER_REFX_DEFAULT_VALUE = "0";
@@ -470,6 +530,8 @@ public interface SVGConstants extends CSSConstants {
     String PATH_CUBIC_TO = "C ";
     String PATH_MOVE = "M ";
     String PATH_LINE_TO = "L ";
+    String PATH_VERTICAL_LINE_TO = "V ";
+    String PATH_HORIZONTAL_LINE_TO = "H ";
     String PATH_QUAD_TO = "Q ";
-
+    String PATH_SMOOTH_QUAD_TO = "T ";
 }
