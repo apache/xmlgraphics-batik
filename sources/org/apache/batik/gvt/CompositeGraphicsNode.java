@@ -159,9 +159,12 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
     public Rectangle2D getPrimitiveBounds() {
         if (primitiveBounds == null) {
             int i=0;
-            while (primitiveBounds == null && i < count) {
-                primitiveBounds = children[i++].getTransformedBounds(IDENTITY);
+            Rectangle2D bounds = null;
+            while ((bounds == null) && i < count) {
+                bounds = children[i++].getTransformedBounds(IDENTITY);
             }
+            if (bounds == null) return null;
+            primitiveBounds = bounds;
 
             Rectangle2D ctb = null;
             while (i < count) {
@@ -170,7 +173,7 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
                     if (primitiveBounds == null) {
                         // another thread has set the primitive bounds to null,
                         // need to recall this function
-                        return getPrimitiveBounds();
+                        return null;
                     } else {
                         primitiveBounds.add(ctb);
                     }

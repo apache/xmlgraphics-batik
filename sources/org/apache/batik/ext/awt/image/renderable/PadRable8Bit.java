@@ -38,8 +38,8 @@ public class PadRable8Bit extends AbstractRable
     Rectangle2D       padRect;
 
     public PadRable8Bit(Filter src,
-                            Rectangle2D padRect,
-                            PadMode     padMode) {
+                        Rectangle2D padRect,
+                        PadMode     padMode) {
         super.init(src, null);
         this.padRect = padRect;
         this.padMode = padMode;

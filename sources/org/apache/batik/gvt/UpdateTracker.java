@@ -21,7 +21,7 @@ import java.util.Set;
 
 import org.apache.batik.gvt.event.GraphicsNodeChangeAdapter;
 import org.apache.batik.gvt.event.GraphicsNodeChangeEvent;
-
+import org.apache.batik.ext.awt.image.renderable.Filter;
 /**
  * This class tracks the changes on a GVT tree
  *
@@ -32,7 +32,6 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
 
     Map dirtyNodes = null;
     Map fromBounds = new HashMap();
-    Map toBounds   = new HashMap();
 
     public UpdateTracker(){
     }
@@ -72,21 +71,20 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
             
             Rectangle2D srcORgn = (Rectangle2D)fromBounds.remove(gnWRef);
 
-            Rectangle2D srcNRgn = gn.getBounds();
-            AffineTransform nat = gn.getTransform();
-
-            if (nat != null){
-                nat = new AffineTransform(nat);
+            Rectangle2D srcNRgn = null;
+            AffineTransform nat = null;
+            if (!(srcORgn instanceof ChngSrcRect)) {
+                // For change srcs don't use the new bounds of parent node.
+                srcNRgn = gn.getBounds();
+                nat = gn.getTransform();
+                if (nat != null)
+                    nat = new AffineTransform(nat);
             }
+
 
             // System.out.println("Rgns: " + srcORgn + " - " + srcNRgn);
             // System.out.println("ATs: " + oat + " - " + nat);
-            Shape oRgn = srcORgn;
-            Shape nRgn = srcNRgn;
-            
             do {
-                // Filter f;
-                // f = gn.getGraphicsNodeRable(false);
                 // f.invalidateCache(oRng);
                 // f.invalidateCache(nRng);
 
@@ -98,6 +96,12 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
                 gn = gn.getParent();
                 if (gn == null)
                     break; // We reached the top of the tree
+
+                Filter f= gn.getFilter();
+                if ( f != null) {
+                    srcNRgn = f.getBounds2D();
+                    nat = null;
+                }
 
                 // Get the parent's current Affine
                 AffineTransform at = gn.getTransform();
@@ -118,29 +122,28 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
                     else
                         nat = new AffineTransform(at);
                 }
-
             } while (true);
 
             if (gn == null) {
                 // We made it to the root graphics node so add them.
                 // System.out.println
-                //     ("Adding: " + oat + " - " + nat + "\n" +
-                //      org.ImageDisplay.stringShape(oRgn) + "\n" +
-                //      org.ImageDisplay.stringShape(nRgn) + "\n");
+                //      ("Adding: " + oat + " - " + nat + "\n" +
+                //       srcORgn + "\n" + srcNRgn + "\n");
                 // <!>
+                Shape oRgn = srcORgn;
                 if (oat != null){
                     oRgn = oat.createTransformedShape(srcORgn);
                 }
-                if (nat != null){
-                    nRgn = nat.createTransformedShape(srcNRgn);
-                }
-
                 if (oRgn != null) {
                     ret.add(oRgn);
                 }
-
-                if (nRgn != null) {
-                    ret.add(nRgn);
+                
+                if (srcNRgn != null) {
+                    Shape nRgn = srcNRgn;
+                    if (nat != null)
+                        nRgn = nat.createTransformedShape(srcNRgn);
+                    if (nRgn != null)
+                        ret.add(nRgn);
                 }
             }
         }
@@ -219,9 +222,9 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
         if (chngSrc != null) {
             // A child node is moving in the tree so assign it's dirty
             // regions to this node before it moves.
-            rgn = getNodeDirtyRegion(chngSrc);
+            rgn = new ChngSrcRect(getNodeDirtyRegion(chngSrc));
         } else {
-            // Otherwise just use gn's dirty region.
+            // Otherwise just use gn's current region.
             rgn = gn.getBounds();
         }
         // Add this dirty region to any existing dirty region.
@@ -232,6 +235,13 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
         }
         // Store the bounds for the future.
         fromBounds.put(gnWRef, r2d);
+    }
+
+    class ChngSrcRect extends Rectangle2D.Float {
+        ChngSrcRect(Rectangle2D r2d) {
+            super((float)r2d.getX(), (float)r2d.getY(), 
+                  (float)r2d.getWidth(), (float)r2d.getHeight());
+        }
     }
 
     /**
