@@ -1,0 +1,120 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20000802//EN"
+"http://www.w3.org/TR/2000/CR-SVG-20000802/DTD/svg-20000802.dtd">
+
+<!-- ========================================================================= -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.        -->
+<!--                                                                           -->
+<!-- This software is published under the terms of the Apache Software License -->
+<!-- version 1.1, a copy of which has been included with this distribution in  -->
+<!-- the LICENSE file.                                                         -->
+<!-- ========================================================================= -->
+
+<!-- ========================================================================= -->
+<!--                                                                           -->
+<!-- @author vhardy@apache.org                                              -->
+<!-- @version $Id$   -->
+<!-- ========================================================================= -->
+
+<svg id="body" width="450" height="500">
+
+  <style type="text/css"><![CDATA[
+    text.link {
+      fill:            rgb(103, 103, 153);
+      font-size:       14;
+      font-family:     'SunSansCondensed-Normal';
+      text-decoration: underline;
+      text-anchor:     start;
+    }
+
+    text.title {
+      font-family: Arial, Helvetica; 
+      font-size: 16;
+      text-anchor: middle;
+    }
+
+  ]]>
+  </style>
+
+<title>Index Page</title>
+
+  <text class="title" x="50%" y="40">SVG Reference</text>
+
+    <g transform="translate(30, 80)">
+        <a xlink:href="ContextATransform.svg" xlink:show="new">
+            <text class="link" y="1em">ContextATransform.svg</text>
+        </a>
+
+        <a xlink:href="ContextBEExample.svg" xlink:show="new">
+            <text class="link" y="2.5em">ContextBEExample.svg</text>
+        </a>
+
+        <a xlink:href="ContextBStroke.svg" xlink:show="new">
+            <text class="link" y="4em">ContextBStroke.svg</text>
+        </a>
+
+        <a xlink:href="ContextBasicShapes.svg" xlink:show="new">
+            <text class="link" y="5.5em">ContextBasicShapes.svg</text>
+        </a>
+
+        <a xlink:href="ContextBasicShapes2.svg" xlink:show="new">
+            <text class="link" y="7em">ContextBasicShapes2.svg</text>
+        </a>
+
+        <a xlink:href="ContextClip.svg" xlink:show="new">
+            <text class="link" y="8.5em">ContextClip.svg</text>
+        </a>
+
+        <a xlink:href="ContextColor1.svg" xlink:show="new">
+            <text class="link" y="10em">ContextColor1.svg</text>
+        </a>
+
+        <a xlink:href="ContextColor2.svg" xlink:show="new">
+            <text class="link" y="11.5em">ContextColor2.svg</text>
+        </a>
+
+        <a xlink:href="ContextFont1.svg" xlink:show="new">
+            <text class="link" y="13em">ContextFont1.svg</text>
+        </a>
+
+        <a xlink:href="ContextFont2.svg" xlink:show="new">
+            <text class="link" y="14.5em">ContextFont2.svg</text>
+        </a>
+
+        <a xlink:href="ContextGVector.svg" xlink:show="new">
+            <text class="link" y="16em">ContextGVector.svg</text>
+        </a>
+
+        <a xlink:href="ContextGradient.svg" xlink:show="new">
+            <text class="link" y="17.5em">ContextGradient.svg</text>
+        </a>
+
+        <a xlink:href="ContextGraphicObjects.svg" xlink:show="new">
+            <text class="link" y="19em">ContextGraphicObjects.svg</text>
+        </a>
+
+        <a xlink:href="ContextLookup.svg" xlink:show="new">
+            <text class="link" y="20.5em">ContextLookup.svg</text>
+        </a>
+
+        <a xlink:href="ContextPaints.svg" xlink:show="new">
+            <text class="link" y="22em">ContextPaints.svg</text>
+        </a>
+
+        <a xlink:href="ContextRHints.svg" xlink:show="new">
+            <text class="link" y="23.5em">ContextRHints.svg</text>
+        </a>
+
+        <a xlink:href="ContextRescale.svg" xlink:show="new">
+            <text class="link" y="25em">ContextRescale.svg</text>
+        </a>
+
+        <a xlink:href="ContextShearTest.svg" xlink:show="new">
+            <text class="link" y="26.5em">ContextShearTest.svg</text>
+        </a>
+
+        <a xlink:href="ContextTexture.svg" xlink:show="new">
+            <text class="link" y="28em">ContextTexture.svg</text>
+        </a>
+    </g>
+</svg>
