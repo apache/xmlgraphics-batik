@@ -41,7 +41,7 @@ import java.awt.font.FontRenderContext;
  * @author <a href="vincent.hardy@sun.com>Vincent Hardy</a>
  * @version $Id$
  */
-public class BasicTextPainter implements TextPainter {
+public abstract class BasicTextPainter implements TextPainter {
 
     /**
      * Paints the specified text node using the
@@ -51,21 +51,21 @@ public class BasicTextPainter implements TextPainter {
      * @param g2d the Graphics2D to use
      * @param context the rendering context.
      */
-    public void paint(TextNode node,
-                      Graphics2D g2d, GraphicsNodeRenderContext context) {
-
+    public abstract void paint(TextNode node,
+                      Graphics2D g2d, GraphicsNodeRenderContext context); // {
+/*
         FontRenderContext frc = context.getFontRenderContext();
         AttributedCharacterIterator aci = node.getAttributedCharacterIterator();
         /* XXX:  The code below only
          *     works for J2SE base implementation of AttributeCharacterIterator
          */
-
+/*
         TextSpanLayout layout =
             getOffsetAdjustedTextLayout(aci, node.getLocation(), frc);
 
         layout.draw(g2d);
     }
-
+*/
     private static TextLayoutFactory textLayoutFactory =
                                new ConcreteTextLayoutFactory();
 
@@ -180,13 +180,13 @@ public class BasicTextPainter implements TextPainter {
      * <em>Note: The Mark instances passed must have been instantiated by
      * an instance of this enclosing TextPainter implementation.</em>
      */
-    public Shape getHighlightShape(org.apache.batik.gvt.text.Mark beginMark,
-                                   org.apache.batik.gvt.text.Mark endMark) {
+    public abstract Shape getHighlightShape(org.apache.batik.gvt.text.Mark beginMark,
+                                   org.apache.batik.gvt.text.Mark endMark);// {
 
         // TODO: later we can return more complex things like
         // noncontiguous selections
 
-        BasicTextPainter.Mark begin;
+   /*     BasicTextPainter.Mark begin;
         BasicTextPainter.Mark end;
         try {
             begin = (BasicTextPainter.Mark) beginMark;
@@ -230,7 +230,7 @@ public class BasicTextPainter implements TextPainter {
         }
         return highlightShape;
     }
-
+*/
 
     /*
      * Get a Rectangle2D in userspace coords which encloses the textnode
@@ -282,11 +282,11 @@ public class BasicTextPainter implements TextPainter {
      * @param includeStrokeWidth whether to include the effect of stroke width
      *            in bounds computation.
      */
-     protected Rectangle2D getBounds(TextNode node,
+     protected abstract Rectangle2D getBounds(TextNode node,
                FontRenderContext context,
                boolean includeDecoration,
-               boolean includeStrokeWidth) {
-
+               boolean includeStrokeWidth); //{
+/*
          AttributedCharacterIterator aci =
              node.getAttributedCharacterIterator();
          TextSpanLayout layout =
@@ -311,7 +311,7 @@ public class BasicTextPainter implements TextPainter {
         return bounds;
 
      }
-
+*/
    /*
     * Get a Shape in userspace coords which defines the textnode glyph outlines.
     * @param node the TextNode to measure
@@ -319,9 +319,9 @@ public class BasicTextPainter implements TextPainter {
     * @param includeDecoration whether to include text decoration
     *            outlines.
     */
-    protected Shape getOutline(TextNode node, FontRenderContext frc,
-                                    boolean includeDecoration) {
-        Shape outline;
+    protected abstract Shape getOutline(TextNode node, FontRenderContext frc,
+                                    boolean includeDecoration); // {
+/*        Shape outline;
         AttributedCharacterIterator aci = node.getAttributedCharacterIterator();
         TextSpanLayout layout =
             getOffsetAdjustedTextLayout(aci, node.getLocation(), frc);
@@ -356,7 +356,7 @@ public class BasicTextPainter implements TextPainter {
 
         return outline;
     }
-
+*/
    /*
     * Get a Shape in userspace coords which defines the textnode glyph outlines.
     * @param node the TextNode to measure
@@ -406,7 +406,7 @@ public class BasicTextPainter implements TextPainter {
      * TODO: fix/replace, removing dependencies on this code!
      */
 
-    private TextSpanLayout getOffsetAdjustedTextLayout(
+ /*   private TextSpanLayout getOffsetAdjustedTextLayout(
                      AttributedCharacterIterator aci,
                      Point2D location,
                      FontRenderContext frc) {
@@ -453,16 +453,18 @@ public class BasicTextPainter implements TextPainter {
 
         return layout;
     }
+*/
 
-    private Mark cachedMark = null;
-    private AttributedCharacterIterator cachedACI = null;
-    private TextHit cachedHit = null;
+    protected Mark cachedMark = null;
+    protected AttributedCharacterIterator cachedACI = null;
+    protected TextHit cachedHit = null;
 
-    private org.apache.batik.gvt.text.Mark hitTest(
+
+    protected abstract org.apache.batik.gvt.text.Mark hitTest(
                          double x, double y, AttributedCharacterIterator aci,
                          TextNode node,
-                         GraphicsNodeRenderContext context) {
-
+                         GraphicsNodeRenderContext context);// {
+/*
         FontRenderContext frc = context.getFontRenderContext();
 
         TextSpanLayout layout =
@@ -487,7 +489,7 @@ public class BasicTextPainter implements TextPainter {
         return cachedMark;
     }
 
-
+*/
 
     /**
      * This TextPainter's implementation of the Mark interface.

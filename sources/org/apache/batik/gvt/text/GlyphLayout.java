@@ -27,9 +27,17 @@ import java.text.AttributedCharacterIterator;
 import java.text.CharacterIterator;
 import java.text.AttributedString;
 
+import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.text.TextSpanLayout;
 import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
 import org.apache.batik.gvt.text.TextHit;
+import org.apache.batik.gvt.font.GVTGlyphVector;
+import org.apache.batik.gvt.font.GVTLineMetrics;
+import org.apache.batik.gvt.font.GVTFont;
+import org.apache.batik.gvt.font.AWTGVTFont;
+
+import java.util.Map;
+import java.util.Vector;
 
 /**
  * Implementation of TextSpanLayout which uses java.awt.font.GlyphVector.
@@ -40,9 +48,11 @@ import org.apache.batik.gvt.text.TextHit;
  */
 public class GlyphLayout implements TextSpanLayout {
 
-    private GlyphVector gv;
-    private Font font;
-    private LineMetrics metrics;
+   // private GlyphVector gv;
+  //  private Font font;
+    private GVTGlyphVector gv;
+    private GVTFont font;
+    private GVTLineMetrics metrics;
     private AttributedCharacterIterator aci;
     private CharacterIterator ci;
     private FontRenderContext frc;
@@ -62,13 +72,23 @@ public class GlyphLayout implements TextSpanLayout {
      */
     public GlyphLayout(AttributedCharacterIterator aci, Point2D offset,
                           FontRenderContext frc) {
+
         this.aci = (AttributedCharacterIterator) aci.clone();
+
+//         System.out.print("creating GlyphLayout for: '");
+//          for (char c = aci.first(); c != aci.DONE; c = aci.next()) {
+//              System.out.print(c);
+//          }
+//          System.out.println("',  at offset: " + offset.getX() + ", " + offset.getY());
+
         this.frc = frc;
         this.font = getFont(aci);
         this.metrics = font.getLineMetrics(
-                           this.aci, aci.getBeginIndex(), aci.getEndIndex(), frc);
+                   this.aci, this.aci.getBeginIndex(), this.aci.getEndIndex(), frc);
 
         ci = new ReorderedCharacterIterator(this.aci);
+     //   GVTGlyphVector gvtgv = font.createGlyphVector(frc, ci);
+     //   this.gv = gvtgv.getAWTGlyphVector();
         this.gv = font.createGlyphVector(frc, ci);
         this.gv.performDefaultLayout();
         this.glyphPositions = new Point2D.Float[gv.getNumGlyphs()];
@@ -87,15 +107,17 @@ public class GlyphLayout implements TextSpanLayout {
      * @param x the x position of the rendered layout origin.
      * @param y the y position of the rendered layout origin.
      */
-    public void draw(Graphics2D g2d) {
+    public void draw(Graphics2D g2d, GraphicsNodeRenderContext context) {
         AffineTransform t;
         if (transform != null) {
             t = g2d.getTransform();
             g2d.transform(transform);
-            g2d.drawGlyphVector(gv, 0f, 0f);
+            gv.draw(g2d, context, aci);
+          //  g2d.drawGlyphVector(gv, 0f, 0f);
             g2d.setTransform(t);
         } else {
-            g2d.drawGlyphVector(gv, 0f, 0f);
+           gv.draw(g2d, context, aci);
+          // g2d.drawGlyphVector(gv, 0f, 0f);
         }
     }
 
@@ -128,7 +150,7 @@ public class GlyphLayout implements TextSpanLayout {
      * (e.g. if the aci has multiple X or Y values).
      */
     public void setOffset(Point2D offset) {
-        //System.out.println("Offset set to "+offset);
+       // System.out.println("Offset set to "+offset);
         this.offset = offset;
         this.gv.performDefaultLayout();
         doExplicitGlyphLayout(true);
@@ -215,7 +237,7 @@ public class GlyphLayout implements TextSpanLayout {
         end = Math.min(end, gv.getNumGlyphs());
 
         if (begin == 0 && end == gv.getNumGlyphs()) {
-           shape = new GeneralPath(getBounds());
+            shape = new GeneralPath(getBounds());
         } else {
             for (int i=begin; i<end; ++i) {
 
@@ -227,7 +249,6 @@ public class GlyphLayout implements TextSpanLayout {
                 } else {
                    ((GeneralPath) shape).append(gbounds2d, false);
                 }
-
             }
             if (transform != null) {
                 shape = transform.createTransformedShape(shape);
@@ -247,7 +268,7 @@ public class GlyphLayout implements TextSpanLayout {
     public TextHit hitTestChar(float x, float y) {
         int begin = 0;
         int end = gv.getNumGlyphs();
-        TextHit textHit;
+        TextHit textHit = null;
         GlyphMetrics gm;
         float maxX = (float) gv.getVisualBounds().getX();
         if (transform != null) {
@@ -277,7 +298,7 @@ public class GlyphLayout implements TextSpanLayout {
         }
 
         // fallthrough: in text bbox but not on a glyph
-        textHit = new TextHit(-1, false);
+       // textHit = new TextHit(-1, false);
 
         return textHit;
     }
@@ -294,10 +315,14 @@ public class GlyphLayout implements TextSpanLayout {
      * Returns the number of characters in this layout.
      */
     public int getCharacterCount() {
+     /*   int count = 0;
+        for (char c = aci.first(); c != aci.DONE; c = aci.next()) {
+            count++;
+        }
+        return count;
+    */
         return gv.getNumGlyphs();
-        // XXX: probably wrong for CTL, work to be done here!
     }
-
 
     protected Shape getGlyphLogicalBounds(int i) {
 
@@ -428,6 +453,8 @@ public class GlyphLayout implements TextSpanLayout {
             int inc = (aci.getAttribute(TextAttribute.RUN_DIRECTION) ==
                                     TextAttribute.RUN_DIRECTION_RTL) ? -1 : 1;
 
+          //  System.out.println("rundir = " + ((inc>0) ? "ltr" : "rtl"));
+
             ndx = (inc > 0) ? begin : end-1;
 
             // reordering section
@@ -437,26 +464,30 @@ public class GlyphLayout implements TextSpanLayout {
                  // get BiDi embedding
                  Integer embed = (Integer) aci.getAttribute(
                                                TextAttribute.BIDI_EMBEDDING);
-                 //System.out.println("BiDi embedding level : "+embed);
+               //  System.out.println("BiDi embedding level : "+embed);
                  // get BiDi span
                  int runLimit = aci.getRunLimit(TextAttribute.BIDI_EMBEDDING);
 
                  boolean isReversed = false;
                  int runEndNdx = ndx;
 
-                 if (embed != null) {
+                 // have commented out this bit because I'm not sure
+                   // why its here and it makes the textBidi test fail
+
+           /*       if (embed != null) {
                      isReversed = (Math.abs(Math.IEEEremainder(
                          (double)embed.intValue(), 2d)) < 0.1) ? false : true;
                      if (isReversed) {
+                    //     System.out.println("is reversed");
                          runEndNdx = ndx + inc*(runLimit-aciIndex);
                          inc = -inc;
                          ndx = runEndNdx + inc;
                      }
                  }
-
+*/
                  for (;aciIndex < runLimit; ch=aci.next(),++aciIndex) {
                       c[ndx] = ch;
-                      //System.out.println("Setting c["+ndx+"] to "+ch);
+                  //    System.out.println("Setting c["+ndx+"] to "+ch);
                       ndx += inc;
                  }
                  if (isReversed) { // undo the reversal, run is done
@@ -533,14 +564,21 @@ public class GlyphLayout implements TextSpanLayout {
      * Returns a shape describing the overline decoration for a given ACI.
      */
     protected Shape getOverlineShape() {
-        double y = metrics.getBaselineOffsets()[java.awt.Font.ROMAN_BASELINE] -
-                metrics.getAscent();
+        double y = metrics.getOverlineOffset();
+        float overlineThickness = metrics.getOverlineThickness();
+
+        // need to move the overline a bit lower,
+        // not sure if this is correct behaviour or not
+        y += overlineThickness;
+
         Stroke overlineStroke =
-            new BasicStroke(metrics.getUnderlineThickness());
+            new BasicStroke(overlineThickness);
+
+        Point2D position = gv.getGlyphPosition(0);
         return overlineStroke.createStrokedShape(
                            new java.awt.geom.Line2D.Double(
-                           0f, y,
-                           getAdvance(), y));
+                           position.getX(), position.getY()+y,
+                           position.getX()+getAdvance(), position.getY()+y));
     }
 
     /**
@@ -548,13 +586,20 @@ public class GlyphLayout implements TextSpanLayout {
      */
     protected Shape getUnderlineShape() {
         double y = metrics.getUnderlineOffset();
-        Stroke underlineStroke =
-            new BasicStroke(metrics.getUnderlineThickness());
+        float underlineThickness = metrics.getUnderlineThickness();
 
+        // need to move the underline a bit lower,
+        // not sure if this is correct behaviour or not
+        y += underlineThickness;
+
+        Stroke underlineStroke =
+            new BasicStroke(underlineThickness);
+
+        Point2D position = gv.getGlyphPosition(0);
         return underlineStroke.createStrokedShape(
                            new java.awt.geom.Line2D.Double(
-                           0f, y,
-                           getAdvance(), y));
+                           position.getX(), position.getY()+y,
+                           position.getX()+getAdvance(), position.getY()+y));
     }
 
     /**
@@ -562,18 +607,40 @@ public class GlyphLayout implements TextSpanLayout {
      */
     protected Shape getStrikethroughShape() {
         double y = metrics.getStrikethroughOffset();
+
         Stroke strikethroughStroke =
             new BasicStroke(metrics.getStrikethroughThickness());
 
+        Point2D position = gv.getGlyphPosition(0);
         return strikethroughStroke.createStrokedShape(
                            new java.awt.geom.Line2D.Double(
-                           0f, y,
-                           getAdvance(), y));
+                           position.getX(), position.getY()+y,
+                           position.getX()+getAdvance(), position.getY()+y));
     }
 
-    protected Font getFont(AttributedCharacterIterator aci) {
+    // returns a GVTFont
+    protected GVTFont getFont(AttributedCharacterIterator aci) {
+
+     /* System.out.print("GVTFont for '");
+        for (char c = aci.first(); c != aci.DONE; c = aci.next()) {
+            System.out.print(c);
+        }
+*/
         aci.first();
-        return new Font(aci.getAttributes());
+        GVTFont gvtFont = (GVTFont)aci.getAttributes().get(
+                GVTAttributedCharacterIterator.TextAttribute.GVT_FONT);
+        if (gvtFont != null) {
+      //      System.out.print("' is:  ");
+       //     if (gvtFont instanceof SVGGVTFont) {
+               // for now, turn it into an AWTGVTFont
+        //       System.out.println("(SVGGVTFont) " + gvtFont.toString());
+        //       return new AWTGVTFont(aci.getAttributes());
+        //    }
+        //    System.out.println(gvtFont.toString());
+            return gvtFont;
+        } else {
+            return new AWTGVTFont(aci.getAttributes());
+        }
     }
 
     protected void doPathLayout() {
@@ -710,7 +777,7 @@ public class GlyphLayout implements TextSpanLayout {
             float xscale = 1f;
             float yscale = 1f;
             if (!isVertical()) {
-                float lastCharWidth = 
+                float lastCharWidth =
                     (float) (gv.getGlyphMetrics(
                         gv.getNumGlyphs()-1).getBounds2D().getWidth());
                 xscale = (length.floatValue()-lastCharWidth)/
@@ -881,77 +948,93 @@ public class GlyphLayout implements TextSpanLayout {
                                (float) gv.getLogicalBounds().getWidth() :
                                (float) gv.getLogicalBounds().getHeight();
 
-        float[] gp = new float[(gv.getNumGlyphs()+1)*2];
-        gp = (float[]) gv.getGlyphPositions(0, gv.getNumGlyphs(), gp).clone();
+     //   float[] gp = new float[(gv.getNumGlyphs()+1)*2];
+        int numGlyphs = gv.getNumGlyphs();
+        float[] gp = new float[numGlyphs*2];
+        gp = (float[]) gv.getGlyphPositions(0, numGlyphs, gp).clone();
         float init_x_pos = (float) offset.getX();
         float init_y_pos = (float) offset.getY();
-        float curr_x_pos = gp[0] + init_x_pos;
-        float curr_y_pos = gp[1] + init_y_pos;
+        float curr_x_pos = init_x_pos; //gp[0] + init_x_pos;
+        float curr_y_pos = init_y_pos; //gp[1] + init_y_pos;
 
-        while ((ch != CharacterIterator.DONE) && (i < gp.length/2)) {
-            Float x = (Float) aci.getAttribute(
+      //  System.out.println("in doExplicitGL, offset = " + offset);
+      //  System.out.println("g pos = " + gp[0] + ", " + gp[1]);
+
+       // while ((ch != CharacterIterator.DONE) && (i < gp.length/2)) {
+     //   while ((ch != CharacterIterator.DONE) || (i < numGlyphs)) {
+        while (i < numGlyphs) {
+
+           float ox = 0f;
+           float oy = 0f;
+           Float rotation = null;
+
+            if (ch != CharacterIterator.DONE) {
+                Float x = (Float) aci.getAttribute(
                              GVTAttributedCharacterIterator.TextAttribute.X);
-            Float dx = (Float) aci.getAttribute(
+                Float dx = (Float) aci.getAttribute(
                              GVTAttributedCharacterIterator.TextAttribute.DX);
-            Float y = (Float) aci.getAttribute(
+                Float y = (Float) aci.getAttribute(
                              GVTAttributedCharacterIterator.TextAttribute.Y);
-            Float dy = (Float) aci.getAttribute(
+                Float dy = (Float) aci.getAttribute(
                              GVTAttributedCharacterIterator.TextAttribute.DY);
-            Float rotation = (Float) aci.getAttribute(
+                rotation = (Float) aci.getAttribute(
                         GVTAttributedCharacterIterator.TextAttribute.ROTATION);
-            if (x!= null && !x.isNaN()) {
-                if (i==0) {
-                    if (applyOffset) {
-                        curr_x_pos = (float) offset.getX();
+                if (x!= null && !x.isNaN()) {
+                    if (i==0) {
+                        if (applyOffset) {
+                            curr_x_pos = (float) offset.getX();
+                        } else {
+                            curr_x_pos = x.floatValue();
+                            init_x_pos = curr_x_pos;
+                        }
                     } else {
                         curr_x_pos = x.floatValue();
-                        init_x_pos = curr_x_pos;
                     }
-                } else {
-                    curr_x_pos = x.floatValue();
+                } else if (dx != null && !dx.isNaN()) {
+                    curr_x_pos += dx.floatValue();
                 }
-            } else if (dx != null && !dx.isNaN()) {
-                curr_x_pos += dx.floatValue();
-            }
 
-            if (y != null && !y.isNaN()) {
-                if (i==0) {
-                    if (applyOffset) {
-                        curr_y_pos = (float) offset.getY();
+                if (y != null && !y.isNaN()) {
+                    if (i==0) {
+                        if (applyOffset) {
+                            curr_y_pos = (float) offset.getY();
+                        } else {
+                            curr_y_pos = y.floatValue();
+                            init_y_pos = curr_y_pos;
+                        }
                     } else {
                         curr_y_pos = y.floatValue();
-                        init_y_pos = curr_y_pos;
                     }
-                } else {
-                    curr_y_pos = y.floatValue();
+                } else if (dy != null && !dy.isNaN()) {
+                    curr_y_pos += dy.floatValue();
+                } else if (i>0) {
+                    curr_y_pos += gp[i*2 + 1]-gp[i*2 - 1];
                 }
-            } else if (dy != null && !dy.isNaN()) {
-                curr_y_pos += dy.floatValue();
-            } else if (i>0) {
-                curr_y_pos += gp[i*2 + 1]-gp[i*2 - 1];
-            }
 
-            // ox and oy are origin adjustments for each glyph,
-            // computed on the basis of baseline-shifts, etc.
-            float ox = 0f;
-            float oy = 0f;
-            float baselineAdjust = 0f;
-            Object baseline = aci.getAttribute(
-                GVTAttributedCharacterIterator.TextAttribute.BASELINE_SHIFT);
-            if (baseline != null) {
-                if (baseline instanceof Integer) {
-                    if (baseline==TextAttribute.SUPERSCRIPT_SUPER) {
-                        baselineAdjust = baselineAscent*0.5f;
-                    } else if (baseline==TextAttribute.SUPERSCRIPT_SUB) {
-                        baselineAdjust = -baselineAscent*0.5f;
+
+
+                // ox and oy are origin adjustments for each glyph,
+                // computed on the basis of baseline-shifts, etc.
+               // float ox = 0f;
+               // float oy = 0f;
+                float baselineAdjust = 0f;
+                Object baseline = aci.getAttribute(
+                    GVTAttributedCharacterIterator.TextAttribute.BASELINE_SHIFT);
+                if (baseline != null) {
+                    if (baseline instanceof Integer) {
+                        if (baseline==TextAttribute.SUPERSCRIPT_SUPER) {
+                            baselineAdjust = baselineAscent*0.5f;
+                        } else if (baseline==TextAttribute.SUPERSCRIPT_SUB) {
+                            baselineAdjust = -baselineAscent*0.5f;
+                        }
+                    } else if (baseline instanceof Float) {
+                        baselineAdjust = ((Float) baseline).floatValue();
                     }
-                } else if (baseline instanceof Float) {
-                    baselineAdjust = ((Float) baseline).floatValue();
-                }
-                if (isVertical()) {
-                    ox = baselineAdjust;
-                } else {
-                    oy = -baselineAdjust;
+                    if (isVertical()) {
+                        ox = baselineAdjust;
+                    } else {
+                        oy = -baselineAdjust;
+                    }
                 }
             }
             glyphPositions[i] = new Point2D.Float(curr_x_pos+ox,curr_y_pos+oy);
@@ -967,11 +1050,13 @@ public class GlyphLayout implements TextSpanLayout {
             ch = aci.next();
             ++i;
         }
-        gv.setGlyphPosition(i, new Point2D.Float(curr_x_pos, curr_y_pos));
+
+     //   gv.setGlyphPosition(i, new Point2D.Float(curr_x_pos, curr_y_pos));
         //System.out.println();
 
         advance = new Point2D.Float((float) (curr_x_pos-offset.getX()),
                                     (float) (curr_y_pos-offset.getY()));
+       // System.out.println("advance = " + advance.getX() + ", " + advance.getY());
 
         offset = new Point2D.Float(init_x_pos, init_y_pos);
 

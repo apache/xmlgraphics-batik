@@ -18,6 +18,9 @@ import java.awt.font.FontRenderContext;
 import java.awt.font.TextAttribute;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
+import java.awt.Composite;
+import java.awt.geom.GeneralPath;
+import java.awt.geom.Rectangle2D;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
 import java.text.CharacterIterator;
@@ -25,12 +28,18 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.Vector;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.TextNode;
 import org.apache.batik.gvt.TextPainter;
 import org.apache.batik.gvt.text.AttributedCharacterSpanIterator;
 import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
 import org.apache.batik.gvt.text.TextSpanLayout;
+import org.apache.batik.gvt.font.GVTFont;
+import org.apache.batik.gvt.font.GVTFontFamily;
+import org.apache.batik.gvt.font.UnresolvedFontFamily;
+import org.apache.batik.gvt.font.FontFamilyResolver;
+import org.apache.batik.gvt.text.TextHit;
 
 /**
  * More sophisticated implementation of TextPainter which
@@ -49,6 +58,7 @@ public class StrokingTextPainter extends BasicTextPainter {
 
     static {
         extendedAtts.add(GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER);
+        extendedAtts.add(GVTAttributedCharacterIterator.TextAttribute.GVT_FONT);
     }
 
     /**
@@ -67,8 +77,30 @@ public class StrokingTextPainter extends BasicTextPainter {
 
         FontRenderContext frc = context.getFontRenderContext();
         AttributedCharacterIterator aci = node.getAttributedCharacterIterator();
+        List textRuns = getTextRuns(node, aci, frc);
+
+        /*
+         * Text Chunks contain one or more TextRuns,
+         * which they create from the ACI.
+         * Each TextRun contains one TextLayout object.
+         * We render each of the TextLayout glyphsets
+         * in turn.
+         */
+        for (int i = 0; i < textRuns.size(); ++i) {
+            paintTextRun((TextRun) textRuns.get(i), g2d, context);
+        }
+
+        // TODO: FONT_VARIANT, SUPERSCRIPT, SUBSCRIPT...
+    }
+
+
+    private List getTextRuns(TextNode node,
+                             AttributedCharacterIterator aci,
+                             FontRenderContext frc) {
+
         List textRuns = new ArrayList();
-        aci.first();
+        AttributedCharacterIterator fontaci = createModifiedACIForFontMatching(node, aci);
+        fontaci.first();
 
         /*
          * We iterate through the spans over extended attributes,
@@ -78,7 +110,11 @@ public class StrokingTextPainter extends BasicTextPainter {
        TextChunk chunk;
        int beginChunk = 0;
        do {
-            chunk = getTextChunk(node, aci, textRuns, beginChunk, frc);
+             /*
+              * Text Chunks contain one or more TextRuns,
+              * which they create from the ACI.
+              */
+            chunk = getTextChunk(node, fontaci, textRuns, beginChunk, frc);
 
             /* Adjust according to text-anchor property value */
 
@@ -89,19 +125,9 @@ public class StrokingTextPainter extends BasicTextPainter {
 
        } while (chunk != null);
 
-        /*
-         * Text Chunks contain one or more TextRuns,
-         * which they create from the ACI.  Each TextRun contains
-         * one TextLayout object.
-         * We render each of the TextLayout glyphsets
-         * in turn.
-         */
-        for (int i=0; i<textRuns.size(); ++i) {
-            paintTextRun((TextRun) textRuns.get(i), g2d);
-        }
-
-        // TODO: FONT_VARIANT, SUPERSCRIPT, SUBSCRIPT...
+        return textRuns;
     }
+
 
 
     private TextChunk getTextChunk(TextNode node,
@@ -119,10 +145,13 @@ public class StrokingTextPainter extends BasicTextPainter {
             int chunkStartIndex = aci.getIndex();
             boolean isChunkStart = true;
             do {
+
                 int start = aci.getRunStart(extendedAtts);
                 int end = aci.getRunLimit(extendedAtts);
+
                 runaci =
                     new AttributedCharacterSpanIterator(aci, start, end);
+
                 Float fx = (Float) runaci.getAttribute(
                      GVTAttributedCharacterIterator.TextAttribute.X);
 
@@ -168,6 +197,7 @@ public class StrokingTextPainter extends BasicTextPainter {
         }
     }
 
+
     private AttributedCharacterIterator createModifiedACIForVerticalLayout(
                                            AttributedCharacterIterator runaci) {
 
@@ -184,6 +214,146 @@ public class StrokingTextPainter extends BasicTextPainter {
         }
         return as.getIterator();
     }
+
+
+    /**
+     * Returns a new AttributedCharacterIterator that contains resolved GVTFont
+     * attributes. This is then used when creating the text runs so that the
+     * text can be split on changes of font as well as tspans and trefs.
+     *
+     * @param node The text node that the aci belongs to.
+     * @param aci The aci to be modified.
+     *
+     * @return The new modified aci.
+     */
+    private AttributedCharacterIterator createModifiedACIForFontMatching(
+                               TextNode node, AttributedCharacterIterator aci) {
+
+    /*    System.out.print("selecting font characters in: ");
+        for (char c = aci.first(); c != aci.DONE; c = aci.next()) {
+            System.out.print(c);
+        }
+        System.out.println();
+*/
+
+        aci.first();
+        AttributedCharacterSpanIterator acsi
+            = new AttributedCharacterSpanIterator(aci, aci.getBeginIndex(), aci.getEndIndex());
+        AttributedString as = new AttributedString(acsi);
+        aci.first();
+
+        boolean moreChunks = true;
+        while (moreChunks) {
+            int start = aci.getRunStart(GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER);
+            int end = aci.getRunLimit(GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER);
+
+            AttributedCharacterSpanIterator runaci = new AttributedCharacterSpanIterator(aci, start, end);
+
+            Vector fontFamilies = (Vector)runaci.getAttributes().get(GVTAttributedCharacterIterator.TextAttribute.GVT_FONT_FAMILIES);
+
+            if (fontFamilies == null) {
+                // no font families set, just return the same aci
+                return aci;
+            }
+
+            // resolve any unresolved font families in the list
+            Vector resolvedFontFamilies = new Vector();
+            for (int i = 0; i < fontFamilies.size(); i++) {
+                GVTFontFamily fontFamily = (GVTFontFamily) fontFamilies.get(i);
+                if (fontFamily instanceof UnresolvedFontFamily) {
+                    GVTFontFamily resolvedFontFamily = FontFamilyResolver.resolve((UnresolvedFontFamily)fontFamily);
+                    if (resolvedFontFamily != null) {
+                        // font family was successfully resolved
+                        resolvedFontFamilies.add(resolvedFontFamily);
+                    }
+                } else {
+                    // already resolved
+                    resolvedFontFamilies.add(fontFamily);
+                }
+            }
+            // if could not resolve at least one of the fontFamilies then use
+            // the default faont
+            if (resolvedFontFamilies.size() == 0) {
+                resolvedFontFamilies.add(FontFamilyResolver.defaultFont);
+            }
+
+            // create a list of fonts of the correct size
+            Float fontSizeFloat = (Float)as.getIterator().getAttribute(TextAttribute.SIZE);
+            float fontSize = 12;
+            if (fontSizeFloat != null) {
+                fontSize = fontSizeFloat.floatValue();
+            }
+            Vector gvtFonts = new Vector();
+            for (int i = 0; i < resolvedFontFamilies.size(); i++) {
+                GVTFont font = ((GVTFontFamily)resolvedFontFamilies.get(i)).deriveFont(fontSize, runaci);
+                gvtFonts.add(font);
+            }
+
+            // now for each char or group of chars in the string,
+            // find a font that can display it
+
+            int runaciLength = end-start;
+            boolean[] fontAssigned = new boolean[runaciLength];
+            for (int i = 0; i < runaciLength; i++) {
+                fontAssigned[i] = false;
+            }
+
+            for (int i = 0; i < gvtFonts.size();  i++) {
+                // assign this font to all characters it can display if it has
+                // not already been assigned
+
+                GVTFont font = (GVTFont)gvtFonts.get(i);
+
+                int currentRunIndex = runaci.getBeginIndex();
+                while (currentRunIndex < runaci.getEndIndex()) {
+
+                    int displayUpToIndex = font.canDisplayUpTo(runaci, currentRunIndex, end);
+
+                    if (displayUpToIndex == -1) {
+                        // for each char, if not already assigned a font, assign this font to it
+                        for (int j = currentRunIndex; j < end; j++) {
+                            if (!fontAssigned[j - start]) {
+                                as.addAttribute(GVTAttributedCharacterIterator.TextAttribute.GVT_FONT, font, j, j+1);
+                                fontAssigned[j - start] = true;
+                            }
+                        }
+                        currentRunIndex = runaci.getEndIndex();
+
+                    } else if (displayUpToIndex > currentRunIndex) {
+                        // could display some but not all
+                        // for each char it can display, if not already assigned a font, assign this font to it
+
+                        for (int j = currentRunIndex; j < displayUpToIndex; j++) {
+                            if (!fontAssigned[j - start]) {
+                                as.addAttribute(GVTAttributedCharacterIterator.TextAttribute.GVT_FONT, font, j, j+1);
+                                fontAssigned[j - start] = true;
+                            }
+                        }
+                        // set currentRunIndex to be one after the char couldn't display
+                        currentRunIndex = displayUpToIndex+1;
+                    } else {
+                        // couldn't display the current char
+                        currentRunIndex++;
+                    }
+                }
+            }
+            // assign the first font to any chars haven't alreay been assigned
+            for (int i = 0; i < runaciLength; i++) {
+                if (!fontAssigned[i]) {
+                    as.addAttribute(GVTAttributedCharacterIterator.TextAttribute.GVT_FONT,
+                                   gvtFonts.get(0), start+i, start+i+1);
+                }
+            }
+            if (aci.setIndex(end) == aci.DONE) {
+                moreChunks = false;
+            }
+        }
+        return as.getIterator();
+    }
+
+
+
+
 
     private void adjustChunkOffsets(List textRuns, Point2D advance,
                                     int beginChunk, int endChunk) {
@@ -226,7 +396,8 @@ public class StrokingTextPainter extends BasicTextPainter {
     }
 
 
-    private void paintTextRun(TextRun textRun, Graphics2D g2d) {
+    private void paintTextRun(TextRun textRun, Graphics2D g2d,
+                           GraphicsNodeRenderContext context) {
 
         AttributedCharacterIterator runaci = textRun.getACI();
         TextSpanLayout layout = textRun.getLayout();
@@ -256,26 +427,8 @@ public class StrokingTextPainter extends BasicTextPainter {
             paintOverline(textRun, g2d);
         }
 
+        layout.draw(g2d, context);
 
-        Shape outline = layout.getOutline();
-
-        // check if we need to fill this glyph
-        Paint paint = (Paint) runaci.getAttribute(TextAttribute.FOREGROUND);
-        if (paint != null) {
-            g2d.setPaint(paint);
-            g2d.fill(outline);
-        }
-
-        // check if we need to draw the outline of this glyph
-        Stroke stroke = (Stroke) runaci.getAttribute(
-            GVTAttributedCharacterIterator.TextAttribute.STROKE);
-        paint = (Paint) runaci.getAttribute(
-            GVTAttributedCharacterIterator.TextAttribute.STROKE_PAINT);
-        if (stroke != null && paint != null) {
-            g2d.setStroke(stroke);
-            g2d.setPaint(paint);
-            g2d.draw(outline);
-        }
         boolean strikethrough =
             (runaci.getAttribute(GVTAttributedCharacterIterator.
                 TextAttribute.STRIKETHROUGH) ==
@@ -382,6 +535,337 @@ public class StrokingTextPainter extends BasicTextPainter {
             g2d.draw(strikethroughShape);
         }
     }
+
+
+
+    /*
+     * Get a Rectangle2D in userspace coords which encloses the textnode
+     * glyphs composed from an AttributedCharacterIterator.
+     * @param node the TextNode to measure
+     * @param g2d the Graphics2D to use
+     * @param context rendering context.
+     * @param includeDecoration whether to include text decoration
+     *            in bounds computation.
+     * @param includeStrokeWidth whether to include the effect of stroke width
+     *            in bounds computation.
+     */
+     protected Rectangle2D getBounds(TextNode node,
+               FontRenderContext context,
+               boolean includeDecoration,
+               boolean includeStrokeWidth) {
+
+         Rectangle2D bounds;
+
+         if (includeStrokeWidth) {
+             Shape s = getStrokeOutline(node, context, includeDecoration);
+             if (s != null) {
+                 bounds = s.getBounds2D();
+             } else {
+                 bounds = getOutline(node, context, false).getBounds2D();
+             }
+         } else {
+             if (includeDecoration) {
+                 bounds = getOutline(node, context, true).getBounds2D();
+             } else {
+                 bounds = getOutline(node, context, false).getBounds2D();
+             }
+         }
+        return bounds;
+
+     }
+
+    /**
+     * Get a Shape in userspace coords which defines the textnode glyph outlines.
+     * @param node the TextNode to measure
+     * @param frc the font rendering context.
+     * @param includeDecoration whether to include text decoration
+     *            outlines.
+     */
+    protected Shape getOutline(TextNode node, FontRenderContext frc,
+                                    boolean includeDecoration) {
+
+        Shape outline = null;
+        AttributedCharacterIterator aci = node.getAttributedCharacterIterator();
+
+        // get the list of text runs
+        List textRuns = getTextRuns(node, aci, frc);
+
+        // for each text run, get its outline and append it to the overall outline
+        for (int i = 0; i < textRuns.size(); ++i) {
+            TextRun textRun = (TextRun)textRuns.get(i);
+            Shape textRunOutline = textRun.getLayout().getOutline();;
+
+            if (includeDecoration) {
+                AttributedCharacterIterator textRunACI = textRun.getACI();
+                int decorationTypes = 0;
+                if (textRunACI.getAttribute(GVTAttributedCharacterIterator.
+                                            TextAttribute.UNDERLINE) != null) {
+                    decorationTypes |= TextSpanLayout.DECORATION_UNDERLINE;
+                }
+                if (textRunACI.getAttribute(GVTAttributedCharacterIterator.
+                                            TextAttribute.OVERLINE) != null) {
+                    decorationTypes |= TextSpanLayout.DECORATION_OVERLINE;
+                }
+                if (textRunACI.getAttribute(GVTAttributedCharacterIterator.
+                                            TextAttribute.STRIKETHROUGH) != null) {
+                    decorationTypes |= TextSpanLayout.DECORATION_STRIKETHROUGH;
+                }
+                if (decorationTypes != 0) {
+                    if (!(textRunOutline instanceof GeneralPath)) {
+                        textRunOutline = new GeneralPath(textRunOutline);
+                    }
+                    ((GeneralPath) textRunOutline).setWindingRule(
+                                            GeneralPath.WIND_NON_ZERO);
+                    ((GeneralPath) textRunOutline).append(
+                        textRun.getLayout().getDecorationOutline(decorationTypes), false);
+                }
+            }
+
+            if (outline == null) {
+               outline = textRunOutline;
+            } else {
+                if (!(outline instanceof GeneralPath)) {
+                    outline = new GeneralPath(outline);
+                }
+                ((GeneralPath) outline).setWindingRule(
+                                                    GeneralPath.WIND_NON_ZERO);
+                ((GeneralPath) outline).append(textRunOutline, false);
+            }
+
+        }
+        return outline;
+    }
+
+
+    protected org.apache.batik.gvt.text.Mark hitTest(
+                         double x, double y, AttributedCharacterIterator aci,
+                         TextNode node,
+                         GraphicsNodeRenderContext context) {
+
+        FontRenderContext frc = context.getFontRenderContext();
+
+        // get the list of text runs
+        List textRuns = getTextRuns(node, aci, frc);
+
+        // for each text run, see if its been hit
+        for (int i = 0; i < textRuns.size(); ++i) {
+            TextRun textRun = (TextRun)textRuns.get(i);
+            TextSpanLayout layout = textRun.getLayout();
+            TextHit textHit = layout.hitTestChar((float) x, (float) y);
+            if (textHit != null && layout.getBounds().contains(x,y)) {
+                textHit.setTextNode(node);
+                textHit.setFontRenderContext(frc);
+
+                // Note that a texthit char index of -1 signals that the
+                // hit, though within the text element bounds, did not
+                // coincide with a glyph.
+                if ((aci != cachedACI) ||
+                    (textHit == null) ||
+                    (cachedHit == null) ||
+                    ((textHit.getCharIndex() != -1) &&
+                    (textHit.getInsertionIndex() != cachedHit.getInsertionIndex()))) {
+                    cachedMark = new BasicTextPainter.Mark(x, y, layout, textHit);
+                    cachedACI = textRun.getACI();
+                    cachedHit = textHit;
+                    return cachedMark;
+                } // else old mark is still valid, return it.
+            }
+        }
+        return cachedMark;
+    }
+
+  /**
+     * Return a Shape, in the coordinate system of the text layout,
+     * which encloses the text selection delineated by two Mark instances.
+     * <em>Note: The Mark instances passed must have been instantiated by
+     * an instance of this enclosing TextPainter implementation.</em>
+     */
+    public Shape getHighlightShape(org.apache.batik.gvt.text.Mark beginMark,
+                                   org.apache.batik.gvt.text.Mark endMark) {
+
+
+        // TODO: later we can return more complex things like
+        // noncontiguous selections
+
+        BasicTextPainter.Mark begin;
+        BasicTextPainter.Mark end;
+        try {
+            begin = (BasicTextPainter.Mark) beginMark;
+            end = (BasicTextPainter.Mark) endMark;
+        } catch (ClassCastException cce) {
+            throw new
+            Error("This Mark was not instantiated by this TextPainter class!");
+        }
+
+     /*   if (begin == null) {
+            System.out.println("begin mark is null");
+        } else {
+            System.out.println("begin mark is at: " + begin.getHit().getCharIndex());
+        }
+        if (end == null) {
+            System.out.println("end mark is null");
+        } else {
+            System.out.println("end mark is at: " + end.getHit().getCharIndex());
+        }
+*/
+        TextSpanLayout beginLayout = null;
+        TextSpanLayout endLayout = null;
+        if (begin != null && end != null) {
+            beginLayout = begin.getLayout();
+            endLayout = end.getLayout();
+        }
+        if (beginLayout == null || endLayout == null) {
+            return null;
+        }
+
+   //     System.out.println("beginLayout offset is: " + beginLayout.getOffset());
+   //     System.out.println("endLayout offset is: " + endLayout.getOffset());
+
+        if (beginLayout.getOffset().equals(endLayout.getOffset())) {
+            int firsthit = 0;
+            int lasthit = 0;
+            if (begin != end) {
+                firsthit = (begin.getHit().isLeadingEdge()) ?
+                              begin.getHit().getCharIndex() :
+                              begin.getHit().getCharIndex()+1;
+                lasthit = (end.getHit().isLeadingEdge()) ?
+                              end.getHit().getCharIndex() :
+                              end.getHit().getCharIndex()+1;
+                if (firsthit > lasthit) {
+                    int temp = firsthit;
+                    firsthit = lasthit;
+                    lasthit = temp;
+                }
+            } else {
+                lasthit = beginLayout.getCharacterCount();
+            }
+            if (firsthit < 0) {
+                firsthit = 0;
+            }
+            return beginLayout.getLogicalHighlightShape(
+                                    firsthit,
+                                    lasthit);
+        } else {
+            // selection must span more than one text layout (run)
+
+            // get the list of text runs
+            TextNode textNode = begin.getHit().getTextNode();
+            FontRenderContext frc = begin.getHit().getFontRenderContext();
+            List textRuns = getTextRuns(textNode, textNode.getAttributedCharacterIterator(), frc);
+
+
+
+            // find out whether selection is right to left or not, ie. whether
+            // beginLayout is before endLayout or not
+            boolean leftToRight = true;
+            for (int i = 0; i < textRuns.size(); ++i) {
+                TextRun textRun = (TextRun)textRuns.get(i);
+                TextSpanLayout layout = textRun.getLayout();
+                if (layout.getOffset().equals(beginLayout.getOffset())) {
+                    break;
+                }
+                if (layout.getOffset().equals(endLayout.getOffset())) {
+                    leftToRight = false;
+                    break;
+                }
+            }
+        /*    if (leftToRight) {
+                System.out.println("left to right selection");
+            } else {
+                System.out.println("right to left selection");
+            }
+*/
+            GeneralPath highlightedShape = new GeneralPath();
+            boolean startedHighlight = false;
+            boolean finishedHighlight = false;
+
+            // for each text run
+            for (int i = 0; i < textRuns.size(); ++i) {
+                TextRun textRun = (TextRun)textRuns.get(i);
+                TextSpanLayout layout = textRun.getLayout();
+
+                Shape layoutHighlightedShape = null;
+
+                if (leftToRight) {
+
+                    if (layout.getOffset().equals(beginLayout.getOffset())) { // found the first layout
+
+                        startedHighlight = true;
+                        int firsthit = (begin.getHit().isLeadingEdge()) ?
+                                        begin.getHit().getCharIndex() :
+                                        begin.getHit().getCharIndex()+1;
+                        if (firsthit < 0) {
+                          firsthit = 0;
+                        }
+                        layoutHighlightedShape = layout.getLogicalHighlightShape(
+                                                  firsthit, layout.getCharacterCount());
+
+                    } else if (layout.getOffset().equals(endLayout.getOffset())) {
+
+                        finishedHighlight = true;
+                        int lasthit = (end.getHit().isLeadingEdge()) ?
+                                        end.getHit().getCharIndex() :
+                                        end.getHit().getCharIndex()+1;
+
+                        if (lasthit < 0) {
+                            lasthit = layout.getCharacterCount();
+                        }
+                        layoutHighlightedShape = layout.getLogicalHighlightShape(
+                                                        0, lasthit);
+
+                    } else if (startedHighlight) {
+                        layoutHighlightedShape = layout.getLogicalHighlightShape(
+                                                     0, layout.getCharacterCount());
+                    }
+
+                } else {  // right to left
+
+                     if (layout.getOffset().equals(beginLayout.getOffset())) { // found the first layout
+                        finishedHighlight = true;
+                        int lasthit = (begin.getHit().isLeadingEdge()) ?
+                                        begin.getHit().getCharIndex() :
+                                        begin.getHit().getCharIndex()+1;
+
+                        if (lasthit < 0) {
+                            lasthit = layout.getCharacterCount();
+                        }
+                        layoutHighlightedShape = layout.getLogicalHighlightShape(
+                                                  0, lasthit);
+
+                    } else if (layout.getOffset().equals(endLayout.getOffset())) {
+                        startedHighlight = true;
+                        int firsthit = (end.getHit().isLeadingEdge()) ?
+                                        end.getHit().getCharIndex() :
+                                        end.getHit().getCharIndex()+1;
+                        if (firsthit < 0) {
+                            firsthit = 0;
+                        }
+
+                        layoutHighlightedShape = layout.getLogicalHighlightShape(
+                                                        firsthit, layout.getCharacterCount());
+
+                    } else if (startedHighlight) {
+                        layoutHighlightedShape = layout.getLogicalHighlightShape(
+                                                     0, layout.getCharacterCount());
+                    }
+
+                }
+
+                // append the highlighted shape of this layout to the
+                // overall hightlighted shape
+                if (layoutHighlightedShape != null && !layoutHighlightedShape.getBounds().isEmpty()) {
+                    highlightedShape.append(layoutHighlightedShape, false);
+                }
+                // if has appended the last highlight, then don't process any more
+                if (finishedHighlight) {
+                    break;
+                }
+            }
+            return highlightedShape;
+        }
+    }
+
+
 
     /**
      * Inner convenience class for associating a TextLayout for

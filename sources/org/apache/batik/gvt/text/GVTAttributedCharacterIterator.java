@@ -324,6 +324,11 @@ public interface GVTAttributedCharacterIterator extends
                                           new TextAttribute("WRITING_MODE");
 
 
+        public final static TextAttribute GVT_FONT_FAMILIES =
+                                          new TextAttribute("GVT_FONT_FAMILIES");
+
+        public final static TextAttribute GVT_FONT =
+                                          new TextAttribute("GVT_FONT");
 
         // VALUES
 

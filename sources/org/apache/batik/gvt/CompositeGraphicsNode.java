@@ -16,6 +16,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.awt.geom.GeneralPath;
 import java.util.Collection;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
@@ -69,6 +70,9 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
      * Internal Cache: Primitive bounds.
      */
     private Rectangle2D primitiveBounds;
+
+
+    private Shape outline;
 
     /**
      * Constructs a new empty <tt>CompositeGraphicsNode</tt>.
@@ -207,6 +211,7 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
         super.invalidateGeometryCache();
         geometryBounds = null;
         primitiveBounds = null;
+        outline = null;
     }
 
     public boolean contains(Point2D p, GraphicsNodeRenderContext rc) {
@@ -397,11 +402,27 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
     }
 
     /**
-     * Not supported operation.
+     * Returns the outline of this <tt>CompositeGraphicsNode</tt>.
+     *
+     * @param rc the GraphicsNodeRenderContext for which this dimension applies
+     * @return the outline of this node
      */
     public Shape getOutline(GraphicsNodeRenderContext rc) {
-        // <!> FIXME : TODO
-        throw new Error("Not yet implemented");
+        if (outline == null) {
+            outline = new GeneralPath();
+            for (int i = 0; i < count; i++) {
+                Shape childOutline = children[i].getOutline(rc);
+                if (childOutline != null) {
+                    AffineTransform tr = children[i].getTransform();
+                    if (tr != null) {
+                        ((GeneralPath)outline).append(tr.createTransformedShape(childOutline), false);
+                    } else {
+                        ((GeneralPath)outline).append(childOutline, false);
+                    }
+                }
+            }
+        }
+        return outline;
     }
 
     //

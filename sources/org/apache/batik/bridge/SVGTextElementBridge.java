@@ -30,6 +30,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 import org.apache.batik.css.CSSOMReadOnlyStyleDeclaration;
 import org.apache.batik.dom.svg.SVGOMDocument;
@@ -39,6 +40,8 @@ import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.TextNode;
 import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
+import org.apache.batik.gvt.font.GVTFontFamily;
+import org.apache.batik.gvt.font.UnresolvedFontFamily;
 import org.apache.batik.util.CSSConstants;
 import org.apache.batik.util.SVGConstants;
 
@@ -263,7 +266,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge,
         // !!! return two lists
         Map m = getAttributeMap(ctx, element, node);
         String s = XMLSupport.getXMLSpace(element);
-        boolean preserve = s.equals("preserve");
+        boolean preserve = s.equals(SVG_PRESERVE_VALUE);
         boolean first = true;
         boolean last;
         boolean stripFirst = !preserve;
@@ -293,14 +296,17 @@ public class SVGTextElementBridge implements GraphicsNodeBridge,
 
                 nodeElement = (Element)n;
 
-                if (n.getLocalName().equals("tspan")
-                    || n.getLocalName().equals("altGlyph")) {
+                if (n.getLocalName().equals(SVG_TSPAN_TAG)
+                    || n.getLocalName().equals(SVG_ALT_GLYPH_TAG)) {
+
                     buildAttributedStrings(ctx,
                                            nodeElement,
                                            node,
                                            false,
                                            result);
-                } else if (n.getLocalName().equals("tref")) {
+
+                } else if (n.getLocalName().equals(SVG_TREF_TAG)) {
+
                     String uriStr = XLinkSupport.getXLinkHref((Element)n);
                     Element ref = ctx.getReferencedElement((Element)n, uriStr);
                     s = getElementContent(ref);
@@ -599,26 +605,16 @@ public class SVGTextElementBridge implements GraphicsNodeBridge,
 
         // Font size, in user space units.
         float fs = TextUtilities.convertFontSize(element, ctx, cssDecl, uctx);
-
         result.put(TextAttribute.SIZE, new Float(fs));
-
-        // Font family
-        CSSValueList ff = (CSSValueList)cssDecl.getPropertyCSSValueInternal
-            (CSS_FONT_FAMILY_PROPERTY);
-        s = null;
-        for (int i = 0; s == null && i < ff.getLength(); i++) {
-            v = (CSSPrimitiveValue)ff.item(i);
-            s = (String)fonts.get(v.getStringValue());
-        }
-        s = (s == null) ? "SansSerif" : s;
-        result.put(TextAttribute.FAMILY, s);
 
         // Font weight
         // TODO: improve support for relative values
         // (e.g. "lighter", "bolder")
         v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValueInternal
             (CSS_FONT_WEIGHT_PROPERTY);
+        String fontWeightString;
         if (v.getPrimitiveType() == CSSPrimitiveValue.CSS_IDENT) {
+            fontWeightString = v.getStringValue();
             //System.out.println("CSS Font Weight "+v.getStringValue());
             if (v.getStringValue().charAt(0) == 'n') {
                 result.put(TextAttribute.WEIGHT,
@@ -632,6 +628,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge,
             }
         } else {
             //System.out.println("CSS Font Weight "+v.getFloatValue(CSSPrimitiveValue.CSS_NUMBER));
+            fontWeightString = "" + v.getFloatValue(CSSPrimitiveValue.CSS_NUMBER);
             switch ((int)v.getFloatValue(CSSPrimitiveValue.CSS_NUMBER)) {
             case 100:
                 result.put(TextAttribute.WEIGHT,
@@ -673,6 +670,93 @@ public class SVGTextElementBridge implements GraphicsNodeBridge,
                            TextAttribute.WEIGHT_BOLD);
             }
         }
+
+        // Font style
+        v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValueInternal
+            (CSS_FONT_STYLE_PROPERTY);
+        String fontStyleString = v.getStringValue();
+        switch (fontStyleString.charAt(0)) {
+        case 'n':
+            result.put(TextAttribute.POSTURE,
+                       TextAttribute.POSTURE_REGULAR);
+            break;
+        case 'o':
+        case 'i':
+            result.put(TextAttribute.POSTURE,
+                       TextAttribute.POSTURE_OBLIQUE);
+        }
+
+
+        // Font stretch
+        v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValueInternal
+            (CSS_FONT_STRETCH_PROPERTY);
+        String fontStretchString = v.getStringValue();
+        switch (fontStretchString.charAt(0)) {
+        case 'u':
+            if (fontStretchString.charAt(6) == 'c') {
+                result.put(TextAttribute.WIDTH,
+                           TextAttribute.WIDTH_CONDENSED);
+            } else {
+                result.put(TextAttribute.WIDTH,
+                           TextAttribute.WIDTH_EXTENDED);
+            }
+            break;
+        case 'e':
+            if (fontStretchString.charAt(6) == 'c') {
+                result.put(TextAttribute.WIDTH,
+                           TextAttribute.WIDTH_CONDENSED);
+            } else {
+                if (fontStretchString.length() == 8) {
+                    result.put(TextAttribute.WIDTH,
+                               TextAttribute.WIDTH_SEMI_EXTENDED);
+                } else {
+                    result.put(TextAttribute.WIDTH,
+                               TextAttribute.WIDTH_EXTENDED);
+                }
+            }
+            break;
+        case 's':
+            if (fontStretchString.charAt(6) == 'c') {
+                result.put(TextAttribute.WIDTH,
+                           TextAttribute.WIDTH_SEMI_CONDENSED);
+            } else {
+                result.put(TextAttribute.WIDTH,
+                           TextAttribute.WIDTH_SEMI_EXTENDED);
+            }
+            break;
+        default:
+            result.put(TextAttribute.WIDTH,
+                       TextAttribute.WIDTH_REGULAR);
+        }
+
+
+        // Font family
+        CSSValueList ff = (CSSValueList)cssDecl.getPropertyCSSValueInternal
+            (CSS_FONT_FAMILY_PROPERTY);
+
+        //
+        // new code for SVGFonts:
+        //
+
+        //  make a list of GVTFontFamily objects
+        Vector fontFamilyList = new Vector();
+        for (int i = 0; i < ff.getLength(); i++) {
+            v = (CSSPrimitiveValue)ff.item(i);
+            String fontFamilyName = v.getStringValue();
+            GVTFontFamily fontFamily
+                = SVGFontUtilities.getFontFamily(element, ctx, fontFamilyName,
+                   fontWeightString, fontStyleString);
+            fontFamilyList.add(fontFamily);
+         /*  if (fontFamily instanceof SVGFontFamily) {
+                System.out.println(fontFamilyName + " : SVGGVTFontFamily");
+            } else {
+                System.out.println(fontFamilyName + " : UnresolvedFontFamily");
+            }
+*/
+        }
+        result.put(GVTAttributedCharacterIterator.TextAttribute.GVT_FONT_FAMILIES,
+                   fontFamilyList);
+
 
         // Text baseline adjustment.
         // TODO: support for <percentage> and <length> values.
@@ -778,20 +862,6 @@ public class SVGTextElementBridge implements GraphicsNodeBridge,
             break;
         }
 
-        // Font style
-        v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValueInternal
-            (CSS_FONT_STYLE_PROPERTY);
-        s = v.getStringValue();
-        switch (s.charAt(0)) {
-        case 'n':
-            result.put(TextAttribute.POSTURE,
-                       TextAttribute.POSTURE_REGULAR);
-            break;
-        case 'o':
-        case 'i':
-            result.put(TextAttribute.POSTURE,
-                       TextAttribute.POSTURE_OBLIQUE);
-        }
 
         // Font stretch
         v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValueInternal
@@ -987,40 +1057,4 @@ public class SVGTextElementBridge implements GraphicsNodeBridge,
     }
 
 
-    protected final static Map fonts = new HashMap(11);
-    static {
-        fonts.put("serif",           "Serif");
-        fonts.put("Times",           "Serif");
-        fonts.put("Times New Roman", "Serif");
-        fonts.put("sans-serif",      "SansSerif");
-        fonts.put("cursive",         "Dialog");
-        fonts.put("fantasy",         "Symbol");
-        fonts.put("monospace",       "Monospaced");
-        fonts.put("monospaced",      "Monospaced");
-        fonts.put("Courier",         "Monospaced");
-
-        //
-        // Load all fonts. Work around
-        //
-        /* Note to maintainer:  font init code should not be here!
-         * we should not have dependencies in the Bridge
-         * on java2d Fonts - they are not relevant to non-rasterizing
-         * renderers!
-         * We should instead support a list of fonts, in order of preference,
-         * as CSS allows, and defer resolving these names to actual
-         * implementation-dependent font names until render time.
-         *
-         *                -Bill Haneman
-         */
-        GraphicsEnvironment env;
-        env = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        // System.out.println("Initializing fonts .... please wait");
-        String fontNames[] = env.getAvailableFontFamilyNames();
-        int nFonts = fontNames != null ? fontNames.length : 0;
-        // System.out.println("Done initializing " + nFonts + " fonts");
-        for(int i=0; i<nFonts; i++){
-            fonts.put(fontNames[i], fontNames[i]);
-            //System.out.println(fontNames[i]);
-        }
-    }
 }

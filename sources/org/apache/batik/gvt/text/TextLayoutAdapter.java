@@ -20,10 +20,12 @@ import java.awt.font.TextLayout;
 import java.awt.font.TextAttribute;
 import java.awt.font.TextHitInfo;
 import java.text.AttributedCharacterIterator;
+import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.TextNode;
 import org.apache.batik.gvt.text.TextSpanLayout;
 import org.apache.batik.gvt.text.TextHit;
 import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
+import java.awt.Paint;
 
 /**
  * Implementation of TextSpanLayout that uses java.awt.font.TextLayout
@@ -53,8 +55,8 @@ public class TextLayoutAdapter implements TextSpanLayout {
      * specified Graphics2D and rendering context.
      * @param g2d the Graphics2D to use
      */
-    public void draw(Graphics2D g2d) {
-        AffineTransform t;
+    public void draw(Graphics2D g2d, GraphicsNodeRenderContext ctx) {
+   /*     AffineTransform t;
         if (transform != null) {
             t = g2d.getTransform();
             g2d.transform(transform);
@@ -63,6 +65,31 @@ public class TextLayoutAdapter implements TextSpanLayout {
         } else {
             layout.draw(g2d, 0f, 0f);
         }
+
+     */
+
+        Shape outline = getOutline();
+
+        // check if we need to fill this glyph
+        Paint paint = (Paint) aci.getAttribute(TextAttribute.FOREGROUND);
+        if (paint != null) {
+            g2d.setPaint(paint);
+            g2d.fill(outline);
+        }
+
+        // check if we need to draw the outline of this glyph
+        Stroke stroke = (Stroke) aci.getAttribute(
+            GVTAttributedCharacterIterator.TextAttribute.STROKE);
+        paint = (Paint) aci.getAttribute(
+            GVTAttributedCharacterIterator.TextAttribute.STROKE_PAINT);
+        if (stroke != null && paint != null) {
+            g2d.setStroke(stroke);
+            g2d.setPaint(paint);
+            g2d.draw(outline);
+        }
+
+
+
     }
 
     /**
@@ -180,6 +207,10 @@ public class TextLayoutAdapter implements TextSpanLayout {
         } catch (java.awt.geom.NoninvertibleTransformException nite) {;}
         TextHitInfo hit = layout.hitTestChar((float) p.getX(),
                                              (float) p.getY());
+        // put this in to be consistent with GlyphLayout
+        if (hit.getCharIndex() == -1) {
+            return null;
+        }
         return new TextHit(hit.getCharIndex(), hit.isLeadingEdge());
     }
 
