@@ -262,7 +262,7 @@ class BridgeEventSupport {
                                         boolean cancelok) {
             Point2D pos = evt.getPoint2D();
             AffineTransform transform = ua.getTransform();
-            if (transform != null & !transform.isIdentity())
+            if (transform != null && !transform.isIdentity())
                 transform.transform(pos, pos);
             Point screen = ua.getClientAreaLocationOnScreen();
             screen.translate((int)Math.floor(pos.getX()),
