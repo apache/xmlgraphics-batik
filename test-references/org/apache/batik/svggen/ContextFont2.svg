@@ -6,9 +6,9 @@
   <defs id="genericDefs" />
   <g>
     <style type="text/css" xml:space="preserve">
-      <![CDATA[.testC1 {shape-rendering:geometricPrecision;text-rendering:optimizeLegibility;font-weight:bold;stroke:rgb(102,102,153);font-size:16;fill:rgb(102,102,153);}
+      <![CDATA[.testC1 {text-rendering:optimizeLegibility;font-weight:bold;stroke:rgb(102,102,153);font-size:16;fill:rgb(102,102,153);}
 .testC2 {stroke:none;}
-.testC3 {shape-rendering:geometricPrecision;text-rendering:optimizeLegibility;font-size:6;}
+.testC3 {text-rendering:optimizeLegibility;font-size:6;}
 .testC4 {stroke:none;}
 .testC5 {stroke:none;font-size:8;}
 .testC6 {stroke:none;font-size:10;}
@@ -16,23 +16,23 @@
 .testC8 {stroke:none;font-size:18;}
 .testC9 {stroke:none;font-size:36;}
 .testC10 {stroke:none;font-size:48;}
-.testC11 {shape-rendering:geometricPrecision;text-rendering:optimizeLegibility;font-weight:bold;stroke:rgb(102,102,153);font-size:16;fill:rgb(102,102,153);}
+.testC11 {text-rendering:optimizeLegibility;font-weight:bold;stroke:rgb(102,102,153);font-size:16;fill:rgb(102,102,153);}
 .testC12 {stroke:none;}
-.testC13 {shape-rendering:geometricPrecision;text-rendering:optimizeLegibility;font-size:20;}
+.testC13 {text-rendering:optimizeLegibility;font-size:20;}
 .testC14 {stroke:none;}
 .testC15 {font-weight:bold;stroke:none;}
 .testC16 {font-style:italic;stroke:none;}
 .testC17 {font-style:italic;font-weight:bold;stroke:none;}
-.testC18 {shape-rendering:geometricPrecision;text-rendering:optimizeLegibility;font-weight:bold;stroke:rgb(102,102,153);font-size:16;fill:rgb(102,102,153);}
+.testC18 {text-rendering:optimizeLegibility;font-weight:bold;stroke:rgb(102,102,153);font-size:16;fill:rgb(102,102,153);}
 .testC19 {stroke:none;}
-.testC20 {shape-rendering:geometricPrecision;text-rendering:optimizeLegibility;font-size:18;}
+.testC20 {text-rendering:optimizeLegibility;font-size:18;}
 .testC21 {stroke:none;}
 .testC22 {font-family:'Times New Roman';stroke:none;}
 .testC23 {font-family:'Courier New';stroke:none;}
 .testC24 {font-family:'Verdana';stroke:none;}
-.testC25 {shape-rendering:geometricPrecision;text-rendering:optimizeLegibility;font-weight:bold;stroke:rgb(102,102,153);font-size:16;fill:rgb(102,102,153);}
+.testC25 {text-rendering:optimizeLegibility;font-weight:bold;stroke:rgb(102,102,153);font-size:16;fill:rgb(102,102,153);}
 .testC26 {stroke:none;}
-.testC27 {shape-rendering:geometricPrecision;text-rendering:optimizeLegibility;font-family:sans-serif;font-size:14;}
+.testC27 {text-rendering:optimizeLegibility;font-family:sans-serif;font-size:14;}
 .testC28 {stroke:none;}
 .testC29 {font-family:monospace;font-weight:bold;stroke:none;}
 .testC30 {font-style:italic;font-family:monospace;stroke:none;}

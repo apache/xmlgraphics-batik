@@ -6,18 +6,18 @@
   <defs id="genericDefs" />
   <g>
     <style type="text/css" xml:space="preserve">
-      <![CDATA[.testC1 {shape-rendering:geometricPrecision;text-rendering:optimizeLegibility;stroke:url(#testpattern1);fill:url(#testpattern1);}
+      <![CDATA[.testC1 {text-rendering:optimizeLegibility;stroke:url(#testpattern1);fill:url(#testpattern1);}
 .testC2 {stroke:none;}
 .testC3 {stroke:none;}
-.testC4 {shape-rendering:geometricPrecision;text-rendering:optimizeLegibility;}
+.testC4 {text-rendering:optimizeLegibility;}
 .testC5 {stroke:none;}
 .testC6 {fill:url(#testpattern2);stroke:none;}
 .testC7 {fill:url(#testpattern2);stroke:none;}
-.testC8 {shape-rendering:geometricPrecision;text-rendering:optimizeLegibility;}
+.testC8 {text-rendering:optimizeLegibility;}
 .testC9 {stroke:none;}
 .testC10 {fill:url(#testpattern3);stroke:none;}
 .testC11 {fill:url(#testpattern3);stroke:none;}
-.testC12 {shape-rendering:geometricPrecision;text-rendering:optimizeLegibility;}
+.testC12 {text-rendering:optimizeLegibility;}
 .testC13 {stroke:none;}
 .testC14 {stroke-dashoffset:0;text-rendering:auto;color-rendering:auto;stroke-linecap:square;fill:black;font-size:12;stroke-linejoin:miter;font-weight:normal;stroke:black;fill-opacity:1;font-style:normal;stroke-dasharray:none;stroke-miterlimit:10;color-interpolation:auto;image-rendering:auto;shape-rendering:auto;font-family:'Arial';stroke-width:1;stroke-opacity:1;}
 ]]>

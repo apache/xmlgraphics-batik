@@ -10,7 +10,7 @@
         <line y2="0" x1="0" x2="0" y1="0" />
       </clipPath>
     </defs>
-    <g text-rendering="optimizeLegibility" shape-rendering="geometricPrecision">
+    <g text-rendering="optimizeLegibility">
       <text xml:space="preserve" x="10" y="20" stroke="none">Rectangle</text>
       <line y2="38" fill="none" x1="110" x2="110" y1="30" />
       <line y2="30" fill="none" x1="150" x2="155" y1="30" />

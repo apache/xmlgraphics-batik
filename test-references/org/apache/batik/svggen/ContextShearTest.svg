@@ -6,9 +6,9 @@
   <defs id="genericDefs" />
   <g>
     <style type="text/css" xml:space="preserve">
-      <![CDATA[.testC1 {shape-rendering:geometricPrecision;text-rendering:optimizeLegibility;stroke-width:15;stroke:gray;fill:gray;}
+      <![CDATA[.testC1 {text-rendering:optimizeLegibility;stroke-width:15;stroke:gray;fill:gray;}
 .testC2 {fill:none;}
-.testC3 {shape-rendering:geometricPrecision;text-rendering:optimizeLegibility;stroke-width:15;stroke:gray;fill:gray;}
+.testC3 {text-rendering:optimizeLegibility;stroke-width:15;stroke:gray;fill:gray;}
 .testC4 {fill:none;}
 .testC5 {stroke-dashoffset:0;text-rendering:auto;color-rendering:auto;stroke-linecap:square;fill:black;font-size:12;stroke-linejoin:miter;font-weight:normal;stroke:black;fill-opacity:1;font-style:normal;stroke-dasharray:none;stroke-miterlimit:10;color-interpolation:auto;image-rendering:auto;shape-rendering:auto;font-family:'Arial';stroke-width:1;stroke-opacity:1;}
 ]]>

@@ -6,12 +6,12 @@
   <defs id="genericDefs" />
   <g>
     <style type="text/css" xml:space="preserve">
-      <![CDATA[.testC1 {shape-rendering:geometricPrecision;text-rendering:optimizeLegibility;}
+      <![CDATA[.testC1 {text-rendering:optimizeLegibility;}
 .testC2 {stroke:none;}
 .testC3 {stroke:none;}
-.testC4 {fill-opacity:0.501960813999176;shape-rendering:geometricPrecision;text-rendering:optimizeLegibility;stroke-opacity:0.501960813999176;stroke:rgb(255,255,0);fill:rgb(255,255,0);}
+.testC4 {fill-opacity:0.501960813999176;text-rendering:optimizeLegibility;stroke-opacity:0.501960813999176;stroke:rgb(255,255,0);fill:rgb(255,255,0);}
 .testC5 {stroke:none;}
-.testC6 {shape-rendering:geometricPrecision;text-rendering:optimizeLegibility;}
+.testC6 {text-rendering:optimizeLegibility;}
 .testC7 {stroke:none;}
 .testC8 {fill:url(#testlinearGradient1);stroke:none;}
 .testC9 {stroke:none;}

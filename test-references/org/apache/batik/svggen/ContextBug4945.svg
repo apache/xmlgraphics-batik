@@ -6,14 +6,14 @@
   <defs id="genericDefs" />
   <g>
     <style type="text/css" xml:space="preserve">
-      <![CDATA[.testC1 {shape-rendering:geometricPrecision;text-rendering:optimizeLegibility;}
+      <![CDATA[.testC1 {text-rendering:optimizeLegibility;}
 .testC2 {stroke:none;}
-.testC3 {shape-rendering:geometricPrecision;text-rendering:optimizeLegibility;}
+.testC3 {text-rendering:optimizeLegibility;}
 .testC4 {stroke:none;}
-.testC5 {shape-rendering:geometricPrecision;text-rendering:optimizeLegibility;}
+.testC5 {text-rendering:optimizeLegibility;}
 .testC6 {fill:none;}
 .testC7 {stroke:none;}
-.testC8 {shape-rendering:geometricPrecision;text-rendering:optimizeLegibility;}
+.testC8 {text-rendering:optimizeLegibility;}
 .testC9 {stroke:none;}
 .testC10 {stroke-dashoffset:0;text-rendering:auto;color-rendering:auto;stroke-linecap:square;fill:black;font-size:12;stroke-linejoin:miter;font-weight:normal;stroke:black;fill-opacity:1;font-style:normal;stroke-dasharray:none;stroke-miterlimit:10;color-interpolation:auto;image-rendering:auto;shape-rendering:auto;font-family:'Arial';stroke-width:1;stroke-opacity:1;}
 ]]>
