@@ -41,7 +41,7 @@
       <filter id="tableIdentity" filterUnits="objectBoundingBox" 
               x="0%" y="0%" width="100%" height="100%">
         <feTurbulence type="turbulence" baseFrequency="0.05" numOctaves="2"/>
-        <feComponentTransfer filterUnits="objectBoundingBox" 
+        <feComponentTransfer
               x="0%" y="0%" width="100%" height="100%" >
             <feFuncR type="table" tableValues="0 1" />
             <feFuncG type="table" tableValues="0 1" />
@@ -53,7 +53,7 @@
       <filter id="tableInvertRGB" filterUnits="objectBoundingBox" 
               x="0%" y="0%" width="100%" height="100%">
         <feTurbulence type="turbulence" baseFrequency="0.05" numOctaves="2"/>
-        <feComponentTransfer filterUnits="objectBoundingBox" 
+        <feComponentTransfer
               x="0%" y="0%" width="100%" height="100%" >
             <feFuncR type="table" tableValues="1 0" />
             <feFuncG type="table" tableValues="1 0" />
@@ -67,7 +67,7 @@
         <feTurbulence type="turbulence" baseFrequency="0.05" numOctaves="2"/>
         <feColorMatrix type="luminanceToAlpha" />
         <feColorMatrix type="matrix" values="0 0 0 -1 1    0 0 0 -1 1    0 0 0 -1 1   0 0 0 0 1" />
-        <feComponentTransfer filterUnits="objectBoundingBox" 
+        <feComponentTransfer
               x="0%" y="0%" width="100%" height="100%" >
             <feFuncR type="table" tableValues="0 0   0   .2  1" />
             <feFuncG type="table" tableValues="0 0   .3  .9  1" />
@@ -81,22 +81,7 @@
         <feTurbulence type="turbulence" baseFrequency="0.05" numOctaves="2"/>
         <feColorMatrix type="luminanceToAlpha" />
         <feColorMatrix type="matrix" values="0 0 0 -1 1    0 0 0 -1 1    0 0 0 -1 1   0 0 0 0 1" />
-        <feComponentTransfer filterUnits="objectBoundingBox" 
-              x="0%" y="0%" width="100%" height="100%" >
-            <feFuncR type="table" tableValues="0 .3   .6  .9  1" />
-            <feFuncG type="table" tableValues="0 0  .3  .9  1" />
-            <feFuncB type="table" tableValues="0 0    0  0   1" />
-            <feFuncA type="linear" slope="1" intercept="0" />
-        </feComponentTransfer>
-      </filter>
-
-
-      <filter id="tableRedOrangeTint" filterUnits="objectBoundingBox" 
-              x="0%" y="0%" width="100%" height="100%">
-        <feTurbulence type="turbulence" baseFrequency="0.05" numOctaves="2"/>
-        <feColorMatrix type="luminanceToAlpha" />
-        <feColorMatrix type="matrix" values="0 0 0 -1 1    0 0 0 -1 1    0 0 0 -1 1   0 0 0 0 1" />
-        <feComponentTransfer filterUnits="objectBoundingBox" 
+        <feComponentTransfer
               x="0%" y="0%" width="100%" height="100%" >
             <feFuncR type="table" tableValues="0 .3   .6  .9  1" />
             <feFuncG type="table" tableValues="0 0  .3  .9  1" />
@@ -110,7 +95,7 @@
         <feTurbulence type="turbulence" baseFrequency="0.05" numOctaves="2"/>
         <feColorMatrix type="luminanceToAlpha" />
         <feColorMatrix type="matrix" values="0 0 0 -1 1    0 0 0 -1 1    0 0 0 -1 1   0 0 0 0 1" />
-        <feComponentTransfer filterUnits="objectBoundingBox" 
+        <feComponentTransfer
               x="0%" y="0%" width="100%" height="100%" >
             <feFuncR type="table" tableValues="0 0   0  .6  1" />
             <feFuncG type="table" tableValues="0 .15  .5  .9  1" />
@@ -124,7 +109,7 @@
         <feTurbulence type="turbulence" baseFrequency="0.05" numOctaves="2"/>
         <feColorMatrix type="luminanceToAlpha" />
         <feColorMatrix type="matrix" values="0 0 0 -1 1    0 0 0 -1 1    0 0 0 -1 1   0 0 0 0 1" />
-        <feComponentTransfer filterUnits="objectBoundingBox" 
+        <feComponentTransfer
               x="0%" y="0%" width="100%" height="100%" >
             <feFuncR type="discrete" tableValues="1 1" />
             <feFuncG type="discrete" tableValues="1 0" />
@@ -137,7 +122,7 @@
         <feTurbulence type="turbulence" baseFrequency="0.05" numOctaves="2"/>
         <feColorMatrix type="luminanceToAlpha" />
         <feColorMatrix type="matrix" values="0 0 0 -1 1    0 0 0 -1 1    0 0 0 -1 1   0 0 0 0 1" />
-        <feComponentTransfer filterUnits="objectBoundingBox" 
+        <feComponentTransfer
               x="0%" y="0%" width="100%" height="100%" >
             <feFuncR type="discrete" tableValues="1 1  1 .5" />
             <feFuncG type="discrete" tableValues="1 1  .5 0" />
@@ -148,7 +133,7 @@
       <filter id="gamma" filterUnits="objectBoundingBox" 
               x="0%" y="0%" width="100%" height="100%">
         <feTurbulence type="turbulence" baseFrequency="0.05" numOctaves="2"/>
-        <feComponentTransfer filterUnits="objectBoundingBox" 
+        <feComponentTransfer
               x="0%" y="0%" width="100%" height="100%" >
             <feFuncR type="gamma" amplitude="1" exponent="2.4" offset="0"/>
             <feFuncG type="gamma" amplitude="1" exponent="2.4" offset="0"/>

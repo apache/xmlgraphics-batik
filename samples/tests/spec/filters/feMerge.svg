@@ -137,7 +137,7 @@
         <!-- Composite_1_*                                  -->
         <!-- ============================================== -->
         <g transform="translate(0 20)" class="row1" >
-    	  <g id="c1" transform="translate(20 0)">
+    	  <g  transform="translate(20 0)">
               <rect x="0" y="0" width="120" height="120" style="fill:WhiteSmoke"/>
     	      <rect x="0" y="0" width="120" height="120" 
     	            style="fill:FireBrick;  filter:url(#Merge1)"/>
@@ -149,7 +149,7 @@
              </g>
     	  </g>
              
-    	  <g id="c2" transform="translate(160 0)">
+    	  <g  transform="translate(160 0)">
               <rect x="0" y="0" width="120" height="120" style="fill:WhiteSmoke"/>
     	      <rect x="0" y="0" width="120" height="120" 
     	       style="fill:FireBrick;  filter:url(#Merge2)" />
@@ -161,7 +161,7 @@
     	  </g>
   
   
-    	  <g id="c2" transform="translate(300 0)">
+    	  <g  transform="translate(300 0)">
               <rect x="0" y="0" width="120" height="120" style="fill:WhiteSmoke"/>
     	      <rect x="0" y="0" width="120" height="120" 
     	       style="fill:FireBrick;  filter:url(#Merge3)" />
@@ -177,7 +177,7 @@
         <!-- Composite_2_*                                  -->
         <!-- ============================================== -->
         <g transform="translate(0 160)" class="row2" >
-    	  <g id="c1" transform="translate(20 0)">
+    	  <g transform="translate(20 0)">
               <rect x="0" y="0" width="120" height="120" style="fill:WhiteSmoke"/>
     	      <rect x="0" y="0" width="120" height="120" 
     	       style="fill:FireBrick;  filter:url(#Merge4)"/>
@@ -188,7 +188,7 @@
              </g>
     	  </g>
 
-    	  <g id="c1" transform="translate(160 0)">
+    	  <g  transform="translate(160 0)">
               <rect x="0" y="0" width="120" height="120" style="fill:WhiteSmoke"/>
     	      <rect x="0" y="0" width="120" height="120" 
     	       style="fill:FireBrick;  filter:url(#Merge5)"/>
@@ -199,7 +199,7 @@
              </g>
     	  </g>
 
-    	  <g id="c1" transform="translate(300 0)">
+    	  <g  transform="translate(300 0)">
               <rect x="0" y="0" width="120" height="120" style="fill:WhiteSmoke"/>
     	      <rect x="0" y="0" width="120" height="120" 
     	       style="fill:FireBrick;  filter:url(#Merge6)"/>

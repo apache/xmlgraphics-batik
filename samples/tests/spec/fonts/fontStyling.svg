@@ -141,13 +141,13 @@
 
                     <glyph unicode="i" glyph-name="i" horiz-adv-x="455"
                         d="M136 0V1062H316V0H136z">
-                        <path marker="url(#dotMarker)" fill="red" d="M136 1259V1466H316V1259H136z" />
+                        <path style="marker:url(#dotMarker);fill:red" d="M136 1259V1466H316V1259H136z" />
                     </glyph>
 
                     <glyph unicode="j" glyph-name="j" horiz-adv-x="455"
                         d="M-94 -412L-60 -259Q-6 -273 25 -273Q80 -273 107 -237T134 -54
                            V1062H314V-58Q314 -254 263 -331Q198 -431 47 -431Q-26 -431 -94 -412z">
-                        <path marker="url(#dotMarker)" fill="red" d="M134 1257V1466H314V1257H134z" />
+                        <path style="marker:url(#dotMarker);fill:red" d="M134 1257V1466H314V1257H134z" />
                     </glyph>
 
 

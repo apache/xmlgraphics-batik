@@ -57,7 +57,7 @@
 
 <defs>
 
-<symbol id="symbol" width="50" height="50" viewBox="-50 -50 100 100" style="stroke:crimson; stroke-width:4">
+<symbol id="symbol" viewBox="-50 -50 100 100" style="stroke:crimson; stroke-width:4">
 	<rect x="-50" y="-50" width="100%" height="100%" style="fill:gold; stroke:none"/>
 	<circle cx="0" cy="0" r="25%"/>
 </symbol>
