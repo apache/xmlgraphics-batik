@@ -6,7 +6,7 @@
  * the LICENSE file.                                                         *
  *****************************************************************************/
 
-package org.apache.batik.refimpl.script.rhino;
+package org.apache.batik.script.rhino;
 
 import org.mozilla.javascript.WrapHandler;
 import org.mozilla.javascript.Scriptable;

@@ -6,7 +6,7 @@
  * the LICENSE file.                                                         *
  *****************************************************************************/
 
-package org.apache.batik.refimpl.script.jpython;
+package org.apache.batik.script.jpython;
 
 import java.io.*;
 import java.util.Locale;
