@@ -77,7 +77,7 @@
     <!-- ======================= -->
     <!-- Admin / Status          -->
     <!-- ======================= -->
-    <external                     label="CVS Repository"           href="http://xml.apache.org/websrc/index.cgi/xml-batik/"/>
+    <external                     label="CVS Repository"           href="http://cvs.apache.org/viewcvs.cgi/xml-batik/"/>
     <external                     label="Bug Database"             href="http://nagoya.apache.org/bugzilla"/>
     <separator/>
     <page id="status"             label="Status"                   source="status.xml" />
