@@ -78,7 +78,7 @@ To display the available targets type:
     <available property="rhino.present" classname="org.mozilla.javascript.Context">
       <classpath refid="libs-classpath"/>
     </available>
-    <available property="jpython.present" classname="org.phyton.util.PythonInterpreter">
+    <available property="jpython.present" classname="org.python.util.PythonInterpreter">
       <classpath refid="libs-classpath"/>
     </available>
     <available property="jacl.present" classname="tcl.lang.Interp">
@@ -89,6 +89,12 @@ To display the available targets type:
 
   <path id="libs-classpath">
     <fileset dir="lib">
+      <include name="*.jar"/>
+    </fileset>
+  </path>
+
+  <path id="libs-build-classpath">
+    <fileset dir="lib/build">
       <include name="*.jar"/>
     </fileset>
   </path>
@@ -203,7 +209,7 @@ To display the available targets type:
           tofile="${xdocs}/book.xml"
           filtering="on"/>
     <java classname="${stylebook-class}" fork="yes">
-      <classpath refid="libs-classpath"/>
+      <classpath refid="libs-build-classpath"/>
       <arg line="targetDirectory=${docs} ${xdocs}/book.xml ${site-skin}"/>
     </java>
   </target>
@@ -214,7 +220,7 @@ To display the available targets type:
           tofile="${xdocs}/book.xml"
           filtering="on"/>
     <java classname="${stylebook-class}" fork="yes">
-      <classpath refid="libs-classpath"/>
+      <classpath refid="libs-build-classpath"/>
       <arg line="targetDirectory=${docs}/print ${xdocs}/book.xml ${print-skin}"/>
     </java>
   </target>
@@ -225,7 +231,7 @@ To display the available targets type:
           tofile="${xdocs}/book.xml"
           filtering="on"/>
     <java classname="${stylebook-class}" fork="yes">
-      <classpath refid="libs-classpath"/>
+      <classpath refid="libs-build-classpath"/>
       <arg line="targetDirectory=${site} ${xdocs}/book.xml ${site-skin}"/>
     </java>
   </target>
