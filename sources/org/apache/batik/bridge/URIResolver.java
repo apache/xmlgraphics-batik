@@ -160,7 +160,12 @@ public class URIResolver {
         UserAgent userAgent = documentLoader.getUserAgent();
         userAgent.checkLoadExternalResource(purl, pDocURL);
 
-        Document doc = documentLoader.loadDocument(purl.toString());
+        String purlStr = purl.toString();
+        if (frag != null) {
+            purlStr = purlStr.substring(0, purlStr.length()-(frag.length()+1));
+        }
+
+        Document doc = documentLoader.loadDocument(purlStr);
         if (frag != null)
             return doc.getElementById(frag);
         return doc;
