@@ -233,7 +233,7 @@ public class SelfContainedSVGOnLoadTest extends AbstractTest {
         // Now that the SVG file has been loaded, build
         // a GVT Tree from it
         //
-        UserAgent userAgent = new UserAgentAdapter();
+        UserAgent userAgent = buildUserAgent();
         GVTBuilder builder = new GVTBuilder();
         BridgeContext ctx = new BridgeContext(userAgent);
         ctx.setDynamic(true);
@@ -318,6 +318,13 @@ public class SelfContainedSVGOnLoadTest extends AbstractTest {
         }
 
         return report;
+    }
+
+    /**
+     * Give subclasses a chance to build their own UserAgent
+     */
+    protected UserAgent buildUserAgent(){
+        return new UserAgentAdapter();
     }
 
 }
