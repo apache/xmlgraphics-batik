@@ -69,29 +69,33 @@ public class SVGLocatableSupport {
                     return (float)svgelt.getSVGContext().getBBox().getX();
                 }
                 public void setX(float x) throws DOMException {
-                    throw new DOMException
-                        (DOMException.NO_MODIFICATION_ALLOWED_ERR, "");
+                    throw svgelt.createDOMException
+                        (DOMException.NO_MODIFICATION_ALLOWED_ERR,
+                         "readonly.rect", null);
                 }
                 public float getY() {
                     return (float)svgelt.getSVGContext().getBBox().getY();
                 }
                 public void setY(float y) throws DOMException {
-                    throw new DOMException
-                        (DOMException.NO_MODIFICATION_ALLOWED_ERR, "");
+                    throw svgelt.createDOMException
+                        (DOMException.NO_MODIFICATION_ALLOWED_ERR,
+                         "readonly.rect", null);
                 }
                 public float getWidth() {
                     return (float)svgelt.getSVGContext().getBBox().getWidth();
                 }
                 public void setWidth(float width) throws DOMException {
-                    throw new DOMException
-                        (DOMException.NO_MODIFICATION_ALLOWED_ERR, "");
+                    throw svgelt.createDOMException
+                        (DOMException.NO_MODIFICATION_ALLOWED_ERR,
+                         "readonly.rect", null);
                 }
                 public float getHeight() {
                     return (float)svgelt.getSVGContext().getBBox().getHeight();
                 }
                 public void setHeight(float height) throws DOMException {
-                    throw new DOMException
-                        (DOMException.NO_MODIFICATION_ALLOWED_ERR, "");
+                    throw svgelt.createDOMException
+                        (DOMException.NO_MODIFICATION_ALLOWED_ERR,
+                         "readonly.rect", null);
                 }
             };
     }

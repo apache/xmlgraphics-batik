@@ -77,28 +77,28 @@ public class SVGOMAltGlyphElement
      * <b>DOM</b>: Implements {@link SVGAltGlyphElement#getGlyphRef()}.
      */
     public String getGlyphRef() {
-        throw new RuntimeException("!!! TODO: getGlyphRef()");
+        return getAttributeNS(null, SVG_GLYPH_REF_ATTRIBUTE);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGAltGlyphElement#setGlyphRef(String)}.
      */
     public void setGlyphRef(String glyphRef) throws DOMException {
-        throw new RuntimeException("!!! TODO: setGlyphRef()");
+        setAttributeNS(null, SVG_GLYPH_REF_ATTRIBUTE, glyphRef);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGAltGlyphElement#getFormat()}.
      */
     public String getFormat() {
-        throw new RuntimeException("!!! TODO: getFormat()");
+        return getAttributeNS(null, SVG_FORMAT_ATTRIBUTE);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGAltGlyphElement#setFormat(String)}.
      */
     public void setFormat(String format) throws DOMException {
-        throw new RuntimeException("!!! TODO: setFormat()");
+        setAttributeNS(null, SVG_FORMAT_ATTRIBUTE, format);
     }
 
     /**

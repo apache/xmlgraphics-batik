@@ -37,10 +37,12 @@ public class SVGZoomAndPanSupport implements SVGConstants {
 	throws DOMException {
 	switch (val) {
 	case SVGZoomAndPan.SVG_ZOOMANDPAN_DISABLE:
-	    elt.setAttributeNS(null, SVG_ZOOM_AND_PAN_ATTRIBUTE, SVG_DISABLE_VALUE);
+	    elt.setAttributeNS(null, SVG_ZOOM_AND_PAN_ATTRIBUTE,
+                               SVG_DISABLE_VALUE);
 	    break;
 	case SVGZoomAndPan.SVG_ZOOMANDPAN_MAGNIFY:
-	    elt.setAttributeNS(null, SVG_ZOOM_AND_PAN_ATTRIBUTE, SVG_MAGNIFY_VALUE);
+	    elt.setAttributeNS(null, SVG_ZOOM_AND_PAN_ATTRIBUTE,
+                               SVG_MAGNIFY_VALUE);
 	    break;
 	default:
 	    throw ((AbstractNode)elt).createDOMException

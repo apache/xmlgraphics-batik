@@ -304,24 +304,53 @@ public class SVGOMSVGElement
 
     // SVGLocatable ///////////////////////////////////////////////////////
 
-    public SVGElement getNearestViewportElement( ) {
-        throw new Error();
+    /**
+     * <b>DOM</b>: Implements {@link
+     * org.w3c.dom.svg.SVGLocatable#getNearestViewportElement()}.
+     */
+    public SVGElement getNearestViewportElement() {
+	return SVGLocatableSupport.getNearestViewportElement(this);
     }
-    public SVGElement getFarthestViewportElement( ) {
-        throw new Error();
+
+    /**
+     * <b>DOM</b>: Implements {@link
+     * org.w3c.dom.svg.SVGLocatable#getFarthestViewportElement()}.
+     */
+    public SVGElement getFarthestViewportElement() {
+	return SVGLocatableSupport.getFarthestViewportElement(this);
     }
-    public SVGRect   getBBox (  ) {
-        throw new Error();
+
+    /**
+     * <b>DOM</b>: Implements {@link
+     * org.w3c.dom.svg.SVGLocatable#getBBox()}.
+     */
+    public SVGRect getBBox() {
+	return SVGLocatableSupport.getBBox(this);
     }
-    public SVGMatrix getCTM (  ) {
-        throw new Error();
+
+    /**
+     * <b>DOM</b>: Implements {@link
+     * org.w3c.dom.svg.SVGLocatable#getCTM()}.
+     */
+    public SVGMatrix getCTM() {
+	return SVGLocatableSupport.getCTM(this);
     }
-    public SVGMatrix getScreenCTM (  ) {
-        throw new Error();
+
+    /**
+     * <b>DOM</b>: Implements {@link
+     * org.w3c.dom.svg.SVGLocatable#getScreenCTM()}.
+     */
+    public SVGMatrix getScreenCTM() {
+	return SVGLocatableSupport.getScreenCTM(this);
     }
-    public SVGMatrix getTransformToElement (SVGElement element)
-        throws SVGException {
-        throw new Error();
+
+    /**
+     * <b>DOM</b>: Implements {@link
+     * org.w3c.dom.svg.SVGLocatable#getTransformToElement(SVGElement)}.
+     */
+    public SVGMatrix getTransformToElement(SVGElement element)
+	throws SVGException {
+	return SVGLocatableSupport.getTransformToElement(this, element);
     }
 
     // ViewCSS ////////////////////////////////////////////////////////////////
@@ -411,14 +440,16 @@ public class SVGOMSVGElement
     // SVGZoomAndPan support ///////////////////////////////////////////////
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGZoomAndPan#getZoomAndPan()}.
+     * <b>DOM</b>: Implements {@link
+     * org.w3c.dom.svg.SVGZoomAndPan#getZoomAndPan()}.
      */
     public short getZoomAndPan() {
         return SVGZoomAndPanSupport.getZoomAndPan(this);
     }
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGZoomAndPan#getZoomAndPan()}.
+     * <b>DOM</b>: Implements {@link
+     * org.w3c.dom.svg.SVGZoomAndPan#getZoomAndPan()}.
      */
     public void setZoomAndPan(short val) {
         SVGZoomAndPanSupport.setZoomAndPan(this, val);
@@ -456,28 +487,32 @@ public class SVGOMSVGElement
     // SVGTests support ///////////////////////////////////////////////////
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGTests#getRequiredFeatures()}.
+     * <b>DOM</b>: Implements {@link
+     * org.w3c.dom.svg.SVGTests#getRequiredFeatures()}.
      */
     public SVGStringList getRequiredFeatures() {
         return SVGTestsSupport.getRequiredFeatures(this);
     }
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGTests#getRequiredExtensions()}.
+     * <b>DOM</b>: Implements {@link
+     * org.w3c.dom.svg.SVGTests#getRequiredExtensions()}.
      */
     public SVGStringList getRequiredExtensions() {
         return SVGTestsSupport.getRequiredExtensions(this);
     }
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGTests#getSystemLanguage()}.
+     * <b>DOM</b>: Implements {@link
+     * org.w3c.dom.svg.SVGTests#getSystemLanguage()}.
      */
     public SVGStringList getSystemLanguage() {
         return SVGTestsSupport.getSystemLanguage(this);
     }
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGTests#hasExtension(String)}.
+     * <b>DOM</b>: Implements {@link
+     * org.w3c.dom.svg.SVGTests#hasExtension(String)}.
      */
     public boolean hasExtension(String extension) {
         return SVGTestsSupport.hasExtension(this, extension);

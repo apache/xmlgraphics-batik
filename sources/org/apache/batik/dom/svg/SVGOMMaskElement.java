@@ -78,28 +78,36 @@ public class SVGOMMaskElement
      * <b>DOM</b>: Implements {@link SVGMaskElement#getX()}.
      */
     public SVGAnimatedLength getX() {
-        throw new RuntimeException(" !!! TODO: getX()");
+        return getAnimatedLengthAttribute
+            (null, SVG_X_ATTRIBUTE, SVG_MASK_X_DEFAULT_VALUE,
+             SVGOMAnimatedLength.HORIZONTAL_LENGTH);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGMaskElement#getY()}.
      */
     public SVGAnimatedLength getY() {
-        throw new RuntimeException(" !!! TODO: getY()");
+        return getAnimatedLengthAttribute
+            (null, SVG_Y_ATTRIBUTE, SVG_MASK_Y_DEFAULT_VALUE,
+             SVGOMAnimatedLength.VERTICAL_LENGTH);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGMaskElement#getWidth()}.
      */
     public SVGAnimatedLength getWidth() {
-        throw new RuntimeException(" !!! TODO: getWidth()");
+        return getAnimatedLengthAttribute
+            (null, SVG_WIDTH_ATTRIBUTE, SVG_MASK_WIDTH_DEFAULT_VALUE,
+             SVGOMAnimatedLength.HORIZONTAL_LENGTH);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGMaskElement#getHeight()}.
      */
     public SVGAnimatedLength getHeight() {
-        throw new RuntimeException(" !!! TODO: getHeight()");
+        return getAnimatedLengthAttribute
+            (null, SVG_HEIGHT_ATTRIBUTE, SVG_MASK_HEIGHT_DEFAULT_VALUE,
+             SVGOMAnimatedLength.VERTICAL_LENGTH);
     }
 
     /**

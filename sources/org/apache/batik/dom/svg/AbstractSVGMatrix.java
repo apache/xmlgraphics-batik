@@ -184,12 +184,8 @@ public abstract class AbstractSVGMatrix implements SVGMatrix {
         try {
             return new SVGOMMatrix(getAffineTransform().createInverse());
         } catch (NoninvertibleTransformException e) {
-            class Ex extends SVGException {
-                Ex(String str) {
-                    super(SVGException.SVG_MATRIX_NOT_INVERTABLE, str);
-                }
-            }
-            throw new Ex(e.getMessage());
+            throw new SVGOMException(SVGException.SVG_MATRIX_NOT_INVERTABLE,
+                                     e.getMessage());
         }
     }
 
@@ -233,7 +229,12 @@ public abstract class AbstractSVGMatrix implements SVGMatrix {
      * Implements {@link SVGMatrix#rotateFromVector(float,float)}.
      */
     public SVGMatrix rotateFromVector(float x, float y) throws SVGException {
-        throw new InternalError("!!! rotateFromVector");
+        if (x == 0 || y == 0) {
+            throw new SVGOMException(SVGException.SVG_INVALID_VALUE_ERR, "");
+        }
+        AffineTransform tr = (AffineTransform)getAffineTransform().clone();
+        tr.rotate(Math.atan2(y, x));
+        return new SVGOMMatrix(tr);
     }
 
     /**
