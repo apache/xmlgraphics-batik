@@ -581,7 +581,7 @@ public class GlyphLayout implements TextSpanLayout {
 
         // need to move the underline a bit lower,
         // not sure if this is correct behaviour or not
-        y += underlineThickness;
+        y += underlineThickness*1.5;
 
         Stroke underlineStroke =
             new BasicStroke(underlineThickness);
@@ -940,7 +940,7 @@ public class GlyphLayout implements TextSpanLayout {
         int i=0;
         float baselineAscent = isVertical() ?
                                (float) gv.getLogicalBounds().getWidth() :
-                               (float) gv.getLogicalBounds().getHeight();
+                              (metrics.getAscent() + Math.abs(metrics.getDescent()));
 
         int numGlyphs = gv.getNumGlyphs();
         float[] gp = new float[numGlyphs*2];

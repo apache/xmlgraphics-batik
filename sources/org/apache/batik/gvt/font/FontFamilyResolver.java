@@ -10,8 +10,11 @@ package org.apache.batik.gvt.font;
 
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Collection;
 import java.awt.GraphicsEnvironment;
 import java.util.StringTokenizer;
+import java.util.Iterator;
+import java.util.Vector;
 
 /**
  * The is a utility class that is used for resolving UnresolvedFontFamilies.
@@ -32,6 +35,9 @@ public class FontFamilyResolver {
      * alternatives.
      */
     protected final static Map fonts = new HashMap(11);
+
+    protected final static Vector awtFontFamilies = new Vector();
+    protected final static Vector awtFonts = new Vector();
 
     /**
      * This sets up the list of available fonts.
@@ -65,6 +71,17 @@ public class FontFamilyResolver {
             }
             fonts.put(fontNameWithoutSpaces, fontNames[i]);
         }
+
+        Collection fontValues = fonts.values();
+        Iterator iter = fontValues.iterator();
+        while(iter.hasNext()) {
+            String fontFamily = (String)iter.next();
+            AWTFontFamily awtFontFamily = new AWTFontFamily(fontFamily);
+            awtFontFamilies.add(awtFontFamily);
+            AWTGVTFont font = new AWTGVTFont(fontFamily, 0, 12);
+            awtFonts.add(font);
+        }
+
     }
 
     /**
@@ -106,6 +123,17 @@ public class FontFamilyResolver {
         }
 
         return resolvedFontFamily;
+    }
+
+    public static GVTFontFamily getFamilyThatCanDisplay(char c) {
+        for (int i = 0; i < awtFontFamilies.size(); i++) {
+            AWTFontFamily fontFamily = (AWTFontFamily)awtFontFamilies.get(i);
+            AWTGVTFont font = (AWTGVTFont)awtFonts.get(i);
+            if (font.canDisplay(c)) {
+                return fontFamily;
+            }
+        }
+        return null;
     }
 
 }
