@@ -42,7 +42,11 @@ import org.w3c.dom.svg.SVGFilterElement;
  */
 public class SVGOMFilterElement
     extends    SVGOMElement
-    implements SVGFilterElement {
+    implements SVGFilterElement,
+               OverrideStyleElement,
+	       ExtendedElementCSSInlineStyle,
+	       ElementNonCSSPresentationalHints {
+
     /**
      * The reference to the x attribute.
      */
@@ -178,6 +182,17 @@ public class SVGOMFilterElement
     public void setFilterRes(int filterResX, int filterResY) {
 	throw new RuntimeException(" !!! TODO: SVGOMFilterElement.setFilterRes()");
     } 
+
+    // ElementNonCSSPresentationalHints ////////////////////////////////////
+
+    /**
+     * Returns the translation of the non-CSS hints to the corresponding
+     * CSS rules. The result can be null.
+     */
+    public CSSStyleDeclaration getNonCSSPresentationalHints() {
+	return ElementNonCSSPresentationalHintsSupport.
+            getNonCSSPresentationalHints(this);
+    }
 
     // XLink support //////////////////////////////////////////////////////
 
