@@ -19,9 +19,9 @@ import java.awt.Shape;
  * @version $Id$
  */
 final class AreaOfInterestHintKey extends RenderingHints.Key {
-    AreaOfInterestHintKey() {
-        super(1000);
-    }
+
+    AreaOfInterestHintKey(int number) { super(number); }
+
     public boolean isCompatibleValue(Object val) {
         boolean isCompatible = true;
         if ((val != null) && !(val instanceof Shape)) {

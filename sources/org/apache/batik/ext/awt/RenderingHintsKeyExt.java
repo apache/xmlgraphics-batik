@@ -18,11 +18,12 @@ import java.awt.RenderingHints;
  * @version $Id$
  */
 public final class RenderingHintsKeyExt {
+    public static final int KEY_BASE;
+
     /**
      * Hint as to the transcoding destination.
      */
-    public static final RenderingHints.Key KEY_TRANSCODING =
-        new TranscodingHintKey();
+    public static final RenderingHints.Key KEY_TRANSCODING;
 
     public static final String VALUE_TRANSCODING_PRINTING = 
         new String("Printing");
@@ -31,8 +32,7 @@ public final class RenderingHintsKeyExt {
      * Key for the AOI hint. This hint is used to propagate the AOI to Paint
      * and PaintContext instances.
      */
-    public static final RenderingHints.Key KEY_AREA_OF_INTEREST =
-        new AreaOfInterestHintKey();
+    public static final RenderingHints.Key KEY_AREA_OF_INTEREST;
 
     /**
      * Hint for the destination of the rendering when it is a BufferedImage
@@ -44,8 +44,43 @@ public final class RenderingHintsKeyExt {
      * create a Graphics2D from a BufferedImage, this will ensure that
      * the proper things are done in the processes of creating the
      * Graphics.  */
-    public static final RenderingHints.Key KEY_BUFFERED_IMAGE =
-        new BufferedImageHintKey();
+    public static final RenderingHints.Key KEY_BUFFERED_IMAGE;
+
+    /**
+     * Hint to source that we only want an alpha channel.
+     * The source should follow the SVG spec for how to
+     * convert ARGB, RGB, Grey and AGrey to just an Alpha channel.
+     */
+    public static final RenderingHints.Key KEY_COLORSPACE;
+
+    static {
+        int base = 10100;
+        RenderingHints.Key trans=null, aoi=null, bi=null, cs=null;
+        while (true) {
+            int val = base;
+
+            try {
+                trans = new TranscodingHintKey   (val++);
+                aoi   = new AreaOfInterestHintKey(val++);
+                bi    = new BufferedImageHintKey (val++);
+                cs    = new ColorSpaceHintKey    (val++);
+            } catch (Exception e) {
+                System.err.println
+                    ("You have loaded the Batik jar files more than once\n" +
+                     "in the same JVM this is likely a problem with the\n" +
+                     "way you are loading the Batik jar files.");
+                
+                base = (int)(Math.random()*2000000);
+                continue;
+            }
+            break;
+        }
+        KEY_BASE             = base;
+        KEY_TRANSCODING      = trans;
+        KEY_AREA_OF_INTEREST = aoi;
+        KEY_BUFFERED_IMAGE   = bi;
+        KEY_COLORSPACE       = cs;
+    }
 
     /**
      * Do not authorize creation of instances of that class

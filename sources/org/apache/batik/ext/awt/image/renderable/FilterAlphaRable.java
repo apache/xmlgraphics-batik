@@ -20,6 +20,8 @@ import java.awt.image.RenderedImage;
 
 import java.awt.image.renderable.RenderContext;
 
+import org.apache.batik.ext.awt.RenderingHintsKeyExt;
+import org.apache.batik.ext.awt.ColorSpaceHintKey;
 import org.apache.batik.ext.awt.image.rendered.CachableRed;
 import org.apache.batik.ext.awt.image.rendered.RenderedImageCachableRed;
 import org.apache.batik.ext.awt.image.rendered.FilterAlphaRed;
@@ -66,8 +68,8 @@ public class FilterAlphaRable
             aoi = getBounds2D();
 
         // We only want it's alpha channel...
-        rh.put(FilterAsAlphaRable.KEY_COLORSPACE, 
-               FilterAsAlphaRable.VALUE_COLORSPACE_ALPHA);
+        rh.put(RenderingHintsKeyExt.KEY_COLORSPACE, 
+               ColorSpaceHintKey.VALUE_COLORSPACE_ALPHA);
 
         RenderedImage ri;
         ri = getSource().createRendering(new RenderContext(at, aoi, rh));
@@ -78,8 +80,8 @@ public class FilterAlphaRable
 
         CachableRed cr = RenderedImageCachableRed.wrap(ri);
 
-        Object val = cr.getProperty(FilterAsAlphaRable.PROPERTY_COLORSPACE);
-        if (val == FilterAsAlphaRable.VALUE_COLORSPACE_ALPHA) 
+        Object val = cr.getProperty(ColorSpaceHintKey.PROPERTY_COLORSPACE);
+        if (val == ColorSpaceHintKey.VALUE_COLORSPACE_ALPHA) 
             return cr; // It listened to us...
 
         return new FilterAlphaRed(cr);

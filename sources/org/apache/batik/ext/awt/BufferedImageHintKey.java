@@ -21,9 +21,8 @@ import java.awt.image.BufferedImage;
  * @version $Id$
  */
 final class BufferedImageHintKey extends RenderingHints.Key {
-    BufferedImageHintKey() {
-        super(1001);
-    }
+    BufferedImageHintKey(int number) { super(number); }
+
     public boolean isCompatibleValue(Object val) {
         if (val == null)
             return true;

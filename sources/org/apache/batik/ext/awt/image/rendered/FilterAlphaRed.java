@@ -28,6 +28,7 @@ import java.awt.image.PixelInterleavedSampleModel;
 import java.awt.image.ComponentColorModel;
 import java.awt.image.WritableRaster;
 
+import org.apache.batik.ext.awt.ColorSpaceHintKey;
 import org.apache.batik.ext.awt.image.renderable.FilterAsAlphaRable;
 
 /**
@@ -51,8 +52,8 @@ public class FilterAlphaRed extends AbstractRed {
               src.getTileGridYOffset(),
               null);
 
-        props.put(FilterAsAlphaRable.PROPERTY_COLORSPACE,
-                  FilterAsAlphaRable.VALUE_COLORSPACE_ALPHA);
+        props.put(ColorSpaceHintKey.PROPERTY_COLORSPACE,
+                  ColorSpaceHintKey.VALUE_COLORSPACE_ALPHA);
     }
 
     public WritableRaster copyData(WritableRaster wr) {
