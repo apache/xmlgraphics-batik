@@ -190,7 +190,24 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge {
         addPaintAttributes(as, e, tn, textDecoration, ctx);
         tn.setAttributedCharacterIterator(as.getIterator());
 
-        super.buildGraphicsNode(ctx, e, node);
+        //
+        // DO NOT CALL super, 'opacity' is handle during addPaintAttributes()
+        //
+
+        // 'filter'
+        node.setFilter(CSSUtilities.convertFilter(e, node, ctx));
+        // 'mask'
+        node.setMask(CSSUtilities.convertMask(e, node, ctx));
+        // 'clip-path'
+        node.setClip(CSSUtilities.convertClipPath(e, node, ctx));
+        // 'pointer-events'
+        node.setPointerEventType(CSSUtilities.convertPointerEvents(e));
+
+        if (ctx.isDynamic()) {
+            initializeDynamicSupport(ctx, e, node);
+        }
+        // Handle children elements such as <title>
+        SVGUtilities.bridgeChildren(ctx, e);
     }
 
     /**
