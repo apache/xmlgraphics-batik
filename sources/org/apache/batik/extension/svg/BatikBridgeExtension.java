@@ -40,6 +40,7 @@ public class BatikBridgeExtension implements BridgeExtension {
             "http://xml.apache.org/batik/ext/poly/1.0" ,
             "http://xml.apache.org/batik/ext/star/1.0" ,
             "http://xml.apache.org/batik/ext/histogramNormalization/1.0" ,
+            "http://xml.apache.org/batik/ext/solidColor/1.0" ,
         };
         Vector v = new Vector(extensions.length);
         for (int i=0; i<extensions.length; i++) {
@@ -92,5 +93,6 @@ public class BatikBridgeExtension implements BridgeExtension {
         ctx.putBridge(new BatikRegularPolygonElementBridge());
         ctx.putBridge(new BatikStarElementBridge());
         ctx.putBridge(new BatikHistogramNormalizationElementBridge());
+        ctx.putBridge(new SolidColorBridge());
     }
 }

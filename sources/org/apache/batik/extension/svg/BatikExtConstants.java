@@ -23,6 +23,10 @@ public interface BatikExtConstants {
     public static final String BATIK_EXT_STAR_TAG = 
         "star";
 
+    /** Tag name for Batik's regular poly extension. */
+    public static final String BATIK_EXT_SOLID_COLOR_TAG = 
+        "solidColor";
+
     /** Tag name for Batik's star extension. */
     public static final String BATIK_EXT_HISTOGRAM_NORMALIZATION_TAG =
         "histogramNormalization";
@@ -38,5 +42,13 @@ public interface BatikExtConstants {
     /** Attribute name for trim percent attribute */
     public static final String BATIK_EXT_TRIM_ATTRIBUTE = 
         "trim";
+
+    /** Attribute name for color attribute */
+    public static final String BATIK_EXT_COLOR_ATTRIBUTE = 
+        "color";
+
+    /** Attribute name for opacity attribute */
+    public static final String BATIK_EXT_OPACITY_ATTRIBUTE = 
+        "opacity";
 
 }

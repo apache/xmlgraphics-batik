@@ -1,0 +1,81 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN"
+"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+
+<!-- ====================================================================== -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.     -->
+<!--                                                                        -->
+<!-- This software is published under the terms of the Apache Software      -->
+<!-- License version 1.1, a copy of which has been included with this       -->
+<!-- distribution in  the LICENSE file.                                     -->
+<!-- ====================================================================== -->
+
+<!-- ====================================================================== -->
+<!-- regularPoly extension tag test                                         -->
+<!--                                                                        -->
+<!-- @author Thomas.DeWeese@Kodak.com                                       -->
+<!-- @version $Id$ -->
+<!-- ====================================================================== -->
+
+<?xml-stylesheet type="text/css" href="extension.css" ?>
+
+<svg id="body" width="450" height="500" xml:space="preserve" 
+     viewBox="0 0 450 500"
+     xmlns:svg="http://www.w3.org/2000/svg"
+     xmlns:batik="http://xml.apache.org/batik/ext">
+
+    <title>Star Extension Tag</title>
+  
+    <!-- ============================================================= -->
+    <!-- Test content                                                  -->
+    <!-- ============================================================= -->
+    <g id="testContent" class="legend" style="text-anchor:middle">
+        <text x="225" y="40" class="title">
+            Solid Color Paint Server
+        </text>
+  
+        <switch>
+          <g requiredExtensions="http://xml.apache.org/batik/ext/solidColor/1.0"
+             fill="#0D0" stroke="#88F" stroke-width="2">
+
+            <batik:solidColor id="TransPurple" color="#FF00FF" opacity=".5"/>
+            <batik:solidColor id="SolidPurple" color="#FF00FF" />
+            <batik:solidColor id="orange"      color="orange" opacity="1"/>
+
+            <circle fill="url(#SolidPurple)"   cx="85"  cy="135" r="50"/>
+            <circle fill="url(#TransPurple)"   cx="225" cy="135" r="50"/>
+            <circle fill="url(#orange)"        cx="365" cy="135" r="50"/>
+                                            
+            <circle stroke="url(#SolidPurple)" cx="85"  cy="275" r="50"/>
+            <circle stroke="url(#TransPurple)" cx="225" cy="275" r="50"/>
+            <circle stroke="url(#orange)"      cx="365" cy="275" r="50"/>
+
+            <circle fill="url(#SolidPurple)"  opacity="0.5" 
+                    cx="85"  cy="415" r="50"/>
+            <circle fill="url(#TransPurple)"  opacity="0.5" 
+                    cx="225" cy="415" r="50"/>
+            <circle fill="url(#orange)"       opacity="0.5" 
+                    cx="365" cy="415" r="50"/>
+          </g>
+         
+          <g fill="red">
+            <circle cx="85"  cy="135" r="50"/>
+            <circle cx="225" cy="135" r="50"/>
+            <circle cx="365" cy="135" r="50"/>
+                                            
+            <circle cx="85"  cy="275" r="50"/>
+            <circle cx="225" cy="275" r="50"/>
+            <circle cx="365" cy="275" r="50"/>
+      
+            <circle cx="85"  cy="415" r="50"/>
+            <circle cx="225" cy="415" r="50"/>
+            <circle cx="365" cy="415" r="50"/>
+          </g>
+        </switch>
+    </g>
+
+    <!-- ============================================================= -->
+    <!-- Batik sample mark                                             -->
+    <!-- ============================================================= -->
+    <use xlink:href="../batikLogo.svg#Batik_Tag_Box" />
+</svg>

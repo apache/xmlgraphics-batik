@@ -63,7 +63,7 @@ public class SAXSVGDocumentFactory
      * @param parser The SAX2 parser classname.
      */
     public SAXSVGDocumentFactory(String parser) {
-        super(SVGDOMImplementation.getDOMImplementation(), parser);
+        super(ExtensibleSVGDOMImplementation.getDOMImplementation(), parser);
     }
 
     /**
@@ -72,7 +72,7 @@ public class SAXSVGDocumentFactory
      * @param dd Whether a document descriptor must be generated.
      */
     public SAXSVGDocumentFactory(String parser, boolean dd) {
-        super(SVGDOMImplementation.getDOMImplementation(), parser, dd);
+        super(ExtensibleSVGDOMImplementation.getDOMImplementation(), parser, dd);
     }
 
     /**
