@@ -13,8 +13,6 @@ import org.mozilla.javascript.Scriptable;
 
 import org.w3c.dom.events.EventTarget;
 
-import org.apache.batik.script.Window;
-
 /**
  * This is an utility class allowing to pass an ECMAScript function
  * as a parameter of the <code>addEventListener</code> method of
