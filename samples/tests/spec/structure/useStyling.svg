@@ -1,0 +1,63 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN"
+"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+
+<!-- ========================================================================= -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.        -->
+<!--                                                                           -->
+<!-- This software is published under the terms of the Apache Software License -->
+<!-- version 1.1, a copy of which has been included with this distribution in  -->
+<!-- the LICENSE file.                                                         -->
+<!-- ========================================================================= -->
+
+<!-- ========================================================================= -->
+<!-- Test use and styling                                                      -->
+<!--                                                                           -->
+<!-- @author tkormann@ilog.fr -->
+<!-- @version $Id$ -->
+<!-- ========================================================================= -->
+
+<?xml-stylesheet type="text/css" href="../../resources/style/test.css" ?>
+
+<svg width="450" height="500" viewBox="0 0 450 500">
+<title>Test use and styling using &lt;style></title>
+
+<!-- ============================================================= -->
+<!-- Test content                                                  -->
+<!-- ============================================================= -->
+<g id="testContent">
+<text x="225" y="60" class="title">&lt;use> and styling using &lt;style></text>
+<text x="225" y="80" style="text-anchor:middle; font-size:12; font-style:italic">This file is using the defs.svg file to get the external resources</text>
+
+<!-- ############################### -->
+<style type="text/css"><![CDATA[     
+.gradClass {
+	fill: url(#grad);
+}
+
+.colorClass {
+	fill: crimson;
+}
+
+]]></style>
+<defs>
+
+  <radialGradient id="grad">
+ 	<stop style="stop-color:gold" offset="0" />
+ 	<stop style="stop-color:crimson" offset="1" />
+  </radialGradient>
+
+</defs>
+
+	<use xlink:href="../../resources/svg/defs.svg#tree3" x="120" y="120" class="colorClass"/>
+
+	<use xlink:href="../../resources/svg/defs.svg#tree4" x="120" y="300" class="gradClass" />
+
+
+</g>
+
+<!-- ============================================================= -->
+<!-- Batik sample mark                                             -->
+<!-- ============================================================= -->
+    <use xlink:href="../../../batikLogo.svg#Batik_Tag_Box" />
+</svg>

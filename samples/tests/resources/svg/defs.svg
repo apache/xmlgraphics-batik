@@ -232,6 +232,85 @@
              style="fill:url(../../spec/structure/useMultipleURI.svg#gold)" />
 </g>
 
+<!-- ###################################################################### -->
+<!-- useStyling.svg -->
+<!-- ###################################################################### -->
+
+<style type="text/css"><![CDATA[     
+
+.gradClass {
+	fill: url(#extGrad3);
+}
+
+.pattClass {
+	fill: url(#patternExtReference);
+}
+
+.colorClass {
+	fill: gold;
+}
+
+.colorOrange {
+	fill: orange;
+}
+
+]]></style>
+
+<g id="tree3">
+	<!-- ### decoration ### -->
+	<line x1="100" y1="0" x2="0" y2="75" style="stroke:black; fill:none" />
+	<line x1="100" y1="0" x2="100" y2="75" style="stroke:black; fill:none" />
+	<line x1="100" y1="0" x2="200" y2="75" style="stroke:black; fill:none" />
+	<circle cx="100" cy="0" r="25" style="fill:#eee;" />
+	<text x="100" y="6" style="fill:black; text-anchor:middle; font-size:18">&lt;g></text>
+
+	<!-- ### color inherited inside this document  ###-->
+	<g class="colorOrange">
+		<circle cx="0" cy="75" r="25" />
+		<text x="0" y="115" style="text-anchor:middle; fill:black; stroke:none;">local</text>
+	</g>
+
+	<!-- ### color inherited from the use element  ###-->
+	<g>
+		<circle cx="100" cy="75" r="25" />
+		<text x="100" y="115" style="text-anchor:middle; fill:black; stroke:none;">inherited</text>
+	</g>
+
+	<!-- ### color defined on the circle  ###-->
+	<g>
+		<circle cx="200" cy="75" r="25" class="colorClass"/>
+		<text x="200" y="115" style="text-anchor:middle; fill:black; stroke:none;">explicit</text>
+	</g>
+</g>
+
+<g id="tree4">
+	<!-- ### decoration ### -->
+	<line x1="100" y1="0" x2="0" y2="75" style="stroke:black; fill:none" />
+	<line x1="100" y1="0" x2="100" y2="75" style="stroke:black; fill:none" />
+	<line x1="100" y1="0" x2="200" y2="75" style="stroke:black; fill:none" />
+	<circle cx="100" cy="0" r="25" style="fill:#eee;" />
+	<text x="100" y="6" style="fill:black; text-anchor:middle; font-size:18">&lt;g></text>
+
+	<!-- ### gradient inherited inside this document ###-->
+	<g class="gradClass">
+		<circle cx="0" cy="75" r="25" />
+		<text x="0" y="115" style="text-anchor:middle; fill:black; stroke:none;">local</text>
+	</g>
+
+	<!-- ### gradient inherited from the use element ###-->
+	<g>
+		<circle cx="100" cy="75" r="25" />
+		<text x="100" y="115" style="text-anchor:middle; fill:black; stroke:none;">inherited</text>
+	</g>
+
+	<!-- ### pattern defined on the circle ###-->
+	<g>
+		<circle cx="200" cy="75" r="25" class="pattClass" />
+		<text x="200" y="115" style="text-anchor:middle; fill:black; stroke:none;">explicit</text>
+	</g>
+</g>
+
+
 </defs>
 
 </svg>
