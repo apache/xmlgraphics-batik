@@ -144,7 +144,7 @@ public class DocumentLoader {
      * Disposes and releases all resources allocated by this document loader.
      */
     public void dispose() {
-        //System.out.println("purge the cache");
+        // new Exception("purge the cache").printStackTrace();
         cacheMap.clear();
     }
 

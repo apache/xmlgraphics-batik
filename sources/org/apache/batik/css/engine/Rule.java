@@ -19,11 +19,11 @@ public interface Rule {
     /**
      * Returns a constant identifying the rule type.
      */
-    short getType();
+    public short getType();
     
 
     /**
      * Returns a printable representation of this rule.
      */
-    String toString(CSSEngine eng);
+    public String toString(CSSEngine eng);
 }

@@ -34,6 +34,8 @@ public class FontWeightManager extends IdentifierManager {
      */
     protected final static StringMap values = new StringMap();
     static {
+	values.put(CSSConstants.CSS_ALL_VALUE,
+                   ValueConstants.ALL_VALUE);
 	values.put(CSSConstants.CSS_BOLD_VALUE,
                    ValueConstants.BOLD_VALUE);
 	values.put(CSSConstants.CSS_BOLDER_VALUE,

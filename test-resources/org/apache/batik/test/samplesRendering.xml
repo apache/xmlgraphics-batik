@@ -132,6 +132,7 @@
         <test id="samples/tests/spec/fonts/fontChoice.svg" />
         <test id="samples/tests/spec/fonts/fontDecorations.svg" />
         <test id="samples/tests/spec/fonts/fontExternalFont.svg" />
+        <test id="samples/tests/spec/fonts/fontFace.svg" />
         <test id="samples/tests/spec/fonts/fontGlyphChoice.svg" />
         <test id="samples/tests/spec/fonts/fontGlyphsBoth.svg" />
         <test id="samples/tests/spec/fonts/fontGlyphsChildSVG.svg" />

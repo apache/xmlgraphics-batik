@@ -70,6 +70,7 @@ public interface CSSConstants {
     String CSS_OVERFLOW_PROPERTY = "overflow";
     String CSS_POINTER_EVENTS_PROPERTY = "pointer-events";
     String CSS_SHAPE_RENDERING_PROPERTY = "shape-rendering";
+    String CSS_SRC_PROPERTY = "src";
     String CSS_STOP_COLOR_PROPERTY = "stop-color";
     String CSS_STOP_OPACITY_PROPERTY = "stop-opacity";
     String CSS_STROKE_PROPERTY = "stroke";

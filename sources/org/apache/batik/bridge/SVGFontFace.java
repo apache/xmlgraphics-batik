@@ -8,142 +8,71 @@
 
 package org.apache.batik.bridge;
 
+import java.util.List;
+
+import org.apache.batik.gvt.font.GVTFontFamily;
+import org.w3c.dom.Element;
+
 /**
- * This class represents a &lt;font-face> element.
+ * This class represents a &lt;font-face> element or @font-face rule
  *
  * @author <a href="mailto:bella.robinson@cmis.csiro.au">Bella Robinson</a>
  * @version $Id$
  */
-public class SVGFontFace {
+public class SVGFontFace extends FontFace {
 
-    protected String familyName;
-    protected float unitsPerEm;
-    protected String fontWeight;
-    protected String fontStyle;
-    protected String fontVariant;
-    protected String fontStretch;
-    protected float slope;
-    protected String panose1;
-    protected float ascent;
-    protected float descent;
-    protected float strikethroughPosition;
-    protected float strikethroughThickness;
-    protected float underlinePosition;
-    protected float underlineThickness;
-    protected float overlinePosition;
-    protected float overlineThickness;
-
+    Element fontFaceElement;
+    GVTFontFamily fontFamily = null;
     /**
      * Constructes an SVGFontFace with the specfied font-face attributes.
      */
-    public SVGFontFace(String familyName, float unitsPerEm, String fontWeight,
-                       String fontStyle, String fontVariant, String fontStretch,
-                       float slope, String panose1, float ascent, float descent,
-                       float strikethroughPosition, float strikethroughThickness,
-                       float underlinePosition, float underlineThickness,
-                       float overlinePosition, float overlineThickness) {
-
-        this.familyName = familyName;
-        this.unitsPerEm = unitsPerEm;
-        this.fontWeight = fontWeight;
-        this.fontStyle = fontStyle;
-        this.fontVariant = fontVariant;
-        this.fontStretch = fontStretch;
-        this.slope = slope;
-        this.panose1 = panose1;
-        this.ascent = ascent;
-        this.descent = descent;
-        this.strikethroughPosition = strikethroughPosition;
-        this.strikethroughThickness = strikethroughThickness;
-        this.underlinePosition = underlinePosition;
-        this.underlineThickness = underlineThickness;
-        this.overlinePosition = overlinePosition;
-        this.overlineThickness = overlineThickness;
+    public SVGFontFace
+        (Element fontFaceElement, List srcs,
+         String familyName, float unitsPerEm, String fontWeight,
+         String fontStyle, String fontVariant, String fontStretch,
+         float slope, String panose1, float ascent, float descent,
+         float strikethroughPosition, float strikethroughThickness,
+         float underlinePosition, float underlineThickness,
+         float overlinePosition, float overlineThickness) {
+        super(srcs,
+              familyName, unitsPerEm, fontWeight, 
+              fontStyle, fontVariant, fontStretch, 
+              slope, panose1, ascent, descent,
+              strikethroughPosition, strikethroughThickness,
+              underlinePosition, underlineThickness,
+              overlinePosition, overlineThickness);
+        this.fontFaceElement = fontFaceElement;
     }
 
     /**
-     * Returns the family name of this font, it may contain more than one.
+     * Returns the font associated with this rule or element.
      */
-    public String getFamilyName() {
-        return familyName;
+    public GVTFontFamily getFontFamily(BridgeContext ctx) {
+        if (fontFamily != null)
+            return fontFamily;
+
+        Element fontElt = SVGUtilities.getParentElement(fontFaceElement);
+        if (fontElt.getNamespaceURI().equals(SVG_NAMESPACE_URI) &&
+            fontElt.getLocalName().equals(SVG_FONT_TAG)) {
+            return new SVGFontFamily(this, fontElt, ctx);
+        }
+
+        fontFamily = super.getFontFamily(ctx);
+        return fontFamily;
+    }
+
+    public Element getFontFaceElement() {
+        return fontFaceElement;
     }
 
     /**
-     * Returns the font-weight.
+     * Default implementation uses the root element of the document 
+     * associated with BridgeContext.  This is useful for CSS case.
      */
-    public String getFontWeight() {
-        return fontWeight;
+    protected Element getBaseElement(BridgeContext ctx) {
+        if (fontFaceElement != null) 
+            return fontFaceElement;
+        return super.getBaseElement(ctx);
     }
 
-    /**
-     * Returns the font-style.
-     */
-    public String getFontStyle() {
-        return fontStyle;
-    }
-
-    /**
-     * The number of coordinate units on the em square for this font.
-     */
-    public float getUnitsPerEm() {
-        return unitsPerEm;
-    }
-
-    /**
-     * Returns the maximum unaccented height of the font within the font
-     * coordinate system.
-     */
-    public float getAscent() {
-        return ascent;
-    }
-
-    /**
-     * Returns the maximum unaccented depth of the font within the font
-     * coordinate system.
-     */
-    public float getDescent() {
-        return descent;
-    }
-
-    /**
-     * Returns the position of the strikethrough decoration.
-     */
-    public float getStrikethroughPosition() {
-        return strikethroughPosition;
-    }
-
-    /**
-     * Returns the stroke thickness to use when drawing a strikethrough.
-     */
-    public float getStrikethroughThickness() {
-        return strikethroughThickness;
-    }
-
-    /**
-     * Returns the position of the underline decoration.
-     */
-    public float getUnderlinePosition() {
-        return underlinePosition;
-    }
-
-    /**
-     * Returns the stroke thickness to use when drawing a underline.
-     */
-    public float getUnderlineThickness() {
-        return underlineThickness;
-    }
-
-    /**
-     * Returns the position of the overline decoration.
-     */
-    public float getOverlinePosition() {
-        return overlinePosition;
-    }
-
-    /**
-     * Returns the stroke thickness to use when drawing a overline.
-     */
-    public float getOverlineThickness() {
-        return overlineThickness;
-    }
 }

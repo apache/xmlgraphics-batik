@@ -25,6 +25,7 @@ import org.apache.batik.css.engine.value.css2.FontStyleManager;
 import org.apache.batik.css.engine.value.css2.FontVariantManager;
 import org.apache.batik.css.engine.value.css2.FontWeightManager;
 import org.apache.batik.css.engine.value.css2.OverflowManager;
+import org.apache.batik.css.engine.value.css2.SrcManager;
 import org.apache.batik.css.engine.value.css2.TextDecorationManager;
 import org.apache.batik.css.engine.value.css2.UnicodeBidiManager;
 import org.apache.batik.css.engine.value.css2.VisibilityManager;
@@ -216,6 +217,7 @@ public class SVGCSSEngine extends CSSEngine {
         new OverflowManager(),
 
         new PointerEventsManager(),
+        new SrcManager(),
         new ShapeRenderingManager(),
         new SVGColorManager(CSSConstants.CSS_STOP_COLOR_PROPERTY),
         new OpacityManager(CSSConstants.CSS_STOP_OPACITY_PROPERTY, false),
@@ -312,7 +314,8 @@ public class SVGCSSEngine extends CSSEngine {
     
 
     public final static int POINTER_EVENTS_INDEX = OVERFLOW_INDEX + 1;
-    public final static int SHAPE_RENDERING_INDEX = POINTER_EVENTS_INDEX + 1;
+    public final static int SRC_INDEX = POINTER_EVENTS_INDEX + 1;
+    public final static int SHAPE_RENDERING_INDEX = SRC_INDEX + 1;
     public final static int STOP_COLOR_INDEX = SHAPE_RENDERING_INDEX + 1;
     public final static int STOP_OPACITY_INDEX = STOP_COLOR_INDEX + 1;
     public final static int STROKE_INDEX = STOP_OPACITY_INDEX + 1;

@@ -8,6 +8,7 @@
 
 package org.apache.batik.gvt.font;
 
+import java.awt.Font;
 import java.awt.font.TextAttribute;
 import java.text.AttributedCharacterIterator;
 import java.util.HashMap;
@@ -21,7 +22,17 @@ import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
  */
 public class AWTFontFamily implements GVTFontFamily {
 
-    protected String familyName;
+    protected GVTFontFace fontFace;
+    protected Font   font;
+
+    /**
+     * Constructs an AWTFontFamily with the specified familyName.
+     *
+     * @param familyName The name of the font family.
+     */
+    public AWTFontFamily(GVTFontFace fontFace) {
+        this.fontFace = fontFace;
+    }
 
     /**
      * Constructs an AWTFontFamily with the specified familyName.
@@ -29,7 +40,17 @@ public class AWTFontFamily implements GVTFontFamily {
      * @param familyName The name of the font family.
      */
     public AWTFontFamily(String familyName) {
-        this.familyName = familyName;
+        this(new GVTFontFace(familyName));
+    }
+
+    /**
+     * Constructs an AWTFontFamily with the specified familyName.
+     *
+     * @param familyName The name of the font family.
+     */
+    public AWTFontFamily(GVTFontFace fontFace, Font font) {
+        this.fontFace = fontFace;
+        this.font     = font;
     }
 
     /**
@@ -38,7 +59,14 @@ public class AWTFontFamily implements GVTFontFamily {
      * @return The family name.
      */
     public String getFamilyName() {
-        return familyName;
+        return fontFace.getFamilyName();
+    }
+
+    /**
+     * Returns the font-face information for this font family.
+     */
+    public GVTFontFace getFontFace() {
+        return fontFace;
     }
 
     /**
@@ -49,10 +77,12 @@ public class AWTFontFamily implements GVTFontFamily {
      *             the derived font.  
      */
     public GVTFont deriveFont(float size, AttributedCharacterIterator aci) {
+        if (font != null)
+            return new AWTGVTFont(font, size);
 
         HashMap fontAttributes = new HashMap(aci.getAttributes());
         fontAttributes.put(TextAttribute.SIZE, new Float(size));
-        fontAttributes.put(TextAttribute.FAMILY, familyName);
+        fontAttributes.put(TextAttribute.FAMILY, fontFace.getFamilyName());
         fontAttributes.remove(GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER);
         return new AWTGVTFont(fontAttributes);
     }

@@ -35,6 +35,8 @@ public class FontSizeManager extends LengthManager {
      */
     protected final static StringMap values = new StringMap();
     static {
+        values.put(CSSConstants.CSS_ALL_VALUE,
+                   ValueConstants.ALL_VALUE);
         values.put(CSSConstants.CSS_LARGE_VALUE,
                    ValueConstants.LARGE_VALUE);
         values.put(CSSConstants.CSS_LARGER_VALUE,

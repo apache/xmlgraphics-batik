@@ -46,9 +46,21 @@ import org.w3c.dom.svg.EventListenerInitializer;
 public class BaseScriptingEnvironment {
     /**
      * Constant used to describe inline scripts
+     * {0} - URL of document containing script.
+     * {1} - Element tag
+     * {2} - line number of element.
      */
     public static final String INLINE_SCRIPT_DESCRIPTION
         = "BaseScriptingEnvironment.constant.inline.script.description";
+
+    /**
+     * Constant used to describe inline scripts
+     * {0} - URL of document containing script.
+     * {1} - Event attribute name
+     * {2} - line number of element.
+     */
+    public static final String EVENT_SCRIPT_DESCRIPTION
+        = "BaseScriptingEnvironment.constant.event.script.description";
 
     /**
      * Tells whether the given SVG document is dynamic.
@@ -364,7 +376,7 @@ public class BaseScriptingEnvironment {
 
             try {
                 String href = XLinkSupport.getXLinkHref(script);
-                String desc = Messages.getMessage(INLINE_SCRIPT_DESCRIPTION);
+                String desc = null;
                 Reader reader;
                 if (href.length() > 0) {
                     desc = href;
@@ -375,6 +387,15 @@ public class BaseScriptingEnvironment {
                     checkCompatibleScriptURL(type, purl);
                     reader = new InputStreamReader(purl.openStream());
                 } else {
+                    DocumentLoader dl = bridgeContext.getDocumentLoader();
+                    Element e = (Element)script;
+                    SVGDocument d = (SVGDocument)e.getOwnerDocument();
+                    int line = dl.getLineNumber((Element)script);
+                    desc = Messages.formatMessage
+                        (INLINE_SCRIPT_DESCRIPTION,
+                         new Object [] {d.getURL(),
+                                        "<"+script.getNodeName()+">", 
+                                        new Integer(line)});
                     // Inline script.
                     Node n = script.getFirstChild();
                     if (n != null) {
@@ -472,12 +493,21 @@ public class BaseScriptingEnvironment {
             checkCanRun = false; // we only check once for onload handlers
         }
 
+        DocumentLoader dl = bridgeContext.getDocumentLoader();
+        SVGDocument d = (SVGDocument)elt.getOwnerDocument();
+        int line = dl.getLineNumber((Element)elt);
+        final String desc = Messages.formatMessage
+            (EVENT_SCRIPT_DESCRIPTION,
+             new Object [] {d.getURL(),
+                            SVGConstants.SVG_ONLOAD_ATTRIBUTE, 
+                            new Integer(line)});
+
         EventListener l = new EventListener() {
                 public void handleEvent(Event evt) {
                     try {
                         interp.bindObject(EVENT_NAME, evt);
                         interp.bindObject(ALTERNATE_EVENT_NAME, evt);
-                        interp.evaluate(new StringReader(s));
+                        interp.evaluate(new StringReader(s), desc);
                     } catch (IOException io) {
                     } catch (InterpreterException e) {
                         handleInterpreterException(e);

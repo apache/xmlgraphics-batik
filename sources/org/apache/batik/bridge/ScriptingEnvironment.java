@@ -10,6 +10,7 @@ package org.apache.batik.bridge;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -35,6 +36,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
+import org.w3c.dom.svg.SVGDocument;
 
 /**
  * This class contains the informations needed by the SVG scripting.
@@ -245,7 +247,8 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
     /**
      * Runs an event handler.
      */
-    public void runEventHandler(String script, Event evt, String lang) {
+    public void runEventHandler(String script, Event evt, 
+                                String lang, String desc) {
         Interpreter interpreter = getInterpreter(lang);
         if (interpreter == null)
             return;
@@ -255,7 +258,9 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
 
             interpreter.bindObject(EVENT_NAME, evt);
             interpreter.bindObject(ALTERNATE_EVENT_NAME, evt);
-            interpreter.evaluate(script);
+            interpreter.evaluate(new StringReader(script), desc);
+        } catch (IOException ioe) {
+            // Do nothing, can't really happen with StringReader
         } catch (InterpreterException ie) {
             handleInterpreterException(ie);
         } catch (SecurityException se) {
@@ -926,6 +931,13 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
             if (script.length() == 0)
                 return;
 
+            DocumentLoader dl = bridgeContext.getDocumentLoader();
+            SVGDocument d = (SVGDocument)elt.getOwnerDocument();
+            int line = dl.getLineNumber((Element)elt);
+            final String desc = Messages.formatMessage
+                (EVENT_SCRIPT_DESCRIPTION,
+                 new Object [] {d.getURL(), attribute, new Integer(line)});
+
             // Find the scripting language
             Element e = elt;
             while (e != null &&
@@ -940,7 +952,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
             String lang = e.getAttributeNS
                 (null, SVGConstants.SVG_CONTENT_SCRIPT_TYPE_ATTRIBUTE);
 
-            runEventHandler(script, evt, lang);
+            runEventHandler(script, evt, lang, desc);
         }
     }
 }

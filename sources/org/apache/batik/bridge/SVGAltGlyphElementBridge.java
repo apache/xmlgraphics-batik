@@ -273,22 +273,21 @@ public class SVGAltGlyphElementBridge extends AbstractSVGBridge
         // if not local, import both the glyph and its font-face element
         Element localGlyphElement = null;
         Element localFontFaceElement = null;
-
+        Element localFontElement = null;
         if (isLocal) {
             localGlyphElement = refGlyphElement;
-            Element fontElement = (Element)localGlyphElement.getParentNode();
+            localFontElement = (Element)localGlyphElement.getParentNode();
             NodeList fontFaceElements
-                = fontElement.getElementsByTagNameNS
+                = localFontElement.getElementsByTagNameNS
 		(SVG_NAMESPACE_URI, SVG_FONT_FACE_TAG);
             if (fontFaceElements.getLength() > 0) {
                 localFontFaceElement = (Element)fontFaceElements.item(0);
             }
 
         } else {
-
             // import the whole font
-            Element localFontElement
-                = (Element)document.importNode(refGlyphElement.getParentNode(), true);
+            localFontElement = (Element)document.importNode
+                (refGlyphElement.getParentNode(), true);
             String base = XMLBaseSupport.getCascadedXMLBase(altGlyphElement);
             Element g = document.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
             g.appendChild(localFontElement);
@@ -300,7 +299,8 @@ public class SVGAltGlyphElementBridge extends AbstractSVGBridge
                 localFontElement, glyphUri);
 
             // get the local glyph element
-            String glyphId = refGlyphElement.getAttributeNS(null, SVG_ID_ATTRIBUTE);
+            String glyphId = refGlyphElement.getAttributeNS
+                (null, SVG_ID_ATTRIBUTE);
             NodeList glyphElements = localFontElement.getElementsByTagNameNS
 		(SVG_NAMESPACE_URI, SVG_GLYPH_TAG);
             for (int i = 0; i < glyphElements.getLength(); i++) {
@@ -326,8 +326,8 @@ public class SVGAltGlyphElementBridge extends AbstractSVGBridge
 
         SVGFontFaceElementBridge fontFaceBridge
             = (SVGFontFaceElementBridge)ctx.getBridge(localFontFaceElement);
-        SVGFontFace fontFace
-            = fontFaceBridge.createFontFace(ctx, localFontFaceElement);
+        SVGFontFace fontFace = fontFaceBridge.createFontFace
+            (ctx, localFontFaceElement);
         SVGGlyphElementBridge glyphBridge
             = (SVGGlyphElementBridge)ctx.getBridge(localGlyphElement);
 

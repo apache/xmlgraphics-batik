@@ -30,6 +30,8 @@ public class FontStretchManager extends IdentifierManager {
      */
     protected final static StringMap values = new StringMap();
     static {
+	values.put(CSSConstants.CSS_ALL_VALUE,
+                   ValueConstants.ALL_VALUE);
 	values.put(CSSConstants.CSS_CONDENSED_VALUE,
                    ValueConstants.CONDENSED_VALUE);
 	values.put(CSSConstants.CSS_EXPANDED_VALUE,

@@ -27,6 +27,8 @@ public class FontStyleManager extends IdentifierManager {
      */
     protected final static StringMap values = new StringMap();
     static {
+	values.put(CSSConstants.CSS_ALL_VALUE,
+                   ValueConstants.ALL_VALUE);
 	values.put(CSSConstants.CSS_ITALIC_VALUE,
                    ValueConstants.ITALIC_VALUE);
 	values.put(CSSConstants.CSS_NORMAL_VALUE,

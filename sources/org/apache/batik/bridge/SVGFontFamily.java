@@ -11,6 +11,7 @@ package org.apache.batik.bridge;
 import java.text.AttributedCharacterIterator;
 
 import org.apache.batik.gvt.font.GVTFont;
+import org.apache.batik.gvt.font.GVTFontFace;
 import org.apache.batik.gvt.font.GVTFontFamily;
 import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
 import org.w3c.dom.Element;
@@ -23,7 +24,7 @@ import org.w3c.dom.Element;
  */
 public class SVGFontFamily implements GVTFontFamily {
 
-    protected SVGFontFace fontFace;
+    protected GVTFontFace fontFace;
     protected Element fontElement;
     protected BridgeContext ctx;
 
@@ -35,7 +36,7 @@ public class SVGFontFamily implements GVTFontFamily {
      * @param ctx The bridge context. This is required for lazily loading the
      * font data at render time.
      */
-    public SVGFontFamily(SVGFontFace fontFace,
+    public SVGFontFamily(GVTFontFace fontFace,
                          Element fontElement,
                          BridgeContext ctx) {
         this.fontFace = fontFace;
@@ -57,7 +58,7 @@ public class SVGFontFamily implements GVTFontFamily {
      *
      * @return The font face.
      */
-    public SVGFontFace getFontFace() {
+    public GVTFontFace getFontFace() {
         return fontFace;
     }
 
