@@ -157,7 +157,7 @@ public class JSVGViewerFrame
     public final static String ZOOM_IN_ACTION = "ZoomInAction";
     public final static String ZOOM_OUT_ACTION = "ZoomOutAction";
     public final static String STOP_ACTION = "StopAction";
-    //public final static String DOUBLE_BUFFER_ACTION = "DoubleBufferAction";
+    public final static String DOUBLE_BUFFER_ACTION = "DoubleBufferAction";
     public final static String AUTO_ADJUST_ACTION = "AutoAdjustAction";
     public final static String SHOW_DEBUG_ACTION = "ShowDebugAction";
     public final static String SHOW_RENDERING_ACTION = "ShowRenderingAction";
@@ -308,6 +308,11 @@ public class JSVGViewerFrame
     protected LocalHistory localHistory;
 
     /**
+     * the ShowRenderingAction.
+     */
+    protected ShowRenderingAction showRenderingAction = new ShowRenderingAction();
+
+    /**
      * Creates a new SVG viewer frame.
      */
     public JSVGViewerFrame(Application app) {
@@ -335,10 +340,10 @@ public class JSVGViewerFrame
         listeners.put(ZOOM_IN_ACTION, new ZoomInAction());
         listeners.put(ZOOM_OUT_ACTION, new ZoomOutAction());
         listeners.put(STOP_ACTION, stopAction);
-        //listeners.put(DOUBLE_BUFFER_ACTION, new DoubleBufferAction());
+        listeners.put(DOUBLE_BUFFER_ACTION, new DoubleBufferAction());
         listeners.put(AUTO_ADJUST_ACTION, new AutoAdjustAction());
         listeners.put(SHOW_DEBUG_ACTION, new ShowDebugAction());
-        listeners.put(SHOW_RENDERING_ACTION, new ShowRenderingAction());
+        listeners.put(SHOW_RENDERING_ACTION, showRenderingAction);
         listeners.put(LANGUAGE_ACTION, new LanguageAction());
         listeners.put(STYLE_SHEET_ACTION, new StyleSheetAction());
         listeners.put(MONITOR_ACTION, new MonitorAction());
@@ -998,8 +1003,9 @@ public class JSVGViewerFrame
     public class DoubleBufferAction extends AbstractAction {
         public DoubleBufferAction() {}
         public void actionPerformed(ActionEvent e) {
-            svgCanvas.setDoubleBufferedRendering
-                (((JCheckBoxMenuItem)e.getSource()).isSelected());
+            boolean b = ((JCheckBoxMenuItem)e.getSource()).isSelected();
+            showRenderingAction.update(!b);
+            svgCanvas.setDoubleBufferedRendering(b);
         }
     }
 
@@ -1027,11 +1033,26 @@ public class JSVGViewerFrame
     /**
      * To enable progressive rendering.
      */
-    public class ShowRenderingAction extends AbstractAction {
+    public class ShowRenderingAction
+        extends AbstractAction
+        implements JComponentModifier {
+        java.util.List components = new LinkedList();
         public ShowRenderingAction() {}
         public void actionPerformed(ActionEvent e) {
             svgCanvas.setProgressivePaint
                 (((JCheckBoxMenuItem)e.getSource()).isSelected());
+        }
+
+        public void addJComponent(JComponent c) {
+            components.add(c);
+            c.setEnabled(true);
+        }
+
+        public void update(boolean enabled) {
+            Iterator it = components.iterator();
+            while (it.hasNext()) {
+                ((JComponent)it.next()).setEnabled(enabled);
+            }
         }
     }
 
