@@ -53,7 +53,7 @@ public class HiddenChildElementSupport {
                                 AbstractViewCSS srcv) {
         CSSOMReadOnlyStyleDeclaration sd;
         sd = (CSSOMReadOnlyStyleDeclaration)srcv.computeStyle(src, null);
-        ((HiddenChildElement)e).setCascadedStyle(sd);
+        ((HiddenChildElement)e).setStyleDeclaration(sd);
         sd.setContext(ev, e);
         
         for (Node en = e.getFirstChild(), sn = src.getFirstChild();

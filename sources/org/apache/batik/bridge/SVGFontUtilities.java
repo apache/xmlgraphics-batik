@@ -134,7 +134,7 @@ public abstract class SVGFontUtilities implements SVGConstants {
                                 fontElement = (isLocal) ? refElement
                                     : (Element)document.importNode(refElement, true);
                                 if (!isLocal) {
-                                    String base = XMLBaseSupport.getXMLBase(fontFaceUriElement);
+                                    String base = XMLBaseSupport.getCascadedXMLBase(fontFaceUriElement);
                                     // need to attach the imported
                                     // element to the document and
                                     // then compute the styles and
