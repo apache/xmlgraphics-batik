@@ -177,6 +177,14 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
         root = new SVGOMCSSImportedElementRoot(document, e, isLocal);
         root.appendChild(localRefElement);
 
+        if (gn == null) {
+            gn = new CompositeGraphicsNode();
+        } else {
+            int s = gn.size();
+            for (int i=0; i<s; i++)
+                gn.remove(0);
+        }
+
         SVGOMUseElement ue = (SVGOMUseElement)e;
         Node oldRoot = ue.getCSSImportedElementRoot();
         if (oldRoot != null) {
@@ -193,13 +201,6 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
         GraphicsNode refNode = builder.build(ctx, g);
 
         ///////////////////////////////////////////////////////////////////////
-        if (gn == null) {
-            gn = new CompositeGraphicsNode();
-        } else {
-            int s = gn.size();
-            for (int i=0; i<s; i++)
-                gn.remove(0);
-        }
 
         gn.getChildren().add(refNode);
 
@@ -221,22 +222,22 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
         if (r != null)
             gn.setBackgroundEnable(r);
 
+        if (l != null) {
+            // Remove event listeners
+            EventTarget target = l.target;
+            target.removeEventListener("DOMAttrModified", l, true);
+            target.removeEventListener("DOMNodeInserted", l, true);
+            target.removeEventListener("DOMNodeRemoved", l, true);
+            target.removeEventListener("DOMCharacterDataModified",l, true);
+            l = null;
+        }
+
         ///////////////////////////////////////////////////////////////////////
         
         // Handle mutations on content referenced in the same file if
         // we are in a dynamic context.
         if (isLocal && ctx.isDynamic()) {
-            if (l == null) {
-                l = new ReferencedElementMutationListener();
-                l.target = (EventTarget)refElement;
-            } else {
-                // Remove event listeners
-                EventTarget target = l.target;
-                target.removeEventListener("DOMAttrModified", l, true);
-                target.removeEventListener("DOMNodeInserted", l, true);
-                target.removeEventListener("DOMNodeRemoved", l, true);
-                target.removeEventListener("DOMCharacterDataModified",l, true);
-            }
+            l = new ReferencedElementMutationListener();
         
             EventTarget target = (EventTarget)refElement;
             l.target = target;
@@ -259,14 +260,6 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
     }
 
     public void dispose() {
-        SVGOMUseElement ue = (SVGOMUseElement)e;
-        if ((ue != null) &&
-            (ue.getCSSImportedElementRoot() != null)) {
-            disposeTree(ue.getCSSImportedElementRoot());
-        }
-
-        super.dispose();
-
         if (l != null) {
             // Remove event listeners
             EventTarget target = l.target;
@@ -274,10 +267,17 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
             target.removeEventListener("DOMNodeInserted", l, true);
             target.removeEventListener("DOMNodeRemoved", l, true);
             target.removeEventListener("DOMCharacterDataModified",l, true);
+            l = null;
         }
 
+        SVGOMUseElement ue = (SVGOMUseElement)e;
+        if ((ue != null) && (ue.getCSSImportedElementRoot() != null)) {
+            disposeTree(ue.getCSSImportedElementRoot());
+        }
+
+        super.dispose();
+
         subCtx = null;
-        l = null;
     }
 
     /**

@@ -23,6 +23,7 @@ import org.w3c.dom.DOMException;
 import org.w3c.dom.svg.SVGAnimatedBoolean;
 import org.w3c.dom.svg.SVGAnimatedEnumeration;
 import org.w3c.dom.svg.SVGAnimatedLength;
+import org.w3c.dom.svg.SVGLength;
 import org.w3c.dom.svg.SVGPoint;
 import org.w3c.dom.svg.SVGRect;
 import org.w3c.dom.svg.SVGStringList;
@@ -73,8 +74,33 @@ public abstract class SVGOMTextContentElement
             result = new AbstractSVGAnimatedLength
                 (this, null, SVG_TEXT_LENGTH_ATTRIBUTE,
                  SVGOMAnimatedLength.HORIZONTAL_LENGTH) {
+                    boolean usedDefault;
+
                     protected String getDefaultValue() {
-                        throw new RuntimeException("!!! TODO");
+                        usedDefault = true;
+                        return ""+getComputedTextLength();
+                    }
+
+                    public SVGLength getBaseVal() {
+                        if (baseVal == null) {
+                            baseVal = new SVGTextLength(direction);
+                        }
+                        return baseVal;
+                    }
+                    
+                    class SVGTextLength extends BaseSVGLength {
+                        public SVGTextLength(short direction) {
+                            super(direction);
+                        }
+                        protected void revalidate() {
+                            usedDefault = false;
+
+                            super.revalidate();
+
+                            // Since the default value can change w/o notice
+                            // always recompute it.
+                            if (usedDefault) valid = false;
+                        }
                     }
                 };
             putLiveAttributeValue(null, SVG_TEXT_LENGTH_ATTRIBUTE,
