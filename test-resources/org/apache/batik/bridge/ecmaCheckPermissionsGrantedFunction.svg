@@ -53,7 +53,7 @@
 -->
 
 <!-- ========================================================================= -->
-<!-- Checks that access to critical functions is not allowed.                  -->
+<!-- Checks that access to critical functions is allowed.                      -->
 <!--                                                                           -->
 <!-- @author vincent.hardy@sun.com                                             -->
 <!-- @version $Id$   -->
@@ -62,11 +62,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" 
      xmlns:xlink="http://www.w3.org/1999/xlink" 
      xmlns:test="http://xml.apache.org/batik/test"
-     width="450" height="500" viewBox="0 0 450 500"
-     onload="runTest()">
+     width="450" height="500" viewBox="0 0 450 500">
 
-    <test:testResult id="testResult" result="failed"/>
-    <script type="text/ecmascript"><![CDATA[
+    <test:testResult id="testResult" />
+    <desc id="dynamicEval"><![CDATA[
 importPackage(Packages.java.awt);
 importPackage(Packages.java.io);
 importPackage(Packages.java.lang.reflect);
@@ -181,41 +180,23 @@ init();
 function runTest(){
     var sm = System.getSecurityManager();
     var successCnt = 0;
-    var unexpectedGrants = new Array();
     var unexpectedDenial = new Array();
     var unexpectedDenialCnt = 0;
-    var unexpectedGrantsCnt = 0;
 
     if (sm == null){
-        for (var i=0; i<nGranted; i++) {
+        for (var i=0; i<permissions.length; i++) {
             successCnt++;
-        }
-        for (var i=nGranted; i<permissions.length; i++) {
-            unexpectedGrants[unexpectedGrantsCnt] = permissions[i][0];
-            unexpectedGrantsCnt++;
         }
     }
     else {
-        for (var i=0; i<nGranted; i++) {
+        for (var i=0; i<permissions.length; i++) {
             var p = permissions[i][1];
-            var success = true;
             try {
                 sm.checkPermission(p);
                 successCnt++;
             } catch (se){
                 unexpectedDenial[unexpectedDenialCnt] = permissions[i][0];
                 unexpectedDenialCnt++;
-            }
-        }
-        for (var i=nGranted; i<permissions.length; i++) {
-            var p = permissions[i][1];
-            var success = true;
-            try {
-                sm.checkPermission(p);
-                unexpectedGrants[unexpectedGrantsCnt] = permissions[i][0];
-                unexpectedGrantsCnt++;
-            } catch (se){
-                successCnt++;
             }
         }
     }
@@ -225,33 +206,17 @@ function runTest(){
     if ( successCnt == permissions.length ) {
         result.setAttributeNS(null, "result", "passed");
     } else {
-        System.out.println("test failed: " + unexpectedGrantsCnt + " / " + unexpectedDenialCnt);
+        System.out.println("test failed: " + unexpectedDenialCnt);
         result.setAttributeNS(null, "result", "failed");
-        result.setAttributeNS(null, "errorCode", "unexpected.grants.or.denials");
+        result.setAttributeNS(null, "errorCode", "unexpected.denials");
         
-        var unexpectedGrantsString = "";
         var unexpectedDenialString = "";
-
-        for (var i=0; i<unexpectedGrantsCnt; i++) {
-            unexpectedGrantsString += unexpectedGrants[i];
-        }
 
         for (var i=0; i<unexpectedDenialCnt; i++) {
             unexpectedDenialString += unexpectedDenial[i];
         }
 
-        System.out.println("unexpected.grants : " + unexpectedGrantsString);
         var entry = null;
-
-        entry = document.createElementNS(testNS, "errorDescriptiongEntry");
-        entry.setAttributeNS(null, "id", "unexpected.grants.count");
-        entry.setAttributeNS(null, "value", "" + unexpectedGrantsCnt);
-        result.appendChild(entry);
-
-        entry = document.createElementNS(testNS, "errorDescriptionEntry");
-        entry.setAttributeNS(null, "id", "unexpected.grants");
-        entry.setAttributeNS(null, "value", unexpectedGrantsString);
-        result.appendChild(entry);
 
         entry = document.createElementNS(testNS, "errorDescriptiongEntry");
         entry.setAttributeNS(null, "id", "unexpected.denials.count");
@@ -267,6 +232,13 @@ function runTest(){
    }
 }
 
-    ]]></script>
+runTest();
 
+    ]]></desc>
+
+    <script type="text/ecmascript"><![CDATA[
+      var scriptContent = document.getElementById("dynamicEval").firstChild.data;
+      var f = new Function(scriptContent);
+      document.documentElement.addEventListener('SVGLoad', f, false);
+    ]]></script>
 </svg>
