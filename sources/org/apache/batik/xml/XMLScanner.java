@@ -923,7 +923,7 @@ public class XMLScanner implements Localizable {
 	}
 	
 	while (current != -1) {
-	    while (current != ']') {
+	    while (current != ']' && current != -1) {
 		nextChar();
 	    }
 	    if (current != -1) {
