@@ -245,7 +245,7 @@ public class SAXSVGDocumentFactory
     public void startDocument() throws SAXException {
         super.startDocument();
 	namespaces.put("", SVGDOMImplementation.SVG_NAMESPACE_URI);
-	namespaces.put("xmlns:xlink", XLinkSupport.XLINK_NAMESPACE_URI);
+	namespaces.put("xlink", XLinkSupport.XLINK_NAMESPACE_URI);
     }
 
     /**
