@@ -907,9 +907,9 @@ public class GlyphLayout implements TextSpanLayout {
         }
         int currentChar = aci.getBeginIndex();
 
-        // calculate the offset of the first glyph
-        // the offset will be 0 if the glyph is on the path (ie. not adjusted by
-        // a dy or dx)
+        // calculate the offset of the first glyph the offset will be
+        // 0 if the glyph is on the path (ie. not adjusted by a dy or
+        // dx)
         Point2D firstGlyphPosition = gv.getGlyphPosition(0);
         float glyphOffset = 0;   // offset perpendicular to path
         if (offsetApplied) {
