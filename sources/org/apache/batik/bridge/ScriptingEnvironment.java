@@ -393,6 +393,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
          * Incremented each time this runnable is added to the queue.
          */
         public int count;
+        public boolean error;
 
         protected Interpreter interpreter;
         protected String script;
@@ -407,6 +408,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
                 interpreter.evaluate(script);
             } catch (InterpreterException ie) {
                 handleInterpreterException(ie);
+                error = true;
             }
         }
     }
@@ -419,6 +421,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
          * Incremented each time this runnable is put in the queue.
          */
         public int count;
+        public boolean error;
 
         protected Runnable runnable;
 
@@ -433,6 +436,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
                 if (userAgent != null) {
                     userAgent.displayError(e);
                 }
+                error = true;
             }
         }
     }
@@ -474,6 +478,9 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
                         }
                         eir.count++;
                         updateRunnableQueue.invokeLater(eir);
+                        if (eir.error) {
+                            cancel();
+                        }
                     }
                 };
 
@@ -495,9 +502,12 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
                         }
                         eihr.count++;
                         updateRunnableQueue.invokeLater(eihr);
+                        if (eihr.error) {
+                            cancel();
+                        }
                     }
                 };
-
+            
             timer.schedule(tt, interval, interval);
             return tt;
         }

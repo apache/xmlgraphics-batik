@@ -564,7 +564,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge {
             String s = (String)strings.remove(count - 1);
             if (s.charAt(s.length() - 1) == ' ') {
                 if (s.length() == 1) {
-                    attributes.remove(count - 1);
+                    attributes.remove(--count);
                     return;
                 }
                 strings.add(s.substring(0, s.length() - 1));
