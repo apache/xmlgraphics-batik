@@ -21,25 +21,14 @@ import org.python.util.*;
  */
 public class JPythonInterpreter implements org.apache.batik.script.Interpreter {
     private PythonInterpreter interpreter = null;
-    
+
     public JPythonInterpreter() {
         interpreter = new PythonInterpreter();
-        // import Java lang package & DOM Level 2 & SVG DOM packages
-        /*
-        NativeJavaPackage pkg = new NativeJavaPackage("java.lang");
-        pkg = new NativeJavaPackage("org.w3c.dom");
-        pkg = new NativeJavaPackage("org.w3c.dom.css");
-        pkg = new NativeJavaPackage("org.w3c.dom.events");
-        pkg = new NativeJavaPackage("org.w3c.dom.smil");
-        pkg = new NativeJavaPackage("org.w3c.dom.stylesheets");
-        pkg = new NativeJavaPackage("org.w3c.dom.svg");
-        pkg = new NativeJavaPackage("org.w3c.dom.views");
-        */
     }
 
     // org.apache.batik.script.Intepreter implementation
-    
-    public Object evaluate(Reader scriptreader) 
+
+    public Object evaluate(Reader scriptreader)
         throws InterpreterException, IOException {
         try {
             // oups jpython doesn't accept reader in its eval method :-(
@@ -52,25 +41,24 @@ public class JPythonInterpreter implements org.apache.batik.script.Interpreter {
             String str = sbuffer.toString();
             interpreter.exec(str);
         } catch (org.python.core.PyException e) {
-            e.printStackTrace();
             throw new InterpreterException(e, e.getMessage(), -1, -1);
         } catch (RuntimeException re) {
             throw new InterpreterException(re, re.getMessage(), -1, -1);
         }
         return null;
     }
-    
+
     public void dispose() {
     }
-    
+
     public void bindObject(String name, Object object) {
         interpreter.set(name, object);
-    } 
-    
+    }
+
     public void setOut(Writer out) {
         interpreter.setOut(out);
     }
-    
+
     // org.apache.batik.i18n.Localizable implementation
 
     public Locale getLocale() {
@@ -79,7 +67,7 @@ public class JPythonInterpreter implements org.apache.batik.script.Interpreter {
 
     public void setLocale(Locale locale) {
     }
-    
+
     public String formatMessage(String key, Object[] args) {
         return null;
     }

@@ -8,7 +8,8 @@
 
 package org.apache.batik.refimpl.script.jpython;
 
-import org.apache.batik.script.*;
+import org.apache.batik.script.Interpreter;
+import org.apache.batik.script.InterpreterFactory;
 
 /**
  * Allows to create instances of <code>JPythonInterpreterFactory</code>.
