@@ -9,6 +9,9 @@
 package org.apache.batik.dom.svg;
 
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import org.apache.batik.parser.ParseException;
 import org.apache.batik.parser.TransformListHandler;
 import org.apache.batik.parser.TransformListParser;
@@ -16,7 +19,7 @@ import org.apache.batik.refimpl.parser.ConcreteTransformListParser;
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.svg.SVGException;
-import org.w3c.dom.svg.SVGList;
+import org.w3c.dom.svg.SVGStringList;
 import org.w3c.dom.svg.SVGMatrix;
 import org.w3c.dom.svg.SVGTransform;
 import org.w3c.dom.svg.SVGTransformList;
@@ -29,10 +32,26 @@ import org.w3c.dom.svg.SVGTransformList;
  * @version $Id$
  */
 public class SVGOMTransformList
-    extends    SVGOMList
     implements SVGTransformList,
                LiveAttributeValue,
                TransformListHandler {
+    /**
+     * The list.
+     */
+    protected List list = new ArrayList();
+
+    /**
+     * The attribute modifier.
+     */
+    protected AttributeModifier attributeModifier;
+
+    /**
+     * Sets the associated attribute modifier.
+     */
+    public void setAttributeModifier(AttributeModifier am) {
+	attributeModifier = am;
+    }
+
     /**
      * Called when the string representation of the value as been modified.
      * @param oldValue The old Attr node.
@@ -40,6 +59,23 @@ public class SVGOMTransformList
      */
     public void valueChanged(Attr oldValue, Attr newValue) {
 	parseTransform(newValue.getValue());
+    }
+
+    /**
+     * <b>DOM</b>: Implements {@link SVGTransformList#getNumberOfItems()}.
+     */
+    public int getNumberOfItems() {
+        return list.size();
+    }
+
+    /**
+     * <b>DOM</b>: Implements {@link SVGTransformList#clear()}.
+     */
+    public void clear() {
+        list.clear();
+        if (attributeModifier != null) {
+            attributeModifier.setAttributeValue(toString());
+        }
     }
 
     /**
@@ -58,26 +94,122 @@ public class SVGOMTransformList
     }
 
     /**
-     * <b>DOM</b>: Implements {@link SVGList#createItem()}.
+     * <b>DOM</b>: Implements {@link SVGTransformList#initialize(Object)}.
      */
-    public Object createItem() {
-        throw new RuntimeException(" !!! TODO: SVGTransformList#createItem()");
+    public SVGTransform initialize(SVGTransform newItem)
+        throws SVGException {
+        list.clear();
+        list.add(newItem);
+        if (attributeModifier != null) {
+            attributeModifier.setAttributeValue(toString());
+        }
+        return newItem;
+     }
+
+    /**
+     * <b>DOM</b>: Implements {@link SVGTransformList#getItem(int)}.
+     */
+    public SVGTransform getItem(int i) throws DOMException {
+        i--;
+        if (i < 0 || i >= list.size()) {
+            throw createDOMException(DOMException.INDEX_SIZE_ERR,
+                                     "index.out.of.bounds",
+                                     new Object[] { new Integer(i) });
+        }
+        return (SVGTransform)list.get(i);
     }
 
     /**
-     * Returns the list separator.
+     * <b>DOM</b>: Implements {@link
+     * SVGTransformList#insertItemBefore(Object,int)}.
      */
-    protected String getSeparator() {
-        return " ";
+    public SVGTransform insertItemBefore(SVGTransform newItem, int index)
+        throws SVGException {
+        index--;
+        if (index < 0) {
+            list.add(0, newItem);
+        } else if (index > list.size()) {
+            list.add(list.size(), newItem);
+        } else {
+            list.add(index, newItem);
+        }
+        if (attributeModifier != null) {
+            attributeModifier.setAttributeValue(toString());
+        }
+        return newItem;
     }
 
     /**
-     * Checks the validity of an item.
+     * <b>DOM</b>: Implements {@link SVGTransformList#replaceItem(Object,int)}.
      */
-    protected void checkItem(Object item) throws SVGException {
-        if (!(item instanceof SVGTransform)) {
-            throw new SVGException(SVGException.SVG_WRONG_TYPE_ERR,
-                                   " !!! wrong.item.type");
+    public SVGTransform replaceItem(SVGTransform newItem, int index)
+        throws DOMException, SVGException {
+        index--;
+        if (index < 0 || index >= list.size()) {
+            throw createDOMException(DOMException.INDEX_SIZE_ERR,
+                                     "index.out.of.bounds",
+                                     new Object[] { new Integer(index) });
+        }
+        list.set(index, newItem);
+        if (attributeModifier != null) {
+            attributeModifier.setAttributeValue(toString());
+        }
+        return newItem;
+    }
+
+    /**
+     * <b>DOM</b>: Implements {@link SVGTransformList#removeItem(int)}.
+     */
+    public SVGTransform removeItem(int index) throws DOMException {
+        index--;
+        if (index < 0 || index >= list.size()) {
+            throw createDOMException(DOMException.INDEX_SIZE_ERR,
+                                     "index.out.of.bounds",
+                                     new Object[] { new Integer(index) });
+        }
+        Object result = list.remove(index);
+        if (attributeModifier != null) {
+            attributeModifier.setAttributeValue(toString());
+        }
+        return (SVGTransform)result;
+    }
+    
+    /**
+     * <b>DOM</b>: Implements {@link SVGTransformList#appendItem(Object)}.
+     */
+    public SVGTransform appendItem(SVGTransform np) throws SVGException {
+        list.add(np);
+        if (attributeModifier != null) {
+            attributeModifier.setAttributeValue(toString());
+        }
+        return np;
+    }
+
+    /**
+     * Returns a string representation of this list.
+     */
+    public String toString() {
+        StringBuffer result = new StringBuffer();
+        Iterator it = list.iterator();
+        if (it.hasNext()) {
+            result.append(it.next().toString());
+        }
+        while (it.hasNext()) {
+            result.append(" ");
+            result.append(it.next().toString());
+        }
+        return result.toString();
+    }
+
+    /**
+     * Creates a localized DOM exception.
+     */
+    protected DOMException createDOMException(short type, String key,
+                                              Object[] args) {
+        if (attributeModifier != null) {
+            return attributeModifier.createDOMException(type, key, args);
+        } else {
+            return new DOMException(type, key);
         }
     }
 

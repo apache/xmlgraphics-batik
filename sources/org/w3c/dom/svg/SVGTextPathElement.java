@@ -2,7 +2,7 @@
 package org.w3c.dom.svg;
 
 public interface SVGTextPathElement extends 
-               SVGTextPositioningElement,
+               SVGTextContentElement,
                SVGURIReference {
   // textPath Method Types
   public static final short TEXTPATH_METHODTYPE_UNKNOWN   = 0;

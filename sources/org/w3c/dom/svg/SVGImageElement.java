@@ -16,4 +16,5 @@ public interface SVGImageElement extends
   public SVGAnimatedLength getY( );
   public SVGAnimatedLength getWidth( );
   public SVGAnimatedLength getHeight( );
+  public SVGAnimatedPreserveAspectRatio getPreserveAspectRatio( );
 }

@@ -1,6 +1,6 @@
 package org.w3c.dom.svg;
 
-public class SVGException extends RuntimeException {
+public abstract class SVGException extends RuntimeException {
   public SVGException(short code, String message) {
     super(message);
     this.code = code;

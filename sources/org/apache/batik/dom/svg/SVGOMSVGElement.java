@@ -20,6 +20,7 @@ import org.apache.batik.dom.util.XMLSupport;
 
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.CSSValue;
 import org.w3c.dom.css.DocumentCSS;
@@ -28,14 +29,23 @@ import org.w3c.dom.events.DocumentEvent;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.stylesheets.DocumentStyle;
 import org.w3c.dom.stylesheets.StyleSheetList;
+import org.w3c.dom.svg.SVGAngle;
 import org.w3c.dom.svg.SVGAnimatedBoolean;
 import org.w3c.dom.svg.SVGAnimatedLength;
 import org.w3c.dom.svg.SVGAnimatedPreserveAspectRatio;
 import org.w3c.dom.svg.SVGAnimatedRect;
 import org.w3c.dom.svg.SVGAnimatedString;
-import org.w3c.dom.svg.SVGList;
+import org.w3c.dom.svg.SVGElement;
+import org.w3c.dom.svg.SVGException;
+import org.w3c.dom.svg.SVGLength;
+import org.w3c.dom.svg.SVGMatrix;
+import org.w3c.dom.svg.SVGNumber;
+import org.w3c.dom.svg.SVGPoint;
 import org.w3c.dom.svg.SVGRect;
+import org.w3c.dom.svg.SVGStringList;
 import org.w3c.dom.svg.SVGSVGElement;
+import org.w3c.dom.svg.SVGTransform;
+import org.w3c.dom.svg.SVGViewSpec;
 import org.w3c.dom.views.AbstractView;
 import org.w3c.dom.views.DocumentView;
 
@@ -218,12 +228,143 @@ public class SVGOMSVGElement
 	throw new RuntimeException(" !!! TODO: SVGOMSVGElement.getViewport()");
     }
 
+    public float getPixelUnitToMillimeterX( ) {
+        throw new Error();
+    }
+    public float getPixelUnitToMillimeterY( ) {
+        throw new Error();
+    }
+    public float getScreenPixelToMillimeterX( ) {
+        throw new Error();
+    }
+    public float getScreenPixelToMillimeterY( ) {
+        throw new Error();
+    }
+    public boolean getUseCurrentView( ) {
+        throw new Error();
+    }
+    public void      setUseCurrentView( boolean useCurrentView )
+        throws DOMException {
+        throw new Error();
+    }
+    public SVGViewSpec getCurrentView( ) {
+        throw new Error();
+    }
+    public float getCurrentScale( ) {
+        throw new Error();
+    }
+    public void      setCurrentScale( float currentScale )
+        throws DOMException {
+        throw new Error();
+    }
+    public SVGPoint getCurrentTranslate( ) {
+        throw new Error();
+    }
+    public int          suspendRedraw ( int max_wait_milliseconds ) {
+        throw new Error();
+    }
+    public void          unsuspendRedraw ( int suspend_handle_id )
+        throws DOMException {
+        throw new Error();
+    }
+    public void          unsuspendRedrawAll (  ) {
+        throw new Error();
+    }
+    public void          forceRedraw (  ) {
+        throw new Error();
+    }
+    public void          pauseAnimations (  ) {
+        throw new Error();
+    }
+    public void          unpauseAnimations (  ) {
+        throw new Error();
+    }
+    public boolean       animationsPaused (  ) {
+        throw new Error();
+    }
+    public float         getCurrentTime (  ) {
+        throw new Error();
+    }
+    public void          setCurrentTime ( float seconds ) {
+        throw new Error();
+    }
+    public NodeList      getIntersectionList ( SVGRect rect,
+                                               SVGElement referenceElement ) {
+        throw new Error();
+    }
+    public NodeList      getEnclosureList ( SVGRect rect,
+                                            SVGElement referenceElement ) {
+        throw new Error();
+    }
+    public boolean       checkIntersection ( SVGElement element,
+                                             SVGRect rect ) {
+        throw new Error();
+    }
+    public boolean       checkEnclosure ( SVGElement element, SVGRect rect ) {
+        throw new Error();
+    }
+    public void          deSelectAll (  ) {
+        throw new Error();
+    }
+    public SVGNumber              createSVGNumber (  ) {
+        throw new Error();
+    }
+    public SVGLength              createSVGLength (  ) {
+        throw new Error();
+    }
+    public SVGAngle               createSVGAngle (  ) {
+        throw new Error();
+    }
+    public SVGPoint               createSVGPoint (  ) {
+        throw new Error();
+    }
+    public SVGMatrix              createSVGMatrix (  ) {
+        throw new Error();
+    }
+    public SVGRect                createSVGRect (  ) {
+        throw new Error();
+    }
+    public SVGTransform           createSVGTransform (  ) {
+        throw new Error();
+    }
+    public SVGTransform     createSVGTransformFromMatrix ( SVGMatrix matrix ) {
+        throw new Error();
+    }
+    public String              createSVGString (  ) {
+        throw new Error();
+    }
+    public Element         getElementById ( String elementId ) {
+        throw new Error();
+    }
+    
     /**
      * Returns the default attribute values in a map.
      * @return null if this element has no attribute with a default value.
      */
     protected Map getDefaultAttributeValues() {
         return attributeValues;
+    }
+
+    // SVGLocatable ///////////////////////////////////////////////////////
+
+    public SVGElement getNearestViewportElement( ) {
+        throw new Error();
+    }
+    public SVGElement getFarthestViewportElement( ) {
+        throw new Error();
+    }
+    public SVGRect   getBBox (  ) {
+        throw new Error();
+    }
+    public SVGMatrix getCTM (  ) {
+        throw new Error();
+    }
+    public SVGMatrix getScreenCTM (  ) {
+        throw new Error();
+    }
+    public SVGMatrix getTransformToElement ( SVGElement element )
+        throws SVGException {
+        throw new Error();
     }
 
     // ElementNonCSSPresentationalHints ////////////////////////////////////
@@ -479,15 +620,15 @@ public class SVGOMSVGElement
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGTests#getRequiredFeatures()}.
      */
-    public SVGList getRequiredFeatures() {
+    public SVGStringList getRequiredFeatures() {
 	return getTestsSupport().getRequiredFeatures(this);
     }
 
     /**
      * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGTests#setRequiredFeatures(org.w3c.dom.svg.SVGList)}.
+     * org.w3c.dom.svg.SVGTests#setRequiredFeatures(SVGStringList)}.
      */
-    public void setRequiredFeatures(SVGList requiredFeatures)
+    public void setRequiredFeatures(SVGStringList requiredFeatures)
 	throws DOMException {
 	getTestsSupport().setRequiredFeatures(requiredFeatures, this);
     }
@@ -496,15 +637,15 @@ public class SVGOMSVGElement
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGTests#getRequiredExtensions()}.
      */
-    public SVGList getRequiredExtensions() {
+    public SVGStringList getRequiredExtensions() {
 	return getTestsSupport().getRequiredExtensions(this);
     }
 
     /**
      * <b>DOM</b>: Implements {@link
-     *org.w3c.dom.svg.SVGTests#setRequiredExtensions(org.w3c.dom.svg.SVGList)}.
+     *org.w3c.dom.svg.SVGTests#setRequiredExtensions(SVGStringList)}.
      */
-    public void setRequiredExtensions(SVGList requiredExtensions)
+    public void setRequiredExtensions(SVGStringList requiredExtensions)
 	throws DOMException {
 	getTestsSupport().setRequiredExtensions(requiredExtensions, this);
     }
@@ -513,15 +654,15 @@ public class SVGOMSVGElement
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGTests#getSystemLanguage()}.
      */
-    public SVGList getSystemLanguage() {
+    public SVGStringList getSystemLanguage() {
 	return getTestsSupport().getSystemLanguage(this);
     }
 
     /**
      * <b>DOM</b>: Implements {@link
-     *org.w3c.dom.svg.SVGTests#setRequiredExtensions(org.w3c.dom.svg.SVGList)}.
+     *org.w3c.dom.svg.SVGTests#setRequiredExtensions(SVGStringList)}.
      */
-    public void setSystemLanguage(SVGList systemLanguage)
+    public void setSystemLanguage(SVGStringList systemLanguage)
 	throws DOMException {
 	getTestsSupport().setSystemLanguage(systemLanguage, this);
     }

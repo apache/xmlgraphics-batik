@@ -11,7 +11,7 @@ package org.apache.batik.dom.svg;
 import java.lang.ref.WeakReference;
 import org.apache.batik.dom.AbstractDocument;
 import org.w3c.dom.svg.SVGAnimatedLengthList;
-import org.w3c.dom.svg.SVGAnimatedTextRotate;
+import org.w3c.dom.svg.SVGAnimatedNumberList;
 import org.w3c.dom.svg.SVGTextPositioningElement;
 
 /**
@@ -101,7 +101,7 @@ public abstract class SVGOMTextPositioningElement
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGTextPositioningElement#getRotate()}.
      */
-    public SVGAnimatedTextRotate getRotate() {
+    public SVGAnimatedNumberList getRotate() {
         throw new RuntimeException(" !!! SVGOMTextPositioningElement.getRotate()");
     }
 

@@ -8,5 +8,5 @@ public interface SVGFEGaussianBlurElement extends
   public SVGAnimatedNumber getStdDeviationX( );
   public SVGAnimatedNumber getStdDeviationY( );
 
-  void setStdDeviation ( float stdDeviationX, float stdDeviationY );
+  public void setStdDeviation ( float stdDeviationX, float stdDeviationY );
 }

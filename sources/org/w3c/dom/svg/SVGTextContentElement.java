@@ -19,19 +19,19 @@ public interface SVGTextContentElement extends
   public SVGAnimatedLength      getTextLength( );
   public SVGAnimatedEnumeration getLengthAdjust( );
 
-  int      getNumberOfChars (  );
-  float    getComputedTextLength (  );
-  float    getSubStringLength ( int charnum, int nchars )
+  public int      getNumberOfChars (  );
+  public float    getComputedTextLength (  );
+  public float    getSubStringLength ( int charnum, int nchars )
                   throws DOMException;
-  SVGPoint getStartPositionOfChar ( int charnum )
+  public SVGPoint getStartPositionOfChar ( int charnum )
                   throws DOMException;
-  SVGPoint getEndPositionOfChar ( int charnum )
+  public SVGPoint getEndPositionOfChar ( int charnum )
                   throws DOMException;
-  SVGRect  getExtentOfChar ( int charnum )
+  public SVGRect  getExtentOfChar ( int charnum )
                   throws DOMException;
-  float    getRotationOfChar ( int charnum )
+  public float    getRotationOfChar ( int charnum )
                   throws DOMException;
-  int      getCharNumAtPosition ( SVGPoint point );
-  void     selectSubString ( int charnum, int nchars )
+  public int      getCharNumAtPosition ( SVGPoint point );
+  public void     selectSubString ( int charnum, int nchars )
                   throws DOMException;
 }

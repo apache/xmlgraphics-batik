@@ -15,10 +15,10 @@ public interface SVGTransform {
   public SVGMatrix getMatrix( );
   public float getAngle( );
 
-  void setMatrix ( SVGMatrix matrix );
-  void setTranslate ( float tx, float ty );
-  void setScale ( float sx, float sy );
-  void setRotate ( float angle, float cx, float cy );
-  void setSkewX ( float angle );
-  void setSkewY ( float angle );
+  public void setMatrix ( SVGMatrix matrix );
+  public void setTranslate ( float tx, float ty );
+  public void setScale ( float sx, float sy );
+  public void setRotate ( float angle, float cx, float cy );
+  public void setSkewX ( float angle );
+  public void setSkewY ( float angle );
 }

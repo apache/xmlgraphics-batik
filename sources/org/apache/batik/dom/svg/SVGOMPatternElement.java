@@ -29,7 +29,7 @@ import org.w3c.dom.svg.SVGAnimatedString;
 import org.w3c.dom.svg.SVGAnimatedTransformList;
 import org.w3c.dom.svg.SVGExternalResourcesRequired;
 import org.w3c.dom.svg.SVGPatternElement;
-import org.w3c.dom.svg.SVGList;
+import org.w3c.dom.svg.SVGStringList;
 
 /**
  * This class implements {@link org.w3c.dom.svg.SVGStopElement}.
@@ -391,15 +391,15 @@ public class SVGOMPatternElement
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGTests#getRequiredFeatures()}.
      */
-    public SVGList getRequiredFeatures() {
+    public SVGStringList getRequiredFeatures() {
 	return getTestsSupport().getRequiredFeatures(this);
     }
 
     /**
      * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGTests#setRequiredFeatures(org.w3c.dom.svg.SVGList)}.
+     * org.w3c.dom.svg.SVGTests#setRequiredFeatures(SVGStringList)}.
      */
-    public void setRequiredFeatures(SVGList requiredFeatures)
+    public void setRequiredFeatures(SVGStringList requiredFeatures)
 	throws DOMException {
 	getTestsSupport().setRequiredFeatures(requiredFeatures, this);
     }
@@ -408,15 +408,15 @@ public class SVGOMPatternElement
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGTests#getRequiredExtensions()}.
      */
-    public SVGList getRequiredExtensions() {
+    public SVGStringList getRequiredExtensions() {
 	return getTestsSupport().getRequiredExtensions(this);
     }
 
     /**
      * <b>DOM</b>: Implements {@link
-     *org.w3c.dom.svg.SVGTests#setRequiredExtensions(org.w3c.dom.svg.SVGList)}.
+     *org.w3c.dom.svg.SVGTests#setRequiredExtensions(SVGStringList)}.
      */
-    public void setRequiredExtensions(SVGList requiredExtensions)
+    public void setRequiredExtensions(SVGStringList requiredExtensions)
 	throws DOMException {
 	getTestsSupport().setRequiredExtensions(requiredExtensions, this);
     }
@@ -425,15 +425,15 @@ public class SVGOMPatternElement
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGTests#getSystemLanguage()}.
      */
-    public SVGList getSystemLanguage() {
+    public SVGStringList getSystemLanguage() {
 	return getTestsSupport().getSystemLanguage(this);
     }
 
     /**
      * <b>DOM</b>: Implements {@link
-     *org.w3c.dom.svg.SVGTests#setRequiredExtensions(org.w3c.dom.svg.SVGList)}.
+     *org.w3c.dom.svg.SVGTests#setRequiredExtensions(SVGStringList)}.
      */
-    public void setSystemLanguage(SVGList systemLanguage)
+    public void setSystemLanguage(SVGStringList systemLanguage)
 	throws DOMException {
 	getTestsSupport().setSystemLanguage(systemLanguage, this);
     }

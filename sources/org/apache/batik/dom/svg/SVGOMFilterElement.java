@@ -27,8 +27,6 @@ import org.w3c.dom.svg.SVGAnimatedTransformList;
 import org.w3c.dom.svg.SVGElement;
 import org.w3c.dom.svg.SVGException;
 import org.w3c.dom.svg.SVGExternalResourcesRequired;
-import org.w3c.dom.svg.SVGGElement;
-import org.w3c.dom.svg.SVGList;
 import org.w3c.dom.svg.SVGMatrix;
 import org.w3c.dom.svg.SVGRect;
 import org.w3c.dom.svg.SVGElementInstance;

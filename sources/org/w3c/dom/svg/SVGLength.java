@@ -27,6 +27,6 @@ public interface SVGLength {
   public void           setValueAsString( String valueAsString )
                        throws DOMException;
 
-  void newValueSpecifiedUnits ( short unitType, float valueInSpecifiedUnits );
-  void convertToSpecifiedUnits ( short unitType );
+  public void newValueSpecifiedUnits ( short unitType, float valueInSpecifiedUnits );
+  public void convertToSpecifiedUnits ( short unitType );
 }

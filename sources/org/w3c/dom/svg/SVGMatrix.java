@@ -23,17 +23,17 @@ public interface SVGMatrix {
   public void      setF( float f )
                        throws DOMException;
 
-  SVGMatrix multiply ( SVGMatrix secondMatrix );
-  SVGMatrix inverse (  )
+  public SVGMatrix multiply ( SVGMatrix secondMatrix );
+  public SVGMatrix inverse (  )
                   throws SVGException;
-  SVGMatrix translate ( float x, float y );
-  SVGMatrix scale ( float scaleFactor );
-  SVGMatrix scaleNonUniform ( float scaleFactorX, float scaleFactorY );
-  SVGMatrix rotate ( float angle );
-  SVGMatrix rotateFromVector ( float x, float y )
+  public SVGMatrix translate ( float x, float y );
+  public SVGMatrix scale ( float scaleFactor );
+  public SVGMatrix scaleNonUniform ( float scaleFactorX, float scaleFactorY );
+  public SVGMatrix rotate ( float angle );
+  public SVGMatrix rotateFromVector ( float x, float y )
                   throws SVGException;
-  SVGMatrix flipX (  );
-  SVGMatrix flipY (  );
-  SVGMatrix skewX ( float angle );
-  SVGMatrix skewY ( float angle );
+  public SVGMatrix flipX (  );
+  public SVGMatrix flipY (  );
+  public SVGMatrix skewX ( float angle );
+  public SVGMatrix skewY ( float angle );
 }

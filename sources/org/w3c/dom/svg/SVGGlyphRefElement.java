@@ -13,4 +13,16 @@ public interface SVGGlyphRefElement extends
   public String getFormat( );
   public void      setFormat( String format )
                        throws DOMException;
+  public float    getX( );
+  public void      setX( float x )
+                       throws DOMException;
+  public float    getY( );
+  public void      setY( float y )
+                       throws DOMException;
+  public float    getDx( );
+  public void      setDx( float dx )
+                       throws DOMException;
+  public float    getDy( );
+  public void      setDy( float dy )
+                       throws DOMException;
 }

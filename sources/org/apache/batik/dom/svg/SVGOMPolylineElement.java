@@ -10,7 +10,7 @@ package org.apache.batik.dom.svg;
 
 import org.apache.batik.dom.AbstractDocument;
 
-import org.w3c.dom.svg.SVGList;
+import org.w3c.dom.svg.SVGPointList;
 import org.w3c.dom.svg.SVGPolylineElement;
 
 /**
@@ -48,7 +48,7 @@ public class SVGOMPolylineElement
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGAnimatedPoints#getPoints()}.
      */
-    public SVGList getPoints() {
+    public SVGPointList getPoints() {
         throw new RuntimeException(" !!! TODO");
     }
 
@@ -56,7 +56,7 @@ public class SVGOMPolylineElement
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGAnimatedPoints#getAnimatedPoints()}.
      */
-    public SVGList getAnimatedPoints() {
+    public SVGPointList getAnimatedPoints() {
         throw new RuntimeException(" !!! TODO");
     }
 }
