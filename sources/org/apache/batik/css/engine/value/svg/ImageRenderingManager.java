@@ -70,7 +70,7 @@ public class ImageRenderingManager extends IdentifierManager {
     /**
      * Implements {@link IdentifierManager#getIdentifiers()}.
      */
-    protected StringMap getIdentifiers() {
+    public StringMap getIdentifiers() {
         return values;
     }
 }

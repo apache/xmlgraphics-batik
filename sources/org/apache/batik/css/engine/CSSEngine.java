@@ -1156,6 +1156,7 @@ public abstract class CSSEngine {
         try {
             parseStyleSheet(ss, new InputSource(new StringReader(rules)), uri);
 	} catch (Exception e) {
+            // e.printStackTrace();
             String m = e.getMessage();
             if (m == null) m = "";
             String s = Messages.formatMessage

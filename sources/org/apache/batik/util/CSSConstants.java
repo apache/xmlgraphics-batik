@@ -140,6 +140,7 @@ public interface CSSConstants {
     String CSS_BUTT_VALUE = "butt";
     String CSS_CADETBLUE_VALUE = "cadetblue";
     String CSS_CAPTIONTEXT_VALUE = "captiontext";
+    String CSS_CAPTION_VALUE = "caption";
     String CSS_CENTER_VALUE = "center";
     String CSS_CENTRAL_VALUE = "central";
     String CSS_CHARTREUSE_VALUE = "chartreuse";
@@ -212,6 +213,7 @@ public interface CSSConstants {
     String CSS_HIGHLIGHT_VALUE = "highlight";
     String CSS_HONEYDEW_VALUE = "honeydew";
     String CSS_HOTPINK_VALUE = "hotpink";
+    String CSS_ICON_VALUE = "icon";
     String CSS_IDEOGRAPHIC_VALUE = "ideographic";
     String CSS_INACTIVEBORDER_VALUE = "inactiveborder";
     String CSS_INACTIVECAPTIONTEXT_VALUE = "inactivecaptiontext";
@@ -271,8 +273,9 @@ public interface CSSConstants {
     String CSS_MEDIUMTURQUOISE_VALUE = "mediumturquoise";
     String CSS_MEDIUMVIOLETRED_VALUE = "mediumvioletred";
     String CSS_MEDIUM_VALUE = "medium";
-    String CSS_MENUTEXT_VALUE = "menutext";
     String CSS_MENU_VALUE = "menu";
+    String CSS_MENUTEXT_VALUE = "menutext";
+    String CSS_MESSAGE_BOX_VALUE = "message-box";
     String CSS_MIDDLE_VALUE = "middle";
     String CSS_MIDNIGHTBLUE_VALUE = "midnightblue";
     String CSS_MINTCREAM_VALUE = "mintcream";
@@ -346,12 +349,14 @@ public interface CSSConstants {
     String CSS_SLATEGREY_VALUE = "slategrey";
     String CSS_SMALLER_VALUE = "smaller";
     String CSS_SMALL_CAPS_VALUE = "small-caps";
+    String CSS_SMALL_CAPTION_VALUE = "small-caption";
     String CSS_SMALL_VALUE = "small";
     String CSS_SNOW_VALUE = "snow";
     String CSS_SPRINGGREEN_VALUE = "springgreen";
     String CSS_SQUARE_VALUE = "square";
     String CSS_SRGB_VALUE = "srgb";
     String CSS_START_VALUE = "start";
+    String CSS_STATUS_BAR_VALUE = "status-bar";
     String CSS_STEELBLUE_VALUE = "steelblue";
     String CSS_STROKE_VALUE = "stroke";
     String CSS_SUB_VALUE = "sub";

@@ -27,6 +27,7 @@ import org.apache.batik.css.engine.value.css2.CursorManager;
 import org.apache.batik.css.engine.value.css2.DirectionManager;
 import org.apache.batik.css.engine.value.css2.DisplayManager;
 import org.apache.batik.css.engine.value.css2.FontFamilyManager;
+import org.apache.batik.css.engine.value.css2.FontShorthandManager;
 import org.apache.batik.css.engine.value.css2.FontSizeAdjustManager;
 import org.apache.batik.css.engine.value.css2.FontSizeManager;
 import org.apache.batik.css.engine.value.css2.FontStretchManager;
@@ -269,6 +270,7 @@ public class SVGCSSEngine extends CSSEngine {
      * The shorthand managers for SVG.
      */
     public final static ShorthandManager[] SVG_SHORTHAND_MANAGERS = {
+        new FontShorthandManager(),
         new MarkerShorthandManager(),
     };
 
