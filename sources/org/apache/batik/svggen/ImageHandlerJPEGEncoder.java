@@ -99,7 +99,7 @@ public class ImageHandlerJPEGEncoder extends AbstractImageHandlerEncoder{
 
         ImageHandler imageHandler = new ImageHandlerJPEGEncoder(imageDir, urlRoot);
         Document domFactory = TestUtil.getDocumentPrototype();
-        Element imageElement = domFactory.createElement(SVGSyntax.SVG_IMAGE_TAG);
+        Element imageElement = domFactory.createElementNS(SVG_NAMESPACE_URI, SVGSyntax.SVG_IMAGE_TAG);
 
         BufferedImage testImage = new BufferedImage(60, 40, BufferedImage.TYPE_INT_ARGB);
         java.awt.Graphics2D g = testImage.createGraphics();
@@ -112,7 +112,7 @@ public class ImageHandlerJPEGEncoder extends AbstractImageHandlerEncoder{
         g.dispose();
 
         imageHandler.handleImage((RenderedImage)testImage, imageElement);
-        System.out.println("Generated xlink:href is : " + imageElement.getAttributeNS(SVG_NAMESPACE_URI, SVGSyntax.ATTR_HREF));
+        System.out.println("Generated xlink:href is : " + imageElement.getAttributeNS(null, SVGSyntax.ATTR_XLINK_HREF));
         System.exit(0);
     }
 }

@@ -61,12 +61,12 @@ public class SVGPath extends SVGGraphicObjectConverter{
             return null;
         }
 
-        Element svgPath = domFactory.createElement(TAG_PATH);
-        svgPath.setAttributeNS(SVG_NAMESPACE_URI, SVG_D_ATTRIBUTE, dAttr);
+        Element svgPath = domFactory.createElementNS(SVG_NAMESPACE_URI, TAG_PATH);
+        svgPath.setAttributeNS(null, SVG_D_ATTRIBUTE, dAttr);
 
         // Set winding rule if different than SVG's default
         if(shape.getWindingRule() == GeneralPath.WIND_EVEN_ODD)
-            svgPath.setAttributeNS(SVG_NAMESPACE_URI, SVG_FILL_RULE_ATTRIBUTE, VALUE_EVEN_ODD);
+            svgPath.setAttributeNS(null, SVG_FILL_RULE_ATTRIBUTE, VALUE_EVEN_ODD);
 
         return svgPath;
 
@@ -151,7 +151,7 @@ public class SVGPath extends SVGGraphicObjectConverter{
         Document domFactory = TestUtil.getDocumentPrototype();
         SVGPath converter = new SVGPath(domFactory);
 
-        Element group = domFactory.createElement(SVG_G_TAG);
+        Element group = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
         for(int i=0; i<shapes.length; i++){
             Shape shape = shapes[i];
             Element path = converter.toSVG(shape);

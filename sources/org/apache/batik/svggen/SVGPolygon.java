@@ -34,7 +34,7 @@ public class SVGPolygon extends SVGGraphicObjectConverter{
      */
     public Element toSVG(Polygon polygon){
 
-        Element svgPolygon = domFactory.createElement(TAG_POLYGON);
+        Element svgPolygon = domFactory.createElementNS(SVG_NAMESPACE_URI, TAG_POLYGON);
         StringBuffer points = new StringBuffer(" ");
         PathIterator pi = polygon.getPathIterator(null);
         float seg[] = new float[6];
@@ -60,7 +60,7 @@ public class SVGPolygon extends SVGGraphicObjectConverter{
             pi.next();
         } // while !isDone
 
-        svgPolygon.setAttributeNS(SVG_NAMESPACE_URI, ATTR_POINTS, points.substring(0, points.length() - 1));
+        svgPolygon.setAttributeNS(null, ATTR_POINTS, points.substring(0, points.length() - 1));
 
         return svgPolygon;
     }

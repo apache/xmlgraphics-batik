@@ -62,8 +62,8 @@ public class SVGLinearGradient extends AbstractSVGConverter{
         SVGPaintDescriptor gradientDesc = (SVGPaintDescriptor)descMap.get(gradient);
 
         if(gradientDesc == null){
-            Element gradientDef = domFactory.createElement(TAG_LINEAR_GRADIENT);
-            gradientDef.setAttributeNS(SVG_NAMESPACE_URI, ATTR_GRADIENT_UNITS,
+            Element gradientDef = domFactory.createElementNS(SVG_NAMESPACE_URI, TAG_LINEAR_GRADIENT);
+            gradientDef.setAttributeNS(null, ATTR_GRADIENT_UNITS,
                                      SVG_USER_SPACE_ON_USE_VALUE);
 
             //
@@ -71,10 +71,10 @@ public class SVGLinearGradient extends AbstractSVGConverter{
             //
             Point2D p1 = gradient.getPoint1();
             Point2D p2 = gradient.getPoint2();
-            gradientDef.setAttributeNS(SVG_NAMESPACE_URI, ATTR_X1, "" + doubleString(p1.getX()));
-            gradientDef.setAttributeNS(SVG_NAMESPACE_URI, ATTR_Y1, "" + doubleString(p1.getY()));
-            gradientDef.setAttributeNS(SVG_NAMESPACE_URI, ATTR_X2, "" + doubleString(p2.getX()));
-            gradientDef.setAttributeNS(SVG_NAMESPACE_URI, ATTR_Y2, "" + doubleString(p2.getY()));
+            gradientDef.setAttributeNS(null, ATTR_X1, "" + doubleString(p1.getX()));
+            gradientDef.setAttributeNS(null, ATTR_Y1, "" + doubleString(p1.getY()));
+            gradientDef.setAttributeNS(null, ATTR_X2, "" + doubleString(p2.getX()));
+            gradientDef.setAttributeNS(null, ATTR_Y2, "" + doubleString(p2.getY()));
 
             //
             // Spread method
@@ -82,19 +82,19 @@ public class SVGLinearGradient extends AbstractSVGConverter{
             String spreadMethod = VALUE_PAD;
             if(gradient.isCyclic())
                 spreadMethod = VALUE_REFLECT;
-            gradientDef.setAttributeNS(SVG_NAMESPACE_URI, ATTR_SPREAD_METHOD, spreadMethod);
+            gradientDef.setAttributeNS(null, ATTR_SPREAD_METHOD, spreadMethod);
 
             //
             // First gradient stop
             //
-            Element gradientStop = domFactory.createElement(SVG_STOP_TAG);
-            gradientStop.setAttributeNS(SVG_NAMESPACE_URI, SVG_OFFSET_ATTRIBUTE,
+            Element gradientStop = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_STOP_TAG);
+            gradientStop.setAttributeNS(null, SVG_OFFSET_ATTRIBUTE,
                                       VALUE_ZERO_PERCENT);
 
             SVGPaintDescriptor colorDesc = SVGColor.toSVG(gradient.getColor1());
-            gradientStop.setAttributeNS(SVG_NAMESPACE_URI, ATTR_STOP_COLOR,
+            gradientStop.setAttributeNS(null, ATTR_STOP_COLOR,
                                       colorDesc.getPaintValue());
-            gradientStop.setAttributeNS(SVG_NAMESPACE_URI, ATTR_STOP_OPACITY,
+            gradientStop.setAttributeNS(null, ATTR_STOP_OPACITY,
                                       colorDesc.getOpacityValue());
 
             gradientDef.appendChild(gradientStop);
@@ -102,14 +102,14 @@ public class SVGLinearGradient extends AbstractSVGConverter{
             //
             // Second gradient stop
             //
-            gradientStop = domFactory.createElement(SVG_STOP_TAG);
-            gradientStop.setAttributeNS(SVG_NAMESPACE_URI, SVG_OFFSET_ATTRIBUTE,
+            gradientStop = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_STOP_TAG);
+            gradientStop.setAttributeNS(null, SVG_OFFSET_ATTRIBUTE,
                                       VALUE_HUNDRED_PERCENT);
 
             colorDesc = SVGColor.toSVG(gradient.getColor2());
-            gradientStop.setAttributeNS(SVG_NAMESPACE_URI, ATTR_STOP_COLOR,
+            gradientStop.setAttributeNS(null, ATTR_STOP_COLOR,
                                       colorDesc.getPaintValue());
-            gradientStop.setAttributeNS(SVG_NAMESPACE_URI, ATTR_STOP_OPACITY,
+            gradientStop.setAttributeNS(null, ATTR_STOP_OPACITY,
                                       colorDesc.getOpacityValue());
 
             gradientDef.appendChild(gradientStop);
@@ -117,14 +117,14 @@ public class SVGLinearGradient extends AbstractSVGConverter{
             //
             // Gradient ID
             //
-            gradientDef.setAttributeNS(SVG_NAMESPACE_URI, ATTR_ID, SVGIDGenerator.generateID(ID_PREFIX_LINEAR_GRADIENT));
+            gradientDef.setAttributeNS(null, ATTR_ID, SVGIDGenerator.generateID(ID_PREFIX_LINEAR_GRADIENT));
 
             //
             // Build Paint descriptor
             //
             StringBuffer paintAttrBuf = new StringBuffer(URL_PREFIX);
             paintAttrBuf.append(SIGN_POUND);
-            paintAttrBuf.append(gradientDef.getAttributeNS(SVG_NAMESPACE_URI, ATTR_ID));
+            paintAttrBuf.append(gradientDef.getAttributeNS(null, ATTR_ID));
             paintAttrBuf.append(URL_SUFFIX);
 
             gradientDesc = new SVGPaintDescriptor(paintAttrBuf.toString(),
@@ -155,8 +155,8 @@ public class SVGLinearGradient extends AbstractSVGConverter{
 
         SVGLinearGradient converter = new SVGLinearGradient(domFactory);
 
-        Element group = domFactory.createElement(SVG_G_TAG);
-        Element defs = domFactory.createElement(SVG_DEFS_TAG);
+        Element group = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
+        Element defs = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_DEFS_TAG);
 
         SVGPaintDescriptor gradientDesc = converter.toSVG(gradient);
 
@@ -166,9 +166,9 @@ public class SVGLinearGradient extends AbstractSVGConverter{
             defs.appendChild(linearGradientDef);
         }
 
-        Element rect = domFactory.createElement(TAG_RECT);
-        rect.setAttributeNS(SVG_NAMESPACE_URI, SVG_FILL_ATTRIBUTE, gradientDesc.getPaintValue());
-        rect.setAttributeNS(SVG_NAMESPACE_URI, SVG_FILL_OPACITY_ATTRIBUTE, gradientDesc.getOpacityValue());
+        Element rect = domFactory.createElementNS(SVG_NAMESPACE_URI, TAG_RECT);
+        rect.setAttributeNS(null, SVG_FILL_ATTRIBUTE, gradientDesc.getPaintValue());
+        rect.setAttributeNS(null, SVG_FILL_OPACITY_ATTRIBUTE, gradientDesc.getOpacityValue());
 
         group.appendChild(defs);
         group.appendChild(rect);

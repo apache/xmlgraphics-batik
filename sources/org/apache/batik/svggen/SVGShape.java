@@ -128,7 +128,7 @@ public class SVGShape extends SVGGraphicObjectConverter{
         };
 
         Document domFactory = TestUtil.getDocumentPrototype();
-        Element group = domFactory.createElement(SVG_G_TAG);
+        Element group = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
         SVGShape converter = new SVGShape(domFactory);
 
         for(int i=0; i<shapes.length; i++)

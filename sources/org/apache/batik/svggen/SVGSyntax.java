@@ -17,11 +17,10 @@ import org.apache.batik.util.SVGConstants;
  * @version $Id$
  */
 public interface SVGSyntax extends SVGConstants{
-    // 
-    // NOTE: TO BE REMOVED ASAP, AS SOON AS DESCREPANCY WITH SVGConstants
-    // IS FIGURED OUT
-    //
-    String ATTR_HREF = "xlink:href";
+    /**
+     * This is a qualified form for href, using the xlink: namespace prefix
+     */
+    public static final String ATTR_XLINK_HREF = "xlink:" + ATTR_HREF;
 
     /**
      * ID Prefix. Generated IDs have the form <prefix><nn>

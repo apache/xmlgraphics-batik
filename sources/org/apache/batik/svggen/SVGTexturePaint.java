@@ -80,27 +80,27 @@ public class SVGTexturePaint extends AbstractSVGConverter{
 
         if(patternDesc == null){
             Rectangle2D anchorRect = texture.getAnchorRect();
-            Element patternDef = domFactory.createElement(TAG_PATTERN);
-            patternDef.setAttributeNS(SVG_NAMESPACE_URI, ATTR_PATTERN_UNITS,
+            Element patternDef = domFactory.createElementNS(SVG_NAMESPACE_URI, TAG_PATTERN);
+            patternDef.setAttributeNS(null, ATTR_PATTERN_UNITS,
                                     SVG_USER_SPACE_ON_USE_VALUE);
 
             //
             // First, set the pattern anchor
             //
-            patternDef.setAttributeNS(SVG_NAMESPACE_URI, SVG_X_ATTRIBUTE,
+            patternDef.setAttributeNS(null, SVG_X_ATTRIBUTE,
                                     doubleString(anchorRect.getX()));
-            patternDef.setAttributeNS(SVG_NAMESPACE_URI, SVG_Y_ATTRIBUTE,
+            patternDef.setAttributeNS(null, SVG_Y_ATTRIBUTE,
                                     doubleString(anchorRect.getY()));
-            patternDef.setAttributeNS(SVG_NAMESPACE_URI, SVG_WIDTH_ATTRIBUTE,
+            patternDef.setAttributeNS(null, SVG_WIDTH_ATTRIBUTE,
                                     doubleString(anchorRect.getWidth()));
-            patternDef.setAttributeNS(SVG_NAMESPACE_URI, SVG_HEIGHT_ATTRIBUTE,
+            patternDef.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE,
                                     doubleString(anchorRect.getHeight()));
 
             //
             // Now, add an image element for the image. 
             //
             BufferedImage textureImage = (BufferedImage)texture.getImage();
-            Element imageElement = domFactory.createElement(SVG_IMAGE_TAG);
+            Element imageElement = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_IMAGE_TAG);
 
             //
             // Rescale the image to fit the anchor rectangle
@@ -135,12 +135,12 @@ public class SVGTexturePaint extends AbstractSVGConverter{
             imageHandler.handleImage((RenderedImage)textureImage, imageElement);
             patternDef.appendChild(imageElement);
 
-            patternDef.setAttributeNS(SVG_NAMESPACE_URI, ATTR_ID,
+            patternDef.setAttributeNS(null, ATTR_ID,
                                     SVGIDGenerator.generateID(ID_PREFIX_PATTERN));
 
             StringBuffer patternAttrBuf = new StringBuffer(URL_PREFIX);
             patternAttrBuf.append(SIGN_POUND);
-            patternAttrBuf.append(patternDef.getAttributeNS(SVG_NAMESPACE_URI, ATTR_ID));
+            patternAttrBuf.append(patternDef.getAttributeNS(null, ATTR_ID));
             patternAttrBuf.append(URL_SUFFIX);
 
             patternDesc = new SVGPaintDescriptor(patternAttrBuf.toString(),
@@ -164,8 +164,8 @@ public class SVGTexturePaint extends AbstractSVGConverter{
         TexturePaint paint = new TexturePaint(buf, new Rectangle(0, 0, 200, 200));
 
         SVGTexturePaint converter = new SVGTexturePaint(domFactory, new DefaultImageHandler());
-        Element group = domFactory.createElement(SVG_G_TAG);
-        Element defs = domFactory.createElement(SVG_DEFS_TAG);
+        Element group = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
+        Element defs = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_DEFS_TAG);
 
         SVGPaintDescriptor patternDesc = converter.toSVG(paint);
         Iterator iter = converter.getDefinitionSet().iterator();
@@ -174,9 +174,9 @@ public class SVGTexturePaint extends AbstractSVGConverter{
             defs.appendChild(patternDef);
         }
 
-        Element rect = domFactory.createElement(TAG_RECT);
-        rect.setAttributeNS(SVG_NAMESPACE_URI, SVG_FILL_ATTRIBUTE, patternDesc.getPaintValue());
-        rect.setAttributeNS(SVG_NAMESPACE_URI, SVG_FILL_OPACITY_ATTRIBUTE, patternDesc.getOpacityValue());
+        Element rect = domFactory.createElementNS(SVG_NAMESPACE_URI, TAG_RECT);
+        rect.setAttributeNS(null, SVG_FILL_ATTRIBUTE, patternDesc.getPaintValue());
+        rect.setAttributeNS(null, SVG_FILL_OPACITY_ATTRIBUTE, patternDesc.getOpacityValue());
 
         group.appendChild(defs);
         group.appendChild(rect);

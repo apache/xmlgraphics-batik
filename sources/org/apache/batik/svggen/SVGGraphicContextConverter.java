@@ -189,7 +189,7 @@ public class SVGGraphicContextConverter implements SVGSyntax{
 
         Set defSet = converter.getDefinitionSet();
         Iterator iter = defSet.iterator();
-        Element defs = domFactory.createElement(SVG_DEFS_TAG);
+        Element defs = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_DEFS_TAG);
         while(iter.hasNext()){
             Element def = (Element)iter.next();
             defs.appendChild(def);

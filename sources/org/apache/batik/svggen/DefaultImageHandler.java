@@ -14,6 +14,8 @@ import java.awt.image.renderable.RenderableImage;
 
 import org.w3c.dom.Element;
 
+import org.apache.batik.dom.util.XLinkSupport;
+
 /**
  * This interface default implementation of the ImageHandler
  * interface simply puts a place holder in the xlink:href
@@ -32,8 +34,8 @@ public class DefaultImageHandler implements ImageHandler{
         //
         // First, set the image width and height
         //
-        imageElement.setAttributeNS(SVG_NAMESPACE_URI, SVG_WIDTH_ATTRIBUTE, "" + image.getWidth(null));
-        imageElement.setAttributeNS(SVG_NAMESPACE_URI, SVG_HEIGHT_ATTRIBUTE, "" + image.getHeight(null));
+        imageElement.setAttributeNS(null, SVG_WIDTH_ATTRIBUTE, "" + image.getWidth(null));
+        imageElement.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE, "" + image.getHeight(null));
 
         //
         // Now, set the href
@@ -49,8 +51,8 @@ public class DefaultImageHandler implements ImageHandler{
         //
         // First, set the image width and height
         //
-        imageElement.setAttributeNS(SVG_NAMESPACE_URI, SVG_WIDTH_ATTRIBUTE, "" + image.getWidth());
-        imageElement.setAttributeNS(SVG_NAMESPACE_URI, SVG_HEIGHT_ATTRIBUTE, "" + image.getHeight());
+        imageElement.setAttributeNS(null, SVG_WIDTH_ATTRIBUTE, "" + image.getWidth());
+        imageElement.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE, "" + image.getHeight());
 
         //
         // Now, set the href
@@ -66,8 +68,8 @@ public class DefaultImageHandler implements ImageHandler{
         //
         // First, set the image width and height
         //
-        imageElement.setAttributeNS(SVG_NAMESPACE_URI, SVG_WIDTH_ATTRIBUTE, "" + image.getWidth());
-        imageElement.setAttributeNS(SVG_NAMESPACE_URI, SVG_HEIGHT_ATTRIBUTE, "" + image.getHeight());
+        imageElement.setAttributeNS(null, SVG_WIDTH_ATTRIBUTE, "" + image.getWidth());
+        imageElement.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE, "" + image.getHeight());
 
         //
         // Now, set the href
@@ -81,7 +83,7 @@ public class DefaultImageHandler implements ImageHandler{
      */
     protected void handleHREF(Image image, Element imageElement){
         // Simply write a placeholder
-        imageElement.setAttributeNS(SVG_NAMESPACE_URI, ATTR_HREF, image.toString());
+        imageElement.setAttributeNS(XLinkSupport.XLINK_NAMESPACE_URI, ATTR_XLINK_HREF, image.toString());
     }
 
     /**
@@ -92,7 +94,7 @@ public class DefaultImageHandler implements ImageHandler{
         System.out.println("********************************************");
         System.out.println("Setting HREF attribute....");
         // Simply write a placeholder
-        imageElement.setAttributeNS(SVG_NAMESPACE_URI, ATTR_HREF, image.toString());
+        imageElement.setAttributeNS(XLinkSupport.XLINK_NAMESPACE_URI, ATTR_XLINK_HREF, image.toString());
     }
 
     /**
@@ -101,6 +103,6 @@ public class DefaultImageHandler implements ImageHandler{
      */
     protected void handleHREF(RenderableImage image, Element imageElement){
         // Simply write a placeholder
-        imageElement.setAttributeNS(SVG_NAMESPACE_URI, ATTR_HREF, image.toString());
+        imageElement.setAttributeNS(XLinkSupport.XLINK_NAMESPACE_URI, ATTR_XLINK_HREF, image.toString());
     }
 }

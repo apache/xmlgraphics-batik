@@ -15,6 +15,7 @@ import java.awt.geom.AffineTransform;
 import java.io.*;
 import java.net.*;
 
+import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.util.svg.Base64Encoder;
 import org.apache.batik.ext.awt.image.codec.ImageEncoder;
 import org.apache.batik.ext.awt.image.codec.PNGImageEncoder;
@@ -84,9 +85,9 @@ public class ImageHandlerBase64Encoder extends DefaultImageHandler{
     }
 
     protected void handleEmptyImage(Element imageElement){
-        imageElement.setAttributeNS(SVG_NAMESPACE_URI, ATTR_HREF, DATA_PROTOCOL_PNG_PREFIX);
-        imageElement.setAttributeNS(SVG_NAMESPACE_URI, SVG_WIDTH_ATTRIBUTE, "0");
-        imageElement.setAttributeNS(SVG_NAMESPACE_URI, SVG_HEIGHT_ATTRIBUTE, "0");
+        imageElement.setAttributeNS(XLinkSupport.XLINK_NAMESPACE_URI, ATTR_XLINK_HREF, DATA_PROTOCOL_PNG_PREFIX);
+        imageElement.setAttributeNS(null, SVG_WIDTH_ATTRIBUTE, "0");
+        imageElement.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE, "0");
     }
 
     /**
@@ -118,9 +119,9 @@ public class ImageHandlerBase64Encoder extends DefaultImageHandler{
         //
         // Finally, write out url
         //
-        imageElement.setAttributeNS(SVG_NAMESPACE_URI, ATTR_HREF,
-                                  DATA_PROTOCOL_PNG_PREFIX + 
-                                  os.toString());
+        imageElement.setAttributeNS(XLinkSupport.XLINK_NAMESPACE_URI, ATTR_XLINK_HREF,
+                                    DATA_PROTOCOL_PNG_PREFIX + 
+                                    os.toString());
         
     }
 
@@ -159,7 +160,7 @@ public class ImageHandlerBase64Encoder extends DefaultImageHandler{
 
         ImageHandler imageHandler = new ImageHandlerBase64Encoder();
         Document domFactory = TestUtil.getDocumentPrototype();
-        Element imageElement = domFactory.createElement(SVGSyntax.SVG_IMAGE_TAG);
+        Element imageElement = domFactory.createElementNS(SVG_NAMESPACE_URI, SVGSyntax.SVG_IMAGE_TAG);
 
         imageHandler.handleImage((RenderedImage)buf, imageElement);
 
@@ -169,7 +170,7 @@ public class ImageHandlerBase64Encoder extends DefaultImageHandler{
         System.out.println();
         System.out.println("<svg width=\"450\" height=\"500\">");
         System.out.println("    <rect width=\"100%\" height=\"100%\" fill=\"yellow\" />");
-        System.out.println("    <image x=\"30\" y=\"30\" xlink:href=\"" + imageElement.getAttributeNS(SVG_NAMESPACE_URI, SVGSyntax.ATTR_HREF) + "\" width=\"100\" height=\"100\" />");        
+        System.out.println("    <image x=\"30\" y=\"30\" xlink:href=\"" + imageElement.getAttributeNS(null, SVGSyntax.ATTR_XLINK_HREF) + "\" width=\"100\" height=\"100\" />");        
         System.out.println("</svg>");
         System.exit(0);
     }
