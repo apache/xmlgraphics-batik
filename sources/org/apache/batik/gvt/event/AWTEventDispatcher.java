@@ -362,10 +362,12 @@ public class AWTEventDispatcher implements EventDispatcher,
         }
 
         GraphicsNode node = root.nodeHitAt(p, nodeRenderContext);
+        GraphicsNode relatedNode = null;
 
         if (isModalEvent(evt, node) && (lastHit != null)) {
             // modal if either button release on null node, or
             // if button is down on a non-press
+            relatedNode = node;
             node = lastHit;
         }
 
@@ -381,7 +383,8 @@ public class AWTEventDispatcher implements EventDispatcher,
                                                     evt.getModifiers(),
                                                     (float)p.getX(),
                                                     (float)p.getY(),
-                                                    evt.getClickCount());
+                                                    evt.getClickCount(),
+                                                    node);
                 processMouseEvent(gvtevt);
                 lastHit.processMouseEvent(gvtevt);
             }
@@ -396,7 +399,8 @@ public class AWTEventDispatcher implements EventDispatcher,
                                                     (float)p.getX(),
                                                     (float)p.getY(),
                                                     evt.
-                                                    getClickCount());
+                                                    getClickCount(),
+                                                    lastHit);
                 processMouseEvent(gvtevt);
                 node.processMouseEvent(gvtevt);
             }
@@ -409,7 +413,8 @@ public class AWTEventDispatcher implements EventDispatcher,
                                                 evt.getModifiers(),
                                                 (float)p.getX(),
                                                 (float)p.getY(),
-                                                evt.getClickCount());
+                                                evt.getClickCount(),
+                                                relatedNode);
             node.processMouseEvent(gvtevt);
             processMouseEvent(gvtevt);
         }

@@ -13,6 +13,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.io.StringReader;
+
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.event.EventDispatcher;
 import org.apache.batik.gvt.event.GraphicsNodeKeyEvent;
@@ -22,6 +23,8 @@ import org.apache.batik.gvt.event.GraphicsNodeMouseListener;
 import org.apache.batik.script.Interpreter;
 import org.apache.batik.script.InterpreterException;
 import org.apache.batik.script.InterpreterPool;
+import org.apache.batik.util.SVGConstants;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -42,7 +45,7 @@ import org.w3c.dom.svg.SVGSVGElement;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-class BridgeEventSupport {
+class BridgeEventSupport implements SVGConstants {
     private static final String[] EVENT_ATTRIBUTES_GRAPHICS = {
         // graphics + svg
         "onfocusin",
@@ -129,7 +132,7 @@ class BridgeEventSupport {
         }
         SVGSVGElement svgElement = (SVGSVGElement)element.getOwnerSVGElement();
         if (svgElement == null) {
-            if (element.getLocalName().equals("svg")) {
+            if (element.getLocalName().equals(SVG_SVG_TAG)) {
                 svgElement = (SVGSVGElement)element;
             } else {
                 // something goes wrong => disable scripting
@@ -141,7 +144,7 @@ class BridgeEventSupport {
         String script = null;
         // <!> TODO we need to memo listeners to be able to remove
         // them later when deconnecting the bridge binding...
-        if (element.getLocalName().equals("svg")) {
+        if (element.getLocalName().equals(SVG_SVG_TAG)) {
             for (int i = 0; i < EVENT_ATTRIBUTES_SVG.length; i++) {
                 if (!(script = element.getAttribute(EVENT_ATTRIBUTES_SVG[i])).
                     equals("")) {
@@ -226,7 +229,7 @@ class BridgeEventSupport {
 
 
     public static void updateDOMListener(BridgeContext ctx,
-                                         Element element) {
+                                         SVGElement element) {
     }
 
     /**
@@ -299,6 +302,7 @@ class BridgeEventSupport {
         implements GraphicsNodeMouseListener {
         private BridgeContext context;
         private UserAgent ua;
+        private GraphicsNode lastTarget;
         public Listener(BridgeContext ctx, UserAgent u) {
             context = ctx;
             ua = u;
@@ -319,7 +323,41 @@ class BridgeEventSupport {
             dispatchMouseEvent("mouseout", evt, true);
         }
         public void mouseDragged(GraphicsNodeMouseEvent evt) {
-            dispatchMouseEvent("mousemove", evt, true);
+            GraphicsNode node = evt.getRelatedNode();
+            if (lastTarget != node) {
+                GraphicsNodeMouseEvent evt2 = null;
+                if (lastTarget != null) {
+                    evt2 = new GraphicsNodeMouseEvent(lastTarget,
+                                                      evt.MOUSE_EXITED,
+                                                      evt.getWhen(),
+                                                      evt.getModifiers(),
+                                                      evt.getX(),
+                                                      evt.getY(),
+                                                      evt.getClickCount(),
+                                                      lastTarget);
+                    dispatchMouseEvent("mouseout",
+                                       evt2,
+                                       true);
+                }
+                if (node != null) {
+                    evt2 = new GraphicsNodeMouseEvent(node,
+                                                      evt.MOUSE_ENTERED,
+                                                      evt.getWhen(),
+                                                      evt.getModifiers(),
+                                                      evt.getX(),
+                                                      evt.getY(),
+                                                      evt.getClickCount(),
+                                                      lastTarget);
+                    dispatchMouseEvent("mouseover",
+                                       evt2,
+                                       true);
+                }
+            }
+            try {
+                dispatchMouseEvent("mousemove", evt, true);
+            } finally {
+                lastTarget = node;
+            }
         }
         public void mouseMoved(GraphicsNodeMouseEvent evt) {
             dispatchMouseEvent("mousemove", evt, false);
@@ -336,11 +374,11 @@ class BridgeEventSupport {
                              (int)Math.floor(pos.getY()));
             // compute screen coordinates
             GraphicsNode node = evt.getGraphicsNode();
-            // <!> TODO dispatch it only if pointers-event property ask for
             Element elmt = context.getElement(node);
             if (elmt == null) // should not appeared if binding on
                 return;
             EventTarget target = (EventTarget)elmt;
+            // <!> TODO dispatch it only if pointers-event property ask for
             short button = 1;
             if ((evt.BUTTON1_MASK & evt.getModifiers()) != 0)
                 button = 0;
@@ -352,6 +390,10 @@ class BridgeEventSupport {
                 (MouseEvent)org.apache.batik.dom.events.EventSupport.
                 createEvent(org.apache.batik.dom.events.EventSupport.
                             MOUSE_EVENT_TYPE);
+            // deal with the related node/target
+            node = evt.getRelatedNode();
+            EventTarget relatedTarget =
+                (EventTarget)context.getElement(node);
             mevent.initMouseEvent(eventType, true, cancelok, null,
                                   evt.getClickCount(),
                                   screen.x, screen.y,
@@ -359,7 +401,7 @@ class BridgeEventSupport {
                                   (int)Math.floor(pos.getY()),
                                   evt.isControlDown(), evt.isAltDown(),
                                   evt.isShiftDown(), evt.isMetaDown(),
-                                  button, target);
+                                  button, relatedTarget);
             try {
                 target.dispatchEvent(mevent);
             } catch (RuntimeException e) {

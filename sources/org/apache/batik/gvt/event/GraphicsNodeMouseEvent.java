@@ -16,6 +16,7 @@ import org.apache.batik.gvt.GraphicsNode;
 /**
  * An event which indicates that a mouse action occurred in a graphics node.
  *
+ * @author <a href="cjolif@ilog.fr>Christophe Jolif</a>
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  * @version $Id$
  */
@@ -87,6 +88,13 @@ public class GraphicsNodeMouseEvent extends GraphicsNodeInputEvent {
     int clickCount;
 
     /**
+     * Additional information. For a MOUSE_EXITED, this will contain the
+     * destination node, for a MOUSE_ENTERED the last node and for
+     * a MOUSE_DRAGGED the node under the mouse pointer.
+     */
+    GraphicsNode relatedNode = null;
+
+    /**
      * Constructs a new graphics node mouse event.
      * @param source the graphics node where the event originated
      * @param id the id of this event
@@ -94,14 +102,18 @@ public class GraphicsNodeMouseEvent extends GraphicsNodeInputEvent {
      * @param modifiers the modifier keys down while event occurred
      * @param x,&nbsp;y the mouse coordinates
      * @param clickCount the number of clicks
+     * @param relatedNode the related node
+     * @see #getRelatedNode
      */
     public GraphicsNodeMouseEvent(GraphicsNode source, int id,
                                   long when, int modifiers,
-                                  float x, float y, int clickCount) {
+                                  float x, float y, int clickCount,
+                                  GraphicsNode relatedNode) {
         super(source, id, when, modifiers);
         this.x = x;
         this.y = y;
         this.clickCount = clickCount;
+        this.relatedNode = relatedNode;
     }
 
     /**
@@ -143,10 +155,21 @@ public class GraphicsNodeMouseEvent extends GraphicsNodeInputEvent {
     }
 
     /**
-     * Return the number of mouse clicks associated with this event.
+     * Returns the number of mouse clicks associated with this event.
      * @return integer value for the number of clicks
      */
     public int getClickCount() {
         return clickCount;
+    }
+
+    /**
+     * Returns the related node for this <code>GraphicsNodeMouseEvent</code>.
+     * For a <code>MOUSE_ENTERED</code> event it is the previous node target,
+     * for a <code>MOUSE_EXITED</code> event it is the next node target and
+     * for a <code>MOUSE_DRAGGED</code> event it is the node under the mouse
+     * pointer. Otherwise the value is <code>null</code>.
+     */
+    public GraphicsNode getRelatedNode() {
+        return relatedNode;
     }
 }
