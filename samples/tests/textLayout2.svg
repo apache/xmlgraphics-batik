@@ -65,9 +65,15 @@
         <tspan x="100" y="300">lines via &lt;tspan&gt; elements.</tspan>
         </text>
 
-        <text text-anchor="start" fill="blue" font-size="4%" transform="translate(175, 390)">
+        <text text-anchor="start" fill="blue" font-size="4%" transform="translate(70, 390)">
         <tspan x="0 10 25 50 75 90 100 90 75 50 25 10 0" 
          y="0 -25 -40 -50 -40 -25 0 25 40 50 40 25 10 0">Text-circle.</tspan>
+        </text>
+
+        <text fill="green" font-size="4%" transform="translate(250, 350)"
+            x="0 20 40 60 80 80 80 80 80 60 40 20 0 0 0 0" 
+            y="0 0 0 0 0 20 40 60 80 80 80 80 80 60 40 20">
+            Text-in-a-square
         </text>
 
     </g>
