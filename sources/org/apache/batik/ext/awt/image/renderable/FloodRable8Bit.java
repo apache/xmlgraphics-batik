@@ -118,9 +118,13 @@ public class FloodRable8Bit extends AbstractRable
         // Now, take area of interest into account. It is
         // defined in user space.
 
-        Rectangle2D userAOI = rc.getAreaOfInterest().getBounds2D();
-        if (userAOI == null) {
+        Shape userAOIShape = rc.getAreaOfInterest();
+        Rectangle2D userAOI = null;
+        if (userAOIShape == null) {
             userAOI = imageRect;
+        }
+        else{
+            userAOI = userAOI.getBounds2D();
         }
 
         // No intersection with the area of interest so return null..
