@@ -366,7 +366,7 @@ public abstract class AbstractNode
         try {
             return new DOMException
                 (type, getCurrentDocument().formatMessage(key, args));
-        } catch (MissingResourceException e) {
+        } catch (Exception e) {
             return new DOMException(type, key);
         }
     }

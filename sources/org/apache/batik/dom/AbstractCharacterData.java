@@ -141,7 +141,7 @@ public abstract class AbstractCharacterData
 
 	String v = getNodeValue();
 	setNodeValue(v.substring(0, offset) +
-		     v.substring(Math.min(v.length() - 1, offset + count),
+		     v.substring(Math.min(v.length(), offset + count),
                                  v.length()));
     }
 
@@ -162,7 +162,7 @@ public abstract class AbstractCharacterData
 	String v = getNodeValue();
 	setNodeValue(v.substring(0, offset) +
 		     arg +
-		     v.substring(Math.min(v.length() - 1, offset + count),
+		     v.substring(Math.min(v.length(), offset + count),
                                  v.length()));
     }
 
