@@ -27,6 +27,15 @@ import org.w3c.dom.NodeList;
  */
 public class XMLReflect implements XMLReflectConstants{
     /**
+     * An error happened while trying to construct a test. No constructor
+     * matching the list of arguments could be found
+     * {0} : The test's class name
+     * {1} : The list of argument types for which no constructor was found
+     */
+    public static final String NO_MATCHING_CONSTRUCTOR
+        = "xml.XMLReflect.error.no.matching.constructor";
+
+    /**
      * Implementation helper: builds a generic object
      */
     public static Object buildObject(Element element) throws Exception {
@@ -69,6 +78,18 @@ public class XMLReflect implements XMLReflectConstants{
         Constructor constructor
             = getDeclaredConstructor(cl, argsClasses);
 
+        if (constructor == null) {
+            String argsClassesStr = "null";
+            if (argsClasses != null) {
+                argsClassesStr = "";
+                for (int i=0; i<argsClasses.length; i++) {
+                    argsClassesStr += argsClasses[i].getName() + " / ";
+                }
+            }
+            throw new Exception(Messages.formatMessage(NO_MATCHING_CONSTRUCTOR,
+                                                       new Object[] { className,
+                                                                      argsClassesStr }));
+        }
         return configureObject(constructor.newInstance(argsArray),
                                element);
     }
