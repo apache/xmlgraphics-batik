@@ -107,7 +107,7 @@
             <test id="samples/anne.svg#svgView(viewBox(100,50,100,200))-ViewBox2" />
             <test id="samples/anne.svg#svgView(transform(translate(-100,-50)))-Transform1" />
             <test id="samples/anne.svg#svgView(transform(translate(225,250)rotate(45)translate(-225,-250)))-Transform2" />
-            <test id="samples/anne.svg#svgView(transform(rotate(45,225,250)))-Transform2" />
+            <test id="samples/anne.svg#svgView(transform(rotate(45,225,250)))-Transform3" />
         </testGroup>
     </testGroup>
 

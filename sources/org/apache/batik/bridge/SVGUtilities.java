@@ -818,8 +818,7 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
                                                    String attr,
                                                    String transform) {
         try {
-            StringReader r = new StringReader(transform);
-            return AWTTransformProducer.createAffineTransform(r);
+            return AWTTransformProducer.createAffineTransform(transform);
         } catch (ParseException ex) {
             throw new BridgeException(e, ERR_ATTRIBUTE_VALUE_MALFORMED,
                                       new Object[] {attr, transform, ex});

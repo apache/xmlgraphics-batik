@@ -21,9 +21,14 @@ import org.apache.batik.i18n.Localizable;
  */
 public interface Parser extends Localizable {
     /**
-     * Parses the given reader representing an angle.
+     * Parses the given reader
      */
-    void parse(Reader r) throws ParseException;
+    public void parse(Reader r) throws ParseException;
+
+    /**
+     * Parses the given string
+     */
+    public void parse(String s) throws ParseException;
 
     /**
      * Allows an application to register an error event handler.

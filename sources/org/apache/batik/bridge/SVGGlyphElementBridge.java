@@ -99,7 +99,7 @@ public class SVGGlyphElementBridge extends AbstractSVGBridge
             try {
                 PathParser pathParser = new PathParser();
                 pathParser.setPathHandler(app);
-                pathParser.parse(new StringReader(d));
+                pathParser.parse(d);
             } catch (ParseException ex) {
                 throw new BridgeException(glyphElement,
                                           ERR_ATTRIBUTE_VALUE_MALFORMED,

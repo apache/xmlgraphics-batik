@@ -63,7 +63,7 @@ public abstract class ViewBox implements SVGConstants, ErrorConstants {
         ViewHandler vh = new ViewHandler();
         FragmentIdentifierParser p = new FragmentIdentifierParser();
         p.setFragmentIdentifierHandler(vh);
-        p.parse(new StringReader(ref));
+        p.parse(ref);
 
         Element attrDefElement = e; // the element that defines the attributes
         if (vh.hasId) {
@@ -104,7 +104,7 @@ public abstract class ViewBox implements SVGConstants, ErrorConstants {
             ViewHandler ph = new ViewHandler();
             pp.setPreserveAspectRatioHandler(ph);
             try {
-                pp.parse(new StringReader(aspectRatio));
+                pp.parse(aspectRatio);
             } catch (ParseException ex) {
                 throw new BridgeException
                     (attrDefElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
@@ -189,7 +189,7 @@ public abstract class ViewBox implements SVGConstants, ErrorConstants {
         ViewHandler ph = new ViewHandler();
         p.setPreserveAspectRatioHandler(ph);
         try {
-            p.parse(new StringReader(aspectRatio));
+            p.parse(aspectRatio);
         } catch (ParseException ex) {
             throw new BridgeException
                 (e, ERR_ATTRIBUTE_VALUE_MALFORMED,
@@ -223,7 +223,7 @@ public abstract class ViewBox implements SVGConstants, ErrorConstants {
         ViewHandler ph = new ViewHandler();
         p.setPreserveAspectRatioHandler(ph);
         try {
-            p.parse(new StringReader(aspectRatio));
+            p.parse(aspectRatio);
         } catch (ParseException ex) {
             throw new BridgeException
                 (e, ERR_ATTRIBUTE_VALUE_MALFORMED,

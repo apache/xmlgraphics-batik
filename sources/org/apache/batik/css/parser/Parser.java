@@ -282,6 +282,7 @@ public class Parser
             }
         } finally {
             documentHandler.endDocument(source);
+            scanner = null;
         }
     }
 
@@ -305,6 +306,8 @@ public class Parser
             parseStyleDeclaration(false);
         } catch (CSSParseException e) {
             reportError(e);
+        } finally {
+            scanner = null;
         }
     }
 
@@ -315,6 +318,7 @@ public class Parser
         scanner = new Scanner(characterStream(source, null));
         nextIgnoreSpaces();
         parseRule();
+        scanner = null;
     }
 
     /**
@@ -324,8 +328,9 @@ public class Parser
         throws CSSException, IOException {
         scanner = new Scanner(characterStream(source, null));
         nextIgnoreSpaces();
-
-        return parseSelectorList();
+        SelectorList ret = parseSelectorList();
+        scanner = null;
+        return ret;
     }
 
     /**
@@ -346,6 +351,8 @@ public class Parser
             throw e;
         }
 
+        scanner = null;
+
         if (current != LexicalUnits.EOF) {
             errorHandler.fatalError(createCSSParseException("eof.expected"));
         }
@@ -360,6 +367,9 @@ public class Parser
         throws CSSException, IOException {
         scanner = new Scanner(characterStream(source, null));
         nextIgnoreSpaces();
+
+        scanner = null;
+
         switch (current) {
         case LexicalUnits.EOF:
             return false;

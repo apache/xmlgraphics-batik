@@ -71,7 +71,7 @@ public class SVGTextPathElementBridge extends AbstractSVGBridge
             try {
                 PathParser pathParser = new PathParser();
                 pathParser.setPathHandler(app);
-                pathParser.parse(new StringReader(s));
+                pathParser.parse(s);
             } catch (ParseException ex) {
                throw new BridgeException(pathElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
                                           new Object[] {SVG_D_ATTRIBUTE});

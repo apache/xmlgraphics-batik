@@ -63,7 +63,7 @@ public abstract class AbstractParser implements Parser {
     /**
      * The buffer.
      */
-    protected char[] buffer = new char[4096];
+    protected char[] buffer;
 
     /**
      * The current position in the buffer.
@@ -80,10 +80,6 @@ public abstract class AbstractParser implements Parser {
      */
     protected int current;
 
-    /**
-     * The previous char.
-     */
-    protected int previous;
 
     /**
      * Returns the current character value.
@@ -132,10 +128,104 @@ public abstract class AbstractParser implements Parser {
     }
 
     /**
-     * Initializes the parser.
+     * Parses the given reader
      */
-    protected void initialize(Reader r) {
+    public void parse(Reader r)  throws ParseException {
         reader = r;
+        buffer = new char[4096];
+
+        doParse();
+    }
+
+    /**
+     * Parses the given string.
+     */
+    public void parse(String s)  throws ParseException {
+        reader = null;
+        buffer = s.toCharArray();
+        position=0;
+        count=buffer.length;
+        collapseCRNL(0, count);
+
+        doParse();
+    }
+
+    /**
+     * Method resposible for actually parsing data after AbstractParser
+     * has initialized it's self.
+     */
+    protected abstract void doParse() throws ParseException ;
+
+    protected final void collapseCRNL(int src, int end) {
+        // Now collapse cr/nl...
+        while(src<end) {
+            if (buffer[src] != 13) {
+                src++;
+            } else {
+                buffer[src] = 10;
+                src++;
+                if (src>=end) break;
+                if (buffer[src] == 10) {
+                    // We now need to collapse some of the chars to
+                    // eliminate cr/nl pairs.  This is where we do it...
+                    int dst = src; // start writing where this 10 is
+                    src++; // skip reading this 10.
+                    while (src<end) {
+                        if (buffer[src] == 13) {
+                            buffer[dst++] = 10;
+                            src++;
+                            if (src>=end) break;
+                            if (buffer[src] == 10) {
+                                src++;
+                            }
+                            continue;
+                        }
+                        buffer[dst++] = buffer[src++];
+                    }
+                    end = dst;
+                    break;
+                }
+            }
+        }
+    }
+
+    protected final boolean fillBuffer() {
+        try {
+            if (count != 0) {
+                if (position == count) {
+                    buffer[0] = buffer[count-1];
+                    count=position=1;
+                } else {
+                    // we keep the last char in our buffer.
+                    System.arraycopy(buffer, position-1, buffer, 0, 
+                                     count-position+1);
+                    count = (count-position)+1;
+                    position = 1;
+                }
+            }
+
+            if (reader == null)
+                return (count != position);
+                    
+            // remember where the fill starts...
+            int src=count-1;
+            if (src < 0) src = 0;
+
+            // Refill the buffer...
+            int read = reader.read(buffer, count, buffer.length-count);
+            if (read == -1) {
+                return (count != position);
+            }
+
+            count+=read; // add in chars read.
+            collapseCRNL(src, count);
+        } catch (IOException e) {
+            errorHandler.error
+                (new ParseException
+                    (createErrorMessage("io.exception", null),
+                     e));
+        }
+        return (count != position);
     }
 
     /**
@@ -143,51 +233,18 @@ public abstract class AbstractParser implements Parser {
      * value.
      */
     protected void read() {
-        try {
-            if (position == count) {
-                position = 0;
-                count = reader.read(buffer, 0, buffer.length);
-                if (count == -1) {
-                    count = 0;
-                    current = -1;
-                    return;
-                }
-            }
-            int c = buffer[position++];
+        if ((position == count) && (!fillBuffer())) {
+            current = -1;
+            return;
+        }
 
-            switch (c) {
-            case -1:
-                current = previous = -1;
-                return;
+        current = buffer[position++];
 
-            case 10:
-                if (previous == 13) {
-                    previous = 10;
-                    read();
-                    return;
-                }
-                line++;
-                column = 1;
-                previous = c;
-                break;
-
-            case 13:
-                previous = c;
-                c = 10;
-                line++;
-                column = 1;
-                break;
-
-            default:
-                previous = c;
-                column++;
-            }
-            current = c;
-        } catch (IOException e) {
-            errorHandler.error
-                (new ParseException
-                    (createErrorMessage("io.exception", null),
-                     e));
+        if (current == 10) {
+            line++;
+            column = 1;
+        } else {
+            column++;
         }
     }
 
@@ -198,8 +255,8 @@ public abstract class AbstractParser implements Parser {
      */
     protected void reportError(String key, Object[] args)
         throws ParseException {
-	errorHandler.error(new ParseException(createErrorMessage(key, args),
-					      line,
+        errorHandler.error(new ParseException(createErrorMessage(key, args),
+                                              line,
                                               column));
     }
 
@@ -209,7 +266,7 @@ public abstract class AbstractParser implements Parser {
      * @param args The message arguments.
      */
     protected String createErrorMessage(String key, Object[] args) {
-	try {
+        try {
             return formatMessage(key, args);
         } catch (MissingResourceException e) {
             return key;
@@ -221,53 +278,88 @@ public abstract class AbstractParser implements Parser {
      * @return BUNDLE_CLASSNAME.
      */
     protected String getBundleClassName() {
-	return BUNDLE_CLASSNAME;
+        return BUNDLE_CLASSNAME;
     }
 
     /**
      * Skips the whitespaces in the current reader.
      */
     protected void skipSpaces() {
+        switch (current) {
+        default:
+            return;
+        case 0x20:
+        case 0x9:
+        case 0xD:
+        case 0xA:
+        }
         for (;;) {
-	    switch (current) {
-	    default:
-		return;
-	    case 0x20:
-	    case 0x9:
-	    case 0xD:
-	    case 0xA:
-	    }
-	    read();
-	}
+            if ((position == count) && (!fillBuffer())) {
+                current = -1;
+                return;
+            }
+            current = buffer[position++];
+
+            switch (current) {
+            default:             return;
+            case 0x20: case 0x09: column++; break;
+            case 0x0D: case 0x0A: line++; column=0; break;
+            }
+        }
     }
 
     /**
      * Skips the whitespaces and an optional comma.
      */
     protected void skipCommaSpaces() {
-        wsp1: for (;;) {
-	    switch (current) {
-	    default:
-		break wsp1;
-	    case 0x20:
-	    case 0x9:
-	    case 0xD:
-	    case 0xA:
-	    }
-	    read();
-	}
-	if (current == ',') {
-            wsp2: for (;;) {
-		read();
-		switch (current) {
-		default:
-		    break wsp2;
-		case 0x20:
-		case 0x9:
-		case 0xD:
-		case 0xA:
-		}
-	    }
-	}
+        // Check current char...
+        switch (current) {
+        default: return;
+        case 0x20: case 0x09: case 0x0D: case 0x0A: break; // nl/cr, spc, tab
+        case ',': 
+            // for a comma just eat rest of ws.
+            for(;;) {
+                if ((position == count) && (!fillBuffer())) {
+                    current = -1;
+                    return;
+                }
+                current = buffer[position++];
+                switch (current) {
+                default:                                return; 
+                case 0x20: case 0x09: column++;         break; // space/tab
+                case 0x0D: case 0x0A: line++; column=0; break; // nl/cr
+                }
+            }
+        }
+
+        for(;;) {
+            // After current char we need to take care to increment line
+            // and column...
+            if ((position == count) && (!fillBuffer())) {
+                current = -1;
+                return;
+            }
+            current = buffer[position++];
+
+            switch (current) {
+            default:                                return;
+            case 0x20: case 0x09: column++;         break; // space tab
+            case 0x0D: case 0x0A: line++; column=0; break; // nl cr
+            case ',':
+                // for a comma just eat rest of ws.
+                for(;;) {
+                    if ((position == count) && (!fillBuffer())) {
+                        current = -1;
+                        return;
+                    }
+                    current = buffer[position++];
+                    switch (current) {
+                    default:                                return; 
+                    case 0x20: case 0x09: column++;         break;
+                    case 0x0D: case 0x0A: line++; column=0; break;
+                    }
+                }
+            }
+        }
     }
 }

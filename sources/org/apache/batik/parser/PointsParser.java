@@ -61,9 +61,7 @@ public class PointsParser extends NumberParser {
     /**
      * Parses the given reader.
      */
-    public void parse(Reader r) throws ParseException {
-	initialize(r);
-
+    protected void doParse() throws ParseException {
 	pointsHandler.startPoints();
 
 	read();

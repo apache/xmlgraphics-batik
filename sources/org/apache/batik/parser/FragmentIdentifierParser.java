@@ -69,11 +69,10 @@ public class FragmentIdentifierParser extends AbstractParser {
     /**
      * Parses the given reader.
      */
-    public void parse(Reader r) throws ParseException {
-	initialize(r);
+    protected void doParse() throws ParseException {
         bufferSize = 0;
                 
-	read();
+        read();
 
         fragmentIdentifierHandler.startFragmentIdentifier();
 

@@ -53,12 +53,7 @@ public class PathParser extends NumberParser {
 	return pathHandler;
     }
 
-    /**
-     * Parses the given reader.
-     */
-    public void parse(Reader r) throws ParseException {
-	initialize(r);
-
+    protected void doParse() throws ParseException {
 	pathHandler.startPath();
 
 	read();
