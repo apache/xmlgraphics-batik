@@ -28,23 +28,23 @@
     </style>
     <g>
       <defs id="testdefs1">
-        <linearGradient x1="30" xmlns:xlink="http://www.w3.org/1999/xlink" x2="30" y1="40" gradientUnits="userSpaceOnUse" y2="120" xlink:type="simple" xlink:actuate="onRequest" id="testlinearGradient1" xlink:show="replace" spreadMethod="pad">
+        <linearGradient x1="30" xmlns:xlink="http://www.w3.org/1999/xlink" x2="30" y1="40" gradientUnits="userSpaceOnUse" y2="120" xlink:type="simple" xlink:actuate="onLoad" id="testlinearGradient1" xlink:show="other" spreadMethod="pad">
           <stop stop-opacity="1" stop-color="red" offset="0%" />
           <stop stop-opacity="1" stop-color="yellow" offset="100%" />
         </linearGradient>
-        <linearGradient x1="0" xmlns:xlink="http://www.w3.org/1999/xlink" x2="20" y1="0" gradientUnits="userSpaceOnUse" y2="0" xlink:type="simple" xlink:actuate="onRequest" id="testlinearGradient2" xlink:show="replace" spreadMethod="pad">
+        <linearGradient x1="0" xmlns:xlink="http://www.w3.org/1999/xlink" x2="20" y1="0" gradientUnits="userSpaceOnUse" y2="0" xlink:type="simple" xlink:actuate="onLoad" id="testlinearGradient2" xlink:show="other" spreadMethod="pad">
           <stop stop-opacity="1" stop-color="red" offset="0%" />
           <stop stop-opacity="1" stop-color="yellow" offset="100%" />
         </linearGradient>
-        <linearGradient x1="0" xmlns:xlink="http://www.w3.org/1999/xlink" x2="20" y1="0" gradientUnits="userSpaceOnUse" y2="0" xlink:type="simple" xlink:actuate="onRequest" id="testlinearGradient3" xlink:show="replace" spreadMethod="reflect">
+        <linearGradient x1="0" xmlns:xlink="http://www.w3.org/1999/xlink" x2="20" y1="0" gradientUnits="userSpaceOnUse" y2="0" xlink:type="simple" xlink:actuate="onLoad" id="testlinearGradient3" xlink:show="other" spreadMethod="reflect">
           <stop stop-opacity="1" stop-color="red" offset="0%" />
           <stop stop-opacity="1" stop-color="yellow" offset="100%" />
         </linearGradient>
-        <linearGradient x1="0" xmlns:xlink="http://www.w3.org/1999/xlink" x2="100" y1="0" gradientUnits="userSpaceOnUse" y2="0" xlink:type="simple" xlink:actuate="onRequest" id="testlinearGradient4" xlink:show="replace" spreadMethod="pad">
+        <linearGradient x1="0" xmlns:xlink="http://www.w3.org/1999/xlink" x2="100" y1="0" gradientUnits="userSpaceOnUse" y2="0" xlink:type="simple" xlink:actuate="onLoad" id="testlinearGradient4" xlink:show="other" spreadMethod="pad">
           <stop stop-opacity="1" stop-color="red" offset="0%" />
           <stop stop-opacity="1" stop-color="yellow" offset="100%" />
         </linearGradient>
-        <linearGradient x1="10" xmlns:xlink="http://www.w3.org/1999/xlink" x2="110" y1="30" gradientUnits="userSpaceOnUse" y2="30" xlink:type="simple" xlink:actuate="onRequest" id="testlinearGradient5" xlink:show="replace" spreadMethod="pad">
+        <linearGradient x1="10" xmlns:xlink="http://www.w3.org/1999/xlink" x2="110" y1="30" gradientUnits="userSpaceOnUse" y2="30" xlink:type="simple" xlink:actuate="onLoad" id="testlinearGradient5" xlink:show="other" spreadMethod="pad">
           <stop stop-opacity="0" stop-color="rgb(255,0,0)" offset="0%" />
           <stop stop-opacity="1" stop-color="yellow" offset="100%" />
         </linearGradient>

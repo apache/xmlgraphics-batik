@@ -68,7 +68,7 @@
           <glyph unicode="H" horiz-adv-x="55.51758" d="M51.375 79.0469 L51.375 0 L30.8125 0 L30.8125 33.2031 L24.6562 33.2031 L24.6562 0 L4.1094 0 L4.1094 79.0469 L24.6562 79.0469 L24.6562 50.7812 L30.8125 50.7812 L30.8125 79.0469 L51.375 79.0469 Z" />
         </font>
         <image width="2" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAFklEQVR42mP8/5/h
-PwMjAwMTiAAyGQAyFwQCULgtXgAAAABJRU5ErkJggg==" xlink:type="simple" xlink:actuate="onRequest" height="2" id="testimage1" preserveAspectRatio="xMidYMid meet" xlink:show="replace" />
+PwMjAwMTiAAyGQAyFwQCULgtXgAAAABJRU5ErkJggg==" xlink:type="simple" xlink:actuate="onLoad" height="2" id="testimage1" preserveAspectRatio="xMidYMid meet" xlink:show="embed" />
       </defs>
       <g class="testC1">
         <text xml:space="preserve" x="10" y="20" class="testC2">Text antialiasing</text>
@@ -82,8 +82,8 @@ PwMjAwMTiAAyGQAyFwQCULgtXgAAAABJRU5ErkJggg==" xlink:type="simple" xlink:actuate=
       </g>
       <g class="testC9" transform="translate(0,200)">
         <text xml:space="preserve" x="10" y="30" class="testC10">Interpolation Nearest Neighbor / Bicubic</text>
-        <use transform="matrix(20,0,0,20,10,50)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC11" xlink:actuate="onRequest" xlink:show="replace" />
-        <use transform="matrix(20,0,0,20,60,50)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC12" xlink:actuate="onRequest" xlink:show="replace" />
+        <use transform="matrix(20,0,0,20,10,50)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC11" xlink:actuate="onLoad" xlink:show="embed" />
+        <use transform="matrix(20,0,0,20,60,50)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC12" xlink:actuate="onLoad" xlink:show="embed" />
       </g>
     </g>
   </g>

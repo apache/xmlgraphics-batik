@@ -76,32 +76,32 @@
         <image width="100" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAYAAACqNX6+AAAAbklEQVR42u3asQ0A
 MAgEMYjYf+UkQ1C9fEyALDq67p+EOmKLOiUgAgJEQIAICBABASIgAgJEQIAICBAB
 ASIgAgJEQIBos0n5k0v5lHMhQAQEiIAAERAgAgJEQAQEiIAAERAgAgJEQAQEiIAA
-0W4PbEgEZMeFA8QAAAAASUVORK5CYII=" xlink:type="simple" xlink:actuate="onRequest" height="50" id="testimage1" preserveAspectRatio="xMidYMid meet" xlink:show="replace" />
+0W4PbEgEZMeFA8QAAAAASUVORK5CYII=" xlink:type="simple" xlink:actuate="onLoad" height="50" id="testimage1" preserveAspectRatio="xMidYMid meet" xlink:show="embed" />
       </defs>
       <g class="testC1">
-        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC2" xlink:actuate="onRequest" xlink:show="replace" />
+        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC2" xlink:actuate="onLoad" xlink:show="embed" />
         <text xml:space="preserve" x="110" y="25" class="testC3">Clip set to device bounds</text>
         <text xml:space="preserve" x="110" y="25" class="testC4" transform="translate(0,70)">Clip set to upper right quarter</text>
-        <use transform="translate(0,70)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC5" xlink:actuate="onRequest" xlink:show="replace" />
+        <use transform="translate(0,70)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC5" xlink:actuate="onLoad" xlink:show="embed" />
       </g>
       <g class="testC6" transform="translate(0,140)">
         <text xml:space="preserve" x="110" y="15" class="testC7">Clip set to upper right quarter</text>
         <text xml:space="preserve" x="110" y="30" class="testC8">after .5 scale</text>
-        <use transform="scale(0.5,0.5)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC9" xlink:actuate="onRequest" xlink:show="replace" />
+        <use transform="scale(0.5,0.5)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC9" xlink:actuate="onLoad" xlink:show="embed" />
       </g>
       <g class="testC10" transform="translate(0,210)">
         <text xml:space="preserve" x="110" y="25" class="testC11">Non-Rectagular clip</text>
-        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC12" xlink:actuate="onRequest" xlink:show="replace" />
+        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC12" xlink:actuate="onLoad" xlink:show="embed" />
       </g>
       <g class="testC13" transform="translate(0,280)">
         <text xml:space="preserve" x="110" y="15" class="testC14">Non-Rectagular clip after</text>
         <text xml:space="preserve" x="110" y="30" class="testC15">.5 scale</text>
-        <use transform="scale(0.5,0.5)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC16" xlink:actuate="onRequest" xlink:show="replace" />
+        <use transform="scale(0.5,0.5)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC16" xlink:actuate="onLoad" xlink:show="embed" />
       </g>
       <g class="testC17" transform="translate(0,350)">
         <text xml:space="preserve" x="110" y="15" class="testC18">Non-Rectagular clip before</text>
         <text xml:space="preserve" x="110" y="30" class="testC19">.5 scale</text>
-        <use transform="scale(0.5,0.5)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC20" xlink:actuate="onRequest" xlink:show="replace" />
+        <use transform="scale(0.5,0.5)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC20" xlink:actuate="onLoad" xlink:show="embed" />
       </g>
     </g>
   </g>

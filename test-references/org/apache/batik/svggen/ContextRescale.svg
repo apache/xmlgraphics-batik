@@ -166,7 +166,7 @@ ATIpRHoDXMglg9rld8j5Y7NUUsWP/uuXaFYIQC+NRtVhHxOhcXXskdttVQfotVXE
 dAUnT0SD9jjN3RHKtH2PDEQT5QqsTSf7mDMWyU4NmFQizL7aZrwspFPIGGS+oRym
 OKCRjBNKOt67ehc5xs4803VJrzBmYuhWFBSWKCCpuPl+jYWyi7SRx9l0JnjL2xnx
 L36ZI4W/9PQTuH55He+9X2Y3ukAqY+IPvnUeW5tNFLdqePJiHvMJPege0xM8axAc
-s/B/wE/81LZ3lbMAAAAASUVORK5CYII=" xlink:type="simple" xlink:actuate="onRequest" height="63" id="testimage1" preserveAspectRatio="xMidYMid meet" xlink:show="replace" />
+s/B/wE/81LZ3lbMAAAAASUVORK5CYII=" xlink:type="simple" xlink:actuate="onLoad" height="63" id="testimage1" preserveAspectRatio="xMidYMid meet" xlink:show="embed" />
         <image width="50" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAA/CAYAAACioZtvAAAgAElEQVR42iWaWa8d
 15me3xp37Xk4A3k4kxJlyZNsp+3uiw6QAd0IMgBBGkiA3OQit/kR/T9ylbskCBAg
 SGAERhppuGHHbtvdtqSWRZGiSB6SZ9jzULvGXXm+RQkEDg/3rlrrG97hW8v7j//r
@@ -344,7 +344,7 @@ RU2bJjvYoHtEAIDZgKg8wLd0WqFDsckRHIWG+uX/+wQzZdOajtJNjV/BBlOQG0p/
 vkGv5b4bLZ3ee3dLtRP2HJ8AwvBbZiMlT6PuEYa/dHd9u7DvsEd2+GDGJgJ8tYHA
 uEP39Ex7jRCTpDdpaYAmevH0UiMiaSZpSXaHcINdZDs+YYFI8ezVFiS0o+6J7nRO
 3t1a7frOEWb49iES/v37N/Ti0ws8+Qo3OkbKZPr+H9/TfLZHOG519miiYR9l3TFb
-TXObCLXBNWVmV0o6IOn/B5vb0uXxU9VwAAAAAElFTkSuQmCC" xlink:type="simple" xlink:actuate="onRequest" height="63" id="testimage2" preserveAspectRatio="xMidYMid meet" xlink:show="replace" />
+TXObCLXBNWVmV0o6IOn/B5vb0uXxU9VwAAAAAElFTkSuQmCC" xlink:type="simple" xlink:actuate="onLoad" height="63" id="testimage2" preserveAspectRatio="xMidYMid meet" xlink:show="embed" />
         <image width="50" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAA/CAYAAACioZtvAAAdfklEQVR42j2a6Y5c
 W3Kd48xDZlZmTSQv79BXjbYkCJZhW/5j+Fn817/8EH47w7Bh2HCjJat1R5G8ZFUx
 q3I68+BvxSHMvg0mM8+wdwwr1orYwX/8z/9pjsbMomK2IAht6kZLVplV596CebY4
@@ -503,7 +503,7 @@ Y4OfUM0obpsiWjQ31F3yVW1QzUpuNyuMobZTZCuovcYaP//4HpKpsVrK37OLMSV4
 Qx7ouOzYB95aurqJfGSdih8KfFRN8GSsJCrTlfXEdgfnyhKdsS3dI32gplroIFAC
 q2k++Zlfjd4yLFqw+f3DEc3IZ+K4itXQxqp1gEZggVDxft96oUyzle3SzXJqNV06
 632nwzix3d9e2f7D0fZ7JKyOC7aDffeHG++tCUS2mn7hhTLNPKw0rB3mLy3dWT2N
-0f4f4XkfuBFYPHcAAAAASUVORK5CYII=" xlink:type="simple" xlink:actuate="onRequest" height="63" id="testimage3" preserveAspectRatio="xMidYMid meet" xlink:show="replace" />
+0f4f4XkfuBFYPHcAAAAASUVORK5CYII=" xlink:type="simple" xlink:actuate="onLoad" height="63" id="testimage3" preserveAspectRatio="xMidYMid meet" xlink:show="embed" />
         <image width="50" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAA/CAYAAACioZtvAAAbyElEQVR42k1aaY8k
 2VW9GZEZuS+1dlXvXdPT0+Mez9gDHoPwBsgWAiwZhIzEB/jKX+E7Ep+RLGQjJAtk
 ZGCQkBd5GDyLe5memZ7qruqu6uqqrNyXyMyIyAzOeScsaKk6t4j37nruufdFLv3X
@@ -653,7 +653,7 @@ hXMxoNjNDdQocKi//e/71gOzyKcV64yXaHd8tHCBnSD098cpQMdDZMMIV7OnVPM1
 eYSFMeaz8Yyx6oYeiERIbaP6Xqit6UJPz3vMYf29Cip8jdyrhe44Zzvs08GJ7u2f
 2XXkzlVY5RDe3UBtCEdgsHzooFS12dEEhTK2zRpYcmVLh0YcQvCpuGloV0Hh/+Da
 Bfvpg1N4dmivoXscgTV/8ytXbdGd2Sfoid7g6Ve9qIcz2Z+4GhJnAKBn7v8XO84B
-pUKskyMAAAAASUVORK5CYII=" xlink:type="simple" xlink:actuate="onRequest" height="63" id="testimage4" preserveAspectRatio="xMidYMid meet" xlink:show="replace" />
+pUKskyMAAAAASUVORK5CYII=" xlink:type="simple" xlink:actuate="onLoad" height="63" id="testimage4" preserveAspectRatio="xMidYMid meet" xlink:show="embed" />
         <image width="50" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAA/CAYAAACioZtvAAAZ70lEQVR42j2a2Y8c
 13XGT1VX9d7Ts5KiuFPUQluUpcCWDTsOnARI8pAAShAgj/mr8uQnvwnxgwMjhhEY
 MWLHkK3VthYrlEhRw3U4e+/d1VVd+c6vroghZ7qrbt26597vfOc7597oh+W/l6l1
@@ -793,7 +793,7 @@ DT8ubeP1nu0V+4SrFZtFNTuzpefLHPZqh9KNo/6KgmAb+Zja5nnFqDy2d/7tI5sd
 CICrtk0fFdaIa7DfiKNVJYb4aM6EU6rtoA/LUDxNHDbrFOeWVPE8CPU1uJRt40qm
 Own4idxOVHA00oVFt9PgPPWuYLHuW6ppk2DZ51hSRKrrJDKPxkRkP0F3QYZXp1Zj
 WGnOUb6mXf+Ls7b75p7tvjWwMy9t2GJvbq99+xKHDFxvnKMu3wgVmmqf96tN0hKp
-k9n/Aw+MgA/S8A29AAAAAElFTkSuQmCC" xlink:type="simple" xlink:actuate="onRequest" height="63" id="testimage5" preserveAspectRatio="xMidYMid meet" xlink:show="replace" />
+k9n/Aw+MgA/S8A29AAAAAElFTkSuQmCC" xlink:type="simple" xlink:actuate="onLoad" height="63" id="testimage5" preserveAspectRatio="xMidYMid meet" xlink:show="embed" />
         <image width="50" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAA/CAYAAACioZtvAAAam0lEQVR42kWayY9c
 13XGT1W9mqurqkf2QDYpDpIoWqZlyY5j2BkMB7DhLIIsHCBBAG+dTXYJsgqSPyII
 ECOLAFkkyDKGAzsxPEWyDMmxTMqSOIhks7vZc9c8D/l+91xCBIpdw3v33XuG7/vO
@@ -937,17 +937,17 @@ toOeSwxICnRaq7km41AbDTlqDqT/lVUvGUCxJaS94vEXP2+HYgoY7bW9XkFfEZYc
 /QgNds1jbdsbdpyyCyrAXMeFrTd6RBT87JjSxaPBDAzTfQc6yQn6ruFIR8rFZEUs
 yXnfJw+GVlfuUCQ19D05w0G2lVVHnsFTR0L6T+z4hlOr8YQoxFiThL9+WePcrYSa
 nGoUKfPal7y3hnDcuOpbbPWSl9XkDtt4SdwOKWlO/w+897qli3RcmQAAAABJRU5E
-rkJggg==" xlink:type="simple" xlink:actuate="onRequest" height="63" id="testimage6" preserveAspectRatio="xMidYMid meet" xlink:show="replace" />
+rkJggg==" xlink:type="simple" xlink:actuate="onLoad" height="63" id="testimage6" preserveAspectRatio="xMidYMid meet" xlink:show="embed" />
       </defs>
       <g class="testC1">
         <text xml:space="preserve" x="10" y="20" class="testC2">Brighter / Normal / Darker</text>
-        <use transform="matrix(1,0,0,1,10,30)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC3" xlink:actuate="onRequest" xlink:show="replace" />
-        <use transform="matrix(1,0,0,1,70,30)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage2" xlink:type="simple" class="testC4" xlink:actuate="onRequest" xlink:show="replace" />
-        <use transform="matrix(1,0,0,1,130,30)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage3" xlink:type="simple" class="testC5" xlink:actuate="onRequest" xlink:show="replace" />
+        <use transform="matrix(1,0,0,1,10,30)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC3" xlink:actuate="onLoad" xlink:show="embed" />
+        <use transform="matrix(1,0,0,1,70,30)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage2" xlink:type="simple" class="testC4" xlink:actuate="onLoad" xlink:show="embed" />
+        <use transform="matrix(1,0,0,1,130,30)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage3" xlink:type="simple" class="testC5" xlink:actuate="onLoad" xlink:show="embed" />
         <text xml:space="preserve" x="10" y="20" class="testC6" transform="translate(0,113)">Rescale Red / Green / Blue</text>
-        <use transform="translate(0,113) matrix(1,0,0,1,10,30)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage4" xlink:type="simple" class="testC7" xlink:actuate="onRequest" xlink:show="replace" />
-        <use transform="translate(0,113) matrix(1,0,0,1,70,30)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage5" xlink:type="simple" class="testC8" xlink:actuate="onRequest" xlink:show="replace" />
-        <use transform="translate(0,113) matrix(1,0,0,1,130,30)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage6" xlink:type="simple" class="testC9" xlink:actuate="onRequest" xlink:show="replace" />
+        <use transform="translate(0,113) matrix(1,0,0,1,10,30)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage4" xlink:type="simple" class="testC7" xlink:actuate="onLoad" xlink:show="embed" />
+        <use transform="translate(0,113) matrix(1,0,0,1,70,30)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage5" xlink:type="simple" class="testC8" xlink:actuate="onLoad" xlink:show="embed" />
+        <use transform="translate(0,113) matrix(1,0,0,1,130,30)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage6" xlink:type="simple" class="testC9" xlink:actuate="onLoad" xlink:show="embed" />
       </g>
     </g>
   </g>

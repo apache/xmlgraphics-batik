@@ -21,12 +21,12 @@
     </style>
     <g>
       <defs id="testdefs1">
-        <linearGradient x1="10" xmlns:xlink="http://www.w3.org/1999/xlink" x2="110" y1="20" gradientUnits="userSpaceOnUse" y2="80" xlink:type="simple" xlink:actuate="onRequest" id="testlinearGradient1" xlink:show="replace" spreadMethod="pad">
+        <linearGradient x1="10" xmlns:xlink="http://www.w3.org/1999/xlink" x2="110" y1="20" gradientUnits="userSpaceOnUse" y2="80" xlink:type="simple" xlink:actuate="onLoad" id="testlinearGradient1" xlink:show="other" spreadMethod="pad">
           <stop stop-opacity="1" stop-color="red" offset="0%" />
           <stop stop-opacity="1" stop-color="yellow" offset="100%" />
         </linearGradient>
-        <pattern x="10" y="20" width="20" xmlns:xlink="http://www.w3.org/1999/xlink" patternUnits="userSpaceOnUse" xlink:type="simple" xlink:actuate="onRequest" id="testpattern1" height="20" preserveAspectRatio="xMidYMid meet" xlink:show="replace">
-          <use xlink:type="simple" xlink:actuate="onRequest" xlink:show="replace" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" />
+        <pattern x="10" y="20" width="20" xmlns:xlink="http://www.w3.org/1999/xlink" patternUnits="userSpaceOnUse" xlink:type="simple" xlink:actuate="onLoad" id="testpattern1" height="20" preserveAspectRatio="xMidYMid meet" xlink:show="other">
+          <use xlink:type="simple" xlink:actuate="onLoad" xlink:show="embed" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" />
         </pattern>
         <font horiz-adv-x="75.0" id="testfont1">
           <font-face ascent="92.163086" descent="19.555664" units-per-em="100" font-family="Arial" font-style="normal" font-weight="normal" />
@@ -60,7 +60,7 @@
           <glyph unicode="T" horiz-adv-x="61.083984" d="M25.9219 0 L25.9219 63.1406 L2.3438 63.1406 L2.3438 71.5781 L59.0781 71.5781 L59.0781 63.1406 L35.4062 63.1406 L35.4062 0 L25.9219 0 Z" />
         </font>
         <image width="20" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAALklEQVR42mP8z8AA
-RIQBIwNxgImBymDUwFEDB4OBoAxAVE75/380DEcNHMEGAgA9ZQUjAKh+SgAAAABJRU5ErkJggg==" xlink:type="simple" xlink:actuate="onRequest" height="20" id="testimage1" preserveAspectRatio="xMidYMid meet" xlink:show="replace" />
+RIQBIwNxgImBymDUwFEDB4OBoAxAVE75/380DEcNHMEGAgA9ZQUjAKh+SgAAAABJRU5ErkJggg==" xlink:type="simple" xlink:actuate="onLoad" height="20" id="testimage1" preserveAspectRatio="xMidYMid meet" xlink:show="embed" />
       </defs>
       <g class="testC1" transform="translate(0,30)">
         <text xml:space="preserve" x="10" y="10" class="testC2">Semi transparent black</text>

@@ -50,7 +50,9 @@
 
 package org.apache.batik.bridge;
 
+import java.awt.Graphics2D;
 import java.awt.Paint;
+import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.util.Iterator;
@@ -62,7 +64,8 @@ import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.ext.awt.image.ConcreteComponentTransferFunction;
 import org.apache.batik.ext.awt.image.renderable.ComponentTransferRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.Filter;
-import org.apache.batik.gvt.CompositeGraphicsNode;
+import org.apache.batik.gvt.AbstractGraphicsNode;
+import org.apache.batik.gvt.RootGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.PatternPaint;
 import org.apache.batik.util.ParsedURL;
@@ -107,13 +110,20 @@ public class SVGPatternElementBridge extends AbstractSVGBridge
 
 
         // extract pattern content
-        CompositeGraphicsNode patternContentNode
-            = extractPatternContent(patternElement, ctx);
+        RootGraphicsNode patternContentNode;
+        patternContentNode = (RootGraphicsNode)
+            ctx.getElementData(patternElement);
+
+        if (patternContentNode == null) {
+            patternContentNode = extractPatternContent(patternElement, ctx);
+            ctx.setElementData(patternElement, patternContentNode);
+        }
         if (patternContentNode == null) {
             return null; // no content means no paint
         }
 
-        // get pattern region using 'patternUnits'. Pattern region is in tile pace.
+        // get pattern region using 'patternUnits'. Pattern region is
+        // in tile pace.
         Rectangle2D patternRegion = SVGUtilities.convertPatternRegion
             (patternElement, paintedElement, paintedNode, ctx);
 
@@ -222,11 +232,15 @@ public class SVGPatternElementBridge extends AbstractSVGBridge
         //
         // Apply transform
         //
-        patternContentNode.setTransform(patternContentTransform);
-
+        // RootGraphicsNode gn = new RootGraphicsNode();
+        // gn.getChildren().add(patternContentNode);
+        GraphicsNode gn = new PatternGraphicsNode(patternContentNode);
+        
+        gn.setTransform(patternContentTransform);
+        
         // take the opacity into account. opacity is implemented by a Filter
         if (opacity != 1) {
-            Filter filter = patternContentNode.getGraphicsNodeRable(true);
+            Filter filter = gn.getGraphicsNodeRable(true);
             filter = new ComponentTransferRable8Bit
                 (filter,
                  ConcreteComponentTransferFunction.getLinearTransfer
@@ -234,10 +248,12 @@ public class SVGPatternElementBridge extends AbstractSVGBridge
                  ConcreteComponentTransferFunction.getIdentityTransfer(), //Red
                  ConcreteComponentTransferFunction.getIdentityTransfer(), //Grn
                  ConcreteComponentTransferFunction.getIdentityTransfer());//Blu
-            patternContentNode.setFilter(filter);
+            gn.setFilter(filter);
         }
 
-        return new PatternPaint(patternContentNode,
+        
+
+        return new PatternPaint(gn,
                                 patternRegion,
                                 !overflowIsHidden,
                                 patternTransform);
@@ -254,12 +270,12 @@ public class SVGPatternElementBridge extends AbstractSVGBridge
      * @param ctx the bridge context to use
      */
     protected static
-        CompositeGraphicsNode extractPatternContent(Element patternElement,
+        RootGraphicsNode extractPatternContent(Element patternElement,
                                                     BridgeContext ctx) {
 
         List refs = new LinkedList();
         for (;;) {
-            CompositeGraphicsNode content
+            RootGraphicsNode content
                 = extractLocalPatternContent(patternElement, ctx);
             if (content != null) {
                 return content; // pattern content found, exit
@@ -294,11 +310,11 @@ public class SVGPatternElementBridge extends AbstractSVGBridge
      * @param ctx the bridge context
      */
     protected static
-        CompositeGraphicsNode extractLocalPatternContent(Element e,
+        RootGraphicsNode extractLocalPatternContent(Element e,
                                                          BridgeContext ctx) {
 
         GVTBuilder builder = ctx.getGVTBuilder();
-        CompositeGraphicsNode content = null;
+        RootGraphicsNode content = null;
         for (Node n = e.getFirstChild(); n != null; n = n.getNextSibling()) {
             // check if the Node is valid
             if (n.getNodeType() != Node.ELEMENT_NODE) {
@@ -308,9 +324,9 @@ public class SVGPatternElementBridge extends AbstractSVGBridge
             GraphicsNode gn = builder.build(ctx, (Element)n);
             // check if a GraphicsNode has been created
             if (gn != null) {
-                // lazy instantation of the list of stop elements
+                // lazy instantation of the grouping element.
                 if (content == null) {
-                    content = new CompositeGraphicsNode();
+                    content = new RootGraphicsNode();
                 }
                 content.getChildren().add(gn);
             }
@@ -332,5 +348,51 @@ public class SVGPatternElementBridge extends AbstractSVGBridge
         }
         return false;
     }
+
+    public static class PatternGraphicsNode extends AbstractGraphicsNode {
+        GraphicsNode pcn;
+        Rectangle2D pBounds;
+        Rectangle2D gBounds;
+        Rectangle2D sBounds;
+        Shape       oShape;
+        public PatternGraphicsNode(GraphicsNode gn) {
+            this.pcn = gn;
+        }
+        public void primitivePaint(Graphics2D g2d) {
+            pcn.paint(g2d);
+        }
+        public Rectangle2D getPrimitiveBounds() {
+            if (pBounds != null) return pBounds;
+            pBounds = pcn.getTransformedBounds(IDENTITY);
+            return pBounds;
+        }
+        public Rectangle2D getGeometryBounds() {
+            if (gBounds != null) return gBounds;
+            gBounds = pcn.getTransformedGeometryBounds(IDENTITY);
+            return gBounds;
+        }
+        public Rectangle2D getSensitiveBounds() {
+            if (sBounds != null) return sBounds;
+            sBounds = pcn.getTransformedSensitiveBounds(IDENTITY);
+            return sBounds;
+        }
+        public Shape getOutline() {
+            if (oShape != null) return oShape;
+            oShape = pcn.getOutline();
+            AffineTransform tr = pcn.getTransform();
+            if (tr != null)
+                oShape = tr.createTransformedShape(oShape);
+            return oShape;
+        }
+        protected void invalidateGeometryCache() {
+            pBounds = null;
+            gBounds = null;
+            sBounds = null;
+            oShape  = null;
+            super.invalidateGeometryCache();
+        }
+
+    }
+
 }
 
