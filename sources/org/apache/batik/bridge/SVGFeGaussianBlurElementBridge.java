@@ -104,11 +104,15 @@ public class SVGFeGaussianBlurElementBridge
                                                         filterRegion,
                                                         ctx);
 
-        PadRable pad = new PadRable8Bit(in, primitiveRegion, PadMode.ZERO_PAD);
+        PadRable pad
+            = new PadRable8Bit(in, primitiveRegion, PadMode.ZERO_PAD);
 
         // build filter
-        Filter filter = new GaussianBlurRable8Bit
+        Filter blur = new GaussianBlurRable8Bit
             (pad, stdDeviationXY[0], stdDeviationXY[1]);
+
+        PadRable filter
+            = new PadRable8Bit(blur, primitiveRegion, PadMode.ZERO_PAD);
 
         // update the filter Map
         updateFilterMap(filterElement, filter, filterMap);

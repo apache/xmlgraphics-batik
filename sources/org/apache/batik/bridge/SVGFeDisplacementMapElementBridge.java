@@ -121,14 +121,17 @@ public class SVGFeDisplacementMapElementBridge
                                                         ctx);
 
         PadRable pad
-            = new PadRable8Bit(inputFilter, primitiveRegion, PadMode.ZERO_PAD);
+            = new PadRable8Bit(in, primitiveRegion, PadMode.ZERO_PAD);
 
         // build the displacement map filter
         List srcs = new ArrayList(2);
         srcs.add(pad);
         srcs.add(in2);
-        Filter filter = new DisplacementMapRable8Bit
+        Filter displacementMap = new DisplacementMapRable8Bit
             (srcs, scale, xChannelSelector, yChannelSelector);
+
+        PadRable filter = new PadRable8Bit
+            (displacementMap, primitiveRegion, PadMode.ZERO_PAD);
 
         // update the filter Map
         updateFilterMap(filterElement, filter, filterMap);

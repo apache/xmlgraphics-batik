@@ -109,8 +109,11 @@ public class SVGFeMorphologyElementBridge
         PadRable pad = new PadRable8Bit(in, primitiveRegion, PadMode.ZERO_PAD);
 
         // build tfilter
-        Filter filter
+        Filter morphology
             = new MorphologyRable8Bit(pad, radii[0], radii[1], isDilate);
+
+        PadRable filter = new PadRable8Bit
+            (morphology, primitiveRegion, PadMode.ZERO_PAD);
 
         // update the filter Map
         updateFilterMap(filterElement, filter, filterMap);

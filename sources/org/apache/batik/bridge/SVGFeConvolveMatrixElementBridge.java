@@ -121,6 +121,7 @@ public class SVGFeConvolveMatrixElementBridge
                                                         ctx);
 
         PadRable pad = new PadRable8Bit(in, primitiveRegion, PadMode.ZERO_PAD);
+
         // build the convolve filter
         ConvolveMatrixRable convolve = new ConvolveMatrixRable8Bit(pad);
         for (int i = 0; i < kernelMatrix.length; i++) {
@@ -133,10 +134,13 @@ public class SVGFeConvolveMatrixElementBridge
         convolve.setKernelUnitLength(kernelUnitLength);
         convolve.setPreserveAlpha(preserveAlpha);
 
-        // update the filter Map
-        updateFilterMap(filterElement, convolve, filterMap);
+        PadRable filter = new PadRable8Bit
+            (convolve, primitiveRegion, PadMode.ZERO_PAD);
 
-        return convolve;
+        // update the filter Map
+        updateFilterMap(filterElement, filter, filterMap);
+
+        return filter;
     }
 
     /**
