@@ -348,7 +348,6 @@ public class PreferenceDialog extends JDialog
 
         addKeyListener(new KeyAdapter(){
                 public void keyPressed(KeyEvent e){
-                    System.out.println("Got key event");
                     if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
                         setVisible(false);
                         returnCode = CANCEL_OPTION;

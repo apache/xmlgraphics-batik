@@ -149,6 +149,7 @@ public class JSVGViewerFrame
         "org.apache.batik.apps.svgbrowser.resources.GUI";
 
     // The actions names.
+    public final static String ABOUT_ACTION = "AboutAction";
     public final static String OPEN_ACTION = "OpenAction";
     public final static String OPEN_LOCATION_ACTION = "OpenLocationAction";
     public final static String NEW_WINDOW_ACTION = "NewWindowAction";
@@ -328,6 +329,7 @@ public class JSVGViewerFrame
             }
         });
 
+        listeners.put(ABOUT_ACTION, new AboutAction());
         listeners.put(OPEN_ACTION, new OpenAction());
         listeners.put(OPEN_LOCATION_ACTION, new OpenLocationAction());
         listeners.put(NEW_WINDOW_ACTION, new NewWindowAction());
@@ -571,6 +573,18 @@ public class JSVGViewerFrame
         return f;
     }
 
+    /**
+     * To show the about dialog
+     */
+    public class AboutAction extends AbstractAction {
+        public AboutAction(){
+        }
+
+        public void actionPerformed(ActionEvent e){
+            AboutDialog dlg = new AboutDialog(JSVGViewerFrame.this);
+            dlg.setVisible(true);
+        }
+    }
 
     /**
      * To open a new file.
@@ -1128,10 +1142,15 @@ public class JSVGViewerFrame
             }
 
             AffineTransform at = svgCanvas.getRenderingTransform();
-            transformDialog.setTransform(at);
+            // transformDialog.setTransform(at);
 
             AffineTransform txf = transformDialog.showDialog();
             if(txf != null){
+                if(at == null){
+                    at = new AffineTransform();
+                }
+
+                txf.concatenate(at);
                 svgCanvas.setRenderingTransform(txf);
             }
         }
