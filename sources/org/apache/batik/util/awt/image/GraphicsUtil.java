@@ -298,7 +298,7 @@ public class GraphicsUtil {
                     for (int x=0; x<wr.getWidth(); x++) {
                         pixel = wr.getPixel(x,y,pixel);
                         int a = pixel[bands-1];
-                        if ((a > 0) && (a < 255)) {
+                        if ((a >= 0) && (a < 255)) {
                             float alpha = a*norm;
                             for (int b=0; b<bands-1; b++) 
                                 pixel[b] = (int)(pixel[b]*alpha+0.5f);
@@ -353,7 +353,7 @@ public class GraphicsUtil {
                 for (int x=0; x<src.getWidth(); x++) {
                     pixel = srcR.getPixel(x,y,pixel);
                     int a = pixel[bands-1];
-                    if ((a > 0) && (a < 255)) {
+                    if ((a >= 0) && (a < 255)) {
                         float alpha = a*norm;
                         for (int b=0; b<bands-1; b++) 
                             pixel[b] = (int)(pixel[b]*alpha+0.5f);
@@ -454,7 +454,7 @@ public class GraphicsUtil {
             while (sp < end) {
                 int pixel = pixels[sp];
                 int a = pixel>>>24;
-                if ((a>0) && (a<255)) {
+                if ((a>=0) && (a<255)) {
                     pixels[sp] = ((a << 24) |
                                   ((((pixel&0xFF0000)*a)>>8)&0xFF0000) |
                                   ((((pixel&0x00FF00)*a)>>8)&0x00FF00) |

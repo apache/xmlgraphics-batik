@@ -19,6 +19,7 @@ import java.io.StringReader;
 import org.apache.batik.bridge.BridgeMutationEvent;
 import org.apache.batik.bridge.GraphicsNodeBridge;
 import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.Clip;
@@ -51,6 +52,20 @@ public class SVGGElementBridge implements GraphicsNodeBridge, SVGConstants {
                                                 ATTR_TRANSFORM,
                                                 ctx.getParserFactory());
         gn.setTransform(at);
+
+        CSSStyleDeclaration decl;
+        decl = ctx.getViewCSS().getComputedStyle(element, null);
+        CSSPrimitiveValue val;
+        val = (CSSPrimitiveValue)
+            decl.getPropertyCSSValue(ATTR_ENABLE_BACKGROUND);
+
+        String enaBg = val.getStringValue();
+        // This needs mucho work since we still need to pull out
+        // the x, y, width and height if they are there...
+        if (enaBg.indexOf("new") != -1) {
+            CompositeGraphicsNode cgn = (CompositeGraphicsNode)gn;
+            cgn.setBackgroundEnable(CompositeGraphicsNode.VIEWPORT);
+        }
 
         return gn;
     }

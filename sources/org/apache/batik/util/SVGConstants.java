@@ -142,6 +142,7 @@ public interface SVGConstants extends CSSConstants {
     String ATTR_MASK_UNITS = "maskUnits";
     String ATTR_MEDIA = "media";
     String ATTR_METHOD = "method";
+    String ATTR_MODE = "mode";
     String ATTR_OFFSET = "offset";
     String ATTR_OPACITY = CSS_OPACITY_PROPERTY;
     String ATTR_OPERATOR = "operator";
@@ -225,6 +226,7 @@ public interface SVGConstants extends CSSConstants {
     String VALUE_BACKGROUND_IMAGE = "BackgroundImage";
     String VALUE_COMPOSITE = "composite";
     String VALUE_CRISP_EDGES = "crispEdges";
+    String VALUE_DARKEN = "darken";
     String VALUE_DIGIT_ONE = "1";
     String VALUE_DILATE = "dilate";
     String VALUE_DISCRETE = "discrete";
@@ -259,6 +261,7 @@ public interface SVGConstants extends CSSConstants {
     String VALUE_HUNDRED_PERCENT = "100%";
     String VALUE_IN = "in";
     String VALUE_IDENTITY = "identity";
+    String VALUE_LIGHTEN = "lighten";
     String VALUE_LINEAR = "linear";
     String VALUE_LINE_CAP_BUTT = "butt";
     String VALUE_LINE_CAP_SQUARE = "square";
@@ -270,8 +273,10 @@ public interface SVGConstants extends CSSConstants {
     String VALUE_LUMINANCE_TO_ALPHA = "luminanceToAlpha";
     String VALUE_MATRIX = "matrix";
     String VALUE_MIDDLE = "middle";
+    String VALUE_MULTIPLY = "multiply";
     String VALUE_NEW = "new";
     String VALUE_NINETY = "90";
+    String VALUE_NORMAL = "normal";
     String VALUE_NO_STITCH = "noStitch";
     String VALUE_NON_ZERO = "nonzero";
     String VALUE_NONE = "none";
@@ -288,6 +293,7 @@ public interface SVGConstants extends CSSConstants {
     String VALUE_REFLECT = "reflect";
     String VALUE_REPEAT = "repeat";
     String VALUE_SATURATE = "saturate";
+    String VALUE_SCREEN = "screen";
     String VALUE_SOURCE_GRAPHIC = "SourceGraphic";
     String VALUE_SRGB = "sRGB";
     String VALUE_START = "start";

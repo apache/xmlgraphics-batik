@@ -19,6 +19,7 @@ import java.awt.image.WritableRaster;
 import java.awt.image.BufferedImage;
 
 import org.apache.batik.gvt.filter.CompositeRule;
+import org.apache.batik.util.awt.image.GraphicsUtil;
 
 /**
  * This provides an implementation of all the composite rules in SVG.
@@ -54,8 +55,22 @@ public class SVGComposite
 
         case CompositeRule.RULE_ARITHMETIC:
             float [] coeff = rule.getCoefficients();
-            return new ArithCompositeContext(coeff[0], coeff[1],
+            return new ArithCompositeContext(srcCM, dstCM,
+                                             coeff[0], coeff[1],
                                              coeff[2], coeff[3]);
+
+        case CompositeRule.RULE_MULTIPLY:
+            return new MultiplyCompositeContext(srcCM, dstCM);
+
+        case CompositeRule.RULE_SCREEN:
+            return new ScreenCompositeContext(srcCM, dstCM);
+
+        case CompositeRule.RULE_DARKEN:
+            return new DarkenCompositeContext(srcCM, dstCM);
+
+        case CompositeRule.RULE_LIGHTEN:
+            return new LightenCompositeContext(srcCM, dstCM);
+
         default:
             throw new UnsupportedOperationException
                 ("Unknown composite rule requested.");
@@ -63,10 +78,11 @@ public class SVGComposite
         
     }
 
-    public static class AtopCompositeContext 
-        implements  CompositeContext {
+    public static abstract class AlphaPreCompositeContext 
+        implements CompositeContext {
+
         ColorModel srcCM, dstCM;
-        AtopCompositeContext(ColorModel srcCM, ColorModel dstCM) {
+        AlphaPreCompositeContext(ColorModel srcCM, ColorModel dstCM) {
             this.srcCM = srcCM;
             this.dstCM = dstCM;
         }
@@ -76,7 +92,45 @@ public class SVGComposite
             dstCM = null;
         }
 
+        protected abstract void precompose(Raster src, Raster dstIn, 
+                                           WritableRaster dstOut);
+
         public void compose(Raster src, Raster dstIn, WritableRaster dstOut) {
+            ColorModel srcPreCM = srcCM;
+            if (!srcCM.isAlphaPremultiplied())
+                srcPreCM = GraphicsUtil.coerceData((WritableRaster)src, 
+                                                   srcCM, true);
+
+            ColorModel dstPreCM = dstCM;
+            if (!dstCM.isAlphaPremultiplied())
+                dstPreCM = GraphicsUtil.coerceData((WritableRaster)dstIn,
+                                                   dstCM, true);
+
+            
+            precompose(src, dstIn, dstOut);
+
+            if (!srcCM.isAlphaPremultiplied())
+                GraphicsUtil.coerceData((WritableRaster)src, 
+                                        srcPreCM, false);
+
+            if (!dstCM.isAlphaPremultiplied()) {
+                GraphicsUtil.coerceData(dstOut, dstPreCM, false);
+                
+                if (dstIn != dstOut)
+                    GraphicsUtil.coerceData((WritableRaster)dstIn, 
+                                            dstPreCM, false);
+            }
+        }
+    }
+
+    public static class AtopCompositeContext 
+        extends AlphaPreCompositeContext {
+        AtopCompositeContext(ColorModel srcCM, ColorModel dstCM) {
+            super(srcCM, dstCM);
+        }
+
+        public void precompose(Raster src, Raster dstIn, 
+                               WritableRaster dstOut) {
             int [] srcPix = null;
             int [] dstPix = null;
 
@@ -86,68 +140,35 @@ public class SVGComposite
             int y0=dstOut.getMinY();
             int y1=y0 + dstOut.getHeight();
 
-            ColorModel srcPreCM = srcCM;
-            if (!srcCM.isAlphaPremultiplied()) {
-                BufferedImage bi = new BufferedImage
-                    (srcCM, (WritableRaster)src, false, null);
-                srcPreCM = GaussianBlurOp.coerceData(bi, true);
-            }
-            ColorModel dstPreCM = dstCM;
-            if (!dstCM.isAlphaPremultiplied()) {
-                BufferedImage bi = new BufferedImage
-                    (dstCM, (WritableRaster)dstIn, false, null);
-                dstPreCM = GaussianBlurOp.coerceData(bi, true);
-            }
-
+            final int norm = (1<<24)/255;
             for (int y = y0; y<y1; y++) {
                 srcPix = src.getPixels  (x, y, w, 1, srcPix);
                 dstPix = dstIn.getPixels(x, y, w, 1, dstPix);
                 int sp  = 0;
                 int end = w*4;
                 while(sp<end) {
-                    final int srcM = dstPix[sp+3];
-                    final int dstM = 256-srcPix[sp+3];
-                    dstPix[sp] = (srcPix[sp]*srcM + dstPix[sp]*dstM)>>8; ++sp;
-                    dstPix[sp] = (srcPix[sp]*srcM + dstPix[sp]*dstM)>>8; ++sp;
-                    dstPix[sp] = (srcPix[sp]*srcM + dstPix[sp]*dstM)>>8; ++sp;
+                    final int srcM = (    dstPix[sp+3])*norm;
+                    final int dstM = (255-srcPix[sp+3])*norm;
+                    dstPix[sp] =(srcPix[sp]*srcM + dstPix[sp]*dstM)>>>24; ++sp;
+                    dstPix[sp] =(srcPix[sp]*srcM + dstPix[sp]*dstM)>>>24; ++sp;
+                    dstPix[sp] =(srcPix[sp]*srcM + dstPix[sp]*dstM)>>>24; ++sp;
                     ++sp;
                 }
                 dstOut.setPixels(x, y, w, 1, dstPix);
             }
 
-            if (!srcCM.isAlphaPremultiplied()) {
-                BufferedImage bi = new BufferedImage
-                    (srcPreCM, (WritableRaster)src, true, null);
-                GaussianBlurOp.coerceData(bi, false);
-            }
-            if (!dstCM.isAlphaPremultiplied()) {
-                BufferedImage bi = new BufferedImage
-                    (dstPreCM, (WritableRaster)dstIn, true, null);
-                GaussianBlurOp.coerceData(bi, false);
-                if (dstIn != dstOut) {
-                    bi = new BufferedImage
-                        (dstPreCM, (WritableRaster)dstOut, true, null);
-                    GaussianBlurOp.coerceData(bi, false);
-                }
-            }
         }
     }
 
     public static class XorCompositeContext 
-        implements  CompositeContext {
-        ColorModel srcCM, dstCM;
+        extends AlphaPreCompositeContext {
 
         XorCompositeContext(ColorModel srcCM, ColorModel dstCM) {
-            this.srcCM = srcCM;
-            this.dstCM = dstCM;
+            super(srcCM, dstCM);
         }
 
-        public void dispose() { 
-            srcCM = null;
-            dstCM = null;
-        }
-
-        public void compose(Raster src, Raster dstIn, WritableRaster dstOut) {
+        public void precompose(Raster src, Raster dstIn, 
+                               WritableRaster dstOut) {
             int [] srcPix = null;
             int [] dstPix = null;
 
@@ -157,92 +178,46 @@ public class SVGComposite
             int y0=dstOut.getMinY();
             int y1=y0 + dstOut.getHeight();
 
-            ColorModel srcPreCM = srcCM;
-            if (!srcCM.isAlphaPremultiplied()) {
-                BufferedImage bi = new BufferedImage
-                    (srcCM, (WritableRaster)src, false, null);
-                srcPreCM = GaussianBlurOp.coerceData(bi, true);
-            }
-            ColorModel dstPreCM = dstCM;
-            if (!dstCM.isAlphaPremultiplied()) {
-                BufferedImage bi = new BufferedImage
-                    (dstCM, (WritableRaster)dstIn, false, null);
-                dstPreCM = GaussianBlurOp.coerceData(bi, true);
-            }
-
+            final int norm = (1<<24)/255;
             for (int y = y0; y<y1; y++) {
                 srcPix = src.getPixels  (x, y, w, 1, srcPix);
                 dstPix = dstIn.getPixels(x, y, w, 1, dstPix);
                 int sp  = 0;
                 int end = w*4;
                 while(sp<end) {
-                    final int srcA = srcPix[sp+3];
-                    final int dstA = dstPix[sp+3];
-                    if (dstA == 0) {
-                        if (srcA == 0) {
-                            dstPix[sp] = 0; ++sp;
-                            dstPix[sp] = 0; ++sp;
-                            dstPix[sp] = 0; ++sp;
-                            dstPix[sp] = 0; ++sp;
-                        } else {
-                            dstPix[sp] = srcPix[sp]; ++sp;
-                            dstPix[sp] = srcPix[sp]; ++sp;
-                            dstPix[sp] = srcPix[sp]; ++sp;
-                            dstPix[sp] = srcPix[sp]; ++sp;
-                        }
-                    } else {
-                        if (srcA == 0) {
-                            dstPix[sp] = dstPix[sp]; ++sp;
-                            dstPix[sp] = dstPix[sp]; ++sp;
-                            dstPix[sp] = dstPix[sp]; ++sp;
-                            dstPix[sp] = dstPix[sp]; ++sp;
-                        } else {
-                            final int srcM = 256-dstA;
-                            final int dstM = 256-srcA;
+                    final int srcM = (255-dstPix[sp+3])*norm;
+                    final int dstM = (255-srcPix[sp+3])*norm;
 
-                            dstPix[sp] = (srcPix[sp]*srcM + 
-                                          dstPix[sp]*dstM)>>8; ++sp;
-                            dstPix[sp] = (srcPix[sp]*srcM + 
-                                          dstPix[sp]*dstM)>>8; ++sp;
-                            dstPix[sp] = (srcPix[sp]*srcM + 
-                                          dstPix[sp]*dstM)>>8; ++sp;
-                            dstPix[sp] = (srcPix[sp]*srcM + 
-                                          dstPix[sp]*dstM)>>8; ++sp;
-                        }
-                    }
+                    dstPix[sp] = (srcPix[sp]*srcM + 
+                                  dstPix[sp]*dstM)>>>24; ++sp;
+                    dstPix[sp] = (srcPix[sp]*srcM + 
+                                  dstPix[sp]*dstM)>>>24; ++sp;
+                    dstPix[sp] = (srcPix[sp]*srcM + 
+                                  dstPix[sp]*dstM)>>>24; ++sp;
+                    dstPix[sp] = (srcPix[sp]*srcM + 
+                                  dstPix[sp]*dstM)>>>24; ++sp;
                 }
                 dstOut.setPixels(x, y, w, 1, dstPix);
             }
 
-            if (!srcCM.isAlphaPremultiplied()) {
-                BufferedImage bi = new BufferedImage
-                    (srcPreCM, (WritableRaster)src, true, null);
-                GaussianBlurOp.coerceData(bi, false);
-            }
-            if (!dstCM.isAlphaPremultiplied()) {
-                BufferedImage bi = new BufferedImage
-                    (dstPreCM, (WritableRaster)dstIn, true, null);
-                GaussianBlurOp.coerceData(bi, false);
-                if (dstIn != dstOut) {
-                    bi = new BufferedImage
-                        (dstPreCM, (WritableRaster)dstOut, true, null);
-                    GaussianBlurOp.coerceData(bi, false);
-                }
-            }
         }
     }
 
     public static class ArithCompositeContext 
-        implements  CompositeContext {
+        extends AlphaPreCompositeContext {
         float k1, k2, k3, k4;
-        ArithCompositeContext(float k1, float k2, float k3, float k4) {
+        ArithCompositeContext(ColorModel srcCM,
+                              ColorModel dstCM,
+                              float k1, float k2, float k3, float k4) {
+            super(srcCM, dstCM);
             this.k1 = k1;
             this.k2 = k2;
             this.k3 = k3;
             this.k4 = k4;
         }
 
-        public void compose(Raster src, Raster dstIn, WritableRaster dstOut) {
+        public void precompose(Raster src, Raster dstIn, 
+                               WritableRaster dstOut) {
             int [] srcPix = null;
             int [] dstPix = null;
 
@@ -252,20 +227,190 @@ public class SVGComposite
             int y0=dstOut.getMinY();
             int y1=y0 + dstOut.getHeight();
             
+            float kk1 = k1/255.0f;
+            float kk4 = k4*255.0f+0.5f;
+
             for (int y = y0; y<y1; y++) {
                 srcPix = src.getPixels  (x, y, w, 1, srcPix);
                 dstPix = dstIn.getPixels(x, y, w, 1, dstPix);
                 for (int i=0; i<srcPix.length; i++) {
-                    dstPix[i] =(int)((k1*srcPix[i]*dstPix[i])/255 +
-                                     k2*srcPix[i] + k3*dstPix[i] + 
-                                     k4*255);
+                    dstPix[i] =(int)((kk1*srcPix[i]*dstPix[i]) +
+                                     k2*srcPix[i] + k3*dstPix[i] + kk4);
                     if      (dstPix[i] < 0)   dstPix[i] = 0;
                     else if (dstPix[i] > 255) dstPix[i] = 255;
                 }
                 dstOut.setPixels(x, y, w, 1, dstPix);
             }
         }
+    }
 
-        public void dispose() { };
+    /**
+     * The following classes implement the various blend modes from SVG.
+     */
+    public static class MultiplyCompositeContext 
+        extends AlphaPreCompositeContext {
+
+        MultiplyCompositeContext(ColorModel srcCM, ColorModel dstCM) {
+            super(srcCM, dstCM);
+        }
+
+        public void precompose(Raster src, Raster dstIn, 
+                               WritableRaster dstOut) {
+            int [] srcPix = null;
+            int [] dstPix = null;
+
+            int x=dstOut.getMinX();
+            int w=dstOut.getWidth();
+
+            int y0=dstOut.getMinY();
+            int y1=y0 + dstOut.getHeight();
+
+            for (int y = y0; y<y1; y++) {
+                srcPix = src.getPixels  (x, y, w, 1, srcPix);
+                dstPix = dstIn.getPixels(x, y, w, 1, dstPix);
+                int sp  = 0;
+                int end = w*4;
+                while(sp<end) {
+                    final int srcM = 255-dstPix[sp+3];
+                    final int dstM = 255-srcPix[sp+3];
+
+                    dstPix[sp] = (srcPix[sp]*srcM + 
+                                  dstPix[sp]*dstM +
+                                  srcPix[sp]*dstPix[sp])/255; ++sp;
+                    dstPix[sp] = (srcPix[sp]*srcM + 
+                                  dstPix[sp]*dstM +
+                                  srcPix[sp]*dstPix[sp])/255; ++sp;
+                    dstPix[sp] = (srcPix[sp]*srcM + 
+                                  dstPix[sp]*dstM +
+                                  srcPix[sp]*dstPix[sp])/255; ++sp;
+                    dstPix[sp] = (srcPix[sp] + dstPix[sp] -
+                                  ((dstPix[sp]*srcPix[sp])/255)); ++sp;
+                }
+                dstOut.setPixels(x, y, w, 1, dstPix);
+            }
+        }
+    }
+
+    public static class ScreenCompositeContext 
+        extends AlphaPreCompositeContext {
+
+        ScreenCompositeContext(ColorModel srcCM, ColorModel dstCM) {
+            super(srcCM, dstCM);
+        }
+
+        public void precompose(Raster src, Raster dstIn, 
+                               WritableRaster dstOut) {
+            int [] srcPix = null;
+            int [] dstPix = null;
+
+            int x=dstOut.getMinX();
+            int w=dstOut.getWidth();
+
+            int y0=dstOut.getMinY();
+            int y1=y0 + dstOut.getHeight();
+
+            for (int y = y0; y<y1; y++) {
+                srcPix = src.getPixels  (x, y, w, 1, srcPix);
+                dstPix = dstIn.getPixels(x, y, w, 1, dstPix);
+                int sp  = 0;
+                int end = w*4;
+                while(sp<end) {
+                    dstPix[sp] = (srcPix[sp] + dstPix[sp] -
+                                  ((srcPix[sp]*dstPix[sp])/255)); ++sp;
+                    dstPix[sp] = (srcPix[sp] + dstPix[sp] -
+                                  ((srcPix[sp]*dstPix[sp])/255)); ++sp;
+                    dstPix[sp] = (srcPix[sp] + dstPix[sp] -
+                                  ((srcPix[sp]*dstPix[sp])/255)); ++sp;
+                    dstPix[sp] = (srcPix[sp] + dstPix[sp] -
+                                  ((dstPix[sp]*srcPix[sp])/255)); ++sp;
+                }
+                dstOut.setPixels(x, y, w, 1, dstPix);
+            }
+        }
+    }
+
+    public static class DarkenCompositeContext 
+        extends AlphaPreCompositeContext {
+
+        DarkenCompositeContext(ColorModel srcCM, ColorModel dstCM) {
+            super(srcCM, dstCM);
+        }
+
+        public void precompose(Raster src, Raster dstIn, 
+                               WritableRaster dstOut) {
+            int [] srcPix = null;
+            int [] dstPix = null;
+
+            int x=dstOut.getMinX();
+            int w=dstOut.getWidth();
+
+            int y0=dstOut.getMinY();
+            int y1=y0 + dstOut.getHeight();
+
+            for (int y = y0; y<y1; y++) {
+                srcPix = src.getPixels  (x, y, w, 1, srcPix);
+                dstPix = dstIn.getPixels(x, y, w, 1, dstPix);
+                int sp  = 0;
+                int end = w*4;
+                while(sp<end) {
+                    final int alp = sp +3;
+                    final int srcM = 255-dstPix[alp];
+                    final int dstM = 255-srcPix[alp];
+
+                    while (sp < alp) {
+                        int t1 = ((srcM*srcPix[sp])/255) + dstPix[sp];
+                        int t2 = ((dstM*dstPix[sp])/255) + srcPix[sp];
+                        if (t1 > t2) dstPix[sp] = t2;
+                        else         dstPix[sp] = t1;
+                        ++sp;
+                    }
+                    dstPix[sp] = (srcPix[sp] + dstPix[sp] -
+                                  ((dstPix[sp]*srcPix[sp])/255)); ++sp;
+                }
+                dstOut.setPixels(x, y, w, 1, dstPix);
+            }
+        }
+    }
+
+    public static class LightenCompositeContext 
+        extends AlphaPreCompositeContext {
+
+        LightenCompositeContext(ColorModel srcCM, ColorModel dstCM) {
+            super(srcCM, dstCM);
+        }
+
+        public void precompose(Raster src, Raster dstIn, 
+                               WritableRaster dstOut) {
+            int [] srcPix = null;
+            int [] dstPix = null;
+
+            int x=dstOut.getMinX();
+            int w=dstOut.getWidth();
+
+            int y0=dstOut.getMinY();
+            int y1=y0 + dstOut.getHeight();
+
+            for (int y = y0; y<y1; y++) {
+                srcPix = src.getPixels  (x, y, w, 1, srcPix);
+                dstPix = dstIn.getPixels(x, y, w, 1, dstPix);
+                int sp  = 0;
+                int end = w*4;
+                while(sp<end) {
+                    final int alp = sp +3;
+                    final int srcM = 255-dstPix[alp];
+                    final int dstM = 255-srcPix[alp];
+                    while (sp < alp) {
+                        int t1 = ((srcM*srcPix[sp])/255) + dstPix[sp];
+                        int t2 = ((dstM*dstPix[sp])/255) + srcPix[sp];
+                        if (t1 > t2) dstPix[sp] = t1;
+                        else         dstPix[sp] = t2;
+                        ++sp;
+                    }
+                    dstPix[sp] = (srcPix[sp] + dstPix[sp] -
+                                  ((dstPix[sp]*srcPix[sp])/255)); ++sp;
+                }
+                dstOut.setPixels(x, y, w, 1, dstPix);
+            }
+        }
     }
 }
