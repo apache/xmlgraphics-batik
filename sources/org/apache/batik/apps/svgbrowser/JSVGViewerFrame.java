@@ -22,6 +22,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -78,6 +79,8 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JToolBar;
+import javax.swing.JWindow;
+import javax.swing.KeyStroke;
 
 import javax.swing.filechooser.FileFilter;
 
@@ -225,6 +228,7 @@ public class JSVGViewerFrame
     public final static String RELOAD_ACTION = "ReloadAction";
     public final static String BACK_ACTION = "BackAction";
     public final static String FORWARD_ACTION = "ForwardAction";
+    public final static String FULL_SCREEN_ACTION = "FullScreenAction";
     public final static String PRINT_ACTION = "PrintAction";
     public final static String EXPORT_AS_JPG_ACTION = "ExportAsJPGAction";
     public final static String EXPORT_AS_PNG_ACTION = "ExportAsPNGAction";
@@ -313,6 +317,16 @@ public class JSVGViewerFrame
      * The JSVGCanvas.
      */
     protected JSVGCanvas svgCanvas;
+
+    /**
+     * The panel where the svgCanvas is displayed
+     */
+    protected JPanel svgCanvasPanel;
+
+    /**
+     * A window used for full screen display
+     */
+    protected JWindow window;
 
     /**
      * The memory monitor frame.
@@ -485,6 +499,12 @@ public class JSVGViewerFrame
                 
             };
         
+        javax.swing.ActionMap map = svgCanvas.getActionMap();
+        map.put(FULL_SCREEN_ACTION, new FullScreenAction());
+        javax.swing.InputMap imap = svgCanvas.getInputMap(JComponent.WHEN_FOCUSED);
+        KeyStroke key = KeyStroke.getKeyStroke(KeyEvent.VK_F11, 0);
+        imap.put(key, FULL_SCREEN_ACTION);
+
         svgCanvas.setDoubleBufferedRendering(true);
 
         listeners.put(ABOUT_ACTION, new AboutAction());
@@ -555,12 +575,12 @@ public class JSVGViewerFrame
             System.exit(0);
         }
 
-        JPanel p2 = new JPanel(new BorderLayout());
-        p2.setBorder(BorderFactory.createEtchedBorder());
+        svgCanvasPanel = new JPanel(new BorderLayout());
+        svgCanvasPanel.setBorder(BorderFactory.createEtchedBorder());
 
-        p2.add(svgCanvas, BorderLayout.CENTER);
+        svgCanvasPanel.add(svgCanvas, BorderLayout.CENTER);
         p = new JPanel(new BorderLayout());
-        p.add(p2, BorderLayout.CENTER);
+        p.add(svgCanvasPanel, BorderLayout.CENTER);
         p.add(statusBar = new StatusBar(), BorderLayout.SOUTH);
 
         getContentPane().add(p, BorderLayout.CENTER);
@@ -1640,6 +1660,34 @@ public class JSVGViewerFrame
         }
     }
 
+    /**
+     * To display the document full screen
+     */
+    public class FullScreenAction extends AbstractAction {
+        public FullScreenAction() {}
+
+        public void actionPerformed(ActionEvent e) {
+            if (window == null || !window.isVisible()) {
+                if (window == null) {
+                    window = new JWindow(JSVGViewerFrame.this);
+                    Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
+                    window.setSize(size);
+                }
+                // Go to full screen in JWindow)
+                svgCanvas.getParent().remove(svgCanvas);
+                window.getContentPane().add(svgCanvas);
+                window.setVisible(true);
+                window.toFront();
+                svgCanvas.requestFocus();
+            } else {
+                // Go back to JSVGViewerFrame display
+                svgCanvas.getParent().remove(svgCanvas);
+                svgCanvasPanel.add(svgCanvas, BorderLayout.CENTER);
+                window.setVisible(false);
+            } 
+        }
+    }
+    
     /**
      * To display the DOM viewer of the document
      */
