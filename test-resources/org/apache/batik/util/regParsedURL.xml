@@ -13,34 +13,41 @@
 
 <testSuite name="Parsed URL test Suite">
     <test class="org.apache.batik.util.ParsedURLTest">
+        <!-- Test simple parsing -->
         <arg class="java.lang.String" value="xml.apache.org" />
         <arg class="java.lang.String" value="//xml.apache.org" />
     </test>
     <test class="org.apache.batik.util.ParsedURLTest">
+        <!-- Test simple parsing -->
+        <arg class="java.lang.String" value="fooz:/home/deweese/.cshrc" />
+        <arg class="java.lang.String" value="fooz:/home/deweese/.cshrc" />
+    </test>
+    <test class="org.apache.batik.util.ParsedURLTest">
+        <!-- Test simple parsing -->
+        <arg class="java.lang.String" value="fazz:///home/deweese/.cshrc" />
+        <arg class="java.lang.String" value="fazz:/home/deweese/.cshrc" />
+    </test>
+    <test class="org.apache.batik.util.ParsedURLTest">
+        <!-- Test simple parsing of single URL -->
+        <arg class="java.lang.String" 
+             value="fooz://www.com:1234/home/deweese/.cshrc#abcd" />
+        <arg class="java.lang.String" 
+             value="fooz://www.com:1234/home/deweese/.cshrc#abcd" />
+    </test>
+    <test class="org.apache.batik.util.ParsedURLTest">
+        <!-- Test relative url off root -->
         <arg class="java.lang.String" value="http://xml.apache.org/" />
         <arg class="java.lang.String" value="~deweese" />
         <arg class="java.lang.String" value="http://xml.apache.org/~deweese" />
     </test>
     <test class="org.apache.batik.util.ParsedURLTest">
+        <!-- Test relative url off file in root dir -->
         <arg class="java.lang.String" value="file:///xml.apache.org" />
         <arg class="java.lang.String" value="~deweese" />
         <arg class="java.lang.String" value="file:/~deweese" />
     </test>
     <test class="org.apache.batik.util.ParsedURLTest">
-        <arg class="java.lang.String" value="fooz:/home/deweese/.cshrc" />
-        <arg class="java.lang.String" value="fooz:/home/deweese/.cshrc" />
-    </test>
-    <test class="org.apache.batik.util.ParsedURLTest">
-        <arg class="java.lang.String" value="fazz:///home/deweese/.cshrc" />
-        <arg class="java.lang.String" value="fazz:/home/deweese/.cshrc" />
-    </test>
-    <test class="org.apache.batik.util.ParsedURLTest">
-        <arg class="java.lang.String" 
-             value="fooz://www.com:1234/home/deweese/.cshrc#abcd" />
-        <arg class="java.lang.String" 
-             value="fooz://www.com:1234/home/deweese/.cshrc#abcd" />
-    </test>
-    <test class="org.apache.batik.util.ParsedURLTest">
+        <!-- Test relative with partial path and fragement ident -->
         <arg class="java.lang.String" 
              value="fooz://www.com:1234/home/deweese/.cshrc#abcd" />
         <arg class="java.lang.String" 
@@ -49,6 +56,7 @@
              value="fooz://www.com:1234/home/deweese/xyz.html#efgh" />
     </test>
     <test class="org.apache.batik.util.ParsedURLTest">
+        <!-- Test relative with absolute path and fragement ident -->
         <arg class="java.lang.String" 
              value="fooz://www.com:1234/home/deweese/xyz.html#efgh" />
         <arg class="java.lang.String" 
@@ -57,11 +65,38 @@
              value="fooz://www.com:1234/xyz.svg#ijkl" />
     </test>
     <test class="org.apache.batik.util.ParsedURLTest">
+        <!-- Test relative with matching protocol -->
         <arg class="java.lang.String" 
              value="file:/home/deweese/test.txt" />
         <arg class="java.lang.String" 
              value="file:junk.html" />
         <arg class="java.lang.String" 
              value="file:/home/deweese/junk.html" />
+    </test>
+    <test class="org.apache.batik.util.ParsedURLTest">
+        <!-- Test just keeping protocol -->
+        <arg class="java.lang.String" value="http://xml.apache.org/batik/" />
+        <arg class="java.lang.String" value="//jakarta.apache.org/ant/" />
+        <arg class="java.lang.String" value="http://jakarta.apache.org/ant/" />
+    </test>
+    <test class="org.apache.batik.util.ParsedURLTest">
+        <!-- Test references to same document -->
+        <arg class="java.lang.String" 
+             value="http://xml.apache.org/batik/#test" />
+        <arg class="java.lang.String" value="" />
+        <arg class="java.lang.String" 
+             value="http://xml.apache.org/batik/#test" />
+    </test>
+    <test class="org.apache.batik.util.ParsedURLTest">
+        <!-- Test relative with absolute path to root -->
+        <arg class="java.lang.String" value="http://xml.apache.org/batik/" />
+        <arg class="java.lang.String" value="/" />
+        <arg class="java.lang.String" value="http://xml.apache.org/" />
+    </test>
+    <test class="org.apache.batik.util.ParsedURLTest">
+        <!-- Test relative with absolute path to item -->
+        <arg class="java.lang.String" value="http://xml.apache.org/batik/" />
+        <arg class="java.lang.String" value="/fop/" />
+        <arg class="java.lang.String" value="http://xml.apache.org/fop/" />
     </test>
 </testSuite>
