@@ -749,7 +749,7 @@ public class JSVGComponent extends JGVTComponent {
             (fragmentIdentifier, elt);
         CanvasGraphicsNode cgn = getCanvasGraphicsNode(gn);
         cgn.setViewingTransform(at);
-        viewingTransform = at;
+        viewingTransform = null;
         initialTransform = new AffineTransform();
         setRenderingTransform(initialTransform, false);
         jsvgComponentListener.updateMatrix(initialTransform);
@@ -819,6 +819,19 @@ public class JSVGComponent extends JGVTComponent {
         return (CanvasGraphicsNode)gn;
     }
 
+    public AffineTransform getViewingTransform() {
+        AffineTransform vt;
+        synchronized (this) {
+            vt = viewingTransform;
+            if (vt == null) {
+                CanvasGraphicsNode cgn = getCanvasGraphicsNode();
+                if (cgn != null)
+                    vt = cgn.getViewingTransform();
+            }
+        }
+        return vt;
+    }
+
     /**
      * Returns the transform from viewBox coords to screen coords
      */
@@ -826,8 +839,9 @@ public class JSVGComponent extends JGVTComponent {
         AffineTransform at = getRenderingTransform();
         if (at == null) at = new AffineTransform();
         else            at = new AffineTransform(at);
-        if (viewingTransform != null) {
-            at.concatenate(viewingTransform);
+        AffineTransform vt = getViewingTransform();
+        if (vt != null) {
+            at.concatenate(vt);
         }
         return at;
     }
@@ -876,7 +890,7 @@ public class JSVGComponent extends JGVTComponent {
             if (d.height < 1) d.height = 1;
             final AffineTransform at = calculateViewingTransform
                 (fragmentIdentifier, elt);
-            AffineTransform vt = viewingTransform;
+            AffineTransform vt = getViewingTransform();
             if (at.equals(vt)) {
                 // No new transform
                 // Only repaint if size really changed.
@@ -923,12 +937,18 @@ public class JSVGComponent extends JGVTComponent {
                     (AffineTransform.getTranslateInstance(dx, dy));
                 setRenderingTransform(rendAT, false);
             }
-            viewingTransform = at;
+            synchronized (this) {
+                viewingTransform = at;
+            }
             Runnable r = new Runnable() {
                     AffineTransform myAT = at;
                     CanvasGraphicsNode myCGN = getCanvasGraphicsNode();
                     public void run() {
-                        myCGN.setViewingTransform(myAT);
+                        synchronized (JSVGComponent.this) {
+                            myCGN.setViewingTransform(myAT);
+                            if (viewingTransform == myAT) 
+                                viewingTransform = null;
+                        }
                     }
                 };
             UpdateManager um = getUpdateManager();
