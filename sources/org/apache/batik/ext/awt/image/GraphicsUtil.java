@@ -284,9 +284,18 @@ public class GraphicsUtil {
             }
 
             // System.out.println("Starting Draw: " + cr);
-            long startTime = System.currentTimeMillis();
+            // long startTime = System.currentTimeMillis();
 
-            if (useMacOSXHacks) {
+            boolean useDrawRenderedImage = useMacOSXHacks;
+
+            SampleModel srcSM = cr.getSampleModel();
+            if ((srcSM.getWidth()*srcSM.getHeight()) >
+                (4*clipR.width*clipR.height))
+                // if srcSM tiles are 4x the clip size then just
+                // draw the renderedImage 
+                useDrawRenderedImage = true;
+
+            if (useDrawRenderedImage) {
 		// We use this code path on MacOSX since the tile
 		// drawing code below sometimes dies for no real
 		// reason this seems to behave better.
@@ -298,7 +307,6 @@ public class GraphicsUtil {
             } else {
                 // Use tiles to draw image...
                 srcCM = cr.getColorModel();
-                SampleModel srcSM = cr.getSampleModel();
                 WritableRaster wr;
                 wr = Raster.createWritableRaster(srcSM, new Point(0,0));
                 BufferedImage bi = new BufferedImage
@@ -394,7 +402,7 @@ public class GraphicsUtil {
                     xloc += xStep;   // Get back in bounds.
                 }
             }
-            long endTime = System.currentTimeMillis();
+            // long endTime = System.currentTimeMillis();
             // System.out.println("Time: " + (endTime-startTime));
 
 

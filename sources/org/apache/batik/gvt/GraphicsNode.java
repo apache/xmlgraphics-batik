@@ -25,7 +25,6 @@ import org.apache.batik.gvt.event.GraphicsNodeKeyListener;
 import org.apache.batik.gvt.event.GraphicsNodeMouseEvent;
 import org.apache.batik.gvt.event.GraphicsNodeMouseListener;
 import org.apache.batik.gvt.filter.Mask;
-import org.apache.batik.gvt.filter.GraphicsNodeRable;
 
 /**
  * The base class for all graphics nodes. A GraphicsNode encapsulates
@@ -230,11 +229,11 @@ public interface GraphicsNode {
     Filter getFilter();
 
     /**
-     * Returns the GraphicsNodeRable for this node.
-     * The GraphicsNodeRable is the Renderable (Filter) before any
+     * Returns the Filter for this node.
+     * The Filter is the Graphics Node before any
      * of the filter operations have been applied.
      */
-    GraphicsNodeRable getGraphicsNodeRable();
+    Filter getGraphicsNodeRable();
 
     //
     // Drawing methods

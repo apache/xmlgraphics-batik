@@ -288,92 +288,97 @@
             <circle cx="396" cy="395" r="10" fill="white" /> -->
         </g>
 
-        <filter id="emboss">
-            <feFlood flood-color="white" />
-            <feMerge result="whiteOnBlack">
-                <feMergeNode />
-                <feMergeNode in="SourceGraphic" />
-            </feMerge>
-            <feGaussianBlur stdDeviation="1" />
-            <feConvolveMatrix order="3" kernelMatrix="-.5 0 0   0 1 0   0 0 .5" result="convolved" />
-            <feComposite operator="arithmetic" in="convolved" in2="whiteOnBlack" 
-                k1="0" k2=".5" k3="-.5" k4=".5" />
-            <feComponentTransfer>
-                <feFuncA type="linear" slope="0" intercept="1" offset="1"/>
-            </feComponentTransfer>
-        </filter>
-
         <filter id="tint" >
-            <feImage xlink:href="#graphics" x="0" y="0" width="450" height="500" result="graphic"/>
+            <feImage xlink:href="#graphics" 
+                     x="0" y="0" width="450" height="500" result="graphic"/>
             <feFlood flood-color="rgb(75,118,197)" result="lightColorFlood" />
             <feFlood flood-color="rgb(95,138,197)" result="darkColorFlood" />
-            <feComposite operator="in" in="lightColorFlood" in2="graphic" result="lightTint"/>
-            <feComposite operator="out" in="darkColorFlood" in2="graphic" result="darkTint"/>
-
-            <feMerge result="tint">
+            <feComposite operator="in" in="lightColorFlood" in2="graphic" 
+                         result="lightTint"/>
+ 
+             <feMerge result="tint">
+                <feMergeNode in="darkColorFlood" />
                 <feMergeNode in="lightTint" />
-                <feMergeNode in="darkTint" />
-            </feMerge>
+             </feMerge>
 
             <feComposite operator="arithmetic" in="tint" in2="SourceGraphic" 
                 k1="1" k2="0" k3=".5" k4="0" /> 
+         </filter>
+
+
+        <filter id="tint2" >
+            <feComponentTransfer in="SourceGraphic" result="dark">
+                <feFuncR type="linear" slope="0.6144" intercept="0" />
+                <feFuncG type="linear" slope="0.7542" intercept="0" />
+                <feFuncB type="linear" slope="1.0568" intercept="0" />
+            </feComponentTransfer> 
+
+            <feComponentTransfer in="SourceGraphic" result="light">
+                <feFuncR type="linear" slope="0.5706" intercept="0" />
+                <feFuncG type="linear" slope="0.6804" intercept="0" />
+                <feFuncB type="linear" slope="1.0568" intercept="0" />
+            </feComponentTransfer> 
+            <feImage xlink:href="#graphics" 
+                     x="0" y="0" width="450" height="500" result="graphic"/>
+            <feComposite operator="in" in="light" in2="graphic" 
+                         result="lightTint"/>
+
+            <feMerge result="tint">
+                <feMergeNode in="dark" />
+                <feMergeNode in="lightTint" />
+            </feMerge>
         </filter>
 
         <filter id="recessed" >
+            <feFlood flood-color="white" flood-opacity="1" 
+                     result="whiteFlood"/>
+
             <feGaussianBlur stdDeviation="2" in="SourceGraphic" />
             <feComponentTransfer >
                 <feFuncA type="linear" slope="-1" intercept="1" />
             </feComponentTransfer> 
+            <feOffset dx="-3" dy="3" result="shadow"/>
 
-            <feOffset dx="-3" dy="3" />
-            <feComposite operator="in" in2="SourceAlpha" result="shadow"/>
 
-            <feFlood flood-color="white" flood-opacity="1" result="whiteFlood"/>
-            <feComposite operator="out" in2="SourceAlpha"/>
-            <feOffset dx="1" dy="-1" />
-            <feComposite operator="in" in2="SourceAlpha" result="whiteTrim"/>
+            <feComposite operator="out" in="whiteFlood" in2="SourceAlpha"/>
+            <feOffset dx="1" dy="-1" result="whiteTrim"/>
 
             <feFlood flood-color="black" flood-opacity=".4"/>
             <feComposite operator="out" in2="SourceAlpha"/>
-            <feOffset dx="-1" dy="1" />
-            <feComposite operator="in" in2="SourceAlpha" result="blackTrim"/>
-
-            <feComposite operator="in" in="whiteFlood" in2="SourceAlpha" result="whiteBkg" />   
+            <feOffset dx="-1" dy="1" result="blackTrim" />
 
             <feMerge>
-                <feMergeNode in="whiteBkg" />
+                <feMergeNode in="whiteFlood" />
                 <feMergeNode in="shadow" />
                 <feMergeNode in="whiteTrim"/>
                 <feMergeNode in="blackTrim"/>
             </feMerge>
-                    
+
+            <feComposite operator="in" in2="SourceAlpha"/>
         </filter>
 
         <filter id="shadow">
             <feGaussianBlur in="SourceAlpha" stdDeviation="3" />
             <feOffset dx="-5" dy="5" />
-            <feComponentTransfer>
+            <feComponentTransfer result="shadow">
                 <feFuncA type="linear" slope=".57" />
             </feComponentTransfer>
 
-            <feComposite operator="out" in2="SourceGraphic" result="shadow"/>
-
-            <feFlood flood-color="white" result="whiteFlood" />
+            <feFlood flood-color="white"/>
             <feComposite operator="in" in2="SourceAlpha"/>
-            <feOffset dx="1" dy="-1" />
-            <feComposite operator="out" in2="SourceAlpha" result="whiteTrim"/>
+            <feOffset dx="1" dy="-1" result="whiteTrim"/>
 
             <feFlood flood-color="black" flood-opacity=".4"/>
             <feComposite operator="in" in2="SourceAlpha"/>
-            <feOffset dx="-1" dy="1" />
-            <feComposite operator="out" in2="SourceAlpha" result="blackTrim"/>
-                    
+            <feOffset dx="-1" dy="1" result="blackTrim"/>
                  
             <feMerge>
                 <feMergeNode in="shadow" />
                 <feMergeNode in="whiteTrim"/>
                 <feMergeNode in="blackTrim"/>
             </feMerge>
+
+            <feComposite operator="out" in2="SourceAlpha"/>
         </filter>
 
         <filter id="carved">
@@ -388,12 +393,6 @@
                 <feMergeNode in="SourceGraphic" />
             </feMerge>
         </filter>
-
-        <radialGradient id="backgroundGradient" cx="500" cy="-50" r="900" gradientUnits="userSpaceOnUse">
-            <stop offset="0" stop-color="white" />
-            <stop offset=".5" stop-color="rgb(95,138,197)" />
-            <stop offset="1" stop-color="black" />
-        </radialGradient>
     </defs>
 
     <image width="100%" height="100%" xlink:href="tests/resources/images/brushedMetal.jpg" filter="url(#tint)"/> 
