@@ -8,7 +8,6 @@
 
 package org.apache.batik.refimpl.bridge;
 
-
 import org.w3c.dom.Element;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -130,7 +129,7 @@ class BridgeEventSupport {
             if (element instanceof SVGSVGElement) {
                 svgElement = (SVGSVGElement)element;
             } else {
-                // Disable scripting
+                // disable scripting
                 return;
             }
         }
@@ -200,7 +199,7 @@ class BridgeEventSupport {
                     interpret.evaluate
                         (new StringReader(script.toString()));
                 } catch (IOException io) {
-                                // will never appeared we don't use a file
+                    // will never appeared we don't use a file
                 } catch (InterpreterException e) {
                     if (ua != null)
                         ua.displayError("scripting error: " +
