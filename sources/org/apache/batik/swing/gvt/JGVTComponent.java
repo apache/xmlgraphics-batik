@@ -242,6 +242,13 @@ public class JGVTComponent extends JComponent {
     }
 
     /**
+     * Returns the root of the GVT tree displayed by this component, if any.
+     */
+    public GraphicsNode getGraphicsNode() {
+        return gvtRoot;
+    }
+
+    /**
      * Sets the GVT tree to display.
      */
     public void setGraphicsNode(GraphicsNode gn) {
