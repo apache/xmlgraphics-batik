@@ -127,8 +127,9 @@ public class JSVGCanvasHandler {
                     public void run() {
                         frame = new JFrame(delegate.getName());
                         canvas = createCanvas();
+                        canvas.setPreferredSize(new Dimension(450, 500));
                         frame.getContentPane().add(canvas);
-                        frame.setSize(new Dimension(450, 500));
+                        frame.pack();
                         wl = new WindowAdapter() {
                                 public void windowClosing(WindowEvent e) {
                                     synchronized (loadMonitor) {
