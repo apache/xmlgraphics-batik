@@ -83,8 +83,8 @@ public class StaticRenderer implements Renderer {
      * @param offScreen image where the Renderer should do its rendering
      * @param rc a GraphicsNodeRenderContext which this renderer should use
      */
-    public StaticRenderer(BufferedImage offScreen, 
-					GraphicsNodeRenderContext rc){
+    public StaticRenderer(BufferedImage offScreen,
+                                        GraphicsNodeRenderContext rc){
         setOffScreen(offScreen);
         setRenderContext(rc);
     }
@@ -125,7 +125,7 @@ public class StaticRenderer implements Renderer {
      *           for its rendering
      */
     public void setRenderContext(GraphicsNodeRenderContext rc) {
-	this.nodeRenderContext = rc;
+        this.nodeRenderContext = rc;
     }
 
     /**
@@ -133,7 +133,7 @@ public class StaticRenderer implements Renderer {
      *           for its rendering
      */
     public GraphicsNodeRenderContext getRenderContext() {
-	return nodeRenderContext;
+        return nodeRenderContext;
     }
 
     /**
@@ -205,8 +205,14 @@ public class StaticRenderer implements Renderer {
         g.clip(nodeRenderContext.getAreaOfInterest());
 
         // Render tree
+        long t0 = System.currentTimeMillis();
         if(treeRoot != null) {
             treeRoot.paint(g, nodeRenderContext);
+            long t1 = System.currentTimeMillis();
+            GraphicsNode copy = treeRoot.renderingClone();
+            long t2 = System.currentTimeMillis();
+            System.out.println("Rendering time: "+(t1-t0));
+            System.out.println("Cloning time: "+(t2-t1));
         }
     }
 

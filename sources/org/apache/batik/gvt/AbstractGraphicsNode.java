@@ -50,7 +50,7 @@ import org.apache.batik.gvt.filter.Mask;
  * @author <a href="mailto:Thomas.DeWeeese@Kodak.com">Thomas DeWeese</a>
  * @version $Id$
  */
-public abstract class AbstractGraphicsNode implements GraphicsNode {
+public abstract class AbstractGraphicsNode implements GraphicsNode, Cloneable {
 
     /**
      * The listeners list.
@@ -312,9 +312,10 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
         Shape defaultClip = g2d.getClip();
         Composite defaultComposite = g2d.getComposite();
         AffineTransform defaultTransform = g2d.getTransform();
-        RenderingHints defaultHints = g2d.getRenderingHints();
+        RenderingHints defaultHints = null;
 
         if (hints != null) {
+            defaultHints = g2d.getRenderingHints();
             g2d.addRenderingHints(hints);
         }
         if (transform != null) {
@@ -420,7 +421,9 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
         }
 
         // Restore default rendering attributes
-        g2d.setRenderingHints(defaultHints);
+        if (defaultHints != null) {
+            g2d.setRenderingHints(defaultHints);
+        }
         g2d.setTransform(defaultTransform);
         g2d.setClip(defaultClip);
         g2d.setComposite(defaultComposite);
@@ -822,5 +825,17 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
      */
     public boolean intersects(Rectangle2D r, GraphicsNodeRenderContext rc) {
         return getBounds(rc).intersects(r);
+    }
+
+    /**
+     *
+     */
+    public GraphicsNode renderingClone() {
+        try {
+            return (GraphicsNode)clone();
+        } catch(CloneNotSupportedException ex) {
+            ex.printStackTrace();
+            return null;
+        }
     }
 }

@@ -338,4 +338,10 @@ public interface GraphicsNode {
      * @return the outline of this node
      */
     Shape getOutline(GraphicsNodeRenderContext rc);
+
+    /**
+     *
+     */
+    GraphicsNode renderingClone();
+
 }
