@@ -8,9 +8,10 @@
 
 package org.apache.batik.bridge;
 
-import org.apache.batik.util.UnitProcessor;
+import java.awt.Cursor;
 import org.apache.batik.gvt.event.EventDispatcher;
-
+import org.apache.batik.util.UnitProcessor;
+import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGAElement;
 
 /**
@@ -26,11 +27,16 @@ public interface UserAgent {
      * <code>UserAgent</code> to dispatch events on GVT.
      */
     EventDispatcher getEventDispatcher();
-    
+
     /**
      * Displays an error message in the User Agent interface.
      */
     void displayError(String message);
+
+    /**
+     * Displays a message in the User Agent interface.
+     */
+    void displayMessage(String message);
 
     /**
      * Returns the pixel to mm factor.
@@ -53,4 +59,10 @@ public interface UserAgent {
      * @param elt The activated link element.
      */
     void openLink(SVGAElement elt);
+
+    /**
+     * Informs the user agent to change the cursor.
+     * @param cursor the new cursor
+     */
+    void setSVGCursor(Cursor cursor);
 }

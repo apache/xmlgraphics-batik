@@ -268,38 +268,41 @@ public class ConcreteEventDispatcher extends AbstractEventDispatcher {
 
         GraphicsNode node = root.nodeHitAt(p);
         // If the receiving node has changed, send a notification
-        if (node != null) {
-                if (lastHit == null) {
-                    node.processMouseEvent
-                        (gvtevt = new GraphicsNodeMouseEvent(node,
-                                                             MouseEvent.
-                                                             MOUSE_ENTERED,
-                                                             evt.getWhen(),
-                                                             evt.
-                                                             getModifiers(),
-                                                             evt.getX(),
-                                                             evt.getY(),
-                                                             evt.
-                                                             getClickCount()));
-                    globalMouseEvent(gvtevt);
-                }
-        } else if (lastHit != null) {
-                lastHit.processMouseEvent
-                    (gvtevt = new GraphicsNodeMouseEvent(lastHit,
-                                                         MouseEvent.
-                                                         MOUSE_EXITED,
-                                                         evt.getWhen(),
-                                                         evt.getModifiers(),
-                                                         evt.getX(),
-                                                         evt.getY(),
-                                                         evt.getClickCount()));
+        // check if we enter a new node
+        if (lastHit != node) {
+            // post an MOUSE_EXITED
+            if (lastHit != null) {
+                gvtevt = new GraphicsNodeMouseEvent(lastHit,
+                                                    MouseEvent.
+                                                    MOUSE_EXITED,
+                                                    evt.getWhen(),
+                                                    evt.getModifiers(),
+                                                    evt.getX(),
+                                                    evt.getY(),
+                                                    evt.getClickCount());
                 globalMouseEvent(gvtevt);
+                lastHit.processMouseEvent(gvtevt);
+            }
+            // post an MOUSE_ENTERED
+            if (node != null) {
+                gvtevt = new GraphicsNodeMouseEvent(node,
+                                                    MouseEvent.
+                                                    MOUSE_ENTERED,
+                                                    evt.getWhen(),
+                                                    evt.
+                                                    getModifiers(),
+                                                    evt.getX(),
+                                                    evt.getY(),
+                                                    evt.
+                                                    getClickCount());
+                globalMouseEvent(gvtevt);
+                node.processMouseEvent(gvtevt);
+            }
         }
-
-        // in all cases, dispatch the original event
+        // In all cases, dispatch the original event
         if (node != null) {
-            node.processMouseEvent(gvtevt =
-                                   new GraphicsNodeMouseEvent(node, evt));
+            gvtevt = new GraphicsNodeMouseEvent(node, evt);
+            node.processMouseEvent(gvtevt);
             globalMouseEvent(gvtevt);
         }
         lastHit = node;
