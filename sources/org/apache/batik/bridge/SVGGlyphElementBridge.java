@@ -232,7 +232,7 @@ public class SVGGlyphElementBridge extends AbstractSVGBridge
         }
         float vertAdvY;
         try {
-            vertAdvY = SVGUtilities.convertSVGNumber(s) * -scale;
+            vertAdvY = SVGUtilities.convertSVGNumber(s) * scale;
         } catch (NumberFormatException ex) {
             throw new BridgeException
                 (glyphElement, ERR_ATTRIBUTE_VALUE_MALFORMED,

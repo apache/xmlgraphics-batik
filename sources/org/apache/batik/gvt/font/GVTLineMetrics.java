@@ -51,6 +51,23 @@ public class GVTLineMetrics {
         this.overlineThickness = this.underlineThickness;
     }
 
+    public GVTLineMetrics(LineMetrics lineMetrics, float scaleFactor) {
+
+        this.ascent = lineMetrics.getAscent() * scaleFactor;
+        this.baselineIndex = lineMetrics.getBaselineIndex();
+        this.baselineOffsets = lineMetrics.getBaselineOffsets();
+        this.descent = lineMetrics.getDescent() * scaleFactor;
+        this.height = lineMetrics.getHeight() * scaleFactor;
+        this.leading = lineMetrics.getLeading();
+        this.numChars = lineMetrics.getNumChars();
+        this.strikethroughOffset = lineMetrics.getStrikethroughOffset() * scaleFactor;
+        this.strikethroughThickness = lineMetrics.getStrikethroughThickness() * scaleFactor;
+        this.underlineOffset = lineMetrics.getUnderlineOffset() * scaleFactor;
+        this.underlineThickness = lineMetrics.getUnderlineThickness() * scaleFactor;
+        this.overlineOffset = -this.ascent;
+        this.overlineThickness = this.underlineThickness;
+    }
+
 
     public GVTLineMetrics(float ascent, int baselineIndex, float[] baselineOffsets,
                           float descent, float height, float leading, int numChars,

@@ -22,8 +22,8 @@ import org.apache.batik.gvt.font.GVTGlyphVector;
 import org.apache.batik.gvt.font.SVGGVTGlyphVector;
 import org.apache.batik.gvt.font.GVTLineMetrics;
 import org.apache.batik.gvt.font.Glyph;
-import org.apache.batik.gvt.font.HKern;
-import org.apache.batik.gvt.font.HKernTable;
+import org.apache.batik.gvt.font.Kern;
+import org.apache.batik.gvt.font.KerningTable;
 import org.apache.batik.util.SVGConstants;
 
 /**
@@ -40,16 +40,19 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
     private String[] glyphNames;
     private Element[] glyphElements;
     private Element[] hkernElements;
+    private Element[] vkernElements;
     private BridgeContext ctx;
     private Element textElement;
     private Element missingGlyphElement;
-    private HKernTable kerningTable;
+    private KerningTable hKerningTable;
+    private KerningTable vKerningTable;
 
     public SVGGVTFont(float fontSize, SVGFontFace fontFace, String[] glyphUnicodes,
                       String[] glyphNames,
                       BridgeContext ctx, Element[] glyphElements,
                       Element missingGlyphElement,
                       Element[] hkernElements,
+                      Element[] vkernElements,
                       Element textElement) {
         this.fontFace = fontFace;
         this.fontSize = fontSize;
@@ -59,9 +62,10 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
         this.glyphElements = glyphElements;
         this.missingGlyphElement = missingGlyphElement;
         this.hkernElements = hkernElements;
+        this.vkernElements = vkernElements;
         this.textElement = textElement;
 
-        createKerningTable();
+        createKerningTables();
     }
 
 
@@ -69,32 +73,94 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
      * Creates the kerning table for this font
      */
 
-    private void createKerningTable() {
+    private void createKerningTables() {
 
-        HKern[] entries = new HKern[hkernElements.length];
-        for (int i=0; i < hkernElements.length; i++) {
+        Kern[] hEntries = new Kern[hkernElements.length];
+        for (int i = 0; i < hkernElements.length; i++) {
             Element hkernElement = hkernElements[i];
             SVGHKernElementBridge hkernBridge = (SVGHKernElementBridge)ctx.getBridge(hkernElement);
-            HKern hkern = hkernBridge.createHKern(ctx, hkernElement, fontFace, this);
-            entries[i] = hkern;
+            Kern hkern = hkernBridge.createKern(ctx, hkernElement, this);
+            hEntries[i] = hkern;
         }
+        hKerningTable = new KerningTable(hEntries);
 
-        kerningTable = new HKernTable(entries);
+        Kern[] vEntries = new Kern[vkernElements.length];
+        for (int i = 0; i < vkernElements.length; i++) {
+            Element vkernElement = vkernElements[i];
+            SVGVKernElementBridge vkernBridge = (SVGVKernElementBridge)ctx.getBridge(vkernElement);
+            Kern vkern = vkernBridge.createKern(ctx, vkernElement, this);
+            vEntries[i] = vkern;
+        }
+        vKerningTable = new KerningTable(vEntries);
 
     }
 
     /**
-     * Returns the kerning value of this character pair.
+     * Returns the horizontal kerning value of this glyph pair.
      */
-    public float getKerning(String unicode1, String unicode2) {
-        if (unicode1 != null && unicode1.length() > 0 &&
-            unicode2 != null && unicode2.length() > 0) {
-            return kerningTable.getKerningValue(unicode1.charAt(0),
-                                                unicode2.charAt(0));
-        } else {
+    public float getHKern(int glyphCode1, int glyphCode2) {
+        if (glyphCode1 < 0 || glyphCode1 >= glyphUnicodes.length
+            || glyphCode2 < 0 || glyphCode2 >= glyphUnicodes.length) {
             return 0f;
         }
+        return hKerningTable.getKerningValue(glyphCode1, glyphCode2,
+                glyphUnicodes[glyphCode1], glyphUnicodes[glyphCode2]);
     }
+
+    /**
+     * Returns the vertical kerning value of this glyph pair.
+     */
+    public float getVKern(int glyphCode1, int glyphCode2) {
+        if (glyphCode1 < 0 || glyphCode1 >= glyphUnicodes.length
+            || glyphCode2 < 0 || glyphCode2 >= glyphUnicodes.length) {
+            return 0f;
+        }
+        return vKerningTable.getKerningValue(glyphCode1, glyphCode2,
+                glyphUnicodes[glyphCode1], glyphUnicodes[glyphCode2]);
+    }
+
+    /**
+     * Returns an array of glyph codes (unique ids) of the glyphs with the
+     * specified name (there may be more than one).
+     *
+     * @param name The name of the glyph.
+     * @return An array of matching glyph codes. This may be empty.
+     */
+    public int[] getGlyphCodesForName(String name) {
+        Vector glyphCodes = new Vector();
+        for (int i = 0; i < glyphNames.length; i++) {
+            if (glyphNames[i] != null && glyphNames[i].equals(name)) {
+                glyphCodes.add(new Integer(i));
+            }
+        }
+        int[] glyphCodeArray = new int[glyphCodes.size()];
+        for (int i = 0; i < glyphCodes.size(); i++) {
+            glyphCodeArray[i] = ((Integer)glyphCodes.elementAt(i)).intValue();
+        }
+        return glyphCodeArray;
+    }
+
+    /**
+     * Returns an array of glyph codes (unique ids) of the glyphs with the
+     * specified unicode value (there may be more than one).
+     *
+     * @param unicode The unicode value of the glyph.
+     * @return An array of matching glyph codes. This may be empty.
+     */
+    public int[] getGlyphCodesForUnicode(String unicode) {
+        Vector glyphCodes = new Vector();
+        for (int i = 0; i < glyphUnicodes.length; i++) {
+            if (glyphUnicodes[i] != null && glyphUnicodes[i].equals(unicode)) {
+                glyphCodes.add(new Integer(i));
+            }
+        }
+        int[] glyphCodeArray = new int[glyphCodes.size()];
+        for (int i = 0; i < glyphCodes.size(); i++) {
+            glyphCodeArray[i] = ((Integer)glyphCodes.elementAt(i)).intValue();
+        }
+        return glyphCodeArray;
+    }
+
 
     /**
      * Checks if this Font has a glyph for the glyph name.
@@ -110,20 +176,6 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
         return false;
     }
 
-
-    /**
-     * Returns the unicode character that corresponds to this glyph.
-     *
-     * @param name The glyph-name to look for.
-     */
-    public char unicodeForName(String name) {
-        for (int i = 0; i < glyphNames.length; i++) {
-            if (glyphNames[i] != null && glyphNames[i].equals(name)) {
-                return glyphUnicodes[i].charAt(0);
-            }
-        }
-        return 0;
-    }
 
     /**
      * Checks if this Font has a glyph for the specified character.
@@ -166,7 +218,7 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
             for (int i = 0; i < glyphUnicodes.length; i++) {
                 if (glyphUnicodes[i].indexOf(c) == 0) {  // found a possible match
 
-                    if (glyphUnicodes[i].length() == 0)  { // not a ligature
+                    if (glyphUnicodes[i].length() == 1)  { // not a ligature
                         foundMatchingGlyph = true;
                         break;
 
@@ -237,7 +289,7 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
             for (int i = 0; i < glyphUnicodes.length; i++) {
                 if (glyphUnicodes[i].indexOf(c) == 0) {  // found a possible match
 
-                    if (glyphUnicodes[i].length() == 0)  { // not a ligature
+                    if (glyphUnicodes[i].length() == 1)  { // not a ligature
                         Element glyphElement = glyphElements[i];
                         SVGGlyphElementBridge glyphBridge = (SVGGlyphElementBridge)ctx.getBridge(glyphElement);
                         Glyph glyph = glyphBridge.createGlyph(ctx, glyphElement, textElement, i, fontSize, fontFace);
@@ -323,7 +375,8 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
      */
     public GVTFont deriveFont(float size) {
         return new SVGGVTFont(size, fontFace, glyphUnicodes, glyphNames, ctx,
-            glyphElements, missingGlyphElement, hkernElements, textElement);
+                              glyphElements, missingGlyphElement, hkernElements,
+                              vkernElements, textElement);
     }
 
     /**

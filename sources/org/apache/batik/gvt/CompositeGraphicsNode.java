@@ -273,7 +273,6 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
       */
     public Rectangle2D getPrimitiveBounds(GraphicsNodeRenderContext rc) {
         if (primitiveBounds == null) {
-            // System.out.println("primitiveBounds are null:" + this.getClass().getName());
             int i=0;
             while(primitiveBounds == null && i < count){
                 primitiveBounds = children[i++].getTransformedBounds
@@ -284,7 +283,13 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
             while(i < count){
                 ctb = children[i++].getTransformedBounds(IDENTITY, rc);
                 if(ctb != null){
-                    primitiveBounds.add(ctb);
+                    if (primitiveBounds == null) {
+                        // another thread has set the primitive bounds to null,
+                        // need to recall this function
+                        return getPrimitiveBounds(rc);
+                    } else {
+                        primitiveBounds.add(ctb);
+                    }
                 }
             }
 
@@ -355,7 +360,13 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
             while(i<count){
                 cgb = children[i++].getTransformedGeometryBounds(IDENTITY, rc);
                 if(cgb != null){
-                    geometryBounds.add(cgb);
+                    if (geometryBounds == null) {
+                        // another thread has set the geometry bounds to null,
+                        // need to recall this function
+                        return getGeometryBounds(rc);
+                    } else {
+                        geometryBounds.add(cgb);
+                    }
                 }
             }
         }

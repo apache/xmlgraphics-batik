@@ -26,7 +26,7 @@ public class TextDecorationResolver implements RelativeValueResolver {
      * Whether the handled property is inherited or not.
      */
     public boolean isInheritedProperty() {
-	return true;
+	return false;
     }
 
     /**
@@ -42,7 +42,7 @@ public class TextDecorationResolver implements RelativeValueResolver {
     public CSSOMReadOnlyValue getDefaultValue() {
 	return new CSSOMReadOnlyValue(TextDecorationFactory.NONE_VALUE);
     }
-    
+
     /**
      * Resolves the given value if relative, and puts it in the given table.
      * @param element The element to which this value applies.

@@ -8,10 +8,6 @@
 
 package org.apache.batik.gvt.text;
 
-import java.awt.Graphics2D;
-import java.awt.Shape;
-import java.awt.geom.Rectangle2D;
-import java.awt.geom.AffineTransform;
 import org.apache.batik.gvt.TextNode;
 import java.awt.font.FontRenderContext;
 
@@ -25,35 +21,28 @@ import java.awt.font.FontRenderContext;
  */
 public class TextHit {
 
-    private int glyphIndex;
+    private int charIndex;
     private boolean leadingEdge;
     private TextNode textNode;
     private FontRenderContext frc;
 
-    public TextHit(int glyphIndex, boolean leadingEdge) {
-        this.glyphIndex = glyphIndex;
+    public TextHit(int charIndex, boolean leadingEdge) {
+        this.charIndex = charIndex;
         this.leadingEdge = leadingEdge;
     }
 
-    public int getGlyphIndex() {
-        return glyphIndex;
+    public int getCharIndex() {
+        return charIndex;
     }
 
     public boolean isLeadingEdge() {
         return leadingEdge;
     }
 
-    public int getInsertionIndex() {
-        int i = getGlyphIndex();
-        if (!leadingEdge) {
-            ++i;
-        }
-        return i;
-    }
-
     public void setTextNode(TextNode textNode) {
         this.textNode = textNode;
     }
+
     public void setFontRenderContext(FontRenderContext frc) {
         this.frc = frc;
     }
@@ -61,6 +50,7 @@ public class TextHit {
     public TextNode getTextNode() {
         return textNode;
     }
+
     public FontRenderContext getFontRenderContext() {
         return frc;
     }

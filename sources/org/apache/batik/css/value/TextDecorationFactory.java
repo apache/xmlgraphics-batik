@@ -35,6 +35,7 @@ public class TextDecorationFactory
 	values.put(CSS_LINE_THROUGH_VALUE, LINE_THROUGH_VALUE);
 	values.put(CSS_OVERLINE_VALUE,     OVERLINE_VALUE);
 	values.put(CSS_UNDERLINE_VALUE,    UNDERLINE_VALUE);
+    values.put(CSS_NONE_VALUE,    NONE_VALUE);
     }
 
     /**
@@ -56,7 +57,7 @@ public class TextDecorationFactory
     public String getPropertyName() {
 	return CSS_TEXT_DECORATION_PROPERTY;
     }
-    
+
     /**
      * Creates a value from a lexical unit.
      * @param lu The SAC lexical unit used to create the value.
@@ -66,9 +67,6 @@ public class TextDecorationFactory
 	case LexicalUnit.SAC_INHERIT:
 	    return INHERIT;
 	case LexicalUnit.SAC_IDENT:
-	    if (lu.getStringValue().equalsIgnoreCase(CSS_NONE_VALUE)) {
-		return NONE_VALUE;
-	    }
 	    ImmutableValueList list = new ImmutableValueList(' ');
 	    do {
 		list.append(new CSSOMValue(identFactory,
@@ -89,7 +87,7 @@ public class TextDecorationFactory
      * Creates and returns a new string value.
      * @param type  A string code as defined in CSSPrimitiveValue. The string
      *   code can only be a string unit type.
-     * @param value  The new string value. 
+     * @param value  The new string value.
      */
     public ImmutableValue createStringValue(short type, String value)
 	throws DOMException {
@@ -121,7 +119,7 @@ public class TextDecorationFactory
 	public String getPropertyName() {
 	    return null;
 	}
-    
+
 	/**
 	 * Returns the property map that contains the possible values.
 	 */

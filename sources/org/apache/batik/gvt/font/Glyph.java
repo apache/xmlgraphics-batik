@@ -13,8 +13,8 @@ import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.AffineTransform;
-import java.awt.font.GlyphMetrics;
 import java.awt.Shape;
+import java.awt.font.GlyphMetrics;
 import java.util.Vector;
 
 
@@ -39,7 +39,7 @@ public class Glyph {
     private int glyphCode;
     private AffineTransform transform;
     private Point2D position;
-    private GlyphMetrics metrics;
+    private GVTGlyphMetrics metrics;
     private float kernScale;
 
     private Shape outline; // cache the glyph outline
@@ -87,8 +87,9 @@ public class Glyph {
         this.vertOrigin = vertOrigin;
         this.horizAdvX = horizAdvX;
         this.vertAdvY = vertAdvY;
-        this.position = new Point2D.Float(0,0);
         this.kernScale = kernScale;
+        this.glyphCode = glyphCode;
+        this.position = new Point2D.Float(0,0);
         this.outline = null;
     }
 
@@ -226,18 +227,19 @@ public class Glyph {
     }
 
     /**
-     * Returns the metrics of this Glyph.
+     * Returns the metrics of this Glyph if it is used in a horizontal layout.
      *
      * @return The glyph metrics.
      */
-    public GlyphMetrics getGlyphMetrics() {
+    public GVTGlyphMetrics getGlyphMetrics() {
         if (metrics == null) {
-            metrics = new GlyphMetrics(getHorizAdvX(),
-                                       glyphNode.getOutline(null).getBounds2D(),
-                                       GlyphMetrics.COMPONENT );
+            metrics = new GVTGlyphMetrics(getHorizAdvX(), getVertAdvY(),
+                                          glyphNode.getOutline(null).getBounds2D(),
+                                          GlyphMetrics.COMPONENT);
         }
         return metrics;
     }
+
 
     /**
      * Returns the metics of this Glyph with the specified kerning value applied.
@@ -245,12 +247,14 @@ public class Glyph {
      * @param kern The kerning value to apply when calculating the glyph metrics.
      * @return The kerned glyph metics.
      */
-    public GlyphMetrics getGlyphMetrics(float kern) {
-        return new GlyphMetrics(getHorizAdvX() - (kern * kernScale),
-                                glyphNode.getOutline(null).getBounds2D(),
-                                GlyphMetrics.COMPONENT );
+    public GVTGlyphMetrics getGlyphMetrics(float hkern, float vkern) {
+        return new GVTGlyphMetrics(getHorizAdvX() - (hkern * kernScale),
+                                   getVertAdvY() - (vkern * kernScale),
+                                   glyphNode.getOutline(null).getBounds2D(),
+                                   GlyphMetrics.COMPONENT);
 
     }
+
 
     /**
      * Returns the outline of this glyph. This will be positioned correctly and

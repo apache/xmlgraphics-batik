@@ -8,17 +8,10 @@
 
 package org.apache.batik.gvt.text;
 
+import java.text.AttributedCharacterIterator;
+import java.text.AttributedString;
 import java.util.Set;
 import java.util.Map;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.ArrayList;
-import java.text.CharacterIterator;
-import java.text.AttributedCharacterIterator;
-import java.text.StringCharacterIterator;
-import java.text.AttributedString;
-
-import org.apache.batik.gvt.TextNode;
 
 /**
  * GVTAttributedCharacterIterator
@@ -33,8 +26,7 @@ import org.apache.batik.gvt.TextNode;
  * @version $Id$
  */
 
-public interface GVTAttributedCharacterIterator extends
-                                   AttributedCharacterIterator {
+public interface GVTAttributedCharacterIterator extends AttributedCharacterIterator {
 
     /**
      * Sets this iterator's contents to an unattributed copy of String s.
@@ -200,8 +192,7 @@ public interface GVTAttributedCharacterIterator extends
      * We duplicate the features of java.awt.font.TextAttribute rather than
      * subclassing because java.awt.font.TextAttribute is <em>final</em>.
      */
-    public static class TextAttribute extends
-                                                                            AttributedCharacterIterator.Attribute {
+    public static class TextAttribute extends AttributedCharacterIterator.Attribute {
 
         /** Construct a TextAttribute key with name s */
         public TextAttribute(String s) {
@@ -252,10 +243,6 @@ public interface GVTAttributedCharacterIterator extends
         public final static TextAttribute UNDERLINE =
                                           new TextAttribute("UNDERLINE");
 
-        /** Overline flag for character.*/
-        public final static TextAttribute OVERLINE =
-                                      new TextAttribute("OVERLINE");
-
         /** Stroke used to paint character underline.*/
         public final static TextAttribute UNDERLINE_STROKE =
                                       new TextAttribute("UNDERLINE_STROKE");
@@ -268,9 +255,41 @@ public interface GVTAttributedCharacterIterator extends
         public final static TextAttribute UNDERLINE_STROKE_PAINT =
                                   new TextAttribute("UNDERLINE_STROKE_PAINT");
 
+
+        /** Overline flag for character.*/
+        public final static TextAttribute OVERLINE =
+                                      new TextAttribute("OVERLINE");
+
+
+        /** Stroke used to paint character overline.*/
+        public final static TextAttribute OVERLINE_STROKE =
+                                      new TextAttribute("OVERLINE_STROKE");
+
+        /** Paint used to fill character overline.*/
+        public final static TextAttribute OVERLINE_PAINT =
+                                      new TextAttribute("OVERLINE_PAINT");
+
+        /** Paint used to stroke character outline for overline.*/
+        public final static TextAttribute OVERLINE_STROKE_PAINT =
+                                  new TextAttribute("OVERLINE_STROKE_PAINT");
+
+
         /** Flag indicating that chars are to be "struck through" */
         public final static TextAttribute STRIKETHROUGH =
                                           new TextAttribute("STRIKETHROUGH");
+
+        /** Stroke used to paint character strikethrough.*/
+        public final static TextAttribute STRIKETHROUGH_STROKE =
+                                      new TextAttribute("STRIKETHROUGH_STROKE");
+
+        /** Paint used to fill character strikethrough.*/
+        public final static TextAttribute STRIKETHROUGH_PAINT =
+                                      new TextAttribute("STRIKETHROUGH_PAINT");
+
+        /** Paint used to stroke character outline for strikethrough.*/
+        public final static TextAttribute STRIKETHROUGH_STROKE_PAINT =
+                                  new TextAttribute("STRIKETHROUGH_STROKE_PAINT");
+
 
         /** Author-expected width for bounding box containing
          *  all text string glyphs.
@@ -337,6 +356,12 @@ public interface GVTAttributedCharacterIterator extends
 
         public final static TextAttribute ALT_GLYPH_HANDLER =
                                           new TextAttribute("ALT_GLYPH_HANDLER");
+
+        public final static TextAttribute BIDI_LEVEL =
+                                          new TextAttribute("BIDI_LEVEL");
+
+        public final static TextAttribute CHAR_INDEX =
+                                          new TextAttribute("CHAR_INDEX");
 
         // VALUES
 

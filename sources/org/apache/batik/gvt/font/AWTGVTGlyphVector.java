@@ -36,11 +36,11 @@ public final class AWTGVTGlyphVector implements GVTGlyphVector {
     private final GlyphVector awtGlyphVector;
     private final AWTGVTFont gvtFont;
 
+    private Point2D[] glyphPositions;
+    private Point2D[] defaultGlyphPositions;
+
     // need to keep track of the glyphTransforms since GlyphVector doesn't seem to
     private AffineTransform[] glyphTransforms;
-
-    // this is to record the default glyph positions
-    private Point2D[] defaultGlyphPositions;
 
     // these are for caching the glyph outlines
     private Shape[] glyphOutlines;
@@ -49,18 +49,21 @@ public final class AWTGVTGlyphVector implements GVTGlyphVector {
     private boolean[] glyphVisible;
     private GeneralPath outline;
     private Rectangle2D logicalBounds;
+    private float scaleFactor;
 
     /**
      * Creates and new AWTGVTGlyphVector from the specified GlyphVector
      * and AWTGVTFont objects.
      */
-    public AWTGVTGlyphVector(GlyphVector glyphVector, AWTGVTFont font) {
+    public AWTGVTGlyphVector(GlyphVector glyphVector, AWTGVTFont font, float scaleFactor) {
         awtGlyphVector = glyphVector;
         gvtFont = font;
+        this.scaleFactor = scaleFactor;
         int numGlyphs = glyphVector.getNumGlyphs();
         outline = null;
         logicalBounds = null;
         glyphTransforms = new AffineTransform[numGlyphs];
+        glyphPositions = new Point2D.Float[numGlyphs];
         defaultGlyphPositions = new Point2D.Float[numGlyphs];
         glyphOutlines = new Shape[numGlyphs];
         glyphVisualBounds = new Shape[numGlyphs];
@@ -124,8 +127,8 @@ public final class AWTGVTGlyphVector implements GVTGlyphVector {
     private void computeGlyphLogicalBounds() {
 
         GVTLineMetrics lineMetrics = gvtFont.getLineMetrics("By", awtGlyphVector.getFontRenderContext());
-        float ascent = lineMetrics.getAscent();
-        float descent = lineMetrics.getDescent();
+        float ascent = lineMetrics.getAscent() * scaleFactor;
+        float descent = lineMetrics.getDescent() * scaleFactor;
 
         for (int i = 0; i < getNumGlyphs(); i++) {
 
@@ -135,11 +138,18 @@ public final class AWTGVTGlyphVector implements GVTGlyphVector {
 
                 if (glyphTransform == null) {
 
-                    GlyphMetrics glyphMetrics = getGlyphMetrics(i);
+                    GVTGlyphMetrics glyphMetrics = getGlyphMetrics(i);
 
                     float glyphX = (float)(getGlyphPosition(i).getX());
                     float glyphY =  (float)getGlyphPosition(i).getY() - ascent;
-                    float glyphWidth = glyphMetrics.getAdvance();
+                    float glyphWidth = glyphMetrics.getHorizontalAdvance();
+                    if (i < getNumGlyphs()-1) {
+                        float nextY = (float)getGlyphPosition(i+1).getY() - ascent;
+                        if (glyphY == nextY) {
+                            float nextX = (float)getGlyphPosition(i+1).getX();
+                            glyphWidth = Math.max(glyphWidth, nextX - glyphX);
+                        }
+                    }
                     float glyphHeight = ascent + descent;
 
                     glyphLogicalBounds[i] = new Rectangle2D.Double(glyphX, glyphY,
@@ -153,6 +163,7 @@ public final class AWTGVTGlyphVector implements GVTGlyphVector {
                     AffineTransform tr = AffineTransform.getTranslateInstance(getGlyphPosition(i).getX(),
                                                                           getGlyphPosition(i).getY());
                     tr.concatenate(glyphTransform);
+                    tr.scale(scaleFactor, scaleFactor);
                     glyphLogicalBounds[i] = tr.createTransformedShape(glyphBounds);
                 }
             } else {
@@ -169,8 +180,17 @@ public final class AWTGVTGlyphVector implements GVTGlyphVector {
      * Returns the metrics of the glyph at the specified index into this
      * GVTGlyphVector.
      */
-    public GlyphMetrics getGlyphMetrics(int glyphIndex) {
-        return awtGlyphVector.getGlyphMetrics(glyphIndex);
+    public GVTGlyphMetrics getGlyphMetrics(int glyphIndex) {
+
+        GVTLineMetrics lineMetrics = gvtFont.getLineMetrics("By", awtGlyphVector.getFontRenderContext());
+        float ascent = lineMetrics.getAscent() * scaleFactor;
+        float descent = lineMetrics.getDescent() * scaleFactor;
+
+        GlyphMetrics gm = awtGlyphVector.getGlyphMetrics(glyphIndex);
+        Rectangle2D gmBounds = gm.getBounds2D();
+        Rectangle2D bounds = new Rectangle2D.Double(gmBounds.getX() * scaleFactor, gmBounds.getY() * scaleFactor,
+                                                   gmBounds.getWidth() * scaleFactor, gmBounds.getHeight() * scaleFactor);
+        return new GVTGlyphMetrics(gm.getAdvance()*scaleFactor, (ascent+descent), bounds, GlyphMetrics.STANDARD);
     }
 
     /**
@@ -180,12 +200,15 @@ public final class AWTGVTGlyphVector implements GVTGlyphVector {
     public Shape getGlyphOutline(int glyphIndex) {
         if (glyphOutlines[glyphIndex] == null) {
             Shape glyphOutline = awtGlyphVector.getGlyphOutline(glyphIndex);
+
             AffineTransform tr = AffineTransform.getTranslateInstance(getGlyphPosition(glyphIndex).getX(),
                                                                       getGlyphPosition(glyphIndex).getY());
+
             AffineTransform glyphTransform = getGlyphTransform(glyphIndex);
             if (glyphTransform != null) {
                 tr.concatenate(glyphTransform);
             }
+            tr.scale(scaleFactor, scaleFactor);
             glyphOutlines[glyphIndex] = tr.createTransformedShape(glyphOutline);
         }
         return glyphOutlines[glyphIndex];
@@ -195,7 +218,7 @@ public final class AWTGVTGlyphVector implements GVTGlyphVector {
      * Returns the position of the specified glyph within this GlyphVector.
      */
     public Point2D getGlyphPosition(int glyphIndex) {
-        return awtGlyphVector.getGlyphPosition(glyphIndex);
+        return glyphPositions[glyphIndex];
     }
 
     /**
@@ -215,8 +238,15 @@ public final class AWTGVTGlyphVector implements GVTGlyphVector {
      */
     public float[] getGlyphPositions(int beginGlyphIndex, int numEntries,
                                      float[] positionReturn) {
-        return awtGlyphVector.getGlyphPositions(beginGlyphIndex, numEntries,
-                                                positionReturn);
+        if (positionReturn == null) {
+            positionReturn = new float[numEntries*2];
+        }
+        for (int i = beginGlyphIndex; i < (beginGlyphIndex+numEntries); i++) {
+            Point2D glyphPos = getGlyphPosition(i);
+            positionReturn[(i-beginGlyphIndex)*2] = (float)glyphPos.getX();
+            positionReturn[(i-beginGlyphIndex)*2 + 1] = (float)glyphPos.getY();
+        }
+        return positionReturn;
     }
 
     /**
@@ -239,6 +269,7 @@ public final class AWTGVTGlyphVector implements GVTGlyphVector {
             if (glyphTransform != null) {
                 tr.concatenate(glyphTransform);
             }
+            tr.scale(scaleFactor, scaleFactor);
             glyphVisualBounds[glyphIndex] = tr.createTransformedShape(glyphBounds);
         }
         return glyphVisualBounds[glyphIndex];
@@ -314,7 +345,10 @@ public final class AWTGVTGlyphVector implements GVTGlyphVector {
         outline = null;
         logicalBounds = null;
         for (int i = 0; i < getNumGlyphs(); i++) {
-            defaultGlyphPositions[i] = getGlyphPosition(i);
+            Point2D glyphPos = awtGlyphVector.getGlyphPosition(i);
+            glyphPositions[i] = new Point2D.Float((float)(glyphPos.getX() * scaleFactor),
+                                                  (float)(glyphPos.getY() * scaleFactor));
+            defaultGlyphPositions[i] = glyphPositions[i];
             glyphTransforms[i] = null;
             glyphVisualBounds[i] = null;
             glyphLogicalBounds[i] = null;
@@ -326,7 +360,7 @@ public final class AWTGVTGlyphVector implements GVTGlyphVector {
      * Sets the position of the specified glyph within this GlyphVector.
      */
     public void setGlyphPosition(int glyphIndex, Point2D newPos) {
-        awtGlyphVector.setGlyphPosition(glyphIndex, newPos);
+        glyphPositions[glyphIndex] = new Point2D.Float((float)newPos.getX(), (float)newPos.getY());
         outline = null;
         logicalBounds = null;
         glyphVisualBounds[glyphIndex] = null;

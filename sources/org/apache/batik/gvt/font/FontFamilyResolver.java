@@ -63,6 +63,7 @@ public class FontFamilyResolver {
         int nFonts = fontNames != null ? fontNames.length : 0;
         for(int i=0; i<nFonts; i++){
             fonts.put(fontNames[i], fontNames[i]);
+
             // also add the font name with the spaces removed
             StringTokenizer st = new StringTokenizer(fontNames[i]);
             String fontNameWithoutSpaces = "";
@@ -70,6 +71,12 @@ public class FontFamilyResolver {
                 fontNameWithoutSpaces += st.nextToken();
             }
             fonts.put(fontNameWithoutSpaces, fontNames[i]);
+
+            // also add the font name with spaces replaced by dashes
+            String fontNameWithDashes = fontNames[i].replace(' ', '-');
+            if (!fontNameWithDashes.equals(fontNames[i])) {
+               fonts.put(fontNameWithDashes, fontNames[i]);
+            }
         }
 
         Collection fontValues = fonts.values();
@@ -92,7 +99,7 @@ public class FontFamilyResolver {
 
 
     /**
-     * Resolves an UnresolvedFontFamily into a GVTFontFamily. If not the font
+     * Resolves an UnresolvedFontFamily into a GVTFontFamily. If the font
      * family cannot be resolved then null will be returned.
      *
      * @param fontFamily The UnresolvedFontFamily to resolve
@@ -121,7 +128,11 @@ public class FontFamilyResolver {
             }
             resolvedFontFamilies.put(fontFamily, resolvedFontFamily);
         }
-
+      //  if (resolvedFontFamily != null) {
+      //      System.out.println("resolved " + fontFamily.getFamilyName() + " to " + resolvedFontFamily.getFamilyName());
+      //  } else {
+      //      System.out.println("could not resolve " + fontFamily.getFamilyName());
+      //  }
         return resolvedFontFamily;
     }
 

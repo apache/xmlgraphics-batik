@@ -489,7 +489,7 @@ public interface SVGConstants extends CSSConstants {
     String SVG_FONT_FACE_PANOSE_1_DEFAULT_VALUE = "0 0 0 0 0 0 0 0 0 0";
     String SVG_FONT_FACE_SLOPE_DEFAULT_VALUE = "0";
     String SVG_FONT_FACE_UNITS_PER_EM_DEFAULT_VALUE = "1000";
-    String SVG_HKERN_K_DEFAULT_VALUE = "0";
+    String SVG_KERN_K_DEFAULT_VALUE = "0";
     String SVG_IMAGE_X_DEFAULT_VALUE = "0";
     String SVG_IMAGE_Y_DEFAULT_VALUE = "0";
     String SVG_LINEAR_GRADIENT_X1_DEFAULT_VALUE = "0%";

@@ -77,7 +77,13 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
     public void setTextRuns(List textRuns) {
         this.textRuns = textRuns;
     }
-
+    public AttributedCharacterIterator[] chunkACIs = null;
+    public AttributedCharacterIterator[] getChunkACIs() {
+        return chunkACIs;
+    }
+    public void setChunkACIs(AttributedCharacterIterator[] chunkACIs) {
+        this.chunkACIs = chunkACIs;
+    }
 
     /**
      * Returns the text of this <tt>TextNode</tt> as a string.

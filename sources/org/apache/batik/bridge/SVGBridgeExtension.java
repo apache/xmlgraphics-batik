@@ -21,7 +21,7 @@ public class SVGBridgeExtension implements BridgeExtension {
      * Return the priority of this Extension.  Extensions are
      * registered from lowest to highest priority.  So if for some
      * reason you need to come before/after another existing extension
-     * make sure your priority is lower/higher than theirs.  
+     * make sure your priority is lower/higher than theirs.
      */
     public float getPriority() { return 0f; }
 
@@ -120,6 +120,7 @@ public class SVGBridgeExtension implements BridgeExtension {
 
         ctx.putBridge(new SVGHKernElementBridge());
 
+
         ctx.putBridge(new SVGImageElementBridge());
 
         ctx.putBridge(new SVGLineElementBridge());
@@ -151,6 +152,8 @@ public class SVGBridgeExtension implements BridgeExtension {
         ctx.putBridge(new SVGTextElementBridge());
 
         ctx.putBridge(new SVGUseElementBridge());
+
+        ctx.putBridge(new SVGVKernElementBridge());
 
         ctx.putBridge(new AbstractSVGLightingElementBridge.SVGFeSpotLightElementBridge());
 

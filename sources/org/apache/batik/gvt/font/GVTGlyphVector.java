@@ -10,7 +10,6 @@ package org.apache.batik.gvt.font;
 
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphJustificationInfo;
-import java.awt.font.GlyphMetrics;
 import java.awt.font.GlyphVector;
 import java.awt.Shape;
 import java.awt.geom.Point2D;
@@ -65,7 +64,7 @@ public interface GVTGlyphVector {
      * Returns the metrics of the glyph at the specified index into this
      * GlyphVector.
      */
-    public GlyphMetrics getGlyphMetrics(int glyphIndex);
+    public GVTGlyphMetrics getGlyphMetrics(int glyphIndex);
 
     /**
      * Returns a Shape whose interior corresponds to the visual representation

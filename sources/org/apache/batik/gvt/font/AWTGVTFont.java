@@ -12,9 +12,11 @@ import java.awt.Font;
 import java.awt.font.FontRenderContext;
 import java.awt.font.LineMetrics;
 import java.awt.font.GlyphVector;
+import java.awt.font.TextAttribute;
 import java.text.CharacterIterator;
 import java.util.Map;
 import java.util.HashMap;
+import java.awt.geom.AffineTransform;
 
 
 /**
@@ -26,12 +28,14 @@ import java.util.HashMap;
 public final class AWTGVTFont implements GVTFont {
 
     private Font awtFont;
+    private Font tenPtFont;
 
     /**
      * Creates a new AWTGVTFont that wraps the given Font.
      */
     public AWTGVTFont(Font font) {
         awtFont = font;
+        tenPtFont = awtFont.deriveFont(10f);
     }
 
     /**
@@ -39,6 +43,7 @@ public final class AWTGVTFont implements GVTFont {
      */
     public AWTGVTFont(Map attributes) {
         awtFont = new Font(attributes);
+        tenPtFont = awtFont.deriveFont(10f);
     }
 
     /**
@@ -46,6 +51,7 @@ public final class AWTGVTFont implements GVTFont {
      */
     public AWTGVTFont(String name, int style, int size) {
         awtFont = new Font(name, style, size);
+        tenPtFont = awtFont.deriveFont(10f);
     }
 
     /**
@@ -84,7 +90,10 @@ public final class AWTGVTFont implements GVTFont {
      */
     public GVTGlyphVector createGlyphVector(FontRenderContext frc,
                                             char[] chars) {
-        return new AWTGVTGlyphVector(awtFont.createGlyphVector(frc, chars), this);
+        if (getSize() < 1) {
+            return new AWTGVTGlyphVector(tenPtFont.createGlyphVector(frc, chars), new AWTGVTFont(tenPtFont), getSize()/10f);
+        }
+        return new AWTGVTGlyphVector(awtFont.createGlyphVector(frc, chars), this, 1);
     }
 
     /**
@@ -93,8 +102,10 @@ public final class AWTGVTFont implements GVTFont {
      */
     public GVTGlyphVector createGlyphVector(FontRenderContext frc,
                                             CharacterIterator ci) {
-        return new AWTGVTGlyphVector(awtFont.createGlyphVector(frc, ci),
-                                     this);
+        if (getSize() < 1) {
+            return new AWTGVTGlyphVector(tenPtFont.createGlyphVector(frc, ci), new AWTGVTFont(tenPtFont), getSize()/10f);
+        }
+        return new AWTGVTGlyphVector(awtFont.createGlyphVector(frc, ci), this, 1);
     }
 
     /**
@@ -103,8 +114,11 @@ public final class AWTGVTFont implements GVTFont {
      */
     public GVTGlyphVector createGlyphVector(FontRenderContext frc,
                                             int[] glyphCodes) {
+        if (getSize() < 1) {
+            return new AWTGVTGlyphVector(tenPtFont.createGlyphVector(frc, glyphCodes), new AWTGVTFont(tenPtFont), getSize()/10f);
+        }
         return new AWTGVTGlyphVector(awtFont.createGlyphVector(frc, glyphCodes),
-                                     this);
+                                     this, 1);
     }
 
     /**
@@ -112,7 +126,10 @@ public final class AWTGVTFont implements GVTFont {
      * the specified FontRenderContext.
      */
     public GVTGlyphVector createGlyphVector(FontRenderContext frc, String str) {
-        return new AWTGVTGlyphVector(awtFont.createGlyphVector(frc, str), this);
+        if (getSize() < 1) {
+            return new AWTGVTGlyphVector(tenPtFont.createGlyphVector(frc, str), new AWTGVTFont(tenPtFont), getSize()/10f);
+        }
+        return new AWTGVTGlyphVector(awtFont.createGlyphVector(frc, str), this, 1);
     }
 
     /**
@@ -128,7 +145,10 @@ public final class AWTGVTFont implements GVTFont {
      *  Returns a LineMetrics object created with the specified arguments.
      */
     public GVTLineMetrics getLineMetrics(char[] chars, int beginIndex, int limit,
-                                      FontRenderContext frc) {
+                                         FontRenderContext frc) {
+        if (getSize() < 1) {
+            return new GVTLineMetrics(tenPtFont.getLineMetrics(chars, beginIndex, limit, frc), getSize()/10f);
+        }
         return new GVTLineMetrics(awtFont.getLineMetrics(chars, beginIndex, limit, frc));
     }
 
@@ -136,7 +156,10 @@ public final class AWTGVTFont implements GVTFont {
      * Returns a GVTLineMetrics object created with the specified arguments.
      */
     public GVTLineMetrics getLineMetrics(CharacterIterator ci, int beginIndex,
-                                      int limit, FontRenderContext frc) {
+                                         int limit, FontRenderContext frc) {
+        if (getSize() < 1) {
+            return new GVTLineMetrics(tenPtFont.getLineMetrics(ci, beginIndex, limit, frc), getSize()/10f);
+        }
         return new GVTLineMetrics(awtFont.getLineMetrics(ci, beginIndex, limit, frc));
     }
 
@@ -145,6 +168,9 @@ public final class AWTGVTFont implements GVTFont {
      *  FontRenderContext.
      */
     public GVTLineMetrics getLineMetrics(String str, FontRenderContext frc) {
+        if (getSize() < 1) {
+            return new GVTLineMetrics(tenPtFont.getLineMetrics(str, frc), getSize()/10f);
+        }
         return new GVTLineMetrics(awtFont.getLineMetrics(str, frc));
     }
 
@@ -152,7 +178,10 @@ public final class AWTGVTFont implements GVTFont {
      * Returns a GVTLineMetrics object created with the specified arguments.
      */
     public GVTLineMetrics getLineMetrics(String str, int beginIndex, int limit,
-                                      FontRenderContext frc) {
+                                         FontRenderContext frc) {
+        if (getSize() < 1) {
+            return new GVTLineMetrics(tenPtFont.getLineMetrics(str, beginIndex, limit, frc), getSize()/10f);
+        }
         return new GVTLineMetrics(awtFont.getLineMetrics(str, beginIndex, limit, frc));
     }
 
@@ -160,13 +189,20 @@ public final class AWTGVTFont implements GVTFont {
      * Returns the size of this font.
      */
     public float getSize() {
-        return awtFont.getSize();
+        return awtFont.getSize2D();
     }
 
     /**
-     * Returns the kerning value of this character pair.
+     * Returns the horizontal kerning value of this glyph pair.
      */
-    public float getKerning(String unicode1, String unicode2) {
+    public float getHKern(int glyphCode1, int glyphCode2) {
+        return 0f;
+    }
+
+    /**
+     * Returns the vertical kerning value of this glyph pair.
+     */
+    public float getVKern(int glyphCode1, int glyphCode2) {
         return 0f;
     }
 

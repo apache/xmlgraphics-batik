@@ -161,16 +161,6 @@ public class TextLayoutAdapter implements TextSpanLayout {
     }
 
     /**
-     * Returns the dimension of the completed glyph layout in the
-     * primary text advance direction (e.g. width, for RTL or LTR text).
-     * (This is the dimension that should be used for positioning
-     * adjacent layouts.)
-     */
-    public float getAdvance() {
-        return layout.getAdvance();
-    }
-
-    /**
      * Returns the current text position at the completion
      * of glyph layout.
      * (This is the position that should be used for positioning
@@ -180,15 +170,49 @@ public class TextLayoutAdapter implements TextSpanLayout {
         return new Point2D.Float(layout.getAdvance(), 0f);
     }
 
+    public Point2D getTextPathAdvance() {
+        return getAdvance2D();
+    }
+
+    /**
+     * Returns the glyph index of the glyph that has the specified char index.
+     *
+     * @param charIndex The original index of the character in the text node's
+     * text string.
+     * @return The index of the matching glyph in this layout's glyph vector,
+     *         or -1 if a matching glyph could not be found.
+     */
+    private int getGlyphIndex(int charIndex) {
+        int currentChar = aci.getBeginIndex();
+        int numGlyphs = getGlyphCount();
+        for (int i = 0; i < numGlyphs; i++) {
+            aci.setIndex(currentChar);
+            int glyphCharIndex = ((Integer)aci.getAttribute(
+                GVTAttributedCharacterIterator.TextAttribute.CHAR_INDEX)).intValue();
+            if (charIndex == glyphCharIndex) {
+                return i;
+            }
+            currentChar += getCharacterCount(i, i);
+        }
+        return -1;
+    }
+
+
     /**
      * Returns a Shape which encloses the currently selected glyphs
-     * as specified by glyph indices <tt>begin/tt> and <tt>end</tt>.
-     * @param begin the index of the first glyph in the contiguous selection.
-     * @param end the index of the last glyph in the contiguous selection.
+     * as specified by the character indices.
+     *
+     * @param beginCharIndex the index of the first char in the contiguous selection.
+     * @param endCharIndex the index of the last char in the contiguous selection.
+     * @param selectionLeftToRight Indicates the selection direction.
+     * @return The highlight shape or null if the spacified char range does not
+     * overlap with the chars in this layout.
      */
-    public Shape getLogicalHighlightShape(int begin, int end) {
+    public Shape getHighlightShape(int beginCharIndex, int endCharIndex,
+                                   boolean selectionLeftToRight) {
         return transform.createTransformedShape(
-                  layout.getLogicalHighlightShape(begin, end));
+            layout.getLogicalHighlightShape(Math.max(0,getGlyphIndex(beginCharIndex)),
+                Math.max(getGlyphCount()-1, getGlyphIndex(endCharIndex))));
     }
 
     /**
@@ -211,11 +235,21 @@ public class TextLayoutAdapter implements TextSpanLayout {
         if (hit.getCharIndex() == -1) {
             return null;
         }
-        return new TextHit(hit.getCharIndex(), hit.isLeadingEdge());
+        aci.setIndex(hit.getCharIndex() + aci.getBeginIndex());
+        int charIndex = ((Integer)aci.getAttribute(
+            GVTAttributedCharacterIterator.TextAttribute.CHAR_INDEX)).intValue();
+        return new TextHit(charIndex, hit.isLeadingEdge());
     }
 
     public boolean isVertical() {
         return layout.isVertical();
+    }
+
+    /**
+     * Returns true if this layout in on a text path.
+     */
+    public boolean isOnATextPath() {
+        return false;
     }
 
     public int getGlyphCount() {
@@ -239,6 +273,14 @@ public class TextLayoutAdapter implements TextSpanLayout {
         }
         return endGlyphIndex - startGlyphIndex + 1;
     }
+
+    /**
+     * Returns true if the text direction in this layout is from left to right.
+     */
+    public boolean isLeftToRight() {
+       return false;
+    }
+
 
 //protected
 

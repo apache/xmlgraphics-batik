@@ -39,6 +39,7 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
     private Glyph[] glyphs;
     private FontRenderContext frc;
     private GeneralPath outline;
+    private Rectangle2D logicalBounds;
     private Point2D[] defaultGlyphPositions;
     private Shape[] glyphLogicalBounds;
     private boolean[] glyphVisible;
@@ -48,6 +49,7 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
         this.glyphs = glyphs;
         this.frc = frc;
         outline = null;
+        logicalBounds = null;
         defaultGlyphPositions = new Point2D.Float[glyphs.length];
         glyphLogicalBounds = new Shape[glyphs.length];
         glyphVisible = new boolean[glyphs.length];
@@ -156,13 +158,20 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
 
             if (glyphVisible[i]) {
                 AffineTransform glyphTransform = getGlyphTransform(i);
-                GlyphMetrics glyphMetrics = getGlyphMetrics(i);
+                GVTGlyphMetrics glyphMetrics = getGlyphMetrics(i);
 
                 if (glyphTransform == null && ascent != 0) {
 
                     float glyphX = (float)getGlyphPosition(i).getX();
                     float glyphY =  (float)getGlyphPosition(i).getY() - ascent;
-                    float glyphWidth = glyphMetrics.getAdvance();
+                    float glyphWidth = glyphMetrics.getHorizontalAdvance();
+                    if (i < getNumGlyphs()-1) {
+                        float nextY = (float)getGlyphPosition(i+1).getY() - ascent;
+                        if (glyphY == nextY) {
+                            float nextX = (float)getGlyphPosition(i+1).getX();
+                            glyphWidth = Math.max(glyphWidth, nextX - glyphX);
+                        }
+                    }
                     float glyphHeight = ascent + descent;
 
                     glyphLogicalBounds[i] = new Rectangle2D.Double(glyphX, glyphY, glyphWidth, glyphHeight);
@@ -188,7 +197,8 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
      * Returns the metrics of the glyph at the specified index into this
      * GlyphVector.
      */
-    public GlyphMetrics getGlyphMetrics(int glyphIndex) {
+    public GVTGlyphMetrics getGlyphMetrics(int glyphIndex) {
+
         if (glyphIndex < 0 || (glyphIndex > glyphs.length-1)) {
             throw new IndexOutOfBoundsException("glyphIndex: " + glyphIndex
             + ", is out of bounds. Should be between 0 and " + (glyphs.length-1) + ".");
@@ -202,15 +212,16 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
         if (glyphIndex < glyphs.length - 1) {
             // check for kerning
             if (font != null) {
-                float kern = font.getKerning(glyphs[glyphIndex].getUnicode(),
-                                             glyphs[glyphIndex+1].getUnicode());
-                return glyphs[glyphIndex].getGlyphMetrics(kern);
+                float hkern = font.getHKern(glyphs[glyphIndex].getGlyphCode(),
+                                            glyphs[glyphIndex+1].getGlyphCode());
+                float vkern = font.getVKern(glyphs[glyphIndex].getGlyphCode(),
+                                            glyphs[glyphIndex+1].getGlyphCode());
+                return glyphs[glyphIndex].getGlyphMetrics(hkern, vkern);
             }
         }
 
         // get a normal metrics
         return glyphs[glyphIndex].getGlyphMetrics();
-
     }
 
     /**
@@ -300,16 +311,21 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
         return glyphs[glyphIndex].getOutline();
     }
 
-    /**
+   /**
      *  Returns the logical bounds of this GlyphVector.
      */
     public Rectangle2D getLogicalBounds() {
-        // get outline of glyph vector and translate so that it is relative to the
-        // positon of the first glyph
-        Shape outline = getOutline();
-        Point2D firstPos = glyphs[0].getPosition();
-        AffineTransform tr = AffineTransform.getTranslateInstance(-firstPos.getX(), -firstPos.getY());
-        return tr.createTransformedShape(outline).getBounds2D();
+        if (logicalBounds == null) {
+            GeneralPath logicalBoundsPath = new GeneralPath();
+            for (int i = 0; i < getNumGlyphs(); i++) {
+                Shape glyphLogicalBounds = getGlyphLogicalBounds(i);
+                if (glyphLogicalBounds != null) {
+                    logicalBoundsPath.append(glyphLogicalBounds, false);
+                }
+            }
+            logicalBounds = logicalBoundsPath.getBounds2D();
+        }
+        return logicalBounds;
     }
 
     /**
@@ -362,7 +378,8 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
     }
 
     /**
-     * Assigns default positions to each glyph in this GlyphVector.
+     * Assigns default positions to each glyph in this GlyphVector. The default
+     * layout is horizontal.
      */
     public void performDefaultLayout() {
         float currentX = 0;
@@ -373,7 +390,8 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
             defaultGlyphPositions[i] = getGlyphPosition(i);
             glyphLogicalBounds[i] = null;
             currentX += glyphs[i].getHorizAdvX();
-          //  currentY += glyphs[i].getVertAdvY();  // only do this for vertical text
+            logicalBounds = null;
+            outline = null;
         }
     }
 
@@ -389,6 +407,7 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
         glyphs[glyphIndex].setPosition(newPos);
         glyphLogicalBounds[glyphIndex] = null;
         outline = null;
+        logicalBounds = null;
     }
 
     /**
@@ -402,6 +421,7 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
         glyphs[glyphIndex].setTransform(newTX);
         glyphLogicalBounds[glyphIndex] = null;
         outline = null;
+        logicalBounds = null;
     }
 
     /**
@@ -410,6 +430,7 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
     public void setGlyphVisible(int glyphIndex, boolean visible) {
         glyphVisible[glyphIndex] = visible;
         outline = null;
+        logicalBounds = null;
         glyphLogicalBounds[glyphIndex] = null;
     }
 
