@@ -356,11 +356,26 @@ class BridgeEventSupport implements SVGConstants {
                         ua.displayError(new Exception("scripting error: "+
                                                       e.getMessage()));
                 }
-            } else
-                if (ua != null)
+            } else {
+                if (ua != null) {
                     ua.displayError(new Exception("unknown language: "+language));
-        }
-    }
+		}
+	    }
+	}
+
+	// add a function definition 'alert'
+	final Interpreter interpret =
+	    ctx.getInterpreterPool().getInterpreter(doc, language);
+	if (interpret != null) {
+	    try {
+		javax.swing.JOptionPane pane = new javax.swing.JOptionPane();
+		interpret.bindObject("pane", pane);
+		interpret.evaluate("function alert(msg) { pane.showMessageDialog(null, msg); }");
+	    } catch (Exception ex) {
+		// nothing to do
+	    }
+	}
+   }
 
     private static class GVTUnloadListener
         implements EventListener {
