@@ -526,12 +526,12 @@ public interface SVGConstants extends CSSConstants {
     String TRANSFORM_SKEWY = "skewY";
     String TRANSFORM_MATRIX = "matrix";
 
-    String PATH_CLOSE = "Z ";
-    String PATH_CUBIC_TO = "C ";
-    String PATH_MOVE = "M ";
-    String PATH_LINE_TO = "L ";
-    String PATH_VERTICAL_LINE_TO = "V ";
-    String PATH_HORIZONTAL_LINE_TO = "H ";
-    String PATH_QUAD_TO = "Q ";
-    String PATH_SMOOTH_QUAD_TO = "T ";
+    String PATH_CLOSE = "Z";
+    String PATH_CUBIC_TO = "C";
+    String PATH_MOVE = "M";
+    String PATH_LINE_TO = "L";
+    String PATH_VERTICAL_LINE_TO = "V";
+    String PATH_HORIZONTAL_LINE_TO = "H";
+    String PATH_QUAD_TO = "Q";
+    String PATH_SMOOTH_QUAD_TO = "T";
 }
