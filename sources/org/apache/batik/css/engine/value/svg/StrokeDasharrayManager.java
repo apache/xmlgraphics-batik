@@ -10,10 +10,13 @@ package org.apache.batik.css.engine.value.svg;
 
 import org.apache.batik.util.CSSConstants;
 
+import org.apache.batik.css.engine.CSSContext;
 import org.apache.batik.css.engine.CSSEngine;
+import org.apache.batik.css.engine.CSSStylableElement;
+import org.apache.batik.css.engine.StyleMap;
 
-import org.apache.batik.css.engine.value.AbstractValueManager;
 import org.apache.batik.css.engine.value.FloatValue;
+import org.apache.batik.css.engine.value.LengthManager;
 import org.apache.batik.css.engine.value.ListValue;
 import org.apache.batik.css.engine.value.Value;
 import org.apache.batik.css.engine.value.ValueManager;
@@ -22,6 +25,7 @@ import org.w3c.css.sac.LexicalUnit;
 
 import org.w3c.dom.DOMException;
 import org.w3c.dom.css.CSSPrimitiveValue;
+import org.w3c.dom.css.CSSValue;
 
 /**
  * This class provides a factory for the 'stroke-dasharray' property values.
@@ -29,7 +33,7 @@ import org.w3c.dom.css.CSSPrimitiveValue;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class StrokeDasharrayManager extends AbstractValueManager {
+public class StrokeDasharrayManager extends LengthManager {
     
     /**
      * Implements {@link ValueManager#isInheritedProperty()}.
@@ -57,8 +61,6 @@ public class StrokeDasharrayManager extends AbstractValueManager {
      */
     public Value createValue(LexicalUnit lu, CSSEngine engine)
         throws DOMException {
-        // !!! TODO: support lengths.
-
         switch (lu.getLexicalUnitType()) {
         case LexicalUnit.SAC_INHERIT:
             return SVGValueConstants.INHERIT_VALUE;
@@ -73,23 +75,7 @@ public class StrokeDasharrayManager extends AbstractValueManager {
 	default:
             ListValue lv = new ListValue(' ');
             do {
-                Value v;
-                switch (lu.getLexicalUnitType()) {
-                case LexicalUnit.SAC_INTEGER:
-                    v = new FloatValue(CSSPrimitiveValue.CSS_NUMBER,
-                                       lu.getIntegerValue());
-                    break;
-
-                case LexicalUnit.SAC_REAL:
-                    v = new FloatValue(CSSPrimitiveValue.CSS_NUMBER,
-                                       lu.getFloatValue());
-                    break;
-
-                default:
-                    throw createInvalidLexicalUnitDOMException
-                        (lu.getLexicalUnitType());
-                }
-
+                Value v = super.createValue(lu, engine);
                 lv.append(v);
                 lu = lu.getNextLexicalUnit();
                 if (lu != null &&
@@ -115,5 +101,37 @@ public class StrokeDasharrayManager extends AbstractValueManager {
             return SVGValueConstants.NONE_VALUE;
         }
         throw createInvalidIdentifierDOMException(value);
+    }
+
+    /**
+     * Implements {@link
+     * ValueManager#computeValue(CSSStylableElement,String,CSSEngine,int,StyleMap,Value)}.
+     */
+    public Value computeValue(CSSStylableElement elt,
+                              String pseudo,
+                              CSSEngine engine,
+                              int idx,
+                              StyleMap sm,
+                              Value value) {
+        switch (value.getCssValueType()) {
+        case CSSValue.CSS_PRIMITIVE_VALUE:
+            return value;
+        }
+        
+        ListValue lv = (ListValue)value;
+        ListValue result = new ListValue(' ');
+        for (int i = 0; i < lv.getLength(); i++) {
+            result.append(super.computeValue(elt, pseudo, engine, idx, sm,
+                                             lv.item(i)));
+        }
+        return result;
+    }
+
+    /**
+     * Indicates the orientation of the property associated with
+     * this manager.
+     */
+    protected int getOrientation() {
+        return BOTH_ORIENTATION;
     }
 }

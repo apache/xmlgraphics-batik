@@ -123,8 +123,7 @@ public class SVGColorManager extends ColorManager {
             }
             lu = lu.getNextLexicalUnit();
             if (lu == null) {
-                throw createInvalidLexicalUnitDOMException
-                    (lu.getLexicalUnitType());
+                throw createInvalidLexicalUnitDOMException((short)-1);
             }
             icc.append(getColorValue(lu));
             lu = lu.getNextLexicalUnit();

@@ -542,7 +542,7 @@ public abstract class AbstractNode
     /**
      * Checks the validity of a node to be inserted.
      */
-    protected void checkChildType(Node n) {
+    protected void checkChildType(Node n, boolean replace) {
         throw createDOMException(DOMException.HIERARCHY_REQUEST_ERR,
                                  "children.not.allowed",
                                  new Object[] { new Integer(getNodeType()),

@@ -94,8 +94,9 @@ public class SVGPaintManager extends SVGColorManager {
             for (int i = 0; i < lv.getLength(); i++) {
                 result.append(lv.item(i));
             }
+        } else {
+            result.append(v);
         }
-        result.append(v);
         return result;
     }
 

@@ -73,7 +73,7 @@ public abstract class AbstractParentNode extends AbstractNode {
 		 new Object[] { new Integer(refChild.getNodeType()),
 				refChild.getNodeName() });
 	}
-	checkAndRemove(newChild);
+	checkAndRemove(newChild, false);
 
 	if (newChild.getNodeType() == DOCUMENT_FRAGMENT_NODE) {
 	    Node n = newChild.getFirstChild();
@@ -114,7 +114,7 @@ public abstract class AbstractParentNode extends AbstractNode {
 		 new Object[] { new Integer(oldChild.getNodeType()),
 				oldChild.getNodeName() });
 	}
-	checkAndRemove(newChild);
+	checkAndRemove(newChild, true);
 
 	if (newChild.getNodeType() == DOCUMENT_FRAGMENT_NODE) {
 	    Node n  = newChild.getLastChild();
@@ -187,7 +187,7 @@ public abstract class AbstractParentNode extends AbstractNode {
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#appendChild(Node)}.
      */
     public Node appendChild(Node newChild) throws DOMException {
-	checkAndRemove(newChild);
+	checkAndRemove(newChild, false);
 
 	if (newChild.getNodeType() == DOCUMENT_FRAGMENT_NODE) {
 	    Node n = newChild.getFirstChild();
@@ -415,8 +415,8 @@ public abstract class AbstractParentNode extends AbstractNode {
      * Checks the validity of a node to be inserted, and removes it from
      * the document if needed.
      */
-    protected void checkAndRemove(Node n) {
-	checkChildType(n);
+    protected void checkAndRemove(Node n, boolean replace) {
+	checkChildType(n, replace);
 	if (isReadonly()) {
 	    throw createDOMException(DOMException.NO_MODIFICATION_ALLOWED_ERR,
 				     "readonly.node",

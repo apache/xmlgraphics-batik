@@ -1052,7 +1052,6 @@ public abstract class CSSEngine {
             ImportRule ir = (ImportRule)r;
             parseStyleSheet(ir, ir.getURI());
         }
-        
     }
 
     /**
@@ -1068,7 +1067,21 @@ public abstract class CSSEngine {
         short   dorg = dest.getOrigin(idx);
         boolean dimp = dest.isImportant(idx);
 
-        if (dval == null || dorg != StyleMap.USER_ORIGIN || !dimp) {
+        boolean cond = dval == null;
+        if (!cond) {
+            switch (dorg) {
+            case StyleMap.USER_ORIGIN:
+                cond = !dimp;
+                break;
+            case StyleMap.AUTHOR_ORIGIN:
+                cond = !dimp || imp;
+                break;
+            default:
+                cond = true;
+            }
+        }
+
+        if (cond) {
             dest.putValue(idx, sval);
             dest.putImportant(idx, imp);
             dest.putOrigin(idx, origin);
@@ -1704,7 +1717,7 @@ public abstract class CSSEngine {
                     for (int i = getNumberOfProperties() - 1; i >= 0; --i) {
                         if (updated[i]) {
                             props[count++] = i;
-                    }
+                        }
                     }
                     firePropertiesChangedEvent(elt, props);
                     

@@ -155,7 +155,6 @@ public class FontSizeManager extends LengthManager {
         case CSSPrimitiveValue.CSS_PT:
             ctx = engine.getCSSContext();
             v = value.getFloatValue();
-            // <!> FIXME should that 72 be 96?
             return new FloatValue(CSSPrimitiveValue.CSS_NUMBER,
                                   v * 25.4f /
                                   (72f * ctx.getPixelUnitToMillimeter()));

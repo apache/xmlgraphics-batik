@@ -41,7 +41,7 @@ public abstract class AbstractDocumentFragment
     /**
      * Checks the validity of a node to be inserted.
      */
-    protected void checkChildType(Node n) {
+    protected void checkChildType(Node n, boolean replace) {
 	switch (n.getNodeType()) {
 	case ELEMENT_NODE:
 	case PROCESSING_INSTRUCTION_NODE:

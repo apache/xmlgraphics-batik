@@ -254,7 +254,7 @@ public abstract class AbstractAttr extends AbstractParentNode implements Attr {
     /**
      * Checks the validity of a node to be inserted.
      */
-    protected void checkChildType(Node n) {
+    protected void checkChildType(Node n, boolean replace) {
 	switch (n.getNodeType()) {
 	case TEXT_NODE:
 	case ENTITY_REFERENCE_NODE:

@@ -487,7 +487,7 @@ public abstract class AbstractDocument
     /**
      * Checks the validity of a node to be inserted.
      */
-    protected void checkChildType(Node n) {
+    protected void checkChildType(Node n, boolean replace) {
 	short t = n.getNodeType();
 	switch (t) {
 	case ELEMENT_NODE:
@@ -504,7 +504,8 @@ public abstract class AbstractDocument
 		                                    new Integer(t),
 						    n.getNodeName() });
 	}
-	if ((t == ELEMENT_NODE && getDocumentElement() != null) ||
+	if (!replace &&
+            (t == ELEMENT_NODE && getDocumentElement() != null) ||
 	    (t == DOCUMENT_TYPE_NODE && getDoctype() != null)) {
 	    throw createDOMException(DOMException.HIERARCHY_REQUEST_ERR,
 				     "child.type",
