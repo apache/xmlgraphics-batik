@@ -344,6 +344,15 @@ To display the available targets type:
     </jar>
   </target>
 
+  <target name="java-binding.jar" depends="compiletestjars" >
+    <jar manifest="${samples}/tests/resources/java/resources/com/test/script/java-binding.mf"
+         jarfile="${samples}/tests/spec/scripting/java-binding.jar">
+      <fileset dir="${samples}/tests/resources/java/classes">
+        <include name="com/test/script/EventListenerInitializerImpl*.class"/>
+      </fileset>
+    </jar>
+  </target>
+
 
   <target name       ="compile"
           depends    ="init"
