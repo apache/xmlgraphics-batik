@@ -210,6 +210,9 @@ public class SpecularLightingRed extends AbstractTiledRed{
                     a = (int)(mult*Math.pow(N[0]*L[0] + N[1]*L[1] + N[2]*L[2], 
                                             specularExponent) + 0.5);
                     
+                    if ((a & 0xFFFFFF00) != 0)
+                        a = ((a & 0x80000000) != 0)?0:255;
+
                     pixels[p++] = (a << 24 | pixel);
                 }
                 p += adjust;
