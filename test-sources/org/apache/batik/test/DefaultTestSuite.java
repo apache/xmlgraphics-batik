@@ -59,7 +59,11 @@ public class DefaultTestSuite extends AbstractTest implements TestSuite {
         while(iter.hasNext()){
             Test t = (Test)iter.next();
             System.err.println("Running " + t.getName());
-            report.addReport(t.run());
+            TestReport tr = t.run();
+            if (tr == null){
+                System.out.println("ERROR" + t.getId() + " returned a null report");
+            }
+            report.addReport(tr);
         }
 
         return report;
