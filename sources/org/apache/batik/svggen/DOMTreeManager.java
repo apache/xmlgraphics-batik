@@ -70,13 +70,13 @@ public class DOMTreeManager implements SVGSyntax, ErrorConstants {
      * Set of group managers that build groups for
      * this manager
      */
-    private Vector groupManagers = new Vector();
+    protected Vector groupManagers = new Vector();
 
     /**
      * Set of definitions that are to be placed at the top of the
      * document tree
      */
-    private List genericDefSet = new LinkedList();
+    protected List genericDefSet = new LinkedList();
 
     /**
      * Default SVG GraphicContext state
@@ -86,7 +86,7 @@ public class DOMTreeManager implements SVGSyntax, ErrorConstants {
     /**
      * Top level group
      */
-    private Element topLevelGroup;
+    protected Element topLevelGroup;
 
     /**
      * Used to convert the Java 2D API graphic context state
@@ -99,18 +99,18 @@ public class DOMTreeManager implements SVGSyntax, ErrorConstants {
      * The context that stores the domFactory, the imageHandler
      * and the extensionHandler.
      */
-    private SVGGeneratorContext generatorContext;
+    protected SVGGeneratorContext generatorContext;
 
     /**
      * Converters used bVy this object to translate graphic context
      * attributes
      */
-    private SVGBufferedImageOp filterConverter;
+    protected SVGBufferedImageOp filterConverter;
 
     /**
      * Set of definitions which can be used by custom extensions
      */
-    private List otherDefs;
+    protected List otherDefs;
 
     /**
      * Constructor
@@ -180,7 +180,7 @@ public class DOMTreeManager implements SVGSyntax, ErrorConstants {
     /**
      * Reset the state of this object to handler a new topLevelGroup
      */
-    private void recycleTopLevelGroup(){
+    protected void recycleTopLevelGroup(){
         recycleTopLevelGroup(true);
     }
 
@@ -188,7 +188,7 @@ public class DOMTreeManager implements SVGSyntax, ErrorConstants {
     /**
      * Reset the state of this object to handler a new topLevelGroup
      */
-    private void recycleTopLevelGroup(boolean recycleConverters){
+    protected void recycleTopLevelGroup(boolean recycleConverters){
         // First, recycle group managers
         int nManagers = groupManagers.size();
         for(int i=0; i<nManagers; i++){
@@ -210,8 +210,9 @@ public class DOMTreeManager implements SVGSyntax, ErrorConstants {
     }
 
     /**
-     * Sets the topLevelGroup to the input element. This will throw an exception
-     * if the input element is not of type 'g' or if it is null.
+     * Sets the topLevelGroup to the input element. This will throw an
+     * exception if the input element is not of type 'g' or if it is
+     * null.
      */
     public void setTopLevelGroup(Element topLevelGroup){
         if(topLevelGroup == null)
@@ -275,8 +276,8 @@ public class DOMTreeManager implements SVGSyntax, ErrorConstants {
      *         definitions
      */
     public Element getGenericDefinitions() {
-        // when called several times, this will create several generic definition
-        // elements... not sure it is desired behavior...
+        // when called several times, this will create several generic
+        // definition elements... not sure it is desired behavior...
         Element genericDefs =
             generatorContext.domFactory.createElementNS(SVG_NAMESPACE_URI,
                                                         SVG_DEFS_TAG);
