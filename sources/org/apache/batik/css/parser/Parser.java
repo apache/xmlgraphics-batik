@@ -1679,7 +1679,7 @@ public class Parser
             }
             return current;
         } catch (ParseException e) {
-            reportError(e.getMessage());
+            errorHandler.error(createCSSParseException(e.getMessage()));
             return current;
         }
     }

@@ -50,6 +50,7 @@ import org.w3c.dom.svg.SVGPreserveAspectRatio;
  * A collection of utility methods for SVG.
  *
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
+ * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
 public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
@@ -148,21 +149,41 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
      * @param ua the user agent
      */
     public static boolean matchUserAgent(Element elt, UserAgent ua) {
-        if (elt.hasAttributeNS(null, SVG_SYSTEM_LANGUAGE_ATTRIBUTE)) {
-            // Evaluates the system languages
+        test: if (elt.hasAttributeNS(null, SVG_SYSTEM_LANGUAGE_ATTRIBUTE)) {
+            // Tests the system languages.
             String sl = elt.getAttributeNS(null, SVG_SYSTEM_LANGUAGE_ATTRIBUTE);
             StringTokenizer st = new StringTokenizer(sl, ",");
             while (st.hasMoreTokens()) {
                 String s = st.nextToken();
                 if (matchUserLanguage(s, ua.getLanguages())) {
-                    return true;
+                    break test;
                 }
             }
             return false;
-        } else {
-            return true;
         }
-        // <!> FIXME TODO requiredFeatures, requiredExtensions
+        if (elt.hasAttributeNS(null, SVG_REQUIRED_FEATURES_ATTRIBUTE)) {
+            // Tests the system features.
+            String sf = elt.getAttributeNS(null, SVG_REQUIRED_FEATURES_ATTRIBUTE);
+            StringTokenizer st = new StringTokenizer(sf, " ");
+            while (st.hasMoreTokens()) {
+                String s = st.nextToken();
+                if (!ua.hasFeature(s)) {
+                    return false;
+                }
+            }
+        }
+        if (elt.hasAttributeNS(null, SVG_REQUIRED_EXTENSIONS_ATTRIBUTE)) {
+            // Tests the system features.
+            String sf = elt.getAttributeNS(null, SVG_REQUIRED_EXTENSIONS_ATTRIBUTE);
+            StringTokenizer st = new StringTokenizer(sf, " ");
+            while (st.hasMoreTokens()) {
+                String s = st.nextToken();
+                if (!ua.supportExtension(s)) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     /**

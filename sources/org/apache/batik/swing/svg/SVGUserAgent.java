@@ -60,4 +60,9 @@ public interface SVGUserAgent {
      */
     void openLink(String uri);
 
+    /**
+     * Tells whether the given extension is supported by this
+     * user agent.
+     */
+    boolean supportExtension(String s);
 }

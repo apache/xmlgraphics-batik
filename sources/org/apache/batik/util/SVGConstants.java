@@ -33,6 +33,14 @@ public interface SVGConstants extends CSSConstants {
         "http://www.w3.org/2000/svg";
 
     /////////////////////////////////////////////////////////////////////////
+    // SVG features
+    /////////////////////////////////////////////////////////////////////////
+
+    String SVG_ORG_W3C_SVG_FEATURE = "org.w3c.svg";
+    String SVG_ORG_W3C_SVG_LANG_FEATURE = "org.w3c.svg.lang";
+    String SVG_ORG_W3C_SVG_STATIC_FEATURE = "org.w3c.svg.static";
+
+    /////////////////////////////////////////////////////////////////////////
     // SVG tags
     /////////////////////////////////////////////////////////////////////////
 
@@ -210,6 +218,8 @@ public interface SVGConstants extends CSSConstants {
     String SVG_REF_X_ATTRIBUTE = "refX";
     String SVG_REF_Y_ATTRIBUTE = "refY";
     String SVG_RENDERING_INTENT_ATTRIBUTE = "rendering-intent";
+    String SVG_REQUIRED_FEATURES_ATTRIBUTE = "requiredFeatures";
+    String SVG_REQUIRED_EXTENSIONS_ATTRIBUTE = "requiredExtensions";
     String SVG_RESULT_ATTRIBUTE = "result";
     String SVG_RESULT_SCALE_ATTRIBUTE = "resultScale";
     String SVG_RX_ATTRIBUTE = "rx";

@@ -973,7 +973,10 @@ public class JSVGViewerFrame
     public class ResetTransformAction extends AbstractAction {
         public ResetTransformAction() {}
         public void actionPerformed(ActionEvent e) {
-            svgCanvas.setRenderingTransform(initialTransform);
+            svgCanvas.setFragmentIdentifier(null);
+            if (initialTransform != null) {
+                svgCanvas.setRenderingTransform(initialTransform);
+            }
         }
     }
 
@@ -1586,6 +1589,14 @@ public class JSVGViewerFrame
          */
         public void openLink(String uri) {
             application.openLink(uri);
+        }
+
+        /**
+         * Tells whether the given extension is supported by this
+         * user agent.
+         */
+        public boolean supportExtension(String s) {
+            return false;
         }
     }
 }

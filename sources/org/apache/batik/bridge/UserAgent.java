@@ -94,4 +94,16 @@ public interface UserAgent {
      * client area in the UserAgent.
      */
     Point getClientAreaLocationOnScreen();
+
+    /**
+     * Tells whether the given feature is supported by this
+     * user agent.
+     */
+    boolean hasFeature(String s);
+
+    /**
+     * Tells whether the given extension is supported by this
+     * user agent.
+     */
+    boolean supportExtension(String s);
 }
