@@ -1,0 +1,243 @@
+<?xml version="1.0"?>
+<!DOCTYPE document SYSTEM "./dtd/document-v10.dtd">
+
+<!-- ========================================================================= -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.        -->
+<!--                                                                           -->
+<!-- This software is published under the terms of the Apache Software License -->
+<!-- version 1.1, a copy of which has been included with this distribution in  -->
+<!-- the LICENSE file.                                                         -->
+<!-- ========================================================================= -->
+
+<!-- ========================================================================= -->
+<!-- author cjolif@ilog.fr                                                     -->
+<!-- version $Id$   -->      
+<!-- ========================================================================= -->
+<document>
+    <header>
+        <title>How to use scripting in Batik?</title>
+        <authors>
+            <person name="Christophe Jolif" email="cjolif@ilog.fr"/>
+        </authors>
+    </header>
+
+    <body>
+        <s1 title="Introduction">
+           <p>
+               Batik 1.0 is a static SVG implementation, that's why scripting cannot be used to modify the rendering of the SVG elements on the screen. However you will find below a little introduction on scripting basics, on how it could be useful through an example and on how you can go a little bit further.
+           </p>
+        </s1>
+        <s1 title="Scripting Basics">
+           <p>
+               As it is one of the most popular scripting language and as the SVG specification states that an SVG conforming implementation should support it, the ECMAScript (JavaScript) language is supported in Batik through the Mozilla ECMAScript interpreter called Rhino. Even if it is the only scripting language provided with the Batik standart distribution, other languages such a Python or Tcl can also be supported. All examples in this section will use ECMAScript.
+           </p>
+           <p>
+               There are two places in an SVG file where you can put scripts. 
+           </p>    
+           <p>  
+               The first one is in the &lt;script&gt; element where you can put the
+	       definition of your functions or some general code to be executed when the
+	       element will be read.
+           </p>
+	   <source>
+
+&lt;svg width="100" height="100"&gt;
+  &lt;script type="text/ecmascript"&gt;
+    // ECMAScript code to be executed 
+  &lt;/script&gt;
+  &lt;!-- Your SVG elements --&gt;
+&lt;/svg&gt;</source>
+	   <p>
+	       You can also put script in respond to user or document events using attributes on SVG elements. As you have seen in previous example, the scripting language must be set on the &lt;script&gt; element, however for event handling the default language type "text/ecmascript" is already set. If you want to change it you can use the contentScriptType attribute on the &lt;svg&gt; element.
+	   </p>
+	   <p>
+	       In most cases, the event attribute will only call a function defined in a &lt;script&gt; section, however as you can see below it can also contains regular code.
+	   </p>
+	   <source>
+
+&lt;svg width="100" height="100"&gt;
+  &lt;rect x="0" y="0" width="10" height="10" 
+         onclick="evt.target.setAttribute('fill', 'blue')"/&gt;
+  &lt;!-- Your SVG elements --&gt;
+&lt;/svg&gt;</source>
+           <p>For more information on using scripting in SVG you can have a look at:</p>
+           <ul>
+  	     <li><link href="http://www.w3.org/TR/SVG/script.html">scripting chapter of SVG specification</link> for advanced information on scripting in SVG.</li>
+	     <li><link href="http://www.ecma.ch/ecma1/stand/ecma-262.htm">ECMAScript specification</link> for advanced information on ECMAScript language.</li>
+           </ul>
+        </s1>
+        <s1 title="Scripting Uses in Batik">
+	<p>Batik release 1.0 is a static SVG implementation, that's why in this version you can't use scripting to move or change graphic objects on the screen, however it can still be usefull for other purposes.</p>
+	<p>The following simplified example that you can find in your Batik distribution uses the Java Sound API through scripting to simulate a piano in SVG:</p>
+	<source>
+
+&lt;svg width="420" height="64"&gt;
+    &lt;defs&gt;
+      &lt;style type="text/css"&gt;
+          #blank {fill:white;stroke:black}
+	  #black {fill:black;stroke:black}
+      &lt;/style&gt;
+      &lt;script type="text/ecmascript"&gt;
+	  importPackage(Packages.javax.sound.midi)
+          var midiChannel
+          var lastId = -1
+	  synthesizer = MidiSystem.synthesizer
+	  synthesizer.open()
+	  var instruments = synthesizer.defaultSoundbank.instruments
+	  // load the first instrument
+	  synthesizer.loadInstrument(instruments[0])
+          midiChannel = synthesizer.getChannels()[0]
+	  midiChannel.programChange(0)
+
+          function down(evt) {
+		target = evt.currentTarget
+		midiChannel.noteOn(target.id, 64)
+	        lastId = target.id
+          }
+
+          function drag(evt) {
+		if (lastId != -1) {
+		  target = evt.currentTarget
+		  midiChannel.noteOn(target.id, 64)
+		  lastId = target.id
+		}
+          }
+      &lt;/script&gt;
+      &lt;rect id="blank" x="0" y="0" width="10" height="60"/&gt;
+      &lt;rect id="black" x="0" y="0" width="6" height="33"/&gt;
+    &lt;/defs&gt;
+    &lt;g&gt;
+      &lt;use onmousedown="down(evt)" onmouseover="drag(evt)" id="24" 
+          xlink:href="#blank"/&gt;
+      &lt;use onmousedown="down(evt)" onmouseover="drag(evt)" id="26" x="10" 
+          xlink:href="#blank"/&gt;
+      &lt;use onmousedown="down(evt)" onmouseover="drag(evt)" id="25" x="7" 
+          xlink:href="#black"/&gt;
+      &lt;use onmousedown="down(evt)" onmouseover="drag(evt)" id="28" x="20" 
+          xlink:href="#blank"/&gt;
+      &lt;use onmousedown="down(evt)" onmouseover="drag(evt)" id="27" x="17" 
+          xlink:href="#black"/&gt;
+      &lt;!-- some other keys as in batikMusic.svg from the distribution --&gt;
+      &lt;use onmousedown="down(evt)" onmouseover="drag(evt)" id="93" x="400" 
+          xlink:href="#blank"/&gt;
+      &lt;use onmousedown="down(evt)" onmouseover="drag(evt)" id="92" x="397" 
+          xlink:href="#black"/&gt;
+      &lt;use onmousedown="down(evt)" onmouseover="drag(evt)" id="95" x="410" 
+          xlink:href="#blank"/&gt;
+      &lt;use onmousedown="down(evt)" onmouseover="drag(evt)" id="94" x="407" 
+          xlink:href="#black"/&gt;
+    &lt;/g&gt;
+&lt;/svg&gt;</source>
+        <p>
+	You can see in the above example that the &lt;script&gt; element contains
+	some code that will be executed when the element is read (the loading of the first
+	instrument in Java Sound bank for example), and also the definition of two functions:
+	<code>down</code> and <code>drag</code>.
+	</p>
+	<p>
+	These functions will be called thanks to the Batik event handling mechanism in answer to
+	user events. 
+	<code>down</code> is registered to listen to mouse down events on the piano keys and 
+	<code>drag</code> to listen to mouse over events.
+	</p>
+	<p>
+	When the user presses the mouse down on a piano key, the <code>down</code> function is called,
+	it gets the SVG element corresponding to the key on which the event listener as been registered
+	(<code>evt.currentTarget</code>) and plays the note corresponding to that key by retrieving it
+	from the ID set on the element (<code>target.id</code>).
+	A similar job is done in the <code>drag</code> function.
+	</p>
+	<p>
+	To sum up, this sample shows that the Batik 1.0 release is able to handle events and perform
+	some actions in ECMAScript when receiving them. Here the action is to play music with the Java 
+	Sound API, it could be other kind of job (logging user actions, performing tasks in answer
+	to user actions...).
+	</p>
+        </s1>
+        <s1 title="Going Further">
+	   <p>
+	   Batik as an extensible API provides the ability to customize the scripting module to
+	   go beyond the simple support of ECMAScript language in SVG files.
+	   </p>
+           <s2 title="Customize the Rhino interpreter">
+	   <p>
+	   A useful example of cutomization of the Rhino interpreter comes from the fact that the
+	   ECMAScript specification doesn't provide any I/O predefined facilities, that's why
+	   in the batikMusic.svg example of the distribution we use the Java API from scripting to
+	   output messages (<code>System.out.println('...')</code>). However it is very common for
+	   ECMAScript compatible languages to provide a function named <code>print</code> to output
+	   messages to the console. We will describe here an example of cutomization of the Batik Rhino
+	   interpreter to add such functionality to it. 
+	   </p>
+	   <p>
+	   You should first subclass the default Batik ECMAScript interpreter to add the functionality
+	   to it as below.
+	   </p>
+	   <source>
+
+public class ExtendedRhinoInterpreter extends RhinoIntepreter {
+    public ExtendedRhinoInterpreter() {
+        super(); // build RhinoInterpreter
+        final String[] names = { "print" }
+        try {
+            getGlobalObject().defineFunctionProperties(names, ExtendedRhinoIntepreter.class,
+                                                       ScriptableObject.DONTENUM);
+        } catch (PropertyException e) {
+            throw new Error(e.getMessage());
+        }
+    }
+    
+    public static void print(Context cx, Scriptable thisObj,
+                             Object[] args, Function funObj) {
+        for (int i=0; i &lt; args.length; i++) {
+            if (i &gt; 0)
+                System.out.print(" ");
+	    
+            // Convert the arbitrary JavaScript value into a string form.
+            String s = Context.toString(args[i]);
+	    
+            System.out.print(s);
+        }
+        System.out.println();
+    }
+}</source>
+           <p>
+	   Now, you should tell to Batik to use this interpreter instead of the default.
+	   For that, you should first define a factory to create instances of your interpreter.
+	   </p>
+	   <source>
+
+public class ExtendedRhinoInterpreterFactory implements InterpreterFactory {
+    public Interpreter createInterpreter() {
+        return new ExtendedRhinoInterpreter();
+    }
+}</source>
+           <p>
+	   Then, you should build an <code>IntepreterPool</code> that will use this factory
+	   and set the pool on the <code>BridgeContext</code> of your application.
+	   </p>
+	   <source>
+
+org.apache.batik.bridge BridgeContext ctx = ...;
+org.apache.batik.script.InterpreterPool pool =
+    new org.apache.batik.scriptInterpreterPool();
+pool.putInterpreterFactory("text/ecmascript", new ExtendedRhinoInterpreterFactory());
+ctx.setIntepreterPool(pool);</source>
+           <p>
+	   For example if you are using the Batik SVGBrowser application you should be able to use
+	   the previous piece of code on a subclass of the <code>JSVGCanvas</code> class
+	   in the <code>createBridgeContext()</code> method.
+	   </p>
+           </s2>
+           <s2 title="Have your own interpreter">
+	   <p>
+	   If you want to use SVG files with your own scripting language in it, you can do it with
+	   Batik.
+	   You will need to define your own class of <code>Interpreter</code> and register it 
+	   to the <code>InterpreterPool</code> with the right type for the language as in the example
+	   above.
+	   </p>
+           </s2>
+        </s1>
+    </body>
+</document>
