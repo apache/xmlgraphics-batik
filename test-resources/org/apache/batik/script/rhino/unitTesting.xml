@@ -1,0 +1,27 @@
+<!-- ========================================================================= -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.        -->
+<!--                                                                           -->
+<!-- This software is published under the terms of the Apache Software License -->
+<!-- version 1.1, a copy of which has been included with this distribution in  -->
+<!-- the LICENSE file.                                                         -->
+<!-- ========================================================================= -->
+
+<!-- ========================================================================= -->
+<!-- @author vincent.hardy@sun.com                                             -->
+<!-- @version $Id$       -->
+<!-- ========================================================================= -->
+<testSuite id="script.rhino.unitTesting"
+           name="org.apache.batik.script.rhino package - Unit Testing">
+
+    <!-- ================================================================ -->
+    <!-- Script Permissions check                                         -->
+    <!-- ================================================================ -->
+    <testGroup id="security" name="Script Security"
+               class="org.apache.batik.script.rhino.ScriptSelfTest">
+        <test id="script/rhino/eval">
+            <property name="Secure" class="java.lang.Boolean" value="true" />
+        </test>
+
+    </testGroup>
+
+</testSuite>
