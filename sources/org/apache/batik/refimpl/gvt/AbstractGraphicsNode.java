@@ -336,10 +336,10 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
                     filteredImage = filter;
                 }
                 else{
-                    /*filteredImage = new org.apache.batik.refimpl.gvt.filter.ConcretePadRable(nodeImage,
+                    filteredImage = new org.apache.batik.refimpl.gvt.filter.ConcretePadRable(nodeImage,
                                                                                              nodeImage.getBounds2D(),
-                                                                                             PadMode.ZERO_PAD);*/
-                    filteredImage = nodeImage;
+                                                                                             PadMode.ZERO_PAD);
+                    // filteredImage = nodeImage;
                 }
                 
                 // Create the render context for drawing this node.
