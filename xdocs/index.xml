@@ -133,6 +133,10 @@
         Batik for charting and for its SVG component.</li>
         <li><link href="http://lagoon.sourceforge.net/">Lagoon</link>, an XML-based framework for web site maintenance, uses the Batik SVG Rasterizer to render SVG as bitmap graphics for web publishing</li>
         <li><link href="http://burma.free.fr">eDoc</link>, a page layout software, is using the Batik SVG generator to export pages to SVG</li>
+        <li><link href="http://www.isacat.net/2002/svolgo/index.htm">Svolgo</link>,a Graph Visualisation/Transformation Framework for the
+                Semantic Web Cross-model transformation, node and arc diagrams, representation in SVG. This project uses Batik's SVG DOM implementation.</li>
+        <li><link href="www.throneworld.com/lords/gms/dev.html">Lords Map</link>, a program to allow players and visitors to view the current map
+                of varoius campaigns. Lord Map uses Batik's SVG DOM and SVG Generator.</li>
         </ul>
         </s1>
     </body>
