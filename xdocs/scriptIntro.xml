@@ -224,7 +224,7 @@ public class ExtendedRhinoInterpreterFactory
 
 org.apache.batik.bridge BridgeContext ctx = ...;
 org.apache.batik.script.InterpreterPool pool =
-    new org.apache.batik.scriptInterpreterPool();
+    new org.apache.batik.script.InterpreterPool();
 pool.putInterpreterFactory("text/ecmascript", 
                            new ExtendedRhinoInterpreterFactory());
 ctx.setIntepreterPool(pool);</source>
