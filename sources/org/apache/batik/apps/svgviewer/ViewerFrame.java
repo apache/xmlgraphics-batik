@@ -14,6 +14,7 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
 import java.awt.event.ActionEvent;
@@ -25,11 +26,16 @@ import java.awt.event.MouseMotionAdapter;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import java.awt.image.BufferedImage;
+
+import java.io.BufferedOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.io.Reader;
 
 import java.net.URL;
@@ -71,6 +77,9 @@ import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.svg.XSLTransformer;
 import org.apache.batik.gvt.event.EventDispatcher;
 
+import org.apache.batik.refimpl.transcoder.ImageTranscoder;
+import org.apache.batik.refimpl.transcoder.PngTranscoder;
+import org.apache.batik.refimpl.transcoder.JpegTranscoder;
 import org.apache.batik.refimpl.util.JSVGCanvas;
 import org.apache.batik.refimpl.gvt.event.ConcreteEventDispatcher;
 
@@ -124,6 +133,8 @@ public class ViewerFrame
     public final static String OPEN_ACTION        = "OpenAction";
     public final static String OPEN_PAGE_ACTION   = "OpenPageAction";
     public final static String NEW_WINDOW_ACTION  = "NewWindowAction";
+    public final static String EXPORT_PNG_ACTION  = "ExportPNGAction";
+    public final static String EXPORT_JPG_ACTION  = "ExportJPGAction";
     public final static String RELOAD_ACTION      = "ReloadAction";
     public final static String BACK_ACTION        = "BackAction";
     public final static String FORWARD_ACTION     = "ForwardAction";
@@ -348,6 +359,8 @@ public class ViewerFrame
         listeners.put(OPEN_ACTION,        new OpenAction());
         listeners.put(OPEN_PAGE_ACTION,   new OpenPageAction());
         listeners.put(NEW_WINDOW_ACTION,  new NewWindowAction());
+        listeners.put(EXPORT_PNG_ACTION,  new ExportPNGAction());
+        listeners.put(EXPORT_JPG_ACTION,  new ExportJPGAction());
         listeners.put(RELOAD_ACTION,      reloadAction);
         listeners.put(BACK_ACTION,        backAction);
         listeners.put(FORWARD_ACTION,     forwardAction);
@@ -723,6 +736,86 @@ public class ViewerFrame
     public class NewWindowAction extends AbstractAction {
         public void actionPerformed(ActionEvent e) {
             application.createAndShowViewerFrame();
+        }
+    }
+
+    /**
+     * To save the current document as PNG.
+     */
+    public class ExportPNGAction extends AbstractAction {
+        public void actionPerformed(ActionEvent e) {
+            JFileChooser fileChooser =
+                new JFileChooser(currentPath);
+            fileChooser.setFileHidingEnabled(false);
+            fileChooser.setFileSelectionMode
+                (JFileChooser.FILES_AND_DIRECTORIES);
+
+            int choice = fileChooser.showSaveDialog(ViewerFrame.this);
+            if (choice == JFileChooser.APPROVE_OPTION) {
+                final File f = fileChooser.getSelectedFile();
+                BufferedImage buffer = canvas.getBuffer();
+                // create a BufferedImage of the appropriate type
+                int w = buffer.getWidth();
+                int h = buffer.getHeight();
+                final ImageTranscoder trans = new PngTranscoder();
+                final BufferedImage img = trans.createImage(w, h);
+                // paint the buffer to the image
+                Graphics2D g2d = img.createGraphics();
+                g2d.drawImage(buffer, null, 0, 0);
+                new Thread() {
+                    public void run() {
+                        try {
+                            OutputStream ostream =
+                              new BufferedOutputStream(new FileOutputStream(f));
+                            trans.writeImage(img, ostream);
+                            ostream.flush();
+                            ostream.close();
+                            statusBar.setMessage(
+                                resources.getString("Document.export"));
+                        } catch (IOException ex) { }
+                    }
+                }.start();
+            }
+        }
+    }
+
+    /**
+     * To save the current document as JPG.
+     */
+    public class ExportJPGAction extends AbstractAction {
+        public void actionPerformed(ActionEvent e) {
+            JFileChooser fileChooser =
+                new JFileChooser(currentPath);
+            fileChooser.setFileHidingEnabled(false);
+            fileChooser.setFileSelectionMode
+                (JFileChooser.FILES_AND_DIRECTORIES);
+
+            int choice = fileChooser.showSaveDialog(ViewerFrame.this);
+            if (choice == JFileChooser.APPROVE_OPTION) {
+                final File f = fileChooser.getSelectedFile();
+                BufferedImage buffer = canvas.getBuffer();
+                // create a BufferedImage of the appropriate type
+                int w = buffer.getWidth();
+                int h = buffer.getHeight();
+                final ImageTranscoder trans = new JpegTranscoder();
+                final BufferedImage img = trans.createImage(w, h);
+                // paint the buffer to the image
+                Graphics2D g2d = img.createGraphics();
+                g2d.drawImage(buffer, null, 0, 0);
+                new Thread() {
+                    public void run() {
+                        try {
+                            OutputStream ostream =
+                              new BufferedOutputStream(new FileOutputStream(f));
+                            trans.writeImage(img, ostream);
+                            ostream.flush();
+                            ostream.close();
+                            statusBar.setMessage(
+                                resources.getString("Document.export"));
+                        } catch (IOException ex) { }
+                    }
+                }.start();
+            }
         }
     }
 
