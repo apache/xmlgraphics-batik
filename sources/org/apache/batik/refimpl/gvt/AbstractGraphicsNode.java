@@ -62,7 +62,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     /**
      * Used to draw renderable images
      */
-    private static final AffineTransform IDENTITY = new AffineTransform();
+    static final AffineTransform IDENTITY = new AffineTransform();
 
     /**
      * The Map used to store mememto objects.
@@ -281,7 +281,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
 
     public void paint(Graphics2D g2d, GraphicsNodeRenderContext rc) {
         //
-        // Set up graphic context. It is important to setup the 
+        // Set up graphic context. It is important to setup the
         // transform first, because the clip is defined in this
         // node's user space.
         //
@@ -299,7 +299,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
         if (composite != null) {
             g2d.setComposite(composite);
         }
-        
+
         if (hints != null) {
             g2d.addRenderingHints(hints);
         }
@@ -334,10 +334,10 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
                 // Render directly on the canvas
                 primitivePaint(g2d, rc);
             } else{
-                Filter nodeImage 
+                Filter nodeImage
                     = rc.getGraphicsNodeRableFactory().createGraphicsNodeRable(this);
                 Filter filteredImage = null;
-                
+
                 if(filter != null){
                     traceFilter(filter, "=====>> ");
                     filteredImage = filter;
@@ -348,7 +348,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
                                                                                              PadMode.ZERO_PAD);
                     // filteredImage = nodeImage;
                 }
-                
+
                 if (mask != null) {
                     if (mask.getSource() != filteredImage){
                         mask.setSource(filteredImage);
@@ -370,7 +370,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
                     g2d.drawRenderedImage(renderedNodeImage, IDENTITY);
                 }
             }
-            
+
         }
 
         // Restore default rendering attributes
@@ -538,11 +538,10 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     //
 
     /**
-     * Compute the rendered bounds of this node based on
-     * it's renderBounds, i.e., the area painted by its 
-     * primitivePaint method. This is used in addition to 
-     * the mask, clip and filter to compute the area 
-     * actually rendered by this node.
+     * Compute the rendered bounds of this node based on it's
+     * renderBounds, i.e., the area painted by its primitivePaint
+     * method. This is used in addition to the mask, clip and filter
+     * to compute the area actually rendered by this node.
      */
     public Rectangle2D getBounds(){
         // Get the primitive bounds
@@ -550,42 +549,33 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
         if(bounds == null){
             // The painted region, before cliping, masking
             // and compositing is either the area painted
-            // by the primitive paint or the area painted 
+            // by the primitive paint or the area painted
             // by the filter.
             if(filter == null){
                 bounds = getPrimitiveBounds();
-            }
-            else{
+            } else {
                 bounds = filter.getBounds2D();
             }
-            
             // Factor in the clipping area, if any
-            if(clip != null){
-                bounds.intersect(bounds, 
+            if(clip != null) {
+                bounds.intersect(bounds,
                                  clip.getBounds2D(),
                                  bounds);
             }
-            
             // Factor in the mask, if any
-            if(mask != null){
+            if(mask != null) {
                 bounds.intersect(bounds,
                                  mask.getBounds2D(),
                                  bounds);
             }
         }
-
         return bounds;
     }
 
-        
+
 
     public boolean contains(Point2D p) {
-        //System.out.println("Bounds "+getBounds()+"point "+p);
-        if (getBounds().contains(p)) {
-            return getOutline().contains(p);
-        } else {
-            return false;
-        }
+        return getBounds().contains(p);
     }
 
     public GraphicsNode nodeHitAt(Point2D p) {
@@ -606,8 +596,8 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
 
     public void processMouseEvent(GraphicsNodeMouseEvent evt) {
         if ((listeners != null) && acceptEvent(evt)) {
-            GraphicsNodeMouseListener[] listeners = 
-                (GraphicsNodeMouseListener[]) 
+            GraphicsNodeMouseListener[] listeners =
+                (GraphicsNodeMouseListener[])
                 getListeners(GraphicsNodeMouseListener.class);
 
             switch (evt.getID()) {
@@ -656,8 +646,8 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
 
    public void processKeyEvent(GraphicsNodeKeyEvent evt) {
         if ((listeners != null) && acceptEvent(evt)) {
-            GraphicsNodeKeyListener[] listeners = 
-                (GraphicsNodeKeyListener[]) 
+            GraphicsNodeKeyListener[] listeners =
+                (GraphicsNodeKeyListener[])
                 getListeners(GraphicsNodeKeyListener.class);
 
             switch (evt.getID()) {
@@ -684,8 +674,8 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
 
     public void processChangeEvent(CompositeGraphicsNodeEvent evt) {
         if ((listeners != null) && acceptEvent(evt)) {
-            CompositeGraphicsNodeListener[] listeners = 
-                (CompositeGraphicsNodeListener[]) 
+            CompositeGraphicsNodeListener[] listeners =
+                (CompositeGraphicsNodeListener[])
                 getListeners(CompositeGraphicsNodeListener.class);
 
             switch (evt.getID()) {

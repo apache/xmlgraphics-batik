@@ -1,0 +1,37 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20000802//EN"
+"http://www.w3.org/TR/2000/CR-SVG-20000802/DTD/svg-20000802.dtd">
+
+<!-- ===================================================================== -->
+<!--
+
+  Test for propaging GVT events to the DOM
+
+  author: Thierry Kormann - ???
+
+-->
+<!-- ===================================================================== -->
+
+<svg width="300" height="150">
+
+	<g transform="translate(30, 30)">
+    <rect x="10" y="10" width="40" height="40"
+	  transform="translate(-25 -25) rotate(45) translate(25 25)"
+	  style="fill:blue;stroke:none" 
+        onmousedown="System.err.println('You clicked on the blue rectangle')" />
+
+    <rect x="70" y="10" width="40" height="40" style="fill:red;stroke:none" 
+        onmousedown="System.err.println('You clicked on the red rectangle')"/>
+
+    <rect x="10" y="70" width="40" height="40" style="fill:yellow;stroke:none" 
+        onmousedown="yellow(evt)"/>
+
+    <rect x="70" y="70" width="40" height="40" style="fill:green;stroke:none" 
+        onmousedown="System.err.println('You clicked on the green rectangle')" />
+</g>
+
+    <g transform="translate(130, -65)">
+    <text x="60" y="125">Click on a rectangle </text>
+    <text x="60" y="140">and look in the console</text>
+    </g>
+</svg>

@@ -267,9 +267,7 @@ public class ConcreteEventDispatcher extends AbstractEventDispatcher {
         }
 
         GraphicsNode node = root.nodeHitAt(p);
-
         // If the receiving node has changed, send a notification
-
         if (node != null) {
                 if (lastHit == null) {
                     node.processMouseEvent
@@ -285,7 +283,6 @@ public class ConcreteEventDispatcher extends AbstractEventDispatcher {
                                                              getClickCount()));
                     globalMouseEvent(gvtevt);
                 }
-
         } else if (lastHit != null) {
                 lastHit.processMouseEvent
                     (gvtevt = new GraphicsNodeMouseEvent(lastHit,

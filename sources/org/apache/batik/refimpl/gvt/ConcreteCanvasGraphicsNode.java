@@ -51,6 +51,10 @@ public class ConcreteCanvasGraphicsNode extends ConcreteCompositeGraphicsNode
         return backgroundPaint;
     }
 
+    public void setTransform(java.awt.geom.AffineTransform t) {
+        throw new Error();
+    }
+
     //
     // Geometric methods
     //
