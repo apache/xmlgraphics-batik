@@ -45,7 +45,7 @@ import org.apache.batik.ext.awt.g2d.GraphicContext;
  *
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
- * @see                org.apache.batik.svggen.GraphicContext
+ * @see                org.apache.batik.ext.awt.g2d.GraphicContext
  * @see                org.apache.batik.svggen.DOMTreeManager
  * @see                org.apache.batik.svggen.DOMGroupManager
  * @see                org.apache.batik.svggen.ImageHandler
@@ -685,7 +685,7 @@ public class SVGGraphics2D extends AbstractGraphics2D implements Cloneable, SVGS
                           int x,
                           int y){
         //
-        // Only convert if the input image is of type sRGB 
+        // Only convert if the input image is of type sRGB
         // non-premultiplied
         //
         /*if(img.getType() == BufferedImage.TYPE_INT_ARGB){
@@ -698,7 +698,7 @@ public class SVGGraphics2D extends AbstractGraphics2D implements Cloneable, SVGS
             if(op instanceof AffineTransformOp){
                 AffineTransformOp transformOp = (AffineTransformOp)op;
                 AffineTransform transform = transformOp.getTransform();
-                
+
                 if(transform.getDeterminant() != 0){
                     AffineTransform inverseTransform = null;
                     try{
@@ -746,7 +746,7 @@ public class SVGGraphics2D extends AbstractGraphics2D implements Cloneable, SVGS
                                                 filterDesc.getFilterValue());
                     Element imageGroup = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
                     imageGroup.appendChild(imageElement);
-                    
+
                     domGroupManager.addElement(imageGroup);
                 }
                 else{
@@ -760,8 +760,8 @@ public class SVGGraphics2D extends AbstractGraphics2D implements Cloneable, SVGS
             }
         }
         else{*/
-            // 
-            // Input image is not sRGB non premultiplied. 
+            //
+            // Input image is not sRGB non premultiplied.
             // Do not try conversion: apply filter and paint
             //
             img = op.filter(img, null);
