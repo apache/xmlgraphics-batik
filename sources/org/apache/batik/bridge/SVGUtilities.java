@@ -900,10 +900,18 @@ public class SVGUtilities implements SVGConstants {
                                        uctx, vd);
             // Now, take the bounds of the GraphicsNode into account
             Rectangle2D gnBounds = node.getGeometryBounds(rc);
-            x = gnBounds.getX() + x*gnBounds.getWidth();
-            y = gnBounds.getY() + y*gnBounds.getHeight();
-            w *= gnBounds.getWidth();
-            h *= gnBounds.getHeight();
+            if(gnBounds != null){
+                x = gnBounds.getX() + x*gnBounds.getWidth();
+                y = gnBounds.getY() + y*gnBounds.getHeight();
+                w *= gnBounds.getWidth();
+                h *= gnBounds.getHeight();
+            }
+            else{
+                x = 0; 
+                y = 0; 
+                w = 0; 
+                h = 0;
+            }
             break;
         case USER_SPACE_ON_USE:
             x = svgToUserSpaceOnUse(filteredElement,
