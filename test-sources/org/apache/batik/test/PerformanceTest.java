@@ -8,11 +8,7 @@
 
 package org.apache.batik.test;
 
-import java.awt.AlphaComposite;
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
+import java.util.Vector;
 
 /**
  * This abstract <code>Test</code> implementation instruments performance
@@ -93,31 +89,56 @@ public abstract class PerformanceTest extends AbstractTest {
      * @see #runOp
      */
     public final TestReport runImpl() throws Exception {
-        // Run the reference and time it the second time it
-        // is run
+        int iter = 50;
+
+        double refUnit = 0;
+        long refStart = 0;
+        long refEnd = 0;
+        long opStart = 0;
+        long opEnd = 0;
+        double opLength = 0;
+
+        // Run once to remove class load time from timing.
         runRef();
-
-        long refStart = System.currentTimeMillis();
-        runRef();
-        long refEnd = System.currentTimeMillis();
-        
-        double refUnit = refEnd - refStart;
-
-        System.err.println(">>>>>>>>>>>>>> refUnit : " + refUnit);
-
-        // Now, run the test's operation and time it the second
-        // time it is run
         runOp();
+        // System.gc();
 
-        long opStart = System.currentTimeMillis();
-        runOp();
-        long opEnd = System.currentTimeMillis();
+        double[] scores = new double[iter];
 
-        double opLength = opEnd - opStart;
+        for (int i=0; i<iter; i++) {
+            refStart = System.currentTimeMillis();
+            runRef();
+            refEnd = System.currentTimeMillis();
+            refUnit = refEnd - refStart;
+
+            opStart = System.currentTimeMillis();
+            runOp();
+            opEnd = System.currentTimeMillis();
+            opLength = opEnd - opStart;
+
+            scores[i] = opLength / refUnit;
+            System.gc();
+        }
+
+        // Now, sort the scores
+        sort(scores);
+
+        // Compute the mean score based on the scores, not accounting
+        // for the lowest and highest scores
+        double score = 0;
+        int trim = 5;
+        for (int i=trim; i<scores.length-trim; i++) {
+            score += scores[i];
+        }
+
+        score /= (iter - 2*trim);
 
         // Compute the score
-        double score = opLength / refUnit;
         this.lastScore = score;
+
+        if (referenceScore != -1) {
+            System.err.println(">>>>>>>>>>>>>>> score/lastScore : " + score/referenceScore);
+        }
 
         // Compare to the reference score
         if (referenceScore == -1) {
@@ -145,26 +166,36 @@ public abstract class PerformanceTest extends AbstractTest {
         }
     }
 
+    protected void sort(double a[]) throws Exception {
+        for (int i = a.length - 1; i>=0; i--) {
+            boolean swapped = false;
+            for (int j = 0; j<i; j++) {
+                if (a[j] > a[j+1]) {
+                    double d = a[j];
+                    a[j] = a[j+1];
+                    a[j+1] = d;
+                    swapped = true;
+                }
+            }
+            if (!swapped)
+                return;
+        }
+    }
+
     /**
      * Runs the reference operation.
      * By default, this runs the same BufferedImage drawing 
      * operation 10000 times
      */
     protected void runRef() {
-        BufferedImage buf = new BufferedImage(200, 200, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g = buf.createGraphics();
-        AffineTransform txf = new AffineTransform();
-        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
-        g.setPaint(new Color(30, 100, 200));
-
-        for (int i=0; i<50; i++) {
-            for (int j=0; j<20; j++) {
-                txf.setToIdentity();
-                txf.translate(-100, -100);
-                txf.rotate(j*Math.PI/100);
-                txf.translate(100, 100);
-                g.setTransform(txf);
-                g.drawRect(30, 30, 140, 140);
+        Vector v = new Vector();
+        for (int i=0; i<10000; i++) {
+            v.addElement("" + i);
+        }
+        
+        for (int i=0; i<10000; i++) {
+            if (v.contains("" + i)) {
+                v.remove("" + i);
             }
         }
     }
