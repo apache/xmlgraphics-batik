@@ -1930,27 +1930,50 @@ public abstract class CSSEngine {
         
         boolean comp = style.isComputed(idx);
 
-        element = elt;
-        try {
-            LexicalUnit lu;
-            lu = parser.parsePropertyValue(evt.getNewValue());
-            ValueManager vm = valueManagers[idx];
-            Value v = vm.createValue(lu, CSSEngine.this);
-            style.putMask(idx, (short)0);
-            style.putValue(idx, v);
-            style.putOrigin(idx, StyleMap.NON_CSS_ORIGIN);
-        } catch (Exception e) {
-            String m = e.getMessage();
-            String s =
-                Messages.formatMessage("property.syntax.error.at",
-                                       new Object[] { documentURI.toString(),
-                                                      property,
-                                                      evt.getNewValue(),
-                                                      (m == null) ? "" : m });
-            throw new DOMException(DOMException.SYNTAX_ERR, s);
+        switch (evt.getAttrChange()) {
+        case MutationEvent.ADDITION:
+        case MutationEvent.MODIFICATION:
+            element = elt;
+            try {
+                LexicalUnit lu;
+                lu = parser.parsePropertyValue(evt.getNewValue());
+                ValueManager vm = valueManagers[idx];
+                Value v = vm.createValue(lu, CSSEngine.this);
+                style.putMask(idx, (short)0);
+                style.putValue(idx, v);
+                style.putOrigin(idx, StyleMap.NON_CSS_ORIGIN);
+            } catch (Exception e) {
+                String m = e.getMessage();
+                String s =
+                    Messages.formatMessage("property.syntax.error.at",
+                        new Object[]
+                        { documentURI.toString(),
+                          property,
+                          evt.getNewValue(),
+                          (m == null) ? "" : m });
+                throw new DOMException(DOMException.SYNTAX_ERR, s);
+            }
+            element = null;
+            cssBaseURI = null;
+            break;
+
+        case MutationEvent.REMOVAL:
+            // Invalidate all the values.
+            elt.setComputedStyleMap(null, null);
+            
+            firePropertiesChangedEvent(elt, ALL_PROPERTIES);
+                    
+            Node c = getImportedChild(elt);
+            if (c != null) {
+                propagateChanges(c, ALL_PROPERTIES);
+            }
+            for (Node n = elt.getFirstChild();
+                 n != null;
+                 n = n.getNextSibling()) {
+                propagateChanges(n, ALL_PROPERTIES);
+            }
+            return;
         }
-        element = null;
-        cssBaseURI = null;
 
         if (!comp) {
             // The previous value was not computed: nobody is
