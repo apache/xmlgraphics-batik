@@ -466,20 +466,24 @@ public class JGVTComponent extends JComponent {
      */
     public void immediateRepaint() {
         if (EventQueue.isDispatchThread()) {
-            Dimension dim = getSize();
+            Rectangle visRect = getVisibleRect();
             if (doubleBufferedRendering)
-                repaint(0, 0, dim.width, dim.height);
+                repaint(visRect.x,     visRect.y, 
+                        visRect.width, visRect.height);
             else
-                paintImmediately(0, 0, dim.width, dim.height);
+                paintImmediately(visRect.x,     visRect.y, 
+                                 visRect.width, visRect.height);
         } else {
             try {
                 EventQueue.invokeAndWait(new Runnable() {
                         public void run() {
-                            Dimension dim = getSize();
+                            Rectangle visRect = getVisibleRect();
                             if (doubleBufferedRendering)
-                                repaint(0, 0, dim.width, dim.height);
+                                repaint(visRect.x,     visRect.y, 
+                                        visRect.width, visRect.height);
                             else
-                                paintImmediately(0, 0, dim.width, dim.height);
+                                paintImmediately(visRect.x,    visRect.y, 
+                                                 visRect.width,visRect.height);
                         }
                     });
             } catch (Exception e) {
@@ -495,10 +499,11 @@ public class JGVTComponent extends JComponent {
 
         Graphics2D g2d = (Graphics2D)g;
 
-        Dimension d = getSize();
+        Rectangle visRect = getVisibleRect();
         g2d.setComposite(AlphaComposite.SrcOver);
         g2d.setPaint(getBackground());
-        g2d.fillRect(0, 0, d.width, d.height);
+        g2d.fillRect(visRect.x,     visRect.y, 
+                     visRect.width, visRect.height);
 
         if (image != null) {
             if (paintingTransform != null) {
@@ -637,8 +642,8 @@ public class JGVTComponent extends JComponent {
      * Renders the GVT tree.
      */
     protected void renderGVTTree() {
-        Dimension d = getSize();
-        if (gvtRoot == null || d.width <= 0 || d.height <= 0) {
+        Rectangle visRect = getVisibleRect();
+        if (gvtRoot == null || visRect.width <= 0 || visRect.height <= 0) {
             return;
         }
 
@@ -655,13 +660,12 @@ public class JGVTComponent extends JComponent {
         } catch (NoninvertibleTransformException e) {
             throw new InternalError(e.getMessage());
         }
-        Shape s = inv.createTransformedShape
-            (new Rectangle(0, 0, d.width, d.height));
+        Shape s = inv.createTransformedShape(visRect);
 
         // Rendering thread setup.
         gvtTreeRenderer = new GVTTreeRenderer(renderer, renderingTransform,
-                                              doubleBufferedRendering,
-                                              s, d.width, d.height);
+                                              doubleBufferedRendering, s,
+                                              visRect.width, visRect.height);
         gvtTreeRenderer.setPriority(Thread.MIN_PRIORITY);
 
         Iterator it = gvtTreeRendererListeners.iterator();
@@ -792,9 +796,9 @@ public class JGVTComponent extends JComponent {
                                     public void run() {
                                         if (progressivePaintThread ==
                                             thisThread) {
-                                            Dimension dim = getSize();
-                                            repaint(0, 0, dim.width,
-                                                    dim.height);
+                                            Rectangle vRect = getVisibleRect();
+                                            repaint(vRect.x,     vRect.y, 
+                                                    vRect.width, vRect.height);
                                         }
                                     }
                                 });

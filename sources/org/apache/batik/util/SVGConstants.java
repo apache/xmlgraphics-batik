@@ -868,8 +868,14 @@ public interface SVGConstants extends CSSConstants {
     // event constants
     ///////////////////////////////////////////////////////////////////
     
-    String SVG_EVENT_CLICK = "click";
+    String SVG_EVENT_CLICK     = "click";
+    String SVG_EVENT_KEYDOWN   = "keydown";
+    String SVG_EVENT_KEYPRESS  = "keypress";
+    String SVG_EVENT_KEYUP     = "keyup";
+    String SVG_EVENT_MOUSEDOWN = "mousedown";
+    String SVG_EVENT_MOUSEMOVE = "mousemove";
     String SVG_EVENT_MOUSEOVER = "mouseover";
     String SVG_EVENT_MOUSEOUT  = "mouseout";
+    String SVG_EVENT_MOUSEUP   = "mouseup";
 
 }

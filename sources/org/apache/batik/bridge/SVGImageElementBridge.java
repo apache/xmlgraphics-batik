@@ -597,16 +597,34 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
         // to the <image> element (inside the original document).
         if (ctx.isInteractive()) {
             EventListener listener = new ForwardEventListener(svgElement, e);
-            EventTarget target = (EventTarget)svgElement;
+            EventTarget tgt = (EventTarget)svgElement;
 
-            target.addEventListener(SVG_EVENT_CLICK, listener, false);
-            ctx.storeEventListener(target, SVG_EVENT_CLICK, listener, false);
+            tgt.addEventListener(SVG_EVENT_CLICK, listener, false);
+            ctx.storeEventListener(tgt, SVG_EVENT_CLICK, listener, false);
 
-            target.addEventListener(SVG_EVENT_MOUSEOVER, listener, false);
-            ctx.storeEventListener(target, SVG_EVENT_MOUSEOVER, listener,false);
+            tgt.addEventListener(SVG_EVENT_KEYDOWN, listener, false);
+            ctx.storeEventListener(tgt, SVG_EVENT_KEYDOWN, listener, false);
 
-            target.addEventListener(SVG_EVENT_MOUSEOUT, listener, false);
-            ctx.storeEventListener(target, SVG_EVENT_MOUSEOUT, listener, false);
+            tgt.addEventListener(SVG_EVENT_KEYPRESS, listener, false);
+            ctx.storeEventListener(tgt, SVG_EVENT_KEYPRESS, listener, false);
+
+            tgt.addEventListener(SVG_EVENT_KEYUP, listener, false);
+            ctx.storeEventListener(tgt, SVG_EVENT_KEYUP, listener, false);
+
+            tgt.addEventListener(SVG_EVENT_MOUSEDOWN, listener, false);
+            ctx.storeEventListener(tgt, SVG_EVENT_MOUSEDOWN, listener,false);
+
+            tgt.addEventListener(SVG_EVENT_MOUSEMOVE, listener, false);
+            ctx.storeEventListener(tgt, SVG_EVENT_MOUSEMOVE, listener,false);
+
+            tgt.addEventListener(SVG_EVENT_MOUSEOUT, listener, false);
+            ctx.storeEventListener(tgt, SVG_EVENT_MOUSEOUT, listener, false);
+
+            tgt.addEventListener(SVG_EVENT_MOUSEOVER, listener, false);
+            ctx.storeEventListener(tgt, SVG_EVENT_MOUSEOVER, listener,false);
+
+            tgt.addEventListener(SVG_EVENT_MOUSEUP, listener, false);
+            ctx.storeEventListener(tgt, SVG_EVENT_MOUSEUP, listener, false);
         }
 
         return result;

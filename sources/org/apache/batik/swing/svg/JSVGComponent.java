@@ -714,8 +714,9 @@ public class JSVGComponent extends JGVTComponent {
             disableInteractions = true;
             initialTransform = new AffineTransform();
             setRenderingTransform(initialTransform, false);
-            Dimension d = getSize();
-            repaint(0, 0, d.width, d.height);
+            Rectangle vRect = getVisibleRect();
+            repaint(vRect.x,     vRect.y, 
+                    vRect.width, vRect.height);
             return;
         } 
 
@@ -993,8 +994,10 @@ public class JSVGComponent extends JGVTComponent {
             return;
         }
 
-        final Dimension d = getSize();
-        if (gvtRoot == null || d.width <= 0 || d.height <= 0) {
+        final Rectangle visRect = getVisibleRect();
+        if ((gvtRoot == null)    || 
+            (visRect.width <= 0) || 
+            (visRect.height <= 0)) {
             return;
         }
 
@@ -1006,17 +1009,15 @@ public class JSVGComponent extends JGVTComponent {
             throw new InternalError(e.getMessage());
         }
         final Shape s =
-            inv.createTransformedShape(new Rectangle(0, 0, d.width, d.height));
+            inv.createTransformedShape(visRect);
 
-        updateManager.getUpdateRunnableQueue().invokeLater(new Runnable() {
-                public void run() {
-                    paintingTransform = null;
-                    updateManager.updateRendering(renderingTransform,
-                                                  doubleBufferedRendering,
-                                                  s, d.width, d.height);
-                    
-                }
-            });
+        updateManager.getUpdateRunnableQueue().invokeLater
+            (new Runnable() { public void run() {
+                paintingTransform = null;
+                updateManager.updateRendering(renderingTransform,
+                                              doubleBufferedRendering, s,
+                                              visRect.width, visRect.height);
+            }});
     }
 
     /**
@@ -1715,10 +1716,10 @@ public class JSVGComponent extends JGVTComponent {
 
                             List l = e.getDirtyAreas();
                             if (l != null) {
-                                Dimension dim = getSize();
-                                List ml = mergeRectangles(l, 0, 0,
-                                                          dim.width - 1,
-                                                          dim.height - 1);
+                                Rectangle visRect = getVisibleRect();
+                                List ml = mergeRectangles
+                                    (l, visRect.x, visRect.y,
+                                     visRect.width - 1, visRect.height - 1);
                                 if (ml.size() < l.size()) {
                                     l = ml;
                                 }

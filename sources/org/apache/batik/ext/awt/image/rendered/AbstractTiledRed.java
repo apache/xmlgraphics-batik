@@ -463,6 +463,9 @@ public abstract class AbstractTiledRed
             // e.printStackTrace();
         }
 
+        if (Thread.currentThread().isInterrupted())
+            return;
+
         idx = 0;
         // Fill in the ones that weren't in the cache.
         for (ty=ty0; ty<=ty1; ty++) {
