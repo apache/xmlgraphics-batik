@@ -39,7 +39,6 @@ import org.apache.batik.bridge.ViewBox;
 
 import org.apache.batik.css.engine.CSSEngine;
 
-import org.apache.batik.dom.svg.DefaultSVGContext;
 import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
 import org.apache.batik.dom.svg.ExtensibleSVGDOMImplementation;
 import org.apache.batik.dom.svg.SVGDOMImplementation;
@@ -147,12 +146,7 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
 
         BridgeContext ctx = new BridgeContext(userAgent);
         SVGOMDocument svgDoc = (SVGOMDocument)document;
-
         SVGSVGElement root = svgDoc.getRootElement();
-        // initialize the SVG document with the appropriate context
-        DefaultSVGContext svgCtx = new DefaultSVGContext();
-        svgCtx.setPixelToMM(userAgent.getPixelToMM());
-        svgDoc.setSVGContext(svgCtx);
 
         // build the GVT tree
         GVTBuilder builder = new GVTBuilder();
