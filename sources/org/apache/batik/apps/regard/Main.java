@@ -327,7 +327,24 @@ public class Main {
             File newImg = new File(newDir, refImg.getName());
             File diffImg = new File(diffDir, refImg.getName());
             BufferedImage bfRef = ImageLoader.loadImage(refImg, BufferedImage.TYPE_INT_ARGB);
+            if (bfRef == null) {
+                display("Fatal error, reference image unreadable!");
+                String s = "<br>" + count + ".  " + refImg.getName() +
+                    ": Reference Image unreadable!";
+                content += s;
+                count++;
+                continue;
+            }
             BufferedImage bfNew = ImageLoader.loadImage(newImg, BufferedImage.TYPE_INT_ARGB);
+            if (bfNew == null) {
+                display("Fatal error, new image unreadable!");
+                String s = "<br>" + count + ".  " + newImg.getName() +
+                    ": New Image unreadable!";
+                content += s;
+                count++;
+                continue;
+            }
+
             if ((bfRef.getWidth() != bfNew.getWidth()) ||
                  (bfRef.getHeight() != bfNew.getHeight())){
                 display("Fatal error, image size changed!");

@@ -234,6 +234,7 @@ public class BackgroundRable8Bit
      * Returns the bounds of this Rable in the user coordinate system.
      */
     public Rectangle2D getBounds2D() {
+        // System.out.println("GetBounds2D called");
         Rectangle2D r2d = getBoundsRecursive(node, null);
 
         if (r2d == CompositeGraphicsNode.VIEWPORT)
@@ -364,11 +365,17 @@ public class BackgroundRable8Bit
 
         Rectangle2D r2d = getBounds2D();
 
+        // System.out.println("Rendering called");
+
         Shape aoi = renderContext.getAreaOfInterest();
         if (aoi != null) {
             Rectangle2D aoiR2d = aoi.getBounds2D();
             if (r2d.intersects(aoiR2d) == false)
                 return null;
+
+            // System.out.println("R2d: " + r2d);
+            // System.out.println("AOI: " + aoiR2d);
+
             Rectangle2D.intersect(r2d, aoiR2d, r2d);
         }
 

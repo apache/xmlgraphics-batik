@@ -233,7 +233,7 @@ public class DisplacementMapOp implements RasterOp {
 
                 if ((x0 < 0) || (x0 > srcXExt) ||
                     (y0 < 0) || (y0 > srcYExt)){
-                    destPixels[dp] = 0xffffffff;
+                    destPixels[dp] = 0x0;
                 }
                 else {
                     int sdp  = srcOff + y0*srcScanStride + x0;
@@ -403,7 +403,7 @@ public class DisplacementMapOp implements RasterOp {
 
                 if ((x0 < 0) || (x0 > srcXExt) ||
                     (y0 < 0) || (y0 > srcYExt)){
-                    destPixels[dp] = 0xffffffff;
+                    destPixels[dp] = 0x0;
                 }
                 else {
                     int sdp = srcOff + y0*srcScanStride + x0;
@@ -425,7 +425,7 @@ public class DisplacementMapOp implements RasterOp {
                 final int y0 = y+(yDisplace>>16);
 
                 if ((y0 < 0) || (y0 > srcYExt)) {
-                    destPixels[dp] = 0xffffffff;
+                    destPixels[dp] = 0x0;
                 }
                 else {
                     int sdp = srcOff + y0*srcScanStride + x0;
@@ -448,7 +448,7 @@ public class DisplacementMapOp implements RasterOp {
 
                 if ((x0 > srcXExt) ||
                     (y0 < 0) || (y0 > srcYExt)){
-                    destPixels[dp] = 0xffffffff;
+                    destPixels[dp] = 0x0;
                 }
                 else {
                     int sdp = srcOff + y0*srcScanStride + x0;
@@ -476,7 +476,7 @@ public class DisplacementMapOp implements RasterOp {
                 final int y0 = y+(yDisplace>>16);
 
                 if ((x0 < 0) || (x0 > srcXExt)){
-                    destPixels[dp] = 0xffffffff;
+                    destPixels[dp] = 0x0;
                 }
                 else {
                     int sdp = srcOff + y0*srcScanStride + x0;
@@ -513,7 +513,7 @@ public class DisplacementMapOp implements RasterOp {
                 final int y0 = y+(yDisplace>>16);
 
                 if (x0 > srcXExt) {
-                    destPixels[dp] = 0xffffffff;
+                    destPixels[dp] = 0x0;
                 }
                 else {
                     int sdp = srcOff + y0*srcScanStride + x0;
@@ -542,7 +542,7 @@ public class DisplacementMapOp implements RasterOp {
 
                 if ((x0 < 0) || (x0 > srcXExt) ||
                     (y0 > srcYExt)){
-                    destPixels[dp] = 0xffffffff;
+                    destPixels[dp] = 0x0;
                 }
                 else {
                     int sdp = srcOff + y0*srcScanStride + x0;
@@ -564,7 +564,7 @@ public class DisplacementMapOp implements RasterOp {
                 final int y0 = y+(yDisplace>>16);
 
                 if (y0 > srcYExt) {
-                    destPixels[dp] = 0xffffffff;
+                    destPixels[dp] = 0x0;
                 }
                 else {
                     int sdp = srcOff + y0*srcScanStride + x0;
@@ -586,7 +586,7 @@ public class DisplacementMapOp implements RasterOp {
                 final int y0 = y+(yDisplace>>16);
 
                 if ((x0 > srcXExt) || (y0 > srcYExt)){
-                    destPixels[dp] = 0xffffffff;
+                    destPixels[dp] = 0x0;
                 }
                 else {
                     int sdp = srcOff + y0*srcScanStride + x0;

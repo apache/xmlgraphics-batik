@@ -351,7 +351,7 @@ public class GaussianBlurOp implements BufferedImageOp, RasterOp {
     public BufferedImage createCompatibleDestImage(BufferedImage src,
                                                    ColorModel  destCM){
         if (destCM==null)
-            destCM = ColorModel.getRGBdefault();
+            destCM = src.getColorModel();
         
         WritableRaster wr;
         wr = destCM.createCompatibleWritableRaster(src.getWidth(),
@@ -695,13 +695,11 @@ public class GaussianBlurOp implements BufferedImageOp, RasterOp {
 
 
         if (dest == null) {
-            dest = new BufferedImage(src.getWidth(), src.getHeight(),
-                                          BufferedImage.TYPE_INT_ARGB_PRE);
+            dest = createCompatibleDestImage(src, null);
             finalDest = dest;
         } else if (!isCompatible(dest.getColorModel(),
                                  dest.getSampleModel())) {
-            dest = new BufferedImage(src.getWidth(), src.getHeight(),
-                                     BufferedImage.TYPE_INT_ARGB_PRE);
+            dest = createCompatibleDestImage(src, null);
         } else if (!dest.isAlphaPremultiplied()) {
             // Get a Premultipled CM.
             ColorModel    dstCM, dstCMPre;
