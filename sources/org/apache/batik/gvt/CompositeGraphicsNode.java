@@ -66,6 +66,11 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
     private Rectangle2D primitiveBounds;
 
     /**
+     * Internal Cache: Sensitive bounds.
+     */
+    private Rectangle2D sensitiveBounds;
+
+    /**
      * Internal Cache: the outline.
      */
     private Shape outline;
@@ -144,6 +149,7 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
         super.invalidateGeometryCache();
         geometryBounds = null;
         primitiveBounds = null;
+        sensitiveBounds = null;
         outline = null;
     }
 
@@ -212,9 +218,10 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
     }
 
     /**
-     * Returns the bounds of the area covered by this node, without taking any
-     * of its rendering attribute into account. i.e., exclusive of any clipping,
-     * masking, filtering or stroking, for example.
+     * Returns the bounds of the area covered by this node, without
+     * taking any of its rendering attribute into account. i.e.,
+     * exclusive of any clipping, masking, filtering or stroking, for
+     * example.
      */
     public Rectangle2D getGeometryBounds() {
         if (geometryBounds == null) {
@@ -278,13 +285,80 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
     }
 
     /**
+     * Returns the bounds of the sensitive area covered by this node,
+     * This includes the stroked area but does not include the effects
+     * of clipping, masking or filtering.
+     */
+    public Rectangle2D getSensitiveBounds() {
+        if (sensitiveBounds != null)
+            return sensitiveBounds;
+
+        // System.out.println("sensitiveBoundsBounds are null");
+        int i=0;
+        while(sensitiveBounds == null && i < count){
+            sensitiveBounds = 
+                children[i++].getTransformedSensitiveBounds(IDENTITY);
+        }
+
+        Rectangle2D cgb = null;
+        while (i<count) {
+            cgb = children[i++].getTransformedSensitiveBounds(IDENTITY);
+            if (cgb != null) {
+                if (sensitiveBounds == null)
+                    // another thread has set the geometry bounds to null,
+                    // need to recall this function
+                    return getSensitiveBounds();
+                
+                sensitiveBounds.add(cgb);
+            }
+        }
+
+        return sensitiveBounds;
+    }
+
+    /**
+     * Returns the bounds of the sensitive area covered by this node,
+     * This includes the stroked area but does not include the effects
+     * of clipping, masking or filtering. The returned value is
+     * transformed by the concatenation of the input transform and
+     * this node's transform.
+     *
+     * @param txf the affine transform with which this node's
+     * transform should be concatenated. Should not be null.
+     */
+    public Rectangle2D getTransformedSensitiveBounds(AffineTransform txf) {
+        AffineTransform t = txf;
+        if (transform != null) {
+            t = new AffineTransform(txf);
+            t.concatenate(transform);
+        }
+	
+        Rectangle2D sb = null;
+        int i=0;
+        while (sb == null && i < count) {
+            sb = children[i++].getTransformedSensitiveBounds(t);
+        }
+	
+        Rectangle2D csb = null;
+        while (i < count) {
+            csb = children[i++].getTransformedSensitiveBounds(t);
+            if (csb != null) {
+                sb.add(csb);
+            }
+        }
+
+        return sb;
+    }
+
+    /**
      * Returns true if the specified Point2D is inside the boundary of this
      * node, false otherwise.
      *
      * @param p the specified Point2D in the user space
      */
     public boolean contains(Point2D p) {
-        if (count > 0 && getBounds().contains(p)) {
+        Rectangle2D bounds = getSensitiveBounds();
+        if (count > 0 && bounds != null && bounds.contains(p)) {
             Point2D pt = null;
             Point2D cp = null; // Propagated to children
             for (int i=0; i < count; ++i) {
@@ -312,7 +386,7 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
      * @param p the specified Point2D in the user space
      */
     public GraphicsNode nodeHitAt(Point2D p) {
-        Rectangle2D bounds = getBounds();
+        Rectangle2D bounds = getSensitiveBounds();
         if (count > 0 && bounds != null && bounds.contains(p)) {
             // Go backward because the children are in rendering order
             Point2D pt = null;

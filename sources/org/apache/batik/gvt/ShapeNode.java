@@ -42,6 +42,11 @@ public class ShapeNode extends AbstractGraphicsNode {
     private Rectangle2D geometryBounds;
 
     /**
+     * Internal Cache: Sensitive bounds
+     */
+    private Rectangle2D sensitiveBounds;
+
+    /**
      * Internal Cache: The painted area.
      */
     private Shape paintedArea;
@@ -150,6 +155,7 @@ public class ShapeNode extends AbstractGraphicsNode {
         super.invalidateGeometryCache();
         primitiveBounds = null;
         geometryBounds = null;
+        sensitiveBounds = null;
         paintedArea = null;
         sensitiveArea = null;
     }
@@ -161,38 +167,26 @@ public class ShapeNode extends AbstractGraphicsNode {
      * @param p the specified Point2D in the user space
      */
     public boolean contains(Point2D p) {
-        // <!> FIXME: should put this code in TextPaint somewhere,
-        // as pointer-events support
-        Rectangle2D b = getBounds();
-        if (b == null || !b.contains(p)) {
-            return false;
-        }
-        Shape s;
         switch(pointerEventType) {
         case VISIBLE_PAINTED:
         case VISIBLE_FILL:
         case VISIBLE_STROKE:
-            s = getSensitiveArea();
-            if (s != null) {
-                return isVisible && s.contains(p);
-            } else {
-                return false;
-            }
         case VISIBLE:
-            return isVisible;
+            if (!isVisible) return false;
+            // Fall Through
         case PAINTED:
         case FILL:
         case STROKE:
-            s = getSensitiveArea();
-            if (s != null) {
-                return s.contains(p);
-            } else {
+        case ALL: {
+            Rectangle2D b = getSensitiveBounds();
+            if (b == null || !b.contains(p))
                 return false;
-            }
-        case ALL:
-            return true;
+
+            Shape s = getSensitiveArea();
+            if (s == null)  return false;
+            return s.contains(p);
+        }
         case NONE:
-            return false;
         default:
             return false;
         }
@@ -237,51 +231,71 @@ public class ShapeNode extends AbstractGraphicsNode {
     }
 
     /**
+     * Returns the bounds of the sensitive area covered by this node,
+     * This includes the stroked area but does not include the effects
+     * of clipping, masking or filtering.
+     */
+    public Rectangle2D getSensitiveBounds() {
+        if (sensitiveBounds != null)
+            return sensitiveBounds;
+
+        Shape sensitive = getSensitiveArea();
+        if (sensitive == null) return null;
+        sensitiveBounds = sensitive.getBounds2D();
+        return sensitiveBounds;
+    }
+
+    /**
      * Returns the shape that represents the sensitive area of this graphics
      * node.
      */
     public Shape getSensitiveArea() {
-        if (sensitiveArea == null) {
-            // <!> NOT REALLY NICE CODE BUT NO OTHER WAY
-            ShapePainter strokeShapePainter = null;
-            ShapePainter fillShapePainter = null;
-            if (shapePainter instanceof StrokeShapePainter) {
-                strokeShapePainter = shapePainter;
-            } else if (shapePainter instanceof FillShapePainter) {
-                fillShapePainter = shapePainter;
-            } else {
-                CompositeShapePainter cp = (CompositeShapePainter)shapePainter;
-                for (int i=0; i < cp.getShapePainterCount(); ++i) {
-                    ShapePainter sp = cp.getShapePainter(i);
-                    if (sp instanceof StrokeShapePainter) {
-                        strokeShapePainter = sp;
-                    } else if (sp instanceof FillShapePainter) {
-                        fillShapePainter = sp;
-                    }
+        if (sensitiveArea != null) 
+            return sensitiveArea;
+
+        // <!> NOT REALLY NICE CODE BUT NO OTHER WAY
+        ShapePainter strokeShapePainter = null;
+        ShapePainter fillShapePainter = null;
+        if (shapePainter instanceof StrokeShapePainter) {
+            strokeShapePainter = shapePainter;
+        } else if (shapePainter instanceof FillShapePainter) {
+            fillShapePainter = shapePainter;
+        } else {
+            CompositeShapePainter cp = (CompositeShapePainter)shapePainter;
+            for (int i=0; i < cp.getShapePainterCount(); ++i) {
+                ShapePainter sp = cp.getShapePainter(i);
+                if (sp instanceof StrokeShapePainter) {
+                    strokeShapePainter = sp;
+                } else if (sp instanceof FillShapePainter) {
+                    fillShapePainter = sp;
                 }
             }
-            switch(pointerEventType) {
-            case VISIBLE_PAINTED:
-            case PAINTED:
-                sensitiveArea = shapePainter.getPaintedArea();
-                break;
-            case VISIBLE_FILL:
-            case FILL:
-                if (fillShapePainter != null) {
-                    sensitiveArea = fillShapePainter.getPaintedArea();
-                }
-                break;
-            case VISIBLE_STROKE:
-            case STROKE:
-                if (strokeShapePainter != null) {
-                    sensitiveArea = strokeShapePainter.getPaintedArea();
-                }
-                break;
-            case ALL:
-            case NONE:
-            default:
-                // nothing to tdo
+        }
+
+        switch(pointerEventType) {
+        case VISIBLE_PAINTED:
+        case PAINTED:
+            sensitiveArea = shapePainter.getPaintedArea();
+            break;
+        case VISIBLE_FILL:
+        case FILL:
+            if (fillShapePainter != null) {
+                sensitiveArea = fillShapePainter.getSensitiveArea();
             }
+            break;
+        case VISIBLE_STROKE:
+        case STROKE:
+            if (strokeShapePainter != null) {
+                sensitiveArea = strokeShapePainter.getSensitiveArea();
+            }
+            break;
+        case VISIBLE:
+        case ALL:
+            sensitiveArea = shapePainter.getSensitiveArea();
+            break;
+        case NONE:
+        default:
+            // nothing to tdo
         }
         return sensitiveArea;
     }

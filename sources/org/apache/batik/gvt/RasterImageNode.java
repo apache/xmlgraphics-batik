@@ -113,6 +113,15 @@ public class RasterImageNode extends AbstractGraphicsNode {
     }
 
     /**
+     * Returns the bounds of the sensitive area covered by this node,
+     * This includes the stroked area but does not include the effects
+     * of clipping, masking or filtering.
+     */
+    public Rectangle2D getSensitiveBounds() {
+        return image.getBounds2D();
+    }
+
+    /**
      * Returns the outline of this node.
      */
     public Shape getOutline() {

@@ -137,6 +137,18 @@ public class MarkerShapePainter implements ShapePainter {
     }
 
     /**
+     * Returns the area covered by this shape painter (even if not painted).
+     * This is always null for Markers.
+     */
+    public Shape getSensitiveArea() { return null; }
+
+    /**
+     * Returns the bounds of the area covered by this shape painte
+     * (even if not painted). This is always null for Markers.
+     */
+    public Rectangle2D getSensitiveBounds2D() { return null; }
+
+    /**
      * Sets the Shape this shape painter is associated with.
      *
      * @param shape new shape this painter should be associated with.

@@ -361,13 +361,16 @@ public interface GraphicsNode {
     Rectangle2D getTransformedBounds(AffineTransform txf);
 
     /**
-     * Returns the bounds of the area covered by this node's primitive paint.
+     * Returns the bounds of the area covered by this node's primitive
+     * paint.  This is the painted region of fill and stroke but does
+     * not account for clipping, masking or filtering.
      */
     Rectangle2D getPrimitiveBounds();
 
     /**
-     * Returns the bounds of this node's primitivePaint after applying the input
-     * transform (if any), concatenated with this node's transform (if any).
+     * Returns the bounds of this node's primitivePaint after applying
+     * the input transform (if any), concatenated with this node's
+     * transform (if any).
      *
      * @param txf the affine transform with which this node's transform should
      *        be concatenated. Should not be null.
@@ -375,23 +378,43 @@ public interface GraphicsNode {
     Rectangle2D getTransformedPrimitiveBounds(AffineTransform txf);
 
     /**
-     * Returns the bounds of the area covered by this node, without taking any
-     * of its rendering attribute into account. i.e., exclusive of any clipping,
-     * masking, filtering or stroking, for example.
+     * Returns the bounds of the area covered by this node, without
+     * taking any of its rendering attribute into account. i.e.,
+     * exclusive of any clipping, masking, filtering or stroking, for
+     * example.
      */
     Rectangle2D getGeometryBounds();
 
     /**
-     * Returns the bounds of the area covered by this node, without taking any
-     * of its rendering attribute into accoun. i.e., exclusive of any clipping,
-     * masking, filtering or stroking, for example. The returned value is
-     * transformed by the concatenation of the input transform and this node's
-     * transform.
+     * Returns the bounds of the area covered by this node, without
+     * taking any of its rendering attribute into accoun. i.e.,
+     * exclusive of any clipping, masking, filtering or stroking, for
+     * example. The returned value is transformed by the concatenation
+     * of the input transform and this node's transform.
      *
      * @param txf the affine transform with which this node's transform should
      *        be concatenated. Should not be null.
      */
     Rectangle2D getTransformedGeometryBounds(AffineTransform txf);
+
+    /**
+     * Returns the bounds of the sensitive area covered by this node,
+     * This includes the stroked area but does not include the effects
+     * of clipping, masking or filtering.
+     */
+    Rectangle2D getSensitiveBounds();
+
+    /**
+     * Returns the bounds of the sensitive area covered by this node,
+     * This includes the stroked area but does not include the effects
+     * of clipping, masking or filtering. The returned value is
+     * transformed by the concatenation of the input transform and
+     * this node's transform.
+     *
+     * @param txf the affine transform with which this node's
+     * transform should be concatenated. Should not be null.
+     */
+    Rectangle2D getTransformedSensitiveBounds(AffineTransform txf);
 
     /**
      * Returns true if the specified Point2D is inside the boundary of this

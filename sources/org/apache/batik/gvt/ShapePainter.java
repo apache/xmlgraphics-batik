@@ -38,6 +38,18 @@ public interface ShapePainter {
     Rectangle2D getPaintedBounds2D();
 
     /**
+     * Returns the area covered by this shape painter (even if nothing
+     * is painted there).
+     */
+    Shape getSensitiveArea();
+
+    /**
+     * Returns the bounds of the area covered by this shape painter
+     * (even if nothing is painted there).
+     */
+    Rectangle2D getSensitiveBounds2D();
+
+    /**
      * Sets the Shape this shape painter is associated with.
      *
      * @param shape new shape this painter should be associated with.

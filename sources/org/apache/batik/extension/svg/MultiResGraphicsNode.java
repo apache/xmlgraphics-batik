@@ -179,6 +179,10 @@ public class MultiResGraphicsNode
         return bounds;
     }
 
+    public Rectangle2D getSensitiveBounds(){
+        return bounds;
+    }
+
     /**
      * Returns the outline of this node.
      */

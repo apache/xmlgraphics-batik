@@ -132,8 +132,6 @@ public abstract class SVGShapeElementBridge extends AbstractGraphicsNodeBridge {
     protected  void handleGeometryChanged() {
         super.handleGeometryChanged();
         ShapeNode shapeNode = (ShapeNode)node;
-        ShapePainter painter = 
-            PaintServer.convertFillAndStroke(e, shapeNode, ctx);
         shapeNode.setShapePainter(createShapePainter(ctx, e, shapeNode));
     }
 
