@@ -132,6 +132,15 @@ public class UserStyleDialog extends JDialog implements ActionMap {
     }
 
     /**
+     * Sets the current dialog path.
+     */
+    public void setPath(String s) {
+        chosenPath = s;
+        panel.fileTextField.setText(s);
+        panel.fileCheckBox.setSelected(true);
+    }
+
+    /**
      * Creates the OK/Cancel buttons panel
      */
     protected JPanel createButtonsPanel() {
