@@ -1018,14 +1018,17 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         extends CleanerThread.SoftReferenceCleared {
         Object mememto;
         Set    set;
+        // String refStr;
         SoftReferenceMememto(Object ref, Object mememto, Set set) {
             super(ref);
+            // refStr = ref.toString();
             this.mememto = mememto;
             this.set     = set;
         }
 
         public void cleared() {
             synchronized (set) {
+                // System.err.println("SRClear: " + refStr);
                 set.remove(mememto);
                 mememto = null;
                 set     = null;

@@ -202,7 +202,7 @@ public class StrokingTextPainter extends BasicTextPainter {
         // cache the textRuns so don't need to recalculate
         node.setTextRuns(textRuns);
         return textRuns;
-    }
+   }
 
     public List computeTextRuns(TextNode node, 
                                 AttributedCharacterIterator aci,
