@@ -318,7 +318,6 @@ class BridgeEventSupport {
             } catch (IOException io) {
                 // will never appeared we don't use a file
             } catch (InterpreterException e) {
-                e.getException().printStackTrace();
                 if (ua != null)
                     ua.displayError("scripting error: " +
                                     e.getMessage());
