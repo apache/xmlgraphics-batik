@@ -59,6 +59,7 @@ To display the available targets type:
   <target name="init" depends="init-args">
     <tstamp/>
     <property name="project" value="batik"/>
+    <property name="year"    value="2000"/>
 
     <property name="src"             value="sources"/>
     <property name="dest"            value="classes"/>
@@ -154,6 +155,7 @@ To display the available targets type:
       <arg line="targetDirectory=${site} ${xdocs}/book.xml ${site-skin}"/>
     </java>
   </target>
+
 
   <!-- Cleans everything .................................................. -->
   <target name="clean"
