@@ -76,6 +76,11 @@ public class SVGGElementBridge implements GraphicsNodeBridge, SVGConstants {
         return gn;
     }
 
+    public void buildGraphicsNode(GraphicsNode node, BridgeContext ctx,
+                                  Element element) {
+
+    }
+
     public void update(BridgeMutationEvent evt) {
         // <!> FIXME : TODO
     }

@@ -90,6 +90,11 @@ public abstract class SVGShapeElementBridge implements GraphicsNodeBridge,
         return node;
     }
 
+    public void buildGraphicsNode(GraphicsNode node, BridgeContext ctx,
+                                  Element element) {
+
+    }
+
     public void update(BridgeMutationEvent evt) {
         BridgeContext ctx = evt.getBridgeContext();
         SVGElement svgElement = (SVGElement) evt.getElement();
