@@ -80,7 +80,7 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
         // compute an additional transform related the clipPathUnits
         String units = clipElement.getAttributeNS(null, ATTR_CLIP_PATH_UNITS);
         if (units.length() == 0) {
-            units = VALUE_OBJECT_BOUNDING_BOX;
+            units = VALUE_USER_SPACE_ON_USE;
         }
         if (VALUE_OBJECT_BOUNDING_BOX.equals(units)) {
             // units are resolved using objectBoundingBox

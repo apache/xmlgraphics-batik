@@ -33,11 +33,11 @@
 
     <defs>
         <!-- ============================================== -->
-        <!-- clipPathUnits : default (objectBoundingBox)    -->
+        <!-- clipPathUnits : default (userSpaceOnUse)       -->
         <!-- ============================================== -->
         <clipPath id="clip_1_1">
-            <circle cx=".3" cy=".5" r="30%"/>
-            <circle cx=".7" cy=".5" r="30%"/>
+            <circle cx="36"  cy="60" r="36"/>
+            <circle cx="84"  cy="60" r="36"/>
         </clipPath>
         <!-- ============================================== -->
         <!-- clipPathUnits : objectBoundingBox              -->
@@ -67,12 +67,12 @@
         </clipPath>
 
         <!-- ============================================== -->
-        <!-- clipPathUnits : default (objectBoundingBox)    -->
+        <!-- clipPathUnits : default (userSpaceOnUse)       -->
         <!-- clip-path on the clipPath element              -->
         <!-- ============================================== -->
         <clipPath id="clip_2_1" style="clip-path:url(#clip)">
-            <circle cx=".3" cy=".5" r="30%"/>
-            <circle cx=".7" cy=".5" r="30%"/>
+            <circle cx="36"  cy="60" r="36"/>
+            <circle cx="84"  cy="60" r="36"/>
         </clipPath>
         <!-- ============================================== -->
         <!-- clipPathUnits : objectBoundingBox              -->
@@ -92,12 +92,12 @@
         </clipPath>
 
         <!-- ============================================== -->
-        <!-- clipPathUnits : default (objectBoundingBox)    -->
+        <!-- clipPathUnits : default (userSpaceOnUse)       -->
         <!-- clip-path on the clipPath children elements    -->
         <!-- ============================================== -->
         <clipPath id="clip_3_1">
-            <circle cx=".3" cy=".5" r="30%" style="clip-path:url(#clip)"/>
-            <circle cx=".7" cy=".5" r="30%" style="clip-path:url(#clip)"/>
+            <circle cx="36"  cy="60" r="36" style="clip-path:url(#clip)"/>
+            <circle cx="84"  cy="60" r="36" style="clip-path:url(#clip)"/>
         </clipPath>
         <!-- ============================================== -->
         <!-- clipPathUnits : objectBoundingBox              -->
