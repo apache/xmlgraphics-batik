@@ -168,6 +168,7 @@ public class PathParser extends NumberParser {
 	    reportError("float.format", new Object[] { getBufferContent() });
 	    skipSubPath();
 	}
+        skipCommaSpaces();
     }
 
     /**
@@ -220,6 +221,7 @@ public class PathParser extends NumberParser {
 	    reportError("float.format", new Object[] { getBufferContent() });
 	    skipSubPath();
 	}	
+        skipCommaSpaces();
     }
 
     /**
