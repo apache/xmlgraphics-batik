@@ -53,7 +53,7 @@
             and download one or more ZIP file containing the distribution of your choice. Here are
             the various components you will find in the download area and their intended use:</p>
             <ul>
-                <li><strong>batik-</strong><em>version</em><strong>.zip</strong> (e.g., <em>batik-1.0beta.zip.</em>)
+                <li><strong>batik-</strong><em>version</em><strong>.zip</strong> (e.g., <em>batik-1.1.zip.</em>)
                 contains a binary distribution 
                 of Batik with executable JAR files that let you get started with Batik easily. This 
                 is the recommended distribution if you want to look at Batik's features, or you want to
@@ -61,7 +61,7 @@
                 comes with a set of sample SVG files.</li>
 
                 <li><strong>batik-src-</strong><em>version</em><strong>.zip</strong> 
-                (e.g.,  <em>batik-src-1.0beta2.zip.</em>)contains a complete 
+                (e.g.,  <em>batik-src-1.1.zip.</em>)contains a complete 
                 snapshot of the Batik source code, documentation, regression tools and utilities as
                 well as the script for building Batik. That distribution is a snapshot of 
                 the CVS repository. This is the recommended distribution for developers who want 
@@ -83,10 +83,10 @@
                 <li>Open a console and go to the directory where the distribution was downloaded.</li>
                 <li>Unpack the distribution with Java's JAR utility:<br />
                     <code>jar xvf &lt;distribution&gt;</code><br />
-                    For example, if you have downloaded batik-1.0beta2.zip into /home/IamHere, type the
+                    For example, if you have downloaded batik-1.1.zip into /home/IamHere, type the
                     following at the command prompt:<br />
                     <code>cd /home/IamHere</code><br />
-                    <code>jar xvf batik-1.0beta2.zip</code><br />
+                    <code>jar xvf batik-1.1.zip</code><br />
                     <strong>IMPORTANT:</strong> UNIX users, do not use the <code>unzip</code> utility to
                     unpack the various Batik zip files, as this would not set the directories access rights
                     properly.
