@@ -37,7 +37,6 @@ public interface ClipBridge extends Bridge {
                          GraphicsNode clipedNode);
 
     /**
-    /**
      * Performs an update according to the specified event.
      *
      * @param evt the event describing the update to perform

@@ -499,7 +499,6 @@ public class PreferenceDialog extends JDialog
             = new JCheckBox(Resources.getString(LABEL_ENABLE_DOUBLE_BUFFERING));
         enableDoubleBuffering.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                System.out.println("enableDoubleBuffering.actionPerformed");
                 showRendering.setEnabled(!enableDoubleBuffering.isSelected());
             }
         });
