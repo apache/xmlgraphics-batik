@@ -1086,12 +1086,20 @@ public class StrokingTextPainter extends BasicTextPainter {
     public Mark getMark(TextNode node, int index, boolean leadingEdge) {
         AttributedCharacterIterator aci;
         aci = node.getAttributedCharacterIterator();
+        if ((index < aci.getBeginIndex()) ||
+            (index > aci.getEndIndex()))
+            return null;
+
+        // get the list of text runs, this also may update the node's
+        // aci with char index information.  So we need to refetch the
+        // node's ACI...
+        List textRuns = getTextRuns(node, aci);
+        aci = node.getAttributedCharacterIterator();
+
         aci.setIndex(index);
         int charIndex = ((Integer)aci.getAttribute
          (GVTAttributedCharacterIterator.TextAttribute.CHAR_INDEX)).intValue();
         
-        // get the list of text runs
-        List textRuns = getTextRuns(node, aci);
 
         // for each text run, see if it contains the current char.
         for (int i = 0; i < textRuns.size(); ++i) {

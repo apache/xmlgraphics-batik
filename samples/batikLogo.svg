@@ -141,7 +141,7 @@
           
           <g id="Batik_Logo_Shadow" filter="url(#dropShadow)">
               <g id="Batik_Logo">
-                 <text x="0" y="0" font-family="Batik SVGFont" 
+                 <text id="text" x="0" y="0" font-family="Batik SVGFont" 
                        font-size="180">Batik</text>
                  <use xlink:href="#Batik_Logo_Underline"/>
               </g> <!-- End Batik_Logo -->

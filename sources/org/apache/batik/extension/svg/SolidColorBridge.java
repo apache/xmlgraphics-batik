@@ -69,12 +69,18 @@ public class SolidColorBridge
                              float opacity) {
         CSSOMReadOnlyStyleDeclaration decl;
         decl = CSSUtilities.getComputedStyle(paintElement);
-        float attr = PaintServer.convertOpacity
-            (decl.getPropertyCSSValueInternal(CSS_OPACITY_PROPERTY));
-        opacity *= attr;
+        CSSValue opacityVal = decl.getPropertyCSSValueInternal
+            (BATIK_EXT_SOLID_OPACITY_PROPERTY);
+        if (opacityVal != null) {
+            float attr = PaintServer.convertOpacity(opacityVal);
+            opacity *= attr;
+        }
 
         CSSValue colorDef
-            = decl.getPropertyCSSValueInternal(CSS_COLOR_PROPERTY);
+            = decl.getPropertyCSSValueInternal(BATIK_EXT_SOLID_COLOR_PROPERTY);
+        if (colorDef == null)
+            return new Color(0f, 0f, 0f, opacity);
+
         Color ret = null;
         if (colorDef.getCssValueType() == CSSValue.CSS_PRIMITIVE_VALUE) {
             CSSPrimitiveValue v = (CSSPrimitiveValue)colorDef;

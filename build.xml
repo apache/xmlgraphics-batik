@@ -219,7 +219,7 @@ To display the available targets type:
           description="Compiles the tests infrastructure source files">
     <mkdir dir="${dest}"/>
 
-    <javac srcdir="${testsrc}" destdir="${dest}" deprecation="on">
+    <javac srcdir="${testsrc}" destdir="${dest}" deprecation="on" debug="on">
       <classpath>
         <pathelement location="${dest}" />
         <path refid="libs-classpath"/>
@@ -233,7 +233,7 @@ To display the available targets type:
           description="Compiles the source files">
     <mkdir dir="${dest}"/>
 
-    <javac srcdir="${src}" destdir="${dest}" deprecation="on">
+    <javac srcdir="${src}" destdir="${dest}" deprecation="on" debug="on">
       <classpath refid="libs-classpath"/>
       <exclude name="**/*.html"/>
       <exclude name="**/rhino/*" unless="rhino.present"/>      
@@ -757,6 +757,8 @@ To display the available targets type:
     <mkdir dir="${test-references}/org/apache/batik/svggen/rendering/candidate-variation" />
     <mkdir dir="${test-references}/org/apache/batik/svggen/rendering/candidate-reference" />
     <mkdir dir="${test-references}/org/apache/batik/svggen/rendering/accepted-variation" />
+    <mkdir dir="${test-references}/org/apache/batik/gvt/candidate" />
+    <mkdir dir="${test-references}/org/apache/batik/gvt/variation" />
   </target>
 
   <target name="ttf2svg"
