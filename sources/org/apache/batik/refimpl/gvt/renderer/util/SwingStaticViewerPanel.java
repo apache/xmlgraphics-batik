@@ -190,8 +190,14 @@ public class SwingStaticViewerPanel extends JPanel {
                        ( (evt.getModifiers() & evt.BUTTON1_MASK) != 0)
                        )
                     {
-                        // User has control-clicked on the viewer
-                        controller.onZoomIn(evt.getPoint());
+                        if( (evt.getModifiers() & evt.SHIFT_MASK) != 0){
+                            // control-shift-click
+                            controller.onRotate(evt.getPoint());
+                        }
+                        else{
+                            // User has control-clicked on the viewer
+                            controller.onZoomIn(evt.getPoint());
+                        }
                     }
                 }
             });
@@ -1023,6 +1029,25 @@ public class SwingStaticViewerPanel extends JPanel {
         }
 
         /**
+         * Handles requests to rotate
+         */
+        public void onRotate(Point rotationCenter){
+            AffineTransform usr2dev = new AffineTransform();
+            usr2dev.rotate(Math.PI/8.f, 
+                           rotationCenter.x,
+                           rotationCenter.y);
+
+            usr2dev.concatenate(viewer.getTransform());
+
+            try{
+                viewer.setTransform(usr2dev);
+            }catch(NoninvertibleTransformException e){
+                // This should never happen
+                throw new Error();
+            }
+        }
+
+        /**
          * Handles requests to search a string in the document
          */
         public void onSearch(){
@@ -1100,6 +1125,10 @@ public class SwingStaticViewerPanel extends JPanel {
             = new org.apache.batik.refimpl.parser.ParserFactory();
         bridgeContext.setParserFactory(parserFactory);
 
+        bridgeContext.setUserAgent(new org.apache.batik.refimpl.bridge.DefaultUserAgent());
+
+        bridgeContext.setGraphicsNodeRableFactory
+            (new org.apache.batik.refimpl.gvt.filter.ConcreteGraphicsNodeRableFactory());
 
         // GVT Builder. Use Batik's Bridge reference implementation builder.
         GVTBuilder gvtBuilder = new org.apache.batik.refimpl.bridge.ConcreteGVTBuilder();

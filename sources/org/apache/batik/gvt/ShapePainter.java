@@ -27,4 +27,10 @@ public interface ShapePainter {
      */
     void paint(Shape shape, Graphics2D g2d, GraphicsNodeRenderContext ctx);
 
+    /**
+     * Returns the area painted by this painter for a given input shape
+     *
+     * @param shape the shape to paint
+     */
+    Shape getPaintedArea(Shape shape);
 }

@@ -105,26 +105,10 @@ public class ConcreteShapeNode extends AbstractGraphicsNode
     //
     // Geometric methods
     //
-
-    public Rectangle2D getBounds() {
-        // <!> FIXME : TODO At the moment this is the same algorithms as getRenderBounds
-        Rectangle2D usrBounds = shape.getBounds2D();
-        if(transform != null){
-            usrBounds 
-                = transform.createTransformedShape(usrBounds).getBounds2D();
-        }
-
-        return usrBounds;
-    }
-
-    public Rectangle2D getRenderBounds() {
-        Rectangle2D usrBounds = shape.getBounds2D();
-        if(transform != null){
-            usrBounds 
-                = transform.createTransformedShape(usrBounds).getBounds2D();
-        }
-
-        return usrBounds;
+    public Rectangle2D getPrimitiveBounds() {
+        if(shapePainter == null)
+            return null;
+        return shapePainter.getPaintedArea(shape).getBounds2D();
     }
 
     public Shape getOutline() {

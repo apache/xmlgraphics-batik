@@ -10,6 +10,7 @@ package org.apache.batik.refimpl.gvt;
 
 import java.awt.Shape;
 import java.awt.Graphics2D;
+import java.awt.geom.Area;
 
 import java.util.List;
 import java.util.Iterator;
@@ -60,5 +61,15 @@ public class ConcreteCompositeShapePainter implements CompositeShapePainter {
                 painters[i].paint(shape, g2d, ctx);
             }
         }
+    }
+
+    public Shape getPaintedArea(Shape shape){
+        Area paintedArea = new Area();
+        if (painters != null) {
+            for (int i=0; i < count; ++i) {
+                paintedArea.add(new Area(painters[i].getPaintedArea(shape)));
+            }
+        }
+        return paintedArea;
     }
 }

@@ -102,7 +102,7 @@ public class ConcreteTextNode
         return anchor;
     }
 
-    public Rectangle2D getBounds(){
+    public Rectangle2D getPrimitiveBounds(){
         // HACK, until we change getBounds to take
         // GraphicsNodeRenderContext
         java.awt.font.TextLayout layout
@@ -129,10 +129,6 @@ public class ConcreteTextNode
         bounds = t.createTransformedShape(bounds).getBounds();
 
         return bounds;
-    }
-
-    public Rectangle2D getRenderBounds(){
-        throw new Error("NOT IMPLEMENTED");
     }
 
     public boolean contains(Point2D p) {
