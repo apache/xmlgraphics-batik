@@ -733,11 +733,9 @@ public class MemoryMonitor extends JFrame implements ActionMap {
 		}
                 try {
                     sleep(timeout);
-                    if (suspended) {
-                        synchronized(this) {
-                            while (suspended) {
-                                wait();
-                            }
+                    synchronized(this) {
+                        while (suspended) {
+                            wait();
                         }
                     }
                 } catch (InterruptedException e) {}
@@ -747,7 +745,7 @@ public class MemoryMonitor extends JFrame implements ActionMap {
         /**
          * Suspends the thread.
          */
-        public void safeSuspend() {
+        public synchronized void safeSuspend() {
             if (!suspended) {
                 suspended = true;
             }

@@ -75,7 +75,6 @@
         <test id="samples/tests/spec/scripting/gradientsUpdate.svg" />
         <test id="samples/tests/spec/scripting/imageUpdate.svg" />
         <test id="samples/tests/spec/scripting/javaBinding.svg" />
-        <test id="samples/tests/spec/scripting/markerUpdate.svg" />
         <test id="samples/tests/spec/scripting/maskClipUpdate.svg" />
         <!-- <test id="samples/tests/spec/scripting/removeLast.svg" /> -->
         <test id="samples/tests/spec/scripting/security3.svg" />
