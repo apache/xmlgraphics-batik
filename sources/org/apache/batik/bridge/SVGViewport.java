@@ -22,8 +22,10 @@ import org.w3c.dom.svg.SVGSVGElement;
  */
 public class SVGViewport implements Viewport, SVGConstants {
 
-    private SVGSVGElement svgSvgElement;
-    private UnitProcessor.Context uctx;
+    // private SVGSVGElement svgSvgElement;
+    // private UnitProcessor.Context uctx;
+    private float width;
+    private float height;
 
     /**
      * Constructs a new viewport with the specified <tt>SVGSVGElement</tt>.
@@ -32,14 +34,17 @@ public class SVGViewport implements Viewport, SVGConstants {
      */
     public SVGViewport(SVGSVGElement svgSvgElement,
                        UnitProcessor.Context uctx) {
-        this.svgSvgElement = svgSvgElement;
-        this.uctx = uctx;
-    }
+        // this.svgSvgElement = svgSvgElement;
+        // this.uctx = uctx;
+        width = computeWidth(svgSvgElement, uctx);
+        height = computeHeight(svgSvgElement, uctx);
+     }
 
     /**
      * Returns the width of this <tt>SVGSVGElement</tt>.
      */
-    public float getWidth() {
+    private float computeWidth(SVGSVGElement svgSvgElement,
+                               UnitProcessor.Context uctx) {
         String s = svgSvgElement.getAttributeNS(null, SVG_WIDTH_ATTRIBUTE);
         LengthParser p = new LengthParser();
         UnitProcessor.UnitResolver ur = new UnitProcessor.UnitResolver();
@@ -55,7 +60,8 @@ public class SVGViewport implements Viewport, SVGConstants {
     /**
      * Returns the height of this viewport.
      */
-    public float getHeight() {
+    private float computeHeight(SVGSVGElement svgSvgElement,
+                                UnitProcessor.Context uctx) {
         String s = svgSvgElement.getAttributeNS(null, SVG_HEIGHT_ATTRIBUTE);
         LengthParser p = new LengthParser();
         UnitProcessor.UnitResolver ur = new UnitProcessor.UnitResolver();
@@ -68,4 +74,11 @@ public class SVGViewport implements Viewport, SVGConstants {
                                             uctx);
     }
 
+    public float getWidth(){
+        return width;
+    }
+
+    public float getHeight(){
+        return height;
+    }
 }
