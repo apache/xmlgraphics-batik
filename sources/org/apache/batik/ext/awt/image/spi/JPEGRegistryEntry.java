@@ -76,7 +76,7 @@ public class JPEGRegistryEntry
                     } catch (IOException ioe) {
                         // Something bad happened here...
                         filt = ImageTagRegistry.getBrokenLinkImage
-                            (errCode, errParam);
+                            (this, errCode, errParam);
                     }
 
                     dr.setSource(filt);

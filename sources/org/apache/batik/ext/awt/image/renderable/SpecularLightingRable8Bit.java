@@ -112,6 +112,7 @@ public class SpecularLightingRable8Bit
      * Set this filter's litRegion
      */
     public void setLitRegion(Rectangle2D litRegion){
+        touch();
         this.litRegion = litRegion;
     }
 
@@ -126,6 +127,7 @@ public class SpecularLightingRable8Bit
      * @param New Light object
      */
     public void setLight(Light light){
+        touch();
         this.light = light;
     }
 
@@ -140,6 +142,7 @@ public class SpecularLightingRable8Bit
      * Sets the surface scale
      */
     public void setSurfaceScale(double surfaceScale){
+        touch();
         this.surfaceScale = surfaceScale;
     }
 
@@ -154,6 +157,7 @@ public class SpecularLightingRable8Bit
      * Sets the specular constant, or ks
      */
     public void setKs(double ks){
+        touch();
         this.ks = ks;
     }
 
@@ -168,6 +172,7 @@ public class SpecularLightingRable8Bit
      * Sets the specular exponent
      */
     public void setSpecularExponent(double specularExponent){
+        touch();
         this.specularExponent = specularExponent;
     }
 

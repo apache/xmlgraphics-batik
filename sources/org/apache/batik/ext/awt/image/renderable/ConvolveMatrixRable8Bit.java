@@ -94,6 +94,7 @@ public class ConvolveMatrixRable8Bit
     }
 
     public void setTarget(Point pt) {
+        touch();
         this.target = (Point)pt.clone();
     }
 

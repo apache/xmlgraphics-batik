@@ -105,6 +105,7 @@ public class DiffuseLightingRable8Bit
      * Set this filter's litRegion
      */
     public void setLitRegion(Rectangle2D litRegion){
+        touch();
         this.litRegion = litRegion;
     }
 
@@ -119,6 +120,7 @@ public class DiffuseLightingRable8Bit
      * @param New Light object
      */
     public void setLight(Light light){
+        touch();
         this.light = light;
     }
 
@@ -133,6 +135,7 @@ public class DiffuseLightingRable8Bit
      * Sets the surface scale
      */
     public void setSurfaceScale(double surfaceScale){
+        touch();
         this.surfaceScale = surfaceScale;
     }
 
@@ -147,6 +150,7 @@ public class DiffuseLightingRable8Bit
      * Sets the diffuse constant, or kd
      */
     public void setKd(double kd){
+        touch();
         this.kd = kd;
     }
 

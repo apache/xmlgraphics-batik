@@ -117,6 +117,7 @@ public class MorphologyRable8Bit
      * @param doDilation do "dilation" when true and "erosion" when false
      */
     public void setDoDilation(boolean doDilation){
+        touch();
         this.doDilation = doDilation;
     }
 

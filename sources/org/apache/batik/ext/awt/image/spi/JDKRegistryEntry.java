@@ -91,76 +91,62 @@ public class JDKRegistryEntry extends AbstractRegistryEntry
         if (img == null)
             return null;
 
-        final DeferRable dr     = new DeferRable();
-        final String     errCode  = ERR_URL_FORMAT_UNREADABLE;
-        final Object []  errParam = new Object[] {"JDK", purl};
+        RenderedImage ri = loadImage(img);
+        if (ri == null)
+            return null;
 
-        Thread t = new Thread() {
-                
-                public RenderedImage loadImage(Image img) {
-                    // In some cases the image will be a
-                    // BufferedImage (subclass of RenderedImage).
-                    if (img instanceof RenderedImage)
-                        return (RenderedImage)img;
-
-                    // Setup the mediaTracker.
-                    int myID;
-                    synchronized (mediaTracker) {
-                        myID = id++;
-                    }
-
-                    // Add our image to the media tracker and wait....
-                    mediaTracker.addImage(img, myID);
-                    while (true) {
-                        try {
-                            mediaTracker.waitForID(myID);
-                        }
-                        catch(InterruptedException ie) {
-                                // Something woke us up but the image
-                                // isn't done yet, so try again.
-                            continue;
-                        };
-
-                        // All done!
-                        break;
-                    }
-
-                    // Clean up our registraction
-                    mediaTracker.removeImage(img, myID);
-
-                    if ((img.getWidth(null)  == -1)||
-                        (img.getHeight(null) == -1))
-                        return null;
-
-                    // Build the image to .
-                    BufferedImage bi = null;
-                    bi = new BufferedImage(img.getWidth(null),
-                                           img.getHeight(null),
-                                           BufferedImage.TYPE_INT_ARGB);
-                    Graphics2D g2d = bi.createGraphics();
-
-                    g2d.drawImage(img, 0, 0, null);
-                    g2d.dispose();
-                    return bi;
-                }
-
-                public void run() {
-                    Filter filt;
-                    RenderedImage ri = loadImage(img);
-                    if (ri == null)
-                        filt = ImageTagRegistry.getBrokenLinkImage
-                            (errCode, errParam);
-                    else
-                        filt = new RedRable(GraphicsUtil.wrap(ri));
-                    dr.setSource(filt);
-                }
-            };
-        t.start();
-        return dr;
+        return new RedRable(GraphicsUtil.wrap(ri));
     }
 
     // Stuff for Image Loading.
     static Component mediaComponent = new Label();
     static MediaTracker mediaTracker = new MediaTracker(mediaComponent);
     static int id = 0;
+
+    public RenderedImage loadImage(Image img) {
+        // In some cases the image will be a
+        // BufferedImage (subclass of RenderedImage).
+        if (img instanceof RenderedImage)
+            return (RenderedImage)img;
+
+                    // Setup the mediaTracker.
+        int myID;
+        synchronized (mediaTracker) {
+            myID = id++;
+        }
+
+        // Add our image to the media tracker and wait....
+        mediaTracker.addImage(img, myID);
+        while (true) {
+            try {
+                mediaTracker.waitForID(myID);
+            }
+            catch(InterruptedException ie) {
+                                // Something woke us up but the image
+                                // isn't done yet, so try again.
+                continue;
+            };
+
+            // All done!
+            break;
+        }
+
+        // Clean up our registraction
+        mediaTracker.removeImage(img, myID);
+
+        if ((img.getWidth(null)  == -1)||
+            (img.getHeight(null) == -1))
+            return null;
+
+                    // Build the image to .
+        BufferedImage bi = null;
+        bi = new BufferedImage(img.getWidth(null),
+                               img.getHeight(null),
+                               BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = bi.createGraphics();
+
+        g2d.drawImage(img, 0, 0, null);
+        g2d.dispose();
+        return bi;
+    }
 }
