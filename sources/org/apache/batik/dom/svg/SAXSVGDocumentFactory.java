@@ -27,6 +27,8 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+import java.util.Properties;
+
 import org.apache.batik.dom.util.SAXDocumentFactory;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.util.MimeTypeConstants;
@@ -46,6 +48,8 @@ import org.xml.sax.SAXException;
 public class SAXSVGDocumentFactory
     extends    SAXDocumentFactory
     implements SVGDocumentFactory {
+
+    public static final Object LOCK = new Object();
 
     /**
      * Key used for public identifiers
@@ -96,7 +100,7 @@ public class SAXSVGDocumentFactory
     /**
      * The ResourceBunder for the public and system ids
      */
-    protected static ResourceBundle rb;
+    protected static Properties dtdProps;
 
     /**
      * Creates a new SVGDocumentFactory object.
@@ -319,36 +323,51 @@ public class SAXSVGDocumentFactory
     public InputSource resolveEntity(String publicId, String systemId)
         throws SAXException {
         try {
-            if (rb == null)
-                rb = ResourceBundle.getBundle(DTDIDS, Locale.getDefault());
-
-            if (dtdids == null)
-                dtdids = rb.getString(KEY_PUBLIC_IDS);
-
-            if (skippable_dtdids == null)
-                skippable_dtdids = rb.getString(KEY_SKIPPABLE_PUBLIC_IDS);
-            if (skip_dtd == null)
-                skip_dtd = rb.getString(KEY_SKIP_DTD);
-
-            if (publicId != null){
-                if (!isValidating && 
-                    (skippable_dtdids.indexOf(publicId) != -1)) {
-                    // We are not validating and this is a DTD we can
-                    // safely skip so do it...  Here we provide just enough
-                    // of the DTD to keep stuff running (set svg and
-                    // xlink namespaces).
-                    return new InputSource(new StringReader(skip_dtd));
+            synchronized (LOCK) {
+                // Bootstrap if needed - move to a static block???
+                if (dtdProps == null) {
+                    dtdProps = new Properties();
+                    try { 
+                        Class cls = SAXSVGDocumentFactory.class;
+                        InputStream is = cls.getResourceAsStream
+                            ("resources/dtdids.properties");
+                        dtdProps.load(is);
+                    } catch (IOException ioe) { 
+                        throw new SAXException(ioe);
+                    }
                 }
 
-                if (dtdids.indexOf(publicId) != -1) {
-                    String localSystemId = 
-                        rb.getString(KEY_SYSTEM_ID + 
-                                     publicId.replace(' ', '_'));
+                if (dtdids == null)
+                    dtdids = dtdProps.getProperty(KEY_PUBLIC_IDS);
 
-                    if (localSystemId != null && !"".equals(localSystemId)){
-                        return new InputSource
-                            (getClass().getResource(localSystemId).toString());
-                    }
+                if (skippable_dtdids == null)
+                    skippable_dtdids = 
+                        dtdProps.getProperty(KEY_SKIPPABLE_PUBLIC_IDS);
+
+                if (skip_dtd == null)
+                    skip_dtd = dtdProps.getProperty(KEY_SKIP_DTD);
+            }
+
+            if (publicId == null)
+                return null; // Let SAX Parser find it.
+
+            if (!isValidating && 
+                (skippable_dtdids.indexOf(publicId) != -1)) {
+                // We are not validating and this is a DTD we can
+                // safely skip so do it...  Here we provide just enough
+                // of the DTD to keep stuff running (set svg and
+                // xlink namespaces).
+                return new InputSource(new StringReader(skip_dtd));
+            }
+            
+            if (dtdids.indexOf(publicId) != -1) {
+                String localSystemId = 
+                    dtdProps.getProperty(KEY_SYSTEM_ID + 
+                                         publicId.replace(' ', '_'));
+                
+                if (localSystemId != null && !"".equals(localSystemId)) {
+                    return new InputSource
+                        (getClass().getResource(localSystemId).toString());
                 }
             }
         } catch (MissingResourceException e) {

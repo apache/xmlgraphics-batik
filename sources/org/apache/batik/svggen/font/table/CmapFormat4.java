@@ -74,11 +74,31 @@ public class CmapFormat4 extends CmapFormat {
 
     public int mapCharCode(int charCode) {
         try {
+            /*
+              Quoting :
+              http://developer.apple.com/fonts/TTRefMan/RM06/Chap6cmap.html#Surrogates
+               
+              The original architecture of the Unicode Standard
+              allowed for all encoded characters to be represented
+              using sixteen bit code points. This allowed for up to
+              65,354 characters to be encoded. (Unicode code points
+              U+FFFE and U+FFFF are reserved and unavailable to
+              represent characters. For more details, see The Unicode
+              Standard.)
+               
+              My comment : Isn't there a typo here ? Shouldn't we
+              rather read 65,534 ?
+              */
+            if ((charCode < 0) || (charCode >= 0xFFFE))
+                return 0;
+
             for (int i = 0; i < segCount; i++) {
                 if (endCode[i] >= charCode) {
                     if (startCode[i] <= charCode) {
                         if (idRangeOffset[i] > 0) {
-                            return glyphIdArray[idRangeOffset[i]/2 + (charCode - startCode[i]) - (segCount - i)];
+                            return glyphIdArray[idRangeOffset[i]/2 + 
+                                                (charCode - startCode[i]) -
+                                                (segCount - i)];
                         } else {
                             return (idDelta[i] + charCode) % 65536;
                         }

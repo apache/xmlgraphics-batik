@@ -29,11 +29,18 @@ import org.apache.batik.script.InterpreterFactory;
  */
 public class JPythonInterpreterFactory implements InterpreterFactory {
 
+    final static String TEXT_PYTHON = "text/python";
+
     /**
      * Builds a <code>JPythonInterpreterFactory</code>.
      */
     public JPythonInterpreterFactory() {
     }
+
+    /**
+     * Returns the mime-type to register this interpereter with.
+     */
+    public String getMimeType() { return TEXT_PYTHON; }
 
     /**
      * Creates an instance of <code>JPythonInterpreter</code> class.
