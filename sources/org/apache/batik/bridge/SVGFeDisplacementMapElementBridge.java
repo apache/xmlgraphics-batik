@@ -13,12 +13,6 @@ import java.awt.geom.Rectangle2D;
 import java.util.Map;
 import java.util.Vector;
 
-import org.apache.batik.bridge.BridgeContext;
-import org.apache.batik.bridge.BridgeMutationEvent;
-import org.apache.batik.bridge.FilterPrimitiveBridge;
-import org.apache.batik.bridge.IllegalAttributeValueException;
-import org.apache.batik.bridge.MissingAttributeException;
-
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.ext.awt.image.renderable.ARGBChannel;
@@ -75,6 +69,7 @@ public class SVGFeDisplacementMapElementBridge implements FilterPrimitiveBridge,
         GraphicsNodeRenderContext rc =
                          bridgeContext.getGraphicsNodeRenderContext();
 
+        DocumentLoader loader = bridgeContext.getDocumentLoader();
         //
         // Extract standard deviation
         //
@@ -152,7 +147,8 @@ public class SVGFeDisplacementMapElementBridge implements FilterPrimitiveBridge,
                                                         filterRegion,
                                                         filteredNode,
                                                         rc,
-                                                        uctx);
+                                                        uctx,
+                                                        loader);
 
         PadRable pad = new PadRable8Bit(in, dispArea, PadMode.ZERO_PAD);
 

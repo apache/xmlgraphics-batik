@@ -14,12 +14,6 @@ import java.awt.geom.Rectangle2D;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import org.apache.batik.bridge.BridgeContext;
-import org.apache.batik.bridge.BridgeMutationEvent;
-import org.apache.batik.bridge.FilterPrimitiveBridge;
-import org.apache.batik.bridge.IllegalAttributeValueException;
-import org.apache.batik.bridge.MissingAttributeException;
-
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.ext.awt.image.renderable.Light;
@@ -79,6 +73,7 @@ public class SVGFeDiffuseLightingElementBridge
         GraphicsNodeRenderContext rc =
                          bridgeContext.getGraphicsNodeRenderContext();
 
+        DocumentLoader loader = bridgeContext.getDocumentLoader();
         // First, extract source
         String inAttr = filterElement.getAttributeNS(null, SVG_IN_ATTRIBUTE);
         in = CSSUtilities.getFilterSource(filteredNode,
@@ -119,7 +114,8 @@ public class SVGFeDiffuseLightingElementBridge
                                                         filterRegion,
                                                         filteredNode,
                                                         rc,
-                                                        uctx);
+                                                        uctx,
+                                                        loader);
 
 
         // Extract the light color

@@ -11,11 +11,6 @@ package org.apache.batik.bridge;
 import java.awt.geom.Rectangle2D;
 import java.util.Map;
 
-import org.apache.batik.bridge.BridgeContext;
-import org.apache.batik.bridge.BridgeMutationEvent;
-import org.apache.batik.bridge.FilterPrimitiveBridge;
-import org.apache.batik.bridge.IllegalAttributeValueException;
-
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.ext.awt.image.renderable.Filter;
@@ -71,6 +66,7 @@ public class SVGFeMorphologyElementBridge implements FilterPrimitiveBridge,
 
         GraphicsNodeRenderContext rc =
                      bridgeContext.getGraphicsNodeRenderContext();
+        DocumentLoader loader = bridgeContext.getDocumentLoader();
 
         // Extract the radius (or radii) for the operation.
         String radius = filterElement.getAttributeNS(null, ATTR_RADIUS);
@@ -160,7 +156,8 @@ public class SVGFeMorphologyElementBridge implements FilterPrimitiveBridge,
                                                         filterRegion,
                                                         filteredNode,
                                                         rc,
-                                                        uctx);
+                                                        uctx,
+                                                        loader);
 
         PadRable pad = new PadRable8Bit(in,
                                             primitiveRegion,

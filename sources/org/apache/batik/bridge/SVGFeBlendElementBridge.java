@@ -12,12 +12,6 @@ import java.awt.geom.Rectangle2D;
 import java.util.Map;
 import java.util.Vector;
 
-import org.apache.batik.bridge.BridgeContext;
-import org.apache.batik.bridge.BridgeMutationEvent;
-import org.apache.batik.bridge.FilterPrimitiveBridge;
-import org.apache.batik.bridge.IllegalAttributeValueException;
-import org.apache.batik.bridge.MissingAttributeException;
-
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.ext.awt.image.renderable.CompositeRable;
@@ -73,9 +67,10 @@ public class SVGFeBlendElementBridge implements FilterPrimitiveBridge,
                          Rectangle2D filterRegion,
                          Map filterMap){
 
-         GraphicsNodeRenderContext rc =
-                         bridgeContext.getGraphicsNodeRenderContext();
+        GraphicsNodeRenderContext rc =
+            bridgeContext.getGraphicsNodeRenderContext();
 
+        DocumentLoader loader = bridgeContext.getDocumentLoader();
         // Extract Blend operation
         CompositeRule rule = getRule(filterElement);
 
@@ -133,7 +128,8 @@ public class SVGFeBlendElementBridge implements FilterPrimitiveBridge,
                                                         filterRegion,
                                                         filteredNode,
                                                         rc,
-                                                        uctx);
+                                                        uctx,
+                                                        loader);
 
         // Now, do the blend.
         Filter filter = null;
@@ -177,8 +173,8 @@ public class SVGFeBlendElementBridge implements FilterPrimitiveBridge,
 
         } else {
             throw new IllegalAttributeValueException(
-                Messages.formatMessage("feBlen.mode.invalid",
-                                       new Object[] { ruleStr }));
+                                                     Messages.formatMessage("feBlen.mode.invalid",
+                                                                            new Object[] { ruleStr }));
         }
         return rule;
     }

@@ -15,10 +15,6 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import org.apache.batik.bridge.BridgeContext;
-import org.apache.batik.bridge.BridgeMutationEvent;
-import org.apache.batik.bridge.FilterPrimitiveBridge;
-
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.ext.awt.image.renderable.AffineRable;
@@ -82,6 +78,8 @@ public class SVGFeOffsetElementBridge implements FilterPrimitiveBridge,
         GraphicsNodeRenderContext rc =
                          bridgeContext.getGraphicsNodeRenderContext();
 
+        DocumentLoader loader = bridgeContext.getDocumentLoader();
+
         // parse the dx attribute
         String dxAttr = filterElement.getAttributeNS(null, SVG_DX_ATTRIBUTE);
         float dx = 0; // default is 0
@@ -138,7 +136,8 @@ public class SVGFeOffsetElementBridge implements FilterPrimitiveBridge,
                                                         filterRegion,
                                                         filteredNode,
                                                         rc,
-                                                        uctx);
+                                                        uctx,
+                                                        loader);
 
         PadRable pad = new PadRable8Bit(in,
                                             offsetArea,
