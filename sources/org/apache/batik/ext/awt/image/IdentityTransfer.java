@@ -12,13 +12,11 @@ package org.apache.batik.ext.awt.image;
  * IdentityTransfer.java
  *
  * This class defines the Identity type transfer function for the
- * feComponentTransfer filter, as defined in chapter 15, section 11
- * of the SVG specification.
+ * feComponentTransfer filter, as defined in chapter 15, section 11 of the SVG
+ * specification.
  *
  * @author <a href="mailto:sheng.pei@sun.com">Sheng Pei</a>
- * @version $Id$
- *
- * @see  org.apache.batik.gvt.filter.ComponentTransferOp
+ * @version $Id$ 
  */
 public class IdentityTransfer implements TransferFunction {
     /**

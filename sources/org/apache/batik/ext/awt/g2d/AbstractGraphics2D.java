@@ -997,7 +997,6 @@ public abstract class AbstractGraphics2D extends Graphics2D implements Cloneable
      * @see java.awt.Graphics#setXORMode
      * @see java.awt.Graphics#setPaintMode
      * @see java.awt.AlphaComposite
-     * @see java.lang.SecurityManager#checkPermission(java.awt.Permission)
      */
     public void setComposite(Composite comp){
         gc.setComposite(comp);

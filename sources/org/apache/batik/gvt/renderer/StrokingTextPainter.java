@@ -16,19 +16,24 @@ import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.Composite;
 import java.awt.BasicStroke;
+
 import java.awt.font.FontRenderContext;
 import java.awt.font.TextAttribute;
+
 import java.awt.geom.Point2D;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Rectangle2D;
+
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
 import java.text.CharacterIterator;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.Vector;
+
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.TextNode;
 import org.apache.batik.gvt.text.AttributedCharacterSpanIterator;
@@ -48,6 +53,7 @@ import org.apache.batik.gvt.text.BidiAttributedCharacterIterator;
  * renders the attributed character iterator of a <tt>TextNode</tt>.
  * <em>StrokingTextPainter includes support for stroke, fill, opacity,
  * text-decoration, and other attributes.</em>
+ *
  * @see org.apache.batik.gvt.TextPainter
  * @see org.apache.batik.gvt.text.GVTAttributedCharacterIterator
  *

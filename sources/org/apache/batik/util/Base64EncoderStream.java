@@ -24,9 +24,7 @@ import java.io.IOException;
  * @author <a href="vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @author      Chuck McManis
  * @version $Id$
- * @see         Base64DecoderStream
  */
-
 public class Base64EncoderStream extends OutputStream {
 
     /** This array maps the 6 bit values to their characters */

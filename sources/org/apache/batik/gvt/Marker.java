@@ -19,6 +19,7 @@ import java.awt.geom.Point2D;
  * @version $Id$
  */
 public class Marker {
+
     /**
      * Rotation angle, about (0, 0) is user space. If orient is NaN
      * then the marker's x-axis should be aligned with the slope
@@ -36,6 +37,13 @@ public class Marker {
      */
     private Point2D ref;
 
+    /**
+     * Constructs a new marker.
+     *
+     * @param markerNode the graphics node that represents the marker
+     * @param ref the reference point
+     * @param orient the orientation of the marker
+     */
     public Marker(GraphicsNode markerNode,
                   Point2D ref,
                   double orient){
@@ -52,20 +60,22 @@ public class Marker {
         this.orient = orient;
     }
 
+    /**
+     * Returns the reference point of this marker.
+     */
     public Point2D getRef(){
         return (Point2D)ref.clone();
     }
 
     /**
-     * @see #orient
+     * Returns the orientation of this marker.
      */
     public double getOrient(){
         return orient;
     }
 
     /**
-     * Returns the <code>GraphicsNode</code> that draws this
-     * Marker
+     * Returns the <code>GraphicsNode</code> that draws this marker.
      */
     public GraphicsNode getMarkerNode(){
         return markerNode;

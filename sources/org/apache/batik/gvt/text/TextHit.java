@@ -14,7 +14,7 @@ import java.awt.font.FontRenderContext;
 /**
  * Class that encapsulates information returned from hit testing
  * a <tt>TextSpanLayout</tt> instance.
- * @see org.apache.batik.gvt.text.TextSpanLayout.
+ * @see org.apache.batik.gvt.text.TextSpanLayout
  *
  * @author <a href="bill.haneman@ireland.sun.com>Bill Haneman</a>
  * @version $Id$
