@@ -53,7 +53,7 @@ public class RunnableQueue implements Runnable {
     /**
      * The current thread.
      */
-    protected Thread runnableQueueThread;
+    protected volatile Thread runnableQueueThread;
 
     /**
      * Creates a new RunnableQueue started in a new thread.
@@ -80,8 +80,8 @@ public class RunnableQueue implements Runnable {
                     if (runHandler != null) {
                         runHandler.executionSuspended(this);
                     }
-                    while (suspended) {
-                        synchronized (suspendLock) {
+                    synchronized (suspendLock) {
+                        while (suspended) {
                             suspendLock.wait();
                         }
                     }
