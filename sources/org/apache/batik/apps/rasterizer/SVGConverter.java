@@ -529,7 +529,13 @@ public class SVGConverter {
                 if (file.exists()) {
                     sources.addElement(new SVGConverterFileSource(file));
                 } else {
-                    sources.addElement(new SVGConverterURLSource(sourceString));
+                    String[] fileNRef = getFileNRef(sourceString);
+                    file = new File(fileNRef[0]);
+                    if (file.exists()){
+                        sources.addElement(new SVGConverterFileSource(file, fileNRef[1]));
+                    } else{
+                        sources.addElement(new SVGConverterURLSource(sourceString));
+                    }
                 }
             }
         }
@@ -550,6 +556,18 @@ public class SVGConverter {
         return sources;
     }
 
+    public String[] getFileNRef(String fileName){
+        int n = fileName.lastIndexOf("#");
+        String[] result = {fileName, ""};
+        if (n > -1){
+            result[0] = fileName.substring(0, n);
+            if (n+1 < fileName.length()){
+                result[1] = fileName.substring(n+1);
+            }
+        }
+
+        return result;
+    }
 
     // -----------------------------------------------------------------------
     //   Internal methods
@@ -636,14 +654,18 @@ public class SVGConverter {
                 throw new SVGConverterException(ERROR_CANNOT_READ_SOURCE,
                                                  new Object[]{inputFile.getName()});
             }
+
             try {
-                input = new TranscoderInput(inputFile.openStream());
+                InputStream in = inputFile.openStream();
+                in.close();
             } catch(IOException ioe) {
                 throw new SVGConverterException(ERROR_CANNOT_OPEN_SOURCE,
                                                  new Object[] {inputFile.getName(),
                                                                ioe.toString()});
-            } 
+                                                               } 
             
+            input = new TranscoderInput(inputFile.getURI());
+
             // Compute transcoder output.
             if (!isWriteable(outputFile)) {
                 throw new SVGConverterException(ERROR_OUTPUT_NOT_WRITEABLE,
@@ -670,6 +692,7 @@ public class SVGConverter {
         // Transcode now
         boolean success = false;
         try {
+            System.out.println("About to transcoder : " + input.getURI());
             transcoder.transcode(input, output);
             success = true;
         } catch(TranscoderException te) {

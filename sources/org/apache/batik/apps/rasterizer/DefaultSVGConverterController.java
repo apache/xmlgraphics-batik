@@ -49,6 +49,7 @@ public class DefaultSVGConverterController implements SVGConverterController {
      */
     public boolean proceedWithSourceTranscoding(SVGConverterSource source,
                                                 File dest) {
+        System.out.println("About to transcoder source of type: " + source.getClass().getName());
         return true;
     }
     
