@@ -1,0 +1,128 @@
+body {
+  margin: 2em 1em 2em 70px;
+  font-family: serif;
+  font-size: 10px;
+  color: black;
+  background: white;
+  background-position: top left;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-color: white;
+
+}
+:link { color: #00C; background: transparent }
+:visited { color: #609; background: transparent }
+:active { color: #C00; background: transparent }
+
+th, tr, td { /* ns 4 */
+  font-family: sans-serif;
+  font-size: 10px;
+}
+
+table tr td {
+    font-family: sans-serif;
+}
+
+p,ol,ul,li { font-family: serif;}
+h1, h2, h3, h4, h5, h6 { text-align: left }
+/* background should be transparent, but WebTV has a bug */
+h1, h2, h3 { color: #444; background: white; }
+h1 { font: 270% serif; }
+h2 { font: 240% serif }
+h3 { font: 220% serif }
+h4 { font: bold 100% serif }
+h5 { font: italic 100% serif }
+h6 { font: small-caps 100% serif }
+h7 { font-family: serif; }
+.hide { display: none }
+
+.oddRow  { background: #dddddd; }
+.evenRow { background: #ffffff; }
+.tableBackground   { background: black; } 
+
+.lightEvenRow { background: #cccccc;  }
+.lightOddRow  { background: #eeeeee; }
+
+.titlefailed { font-family: Arial; font-weight: bolder; font-size: 12;}
+.titlepassed {}
+
+div.head { margin-bottom: 1em }
+div.head h1 { margin-top: 2em; clear: both }
+div.head table { margin-left: 2em; margin-top: 2em }
+div.head img { color: white; border: none } /* remove border from top image */
+
+.margin0 { background: red;}
+.repaintThread {
+    color: black;
+    font-weight: bold;
+}
+
+.uiThread {
+    color: #aaF;
+    font-weight: bold;
+}
+
+.svgLoadingThread {
+    color: #2F2;
+    font-weight: bold;
+}
+
+.gvtBuildingThread {
+    color: #dddddd;
+    font-weight: bold;
+}
+
+.scriptingThread {
+    color: gold;
+    font-weight: bold;
+}
+
+.updateThread {
+    color: crimson;
+    font-weight: bold;
+}
+
+.margin0 { margin-left: 10px; }
+.margin1 { margin-left: 18px;}
+.margin2 { margin-left: 26px; }
+.margin3 { margin-left: 34px; }
+.margin4 { margin-left: 42px; }
+.margin5 { margin-left: 50px; }
+.margin6 { margin-left: 58px; }
+
+p.copyright { font-size: small }
+p.copyright small { font-size: small }
+
+@media screen {  /* hide from IE3 */
+a:hover { background: #ffa } 
+}
+
+pre { color: #99F; }
+/*
+p {
+  margin-top: 0.6em;
+  margin-bottom: 0.6em;
+}
+*/
+dt, dd { margin-top: 0; margin-bottom: 0 } /* opera 3.50 */
+dt { font-weight: bold }
+
+tt, pre, code { font-family: monospace } /* navigator 4 requires this */
+
+ul.toc {
+  list-style: disc;		/* Mac NS has problem with 'none' */
+  list-style: none;
+}
+
+@media aural {  
+  h1, h2, h3 { stress: 20; richness: 90 }
+  .hide { speak: none }
+  p.copyright { volume: x-soft; speech-rate: x-fast }
+  dt { pause-before: 20% }
+  pre { speak-punctuation: code } 
+}
+
+table {
+    font-size: 10;
+    font-family: sans-serif;
+}
