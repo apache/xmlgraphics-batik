@@ -1,7 +1,50 @@
-Apache Batik Workspace README
 
-Currently this is an empty repository ready to be used by the initial
-committers to the Apache Batik project.
+                  A  P  A  C  H  E     B  A  T  I  K
 
-For any initial setup questions, feel free to mail duncan or stefano.
+                               @version@
 
+
+  What is it?
+  -----------
+
+  Apache Batik is ... [TODO (SM) finish this]
+
+
+  Where is it?
+  ------------
+
+  The home page for the Apache Batik project can be found in the Apache XML 
+  Project web site (http://xml.apache.org/batik/). There you also find 
+  information on how to download the latest release as well as all the other 
+  information you might need regarding this project.
+
+
+  Requirements
+  ------------
+
+   o  A Java 1.2 or later compatible virtual machine for your operating system.
+
+
+  Installation Instructions and Documentation
+  -------------------------------------------
+
+  Read the INSTALL file in this directory for the installation instructions.
+
+  The documentation available as of the date of this release is
+  included in the "docs/" directory.
+
+  Look for the most updated documentation on the Apache Batik web site under
+  the Apache XML Project (http://xml.apache.org/batik/).
+
+
+  Licensing and legal issues
+  --------------------------
+
+  For legal and licensing issues, please read the LICENSE file.
+
+
+
+  Thanks for using Apache Batik.
+
+                                           The Apache XML Project
+                                           http://xml.apache.org/
