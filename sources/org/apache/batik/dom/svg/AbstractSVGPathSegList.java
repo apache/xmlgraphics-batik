@@ -801,7 +801,7 @@ public abstract class AbstractSVGPathSegList
         }
 
         public void setX2(float x2){
-            this.x1 = x2;
+            this.x2 = x2;
             resetAttribute();
         }
         public void setY2(float y2){

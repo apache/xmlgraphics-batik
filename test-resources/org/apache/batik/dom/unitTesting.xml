@@ -20,6 +20,7 @@
                class="org.apache.batik.dom.EcmaScriptDOMTest">
         <test id="bug18143" />
         <test id="bug20331" />
+        <test id="bug20332" />
     </testGroup>
 
     <!-- ========================================================================== -->
