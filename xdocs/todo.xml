@@ -53,11 +53,6 @@
             Error handling (tolerance on DOCTYPE and processing errors)
         </action>
 
-        <action context="code" assigned-to="CJ">
-            Fix issue with passing a script function
-            instead of a listener.
-        </action>
-
         <action context="code"
                 assigned-to="CJ">
             Make sure we pass dom-eventListeners-BE-04.svg
