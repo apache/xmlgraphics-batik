@@ -323,5 +323,4 @@ public class MultiplyAlphaRed extends AbstractRed {
                                        Transparency.TRANSLUCENT,
                                        DataBuffer.TYPE_BYTE);
     }
-
-}    
+}

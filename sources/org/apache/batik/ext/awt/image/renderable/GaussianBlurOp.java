@@ -123,9 +123,9 @@ public class GaussianBlurOp implements BufferedImageOp, RasterOp {
      * @param radius stdDeviationX or stdDeviationY.
      * @see #makeQualityKernels */
     private float [] computeQualityKernelData(int radius, float stdDev){
-        final float kernelData[] = new float [radius * 2 + 1];
+        final float kernelData[] = new float [2*(radius-1) + 1];
         float sum = 0; // Used to normalise the kernel
-        final int w = 2*radius+1; // Kernel width
+        final int w = 2*(radius-1)+1; // Kernel width
 
         for(int i=0; i<w; i++){
             kernelData[i] = (float)(Math.pow(Math.E, -(i-radius)*(i-radius)/
@@ -143,12 +143,12 @@ public class GaussianBlurOp implements BufferedImageOp, RasterOp {
     }
 
     private Kernel makeQualityKernelX(){
-        return new Kernel(2*radiusX+1, 1,
+        return new Kernel(2*(radiusX-1)+1, 1,
                           computeQualityKernelData(radiusX, stdDeviationX));
     }
 
     private Kernel makeQualityKernelY(){
-        return new Kernel(1, 2*radiusY+1,
+        return new Kernel(1, 2*(radiusY-1)+1,
                           computeQualityKernelData(radiusY, stdDeviationY));
     }
 
@@ -361,14 +361,6 @@ public class GaussianBlurOp implements BufferedImageOp, RasterOp {
         return new BufferedImage(destCM, wr,
                                  destCM.isAlphaPremultiplied(), null);
     }
-
-    private void specialProcessRow(Raster src, WritableRaster dest){
-        System.out.println("Error!");
-    }
-    private void specialProcessColumn(Raster src, WritableRaster dest){
-        System.out.println("Error!");
-    }
-
 
     private WritableRaster boxFilterH(Raster src, WritableRaster dest,
                                       int skipX, int skipY, 

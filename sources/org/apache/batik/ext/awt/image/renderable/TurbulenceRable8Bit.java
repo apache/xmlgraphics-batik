@@ -210,9 +210,16 @@ public class TurbulenceRable8Bit
 
     public RenderedImage createRendering(RenderContext rc){
 
+        Rectangle2D aoiRect;
         Shape aoi = rc.getAreaOfInterest();
         if(aoi == null){
-            aoi = getBounds2D();
+            aoiRect = getBounds2D();
+        } else {
+            Rectangle2D rect = getBounds2D();
+            aoiRect          = aoi.getBounds2D();
+            if (aoiRect.intersects(rect) == false)
+                return null;
+            Rectangle2D.intersect(aoiRect, rect, aoiRect);
         }
 
         AffineTransform usr2dev = rc.getTransform();
@@ -222,7 +229,11 @@ public class TurbulenceRable8Bit
         // System.out.println("Scale X : " + usr2dev.getScaleX() + " scaleY : " + usr2dev.getScaleY());
         // System.out.println("Turbulence aoi dev : " + usr2dev.createTransformedShape(aoi).getBounds());
         final Rectangle rasterRect 
-            = usr2dev.createTransformedShape(aoi).getBounds();
+            = usr2dev.createTransformedShape(aoiRect).getBounds();
+
+        if ((rasterRect.width <= 0) ||
+            (rasterRect.height <= 0))
+            return null;
 
         ColorModel cm = GraphicsUtil.Linear_sRGB_Unpre;
 
@@ -276,7 +287,6 @@ public class TurbulenceRable8Bit
             g.dispose();
             }*/
 
-        return new BufferedImageCachableRed(bi, rasterRect.x,
-                                            rasterRect.y);
+        return new BufferedImageCachableRed(bi, rasterRect.x, rasterRect.y);
     }
 }

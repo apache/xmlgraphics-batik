@@ -28,8 +28,8 @@ import java.awt.image.renderable.RenderContext;
 
 import org.apache.batik.ext.awt.image.rendered.CachableRed;
 import org.apache.batik.ext.awt.image.rendered.PadRed;
-import org.apache.batik.ext.awt.image.rendered.BufferedImageCachableRed;
 import org.apache.batik.ext.awt.image.rendered.AffineRed;
+import org.apache.batik.ext.awt.image.rendered.GaussianBlurRed8Bit;
 
 /**
  * GaussianBlurRable implementation
@@ -51,7 +51,7 @@ public class GaussianBlurRable8Bit
     private double stdDeviationY;
 
     public GaussianBlurRable8Bit(Filter src,
-                                     double stdevX, double stdevY) {
+                                 double stdevX, double stdevY) {
         super(src, null);
         setStdDeviationX(stdevX);
         setStdDeviationY(stdevY);
@@ -104,12 +104,17 @@ public class GaussianBlurRable8Bit
     }
 
     /**
+     * Constant: 3*sqrt(2*PI)/4
+     */
+    static final float DSQRT2PI = (float)(Math.sqrt(2*Math.PI)*3.0/4.0);
+
+    /**
      * Grow the source's bounds
      */
     public Rectangle2D getBounds2D(){
         Rectangle2D src = getSource().getBounds2D();
-        float dX = (float)(stdDeviationX*GaussianBlurOp.DSQRT2PI);
-        float dY = (float)(stdDeviationY*GaussianBlurOp.DSQRT2PI);
+        float dX = (float)(stdDeviationX*DSQRT2PI);
+        float dY = (float)(stdDeviationY*DSQRT2PI);
         float radX = 3*dX/2;
         float radY = 3*dY/2;
         return new Rectangle2D.Float
@@ -164,23 +169,6 @@ public class GaussianBlurRable8Bit
         double sdx = stdDeviationX*scaleX;
         double sdy = stdDeviationY*scaleY;
 
-        GaussianBlurOp op = new GaussianBlurOp(sdx, sdy, rh);
-
-        double blurRadX = op.getRadiusX();
-        double blurRadY = op.getRadiusY();
-
-        Shape aoi = rc.getAreaOfInterest();
-        if(aoi == null)
-            aoi = getBounds2D();
-
-        Rectangle2D r = aoi.getBounds2D();
-
-        // Grow the region in usr space.
-        r = new Rectangle2D.Double(r.getX()-blurRadX/scaleX, 
-                                   r.getY()-blurRadY/scaleY,
-                                   r.getWidth() +2*blurRadX/scaleX, 
-                                   r.getHeight()+2*blurRadY/scaleY);
-
         // This is the affine transform between our usr space and an
         // intermediate space which is scaled similarly to our device
         // space but is still axially aligned with our device space.
@@ -191,7 +179,10 @@ public class GaussianBlurRable8Bit
         // we don't need an intermediate space).
         AffineTransform resAt;
 
-        if (eps_eq(blurRadX, blurRadY) &&
+        int outsetX, outsetY;
+        if ((sdx < 10)           && 
+            (sdy < 10)           &&
+            eps_eq    (sdx, sdy) &&
             eps_abs_eq(sx/scaleX, sy/scaleY)) {
             // Ok we have a square Gaussian kernel which means it is
             // circularly symetric, further our residual matrix (after
@@ -204,7 +195,23 @@ public class GaussianBlurRable8Bit
 
             srcAt = at;
             resAt = null;
+            outsetX = 0;
+            outsetY = 0;
         } else {
+
+            // Limit std dev to 10.  Put any extra into our
+            // residual matrix.  This will effectively linearly
+            // interpolate, but with such a large StdDev the 
+            // function is fairly smooth anyway...
+            if (sdx > 10) {
+                scaleX = scaleX*10/sdx;
+                sdx = 10;
+            }
+            if (sdy > 10) {
+                scaleY = scaleY*10/sdy;
+                sdy = 10;
+            }
+
             // Scale to device coords.
             srcAt = AffineTransform.getScaleInstance(scaleX, scaleY);
 
@@ -213,14 +220,44 @@ public class GaussianBlurRable8Bit
             resAt = new AffineTransform(sx/scaleX, shy/scaleX,
                                         shx/scaleY,  sy/scaleY,
                                         tx, ty);
+            // Add a pixel all around for the affine to interpolate with.
+            outsetX = 2;
+            outsetY = 2;
         }
 
+
+        Shape aoi = rc.getAreaOfInterest();
+        if(aoi == null)
+            aoi = getBounds2D();
+
+        Shape devShape = srcAt.createTransformedShape(aoi);
+        Rectangle devRect = devShape.getBounds();
+
+        outsetX += GaussianBlurRed8Bit.surroundPixels(sdx, rh);
+        outsetY += GaussianBlurRed8Bit.surroundPixels(sdy, rh);
+
+        devRect.x      -= outsetX;
+        devRect.y      -= outsetY;
+        devRect.width  += 2*outsetX;
+        devRect.height += 2*outsetY;
+
+        Rectangle2D r;
+        try {
+            AffineTransform invSrcAt = srcAt.createInverse();
+            r = invSrcAt.createTransformedShape(devRect).getBounds2D();
+        } catch (NoninvertibleTransformException nte) {
+            // Grow the region in usr space.
+            r = aoi.getBounds2D();
+            r = new Rectangle2D.Double(r.getX()-outsetX/scaleX, 
+                                       r.getY()-outsetY/scaleY,
+                                       r.getWidth() +2*outsetX/scaleX, 
+                                       r.getHeight()+2*outsetY/scaleY);
+        }
         
         RenderedImage ri;
         ri = getSource().createRendering(new RenderContext(srcAt, r, rh));
         if (ri == null)
             return null;
-
 
         CachableRed cr;
         cr = GraphicsUtil.wrap(ri);
@@ -228,30 +265,15 @@ public class GaussianBlurRable8Bit
         cr = GraphicsUtil.convertToLsRGB(cr);
         // org.apache.batik.test.gvt.ImageDisplay.showImage("Conv: ", cr);
 
-        Shape devShape = srcAt.createTransformedShape(aoi);
-        r = devShape.getBounds2D();
-        r = new Rectangle2D.Double(r.getX()-blurRadX, 
-                                   r.getY()-blurRadY,
-                                   r.getWidth() +2*blurRadX, 
-                                   r.getHeight()+2*blurRadY);
-        if (!r.getBounds().equals(cr.getBounds()))
-            cr = new PadRed(cr, r.getBounds(), PadMode.ZERO_PAD, rh);
+        // System.out.println("DevRect: " + devRect);
+
+        if (!devRect.equals(cr.getBounds())) {
+            // System.out.println("MisMatch Dev:" + devRect);
+            // System.out.println("         CR :" + cr.getBounds());
+            cr = new PadRed(cr, devRect, PadMode.ZERO_PAD, rh);
+        }
         
-        ColorModel cm = cr.getColorModel();
-        
-        Raster rr = cr.getData();
-        WritableRaster wr = GraphicsUtil.makeRasterWritable(rr, 0, 0);
-
-        BufferedImage srcBI;
-        srcBI = new BufferedImage(cm, wr, cm.isAlphaPremultiplied(), null);
-
-        BufferedImage destBI;
-        destBI = op.filter(srcBI, null);
-
-        final int rrMinX = cr.getMinX();
-        final int rrMinY = cr.getMinY();
-
-        cr = new BufferedImageCachableRed(destBI, rrMinX, rrMinY);
+        cr = new GaussianBlurRed8Bit(cr, sdx, sdy, rh);
 
         if ((resAt != null) && (!resAt.isIdentity()))
             cr = new AffineRed(cr, resAt, rh);

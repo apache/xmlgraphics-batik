@@ -166,7 +166,25 @@ public class FilterResRable8Bit extends AbstractRable
                     RenderContext newRenderContext 
                         = (RenderContext)renderContext.clone();
                     newRenderContext.setTransform(newUsr2Dev);
+
+                    Shape aoi = renderContext.getAreaOfInterest();
+                    if (aoi == null)
+                        aoi = getBounds2D();
                     
+                    // 
+                    // We need to grow the area of interest by a few
+                    // pixels in device space so the AffineRed can
+                    // interpolate at the edges..
+                    //
+                    Rectangle2D newAOI = aoi.getBounds2D();
+                    newAOI = new Rectangle2D.Double
+                        (newAOI.getX()-scaleX,
+                         newAOI.getY()-scaleY,
+                         newAOI.getWidth()+2*scaleX,
+                         newAOI.getHeight()+2*scaleY);
+
+                    newRenderContext.setAreaOfInterest(newAOI);
+
                     //
                     // Now, use an AffineRable that will apply the
                     // resampling

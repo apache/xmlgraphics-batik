@@ -210,7 +210,7 @@ public final class TurbulencePatternGenerator{
     }
 
     public final int random(int seed){
-        int result = RAND_a * (seed % RAND_q) - RAND_r * (seed / RAND_q);
+      int result = RAND_a * (seed % RAND_q) - RAND_r * (seed / RAND_q);
         if (result <= 0) result += RAND_m;
         return result;
     }

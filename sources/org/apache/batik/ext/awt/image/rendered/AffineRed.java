@@ -112,13 +112,13 @@ public class AffineRed extends AbstractRed {
         if (me2src == null)
             return;
 
-        Rectangle srcR;
-        srcR = me2src.createTransformedShape(wr.getBounds()).getBounds();
+        Rectangle srcR 
+            = me2src.createTransformedShape(wr.getBounds()).getBounds();
 
         // System.out.println("Affine wrR: " + wr.getBounds());
         // System.out.println("Affine srcR: " + srcR);
 
-        // Outset by one pixel so we get context for interpolation...
+        // Outset by two pixels so we get context for interpolation...
         srcR.setBounds(srcR.x-1, srcR.y-1, srcR.width+2, srcR.height+2);
 
         // Don't try and get data from src that it doesn't have...
@@ -129,7 +129,7 @@ public class AffineRed extends AbstractRed {
         // 
         // srcR = srcR.intersection(src.getBounds());
         
-        Raster srcRas = src.getData(srcR.getBounds());
+        Raster srcRas = src.getData(srcR);
 
         if (srcRas == null)
             return;

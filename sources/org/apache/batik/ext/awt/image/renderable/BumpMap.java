@@ -73,10 +73,25 @@ public final class BumpMap {
         (final int x, final int y, 
          final int w, final int h)
     {
-        final Raster r = texture.getData(new Rectangle(x, y, w, h));
-
         final double[][][] N = new double[h][w][4];
-        double[] n;
+
+        Rectangle srcRect = new Rectangle(x-1, y-1, w+2, h+2);
+        Rectangle srcBound = new Rectangle
+            (texture.getMinX(), texture.getMinY(),
+             texture.getWidth(), texture.getHeight());
+
+        if (srcRect.intersects(srcBound) == false)
+            return N;
+        
+        srcRect = srcRect.intersection(srcBound);
+        final Raster r = texture.getData(srcRect);
+
+        srcRect = r.getBounds();
+
+        // System.out.println("SrcRect: " + srcRect);
+        // System.out.println("rect: [" + 
+        //                    x + ", " + y + ", " +
+        //                    w + ", " + h + "]");
 
         final DataBufferInt db = (DataBufferInt)r.getDataBuffer();
 
@@ -85,23 +100,17 @@ public final class BumpMap {
 
         final SinglePixelPackedSampleModel sppsm;
         sppsm = (SinglePixelPackedSampleModel)r.getSampleModel();
-        
-        final int offset = 
-        (db.getOffset() +
-         sppsm.getOffset(r.getMinX() -r.getSampleModelTranslateX(), 
-                         r.getMinY() -r.getSampleModelTranslateY()));
+
 
         final int scanStride = sppsm.getScanlineStride();
         final int scanStridePP = scanStride + 1;
         final int scanStrideMM = scanStride - 1;
-        final int adjust = scanStride - w;
-        int p = offset + scanStride;
         int a = 0;
         int i=0, j=0;
         double prpc=0, prcc=0, prnc=0;
         double crpc=0, crcc=0, crnc=0;
         double nrpc=0, nrcc=0, nrnc=0;
-        double norm;
+        double invNorm;
 
         final double quarterSurfaceScaleX = surfaceScaleX / 4f;
         final double quarterSurfaceScaleY = surfaceScaleY / 4f;
@@ -112,235 +121,290 @@ public final class BumpMap {
         final double twoThirdSurfaceScaleX = surfaceScaleX * 2 / 3f;
         final double twoThirdSurfaceScaleY = surfaceScaleY * 2 / 3f;
 
-        if(w > 1){
-            for(i=1; i<h-1; i++){
-                
-                crcc = (pixels[p] >>> 24)/255.;
-                crnc = (pixels[p+1] >>> 24)/255.;
-                prcc = (pixels[p - scanStride] >>> 24)/255.;
-                prnc = (pixels[p - scanStrideMM] >>> 24)/255.;
-                nrcc = (pixels[p + scanStride] >>> 24)/255.;
-                nrnc = (pixels[p + scanStridePP] >>> 24)/255.;
-                
-                p++; // start in 1, not 0.
-                for(j=1; j<w-1; j++){
-                    prpc = prcc;
-                    crpc = crcc;
-                    nrpc = nrcc;
-                    prcc = prnc;
-                    crcc = crnc;
-                    nrcc = nrnc;
-                    
-                    crnc = (pixels[p+1] >>> 24)/255.;
-                    prnc = (pixels[p - scanStrideMM] >>> 24)/255.;
-                    nrnc = (pixels[p + scanStridePP] >>> 24)/255.;
-                    
-                    n = N[i][j];
-                    n[0] = - quarterSurfaceScaleX *(( prnc + 2*crnc + nrnc)
-                                                  - (prpc + 2*crpc + nrpc));
-                    n[1] = - quarterSurfaceScaleY *(( nrpc + 2*nrcc + nrnc)
-                                                  - (prpc + 2*prcc + prnc));
-                    
-                    norm = Math.sqrt(n[0]*n[0] + n[1]*n[1] + 1);
-                    n[0] /= norm;
-                    n[1] /= norm;
-                    n[2] = 1/norm;
-                    n[3] = crcc*surfaceScale;
-                    p++;
-                }
-                p += adjust + 1;
+        final double pixelScale = 1.0/255;
+
+        if(w <= 0)
+            return N;
+        // Process pixels on the border
+        if(h <= 0)
+            return N;
+
+        int xEnd = srcRect.x+srcRect.width-1;
+        if (xEnd > x+w) xEnd = x+w;
+
+        int yEnd = srcRect.y+srcRect.height-1;
+        if (yEnd > y+h) yEnd = y+h;
+
+        final int offset = 
+            (db.getOffset() +
+             sppsm.getOffset(srcRect.x -r.getSampleModelTranslateX(), 
+                             srcRect.y -r.getSampleModelTranslateY()));
+
+        int yloc=y;
+        if (yloc < srcRect.y) {
+            yloc = srcRect.y;
+        }
+
+        // Top edge extend filters...
+        if (yloc == srcRect.y) {
+            double [][] NRow = N[yloc-y];
+            int p  = offset + scanStride*(yloc-srcRect.y);
+            int xloc=x;
+            if (xloc < srcRect.x)
+                xloc = srcRect.x;
+            p += xloc-srcRect.x;
+
+            crcc = (pixels[p] >>> 24)*pixelScale;
+            nrcc = (pixels[p + scanStride] >>> 24)*pixelScale;
+
+            if (xloc != srcRect.x) {
+                crpc = (pixels[p - 1] >>> 24)*pixelScale;
+                nrpc = (pixels[p + scanStrideMM] >>> 24)*pixelScale;
+            }
+            else {
+                // Top left pixel, in src (0, 0);
+                crnc = (pixels[p+1] >>> 24)*pixelScale;
+                nrnc = (pixels[p + scanStridePP] >>> 24)*pixelScale;
+
+                final double [] n = NRow[xloc-x];
+        
+                n[0] = - twoThirdSurfaceScaleX *
+                    ((2*crnc + nrnc - 2*crcc - nrcc));
+                n[1] = - twoThirdSurfaceScaleY *
+                    ((2*nrcc + nrnc - 2*crcc - crnc));
+                invNorm = 1.0/Math.sqrt(n[0]*n[0] + n[1]*n[1] + 1);
+                n[0] *= invNorm;
+                n[1] *= invNorm;
+                n[2]  = invNorm;
+                n[3]  = crcc*surfaceScale;
+                p++;
+                xloc++;
+                crpc = crcc;
+                nrpc = nrcc;
+                crcc = crnc;
+                nrcc = nrnc;
             }
 
-            // Process pixels on the border
-            if(h>1){
-                p = offset;
+            for (; xloc<xEnd; xloc++) {
+                // Middle Top row...
+                crnc = (pixels[p+1] >>> 24)*pixelScale;
+                nrnc = (pixels[p + scanStridePP] >>> 24)*pixelScale;
 
-                // Top left pixel, in (0, 0);
-                n = N[0][0];
+                final double [] n = NRow[xloc-x];
 
-                crcc = (pixels[p] >>> 24)/255.;
-                crnc = (pixels[p+1] >>> 24)/255.;
-                nrcc = (pixels[p + scanStride] >>> 24)/255.;
-                nrnc = (pixels[p + scanStridePP] >>> 24)/255.;
-        
-                n[0] = - twoThirdSurfaceScaleX *((2*crnc + nrnc - 2*crcc - nrcc));
-                n[1] = - twoThirdSurfaceScaleY *((2*nrcc + nrnc - 2*crcc - crnc));
-                norm = Math.sqrt(n[0]*n[0] + n[1]*n[1] + 1);
-                n[0] /= norm;
-                n[1] /= norm;
-                n[2] = 1/norm;
-                n[3] = crcc*surfaceScale;
-
-                // Top row...
+                n[0] = - thirdSurfaceScaleX * (( 2*crnc + nrnc)
+                                               - (2*crpc + nrpc));
+                n[1] = - halfSurfaceScaleY *(( nrpc + 2*nrcc + nrnc)
+                                             - (crpc + 2*crcc + crnc));
+            
+                invNorm = 1.0/Math.sqrt(n[0]*n[0] + n[1]*n[1] + 1);
+                n[0] *= invNorm;
+                n[1] *= invNorm;
+                n[2]  = invNorm;
+                n[3]  = crcc*surfaceScale;
                 p++;
-                for(j=1; j<w-1; j++){
-                    crpc = crcc;
-                    nrpc = nrcc;
-                    crcc = crnc;
-                    nrcc = nrnc;
-            
-                    crnc = (pixels[p+1] >>> 24)/255.;
-                    nrnc = (pixels[p + scanStridePP] >>> 24)/255.;
-            
-                    n = N[0][j];
-                    n[0] = - thirdSurfaceScaleX * (( 2*crnc + nrnc)
-                                                     - (2*crpc + nrpc));
-                    n[1] = - halfSurfaceScaleY *(( nrpc + 2*nrcc + nrnc)
-                                                    - (crpc + 2*crcc + crnc));
-            
-                    norm = Math.sqrt(n[0]*n[0] + n[1]*n[1] + 1);
-                    n[0] /= norm;
-                    n[1] /= norm;
-                    n[2] = 1/norm;
-                    n[3] = crcc*surfaceScale;
-                    p++;
-            
-                }
-        
+                crpc = crcc;
+                nrpc = nrcc;
+                crcc = crnc;
+                nrcc = nrnc;
+            }
+
+            if ((xloc < x+w) && 
+                (xloc == srcRect.x+srcRect.width-1)) {
                 // Last pixel of top row
-                if(w > 1){
-                    n = N[0][j];
-                    crpc = crcc;
-                    nrpc = nrcc;
-                    crcc = crnc;
-                    nrcc = nrnc;
-                    n[0] = - twoThirdSurfaceScaleX *(( 2*crcc + nrcc)
-                                                     - (2*crpc + nrpc));
-                    n[1] = - twoThirdSurfaceScaleY *(( 2*nrcc + nrpc)
-                                                     - (2*crcc + crpc));
-            
-                    norm = Math.sqrt(n[0]*n[0] + n[1]*n[1] + 1);
-                    n[0] /= norm;
-                    n[1] /= norm;
-                    n[2] = 1/norm;
-                    n[3] = crcc*surfaceScale;
-                }
+                final double [] n = NRow[xloc-x];
 
+                n[0] = - twoThirdSurfaceScaleX *(( 2*crcc + nrcc)
+                                                 - (2*crpc + nrpc));
+                n[1] = - twoThirdSurfaceScaleY *(( 2*nrcc + nrpc)
+                                                 - (2*crcc + crpc));
+            
+                invNorm = 1.0/Math.sqrt(n[0]*n[0] + n[1]*n[1] + 1);
+                n[0] *= invNorm;
+                n[1] *= invNorm;
+                n[2]  = invNorm;
+                n[3]  = crcc*surfaceScale;
+            }
+            yloc++;
+        }
+
+        for (; yloc<yEnd; yloc++) {
+            double [][] NRow = N[yloc-y];
+            int p  = offset + scanStride*(yloc-srcRect.y);
+
+            int xloc=x;
+            if (xloc < srcRect.x)
+                xloc = srcRect.x;
+
+            p += xloc-srcRect.x;
+
+            prcc = (pixels[p - scanStride] >>> 24)*pixelScale;
+            crcc = (pixels[p] >>> 24)*pixelScale;
+            nrcc = (pixels[p + scanStride] >>> 24)*pixelScale;
+            
+            if (xloc != srcRect.x) {
+                prpc = (pixels[p - scanStridePP] >>> 24)*pixelScale;
+                crpc = (pixels[p - 1] >>> 24)*pixelScale;
+                nrpc = (pixels[p + scanStrideMM] >>> 24)*pixelScale;
+            }
+            else {
                 // Now, process left column, from (0, 1) to (0, h-1)
-                p = offset;
-                crcc = (pixels[p] >>> 24)/255.;
-                crnc = (pixels[p+1] >>> 24)/255.;
-                nrcc = (pixels[p + scanStride] >>> 24)/255.;
-                nrnc = (pixels[p + scanStridePP] >>> 24)/255.;
-                p += scanStride;
+                crnc = (pixels[p+1] >>> 24)*pixelScale;
+                prnc = (pixels[p - scanStrideMM] >>> 24)*pixelScale;
+                nrnc = (pixels[p + scanStridePP] >>> 24)*pixelScale;
 
-                for(i=1; i<h-1; i++){
-                    prcc = crcc;
-                    crcc = nrcc;
-                    prnc = crnc;
-                    crnc = nrnc;
-            
-                    nrcc = (pixels[p + scanStride] >>> 24)/255.;
-                    nrnc = (pixels[p + scanStridePP] >>> 24)/255.;
-            
-                    n = N[i][0];
-                    n[0] = - halfSurfaceScaleX *(( prnc + 2*crnc + nrnc)
-                                                   - (prcc + 2*crcc + nrcc));
-                    n[1] = - thirdSurfaceScaleY *(( 2*prcc + prnc)
-                                                   - ( 2*crcc + crnc));
-            
-                    norm = Math.sqrt(n[0]*n[0] + n[1]*n[1] + 1);
-                    n[0] /= norm;
-                    n[1] /= norm;
-                    n[2] = 1/norm;
-                    n[3] = crcc*surfaceScale;
-                    p += scanStride;
-            
-                }
+                final double [] n = NRow[xloc-x];
 
+                n[0] = - halfSurfaceScaleX *(( prnc + 2*crnc + nrnc)
+                                             - (prcc + 2*crcc + nrcc));
+                n[1] = - thirdSurfaceScaleY *(( 2*prcc + prnc)
+                                              - ( 2*crcc + crnc));
+            
+                invNorm = 1.0/Math.sqrt(n[0]*n[0] + n[1]*n[1] + 1);
+                n[0] *= invNorm;
+                n[1] *= invNorm;
+                n[2]  = invNorm;
+                n[3]  = crcc*surfaceScale;
+
+                p++;
+                xloc++;
+
+                prpc = prcc;
+                crpc = crcc;
+                nrpc = nrcc;
+                prcc = prnc;
+                crcc = crnc;
+                nrcc = nrnc;
+            }
+
+            for (; xloc<xEnd; xloc++) {
+                // Middle Middle row...
+                prnc = (pixels[p - scanStrideMM] >>> 24)*pixelScale;
+                crnc = (pixels[p+1] >>> 24)*pixelScale;
+                nrnc = (pixels[p + scanStridePP] >>> 24)*pixelScale;
+
+                final double [] n = NRow[xloc-x];
+
+                n[0] = - quarterSurfaceScaleX *(( prnc + 2*crnc + nrnc)
+                                                - (prpc + 2*crpc + nrpc));
+                n[1] = - quarterSurfaceScaleY *(( nrpc + 2*nrcc + nrnc)
+                                                - (prpc + 2*prcc + prnc));
+                    
+                invNorm = 1.0/Math.sqrt(n[0]*n[0] + n[1]*n[1] + 1);
+                n[0] *= invNorm;
+                n[1] *= invNorm;
+                n[2]  = invNorm;
+                n[3]  = crcc*surfaceScale;
+
+                p++;
+                prpc = prcc;
+                crpc = crcc;
+                nrpc = nrcc;
+                prcc = prnc;
+                crcc = crnc;
+                nrcc = nrnc;
+            }
+
+            if ((xloc < x+w) && 
+                (xloc == srcRect.x+srcRect.width-1)) {
                 // Now, proces right column, from (w-1, 1) to (w-1, h-1)
-                p = offset + scanStride -1;
-                crcc = (pixels[p] >>> 24)/255.;
-                crpc = (pixels[p-1] >>> 24)/255.;
-                nrcc = (pixels[p + scanStride] >>> 24)/255.;
-                nrpc = (pixels[p + scanStrideMM] >>> 24)/255.;
-                p += scanStride;
-        
-                for(i=1; i<h-1; i++){
-                    prcc = crcc;
-                    prpc = crpc;
-                    crcc = nrcc;
-                    crpc = nrpc;
-            
-                    nrcc = (pixels[p + scanStride] >>> 24)/255.;
-                    nrpc = (pixels[p + scanStrideMM] >>> 24)/255.;
-            
-                    n = N[i][w-1];
-                    n[0] = - halfSurfaceScaleX *(( prcc + 2*crcc + nrcc)
-                                                   - (prpc + 2*crpc + nrpc));
-                    n[1] = - thirdSurfaceScaleY *(( nrpc + 2*nrcc)
-                                                   - ( prpc + 2*prcc));
-            
-                    norm = Math.sqrt(n[0]*n[0] + n[1]*n[1] + 1);
-                    n[0] /= norm;
-                    n[1] /= norm;
-                    n[2] = 1/norm;
-                    n[3] = crcc*surfaceScale;
-                    p += scanStride;
-                }
+                final double [] n = NRow[xloc-x];
 
+                n[0] = - halfSurfaceScaleX *(( prcc + 2*crcc + nrcc)
+                                             - (prpc + 2*crpc + nrpc));
+                n[1] = - thirdSurfaceScaleY *(( nrpc + 2*nrcc)
+                                              - ( prpc + 2*prcc));
+            
+                invNorm = 1.0/Math.sqrt(n[0]*n[0] + n[1]*n[1] + 1);
+                n[0] *= invNorm;
+                n[1] *= invNorm;
+                n[2]  = invNorm;
+                n[3]  = crcc*surfaceScale;
+            }
+        }
+
+        if ((yloc < y+h) && 
+            (yloc == srcRect.y+srcRect.height-1)) {
+            double [][] NRow = N[yloc-y];
+            int p  = offset + scanStride*(yloc-srcRect.y);
+            int xloc=x;
+            if (xloc < srcRect.x)
+                xloc = srcRect.x;
+
+            p += xloc-srcRect.x;
+
+            crcc = (pixels[p] >>> 24)*pixelScale;
+            prcc = (pixels[p - scanStride] >>> 24)*pixelScale;
+
+            if (xloc != srcRect.x) {
+                prpc = (pixels[p - scanStridePP] >>> 24)*pixelScale;
+                crpc = (pixels[p - 1] >>> 24)*pixelScale;
+            }
+            else {
                 // Process first pixel of last row
-                p = offset + (h-1)*scanStride;
-                crcc = (pixels[p] >>> 24)/255.;
-                crnc = (pixels[p+1] >>> 24)/255.;
-                prcc = (pixels[p - scanStride] >>> 24)/255.;
-                prnc = (pixels[p - scanStrideMM] >>> 24)/255.;
-        
-                n = N[h-1][0];
+                crnc = (pixels[p + 1] >>> 24)*pixelScale;
+                prnc = (pixels[p - scanStrideMM] >>> 24)*pixelScale;
+
+                final double [] n = NRow[xloc-x];
 
                 n[0] = - twoThirdSurfaceScaleX * ((2*crnc + prnc - 2*crcc - prcc));
                 n[1] = - twoThirdSurfaceScaleY * ((2*crcc + crnc - 2*prcc - prnc));
-                norm = Math.sqrt(n[0]*n[0] + n[1]*n[1] + 1);
-                n[0] /= norm;
-                n[1] /= norm;
-                n[2] = 1/norm;
-                n[3] = crcc*surfaceScale;
-        
-                // Bottom row...
-                p++;
-                for(j=1; j<w-1; j++){
-                    crpc = crcc;
-                    prpc = prcc;
-                    crcc = crnc;
-                    prcc = prnc;
-            
-                    crnc = (pixels[p+1] >>> 24)/255.;
-                    prnc = (pixels[p - scanStrideMM] >>> 24)/255.;
-            
-                    n = N[h-1][j];
-                    n[0] = - thirdSurfaceScaleX *(( 2*crnc + prnc)
-                                                   - (2*crpc + prpc));
-                    n[1] = - halfSurfaceScaleY *(( crpc + 2*crcc + crnc)
-                                                   - (prpc + 2*prcc + prnc));
-            
-                    norm = Math.sqrt(n[0]*n[0] + n[1]*n[1] + 1);
-                    n[0] /= norm;
-                    n[1] /= norm;
-                    n[2] = 1/norm;
-                    n[3] = crcc*surfaceScale;
-                    p++;
-                }
+                invNorm = 1.0/Math.sqrt(n[0]*n[0] + n[1]*n[1] + 1);
+                n[0] *= invNorm;
+                n[1] *= invNorm;
+                n[2]  = invNorm;
+                n[3]  = crcc*surfaceScale;
 
-                // Bottom right corner
+                p++;
+                xloc++;
                 crpc = crcc;
                 prpc = prcc;
                 crcc = crnc;
                 prcc = prnc;
+            }
             
-                n = N[h-1][w-1];
+            for (; xloc<xEnd; xloc++) {
+                // Middle of Bottom row...
+                crnc = (pixels[p + 1] >>> 24)*pixelScale;
+                prnc = (pixels[p - scanStrideMM] >>> 24)*pixelScale;
+
+                final double [] n = NRow[xloc-x];
+
+                n[0] = - thirdSurfaceScaleX *(( 2*crnc + prnc)
+                                              - (2*crpc + prpc));
+                n[1] = - halfSurfaceScaleY *(( crpc + 2*crcc + crnc)
+                                             - (prpc + 2*prcc + prnc));
+            
+                invNorm = 1.0/Math.sqrt(n[0]*n[0] + n[1]*n[1] + 1);
+                n[0] *= invNorm;
+                n[1] *= invNorm;
+                n[2]  = invNorm;
+                n[3]  = crcc*surfaceScale;
+
+                p++;
+                crpc = crcc;
+                prpc = prcc;
+                crcc = crnc;
+                prcc = prnc;
+            }
+
+            if ((xloc < x+w) && 
+                (xloc == srcRect.x+srcRect.width-1)) {
+                // Bottom right corner
+                final double [] n = NRow[xloc-x];
+
                 n[0] = - twoThirdSurfaceScaleX *(( 2*crcc + prcc)
                                                  - (2*crpc + prpc));
                 n[1] = - twoThirdSurfaceScaleY *(( 2*crcc + crpc)
                                                  - (2*prcc + prpc));
             
-                norm = Math.sqrt(n[0]*n[0] + n[1]*n[1] + 1);
-                n[0] /= norm;
-                n[1] /= norm;
-                n[2] = 1/norm;
-                n[3] = crcc*surfaceScale;
+                invNorm = 1.0/Math.sqrt(n[0]*n[0] + n[1]*n[1] + 1);
+                n[0] *= invNorm;
+                n[1] *= invNorm;
+                n[2]  = invNorm;
+                n[3]  = crcc*surfaceScale;
             }
         }
-
         return N;
     }
 }

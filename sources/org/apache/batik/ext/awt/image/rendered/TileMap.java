@@ -43,17 +43,16 @@ public class TileMap implements TileStore {
         if (DEBUG) System.out.println("Setting: (" + x + ", " + y + ")");
     }
 
-    // Returns true if the tile is _currently_ in the cache.  This
-    // may not be true by the time you get around to calling
-    // getTile however...
-    public boolean checkTile(int x, int y) {
+    // Returns Raster if the tile is _currently_ in the cache.  
+    // If it is not currently in the cache it returns null.
+    public Raster getTileNoCompute(int x, int y) {
         Point pt = new Point(x, y);
         Object o = rasters.get(pt);
         if (o == null) 
-            return false;
+            return null;
 
         TileLRUMember item = (TileLRUMember)o;
-        return item.checkRaster();
+        return item.retrieveRaster();
     }
 
     public Raster getTile(int x, int y) {

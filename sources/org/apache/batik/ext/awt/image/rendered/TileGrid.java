@@ -69,22 +69,24 @@ public class TileGrid implements TileStore {
                                       (y+minTileY) + ")");
     }
 
-    // Returns true if the tile is _currently_ in the cache.  This
-    // may not be true by the time you get around to calling
-    // getTile however...
-    public boolean checkTile(int x, int y) {
+    // Returns Raster if the tile is _currently_ in the cache.  
+    // If it is not currently in the cache it returns null.
+    public Raster getTileNoCompute(int x, int y) {
         x-=minTileX;
         y-=minTileY;
-        if ((x<0) || (x>=xSz)) return false;
-        if ((y<0) || (y>=ySz)) return false;
+        if ((x<0) || (x>=xSz)) return null;
+        if ((y<0) || (y>=ySz)) return null;
 
         TileLRUMember [] row = rasters[y];
         if (row == null)
-            return false;
+            return null;
         TileLRUMember item = row[x];
         if (item == null)
-            return false;
-        return item.checkRaster();
+            return null;
+        Raster ret = item.retrieveRaster();
+        if (ret != null)
+            cache.add(item);
+        return ret;
     }
 
     public Raster getTile(int x, int y) {
