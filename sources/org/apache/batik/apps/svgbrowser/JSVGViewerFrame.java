@@ -1137,15 +1137,12 @@ public class JSVGViewerFrame
                 transformDialog
                     = JAffineTransformChooser.createDialog
                     (JSVGViewerFrame.this,
-                     resources.getString("SetTransform.title"),
-                     null);
+                     resources.getString("SetTransform.title"));
             }
-
-            AffineTransform at = svgCanvas.getRenderingTransform();
-            // transformDialog.setTransform(at);
 
             AffineTransform txf = transformDialog.showDialog();
             if(txf != null){
+                AffineTransform at = svgCanvas.getRenderingTransform();
                 if(at == null){
                     at = new AffineTransform();
                 }
