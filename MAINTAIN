@@ -141,7 +141,6 @@ Site Creation
 
 For creating the web site, the following steps must be done:
 
-
 [Note: due to JVM font-rendering problems, this is best done on a windows machine]
 
  1) make sure you checked out the module "xml-site/targets/batik" in
@@ -151,6 +150,10 @@ For creating the web site, the following steps must be done:
  4) connect to xml.apache.org with your account
  5) execute "cd /www/xml.apache.org/[project]"
  6) execute "cvs update"
+ 7) zip the Batik javadoc of the latest stable Batik release
+ 8) ftp the Batik javadoc to xml.apache.org/batik 
+ 9) upzip the Batik java so that the javadoc is available
+    at xml.apache.org/batik/javadoc/index.html
  
 [NOTE: you must have commit access on xml-site to be able to do this]
 
