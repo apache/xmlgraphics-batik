@@ -36,7 +36,7 @@ public class SVGOMFECompositeElement
         OPERATOR_DEFAULT_VALUE_PRODUCER =
         new DefaultAttributeValueProducer() {
                 public String getDefaultAttributeValue() {
-                    return SVG_DEFAULT_VALUE_FE_COMPOSITE_OPERATOR;
+                    return SVG_FE_COMPOSITE_OPERATOR_DEFAULT_VALUE;
                 }
             };
 
@@ -46,7 +46,7 @@ public class SVGOMFECompositeElement
     protected final static DefaultAttributeValueProducer K1_DEFAULT_VALUE_PRODUCER =
         new DefaultAttributeValueProducer() {
                 public String getDefaultAttributeValue() {
-                    return SVG_DEFAULT_VALUE_FE_COMPOSITE_K1;
+                    return SVG_FE_COMPOSITE_K1_DEFAULT_VALUE;
                 }
             };
 
@@ -56,7 +56,7 @@ public class SVGOMFECompositeElement
     protected final static DefaultAttributeValueProducer K2_DEFAULT_VALUE_PRODUCER =
         new DefaultAttributeValueProducer() {
                 public String getDefaultAttributeValue() {
-                    return SVG_DEFAULT_VALUE_FE_COMPOSITE_K2;
+                    return SVG_FE_COMPOSITE_K2_DEFAULT_VALUE;
                 }
             };
 
@@ -66,7 +66,7 @@ public class SVGOMFECompositeElement
     protected final static DefaultAttributeValueProducer K3_DEFAULT_VALUE_PRODUCER =
         new DefaultAttributeValueProducer() {
                 public String getDefaultAttributeValue() {
-                    return SVG_DEFAULT_VALUE_FE_COMPOSITE_K3;
+                    return SVG_FE_COMPOSITE_K3_DEFAULT_VALUE;
                 }
             };
 
@@ -76,7 +76,7 @@ public class SVGOMFECompositeElement
     protected final static DefaultAttributeValueProducer K4_DEFAULT_VALUE_PRODUCER =
         new DefaultAttributeValueProducer() {
                 public String getDefaultAttributeValue() {
-                    return SVG_DEFAULT_VALUE_FE_COMPOSITE_K4;
+                    return SVG_FE_COMPOSITE_K4_DEFAULT_VALUE;
                 }
             };
 
@@ -183,13 +183,13 @@ public class SVGOMFECompositeElement
      * SVGFECompositeElement#getIn1()}.
      */
     public SVGAnimatedString getIn1() {
-	SVGAnimatedString result;
-	if (inReference == null ||
-	    (result = (SVGAnimatedString)inReference.get()) == null) {
-	    result = new SVGOMAnimatedString(this, null, SVG_IN_ATTRIBUTE);
-	    inReference = new WeakReference(result);
-	}
-	return result;
+        SVGAnimatedString result;
+        if (inReference == null ||
+            (result = (SVGAnimatedString)inReference.get()) == null) {
+            result = new SVGOMAnimatedString(this, null, SVG_IN_ATTRIBUTE);
+            inReference = new WeakReference(result);
+        }
+        return result;
     }
 
     /**
@@ -197,13 +197,13 @@ public class SVGOMFECompositeElement
      * SVGFECompositeElement#getIn2()}.
      */
     public SVGAnimatedString getIn2() {
-	SVGAnimatedString result;
-	if (in2Reference == null ||
-	    (result = (SVGAnimatedString)in2Reference.get()) == null) {
-	    result = new SVGOMAnimatedString(this, null, SVG_IN2_ATTRIBUTE);
-	    in2Reference = new WeakReference(result);
-	}
-	return result;
+        SVGAnimatedString result;
+        if (in2Reference == null ||
+            (result = (SVGAnimatedString)in2Reference.get()) == null) {
+            result = new SVGOMAnimatedString(this, null, SVG_IN2_ATTRIBUTE);
+            in2Reference = new WeakReference(result);
+        }
+        return result;
     }
 
     /**
@@ -229,14 +229,14 @@ public class SVGOMFECompositeElement
      * org.w3c.dom.svg.SVGFECompositeElement#getK1()}.
      */
     public SVGAnimatedNumber getK1() {
-	SVGAnimatedNumber result;
-	if (k1Reference == null ||
-	    (result = (SVGAnimatedNumber)k1Reference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, SVG_K1_ATTRIBUTE,
+        SVGAnimatedNumber result;
+        if (k1Reference == null ||
+            (result = (SVGAnimatedNumber)k1Reference.get()) == null) {
+            result = new SVGOMAnimatedNumber(this, null, SVG_K1_ATTRIBUTE,
                                              K1_DEFAULT_VALUE_PRODUCER);
-	    k1Reference = new WeakReference(result);
-	}
-	return result;
+            k1Reference = new WeakReference(result);
+        }
+        return result;
     }
 
     /**
@@ -244,14 +244,14 @@ public class SVGOMFECompositeElement
      * org.w3c.dom.svg.SVGFECompositeElement#getK2()}.
      */
     public SVGAnimatedNumber getK2() {
-	SVGAnimatedNumber result;
-	if (k2Reference == null ||
-	    (result = (SVGAnimatedNumber)k2Reference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, SVG_K2_ATTRIBUTE,
+        SVGAnimatedNumber result;
+        if (k2Reference == null ||
+            (result = (SVGAnimatedNumber)k2Reference.get()) == null) {
+            result = new SVGOMAnimatedNumber(this, null, SVG_K2_ATTRIBUTE,
                                              K2_DEFAULT_VALUE_PRODUCER);
-	    k2Reference = new WeakReference(result);
-	}
-	return result;
+            k2Reference = new WeakReference(result);
+        }
+        return result;
     }
 
     /**
@@ -259,14 +259,14 @@ public class SVGOMFECompositeElement
      * org.w3c.dom.svg.SVGFECompositeElement#getK3()}.
      */
     public SVGAnimatedNumber getK3() {
-	SVGAnimatedNumber result;
-	if (k3Reference == null ||
-	    (result = (SVGAnimatedNumber)k3Reference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, SVG_K3_ATTRIBUTE,
+        SVGAnimatedNumber result;
+        if (k3Reference == null ||
+            (result = (SVGAnimatedNumber)k3Reference.get()) == null) {
+            result = new SVGOMAnimatedNumber(this, null, SVG_K3_ATTRIBUTE,
                                              K3_DEFAULT_VALUE_PRODUCER);
-	    k3Reference = new WeakReference(result);
-	}
-	return result;
+            k3Reference = new WeakReference(result);
+        }
+        return result;
     }
 
     /**
@@ -274,14 +274,14 @@ public class SVGOMFECompositeElement
      * org.w3c.dom.svg.SVGFECompositeElement#getK4()}.
      */
     public SVGAnimatedNumber getK4() {
-	SVGAnimatedNumber result;
-	if (k4Reference == null ||
-	    (result = (SVGAnimatedNumber)k4Reference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, SVG_K4_ATTRIBUTE,
+        SVGAnimatedNumber result;
+        if (k4Reference == null ||
+            (result = (SVGAnimatedNumber)k4Reference.get()) == null) {
+            result = new SVGOMAnimatedNumber(this, null, SVG_K4_ATTRIBUTE,
                                              K4_DEFAULT_VALUE_PRODUCER);
-	    k4Reference = new WeakReference(result);
-	}
-	return result;
+            k4Reference = new WeakReference(result);
+        }
+        return result;
     }
 
     /**

@@ -38,7 +38,7 @@ public class SVGOMFETurbulenceElement
         NUM_OCTAVES_DEFAULT_VALUE_PRODUCER =
         new DefaultAttributeValueProducer() {
                 public String getDefaultAttributeValue() {
-                    return SVG_DEFAULT_VALUE_FE_TURBULENCE_NUM_OCTAVES;
+                    return SVG_FE_TURBULENCE_NUM_OCTAVES_DEFAULT_VALUE;
                 }
             };
 
@@ -49,7 +49,7 @@ public class SVGOMFETurbulenceElement
         SEED_DEFAULT_VALUE_PRODUCER =
         new DefaultAttributeValueProducer() {
                 public String getDefaultAttributeValue() {
-                    return SVG_DEFAULT_VALUE_FE_TURBULENCE_SEED;
+                    return SVG_FE_TURBULENCE_SEED_DEFAULT_VALUE;
                 }
             };
 
@@ -155,14 +155,14 @@ public class SVGOMFETurbulenceElement
      * org.w3c.dom.svg.SVGFETurbulenceElement#getNumOctaves()}.
      */
     public SVGAnimatedInteger getNumOctaves() {
-	SVGAnimatedInteger result;
-	if (numOctavesReference == null ||
-	    (result = (SVGAnimatedInteger)numOctavesReference.get()) == null) {
-	    result = new SVGOMAnimatedInteger(this, null, SVG_NUM_OCTAVES_ATTRIBUTE,
+        SVGAnimatedInteger result;
+        if (numOctavesReference == null ||
+            (result = (SVGAnimatedInteger)numOctavesReference.get()) == null) {
+            result = new SVGOMAnimatedInteger(this, null, SVG_NUM_OCTAVES_ATTRIBUTE,
                                               NUM_OCTAVES_DEFAULT_VALUE_PRODUCER);
-	    numOctavesReference = new WeakReference(result);
-	}
-	return result;
+            numOctavesReference = new WeakReference(result);
+        }
+        return result;
     }
 
     /**
@@ -170,14 +170,14 @@ public class SVGOMFETurbulenceElement
      * org.w3c.dom.svg.SVGFETurbulenceElement#getSeed()}.
      */
     public SVGAnimatedNumber getSeed() {
-	SVGAnimatedNumber result;
-	if (seedReference == null ||
-	    (result = (SVGAnimatedNumber)seedReference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, SVG_SEED_ATTRIBUTE,
+        SVGAnimatedNumber result;
+        if (seedReference == null ||
+            (result = (SVGAnimatedNumber)seedReference.get()) == null) {
+            result = new SVGOMAnimatedNumber(this, null, SVG_SEED_ATTRIBUTE,
                                              SEED_DEFAULT_VALUE_PRODUCER);
-	    seedReference = new WeakReference(result);
-	}
-	return result;
+            seedReference = new WeakReference(result);
+        }
+        return result;
     }
 
     /**

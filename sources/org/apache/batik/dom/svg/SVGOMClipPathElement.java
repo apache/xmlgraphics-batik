@@ -25,7 +25,7 @@ import org.w3c.dom.svg.SVGClipPathElement;
 public class SVGOMClipPathElement
     extends    SVGClippingMaskingElement
     implements SVGClipPathElement {
-    
+
     /**
      * The DefaultAttributeValueProducer for clipPathUnits.
      */
@@ -33,10 +33,10 @@ public class SVGOMClipPathElement
         CLIP_PATH_UNITS_DEFAULT_VALUE_PRODUCER =
         new DefaultAttributeValueProducer() {
                 public String getDefaultAttributeValue() {
-                    return SVG_DEFAULT_VALUE_CLIP_PATH_CLIP_PATH_UNITS;
+                    return SVG_CLIP_PATH_CLIP_PATH_UNITS_DEFAULT_VALUE;
                 }
             };
-    
+
     /**
      * The clipPathUnits attribute reference.
      */

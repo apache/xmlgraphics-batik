@@ -47,8 +47,8 @@ public class SVGOMFilterElement
     extends    SVGOMElement
     implements SVGFilterElement,
                OverrideStyleElement,
-	       ExtendedElementCSSInlineStyle,
-	       ElementNonCSSPresentationalHints {
+               ExtendedElementCSSInlineStyle,
+               ElementNonCSSPresentationalHints {
 
     /**
      * The DefaultAttributeValueProducer for filterUnits.
@@ -57,7 +57,7 @@ public class SVGOMFilterElement
         FILTER_UNITS_DEFAULT_VALUE_PRODUCER =
         new DefaultAttributeValueProducer() {
                 public String getDefaultAttributeValue() {
-                    return SVG_DEFAULT_VALUE_FILTER_FILTER_UNITS;
+                    return SVG_FILTER_FILTER_UNITS_DEFAULT_VALUE;
                 }
             };
 
@@ -68,7 +68,7 @@ public class SVGOMFilterElement
         PRIMITIVE_UNITS_DEFAULT_VALUE_PRODUCER =
         new DefaultAttributeValueProducer() {
                 public String getDefaultAttributeValue() {
-                    return SVG_DEFAULT_VALUE_FILTER_PRIMITIVE_UNITS;
+                    return SVG_FILTER_PRIMITIVE_UNITS_DEFAULT_VALUE;
                 }
             };
 
@@ -160,7 +160,7 @@ public class SVGOMFilterElement
         }
         return result;
     }
- 
+
     /**
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGFilterElement#getPrimitiveUnits()}.
@@ -177,85 +177,85 @@ public class SVGOMFilterElement
             primitiveUnitsReference = new WeakReference(result);
         }
         return result;
-    } 
+    }
 
     /**
      * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGFilterElement#getX()}.
      */
     public SVGAnimatedLength getX() {
-	SVGAnimatedLength result;
-	if (xReference == null ||
-	    (result = (SVGAnimatedLength)xReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, SVG_X_ATTRIBUTE, null);
-	    xReference = new WeakReference(result);
-	}
-	return result;
-    } 
+        SVGAnimatedLength result;
+        if (xReference == null ||
+            (result = (SVGAnimatedLength)xReference.get()) == null) {
+            result = new SVGOMAnimatedLength(this, null, SVG_X_ATTRIBUTE, null);
+            xReference = new WeakReference(result);
+        }
+        return result;
+    }
 
     /**
      * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGFilterElement#getY()}.
      */
     public SVGAnimatedLength getY() {
-	SVGAnimatedLength result;
-	if (yReference == null ||
-	    (result = (SVGAnimatedLength)yReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, SVG_Y_ATTRIBUTE, null);
-	    yReference = new WeakReference(result);
-	}
-	return result;
-    } 
+        SVGAnimatedLength result;
+        if (yReference == null ||
+            (result = (SVGAnimatedLength)yReference.get()) == null) {
+            result = new SVGOMAnimatedLength(this, null, SVG_Y_ATTRIBUTE, null);
+            yReference = new WeakReference(result);
+        }
+        return result;
+    }
 
     /**
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGFilterElement#getWidth()}.
      */
     public SVGAnimatedLength getWidth() {
-	SVGAnimatedLength result;
-	if (widthReference == null ||
-	    (result = (SVGAnimatedLength)widthReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "width", null);
-	    widthReference = new WeakReference(result);
-	}
-	return result;
-    } 
+        SVGAnimatedLength result;
+        if (widthReference == null ||
+            (result = (SVGAnimatedLength)widthReference.get()) == null) {
+            result = new SVGOMAnimatedLength(this, null, "width", null);
+            widthReference = new WeakReference(result);
+        }
+        return result;
+    }
 
     /**
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGFilterElement#getHeight()}.
      */
     public SVGAnimatedLength getHeight() {
-	SVGAnimatedLength result;
-	if (heightReference == null ||
-	    (result = (SVGAnimatedLength)heightReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "height", null);
-	    heightReference = new WeakReference(result);
-	}
-	return result;
-    } 
+        SVGAnimatedLength result;
+        if (heightReference == null ||
+            (result = (SVGAnimatedLength)heightReference.get()) == null) {
+            result = new SVGOMAnimatedLength(this, null, "height", null);
+            heightReference = new WeakReference(result);
+        }
+        return result;
+    }
 
     /**
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGFilterElement#getFilterResX()}.
      */
     public SVGAnimatedInteger getFilterResX() {
-	throw new RuntimeException(" !!! TODO: SVGOMFilterElement.getFilterResX()");
+        throw new RuntimeException(" !!! TODO: SVGOMFilterElement.getFilterResX()");
     }
- 
+
     /**
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGFilterElement#getFilterResY()}.
      */
     public SVGAnimatedInteger getFilterResY() {
-	throw new RuntimeException(" !!! TODO: SVGOMFilterElement.getFilterResY()");
+        throw new RuntimeException(" !!! TODO: SVGOMFilterElement.getFilterResY()");
     }
- 
+
     /**
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGFilterElement#setFilterRes(int,int)}.
      */
     public void setFilterRes(int filterResX, int filterResY) {
-	throw new RuntimeException(" !!! TODO: SVGOMFilterElement.setFilterRes()");
-    } 
+        throw new RuntimeException(" !!! TODO: SVGOMFilterElement.setFilterRes()");
+    }
 
     // ElementNonCSSPresentationalHints ////////////////////////////////////
 
@@ -264,7 +264,7 @@ public class SVGOMFilterElement
      * CSS rules. The result can be null.
      */
     public CSSStyleDeclaration getNonCSSPresentationalHints() {
-	return ElementNonCSSPresentationalHintsSupport.
+        return ElementNonCSSPresentationalHintsSupport.
             getNonCSSPresentationalHints(this);
     }
 
@@ -279,10 +279,10 @@ public class SVGOMFilterElement
      * Returns uriReferenceSupport different from null.
      */
     protected final SVGURIReferenceSupport getSVGURIReferenceSupport() {
-	if (uriReferenceSupport == null) {
-	    uriReferenceSupport = new SVGURIReferenceSupport();
-	}
-	return uriReferenceSupport;
+        if (uriReferenceSupport == null) {
+            uriReferenceSupport = new SVGURIReferenceSupport();
+        }
+        return uriReferenceSupport;
     }
 
     /**
@@ -414,10 +414,10 @@ public class SVGOMFilterElement
      * Returns stylableSupport different from null.
      */
     protected final SVGStylableSupport getStylableSupport() {
-	if (stylableSupport == null) {
-	    stylableSupport = new SVGStylableSupport();
-	}
-	return stylableSupport;
+        if (stylableSupport == null) {
+            stylableSupport = new SVGStylableSupport();
+        }
+        return stylableSupport;
     }
 
     /**
@@ -458,15 +458,15 @@ public class SVGOMFilterElement
      * OverrideStyleElement#hasOverrideStyle(String)}.
      */
     public boolean hasOverrideStyle(String pseudoElt) {
-	return getStylableSupport().hasOverrideStyle(pseudoElt);
-    }    
+        return getStylableSupport().hasOverrideStyle(pseudoElt);
+    }
 
     /**
      * Implements {@link
      * OverrideStyleElement#getOverrideStyle(String)}.
      */
     public CSSStyleDeclaration getOverrideStyle(String pseudoElt) {
-	return getStylableSupport().getOverrideStyle(pseudoElt, this);
+        return getStylableSupport().getOverrideStyle(pseudoElt, this);
     }
 
     // SVGExternalResourcesRequired support /////////////////////////////
@@ -481,12 +481,12 @@ public class SVGOMFilterElement
      * Returns testsSupport different from null.
      */
     protected final SVGExternalResourcesRequiredSupport
-	getExternalResourcesRequiredSupport() {
-	if (externalResourcesRequiredSupport == null) {
-	    externalResourcesRequiredSupport =
+        getExternalResourcesRequiredSupport() {
+        if (externalResourcesRequiredSupport == null) {
+            externalResourcesRequiredSupport =
                 new SVGExternalResourcesRequiredSupport();
-	}
-	return externalResourcesRequiredSupport;
+        }
+        return externalResourcesRequiredSupport;
     }
 
     /**
@@ -494,12 +494,12 @@ public class SVGOMFilterElement
      * SVGExternalResourcesRequired#getExternalResourcesRequired()}.
      */
     public SVGAnimatedBoolean getExternalResourcesRequired() {
-	return getExternalResourcesRequiredSupport().
+        return getExternalResourcesRequiredSupport().
             getExternalResourcesRequired(this);
     }
 
     // SVGLangSpace support //////////////////////////////////////////////////
-    
+
     /**
      * <b>DOM</b>: Returns the xml:lang attribute value.
      */
@@ -513,7 +513,7 @@ public class SVGOMFilterElement
     public void setXMLlang(String lang) {
         XMLSupport.setXMLLang(this, lang);
     }
-    
+
     /**
      * <b>DOM</b>: Returns the xml:space attribute value.
      */

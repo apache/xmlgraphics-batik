@@ -28,7 +28,7 @@ import org.w3c.dom.svg.SVGMaskElement;
 public class SVGOMMaskElement
     extends    SVGClippingMaskingElement
     implements SVGMaskElement {
-    
+
     /**
      * The DefaultAttributeValueProducer for maskUnits.
      */
@@ -36,7 +36,7 @@ public class SVGOMMaskElement
         MASK_UNITS_DEFAULT_VALUE_PRODUCER =
         new DefaultAttributeValueProducer() {
                 public String getDefaultAttributeValue() {
-                    return SVG_DEFAULT_VALUE_MASK_MASK_UNITS;
+                    return SVG_MASK_MASK_UNITS_DEFAULT_VALUE;
                 }
             };
 
@@ -119,60 +119,60 @@ public class SVGOMMaskElement
         }
         return result;
     }
- 
+
     /**
      * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGRectElement#getX()}.
      */
     public SVGAnimatedLength getX() {
-	SVGAnimatedLength result;
-	if (xReference == null ||
-	    (result = (SVGAnimatedLength)xReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, SVG_X_ATTRIBUTE, null);
-	    xReference = new WeakReference(result);
-	}
-	return result;
-    } 
+        SVGAnimatedLength result;
+        if (xReference == null ||
+            (result = (SVGAnimatedLength)xReference.get()) == null) {
+            result = new SVGOMAnimatedLength(this, null, SVG_X_ATTRIBUTE, null);
+            xReference = new WeakReference(result);
+        }
+        return result;
+    }
 
     /**
      * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGRectElement#getY()}.
      */
     public SVGAnimatedLength getY() {
-	SVGAnimatedLength result;
-	if (yReference == null ||
-	    (result = (SVGAnimatedLength)yReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, SVG_Y_ATTRIBUTE, null);
-	    yReference = new WeakReference(result);
-	}
-	return result;
-    } 
+        SVGAnimatedLength result;
+        if (yReference == null ||
+            (result = (SVGAnimatedLength)yReference.get()) == null) {
+            result = new SVGOMAnimatedLength(this, null, SVG_Y_ATTRIBUTE, null);
+            yReference = new WeakReference(result);
+        }
+        return result;
+    }
 
     /**
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGRectElement#getWidth()}.
      */
     public SVGAnimatedLength getWidth() {
-	SVGAnimatedLength result;
-	if (widthReference == null ||
-	    (result = (SVGAnimatedLength)widthReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, SVG_WIDTH_ATTRIBUTE, null);
-	    widthReference = new WeakReference(result);
-	}
-	return result;
-    } 
+        SVGAnimatedLength result;
+        if (widthReference == null ||
+            (result = (SVGAnimatedLength)widthReference.get()) == null) {
+            result = new SVGOMAnimatedLength(this, null, SVG_WIDTH_ATTRIBUTE, null);
+            widthReference = new WeakReference(result);
+        }
+        return result;
+    }
 
     /**
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGRectElement#getHeight()}.
      */
     public SVGAnimatedLength getHeight() {
-	SVGAnimatedLength result;
-	if (heightReference == null ||
-	    (result = (SVGAnimatedLength)heightReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, SVG_HEIGHT_ATTRIBUTE, null);
-	    heightReference = new WeakReference(result);
-	}
-	return result;
-    } 
+        SVGAnimatedLength result;
+        if (heightReference == null ||
+            (result = (SVGAnimatedLength)heightReference.get()) == null) {
+            result = new SVGOMAnimatedLength(this, null, SVG_HEIGHT_ATTRIBUTE, null);
+            heightReference = new WeakReference(result);
+        }
+        return result;
+    }
 
     /**
      * Returns a new uninitialized instance of this object's class.

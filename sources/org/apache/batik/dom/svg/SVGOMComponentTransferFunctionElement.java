@@ -36,7 +36,7 @@ public abstract class SVGOMComponentTransferFunctionElement
         TABLE_VALUES_DEFAULT_VALUE_PRODUCER =
         new DefaultAttributeValueProducer() {
                 public String getDefaultAttributeValue() {
-                    return SVG_DEFAULT_VALUE_COMPONENT_TRANSFER_FUNCTION_TABLE_VALUES;
+                    return SVG_COMPONENT_TRANSFER_FUNCTION_TABLE_VALUES_DEFAULT_VALUE;
                 }
             };
 
@@ -47,7 +47,7 @@ public abstract class SVGOMComponentTransferFunctionElement
         SLOPE_DEFAULT_VALUE_PRODUCER =
         new DefaultAttributeValueProducer() {
                 public String getDefaultAttributeValue() {
-                    return SVG_DEFAULT_VALUE_COMPONENT_TRANSFER_FUNCTION_SLOPE;
+                    return SVG_COMPONENT_TRANSFER_FUNCTION_SLOPE_DEFAULT_VALUE;
                 }
             };
 
@@ -58,7 +58,7 @@ public abstract class SVGOMComponentTransferFunctionElement
         INTERCEPT_DEFAULT_VALUE_PRODUCER =
         new DefaultAttributeValueProducer() {
                 public String getDefaultAttributeValue() {
-                    return SVG_DEFAULT_VALUE_COMPONENT_TRANSFER_FUNCTION_INTERCEPT;
+                    return SVG_COMPONENT_TRANSFER_FUNCTION_INTERCEPT_DEFAULT_VALUE;
                 }
             };
 
@@ -69,7 +69,7 @@ public abstract class SVGOMComponentTransferFunctionElement
         AMPLITUDE_DEFAULT_VALUE_PRODUCER =
         new DefaultAttributeValueProducer() {
                 public String getDefaultAttributeValue() {
-                    return SVG_DEFAULT_VALUE_COMPONENT_TRANSFER_FUNCTION_AMPLITUDE;
+                    return SVG_COMPONENT_TRANSFER_FUNCTION_AMPLITUDE_DEFAULT_VALUE;
                 }
             };
 
@@ -80,7 +80,7 @@ public abstract class SVGOMComponentTransferFunctionElement
         EXPONENT_DEFAULT_VALUE_PRODUCER =
         new DefaultAttributeValueProducer() {
                 public String getDefaultAttributeValue() {
-                    return SVG_DEFAULT_VALUE_COMPONENT_TRANSFER_FUNCTION_EXPONENT;
+                    return SVG_COMPONENT_TRANSFER_FUNCTION_EXPONENT_DEFAULT_VALUE;
                 }
             };
 
@@ -91,7 +91,7 @@ public abstract class SVGOMComponentTransferFunctionElement
         OFFSET_DEFAULT_VALUE_PRODUCER =
         new DefaultAttributeValueProducer() {
                 public String getDefaultAttributeValue() {
-                    return SVG_DEFAULT_VALUE_COMPONENT_TRANSFER_FUNCTION_OFFSET;
+                    return SVG_COMPONENT_TRANSFER_FUNCTION_OFFSET_DEFAULT_VALUE;
                 }
             };
 
@@ -126,37 +126,37 @@ public abstract class SVGOMComponentTransferFunctionElement
      * The type attribute reference.
      */
     protected transient WeakReference typeReference;
-    
+
     /**
      * The tableValues attribute reference.
      */
     protected transient WeakReference tableValuesReference;
-    
+
     /**
      * The slope attribute reference.
      */
     protected transient WeakReference slopeReference;
-    
+
     /**
      * The intercept attribute reference.
      */
     protected transient WeakReference interceptReference;
-    
+
     /**
      * The amplitude attribute reference.
      */
     protected transient WeakReference amplitudeReference;
-    
+
     /**
      * The exponent attribute reference.
      */
     protected transient WeakReference exponentReference;
-    
+
     /**
      * The offset attribute reference.
      */
     protected transient WeakReference offsetReference;
-    
+
     /**
      * Creates a new Element object.
      */
@@ -212,14 +212,14 @@ public abstract class SVGOMComponentTransferFunctionElement
      * org.w3c.dom.svg.SVGComponentTransferFunctionElement#getSlope()}.
      */
     public SVGAnimatedNumber getSlope() {
-	SVGAnimatedNumber result;
-	if (slopeReference == null ||
-	    (result = (SVGAnimatedNumber)slopeReference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, SVG_SLOPE_ATTRIBUTE,
+        SVGAnimatedNumber result;
+        if (slopeReference == null ||
+            (result = (SVGAnimatedNumber)slopeReference.get()) == null) {
+            result = new SVGOMAnimatedNumber(this, null, SVG_SLOPE_ATTRIBUTE,
                                              SLOPE_DEFAULT_VALUE_PRODUCER);
-	    slopeReference = new WeakReference(result);
-	}
-	return result;
+            slopeReference = new WeakReference(result);
+        }
+        return result;
     }
 
     /**
@@ -227,14 +227,14 @@ public abstract class SVGOMComponentTransferFunctionElement
      * org.w3c.dom.svg.SVGComponentTransferFunctionElement#getIntercept()}.
      */
     public SVGAnimatedNumber getIntercept() {
-	SVGAnimatedNumber result;
-	if (interceptReference == null ||
-	    (result = (SVGAnimatedNumber)interceptReference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, SVG_INTERCEPT_ATTRIBUTE,
+        SVGAnimatedNumber result;
+        if (interceptReference == null ||
+            (result = (SVGAnimatedNumber)interceptReference.get()) == null) {
+            result = new SVGOMAnimatedNumber(this, null, SVG_INTERCEPT_ATTRIBUTE,
                                              INTERCEPT_DEFAULT_VALUE_PRODUCER);
-	    interceptReference = new WeakReference(result);
-	}
-	return result;
+            interceptReference = new WeakReference(result);
+        }
+        return result;
     }
 
     /**
@@ -242,14 +242,14 @@ public abstract class SVGOMComponentTransferFunctionElement
      * org.w3c.dom.svg.SVGComponentTransferFunctionElement#getAmplitude()}.
      */
     public SVGAnimatedNumber getAmplitude() {
-	SVGAnimatedNumber result;
-	if (amplitudeReference == null ||
-	    (result = (SVGAnimatedNumber)amplitudeReference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, SVG_AMPLITUDE_ATTRIBUTE,
+        SVGAnimatedNumber result;
+        if (amplitudeReference == null ||
+            (result = (SVGAnimatedNumber)amplitudeReference.get()) == null) {
+            result = new SVGOMAnimatedNumber(this, null, SVG_AMPLITUDE_ATTRIBUTE,
                                              AMPLITUDE_DEFAULT_VALUE_PRODUCER);
-	    amplitudeReference = new WeakReference(result);
-	}
-	return result;
+            amplitudeReference = new WeakReference(result);
+        }
+        return result;
     }
 
     /**
@@ -257,14 +257,14 @@ public abstract class SVGOMComponentTransferFunctionElement
      * org.w3c.dom.svg.SVGComponentTransferFunctionElement#getExponent()}.
      */
     public SVGAnimatedNumber getExponent() {
-	SVGAnimatedNumber result;
-	if (exponentReference == null ||
-	    (result = (SVGAnimatedNumber)exponentReference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, SVG_EXPONENT_ATTRIBUTE,
+        SVGAnimatedNumber result;
+        if (exponentReference == null ||
+            (result = (SVGAnimatedNumber)exponentReference.get()) == null) {
+            result = new SVGOMAnimatedNumber(this, null, SVG_EXPONENT_ATTRIBUTE,
                                              EXPONENT_DEFAULT_VALUE_PRODUCER);
-	    exponentReference = new WeakReference(result);
-	}
-	return result;
+            exponentReference = new WeakReference(result);
+        }
+        return result;
     }
 
     /**
@@ -272,13 +272,13 @@ public abstract class SVGOMComponentTransferFunctionElement
      * org.w3c.dom.svg.SVGComponentTransferFunctionElement#getOffset()}.
      */
     public SVGAnimatedNumber getOffset() {
-	SVGAnimatedNumber result;
-	if (offsetReference == null ||
-	    (result = (SVGAnimatedNumber)offsetReference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, SVG_OFFSET_ATTRIBUTE,
+        SVGAnimatedNumber result;
+        if (offsetReference == null ||
+            (result = (SVGAnimatedNumber)offsetReference.get()) == null) {
+            result = new SVGOMAnimatedNumber(this, null, SVG_OFFSET_ATTRIBUTE,
                                              OFFSET_DEFAULT_VALUE_PRODUCER);
-	    offsetReference = new WeakReference(result);
-	}
-	return result;
+            offsetReference = new WeakReference(result);
+        }
+        return result;
     }
 }

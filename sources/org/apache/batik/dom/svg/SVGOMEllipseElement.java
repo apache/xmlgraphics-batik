@@ -31,10 +31,10 @@ public class SVGOMEllipseElement
         CX_DEFAULT_VALUE_PRODUCER =
         new DefaultAttributeValueProducer() {
                 public String getDefaultAttributeValue() {
-                    return SVG_DEFAULT_VALUE_ELLIPSE_CX;
+                    return SVG_ELLIPSE_CX_DEFAULT_VALUE;
                 }
             };
-    
+
     /**
      * The DefaultAttributeValueProducer for cy.
      */
@@ -42,10 +42,10 @@ public class SVGOMEllipseElement
         CY_DEFAULT_VALUE_PRODUCER =
         new DefaultAttributeValueProducer() {
                 public String getDefaultAttributeValue() {
-                    return SVG_DEFAULT_VALUE_ELLIPSE_CY;
+                    return SVG_ELLIPSE_CY_DEFAULT_VALUE;
                 }
             };
-    
+
     /**
      * The reference to the cx attribute.
      */
@@ -93,58 +93,58 @@ public class SVGOMEllipseElement
      * org.w3c.dom.svg.SVGEllipseElement#getCx()}.
      */
     public SVGAnimatedLength getCx() {
-	SVGAnimatedLength result;
-	if (cxReference == null ||
-	    (result = (SVGAnimatedLength)cxReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, SVG_CX_ATTRIBUTE,
+        SVGAnimatedLength result;
+        if (cxReference == null ||
+            (result = (SVGAnimatedLength)cxReference.get()) == null) {
+            result = new SVGOMAnimatedLength(this, null, SVG_CX_ATTRIBUTE,
                                              CX_DEFAULT_VALUE_PRODUCER);
-	    cxReference = new WeakReference(result);
-	}
-	return result;
-    } 
+            cxReference = new WeakReference(result);
+        }
+        return result;
+    }
 
     /**
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGEllipseElement#getCy()}.
      */
     public SVGAnimatedLength getCy() {
-	SVGAnimatedLength result;
-	if (cyReference == null ||
-	    (result = (SVGAnimatedLength)cyReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, SVG_CY_ATTRIBUTE,
+        SVGAnimatedLength result;
+        if (cyReference == null ||
+            (result = (SVGAnimatedLength)cyReference.get()) == null) {
+            result = new SVGOMAnimatedLength(this, null, SVG_CY_ATTRIBUTE,
                                              CY_DEFAULT_VALUE_PRODUCER);
-	    cyReference = new WeakReference(result);
-	}
-	return result;
-    } 
+            cyReference = new WeakReference(result);
+        }
+        return result;
+    }
 
     /**
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGEllipseElement#getRx()}.
      */
     public SVGAnimatedLength getRx() {
-	SVGAnimatedLength result;
-	if (rxReference == null ||
-	    (result = (SVGAnimatedLength)rxReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, SVG_RX_ATTRIBUTE, null);
-	    rxReference = new WeakReference(result);
-	}
-	return result;
-    } 
+        SVGAnimatedLength result;
+        if (rxReference == null ||
+            (result = (SVGAnimatedLength)rxReference.get()) == null) {
+            result = new SVGOMAnimatedLength(this, null, SVG_RX_ATTRIBUTE, null);
+            rxReference = new WeakReference(result);
+        }
+        return result;
+    }
 
     /**
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGEllipseElement#getRy()}.
      */
     public SVGAnimatedLength getRy() {
-	SVGAnimatedLength result;
-	if (ryReference == null ||
-	    (result = (SVGAnimatedLength)ryReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, SVG_RY_ATTRIBUTE, null);
-	    ryReference = new WeakReference(result);
-	}
-	return result;
-    } 
+        SVGAnimatedLength result;
+        if (ryReference == null ||
+            (result = (SVGAnimatedLength)ryReference.get()) == null) {
+            result = new SVGOMAnimatedLength(this, null, SVG_RY_ATTRIBUTE, null);
+            ryReference = new WeakReference(result);
+        }
+        return result;
+    }
 
     /**
      * Returns a new uninitialized instance of this object's class.
