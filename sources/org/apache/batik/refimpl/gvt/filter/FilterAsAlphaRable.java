@@ -119,7 +119,9 @@ public class FilterAsAlphaRable
 
         RenderedImage ri;
         ri = getSource().createRendering(new RenderContext(at, aoi, rh));
-        
+        if (ri == null) 
+            return null;
+
         CachableRed cr = ConcreteRenderedImageCachableRed.wrap(ri);
 
         Object val = cr.getProperty(PROPERTY_COLORSPACE);

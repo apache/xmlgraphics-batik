@@ -9,8 +9,11 @@
 package org.apache.batik.refimpl.gvt.filter;
 
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Shape;
+
+import java.awt.color.ColorSpace;
 
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.AffineTransform;
@@ -19,6 +22,8 @@ import java.awt.image.BufferedImage;
 import java.awt.image.BufferedImageOp;
 import java.awt.image.ColorModel;
 import java.awt.image.ConvolveOp;
+import java.awt.image.DataBuffer;
+import java.awt.image.DirectColorModel;
 import java.awt.image.Kernel;
 import java.awt.image.Raster;
 import java.awt.image.RenderedImage;
@@ -29,6 +34,8 @@ import org.apache.batik.gvt.filter.PadMode;
 import org.apache.batik.gvt.filter.ConvolveMatrixRable;
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.CachableRed;
+
+import org.apache.batik.util.awt.image.GraphicsUtil;
 
 /**
  * Convolves an image with a convolution matrix.
@@ -235,11 +242,6 @@ public class ConcreteConvolveMatrixRable
         AffineTransform srcAt 
             = AffineTransform.getScaleInstance(scaleX, scaleY);
 
-        // Here we update the translate to account for the phase shift
-        // (if any) introduced by setting targetX, targetY in SVG.
-        tx += target.x - kernel.getXOrigin();
-        ty += target.y - kernel.getYOrigin();
-
         // This is the affine transform between our intermediate
         // coordinate space (where the convolution takes place) and
         // the real device space, or null (if we don't need an
@@ -256,8 +258,7 @@ public class ConcreteConvolveMatrixRable
         if (ri == null)
             return null;
 
-        CachableRed cr;
-        cr = ConcreteRenderedImageCachableRed.wrap(ri);
+        CachableRed cr = GraphicsUtil.wrap(ri);
 
         Shape devShape = srcAt.createTransformedShape(aoi);
         r = devShape.getBounds2D();
@@ -277,7 +278,7 @@ public class ConcreteConvolveMatrixRable
 
         if (bias != 0.0)
             throw new IllegalArgumentException
-                ("Only bias equals zero is supported in ConvolveMatrix.");
+                ("Only bias equal to zero is supported in ConvolveMatrix.");
         
         BufferedImageOp op = new ConvolveOp(kernel, 
                                             ConvolveOp.EDGE_NO_OP,
@@ -289,24 +290,112 @@ public class ConcreteConvolveMatrixRable
         // The read-only raster that getData gives us. And use it to
         // build a WritableRaster.  This avoids a copy of the data.
         Raster rr = cr.getData();
-        Point  pt = new Point(0,0);
         WritableRaster wr = Raster.createWritableRaster(rr.getSampleModel(),
                                                         rr.getDataBuffer(),
-                                                        pt);
+                                                        new Point(0,0));
         
         BufferedImage srcBI;
+        BufferedImage destBI;
+
         srcBI = new BufferedImage(cm, wr, cm.isAlphaPremultiplied(), null);
 
-        BufferedImage destBI;
-        destBI = op.filter(srcBI, null);
+        // Here we update the translate to account for the phase shift
+        // (if any) introduced by setting targetX, targetY in SVG.
+        int phaseShiftX = target.x - kernel.getXOrigin();
+        int phaseShiftY = target.y - kernel.getYOrigin();
+        int destX = (int)(r.getX() + phaseShiftX);
+        int destY = (int)(r.getY() + phaseShiftY);
 
-        cr = new ConcreteBufferedImageCachableRed(destBI,
-                                                  (int)r.getX(),
-                                                  (int)r.getY());
-        cr = new PadRed(cr, r.getBounds(), PadMode.ZERO_PAD, rh);
-        if (!resAt.isIdentity())
-            cr = new AffineRed(cr, resAt, null);
+        if (!preserveAlpha) {
+            // Easy case just apply the op...
+            destBI = op.filter(srcBI, null);
 
+            // Wrap it as a CachableRed
+            cr = new ConcreteBufferedImageCachableRed(destBI, destX, destY);
+
+            // Make sure to crop junk from edges.
+            cr = new PadRed(cr, r.getBounds(), PadMode.ZERO_PAD, rh);
+
+            // If we need to scale/rotate/translate the result do so now...
+            if (!resAt.isIdentity())
+                cr = new AffineRed(cr, resAt, null);
+
+        } else {
+
+            // Construct a linear sRGB cm without alpha...
+            cm = new DirectColorModel(ColorSpace.getInstance
+                                      (ColorSpace.CS_LINEAR_RGB), 24,
+                                      0x00FF0000, 0x0000FF00, 
+                                      0x000000FF, 0x0, false, 
+                                      DataBuffer.TYPE_INT);
+
+            // Create an image with that color model
+            BufferedImage tmpSrcBI = new BufferedImage
+                (cm, cm.createCompatibleWritableRaster(wr.getWidth(),
+                                                       wr.getHeight()),
+                 cm.isAlphaPremultiplied(), null);
+
+            // Copy the color data (no alpha) to that image 
+            // (dividing out alpha).
+            GraphicsUtil.copyData(srcBI, tmpSrcBI);
+
+            // org.apache.batik.test.gvt.ImageDisplay.showImage
+            //   ("tmpSrcBI: ", tmpSrcBI);
+
+            // Get a linear sRGB Premult ColorModel
+            ColorModel dstCM = GraphicsUtil.Linear_sRGB_Pre;
+            // Construct out output image around that ColorModel
+            destBI = new BufferedImage
+                (dstCM, dstCM.createCompatibleWritableRaster(wr.getWidth(),
+                                                             wr.getHeight()),
+                 dstCM.isAlphaPremultiplied(), null);
+
+            // Construct another image on the same data buffer but without
+            // an alpha channel.
+
+            // Create the Raster (note we are using 'cm' again).
+            WritableRaster dstWR = 
+                Raster.createWritableRaster
+                (cm.createCompatibleSampleModel(wr.getWidth(), wr.getHeight()),
+                 destBI.getRaster().getDataBuffer(),
+                 new Point(0,0));
+
+            // Create the BufferedImage.
+            BufferedImage tmpDstBI = new BufferedImage
+                (cm, dstWR, cm.isAlphaPremultiplied(), null);
+            
+            // Filter between the two image without alpha.
+            tmpDstBI = op.filter(tmpSrcBI, tmpDstBI);
+
+            // org.apache.batik.test.gvt.ImageDisplay.showImage
+            //   ("tmpDstBI: ", tmpDstBI);
+
+            // Copy the alpha channel into the result (note the color
+            // channels are still unpremult.
+            Rectangle srcRect = wr.getBounds();
+            Rectangle dstRect = new Rectangle(srcRect.x-phaseShiftX,
+                                              srcRect.y-phaseShiftY,
+                                              srcRect.width, srcRect.height);
+            GraphicsUtil.copyBand(wr, srcRect, wr.getNumBands()-1,
+                                  destBI.getRaster(), dstRect,
+                                  destBI.getRaster().getNumBands()-1);
+            // Premultiply the colorchannels.
+            GraphicsUtil.coerceData(destBI.getRaster(),
+                                    GraphicsUtil.Linear_sRGB_Unpre,
+                                    true);
+
+            // Wrap it as a CachableRed
+            cr = new ConcreteBufferedImageCachableRed(destBI, destX, destY);
+
+            // Make sure to crop junk from edges.   
+            cr = new PadRed(cr, r.getBounds(), PadMode.ZERO_PAD, rh);
+            
+            // If we need to scale/rotate/translate the result do so now...
+            if (!resAt.isIdentity())
+                cr = new AffineRed(cr, resAt, null);
+        }
+
+        // return the result.
         return cr;
     }
     

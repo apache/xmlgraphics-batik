@@ -148,22 +148,6 @@
          edgeMode="none" />
   	</filter>
 
-  	<filter id="conv-none-tl" x="0" y="0" width="1" height="1">
-        <feConvolveMatrix order="11 11"
-         kernelMatrix="1 0 0 0 0 0 0 0 0 0 0
-                       0 0 0 0 0 0 0 0 0 0 0
-                       0 0 0 0 0 0 0 0 0 0 0
-                       0 0 0 0 0 0 0 0 0 0 0
-                       0 0 0 0 0 0 0 0 0 0 0
-                       0 0 0 0 0 0 0 0 0 0 0
-                       0 0 0 0 0 0 0 0 0 0 0
-                       0 0 0 0 0 0 0 0 0 0 0
-                       0 0 0 0 0 0 0 0 0 0 0
-                       0 0 0 0 0 0 0 0 0 0 0
-                       0 0 0 0 0 0 0 0 0 0 0"
-         edgeMode="none" />
-  	</filter>
-
   	<filter id="conv-none-bl" x="0" y="0" width="1" height="1">
         <feConvolveMatrix order="11 11"
          kernelMatrix="0 0 0 0 0 0 0 0 0 0 0
@@ -181,15 +165,29 @@
          edgeMode="none" />
   	</filter>
 
+  	<filter id="conv-alpha" x="0" y="0" width="1" height="1">
+        <feConvolveMatrix order="11 11"
+         kernelMatrix="0 0 0 0 0 0 0 0 0 0 0
+                       0 0 0 0 0 0 0 0 0 0 0
+                       0 0 0 0 0 0 0 0 0 0 0
+                       0 0 0 0 0 0 0 0 0 0 0
+                       0 0 0 0 0 0 0 0 0 0 0
+                       0 0 0 0 0 0 0 0 0 0 0
+                       0 0 0 0 0 0 0 0 0 0 0
+                       0 0 0 0 0 0 0 0 0 0 0
+                       0 0 0 0 0 0 0 0 0 0 0
+                       0 0 0 0 0 0 0 0 0 0 0
+                       1 0 0 0 0 0 0 0 0 0 0"
+         edgeMode="none" 
+         preserveAlpha="true"/>
+  	</filter>
+
       <linearGradient id="grad" y2="100%">
         <stop offset="0%"   style="stop-color:#FF0" />
         <stop offset="100%" style="stop-color:#F00" />
       </linearGradient>
 
-      <g id="content">
-        <rect   x="15" y="15" width="90" height="90" 
-                style="fill:url(#grad)" />
-
+      <g id="simple_content">
         <circle id="Circle1" cx="40" cy="65" r="25" 
                 style="fill:yellowGreen" />
    
@@ -202,6 +200,12 @@
         <rect   id="Rect2"   x="60" y="15" width="30" height="70" 
                 rx="10" ry="10"
                 style="fill:Green" />
+      </g>
+
+      <g id="content">
+        <rect   x="15" y="15" width="90" height="90" 
+                style="fill:url(#grad)" />
+        <use xlink:href="#simple_content" />
       </g>
 
     </defs>
@@ -289,24 +293,23 @@
       <!-- ============================================== -->
       <g transform="translate(0 300)" class="row3" >
         <g transform="translate(20,0)" >
+          <g style="filter:url(#conv-alpha)">
+            <use xlink:href="#simple_content" />
+          </g>
+
+          <text transform="translate(60, 130)"
+                x="0" y="0" style="text-anchor:middle">
+           3.2 None PreserveAlpha B&amp;L
+          </text>
+        </g>
+        <g transform="translate(160,0)" >
           <g style="filter:url(#conv-none-tr)">
             <use xlink:href="#content" />
           </g>
 
           <text transform="translate(60, 130)"
                 x="0" y="0" style="text-anchor:middle">
-           3.1 None Top &amp; Right
-          </text>
-        </g>
-
-        <g transform="translate(160,0)" >
-          <g style="filter:url(#conv-none-tl)">
-            <use xlink:href="#content" />
-          </g>
-
-          <text transform="translate(60, 130)"
-                x="0" y="0" style="text-anchor:middle">
-           3.2 None Top &amp; Left
+           3.2 None Top &amp; Right
           </text>
         </g>
 
@@ -320,6 +323,7 @@
            3.3 None Bottom &amp; Left
           </text>
         </g>
+
       </g>  <!-- end row3-->
 
     </g> <!-- end legend -->
