@@ -72,6 +72,7 @@
 			  ${class-prefix}.refimpl.script.jacl,
 			  ${class-prefix}.refimpl.script.jpython,
 			  ${class-prefix}.refimpl.script.rhino,
+			  ${class-prefix}.refimpl.transcoder,
 			  ${class-prefix}.refimpl.util"/>
     <property name="packages-all"  value="${packages}, 
                                           ${packages-refimpl},
