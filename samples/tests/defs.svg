@@ -26,6 +26,8 @@
 <defs>
 
 <!-- ###################################################################### -->
+<!-- used by externalPaints.svg -->
+<!-- ###################################################################### -->
 <linearGradient id="linearSimpleReference" x1=".5" y1="0" x2=".5" y2="1">
 	<stop style="stop-color:blue" offset="0" />
 	<stop style="stop-color:white" offset=".5" />
@@ -72,6 +74,33 @@
          patternContentUnits="userSpaceOnUse" patternUnits="userSpaceOnUse"
          patternTransform="rotate(45)"
          xlink:href="defs2.svg#pattern" />
+
+<!-- ###################################################################### -->
+<!-- useStyling.svg -->
+<!-- ###################################################################### -->
+
+  <radialGradient id="extGrad1">
+ 	<stop style="stop-color:gold" offset="0" />
+ 	<stop style="stop-color:crimson" offset="1" />
+  </radialGradient>
+
+  <radialGradient id="extGrad2">
+ 	<stop style="stop-color:white" offset="0" />
+ 	<stop style="stop-color:black" offset="1" />
+  </radialGradient>
+
+  <radialGradient id="extGrad3">
+ 	<stop style="stop-color:gold" offset="0" />
+ 	<stop style="stop-color:green" offset="1" />
+  </radialGradient>
+
+<g>
+	<circle id="extE" cx="25" cy="25" r="20" />
+
+	<circle id="extE1" cx="25" cy="25" r="20" style="fill:url(#extGrad1)" />
+
+	<circle id="extE2" cx="25" cy="25" r="20" style="fill:url(useStylingURI.svg#grad1)" />
+</g>
 
 </defs>
 
