@@ -259,7 +259,9 @@ public class ParsedURL {
 
     /**
      * Returns the path for this URL, if any (where appropriate for
-     * the protocol this also includes the file, not just directory.) 
+     * the protocol this also includes the file, not just directory).
+     * Note that getPath appears in JDK 1.3 as a synonym for getFile
+     * from JDK 1.2.
      */
     public String getPath()     { 
         if (data.path == null) return null;

@@ -233,10 +233,8 @@ public abstract class AbstractSVGGradientElementBridge extends AbstractSVGBridge
                 stops = new LinkedList();
             }
             if (previous != null) {
-                if (stop.offset == previous.offset) {
-                    stops.removeLast();
-                } else if (stop.offset < previous.offset) {
-                    stop.offset = previous.offset+0.01f;
+                if (stop.offset < previous.offset) {
+                    stop.offset = previous.offset;
                 }
             }
             stops.add(stop);
