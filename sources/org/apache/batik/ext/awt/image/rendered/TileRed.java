@@ -103,17 +103,18 @@ public class TileRed extends AbstractRed implements TileGenerator {
 
         double smSz   = sm.getWidth()*sm.getHeight();
         double stepSz = (xStep*(double)yStep);
-        if (2.0*smSz > stepSz) {
+        // be prepaired to grow the default tile size quite a bit if
+        // it means the image to tile will fit in it...
+        if (16.1*smSz > stepSz) {
             int xSz = xStep;
             int ySz = yStep;
 
             // If the pattern size is small then have multiple copies
             // in our tile.
-            if (4*stepSz < smSz) {
-                double mult = smSz/stepSz;
-                double sqrt = Math.sqrt(mult);
-                xSz *= (int)sqrt;
-                ySz *= (int)sqrt;
+            if (4*stepSz <= smSz) {
+                int mult = (int)Math.ceil(Math.sqrt(smSz/stepSz));
+                xSz *= mult;
+                ySz *= mult;
             }
 
             sm = sm.createCompatibleSampleModel(xSz, ySz);
@@ -191,20 +192,26 @@ public class TileRed extends AbstractRed implements TileGenerator {
             }
         }
         else {
-            this.tile        = tile;
-            tiles = TileCache.getTileMap(this);
+            this.tile        = new TileCacheRed(GraphicsUtil.wrap(tile));
         }
     }
 
     public WritableRaster copyData(WritableRaster wr) {
-        int tx0 = getXTile(wr.getMinX());
-        int ty0 = getYTile(wr.getMinY());
-        int tx1 = getXTile(wr.getMinX()+wr.getWidth() -1);
-        int ty1 = getYTile(wr.getMinY()+wr.getHeight()-1);
+        int xOff = ((int)Math.floor(wr.getMinX()/xStep))*xStep;
+        int yOff = ((int)Math.floor(wr.getMinY()/yStep))*yStep;
+        int x0   = wr.getMinX()-xOff;
+        int y0   = wr.getMinY()-yOff;
+        int tx0 = getXTile(x0);
+        int ty0 = getYTile(y0);
+        int tx1 = getXTile(x0+wr.getWidth() -1);
+        int ty1 = getYTile(y0+wr.getHeight()-1);
 
         for (int y=ty0; y<=ty1; y++)
             for (int x=tx0; x<=tx1; x++) {
                 Raster r = getTile(x, y);
+                r = r.createChild(r.getMinX(),      r.getMinY(), 
+                                  r.getWidth(),     r.getHeight(),
+                                  r.getMinX()+xOff, r.getMinY()+yOff, null);
                 if (is_INT_PACK)
                     GraphicsUtil.copyData_INT_PACK(r, wr);
                 else
@@ -225,11 +232,11 @@ public class TileRed extends AbstractRed implements TileGenerator {
         }
 
         // System.out.println("Checking Cache [" + x + "," + y + "]");
-        return tiles.getTile(x,y);
+        return genTile(x,y);
     }
 
     public Raster genTile(int x, int y) {
-        // System.out.println("Cache Miss     [" + x + "," + y + "]");
+      // System.out.println("Cache Miss     [" + x + "," + y + "]");
         int tx = tileGridXOff+x*tileWidth;
         int ty = tileGridYOff+y*tileHeight;
         
@@ -291,8 +298,8 @@ public class TileRed extends AbstractRed implements TileGenerator {
         //                    src.getHeight() + "]");
         // System.out.println("tileTx/tileTy : " + tileTx + " / " + tileTy);
         minX = curX;
-        while(curY <= maxY) {
-            while (curX <= maxX) {
+        while(curY < maxY) {
+            while (curX < maxX) {
                 // System.out.println("curX/curY : " + curX + " / " + curY);
                 // System.out.println("transform : " + 
                 //                    g.getTransform().getTranslateX() + 

@@ -14,23 +14,15 @@ import java.awt.Shape;
 
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
-
-import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
-import java.awt.image.Raster;
-import java.awt.image.WritableRaster;
-import java.awt.image.ColorModel;
 import java.awt.image.renderable.RenderContext;
 
 import java.util.List;
 
-import org.apache.batik.ext.awt.image.GraphicsUtil;
-
 import org.apache.batik.ext.awt.image.ARGBChannel;
-import org.apache.batik.ext.awt.image.PadMode;
-import org.apache.batik.ext.awt.image.rendered.BufferedImageCachableRed;
+import org.apache.batik.ext.awt.image.GraphicsUtil;
 import org.apache.batik.ext.awt.image.rendered.CachableRed;
-import org.apache.batik.ext.awt.image.rendered.DisplacementMapOp;
+import org.apache.batik.ext.awt.image.rendered.DisplacementMapRed8Bit;
 import org.apache.batik.ext.awt.image.rendered.AffineRed;
 
 /**
@@ -171,14 +163,17 @@ public class DisplacementMapRable8Bit
 
         // Now, apply the filter
         //
-        int scaleX = (int)(scale*atScaleX);
-        int scaleY = (int)(scale*atScaleY);
+        float scaleX = (float)(scale*atScaleX);
+        float scaleY = (float)(scale*atScaleY);
 
         // If both scale factors are zero then we don't
         // affect the source image so just return it...
         if ((scaleX == 0) && (scaleY == 0))
             return displaced.createRendering(rc);
 
+        // if ((scaleX > 255) || (scaleY > 255)) {
+        //   System.out.println("Scales: [" + scaleX + ", " + scaleY + "]");
+        // }
 
         AffineTransform srcAt
             = AffineTransform.getScaleInstance(atScaleX, atScaleY);
@@ -189,15 +184,10 @@ public class DisplacementMapRable8Bit
 
         Rectangle2D aoiR = origAOI.getBounds2D();
 
-        // Get a rendering from the displacement map
-        PadRable mapPad = new PadRable8Bit(map, aoiR, PadMode.ZERO_PAD);
-
         RenderContext srcRc = new RenderContext(srcAt, aoiR, rh);
-        RenderedImage mapRed = mapPad.createRendering(srcRc);
+        RenderedImage mapRed = map.createRendering(srcRc);
 
-        if(mapRed == null){
-            return null;
-        }
+        if (mapRed == null) return null;
 
         // Grow the area of interest in user space. to account for
         // the max surround needs of displacement map.
@@ -214,43 +204,19 @@ public class DisplacementMapRable8Bit
         srcRc = new RenderContext(srcAt, aoiR, rh);
         RenderedImage displacedRed = displaced.createRendering(srcRc);
 
-        if(displacedRed == null){
-            return null;
-        }
+        if (displacedRed == null) return null;
 
         mapRed = convertSourceCS(mapRed);
 
         //
-        // Build a BufferedImages from the two sources
+        // Build a Displacement Map Red from the two sources
         //
 
-        // Get Raster for displacedRed
-        Raster displacedRas = displacedRed.getData();
-
-        ColorModel disCM = displacedRed.getColorModel();
-        // Make sure displaced is premultiplied
-        disCM = GraphicsUtil.coerceData((WritableRaster)displacedRas,
-                                        disCM, true);
-
-        // Get Raster for mapRed
-        Raster mapRas    = mapRed.getData();
-        ColorModel mapCM = mapRed.getColorModel();
-        // ensure map isn't pre-multiplied.
-        GraphicsUtil.coerceData((WritableRaster)mapRas, mapCM, false);
-
-
-        DisplacementMapOp op
-            = new DisplacementMapOp(xChannelSelector,
-                                    yChannelSelector,
-                                    scaleX, scaleY,
-                                    mapRas);
-
-        WritableRaster destRas = op.filter(displacedRas, null);
-        destRas = destRas.createWritableTranslatedChild(0,0);
-
-        BufferedImage destBI = new BufferedImage(disCM, destRas,
-                                                 disCM.isAlphaPremultiplied(),
-                                                 null);
+        CachableRed cr = new DisplacementMapRed8Bit
+            (GraphicsUtil.wrap(displacedRed),
+             GraphicsUtil.wrap(mapRed),
+             xChannelSelector, yChannelSelector,
+             scaleX, scaleY, rh);
         //
         // Apply the non scaling part of the transform now,
         // if different from identity.
@@ -260,15 +226,8 @@ public class DisplacementMapRable8Bit
                                   shx/atScaleY,  sy/atScaleY,
                                   tx, ty);
 
-        final int minX = mapRed.getMinX();
-        final int minY = mapRed.getMinY();
-
-        CachableRed cr
-            = new BufferedImageCachableRed(destBI, minX, minY);
-
-        if(!resAt.isIdentity()){
+        if(!resAt.isIdentity())
             cr = new AffineRed(cr, resAt, rh);
-        }
 
         return cr;
 

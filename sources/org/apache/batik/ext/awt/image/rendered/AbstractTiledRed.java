@@ -251,6 +251,23 @@ public abstract class AbstractTiledRed
         return wr;
     }
 
+        
+    public Raster getData(Rectangle rect) {
+        int xt0 = getXTile(rect.x);
+        int xt1 = getXTile(rect.x+rect.width-1);
+        int yt0 = getYTile(rect.y);
+        int yt1 = getYTile(rect.y+rect.height-1);
+
+        if ((xt0 == xt1) && (yt0 == yt1)) {
+            Raster r = getTile(xt0, yt0);
+            return r.createChild(rect.x, rect.y, rect.width, rect.height,
+                                 rect.x, rect.y, null);
+        }
+        // rect crosses tile boundries...
+        return super.getData(rect);
+    }
+
+
     public Raster getTile(int x, int y) {
         return tiles.getTile(x, y);
     }
