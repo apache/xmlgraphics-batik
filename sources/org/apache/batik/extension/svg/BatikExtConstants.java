@@ -24,6 +24,16 @@ public interface BatikExtConstants {
     public static final String BATIK_EXT_NAMESPACE_URI = 
         "http://xml.apache.org/batik/ext";
 
+    /** Namespace for batik experimental svg 1.2 elements. */
+    public static final String BATIK_12_NAMESPACE_URI = 
+        "http://xml.apache.org/batik/ext";
+        //         "http://www.w3.org/2000/svg";
+
+    /** Namespace for batik experimental svg 1.2 attributes. */
+    public static final String BATIK_12_ATTR_NAMESPACE_URI = 
+        "http://xml.apache.org/batik/ext";
+        // null;
+
     /** Tag name for Batik's regular poly extension. */
     public static final String BATIK_EXT_REGULAR_POLYGON_TAG = 
         "regularPolygon";

@@ -116,7 +116,7 @@ public class SVGFlowTextElementBridge extends SVGTextElementBridge
      * Returns the SVG namespace URI.
      */
     public String getNamespaceURI() {
-        return BATIK_EXT_NAMESPACE_URI;
+        return BATIK_12_NAMESPACE_URI;
     }
 
     /**
@@ -356,7 +356,7 @@ public class SVGFlowTextElementBridge extends SVGTextElementBridge
         for (Node n = element.getFirstChild();
              n != null; n = n.getNextSibling()) {
             if (n.getNodeType()     != Node.ELEMENT_NODE) continue;
-            if (n.getNamespaceURI() != getNamespaceURI()) continue;
+            if (!getNamespaceURI().equals(n.getNamespaceURI())) continue;
             Element e = (Element)n;
 
             String ln = n.getLocalName();
@@ -376,7 +376,7 @@ public class SVGFlowTextElementBridge extends SVGTextElementBridge
         for (Node n = div.getFirstChild();
              n != null; n = n.getNextSibling()) {
             if (n.getNodeType()     != Node.ELEMENT_NODE) continue;
-            if (n.getNamespaceURI() != getNamespaceURI()) continue;
+            if (!getNamespaceURI().equals(n.getNamespaceURI())) continue;
             Element e = (Element)n;
 
             String ln = e.getLocalName();
@@ -439,34 +439,35 @@ public class SVGFlowTextElementBridge extends SVGTextElementBridge
         List ret = new LinkedList();
         for (Node n = element.getFirstChild();
              n != null; n = n.getNextSibling()) {
+            
             if (n.getNodeType()     != Node.ELEMENT_NODE) continue;
-            if (n.getNamespaceURI() != getNamespaceURI()) continue;
+            if (!getNamespaceURI().equals(n.getNamespaceURI())) continue;
 
             Element e = (Element)n;
 
             String ln = e.getLocalName();
-            if (BATIK_EXT_FLOW_REGION_TAG.equals(ln)) {
-                // our default alignment is to the top of the flow rect.
-                float verticalAlignment = 0.0f;
-                String verticalAlignmentAttribute 
-                    = e.getAttribute(BATIK_EXT_VERTICAL_ALIGN_ATTRIBUTE);
+            if (!BATIK_EXT_FLOW_REGION_TAG.equals(ln))  continue;
 
-                if ((verticalAlignmentAttribute != null) && 
-                    (verticalAlignmentAttribute.length() > 0)) {
-                    if (BATIK_EXT_ALIGN_TOP_VALUE.equals
-                        (verticalAlignmentAttribute)) {
-                        verticalAlignment = 0.0f;
-                    } else if (BATIK_EXT_ALIGN_MIDDLE_VALUE.equals 
-                               (verticalAlignmentAttribute)) {
-                        verticalAlignment = 0.5f;
-                    } else if (BATIK_EXT_ALIGN_BOTTOM_VALUE.equals 
-                               (verticalAlignmentAttribute)) {
-                        verticalAlignment = 1.0f;
-                    }
+            // our default alignment is to the top of the flow rect.
+            float verticalAlignment = 0.0f;
+            String verticalAlignmentAttribute 
+                = e.getAttribute(BATIK_EXT_VERTICAL_ALIGN_ATTRIBUTE);
+            
+            if ((verticalAlignmentAttribute != null) && 
+                (verticalAlignmentAttribute.length() > 0)) {
+                if (BATIK_EXT_ALIGN_TOP_VALUE.equals
+                    (verticalAlignmentAttribute)) {
+                    verticalAlignment = 0.0f;
+                } else if (BATIK_EXT_ALIGN_MIDDLE_VALUE.equals 
+                           (verticalAlignmentAttribute)) {
+                    verticalAlignment = 0.5f;
+                } else if (BATIK_EXT_ALIGN_BOTTOM_VALUE.equals 
+                           (verticalAlignmentAttribute)) {
+                    verticalAlignment = 1.0f;
                 }
-
-                gatherRegionInfo(ctx, e, verticalAlignment, ret);
             }
+            
+            gatherRegionInfo(ctx, e, verticalAlignment, ret);
         }
 
         return ret;
@@ -479,9 +480,8 @@ public class SVGFlowTextElementBridge extends SVGTextElementBridge
              n != null; n = n.getNextSibling()) {
 
             if (n.getNodeType()     != Node.ELEMENT_NODE) continue;
-            if (n.getNamespaceURI() != getNamespaceURI()) continue;
+            if (!getNamespaceURI().equals(n.getNamespaceURI())) continue;
             Element e = (Element)n;
-
             String ln = n.getLocalName();
             if (ln.equals(SVGConstants.SVG_RECT_TAG)) {
                 UnitProcessor.Context uctx;
@@ -563,7 +563,6 @@ public class SVGFlowTextElementBridge extends SVGTextElementBridge
         if (!SVGUtilities.matchUserAgent(element, ctx.getUserAgent())) {
             return;
         }
-        
         String  s        = XMLSupport.getXMLSpace(element);
         boolean preserve = s.equals(SVG_PRESERVE_VALUE);
         boolean first = true;
@@ -591,8 +590,8 @@ public class SVGFlowTextElementBridge extends SVGTextElementBridge
             switch (n.getNodeType()) {
             case Node.ELEMENT_NODE:
                 // System.out.println("Element: " + n);
-                if ((n.getNamespaceURI() != getNamespaceURI()) &&
-                    (n.getNamespaceURI() != SVG_NAMESPACE_URI)) {
+                if ((!getNamespaceURI().equals(n.getNamespaceURI())) &&
+                    (!SVG_NAMESPACE_URI.equals(n.getNamespaceURI()))) {
                     break;
                 }
                 

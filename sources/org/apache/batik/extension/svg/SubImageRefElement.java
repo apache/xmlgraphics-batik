@@ -22,27 +22,41 @@ import org.apache.batik.extension.PrefixableStylableExtensionElement;
 import org.w3c.dom.Node;
 
 /**
- * This class implements a regular polygon extension to SVG
+ * This class implements a multiImage extension to SVG.
+ *
+ * The 'multiImage' element is similar to the 'image' element (supports
+ * all the same attributes and properties) except.
+ * <ol>
+ *    <li>It can only be used to reference raster content (this is an
+ *        implementation thing really)</li>
+ *    <li>It has two addtional attributes: 'pixel-width' and
+ *        'pixel-height' which are the maximum width and height of the
+ *        image referenced by the xlink:href attribute.</li>
+ *    <li>It can contain a child element 'subImage' which has only
+ *        three attributes, pixel-width, pixel-height and xlink:href.
+ *        The image displayed is the smallest image such that
+ *        pixel-width and pixel-height are greater than or equal to the
+ *        required image size for display.</li>
+ * </ol>
  *
  * @author <a href="mailto:thomas.deweese@kodak.com">Thomas DeWeese</a>
- * @version $Id$
- */
-public class FlowTextElement
+ * @version $Id$ */
+public class SubImageRefElement
     extends    PrefixableStylableExtensionElement 
     implements BatikExtConstants {
 
     /**
-     * Creates a new BatikRegularPolygonElement object.
+     * Creates a new SubImageRefElement object.
      */
-    protected FlowTextElement() {
+    protected SubImageRefElement() {
     }
 
     /**
-     * Creates a new BatikRegularPolygonElement object.
+     * Creates a new SubImageRefElement object.
      * @param prefix The namespace prefix.
      * @param owner The owner document.
      */
-    public FlowTextElement(String prefix, AbstractDocument owner) {
+    public SubImageRefElement(String prefix, AbstractDocument owner) {
         super(prefix, owner);
     }
 
@@ -50,7 +64,7 @@ public class FlowTextElement
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
      */
     public String getLocalName() {
-        return BATIK_EXT_FLOW_TEXT_TAG;
+        return BATIK_EXT_SUB_IMAGE_REF_TAG;
     }
 
     /**
@@ -64,6 +78,6 @@ public class FlowTextElement
      * Returns a new uninitialized instance of this object's class.
      */
     protected Node newNode() {
-        return new FlowTextElement();
+        return new SubImageRefElement();
     }
 }

@@ -98,42 +98,57 @@ public class BatikDomExtension
              new BatikHistogramNormalizationElementFactory());
 
         di.registerCustomElementFactory
-            (BATIK_EXT_NAMESPACE_URI,
+            (BATIK_12_NAMESPACE_URI,
              BATIK_EXT_MULTI_IMAGE_TAG,
              new BatikMultiImageElementFactory());
 
         di.registerCustomElementFactory
-            (BATIK_EXT_NAMESPACE_URI,
+            (BATIK_12_NAMESPACE_URI,
+             BATIK_EXT_SUB_IMAGE_TAG,
+             new BatikSubImageElementFactory());
+
+        di.registerCustomElementFactory
+            (BATIK_12_NAMESPACE_URI,
+             BATIK_EXT_SUB_IMAGE_REF_TAG,
+             new BatikSubImageRefElementFactory());
+
+        di.registerCustomElementFactory
+            (BATIK_12_NAMESPACE_URI,
              BATIK_EXT_SOLID_COLOR_TAG,
              new SolidColorElementFactory());
 
         di.registerCustomElementFactory
-            (BATIK_EXT_NAMESPACE_URI,
+            (BATIK_12_NAMESPACE_URI,
              BATIK_EXT_FLOW_TEXT_TAG,
              new FlowTextElementFactory());
 
         di.registerCustomElementFactory
-            (BATIK_EXT_NAMESPACE_URI,
+            (BATIK_12_NAMESPACE_URI,
              BATIK_EXT_FLOW_DIV_TAG,
              new FlowDivElementFactory());
 
         di.registerCustomElementFactory
-            (BATIK_EXT_NAMESPACE_URI,
+            (BATIK_12_NAMESPACE_URI,
              BATIK_EXT_FLOW_PARA_TAG,
              new FlowParaElementFactory());
 
         di.registerCustomElementFactory
-            (BATIK_EXT_NAMESPACE_URI,
+            (BATIK_12_NAMESPACE_URI,
              BATIK_EXT_FLOW_REGION_BREAK_TAG,
              new FlowRegionBreakElementFactory());
 
         di.registerCustomElementFactory
-            (BATIK_EXT_NAMESPACE_URI,
+            (BATIK_12_NAMESPACE_URI,
+             BATIK_EXT_FLOW_REGION_TAG,
+             new FlowRegionElementFactory());
+
+        di.registerCustomElementFactory
+            (BATIK_12_NAMESPACE_URI,
              BATIK_EXT_FLOW_LINE_TAG,
              new FlowLineElementFactory());
 
         di.registerCustomElementFactory
-            (BATIK_EXT_NAMESPACE_URI,
+            (BATIK_12_NAMESPACE_URI,
              BATIK_EXT_FLOW_SPAN_TAG,
              new FlowSpanElementFactory());
 
@@ -206,6 +221,34 @@ public class BatikDomExtension
         public Element create(String prefix, Document doc) {
             return new BatikMultiImageElement
                 (prefix, (AbstractDocument)doc);
+        }
+    }
+
+    /**
+     * To create a 'subImage' element.
+     */
+    protected static class BatikSubImageElementFactory 
+        implements SVGDOMImplementation.ElementFactory {
+        public BatikSubImageElementFactory() {}
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix, Document doc) {
+            return new SubImageElement(prefix, (AbstractDocument)doc);
+        }
+    }
+
+    /**
+     * To create a 'SubImageRef' element.
+     */
+    protected static class BatikSubImageRefElementFactory 
+        implements SVGDOMImplementation.ElementFactory {
+        public BatikSubImageRefElementFactory() {}
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix, Document doc) {
+            return new SubImageRefElement(prefix, (AbstractDocument)doc);
         }
     }
 
@@ -296,6 +339,21 @@ public class BatikDomExtension
          */
         public Element create(String prefix, Document doc) {
             return new FlowRegionBreakElement(prefix, (AbstractDocument)doc);
+        }
+    }
+
+    /**
+     * To create a 'flowRegion' element.
+     */
+    protected static class FlowRegionElementFactory 
+        implements SVGDOMImplementation.ElementFactory {
+        public FlowRegionElementFactory() {
+        }
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix, Document doc) {
+            return new FlowRegionElement(prefix, (AbstractDocument)doc);
         }
     }
 

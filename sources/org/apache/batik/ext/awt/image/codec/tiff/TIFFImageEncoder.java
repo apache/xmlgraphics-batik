@@ -774,7 +774,7 @@ public class TIFFImageEncoder extends ImageEncoderImpl {
                 nextIFDOffset = (int)(tileOffsets[0] + totalBytesOfData);
 
                 // IFD offsets must be on a word boundary.
-                if(nextIFDOffset % 2 != 0) {
+                if ((nextIFDOffset&0x01) != 0) {
                     nextIFDOffset++;
                     skipByte = true;
                 }
@@ -1237,7 +1237,10 @@ public class TIFFImageEncoder extends ImageEncoderImpl {
 
             nextIFDOffset = isLast ?
                 0 : ifdOffset + dirSize + totalBytes;
-            skipByte = nextIFDOffset % 2 != 0;
+            if ((nextIFDOffset&0x01) != 0) {
+                nextIFDOffset++;
+                skipByte = true;
+            }
 
             if(outCache == null) {
                 // Original OutputStream must be a SeekableOutputStream.

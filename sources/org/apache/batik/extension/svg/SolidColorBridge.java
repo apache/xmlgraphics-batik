@@ -60,7 +60,7 @@ public class SolidColorBridge
      * Returns the SVG namespace URI.
      */
     public String getNamespaceURI() {
-        return BATIK_EXT_NAMESPACE_URI;
+        return BATIK_12_NAMESPACE_URI;
     }
 
     /**

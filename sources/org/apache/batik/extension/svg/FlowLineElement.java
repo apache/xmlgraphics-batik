@@ -57,7 +57,7 @@ public class FlowLineElement
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getNamespaceURI()}.
      */
     public String getNamespaceURI() {
-        return BATIK_EXT_NAMESPACE_URI;
+        return BATIK_12_NAMESPACE_URI;
     }
 
     /**

@@ -121,7 +121,7 @@
       setRect(rect, 255, 200, 2, 50);
       doCheck(root, rect, ts, "stroke", "crimson");
       makeRect(root, rect, "crimson");
-
+      
 
 
       var tb6   = root.getElementById("testblock6");
