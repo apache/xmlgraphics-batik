@@ -41,7 +41,7 @@ import java.util.ResourceBundle;
  *  }
  * </pre>
  * The algorithm for the Locale lookup in a LocalizableSupport object is:
- * <ul> 
+ * <ul>
  *   <li>
  *     if a Locale has been set by a call to setLocale(), use this Locale,
  *     else,
@@ -97,16 +97,16 @@ public class LocalizableSupport implements Localizable {
     protected ResourceBundle resourceBundle;
 
     /**
-     * Same as LocalizableSupport(s, ClassLoader.getSystemClassLoader()).
+     * Same as LocalizableSupport(s, null).
      */
     public LocalizableSupport(String s) {
-        this(s, ClassLoader.getSystemClassLoader());
+        this(s, null);
     }
 
     /**
      * Creates a new Localizable object.
      * The resource bundle class name is required allows the use of custom
-     * classes of resource bundles. 
+     * classes of resource bundles.
      * @param s  must be the name of the class to use to get the appropriate
      *           resource bundle given the current locale.
      * @param cl is the classloader used to create the resource bundle,
@@ -155,7 +155,7 @@ public class LocalizableSupport implements Localizable {
      * Implements {@link
      * org.apache.batik.i18n.ExtendedLocalizable#setDefaultLocale(Locale)}.
      * Later invocations of the instance methods will lead to update the
-     * resource bundle used. 
+     * resource bundle used.
      */
     public void setDefaultLocale(Locale l) {
         localeGroup.setLocale(l);

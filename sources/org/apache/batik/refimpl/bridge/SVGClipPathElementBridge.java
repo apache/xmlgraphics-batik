@@ -107,7 +107,8 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
                 if(node != null){
                     CSSStyleDeclaration childDecl
                         = bridgeContext.getViewCSS().getComputedStyle((Element)child, null);
-                    Shape outline = new TransformedShape(node.getOutline(), ats);
+                    Shape outline =
+                        new TransformedShape(node.getOutline(), ats);
                     // set the clip-rule
                     CSSPrimitiveValue v;
                     v = (CSSPrimitiveValue)childDecl.getPropertyCSSValue(CLIP_RULE_PROPERTY);
