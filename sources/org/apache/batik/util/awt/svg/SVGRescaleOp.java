@@ -67,7 +67,6 @@ public class SVGRescaleOp extends AbstractSVGFilterConverter{
      * @return a description of the SVG filter corresponding to
      *         rescaleOp. The definition of the feComponentTransfer
      *         filter in put in feComponentTransferDefSet
-     * @see #getFilterDefSet
      */
     public SVGFilterDescriptor toSVG(RescaleOp rescaleOp){
         // Reuse definition if rescaleOp has already been converted

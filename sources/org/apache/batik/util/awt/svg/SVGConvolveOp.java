@@ -60,7 +60,6 @@ public class SVGConvolveOp extends AbstractSVGFilterConverter{
      * @return a description of the SVG filter corresponding to
      *         convolveOp. The definition of the feConvolveMatrix
      *         filter in put in feConvolveMatrixDefSet
-     * @see #getFilterDefSet
      */
     public SVGFilterDescriptor toSVG(ConvolveOp convolveOp){
         // Reuse definition if convolveOp has already been converted

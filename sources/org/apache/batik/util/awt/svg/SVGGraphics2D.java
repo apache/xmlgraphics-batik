@@ -487,9 +487,6 @@ public class SVGGraphics2D extends Graphics2D implements Cloneable, SVGSyntax{
      * use this font.
      * @param  font   the font.
      * @see     java.awt.Graphics#getFont
-     * @see     java.awt.Graphics#drawChars(java.lang.String, int, int)
-     * @see     java.awt.Graphics#drawString(byte[], int, int, int, int)
-     * @see     java.awt.Graphics#drawBytes(char[], int, int, int, int)
      */
     public void setFont(Font font){
         gc.setFont(font);

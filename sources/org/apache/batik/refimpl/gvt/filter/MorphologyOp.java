@@ -805,8 +805,6 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
      * @param dest stores the filtered image. If null, a destination will
      *        be created. src and dest can refer to the same Raster, in
      *        which situation the src will be modified.
-     * @see #radiusX
-     * @see #radiusY
      */
     public WritableRaster filter(Raster src, WritableRaster dest){
 

@@ -25,7 +25,6 @@ import org.w3c.dom.Document;
  *
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
- * @see               java.awt.Paint, java.awt.Composite, java.awt.image.BufferedImageOp
  */
 public interface ExtensionHandler{
     /**

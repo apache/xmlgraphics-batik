@@ -28,7 +28,7 @@ import org.w3c.dom.*;
  *
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
- * @see             org.apache.batik.util.awt.svg.Graphics2D
+ * @see             org.apache.batik.util.awt.svg.SVGGraphics2D
  * @see             org.apache.batik.util.awt.svg.ImageHandlerJPEGEncoder
  * @see             org.apache.batik.util.awt.svg.ImageHandlerPNGEncoder
  */

@@ -231,10 +231,6 @@ public class DisplacementMapOp implements BufferedImageOp, RasterOp {
      * @param dest stores the filtered image. If null, a destination will
      *        be created. src and dest can refer to the same Raster, in
      *        which situation the src will be modified.
-     * @see #scale
-     * @see #xChannel
-     * @see #yChannel
-     * @see #in2
      */
     public WritableRaster filter(Raster src, WritableRaster dest){
 

@@ -24,7 +24,7 @@ import org.w3c.dom.Element;
  *
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
- * @see             org.apache.batik.util.awt.svg.Graphics2D
+ * @see             org.apache.batik.util.awt.svg.SVGGraphics2D
  */
 public interface ImageHandler extends SVGSyntax{
     /**
