@@ -22,6 +22,8 @@ import org.apache.batik.dom.events.EventSupport;
 import org.apache.batik.dom.util.CSSStyleDeclarationFactory;
 import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.dom.util.HashTable;
+import org.apache.batik.util.SVGConstants;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentType;
 import org.w3c.dom.DOMException;
@@ -49,7 +51,7 @@ public class SVGDOMImplementation
      * The SVG namespace uri.
      */
     public final static String SVG_NAMESPACE_URI =
-        "http://www.w3.org/2000/svg";
+        SVGConstants.SVG_NAMESPACE_URI;
 
     /**
      * The default instance of this class.
