@@ -55,7 +55,16 @@ public class GVTBuilder implements SVGConstants {
         Element svgElement = document.getDocumentElement();
         GraphicsNode topNode = null;
         try {
-            topNode = build(ctx, svgElement);
+            // get the appropriate bridge according to the specified element
+            Bridge bridge = ctx.getBridge(svgElement);
+            if (bridge == null || !(bridge instanceof GraphicsNodeBridge)) {
+                return null;
+            }
+            // create the associated composite graphics node
+            GraphicsNodeBridge gnBridge = (GraphicsNodeBridge)bridge;
+            topNode = gnBridge.createGraphicsNode(ctx, svgElement);
+            buildComposite(ctx, svgElement, (CompositeGraphicsNode)topNode);
+            gnBridge.buildGraphicsNode(ctx, svgElement, topNode);
         } catch (BridgeException ex) {
             // update the exception with the missing parameters
             ex.setGraphicsNode(rootNode);
@@ -141,16 +150,29 @@ public class GVTBuilder implements SVGConstants {
         if (bridge == null || !(bridge instanceof GraphicsNodeBridge)) {
             return;
         }
-        // create the associated graphics node
         GraphicsNodeBridge gnBridge = (GraphicsNodeBridge)bridge;
-        GraphicsNode gn = gnBridge.createGraphicsNode(ctx, e);
-        // attach the graphics node to the GVT tree now !
-        parentNode.getChildren().add(gn);
-        // check if the element has children to build
-        if (gnBridge.isComposite()) {
-            buildComposite(ctx, e, (CompositeGraphicsNode)gn);
+        try {
+            // create the associated graphics node
+            GraphicsNode gn = gnBridge.createGraphicsNode(ctx, e);
+            // attach the graphics node to the GVT tree now !
+            parentNode.getChildren().add(gn);
+            // check if the element has children to build
+            if (gnBridge.isComposite()) {
+                buildComposite(ctx, e, (CompositeGraphicsNode)gn);
+            }
+            gnBridge.buildGraphicsNode(ctx, e, gn);
+        } catch (BridgeException ex) {
+            // some bridge may decide that the node in error can be
+            // displayed (e.g. polyline, path...)
+            // In this case, the exception contains the GraphicsNode
+            GraphicsNode errNode = ex.getGraphicsNode();
+            if (errNode != null) {
+                parentNode.getChildren().add(errNode);
+                gnBridge.buildGraphicsNode(ctx, e, errNode);
+                ex.setGraphicsNode(null);
+            }
+            throw ex;
         }
-        gnBridge.buildGraphicsNode(ctx, e, gn);
     }
 }
 
