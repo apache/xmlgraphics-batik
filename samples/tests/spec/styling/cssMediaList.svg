@@ -18,7 +18,7 @@
 <!-- ========================================================================= -->
 
 <?xml-stylesheet type="text/css" href="../../resources/style/test.css" ?>
-<?xml-stylesheet type="text/css" href="cssMediaList.css" ?>
+<?xml-stylesheet type="text/css" href="../../resources/style/cssMediaList.css" ?>
 
 <svg width="450" height="500" viewBox="0 0 450 500">
 <title>CSS Media</title>

@@ -17,13 +17,13 @@
 <!-- @version $Id$ -->
 <!-- ========================================================================= -->
 
-<?xml-stylesheet type="text/css" href="default.css" ?>
+<?xml-stylesheet type="text/css" href="../../resources/style/default.css" ?>
 
-<?xml-stylesheet type="text/css" title="Smiling" href="smiling.css" alternate="yes" ?>
-<?xml-stylesheet type="text/css" title="Basic Sad" href="basicsad.css" alternate="yes" ?>
-<?xml-stylesheet type="text/css" title="Wow!" href="wow.css" alternate="yes" ?>
-<?xml-stylesheet type="text/css" title="Grim" href="grim.css" alternate="yes" ?>
-<?xml-stylesheet type="text/css" title="Oups" href="oups.css" alternate="yes" ?>
+<?xml-stylesheet type="text/css" title="Smiling" href="../../resources/style/smiling.css" alternate="yes" ?>
+<?xml-stylesheet type="text/css" title="Basic Sad" href="../../resources/style/basicsad.css" alternate="yes" ?>
+<?xml-stylesheet type="text/css" title="Wow!" href="../../resources/style/wow.css" alternate="yes" ?>
+<?xml-stylesheet type="text/css" title="Grim" href="../../resources/style/grim.css" alternate="yes" ?>
+<?xml-stylesheet type="text/css" title="Oups" href="../../resources/style/oups.css" alternate="yes" ?>
 
 <svg width="450" height="500" viewBox="0 0 450 500">
 <title>Alternate stylesheets</title>

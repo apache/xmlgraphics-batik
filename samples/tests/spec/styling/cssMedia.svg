@@ -18,9 +18,9 @@
 <!-- ========================================================================= -->
 
 <?xml-stylesheet type="text/css" href="../../resources/style/test.css" ?>
-<?xml-stylesheet type="text/css" href="cssMediaScreen.css" media="screen"?>
-<?xml-stylesheet type="text/css" href="cssMediaProjection.css" media="projection"?>
-<?xml-stylesheet type="text/css" href="cssMediaPrint.css" media="print"?>
+<?xml-stylesheet type="text/css" href="../../resources/style/cssMediaScreen.css" media="screen"?>
+<?xml-stylesheet type="text/css" href="../../resources/style/cssMediaProjection.css" media="projection"?>
+<?xml-stylesheet type="text/css" href="../../resources/style/cssMediaPrint.css" media="print"?>
 
 <svg width="450" height="500" viewBox="0 0 450 500">
 <title>CSS Media</title>

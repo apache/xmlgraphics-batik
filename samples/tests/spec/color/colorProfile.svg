@@ -18,7 +18,7 @@
 <!-- @author vhardy@apache.org                                                 -->
 <!-- @version $Id$   -->
 <!-- ========================================================================= -->
-<?xml-stylesheet type="../../resources/style/text/css" href="test.css" ?>  
+<?xml-stylesheet type="text/css" href="../../resources/style/test.css" ?>  
 
 <svg id="body" width="450" height="500" viewBox="0 0 450 500">
 <title>&lt;color-profile&gt; test</title>

@@ -47,7 +47,7 @@
     	</filter>
   
     	<filter id="Elem3" x="0" y="0" width="1" height="1">
-    	  <feImage xlink:href="dataProtocol.svg#testContent"/>
+    	  <feImage xlink:href="../structure/dataProtocol.svg#testContent"/>
     	</filter>
   
       </defs>
