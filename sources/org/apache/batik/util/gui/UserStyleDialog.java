@@ -286,6 +286,33 @@ public class UserStyleDialog extends JDialog implements ActionMap {
         }
 
         /**
+         * Returns the chosen path or null.
+         */
+        public String getPath() {
+            if(fileCheckBox.isSelected()){
+                return fileTextField.getText();
+            }
+            else{
+                return null;
+            }
+        }
+        
+        /**
+         * Sets the current dialog path.
+         */
+        public void setPath(String s) {
+            if(s == null){
+                fileTextField.setEnabled(false);
+                fileCheckBox.setSelected(false);
+            }
+            else{
+                fileTextField.setEnabled(true);
+                fileTextField.setText(s);
+                fileCheckBox.setSelected(true);
+            }
+        }
+
+        /**
          * To listen to the file checkbox
          */
         protected class FileCheckBoxChangeListener implements ChangeListener {

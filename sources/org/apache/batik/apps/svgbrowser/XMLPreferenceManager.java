@@ -31,6 +31,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import org.apache.batik.util.XMLResourceDescriptor;
+
 /**
  * An extension of {@link PreferenceManager} which store the preference
  * in XML.
@@ -44,6 +46,27 @@ public class XMLPreferenceManager extends PreferenceManager {
      * The XML parser
      */
     protected String xmlParserClassName;
+
+    /**
+     * Creates a preference manager.
+     * @param prefFileName the name of the preference file.
+     */
+    public XMLPreferenceManager(String prefFileName){
+        this(prefFileName, null, 
+             XMLResourceDescriptor.getXMLParserClassName());
+    }
+
+    /**
+     * Creates a preference manager.
+     * @param prefFileName the name of the preference file.
+     * @param defaults where to get defaults value if the value is
+     * not specified in the file.
+     */
+    public XMLPreferenceManager(String prefFileName,
+                                Map defaults){
+        this(prefFileName, defaults, 
+             XMLResourceDescriptor.getXMLParserClassName());
+    }
 
     /**
      * Creates a preference manager.
