@@ -175,7 +175,7 @@
 	<test id="samples/tests/spec/structure/useStyling.svg" />
 	<test id="samples/tests/spec/structure/useStylingURI.svg" />
         <test id="samples/tests/spec/structure/useTargets.svg" />
-        <test id="samples/tests/spec/structure/xmlBase.svg" />
+        <test id="samples/tests/spec/structure/xmlBaseStyling.svg" />
     </testGroup>
 
     <testGroup id="tests.spec.styling">
