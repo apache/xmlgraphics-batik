@@ -93,62 +93,61 @@ public class SVGFeMorphologyElementBridge implements FilterBridge,
 
           // Get source
         String inAttr = filterElement.getAttributeNS(null, ATTR_IN);
-        in = CSSUtilities.getFilterSource(filteredNode, inAttr, 
-                                          bridgeContext, 
+        in = CSSUtilities.getFilterSource(filteredNode, inAttr,
+                                          bridgeContext,
                                           filteredElement,
                                           in, filterMap);
 
         // feMorphology is a point operation. Therefore, to take the
         // filter primitive region into account, only a pad operation
         // on the input is required.
-        
+
         //
         // The default region is the input source's region
         // unless the source is SourceGraphics, in which
-        // case the default region is the filter chain's 
+        // case the default region is the filter chain's
         // region
         //
-        Filter sourceGraphics 
+        Filter sourceGraphics
             = (Filter)filterMap.get(VALUE_SOURCE_GRAPHIC);
-        
-        Rectangle2D defaultRegion 
+
+        Rectangle2D defaultRegion
             = in.getBounds2D();
-        
+
         if(in == sourceGraphics){
             defaultRegion = filterRegion;
         }
-        
+
         CSSStyleDeclaration cssDecl
             = bridgeContext.getViewCSS().getComputedStyle(filterElement,
                                                           null);
-        
+
         UnitProcessor.Context uctx
             = new DefaultUnitProcessorContext(bridgeContext,
                                               cssDecl);
-        
-        Rectangle2D primitiveRegion 
-            = SVGUtilities.convertFilterPrimitiveRegion2
-            (filterElement,
-             filteredElement,
-             defaultRegion,
-             filteredNode,
-             uctx);
-        
-        PadRable pad 
+
+        Rectangle2D primitiveRegion
+            = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
+                                                        filteredElement,
+                                                        defaultRegion,
+                                                        filteredNode,
+                                                        uctx);
+
+        PadRable pad
             = new ConcretePadRable(in,
                                    primitiveRegion,
                                    PadMode.ZERO_PAD);
-        
+
         // Build filter
         Filter filter = null;
         filter = new ConcreteMorphologyRable(pad, radiusX, radiusY, doDilation);
-        
+
         // Get result attribute if any
         String result = filterElement.getAttributeNS(null, ATTR_RESULT);
         if((result != null) && (result.trim().length() > 0)){
             filterMap.put(result, filter);
         }
-    
+
         return filter;
     }
 

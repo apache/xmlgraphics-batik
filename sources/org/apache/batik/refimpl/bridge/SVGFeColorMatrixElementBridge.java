@@ -100,12 +100,11 @@ public class SVGFeColorMatrixElementBridge implements FilterBridge,
                                                   cssDecl);
 
             Rectangle2D primitiveRegion
-                = SVGUtilities.convertFilterPrimitiveRegion2
-                (filterElement,
-                 filteredElement,
-                 defaultRegion,
-                 filteredNode,
-                 uctx);
+                = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
+                                                            filteredElement,
+                                                            defaultRegion,
+                                                            filteredNode,
+                                                            uctx);
 
             //
             // Extract the matrix type. Interpret the values

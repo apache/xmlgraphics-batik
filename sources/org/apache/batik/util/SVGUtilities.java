@@ -928,6 +928,243 @@ public class SVGUtilities implements SVGConstants {
         return valueStr;
     }
 
+    /**
+     * Creates a <tt>Rectangle2D</tt> for the input filter primitive element.
+     * Processing the element as the top one in the filter chain.
+     *
+     * @param filterPrimitiveElement the primitive filter
+     * @param filteredElement the element which uses the filter
+     * @param defaultRegion the default region to filter
+     * @param node the graphics node that represents the element to filter
+     * @param uctx the context used to compute units and percentages
+     */
+    public static
+        Rectangle2D convertFilterPrimitiveRegion(Element filterPrimitiveElement,
+                                                 Element filteredElement,
+                                                 Rectangle2D defaultRegion,
+                                                 GraphicsNode node,
+                                                 UnitProcessor.Context uctx) {
+
+        // Get coordinate system from the parent node.
+        Node parentNode = filterPrimitiveElement.getParentNode();
+        String units = "";
+        if((parentNode != null) &&
+               (parentNode.getNodeType() == parentNode.ELEMENT_NODE)) {
+            Element parent = (Element) parentNode;
+            units = parent.getAttributeNS(null, ATTR_PRIMITIVE_UNITS);
+        }
+        if(units.length() == 0){
+            units = VALUE_USER_SPACE_ON_USE;
+        }
+
+        int unitsType = parseCoordinateSystem(units);
+        switch(unitsType) {
+        case OBJECT_BOUNDING_BOX:
+            return convertObjectBoundingBoxFilterPrimitiveRegion(
+                                                         filterPrimitiveElement,
+                                                         filteredElement,
+                                                         defaultRegion,
+                                                         node,
+                                                         uctx);
+        case USER_SPACE_ON_USE:
+            return convertUserSpaceOnUseFilterPrimitiveRegion(
+                                                         filterPrimitiveElement,
+                                                         filteredElement,
+                                                         defaultRegion,
+                                                         node,
+                                                         uctx);
+        default:
+            /* Never happen: Bad coordinate system is catched previously */
+            throw new Error();
+        }
+    }
+
+
+    /**
+     * Creates a <tt>Rectangle2D</tt> for the input filter primitive element
+     * in the 'objectBoundingBox' coordinate system.
+     *
+     * @param filterPrimitiveElement the primitive filter
+     * @param filteredElement the element which uses the filter
+     * @param defaultRegion the default region to filter
+     * @param node the graphics node that represents the element to filter
+     * @param uctx the context used to compute units and percentages
+     */
+    protected static
+        Rectangle2D convertObjectBoundingBoxFilterPrimitiveRegion(
+                                                 Element filterPrimitiveElement,
+                                                 Element filteredElement,
+                                                 Rectangle2D defaultRegion,
+                                                 GraphicsNode node,
+                                                 UnitProcessor.Context uctx) {
+
+        SVGElement svgElement = (SVGElement)filteredElement;
+        // x, y, width and height will hold the filter region size
+        double x, y, width, height;
+
+        // Resolve each of x, y, widht and height values.
+        // For each value, we distinguish two cases: percentages
+        // and other. If a percentage value is used, it is converted
+        // to a 'FilterRegion' space coordinate by division by 100
+        // Otherwise, standard unit conversion is used.
+
+        LengthParser p = uctx.getParserFactory().createLengthParser();
+        UnitProcessor.UnitResolver ur;
+        Rectangle2D bounds = node.getBounds();
+
+        // parse the x attribute if defined
+        String floatStr = filterPrimitiveElement.getAttributeNS(null, ATTR_X);
+        if (floatStr.length() > 0) {
+            ur = new UnitProcessor.UnitResolver();
+            p.setLengthHandler(ur);
+            p.parse(new StringReader(floatStr));
+
+            if (ur.unit == SVGLength.SVG_LENGTHTYPE_PERCENTAGE) {
+                x = ur.value / 100f;
+            } else {
+                x = UnitProcessor.svgToUserSpace(ur.unit,
+                                                ur.value,
+                                                svgElement,
+                                                UnitProcessor.HORIZONTAL_LENGTH,
+                                                uctx);
+            }
+            x = bounds.getX() + x*bounds.getWidth();
+        } else {
+            x = defaultRegion.getX();
+        }
+
+        // parse the y attribute if defined
+        floatStr = filterPrimitiveElement.getAttributeNS(null, ATTR_Y);
+        if (floatStr.length() > 0) {
+            ur = new UnitProcessor.UnitResolver();
+            p.setLengthHandler(ur);
+            p.parse(new StringReader(floatStr));
+
+            if (ur.unit == SVGLength.SVG_LENGTHTYPE_PERCENTAGE) {
+                y = ur.value / 100f;
+            } else {
+                y = UnitProcessor.svgToUserSpace(ur.unit,
+                                                 ur.value,
+                                                 svgElement,
+                                                 UnitProcessor.VERTICAL_LENGTH,
+                                                 uctx);
+            }
+            y = bounds.getY() + y*bounds.getHeight();
+        } else {
+            y = defaultRegion.getY();
+        }
+
+        // parse the width attribute if defined
+        floatStr = filterPrimitiveElement.getAttributeNS(null, ATTR_WIDTH);
+        if (floatStr.length() > 0) {
+            ur = new UnitProcessor.UnitResolver();
+            p.setLengthHandler(ur);
+            p.parse(new StringReader(floatStr));
+
+            if (ur.unit == SVGLength.SVG_LENGTHTYPE_PERCENTAGE) {
+                width = ur.value / 100f;
+            } else {
+                width = UnitProcessor.svgToUserSpace(ur.unit,
+                                                ur.value,
+                                                svgElement,
+                                                UnitProcessor.HORIZONTAL_LENGTH,
+                                                uctx);
+            }
+            width = bounds.getWidth()*width;
+        } else {
+            width = defaultRegion.getWidth();
+        }
+
+        // parse the width attribute if defined
+        floatStr = filterPrimitiveElement.getAttributeNS(null, ATTR_HEIGHT);
+        if (floatStr.length() > 0) {
+            ur = new UnitProcessor.UnitResolver();
+            p.setLengthHandler(ur);
+            p.parse(new StringReader(floatStr));
+
+            if (ur.unit == SVGLength.SVG_LENGTHTYPE_PERCENTAGE) {
+                height = ur.value / 100f;
+            } else {
+                height= UnitProcessor.svgToUserSpace(ur.unit,
+                                                  ur.value,
+                                                  svgElement,
+                                                  UnitProcessor.VERTICAL_LENGTH,
+                                                  uctx);
+            }
+            height = bounds.getHeight()*height;
+        } else {
+            height = defaultRegion.getHeight();
+        }
+
+        return new Rectangle2D.Double(x, y, width, height);
+    }
+
+    /**
+     * Creates a <tt>Rectangle2D</tt> for the input filter primitive element
+     * in the 'userSpaceOnUse' coordinate system.
+     *
+     * @param filterPrimitiveElement the primitive filter
+     * @param filteredElement the element which uses the filter
+     * @param defaultRegion the default region to filter
+     * @param node the graphics node that represents the element to filter
+     * @param uctx the context used to compute units and percentages
+     */
+    protected static
+        Rectangle2D convertUserSpaceOnUseFilterPrimitiveRegion(
+                                                 Element filterPrimitiveElement,
+                                                 Element filteredElement,
+                                                 Rectangle2D defaultRegion,
+                                                 GraphicsNode node,
+                                                 UnitProcessor.Context uctx) {
+
+        SVGElement svgElement = (SVGElement)filteredElement;
+        // x, y, width and height will hold the filter region size
+        double x, y, width, height;
+
+        String floatStr = filterPrimitiveElement.getAttributeNS(null, ATTR_X);
+        if (floatStr.length() > 0) {
+            x = UnitProcessor.svgToUserSpace(floatStr,
+                                             svgElement,
+                                             UnitProcessor.HORIZONTAL_LENGTH,
+                                             uctx);
+        } else {
+            x = defaultRegion.getX();
+        }
+
+        floatStr = filterPrimitiveElement.getAttributeNS(null, ATTR_Y);
+        if (floatStr.length() > 0) {
+            y = UnitProcessor.svgToUserSpace(floatStr,
+                                             svgElement,
+                                             UnitProcessor.VERTICAL_LENGTH,
+                                             uctx);
+        } else {
+            y = defaultRegion.getY();
+        }
+
+        floatStr = filterPrimitiveElement.getAttributeNS(null, ATTR_WIDTH);
+        if (floatStr.length() > 0) {
+            width = UnitProcessor.svgToUserSpace(floatStr,
+                                                svgElement,
+                                                UnitProcessor.HORIZONTAL_LENGTH,
+                                                uctx);
+        } else {
+            width = defaultRegion.getWidth();
+        }
+
+        floatStr = filterPrimitiveElement.getAttributeNS(null, ATTR_HEIGHT);
+        if (floatStr.length() > 0) {
+            height = UnitProcessor.svgToUserSpace(floatStr,
+                                                  svgElement,
+                                                  UnitProcessor.VERTICAL_LENGTH,
+                                                  uctx);
+        } else {
+            height = defaultRegion.getHeight();
+        }
+
+        return new Rectangle2D.Double(x, y, width, height);
+
+    }
+
     // ------------------------------------------------------------------------
     // Coordinate computation for <linearGradient> and <radialGradient>
     // ------------------------------------------------------------------------
@@ -1210,195 +1447,6 @@ public class SVGUtilities implements SVGConstants {
         }
         Mx.concatenate(at);
         return Mx;
-    }
-
-    /**
-     * Creates a <tt>Rectangle2D</tt> for the input filter
-     * primitive element, processing the element as a node in
-     * a filter chain.
-     */
-    public static Rectangle2D
-        convertFilterPrimitiveRegion2(Element filterPrimitiveElement,
-                                      Element filteredElement,
-                                      Rectangle2D defaultRegion,
-                                      GraphicsNode node,
-                                      UnitProcessor.Context uctx){
-        // Get unit. Comes from parent node.
-        Node parentNode = filterPrimitiveElement.getParentNode();
-        String units = "";
-        if((parentNode != null)
-           &&
-           (parentNode.getNodeType() == parentNode.ELEMENT_NODE)){
-            units = ((Element)parentNode).getAttributeNS(null, ATTR_PRIMITIVE_UNITS);
-        }
-        if(units.length() == 0){
-            units = VALUE_USER_SPACE_ON_USE;
-        }
-
-        SVGElement svgElement = (SVGElement)filteredElement;
-
-        // x, y, width and height will hold the filter
-        // region size
-        Double x=null, y=null, width=null, height=null;
-
-        if(VALUE_OBJECT_BOUNDING_BOX.equals(units)){
-            //
-            // Values are in 'objectBoundingBox' units
-            // Resolve each of x, y, widht and height values.
-            // For each value, we distinguish two cases: percentages
-            // and other. If a percentage value is used, it is converted
-            // to a 'FilterRegion' space coordinate by division by 100
-            // Otherwise, standard unit conversion is used.
-            LengthParser p = uctx.getParserFactory().createLengthParser();
-            UnitProcessor.UnitResolver ur = new UnitProcessor.UnitResolver();
-            p.setLengthHandler(ur);
-
-            // x  value
-            String floatStr = filterPrimitiveElement.getAttributeNS(null, ATTR_X);
-            if(floatStr.length() > 0){
-                p.parse(new StringReader(floatStr));
-
-                if(ur.unit == SVGLength.SVG_LENGTHTYPE_PERCENTAGE){
-                    x = new Double(ur.value / 100f);
-                }
-                else{
-                    x = new Double(UnitProcessor.svgToUserSpace(ur.unit,
-                                                               ur.value,
-                                                               svgElement,
-                                                               UnitProcessor.HORIZONTAL_LENGTH,
-                                                               uctx));
-                }
-            }
-
-            // y value
-            floatStr = filterPrimitiveElement.getAttributeNS(null, ATTR_Y);
-            if(floatStr.length() > 0){
-                ur = new UnitProcessor.UnitResolver();
-                p.setLengthHandler(ur);
-                p.parse(new StringReader(floatStr));
-
-                if(ur.unit == SVGLength.SVG_LENGTHTYPE_PERCENTAGE){
-                    y = new Double(ur.value / 100f);
-                }
-                else{
-                    y = new Double(UnitProcessor.svgToUserSpace(ur.unit, ur.value,
-                                                               svgElement,
-                                                               UnitProcessor.VERTICAL_LENGTH,
-                                                               uctx));
-                }
-            }
-
-            // width  value
-            floatStr = filterPrimitiveElement.getAttributeNS(null, ATTR_WIDTH);
-            if(floatStr.length() > 0){
-                ur = new UnitProcessor.UnitResolver();
-                p.setLengthHandler(ur);
-                p.parse(new StringReader(floatStr));
-
-                if(ur.unit == SVGLength.SVG_LENGTHTYPE_PERCENTAGE){
-                    width = new Double(ur.value / 100f);
-                }
-                else{
-                    width = new Double(UnitProcessor.svgToUserSpace(ur.unit, ur.value,
-                                                                   svgElement,
-                                                                   UnitProcessor.HORIZONTAL_LENGTH,
-                                                                   uctx));
-                }
-            }
-
-            // height value
-            floatStr = filterPrimitiveElement.getAttributeNS(null, ATTR_HEIGHT);
-            if(floatStr.length() > 0){
-                ur = new UnitProcessor.UnitResolver();
-                p.setLengthHandler(ur);
-                p.parse(new StringReader(floatStr));
-
-                if(ur.unit == SVGLength.SVG_LENGTHTYPE_PERCENTAGE){
-                    height = new Double(ur.value / 100f);
-                }
-                else{
-                    height= new Double(UnitProcessor.svgToUserSpace(ur.unit, ur.value,
-                                                                   svgElement,
-                                                                   UnitProcessor.VERTICAL_LENGTH,
-                                                                   uctx));
-                }
-            }
-
-            Rectangle2D bounds = node.getBounds();
-            if(x != null){
-                x = new Double(bounds.getX() + x.doubleValue()*bounds.getWidth());
-            }
-
-            if(y != null){
-                y = new Double(bounds.getY() + y.doubleValue()*bounds.getHeight());
-            }
-
-            if(width != null){
-                width = new Double(bounds.getWidth()*width.doubleValue());
-            }
-
-            if(height != null){
-                height = new Double(bounds.getHeight()*height.doubleValue());
-            }
-        }
-
-        else{
-            //
-            // Values are in 'userSpaceOnUse'. Everything, including percentages,
-            // can be resolved now (percentages refer to the viewPort
-            //
-
-            // Now, resolve each of the x, y, width and height values
-            String floatStr = filterPrimitiveElement.getAttributeNS(null, ATTR_X);
-            if(floatStr.length() > 0){
-                x = new Double(UnitProcessor.svgToUserSpace(floatStr,
-                                                           svgElement,
-                                                           UnitProcessor.HORIZONTAL_LENGTH,
-                                                           uctx));
-            }
-
-            floatStr = filterPrimitiveElement.getAttributeNS(null, ATTR_Y);
-            if(floatStr.length() > 0){
-                y = new Double(UnitProcessor.svgToUserSpace(floatStr,
-                                                           svgElement,
-                                                           UnitProcessor.VERTICAL_LENGTH,
-                                                           uctx));
-            }
-
-            floatStr = filterPrimitiveElement.getAttributeNS(null, ATTR_WIDTH);
-            if(floatStr.length() > 0){
-                width = new Double(UnitProcessor.svgToUserSpace(floatStr,
-                                                               svgElement,
-                                                               UnitProcessor.HORIZONTAL_LENGTH,
-                                                               uctx));
-            }
-
-            floatStr = filterPrimitiveElement.getAttributeNS(null, ATTR_HEIGHT);
-            if(floatStr.length() > 0){
-                height = new Double(UnitProcessor.svgToUserSpace(floatStr,
-                                                                svgElement,
-                                                                UnitProcessor.VERTICAL_LENGTH,
-                                                                uctx));
-            }
-        }
-
-        if(x == null){
-            x = new Double(defaultRegion.getX());
-        }
-        if(y == null){
-            y = new Double(defaultRegion.getY());
-        }
-        if(width == null){
-            width = new Double(defaultRegion.getWidth());
-        }
-        if(height == null){
-            height = new Double(defaultRegion.getHeight());
-        }
-
-        return new Rectangle2D.Double(x.doubleValue(),
-                                      y.doubleValue(),
-                                      width.doubleValue(),
-                                      height.doubleValue());
     }
 
     /**

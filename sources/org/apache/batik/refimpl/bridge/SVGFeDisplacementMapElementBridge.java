@@ -74,9 +74,9 @@ public class SVGFeDisplacementMapElementBridge implements FilterBridge,
             = filterElement.getAttributeNS(null,
                                            ATTR_X_CHANNEL_SELECTOR);
 
-        ARGBChannel xChannelSelector 
+        ARGBChannel xChannelSelector
             = computeChannelSelector(xChannelSelectorStr);
-                
+
         String yChannelSelectorStr
             = filterElement.getAttributeNS(null,
                                            ATTR_Y_CHANNEL_SELECTOR);
@@ -91,9 +91,9 @@ public class SVGFeDisplacementMapElementBridge implements FilterBridge,
 
         // Get source 1
         String inAttr = filterElement.getAttributeNS(null, ATTR_IN);
-        Filter in1 = CSSUtilities.getFilterSource(filteredNode, 
-                                                  inAttr, 
-                                                  bridgeContext, 
+        Filter in1 = CSSUtilities.getFilterSource(filteredNode,
+                                                  inAttr,
+                                                  bridgeContext,
                                                   filteredElement,
                                                   in, filterMap);
 
@@ -101,25 +101,25 @@ public class SVGFeDisplacementMapElementBridge implements FilterBridge,
 
         // Get source 2
         String in2Attr = filterElement.getAttributeNS(null, ATTR_IN2);
-        in2 = CSSUtilities.getFilterSource(filteredNode, 
-                                          in2Attr, 
-                                          bridgeContext, 
+        in2 = CSSUtilities.getFilterSource(filteredNode,
+                                          in2Attr,
+                                          bridgeContext,
                                           filteredElement,
                                           in, filterMap);
 
         //
-        // The default region is the union of the 
+        // The default region is the union of the
         // input sources bounds unless in in is
         // SourceGraphic, in which case the default
         // is the filter chain's region
         //
-        Filter sourceGraphics 
+        Filter sourceGraphics
             = (Filter)filterMap.get(VALUE_SOURCE_GRAPHIC);
-        
-        Rectangle2D defaultRegion 
+
+        Rectangle2D defaultRegion
             = in1.getBounds2D();
         defaultRegion.add(in2.getBounds2D());
-        
+
         if(in1 == sourceGraphics){
             defaultRegion = filterRegion;
         }
@@ -128,21 +128,20 @@ public class SVGFeDisplacementMapElementBridge implements FilterBridge,
             = bridgeContext.getViewCSS().getComputedStyle
             (filterElement,
              null);
-        
+
         UnitProcessor.Context uctx
             = new DefaultUnitProcessorContext
                 (bridgeContext,
                  cssDecl);
 
         Rectangle2D dispArea
-            = SVGUtilities.convertFilterPrimitiveRegion2
-            (filterElement,
-             filteredElement,
-             defaultRegion,
-             filteredNode,
-             uctx);
+            = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
+                                                        filteredElement,
+                                                        defaultRegion,
+                                                        filteredNode,
+                                                        uctx);
 
-        PadRable pad 
+        PadRable pad
             = new ConcretePadRable
                 (in, dispArea, PadMode.ZERO_PAD);
 
@@ -150,9 +149,9 @@ public class SVGFeDisplacementMapElementBridge implements FilterBridge,
         Vector sources = new Vector();
         sources.addElement(pad);
         sources.addElement(in2);
-        filter 
+        filter
             = new ConcreteDisplacementMapRable(sources, scale,
-                                               xChannelSelector, 
+                                               xChannelSelector,
                                                yChannelSelector);
 
         // Get result attribute if any
