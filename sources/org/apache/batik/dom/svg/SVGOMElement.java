@@ -196,6 +196,18 @@ public abstract class SVGOMElement
         this.prefix = prefix;
     }
 
+    /**
+     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGElement#getXMLbase()}.
+     */
+    public String getXMLbase() {
+        return null;
+    }
+    /**
+     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGElement#setXMLbase(String)}.
+     */
+    public void setXMLbase(String xmlbase) throws DOMException {
+    }
+
     // ExtendedNode //////////////////////////////////////////////////
 
     /**

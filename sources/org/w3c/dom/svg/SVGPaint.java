@@ -15,6 +15,7 @@ public interface SVGPaint extends
   public static final short SVG_PAINTTYPE_URI_CURRENTCOLOR      = 104;
   public static final short SVG_PAINTTYPE_URI_RGBCOLOR          = 105;
   public static final short SVG_PAINTTYPE_URI_RGBCOLOR_ICCCOLOR = 106;
+  public static final short SVG_PAINTTYPE_URI                   = 107;
 
   public short getPaintType( );
   public String      getUri( );

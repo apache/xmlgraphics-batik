@@ -2,8 +2,6 @@
 package org.w3c.dom.svg;
 
 public interface SVGTextElement extends 
-               SVGTextContentElement,
+               SVGTextPositioningElement,
                SVGTransformable {
-  public SVGAnimatedLength getX( );
-  public SVGAnimatedLength getY( );
 }

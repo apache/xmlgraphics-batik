@@ -104,7 +104,7 @@ public class SVGOMMaskElement
 
     /**
      * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGGradientElement#getGradientUnits()}.
+     * org.w3c.dom.svg.SVGGradientElement#getMaskUnits()}.
      */
     public SVGAnimatedEnumeration getMaskUnits() {
         SVGAnimatedEnumeration result;
@@ -118,6 +118,14 @@ public class SVGOMMaskElement
             maskUnitsReference = new WeakReference(result);
         }
         return result;
+    }
+
+    /**
+     * <b>DOM</b>: Implements {@link
+     * org.w3c.dom.svg.SVGPatternElement#getMaskContentUnits()}.
+     */
+    public SVGAnimatedEnumeration getMaskContentUnits() {
+        throw new RuntimeException(" !!! TODO: SVGOMMaskElement.getPatternUnits()");
     }
 
     /**

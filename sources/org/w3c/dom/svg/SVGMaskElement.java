@@ -7,9 +7,9 @@ public interface SVGMaskElement extends
                SVGLangSpace,
                SVGExternalResourcesRequired,
                SVGStylable,
-               SVGTransformable,
                SVGUnitTypes {
   public SVGAnimatedEnumeration getMaskUnits( );
+  public SVGAnimatedEnumeration getMaskContentUnits( );
   public SVGAnimatedLength      getX( );
   public SVGAnimatedLength      getY( );
   public SVGAnimatedLength      getWidth( );

@@ -113,4 +113,13 @@ public class SVGCSSValue
         throws SVGException {
         throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "");
     }
+
+    /**
+     * <b>DOM</b>: Implements {@link
+     * org.w3c.dom.svg.SVGColor#setColor(short,String,String)}.
+     */
+    public void setColor(short colorType, String rgbColor, String iccColor)
+        throws SVGException {
+        throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "");
+    }
 }

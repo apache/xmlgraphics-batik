@@ -117,4 +117,16 @@ public class SVGCSSReadOnlyValue
 	     "readonly.value",
 	     new Object[] {});
     }
+
+    /**
+     * <b>DOM</b>: Implements {@link
+     * org.w3c.dom.svg.SVGColor#setColor(short,String,String)}.
+     */
+    public void setColor(short colorType, String rgbColor, String iccColor)
+        throws SVGException {
+	throw CSSDOMExceptionFactory.createDOMException
+	    (DOMException.INVALID_ACCESS_ERR,
+	     "readonly.value",
+	     new Object[] {});
+    }
 }

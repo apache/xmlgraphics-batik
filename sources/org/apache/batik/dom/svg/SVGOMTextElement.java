@@ -28,7 +28,7 @@ import org.w3c.dom.svg.SVGTextElement;
  * @version $Id$
  */
 public class SVGOMTextElement
-    extends    SVGOMTextContentElement
+    extends    SVGOMTextPositioningElement
     implements SVGTextElement {
 
     /**
@@ -62,32 +62,6 @@ public class SVGOMTextElement
     public String getLocalName() {
         return SVG_TEXT_TAG;
     }
-
-    /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGTextElement#getX()}.
-     */
-    public SVGAnimatedLength getX() {
-	SVGAnimatedLength result;
-	if (xReference == null ||
-	    (result = (SVGAnimatedLength)xReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, SVG_X_ATTRIBUTE, null);
-	    xReference = new WeakReference(result);
-	}
-	return result;
-    } 
-
-    /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGTextElement#getY()}.
-     */
-    public SVGAnimatedLength getY() {
-	SVGAnimatedLength result;
-	if (yReference == null ||
-	    (result = (SVGAnimatedLength)yReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, SVG_Y_ATTRIBUTE, null);
-	    yReference = new WeakReference(result);
-	}
-	return result;
-    } 
 
     // SVGTransformable support /////////////////////////////////////////////
 
