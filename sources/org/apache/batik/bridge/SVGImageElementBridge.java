@@ -176,22 +176,13 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
 
         // bind the specified element and its associated graphics node if needed
         if (ctx.isDynamic()) {
-            ((EventTarget)e).addEventListener("DOMAttrModified", 
-                                              new DOMAttrModifiedEventListener(),
-                                              false);
             this.e = e;
             this.node = node;
             this.ctx = ctx;
-            // HACK due to the way images are represented in GVT
-            ImageNode imgNode = (ImageNode)node;
-            if (imgNode.getImage() instanceof RasterImageNode) {
-                // register the RasterImageNode instead
-                ctx.bind(e, imgNode.getImage());
-            } else {
-                ctx.bind(e, node);
-            }
-            BridgeEventSupport.addDOMListener(ctx, e);
+            initializeDynamicSupport();
         }
+
+        // Handle children elements such as <title>
         SVGUtilities.bridgeChildren(ctx, e);
     }
 
@@ -210,6 +201,27 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
     }
 
     // dynamic support
+
+    /**
+     * This method is invoked during the build phase if the document
+     * is dynamic. The responsability of this method is to ensure that
+     * any dynamic modifications of the element this bridge is
+     * dedicated to, happen on its associated GVT product.
+     */
+    protected void initializeDynamicSupport() {
+        ((EventTarget)e).addEventListener("DOMAttrModified", 
+                                          new DOMAttrModifiedEventListener(),
+                                          false);
+        // HACK due to the way images are represented in GVT
+        ImageNode imgNode = (ImageNode)node;
+        if (imgNode.getImage() instanceof RasterImageNode) {
+            // register the RasterImageNode instead
+            ctx.bind(e, imgNode.getImage());
+        } else {
+            ctx.bind(e, node);
+        }
+        BridgeEventSupport.addDOMListener(ctx, e);
+    }
 
     /**
      * Handles DOMAttrModified events.

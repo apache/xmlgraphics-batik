@@ -32,8 +32,12 @@
         elt.setAttribute("y", y)
         elt.setAttribute("width", w)
         elt.setAttribute("height", h)
-        elt.setAttribute("rx", rx)
-        elt.setAttribute("ry", ry)
+        if (rx != null) {
+                elt.setAttribute("rx", rx)
+        }
+        if (ry != null) {
+                elt.setAttribute("ry", ry)
+        }
     }
 
     </script>
