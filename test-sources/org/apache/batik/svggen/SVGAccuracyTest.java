@@ -304,14 +304,6 @@ public class SVGAccuracyTest extends AbstractTest
     }
 
     /**
-     * Returns this Test's name
-     */
-    public String getName(){
-        String painterInfo = painter != null ? painter.getClass().getName() : "null";
-        return painterInfo + " -- " + super.getName();
-    }
-
-    /**
      * Saves the byte array in the "saveSVG" file
      * if that file's parent directory exists.
      */

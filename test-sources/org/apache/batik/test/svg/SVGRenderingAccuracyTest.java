@@ -360,7 +360,10 @@ public class SVGRenderingAccuracyTest extends AbstractTest {
      * URL of the SVG being rendered.
      */
     public String getName(){
-        return svgURL.toString();
+        if(this.name == null){
+            return svgURL.toString();
+        }
+        return name;
     }
 
     /**
