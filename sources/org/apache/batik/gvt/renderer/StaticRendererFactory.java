@@ -27,7 +27,7 @@ import org.apache.batik.gvt.filter.ConcreteGraphicsNodeRableFactory;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class StaticRendererFactory implements RendererFactory {
+public class StaticRendererFactory implements ImageRendererFactory {
 
     private GraphicsNodeRenderContext nodeRenderContext = null;
 
@@ -35,6 +35,13 @@ public class StaticRendererFactory implements RendererFactory {
      * Creates a new renderer.
      */
     public Renderer createRenderer() {
+        return createImageRenderer();
+    }
+
+    /**
+     * Creates a new renderer
+     */
+    public ImageRenderer createImageRenderer(){
         return new StaticRenderer(getRenderContext());
     }
 
