@@ -161,22 +161,22 @@ public class SVGFeCompositeElementBridge implements FilterBridge, SVGConstants {
 
             kAttr = filterElement.getAttributeNS(null, ATTR_K1);
             if (kAttr.length() != 0) {
-                k1 = SVGUtilities.convertSVGNumber(kAttr);
+                k1 = SVGUtilities.convertSVGNumber(ATTR_K1, kAttr);
             }
 
             kAttr = filterElement.getAttributeNS(null, ATTR_K2);
             if (kAttr.length() != 0) {
-                k2 = SVGUtilities.convertSVGNumber(kAttr);
+                k2 = SVGUtilities.convertSVGNumber(ATTR_K2, kAttr);
             }
 
             kAttr = filterElement.getAttributeNS(null, ATTR_K3);
             if (kAttr.length() != 0) {
-                k3 = SVGUtilities.convertSVGNumber(kAttr);
+                k3 = SVGUtilities.convertSVGNumber(ATTR_K3, kAttr);
             }
 
             kAttr = filterElement.getAttributeNS(null, ATTR_K4);
             if (kAttr.length() != 0) {
-                k4 = SVGUtilities.convertSVGNumber(kAttr);
+                k4 = SVGUtilities.convertSVGNumber(ATTR_K4, kAttr);
             }
             rule = CompositeRule.ARITHMETIC(k1, k2, k3, k4);
 
