@@ -27,10 +27,11 @@
     <!-- ======================= -->
     <page id="index"    label="Overview" source="index.xml"/>
     <faqs id="faqs" label="FAQ" source="faq.xml"/>
-    <page id="demo"     label="Demo" source="demo.xml" />
+    <page id="demo"     label="Tools and Apps" source="demo.xml" />
     <page id="license"  label="License" source="license.xml"/>
     <external href="dist" label="Download"/>
     <page id="install"  label="Install" source="installing.xml"/>
+    <page id="pr" label="In the news" source="pr.xml" />
     <separator/>
 
     <!-- ======================= -->
@@ -38,7 +39,7 @@
     <!-- ======================= -->
     <page id="svgviewer" label="Viewer" source="svgviewer.xml"/>
     <page id="svgrasterizer" label="Rasterizer" source="svgrasterizer.xml" />
-    <page id="svgapplet" label="SVG Applet" source="svgapplet.xml" />
+    <!-- <page id="svgapplet" label="SVG Applet" source="svgapplet.xml" />-->
     <page id="svggen" label="Generator" source="svggen.xml" />
     <separator />
 
@@ -60,7 +61,7 @@
     <!-- ======================= -->
     <page id="glossary" label="Glossary" source="glossary.xml" />
     <page id="regard" label="Regression tool" source="regardIntro.xml" />
-    <external label="API (Javadoc)" href="javadoc/index.html"/>
+    <!-- <external label="API (Javadoc)" href="javadoc/index.html"/> -->
     <separator />
 
 

@@ -21,9 +21,11 @@
     <question>What is Batik?</question>
     <answer>
         <p>        <img src="images/batikUses.jpg" alt="Batik use cases" />
-        Batik is a Java based toolkit for applications which handle
-        images in the Scalable Vector Graphics (SVG) format for
-        various purposes, such as viewing, generation or manipulation.
+        Batik is a Java
+        based toolkit for applications that want to use images in the
+        <link href="http://www.w3.org/TR/SVG/">Scalable Vector
+        Graphics (SVG)</link> format for various purposes, such as
+        viewing, generation or manipulation.        
         </p>
         <p>
         The project's ambition is to give developers a set of core modules which can be used together 
@@ -89,7 +91,7 @@
     <answer>
         <p>
         Batik contains several modules that can be used independently such as an SVG parser,
-        a object oriented vector tookit (<link href="glossary.html#GVT">GVT</link>) and
+        a object oriented vector toolkit (<link href="glossary.html#GVT">GVT</link>) and
         a set of extensions to the Java 2D API (such as sophisticated fill types and 
         filter effects).</p>
         <p>
@@ -105,14 +107,14 @@
         The SVG viewer can display SVG documents and lets the user zoom, pan 
         and rotate any SVG document, view the SVG source, link between SVG 
         documents, view a tree representation of the SVG DOM and more. One
-        important component of the SVG viewer is the JSVGCanvas component that
-        can be plugged in any Java application to provide SVG viewing capability.
+        important component of the SVG viewer is the <code>org.apache.batik.refimpl.util.JSVGCanvas</code>  
+        component that can be plugged in any Java application to provide SVG viewing capability.
         </p>
         <p>
         The SVG rasterizer lets the user convert SVG files to raster formats such
         as JPEG and PNG. It contains an extensible mechanism so that arbitrary
         raster formats can be added. For example, the rasterizer lets you create 
-        one SVG file with a specical effect (e.g., shadows, gradients, etc...), 
+        one SVG file with a special effect (e.g., shadows, gradients, etc...), 
         turn it into an PNG image, then modify the SVG source (e.g., modify
         a piece of text or a color), and generate another PNG image from it. This
         way, you can easily generate a series of images sharing a common
@@ -121,12 +123,12 @@
         
         </p>
         <p>
+
         The SVG generator lets all Java application export their graphics
-        as SVG, with no more requirements than for drawing to the screen or
-        for printing. For example, if you have an application that displays
-        a pie chart in a window, you can use the SVG generator to simply 
-        export that pie chart to the SVG format (with no more work than
-        for printing that pie chart or drawing it to the screen).
+        as SVG, using the same code used for drawing to the screen or for
+        printing. For example, an application that displays a pie chart in
+        a window, can use the SVG generator to easily export the sequence
+        of Java2D drawing calls for the pie chart to a SVG format.
         </p>
         <p>
         These three applications show that Batik can be used client side (the viewer
@@ -151,11 +153,7 @@
     <answer>
         <p>
         You can either <link href="dist">download</link>
-        Batik and run the viewer or follow this <link href="svgapplet.html">link</link>
-        to see an on-line demo of Batik's capabilities.
-        </p>
-        <p>
-        You can also see 
+        Batik or see 
         <link href="svgviewer.html">screenshots</link> 
         of the Batik SVG viewer, images created from the 
         <link href="svgrasterizer.html">rasterizer</link>
@@ -208,7 +206,7 @@
         <ul>
             <li><link href="http://www.csiro.au/">CSIRO</link></li>
             <li><link href="http://www.ilog.com/">ILOG</link></li>
-            <li><link href="http://www-sop.inria.fr/koala/jackaroo/">Koala Team</link></li>
+            <li><link href="http://www.inria.fr/koala/">Koala Team</link></li>
             <li><link href="http://www.kodak.com/">Eastman Kodak Company</link></li>
             <li><link href="http://www.sun.com">Sun Microsystems, Inc.</link></li>
         </ul>
@@ -362,7 +360,7 @@
         for the animation.
         </p>
         <p>
-        Beyond the use and mix with other XML syntaxes, being an XML grammer
+        Beyond the use and mix with other XML syntaxes, being an XML grammar
         lets SVG benefit from the pletora of XML tools that make it so easy
         to manipulate, generate, search and edit SVG files.
         </p>
@@ -375,17 +373,17 @@
     <question>Where does the name come from?</question>
     <answer>
         <p>
-        Batik is one of Java's famous and highly developed art traditions.
-        Batik is generally thought of as the most quintessentially Indonesian
-        textile.
-        Motifs of flowers, twining plants, leaves buds, flowers, birds,
-        butterflies, fish, insects and geometric forms are rich in symbolic
-        association and variety; there are about three thousand recorded batik
-        patterns.
+        Batik is a highly evolved art tradition that developed in Java
+        (one of the islands comprising what is now called
+        Idonesia). Batik is generally thought of as the quintessentially
+        Indonesian textile. Motifs of flowers, twining plants, leaves,
+        buds, birds, butterflies, fish, insects and geometric forms are
+        rich in symbolic association and variety; there are about three
+        thousand recorded batik patterns.
         </p>
         <p>
-        We think that Batik evokes gracefully Java, graphics and high-quality,
-        terms that constitute the core of the toolkit.
+        We think that Batik gracefully evokes Java, graphics and
+        high-quality, terms that constitute the core of the toolkit.
         </p>
         <p>
         The following <link href="http://www.culturalbridge.com/idgallbk1.htm">
@@ -398,10 +396,9 @@
     <question>What are the System Requirements to run Batik?</question>
     <answer>
         <p>
-        Batik is written in the Java language and requires a version 1.2.2
+        Batik is written in the Java language and requires a version 1.2
         implementation. However, version 1.3 is highly recommended, as that version
-        fixed several problems that improved performances a lot.
-        
+        fixes several bugs and has greatly improved performance.        
         </p>
     </answer>
 
@@ -418,25 +415,8 @@
         To install Batik you need to <link href="dist">download</link>
         the binary or source distribution and unzip it on your computer.
         </p>
-        <p>
-        Once Batik is installed, you need to enter the command "batik" in the directory where
-        you unpacked the distribution.
-        </p>
 	<p>You can have a look at the <link href="install.html">installation instructions</link> for more help on this.
 	</p>
-    </answer>
-
-</faq>
-
-<faq>
-    <question>Which JDK version do I need?</question>
-    <answer>
-        <p>
-        Batik is written in the Java language and requires a version 1.2.2
-        implementation. However, version 1.3 is highly recommended, as that version
-        fixed several problems that improved performances a lot.        
-        </p>
-
     </answer>
 
 </faq>
@@ -457,25 +437,25 @@
     <question>What scripting languages can I use in my SVG files?</question>
     <answer>
         <p>
-	A limited support of scripting in SVG files is provided with the current
-	version of Batik (script are executed but the dynamic update is not fully
-	supported).
-	</p>
-	<p>
-	Batik can recognized the following scripting languages:
-	</p>
-	<ul>
-	    <li>ECMAScript thanks to the <link href="http://www.mozilla.org/rhino">Mozilla Rhino</link> JavaScript engine included in the distribution.
-	    </li>
-	    <li>Python for which you need to download the <link href="http://www.jpython.org">JPython</link> engine.
-	    </li>
-	    <li>Tcl for which you need to download the <link href="http://dev.scriptics.com/software/java/">Jacl</link> engine.
-	    </li>
-	</ul>
-	<p>
-	To get more information on how to install optional scripting languages
-	you can have a look at the <link href="install.html">installation instructions</link>.
-	</p>
+        A limited support of scripting in SVG files is provided with the
+        current version of Batik (script are executed but dynamic
+        update is not supported).
+    	</p>
+	    <p>
+	    Batik can recognized the following scripting languages:
+	    </p>
+	    <ul>
+	        <li>ECMAScript thanks to the <link href="http://www.mozilla.org/rhino">Mozilla Rhino</link> JavaScript engine included in the distribution.
+	        </li>
+	        <li>Python for which you need to download the <link href="http://www.jpython.org">JPython</link> engine.
+	        </li>
+	        <li>Tcl for which you need to download the <link href="http://dev.scriptics.com/software/java/">Jacl</link> engine.
+	        </li>
+	    </ul>
+	    <p>
+	    To get more information on how to install optional scripting languages
+	    you can have a look at the <link href="install.html">installation instructions</link>.
+	    </p>
     </answer>
     
 </faq>

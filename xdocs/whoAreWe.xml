@@ -74,7 +74,7 @@
           </dd>
 
           <dt>Stephane Hillion (SH)</dt><dd><br />
-          <link href="mailto:hillion@apache.org">hillion@apache.org</link><br />
+          <link href="mailto:shillion@ilog.fr">shillion@ilog.fr</link><br />
           <em>
           Stephane is a research engineer at ILOG. His main interests are in
           programming languages and web standards. He wrote DynamicJava, a Java
@@ -103,11 +103,11 @@
 
           <dt>Thierry Kormann (TK)</dt><dd><br />
           <link href="mailto:tkormann@apache.org">tkormann@apache.org</link> <br />
-          <em>Thierry is a research software engineer, at ILOG in Sophia Antipolis, France. 
-          Thierry has developed an SVG engine presented at the SVG BOF session at JavaOne 2000. 
-          Since then, he co-founded the Apache Batik project.
-          His work is focused on the Graphics Vector Toolkit and the DOM bridge 
-          engine. Thierry has been programming in Java since the end of year 1996.</em>
+          <em>Thierry is a research software engineer, at the Koala project of Dyade located 
+          at INRIA Sophia Antipolis, France. Thierry has developed an SVG engine 
+          presented at the SVG BOF session at JavaOne 2000. Since then, he co-founded the 
+          Apache Batik project. His work is focused on Graphics and XML related 
+          technologies. Thierry has been programming in Java since the end of year 1996.</em>
           <br /><br />
           </dd>
 

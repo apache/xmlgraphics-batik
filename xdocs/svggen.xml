@@ -30,8 +30,8 @@
         <p>
                 As SVG(Scalable Vector Graphics) is emerging as a promising graphics format 
                 for a wide range of domains and applications, bridging it with Java becomes important. 
-                This page explains how Batik's <code>SVGGraphics2D</code>, refered to as the SVG Generator, makes
-                this possible. It is devided into three parts: </p>
+                This page explains how Batik's <code>SVGGraphics2D</code>, referred to as the SVG Generator, makes
+                this possible. It is divided into three parts: </p>
                 <ul>
                     <li><link href="#whatIsIt">What is <code>SVGGraphics2D</code>?</link></li>
                     <li><link href="#howToUse">How to use <code>SVGGraphics2D</code>?</link></li>
