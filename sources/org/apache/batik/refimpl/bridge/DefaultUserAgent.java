@@ -25,12 +25,12 @@ public class DefaultUserAgent implements UserAgent {
     public EventDispatcher getEventDispatcher() {
         return null;
     }
-    
+
     /**
      * Displays an error message in the User Agent interface.
      */
     public void displayError(String message) {
-        System.out.println(message);
+        System.err.println(message);
     }
 
     /**

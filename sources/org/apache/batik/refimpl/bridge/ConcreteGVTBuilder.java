@@ -96,7 +96,7 @@ public class ConcreteGVTBuilder implements GVTBuilder, SVGConstants {
 
         // <!> TODO as previous line this should be done only if we want
         // binding !!!!
-        BridgeEventSupport.addGVTListener(ctx, treeRoot);
+        BridgeEventSupport.addGVTListener(ctx, svgRoot);
 
         return treeRoot;
     }
@@ -130,7 +130,7 @@ public class ConcreteGVTBuilder implements GVTBuilder, SVGConstants {
             GraphicsNodeBridge gnb = (GraphicsNodeBridge)bridge;
             GraphicsNode childGVTNode
                 = gnb.createGraphicsNode(ctx, e);
-                    
+
             gvtChildList.add(childGVTNode);
             if (gnb.isContainer()) {
                 buildComposite(ctx,

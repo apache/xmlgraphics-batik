@@ -17,14 +17,14 @@ import org.w3c.dom.svg.*;
 import org.w3c.dom.events.*;
 
 /**
- * A simple test for three wrappers on scripting engines (ECMAScript, 
+ * A simple test for three wrappers on scripting engines (ECMAScript,
  * TCL & Python).
  * @author <a href="mailto:cjolif@ilog.fr">Christophe Jolif</a>
  * @version $Id$
  */
 public class ScriptDOMTest {
     final static private String SCRIPT_LOC =
-        "resources/org/apache/batik/script/test/";
+        "resources/org/apache/batik/test/script/";
 
     final static private String POOL_CLASS =
         "org.apache.batik.refimpl.script.ConcreteInterpreterPool";

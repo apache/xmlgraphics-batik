@@ -69,6 +69,7 @@ import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.gvt.event.EventDispatcher;
 
 import org.apache.batik.refimpl.util.JSVGCanvas;
+import org.apache.batik.refimpl.gvt.event.ConcreteEventDispatcher;
 
 import org.apache.batik.util.SVGFileFilter;
 import org.apache.batik.util.SVGUtilities;
@@ -98,6 +99,7 @@ import org.w3c.dom.svg.SVGSVGElement;
  * This class represents a viewer frame.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
+ * @author <a href="mailto:cjolif@ilog.fr">Christophe Jolif</a>
  * @version $Id$
  */
 public class ViewerFrame
@@ -256,6 +258,12 @@ public class ViewerFrame
     protected boolean fixedSize;
 
     /**
+     * The event dispatcher.
+     */
+    private ConcreteEventDispatcher eventDispatcher =
+        new ConcreteEventDispatcher();
+
+    /**
      * The user languages.
      */
     protected String userLanguages = "en";
@@ -305,7 +313,7 @@ public class ViewerFrame
         listeners.put(LANGUAGE_ACTION,    new LanguageAction());
         listeners.put(USER_STYLE_ACTION,  new UserStyleAction());
         listeners.put(MONITOR_ACTION,     new MonitorAction());
- 
+
         JPanel p = null;
         try {
             // Create the menu
@@ -420,14 +428,14 @@ public class ViewerFrame
      * <code>UserAgent</code> to dispatch events on GVT.
      */
     public EventDispatcher getEventDispatcher() {
-        return null;
+        return eventDispatcher;
     }
-    
+
     /**
      * Displays an error message in the User Agent interface.
      */
     public void displayError(String message) {
-        System.out.println(message);
+        System.err.println(message);
     }
 
     /**
@@ -545,7 +553,7 @@ public class ViewerFrame
             loadDocument(uriChooser.getText());
         }
     }
-    
+
     /**
      * To open a new document
      */
@@ -622,7 +630,7 @@ public class ViewerFrame
             }
         }
     }
-    
+
     /**
      * To view the current document source.
      */
@@ -665,13 +673,13 @@ public class ViewerFrame
                 // !!! TODO : dialog
                 System.err.println(ex.toString());
             }
-            
+
             ta.setDocument(doc);
             ta.setEditable(false);
             fr.show();
        }
     }
-        
+
     /**
      * To display the description of the document
      */
@@ -688,19 +696,19 @@ public class ViewerFrame
             ta.setLineWrap(true);
             ta.setBackground(Color.lightGray);
             ta.setFont(new Font("monospaced", Font.PLAIN, 10));
-            
+
             JScrollPane scroll = new JScrollPane();
             scroll.getViewport().add(ta);
             scroll.setVerticalScrollBarPolicy
                 (JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
             fr.getContentPane().add("Center", scroll);
-            
+
             ta.setText(description);
             ta.setEditable(false);
             fr.show();
         }
     }
-    
+
     /**
      * To display the tree view of the document
      */
@@ -746,7 +754,7 @@ public class ViewerFrame
                               BorderFactory.createEmptyBorder(5, 5, 5, 5)),
                              BorderFactory.createLoweredBevelBorder()));
 
-                
+
                 p.add("Center", canvas.getThumbnail());
 
                 URL url =
@@ -796,7 +804,7 @@ public class ViewerFrame
             }
         }
     }
-    
+
     /**
      * To make the frame fit the SVG viewport
      */
@@ -847,7 +855,7 @@ public class ViewerFrame
             memoryMonitor.show();
         }
     }
-    
+
     /**
      * To manage the location bar action
      */
@@ -874,7 +882,7 @@ public class ViewerFrame
             }
         }
     }
-    
+
     /**
      * The document loading thread.
      */
@@ -891,7 +899,7 @@ public class ViewerFrame
             setPriority(Thread.MIN_PRIORITY);
             documentURI = uri;
         }
-        
+
         /**
          * The thread main method.
          */
@@ -910,7 +918,7 @@ public class ViewerFrame
                 SVGOMDocument doc;
 
                 long t1 = System.currentTimeMillis();
-                
+
                 SVGDocumentFactory df = new SVGDocumentFactory
                     (application.getXMLParserClassName());
                 URL url = new URL(uri);
@@ -934,7 +942,7 @@ public class ViewerFrame
                 System.out.println("--------------------------------");
                 System.out.println(" Document loading time: " +
                                    (t2 - t1) + " ms");
-                
+
                 String title = doc.getTitle();
                 if (title.equals("")) {
                     setTitle(resources.getString("Frame.title") + ": " +
@@ -966,14 +974,14 @@ public class ViewerFrame
                 System.out.println("--------------------------------");
                 System.out.println(" Tree construction time: " +
                                    (t1 - t2) + " ms");
-                
+
                 description
                     =  SVGUtilities.getDescription(doc.getRootElement());
                 if (description.equals("")) {
                     description
                         = resources.getString("Description.no_description");
                 }
-                
+
             } catch (ThreadDeath e) {
                 td = e;
             } catch (Exception e) {

@@ -20,31 +20,31 @@ import java.util.HashMap;
 public class ConcreteInterpreterPool implements InterpreterPool {
     private HashMap factories = new HashMap(3);
     private HashMap interpreters = new HashMap(1);
-    
-    private static final String RHINO = 
+
+    private static final String RHINO =
         "org.apache.batik.refimpl.script.rhino.RhinoInterpreterFactory";
-    
-    private static final String JPYTHON = 
+
+    private static final String JPYTHON =
         "org.apache.batik.refimpl.script.jpython.JPythonInterpreterFactory";
-    
-    private static final String JACL = 
+
+    private static final String JACL =
         "org.apache.batik.refimpl.script.jacl.JaclInterpreterFactory";
-    
+
     /**
      * Builds an instance of <code>ConcreteInterpreterPool</code>.
      */
     public ConcreteInterpreterPool() {
         InterpreterFactory factory = null;
         try {
-            factory = 
+            factory =
                 (InterpreterFactory)Class.forName(RHINO).newInstance();
             putInterpreterFactory("text/ecmascript",
                                   factory);
-        } catch (Throwable t1) { 
+        } catch (Throwable t1) {
             // may append if the class is not there
         }
         try {
-            factory = 
+            factory =
                 (InterpreterFactory)Class.forName(JPYTHON).newInstance();
             putInterpreterFactory("text/python",
                                   factory);
@@ -52,20 +52,20 @@ public class ConcreteInterpreterPool implements InterpreterPool {
             // may append if the class is not ther e
         }
         try {
-            factory = 
+            factory =
                 (InterpreterFactory)Class.forName(JACL).newInstance();
             putInterpreterFactory("text/tcl",
                                   factory);
-        } catch (Throwable t3) { 
+        } catch (Throwable t3) {
             // may append if the class is not there
         }
     }
-    
+
     /**
-     * Should return a unique instance of an implementation of <code>Interpreter
-     * </code> interface that match the given language and that provides
-     * a "document" script object binding the given <code>Document</code>
-     * instance.
+     * Should return a unique instance of an implementation of
+     * <code>Interpreter</code> interface that match the given language
+     * and that provides a "document" script object binding the given
+     * <code>Document</code> instance.
      * @param language a mimeType like string describing the language to use
      * (i.e. "text/ecmascript" for ECMAScript interpreter).
      * @param document the <code>Document instance</code>.
@@ -97,7 +97,7 @@ public class ConcreteInterpreterPool implements InterpreterPool {
         }
         return interpreter;
     }
-    
+
     /**
      * Registers an <code>InterpreterFactory</code> for the given
      * language.
@@ -105,7 +105,7 @@ public class ConcreteInterpreterPool implements InterpreterPool {
      * @parma factory the <code>InterpreterFactory</code> that will allow to
      * create a interpreter for the language.
      */
-    public void putInterpreterFactory(String language, 
+    public void putInterpreterFactory(String language,
                                       InterpreterFactory factory) {
         factories.put(language, factory);
     }

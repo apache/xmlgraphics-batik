@@ -35,6 +35,7 @@ import org.w3c.dom.css.CSSPrimitiveValue;
  * A factory for the &lt;rect> SVG element.
  *
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
+ * @author <a href="mailto:cjolif@ilog.fr">Christophe Jolif</a>
  * @version $Id$
  */
 public abstract class SVGShapeElementBridge implements GraphicsNodeBridge,
@@ -68,6 +69,10 @@ public abstract class SVGShapeElementBridge implements GraphicsNodeBridge,
         // Set node filter
         Filter filter = CSSUtilities.convertFilter(element, node, ctx);
         node.setFilter(filter);
+
+        // <!> TODO only when binding is enabled
+        BridgeEventSupport.addDOMListener(ctx, element);
+        ctx.bind(element, node);
 
         return node;
     }

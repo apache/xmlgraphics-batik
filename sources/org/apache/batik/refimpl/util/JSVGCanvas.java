@@ -50,6 +50,8 @@ import org.apache.batik.bridge.UserAgent;
 
 import org.apache.batik.gvt.GraphicsNode;
 
+import org.apache.batik.gvt.event.AbstractEventDispatcher;
+
 import org.apache.batik.gvt.renderer.Renderer;
 import org.apache.batik.gvt.renderer.RendererFactory;
 
@@ -65,6 +67,8 @@ import org.apache.batik.refimpl.gvt.renderer.StaticRendererFactory;
 
 import org.apache.batik.refimpl.parser.ParserFactory;
 
+import org.apache.batik.refimpl.script.ConcreteInterpreterPool;
+
 import org.apache.batik.util.SVGUtilities;
 
 import org.apache.batik.util.gui.resource.ActionMap;
@@ -73,12 +77,16 @@ import org.apache.batik.util.gui.resource.MissingListenerException;
 import org.w3c.dom.css.ViewCSS;
 import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.svg.SVGSVGElement;
+import org.w3c.dom.events.Event;
+import org.w3c.dom.events.EventTarget;
+
 
 /**
  * This class represents a JComponent which is able to represents
  * a SVG document.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
+ * @author <a href="mailto:cjolif@ilog.fr">Christophe Jolif</a>
  * @version $Id$
  */
 public class JSVGCanvas
@@ -210,8 +218,8 @@ public class JSVGCanvas
     /**
      * Used to draw marker
      */
-    protected BasicStroke markerStroke 
-        = new BasicStroke(1, BasicStroke.CAP_SQUARE, 
+    protected BasicStroke markerStroke
+        = new BasicStroke(1, BasicStroke.CAP_SQUARE,
                           BasicStroke.JOIN_MITER,
                           10,
                           new float[]{4, 4}, 0);
@@ -227,8 +235,18 @@ public class JSVGCanvas
      */
     public JSVGCanvas(UserAgent ua) {
         userAgent = ua;
+
+        // for event dispatching inside GVT
+        AbstractEventDispatcher dispatcher =
+            (AbstractEventDispatcher)userAgent.getEventDispatcher();
+        if (dispatcher != null) {
+            addMouseListener(dispatcher);
+            addMouseMotionListener(dispatcher);
+            addKeyListener(dispatcher);
+        }
+
         rendererFactory = new StaticRendererFactory();
- 
+
         builder = new ConcreteGVTBuilder();
         bridgeContext = new SVGBridgeContext();
         bridgeContext.setGVTFactory
@@ -237,9 +255,11 @@ public class JSVGCanvas
         bridgeContext.setUserAgent(userAgent);
         bridgeContext.setGraphicsNodeRableFactory
             (new ConcreteGraphicsNodeRableFactory());
+        ((SVGBridgeContext)bridgeContext).setInterpreterPool
+            (new ConcreteInterpreterPool());
 
         addComponentListener(new CanvasListener());
-        MouseListener ml = new MouseListener(); 
+        MouseListener ml = new MouseListener();
         addMouseListener(ml);
         addMouseMotionListener(ml);
 
@@ -268,15 +288,25 @@ public class JSVGCanvas
      * @param doc if null, clears the canvas.
      */
     public void setSVGDocument(SVGDocument doc) {
+        if (document != null) {
+            // fire the unload event
+            Event evt = document.createEvent("SVGEvents");
+            evt.initEvent("SVGUnload", false, false);
+            ((EventTarget)(document.
+                           getRootElement())).
+                dispatchEvent(evt);
+        }
         document = doc;
         if (document == null) {
             gvtRoot = null;
         } else {
             bridgeContext.setViewCSS((ViewCSS)doc.getDocumentElement());
             gvtRoot = builder.build(bridgeContext, document);
-
             computeTransform();
         }
+
+        if (userAgent.getEventDispatcher() != null)
+            userAgent.getEventDispatcher().setRootNode(gvtRoot);
 
         repaint = true;
         repaint();
@@ -356,7 +386,7 @@ public class JSVGCanvas
         if (w < 1 || h < 1) {
             return;
         }
-        
+
         if (repaintThread != null) {
             Graphics2D g2d = (Graphics2D)g;
             g2d.drawImage(buffer, null, 0, 0);
@@ -391,7 +421,7 @@ public class JSVGCanvas
 
             clearBuffer(w, h);
             renderer.setTransform(transform);
-       
+
             repaintThread = new RepaintThread();
             repaintThread.start();
             repaint = false;
@@ -477,7 +507,7 @@ public class JSVGCanvas
         Dimension size = getSize();
         int w = size.width;
         int h = size.height;
-        
+
         transform = SVGUtilities.getPreserveAspectRatioTransform
             (elt, w, h, bridgeContext.getParserFactory());
     }
@@ -492,7 +522,7 @@ public class JSVGCanvas
         public RepaintThread() {
             setPriority(Thread.MIN_PRIORITY);
         }
-        
+
         /**
          * The thread main method.
          */
@@ -535,7 +565,7 @@ public class JSVGCanvas
             }
         }
     }
-    
+
     /**
      * To zoom in the document.
      */
@@ -551,7 +581,7 @@ public class JSVGCanvas
             }
         }
     }
-    
+
     /**
      * To zoom out the document.
      */
@@ -567,7 +597,7 @@ public class JSVGCanvas
             }
         }
     }
-    
+
     /**
      * To handle the mouse events.
      */
@@ -667,7 +697,7 @@ public class JSVGCanvas
         protected void endOperation(int x, int y) {
             setCursor(cursor);
             cursor = null;
-            
+
             if (mouseExited) {
                 repaint();
                 return;
@@ -725,7 +755,7 @@ public class JSVGCanvas
         }
         protected void paintRotateMarker(int x, int y) {
             clearRotateMarker();
-            
+
             if (mouseExited) {
                 rotateMarker = null;
             } else {
@@ -748,12 +778,12 @@ public class JSVGCanvas
                 double dy = y - dim.height / 2;
                 double cos = -dy / Math.sqrt(dx * dx + dy * dy);
 
-                rotateTransform = 
+                rotateTransform =
                     AffineTransform.getRotateInstance
                     ((dx > 0) ? Math.acos(cos) : -Math.acos(cos),
                      dim.width / 2,
                      dim.height / 2);
-                
+
                 rotateMarker = rotateTransform.createTransformedShape(p);
 
                 Rectangle r;
@@ -786,13 +816,13 @@ public class JSVGCanvas
                 Rectangle r;
                 r = markerStroke.createStrokedShape(markerTop).getBounds();
                 paintImmediately(r.x, r.y, r.width, r.height);
-            
+
                 r = markerStroke.createStrokedShape(markerLeft).getBounds();
                 paintImmediately(r.x, r.y, r.width, r.height);
-            
+
                 r = markerStroke.createStrokedShape(markerBottom).getBounds();
                 paintImmediately(r.x, r.y, r.width, r.height);
-                
+
                 r = markerStroke.createStrokedShape(markerRight).getBounds();
                 paintImmediately(r.x, r.y, r.width, r.height);
             }
@@ -851,8 +881,8 @@ public class JSVGCanvas
         /**
          * Used to draw marker
          */
-        protected BasicStroke markerStroke 
-            = new BasicStroke(1, BasicStroke.CAP_SQUARE, 
+        protected BasicStroke markerStroke
+            = new BasicStroke(1, BasicStroke.CAP_SQUARE,
                               BasicStroke.JOIN_MITER,
                               10,
                               new float[]{2, 2}, 0);
@@ -877,7 +907,7 @@ public class JSVGCanvas
          */
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
-            
+
             Dimension size = getSize();
             int w = size.width;
             int h = size.height;
@@ -885,7 +915,7 @@ public class JSVGCanvas
             if (w < 1 || h < 1) {
                 return;
             }
-        
+
             if (repaintThread != null) {
                 Graphics2D g2d = (Graphics2D)g;
                 g2d.drawImage(offscreenBuffer, null, 0, 0);
@@ -905,7 +935,7 @@ public class JSVGCanvas
             if (repaint) {
                 clearBuffer(w, h);
                 renderer.setTransform(transform);
-       
+
                 repaintThread = new ThumbnailRepaintThread();
                 repaintThread.start();
                 repaint = false;
@@ -915,7 +945,7 @@ public class JSVGCanvas
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                                  RenderingHints.VALUE_ANTIALIAS_ON);
             g2d.drawImage(offscreenBuffer, null, 0, 0);
-            
+
             // Paint the marker
             Dimension csize = JSVGCanvas.this.getSize();
             Rectangle rect = new Rectangle(0, 0, csize.width, csize.height);
@@ -970,7 +1000,7 @@ public class JSVGCanvas
             Dimension size = getSize();
             int w = size.width;
             int h = size.height;
-            
+
             transform = SVGUtilities.getPreserveAspectRatioTransform
                 (elt, w, h, bridgeContext.getParserFactory());
             if (transform.isIdentity()) {
@@ -1006,7 +1036,7 @@ public class JSVGCanvas
             public ThumbnailRepaintThread() {
                 setPriority(Thread.MIN_PRIORITY);
             }
-        
+
             /**
              * The thread main method.
              */

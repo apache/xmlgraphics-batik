@@ -43,8 +43,8 @@ import org.w3c.dom.svg.SVGDocument;
 public class SVGDOMImplementation
     extends    AbstractDOMImplementation
     implements DOMImplementationCSS,
-	       CSSStyleDeclarationFactory,
-	       StyleSheetFactory {
+               CSSStyleDeclarationFactory,
+               StyleSheetFactory {
     /**
      * The SVG namespace uri.
      */
@@ -58,7 +58,7 @@ public class SVGDOMImplementation
         new SVGDOMImplementation();
 
     static {
-        EventSupport.registerEventFactory("SVGEvent",
+        EventSupport.registerEventFactory("SVGEvents",
             new EventSupport.EventFactory() {
                     public Event createEvent() {
                         return new SVGOMEvent();
@@ -83,16 +83,16 @@ public class SVGDOMImplementation
      * The CSS value factory map for SVG.
      */
     protected ValueFactoryMap valueFactoryMap =
-	new SVGValueFactoryMap(CSSDocumentHandler.createParser());
+        new SVGValueFactoryMap(CSSDocumentHandler.createParser());
 
     /**
      * <b>DOM</b>: Implements {@link
      * DOMImplementation#createDocumentType(String,String,String)}.
      */
-    public DocumentType createDocumentType(String qualifiedName, 
-                                           String publicId, 
+    public DocumentType createDocumentType(String qualifiedName,
+                                           String publicId,
                                            String systemId) {
-	throw new DOMException(DOMException.NOT_SUPPORTED_ERR,
+        throw new DOMException(DOMException.NOT_SUPPORTED_ERR,
                                "Doctype not supported");
     }
 
@@ -100,8 +100,8 @@ public class SVGDOMImplementation
      * <b>DOM</b>: Implements {@link
      * DOMImplementation#createDocument(String,String,DocumentType)}.
      */
-    public Document createDocument(String namespaceURI, 
-                                   String qualifiedName, 
+    public Document createDocument(String namespaceURI,
+                                   String qualifiedName,
                                    DocumentType doctype)
         throws DOMException {
         Document result = new SVGOMDocument(doctype, this);
@@ -168,7 +168,7 @@ public class SVGDOMImplementation
                 String media = (String)attrs.get("media");
                 String href  = (String)attrs.get("href");
 
-		SVGOMDocument doc = (SVGOMDocument)n.getOwnerDocument();
+                SVGOMDocument doc = (SVGOMDocument)n.getOwnerDocument();
                 URL url = new URL(doc.getURLObject(), href);
 
                 CSSOMStyleSheet ss = new CSSOMStyleSheet
@@ -180,7 +180,7 @@ public class SVGDOMImplementation
                      null,
                      valueFactoryMap,
                      CSSDocumentHandler.createParser());
-            
+
                 CSSDocumentHandler.parseStyleSheet(ss, url.toString());
                 return ss;
             } catch (Exception e) {

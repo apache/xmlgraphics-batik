@@ -1,6 +1,6 @@
 /*****************************************************************************
  * Copyright (C) The Apache Software Foundation. All rights reserved.        *
- *---------------------------------------------------------------------------*  
+ *---------------------------------------------------------------------------*
  * This software is published under the terms of the Apache Software License *
  * version 1.1, a copy of which has been included with this distribution in  *
  * the LICENSE file.                                                         *
@@ -20,12 +20,11 @@ import org.mozilla.javascript.*;
  * @version $Id$
  */
 public class RhinoInterpreter implements org.apache.batik.script.Interpreter {
-    private Context ctx = null;
     private Scriptable scope = null;
-    
+
     public RhinoInterpreter() {
         // entering a context
-        ctx = Context.enter();
+        Context ctx = Context.enter();
         // init std object with an importer
         ImporterTopLevel importer = new ImporterTopLevel();
         scope = ctx.initStandardObjects(importer);
@@ -46,13 +45,15 @@ public class RhinoInterpreter implements org.apache.batik.script.Interpreter {
         importer.importPackage(pkg);
         pkg = new NativeJavaPackage("org.w3c.dom.views");
         importer.importPackage(pkg);
+        Context.exit();
     }
 
     // org.apache.batik.script.Intepreter implementation
-    
-    public Object evaluate(Reader scriptreader) 
+
+    public Object evaluate(Reader scriptreader)
         throws InterpreterException, IOException {
         Object rv = null;
+        Context ctx = Context.enter();
         try {
             rv = ctx.evaluateReader(scope,
                                     scriptreader,
@@ -63,32 +64,33 @@ public class RhinoInterpreter implements org.apache.batik.script.Interpreter {
         } catch (RuntimeException re) {
             throw new InterpreterException(re, re.getMessage(), -1, -1);
         }
+        Context.exit();
         return rv;
     }
-    
+
     public void dispose() {
-        ctx.exit();
     }
-    
+
     public void bindObject(String name, Object object) {
-        Scriptable jsObject = Context.toObject(object, scope); 
+        Scriptable jsObject = Context.toObject(object, scope);
         scope.put(name, scope, jsObject);
-    } 
-    
+    }
+
     public void setOut(Writer out) {
         // no implementation of a default output function in Rhino
     }
-    
+
     // org.apache.batik.i18n.Localizable implementation
 
     public Locale getLocale() {
-        return ctx.getLocale();
+        // <!> TODO : in Rhino the local is for a thread not a scope..
+        return null;
     }
 
     public void setLocale(Locale locale) {
-        ctx.setLocale(locale);
+        // <!> TODO : in Rhino the local is for a thread not a scope..
     }
-    
+
     public String formatMessage(String key, Object[] args) {
         return null;
     }

@@ -10,6 +10,7 @@ package org.apache.batik.refimpl.bridge;
 
 
 import org.w3c.dom.Element;
+import org.w3c.dom.Document;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
@@ -40,7 +41,7 @@ import java.awt.geom.Point2D;
  */
 class BridgeEventSupport {
     private static String[] EVENT_ATTRIBUTES = {
-        // all 
+        // all
         "onfocusin",
         "onfocusout",
         "onactivate",
@@ -51,7 +52,7 @@ class BridgeEventSupport {
         "onmouseout",
         "onmousemove",
         "onload",
-        
+
         // document
         "onunload",
         "onabort",
@@ -59,15 +60,15 @@ class BridgeEventSupport {
         "onresize",
         "onscroll",
         "onzoom",
-        
+
         // animation
         "onbegin",
         "onend",
         "onrepeat"
     };
-    
+
     private static String[] EVENT_NAMES = {
-        // all 
+        // all
         "focusin",
         "focusout",
         "activate",
@@ -78,7 +79,7 @@ class BridgeEventSupport {
         "mouseout",
         "mousemove",
         "SVGLoad",
-        
+
         // document
         "SVGUnload",
         "SVGAbort",
@@ -86,15 +87,15 @@ class BridgeEventSupport {
         "SVGResize",
         "SVGScroll",
         "SVGZoom",
-        
+
         // animation
         "beginEvent",
         "endEvent",
         "repeatEvent"
     };
-    
+
     private BridgeEventSupport() {}
-    
+
     /**
      * Creates and add a listener on the element to call script
      * when necessary.
@@ -104,14 +105,14 @@ class BridgeEventSupport {
      * also be an event target.
      * @param node the <code>GraphicsNode</code>.
      */
-    public static void addDOMListener(BridgeContext ctx, 
+    public static void addDOMListener(BridgeContext ctx,
                                       Element element) {
         // ability for scripts to be called
         EventTarget target = (EventTarget)element;
         String script = null;
         // <!> HACK (the cast) should be modified : call the method
         // with SVGElement's only
-        Interpreter interpret = 
+        Interpreter interpret =
             ctx.getInterpreterPool().
             getInterpreter(((SVGElement)element).getOwnerSVGElement().
                            getContentScriptType(), element.getOwnerDocument());
@@ -123,7 +124,7 @@ class BridgeEventSupport {
             if (!(script = element.getAttribute(EVENT_ATTRIBUTES[i])).
                 equals("")) {
                 target.
-                    addEventListener(EVENT_NAMES[i], 
+                    addEventListener(EVENT_NAMES[i],
                                      new ScriptCaller(ctx.getUserAgent(),
                                                       script, interpret),
                                      false);
@@ -134,50 +135,72 @@ class BridgeEventSupport {
     public static void updateDOMListener(BridgeContext ctx,
                                          Element element) {
     }
-    
-    public static void addGVTListener(BridgeContext ctx, GraphicsNode node) {
+
+    public static void addGVTListener(BridgeContext ctx, Element svgRoot) {
         UserAgent ua = ctx.getUserAgent();
         if (ua != null) {
             EventDispatcher dispatcher = ua.getEventDispatcher();
             if (dispatcher != null) {
-                Listener listener = new Listener(ctx);
+                final Listener listener = new Listener(ctx);
                 dispatcher.addGlobalGraphicsNodeMouseListener(listener);
+                ((EventTarget)svgRoot).
+                    addEventListener("SVGUnload",
+                                     new UnloadListener(dispatcher, listener),
+                                     false);
             }
         }
     }
-    
-    public static class Listener 
+
+    private static class UnloadListener
+        implements EventListener {
+        private EventDispatcher dispatcher;
+        private Listener listener;
+        UnloadListener(EventDispatcher dispatcher, Listener listener)
+        {
+            this.dispatcher = dispatcher;
+            this.listener = listener;
+        }
+        public void handleEvent(Event evt) {
+            dispatcher.removeGlobalGraphicsNodeMouseListener(listener);
+            evt.getTarget().removeEventListener("SVGUnload", this, false);
+        }
+    }
+
+    private static class Listener
         implements GraphicsNodeMouseListener {
         private BridgeContext context;
         public Listener(BridgeContext ctx) {
             context = ctx;
         }
         public void mouseClicked(GraphicsNodeMouseEvent evt) {
-            dispatchMouseEvent("click", evt);
+            dispatchMouseEvent("click", evt, true);
         }
         public void mousePressed(GraphicsNodeMouseEvent evt) {
-            dispatchMouseEvent("mousedown", evt);
+            dispatchMouseEvent("mousedown", evt, true);
         }
         public void mouseReleased(GraphicsNodeMouseEvent evt) {
-            dispatchMouseEvent("mouseup", evt);
+            dispatchMouseEvent("mouseup", evt, true);
         }
         public void mouseEntered(GraphicsNodeMouseEvent evt) {
-            dispatchMouseEvent("mouseover", evt);
+            dispatchMouseEvent("mouseover", evt, true);
         }
         public void mouseExited(GraphicsNodeMouseEvent evt) {
-            dispatchMouseEvent("mouseout", evt);
+            dispatchMouseEvent("mouseout", evt, true);
         }
         public void mouseDragged(GraphicsNodeMouseEvent evt) {
-            dispatchMouseEvent("mousemove", evt);
+            dispatchMouseEvent("mousemove", evt, true);
         }
         public void mouseMoved(GraphicsNodeMouseEvent evt) {
-            dispatchMouseEvent("mousemove", evt);
+            dispatchMouseEvent("mousemove", evt, false);
         }
         private void dispatchMouseEvent(String eventType,
-                                        GraphicsNodeMouseEvent evt) {
+                                        GraphicsNodeMouseEvent evt,
+                                        boolean cancelok) {
             Point2D pos = evt.getPoint2D();
             GraphicsNode node = evt.getGraphicsNode();
             Element elmt = context.getElement(node);
+            if (elmt == null) // should not appeared if binding on
+                return;
             EventTarget target = (EventTarget)elmt;
             short button = 1;
             if ((evt.BUTTON1_MASK & evt.getModifiers()) != 0)
@@ -185,15 +208,15 @@ class BridgeEventSupport {
             else
                 if ((evt.BUTTON3_MASK & evt.getModifiers()) != 0)
                     button = 2;
-            // <!> TODO some stuff to transform pos 
-            MouseEvent mevent = 
+            // <!> TODO some stuff to transform pos
+            MouseEvent mevent =
                 // DOM Level 2 6.5 cast form Document to DocumentEvent is ok
-                (MouseEvent)((DocumentEvent)elmt.getOwnerDocument()).
+                (MouseEvent)org.apache.batik.dom.events.EventSupport.
                 createEvent(org.apache.batik.dom.events.EventSupport.
-                            MUTATION_EVENT_TYPE);
-            mevent.initMouseEvent(eventType, true, true, null, 
-                                  evt.getClickCount(), 0, 0, 
-                                  (int)Math.floor(pos.getX()), 
+                            MOUSE_EVENT_TYPE);
+            mevent.initMouseEvent(eventType, true, cancelok, null,
+                                  evt.getClickCount(), 0, 0,
+                                  (int)Math.floor(pos.getX()),
                                   (int)Math.floor(pos.getY()),
                                   evt.isControlDown(), evt.isAltDown(),
                                   evt.isShiftDown(), evt.isMetaDown(),
@@ -201,11 +224,11 @@ class BridgeEventSupport {
             target.dispatchEvent(mevent);
         }
     }
-                                                                  
-    
+
+
     public static class ScriptCaller implements EventListener {
         private static String EVENT_NAME = "evt";
-        
+
         private String script = null;
         private Interpreter interpreter = null;
         private UserAgent ua = null;
@@ -216,7 +239,7 @@ class BridgeEventSupport {
             interpreter = interpret;
             ua = agent;
         }
-        
+
         public void handleEvent(Event evt) {
             interpreter.bindObject(EVENT_NAME, evt);
             try {
@@ -225,9 +248,9 @@ class BridgeEventSupport {
                 // will never appeared we don't use a file
             } catch (InterpreterException e) {
                 if (ua != null)
-                    ua.displayError(e.getMessage());
+                    ua.displayError("scripting error: "+e.getMessage());
             }
         }
     }
 }
-    
+
