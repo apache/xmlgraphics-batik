@@ -77,6 +77,15 @@
 <text x="240" y="340" class="info">&lt;tspan x="240" dx="0 10 10 10 10" <tspan x="273" dy="1.1em">y="320" style="letter-spacing:10"></tspan></text>
 
 
+<!-- ################################################################ -->
+
+<text><tspan x="50" letter-spacing="10" y="380">Batik</tspan><tspan x="10" y="380"/></text>
+<text x="50" y="400" class="info">Empty Trailing tspan</text>
+
+
+<text><tspan x="200" y="380"/><tspan x="240" letter-spacing="20" y="380">Batik</tspan></text>
+<text x="240" y="400" class="info">Empty Preceeding tspan</text>
+
 
 </g>
 
