@@ -45,13 +45,13 @@ public abstract class AbstractGraphics2D extends Graphics2D implements Cloneable
     protected GraphicContext gc;
 
     /**
-     * Text handling strategy
+     * Text handling strategy.
      */
     protected boolean textAsShapes = false;
 
     /**
-     * @param textAsShapes if true, all text is turned into SVG shapes in the
-     *        convertion. No SVG text is output.
+     * @param textAsShapes if true, all text is turned into shapes in the
+     *        convertion. No text is output.
      *
      */
     public AbstractGraphics2D(boolean textAsShapes){
