@@ -57,8 +57,7 @@ import javax.swing.KeyStroke;
  *   Menu1.enabled     = true | false
  *   ...
  * mnemonic is a single character
- * accelerator is of the form: mod+mod+...+X
- *   where mod is Shift, Meta, Alt or Ctrl
+ * accelerator is of the form described in {@link javax.swing.KeyStroke#getKeyStroke(String)}.
  * '-' represents a separator
  * </pre>
  * All entries are optional except the '.type' entry
@@ -341,7 +340,7 @@ public class MenuFactory extends ResourceManager {
 	try {
 	    if (!(item instanceof JMenu)) {
 		String str = getString(name+ACCELERATOR_SUFFIX);
-		KeyStroke ks = toKeyStroke(str);
+		KeyStroke ks = KeyStroke.getKeyStroke(str);
 		if (ks != null) {
 		    item.setAccelerator(ks);
 		} else {
@@ -359,111 +358,5 @@ public class MenuFactory extends ResourceManager {
 	    item.setEnabled(getBoolean(name+ENABLED_SUFFIX));
 	} catch (MissingResourceException e) {
 	}
-    }
-
-    /**
-     * Translate a string into a key stroke.
-     * See the class comment for details
-     * @param str a string
-     */
-    protected KeyStroke toKeyStroke(String str) {
-        int    state = 0;
-        int    code  = 0;
-        int    modif = 0;
-        int    i     = 0;
-
-        while (state != 100 && i < str.length()) {
-            char curr = Character.toUpperCase(str.charAt(i));
-            
-            switch (state) {
-            case 0 :
-                code = curr;
-                switch (curr) {
-                case 'C': state = 1; break;
-                case 'A': state = 5; break;
-                case 'M': state = 8; break;
-                case 'S': state = 12; break;
-                default:
-                    state = 100;
-                }
-                break;
-
-            case 1 : state = (curr == 'T') ? 2 : 100; break;
-            case 2 : state = (curr == 'R') ? 3 : 100; break;
-            case 3 : state = (curr == 'L') ? 4 : 100; break;
-            case 4 : state = (curr == '+') ? 0 : 100;
-                if (state == 0) {
-                    modif |= Event.CTRL_MASK;
-                }
-                break;
-            case 5 : state = (curr == 'L') ? 6 : 100; break;
-            case 6 : state = (curr == 'T') ? 7 : 100; break;
-            case 7 : state = (curr == '+') ? 0 : 100;
-                if (state == 0) {
-                    modif |= Event.ALT_MASK;
-                }
-                break;
-            case 8 : state = (curr == 'E') ? 9 : 100; break;
-            case 9 : state = (curr == 'T') ? 10: 100; break;
-            case 10: state = (curr == 'A') ? 11: 100; break;
-            case 11: state = (curr == '+') ? 0 : 100;
-                if (state == 0) {
-                    modif |= Event.META_MASK;
-                }
-                break;
-            case 12: state = (curr == 'H') ? 13: 100; break;
-            case 13: state = (curr == 'I') ? 14: 100; break;
-            case 14: state = (curr == 'F') ? 15: 100; break;
-            case 15: state = (curr == 'T') ? 16: 100; break;
-            case 16: state = (curr == '+') ? 0 : 100;
-                if (state == 0) {
-                    modif |= Event.SHIFT_MASK;
-                }
-                break;
-            }
-            i++;
-        }
-        if (code > 0 && modif > 0) {
-            if (i < str.length()) {
-                char curr = Character.toUpperCase(str.charAt(i));
-                switch (code) {
-                case 'U':
-                    if (str.length() - i != 1 || curr != 'P') {
-                        break;
-                    }
-                    code = KeyEvent.VK_UP;
-                    break;
-                case 'L':
-                    if (str.length() - i != 3 ||
-                        curr != 'E' ||
-                        Character.toUpperCase(str.charAt(i + 1)) != 'F' ||
-                        Character.toUpperCase(str.charAt(i + 2)) != 'T') {
-                        break;
-                    }
-                    code = KeyEvent.VK_LEFT;
-                    break;
-                case 'D':
-                    if (str.length() - i != 3 ||
-                        curr != 'O' ||
-                        Character.toUpperCase(str.charAt(i + 1)) != 'W' ||
-                        Character.toUpperCase(str.charAt(i + 2)) != 'N') {
-                        break;
-                    }
-                    code = KeyEvent.VK_DOWN;
-                    break;
-                case 'R':
-                    if (str.length() - i != 4 ||
-                        curr != 'I' ||
-                        Character.toUpperCase(str.charAt(i + 1)) != 'G' ||
-                        Character.toUpperCase(str.charAt(i + 2)) != 'H' ||
-                        Character.toUpperCase(str.charAt(i + 3)) != 'T') {
-                        break;
-                    }
-                    code = KeyEvent.VK_RIGHT;
-                }
-            }
-            return KeyStroke.getKeyStroke(code, modif);
-        }
-        return null;
     }
 }
