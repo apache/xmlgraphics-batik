@@ -418,7 +418,7 @@
             </g>
             <use x="140" y="620" xlink:href="#boomingStar" transform="scale(2, 2)"/>
             <use x="140" y="620" xlink:href="#boomingStar" transform="scale(3, 3) rotate(30)" opacity=".5"/>
-            <circle id="planet" cx="-450" cy="1000" r="700" fill="url(#planetGradient)" fill-opacity="1"/> 
+            <circle cx="-450" cy="1000" r="700" fill="url(#planetGradient)" fill-opacity="1"/> 
         </g>
 
         <g id="saturn" transform="translate(370, 80)" filter="url(#saturnShadow)" visibility="visible" >
