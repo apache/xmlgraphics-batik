@@ -18,6 +18,7 @@ import java.awt.Stroke;
 import java.awt.BasicStroke;
 import java.awt.Shape;
 import java.awt.Composite;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.text.AttributedCharacterIterator;
 import java.awt.font.TextLayout;
@@ -50,7 +51,7 @@ public class BasicTextPainter implements TextPainter {
      * @param g2d the Graphics2D to use
      * @param context rendering context.
      */
-    public void paint(AttributedCharacterIterator aci, TextNode.Anchor anchor, 
+    public void paint(AttributedCharacterIterator aci, Point2D location, TextNode.Anchor anchor, 
                Graphics2D g2d, GraphicsNodeRenderContext context) {
 
         FontRenderContext frc = context.getFontRenderContext();
@@ -69,7 +70,7 @@ public class BasicTextPainter implements TextPainter {
         case TextNode.Anchor.ANCHOR_END:
             tx = -advance;
         }
-        layout.draw(g2d, tx, 0f);
+        layout.draw(g2d, (float)(location.getX() + tx), (float)location.getY());
         //
         // drawHighlight(textnode.getHighlightShape()); // maybe not the best way to do this...
         //

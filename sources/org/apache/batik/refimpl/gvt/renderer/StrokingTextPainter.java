@@ -46,7 +46,7 @@ public class StrokingTextPainter extends BasicTextPainter {
      * @param g2d the Graphics2D to use
      * @param context rendering context.
      */
-    public void paint(AttributedCharacterIterator aci, TextNode.Anchor anchor,
+    public void paint(AttributedCharacterIterator aci, Point2D location, TextNode.Anchor anchor,
                Graphics2D g2d, GraphicsNodeRenderContext context) {
 
         FontRenderContext frc = context.getFontRenderContext();
@@ -108,7 +108,7 @@ public class StrokingTextPainter extends BasicTextPainter {
             // check if we need to fill this glyph
             Paint paint = (Paint) runaci.getAttribute(TextAttribute.FOREGROUND);
             if (paint != null) {
-                textRun.getLayout().draw(g2d, x, 0f);
+                textRun.getLayout().draw(g2d, (float)(location.getX() + x), (float)(location.getY()));
             }
             // check if we need to draw the outline of this glyph
             Stroke stroke = (Stroke) runaci.getAttribute(
@@ -116,7 +116,7 @@ public class StrokingTextPainter extends BasicTextPainter {
             paint = (Paint) runaci.getAttribute(
                     GVTAttributedCharacterIterator.TextAttribute.STROKE_PAINT);
             if (stroke != null && paint != null) {
-                AffineTransform t = AffineTransform.getTranslateInstance(x, 0f);
+                AffineTransform t = AffineTransform.getTranslateInstance(location.getX() + x, location.getY());
                 g2d.setStroke(stroke);
                 g2d.setPaint(paint);
                 g2d.draw(textRun.getLayout().getOutline(t));

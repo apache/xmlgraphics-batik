@@ -12,6 +12,7 @@ import java.awt.Graphics2D;
 import java.text.AttributedCharacterIterator;
 import java.awt.image.renderable.RenderContext;
 import java.awt.font.FontRenderContext;
+import java.awt.geom.Point2D;
 
 import org.apache.batik.gvt.text.Mark;
 
@@ -30,7 +31,7 @@ public interface TextPainter {
      * @param g2d the Graphics2D to use
      * @param context rendering context.
      */
-    void paint(AttributedCharacterIterator aci, TextNode.Anchor anchor,
+    void paint(AttributedCharacterIterator aci, Point2D location, TextNode.Anchor anchor,
                Graphics2D g2d, GraphicsNodeRenderContext context);
 
     public Mark selectAt(double x, double y, AttributedCharacterIterator aci, 
