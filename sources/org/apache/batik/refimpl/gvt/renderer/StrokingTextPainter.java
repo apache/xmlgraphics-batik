@@ -50,6 +50,7 @@ public class StrokingTextPainter extends BasicTextPainter {
                Graphics2D g2d, GraphicsNodeRenderContext context) {
 
         FontRenderContext frc = context.getFontRenderContext();
+
         Set extendedAtts = new HashSet();
         List textRuns = new ArrayList();
         float advance = 0f;

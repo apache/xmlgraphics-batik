@@ -9,6 +9,7 @@
 package org.apache.batik.refimpl.bridge;
 
 import java.awt.Color;
+import java.awt.GraphicsEnvironment;
 import java.awt.Paint;
 import java.awt.RenderingHints;
 import java.awt.Shape;
@@ -62,17 +63,24 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
         fonts.put("serif",           "Serif");
         fonts.put("Times",           "Serif");
         fonts.put("Times New Roman", "Serif");
-        fonts.put("Garamond",        "Serif");
         fonts.put("sans-serif",      "SansSerif");
-        fonts.put("Arial",           "SansSerif");
-        fonts.put("Helvetica",       "SansSerif");
-        fonts.put("Verdana",         "SansSerif");
         fonts.put("cursive",         "Dialog");
         fonts.put("fantasy",         "Symbol");
         fonts.put("monospace",       "Monospaced");
         fonts.put("monospaced",      "Monospaced");
         fonts.put("Courier",         "Monospaced");
-        fonts.put("Courier New",     "Monospaced");
+
+        //
+        // Load all fonts. Work around
+        //
+        GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        System.out.println("Initializing fonts .... please wait");
+        String fontNames[] = env.getAvailableFontFamilyNames();
+        System.out.println("Done initializing " + fontNames.length + " fonts");
+        int nFonts = fontNames != null ? fontNames.length : 0;
+        for(int i=0; i<nFonts; i++){
+            fonts.put(fontNames[i], fontNames[i]);
+        }
     }
 
     public GraphicsNode createGraphicsNode(BridgeContext ctx,
@@ -332,7 +340,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                                                 cssDecl,
                                                 uctx);
 
-        fs = fs * ctx.getUserAgent().getPixelToMM() * 72f / 25.4f;
+        fs = Math.round(fs * ctx.getUserAgent().getPixelToMM() * 72f / 25.4f);
 
         result.put(TextAttribute.SIZE, new Float(fs));
 

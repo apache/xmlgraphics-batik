@@ -9,6 +9,7 @@
 package org.apache.batik.util;
 
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.io.StringReader;
 import java.util.StringTokenizer;
@@ -23,9 +24,14 @@ import org.apache.batik.parser.ParseException;
 import org.apache.batik.parser.ParserFactory;
 import org.apache.batik.parser.PreserveAspectRatioHandler;
 import org.apache.batik.parser.PreserveAspectRatioParser;
+import org.apache.batik.refimpl.gvt.AffineTransformSourceBoundingBox;
+import org.apache.batik.refimpl.gvt.CompositeAffineTransformSource;
+import org.apache.batik.refimpl.gvt.DimensionTransformer;
+import org.apache.batik.refimpl.gvt.DimensionTransformerBoundingBox;
 import org.apache.batik.refimpl.gvt.PointTransformer;
 import org.apache.batik.refimpl.gvt.PointTransformerIdentity;
 import org.apache.batik.refimpl.gvt.PointTransformerBoundingBox;
+import org.apache.batik.refimpl.gvt.TransformedDimension;
 import org.apache.batik.refimpl.gvt.TransformedPoint;
 import org.apache.batik.refimpl.gvt.filter.ConcreteFilterRegion;
 import org.apache.batik.refimpl.gvt.filter.FilterChainRegion;
@@ -33,6 +39,10 @@ import org.apache.batik.refimpl.gvt.filter.FilterPrimitiveRegion;
 import org.apache.batik.refimpl.gvt.filter.FilterRegionTransformer;
 import org.apache.batik.refimpl.gvt.filter.FilterRegionTransformerIdentity;
 import org.apache.batik.refimpl.gvt.filter.FilterRegionTransformerBoundingBox;
+
+import org.apache.batik.util.awt.geom.Dimension2D_Double;
+import org.apache.batik.util.awt.geom.AffineTransformSource;
+import org.apache.batik.util.awt.geom.DefaultAffineTransformSource;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -721,25 +731,9 @@ public class SVGUtilities implements SVGConstants {
     public static Point2D
         convertPoint(SVGElement svgElement, String xStr, String yStr, String units,
                      GraphicsNode node, UnitProcessor.Context uctx){
-        // pointTransformer will hold the gradient point to
-        // user space transformer.
         Point2D point;
-        PointTransformer pointTransformer = null;
 
         if(VALUE_OBJECT_BOUNDING_BOX.equals(units)){
-            //
-            // Values are in 'objectBoundingBox' units
-            // These cannot be resolved at construction time,
-            // so we keep value in 'bounding box space'. We
-            // build a TransformedPoint that
-            // will resolve bounding box coordinates to user
-            // space coordinates upon rendering (i.e., when the
-            // LazyPoint's getPoint method is invoked.
-            //
-
-            // Build FilterRegionTransformer
-            pointTransformer = new PointTransformerBoundingBox(node);
-
             // Now, resolve x and y values.
             // For each value, we distinguish two cases: percentages
             // and other. If a percentage value is used, it is converted
@@ -786,16 +780,12 @@ public class SVGUtilities implements SVGConstants {
                 }
             }
 
-            System.out.println("New BB Point : " + x + " / " + y);
-            point = new TransformedPoint(x, y, pointTransformer);
+            point = new Point2D.Float(x, y);
         }
         else{
             // Values are in 'userSpaceOnUse'. Everything, including percentages,
             // can be resolved now (percentages refer to the viewPort)
             //
-
-            // Build a PointTransformer that does not do anything
-            pointTransformer = new PointTransformerIdentity();
 
             // Now, resolve x and y
             float x = 0;
@@ -814,12 +804,89 @@ public class SVGUtilities implements SVGConstants {
                                                  uctx);
             }
 
-            System.out.println("New US Point Str : " + xStr + " / " + yStr);
-            System.out.println("New US Point : " + x + " / " + y);
-            point = new TransformedPoint(x, y, pointTransformer);
+            point = new Point2D.Float(x, y);
         }
 
         return point;
+    }
+
+    /**
+     * Creates a float value for the input 
+     * value in 'units'
+     */
+    public static float
+        convertLength(SVGElement svgElement, String lengthStr, String units,
+                     GraphicsNode node, UnitProcessor.Context uctx){
+        float length = 0;
+
+        if(VALUE_OBJECT_BOUNDING_BOX.equals(units)){
+            //
+            // Value is in 'objectBoundingBox' units
+            //
+
+            // We distinguish two cases: percentages
+            // and other. If a percentage value is used, it is converted
+            // to a 'bounding box' space coordinate by division by 100
+            // Otherwise, standard unit conversion is used.
+            LengthParser p = uctx.getParserFactory().createLengthParser();
+            UnitProcessor.UnitResolver ur = new UnitProcessor.UnitResolver();
+            p.setLengthHandler(ur);
+
+            if(lengthStr.length() > 0){
+                p.parse(new StringReader(lengthStr));
+
+                if(ur.unit == SVGLength.SVG_LENGTHTYPE_PERCENTAGE){
+                    length = ur.value / 100f;
+                }
+                else{
+                    length = UnitProcessor.svgToUserSpace(ur.unit,
+                                                          ur.value,
+                                                          svgElement,
+                                                          UnitProcessor.OTHER_LENGTH,
+                                                          uctx);
+                }
+            }
+
+        }
+        else{
+            // Values is in 'userSpaceOnUse'. Everything, including percentages,
+            // can be resolved now (percentages refer to the viewPort)
+            //
+
+            // Resolve length
+            if(lengthStr.length() > 0){
+                length = UnitProcessor.svgToUserSpace(lengthStr,
+                                                      svgElement,
+                                                      UnitProcessor.OTHER_LENGTH,
+                                                      uctx);
+            }
+        }
+
+        return length;
+    }
+
+    /**
+     * Creates an <tt>AffineTransformSource</tt> 
+     */
+    public static AffineTransformSource 
+        convertAffineTransformSource(AffineTransform at,
+                                     GraphicsNode node,
+                                     String units){
+        
+        AffineTransformSource ats = null;
+        if(VALUE_OBJECT_BOUNDING_BOX.equals(units)){
+            AffineTransformSource ts = 
+                new DefaultAffineTransformSource(at);
+            AffineTransformSource bbts =
+                new AffineTransformSourceBoundingBox(node);
+
+            ats = new CompositeAffineTransformSource(bbts, ts);
+        }
+        else{
+            ats = new DefaultAffineTransformSource(at);
+        }
+
+        return ats;
     }
 
     /**

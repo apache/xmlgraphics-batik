@@ -22,6 +22,7 @@ import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.SVGUtilities;
 import org.apache.batik.util.UnitProcessor;
 import org.apache.batik.util.awt.LinearGradientPaint;
+import org.apache.batik.util.awt.geom.AffineTransformSource;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.css.CSSStyleDeclaration;
@@ -134,6 +135,11 @@ public class SVGLinearGradientBridge extends SVGGradientBridge
         AffineTransform at = AWTTransformProducer.createAffineTransform
             (new StringReader(paintElement.getAttributeNS(null, ATTR_GRADIENT_TRANSFORM)), ctx.getParserFactory());
 
+        AffineTransformSource ats 
+            = SVGUtilities.convertAffineTransformSource(at, 
+                                                        paintedNode, 
+                                                        units);
+
         //
         // Extract stop colors and intervals
         //
@@ -181,7 +187,7 @@ public class SVGLinearGradientBridge extends SVGGradientBridge
             paint = new LinearGradientPaint(p1, p2, offsets, colors,
                                             cycleMethod,
                                             LinearGradientPaint.SRGB,
-                                            at);
+                                            ats);
             // System.out.println("x1 : " + p1.getX() + " y1 : " + p1.getY());
             // System.out.println("x2 : " + p2.getX() + " y2 : " + p2.getY());
         }
