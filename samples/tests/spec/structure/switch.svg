@@ -1,0 +1,47 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN"
+"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+
+<!-- ========================================================================= -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.        -->
+<!--                                                                           -->
+<!-- This software is published under the terms of the Apache Software License -->
+<!-- version 1.1, a copy of which has been included with this distribution in  -->
+<!-- the LICENSE file.                                                         -->
+<!-- ========================================================================= -->
+
+<!-- ========================================================================= -->
+<!-- Image element references an SVG file                                      -->
+<!--                                                                           -->
+<!-- @author Thierry.Kormann@sophia.inria.fr                                   -->
+<!-- @version $Id$     -->
+<!-- ========================================================================= -->
+
+<?xml-stylesheet type="text/css" href="../../resources/style/test.css" ?>
+
+<svg xmlns="http://www.w3.org/2000/svg" 
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="450" height="500" viewBox="0 0 450 500">
+<title>Switch element with transform</title>
+
+    <!-- ============================================================= -->
+    <!-- Test content                                                  -->
+    <!-- ============================================================= -->
+    <g id="testContent">
+    <text x="225" y="30" class="title">Switch element with transform</text>
+
+    <switch transform="translate(100, -50)">
+      <rect fill="red" x="0" y="0" width="225" height="225"
+            requiredExtensions="http://example.org/bogus"/>
+      <rect fill="green" x="0" y="225" width="225" height="225"/>
+      <rect fill="blue" x="225" y="0" width="225" height="225"/>
+    </switch>
+
+    </g>
+
+    <!-- ============================================================= -->
+    <!-- Batik sample mark                                             -->
+    <!-- ============================================================= -->
+    <use xlink:href="../../../batikLogo.svg#Batik_Tag_Box" />
+    
+</svg>
