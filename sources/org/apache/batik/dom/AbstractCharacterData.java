@@ -116,7 +116,7 @@ public abstract class AbstractCharacterData
 				     new Object[] { new Integer(getNodeType()),
 						    getNodeName() });
 	}
-	if (offset < 0 || offset >= getLength()) {
+	if (offset < 0 || offset > getLength()) {
 	    throw createDOMException(DOMException.INDEX_SIZE_ERR,
 				     "offset",
 				     new Object[] { new Integer(offset) });
