@@ -357,21 +357,20 @@ public class RhinoInterpreter implements Interpreter {
         try {
             if (name.equals(BIND_NAME_WINDOW) && object instanceof Window) {
                 window = (Window)object;
-            } else {
-                try {
-                    Scriptable jsObject;
-                    jsObject = Context.toObject(object, globalObject);
-                    objects.put(name, jsObject);
-                    if (ScriptableObject.getProperty(globalObject, name) ==
-                        ScriptableObject.NOT_FOUND)
-                        globalObject.defineProperty
-                            (name, new RhinoGetDelegate(name),
-                             rhinoGetter, null, ScriptableObject.READONLY);
-                } catch (PropertyException pe) {
-                    pe.printStackTrace();
-                }
+                object = globalObject;
             }
-
+            try {
+                Scriptable jsObject;
+                jsObject = Context.toObject(object, globalObject);
+                objects.put(name, jsObject);
+                if (ScriptableObject.getProperty(globalObject, name) ==
+                    ScriptableObject.NOT_FOUND)
+                    globalObject.defineProperty
+                        (name, new RhinoGetDelegate(name),
+                         rhinoGetter, null, ScriptableObject.READONLY);
+            } catch (PropertyException pe) {
+                pe.printStackTrace();
+            }
         } finally {
             Context.exit();
         }
