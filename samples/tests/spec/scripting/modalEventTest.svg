@@ -26,9 +26,16 @@
      xmlns:xlink="http://www.w3.org/1999/xlink"
      id="body" width="450" height="500" viewBox="0 0 450 500">
 
-    <title>Remove/Insert event handler test</title>
+    <title>Modal Event Test</title>
 
-    <text x="50%" y="45" class="title">remove/insert event handler test</text>
+    <text x="50%" y="45" class="title">Modal Event Test</text>
+
+    <text transform="translate(225,140)" class="legend">
+        <tspan x="0" dy="0">Test 1: Press mousedown on circle, move out, release</tspan>
+        <tspan x="0" dy="1.2em">Test 2: Press mousedown out of circle, move in, release</tspan>
+        <tspan x="0" dy="1.2em">Test 3: Press mousedown out of circle, move through, release</tspan>
+        <tspan x="0" dy="1.6em">Hit the clear button between tests</tspan>
+    </text>
 
     <script type="text/ecmascript"><![CDATA[
 
