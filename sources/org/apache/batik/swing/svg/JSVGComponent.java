@@ -745,7 +745,8 @@ public class JSVGComponent extends JGVTComponent {
         Element root = doc.getDocumentElement();
         String znp = root.getAttributeNS
             (null, SVGConstants.SVG_ZOOM_AND_PAN_ATTRIBUTE);
-        disableInteractions = !znp.equals(SVGConstants.SVG_MAGNIFY_VALUE);
+
+        setDisableInteractions(!znp.equals(SVGConstants.SVG_MAGNIFY_VALUE));
 
         bridgeContext = createBridgeContext();
         nextGVTTreeBuilder = new GVTTreeBuilder(doc, bridgeContext);

@@ -141,8 +141,20 @@ public class SrcManager extends IdentifierManager {
             case LexicalUnit.SAC_URI:
                 String uri = resolveURI(engine.getCSSBaseURI(), 
                                         lu.getStringValue());
+                
                 result.append(new StringValue(CSSPrimitiveValue.CSS_URI, uri));
                 lu = lu.getNextLexicalUnit();
+                if ((lu != null) && 
+                    (lu.getLexicalUnitType() == LexicalUnit.SAC_FUNCTION)) {
+                    if (!lu.getFunctionName().equalsIgnoreCase("format")) {
+                        break;
+                    }
+                    // Format really does us no good so just ignore it.
+
+                    // TODO: Should probably turn this into a ListValue 
+                    // and append the format function CSS Value.
+                    lu = lu.getNextLexicalUnit();
+                }
                 break;
                 
             case LexicalUnit.SAC_IDENT:

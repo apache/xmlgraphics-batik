@@ -371,10 +371,14 @@ public class Parser implements ExtendedParser, Localizable {
             throw e;
         }
 
+        CSSParseException exception = null;
+        if (current != LexicalUnits.EOF)
+            exception = createCSSParseException("eof.expected");
+
         scanner = null;
 
-        if (current != LexicalUnits.EOF) {
-            errorHandler.fatalError(createCSSParseException("eof.expected"));
+        if (exception != null) {
+            errorHandler.fatalError(exception);
         }
         return exp;
     }

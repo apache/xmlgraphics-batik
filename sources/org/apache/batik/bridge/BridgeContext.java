@@ -70,6 +70,7 @@ import org.apache.batik.css.engine.CSSContext;
 import org.apache.batik.css.engine.CSSEngine;
 import org.apache.batik.css.engine.CSSEngineEvent;
 import org.apache.batik.css.engine.CSSEngineListener;
+import org.apache.batik.css.engine.CSSEngineUserAgent;
 import org.apache.batik.css.engine.SystemColorSupport;
 import org.apache.batik.css.engine.value.Value;
 import org.apache.batik.dom.svg.SVGContext;
@@ -281,6 +282,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
             SVGDOMImplementation impl;
             impl = (SVGDOMImplementation)doc.getImplementation();
             eng = impl.createCSSEngine(doc, this);
+            eng.setCSSEngineUserAgent(new CSSEngineUserAgentWrapper(userAgent));
             doc.setCSSEngine(eng);
             eng.setMedia(userAgent.getMedia());
             String uri = userAgent.getUserStyleSheetURI();
@@ -1431,5 +1433,23 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         }
         return extensions;
     }        
- }
+
+    public static class CSSEngineUserAgentWrapper implements CSSEngineUserAgent {
+        UserAgent ua;
+        CSSEngineUserAgentWrapper(UserAgent ua) {
+            this.ua = ua;
+        }
+
+        /**
+         * Displays an error resulting from the specified Exception.
+         */
+        public void displayError(Exception ex) { ua.displayError(ex); }
+
+        /**
+         * Displays a message in the User Agent interface.
+         */
+        public void displayMessage(String message) { ua.displayMessage(message); }
+    }
+
+}
 
