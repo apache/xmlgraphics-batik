@@ -157,13 +157,11 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
         }
 
 
-        Object o = nodeBounds.get(gnWRef);
-        while (o == null) {
+        while (!nodeBounds.containsKey(gnWRef)) {
             nodeBounds.put(gnWRef, gn.getBounds());
             gn = gn.getParent();
             if (gn == null) break;
             gnWRef = gn.getWeakReference();
-            o = nodeBounds.get(gnWRef);
         }
     }
 

@@ -46,10 +46,10 @@ public class GraphicsNodeRable8Bit
     extends    AbstractRable 
     implements GraphicsNodeRable, PaintRable {
 
-    private AffineTransform cachedGn2dev  = null;
-    private AffineTransform cachedUsr2dev = null;
-    private CachableRed     cachedRed = null;
-
+    private AffineTransform cachedGn2dev   = null;
+    private AffineTransform cachedUsr2dev  = null;
+    private CachableRed     cachedRed      = null;
+    private Rectangle2D     cachedBounds = null;
     /**
      * Should GraphicsNodeRable call primitivePaint or Paint.
      */
@@ -103,6 +103,7 @@ public class GraphicsNodeRable8Bit
         cachedRed     = null;
         cachedUsr2dev = null;
         cachedGn2dev  = null;
+        cachedBounds  = null;
     }
 
     /**
@@ -258,7 +259,11 @@ public class GraphicsNodeRable8Bit
             gn2dev.concatenate(gn2usr);
         }
 
-        if ((cachedGn2dev != null) && 
+        Rectangle2D bounds2D = getBounds2D();
+
+        if ((cachedBounds != null)                            &&
+            (cachedGn2dev != null)                            &&
+            (cachedBounds.equals(bounds2D))                   &&
             (gn2dev.getScaleX()  == cachedGn2dev.getScaleX()) &&
             (gn2dev.getScaleY()  == cachedGn2dev.getScaleY()) &&
             (gn2dev.getShearX()  == cachedGn2dev.getShearX()) &&
@@ -294,17 +299,21 @@ public class GraphicsNodeRable8Bit
             System.out.println("Old:                  " + cachedUsr2dev);
         }
 
-        Rectangle2D bounds2D = getBounds2D();
         if((bounds2D.getWidth()  > 0) && 
            (bounds2D.getHeight() > 0)) {
             cachedUsr2dev = (AffineTransform)usr2dev.clone();
-            cachedGn2dev = gn2dev;
+            cachedGn2dev  = gn2dev;
+            cachedBounds  = bounds2D;
             cachedRed =  new GraphicsNodeRed8Bit
                 (node, usr2dev, usePrimitivePaint, 
                  renderContext.getRenderingHints());
             return cachedRed;
         }
 
+        cachedUsr2dev = null;
+        cachedGn2dev  = null;
+        cachedBounds  = null;
+        cachedRed     = null;
         return null;
     }
 }

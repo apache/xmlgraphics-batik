@@ -37,7 +37,7 @@ public class RectListManager implements Collection {
      * The comparator used to sort the elements of this List.
      * Sorts on x value of Rectangle.
      */
-    public static Comparator comparator;
+    public static Comparator comparator = new RectXComparator();
 
     /**
      * Construct a <tt>RectListManager</tt> from a Collection of Rectangles
@@ -61,9 +61,21 @@ public class RectListManager implements Collection {
      *              any null entries.
      */
     public RectListManager(Rectangle [] rects) {
-        this.rects = new Rectangle[rects.length];
-        size  = rects.length;
-        System.arraycopy(rects, 0, this.rects, 0, size);
+        this(rects, 0, rects.length);
+    }
+
+    /**
+     * Construct a <tt>RectListManager</tt> from an Array of 
+     * <tt>Rectangles</tt>
+     * @param rects Array of <tt>Rectangles</tt>, must not contain
+     *              any null entries in the range [off, off+sz-1].
+     * @param off   The offset to start copying from in rects.
+     * @param sz    The number of entries to copy from rects.
+     */
+    public RectListManager(Rectangle [] rects, int off, int sz) {
+        this.size  = sz;
+        this.rects = new Rectangle[sz];
+        System.arraycopy(rects, off, this.rects, 0, sz);
         Arrays.sort(this.rects, comparator);
     }
 
@@ -755,9 +767,6 @@ public class RectListManager implements Collection {
         RectXComparator() { }
 
         public final int compare(Object o1, Object o2) {
-            // Treat nulls as inifinate X.
-            if (o1 == null) return -1;
-            if (o2 == null) return 1;
             return ((Rectangle)o1).x-((Rectangle)o2).x;
         }
     }

@@ -12,6 +12,7 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Rectangle2D;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -150,7 +151,16 @@ public class RepaintManager {
         Iterator i = areas.iterator();
         while (i.hasNext()) {
             Shape s = (Shape)i.next();
-            Rectangle r = at.createTransformedShape(s).getBounds();
+            s = at.createTransformedShape(s);
+            Rectangle2D r2d = s.getBounds2D();
+            int x0 = (int)Math.floor(r2d.getX());
+            int y0 = (int)Math.floor(r2d.getY());
+            int x1 = (int)Math.ceil(r2d.getX()+r2d.getWidth());
+            int y1 = (int)Math.ceil(r2d.getY()+r2d.getHeight());
+            // This rectangle must be outset one pixel to ensure
+            // it includes the effects of anti-aliasing on object.s
+            Rectangle r = new Rectangle(x0-1, y0-1, x1-x0+3, y1-y0+3);
+                
             rects.add(r);
         }
 
