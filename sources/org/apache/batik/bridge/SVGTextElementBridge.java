@@ -387,12 +387,10 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge {
                 }
                 
                 nodeElement = (Element)n;
-
                 String ln = n.getLocalName();
 
                 if (ln.equals(SVG_TSPAN_TAG) ||
-                    ln.equals(SVG_ALT_GLYPH_TAG) ||
-                    ln.equals(SVG_A_TAG)) {
+                    ln.equals(SVG_ALT_GLYPH_TAG)) {
                     fillAttributedStringBuffer(ctx,
                                                nodeElement,
                                                false,
@@ -423,9 +421,31 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge {
                         Map m = getAttributeMap(ctx, nodeElement, textPath);
                         asb.append(s, m);
                     }
+                } else if (ln.equals(SVG_A_TAG)) {
+                    EventTarget target = (EventTarget)nodeElement;
+                    System.out.println(ln);
+                    UserAgent ua = ctx.getUserAgent();
+                    target.addEventListener
+                        (SVG_EVENT_CLICK, 
+                         new SVGAElementBridge.AnchorListener(ua),
+                         false);
+                    
+                    target.addEventListener
+                        (SVG_EVENT_MOUSEOVER,
+                         new SVGAElementBridge.CursorMouseOverListener(ua),
+                         false);
+                    
+                    target.addEventListener
+                        (SVG_EVENT_MOUSEOUT,
+                         new SVGAElementBridge.CursorMouseOutListener(ua),
+                         false);
+                    fillAttributedStringBuffer(ctx,
+                                               nodeElement,
+                                               false,
+                                               textPath,
+                                               asb);
                 }
                 break;
-                
             case Node.TEXT_NODE:
             case Node.CDATA_SECTION_NODE:
                 s = n.getNodeValue();
