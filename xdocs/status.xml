@@ -52,11 +52,6 @@
                     properties are supported by the Batik
                     components.</li>
 
-                    <li><link href="#domLevel2Status">DOM Level
-                    2</link> which defines which portions of the DOM
-                    Level 2 API are supported by the Batik
-                    implementation</li>
-
                     <li><link href="#svgDomStatus">SVG DOM</link>
                     which defines which portions of the SVG DOM are
                     supported by the Batik implementation.
@@ -94,11 +89,8 @@
 
                 <li><strong>Batik 1.5</strong> (Summer 2003) is
                 focussed on supporting SVG scripting fully. The
-                following sections provide details on the progress of
-                this on-going effort.</li> 
-
-                <li><strong>Batik 2.0</strong> (???) will be
-                focussed on supporting SMIL animation fully.</li>
+                following sections provide details on the exact support
+                of the SVG scripting features.</li> 
             </ul>
 
             </s1>
@@ -120,13 +112,6 @@
             specification or the CSS2 specification that are supported in the
             Batik toolkit rendering components (i.e., the <code>ImageTranscoder</code> and the
             <code>JSVGCanvas</code> Swing component).  </p>
-
-            </s1>
-
-            <anchor id="domLevel2Status" />
-            <s1 title="DOM Level 2 Support" >
-
-            <p>This information will be provided shortly</p>
 
             </s1>
 
@@ -266,7 +251,7 @@
 
         <anchor id="metrics" />
         <s1 title="Batik Metrics">
-            <p>The following numbers are as of March 14th 2003</p>
+            <p>The following numbers are as of July 10th 2003</p>
 
             <p><strong>Modules Binary size</strong></p>
             <table>
@@ -275,26 +260,26 @@
                         (batik-awt-util.jar, 
                         org.apache.batik.ext.awt and 
                         org.apache.batik.ext.swing)</td>
-                    <td>354,607</td>
+                    <td>354,700</td>
                 </tr>
                 <tr>
                     <td>Bridge module (batik-bridge.jar,
                     org.apache.batik.bridge)</td>
-                    <td>233,283</td>
+                    <td>240,925</td>
                 </tr>
                 <tr>
                     <td>CSS 2 support (batik-css.jar,
                     org.apache.batik.css)</td>
-                    <td>220,335</td>
+                    <td>221,112</td>
                 </tr>
                 <tr>
                     <td>Batik DOM support (batik-dom.jar, 
                         org.apache.batik.dom)</td>
-                    <td>78,634</td>
+                    <td>79,168</td>
                 </tr>
                 <tr>
                     <td>W3C and XML APIs (batik-ext.jar, org.w3c)</td>
-                    <td>76,369</td>
+                    <td>76,733</td>
                 </tr>
                 <tr>
                     <td>Sample extensions (batik-extensions.jar,
@@ -304,52 +289,52 @@
                 <tr>
                     <td>User interface utilities (batik-gui-util.jar,
                     org.apache.batik.dom)</td>
-                    <td>134,090</td>
+                    <td>135,636</td>
                 </tr>
                 <tr>
                     <td>GVT  (batik-gvt.jar,
                     org.apache.batik.gvt)</td>
-                    <td>140,355</td>
+                    <td>143,429</td>
                 </tr>
                 <tr>
                     <td>Micro Parsers  (batik-parser.jar,
                     org.apache.batik.parser)</td>
-                    <td>38,018</td>
+                    <td>35,078</td>
                 </tr>
                 <tr>
                     <td>Scripting engines infrastructure  (batik-script.jar,
                     org.apache.batik.script)</td>
-                    <td>27,658</td>
+                    <td>30,842</td>
                 </tr>
                 <tr>
                     <td>Batik SVG Dom Implementation  (batik-svg-dom.jar,
                     org.apache.batik.dom.svg)</td>
-                    <td>377,451</td>
+                    <td>376,951</td>
                 </tr>
                 <tr>
                     <td>SVG Generator (batik-svggen.jar, 
                         includes SVG font converter)</td>
-                    <td>174,039</td>
+                    <td>162,171</td>
                 </tr>
                 <tr>
                     <td>JSVG Canvas (batik-swing.jar,
                         org.apache.batik.swing)</td>
-                    <td>121,246</td>
+                    <td>126,040</td>
                 </tr>
                 <tr>
                     <td>Transcoder module (batik-transcoder.jar,
                     org.apache.batik.transcoder)</td>
-                    <td>61,451</td>
+                    <td>61,780</td>
                 </tr>
                 <tr>
                     <td>Utilities (batik-util.jar, org.apache.batik.util 
                         and org.apache.batik.i18n)</td>
-                    <td>74,414</td>
+                    <td>75,679</td>
                 </tr>
                 <tr>
                     <td>XML Parsing utilities (batik-xml.jar,
                     org.apache.batik.xml)</td>
-                    <td>19,864</td>
+                    <td>19,876</td>
                 </tr>
             </table>
 
@@ -358,7 +343,7 @@
             <table>
                 <tr>
                     <td>ECMA Script Engine (js.jar)</td>
-                    <td>593,062</td>
+                    <td>593,919</td>
                 </tr>
 
                 <tr>
@@ -373,46 +358,23 @@
 
                 <tr>
                     <td>FOP PDF Transcoder (pdf-transcoder.jar)</td>
-                    <td>302,844</td>
+                    <td>302,896</td>
                 </tr>
             </table>
 
-            <p><strong>Lines of code</strong></p>
+            <p><strong>Source Metrics</strong></p>
 
-            <p>The following numbers include comments and empty lines. </p>
             <table>
                 <tr>
-                    <td>Number of source lines overall</td>
-                    <td>243,450 (100%)</td>
+                    <td>Number of source lines overall (includes comments and empty lines)</td>
+                    <td>242,137</td>
                 </tr>
-                <tr>
-                    <td>Number of source lines, W3C SVG DOM Binding</td>
-                    <td>4,996 (2%)</td>
-                </tr>
-                <tr>
-                    <td>Number of Batik specific source lines</td>
-                    <td>238,454 (98%)</td>
-                </tr>
-            </table>
-
-            <p><strong>Source Files</strong></p>
-            <table>
                 <tr>
                     <td>Number of source files overall</td>
-                    <td>1,346 (100%)</td>
-                </tr>
-                <tr>
-                    <td>Number of source files, W3C DOM Binding</td>
-                    <td>190 (15%)</td>
-                </tr>
-                <tr>
-                    <td>Number of Batik specific source files</td>
-                    <td>1,156 (85%)</td>
+                    <td>1,348</td>
                 </tr>
             </table>
 
         </s1>
-
-
     </body>
 </document>

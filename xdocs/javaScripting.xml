@@ -213,11 +213,11 @@ canvas.getUpdateManager().getUpdateRunnableQueue().
 
       The manifest of this jar file must contains an entry of the form:
       <br/><br/>
-      <code>Script-Handler: </code><em>classname</em><br/><br/>
+      <code>SVG-Handler-Class: </code><em>classname</em><br/><br/>
 
       Where <em>classname</em> must be the name of a class which
       implements the
-      <code>org.apache.batik.script.ScriptHandler</code> interface.
+      <code>org.w3c.dom.svg.EventListenerInitializer</code> interface.
       See the javadoc of this interface for more details.
       <br/>
 
