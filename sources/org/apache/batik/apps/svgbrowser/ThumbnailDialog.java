@@ -48,6 +48,10 @@ import org.apache.batik.swing.svg.SVGDocumentLoaderEvent;
 
 import org.apache.batik.util.gui.resource.ResourceManager;
 
+import org.apache.batik.gvt.CanvasGraphicsNode;
+import org.apache.batik.gvt.CompositeGraphicsNode;
+import org.apache.batik.gvt.GraphicsNode;
+
 import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.svg.SVGSVGElement;
 
@@ -106,7 +110,8 @@ public class ThumbnailDialog extends JDialog {
         // register listeners to maintain consistency
         this.svgCanvas = svgCanvas;
         svgCanvas.addGVTTreeRendererListener(new ThumbnailGVTListener());
-        svgCanvas.addSVGDocumentLoaderListener(new ThumbnailDocumentListener());
+        svgCanvas.addSVGDocumentLoaderListener(new ThumbnailDocumentListener());        svgCanvas.addComponentListener(new ThumbnailCanvasComponentListener());
+
 
         // create the thumbnail
         svgThumbnailCanvas = new JGVTComponent();
@@ -128,6 +133,16 @@ public class ThumbnailDialog extends JDialog {
         updateThumbnailRenderingTransform();
     }
 
+    protected CanvasGraphicsNode getCanvasGraphicsNode(GraphicsNode gn) {
+        if (!(gn instanceof CompositeGraphicsNode))
+            return null;
+        CompositeGraphicsNode cgn = (CompositeGraphicsNode)gn;
+        gn = (GraphicsNode)cgn.getChildren().get(0);
+        if (!(gn instanceof CanvasGraphicsNode))
+            return null;
+        return (CanvasGraphicsNode)gn;
+    }
+
     /**
      * Updates the thumbnail component rendering transform.
      */
@@ -147,6 +162,19 @@ public class ThumbnailDialog extends JDialog {
                 double s = Math.min(sx, sy);
                 Tx = AffineTransform.getScaleInstance(s, s);
             }
+
+            GraphicsNode gn = svgCanvas.getGraphicsNode();
+            CanvasGraphicsNode cgn = getCanvasGraphicsNode(gn);
+            AffineTransform vTx = cgn.getViewingTransform();
+            if ((vTx != null) && !vTx.isIdentity()) {
+                try {
+                    AffineTransform invVTx = vTx.createInverse();
+                    Tx.concatenate(invVTx);
+                } catch (NoninvertibleTransformException nite) {
+                    /* nothing */
+                }
+            }
+
             svgThumbnailCanvas.setRenderingTransform(Tx);
             overlay.synchronizeAreaOfInterest();
         }
@@ -258,6 +286,17 @@ public class ThumbnailDialog extends JDialog {
      * resized properly.
      */
     protected class ThumbnailComponentListener extends ComponentAdapter {
+
+        public void componentResized(ComponentEvent e) {
+            updateThumbnailRenderingTransform();
+        }
+    }
+
+    /**
+     * Used to allow the SVG document being displayed by the thumbnail to be
+     * resized properly when parent resizes.
+     */
+    protected class ThumbnailCanvasComponentListener extends ComponentAdapter {
 
         public void componentResized(ComponentEvent e) {
             updateThumbnailRenderingTransform();
