@@ -29,6 +29,7 @@ import org.apache.batik.gvt.event.GraphicsNodeKeyListener;
 import org.apache.batik.gvt.event.GraphicsNodeEventFilter;
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.Mask;
+import org.apache.batik.gvt.filter.Clip;
 
 /**
  * The base class for all graphics nodes. A GraphicsNode encapsulates
@@ -101,16 +102,16 @@ public interface GraphicsNode {
     boolean isVisible();
 
     /**
-     * Sets the clipping area of this node.
-     * @param newClippingArea the new clipping area of this node
+     * Sets the clipping filter for this node.
+     * @param newClipper the new clipping filter of this node
      */
-    void setClippingArea(Shape newClippingArea);
+    void setClip(Clip newClipper);
 
     /**
-     * Returns the clipping area of this node or null if any.
-     * @return the clipping area of this node or null if any
+     * Returns the clipping filter of this node or null if any.
+     * @return the clipping filter of this node or null if any
      */
-    Shape getClippingArea();
+    Clip getClip();
 
     /**
      * Maps the specified key to the specified value in the rendering

@@ -8,16 +8,16 @@
 
 package org.apache.batik.gvt.filter;
 
-import org.apache.batik.gvt.GraphicsNode;
+import java.awt.Shape;
 
 /**
  * Implements a clip operation.  This is similar to the mask operation
- * except it only use the outline of the given Graphicsnode.
+ * except it uses a '1 bit' mask (it's normally anti-aliased, but
+ * shouldn't have any fluctions in side the outline of the shape.).
  *
  * @author <a href="mailto:Thomas.DeWeeese@Kodak.com">Thomas DeWeese</a>
- * @version $Id$
- */
-public interface ClipRable extends Filter {
+ * @version $Id$ */
+public interface Clip extends Filter {
 
       /**
        * The source to be clipped by the outline of the clip node.
@@ -31,17 +31,18 @@ public interface ClipRable extends Filter {
        */
     public Filter getSource();
 
-      /**
-       * The clipping path to that described by gn. Only the outline
-       * of gn will be used (GraphicsNode.getOutline()).
-       * @param gn The graphics node that defines the clipping path.
-       */
-    public void setClipNode(GraphicsNode gn);
+    /**
+     * Set the clip path to use.
+     * The path will be filled with opaque white, to define the
+     * the clipping mask.
+     * @param clipPath The clip path to use
+     */
+    public void setClipPath(Shape clipPath);
 
       /**
-       * Returns the Graphics node that the clip operation will use to
-       * define the clipping path.
-       * @return The graphics node that defines the clipping path.
+       * Returns the Shape that the Clip will use to
+       * define the clip path.
+       * @return The shape that defines the clip path.
        */
-    public GraphicsNode getClipNode();
+    public Shape getClipPath();
 }

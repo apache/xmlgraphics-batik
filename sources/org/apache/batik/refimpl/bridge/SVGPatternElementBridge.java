@@ -30,6 +30,11 @@ import org.apache.batik.util.UnitProcessor;
 
 import org.apache.batik.refimpl.gvt.AffineTransformSourceBoundingBox;
 import org.apache.batik.refimpl.gvt.ConcretePatternPaint;
+
+import org.apache.batik.gvt.filter.Filter;
+import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
+import org.apache.batik.refimpl.gvt.filter.ConcreteClipRable;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.css.CSSPrimitiveValue;
@@ -216,7 +221,16 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
                     = gvtFactory.createCompositeGraphicsNode(); // new CompositeGraphicsNode();
 
                 newPatternContentNode.getChildren().add(patternContentNode);
-                newPatternContentNode.setClippingArea(viewBox);
+
+                GraphicsNodeRableFactory gnrFactory
+                    = ctx.getGraphicsNodeRableFactory();
+
+                Filter filter = gnrFactory.createGraphicsNodeRable
+                    (newPatternContentNode);
+
+                newPatternContentNode.setClip
+                    (new ConcreteClipRable(filter, viewBox));
+
                 patternContentNode = newPatternContentNode;
             }
         } else{

@@ -35,6 +35,7 @@ import org.apache.batik.gvt.StrokeShapePainter;
 
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
+import org.apache.batik.gvt.filter.Clip;
 import org.apache.batik.gvt.filter.Mask;
 import org.apache.batik.gvt.filter.FilterRegion;
 
@@ -133,7 +134,7 @@ public class CSSUtilities implements SVGConstants {
       * Returns the <tt>Shape</tt> referenced by the input
       * element's <tt>clip</tt> attribute.
       */
-    public static Shape convertClipPath(Element clipedElement,
+    public static Clip convertClipPath(Element clipedElement,
                                         GraphicsNode gn,
                                         BridgeContext ctx) {
          CSSStyleDeclaration decl

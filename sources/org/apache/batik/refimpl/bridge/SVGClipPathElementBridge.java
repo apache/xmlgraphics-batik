@@ -19,9 +19,16 @@ import org.apache.batik.bridge.ClipBridge;
 import org.apache.batik.bridge.GVTBuilder;
 import org.apache.batik.bridge.ObjectBoundingBoxViewport;
 import org.apache.batik.bridge.Viewport;
+
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.filter.Clip;
+import org.apache.batik.gvt.filter.Filter;
+import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
+
 import org.apache.batik.parser.AWTTransformProducer;
 import org.apache.batik.refimpl.gvt.AffineTransformSourceBoundingBox;
+import org.apache.batik.refimpl.gvt.filter.ConcreteClipRable;
+
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.SVGUtilities;
 import org.apache.batik.util.UnitProcessor;
@@ -47,7 +54,7 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
      * Returns the <tt>Shape</tt> referenced by the input element's
      * <tt>clip-path</tt> attribute.
      */
-    public Shape createClip(BridgeContext bridgeContext,
+    public Clip createClip(BridgeContext bridgeContext,
                             GraphicsNode gn,
                             Element clipElement,
                             Element clipedElement) {
@@ -75,10 +82,14 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
                 GraphicsNode node
                     = builder.build(bridgeContext, e) ;
                 if(node != null){
+                      // Apply the child clip if any...
                     Area outline = new Area(node.getOutline());
-                    Shape clip = node.getClippingArea();
+                    Clip clip = node.getClip();
                     if (clip != null) {
-                        outline.subtract(new Area(clip));  // child clip applied
+                        Shape clipPath = clip.getClipPath();
+                        if (clipPath != null) {
+                            outline.subtract(new Area(clipPath));
+                        }
                     }
                     area.add(outline);
                 }
@@ -105,11 +116,11 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
         Shape clipPath = childrenClipPath;
 
         // Get the clip-path property of this clipPath Element in user space
-        Shape clipElementClipPath =
+        Clip clipElementClipPath =
             CSSUtilities.convertClipPath(clipElement, gn, bridgeContext);
         if (clipElementClipPath != null) {
             Area merge = new Area(clipPath);
-            merge.subtract(new Area(clipElementClipPath));
+            merge.subtract(new Area(clipElementClipPath.getClipPath()));
             clipPath = merge;
         }
 
@@ -123,7 +134,16 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
 
         clip.setWindingRule(wr);
         bridgeContext.setCurrentViewport(oldViewport); // restore the viewport
-        return clip;
+
+        // OTHER PROBLEM: SHOULD TAKE MASK REGION INTO ACCOUNT
+        Filter filter = gn.getFilter();
+        if (filter == null) {
+              // Make the initial source as a RenderableImage
+            GraphicsNodeRableFactory gnrFactory
+                = bridgeContext.getGraphicsNodeRableFactory();
+            filter = gnrFactory.createGraphicsNodeRable(gn);
+        }
+        return new ConcreteClipRable(filter, clip);
     }
 
     public void update(BridgeMutationEvent evt) {

@@ -21,6 +21,7 @@ import org.apache.batik.bridge.GraphicsNodeBridge;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.Filter;
+import org.apache.batik.gvt.filter.Clip;
 import org.apache.batik.gvt.filter.Mask;
 import org.apache.batik.parser.AWTTransformProducer;
 import org.apache.batik.util.SVGConstants;
@@ -65,8 +66,8 @@ public class SVGSwitchElementBridge
         Mask mask = CSSUtilities.convertMask(element, gn, ctx);
         gn.setMask(mask);
 
-        Shape clip = CSSUtilities.convertClipPath(element, gn, ctx);
-        gn.setClippingArea(clip);
+        Clip clip = CSSUtilities.convertClipPath(element, gn, ctx);
+        gn.setClip(clip);
 
         // <!> TODO only when binding is enabled
         BridgeEventSupport.addDOMListener(ctx, element);
