@@ -213,7 +213,7 @@ public class SpecularLightingRable8Bit
         rc.setAreaOfInterest(aoi);
         rc.setTransform(scale);
 
-        System.out.println("scaleX / scaleY : " + scaleX + "/" + scaleY);
+        // System.out.println("scaleX / scaleY : " + scaleX + "/" + scaleY);
 
         RenderingHints rh = rc.getRenderingHints();
         bounds = scale.createTransformedShape(aoi).getBounds();
@@ -241,11 +241,11 @@ public class SpecularLightingRable8Bit
                                 tx, ty);
         
         if(shearAt.isIdentity()){
-            System.out.println("Scale only transform");
+            // System.out.println("Scale only transform");
             return specularRed;
         }
        
-        System.out.println("Transform has translate and/or shear and rotate");
+        // System.out.println("Transform has translate and/or shear and rotate");
         CachableRed cr 
             = new RenderedImageCachableRed(specularRed);
 

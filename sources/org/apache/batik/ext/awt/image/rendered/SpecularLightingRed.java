@@ -74,14 +74,6 @@ public class SpecularLightingRed extends AbstractRed{
         this.scaleX = scaleX;
         this.scaleY = scaleY;
 
-        /*ColorModel cm 
-            = new DirectColorModel(32, 
-                                   0x00ff0000,// Red
-                                   0x0000ff00,// Green
-                                   0x000000ff,// Blue
-                                   0xff000000 // Alpha
-                                   );*/
-
         ColorModel cm = GraphicsUtil.Linear_sRGB_Unpre;
 
         SampleModel sm = 
@@ -92,38 +84,22 @@ public class SpecularLightingRed extends AbstractRed{
              litRegion.x, litRegion.y, null);
     }
 
-    /**
-     * Lookup tables for RGB lookups. The linearToSRGBLut is used
-     * when noise values are considered to be on a linearScale. The
-     * linearToLinear table is used when the values are considered to
-     * be on the sRGB scale to begin with.
-     */
-    /*private static final int linearToSRGBLut[] = new int[256];
-    private static final double GAMMA = 1./2.4;
-    static{
-        for(int i=0; i<256; i++){
-            double value = i/255.;
-            if(value <= 0.0031308)
-                value *= 12.92;
-            else
-                value = 1.055 * Math.pow(value, GAMMA) - 0.055;
-
-            linearToSRGBLut[i] = (int)Math.round(value*255.);
-        }
-        }*/
-
     public WritableRaster copyData(WritableRaster wr){
-        double[] lightColor = light.getColor();
+        // Copy variable on stack for faster access in thight loop
+        final double scaleX = this.scaleX;
+        final double scaleY = this.scaleY;
+
+        final double[] lightColor = light.getColor();
         
-        int w = wr.getWidth();
-        int h = wr.getHeight();
-        int minX = wr.getMinX();
-        int minY = wr.getMinY();
+        final int w = wr.getWidth();
+        final int h = wr.getHeight();
+        final int minX = wr.getMinX();
+        final int minY = wr.getMinY();
 
-        DataBufferInt db = (DataBufferInt)wr.getDataBuffer();
-        int[] pixels = db.getBankData()[0];
+        final DataBufferInt db = (DataBufferInt)wr.getDataBuffer();
+        final int[] pixels = db.getBankData()[0];
 
-        SinglePixelPackedSampleModel sppsm;
+        final SinglePixelPackedSampleModel sppsm;
         sppsm = (SinglePixelPackedSampleModel)wr.getSampleModel();
 
         final int offset = 
@@ -131,10 +107,8 @@ public class SpecularLightingRed extends AbstractRed{
              sppsm.getOffset(minX-wr.getSampleModelTranslateX(), 
                              minY-wr.getSampleModelTranslateY()));
         // int offset = db.getOffset();
-        int scanStride = 
-            ((SinglePixelPackedSampleModel)wr.getSampleModel())
-            .getScanlineStride();
-        int adjust = scanStride - w;
+        final int scanStride = sppsm.getScanlineStride();
+        final int adjust = scanStride - w;
         int p = offset;
         int r=0, g=0, b=0, a=0;
         int i=0, j=0;
@@ -144,56 +118,120 @@ public class SpecularLightingRed extends AbstractRed{
         double y = scaleY*minY;
         double ksPwNHns = 0, norm = 0;
 
-        double[] L = new double[3], N;
-        double[][][] NA = bumpMap.getNormalArray(minX, minY, w, h);
+        // final double[] L = new double[3];
+        double[] N;
+        final double[][][] NA = bumpMap.getNormalArray(minX, minY, w, h);
 
-        for(i=0; i<h; i++){
-            for(j=0; j<w; j++){
-                // Get Normal 
-                N = NA[i][j];
+        if(!light.isConstant()){
+            double[] L;
+            final double[][][] LA = light.getLightMap(x, y, scaleX, scaleY, w, h, NA);
+            for(i=0; i<h; i++){
+                for(j=0; j<w; j++){
+                    // Get Normal 
+                    N = NA[i][j];
+                    
+                    // Get Light Vector
+                    // light.getLight(x, y, N[3], L);
+                    L = LA[i][j];
 
-                // Get Light Vector
-                light.getLight(x, y, N[3], L);
-                // System.out.println("L : " + L[0] + "/" + L[1] + "/" + L[2]);
-
-                // Compute Half-way vector
-                L[2] += 1;
-                norm = Math.sqrt(L[0]*L[0] + L[1]*L[1] + L[2]*L[2]);
-                if(norm > 0){
-                    L[0] /= norm;
-                    L[1] /= norm;
-                    L[2] /= norm;
+                    // Compute Half-way vector
+                    L[2] += 1;
+                    norm = Math.sqrt(L[0]*L[0] + L[1]*L[1] + L[2]*L[2]);
+                    if(norm > 0){
+                        L[0] /= norm;
+                        L[1] /= norm;
+                        L[2] /= norm;
+                    }
+                    
+                    ksPwNHns = 255.*ks*Math.pow(N[0]*L[0] + N[1]*L[1] + N[2]*L[2],
+                                                specularExponent);
+                    
+                    r = (int)(ksPwNHns*lightColor[0]);
+                    g = (int)(ksPwNHns*lightColor[1]);
+                    b = (int)(ksPwNHns*lightColor[2]);
+                    
+                    
+                    // If any high bits are set we are not in range.
+                    // If the highest bit is set then we are negative so
+                    // clamp to zero else we are > 255 so clamp to 255.
+                    if ((r & 0xFFFFFF00) != 0)
+                        r = ((r & 0x80000000) != 0)?0:255;
+                    if ((g & 0xFFFFFF00) != 0)
+                        g = ((g & 0x80000000) != 0)?0:255;
+                    if ((b & 0xFFFFFF00) != 0)
+                        b = ((b & 0x80000000) != 0)?0:255;
+                    
+                    a = r > g ? r : g;
+                    a = a > b ? a : b;
+                    
+                    pixels[p++] = (a << 24
+                                   |
+                                   r << 16
+                                   |
+                                   g << 8
+                                   |
+                                   b);
+                    
+                    x += scaleX;
                 }
-
-                // System.out.println("N : " + N[0] + "/" + N[1] + "/" + N[2]);
-                // System.out.println("L : " + L[0] + "/" + L[1] + "/" + L[2]);
- 
-                ksPwNHns = 255.*ks*Math.pow(N[0]*L[0] + N[1]*L[1] + N[2]*L[2],
-                                            specularExponent);
-
-                r = (int)(ksPwNHns*lightColor[0]);
-                g = (int)(ksPwNHns*lightColor[1]);
-                b = (int)(ksPwNHns*lightColor[2]);
-
-                r = r < 0 ? 0 : (r > 255 ? 255 : r);
-                g = g < 0 ? 0 : (g > 255 ? 255 : g);
-                b = b < 0 ? 0 : (b > 255 ? 255 : b);
-                a = r > g ? r : g;
-                a = a > b ? a : b;
-
-                pixels[p++] = (a << 24
-                               |
-                               r << 16
-                               |
-                               g << 8
-                               |
-                               b);
-
-                x += scaleX;
+                x = scaleX*minX;
+                y += scaleY;
+                p += adjust;
             }
-            x = scaleX*minX;
-            y += scaleY;
-            p += adjust;
+        }
+        else{
+            // Get constant light vector
+            double[] L = new double[3];
+            light.getLight(0, 0, 0, L);
+
+            // Compute Half-way vector
+            L[2] += 1;
+            norm = Math.sqrt(L[0]*L[0] + L[1]*L[1] + L[2]*L[2]);
+            if(norm > 0){
+                L[0] /= norm;
+                L[1] /= norm;
+                L[2] /= norm;
+            }
+
+            for(i=0; i<h; i++){
+                for(j=0; j<w; j++){
+                    // Get Normal 
+                    N = NA[i][j];
+                    
+                    ksPwNHns = 255.*ks*Math.pow(N[0]*L[0] + N[1]*L[1] + N[2]*L[2],
+                                                specularExponent);
+                    
+                    r = (int)(ksPwNHns*lightColor[0]);
+                    g = (int)(ksPwNHns*lightColor[1]);
+                    b = (int)(ksPwNHns*lightColor[2]);
+                    
+                    // If any high bits are set we are not in range.
+                    // If the highest bit is set then we are negative so
+                    // clamp to zero else we are > 255 so clamp to 255.
+                    if ((r & 0xFFFFFF00) != 0)
+                        r = ((r & 0x80000000) != 0)?0:255;
+                    if ((g & 0xFFFFFF00) != 0)
+                        g = ((g & 0x80000000) != 0)?0:255;
+                    if ((b & 0xFFFFFF00) != 0)
+                        b = ((b & 0x80000000) != 0)?0:255;
+                    
+                    a = r > g ? r : g;
+                    a = a > b ? a : b;
+                    
+                    pixels[p++] = (a << 24
+                                   |
+                                   r << 16
+                                   |
+                                   g << 8
+                                   |
+                                   b);
+                    
+                    x += scaleX;
+                }
+                x = scaleX*minX;
+                y += scaleY;
+                p += adjust;
+            }        
         }
         
         return wr;
