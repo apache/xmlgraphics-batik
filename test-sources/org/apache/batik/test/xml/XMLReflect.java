@@ -126,13 +126,43 @@ public class XMLReflect implements XMLReflectConstants{
      * Sets the property with given name on object to the input value
      */
     public static void setObjectProperty(Object obj,
-                                          String propertyName,
-                                          Object propertyValue)
+                                         String propertyName,
+                                         Object propertyValue)
         throws Exception {
         Class cl = obj.getClass();
-        Method m = cl.getMethod("set" + propertyName,
-                                new Class[]{propertyValue.getClass()});
-
+        Method m = null;
+        try {
+            m = cl.getMethod("set" + propertyName,
+                             new Class[]{propertyValue.getClass()});
+            
+        } catch (NoSuchMethodException e) {
+            //
+            // Check if the type was one of the primitive types, Double,
+            // Float, Boolean or Integer
+            //
+            Class propertyClass = propertyValue.getClass();
+            try {
+                if (propertyClass == java.lang.Double.class) {
+                    m = cl.getMethod("set" + propertyName,
+                                     new Class[] {java.lang.Double.TYPE});
+                } else if (propertyClass == java.lang.Float.class) {
+                    m = cl.getMethod("set" + propertyName,
+                                     new Class[] {java.lang.Float.TYPE});
+                } else if (propertyClass == java.lang.Integer.class) {
+                    m = cl.getMethod("set" + propertyName,
+                                     new Class[] {java.lang.Integer.TYPE});
+                } else if (propertyClass == java.lang.Boolean.class) {
+                    m = cl.getMethod("set" + propertyName,
+                                     new Class[] {java.lang.Boolean.TYPE});
+                } else {
+                    System.err.println("Could not find a set method for property : " + propertyName 
+                                       + " with value " + propertyValue + " and class " + propertyValue.getClass().getName());
+                    throw e;
+                }
+            } catch (NoSuchMethodException nsme) {
+                throw nsme;
+            }
+        }
         if(m != null){
             m.invoke(obj, new Object[]{propertyValue});
         }
