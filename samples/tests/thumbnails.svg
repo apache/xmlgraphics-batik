@@ -226,12 +226,12 @@
         <g transform="translate(200, 0) scale(1.5, 1.5)">
             <!-- The <svg> element in a symbol to be able to resize it -->
             <symbol id="mask" viewBox="0 0 450 500">
-                <use xlink:href="mask.svg#body"/>
+                <use xlink:href="maskRegions.svg#body"/>
             </symbol>
 
             <use xlink:href="#mask" width="45" height="50"/>
 
-            <a xlink:href="mask.svg" xlink:show="new">
+            <a xlink:href="maskRegions.svg" xlink:show="new">
                 <rect width="45" height="50"
                     style="fill-opacity:0;"/>
             </a>

@@ -157,7 +157,8 @@
         <!--   chain region: [objectBoundingBox], undefined           -->
         <!--   flood region: undefined                                -->
         <!--                                                          -->
-        <!-- Expected fill region: (0, 0, 450, 450) in user space     -->
+        <!-- Expected fill region: (-10%, -10%, 120%, 120%) in user   -->
+        <!-- space                                                    -->
         <!-- ======================================================== -->
         <filter id="filterRegion_2_0" primitiveUnits="objectBoundingBox">
             <feFlood style="flood-color:red;" />
