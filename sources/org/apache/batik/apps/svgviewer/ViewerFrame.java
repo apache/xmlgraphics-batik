@@ -1318,6 +1318,7 @@ public class ViewerFrame
             reloadAction.update(true); // in case we want to try again
             statusBar.setMainMessage("");
             statusBar.setMessage(resources.getString("Document.failed"));
+            displayError(e.getException());
         }
     }
 
