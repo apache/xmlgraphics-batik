@@ -125,6 +125,8 @@ public class PadRed extends AbstractRed {
         final int base;
         final int scanStride;
         final int pixels[];
+        final int zeros[];
+        final int x0, y0;
 
         public ZeroRecter_INT_PACK(WritableRaster wr) {
             super(wr);
@@ -134,32 +136,38 @@ public class PadRed extends AbstractRed {
 
             scanStride = sppsm.getScanlineStride();
             DataBufferInt db = (DataBufferInt)wr.getDataBuffer();
+            x0 = wr.getMinY();
+            y0 = wr.getMinX();
             base = (db.getOffset() + 
-                    sppsm.getOffset(0-wr.getSampleModelTranslateX(), 
-                                    0-wr.getSampleModelTranslateY()));
+                    sppsm.getOffset(x0-wr.getSampleModelTranslateX(), 
+                                    y0-wr.getSampleModelTranslateY()));
 
             pixels = db.getBankData()[0];
+            if (wr.getWidth() > 10)
+                zeros = new int[wr.getWidth()];
+            else
+                zeros = null;
         }
 
         public void zeroRect(Rectangle r) {
-            final int rbase = base+r.x + r.y*scanStride;
+            final int rbase = base+(r.x-x0) + (r.y-y0)*scanStride;
 
-            if ((r.width > 10) && (r.height>5)) {
+            if (r.width > 10) {
                 // Longer runs use arraycopy...
-                int [] zeros = new int[r.width];
-
-                // Access the pixel data array
                 for (int y=0; y<r.height; y++) {
                     int sp = rbase + y*scanStride;
-                    System.arraycopy(zeros, 0, pixels, sp, zeros.length);
+                    System.arraycopy(zeros, 0, pixels, sp, r.width);
                 }
             } else {
                 // Small runs quicker to avoid func call.
+                int sp = rbase;
+                int end = sp +r.width;
+                int adj = scanStride-r.width;
                 for (int y=0; y<r.height; y++) {
-                    int sp = rbase + y*scanStride;
-                    final int end = sp + r.width;
                     while (sp < end)
                         pixels[sp++] = 0;
+                    sp  += adj;
+                    end += scanStride;
                 }
             }
         }

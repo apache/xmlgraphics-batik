@@ -115,6 +115,8 @@ public class FilterResRable8Bit extends AbstractRable
         //   Else, return the source as is.
         float filterResolutionX = this.filterResolutionX;
         float filterResolutionY = this.filterResolutionY;
+        // System.out.println("FilterResRable: " + filterResolutionX + "x" +
+        //                    filterResolutionY);
 
         // Find out the renderable area
         Rectangle2D imageRect = getBounds2D();

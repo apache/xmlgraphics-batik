@@ -165,11 +165,10 @@ public class GaussianBlurRed8Bit extends AbstractRed {
 
         //compute d
         int diam = (int)Math.floor(DSQRT2PI*stdDev+0.5f);
-        int r = diam/2;
         if (diam%2 == 0) 
-            return 3*r-1; // even case
+            return diam-1 + diam/2; // even case
         else
-            return 3*r;   // Odd case
+            return diam-2 + diam/2;   // Odd case
     }
 
     /*
@@ -251,7 +250,7 @@ public class GaussianBlurRed8Bit extends AbstractRed {
             tmpR1 = tmpR2;
             tmpR2 = tmp;
         } else {
-            if (dX%2 == 0){
+            if ((dX&0x01) == 0){
                 tmpR1 = boxFilterH(tmpR1, tmpR1, 0,    0,   dX,   dX/2);
                 tmpR1 = boxFilterH(tmpR1, tmpR1, dX/2, 0,   dX,   dX/2-1);
                 tmpR1 = boxFilterH(tmpR1, tmpR1, dX-1, 0,   dX+1, dX/2);
@@ -271,7 +270,7 @@ public class GaussianBlurRed8Bit extends AbstractRed {
             }
             tmpR2 = convOp[1].filter(tmpR1, tmpR2);
         } else {
-            if (dY%2 == 0){
+            if ((dY&0x01) == 0){
                 tmpR1 = boxFilterV(tmpR1, tmpR1, skipX, 0,    dY,   dY/2);
                 tmpR1 = boxFilterV(tmpR1, tmpR1, skipX, dY/2, dY,   dY/2-1);
                 tmpR1 = boxFilterV(tmpR1, tmpR1, skipX, dY-1, dY+1, dY/2);
@@ -286,7 +285,8 @@ public class GaussianBlurRed8Bit extends AbstractRed {
         // System.out.println("Rasters  WR :" + wr.getBounds());
         // System.out.println("         tmp:" + tmpR2.getBounds());
         // System.out.println("      bounds:" + getBounds());
-        // System.out.println("         dx:" + dX + " Dy: " + dY);
+        // System.out.println("       skipX:" + skipX + 
+        //                    " dx:" + dX + " Dy: " + dY);
         tmpR2 = tmpR2.createWritableTranslatedChild(r.x, r.y);
         GraphicsUtil.copyData(tmpR2, wr);
 
