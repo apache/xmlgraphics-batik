@@ -22,6 +22,7 @@ import java.net.MalformedURLException;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.image.ImageTranscoder;
+import org.apache.batik.transcoder.Transcoder;
 import org.apache.batik.transcoder.image.JPEGTranscoder;
 import org.apache.batik.transcoder.image.PNGTranscoder;
 import org.apache.batik.transcoder.image.TIFFTranscoder;
@@ -35,7 +36,7 @@ import org.xml.sax.InputSource;
  */
 public class Main {
 
-    public static void writeImage(ImageTranscoder transcoder,
+    public static void writeImage(Transcoder transcoder,
                                   String uri, String output) {
         try {
             System.out.println("Converting "+uri+" to "+output);
@@ -133,13 +134,22 @@ public class Main {
         /*TranscoderFactory factory =
           ConcreteTranscoderFactory.getTranscoderFactoryImplementation();
         */
-        ImageTranscoder t = null;
+        Transcoder t = null;
         if (mimeType.equals("image/jpg") ||
             mimeType.equals("image/jpeg") ||
             mimeType.equals("image/jpe")) {
             t = new JPEGTranscoder();
         } else if (mimeType.equals("image/png")) {
             t = new PNGTranscoder();
+        } else if (mimeType.equals("application/pdf")) {
+            try {
+                Class cla = Class.forName("org.apache.fop.svg.PDFTranscoder");
+                Object obj = cla.newInstance();
+                t = (Transcoder)obj;
+            } catch(Exception e) {
+                t = null;
+                error("PDF transcoder could not be loaded");
+            }
         } else if (mimeType.equals("image/tiff")) {
             t = new TIFFTranscoder();
         }
@@ -186,8 +196,8 @@ public class Main {
 
                 if (directory != null) {
                     File output = new File(directory, uri);
-
-                    writeImage((ImageTranscoder)t,
+							
+                    writeImage((Transcoder)t,
                                url.toString(),
                                output.getAbsolutePath());
 
