@@ -19,7 +19,9 @@ import java.util.MissingResourceException;
 import java.util.WeakHashMap;
 
 import org.apache.batik.dom.events.DocumentEventSupport;
+
 import org.apache.batik.dom.traversal.TraversalSupport;
+
 import org.apache.batik.i18n.Localizable;
 import org.apache.batik.i18n.LocalizableSupport;
 
@@ -34,8 +36,11 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
 import org.w3c.dom.events.DocumentEvent;
 import org.w3c.dom.events.Event;
+import org.w3c.dom.events.EventListener;
+
 import org.w3c.dom.traversal.DocumentTraversal;
 import org.w3c.dom.traversal.NodeFilter;
 import org.w3c.dom.traversal.NodeIterator;
@@ -250,8 +255,9 @@ public abstract class AbstractDocument
                 break;
 
             case PROCESSING_INSTRUCTION_NODE:
-                result = createProcessingInstruction(importedNode.getNodeName(),
-                                                     importedNode.getNodeValue());
+                result = createProcessingInstruction
+                    (importedNode.getNodeName(),
+                     importedNode.getNodeValue());
                 deep = false;
                 break;
 
@@ -297,7 +303,9 @@ public abstract class AbstractDocument
     /**
      * Returns an ElementsByTagName object from the cache, if any.
      */
-    public ElementsByTagName getElementsByTagName(Node n, String ns, String ln) {
+    public ElementsByTagName getElementsByTagName(Node n,
+                                                  String ns,
+                                                  String ln) {
         if (elementsByTagNames == null) {
             return null;
         }
@@ -334,7 +342,8 @@ public abstract class AbstractDocument
     public Event createEvent(String eventType) throws DOMException {
         if (documentEventSupport == null) {
             documentEventSupport =
-                ((AbstractDOMImplementation)implementation).createDocumentEventSupport();
+                ((AbstractDOMImplementation)implementation).
+                    createDocumentEventSupport();
         }
 	return documentEventSupport.createEvent(eventType);
     }
@@ -353,7 +362,8 @@ public abstract class AbstractDocument
         if (traversalSupport == null) {
             traversalSupport = new TraversalSupport();
         }
-        return traversalSupport.createNodeIterator(this, root, whatToShow, filter,
+        return traversalSupport.createNodeIterator(this, root, whatToShow,
+                                                   filter,
                                                    entityReferenceExpansion);
     }
 
@@ -366,7 +376,8 @@ public abstract class AbstractDocument
                                        NodeFilter filter, 
                                        boolean entityReferenceExpansion)
         throws DOMException {
-        return TraversalSupport.createTreeWalker(this, root, whatToShow, filter,
+        return TraversalSupport.createTreeWalker(this, root, whatToShow,
+                                                 filter,
                                                  entityReferenceExpansion);
     }
 

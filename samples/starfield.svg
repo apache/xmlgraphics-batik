@@ -115,14 +115,15 @@
         var showControlPanel = false
         var helpText1 = "Click on the title to show the control panel"
         var helpText2 = "Click on the title to hide the control panel"
-
+        var startDate;
+        var nframe;
 
         //
         // Decreases the number of stars. If numberOfStars is at his min value,
         // do nothing.
         //
         function decreaseNumberOfStars(evt) {
-            if (numberOfStars == starIncrement) {
+            if (numberOfStars == 0) {
                 return
             }
 
@@ -132,7 +133,7 @@
             updateText("number-label", numberOfStars)
 
             unitCount--
-            units.setAttributeNS(null, "width", ""+(unitCount * 10))
+            units.setAttributeNS(null, "width", unitCount * 10)
         }
 
         //
@@ -150,7 +151,7 @@
             updateText("number-label", numberOfStars)
 
             unitCount++
-            units.setAttributeNS(null, "width", ""+(unitCount * 10))
+            units.setAttributeNS(null, "width", unitCount * 10)
 
         }
 
@@ -170,6 +171,8 @@
             grp.replaceChild(newelt, elt)
         }
 
+        var itv;
+
         //
         // Starts the animation loops.
         //
@@ -183,32 +186,31 @@
             }
             updateText("help", helpText1)
 
-            setTimeout("animateStars()", 50, new Date(), 0)
-
-            startDate = new Date();
+            itv = setInterval("animateStars()", 50)
+ 
+            startDate = new Date()
+            nframe = 0
         }
 
         //
-        // The stars animation.
+        // Animates the stars.
         //
-        function animateStars(dt, n) {
+        function animateStars() {
             for (var i = 0; i < starIncrement * 10; i++) {            
                 stars[i].update()
             }
-            if (n < 10) {
-                n++
+            if (nframe < 10) {
+                nframe++
             } else {
                 var d = new Date()
-                var dt = d - dt
+                var dt = d - startDate
                 var val = Math.round(10000 / dt)
 
                 updateText("fps1", val);
                 updateText("fps2", val);
-                dt = d
-                n = 0
+                startDate = d
+                nframe = 0
             }
-
-            setTimeout("animateStars()", 50, dt, n)
         }
 
         //
@@ -220,10 +222,10 @@
                 showControlPanel = !showControlPanel
                 if (showControlPanel) {
                     updateText("help", helpText2)
-                    setTimeout("controlPanelAnimation()", 50, 20, 1)
+                    setTimeout(controlPanelAnimation, 50, 20, 1)
                 } else {
                     updateText("help", helpText1)
-                    setTimeout("controlPanelAnimation()", 50, 0, -1)
+                    setTimeout(controlPanelAnimation, 50, 0, -1)
                 }
             }            
         }
@@ -237,7 +239,7 @@
             elt.setAttributeNS(null, "transform", "translate(0 " + ((n - 100) * sgn) + ")");
 
             if (n < 200) {
-                setTimeout("controlPanelAnimation()", 50, n + 20, sgn)
+                setTimeout(controlPanelAnimation, 50, n + 20, sgn)
             } else {
                 controlPanelMoving = false;
             }

@@ -46,6 +46,15 @@ public class RepaintManager {
     protected boolean enabled;
 
     /**
+     * The repaint runnable.
+     */
+    protected Runnable repaintRunnable = new Runnable() {
+            public void run() {
+                repaint();
+            }
+        };
+
+    /**
      * Creates a new repaint manager.
      */
     public RepaintManager(UpdateManager um, ImageRenderer r) {
@@ -54,52 +63,22 @@ public class RepaintManager {
     }
     
     /**
-     * Provokes a repaint, if needed.
-     * @param b If true, waits until the repaint has finished.
+     * Repaints the dirty areas, if needed.
      */
-    public void repaint(boolean b) throws InterruptedException {
-        if (!enabled) {
-            return;
-        }
-        final UpdateTracker ut = updateManager.getUpdateTracker();
-        Runnable r = new Runnable() {
-                public void run() {
-                    if (ut.hasChanged()) {
-                        List dirtyAreas = ut.getDirtyAreas();
-                        if (dirtyAreas != null) {
-                            // Calls the UpdateManager methods
-                            // to allow events to be fired.
-                            updateManager.modifiedAreas(dirtyAreas);
-                            updateManager.updateRendering(dirtyAreas);
-                        }
-                        ut.clear();
-                    }
-                }
-            };
-        if (updateManager.getUpdateRunnableQueue().getThread() == null) {
-            return;
-        }
-        if (b) {
-            updateManager.getUpdateRunnableQueue().invokeAndWait(r);
-        } else {
-            updateManager.getUpdateRunnableQueue().invokeLater(r);
+    public void repaint() {
+        UpdateTracker ut = updateManager.getUpdateTracker();
+        if (ut.hasChanged()) {
+            List dirtyAreas = ut.getDirtyAreas();
+            if (dirtyAreas != null) {
+                // Calls the UpdateManager methods
+                // to allow events to be fired.
+                updateManager.modifiedAreas(dirtyAreas);
+                updateManager.updateRendering(dirtyAreas);
+            }
+            ut.clear();
         }
     }
 
-    /**
-     * Suspends the repaint management.
-     */
-    public void disable() {
-        enabled = false;
-    }
-
-    /**
-     * Suspends the repaint management.
-     */
-    public void enable() {
-        enabled = true;
-    }
-    
     /**
      * Call this to let the Repaint Manager know that certain areas
      * in the image have been modified and need to be rerendered..

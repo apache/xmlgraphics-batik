@@ -16,12 +16,12 @@ import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.apache.batik.dom.svg.SVGOMDocument;
 
@@ -30,9 +30,7 @@ import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.script.Interpreter;
 import org.apache.batik.script.InterpreterException;
 import org.apache.batik.script.InterpreterPool;
-import org.apache.batik.script.JavaFunction;
 
-import org.apache.batik.util.Lock;
 import org.apache.batik.util.RunnableQueue;
 import org.apache.batik.util.SVGConstants;
 
@@ -158,13 +156,13 @@ public class ScriptingEnvironment {
     }
     
 
-    private final static String EVENT_NAME = "evt";
-    private final static String ARG_NAME = "arg__";
+    private final static String EVENT_NAME = "event";
+    private final static String ALTERNATE_EVENT_NAME = "evt";
 
     /**
-     * The scripting lock.
+     * The timer for periodic or delayed tasks.
      */
-    protected Lock scriptingLock;
+    Timer timer = new Timer(true);
 
     /**
      * The update manager.
@@ -182,195 +180,81 @@ public class ScriptingEnvironment {
     protected RunnableQueue updateRunnableQueue;
 
     /**
-     * Whether the scripts must be suspended.
-     */
-    protected volatile boolean suspended;
-
-    /**
      * The bridge context.
      */
     protected BridgeContext bridgeContext;
-    
-    /**
-     * The suspend lock.
-     */
-    protected Object suspendLock = new Object();
 
+    /**
+     * The user-agent.
+     */
+    protected UserAgent userAgent;
+    
     /**
      * The document to manage.
      */
     protected Document document;
 
     /**
-     * The alert function.
-     */
-    protected JavaFunction alertFunction;
-
-    /**
-     * The live scripting threads.
-     */
-    protected List liveThreads =
-        Collections.synchronizedList(new LinkedList());
-
-    /**
-     * Whether this environment has been interrupted.
-     */
-    protected boolean interrupted;
-
-    /**
      * Creates a new ScriptingEnvironment.
      * @param um The update manager.
      */
     public ScriptingEnvironment(UpdateManager um) {
-        scriptingLock = new Lock();
         updateManager = um;
         bridgeContext = updateManager.getBridgeContext();
-        document = updateManager.getDocument();
+        userAgent     = bridgeContext.getUserAgent();
+        document      = updateManager.getDocument();
+        updateRunnableQueue = um.getUpdateRunnableQueue();
+    }
+
+    /**
+     * Creates a new Window object.
+     */
+    public Window createWindow(Interpreter interp, String lang) {
+        return new Window(interp, lang);
+    }
+
+    /**
+     * Creates a new Window object.
+     */
+    public Window createWindow() {
+        return new Window(null, null);
     }
 
     /**
      * Initializes the environment of the given interpreter.
      */
     public void initializeEnvironment(Interpreter interp, String lang) {
-        interp.bindObject("alert", getAlertFunction());
-        interp.bindObject("setTimeout", getSetTimeoutFunction(lang));
-    }
-
-    /**
-     * Returns the scripting lock.
-     */
-    public Lock getScriptingLock() {
-        return scriptingLock;
+        interp.bindObject("window", new Window(interp, lang));
     }
 
     /**
      * Runs an event handler.
      */
     public void runEventHandler(String script, Event evt, String lang) {
-        new EventHandlerThread(script, evt, lang).start();
-    }
-
-    /**
-     * Runs a function.
-     */
-    public void runFunction(String function,
-                            Object[] args,
-                            String lang,
-                            long delay) {
-        new FunctionCallThread(function, args, lang, delay).start();
-    }
-
-    /**
-     * Interrupts the scripts.
-     */
-    public void interruptScripts() {
-        synchronized (liveThreads) {
-            interrupted = true;
-            Iterator it = liveThreads.iterator();
-            while (it.hasNext()) {
-                scriptingLock.unlock();
-                ((Thread)it.next()).interrupt();
+        Interpreter interpreter = bridgeContext.getInterpreter(lang);
+        if (interpreter == null) {
+            if (userAgent != null) {
+                userAgent.displayError
+                    (new Exception("unknow language: " + lang));
             }
         }
-    }
 
-    /**
-     * Suspends the scripts.
-     */
-    public void suspendScripts() {
-        suspended = true;
-    }
 
-    /**
-     * Resumes the scripts.
-     */
-    public void resumeScripts() {
-        synchronized (suspendLock) {
-            suspended = false;
-            suspendLock.notifyAll();
-        }
-    }
-
-    /**
-     * Begins a script evaluation section.
-     */
-    public void beginScript() {
+        interpreter.bindObject(EVENT_NAME, evt);
+        interpreter.bindObject(ALTERNATE_EVENT_NAME, evt);
+            
         try {
-            scriptingLock.lock();
-        } catch (InterruptedException e) {
-            throw new StopScriptException();
+            interpreter.evaluate(script);
+        } catch (InterpreterException ie) {
+            handleInterpreterException(ie);
         }
-        synchronized (suspendLock) {
-            if (suspended) {
-                try {
-                    suspendLock.wait();
-                } catch (InterruptedException e) {
-                    throw new StopScriptException();
-                }
-            }
-        }
-
-        if (repaintManager == null) {
-            repaintManager = updateManager.getRepaintManager();
-            if (repaintManager == null) {
-                throw new StopScriptException();
-            }
-            updateRunnableQueue = updateManager.getUpdateRunnableQueue();
-        }
-
-        repaintManager.disable();
-        if (updateRunnableQueue.getThread() == null) {
-            scriptingLock.unlock();
-            throw new StopScriptException();
-        }
-        updateRunnableQueue.suspendExecution(true);
     }
 
     /**
-     * Ends a script evaluation section.
+     * Interrupts the periodic tasks.
      */
-    public void endScript() {
-        synchronized (suspendLock) {
-            if (suspended) {
-                try {
-                    suspendLock.wait();
-                } catch (InterruptedException e) {
-                    throw new StopScriptException();
-                }
-            }
-        }
-        repaintManager.enable();
-        if (updateRunnableQueue.getThread() == null) {
-            scriptingLock.unlock();
-            throw new StopScriptException();
-        }
-        updateRunnableQueue.resumeExecution();
-    
-        try {
-            repaintManager.repaint(true);
-        } catch (InterruptedException e) {
-            throw new StopScriptException();
-        }
-        scriptingLock.unlock();
-    }
-
-    /**
-     * Pauses the current script for the given amount of time.
-     */
-    public void pauseScript(long millis) {
-        long t1 = System.currentTimeMillis();
-        endScript();
-        long t2 = System.currentTimeMillis();
-        millis -= t2 - t1;
-        if (millis < 0) {
-            millis = 0;
-        }
-        try {
-            Thread.sleep(millis);
-        } catch (InterruptedException e) {
-        } finally {
-            beginScript();
-        }
+    public void interrupt() {
+        timer.cancel();
     }
 
     /**
@@ -432,16 +316,12 @@ public class ScriptingEnvironment {
                 interpreter.evaluate(reader);
 
             } catch (IOException e) {
-                UserAgent ua = bridgeContext.getUserAgent();
-                if (ua != null) {
-                    ua.displayError(e);
+                if (userAgent != null) {
+                    userAgent.displayError(e);
                 }
+                return;
             } catch (InterpreterException e) {
-                UserAgent ua = bridgeContext.getUserAgent();
-                if (ua != null) {
-                    Exception ex = e.getException();
-                    ua.displayError((ex == null) ? e : ex);
-                }
+                handleInterpreterException(e);
                 return;
             }
         }
@@ -487,18 +367,15 @@ public class ScriptingEnvironment {
             elt.getAttributeNS(null, SVGConstants.SVG_ONLOAD_ATTRIBUTE);
         EventListener l = null;
         if (s.length() > 0) {
-            l = new EventListener() {
+            l = new UnwrappedEventListener() {
                     public void handleEvent(Event evt) {
                         try {
                             interp.bindObject(EVENT_NAME, evt);
+                            interp.bindObject(ALTERNATE_EVENT_NAME, evt);
                             interp.evaluate(new StringReader(s));
                         } catch (IOException io) {
                         } catch (InterpreterException e) {
-                            UserAgent ua = bridgeContext.getUserAgent();
-                            if (ua != null) {
-                                Exception ex = e.getException();
-                                ua.displayError((ex == null) ? e : ex);
-                            }
+                            handleInterpreterException(e);
                         }
                     }
                 };
@@ -511,206 +388,273 @@ public class ScriptingEnvironment {
     }
 
     /**
-     * Returns the 'alert' function.
+     * Handles the given exception.
      */
-    protected JavaFunction getAlertFunction() {
-        if (alertFunction == null) {
-            alertFunction = new JavaFunction() {
-                    public Class[] getParameterTypes() {
-                        return new Class[] { String.class };
-                    }
-                    public Object call(Object[] arguments) {
-                        javax.swing.JOptionPane.showMessageDialog
-                            (null, (String)arguments[0]);
-                        return null;
-                    }
-                };
+    protected void handleInterpreterException(InterpreterException ie) {
+        if (userAgent != null) {
+            Exception ex = ie.getException();
+            userAgent.displayError((ex == null) ? ie : ex);
         }
-        return alertFunction;
-    }
-
-
-    protected final static Class[] ST_PARAMS = { String.class, Long.TYPE };
-
-    /**
-     * Returns the 'setTimeout' function.
-     */
-    protected JavaFunction getSetTimeoutFunction(final String lang) {
-        return new JavaFunction() {
-                public Class[] getParameterTypes() {
-                    return ST_PARAMS;
-                }
-                public Object call(Object[] args) {
-                    Object[] fargs = new Object[args.length - 2];
-                    for (int i = 0; i < fargs.length; i++) {
-                        fargs[i] = args[i + 2];
-                    }
-                    runFunction((String)args[0], fargs, lang,
-                                ((Long)args[1]).longValue());
-                    return null;
-                }
-            };
     }
 
     /**
-     * To run a piece of script.
+     * To wrap an event listener.
      */
-    protected abstract class ScriptingThread extends Thread {
+    protected class EventListenerWrapper implements UnwrappedEventListener {
 
-        protected UserAgent userAgent;
+        /**
+         * The wrapped event listener.
+         */
+        protected EventListener eventListener;
+
+        /**
+         * Creates a new EventListenerWrapper.
+         */
+        public EventListenerWrapper(EventListener el) {
+            eventListener = el;
+        }
+
+        public void handleEvent(final Event evt) {
+            eventListener.handleEvent(evt);
+        }
+    }
+
+    /**
+     * To interpret a script.
+     */
+    protected class EvaluateRunnable implements Runnable {
+        protected Interpreter interpreter;
+        protected String script;
+        public EvaluateRunnable(String s, Interpreter interp) {
+            interpreter = interp;
+            script = s;
+        }
+        public void run() {
+            try {
+                interpreter.evaluate(script);
+            } catch (InterpreterException ie) {
+                handleInterpreterException(ie);
+            }
+        }
+    }
+
+    /**
+     * To interpret a script.
+     */
+    protected class EvaluateIntervalRunnable implements Runnable {
+        /**
+         * Incremented each time this runnable is added to the queue.
+         */
+        public int count;
+
+        protected Interpreter interpreter;
+        protected String script;
+
+        public EvaluateIntervalRunnable(String s, Interpreter interp) {
+            interpreter = interp;
+            script = s;
+        }
+        public void run() {
+            count--;
+            try {
+                interpreter.evaluate(script);
+            } catch (InterpreterException ie) {
+                handleInterpreterException(ie);
+            }
+        }
+    }
+
+    /**
+     * To call a Runnable.
+     */
+    protected class EvaluateRunnableRunnable implements Runnable {
+        /**
+         * Incremented each time this runnable is put in the queue.
+         */
+        public int count;
+
+        protected Runnable runnable;
+
+        public EvaluateRunnableRunnable(Runnable r) {
+            runnable = r;
+        }
+        public void run() {
+            count--;
+            try {
+                runnable.run();
+            } catch (Exception e) {
+                if (userAgent != null) {
+                    userAgent.displayError(e);
+                }
+            }
+        }
+    }
+
+    /**
+     * Represents the window object of this environment.
+     */
+    public class Window implements org.apache.batik.script.Window {
+
+        /**
+         * The associated interpreter.
+         */
         protected Interpreter interpreter;
 
         /**
-         * Creates a new scripting thread.
+         * The associated language.
          */
-        public ScriptingThread(String lang) {
-            BridgeContext bc = updateManager.getBridgeContext();
-            userAgent = bc.getUserAgent();
-            Document doc = updateManager.getDocument();
-            interpreter = bc.getInterpreter(lang);
-            if (interpreter == null) {
-                if (userAgent != null) {
-                    userAgent.displayError
-                        (new Exception("unknow language: " + lang));
-                }
-            }
+        protected String language;
+
+        /**
+         * Creates a new Window for the given language.
+         */
+        public Window(Interpreter interp, String lang) {
+            interpreter = interp;
+            language = lang;
         }
 
         /**
-         * The main method.
+         * Implements {@link
+         * org.apache.batik.script.Window#setInterval(String,long)}.
          */
-        public void run() {
-            try {
-                liveThreads.add(this);
-                if (interrupted) {
-                    return;
-                }
-                if (interpreter != null) {
-                    try {
-                        beginScript();
-                    } catch (StopScriptException e) {
-                        return;
-                    }
-                    
-                    try {
-                        interpreter.evaluate(getScript());
-                    } catch (InterpreterException ie) {
-                        Exception ex = ie.getException();
-                        if (ex instanceof StopScriptException) {
+        public Object setInterval(final String script, long interval) {
+            TimerTask tt = new TimerTask() {
+                    EvaluateIntervalRunnable eir =
+                        new EvaluateIntervalRunnable(script, interpreter);
+                    public void run() {
+                        if (eir.count > 1) {
                             return;
                         }
-                        if (userAgent != null) {
-                            userAgent.displayError((ex != null) ? ex : ie);
-                        }
+                        eir.count++;
+                        updateRunnableQueue.invokeLater(eir);
                     }
-                    if (!interrupted) {
-                        try {
-                            endScript();
-                        } catch (StopScriptException e) {
+                };
+
+            timer.schedule(tt, interval, interval);
+            return tt;
+        }
+
+        /**
+         * Implements {@link
+         * org.apache.batik.script.Window#setInterval(Runnable,long)}.
+         */
+        public Object setInterval(final Runnable r, long interval) {
+            TimerTask tt = new TimerTask() {
+                    EvaluateRunnableRunnable eihr =
+                        new EvaluateRunnableRunnable(r);
+                    public void run() {
+                        if (eihr.count > 1) {
+                            return;
                         }
+                        eihr.count++;
+                        updateRunnableQueue.invokeLater(eihr);
                     }
-                }
-            } finally {
-                liveThreads.remove(this);
-            }
+                };
+
+            timer.schedule(tt, interval, interval);
+            return tt;
         }
 
         /**
-         * Returns the script to execute.
+         * Implements {@link
+         * org.apache.batik.script.Window#clearInterval(Object)}.
          */
-        protected abstract String getScript();
-
-    }
-
-    /**
-     * To run a function.
-     */
-    protected class FunctionCallThread extends ScriptingThread {
-        protected String function;
-        protected Object[] arguments;
-        protected long delay;
-
-        /**
-         * Creates a new FunctionCallThread.
-         */
-        public FunctionCallThread(String fname,
-                                  Object[] args,
-                                  String lang,
-                                  long delay) {
-            super(lang);
-            function = fname;
-            arguments = args;
-            this.delay = delay;
+        public void clearInterval(Object interval) {
+            ((TimerTask)interval).cancel();
         }
 
         /**
-         * The main method.
+         * Implements {@link
+         * org.apache.batik.script.Window#setTimeout(String,long)}.
          */
-        public void run() {
-            if (delay > 0) {
-                try {
-                    sleep(delay);
-                } catch (InterruptedException e) {
-                    return;
-                }
-            }
-            super.run();
+        public Object setTimeout(final String script, long timeout) {
+            TimerTask tt = new TimerTask() {
+                    public void run() {
+                        updateRunnableQueue.invokeLater
+                            (new EvaluateRunnable(script, interpreter));
+                    }
+                };
+
+            timer.schedule(tt, timeout);
+            return tt;
         }
 
         /**
-         * Returns the script to execute.
+         * Implements {@link
+         * org.apache.batik.script.Window#setTimeout(Runnable,long)}.
          */
-        protected String getScript() {
-            if (function.endsWith("()")) {
-                function = function.substring(0, function.length() - 2);
-            }
-            StringBuffer sb = new StringBuffer(function);
+        public Object setTimeout(final Runnable r, long timeout) {
+            TimerTask tt = new TimerTask() {
+                    public void run() {
+                        updateRunnableQueue.invokeLater(new Runnable() {
+                                public void run() {
+                                    try {
+                                        r.run();
+                                    } catch (Exception e) {
+                                        if (userAgent != null) {
+                                            userAgent.displayError(e);
+                                        }
+                                    }
+                                }
+                            });
+                    }
+                };
 
-            sb.append("(");
-            if (arguments.length > 0) {
-                String s = ARG_NAME + 0;
-                sb.append(s);
-                interpreter.bindObject(s, arguments[0]);
-                for (int i = 1; i < arguments.length; i++) {
-                    s = ARG_NAME + i;
-                    sb.append(",");
-                    sb.append(s);
-                    interpreter.bindObject(s, arguments[i]);
-                }
-            }
-            sb.append(")");
-            return sb.toString();
-        }
-    }
-
-    /**
-     * To run an event handler.
-     */
-    protected class EventHandlerThread extends ScriptingThread {
-        protected String script;
-        protected Event event;
-
-        /**
-         * Creates a new EventHandlerThread.
-         */
-        public EventHandlerThread(String script, Event evt, String lang) {
-            super(lang);
-            this.script = script;
-            event = evt;
+            timer.schedule(tt, timeout);
+            return tt;
         }
 
         /**
-         * Returns the script to execute.
+         * Implements {@link
+         * org.apache.batik.script.Window#clearTimeout(Object)}.
          */
-        protected String getScript() {
-            interpreter.bindObject(EVENT_NAME, event);
-            return script;
+        public void clearTimeout(Object timeout) {
+            ((TimerTask)timeout).cancel();
         }
-    }
 
-    protected static class StopScriptException
-        extends RuntimeException {
-        public StopScriptException() {
+        /**
+         * Displays an alert dialog box.
+         */
+        public void alert(String message) {
+            javax.swing.JOptionPane.showMessageDialog
+                (null, "Script alert:\n" + message);
+        }
+
+        /**
+         * Displays a confirm dialog box.
+         */
+        public boolean confirm(String message) {
+            return javax.swing.JOptionPane.showConfirmDialog
+                    (null, "Script confirm:\n" + message,
+                     "Confirm",javax.swing.JOptionPane.YES_NO_OPTION) ==
+                    javax.swing.JOptionPane.YES_OPTION;
+        }
+
+        /**
+         * Displays an input dialog box.
+         */
+        public String prompt(String message) {
+            return javax.swing.JOptionPane.showInputDialog
+                ("Script prompt:\n" + message);
+        }
+
+        /**
+         * Displays an input dialog box, given the default value.
+         */
+        public String prompt(String message, String defVal) {
+            return (String)javax.swing.JOptionPane.showInputDialog
+                (null,
+                 "Script prompt:\n" + message,
+                 "Prompt",
+                 javax.swing.JOptionPane.PLAIN_MESSAGE,
+                 null, null, defVal);
+        }
+
+        /**
+         * Returns the associated interpreter.
+         */
+        public Interpreter getInterpreter() {
+            return interpreter;
         }
     }
 }

@@ -259,7 +259,8 @@ public class SVGSVGElementBridge extends AbstractSVGBridge
     /**
      * The listener class for 'DOMAttrModified' event.
      */
-    protected class DOMAttrModifiedEventListener implements EventListener {
+    protected class DOMAttrModifiedEventListener
+        implements UnwrappedEventListener {
 
         /**
          * Handles 'DOMAttrModfied' events and deleguates to the

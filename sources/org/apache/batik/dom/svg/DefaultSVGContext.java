@@ -10,7 +10,6 @@ package org.apache.batik.dom.svg;
 
 import org.apache.batik.css.svg.DefaultSVGCSSContext;
 
-
 /**
  * This class is the placeholder for SVG application informations.
  *

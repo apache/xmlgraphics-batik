@@ -108,12 +108,14 @@ public class SVGLoadEventDispatcher extends Thread {
     /**
      * Adds a SVGLoadEventDispatcherListener to this SVGLoadEventDispatcher.
      */
-    public void addSVGLoadEventDispatcherListener(SVGLoadEventDispatcherListener l) {
+    public void addSVGLoadEventDispatcherListener
+        (SVGLoadEventDispatcherListener l) {
         listeners.add(l);
     }
 
     /**
-     * Removes a SVGLoadEventDispatcherListener from this SVGLoadEventDispatcher.
+     * Removes a SVGLoadEventDispatcherListener from this
+     * SVGLoadEventDispatcher.
      */
     public void removeSVGLoadEventDispatcherListener
         (SVGLoadEventDispatcherListener l) {

@@ -287,7 +287,8 @@ public abstract class AbstractNode
      * org.w3c.dom.Node#isSupported(String,String)}.
      */
     public boolean isSupported(String feature, String version) {
-        return getCurrentDocument().getImplementation().hasFeature(feature, version);
+        return getCurrentDocument().getImplementation().hasFeature(feature,
+                                                                   version);
     }
 
     /**
@@ -381,9 +382,10 @@ public abstract class AbstractNode
     public void addEventListener(String type,
                                  EventListener listener,
                                  boolean useCapture) {
+        AbstractDocument doc = getCurrentDocument();
         if (eventSupport == null) {
             eventSupport = new EventSupport();
-            getCurrentDocument().setEventsEnabled(true);
+            doc.setEventsEnabled(true);
         }
         eventSupport.addEventListener(type, listener, useCapture);
     }
@@ -397,6 +399,7 @@ public abstract class AbstractNode
                                     EventListener listener,
                                     boolean useCapture) {
         if (eventSupport != null) {
+            AbstractDocument doc = getCurrentDocument();
             eventSupport.removeEventListener(type, listener, useCapture);
         }
     }

@@ -355,7 +355,8 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
      * A simple DOM listener to forward events from the SVG image document to
      * the original document.
      */
-    protected static class ForwardEventListener implements EventListener {
+    protected static class ForwardEventListener
+        implements UnwrappedEventListener {
 
         /**
          * The root element of the SVG image.

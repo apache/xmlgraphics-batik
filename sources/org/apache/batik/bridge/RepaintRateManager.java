@@ -8,6 +8,8 @@
 
 package org.apache.batik.bridge;
 
+import org.apache.batik.util.RunnableQueue;
+
 /**
  * This class is responsible of deciding whether or not a repaint is needed.
  *
@@ -44,18 +46,31 @@ public class RepaintRateManager extends Thread {
      * current frame-rate easily)
      */
     public void run() {
-        long lastFrameTime, currentTime, tm, sleepTime;
+        long lastFrameTime;
+        long currentTime;
+        long tm;
+        long sleepTime;
+
+        final RepaintManager rm = updateManager.getRepaintManager();
+        Runnable repaintRunnable = new NoRepaintRunnable() {
+                public void run() {
+                    rm.repaint();
+                }
+            };
+        RunnableQueue rq = updateManager.getUpdateRunnableQueue();
+
         try {
             while (!Thread.currentThread().isInterrupted()) {
                 lastFrameTime = System.currentTimeMillis();
 
-                updateManager.getRepaintManager().repaint(true);
+                rq.invokeAndWait(repaintRunnable);
 
                 currentTime = System.currentTimeMillis();
                 tm = currentTime - lastFrameTime;
                 sleepTime = targetFrameTime-tm;
-                if (sleepTime > 0)
+                if (sleepTime > 0) {
                     sleep(sleepTime);
+                }
             }
         } catch (InterruptedException e) {
         }
