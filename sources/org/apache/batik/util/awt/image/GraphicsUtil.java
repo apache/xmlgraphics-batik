@@ -8,6 +8,8 @@
 
 package org.apache.batik.util.awt.image;
 
+import java.awt.color.ColorSpace;
+
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -21,6 +23,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferInt;
+import java.awt.image.DirectColorModel;
 import java.awt.image.Raster;
 import java.awt.image.RenderedImage;
 import java.awt.image.SampleModel;
@@ -214,6 +217,39 @@ public class GraphicsUtil {
         g2d.setTransform(at);
     }
 
+    public final static ColorModel Linear_sRGB = 
+        new DirectColorModel(ColorSpace.getInstance
+                             (ColorSpace.CS_LINEAR_RGB), 24,
+                             0x00FF0000, 0x0000FF00, 
+                             0x000000FF, 0x0, false, 
+                             DataBuffer.TYPE_INT);
+
+    public final static ColorModel Linear_sRGB_Pre = 
+        new DirectColorModel(ColorSpace.getInstance
+                             (ColorSpace.CS_LINEAR_RGB), 32,
+                             0x00FF0000, 0x0000FF00, 
+                             0x000000FF, 0xFF000000, true, 
+                             DataBuffer.TYPE_INT);
+    public final static ColorModel Linear_sRGB_Unpre = 
+        new DirectColorModel(ColorSpace.getInstance
+                             (ColorSpace.CS_LINEAR_RGB), 32,
+                             0x00FF0000, 0x0000FF00, 
+                             0x000000FF, 0xFF000000, false, 
+                             DataBuffer.TYPE_INT);
+
+    public static ColorModel makeLinear_sRGBCM(boolean premult) {
+        if (premult)
+            return Linear_sRGB_Pre;
+        return Linear_sRGB_Unpre;
+    }
+
+    public static BufferedImage makeLinearBufferedImage(int width, 
+                                                        int height, 
+                                                        boolean premult) {
+        ColorModel cm = makeLinear_sRGBCM(premult);
+        WritableRaster wr = cm.createCompatibleWritableRaster(width, height);
+        return new BufferedImage(cm, wr, premult, null);
+    }
 
     public static CachableRed wrap(RenderedImage ri) {
         if (ri instanceof CachableRed)

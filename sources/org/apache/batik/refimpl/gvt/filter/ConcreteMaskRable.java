@@ -139,6 +139,9 @@ public class ConcreteMaskRable
                                                   getBounds2D(),
                                                   PadMode.ZERO_PAD);
         ri = maskedPad.createRendering(rc);
+        if (ri == null)
+            return null;
+
         CachableRed cr = ConcreteRenderedImageCachableRed.wrap(ri);
 
         CachableRed ret = new MultiplyAlphaRed(cr, maskCr);
