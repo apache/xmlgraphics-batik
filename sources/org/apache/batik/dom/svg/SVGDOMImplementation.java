@@ -21,7 +21,7 @@ import org.apache.batik.css.engine.SVGCSSEngine;
 import org.apache.batik.css.parser.ExtendedParser;
 import org.apache.batik.css.parser.ExtendedParserWrapper;
 
-import org.apache.batik.css.dom.CSSOMViewCSS;
+import org.apache.batik.css.dom.CSSOMSVGViewCSS;
 
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.AbstractDOMImplementation;
@@ -147,7 +147,7 @@ public class SVGDOMImplementation
      * Creates a ViewCSS.
      */
     public ViewCSS createViewCSS(SVGOMDocument doc) {
-        return new CSSOMViewCSS(doc.getCSSEngine());
+        return new CSSOMSVGViewCSS(doc.getCSSEngine());
     }
 
     /**

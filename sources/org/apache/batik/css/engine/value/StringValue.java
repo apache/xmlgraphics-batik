@@ -18,6 +18,21 @@ import org.w3c.dom.css.CSSPrimitiveValue;
  * @version $Id$
  */
 public class StringValue extends AbstractValue {
+
+    /**
+     * Returns the CSS text associated with the given type/value pair.
+     */
+    public static String getCssText(short type, String value) {
+	switch (type) {
+	case CSSPrimitiveValue.CSS_URI:
+	    return "url(" + value + ")";
+
+	case CSSPrimitiveValue.CSS_STRING:
+	    char q = (value.indexOf('"') != -1) ? '\'' : '"';
+	    return q + value + q;
+	}
+	return value;
+    }
     
     /**
      * The value of the string
@@ -63,15 +78,7 @@ public class StringValue extends AbstractValue {
      * A string representation of the current value. 
      */
     public String getCssText() {
-	switch (unitType) {
-	case CSSPrimitiveValue.CSS_URI:
-	    return "url(" + value + ")";
-
-	case CSSPrimitiveValue.CSS_STRING:
-	    char q = (value.indexOf('"') != -1) ? '\'' : '"';
-	    return q + value + q;
-	}
-	return value;
+	return getCssText(unitType, value);
     }
 
     /**

@@ -240,6 +240,13 @@ public abstract class CSSEngine {
         new StyleSheetDocumentHandler();
 
     /**
+     * The style declaration document handler used to build a
+     * StyleDeclaration object.
+     */
+    protected StyleDeclarationBuilder styleDeclarationBuilder =
+        new StyleDeclarationBuilder();
+
+    /**
      * The current element.
      */
     protected CSSStylableElement element;
@@ -466,6 +473,13 @@ public abstract class CSSEngine {
      */
     public void setUserStyleSheet(StyleSheet ss) {
         userStyleSheet = ss;
+    }
+
+    /**
+     * Returns the ValueManagers.
+     */
+    public ValueManager[] getValueManagers() {
+        return valueManagers;
     }
 
     /**
@@ -697,6 +711,54 @@ public abstract class CSSEngine {
             findStyleSheetNodes(document);
         }
         return styleSheetNodes;
+    }
+
+    /**
+     * Parses and creates a property value.
+     * @param prop The property name.
+     * @param value The property value.
+     */
+    public Value parsePropertyValue(String prop, String value) {
+        try {
+            LexicalUnit lu;
+            int idx = getPropertyIndex(prop);
+            lu = parser.parsePropertyValue(value);
+            ValueManager vm = valueManagers[idx];
+            return vm.createValue(lu, this);
+        } catch (Exception e) {
+            String m = e.getMessage();
+            String s =
+                Messages.formatMessage("property.syntax.error.at",
+                                       new Object[] { documentURI.toString(),
+                                                      prop,
+                                                      value,
+                                                      (m == null) ? "" : m });
+            throw new DOMException(DOMException.SYNTAX_ERR, s);
+        }
+    }
+
+    /**
+     * Parses and creates a style declaration.
+     * @param value The style declaration text.
+     */
+    public StyleDeclaration parseStyleDeclaration(String value) {
+        try {
+            parser.setSelectorFactory(CSSSelectorFactory.INSTANCE);
+            parser.setConditionFactory(CSSConditionFactory.INSTANCE);
+            cssBaseURI = documentURI;
+            styleDeclarationBuilder.styleDeclaration = new StyleDeclaration();
+            parser.setDocumentHandler(styleDeclarationBuilder);
+            parser.parseStyleDeclaration(value);
+            cssBaseURI = null;
+            return styleDeclarationBuilder.styleDeclaration;
+        } catch (Exception e) {
+            String m = e.getMessage();
+            String s =
+                Messages.formatMessage("syntax.error.at",
+                                       new Object[] { documentURI.toString(),
+                                                      (m == null) ? "" : m });
+            throw new DOMException(DOMException.SYNTAX_ERR, s);
+        }
     }
 
     /**
@@ -1011,6 +1073,38 @@ public abstract class CSSEngine {
                 Value v = valueManagers[i].createValue(value, CSSEngine.this);
                 putAuthorProperty(styleMap, i, v, important,
                                   StyleMap.INLINE_AUTHOR_ORIGIN);
+            }
+        }
+    }
+
+    /**
+     * To build a StyleDeclaration object.
+     */
+    protected class StyleDeclarationBuilder
+        extends DocumentAdapter
+        implements ShorthandManager.PropertyHandler {
+        public StyleDeclaration styleDeclaration;
+    
+        /**
+         * <b>SAC</b>: Implements {@link
+         * DocumentHandler#property(String,LexicalUnit,boolean)}.
+         */
+        public void property(String name, LexicalUnit value, boolean important)
+            throws CSSException {
+            int i = getPropertyIndex(name);
+            if (i == -1) {
+                i = getShorthandIndex(name);
+                if (i == -1) {
+                    // Unknown property
+                    return;
+                }
+                shorthandManagers[i].setValues(CSSEngine.this,
+                                               this,
+                                               value,
+                                               important);
+            } else {
+                Value v = valueManagers[i].createValue(value, CSSEngine.this);
+                styleDeclaration.append(v, i, important);
             }
         }
     }

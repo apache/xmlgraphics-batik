@@ -71,6 +71,27 @@ public class StyleDeclaration {
     }
 
     /**
+     * Removes the value at the given index.
+     */
+    public void remove(int idx) {
+        count--;
+        for (int i = idx; i < count; i++) {
+            values[i] = values[i + 1];
+            indexes[i] = indexes[i + 1];
+            priorities[i] = priorities[i + 1];
+        }
+    }
+
+    /**
+     * Sets a value within the declaration.
+     */
+    public void put(Value v, int idx, boolean prio) {
+        values[idx]     = v;
+        indexes[idx]    = idx;
+        priorities[idx] = prio;
+    }
+
+    /**
      * Appends a value to the declaration.
      */
     public void append(Value v, int idx, boolean prio) {
@@ -102,6 +123,7 @@ public class StyleDeclaration {
             sb.append(eng.getPropertyName(indexes[i]));
             sb.append(": ");
             sb.append(values[i]);
+            sb.append(";\n");
         }
         return sb.toString();
     }

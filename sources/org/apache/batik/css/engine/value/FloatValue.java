@@ -8,6 +8,7 @@
 
 package org.apache.batik.css.engine.value;
 
+import org.w3c.dom.DOMException;
 import org.w3c.dom.css.CSSPrimitiveValue;
 
 /**
@@ -18,6 +19,20 @@ import org.w3c.dom.css.CSSPrimitiveValue;
  */
 public class FloatValue extends AbstractValue {
     
+    /**
+     * Returns the CSS text associated with the given type/value pair.
+     */
+    public static String getCssText(short unit, float value) {
+        if (unit < 0 || unit >= UNITS.length) {
+            throw new DOMException(DOMException.SYNTAX_ERR, "");
+        }
+        String s = String.valueOf(value);
+        if (s.endsWith(".0")) {
+            s = s.substring(0, s.length() - 2);
+        }
+	return s + UNITS[unit - CSSPrimitiveValue.CSS_NUMBER];
+    }
+
     /**
      * The unit types representations
      */
@@ -62,11 +77,7 @@ public class FloatValue extends AbstractValue {
      *  A string representation of the current value. 
      */
     public String getCssText() {
-        String s = "" + floatValue;
-        if (s.endsWith(".0")) {
-            s = s.substring(0, s.length() - 2);
-        }
-	return s + UNITS[unitType - CSSPrimitiveValue.CSS_NUMBER];
+	return getCssText(unitType, floatValue);
     }
 
     /**
