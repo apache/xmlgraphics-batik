@@ -121,7 +121,6 @@ public class ConcreteTextSelector implements Selector {
         Shape  shape     = node.getHighlightShape();
         dispatchSelectionEvent(new SelectionEvent
             (selection, SelectionEvent.SELECTION_DONE, shape));
-        copyToClipboard(selection);
     }
 
     public void clearSelection() {
@@ -129,7 +128,6 @@ public class ConcreteTextSelector implements Selector {
             return;
         dispatchSelectionEvent(new SelectionEvent
             (null, SelectionEvent.SELECTION_CLEARED, null));
-        // copyToClipboard(null);
         selectionNode = null;
     }
 
@@ -207,7 +205,6 @@ public class ConcreteTextSelector implements Selector {
                         new SelectionEvent(oldSelection,
                                 SelectionEvent.SELECTION_DONE,
                                 newShape));
-                copyToClipboard(oldSelection);
             } else
 
             if (isSelectContinueGesture(evt)) {
@@ -235,7 +232,6 @@ public class ConcreteTextSelector implements Selector {
                             .addTreeGraphicsNodeChangeListener(this);
                 }
                 selectionNode = source;
-                
                 ((Selectable) source).selectAll(p.getX(), p.getY());
                 Object oldSelection = getSelection();
                 Shape newShape =
@@ -244,7 +240,6 @@ public class ConcreteTextSelector implements Selector {
                         new SelectionEvent(oldSelection,
                                 SelectionEvent.SELECTION_DONE,
                                 newShape));
-                copyToClipboard(oldSelection);
             }
         }
     }
@@ -339,44 +334,6 @@ public class ConcreteTextSelector implements Selector {
         if (listeners != null) {
             listeners.remove(l);
         }
-    }
-
-    private void copyToClipboard(final Object o) {
-	//
-	// HACK: getSystemClipboard sometimes deadlocks on linux when called
-	// from the AWT Thread. The Thread creation prevents that.
-	//
-	new Thread() {
-	    public void run() {
-		// first see if we can access the clipboard
-		SecurityManager securityManager = System.getSecurityManager();
-		boolean canAccessClipboard = true;
-		if (securityManager != null) {
-		    try {
-			securityManager.checkSystemClipboardAccess();
-		    } catch (SecurityException e) {
-			canAccessClipboard = false;
-		    }
-		}
-		if (canAccessClipboard) {
-		    String label = "";
-		    if (o instanceof CharacterIterator) {
-			CharacterIterator iter = (CharacterIterator) o;
-			char[] cbuff = new char[iter.getEndIndex()-iter.getBeginIndex()];
-			if (cbuff.length > 0) {
-			    cbuff[0] = iter.first();
-			}
-			for (int i=1; i<cbuff.length;++i) {
-			    cbuff[i] = iter.next();
-			}
-			label = new String(cbuff);
-		    }
-		    Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-		    StringSelection selection = new StringSelection(label);
-		    clipboard.setContents(selection, selection);
-		}
-	    }
-	}.start();
     }
 
     private void report(GraphicsNodeEvent evt, String message) {

@@ -1446,7 +1446,7 @@ public class StrokingTextPainter extends BasicTextPainter {
     public Mark selectLast(TextNode node) {
         AttributedCharacterIterator aci;
         aci = node.getAttributedCharacterIterator();
-        TextHit textHit = new TextHit(aci.getEndIndex(), false);
+        TextHit textHit = new TextHit(aci.getEndIndex()-1, false);
         return  new BasicTextPainter.BasicMark(node, textHit);
     }
 
@@ -1469,8 +1469,8 @@ public class StrokingTextPainter extends BasicTextPainter {
             start = (BasicTextPainter.BasicMark) startMark;
             finish = (BasicTextPainter.BasicMark) finishMark;
         } catch (ClassCastException cce) {
-            throw new
-            Error("This Mark was not instantiated by this TextPainter class!");
+            throw new Error
+                ("This Mark was not instantiated by this TextPainter class!");
         }
 
         TextNode textNode = start.getTextNode();
