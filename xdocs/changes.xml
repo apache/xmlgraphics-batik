@@ -4,7 +4,7 @@
 
 <changes title="History of Changes">
   <devs>
-    <person name="Everybody" email="batik-dev@apache.org" id="XX"/>
+    <person name="Everybody" email="batik-dev@xml.apache.org" id="XX"/>
     <person name="Stephane Hillion" email="stephane@hillion.org" id="SH"/>
   </devs>
 
@@ -24,7 +24,7 @@
 
   </release>
 
-  <release version="1.0" date="December 4 2000">
+  <release version="1.0beta" date="December 4 2000">
     <action dev="XX" type="add">
     Initial version.
     </action>
