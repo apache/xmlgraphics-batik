@@ -111,6 +111,26 @@ public class SVGDOMImplementation
         return result;
     }
 
+    /**
+     * Returns the user-agent stylesheet.
+     */
+    public CSSStyleSheet getUserAgentStyleSheet() {
+        CSSStyleSheet result = null;
+
+        URL url = getClass().getResource("resources/UserAgentStyleSheet.css");
+        if (url != null) {
+            String uri = url.toString();
+            result = createCSSStyleSheet("User Agent Style Sheet", "all");
+            try {
+                CSSDocumentHandler.parseStyleSheet
+                    ((CSSOMStyleSheet)result, uri);
+            } catch (Exception e) {
+                System.err.println(e.getMessage());
+            }
+        }
+        return result;
+    }
+
     // CSSStyleDeclarationFactory ///////////////////////////////////////////
 
     /**

@@ -633,6 +633,10 @@ public class SVGOMDocument
                 context = new DefaultSVGContext();
             }
             defaultView = new SVGViewCSS(this, context);
+            SVGDOMImplementation impl =
+                (SVGDOMImplementation)getImplementation();
+            ((SVGViewCSS)defaultView).setUserAgentStyleSheet
+                (impl.getUserAgentStyleSheet());
         }
         return defaultView;
     }
