@@ -226,4 +226,11 @@ public abstract class MultipleGradientPaint implements Paint {
         return colorSpace;
     }
 
+    /**
+     * Returns a copy of the transform applied to the gradient.
+     * @return a copy of the transform applied to the gradient.
+     */
+    public AffineTransform getTransform() {
+        return (AffineTransform)gradientTransform.clone();
+    }
 }
