@@ -95,6 +95,11 @@ public class SVGOMDocument
     protected transient boolean readonly;
 
     /**
+     * Whether the document supports SVG 1.2.
+     */
+    protected boolean isSVG12;
+
+    /**
      * Creates a new uninitialized document.
      */
     protected SVGOMDocument() {
@@ -110,7 +115,7 @@ public class SVGOMDocument
     /**
      * Implements {@link Localizable#setLocale(Locale)}.
      */
-    public  void setLocale(Locale l) {
+    public void setLocale(Locale l) {
         super.setLocale(l);
         localizableSupport.setLocale(l);
     }
@@ -298,38 +303,17 @@ public class SVGOMDocument
     }
 
     /**
-     * <b>DOM</b>: Implements {@link Document#getElementById(String)}.
+     * Returns whether the document supports SVG 1.2.
      */
-    public Element getElementById(String elementId) {
-        if (elementId == null || elementId.equals("")) {
-            return null;
-        }
-        Element e = getDocumentElement();
-        if (e == null) {
-            return null;
-        }
-        return getById(elementId, e);
+    public boolean isSVG12() {
+        return isSVG12;
     }
 
     /**
-     * An auxiliary method used by getElementById.
+     * Sets whether the document supports SVG 1.2.
      */
-    protected static Element getById(String id, Node node) {
-        if (node.getNodeType() == Node.ELEMENT_NODE) {
-            Element elt = (Element)node;
-            if (elt.getAttributeNS(null, "id").equals(id)) {
-                return elt;
-            }
-        }
-        for (Node n = node.getFirstChild();
-             n != null;
-             n = n.getNextSibling()) {
-            Element result = getById(id, n);
-            if (result != null) {
-                return result;
-            }
-        }
-        return null;
+    public void setIsSVG12(boolean b) {
+        isSVG12 = b;
     }
 
     // AbstractDocument ///////////////////////////////////////////////

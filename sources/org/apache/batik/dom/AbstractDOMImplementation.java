@@ -32,7 +32,7 @@ import org.w3c.dom.DOMImplementation;
  */
 
 public abstract class AbstractDOMImplementation
-    implements DOMImplementation,
+    implements org.apache.batik.dom.dom3.DOMImplementation,
                Serializable {
 
     /**
@@ -40,12 +40,19 @@ public abstract class AbstractDOMImplementation
      */
     protected final HashTable features = new HashTable();
     {
-	registerFeature("XML",            new String[] { "1.0", "2.0" });
-	registerFeature("Events",         "2.0");
-	registerFeature("MouseEvents",    "2.0");
-	registerFeature("MutationEvents", "2.0");
-	registerFeature("Traversal",      "2.0");
-	registerFeature("UIEvents",       "2.0");
+        // registerFeature("BasicEvents",        "3.0");
+        registerFeature("Core",               new String[] { "2.0", "3.0" });
+        registerFeature("XML",                new String[] { "1.0", "2.0",
+                                                             "3.0" });
+        registerFeature("Events",             new String[] { "2.0", "3.0" });
+        registerFeature("UIEvents",           new String[] { "2.0", "3.0" });
+        registerFeature("MouseEvents",        new String[] { "2.0", "3.0" });
+        registerFeature("TextEvents",         "3.0");
+        registerFeature("KeyboardEvents",     "3.0");
+        registerFeature("MutationEvents",     new String[] { "2.0", "3.0" });
+        registerFeature("MutationNameEvents", "3.0");
+        registerFeature("Traversal",          "2.0");
+        registerFeature("XPath",              "3.0");
     }
     
     /**
@@ -66,6 +73,13 @@ public abstract class AbstractDOMImplementation
      * org.w3c.dom.DOMImplementation#hasFeature(String,String)}.
      */
     public boolean hasFeature(String feature, String version) {
+        if (feature == null || feature.length() == 0) {
+            return false;
+        }
+        if (feature.charAt(0) == '+') {
+            // All features are directly castable.
+            feature = feature.substring(1);
+        }
 	Object v = features.get(feature.toLowerCase());
 	if (v == null) {
 	    return false;
@@ -84,6 +98,19 @@ public abstract class AbstractDOMImplementation
             }
             return false;
         }
+    }
+
+    /**
+     * <b>DOM</b>: Implements
+     * {@link org.w3c.dom.DOMImplementation#getFeature(String,String)}.
+     * No compound document support, so just return this DOMImlpementation
+     * where appropriate.
+     */
+    public Object getFeature(String feature, String version) {
+        if (hasFeature(feature, version)) {
+            return this;
+        }
+        return null;
     }
 
     /**

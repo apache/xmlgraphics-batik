@@ -30,7 +30,8 @@ import org.w3c.dom.Node;
  */
 public abstract class AbstractEntityReference
     extends    AbstractParentChildNode
-    implements EntityReference {
+    implements org.apache.batik.dom.dom3.EntityReference {
+
     /**
      * The node name.
      */
@@ -54,7 +55,7 @@ public abstract class AbstractEntityReference
 	throws DOMException {
 	ownerDocument = owner;
 
-	if (!DOMUtilities.isValidName(name)) {
+	if (owner.getStrictErrorChecking() && !DOMUtilities.isValidName(name)) {
 	    throw createDOMException(DOMException.INVALID_CHARACTER_ERR,
 				     "xml.name",
 				     new Object[] { name });

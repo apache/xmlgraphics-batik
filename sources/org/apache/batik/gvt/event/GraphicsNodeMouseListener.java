@@ -68,6 +68,5 @@ public interface GraphicsNodeMouseListener extends EventListener {
      * Invoked when the mouse button has been moved on a node.
      * @param evt the graphics node mouse event
      */
-     void mouseMoved(GraphicsNodeMouseEvent evt);
-
+    void mouseMoved(GraphicsNodeMouseEvent evt);
 }

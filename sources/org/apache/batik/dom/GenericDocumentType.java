@@ -23,7 +23,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 public class GenericDocumentType extends AbstractChildNode 
-    implements DocumentType {
+    implements org.apache.batik.dom.dom3.DocumentType {
 
     protected String qualifiedName;
     protected String publicId;

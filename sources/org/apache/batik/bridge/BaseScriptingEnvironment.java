@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.jar.Manifest;
 
-import org.apache.batik.dom.svg.XMLBaseSupport;
+import org.apache.batik.dom.AbstractElement;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.script.Interpreter;
 import org.apache.batik.script.InterpreterException;
@@ -308,7 +308,7 @@ public class BaseScriptingEnvironment {
         }
 
         for (int i = 0; i < len; i++) {
-            Element script = (Element)scripts.item(i);
+            AbstractElement script = (AbstractElement) scripts.item(i);
             String type = script.getAttributeNS
                 (null, SVGConstants.SVG_TYPE_ATTRIBUTE);
 
@@ -322,8 +322,7 @@ public class BaseScriptingEnvironment {
             if (type.equals(SVGConstants.SVG_SCRIPT_TYPE_JAVA)) {
                 try {
                     String href = XLinkSupport.getXLinkHref(script);
-                    ParsedURL purl = new ParsedURL
-                        (XMLBaseSupport.getCascadedXMLBase(script), href);
+                    ParsedURL purl = new ParsedURL(script.getBaseURI(), href);
 
                     checkCompatibleScriptURL(type, purl);
 
@@ -397,8 +396,7 @@ public class BaseScriptingEnvironment {
                     desc = href;
 
                     // External script.
-                    ParsedURL purl = new ParsedURL
-                        (XMLBaseSupport.getCascadedXMLBase(script), href);
+                    ParsedURL purl = new ParsedURL(script.getBaseURI(), href);
 
                     checkCompatibleScriptURL(type, purl);
                     reader = new InputStreamReader(purl.openStream());

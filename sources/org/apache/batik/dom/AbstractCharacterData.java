@@ -29,7 +29,8 @@ import org.w3c.dom.Node;
  */
 public abstract class AbstractCharacterData
     extends    AbstractChildNode
-    implements CharacterData {
+    implements org.apache.batik.dom.dom3.CharacterData {
+
     /**
      * The value of this node.
      */
