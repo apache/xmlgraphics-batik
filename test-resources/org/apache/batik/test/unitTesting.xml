@@ -45,4 +45,11 @@
     <test id="memoryLeakTestValidator" 
     class="org.apache.batik.test.MemoryLeakTestValidator" />
 
+    <!-- ========================================================================== -->
+    <!-- Validates the operation of PerformanceTest                                 -->
+    <!-- ========================================================================== -->
+    <test id="PerformanceTestValidator" class="org.apache.batik.test.PerformanceTestValidator" /> 
+
+    
+
 </testSuite>
