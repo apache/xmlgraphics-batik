@@ -113,6 +113,7 @@
         <test id="samples/tests/spec/fonts/batikFont.svg" />
         <test id="samples/tests/spec/fonts/fontAltGlyph.svg" />
         <test id="samples/tests/spec/fonts/fontArabic.svg" />
+        <test id="samples/tests/spec/fonts/fontBounds.svg" />
         <test id="samples/tests/spec/fonts/fontChoice.svg" />
         <test id="samples/tests/spec/fonts/fontDecorations.svg" />
         <test id="samples/tests/spec/fonts/fontExternalFont.svg" />
