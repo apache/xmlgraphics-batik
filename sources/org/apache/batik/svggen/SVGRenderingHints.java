@@ -55,7 +55,8 @@ public class SVGRenderingHints extends AbstractSVGConverter{
      * @return map Map of attribute values that describe the hints
      */
     public static SVGHintsDescriptor toSVG(RenderingHints hints){
-        String colorInterpolation = SVG_SRGB_VALUE;
+        // no hints should mean default
+        String colorInterpolation = SVG_AUTO_VALUE;
         String colorRendering = SVG_AUTO_VALUE;
         String textRendering = SVG_AUTO_VALUE;
         String shapeRendering = SVG_AUTO_VALUE;
