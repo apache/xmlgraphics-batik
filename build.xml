@@ -84,6 +84,7 @@ To display the available targets type:
     <property name="print-skin"      value="${skins}/printer/"/>
 
     <property name="test-reports"    value="test-reports" />
+    <property name="test-references" value="test-references" />
 
     <available property="rhino.present" classname="org.mozilla.javascript.Context">
       <classpath refid="libs-classpath"/>
@@ -576,16 +577,22 @@ To display the available targets type:
   </target>
 
   <target name="regard"
-          depends="compile"
-          description="Runs the regression utility">
+          depends="compiletest"
+          description="Runs test suite whose file or uri is passed as an input">
+    <mkdir dir="${test-reports}"/>
+    <mkdir dir="${test-references}/samples/accepted-variation"/>
+    <mkdir dir="${test-references}/samples/candidate-variation"/>
     <java fork="yes"
-          classname="${class-prefix}.apps.regard.Main">
+          classname="${class-prefix}.test.xml.XMLTestSuiteRunner"
+          jvmargs="-DproxyHost=webcache.eng.sun.com -DproxyPort=8080">
       <classpath>
         <pathelement location="${dest}" />
         <path refid="libs-classpath"/>
+        <path refid="libs-build-classpath"/>
         <pathelement location="resources" />
+        <pathelement location="test-resources" />
       </classpath>
-      <arg value="${args}"/>
+      <arg line="test-resources/org/apache/batik/test/samplesRendering.xml"/>
     </java>
   </target>
 
