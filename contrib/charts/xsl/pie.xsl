@@ -19,7 +19,7 @@
 
 <xsl:stylesheet version="1.0"
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-	xmlns:math="http://xsl.lotus.com/java">
+    xmlns:math="http://xml.apache.org/xslt/java">
 
 <xsl:variable name="height" select="graph/meta/pie/height"/>
 <xsl:variable name="width"  select="graph/meta/pie/width"/>
