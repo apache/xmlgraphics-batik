@@ -11,13 +11,39 @@ package org.apache.batik.ext.awt.image.rendered;
 import java.awt.Point;
 import java.awt.image.Raster;
 import java.util.HashMap;
-
+import java.lang.ref.Reference;
+import java.lang.ref.ReferenceQueue;
+import java.lang.ref.SoftReference;
 
 public class TileMap implements TileStore {
     private static final boolean DEBUG = false;
     private static final boolean COUNT = false;		
 
+    private static ReferenceQueue queue = new ReferenceQueue();
+
+    private static HashMap items  =new HashMap();
     private HashMap rasters=new HashMap();
+
+    static class TileMapLRUMember extends TileLRUMember {
+        public Point   pt;
+        public TileMap parent;
+        TileMapLRUMember(TileMap parent, Point pt, Raster ras) {
+            super(ras);
+            this.parent = parent;
+            this.pt     = pt;
+        }
+
+        public void setRaster(Raster ras) {
+            hRaster = ras;
+            synchronized (items) {
+                if (wRaster != null)
+                    items.remove(wRaster);
+                wRaster = new SoftReference(ras, queue);
+                items.put(wRaster, this);
+            }
+        }
+    }
+
     private TileGenerator source = null;
     private LRUCache      cache = null;
 
@@ -30,16 +56,16 @@ public class TileMap implements TileStore {
     public void setTile(int x, int y, Raster ras) {
         Point pt = new Point(x, y);
         Object o = rasters.get(pt);
-        TileLRUMember item;
+        TileMapLRUMember item;
         if (o == null) {
-            item = new TileLRUMember(ras);
+            item = new TileMapLRUMember(this, pt, ras);
+            rasters.put(pt, item);
         } else {
-            item = (TileLRUMember)o;
+            item = (TileMapLRUMember)o;
             item.setRaster(ras);
         }
 		
-        if (item.lruGet() != null) cache.touch(item);
-        else                       cache.add(item);
+        cache.add(item);
         if (DEBUG) System.out.println("Setting: (" + x + ", " + y + ")");
     }
 
@@ -51,8 +77,11 @@ public class TileMap implements TileStore {
         if (o == null) 
             return null;
 
-        TileLRUMember item = (TileLRUMember)o;
-        return item.retrieveRaster();
+        TileMapLRUMember item = (TileMapLRUMember)o;
+        Raster ret = item.retrieveRaster();
+        if (ret != null)
+            cache.add(item);
+        return ret;
     }
 
     public Raster getTile(int x, int y) {
@@ -63,12 +92,9 @@ public class TileMap implements TileStore {
         Raster       ras  = null;
         Point pt = new Point(x, y);
         Object o = rasters.get(pt);
-        TileLRUMember item;
-        if (o == null) {
-            item = new TileLRUMember();
-            rasters.put(pt, item);
-        } else {
-            item = (TileLRUMember)o;
+        TileMapLRUMember item = null;
+        if (o != null) {
+            item = (TileMapLRUMember)o;
             ras = item.retrieveRaster();
         }
 		
@@ -84,7 +110,12 @@ public class TileMap implements TileStore {
             if (Thread.currentThread().isInterrupted())
                 return ras;
 
-            item.setRaster(ras);
+            if (item != null)
+                item.setRaster(ras);
+            else  {
+                item = new TileMapLRUMember(this, pt, ras);
+                rasters.put(pt, item);
+            }
         }
 
         // Update the item's position in the cache..
@@ -95,4 +126,32 @@ public class TileMap implements TileStore {
 
     static int requests;
     static int misses;
+
+    static Thread cleanup;
+
+    static {
+        cleanup = new Thread() {
+                public void run() {
+                    while(true) {
+                        Reference ref;
+
+                        try {
+                            ref = queue.remove();
+                        } catch (InterruptedException ie) {
+                            continue;
+                        }
+                        synchronized (items) {
+                            Object o = items.remove(ref);
+                            if (DEBUG) System.out.println("Cleaning: " + o);
+                            if (o == null) continue;
+                        
+                            TileMapLRUMember item = (TileMapLRUMember)o;
+                            item.parent.rasters.remove(item.pt);
+                        }
+                    }
+                }
+            };
+        cleanup.start();
+    }
+
 }

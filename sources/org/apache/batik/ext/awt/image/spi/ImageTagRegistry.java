@@ -17,9 +17,8 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.StreamCorruptedException;
 
-import java.net.URL;
-
 import org.apache.batik.ext.awt.image.renderable.Filter;
+import org.apache.batik.util.ParsedURL;
 
 public class ImageTagRegistry {
     List entries = new LinkedList();
@@ -27,7 +26,7 @@ public class ImageTagRegistry {
     public ImageTagRegistry() {
     }
 
-    Filter readURL(URL url) {
+    public Filter readURL(ParsedURL purl) {
         Iterator i;
         i = entries.iterator();
         while (i.hasNext()) {
@@ -35,8 +34,8 @@ public class ImageTagRegistry {
             if (! (re instanceof URLRegistryEntry))
                 continue;
             URLRegistryEntry ure = (URLRegistryEntry)re;
-            if (ure.isCompatibleURL(url)) {
-                return ure.handleURL(url);
+            if (ure.isCompatibleURL(purl)) {
+                return ure.handleURL(purl);
             }
         }
 	
@@ -51,7 +50,7 @@ public class ImageTagRegistry {
             try {
                 if (is == null) {
                     try {
-                        is = url.openStream();
+                        is = purl.openStream();
                     } catch(IOException ioe) {
                         // Couldn't open the stream...
                         return null;
@@ -63,8 +62,9 @@ public class ImageTagRegistry {
                         is = new BufferedInputStream(is);
                 }
 
-                if (sre.isCompatibleStream(is))
+                if (sre.isCompatibleStream(is)) {
                     return sre.handleStream(is);
+                }
             } catch (StreamCorruptedException sce) {
                 // Stream is messed up so setup to reopen it..
                 is = null;
@@ -73,7 +73,7 @@ public class ImageTagRegistry {
         return null;
     }
     
-    Filter readStream(InputStream is) {
+    public Filter readStream(InputStream is) {
         if (!is.markSupported())
             // Doesn't support mark so wrap with BufferedInputStream that does.
             is = new BufferedInputStream(is);
@@ -100,15 +100,14 @@ public class ImageTagRegistry {
         entries.add(re);
     }
 
-    static ImageTagRegistry registry = null;
+    static ImageTagRegistry registry = new ImageTagRegistry();
     
-    public synchronized static ImageTagRegistry getRegistry() { 
-        if (registry != null) 
-            return registry;
-
-        registry = new ImageTagRegistry();
+    static {
         registry.register(new PNGRegistryEntry());
         registry.register(new JPEGRegistryEntry());
+    }
+
+    public static ImageTagRegistry getRegistry() { 
         return registry;
     }
 }

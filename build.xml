@@ -576,9 +576,9 @@ To display the available targets type:
     </java>
   </target>
 
-  <target name="regard"
-          depends="compiletest"
-          description="Runs test suite whose file or uri is passed as an input">
+  <target name="testdirs"
+          description="Created directories needed for test suite">
+
     <mkdir dir="${test-reports}"/>
     <mkdir dir="${test-references}/samples/accepted-variation"/>
     <mkdir dir="${test-references}/samples/candidate-variation"/>
@@ -586,6 +586,11 @@ To display the available targets type:
     <mkdir dir="${test-references}/samples/tests/candidate-variation"/>
     <mkdir dir="${test-references}/svgbe/accepted-variation"/>
     <mkdir dir="${test-references}/svgbe/candidate-variation"/>
+  </target>
+
+  <target name="regard"
+          depends="compiletest, testdirs"
+          description="Runs test suite whose file or uri is passed as an input">
     <java fork="yes"
           classname="${class-prefix}.test.xml.XMLTestSuiteRunner"
           jvmargs="-DproxyHost=webcache.eng.sun.com -DproxyPort=8080">
@@ -601,7 +606,7 @@ To display the available targets type:
   </target>
 
   <target name="runtestsuite"
-          depends="compiletest"
+          depends="compiletest, testdirs"
           description="Runs test suite whose file or uri is passed as an input">
     <mkdir dir="${test-reports}"/>
     <java fork="yes"

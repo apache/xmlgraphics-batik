@@ -8,8 +8,7 @@
 
 package org.apache.batik.ext.awt.image.spi;
 
-import java.net.URL;
-
+import org.apache.batik.util.ParsedURL;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 
 /**
@@ -33,11 +32,11 @@ public interface URLRegistryEntry extends RegistryEntry {
      * StreamRegistryEntry, so the URL "connection" will be made
      * only once.  
      */
-    public boolean isCompatibleURL(URL url);
+    public boolean isCompatibleURL(ParsedURL url);
 
     /**
      * Decode the URL into a RenderableImage, here you should feel
      * free to open the URL yourself.
      */
-    public Filter handleURL(URL url);
+    public Filter handleURL(ParsedURL url);
 }

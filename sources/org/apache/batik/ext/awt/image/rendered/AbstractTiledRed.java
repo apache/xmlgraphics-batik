@@ -245,7 +245,7 @@ public abstract class AbstractTiledRed
     }
 
     protected TileStore createTileStore() {
-        return TileCache.getTileGrid(this, this);
+        return TileCache.getTileMap(this);
     }
 
     public WritableRaster copyData(WritableRaster wr) {
