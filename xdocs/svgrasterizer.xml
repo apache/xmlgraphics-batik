@@ -101,6 +101,9 @@
                 image/jpeg mime type.</li>
                 <li><code>-dpi</code><em> &lt;resolution&gt;</em>. Resolution for the ouptut image.</li>
                 <li><code>-validate</code> Controls whether the source SVG files should be validated.</li>
+                <li><code>-onload</code> Controls if the source SVG files must be rasterize after dispatching the 'onload' event.</li>
+                <li><code>-scriptSecurityOff</code> Removes any security check on the scripts running as a result of dispatching the onload event.</li>
+                <li><code>-scripts</code><em>&lt;listOfAllowedScripts&gt;</em> List of script types (i.e., values for the type attribute in the <code>&lt;script&gt;</code> tag) which should be loaded.</li>
                 </ul>
                	
                 <p>For example:</p>
@@ -293,6 +296,11 @@ classname="org.apache.tools.ant.taskdefs.optional.RasterizerTask" /&gt;
                         attribute, <code>srcdir</code> attribute or 
                         <code>fileset</code> element(s).</td>
                     </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                    </tr>
+
                     <tr>
                         <td>dest</td>
                         <td>Name of a one output file. Use this with 

@@ -31,7 +31,6 @@
     <external                     label="Download"                 href="http://xml.apache.org/batik/dist" />
     <page id="install"            label="Install"                  source="installing.xml"/>
     <page id="batikDemo"          label="Demo"                     source="batikDemo.xml"/>
-    <external                     label="Demo"                     href="batikDemo.html"/>
     <separator/>
 
     <!-- ======================= -->
@@ -56,6 +55,7 @@
     <!-- Developer's Guides and Tutorials     -->
     <!-- ==================================== -->
     <page id="architecture"       label="Architecture"             source="architecture.xml"/>
+    <external id="javadoc"            label="API (Javadoc)"        href="javadoc/index.html"/>
     <page id="svggen"             label="Generator"                source="svggen.xml" />
     <page id="domapi"             label="DOM API"                  source="domTutorial.xml" />
     <page id="svgcanvas"          label="JSVGCanvas"               source="jsvgcanvas.xml" />
