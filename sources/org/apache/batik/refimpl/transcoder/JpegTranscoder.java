@@ -27,7 +27,7 @@ public class JpegTranscoder extends ImageTranscoder {
             throws IOException {
         JPEGImageEncoder jpegEncoder = JPEGCodec.createJPEGEncoder(ostream);
         JPEGEncodeParam params = JPEGCodec.getDefaultJPEGEncodeParam(img);
-        params.setQuality((float) 0.9, true);
+        params.setQuality(1f, true);
         jpegEncoder.encode(img, params);
     }
 
