@@ -79,6 +79,7 @@ public class SVGFeMorphologyElementBridge implements FilterBridge,
             radiusX = radiusPair[0].floatValue();
         }
         if (radiusX == 0) {
+            // <!> FIXME :  the result is a fully transparent image
             // A value of zero disables the effect of the filter primitive
             return null;
         } else if (radiusX < 0) {
@@ -93,6 +94,7 @@ public class SVGFeMorphologyElementBridge implements FilterBridge,
             radiusY = radiusPair[1].floatValue();
         }
         if (radiusY == 0) {
+            // <!> FIXME :  the result is a fully transparent image
             // A value of zero disables the effect of the filter primitive
             return null;
         } else if (radiusY < 0) {

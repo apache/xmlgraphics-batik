@@ -10,21 +10,29 @@ package org.apache.batik.refimpl.bridge;
 
 import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
+
+import org.apache.batik.bridge.Bridge;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeMutationEvent;
 import org.apache.batik.bridge.FilterBridge;
+import org.apache.batik.bridge.IllegalAttributeValueException;
+
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.FilterChainRable;
 import org.apache.batik.gvt.filter.GraphicsNodeRable;
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
+
+import org.apache.batik.refimpl.bridge.resources.Messages;
 import org.apache.batik.refimpl.gvt.filter.ConcreteFilterChainRable;
+
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.SVGUtilities;
 import org.apache.batik.util.UnitProcessor;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -38,6 +46,7 @@ import org.w3c.dom.css.CSSStyleDeclaration;
  * @version $Id$
  */
 public class SVGFilterElementBridge implements FilterBridge, SVGConstants {
+
     /**
      * Returns the <tt>Filter</tt> that implements the filter
      * operation modeled by the input DOM element
@@ -60,115 +69,115 @@ public class SVGFilterElementBridge implements FilterBridge, SVGConstants {
                          Filter in,
                          Rectangle2D filterRegion,
                          Map filterMap){
+
         // Make the initial source as a RenderableImage
         GraphicsNodeRableFactory gnrFactory
             = bridgeContext.getGraphicsNodeRableFactory();
+
         GraphicsNodeRable sourceGraphic
             = gnrFactory.createGraphicsNodeRable(filteredNode);
 
         // Get the filter region and resolution
         CSSStyleDeclaration cssDecl
-            = bridgeContext.getViewCSS().getComputedStyle(filterElement,
-                                                          null);
+            = bridgeContext.getViewCSS().getComputedStyle(filterElement, null);
 
         UnitProcessor.Context uctx
-            = new DefaultUnitProcessorContext(bridgeContext,
-                                              cssDecl);
+            = new DefaultUnitProcessorContext(bridgeContext, cssDecl);
 
-        filterRegion =
-            SVGUtilities.convertFilterChainRegion
-            (filterElement,
-             filteredElement,
-             filteredNode,
-             uctx);
+        filterRegion = SVGUtilities.convertFilterChainRegion(filterElement,
+                                                             filteredElement,
+                                                             filteredNode,
+                                                             uctx);
 
         // Build a ConcreteFilterChainRable
         FilterChainRable filterChain
             = new ConcreteFilterChainRable(sourceGraphic, filterRegion);
 
-
-        // Get filter resolution. -1 means undefined.
-        float filterResolutionX = -1;
-        float filterResolutionY = -1;
-        StringTokenizer st = new StringTokenizer(filterElement.getAttributeNS(null, ATTR_FILTER_RES));
-        if(st.countTokens()>0){
-            // Get resolution along the x-axis
-            String filterResolutionXStr = st.nextToken();
-            try{
-                filterResolutionX = Float.parseFloat(filterResolutionXStr);
-            }catch(NumberFormatException e){}
-
-            if(st.hasMoreTokens()){
-                try{
-                    filterResolutionY = Float.parseFloat((String)st.nextElement());
-                }catch(NumberFormatException e){}
-            }
+        // parse the filter resolution attribute
+        String resStr = filterElement.getAttributeNS(null, ATTR_FILTER_RES);
+        Float [] filterResolution = SVGUtilities.buildFloatPair(resStr);
+        float filterResolutionX = -1; // -1 means undefined
+        if (filterResolution[0] != null) {
+            filterResolutionX = filterResolution[0].floatValue();
+        }
+        if (filterResolutionX == 0) {
+            return null; // zero value disable rendering of the filtered element
+        }
+        if (filterResolutionX < 0) {
+            // A negative value is an error
+            throw new IllegalAttributeValueException(
+                Messages.formatMessage("filter.filterResX.invalid", null));
+        }
+        float filterResolutionY = filterResolutionX; // default is filterResX
+        if (filterResolution[1] != null) {
+            filterResolutionY = filterResolution[1].floatValue();
+        }
+        if (filterResolutionY == 0) {
+            return null; // zero value disable rendering of the filtered element
+        }
+        if (filterResolutionY < 0) {
+            // A negative value is an error
+            throw new IllegalAttributeValueException(
+                Messages.formatMessage("filter.filterResY.invalid", null));
         }
 
         // Set resolution in filterChain
         filterChain.setFilterResolutionX((int)filterResolutionX);
         filterChain.setFilterResolutionY((int)filterResolutionY);
 
-        //
-        // Now, build filter chain
-        //
-
-        // Create a map for filter nodes to advertise themselves as named
-        // sources.
-        Map filterNodeMap = new Hashtable();
-
-        NodeList childList = filterElement.getChildNodes();
-        if(in == null){
-            in = sourceGraphic;  // For the filter element, the in parameter is overridden
+        // Now build the filter chain. Create a map for filter nodes
+        // to advertise themselves as named sources.
+        Map filterNodeMap = new HashMap();
+        if (in == null) {
+            // For the filter element, the in parameter is overridden
+            in = sourceGraphic;
             filterNodeMap.put(VALUE_SOURCE_GRAPHIC, sourceGraphic);
         }
 
-        if(childList != null){
-            int nChildren = childList.getLength();
-            for(int i=0; i<nChildren; i++){
-                Node child = childList.item(i);
-                if(child instanceof Element){
-                    FilterBridge bridge
-                        = (FilterBridge)bridgeContext.getBridge((Element)child);
+        for (Node child=filterElement.getFirstChild();
+                 child != null;
+                 child = child.getNextSibling()) {
 
-                    if(bridge != null){
-                        // If we have a bridge, ask it to create a
-                        // filter node.
-                        Filter filterNode
-                            = bridge.create(filteredNode,
-                                            bridgeContext,
-                                            (Element)child,
-                                            filteredElement,
-                                            in,
-                                            filterRegion,
-                                            filterNodeMap);
-
-                        // Update in if we were able to create a
-                        // child node.
-                        if(filterNode != null){
-                            in = filterNode;
-                        }
-                        else{
-                            System.out.println("Filter bridge could not bridge element: " + ((Element)child).getNodeName());
-                        }
-                    }
-                    else{
-                        System.out.println("Could not find bridge for " + ((Element)child).getNodeName());
-                    }
-                }
+            if (child.getNodeType() != Node.ELEMENT_NODE) {
+                continue; // skip node that is not an Element
             }
+            Element elt = (Element)child;
+            String namespaceURI = elt.getNamespaceURI();
+            if (namespaceURI == null ||
+                    !namespaceURI.equals(SVG_NAMESPACE_URI)) {
+                continue; // skip element in the wrong namespace
+            }
+            Bridge bridge = bridgeContext.getBridge(elt);
+            if (bridge == null || !(bridge instanceof FilterBridge)) {
+                throw new IllegalAttributeValueException(
+                    Messages.formatMessage("filter.subelement.illegal",
+                                           new Object[] {elt.getLocalName()}));
+            }
+            FilterBridge filterBridge = (FilterBridge)bridge;
+            Filter filterNode = filterBridge.create(filteredNode,
+                                                    bridgeContext,
+                                                    elt,
+                                                    filteredElement,
+                                                    in,
+                                                    filterRegion,
+                                                    filterNodeMap);
+            if (filterNode == null) {
+                throw new IllegalAttributeValueException(
+                    Messages.formatMessage("filter.subelement.invalid",
+                                           new Object[] {elt.getLocalName()}));
+            }
+            in = filterNode;
         }
 
         // Set the source on the filter node
         if(in != sourceGraphic){
             filterChain.setSource(in);
-        }
-        else{
+        } else {
             // No child filter node. Disable filter
             filterChain.setSource(null);
         }
-        return filterChain;
 
+        return filterChain;
     }
 
     /**

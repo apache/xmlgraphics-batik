@@ -870,9 +870,9 @@ public class CSSUtilities implements SVGConstants {
                                          Element       filteredElement,
                                          Filter        in,
                                          Map           filterMap) {
-        //System.out.println("In: " + in);
+
         int inValue = SVGUtilities.parseInAttribute(inAttr);
-        //System.out.println("InVal: " + inValue);
+
         switch (inValue) {
         case SVGUtilities.EMPTY:
             return in;
