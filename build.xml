@@ -166,7 +166,6 @@ To display the available targets type:
       <fileset dir="samples"/>
     </copy>
     <delete file="${build}/samples/tests/bboxOnText.svg" />
-    <zip zipfile="${build}/samples.zip" basedir="." includes="samples/**"/>
     <zip zipfile="${project}-${version}.zip" basedir="." includes="${build}/**"/>
 
     <cvs cvsRoot=":pserver:anoncvs@xml.apache.org:/home/cvspublic"
@@ -192,8 +191,6 @@ To display the available targets type:
     <copy todir="${build}/samples">
       <fileset dir="samples"/>
     </copy>
-    <tar tarfile="${build}/samples.tar" basedir="." includes="samples/**"/>
-    <gzip zipfile="${build}/samples.tar.gz" src="${build}/samples.tar"/>
     <tar tarfile="${project}-${version}.tar" basedir="." includes="${build}/**"/>
     <gzip zipfile="${project}-${version}.tar.gz" src="${project}-${version}.tar"/>
     <delete file="${project}-docs-${version}.tar"/>
