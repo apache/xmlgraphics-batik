@@ -12,12 +12,14 @@ import java.net.URL;
 
 import java.util.Locale;
 import java.util.MissingResourceException;
+import java.util.Set;
 
 import org.apache.batik.css.CSSDocumentHandler;
 import org.apache.batik.css.CSSOMStyleDeclaration;
 import org.apache.batik.css.CSSOMStyleSheet;
 import org.apache.batik.css.DOMMediaList;
 import org.apache.batik.css.svg.SVGValueFactoryMap;
+import org.apache.batik.css.svg.SVGViewCSS;
 import org.apache.batik.css.value.ValueFactoryMap;
 
 import org.apache.batik.dom.AbstractDocument;
@@ -46,6 +48,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.CSSStyleSheet;
 import org.w3c.dom.css.DOMImplementationCSS;
+import org.w3c.dom.css.ViewCSS;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.stylesheets.StyleSheet;
 
@@ -85,7 +88,7 @@ public class SVGDOMImplementation
     /**
      * The CSS value factory map for SVG.
      */
-    protected ValueFactoryMap valueFactoryMap =
+    protected SVGValueFactoryMap valueFactoryMap =
         new SVGValueFactoryMap(CSSDocumentHandler.createParser());
 
     /**
@@ -93,6 +96,12 @@ public class SVGDOMImplementation
      */
     protected LocalizableSupport localizableSupport =
         new LocalizableSupport(RESOURCES);
+
+    /**
+     * The presentation attribute set.
+     */
+    protected Set presentationAttributeSet =
+        ElementNonCSSPresentationalHintsSupport.createPresentionAttributeSet();
 
     /**
      * Returns the default instance of this class.
@@ -109,6 +118,25 @@ public class SVGDOMImplementation
         registerFeature("StyleSheets",    "2.0");
         registerFeature("SVG",            "1.0");
         registerFeature("SVGEvents",      "1.0");
+    }
+
+    /**
+     * Creates a ViewCSS.
+     */
+    public ViewCSS createViewCSS(SVGOMDocument doc) {
+        SVGViewCSS result;
+
+        result = new SVGViewCSS(doc, doc.getSVGContext());
+        result.setUserAgentStyleSheet(getUserAgentStyleSheet());
+
+        return result;
+    }
+
+    /**
+     * Return the default presentation attributes.
+     */
+    public Set getPresentionAttributeSet() {
+        return presentationAttributeSet;
     }
 
     /**

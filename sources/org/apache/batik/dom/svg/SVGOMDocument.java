@@ -17,7 +17,6 @@ import java.util.MissingResourceException;
 
 import org.apache.batik.css.DOMStyleSheetList;
 import org.apache.batik.css.ElementWithID;
-import org.apache.batik.css.svg.SVGViewCSS;
 
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.GenericAttr;
@@ -450,10 +449,8 @@ public class SVGOMDocument
      */
     public AbstractView getDefaultView() {
         if (defaultView == null) {
-            defaultView = new SVGViewCSS(this, getSVGContext());
             SVGDOMImplementation impl = (SVGDOMImplementation)implementation;
-            ((SVGViewCSS)defaultView).setUserAgentStyleSheet
-                (impl.getUserAgentStyleSheet());
+            defaultView = impl.createViewCSS(this);
         }
         return defaultView;
     }
