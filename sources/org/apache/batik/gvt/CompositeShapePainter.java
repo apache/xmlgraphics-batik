@@ -52,11 +52,9 @@ public class CompositeShapePainter implements ShapePainter {
         if (shapePainter == null) {
             return;
         }
-
         if(this.shape != shapePainter.getShape()){
             shapePainter.setShape(shape);
         }
-
         if (painters == null) {
             painters = new ShapePainter[2];
         }
@@ -83,7 +81,7 @@ public class CompositeShapePainter implements ShapePainter {
     }
 
     /**
-     * Returns the area painted by this painter 
+     * Returns the area painted by this painter
      */
     public Shape getPaintedArea(GraphicsNodeRenderContext rc){
         // <!> FIX ME: Use of GeneralPath is a work around Area problems.

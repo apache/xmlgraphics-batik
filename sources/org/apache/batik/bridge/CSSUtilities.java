@@ -79,16 +79,17 @@ public abstract class CSSUtilities implements CSSConstants, ErrorConstants {
      * Returns the View CSS associated to the specified element.
      * @param e the element
      */
-    public static ViewCSS getViewCSS(Element e) {
-        return (ViewCSS)((SVGOMDocument)e.getOwnerDocument()).getDefaultView();
+    public static AbstractViewCSS getViewCSS(Element e) {
+        return (AbstractViewCSS)
+            ((SVGOMDocument)e.getOwnerDocument()).getDefaultView();
     }
 
     /**
      * Returns the computed style of the specified element.
      * @param e the element
      */
-    public static CSSStyleDeclaration getComputedStyle(Element e) {
-        return getViewCSS(e).getComputedStyle(e, null);
+    public static CSSOMReadOnlyStyleDeclaration getComputedStyle(Element e) {
+        return getViewCSS(e).getComputedStyleInternal(e, null);
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -105,8 +106,9 @@ public abstract class CSSUtilities implements CSSConstants, ErrorConstants {
         Rectangle2D convertEnableBackground(Element e,
                                             UnitProcessor.Context uctx) {
 
-        CSSStyleDeclaration decl = getComputedStyle(e);
-        CSSValue v = decl.getPropertyCSSValue(CSS_ENABLE_BACKGROUND_PROPERTY);
+        CSSOMReadOnlyStyleDeclaration decl = getComputedStyle(e);
+        CSSValue v
+            = decl.getPropertyCSSValueInternal(CSS_ENABLE_BACKGROUND_PROPERTY);
         if (v.getCssValueType() != v.CSS_VALUE_LIST) {
             return null; // accumulate
         }
@@ -152,8 +154,9 @@ public abstract class CSSUtilities implements CSSConstants, ErrorConstants {
     public static MultipleGradientPaint.ColorSpaceEnum
         convertColorInterpolation(Element e) {
 
-        CSSStyleDeclaration decl = CSSUtilities.getComputedStyle(e);
-        CSSPrimitiveValue v = (CSSPrimitiveValue) decl.getPropertyCSSValue
+        CSSOMReadOnlyStyleDeclaration decl = getComputedStyle(e);
+        CSSPrimitiveValue v
+            = (CSSPrimitiveValue) decl.getPropertyCSSValueInternal
             (CSS_COLOR_INTERPOLATION_PROPERTY);
 
         return CSS_LINEARRGB_VALUE.equals(v.getStringValue())
@@ -172,8 +175,8 @@ public abstract class CSSUtilities implements CSSConstants, ErrorConstants {
      * @param e the element
      */
     public static boolean convertVisibility(Element e) {
-        CSSStyleDeclaration decl = getComputedStyle(e);
-        CSSValue v = decl.getPropertyCSSValue(CSS_VISIBILITY_PROPERTY);
+        CSSOMReadOnlyStyleDeclaration decl = getComputedStyle(e);
+        CSSValue v = decl.getPropertyCSSValueInternal(CSS_VISIBILITY_PROPERTY);
         if (v.getCssValueType() == CSSValue.CSS_INHERIT) {
             // workaround for the CSS2 spec which indicates that the
             // initial value is 'inherit'. So if we get 'inherit' it
@@ -196,9 +199,10 @@ public abstract class CSSUtilities implements CSSConstants, ErrorConstants {
      * @param e the element
      */
     public static Composite convertOpacity(Element e) {
-        CSSStyleDeclaration decl = getComputedStyle(e);
+        CSSOMReadOnlyStyleDeclaration decl = getComputedStyle(e);
         CSSValue v =
-            getComputedStyle(e).getPropertyCSSValue(CSS_OPACITY_PROPERTY);
+            getComputedStyle(e).getPropertyCSSValueInternal
+            (CSS_OPACITY_PROPERTY);
         float opacity = PaintServer.convertOpacity(v);
         if (opacity <= 0f) {
             return null;
@@ -222,9 +226,10 @@ public abstract class CSSUtilities implements CSSConstants, ErrorConstants {
      * @param e the element with the 'overflow' property
      */
     public static boolean convertOverflow(Element e) {
-        CSSStyleDeclaration decl = getComputedStyle(e);
+        CSSOMReadOnlyStyleDeclaration decl = getComputedStyle(e);
         CSSPrimitiveValue overflow =
-            (CSSPrimitiveValue)decl.getPropertyCSSValue(CSS_OVERFLOW_PROPERTY);
+            (CSSPrimitiveValue)decl.getPropertyCSSValueInternal
+            (CSS_OVERFLOW_PROPERTY);
         String s = overflow.getStringValue();
         // clip if 'hidden' or 'scroll'
         return (s.charAt(0) == 'h') || (s.charAt(0) == 's');
@@ -238,9 +243,10 @@ public abstract class CSSUtilities implements CSSConstants, ErrorConstants {
      * @param e the element with the 'clip' property
      */
     public static float[] convertClip(Element e) {
-        CSSStyleDeclaration decl = getComputedStyle(e);
+        CSSOMReadOnlyStyleDeclaration decl = getComputedStyle(e);
         CSSPrimitiveValue clip =
-            (CSSPrimitiveValue)decl.getPropertyCSSValue(CSS_CLIP_PROPERTY);
+            (CSSPrimitiveValue)decl.getPropertyCSSValueInternal
+            (CSS_CLIP_PROPERTY);
         switch (clip.getPrimitiveType()) {
         case CSSPrimitiveValue.CSS_RECT:
             float [] off = new float[4];
@@ -273,10 +279,11 @@ public abstract class CSSUtilities implements CSSConstants, ErrorConstants {
     public static Filter convertFilter(Element filteredElement,
                                        GraphicsNode filteredNode,
                                        BridgeContext ctx) {
-        CSSStyleDeclaration decl = getComputedStyle(filteredElement);
+        CSSOMReadOnlyStyleDeclaration decl = getComputedStyle(filteredElement);
 
         CSSPrimitiveValue filterValue =
-            (CSSPrimitiveValue)decl.getPropertyCSSValue(CSS_FILTER_PROPERTY);
+            (CSSPrimitiveValue)decl.getPropertyCSSValueInternal
+            (CSS_FILTER_PROPERTY);
 
         switch(filterValue.getPrimitiveType()){
         case CSSPrimitiveValue.CSS_IDENT:
@@ -315,10 +322,11 @@ public abstract class CSSUtilities implements CSSConstants, ErrorConstants {
     public static Clip convertClipPath(Element clipedElement,
                                        GraphicsNode clipedNode,
                                        BridgeContext ctx) {
-        CSSStyleDeclaration decl = getComputedStyle(clipedElement);
+        CSSOMReadOnlyStyleDeclaration decl = getComputedStyle(clipedElement);
 
         CSSPrimitiveValue clipValue =
-            (CSSPrimitiveValue)decl.getPropertyCSSValue(CSS_CLIP_PATH_PROPERTY);
+            (CSSPrimitiveValue)decl.getPropertyCSSValueInternal
+            (CSS_CLIP_PATH_PROPERTY);
 
         switch(clipValue.getPrimitiveType()){
         case CSSPrimitiveValue.CSS_IDENT:
@@ -348,8 +356,8 @@ public abstract class CSSUtilities implements CSSConstants, ErrorConstants {
      * @return GeneralPath.WIND_NON_ZERO | GeneralPath.WIND_EVEN_ODD
      */
     public static int convertClipRule(Element e) {
-        CSSStyleDeclaration decl = getComputedStyle(e);
-        return rule(decl.getPropertyCSSValue(CSS_CLIP_RULE_PROPERTY));
+        CSSOMReadOnlyStyleDeclaration decl = getComputedStyle(e);
+        return rule(decl.getPropertyCSSValueInternal(CSS_CLIP_RULE_PROPERTY));
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -368,10 +376,11 @@ public abstract class CSSUtilities implements CSSConstants, ErrorConstants {
     public static Mask convertMask(Element maskedElement,
                                    GraphicsNode maskedNode,
                                    BridgeContext ctx) {
-        CSSStyleDeclaration decl = getComputedStyle(maskedElement);
+        CSSOMReadOnlyStyleDeclaration decl = getComputedStyle(maskedElement);
 
         CSSPrimitiveValue maskValue =
-            (CSSPrimitiveValue)decl.getPropertyCSSValue(CSS_MASK_PROPERTY);
+            (CSSPrimitiveValue)decl.getPropertyCSSValueInternal
+            (CSS_MASK_PROPERTY);
 
         switch(maskValue.getPrimitiveType()){
         case CSSPrimitiveValue.CSS_IDENT:
@@ -401,8 +410,9 @@ public abstract class CSSUtilities implements CSSConstants, ErrorConstants {
      * @return GeneralPath.WIND_NON_ZERO | GeneralPath.WIND_EVEN_ODD
      */
     public static int convertFillRule(Element e) {
-        CSSStyleDeclaration decl = getComputedStyle(e);
-        return rule(decl.getPropertyCSSValue(CSS_FILL_RULE_PROPERTY));
+        CSSOMReadOnlyStyleDeclaration decl = getComputedStyle(e);
+        return rule(decl.getPropertyCSSValueInternal
+                    (CSS_FILL_RULE_PROPERTY));
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -417,9 +427,9 @@ public abstract class CSSUtilities implements CSSConstants, ErrorConstants {
      * @param ctx the bridge context
      */
     public static Color convertLightingColor(Element e, BridgeContext ctx) {
-        CSSStyleDeclaration decl = getComputedStyle(e);
+        CSSOMReadOnlyStyleDeclaration decl = getComputedStyle(e);
 
-        CSSValue colorDef = decl.getPropertyCSSValue
+        CSSValue colorDef = decl.getPropertyCSSValueInternal
             (CSS_LIGHTING_COLOR_PROPERTY);
         if (colorDef.getCssValueType() == CSSValue.CSS_PRIMITIVE_VALUE) {
             CSSPrimitiveValue v = (CSSPrimitiveValue)colorDef;
@@ -442,11 +452,12 @@ public abstract class CSSUtilities implements CSSConstants, ErrorConstants {
      * @param ctx the bridge context
      */
     public static Color convertFloodColor(Element e, BridgeContext ctx) {
-        CSSStyleDeclaration decl = getComputedStyle(e);
+        CSSOMReadOnlyStyleDeclaration decl = getComputedStyle(e);
         float opacity = PaintServer.convertOpacity
-            (decl.getPropertyCSSValue(CSS_FLOOD_OPACITY_PROPERTY));
+            (decl.getPropertyCSSValueInternal(CSS_FLOOD_OPACITY_PROPERTY));
 
-        CSSValue colorDef = decl.getPropertyCSSValue(CSS_FLOOD_COLOR_PROPERTY);
+        CSSValue colorDef
+            = decl.getPropertyCSSValueInternal(CSS_FLOOD_COLOR_PROPERTY);
         if (colorDef.getCssValueType() == CSSValue.CSS_PRIMITIVE_VALUE) {
             CSSPrimitiveValue v = (CSSPrimitiveValue)colorDef;
             return PaintServer.convertColor(v.getRGBColorValue(), opacity);
@@ -472,12 +483,13 @@ public abstract class CSSUtilities implements CSSConstants, ErrorConstants {
                                          float opacity,
                                          BridgeContext ctx) {
 
-        CSSStyleDeclaration decl = getComputedStyle(stopElement);
+        CSSOMReadOnlyStyleDeclaration decl = getComputedStyle(stopElement);
 
-        CSSValue colorDef = decl.getPropertyCSSValue(CSS_STOP_COLOR_PROPERTY);
+        CSSValue colorDef
+            = decl.getPropertyCSSValueInternal(CSS_STOP_COLOR_PROPERTY);
 
         float stopOpacity = PaintServer.convertOpacity
-            (decl.getPropertyCSSValue(CSS_STOP_OPACITY_PROPERTY));
+            (decl.getPropertyCSSValueInternal(CSS_STOP_OPACITY_PROPERTY));
         opacity *= stopOpacity;
 
         if (colorDef.getCssValueType() == CSSValue.CSS_PRIMITIVE_VALUE) {

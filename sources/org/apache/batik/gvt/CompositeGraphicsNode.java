@@ -271,16 +271,13 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
             // System.out.println("primitiveBounds are null:" + this.getClass().getName());
             int i=0;
             while(primitiveBounds == null && i < count){
-                // System.out.println("XX");
-                primitiveBounds = children[i++].getTransformedBounds(IDENTITY, rc);
-                // System.out.println("child" + (i -1) + " bounds : " + primitiveBounds);
+                primitiveBounds = children[i++].getTransformedBounds
+                    (IDENTITY, rc);
             }
 
             Rectangle2D ctb = null;
             while(i < count){
                 ctb = children[i++].getTransformedBounds(IDENTITY, rc);
-                // System.out.println("YY");
-                // System.out.println("child add" + (i -1) + " bounds : " + ctb);
                 if(ctb != null){
                     primitiveBounds.add(ctb);
                 }
@@ -309,13 +306,11 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
         int i = 0;
         Rectangle2D tpb = null;
         while( tpb == null && i < count){
-            // System.out.println("XX22");
             tpb = children[i++].getTransformedBounds(t, rc);
         }
 
         Rectangle2D ctb = null;
         while(i < count){
-            // System.out.println("YY22");
             ctb = children[i++].getTransformedBounds(t, rc);
             if(ctb != null){
                 tpb.add(ctb);
@@ -335,18 +330,17 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
      *
      * @param rc the GraphicsNodeRenderContext for which this dimension applies
       */
-    public Rectangle2D getGeometryBounds(GraphicsNodeRenderContext rc){
+    public Rectangle2D getGeometryBounds(GraphicsNodeRenderContext rc) {
         if(geometryBounds == null){
             // System.out.println("geometryBounds are null");
             int i=0;
             while(geometryBounds == null && i < count){
-                // System.out.println("XX33");
-                geometryBounds = children[i++].getTransformedGeometryBounds(IDENTITY, rc);
+                geometryBounds
+                    = children[i++].getTransformedGeometryBounds (IDENTITY, rc);
             }
 
             Rectangle2D cgb = null;
             while(i<count){
-                // System.out.println("YY33");
                 cgb = children[i++].getTransformedGeometryBounds(IDENTITY, rc);
                 if(cgb != null){
                     geometryBounds.add(cgb);
@@ -369,8 +363,9 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
      *
      * @param rc the GraphicsNodeRenderContext for which this dimension applies
       */
-    public Rectangle2D getTransformedGeometryBounds(AffineTransform txf,
-                                                    GraphicsNodeRenderContext rc){
+    public Rectangle2D getTransformedGeometryBounds
+        (AffineTransform txf, GraphicsNodeRenderContext rc) {
+
         AffineTransform t = txf;
         if(transform != null){
             t = new AffineTransform(txf);
@@ -380,13 +375,11 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
         Rectangle2D gb = null;
         int i=0;
         while(gb == null && i < count){
-            // System.out.println("XX44");
             gb = children[i++].getTransformedGeometryBounds(t, rc);
         }
 
         Rectangle2D cgb = null;
         while(i < count){
-            // System.out.println("YY44");
             cgb = children[i++].getTransformedGeometryBounds(t, rc);
             if(cgb != null){
                 gb.add(cgb);

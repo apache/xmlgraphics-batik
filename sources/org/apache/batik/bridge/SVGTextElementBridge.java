@@ -30,6 +30,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.batik.css.CSSOMReadOnlyStyleDeclaration;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.dom.util.XMLSupport;
@@ -549,7 +550,8 @@ public class SVGTextElementBridge implements GraphicsNodeBridge,
                                   Element element,
                                   GraphicsNode node) {
 
-        CSSStyleDeclaration cssDecl = CSSUtilities.getComputedStyle(element);
+        CSSOMReadOnlyStyleDeclaration cssDecl
+            = CSSUtilities.getComputedStyle(element);
         UnitProcessor.Context uctx = UnitProcessor.createContext(ctx, element);
 
         Map result = new HashMap();
@@ -561,7 +563,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge,
         result.put(GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER, element);
 
         // Text-anchor
-        v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue
+        v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValueInternal
             (CSS_TEXT_ANCHOR_PROPERTY);
         s = v.getStringValue();
         TextNode.Anchor a;
@@ -583,7 +585,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge,
         result.put(TextAttribute.SIZE, new Float(fs));
 
         // Font family
-        CSSValueList ff = (CSSValueList)cssDecl.getPropertyCSSValue
+        CSSValueList ff = (CSSValueList)cssDecl.getPropertyCSSValueInternal
             (CSS_FONT_FAMILY_PROPERTY);
         s = null;
         for (int i = 0; s == null && i < ff.getLength(); i++) {
@@ -596,7 +598,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge,
         // Font weight
         // TODO: improve support for relative values
         // (e.g. "lighter", "bolder")
-        v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue
+        v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValueInternal
             (CSS_FONT_WEIGHT_PROPERTY);
         if (v.getPrimitiveType() == CSSPrimitiveValue.CSS_IDENT) {
             //System.out.println("CSS Font Weight "+v.getStringValue());
@@ -656,7 +658,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge,
 
         // Text baseline adjustment.
         // TODO: support for <percentage> and <length> values.
-        v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue
+        v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValueInternal
             (CSS_BASELINE_SHIFT_PROPERTY);
         if (v.getPrimitiveType() == CSSPrimitiveValue.CSS_IDENT) {
             s = v.getStringValue();
@@ -693,7 +695,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge,
         // full support requires revision: see comments
         // below regarding 'direction'
 
-        v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue
+        v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValueInternal
             (CSS_UNICODE_BIDI_PROPERTY);
         s = v.getStringValue();
         if (s.charAt(0) == 'n') {
@@ -711,7 +713,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge,
             // is only needed when one wants to override the
             // normal writing direction for a string/substring.
 
-            v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue
+            v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValueInternal
                 (CSS_DIRECTION_PROPERTY);
             String rs = v.getStringValue();
             switch (rs.charAt(0)) {
@@ -738,7 +740,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge,
 
         // Writing mode
 
-        v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue
+        v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValueInternal
             (CSS_WRITING_MODE_PROPERTY);
         s = v.getStringValue();
         switch (s.charAt(0)) {
@@ -759,7 +761,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge,
         }
 
         // Font style
-        v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue
+        v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValueInternal
             (CSS_FONT_STYLE_PROPERTY);
         s = v.getStringValue();
         switch (s.charAt(0)) {
@@ -774,7 +776,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge,
         }
 
         // Font stretch
-        v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue
+        v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValueInternal
             (CSS_FONT_STRETCH_PROPERTY);
         s = v.getStringValue();
         switch (s.charAt(0)) {
@@ -818,7 +820,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge,
         // text spacing properties...
 
         // Letter Spacing
-        v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue
+        v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValueInternal
             (CSS_LETTER_SPACING_PROPERTY);
         t = v.getPrimitiveType();
         if (t != CSSPrimitiveValue.CSS_IDENT) {
@@ -837,7 +839,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge,
         }
 
         // Word spacing
-        v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue
+        v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValueInternal
             (CSS_WORD_SPACING_PROPERTY);
         t = v.getPrimitiveType();
         if (t != CSSPrimitiveValue.CSS_IDENT) {
@@ -925,7 +927,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge,
         }
 
         // Text decoration
-        CSSValue cssVal = cssDecl.getPropertyCSSValue
+        CSSValue cssVal = cssDecl.getPropertyCSSValueInternal
             (CSS_TEXT_DECORATION_PROPERTY);
         t = cssVal.getCssValueType();
         if (t == CSSValue.CSS_VALUE_LIST) {

@@ -61,60 +61,17 @@ public class SVGMarkerElementBridge implements MarkerBridge,
                                Element markerElement,
                                Element paintedElement) {
 
-        //
-        // CSS setup
-        //
-        // Properties inherit into the 'marker' element from its ancestors
-        // and do not inherit from the element referencing the 'marker' element.
-        //
-        SVGOMDocument md = (SVGOMDocument)markerElement.getOwnerDocument();
-        SVGOMDocument pd = (SVGOMDocument)paintedElement.getOwnerDocument();
-        ViewCSS viewCSS = (ViewCSS)pd.getDefaultView();
-        Element inst;
-        if (md == pd) {
-            inst = (Element)markerElement.cloneNode(true);
-        } else {
-            inst = (Element)paintedElement.getOwnerDocument().importNode
-                (markerElement, true);
-        }
-        Element g = pd.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
-        ((HiddenChildElement)g).setParentElement(paintedElement);
-
-        CSSOMReadOnlyStyleDeclaration gsd =
-            (CSSOMReadOnlyStyleDeclaration)viewCSS.getComputedStyle(g, null);
-
-        gsd.setPropertyCSSValue
-            (CSS_MARKER_PROPERTY,
-             new CSSOMReadOnlyValue(ValueConstants.NONE_VALUE),
-             gsd.getLocalPropertyPriority(CSS_MARKER_PROPERTY),
-             gsd.getLocalPropertyOrigin(CSS_MARKER_PROPERTY));
-        gsd.setPropertyCSSValue
-            (CSS_MARKER_START_PROPERTY,
-             new CSSOMReadOnlyValue(ValueConstants.NONE_VALUE),
-             gsd.getLocalPropertyPriority(CSS_MARKER_START_PROPERTY),
-             gsd.getLocalPropertyOrigin(CSS_MARKER_START_PROPERTY));
-        gsd.setPropertyCSSValue
-            (CSS_MARKER_MID_PROPERTY,
-             new CSSOMReadOnlyValue(ValueConstants.NONE_VALUE),
-             gsd.getLocalPropertyPriority(CSS_MARKER_START_PROPERTY),
-             gsd.getLocalPropertyOrigin(CSS_MARKER_START_PROPERTY));
-        gsd.setPropertyCSSValue
-            (CSS_MARKER_END_PROPERTY,
-             new CSSOMReadOnlyValue(ValueConstants.NONE_VALUE),
-             gsd.getLocalPropertyPriority(CSS_MARKER_START_PROPERTY),
-             gsd.getLocalPropertyOrigin(CSS_MARKER_START_PROPERTY));
-        g.appendChild(inst);
-        if (md != pd) {
-            CSSUtilities.computeStyleAndURIs(markerElement, inst);
-        }
-
         GVTBuilder builder = ctx.getGVTBuilder();
+
         CompositeGraphicsNode markerContentNode
             = new CompositeGraphicsNode();
 
         // build the GVT tree that represents the marker
         boolean hasChildren = false;
-        for(Node n=inst.getFirstChild(); n != null; n = n.getNextSibling()) {
+        for(Node n = markerElement.getFirstChild();
+            n != null;
+            n = n.getNextSibling()) {
+
             // check if the node is a valid Element
             if (n.getNodeType() != Node.ELEMENT_NODE) {
                 continue;
@@ -133,11 +90,12 @@ public class SVGMarkerElementBridge implements MarkerBridge,
         }
 
         String s;
-        UnitProcessor.Context uctx = UnitProcessor.createContext(ctx, inst);
+        UnitProcessor.Context uctx
+            = UnitProcessor.createContext(ctx, paintedElement);
 
         // 'markerWidth' attribute - default is 3
         float markerWidth = 3;
-        s = inst.getAttributeNS(null, SVG_MARKER_WIDTH_ATTRIBUTE);
+        s = markerElement.getAttributeNS(null, SVG_MARKER_WIDTH_ATTRIBUTE);
         if (s.length() != 0) {
             markerWidth = UnitProcessor.svgHorizontalLengthToUserSpace
                 (s, SVG_MARKER_WIDTH_ATTRIBUTE, uctx);
@@ -149,7 +107,7 @@ public class SVGMarkerElementBridge implements MarkerBridge,
 
         // 'markerHeight' attribute - default is 3
         float markerHeight = 3;
-        s = inst.getAttributeNS(null, SVG_MARKER_HEIGHT_ATTRIBUTE);
+        s = markerElement.getAttributeNS(null, SVG_MARKER_HEIGHT_ATTRIBUTE);
         if (s.length() != 0) {
             markerHeight = UnitProcessor.svgVerticalLengthToUserSpace
                 (s, SVG_MARKER_HEIGHT_ATTRIBUTE, uctx);
@@ -161,7 +119,7 @@ public class SVGMarkerElementBridge implements MarkerBridge,
 
         // 'orient' attribute - default is 'auto'
         double orient;
-        s = inst.getAttributeNS(null, SVG_ORIENT_ATTRIBUTE);
+        s = markerElement.getAttributeNS(null, SVG_ORIENT_ATTRIBUTE);
         if (s.length() == 0 || VALUE_AUTO.equals(s)) {
             orient = Double.NaN;
         } else {
@@ -177,21 +135,23 @@ public class SVGMarkerElementBridge implements MarkerBridge,
         // 'stroke-width' property
         CSSStyleDeclaration decl
             = CSSUtilities.getComputedStyle(paintedElement);
-        UnitProcessor.Context puctx
-            = UnitProcessor.createContext(ctx, paintedElement);
         CSSValue v = decl.getPropertyCSSValue(CSS_STROKE_WIDTH_PROPERTY);
         float strokeWidth = UnitProcessor.cssOtherLengthToUserSpace
-            (v, CSS_STROKE_WIDTH_PROPERTY, puctx);
+            (v, CSS_STROKE_WIDTH_PROPERTY, uctx);
 
         // 'markerUnits' attribute - default is 'strokeWidth'
         short unitsType;
-        s = inst.getAttributeNS(null, SVG_MARKER_UNITS_ATTRIBUTE);
+        s = markerElement.getAttributeNS(null, SVG_MARKER_UNITS_ATTRIBUTE);
         if (s.length() == 0) {
             unitsType = SVGUtilities.STROKE_WIDTH;
         } else {
             unitsType = SVGUtilities.parseMarkerCoordinateSystem
-                (inst, SVG_MARKER_UNITS_ATTRIBUTE, s);
+                (markerElement, SVG_MARKER_UNITS_ATTRIBUTE, s);
         }
+
+        //
+        //
+        //
 
         // compute an additional transform for 'strokeWidth' coordinate system
         AffineTransform markerTxf;
@@ -205,7 +165,7 @@ public class SVGMarkerElementBridge implements MarkerBridge,
         // 'viewBox' and 'preserveAspectRatio' attributes
         // viewBox -> viewport(0, 0, markerWidth, markerHeight)
         AffineTransform preserveAspectRatioTransform
-            = ViewBox.getPreserveAspectRatioTransform(inst,
+            = ViewBox.getPreserveAspectRatioTransform(markerElement,
                                                       markerWidth,
                                                       markerHeight);
         if (preserveAspectRatioTransform == null) {
@@ -218,9 +178,9 @@ public class SVGMarkerElementBridge implements MarkerBridge,
         markerContentNode.setTransform(markerTxf);
 
         // 'overflow' property
-        if (CSSUtilities.convertOverflow(inst)) { // overflow:hidden
+        if (CSSUtilities.convertOverflow(markerElement)) { // overflow:hidden
             Rectangle2D markerClip;
-            float [] offsets = CSSUtilities.convertClip(inst);
+            float [] offsets = CSSUtilities.convertClip(markerElement);
             if (offsets == null) { // clip:auto
                 markerClip
                     = new Rectangle2D.Float(0,
@@ -249,7 +209,7 @@ public class SVGMarkerElementBridge implements MarkerBridge,
 
         // 'refX' attribute - default is 0
         float refX = 0;
-        s = inst.getAttributeNS(null, SVG_REFX_ATTRIBUTE);
+        s = markerElement.getAttributeNS(null, SVG_REFX_ATTRIBUTE);
         if (s.length() != 0) {
             refX = UnitProcessor.svgHorizontalCoordinateToUserSpace
                 (s, SVG_REFX_ATTRIBUTE, uctx);
@@ -257,7 +217,7 @@ public class SVGMarkerElementBridge implements MarkerBridge,
 
         // 'refY' attribute - default is 0
         float refY = 0;
-        s = inst.getAttributeNS(null, SVG_REFY_ATTRIBUTE);
+        s = markerElement.getAttributeNS(null, SVG_REFY_ATTRIBUTE);
         if (s.length() != 0) {
             refY = UnitProcessor.svgVerticalCoordinateToUserSpace
                 (s, SVG_REFY_ATTRIBUTE, uctx);
