@@ -274,32 +274,32 @@ public abstract class PaintServer
                                           (ICCColor)paintDef.item(1),
                                           opacity, ctx);
 
-            case CSSPrimitiveValue.CSS_URI:
+            case CSSPrimitiveValue.CSS_URI: {
                 Paint result = silentConvertURIPaint(paintedElement,
                                                      paintedNode,
-                                                     v,
-                                                     opacity,
-                                                     ctx);
-                if (result == null) {
-                    v = paintDef.item(1);
-                    switch (v.getPrimitiveType()) {
-                    case CSSPrimitiveValue.CSS_IDENT:
-                        return null; // none
+                                                     v, opacity, ctx);
+                if (result != null) return result;
 
-                    case CSSPrimitiveValue.CSS_RGBCOLOR:
-                        if (paintDef.getLength() == 2) {
-                            return convertColor(v, opacity);
-                        } else {
-                            return convertRGBICCColor(paintedElement, v,
-                                                      (ICCColor)paintDef.item(2),
-                                                      opacity, ctx);
-                        }
-                    default:
-                        throw new Error(); // can't be reached
+                v = paintDef.item(1);
+                switch (v.getPrimitiveType()) {
+                case CSSPrimitiveValue.CSS_IDENT:
+                    return null; // none
+                    
+                case CSSPrimitiveValue.CSS_RGBCOLOR:
+                    if (paintDef.getLength() == 2) {
+                        return convertColor(v, opacity);
+                    } else {
+                        return convertRGBICCColor(paintedElement, v,
+                                                  (ICCColor)paintDef.item(2),
+                                                  opacity, ctx);
                     }
+                default:
+                    throw new Error(); // can't be reached
                 }
+            }
             default:
-                throw new Error(); // can't be reached
+                // can't be reached
+                throw new Error("Unallowed Value: " + v.getPrimitiveType()); 
             }
         }
     }

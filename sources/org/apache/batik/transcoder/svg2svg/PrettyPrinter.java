@@ -824,11 +824,12 @@ public class PrettyPrinter {
     /**
      * Prints an element.
      */
-    protected void printElement()
+    protected String printElement()
         throws TranscoderException,
                XMLException,
                IOException {
         char[] name = getCurrentValue();
+        String nameStr = new String(name);
         List attributes = new LinkedList();
         char[] space = null;
 
@@ -913,7 +914,7 @@ public class PrettyPrinter {
         case LexicalUnits.END_CHAR:
             output.printCharacter('>');
             type = scanner.next();
-            printContent();
+            printContent(allowSpaceAtStart(nameStr));
             if (type != LexicalUnits.END_TAG) {
                 throw fatalError("end.tag", null);
             }
@@ -934,29 +935,46 @@ public class PrettyPrinter {
         }
 
         type = scanner.next();
+        return nameStr;
+    }
+
+    boolean allowSpaceAtStart(String tagName) {
+        return true;
+        /**
+         * This would be a real hack for SVG.  This should be
+         * driven by a configuration paramater as well as
+         * needing to be really namespace aware...
+         */
+        // return !(tagName.equals("tspan")||
+        //         tagName.endsWith(":tspan"));
     }
 
     /**
      * Prints the content of an element.
      */
-    protected void printContent()
+    protected void printContent(boolean spaceAtStart)
         throws TranscoderException,
                XMLException,
                IOException {
+        boolean preceedingSpace = false;
         content: for (;;) {
             switch (type) {
             case LexicalUnits.COMMENT:
                 output.printComment(getCurrentValue());
                 scanner.clearBuffer();
                 type = scanner.next();
+                preceedingSpace = false;
                 break;
             case LexicalUnits.PI_START:
                 printPI();
+                preceedingSpace = false;
                 break;
             case LexicalUnits.CHARACTER_DATA:
-                output.printCharacterData(getCurrentValue());
+                preceedingSpace = output.printCharacterData
+                    (getCurrentValue(), spaceAtStart, preceedingSpace);
                 scanner.clearBuffer();
                 type = scanner.next();
+                spaceAtStart = false;
                 break;
             case LexicalUnits.CDATA_START:
                 type = scanner.next();
@@ -969,19 +987,28 @@ public class PrettyPrinter {
                 }
                 scanner.clearBuffer();
                 type = scanner.next();
+                preceedingSpace = false;
+                spaceAtStart = false;
                 break;
             case LexicalUnits.START_TAG:
-                printElement();
+                String name = printElement();
+                spaceAtStart = allowSpaceAtStart(name);
                 break;
             case LexicalUnits.CHARACTER_REFERENCE:
-                output.printCharacterEntityReference(getCurrentValue());
+                output.printCharacterEntityReference(getCurrentValue(),
+                                                     spaceAtStart,
+                                                     preceedingSpace);
                 scanner.clearBuffer();
                 type = scanner.next();
+                spaceAtStart = false;
+                preceedingSpace = false;
                 break;
             case LexicalUnits.ENTITY_REFERENCE:
-                output.printEntityReference(getCurrentValue());
+                output.printEntityReference(getCurrentValue(), spaceAtStart);
                 scanner.clearBuffer();
                 type = scanner.next();
+                spaceAtStart = false;
+                preceedingSpace = false;
                 break;
             default:
                 break content;

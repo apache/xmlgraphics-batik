@@ -234,9 +234,7 @@ public class TextSelectionManager {
         }
 
         public void mouseReleased(GraphicsNodeMouseEvent evt) {
-            if (evt.getSource() instanceof Selectable) {
-                textSelector.mouseReleased(evt);
-            }
+            textSelector.mouseReleased(evt);
         }
 
         public void mouseEntered(GraphicsNodeMouseEvent evt) {
@@ -264,11 +262,7 @@ public class TextSelectionManager {
             }
         }
 
-        public void mouseMoved(GraphicsNodeMouseEvent evt) {
-            if (evt.getSource() instanceof Selectable) {
-                textSelector.mouseMoved(evt);
-            }
-        }
+        public void mouseMoved(GraphicsNodeMouseEvent evt) { }
     }
 
     /**
