@@ -59,6 +59,7 @@ import org.apache.batik.gvt.event.EventDispatcher;
 import org.apache.batik.swing.gvt.GVTTreeRendererEvent;
 import org.apache.batik.swing.gvt.JGVTComponent;
 
+import org.apache.batik.util.RunnableQueue;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLResourceDescriptor;
 
@@ -76,7 +77,7 @@ import org.w3c.dom.svg.SVGSVGElement;
  *
  * <h2>Rendering Process</h2>
  *
- * <p>The rendering process can be broken down into three phases. Not all of
+ * <p>The rendering process can be broken down into five phases. Not all of
  * those steps are required - depending on the method used to specify the SVG
  * document to display, but basically the steps in the rendering process
  * are:</p>
@@ -96,19 +97,39 @@ import org.w3c.dom.svg.SVGSVGElement;
  * render an SVG document. see the <tt>{@link org.apache.batik.gvt}
  * package.</tt></blockquote></li>
  *
+ * <li><b>Executing the SVGLoad event handlers</b>
+ *
+ * <blockquote>
+ *    If the document is dynamic, the scripts are initialized and the
+ *    SVGLoad event is dispatched before the initial rendering.
+ * </blockquote></li>
+ *
  * <li><b>Rendering the GVT tree</b>
  *
  * <blockquote>Then the GVT tree is rendered. see the <tt>{@link
  * org.apache.batik.gvt.renderer}</tt> package.</blockquote></li>
  *
+ * <li><b>Running the document</b>
+ *
+ * <blockquote>
+ *    If the document is dynamic, the update threads are started.
+ * </blockquote></li>
+ *
  * </ol>
  *
  * <p>Those steps are performed in a separate thread. To be notified to what
  * happens and eventually perform some operations - such as resizing the window
- * to the size of the document or get the SVGDocument built via a URI, three
- * different listeners are provided (one per step): <tt>{@link
- * SVGDocumentLoaderListener}</tt>, <tt>{@link GVTTreeBuilderListener}</tt>, and
- * <tt>{@link org.apache.batik.swing.gvt.GVTTreeRendererListener}</tt>.</p>
+ * to the size of the document or get the SVGDocument built via a URI, five
+ * different listeners are provided (one per step):
+ * <tt>{@link SVGDocumentLoaderListener}</tt>,
+ * <tt>{@link GVTTreeBuilderListener}</tt>,
+ * <tt>{@link SVGLoadEventDispatcherListener}</tt>,
+ * <tt>{@link org.apache.batik.swing.gvt.GVTTreeRendererListener}</tt>,
+ * <tt>{@link org.apache.batik.bridge.UpdateManagerListener}</tt>.</p>
+ *
+ * <p>Each listener has methods to be notified of the start of a phase,
+ *    and methods to be notified of the end of a phase.
+ *    A phase cannot start before the preceding has finished.</p>
  *
  * <p>The following example shows how you can get the size of an SVG
  * document. Note that due to how SVG is designed (units, percentages...), the
@@ -140,11 +161,11 @@ import org.w3c.dom.svg.SVGSVGElement;
  * });
  * </pre>
  *
- * <p>Conformed to the <a
- * href="http://java.sun.com/docs/books/tutorial/uiswing/overview/threads.html">single
- * thread rule of swing</a>, the listeners are executed in the swing thread. The
- * sequence of the method calls for a particular listener and the order of the
- * listeners themselves are <em>guaranteed</em>.</p>
+ * <p>Conformed to the <a href=
+ * "http://java.sun.com/docs/books/tutorial/uiswing/overview/threads.html">
+ * single thread rule of swing</a>, the listeners are executed in the swing
+ * thread. The sequence of the method calls for a particular listener and
+ * the order of the listeners themselves are <em>guaranteed</em>.</p>
  *
  * <h2>User Agent</h2>
  *
@@ -202,6 +223,11 @@ public class JSVGComponent extends JGVTComponent {
     protected List gvtTreeBuilderListeners = new LinkedList();
 
     /**
+     * The SVG onload dispatcher listeners.
+     */
+    protected List svgLoadEventDispatcherListeners = new LinkedList();
+
+    /**
      * The link activation listeners.
      */
     protected List linkActivationListeners = new LinkedList();
@@ -242,6 +268,16 @@ public class JSVGComponent extends JGVTComponent {
     protected boolean updateManagerStopped;
 
     /**
+     * Whether the update manager was suspended.
+     */
+    protected boolean updateManagerSuspended;
+
+    /**
+     * Whether the current document has dynamic features.
+     */
+    protected boolean isDynamicDocument;
+
+    /**
      * Creates a new JSVGComponent.
      */
     public JSVGComponent() {
@@ -265,7 +301,16 @@ public class JSVGComponent extends JGVTComponent {
 
         addSVGDocumentLoaderListener((SVGListener)listener);
         addGVTTreeBuilderListener((SVGListener)listener);
+        addSVGLoadEventDispatcherListener((SVGListener)listener);
         updateManagerListeners.add(listener);
+    }
+
+    /**
+     * Tells whether the component use dynamic features to
+     * process the current document.
+     */
+    public boolean isDynamic() {
+        return isDynamicDocument;
     }
 
     /**
@@ -298,7 +343,7 @@ public class JSVGComponent extends JGVTComponent {
         } else if (gvtTreeBuilder != null) {
             gvtTreeBuilder.interrupt();
         } else if (updateManager != null) {
-            updateManager.dispatchSVGUnLoad();
+            updateManager.dispatchSVGUnLoadEvent();
             updateManager = null;
             updateManagerStopped = true;
         } else {
@@ -365,11 +410,16 @@ public class JSVGComponent extends JGVTComponent {
             throw new IllegalArgumentException("Invalid DOM implementation.");
         }
 
-        if (eventsEnabled && svgDocument != null && updateManager != null) {
-            updateManager.dispatchSVGUnLoad();
+        if (isDynamicDocument &&
+            eventsEnabled &&
+            svgDocument != null &&
+            updateManager != null) {
+            updateManager.dispatchSVGUnLoadEvent();
             updateManager = null;
         }
         updateManagerStopped = false;
+
+        isDynamicDocument = UpdateManager.isDynamicDocument(doc);
 
         svgDocument = doc;
 
@@ -449,6 +499,32 @@ public class JSVGComponent extends JGVTComponent {
     }
 
     /**
+     * Starts a SVGLoadEventDispatcher thread.
+     */
+    private void startSVGLoadEventDispatcher(GraphicsNode root) {
+        updateManager = new UpdateManager(bridgeContext,
+                                          root,
+                                          svgDocument);
+        Iterator it = updateManagerListeners.iterator();
+        while (it.hasNext()) {
+            updateManager.addUpdateManagerListener
+                ((UpdateManagerListener)it.next());
+        }
+
+        SVGLoadEventDispatcher d = new SVGLoadEventDispatcher(root,
+                                                        svgDocument,
+                                                        bridgeContext,
+                                                        updateManager);
+        it = svgLoadEventDispatcherListeners.iterator();
+        while (it.hasNext()) {
+            d.addSVGLoadEventDispatcherListener
+                ((SVGLoadEventDispatcherListener)it.next());
+        }
+
+        d.start();
+    }
+
+    /**
      * Computes the transform used for rendering.
      */
     protected void computeRenderingTransform() {
@@ -458,7 +534,7 @@ public class JSVGComponent extends JGVTComponent {
                 Dimension d = getSize();
                 setRenderingTransform
                     (ViewBox.getViewTransform
-                                      (fragmentIdentifier, elt, d.width, d.height));
+                     (fragmentIdentifier, elt, d.width, d.height));
                 initialTransform = renderingTransform;
             }
         } catch (BridgeException e) {
@@ -479,7 +555,9 @@ public class JSVGComponent extends JGVTComponent {
      * Renders the GVT tree.
      */
     protected void renderGVTTree() {
-        if (updateManager == null || !updateManager.isRunning()) {
+        if (!isDynamicDocument ||
+            updateManager == null ||
+            !updateManager.isRunning()) {
             super.renderGVTTree();
             return;
         }
@@ -504,6 +582,7 @@ public class JSVGComponent extends JGVTComponent {
                     updateManager.updateRendering(renderingTransform,
                                                   doubleBufferedRendering,
                                                   s, d.width, d.height);
+                    
                 }
             });
     }
@@ -541,6 +620,22 @@ public class JSVGComponent extends JGVTComponent {
      */
     public void removeGVTTreeBuilderListener(GVTTreeBuilderListener l) {
         gvtTreeBuilderListeners.remove(l);
+    }
+
+    /**
+     * Adds a SVGLoadEventDispatcherListener to this component.
+     */
+    public void addSVGLoadEventDispatcherListener
+        (SVGLoadEventDispatcherListener l) {
+        svgLoadEventDispatcherListeners.add(l);
+    }
+
+    /**
+     * Removes a SVGLoadEventDispatcherListener from this component.
+     */
+    public void removeSVGLoadEventDispatcherListener
+        (SVGLoadEventDispatcherListener l) {
+        svgLoadEventDispatcherListeners.remove(l);
     }
 
     /**
@@ -681,6 +776,7 @@ public class JSVGComponent extends JGVTComponent {
         extends Listener
         implements SVGDocumentLoaderListener,
                    GVTTreeBuilderListener,
+                   SVGLoadEventDispatcherListener,
                    UpdateManagerListener {
 
         /**
@@ -689,7 +785,7 @@ public class JSVGComponent extends JGVTComponent {
         protected SVGListener() {
         }
 
-        // SVGDocumentLoaderListener ///////////////////////////////////////////
+        // SVGDocumentLoaderListener /////////////////////////////////////////
 
         /**
          * Called when the loading of a document was started.
@@ -737,7 +833,8 @@ public class JSVGComponent extends JGVTComponent {
             }
 
             documentLoader = null;
-            userAgent.displayError(((SVGDocumentLoader)e.getSource()).getException());
+            userAgent.displayError(((SVGDocumentLoader)e.getSource()).
+                                   getException());
 
             if (nextGVTTreeBuilder != null) {
                 startGVTTreeBuilder();
@@ -745,7 +842,7 @@ public class JSVGComponent extends JGVTComponent {
             }
         }
 
-        // GVTTreeBuilderListener //////////////////////////////////////////////
+        // GVTTreeBuilderListener ////////////////////////////////////////////
 
         /**
          * Called when a build started.
@@ -771,9 +868,15 @@ public class JSVGComponent extends JGVTComponent {
                 return;
             }
 
-            JSVGComponent.this.setGraphicsNode(e.getGVTRoot(), false);
+
+            if (isDynamicDocument && JSVGComponent.this.eventsEnabled) {
+                startSVGLoadEventDispatcher(e.getGVTRoot());
+            } else {
+                JSVGComponent.this.setGraphicsNode(e.getGVTRoot(), false);
+            }
             Dimension2D dim = bridgeContext.getDocumentSize();
-            setPreferredSize(new Dimension((int)dim.getWidth(), (int)dim.getHeight()));
+            setPreferredSize(new Dimension((int)dim.getWidth(),
+                                           (int)dim.getHeight()));
             invalidate();
         }
 
@@ -823,10 +926,88 @@ public class JSVGComponent extends JGVTComponent {
                                                (int)dim.getHeight()));
                 invalidate();
             }
-            userAgent.displayError(((GVTTreeBuilder)e.getSource()).getException());
+            userAgent.displayError(((GVTTreeBuilder)e.getSource())
+                                   .getException());
         }
 
-        // GVTTreeRendererListener /////////////////////////////////////////////
+        // SVGLoadEventDispatcherListener ////////////////////////////////////
+
+        /**
+         * Called when a onload event dispatch started.
+         */
+        public void svgLoadEventDispatchStarted
+            (SVGLoadEventDispatcherEvent e) {
+        }
+
+        /**
+         * Called when a onload event dispatch was completed.
+         */
+        public void svgLoadEventDispatchCompleted
+            (SVGLoadEventDispatcherEvent e) {
+            if (nextGVTTreeBuilder != null) {
+                startGVTTreeBuilder();
+                return;
+            }
+            if (nextDocumentLoader != null) {
+                startDocumentLoader();
+                return;
+            }
+
+            JSVGComponent.this.setGraphicsNode(e.getGVTRoot(), false);
+        }
+
+        /**
+         * Called when a onload event dispatch was cancelled.
+         */
+        public void svgLoadEventDispatchCancelled
+            (SVGLoadEventDispatcherEvent e) {
+            loader = null;
+            gvtTreeBuilder = null;
+            if (nextGVTTreeBuilder != null) {
+                startGVTTreeBuilder();
+                return;
+            }
+            if (nextDocumentLoader != null) {
+                startDocumentLoader();
+                return;
+            }
+        }
+
+        /**
+         * Called when a onload event dispatch failed.
+         */
+        public void svgLoadEventDispatchFailed
+            (SVGLoadEventDispatcherEvent e) {
+            loader = null;
+            gvtTreeBuilder = null;
+            if (nextGVTTreeBuilder != null) {
+                startGVTTreeBuilder();
+                return;
+            }
+            if (nextDocumentLoader != null) {
+                startDocumentLoader();
+                return;
+            }
+
+            GraphicsNode gn = e.getGVTRoot();
+            Dimension2D dim = bridgeContext.getDocumentSize();
+            if (gn == null || dim == null) {
+                JSVGComponent.this.image = null;
+                repaint();
+            } else {
+                JSVGComponent.this.setGraphicsNode(gn, false);
+            }
+            userAgent.displayError(((SVGLoadEventDispatcher)e.getSource())
+                                   .getException());
+        }
+
+        // GVTTreeRendererListener ///////////////////////////////////////////
+
+        /**
+         * Called when a rendering started.
+         */
+        public void gvtRenderingStarted(GVTTreeRendererEvent e) {
+        }
 
         /**
          * Called when a rendering was completed.
@@ -842,20 +1023,14 @@ public class JSVGComponent extends JGVTComponent {
                 startDocumentLoader();
                 return;
             }
-
-            if (JSVGComponent.this.eventsEnabled &&
-                updateManager == null &&
-                !updateManagerStopped) {
-                updateManager = new UpdateManager(bridgeContext,
-                                                  getGraphicsNode(),
-                                                  svgDocument,
-                                                  renderer);
-                Iterator it = updateManagerListeners.iterator();
-                while (it.hasNext()) {
-                    updateManager.addUpdateManagerListener
-                        ((UpdateManagerListener)it.next());
+            
+            if (isDynamicDocument) {
+                if (JSVGComponent.this.eventsEnabled &&
+                    !updateManagerSuspended &&
+                    !updateManagerStopped) {
+                    updateManager.manageUpdates(renderer);
                 }
-                updateManager.dispatchSVGLoad();
+                suspendInteractions = false;
             }
         }
 
@@ -897,24 +1072,30 @@ public class JSVGComponent extends JGVTComponent {
          * Called when the manager was started.
          */
         public void managerStarted(UpdateManagerEvent e) {
+            suspendInteractions = false;
+            updateManagerSuspended = false;
         }
 
         /**
          * Called when the manager was suspended.
          */
         public void managerSuspended(UpdateManagerEvent e) {
+            updateManagerSuspended = true;
         }
 
         /**
          * Called when the manager was resumed.
          */
         public void managerResumed(UpdateManagerEvent e) {
+            updateManagerSuspended = false;
         }
 
         /**
          * Called when the manager was stopped.
          */
         public void managerStopped(UpdateManagerEvent e) {
+            updateManagerSuspended = false;
+            updateManagerStopped = true;
         }
 
         /**
@@ -969,8 +1150,14 @@ public class JSVGComponent extends JGVTComponent {
          * Dispatches the event to the GVT tree.
          */
         protected void dispatchMouseClicked(final MouseEvent e) {
+            if (!isDynamicDocument) {
+                super.dispatchMouseClicked(e);
+                return;
+            }
+
             if (updateManager != null && updateManager.isRunning()) {
-                updateManager.getUpdateRunnableQueue().invokeLater(new Runnable() {
+                updateManager.getUpdateRunnableQueue().invokeLater
+                    (new Runnable() {
                         public void run() {
                             eventDispatcher.mouseClicked(e);
                         }
@@ -982,8 +1169,14 @@ public class JSVGComponent extends JGVTComponent {
          * Dispatches the event to the GVT tree.
          */
         protected void dispatchMousePressed(final MouseEvent e) {
+            if (!isDynamicDocument) {
+                super.dispatchMousePressed(e);
+                return;
+            }
+
             if (updateManager != null && updateManager.isRunning()) {
-                updateManager.getUpdateRunnableQueue().invokeLater(new Runnable() {
+                updateManager.getUpdateRunnableQueue().invokeLater
+                    (new Runnable() {
                         public void run() {
                             eventDispatcher.mousePressed(e);
                         }
@@ -995,8 +1188,14 @@ public class JSVGComponent extends JGVTComponent {
          * Dispatches the event to the GVT tree.
          */
         protected void dispatchMouseReleased(final MouseEvent e) {
+            if (!isDynamicDocument) {
+                super.dispatchMouseReleased(e);
+                return;
+            }
+
             if (updateManager != null && updateManager.isRunning()) {
-                updateManager.getUpdateRunnableQueue().invokeLater(new Runnable() {
+                updateManager.getUpdateRunnableQueue().invokeLater
+                    (new Runnable() {
                         public void run() {
                             eventDispatcher.mouseReleased(e);
                         }
@@ -1008,8 +1207,14 @@ public class JSVGComponent extends JGVTComponent {
          * Dispatches the event to the GVT tree.
          */
         protected void dispatchMouseEntered(final MouseEvent e) {
+            if (!isDynamicDocument) {
+                super.dispatchMouseEntered(e);
+                return;
+            }
+
             if (updateManager != null && updateManager.isRunning()) {
-                updateManager.getUpdateRunnableQueue().invokeLater(new Runnable() {
+                updateManager.getUpdateRunnableQueue().invokeLater
+                    (new Runnable() {
                         public void run() {
                             eventDispatcher.mouseEntered(e);
                         }
@@ -1021,8 +1226,14 @@ public class JSVGComponent extends JGVTComponent {
          * Dispatches the event to the GVT tree.
          */
         protected void dispatchMouseExited(final MouseEvent e) {
+            if (!isDynamicDocument) {
+                super.dispatchMouseExited(e);
+                return;
+            }
+
             if (updateManager != null && updateManager.isRunning()) {
-                updateManager.getUpdateRunnableQueue().invokeLater(new Runnable() {
+                updateManager.getUpdateRunnableQueue().invokeLater
+                    (new Runnable() {
                         public void run() {
                             eventDispatcher.mouseExited(e);
                         }
@@ -1033,26 +1244,89 @@ public class JSVGComponent extends JGVTComponent {
         /**
          * Dispatches the event to the GVT tree.
          */
-        protected void dispatchMouseDragged(final MouseEvent e) {
+        protected void dispatchMouseDragged(MouseEvent e) {
+            if (!isDynamicDocument) {
+                super.dispatchMouseDragged(e);
+                return;
+            }
+
+            class MouseDraggedRunnable implements Runnable {
+                MouseEvent event;
+                MouseDraggedRunnable(MouseEvent evt) {
+                    event = evt;
+                }
+                public void run() {
+                    eventDispatcher.mouseDragged(event);
+                }
+            }
+
             if (updateManager != null && updateManager.isRunning()) {
-                updateManager.getUpdateRunnableQueue().invokeLater(new Runnable() {
-                        public void run() {
-                            eventDispatcher.mouseDragged(e);
+                RunnableQueue rq = updateManager.getUpdateRunnableQueue();
+
+                // Events compression.
+                synchronized (rq.getIteratorLock()) {
+                    Iterator it = rq.iterator();
+                    while (it.hasNext()) {
+                        Object next = it.next();
+                        if (next instanceof MouseDraggedRunnable) {
+                            MouseDraggedRunnable mdr;
+                            mdr = (MouseDraggedRunnable)next;
+                            MouseEvent mev = mdr.event;
+                            if (mev.getModifiers() == e.getModifiers()) {
+                                mdr.event = e;
+                            }
+                            return;
                         }
-                    });
+                    }
+                }
+
+                rq.invokeLater(new MouseDraggedRunnable(e));
             }
         }
 
         /**
          * Dispatches the event to the GVT tree.
          */
-        protected void dispatchMouseMoved(final MouseEvent e) {
+        protected void dispatchMouseMoved(MouseEvent e) {
+            if (!isDynamicDocument) {
+                super.dispatchMouseMoved(e);
+                return;
+            }
+
+            class MouseMovedRunnable implements Runnable {
+                MouseEvent event;
+                MouseMovedRunnable(MouseEvent evt) {
+                    event = evt;
+                }
+                public void run() {
+                    eventDispatcher.mouseMoved(event);
+                }
+            }
+
             if (updateManager != null && updateManager.isRunning()) {
-                updateManager.getUpdateRunnableQueue().invokeLater(new Runnable() {
-                        public void run() {
-                            eventDispatcher.mouseMoved(e);
+                RunnableQueue rq = updateManager.getUpdateRunnableQueue();
+
+                // Events compression.
+                int i = 0;
+                synchronized (rq.getIteratorLock()) {
+                    Iterator it = rq.iterator();
+                    while (it.hasNext()) {
+                        Object next = it.next();
+                        if (next instanceof MouseMovedRunnable) {
+                            MouseMovedRunnable mmr;
+                            mmr = (MouseMovedRunnable)next;
+                            MouseEvent mev = mmr.event;
+                            if (mev.getModifiers() == e.getModifiers()) {
+                                mmr.event = e;
+                            }
+                            return;
                         }
-                    });
+                        i++;
+                    }
+
+                }
+
+                rq.invokeLater(new MouseMovedRunnable(e));
             }
         }
     }
@@ -1526,7 +1800,8 @@ public class JSVGComponent extends JGVTComponent {
 			if (elt.getOwnerDocument() != svgDocument) {
 			    SVGOMDocument doc = 
 				(SVGOMDocument)elt.getOwnerDocument();
-			    href = new URL(doc.getURLObject(), href).toString();
+			    href = new URL(doc.getURLObject(), href).
+                                toString();
 			}
                         newURI = new URL(oldURI, href);
                     } catch (MalformedURLException e) {

@@ -16,6 +16,7 @@ import java.io.UnsupportedEncodingException;
 
 import java.util.Locale;
 import java.util.MissingResourceException;
+import java.util.StringTokenizer;
 
 import org.apache.batik.css.sac.CSSOMConditionFactory;
 import org.apache.batik.css.sac.CSSOMSelectorFactory;
@@ -34,6 +35,7 @@ import org.w3c.css.sac.ErrorHandler;
 import org.w3c.css.sac.InputSource;
 import org.w3c.css.sac.LexicalUnit;
 import org.w3c.css.sac.Locator;
+import org.w3c.css.sac.SACMediaList;
 import org.w3c.css.sac.Selector;
 import org.w3c.css.sac.SelectorFactory;
 import org.w3c.css.sac.SelectorList;
@@ -1679,8 +1681,7 @@ public class Parser implements ExtendedParser, Localizable {
     // -----------------------------------------------------------------------
     
     /**
-     * Implements {@link 
-     * org.apache.batik.css.parser.ExtendedParser#parseStyleDeclaration(String)}.
+     * Implements {@link ExtendedParser#parseStyleDeclaration(String)}.
      */
     public void parseStyleDeclaration(String source) 
 	throws CSSException, IOException {
@@ -1689,8 +1690,7 @@ public class Parser implements ExtendedParser, Localizable {
     }
 
     /**
-     * Implements {@link 
-     * org.apache.batik.css.parser.ExtendedParser#parseRule(String)}.
+     * Implements {@link ExtendedParser#parseRule(String)}.
      */
     public void parseRule(String source) throws CSSException, IOException {
         scanner = new Scanner(source);
@@ -1698,8 +1698,7 @@ public class Parser implements ExtendedParser, Localizable {
     }
     
     /**
-     * Implements {@link 
-     * org.apache.batik.css.parser.ExtendedParser#parseSelectors(String)}.
+     * Implements {@link ExtendedParser#parseSelectors(String)}.
      */
     public SelectorList parseSelectors(String source)
         throws CSSException, IOException {
@@ -1708,8 +1707,7 @@ public class Parser implements ExtendedParser, Localizable {
     }
 
     /**
-     * Implements {@link 
-     * org.apache.batik.css.parser.ExtendedParser#parsePropertyValue(String)}.
+     * Implements {@link ExtendedParser#parsePropertyValue(String)}.
      */
     public LexicalUnit parsePropertyValue(String source)
         throws CSSException, IOException {
@@ -1718,12 +1716,26 @@ public class Parser implements ExtendedParser, Localizable {
     }
 
     /**
-     * Implements {@link 
-     * org.apache.batik.css.parser.ExtendedParser#parsePriority(String)}.
+     * Implements {@link ExtendedParser#parsePriority(String)}.
      */
     public boolean parsePriority(String source)
         throws CSSException, IOException {
         scanner = new Scanner(source);
 	return parsePriorityInternal();
+    }
+
+    /**
+     * Implements {@link ExtendedParser#parseMedia(String)}.
+     */
+    public SACMediaList parseMedia(String mediaText)
+        throws CSSException, IOException {
+        CSSSACMediaList result = new CSSSACMediaList();
+        if (!"all".equalsIgnoreCase(mediaText)) {
+            StringTokenizer st = new StringTokenizer(mediaText, " ,");
+            while (st.hasMoreTokens()) {
+                result.append(st.nextToken());
+            }
+        }
+        return result;
     }
 }

@@ -108,6 +108,8 @@ import org.apache.batik.swing.svg.LinkActivationListener;
 import org.apache.batik.swing.svg.SVGDocumentLoaderEvent;
 import org.apache.batik.swing.svg.SVGDocumentLoaderListener;
 import org.apache.batik.swing.svg.SVGFileFilter;
+import org.apache.batik.swing.svg.SVGLoadEventDispatcherEvent;
+import org.apache.batik.swing.svg.SVGLoadEventDispatcherListener;
 import org.apache.batik.swing.svg.SVGUserAgent;
 
 import org.apache.batik.transcoder.TranscoderInput;
@@ -166,6 +168,7 @@ public class JSVGViewerFrame
     implements ActionMap,
                SVGDocumentLoaderListener,
                GVTTreeBuilderListener,
+               SVGLoadEventDispatcherListener,
                GVTTreeRendererListener,
                LinkActivationListener,
                UpdateManagerListener {
@@ -311,6 +314,11 @@ public class JSVGViewerFrame
      * The auto adjust flag.
      */
     protected boolean autoAdjust = true;
+
+    /**
+     * Whether the update manager was stopped.
+     */
+    protected boolean managerStopped;
 
     /**
      * The SVG user agent.
@@ -481,6 +489,7 @@ public class JSVGViewerFrame
 
         svgCanvas.addSVGDocumentLoaderListener(this);
         svgCanvas.addGVTTreeBuilderListener(this);
+        svgCanvas.addSVGLoadEventDispatcherListener(this);
         svgCanvas.addGVTTreeRendererListener(this);
         svgCanvas.addLinkActivationListener(this);
         svgCanvas.addUpdateManagerListener(this);
@@ -1654,6 +1663,57 @@ public class JSVGViewerFrame
         }
     }
 
+    // SVGLoadEventDispatcherListener //////////////////////////////////////
+
+    /**
+     * Called when a onload event dispatch started.
+     */
+    public void svgLoadEventDispatchStarted(SVGLoadEventDispatcherEvent e) {
+        if (debug) {
+            System.out.println("onload dispatch started...");
+            time = System.currentTimeMillis();
+        }
+        stopAction.update(true);
+        statusBar.setMainMessage("Message.onload");
+    }
+
+    /**
+     * Called when a onload event dispatch was completed.
+     */
+    public void svgLoadEventDispatchCompleted(SVGLoadEventDispatcherEvent e) {
+        if (debug) {
+            System.out.print("onload dispatch completed in ");
+            System.out.println((System.currentTimeMillis() - time) + " ms");
+        }
+        stopAction.update(false);
+        statusBar.setMainMessage("");
+        statusBar.setMessage(resources.getString("Message.done"));
+    }
+
+    /**
+     * Called when a onload event dispatch was cancelled.
+     */
+    public void svgLoadEventDispatchCancelled(SVGLoadEventDispatcherEvent e) {
+        if (debug) {
+            System.out.println("onload dispatch cancelled.");
+        }
+        stopAction.update(false);
+        statusBar.setMainMessage("");
+        statusBar.setMessage(resources.getString("Message.onloadCancelled"));
+    }
+
+    /**
+     * Called when a onload event dispatch failed.
+     */
+    public void svgLoadEventDispatchFailed(SVGLoadEventDispatcherEvent e) {
+        if (debug) {
+            System.out.println("onload dispatch failed.");
+        }
+        stopAction.update(false);
+        statusBar.setMainMessage("");
+        statusBar.setMessage(resources.getString("Message.onloadFailed"));
+    }
+
     // GVTTreeRendererListener /////////////////////////////////////////////
 
     /**
@@ -1692,7 +1752,9 @@ public class JSVGViewerFrame
         }
         statusBar.setMainMessage("");
         statusBar.setMessage(resources.getString("Message.done"));
-        stopAction.update(false);
+        if (!svgCanvas.isDynamic() || managerStopped) {
+            stopAction.update(false);
+        }
         svgCanvas.setCursor(DEFAULT_CURSOR);
 
         transformHistory.update(svgCanvas.getRenderingTransform());
@@ -1708,7 +1770,9 @@ public class JSVGViewerFrame
             System.out.println("Rendering cancelled");
         }
         statusBar.setMainMessage("");
-        stopAction.update(false);
+        if (!svgCanvas.isDynamic()) {
+            stopAction.update(false);
+        }
         svgCanvas.setCursor(DEFAULT_CURSOR);
     }
 
@@ -1720,7 +1784,9 @@ public class JSVGViewerFrame
             System.out.println("Rendering failed");
         }
         statusBar.setMainMessage("");
-        stopAction.update(false);
+        if (!svgCanvas.isDynamic()) {
+            stopAction.update(false);
+        }
         svgCanvas.setCursor(DEFAULT_CURSOR);
     }
 
@@ -1762,6 +1828,7 @@ public class JSVGViewerFrame
         if (debug) {
             System.out.println("Manager Started");
         }
+        managerStopped = false;
         playAction.update(false);
         pauseAction.update(true);
         stopAction.update(true);
@@ -1796,6 +1863,7 @@ public class JSVGViewerFrame
         if (debug) {
             System.out.println("Manager Stopped");
         }
+        managerStopped = true;
         playAction.update(false);
         pauseAction.update(false);
         stopAction.update(false);

@@ -193,31 +193,6 @@ class BridgeEventSupport implements SVGConstants {
         }
     }
 
-    /**
-     * Recursively dispatches the onload events.
-     */
-    public static void dispatchOnLoad(BridgeContext ctx,
-                                      Element root,
-                                      String language) {
-        for (Node n = root.getFirstChild(); n != null; n = n.getNextSibling()) {
-            if (n.getNodeType() == n.ELEMENT_NODE) {
-                dispatchOnLoad(ctx, (Element)n, language);
-            }
-        }
-
-        String s = root.getAttributeNS(null, "onload");
-        if (s.length() != 0) {
-            Event ev;
-            ev = ((DocumentEvent)root.getOwnerDocument()).createEvent("SVGEvents");
-            ev.initEvent("SVGLoad", false, false);
-            EventTarget t = (EventTarget)root;
-            EventListener l = new ScriptCaller(ctx, s, language);
-            t.addEventListener("SVGLoad", l, false);
-            t.dispatchEvent(ev);
-            t.removeEventListener("SVGLoad", l, false);
-        }
-    }
-
     public static void updateDOMListener(BridgeContext ctx,
                                          SVGElement element) {
     }
@@ -303,54 +278,6 @@ class BridgeEventSupport implements SVGConstants {
             }
         }
     }
-
-    public static void loadScripts(BridgeContext ctx, Element element) {
-        UpdateManager um = ctx.getUpdateManager();
-        Document doc = um.getDocument();
-        NodeList list = element.getElementsByTagNameNS(SVG_NAMESPACE_URI,
-                                                       SVG_SCRIPT_TAG);
-        final UserAgent ua = ctx.getUserAgent();
-        String language = null;
-        Element selement = null;
-        final ScriptingEnvironment se = ctx.getUpdateManager().
-            getScriptingEnvironment();
-
-        String lang = null;
-        for (int i = 0; i < list.getLength(); i++) {
-            language = (selement = (Element)list.item(i)).
-                getAttribute("type");
-            final Interpreter interpret = ctx.getInterpreter(language);
-            if (interpret != null) {
-                if (language != lang) {
-                    se.setEnvironment(interpret, language);
-                }
-                lang = language;
-
-                final StringBuffer script = new StringBuffer();
-                for (Node n = selement.getFirstChild(); n != null;
-                     n = n.getNextSibling()) {
-                    script.append(n.getNodeValue());
-                }
-                try {
-                    // use Reader mechanism => no caching
-                    // (will not be revaluated + <script> content is
-                    // generally bigger than the one in event attributes
-                    interpret.evaluate(new StringReader(script.toString()));
-                } catch (IOException io) {
-                    // will never appeared we don't use a file
-                } catch (InterpreterException e) {
-                    if (ua != null)
-                        ua.displayError(new Exception("scripting error: "+
-                                                      e.getMessage()));
-                }
-            } else {
-                if (ua != null) {
-                    ua.displayError(new Exception("unknown language: "+language));
-		}
-	    }
-	}
-
-   }
 
     private static class GVTUnloadListener
         implements EventListener {

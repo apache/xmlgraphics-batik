@@ -8,6 +8,7 @@
 
 package org.apache.batik.util;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -332,29 +333,45 @@ public class RunnableQueue implements Runnable {
     }
 
     /**
-     * Returns the queued Runnable objects in a List.
-     * <p>
-     * To be garanteed to work on a valid list, be sure to lock or
-     * to suspend (with <tt>suspendExecution()</tt>) the queue.
-     * @throws IllegalStateException if getThread() is null.
+     * Returns iterator lock to use to work with the iterator
+     * returned by iterator().
      */
-    public List getRunnableList() {
-        if (runnableQueueThread == null) {
-            throw new IllegalStateException
-                ("RunnableQueue not started or has exited");
-        }
+    public Object getIteratorLock() {
+        return list;
+    }
 
-        List result = new LinkedList();
-        synchronized (list) {
-            Link l, h;
-            l = h = (Link)list.getHead();
-            if (h==null) return result;
-            do {
-                result.add(l.runnable);
-                l = (Link)l.getNext();
-            } while (l != h);
-        }
-        return result;
+    /**
+     * Returns an iterator over the runnables.
+     */
+    public Iterator iterator() {
+        return new Iterator() {
+                Link head = (Link)list.getHead();
+                Link link;
+                public boolean hasNext() {
+                    if (head == null) {
+                        return false;
+                    }
+                    if (link == null) {
+                        return true;
+                    }
+                    return link != head;
+                }
+                public Object next() {
+                    if (head == null || head == link) {
+                        throw new java.util.NoSuchElementException();
+                    }
+                    if (link == null) {
+                        link = (Link)head.getNext();
+                        return head.runnable;
+                    }
+                    Object result = link.runnable;
+                    link = (Link)link.getNext();
+                    return result;
+                }
+                public void remove() {
+                    throw new UnsupportedOperationException();
+                }
+            };
     }
 
     /**

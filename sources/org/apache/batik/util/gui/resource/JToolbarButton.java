@@ -8,8 +8,11 @@
 
 package org.apache.batik.util.gui.resource;
 
+import java.awt.Insets;
+
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
 import javax.swing.JButton;
 
 /**
@@ -40,6 +43,7 @@ public class JToolbarButton extends JButton {
      */
     protected void initialize() {
         setBorderPainted(false);
+        setMargin(new Insets(0, 1, 0, 1));
         addMouseListener(new MouseListener());
     }
 
