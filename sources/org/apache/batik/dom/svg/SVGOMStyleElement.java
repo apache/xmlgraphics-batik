@@ -83,10 +83,8 @@ public class SVGOMStyleElement
     protected final static AttributeInitializer attributeInitializer;
     static {
         attributeInitializer = new AttributeInitializer(1);
-        attributeInitializer.addAttribute(null,
-                                          null,
-                                          "xml:space",
-                                          "preserve");
+        attributeInitializer.addAttribute(XMLSupport.XML_NAMESPACE_URI,
+                                          "xml", "space", "preserve");
     }
 
     /**

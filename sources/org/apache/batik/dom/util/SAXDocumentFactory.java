@@ -123,7 +123,7 @@ public class SAXDocumentFactory
     /**
      * Whether the parser currently parses a CDATA section.
      */
-    protected boolean inCDATA;
+    protected StringBuffer cdataBuffer;
 
     /**
      * Whether the parser currently parses a DTD.
@@ -478,7 +478,7 @@ public class SAXDocumentFactory
 	namespaces.put("xmlns", XMLSupport.XMLNS_NAMESPACE_URI);
 	namespaces.put("", null);
 
-        inCDATA = false;
+        cdataBuffer = null;
         inDTD = false;
         currentNode = null;
 
@@ -610,15 +610,15 @@ public class SAXDocumentFactory
      */
     public void characters(char ch[], int start, int length)
         throws SAXException {
-	String data = new String(ch, start, length);
-        if (currentNode == null) {
-            if (inCDATA) preInfo.add(new CDataInfo(data));
-            else         preInfo.add(new TextInfo(data));
-        } else {
-            Node n = (inCDATA)
-                ? document.createCDATASection(data)
-                : document.createTextNode(data);
-            currentNode.appendChild(n);
+        if (cdataBuffer != null) 
+            cdataBuffer.append(ch, start, length);
+        else {
+            String data = new String(ch, start, length);
+            if (currentNode == null) {
+                preInfo.add(new TextInfo(data));
+            } else {
+                currentNode.appendChild(document.createTextNode(data));
+            }
         }
     }
     
@@ -674,7 +674,7 @@ public class SAXDocumentFactory
      * org.xml.sax.ext.LexicalHandler#startCDATA()}.
      */
     public void startCDATA() throws SAXException {
-	inCDATA = true;
+        cdataBuffer = new StringBuffer();
     }
 
     /**
@@ -682,7 +682,13 @@ public class SAXDocumentFactory
      * org.xml.sax.ext.LexicalHandler#endCDATA()}.
      */
     public void endCDATA() throws SAXException {
-	inCDATA = false;
+        String data = cdataBuffer.toString();
+        if (currentNode == null) {
+            preInfo.add(new CDataInfo(data));
+        } else {
+            currentNode.appendChild(document.createCDATASection(data));
+        }
+        cdataBuffer = null;
     }
 
     /**
