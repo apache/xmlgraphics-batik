@@ -246,6 +246,7 @@ public interface SVGSyntax{
     public static final String VALUE_OBJECT_BOUNDING_BOX = "objectBoundingBox";
     public static final String VALUE_ONE = "1";
     public static final String VALUE_OPAQUE = "1";
+    public static final String VALUE_OPTIMIZE_LEGIBILITY = "optimizeLegibility";
     public static final String VALUE_OPTIMIZE_QUALITY = "optimizeQuality";
     public static final String VALUE_OPTIMIZE_SPEED = "optimizeSpeed";
     public static final String VALUE_OUT = "out";

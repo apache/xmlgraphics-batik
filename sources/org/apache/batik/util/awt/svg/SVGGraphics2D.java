@@ -1352,8 +1352,10 @@ public class SVGGraphics2D extends Graphics2D implements Cloneable, SVGSyntax{
         Stroke stroke = gc.getStroke();
         if(stroke instanceof BasicStroke){
             Element svgShape = shapeConverter.toSVG(s);
-            svgShape.setAttribute(ATTR_FILL, VALUE_NONE);
-            domGroupManager.addElement(svgShape);
+            if(svgShape != null){
+                svgShape.setAttribute(ATTR_FILL, VALUE_NONE);
+                domGroupManager.addElement(svgShape);
+            }
         }
         else{
             Shape strokedShape = stroke.createStrokedShape(s);
@@ -1738,8 +1740,10 @@ public class SVGGraphics2D extends Graphics2D implements Cloneable, SVGSyntax{
      */
     public void fill(Shape s){
         Element svgShape = shapeConverter.toSVG(s);
-        svgShape.setAttribute(ATTR_STROKE, VALUE_NONE);
-        domGroupManager.addElement(svgShape);
+        if(svgShape != null){
+            svgShape.setAttribute(ATTR_STROKE, VALUE_NONE);
+            domGroupManager.addElement(svgShape);
+        }
     }
 
     /**

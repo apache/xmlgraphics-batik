@@ -256,7 +256,7 @@ public class SVGComposite
                 srcPix = src.getPixels  (x, y, w, 1, srcPix);
                 dstPix = dstIn.getPixels(x, y, w, 1, dstPix);
                 for (int i=0; i<srcPix.length; i++) {
-                    dstPix[i] =(int)(k1*srcPix[i]*dstPix[i] +
+                    dstPix[i] =(int)((k1*srcPix[i]*dstPix[i])/255 +
                                      k2*srcPix[i] + k3*dstPix[i] + 
                                      k4*255);
                     if      (dstPix[i] < 0)   dstPix[i] = 0;

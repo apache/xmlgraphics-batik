@@ -76,16 +76,6 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
         //
         // Load all fonts. Work around
         //
-        /* Note to maintainer:  font init code should not be here!
-         * we should not have dependencies in the Bridge
-         * on java2d Fonts - they are not relevant to non-rasterizing
-         * renderers!
-         * We should instead support a list of fonts, in order of preference,
-         * as CSS allows, and defer resolving these names to actual
-         * implementation-dependent font names until render time.
-         *
-         *                -Bill Haneman
-         */
         GraphicsEnvironment env;
         env = GraphicsEnvironment.getLocalGraphicsEnvironment();
         // System.out.println("Initializing fonts .... please wait");

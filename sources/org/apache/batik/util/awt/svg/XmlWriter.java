@@ -8,6 +8,8 @@
 
 package org.apache.batik.util.awt.svg;
 
+import org.apache.batik.util.SVGConstants;
+
 import java.io.*;
 import org.w3c.dom.*;
 
@@ -21,7 +23,7 @@ import org.w3c.dom.*;
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
-class XmlWriter implements SVGSyntax{
+class XmlWriter implements SVGConstants {
     static private String       EOL;
     static private String TAG_END = " />";
     static private String TAG_START = "</";
@@ -290,15 +292,14 @@ class XmlWriter implements SVGSyntax{
         out.write (EOL);
 
         // Write DOCTYPE declaration here. Skip until specification is released.
-        /**
-           out.write ("<!DOCTYPE svg PUBLIC '");
-           out.write (SVG_PUBLIC_ID);
-           out.write ("' '");
-           out.write (SVG_SYSTEM_ID);
-           out.write ("'");
-
-           out.write (">");
-           out.write (EOL);*/
+        out.write ("<!DOCTYPE svg PUBLIC '");
+        out.write (SVG_PUBLIC_ID);
+        out.write ("' '");
+        out.write (SVG_SYSTEM_ID);
+        out.write ("'");
+        
+        out.write (">");
+        out.write (EOL);
     }
 
     private static void writeXml (Document document, IndentWriter out) throws IOException{
