@@ -47,12 +47,13 @@ public class UpdateManager implements RunnableQueue.RunHandler {
 
     static final long MIN_REPAINT_TIME;
     static {
-        String s = System.getProperty
-            ("org.apache.batik.min_repaint_time", "20");
         long value = 20;
         try {
+            String s = System.getProperty
+            ("org.apache.batik.min_repaint_time", "20");
             value = Long.parseLong(s);
-        } catch (NumberFormatException nfe) {
+        } catch (SecurityException se) {
+        } catch (NumberFormatException nfe){
         } finally {
             MIN_REPAINT_TIME = value;
         }
