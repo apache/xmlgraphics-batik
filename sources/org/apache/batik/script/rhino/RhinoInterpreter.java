@@ -58,7 +58,7 @@ public class RhinoInterpreter implements Interpreter {
         context = Context.enter();
         try {
             // init std object with an importer
-            ImporterTopLevel importer = new ImporterTopLevel();
+            ImporterTopLevel importer = new ImporterTopLevel(context);
             globalObject = (ScriptableObject)context.initStandardObjects(importer);
             // import Java lang package & DOM Level 2 & SVG DOM packages
             NativeJavaPackage[] p= new NativeJavaPackage[TO_BE_IMPORTED.length];

@@ -68,7 +68,7 @@ class EventTargetWrapper extends NativeJavaObject {
                            Scriptable thisObj, Object[] args)
             throws JavaScriptException {
             if (args[1] instanceof Function) {
-                if (jsGet_name().equals(ADD_NAME)) {
+                if (this.get(NAME, this).equals(ADD_NAME)) {
                     EventListener evtListener =
                         new RhinoEventListener((Function)args[1]);
                     if (listenerMap == null)
@@ -118,6 +118,7 @@ class EventTargetWrapper extends NativeJavaObject {
     private final static Class[] ARGS_TYPE = { String.class,
                                                EventListener.class,
                                                Boolean.TYPE };
+    private final static String NAME = "name";
 
     EventTargetWrapper(Scriptable scope, EventTarget object,
                        RhinoInterpreter interp) {
