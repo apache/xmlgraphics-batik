@@ -35,6 +35,8 @@ public class CSSEngineEvent extends EventObject {
      */
     public CSSEngineEvent(CSSEngine source, Element elt, int[] props) {
         super(source);
+        element = elt;
+        properties = props;
     }
 
     /**
