@@ -1,5 +1,18 @@
 <?xml version="1.0"?>
 
+<!-- ========================================================================= -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.        -->
+<!--                                                                           -->
+<!-- This software is published under the terms of the Apache Software License -->
+<!-- version 1.1, a copy of which has been included with this distribution in  -->
+<!-- the LICENSE file.                                                         -->
+<!-- ========================================================================= -->
+
+<!-- ========================================================================= -->
+<!-- author stephane@hillion.org                                               -->
+<!-- version $Id$ -->
+<!-- ========================================================================= -->
+
 <book title="Apache Batik documentation" copyright="2000 The Apache Software Foundation">
   <page id="index"    label="Overview" source="index.xml"/>
   <page id="status"   label="Status" source="status.xml" />
@@ -16,7 +29,7 @@
   <todo id="todo" label="Todo" source="todo.xml"/>
 <separator/>
   <external label="Code Repository" href="http://xml.apache.org/websrc/index.cgi/xml-batik/"/>
-  <!--<external label="Dev Snapshots" href="http://xml.apache.org/from-cvs/xml-cocoon/"/> -->
-  <!-- <external label="Mail Archive" href="http://mail-archives.apache.org/"/> -->
-  <!-- <external label="Bug Database" href="http://xml.apache.org/bugs/"/> -->
+  <external label="Dev Snapshots" href="http://xml.apache.org/from-cvs/xml-batik/"/>
+  <external label="Mail Archive" href="http://mail-archives.apache.org/"/>
+  <external label="Bug Database" href="http://xml.apache.org/bugs/"/>
 </book>
