@@ -351,13 +351,13 @@ public class Main {
             int nCodeDefs = codeDefs.getLength();
             for(int j=0; j<nCodeDefs; j++){
                 Node codeDef = codeDefs.item(j);
-                display("Child of type: " + codeDef.getNodeType());
+                // display("Child of type: " + codeDef.getNodeType());
                 javaCode.append(codeDef.getNodeValue());
                 javaCode.append("\n");
             }
         }
 
-        display("Found : " + nCodeNodes + " javaCode elements and " + nCD + " CDATA sections");
+        // display("Found : " + nCodeNodes + " javaCode elements and " + nCD + " CDATA sections");
 
         //
         // Get additional imports
@@ -371,7 +371,7 @@ public class Main {
             imports.append("\n");
         }
 
-        display("Imports: " + imports.toString());
+        // display("Imports: " + imports.toString());
 
         // Create a temporary file for compiling the test
         File tmpSourceFile = File.createTempFile("SVGGeneratorTest", ".java");
@@ -393,7 +393,8 @@ public class Main {
         command += System.getProperty("java.class.path") + CLASSPATH_SEPARATOR +  tmpSourceFile.getParent();
         command += " -d " + classDir + " " + tmpSourceFile.getAbsolutePath();
 
-        display(command);
+        // display(command);
+        display("compiling test...");
         final Process process = Runtime.getRuntime().exec(command);
 
         // In a separate thread, read the compilation output
@@ -447,7 +448,7 @@ public class Main {
     public static void createBufImage(String className, String testImageName)
     throws Exception{
         Class cl = Class.forName(className);
-        display("Loading class: " + className);
+        display("Loading compiled test...");
         Painter painter = null;
         try{
             painter = (Painter)cl.newInstance();
@@ -491,7 +492,7 @@ public class Main {
     public static void createSvgFile(String className, String testImageName)
     throws Exception{
         Class cl = Class.forName(className);
-        display("Loading class: " + className);
+        display("Loading compiled test to convert to SVG ...");
         Painter painter = null;
         try{
             painter = (Painter)cl.newInstance();
@@ -605,7 +606,7 @@ public class Main {
         String reportFileName = REGSVGGEN_REPORT_FILE_NAME + "_" + time + "." + REGSVGGEN_REPORT_FILE_EXT;
         File f = new File(REGSVGGEN_DIRECTORY_NAME);
         File reportFile = new File(f, reportFileName);
-        display("Creating report...");
+        display("Creating report... " + reportFileName);
         try {
             PrintWriter writer = new PrintWriter(new FileWriter(reportFile));
             String content = new String();
@@ -650,8 +651,12 @@ public class Main {
             File newImg = new File(newDir, refImg.getName());
             File diffImg = new File(diffDir, refImg.getName());
             BufferedImage bfRef = ImageLoader.loadImage(refImg, BufferedImage.TYPE_INT_ARGB);
-            BufferedImage bfNew = ImageLoader.loadImage(newImg, BufferedImage.TYPE_INT_ARGB);
-            if ((bfRef.getWidth() != bfNew.getWidth()) ||
+            BufferedImage bfNew = null;
+            if(newImg != null){
+                bfNew = ImageLoader.loadImage(newImg, BufferedImage.TYPE_INT_ARGB);
+            }
+
+            if (bfNew == null || bfRef == null || (bfRef.getWidth() != bfNew.getWidth()) ||
                  (bfRef.getHeight() != bfNew.getHeight())){
                 display("Error: image size changed!");
                 String s = "<br>" + String.valueOf(i+1) + ".  " + refImg.getName() +  ": image size changed!";
