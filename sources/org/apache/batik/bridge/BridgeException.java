@@ -95,45 +95,5 @@ public class BridgeException extends RuntimeException {
             fullparams[i+3] = params[i];
         }
         return Messages.formatMessage(code, fullparams);
-/*
-        StringBuffer buffer = new StringBuffer();
-        String uri = ((SVGDocument)e.getOwnerDocument()).getURL();
-        buffer.append("\n");
-        buffer.append("-----------------------------------------\n");
-        buffer.append(uri);
-        buffer.append(":");
-        buffer.append(String.valueOf(line));
-        buffer.append("\n");
-
-        buffer.append("<");
-        buffer.append(e.getLocalName());
-        NamedNodeMap attrs = e.getAttributes();
-        if (attrs != null) {
-            buffer.append(" ");
-            for (int i=0; i < attrs.getLength(); ++i) {
-                Node n = attrs.item(i);
-                if (n.getNodeType() == Node.ATTRIBUTE_NODE) {
-                    Attr attr = (Attr)n;
-                    buffer.append(attr.getName());
-                    buffer.append("=\"");
-                    buffer.append(attr.getValue());
-                    buffer.append("\" ");
-                }
-            }
-        }
-        buffer.append(">\n");
-
-        buffer.append(code);
-        if (params != null) {
-            for (int i=0; i < params.length; ++i) {
-                buffer.append(" [");
-                buffer.append(params[i].toString());
-                buffer.append("]");
-            }
-        }
-        buffer.append("\n");
-        buffer.append("-----------------------------------------\n");
-        return buffer.toString();
-*/
     }
 }

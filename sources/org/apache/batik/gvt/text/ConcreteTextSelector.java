@@ -144,13 +144,12 @@ public class ConcreteTextSelector implements Selector {
             p = t.transform(p, null);
 
             if (isSelectContinueGesture(evt)) {
-
                 if (selectionNode != source) {
                      // have been dragged into new node!
                      // System.out.println("Select (Entering) at "+p);
                      ((Selectable) source).selectAt(p.getX(), p.getY(),
-                                                        renderContext);;
-                     selectionNode = source;
+                                                    renderContext);
+                     //selectionNode = source;
                 } else {
                     boolean result = ((Selectable) source).selectTo(p.getX(), p.getY(),
                                                         renderContext);
@@ -164,7 +163,6 @@ public class ConcreteTextSelector implements Selector {
                                 newShape));
                     }
                 }
-
             } else if (isSelectStartGesture(evt)) {
 
                 selectionNode = source;
