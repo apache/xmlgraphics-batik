@@ -25,6 +25,7 @@ import org.w3c.dom.Node;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
+import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.ext.LexicalHandler;
@@ -59,9 +60,24 @@ public class SAXDocumentFactory
     protected Document document;
 
     /**
+     * The created document descriptor.
+     */
+    protected DocumentDescriptor documentDescriptor;
+
+    /**
+     * Whether a document descriptor must be generated.
+     */
+    protected boolean createDocumentDescriptor;
+
+    /**
      * The current node.
      */
     protected Node currentNode;
+
+    /**
+     * The locator.
+     */
+    protected Locator locator;
 
     /**
      * Whether the parser currently parses a CDATA section.
@@ -85,12 +101,28 @@ public class SAXDocumentFactory
 
     /**
      * Creates a new SAXDocumentFactory object.
+     * No document descriptor will be created while generating a document.
      * @param impl The DOM implementation to use for building the DOM tree.
      * @param parser The SAX2 parser classname.
      */
-    public SAXDocumentFactory(DOMImplementation impl, String parser) {
-	implementation = impl;
-	parserClassName = parser;
+    public SAXDocumentFactory(DOMImplementation impl,
+                              String parser) {
+	implementation           = impl;
+	parserClassName          = parser;
+    }
+
+    /**
+     * Creates a new SAXDocumentFactory object.
+     * @param impl The DOM implementation to use for building the DOM tree.
+     * @param parser The SAX2 parser classname.
+     * @param dd Whether a document descriptor must be generated.
+     */
+    public SAXDocumentFactory(DOMImplementation impl,
+                              String parser,
+                              boolean dd) {
+	implementation           = impl;
+	parserClassName          = parser;
+        createDocumentDescriptor = dd;
     }
 
     /**
@@ -176,6 +208,23 @@ public class SAXDocumentFactory
     }
 
     /**
+     * Returns the document descriptor associated with the latest created
+     * document.
+     * @return null if no document or descriptor was previously generated.
+     */
+    public DocumentDescriptor getDocumentDescriptor() {
+        return documentDescriptor;
+    }
+
+    /**
+     * <b>SAX</b>: Implements {@link
+     * org.xml.sax.ContentHandler#setDocumentLocator(Locator)}.
+     */
+    public void setDocumentLocator(Locator l) {
+        locator = l;
+    }
+
+    /**
      * <b>SAX</b>: Implements {@link
      * org.xml.sax.ContentHandler#startDocument()}.
      */
@@ -189,6 +238,12 @@ public class SAXDocumentFactory
         inCDATA = false;
         inDTD = false;
 	currentNode = document;
+
+        if (createDocumentDescriptor) {
+            documentDescriptor = new DocumentDescriptor();
+        } else {
+            documentDescriptor = null;
+        }
     }
 
     /**
@@ -256,6 +311,11 @@ public class SAXDocumentFactory
 	}
 	currentNode = e;
 
+        // Storage of the line number.
+        if (createDocumentDescriptor && locator != null) {
+            documentDescriptor.setLocationLine(e, locator.getLineNumber());
+        }
+
 	// Attributes creation
 	for (int i = 0; i < len; i++) {
 	    String aname = attributes.getQName(i);
@@ -289,7 +349,6 @@ public class SAXDocumentFactory
 	currentNode = currentNode.getParentNode();
 	namespaces.pop();
     }
-    
     
     /**
      * <b>SAX</b>: Implements {@link
