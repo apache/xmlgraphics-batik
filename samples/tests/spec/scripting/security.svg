@@ -93,7 +93,7 @@
     <!-- ============================================================= -->
     <g id="testContent">
         <text x="225" y="30" class="title">
-            Security Check
+            ECMA Script Security Check
         </text>
 
         <defs>
@@ -159,13 +159,25 @@
         <!-- =========================================== -->
         <!-- Button for starting the security check      -->
         <!-- =========================================== -->
-        <g transform="translate(225, 470)" onmouseover="setAttribute('runTest', 'fill', 'gold')"
+        <g transform="translate(90, 470)" onmouseover="setAttribute('runTest', 'fill', 'gold')"
                   onmouseout="setAttribute('runTest', 'fill', 'lightgray')"
                   onclick="runEcmascriptSecurityTest()">
             <rect id="runTest" x="-40" y="-10" width="80" height="20" 
                     stroke="black" fill="lightgray" />
 
             <text x="0" y="5" text-anchor="middle">Run Test</text>
+        </g>
+
+        <!-- =========================================== -->
+        <!-- Used to display the overall status          -->
+        <!-- =========================================== -->
+        <g id="globalStatusGroup">
+            <rect x="380" y="460" width="20" height="20" 
+                  class="tableCell" />
+            <rect id="globalStatus" 
+                  x="383" y="463" width="14" height="14"
+                  class="untested" />
+            <text id="successRatio" x="375" y="475" text-anchor="end">not run</text>
         </g>
 
     </g>
