@@ -352,6 +352,9 @@ public class ParsedURL {
     /**
      * Attempt to open the stream checking for common compression
      * types, and automatically decompressing them if found.  
+     * @param mimeType The expected mime type of the content 
+     *        in the returned InputStream (mapped to Http accept
+     *        header among other possabilities).
      */
     public InputStream openStream(String mimeType) throws IOException {
         List mt = new ArrayList(1);
@@ -364,7 +367,7 @@ public class ParsedURL {
      * types, and automatically decompressing them if found.
      * @param mimeTypes The expected mime types of the content 
      *        in the returned InputStream (mapped to Http accept
-     *        header among other possability).
+     *        header among other possabilities).
      */
     public InputStream openStream(String [] mimeTypes) throws IOException {
         List mt = new ArrayList(mimeTypes.length);
@@ -378,7 +381,7 @@ public class ParsedURL {
      * types, and automatically decompressing them if found.
      * @param mimeTypes The expected mime types of the content 
      *        in the returned InputStream (mapped to Http accept
-     *        header among other possability).  The elements of
+     *        header among other possabilities).  The elements of
      *        the iterator must be strings.
      */
     public InputStream openStream(Iterator mimeTypes) throws IOException {
@@ -386,7 +389,7 @@ public class ParsedURL {
     }
 
     /**
-     * Attempt to open the stream, does no checking for comression
+     * Attempt to open the stream, does no checking for compression
      * types.
      */
     public InputStream openStreamRaw() throws IOException {
@@ -394,11 +397,11 @@ public class ParsedURL {
     }
 
     /**
-     * Attempt to open the stream, does no checking for comression
+     * Attempt to open the stream, does no checking for compression
      * types.
      * @param mimeType The expected mime type of the content 
      *        in the returned InputStream (mapped to Http accept
-     *        header among other possability).
+     *        header among other possabilities).
      */
     public InputStream openStreamRaw(String mimeType) throws IOException {
         List mt = new ArrayList(1);
@@ -411,7 +414,7 @@ public class ParsedURL {
      * types.
      * @param mimeTypes The expected mime types of the content 
      *        in the returned InputStream (mapped to Http accept
-     *        header among other possability).
+     *        header among other possabilities).
      */
     public InputStream openStreamRaw(String [] mimeTypes) throws IOException {
         List mt = new ArrayList(mimeTypes.length);
@@ -425,7 +428,7 @@ public class ParsedURL {
      * types.
      * @param mimeTypes The expected mime types of the content 
      *        in the returned InputStream (mapped to Http accept
-     *        header among other possability).  The elements of
+     *        header among other possabilities).  The elements of
      *        the iterator must be strings.
      */
     public InputStream openStreamRaw(Iterator mimeTypes) throws IOException {
@@ -481,9 +484,9 @@ public class ParsedURL {
      */
     public static ParsedURLData parseURL(ParsedURL baseURL, String urlStr) {
         String protocol = getProtocol(urlStr);
-        
         if (protocol == null)
             protocol = baseURL.getProtocol();
+
         ParsedURLProtocolHandler handler = getHandler(protocol);
         return handler.parseURL(baseURL, urlStr);        
     }
