@@ -8,19 +8,63 @@
 
 package org.apache.batik.refimpl.bridge;
 
-import org.apache.batik.util.SVGConstants;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import org.apache.batik.bridge.Bridge;
 import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.util.SVGConstants;
 
 /**
  * A bridge context initialized with all bridges needed by the SVG spec.
  *
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
+ * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
 public class SVGBridgeContext extends ConcreteBridgeContext
         implements SVGConstants {
 
+    /**
+     * The global bridges.
+     */
+    protected static HashMap globalBridges;
+
+    /**
+     * Registers a new global bridge.
+     */
+    public static void registerGlobalBridge(String namespaceURI,
+                                            String localName,
+                                            Bridge bridge) {
+        if (globalBridges == null) {
+            globalBridges = new HashMap(11);
+        }
+        Map ns = (Map)globalBridges.get(namespaceURI);
+        if (ns == null) {
+            globalBridges.put(namespaceURI, ns = new HashMap(11));
+        }
+        ns.put(localName, bridge);
+    }
+
     public SVGBridgeContext() {
+        // Register the global bridges
+        if (globalBridges != null) {
+            Iterator it = globalBridges.keySet().iterator();
+            while (it.hasNext()) {
+                String ns = (String)it.next();
+                Map m = (Map)globalBridges.get(ns);
+                if (m != null) {
+                    Iterator mit = m.keySet().iterator();
+                    while (mit.hasNext()) {
+                        String ln = (String)mit.next();
+                        putBridge(ns, ln, (Bridge)m.get(ln));
+                    }
+                }
+            }
+        }
+
+        // Register the standard bridges
         putBridge(SVG_NAMESPACE_URI, TAG_A,
                   new SVGAElementBridge());
 
@@ -116,9 +160,6 @@ public class SVGBridgeContext extends ConcreteBridgeContext
 
         putBridge(SVG_NAMESPACE_URI, TAG_TEXT,
                   new SVGTextElementBridge());
-
-        putBridge(SVG_NAMESPACE_URI, TAG_TEXT_PATH,
-                  new SVGTextPathElementBridge());
 
         putBridge(SVG_NAMESPACE_URI, TAG_USE,
                   new SVGUseElementBridge());

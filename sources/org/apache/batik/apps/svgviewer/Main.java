@@ -26,6 +26,8 @@ import javax.swing.UIManager;
 
 import org.apache.batik.css.CSSDocumentHandler;
 
+import org.apache.batik.experiment.Experiments;
+
 import org.apache.batik.util.SwingInitializer;
 
 import org.w3c.dom.svg.SVGAElement;
@@ -122,6 +124,7 @@ public class Main implements ViewerFrame.Application {
             args = t;
         }
         
+        Experiments.registerExperimentBridges();
         CSSDocumentHandler.setParserClassName
             (bundle.getString(CSS_PARSER_CLASS_NAME_KEY));
         new Main(args);

@@ -6,7 +6,7 @@
  * the LICENSE file.                                                         *
  *****************************************************************************/
 
-package org.apache.batik.refimpl.bridge;
+package org.apache.batik.experiment;
 
 import java.awt.AlphaComposite;
 import java.awt.Composite;
@@ -45,6 +45,10 @@ import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.Clip;
 import org.apache.batik.gvt.filter.Mask;
 import org.apache.batik.parser.AWTPathProducer;
+import org.apache.batik.refimpl.bridge.CSSUtilities;
+import org.apache.batik.refimpl.bridge.DefaultUnitProcessorContext;
+import org.apache.batik.refimpl.bridge.SVGUtilities;
+import org.apache.batik.refimpl.bridge.URIResolver;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.UnitProcessor;
 import org.apache.batik.dom.util.XLinkSupport;
@@ -66,7 +70,7 @@ import org.w3c.dom.svg.SVGDocument;
  * @author <a href="mailto:dean@w3.org">Dean Jackson</a>
  * @version $Id$
  */
-public class SVGTextPathElementBridge implements GraphicsNodeBridge, SVGConstants {
+public class TextPathElementBridge implements GraphicsNodeBridge, SVGConstants {
     protected final static Map fonts = new HashMap(11);
     static {
         fonts.put("serif",           "Serif");

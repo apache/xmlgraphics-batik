@@ -23,7 +23,9 @@
     <!-- ============================================================= -->
     <!-- Test content                                                  -->
     <!-- ============================================================= -->
-    <g id="testContent">
+    <g id="testContent"
+       xmlns:experiment="http://xml.apache.org/batik/experiment"
+       xmlns:xlink="http://www.w3.org/1999/xlink">
         <defs>
 	<path id="path1" d="M                   0   0 
                             C  25   0  75  30 100  30 
@@ -48,43 +50,43 @@
 
 	<g transform="translate(25, 100)" style="text-anchor: middle; font-size:25;">
 	  <use xlink:href="#path1"/>
-          <textPath xlink:href="#path1">deliver me from sweedish furniture</textPath> 
+          <experiment:textPath xlink:href="#path1">deliver me from sweedish furniture</experiment:textPath> 
         </g>
 
 	<g transform="translate(25, 150)" style="font-size:25;">
 	  <use xlink:href="#path1"/>
-          <textPath xlink:href="#path1">deliver me from clever art</textPath> 
+          <experiment:textPath xlink:href="#path1">deliver me from clever art</experiment:textPath> 
         </g>
 
 	<g transform="translate(25, 200)" style="text-anchor: middle; font-size:25;">
 	  <use xlink:href="#path1"/>
-          <textPath xlink:href="#path1" startOffset="30">you are not your grande latte</textPath> 
+          <experiment:textPath xlink:href="#path1" startOffset="30">you are not your grande latte</experiment:textPath> 
         </g>
 
 	<g transform="translate(25, 250)" style="text-anchor: middle; font-size:25;">
 	  <use xlink:href="#path1"/>
-          <textPath xlink:href="#path1" textLength="400" method="stretch">you are not your khakis</textPath> 
+          <experiment:textPath xlink:href="#path1" textLength="400" method="stretch">you are not your khakis</experiment:textPath> 
         </g>
 
 	<g transform="translate(25, 300)" style="text-anchor: middle; font-size:25;">
 	  <use xlink:href="#path1"/>
-          <textPath xlink:href="#path1" textLength="400" method="align">you are not your bank account</textPath> 
+          <experiment:textPath xlink:href="#path1" textLength="400" method="align">you are not your bank account</experiment:textPath> 
         </g>
 
 	<g transform="translate(25, 350)" style="text-anchor: middle; font-size:25;">
 	  <use xlink:href="#path1"/>
-          <textPath xlink:href="#path1" style="fill:url(#gradient1); stroke:black; stroke-width: 0.3">you are not the clothes you wear</textPath> 
+          <experiment:textPath xlink:href="#path1" style="fill:url(#gradient1); stroke:black; stroke-width: 0.3">you are not the clothes you wear</experiment:textPath> 
         </g>
 
 	<g transform="translate(25, 400)" style="text-anchor: middle; font-size:25;">
 	  <use xlink:href="#path1"/>
-          <textPath xlink:href="#path1" style="filter:url(#filter1)">let me never be complete</textPath> 
+          <experiment:textPath xlink:href="#path1" style="filter:url(#filter1)">let me never be complete</experiment:textPath> 
         </g>
     </g>
 
     <!-- ============================================================= -->
     <!-- Batik sample mark                                             -->
     <!-- ============================================================= -->
-    <use xlink:href="../testTemplate.svg/#BatikTag" />
+    <use xlink:href="../batikLogo.svg#Batik_Tag_Box"/>
     
 </svg>
