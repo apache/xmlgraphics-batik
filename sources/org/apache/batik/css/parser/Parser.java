@@ -477,20 +477,10 @@ public class Parser
             } else {
                 nextIgnoreSpaces();
         
-                boolean err = false;
                 try {
                     parseStyleDeclaration(true);
                 } catch (CSSParseException e) {
                     reportError(e);
-                    err = true;
-                }
-
-                if (!err) {
-                    if (current != LexicalUnits.RIGHT_CURLY_BRACE) {
-                        reportError("right.curly.brace");
-                    } else {
-                        nextIgnoreSpaces();
-                    }
                 }
             }
         } finally {
@@ -529,20 +519,10 @@ public class Parser
             } else {
                 nextIgnoreSpaces();
         
-                boolean err = false;
                 try {
                     parseStyleDeclaration(true);
                 } catch (CSSParseException e) {
                     reportError(e);
-                    err = true;
-                }
-
-                if (!err) {
-                    if (current != LexicalUnits.RIGHT_CURLY_BRACE) {
-                        reportError("right.curly.brace");
-                    } else {
-                        nextIgnoreSpaces();
-                    }
                 }
             }
         } finally {
@@ -609,20 +589,10 @@ public class Parser
             } else {
                 nextIgnoreSpaces();
         
-                boolean err = false;
                 try {
                     parseStyleDeclaration(true);
                 } catch (CSSParseException e) {
                     reportError(e);
-                    err = true;
-                }
-
-                if (!err) {
-                    if (current != LexicalUnits.RIGHT_CURLY_BRACE) {
-                        reportError("right.curly.brace");
-                    } else {
-                        nextIgnoreSpaces();
-                    }
                 }
             }
         } finally {
@@ -860,6 +830,7 @@ public class Parser
                 if (!inSheet) {
                     throw createCSSParseException("eof.expected");
                 }
+                nextIgnoreSpaces();
                 return;
             case LexicalUnits.SEMI_COLON:
                 nextIgnoreSpaces();
@@ -1681,6 +1652,7 @@ public class Parser
             case LexicalUnits.SEMI_COLON:
             case LexicalUnits.RIGHT_CURLY_BRACE:
                 if (--cbraces == 0) {
+                    nextIgnoreSpaces();
                     return;
                 }
             case LexicalUnits.LEFT_CURLY_BRACE:
