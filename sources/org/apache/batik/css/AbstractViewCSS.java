@@ -578,8 +578,6 @@ public abstract class AbstractViewCSS implements ViewCSS {
          * Caches the given computed style.
          */
         public void put(Element elt, String pe, CSSOMReadOnlyStyleDeclaration sd) {
-            update();
-
             int hash  = hashCode(elt, pe) & 0x7FFFFFFF;
             int index = hash % table.length;
 	
@@ -606,8 +604,6 @@ public abstract class AbstractViewCSS implements ViewCSS {
          */
         public void putPermanent(Element elt, String pe,
                                  CSSOMReadOnlyStyleDeclaration sd) {
-            update();
-
             int hash  = hashCode(elt, pe) & 0x7FFFFFFF;
             int index = hash % table.length;
 	
@@ -634,8 +630,6 @@ public abstract class AbstractViewCSS implements ViewCSS {
          * and pseudo-element, if any.
          */
         public CSSOMReadOnlyStyleDeclaration get(Element elt, String pe) {
-            update();
-            
             int hash  = hashCode(elt, pe) & 0x7FFFFFFF;
             int index = hash % table.length;
 	
