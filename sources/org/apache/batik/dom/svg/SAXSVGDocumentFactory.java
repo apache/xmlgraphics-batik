@@ -22,6 +22,8 @@ import java.util.ResourceBundle;
 import java.util.zip.GZIPInputStream;
 
 import org.apache.batik.dom.util.SAXDocumentFactory;
+import org.apache.batik.dom.util.XLinkSupport;
+
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.MimeTypeConstants;
 
@@ -234,6 +236,16 @@ public class SAXSVGDocumentFactory
             throw new RuntimeException("Bad root element");
         }
         return createDocument(uri, r);
+    }
+
+    /**
+     * <b>SAX</b>: Implements {@link
+     * org.xml.sax.ContentHandler#startDocument()}.
+     */
+    public void startDocument() throws SAXException {
+        super.startDocument();
+	namespaces.put("", SVGDOMImplementation.SVG_NAMESPACE_URI);
+	namespaces.put("xmlns:xlink", XLinkSupport.XLINK_NAMESPACE_URI);
     }
 
     /**
