@@ -28,7 +28,7 @@
             </arg>
         </testReportProcessor>
 
-        <testSuite href="file:test-resources/org/apache/batik/test/samplesRendering.xml" /> 
+        <testSuite href="file:test-resources/org/apache/batik/test/samplesRendering.xml" />
         <testSuite href="file:test-resources/org/apache/batik/test/unitTesting.xml" />
     </testRun>
 

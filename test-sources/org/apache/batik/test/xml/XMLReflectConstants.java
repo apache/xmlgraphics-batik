@@ -9,23 +9,24 @@
 package org.apache.batik.test.xml;
 
 /**
- * Contains constants for the XML Test Suite (XTS) syntax.
+ * Contains constants for elements and attributes used to
+ * describe Java objects, constructor arguments and properties
+ * in XML.
  *
  * @author <a href="mailto:vhardy@apache.org">Vincent Hardy</a>
  * @version $Id$
  */
-public interface XTSConstants extends XMLReflectConstants{
-    String XTS_NAMESPACE_URI 
-        = "http://xml.apache.org/xml-batik/test/xts";
-
+public interface XMLReflectConstants {
     /////////////////////////////////////////////////////////////////////////
-    // XTS tags
+    // Tags
     /////////////////////////////////////////////////////////////////////////
-    String XTS_TEST_TAG       = "test";
-    String XTS_TEST_SUITE_TAG = "testSuite";
+    String XR_ARG_TAG        = "arg";
+    String XR_PROPERTY_TAG   = "property";
 
     /////////////////////////////////////////////////////////////////////////
     // XTS attributes
     /////////////////////////////////////////////////////////////////////////
-    String XTS_NAME_ATTRIBUTE = "name";
+    String XR_CLASS_ATTRIBUTE = "class";
+    String XR_NAME_ATTRIBUTE  = "name";
+    String XR_VALUE_ATTRIBUTE = "value";
 }

@@ -14,7 +14,7 @@ package org.apache.batik.test.xml;
  * @author <a href="mailto:vhardy@apache.org">Vincent Hardy</a>
  * @version $Id$
  */
-public interface XTRConstants {
+public interface XTRConstants extends XMLReflectConstants{
     String XTR_NAMESPACE_URI 
         = "http://xml.apache.org/xml-batik/test/xtr";
 
@@ -35,7 +35,7 @@ public interface XTRConstants {
     String XTR_ERROR_CODE_ATTRIBUTE = "errorCode";
     String XTR_STATUS_ATTRIBUTE = "status";
     String XTR_TEST_NAME_ATTRIBUTE = "testName";
-    String XTR_VALUE_ATTRIBUTE = "value";
+    String XTR_VALUE_ATTRIBUTE     = "value";
 
     /////////////////////////////////////////////////////////////////////////
     // XTR values
