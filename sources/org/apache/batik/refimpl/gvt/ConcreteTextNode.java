@@ -12,7 +12,6 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.BasicStroke;
-import java.awt.font.TextLayout;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
@@ -180,11 +179,8 @@ public class ConcreteTextNode
 
         Shape outline;
         if (aci != null) {
-            /* outline = rc.getTextPainter().getDecoratedShape(this, rc.getFontRenderContext()); */
-
-            // XXX: getDecoratedShape not working yet, will fix later !
-
-            outline = ((org.apache.batik.refimpl.gvt.renderer.BasicTextPainter) rc.getTextPainter()).getOutline(this, rc.getFontRenderContext(), true);
+            outline = rc.getTextPainter().getDecoratedShape(
+                                              this, rc.getFontRenderContext());
         } else {
             outline = new Rectangle2D.Float(0, 0, 0, 0);
         }
