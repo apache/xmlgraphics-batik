@@ -45,9 +45,10 @@
                 <stop offset="1.4" stop-color="black" />
             </radialGradient>
 
-            <filter id="shadow" filterRes="200" x="-.2" y="0">
-                <feGaussianBlur stdDeviation="3 3" />
-                <feOffset dx="-10" dy="10" />
+            <filter id="shadow" width="1.3" height="1.3">
+                <feGaussianBlur stdDeviation="1 1" in="SourceAlpha"/>
+                <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 .5 0" />
+                <feOffset dx="2" dy="2" />
                 <feMerge>
                     <feMergeNode />
                     <feMergeNode in="SourceGraphic" />
@@ -86,7 +87,7 @@
                   marker-start="url(#startMarker)" 
                   marker-mid="url(#midMarker)" 
                   marker-end="url(#endMarker)" 
-
+                  filter="url(#shadow)"
                   transform="scale(3, 3)" />
             <text x="15" y="280" text-anchor="middle" class="label">&lt;path&gt;</text>
         </g>
@@ -95,10 +96,11 @@
         <!-- Line with marker                     -->
         <!-- ==================================== -->
         <g transform="translate(50, 120)" >
-            <line stroke="black" stroke-width="6" x1="0" y1="0" x2="0" y2="240" />
+            <line stroke="black" stroke-width="6" x1="0" y1="0" x2="0" y2="240" 
                   marker-start="url(#startMarker)" 
                   marker-mid="url(#midMarker)" 
-                  marker-end="url(#endMarker)"  />
+                  marker-end="url(#endMarker)" 
+                  filter="url(#shadow)"  />
             <text x="0" y="280" text-anchor="middle" class="label">&lt;line&gt;</text>
         </g>
 
@@ -109,7 +111,7 @@
             <polyline fill="none" stroke="black" stroke-width="2" points="0,0 10,10 0,20 10,30 0,40 10,50 0,60 10,70 0,80 " 
                   marker-start="url(#startMarker)" 
                   marker-mid="url(#midMarker)" 
-                  marker-end="url(#endMarker)" transform="scale(3, 3)" /> 
+                  marker-end="url(#endMarker)" filter="url(#shadow)" transform="scale(3, 3)" /> 
             <text x="0" y="280" text-anchor="middle" class="label">&lt;polyline&gt;</text>
         </g>
 
@@ -122,7 +124,7 @@
                      -20,80 -10,70 -20,60 -10,50 -20,40 -10,30 -20,20 -10,10 -20,0"
                   marker-start="url(#startMarker)" 
                   marker-mid="url(#midMarker)" 
-                  marker-end="url(#endMarker)" transform="scale(3, 3)" /> 
+                  marker-end="url(#endMarker)" filter="url(#shadow)" transform="scale(3, 3)" /> 
             <text x="-20" y="280" text-anchor="middle" class="label">&lt;polygon&gt;</text>
         </g>
 
