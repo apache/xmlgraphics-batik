@@ -48,6 +48,11 @@ public class XMLPreferenceManager extends PreferenceManager {
     protected String xmlParserClassName;
 
     /**
+     * The XML encoding used to store properties
+     */
+    public static final String PREFERENCE_ENCODING = "8859_1";
+
+    /**
      * Creates a preference manager.
      * @param prefFileName the name of the preference file.
      */
@@ -102,7 +107,7 @@ public class XMLPreferenceManager extends PreferenceManager {
          */
         public synchronized void load(InputStream is) throws IOException {
             BufferedReader r;
-            r = new BufferedReader(new InputStreamReader(is, "8859_1"));
+            r = new BufferedReader(new InputStreamReader(is, PREFERENCE_ENCODING));
             DocumentFactory df = new SAXDocumentFactory
                 (GenericDOMImplementation.getDOMImplementation(),
                  xmlParserClassName);
@@ -143,7 +148,7 @@ public class XMLPreferenceManager extends PreferenceManager {
         public synchronized void store(OutputStream os, String header)
             throws IOException {
             BufferedWriter w;
-            w = new BufferedWriter(new OutputStreamWriter(os, "8859_1"));
+            w = new BufferedWriter(new OutputStreamWriter(os, PREFERENCE_ENCODING));
 
             Map m = new HashMap();
             enumerate(m);
