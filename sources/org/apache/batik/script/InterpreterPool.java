@@ -109,19 +109,6 @@ public class InterpreterPool {
             }
         return interpreter;
     }
-    
-    /**
-     * We use Proxies that use WeakReference to prevent from referencing
-     * directly the document, otherwhise, the WeakHashMap will be useless
-     * as the document will never be in situation of beeing discarded.
-     */
-    protected static Document createDocumentProxy(Document document) {
-        if (document instanceof SVGDocument) {
-            return new SVGDocumentProxy((SVGDocument)document);
-        } else {
-            return new DocumentProxy(document);
-        }
-    }
 
     /**
      * Adds for the specified language, the specified Interpreter factory.
