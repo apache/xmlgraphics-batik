@@ -14,6 +14,7 @@ import java.util.Vector;
 
 import org.apache.batik.parser.ParseException;
 import org.apache.batik.gvt.ShapeNode;
+import org.apache.batik.bridge.Bridge;
 import org.apache.batik.bridge.SVGDecoratedShapeElementBridge;
 import org.apache.batik.bridge.UnitProcessor;
 import org.apache.batik.bridge.BridgeException;
@@ -48,6 +49,13 @@ public class BatikStarElementBridge
      */
     public String getLocalName() {
         return BATIK_EXT_STAR_TAG;
+    }
+
+    /**
+     * Returns a new instance of this bridge.
+     */
+    public Bridge getInstance() {
+        return new BatikStarElementBridge();
     }
 
     /**

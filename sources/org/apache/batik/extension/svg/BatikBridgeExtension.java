@@ -42,6 +42,7 @@ public class BatikBridgeExtension implements BridgeExtension {
             "http://xml.apache.org/batik/ext/histogramNormalization/1.0" ,
             "http://xml.apache.org/batik/ext/solidColor/1.0" ,
             "http://xml.apache.org/batik/ext/colorSwitch/1.0" ,
+            "http://xml.apache.org/batik/ext/flowText/1.0" ,
             "http://xml.apache.org/batik/ext/multi-image/1.0" ,
         };
         Vector v = new Vector(extensions.length);
@@ -98,5 +99,6 @@ public class BatikBridgeExtension implements BridgeExtension {
         ctx.putBridge(new BatikMultiImageElementBridge());
         ctx.putBridge(new SolidColorBridge());
         ctx.putBridge(new ColorSwitchBridge());
+        ctx.putBridge(new SVGFlowTextElementBridge());
     }
 }

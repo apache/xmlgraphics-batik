@@ -23,11 +23,71 @@ public interface BatikExtConstants {
     public static final String BATIK_EXT_STAR_TAG = 
         "star";
 
-    /** Tag name for Batik's regular poly extension. */
+    /** Tag name for Batik's flowText extension (SVG 1.1). */
+    public static final String BATIK_EXT_FLOW_TEXT_TAG = 
+        "flowText";
+
+    /** Tag name for Batik's flowText extension Region element (SVG 1.1). */
+    public static final String BATIK_EXT_FLOW_REGION_TAG = 
+        "flowRegion";
+    /** Tag name for Batik's flowText extension Region element (SVG 1.1). */
+    public static final String BATIK_EXT_FLOW_RECT_TAG = 
+        "rect";
+
+    /** Attribute name for x attribute */
+    public static final String BATIK_EXT_X_ATTRIBUTE = 
+        "x";
+    /** Attribute name for y attribute */
+    public static final String BATIK_EXT_Y_ATTRIBUTE = 
+        "y";
+    /** Attribute name for width attribute */
+    public static final String BATIK_EXT_WIDTH_ATTRIBUTE = 
+        "width";
+    /** Attribute name for height attribute */
+    public static final String BATIK_EXT_HEIGHT_ATTRIBUTE = 
+        "height";
+
+    /** Attribute name for margine psudo-attribute */
+    public static final String BATIK_EXT_MARGIN_ATTRIBUTE = 
+        "margin";
+    /** Attribute name for margine psudo-attribute */
+    public static final String BATIK_EXT_TOP_MARGIN_ATTRIBUTE = 
+        "top-margin";
+    /** Attribute name for margine psudo-attribute */
+    public static final String BATIK_EXT_RIGHT_MARGIN_ATTRIBUTE = 
+        "right-margin";
+    /** Attribute name for margine psudo-attribute */
+    public static final String BATIK_EXT_BOTTOM_MARGIN_ATTRIBUTE = 
+        "bottom-margin";
+    /** Attribute name for margine psudo-attribute */
+    public static final String BATIK_EXT_LEFT_MARGIN_ATTRIBUTE = 
+        "left-margin";
+    /** Attribute name for margine psudo-attribute */
+    public static final String BATIK_EXT_JUSTIFICATION_ATTRIBUTE = 
+        "justification";
+
+
+    /** Tag name for Batik's flowText extension div element SVG 1.1). */
+    public static final String BATIK_EXT_FLOW_DIV_TAG = 
+        "flowDiv";
+
+    /** Tag name for Batik's flowText extension p element SVG 1.1). */
+    public static final String BATIK_EXT_FLOW_PARA_TAG = 
+        "flowPara";
+
+    /** Tag name for Batik's flowText extension line element SVG 1.1). */
+    public static final String BATIK_EXT_FLOW_LINE_TAG = 
+        "flowLine";
+
+    /** Tag name for Batik's flowText extension span element SVG 1.1). */
+    public static final String BATIK_EXT_FLOW_SPAN_TAG = 
+        "flowSpan";
+
+    /** Tag name for Batik's solid color extension (SVG 1.1). */
     public static final String BATIK_EXT_SOLID_COLOR_TAG = 
         "solidColor";
 
-    /** Tag name for Batik's regular poly extension. */
+    /** Tag name for Batik's color switch extension. */
     public static final String BATIK_EXT_COLOR_SWITCH_TAG = 
         "colorSwitch";
 

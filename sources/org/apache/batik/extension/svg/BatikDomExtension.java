@@ -100,6 +100,31 @@ public class BatikDomExtension
              BATIK_EXT_SOLID_COLOR_TAG,
              new SolidColorElementFactory());
 
+        di.registerCustomElementFactory
+            (BATIK_EXT_NAMESPACE_URI,
+             BATIK_EXT_FLOW_TEXT_TAG,
+             new FlowTextElementFactory());
+
+        di.registerCustomElementFactory
+            (BATIK_EXT_NAMESPACE_URI,
+             BATIK_EXT_FLOW_DIV_TAG,
+             new FlowDivElementFactory());
+
+        di.registerCustomElementFactory
+            (BATIK_EXT_NAMESPACE_URI,
+             BATIK_EXT_FLOW_PARA_TAG,
+             new FlowParaElementFactory());
+
+        di.registerCustomElementFactory
+            (BATIK_EXT_NAMESPACE_URI,
+             BATIK_EXT_FLOW_LINE_TAG,
+             new FlowLineElementFactory());
+
+        di.registerCustomElementFactory
+            (BATIK_EXT_NAMESPACE_URI,
+             BATIK_EXT_FLOW_SPAN_TAG,
+             new FlowSpanElementFactory());
+
         di.registerCustomCSSValueManager
             (new SVGColorManager(BATIK_EXT_SOLID_COLOR_PROPERTY));
 
@@ -202,4 +227,78 @@ public class BatikDomExtension
         }
     }
 
+    /**
+     * To create a 'flowText' element.
+     */
+    protected static class FlowTextElementFactory 
+        implements SVGDOMImplementation.ElementFactory {
+        public FlowTextElementFactory() {
+        }
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix, Document doc) {
+            return new FlowTextElement(prefix, (AbstractDocument)doc);
+        }
+    }
+
+    /**
+     * To create a 'flowDiv' element.
+     */
+    protected static class FlowDivElementFactory 
+        implements SVGDOMImplementation.ElementFactory {
+        public FlowDivElementFactory() {
+        }
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix, Document doc) {
+            return new FlowDivElement(prefix, (AbstractDocument)doc);
+        }
+    }
+
+    /**
+     * To create a 'flowPara' element.
+     */
+    protected static class FlowParaElementFactory 
+        implements SVGDOMImplementation.ElementFactory {
+        public FlowParaElementFactory() {
+        }
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix, Document doc) {
+            return new FlowParaElement(prefix, (AbstractDocument)doc);
+        }
+    }
+
+    /**
+     * To create a 'flowLine' element.
+     */
+    protected static class FlowLineElementFactory 
+        implements SVGDOMImplementation.ElementFactory {
+        public FlowLineElementFactory() {
+        }
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix, Document doc) {
+            return new FlowLineElement(prefix, (AbstractDocument)doc);
+        }
+    }
+
+    /**
+     * To create a 'flowSpan' element.
+     */
+    protected static class FlowSpanElementFactory 
+        implements SVGDOMImplementation.ElementFactory {
+        public FlowSpanElementFactory() {
+        }
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix, Document doc) {
+            return new FlowSpanElement(prefix, (AbstractDocument)doc);
+        }
+    }
 }

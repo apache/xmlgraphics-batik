@@ -538,13 +538,20 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge {
          * The number of items.
          */
         protected int count;
+
+        /**
+         * The length of the attributed string.
+         */
+        protected int length;
         
         /**
          * Creates a new empty AttributedStringBuffer.
          */
         public AttributedStringBuffer() {
-            strings = new ArrayList();
+            strings    = new ArrayList();
             attributes = new ArrayList();
+            count      = 0;
+            length     = 0;
         }
 
         /**
@@ -552,6 +559,13 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge {
          */
         public boolean isEmpty() {
             return count == 0;
+        }
+        
+        /**
+         * Returns the length in chars of the current Attributed String
+         */
+        public int length() {
+            return length;
         }
 
         /**
@@ -561,6 +575,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge {
             strings.add(s);
             attributes.add(m);
             count++;
+            length += s.length();
         }
 
         /**
@@ -585,6 +600,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge {
                     return;
                 }
                 strings.add(s.substring(0, s.length() - 1));
+                length--;
             } else {
                 strings.add(s);
             }
@@ -782,6 +798,12 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge {
             }
         }
 
+        addChildGlyphPositionAttributes(as, element, ctx);
+    }
+
+    protected void addChildGlyphPositionAttributes(AttributedString as,
+                                                   Element element,
+                                                   BridgeContext ctx) {
         // do the same for each child element
         for (Node child = element.getFirstChild();
              child != null;
@@ -820,7 +842,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge {
         AttributedCharacterIterator aci = as.getIterator();
 
         // calculate which chars in the string belong to this element
-        int firstChar = 0;
+        int firstChar = -1;
         for (int i = 0; i < aci.getEndIndex(); i++) {
             aci.setIndex(i);
             Element delimeter = (Element)aci.getAttribute(
@@ -831,6 +853,9 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge {
                 break;
             }
         }
+        if (firstChar == -1)
+            return; // Element not part of aci (no chars in elem usually)
+
         int lastChar = aci.getEndIndex()-1;
         for (int i = aci.getEndIndex()-1; i >= 0; i--) {
             aci.setIndex(i);
@@ -850,6 +875,8 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge {
 
         // Fill
         Paint p = PaintServer.convertFillPaint(element, node, ctx);
+        // System.out.println("Fore: " + p + " [" + firstChar + "," +
+        //                    (lastChar+1) + "]");
         as.addAttribute(TextAttribute.FOREGROUND, p,
                         firstChar, lastChar+1);
 
@@ -913,11 +940,20 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge {
                             firstChar, lastChar+1);
         }
 
-        // do the same for each child element
+        addChildPaintAttributes(as, element, node, textDecoration, ctx);
+    }
+
+    protected void addChildPaintAttributes(AttributedString as,
+                                           Element element,
+                                           TextNode node,
+                                           TextDecoration textDecoration,
+                                           BridgeContext ctx) {
+        // Add Paint attributres for children of text element
         for (Node child = element.getFirstChild();
              child != null;
              child = child.getNextSibling()) {
             if (child.getNodeType() != Node.ELEMENT_NODE) {
+                continue;
             }
             if (!SVG_NAMESPACE_URI.equals(child.getNamespaceURI())) {
                 continue;
@@ -935,7 +971,6 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge {
             }
         }
     }
-
 
     /**
      * Returns the map to pass to the current characters.

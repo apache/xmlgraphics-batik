@@ -13,6 +13,7 @@ import org.w3c.dom.Element;
 import java.awt.geom.Rectangle2D;
 import java.util.Map;
 
+import org.apache.batik.bridge.Bridge;
 import org.apache.batik.bridge.BridgeException;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.SVGUtilities;
@@ -50,6 +51,13 @@ public class BatikHistogramNormalizationElementBridge
      */
     public String getLocalName() {
         return BATIK_EXT_HISTOGRAM_NORMALIZATION_TAG;
+    }
+
+    /**
+     * Returns a new instance of this bridge.
+     */
+    public Bridge getInstance() {
+        return new BatikHistogramNormalizationElementBridge();
     }
 
     /**

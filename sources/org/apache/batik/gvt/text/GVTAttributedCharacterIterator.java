@@ -199,6 +199,18 @@ public interface GVTAttributedCharacterIterator extends AttributedCharacterItera
             super(s);
         }
 
+        public final static TextAttribute FLOW_PARAGRAPH =
+            new TextAttribute("FLOW_PARAGRAPH");
+
+        public final static TextAttribute FLOW_EMPTY_PARAGRAPH =
+            new TextAttribute("FLOW_EMPTY_PARAGRAPH");
+
+        public final static TextAttribute FLOW_LINE_BREAK =
+            new TextAttribute("FLOW_LINE_BREAK");
+
+        public final static TextAttribute FLOW_REGIONS =
+            new TextAttribute("FLOW_REGIONS");
+
         /** Attribute span delimiter - new tspan, tref, or textelement.*/
         public final static TextAttribute TEXT_COMPOUND_DELIMITER =
                               new TextAttribute("TEXT_COMPOUND_DELIMITER");
