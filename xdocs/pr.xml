@@ -15,8 +15,8 @@
 <!-- ========================================================================= -->
 <document>
     <header>
-        <title>Batik Announcement</title>
-        <subtitle>Press Release</subtitle>
+        <title>Batik In The News</title>
+        <subtitle>Press Release, reports etc...</subtitle>
         <authors>
             <person name="Vincent Hardy" email="vincent.hardy@eng.sun.com"/>
             <person name="Roddy Young" email="roddy@zotgroup.com"/>
@@ -24,7 +24,17 @@
     </header>
 
     <body>
-        <s1 title="Batik 1.0 Press Releases">
+        <s1 title="Batik 1.0 release reports and reviews">
+            <ul>
+                <li><link href="http://news.cnet.com/news/0-1005-200-5991585.html">CNET</link></li>
+                <li><link href="http://industry.java.sun.com/javanews/stories/story2/0,1072,36774,00.html">Java Industry Connection</link></li>
+                <li><link href="http://apachetoday.com/news_story.php3?ltsn=2001-05-21-002-06-PR-CY">Apache Today</link></li>
+                <li><link href="http://freshmeat.net/releases/48664/">Freshmeat.net</link></li>
+                <li><link href="http://xmlhack.com/read.php?item=1225">XML Hack</link></li>
+                <li><link href="http://www.webtechniques.com/archives/2001/04/desi/">Web Techniques</link></li>
+            </ul>
+        </s1>
+        <s1 title="Batik 1.0 Press Releases, Monday May 21rst 2001">
 <p><strong>CONTACT</strong><br />
 <em>Roderic Olvera Young</em><br />
 <em>Camelot Media</em><br />
