@@ -9,11 +9,13 @@
 package org.apache.batik.gvt.event;
 
 import java.awt.Shape;
+import java.util.EventObject;
 
 /**
  * An event which indicates that a selection is being made or has been made.
  *
  * @author <a href="mailto:bill.haneman@ireland.sun.com">Bill Haneman</a>
+ * @author <a href="mailto:tkormann@ilog.fr">Thierry Kormann</a>
  * @version $Id$
  */
 public class SelectionEvent {
@@ -32,7 +34,7 @@ public class SelectionEvent {
     /**
      * The id for the "selection started" event.
      */
-    public static final int SELECTION_START = 4;
+    public static final int SELECTION_STARTED = 4;
 
     /**
      * The id for the "selection completed" event.
@@ -82,10 +84,7 @@ public class SelectionEvent {
      * @see org.apache.batik.gvt.event.SelectionEvent#SELECTION_CLEARED
      * @see org.apache.batik.gvt.event.SelectionEvent#SELECTION_DONE
      */
-    public int getType() {
+    public int getID() {
         return id;
     }
-
-
-
 }

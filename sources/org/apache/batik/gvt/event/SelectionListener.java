@@ -19,12 +19,27 @@ import java.util.EventListener;
 public interface SelectionListener extends EventListener {
 
     /**
-     * Invoked when a selection has changed
+     * Invoked when a selection has changed.
      * @param evt the selection change event
-     * @see org.apache.batik.gvt.Selector
-     * @see org.apache.batik.gvt.event.SelectionEvent
-     * @see org.apache.batik.gvt.Selectable
      */
-    void selectionChanged(SelectionEvent e);
+    void selectionChanged(SelectionEvent evt);
+
+    /**
+     * Invoked when a selection is done.
+     * @param evt the selection change event
+     */
+    void selectionDone(SelectionEvent evt);
+
+    /**
+     * Invoked when a selection is cleared.
+     * @param evt the selection change event
+     */
+    void selectionCleared(SelectionEvent evt);
+
+    /**
+     * Invoked when a selection started.
+     * @param evt the selection change event
+     */
+    void selectionStarted(SelectionEvent evt);
 
 }
