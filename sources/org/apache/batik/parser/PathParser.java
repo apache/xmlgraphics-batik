@@ -180,7 +180,7 @@ public class PathParser extends NumberParser {
 	skipSpaces();
         for (;;) {
 	    switch (current) {
-	    case '+': case '-':
+	    case '+': case '-': case '.':
 	    case '0': case '1': case '2': case '3': case '4':
 	    case '5': case '6': case '7': case '8': case '9':
 		try {
@@ -232,7 +232,7 @@ public class PathParser extends NumberParser {
 	skipSpaces();
         for (;;) {
 	    switch (current) {
-	    case '+': case '-':
+	    case '+': case '-': case '.':
 	    case '0': case '1': case '2': case '3': case '4':
 	    case '5': case '6': case '7': case '8': case '9':
 		try {
@@ -264,7 +264,7 @@ public class PathParser extends NumberParser {
 
 	for (;;) {
 	    switch (current) {
-	    case '+': case '-':
+	    case '+': case '-': case '.':
 	    case '0': case '1': case '2': case '3': case '4':
 	    case '5': case '6': case '7': case '8': case '9':
 		try {
@@ -293,7 +293,7 @@ public class PathParser extends NumberParser {
 
 	for (;;) {
 	    switch (current) {
-	    case '+': case '-':
+	    case '+': case '-': case '.':
 	    case '0': case '1': case '2': case '3': case '4':
 	    case '5': case '6': case '7': case '8': case '9':
 		try {
@@ -322,7 +322,7 @@ public class PathParser extends NumberParser {
 
 	for (;;) {
 	    switch (current) {
-	    case '+': case '-':
+	    case '+': case '-': case '.':
 	    case '0': case '1': case '2': case '3': case '4':
 	    case '5': case '6': case '7': case '8': case '9':
 		try {
@@ -351,7 +351,7 @@ public class PathParser extends NumberParser {
 
 	for (;;) {
 	    switch (current) {
-	    case '+': case '-':
+	    case '+': case '-': case '.':
 	    case '0': case '1': case '2': case '3': case '4':
 	    case '5': case '6': case '7': case '8': case '9':
 		try {
@@ -382,7 +382,7 @@ public class PathParser extends NumberParser {
 	    switch (current) {
 	    default:
 		return;
-	    case '+': case '-':
+	    case '+': case '-': case '.':
 	    case '0': case '1': case '2': case '3': case '4':
 	    case '5': case '6': case '7': case '8': case '9':
 	    }
@@ -422,7 +422,7 @@ public class PathParser extends NumberParser {
 	    switch (current) {
 	    default:
 		return;
-	    case '+': case '-':
+	    case '+': case '-': case '.':
 	    case '0': case '1': case '2': case '3': case '4':
 	    case '5': case '6': case '7': case '8': case '9':
 	    }
@@ -462,7 +462,7 @@ public class PathParser extends NumberParser {
 	    switch (current) {
 	    default:
 		return;
-	    case '+': case '-':
+	    case '+': case '-': case '.':
 	    case '0': case '1': case '2': case '3': case '4':
 	    case '5': case '6': case '7': case '8': case '9':
 	    }
@@ -498,7 +498,7 @@ public class PathParser extends NumberParser {
 	    switch (current) {
 	    default:
 		return;
-	    case '+': case '-':
+	    case '+': case '-': case '.':
 	    case '0': case '1': case '2': case '3': case '4':
 	    case '5': case '6': case '7': case '8': case '9':
 	    }
@@ -534,7 +534,7 @@ public class PathParser extends NumberParser {
 	    switch (current) {
 	    default:
 		return;
-	    case '+': case '-':
+	    case '+': case '-': case '.':
 	    case '0': case '1': case '2': case '3': case '4':
 	    case '5': case '6': case '7': case '8': case '9':
 	    }
@@ -570,7 +570,7 @@ public class PathParser extends NumberParser {
 	    switch (current) {
 	    default:
 		return;
-	    case '+': case '-':
+	    case '+': case '-': case '.':
 	    case '0': case '1': case '2': case '3': case '4':
 	    case '5': case '6': case '7': case '8': case '9':
 	    }
@@ -606,7 +606,7 @@ public class PathParser extends NumberParser {
 	    switch (current) {
 	    default:
 		return;
-	    case '+': case '-':
+	    case '+': case '-': case '.':
 	    case '0': case '1': case '2': case '3': case '4':
 	    case '5': case '6': case '7': case '8': case '9':
 	    }
@@ -638,7 +638,7 @@ public class PathParser extends NumberParser {
 	    switch (current) {
 	    default:
 		return;
-	    case '+': case '-':
+	    case '+': case '-': case '.':
 	    case '0': case '1': case '2': case '3': case '4':
 	    case '5': case '6': case '7': case '8': case '9':
 	    }
@@ -670,7 +670,7 @@ public class PathParser extends NumberParser {
 	    switch (current) {
 	    default:
 		return;
-	    case '+': case '-':
+	    case '+': case '-': case '.':
 	    case '0': case '1': case '2': case '3': case '4':
 	    case '5': case '6': case '7': case '8': case '9':
 	    }
@@ -745,7 +745,7 @@ public class PathParser extends NumberParser {
 	    switch (current) {
 	    default:
 		return;
-	    case '+': case '-':
+	    case '+': case '-': case '.':
 	    case '0': case '1': case '2': case '3': case '4':
 	    case '5': case '6': case '7': case '8': case '9':
 	    }
