@@ -1,0 +1,44 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20000802//EN"
+"http://www.w3.org/TR/2000/CR-SVG-20000802/DTD/svg-20000802.dtd">
+
+<!-- ====================================================================== -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.     -->
+<!--                                                                        -->
+<!-- This software is published under the terms of the Apache Software      -->
+<!-- License version 1.1, a copy of which has been included with this       -->
+<!-- distribution in the LICENSE file.                                      -->
+<!-- ====================================================================== -->
+
+<!-- ====================================================================== -->
+<!-- Modification of text children                                          -->
+<!--                                                                        -->
+<!-- @author nicolas.socheleau@bitflash.com                                 -->
+<!-- @version $Id$                                                          -->
+<!-- ====================================================================== -->
+
+<?xml-stylesheet type="text/css" href="../../resources/style/test.css" ?>  
+
+<svg id="body" width="450" height="500" viewBox="0 0 450 500">
+  <title>&lt;text&gt; children 'onload'</title>
+
+  <text x="50%" y="45" class="title">&lt;text&gt; children in 'onload'</text>
+
+  <script type="text/ecmascript"><![CDATA[
+    var inRegard=false;
+    function regardStart() {
+    inRegard=true;
+    var elem = document.getElementById("t1");
+    regardTestInstance.registerObjectDesc(elem, "T1");
+    elem.parentNode.removeChild(elem);
+    regardTestInstance.scriptDone();
+    }
+]]></script>
+
+  <g id="test-content">
+    <g style="font-size:40" >
+      <text id="t1_bg" x="70" y="135" style="fill:gold">The good the bad</text>
+      <text id="t1" x="70" y="135" style="fill:crimson">The good the bad</text>
+    </g>
+  </g>
+</svg>
