@@ -20,6 +20,8 @@ import java.awt.geom.Point2D;
 import java.lang.reflect.Array;
 import java.util.EventListener;
 import java.util.EventObject;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.swing.event.EventListenerList;
 
@@ -75,6 +77,13 @@ public class AWTEventDispatcher implements EventDispatcher,
      * The current GraphicsNode targeted by an key events.
      */
     protected GraphicsNode currentKeyEventTarget;
+
+    /**
+     * These are used to queue events while a rendering event
+     * is in progress.
+     */
+    protected List eventQueue = new LinkedList();
+    protected boolean eventDispatchEnabled = true;
 
     private int nodeIncrementEventID = KeyEvent.KEY_PRESSED;
     private int nodeIncrementEventCode = KeyEvent.VK_TAB;
@@ -290,13 +299,28 @@ public class AWTEventDispatcher implements EventDispatcher,
     // Event dispatch implementation
     //
 
+    public void setEventDispatchEnabled(boolean b) {
+        eventDispatchEnabled = b;
+        if (eventDispatchEnabled) {
+            // Dispatch any queued events.
+            while (eventQueue.size() > 0) {
+                EventObject evt =  (EventObject)eventQueue.remove(0);
+                dispatchEvent(evt);
+            }
+        }
+    }
+
     /**
      * Dispatches the specified AWT event.
      * @param evt the event to dispatch
      */
     public void dispatchEvent(EventObject evt) {
-        if (root == null)
+        if (root == null) 
             return;
+        if (!eventDispatchEnabled) {
+            eventQueue.add(evt);
+            return;
+        }
         if (evt instanceof MouseEvent) {
             dispatchMouseEvent((MouseEvent) evt);
         } else if (evt instanceof KeyEvent) {

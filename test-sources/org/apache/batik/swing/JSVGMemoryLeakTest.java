@@ -24,7 +24,6 @@ import javax.swing.JFrame;
 
 import org.w3c.dom.Element;
 
-
 /**
  * One line Class Desc
  *
@@ -38,7 +37,7 @@ public class JSVGMemoryLeakTest extends MemoryLeakTest
     public JSVGMemoryLeakTest() {
     }
 
-    public String getName() { return getId(); }
+    public String getName() { return "JSVGMemoryLeakTest."+getId(); }
 
     TestReport failReport = null;
     boolean done;

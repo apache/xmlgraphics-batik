@@ -26,4 +26,10 @@
 
   <test id="NullSetSVGDocumentTest" 
         class="org.apache.batik.swing.NullSetSVGDocumentTest" />
+
+  <testGroup id="swing.interrupt" 
+             class="org.apache.batik.swing.JSVGInterruptTest">
+    <test id="samples/anne.svg" />
+<!--    <test id="samples/mines.svg" /> -->
+  </testGroup>
 </testSuite>

@@ -8,8 +8,6 @@
 
 package org.apache.batik.swing.svg;
 
-import java.awt.EventQueue;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -20,7 +18,10 @@ import org.apache.batik.bridge.DynamicGVTBuilder;
 import org.apache.batik.bridge.GVTBuilder;
 import org.apache.batik.bridge.InterruptedBridgeException;
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.util.EventDispatcher;
+import org.apache.batik.util.EventDispatcher.Dispatcher;
 import org.w3c.dom.svg.SVGDocument;
+
 
 /**
  * This class represents an object which builds asynchroneaously
@@ -52,21 +53,37 @@ public class GVTTreeBuilder extends Thread {
     protected Exception exception;
 
     /**
+     * Boolean indicating if this thread has ever been interrupted.
+     */
+    protected boolean beenInterrupted;
+
+    /**
      * Creates a new GVTTreeBuilder.
      */
     public GVTTreeBuilder(SVGDocument   doc,
                           BridgeContext bc) {
         svgDocument = doc;
         bridgeContext = bc;
+        beenInterrupted = false;
+    }
+
+    public boolean getBeenInterrupted() {
+        synchronized (this) { return beenInterrupted; }
     }
 
     /**
      * Runs this builder.
      */
     public void run() {
+        GVTTreeBuilderEvent ev;
+        ev = new GVTTreeBuilderEvent(this, null);
         try {
-            fireStartedEvent();
+            fireEvent(startedDispatcher, ev);
 
+            if (getBeenInterrupted()) {
+                fireEvent(cancelledDispatcher, ev);
+                return;
+            }
             GVTBuilder builder = null;
 
             if (bridgeContext.isDynamic()) {
@@ -76,17 +93,36 @@ public class GVTTreeBuilder extends Thread {
             }
             GraphicsNode gvtRoot = builder.build(bridgeContext, svgDocument);
 
-            fireCompletedEvent(gvtRoot);
+            if (getBeenInterrupted()) {
+                fireEvent(cancelledDispatcher, ev);
+                return;
+            }
+
+            ev = new GVTTreeBuilderEvent(this, gvtRoot);
+            fireEvent(completedDispatcher, ev);
         } catch (InterruptedBridgeException e) {
-            fireCancelledEvent();
+            fireEvent(cancelledDispatcher, ev);
         } catch (BridgeException e) {
             exception = e;
-            fireFailedEvent(e.getGraphicsNode());
+            ev = new GVTTreeBuilderEvent(this, e.getGraphicsNode());
+            fireEvent(failedDispatcher, ev);
         } catch (Exception e) {
             exception = e;
-            fireFailedEvent(null);
+            fireEvent(failedDispatcher, ev);
+        } catch (Throwable t) {
+            t.printStackTrace();
+            exception = new Exception(t.getMessage());
+            fireEvent(failedDispatcher, ev);
+        } finally {
+            bridgeContext.getDocumentLoader().dispose();
         }
-        bridgeContext.getDocumentLoader().dispose();
+    }
+
+    public void interrupt() {
+        super.interrupt();
+        synchronized (this) {
+            beenInterrupted = true;
+        }
     }
 
     /**
@@ -110,118 +146,39 @@ public class GVTTreeBuilder extends Thread {
         listeners.remove(l);
     }
 
-    /**
-     * Fires a GVTTreeBuilderEvent.
-     */
-    protected void fireStartedEvent() throws InterruptedException {
-        final Object[] dll = listeners.toArray();
-
-        if (dll.length > 0) {
-            final GVTTreeBuilderEvent ev = new GVTTreeBuilderEvent(this, null);
-
-            if (EventQueue.isDispatchThread()) {
-                for (int i = 0; i < dll.length; i++) {
-                    GVTTreeBuilderListener dl = (GVTTreeBuilderListener)dll[i];
-                    dl.gvtBuildStarted(ev);
-                }
-            } else {
-                try {
-                    EventQueue.invokeAndWait(new Runnable() {
-                            public void run() {
-                                for (int i = 0; i < dll.length; i++) {
-                                    GVTTreeBuilderListener dl =
-                                        (GVTTreeBuilderListener)dll[i];
-                                    dl.gvtBuildStarted(ev);
-                                }
-                            }
-                        });
-                } catch (InvocationTargetException e) {
-                }
-            }
-        }
+    public void fireEvent(Dispatcher dispatcher, Object event) {
+        EventDispatcher.fireEvent(dispatcher, listeners, event, true);
     }
 
-    /**
-     * Fires a GVTTreeBuilderEvent.
-     */
-    protected void fireCompletedEvent(GraphicsNode root) {
-        final Object[] dll = listeners.toArray();
-
-        if (dll.length > 0) {
-            final GVTTreeBuilderEvent ev = new GVTTreeBuilderEvent(this, root);
-
-            if (EventQueue.isDispatchThread()) {
-                for (int i = 0; i < dll.length; i++) {
-                    GVTTreeBuilderListener dl = (GVTTreeBuilderListener)dll[i];
-                    dl.gvtBuildCompleted(ev);
-                }
-            } else {
-                EventQueue.invokeLater(new Runnable() {
-                    public void run() {
-                        for (int i = 0; i < dll.length; i++) {
-                            GVTTreeBuilderListener dl =
-                                (GVTTreeBuilderListener)dll[i];
-                            dl.gvtBuildCompleted(ev);
-                        }
-                    }
-                });
+    static Dispatcher startedDispatcher = new Dispatcher() {
+            public void dispatch(Object listener,
+                                 Object event) {
+                ((GVTTreeBuilderListener)listener).gvtBuildStarted
+                 ((GVTTreeBuilderEvent)event);
             }
-        }
-    }
+        };
 
-    /**
-     * Fires a GVTTreeBuilderEvent.
-     */
-    protected void fireFailedEvent(GraphicsNode root) {
-        final Object[] dll = listeners.toArray();
-
-        if (dll.length > 0) {
-            final GVTTreeBuilderEvent ev = new GVTTreeBuilderEvent(this, root);
-
-            if (EventQueue.isDispatchThread()) {
-                for (int i = 0; i < dll.length; i++) {
-                    GVTTreeBuilderListener dl = (GVTTreeBuilderListener)dll[i];
-                    dl.gvtBuildFailed(ev);
-                }
-            } else {
-                EventQueue.invokeLater(new Runnable() {
-                    public void run() {
-                        for (int i = 0; i < dll.length; i++) {
-                            GVTTreeBuilderListener dl =
-                                (GVTTreeBuilderListener)dll[i];
-                            dl.gvtBuildFailed(ev);
-                        }
-                    }
-                });
+    static Dispatcher completedDispatcher = new Dispatcher() {
+            public void dispatch(Object listener,
+                                 Object event) {
+                ((GVTTreeBuilderListener)listener).gvtBuildCompleted
+                 ((GVTTreeBuilderEvent)event);
             }
-        }
-    }
+        };
 
-    /**
-     * Fires a GVTTreeBuilderEvent.
-     */
-    protected void fireCancelledEvent() {
-        final Object[] dll = listeners.toArray();
-
-        if (dll.length > 0) {
-            final GVTTreeBuilderEvent ev = new GVTTreeBuilderEvent(this, null);
-
-            if (EventQueue.isDispatchThread()) {
-                for (int i = 0; i < dll.length; i++) {
-                    GVTTreeBuilderListener dl = (GVTTreeBuilderListener)dll[i];
-                    dl.gvtBuildCancelled(ev);
-                }
-            } else {
-                EventQueue.invokeLater(new Runnable() {
-                    public void run() {
-                        for (int i = 0; i < dll.length; i++) {
-                            GVTTreeBuilderListener dl =
-                                (GVTTreeBuilderListener)dll[i];
-                            dl.gvtBuildCancelled(ev);
-                        }
-                    }
-                });
+    static Dispatcher cancelledDispatcher = new Dispatcher() {
+            public void dispatch(Object listener,
+                                 Object event) {
+                ((GVTTreeBuilderListener)listener).gvtBuildCancelled
+                 ((GVTTreeBuilderEvent)event);
             }
-        }
-    }
+        };
+
+    static Dispatcher failedDispatcher = new Dispatcher() {
+            public void dispatch(Object listener,
+                                 Object event) {
+                ((GVTTreeBuilderListener)listener).gvtBuildFailed
+                 ((GVTTreeBuilderEvent)event);
+            }
+        };
 }

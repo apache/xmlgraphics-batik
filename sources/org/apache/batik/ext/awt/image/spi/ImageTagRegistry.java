@@ -61,12 +61,7 @@ public class ImageTagRegistry implements ErrorConstants {
         imgCache.flush();
     }
 
-    public Filter readURL(ParsedURL purl) {
-        return readURL(purl, null);
-    }
-
-    public Filter readURL(ParsedURL purl, ICCColorSpaceExt colorSpace) {
-
+    public Filter checkCache(ParsedURL purl, ICCColorSpaceExt colorSpace) {
         // I just realized that this whole thing could 
         boolean needRawData = (colorSpace != null);
 
@@ -76,15 +71,54 @@ public class ImageTagRegistry implements ErrorConstants {
         else             cache = imgCache;
 
         ret = cache.request(purl);
-        if (ret != null) {
-            // System.out.println("Image came from cache" + purl);
-            if (colorSpace != null)
-                ret = new ProfileRable(ret, colorSpace);
-            return ret;
+        if (ret == null) {
+            cache.clear(purl);
+            return null;
+        }
+
+        // System.out.println("Image came from cache" + purl);
+        if (colorSpace != null)
+            ret = new ProfileRable(ret, colorSpace);
+        return ret;
+    }
+
+    public Filter readURL(ParsedURL purl) {
+        return readURL(null, purl, null, true, true);
+    }
+
+    public Filter readURL(ParsedURL purl, ICCColorSpaceExt colorSpace) {
+        return readURL(null, purl, colorSpace, true, true);
+    }
+
+    public Filter readURL(InputStream is, ParsedURL purl, 
+                          ICCColorSpaceExt colorSpace,
+                          boolean allowOpenStream,
+                          boolean returnBrokenLink) {
+        if ((is != null) && !is.markSupported())
+            // Doesn't support mark so wrap with
+            // BufferedInputStream that does.
+            is = new BufferedInputStream(is);
+
+        // I just realized that this whole thing could 
+        boolean needRawData = (colorSpace != null);
+
+        Filter      ret     = null;
+        URLImageCache cache = null;
+
+        if (purl != null) {
+            if (needRawData) cache = rawCache;
+            else             cache = imgCache;
+
+            ret = cache.request(purl);
+            if (ret != null) {
+                // System.out.println("Image came from cache" + purl);
+                if (colorSpace != null)
+                    ret = new ProfileRable(ret, colorSpace);
+                return ret;
+            }
         }
         // System.out.println("Image didn't come from cache: " + purl);
 
-        InputStream is         = null;
         boolean     openFailed = false;
         List mimeTypes = getRegisteredMimeTypes();
 
@@ -94,6 +128,8 @@ public class ImageTagRegistry implements ErrorConstants {
             RegistryEntry re = (RegistryEntry)i.next();
 
             if (re instanceof URLRegistryEntry) {
+                if ((purl == null) || !allowOpenStream) continue;
+
                 URLRegistryEntry ure = (URLRegistryEntry)re;
                 if (ure.isCompatibleURL(purl)) {
                     ret = ure.handleURL(purl, needRawData);
@@ -101,7 +137,10 @@ public class ImageTagRegistry implements ErrorConstants {
                     // Check if we got an image.
                     if (ret != null) break;
                 }
-            } else if (re instanceof StreamRegistryEntry) {
+                continue;
+            } 
+
+            if (re instanceof StreamRegistryEntry) {
                 StreamRegistryEntry sre = (StreamRegistryEntry)re;
                 // Quick out last time the open didn't work for this
                 // URL so don't try again...
@@ -110,6 +149,8 @@ public class ImageTagRegistry implements ErrorConstants {
                 try {
                     if (is == null) {
                         // Haven't opened the stream yet let's try.
+                        if ((purl == null) || !allowOpenStream)
+                            break;  // No purl nothing we can do...
                         try {
                             is = purl.openStream(mimeTypes.iterator());
                         } catch(IOException ioe) {
@@ -132,29 +173,35 @@ public class ImageTagRegistry implements ErrorConstants {
                     // Stream is messed up so setup to reopen it..
                     is = null;
                 }
+                continue;
             }
         }
         
+        if (cache != null)
+            cache.put(purl, ret);
+
         if (ret == null) {
+            if (!returnBrokenLink)
+                return null;
             if (openFailed)
                 // Technially it's possible that it's an unknown
                 // 'protocol that caused the open to fail but probably
                 // it's a bad URL...
-                ret = getBrokenLinkImage(this, ERR_URL_UNREACHABLE,
-                                         new Object[] { purl });
-            else
-                // We were able to get to the data we just couldn't
-                // make sense of it...
-                ret = getBrokenLinkImage(this, ERR_URL_UNINTERPRETABLE, 
-                                         new Object[] { purl } );
-            cache.put(purl, null);
-        } else {
-            cache.put(purl, ret);
+                return getBrokenLinkImage(this, ERR_URL_UNREACHABLE,
+                                          new Object[] { purl });
+
+            // We were able to get to the data we just couldn't
+            // make sense of it...
+            return getBrokenLinkImage(this, ERR_URL_UNINTERPRETABLE, 
+                                      new Object[] { purl } );
         }
 
-        if ((colorSpace != null) &&
-            ret.getProperty(BrokenLinkProvider.BROKEN_LINK_PROPERTY) == null)
-            // Don't profile the Broken link image.
+        if (ret.getProperty(BrokenLinkProvider.BROKEN_LINK_PROPERTY) != null) {
+            // Don't Return Broken link image unless requested
+            return (returnBrokenLink)?ret:null;
+        }
+
+        if (colorSpace != null)
             ret = new ProfileRable(ret, colorSpace);
 
         return ret;

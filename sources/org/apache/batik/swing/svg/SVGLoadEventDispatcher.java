@@ -8,15 +8,16 @@
 
 package org.apache.batik.swing.svg;
 
-import java.awt.EventQueue;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.bridge.InterruptedBridgeException;
 import org.apache.batik.bridge.UpdateManager;
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.util.EventDispatcher;
+import org.apache.batik.util.EventDispatcher.Dispatcher;
 import org.w3c.dom.svg.SVGDocument;
 
 /**
@@ -58,6 +59,11 @@ public class SVGLoadEventDispatcher extends Thread {
     protected Exception exception;
 
     /**
+     * Boolean indicating if this thread has ever been interrupted.
+     */
+    protected boolean beenInterrupted;
+
+    /**
      * Creates a new SVGLoadEventDispatcher.
      */
     public SVGLoadEventDispatcher(GraphicsNode gn,
@@ -68,23 +74,53 @@ public class SVGLoadEventDispatcher extends Thread {
         root = gn;
         bridgeContext = bc;
         updateManager = um;
+        beenInterrupted = false;
+    }
+
+    public boolean getBeenInterrupted() {
+        synchronized (this) { return beenInterrupted; }
     }
 
     /**
      * Runs the dispatcher.
      */
     public void run() {
+        SVGLoadEventDispatcherEvent ev;
+        ev = new SVGLoadEventDispatcherEvent(this, root);
         try {
-            fireStartedEvent();
+            fireEvent(startedDispatcher, ev);
+
+            if (getBeenInterrupted()) {
+                fireEvent(cancelledDispatcher, ev);
+                return;
+            }
 
             updateManager.dispatchSVGLoadEvent();
 
-            fireCompletedEvent();
+            if (getBeenInterrupted()) {
+                fireEvent(cancelledDispatcher, ev);
+                return;
+            }
+
+            fireEvent(completedDispatcher, ev);
         } catch (InterruptedException e) {
-            fireCancelledEvent();
+            fireEvent(cancelledDispatcher, ev);
+        } catch (InterruptedBridgeException e) {
+            fireEvent(cancelledDispatcher, ev);
         } catch (Exception e) {
             exception = e;
-            fireFailedEvent();
+            fireEvent(failedDispatcher, ev);
+        } catch (Throwable t) {
+            t.printStackTrace();
+            exception = new Exception(t.getMessage());
+            fireEvent(failedDispatcher, ev);
+        }
+    }
+
+    public void interrupt() {
+        super.interrupt();
+        synchronized (this) {
+            beenInterrupted = true;
         }
     }
 
@@ -119,127 +155,43 @@ public class SVGLoadEventDispatcher extends Thread {
         listeners.remove(l);
     }
 
-    /**
-     * Fires a SVGLoadEventDispatcherEvent.
-     */
-    protected void fireStartedEvent() throws InterruptedException {
-        final Object[] dll = listeners.toArray();
-
-        if (dll.length > 0) {
-            final SVGLoadEventDispatcherEvent ev =
-                new SVGLoadEventDispatcherEvent(this, root);
-
-            if (EventQueue.isDispatchThread()) {
-                for (int i = 0; i < dll.length; i++) {
-                    SVGLoadEventDispatcherListener dl =
-                        (SVGLoadEventDispatcherListener)dll[i];
-                    dl.svgLoadEventDispatchStarted(ev);
-                }
-            } else {
-                try {
-                    EventQueue.invokeAndWait(new Runnable() {
-                            public void run() {
-                                for (int i = 0; i < dll.length; i++) {
-                                    SVGLoadEventDispatcherListener dl =
-                                        (SVGLoadEventDispatcherListener)dll[i];
-                                    dl.svgLoadEventDispatchStarted(ev);
-                                }
-                            }
-                        });
-                } catch (InvocationTargetException e) {
-                }
-            }
-        }
+    public void fireEvent(Dispatcher dispatcher, Object event) {
+        EventDispatcher.fireEvent(dispatcher, listeners, event, true);
     }
 
-    /**
-     * Fires a SVGLoadEventDispatcherEvent.
-     */
-    protected void fireCompletedEvent() {
-        final Object[] dll = listeners.toArray();
-
-        if (dll.length > 0) {
-            final SVGLoadEventDispatcherEvent ev =
-                new SVGLoadEventDispatcherEvent(this, root);
-
-            if (EventQueue.isDispatchThread()) {
-                for (int i = 0; i < dll.length; i++) {
-                    SVGLoadEventDispatcherListener dl =
-                        (SVGLoadEventDispatcherListener)dll[i];
-                    dl.svgLoadEventDispatchCompleted(ev);
-                }
-            } else {
-                EventQueue.invokeLater(new Runnable() {
-                    public void run() {
-                        for (int i = 0; i < dll.length; i++) {
-                            SVGLoadEventDispatcherListener dl =
-                                (SVGLoadEventDispatcherListener)dll[i];
-                            dl.svgLoadEventDispatchCompleted(ev);
-                        }
-                    }
-                });
+    static Dispatcher startedDispatcher = new Dispatcher() {
+            public void dispatch(Object listener,
+                                 Object event) {
+                ((SVGLoadEventDispatcherListener)listener).
+                    svgLoadEventDispatchStarted
+                    ((SVGLoadEventDispatcherEvent)event);
             }
-        }
-    }
+        };
 
-    /**
-     * Fires a SVGLoadEventDispatcherEvent.
-     */
-    protected void fireFailedEvent() {
-        final Object[] dll = listeners.toArray();
-
-        if (dll.length > 0) {
-            final SVGLoadEventDispatcherEvent ev =
-                new SVGLoadEventDispatcherEvent(this, root);
-
-            if (EventQueue.isDispatchThread()) {
-                for (int i = 0; i < dll.length; i++) {
-                    SVGLoadEventDispatcherListener dl =
-                        (SVGLoadEventDispatcherListener)dll[i];
-                    dl.svgLoadEventDispatchFailed(ev);
-                }
-            } else {
-                EventQueue.invokeLater(new Runnable() {
-                    public void run() {
-                        for (int i = 0; i < dll.length; i++) {
-                            SVGLoadEventDispatcherListener dl =
-                                (SVGLoadEventDispatcherListener)dll[i];
-                            dl.svgLoadEventDispatchFailed(ev);
-                        }
-                    }
-                });
+    static Dispatcher completedDispatcher = new Dispatcher() {
+            public void dispatch(Object listener,
+                                 Object event) {
+                ((SVGLoadEventDispatcherListener)listener).
+                    svgLoadEventDispatchCompleted
+                    ((SVGLoadEventDispatcherEvent)event);
             }
-        }
-    }
+        };
 
-    /**
-     * Fires a SVGLoadEventDispatcherEvent.
-     */
-    protected void fireCancelledEvent() {
-        final Object[] dll = listeners.toArray();
-
-        if (dll.length > 0) {
-            final SVGLoadEventDispatcherEvent ev =
-                new SVGLoadEventDispatcherEvent(this, root);
-
-            if (EventQueue.isDispatchThread()) {
-                for (int i = 0; i < dll.length; i++) {
-                    SVGLoadEventDispatcherListener dl =
-                        (SVGLoadEventDispatcherListener)dll[i];
-                    dl.svgLoadEventDispatchCancelled(ev);
-                }
-            } else {
-                EventQueue.invokeLater(new Runnable() {
-                    public void run() {
-                        for (int i = 0; i < dll.length; i++) {
-                            SVGLoadEventDispatcherListener dl =
-                                (SVGLoadEventDispatcherListener)dll[i];
-                            dl.svgLoadEventDispatchCancelled(ev);
-                        }
-                    }
-                });
+    static Dispatcher cancelledDispatcher = new Dispatcher() {
+            public void dispatch(Object listener,
+                                 Object event) {
+                ((SVGLoadEventDispatcherListener)listener).
+                    svgLoadEventDispatchCancelled
+                    ((SVGLoadEventDispatcherEvent)event);
             }
-        }
-    }
+        };
 
+    static Dispatcher failedDispatcher = new Dispatcher() {
+            public void dispatch(Object listener,
+                                 Object event) {
+                ((SVGLoadEventDispatcherListener)listener).
+                    svgLoadEventDispatchFailed
+                    ((SVGLoadEventDispatcherEvent)event);
+            }
+        };
 }

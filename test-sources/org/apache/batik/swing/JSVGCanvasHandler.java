@@ -122,35 +122,8 @@ public class JSVGCanvasHandler {
 
     public void runCanvas(String desc) {
         this.desc = desc;
-        try {
-            EventQueue.invokeAndWait(new Runnable() {
-                    public void run() {
-                        frame = new JFrame(delegate.getName());
-                        canvas = createCanvas();
-                        canvas.setPreferredSize(new Dimension(450, 500));
-                        frame.getContentPane().add(canvas);
-                        frame.pack();
-                        wl = new WindowAdapter() {
-                                public void windowClosing(WindowEvent e) {
-                                    synchronized (loadMonitor) {
-                                        abort = true;
-                                        loadMonitor.notifyAll();
-                                    }
-                                    synchronized (renderMonitor) {
-                                        abort = true;
-                                        renderMonitor.notifyAll();
-                                    }
-                                }
-                            };
-                        frame.addWindowListener(wl);
-                        frame.setVisible(true);
 
-                        irl = new InitialRenderListener();
-                        canvas.addGVTTreeRendererListener(irl);
-                        ll = new LoadListener();
-                        canvas.addSVGDocumentLoaderListener(ll);
-                    }});
-        } catch (Throwable t) { }
+        setupCanvas();
 
         if ( abort) return;
 
@@ -199,19 +172,58 @@ public class JSVGCanvasHandler {
         }
     }
 
-    public void scriptDone() {
-        if (updateManager == null) return;
-        
-        updateManager.getUpdateRunnableQueue().invokeLater
-            (new Runnable() {
+    public void setupCanvas() { 
+        try {
+            EventQueue.invokeAndWait(new Runnable() {
                     public void run() {
-                        synchronized(renderMonitor) {
-                            done = true;
-                            failed = false;
-                            renderMonitor.notifyAll();
-                        }
+                        frame = new JFrame(delegate.getName());
+                        canvas = createCanvas();
+                        canvas.setPreferredSize(new Dimension(450, 500));
+                        frame.getContentPane().add(canvas);
+                        frame.pack();
+                        wl = new WindowAdapter() {
+                                public void windowClosing(WindowEvent e) {
+                                    synchronized (loadMonitor) {
+                                        abort = true;
+                                        loadMonitor.notifyAll();
+                                    }
+                                    synchronized (renderMonitor) {
+                                        abort = true;
+                                        renderMonitor.notifyAll();
+                                    }
+                                }
+                            };
+                        frame.addWindowListener(wl);
+                        frame.setVisible(true);
+
+                        irl = new InitialRenderListener();
+                        canvas.addGVTTreeRendererListener(irl);
+                        ll = new LoadListener();
+                        canvas.addSVGDocumentLoaderListener(ll);
+                    }});
+        } catch (Throwable t) { 
+            t.printStackTrace();
+        }
+    }
+
+
+    public void scriptDone() {
+        Runnable r = new Runnable() {
+                public void run() {
+                    synchronized(renderMonitor) {
+                        done = true;
+                        failed = false;
+                        renderMonitor.notifyAll();
                     }
-                });
+                }
+            };
+        if (updateManager == null) {
+            // Don't run it in this thread or we deadlock the event queue.
+            Thread t = new Thread(r);
+            t.start();
+        } else {
+            updateManager.getUpdateRunnableQueue().invokeLater(r);
+        }
     }
     
     public void dispose() {

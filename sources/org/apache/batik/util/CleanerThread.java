@@ -87,17 +87,21 @@ public class CleanerThread extends Thread {
 
     public void run() {
         while(true) {
-            Reference ref;
             try {
-                ref = queue.remove();
-                // System.err.println("Cleaned: " + ref);
-            } catch (InterruptedException ie) {
-                continue;
-            }
+                Reference ref;
+                try {
+                    ref = queue.remove();
+                    // System.err.println("Cleaned: " + ref);
+                } catch (InterruptedException ie) {
+                    continue;
+                }
 
-            if (ref instanceof ReferenceCleared) {
-                ReferenceCleared rc = (ReferenceCleared)ref;
-                rc.cleared();
+                if (ref instanceof ReferenceCleared) {
+                    ReferenceCleared rc = (ReferenceCleared)ref;
+                    rc.cleared();
+                }
+            } catch (Throwable t) {
+                t.printStackTrace();
             }
         }
     }

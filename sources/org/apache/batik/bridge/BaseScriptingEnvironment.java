@@ -399,6 +399,7 @@ public class BaseScriptingEnvironment {
                 }
                 return;
             } catch (InterpreterException e) {
+                System.err.println("InterpExcept: " + e);
                 handleInterpreterException(e);
                 return;
             } catch (SecurityException e) {

@@ -24,6 +24,7 @@ import java.util.Vector;
 import java.util.Map;
 import java.util.HashMap;
 
+import org.apache.batik.bridge.InterruptedBridgeException;
 import org.apache.batik.script.Interpreter;
 import org.apache.batik.script.InterpreterException;
 import org.apache.batik.script.Window;
@@ -234,7 +235,10 @@ public class RhinoInterpreter implements Interpreter {
                                              -1, -1);
             else
                 throw new InterpreterException(we.getWrappedException().getMessage(), -1, -1);
-        } catch (RuntimeException re) {
+        } catch (InterruptedBridgeException ibe) {
+            // This sometimes happens when script builds stuff.
+            throw ibe;
+        }  catch (RuntimeException re) {
             // other RuntimeExceptions
             throw new InterpreterException(re, re.getMessage(), -1, -1);
         } finally {

@@ -8,14 +8,14 @@
 
 package org.apache.batik.swing.svg;
 
-import java.awt.EventQueue;
 import java.io.InterruptedIOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.batik.bridge.DocumentLoader;
+import org.apache.batik.util.EventDispatcher;
+import org.apache.batik.util.EventDispatcher.Dispatcher;
 import org.w3c.dom.svg.SVGDocument;
 
 /**
@@ -47,6 +47,11 @@ public class SVGDocumentLoader extends Thread {
     protected List listeners = Collections.synchronizedList(new LinkedList());
 
     /**
+     * Boolean indicating if this thread has ever been interrupted.
+     */
+    protected boolean beenInterrupted;
+
+    /**
      * Creates a new SVGDocumentLoader.
      * @param u The URL of the document.
      * @param l The document loader to use
@@ -54,21 +59,51 @@ public class SVGDocumentLoader extends Thread {
     public SVGDocumentLoader(String u, DocumentLoader l) {
         url = u;
         loader = l;
+        beenInterrupted = false;
+    }
+
+    public boolean getBeenInterrupted() {
+        synchronized (this) { return beenInterrupted; }
     }
 
     /**
      * Runs this loader.
      */
     public void run() {
+        SVGDocumentLoaderEvent evt;
+        evt = new SVGDocumentLoaderEvent(this, null);
         try {
-            fireStartedEvent();
+            fireEvent(startedDispatcher, evt);
+            if (getBeenInterrupted()) {
+                fireEvent(cancelledDispatcher, evt);
+                return;
+            }
+
             SVGDocument svgDocument = (SVGDocument)loader.loadDocument(url);
-            fireCompletedEvent(svgDocument);
+
+            if (getBeenInterrupted()) {
+                fireEvent(cancelledDispatcher, evt);
+                return;
+            }
+
+            evt = new SVGDocumentLoaderEvent(this, svgDocument);
+            fireEvent(completedDispatcher, evt);
         } catch (InterruptedIOException e) {
-            fireCancelledEvent();
+            fireEvent(cancelledDispatcher, evt);
         } catch (Exception e) {
             exception = e;
-            fireFailedEvent();
+            fireEvent(failedDispatcher, evt);
+        } catch (Throwable t) {
+            t.printStackTrace();
+            exception = new Exception(t.getMessage());
+            fireEvent(failedDispatcher, evt);
+        }
+    }
+
+    public void interrupt() {
+        super.interrupt();
+        synchronized (this) {
+            beenInterrupted = true;
         }
     }
 
@@ -93,126 +128,39 @@ public class SVGDocumentLoader extends Thread {
         listeners.remove(l);
     }
 
-    /**
-     * Fires a SVGDocumentLoaderEvent.
-     */
-    protected void fireStartedEvent() throws InterruptedException {
-        final Object[] dll = listeners.toArray();
-
-        if (dll.length > 0) {
-            final SVGDocumentLoaderEvent ev =
-                new SVGDocumentLoaderEvent(this, null);
-
-            if (EventQueue.isDispatchThread()) {
-                for (int i = 0; i < dll.length; i++) {
-                    SVGDocumentLoaderListener dl =
-                        (SVGDocumentLoaderListener)dll[i];
-                    dl.documentLoadingStarted(ev);
-                }
-            } else {
-                try {
-                    EventQueue.invokeAndWait(new Runnable() {
-                            public void run() {
-                                for (int i = 0; i < dll.length; i++) {
-                                    SVGDocumentLoaderListener dl =
-                                        (SVGDocumentLoaderListener)dll[i];
-                                    dl.documentLoadingStarted(ev);
-                                }
-                            }
-                        });
-                } catch (InvocationTargetException e) {
-                }
-            }
-        }
+    public void fireEvent(Dispatcher dispatcher, Object event) {
+        EventDispatcher.fireEvent(dispatcher, listeners, event, true);
     }
 
-    /**
-     * Fires a SVGDocumentLoaderEvent.
-     */
-    protected void fireCompletedEvent(SVGDocument doc) {
-        final Object[] dll = listeners.toArray();
-
-        if (dll.length > 0) {
-            final SVGDocumentLoaderEvent ev =
-                new SVGDocumentLoaderEvent(this, doc);
-
-            if (EventQueue.isDispatchThread()) {
-                for (int i = 0; i < dll.length; i++) {
-                    SVGDocumentLoaderListener dl =
-                        (SVGDocumentLoaderListener)dll[i];
-                    dl.documentLoadingCompleted(ev);
-                }
-            } else {
-                EventQueue.invokeLater(new Runnable() {
-                    public void run() {
-                        for (int i = 0; i < dll.length; i++) {
-                            SVGDocumentLoaderListener dl =
-                                (SVGDocumentLoaderListener)dll[i];
-                            dl.documentLoadingCompleted(ev);
-                        }
-                    }
-                });
+    static Dispatcher startedDispatcher = new Dispatcher() {
+            public void dispatch(Object listener,
+                                 Object event) {
+                ((SVGDocumentLoaderListener)listener).documentLoadingStarted
+                    ((SVGDocumentLoaderEvent)event);
             }
-        }
-    }
-
-    /**
-     * Fires a SVGDocumentLoaderEvent.
-     */
-    protected void fireFailedEvent() {
-        final Object[] dll = listeners.toArray();
-
-        if (dll.length > 0) {
-            final SVGDocumentLoaderEvent ev =
-                new SVGDocumentLoaderEvent(this, null);
-
-            if (EventQueue.isDispatchThread()) {
-                for (int i = 0; i < dll.length; i++) {
-                    SVGDocumentLoaderListener dl =
-                        (SVGDocumentLoaderListener)dll[i];
-                    dl.documentLoadingFailed(ev);
-                }
-            } else {
-                EventQueue.invokeLater(new Runnable() {
-                    public void run() {
-                        for (int i = 0; i < dll.length; i++) {
-                            SVGDocumentLoaderListener dl =
-                                (SVGDocumentLoaderListener)dll[i];
-                            dl.documentLoadingFailed(ev);
-                        }
-                    }
-                });
+        };
+            
+            static Dispatcher completedDispatcher = new Dispatcher() {
+            public void dispatch(Object listener,
+                                 Object event) {
+                ((SVGDocumentLoaderListener)listener).documentLoadingCompleted
+                 ((SVGDocumentLoaderEvent)event);
             }
-        }
-    }
+        };
 
-    /**
-     * Fires a SVGDocumentLoaderEvent.
-     */
-    protected void fireCancelledEvent() {
-        final Object[] dll = listeners.toArray();
-
-        if (dll.length > 0) {
-            final SVGDocumentLoaderEvent ev =
-                new SVGDocumentLoaderEvent(this, null);
-
-            if (EventQueue.isDispatchThread()) {
-                for (int i = 0; i < dll.length; i++) {
-                    SVGDocumentLoaderListener dl =
-                        (SVGDocumentLoaderListener)dll[i];
-                    dl.documentLoadingCancelled(ev);
-                }
-            } else {
-                EventQueue.invokeLater(new Runnable() {
-                    public void run() {
-                        for (int i = 0; i < dll.length; i++) {
-                            SVGDocumentLoaderListener dl =
-                                (SVGDocumentLoaderListener)dll[i];
-                            dl.documentLoadingCancelled(ev);
-                        }
-                    }
-                });
+    static Dispatcher cancelledDispatcher = new Dispatcher() {
+            public void dispatch(Object listener,
+                                 Object event) {
+                ((SVGDocumentLoaderListener)listener).documentLoadingCancelled
+                 ((SVGDocumentLoaderEvent)event);
             }
-        }
-    }
+        };
+
+    static Dispatcher failedDispatcher = new Dispatcher() {
+            public void dispatch(Object listener,
+                                 Object event) {
+                ((SVGDocumentLoaderListener)listener).documentLoadingFailed
+                 ((SVGDocumentLoaderEvent)event);
+            }
+        };
 }

@@ -969,27 +969,30 @@ public class BridgeContext implements ErrorConstants, CSSContext {
             }
         }
 
-        EventTarget evtTarget = (EventTarget)document;
+        if (document != null) {
+            EventTarget evtTarget = (EventTarget)document;
 
-        evtTarget.removeEventListener("DOMAttrModified",
-                                      domAttrModifiedEventListener, 
-                                      true);
-        evtTarget.removeEventListener("DOMNodeInserted",
-                                      domNodeInsertedEventListener, 
-                                      true);
-        evtTarget.removeEventListener("DOMNodeRemoved",
-                                      domNodeRemovedEventListener, 
-                                      true);
-        evtTarget.removeEventListener("DOMCharacterDataModified",
-                                      domCharacterDataModifiedListener, 
-                                      true);
-
-        SVGOMDocument svgDocument = (SVGOMDocument)document;
-        CSSEngine cssEngine = svgDocument.getCSSEngine();
-        if (cssEngine != null) {
-            cssEngine.removeCSSEngineListener(cssPropertiesChangedListener);
-            cssEngine.dispose();
-            svgDocument.setCSSEngine(null);
+            evtTarget.removeEventListener("DOMAttrModified",
+                                          domAttrModifiedEventListener, 
+                                          true);
+            evtTarget.removeEventListener("DOMNodeInserted",
+                                          domNodeInsertedEventListener, 
+                                          true);
+            evtTarget.removeEventListener("DOMNodeRemoved",
+                                          domNodeRemovedEventListener, 
+                                          true);
+            evtTarget.removeEventListener("DOMCharacterDataModified",
+                                          domCharacterDataModifiedListener, 
+                                          true);
+            
+            SVGOMDocument svgDocument = (SVGOMDocument)document;
+            CSSEngine cssEngine = svgDocument.getCSSEngine();
+            if (cssEngine != null) {
+                cssEngine.removeCSSEngineListener
+                    (cssPropertiesChangedListener);
+                cssEngine.dispose();
+                svgDocument.setCSSEngine(null);
+            }
         }
         if (focusManager != null) {
             focusManager.dispose();
@@ -1091,6 +1094,8 @@ public class BridgeContext implements ErrorConstants, CSSContext {
             if (h != null) {
                 try {
                     h.handleDOMNodeInsertedEvent(me);
+                } catch (InterruptedBridgeException ibe) {
+                    /* do nothing */
                 } catch (Exception e) {
                     userAgent.displayError(e);
                 }
