@@ -608,9 +608,6 @@ public class SVGConverter {
 
         // Set AOI. ----------------------------------------------------------
         if (area != null) {
-            // Set height and width so that image doesn't get distorted.
-            map.put(ImageTranscoder.KEY_HEIGHT, new Float((float)area.getHeight()));
-            map.put(ImageTranscoder.KEY_WIDTH, new Float((float)area.getWidth()));
             map.put(ImageTranscoder.KEY_AOI, area);           
         }
 
