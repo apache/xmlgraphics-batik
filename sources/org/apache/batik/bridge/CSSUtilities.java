@@ -275,14 +275,14 @@ public abstract class CSSUtilities implements CSSConstants, ErrorConstants {
             return null;
         }
         Map hints = new HashMap();
-        switch(s.charAt(9)) {
-        case 'S': // optimizeSpeed
+        switch(s.charAt(8)) {
+        case 's': // optimizeSpeed
             hints.put(RenderingHints.KEY_RENDERING,
                       RenderingHints.VALUE_RENDER_SPEED);
             hints.put(RenderingHints.KEY_INTERPOLATION,
                       RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
             break;
-        case 'Q': // optimizeQuality
+        case 'q': // optimizeQuality
             hints.put(RenderingHints.KEY_RENDERING,
                       RenderingHints.VALUE_RENDER_QUALITY);
             hints.put(RenderingHints.KEY_INTERPOLATION,
