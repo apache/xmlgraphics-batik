@@ -104,7 +104,7 @@ public class ApplicationSecurityEnforcer {
     /**
      * Keeps track of the last SecurityManager installed
      */
-    protected SecurityManager lastSecurityManagerInstalled;
+    protected BatikSecurityManager lastSecurityManagerInstalled;
 
     /**
      * @param appClass class of the applications's main entry point
@@ -148,11 +148,13 @@ public class ApplicationSecurityEnforcer {
             // We want to install a SecurityManager.
             if (sm == null) {
                 installSecurityManager();
+                System.err.println("installed SecurityManager");
             }
         } else {
             if (sm != null) {
                 System.setSecurityManager(null);
                 lastSecurityManagerInstalled = null;
+                System.err.println("Removed SecurityManager");
             }
         }
     }
@@ -162,7 +164,7 @@ public class ApplicationSecurityEnforcer {
      */
     public void installSecurityManager(){
         Policy policy = Policy.getPolicy();
-        SecurityManager securityManager = new SecurityManager();
+        BatikSecurityManager securityManager = new BatikSecurityManager();
 
         // Specify app's security policy in the
         // system property. 
@@ -209,6 +211,8 @@ public class ApplicationSecurityEnforcer {
 
         // Forces re-loading of the security policy
         policy.refresh();
+
+        System.out.println("Enforcing secure script execution");
     }
 
     private void setJarBase(String expandedMainClassName){
