@@ -22,7 +22,6 @@
   <target name="svgviewer" depends="init">
     <java classpath="classes:lib/xerces.jar:resources"
           classname="${class-prefix}.apps.svgviewer.Main"
-	  args="samples/logoOffset.svg"
           fork="yes"/>
   </target>
 
