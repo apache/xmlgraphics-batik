@@ -39,6 +39,7 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
 
     static final String PROPERTY_LINE_SEPARATOR = "line.separator";
     static final String PROPERTY_LINE_SEPARATOR_DEFAULT = "\n";
+
     static {
         String  temp;
         try { 
@@ -191,40 +192,43 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
         short descent = font.getHheaTable().getDescender();
         int baseline = 0; // bit 0 of head.flags will indicate if this is true
 
-        // <!ELEMENT font-face (%descTitleMetadata;,font-face-src?,definition-src?) >
-        // <!ATTLIST font-face
-        //   %stdAttrs;
-        //   font-family CDATA #IMPLIED
-        //   font-style CDATA #IMPLIED
-        //   font-variant CDATA #IMPLIED
-        //   font-weight CDATA #IMPLIED
-        //   font-stretch CDATA #IMPLIED
-        //   font-size CDATA #IMPLIED
-        //   unicode-range CDATA #IMPLIED
-        //   units-per-em %Number; #IMPLIED
-        //   panose-1 CDATA #IMPLIED
-        //   stemv %Number; #IMPLIED
-        //   stemh %Number; #IMPLIED
-        //   slope %Number; #IMPLIED
-        //   cap-height %Number; #IMPLIED
-        //   x-height %Number; #IMPLIED
-        //   accent-height %Number; #IMPLIED
-        //   ascent %Number; #IMPLIED
-        //   descent %Number; #IMPLIED
-        //   widths CDATA #IMPLIED
-        //   bbox CDATA #IMPLIED
-        //   ideographic %Number; #IMPLIED
-        //   baseline %Number; #IMPLIED
-        //   centerline %Number; #IMPLIED
-        //   mathline %Number; #IMPLIED
-        //   hanging %Number; #IMPLIED
-        //   topline %Number; #IMPLIED
-        //   underline-position %Number; #IMPLIED
-        //   underline-thickness %Number; #IMPLIED
-        //   strikethrough-position %Number; #IMPLIED
-        //   strikethrough-thickness %Number; #IMPLIED
-        //   overline-position %Number; #IMPLIED
-        //   overline-thickness %Number; #IMPLIED >
+	// 	<!ELEMENT font-face (%descTitleMetadata;,font-face-src?,definition-src?) >
+	//           <!ATTLIST font-face 
+	//             %stdAttrs;
+	//             font-family CDATA #IMPLIED
+	//             font-style CDATA #IMPLIED
+	//             font-variant CDATA #IMPLIED
+	//             font-weight CDATA #IMPLIED
+	//             font-stretch CDATA #IMPLIED
+	//             font-size CDATA #IMPLIED
+	//             unicode-range CDATA #IMPLIED
+	//             units-per-em %Number; #IMPLIED
+	//             panose-1 CDATA #IMPLIED
+	//             stemv %Number; #IMPLIED
+	//             stemh %Number; #IMPLIED
+	//             slope %Number; #IMPLIED
+	//             cap-height %Number; #IMPLIED
+	//             x-height %Number; #IMPLIED
+	//             accent-height %Number; #IMPLIED
+	//             ascent %Number; #IMPLIED
+	//             descent %Number; #IMPLIED
+	//             widths CDATA #IMPLIED
+	//             bbox CDATA #IMPLIED
+	//             ideographic %Number; #IMPLIED
+	//             alphabetic %Number; #IMPLIED
+	//             mathematical %Number; #IMPLIED
+	//             hanging %Number; #IMPLIED
+	//             v-ideographic %Number; #IMPLIED
+	//             v-alphabetic %Number; #IMPLIED
+	//             v-mathematical %Number; #IMPLIED
+	//             v-hanging %Number; #IMPLIED
+	//             underline-position %Number; #IMPLIED
+	//             underline-thickness %Number; #IMPLIED
+	//             strikethrough-position %Number; #IMPLIED
+	//             strikethrough-thickness %Number; #IMPLIED
+	//             overline-position %Number; #IMPLIED
+	//             overline-thickness %Number; #IMPLIED >
+	
         sb.append(XML_OPEN_TAG_START).append(SVG_FONT_FACE_TAG).append(EOL)
             .append(XML_TAB).append(SVG_FONT_FAMILY_ATTRIBUTE).append(XML_EQUAL_QUOT).append(fontFamily).append(QUOT_EOL)
             // .append("  font-family=\"").append(fontFamily).append("\"\r\n")
@@ -236,7 +240,7 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
             // .append("  ascent=\"").append(ascent).append("\"\r\n")
             .append(XML_TAB).append(SVG_DESCENT_ATTRIBUTE).append(XML_EQUAL_QUOT).append(descent).append(QUOT_EOL)
             // .append("  descent=\"").append(descent).append("\"\r\n")
-            .append(XML_TAB).append(SVG_BASELINE_ATTRIBUTE).append(XML_EQUAL_QUOT).append(baseline).append(XML_CHAR_QUOT)
+            .append(XML_TAB).append(SVG_ALPHABETIC_ATTRIBUTE).append(XML_EQUAL_QUOT).append(baseline).append(XML_CHAR_QUOT)
             .append(XML_OPEN_TAG_END_NO_CHILDREN).append(EOL);
             //.append("  baseline=\"").append(baseline).append("\"/>\r\n");
 
