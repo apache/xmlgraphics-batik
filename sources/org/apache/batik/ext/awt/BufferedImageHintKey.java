@@ -8,6 +8,8 @@
 
 package org.apache.batik.ext.awt;
 
+import java.lang.ref.Reference;
+
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
@@ -23,6 +25,13 @@ final class BufferedImageHintKey extends RenderingHints.Key {
         super(1001);
     }
     public boolean isCompatibleValue(Object val) {
+        if (val == null)
+            return true;
+
+        if (!(val instanceof Reference))
+            return false;
+        Reference ref = (Reference)val;
+        val = ref.get();
         if (val == null)
             return true;
         if (val instanceof BufferedImage)

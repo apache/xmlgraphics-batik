@@ -92,7 +92,6 @@ public class TileRed extends AbstractRed implements TileGenerator {
 
         // org.apache.batik.test.gvt.ImageDisplay.showImage("Tile: ", tile);
         this.tiledRegion = tiledRegion;
-        this.tile        = tile;
         this.xStep       = xStep;
         this.yStep       = yStep;
         this.hints       = hints;
@@ -107,7 +106,6 @@ public class TileRed extends AbstractRed implements TileGenerator {
                 raster = Raster.createWritableRaster
                     (sm, new Point(tile.getMinX(), tile.getMinY()));
             }
-
         
         // Initialize our base class We set our bounds be we will
         // respond with data for any area we cover.  This is needed
@@ -120,9 +118,12 @@ public class TileRed extends AbstractRed implements TileGenerator {
 
         if (raster != null) {
             fillRasterFrom(raster, tile);
+            this.tile = null;  // don't need it (It's in the raster).
         }
-        else
+        else {
+            this.tile        = tile;
             tiles = TileCache.getTileMap(this);
+        }
     }
 
     public WritableRaster copyData(WritableRaster wr) {
@@ -165,6 +166,12 @@ public class TileRed extends AbstractRed implements TileGenerator {
         int tx = tileGridXOff+x*tileWidth;
         int ty = tileGridYOff+y*tileHeight;
         
+        if (raster!=null) {
+            // We have a Single raster that we translate where needed
+            // position.  So just offest appropriately.
+            return raster.createTranslatedChild(tx, ty);
+        }
+
         Point pt = new Point(tx, ty);
         WritableRaster wr = Raster.createWritableRaster(sm, pt);
         fillRasterFrom(wr, tile);

@@ -11,9 +11,6 @@ package org.apache.batik.gvt.filter;
 import org.apache.batik.ext.awt.image.GraphicsUtil;
 import org.apache.batik.ext.awt.image.rendered.AbstractTiledRed;
 import org.apache.batik.ext.awt.image.rendered.CachableRed;
-import org.apache.batik.ext.awt.image.rendered.TileGenerator;
-import org.apache.batik.ext.awt.image.rendered.TileStore;
-import org.apache.batik.ext.awt.image.rendered.TileCache;
 
 import java.awt.AlphaComposite;
 import java.awt.Rectangle;
@@ -38,8 +35,7 @@ import org.apache.batik.gvt.GraphicsNodeRenderContext;
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
-public class GraphicsNodeRed8Bit extends AbstractTiledRed 
-    implements TileGenerator {
+public class GraphicsNodeRed8Bit extends AbstractTiledRed {
 
     /**
      * GraphicsNode this image can render
