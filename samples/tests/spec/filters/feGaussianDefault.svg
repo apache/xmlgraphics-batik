@@ -1,0 +1,42 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN"
+"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+
+<!-- ====================================================================== -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.     -->
+<!--                                                                        -->
+<!-- This software is published under the terms of the Apache Software      -->
+<!-- License version 1.1, a copy of which has been included with this       -->
+<!-- distribution in the LICENSE file.                                      -->
+<!-- ====================================================================== -->
+
+<!-- ====================================================================== -->
+<!-- check updates on gradients, filter, mask, and clip regarding to        -->
+<!-- geometry updates                                                       -->
+<!--                                                                        -->
+<!-- @author tkormann@ilog.fr                                               -->
+<!-- @version $Id$ -->
+<!-- ====================================================================== -->
+
+<svg xmlns="http://www.w3.org/2000/svg" 
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     id="body" width="450" height="500" viewBox="0 0 450 500">
+
+<defs>
+<filter id="filterObjectBoundingBox" filterUnits="objectBoundingBox"
+        x="0" y="0" width="1" height="1">
+  <feGaussianBlur/>
+</filter>
+
+</defs>
+
+
+<g id="test-content">
+
+<rect onclick="move(evt)" x="50" y="110" width="90" height="85" style="fill:crimson; filter:url(#filterObjectBoundingBox)"/>
+
+</g>
+
+
+
+</svg>
