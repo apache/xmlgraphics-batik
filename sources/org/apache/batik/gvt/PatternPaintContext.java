@@ -162,6 +162,14 @@ public class PatternPaintContext implements PaintContext {
         GraphicsUtil.coerceData(wr, tiled.getColorModel(), 
                                 rasterCM.isAlphaPremultiplied());
 
-        return wr;
+	// On Mac OS X it always wants the raster at 0,0 if the
+	// requested width and height matches raster we can just
+	// return it.  Otherwise we create a translated child that
+	// lives at 0,0.
+	if ((raster.getWidth()  == width) &&
+	    (raster.getHeight() == height))
+	    return raster;
+
+	return wr.createTranslatedChild(0,0);
     }
 }
