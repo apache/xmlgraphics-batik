@@ -262,7 +262,7 @@ public class GraphicContext implements Cloneable{
      * @see #setClip(Shape)
      */
     public void clipRect(int x, int y, int width, int height){
-        System.out.println("clipRect(" + x + "," + y + "," + width + "," + height + ")");
+        // System.out.println("clipRect(" + x + "," + y + "," + width + "," + height + ")");
         // Exception e = new Exception("");
         // e.printStackTrace();
         clip(new Rectangle(x, y, width, height));
