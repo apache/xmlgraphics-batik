@@ -161,12 +161,6 @@
         <p>While it is hard to track projects and products which are using Batik, here are a few
         ones which are known:</p>
         <ul>
-        <li><link href="http://luxor-xul.sourceforge.net/index.html">Luxor XUL</link> is a free, open-source XML User Interface Language (XUL) toolkit in Java released under the GNU
-GPL that supports hand-picked Mozilla XUL goodies and
-also includes a ultra-lightweight, multi-threaded web
-server, a portal engine, a scripting engine, a
-template engine and much more. Gerard Bauer, the Luxor project lead, has written an extensive
-<link href="http://luxor-xul.sourceforge.net/talk/jug-nov-2002/slides.html">SVG presentation</link>.</li>
         <li><link href="http://www.bitflash.com/products/brilliance.asp">BitFlash Brilliance</link> delivers a robust 
         set of graphic-design and source-code editing tools for fast and flexible Mobile
          SVG development. It uses Batik to display SVG Images.</li>
