@@ -32,6 +32,7 @@ public interface XTRConstants extends XMLReflectConstants{
     /////////////////////////////////////////////////////////////////////////
     // XTR attributes
     /////////////////////////////////////////////////////////////////////////
+    String XTR_CLASS_ATTRIBUTE = "class";
     String XTR_DATE_ATTRIBUTE = "date";
     String XTR_KEY_ATTRIBUTE = "key";
     String XTR_ERROR_CODE_ATTRIBUTE = "errorCode";
