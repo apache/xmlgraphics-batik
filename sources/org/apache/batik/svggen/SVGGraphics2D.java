@@ -387,7 +387,7 @@ public class SVGGraphics2D extends AbstractGraphics2D
         throws SVGGraphics2DIOException {
         try {
             //
-            // Enforce that the default ans xlink namespace
+            // Enforce that the default and xlink namespace
             // declarations appear on the root element
             //
             svgRoot.setAttributeNS(XMLNS_NAMESPACE_URI,
