@@ -19,7 +19,6 @@ import org.apache.batik.dom.svg.SVGDocumentLoader;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
-import org.apache.batik.script.ConcreteInterpreterPool;
 import org.apache.batik.script.InterpreterPool;
 import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
@@ -120,6 +119,11 @@ public class BridgeContext implements SVGConstants {
     protected BridgeContext() {}
 
     /**
+     * By default we share a unique instance of InterpreterPool.
+     */
+    private static InterpreterPool sharedPool = new InterpreterPool();
+
+    /**
      * Constructs a new bridge context.
      * @param userAgent the user agent
      * @param rc the graphics node renderer context
@@ -128,7 +132,7 @@ public class BridgeContext implements SVGConstants {
                          GraphicsNodeRenderContext rc) {
         this(userAgent,
              rc,
-             new ConcreteInterpreterPool(),
+             sharedPool,
              new BufferedDocumentLoader(
                  new SVGDocumentLoader(userAgent.getXMLParserClassName())));
     }
