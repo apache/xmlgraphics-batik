@@ -108,7 +108,7 @@
         </p>
         
         <p>
-        In addition, Batik contains low <link href="architecture.html#lowLevelComponents">level modules</link> such as
+        In addition, Batik contains <link href="architecture.html#lowLevelComponents">low level modules</link> such as
         an object oriented Graphic Vector Toolkit (<link href="glossary.html#GVT">GVT</link>),
         a set of low level parsers(<link href="glossary.html#SVGParser">SVG Parser</link>) specific to the SVG syntax and
         a set of <link href="extendingBatik.html">extensions</link> to the Java 2D API (such as sophisticated fill types and 
@@ -127,7 +127,7 @@
         <link href="svgpp.html">SVG pretty printer</link> (in the 
         <code>org.apache.batik.apps.svgpp package</code>).</p>
         <p>
-        The <strong>SVG browser</strong> <link href="svgviewer.html">(here)</link> can display SVG documents and lets the user zoom, pan 
+        The <strong>Squiggle SVG browser</strong> <link href="svgviewer.html">(here)</link> can display SVG documents and lets the user zoom, pan 
         and rotate any SVG document, view the SVG source, link between SVG 
         documents, view a tree representation of the SVG DOM and more. One
         important component of the SVG viewer is the <code>org.apache.batik.swing.JSVGCanvas</code>  
@@ -178,7 +178,7 @@
         used to serve SVG images to client machines that do not have SVG support).
         </p>
         <p>
-        The <link href="svgviewer.html">SVG Browser</link> and the
+        The <link href="svgviewer.html">Squiggle SVG Browser</link> and the
         <link href="svgrasterizer.html">rasterizer</link> are examples
         of some of the types of applications Batik allows. Batik's
         <link href="architecture.html">architecture</link> allows the
@@ -197,7 +197,7 @@
     <question>How can I see a demo?</question>
     <answer>
         <p>
-        You can see an online demonstration of the Batik SVG browser
+        You can see an online demonstration of the Squiggle SVG browser
         on the <link href="batikDemo.html">demo page</link>. Alternatively,
         you can <link href="dist">download</link>
         Batik or see 
@@ -310,8 +310,9 @@
         <p>The SVG implementation is not complete <link href="status.html">(status)</link>, and there is more work to do to 
         achieve a fully functional viewer.</p>
         <p>Batik 1.1 supports all the <link href="status.html#beSuiteStatus">static SVG features</link>, linking and a limited
-        support for <link href="scripting.html">scripting</link>. Design work has 
-        started on <link href="status.html#DynamicTest">dynamic features</link> (scripting and SMIL animation) support.
+        support for <link href="scripting.html">scripting</link>. Work has 
+        started on <link href="status.html#DynamicTest">dynamic features</link>. Scripting support with the 1.5 beta releases,
+        and declarative animation (known as SMIL animation) will be supported in the 2.0 release.
         </p>
         <p>
         The type of applications (e.g., transcoding applications) that can or will
@@ -623,7 +624,7 @@
     What is happening?
     </question>
     <answer>
-    <p>The Batik demo (see <code>http://xml.apache.org/batik/batikDemo.html</code>) uses Java Web Start. Java Web Start (under the Applications/Utilities
+    <p>The Batik <link href="http://xml.apache.org/batik/batikDemo.html">demo</link> uses Java Web Start. Java Web Start (under the Applications/Utilities
     folder), lets you start a Java application from a web browser. You can see the debug
     traces by enabling the Java console for Java Web Start. If you do, you will see that
     there is a <code>java.lang.NoSuchMethodError</code> execption thrown.</p>

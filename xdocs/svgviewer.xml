@@ -16,7 +16,7 @@
 
 <document>
     <header>
-        <title>Batik - SVG Browser</title>
+        <title>Squiggle - SVG Browser</title>
         <subtitle>A cross platform SVG Browser</subtitle>
         <authors>
             <person name="Vincent Hardy" email="vincent.hardy@eng.sun.com"/>
@@ -25,9 +25,9 @@
 
     <body>
         <s1 title="Introduction">
-        <!-- <figure src="images/viewerBanner.jpg" alt="Batik Browser"/> -->
+        <!-- <figure src="images/viewerBanner.jpg" alt="Squiggle SVG Browser"/> -->
         <p>
-        This page describes the main features of the SVG Browser that comes with Batik.
+        This page describes the main features of the Squiggle SVG Browser that comes with Batik.
         It discusses the following:</p>
         <ul>
             <li><link href="#downloading">Downloading and installing the browser</link></li>
@@ -35,7 +35,7 @@
             <li><link href="#viewing">Viewing SVG documents</link></li>
             <li><link href="#exportAndPrint">Printing and Converting SVG files</link></li>
             <li><link href="#inspectingSVGSourceContent">Inspecting the SVG source</link></li>
-            <li><link href="#configuring">Configuring the SVG Browser</link></li>
+            <li><link href="#configuring">Configuring Squiggle</link></li>
             <li><link href="#zooming">Navigating SVG documents (zooming, panning, rotating, transform, thumbnail)</link></li>
         </ul>
 
@@ -113,7 +113,7 @@
                 limited because batch files take at most 9 parameters.</p>
             </s2>
 
-            <s2 title="SVG browser screen shot">
+            <s2 title="Squiggle screen shot">
                 <p>The following image shows the result of starting the browser, in the 
                 <link href="install.html#distributions">binary distribution</link> or 
                 <link href="install.html#distributions">source distribution</link>, 
@@ -137,12 +137,12 @@
             <anchor id="localFile" />
             <s2 title="Opening a local SVG file">
 
-            <p>In situations where you want to open SVG files locally on the machine where you are running the
-            Batik SVG browser, you can use <strong>"File-&gt;Open File"</strong> menu item to open that file, or use
+            <p>In situations where you want to open SVG files locally on the machine where you are running Squiggle,
+            you can use <strong>"File-&gt;Open File"</strong> menu item to open that file, or use
             the <strong>"Ctrl-F"</strong> key accelerator. Doing so brings up a file choser that lets you select the file
             you want to view.</p>
 
-            <figure src="images/svgviewerFileOpen.gif" alt="File Open in SVG Browser"/>
+            <figure src="images/svgviewerFileOpen.gif" alt="File Open in Squiggle"/>
 
             </s2>
 
@@ -150,7 +150,7 @@
             <s2 title="Opening an SVG file from the Web">
 
             <p>There are many situations where the SVG content you want to view is not local to the machine
-            where the Batik SVG browser is running. In that case, you can use the <strong>"File-&gt;Open Location"</strong> menu item, or use
+            where Squiggle is running. In that case, you can use the <strong>"File-&gt;Open Location"</strong> menu item, or use
             the "<strong>Ctrl-A"</strong> key accelerator to open that page. Doing so brings up a dialog box where you 
             can type in the URL for the file you want to view.</p>
 
@@ -162,7 +162,7 @@
             <s2 title="Using the location bar text field to view an SVG file">
 
             <p>When you know the URL of the document you want to view, you can enter it directly in 
-            the location bar text field at the top of the Batik SVG browser, the same way you can enter a
+            the location bar text field at the top of Squiggle, the same way you can enter a
             URL in an HTML browser</p>
 
             <figure src="images/svgviewerLocationBar.gif" alt="Location Bar in SVG Browser"/>
@@ -242,7 +242,7 @@
         </s1>
         
         <anchor id="configuring"/>
-        <s1 title="Configuring the SVG Browser">
+        <s1 title="Configuring Squiggle">
 
         <p>The "<strong>Edit->Preferences</strong>" menu item or <strong>Edit-G</strong>brings up the dialog box shown in the following
         figure.</p>
