@@ -133,63 +133,63 @@
     </style>
     <g>
       <g class="testC1" transform="translate(20,20)">
-        <text x="-5" y="0" class="testC2">Color Constants
+        <text xml:space="preserve" x="-5" y="0" class="testC2">Color Constants
         </text>
-        <text x="10" y="3" class="testC3" transform="translate(0,20)">black
+        <text xml:space="preserve" x="10" y="3" class="testC3" transform="translate(0,20)">black
         </text>
         <rect x="-5" y="-5" transform="translate(0,20)" width="10" class="testC4" height="10" />
         <rect x="-5" y="-5" transform="translate(0,20)" width="10" class="testC5" height="10" />
-        <text x="10" y="3" class="testC6" transform="translate(0,40)">blue
+        <text xml:space="preserve" x="10" y="3" class="testC6" transform="translate(0,40)">blue
         </text>
         <rect x="-5" y="-5" transform="translate(0,40)" width="10" class="testC7" height="10" />
         <rect x="-5" y="-5" transform="translate(0,40)" width="10" class="testC8" height="10" />
-        <text x="10" y="3" class="testC9" transform="translate(0,60)">cyan
+        <text xml:space="preserve" x="10" y="3" class="testC9" transform="translate(0,60)">cyan
         </text>
         <rect x="-5" y="-5" transform="translate(0,60)" width="10" class="testC10" height="10" />
         <rect x="-5" y="-5" transform="translate(0,60)" width="10" class="testC11" height="10" />
-        <text x="10" y="3" class="testC12" transform="translate(0,80)">darkGray
+        <text xml:space="preserve" x="10" y="3" class="testC12" transform="translate(0,80)">darkGray
         </text>
         <rect x="-5" y="-5" transform="translate(0,80)" width="10" class="testC13" height="10" />
         <rect x="-5" y="-5" transform="translate(0,80)" width="10" class="testC14" height="10" />
-        <text x="10" y="3" class="testC15" transform="translate(0,100)">gray
+        <text xml:space="preserve" x="10" y="3" class="testC15" transform="translate(0,100)">gray
         </text>
         <rect x="-5" y="-5" transform="translate(0,100)" width="10" class="testC16" height="10" />
         <rect x="-5" y="-5" transform="translate(0,100)" width="10" class="testC17" height="10" />
-        <text x="10" y="3" class="testC18" transform="translate(0,120)">green
+        <text xml:space="preserve" x="10" y="3" class="testC18" transform="translate(0,120)">green
         </text>
         <rect x="-5" y="-5" transform="translate(0,120)" width="10" class="testC19" height="10" />
         <rect x="-5" y="-5" transform="translate(0,120)" width="10" class="testC20" height="10" />
-        <text x="10" y="3" class="testC21" transform="translate(0,140)">lightGray
+        <text xml:space="preserve" x="10" y="3" class="testC21" transform="translate(0,140)">lightGray
         </text>
         <rect x="-5" y="-5" transform="translate(0,140)" width="10" class="testC22" height="10" />
         <rect x="-5" y="-5" transform="translate(0,140)" width="10" class="testC23" height="10" />
-        <text x="10" y="3" class="testC24" transform="translate(0,160)">magenta
+        <text xml:space="preserve" x="10" y="3" class="testC24" transform="translate(0,160)">magenta
         </text>
         <rect x="-5" y="-5" transform="translate(0,160)" width="10" class="testC25" height="10" />
         <rect x="-5" y="-5" transform="translate(0,160)" width="10" class="testC26" height="10" />
-        <text x="10" y="3" class="testC27" transform="translate(0,180)">orange
+        <text xml:space="preserve" x="10" y="3" class="testC27" transform="translate(0,180)">orange
         </text>
         <rect x="-5" y="-5" transform="translate(0,180)" width="10" class="testC28" height="10" />
         <rect x="-5" y="-5" transform="translate(0,180)" width="10" class="testC29" height="10" />
-        <text x="10" y="3" class="testC30" transform="translate(0,200)">pink
+        <text xml:space="preserve" x="10" y="3" class="testC30" transform="translate(0,200)">pink
         </text>
         <rect x="-5" y="-5" transform="translate(0,200)" width="10" class="testC31" height="10" />
         <rect x="-5" y="-5" transform="translate(0,200)" width="10" class="testC32" height="10" />
-        <text x="10" y="3" class="testC33" transform="translate(0,220)">red
+        <text xml:space="preserve" x="10" y="3" class="testC33" transform="translate(0,220)">red
         </text>
         <rect x="-5" y="-5" transform="translate(0,220)" width="10" class="testC34" height="10" />
         <rect x="-5" y="-5" transform="translate(0,220)" width="10" class="testC35" height="10" />
-        <text x="10" y="3" class="testC36" transform="translate(0,240)">white
+        <text xml:space="preserve" x="10" y="3" class="testC36" transform="translate(0,240)">white
         </text>
         <rect x="-5" y="-5" transform="translate(0,240)" width="10" class="testC37" height="10" />
         <rect x="-5" y="-5" transform="translate(0,240)" width="10" class="testC38" height="10" />
-        <text x="10" y="3" class="testC39" transform="translate(0,260)">yellow
+        <text xml:space="preserve" x="10" y="3" class="testC39" transform="translate(0,260)">yellow
         </text>
         <rect x="-5" y="-5" transform="translate(0,260)" width="10" class="testC40" height="10" />
         <rect x="-5" y="-5" transform="translate(0,260)" width="10" class="testC41" height="10" />
       </g>
       <g class="testC42" transform="translate(150,20)">
-        <text x="0" y="0" class="testC43">Various opacities
+        <text xml:space="preserve" x="0" y="0" class="testC43">Various opacities
         </text>
         <rect x="0" y="0" transform="translate(0,10)" width="40" class="testC44" height="260" />
       </g>
@@ -197,136 +197,136 @@
         <rect width="40" x="0" height="13" y="0" class="testC46" />
       </g>
       <g class="testC47" transform="translate(150,30)">
-        <text x="50" y="6" class="testC48">12
+        <text xml:space="preserve" x="50" y="6" class="testC48">12
         </text>
       </g>
       <g class="testC49" transform="translate(150,43)">
         <rect width="40" x="0" height="13" y="0" class="testC50" />
       </g>
       <g class="testC51" transform="translate(150,43)">
-        <text x="50" y="6" class="testC52">25
+        <text xml:space="preserve" x="50" y="6" class="testC52">25
         </text>
       </g>
       <g class="testC53" transform="translate(150,56)">
         <rect width="40" x="0" height="13" y="0" class="testC54" />
       </g>
       <g class="testC55" transform="translate(150,56)">
-        <text x="50" y="6" class="testC56">38
+        <text xml:space="preserve" x="50" y="6" class="testC56">38
         </text>
       </g>
       <g class="testC57" transform="translate(150,69)">
         <rect width="40" x="0" height="13" y="0" class="testC58" />
       </g>
       <g class="testC59" transform="translate(150,69)">
-        <text x="50" y="6" class="testC60">51
+        <text xml:space="preserve" x="50" y="6" class="testC60">51
         </text>
       </g>
       <g class="testC61" transform="translate(150,82)">
         <rect width="40" x="0" height="13" y="0" class="testC62" />
       </g>
       <g class="testC63" transform="translate(150,82)">
-        <text x="50" y="6" class="testC64">63
+        <text xml:space="preserve" x="50" y="6" class="testC64">63
         </text>
       </g>
       <g class="testC65" transform="translate(150,95)">
         <rect width="40" x="0" height="13" y="0" class="testC66" />
       </g>
       <g class="testC67" transform="translate(150,95)">
-        <text x="50" y="6" class="testC68">76
+        <text xml:space="preserve" x="50" y="6" class="testC68">76
         </text>
       </g>
       <g class="testC69" transform="translate(150,108)">
         <rect width="40" x="0" height="13" y="0" class="testC70" />
       </g>
       <g class="testC71" transform="translate(150,108)">
-        <text x="50" y="6" class="testC72">89
+        <text xml:space="preserve" x="50" y="6" class="testC72">89
         </text>
       </g>
       <g class="testC73" transform="translate(150,121)">
         <rect width="40" x="0" height="13" y="0" class="testC74" />
       </g>
       <g class="testC75" transform="translate(150,121)">
-        <text x="50" y="6" class="testC76">102
+        <text xml:space="preserve" x="50" y="6" class="testC76">102
         </text>
       </g>
       <g class="testC77" transform="translate(150,134)">
         <rect width="40" x="0" height="13" y="0" class="testC78" />
       </g>
       <g class="testC79" transform="translate(150,134)">
-        <text x="50" y="6" class="testC80">114
+        <text xml:space="preserve" x="50" y="6" class="testC80">114
         </text>
       </g>
       <g class="testC81" transform="translate(150,147)">
         <rect width="40" x="0" height="13" y="0" class="testC82" />
       </g>
       <g class="testC83" transform="translate(150,147)">
-        <text x="50" y="6" class="testC84">127
+        <text xml:space="preserve" x="50" y="6" class="testC84">127
         </text>
       </g>
       <g class="testC85" transform="translate(150,160)">
         <rect width="40" x="0" height="13" y="0" class="testC86" />
       </g>
       <g class="testC87" transform="translate(150,160)">
-        <text x="50" y="6" class="testC88">140
+        <text xml:space="preserve" x="50" y="6" class="testC88">140
         </text>
       </g>
       <g class="testC89" transform="translate(150,173)">
         <rect width="40" x="0" height="13" y="0" class="testC90" />
       </g>
       <g class="testC91" transform="translate(150,173)">
-        <text x="50" y="6" class="testC92">153
+        <text xml:space="preserve" x="50" y="6" class="testC92">153
         </text>
       </g>
       <g class="testC93" transform="translate(150,186)">
         <rect width="40" x="0" height="13" y="0" class="testC94" />
       </g>
       <g class="testC95" transform="translate(150,186)">
-        <text x="50" y="6" class="testC96">165
+        <text xml:space="preserve" x="50" y="6" class="testC96">165
         </text>
       </g>
       <g class="testC97" transform="translate(150,199)">
         <rect width="40" x="0" height="13" y="0" class="testC98" />
       </g>
       <g class="testC99" transform="translate(150,199)">
-        <text x="50" y="6" class="testC100">178
+        <text xml:space="preserve" x="50" y="6" class="testC100">178
         </text>
       </g>
       <g class="testC101" transform="translate(150,212)">
         <rect width="40" x="0" height="13" y="0" class="testC102" />
       </g>
       <g class="testC103" transform="translate(150,212)">
-        <text x="50" y="6" class="testC104">191
+        <text xml:space="preserve" x="50" y="6" class="testC104">191
         </text>
       </g>
       <g class="testC105" transform="translate(150,225)">
         <rect width="40" x="0" height="13" y="0" class="testC106" />
       </g>
       <g class="testC107" transform="translate(150,225)">
-        <text x="50" y="6" class="testC108">204
+        <text xml:space="preserve" x="50" y="6" class="testC108">204
         </text>
       </g>
       <g class="testC109" transform="translate(150,238)">
         <rect width="40" x="0" height="13" y="0" class="testC110" />
       </g>
       <g class="testC111" transform="translate(150,238)">
-        <text x="50" y="6" class="testC112">216
+        <text xml:space="preserve" x="50" y="6" class="testC112">216
         </text>
       </g>
       <g class="testC113" transform="translate(150,251)">
         <rect width="40" x="0" height="13" y="0" class="testC114" />
       </g>
       <g class="testC115" transform="translate(150,251)">
-        <text x="50" y="6" class="testC116">229
+        <text xml:space="preserve" x="50" y="6" class="testC116">229
         </text>
       </g>
       <g class="testC117" transform="translate(150,264)">
         <rect width="40" x="0" height="13" y="0" class="testC118" />
       </g>
       <g class="testC119" transform="translate(150,264)">
-        <text x="50" y="6" class="testC120">242
+        <text xml:space="preserve" x="50" y="6" class="testC120">242
         </text>
         <rect x="0" y="0" transform="translate(0,13)" width="40" class="testC121" height="13" />
-        <text x="50" y="6" class="testC122" transform="translate(0,13)">255
+        <text xml:space="preserve" x="50" y="6" class="testC122" transform="translate(0,13)">255
         </text>
       </g>
     </g>

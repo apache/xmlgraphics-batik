@@ -6,32 +6,32 @@
   <defs id="genericDefs" />
   <g>
     <g text-rendering="optimizeLegibility" shape-rendering="geometricPrecision">
-      <text x="10" y="20" stroke="none">Rectangle
+      <text xml:space="preserve" x="10" y="20" stroke="none">Rectangle
       </text>
       <line y2="38" fill="none" x1="110" x2="110" y1="30" />
       <line y2="30" fill="none" x1="150" x2="155" y1="30" />
       <rect fill="none" width="5" x="170" height="8" y="30" />
-      <text x="10" y="20" transform="translate(0,35)" stroke="none">RoundRectangle2D
+      <text xml:space="preserve" x="10" y="20" transform="translate(0,35)" stroke="none">RoundRectangle2D
       </text>
       <line transform="translate(0,35)" fill="none" x1="110" x2="110" y1="30" y2="38" />
       <line transform="translate(0,35)" fill="none" x1="150" x2="155" y1="30" y2="30" />
       <rect x="170" y="30" transform="translate(0,35)" fill="none" width="5" rx="1" ry="1" height="8" />
-      <text x="10" y="20" transform="translate(0,70)" stroke="none">RoundRectangle2D, negative radius
+      <text xml:space="preserve" x="10" y="20" transform="translate(0,70)" stroke="none">RoundRectangle2D, negative radius
       </text>
       <line transform="translate(0,70)" fill="none" x1="110" x2="110" y1="30" y2="38" />
       <line transform="translate(0,70)" fill="none" x1="150" x2="155" y1="30" y2="30" />
       <rect x="170" y="30" transform="translate(0,70)" fill="none" width="5" rx="1" ry="1" height="8" />
-      <text x="10" y="20" transform="translate(0,105)" stroke="none">Circle
+      <text xml:space="preserve" x="10" y="20" transform="translate(0,105)" stroke="none">Circle
       </text>
       <circle fill="none" r="0" cx="30" transform="translate(0,105)" cy="30" />
       <circle fill="none" r="2.5" cx="52.5" transform="translate(0,105)" cy="32.5" />
-      <text x="10" y="20" transform="translate(0,140)" stroke="none">Ellipse
+      <text xml:space="preserve" x="10" y="20" transform="translate(0,140)" stroke="none">Ellipse
       </text>
       <circle fill="none" r="0" cx="90" transform="translate(0,140)" cy="30" />
       <line transform="translate(0,140)" fill="none" x1="110" x2="110" y1="30" y2="38" />
       <line transform="translate(0,140)" fill="none" x1="150" x2="155" y1="30" y2="30" />
       <ellipse transform="translate(0,140)" fill="none" rx="2.5" cx="172.5" ry="4" cy="34" />
-      <text x="10" y="20" transform="translate(0,175)" stroke="none">fill3Drect
+      <text xml:space="preserve" x="10" y="20" transform="translate(0,175)" stroke="none">fill3Drect
       </text>
       <line transform="translate(0,175)" fill="white" x1="30" x2="31" y1="30" y2="30" stroke="none" />
       <rect x="50" y="30" transform="translate(0,175)" fill="white" width="1" height="8" stroke="none" />

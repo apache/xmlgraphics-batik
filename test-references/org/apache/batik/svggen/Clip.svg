@@ -27,9 +27,9 @@
 MAgEwTOk/5ZNC3kKzlYgw/2sdCZWE486ESxYsGDBgiVYsGDBggVLsGDBggULlmDB
 ggUL1vZu+7JaFixYsGDBEixYsGDBgiVYsGDBggVLsGDBggULlr57aAcDZaydo60A
 AAAASUVORK5CYII=" xlink:type="simple" xlink:actuate="onRequest" height="50" preserveAspectRatio="xMidYMid meet" xlink:show="replace" />
-      <text x="110" y="25" stroke="none">Clip set to device bounds
+      <text xml:space="preserve" x="110" y="25" stroke="none">Clip set to device bounds
       </text>
-      <text x="110" y="25" transform="translate(0,70)" stroke="none">Clip set to upper right quarter
+      <text xml:space="preserve" x="110" y="25" transform="translate(0,70)" stroke="none">Clip set to upper right quarter
       </text>
       <image xmlns:xlink="http://www.w3.org/1999/xlink" transform="translate(0,70)" width="100" xlink:show="replace" xlink:type="simple" clip-path="url(#clipPath2)" preserveAspectRatio="xMidYMid meet" height="50" x="0" y="0" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAIAAAAlV+npAAAAYklEQVR42u3ZwQkA
 MAgEwTOk/5ZNC3kKzlYgw/2sdCZWE486ESxYsGDBgiVYsGDBggVLsGDBggULlmDB
@@ -37,9 +37,9 @@ ggUL1vZu+7JaFixYsGDBEixYsGDBgiVYsGDBggVLsGDBggULlr57aAcDZaydo60A
 AAAASUVORK5CYII=" xlink:actuate="onRequest" />
     </g>
     <g text-rendering="optimizeLegibility" shape-rendering="geometricPrecision" transform="translate(0,140)">
-      <text x="110" y="15" stroke="none">Clip set to upper right quarter
+      <text xml:space="preserve" x="110" y="15" stroke="none">Clip set to upper right quarter
       </text>
-      <text x="110" y="30" stroke="none">after .5 scale
+      <text xml:space="preserve" x="110" y="30" stroke="none">after .5 scale
       </text>
       <image xmlns:xlink="http://www.w3.org/1999/xlink" transform="scale(0.5,0.5)" width="100" xlink:show="replace" xlink:type="simple" clip-path="url(#clipPath2)" preserveAspectRatio="xMidYMid meet" height="50" x="0" y="0" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAIAAAAlV+npAAAAYklEQVR42u3ZwQkA
 MAgEwTOk/5ZNC3kKzlYgw/2sdCZWE486ESxYsGDBgiVYsGDBggVLsGDBggULlmDB
@@ -47,7 +47,7 @@ ggUL1vZu+7JaFixYsGDBEixYsGDBgiVYsGDBggVLsGDBggULlr57aAcDZaydo60A
 AAAASUVORK5CYII=" xlink:actuate="onRequest" />
     </g>
     <g text-rendering="optimizeLegibility" shape-rendering="geometricPrecision" transform="translate(0,210)">
-      <text x="110" y="25" stroke="none">Non-Rectagular clip
+      <text xml:space="preserve" x="110" y="25" stroke="none">Non-Rectagular clip
       </text>
       <image x="0" y="0" clip-path="url(#clipPath3)" width="100" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAIAAAAlV+npAAAAYklEQVR42u3ZwQkA
 MAgEwTOk/5ZNC3kKzlYgw/2sdCZWE486ESxYsGDBgiVYsGDBggVLsGDBggULlmDB
@@ -55,9 +55,9 @@ ggUL1vZu+7JaFixYsGDBEixYsGDBgiVYsGDBggVLsGDBggULlr57aAcDZaydo60A
 AAAASUVORK5CYII=" xlink:type="simple" xlink:actuate="onRequest" height="50" preserveAspectRatio="xMidYMid meet" xlink:show="replace" />
     </g>
     <g text-rendering="optimizeLegibility" shape-rendering="geometricPrecision" transform="translate(0,280)">
-      <text x="110" y="15" stroke="none">Non-Rectagular clip after
+      <text xml:space="preserve" x="110" y="15" stroke="none">Non-Rectagular clip after
       </text>
-      <text x="110" y="30" stroke="none">.5 scale
+      <text xml:space="preserve" x="110" y="30" stroke="none">.5 scale
       </text>
       <image xmlns:xlink="http://www.w3.org/1999/xlink" transform="scale(0.5,0.5)" width="100" xlink:show="replace" xlink:type="simple" clip-path="url(#clipPath4)" preserveAspectRatio="xMidYMid meet" height="50" x="0" y="0" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAIAAAAlV+npAAAAYklEQVR42u3ZwQkA
 MAgEwTOk/5ZNC3kKzlYgw/2sdCZWE486ESxYsGDBgiVYsGDBggVLsGDBggULlmDB
@@ -65,9 +65,9 @@ ggUL1vZu+7JaFixYsGDBEixYsGDBgiVYsGDBggVLsGDBggULlr57aAcDZaydo60A
 AAAASUVORK5CYII=" xlink:actuate="onRequest" />
     </g>
     <g text-rendering="optimizeLegibility" shape-rendering="geometricPrecision" transform="translate(0,350)">
-      <text x="110" y="15" stroke="none">Non-Rectagular clip before
+      <text xml:space="preserve" x="110" y="15" stroke="none">Non-Rectagular clip before
       </text>
-      <text x="110" y="30" stroke="none">.5 scale
+      <text xml:space="preserve" x="110" y="30" stroke="none">.5 scale
       </text>
       <image xmlns:xlink="http://www.w3.org/1999/xlink" transform="scale(0.5,0.5)" width="100" xlink:show="replace" xlink:type="simple" clip-path="url(#clipPath5)" preserveAspectRatio="xMidYMid meet" height="50" x="0" y="0" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAIAAAAlV+npAAAAYklEQVR42u3ZwQkA
 MAgEwTOk/5ZNC3kKzlYgw/2sdCZWE486ESxYsGDBgiVYsGDBggVLsGDBggULlmDB

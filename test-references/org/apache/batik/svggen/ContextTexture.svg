@@ -42,19 +42,19 @@ RKiAkQETMDEQCQZQIcjdGJ75/39oegYAdDoFDw5zppEAAAAASUVORK5CYII=" xlink:type="simple
         <rect x="0" y="0" transform="translate(150,0) matrix(1,0,0.5,1,0,0)" width="80" class="testC3" height="80" />
       </g>
       <g class="testC4" transform="matrix(1,0,0,1,0,20)">
-        <text x="10" y="100" class="testC5">Anchor matches texture image
+        <text xml:space="preserve" x="10" y="100" class="testC5">Anchor matches texture image
         </text>
         <rect x="0" y="0" transform="translate(0,120)" width="80" class="testC6" height="80" />
         <rect x="0" y="0" transform="translate(150,120) matrix(1,0,0.5,1,0,0)" width="80" class="testC7" height="80" />
       </g>
       <g class="testC8" transform="matrix(1,0,0,1,0,140)">
-        <text x="10" y="100" class="testC9">Anchor offset to texture image center
+        <text xml:space="preserve" x="10" y="100" class="testC9">Anchor offset to texture image center
         </text>
         <rect x="0" y="0" transform="translate(0,120)" width="80" class="testC10" height="80" />
         <rect x="0" y="0" transform="translate(150,120) matrix(1,0,0.5,1,0,0)" width="80" class="testC11" height="80" />
       </g>
       <g class="testC12" transform="matrix(1,0,0,1,0,260)">
-        <text x="10" y="100" class="testC13">Anchor half the size of texture
+        <text xml:space="preserve" x="10" y="100" class="testC13">Anchor half the size of texture
         </text>
       </g>
     </g>

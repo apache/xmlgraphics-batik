@@ -52,9 +52,9 @@
 MAgEwTOk/5ZNC3kKzlYgw/2sdCZWE486ESxYsGDBgiVYsGDBggVLsGDBggULlmDB
 ggUL1vZu+7JaFixYsGDBEixYsGDBgiVYsGDBggVLsGDBggULlr57aAcDZaydo60A
 AAAASUVORK5CYII=" xlink:type="simple" class="testC2" xlink:actuate="onRequest" height="50" preserveAspectRatio="xMidYMid meet" xlink:show="replace" />
-        <text x="110" y="25" class="testC3">Clip set to device bounds
+        <text xml:space="preserve" x="110" y="25" class="testC3">Clip set to device bounds
         </text>
-        <text x="110" y="25" class="testC4" transform="translate(0,70)">Clip set to upper right quarter
+        <text xml:space="preserve" x="110" y="25" class="testC4" transform="translate(0,70)">Clip set to upper right quarter
         </text>
         <image xmlns:xlink="http://www.w3.org/1999/xlink" transform="translate(0,70)" width="100" xlink:show="replace" xlink:type="simple" preserveAspectRatio="xMidYMid meet" height="50" class="testC5" x="0" y="0" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAIAAAAlV+npAAAAYklEQVR42u3ZwQkA
 MAgEwTOk/5ZNC3kKzlYgw/2sdCZWE486ESxYsGDBgiVYsGDBggVLsGDBggULlmDB
@@ -62,9 +62,9 @@ ggUL1vZu+7JaFixYsGDBEixYsGDBgiVYsGDBggVLsGDBggULlr57aAcDZaydo60A
 AAAASUVORK5CYII=" xlink:actuate="onRequest" />
       </g>
       <g class="testC6" transform="translate(0,140)">
-        <text x="110" y="15" class="testC7">Clip set to upper right quarter
+        <text xml:space="preserve" x="110" y="15" class="testC7">Clip set to upper right quarter
         </text>
-        <text x="110" y="30" class="testC8">after .5 scale
+        <text xml:space="preserve" x="110" y="30" class="testC8">after .5 scale
         </text>
         <image xmlns:xlink="http://www.w3.org/1999/xlink" transform="scale(0.5,0.5)" width="100" xlink:show="replace" xlink:type="simple" preserveAspectRatio="xMidYMid meet" height="50" class="testC9" x="0" y="0" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAIAAAAlV+npAAAAYklEQVR42u3ZwQkA
 MAgEwTOk/5ZNC3kKzlYgw/2sdCZWE486ESxYsGDBgiVYsGDBggVLsGDBggULlmDB
@@ -72,7 +72,7 @@ ggUL1vZu+7JaFixYsGDBEixYsGDBgiVYsGDBggVLsGDBggULlr57aAcDZaydo60A
 AAAASUVORK5CYII=" xlink:actuate="onRequest" />
       </g>
       <g class="testC10" transform="translate(0,210)">
-        <text x="110" y="25" class="testC11">Non-Rectagular clip
+        <text xml:space="preserve" x="110" y="25" class="testC11">Non-Rectagular clip
         </text>
         <image x="0" y="0" width="100" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAIAAAAlV+npAAAAYklEQVR42u3ZwQkA
 MAgEwTOk/5ZNC3kKzlYgw/2sdCZWE486ESxYsGDBgiVYsGDBggVLsGDBggULlmDB
@@ -80,9 +80,9 @@ ggUL1vZu+7JaFixYsGDBEixYsGDBgiVYsGDBggVLsGDBggULlr57aAcDZaydo60A
 AAAASUVORK5CYII=" xlink:type="simple" class="testC12" xlink:actuate="onRequest" height="50" preserveAspectRatio="xMidYMid meet" xlink:show="replace" />
       </g>
       <g class="testC13" transform="translate(0,280)">
-        <text x="110" y="15" class="testC14">Non-Rectagular clip after
+        <text xml:space="preserve" x="110" y="15" class="testC14">Non-Rectagular clip after
         </text>
-        <text x="110" y="30" class="testC15">.5 scale
+        <text xml:space="preserve" x="110" y="30" class="testC15">.5 scale
         </text>
         <image xmlns:xlink="http://www.w3.org/1999/xlink" transform="scale(0.5,0.5)" width="100" xlink:show="replace" xlink:type="simple" preserveAspectRatio="xMidYMid meet" height="50" class="testC16" x="0" y="0" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAIAAAAlV+npAAAAYklEQVR42u3ZwQkA
 MAgEwTOk/5ZNC3kKzlYgw/2sdCZWE486ESxYsGDBgiVYsGDBggVLsGDBggULlmDB
@@ -90,9 +90,9 @@ ggUL1vZu+7JaFixYsGDBEixYsGDBgiVYsGDBggVLsGDBggULlr57aAcDZaydo60A
 AAAASUVORK5CYII=" xlink:actuate="onRequest" />
       </g>
       <g class="testC17" transform="translate(0,350)">
-        <text x="110" y="15" class="testC18">Non-Rectagular clip before
+        <text xml:space="preserve" x="110" y="15" class="testC18">Non-Rectagular clip before
         </text>
-        <text x="110" y="30" class="testC19">.5 scale
+        <text xml:space="preserve" x="110" y="30" class="testC19">.5 scale
         </text>
         <image xmlns:xlink="http://www.w3.org/1999/xlink" transform="scale(0.5,0.5)" width="100" xlink:show="replace" xlink:type="simple" preserveAspectRatio="xMidYMid meet" height="50" class="testC20" x="0" y="0" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAIAAAAlV+npAAAAYklEQVR42u3ZwQkA
 MAgEwTOk/5ZNC3kKzlYgw/2sdCZWE486ESxYsGDBgiVYsGDBggVLsGDBggULlmDB
