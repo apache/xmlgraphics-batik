@@ -133,8 +133,6 @@ To display the available targets type:
         <equals arg1="${jdk14.present}" arg2="true"/>
       </not>
     </condition>
-
-    <echo message="src-jdk = ${src-jdk}"/>
   </target>
 
   <path id="libs-classpath">

@@ -17,6 +17,7 @@
  */
 package org.apache.batik.gvt.event;
 
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
