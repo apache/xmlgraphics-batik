@@ -1819,7 +1819,6 @@ public class SVGGraphics2D extends Graphics2D implements Cloneable, SVGSyntax{
      * @see java.awt.Graphics#setPaintMode
      * @see java.awt.AlphaComposite
      * @see java.lang.SecurityManager#checkPermission(java.awt.Permission)
-     * @see java.awt.AWTPermission
      */
     public void setComposite(Composite comp){
         gc.setComposite(comp);
