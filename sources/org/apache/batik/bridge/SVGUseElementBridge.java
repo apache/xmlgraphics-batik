@@ -10,6 +10,7 @@ package org.apache.batik.bridge;
 
 import java.net.MalformedURLException;
 
+import java.awt.Cursor;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 
@@ -244,7 +245,7 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
     /**
      * To handle a mouseover on an anchor and set the cursor.
      */
-    public static class CursorMouseOverListener implements EventListener {
+    public class CursorMouseOverListener implements EventListener {
 
         protected UserAgent userAgent;
 
@@ -257,10 +258,13 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
             // Only modify the cursor if the current target's (i.e., the <use>) cursor 
             // property is *not* 'auto'.
             //
-            String cursorStr = CSSUtilities.convertCursor((Element)evt.getCurrentTarget());
-            
-            if (!SVG_AUTO_VALUE.equalsIgnoreCase(cursorStr)) {
-                userAgent.setSVGCursor(CursorManager.getCursor(cursorStr));
+            Element currentTarget = (Element)evt.getCurrentTarget();
+
+            if (!CSSUtilities.isAutoCursor(currentTarget)) {
+                Cursor cursor = CSSUtilities.convertCursor(currentTarget, ctx);
+                if (cursor != null) {
+                    userAgent.setSVGCursor(cursor);
+                }
             }
         }
     }

@@ -340,6 +340,13 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     }
 
     /**
+     * Returns the cursor manager
+     */
+    public CursorManager getCursorManager() {
+        return cursorManager;
+    }
+
+    /**
      * Sets the interpreter pool used to handle scripts to the
      * specified interpreter pool.
      * @param interpreterPool the interpreter pool
@@ -752,6 +759,11 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     protected FocusManager focusManager;
 
     /**
+     * Manages cursors and performs caching when appropriate
+     */
+    protected CursorManager cursorManager = new CursorManager(this);
+
+    /**
      * Adds EventListeners to the input document to handle the cursor 
      * property.
      * This is not done in the addDOMListeners method because 
@@ -958,49 +970,11 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         public void handleEvent(Event evt) {
             Element target = (Element)evt.getTarget();
             String tag = target.getNodeName();
-            String cursorStr = CSSUtilities.convertCursor(target);
-            Cursor cursor = null;
-
-            if (SVGConstants.SVG_AUTO_VALUE.equalsIgnoreCase(cursorStr)) {
-                // Handle 'auto' value.
-                //
-                // - <a> The following sets the cursor for <a> element enclosing
-                //   text nodes. Setting the proper cursor (i.e., depending on the
-                //   children's 'cursor' property, is handled in the SVGAElementBridge
-                //   so as to avoid going up the tree on mouseover events (looking for
-                //   an anchor ancestor.
-                // - <image> The following does not change the cursor if the 
-                //   element's cursor property is set to 'auto'. Otherwise, it takes
-                //   precedence over any child (in case of SVG content) cursor setting.
-                //   This means that for images referencing SVG content, a cursor 
-                //   property set to 'auto' on the <image> element will not override 
-                //   the cursor settings inside the SVG image. Any other cursor property
-                //   will take precedence.
-                // - <use> Same behavior as for <image> except that the behavior 
-                //   is controlled from the <use> element bridge (SVGUseElementBridge).
-                // - <text>, <tref> and <tspan> : a cursor value of auto will cause the
-                //   cursor to be set to a text cursor. Note that text content with an
-                //   'auto' cursor and descendant of an anchor will have its cursor
-                //   set to the anchor cursor through the SVGAElementBridge.
-                //
-                if (SVGConstants.SVG_A_TAG.equalsIgnoreCase(tag)) {
-                    cursor = CursorManager.ANCHOR_CURSOR;
-                } else if (SVGConstants.SVG_TEXT_TAG.equalsIgnoreCase(tag) ||
-                           SVGConstants.SVG_TSPAN_TAG.equalsIgnoreCase(tag) ||
-                           SVGConstants.SVG_TREF_TAG.equalsIgnoreCase(tag) ) {
-                    cursor = CursorManager.TEXT_CURSOR;
-                } else if (SVGConstants.SVG_IMAGE_TAG.equalsIgnoreCase(tag)) {
-                    // Do not change the cursor 
-                    return;
-                } else {
-                    cursor = CursorManager.DEFAULT_CURSOR;
-                }
-            } else {
-                // Specific, logical cursor
-                cursor = CursorManager.getCursor(cursorStr);
+            Cursor cursor = CSSUtilities.convertCursor(target, BridgeContext.this);
+            
+            if (cursor != null) {
+                userAgent.setSVGCursor(cursor);
             }
-
-            userAgent.setSVGCursor(cursor);
         }
     }
     
