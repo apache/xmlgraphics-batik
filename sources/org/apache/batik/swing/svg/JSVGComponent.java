@@ -988,10 +988,18 @@ public class JSVGComponent extends JGVTComponent {
             super.gvtRenderingCompleted(e);
 
             if (nextGVTTreeBuilder != null) {
+                if (nextUpdateManager != null) {
+                    nextUpdateManager.interrupt();
+                    nextUpdateManager = null;
+                }
                 startGVTTreeBuilder();
                 return;
             }
             if (nextDocumentLoader != null) {
+                if (nextUpdateManager != null) {
+                    nextUpdateManager.interrupt();
+                    nextUpdateManager = null;
+                }
                 startDocumentLoader();
                 return;
             }
