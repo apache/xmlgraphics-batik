@@ -420,7 +420,7 @@ public class OutputManager {
         startingLines.add(0, new Integer(line));
 
         if (prettyPrinter.getFormat()) {
-            if (level > 0 && canIndent) {
+            if (canIndent) {
                 printNewline();
                 printString(margin.toString());
             }
