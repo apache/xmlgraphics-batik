@@ -122,7 +122,7 @@ public class JErrorPane extends JPanel implements ActionMap {
 
         listeners.put("ShowDetailButtonAction", new ShowDetailButtonAction());
         listeners.put("OKButtonAction", new OKButtonAction());
-        this.msg = th.getMessage();
+        this.msg = bundle.getString("Heading.text") + "\n\n" + th.getMessage();
 
         StringWriter writer = new StringWriter();
         th.printStackTrace(new PrintWriter(writer));

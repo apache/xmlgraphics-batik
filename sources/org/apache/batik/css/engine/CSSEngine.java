@@ -1000,11 +1000,8 @@ public abstract class CSSEngine {
             if (i == -1) {
                 i = getShorthandIndex(name);
                 if (i == -1) {
-                    String s = Messages.formatMessage("invalid.property",
-                                                  new Object[] {
-                                                      documentURI,
-                                                      name });
-                    throw new DOMException(DOMException.SYNTAX_ERR, s);
+                    // Unknown property
+                    return;
                 }
                 shorthandManagers[i].setValues(CSSEngine.this,
                                                this,
@@ -1048,7 +1045,6 @@ public abstract class CSSEngine {
          * org.w3c.css.sac.DocumentHandler#ignorableAtRule(String)}.
          */
         public void ignorableAtRule(String atRule) throws CSSException {
-            throw new CSSException("!!! TODO");
         }
     
         /**
@@ -1095,7 +1091,6 @@ public abstract class CSSEngine {
          */    
         public void startPage(String name, String pseudo_page)
             throws CSSException {
-            throw new CSSException("!!! TODO");
         }
     
         /**
@@ -1111,7 +1106,6 @@ public abstract class CSSEngine {
          * org.w3c.css.sac.DocumentHandler#startFontFace()}.
          */
         public void startFontFace() throws CSSException {
-            throw new CSSException("!!! TODO");
         }
     
         /**
@@ -1152,11 +1146,8 @@ public abstract class CSSEngine {
             if (i == -1) {
                 i = getShorthandIndex(name);
                 if (i == -1) {
-                    String s = Messages.formatMessage("invalid.property",
-                                                      new Object[] {
-                                                          documentURI,
-                                                          name });
-                    throw new DOMException(DOMException.SYNTAX_ERR, s);
+                    // Unknown property
+                    return;
                 }
                 shorthandManagers[i].setValues(CSSEngine.this,
                                                this,
@@ -1601,11 +1592,8 @@ public abstract class CSSEngine {
             if (i == -1) {
                 i = getShorthandIndex(name);
                 if (i == -1) {
-                    String s = Messages.formatMessage("invalid.property",
-                                                  new Object[] {
-                                                      documentURI,
-                                                      name });
-                    throw new DOMException(DOMException.SYNTAX_ERR, s);
+                    // Unknown property
+                    return;
                 }
                 shorthandManagers[i].setValues(CSSEngine.this,
                                                this,

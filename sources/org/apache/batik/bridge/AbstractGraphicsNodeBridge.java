@@ -211,9 +211,13 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
      * Invoked when an CSSEngineEvent is fired.
      */
     public void handleCSSEngineEvent(CSSEngineEvent evt) {
-        int [] properties = evt.getProperties();
-        for (int i=0; i < properties.length; ++i) {
-            handleCSSPropertyChanged(properties[i]);
+        try {
+            int [] properties = evt.getProperties();
+            for (int i=0; i < properties.length; ++i) {
+                handleCSSPropertyChanged(properties[i]);
+            }
+        } catch (Exception ex) {
+            ctx.getUserAgent().displayError(ex);
         }
     }
 
