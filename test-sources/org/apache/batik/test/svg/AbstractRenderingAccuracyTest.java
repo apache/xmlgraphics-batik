@@ -14,8 +14,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
-import java.io.StringWriter;
+import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 
 import java.net.URL;
 import java.net.MalformedURLException;
@@ -422,7 +423,8 @@ public abstract class AbstractRenderingAccuracyTest extends AbstractTest {
         // encoding failed and we should return that report.
         {
             TestReport encodeTR = encode(svgURL, tmpFileOS);
-            if (encodeTR != null) {
+            if ((encodeTR != null) && 
+                (encodeTR.hasPassed() == false)) {
                 tmpFile.deleteOnExit();
                 return encodeTR;
             }
@@ -625,10 +627,16 @@ public abstract class AbstractRenderingAccuracyTest extends AbstractTest {
         if(!imgFile.exists()){
             imgFile.createNewFile();
         }
+        saveImage(img, new FileOutputStream(imgFile));
+    }
 
+    /**
+     * Saves an image in a given File
+     */
+    protected void saveImage(BufferedImage img, OutputStream os)
+        throws IOException {
         PNGImageEncoder encoder = new PNGImageEncoder
-            (new FileOutputStream(imgFile),
-             PNGEncodeParam.getDefaultEncodeParam(img));
+            (os, PNGEncodeParam.getDefaultEncodeParam(img));
         
         encoder.encode(img);
     }

@@ -8,39 +8,11 @@
 
 package org.apache.batik.test.svg;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
+import java.awt.Color;
 import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.IOException;
 import java.io.StringWriter;
 import java.io.PrintWriter;
-
 import java.net.URL;
-import java.net.MalformedURLException;
-
-import java.util.Locale;
-import java.util.ResourceBundle;
-import java.util.Vector;
-
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
-import java.awt.image.WritableRaster;
-import java.awt.image.ColorModel;
-
-import org.apache.batik.ext.awt.image.CompositeRule;
-import org.apache.batik.ext.awt.image.GraphicsUtil;
-import org.apache.batik.ext.awt.image.rendered.CompositeRed;
-import org.apache.batik.ext.awt.image.rendered.BufferedImageCachableRed;
-
-import org.apache.batik.ext.awt.image.spi.ImageTagRegistry;
-import org.apache.batik.ext.awt.image.renderable.Filter;
-
-import org.apache.batik.ext.awt.image.codec.PNGImageEncoder;
-import org.apache.batik.ext.awt.image.codec.PNGEncodeParam;
 
 import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderInput;
@@ -49,11 +21,7 @@ import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.image.ImageTranscoder;
 import org.apache.batik.transcoder.image.PNGTranscoder;
 
-import org.apache.batik.util.ParsedURL;
-
-import org.apache.batik.test.AbstractTest;
 import org.apache.batik.test.DefaultTestReport;
-import org.apache.batik.test.Test;
 import org.apache.batik.test.TestReport;
 
 import org.w3c.dom.Document;

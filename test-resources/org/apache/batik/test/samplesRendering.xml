@@ -12,10 +12,10 @@
 <!-- ========================================================================= -->
 <testSuite id="samplesRendering" name="samples and samples/test Rendering" class="org.apache.batik.test.svg.SamplesRenderingTest">
 
-    <!-- ========================================================================== -->
-    <!-- The following tests check correct rendering of images in the samples       -->
-    <!-- directory.                                                                 -->
-    <!-- ========================================================================== -->
+    <!-- ================================================================== -->
+    <!-- The following tests check correct rendering of images in the       -->
+    <!-- samples directory.                                                 -->
+    <!-- ================================================================== -->
     <testGroup id="samples" name="samples Rendering">
         <test id="samples/anne.svg" />
         <test id="samples/asf-logo.svg" />
@@ -379,4 +379,12 @@
     <testGroup id="test-resources.bugs">
         <test id="test-resources/org/apache/batik/test/svg/bug19363.svg" />
     </testGroup>
+
+    <testGroup id="updateTests" name="Dynamic Update Tests"
+               class="org.apache.batik.test.svg.JSVGRenderingAccuracyTest">
+        <test id="samples/tests/spec/scripting/boundsTransformChange.svg" />
+        <test id="samples/tests/spec/scripting/rootSizeChange.svg" />
+        <test id="samples/tests/spec/scripting/rectResizeOnClick.svg" />
+    </testGroup>
+
 </testSuite>

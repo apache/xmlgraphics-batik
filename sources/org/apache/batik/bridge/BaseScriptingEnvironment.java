@@ -54,7 +54,8 @@ public class BaseScriptingEnvironment {
      */
     public static boolean isDynamicDocument(Document doc) {
         Element elt = doc.getDocumentElement();
-        if (elt.getNamespaceURI().equals(SVGConstants.SVG_NAMESPACE_URI)) {
+        if ((elt != null) &&
+            SVGConstants.SVG_NAMESPACE_URI.equals(elt.getNamespaceURI())) {
             if (elt.getAttributeNS
                 (null, SVGConstants.SVG_ONABORT_ATTRIBUTE).length() > 0) {
                 return true;

@@ -344,9 +344,14 @@ public class AWTEventDispatcher implements EventDispatcher,
 
         // If the receiving node has changed, send a notification
         // check if we enter a new node
-        Point screenPos = evt.getComponent().getLocationOnScreen();
-        screenPos.x += evt.getX();
-        screenPos.y += evt.getY();
+        Point screenPos;
+        if (!evt.getComponent().isShowing()) {
+            screenPos = new Point(0,0);
+        } else {
+            screenPos = evt.getComponent().getLocationOnScreen();
+            screenPos.x += evt.getX();
+            screenPos.y += evt.getY();
+        }
 
 
         if (lastHit != node) {
