@@ -62,7 +62,12 @@ public class ConcreteStrokeShapePainter implements StrokeShapePainter {
     }
 
     public Shape getPaintedArea(Shape shape){
-        return stroke.createStrokedShape(shape);
+        if(paint != null){
+            return stroke.createStrokedShape(shape);
+        }
+        else{
+            return shape;
+        }
     }
 
     public Shape getPaintedOutline(Shape shape){

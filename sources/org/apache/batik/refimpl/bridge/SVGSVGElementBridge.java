@@ -9,6 +9,7 @@
 package org.apache.batik.refimpl.bridge;
 
 import java.awt.RenderingHints;
+import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 

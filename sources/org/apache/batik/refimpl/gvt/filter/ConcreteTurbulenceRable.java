@@ -215,9 +215,9 @@ public class ConcreteTurbulenceRable
         }
 
         // Compute size of raster image in device space.
-        System.out.println("Turbulence aoi : " + aoi);
-        System.out.println("Scale X : " + rc.getTransform().getScaleX() + " scaleY : " + rc.getTransform().getScaleY());
-        System.out.println("Turbulence aoi dev : " + rc.getTransform().createTransformedShape(aoi).getBounds());
+        // System.out.println("Turbulence aoi : " + aoi);
+        // System.out.println("Scale X : " + rc.getTransform().getScaleX() + " scaleY : " + rc.getTransform().getScaleY());
+        // System.out.println("Turbulence aoi dev : " + rc.getTransform().createTransformedShape(aoi).getBounds());
         final Rectangle rasterRect 
             = rc.getTransform().createTransformedShape(aoi).getBounds();
 

@@ -33,7 +33,6 @@ import org.apache.batik.refimpl.gvt.PointTransformerIdentity;
 import org.apache.batik.refimpl.gvt.PointTransformerBoundingBox;
 import org.apache.batik.refimpl.gvt.TransformedDimension;
 import org.apache.batik.refimpl.gvt.TransformedPoint;
-import org.apache.batik.refimpl.gvt.filter.ConcreteFilterRegion;
 import org.apache.batik.refimpl.gvt.filter.FilterChainRegion;
 import org.apache.batik.refimpl.gvt.filter.FilterPrimitiveRegion;
 import org.apache.batik.refimpl.gvt.filter.FilterRegionTransformer;
@@ -562,6 +561,18 @@ public class SVGUtilities implements SVGConstants {
                           GraphicsNode node,
                           UnitProcessor.Context uctx){
         return convertRegion(maskElement, maskedElement, node, uctx, ATTR_MASK_UNITS);
+    }
+
+    /**
+     * Creates a <tt>FilterRegion</tt> for the input mask
+     * element.
+     */
+    public static FilterRegion
+        convertPatternRegion(Element maskElement,
+                             Element maskedElement,
+                             GraphicsNode node,
+                             UnitProcessor.Context uctx){
+        return convertRegion(maskElement, maskedElement, node, uctx, ATTR_PATTERN_UNITS);
     }
 
     /**

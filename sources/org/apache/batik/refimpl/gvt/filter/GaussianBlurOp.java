@@ -722,9 +722,9 @@ public class GaussianBlurOp implements BufferedImageOp, RasterOp {
             // Coerce our source back the way it was...
             //org.apache.batik.refimpl.gvt.AbstractGraphicsNode.showImage
             // (dest, "Dest");
-            System.out.println("Dest: " + dest.isAlphaPremultiplied() +
+            /*System.out.println("Dest: " + dest.isAlphaPremultiplied() +
                                " finalDest: " + 
-                               finalDest.isAlphaPremultiplied());
+                               finalDest.isAlphaPremultiplied());*/
 
             GaussianBlurOp.copyData(dest, finalDest);
 

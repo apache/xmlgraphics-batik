@@ -213,6 +213,27 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
         return transform;
     }
 
+    public AffineTransform getGlobalTransform(){
+        AffineTransform ctm = null;
+        if(transform != null){
+            ctm = new AffineTransform(transform);
+        }
+        else{
+            ctm = new AffineTransform();
+        }
+
+        GraphicsNode node = this;
+        GraphicsNode parent = null;
+        while((parent = node.getParent()) != null){
+            if(parent.getTransform() != null){
+                ctm.preConcatenate(parent.getTransform());
+            }
+            node = parent;
+        }
+
+        return ctm;
+    }
+
     public void setComposite(Composite newComposite) {
         invalidateGeometryCache();
         Composite oldComposite = composite;
@@ -356,7 +377,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
                         createGraphicsNodeRable(this);
                 }
                 else {
-                    traceFilter(filter, "=====>> ");
+                    // traceFilter(filter, "=====>> ");
                     filteredImage = filter;
                 }
 
@@ -365,7 +386,6 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
                         mask.setSource(filteredImage);
                     }
                     filteredImage = mask;
-                    System.out.println("YYYYYYYY Masking.... ");
                 }
 
                 // Create the render context for drawing this node.

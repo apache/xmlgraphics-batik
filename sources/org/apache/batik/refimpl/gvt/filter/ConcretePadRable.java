@@ -127,14 +127,14 @@ public class ConcretePadRable extends AbstractRable
                 
                 arect = at.createTransformedShape(arect).getBounds2D();
                 
-                System.out.println("Pad rect : " + arect);
+                // System.out.println("Pad rect : " + arect);
                 // Use arect (my bounds intersect area of interest)
 
                 result = new PadRed(cr, arect.getBounds(), padMode, rh);
             }
         }
 
-        System.out.println("ConcretePadRable done");
+        // System.out.println("ConcretePadRable done");
         return result;
     }
 

@@ -61,9 +61,9 @@ public class GraphicsNodeRenderContext extends RenderContext{
     public static RenderingHints.Key KEY_GRAPHICS_NODE_RABLE_FACTORY = new RenderingHints.Key(102){
             public boolean isCompatibleValue(Object val){
                 boolean isCompatible = true;
-                System.out.println("==> val : " + val);
-                if(val != null)
-                    System.out.println("==> val class : " + val.getClass().getName());
+                // System.out.println("==> val : " + val);
+                /*if(val != null)
+                  System.out.println("==> val class : " + val.getClass().getName());*/
                 if((val != null) && !(val instanceof GraphicsNodeRableFactory)){
                     isCompatible = false;
                 }
