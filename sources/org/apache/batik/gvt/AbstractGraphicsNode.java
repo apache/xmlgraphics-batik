@@ -899,6 +899,8 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
      * relatively speaking.  
      */
     protected Rectangle2D normalizeRectangle(Rectangle2D bounds) {
+        if (bounds == null) return null;
+
         if ((bounds.getWidth() < EPSILON)) {
             if (bounds.getHeight() < EPSILON) {
                 AffineTransform gt = getGlobalTransform();
