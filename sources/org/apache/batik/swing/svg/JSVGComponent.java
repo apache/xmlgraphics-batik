@@ -110,6 +110,11 @@ public class JSVGComponent extends JGVTComponent {
     protected BridgeContext bridgeContext;
 
     /**
+     * The current document fragment identifier.
+     */
+    protected String documentFragment;
+
+    /**
      * Creates a new JSVGComponent.
      */
     public JSVGComponent() {
@@ -169,6 +174,15 @@ public class JSVGComponent extends JGVTComponent {
             }
 
             url = newURI.toString();
+            String s = newURI.getRef();
+            if (newURI.sameFile(oldURI) &&
+                ((documentFragment == null && s != null) ||
+                 (s == null && documentFragment != null) ||
+                 (s != null && !s.equals(documentFragment)))) {
+                documentFragment = s;
+                computeRenderingTransform();
+                return;
+            }
         }
 
         loader = new DocumentLoader(userAgent.getXMLParserClassName());
@@ -241,8 +255,8 @@ public class JSVGComponent extends JGVTComponent {
         if (svgDocument != null) {
             SVGSVGElement elt = svgDocument.getRootElement();
             Dimension d = getSize();
-            setRenderingTransform(ViewBox.getPreserveAspectRatioTransform
-                                  (elt, d.width, d.height));
+            setRenderingTransform(ViewBox.getViewTransform
+                                  (documentFragment, elt, d.width, d.height));
             initialTransform = renderingTransform;
         }
     }
