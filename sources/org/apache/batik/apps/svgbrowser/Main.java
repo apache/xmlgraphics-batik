@@ -187,6 +187,7 @@ public class Main implements Application {
 
         initDialog.setSize(ds);
         initDialog.setVisible(true);
+	initDialog.pack();
 
         final JSVGViewerFrame v = new JSVGViewerFrame(this);
         JSVGCanvas c = v.getJSVGCanvas();
