@@ -548,7 +548,13 @@ public class SVGUtilities implements SVGConstants {
                                  Element filteredElement,
                                  GraphicsNode node,
                                  UnitProcessor.Context uctx){
-        return convertRegion(filterElement, filteredElement, node, uctx, ATTR_FILTER_UNITS);
+        return convertRegion(filterElement, filteredElement, 
+                             node, uctx, ATTR_FILTER_UNITS,
+                             VALUE_OBJECT_BOUNDING_BOX,
+                             VALUE_FILTER_X_DEFAULT,
+                             VALUE_FILTER_Y_DEFAULT,
+                             VALUE_FILTER_WIDTH_DEFAULT,
+                             VALUE_FILTER_HEIGHT_DEFAULT);
     }
 
     /**
@@ -560,7 +566,13 @@ public class SVGUtilities implements SVGConstants {
                           Element maskedElement,
                           GraphicsNode node,
                           UnitProcessor.Context uctx){
-        return convertRegion(maskElement, maskedElement, node, uctx, ATTR_MASK_UNITS);
+        return convertRegion(maskElement, maskedElement, 
+                             node, uctx, ATTR_MASK_UNITS,
+                             VALUE_OBJECT_BOUNDING_BOX,
+                             VALUE_MASK_X_DEFAULT,
+                             VALUE_MASK_Y_DEFAULT,
+                             VALUE_MASK_WIDTH_DEFAULT,
+                             VALUE_MASK_HEIGHT_DEFAULT);
     }
 
     /**
@@ -572,7 +584,13 @@ public class SVGUtilities implements SVGConstants {
                              Element maskedElement,
                              GraphicsNode node,
                              UnitProcessor.Context uctx){
-        return convertRegion(maskElement, maskedElement, node, uctx, ATTR_PATTERN_UNITS);
+        return convertRegion(maskElement, maskedElement, 
+                             node, uctx, ATTR_PATTERN_UNITS,
+                             VALUE_OBJECT_BOUNDING_BOX,
+                             VALUE_PATTERN_X_DEFAULT,
+                             VALUE_PATTERN_Y_DEFAULT,
+                             VALUE_PATTERN_WIDTH_DEFAULT,
+                             VALUE_PATTERN_HEIGHT_DEFAULT);
     }
 
     /**
@@ -586,7 +604,10 @@ public class SVGUtilities implements SVGConstants {
                       Element filteredElement,
                       GraphicsNode node,
                       UnitProcessor.Context uctx,
-                      String unitsAttr){
+                      String unitsAttr,
+                      String unitsDefault,
+                      String xDefault, String yDefault,
+                      String widthDefault, String heightDefault){
         SVGElement svgElement = (SVGElement)filteredElement;
 
         // x, y, width and height will hold the filter
@@ -600,6 +621,11 @@ public class SVGUtilities implements SVGConstants {
         // Extract filterUnits value
         String units = filterElement.getAttributeNS(null, unitsAttr);
 
+        if(units.length() == 0){
+            units = unitsDefault;
+        }
+
+        System.out.println("units : " + units);
         if(VALUE_OBJECT_BOUNDING_BOX.equals(units)){
             //
             // Values are in 'objectBoundingBox' units
@@ -625,7 +651,7 @@ public class SVGUtilities implements SVGConstants {
 
             // x  value
             String floatStr = filterElement.getAttributeNS(null, ATTR_X);
-            floatStr = (floatStr.length() == 0 ? VALUE_ZERO : floatStr);
+            floatStr = (floatStr.length() == 0 ? xDefault : floatStr);
             p.parse(new StringReader(floatStr));
 
             if(ur.unit == SVGLength.SVG_LENGTHTYPE_PERCENTAGE){
@@ -641,7 +667,7 @@ public class SVGUtilities implements SVGConstants {
 
             // y value
             floatStr = filterElement.getAttributeNS(null, ATTR_Y);
-            floatStr = (floatStr.length() == 0 ? VALUE_ZERO : floatStr);
+            floatStr = (floatStr.length() == 0 ? yDefault : floatStr);
             ur = new UnitProcessor.UnitResolver();
             p.setLengthHandler(ur);
             p.parse(new StringReader(floatStr));
@@ -658,7 +684,7 @@ public class SVGUtilities implements SVGConstants {
 
             // width  value
             floatStr = filterElement.getAttributeNS(null, ATTR_WIDTH);
-            floatStr = (floatStr.length() == 0 ? VALUE_HUNDRED_PERCENT : floatStr);
+            floatStr = (floatStr.length() == 0 ? widthDefault : floatStr);
             ur = new UnitProcessor.UnitResolver();
             p.setLengthHandler(ur);
             p.parse(new StringReader(floatStr));
@@ -675,7 +701,7 @@ public class SVGUtilities implements SVGConstants {
 
             // height value
             floatStr = filterElement.getAttributeNS(null, ATTR_HEIGHT);
-            floatStr = (floatStr.length() == 0 ? VALUE_HUNDRED_PERCENT : floatStr);
+            floatStr = (floatStr.length() == 0 ? heightDefault : floatStr);
             ur = new UnitProcessor.UnitResolver();
             p.setLengthHandler(ur);
             p.parse(new StringReader(floatStr));

@@ -145,6 +145,7 @@ public interface SVGConstants extends CSSConstants {
     String ATTR_ORDER = "order";
     String ATTR_ORDER_X = "orderX";
     String ATTR_ORDER_Y = "orderY";
+    String ATTR_PATTERN_CONTENT_UNITS = "patternContentUnits";
     String ATTR_PATTERN_TRANSFORM = "patternTransform";
     String ATTR_PATTERN_UNITS = "patternUnits";
     String ATTR_POINTS_AT_X = "pointsAtX";
@@ -218,6 +219,10 @@ public interface SVGConstants extends CSSConstants {
     String VALUE_EDGE_NONE = "none";
     String VALUE_END = "end";
     String VALUE_EVEN_ODD = "evenodd";
+    String VALUE_FILTER_X_DEFAULT = "-10%";
+    String VALUE_FILTER_Y_DEFAULT = "-10%";
+    String VALUE_FILTER_WIDTH_DEFAULT = "120%";
+    String VALUE_FILTER_HEIGHT_DEFAULT = "120%";
     String VALUE_FLOOD = "flood";
     String VALUE_FONT_WEIGHT_BOLD = "bold";
     String VALUE_FONT_WEIGHT_BOLDER = "bolder";
@@ -247,6 +252,10 @@ public interface SVGConstants extends CSSConstants {
     String VALUE_LINE_JOIN_MITER = "miter";
     String VALUE_LINEAR_RGB = "linearRGB";
     String VALUE_LUMINANCE_TO_ALPHA = "luminanceToAlpha";
+    String VALUE_MASK_X_DEFAULT = "-10%";
+    String VALUE_MASK_Y_DEFAULT = "-10%";
+    String VALUE_MASK_WIDTH_DEFAULT = "120%";
+    String VALUE_MASK_HEIGHT_DEFAULT = "120%";
     String VALUE_MATRIX = "matrix";
     String VALUE_MIDDLE = "middle";
     String VALUE_NEW = "new";
@@ -262,6 +271,10 @@ public interface SVGConstants extends CSSConstants {
     String VALUE_OUT = "out";
     String VALUE_OVER = "over";
     String VALUE_PAD = "pad";
+    String VALUE_PATTERN_X_DEFAULT = "0%";
+    String VALUE_PATTERN_Y_DEFAULT = "0%";
+    String VALUE_PATTERN_WIDTH_DEFAULT = "100%";
+    String VALUE_PATTERN_HEIGHT_DEFAULT = "100%";    
     String VALUE_PRESERVE = "preserve";
     String VALUE_REFLECT = "reflect";
     String VALUE_REPEAT = "repeat";

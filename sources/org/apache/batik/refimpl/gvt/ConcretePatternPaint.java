@@ -20,6 +20,8 @@ import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.PatternPaint;
 import org.apache.batik.gvt.filter.FilterRegion;
 
+import org.apache.batik.util.awt.geom.AffineTransformSource;
+
 /**
  * Concrete implementation of the <tt>PatternPaint</tt> interface
  *
@@ -39,11 +41,39 @@ public class ConcretePatternPaint implements PatternPaint {
     private FilterRegion patternRegion;
 
     /**
+     * Additional pattern transform, added on top of the
+     * user space to device space transform (i.e., before
+     * the tiling space
+     */
+    private AffineTransform patternTransform;
+
+    /**
+     * Controls whether or not the pattern clips the 
+     * the node
+     */
+    private boolean overflow;
+
+    /**
+     * Source for an addition transform to apply to the 
+     * pattern content node
+     */
+    private AffineTransformSource nodeTransformSource;
+
+    /**
      * @param node Used to generate the paint pixel pattern
+     * @param nodeTransformSource Source for an additional transform to 
+     *        set on the pattern content node.
      * @param patternRegion Region to which this paint is constrained
+     * @param overflow controls whether or not the patternRegion
+     *        clips the pattern node.
+     * @param patternTransform additional transform added on
+     *        top of the user space to device space transform.
      */
     public ConcretePatternPaint(GraphicsNode node,
-                                FilterRegion patternRegion){
+                                AffineTransformSource nodeTransformSource,
+                                FilterRegion patternRegion,
+                                boolean overflow,
+                                AffineTransform patternTransform){
         if(node == null){
             throw new IllegalArgumentException();
         }
@@ -53,7 +83,10 @@ public class ConcretePatternPaint implements PatternPaint {
         }
 
         this.node = node;
+        this.nodeTransformSource = nodeTransformSource;
         this.patternRegion = patternRegion;
+        this.overflow = overflow;
+        this.patternTransform = patternTransform;
     }
 
     public GraphicsNode getGraphicsNode(){
@@ -64,12 +97,29 @@ public class ConcretePatternPaint implements PatternPaint {
         return patternRegion.getRegion();
     }
 
+    public boolean isOverflow(){
+        return overflow;
+    }
+
+    public AffineTransform getPatternTransform(){
+        return patternTransform;
+    }
+
     public PaintContext createContext(ColorModel cm, Rectangle deviceBounds,
                                       Rectangle2D userBounds, AffineTransform xform,
                                       RenderingHints hints) {
-        return new ConcretePatternPaintContext(cm, deviceBounds, 
-                                               userBounds, xform,
-                                               hints, node, patternRegion);
+        //
+        // Concatenate the patternTransform to xform
+        //
+        if(patternTransform != null){
+            xform.concatenate(patternTransform);
+        }
+
+        return new ConcretePatternPaintContext(cm, xform,
+                                               hints, node, 
+                                               nodeTransformSource,
+                                               patternRegion,
+                                               overflow);
     }
     
     public int getTransparency(){

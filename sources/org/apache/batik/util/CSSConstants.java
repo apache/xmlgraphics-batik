@@ -33,6 +33,8 @@ public interface CSSConstants {
     String FONT_STYLE_PROPERTY = "font-style";
     String FONT_WEIGHT_PROPERTY = "font-weight";
 
+    String OVERFLOW_PROPERTY = "overflow";
+
     String STOP_COLOR_PROPERTY = "stop-color";
     String STOP_OPACITY_PROPERTY = "stop-opacity";
     String STROKE_DASHARRAY_PROPERTY = "stroke-dasharray";
@@ -53,6 +55,7 @@ public interface CSSConstants {
     String CROSSHAIR = "crosshair";
     String DEFAULT  = "default";
     String E_RESIZE  = "e-resize";
+    String HIDDEN = "hidden";
     String MOVE  = "move";
     String N_RESIZE  = "n-resize";
     String NE_RESIZE  = "ne-resize";
