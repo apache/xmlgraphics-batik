@@ -23,8 +23,6 @@ import org.w3c.dom.*;
  * @see             org.apache.batik.svggen.SVGFont
  */
 public class SVGFontDescriptor implements SVGDescriptor, SVGSyntax {
-    public static final String ERROR_NULL_INPUT = "none of the input arguments should be null";
-
     private String fontSize;
     private String fontWeight;
     private String fontStyle;
@@ -37,11 +35,11 @@ public class SVGFontDescriptor implements SVGDescriptor, SVGSyntax {
                              String fontWeight,
                              String fontStyle,
                              String fontFamily){
-        if(fontSize == null ||
-           fontWeight == null ||
-           fontStyle == null ||
-           fontFamily == null)
-            throw new IllegalArgumentException(ERROR_NULL_INPUT);
+        if (fontSize == null ||
+            fontWeight == null ||
+            fontStyle == null ||
+            fontFamily == null)
+            throw new SVGGraphics2DRuntimeException(ErrorConstants.ERR_FONT_NULL);
 
         this.fontSize = fontSize;
         this.fontWeight = fontWeight;

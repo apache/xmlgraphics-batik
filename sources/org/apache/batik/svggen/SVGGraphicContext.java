@@ -24,10 +24,7 @@ import org.apache.batik.ext.awt.g2d.TransformStackElement;
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
-public class SVGGraphicContext implements SVGConstants {
-    private static final String ERROR_NULL_INPUT =
-        "arguments should not be null";
-
+public class SVGGraphicContext implements SVGConstants, ErrorConstants {
     // this properties can only be set of leaf nodes =>
     // if they have default values they can be ignored
     private static final String leafOnlyAttributes[] = {
@@ -54,9 +51,10 @@ public class SVGGraphicContext implements SVGConstants {
      */
     public SVGGraphicContext(Map context,
                              TransformStackElement transformStack[]) {
-        if (context == null ||
-            transformStack == null)
-            throw new IllegalArgumentException(ERROR_NULL_INPUT);
+        if (context == null)
+            throw new SVGGraphics2DRuntimeException(ERR_MAP_NULL);
+        if (transformStack == null)
+            throw new SVGGraphics2DRuntimeException(ERR_TRANS_NULL);
         this.context = context;
         this.transformStack = transformStack;
         computeGroupAndGraphicElementContext();
@@ -71,9 +69,10 @@ public class SVGGraphicContext implements SVGConstants {
      */
     public SVGGraphicContext(Map groupContext, Map graphicElementContext,
                              TransformStackElement transformStack[]) {
-        if (groupContext == null || graphicElementContext == null ||
-            transformStack == null)
-            throw new IllegalArgumentException(ERROR_NULL_INPUT);
+        if (groupContext == null || graphicElementContext == null)
+            throw new SVGGraphics2DRuntimeException(ERR_MAP_NULL);
+        if (transformStack == null)
+            throw new SVGGraphics2DRuntimeException(ERR_TRANS_NULL);
 
         this.groupContext = groupContext;
         this.graphicElementContext = graphicElementContext;

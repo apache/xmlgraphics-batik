@@ -50,11 +50,7 @@ import org.apache.batik.ext.awt.g2d.TransformStackElement;
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
-public class DOMGroupManager implements SVGSyntax {
-    private static final String ERROR_GC_NULL = "gc should not be null";
-    private static final String ERROR_DOMTREEMANAGER_NULL =
-        "domTreeManager should not be null";
-
+public class DOMGroupManager implements SVGSyntax, ErrorConstants {
     public final static short DRAW = 0x01;
     public final static short FILL = 0x10;
 
@@ -88,10 +84,10 @@ public class DOMGroupManager implements SVGSyntax {
      */
     public DOMGroupManager(GraphicContext gc, DOMTreeManager domTreeManager) {
         if (gc == null)
-            throw new IllegalArgumentException(ERROR_GC_NULL);
+            throw new SVGGraphics2DRuntimeException(ERR_GC_NULL);
 
         if (domTreeManager == null)
-            throw new IllegalArgumentException(ERROR_DOMTREEMANAGER_NULL);
+            throw new SVGGraphics2DRuntimeException(ERR_DOMTREEMANAGER_NULL);
 
         this.gc = gc;
         this.domTreeManager = domTreeManager;

@@ -32,10 +32,6 @@ import org.w3c.dom.Element;
  * @see                org.apache.batik.svggen.SVGBufferedImageOp
  */
 public class SVGRescaleOp extends AbstractSVGFilterConverter {
-    public static final String ERROR_SCALE_FACTORS_AND_OFFSETS_MISMATCH =
-        "RescapeOp offsets and scaleFactor array lenght do not match";
-    public static final String ERROR_ILLEGAL_BUFFERED_IMAGE_RESCALE_OP =
-        "BufferedImage RescaleOp should have 1, 3 or 4 scale factors";
 
     /**
      * @param generatorContext used to build Elements
@@ -101,12 +97,12 @@ public class SVGRescaleOp extends AbstractSVGFilterConverter {
             float offsets[] = rescaleOp.getOffsets(null);
             float scaleFactors[] = rescaleOp.getScaleFactors(null);
             if(offsets.length != scaleFactors.length)
-                throw new IllegalArgumentException(ERROR_SCALE_FACTORS_AND_OFFSETS_MISMATCH);
+                throw new SVGGraphics2DRuntimeException(ERR_SCALE_FACTORS_AND_OFFSETS_MISMATCH);
 
             if(offsets.length != 1 &&
                offsets.length != 3 &&
                offsets.length != 4)
-                throw new IllegalArgumentException(ERROR_ILLEGAL_BUFFERED_IMAGE_RESCALE_OP);
+                throw new SVGGraphics2DRuntimeException(ERR_ILLEGAL_BUFFERED_IMAGE_RESCALE_OP);
 
             Element feFuncR = domFactory.createElementNS(SVG_NAMESPACE_URI,
                                                          SVG_FE_FUNC_R_TAG);

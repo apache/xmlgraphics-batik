@@ -15,7 +15,6 @@ import java.awt.geom.AffineTransform;
 import java.io.*;
 import java.net.*;
 
-import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.util.Base64Encoder;
 import org.apache.batik.ext.awt.image.codec.ImageEncoder;
 import org.apache.batik.ext.awt.image.codec.PNGImageEncoder;
@@ -49,18 +48,18 @@ public class ImageHandlerBase64Encoder extends DefaultImageHandler {
      * height attributes.
      */
     protected void handleHREF(Image image, Element imageElement,
-                              SVGGeneratorContext generatorContext) {
-        if (image == null) {
-            throw new IllegalArgumentException();
-        }
+                              SVGGeneratorContext generatorContext)
+        throws SVGGraphics2DIOException {
+        if (image == null)
+            throw new SVGGraphics2DRuntimeException(ERR_IMAGE_NULL);
 
         int width = image.getWidth(null);
         int height = image.getHeight(null);
 
-        if(width==0 || height==0){
+        if (width==0 || height==0) {
             handleEmptyImage(imageElement);
-        } else{
-            if(image instanceof RenderedImage) {
+        } else {
+            if (image instanceof RenderedImage) {
                 handleHREF((RenderedImage)image, imageElement,
                            generatorContext);
             } else {
@@ -82,9 +81,10 @@ public class ImageHandlerBase64Encoder extends DefaultImageHandler {
      * height attributes.
      */
     protected void handleHREF(RenderableImage image, Element imageElement,
-                              SVGGeneratorContext generatorContext) {
+                              SVGGeneratorContext generatorContext)
+        throws SVGGraphics2DIOException {
         if (image == null){
-            throw new IllegalArgumentException();
+            throw new SVGGraphics2DRuntimeException(ERR_IMAGE_NULL);
         }
 
         RenderedImage r = image.createDefaultRendering();
@@ -96,7 +96,7 @@ public class ImageHandlerBase64Encoder extends DefaultImageHandler {
     }
 
     protected void handleEmptyImage(Element imageElement) {
-        imageElement.setAttributeNS(XLinkSupport.XLINK_NAMESPACE_URI,
+        imageElement.setAttributeNS(XLINK_NAMESPACE_URI,
                                     ATTR_XLINK_HREF, DATA_PROTOCOL_PNG_PREFIX);
         imageElement.setAttributeNS(null, SVG_WIDTH_ATTRIBUTE, "0");
         imageElement.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE, "0");
@@ -109,7 +109,8 @@ public class ImageHandlerBase64Encoder extends DefaultImageHandler {
      * input imageElement, using the data: protocol.
      */
     protected void handleHREF(RenderedImage image, Element imageElement,
-                              SVGGeneratorContext generatorContext) {
+                              SVGGeneratorContext generatorContext)
+        throws SVGGraphics2DIOException {
         //
         // First, encode the input image in PNG
         //
@@ -124,22 +125,23 @@ public class ImageHandlerBase64Encoder extends DefaultImageHandler {
         try {
             b64Encoder.encodeBuffer(new ByteArrayInputStream(pngBytes),
                                     os);
-        } catch(IOException e) {
+        } catch (IOException e) {
             // Should not happen because we are doing in-memory processing
-            throw new Error();
+            throw new SVGGraphics2DIOException(ERR_UNEXPECTED, e);
         }
 
         //
         // Finally, write out url
         //
-        imageElement.setAttributeNS(XLinkSupport.XLINK_NAMESPACE_URI,
+        imageElement.setAttributeNS(XLINK_NAMESPACE_URI,
                                     ATTR_XLINK_HREF,
                                     DATA_PROTOCOL_PNG_PREFIX +
                                     os.toString());
 
     }
 
-    public byte[] encodeImage(RenderedImage buf){
+    public byte[] encodeImage(RenderedImage buf)
+        throws SVGGraphics2DIOException {
         try{
             ByteArrayOutputStream os = new ByteArrayOutputStream();
             ImageEncoder encoder = new PNGImageEncoder(os, null);
@@ -149,7 +151,7 @@ public class ImageHandlerBase64Encoder extends DefaultImageHandler {
             return os.toByteArray();
         } catch(IOException e) {
             // We are doing in-memory processing. This should not happen.
-            throw new Error();
+            throw new SVGGraphics2DIOException(ERR_UNEXPECTED);
         }
     }
 

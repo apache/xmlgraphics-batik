@@ -44,7 +44,7 @@ public class SVGHintsDescriptor implements SVGDescriptor, SVGSyntax {
            textRendering == null ||
            shapeRendering == null ||
            imageRendering == null)
-            throw new IllegalArgumentException(ERROR_NULL_INPUT);
+            throw new SVGGraphics2DRuntimeException(ErrorConstants.ERR_HINT_NULL);
 
         this.colorInterpolation = colorInterpolation;
         this.colorRendering = colorRendering;

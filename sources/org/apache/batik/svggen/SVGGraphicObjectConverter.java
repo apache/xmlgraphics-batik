@@ -21,9 +21,6 @@ import org.w3c.dom.Document;
  * @version $Id$
  */
 public abstract class SVGGraphicObjectConverter implements SVGSyntax {
-    private static final String ERROR_CONTEXT_NULL =
-        "generatorContext should not be null";
-
     /**
      * Used by converters to create Elements and other DOM objects.
      */
@@ -35,7 +32,7 @@ public abstract class SVGGraphicObjectConverter implements SVGSyntax {
      */
     public SVGGraphicObjectConverter(SVGGeneratorContext generatorContext) {
         if (generatorContext == null)
-            throw new IllegalArgumentException(ERROR_CONTEXT_NULL);
+            throw new SVGGraphics2DRuntimeException(ErrorConstants.ERR_CONTEXT_NULL);
         this.generatorContext = generatorContext;
     }
 

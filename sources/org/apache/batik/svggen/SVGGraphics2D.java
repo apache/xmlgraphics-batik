@@ -53,15 +53,7 @@ import org.apache.batik.ext.awt.g2d.GraphicContext;
  * @see                org.w3c.dom.Document
  */
 public class SVGGraphics2D extends AbstractGraphics2D
-    implements Cloneable, SVGSyntax {
-    /*
-     * Error messages
-     */
-    private static final String ERROR_CANVAS_SIZE_NULL =
-        "canvas size should not be null";
-    private static final String ERROR_CONTEXT_NULL =
-        "generatorContext should not be null";
-
+    implements Cloneable, SVGSyntax, ErrorConstants {
     /*
      * Constants definitions
      */
@@ -136,9 +128,10 @@ public class SVGGraphics2D extends AbstractGraphics2D
     /**
      * @param SVG Canvas size
      */
-    public final void setSVGCanvasSize(Dimension svgCanvasSize){
-        if(svgCanvasSize == null)
-            throw new IllegalArgumentException(ERROR_CANVAS_SIZE_NULL);
+    public final void setSVGCanvasSize(Dimension svgCanvasSize) {
+        if (svgCanvasSize == null)
+            generatorCtx.errorHandler.
+                handleError(new SVGGraphics2DRuntimeException(ERR_CANVAS_SIZE_NULL));
 
         this.svgCanvasSize = new Dimension(svgCanvasSize);
     }
@@ -189,7 +182,7 @@ public class SVGGraphics2D extends AbstractGraphics2D
     /**
      * @param domFactory Factory which will produce Elements for the DOM tree
      *        this Graphics2D generates.
-     * @exception IllegalArgumentException if domFactory is null.
+     * @exception SVGGraphics2DRuntimeException if domFactory is null.
      */
     public SVGGraphics2D(Document domFactory) {
         this(SVGGeneratorContext.createDefault(domFactory), false);
@@ -205,7 +198,7 @@ public class SVGGraphics2D extends AbstractGraphics2D
      * @param textAsShapes if true, all text is turned into SVG shapes in the
      *        convertion. No SVG text is output.
      *
-     * @exception IllegalArgumentException if domFactory is null.
+     * @exception SVGGraphics2DRuntimeException if domFactory is null.
      */
     public SVGGraphics2D(Document domFactory,
                          ImageHandler imageHandler,
@@ -221,13 +214,16 @@ public class SVGGraphics2D extends AbstractGraphics2D
      * that will provide all useful information to the generator.
      * @param textAsShapes if true, all text is turned into SVG shapes in the
      *        convertion. No SVG text is output.
+     *
+     * @exception SVGGraphics2DRuntimeException if generatorContext is null.
      */
     public SVGGraphics2D(SVGGeneratorContext generatorCtx,
                          boolean textAsShapes) {
         super(textAsShapes);
 
         if (generatorCtx == null)
-            throw new IllegalArgumentException(ERROR_CONTEXT_NULL);
+            // not error handler here as we don't have the ctx...
+            throw new SVGGraphics2DRuntimeException(ERR_CONTEXT_NULL);
 
         this.generatorCtx = generatorCtx;
 
@@ -260,7 +256,7 @@ public class SVGGraphics2D extends AbstractGraphics2D
      * @param svgFileName name of the file where SVG content
      *        should be written
      */
-    public void stream(String svgFileName) throws IOException {
+    public void stream(String svgFileName) throws SVGGraphics2DIOException {
         stream(svgFileName, false);
     }
 
@@ -270,19 +266,25 @@ public class SVGGraphics2D extends AbstractGraphics2D
      * @param useCss defines whether the output SVG should use CSS style
      * properties as opposed to plain attributes.
      */
-    public void stream(String svgFileName, boolean useCss) throws IOException {
-        OutputStreamWriter writer =
-            new OutputStreamWriter(new FileOutputStream(svgFileName),
-                                   DEFAULT_XML_ENCODING);
-        stream(writer, useCss);
-        writer.flush();
-        writer.close();
+    public void stream(String svgFileName, boolean useCss)
+        throws SVGGraphics2DIOException {
+        try {
+            OutputStreamWriter writer =
+                new OutputStreamWriter(new FileOutputStream(svgFileName),
+                                       DEFAULT_XML_ENCODING);
+            stream(writer, useCss);
+            writer.flush();
+            writer.close();
+        } catch (IOException e) {
+            generatorCtx.errorHandler.
+                handleError(new SVGGraphics2DIOException(e));
+        }
     }
 
     /**
      * @param writer used to writer out the SVG content
      */
-    public void stream(Writer writer) throws IOException {
+    public void stream(Writer writer) throws SVGGraphics2DIOException {
         stream(writer, false);
     }
 
@@ -291,7 +293,8 @@ public class SVGGraphics2D extends AbstractGraphics2D
      * @param useCss defines whether the output SVG should use CSS
      * style properties as opposed to plain attributes.
      */
-    public void stream(Writer writer, boolean useCss) throws IOException {
+    public void stream(Writer writer, boolean useCss)
+        throws SVGGraphics2DIOException {
         Element svgRoot = getRoot();
         stream(svgRoot, writer, useCss);
     }
@@ -299,7 +302,8 @@ public class SVGGraphics2D extends AbstractGraphics2D
     /**
      * @param svgRoot root element to stream out
      */
-    public void stream(Element svgRoot, Writer writer) throws IOException{
+    public void stream(Element svgRoot, Writer writer)
+        throws SVGGraphics2DIOException {
         stream(svgRoot, writer, false);
     }
 
@@ -310,27 +314,35 @@ public class SVGGraphics2D extends AbstractGraphics2D
      * properties as opposed to plain attributes.
      */
     public void stream(Element svgRoot, Writer writer, boolean useCss)
-        throws IOException {
-        PrintWriter out = new PrintWriter(writer);
-        DocumentFragment svgDocument =
-            svgRoot.getOwnerDocument().createDocumentFragment();
-        svgDocument.appendChild(svgRoot);
+        throws SVGGraphics2DIOException {
+        try {
+            PrintWriter out = new PrintWriter(writer);
+            DocumentFragment svgDocument =
+                svgRoot.getOwnerDocument().createDocumentFragment();
+            svgDocument.appendChild(svgRoot);
 
-        /*if(useCss){
-          Node svgCssDocument = svgDocument;
-          SVGCSSStyler.style(svgCssDocument);
-          XmlWriter.writeXml(svgCssDocument, writer);
-          writer.flush();
-          }
-          else{
-          XmlWriter.writeXml(svgDocument, writer);
-          writer.flush();
-          }*/
-        if(useCss)
-            SVGCSSStyler.style(svgDocument);
+            /*if(useCss){
+              Node svgCssDocument = svgDocument;
+              SVGCSSStyler.style(svgCssDocument);
+              XmlWriter.writeXml(svgCssDocument, writer);
+              writer.flush();
+              }
+              else{
+              XmlWriter.writeXml(svgDocument, writer);
+              writer.flush();
+              }*/
+            if (useCss)
+                SVGCSSStyler.style(svgDocument);
 
-        XmlWriter.writeXml(svgDocument, writer);
-        writer.flush();
+            XmlWriter.writeXml(svgDocument, writer);
+            writer.flush();
+        } catch (IOException io) {
+            generatorCtx.errorHandler.
+                handleError(new SVGGraphics2DIOException(io));
+        } catch (SVGGraphics2DIOException e) {
+            generatorCtx.errorHandler.
+                handleError(e);
+        }
     }
 
     /**
@@ -416,8 +428,9 @@ public class SVGGraphics2D extends AbstractGraphics2D
      * drawn twice, then all pixels are restored to their original values.
      * @param     c1 the XOR alternation color
      */
-    public void setXORMode(Color c1){
-        throw new Error("XOR Mode is not supported by Graphics2D SVG Generator");
+    public void setXORMode(Color c1) {
+        generatorCtx.errorHandler.
+            handleError(new SVGGraphics2DRuntimeException(ERR_XOR));
     }
 
     /**
@@ -481,13 +494,13 @@ public class SVGGraphics2D extends AbstractGraphics2D
      * @see      java.awt.image.ImageObserver#imageUpdate(java.awt.Image, int, int, int, int, int)
      */
     public boolean drawImage(Image img, int x, int y,
-                             ImageObserver observer){
+                             ImageObserver observer) {
         Element imageElement =
             getDOMFactory().createElementNS(SVG_NAMESPACE_URI, SVG_IMAGE_TAG);
         imageElement.setAttributeNS(null, SVG_X_ATTRIBUTE, Integer.toString(x));
         imageElement.setAttributeNS(null, SVG_Y_ATTRIBUTE, Integer.toString(y));
         imageElement.setAttributeNS(null, SVG_WIDTH_ATTRIBUTE,
-                                  Integer.toString(img.getWidth(null)));
+                                    Integer.toString(img.getWidth(null)));
         imageElement.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE,
                                   Integer.toString(img.getHeight(null)));
         getImageHandler().handleImage(img, imageElement, generatorCtx);
@@ -572,7 +585,7 @@ public class SVGGraphics2D extends AbstractGraphics2D
      * @see         java.awt.Component#getGraphics
      * @see         java.awt.Graphics#create
      */
-    public void dispose(){
+    public void dispose() {
         this.domTreeManager.removeGroupManager(this.domGroupManager);
     }
 
@@ -644,16 +657,15 @@ public class SVGGraphics2D extends AbstractGraphics2D
             try{
                 inverseTransform = xform.createInverse();
             }   catch(NoninvertibleTransformException e){
-                                // Should never happen since we checked the
-                                // matrix determinant
-                throw new Error();
+                // Should never happen since we checked the
+                // matrix determinant
+                throw new SVGGraphics2DRuntimeException(ERR_UNEXPECTED);
             }
 
             gc.transform(xform);
             retVal = drawImage(img, 0, 0, null);
             gc.transform(inverseTransform);
-        }
-        else{
+        } else {
             AffineTransform savTransform = new AffineTransform(gc.getTransform());
             gc.transform(xform);
             retVal = drawImage(img, 0, 0, null);
@@ -713,7 +725,7 @@ public class SVGGraphics2D extends AbstractGraphics2D
                     }catch(NoninvertibleTransformException e){
                         // This should never happen since we checked the
                         // matrix determinant
-                        throw new Error();
+                        throw new SVGGraphics2DRuntimeException(ERR_UNEXPECTED);
                     }
                     gc.transform(transform);
                     drawImage(img, x, y, null);
@@ -825,15 +837,14 @@ public class SVGGraphics2D extends AbstractGraphics2D
             try{
                 inverseTransform = xform.createInverse();
             }catch(NoninvertibleTransformException e){
-                                // This should never happen since we checked
-                                // the matrix determinant
-                throw new Error();
+                // This should never happen since we checked
+                // the matrix determinant
+                throw new SVGGraphics2DRuntimeException(ERR_UNEXPECTED);
             }
             gc.transform(xform);
             domGroupManager.addElement(image);
             gc.transform(inverseTransform);
-        }
-        else{
+        } else {
             AffineTransform savTransform = new AffineTransform(gc.getTransform());
             gc.transform(xform);
             domGroupManager.addElement(image);
@@ -891,15 +902,14 @@ public class SVGGraphics2D extends AbstractGraphics2D
             try{
                 inverseTransform = xform.createInverse();
             }catch(NoninvertibleTransformException e){
-                                // This should never happen because we checked the
-                                // matrix determinant
-                throw new Error();
+                // This should never happen because we checked the
+                // matrix determinant
+                throw new SVGGraphics2DRuntimeException(ERR_UNEXPECTED);
             }
             gc.transform(xform);
             domGroupManager.addElement(image);
             gc.transform(inverseTransform);
-        }
-        else{
+        } else {
             AffineTransform savTransform = new AffineTransform(gc.getTransform());
             gc.transform(xform);
             domGroupManager.addElement(image);
@@ -970,8 +980,9 @@ public class SVGGraphics2D extends AbstractGraphics2D
      * @see #setClip
      */
     public void drawString(AttributedCharacterIterator iterator,
-                           float x, float y){
-        throw new Error("AttributedCharacterIterator not supported yet");
+                           float x, float y) {
+        generatorCtx.errorHandler.
+            handleError(new SVGGraphics2DRuntimeException(ERR_ACI));
     }
 
 

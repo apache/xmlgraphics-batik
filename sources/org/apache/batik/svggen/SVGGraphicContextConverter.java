@@ -28,9 +28,6 @@ import org.apache.batik.ext.awt.g2d.TransformStackElement;
  * @version $Id$
  */
 public class SVGGraphicContextConverter {
-    private static final String ERROR_CONTEXT_NULL =
-        "generatorContext should not be null";
-
     private static final int GRAPHIC_CONTEXT_CONVERTER_COUNT = 6;
 
     private SVGTransform transformConverter;
@@ -57,7 +54,7 @@ public class SVGGraphicContextConverter {
      */
     public SVGGraphicContextConverter(SVGGeneratorContext generatorContext) {
         if (generatorContext == null)
-            throw new IllegalArgumentException(ERROR_CONTEXT_NULL);
+            throw new SVGGraphics2DRuntimeException(ErrorConstants.ERR_CONTEXT_NULL);
 
         transformConverter = new SVGTransform();
         paintConverter = new SVGPaint(generatorContext);

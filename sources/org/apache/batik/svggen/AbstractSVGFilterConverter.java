@@ -26,10 +26,8 @@ import org.w3c.dom.Document;
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
-public abstract class AbstractSVGFilterConverter implements SVGFilterConverter {
-    private static final String ERROR_CONTEXT_NULL =
-        "generatorContext should not be null";
-
+public abstract class AbstractSVGFilterConverter
+    implements SVGFilterConverter, ErrorConstants {
     /**
      * Used by converters to create Elements and other DOM objects
      */
@@ -53,7 +51,7 @@ public abstract class AbstractSVGFilterConverter implements SVGFilterConverter {
      */
     public AbstractSVGFilterConverter(SVGGeneratorContext generatorContext) {
         if (generatorContext == null)
-            throw new IllegalArgumentException(ERROR_CONTEXT_NULL);
+            throw new SVGGraphics2DRuntimeException(ERR_CONTEXT_NULL);
         this.generatorContext = generatorContext;
     }
 

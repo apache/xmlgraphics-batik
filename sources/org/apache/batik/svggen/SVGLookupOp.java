@@ -31,9 +31,6 @@ import org.w3c.dom.Element;
  * @see                org.apache.batik.svggen.SVGBufferedImageOp
  */
 public class SVGLookupOp extends AbstractSVGFilterConverter {
-    private static final String ERROR_ILLEGAL_BUFFERED_IMAGE_LOOKUP_OP =
-        "BufferedImage LookupOp should have 1, 3 or 4 lookup arrays";
-
     /**
      * Gamma for linear to sRGB convertion
      */
@@ -213,7 +210,7 @@ public class SVGLookupOp extends AbstractSVGFilterConverter {
         int nComponents = lookupTable.getNumComponents();
 
         if((nComponents != 1) && (nComponents != 3) && (nComponents != 4))
-            throw new IllegalArgumentException(ERROR_ILLEGAL_BUFFERED_IMAGE_LOOKUP_OP);
+            throw new SVGGraphics2DRuntimeException(ERR_ILLEGAL_BUFFERED_IMAGE_LOOKUP_OP);
 
         StringBuffer lookupTableBuf[] = new StringBuffer[nComponents];
         for(int i=0; i<nComponents; i++)

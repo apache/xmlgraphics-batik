@@ -20,7 +20,7 @@ import java.util.Set;
  * @version $Id$
  * @see           org.apache.batik.svggen.SVGFilterDescriptor
  */
-public interface SVGFilterConverter extends SVGSyntax{
+public interface SVGFilterConverter extends SVGSyntax {
     /**
      * Converts a Java 2D API BufferedImageOp into
      * a set of attribute/value pairs and related definitions
