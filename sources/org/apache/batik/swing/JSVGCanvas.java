@@ -1781,7 +1781,7 @@ public class JSVGCanvas
 
       /**
        * Paints the thumbnail component.
-       * @see org.apache.batik.refimpl.util.JSVGCanvas#paintComponent
+       * @see org.apache.batik.swing.JSVGCanvas#paintComponent
        */
       public void paintComponent(Graphics g) {
 

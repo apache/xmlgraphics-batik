@@ -18,7 +18,7 @@ import org.apache.batik.i18n.LocalizableSupport;
 
 public class PropertyUtil {
     protected final static String RESOURCES =
-        "org.apache.batik.refimpl.bridge.resources.properties";
+        "org.apache.batik.bridge.resources.properties";
 
 
     protected static LocalizableSupport localizableSupport =
