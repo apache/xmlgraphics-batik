@@ -68,10 +68,12 @@ public class SVGGeneratorContext implements ErrorConstants {
     /**
      * Builds an instance of <code>SVGGeneratorContext</code> with the given
      * <code>domFactory</code> but let the user set later the other contextual
-     * information.
+     * information. Please note that none of the parameter below should be <code>null</code>.
      * @see #setIDGenerator
      * @see #setExtensionHandler
      * @see #setImageHandler
+     * @see #setStyleHandler
+     * @see #setErrorHandler
      */
     protected SVGGeneratorContext(Document domFactory) {
         setDOMFactory(domFactory);
@@ -84,6 +86,8 @@ public class SVGGeneratorContext implements ErrorConstants {
      * @see org.apache.batik.svggen.SVGIDGenerator
      * @see org.apache.batik.svggen.DefaultExtensionHandler
      * @see org.apache.batik.svggen.ImageHandlerBase64Encoder
+     * @see org.apache.batik.svggen.DefaultStyleHandler
+     * @see org.apache.batik.svggen.DefaultErrorHandler
      */
     public static SVGGeneratorContext createDefault(Document domFactory) {
         SVGGeneratorContext ctx = new SVGGeneratorContext(domFactory);

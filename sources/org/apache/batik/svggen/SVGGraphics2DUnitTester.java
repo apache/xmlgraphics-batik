@@ -99,6 +99,12 @@ public class SVGGraphics2DUnitTester implements SVGConstants {
             && Modifier.isPublic(m.getModifiers());
     }
 
+    public void testCustomization() throws Exception {
+        SVGGraphics2D g2d = new SVGGraphics2D(getDocumentPrototype(),
+                                              new DefaultImageHandler(),
+                                              new DefaultExtensionHandler(), false );
+    }
+
     public void testDOMGroupManager() throws Exception {
         // was commented => let it like that
         /*
