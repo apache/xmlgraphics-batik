@@ -30,10 +30,15 @@
     <!-- ============================================================= -->
     <g id="testContent">
 
+        <!-- ============================================= -->
+        <!-- First row                                     -->
+        <!-- ============================================= -->
+        <g id="row1" transform="translate(40, 100)">
+
         <!-- ======================== -->
         <!-- Filter regions           -->
         <!-- ======================== -->
-        <g transform="translate(20, 100) scale(1.5, 1.5)">
+        <g transform="scale(1.5, 1.5)">
             <!-- The <svg> element in a symbol to be able to resize it -->
             <symbol id="filterRegions" viewBox="0 0 450 500">
                 <use xlink:href="filterRegions.svg#body"/>
@@ -50,7 +55,7 @@
         <!-- ======================== -->
         <!-- Pattern regions          -->
         <!-- ======================== -->
-        <g transform="translate(120, 100) scale(1.5, 1.5)">
+        <g transform="translate(100, 0) scale(1.5, 1.5)">
             <!-- The <svg> element in a symbol to be able to resize it -->
             <symbol id="patternRegions" viewBox="0 0 450 500">
                 <use xlink:href="patternRegions.svg#body"/>
@@ -67,7 +72,7 @@
         <!-- ======================== -->
         <!-- Clip                     -->
         <!-- ======================== -->
-        <g transform="translate(220, 100) scale(1.5, 1.5)">
+        <g transform="translate(200, 0) scale(1.5, 1.5)">
             <!-- The <svg> element in a symbol to be able to resize it -->
             <symbol id="clip" viewBox="0 0 450 500">
                 <use xlink:href="clip.svg#body"/>
@@ -84,7 +89,7 @@
         <!-- ======================== -->
         <!-- Opacity                  -->
         <!-- ======================== -->
-        <g transform="translate(320, 100) scale(1.5, 1.5)">
+        <g transform="translate(300, 0) scale(1.5, 1.5)">
             <!-- The <svg> element in a symbol to be able to resize it -->
             <symbol id="opacity" viewBox="0 0 450 500">
                 <use xlink:href="opacity.svg#body"/>
@@ -98,10 +103,17 @@
             </a>
         </g>
 
+        </g>
+
+        <!-- ============================================= -->
+        <!-- Second row                                    -->
+        <!-- ============================================= -->
+        <g id="row2" transform="translate(40, 200)">
+
         <!-- ======================== -->
         <!-- feMorphology             -->
         <!-- ======================== -->
-        <g transform="translate(20, 200) scale(1.5, 1.5)">
+        <g transform="translate(0, 0) scale(1.5, 1.5)">
             <!-- The <svg> element in a symbol to be able to resize it -->
             <symbol id="feMorphology" viewBox="0 0 450 500">
                 <use xlink:href="feMorphology.svg#body"/>
@@ -118,7 +130,7 @@
         <!-- ======================== -->
         <!-- feComponentTransfer      -->
         <!-- ======================== -->
-        <g transform="translate(120, 200) scale(1.5, 1.5)">
+        <g transform="translate(100, 0) scale(1.5, 1.5)">
             <!-- The <svg> element in a symbol to be able to resize it -->
             <symbol id="feComponentTransfer" viewBox="0 0 450 500">
                 <use xlink:href="feComponentTransfer.svg#body"/>
@@ -135,7 +147,7 @@
         <!-- ======================== -->
         <!-- feComponentTransfer2     -->
         <!-- ======================== -->
-        <g transform="translate(220, 200) scale(1.5, 1.5)">
+        <g transform="translate(200, 0) scale(1.5, 1.5)">
             <!-- The <svg> element in a symbol to be able to resize it -->
             <symbol id="feComponentTransfer2" viewBox="0 0 450 500">
                 <use xlink:href="feComponentTransfer2.svg#body"/>
@@ -152,7 +164,7 @@
         <!-- ======================== -->
         <!-- feColorMatrix            -->
         <!-- ======================== -->
-        <g transform="translate(320, 200) scale(1.5, 1.5)">
+        <g transform="translate(300, 0) scale(1.5, 1.5)">
             <!-- The <svg> element in a symbol to be able to resize it -->
             <symbol id="feColorMatrix" viewBox="0 0 450 500">
                 <use xlink:href="feColorMatrix.svg#body"/>
@@ -166,10 +178,18 @@
             </a>
         </g>
 
+        </g>
+
+        <!-- ============================================= -->
+        <!-- Third row                                     -->
+        <!-- ============================================= -->
+        <g id="row3" transform="translate(40, 300)">
+
+
         <!-- ======================== -->
         <!-- feTurbulence            -->
         <!-- ======================== -->
-        <g transform="translate(20, 300) scale(1.5, 1.5)">
+        <g transform="translate(0, 0) scale(1.5, 1.5)">
             <!-- The <svg> element in a symbol to be able to resize it -->
             <symbol id="feTurbulence" viewBox="0 0 450 500">
                 <use xlink:href="feTurbulence.svg#body"/>
@@ -186,7 +206,7 @@
         <!-- ======================== -->
         <!-- opacity2                 -->
         <!-- ======================== -->
-        <g transform="translate(120, 300) scale(1.5, 1.5)">
+        <g transform="translate(100, 0) scale(1.5, 1.5)">
             <!-- The <svg> element in a symbol to be able to resize it -->
             <symbol id="opacity2" viewBox="0 0 450 500">
                 <use xlink:href="opacity2.svg#body"/>
@@ -203,7 +223,7 @@
         <!-- ======================== -->
         <!-- mask                 -->
         <!-- ======================== -->
-        <g transform="translate(220, 300) scale(1.5, 1.5)">
+        <g transform="translate(200, 0) scale(1.5, 1.5)">
             <!-- The <svg> element in a symbol to be able to resize it -->
             <symbol id="mask" viewBox="0 0 450 500">
                 <use xlink:href="mask.svg#body"/>
@@ -221,7 +241,7 @@
         <!-- textPath                 -->
         <!-- ======================== -->
         <!-- 
-        <g transform="translate(320, 300) scale(1.5, 1.5)">
+        <g transform="translate(300, 0) scale(1.5, 1.5)">
             <symbol id="textPath" viewBox="0 0 450 500">
                 <use xlink:href="textPath.svg#body"/>
             </symbol>
@@ -234,6 +254,8 @@
             </a>
         </g>
         -->
+
+        </g>
     </g>
 
     <!-- ============================================================= -->
