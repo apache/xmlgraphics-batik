@@ -10,6 +10,7 @@ package org.apache.batik.gvt.font;
 
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
+import org.apache.batik.gvt.text.ArabicTextHandler;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.AffineTransform;
@@ -33,6 +34,7 @@ public class Glyph {
     private String orientation;
     private String arabicForm;
     private String lang;
+    private Point2D horizOrigin;
     private Point2D vertOrigin;
     private float horizAdvX;
     private float vertAdvY;
@@ -56,6 +58,7 @@ public class Glyph {
      * only, or empty which indicates that the glpyh can be use in both.
      * @param arabicForm
      * @param lang
+     * @param horizOrigin
      * @param vertOrigin
      * @param horizAdvX
      * @param vertAdvY
@@ -64,8 +67,8 @@ public class Glyph {
      */
     public Glyph(GraphicsNode glyphNode, String unicode, Vector names,
                  String orientation, String arabicForm, String lang,
-                 Point2D vertOrigin, float horizAdvX, float vertAdvY,
-                 int glyphCode, float kernScale) {
+                 Point2D horizOrigin, Point2D vertOrigin, float horizAdvX,
+                 float vertAdvY, int glyphCode, float kernScale) {
 
         if (glyphNode == null) {
             throw new IllegalArgumentException();
@@ -73,10 +76,12 @@ public class Glyph {
         if (unicode == null) {
             throw new IllegalArgumentException();
         }
+        if (horizOrigin == null) {
+            throw new IllegalArgumentException();
+        }
         if (vertOrigin == null) {
             throw new IllegalArgumentException();
         }
-        // should really check all of the other paramters too
 
         this.glyphNode = glyphNode;
         this.unicode = unicode;
@@ -84,9 +89,19 @@ public class Glyph {
         this.orientation = orientation;
         this.arabicForm = arabicForm;
         this.lang = lang;
+        this.horizOrigin = horizOrigin;
         this.vertOrigin = vertOrigin;
         this.horizAdvX = horizAdvX;
         this.vertAdvY = vertAdvY;
+        if (this.unicode != null) {
+            if (this.unicode.length() > 0
+                && ArabicTextHandler.arabicCharTransparent(this.unicode.charAt(0))) {
+                // if this glyph is arabic and transparent,
+                // then it doesn't cause any advance
+                this.horizAdvX = 0;
+                this.vertAdvY = 0;
+            }
+        }
         this.kernScale = kernScale;
         this.glyphCode = glyphCode;
         this.position = new Point2D.Float(0,0);
@@ -149,6 +164,15 @@ public class Glyph {
      */
     public String getLang() {
         return lang;
+    }
+
+    /**
+     * Returns the horizontal origin of this glyph.
+     *
+     * @return The horizontal origin.
+     */
+    public Point2D getHorizOrigin() {
+        return horizOrigin;
     }
 
     /**

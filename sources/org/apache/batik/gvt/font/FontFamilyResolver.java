@@ -34,7 +34,7 @@ public class FontFamilyResolver {
      * List of all available fonts on the current system, plus a few common
      * alternatives.
      */
-    protected final static Map fonts = new HashMap(11);
+    protected final static Map fonts = new HashMap();
 
     protected final static Vector awtFontFamilies = new Vector();
     protected final static Vector awtFonts = new Vector();
@@ -43,10 +43,10 @@ public class FontFamilyResolver {
      * This sets up the list of available fonts.
      */
     static {
+        fonts.put("sans-serif",      "SansSerif");
         fonts.put("serif",           "Serif");
         fonts.put("Times",           "Serif");
         fonts.put("Times New Roman", "Serif");
-        fonts.put("sans-serif",      "SansSerif");
         fonts.put("cursive",         "Dialog");
         fonts.put("fantasy",         "Symbol");
         fonts.put("monospace",       "Monospaced");
@@ -78,6 +78,10 @@ public class FontFamilyResolver {
                fonts.put(fontNameWithDashes, fontNames[i]);
             }
         }
+
+        // first add the default font
+        awtFontFamilies.add(defaultFont);
+        awtFonts.add(new AWTGVTFont(defaultFont.getFamilyName(), 0, 12));
 
         Collection fontValues = fonts.values();
         Iterator iter = fontValues.iterator();
@@ -140,7 +144,8 @@ public class FontFamilyResolver {
         for (int i = 0; i < awtFontFamilies.size(); i++) {
             AWTFontFamily fontFamily = (AWTFontFamily)awtFontFamilies.get(i);
             AWTGVTFont font = (AWTGVTFont)awtFonts.get(i);
-            if (font.canDisplay(c)) {
+            if (font.canDisplay(c) && fontFamily.getFamilyName().indexOf("Song") == -1) {
+                // the awt font for "MS Song" doesn't display chinese glyphs correctly
                 return fontFamily;
             }
         }

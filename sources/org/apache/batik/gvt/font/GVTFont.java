@@ -59,7 +59,8 @@ public interface GVTFont {
      *  array and the specified FontRenderContext.
      */
     public GVTGlyphVector createGlyphVector(FontRenderContext frc,
-                                            int[] glyphCodes);
+                                            int[] glyphCodes,
+                                            CharacterIterator ci);
     /**
      * Returns a new GlyphVector object created with the specified String and
      * the specified FontRenderContext.
