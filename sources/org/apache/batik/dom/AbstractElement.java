@@ -173,7 +173,8 @@ public abstract class AbstractElement
 				     "attribute.missing",
 				     new Object[] { oldAttr.getName() });
 	}
-	return (Attr)attributes.removeNamedItem(oldAttr.getNodeName());
+	return (Attr)attributes.removeNamedItemNS(oldAttr.getNamespaceURI(),
+                                                  oldAttr.getLocalName());
     }
 
     /**

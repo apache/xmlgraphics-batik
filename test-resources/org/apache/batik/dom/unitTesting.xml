@@ -14,6 +14,14 @@
 <testSuite id="dom.unitTesting" name="org.apache.batik.dom package - Unit Testing">
 
     <!-- ========================================================================== -->
+    <!-- ECMAScript based DOM test                                                  -->
+    <!-- ========================================================================== -->
+    <testGroup id="ecmaDOM" name="Basic DOM Tests from ECMA Scripts"
+               class="org.apache.batik.dom.EcmaScriptDOMTest">
+        <test id="bug18143" />
+    </testGroup>
+
+    <!-- ========================================================================== -->
     <!-- setAttribute test                                                          -->
     <!-- ========================================================================== -->
     <test id="setAttribute" class="org.apache.batik.dom.SetAttributeTest" >

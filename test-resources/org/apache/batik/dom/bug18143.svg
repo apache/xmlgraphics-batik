@@ -1,0 +1,44 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN"
+"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+
+
+<!-- ========================================================================= -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.        -->
+<!--                                                                           -->
+<!-- This software is published under the terms of the Apache Software License -->
+<!-- version 1.1, a copy of which has been included with this distribution in  -->
+<!-- the LICENSE file.                                                         -->
+<!-- ========================================================================= -->
+
+<!-- ========================================================================= -->
+<!--                                                                           -->
+<!-- @author vincent.hardy@sun.com                                             -->
+<!-- @version $Id$          -->
+<!-- ========================================================================= -->
+
+<svg xmlns="http://www.w3.org/2000/svg" 
+     xmlns:xlink="http://www.w3.org/1999/xlink" 
+     xmlns:test="http://xml.apache.org/batik/test"
+     width="350" height="350" onload="runTest(evt)" >
+
+    <test:testResult id="testResult" />
+
+    <script type="text/ecmascript">
+   var testNS = "http://xml.apache.org/batik/test";
+
+   function runTest() {
+       var result = document.getElementById("testResult");
+       var t = document.getElementById("text");
+       t.setAttributeNS("http://foo.com", "foo:bar", "barValue"); 
+       var an = t.getAttributeNodeNS("http://foo.com", "bar");
+       t.removeAttributeNode(an);
+       t.setAttributeNS(null, "fill", "#0F0");
+       result.setAttributeNS(null, "result", "passed");
+   }
+
+</script>
+
+    <text id="text" x="50%" y="50%" text-anchor="middle" fill="red">This string is red if test failed, green otherwise</text>
+
+</svg>
