@@ -83,9 +83,9 @@ public class SpecularLightingRed extends AbstractTiledRed{
 
         ColorModel cm;
         if (linear)
-            cm = GraphicsUtil.Linear_sRGB_Unpre;
+            cm = GraphicsUtil.Linear_sRGB_Pre;
         else
-            cm = GraphicsUtil.sRGB_Unpre;
+            cm = GraphicsUtil.sRGB_Pre;
 
         int tw = litRegion.width;
         int th = litRegion.height;

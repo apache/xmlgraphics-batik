@@ -75,9 +75,9 @@ public class DiffuseLightingRed extends AbstractRed{
 
         ColorModel cm;
         if (linear)
-            cm = GraphicsUtil.Linear_sRGB_Unpre;
+            cm = GraphicsUtil.Linear_sRGB_Pre;
         else
-            cm = GraphicsUtil.sRGB_Unpre;
+            cm = GraphicsUtil.sRGB_Pre;
 
         SampleModel sm = 
             cm.createCompatibleSampleModel(litRegion.width,
