@@ -25,6 +25,7 @@ import java.util.ResourceBundle;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
 import javax.swing.plaf.FontUIResource;
@@ -46,6 +47,7 @@ public class Main implements Application {
      * @param args The command-line arguments.
      */
     public static void main(String[] args) {
+        javax.swing.JOptionPane.showMessageDialog(null, "Starting latest Batik");
         new Main(args).run();
     }
 
@@ -121,7 +123,7 @@ public class Main implements Application {
     public Main(String[] args) {
         arguments = args;
         CSSDocumentHandler.setParserClassName
-            (resources.getString(CSS_PARSER_CLASS_NAME_KEY));
+        (resources.getString(CSS_PARSER_CLASS_NAME_KEY));
     }
 
     /**
@@ -153,8 +155,19 @@ public class Main implements Application {
                         (file.toURL().toString());
                     frame = null;
                 } else {
-                    // Should let the user know that we are
+                    // Let the user know that we are
                     // skipping this file...
+
+                    // Note that frame may be null, which is 
+                    // a valid argument for showMessageDialog
+
+                    // NOTE: Need to revisit Resources/Messages usage to
+                    //       have a single entry point. Should have a 
+                    //       formated message here instead of a + ...
+                    JOptionPane.showMessageDialog
+                        (frame, 
+                         resources.getString("Error.skipping.file") 
+                         + file.getAbsolutePath());
                 }
                 i++;
             }
