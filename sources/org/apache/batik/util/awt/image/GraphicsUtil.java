@@ -11,6 +11,7 @@ package org.apache.batik.util.awt.image;
 import java.awt.color.ColorSpace;
 
 import java.awt.Graphics2D;
+import java.awt.GraphicsConfiguration;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
@@ -22,7 +23,10 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.DataBuffer;
+import java.awt.image.DataBufferByte;
 import java.awt.image.DataBufferInt;
+import java.awt.image.DataBufferShort;
+import java.awt.image.DataBufferUShort;
 import java.awt.image.DirectColorModel;
 import java.awt.image.Raster;
 import java.awt.image.RenderedImage;
@@ -48,6 +52,8 @@ import org.apache.batik.gvt.GraphicsNodeRenderContext;
 
 import org.apache.batik.refimpl.gvt.filter.ConcreteBufferedImageCachableRed;
 import org.apache.batik.refimpl.gvt.filter.ConcreteRenderedImageCachableRed;
+import org.apache.batik.refimpl.gvt.filter.Any2LsRGBRed;
+import org.apache.batik.refimpl.gvt.filter.Any2sRGBRed;
 
 /**
  * Set of utility methods for Graphics. 
@@ -66,25 +72,47 @@ public class GraphicsUtil {
 
     public static void drawImage(Graphics2D g2d,
                                  CachableRed cr) {
-        ColorModel  cm = cr.getColorModel();
-        SampleModel sm = cr.getSampleModel();
+        ColorModel  srcCM = cr.getColorModel();
 
+        GraphicsConfiguration gc = g2d.getDeviceConfiguration();
+        ColorModel g2dCM = gc.getColorModel();
+        ColorSpace g2dCS = g2dCM.getColorSpace();
+
+        if (g2dCS != srcCM.getColorSpace()) {
+            if      (g2dCS == ColorSpace.getInstance(ColorSpace.CS_sRGB))
+                cr = convertTosRGB(cr);
+            else if (g2dCS == ColorSpace.getInstance(ColorSpace.CS_LINEAR_RGB))
+                cr = convertToLsRGB(cr);
+            srcCM = cr.getColorModel();
+        }
+
+        ColorModel drawCM = srcCM;
+        if ((drawCM.hasAlpha()) && (g2dCM.hasAlpha())) {
+            if (drawCM.isAlphaPremultiplied() != 
+                g2dCM .isAlphaPremultiplied())
+                drawCM = coerceColorModel(drawCM, 
+                                          g2dCM.isAlphaPremultiplied());
+        }
+
+        SampleModel srcSM = cr.getSampleModel();
         WritableRaster wr;
-        wr = Raster.createWritableRaster(sm, new Point(0,0));
+        wr = Raster.createWritableRaster(srcSM, new Point(0,0));
         BufferedImage bi = new BufferedImage
-            (cm, wr, cm.isAlphaPremultiplied(), null);
+            (drawCM, wr, drawCM.isAlphaPremultiplied(), null);
 
+        /*
         Graphics2D big2d = bi.createGraphics();
         // Fully transparent black.
         big2d.setColor(new java.awt.Color(0,0,0,0));
         big2d.setComposite(java.awt.AlphaComposite.Src);
+        */
 
         int xt0 = cr.getMinTileX();
         int xt1 = xt0+cr.getNumXTiles();
         int yt0 = cr.getMinTileY();
         int yt1 = yt0+cr.getNumYTiles();
-        int tw  = sm.getWidth();
-        int th  = sm.getHeight();
+        int tw  = srcSM.getWidth();
+        int th  = srcSM.getHeight();
 
         Rectangle crR = cr.getBounds();
         Rectangle tR  = new Rectangle(0,0,tw,th);
@@ -105,9 +133,10 @@ public class GraphicsUtil {
         for (int y=yt0; y<yt1; y++) {
             int xloc = xt0*tw+cr.getTileGridXOffset();
             for (int x=xt0; x<xt1; x++) {
-                wr = Raster.createWritableRaster(sm, db,
-                                                     new Point(xloc, yloc));
+                wr = Raster.createWritableRaster(srcSM, db,
+                                                 new Point(xloc, yloc));
                 cr.copyData(wr);
+                coerceData(wr, srcCM, drawCM.isAlphaPremultiplied());
 
                 tR.x = xloc;
                 tR.y = yloc;
@@ -117,6 +146,8 @@ public class GraphicsUtil {
                 BufferedImage subBI;
                 subBI = bi.getSubimage(iR.x-xloc, iR.y-yloc,
                                        iR.width,  iR.height);
+                if (false)
+                    System.out.println("IR: " + iR);
 
                 g2d.drawImage(subBI, null, iR.x, iR.y);
                 // big2d.fillRect(0, 0, tw, th);
@@ -233,7 +264,6 @@ public class GraphicsUtil {
                              0x00FF0000, 0x0000FF00, 
                              0x000000FF, 0x0, false, 
                              DataBuffer.TYPE_INT);
-
     public final static ColorModel Linear_sRGB_Pre = 
         new DirectColorModel(ColorSpace.getInstance
                              (ColorSpace.CS_LINEAR_RGB), 32,
@@ -243,6 +273,25 @@ public class GraphicsUtil {
     public final static ColorModel Linear_sRGB_Unpre = 
         new DirectColorModel(ColorSpace.getInstance
                              (ColorSpace.CS_LINEAR_RGB), 32,
+                             0x00FF0000, 0x0000FF00, 
+                             0x000000FF, 0xFF000000, false, 
+                             DataBuffer.TYPE_INT);
+
+    public final static ColorModel sRGB = 
+        new DirectColorModel(ColorSpace.getInstance
+                             (ColorSpace.CS_sRGB), 24,
+                             0x00FF0000, 0x0000FF00, 
+                             0x000000FF, 0x0, false, 
+                             DataBuffer.TYPE_INT);
+    public final static ColorModel sRGB_Pre = 
+        new DirectColorModel(ColorSpace.getInstance
+                             (ColorSpace.CS_sRGB), 32,
+                             0x00FF0000, 0x0000FF00, 
+                             0x000000FF, 0xFF000000, true, 
+                             DataBuffer.TYPE_INT);
+    public final static ColorModel sRGB_Unpre = 
+        new DirectColorModel(ColorSpace.getInstance
+                             (ColorSpace.CS_sRGB), 32,
                              0x00FF0000, 0x0000FF00, 
                              0x000000FF, 0xFF000000, false, 
                              DataBuffer.TYPE_INT);
@@ -261,6 +310,24 @@ public class GraphicsUtil {
         return new BufferedImage(cm, wr, premult, null);
     }
 
+    public static CachableRed convertToLsRGB(CachableRed src) {
+        ColorModel cm = src.getColorModel();
+        ColorSpace cs = cm.getColorSpace();
+        if (cs == ColorSpace.getInstance(ColorSpace.CS_LINEAR_RGB))
+            return src;
+        
+        return new Any2LsRGBRed(src);
+    }
+
+    public static CachableRed convertTosRGB(CachableRed src) {
+        ColorModel cm = src.getColorModel();
+        ColorSpace cs = cm.getColorSpace();
+        if (cs == ColorSpace.getInstance(ColorSpace.CS_sRGB))
+            return src;
+        
+        return new Any2sRGBRed(src);
+    }
+
     public static CachableRed wrap(RenderedImage ri) {
         if (ri instanceof CachableRed)
             return (CachableRed) ri;
@@ -269,6 +336,81 @@ public class GraphicsUtil {
         return new ConcreteRenderedImageCachableRed(ri);
     }
 
+
+    public static WritableRaster copyRaster(Raster ras) {
+        return copyRaster(ras, ras.getMinX(), ras.getMinY());
+    }
+
+    public static WritableRaster copyRaster(Raster ras, int minX, int minY) {
+        WritableRaster newSrcWR;
+        WritableRaster ret = Raster.createWritableRaster
+            (ras.getSampleModel(),
+             new Point(0,0));
+        ret = ret.createWritableChild
+            (ras.getMinX()-ras.getSampleModelTranslateX(),
+             ras.getMinY()-ras.getSampleModelTranslateY(),
+             ras.getWidth(), ras.getHeight(),
+             minX, minY, null);
+
+        // Use System.arraycopy to copy the data between the two...
+        DataBuffer srcDB = ras.getDataBuffer();
+        DataBuffer retDB = ret.getDataBuffer();
+        if (srcDB.getDataType() != retDB.getDataType()) {
+            throw new IllegalArgumentException
+                ("New DataBuffer doesn't match original");
+        }
+        int len   = srcDB.getSize();
+        int banks = srcDB.getNumBanks();
+        int [] offsets = srcDB.getOffsets();
+        for (int b=0; b< banks; b++) {
+            switch (srcDB.getDataType()) {
+            case DataBuffer.TYPE_BYTE: {
+                DataBufferByte srcDBT = (DataBufferByte)srcDB;
+                DataBufferByte retDBT = (DataBufferByte)retDB;
+                System.arraycopy(srcDBT.getData(b), offsets[b],
+                                 retDBT.getData(b), offsets[b], len);
+            }
+            case DataBuffer.TYPE_INT: {
+                DataBufferInt srcDBT = (DataBufferInt)srcDB;
+                DataBufferInt retDBT = (DataBufferInt)retDB;
+                System.arraycopy(srcDBT.getData(b), offsets[b],
+                                 retDBT.getData(b), offsets[b], len);
+            }
+            case DataBuffer.TYPE_SHORT: {
+                DataBufferShort srcDBT = (DataBufferShort)srcDB;
+                DataBufferShort retDBT = (DataBufferShort)retDB;
+                System.arraycopy(srcDBT.getData(b), offsets[b],
+                                 retDBT.getData(b), offsets[b], len);
+            }
+            case DataBuffer.TYPE_USHORT: {
+                DataBufferUShort srcDBT = (DataBufferUShort)srcDB;
+                DataBufferUShort retDBT = (DataBufferUShort)retDB;
+                System.arraycopy(srcDBT.getData(b), offsets[b],
+                                 retDBT.getData(b), offsets[b], len);
+            }
+            }
+        }
+
+        return ret;
+    }
+
+    public static WritableRaster makeRasterWritable(Raster ras) {
+        return makeRasterWritable(ras, ras.getMinX(), ras.getMinY());
+    }
+
+    public static WritableRaster makeRasterWritable(Raster ras, 
+                                                    int minX, int minY) {
+        WritableRaster ret = Raster.createWritableRaster
+            (ras.getSampleModel(),
+             ras.getDataBuffer(),
+             new Point(0,0));
+        ret = ret.createWritableChild
+            (ras.getMinX()-ras.getSampleModelTranslateX(),
+             ras.getMinY()-ras.getSampleModelTranslateY(),
+             ras.getWidth(), ras.getHeight(),
+             minX, minY, null);
+        return ret;
+    }
 
     public static ColorModel
         coerceColorModel(ColorModel cm, boolean newAlphaPreMult) {
@@ -293,6 +435,10 @@ public class GraphicsUtil {
      */
     public static ColorModel 
         coerceData(WritableRaster wr, ColorModel cm, boolean newAlphaPreMult) {
+
+        // System.out.println("CoerceData: " + cm.isAlphaPremultiplied() + 
+        //                    " Out: " + newAlphaPreMult);
+
         if (cm.isAlphaPremultiplied() == newAlphaPreMult)
             return cm;
 
@@ -365,8 +511,24 @@ public class GraphicsUtil {
     public static void 
         copyData(BufferedImage src, Rectangle srcRect,
                  BufferedImage dst, Point destP) {
+
+        ColorSpace srcCS = src.getColorModel().getColorSpace();
+        ColorSpace dstCS = dst.getColorModel().getColorSpace();
+
+        /*
+        if (srcCS != dstCS) 
+            throw new IllegalArgumentException
+                ("Images must be in the same ColorSpace in order "+
+                 "to copy Data between them");
+        */
         boolean srcAlpha = src.getColorModel().hasAlpha();
         boolean dstAlpha = dst.getColorModel().hasAlpha();
+
+        // System.out.println("Src has: " + srcAlpha + 
+        //                    " is: " + src.isAlphaPremultiplied());
+        // 
+        // System.out.println("Dst has: " + dstAlpha + 
+        //                    " is: " + dst.isAlphaPremultiplied());
 
         if (srcAlpha == dstAlpha)
             if ((srcAlpha == false) ||
@@ -523,7 +685,7 @@ public class GraphicsUtil {
             = (db.getOffset() + 
                sppsm.getOffset(wr.getMinX()-wr.getSampleModelTranslateX(), 
                                wr.getMinY()-wr.getSampleModelTranslateY()));
-
+        int n=0;
         // Access the pixel data array
         final int pixels[] = db.getBankData()[0];
         for (int y=0; y<wr.getHeight(); y++) {
@@ -546,7 +708,7 @@ public class GraphicsUtil {
     }
 
     protected static void mult_INT_PACK_Data(WritableRaster wr) {
-        // System.out.println("Multiply Int");
+        // System.out.println("Multiply Int: " + wr);
         
         SinglePixelPackedSampleModel sppsm;
         sppsm = (SinglePixelPackedSampleModel)wr.getSampleModel();
@@ -559,7 +721,7 @@ public class GraphicsUtil {
             = (db.getOffset() + 
                sppsm.getOffset(wr.getMinX()-wr.getSampleModelTranslateX(), 
                                wr.getMinY()-wr.getSampleModelTranslateY()));
-
+        int n=0;
         // Access the pixel data array
         final int pixels[] = db.getBankData()[0];
         for (int y=0; y<wr.getHeight(); y++) {

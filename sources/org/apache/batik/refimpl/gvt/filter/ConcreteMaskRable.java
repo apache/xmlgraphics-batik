@@ -10,6 +10,7 @@ package org.apache.batik.refimpl.gvt.filter;
 
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
+import org.apache.batik.util.awt.image.GraphicsUtil;
 
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.CachableRed;
@@ -150,9 +151,17 @@ public class ConcreteMaskRable
         if (ri == null)
             return null;
 
-        CachableRed cr = ConcreteRenderedImageCachableRed.wrap(ri);
+        CachableRed cr;
+        cr = GraphicsUtil.wrap(ri);
+        cr = GraphicsUtil.convertToLsRGB(cr);
+
+        // org.apache.batik.test.gvt.ImageDisplay.showImage("Src: ", cr);
+        // org.apache.batik.test.gvt.ImageDisplay.showImage("Mask: ", maskCr);
 
         CachableRed ret = new MultiplyAlphaRed(cr, maskCr);
+
+        // org.apache.batik.test.gvt.ImageDisplay.showImage("Masked: ", ret);
+
 
         // ret = new PadRed(ret, cr.getBounds(), PadMode.ZERO_PAD, rh);
 

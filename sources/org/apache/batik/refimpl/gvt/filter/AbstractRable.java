@@ -301,7 +301,6 @@ public abstract class AbstractRable implements Filter {
     
     
     /* left for subclass:
-       public boolean isDynamic();
        public RenderedImage createRendering(RenderContext rc);
     */
 }

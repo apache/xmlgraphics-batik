@@ -11,8 +11,10 @@ package org.apache.batik.refimpl.gvt.filter;
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.CachableRed;
 import org.apache.batik.gvt.filter.ColorMatrixRable;
+import org.apache.batik.util.awt.image.GraphicsUtil;
 
 import java.awt.Point;
+import java.awt.Shape;
 import java.awt.RenderingHints;
 
 import java.awt.image.BufferedImage;
@@ -201,43 +203,42 @@ public class ConcreteColorMatrixRable
         return filter;
     }
 
-    public RenderedImage createRendering(RenderContext rc){
+    public RenderedImage createRendering(RenderContext rc) {
         //
         // Get source's rendered image
         //
         RenderedImage srcRI = getSource().createRendering(rc);
 
-        if(srcRI == null){
+        if(srcRI == null)
             return null;
-        }
 
-        final int srcMinX = srcRI.getMinX();
-        final int srcMinY = srcRI.getMinY();
+        CachableRed srcCR = GraphicsUtil.wrap(srcRI);
+        srcCR = GraphicsUtil.convertToLsRGB(srcCR);
 
-        RenderingHints hints = rc.getRenderingHints();
-        BandCombineOp op = new BandCombineOp(matrix, null);
+        final int srcMinX = srcCR.getMinX();
+        final int srcMinY = srcCR.getMinY();
 
         //
         // Wrap source in buffered image
         //
-        ColorModel cm = srcRI.getColorModel();
-        Raster srcRR = srcRI.getData();
-        Point origin = new Point(0, 0);
-        WritableRaster srcWR = Raster.createWritableRaster(srcRR.getSampleModel(),
-                                                           srcRR.getDataBuffer(),
-                                                           origin);
-        /*
-        BufferedImage srcBI = new BufferedImage(cm,
-                                                srcWR,
-                                                cm.isAlphaPremultiplied(),
-                                                null);*/
+        Shape aoi = rc.getAreaOfInterest();
+        if(aoi == null)
+            aoi = getBounds2D();
 
+        ColorModel cm = srcCR.getColorModel();
+        Raster srcRR  = srcCR.getData();
+        WritableRaster srcWR = GraphicsUtil.makeRasterWritable(srcRR, 0, 0);
+        
+        // Unpremultiply data if nessisary.
+        cm = GraphicsUtil.coerceData(srcWR, cm, false);
+
+        BandCombineOp op = new BandCombineOp(matrix, null);
         WritableRaster dstWR = op.filter(srcWR, srcWR);
 
-        BufferedImage dstBI = new BufferedImage(cm,
-                                                dstWR,
-                                                cm.isAlphaPremultiplied(),
-                                                null);
+        BufferedImage  dstBI = new BufferedImage(cm,
+                                                 dstWR,
+                                                 cm.isAlphaPremultiplied(),
+                                                 null);
 
         return new ConcreteBufferedImageCachableRed(dstBI, srcMinX, srcMinY);
     }

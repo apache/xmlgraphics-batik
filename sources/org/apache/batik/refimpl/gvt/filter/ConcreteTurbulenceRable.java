@@ -10,6 +10,7 @@ package org.apache.batik.refimpl.gvt.filter;
 
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.TurbulenceRable;
+import org.apache.batik.util.awt.image.GraphicsUtil;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -223,20 +224,25 @@ public class ConcreteTurbulenceRable
         final Rectangle rasterRect 
             = usr2dev.createTransformedShape(aoi).getBounds();
 
-        ColorModel cm = ColorModel.getRGBdefault();
+        ColorModel cm = GraphicsUtil.Linear_sRGB_Unpre;
 
         // Create a raster for the turbulence pattern
-        WritableRaster wr = cm.createCompatibleWritableRaster(rasterRect.width, rasterRect.height);
-        WritableRaster twr = wr.createWritableTranslatedChild(rasterRect.x, rasterRect.y);
+        WritableRaster wr, twr;
+        wr = cm.createCompatibleWritableRaster(rasterRect.width, 
+                                               rasterRect.height);
+        twr = wr.createWritableTranslatedChild(rasterRect.x, 
+                                               rasterRect.y);
 
         // Create a TurbulencePatternGenerator that will do the job
         // <!> FIX ME. The tile is not propagated properly to the turbulence op
-        // <!> FIX ME. SHOULD OPTIMIZE THE CHANNELS REQUIRED FROM THE FILTER. THIS COULD
-        //     BE ADDED TO THE RENDER CONTEXT.
+        // <!> FIX ME. SHOULD OPTIMIZE THE CHANNELS REQUIRED FROM THE
+        //             FILTER. THIS COULD BE ADDED TO THE RENDER CONTEXT.
         TurbulencePatternGenerator turbGenerator 
-            = new TurbulencePatternGenerator(baseFreqX, baseFreqY, numOctaves,
-                                             seed, stitched, fractalNoise, true,
-                                             (Rectangle2D)region.clone(), new boolean[]{true, true, true, true});
+            = new TurbulencePatternGenerator
+                (baseFreqX, baseFreqY, numOctaves,
+                 seed, stitched, fractalNoise,
+                 (Rectangle2D)region.clone(),
+                 new boolean[]{true, true, true, true});
 
         AffineTransform patternTxf = new AffineTransform();
         try{
@@ -273,61 +279,4 @@ public class ConcreteTurbulenceRable
         return new ConcreteBufferedImageCachableRed(bi, rasterRect.x,
                                                     rasterRect.y);
     }
-
-    public RenderedImage createRenderingThomas(RenderContext rc) {
-        // Just copy over the rendering hints.
-        RenderingHints rh = rc.getRenderingHints();
-        if (rh == null) rh = new RenderingHints(null);
-
-        // Map the area of interest to our input...
-        Shape aoi = rc.getAreaOfInterest();
-        if (aoi == null)
-            aoi = getBounds2D();
-
-        Rectangle2D r = getBounds2D().createIntersection(
-                                                 aoi.getBounds2D());
-
-        // update the current affine transform
-        AffineTransform at = rc.getTransform();
-        if (at == null) at = new AffineTransform();
-
-        // This splits out the scale and translate and applies them
-        // prior to the Gaussian.  Then after appying the gaussian
-        // it applies the shear component.
-        // I derived the Matrix as such:
-        // +-          -+   +-           -+    +-           -+
-        // |  a   b   0 |   |  sx  0   0  |    |  sx shy  0  |
-        // |  c   d   0 | * |  0   sy  0  | =  | shx  sy  0  |
-        // |  e   f   1 |   |  tx  ty  1  |    |  tx  ty  1  |
-        // +-          -+   +-           -+    +-           -+
-        //
-        // This gives the following sequence of equasions:
-        //
-        // a* sx       =  sx -> a = 1
-        // b* sy       = shy -> b = shy/ sy
-        // c* sx       = shx -> c = shx/ sx
-        // d* sy       =  sy -> d = 1
-        // e* sx +  tx =  tx -> e = 0
-        // f* sy +  ty =  ty -> f = 0
-
-        double sx = at.getScaleX();
-        double sy = at.getScaleY();
-
-        double tx = at.getTranslateX();
-        double ty = at.getTranslateY();
-
-        AffineTransform srcAt = AffineTransform.getTranslateInstance(tx, ty);
-        srcAt.concatenate(AffineTransform.getScaleInstance(sx, sy));
-
-        double shx = at.getShearX();
-        double shy = at.getShearY();
-
-        AffineTransform resAt;
-        resAt = AffineTransform.getShearInstance(shx/sx, shy/sy);
-
-        return null;
-    }
-
-
-
 }

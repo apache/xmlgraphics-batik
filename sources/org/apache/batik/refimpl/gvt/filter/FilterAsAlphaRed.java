@@ -107,9 +107,9 @@ public class FilterAsAlphaRed extends AbstractRed {
         if (srcRed.getColorModel().isAlphaPremultiplied()) {
             // Lum is already multiplied by alpha so we just copy lum channel.
             for (int y=0; y<srcRas.getHeight(); y++) {
-                int srcI  = srcDB.getOffset() + srcSM.getOffset(srcX0, srcY0);
-                int dstI  = dstDB.getOffset() + dstSM.getOffset(dstX0, dstY0);
-                int dstE  = dstDB.getOffset() + dstSM.getOffset(dstX1, dstY0);
+                int srcI  = srcDB.getOffset() + srcSM.getOffset(srcX0,  srcY0);
+                int dstI  = dstDB.getOffset() + dstSM.getOffset(dstX0,  dstY0);
+                int dstE  = dstDB.getOffset() + dstSM.getOffset(dstX1+1,dstY0);
 
                 srcI += srcLOff; // Go to Lum Channel (already mult by alpha).
 
@@ -127,9 +127,9 @@ public class FilterAsAlphaRed extends AbstractRed {
             srcAOff = srcAOff-srcLOff;
 
             for (int y=0; y<srcRas.getHeight(); y++) {
-                int srcI  = srcDB.getOffset() + srcSM.getOffset(srcX0, srcY0);
-                int dstI  = dstDB.getOffset() + dstSM.getOffset(dstX0, dstY0);
-                int dstE  = dstDB.getOffset() + dstSM.getOffset(dstX1, dstY0);
+                int srcI  = srcDB.getOffset() + srcSM.getOffset(srcX0,  srcY0);
+                int dstI  = dstDB.getOffset() + dstSM.getOffset(dstX0,  dstY0);
+                int dstE  = dstDB.getOffset() + dstSM.getOffset(dstX1+1,dstY0);
 
                 srcI += srcLOff;
 

@@ -36,56 +36,6 @@
 
   	<filter id="conv-rep-tr" x="0" y="0" width="1" height="1">
         <feConvolveMatrix order="11 11"
-         kernelMatrix="0 0 0 0 0 0 0 0 0 0 1
-                       0 0 0 0 0 0 0 0 0 0 0
-                       0 0 0 0 0 0 0 0 0 0 0
-                       0 0 0 0 0 0 0 0 0 0 0
-                       0 0 0 0 0 0 0 0 0 0 0
-                       0 0 0 0 0 0 0 0 0 0 0
-                       0 0 0 0 0 0 0 0 0 0 0
-                       0 0 0 0 0 0 0 0 0 0 0
-                       0 0 0 0 0 0 0 0 0 0 0
-                       0 0 0 0 0 0 0 0 0 0 0
-                       0 0 0 0 0 0 0 0 0 0 0"
-         edgeMode="duplicate" />
-  	</filter>
-
-  	<filter id="conv-centX" x="0" y="0" width="1" height="1">
-        <feConvolveMatrix order="11 11"
-         kernelMatrix="0 0 0 0 0 0 0 0 0 0 10
-                       0 0 0 0 0 0 0 0 0 0 0
-                       0 0 0 0 0 0 0 0 0 0 0
-                       0 0 0 0 0 0 0 0 0 0 0
-                       0 0 0 0 0 0 0 0 0 0 0
-                       0 0 0 0 0 0 0 0 0 0 0
-                       0 0 0 0 0 0 0 0 0 0 0
-                       0 0 0 0 0 0 0 0 0 0 0
-                       0 0 0 0 0 0 0 0 0 0 0
-                       0 0 0 0 0 0 0 0 0 0 0
-                       0 0 0 0 0 0 0 0 0 0 0"
-         targetX="10"
-         edgeMode="duplicate" />
-  	</filter>
-
-  	<filter id="conv-centY" x="0" y="0" width="1" height="1">
-        <feConvolveMatrix order="11 11"
-         kernelMatrix="0 0 0 0 0 0 0 0 0 0 10
-                       0 0 0 0 0 0 0 0 0 0 0
-                       0 0 0 0 0 0 0 0 0 0 0
-                       0 0 0 0 0 0 0 0 0 0 0
-                       0 0 0 0 0 0 0 0 0 0 0
-                       0 0 0 0 0 0 0 0 0 0 0
-                       0 0 0 0 0 0 0 0 0 0 0
-                       0 0 0 0 0 0 0 0 0 0 0
-                       0 0 0 0 0 0 0 0 0 0 0
-                       0 0 0 0 0 0 0 0 0 0 0
-                       0 0 0 0 0 0 0 0 0 0 0"
-         targetY="0"
-         edgeMode="duplicate" />
-  	</filter>
-
-  	<filter id="conv-rep-bl" x="0" y="0" width="1" height="1">
-        <feConvolveMatrix order="11 11"
          kernelMatrix="0 0 0 0 0 0 0 0 0 0 0
                        0 0 0 0 0 0 0 0 0 0 0
                        0 0 0 0 0 0 0 0 0 0 0
@@ -100,7 +50,7 @@
          edgeMode="duplicate" />
   	</filter>
 
-  	<filter id="conv-rep-br" x="0" y="0" width="1" height="1">
+  	<filter id="conv-centX" x="0" y="0" width="1" height="1">
         <feConvolveMatrix order="11 11"
          kernelMatrix="0 0 0 0 0 0 0 0 0 0 0
                        0 0 0 0 0 0 0 0 0 0 0
@@ -112,11 +62,45 @@
                        0 0 0 0 0 0 0 0 0 0 0
                        0 0 0 0 0 0 0 0 0 0 0
                        0 0 0 0 0 0 0 0 0 0 0
-                       0 0 0 0 0 0 0 0 0 0 1"
+                      10 0 0 0 0 0 0 0 0 0 0"
+         targetX="10"
          edgeMode="duplicate" />
   	</filter>
 
-  	<filter id="conv-rep-tl" x="0" y="0" width="1" height="1">
+  	<filter id="conv-centY" x="0" y="0" width="1" height="1">
+        <feConvolveMatrix order="11 11"
+         kernelMatrix="0 0 0 0 0 0 0 0 0 0 0
+                       0 0 0 0 0 0 0 0 0 0 0
+                       0 0 0 0 0 0 0 0 0 0 0
+                       0 0 0 0 0 0 0 0 0 0 0
+                       0 0 0 0 0 0 0 0 0 0 0
+                       0 0 0 0 0 0 0 0 0 0 0
+                       0 0 0 0 0 0 0 0 0 0 0
+                       0 0 0 0 0 0 0 0 0 0 0
+                       0 0 0 0 0 0 0 0 0 0 0
+                       0 0 0 0 0 0 0 0 0 0 0
+                      10 0 0 0 0 0 0 0 0 0 0"
+         targetY="0"
+         edgeMode="duplicate" />
+  	</filter>
+
+  	<filter id="conv-rep-bl" x="0" y="0" width="1" height="1">
+        <feConvolveMatrix order="11 11"
+         kernelMatrix="0 0 0 0 0 0 0 0 0 0 1
+                       0 0 0 0 0 0 0 0 0 0 0
+                       0 0 0 0 0 0 0 0 0 0 0
+                       0 0 0 0 0 0 0 0 0 0 0
+                       0 0 0 0 0 0 0 0 0 0 0
+                       0 0 0 0 0 0 0 0 0 0 0
+                       0 0 0 0 0 0 0 0 0 0 0
+                       0 0 0 0 0 0 0 0 0 0 0
+                       0 0 0 0 0 0 0 0 0 0 0
+                       0 0 0 0 0 0 0 0 0 0 0
+                       0 0 0 0 0 0 0 0 0 0 0"
+         edgeMode="duplicate" />
+  	</filter>
+
+  	<filter id="conv-rep-br" x="0" y="0" width="1" height="1">
         <feConvolveMatrix order="11 11"
          kernelMatrix="1 0 0 0 0 0 0 0 0 0 0
                        0 0 0 0 0 0 0 0 0 0 0
@@ -132,7 +116,39 @@
          edgeMode="duplicate" />
   	</filter>
 
+  	<filter id="conv-rep-tl" x="0" y="0" width="1" height="1">
+        <feConvolveMatrix order="11 11"
+         kernelMatrix="0 0 0 0 0 0 0 0 0 0 0
+                       0 0 0 0 0 0 0 0 0 0 0
+                       0 0 0 0 0 0 0 0 0 0 0
+                       0 0 0 0 0 0 0 0 0 0 0
+                       0 0 0 0 0 0 0 0 0 0 0
+                       0 0 0 0 0 0 0 0 0 0 0
+                       0 0 0 0 0 0 0 0 0 0 0
+                       0 0 0 0 0 0 0 0 0 0 0
+                       0 0 0 0 0 0 0 0 0 0 0
+                       0 0 0 0 0 0 0 0 0 0 0
+                       0 0 0 0 0 0 0 0 0 0 1"
+         edgeMode="duplicate" />
+  	</filter>
+
   	<filter id="conv-none-tr" x="0" y="0" width="1" height="1">
+        <feConvolveMatrix order="11 11"
+         kernelMatrix="0 0 0 0 0 0 0 0 0 0 0
+                       0 0 0 0 0 0 0 0 0 0 0
+                       0 0 0 0 0 0 0 0 0 0 0
+                       0 0 0 0 0 0 0 0 0 0 0
+                       0 0 0 0 0 0 0 0 0 0 0
+                       0 0 0 0 0 0 0 0 0 0 0
+                       0 0 0 0 0 0 0 0 0 0 0
+                       0 0 0 0 0 0 0 0 0 0 0
+                       0 0 0 0 0 0 0 0 0 0 0
+                       0 0 0 0 0 0 0 0 0 0 0
+                       1 0 0 0 0 0 0 0 0 0 0"
+         edgeMode="none" />
+  	</filter>
+
+  	<filter id="conv-none-bl" x="0" y="0" width="1" height="1">
         <feConvolveMatrix order="11 11"
          kernelMatrix="0 0 0 0 0 0 0 0 0 0 1
                        0 0 0 0 0 0 0 0 0 0 0
@@ -145,29 +161,13 @@
                        0 0 0 0 0 0 0 0 0 0 0
                        0 0 0 0 0 0 0 0 0 0 0
                        0 0 0 0 0 0 0 0 0 0 0"
-         edgeMode="none" />
-  	</filter>
-
-  	<filter id="conv-none-bl" x="0" y="0" width="1" height="1">
-        <feConvolveMatrix order="11 11"
-         kernelMatrix="0 0 0 0 0 0 0 0 0 0 0
-                       0 0 0 0 0 0 0 0 0 0 0
-                       0 0 0 0 0 0 0 0 0 0 0
-                       0 0 0 0 0 0 0 0 0 0 0
-                       0 0 0 0 0 0 0 0 0 0 0
-                       0 0 0 0 0 0 0 0 0 0 0
-                       0 0 0 0 0 0 0 0 0 0 0
-                       0 0 0 0 0 0 0 0 0 0 0
-                       0 0 0 0 0 0 0 0 0 0 0
-                       0 0 0 0 0 0 0 0 0 0 0
-                       1 0 0 0 0 0 0 0 0 0 0"
          kernelUnitLength="4"
          edgeMode="none" />
   	</filter>
 
   	<filter id="conv-alpha" x="0" y="0" width="1" height="1">
         <feConvolveMatrix order="11 11"
-         kernelMatrix="0 0 0 0 0 0 0 0 0 0 0
+         kernelMatrix="0 0 0 0 0 0 0 0 0 0 1
                        0 0 0 0 0 0 0 0 0 0 0
                        0 0 0 0 0 0 0 0 0 0 0
                        0 0 0 0 0 0 0 0 0 0 0
@@ -177,7 +177,7 @@
                        0 0 0 0 0 0 0 0 0 0 0
                        0 0 0 0 0 0 0 0 0 0 0
                        0 0 0 0 0 0 0 0 0 0 0
-                       1 0 0 0 0 0 0 0 0 0 0"
+                       0 0 0 0 0 0 0 0 0 0 0"
          edgeMode="none" 
          preserveAlpha="true"/>
   	</filter>
