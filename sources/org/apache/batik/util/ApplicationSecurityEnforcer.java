@@ -164,70 +164,86 @@ public class ApplicationSecurityEnforcer {
         Policy policy = Policy.getPolicy();
         BatikSecurityManager securityManager = new BatikSecurityManager();
 
-        // Specify app's security policy in the
-        // system property. 
-        ClassLoader cl = appMainClass.getClassLoader();
-        URL url = cl.getResource(securityPolicy);
-
-        if (url == null) {
-            throw new NullPointerException
-                (Messages.formatMessage(EXCEPTION_NO_POLICY_FILE,
-                                        new Object[]{securityPolicy}));
-        }
-
-        System.setProperty(PROPERTY_JAVA_SECURITY_POLICY,
-                           url.toString());
-
-        // 
-        // The following detects whether the application is running in the
-        // development environment, in which case it will set the 
-        // app.dev.base property or if it is running in the binary
-        // distribution, in which case it will set the app.jar.base
-        // property. These properties are expanded in the security 
-        // policy files.
-        // Property expansion is used to provide portability of the 
-        // policy files between various code bases (e.g., file base,
-        // server base, etc..).
         //
-        url = cl.getResource(appMainClassRelativeURL);
-        if (url == null){
-            // Something is really wrong: we would be running a class
-            // which can't be found....
-            throw new Error(appMainClassRelativeURL);
-        }
-        
-        String expandedMainClassName = url.toString();
-        if (expandedMainClassName.startsWith(JAR_PROTOCOL) ) {
-            setJarBase(expandedMainClassName);
-        } else {
-            setDevBase(expandedMainClassName);
-        }
-        
-        // Install new security manager
-        System.setSecurityManager(securityManager);
-        lastSecurityManagerInstalled = securityManager;
+        // If there is a java.security.policy property defined,
+        // it takes precedence over the one passed to this object.
+        // Otherwise, we default to the one passed to the constructor
+        //
+        String securityPolicyProperty 
+            = System.getProperty(PROPERTY_JAVA_SECURITY_POLICY);
 
-        // Forces re-loading of the security policy
-        policy.refresh();
+        if (securityPolicyProperty == null) {
+            // Specify app's security policy in the
+            // system property. 
+            ClassLoader cl = appMainClass.getClassLoader();
+            URL policyURL = cl.getResource(securityPolicy);
+            
+            if (policyURL == null) {
+                throw new NullPointerException
+                    (Messages.formatMessage(EXCEPTION_NO_POLICY_FILE,
+                                        new Object[]{securityPolicy}));
+            }
+            
+            System.setProperty(PROPERTY_JAVA_SECURITY_POLICY,
+                               policyURL.toString());
+            
+            // 
+            // The following detects whether the application is running in the
+            // development environment, in which case it will set the 
+            // app.dev.base property or if it is running in the binary
+            // distribution, in which case it will set the app.jar.base
+            // property. These properties are expanded in the security 
+            // policy files.
+            // Property expansion is used to provide portability of the 
+            // policy files between various code bases (e.g., file base,
+            // server base, etc..).
+            //
+            URL mainClassURL = cl.getResource(appMainClassRelativeURL);
+            if (mainClassURL == null){
+                // Something is really wrong: we would be running a class
+                // which can't be found....
+                throw new Error(appMainClassRelativeURL);
+            }
+            
+            String expandedMainClassName = mainClassURL.toString();
+            if (expandedMainClassName.startsWith(JAR_PROTOCOL) ) {
+                setJarBase(expandedMainClassName);
+            } else {
+                setDevBase(expandedMainClassName);
+            }
+            
+            // Install new security manager
+            System.setSecurityManager(securityManager);
+            lastSecurityManagerInstalled = securityManager;
+            
+            // Forces re-loading of the security policy
+            policy.refresh();
+        }
     }
 
     private void setJarBase(String expandedMainClassName){
-        expandedMainClassName = expandedMainClassName.substring(JAR_PROTOCOL.length());
-
-        int codeBaseEnd = 
-            expandedMainClassName.indexOf(appJarFile +
-                                          JAR_URL_FILE_SEPARATOR +
-                                          appMainClassRelativeURL);
-
-        if (codeBaseEnd == -1){
-            // Something is seriously wrong. This should *never* happen
-            // as the APP_SECURITY_POLICY_URL is such that it will be
-            // a substring of its corresponding URL value
-            throw new Error();
+        //
+        // Only set the app.jar.base if it is not already defined
+        //
+        String curAppJarBase = System.getProperty(PROPERTY_APP_JAR_BASE);
+        if (curAppJarBase == null) {
+            expandedMainClassName = expandedMainClassName.substring(JAR_PROTOCOL.length());
+            
+            int codeBaseEnd = 
+                expandedMainClassName.indexOf(appJarFile +
+                                              JAR_URL_FILE_SEPARATOR +
+                                              appMainClassRelativeURL);
+            
+            if (codeBaseEnd == -1){
+                // Something is seriously wrong. This should *never* happen
+                // as the APP_SECURITY_POLICY_URL is such that it will be
+                // a substring of its corresponding URL value
+                throw new Error();
+            }
+            
+            String appCodeBase = expandedMainClassName.substring(0, codeBaseEnd);
+            System.setProperty(PROPERTY_APP_JAR_BASE, appCodeBase);
         }
-
-        String appCodeBase = expandedMainClassName.substring(0, codeBaseEnd);
-        System.setProperty(PROPERTY_APP_JAR_BASE, appCodeBase);
     }
 
     /**
@@ -236,19 +252,26 @@ public class ApplicationSecurityEnforcer {
      * development version
      */
     private void setDevBase(String expandedMainClassName){
-        int codeBaseEnd = 
-            expandedMainClassName.indexOf(APP_MAIN_CLASS_DIR + 
-                                          appMainClassRelativeURL);
-
-        if (codeBaseEnd == -1){
-            // Something is seriously wrong. This should *never* happen
-            // as the APP_SECURITY_POLICY_URL is such that it will be
-            // a substring of its corresponding URL value
-            throw new Error();
+        //
+        // Only set the app.code.base property if it is not already
+        // defined.
+        //
+        String curAppCodeBase = System.getProperty(PROPERTY_APP_DEV_BASE);
+        if (curAppCodeBase == null) {
+            int codeBaseEnd = 
+                expandedMainClassName.indexOf(APP_MAIN_CLASS_DIR + 
+                                              appMainClassRelativeURL);
+            
+            if (codeBaseEnd == -1){
+                // Something is seriously wrong. This should *never* happen
+                // as the APP_SECURITY_POLICY_URL is such that it will be
+                // a substring of its corresponding URL value
+                throw new Error();
+            }
+            
+            String appCodeBase = expandedMainClassName.substring(0, codeBaseEnd);
+            System.setProperty(PROPERTY_APP_DEV_BASE, appCodeBase);
         }
-
-        String appCodeBase = expandedMainClassName.substring(0, codeBaseEnd);
-        System.setProperty(PROPERTY_APP_DEV_BASE, appCodeBase);
     }
 
 
