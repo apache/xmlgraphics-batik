@@ -1,0 +1,91 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN"
+"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+
+
+<!-- ========================================================================= -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.        -->
+<!--                                                                           -->
+<!-- This software is published under the terms of the Apache Software License -->
+<!-- version 1.1, a copy of which has been included with this distribution in  -->
+<!-- the LICENSE file.                                                         -->
+<!-- ========================================================================= -->
+
+<!-- ========================================================================= -->
+<!--                                                                           -->
+<!-- @author vincent.hardy@sun.com                                             -->
+<!-- @version $Id$          -->
+<!-- ========================================================================= -->
+
+<svg xmlns="http://www.w3.org/2000/svg" 
+     xmlns:xlink="http://www.w3.org/1999/xlink" 
+     xmlns:test="http://xml.apache.org/batik/test"
+     width="350" height="350" onload="runTest(evt)" >
+
+    <test:testResult id="testResult" result="failed" code="invalid.path.seg.value"/>
+
+    <script type="text/ecmascript"><![CDATA[
+   var testNS = "http://xml.apache.org/batik/test";
+   var svgNS = "http://www.w3.org/2000/svg";
+
+   function runTest() {
+       var result = document.getElementById("testResult");
+       var p = document.getElementById("path");
+       if (p == null) {
+           return;
+       }
+
+       var psl = p.pathSegList;
+
+       if (psl == null) {
+          return;
+       }
+
+       if (psl.numberOfItems != 3) {
+           result.setAttributeNS(null, "code", "wrong.number.of.path.seg");
+           return;
+       }
+
+       var ps = psl.getItem(0);
+       if (ps == null || ps.pathSegType != 2) {
+           result.setAttributeNS(null, "code", "wrong.first.seg.type.0.M.vs." + ps.pathSegType);
+           return;
+       }
+
+       ps = psl.getItem(1);
+       if (ps == null || ps.pathSegType != 16) {
+           result.setAttributeNS(null, "code", "wrong.first.seg.type.1.S.vs." + ps.pathSegType);
+           return;
+       }
+
+       if (ps.x2 != 1 || ps.y2 != 2 || ps.x != 3 || ps.y != 4) {
+           result.setAttributeNS(null, "code", "wrong.x2.1.vs." + ps.x2 + " or y2.2.vs." + ps.y2 + " or x.3.vs." + ps.x + " or y.4.vs." + ps.y);
+           return;
+       }
+
+       ps.x2 = 10;
+       ps.y2 = 20;
+       ps.x = 30;
+       ps.y = 40;
+
+       if (ps.x2 != 10 || ps.y2 != 20 || ps.x != 30 || ps.y != 40) {
+           result.setAttributeNS(null, "code", "wrong.x2.10.vs." + ps.x2 + " or y2.20.vs." + ps.y2 + " or x.30.vs." + ps.x + " or y.40.vs." + ps.y);
+           return;
+       }
+
+       ps = psl.getItem(2);
+       if (ps == null || ps.pathSegType != 1) {
+           result.setAttributeNS(null, "code", "wrong.first.seg.type.2.Z.vs." + ps.pathSegType);
+           return;
+       }
+
+       var t = document.getElementById("text"); 
+       t.setAttributeNS(null, "fill", "#0F0");
+       result.setAttributeNS(null, "result", "passed");
+   }
+
+]]></script>
+
+    <text id="text" x="50%" y="50%" text-anchor="middle" fill="red">This string is red if test failed, green otherwise</text>
+    <path d="M 0 0 S 1 2 3 4 Z" id="path"/>
+</svg>
