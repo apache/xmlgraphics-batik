@@ -117,6 +117,18 @@ public class MarkerShapePainter implements ShapePainter {
     }
 
     /**
+     * Returns the bounds of the area painted by this shape painter
+     */
+    public Rectangle2D getPaintedBounds(){
+	Shape shape = getPaintedArea();
+	if (shape != null){
+	    return shape.getBounds2D();
+	} else {
+	    return null;
+	}
+    }
+
+    /**
      * Sets the Shape this shape painter is associated with.
      *
      * @param shape new shape this painter should be associated with.

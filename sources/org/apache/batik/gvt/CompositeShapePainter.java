@@ -12,6 +12,7 @@ import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.geom.Area;
 import java.awt.geom.GeneralPath;
+import java.awt.geom.Rectangle2D;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -118,6 +119,25 @@ public class CompositeShapePainter implements ShapePainter {
             return null;
         }
     }
+
+    /**
+     * Returns the bounds of the area painted by this shape painter
+     */
+    public Rectangle2D getPaintedBounds(){
+        if (painters != null) {
+            GeneralPath paintedArea = new GeneralPath();
+            for (int i=0; i < count; ++i) {
+                Shape s = painters[i].getPaintedArea();
+                if (s != null) {
+                    paintedArea.append(s, false);
+                }
+            }
+            return paintedArea.getBounds2D();
+        } else {
+            return null;
+        }
+    }
+
 
     /**
      * Sets the Shape this shape painter is associated with.

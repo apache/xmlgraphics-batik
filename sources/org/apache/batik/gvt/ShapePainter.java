@@ -10,6 +10,7 @@ package org.apache.batik.gvt;
 
 import java.awt.Shape;
 import java.awt.Graphics2D;
+import java.awt.geom.Rectangle2D;
 
 /**
  * Renders the shape of a <tt>ShapeNode</tt>.
@@ -30,6 +31,11 @@ public interface ShapePainter {
      * Returns the area painted by this shape painter.
      */
     Shape getPaintedArea();
+
+    /**
+     * Returns the bounds of the area painted by this shape painter
+     */
+    Rectangle2D getPaintedBounds();
 
     /**
      * Sets the Shape this shape painter is associated with.
