@@ -15,4 +15,9 @@
     <!-- Validates that the SVGRenderingAccuracyTest class is operating as expected -->
     <!-- ========================================================================== -->
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTestValidator" />
+
+    <!-- ========================================================================== -->
+    <!-- Validates that the SVGAccuracyTest class is operating as expected          -->
+    <!-- ========================================================================== -->
+    <test class="org.apache.batik.svggen.SVGAccuracyTestValidator" />
 </testSuite>

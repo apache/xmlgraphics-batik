@@ -58,27 +58,6 @@ import org.w3c.dom.NodeList;
  */
 public class XMLTestSuiteRunner implements XTRunConstants, XTSConstants{
     /**
-     * An error happened while processing a <tt>Test</tt>
-     * description.
-     * {0} : the <test> "className" attribute value
-     * {1} : exception's class name
-     * {2} : exception's message
-     * {3} : exception's stack trace
-     */
-    public static final String CANNOT_CREATE_TEST
-        = "xml.XMLTestSuiteRunner.error.cannot.create.test";
-
-    /**
-     * An error happened while loading a test suite document.
-     * {0} : the &lt;testSuite&gt; href value.
-     * {1} : the exception's class name
-     * {2} : exception's message
-     * {3} : exception's stack trace
-     */
-    public static final String TEST_SUITE_LOADING_EXCEPTION
-        = "xml.XMLTestSuiteRunner.error.test.suite.loading.exception";
-
-    /**
      * An error happened while processing a <tt>TestreportProcessor</tt>
      * description.
      * {0} : the <testReportProcessor> "className" attribute value
@@ -149,19 +128,14 @@ public class XMLTestSuiteRunner implements XTRunConstants, XTSConstants{
      */
     protected TestReportProcessor buildProcessor(Element element)
         throws TestException {
-
-        String className 
-            = element.getAttributeNS(null,
-                                     XTRun_CLASS_ATTRIBUTE);
-        
         try{
-            return (TestReportProcessor)buildObject(className, element);
+            return (TestReportProcessor)XMLReflect.buildObject(element);
         }catch(Exception e){
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
             e.printStackTrace(pw);
             throw new TestException(CANNOT_CREATE_TEST_REPORT_PROCESSOR,
-                                    new Object[] { className,
+                                    new Object[] { element.getAttributeNS(null, XR_CLASS_ATTRIBUTE),
                                                    e.getClass().getName(),
                                                    e.getMessage(),
                                                    sw.toString() },
@@ -188,52 +162,10 @@ public class XMLTestSuiteRunner implements XTRunConstants, XTSConstants{
             String suiteHref = 
                 testSuites[i].getAttributeNS(null, XTRun_HREF_ATTRIBUTE);
 
-            testSuite.addTest( loadTestSuite(suiteHref) );
+            testSuite.addTest( XMLTestSuiteLoader.loadTestSuite(suiteHref) );
         }
 
         return testSuite;
-    }
-
-    /**
-     * Load the test suite defined by the input URI
-     */
-    protected TestSuite loadTestSuite(String testSuiteURI) 
-        throws TestException{
-        Document testSuiteDocument = loadTestSuiteDocument(testSuiteURI);
-        return buildTestSuite(testSuiteDocument.getDocumentElement());
-    }
-
-    /**
-     * Loads the URI as a <tt>Document</tt>
-     */
-    protected Document loadTestSuiteDocument(String testSuiteURI)
-        throws TestException{
-        DocumentFactory df 
-            = new SAXDocumentFactory(SVGDOMImplementation.getDOMImplementation(), 
-                                     Messages.formatMessage(XML_PARSER, null));
-
-        Document doc = null;
-
-        try{
-            URL url = new URL(testSuiteURI);
-            doc = df.createDocument(null,
-                                    XTS_TEST_SUITE_TAG,
-                                    url.toString(),
-                                    url.openStream());
-        }catch(Exception e){
-            StringWriter sw = new StringWriter();
-            PrintWriter pw = new PrintWriter(sw);
-            e.printStackTrace(pw);
-            throw new TestException(TEST_SUITE_LOADING_EXCEPTION,
-                                    new Object[] { testSuiteURI,
-                                                   e.getClass().getName(),
-                                                   e.getMessage(),
-                                                   sw.toString() },
-                                    e);            
-
-        }
-
-        return doc;
     }
 
     /**
@@ -269,209 +201,6 @@ public class XMLTestSuiteRunner implements XTRunConstants, XTSConstants{
         return a;        
     }
 
-    /**
-     * Builds a <tt>TestSuite</tt> from an input element.
-     * This method assumes that element is a &lt;testSuite&gt;
-     * instance, as the input document should have been
-     * validated when loaded.
-     */
-    protected TestSuite buildTestSuite(Element element) 
-        throws TestException {
-        DefaultTestSuite testSuite 
-            = new DefaultTestSuite();
-
-        String suiteName 
-            = element.getAttributeNS(null,
-                                     XTRun_NAME_ATTRIBUTE);
-
-        testSuite.setName(suiteName + " -- " + testSuite.getName());
-
-        NodeList children = element.getChildNodes();
-        if(children != null && children.getLength() > 0){
-            int n = children.getLength();
-            for(int i=0; i<n; i++){
-                Node child = children.item(i);
-                if(child.getNodeType() == Node.ELEMENT_NODE){
-                    Element childElement = (Element)child;
-                    String tagName = childElement.getTagName().intern();
-                    if(tagName == XTS_TEST_TAG){
-                        Test t = buildTest(childElement);
-                        testSuite.addTest(t);
-                    }
-                }
-            }
-        }
-
-        return testSuite;
-    }
-
-    protected Test buildTest(Element element) throws TestException {
-        String className 
-            = element.getAttributeNS(null,
-                                     XTS_CLASS_ATTRIBUTE);
-        
-        try{
-            return (Test)buildObject(className, element);
-
-        }catch (Exception e) {
-            StringWriter sw = new StringWriter();
-            PrintWriter pw = new PrintWriter(sw);
-            e.printStackTrace(pw);
-            throw new TestException(CANNOT_CREATE_TEST,
-                                    new Object[] { className,
-                                                   e.getClass().getName(),
-                                                   e.getMessage(),
-                                                   sw.toString() },
-                                    e);
-        }
-    }
-
-    /**
-     * Implementation helper: builds a generic object
-     */
-    public Object buildObject(String className, 
-                              Element element) throws Exception {
-        Class cl = Class.forName(className);
-        Object[] argsArray = null;
-        Class[]  argsClasses = null;
-        
-        NodeList children = element.getChildNodes();
-        if(children != null && children.getLength() > 0){
-            int n = children.getLength();
-            Vector args = new Vector();
-            for(int i=0; i<n; i++){
-                Node child = children.item(i);
-                if(child.getNodeType() == Node.ELEMENT_NODE){
-                    Element childElement = (Element)child;
-                    String tagName = childElement.getTagName().intern();
-                    if(tagName == XTS_ARG_TAG){
-                        Object arg = buildArgument(childElement);
-                        args.addElement(arg);
-                    }
-                }
-            }
-            
-            if(args.size() > 0){
-                argsArray = new Object[args.size()];
-                args.copyInto(argsArray);
-                
-                argsClasses = new Class[args.size()];
-                
-                for(int i=0; i<args.size(); i++){
-                    argsClasses[i] = argsArray[i].getClass();
-                }
-            }
-        }
-        
-        Constructor constructor 
-            = getDeclaredConstructor(cl, argsClasses);
-        
-        return configureObject(constructor.newInstance(argsArray),
-                               element);
-    }
-
-    /**
-     * Implementation helper: configures a generic object
-     */
-    public Object configureObject(Object obj,
-                                  Element element) throws Exception {
-        NodeList children = element.getChildNodes();
-        if(children != null && children.getLength() > 0){
-            int n = children.getLength();
-            Vector args = new Vector();
-            for(int i=0; i<n; i++){
-                Node child = children.item(i);
-                if(child.getNodeType() == Node.ELEMENT_NODE){
-                    Element childElement = (Element)child;
-                    String tagName = childElement.getTagName().intern();
-                    if(tagName == XTS_PROPERTY_TAG){
-                        Object arg = buildArgument(childElement);
-                        String propertyName 
-                            = childElement.getAttributeNS(null, XTS_NAME_ATTRIBUTE);
-                        setObjectProperty(obj, propertyName, arg);
-                    }
-                }
-            }
-            
-        }
-        
-        return obj;
-    }
-
-    /**
-     * Sets the property with given name on object to the input value
-     */
-    protected void setObjectProperty(Object obj,
-                                     String propertyName,
-                                     Object propertyValue) 
-        throws Exception {
-        Class cl = obj.getClass();
-        Method m = cl.getDeclaredMethod("set" + propertyName,
-                                        new Class[]{propertyValue.getClass()});
-
-        if(m != null){
-            m.invoke(obj, new Object[]{propertyValue});
-        }
-    }
-
-
-    /**
-     * Returns a constructor that has can be used for the input class
-     * types.
-     */
-    protected Constructor getDeclaredConstructor(Class cl,
-                                                 Class[] argClasses){
-        Constructor[] cs = cl.getDeclaredConstructors();
-        for(int i=0; i<cs.length; i++){
-            Class[] reqArgClasses = cs[i].getParameterTypes();
-            if(reqArgClasses != null && reqArgClasses.length > 0){
-                if(reqArgClasses.length == argClasses.length){
-                    int j=0;
-                    for(; j<argClasses.length; j++){
-                        if(!reqArgClasses[j].isAssignableFrom(argClasses[j])){
-                            break;
-                        }
-                    }
-                    if(j == argClasses.length){
-                        return cs[i];
-                    }
-                }
-            }
-            else{
-                if(argClasses == null || argClasses.length == 0){
-                    return cs[i];
-                }
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Limitation: Arguments *must* have a String based
-     * constructor. Or be an object that takes a set of string
-     * based arguments.
-     */
-    public Object buildArgument(Element element) throws Exception {
-        String classAttr = element.getAttributeNS(null,
-                                             XTS_CLASS_ATTRIBUTE);
-
-        if(!element.hasChildNodes()){
-            String value = element.getAttributeNS(null,
-                                                  XTS_VALUE_ATTRIBUTE);
-            
-            // String based argument
-            Class cl = Class.forName(classAttr);
-            
-            Constructor constructor 
-                = cl.getDeclaredConstructor(new Class[] { String.class });
-            
-            return constructor.newInstance(new Object[] {value});
-        }
-        else{
-            return buildObject(classAttr, element);
-        }
-    }
 
     /**
      * Runs the test suite described by the input

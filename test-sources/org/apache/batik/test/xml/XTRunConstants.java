@@ -21,8 +21,6 @@ public interface XTRunConstants {
     /////////////////////////////////////////////////////////////////////////
     // XTRun tags
     /////////////////////////////////////////////////////////////////////////
-    String XTRun_ARG_TAG = "arg";
-    String XTRun_PROPERTY_TAG = "property";
     String XTRun_TEST_RUN_TAG = "testRun";
     String XTRun_TEST_SUITE_TAG = "testSuite";
     String XTRun_TEST_REPORT_PROCESSOR_TAG = "testReportProcessor";
@@ -30,8 +28,6 @@ public interface XTRunConstants {
     /////////////////////////////////////////////////////////////////////////
     // XTRun attributes
     /////////////////////////////////////////////////////////////////////////
-    String XTRun_CLASS_ATTRIBUTE = "class";
     String XTRun_HREF_ATTRIBUTE = "href";
     String XTRun_NAME_ATTRIBUTE  = "name";
-    String XTRun_VALUE_ATTRIBUTE = "value";
 }
