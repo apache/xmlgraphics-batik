@@ -181,11 +181,11 @@ public class Parser implements org.w3c.css.sac.Parser {
     }
 
     /**
-     * This methods returns "CSS2".
-     * @return the string "CSS2".
+     * This methods returns "http://www.w3.org/TR/REC-CSS2".
+     * @return the string "http://www.w3.org/TR/REC-CSS2".
      */    
     public String getParserVersion() {
-	return "CSS2";
+	return "http://www.w3.org/TR/REC-CSS2";
     }
 
     /**
@@ -361,7 +361,7 @@ public class Parser implements org.w3c.css.sac.Parser {
 	// set the real reader of this source.
 	source.setCharacterStream(new InputStreamReader(source.getByteStream(),
                                              Encoding.getJavaEncoding(encoding)));
-	// reset the stream (left the charset declaration in the stream).
+	// reset the stream (leave the charset declaration in the stream).
 	input.reset();
 
 	return new Generic_CharStream(source.getCharacterStream(), 1, 1);
@@ -513,7 +513,6 @@ TOKEN :
 {
   < STRING      : ( "\"" ( <STRINGCHAR> | "'" )* "\"" ) | 
                   ( "'" ( <STRINGCHAR> | "\"" )* "'" ) >
-  | < INHERIT     : "inherit" >
   | < IDENT         : <NMSTART> ( <NMCHAR> )* >
   | < NUMBER	  : ( <D> )+ | ( <D> )* "." ( <D> )+ > 
   | < #_URL       : [ "!","#","$","%","&","*"-"~" ] | <NONASCII> | <ESCAPE> >
@@ -1030,7 +1029,8 @@ Selector simple_selector(Selector selector, char comb) :
 		    break;
 		case '+':
 		    selector = 
-			selectorFactory.createDirectAdjacentSelector(selector, 
+			selectorFactory.createDirectAdjacentSelector((short) 1,
+								     selector, 
 								     simple_current);
 		    break;
 		case '>':
@@ -1380,14 +1380,19 @@ LexicalUnitImpl term(LexicalUnitImpl prev) :
 	  LexicalUnitImpl.createString(n.beginLine, n.beginColumn, prev,
 				       convertStringIndex(n.image, 1, 
 							  n.image.length() -1));}
-       | n=<INHERIT> 
-	{ result = LexicalUnitImpl.createInherit(n.beginLine,
-                                                 n.beginColumn, prev); }
        | n=<IDENT> 
-	{ result = LexicalUnitImpl.createIdent(n.beginLine, n.beginColumn,
+      { String s = convertIdent(n.image);
+	if ("inherit".equals(s)) {
+	    result = LexicalUnitImpl.createInherit(n.beginLine, n.beginColumn,
+					       prev);
+	} else {
+	    result = LexicalUnitImpl.createIdent(n.beginLine, n.beginColumn,
 					       prev, convertIdent(n.image));
+	}
 
 	  /* /
+         Auto correction code used in the CSS Validator but must not
+          be used by a conformant CSS2 parser.
 	 * Common error :
 	 * H1 {
 	 *   color : black
@@ -1432,9 +1437,10 @@ LexicalUnitImpl function(char operator, LexicalUnitImpl prev) :
 	    throw new CSSParseException("invalid operator before a function.", 
 					getLocator());
 	}
+	String f = convertIdent(n.image);
         LexicalUnitImpl l = (LexicalUnitImpl) params;
 	boolean loop = true;
-	if (n.image.equals("rgb(")) {
+	if ("rgb(".equals(f)) {
 	    // this is a RGB declaration (e.g. rgb(255, 50%, 0) )
 	    int i = 0;
 	    while (loop && l != null && i < 5) {
@@ -1496,7 +1502,7 @@ LexicalUnitImpl function(char operator, LexicalUnitImpl prev) :
 
 		throw new JumpException();
 	    }
-	} else if (n.image.equals("counter(")) {
+	} else if ("counter".equals(f)) {
 	    int i = 0;
 	    while (loop && l != null && i < 3) {
 		switch (i) {
@@ -1522,7 +1528,7 @@ LexicalUnitImpl function(char operator, LexicalUnitImpl prev) :
 						     prev, params);
 	    }
 
-	} else if (n.image.equals("counters(")) {
+	} else if ("counters(".equals(f)) {
 	    
 	    int i = 0;
 	    while (loop && l != null && i < 5) {
@@ -1554,7 +1560,7 @@ LexicalUnitImpl function(char operator, LexicalUnitImpl prev) :
 		return LexicalUnitImpl.createCounters(n.beginLine, n.beginColumn,
 						      prev, params);
 	    }
-	} else if (n.image.equals("attr(")) {
+	} else if ("attr(".equals(f)) {
 	    if ((l != null)
 		&& (l.getNextLexicalUnit() == null)
 		&& (l.getLexicalUnitType() == LexicalUnit.SAC_IDENT)) {
@@ -1562,7 +1568,7 @@ LexicalUnitImpl function(char operator, LexicalUnitImpl prev) :
 						  l.getColumnNumber(),
 						  prev, l.getStringValue());
 	    }
-	} else if (n.image.equals("rect(")) {
+	} else if ("rect(".equals(f)) {
 	    int i = 0;
 	    while (loop && l != null && i < 7) {
 		switch (i) {
@@ -1614,8 +1620,8 @@ LexicalUnitImpl function(char operator, LexicalUnitImpl prev) :
 	    }
 	}
 	return LexicalUnitImpl.createFunction(n.beginLine, n.beginColumn, prev, 
-					      n.image.substring(0, 
-							n.image.length() -1),
+					      f.substring(0, 
+							f.length() -1),
 					      params);
     }
 }

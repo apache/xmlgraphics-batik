@@ -20,7 +20,8 @@ import org.w3c.css.sac.SimpleSelector;
 import org.w3c.css.sac.ElementSelector;
 import org.w3c.css.sac.CharacterDataSelector;
 import org.w3c.css.sac.ProcessingInstructionSelector;
-import org.w3c.css.sac.CombinatorSelector;
+import org.w3c.css.sac.SiblingSelector;
+import org.w3c.css.sac.DescendantSelector;
 import org.w3c.css.sac.Selector;
 import org.w3c.css.sac.Condition;
 import org.w3c.css.sac.CSSException;
@@ -174,8 +175,8 @@ public class SelectorFactoryImpl implements SelectorFactory {
      * @return the combinator selector.
      * @exception CSSException If this selector is not supported.
      */    
-    public CombinatorSelector createDescendantSelector(Selector parent,
-						SimpleSelector descendant)
+    public DescendantSelector createDescendantSelector(Selector parent,
+						       SimpleSelector descendant)
 	    throws CSSException {
 	return new DescendantSelectorImpl(parent, descendant);
     }
@@ -188,8 +189,8 @@ public class SelectorFactoryImpl implements SelectorFactory {
      * @return the combinator selector.
      * @exception CSSException If this selector is not supported.
      */    
-    public CombinatorSelector createChildSelector(Selector parent,
-						SimpleSelector child)
+    public DescendantSelector createChildSelector(Selector parent,
+						  SimpleSelector child)
 	    throws CSSException {
 	return new ChildSelectorImpl(parent, child);
     }
@@ -202,24 +203,15 @@ public class SelectorFactoryImpl implements SelectorFactory {
      * @return the combinator selector.
      * @exception CSSException If this selector is not supported.
      */
-    public CombinatorSelector createDirectAdjacentSelector(Selector child,
-						    SimpleSelector directAdjacent)
+    public SiblingSelector createDirectAdjacentSelector(short nodeType,
+							Selector child,
+							SimpleSelector directAdjacent)
 	    throws CSSException {
-	return new DirectAdjacentSelectorImpl(child, directAdjacent);
-    }
-
-    /**
-     * Creates a indirect adjacent selector.
-     *
-     * @param child the child selector
-     * @param adjacent the indirect adjacent selector
-     * @return the combinator selector.
-     * @exception CSSException If this selector is not supported.
-     */    
-    public CombinatorSelector createIndirectAdjacentSelector(Selector child,
-						    SimpleSelector indirectAdjacent)
-	    throws CSSException {
-	throw new CSSException(CSSException.SAC_NOT_SUPPORTED_ERR);
+	if (nodeType != 1) {	    
+	    throw new CSSException(CSSException.SAC_NOT_SUPPORTED_ERR);
+	} else {
+	    return new DirectAdjacentSelectorImpl(child, directAdjacent);
+	}
     }
 
 }

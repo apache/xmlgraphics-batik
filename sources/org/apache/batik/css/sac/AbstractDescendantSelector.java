@@ -8,24 +8,24 @@
 
 package org.apache.batik.css.sac;
 
-import org.w3c.css.sac.CombinatorSelector;
+import org.w3c.css.sac.DescendantSelector;
 import org.w3c.css.sac.Selector;
 import org.w3c.css.sac.SimpleSelector;
 
 /**
  * This class provides an abstract implementation of the {@link
- * org.w3c.css.sac.CombinatorSelector} interface.
+ * org.w3c.css.sac.DescendantSelector} interface.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public abstract class AbstractCombinatorSelector
-    implements CombinatorSelector,
+public abstract class AbstractDescendantSelector
+    implements DescendantSelector,
 	       ExtendedSelector {
     /**
-     * The parent selector.
+     * The ancestor selector.
      */
-    protected Selector parentSelector;
+    protected Selector ancestorSelector;
 
     /**
      * The simple selector.
@@ -33,11 +33,11 @@ public abstract class AbstractCombinatorSelector
     protected SimpleSelector simpleSelector;
 
     /**
-     * Creates a new CombinatorSelector object.
+     * Creates a new DescendantSelector object.
      */
-    protected AbstractCombinatorSelector(Selector parent,
+    protected AbstractDescendantSelector(Selector ancestor,
                                          SimpleSelector simple) {
-	parentSelector = parent;
+	ancestorSelector = ancestor;
 	simpleSelector = simple;
     }
 
@@ -49,7 +49,7 @@ public abstract class AbstractCombinatorSelector
 	if (obj == null || !(obj.getClass() != getClass())) {
 	    return false;
 	}
-	AbstractCombinatorSelector s = (AbstractCombinatorSelector)obj;
+	AbstractDescendantSelector s = (AbstractDescendantSelector)obj;
 	return s.simpleSelector.equals(simpleSelector);
     }
 
@@ -57,21 +57,21 @@ public abstract class AbstractCombinatorSelector
      * Returns the specificity of this selector.
      */
     public int getSpecificity() {
-	return ((ExtendedSelector)parentSelector).getSpecificity() +
+	return ((ExtendedSelector)ancestorSelector).getSpecificity() +
        	       ((ExtendedSelector)simpleSelector).getSpecificity();
     }
 
     /**
      * <b>SAC</b>: Implements {@link
-     * org.w3c.css.sac.CombinatorSelector#getParentSelector()}.
+     * org.w3c.css.sac.DescendantSelector#getAncestorSelector()}.
      */    
-    public Selector getParentSelector() {
-	return parentSelector;
+    public Selector getAncestorSelector() {
+	return ancestorSelector;
     }
 
     /**
      * <b>SAC</b>: Implements {@link
-     * org.w3c.css.sac.CombinatorSelector#getSimpleSelector()}.
+     * org.w3c.css.sac.DescendantSelector#getSimpleSelector()}.
      */    
     public SimpleSelector getSimpleSelector() {
 	return simpleSelector;

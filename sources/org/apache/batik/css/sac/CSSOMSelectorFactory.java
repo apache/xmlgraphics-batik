@@ -10,14 +10,15 @@ package org.apache.batik.css.sac;
 
 import org.w3c.css.sac.CSSException;
 import org.w3c.css.sac.CharacterDataSelector;
-import org.w3c.css.sac.CombinatorSelector;
 import org.w3c.css.sac.Condition;
 import org.w3c.css.sac.ConditionalSelector;
+import org.w3c.css.sac.DescendantSelector;
 import org.w3c.css.sac.ElementSelector;
 import org.w3c.css.sac.NegativeSelector;
 import org.w3c.css.sac.ProcessingInstructionSelector;
 import org.w3c.css.sac.Selector;
 import org.w3c.css.sac.SelectorFactory;
+import org.w3c.css.sac.SiblingSelector;
 import org.w3c.css.sac.SimpleSelector;
 
 /**
@@ -125,7 +126,7 @@ public class CSSOMSelectorFactory implements SelectorFactory {
      * <b>SAC</b>: Implements {@link
      * SelectorFactory#createDescendantSelector(Selector,SimpleSelector)}.
      */    
-    public CombinatorSelector createDescendantSelector
+    public DescendantSelector createDescendantSelector
         (Selector parent,
          SimpleSelector descendant)
 	throws CSSException {
@@ -136,7 +137,7 @@ public class CSSOMSelectorFactory implements SelectorFactory {
      * <b>SAC</b>: Implements {@link
      * SelectorFactory#createChildSelector(Selector,SimpleSelector)}.
      */    
-    public CombinatorSelector createChildSelector(Selector parent,
+    public DescendantSelector createChildSelector(Selector parent,
 						  SimpleSelector child)
 	throws CSSException {
 	return new CSSOMChildSelector(parent, child);
@@ -146,20 +147,12 @@ public class CSSOMSelectorFactory implements SelectorFactory {
      * <b>SAC</b>: Implements {@link
      * SelectorFactory#createDirectAdjacentSelector(Selector,SimpleSelector)}.
      */
-    public CombinatorSelector createDirectAdjacentSelector
-        (Selector child,
+    public SiblingSelector createDirectAdjacentSelector
+        (short          nodeType,
+         Selector       child,
          SimpleSelector directAdjacent)
 	throws CSSException {
-	return new CSSOMDirectAdjacentSelector(child, directAdjacent);
-    }
-
-    /**
-     * <b>SAC</b>: Implements {@link
-     *SelectorFactory#createIndirectAdjacentSelector(Selector,SimpleSelector)}.
-     */    
-    public CombinatorSelector createIndirectAdjacentSelector(
-        Selector child,
-	SimpleSelector indirectAdjacent) throws CSSException {
-	throw new CSSException("Not implemented in CSS2");
+	return new CSSOMDirectAdjacentSelector(nodeType, child,
+                                               directAdjacent);
     }
 }

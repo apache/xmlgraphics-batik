@@ -135,8 +135,8 @@ public interface SelectorFactory {
      * @return the combinator selector.
      * @exception CSSException If this selector is not supported.
      */    
-    CombinatorSelector createDescendantSelector(Selector parent,
-						SimpleSelector descendant)
+    DescendantSelector createDescendantSelector(Selector parent,
+					     SimpleSelector descendant)
 	throws CSSException;
 
     /**
@@ -147,32 +147,22 @@ public interface SelectorFactory {
      * @return the combinator selector.
      * @exception CSSException If this selector is not supported.
      */    
-    CombinatorSelector createChildSelector(Selector parent,
-						SimpleSelector child)
+    DescendantSelector createChildSelector(Selector parent,
+					   SimpleSelector child)
 	throws CSSException;
 
     /**
-     * Creates a direct adjacent selector.
+     * Creates a sibling selector.
      *
+     * @param nodeType the type of nodes in the siblings list.
      * @param child the child selector
      * @param adjacent the direct adjacent selector
-     * @return the combinator selector.
+     * @return the sibling selector with nodeType 
+               equals to org.w3c.dom.Node.ELEMENT_NODE
      * @exception CSSException If this selector is not supported.
      */
-    CombinatorSelector createDirectAdjacentSelector(Selector child,
-						    SimpleSelector directAdjacent)
+    SiblingSelector createDirectAdjacentSelector(short nodeType,
+						 Selector child,
+						 SimpleSelector directAdjacent)
 	throws CSSException;
-
-    /**
-     * Creates a indirect adjacent selector.
-     *
-     * @param child the child selector
-     * @param adjacent the indirect adjacent selector
-     * @return the combinator selector.
-     * @exception CSSException If this selector is not supported.
-     */    
-    CombinatorSelector createIndirectAdjacentSelector(Selector child,
-						    SimpleSelector indirectAdjacent)
-	throws CSSException;
-
 }
