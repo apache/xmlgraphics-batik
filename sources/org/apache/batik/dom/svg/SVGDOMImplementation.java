@@ -58,7 +58,7 @@ public class SVGDOMImplementation
         new SVGDOMImplementation();
 
     static {
-        EventSupport.registerEventFactory("SVGEvent",
+        EventSupport.registerEventFactory("SVGEvents",
             new EventSupport.EventFactory() {
                     public Event createEvent() {
                         return new SVGOMEvent();

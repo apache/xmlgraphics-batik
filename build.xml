@@ -75,6 +75,16 @@ To display the available targets type:
     <property name="site-skin"       value="${skins}/xml.apache.org/"/>
     <property name="print-skin"      value="${skins}/printer/"/>
 
+    <available property="rhino.present" classname="org.mozilla.javascript.Context">
+      <classpath refid="libs-classpath"/>
+    </available>
+    <available property="jpython.present" classname="org.phyton.util.PythonInterpreter">
+      <classpath refid="libs-classpath"/>
+    </available>
+    <available property="jacl.present" classname="tcl.lang.Interp">
+      <classpath refid="libs-classpath"/>
+    </available>
+
   </target>
 
   <path id="libs-classpath">
@@ -121,6 +131,9 @@ To display the available targets type:
     <javac srcdir="${src}" destdir="${dest}" deprecation="on">
       <classpath refid="libs-classpath"/>
       <exclude name="**/*.html"/>
+      <exclude name="**/rhino*" unless="rhino.present"/>      
+      <exclude name="**/jpython*" unless="jpython.present"/>
+      <exclude name="**/jacl*" unless="jacl.present"/>
     </javac>
 
     <copy file="${src}/org/w3c/flute/util/encoding.properties"

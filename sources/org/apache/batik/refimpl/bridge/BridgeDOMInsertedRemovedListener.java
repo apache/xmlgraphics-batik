@@ -26,13 +26,13 @@ import java.util.List;
 import java.util.Iterator;
 
 /**
- * This class listens to DOMNodeInserted and DOMNodeRemoved 
+ * This class listens to DOMNodeInserted and DOMNodeRemoved
  * events in the SVG tree.
  * @author <a href="mailto:etissandier@ilog.fr">Emmanuel Tissandier</a>
  * @version $Id$
  */
 public class BridgeDOMInsertedRemovedListener implements EventListener {
-    
+
     private static final String DOM_NODE_INSERTED_TYPE = "DOMNodeInserted";
     private static final String DOM_NODE_REMOVED_TYPE = "DOMNodeRemoved";
 
@@ -54,29 +54,34 @@ public class BridgeDOMInsertedRemovedListener implements EventListener {
     public void handleEvent(Event evt){
 
         MutationEvent event = (MutationEvent)evt;
-        
-        Node    child  = (Node)event.getTarget(); // The inserted or removed Element
+
+        Node child  = (Node)event.getTarget(); // The inserted or removed elmt
         Element parent = (Element)event.getRelatedNode(); // The parent
 
         if (child.getNodeType() == Node.ELEMENT_NODE) {
-        
+
             GraphicsNode gn = context.getGraphicsNode(parent);
 
             if (gn != null) { // The parent is an SVG element
                 // May be this should be done in the BridgeUpdateManager
-                
+
                 if (event.getType().equals(DOM_NODE_INSERTED_TYPE)){
-                    
-                    GraphicsNodeBridge graphicsNodeBridge = (GraphicsNodeBridge)context.getBridge((Element)child);
-                    GraphicsNode childGVTNode = graphicsNodeBridge.createGraphicsNode(context, (Element)child);
+
+                    GraphicsNodeBridge graphicsNodeBridge =
+                        (GraphicsNodeBridge)context.getBridge((Element)child);
+                    GraphicsNode childGVTNode =
+                        graphicsNodeBridge.createGraphicsNode(context,
+                                                              (Element)child);
                     ((CompositeGraphicsNode)gn).getChildren().add(childGVTNode);
 
                 } else { // DOM_NODE_REMOVED_TYPE
-                    
-                    GraphicsNode childGVTNode = context.getGraphicsNode((Element)child);
-                    ((CompositeGraphicsNode)gn).getChildren().remove(childGVTNode);
+
+                    GraphicsNode childGVTNode =
+                        context.getGraphicsNode((Element)child);
+                    ((CompositeGraphicsNode)gn).getChildren().
+                        remove(childGVTNode);
                     context.unbind((Element)child);
-                    
+
                 }
             }
         }

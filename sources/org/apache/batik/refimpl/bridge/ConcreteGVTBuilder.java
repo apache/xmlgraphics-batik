@@ -70,6 +70,9 @@ public class ConcreteGVTBuilder implements GVTBuilder, SVGConstants {
             throw new IllegalArgumentException(
                  "Bridge for "+svgRoot.getTagName()+" is not registered");
 
+        // <!> TODO this should be done only if we want binding !!!!
+        BridgeEventSupport.loadScripts(ctx, svgDocument);
+
         GraphicsNode treeRoot;
         treeRoot = graphicsNodeBridge.createGraphicsNode(ctx, svgRoot);
 
@@ -97,7 +100,6 @@ public class ConcreteGVTBuilder implements GVTBuilder, SVGConstants {
         // <!> TODO as previous lines this should be done only if we want
         // binding !!!!
         BridgeEventSupport.addGVTListener(ctx, svgRoot);
-        BridgeEventSupport.loadScripts(ctx, svgDocument);
 
         RootGraphicsNode root = ctx.getGVTFactory().createRootGraphicsNode();
         root.getChildren().add(treeRoot);

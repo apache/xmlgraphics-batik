@@ -340,6 +340,15 @@ public class JSVGCanvas
             gvtRoot = builder.build(bridgeContext, document);
             computeTransform();
 
+            // <!> HACK maybe not the right place to dispatch
+            // this event
+            // fire the load event
+            Event evt = document.createEvent("SVGEvents");
+            evt.initEvent("SVGLoad", false, false);
+            ((EventTarget)(document.
+                           getRootElement())).
+                dispatchEvent(evt);
+
             ((EventTarget)doc).addEventListener("DOMAttrModified",
                                                 new MutationListener(),
                                                 false);
@@ -1120,7 +1129,7 @@ public class JSVGCanvas
                 // Paint the marker
                 Dimension csize = JSVGCanvas.this.getSize();
                 Rectangle rect = new Rectangle(0, 0, csize.width, csize.height);
-                
+
                 GeneralPath p = new GeneralPath();
                 p.moveTo(0, 0);
                 p.lineTo(csize.width, 0);
@@ -1293,7 +1302,7 @@ public class JSVGCanvas
 
                     int dx = e.getX() - sx;
                     int dy = e.getY() - sy;
-                    
+
                     markerTransform =
                         AffineTransform.getTranslateInstance(dx, dy);
                     Dimension d = getSize();
@@ -1324,7 +1333,7 @@ public class JSVGCanvas
                 if (in) {
                     in = false;
                     markerTransform = new AffineTransform();
-                    
+
                     Dimension d = getSize();
                     paintImmediately(0, 0, d.width, d.height);
                 }
