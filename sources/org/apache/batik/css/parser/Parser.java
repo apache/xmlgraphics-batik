@@ -194,6 +194,7 @@ public class Parser implements ExtendedParser, Localizable {
                 if (current == LexicalUnits.IMPORT_SYMBOL) {
                     nextIgnoreSpaces();
                     parseImportRule();
+                    nextIgnoreSpaces();
                 } else {
                     break;
                 }
