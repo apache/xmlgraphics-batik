@@ -392,8 +392,8 @@ fybudeoweVphAAAAAElFTkSuQmCC" xlink:type="simple" xlink:actuate="onRequest" heig
       </defs>
       <g class="testC1">
         <text xml:space="preserve" x="10" y="20" class="testC2">Normal / Inverted</text>
-        <use x="10" y="30" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC3" xlink:actuate="onRequest" xlink:show="replace" />
-        <use x="70" y="30" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage2" xlink:type="simple" class="testC4" xlink:actuate="onRequest" xlink:show="replace" />
+        <use transform="matrix(1,0,0,1,10,30)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC3" xlink:actuate="onRequest" xlink:show="replace" />
+        <use transform="matrix(1,0,0,1,70,30)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage2" xlink:type="simple" class="testC4" xlink:actuate="onRequest" xlink:show="replace" />
       </g>
     </g>
   </g>

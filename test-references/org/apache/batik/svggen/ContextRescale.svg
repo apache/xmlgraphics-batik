@@ -941,13 +941,13 @@ rkJggg==" xlink:type="simple" xlink:actuate="onRequest" height="63" id="testimag
       </defs>
       <g class="testC1">
         <text xml:space="preserve" x="10" y="20" class="testC2">Brighter / Normal / Darker</text>
-        <use x="10" y="30" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC3" xlink:actuate="onRequest" xlink:show="replace" />
-        <use x="70" y="30" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage2" xlink:type="simple" class="testC4" xlink:actuate="onRequest" xlink:show="replace" />
-        <use x="130" y="30" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage3" xlink:type="simple" class="testC5" xlink:actuate="onRequest" xlink:show="replace" />
+        <use transform="matrix(1,0,0,1,10,30)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC3" xlink:actuate="onRequest" xlink:show="replace" />
+        <use transform="matrix(1,0,0,1,70,30)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage2" xlink:type="simple" class="testC4" xlink:actuate="onRequest" xlink:show="replace" />
+        <use transform="matrix(1,0,0,1,130,30)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage3" xlink:type="simple" class="testC5" xlink:actuate="onRequest" xlink:show="replace" />
         <text xml:space="preserve" x="10" y="20" class="testC6" transform="translate(0,113)">Rescale Red / Green / Blue</text>
-        <use x="10" y="30" transform="translate(0,113)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage4" xlink:type="simple" class="testC7" xlink:actuate="onRequest" xlink:show="replace" />
-        <use x="70" y="30" transform="translate(0,113)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage5" xlink:type="simple" class="testC8" xlink:actuate="onRequest" xlink:show="replace" />
-        <use x="130" y="30" transform="translate(0,113)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage6" xlink:type="simple" class="testC9" xlink:actuate="onRequest" xlink:show="replace" />
+        <use transform="translate(0,113) matrix(1,0,0,1,10,30)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage4" xlink:type="simple" class="testC7" xlink:actuate="onRequest" xlink:show="replace" />
+        <use transform="translate(0,113) matrix(1,0,0,1,70,30)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage5" xlink:type="simple" class="testC8" xlink:actuate="onRequest" xlink:show="replace" />
+        <use transform="translate(0,113) matrix(1,0,0,1,130,30)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage6" xlink:type="simple" class="testC9" xlink:actuate="onRequest" xlink:show="replace" />
       </g>
     </g>
   </g>

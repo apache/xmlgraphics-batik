@@ -193,7 +193,7 @@ iQBfbSAwQjZ0OjCKN6SiSG/SUh9N9BwiHBJJM0lzsjtAUthFtsMjFogUz16uHVGm
 0ENZp2arI3rHZFLl7ifblZIUJP3/xKLSFlvxD0QAAAAASUVORK5CYII=" xlink:type="simple" xlink:actuate="onRequest" height="63" id="testimage1" preserveAspectRatio="xMidYMid meet" xlink:show="replace" />
       </defs>
       <g class="testC1" transform="translate(40,40)">
-        <use x="0" y="0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC2" xlink:actuate="onRequest" xlink:show="replace" />
+        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC2" xlink:actuate="onRequest" xlink:show="replace" />
       </g>
     </g>
   </g>
