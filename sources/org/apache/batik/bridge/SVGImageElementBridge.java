@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.XLinkSupport;
+import org.apache.batik.dom.svg.XMLBaseSupport;
 import org.apache.batik.ext.awt.color.ICCColorSpaceExt;
 import org.apache.batik.ext.awt.image.renderable.ClipRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.Filter;
@@ -104,14 +105,12 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
         GraphicsNode node = null;
         // try to load the image as an svg document
         SVGDocument svgDoc = (SVGDocument)e.getOwnerDocument();
-        URL baseURL = ((SVGOMDocument)svgDoc).getURLObject();
-        ParsedURL purl = new ParsedURL(baseURL, uriStr);
 
         // try to load an SVG document
         DocumentLoader loader = ctx.getDocumentLoader();
         URIResolver resolver = new URIResolver(svgDoc, loader);
         try {
-            Node n = resolver.getNode(purl.toString(), e);
+            Node n = resolver.getNode(uriStr, e);
             if (n.getNodeType() == n.DOCUMENT_NODE) {
                 SVGDocument imgDocument = (SVGDocument)n;
                 node = createSVGImageNode(ctx, e, imgDocument);
@@ -123,6 +122,13 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
         }
 
         if (node == null) {
+            String baseURI = XMLBaseSupport.getCascadedXMLBase(e);
+            ParsedURL purl;
+            if (baseURI == null)
+                purl = new ParsedURL(uriStr);
+            else 
+                purl = new ParsedURL(baseURI, uriStr);
+
             // try to load the image as a raster image (JPG or PNG)
             node = createRasterImageNode(ctx, e, purl);
         }

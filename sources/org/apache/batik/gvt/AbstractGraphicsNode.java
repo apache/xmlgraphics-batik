@@ -885,20 +885,6 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
             ((AbstractGraphicsNode) parent).invalidateGeometryCache();
         }
         bounds = null;
-
-        if (graphicsNodeRable != null) {
-            GraphicsNodeRable8Bit gnr;
-            gnr = (GraphicsNodeRable8Bit)graphicsNodeRable.get();
-            if (gnr != null)
-                gnr.clearCache();
-        }
-
-        if (enableBackgroundGraphicsNodeRable != null) {
-            GraphicsNodeRable8Bit gnr =
-                (GraphicsNodeRable8Bit)enableBackgroundGraphicsNodeRable.get();
-            if (gnr != null)
-                gnr.clearCache();
-        }
     }
 
     /**
