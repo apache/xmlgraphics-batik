@@ -8,8 +8,8 @@
 
 package org.apache.batik.css.parser;
 
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
 
 import org.apache.batik.util.io.NormalizingReader;

@@ -12,7 +12,6 @@ import org.w3c.css.sac.CSSException;
 import org.w3c.css.sac.DocumentHandler;
 import org.w3c.css.sac.InputSource;
 import org.w3c.css.sac.LexicalUnit;
-import org.w3c.css.sac.Parser;
 import org.w3c.css.sac.SACMediaList;
 import org.w3c.css.sac.SelectorList;
 

@@ -19,11 +19,10 @@ import org.w3c.css.sac.DocumentHandler;
 import org.w3c.css.sac.ErrorHandler;
 import org.w3c.css.sac.InputSource;
 import org.w3c.css.sac.LexicalUnit;
+import org.w3c.css.sac.Parser;
 import org.w3c.css.sac.SACMediaList;
 import org.w3c.css.sac.SelectorFactory;
 import org.w3c.css.sac.SelectorList;
-
-import org.w3c.css.sac.Parser;
 
 /**
  * This class implements the {@link org.apache.batik.css.parser.ExtendedParser} 

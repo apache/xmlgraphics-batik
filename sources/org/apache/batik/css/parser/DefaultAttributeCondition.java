@@ -8,7 +8,6 @@
 
 package org.apache.batik.css.parser;
 
-import org.w3c.dom.Element;
 
 /**
  * This class provides an implementation of the

@@ -12,8 +12,8 @@ import java.io.IOException;
 
 import org.w3c.css.sac.CSSException;
 import org.w3c.css.sac.LexicalUnit;
-import org.w3c.css.sac.SelectorList;
 import org.w3c.css.sac.SACMediaList;
+import org.w3c.css.sac.SelectorList;
 
 /**
  * This class implements the {@link org.w3c.css.sac.Parser} interface plus a

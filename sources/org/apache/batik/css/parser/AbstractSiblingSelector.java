@@ -8,8 +8,8 @@
 
 package org.apache.batik.css.parser;
 
-import org.w3c.css.sac.SiblingSelector;
 import org.w3c.css.sac.Selector;
+import org.w3c.css.sac.SiblingSelector;
 import org.w3c.css.sac.SimpleSelector;
 
 /**
