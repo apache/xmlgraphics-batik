@@ -164,11 +164,11 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
 
         ImageTagRegistry reg = ImageTagRegistry.getRegistry();
         Filter           img = reg.readURL(purl, extractColorSpace(e, ctx));
-        SVGDocument errDoc = (SVGDocument)img.getProperty
+        Object           obj = img.getProperty
             (SVGBrokenLinkProvider.SVG_BROKEN_LINK_DOCUMENT_PROPERTY);
-        if (errDoc != null) {
+        if ((obj != null) && (obj instanceof SVGDocument)) {
             // Ok so we are dealing with a broken link.
-            return createSVGImageNode(ctx, e, errDoc);
+            return createSVGImageNode(ctx, e, (SVGDocument)obj);
         }
         node.setImage(img);
 	Rectangle2D imgBounds = img.getBounds2D();

@@ -14,6 +14,8 @@ import com.sun.image.codec.jpeg.JPEGCodec;
 import java.io.InputStream;
 import java.io.IOException;
 import java.awt.image.BufferedImage;
+import java.awt.image.WritableRaster;
+import java.awt.image.ColorModel;
 
 import org.apache.batik.ext.awt.image.GraphicsUtil;
 import org.apache.batik.ext.awt.image.renderable.Filter;
@@ -72,6 +74,11 @@ public class JPEGRegistryEntry
                         CachableRed cr;
                         cr = GraphicsUtil.wrap(image);
                         cr = new Any2sRGBRed(cr);
+                        WritableRaster wr = (WritableRaster)cr.getData();
+                        ColorModel cm = cr.getColorModel();
+                        image = new BufferedImage
+                            (cm, wr, cm.isAlphaPremultiplied(), null);
+                        cr = GraphicsUtil.wrap(image);
                         filt = new RedRable(cr);
                     } catch (IOException ioe) {
                         // Something bad happened here...
