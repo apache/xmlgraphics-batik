@@ -26,7 +26,7 @@
 
     <defs>
         <pattern id="backgroundPattern" patternUnits="userSpaceOnUse"
-                 x="0" y="0" width="20" height="10" >
+                 x="0" y="0" width="20" height="10" style="overflow:hidden">
             <rect x="0" y="0" width="10" height="10" fill="rgb(110, 200, 255)" fill-opacity=".5" />
             <rect x="0" y="-5" width="8" height="20" fill="none" stroke="rgb(204, 102, 53)" stroke-width="1"/>
         </pattern>
@@ -64,14 +64,14 @@
 			L203.22,0h3.459c2.316,0,4.285,0.348,5.906,1.039c1.621,0.693,2.896,2.002,3.824,3.926z"/>
         </g>
 
-        <filter id="shadow" filterRes="200" x="0" y="0">
+        <filter id="shadow" filterRes="200" x="-.2" y="0">
             <feGaussianBlur stdDeviation="3 3" />
-            <feOffset dx="10" dy="10" />
+            <feOffset dx="-10" dy="10" />
         </filter>
 
-        <filter id="innerShadow" filterRes="500" x="0" y="0">
-            <feGaussianBlur stdDeviation="3 4"/>
-            <feOffset dx="10" dy="15" result="offsetShadow"/>
+        <filter id="innerShadow" filterRes="500" x="-.2" y="0">
+            <feGaussianBlur stdDeviation="3 4" in="SourceAlpha"/>
+            <feOffset dx="-10" dy="15" result="offsetShadow"/>
             <feComposite in2="SourceGraphic" in="offsetShadow" operator="out" />
         </filter>
 
@@ -81,15 +81,10 @@
 	    <path id="Inner_Ellipse" style="stroke:none;" d="M399.464,123.946C291.018,15.543,142.959-12.163,68.766,62.059c-74.192,74.224-46.423,222.27,62.023,330.672c108.445,108.402,256.503,136.11,330.696,61.886c74.192-74.223,46.424-222.27-62.021-330.672z
 			 M410.417,397.331c-58.115,58.14-179.371,31.157-270.832-60.267C48.124,245.64,21.092,124.396,79.207,66.256c58.116-58.139,179.372-31.157,270.833,60.267c91.46,91.424,118.493,212.668,60.377,270.808z"/>
 
-        <linearGradient x1=".25" x2="1" y1="0" y2="1" id="lightGradient">
-            <stop offset="0" stop-color="rgb(255, 255, 255)" stop-opacity="0" />
-            <stop offset=".75" stop-color="rgb(0, 0, 0)" stop-opacity=".25" />
-            <stop offset="1" stop-color="rgb(0, 0, 0)" stop-opacity=".5" />
-        </linearGradient>
 	</defs>
 
     <rect x="0" y="0" width="100%" height="100%" fill="rgb(13, 97, 160)" />
-    <g fill="rgb(238, 242, 64)">
+    <g fill="rgb(255, 255, 20)">
         <circle cx="50" cy="150" r="120" />
         <circle cx="100" cy="300" r="60" />
         <circle cx="350" cy="200" r="90" />
@@ -99,12 +94,14 @@
         <circle cx="-20" cy="500" r="120" />
     </g>
     <rect x="0" y="0" width="100%" height="100%" style="overflow:hidden; fill:url(#backgroundPattern)" />
-    <rect x="0" y="0" width="100%" height="100%" style="overflow:hidden; fill:url(#lightGradient)" />
 
-    <use xlink:href="#Inner_Ellipse" fill="black" filter="url(#innerShadow)" opacity=".5"/>
+    <g filter="url(#innerShadow)" opacity=".5">
+        <use xlink:href="#Outer_Ellipse" fill-opacity="1"/>
+        <use xlink:href="#Inner_Ellipse" fill-opacity="1"/>
+    </g>
 
-    <use xlink:href="#Outer_Ellipse" fill="rgb(0, 84, 147)" />
-    <use xlink:href="#Inner_Ellipse" fill="rgb(238, 242, 64)" fill-opacity=".75" />
+    <use xlink:href="#Outer_Ellipse" fill="rgb(13, 97, 160)" fill-opacity=".75"/>
+    <use xlink:href="#Inner_Ellipse" fill="rgb(255, 255, 20)" fill-opacity=".75" />
 
     <g transform="translate(50, 154) scale(1.5, 1.5)">
     <use x="0" y="0" xlink:href="#batik" 
@@ -114,7 +111,7 @@
          fill="none" stroke-width="8" stroke="rgb(13, 97, 160)"/>
 
     <use x="0" y="0" xlink:href="#batik" 
-         fill="rgb(238, 242, 64)" stroke="rgb(204, 102, 53)" stroke-width="1"/>
+         fill="rgb(255, 255, 20)" stroke="rgb(204, 102, 53)" stroke-width="1"/>
     </g>
 
     </g>
