@@ -411,11 +411,16 @@ public abstract class CSSEngine {
         }
 
         if (hints) {
-            len = vm.length;
-            nonCSSPresentationalHints = new HashSet();
+            nonCSSPresentationalHints = new HashSet(vm.length+sm.length);
             nonCSSPresentationalHintsNamespaceURI = hintsNS;
-            for (int i = len - 1; i >= 0; --i) {
+            len = vm.length;
+            for (int i = 0; i < len; i++) {
                 String pn = vm[i].getPropertyName();
+                nonCSSPresentationalHints.add(pn);
+            }
+            len = sm.length;
+            for (int i = 0; i < len; i++) {
+                String pn = sm[i].getPropertyName();
                 nonCSSPresentationalHints.add(pn);
             }
         }
@@ -665,7 +670,7 @@ public abstract class CSSEngine {
     public StyleMap getCascadedStyleMap(CSSStylableElement elt,
                                         String pseudo) {
         int props = getNumberOfProperties();
-        StyleMap result = new StyleMap(props);
+        final StyleMap result = new StyleMap(props);
 
         // Apply the user-agent style-sheet to the result.
         if (userAgentStyleSheet != null) {
@@ -683,7 +688,28 @@ public abstract class CSSEngine {
 
         element = elt;
         try {
-        // Apply the non-CSS presentational hints to the result.
+            // Apply the non-CSS presentational hints to the result.
+            ShorthandManager.PropertyHandler ph =
+                new ShorthandManager.PropertyHandler() {
+                    public void property(String pname, LexicalUnit lu,
+                                         boolean important) {
+                        int idx = getPropertyIndex(pname);
+                        if (idx != -1) {
+                            ValueManager vm = valueManagers[idx];
+                            Value v = vm.createValue(lu, CSSEngine.this);
+                            putAuthorProperty(result, idx, v, important,
+                                              StyleMap.NON_CSS_ORIGIN);
+                            return;
+                        }
+                        idx = getShorthandIndex(pname);
+                        if (idx == -1)
+                            return; // Unknown property...
+                        // Shorthand value
+                        shorthandManagers[idx].setValues
+                            (CSSEngine.this, this, lu, important);
+                    }
+                };
+
             if (nonCSSPresentationalHints != null) {
                 NamedNodeMap attrs = elt.getAttributes();
                 int len = attrs.getLength();
@@ -693,13 +719,8 @@ public abstract class CSSEngine {
                     if (nonCSSPresentationalHints.contains(an)) {
                         try {
                             LexicalUnit lu;
-                            int idx = getPropertyIndex(an);
-                            lu = parser.parsePropertyValue
-                                (attr.getNodeValue());
-                            ValueManager vm = valueManagers[idx];
-                            Value v = vm.createValue(lu, this);
-                            putAuthorProperty(result, idx, v, false,
-                                              StyleMap.NON_CSS_ORIGIN);
+                            lu = parser.parsePropertyValue(attr.getNodeValue());
+                            ph.property(an, lu, false);
                         } catch (Exception e) {
                             String m = e.getMessage();
                             if (m == null) m = "";

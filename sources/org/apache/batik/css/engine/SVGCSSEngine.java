@@ -147,12 +147,8 @@ public class SVGCSSEngine extends CSSEngine {
     private static ValueManager[] mergeArrays(ValueManager[] a1,
                                               ValueManager[] a2) {
         ValueManager[] result = new ValueManager[a1.length + a2.length];
-        for (int i = 0; i < a1.length; i++) {
-            result[i] = a1[i];
-        }
-        for (int i = 0; i < a2.length; i++) {
-            result[i + a1.length] = a2[i];
-        }
+        System.arraycopy(a1, 0, result, 0, a1.length);
+        System.arraycopy(a2, 0, result, a1.length, a2.length);
         return result;
     }
 
@@ -163,12 +159,8 @@ public class SVGCSSEngine extends CSSEngine {
                                                   ShorthandManager[] a2) {
         ShorthandManager[] result =
             new ShorthandManager[a1.length + a2.length];
-        for (int i = 0; i < a1.length; i++) {
-            result[i] = a1[i];
-        }
-        for (int i = 0; i < a2.length; i++) {
-            result[i + a1.length] = a2[i];
-        }
+        System.arraycopy(a1, 0, result, 0, a1.length);
+        System.arraycopy(a2, 0, result, a1.length, a2.length);
         return result;
     }
 
