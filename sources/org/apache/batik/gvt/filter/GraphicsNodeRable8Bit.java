@@ -251,6 +251,8 @@ public class GraphicsNodeRable8Bit
                 // Actually no translation
                 return cachedRed;
 
+            // System.out.println("Delta: [" + deltaX + ", " + deltaY + "]");
+
             // Integer translation in device space..
             if ((deltaX == (int)deltaX) &&
                 (deltaY == (int)deltaY)) {
