@@ -1,0 +1,233 @@
+/*****************************************************************************
+ * Copyright (C) The Apache Software Foundation. All rights reserved.        *
+ * ------------------------------------------------------------------------- *
+ * This software is published under the terms of the Apache Software License *
+ * version 1.1, a copy of which has been included with this distribution in  *
+ * the LICENSE file.                                                         *
+ *****************************************************************************/
+
+package org.apache.batik.refimpl.gvt.filter;
+
+import java.awt.geom.Rectangle2D;
+import java.awt.image.RenderedImage;
+import java.awt.image.renderable.RenderContext;
+
+import org.apache.batik.gvt.filter.FilterChainRable;
+import org.apache.batik.gvt.filter.Filter;
+import org.apache.batik.gvt.filter.PadRable;
+import org.apache.batik.gvt.filter.FilterRegion;
+import org.apache.batik.gvt.filter.FilterResRable;
+import org.apache.batik.gvt.filter.PadMode;
+
+import org.apache.batik.gvt.GraphicsNode;
+
+/**
+ * Implements a filter chain. A filter chain is defined by its
+ * filter region (i.e., the bounding box of its input/output), its
+ * filter resolution and its source. Its source cannot be null,
+ * but its resolution can. <br />
+ * The filter chain decomposes as follows: 
+ * <ul>
+ *  <li>A pad operation that makes the input image a big as the
+ *      filter region.</li>
+ *  <li>If there is a filterResolution specified along at least
+ *      one of the axis, a <tt>AffineRable</tt>
+ * </ul>
+ *
+ * @author <a href="mailto:vincent.hardy@eng.sun.com>Vincent Hardy</a>
+ * @version $Id$
+ */
+public class ConcreteFilterChainRable extends AbstractRable
+    implements FilterChainRable {
+    /**
+     * Resolution along the X axis
+     */
+    private int filterResolutionX;
+
+    /**
+     * Resolution along the Y axis
+     */
+    private int filterResolutionY;
+
+    /**
+     * The chain's source
+     */
+    private Filter chainSource;
+
+    /**
+     * Scale operation. May be null
+     */
+    private FilterResRable filterRes;
+
+    /**
+     * Crop operation.
+     */
+    private PadRable crop;
+
+    /**
+     * Filter region
+     */
+    private FilterRegion filterRegion;
+
+    /**
+     * Default constructor.
+     */
+    public ConcreteFilterChainRable(Filter source, FilterRegion filterRegion){
+        if(source == null){
+            throw new IllegalArgumentException();
+        }
+        if(filterRegion == null){
+            throw new IllegalArgumentException();
+        }
+
+        // Build crop with chain source and region
+        Rectangle2D padRect = filterRegion.getRegion();
+        crop = new ConcretePadRable(source, padRect, 
+                                    PadMode.ZERO_PAD);
+
+        // Keep a reference to the chain source and filter
+        // regions.
+        this.chainSource = source;
+        this.filterRegion = filterRegion;
+
+        // crop is the real shource for this filter
+        // The filter chain is a simple passthrough to its
+        // crop node.
+        init(crop); 
+  
+    }
+
+    /**
+     * Returns the resolution along the X axis.
+     */
+    public int getFilterResolutionX(){
+        return filterResolutionX;
+    }
+
+    /**
+     * Sets the resolution along the X axis, i.e., the maximum
+     * size for intermediate images along that axis.
+     * If filterResolutionX is less than zero, no filter resolution
+     * is forced on the filter chain. If filterResolutionX is zero,
+     * then the filter returns null. If filterResolutionX is positive,
+     * then the filter resolution is applied.
+     */
+    public void setFilterResolutionX(int filterResolutionX){
+        this.filterResolutionX = filterResolutionX;
+
+        setupFilterRes();
+    }
+
+    /**
+     * Returns the resolution along the Y axis.
+     */
+    public int getFilterResolutionY(){
+        return filterResolutionY;
+    }
+
+    /**
+     * Sets the resolution along the Y axis, i.e., the maximum
+     * size for intermediate images along that axis.
+     * If filterResolutionY is zero or less, the value of
+     * filterResolutionX is used.
+     */
+    public void setFilterResolutionY(int filterResolutionY){
+        this.filterResolutionY = filterResolutionY;
+        setupFilterRes();
+    }
+    
+    /**
+     * Implementation. Checks the current value of the 
+     * filterResolutionX and filterResolutionY attribute and 
+     * setup the filterRes operation accordingly.
+     */
+    private void setupFilterRes(){
+        if(filterResolutionX >=0){
+            if(filterRes == null){
+                filterRes = new ConcreteFilterResRable();
+                filterRes.setSource(chainSource);
+            }
+            
+            filterRes.setFilterResolutionX(filterResolutionX);
+            filterRes.setFilterResolutionY(filterResolutionY);
+        }
+        else{
+            // X is negative, this disables the resolution filter.
+            filterRes = null;
+        }
+
+        // Now, update the crop source to reflect the filterRes
+        // settings.
+        if(filterRes != null){
+            crop.setSource(filterRes);
+        }
+        else{
+            crop.setSource(chainSource);
+        }
+    }
+    
+    /**
+     * Sets the filter output area, in user space. 
+     * A null value is illegal.
+     */
+    public void setFilterRegion(FilterRegion filterRegion){
+        if(filterRegion == null){
+            throw new IllegalArgumentException();
+        }
+
+        // Update the crop operation with the new filter 
+        // region's size.
+        crop.setPadRect(filterRegion.getRegion());
+     }
+
+    /**
+     * Returns the filter output area, in user space
+     */
+    public FilterRegion getFilterRegion(){
+        return filterRegion;
+    }
+
+    /**
+     * Returns the source of the chain. Note that a crop and
+     * affine operation may be inserted before the source, 
+     * depending on the filterRegion and filterResolution 
+     * parameters.
+     */
+    public Filter getSource() {
+        return (Filter)srcs.get(0);
+    }
+    
+    /**
+     * Sets the source to be src.
+     * @param src image to the chain.
+     */
+    public void setSource(Filter chainSource) {
+        if(chainSource == null){
+            throw new IllegalArgumentException();
+        }
+        this.chainSource = chainSource;
+        
+        if(filterRes == null){
+            crop.setSource(chainSource);
+        }
+        else{
+            filterRes.setSource(chainSource);
+        }
+    }
+
+    /**
+     * Returns this filter's bounds
+     */
+    public Rectangle2D getBounds2D(){
+        // <!> HACK : Should not need to update the crop's here
+        crop.setPadRect(filterRegion.getRegion());
+        return filterRegion.getRegion();
+    }
+
+    public RenderedImage createRendering(RenderContext context){
+        // Update crop region
+        crop.setPadRect(filterRegion.getRegion());
+
+        return crop.createRendering(context);
+    }
+}

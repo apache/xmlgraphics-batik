@@ -1,0 +1,299 @@
+/*****************************************************************************
+ * Copyright (C) The Apache Software Foundation. All rights reserved.        *
+ * ------------------------------------------------------------------------- *
+ * This software is published under the terms of the Apache Software License *
+ * version 1.1, a copy of which has been included with this distribution in  *
+ * the LICENSE file.                                                         *
+ *****************************************************************************/
+
+package org.apache.batik.util.gui;
+
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+
+import java.awt.event.ActionEvent;
+
+import java.io.IOException;
+import java.io.File;
+
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.ResourceBundle;
+
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+
+import org.apache.batik.util.gui.resource.ActionMap;
+import org.apache.batik.util.gui.resource.ButtonFactory;
+import org.apache.batik.util.gui.resource.MissingListenerException;
+import org.apache.batik.util.gui.resource.ResourceManager;
+
+/**
+ * This class is a dialog used to enter an URI or to choose a local file
+ *
+ * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
+ * @version $Id$
+ */
+public class URIChooser extends JDialog implements ActionMap {
+    /**
+     * The resource file name
+     */
+    protected final static String RESOURCES =
+        "org.apache.batik.util.gui.resources.URIChooserMessages";
+
+    /**
+     * The resource bundle
+     */
+    protected static ResourceBundle bundle;
+
+    /**
+     * The resource manager
+     */
+    protected static ResourceManager resources;
+    static {
+        bundle = ResourceBundle.getBundle(RESOURCES, Locale.getDefault());
+        resources = new ResourceManager(bundle);
+    }
+    
+    /**
+     * The button factory
+     */
+    protected ButtonFactory buttonFactory;
+
+    /**
+     * The text field
+     */
+    protected JTextField textField;
+
+    /**
+     * The OK button
+     */
+    protected JButton okButton;
+    
+    /**
+     * The Clear button
+     */
+    protected JButton clearButton;
+
+    /**
+     * The external action associated with the ok button
+     */
+    protected Action okAction;
+
+    /**
+     * The current path.
+     */
+    protected String currentPath = ".";
+
+    /**
+     * Creates a new URIChooser
+     * @param d the parent dialog
+     * @param okAction the action to associate to the ok button
+     */
+    public URIChooser(JDialog d, Action okAction) {
+        super(d);
+        initialize(okAction);
+    }
+
+    /**
+     * Creates a new URIChooser
+     * @param f the parent frame
+     * @param okAction the action to associate to the ok button
+     */
+    public URIChooser(JFrame f, Action okAction) {
+        super(f);
+        initialize(okAction);
+    }
+
+    /**
+     * Returns the text contained in the text field
+     */
+    public String getText() {
+        return textField.getText();
+    }
+
+    /**
+     * Initializes the dialog
+     */
+    protected void initialize(Action okAction) {
+        this.okAction = okAction;
+        setModal(true);
+
+        listeners.put("BrowseButtonAction", new BrowseButtonAction());
+        listeners.put("OKButtonAction",     new OKButtonAction());
+        listeners.put("CancelButtonAction", new CancelButtonAction());
+        listeners.put("ClearButtonAction",  new ClearButtonAction());
+
+        setTitle(resources.getString("Dialog.title"));
+        buttonFactory = new ButtonFactory(bundle, this);
+        
+        getContentPane().add("North",  createURISelectionPanel());
+        getContentPane().add("South",  createButtonsPanel());
+    }
+
+    /**
+     * Creates the URI selection panel
+     */
+    protected JPanel createURISelectionPanel() {
+        JPanel p = new JPanel(new GridBagLayout());
+        p.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+            
+        ExtendedGridBagConstraints constraints;
+        constraints = new ExtendedGridBagConstraints();
+
+        constraints.insets = new Insets(5, 5, 5, 5);
+        constraints.weightx = 0;
+        constraints.weighty = 0;
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+        constraints.setGridBounds(0, 0, 2, 1);
+        p.add(new JLabel(resources.getString("Dialog.label")), constraints);
+
+        textField = new JTextField(30);
+        textField.getDocument().addDocumentListener(new DocumentAdapter());
+        constraints.weightx = 1.0;
+        constraints.weighty = 0;
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+        constraints.setGridBounds(0, 1, 1, 1);
+        p.add(textField, constraints);
+        
+        constraints.weightx = 0;
+        constraints.weighty = 0;
+        constraints.fill = GridBagConstraints.NONE;
+        constraints.setGridBounds(1, 1, 1, 1);
+        p.add(buttonFactory.createJButton("BrowseButton"), constraints);
+        
+        return p;
+    }
+
+    /**
+     * Creates the buttons panel
+     */
+    protected JPanel createButtonsPanel() {
+        JPanel  p = new JPanel(new FlowLayout());
+
+        p.add(okButton = buttonFactory.createJButton("OKButton"));
+        p.add(buttonFactory.createJButton("CancelButton"));
+        p.add(clearButton = buttonFactory.createJButton("ClearButton"));
+            
+        okButton.setEnabled(false);
+        clearButton.setEnabled(false);
+        
+        return p;
+    }
+
+    /**
+     * To update the state of the OK button
+     */
+    protected void updateOKButtonAction() {
+        okButton.setEnabled(!textField.getText().equals(""));
+    }
+
+    /**
+     * To update the state of the Clear button
+     */
+    protected void updateClearButtonAction() {
+        clearButton.setEnabled(!textField.getText().equals(""));
+    }
+
+    /**
+     * To listen to the document changes
+     */
+    protected class DocumentAdapter implements DocumentListener {
+        public void changedUpdate(DocumentEvent e) {
+            updateOKButtonAction();
+            updateClearButtonAction();
+        }
+            
+        public void insertUpdate(DocumentEvent e) {
+            updateOKButtonAction();
+            updateClearButtonAction();
+        }
+
+        public void removeUpdate(DocumentEvent e) {
+            updateOKButtonAction();
+            updateClearButtonAction();
+        }       
+    }
+
+    /**
+     * The action associated with the 'browse' button
+     */
+    protected class BrowseButtonAction extends AbstractAction {
+        public void actionPerformed(ActionEvent e) {
+            JFileChooser fileChooser = new JFileChooser(currentPath);
+            fileChooser.setFileHidingEnabled(false);
+            fileChooser.setFileSelectionMode
+                (JFileChooser.FILES_AND_DIRECTORIES);
+
+            int choice = fileChooser.showOpenDialog(URIChooser.this);
+            if (choice == JFileChooser.APPROVE_OPTION) {
+                File f = fileChooser.getSelectedFile();
+                try {
+                    textField.setText(currentPath = f.getCanonicalPath());
+                } catch (IOException ex) {
+                }
+            }
+        }
+    }
+
+    /**
+     * The action associated with the 'OK' button of the URI chooser
+     */
+    protected class OKButtonAction extends AbstractAction {
+        public void actionPerformed(ActionEvent e) {
+            okAction.actionPerformed(e);
+            dispose();
+            textField.setText("");
+        }
+    }
+
+    /**
+     * The action associated with the 'Cancel' button of the URI chooser
+     */
+    protected class CancelButtonAction extends AbstractAction {
+        public void actionPerformed(ActionEvent e) {
+            dispose();
+            textField.setText("");
+        }
+    }
+
+    /**
+     * The action associated with the 'Clear' button of the URI chooser
+     */
+    protected class ClearButtonAction extends AbstractAction {
+        public void actionPerformed(ActionEvent e) {
+            textField.setText("");
+        }
+    }
+
+    // ActionMap implementation
+
+    /**
+     * The map that contains the listeners
+     */
+    protected Map listeners = new HashMap(10);
+
+    /**
+     * Returns the action associated with the given string
+     * or null on error
+     * @param key the key mapped with the action to get
+     * @throws MissingListenerException if the action is not found
+     */
+    public Action getAction(String key) throws MissingListenerException {
+        return (Action)listeners.get(key);
+    }
+}
