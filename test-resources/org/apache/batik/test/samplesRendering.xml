@@ -212,6 +212,63 @@
     </test>
 
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:samples/tests/fontKerning.svg" />
+        <arg class="java.net.URL" value="file:test-references/samples/tests/fontKerning.png" />
+        <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/fontKerning.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/fontKerning.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:samples/tests/radialGradient2.svg" />
+        <arg class="java.net.URL" value="file:test-references/samples/tests/radialGradient2.png" />
+        <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/radialGradient2.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/radialGradient2.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:samples/tests/radialGradient3.svg" />
+        <arg class="java.net.URL" value="file:test-references/samples/tests/radialGradient3.png" />
+        <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/radialGradient3.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/radialGradient3.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:samples/tests/smallFonts.svg" />
+        <arg class="java.net.URL" value="file:test-references/samples/tests/smallFonts.png" />
+        <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/smallFonts.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/smallFonts.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:samples/tests/textDecoration.svg" />
+        <arg class="java.net.URL" value="file:test-references/samples/tests/textDecoration.png" />
+        <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/textDecoration.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/textDecoration.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:samples/tests/textOnPathSpaces.svg" />
+        <arg class="java.net.URL" value="file:test-references/samples/tests/textOnPathSpaces.png" />
+        <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/textOnPathSpaces.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/textOnPathSpaces.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:samples/tests/fontArabic.svg" />
+        <arg class="java.net.URL" value="file:test-references/samples/tests/fontArabic.png" />
+        <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/fontArabic.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/fontArabic.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:samples/tests/fontGlyphChoice.svg" />
+        <arg class="java.net.URL" value="file:test-references/samples/tests/fontGlyphChoice.png" />
+        <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/fontGlyphChoice.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/fontGlyphChoice.png" />
+    </test>
+
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/tests/patternRegionA.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/patternRegionA.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/textRotateShadows.png" />
@@ -594,6 +651,13 @@
         <arg class="java.net.URL" value="file:test-references/samples/tests/verticalText.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/verticalText.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/verticalText.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:samples/tests/verticalTextOnPath.svg" />
+        <arg class="java.net.URL" value="file:test-references/samples/tests/verticalTextOnPath.png" />
+        <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/verticalTextOnPath.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/verticalTextOnPath.png" />
     </test>
 
 </testSuite>
