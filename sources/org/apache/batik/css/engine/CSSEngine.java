@@ -1889,13 +1889,16 @@ public abstract class CSSEngine {
                 else props[i] = -1;
             }
             
-            if (count == 0) 
-                return; // nothing to propogate
-            inherited = new int[count];
-            count=0;
-            for (int i=0; i<props.length; i++)
-                if (props[i] != -1)
-                    inherited[count++] = props[i];
+            if (count == 0) {
+                // nothing to propogate for sure
+                inherited = null;
+            } else {
+                inherited = new int[count];
+                count=0;
+                for (int i=0; i<props.length; i++)
+                    if (props[i] != -1)
+                        inherited[count++] = props[i];
+            }
         }
 
         Node c = getImportedChild(node);

@@ -318,6 +318,12 @@ abstract class MultipleGradientPaintContext implements PaintContext {
 
         //initialize to be fully opaque for ANDing with colors
         transparencyTest = 0xff000000;
+        if (cycleMethod == MultipleGradientPaint.NO_CYCLE) {
+            // Include overflow and underflow colors in transparency
+            // test.
+            transparencyTest &= gradientUnderflow;
+            transparencyTest &= gradientOverflow;
+        }
 
         //array of interpolation arrays
         gradients = new int[fractions.length - 1][];

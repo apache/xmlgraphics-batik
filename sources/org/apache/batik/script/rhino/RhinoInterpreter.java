@@ -459,12 +459,12 @@ public class RhinoInterpreter implements Interpreter {
     /**
      * To be used by <code>WindowWrapper</code>.
      */
-    void callHandler(Function handler,
-                     ArgumentsBuilder ab)
+    void callHandler(Function handler, ArgumentsBuilder ab)
         throws JavaScriptException {
         Context ctx = enterContext(); 
         try {
-           handler.call(ctx, globalObject, globalObject, ab.buildArguments());
+            Object [] args = ab.buildArguments();
+           handler.call(ctx, handler.getParentScope(), globalObject, args );
         } finally {
             Context.exit();
         }
