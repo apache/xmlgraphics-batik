@@ -1,0 +1,70 @@
+ID: rlm1-1 Sz: 4
+  java.awt.Rectangle[x=-50,y=-50,width=100,height=25]
+  java.awt.Rectangle[x=-50,y=25,width=100,height=25]
+  java.awt.Rectangle[x=-50,y=-25,width=25,height=50]
+  java.awt.Rectangle[x=25,y=-25,width=25,height=50]
+
+ID: rlm2-1 Sz: 2
+  java.awt.Rectangle[x=-50,y=-25,width=100,height=75]
+  java.awt.Rectangle[x=-25,y=-50,width=75,height=25]
+
+ID: rlm3-1 Sz: 3
+  java.awt.Rectangle[x=-50,y=-25,width=100,height=75]
+  java.awt.Rectangle[x=-50,y=-50,width=25,height=25]
+  java.awt.Rectangle[x=25,y=-50,width=25,height=25]
+
+ID: rlm4-1 Sz: 2
+  java.awt.Rectangle[x=-50,y=-25,width=100,height=75]
+  java.awt.Rectangle[x=-50,y=-50,width=75,height=25]
+
+ID: rlm5-1 Sz: 3
+  java.awt.Rectangle[x=-50,y=-50,width=100,height=25]
+  java.awt.Rectangle[x=-50,y=25,width=100,height=25]
+  java.awt.Rectangle[x=-25,y=-25,width=75,height=50]
+
+ID: rlm6-1 Sz: 3
+  java.awt.Rectangle[x=-50,y=-50,width=100,height=25]
+  java.awt.Rectangle[x=-50,y=25,width=100,height=25]
+  java.awt.Rectangle[x=-50,y=-25,width=75,height=50]
+
+ID: rlm7-1 Sz: 2
+  java.awt.Rectangle[x=-50,y=-50,width=100,height=75]
+  java.awt.Rectangle[x=-25,y=25,width=75,height=25]
+
+ID: rlm8-1 Sz: 3
+  java.awt.Rectangle[x=-50,y=-50,width=100,height=75]
+  java.awt.Rectangle[x=-50,y=25,width=25,height=25]
+  java.awt.Rectangle[x=25,y=25,width=25,height=25]
+
+ID: rlm9-1 Sz: 2
+  java.awt.Rectangle[x=-50,y=-50,width=100,height=75]
+  java.awt.Rectangle[x=-50,y=25,width=75,height=25]
+
+ID: rlm10-1 Sz: 0
+
+ID: rlm11-1 Sz: 1
+  java.awt.Rectangle[x=-25,y=-50,width=75,height=100]
+
+ID: rlm12-1 Sz: 2
+  java.awt.Rectangle[x=-50,y=-50,width=25,height=100]
+  java.awt.Rectangle[x=25,y=-50,width=25,height=100]
+
+ID: rlm13-1 Sz: 1
+  java.awt.Rectangle[x=-50,y=-50,width=75,height=100]
+
+ID: rlm14-1 Sz: 1
+  java.awt.Rectangle[x=-50,y=-25,width=100,height=75]
+
+ID: rlm15-1 Sz: 2
+  java.awt.Rectangle[x=-50,y=-50,width=100,height=25]
+  java.awt.Rectangle[x=-50,y=25,width=100,height=25]
+
+ID: rlm16-1 Sz: 1
+  java.awt.Rectangle[x=-50,y=-50,width=100,height=75]
+
+ID: rlm17-1 Sz: 0
+
+ID: rlm18-1 Sz: 0
+
+ID: rlm19-2 Sz: 0
+

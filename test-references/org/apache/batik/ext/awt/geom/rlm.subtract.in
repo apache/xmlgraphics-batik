@@ -1,0 +1,172 @@
+# Subtract center of rect.
+rectlistmanger rlm1-1
+rect -50 -50 100 100
+rectlistmanger rlm1-2
+rect -25 -25  50  50
+rectlistmanger rlm1-1
+subtract rlm1-2 0 0
+print
+
+# Subtract top-left
+rectlistmanger rlm2-1
+rect -50 -50 100 100
+rectlistmanger rlm2-2
+rect -75 -75  50  50
+rectlistmanger rlm2-1
+subtract rlm2-2 0 0
+print
+
+# Subtract top-center
+rectlistmanger rlm3-1
+rect -50 -50 100 100
+rectlistmanger rlm3-2
+rect -25 -75  50  50
+rectlistmanger rlm3-1
+subtract rlm3-2 0 0
+print
+
+# Subtract top-right
+rectlistmanger rlm4-1
+rect -50 -50 100 100
+rectlistmanger rlm4-2
+rect 25 -75  50  50
+rectlistmanger rlm4-1
+subtract rlm4-2 0 0
+print
+
+# Subtract left-center
+rectlistmanger rlm5-1
+rect -50 -50 100 100
+rectlistmanger rlm5-2
+rect -75 -25  50  50
+rectlistmanger rlm5-1
+subtract rlm5-2 0 0
+print
+
+# Subtract right-center
+rectlistmanger rlm6-1
+rect -50 -50 100 100
+rectlistmanger rlm6-2
+rect 25 -25  50  50
+rectlistmanger rlm6-1
+subtract rlm6-2 0 0
+print
+
+# Subtract bottom-left
+rectlistmanger rlm7-1
+rect -50 -50 100 100
+rectlistmanger rlm7-2
+rect -75 25  50  50
+rectlistmanger rlm7-1
+subtract rlm7-2 0 0
+print
+
+# Subtract bottom-center
+rectlistmanger rlm8-1
+rect -50 -50 100 100
+rectlistmanger rlm8-2
+rect -25 25  50  50
+rectlistmanger rlm8-1
+subtract rlm8-2 0 0
+print
+
+# Subtract bottom-right
+rectlistmanger rlm9-1
+rect -50 -50 100 100
+rectlistmanger rlm9-2
+rect 25 25  50  50
+rectlistmanger rlm9-1
+subtract rlm9-2 0 0
+print
+
+# Subtract all of them
+rectlistmanger rlm10-1
+rect -50 -50 100 100
+subtract rlm1-2 0 0
+subtract rlm2-2 0 0
+subtract rlm3-2 0 0
+subtract rlm4-2 0 0
+subtract rlm5-2 0 0
+subtract rlm6-2 0 0
+subtract rlm7-2 0 0
+subtract rlm8-2 0 0
+subtract rlm9-2 0 0
+print
+
+# Subtract Left Edge
+rectlistmanger rlm11-1
+rect -50 -50 100 100
+rectlistmanger rlm11-2
+rect -75 -75  50  150
+rectlistmanger rlm11-1
+subtract rlm11-2 0 0
+print
+
+# Subtract Vertical Center 
+rectlistmanger rlm12-1
+rect -50 -50 100 100
+rectlistmanger rlm12-2
+rect -25 -75  50  150
+rectlistmanger rlm12-1
+subtract rlm12-2 0 0
+print
+
+# Subtract Right Edge
+rectlistmanger rlm13-1
+rect -50 -50 100 100
+rectlistmanger rlm13-2
+rect  25 -75  50  150
+rectlistmanger rlm13-1
+subtract rlm13-2 0 0
+print
+
+# Subtract Top Edge
+rectlistmanger rlm14-1
+rect -50 -50 100 100
+rectlistmanger rlm14-2
+rect -75 -75  150  50
+rectlistmanger rlm14-1
+subtract rlm14-2 0 0
+print
+
+# Subtract Horiz Center 
+rectlistmanger rlm15-1
+rect -50 -50 100 100
+rectlistmanger rlm15-2
+rect -75 -25  150  50
+rectlistmanger rlm15-1
+subtract rlm15-2 0 0
+print
+
+# Subtract Bottom Edge
+rectlistmanger rlm16-1
+rect -50 -50 100 100
+rectlistmanger rlm16-2
+rect -75 25  150  50
+rectlistmanger rlm16-1
+subtract rlm16-2 0 0
+print
+
+# Subtract All Vertical
+rectlistmanger rlm17-1
+rect -50 -50 100 100
+subtract rlm11-2 0 0
+subtract rlm12-2 0 0
+subtract rlm13-2 0 0
+print
+
+# Subtract All Horizonal
+rectlistmanger rlm18-1
+rect -50 -50 100 100
+subtract rlm14-2 0 0
+subtract rlm15-2 0 0
+subtract rlm16-2 0 0
+print
+
+# Subtract whole thing at once
+rectlistmanger rlm19-1
+rect -50 -50 100 100
+rectlistmanger rlm19-2
+rect -75 -75 150 150
+subtract rlm19-2 0 0
+print

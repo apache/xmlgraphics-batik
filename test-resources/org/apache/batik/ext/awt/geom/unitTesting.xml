@@ -1,0 +1,52 @@
+<!-- ====================================================================== -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.     -->
+<!--                                                                        -->
+<!-- This software is published under the terms of the Apache Software      -->
+<!-- License version 1.1, a copy of which has been included with this       -->
+<!-- distribution in the LICENSE file.                                      -->
+<!-- ====================================================================== -->
+
+<!-- ====================================================================== -->
+<!-- @author deweese@apache.org                                             -->
+<!-- @version $Id$     -->
+<!-- ====================================================================== -->
+
+<testSuite id="ext.awt.geom.unitTesting" 
+           name="org.apache.batik.ext.awt.geom Unit Testing">
+    <test id="rlm.sort" 
+          class="org.apache.batik.ext.awt.geom.RectListManagerTest">
+        <arg class="java.lang.String" value="rlm.sort.in" />
+        <arg class="java.lang.String" value="rlm.sort.out" />
+    </test>
+
+    <test id="rlm.containsall" 
+          class="org.apache.batik.ext.awt.geom.RectListManagerTest">
+        <arg class="java.lang.String" value="rlm.containsall.in" />
+        <arg class="java.lang.String" value="rlm.containsall.out" />
+    </test>
+
+    <test id="rlm.removeall" 
+          class="org.apache.batik.ext.awt.geom.RectListManagerTest">
+        <arg class="java.lang.String" value="rlm.removeall.in" />
+        <arg class="java.lang.String" value="rlm.removeall.out" />
+    </test>
+
+    <test id="rlm.retainall" 
+          class="org.apache.batik.ext.awt.geom.RectListManagerTest">
+        <arg class="java.lang.String" value="rlm.retainall.in" />
+        <arg class="java.lang.String" value="rlm.retainall.out" />
+    </test>
+
+    <test id="rlm.merge" 
+          class="org.apache.batik.ext.awt.geom.RectListManagerTest">
+        <arg class="java.lang.String" value="rlm.merge.in" />
+        <arg class="java.lang.String" value="rlm.merge.out" />
+    </test>
+
+    <test id="rlm.subtract" 
+          class="org.apache.batik.ext.awt.geom.RectListManagerTest">
+        <arg class="java.lang.String" value="rlm.subtract.in" />
+        <arg class="java.lang.String" value="rlm.subtract.out" />
+    </test>
+
+</testSuite>
