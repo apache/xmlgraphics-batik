@@ -63,4 +63,14 @@ public class LineInfo {
     public float          getLastCharWidth()    { return lastCharWidth; }
     public float          getLineWidth()        { return lineWidth; }
     public boolean        isPartialLine()       { return partial; }
+
+    public String         toString() { 
+        return ("[LineInfo loc: " + loc + 
+                " [" + startIdx + "," + endIdx + "] " +
+                " LWidth: " + lineWidth +
+                " Adv: " + advance + " VAdv: " + visualAdvance +
+                " LCW: " + lastCharWidth +
+                " Partial: " + partial);
+    }
+
 }
