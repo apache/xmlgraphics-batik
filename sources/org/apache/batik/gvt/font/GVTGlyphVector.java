@@ -78,12 +78,6 @@ public interface GVTGlyphVector {
     public Point2D getGlyphPosition(int glyphIndex);
 
     /**
-     * Returns the default position of the glyph. This will be the position that
-     * is set when the performDefaultLayout method is run.
-     */
-    public Point2D getDefaultGlyphPosition(int glyphIndex);
-
-    /**
      * Returns an array of glyph positions for the specified glyphs
      */
     public float[] getGlyphPositions(int beginGlyphIndex, int numEntries,

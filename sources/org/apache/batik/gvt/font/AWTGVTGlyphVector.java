@@ -40,7 +40,6 @@ public final class AWTGVTGlyphVector implements GVTGlyphVector {
     private CharacterIterator ci;
 
     private Point2D[] glyphPositions;
-    private Point2D[] defaultGlyphPositions;
 
     // need to keep track of the glyphTransforms since GlyphVector doesn't seem to
     private AffineTransform[] glyphTransforms;
@@ -80,7 +79,6 @@ public final class AWTGVTGlyphVector implements GVTGlyphVector {
         logicalBounds = null;
         glyphTransforms = new AffineTransform[numGlyphs];
         glyphPositions = new Point2D.Float[numGlyphs];
-        defaultGlyphPositions = new Point2D.Float[numGlyphs];
         glyphOutlines = new Shape[numGlyphs];
         glyphVisualBounds = new Shape[numGlyphs];
         glyphLogicalBounds = new Shape[numGlyphs];
@@ -337,18 +335,6 @@ public final class AWTGVTGlyphVector implements GVTGlyphVector {
     }
 
     /**
-     * Returns the default position of the glyph. This will be the position that
-     * is set when the performDefaultLayout method is run.
-     */
-    public Point2D getDefaultGlyphPosition(int glyphIndex) {
-        if (defaultGlyphPositions[glyphIndex] == null) {
-            performDefaultLayout();
-        }
-        return defaultGlyphPositions[glyphIndex];
-    }
-
-
-    /**
      * Returns an array of glyph positions for the specified glyphs
      */
     public float[] getGlyphPositions(int beginGlyphIndex, int numEntries,
@@ -464,7 +450,6 @@ public final class AWTGVTGlyphVector implements GVTGlyphVector {
             Point2D glyphPos = awtGlyphVector.getGlyphPosition(i);
             glyphPositions[i] = new Point2D.Float((float)((glyphPos.getX()-shiftLeft) * scaleFactor),
                                                   (float)(glyphPos.getY() * scaleFactor));
-            defaultGlyphPositions[i] = glyphPositions[i];
             glyphTransforms[i] = null;
             glyphVisualBounds[i] = null;
             glyphLogicalBounds[i] = null;

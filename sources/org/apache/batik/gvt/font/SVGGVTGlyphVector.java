@@ -40,7 +40,6 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
     private FontRenderContext frc;
     private GeneralPath outline;
     private Rectangle2D logicalBounds;
-    private Point2D[] defaultGlyphPositions;
     private Shape[] glyphLogicalBounds;
     private boolean[] glyphVisible;
 
@@ -58,7 +57,6 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
         this.frc = frc;
         outline = null;
         logicalBounds = null;
-        defaultGlyphPositions = new Point2D.Float[glyphs.length];
         glyphLogicalBounds = new Shape[glyphs.length];
         glyphVisible = new boolean[glyphs.length];
         for (int i = 0; i < glyphs.length; i++) {
@@ -354,17 +352,6 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
         return glyphs[glyphIndex].getPosition();
     }
 
-    /**
-     * Returns the default position of the glyph. This will be the position that
-     * is set when the performDefaultLayout method is run.
-     */
-    public Point2D getDefaultGlyphPosition(int glyphIndex) {
-        if (defaultGlyphPositions[glyphIndex] == null) {
-            performDefaultLayout();
-        }
-        return defaultGlyphPositions[glyphIndex];
-    }
-
 
     /**
      * Returns an array of glyph positions for the specified glyphs
@@ -494,7 +481,6 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
         for (int i = 0; i < glyphs.length; i++) {
             glyphs[i].setPosition(new Point2D.Float(currentX, currentY));
             glyphs[i].setTransform(null);
-            defaultGlyphPositions[i] = getGlyphPosition(i);
             glyphLogicalBounds[i] = null;
             currentX += glyphs[i].getHorizAdvX();
             logicalBounds = null;
