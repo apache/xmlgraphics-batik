@@ -17,6 +17,7 @@ import java.util.ResourceBundle;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.border.BevelBorder;
 
 import org.apache.batik.util.gui.resource.ResourceManager;
 
@@ -78,18 +79,24 @@ public class StatusBar extends JPanel {
         add("West", p);
 
         xPosition = new JLabel();
-        xPosition.setBorder(BorderFactory.createLoweredBevelBorder());
+        BevelBorder bb;
+        bb = new BevelBorder(BevelBorder.LOWERED,
+                             getBackground().brighter().brighter(),
+                             getBackground(),
+                             getBackground().darker().darker(),
+                             getBackground());
+        xPosition.setBorder(bb);
         xPosition.setPreferredSize(new Dimension(75, 16));
         p.add("West", xPosition);
 
         yPosition = new JLabel();
-        yPosition.setBorder(BorderFactory.createLoweredBevelBorder());
+        yPosition.setBorder(bb);
         yPosition.setPreferredSize(new Dimension(75, 16));
         p.add("East", yPosition);
 
         p = new JPanel(new BorderLayout(0, 0));
         message = new JLabel();
-        message.setBorder(BorderFactory.createLoweredBevelBorder());
+        message.setBorder(bb);
         p.add(message);
         add(p);
         setMainMessage(rManager.getString("Panel.default_message"));

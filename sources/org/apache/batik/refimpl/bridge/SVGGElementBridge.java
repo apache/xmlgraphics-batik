@@ -11,6 +11,7 @@ package org.apache.batik.refimpl.bridge;
 import java.awt.AlphaComposite;
 import java.awt.Composite;
 import java.awt.RenderingHints;
+import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 
 import java.io.StringReader;
@@ -61,8 +62,12 @@ public class SVGGElementBridge implements GraphicsNodeBridge, SVGConstants {
         Mask mask = CSSUtilities.convertMask(element, gn, ctx);
         gn.setMask(mask);
 
+        Shape clip = CSSUtilities.convertClipPath(element, gn, ctx);
+        gn.setClippingArea(clip);
+
         // <!> TODO only when binding is enabled
         BridgeEventSupport.addDOMListener(ctx, element);
+        ctx.bind(element, gn);
 
         return gn;
     }

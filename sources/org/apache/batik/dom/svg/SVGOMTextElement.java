@@ -11,9 +11,11 @@ package org.apache.batik.dom.svg;
 import java.lang.ref.WeakReference;
 import org.apache.batik.dom.AbstractDocument;
 import org.w3c.dom.DOMException;
-import org.w3c.dom.svg.SVGAnimatedEnumeration;
 import org.w3c.dom.svg.SVGAnimatedLength;
-import org.w3c.dom.svg.SVGPoint;
+import org.w3c.dom.svg.SVGAnimatedTransformList;
+import org.w3c.dom.svg.SVGElement;
+import org.w3c.dom.svg.SVGException;
+import org.w3c.dom.svg.SVGMatrix;
 import org.w3c.dom.svg.SVGRect;
 import org.w3c.dom.svg.SVGTextElement;
 
@@ -24,7 +26,7 @@ import org.w3c.dom.svg.SVGTextElement;
  * @version $Id$
  */
 public class SVGOMTextElement
-    extends    SVGGraphicsElement
+    extends    SVGOMTextContentElement
     implements SVGTextElement {
     /**
      * The reference to the x attribute.
@@ -84,95 +86,77 @@ public class SVGOMTextElement
 	return result;
     } 
 
-    // SVGTextContentElement //////////////////////////////////////////////
+    // SVGTransformable support /////////////////////////////////////////////
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGTextContentElement#getTextLength()}.
+     * The transformable support.
      */
-    public SVGAnimatedLength getTextLength() {
-        throw new RuntimeException(" !!! SVGOMTextElement.getTextLength()");
+    protected SVGTransformableSupport transformableSupport;
+
+    /**
+     * Returns stylableSupport different from null.
+     */
+    protected final SVGTransformableSupport getTransformableSupport() {
+	if (transformableSupport == null) {
+	    transformableSupport = new SVGTransformableSupport();
+	}
+	return transformableSupport;
     }
 
     /**
      * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGTextContentElement#getLengthAdjust()}.
+     * org.w3c.dom.svg.SVGTransformable#getNearestViewportElement()}.
      */
-    public SVGAnimatedEnumeration getLengthAdjust() {
-        throw new RuntimeException(" !!! SVGOMTextElement.getLengthAdjust()");
+    public SVGElement getNearestViewportElement() {
+	return getTransformableSupport().getNearestViewportElement(this);
     }
 
     /**
      * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGTextContentElement#getNumberOfChars()}.
+     * org.w3c.dom.svg.SVGTransformable#getFarthestViewportElement()}.
      */
-    public int getNumberOfChars() {
-        throw new RuntimeException(" !!! SVGOMTextElement.getNumberOfChars()");
+    public SVGElement getFarthestViewportElement() {
+	return getTransformableSupport().getFarthestViewportElement(this);
     }
 
     /**
      * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGTextContentElement#getComputedTextLength()}.
+     * org.w3c.dom.svg.SVGTransformable#getTransform()}.
      */
-    public float getComputedTextLength() {
-        throw new RuntimeException(" !!! SVGOMTextElement.getComputedTextLength()");
+    public SVGAnimatedTransformList getTransform() {
+	return getTransformableSupport().getTransform(this);
     }
 
     /**
      * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGTextContentElement#getSubStringLength(int,int)}.
+     * org.w3c.dom.svg.SVGTransformable#getBBox()}.
      */
-    public float getSubStringLength(int charnum, int nchars)
-        throws DOMException {
-        throw new RuntimeException(" !!! SVGOMTextElement.getSubStringLength()");
+    public SVGRect getBBox() {
+	return getTransformableSupport().getBBox(this);
     }
 
     /**
      * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGTextContentElement#getStartPositionOfChar(int)}.
+     * org.w3c.dom.svg.SVGTransformable#getCTM()}.
      */
-    public SVGPoint getStartPositionOfChar(int charnum) throws DOMException {
-        throw new RuntimeException(" !!! SVGOMTextElement.getStartPositionOfChar()");
+    public SVGMatrix getCTM() {
+	return getTransformableSupport().getCTM(this);
     }
 
     /**
      * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGTextContentElement#getEndPositionOfChar(int)}.
+     * org.w3c.dom.svg.SVGTransformable#getScreenCTM()}.
      */
-    public SVGPoint getEndPositionOfChar(int charnum) throws DOMException {
-        throw new RuntimeException(" !!! SVGOMTextElement.getEndPositionOfChar()");
+    public SVGMatrix getScreenCTM() {
+	return getTransformableSupport().getScreenCTM(this);
     }
 
     /**
      * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGTextContentElement#getExtentOfChar(int)}.
+     * org.w3c.dom.svg.SVGTransformable#getTransformToElement(SVGElement)}.
      */
-    public SVGRect getExtentOfChar(int charnum) throws DOMException {
-        throw new RuntimeException(" !!! SVGOMTextElement.getExtentOfChar()");
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGTextContentElement#getRotationOfChar(int)}.
-     */
-    public float getRotationOfChar(int charnum) throws DOMException {
-        throw new RuntimeException(" !!! SVGOMTextElement.getRotationOfChar()");
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGTextContentElement#getCharNumAtPosition(SVGPoint)}.
-     */
-    public int getCharNumAtPosition(SVGPoint point) {
-        throw new RuntimeException(" !!! SVGOMTextElement.getCharNumAtPosition()");
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGTextContentElement#selectSubString(int,int)}.
-     */
-    public void selectSubString(int charnum, int nchars)
-        throws DOMException {
-        throw new RuntimeException(" !!! SVGOMTextElement.getSubStringLength()");
+    public SVGMatrix getTransformToElement(SVGElement element)
+	throws SVGException {
+	return getTransformableSupport().getTransformToElement(element, this);
     }
 }

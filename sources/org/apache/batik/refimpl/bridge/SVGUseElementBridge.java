@@ -11,6 +11,7 @@ package org.apache.batik.refimpl.bridge;
 import java.awt.AlphaComposite;
 import java.awt.Composite;
 import java.awt.RenderingHints;
+import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 
 import java.io.StringReader;
@@ -20,6 +21,7 @@ import org.apache.batik.bridge.GraphicsNodeBridge;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.Filter;
+import org.apache.batik.gvt.filter.Mask;
 import org.apache.batik.parser.AWTTransformProducer;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.UnitProcessor;
@@ -74,6 +76,12 @@ public class SVGUseElementBridge
 
         Filter filter = CSSUtilities.convertFilter(element, gn, ctx);
         gn.setFilter(filter);
+
+        Mask mask = CSSUtilities.convertMask(element, gn, ctx);
+        gn.setMask(mask);
+
+        Shape clip = CSSUtilities.convertClipPath(element, gn, ctx);
+        gn.setClippingArea(clip);
 
         // <!> TODO only when binding is enabled
         BridgeEventSupport.addDOMListener(ctx, element);

@@ -110,6 +110,7 @@ public class XMLSupport {
 	    switch (c) {
 	    case 10:
 	    case 13:
+		space = false;
 		break;
 	    case ' ':
 	    case '\t':

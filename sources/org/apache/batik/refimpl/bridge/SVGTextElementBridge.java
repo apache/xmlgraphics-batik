@@ -10,16 +10,22 @@ package org.apache.batik.refimpl.bridge;
 
 import java.awt.Color;
 import java.awt.Paint;
-import java.awt.Stroke;
 import java.awt.RenderingHints;
+import java.awt.Shape;
+import java.awt.Stroke;
 import java.awt.font.TextAttribute;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 
 import java.io.StringReader;
 
+import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
+import java.text.CharacterIterator;
 
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,6 +43,7 @@ import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.UnitProcessor;
 
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.css.CSSPrimitiveValue;
 import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.CSSValue;
@@ -99,30 +106,6 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
 
         result.setLocation(new Point2D.Float(x, y));
 
-        // !!! TODO better text handling
-        element.normalize();
-        String text = element.getFirstChild().getNodeValue();
-        String sp = XMLSupport.getXMLSpace(element);
-        if (sp.equals("preserve")) {
-            text = XMLSupport.preserveXMLSpace(text);
-        } else {
-            text = XMLSupport.defaultXMLSpace(text);
-        }
-        text = (text.length() == 0) ? " " : text;
-        AttributedString as;
-        as = new AttributedString(text);
-
-        // Font size
-        float fs = CSSUtilities.convertFontSize((SVGElement)element,
-                                                ctx,
-                                                cssDecl,
-                                                uctx);
-
-        fs = fs * ctx.getUserAgent().getPixelToMM() * 72f / 25.4f;
-        //fs *= 0.92; // Font size correction
-
-        as.addAttribute(TextAttribute.SIZE, new Float(fs));
-
         // Text-anchor
         CSSPrimitiveValue v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue
             (TEXT_ANCHOR_PROPERTY);
@@ -140,185 +123,11 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
         }
         result.setAnchor(a);
 
-        // Font family
-        CSSValueList ff = (CSSValueList)cssDecl.getPropertyCSSValue
-            (FONT_FAMILY_PROPERTY);
-        s = null;
-        for (int i = 0; s == null && i < ff.getLength(); i++) {
-            v = (CSSPrimitiveValue)ff.item(i);
-            s = (String)fonts.get(v.getStringValue());
-        }
-        s = (s == null) ? "SansSerif" : s;
-        as.addAttribute(TextAttribute.FAMILY, s);
+        element.normalize();
 
-        // Font weight
-        v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue
-            (FONT_WEIGHT_PROPERTY);
-        if (v.getPrimitiveType() == CSSPrimitiveValue.CSS_IDENT) {
-            if (v.getStringValue().charAt(0) == 'n') {
-                as.addAttribute(TextAttribute.WEIGHT,
-                                TextAttribute.WEIGHT_REGULAR);
-            } else {
-                as.addAttribute(TextAttribute.WEIGHT,
-                                TextAttribute.WEIGHT_BOLD);
-            }
-        } else {
-            switch ((int)v.getFloatValue(CSSPrimitiveValue.CSS_NUMBER)) {
-            case 100:
-                as.addAttribute(TextAttribute.WEIGHT,
-                                TextAttribute.WEIGHT_EXTRA_LIGHT);
-                break;
-            case 200:
-                as.addAttribute(TextAttribute.WEIGHT,
-                                TextAttribute.WEIGHT_LIGHT);
-                break;
-            case 300:
-                as.addAttribute(TextAttribute.WEIGHT,
-                                TextAttribute.WEIGHT_DEMILIGHT);
-                break;
-            case 400:
-                as.addAttribute(TextAttribute.WEIGHT,
-                                TextAttribute.WEIGHT_REGULAR);
-                break;
-            case 500:
-                as.addAttribute(TextAttribute.WEIGHT,
-                                TextAttribute.WEIGHT_SEMIBOLD);
-                break;
-            case 600:
-                as.addAttribute(TextAttribute.WEIGHT,
-                                TextAttribute.WEIGHT_DEMIBOLD);
-                break;
-            case 700:
-                as.addAttribute(TextAttribute.WEIGHT,
-                                TextAttribute.WEIGHT_BOLD);
-                break;
-            case 800:
-                as.addAttribute(TextAttribute.WEIGHT,
-                                //TextAttribute.WEIGHT_EXTRABOLD);
-                                TextAttribute.WEIGHT_BOLD);
-                break;
-            case 900:
-                as.addAttribute(TextAttribute.WEIGHT,
-                                //TextAttribute.WEIGHT_ULTRABOLD);
-                                TextAttribute.WEIGHT_BOLD);
-            }
-        }
-
-        // Font style
-        v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue
-            (FONT_STYLE_PROPERTY);
-        s = v.getStringValue();
-        switch (s.charAt(0)) {
-        case 'n':
-            as.addAttribute(TextAttribute.POSTURE,
-                            TextAttribute.POSTURE_REGULAR);
-            break;
-        case 'o':
-        case 'i':
-            as.addAttribute(TextAttribute.POSTURE,
-                            TextAttribute.POSTURE_OBLIQUE);
-        }
-
-        // Font stretch
-        v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue
-            (FONT_STRETCH_PROPERTY);
-        s = v.getStringValue();
-        switch (s.charAt(0)) {
-        case 'u':
-            if (s.charAt(6) == 'c') {
-                as.addAttribute(TextAttribute.WIDTH,
-                                TextAttribute.WIDTH_CONDENSED);
-            } else {
-                as.addAttribute(TextAttribute.WIDTH,
-                                TextAttribute.WIDTH_EXTENDED);
-            }
-            break;
-        case 'e':
-            if (s.charAt(6) == 'c') {
-                as.addAttribute(TextAttribute.WIDTH,
-                                TextAttribute.WIDTH_CONDENSED);
-            } else {
-                if (s.length() == 8) {
-                    as.addAttribute(TextAttribute.WIDTH,
-                                    TextAttribute.WIDTH_SEMI_EXTENDED);
-                } else {
-                    as.addAttribute(TextAttribute.WIDTH,
-                                    TextAttribute.WIDTH_EXTENDED);
-                }
-            }
-            break;
-        case 's':
-            if (s.charAt(6) == 'c') {
-                as.addAttribute(TextAttribute.WIDTH,
-                                TextAttribute.WIDTH_SEMI_CONDENSED);
-            } else {
-                as.addAttribute(TextAttribute.WIDTH,
-                                TextAttribute.WIDTH_SEMI_EXTENDED);
-            }
-            break;
-        default:
-            as.addAttribute(TextAttribute.WIDTH,
-                            TextAttribute.WIDTH_REGULAR);
-        }
-
-        // Text decoration
-        CSSValue cssVal = cssDecl.getPropertyCSSValue
-            (TEXT_DECORATION_PROPERTY);
-        short t = cssVal.getCssValueType();
-        if (t == CSSValue.CSS_VALUE_LIST) {
-            CSSValueList lst = (CSSValueList)cssVal;
-            for (int i = 0; i < lst.getLength(); i++) {
-                v = (CSSPrimitiveValue)lst.item(i);
-                s = v.getStringValue();
-                switch (s.charAt(0)) {
-                case 'u':
-                    as.addAttribute(TextAttribute.UNDERLINE,
-                                    TextAttribute.UNDERLINE_ON);
-                    break;
-                case 'o':
-                    // overline
-                    break;
-                case 'l':
-                    as.addAttribute(TextAttribute.STRIKETHROUGH,
-                                    TextAttribute.STRIKETHROUGH_ON);
-                }
-            }
-        }
-
-
-        // Fill
-        Paint p = CSSUtilities.convertFillToPaint((SVGElement)element,
-                                                  result,
-                                                  ctx,
-                                                  cssDecl,
-                                                  uctx);
-        if (p != null) {
-            as.addAttribute(TextAttribute.FOREGROUND, p);
-        }
-
-        // Stroke Paint
-        p = CSSUtilities.convertStrokeToPaint((SVGElement)element,
-                                              result,
-                                              ctx,
-                                              cssDecl,
-                                              uctx);
-        if (p != null) {
-            as.addAttribute
-                (GVTAttributedCharacterIterator.TextAttribute.STROKE_PAINT, p);
-        }
-
-        // Stroke
-        Stroke stroke
-            = CSSUtilities.convertStrokeToBasicStroke((SVGElement)element,
-                                                      ctx,
-                                                      cssDecl,
-                                                      uctx);
-
-        if(stroke != null){
-            as.addAttribute(GVTAttributedCharacterIterator.TextAttribute.STROKE,
-                            stroke);
-        }
-
+        AttributedString as = buildAttributedString(ctx,
+                                                    element,
+                                                    result);
         result.setAttributedCharacterIterator(as.getIterator());
 
         Filter filter = CSSUtilities.convertFilter(element, result, ctx);
@@ -326,6 +135,9 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
 
         Mask mask = CSSUtilities.convertMask(element, result, ctx);
         result.setMask(mask);
+
+        Shape clip = CSSUtilities.convertClipPath(element, result, ctx);
+        result.setClippingArea(clip);
 
         // <!> TODO only when binding is enabled
         BridgeEventSupport.addDOMListener(ctx, element);
@@ -340,5 +152,367 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
 
     public boolean isContainer() {
         return false;
+    }
+    
+    /**
+     * Creates the attributed string which represent the given text
+     * element children.
+     */
+    protected AttributedString buildAttributedString(BridgeContext ctx,
+                                                     Element element,
+                                                     GraphicsNode node) {
+        AttributedString result = null;
+        List l = buildAttributedStrings(ctx,
+                                        element,
+                                        node,
+                                        true);
+        // Simple cases
+        switch (l.size()) {
+        case 0:
+            return new AttributedString(" ");
+        case 1:
+            return (AttributedString)l.get(0);
+        }
+
+        //
+        // Merge the attributed strings
+        //
+        List buffers = new LinkedList();
+        List maps = new LinkedList();
+        Iterator it = l.iterator();
+        // Build the StringBuffer list and the attribute map list.
+        while (it.hasNext()) {
+            AttributedString s = (AttributedString)it.next();
+            AttributedCharacterIterator aci = s.getIterator();
+            char c = aci.first();
+            StringBuffer sb = new StringBuffer();
+            Map m = aci.getAttributes();
+            for (; c != CharacterIterator.DONE; c = aci.next()) {
+                sb.append(c);
+            }
+            buffers.add(sb);
+            maps.add(m);
+        }
+        // Build the attributed string
+        it = buffers.iterator();
+        StringBuffer sb = new StringBuffer();
+        while (it.hasNext()) {
+            sb.append(it.next());
+        }
+        result = new AttributedString(sb.toString());
+
+        // Decorate the attributed string
+        int i = 0;
+        it = buffers.iterator();
+        Iterator it2 = maps.iterator();
+        while (it.hasNext()) {
+            sb = (StringBuffer)it.next();
+            result.addAttributes((Map)it2.next(), i, i += sb.length());
+        }
+        return result;
+    }
+
+    /**
+     * Creates the attributed strings which represent the given text
+     * element children.
+     */
+    protected List buildAttributedStrings(BridgeContext ctx,
+                                          Element element,
+                                          GraphicsNode node,
+                                          boolean top) {
+        // !!! return two lists
+
+        List result = new LinkedList();
+        Map m = getAttributeMap(ctx, element, node);
+        String s = XMLSupport.getXMLSpace(element);
+        boolean preserve = s.equals("preserve");
+        boolean first = true;
+        boolean last;
+        for (Node n = element.getFirstChild();
+             n != null;
+             n = n.getNextSibling()) {
+
+            last = n.getNextSibling() == null;
+
+            switch (n.getNodeType()) {
+            case Node.ELEMENT_NODE:
+                if (n.getLocalName().equals("tspan")) {
+                    result.addAll(buildAttributedStrings(ctx,
+                                                         (Element)n,
+                                                         node,
+                                                         false));
+                }
+                break;
+            case Node.TEXT_NODE:
+                s = n.getNodeValue();
+                StringBuffer sb = new StringBuffer();
+                if (preserve) {
+                    for (int i = 0; i < s.length(); i++) {
+                        char c = s.charAt(i);
+                        switch (c) {
+                        case 10:
+                        case 13:
+                        case '\t':
+                            sb.append(' ');
+                            break;
+                        default:
+                            sb.append(c);
+                        }
+                    }
+                } else {
+                    boolean space = false;
+                    for (int i = 0; i < s.length(); i++) {
+                        char c = s.charAt(i);
+                        switch (c) {
+                        case 10:
+                        case 13:
+                            space = false;
+                            break;
+                        case ' ':
+                        case '\t':
+                            if (!space) {
+                                sb.append(' ');
+                                space = true;
+                            }
+                            break;
+                        default:
+                            sb.append(c);
+                            space = false;
+
+                        }
+                    }
+                    if (top) {
+                        if (first) {
+                            while (sb.length() > 0) {
+                                if (sb.charAt(0) == ' ') {
+                                    sb.deleteCharAt(0);
+                                } else {
+                                    break;
+                                }
+                            }
+                        }
+                        if (last) {
+                            int len;
+                            while ((len = sb.length()) > 0) {
+                                if (sb.charAt(len - 1) == ' ') {
+                                    sb.deleteCharAt(len - 1);
+                                } else {
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                if (sb.length() > 0) {
+                    result.add(new AttributedString(sb.toString(), m));
+                }
+            }
+            first = false;
+        }
+        return result;
+    }
+
+    /**
+     * Returns the map to pass to the current characters.
+     */
+    protected Map getAttributeMap(BridgeContext ctx,
+                                  Element element,
+                                  GraphicsNode node) {
+        CSSStyleDeclaration cssDecl
+            = ctx.getViewCSS().getComputedStyle(element, null);
+        UnitProcessor.Context uctx
+            = new DefaultUnitProcessorContext(ctx, cssDecl);
+
+        Map result = new HashMap();
+        CSSPrimitiveValue v;
+
+        // Font size
+        float fs = CSSUtilities.convertFontSize((SVGElement)element,
+                                                ctx,
+                                                cssDecl,
+                                                uctx);
+
+        fs = fs * ctx.getUserAgent().getPixelToMM() * 72f / 25.4f;
+
+        result.put(TextAttribute.SIZE, new Float(fs));
+
+        // Font family
+        CSSValueList ff = (CSSValueList)cssDecl.getPropertyCSSValue
+            (FONT_FAMILY_PROPERTY);
+        String s = null;
+        for (int i = 0; s == null && i < ff.getLength(); i++) {
+            v = (CSSPrimitiveValue)ff.item(i);
+            s = (String)fonts.get(v.getStringValue());
+        }
+        s = (s == null) ? "SansSerif" : s;
+        result.put(TextAttribute.FAMILY, s);
+
+        // Font weight
+        v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue
+            (FONT_WEIGHT_PROPERTY);
+        if (v.getPrimitiveType() == CSSPrimitiveValue.CSS_IDENT) {
+            if (v.getStringValue().charAt(0) == 'n') {
+                result.put(TextAttribute.WEIGHT,
+                           TextAttribute.WEIGHT_REGULAR);
+            } else {
+                result.put(TextAttribute.WEIGHT,
+                           TextAttribute.WEIGHT_BOLD);
+            }
+        } else {
+            switch ((int)v.getFloatValue(CSSPrimitiveValue.CSS_NUMBER)) {
+            case 100:
+                result.put(TextAttribute.WEIGHT,
+                           TextAttribute.WEIGHT_EXTRA_LIGHT);
+                break;
+            case 200:
+                result.put(TextAttribute.WEIGHT,
+                           TextAttribute.WEIGHT_LIGHT);
+                break;
+            case 300:
+                result.put(TextAttribute.WEIGHT,
+                           TextAttribute.WEIGHT_DEMILIGHT);
+                break;
+            case 400:
+                result.put(TextAttribute.WEIGHT,
+                           TextAttribute.WEIGHT_REGULAR);
+                break;
+            case 500:
+                result.put(TextAttribute.WEIGHT,
+                           TextAttribute.WEIGHT_SEMIBOLD);
+                break;
+            case 600:
+                result.put(TextAttribute.WEIGHT,
+                           TextAttribute.WEIGHT_DEMIBOLD);
+                break;
+            case 700:
+                result.put(TextAttribute.WEIGHT,
+                           TextAttribute.WEIGHT_BOLD);
+                break;
+            case 800:
+                result.put(TextAttribute.WEIGHT,
+                           //TextAttribute.WEIGHT_EXTRABOLD);
+                           TextAttribute.WEIGHT_BOLD);
+                break;
+            case 900:
+                result.put(TextAttribute.WEIGHT,
+                           //TextAttribute.WEIGHT_ULTRABOLD);
+                           TextAttribute.WEIGHT_BOLD);
+            }
+        }
+
+        // Font style
+        v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue
+            (FONT_STYLE_PROPERTY);
+        s = v.getStringValue();
+        switch (s.charAt(0)) {
+        case 'n':
+            result.put(TextAttribute.POSTURE,
+                       TextAttribute.POSTURE_REGULAR);
+            break;
+        case 'o':
+        case 'i':
+            result.put(TextAttribute.POSTURE,
+                       TextAttribute.POSTURE_OBLIQUE);
+        }
+
+        // Font stretch
+        v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue
+            (FONT_STRETCH_PROPERTY);
+        s = v.getStringValue();
+        switch (s.charAt(0)) {
+        case 'u':
+            if (s.charAt(6) == 'c') {
+                result.put(TextAttribute.WIDTH,
+                           TextAttribute.WIDTH_CONDENSED);
+            } else {
+                result.put(TextAttribute.WIDTH,
+                           TextAttribute.WIDTH_EXTENDED);
+            }
+            break;
+        case 'e':
+            if (s.charAt(6) == 'c') {
+                result.put(TextAttribute.WIDTH,
+                           TextAttribute.WIDTH_CONDENSED);
+            } else {
+                if (s.length() == 8) {
+                    result.put(TextAttribute.WIDTH,
+                               TextAttribute.WIDTH_SEMI_EXTENDED);
+                } else {
+                    result.put(TextAttribute.WIDTH,
+                               TextAttribute.WIDTH_EXTENDED);
+                }
+            }
+            break;
+        case 's':
+            if (s.charAt(6) == 'c') {
+                result.put(TextAttribute.WIDTH,
+                           TextAttribute.WIDTH_SEMI_CONDENSED);
+            } else {
+                result.put(TextAttribute.WIDTH,
+                           TextAttribute.WIDTH_SEMI_EXTENDED);
+            }
+            break;
+        default:
+            result.put(TextAttribute.WIDTH,
+                       TextAttribute.WIDTH_REGULAR);
+        }
+
+        // Text decoration
+        CSSValue cssVal = cssDecl.getPropertyCSSValue
+            (TEXT_DECORATION_PROPERTY);
+        short t = cssVal.getCssValueType();
+        if (t == CSSValue.CSS_VALUE_LIST) {
+            CSSValueList lst = (CSSValueList)cssVal;
+            for (int i = 0; i < lst.getLength(); i++) {
+                v = (CSSPrimitiveValue)lst.item(i);
+                s = v.getStringValue();
+                switch (s.charAt(0)) {
+                case 'u':
+                    result.put(TextAttribute.UNDERLINE,
+                               TextAttribute.UNDERLINE_ON);
+                    break;
+                case 'o':
+                    // !!! overline
+                    break;
+                case 'l':
+                    result.put(TextAttribute.STRIKETHROUGH,
+                               TextAttribute.STRIKETHROUGH_ON);
+                }
+            }
+        }
+
+        // Fill
+        Paint p = CSSUtilities.convertFillToPaint((SVGElement)element,
+                                                  node,
+                                                  ctx,
+                                                  cssDecl,
+                                                  uctx);
+        if (p != null) {
+            result.put(TextAttribute.FOREGROUND, p);
+        }
+
+        // Stroke Paint
+        p = CSSUtilities.convertStrokeToPaint((SVGElement)element,
+                                              node,
+                                              ctx,
+                                              cssDecl,
+                                              uctx);
+        if (p != null) {
+            result.put
+                (GVTAttributedCharacterIterator.TextAttribute.STROKE_PAINT, p);
+        }
+
+        // Stroke
+        Stroke stroke
+            = CSSUtilities.convertStrokeToBasicStroke((SVGElement)element,
+                                                      ctx,
+                                                      cssDecl,
+                                                      uctx);
+        if(stroke != null){
+            result.put(GVTAttributedCharacterIterator.TextAttribute.STROKE,
+                       stroke);
+        }
+
+        return result;
     }
 }
