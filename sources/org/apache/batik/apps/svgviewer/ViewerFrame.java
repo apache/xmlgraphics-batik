@@ -1067,7 +1067,7 @@ public class ViewerFrame
                     is.close();
                     is = u.openStream();
                 }
-                Reader in = new InputStreamReader(is);
+                Reader in = new InputStreamReader(is, "Unicode");
                 int nch;
                 while ((nch = in.read(buffer, 0, buffer.length)) != -1) {
                     doc.insertString(doc.getLength(),
