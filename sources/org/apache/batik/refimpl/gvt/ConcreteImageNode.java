@@ -24,13 +24,8 @@ import org.apache.batik.gvt.GraphicsNodeRenderContext;
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  * @version $Id$
  */
-public class ConcreteImageNode extends AbstractGraphicsNode
+public class ConcreteImageNode extends ConcreteCompositeGraphicsNode
         implements ImageNode {
-
-    /**
-     * The graphics node that represents this image node.
-     */
-    protected GraphicsNode image;
 
     /**
      * Constructs a new empty image node.
@@ -42,59 +37,14 @@ public class ConcreteImageNode extends AbstractGraphicsNode
     //
 
     public void setImage(GraphicsNode newImage) {
-        GraphicsNode oldImage = image;
-        this.image = newImage;
-        firePropertyChange("image", oldImage, newImage);
+        getChildren().add(0, newImage);
     }
 
     public GraphicsNode getImage() {
-        return image;
-    }
-
-    //
-    // Drawing methods
-    //
-
-    public boolean hasProgressivePaint() {
-        // <!> FIXME : TODO
-        return false;
-    }
-
-    public void progressivePaint(Graphics2D g2d, GraphicsNodeRenderContext rc) {
-        // <!> FIXME : TODO
-    }
-
-    public void primitivePaint(Graphics2D g2d, GraphicsNodeRenderContext rc) {
-        if (image != null) {
-            image.primitivePaint(g2d, rc);
-        }
-    }
-
-    //
-    // Geometric methods
-    //
-
-    public Rectangle2D getPrimitiveBounds() {
-        if (image == null) {
-            return null;
+        if (count > 0) {
+            return children[0];
         } else {
-            return image.getPrimitiveBounds();
-        }
-    }
-
-    public Shape getOutline() {
-        if (image == null) {
             return null;
-        } else {
-            return image.getOutline();
-        }
-    }
-
-    public Rectangle2D getGeometryBounds(){
-        if (image == null) {
-            return null;
-        } else {
-            return image.getGeometryBounds();
         }
     }
 }
