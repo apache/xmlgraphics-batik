@@ -147,6 +147,12 @@ public class SVGFilterElementBridge implements FilterBridge, SVGConstants {
                         if(filterNode != null){
                             in = filterNode;
                         }
+                        else{
+                            System.out.println("Filter bridge could not bridge element: " + ((Element)child).getNodeName());
+                        }
+                    }
+                    else{
+                        System.out.println("Could not find bridge for " + ((Element)child).getNodeName());
                     }
                 }
             }

@@ -49,7 +49,7 @@ public class StaticRenderer implements Renderer {
     /**
      * Tree this Renderer paints.
      */
-    private GraphicsNode treeRoot;
+    protected GraphicsNode treeRoot;
 
     /**
      * Flag for progressive rendering. Not used in this implementation
