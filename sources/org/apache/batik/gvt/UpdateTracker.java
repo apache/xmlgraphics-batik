@@ -140,15 +140,15 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
                     nRgn = nat.createTransformedShape(srcNRgn);
                 }
 
-                ret.add(oRgn);
+                if (oRgn != null) {
+                    ret.add(oRgn);
+                }
 
                 if (nRgn != null) {
                     ret.add(nRgn);
                 }
             }
         }
-
-        // System.out.println("Dirty area: " + ret);
         return ret;
     }
 
