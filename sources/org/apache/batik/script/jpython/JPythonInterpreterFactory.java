@@ -12,7 +12,7 @@ import org.apache.batik.script.Interpreter;
 import org.apache.batik.script.InterpreterFactory;
 
 /**
- * Allows to create instances of <code>JPythonInterpreterFactory</code>.
+ * Allows to create instances of <code>JPythonInterpreter</code> class.
  * @author <a href="mailto:cjolif@ilog.fr">Christophe Jolif</a>
  * @version $Id$
  */

@@ -14,7 +14,7 @@ import org.mozilla.javascript.Scriptable;
 import org.w3c.dom.events.EventTarget;
 
 /**
- * This is utility class allowing to pass an ECMAScript function
+ * This is an utility class allowing to pass an ECMAScript function
  * as a parameter of the <code>addEventListener</code> method of
  * <code>EventTarget</code> objects as DOM Level 2 recommendation
  * required.

@@ -12,12 +12,11 @@ import org.apache.batik.script.Interpreter;
 import org.apache.batik.script.InterpreterFactory;
 
 /**
- * Allows to create instances of <code>RhinoInterpreterFactory</code>.
+ * Allows to create instances of <code>RhinoInterpreter</code> class.
  * @author <a href="mailto:cjolif@ilog.fr">Christophe Jolif</a>
  * @version $Id$
  */
 public class RhinoInterpreterFactory implements InterpreterFactory {
-
     /**
      * Builds a <code>RhinoInterpreterFactory</code>.
      */
