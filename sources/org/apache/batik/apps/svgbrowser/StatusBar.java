@@ -88,6 +88,11 @@ public class StatusBar extends JPanel {
     protected String mainMessage;
 
     /**
+     * The current display thread.
+     */
+    protected Thread displayThread;
+
+    /**
      * Creates a new status bar
      * @param rm the resource manager that finds the message
      */
@@ -183,9 +188,13 @@ public class StatusBar extends JPanel {
      * @param s the message
      */
     public void setMessage(String s) {
-        message.setText(s);
         setPreferredSize(new Dimension(0, getPreferredSize().height));
-        new DisplayThread().start();
+        if (displayThread != null) {
+            displayThread.interrupt();
+        }
+        displayThread = new DisplayThread();
+        displayThread.start();
+        message.setText(s);
     }
 
     /**
@@ -195,6 +204,10 @@ public class StatusBar extends JPanel {
     public void setMainMessage(String s) {
         mainMessage = s;
         message.setText(mainMessage = s);
+        if (displayThread != null) {
+            displayThread.interrupt();
+            displayThread = null;
+        }
         setPreferredSize(new Dimension(0, getPreferredSize().height));
     }
 

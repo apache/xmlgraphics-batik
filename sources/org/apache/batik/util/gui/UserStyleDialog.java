@@ -51,7 +51,18 @@ import org.apache.batik.util.gui.resource.ResourceManager;
  * @version $Id$
  */
 public class UserStyleDialog extends JDialog implements ActionMap {
-   /**
+
+    /**
+     * The return value if 'OK' is chosen.
+     */
+    public final static int OK_OPTION = 0;
+
+    /**
+     * The return value if 'Cancel' is chosen.
+     */
+    public final static int CANCEL_OPTION = 1;
+
+    /**
      * The resource file name
      */
     protected final static String RESOURCES =
@@ -78,9 +89,14 @@ public class UserStyleDialog extends JDialog implements ActionMap {
     protected Panel panel;
 
     /**
-     * The change handler.
+     * The chosen path.
      */
-    protected ChangeHandler changeHandler;
+    protected String chosenPath;
+
+    /**
+     * The last return code.
+     */
+    protected int returnCode;
 
     /**
      * Creates a new user style dialog.
@@ -96,6 +112,23 @@ public class UserStyleDialog extends JDialog implements ActionMap {
         getContentPane().add(panel = new Panel());
         getContentPane().add("South", createButtonsPanel());
         pack();
+    }
+
+    /**
+     * Shows the dialog.
+     * @return OK_OPTION or CANCEL_OPTION.
+     */
+    public int showDialog() {
+        pack();
+        show();
+        return returnCode;
+    }
+
+    /**
+     * Returns the chosen path or null.
+     */
+    public String getPath() {
+        return chosenPath;
     }
 
     /**
@@ -133,24 +166,14 @@ public class UserStyleDialog extends JDialog implements ActionMap {
                             path = "file:" + path;
                         }
                     }
-                    if (changeHandler != null) {
-                        changeHandler.userStyleSheetURIChanged(path);
-                    }
+                    chosenPath = path;
                 }
             } else {
-                if (changeHandler != null) {
-                    changeHandler.userStyleSheetURIChanged(null);
-                }
+                chosenPath = null;
             }
+            returnCode = OK_OPTION;
             dispose();
         }
-    }
-
-    /**
-     * Sets the change handler.
-     */
-    public void setChangeHandler(ChangeHandler ch) {
-        changeHandler = ch;
     }
 
     /**
@@ -158,6 +181,7 @@ public class UserStyleDialog extends JDialog implements ActionMap {
      */
     protected class CancelButtonAction extends AbstractAction {
         public void actionPerformed(ActionEvent e) {
+            returnCode = CANCEL_OPTION;
             dispose();
         }
     }
@@ -175,16 +199,6 @@ public class UserStyleDialog extends JDialog implements ActionMap {
      */
     public Action getAction(String key) throws MissingListenerException {
         return (Action)listeners.get(key);
-    }
-
-    /**
-     * To handle a change in this dialog.
-     */
-    public interface ChangeHandler {
-        /**
-         * Called when the user stylesheet has changed.
-         */
-        void userStyleSheetURIChanged(String s);
     }
 
     /**

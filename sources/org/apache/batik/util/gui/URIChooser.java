@@ -51,6 +51,17 @@ import org.apache.batik.util.gui.resource.ResourceManager;
  * @version $Id$
  */
 public class URIChooser extends JDialog implements ActionMap {
+
+    /**
+     * The return value if 'OK' is chosen.
+     */
+    public final static int OK_OPTION = 0;
+
+    /**
+     * The return value if 'Cancel' is chosen.
+     */
+    public final static int CANCEL_OPTION = 1;
+
     /**
      * The resource file name
      */
@@ -92,11 +103,6 @@ public class URIChooser extends JDialog implements ActionMap {
     protected JButton clearButton;
 
     /**
-     * The external action associated with the ok button
-     */
-    protected Action okAction;
-
-    /**
      * The current path.
      */
     protected String currentPath = ".";
@@ -107,13 +113,22 @@ public class URIChooser extends JDialog implements ActionMap {
     protected FileFilter fileFilter;
 
     /**
+     * The last return code.
+     */
+    protected int returnCode;
+
+    /**
+     * The last chosen path.
+     */
+    protected String chosenPath;
+
+    /**
      * Creates a new URIChooser
      * @param d the parent dialog
-     * @param okAction the action to associate to the ok button
      */
-    public URIChooser(JDialog d, Action okAction) {
+    public URIChooser(JDialog d) {
         super(d);
-        initialize(okAction);
+        initialize();
     }
 
     /**
@@ -121,16 +136,26 @@ public class URIChooser extends JDialog implements ActionMap {
      * @param f the parent frame
      * @param okAction the action to associate to the ok button
      */
-    public URIChooser(JFrame f, Action okAction) {
+    public URIChooser(JFrame f) {
         super(f);
-        initialize(okAction);
+        initialize();
     }
 
     /**
-     * Returns the text contained in the text field
+     * Shows the dialog.
+     * @return OK_OPTION or CANCEL_OPTION.
+     */
+    public int showDialog() {
+        pack();
+        show();
+        return returnCode;
+    }
+
+    /**
+     * Returns the text entered by the user.
      */
     public String getText() {
-        return textField.getText();
+        return chosenPath;
     }
 
     /**
@@ -143,8 +168,7 @@ public class URIChooser extends JDialog implements ActionMap {
     /**
      * Initializes the dialog
      */
-    protected void initialize(Action okAction) {
-        this.okAction = okAction;
+    protected void initialize() {
         setModal(true);
 
         listeners.put("BrowseButtonAction", new BrowseButtonAction());
@@ -272,9 +296,9 @@ public class URIChooser extends JDialog implements ActionMap {
      */
     protected class OKButtonAction extends AbstractAction {
         public void actionPerformed(ActionEvent e) {
-            okAction.actionPerformed(e);
+            returnCode = OK_OPTION;
+            chosenPath = textField.getText();
             dispose();
-            textField.setText("");
         }
     }
 
@@ -283,8 +307,9 @@ public class URIChooser extends JDialog implements ActionMap {
      */
     protected class CancelButtonAction extends AbstractAction {
         public void actionPerformed(ActionEvent e) {
+            returnCode = CANCEL_OPTION;
             dispose();
-            textField.setText("");
+            textField.setText(chosenPath);
         }
     }
 

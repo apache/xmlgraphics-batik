@@ -34,7 +34,7 @@
       }
       text.previous {
 	  stroke-width: 1;
-          font-size: 32;
+          font-size: 28;
           text-anchor: start;
           text-decoration: underline;
       }
@@ -46,7 +46,7 @@
       }
       text.link {
           fill: white;
-          font-size: 18;
+          font-size: 14;
           font-family: SunSansCondensed-Heavy;
       }
   ]]>
@@ -93,68 +93,98 @@
     Test Files 2
   </text>
 
-  <a xlink:href="clip.svg" xlink:show="new">
+  <a xlink:href="image.svg" xlink:show="new">
     <text class="link" x="70" y="0"
-          transform="translate(0, 250) rotate(-45)">
-      Clip Path (clip.svg)
+          transform="translate(0, 250) rotate(-55)">
+      Images (image.svg)
     </text>
   </a> 
 
   <a xlink:href="textFeatures.svg" xlink:show="new">
     <text class="link" x="70" y="0"
-          transform="translate(0, 250) rotate(-35)">
+          transform="translate(0, 250) rotate(-47)">
       Text (textFeatures.svg)
     </text>
   </a> 
 
-  <a xlink:href="dataProtocol.svg" xlink:show="new">
+  <a xlink:href="textProperties.svg" xlink:show="new">
     <text class="link" x="70" y="0"
-          transform="translate(0, 250) rotate(-25)">
-      Data Protocol (dataProtocol.svg)
+          transform="translate(0, 250) rotate(-39)">
+      Text 2 (textProperties.svg)
     </text>
   </a> 
 
-  <a xlink:href="feComposite.svg" xlink:show="new">
+  <a xlink:href="patternRegionA.svg" xlink:show="new">
+    <text class="link" x="70" y="0"
+          transform="translate(0, 250) rotate(-31)">
+      Pattern Region A (patternRegionA.svg)
+    </text>
+  </a> 
+
+  <a xlink:href="patternRegionB.svg" xlink:show="new">
+    <text class="link" x="70" y="0"
+          transform="translate(0, 250) rotate(-23)">
+      Pattern Region B (patternRegionB.svg)
+    </text>
+  </a> 
+
+  <a xlink:href="systemColors.svg" xlink:show="new">
     <text class="link" x="70" y="0"
           transform="translate(0, 250) rotate(-15)">
-      feComposite (feComposite.svg)
+      System Colors (systemColors.svg)
     </text>
   </a> 
 
-  <a xlink:href="feTileTarget.svg" xlink:show="new">
+  <a xlink:href="textBidi.svg" xlink:show="new">
     <text class="link" x="70" y="0"
-          transform="translate(0, 250) rotate(-5)">
-      feTileTarget (feTileTarget.svg)
+          transform="translate(0, 250) rotate(-7)">
+      Bidirectional Text (textBidi.svg)
     </text>
   </a> 
 
-  <a xlink:href="image.svg" xlink:show="new">
+  <a xlink:href="percentagesAndUnits.svg" xlink:show="new">
     <text class="link" x="70" y="0"
-          transform="translate(0, 250) rotate(5)">
-      SVG Images (image.svg)
+          transform="translate(0, 250) rotate(1)">
+      Percentages &amp; Units (percentagesAndUnits.svg)
     </text>
   </a> 
 
-  <a xlink:href="thumbnails.svg" xlink:show="new">
+  <a xlink:href="textStyles.svg" xlink:show="new">
     <text class="link" x="70" y="0"
-          transform="translate(0, 250) rotate(15)">
-      External References (thumbnails.svg)
+          transform="translate(0, 250) rotate(9)">
+      Text Styles (textStyles.svg)
     </text>
   </a> 
 
-  <a xlink:href="feDisplacementMap.svg" xlink:show="new">
+
+  <a xlink:href="textLayout.svg" xlink:show="new">
+    <text class="link" x="70" y="0"
+          transform="translate(0, 250) rotate(17)">
+      Text Layout (textLayout.svg)
+    </text>
+  </a> 
+
+  <a xlink:href="patternPreserveAspectRatioA.svg" xlink:show="new">
     <text class="link" x="70" y="0"
           transform="translate(0, 250) rotate(25)">
-      feDisplacementMap (feDisplacementMap.svg)
+      Pattern PreserveAspectRatio (patternPreserveAspectRatioA.svg)
     </text>
   </a> 
 
-  <a xlink:href="feTile.svg" xlink:show="new">
+  <a xlink:href="textLayout2.svg" xlink:show="new">
     <text class="link" x="70" y="0"
-          transform="translate(0, 250) rotate(35)">
-      feTile (feTile.svg)
+          transform="translate(0, 250) rotate(33)">
+      Text Layout 2 (textLayout2.svg)
     </text>
   </a> 
+
+  <a xlink:href="visibility.svg" xlink:show="new">
+    <text class="link" x="70" y="0"
+          transform="translate(0, 250) rotate(41)">
+      Visibility (visibility.svg)
+    </text>
+  </a> 
+
 
   <a xlink:href="index.svg">
     <text class="headfoot previous" style="fill:white; filter:url(#blur);" x="20" y="480" transform="translate(0, 0)">
@@ -165,6 +195,18 @@
     </text>
     <text class="headfoot previous" x="20" y="480">
       Previous
+    </text>
+  </a>
+
+  <a xlink:href="thumbnails.svg">
+    <text class="headfoot previous" style="fill:white; filter:url(#blur);" x="350" y="480" transform="translate(0, 0)">
+      Next
+    </text>
+    <text class="headfoot previous" style="fill:white; filter:url(#blur);" x="350" y="480" transform="translate(0, 0)">
+      Next
+    </text>
+    <text class="headfoot previous" x="350" y="480">
+      Next
     </text>
   </a>
 </svg>

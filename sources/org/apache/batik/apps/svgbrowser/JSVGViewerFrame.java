@@ -96,10 +96,10 @@ import org.apache.batik.transcoder.image.PNGTranscoder;
 import org.apache.batik.transcoder.print.PrintTranscoder;
 
 import org.apache.batik.util.gui.DOMViewer;
-import org.apache.batik.util.gui.LanguageChangeHandler;
 import org.apache.batik.util.gui.LanguageDialog;
 import org.apache.batik.util.gui.LocationBar;
 import org.apache.batik.util.gui.MemoryMonitor;
+import org.apache.batik.util.gui.URIChooser;
 import org.apache.batik.util.gui.UserStyleDialog;
 
 import org.apache.batik.util.gui.resource.ActionMap;
@@ -135,6 +135,7 @@ public class JSVGViewerFrame
 
     // The actions names.
     public final static String OPEN_ACTION = "OpenAction";
+    public final static String OPEN_LOCATION_ACTION = "OpenLocationAction";
     public final static String NEW_WINDOW_ACTION = "NewWindowAction";
     public final static String RELOAD_ACTION = "ReloadAction";
     public final static String PRINT_ACTION = "PrintAction";
@@ -233,6 +234,11 @@ public class JSVGViewerFrame
     protected SVGDocument svgDocument;
 
     /**
+     * The URI chooser.
+     */
+    protected URIChooser uriChooser;
+
+    /**
      * The DOM viewer.
      */
     protected DOMViewer domViewer;
@@ -290,6 +296,7 @@ public class JSVGViewerFrame
         });
 
         listeners.put(OPEN_ACTION, new OpenAction());
+        listeners.put(OPEN_LOCATION_ACTION, new OpenLocationAction());
         listeners.put(NEW_WINDOW_ACTION, new NewWindowAction());
         listeners.put(RELOAD_ACTION, new ReloadAction());
         listeners.put(PRINT_ACTION, new PrintAction());
@@ -510,7 +517,7 @@ public class JSVGViewerFrame
     }
 
     /**
-     * To open a new document.
+     * To open a new file.
      */
     public class OpenAction extends AbstractAction {
         public OpenAction() {}
@@ -529,6 +536,39 @@ public class JSVGViewerFrame
                     currentPath = f.getCanonicalPath();
                     svgCanvas.loadSVGDocument(f.toURL().toString());
                 } catch (IOException ex) {
+                    // !!! Error dialog
+                }
+            }
+        }
+    }
+
+    /**
+     * To open a new document.
+     */
+    public class OpenLocationAction extends AbstractAction {
+        public OpenLocationAction() {}
+        public void actionPerformed(ActionEvent e) {
+            if (uriChooser == null) {
+                uriChooser = new URIChooser(JSVGViewerFrame.this);
+                uriChooser.setFileFilter(new SVGFileFilter());
+                uriChooser.pack();
+                Rectangle fr = getBounds();
+                Dimension sd = uriChooser.getSize();
+                uriChooser.setLocation(fr.x + (fr.width  - sd.width) / 2,
+                                       fr.y + (fr.height - sd.height) / 2);
+            }
+            if (uriChooser.showDialog() == URIChooser.OK_OPTION) {
+                String text = uriChooser.getText();
+                try {
+                    File f = new File(text);
+                    URL u = null;
+                    if (f.exists() && !f.isDirectory()) {
+                        u = f.toURL();
+                    } else {
+                        u = new URL(text);
+                    }
+                    svgCanvas.loadSVGDocument(u.toString());
+                } catch (Exception ex) {
                     // !!! Error dialog
                 }
             }
@@ -690,24 +730,31 @@ public class JSVGViewerFrame
                 return;
             }
             
+            URL tu = null;
+            try {
+                tu = new URL(((SVGOMDocument)svgDocument).getURLObject(), "");
+            } catch (MalformedURLException ex) {
+                // Can't happen
+                throw new InternalError(ex.getMessage());
+            }
+            final URL u = tu;
+
+            final JFrame fr = new JFrame(u.toString());
+            fr.setSize(resources.getInteger("ViewSource.width"),
+                       resources.getInteger("ViewSource.height"));
+            final JTextArea ta  = new JTextArea();
+            ta.setLineWrap(true);
+            ta.setFont(new Font("monospaced", Font.PLAIN, 12));
+                
+            JScrollPane scroll = new JScrollPane();
+            scroll.getViewport().add(ta);
+            scroll.setVerticalScrollBarPolicy
+                (JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+            fr.getContentPane().add(scroll, BorderLayout.CENTER);
+
             new Thread() {
                 public void run() {
                     char [] buffer = new char[4096];
-
-                    URL u = ((SVGOMDocument)svgDocument).getURLObject();
-
-                    JFrame fr = new JFrame(u.toString());
-                    fr.setSize(resources.getInteger("ViewSource.width"),
-                               resources.getInteger("ViewSource.height"));
-                    JTextArea ta  = new JTextArea();
-                    ta.setLineWrap(true);
-                    ta.setFont(new Font("monospaced", Font.PLAIN, 12));
-                
-                    JScrollPane scroll = new JScrollPane();
-                    scroll.getViewport().add(ta);
-                    scroll.setVerticalScrollBarPolicy
-                        (JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-                    fr.getContentPane().add(scroll, BorderLayout.CENTER);
                     
                     try {
                         Document  doc = new PlainDocument();
@@ -731,16 +778,12 @@ public class JSVGViewerFrame
                             // try default encoding...
                             doc = new PlainDocument();
                             is = u.openStream();
-                            try {
-                                Reader in = new InputStreamReader(is);
-                                int nch;
-                                while ((nch = in.read(buffer, 0, buffer.length))!=-1){
-                                    doc.insertString(doc.getLength(),
-                                                     new String(buffer, 0, nch), null);
-                                }
-                            } catch (Exception ex) {
-                                // !!! TODO : dialog
-                                System.err.println(ex.toString());
+
+                            Reader in = new InputStreamReader(is);
+                            int nch;
+                            while ((nch = in.read(buffer, 0, buffer.length))!=-1){
+                                doc.insertString(doc.getLength(),
+                                                 new String(buffer, 0, nch), null);
                             }
                         }
 
@@ -882,19 +925,36 @@ public class JSVGViewerFrame
         public void actionPerformed(ActionEvent e) {
             if (languageDialog == null) {
                 languageDialog = new LanguageDialog(JSVGViewerFrame.this);
-                languageDialog.setLanguageChangeHandler
-                    (new LanguageChangeHandler() {
-                        public void languageChanged(String lang) {
-                            userLanguages = lang;
-                        }
-                    });
+
                 Rectangle fr = getBounds();
                 Dimension ld = languageDialog.getSize();
                 languageDialog.setLocation(fr.x + (fr.width  - ld.width) / 2,
                                            fr.y + (fr.height - ld.height) / 2);
                 languageDialog.setLanguages(userLanguages);
             }
-            languageDialog.show();
+            if (languageDialog.showDialog() == LanguageDialog.OK_OPTION) {
+                userLanguages = languageDialog.getLanguages();
+            }
+        }
+    }
+
+    /**
+     * To display the user style options dialog.
+     */
+    public class StyleSheetAction extends AbstractAction {
+        public StyleSheetAction() {}
+        public void actionPerformed(ActionEvent e) {
+            if (styleSheetDialog == null) {
+                styleSheetDialog = new UserStyleDialog(JSVGViewerFrame.this);
+                styleSheetDialog.pack();
+                Rectangle fr = getBounds();
+                Dimension sd = styleSheetDialog.getSize();
+                styleSheetDialog.setLocation(fr.x + (fr.width  - sd.width) / 2,
+                                             fr.y + (fr.height - sd.height) / 2);
+            }
+            if (styleSheetDialog.showDialog() == UserStyleDialog.OK_OPTION) {
+                userStyleSheetURI = styleSheetDialog.getPath();
+            }
         }
     }
 
@@ -912,31 +972,6 @@ public class JSVGViewerFrame
                                                fr.y + (fr.height - md.height) / 2);
             }
             memoryMonitorFrame.show();
-        }
-    }
-
-    /**
-     * To display the user style options dialog.
-     */
-    public class StyleSheetAction extends AbstractAction {
-        public StyleSheetAction() {}
-        public void actionPerformed(ActionEvent e) {
-            if (styleSheetDialog == null) {
-                styleSheetDialog = new UserStyleDialog(JSVGViewerFrame.this);
-                styleSheetDialog.setChangeHandler
-                    (new UserStyleDialog.ChangeHandler() {
-                        public void userStyleSheetURIChanged(String s) {
-                            userStyleSheetURI = s;
-                        }
-                    });
-                styleSheetDialog.pack();
-                Rectangle fr = getBounds();
-                Dimension sd = styleSheetDialog.getSize();
-                styleSheetDialog.setLocation(fr.x + (fr.width  - sd.width) / 2,
-                                             fr.y + (fr.height - sd.height) / 2);
-            }
-            styleSheetDialog.pack();
-            styleSheetDialog.show();
         }
     }
 
@@ -1212,14 +1247,14 @@ public class JSVGViewerFrame
          * The given message is typically displayed in a status bar.
          */
         public void displayMessage(String message) {
-            System.out.println(message);
+            statusBar.setMessage(message);
         }
 
         /**
          * Returns a customized the pixel to mm factor.
          */
         public float getPixelToMM() {
-            return 0.264583333333333333333f; // 72 dpi
+            return 0.264583333333333333333f; // 96 dpi
         }
 
         /**

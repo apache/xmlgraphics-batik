@@ -238,16 +238,17 @@
         </g>
 
         <!-- ======================== -->
-        <!-- textPath                 -->
+        <!-- feDisplacementMap        -->
         <!-- ======================== -->
         <g transform="translate(300, 0) scale(1.5, 1.5)">
-            <symbol id="textPath" viewBox="0 0 450 500">
-                <use xlink:href="textPath.svg#body"/>
+            <!-- The <svg> element in a symbol to be able to resize it -->
+            <symbol id="feDisplacementMap" viewBox="0 0 450 500">
+                <use xlink:href="feDisplacementMap.svg#body"/>
             </symbol>
 
-            <use xlink:href="#textPath" width="45" height="50"/>
+            <use xlink:href="#feDisplacementMap" width="45" height="50"/>
 
-            <a xlink:href="textPath.svg" xlink:show="new">
+            <a xlink:href="feDisplacementMap.svg" xlink:show="new">
                 <rect width="45" height="50"
                     style="fill-opacity:0;"/>
             </a>
@@ -312,17 +313,17 @@
         </g>
 
         <!-- ======================== -->
-        <!-- feDisplacementMap        -->
+        <!-- index2                   -->
         <!-- ======================== -->
         <g transform="translate(300, 0) scale(1.5, 1.5)">
             <!-- The <svg> element in a symbol to be able to resize it -->
-            <symbol id="feDisplacementMap" viewBox="0 0 450 500">
-                <use xlink:href="feDisplacementMap.svg#body"/>
+            <symbol id="index2" viewBox="0 0 450 500">
+                <use xlink:href="index2.svg#body"/>
             </symbol>
 
-            <use xlink:href="#feDisplacementMap" width="45" height="50"/>
+            <use xlink:href="#index2" width="45" height="50"/>
 
-            <a xlink:href="feDisplacementMap.svg" xlink:show="new">
+            <a xlink:href="index2.svg">
                 <rect width="45" height="50"
                     style="fill-opacity:0;"/>
             </a>
