@@ -11,25 +11,35 @@ package org.apache.batik.refimpl.bridge;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Node;
+
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
 import org.w3c.dom.events.MouseEvent;
 import org.w3c.dom.events.DocumentEvent;
+
 import org.w3c.dom.svg.SVGElement;
+
 import org.apache.batik.gvt.GraphicsNode;
+
 import org.apache.batik.gvt.event.EventDispatcher;
 import org.apache.batik.gvt.event.GraphicsNodeMouseListener;
 import org.apache.batik.gvt.event.GraphicsNodeKeyListener;
 import org.apache.batik.gvt.event.GraphicsNodeMouseEvent;
 import org.apache.batik.gvt.event.GraphicsNodeKeyEvent;
+
 import org.apache.batik.script.Interpreter;
 import org.apache.batik.script.InterpreterPool;
 import org.apache.batik.script.InterpreterException;
+
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.UserAgent;
+
 import java.io.StringReader;
 import java.io.IOException;
+
 import java.awt.geom.Point2D;
 
 /**
@@ -112,23 +122,30 @@ class BridgeEventSupport {
         String script = null;
         // <!> HACK (the cast) should be modified : call the method
         // with SVGElement's only
+        String language = ((SVGElement)element).getOwnerSVGElement().
+            getContentScriptType();
         Interpreter interpret =
             ctx.getInterpreterPool().
-            getInterpreter(((SVGElement)element).getOwnerSVGElement().
-                           getContentScriptType());
-        // <!> TODO we need to memo listeners to be able to remove
-        // them later.
-        // <!> TODO be smarter : don't look for doc attr on other
-        // elements.
-        for (int i = 0; i < EVENT_ATTRIBUTES.length; i++) {
-            if (!(script = element.getAttribute(EVENT_ATTRIBUTES[i])).
-                equals("")) {
-                target.
-                    addEventListener(EVENT_NAMES[i],
-                                     new ScriptCaller(ctx.getUserAgent(),
-                                                      script, interpret),
-                                     false);
+            getInterpreter(language);
+        if (interpret != null) {
+            // <!> TODO we need to memo listeners to be able to remove
+            // them later.
+            // <!> TODO be smarter : don't look for doc attr on other
+            // elements.
+            for (int i = 0; i < EVENT_ATTRIBUTES.length; i++) {
+                if (!(script = element.getAttribute(EVENT_ATTRIBUTES[i])).
+                    equals("")) {
+                    target.
+                        addEventListener(EVENT_NAMES[i],
+                                         new ScriptCaller(ctx.getUserAgent(),
+                                                          script, interpret),
+                                         false);
+                }
             }
+        } else {
+            UserAgent ua = ctx.getUserAgent();
+            if (ua != null)
+                ua.displayError("unknow language: "+language);
         }
     }
 
@@ -148,6 +165,38 @@ class BridgeEventSupport {
                                      new UnloadListener(dispatcher, listener),
                                      false);
             }
+        }
+    }
+
+    public static void loadScripts(BridgeContext ctx, Document doc) {
+        NodeList list = doc.getElementsByTagName("script");
+        UserAgent ua = ctx.getUserAgent();
+        String language = null;
+        StringBuffer script = null;
+        Element selement = null;
+        for (int i = 0; i < list.getLength(); i++) {
+            language = (selement = (Element)list.item(i)).
+                getAttribute("type");
+            Interpreter interpret =
+                ctx.getInterpreterPool().
+                getInterpreter(language);
+            if (interpret != null) {
+                script = new StringBuffer();
+                for (Node n = selement.getFirstChild(); n != null;
+                     n = n.getNextSibling()) {
+                    script.append(n.getNodeValue());
+                }
+                try {
+                    interpret.evaluate(new StringReader(script.toString()));
+                } catch (IOException io) {
+                    // will never appeared we don't use a file
+                } catch (InterpreterException e) {
+                    if (ua != null)
+                        ua.displayError("scripting error: "+e.getMessage());
+                }
+            } else
+                if (ua != null)
+                    ua.displayError("unknow language: "+language);
         }
     }
 
