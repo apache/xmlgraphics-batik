@@ -31,7 +31,6 @@ public class ParsedURLJarProtocolHandler
     }
 
     public ParsedURLData parseURL(ParsedURL baseURL, String urlStr) {
-        System.out.println("In parseURL");
         String start = urlStr.substring(0, JAR.length()+1).toLowerCase();
         
         if (start.equals(JAR+":"))
