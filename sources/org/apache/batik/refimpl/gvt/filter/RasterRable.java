@@ -99,6 +99,7 @@ public class RasterRable
             }
             thread = null;
         }
+
         return src;
     }
 
@@ -234,6 +235,7 @@ public class RasterRable
                                        img.getHeight(null),
                                        BufferedImage.TYPE_INT_ARGB);
                 Graphics2D g2d = bi.createGraphics();
+
                 g2d.drawImage(img, 0, 0, null);
                 g2d.dispose();
                 

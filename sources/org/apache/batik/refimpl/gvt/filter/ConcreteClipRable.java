@@ -105,8 +105,17 @@ public class ConcreteClipRable
         Shape aoi = rc.getAreaOfInterest();
         if (aoi == null) aoi = getBounds2D();
 
-        Rectangle2D rect = getBounds2D();
-        Rectangle2D.intersect(rect, clipPath.getBounds2D(), rect);
+        Rectangle2D rect     = getBounds2D();
+        Rectangle2D clipRect = clipPath.getBounds2D();
+        Rectangle2D aoiRect  = aoi.getBounds2D();
+        
+        if (rect.intersects(clipRect) == false)
+            return null;
+        Rectangle2D.intersect(rect, clipRect, rect);
+
+        
+        if (rect.intersects(aoiRect) == false)
+            return null;
         Rectangle2D.intersect(rect, aoi.getBounds2D(), rect);
 
         Rectangle devR = usr2dev.createTransformedShape(rect).getBounds();

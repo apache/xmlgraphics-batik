@@ -180,12 +180,12 @@ public class ConcreteDisplacementMapRable
                     aoi.getY() - scale/2,
                     aoi.getWidth() + scale,
                     aoi.getHeight() + scale);
-        aoi.intersect(displaced.getBounds2D(),aoi, aoi);
+        Rectangle2D displacedRect = displaced.getBounds2D();
+        if (aoi.intersects(displacedRect) == false)
+            return null;
 
-        RenderContext srcRc 
-            = new RenderContext(srcAt, 
-                                aoi,
-                                rh);
+        aoi = aoi.createIntersection(displacedRect);
+        RenderContext srcRc = new RenderContext(srcAt, aoi, rh);
         RenderedImage displacedRed = displaced.createRendering(srcRc);
 
         if(displacedRed == null){
@@ -282,17 +282,10 @@ public class ConcreteDisplacementMapRable
      * coordinate system for the source indicated by srcIndex.
      */
     public Shape getDependencyRegion(int srcIndex, Rectangle2D outputRgn){
-        // For DisplacementMap, the output is equal to the input. Therefore,
-        // the dependency region is the intersection of the outputRgn
-        // with the source.
-        Rectangle2D dependencyRegion = null;
-        if(srcIndex == 0 || srcIndex == 1){
-            // There are two source in DisplacementMap
-            // Intersect with output region
-            dependencyRegion = outputRgn.createIntersection(getBounds2D());
-        }
-
-        return dependencyRegion;
+        // NOTE: This needs to grow the region!!!
+        //       Morphology actually needs a larger area of input than
+        //       it outputs.
+        return super.getDependencyRegion(srcIndex, outputRgn);
     }
 
     /**
@@ -307,17 +300,10 @@ public class ConcreteDisplacementMapRable
      *  this is in the user coordinate system of this node.
      */
     public Shape getDirtyRegion(int srcIndex, Rectangle2D inputRgn){
-        // For DisplacementMap, the output is equal to the input. Therefore
-        // the dependency region is the intersection of the inputRgn
-        // with the source.
-        Rectangle2D dirtyRegion = null;
-        if(srcIndex == 0 || srcIndex == 1){
-            // There is only one source in Morphology
-            // Intersect with output region
-            dirtyRegion = inputRgn.createIntersection(getBounds2D());
-        }
-
-        return dirtyRegion;
+        // NOTE: This needs to grow the region!!!
+        //       Changes in the input region affect a larger area of
+        //       output than the input.
+        return super.getDirtyRegion(srcIndex, inputRgn);
     }
 
 }

@@ -240,7 +240,7 @@ public class ConcreteColorMatrixRable
                                                  cm.isAlphaPremultiplied(),
                                                  null);
 
+
         return new ConcreteBufferedImageCachableRed(dstBI, srcMinX, srcMinY);
     }
-
 }

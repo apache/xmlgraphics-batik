@@ -282,7 +282,13 @@ public abstract class AbstractRable implements Filter {
         // We only depend on our source for stuff that is inside
         // our bounds...
         Rectangle2D srect = (Rectangle2D)outputRgn.clone();
-        Rectangle2D.intersect(srect, getBounds2D(), srect);
+        Rectangle2D bounds = getBounds2D();
+
+        // Return empty rect if they don't intersect.
+        if (bounds.intersects(srect) == false)
+            return new Rectangle2D.Float();
+            
+        Rectangle2D.intersect(srect, bounds, srect);
         return srect;
     }
 
@@ -295,7 +301,13 @@ public abstract class AbstractRable implements Filter {
           // Changes in the input region don't propogate outside our
           // bounds.
         Rectangle2D drect = (Rectangle2D)inputRgn.clone();
-        Rectangle2D.intersect(drect, getBounds2D(), drect);
+        Rectangle2D bounds = getBounds2D();
+
+        // Return empty rect if they don't intersect.
+        if (bounds.intersects(drect) == false)
+            return new Rectangle2D.Float();
+
+        Rectangle2D.intersect(drect, bounds, drect);
         return drect;
     }
     

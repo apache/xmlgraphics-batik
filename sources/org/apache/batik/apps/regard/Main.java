@@ -310,6 +310,8 @@ public class Main {
         content += String.valueOf(bi);
         content += " file(s) that has/have regression:<p>";
 
+        int count=1;
+
         for(int i=0; i<bi; i++){
             File refImg = refImages[badIndex[i]];
             File newImg = new File(newDir, refImg.getName());
@@ -319,31 +321,48 @@ public class Main {
             if ((bfRef.getWidth() != bfNew.getWidth()) ||
                  (bfRef.getHeight() != bfNew.getHeight())){
                 display("Fatal error, image size changed!");
-                String s = "<br>" + String.valueOf(i+1) + ".  " + refImg.getName() +  ": image size changed!";
+                String s = "<br>" + count + ".  " + refImg.getName() +  
+                    ": image size changed!";
                 content += s;
-                break;
+                count++;
+                continue;
             }
 
             ImageTranscoder transcoder
                 = (ImageTranscoder)getTranscoder();
-            BufferedImage bfDiff = transcoder.createImage(2*bfRef.getWidth(), 2*bfRef.getHeight());
+            BufferedImage bfDiff = transcoder.createImage(2*bfRef.getWidth(), 
+                                                          2*bfRef.getHeight());
 
             Graphics2D g = bfDiff.createGraphics();
             // g.setPaint(transcoder.getBackgroundPaint());
             // g.fillRect(0, 0, bfDiff.getWidth(), bfDiff.getHeight());
             g.dispose();
-            diffBufferedImage(bfRef.getRaster(), bfNew.getRaster(), bfDiff.getRaster());
-            try{
-                transcoder.writeImage(bfDiff, new FileOutputStream(diffImg));
-            }
-            catch(Exception e){
-            }
             display(String.valueOf(i+1) + ". " + "Creating the difference image file of " + refImg.getName());
-            try{
-                String s = diffImg.toURL().toString();
-                content += "<br>" + String.valueOf(i+1) + ". " + "<a href=" + "\"" + s + "\"" +">" + "<img border=\"0\" hspace=\"0\" vspace=\"0\" align=\"middle\" src=" + "\"" + s + "\"" + " height=100 width=90" + " />" + "</a>";
-            }
-            catch(MalformedURLException e){
+
+            boolean difference = 
+                diffBufferedImage(bfRef.getRaster(), 
+                                  bfNew.getRaster(), 
+                                  bfDiff.getRaster());
+            if (!difference) {
+                display("   No difference in image content");
+            } else {
+                try{
+                    transcoder.writeImage(bfDiff, 
+                                          new FileOutputStream(diffImg));
+                }
+                catch(Exception e){
+                }
+                try{
+                    String s = diffImg.toURL().toString();
+                    content += "<br>" + count + ". " + 
+                        "<a href=" + "\"" + s + "\"" +">" + 
+                        "<img border=\"0\" hspace=\"0\" vspace=\"0\" " + 
+                        "align=\"middle\" src=" + "\"" + s + "\"" + 
+                        " height=100 width=90" + " />" + "</a>";
+                }
+                catch(MalformedURLException e){
+                }
+                count++;
             }
         }
         content += "<p>Reported On: ";
@@ -367,7 +386,9 @@ public class Main {
      * @param diff the difference image in BufferedImage
      */
 
-    public static void diffBufferedImage(Raster ref, Raster cmp, Raster diff){
+    public static boolean diffBufferedImage(Raster ref, 
+                                            Raster cmp, 
+                                            Raster diff){
         final int w = ref.getWidth();
         final int h = ref.getHeight();
 
@@ -407,6 +428,9 @@ public class Main {
         int cmpPixel;
         int diffPixel;
 
+
+        boolean ret = false;
+
         for (int i=0; i<h; i++){
             rp = refOff + i*refScanStride;
             np = cmpOff + i*cmpScanStride;
@@ -421,6 +445,7 @@ public class Main {
                 diffPixels[dp0] = refPixel;
                 diffPixels[dp1] = cmpPixel;
                 diffPixels[dp2] = diffPixel;
+                if (diffPixel != 0) ret = true;
                 rp++;
                 np++;
                 dp0++;
@@ -428,6 +453,7 @@ public class Main {
                 dp2++;
             }
         }
+        return ret;
     }
 
     //

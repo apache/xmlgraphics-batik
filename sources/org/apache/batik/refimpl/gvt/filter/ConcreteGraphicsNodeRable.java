@@ -172,27 +172,28 @@ public class ConcreteGraphicsNodeRable
 
         // Find out the renderable area
         Rectangle2D imageRect2D = getBounds2D();
-        Rectangle2D.Float imageRect =
-            new Rectangle2D.Float((float)imageRect2D.getX(),
-                                  (float)imageRect2D.getY(),
-                                  (float)imageRect2D.getWidth(),
-                                  (float)imageRect2D.getHeight());
         Rectangle renderableArea
-            = usr2dev.createTransformedShape(imageRect).getBounds();
+            = usr2dev.createTransformedShape(imageRect2D).getBounds();
 
         // Now, take area of interest into account. It is
         // defined in user space.
         Shape usrAOI = renderContext.getAreaOfInterest();
         if(usrAOI == null)
-            usrAOI = imageRect;
+            usrAOI = imageRect2D;
 
         Rectangle devAOI
             = usr2dev.createTransformedShape(usrAOI).getBounds();
 
-        // The rendered area is the interesection of the
-        // renderable area and the device AOI bounds
-        final Rectangle renderedArea
-            = renderableArea.createIntersection(devAOI).getBounds();
+
+        // The rendered area is the interesection of the renderable
+        // area and the device AOI bounds. if this is empty return
+        // null.
+        if (renderableArea.intersects(devAOI) == false)
+            return null;
+
+        final Rectangle renderedArea = renderableArea.intersection(devAOI);
+
+        // System.out.println("RenderedArea: " + renderedArea);
 
         if (   (renderedArea.width == 0)
             || (renderedArea.height == 0))

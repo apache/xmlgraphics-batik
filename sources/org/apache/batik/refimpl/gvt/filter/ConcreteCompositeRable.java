@@ -89,13 +89,13 @@ public class ConcreteCompositeRable
         Rectangle r = at.createTransformedShape(getBounds2D()).getBounds();
 
         Shape aoi = rc.getAreaOfInterest();
-        if (aoi == null) 
-            aoi = getBounds2D();
-        else {
+        if (aoi != null) {
             // Get AOI bounds in device space...
             Rectangle aoiR = at.createTransformedShape(aoi).getBounds();
+            if (r.intersects(aoiR) == false)
+                return null;
+
             Rectangle2D.intersect(r, aoiR, r);
-            aoi = getBounds2D().createIntersection(aoi.getBounds2D());
         }
 
         AffineTransform translate = 

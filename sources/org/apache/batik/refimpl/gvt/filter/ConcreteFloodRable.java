@@ -78,6 +78,7 @@ public class ConcreteFloodRable extends AbstractRable
     }
 
     public Rectangle2D getBounds2D() {
+
         return (Rectangle2D)floodRegion.clone();
     }
 
@@ -118,19 +119,22 @@ public class ConcreteFloodRable extends AbstractRable
         // Now, take area of interest into account. It is
         // defined in user space.
 
-        Shape userAOI = rc.getAreaOfInterest();
+        Rectangle2D userAOI = rc.getAreaOfInterest().getBounds2D();
         if (userAOI == null) {
             userAOI = imageRect;
         }
 
+        // No intersection with the area of interest so return null..
+        if (imageRect.intersects(userAOI) == false) 
+            return null;
+
         // intersect the filter area and the AOI in user space
-        Rectangle2D userSpaceRenderableArea =
-            imageRect.createIntersection(userAOI.getBounds2D());
+        Rectangle2D.intersect(imageRect, userAOI, userAOI);
 
         // The rendered area is the interesection of the
         // user space renderable area and the user space AOI bounds
         final Rectangle renderedArea
-            = usr2dev.createTransformedShape(userSpaceRenderableArea).getBounds();
+            = usr2dev.createTransformedShape(userAOI).getBounds();
 
         if ((renderedArea.width <= 0) || (renderedArea.height <= 0)) {
             // If there is no intersection, return null
@@ -165,7 +169,7 @@ public class ConcreteFloodRable extends AbstractRable
         // fill the user space renderable area, this is the
         // area that was used to create the device space offscreen
         // image
-        g.fill(userSpaceRenderableArea);
+        g.fill(userAOI);
 
         g.dispose();
 

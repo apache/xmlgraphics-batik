@@ -472,6 +472,10 @@ public abstract class AbstractRed implements CachableRed {
             throw new IndexOutOfBoundsException
                 ("Nonexistant source requested.");
 
+        // Return empty rect if they don't intersect.
+        if (outputRgn.intersects(bounds) == false)
+            return new Rectangle();
+
         // We only depend on our source for stuff that is inside
         // our bounds...
         return outputRgn.intersection(bounds);
@@ -481,6 +485,10 @@ public abstract class AbstractRed implements CachableRed {
         if (srcIndex != 0)
             throw new IndexOutOfBoundsException
                 ("Nonexistant source requested.");
+
+        // Return empty rect if they don't intersect.
+        if (inputRgn.intersects(bounds) == false)
+            return new Rectangle();
 
         // Changes in the input region don't propogate outside our
         // bounds.

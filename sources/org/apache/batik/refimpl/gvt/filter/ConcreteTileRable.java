@@ -154,8 +154,11 @@ public class ConcreteTileRable extends AbstractRable implements TileRable{
 
         // tiledRect
         Rectangle2D tiledRect = getBounds2D();
-        Shape aoiShape = rc.getAreaOfInterest();
-        Rectangle2D aoiRect = aoiShape.getBounds2D();
+        Shape       aoiShape  = rc.getAreaOfInterest();
+        Rectangle2D aoiRect   = aoiShape.getBounds2D();
+
+        if (tiledRect.intersects(aoiRect) == false) 
+            return null;
         Rectangle2D.intersect(tiledRect, aoiRect, tiledRect);
 
         // tileRect
@@ -298,8 +301,10 @@ public class ConcreteTileRable extends AbstractRable implements TileRable{
         // The region actually tiles is the intersection
         // of the tiledRegion and the area of interest
         Rectangle2D tiledRect = getBounds2D();
-        Shape aoiShape = rc.getAreaOfInterest();
-        Rectangle2D aoiRect = aoiShape.getBounds2D();
+        Shape       aoiShape  = rc.getAreaOfInterest();
+        Rectangle2D aoiRect   = aoiShape.getBounds2D();
+        if (tiledRect.intersects(aoiRect) == false) 
+            return null;
         Rectangle2D.intersect(tiledRect, aoiRect, tiledRect);
 
         // Get the tile rectangle in user space

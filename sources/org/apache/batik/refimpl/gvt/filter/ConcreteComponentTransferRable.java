@@ -178,7 +178,8 @@ public class ConcreteComponentTransferRable
         RenderingHints hints = rc.getRenderingHints();
         ComponentTransferOp op = new ComponentTransferOp(funcs,
                                                          hints);
-        BufferedImage dstBI = op.filter(srcBI, null);
+
+        BufferedImage dstBI = op.filter(srcBI, srcBI);
 
         return new ConcreteBufferedImageCachableRed(dstBI, srcMinX, srcMinY);
     }
@@ -232,12 +233,12 @@ public class ConcreteComponentTransferRable
                 break;
             case ComponentTransferFunction.LINEAR:
                 txfFunc = new LinearTransfer(function.getSlope(),
-                                             255*function.getIntercept());
+                                             function.getIntercept());
                 break;
             case ComponentTransferFunction.GAMMA:
                 txfFunc = new GammaTransfer(function.getAmplitude(),
                                             function.getExponent(),
-                                            255*function.getOffset());
+                                            function.getOffset());
                 break;
             default:
                 // Should never happen
