@@ -101,7 +101,8 @@ public abstract class AbstractDocument
      * The localizable support for the error messages.
      */
     protected transient LocalizableSupport localizableSupport =
-        new LocalizableSupport(RESOURCES);
+        new LocalizableSupport
+        (RESOURCES, getClass().getClassLoader());
 
     /**
      * The DOM implementation.
@@ -510,7 +511,8 @@ public abstract class AbstractDocument
 	super.copyInto(n);
 	AbstractDocument ad = (AbstractDocument)n;
 	ad.implementation = implementation;
-        ad.localizableSupport = new LocalizableSupport(RESOURCES);
+        ad.localizableSupport = new LocalizableSupport
+            (RESOURCES, getClass().getClassLoader());
 	return n;
     }
 
@@ -522,7 +524,8 @@ public abstract class AbstractDocument
 	super.deepCopyInto(n);
 	AbstractDocument ad = (AbstractDocument)n;
 	ad.implementation = implementation;
-        ad.localizableSupport = new LocalizableSupport(RESOURCES);
+        ad.localizableSupport = new LocalizableSupport
+            (RESOURCES, getClass().getClassLoader());
 	return n;
     }
 
@@ -570,7 +573,8 @@ public abstract class AbstractDocument
         throws IOException, ClassNotFoundException {
         s.defaultReadObject();
 
-        localizableSupport = new LocalizableSupport(RESOURCES);
+        localizableSupport = new LocalizableSupport
+            (RESOURCES, getClass().getClassLoader());
 
         Class c = Class.forName((String)s.readObject());
 

@@ -60,7 +60,8 @@ public class PropertyUtil {
 
 
     protected static LocalizableSupport localizableSupport =
-        new LocalizableSupport(RESOURCES);
+        new LocalizableSupport
+        (RESOURCES, PropertyUtil.class.getClassLoader());
 
     public static String getString(String key) {
         try{

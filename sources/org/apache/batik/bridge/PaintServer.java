@@ -263,7 +263,7 @@ public abstract class PaintServer
      * @param opacity the opacity to consider for the Paint
      * @param ctx the bridge context
      */
-    protected static Paint convertPaint(Element paintedElement,
+    public static Paint convertPaint(Element paintedElement,
                                         GraphicsNode paintedNode,
                                         Value paintDef,
                                         float opacity,

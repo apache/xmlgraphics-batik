@@ -85,7 +85,8 @@ public abstract class AbstractParser implements Parser {
      * The localizable support.
      */
     protected LocalizableSupport localizableSupport =
-        new LocalizableSupport(BUNDLE_CLASSNAME);
+        new LocalizableSupport(BUNDLE_CLASSNAME, 
+                               AbstractParser.class.getClassLoader());
 
     /**
      * The normalizing reader.

@@ -115,7 +115,7 @@ public class SVGOMDocument
      * The localizable support for the error messages.
      */
     protected transient LocalizableSupport localizableSupport =
-        new LocalizableSupport(RESOURCES);
+        new LocalizableSupport(RESOURCES, getClass().getClassLoader());
 
     /**
      * The string representing the referrer.
@@ -473,7 +473,8 @@ public class SVGOMDocument
     protected Node copyInto(Node n) {
 	super.copyInto(n);
 	SVGOMDocument sd = (SVGOMDocument)n;
-        sd.localizableSupport = new LocalizableSupport(RESOURCES);
+        sd.localizableSupport = new LocalizableSupport
+            (RESOURCES, getClass().getClassLoader());
         sd.referrer = referrer;
         sd.url = url;
 	return n;
@@ -486,7 +487,8 @@ public class SVGOMDocument
     protected Node deepCopyInto(Node n) {
 	super.deepCopyInto(n);
         SVGOMDocument sd = (SVGOMDocument)n;
-        sd.localizableSupport = new LocalizableSupport(RESOURCES);
+        sd.localizableSupport = new LocalizableSupport
+            (RESOURCES, getClass().getClassLoader());
         sd.referrer = referrer;
         sd.url = url;
 	return n;
@@ -501,6 +503,7 @@ public class SVGOMDocument
         throws IOException, ClassNotFoundException {
         s.defaultReadObject();
         
-        localizableSupport = new LocalizableSupport(RESOURCES);
+        localizableSupport = new LocalizableSupport
+            (RESOURCES, getClass().getClassLoader());
     }        
 }

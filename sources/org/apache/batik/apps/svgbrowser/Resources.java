@@ -79,7 +79,7 @@ public class Resources {
      * The localizable support for the error messages.
      */
     protected static LocalizableSupport localizableSupport =
-        new LocalizableSupport(RESOURCES);
+        new LocalizableSupport(RESOURCES, Resources.class.getClassLoader());
 
     /**
      * The resource manager to decode messages.

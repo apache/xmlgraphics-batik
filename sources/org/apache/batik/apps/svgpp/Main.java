@@ -88,7 +88,7 @@ public class Main {
      * The localizable support.
      */
     protected static LocalizableSupport localizableSupport =
-        new LocalizableSupport(BUNDLE_CLASSNAME);
+        new LocalizableSupport(BUNDLE_CLASSNAME, Main.class.getClassLoader());
 
     /**
      * The arguments.
