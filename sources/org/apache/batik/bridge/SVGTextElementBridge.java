@@ -617,6 +617,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
         Map result = new HashMap();
         CSSPrimitiveValue v;
         String s;
+        float f;
 
         result.put(GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER, element);
 
@@ -737,7 +738,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
             }
         } else {
             // TODO
-            float f = v.getFloatValue(CSSPrimitiveValue.CSS_NUMBER);
+            f = v.getFloatValue(CSSPrimitiveValue.CSS_NUMBER);
             // result.put(TextAttribute.TRANSFORM,
             //           CSSUtilities.convertFloatToTranslation(0f, f));
         }
@@ -862,6 +863,98 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
             result.put(TextAttribute.WIDTH,
                        TextAttribute.WIDTH_REGULAR);
         }
+
+        // text spacing properties...
+
+        // Letter Spacing
+        v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue
+            (CSS_LETTER_SPACING_PROPERTY);
+        if (v.getPrimitiveType() != CSSPrimitiveValue.CSS_IDENT) {
+            s = v.getStringValue();
+            f = SVGUtilities.svgToUserSpace(element,
+                                            CSS_LETTER_SPACING_PROPERTY, s,
+                                            uctx,
+                                            UnitProcessor.HORIZONTAL_LENGTH);
+
+            // XXX: HACK: Assuming horizontal length units is wrong,
+            // layout might be vertical!
+
+            result.put(GVTAttributedCharacterIterator.
+                           TextAttribute.LETTER_SPACING,
+                           new Float(f));
+            result.put(GVTAttributedCharacterIterator.
+                           TextAttribute.CUSTOM_SPACING,
+                           new Boolean(true));
+        }
+
+        // Word spacing
+        v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue
+            (CSS_WORD_SPACING_PROPERTY);
+        if (v.getPrimitiveType() != CSSPrimitiveValue.CSS_IDENT) {
+            s = v.getStringValue();
+            f = SVGUtilities.svgToUserSpace(element,
+                                            CSS_WORD_SPACING_PROPERTY, s,
+                                            uctx,
+                                            UnitProcessor.HORIZONTAL_LENGTH);
+
+            // XXX: HACK: Assuming horizontal length units is wrong,
+            // layout might be vertical!
+
+            result.put(GVTAttributedCharacterIterator.TextAttribute.WORD_SPACING,
+                                                               new Float(f));
+            result.put(GVTAttributedCharacterIterator.
+                       TextAttribute.CUSTOM_SPACING,
+                       new Boolean(true));
+        }
+
+        // Kerning
+        s = element.getAttributeNS(null, SVGConstants.ATTR_KERNING);
+        if (s.length() != 0) {
+            f = SVGUtilities.svgToUserSpace(element,
+                                            ATTR_KERNING, s,
+                                            uctx,
+                                            UnitProcessor.HORIZONTAL_LENGTH);
+            // XXX: Assuming horizontal length units is wrong,
+            // layout might be vertical!
+
+            result.put(GVTAttributedCharacterIterator.TextAttribute.KERNING,
+                                                             new Float(f));
+            result.put(GVTAttributedCharacterIterator.
+                       TextAttribute.CUSTOM_SPACING,
+                       new Boolean(true));
+        }
+
+        // textLength
+        s = element.getAttributeNS(null, SVGConstants.ATTR_TEXT_LENGTH);
+        if (s.length() != 0) {
+            f = SVGUtilities.svgToUserSpace(element,
+                                            ATTR_TEXT_LENGTH, s,
+                                            uctx,
+                                            UnitProcessor.HORIZONTAL_LENGTH);
+            // XXX: Assuming horizontal length units is wrong,
+            // layout might be vertical!
+
+            result.put(GVTAttributedCharacterIterator.TextAttribute.BBOX_WIDTH,
+                                                             new Float(f));
+            // lengthAdjust
+            s = element.getAttributeNS(null, SVGConstants.ATTR_LENGTH_ADJUST);
+
+            if (s.length() < 10) {
+                result.put(GVTAttributedCharacterIterator.
+                       TextAttribute.LENGTH_ADJUST,
+                       GVTAttributedCharacterIterator.TextAttribute.ADJUST_SPACING);
+                result.put(GVTAttributedCharacterIterator.
+                       TextAttribute.CUSTOM_SPACING,
+                       new Boolean(true));
+            } else {
+                result.put(GVTAttributedCharacterIterator.
+                       TextAttribute.LENGTH_ADJUST,
+                       GVTAttributedCharacterIterator.TextAttribute.ADJUST_ALL);
+            }
+
+        }
+
+
 
         // Opacity
         CSSPrimitiveValue opacityVal =

@@ -278,11 +278,40 @@ public interface GVTAttributedCharacterIterator extends
         public final static TextAttribute BBOX_WIDTH =
                                           new TextAttribute("BBOX_WIDTH");
 
+        /** Method specified for adjusting text element layout size.
+         */
+        public final static TextAttribute LENGTH_ADJUST =
+                                          new TextAttribute("LENGTH_ADJUST");
+
+        /** Convenience flag indicating that non-default glyph spacing is needed.
+         */
+        public final static TextAttribute CUSTOM_SPACING =
+                                          new TextAttribute("CUSTOM_SPACING");
+
+        /** User-specified inter-glyph kerning value.
+         */
+        public final static TextAttribute KERNING =
+                                          new TextAttribute("KERNING");
+
+        /** User-specified inter-glyph spacing value.
+         */
+        public final static TextAttribute LETTER_SPACING =
+                                          new TextAttribute("LETTER_SPACING");
+
+        /** User-specified width for whitespace characters.
+         */
+        public final static TextAttribute WORD_SPACING =
+                                          new TextAttribute("WORD_SPACING");
+
         /** Font variant to be used for this character span.
          * @see org.apache.batik.gvt.text.GVTAttributedCharacterIterator.TextAttribute#SMALL_CAPS
          */
         public final static TextAttribute FONT_VARIANT =
                                           new TextAttribute("FONT_VARIANT");
+
+
+
+        // VALUES
 
         /** Value for FONT_VARIANT specifying small caps */
         public final static Integer SMALL_CAPS = new Integer(0x10);
@@ -297,6 +326,14 @@ public interface GVTAttributedCharacterIterator extends
         /** Value for STRIKETHROUGH specifying strikethrough-on */
         public final static Boolean STRIKETHROUGH_ON =
                             java.awt.font.TextAttribute.STRIKETHROUGH_ON;
+
+        /** Value for LENGTH_ADJUST specifying adjustment to inter-glyph spacing */
+        public final static Integer ADJUST_SPACING =
+                            new Integer(0x0);
+
+        /** Value for LENGTH_ADJUST specifying overall scaling of layout outlines */
+        public final static Integer ADJUST_ALL =
+                            new Integer(0x01);
 
     }
 
