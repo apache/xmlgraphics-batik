@@ -27,12 +27,13 @@ public class GVTDemoLauncher extends JFrame {
 
     public GVTDemoLauncher(String title, GVTDemoSetup setup) {
         super(title);
-        GraphicsNode node = setup.createGraphicsNode();
+	// Note that the order of the two calls below matters!
         GraphicsNodeRenderContext context = setup.createGraphicsContext();
+        GraphicsNode node = setup.createGraphicsNode();
 	EventDispatcher dispatcher = setup.createEventDispatcher();
 
-
         JComponent comp = new JSVGCanvas(node, context);
+
         getContentPane().add(comp, BorderLayout.CENTER);
 
 	// for now, event listening in GVTDemoSetup is optional
@@ -99,6 +100,13 @@ class JSVGCanvas extends JComponent {
     }
 
     protected void paintComponent(Graphics g) {
+
+	/* XXX: Hack - there is an inconsistency in
+	 * the way RenderingHints are specified which means
+	 * GraphicsNodeRenderContext hints are overwritten by
+	 * those from the Graphics2d.  Thus, the line below:
+	 */
+	((Graphics2D) g).addRenderingHints(context.getRenderingHints());
         node.paint((Graphics2D) g, context);
     }
 
