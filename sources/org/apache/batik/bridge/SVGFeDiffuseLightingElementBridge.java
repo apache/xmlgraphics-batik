@@ -73,6 +73,9 @@ public class SVGFeDiffuseLightingElementBridge
         // extract the light definition from the filterElement's children list
         Light light = extractLight(filterElement, ctx);
 
+        // 'kernelUnitLength' attribute
+        double [] kernelUnitLength = convertKernelUnitLength(filterElement);
+
         // 'in' attribute
         Filter in = getIn(filterElement,
                           filteredElement,
@@ -102,8 +105,12 @@ public class SVGFeDiffuseLightingElementBridge
                                                         defaultRegion,
                                                         filterRegion,
                                                         ctx);
-        Filter filter = new DiffuseLightingRable8Bit
-            (in, primitiveRegion, light, diffuseConstant, surfaceScale);
+        Filter filter = new DiffuseLightingRable8Bit(in,
+                                                     primitiveRegion,
+                                                     light,
+                                                     diffuseConstant,
+                                                     surfaceScale,
+                                                     kernelUnitLength);
 
         // update the filter Map
         updateFilterMap(filterElement, filter, filterMap);
