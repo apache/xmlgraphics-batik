@@ -46,6 +46,34 @@
                       value="false" />
         </test>
 
+        <test id="jarCheckPermissionsDenied">
+            <property name="Secure" class="java.lang.Boolean" value="true" />
+        </test>
+
+        <test id="jarCheckPermissionsGranted">
+            <property name="Secure" class="java.lang.Boolean" value="false" />
+        </test>
+
+        <test id="jarCheckNoLoad">
+            <property name="Scripts" class="java.lang.String" 
+                      value="text/ecmascript" />
+        </test>
+
+        <test id="jarCheckLoad">
+            <property name="Scripts" class="java.lang.String" 
+                      value="application/java-archive" />
+        </test>
+
+        <test id="jarCheckConstrain">
+            <property name="Constrain" class="java.lang.Boolean" 
+                      value="true" />
+        </test>
+
+        <test id="jarCheckNoConstrain">
+            <property name="Constrain" class="java.lang.Boolean" 
+                      value="false" />
+        </test>
+
 
     </testGroup>
 
