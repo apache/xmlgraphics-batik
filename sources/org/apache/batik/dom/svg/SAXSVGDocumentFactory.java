@@ -21,6 +21,7 @@ import java.util.ResourceBundle;
 
 import org.apache.batik.dom.util.SAXDocumentFactory;
 
+import org.w3c.dom.Document;
 import org.w3c.dom.DOMException;
 
 import org.xml.sax.InputSource;
