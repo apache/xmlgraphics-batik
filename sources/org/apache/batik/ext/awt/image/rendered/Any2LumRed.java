@@ -65,8 +65,9 @@ public class Any2LumRed extends AbstractRed {
         // Get my source.
         CachableRed src = (CachableRed)getSources().get(0);
 
-        SampleModel sm = src.getSampleModel();
-        ColorModel  srcCM = src.getColorModel();
+        SampleModel sm     = src.getSampleModel();
+        ColorModel  srcCM  = src.getColorModel();
+        Raster      srcRas = src.getData(wr.getBounds());
         if (srcCM == null) {
             // We don't really know much about this source.
 
@@ -80,11 +81,9 @@ public class Any2LumRed extends AbstractRed {
                 matrix[0][0] = 1;
             }
 
-            Raster srcRas = src.getData(wr.getBounds());
             BandCombineOp op = new BandCombineOp(matrix, null);
             op.filter(srcRas, wr);
         } else {
-            Raster         srcRas = src.getData(wr.getBounds());
             WritableRaster srcWr  = (WritableRaster)srcRas;
 
             // Divide out alpha if we have it.  We need to do this since
@@ -139,11 +138,13 @@ public class Any2LumRed extends AbstractRed {
             ColorConvertOp op = new ColorConvertOp(null);
             op.filter(srcBI, dstBI);
 
-            // I never have to 'fix' alpha premult since I take
-            // it's value from my source....
-            if (dstCM.hasAlpha())
+            // Have to 'fix' alpha premult
+            if (dstCM.hasAlpha()) {
                 copyBand(srcWr, sm.getNumBands()-1,
                          wr,    getSampleModel().getNumBands()-1);
+                if (dstCM.isAlphaPremultiplied())
+                    GraphicsUtil.multiplyAlpha(wr);
+            }
         }
         return wr;
     }
