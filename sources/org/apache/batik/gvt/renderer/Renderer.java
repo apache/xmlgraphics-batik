@@ -13,6 +13,8 @@ import java.awt.image.BufferedImage;
 import java.awt.geom.AffineTransform;
 import java.awt.Shape;
 
+import java.util.List;
+
 /**
  * Interface for GVT Renderers.
  *
@@ -34,12 +36,21 @@ public interface Renderer {
     public GraphicsNode getTree();
 
     /**
-     * Forces repaint of provided node. 'node' must be a node in the
-     * currently associated GVT tree.  Normally there is no need to
-     * call this method explicitly as the Renderer listens for changes
-     * on all nodes in the tree it is associated with.
+     * Repaints the associated GVT tree at least under <tt>area</tt>.
+     * 
+     * @param areas the region to be repainted, in the current user
+     * space coordinate system.  
      */
     public void repaint(Shape area) throws InterruptedException;
+
+    /**
+     * Repaints the associated GVT tree at least in areas under the
+     * list of <tt>areas</tt>.
+     * 
+     * @param areas a List of regions to be repainted, in the current
+     * user space coordinate system.  
+     */
+    public void repaint(List areas) throws InterruptedException;
 
     /**
      * Sets the transform from the current user space (as defined by

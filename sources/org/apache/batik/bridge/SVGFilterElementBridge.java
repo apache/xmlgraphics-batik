@@ -68,7 +68,7 @@ public class SVGFilterElementBridge extends AbstractSVGBridge
             (filterElement, filteredElement, filteredNode, ctx);
 
         // make the initial source as a RenderableImage
-        Filter sourceGraphic = filteredNode.getGraphicsNodeRable();
+        Filter sourceGraphic = filteredNode.getGraphicsNodeRable(true);
 
         // build a FilterChainRable8Bit
         FilterChainRable filterChain

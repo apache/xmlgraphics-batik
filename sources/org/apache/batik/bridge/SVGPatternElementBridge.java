@@ -188,7 +188,7 @@ public class SVGPatternElementBridge extends AbstractSVGBridge
 
         // take the opacity into account. opacity is implemented by a Filter
         if (opacity != 1) {
-            Filter filter = patternContentNode.getGraphicsNodeRable();
+            Filter filter = patternContentNode.getGraphicsNodeRable(true);
             filter = new ComponentTransferRable8Bit
                 (filter,
                  ConcreteComponentTransferFunction.getLinearTransfer

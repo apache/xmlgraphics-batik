@@ -157,8 +157,10 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
      * @param newLocation the new location of this text node
      */
     public void setLocation(Point2D newLocation){
+        fireGraphicsNodeChangeStarted();
         invalidateGeometryCache();
         this.location = newLocation;
+        fireGraphicsNodeChangeCompleted();
     }
 
     /**
@@ -177,10 +179,12 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
      */
     public void setAttributedCharacterIterator(AttributedCharacterIterator
                                                newAci) {
+        fireGraphicsNodeChangeStarted();
         invalidateGeometryCache();
         this.aci = newAci;
         text = null;
         textRuns = null;
+        fireGraphicsNodeChangeCompleted();
     }
 
     /**

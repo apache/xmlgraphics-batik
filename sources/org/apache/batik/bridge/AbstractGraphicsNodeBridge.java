@@ -115,4 +115,8 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
     public void update(BridgeMutationEvent evt) {
         throw new Error("Not implemented");
     }
+
+    public Bridge getInstance(){
+        return this;
+    }
 }

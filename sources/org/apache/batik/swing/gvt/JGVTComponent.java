@@ -479,7 +479,8 @@ public class JGVTComponent extends JComponent {
         suspendInteractions = true;
         if (eventDispatcher != null) {
             try {
-                eventDispatcher.setBaseTransform(renderingTransform.createInverse());
+                eventDispatcher.setBaseTransform
+                    (renderingTransform.createInverse());
             } catch (NoninvertibleTransformException e) {
                 handleException(e);
             }
@@ -570,7 +571,8 @@ public class JGVTComponent extends JComponent {
         } catch (NoninvertibleTransformException e) {
             throw new InternalError(e.getMessage());
         }
-        Shape s = inv.createTransformedShape(new Rectangle(0, 0, d.width, d.height));
+        Shape s = inv.createTransformedShape
+            (new Rectangle(0, 0, d.width, d.height));
 
         // Rendering thread setup.
         gvtTreeRenderer = new GVTTreeRenderer(renderer, renderingTransform,

@@ -21,6 +21,8 @@ import org.apache.batik.ext.awt.image.rendered.TileCacheRed;
 import java.lang.ref.SoftReference;
 import java.util.Iterator;
 import java.util.Stack;
+import java.util.List;
+import java.util.ArrayList;
 
 import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
@@ -165,7 +167,7 @@ public class StaticRenderer implements ImageRenderer {
     }
 
     /**
-     * @param rh Set of rendering hints to user for future renderings
+     * @param rh Set of rendering hints to use for future renderings
      */
     public void setRenderingHints(RenderingHints rh) {
         renderingHints = new RenderingHints(rh);
@@ -250,7 +252,7 @@ public class StaticRenderer implements ImageRenderer {
     /**
      * Update the size of the image to be returned by getOffScreen.
      * Note that this change will not be reflected by calls to
-     * getOffscreen until either clearOffscreen has completed (when
+     * getOffscreen until either clearOffScreen has completed (when
      * isDoubleBuffered is false) or reapint has completed (when
      * isDoubleBuffered is true).  
      *
@@ -313,19 +315,46 @@ public class StaticRenderer implements ImageRenderer {
         }
     }
 
+
     /**
-     * Repaints the associated GVT tree under 'area'.
+     * Repaints the associated GVT tree under <tt>area</tt>.
      * 
-     * If double buffered is true if this method completes cleanly it
+     * If double buffered is true and this method completes cleanly it
      * will set the result of the repaint as the image returned by
-     * getOffscreen
+     * getOffscreen otherwise the old image will still be returned.
+     * If double buffered is false it is possible some effects of
+     * the failed rendering will be visible in the image returned
+     * by getOffscreen.
      *
      * @param area region to be repainted, in the current user space
      * coordinate system.  
      */
     public void repaint(Shape area) throws InterruptedException {
-        if (area == null)
+        if (area == null) return;
+        List l = new ArrayList(1);
+        l.add(area);
+        repaint(l);
+    }
+
+    /**
+     * Repaints the associated GVT tree under the list of <tt>areas</tt>.
+     * 
+     * If double buffered is true and this method completes cleanly it
+     * will set the result of the repaint as the image returned by
+     * getOffscreen otherwise the old image will still be returned.
+     * If double buffered is false it is possible some effects of
+     * the failed rendering will be visible in the image returned
+     * by getOffscreen.
+     *
+     * @param areas a List of regions to be repainted, in the current
+     * user space coordinate system.  
+     */
+    public void repaint(List areas) throws InterruptedException {
+
+        if (areas == null)
             return;
+
+        // System.out.println("Renderer Repainting");
 
         // long t0 = System.currentTimeMillis();
 
@@ -368,6 +397,8 @@ public class StaticRenderer implements ImageRenderer {
             currentRaster     = copyRaster;
             currentBaseRaster = syncRaster;
             currentOffScreen  = tmpBI;
+
+            // System.out.println("Current offscreen : " + currentOffScreen);
         }
     }
 
@@ -446,7 +477,7 @@ public class StaticRenderer implements ImageRenderer {
      */
     protected void updateWorkingBuffers() {
         if (rootFilter == null) {
-            rootFilter = rootGN.getGraphicsNodeRable();
+            rootFilter = rootGN.getGraphicsNodeRable(true);
             rootCR = null;
         }
 

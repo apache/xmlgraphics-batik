@@ -177,7 +177,6 @@ public class StrokingTextPainter extends BasicTextPainter {
         // create text runs for each chunk and add them to the list
         textRuns = new ArrayList();
         TextChunk chunk, prevChunk=null;
-        int beginChunk = 0;
         int currentChunk = 0;
         do {
 	    // Text Chunks contain one or more TextRuns, which they create from
@@ -188,7 +187,6 @@ public class StrokingTextPainter extends BasicTextPainter {
                                  chunkACIs[currentChunk], 
                                  chunkCharMaps[currentChunk],
                                  textRuns,
-                                 beginChunk, 
                                  prevChunk);
 	    
             // Adjust according to text-anchor property value
@@ -196,7 +194,6 @@ public class StrokingTextPainter extends BasicTextPainter {
             if (chunk != null) {
                 adjustChunkOffsets(textRuns, chunk.advance, 
                                    chunk.begin, chunk.end);
-                beginChunk = chunk.end;
             }
             prevChunk = chunk;
             currentChunk++;
@@ -307,8 +304,10 @@ public class StrokingTextPainter extends BasicTextPainter {
                                    AttributedCharacterIterator aci,
                                    int [] charMap,
                                    List textRuns,
-                                   int beginChunk,
                                    TextChunk prevChunk) {
+        int beginChunk = 0;
+        if (prevChunk != null)
+            beginChunk = prevChunk.end;
         int endChunk = beginChunk;
         int begin = aci.getIndex();
         // System.out.println("New Chunk");
@@ -375,8 +374,8 @@ public class StrokingTextPainter extends BasicTextPainter {
 
             // System.out.println("layoutAdv: " + layoutAdvance);
 
-            advance = new Point2D.Float(
-                                        (float) (advance.getX()+layoutAdvance.getX()),
+            advance = new Point2D.Float
+                ((float) (advance.getX()+layoutAdvance.getX()),
                                         (float) (advance.getY()+layoutAdvance.getY()));
             ++endChunk;
             prevTextPath = textPath;
@@ -1395,7 +1394,8 @@ public class StrokingTextPainter extends BasicTextPainter {
         public Point2D advance;
         public Point2D absLoc;
 
-        public TextChunk(int begin, int end, Point2D absLoc, Point2D advance) {
+        public TextChunk(int begin, int end, 
+                         Point2D absLoc, Point2D advance) {
             this.begin = begin;
             this.end = end;
             this.absLoc  = new Point2D.Float((float) absLoc.getX(),

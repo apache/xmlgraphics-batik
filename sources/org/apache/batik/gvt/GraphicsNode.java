@@ -15,6 +15,8 @@ import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.lang.ref.WeakReference;
+
 import java.util.EventListener;
 import java.util.Map;
 import org.apache.batik.ext.awt.image.renderable.ClipRable;
@@ -94,6 +96,12 @@ public interface GraphicsNode {
      * The identity affine transform matrix used to draw renderable images.
      */
     public static final AffineTransform IDENTITY = new AffineTransform();
+
+    /**
+     * Returns a canonical WeakReference to this GraphicsNode.
+     * This is suitable for use as a key value in a hash map
+     */
+    WeakReference getWeakReference();
 
     //
     // Properties methods
@@ -229,11 +237,18 @@ public interface GraphicsNode {
     Filter getFilter();
 
     /**
-     * Returns the Filter for this node.
-     * The Filter is the Graphics Node before any
-     * of the filter operations have been applied.
+     * Returns the GraphicsNodeRable for this node.  This
+     * GraphicsNodeRable is the Renderable (Filter) before any of the
+     * filter operations have been applied.  
      */
-    Filter getGraphicsNodeRable();
+    Filter getGraphicsNodeRable(boolean createIfNeeded);
+
+    /**
+     * Returns the GraphicsNodeRable for this node.  This
+     * GraphicsNodeRable is the Renderable (Filter) after all of the
+     * filter operations have been applied.  
+     */
+    Filter getEnableBackgroundGraphicsNodeRable(boolean createIfNeeded);
 
     //
     // Drawing methods

@@ -1,0 +1,57 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20000802//EN"
+"http://www.w3.org/TR/2000/CR-SVG-20000802/DTD/svg-20000802.dtd">
+
+<!-- ========================================================================= -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.        -->
+<!--                                                                           -->
+<!-- This software is published under the terms of the Apache Software License -->
+<!-- version 1.1, a copy of which has been included with this distribution in  -->
+<!-- the LICENSE file.                                                         -->
+<!-- ========================================================================= -->
+
+<!-- ========================================================================= -->
+<!-- Modification of an element used in a BackgroundImage                      -->
+<!--                                                                           -->
+<!-- @author vhardy@apache.org                                                 -->
+<!-- @version $Id$  -->
+<!-- ========================================================================= -->
+<?xml-stylesheet type="text/css" href="../../resources/style/test.css" ?>  
+<svg id="body" width="450" height="500" viewBox="0 0 450 500">
+    <title>&lt;rect&gt; x modification in 'onload'</title>
+
+    <text x="50%" y="45" class="title">&lt;rect&gt; x modification in 'onload'</text>
+
+    <script type="text/ecmascript">
+
+    function setXTo(evt, val){
+        // alert('In setXTo');
+        var r = evt.getTarget();
+        r.setAttribute('x', val);
+    }
+
+    </script>
+
+    <g id="test-content" transform="translate(0,125)">
+        <g transform="translate(75,0)">
+            <rect id="originalPlaceShadow" x="35" y="80" width="80" height="40" style="fill:crimson;"/>
+            <rect id="originalPlaceShadowBorder" x="32" y="77" width="86" height="46" style="fill:none; stroke:black" />
+
+            <text class="legend" x="75" y="135">&lt;rect&gt; position</text>
+            <text class="legend" x="75" y="150">before onload</text>
+        </g>
+
+        <g transform="translate(225,0)">
+            <rect id="targetPlaceShadow" x="35" y="80" width="80" height="40" style="fill:crimson;"/>
+            <rect id="targetPlaceShadowBorder" x="32" y="77" width="86" height="46" style="fill:none; stroke:black" />
+
+            <text class="legend" x="75" y="135">&lt;rect&gt; position</text>
+            <text class="legend" x="75" y="150">after onload</text>
+        </g>
+
+        <rect id="targetRect" x="110" y="80" width="80" height="40" style="fill:orange" onload="setXTo(evt,'260')"/>
+
+        <text class="legend" x="225" y="185">The modified rectangle is orange</text>
+        <text class="legend" x="225" y="200">and should show on the right</text>
+    </g>
+</svg>

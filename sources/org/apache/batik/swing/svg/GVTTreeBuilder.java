@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeException;
+import org.apache.batik.bridge.DynamicGVTBuilder;
 import org.apache.batik.bridge.GVTBuilder;
 import org.apache.batik.bridge.InterruptedBridgeException;
 
@@ -68,7 +69,14 @@ public class GVTTreeBuilder extends Thread {
         try {
             fireStartedEvent();
 
-            GVTBuilder builder = new GVTBuilder();
+            GVTBuilder builder = null;
+
+            if (bridgeContext.isDynamic()) {
+                // System.out.println("Using dynamic GVTBuilder");
+                builder = new DynamicGVTBuilder();
+            } else {
+                builder = new GVTBuilder();
+            }
             GraphicsNode gvtRoot = builder.build(bridgeContext, svgDocument);
 
             fireCompletedEvent(gvtRoot);

@@ -28,6 +28,7 @@ import java.lang.reflect.Array;
 import java.lang.ref.WeakReference;
 import java.util.EventListener;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -37,6 +38,8 @@ import org.apache.batik.ext.awt.image.PadMode;
 import org.apache.batik.ext.awt.image.renderable.ClipRable;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.gvt.event.GraphicsNodeEvent;
+import org.apache.batik.gvt.event.GraphicsNodeChangeEvent;
+import org.apache.batik.gvt.event.GraphicsNodeChangeListener;
 import org.apache.batik.gvt.event.GraphicsNodeKeyEvent;
 import org.apache.batik.gvt.event.GraphicsNodeKeyListener;
 import org.apache.batik.gvt.event.GraphicsNodeMouseEvent;
@@ -124,14 +127,33 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     protected WeakReference graphicsNodeRable;
 
     /**
+     * A Weak Reference to this.
+     */
+    protected WeakReference weakRef;
+
+    /**
      * Internal Cache: node bounds
      */
     private Rectangle2D bounds;
+
+
+    protected GraphicsNodeChangeEvent changeStartedEvent   = null;
+    protected GraphicsNodeChangeEvent changeCompletedEvent = null;
 
     /**
      * Constructs a new graphics node.
      */
     protected AbstractGraphicsNode() {}
+
+    /**
+     * Returns a canonical WeakReference to this GraphicsNode.
+     * This is suitable for use as a key value in a hash map
+     */
+    public WeakReference getWeakReference() {
+        if (weakRef == null)
+            weakRef =  new WeakReference(this);
+        return weakRef;
+    }
 
     //
     // Properties methods
@@ -163,6 +185,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
      * @param newTransform the new transform of this node
      */
     public void setTransform(AffineTransform newTransform) {
+        fireGraphicsNodeChangeStarted();
         invalidateGeometryCache();
         this.transform = newTransform;
         if(transform.getDeterminant() != 0){
@@ -178,6 +201,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
             // transform.
             inverseTransform = transform;
         }
+        fireGraphicsNodeChangeCompleted();
     }
 
     /**
@@ -216,8 +240,10 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
      * @param composite the composite of this node
      */
     public void setComposite(Composite newComposite) {
+        fireGraphicsNodeChangeStarted();
         invalidateGeometryCache();
         this.composite = newComposite;
+        fireGraphicsNodeChangeCompleted();
     }
 
     /**
@@ -244,8 +270,10 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     }
 
     public void setClip(ClipRable newClipper) {
+        fireGraphicsNodeChangeStarted();
         invalidateGeometryCache();
         this.clip = newClipper;
+        fireGraphicsNodeChangeCompleted();
     }
 
     /**
@@ -307,8 +335,10 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
      * @param newMask the new mask of this node
      */
     public void setMask(Mask newMask) {
+        fireGraphicsNodeChangeStarted();
         invalidateGeometryCache();
         this.mask = newMask;
+        fireGraphicsNodeChangeCompleted();
     }
 
     /**
@@ -324,8 +354,10 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
      * @param newFilter the new filter of this node
      */
     public void setFilter(Filter newFilter) {
+        fireGraphicsNodeChangeStarted();
         invalidateGeometryCache();
         this.filter = newFilter;
+        fireGraphicsNodeChangeCompleted();
     }
 
     /**
@@ -336,21 +368,42 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     }
 
     /**
-     * Returns the GraphicsNodeRable for this node.
-     * The GraphicsNodeRable is the Renderable (Filter) before any
-     * of the filter operations have been applied.
+     * Returns the GraphicsNodeRable for this node.  This
+     * GraphicsNodeRable is the Renderable (Filter) before any of the
+     * filter operations have been applied.  
      */
-    public Filter getGraphicsNodeRable() {
+    public Filter getGraphicsNodeRable(boolean createIfNeeded) {
         GraphicsNodeRable ret = null;
         if (graphicsNodeRable != null) {
             ret = (GraphicsNodeRable)graphicsNodeRable.get();
             if (ret != null) return ret;
         }
+        if (createIfNeeded) {
         ret = new GraphicsNodeRable8Bit(this);
         graphicsNodeRable = new WeakReference(ret);
+        }
         return ret;
     }
 
+    /**
+     * Returns the GraphicsNodeRable for this node.  This
+     * GraphicsNodeRable is the Renderable (Filter) after all of the
+     * filter operations have been applied.  
+     */
+    public Filter getEnableBackgroundGraphicsNodeRable
+        (boolean createIfNeeded) {
+        GraphicsNodeRable ret = null;
+        if (graphicsNodeRable != null) {
+            ret = (GraphicsNodeRable)graphicsNodeRable.get();
+            if (ret != null) return ret;
+        }
+        if (createIfNeeded) {
+            ret = new GraphicsNodeRable8Bit(this);
+            ret.setUsePrimitivePaint(false);
+            graphicsNodeRable = new WeakReference(ret);
+        }
+        return ret;
+    }
 
     //
     // Drawing methods
@@ -437,7 +490,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
                 Filter filteredImage = null;
 
                 if(filter == null){
-                    filteredImage = getGraphicsNodeRable();
+                    filteredImage = getGraphicsNodeRable(true);
                 }
                 else {
                     // traceFilter(filter, "=====>> ");
@@ -545,6 +598,49 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     //
     // Event support methods
     //
+    public void fireGraphicsNodeChangeStarted() {
+        if (changeStartedEvent == null)
+            changeStartedEvent = new GraphicsNodeChangeEvent
+                (this, GraphicsNodeChangeEvent.CHANGE_STARTED);
+
+        // If we had per node listeners we would fire them here...
+
+        RootGraphicsNode rootGN = getRoot();
+        if (rootGN == null) return;
+
+        List l = rootGN.getTreeGraphicsNodeChangeListeners();
+        if (l == null) return;
+
+        Iterator i = l.iterator();
+        GraphicsNodeChangeListener gncl;
+        while (i.hasNext()) {
+            gncl = (GraphicsNodeChangeListener)i.next();
+            gncl.changeStarted(changeStartedEvent);
+        }
+    }
+
+    public void fireGraphicsNodeChangeCompleted() {
+        if (changeCompletedEvent == null) {
+            changeCompletedEvent = new GraphicsNodeChangeEvent
+                (this, GraphicsNodeChangeEvent.CHANGE_COMPLETED);
+        }
+
+        // If we had per node listeners we would fire them here...
+
+        RootGraphicsNode rootGN = getRoot();
+        if (rootGN == null) return;
+
+        List l = rootGN.getTreeGraphicsNodeChangeListeners();
+        if (l == null) return;
+
+        Iterator i = l.iterator();
+        GraphicsNodeChangeListener gncl;
+        while (i.hasNext()) {
+            gncl = (GraphicsNodeChangeListener)i.next();
+            gncl.changeStarted(changeStartedEvent);
+        }
+    }
+
 
     /**
      * Dispatches the specified event to the interested registered listeners.

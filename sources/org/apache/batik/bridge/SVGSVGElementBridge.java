@@ -46,6 +46,10 @@ public class SVGSVGElementBridge extends AbstractSVGBridge
         return SVG_SVG_TAG;
     }
 
+    public Bridge getInstance(){
+        return this;
+    }
+
     /**
      * Creates a <tt>GraphicsNode</tt> according to the specified parameters.
      *
@@ -149,7 +153,7 @@ public class SVGSVGElementBridge extends AbstractSVGBridge
             try {
                 at = at.createInverse(); // clip in user space
                 clip = at.createTransformedShape(clip);
-                Filter filter = gn.getGraphicsNodeRable();
+                Filter filter = gn.getGraphicsNodeRable(true);
                 gn.setClip(new ClipRable8Bit(filter, clip));
             } catch (NoninvertibleTransformException ex) {}
         }

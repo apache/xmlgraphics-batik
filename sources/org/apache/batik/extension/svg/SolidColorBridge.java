@@ -10,13 +10,23 @@ package org.apache.batik.extension.svg;
 
 import java.awt.Color;
 import java.awt.Paint;
-import java.util.Vector;
+import java.util.Map;
+import java.util.HashMap;
+import java.net.URL;
+import java.net.MalformedURLException;
 
-import org.apache.batik.bridge.CSSUtilities;
-import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.AbstractSVGBridge;
+import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.bridge.BridgeException;
+import org.apache.batik.bridge.CSSUtilities;
+import org.apache.batik.bridge.ErrorConstants;
 import org.apache.batik.bridge.PaintBridge;
 import org.apache.batik.bridge.PaintServer;
+
+import org.apache.batik.dom.util.XLinkSupport;
+import org.apache.batik.dom.svg.SVGOMDocument;
+
+
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.css.CSSOMReadOnlyStyleDeclaration;
 import org.apache.batik.util.CSSConstants;
@@ -32,7 +42,7 @@ import org.w3c.dom.svg.SVGColor;
  */
 public class SolidColorBridge 
     extends AbstractSVGBridge
-    implements PaintBridge, BatikExtConstants, CSSConstants {
+    implements PaintBridge, BatikExtConstants, CSSConstants, ErrorConstants {
 
     /**
      * Constructs a new bridge for the &lt;rect> element.
@@ -67,28 +77,101 @@ public class SolidColorBridge
                              Element paintedElement,
                              GraphicsNode paintedNode,
                              float opacity) {
+
+        opacity = extractOpacity(paintElement, opacity, ctx);
+
+        return extractColor(paintElement, opacity, ctx);
+    }
+
+    protected static float extractOpacity(Element paintElement, 
+                                          float opacity,
+                                          BridgeContext ctx) {
+        Map refs = new HashMap();
+        for (;;) {
         CSSOMReadOnlyStyleDeclaration decl;
         decl = CSSUtilities.getComputedStyle(paintElement);
+
         CSSValue opacityVal = decl.getPropertyCSSValueInternal
             (BATIK_EXT_SOLID_OPACITY_PROPERTY);
         if (opacityVal != null) {
             float attr = PaintServer.convertOpacity(opacityVal);
-            opacity *= attr;
+                return (opacity * attr);
+            }
+
+            String uri = XLinkSupport.getXLinkHref(paintElement);
+            if (uri.length() == 0) {
+                return opacity; // no xlink:href found, exit
+            }
+
+            SVGOMDocument doc = (SVGOMDocument)paintElement.getOwnerDocument();
+            URL url;
+            try {
+                url = new URL(doc.getURLObject(), uri);
+            } catch (MalformedURLException ex) {
+                throw new BridgeException(paintElement,
+                                          ERR_URI_MALFORMED,
+                                          new Object[] {uri});
+            
+            }
+            // check if there is circular dependencies
+            if (refs.containsKey(url)) {
+                throw new BridgeException(paintElement,
+                                          ERR_XLINK_HREF_CIRCULAR_DEPENDENCIES,
+                                          new Object[] {uri});
+            }
+            refs.put(url, url);
+            paintElement = ctx.getReferencedElement(paintElement, uri);
         }
+    }
 
-        CSSValue colorDef
-            = decl.getPropertyCSSValueInternal(BATIK_EXT_SOLID_COLOR_PROPERTY);
-        if (colorDef == null)
-            return new Color(0f, 0f, 0f, opacity);
+    protected static Color extractColor(Element paintElement, 
+                                        float opacity,
+                                        BridgeContext ctx) {
+        Map refs = new HashMap();
+        for (;;) {
+            CSSOMReadOnlyStyleDeclaration decl;
+            decl = CSSUtilities.getComputedStyle(paintElement);
 
-        Color ret = null;
-        if (colorDef.getCssValueType() == CSSValue.CSS_PRIMITIVE_VALUE) {
+            CSSValue colorDef;
+            colorDef = decl.getPropertyCSSValueInternal
+                (BATIK_EXT_SOLID_COLOR_PROPERTY);
+            if (colorDef != null) {
+                if (colorDef.getCssValueType() == 
+                    CSSValue.CSS_PRIMITIVE_VALUE) {
             CSSPrimitiveValue v = (CSSPrimitiveValue)colorDef;
-            ret = PaintServer.convertColor(v.getRGBColorValue(), opacity);
+                    return PaintServer.convertColor
+                        (v.getRGBColorValue(), opacity);
         } else {
-            ret = PaintServer.convertRGBICCColor
+                    PaintServer.convertRGBICCColor
                 (paintElement, (SVGColor)colorDef, opacity, ctx);
+                }
+            }
+
+            String uri = XLinkSupport.getXLinkHref(paintElement);
+            if (uri.length() == 0) {
+                // no xlink:href found, exit    
+                return new Color(0, 0, 0, opacity); 
+            }
+
+            SVGOMDocument doc = (SVGOMDocument)paintElement.getOwnerDocument();
+            URL url;
+            try {
+                url = new URL(doc.getURLObject(), uri);
+            } catch (MalformedURLException ex) {
+                throw new BridgeException(paintElement,
+                                          ERR_URI_MALFORMED,
+                                          new Object[] {uri});
+            
+            }
+            // check if there is circular dependencies
+            if (refs.containsKey(url)) {
+                throw new BridgeException
+                    (paintElement,
+                     ERR_XLINK_HREF_CIRCULAR_DEPENDENCIES,
+                     new Object[] {uri});
+            }
+            refs.put(url, url);
+            paintElement = ctx.getReferencedElement(paintElement, uri);
         }
-        return ret;
     }
 }

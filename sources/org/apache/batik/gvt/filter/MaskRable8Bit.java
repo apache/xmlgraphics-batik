@@ -131,7 +131,7 @@ public class MaskRable8Bit
         //
         // Get the mask content
         //
-        Filter   maskSrc = getMaskNode().getGraphicsNodeRable();
+        Filter   maskSrc = getMaskNode().getGraphicsNodeRable(true);
         PadRable maskPad = new PadRable8Bit(maskSrc, getBounds2D(),
                                                 PadMode.ZERO_PAD);
         maskSrc = new FilterAsAlphaRable(maskPad);

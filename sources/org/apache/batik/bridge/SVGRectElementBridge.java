@@ -13,9 +13,15 @@ import java.awt.geom.Rectangle2D;
 import java.awt.geom.RoundRectangle2D;
 
 import org.apache.batik.parser.ParseException;
+import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.ShapeNode;
 
 import org.w3c.dom.Element;
+
+import org.w3c.dom.events.Event;
+import org.w3c.dom.events.EventListener;
+import org.w3c.dom.events.EventTarget;
+import org.w3c.dom.events.MutationEvent;
 
 /**
  * Bridge class for the &lt;rect> element.
@@ -140,5 +146,88 @@ public class SVGRectElementBridge extends SVGShapeElementBridge {
             shape = new Rectangle2D.Float(x, y, w, h);
         }
         shapeNode.setShape(shape);
+    }
+
+    /**
+     * Extension of the <tt>SVGRectElementBridge</tt> that can 
+     * handle updates in the corresponding <tt>&lt;rect&gt;</tt>
+     * element.
+     */
+    public static class Dynamic extends SVGRectElementBridge 
+        implements DynamicBridge, EventListener{
+        private BridgeContext ctx;
+        private BridgeUpdateHandler handler;
+        private int handlerKey;
+        private ShapeNode node;
+
+        public Bridge getInstance(){
+            return new SVGRectElementBridge();
+        }
+
+        /**
+         * Creates a graphics node using the specified BridgeContext and
+         * for the specified element.
+         *
+         * @param ctx the bridge context to use
+         * @param e the element that describes the graphics node to build
+         * @return a graphics node that represents the specified element
+         */
+        public GraphicsNode createGraphicsNode(BridgeContext ctx, Element e) {
+            // System.out.println("Calling createGraphicsNode");
+            ((EventTarget)e).addEventListener("DOMAttrModified",
+                                              this,
+                                              false);
+            node = (ShapeNode)super.createGraphicsNode(ctx, e);
+            this.ctx = ctx;
+            return node;
+        }
+
+        /**
+         *
+         */
+        public void handleEvent(Event evt){
+            
+            BridgeUpdateEvent be = new BridgeUpdateEvent();
+            be.setHandlerKey(handlerKey);
+
+            // Notify handler if any.
+            if(handler != null){
+                handler.bridgeUpdateStarting(be);
+            }
+
+            Rectangle2D r = (Rectangle2D)node.getShape();
+            // System.out.println("Old r: " + r);
+
+            r.setRect(Float.parseFloat(((MutationEvent)evt).getNewValue()),
+                      r.getY(),
+                      r.getWidth(),
+                      r.getHeight());
+
+            // System.out.println("New r: " + r);
+
+            node.setShape(r);
+
+            if(handler != null){
+                handler.bridgeUpdateCompleted(be);
+            }
+        }
+
+        /**
+         * 
+         */
+        public BridgeUpdateHandler getBridgeUpdateHandler(){
+            return handler;
+        }
+        
+        /**
+         * 
+         */
+        public void setBridgeUpdateHandler(BridgeUpdateHandler handler,
+                                           int handlerKey){
+            System.out.println("SVGRectElementBridge.Dynamic, I have been called: " + handler );
+            this.handler = handler;
+            this.handlerKey = handlerKey;
+        }
+        
     }
 }

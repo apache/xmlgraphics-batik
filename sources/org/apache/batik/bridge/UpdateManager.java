@@ -15,13 +15,17 @@ import java.awt.geom.AffineTransform;
 
 import java.awt.image.BufferedImage;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.batik.dom.DocumentWrapper;
 import org.apache.batik.dom.DOMImplementationWrapper;
 
+import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.RootGraphicsNode;
 import org.apache.batik.gvt.UpdateTracker;
 
 import org.apache.batik.gvt.renderer.ImageRenderer;
@@ -120,10 +124,12 @@ public class UpdateManager implements RunnableQueue.RunHandler {
     /**
      * Creates a new update manager.
      * @param ctx The bridge context.
+     * @param gn GraphicsNode whose updates are to be tracked.
      * @param doc The document to manage.
      * @param r The renderer.
      */
     public UpdateManager(BridgeContext ctx,
+                         GraphicsNode gn,
                          Document doc,
                          ImageRenderer r) {
         bridgeContext = ctx;
@@ -144,6 +150,11 @@ public class UpdateManager implements RunnableQueue.RunHandler {
         scriptingDocument = new DocumentWrapper(iw, document);
 
         updateTracker = new UpdateTracker();
+
+        RootGraphicsNode root = gn.getRoot();
+        if (root != null){
+            root.addTreeGraphicsNodeChangeListener(getUpdateTracker());
+        }
 
         repaintManager = new RepaintManager(this);
         repaintManager.start();
@@ -292,20 +303,32 @@ public class UpdateManager implements RunnableQueue.RunHandler {
         renderer.setDoubleBuffered(dbr);
         renderer.updateOffScreen(width, height);
         renderer.clearOffScreen();
-        updateRendering(aoi);
+        List l = new ArrayList(1);
+        l.add(aoi);
+        updateRendering(l);
     }
 
     /**
      * Updates the rendering buffer.
      * @param aoi The area of interest in the renderer space units.
      */
-    public void updateRendering(Shape aoi) {
+    public void updateRendering(List areas) {
         try {
             fireStartedEvent(renderer.getOffScreen());
-            renderer.repaint(aoi);
-            Rectangle r = renderer.getTransform().
-                createTransformedShape(aoi).getBounds();
-            fireCompletedEvent(renderer.getOffScreen(), r);
+            Iterator i = areas.iterator();
+            List rects = new ArrayList(areas.size());
+            AffineTransform at = renderer.getTransform();
+
+            while (i.hasNext()) {
+                Shape s = (Shape)i.next();
+                renderer.flush(s.getBounds());
+                Rectangle r = at.createTransformedShape(s).getBounds();
+                rects.add(r);
+            }
+
+            renderer.setTransform(renderer.getTransform());
+            renderer.repaint(areas);
+            fireCompletedEvent(renderer.getOffScreen(), rects);
         } catch (Exception e) {
             fireFailedEvent();
         }
@@ -398,11 +421,11 @@ public class UpdateManager implements RunnableQueue.RunHandler {
     /**
      * Fires a UpdateManagerEvent when an update completed.
      */
-    protected void fireCompletedEvent(BufferedImage bi, Rectangle r) {
+    protected void fireCompletedEvent(BufferedImage bi, List rects) {
         Object[] dll = listeners.toArray();
 
         if (dll.length > 0) {
-            UpdateManagerEvent ev = new UpdateManagerEvent(this, bi, r);
+            UpdateManagerEvent ev = new UpdateManagerEvent(this, bi, rects);
             for (int i = 0; i < dll.length; i++) {
                 ((UpdateManagerListener)dll[i]).updateCompleted(ev);
             }

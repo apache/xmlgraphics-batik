@@ -144,7 +144,11 @@ public class AboutDialog extends JWindow {
         // Add exact revision information
         //
         String tagName = "$Name$";
-        tagName = tagName.substring(6, tagName.length()-1);
+        if (tagName.startsWith("$Name:")) {
+            tagName = tagName.substring(6, tagName.length()-1);
+        } else {
+            tagName = "";
+        }
         
         if(tagName.trim().intern().equals("")){
             tagName = Resources.getString(LABEL_DEVELOPMENT_BUILD);

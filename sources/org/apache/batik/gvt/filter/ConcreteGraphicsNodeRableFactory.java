@@ -26,6 +26,6 @@ public class ConcreteGraphicsNodeRableFactory implements GraphicsNodeRableFactor
      * input <tt>GraphicsNode</tt>.
      */
     public GraphicsNodeRable createGraphicsNodeRable(GraphicsNode node){
-        return (GraphicsNodeRable)node.getGraphicsNodeRable();
+        return (GraphicsNodeRable)node.getGraphicsNodeRable(true);
     }
 }

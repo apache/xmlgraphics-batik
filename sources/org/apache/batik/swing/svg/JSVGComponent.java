@@ -377,7 +377,8 @@ public class JSVGComponent extends JGVTComponent {
         svgDocument = doc;
 
         Element root = doc.getDocumentElement();
-        String znp = root.getAttributeNS(null, SVGConstants.SVG_ZOOM_AND_PAN_ATTRIBUTE);
+        String znp = root.getAttributeNS
+            (null, SVGConstants.SVG_ZOOM_AND_PAN_ATTRIBUTE);
         disableInteractions = !znp.equals(SVGConstants.SVG_MAGNIFY_VALUE);
 
         bridgeContext = createBridgeContext();
@@ -458,7 +459,8 @@ public class JSVGComponent extends JGVTComponent {
             if (svgDocument != null) {
                 SVGSVGElement elt = svgDocument.getRootElement();
                 Dimension d = getSize();
-                setRenderingTransform(ViewBox.getViewTransform
+                setRenderingTransform
+                    (ViewBox.getViewTransform
                                       (fragmentIdentifier, elt, d.width, d.height));
                 initialTransform = renderingTransform;
             }
@@ -848,6 +850,7 @@ public class JSVGComponent extends JGVTComponent {
                 updateManager == null &&
                 !updateManagerStopped) {
                 updateManager = new UpdateManager(bridgeContext,
+                                                  getGraphicsNode(),
                                                   svgDocument,
                                                   renderer);
                 Iterator it = updateManagerListeners.iterator();
@@ -939,7 +942,17 @@ public class JSVGComponent extends JGVTComponent {
                 EventQueue.invokeAndWait(new Runnable() {
                         public void run() {
                             image = e.getImage();
-                            paintImmediately(e.getDirtyArea());
+
+                            List l = e.getDirtyAreas();
+                            if (l != null) {
+                                Iterator i = l.iterator();
+                                while (i.hasNext()) {
+                                    // CHECK: This may not be the
+                                    // fastest way to do this...
+                                    Rectangle r = (Rectangle)i.next();
+                                    paintImmediately(r);
+                                }
+                            }
                             suspendInteractions = false;
                         }
                     });

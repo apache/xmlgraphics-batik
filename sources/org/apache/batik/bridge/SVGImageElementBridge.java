@@ -389,7 +389,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
         if (clip != null) {
             try {
                 at = at.createInverse(); // clip in user space
-                Filter filter = node.getGraphicsNodeRable();
+                Filter filter = node.getGraphicsNodeRable(true);
                 clip = at.createTransformedShape(clip);
                 node.setClip(new ClipRable8Bit(filter, clip));
             } catch (java.awt.geom.NoninvertibleTransformException ex) {}
