@@ -25,8 +25,10 @@ import org.apache.batik.util.UnitProcessor;
 
 import org.apache.batik.refimpl.gvt.filter.ConcreteGaussianBlurRable;
 import org.apache.batik.refimpl.gvt.filter.ConcretePadRable;
+import org.apache.batik.refimpl.gvt.filter.FilterSourceRegion;
 
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.css.CSSStyleDeclaration;
 
 /**
@@ -116,6 +118,19 @@ public class SVGFeGaussianBlurElementBridge implements FilterBridge,
                 // filter primitive region into account, only a pad operation
                 // on the input is required.
 
+                // The primitive region defaults to the source's region.
+                FilterRegion defaultRegion = new FilterSourceRegion(in);
+
+                // Get unit. Comes from parent node.
+                Node parentNode = filterElement.getParentNode();
+                String units = VALUE_USER_SPACE_ON_USE;
+                if((parentNode != null) 
+                   &&
+                   (parentNode.getNodeType() == parentNode.ELEMENT_NODE)){
+                    units = ((Element)parentNode).getAttributeNS(null, ATTR_PRIMITIVE_UNITS);
+                }
+
+                // Compute primitive region
                 CSSStyleDeclaration cssDecl
                     = bridgeContext.getViewCSS().getComputedStyle(filterElement, 
                                                                   null);
@@ -125,9 +140,12 @@ public class SVGFeGaussianBlurElementBridge implements FilterBridge,
                                                       cssDecl);
                  
                 final FilterRegion blurArea 
-                    = SVGUtilities.convertFilterRegion(filteredElement,
-                                                       filteredNode,
-                                                       uctx);
+                    = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
+                                                                filteredElement,
+                                                                defaultRegion,
+                                                                units,
+                                                                filteredNode,
+                                                                uctx);
                 
                 PadRable pad = new ConcretePadRable(in, 
                                                     blurArea.getRegion(),

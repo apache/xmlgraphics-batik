@@ -19,7 +19,7 @@ import org.apache.batik.dom.AbstractDocument;
  * @version $Id$
  */
 public class SVGOMToBeImplementedElement
-    extends    SVGOMElement {
+    extends SVGGraphicsElement {
     
     /**
      * This element's local name

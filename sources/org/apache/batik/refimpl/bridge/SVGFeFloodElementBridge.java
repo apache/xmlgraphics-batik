@@ -28,7 +28,6 @@ import org.apache.batik.gvt.filter.FilterRegion;
 import org.apache.batik.gvt.filter.FloodRable;
 
 import org.apache.batik.refimpl.gvt.filter.ConcreteFloodRable;
-
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.SVGUtilities;
 import org.apache.batik.util.UnitProcessor;
@@ -82,7 +81,6 @@ public class SVGFeFloodElementBridge implements FilterBridge, SVGConstants {
         Color floodColor
             = CSSUtilities.convertFloodColorToPaint(decl);
 
-
         CSSStyleDeclaration cssDecl
             = bridgeContext.getViewCSS().getComputedStyle(filterElement, 
                                                           null);
@@ -91,13 +89,26 @@ public class SVGFeFloodElementBridge implements FilterBridge, SVGConstants {
             = new DefaultUnitProcessorContext(bridgeContext,
                                               cssDecl);
         
-        final FilterRegion blurArea 
-            = SVGUtilities.convertFilterRegion(filteredElement,
-                                               filteredNode,
-                                               uctx);
+        // Get unit. Comes from parent node.
+        Node parentNode = filterElement.getParentNode();
+        String units = VALUE_USER_SPACE_ON_USE;
+        if((parentNode != null) 
+           &&
+           (parentNode.getNodeType() == parentNode.ELEMENT_NODE)){
+            units = ((Element)parentNode).getAttributeNS(null, ATTR_PRIMITIVE_UNITS);
+        }
+
+                                                               
+        final FilterRegion floodRegion 
+            = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
+                                                        filteredElement,
+                                                        filterRegion,
+                                                        units,
+                                                        filteredNode,
+                                                        uctx);
         
         // First, create the FloodRable that maps the input filter node
-        FloodRable flood = new ConcreteFloodRable(filterRegion, floodColor);
+        FloodRable flood = new ConcreteFloodRable(floodRegion, floodColor);
 
         // Get result attribute if any
         String result = filterElement.getAttributeNS(null, 

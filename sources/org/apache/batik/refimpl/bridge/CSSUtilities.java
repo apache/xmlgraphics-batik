@@ -331,6 +331,8 @@ public class CSSUtilities implements SVGConstants {
         CSSPrimitiveValue vv = (CSSPrimitiveValue)
             decl.getPropertyCSSValue(FLOOD_OPACITY_PROPERTY);
         float opacity = convertOpacity(vv);
+
+        System.out.println("Flood color: " + v.getCssText());
         return convertColor(v.getRGBColorValue(), opacity);
     }
 

@@ -32,6 +32,7 @@ import org.apache.batik.gvt.filter.PadMode;
 
 import org.apache.batik.refimpl.gvt.filter.ConcreteAffineRable;
 import org.apache.batik.refimpl.gvt.filter.ConcretePadRable;
+import org.apache.batik.refimpl.gvt.filter.FilterSourceRegion;
 
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.SVGUtilities;
@@ -148,10 +149,25 @@ public class SVGFeOffsetElementBridge implements FilterBridge, SVGConstants {
             = new DefaultUnitProcessorContext(bridgeContext,
                                               cssDecl);
 
+        // Get default filter region. Source for feOffset
+        FilterRegion defaultRegion = new FilterSourceRegion(in);
+
+        // Get unit. Comes from parent node.
+        Node parentNode = filterElement.getParentNode();
+        String units = VALUE_USER_SPACE_ON_USE;
+        if((parentNode != null) 
+           &&
+           (parentNode.getNodeType() == parentNode.ELEMENT_NODE)){
+            units = ((Element)parentNode).getAttributeNS(null, ATTR_PRIMITIVE_UNITS);
+        }
+        
         final FilterRegion offsetArea
-            = SVGUtilities.convertFilterRegion(filterElement,
-                                               filteredNode,
-                                               uctx);
+            = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
+                                                        filteredElement,
+                                                        defaultRegion,
+                                                        units,
+                                                        filteredNode,
+                                                        uctx);
 
         PadRable pad = new ConcretePadRable(in,
                                             offsetArea.getRegion(),
