@@ -7,7 +7,7 @@
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN"
    "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
 
-<svg width="100" height="100" viewBox="0 0 100 100">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100" height="100" viewBox="0 0 100 100">
 
     <defs>
         <g id="batik">
@@ -42,15 +42,8 @@
       <clipPath id="textClip">
        <text x="0" y="0" text-anchor="middle" font-size="80%" font-family="Serif" id="text">batik <tspan dx="10 20 30" dy="10 20 30" style="stroke:#CC4">SVG</tspan></text>
       </clipPath>
-       <g id="words">
-         <use xlink:href="#text"/>
-         <g clip-path="url(#textClip)">
-             <use xlink:href="#text" transform="scale(0.9) rotate(20) translate(-20,-15)" filter="url(#shadow)" fill="black" opacity="0.4"/>
-         </g>
-       </g>
         <g opacity="1.0" transform="translate(225, 250) rotate(-260)" id="rotatedText">
         <g  transform="scale(0.9) rotate(20)">
-        <use xlink:href="#words"/>
         </g></g>
 	    <path id="Inner_Ellipse" style="stroke:none;" d="M399.464,123.946C291.018,15.543,142.959-12.163,68.766,62.059c-74.192,74.224-46.423,222.27,62.023,330.672c108.445,108.402,256.503,136.11,330.696,61.886c74.192-74.223,46.424-222.27-62.021-330.672z
 			 M410.417,397.331c-58.115,58.14-179.371,31.157-270.832-60.267C48.124,245.64,21.092,124.396,79.207,66.256c58.116-58.139,179.372-31.157,270.833,60.267c91.46,91.424,118.493,212.668,60.377,270.808z"/>
@@ -61,28 +54,11 @@
         <circle cx="50" cy="50" r="50"/>
     </g>
 
-    <g filter="url(#innerShadow)" opacity=".5">
-        <use xlink:href="#Outer_Ellipse" fill-opacity="1"/>
+    <g opacity=".5">
+        <rect width="400" height="200" fill-opacity="1"/>
     </g>
-
-    <use xlink:href="#Outer_Ellipse" fill="rgb(13, 97, 160)" fill-opacity=".75"/>
-    <use xlink:href="#Inner_Ellipse" fill="rgb(255, 255, 20)" fill-opacity=".75" />
 
     <g transform="translate(50, 154) scale(1.5, 1.5)">
-    <use x="0" y="0" xlink:href="#batik" 
-         fill="black" fill-opacity=".5" filter="url(#shadow)"/>
-
-    <use x="0" y="0" xlink:href="#batik" 
-         fill="none" stroke-width="8" stroke="rgb(13, 97, 160)"/>
-
-    <use x="0" y="0" xlink:href="#batik" 
-         fill="rgb(255, 255, 20)" stroke="rgb(204, 102, 53)" stroke-width="1"/>
     </g>
 
-        <use xlink:href="#rotatedText" fill="white" stroke-width="2" stroke="black"/>
-        <g  transform="translate(50, 50) scale(0.254) rotate(30)">
-        <use xlink:href="#text" fill="black" filter="url(#shadow)" opacity="0.4" transform="translate(-10, 8)"/>
-        <use xlink:href="#text" stroke="black" stroke-width="16" fill="none"/>
-        <use xlink:href="#text" stroke="none" fill="white"/>
-        </g>
 </svg>
