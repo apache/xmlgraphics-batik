@@ -108,6 +108,7 @@ public class SVGCircleElementBridge extends SVGShapeElementBridge {
             attrName.equals(SVG_R_ATTRIBUTE)) {
 
             buildShape(ctx, e, (ShapeNode)node);
+            handleGeometryChanged();
         } else {
             super.handleDOMAttrModifiedEvent(evt);
         }
