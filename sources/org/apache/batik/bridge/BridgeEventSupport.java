@@ -404,11 +404,9 @@ class BridgeEventSupport implements SVGConstants {
             else
                 if ((evt.BUTTON3_MASK & evt.getModifiers()) != 0)
                     button = 2;
-            MouseEvent mevent =
+            MouseEvent mevent = (MouseEvent)
                 // DOM Level 2 6.5 cast from Document to DocumentEvent is ok
-                (MouseEvent)org.apache.batik.dom.events.EventSupport.
-                createEvent(org.apache.batik.dom.events.EventSupport.
-                            MOUSE_EVENT_TYPE);
+                ((DocumentEvent)elmt.getOwnerDocument()).createEvent("MouseEvents");
             // deal with the related node/target
             node = evt.getRelatedNode();
             EventTarget relatedTarget =
