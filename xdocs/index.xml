@@ -89,8 +89,10 @@
 
         <s1 title="Batik's Implementation Status">
         <p>
-        At this time, Batik provides a good implementation for all the SVG static 
-        features, supports linking, and has some scripting support, even though SMIL animation is not supported.
+        The latest stable revision of Batik provides a complete support for all the static SVG features.
+        Work on supporting dynamic SVG features such as scripting and animation is under way and 
+        this work is available from the <link href="http://cvs.apache.org/viewcvs.cgi/xml-batik/">CVS repository</link>
+        or from beta <link href="http://xml.apache.org/batik/dist">downloads</link>.
         </p>
         <p>
         You will find a detailed description of the set of SVG features
