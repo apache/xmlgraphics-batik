@@ -84,6 +84,7 @@ To display the available targets type:
 
     <property name="test-reports"    value="test-reports" />
     <property name="test-references" value="test-references" />
+    <property name="test-resources"  value="test-resources" />
 
     <available property="rhino.present" classname="org.mozilla.javascript.Context">
       <classpath refid="libs-classpath"/>
@@ -693,6 +694,15 @@ To display the available targets type:
           description="Created directories needed for test suite">
 
     <mkdir dir="${test-reports}"/>
+    <mkdir dir="${test-reports}/style"/>
+    <mkdir dir="${test-reports}/images"/>
+    <copy todir="${test-reports}/style">
+      <fileset dir="${test-resources}/org/apache/batik/test/svg/resources/style"/>
+    </copy>
+    <copy todir="${test-reports}/images">
+      <fileset dir="${test-resources}/org/apache/batik/test/svg/resources/images"/>
+    </copy>
+
     <mkdir dir="${test-references}/samples/accepted-variation"/>
     <mkdir dir="${test-references}/samples/candidate-variation"/>
     <mkdir dir="${test-references}/samples/tests/spec/coordinates/candidate-variation" />
