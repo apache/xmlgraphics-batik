@@ -15,10 +15,15 @@ import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
+
+import java.awt.print.PrinterJob;
+import java.awt.print.Printable;
+import java.awt.print.PageFormat;
 
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Dimension2D;
@@ -169,6 +174,7 @@ public class ViewerFrame
     public final static String USER_STYLE_ACTION  = "UserStyleAction";
     public final static String MONITOR_ACTION     = "MonitorAction";
     public final static String ABOUT_ACTION       = "AboutAction";
+    public final static String PRINT_ACTION       = "PrintAction";
 
     /**
      * The default cursor.
@@ -384,7 +390,7 @@ public class ViewerFrame
         // Create the SVG canvas.
         canvas = new JSVGCanvas(this);
 
-        eventDispatcher = 
+        eventDispatcher =
             new ConcreteEventDispatcher(
                 canvas.getRendererFactory().getRenderContext());
 
@@ -410,6 +416,7 @@ public class ViewerFrame
         listeners.put(USER_STYLE_ACTION,  new UserStyleAction());
         listeners.put(MONITOR_ACTION,     new MonitorAction());
         listeners.put(ABOUT_ACTION,       new AboutAction());
+        listeners.put(PRINT_ACTION,       new PrintAction());
 
         JPanel p = null;
         try {
@@ -1170,6 +1177,25 @@ public class ViewerFrame
             while (it.hasNext()) {
                 ((JComponent)it.next()).setEnabled(isRunning);
             }
+        }
+    }
+
+    /**
+     * To print the current SVG document
+     */
+    public class PrintAction extends AbstractAction {
+        public PrintAction() {}
+        public void actionPerformed(ActionEvent e) {
+            PrinterJob job = PrinterJob.getPrinterJob();
+            job.setPrintable(new Printable() {
+                public int print(Graphics g, PageFormat pf, int i) {
+                    if (i > 0) {
+                        return Printable.NO_SUCH_PAGE;
+                    } else {
+                        canvas.paintComponent(g);
+                        return Printable.PAGE_EXISTS;
+                    }
+                }});
         }
     }
 

@@ -63,7 +63,7 @@ public class BasicTextPainter implements TextPainter {
          *     works for J2SE base implementation of AttributeCharacterIterator
          */
         TextSpanLayout layout = getTextLayoutFactory().
-                                      createTextLayout(aci, frc);
+                       createTextLayout(aci, new Point2D.Float(0f, 0f), frc);
 
         float advance = layout.getAdvance();
         float tx = 0f;
@@ -313,6 +313,7 @@ public class BasicTextPainter implements TextPainter {
          AttributedCharacterIterator aci = node.getAttributedCharacterIterator();
          TextSpanLayout layout
                     = getTextLayoutFactory().createTextLayout(aci,
+                          new Point2D.Float(0f, 0f),
                           new java.awt.font.FontRenderContext(
                                             new AffineTransform(),
                                                 true, true));
@@ -374,7 +375,8 @@ public class BasicTextPainter implements TextPainter {
         AttributedCharacterIterator aci = node.getAttributedCharacterIterator();
 
         TextSpanLayout layout = getTextLayoutFactory().createTextLayout(aci,
-                      new java.awt.font.FontRenderContext(
+                          new Point2D.Float(0f, 0f),
+                          new java.awt.font.FontRenderContext(
                                             new AffineTransform(),
                                                           true,
                                                           true));
@@ -472,7 +474,9 @@ public class BasicTextPainter implements TextPainter {
 
         FontRenderContext frc = context.getFontRenderContext();
         TextSpanLayout layout =
-               getTextLayoutFactory().createTextLayout(aci, frc);
+               getTextLayoutFactory().createTextLayout(aci,
+               new Point2D.Float(0f, 0f),
+               frc);
         float advance = layout.getAdvance();
         float tx = 0f;
 
@@ -487,10 +491,14 @@ public class BasicTextPainter implements TextPainter {
         TextHit textHit =
             layout.hitTestChar((float) (x+tx), (float) y);
 
+        // Note that a texthit char index of -1 signals that the
+        // hit, though within the text element bounds, did not
+        // coincide with a glyph.
         if ((aci != cachedACI) ||
             (textHit == null) ||
             (cachedHit == null) ||
-            (textHit.getInsertionIndex() != cachedHit.getInsertionIndex())) {
+            ((textHit.getCharIndex() != -1) &&
+            (textHit.getInsertionIndex() != cachedHit.getInsertionIndex()))) {
             cachedMark = new BasicTextPainter.Mark(x, y, layout, textHit);
             cachedACI = aci;
             cachedHit = textHit;

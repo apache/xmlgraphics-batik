@@ -220,10 +220,12 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
 
 
         AttributedString result = null;
+
         List l = buildAttributedStrings(ctx,
                                         element,
                                         node,
-                                        true);
+                                        true,
+                                        new LinkedList());
         // Simple cases
         switch (l.size()) {
         case 0:
@@ -238,34 +240,62 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
         List buffers = new LinkedList();
         List maps = new LinkedList();
         Iterator it = l.iterator();
-        // Build the StringBuffer list and the attribute map list.
+
+        // First pass: build the string buffer.
+        StringBuffer sb = new StringBuffer();
         while (it.hasNext()) {
             AttributedString s = (AttributedString)it.next();
             AttributedCharacterIterator aci = s.getIterator();
+            // Build the StringBuffer
             char c = aci.first();
-            StringBuffer sb = new StringBuffer();
-            Map m = aci.getAttributes();
             for (; c != CharacterIterator.DONE; c = aci.next()) {
                 sb.append(c);
             }
-            buffers.add(sb);
-            maps.add(m);
         }
-        // Build the attributed string
-        it = buffers.iterator();
-        StringBuffer sb = new StringBuffer();
-        while (it.hasNext()) {
-            sb.append(it.next());
-        }
+
         result = new AttributedString(sb.toString());
 
-        // Decorate the attributed string
-        int i = 0;
-        it = buffers.iterator();
-        Iterator it2 = maps.iterator();
+        // Second pass: decorate the attributed string.
+        int i=0;
+        it = l.iterator();
         while (it.hasNext()) {
-            sb = (StringBuffer)it.next();
-            result.addAttributes((Map)it2.next(), i, i += sb.length());
+            AttributedString s = (AttributedString)it.next();
+            AttributedCharacterIterator aci = s.getIterator();
+            Iterator attrIter = aci.getAllAttributeKeys().iterator();
+            while (attrIter.hasNext()) { // for each attribute key...
+                AttributedCharacterIterator.Attribute key =
+                    (AttributedCharacterIterator.Attribute) attrIter.next();
+
+                int begin;
+                int end;
+                aci.first();
+                do {
+                    begin = aci.getRunStart(key);
+                    end = aci.getRunLimit(key);
+                    aci.setIndex(begin);
+                    Object value = aci.getAttribute(key);
+                    //System.out.println("Adding attribute "+key+": "+value+" from "+(i+begin)+"->"+(i+end));
+                    result.addAttribute(key, value, i+begin, i+end);
+                    aci.setIndex(end);
+                } while (end < aci.getEndIndex()); // more runs in aci
+            }
+            i += aci.getEndIndex();
+        }
+
+        AttributedCharacterIterator iter = result.getIterator();
+        int ch = iter.first();
+        while (ch != CharacterIterator.DONE) {
+            Float dx = (Float) iter.getAttribute(
+                           GVTAttributedCharacterIterator.TextAttribute.DX);
+            Float dy = (Float) iter.getAttribute(
+                           GVTAttributedCharacterIterator.TextAttribute.DY);
+            //System.out.println((char) ch+" deltas : ("+dx+","+dy+")");
+            Float x = (Float) iter.getAttribute(
+                           GVTAttributedCharacterIterator.TextAttribute.X);
+            Float y = (Float) iter.getAttribute(
+                           GVTAttributedCharacterIterator.TextAttribute.Y);
+            //System.out.println((char) ch+" pos : ("+x+","+y+")");
+            ch = iter.next();
         }
         return result;
     }
@@ -277,30 +307,46 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
     protected List buildAttributedStrings(BridgeContext ctx,
                                           Element element,
                                           GraphicsNode node,
-                                          boolean top) {
-
+                                          boolean top,
+                                          LinkedList result) {
 
         // !!! return two lists
 
-        List result = new LinkedList();
         Map m = getAttributeMap(ctx, element, node);
         String s = XMLSupport.getXMLSpace(element);
         boolean preserve = s.equals("preserve");
         boolean first = true;
         boolean last;
+        boolean stripFirst = true;
+        boolean stripLast = true;
+        Element nodeElement = element;
+        AttributedString as = null;
+
+        if (!result.isEmpty()) {
+            as = (AttributedString) result.getLast();
+        }
+
         for (Node n = element.getFirstChild();
              n != null;
              n = n.getNextSibling()) {
 
             last = n.getNextSibling() == null;
 
+            int lastChar = (as != null) ? (as.getIterator().last()) : CharacterIterator.DONE;
+            stripFirst = first &&
+                         (top || (lastChar == ' ') || (lastChar == CharacterIterator.DONE));
+
             switch (n.getNodeType()) {
             case Node.ELEMENT_NODE:
+
+                nodeElement = (Element)n;
+
                 if (n.getLocalName().equals("tspan")) {
-                    result.addAll(buildAttributedStrings(ctx,
-                                                         (Element)n,
-                                                         node,
-                                                         false));
+                    buildAttributedStrings(ctx,
+                                           nodeElement,
+                                           node,
+                                           false,
+                                           result);
                 } else if (n.getLocalName().equals("tref")) {
                     try {
                         String uriStr = XLinkSupport.getXLinkHref((Element)n);
@@ -313,42 +359,44 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                         URIResolver resolver = new URIResolver(svgDoc, loader);
                         Element ref = (Element)resolver.getNode(url.toString());
                         s = getElementContent(ref);
-                        AttributedString as;
-                        Map map = getAttributeMap(ctx, (Element)n, node);
-                        as = createAttributedString(s, map, preserve, top,
-                                                    first, last);
+                        Map map = getAttributeMap(ctx, nodeElement, node);
+                        int[] indexMap = new int[s.length()];
+                        as = createAttributedString(s, map, indexMap, preserve,
+                                                    stripFirst, last && top);
                         if (as != null) {
+                            addGlyphPositionAttributes(
+                                 as, indexMap, ctx, nodeElement);
+                            stripLast = last && (as.getIterator().first() == ' ');
+                            if (stripLast) {
+                                AttributedString las =
+                                     (AttributedString) result.removeLast();
+                                if (las != null) {
+                                    AttributedCharacterIterator iter = las.getIterator();
+                                    AttributedCharacterIterator.Attribute[] atts =
+                                       (AttributedCharacterIterator.Attribute[])
+                                       iter.getAllAttributeKeys().toArray();
+                                    las = new AttributedString(
+                                         las.getIterator(atts,
+                                             iter.getBeginIndex(), iter.getEndIndex()-1));
+                                    result.add(las);
+                                }
+                            }
                             result.add(as);
                         }
                     } catch(MalformedURLException ex) {
                         throw new IllegalAttributeValueException(
                          Messages.formatMessage("tref.xlinkHref.badURL", null));
                     } catch (Exception ex) { /* Nothing to do */ }
-                    /*
-                      s = XLinkSupport.getXLinkHref((Element)n);
-                    if (s.startsWith("#")) {
-                        Document doc = n.getOwnerDocument();
-                        Element ref = doc.getElementById(s.substring(1));
-                        s = getElementContent(ref);
-                        AttributedString as;
-                        Map map = getAttributeMap(ctx, (Element)n, node);
-                        as = createAttributedString(s, map, preserve, top,
-                                                    first, last);
-                        if (as != null) {
-                            result.add(as);
-                        }
-                    } else {
-                        System.out.println(" !!! <tref> Non local URI");
-                    }
-                    */
                 }
                 break;
             case Node.TEXT_NODE:
                 s = n.getNodeValue();
-                AttributedString as = createAttributedString(s, m, preserve,
-                                                             top, first, last);
+                int[] indexMap = new int[s.length()];
+                as = createAttributedString(
+                              s, m, indexMap, preserve, stripFirst, last && top);
                 if (as != null) {
-                    result.add(as);
+                     addGlyphPositionAttributes(as, indexMap, ctx, element);
+                     result.add(as);
                 }
             }
             first = false;
@@ -380,10 +428,11 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
      */
     protected AttributedString createAttributedString(String s,
                                                       Map m,
+                                                      int[] indexMap,
                                                       boolean preserve,
-                                                      boolean top,
-                                                      boolean first,
-                                                      boolean last) {
+                                                      boolean stripfirst,
+                                                      boolean striplast) {
+        AttributedString as = null;
         StringBuffer sb = new StringBuffer();
         if (preserve) {
             for (int i = 0; i < s.length(); i++) {
@@ -397,6 +446,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                 default:
                     sb.append(c);
                 }
+                indexMap[i] = i;
             }
         } else {
             boolean space = false;
@@ -405,51 +455,161 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                 switch (c) {
                 case 10:
                 case 13:
-                    // I don't think behavior below is correct for tspan...
-                    // including "space = false" means that newlines
-                    // cause leading whitespace on next line to turn into
-                    // a single space!
-                    // space = false;
                     break; // should break, newlines are not whitespace
                 case ' ':
                 case '\t':
                     if (!space) {
                         sb.append(' ');
+                        indexMap[sb.length()-1] = i;
                         space = true;
                     }
                     break;
                 default:
                     sb.append(c);
+                    indexMap[sb.length()-1] = i;
                     space = false;
-
                 }
             }
-            if (top) {
-                if (first) {
-                    while (sb.length() > 0) {
-                        if (sb.charAt(0) == ' ') {
-                            sb.deleteCharAt(0);
-                        } else {
-                            break;
-                        }
-                    }
-                }
-                if (last) {
-                    int len;
-                    while ((len = sb.length()) > 0) {
-                        if (sb.charAt(len - 1) == ' ') {
-                            sb.deleteCharAt(len - 1);
-                        } else {
-                            break;
-                        }
+            if (stripfirst) {
+                while (sb.length() > 0) {
+                    if (sb.charAt(0) == ' ') {
+                        sb.deleteCharAt(0);
+                        System.arraycopy(indexMap, 1, indexMap, 0, sb.length());
+                    } else {
+                        break;
                     }
                 }
              }
+             if (striplast) {
+                int len;
+                while ((len = sb.length()) > 0) {
+                    if (sb.charAt(len - 1) == ' ') {
+                        sb.deleteCharAt(len - 1);
+                    } else {
+                        break;
+                    }
+                }
+             }
+             for (int i=sb.length(); i<indexMap.length; ++i) {
+                indexMap[i] = -1;
+             }
         }
         if (sb.length() > 0) {
-            return new AttributedString(sb.toString(), m);
+            as = new AttributedString(sb.toString(), m);
         }
-        return null;
+
+        return as;
+    }
+
+    /**
+     * Adds glyph position attributes to an AttributedString.
+     */
+    protected void addGlyphPositionAttributes(AttributedString as,
+                                  int[] indexMap,
+                                  BridgeContext ctx,
+                                  Element element) {
+
+        CSSStyleDeclaration cssDecl
+            = ctx.getViewCSS().getComputedStyle(element, null);
+        UnitProcessor.Context uctx
+            = new DefaultUnitProcessorContext(ctx, cssDecl);
+
+        int asLength =
+            as.getIterator().getEndIndex();
+            // AttributedStrings always start at index 0, we hope!
+
+        // glyph and sub-element positions
+        // (Don't do these for <text> elements
+        if (((Node)element).getLocalName() != "text") {
+            String s = element.getAttributeNS(null, SVG_X_ATTRIBUTE);
+            //System.out.println("X: "+s);
+            if (s.length() != 0) {
+                float x[] = SVGUtilities.svgToUserSpaceArray(element,
+                                            SVG_X_ATTRIBUTE, s,
+                                            uctx,
+                                            UnitProcessor.HORIZONTAL_LENGTH);
+
+                for (int i=0; i<asLength; ++i) {
+                    if (i < x.length) {
+                            as.addAttribute(
+                                GVTAttributedCharacterIterator.TextAttribute.X,
+                                    new Float(x[i]), i, i+1);
+                    }
+                }
+            }
+            // parse the y attribute, (default is 0)
+            s = element.getAttributeNS(null, SVG_Y_ATTRIBUTE);
+            //System.out.println("Y: "+s);
+            if (s.length() != 0) {
+                float y[] = SVGUtilities.svgToUserSpaceArray(element,
+                                            SVG_Y_ATTRIBUTE, s,
+                                            uctx,
+                                            UnitProcessor.VERTICAL_LENGTH);
+
+                for (int i=0; i<asLength; ++i) {
+                    if (i < y.length) {
+                        as.addAttribute(
+                            GVTAttributedCharacterIterator.TextAttribute.Y,
+                                new Float(y[i]), i, i+1);
+                    }
+                }
+
+            }
+            s = element.getAttributeNS(null, SVG_DX_ATTRIBUTE);
+            //System.out.println("DX: "+s);
+            if (s.length() != 0) {
+                float x[] = SVGUtilities.svgToUserSpaceArray(element,
+                                            SVG_DX_ATTRIBUTE, s,
+                                            uctx,
+                                            UnitProcessor.HORIZONTAL_LENGTH);
+                int i=0;
+                float cx = 0f;
+                for (int n=0; n<indexMap.length && indexMap[n] >= 0; ++n) {
+                    boolean hasAnother = false;
+                    while ((indexMap[n] != i) && (i<x.length)) {
+                        cx += x[i];
+                        ++i;
+                        hasAnother = true;
+                    }
+                    if ((i<x.length) && (indexMap[n] == i)) {
+                        cx += x[i];
+                        hasAnother = true;
+                    }
+                    if (hasAnother) as.addAttribute(
+                          GVTAttributedCharacterIterator.TextAttribute.DX,
+                                    new Float(cx), n, n+1);
+                    cx = 0f;
+                }
+            }
+            // parse the y attribute, (default is 0)
+            s = element.getAttributeNS(null, SVG_DY_ATTRIBUTE);
+            //System.out.println("DY: "+s);
+            if (s.length() != 0) {
+                float y[] = SVGUtilities.svgToUserSpaceArray(element,
+                                            SVG_DY_ATTRIBUTE, s,
+                                            uctx,
+                                            UnitProcessor.VERTICAL_LENGTH);
+                int i=0;
+                float cy = 0f;
+                for (int n=0; n<indexMap.length && indexMap[n] >= 0; ++n) {
+                    boolean hasAnother = false;
+                    while ((indexMap[n] != i) && (i<y.length)) {
+                        cy += y[i];
+                        ++i;
+                        hasAnother = true;
+                    }
+                    if ((i<y.length) && (indexMap[n] == i)) {
+                        cy += y[i];
+                        hasAnother = true;
+                    }
+                    if (hasAnother) as.addAttribute(
+                           GVTAttributedCharacterIterator.TextAttribute.DY,
+                                    new Float(cy), n, n+1);
+                    //System.out.println("Setting DY to "+cy+" at "+n);
+                    cy = 0f;
+                }
+            }
+        }
     }
 
     /**
@@ -783,4 +943,5 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
 
         return result;
     }
+
 }

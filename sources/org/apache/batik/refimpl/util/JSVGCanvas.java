@@ -869,7 +869,7 @@ public class JSVGCanvas
      * rendering thread and cue another repaint.  Otherwise,
      * it simply repaints the offscreen buffer and overlays.
      */
-    protected void paintComponent(Graphics g) {
+    public void paintComponent(Graphics g) {
 
         if (!EventQueue.isDispatchThread()) {
             System.err.println(

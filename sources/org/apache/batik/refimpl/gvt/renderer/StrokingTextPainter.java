@@ -71,7 +71,8 @@ public class StrokingTextPainter extends BasicTextPainter {
         Point2D location = node.getLocation();
         TextNode.Anchor anchor = node.getAnchor();
         List textRuns = new ArrayList();
-        double advance = 0d;
+        double xadvance = 0d;
+        Point2D advance = new Point2D.Float(0f, 0f);
 
         aci.first();
         /*
@@ -80,19 +81,14 @@ public class StrokingTextPainter extends BasicTextPainter {
          * accumulate an overall advance for the text display.
          */
         while (aci.current() != CharacterIterator.DONE) {
-            double x = 0d;
-            double y = 0d;
-            /*
-             * note that these can be superseded by X, Y attributes
-             * but this hasn't been implemented yet
-             */
+
             int start = aci.getRunStart(extendedAtts);
             int end = aci.getRunLimit(extendedAtts);
 
             AttributedCharacterIterator runaci =
                     new AttributedCharacterSpanIterator(aci, start, end);
 
-            TextSpanLayout layout = getTextLayoutFactory().createTextLayout(runaci, frc);
+            TextSpanLayout layout = getTextLayoutFactory().createTextLayout(runaci, advance, frc);
 
             if (layout.isVertical()) {
                 AttributedString as = new AttributedString(runaci);
@@ -113,7 +109,12 @@ public class StrokingTextPainter extends BasicTextPainter {
 
             textRuns.add(run);
 
-            advance += (double) layout.getAdvance();
+            Point2D layoutAdvance = layout.getAdvance2D();
+            advance = new Point2D.Float(
+                       (float) (advance.getX()+layoutAdvance.getX()), 
+                       (float) (advance.getY()+layoutAdvance.getY()));
+
+            xadvance = advance.getX();
 
             // FIXME: not BIDI compliant yet!
 
@@ -121,13 +122,16 @@ public class StrokingTextPainter extends BasicTextPainter {
         }
 
         double x = 0d;
+        double y = 0d;
+
+        // XXX: horizontal layouts only!
 
         switch(anchor.getType()){
         case TextNode.Anchor.ANCHOR_MIDDLE:
-            x = -advance/2d;
+            x = -xadvance/2d;
             break;
         case TextNode.Anchor.ANCHOR_END:
-            x = -advance;
+            x = -xadvance;
         }
 
         /*
@@ -173,7 +177,8 @@ public class StrokingTextPainter extends BasicTextPainter {
 
 
             AffineTransform tx = AffineTransform.getTranslateInstance(
-                                        location.getX() + x, location.getY());
+                                        location.getX() + x, 
+                                        location.getY() + y);
             Shape outline = layout.getOutline(tx);
 
             // check if we need to fill this glyph
@@ -203,7 +208,6 @@ public class StrokingTextPainter extends BasicTextPainter {
             if (strikethrough && !layout.isVertical()) {
                 paintStrikethrough(textRun, location, x, g2d);
             }
-            x += textRun.getLayout().getAdvance();
         }
 
         // FIXME: Finish implementation!
