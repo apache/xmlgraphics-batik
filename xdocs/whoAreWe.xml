@@ -159,6 +159,7 @@
           <li><link href="mailto:spei@cs.uiowa.edu">Sheng Pei</link> - Contributed on filters and the Regard tool.</li>
           <li><link href="mailto:neeme.praks@one.ee">Neeme Praks</link> - Contributed patches, feedback and scripts for
             building charts from John Morrisson's XSL stylesheets</li>
+          <li><link href="mailto:ruini@iki.fi">Henri Ruini</link> - Contributed improvements to the rasterizer task.</li>
           <li><link href="mailto:david@steadystate.co.uk">David Schweinsberg</link> - Contributed the True Type Font to 
               SVG Font converter</li>
           <li><link href="mailto:natalian@cs.brown.edu">Nicholas Talian</link> - Contributed on gradients.</li>
