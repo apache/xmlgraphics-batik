@@ -791,6 +791,25 @@ To display the available targets type:
          jarfile="${build}/${project}.jar"/>
   </target>
 
+  <!-- regard.jar : A jar containing the regard test infrastructure. -->
+  <!-- This jar only contains the generic parts of the Batik test    -->
+  <!-- infrastructure.                                               -->
+  <target name="regard-jar" depends="compiletest, prepare-build">
+    <jar jarfile="regard.jar">
+        <fileset dir="${dest}">
+          <include name="${package-prefix}/test/*.class" />
+          <include name="${package-prefix}/test/xml/*.class" />
+          <include name="${package-prefix}/i18n/Localizable.class" />
+          <include name="${package-prefix}/i18n/LocalizableSupport.class" />
+          <include name="${package-prefix}/i18n/LocaleGroup.class" />
+          <include name="${package-prefix}/util/XMLConstants.class" />
+        </fileset>
+        <fileset dir="${test-resources}">
+          <include name="${package-prefix}/test/resources/*.properties" />
+          <include name="${package-prefix}/test/xml/resources/*.properties" />
+        </fileset>
+    </jar>
+  </target>
 
   <!-- Applications ....................................................... -->
   <target name="squiggle" depends="compile"
