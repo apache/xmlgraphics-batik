@@ -40,8 +40,6 @@ import javax.swing.KeyStroke;
 import javax.swing.ToolTipManager;
 
 import org.apache.batik.bridge.UserAgent;
-import org.apache.batik.dom.svg.ExtensibleSVGDOMImplementation;
-import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.apache.batik.swing.gvt.AbstractImageZoomInteractor;
 import org.apache.batik.swing.gvt.AbstractPanInteractor;
 import org.apache.batik.swing.gvt.AbstractResetTransformInteractor;
@@ -54,7 +52,6 @@ import org.apache.batik.swing.svg.SVGUserAgent;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLConstants;
 import org.apache.batik.util.gui.JErrorPane;
-import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.events.Event;
@@ -854,26 +851,28 @@ public class JSVGCanvas extends JSVGComponent {
 
         /**
          * Converts line breaks to HTML breaks and encodes special entities.
-         * Poor way of replacing '<', '>', '"', '&' and ''' in attribute values.
+         * Poor way of replacing '<', '>' and '&' in content.
          */
         public String toFormattedHTML(String str) {
             StringBuffer sb = new StringBuffer(str);
-            replace(sb, XML_CHAR_AMP, XML_ENTITY_AMP);
+            replace(sb, XML_CHAR_AMP, XML_ENTITY_AMP);  // Must go first!
             replace(sb, XML_CHAR_LT, XML_ENTITY_LT);
             replace(sb, XML_CHAR_GT, XML_ENTITY_GT);
             replace(sb, XML_CHAR_QUOT, XML_ENTITY_QUOT);
-            replace(sb, XML_CHAR_APOS, XML_ENTITY_APOS);
+            // Dont' quote "'" apostrphe since the display doesn't
+            // seem to understand it.
+            // replace(sb, XML_CHAR_APOS, XML_ENTITY_APOS);
             replace(sb, '\n', "<br>");
             return sb.toString();
         }
 
-        protected void replace(StringBuffer s, char c, String r) {
-            String v = s.toString() + 1;
+        protected void replace(StringBuffer sb, char c, String r) {
+            String v = sb.toString();
             int i = v.length();
 
-            while( (i=v.lastIndexOf(c, --i)) != -1 ) {
-                s.deleteCharAt(i);
-                s.insert(i, r);
+            while( (i=v.lastIndexOf(c, i-1)) != -1 ) {
+                sb.deleteCharAt(i);
+                sb.insert(i, r);
             }
         }
 

@@ -54,10 +54,7 @@ public class GenericDocument
      * Creates a new uninitialized document.
      */
     public GenericDocument(DocumentType dt, DOMImplementation impl) {
-        super(impl);
-        if (dt != null) {
-            appendChild(dt);
-        }
+        super(dt, impl);
     }
 
     /**

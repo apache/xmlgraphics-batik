@@ -475,11 +475,16 @@ public class SAXDocumentFactory
 	// Namespaces resolution
 	int len = attributes.getLength();
 	namespaces.push();
+        String version = null;
 	for (int i = 0; i < len; i++) {
 	    String aname = attributes.getQName(i);
             int slen = aname.length();
             if (slen < 5) 
                 continue;
+            if (aname.equals("version")) {
+                version = attributes.getValue(i);
+                continue;
+            }
             if (!aname.startsWith("xmlns"))
                 continue;
             if (slen == 5) {
@@ -504,6 +509,7 @@ public class SAXDocumentFactory
 	    : rawName.substring(0, idx);
 	String nsURI = namespaces.get(nsp);
         if (currentNode == null) {
+            implementation = getDOMImplementation(version);
             document = implementation.createDocument(nsURI, rawName, null);
             Iterator i = preInfo.iterator();
             currentNode = e = document.getDocumentElement();
@@ -539,6 +545,10 @@ public class SAXDocumentFactory
 		e.setAttributeNS(nsURI, aname, attributes.getValue(i));
 	    }
 	}
+    }
+
+    public DOMImplementation getDOMImplementation(String ver) {
+        return implementation;
     }
 
     /**

@@ -61,13 +61,6 @@ public class UpdateManager  {
     }
 
     /**
-     * Tells whether the given SVG document is dynamic.
-     */
-    public static boolean isDynamicDocument(Document doc) {
-        return BaseScriptingEnvironment.isDynamicDocument(doc);
-    }
-    
-    /**
      * The bridge context.
      */
     protected BridgeContext bridgeContext;

@@ -718,36 +718,7 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
                               hkernElements, vkernElements, textElement);
     }
 
-    /**
-     * Returns the line metrics for the specified text.
-     *
-     * @param chars The character array containing the text.
-     * @param beginIndex The index of the first character.
-     * @param limit The limit of characters.
-     * @param frc The current font render context.
-     *
-     * @return The new GVTLineMetrics object.
-     */
-    public GVTLineMetrics getLineMetrics(char[] chars, int beginIndex,
-                                         int limit,
-                                         FontRenderContext frc) {
-        StringCharacterIterator sci =
-            new StringCharacterIterator(new String(chars));
-        return getLineMetrics(sci, beginIndex, limit, frc);
-    }
-
-    /**
-     * Returns the line metrics for the specified text.
-     *
-     * @param ci The character iterator containing the text.
-     * @param beginIndex The index of the first character.
-     * @param limit The limit of characters.
-     * @param frc The current font render context.
-     *
-     * @return The new GVTLineMetrics object.
-     */
-    public GVTLineMetrics getLineMetrics(CharacterIterator ci, int beginIndex,
-                                         int limit, FontRenderContext frc) {
+    protected GVTLineMetrics getLineMetrics(int beginIndex, int limit) {
         if (lineMetrics != null) 
             return lineMetrics;
 
@@ -777,6 +748,37 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
              ulOffset, ulThickness, 
              olOffset, olThickness);
         return lineMetrics;
+    }
+
+    /**
+     * Returns the line metrics for the specified text.
+     *
+     * @param chars The character array containing the text.
+     * @param beginIndex The index of the first character.
+     * @param limit The limit of characters.
+     * @param frc The current font render context.
+     *
+     * @return The new GVTLineMetrics object.
+     */
+    public GVTLineMetrics getLineMetrics(char[] chars, int beginIndex,
+                                         int limit,
+                                         FontRenderContext frc) {
+        return getLineMetrics(beginIndex, limit);
+    }
+
+    /**
+     * Returns the line metrics for the specified text.
+     *
+     * @param ci The character iterator containing the text.
+     * @param beginIndex The index of the first character.
+     * @param limit The limit of characters.
+     * @param frc The current font render context.
+     *
+     * @return The new GVTLineMetrics object.
+     */
+    public GVTLineMetrics getLineMetrics(CharacterIterator ci, int beginIndex,
+                                         int limit, FontRenderContext frc) {
+        return getLineMetrics(beginIndex, limit);
     }
 
     /**

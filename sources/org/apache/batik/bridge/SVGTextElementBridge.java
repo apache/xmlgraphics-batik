@@ -17,6 +17,7 @@
  */
 package org.apache.batik.bridge;
 
+import java.awt.AlphaComposite;
 import java.awt.Composite;
 import java.awt.Paint;
 import java.awt.RenderingHints;
@@ -210,7 +211,8 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         //
         // DO NOT CALL super, 'opacity' is handle during addPaintAttributes()
         //
-
+        // 'opacity'
+        node.setComposite(CSSUtilities.convertOpacity(e));
         // 'filter'
         node.setFilter(CSSUtilities.convertFilter(e, node, ctx));
         // 'mask'
@@ -1148,10 +1150,10 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         int lastChar = getElementEndIndex(aci, element);
 
         // get all of the glyph position attribute values
-        String xAtt = element.getAttributeNS(null, SVG_X_ATTRIBUTE);
-        String yAtt = element.getAttributeNS(null, SVG_Y_ATTRIBUTE);
-        String dxAtt = element.getAttributeNS(null, SVG_DX_ATTRIBUTE);
-        String dyAtt = element.getAttributeNS(null, SVG_DY_ATTRIBUTE);
+        String xAtt      = element.getAttributeNS(null, SVG_X_ATTRIBUTE);
+        String yAtt      = element.getAttributeNS(null, SVG_Y_ATTRIBUTE);
+        String dxAtt     = element.getAttributeNS(null, SVG_DX_ATTRIBUTE);
+        String dyAtt     = element.getAttributeNS(null, SVG_DY_ATTRIBUTE);
         String rotateAtt = element.getAttributeNS(null, SVG_ROTATE_ATTRIBUTE);
 
         ArrayList al;
@@ -1162,7 +1164,6 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             al = TextUtilities.svgHorizontalCoordinateArrayToUserSpace
                 (element, SVG_X_ATTRIBUTE, xAtt, ctx);
             len = al.size();
-
             for (int i = 0; i < len; i++) {
                 if (firstChar + i <= lastChar) {
                     as.addAttribute
@@ -1171,6 +1172,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                 }
             }
         }
+
 
        // process the y attribute
         if (yAtt.length() != 0) {
@@ -1316,6 +1318,28 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         }
     }
 
+    protected Map getFontProperties(BridgeContext ctx, Element element, 
+                                    Map map) {
+        if (map == null) map = new HashMap(4);
+
+        // Needed for SVG fonts.
+        map.put(TEXT_COMPOUND_DELIMITER, element);
+
+        // Font size.
+        map.put(TextAttribute.SIZE, TextUtilities.convertFontSize(element));
+
+        // Font stretch
+        map.put(TextAttribute.WIDTH, TextUtilities.convertFontStretch(element));
+
+        // Font weight
+        map.put(TextAttribute.WEIGHT, TextUtilities.convertFontWeight(element));
+
+        // Font style
+        map.put(TextAttribute.POSTURE, TextUtilities.convertFontStyle(element));
+
+        return map;
+    }
+
     /**
      * Returns the map to pass to the current characters.
      */
@@ -1328,7 +1352,6 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         Map result = new HashMap();
         String s;
         float f;
-        result.put(TEXT_COMPOUND_DELIMITER, element);
 
         if (element.getTagName().equals(SVG_ALT_GLYPH_TAG)) {
             result.put
@@ -1346,49 +1369,11 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         result.put(GVTAttributedCharacterIterator.TextAttribute.ANCHOR_TYPE,
                    a);
 
-        // Font size.
-        Float fs = TextUtilities.convertFontSize(element);
-        result.put(TextAttribute.SIZE, fs);
-
-        // Font weight
-        Float fw = TextUtilities.convertFontWeight(element);
-        Value v = CSSUtilities.getComputedStyle
-            (element, SVGCSSEngine.FONT_WEIGHT_INDEX);
-        String fontWeightString = v.getCssText();
-        result.put(TextAttribute.WEIGHT, fw);
-
-        // Font style
-        String fontStyleString = CSSUtilities.getComputedStyle
-            (element, SVGCSSEngine.FONT_STYLE_INDEX).getStringValue();
-        result.put(TextAttribute.POSTURE,
-                   TextUtilities.convertFontStyle(element));
-
-        // Font stretch
-        result.put(TextAttribute.WIDTH,
-                   TextUtilities.convertFontStretch(element));
+        // get font size/width/weight/posture properties
+        getFontProperties(ctx, element, result);
 
         // Font family
-        Value val = CSSUtilities.getComputedStyle
-            (element, SVGCSSEngine.FONT_FAMILY_INDEX);
-
-        //  make a list of GVTFontFamily objects
-        List fontFamilyList = new Vector();
-        int len = val.getLength();
-        for (int i = 0; i < len; i++) {
-            Value it = val.item(i);
-            String fontFamilyName = it.getStringValue();
-            GVTFontFamily fontFamily
-                = SVGFontUtilities.getFontFamily(element, ctx, fontFamilyName,
-                   fontWeightString, fontStyleString);
-            if (fontFamily instanceof SVGFontFamily) {
-                SVGFontFamily svgFF = (SVGFontFamily)fontFamily;
-                if (svgFF.isComplex()) {
-                    usingComplexSVGFont = true;
-                }
-            }
-            fontFamilyList.add(fontFamily);
-        }
-
+        List fontFamilyList = getFontFamilyList(element, ctx);
         result.put
             (GVTAttributedCharacterIterator.TextAttribute.GVT_FONT_FAMILIES,
              fontFamilyList);
@@ -1401,7 +1386,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         }
 
         // Unicode-bidi mode
-        val =  CSSUtilities.getComputedStyle
+        Value val =  CSSUtilities.getComputedStyle
             (element, SVGCSSEngine.UNICODE_BIDI_INDEX);
         s = val.getStringValue();
         if (s.charAt(0) == 'n') {
@@ -1612,6 +1597,39 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
     }
 
 
+    protected List getFontFamilyList(Element element, BridgeContext ctx) {
+        // Font weight
+        Value v = CSSUtilities.getComputedStyle
+            (element, SVGCSSEngine.FONT_WEIGHT_INDEX);
+        String fontWeightString = v.getCssText();
+
+        // Font style
+        String fontStyleString = CSSUtilities.getComputedStyle
+            (element, SVGCSSEngine.FONT_STYLE_INDEX).getStringValue();
+
+        Value val = CSSUtilities.getComputedStyle
+            (element, SVGCSSEngine.FONT_FAMILY_INDEX);
+        //  make a list of GVTFontFamily objects
+        List fontFamilyList = new ArrayList();
+        int len = val.getLength();
+        for (int i = 0; i < len; i++) {
+            Value it = val.item(i);
+            String fontFamilyName = it.getStringValue();
+            GVTFontFamily fontFamily
+                = SVGFontUtilities.getFontFamily(element, ctx, fontFamilyName,
+                                                 fontWeightString, 
+                                                 fontStyleString);
+            if (fontFamily instanceof SVGFontFamily) {
+                SVGFontFamily svgFF = (SVGFontFamily)fontFamily;
+                if (svgFF.isComplex()) {
+                    usingComplexSVGFont = true;
+                }
+            }
+            fontFamilyList.add(fontFamily);
+        }
+        return fontFamilyList;
+    }
+
     /**
      * Retrieve in the AttributeString the closest parent
      * of the node 'child' and extract the text decorations
@@ -1685,7 +1703,11 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
 
     public void setBaseTextPaintInfo(TextPaintInfo pi, Element element,
                                      GraphicsNode node, BridgeContext ctx) {
-        pi.composite    = CSSUtilities.convertOpacity   (element);
+        if (!element.getLocalName().equals(SVG_TEXT_TAG))
+            pi.composite    = CSSUtilities.convertOpacity   (element);
+        else
+            pi.composite    = AlphaComposite.SrcOver;
+
         pi.fillPaint    = PaintServer.convertFillPaint  (element, node, ctx);
         pi.strokePaint  = PaintServer.convertStrokePaint(element, node, ctx);
         pi.strokeStroke = PaintServer.convertStroke     (element);

@@ -31,7 +31,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 
-import org.apache.batik.dom.svg.ExtensibleSVGDOMImplementation;
+import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.apache.batik.svggen.SVGGraphics2D;
 import org.apache.batik.transcoder.AbstractTranscoder;
 import org.apache.batik.transcoder.TranscoderException;
@@ -109,7 +109,7 @@ public class WMFTranscoder extends AbstractTranscoder
         // Use SVGGraphics2D to generate SVG content
         //
         DOMImplementation domImpl
-            = ExtensibleSVGDOMImplementation.getDOMImplementation();
+            = SVGDOMImplementation.getDOMImplementation();
 
         Document doc = domImpl.createDocument(SVG_NAMESPACE_URI,
                                               SVG_SVG_TAG, null);

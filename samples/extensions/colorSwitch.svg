@@ -28,9 +28,10 @@
 
 <?xml-stylesheet type="text/css" href="extension.css" ?>
 
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="body" width="450" height="500" xml:space="preserve" 
+<svg id="body" width="450" height="500" xml:space="preserve" 
      viewBox="0 0 450 500"
-     xmlns:svg="http://www.w3.org/2000/svg"
+     xmlns="http://www.w3.org/2000/svg" version="1.2"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
      xmlns:batik="http://xml.apache.org/batik/ext">
 
     <title>Star Extension Tag</title>
@@ -60,25 +61,23 @@
              fill="#0D0" stroke="#88F" stroke-width="2">
 
             <batik:colorSwitch id="TransPurple">
-                <batik:solidColor solid-color="red" 
+                <solidColor solid-color="red" 
                        requiredExtensions="NonExistantExtension"/>
-                <batik:solidColor solid-color="#FF00FF" solid-opacity=".5"
-                       requiredExtensions="http://xml.apache.org/batik/ext/solidColor/1.0"/>
+                <solidColor solid-color="#FF00FF" solid-opacity=".5"/>
                 <linearGradient>
                     <stop offset="0" stop-color="#FF0000" stop-opacity="0.5"/>
                 </linearGradient>
             </batik:colorSwitch>
 
             <batik:colorSwitch id="SolidPurple">
-                <batik:solidColor solid-color="#FF00FF" 
-                       requiredExtensions="http://xml.apache.org/batik/ext/solidColor/1.0"/>
+                <solidColor solid-color="#FF00FF"/>
                 <linearGradient>
                     <stop offset="0" stop-color="#FFFF00" />
                 </linearGradient>
             </batik:colorSwitch>
 
             <batik:colorSwitch id="orange">
-                <batik:solidColor solid-color="orange" solid-opacity="1"
+                <solidColor solid-color="orange" solid-opacity="1"
                        requiredExtensions="NonExistantExtension" />
                 <linearGradient y2="100%">
                     <stop offset=".1" stop-color="crimson" />

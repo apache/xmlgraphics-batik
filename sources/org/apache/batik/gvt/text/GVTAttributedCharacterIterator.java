@@ -220,6 +220,9 @@ public interface GVTAttributedCharacterIterator extends AttributedCharacterItera
         public final static TextAttribute FLOW_REGIONS =
             new TextAttribute("FLOW_REGIONS");
 
+        public final static TextAttribute LINE_HEIGHT =
+            new TextAttribute("LINE_HEIGHT");
+
         public final static TextAttribute PREFORMATTED =
             new TextAttribute("PREFORMATTED");
 

@@ -21,6 +21,7 @@ import java.awt.Font;
 import java.awt.font.TextAttribute;
 import java.text.AttributedCharacterIterator;
 import java.util.HashMap;
+import java.util.Map;
 import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
 
 /**
@@ -89,11 +90,24 @@ public class AWTFontFamily implements GVTFontFamily {
         if (font != null)
             return new AWTGVTFont(font, size);
 
-        HashMap fontAttributes = new HashMap(aci.getAttributes());
+        return deriveFont(size, aci.getAttributes());
+    }
+
+
+    /**
+     * Derives a GVTFont object of the correct size from an attribute Map.
+     * @param size  The required size of the derived font.
+     * @param attrs The Attribute Map to get Values from.
+     */
+    public GVTFont deriveFont(float size, Map attrs) {
+        if (font != null)
+            return new AWTGVTFont(font, size);
+
+        Map fontAttributes = new HashMap(attrs);
         fontAttributes.put(TextAttribute.SIZE, new Float(size));
         fontAttributes.put(TextAttribute.FAMILY, fontFace.getFamilyName());
         fontAttributes.remove(GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER);
         return new AWTGVTFont(fontAttributes);
     }
-
+     
 }

@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
+import org.apache.batik.bridge.svg12.SVG12BridgeExtension;
 import org.apache.batik.css.engine.CSSContext;
 import org.apache.batik.css.engine.CSSEngine;
 import org.apache.batik.css.engine.CSSEngineEvent;
@@ -251,7 +252,6 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         this.viewportMap.put(userAgent, new UserAgentViewport(userAgent));
         this.interpreterPool = interpreterPool;
         this.documentLoader = documentLoader;
-        registerSVGBridges(this);
     }
 
     /**
@@ -326,6 +326,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
             fontFamilyMap = null;
         }
         this.document = document;
+        registerSVGBridges();
     }
 
     /**
@@ -1446,8 +1447,8 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     /**
      * Tells whether the given SVG document is dynamic.
      */
-    public static boolean isDynamicDocument(Document doc) {
-        return BaseScriptingEnvironment.isDynamicDocument(doc);
+    public boolean isDynamicDocument(Document doc) {
+        return BaseScriptingEnvironment.isDynamicDocument(this, doc);
     }
     
     /**
@@ -1455,7 +1456,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      * We say it is, if it has any <title>, <desc>, or <a> elements,
      * of if the 'cursor' property is anything but Auto on any element.
      */
-    public static boolean isInteractiveDocument(Document doc) {
+    public boolean isInteractiveDocument(Document doc) {
         
         Element root = ((SVGDocument)doc).getRootElement();
         if (!SVGConstants.SVG_NAMESPACE_URI.equals(root.getNamespaceURI()))
@@ -1468,7 +1469,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      * used by isInteractiveDocument to check if document
      * contains any 'interactive' elements.
      */
-    public static boolean checkInteractiveElement(Element e) {
+    public boolean checkInteractiveElement(Element e) {
         return checkInteractiveElement
             ((SVGDocument)e.getOwnerDocument(), e);
     }
@@ -1477,8 +1478,8 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      * used by isInteractiveDocument to check if document
      * contains any 'interactive' elements.
      */
-    public static boolean checkInteractiveElement(SVGDocument doc,
-                                                  Element e) {
+    public boolean checkInteractiveElement(SVGDocument doc,
+                                           Element e) {
         String tag = e.getLocalName();
         
         // Check if it's one of our important element.
@@ -1533,39 +1534,71 @@ public class BridgeContext implements ErrorConstants, CSSContext {
 
     // bridge extensions support //////////////////////////////////////////////
 
-    protected static List extensions = null;
-
+    protected List extensions = null;
     /**
      * Registers the bridges to handle SVG 1.0 elements.
      *
      * @param ctx the bridge context to initialize
      */
-    public static void registerSVGBridges(BridgeContext ctx) {
-        UserAgent ua = ctx.getUserAgent();
-        Iterator iter = getBridgeExtensions().iterator();
+    public void registerSVGBridges() {
+        UserAgent ua = getUserAgent();
+        List ext = getBridgeExtensions(document);
+        Iterator iter = ext.iterator();
+
         while(iter.hasNext()) {
             BridgeExtension be = (BridgeExtension)iter.next();
-            be.registerTags(ctx);
+            be.registerTags(this);
             ua.registerExtension(be);
         }
+    }
+
+    public List getBridgeExtensions(Document doc) {
+        Element root = ((SVGOMDocument)doc).getRootElement();
+        String ver = root.getAttributeNS
+            (null, SVGConstants.SVG_VERSION_ATTRIBUTE);
+        BridgeExtension svgBE;
+        if ((ver.length()==0) || ver.equals("1.0") || ver.equals("1.1"))
+            svgBE = new SVGBridgeExtension();
+        else
+            svgBE = new SVG12BridgeExtension();
+
+        float priority = svgBE.getPriority();
+        extensions = new LinkedList(getGlobalBridgeExtensions());
+
+        ListIterator li = extensions.listIterator();
+        for (;;) {
+            if (!li.hasNext()) {
+                li.add(svgBE);
+                break;
+            }
+            BridgeExtension lbe = (BridgeExtension)li.next();
+            if (lbe.getPriority() > priority) {
+                li.previous();
+                li.add(svgBE);
+                break;
+            }
+        }
+
+        return extensions;
     }
 
     /**
      * Returns the extensions supported by this bridge context.
      */
-    public synchronized static List getBridgeExtensions() {
-        if (extensions != null) {
-            return extensions;
+    protected static List globalExtensions = null;
+
+    public synchronized static List getGlobalBridgeExtensions() {
+        if (globalExtensions != null) {
+            return globalExtensions;
         }
-        extensions = new LinkedList();
-        extensions.add(new SVGBridgeExtension());
+        globalExtensions = new LinkedList();
 
         Iterator iter = Service.providers(BridgeExtension.class);
 
         while (iter.hasNext()) {
             BridgeExtension be = (BridgeExtension)iter.next();
             float priority  = be.getPriority();
-            ListIterator li = extensions.listIterator();
+            ListIterator li = globalExtensions.listIterator();
             for (;;) {
                 if (!li.hasNext()) {
                     li.add(be);
@@ -1579,7 +1612,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
                 }
             }
         }
-        return extensions;
+        return globalExtensions;
     }        
 
     public static class CSSEngineUserAgentWrapper implements CSSEngineUserAgent {

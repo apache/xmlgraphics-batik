@@ -53,6 +53,51 @@
         <test id="samples/textRotateShadows.svg" />
     </testGroup>
 
+    <testGroup id="svg1.2" name="SVG Version 1.2 functionality tests">
+        <test id="samples/tests/spec12/text/flowText.svg" >
+            <property name="Validating" class="java.lang.Boolean" value="false" />
+	</test>
+        <test id="samples/tests/spec12/text/flowText2.svg" >
+            <property name="Validating" class="java.lang.Boolean" value="false" />
+	</test>
+        <test id="samples/tests/spec12/text/flowText3.svg" >
+            <property name="Validating" class="java.lang.Boolean" value="false" />
+	</test>
+        <test id="samples/tests/spec12/text/flowText4.svg" >
+            <property name="Validating" class="java.lang.Boolean" value="false" />
+	</test>
+        <test id="samples/tests/spec12/text/flowText5.svg" >
+            <property name="Validating" class="java.lang.Boolean" value="false" />
+	</test>
+        <test id="samples/tests/spec12/text/flowRegionBreak.svg" >
+            <property name="Validating" class="java.lang.Boolean" value="false" />
+	</test>
+        <test id="samples/tests/spec12/structure/multi.svg" >
+            <property name="Validating" class="java.lang.Boolean" value="false" />
+	</test>
+        <test id="samples/tests/spec12/structure/multi2.svg" >
+            <property name="Validating" class="java.lang.Boolean" value="false" />
+	</test>
+        <test id="samples/tests/spec12/structure/opera/opera-subImage.svg" >
+            <property name="Validating" class="java.lang.Boolean" value="false" />
+	</test>
+        <test id="samples/tests/spec12/structure/opera/opera-subImageRef.svg" >
+            <property name="Validating" class="java.lang.Boolean" value="false" />
+	</test>
+        <test id="samples/tests/spec12/paints/solidColor.svg" >
+            <property name="Validating" class="java.lang.Boolean" value="false" />
+	</test>
+        <test id="samples/tests/spec12/paints/solidColor2.svg" >
+            <property name="Validating" class="java.lang.Boolean" value="false" />
+	</test>
+        <test id="samples/tests/spec12/filters/filterRegion.svg" >
+            <property name="Validating" class="java.lang.Boolean" value="false" />
+	</test>
+        <test id="samples/tests/spec12/filters/filterRegionDetailed.svg" >
+            <property name="Validating" class="java.lang.Boolean" value="false" />
+	</test>
+    </testGroup>
+
     <!-- ================================================================== -->
     <!-- Samples extensions files                                           -->
     <!-- ================================================================== -->
@@ -63,36 +108,19 @@
         <test id="samples/extensions/histogramNormalization.svg" >
             <property name="Validating" class="java.lang.Boolean" value="false" />
 	</test>
-        <test id="samples/extensions/flowText.svg" >
-            <property name="Validating" class="java.lang.Boolean" value="false" />
-	</test>
-        <test id="samples/extensions/multi.svg" >
-            <property name="Validating" class="java.lang.Boolean" value="false" />
-	</test>
         <test id="samples/extensions/regularPolygon.svg" >
-            <property name="Validating" class="java.lang.Boolean" value="false" />
-	</test>
-        <test id="samples/extensions/solidColor.svg" >
-            <property name="Validating" class="java.lang.Boolean" value="false" />
-	</test>
-        <test id="samples/extensions/solidColor2.svg" >
             <property name="Validating" class="java.lang.Boolean" value="false" />
 	</test>
         <test id="samples/extensions/star.svg" >
             <property name="Validating" class="java.lang.Boolean" value="false" />
 	</test>
-        <test id="samples/extensions/filterRegion.svg" >
+        <test id="samples/extensions/flowText.svg" >
             <property name="Validating" class="java.lang.Boolean" value="false" />
 	</test>
-        <test id="samples/extensions/filterRegionDetailed.svg" >
+        <test id="samples/extensions/flowTextAlign.svg" >
             <property name="Validating" class="java.lang.Boolean" value="false" />
 	</test>
-        <test id="samples/extensions/opera/opera-subImage.svg" >
-            <property name="Validating" class="java.lang.Boolean" value="false" />
-	</test>
-        <test id="samples/extensions/opera/opera-subImageRef.svg" >
-            <property name="Validating" class="java.lang.Boolean" value="false" />
-	</test>
+
     </testGroup>
 
     <!-- ======================================================================= -->

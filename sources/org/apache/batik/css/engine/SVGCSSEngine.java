@@ -141,10 +141,32 @@ public class SVGCSSEngine extends CSSEngine {
         lineHeightIndex = fontSizeIndex;
     }
 
+    protected SVGCSSEngine(Document doc,
+                           URL uri,
+                           ExtendedParser p,
+                           ValueManager[] vms,
+                           ShorthandManager[] sms,
+                           String[] pe,
+                           String sns,
+                           String sln,
+                           String cns,
+                           String cln,
+                           boolean hints,
+                           String hintsNS,
+                           CSSContext ctx) {
+        super(doc, uri, p,
+              mergeArrays(SVG_VALUE_MANAGERS, vms),
+              mergeArrays(SVG_SHORTHAND_MANAGERS, sms),
+              pe, sns, sln, cns, cln, hints, hintsNS, ctx);
+        // SVG defines line-height to be font-size.
+        lineHeightIndex = fontSizeIndex;
+    }
+
+
     /**
      * Merges the given arrays.
      */
-    private static ValueManager[] mergeArrays(ValueManager[] a1,
+    protected static ValueManager[] mergeArrays(ValueManager[] a1,
                                               ValueManager[] a2) {
         ValueManager[] result = new ValueManager[a1.length + a2.length];
         System.arraycopy(a1, 0, result, 0, a1.length);
@@ -155,7 +177,7 @@ public class SVGCSSEngine extends CSSEngine {
     /**
      * Merges the given arrays.
      */
-    private static ShorthandManager[] mergeArrays(ShorthandManager[] a1,
+    protected static ShorthandManager[] mergeArrays(ShorthandManager[] a1,
                                                   ShorthandManager[] a2) {
         ShorthandManager[] result =
             new ShorthandManager[a1.length + a2.length];

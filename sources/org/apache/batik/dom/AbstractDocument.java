@@ -110,8 +110,16 @@ public abstract class AbstractDocument
     /**
      * Creates a new document.
      */
-    protected AbstractDocument(DOMImplementation impl) {
+    public AbstractDocument(DocumentType dt, DOMImplementation impl) {
 	implementation = impl;
+        if (dt != null) {
+            if (dt instanceof GenericDocumentType) {
+                GenericDocumentType gdt = (GenericDocumentType)dt;
+                if (gdt.getOwnerDocument() == null) 
+                    gdt.setOwnerDocument(this);
+            }
+            appendChild(dt);
+        }
     }
 
     /**

@@ -18,17 +18,18 @@
 package org.apache.batik.dom.svg;
 
 import java.net.URL;
-import java.util.Locale;
-import java.util.MissingResourceException;
 
 import org.apache.batik.css.dom.CSSOMSVGViewCSS;
 import org.apache.batik.css.engine.CSSContext;
 import org.apache.batik.css.engine.CSSEngine;
 import org.apache.batik.css.engine.SVGCSSEngine;
+import org.apache.batik.css.engine.value.ShorthandManager;
+import org.apache.batik.css.engine.value.ValueManager;
 import org.apache.batik.css.parser.ExtendedParser;
 import org.apache.batik.css.parser.ExtendedParserWrapper;
-import org.apache.batik.dom.AbstractDOMImplementation;
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.dom.AbstractStylableDocument;
+import org.apache.batik.dom.ExtensibleDOMImplementation;
 import org.apache.batik.dom.GenericDocumentType;
 import org.apache.batik.dom.GenericElement;
 import org.apache.batik.dom.GenericElementNS;
@@ -37,10 +38,10 @@ import org.apache.batik.dom.events.DocumentEventSupport;
 import org.apache.batik.dom.util.CSSStyleDeclarationFactory;
 import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.dom.util.HashTable;
-import org.apache.batik.i18n.Localizable;
 import org.apache.batik.i18n.LocalizableSupport;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLResourceDescriptor;
+
 import org.w3c.css.sac.InputSource;
 import org.w3c.css.sac.Parser;
 import org.w3c.dom.DOMException;
@@ -51,25 +52,20 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.CSSStyleSheet;
-import org.w3c.dom.css.DOMImplementationCSS;
 import org.w3c.dom.css.ViewCSS;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.stylesheets.StyleSheet;
 
 /**
  * This class implements the {@link DOMImplementation} interface.
- * It provides support the SVG 1.0 documents.
+ * It provides support the SVG 1.1 documents.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
 public class SVGDOMImplementation
-    extends    AbstractDOMImplementation
-    implements Localizable,
-               DOMImplementationCSS,
-               CSSStyleDeclarationFactory,
-               StyleSheetFactory,
-               SVGConstants {
+    extends    ExtensibleDOMImplementation 
+    implements CSSStyleDeclarationFactory {
     
     /**
      * The SVG namespace uri.
@@ -78,22 +74,12 @@ public class SVGDOMImplementation
         SVGConstants.SVG_NAMESPACE_URI;
 
     /**
-     * The default instance of this class.
-     */
-    protected final static DOMImplementation DOM_IMPLEMENTATION =
-        new SVGDOMImplementation();
-
-    /**
      * The error messages bundle class name.
      */
     protected final static String RESOURCES =
         "org.apache.batik.dom.svg.resources.Messages";
 
-    /**
-     * The localizable support for the error messages.
-     */
-    protected LocalizableSupport localizableSupport =
-        new LocalizableSupport(RESOURCES, getClass().getClassLoader());
+    protected HashTable factories;
 
     /**
      * Returns the default instance of this class.
@@ -102,52 +88,46 @@ public class SVGDOMImplementation
         return DOM_IMPLEMENTATION;
     }
 
+    
     /**
      * Creates a new SVGDOMImplementation object.
      */
     public SVGDOMImplementation() {
+        factories = svg11Factories;
         registerFeature("CSS",            "2.0");
         registerFeature("StyleSheets",    "2.0");
-        registerFeature("SVG",            "1.0");
-        registerFeature("SVGEvents",      "1.0");
+        registerFeature("SVG",            new String[] {"1.0", "1.1"});
+        registerFeature("SVGEvents",      new String[] {"1.0", "1.1"});
     }
 
-    /**
-     * Creates new CSSEngine and attach it to the document.
-     */
-    public CSSEngine createCSSEngine(SVGOMDocument doc, CSSContext ctx) {
-        String pn = XMLResourceDescriptor.getCSSParserClassName();
-        Parser p;
-        try {
-            p = (Parser)Class.forName(pn).newInstance();
-        } catch (ClassNotFoundException e) {
-            throw new DOMException(DOMException.INVALID_ACCESS_ERR,
-                                   formatMessage("css.parser.class",
-                                                 new Object[] { pn }));
-        } catch (InstantiationException e) {
-            throw new DOMException(DOMException.INVALID_ACCESS_ERR,
-                                   formatMessage("css.parser.creation",
-                                                 new Object[] { pn }));
-        } catch (IllegalAccessException e) {
-            throw new DOMException(DOMException.INVALID_ACCESS_ERR,
-                                   formatMessage("css.parser.access",
-                                                 new Object[] { pn }));
-        }
-        ExtendedParser ep = ExtendedParserWrapper.wrap(p);
-        CSSEngine result = new SVGCSSEngine(doc, doc.getURLObject(), ep, ctx);
+    protected void initLocalizable() {
+        localizableSupport = new LocalizableSupport
+            (RESOURCES, getClass().getClassLoader());
+    }
+
+    public CSSEngine createCSSEngine(AbstractStylableDocument doc, 
+                                     CSSContext               ctx,
+                                     ExtendedParser           ep,
+                                     ValueManager     []      vms, 
+                                     ShorthandManager []      sms) {
+                                     
+        URL durl = ((SVGOMDocument)doc).getURLObject();
+        CSSEngine result = new SVGCSSEngine(doc, durl, ep, vms, sms, ctx);
+
         URL url = getClass().getResource("resources/UserAgentStyleSheet.css");
         if (url != null) {
             InputSource is = new InputSource(url.toString());
-            result.setUserAgentStyleSheet(result.parseStyleSheet(is, url, "all"));
+            result.setUserAgentStyleSheet
+                (result.parseStyleSheet(is, url, "all"));
         }
-        doc.setCSSEngine(result);
+
         return result;
     }
 
     /**
      * Creates a ViewCSS.
      */
-    public ViewCSS createViewCSS(SVGOMDocument doc) {
+    public ViewCSS createViewCSS(AbstractStylableDocument doc) {
         return new CSSOMSVGViewCSS(doc.getCSSEngine());
     }
 
@@ -170,8 +150,10 @@ public class SVGDOMImplementation
                                    DocumentType doctype)
         throws DOMException {
         Document result = new SVGOMDocument(doctype, this);
-        result.appendChild(result.createElementNS(namespaceURI,
-                                                  qualifiedName));
+        // BUG 32108: return empty document if qualifiedName is null.
+        if (qualifiedName != null)
+            result.appendChild(result.createElementNS(namespaceURI,
+                                                      qualifiedName));
         return result;
     }
 
@@ -193,30 +175,6 @@ public class SVGDOMImplementation
      */
     public CSSStyleDeclaration createCSSStyleDeclaration() {
         throw new InternalError("Not implemented");
-    }
-
-    // Localizable //////////////////////////////////////////////////////
-
-    /**
-     * Implements {@link Localizable#setLocale(Locale)}.
-     */
-    public void setLocale(Locale l) {
-	localizableSupport.setLocale(l);
-    }
-
-    /**
-     * Implements {@link Localizable#getLocale()}.
-     */
-    public Locale getLocale() {
-        return localizableSupport.getLocale();
-    }
-
-    /**
-     * Implements {@link Localizable#formatMessage(String,Object[])}.
-     */
-    public String formatMessage(String key, Object[] args)
-        throws MissingResourceException {
-        return localizableSupport.formatMessage(key, args);
     }
 
     // StyleSheetFactory /////////////////////////////////////////////
@@ -243,20 +201,18 @@ public class SVGDOMImplementation
     public Element createElementNS(AbstractDocument document,
                                    String           namespaceURI,
                                    String           qualifiedName) {
-        if (namespaceURI == null) {
-            return new GenericElement(qualifiedName.intern(), document);
-        }
-        if (namespaceURI.equals(SVG_NAMESPACE_URI)) {
+        if (SVGConstants.SVG_NAMESPACE_URI.equals(namespaceURI)) {
             String name = DOMUtilities.getLocalName(qualifiedName);
             ElementFactory ef = (ElementFactory)factories.get(name);
-            if (ef != null) {
+            if (ef != null)
                 return ef.create(DOMUtilities.getPrefix(qualifiedName),
                                  document);
-            }
+            throw document.createDOMException
+                (DOMException.NOT_FOUND_ERR, "invalid.element",
+                 new Object[] { namespaceURI, qualifiedName });
         }
-        return new GenericElementNS(namespaceURI.intern(),
-                                    qualifiedName.intern(),
-                                    document);
+
+        return super.createElementNS(document, namespaceURI, qualifiedName);
     }
 
     /**
@@ -277,263 +233,253 @@ public class SVGDOMImplementation
     // The element factories /////////////////////////////////////////////////
 
     /**
-     * This interface represents a factory of elements.
-     */
-    public interface ElementFactory {
-        /**
-         * Creates an instance of the associated element type.
-         */
-        Element create(String prefix, Document doc);
-    }
-
-    /**
      * The SVG element factories.
      */
-    protected HashTable factories = new HashTable();
+    protected static HashTable svg11Factories = new HashTable();
 
-    {
-        factories.put(SVG_A_TAG,
-                      new AElementFactory());
+    static {
+        svg11Factories.put(SVGConstants.SVG_A_TAG,
+                           new AElementFactory());
 
-        factories.put(SVG_ALT_GLYPH_TAG,
-                      new AltGlyphElementFactory());
+        svg11Factories.put(SVGConstants.SVG_ALT_GLYPH_TAG,
+                           new AltGlyphElementFactory());
 
-        factories.put(SVG_ALT_GLYPH_DEF_TAG,
-                      new AltGlyphDefElementFactory());
+        svg11Factories.put(SVGConstants.SVG_ALT_GLYPH_DEF_TAG,
+                           new AltGlyphDefElementFactory());
 
-        factories.put(SVG_ALT_GLYPH_ITEM_TAG,
-                      new AltGlyphItemElementFactory());
+        svg11Factories.put(SVGConstants.SVG_ALT_GLYPH_ITEM_TAG,
+                           new AltGlyphItemElementFactory());
 
-        factories.put(SVG_ANIMATE_TAG,
-                      new AnimateElementFactory());
+        svg11Factories.put(SVGConstants.SVG_ANIMATE_TAG,
+                           new AnimateElementFactory());
 
-        factories.put(SVG_ANIMATE_COLOR_TAG,
-                      new AnimateColorElementFactory());
+        svg11Factories.put(SVGConstants.SVG_ANIMATE_COLOR_TAG,
+                           new AnimateColorElementFactory());
 
-        factories.put(SVG_ANIMATE_MOTION_TAG,
-                      new AnimateMotionElementFactory());
+        svg11Factories.put(SVGConstants.SVG_ANIMATE_MOTION_TAG,
+                           new AnimateMotionElementFactory());
 
-        factories.put(SVG_ANIMATE_TRANSFORM_TAG,
-                      new AnimateTransformElementFactory());
+        svg11Factories.put(SVGConstants.SVG_ANIMATE_TRANSFORM_TAG,
+                           new AnimateTransformElementFactory());
 
-        factories.put(SVG_CIRCLE_TAG,
-                      new CircleElementFactory());
+        svg11Factories.put(SVGConstants.SVG_CIRCLE_TAG,
+                           new CircleElementFactory());
 
-        factories.put(SVG_CLIP_PATH_TAG,
-                      new ClipPathElementFactory());
+        svg11Factories.put(SVGConstants.SVG_CLIP_PATH_TAG,
+                           new ClipPathElementFactory());
 
-        factories.put(SVG_COLOR_PROFILE_TAG,
-                      new ColorProfileElementFactory());
+        svg11Factories.put(SVGConstants.SVG_COLOR_PROFILE_TAG,
+                           new ColorProfileElementFactory());
 
-        factories.put(SVG_CURSOR_TAG,
-                      new CursorElementFactory());
+        svg11Factories.put(SVGConstants.SVG_CURSOR_TAG,
+                           new CursorElementFactory());
 
-        factories.put(SVG_DEFINITION_SRC_TAG,
-                      new DefinitionSrcElementFactory());
+        svg11Factories.put(SVGConstants.SVG_DEFINITION_SRC_TAG,
+                           new DefinitionSrcElementFactory());
 
-        factories.put(SVG_DEFS_TAG,
-                      new DefsElementFactory());
+        svg11Factories.put(SVGConstants.SVG_DEFS_TAG,
+                           new DefsElementFactory());
 
-        factories.put(SVG_DESC_TAG,
-                      new DescElementFactory());
+        svg11Factories.put(SVGConstants.SVG_DESC_TAG,
+                           new DescElementFactory());
 
-        factories.put(SVG_ELLIPSE_TAG,
-                      new EllipseElementFactory());
+        svg11Factories.put(SVGConstants.SVG_ELLIPSE_TAG,
+                           new EllipseElementFactory());
 
-        factories.put(SVG_FE_BLEND_TAG,
-                      new FeBlendElementFactory());
+        svg11Factories.put(SVGConstants.SVG_FE_BLEND_TAG,
+                           new FeBlendElementFactory());
 
-        factories.put(SVG_FE_COLOR_MATRIX_TAG,
-                      new FeColorMatrixElementFactory());
+        svg11Factories.put(SVGConstants.SVG_FE_COLOR_MATRIX_TAG,
+                           new FeColorMatrixElementFactory());
 
-        factories.put(SVG_FE_COMPONENT_TRANSFER_TAG,
-                      new FeComponentTransferElementFactory());
+        svg11Factories.put(SVGConstants.SVG_FE_COMPONENT_TRANSFER_TAG,
+                           new FeComponentTransferElementFactory());
 
-        factories.put(SVG_FE_COMPOSITE_TAG,
-                      new FeCompositeElementFactory());
+        svg11Factories.put(SVGConstants.SVG_FE_COMPOSITE_TAG,
+                           new FeCompositeElementFactory());
 
-        factories.put(SVG_FE_CONVOLVE_MATRIX_TAG,
-                      new FeConvolveMatrixElementFactory());
+        svg11Factories.put(SVGConstants.SVG_FE_CONVOLVE_MATRIX_TAG,
+                           new FeConvolveMatrixElementFactory());
 
-        factories.put(SVG_FE_DIFFUSE_LIGHTING_TAG,
-                      new FeDiffuseLightingElementFactory());
+        svg11Factories.put(SVGConstants.SVG_FE_DIFFUSE_LIGHTING_TAG,
+                           new FeDiffuseLightingElementFactory());
 
-        factories.put(SVG_FE_DISPLACEMENT_MAP_TAG,
-                      new FeDisplacementMapElementFactory());
+        svg11Factories.put(SVGConstants.SVG_FE_DISPLACEMENT_MAP_TAG,
+                           new FeDisplacementMapElementFactory());
 
-        factories.put(SVG_FE_DISTANT_LIGHT_TAG,
-                      new FeDistantLightElementFactory());
+        svg11Factories.put(SVGConstants.SVG_FE_DISTANT_LIGHT_TAG,
+                           new FeDistantLightElementFactory());
 
-        factories.put(SVG_FE_FLOOD_TAG,
-                      new FeFloodElementFactory());
+        svg11Factories.put(SVGConstants.SVG_FE_FLOOD_TAG,
+                           new FeFloodElementFactory());
 
-        factories.put(SVG_FE_FUNC_A_TAG,
-                      new FeFuncAElementFactory());
+        svg11Factories.put(SVGConstants.SVG_FE_FUNC_A_TAG,
+                           new FeFuncAElementFactory());
 
-        factories.put(SVG_FE_FUNC_R_TAG,
-                      new FeFuncRElementFactory());
+        svg11Factories.put(SVGConstants.SVG_FE_FUNC_R_TAG,
+                           new FeFuncRElementFactory());
 
-        factories.put(SVG_FE_FUNC_G_TAG,
-                      new FeFuncGElementFactory());
+        svg11Factories.put(SVGConstants.SVG_FE_FUNC_G_TAG,
+                           new FeFuncGElementFactory());
 
-        factories.put(SVG_FE_FUNC_B_TAG,
-                      new FeFuncBElementFactory());
+        svg11Factories.put(SVGConstants.SVG_FE_FUNC_B_TAG,
+                           new FeFuncBElementFactory());
 
-        factories.put(SVG_FE_GAUSSIAN_BLUR_TAG,
-                      new FeGaussianBlurElementFactory());
+        svg11Factories.put(SVGConstants.SVG_FE_GAUSSIAN_BLUR_TAG,
+                           new FeGaussianBlurElementFactory());
 
-        factories.put(SVG_FE_IMAGE_TAG,
-                      new FeImageElementFactory());
+        svg11Factories.put(SVGConstants.SVG_FE_IMAGE_TAG,
+                           new FeImageElementFactory());
 
-        factories.put(SVG_FE_MERGE_TAG,
-                      new FeMergeElementFactory());
+        svg11Factories.put(SVGConstants.SVG_FE_MERGE_TAG,
+                           new FeMergeElementFactory());
 
-        factories.put(SVG_FE_MERGE_NODE_TAG,
-                      new FeMergeNodeElementFactory());
+        svg11Factories.put(SVGConstants.SVG_FE_MERGE_NODE_TAG,
+                           new FeMergeNodeElementFactory());
 
-        factories.put(SVG_FE_MORPHOLOGY_TAG,
-                      new FeMorphologyElementFactory());
+        svg11Factories.put(SVGConstants.SVG_FE_MORPHOLOGY_TAG,
+                           new FeMorphologyElementFactory());
 
-        factories.put(SVG_FE_OFFSET_TAG,
-                      new FeOffsetElementFactory());
+        svg11Factories.put(SVGConstants.SVG_FE_OFFSET_TAG,
+                           new FeOffsetElementFactory());
 
-        factories.put(SVG_FE_POINT_LIGHT_TAG,
-                      new FePointLightElementFactory());
+        svg11Factories.put(SVGConstants.SVG_FE_POINT_LIGHT_TAG,
+                           new FePointLightElementFactory());
 
-        factories.put(SVG_FE_SPECULAR_LIGHTING_TAG,
-                      new FeSpecularLightingElementFactory());
+        svg11Factories.put(SVGConstants.SVG_FE_SPECULAR_LIGHTING_TAG,
+                           new FeSpecularLightingElementFactory());
 
-        factories.put(SVG_FE_SPOT_LIGHT_TAG,
-                      new FeSpotLightElementFactory());
+        svg11Factories.put(SVGConstants.SVG_FE_SPOT_LIGHT_TAG,
+                           new FeSpotLightElementFactory());
 
-        factories.put(SVG_FE_TILE_TAG,
-                      new FeTileElementFactory());
+        svg11Factories.put(SVGConstants.SVG_FE_TILE_TAG,
+                           new FeTileElementFactory());
 
-        factories.put(SVG_FE_TURBULENCE_TAG,
-                      new FeTurbulenceElementFactory());
+        svg11Factories.put(SVGConstants.SVG_FE_TURBULENCE_TAG,
+                           new FeTurbulenceElementFactory());
 
-        factories.put(SVG_FILTER_TAG,
-                      new FilterElementFactory());
+        svg11Factories.put(SVGConstants.SVG_FILTER_TAG,
+                           new FilterElementFactory());
 
-        factories.put(SVG_FONT_TAG,
-                      new FontElementFactory());
+        svg11Factories.put(SVGConstants.SVG_FONT_TAG,
+                           new FontElementFactory());
 
-        factories.put(SVG_FONT_FACE_TAG,
-                      new FontFaceElementFactory());
+        svg11Factories.put(SVGConstants.SVG_FONT_FACE_TAG,
+                           new FontFaceElementFactory());
 
-        factories.put(SVG_FONT_FACE_FORMAT_TAG,
-                      new FontFaceFormatElementFactory());
+        svg11Factories.put(SVGConstants.SVG_FONT_FACE_FORMAT_TAG,
+                           new FontFaceFormatElementFactory());
 
-        factories.put(SVG_FONT_FACE_NAME_TAG,
-                      new FontFaceNameElementFactory());
+        svg11Factories.put(SVGConstants.SVG_FONT_FACE_NAME_TAG,
+                           new FontFaceNameElementFactory());
 
-        factories.put(SVG_FONT_FACE_SRC_TAG,
-                      new FontFaceSrcElementFactory());
+        svg11Factories.put(SVGConstants.SVG_FONT_FACE_SRC_TAG,
+                           new FontFaceSrcElementFactory());
 
-        factories.put(SVG_FONT_FACE_URI_TAG,
-                      new FontFaceUriElementFactory());
+        svg11Factories.put(SVGConstants.SVG_FONT_FACE_URI_TAG,
+                           new FontFaceUriElementFactory());
 
-        factories.put(SVG_FOREIGN_OBJECT_TAG,
-                      new ForeignObjectElementFactory());
+        svg11Factories.put(SVGConstants.SVG_FOREIGN_OBJECT_TAG,
+                           new ForeignObjectElementFactory());
 
-        factories.put(SVG_G_TAG,
-                      new GElementFactory());
+        svg11Factories.put(SVGConstants.SVG_G_TAG,
+                           new GElementFactory());
 
-        factories.put(SVG_GLYPH_TAG,
-                      new GlyphElementFactory());
+        svg11Factories.put(SVGConstants.SVG_GLYPH_TAG,
+                           new GlyphElementFactory());
 
-        factories.put(SVG_GLYPH_REF_TAG,
-                      new GlyphRefElementFactory());
+        svg11Factories.put(SVGConstants.SVG_GLYPH_REF_TAG,
+                           new GlyphRefElementFactory());
 
-        factories.put(SVG_HKERN_TAG,
-                      new HkernElementFactory());
+        svg11Factories.put(SVGConstants.SVG_HKERN_TAG,
+                           new HkernElementFactory());
 
-        factories.put(SVG_IMAGE_TAG,
-                      new ImageElementFactory());
+        svg11Factories.put(SVGConstants.SVG_IMAGE_TAG,
+                           new ImageElementFactory());
 
-        factories.put(SVG_LINE_TAG,
-                      new LineElementFactory());
+        svg11Factories.put(SVGConstants.SVG_LINE_TAG,
+                           new LineElementFactory());
 
-        factories.put(SVG_LINEAR_GRADIENT_TAG,
-                      new LinearGradientElementFactory());
+        svg11Factories.put(SVGConstants.SVG_LINEAR_GRADIENT_TAG,
+                           new LinearGradientElementFactory());
 
-        factories.put(SVG_MARKER_TAG,
-                      new MarkerElementFactory());
+        svg11Factories.put(SVGConstants.SVG_MARKER_TAG,
+                           new MarkerElementFactory());
 
-        factories.put(SVG_MASK_TAG,
-                      new MaskElementFactory());
+        svg11Factories.put(SVGConstants.SVG_MASK_TAG,
+                           new MaskElementFactory());
 
-        factories.put(SVG_METADATA_TAG,
-                      new MetadataElementFactory());
+        svg11Factories.put(SVGConstants.SVG_METADATA_TAG,
+                           new MetadataElementFactory());
 
-        factories.put(SVG_MISSING_GLYPH_TAG,
-                      new MissingGlyphElementFactory());
+        svg11Factories.put(SVGConstants.SVG_MISSING_GLYPH_TAG,
+                           new MissingGlyphElementFactory());
 
-        factories.put(SVG_MPATH_TAG,
-                      new MpathElementFactory());
+        svg11Factories.put(SVGConstants.SVG_MPATH_TAG,
+                           new MpathElementFactory());
 
-        factories.put(SVG_PATH_TAG,
-                      new PathElementFactory());
+        svg11Factories.put(SVGConstants.SVG_PATH_TAG,
+                           new PathElementFactory());
 
-        factories.put(SVG_PATTERN_TAG,
-                      new PatternElementFactory());
+        svg11Factories.put(SVGConstants.SVG_PATTERN_TAG,
+                           new PatternElementFactory());
 
-        factories.put(SVG_POLYGON_TAG,
-                      new PolygonElementFactory());
+        svg11Factories.put(SVGConstants.SVG_POLYGON_TAG,
+                           new PolygonElementFactory());
 
-        factories.put(SVG_POLYLINE_TAG,
-                      new PolylineElementFactory());
+        svg11Factories.put(SVGConstants.SVG_POLYLINE_TAG,
+                           new PolylineElementFactory());
 
-        factories.put(SVG_RADIAL_GRADIENT_TAG,
-                      new RadialGradientElementFactory());
+        svg11Factories.put(SVGConstants.SVG_RADIAL_GRADIENT_TAG,
+                           new RadialGradientElementFactory());
 
-        factories.put(SVG_RECT_TAG,
-                      new RectElementFactory());
+        svg11Factories.put(SVGConstants.SVG_RECT_TAG,
+                           new RectElementFactory());
 
-        factories.put(SVG_SET_TAG,
-                      new SetElementFactory());
+        svg11Factories.put(SVGConstants.SVG_SET_TAG,
+                           new SetElementFactory());
 
-        factories.put(SVG_SCRIPT_TAG,
-                      new ScriptElementFactory());
+        svg11Factories.put(SVGConstants.SVG_SCRIPT_TAG,
+                           new ScriptElementFactory());
 
-        factories.put(SVG_STOP_TAG,
-                      new StopElementFactory());
+        svg11Factories.put(SVGConstants.SVG_STOP_TAG,
+                           new StopElementFactory());
 
-        factories.put(SVG_STYLE_TAG,
-                      new StyleElementFactory());
+        svg11Factories.put(SVGConstants.SVG_STYLE_TAG,
+                           new StyleElementFactory());
 
-        factories.put(SVG_SVG_TAG,
-                      new SvgElementFactory());
+        svg11Factories.put(SVGConstants.SVG_SVG_TAG,
+                           new SvgElementFactory());
 
-        factories.put(SVG_SWITCH_TAG,
-                      new SwitchElementFactory());
+        svg11Factories.put(SVGConstants.SVG_SWITCH_TAG,
+                           new SwitchElementFactory());
 
-        factories.put(SVG_SYMBOL_TAG,
-                      new SymbolElementFactory());
+        svg11Factories.put(SVGConstants.SVG_SYMBOL_TAG,
+                           new SymbolElementFactory());
 
-        factories.put(SVG_TEXT_TAG,
-                      new TextElementFactory());
+        svg11Factories.put(SVGConstants.SVG_TEXT_TAG,
+                           new TextElementFactory());
 
-        factories.put(TAG_TEXT_PATH,
-                      new TextPathElementFactory());
+        svg11Factories.put(SVGConstants.SVG_TEXT_PATH_TAG,
+                           new TextPathElementFactory());
 
-        factories.put(SVG_TITLE_TAG,
-                      new TitleElementFactory());
+        svg11Factories.put(SVGConstants.SVG_TITLE_TAG,
+                           new TitleElementFactory());
 
-        factories.put(SVG_TREF_TAG,
-                      new TrefElementFactory());
+        svg11Factories.put(SVGConstants.SVG_TREF_TAG,
+                           new TrefElementFactory());
 
-        factories.put(SVG_TSPAN_TAG,
-                      new TspanElementFactory());
+        svg11Factories.put(SVGConstants.SVG_TSPAN_TAG,
+                           new TspanElementFactory());
 
-        factories.put(SVG_USE_TAG,
-                      new UseElementFactory());
+        svg11Factories.put(SVGConstants.SVG_USE_TAG,
+                           new UseElementFactory());
 
-        factories.put(SVG_VIEW_TAG,
-                      new ViewElementFactory());
+        svg11Factories.put(SVGConstants.SVG_VIEW_TAG,
+                           new ViewElementFactory());
 
-        factories.put(SVG_VKERN_TAG,
-                      new VkernElementFactory());
+        svg11Factories.put(SVGConstants.SVG_VKERN_TAG,
+                           new VkernElementFactory());
     }
 
     /**
@@ -1636,4 +1582,11 @@ public class SVGDOMImplementation
             return new SVGOMVKernElement(prefix, (AbstractDocument)doc);
         }
     }
+
+    /**
+     * The default instance of this class.
+     */
+    protected final static DOMImplementation DOM_IMPLEMENTATION =
+        new SVGDOMImplementation();
+
 }

@@ -19,6 +19,8 @@ package org.apache.batik.gvt.font;
 
 import java.text.AttributedCharacterIterator;
 
+import java.util.Map;
+
 /**
  * An interface for all font family classes.
  *
@@ -48,4 +50,11 @@ public interface GVTFontFamily {
      */
     GVTFont deriveFont(float size, AttributedCharacterIterator aci);
 
+    /**
+     * Derives a GVTFont object of the correct size from an attribute Map.
+     * @param size  The required size of the derived font.
+     * @param attrs The Attribute Map to get Values from.
+     */
+    GVTFont deriveFont(float size, Map attrs);
+     
 }
