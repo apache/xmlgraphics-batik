@@ -155,12 +155,16 @@ To display the available targets type:
 
   <!-- Build .............................................................. -->
   <target name="dist-zip" depends="build"/>
-  <target name="build" depends="jars, html"> 
+  <target name="build" depends="doc-zip, bin-zip, src-zip, jars, html" />
+
+  <target name="doc-zip" depends="html">
     <delete dir="${build}/docs/images/BE"/>
     <zip zipfile="${project}-docs-${version}.zip" basedir="${build}"
          includes="docs/javadoc/**"/>
     <delete dir="${build}/docs/javadoc"/>
+  </target>
 
+  <target name="bin-zip" depends="jars">
     <copy file="README" todir="${build}"/>
     <copy file="LICENSE" todir="${build}"/>
     <copy file="LICENSE.rhino" todir="${build}"/>
@@ -168,7 +172,9 @@ To display the available targets type:
       <fileset dir="samples"/>
     </copy>
     <zip zipfile="${project}-${version}.zip" basedir="." includes="${build}/**"/> 
+  </target>
 
+  <target name="src-zip">
     <zip zipfile="${project}-src-${version}.zip" basedir=".." 
          includes="xml-${project}/**" excludes="xml-${project}/test-references/**">
         <exclude name="xml-${project}/${project}-src-${version}.zip" />
@@ -180,7 +186,6 @@ To display the available targets type:
         <exclude name="xml-${project}/test-references/**" />
         <exclude name="xml-${project}/${build}/**" />
     </zip>
-
   </target>
 
   <target name="dist-tgz" depends="build-tgz"/>
