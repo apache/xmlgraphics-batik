@@ -47,6 +47,14 @@ import org.apache.batik.transcoder.TranscodingHints;
 import org.apache.batik.transcoder.XMLAbstractTranscoder;
 import org.apache.batik.transcoder.image.resources.Messages;
 
+import org.apache.batik.transcoder.keys.BooleanKey;
+import org.apache.batik.transcoder.keys.FloatKey;
+import org.apache.batik.transcoder.keys.LengthKey;
+import org.apache.batik.transcoder.keys.PaintKey;
+import org.apache.batik.transcoder.keys.PaintKey;
+import org.apache.batik.transcoder.keys.Rectangle2DKey;
+import org.apache.batik.transcoder.keys.StringKey;
+
 import org.apache.batik.util.SVGConstants;
 
 import org.w3c.dom.DOMException;
@@ -383,6 +391,147 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
     // --------------------------------------------------------------------
     // Keys definition
     // --------------------------------------------------------------------
+
+    /**
+     * The image width key.
+     * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Key: </TH>
+     * <TD VALIGN="TOP">KEY_WIDTH</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Value: </TH>
+     * <TD VALIGN="TOP">Float</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Default: </TH>
+     * <TD VALIGN="TOP">The width of the top most svg element</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Required: </TH>
+     * <TD VALIGN="TOP">No</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Description: </TH>
+     * <TD VALIGN="TOP">Specify the width of the image to create.</TD></TR>
+     * </TABLE> */
+    public static final TranscodingHints.Key KEY_WIDTH
+        = new LengthKey();
+
+    /**
+     * The image height key.
+     * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Key: </TH>
+     * <TD VALIGN="TOP">KEY_HEIGHT</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Value: </TH>
+     * <TD VALIGN="TOP">Float</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Default: </TH>
+     * <TD VALIGN="TOP">The height of the top most svg element</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Required: </TH>
+     * <TD VALIGN="TOP">No</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Description: </TH>
+     * <TD VALIGN="TOP">Specify the height of the image to create.</TD></TR>
+     * </TABLE> */
+    public static final TranscodingHints.Key KEY_HEIGHT
+        = new LengthKey();
+
+    /**
+     * The area of interest key.
+     * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Key: </TH>
+     * <TD VALIGN="TOP">KEY_AOI</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Value: </TH>
+     * <TD VALIGN="TOP">Rectangle2D</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Default: </TH>
+     * <TD VALIGN="TOP">The document's size</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Required: </TH>
+     * <TD VALIGN="TOP">No</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Description: </TH>
+     * <TD VALIGN="TOP">Specify the area of interest to render. The
+     * rectangle coordinates must be specified in pixels and in the
+     * document coordinates system.</TD></TR>
+     * </TABLE>
+     */
+    public static final TranscodingHints.Key KEY_AOI
+        = new Rectangle2DKey();
+
+    /**
+     * The language key.
+     * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Key: </TH>
+     * <TD VALIGN="TOP">KEY_LANGUAGE</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Value: </TH>
+     * <TD VALIGN="TOP">String</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Default: </TH>
+     * <TD VALIGN="TOP">"en"</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Required: </TH>
+     * <TD VALIGN="TOP">No</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Description: </TH>
+     * <TD VALIGN="TOP">Specify the preferred language of the document.
+     * </TD></TR>
+     * </TABLE>
+     */
+    public static final TranscodingHints.Key KEY_LANGUAGE
+        = new StringKey();
+
+    /**
+     * The user stylesheet URI key.
+     * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Key: </TH>
+     * <TD VALIGN="TOP">KEY_USER_STYLESHEET_URI</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Value: </TH>
+     * <TD VALIGN="TOP">String</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Default: </TH>
+     * <TD VALIGN="TOP">null</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Required: </TH>
+     * <TD VALIGN="TOP">No</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Description: </TH>
+     * <TD VALIGN="TOP">Specify the user style sheet.</TD></TR>
+     * </TABLE>
+     */
+    public static final TranscodingHints.Key KEY_USER_STYLESHEET_URI
+        = new StringKey();
+
+    /**
+     * The pixel to millimeter conversion factor key.
+     * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Key: </TH>
+     * <TD VALIGN="TOP">KEY_PIXEL_TO_MM</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Value: </TH>
+     * <TD VALIGN="TOP">Float</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Default: </TH>
+     * <TD VALIGN="TOP">0.33</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Required: </TH>
+     * <TD VALIGN="TOP">No</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Description: </TH>
+     * <TD VALIGN="TOP">Specify the pixel to millimeter conversion factor.
+     * </TD></TR>
+     * </TABLE>
+     */
+    public static final TranscodingHints.Key KEY_PIXEL_TO_MM
+        = new FloatKey();
+
     /**
      * The image background paint key.
      * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
@@ -406,6 +555,6 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
      * </TABLE>
      */
     public static final TranscodingHints.Key KEY_BACKGROUND_COLOR
-        = new PaintKey(0);
+        = new PaintKey();
 
 }

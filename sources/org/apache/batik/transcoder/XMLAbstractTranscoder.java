@@ -12,8 +12,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.util.Map;
+
 import org.apache.batik.dom.util.DocumentFactory;
 import org.apache.batik.dom.util.SAXDocumentFactory;
+import org.apache.batik.transcoder.keys.DOMImplementationKey;
+import org.apache.batik.transcoder.keys.StringKey;
+
 import org.w3c.dom.DOMException;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
@@ -179,8 +183,7 @@ public abstract class XMLAbstractTranscoder extends AbstractTranscoder {
      * </TABLE>
      */
     public static final TranscodingHints.Key KEY_XML_PARSER_CLASSNAME
-        = new StringKey(10);
-    public static final String KEY_XML_PARSER_CLASSNAME_STR = "xmlParserClassName";
+        = new StringKey();
 
     /**
      * Document element key.
@@ -204,7 +207,7 @@ public abstract class XMLAbstractTranscoder extends AbstractTranscoder {
      * </TABLE>
      */
     public static final TranscodingHints.Key KEY_DOCUMENT_ELEMENT
-        = new StringKey(12);
+        = new StringKey();
 
     /**
      * Document element namespace URI key.
@@ -229,7 +232,7 @@ public abstract class XMLAbstractTranscoder extends AbstractTranscoder {
      * </TABLE>
      */
     public static final TranscodingHints.Key KEY_DOCUMENT_ELEMENT_NAMESPACE_URI
-        = new StringKey(13);
+        = new StringKey();
 
     /**
      * DOM Implementation key.
@@ -253,19 +256,7 @@ public abstract class XMLAbstractTranscoder extends AbstractTranscoder {
      * </TABLE>
      */
     public static final TranscodingHints.Key KEY_DOM_IMPLEMENTATION
-        = new DOMImplKey(14);
-
-    /**
-     * A transcoding Key represented as a DOMImplementation.
-     */
-    public static class DOMImplKey extends TranscodingHints.Key {
-        public DOMImplKey(int privatekey) {
-            super(privatekey);
-        }
-        public boolean isCompatibleValue(Object v) {
-            return (v instanceof DOMImplementation);
-        }
-    }
+        = new DOMImplementationKey();
 }
 
 

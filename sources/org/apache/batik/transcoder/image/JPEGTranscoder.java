@@ -100,15 +100,12 @@ public class JPEGTranscoder extends ImageTranscoder {
      * </TABLE>
      */
     public static final TranscodingHints.Key KEY_QUALITY
-        = new QualityKey(0);
+        = new QualityKey();
 
     /**
      * A transcoding Key represented the JPEG image quality.
      */
     private static class QualityKey extends TranscodingHints.Key {
-        public QualityKey(int privatekey) {
-            super(privatekey);
-        }
         public boolean isCompatibleValue(Object v) {
             if (v instanceof Float) {
                 float q = ((Float)v).floatValue();
