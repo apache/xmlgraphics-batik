@@ -2536,7 +2536,8 @@ public class JSVGComponent extends JGVTComponent {
          * @param cursor the new cursor
          */
         public void setSVGCursor(Cursor cursor) {
-            JSVGComponent.this.setCursor(cursor);
+            if (cursor != JSVGComponent.this.getCursor())
+                JSVGComponent.this.setCursor(cursor);
         }
 
         /**

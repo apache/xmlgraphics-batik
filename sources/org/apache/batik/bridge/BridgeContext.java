@@ -52,6 +52,7 @@ import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
 import org.w3c.dom.events.MutationEvent;
+import org.w3c.dom.events.MouseEvent;
 import org.w3c.dom.svg.SVGDocument;
 
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
@@ -951,7 +952,16 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      */
     protected class DOMMouseOutEventListener implements EventListener {
         public void handleEvent(Event evt) {
-            userAgent.setSVGCursor(CursorManager.DEFAULT_CURSOR);
+            MouseEvent me = (MouseEvent)evt;
+            Element newTarget = (Element)me.getRelatedTarget();
+            Cursor cursor = CursorManager.DEFAULT_CURSOR;
+            if (newTarget != null)
+                cursor = CSSUtilities.convertCursor
+                    (newTarget, BridgeContext.this);
+            if (cursor == null) 
+                cursor = CursorManager.DEFAULT_CURSOR;
+
+            userAgent.setSVGCursor(cursor);
         }
     }
 
@@ -969,7 +979,6 @@ public class BridgeContext implements ErrorConstants, CSSContext {
          */
         public void handleEvent(Event evt) {
             Element target = (Element)evt.getTarget();
-            String tag = target.getNodeName();
             Cursor cursor = CSSUtilities.convertCursor(target, BridgeContext.this);
             
             if (cursor != null) {

@@ -214,7 +214,8 @@ public class BridgeEventSupport implements SVGConstants {
 
         public void mouseExited(GraphicsNodeMouseEvent evt) {
             Point clientXY = getClientMouseLocation(evt.getPoint2D());
-            GraphicsNode node = evt.getGraphicsNode();
+            // Get the 'new' node for the DOM event.
+            GraphicsNode node = evt.getRelatedNode();
             Element targetElement = getEventTarget(node, clientXY);
             if (lastTargetElement != null) {
                 dispatchMouseEvent("mouseout", 
@@ -234,10 +235,11 @@ public class BridgeEventSupport implements SVGConstants {
             Point clientXY = getClientMouseLocation(evt.getPoint2D());
             GraphicsNode node = evt.getGraphicsNode();
             Element targetElement = getEventTarget(node, clientXY);
-            if (lastTargetElement != targetElement) {
-                if (lastTargetElement != null) {
+            Element holdLTE = lastTargetElement;
+            if (holdLTE != targetElement) {
+                if (holdLTE != null) {
                     dispatchMouseEvent("mouseout", 
-                                       lastTargetElement, // target
+                                       holdLTE, // target
                                        targetElement,     // relatedTarget
                                        clientXY,
                                        evt,
@@ -246,7 +248,7 @@ public class BridgeEventSupport implements SVGConstants {
                 if (targetElement != null) {
                     dispatchMouseEvent("mouseover", 
                                        targetElement,     // target
-                                       lastTargetElement, // relatedTarget
+                                       holdLTE, // relatedTarget
                                        clientXY,
                                        evt,
                                        true);
