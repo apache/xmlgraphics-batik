@@ -8,11 +8,12 @@
 
 package org.apache.batik.refimpl.gvt.renderer;
 
+import java.awt.BasicStroke;
+import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.Paint;
-import java.awt.Stroke;
-import java.awt.BasicStroke;
 import java.awt.Shape;
+import java.awt.Stroke;
 import java.awt.font.FontRenderContext;
 import java.awt.font.TextAttribute;
 import java.awt.font.TextLayout;
@@ -49,6 +50,10 @@ public class StrokingTextPainter extends BasicTextPainter {
         extendedAtts.add(
                 GVTAttributedCharacterIterator.TextAttribute.UNDERLINE);
         extendedAtts.add(
+                GVTAttributedCharacterIterator.TextAttribute.OVERLINE);
+        extendedAtts.add(
+                GVTAttributedCharacterIterator.TextAttribute.STRIKETHROUGH);
+        extendedAtts.add(
                 GVTAttributedCharacterIterator.TextAttribute.UNDERLINE_STROKE);
         extendedAtts.add(
                 GVTAttributedCharacterIterator.TextAttribute.UNDERLINE_PAINT);
@@ -56,6 +61,7 @@ public class StrokingTextPainter extends BasicTextPainter {
                 GVTAttributedCharacterIterator.
                                       TextAttribute.UNDERLINE_STROKE_PAINT);
         extendedAtts.add(TextAttribute.FOREGROUND);
+        extendedAtts.add(GVTAttributedCharacterIterator.TextAttribute.OPACITY);
     }
 
     /**
@@ -150,6 +156,14 @@ public class StrokingTextPainter extends BasicTextPainter {
             //}
             //System.out.println("");
             runaci.first();
+
+            Composite opacity = (Composite)
+                      runaci.getAttribute(GVTAttributedCharacterIterator.
+                                                  TextAttribute.OPACITY);
+            if (opacity != null) {
+                g2d.setComposite(opacity);
+            }
+
             boolean underline =
                 (runaci.getAttribute(GVTAttributedCharacterIterator.
                                      TextAttribute.UNDERLINE) != null);
@@ -218,7 +232,7 @@ public class StrokingTextPainter extends BasicTextPainter {
         AttributedCharacterIterator runaci = textRun.getACI();
         TextLayout layout = textRun.getLayout();
         double y = location.getY() +
-            layout.getBaselineOffsets()[java.awt.Font.ROMAN_BASELINE] +
+            layout.getBaselineOffsets()[java.awt.Font.ROMAN_BASELINE] -
                 layout.getAscent()*1.1;
         Stroke overlineStroke =
             new BasicStroke(thickness);
@@ -324,13 +338,11 @@ public class StrokingTextPainter extends BasicTextPainter {
             GVTAttributedCharacterIterator.TextAttribute.STROKE);
         paint = (Paint) runaci.getAttribute(
             GVTAttributedCharacterIterator.TextAttribute.STROKE_PAINT);
-        if (stroke != null) {
+        if ((stroke != null) || (paint != null)) {
             g2d.setStroke(stroke);
-        }
-        if (paint != null) {
             g2d.setPaint(paint);
+            g2d.draw(strikethroughShape);
         }
-        g2d.draw(strikethroughShape);
     }
 
 
