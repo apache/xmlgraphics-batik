@@ -420,7 +420,7 @@ public class Main implements SVGConverterController {
         mimeTypeMap.put("image/jpeg", DestinationType.JPEG);
         mimeTypeMap.put("image/jpe", DestinationType.JPEG);
         mimeTypeMap.put("image/png", DestinationType.PNG);
-        mimeTypeMap.put("image/pdf", DestinationType.PDF);
+        mimeTypeMap.put("application/pdf", DestinationType.PDF);
         mimeTypeMap.put("image/tiff", DestinationType.TIFF);
 
         optionMap.put(CL_OPTION_OUTPUT,
@@ -566,7 +566,7 @@ public class Main implements SVGConverterController {
                                       throw new IllegalArgumentException();
                                   }
 
-                                  c.setPixelToMillimeter(2.54f/optionValue);
+                                  c.setPixelToMillimeter((2.54f/optionValue)*10);
                               }
 
                               public String getOptionDescription(){
