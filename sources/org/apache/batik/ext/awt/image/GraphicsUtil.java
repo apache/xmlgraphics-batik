@@ -102,9 +102,9 @@ public class GraphicsUtil {
             /*
             System.out.println("srcCS: " + srcCM.getColorSpace());
             System.out.println("g2dCS: " + g2dCS);
-            System.out.println("sRGB: " + 
+            System.out.println("sRGB: " +
                                ColorSpace.getInstance(ColorSpace.CS_sRGB));
-            System.out.println("LsRGB: " + 
+            System.out.println("LsRGB: " +
                                ColorSpace.getInstance
                                (ColorSpace.CS_LINEAR_RGB));
             */
@@ -170,14 +170,14 @@ public class GraphicsUtil {
                     big2d.setPaint(Color.white);
                     big2d.fill(clip);
                     big2d.dispose();
-                
+
                     CachableRed cCr;
                     cCr = new BufferedImageCachableRed(bi, clipR.x, clipR.y);
                     cr     = new MultiplyAlphaRed     (cr, cCr);
                 }
                 g2d.setClip(null);
             }
-
+/*
             if (false) {
                 Rectangle    clipR = clip.getBounds();
                 BufferedImage bi   = new BufferedImage
@@ -194,14 +194,15 @@ public class GraphicsUtil {
                 // org.apache.batik.test.gvt.ImageDisplay.showImage
                 //     ("Big2d: ", bi);
             }
+*/
         }
 
         srcCM = cr.getColorModel();
         ColorModel drawCM = srcCM;
         if ((drawCM.hasAlpha()) && (g2dCM.hasAlpha())) {
-            if (drawCM.isAlphaPremultiplied() != 
+            if (drawCM.isAlphaPremultiplied() !=
                 g2dCM .isAlphaPremultiplied())
-                drawCM = coerceColorModel(drawCM, 
+                drawCM = coerceColorModel(drawCM,
                                           g2dCM.isAlphaPremultiplied());
         }
 
@@ -291,7 +292,7 @@ public class GraphicsUtil {
      *
      * @param g2d    The Graphics to draw into.
      * @param filter The filter to draw
-     * @param rc The render context that controls the drawing operation.  
+     * @param rc The render context that controls the drawing operation.
      */
     public static void drawImage(Graphics2D    g2d,
                                  Filter        filter,
@@ -479,7 +480,7 @@ public class GraphicsUtil {
      * based on premult flag.
      * @param premult True if the ColorModel should have premultiplied alpha.
      * @return        a ColorMdoel with Linear sRGB colorSpace and
-     *                the alpha channel set in accordance with 
+     *                the alpha channel set in accordance with
      *                <tt>premult</tt>
      */
     public static ColorModel makeLinear_sRGBCM(boolean premult) {
@@ -511,7 +512,7 @@ public class GraphicsUtil {
      * <tt>src</tt>'s output to linear sRGB and returns that CacheableRed.
      *
      * @param src The image to convert to linear sRGB.
-     * @return    An equivilant image to <tt>src</tt> who's data is in 
+     * @return    An equivilant image to <tt>src</tt> who's data is in
      *            linear sRGB.
      */
     public static CachableRed convertToLsRGB(CachableRed src) {
@@ -550,10 +551,10 @@ public class GraphicsUtil {
      * In cases where <tt>ri</tt> is not already a CacheableRed it
      * wraps <tt>ri</tt> with a helper class.  The wrapped
      * CacheableRed "Pretends" that it has no sources since it has no
-     * way of inteligently handling the dependency/dirty region calls 
+     * way of inteligently handling the dependency/dirty region calls
      * if it exposed the source.
      * @param ri The RenderedImage to convert.
-     * @return   a CacheableRed that contains the same data as ri.  
+     * @return   a CacheableRed that contains the same data as ri.
      */
     public static CachableRed wrap(RenderedImage ri) {
         if (ri instanceof CachableRed)
@@ -643,7 +644,7 @@ public class GraphicsUtil {
      * <tt>Dst</tt> must have compatible SampleModels.
      *
      * @param src The source of the data
-     * @param dst The destination for the data.  
+     * @param dst The destination for the data.
      */
     public static void copyData(Raster src, WritableRaster dst) {
         if (is_INT_PACK_Data(src.getSampleModel(), false) &&
@@ -693,7 +694,7 @@ public class GraphicsUtil {
         return copyRaster(ras, ras.getMinX(), ras.getMinY());
     }
 
-    
+
     /**
      * Creates a new raster that has a <b>copy</b> of the data in
      * <tt>ras</tt>.  This is highly optimized for speed.  There is
@@ -768,7 +769,7 @@ public class GraphicsUtil {
     }
 
     /**
-     * Coerces <tt>ras</tt> to be writable.  The returned Raster continues to 
+     * Coerces <tt>ras</tt> to be writable.  The returned Raster continues to
      * reference the DataBuffer from ras, so modifications to the returned
      * WritableRaster will be seen in ras.<p>
      *
@@ -778,7 +779,7 @@ public class GraphicsUtil {
      * you have any doubt about other users of the data in <tt>ras</tt>,
      * use copyRaster (above).
      * @param ras The raster to make writable.
-     * @return    A Writable version of ras (shares DataBuffer with 
+     * @return    A Writable version of ras (shares DataBuffer with
      *            <tt>ras</tt>).
      */
     public static WritableRaster makeRasterWritable(Raster ras) {
@@ -786,7 +787,7 @@ public class GraphicsUtil {
     }
 
     /**
-     * Coerces <tt>ras</tt> to be writable.  The returned Raster continues to 
+     * Coerces <tt>ras</tt> to be writable.  The returned Raster continues to
      * reference the DataBuffer from ras, so modifications to the returned
      * WritableRaster will be seen in ras.<p>
      *
@@ -809,8 +810,8 @@ public class GraphicsUtil {
      *             returned WritableRaster.
      *
      * @return A Writable version of <tT>ras</tt> with it's upper left
-     *         hand coordinate set to minX, minY (shares it's DataBuffer 
-     *         with <tt>ras</tt>).  
+     *         hand coordinate set to minX, minY (shares it's DataBuffer
+     *         with <tt>ras</tt>).
      */
     public static WritableRaster makeRasterWritable(Raster ras,
                                                     int minX, int minY) {

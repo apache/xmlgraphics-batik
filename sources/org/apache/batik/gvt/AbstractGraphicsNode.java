@@ -12,7 +12,6 @@ import java.awt.AlphaComposite;
 import java.awt.Composite;
 import java.awt.Cursor;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
@@ -333,7 +332,10 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
         if (Thread.currentThread().isInterrupted()) {
             throw new InterruptedException();
         }
-
+        if (!isVisible) {
+            // Exit if the visible flag is off
+            return;
+        }
         //
         // Set up graphic context. It is important to setup the
         // transform first, because the clip is defined in this
@@ -521,11 +523,28 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     //
 
     /**
-     * Dispatches the specified event to the interested registered listeners.
-     * @param evt the event to dispatch
+     * Adds the specified composite graphics node listener to receive
+     * composite graphics node events from this node.
+     * @param l the composite graphics node listener to add
      */
-    public void dispatch(GraphicsNodeEvent evt) {
-        // <!> FIXME : TODO
+    public void addCompositeGraphicsNodeListener(
+                                              CompositeGraphicsNodeListener l) {
+        if (listeners == null) {
+            listeners = new EventListenerList();
+        }
+        listeners.add(CompositeGraphicsNodeListener.class, l);
+    }
+
+    /**
+     * Removes the specified composite graphics node listener so that it
+     * no longer receives composite graphics node events from this node.
+     * @param l the composite graphics node listener to remove
+     */
+    public void removeCompositeGraphicsNodeListener(
+                                              CompositeGraphicsNodeListener l) {
+        if (listeners != null) {
+            listeners.remove(CompositeGraphicsNodeListener.class, l);
+        }
     }
 
     /**
@@ -626,8 +645,37 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     }
 
     /**
-     * Dispatches a graphics node event to this node or one of its child.
-     * @param evt the evt to dispatch
+     * Dispatches the specified event to the interested registered listeners.
+     * @param evt the event to dispatch
+     */
+    public void dispatch(GraphicsNodeEvent evt) {
+        int id = evt.getID();
+        switch(id) {
+        case CompositeGraphicsNodeEvent.GRAPHICS_NODE_ADDED:
+        case CompositeGraphicsNodeEvent.GRAPHICS_NODE_REMOVED:
+            processCompositeEvent((CompositeGraphicsNodeEvent)evt);
+            break;
+        case GraphicsNodeMouseEvent.MOUSE_PRESSED:
+        case GraphicsNodeMouseEvent.MOUSE_RELEASED:
+        case GraphicsNodeMouseEvent.MOUSE_MOVED:
+        case GraphicsNodeMouseEvent.MOUSE_ENTERED:
+        case GraphicsNodeMouseEvent.MOUSE_EXITED:
+        case GraphicsNodeMouseEvent.MOUSE_DRAGGED:
+            processMouseEvent((GraphicsNodeMouseEvent)evt);
+            break;
+        case GraphicsNodeKeyEvent.KEY_TYPED:
+        case GraphicsNodeKeyEvent.KEY_PRESSED:
+        case GraphicsNodeKeyEvent.KEY_RELEASED:
+            processKeyEvent((GraphicsNodeKeyEvent)evt);
+            break;
+        default:
+            break;
+        }
+    }
+
+    /**
+     * Processes a mouse event occuring on this graphics node.
+     * @param evt the event to process
      */
     public void processMouseEvent(GraphicsNodeMouseEvent evt) {
         if ((listeners != null) && acceptEvent(evt)) {
@@ -680,8 +728,8 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
 
 
     /**
-     * Dispatches a graphics node event to this node or one of its child.
-     * @param evt the evt to dispatch
+     * Processes a key event occuring on this graphics node.
+     * @param evt the event to process
      */
    public void processKeyEvent(GraphicsNodeKeyEvent evt) {
         if ((listeners != null) && acceptEvent(evt)) {
@@ -692,20 +740,49 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
             switch (evt.getID()) {
             case GraphicsNodeKeyEvent.KEY_PRESSED:
                 for (int i=0; i<listeners.length; ++i) {
-                    listeners[i].keyPressed((GraphicsNodeKeyEvent) evt.clone());
+                    listeners[i].keyPressed(evt);
                 }
+                break;
             case GraphicsNodeKeyEvent.KEY_RELEASED:
                 for (int i=0; i<listeners.length; ++i) {
-                    listeners[i].keyReleased((GraphicsNodeKeyEvent) evt.clone());
+                    listeners[i].keyReleased(evt);
                 }
                 break;
             case GraphicsNodeKeyEvent.KEY_TYPED:
                 for (int i=0; i<listeners.length; ++i) {
-                    listeners[i].keyTyped((GraphicsNodeKeyEvent) evt.clone());
+                    listeners[i].keyTyped(evt);
                 }
                 break;
             default:
                 throw new Error("Unknown Key Event type: "+evt.getID());
+            }
+        }
+        evt.consume();
+    }
+
+    /**
+     * Processes a composite event occuring on this graphics node.
+     * @param evt the event to process
+     */
+   public void processCompositeEvent(CompositeGraphicsNodeEvent evt) {
+        if ((listeners != null) && acceptEvent(evt)) {
+            CompositeGraphicsNodeListener [] listeners =
+                (CompositeGraphicsNodeListener[])
+                getListeners(CompositeGraphicsNodeListener.class);
+
+            switch (evt.getID()) {
+            case CompositeGraphicsNodeEvent.GRAPHICS_NODE_ADDED:
+                for (int i=0; i<listeners.length; ++i) {
+                    listeners[i].graphicsNodeAdded(evt);
+                }
+                break;
+            case CompositeGraphicsNodeEvent.GRAPHICS_NODE_REMOVED:
+                for (int i=0; i<listeners.length; ++i) {
+                    listeners[i].graphicsNodeRemoved(evt);
+                }
+                break;
+            default:
+                throw new Error("Unknown Composite Event type: "+evt.getID());
             }
         }
         evt.consume();

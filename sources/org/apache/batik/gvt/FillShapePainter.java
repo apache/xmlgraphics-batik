@@ -13,7 +13,7 @@ import java.awt.Graphics2D;
 import java.awt.Paint;
 
 /**
- * The default implementation of the <tt>FillShapePainter</tt>.
+ * A shape painter that can be used to fill a shape.
  *
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  * @version $Id$
@@ -31,6 +31,7 @@ public class FillShapePainter implements ShapePainter {
 
     /**
      * Sets the paint used to fill a shape.
+     *
      * @param newPaint the paint object used to fill the shape
      */
     public void setPaint(Paint newPaint) {
@@ -39,6 +40,7 @@ public class FillShapePainter implements ShapePainter {
 
     /**
      * Paints the specified shape using the specified Graphics2D and context.
+     *
      * @param shape the shape to paint
      * @param g2d the Graphics2D to use
      * @param ctx the render context to use
