@@ -14,6 +14,8 @@ import java.awt.geom.*;
 import java.awt.image.*;
 import java.lang.ref.WeakReference;
 
+import org.apache.batik.ext.awt.image.GraphicsUtil;
+
 /** This is the superclass for all PaintContexts which use a multiple color
  * gradient to fill in their raster. It provides the actual color interpolation
  * functionality.  Subclasses only have to deal with using the gradient to fill
@@ -27,8 +29,13 @@ import java.lang.ref.WeakReference;
 abstract class MultipleGradientPaintContext implements PaintContext {
 
     /**
-     * PaintContext's ColorModel ARGB if colors are not all opaque.
-     * RGB otherwise.
+     * The color model data is generated in (always un premult).
+     */
+    protected ColorModel dataModel;
+    /**
+     * PaintContext's output ColorModel ARGB if colors are not all
+     * opaque, RGB otherwise.  Linear and premult are matched to
+     * output ColorModel.
      */
     protected ColorModel model;
 
@@ -61,7 +68,7 @@ abstract class MultipleGradientPaintContext implements PaintContext {
     protected static WeakReference cached;
 
     /** Raster is reused whenever possible */
-    protected Raster saved;
+    protected WritableRaster saved;
 
     /** The method to use when painting out of the gradient bounds. */
     protected MultipleGradientPaint.CycleMethodEnum cycleMethod;
@@ -292,12 +299,15 @@ abstract class MultipleGradientPaintContext implements PaintContext {
 
         // Setup an example Model, we may refine it later.
         if (cm.getColorSpace() == lrgbmodel_A.getColorSpace())
-            model = lrgbmodel_A;
+            dataModel = lrgbmodel_A;
         else if (cm.getColorSpace() == srgbmodel_A.getColorSpace())
-            model = srgbmodel_A;
+            dataModel = srgbmodel_A;
         else 
             throw new IllegalArgumentException
                 ("Unsupported ColorSpace for interpolation");
+        
+        model = GraphicsUtil.coerceColorModel(dataModel, 
+                                              cm.isAlphaPremultiplied());
     }
 
 
@@ -357,12 +367,13 @@ abstract class MultipleGradientPaintContext implements PaintContext {
             calculateSingleArrayGradient(Imin);
         }
 
-        // Use the most 'economical' model.
+        // Use the most 'economical' model (no alpha).
         if((transparencyTest >>> 24) == 0xff) {
-            if (model.getColorSpace() == lrgbmodel_NA.getColorSpace())
-                model = lrgbmodel_NA;
-            else if (model.getColorSpace() == srgbmodel_NA.getColorSpace())
-                model = srgbmodel_NA;
+            if (dataModel.getColorSpace() == lrgbmodel_NA.getColorSpace())
+                dataModel = lrgbmodel_NA;
+            else if (dataModel.getColorSpace() == srgbmodel_NA.getColorSpace())
+                dataModel = srgbmodel_NA;
+            model = dataModel;
         }
     }
 
@@ -435,7 +446,7 @@ abstract class MultipleGradientPaintContext implements PaintContext {
         //if interpolation occurred in Linear RGB space, convert the
         //gradients back to SRGB using the lookup table
         if (colorSpace == LinearGradientPaint.LINEAR_RGB) {
-            if (model.getColorSpace() == 
+            if (dataModel.getColorSpace() == 
                 ColorSpace.getInstance(ColorSpace.CS_sRGB)) {
                 for (int i = 0; i < gradient.length; i++) {
                     gradient[i] = 
@@ -443,7 +454,7 @@ abstract class MultipleGradientPaintContext implements PaintContext {
                 }
             }
         } else {
-            if (model.getColorSpace() == 
+            if (dataModel.getColorSpace() == 
                 ColorSpace.getInstance(ColorSpace.CS_LINEAR_RGB)) {
                 for (int i = 0; i < gradient.length; i++) {
                     gradient[i] = 
@@ -504,7 +515,7 @@ abstract class MultipleGradientPaintContext implements PaintContext {
         //if interpolation occurred in Linear RGB space, convert the
         //gradients back to SRGB using the lookup table
         if (colorSpace == LinearGradientPaint.LINEAR_RGB) {
-            if (model.getColorSpace() == 
+            if (dataModel.getColorSpace() == 
                 ColorSpace.getInstance(ColorSpace.CS_sRGB)) {
                 for (int j = 0; j < gradients.length; j++) {
                     for (int i = 0; i < gradients[j].length; i++) {
@@ -514,7 +525,7 @@ abstract class MultipleGradientPaintContext implements PaintContext {
                 }
             }
         } else {
-            if (model.getColorSpace() == 
+            if (dataModel.getColorSpace() == 
                 ColorSpace.getInstance(ColorSpace.CS_LINEAR_RGB)) {
                 for (int j = 0; j < gradients.length; j++) {
                     for (int i = 0; i < gradients[j].length; i++) {
@@ -747,10 +758,10 @@ abstract class MultipleGradientPaintContext implements PaintContext {
         // If working raster is big enough, reuse it. Otherwise,
         // build a large enough new one.
         //
-        Raster raster = saved;
+        WritableRaster raster = saved;
         if (raster == null || raster.getWidth() < w || raster.getHeight() < h)
             {
-                raster = getCachedRaster(model, w, h);
+                raster = getCachedRaster(dataModel, w, h);
                 saved = raster;
             }
         //
@@ -769,6 +780,10 @@ abstract class MultipleGradientPaintContext implements PaintContext {
 
         fillRaster(pixels, off, adjust, x, y, w, h); //delegate to subclass.
 
+        GraphicsUtil.coerceData(raster, dataModel, 
+                                model.isAlphaPremultiplied());
+
+
         return raster;
     }
 
@@ -782,10 +797,11 @@ abstract class MultipleGradientPaintContext implements PaintContext {
      * large.
      */
     protected final
-    static synchronized Raster getCachedRaster(ColorModel cm, int w, int h) {
+    static synchronized WritableRaster getCachedRaster
+        (ColorModel cm, int w, int h) {
         if (cm == cachedModel) {
             if (cached != null) {
-                Raster ras = (Raster) cached.get();
+                WritableRaster ras = (WritableRaster) cached.get();
                 if (ras != null &&
                     ras.getWidth() >= w &&
                     ras.getHeight() >= h)
@@ -803,9 +819,10 @@ abstract class MultipleGradientPaintContext implements PaintContext {
      * large.
      */
     protected final
-    static synchronized void putCachedRaster(ColorModel cm, Raster ras) {
+    static synchronized void putCachedRaster(ColorModel cm, 
+                                             WritableRaster ras) {
         if (cached != null) {
-            Raster cras = (Raster) cached.get();
+            WritableRaster cras = (WritableRaster) cached.get();
             if (cras != null) {
                 int cw = cras.getWidth();
                 int ch = cras.getHeight();

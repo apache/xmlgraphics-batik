@@ -15,6 +15,7 @@ import java.awt.PaintContext;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Shape;
+import java.awt.color.ColorSpace;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
@@ -26,9 +27,9 @@ import java.awt.image.RenderedImage;
 import java.awt.image.WritableRaster;
 import java.awt.image.renderable.RenderContext;
 
+import org.apache.batik.ext.awt.image.GraphicsUtil;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.renderable.TileRable8Bit;
-import org.apache.batik.ext.awt.image.renderable.TileRable;
 
 /**
  * <tt>PaintContext</tt> for the <tt>ConcretePatterPaint</tt>
@@ -70,6 +71,7 @@ public class PatternPaintContext implements PaintContext {
                                Rectangle2D     patternRegion,
                                Rectangle2D     userBounds,
                                boolean         overflow) {
+
         if(usr2dev == null){
             throw new IllegalArgumentException();
         }
@@ -86,10 +88,10 @@ public class PatternPaintContext implements PaintContext {
         // System.out.println("PatB: " + patternRegion);
         // System.out.println("Tile: " + tile);
 
-        TileRable tileRable = new TileRable8Bit(tile,
-                                                userBounds,
-                                                patternRegion,
-                                                overflow);
+        Filter tileRable = new TileRable8Bit(tile,
+                                             userBounds,
+                                             patternRegion,
+                                             overflow);
 
         RenderContext rc = new RenderContext(usr2dev,  userBounds, hints);
 
@@ -99,14 +101,45 @@ public class PatternPaintContext implements PaintContext {
         // org.apache.batik.test.gvt.ImageDisplay.showImage("Tiled: ", tiled);
 
         //System.out.println("Created rendering");
-        if(tiled != null) 
+        if(tiled != null) {
             rasterCM = tiled.getColorModel();
+            ColorSpace destCS = destCM.getColorSpace();
+
+            if (destCS != rasterCM.getColorSpace()) {
+                if (destCS == ColorSpace.getInstance(ColorSpace.CS_sRGB))
+                    tiled = GraphicsUtil.convertTosRGB
+                        (GraphicsUtil.wrap(tiled));
+                else if (destCS == 
+                         ColorSpace.getInstance(ColorSpace.CS_LINEAR_RGB))
+                    tiled = GraphicsUtil.convertToLsRGB
+                        (GraphicsUtil.wrap(tiled));
+            }
+
+            rasterCM = tiled.getColorModel();
+            if (rasterCM.hasAlpha()) {
+                if (destCM.hasAlpha()) {
+                    if (rasterCM.isAlphaPremultiplied() !=
+                        destCM  .isAlphaPremultiplied())
+                        rasterCM = GraphicsUtil.coerceColorModel
+                            (rasterCM, destCM.isAlphaPremultiplied());
+                } else {
+                    rasterCM = GraphicsUtil.coerceColorModel(rasterCM, false);
+                }
+            }
+        }
         else {
             //System.out.println("Tile was null");
             rasterCM = ColorModel.getRGBdefault();
-            WritableRaster wr = rasterCM.createCompatibleWritableRaster(32, 32);
+            WritableRaster wr;
+            wr = rasterCM.createCompatibleWritableRaster(32, 32);
             tiled = new BufferedImage(rasterCM, wr, false, null);
         }
+
+
+        // System.out.println("DestCM  : " + destCM);
+        // System.out.println("RasterCM: " + rasterCM);
+        // Exception e = new Exception("Pattern");
+        // e.printStackTrace();
         
     }
 
@@ -127,9 +160,14 @@ public class PatternPaintContext implements PaintContext {
             (raster.getHeight() < height)) {
             raster = rasterCM.createCompatibleWritableRaster(width, height);
         }
+
         WritableRaster wr
             = raster.createWritableChild(0, 0, width, height, x, y, null);
 
-        return tiled.copyData(wr);
+        tiled.copyData(wr);
+        GraphicsUtil.coerceData(wr, tiled.getColorModel(), 
+                                rasterCM.isAlphaPremultiplied());
+
+        return wr;
     }
 }

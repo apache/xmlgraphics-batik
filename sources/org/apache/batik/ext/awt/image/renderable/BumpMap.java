@@ -129,12 +129,8 @@ public final class BumpMap {
         if(h <= 0)
             return N;
 
-        int xEnd = srcRect.x+srcRect.width-1;
-        if (xEnd > x+w) xEnd = x+w;
-
-        int yEnd = srcRect.y+srcRect.height-1;
-        if (yEnd > y+h) yEnd = y+h;
-
+        final int xEnd   = Math.min(srcRect.x+srcRect.width -1, x+w);
+        final int yEnd   = Math.min(srcRect.y+srcRect.height-1, y+h);
         final int offset = 
             (db.getOffset() +
              sppsm.getOffset(srcRect.x -r.getSampleModelTranslateX(), 
@@ -147,7 +143,7 @@ public final class BumpMap {
 
         // Top edge extend filters...
         if (yloc == srcRect.y) {
-            double [][] NRow = N[yloc-y];
+            final double [][] NRow = N[yloc-y];
             int p  = offset + scanStride*(yloc-srcRect.y);
             int xloc=x;
             if (xloc < srcRect.x)
@@ -161,7 +157,7 @@ public final class BumpMap {
                 crpc = (pixels[p - 1] >>> 24)*pixelScale;
                 nrpc = (pixels[p + scanStrideMM] >>> 24)*pixelScale;
             }
-            else {
+            else if (xloc < xEnd) {
                 // Top left pixel, in src (0, 0);
                 crnc = (pixels[p+1] >>> 24)*pixelScale;
                 nrnc = (pixels[p + scanStridePP] >>> 24)*pixelScale;
@@ -229,7 +225,7 @@ public final class BumpMap {
         }
 
         for (; yloc<yEnd; yloc++) {
-            double [][] NRow = N[yloc-y];
+            final double [][] NRow = N[yloc-y];
             int p  = offset + scanStride*(yloc-srcRect.y);
 
             int xloc=x;
@@ -247,7 +243,7 @@ public final class BumpMap {
                 crpc = (pixels[p - 1] >>> 24)*pixelScale;
                 nrpc = (pixels[p + scanStrideMM] >>> 24)*pixelScale;
             }
-            else {
+            else if (xloc < xEnd) {
                 // Now, process left column, from (0, 1) to (0, h-1)
                 crnc = (pixels[p+1] >>> 24)*pixelScale;
                 prnc = (pixels[p - scanStrideMM] >>> 24)*pixelScale;
@@ -310,8 +306,8 @@ public final class BumpMap {
                 // Now, proces right column, from (w-1, 1) to (w-1, h-1)
                 final double [] n = NRow[xloc-x];
 
-                n[0] = - halfSurfaceScaleX *(( prcc + 2*crcc + nrcc)
-                                             - (prpc + 2*crpc + nrpc));
+                n[0] = - halfSurfaceScaleX *( (prcc + 2*crcc + nrcc)
+                                             -(prpc + 2*crpc + nrpc));
                 n[1] = - thirdSurfaceScaleY *(( nrpc + 2*nrcc)
                                               - ( prpc + 2*prcc));
             
@@ -325,7 +321,7 @@ public final class BumpMap {
 
         if ((yloc < y+h) && 
             (yloc == srcRect.y+srcRect.height-1)) {
-            double [][] NRow = N[yloc-y];
+            final double [][] NRow = N[yloc-y];
             int p  = offset + scanStride*(yloc-srcRect.y);
             int xloc=x;
             if (xloc < srcRect.x)
@@ -340,7 +336,7 @@ public final class BumpMap {
                 prpc = (pixels[p - scanStridePP] >>> 24)*pixelScale;
                 crpc = (pixels[p - 1] >>> 24)*pixelScale;
             }
-            else {
+            else if (xloc < xEnd) {
                 // Process first pixel of last row
                 crnc = (pixels[p + 1] >>> 24)*pixelScale;
                 prnc = (pixels[p - scanStrideMM] >>> 24)*pixelScale;
@@ -368,6 +364,10 @@ public final class BumpMap {
                 crnc = (pixels[p + 1] >>> 24)*pixelScale;
                 prnc = (pixels[p - scanStrideMM] >>> 24)*pixelScale;
 
+                // System.out.println("Vals: " + 
+                //                    prpc + "," + prcc + "," + prnc + "  " +
+                //                    crpc + "," + crcc + "," + crnc );
+                                   
                 final double [] n = NRow[xloc-x];
 
                 n[0] = - thirdSurfaceScaleX *(( 2*crnc + prnc)

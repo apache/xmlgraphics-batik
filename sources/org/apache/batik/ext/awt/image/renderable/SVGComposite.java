@@ -19,6 +19,9 @@ import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
 import java.awt.image.BufferedImage;
 
+import java.awt.image.SinglePixelPackedSampleModel;
+import java.awt.image.PackedColorModel;
+import java.awt.image.DataBufferInt;
 
 import org.apache.batik.ext.awt.image.GraphicsUtil;
 
@@ -87,6 +90,25 @@ public class SVGComposite
         return false;
     }
 
+    public boolean is_INT_PACK(ColorModel cm) {
+          // Check ColorModel is of type DirectColorModel
+        if(!(cm instanceof PackedColorModel)) return false;
+
+        PackedColorModel pcm = (PackedColorModel)cm;
+
+        int [] masks = pcm.getMasks();
+
+        // Check transfer type
+        if(masks.length != 4) return false;
+
+        if (masks[0] != 0x00ff0000) return false;
+        if (masks[1] != 0x0000ff00) return false;
+        if (masks[2] != 0x000000ff) return false;
+        if (masks[3] != 0xff000000) return false;
+
+        return true;
+   }
+
     public CompositeContext createContext(ColorModel srcCM,
                                           ColorModel dstCM,
                                           RenderingHints hints) {
@@ -100,9 +122,15 @@ public class SVGComposite
             System.out.println
                 ("sRGB: " + ColorSpace.getInstance(ColorSpace.CS_sRGB));
         }
+
+        boolean use_int_pack = (is_INT_PACK(srcCM) && is_INT_PACK(dstCM));
+
         switch (rule.getRule()) {
         case CompositeRule.RULE_OVER:
-            return new OverCompositeContext(srcCM, dstCM);
+            if (use_int_pack) 
+                return new OverCompositeContext_INT_PACK(srcCM, dstCM);
+            else
+                return new OverCompositeContext(srcCM, dstCM);
 
         case CompositeRule.RULE_IN:
             return new InCompositeContext  (srcCM, dstCM);
@@ -227,15 +255,20 @@ public class SVGComposite
         }
     }
 
-    /*
     public static class OverCompositeContext_INT_PACK 
         extends AlphaPreCompositeContext {
-        OverCompositeContext(ColorModel srcCM, ColorModel dstCM) {
+        OverCompositeContext_INT_PACK(ColorModel srcCM, ColorModel dstCM) {
             super(srcCM, dstCM);
         }
 
         public void precompose(Raster src, Raster dstIn, 
                                WritableRaster dstOut) {
+
+            int x0=dstOut.getMinX();
+            int w =dstOut.getWidth();
+
+            int y0=dstOut.getMinY();
+            int y1=y0 + dstOut.getHeight();
 
             SinglePixelPackedSampleModel srcSPPSM;
             srcSPPSM = (SinglePixelPackedSampleModel)src.getSampleModel();
@@ -258,7 +291,7 @@ public class SVGComposite
             final int     dstInBase =
                 (dstInDB.getOffset() +
                  dstInSPPSM.getOffset(x0-dstIn.getSampleModelTranslateX(),
-                                    y0-dstIn.getSampleModelTranslateY()));
+                                      y0-dstIn.getSampleModelTranslateY()));
 
             SinglePixelPackedSampleModel dstOutSPPSM;
             dstOutSPPSM = (SinglePixelPackedSampleModel)dstOut.getSampleModel();
@@ -269,42 +302,45 @@ public class SVGComposite
             final int     dstOutBase =
                 (dstOutDB.getOffset() +
                  dstOutSPPSM.getOffset(x0-dstOut.getSampleModelTranslateX(),
-                                    y0-dstOut.getSampleModelTranslateY()));
-
-            int [] srcPix = null;
-            int [] dstOutPix = null;
-
-            int x=dstOut.getMinX();
-            int w=dstOut.getWidth();
-
-            int y0=dstOut.getMinY();
-            int y1=y0 + dstOut.getHeight();
+                                       y0-dstOut.getSampleModelTranslateY()));
 
             final int norm = (1<<24)/255;
             final int pt5  = (1<<23);
 
-            for (int y = y0; y<y1; y++) {
-                srcPix = src.getPixels  (x, y, w, 1, srcPix);
-                dstPix = dstIn.getPixels(x, y, w, 1, dstPix);
-                int sp  = 0;
-                int end = w*4;
-                while(sp<end) {
-                    final int dstM = (255-srcPix[sp+3])*norm;
-                    dstPix[sp] = srcPix[sp] + ((dstPix[sp]*dstM +pt5)>>>24);
-                    ++sp;
-                    dstPix[sp] = srcPix[sp] + ((dstPix[sp]*dstM +pt5)>>>24);
-                    ++sp;
-                    dstPix[sp] = srcPix[sp] + ((dstPix[sp]*dstM +pt5)>>>24);
-                    ++sp;
-                    dstPix[sp] = srcPix[sp] + ((dstPix[sp]*dstM +pt5)>>>24);
-                    ++sp;
-                }
-                dstOut.setPixels(x, y, w, 1, dstPix);
-            }
+            final int   srcAdjust  =    srcScanStride - w;
+            final int  dstInAdjust =  dstInScanStride - w;
+            final int dstOutAdjust = dstOutScanStride - w;
 
+            int srcSp    = srcBase;
+            int dstInSp  = dstInBase;
+            int dstOutSp = dstOutBase;
+
+            int srcP, dstInP, dstM, a, r, g, b;
+
+            for (int y = y0; y<y1; y++) {
+                final int end = dstOutSp+w;
+                while (dstOutSp<end) {
+                    srcP   = srcPixels  [srcSp++];
+                    dstInP = dstInPixels[dstInSp++];
+                    
+                    dstM = (255-(srcP>>>24))*norm;
+                    a = ((     srcP & 0xFF000000) +
+                         ((((dstInP>>>24)     )*dstM + pt5)     )) &0xFF000000;
+                    r = ((     srcP & 0x00FF0000) +
+                         ((((dstInP>> 16)&0xFF)*dstM + pt5)>>  8)) &0x00FF0000;
+                    g = ((     srcP & 0x0000FF00) +
+                         ((((dstInP>>  8)&0xFF)*dstM + pt5)>> 16)) &0x0000FF00;
+                    b = ((     srcP & 0x000000FF) +
+                         ((((dstInP     )&0xFF)*dstM + pt5)>>>24));
+
+                    dstOutPixels[dstOutSp++] = (a|r|g|b);
+                }
+                srcSp    += srcAdjust;
+                dstInSp  += dstInAdjust;
+                dstOutSp += dstOutAdjust;
+            }
         }
     }
-    /**/
 
     public static class InCompositeContext 
         extends AlphaPreCompositeContext {
