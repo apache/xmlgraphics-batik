@@ -11,7 +11,7 @@
 <!-- ====================================================================== -->
 
 <!-- ====================================================================== -->
-<!-- Tests text-anchor on multiple text chunks on single tspan element      -->
+<!-- Tests systemLanguage on elements                                       -->
 <!--                                                                        -->
 <!-- @author tkormann@ilog.fr                                               -->
 <!-- @version $Id$  -->

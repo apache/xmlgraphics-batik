@@ -151,7 +151,7 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
         test: if (elt.hasAttributeNS(null, SVG_SYSTEM_LANGUAGE_ATTRIBUTE)) {
             // Tests the system languages.
             String sl = elt.getAttributeNS(null, SVG_SYSTEM_LANGUAGE_ATTRIBUTE);
-            StringTokenizer st = new StringTokenizer(sl, ",");
+            StringTokenizer st = new StringTokenizer(sl, ", ");
             while (st.hasMoreTokens()) {
                 String s = st.nextToken();
                 if (matchUserLanguage(s, ua.getLanguages())) {
@@ -193,12 +193,12 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
      * @param userLanguages the user langages
      */
     protected static boolean matchUserLanguage(String s, String userLanguages) {
-        StringTokenizer st = new StringTokenizer(userLanguages, ",");
+        StringTokenizer st = new StringTokenizer(userLanguages, ", ");
         while (st.hasMoreTokens()) {
             String t = st.nextToken();
-            if (t.startsWith(s)) {
-                if (t.length() > s.length()) {
-                    return (t.charAt(s.length()) == '-') ? true : false;
+            if (s.startsWith(t)) {
+                if (s.length() > t.length()) {
+                    return (s.charAt(t.length()) == '-');
                 }
                 return true;
             }
@@ -872,7 +872,7 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
     /**
      * Scans the children of the input <tt>e</tt> element and
      * invokes any registered bridge found for the children.
-     * 
+     *
      * @param ctx active BridgeContext
      * @param e element to be scanned
      */
@@ -881,17 +881,17 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
         for (Node n = elt.getFirstChild();
              n != null;
              n = n.getNextSibling()) {
-            
+
             if ((n.getNodeType() != Node.ELEMENT_NODE)) {
                 continue;
             }
-            
+
             Element e = (Element)n;
             Bridge bridge = ctx.getBridge(e);
             if (bridge == null || !(bridge instanceof GenericBridge)) {
                 continue;
             }
-            
+
             ((GenericBridge)bridge).handleElement(ctx, e);
         }
     }
