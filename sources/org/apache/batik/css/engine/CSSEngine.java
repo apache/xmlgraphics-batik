@@ -576,7 +576,6 @@ public abstract class CSSEngine {
                         putAuthorProperty(result, idx, v, false,
                                           StyleMap.NON_CSS_ORIGIN);
                     } catch (Exception e) {
-                        e.printStackTrace();
                         String m = e.getMessage();
                         String s =
                             Messages.formatMessage("property.syntax.error.at",
@@ -1360,6 +1359,7 @@ public abstract class CSSEngine {
         case MutationEvent.MODIFICATION:
             String decl = evt.getNewValue();
             if (decl.length() > 0) {
+                element = elt;
                 try {
                     parser.setSelectorFactory(CSSSelectorFactory.INSTANCE);
                     parser.setConditionFactory(CSSConditionFactory.INSTANCE);
@@ -1373,10 +1373,12 @@ public abstract class CSSEngine {
                         Messages.formatMessage("style.syntax.error.at",
                                       new Object[] { documentURI.toString(),
                                                      styleLocalName,
-                                                     style,
+                                                     decl,
                                                      (m == null) ? "" : m });
                     throw new DOMException(DOMException.SYNTAX_ERR, s);
                 }
+                element = null;
+                cssBaseURI = null;
             }
 
             // Fall through
@@ -1652,6 +1654,7 @@ public abstract class CSSEngine {
         
         boolean comp = style.isComputed(idx);
 
+        element = elt;
         try {
             LexicalUnit lu;
             lu = parser.parsePropertyValue(evt.getNewValue());
@@ -1661,7 +1664,6 @@ public abstract class CSSEngine {
             style.putValue(idx, v);
             style.putOrigin(idx, StyleMap.NON_CSS_ORIGIN);
         } catch (Exception e) {
-            e.printStackTrace();
             String m = e.getMessage();
             String s =
                 Messages.formatMessage("property.syntax.error.at",
@@ -1671,6 +1673,8 @@ public abstract class CSSEngine {
                                                       (m == null) ? "" : m });
             throw new DOMException(DOMException.SYNTAX_ERR, s);
         }
+        element = null;
+        cssBaseURI = null;
 
         if (!comp) {
             // The previous value was not computed: nobody is

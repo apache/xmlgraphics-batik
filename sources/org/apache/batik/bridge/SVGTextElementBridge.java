@@ -786,7 +786,18 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge {
         for (Node child = element.getFirstChild();
              child != null;
              child = child.getNextSibling()) {
-            if (child.getNodeType() == Node.ELEMENT_NODE) {
+            if (child.getNodeType() != Node.ELEMENT_NODE) {
+                continue;
+            }
+            if (!SVG_NAMESPACE_URI.equals(child.getNamespaceURI())) {
+                continue;
+            }
+            String ln = child.getLocalName();
+            if (ln.equals(SVG_TSPAN_TAG) ||
+                ln.equals(SVG_ALT_GLYPH_TAG) ||
+                ln.equals(SVG_A_TAG) ||
+                ln.equals(SVG_TEXT_PATH_TAG) ||
+                ln.equals(SVG_TREF_TAG)) {
                 addGlyphPositionAttributes(as, (Element)child, ctx);
             }
         }
@@ -906,7 +917,17 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge {
         for (Node child = element.getFirstChild();
              child != null;
              child = child.getNextSibling()) {
-            if (child.getNodeType() == Node.ELEMENT_NODE) {
+            if (child.getNodeType() != Node.ELEMENT_NODE) {
+            }
+            if (!SVG_NAMESPACE_URI.equals(child.getNamespaceURI())) {
+                continue;
+            }
+            String ln = child.getLocalName();
+            if (ln.equals(SVG_TSPAN_TAG) ||
+                ln.equals(SVG_ALT_GLYPH_TAG) ||
+                ln.equals(SVG_A_TAG) ||
+                ln.equals(SVG_TEXT_PATH_TAG) ||
+                ln.equals(SVG_TREF_TAG)) {
                 Element childElement = (Element)child;
                 TextDecoration td = getTextDecoration(childElement, node,
                                                       textDecoration, ctx);
