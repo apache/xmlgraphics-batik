@@ -335,7 +335,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
                 target.addEventListener("DOMFocusOut", focusoutListener, false);
             }
             if (elt.hasAttributeNS(null, "onactivate")) {
-                target.addEventListener("activate", activateListener, false);
+                target.addEventListener("DOMActivate", activateListener, false);
             }
             if (elt.hasAttributeNS(null, "onclick")) {
                 target.addEventListener("click", clickListener, false);
@@ -377,7 +377,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
                 if (SVGConstants.SVG_SVG_TAG.equals(elt.getLocalName())) {
                     // <svg> listeners
                     target.removeEventListener("SVGAbort",
-                                                   svgAbortListener, false);
+                                               svgAbortListener, false);
                     target.removeEventListener("SVGError",
                                                svgErrorListener, false);
                     target.removeEventListener("SVGResize",
@@ -410,7 +410,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
             // UI listeners
             target.removeEventListener("DOMFocusIn", focusinListener, false);
             target.removeEventListener("DOMFocusOut", focusoutListener, false);
-            target.removeEventListener("activate", activateListener, false);
+            target.removeEventListener("DOMActivate", activateListener, false);
             target.removeEventListener("click", clickListener, false);
             target.removeEventListener("mousedown", mousedownListener, false);
             target.removeEventListener("mouseup", mouseupListener, false);

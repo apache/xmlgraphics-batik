@@ -38,6 +38,11 @@ public class FocusManager {
     protected Document document;
 
     /**
+     * The EventListener that tracks 'mouseclick' events.
+     */
+    protected EventListener mouseclickListener;
+
+    /**
      * The EventListener that tracks 'DOMFocusIn' events.
      */
     protected EventListener domFocusInListener;
@@ -66,6 +71,9 @@ public class FocusManager {
         document = doc;
         EventTarget target = (EventTarget)doc;
 
+        mouseclickListener = new MouseClickTacker();
+        target.addEventListener("click", mouseclickListener, true);
+
         mouseoverListener = new MouseOverTacker();
         target.addEventListener("mouseover", mouseoverListener, true);
 
@@ -91,10 +99,22 @@ public class FocusManager {
      */
     public void dispose() {
         EventTarget target = (EventTarget)document;
+        target.removeEventListener("click", mouseclickListener, true);
         target.removeEventListener("mouseover", mouseoverListener, true);
         target.removeEventListener("mouseout", mouseoutListener, true);
         target.removeEventListener("DOMFocusIn", domFocusInListener, true);
         target.removeEventListener("DOMFocusOut", domFocusOutListener, true);
+    }
+
+    /**
+     * The class that is responsible for tracking 'mouseclick' changes.
+     */
+    protected class MouseClickTacker implements EventListener {
+
+        public void handleEvent(Event evt) {
+            MouseEvent mevt = (MouseEvent)evt;
+            fireDOMActivateEvent(evt.getTarget(), mevt.getDetail());
+        }
     }
 
     /**
