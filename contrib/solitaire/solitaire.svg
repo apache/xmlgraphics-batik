@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN"    
+  "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+
+<!--
+
+ ============================================================================
+                   The Apache Software License, Version 1.1
+ ============================================================================
+
+ Copyright (C) 1999-2003 The Apache Software Foundation. All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without modifica-
+ tion, are permitted provided that the following conditions are met:
+
+ 1. Redistributions of  source code must  retain the above copyright  notice,
+    this list of conditions and the following disclaimer.
+
+ 2. Redistributions in binary form must reproduce the above copyright notice,
+    this list of conditions and the following disclaimer in the documentation
+    and/or other materials provided with the distribution.
+
+ 3. The end-user documentation included with the redistribution, if any, must
+    include  the following  acknowledgment:  "This product includes  software
+    developed  by the  Apache Software Foundation  (http://www.apache.org/)."
+    Alternately, this  acknowledgment may  appear in the software itself,  if
+    and wherever such third-party acknowledgments normally appear.
+
+ 4. The names "Batik" and  "Apache Software Foundation" must  not  be
+    used to  endorse or promote  products derived from  this software without
+    prior written permission. For written permission, please contact
+    apache@apache.org.
+
+ 5. Products  derived from this software may not  be called "Apache", nor may
+    "Apache" appear  in their name,  without prior written permission  of the
+    Apache Software Foundation.
+
+ THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED WARRANTIES,
+ INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+ FITNESS  FOR A PARTICULAR  PURPOSE ARE  DISCLAIMED.  IN NO  EVENT SHALL  THE
+ APACHE SOFTWARE  FOUNDATION  OR ITS CONTRIBUTORS  BE LIABLE FOR  ANY DIRECT,
+ INDIRECT, INCIDENTAL, SPECIAL,  EXEMPLARY, OR CONSEQUENTIAL  DAMAGES (INCLU-
+ DING, BUT NOT LIMITED TO, PROCUREMENT  OF SUBSTITUTE GOODS OR SERVICES; LOSS
+ OF USE, DATA, OR  PROFITS; OR BUSINESS  INTERRUPTION)  HOWEVER CAUSED AND ON
+ ANY  THEORY OF LIABILITY,  WHETHER  IN CONTRACT,  STRICT LIABILITY,  OR TORT
+ (INCLUDING  NEGLIGENCE OR  OTHERWISE) ARISING IN  ANY WAY OUT OF THE  USE OF
+ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+ This software  consists of voluntary contributions made  by many individuals
+ on  behalf of the Apache Software  Foundation. For more  information on the
+ Apache Software Foundation, please see <http://www.apache.org/>.
+
+-->
+<!-- ====================================================================== -->
+<!-- An implementation of traditional solitaire in SVG                      -->
+<!--                                                                        -->
+<!-- @author deweese@apache.org                                             -->
+<!-- @version $Id$          -->
+<!-- ====================================================================== -->
+
+  <svg width="800" height="600" viewBox="0 0 800 600" 
+    xmlns="http://www.w3.org/2000/svg" 
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <script language="text/ecmascript" xlink:href="script/util.js"/>
+    <script language="text/ecmascript" xlink:href="script/board.js"/>
+    <script language="text/ecmascript" xlink:href="script/deck.js"/>
+    <script language="text/ecmascript" xlink:href="script/card.js"/>
+    <script language="text/ecmascript" xlink:href="script/pile.js"/>
+<script language="text/ecmascript"><![CDATA[
+    var svgns   = "http://www.w3.org/2000/svg";
+    var xlinkns = "http://www.w3.org/1999/xlink";
+    var cg = document.getElementById("cards");
+    var dragGroup = document.getElementById("drag");
+    var winGroup = document.getElementById("win");
+
+    var BOARD = new Board(cg, dragGroup);
+    BOARD.setNotifyMoveDone(solitareMoveDone);
+
+    var DECK_PILES = new Array();
+    DECK_PILES[0] = new Pile(BOARD, 2.5, 5,   75, 105, 0, 0, 0, 0);
+    DECK_PILES[1] = new Pile(BOARD, 2.5, 120, 75, 105, 0, 0, 0, 0);
+    DECK_PILES[2] = new Pile(BOARD, 2.5, 235, 75, 105, 0, 0, 0, 0);
+    DECK_PILES[3] = new Pile(BOARD, 2.5, 350, 75, 105, 0, 0, 0, 0);
+
+    var pileUp, pileDown;
+    var dealUp, dealDown;
+
+    function init() {
+      var deck = new Deck(document, 1, "cards/default.svg", 75, 105);
+      deck.shuffle();
+      for (var i=0; i<4; i++) {
+        DECK_PILES[i].setDragCheck(deckDragCheck);
+        DECK_PILES[i].setDropCheck(deckDropCheck);
+      }
+
+      pileDown = new Array();
+      pileUp   = new Array();
+      for (var i=0; i<7; i++) {
+         pileDown[i] = new Pile(BOARD, 80*(i+1), 65, 75, 105, 0, 10, 0, -10);
+         pileUp[i]   = new Pile(BOARD, 80*(i+1), 75, 75, 105, 0, 25, 0, 0);
+         pileUp[i].setDragCheck(dragCheck);
+         pileUp[i].setDropCheck(dropCheck);
+         pileUp[i].g.addEventListener("click", doubleClick, false);
+      }
+
+      dealDown = new Pile(BOARD, 640, 105, 75, 105, 0, 5, 0, -5);
+      dealDown.setDragCheck(dealDownDragCheck);
+      dealDown.setDropCheck(dealDownDropCheck);
+      dealDown.g.addEventListener
+      ("click", dealDownClick, false);
+
+      dealUp   = new Pile(BOARD, 640, 220, 80, 105, 0, 5, 0, 0);
+      dealUp.setDragCheck(dealUpDragCheck);
+      dealUp.setDropCheck(dealUpDropCheck);
+      dealUp.g.addEventListener
+      ("click", doubleClick, false);
+
+      for (var i=0; i<6; i++) {
+        for (var j=6-i; j<7; j++) {
+          pileDown[j].addCard(deck.dealCard(false));
+        }
+      }
+      for (var i=0; i<7; i++) {
+        pileUp[i].addCard(deck.dealCard(true));
+      }
+      for (var i=0; i<21; i++) {
+        dealDown.addCard(deck.dealCard(false));
+      }
+      for (var i=0; i<3; i++) {
+        dealUp.addCard(deck.dealCard(i==2));
+      }
+    }
+    init();
+
+var DOUBLE_CLICK_TGT;
+var DOUBLE_CLICK_X;
+var DOUBLE_CLICK_Y;
+var DOUBLE_CLICK_CNT;
+    function doubleClick(evt) {
+      if (DOUBLE_CLICK_TGT != evt.target) {
+         DOUBLE_CLICK_TGT = evt.target;
+         DOUBLE_CLICK_X = evt.clientX;
+         DOUBLE_CLICK_Y = evt.clientY;
+         DOUBLE_CLICK_CNT = 1;
+         return;
+      }
+
+      var dx = evt.clientX-DOUBLE_CLICK_X;
+      var dy = evt.clientY-DOUBLE_CLICK_Y;
+      if (dx*dx+dy*dy > 9) {
+         DOUBLE_CLICK_X = evt.clientX;
+         DOUBLE_CLICK_Y = evt.clientY;
+         DOUBLE_CLICK_CNT = 1;
+         return;
+      }
+      
+      DOUBLE_CLICK_X = evt.clientX;
+      DOUBLE_CLICK_Y = evt.clientY;
+      DOUBLE_CLICK_CNT++;
+      if (DOUBLE_CLICK_CNT > 2) {
+        DOUBLE_CLICK_CNT = 1;
+        return;
+      }
+
+      var pile = findPile(BOARD, evt.target);
+      if (!pile) return;
+
+      var c = pile.checkTopCard();
+      if (!c) return;
+      for (var i=0; i<4; i++) {
+        if (DECK_PILES[i].size() == 0) {
+          if (c.getValue() == 1) {
+            DECK_PILES[i].moveCardTo(c, 40);
+            solitareMoveDone();
+            return;
+          }
+          continue;
+        }
+        var top = DECK_PILES[i].checkTopCard();
+        if ((top.suite != c.suite) ||
+            (! top.valueOneHigher(c)))
+          continue;
+        DECK_PILES[i].moveCardTo(c, 40);
+        solitareMoveDone();
+        return;
+      }
+      if (pile == dealUp) {
+        if (c.getValue() != 13)
+          return;
+        // It's a king look for an open spot.
+        for (var i=0; i<7; i++) {
+          if (pileUp[i].size() == 0) {
+            pileUp[i].moveCardTo(c, 40);
+            solitareMoveDone();
+            return;
+          }
+        }
+        return;
+      }
+
+      // For field piles check bottom card
+      c = pile.cards[0];
+      if (c.getValue() != 13)
+        return;
+      // It's a king look for an open spot.
+      for (var i=0; i<7; i++) {
+        if (pileUp[i].size() == 0) {
+          var len = pile.size();
+          var cards = new Array()
+          for (var j=0; j<len; j++) {
+            cards.push(pile.cards[j]);
+          }
+          pileUp[i].moveCardsTo(cards, 40);
+          solitareMoveDone();
+          return;
+        }
+      }
+    }
+
+
+    function dragCheck(pile, card, index) {
+      var sz = pile.size();
+      var prevCard = card;
+      for (var i=index+1; i<sz; i++) {
+        var c = pile.checkCard(i);
+        if ((prevCard.colorMatch(c)) ||
+            (!prevCard.valueOneLower(c)))
+          return false;
+        prevCard = c;
+      }
+      return dragGroup;
+    }
+
+    function dropCheck(fromPile, toPile, cards) {
+      var dragBottomCard = cards[0];
+      var pileTopCard = toPile.checkTopCard();
+      if (!pileTopCard) {
+        if (dragBottomCard.getValue() != 13) 
+          return false;
+      } else if ((pileTopCard.colorMatch(dragBottomCard)) ||
+                 (!pileTopCard.valueOneLower(dragBottomCard))) {
+        return false;
+      }
+      for (var i=0; i<cards.length; i++) {
+        toPile.addCard(cards[i]);
+      }
+      if ((fromPile == dealUp) &&
+          (dealUp.size() != 0))
+        dealUp.checkTopCard().flipCard(true);
+      return true;
+    }
+
+    function deckDragCheck(pile, card, index) {
+      return dragGroup;
+    }
+
+    function deckDropCheck(fromPile, toPile, cards) {
+      if (toPile.size() == 0) {
+        if (cards[cards.length-1].getValue() != 1) 
+          return false;
+      } else {
+        var top = toPile.checkTopCard();
+        if ((top.suite != cards[0].suite) ||
+            (! top.valueOneHigher(cards[cards.length-1])))
+          return false;
+      }
+
+      // Success!
+      for (var i=cards.length-1; i>=0; i--) {
+        toPile.addCard(cards[i]);
+      }
+      if ((fromPile == dealUp) &&
+          (dealUp.size() != 0))
+        dealUp.checkTopCard().flipCard(true);
+      return true;
+    }
+
+    function dealUpDragCheck(pile, card, index) {
+      if (index == pile.size()-1)
+         return dragGroup;
+      return false;
+    }
+    function dealUpDropCheck(fromPile, toPile, cards) {
+      return false;
+    }
+      
+    function dealDownDragCheck(pile, card, index) {
+      return false;
+    }
+    function dealDownDropCheck(fromPile, toPile, cards) {
+      return false;
+    }
+    function dealDownClick(evt) {
+      if (dealDown.size() == 0) {
+        var len = dealUp.size();
+        for (var i=0; i<len; i++) {
+         var c = dealUp.getTopCard(c);
+         c.flipCard(false);
+         dealDown.addCard(c);
+        }
+      }
+      for (var i=0; i<3; i++) {
+        if (dealDown.size() == 0) break;
+        var c = dealDown.getTopCard();
+        dealUp.addCard(c);
+      }
+      if (dealUp.size() != 0)
+        dealUp.checkTopCard().flipCard(true);
+    }
+      
+    function solitareMoveDone() {
+      var zeroCount=0;
+      if (dealUp.size() != 0)
+        dealUp.checkTopCard().flipCard(true);
+      for (var i=0; i<7; i++) {
+        if (pileUp[i].size()!=0)
+          continue;
+        zeroCount++;
+        if (pileDown[i].size() != 0) {
+          var c = pileDown[i].getTopCard();
+          c.flipCard(true);
+          pileUp[i].addCard(c);
+        }
+      }
+      if (zeroCount != 7) 
+        return;
+      if ((dealUp.size() == 0) &&
+          (dealDown.size() == 0)) {
+        winGroup.style.setProperty("display", "inline", "");
+      }
+    }
+
+
+]]></script>
+
+    <g id="background" style="pointer-events:none;">
+      <rect x="0" y="0" width="100%" height="100%" fill="#080" 
+        pointer-events="fill"/>
+
+      <g fill="none" stroke="white" stroke-width="1">
+        <rect rx="6" ry="6" x="7.5" y="5"   width="64" height="104"/>
+        <rect rx="6" ry="6" x="7.5" y="120" width="64" height="104"/>
+        <rect rx="6" ry="6" x="7.5" y="235" width="64" height="104"/>
+        <rect rx="6" ry="6" x="7.5" y="350" width="64" height="104"/>
+
+        <rect rx="6" ry="6" x="645" y="105" width="64" height="104"/>
+        <rect rx="6" ry="6" x="645" y="220" width="64" height="104"/>
+
+        <rect rx="6" ry="6" x="85"  y="75" width="64" height="104"/>
+        <rect rx="6" ry="6" x="165" y="75" width="64" height="104"/>
+        <rect rx="6" ry="6" x="245" y="75" width="64" height="104"/>
+        <rect rx="6" ry="6" x="325" y="75" width="64" height="104"/>
+        <rect rx="6" ry="6" x="405" y="75" width="64" height="104"/>
+        <rect rx="6" ry="6" x="485" y="75" width="64" height="104"/>
+        <rect rx="6" ry="6" x="565" y="75" width="64" height="104"/>
+      </g>
+      
+    </g>
+
+    <g id="cards"/>
+
+    <g id="drag" style="pointer-events:none; opacity: 0.75;"/>
+
+    <g id="win" style="display:none; pointer-events:none; ">
+      <rect x="0" y="0" width="800" height="600" fill="#008"
+        fill-opacity="0.75"/>
+      <text x="50%" y="50%" text-anchor="middle"
+        font-size="72" fill="white">You Win!!!</text>
+    </g>
+  </svg>
