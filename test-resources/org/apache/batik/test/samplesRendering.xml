@@ -226,6 +226,13 @@
     </test>
 
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:samples/tests/gradientLimit.svg" />
+        <arg class="java.net.URL" value="file:test-references/samples/tests/gradientLimit.png" />
+        <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/gradientLimit.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/gradientLimit.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/tests/radialGradient2.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/radialGradient2.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/radialGradient2.png" />
@@ -732,6 +739,13 @@
         <arg class="java.net.URL" value="file:test-references/samples/tests/verticalTextOnPath.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/verticalTextOnPath.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/verticalTextOnPath.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:samples/tests/svgEnableBackground.svg" />
+        <arg class="java.net.URL" value="file:test-references/samples/tests/svgEnableBackground.png" />
+        <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/svgEnableBackground.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/svgEnableBackground.png" />
     </test>
 
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
