@@ -90,21 +90,21 @@ public class MemoryMonitor extends JFrame implements ActionMap {
 
 	addWindowListener(new WindowAdapter() {
             public void windowActivated(WindowEvent e) {
-		Thread t = panel.getRepaintThread();
-		if (!t.isAlive()) {
-		    t.start();
-		} else {
-		    t.resume();
-		}
+		RepaintThread t = panel.getRepaintThread();
+                if (!t.isAlive()) {
+                    t.start();
+                } else {
+                    t.safeResume();
+                }
 	    }
             public void windowClosing(WindowEvent ev) {
-		panel.getRepaintThread().suspend();
+                panel.getRepaintThread().safeSuspend();
 	    }
             public void windowDeiconified(WindowEvent e) {
-		panel.getRepaintThread().resume();
+                panel.getRepaintThread().safeResume();
 	    }
             public void windowIconified(WindowEvent e) {
-		panel.getRepaintThread().suspend();
+                panel.getRepaintThread().safeSuspend();
 	    }
         });
     }
@@ -126,7 +126,7 @@ public class MemoryMonitor extends JFrame implements ActionMap {
      */
     protected class CloseButtonAction extends AbstractAction {
         public void actionPerformed(ActionEvent e) {
-	    panel.getRepaintThread().suspend();
+            panel.getRepaintThread().safeSuspend();
             dispose();
         }
     }
@@ -138,7 +138,7 @@ public class MemoryMonitor extends JFrame implements ActionMap {
 	/**
 	 * The repaint thread.
 	 */
-	protected Thread repaintThread;
+	protected RepaintThread repaintThread;
 
 	/**
 	 * Creates a new memory monitor panel, composed of a Usage instance
@@ -189,7 +189,7 @@ public class MemoryMonitor extends JFrame implements ActionMap {
 	/**
 	 * Returns the repaint thread.
 	 */
-	public Thread getRepaintThread() {
+	public RepaintThread getRepaintThread() {
 	    return repaintThread;
 	}
     }
@@ -618,6 +618,11 @@ public class MemoryMonitor extends JFrame implements ActionMap {
 	 */
 	protected Runtime runtime = Runtime.getRuntime();
 
+        /**
+         * Whether or not the thread was supended.
+         */
+        protected boolean suspended;
+
 	/**
 	 * Creates a new Thread.
 	 * @param timeout    The time between two repaint in ms.
@@ -644,8 +649,34 @@ public class MemoryMonitor extends JFrame implements ActionMap {
 		}
                 try {
                     sleep(timeout);
-                } catch (InterruptedException e) { break; }
+                    if (suspended) {
+                        synchronized(this) {
+                            while (suspended) {
+                                wait();
+                            }
+                        }
+                    }
+                } catch (InterruptedException e) {}
 	    }
 	}
+        
+        /**
+         * Suspends the thread.
+         */
+        public void safeSuspend() {
+            if (!suspended) {
+                suspended = true;
+            }
+        }
+
+        /**
+         * Resumes the thread.
+         */
+        public synchronized void safeResume() {
+            if (suspended) {
+                suspended = false;
+                notify();
+            }
+        }
     }
 }

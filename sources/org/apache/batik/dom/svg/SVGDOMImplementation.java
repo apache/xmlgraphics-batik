@@ -188,6 +188,7 @@ public class SVGDOMImplementation
                 throw new RuntimeException(e.getMessage());
             }
         }
-        throw new RuntimeException("'" + type + "' not supported");
+        //throw new RuntimeException("'" + type + "' not supported");
+        return null;
     }
 }

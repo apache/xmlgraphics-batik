@@ -203,6 +203,30 @@ public class DOMViewer extends JFrame implements ActionMap {
 	}
 
 	/**
+	 * The documentInfo panel text area.
+	 */
+	protected JTextArea documentInfo = new JTextArea();
+
+	/**
+	 * The documentInfo node panel.
+	 */
+	protected JPanel documentInfoPanel = new JPanel(new BorderLayout());
+	{
+	    documentInfoPanel.setBorder
+                (BorderFactory.createCompoundBorder
+                 (BorderFactory.createEmptyBorder(2, 0, 2, 2),
+                  BorderFactory.createCompoundBorder
+                  (BorderFactory.createTitledBorder
+                   (BorderFactory.createEmptyBorder(),
+                    resources.getString("DocumentInfoPanel.title")),
+                   BorderFactory.createLoweredBevelBorder())));
+	    JScrollPane pane = new JScrollPane();
+	    pane.getViewport().add(documentInfo);
+	    documentInfoPanel.add(pane);
+	    documentInfo.setEditable(false);
+	}
+
+	/**
 	 * Creates a new Panel object.
 	 */
 	public Panel() {
@@ -298,6 +322,11 @@ public class DOMViewer extends JFrame implements ActionMap {
 		if (nodeInfo instanceof NodeInfo) {
 		    Node node = ((NodeInfo)nodeInfo).getNode();
 		    switch (node.getNodeType()) {
+		    case Node.DOCUMENT_NODE:
+			documentInfo.setText
+                            (createDocumentText((Document)node));
+			rightPanel.add(documentInfoPanel);
+                        break;
 		    case Node.ELEMENT_NODE:
 			attributesTable.setModel(new NodeAttributesModel(node));
 			propertiesTable.setModel(new NodeCSSValuesModel(node));
@@ -313,6 +342,23 @@ public class DOMViewer extends JFrame implements ActionMap {
 		splitPane.revalidate();
 		splitPane.repaint();
 	    }
+
+            protected String createDocumentText(Document doc) {
+                StringBuffer sb = new StringBuffer();
+                sb.append("Nodes: ");
+                sb.append(nodeCount(doc));
+                return sb.toString();
+            }
+
+            protected int nodeCount(Node node) {
+                int result = 1;
+                for (Node n = node.getFirstChild();
+                     n != null;
+                     n = n.getNextSibling()) {
+                    result += nodeCount(n);
+                }
+                return result;
+            }
 	}
 
 	/**
