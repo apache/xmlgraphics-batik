@@ -155,6 +155,14 @@ public class CSSOMSVGColor
     }
 
     /**
+     * Returns the RGBColor value for this SVGColor.
+     * For the SVG 1.1 ECMAScript binding.
+     */
+    public RGBColor getRgbColor() {
+        return this;
+    }
+
+    /**
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGColor#setRGBColor(String)}.
      */
@@ -172,6 +180,14 @@ public class CSSOMSVGColor
      * org.w3c.dom.svg.SVGColor#getICCColor()}.
      */
     public SVGICCColor getICCColor() {
+        return this;
+    }
+
+    /**
+     * Returns the SVGICCColor value of this SVGColor.
+     * For the SVG 1.1 ECMAScript binding.
+     */
+    public SVGICCColor getIccColor() {
         return this;
     }
 
