@@ -12,8 +12,11 @@
 <title>Usage</title>
 
 <defs>
-  <filter id="blurFilter" >
-    <feGaussianBlur stdDeviation="2 3"/>
+  <filter id="blurFilter" filterUnits="objectBoundingBox"
+                          primitiveUnits="objectBoundingBox"
+                          x="-10%" y="-10%" width="120%" height="120%"
+                          filterRes="200 100">
+    <feGaussianBlur stdDeviation="2 3" x="-10%" y="-10%" width="120%" height="120%"/>
   </filter>
 </defs>
 
