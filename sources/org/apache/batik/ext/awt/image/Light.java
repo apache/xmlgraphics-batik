@@ -6,102 +6,34 @@
  * the LICENSE file.                                                         *
  *****************************************************************************/
 
-package org.apache.batik.ext.awt.image.renderable;
+package org.apache.batik.ext.awt.image;
 
 import java.awt.Color;
 
 /**
- * A light source placed at the infinity, such that the light angle is
- * constant over the whole surface.
+ * Top level interface to model a light element. A light is responsible for
+ * computing the light vector on a given point of a surface. A light is
+ * typically in a 3 dimensional space and the methods assumes the surface
+ * is at elevation 0.
  *
  * @author <a href="mailto:vincent.hardy@eng.sun.com>Vincent Hardy</a>
  * @version $Id$
  */
-public class DistantLight implements Light {
-    /**
-     * The azimuth of the distant light, i.e., the angle of the light vector
-     * on the (X, Y) plane
-     */
-    private double azimuth;
-
-    /**
-     * The elevation of the distant light, i.e., the angle of the light
-     * vector on the (X, Z) plane.
-     */
-    private double elevation;
-
-    /**
-     * Light vector
-     */
-    private double Lx, Ly, Lz;
-
-    /**
-     * Light color
-     */
-    private double[] color;
-
-    /**
-     * @return the DistantLight's azimuth
-     */
-    public double getAzimuth(){
-        return azimuth;
-    }
-
-    /**
-     * @return the DistantLight's elevation
-     */
-    public double getElevation(){
-        return elevation;
-    }
-
-    /**
-     * @return the light's color
-     */
-    public double[] getColor(){
-        return color;
-    }
-
-    public DistantLight(double azimuth, double elevation, Color color){
-        this.azimuth = azimuth;
-        this.elevation = elevation;
-        setColor(color);
-
-        Lx = Math.cos(Math.PI*azimuth/180.)*Math.cos(Math.PI*elevation/180.);
-        Ly = Math.sin(Math.PI*azimuth/180.)*Math.cos(Math.PI*elevation/180.);
-        Lz = Math.sin(Math.PI*elevation/180);
-    }
-
-    /**
-     * Sets the new light color
-     */
-    public void setColor(Color newColor){
-        double[] color = new double[3];
-        color[0] = newColor.getRed()/255.;
-        color[1] = newColor.getGreen()/255.;
-        color[2] = newColor.getBlue()/255.;
-
-        this.color = color;
-    }
-
+public interface Light {
     /**
      * @return true if the light is constant over the whole surface
      */
-    public boolean isConstant(){
-        return true;
-    }
+    public boolean isConstant();
 
     /**
      * Computes the light vector in (x, y)
      *
      * @param x x-axis coordinate where the light should be computed
      * @param y y-axis coordinate where the light should be computed
+     * @param z z-axis coordinate where the light should be computed
      * @param L array of length 3 where the result is stored
      */
-    public void getLight(final double x, final double y, final double z, final double L[]){
-        L[0] = Lx;
-        L[1] = Ly;
-        L[2] = Lz;
-    }
+    public void getLight(final double x, final double y, final double z, final double L[]);
 
     /**
      * Returns a light map, starting in (x, y) with dx, dy increments, a given
@@ -115,21 +47,15 @@ public class DistantLight implements Light {
      * @param width number of samples to compute on the x axis
      * @param height number of samples to compute on the y axis
      * @param z array containing the z elevation for all the points
+     *
+     * @return an array of height rows, width columns where each element
+     *         is an array of three components representing the x, y and z
+     *         components of the light vector.
      */
     public double[][][] getLightMap(double x, double y, 
                                   final double dx, final double dy,
                                   final int width, final int height,
-                                  final double[][][] z)
-    {
-        double[][][] L = new double[height][][];
-
-        for(int i=0; i<height; i++){
-            L[i] = getLightRow(x, y, dx, width, z[i], null);
-            y += dy;
-        }
-
-        return L;
-    }
+                                  final double[][][] z);
 
     /**
      * Returns a row of the light map, starting at (x, y) with dx
@@ -150,31 +76,17 @@ public class DistantLight implements Light {
     public double[][] getLightRow(double x, double y, 
                                   final double dx, final int width,
                                   final double[][] z,
-                                  final double[][] lightRow) {
-        double [][] ret = lightRow;
+                                  final double[][] lightRow);
 
-        if (ret == null) {
-            ret = new double[width][];
+    /**
+     * @return the Light's color. The return value is an array of normalized
+     *         RGB intensities.
+     */
+    public double[] getColor();
 
-            double[] CL = new double[3];
-            getLight(0, 0, 0, CL);
-
-            for(int i=0; i<width; i++){
-                ret[i] = CL;
-            }
-        } else {
-            final double lx = Lx;
-            final double ly = Ly;
-            final double lz = Lz;
-
-            for(int i=0; i<width; i++){
-                ret[i][0] = lx;
-                ret[i][1] = ly;
-                ret[i][2] = lz;
-            }
-        }
-
-        return ret;
-    }
+    /**
+     * Sets the light color to a new value
+     */
+    public void setColor(Color color);
 }
 

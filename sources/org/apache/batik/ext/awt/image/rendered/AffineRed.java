@@ -8,7 +8,7 @@
 
 package org.apache.batik.ext.awt.image.rendered;
 
-import org.apache.batik.ext.awt.image.renderable.PadMode;
+import org.apache.batik.ext.awt.image.PadMode;
 import org.apache.batik.ext.awt.image.GraphicsUtil;
 
 import java.awt.Point;

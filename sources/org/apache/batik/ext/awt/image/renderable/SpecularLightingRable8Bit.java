@@ -17,7 +17,10 @@ import java.awt.image.RenderedImage;
 import java.awt.image.renderable.RenderContext;
 
 import org.apache.batik.ext.awt.image.GraphicsUtil;
+import org.apache.batik.ext.awt.image.Light;
+import org.apache.batik.ext.awt.image.PadMode;
 import org.apache.batik.ext.awt.image.rendered.AffineRed;
+import org.apache.batik.ext.awt.image.rendered.BumpMap;
 import org.apache.batik.ext.awt.image.rendered.CachableRed;
 import org.apache.batik.ext.awt.image.rendered.PadRed;
 import org.apache.batik.ext.awt.image.rendered.SpecularLightingRed;

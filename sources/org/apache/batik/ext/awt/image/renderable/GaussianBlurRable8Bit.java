@@ -26,9 +26,10 @@ import java.awt.image.WritableRaster;
 import java.awt.image.ColorModel;
 import java.awt.image.renderable.RenderContext;
 
+import org.apache.batik.ext.awt.image.PadMode;
+import org.apache.batik.ext.awt.image.rendered.AffineRed;
 import org.apache.batik.ext.awt.image.rendered.CachableRed;
 import org.apache.batik.ext.awt.image.rendered.PadRed;
-import org.apache.batik.ext.awt.image.rendered.AffineRed;
 import org.apache.batik.ext.awt.image.rendered.GaussianBlurRed8Bit;
 
 /**
@@ -296,8 +297,8 @@ public class GaussianBlurRable8Bit
             outputRgn = null;
         else {
             // There is only one source in GaussianBlur
-            float dX = (float)(stdDeviationX*GaussianBlurOp.DSQRT2PI);
-            float dY = (float)(stdDeviationY*GaussianBlurOp.DSQRT2PI);
+            float dX = (float)(stdDeviationX*DSQRT2PI);
+            float dY = (float)(stdDeviationY*DSQRT2PI);
             float radX = 3*dX/2;
             float radY = 3*dY/2;
             outputRgn = new Rectangle2D.Float
@@ -330,8 +331,8 @@ public class GaussianBlurRable8Bit
     public Shape getDirtyRegion(int srcIndex, Rectangle2D inputRgn){
         Rectangle2D dirtyRegion = null;
         if(srcIndex == 0){
-            float dX = (float)(stdDeviationX*GaussianBlurOp.DSQRT2PI);
-            float dY = (float)(stdDeviationY*GaussianBlurOp.DSQRT2PI);
+            float dX = (float)(stdDeviationX*DSQRT2PI);
+            float dY = (float)(stdDeviationY*DSQRT2PI);
             float radX = 3*dX/2;
             float radY = 3*dY/2;
             inputRgn = new Rectangle2D.Float

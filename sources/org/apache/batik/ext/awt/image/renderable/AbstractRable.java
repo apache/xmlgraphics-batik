@@ -27,6 +27,7 @@ import java.awt.image.RenderedImage;
 import java.awt.image.renderable.RenderableImage;
 import java.awt.image.renderable.RenderContext;
 
+import org.apache.batik.ext.awt.image.PadMode;
 import org.apache.batik.ext.awt.image.rendered.CachableRed;
 import org.apache.batik.ext.awt.image.rendered.RenderedImageCachableRed;
 import org.apache.batik.ext.awt.image.rendered.PadRed;

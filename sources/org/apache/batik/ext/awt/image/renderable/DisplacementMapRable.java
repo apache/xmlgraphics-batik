@@ -10,6 +10,8 @@ package org.apache.batik.ext.awt.image.renderable;
 
 import java.util.List;
 
+import org.apache.batik.ext.awt.image.ARGBChannel;
+
 /**
  * Implements a DisplacementMap operation, which takes pixel values from
  * another image to spatially displace the input image

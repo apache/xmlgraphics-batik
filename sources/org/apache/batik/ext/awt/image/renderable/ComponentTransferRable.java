@@ -8,6 +8,8 @@
 
 package org.apache.batik.ext.awt.image.renderable;
 
+import org.apache.batik.ext.awt.image.ComponentTransferFunction;
+
 /**
  * Defines the interface expected from a component 
  * transfer operation.

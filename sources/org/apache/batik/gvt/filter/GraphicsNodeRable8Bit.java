@@ -27,11 +27,11 @@ import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.filter.GraphicsNodeRable;
 import org.apache.batik.ext.awt.RenderingHintsKeyExt;
 import org.apache.batik.ext.awt.image.GraphicsUtil;
-import org.apache.batik.ext.awt.image.renderable.SVGComposite;
 import org.apache.batik.ext.awt.image.renderable.AbstractRable;
 import org.apache.batik.ext.awt.image.renderable.PaintRable;
 import org.apache.batik.ext.awt.image.rendered.CachableRed;
 import org.apache.batik.ext.awt.image.rendered.TranslateRed;
+import org.apache.batik.ext.awt.image.SVGComposite;
 
 /**
  * This implementation of RenderableImage will render its input

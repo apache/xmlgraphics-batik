@@ -11,6 +11,8 @@ package org.apache.batik.ext.awt.image.renderable;
 import java.awt.image.Kernel;
 import java.awt.Point;
 
+import org.apache.batik.ext.awt.image.PadMode;
+
 /**
  * Convolves an image with a convolution matrix.
  *

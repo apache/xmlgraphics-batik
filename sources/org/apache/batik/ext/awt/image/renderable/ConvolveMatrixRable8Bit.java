@@ -30,12 +30,13 @@ import java.awt.image.RenderedImage;
 import java.awt.image.renderable.RenderContext;
 import java.awt.image.WritableRaster;
 
+import org.apache.batik.ext.awt.image.GraphicsUtil;
+import org.apache.batik.ext.awt.image.PadMode;
+
 import org.apache.batik.ext.awt.image.rendered.CachableRed;
 import org.apache.batik.ext.awt.image.rendered.PadRed;
 import org.apache.batik.ext.awt.image.rendered.BufferedImageCachableRed;
 import org.apache.batik.ext.awt.image.rendered.AffineRed;
-
-import org.apache.batik.ext.awt.image.GraphicsUtil;
 
 /**
  * Convolves an image with a convolution matrix.

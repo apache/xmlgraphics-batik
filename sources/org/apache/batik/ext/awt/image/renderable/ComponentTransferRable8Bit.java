@@ -21,7 +21,16 @@ import java.awt.image.ColorModel;
 import java.awt.image.renderable.RenderContext;
 
 import org.apache.batik.ext.awt.image.rendered.CachableRed;
+import org.apache.batik.ext.awt.image.rendered.ComponentTransferOp;
 import org.apache.batik.ext.awt.image.rendered.BufferedImageCachableRed;
+
+import org.apache.batik.ext.awt.image.ComponentTransferFunction;
+import org.apache.batik.ext.awt.image.TransferFunction;
+import org.apache.batik.ext.awt.image.IdentityTransfer;
+import org.apache.batik.ext.awt.image.TableTransfer;
+import org.apache.batik.ext.awt.image.DiscreteTransfer;
+import org.apache.batik.ext.awt.image.LinearTransfer;
+import org.apache.batik.ext.awt.image.GammaTransfer;
 
 /**
  * This class implements the interface expected from a component 

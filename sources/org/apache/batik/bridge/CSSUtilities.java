@@ -31,7 +31,7 @@ import org.apache.batik.dom.util.XLinkSupport;
 
 import org.apache.batik.ext.awt.MultipleGradientPaint;
 import org.apache.batik.ext.awt.color.ICCColorSpaceExt;
-import org.apache.batik.ext.awt.image.renderable.Clip;
+import org.apache.batik.ext.awt.image.renderable.ClipRable;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 
 import org.apache.batik.gvt.CompositeGraphicsNode;
@@ -319,9 +319,9 @@ public abstract class CSSUtilities implements CSSConstants, ErrorConstants {
      * @param clipedNode the graphics node associated to the element to clip
      * @param ctx the bridge context
      */
-    public static Clip convertClipPath(Element clipedElement,
-                                       GraphicsNode clipedNode,
-                                       BridgeContext ctx) {
+    public static ClipRable convertClipPath(Element clipedElement,
+                                            GraphicsNode clipedNode,
+                                            BridgeContext ctx) {
         CSSOMReadOnlyStyleDeclaration decl = getComputedStyle(clipedElement);
 
         CSSPrimitiveValue clipValue =

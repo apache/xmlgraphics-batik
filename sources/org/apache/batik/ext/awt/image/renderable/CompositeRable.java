@@ -11,6 +11,8 @@ package org.apache.batik.ext.awt.image.renderable;
 import java.util.List;
 import java.awt.color.ColorSpace;
 
+import org.apache.batik.ext.awt.image.CompositeRule;
+
 /**
  * Composites a list of images according to a single composite rule.
  * the image are applied in the order they are in the List given.

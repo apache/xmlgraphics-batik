@@ -6,7 +6,7 @@
  * the LICENSE file.                                                         *
  *****************************************************************************/
 
-package org.apache.batik.ext.awt.image.renderable;
+package org.apache.batik.ext.awt.image.rendered;
 
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;

@@ -6,21 +6,34 @@
  * the LICENSE file.                                                         *
  *****************************************************************************/
 
-package org.apache.batik.ext.awt.image.renderable;
+package org.apache.batik.ext.awt.image;
 
 import java.awt.Color;
 
 /**
- * A light source which emits a light of constant intensity in all directions.
+ * A light source placed at the infinity, such that the light angle is
+ * constant over the whole surface.
  *
  * @author <a href="mailto:vincent.hardy@eng.sun.com>Vincent Hardy</a>
  * @version $Id$
  */
-public class PointLight implements Light {
+public class DistantLight implements Light {
     /**
-     * The light position, in user space
+     * The azimuth of the distant light, i.e., the angle of the light vector
+     * on the (X, Y) plane
      */
-    private double lightX, lightY, lightZ;
+    private double azimuth;
+
+    /**
+     * The elevation of the distant light, i.e., the angle of the light
+     * vector on the (X, Z) plane.
+     */
+    private double elevation;
+
+    /**
+     * Light vector
+     */
+    private double Lx, Ly, Lz;
 
     /**
      * Light color
@@ -28,24 +41,17 @@ public class PointLight implements Light {
     private double[] color;
 
     /**
-     * @return the light's x position
+     * @return the DistantLight's azimuth
      */
-    public double getLightX(){
-        return lightX;
+    public double getAzimuth(){
+        return azimuth;
     }
 
     /**
-     * @return the light's y position
+     * @return the DistantLight's elevation
      */
-    public double getLightY(){
-        return lightY;
-    }
-
-    /**
-     * @return the light's z position
-     */
-    public double getLightZ(){
-        return lightZ;
+    public double getElevation(){
+        return elevation;
     }
 
     /**
@@ -55,12 +61,14 @@ public class PointLight implements Light {
         return color;
     }
 
-    public PointLight(double lightX, double lightY, double lightZ,
-                      Color lightColor){
-        this.lightX = lightX;
-        this.lightY = lightY;
-        this.lightZ = lightZ;
-        setColor(lightColor);
+    public DistantLight(double azimuth, double elevation, Color color){
+        this.azimuth = azimuth;
+        this.elevation = elevation;
+        setColor(color);
+
+        Lx = Math.cos(Math.PI*azimuth/180.)*Math.cos(Math.PI*elevation/180.);
+        Ly = Math.sin(Math.PI*azimuth/180.)*Math.cos(Math.PI*elevation/180.);
+        Lz = Math.sin(Math.PI*elevation/180);
     }
 
     /**
@@ -79,35 +87,21 @@ public class PointLight implements Light {
      * @return true if the light is constant over the whole surface
      */
     public boolean isConstant(){
-        return false;
+        return true;
     }
 
     /**
-     * Computes the light vector in (x, y, z)
+     * Computes the light vector in (x, y)
      *
      * @param x x-axis coordinate where the light should be computed
      * @param y y-axis coordinate where the light should be computed
-     * @param z z-axis coordinate where the light should be computed
      * @param L array of length 3 where the result is stored
      */
-    public final void getLight(final double x, final double y, final double z,
-                               final double L[]){
-        L[0] = lightX - x;
-        L[1] = lightY - y;
-        L[2] = lightZ - z;
-
-        final double norm = Math.sqrt(L[0]*L[0] +
-                                      L[1]*L[1] +
-                                      L[2]*L[2]);
-
-        if(norm > 0){
-            final double invNorm = 1.0/norm;
-            L[0] *= invNorm;
-            L[1] *= invNorm;
-            L[2] *= invNorm;
-        }
+    public void getLight(final double x, final double y, final double z, final double L[]){
+        L[0] = Lx;
+        L[1] = Ly;
+        L[2] = Lz;
     }
-
 
     /**
      * Returns a light map, starting in (x, y) with dx, dy increments, a given
@@ -158,12 +152,26 @@ public class PointLight implements Light {
                                   final double[][] z,
                                   final double[][] lightRow) {
         double [][] ret = lightRow;
-        if (ret == null) 
-            ret = new double[width][3];
 
-        for(int i=0; i<width; i++){
-            getLight(x, y, z[i][3], ret[i]);
-            x += dx;
+        if (ret == null) {
+            ret = new double[width][];
+
+            double[] CL = new double[3];
+            getLight(0, 0, 0, CL);
+
+            for(int i=0; i<width; i++){
+                ret[i] = CL;
+            }
+        } else {
+            final double lx = Lx;
+            final double ly = Ly;
+            final double lz = Lz;
+
+            for(int i=0; i<width; i++){
+                ret[i][0] = lx;
+                ret[i][1] = ly;
+                ret[i][2] = lz;
+            }
         }
 
         return ret;
