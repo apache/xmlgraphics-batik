@@ -42,7 +42,9 @@ public class SamplesRenderingTest extends PreconfiguredRenderingTest {
     public static final String SAVE_CANDIDATE_REFERENCE_SUFFIX
         = "candidate-reference/";
 
-
+    public SamplesRenderingTest(){
+        setValidating(true);
+    }
 
     protected String getSVGURLPrefix(){
         return SVG_URL_PREFIX;

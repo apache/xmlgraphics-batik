@@ -250,6 +250,12 @@ public class SVGRenderingAccuracyTest extends AbstractTest {
     protected File candidateReference;
 
     /**
+     * Controls whether or not the SVG file should be
+     * validated. By default, no validation is used.
+     */
+    protected boolean validate = false;
+
+    /**
      * Temporary directory
      */
     protected static File tempDirectory;
@@ -881,9 +887,25 @@ public class SVGRenderingAccuracyTest extends AbstractTest {
                              new Boolean(false));
         t.addTranscodingHint(PNGTranscoder.KEY_BACKGROUND_COLOR,
                              new Color(0,0,0,0));
-        // t.addTranscodingHint(PNGTranscoder.KEY_XML_PARSER_VALIDATING,
-        //                      new Boolean(true));
+
+        if (validate){
+            System.out.println("Using validation");
+            t.addTranscodingHint(PNGTranscoder.KEY_XML_PARSER_VALIDATING,
+                                 new Boolean(true));
+        }
+
         return t;
+    }
+
+    /**
+     * If true, this test will use validation
+     */
+    public void setValidating(boolean validate){
+        this.validate = validate;
+    }
+
+    public boolean getValidating(){
+        return validate;
     }
 
     /**
