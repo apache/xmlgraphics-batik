@@ -129,16 +129,16 @@
         <anchor id="BatikStatus" />
         <s1 title="Batik's Implementation Status">
         <p>
-        The latest stable revision of Batik provides a complete support for all the <link href="status.html#beSuiteStatus">static SVG features.</link>
-        Work on supporting <link href="status.html#DynamicTest">dynamic SVG features</link> such as scripting and animation is under way and 
-        this work is available from the <link href="http://cvs.apache.org/viewcvs.cgi/xml-batik/">CVS repository</link>
-        or from beta <link href="http://xml.apache.org/batik/dist">downloads</link>.
-        </p>
+        The latest revision of Batik is a conformant <link href="http://www.w3.org/TR/SVG11/conform.html#ConformingSVGViewers">static
+        SVG implementation</link> and supports <link href="http://www.w3.org/TR/SVG11/interact.html">interactivity</link>, 
+        <link href="http://www.w3.org/TR/SVG11/linking.html">linking</link> and 
+        <link href="http://www.w3.org/TR/SVG11/script.html">scripting</link> features of the SVG specification. 
+        The Batik project does not support declarative <link href="http://www.w3.org/TR/SVG11/animate.html">animation</link> 
+        and there is currently no plan to add support for SMIL Animation to the Batik project.</p>
+
         <p>
-        You will find a detailed description of the set of SVG features
-        Batik supports on the 
-        <link href="status.html">Status</link>
-        page.
+        See the  <link href="status.html">status</link> page for a detailed description of the set of SVG features
+        Batik supports.
         </p>
         </s1>
  
