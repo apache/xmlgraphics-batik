@@ -488,6 +488,7 @@ public class BridgeContext implements ErrorConstants {
  
     /**
      * Returns the bridge associated with the specified element.
+     *
      * @param element the element
      */
     public Bridge getBridge(Element element) {
@@ -510,7 +511,28 @@ public class BridgeContext implements ErrorConstants {
     }
 
     /**
+     * Returns true if the specified element has a GraphicsNodeBridge
+     * associated to it, false otherwise.
+     *
+     * @param element the element
+     */
+    public boolean hasGraphicsNodeBridge(Element element) {
+        if (namespaceURIMap == null || element == null) {
+            return false;
+        }
+        String namespaceURI = element.getNamespaceURI();
+        String localName = element.getLocalName();
+        namespaceURI = ((namespaceURI == null)? "" : namespaceURI);
+        HashMap localNameMap = (HashMap) namespaceURIMap.get(namespaceURI);
+        if (localNameMap == null) {
+            return false;
+        }
+        return (localNameMap.get(localName) instanceof GraphicsNodeBridge);
+    }
+
+    /**
      * Returns the bridge associated with the element type
+     *
      * @param nameSpaceURI namespace of the requested element
      * @param localName element's local name
      *

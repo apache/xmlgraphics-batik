@@ -124,7 +124,9 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
                 //      org.ImageDisplay.stringShape(oRgn) + "\n" +
                 //      org.ImageDisplay.stringShape(nRgn) + "\n");
                 ret.add(oRgn);
-                ret.add(nRgn);
+                if (nRgn != null) {
+                    ret.add(nRgn);
+                }
             }
         }
 
