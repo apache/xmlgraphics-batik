@@ -42,7 +42,7 @@ import org.w3c.dom.DOMImplementation;
  * @author <a href="mailto:vhardy@apache.org">Vincent Hardy</a>
  * @version $Id$
  */
-public class SVGAccuracyTest extends AbstractTest 
+public class SVGAccuracyTest extends AbstractTest
     implements SVGConstants{
     /**
      * Error when an error occurs while generating SVG
@@ -60,16 +60,16 @@ public class SVGAccuracyTest extends AbstractTest
      * {0} = URI of the reference image
      * {1} = IOException message
      */
-    public static final String ERROR_CANNOT_OPEN_REFERENCE_SVG_FILE    
+    public static final String ERROR_CANNOT_OPEN_REFERENCE_SVG_FILE
         = "SVGAccuracyTest.error.cannot.open.reference.svg.file";
 
     /**
-     * Error when there is an IOException while comparing the 
+     * Error when there is an IOException while comparing the
      * reference SVG file with the newly generated SVG content
      * {0} = URI of the reference image
      * {1} = IOException message.
      */
-    public static final String ERROR_ERROR_WHILE_COMPARING_FILES    
+    public static final String ERROR_ERROR_WHILE_COMPARING_FILES
         = "SVGAccuracyTest.error.while.comparing.files";
 
     /**
@@ -78,13 +78,13 @@ public class SVGAccuracyTest extends AbstractTest
     public static final String ERROR_GENERATED_SVG_INACCURATE
         = "SVGAccuracyTest.error.generated.svg.inaccurate";
 
-    public static final String ENTRY_KEY_ERROR_DESCRIPTION 
+    public static final String ENTRY_KEY_ERROR_DESCRIPTION
         = "SVGAccuracyTest.entry.key.error.description";
 
     /**
      * Canvas size for all tests
      */
-    public static final Dimension CANVAS_SIZE 
+    public static final Dimension CANVAS_SIZE
         = new Dimension(300, 400);
 
     /**
@@ -105,9 +105,9 @@ public class SVGAccuracyTest extends AbstractTest
 
     /**
      * Constructor
-     * @param painter the <tt>Painter</tt> object which will 
+     * @param painter the <tt>Painter</tt> object which will
      *        perform an arbitrary rendering sequence.
-     * @param refURL the location of a reference SVG which 
+     * @param refURL the location of a reference SVG which
      *        should be exactly identical to that generated
      *        by the painter.
      */
@@ -130,7 +130,7 @@ public class SVGAccuracyTest extends AbstractTest
      * of the test's internal operation fails.
      */
     public TestReport runImpl() throws Exception {
-        DefaultTestReport report 
+        DefaultTestReport report
             = new DefaultTestReport(this);
 
         SVGGraphics2D g2d = buildSVGGraphics2D();
@@ -161,7 +161,7 @@ public class SVGAccuracyTest extends AbstractTest
             report.setPassed(false);
             return report;
         }
-     
+
         //
         // Compare with reference SVG
         //
@@ -174,7 +174,7 @@ public class SVGAccuracyTest extends AbstractTest
             report.setDescription( new TestReport.Entry[]{
                 new TestReport.Entry(Messages.formatMessage(ENTRY_KEY_ERROR_DESCRIPTION, null),
                           Messages.formatMessage(ERROR_CANNOT_OPEN_REFERENCE_SVG_FILE,
-                                                 new Object[]{refURL != null? refURL.toExternalForm() : "null", 
+                                                 new Object[]{refURL != null? refURL.toExternalForm() : "null",
                                                               e.getMessage()})) });
             report.setPassed(false);
             save(bos.toByteArray());
@@ -191,7 +191,7 @@ public class SVGAccuracyTest extends AbstractTest
             report.setDescription(new TestReport.Entry[]{
                 new TestReport.Entry(Messages.formatMessage(ENTRY_KEY_ERROR_DESCRIPTION, null),
                           Messages.formatMessage(ERROR_ERROR_WHILE_COMPARING_FILES,
-                                                 new Object[]{refURL.toExternalForm(), 
+                                                 new Object[]{refURL.toExternalForm(),
                                                               e.getMessage()}))});
             report.setPassed(false);
             save(bos.toByteArray());
@@ -238,19 +238,20 @@ public class SVGAccuracyTest extends AbstractTest
     protected boolean compare(InputStream refStream,
                               InputStream newStream)
         throws IOException{
-        int b, nb;
-        boolean accurate;
+        int b = 0;
+        int nb = 0;
         do {
-            b = refStream.read();
+            if (b == nb || nb != 13)
+                b = refStream.read();
             nb = newStream.read();
-        } while (b != -1 && nb != -1 && b == nb);
+        } while (b != -1 && nb != -1 && (b == nb || nb == 13));
         refStream.close();
         newStream.close();
-        return (b == nb);
+        return (b == nb || nb == 13);
     }
 
     /**
-     * Builds an <tt>SVGGraphics2D</tt> with a default 
+     * Builds an <tt>SVGGraphics2D</tt> with a default
      * configuration.
      */
     protected SVGGraphics2D buildSVGGraphics2D(){
