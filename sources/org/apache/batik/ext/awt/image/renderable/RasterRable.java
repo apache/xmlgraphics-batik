@@ -338,7 +338,7 @@ public class RasterRable
             if (bi != null)
                 cache.put(url, bi); // Let other people use our work..
             else
-                // Something wrong, We Couldn't loda the image.
+                // Something wrong, We Couldn't load the image.
                 // This is debateable but I'm going to clear my entry
                 // rather than put the 'broken link' image here...
                 cache.clear(url);

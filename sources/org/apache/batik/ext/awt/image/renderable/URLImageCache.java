@@ -41,6 +41,18 @@ public class URLImageCache {
      */
     public URLImageCache() { }
 
+
+    /**
+     * Let people flush the cache (remove any cached data).  Pending
+     * requests will be treated as though clear() was called on the
+     * URL, this should cause them to go and re-read the data.  
+     */
+
+    public synchronized void flush() {
+        map.clear();
+        this.notifyAll();
+    }
+
     /**
      * Check if <tt>request(url)</tt> will return with a BufferedImage
      * (not putting you on the hook for it).  Note that it is possible
@@ -138,11 +150,15 @@ public class URLImageCache {
     /**
      * Associate bi with url.  bi is only referenced through
      * a soft reference so don't rely on the cache to keep it
-     * around.
+     * around.  If the map no longer contains our url it was
+     * probably cleared or flushed since we were put on the hook
+     * for it, so in that case we will do nothing.
      */
     public synchronized void put(URL url, BufferedImage bi) {
-        SoftReference ref = new SoftReference(bi);
-        map.put(url, ref);
-        this.notifyAll();
+        if (map.containsKey(url)) {
+            SoftReference ref = new SoftReference(bi);
+            map.put(url, ref);
+            this.notifyAll();
+        }
     }
 }

@@ -8,16 +8,17 @@
 
 package org.apache.batik.ext.awt.image.renderable;
 
-
-
-
 import java.awt.RenderingHints;
 import java.awt.Shape;
+import java.awt.Graphics2D;
+
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.image.RenderedImage;
 import java.awt.image.renderable.RenderContext;
+
+import org.apache.batik.ext.awt.image.GraphicsUtil;
 
 /**
  * Concrete implementation of the AffineRable interface.
@@ -26,8 +27,9 @@ import java.awt.image.renderable.RenderContext;
  * @author <a href="mailto:Thomas.DeWeeese@Kodak.com">Thomas DeWeese</a>
  * @version $Id$
  */
-public class AffineRable8Bit extends AbstractRable
-    implements AffineRable {
+public class AffineRable8Bit 
+    extends    AbstractRable
+    implements AffineRable, PaintRable {
 
     AffineTransform affine;
     AffineTransform invAffine;
@@ -77,6 +79,27 @@ public class AffineRable8Bit extends AbstractRable
     public AffineTransform getAffine() {
         return (AffineTransform)affine.clone();
     }
+
+    /**
+     * Should perform the equivilent action as 
+     * createRendering followed by drawing the RenderedImage.
+     *
+     * @param g2d The Graphics2D to draw to.
+     * @return true if the paint call succeeded, false if
+     *         for some reason the paint failed (in which 
+     *         case a createRendering should be used).
+     */
+    public boolean paintRable(Graphics2D g2d) {
+        AffineTransform at = g2d.getTransform();
+
+        g2d.transform(getAffine());
+        GraphicsUtil.drawImage(g2d, getSource());
+
+        g2d.setTransform(at);
+
+        return true;
+    }
+
 
     public RenderedImage createRendering(RenderContext rc) {
         // Degenerate Affine no output image..

@@ -18,8 +18,6 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Shape;
-import java.awt.AlphaComposite;
-import java.awt.Composite;
 
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
@@ -40,34 +38,26 @@ import java.awt.image.WritableRaster;
 import java.awt.image.renderable.RenderContext;
 import java.awt.image.renderable.RenderableImage;
 
-import java.util.Hashtable;
-import java.util.Vector;
-import java.util.Iterator;
-
-import org.apache.batik.ext.awt.RenderingHintsKeyExt;
-import org.apache.batik.ext.awt.image.renderable.AffineRable;
-import org.apache.batik.ext.awt.image.rendered.AffineRed;
-import org.apache.batik.ext.awt.image.rendered.TranslateRed;
-import org.apache.batik.ext.awt.image.rendered.CachableRed;
-import org.apache.batik.ext.awt.image.rendered.MultiplyAlphaRed;
-import org.apache.batik.ext.awt.image.rendered.PadRed;
-import org.apache.batik.ext.awt.image.renderable.CompositeRable;
-import org.apache.batik.ext.awt.image.renderable.CompositeRule;
-import org.apache.batik.ext.awt.image.renderable.Filter;
-import org.apache.batik.ext.awt.image.renderable.FilterChainRable;
-import org.apache.batik.ext.awt.image.renderable.PadMode;
-import org.apache.batik.ext.awt.image.renderable.PadRable;
-import org.apache.batik.ext.awt.image.renderable.SVGComposite;
-
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.filter.GraphicsNodeRable;
 
-import org.apache.batik.ext.awt.image.rendered.BufferedImageCachableRed;
-import org.apache.batik.ext.awt.image.rendered.RenderedImageCachableRed;
+import org.apache.batik.ext.awt.RenderingHintsKeyExt;
+import org.apache.batik.ext.awt.image.renderable.Filter;
+import org.apache.batik.ext.awt.image.renderable.PadMode;
+import org.apache.batik.ext.awt.image.renderable.PaintRable;
+import org.apache.batik.ext.awt.image.renderable.SVGComposite;
+import org.apache.batik.ext.awt.image.rendered.AffineRed;
 import org.apache.batik.ext.awt.image.rendered.Any2LsRGBRed;
 import org.apache.batik.ext.awt.image.rendered.Any2sRGBRed;
+import org.apache.batik.ext.awt.image.rendered.BufferedImageCachableRed;
+import org.apache.batik.ext.awt.image.rendered.CachableRed;
+import org.apache.batik.ext.awt.image.rendered.MultiplyAlphaRed;
+import org.apache.batik.ext.awt.image.rendered.PadRed;
+import org.apache.batik.ext.awt.image.rendered.RenderedImageCachableRed;
+import org.apache.batik.ext.awt.image.rendered.TranslateRed;
+
 
 /**
  * Set of utility methods for Graphics.
@@ -407,90 +397,11 @@ public class GraphicsUtil {
      */
     public static void drawImage(Graphics2D g2d,
                                  RenderableImage filter) {
-        if (filter instanceof AffineRable) {
-            AffineRable ar = (AffineRable)filter;
-
-            AffineTransform at = g2d.getTransform();
-
-            g2d.transform(ar.getAffine());
-            drawImage(g2d, ar.getSource());
-
-            g2d.setTransform(at);
-            return;
-        }
-
-        // These optimizations only apply if we are using
-        // SrcOver.  Otherwise things break...
-        Composite c = g2d.getComposite();
-        boolean okToOptimize = false;
-        if (c == AlphaComposite.SrcOver) {
-            okToOptimize = true;
-        } else if (c instanceof SVGComposite) {
-            SVGComposite sc = (SVGComposite)c;
-            okToOptimize = (sc.getRule() == CompositeRule.OVER);
-        }
-
-        if (okToOptimize) {
-            if (filter instanceof PadRable) {
-                PadRable pr = (PadRable)filter;
-                if (pr.getPadMode() == PadMode.ZERO_PAD) {
-                    Rectangle2D padBounds = pr.getPadRect();
-
-                    Shape clip = g2d.getClip();
-                    g2d.clip(padBounds);
-                    drawImage(g2d, pr.getSource());
-
-                    g2d.setClip(clip);
-                    return;
-                }
-            }
-            else if (filter instanceof CompositeRable) {
-                CompositeRable cr = (CompositeRable)filter;
-                // For the over mode we can just draw them in order...
-                if (cr.getCompositeRule() == CompositeRule.OVER) {
-                    ColorSpace crCS = cr.getCompositeColorSpace();
-                    ColorSpace g2dCS = getDestinationColorSpace(g2d);
-                    if (g2dCS == crCS) {
-                        // System.out.println("drawImage : " + g2dCS +
-                        //                    crCS);
-                        Vector srcs = cr.getSources();
-                        Iterator i = srcs.iterator();
-                        while (i.hasNext()) {
-                            drawImage(g2d, (Filter)i.next());
-                        }
-                        return;
-                    }
-                }
-            }
-            else if (filter instanceof GraphicsNodeRable) {
-                GraphicsNodeRable gnr = (GraphicsNodeRable)filter;
-                ColorSpace g2dCS = getDestinationColorSpace(g2d);
-                if (g2dCS == ColorSpace.getInstance(ColorSpace.CS_sRGB)) {
-                    // System.out.println("drawImage GNR: " + g2dCS);
-
-                    if (gnr.getUsePrimitivePaint()) {
-                        gnr.getGraphicsNode().primitivePaint
-                            (g2d, GraphicsNodeRenderContext.
-                             getGraphicsNodeRenderContext(g2d));
-                    } else {
-                        try {
-                            gnr.getGraphicsNode().paint
-                                (g2d, GraphicsNodeRenderContext.
-                                 getGraphicsNodeRenderContext(g2d));
-                        } catch (InterruptedException ie) {
-                            // Don't do anything we just return...
-                        }
-                    }
-                    // Primitive Paint did the work...
-                    return;
-                }
-            }
-            else if (filter instanceof FilterChainRable) {
-                FilterChainRable fcr = (FilterChainRable)filter;
-                PadRable pad = (PadRable)fcr.getSource();
-                drawImage(g2d, pad);
+        if (filter instanceof PaintRable) {
+            PaintRable pr = (PaintRable)filter;
+            if (pr.paintRable(g2d))
+                // paintRable succeeded so we are done...
                 return;
-            }
         }
 
         // Get our sources image...
@@ -577,6 +488,7 @@ public class GraphicsUtil {
         GraphicsConfiguration gc = g2d.getDeviceConfiguration();
         return gc.getBounds();
     }
+
 
     /**
      * Standard prebuilt Linear_sRGB color model with no alpha */

@@ -31,12 +31,60 @@ import org.apache.batik.ext.awt.image.GraphicsUtil;
 public class SVGComposite
     implements Composite {
 
+    public static final SVGComposite OVER 
+        = new SVGComposite(CompositeRule.OVER);
+    
+    public static final SVGComposite IN 
+        = new SVGComposite(CompositeRule.IN);
+    
+    public static final SVGComposite OUT 
+        = new SVGComposite(CompositeRule.OUT);
+    
+    public static final SVGComposite ATOP 
+        = new SVGComposite(CompositeRule.ATOP);
+    
+    public static final SVGComposite XOR 
+        = new SVGComposite(CompositeRule.XOR);
+    
+    public static final SVGComposite MULTIPLY 
+        = new SVGComposite(CompositeRule.MULTIPLY);
+    
+    public static final SVGComposite SCREEN 
+        = new SVGComposite(CompositeRule.SCREEN);
+    
+    public static final SVGComposite DARKEN 
+        = new SVGComposite(CompositeRule.DARKEN);
+    
+    public static final SVGComposite LIGHTEN 
+        = new SVGComposite(CompositeRule.LIGHTEN);
+    
+
     CompositeRule rule;
 
     public CompositeRule getRule() { return rule; }
 
     public SVGComposite(CompositeRule rule) {
         this.rule = rule;
+    }
+
+    public boolean equals(Object o) {
+        if (o instanceof SVGComposite) {
+            SVGComposite svgc = (SVGComposite)o;
+            return (svgc.getRule() == getRule());
+        } else if (o instanceof AlphaComposite) {
+            AlphaComposite ac = (AlphaComposite)o;
+            switch (getRule().getRule()) {
+            case CompositeRule.RULE_OVER:
+                return (ac == AlphaComposite.SrcOver);
+            case CompositeRule.RULE_IN:
+                return (ac == AlphaComposite.SrcIn);
+            case CompositeRule.RULE_OUT:
+                return (ac == AlphaComposite.SrcOut);
+            default:
+                return false;
+            }
+        }
+        return false;
     }
 
     public CompositeContext createContext(ColorModel srcCM,

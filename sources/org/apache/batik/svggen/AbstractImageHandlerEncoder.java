@@ -18,7 +18,7 @@ import java.net.*;
 import org.w3c.dom.Element;
 
 import org.apache.batik.dom.util.XLinkSupport;
-import org.apache.batik.ext.awt.image.GraphicsUtil;
+import org.apache.batik.ext.awt.RenderingHintsKeyExt;
 
 /**
  * This abstract implementation of the ImageHandler interface
@@ -86,7 +86,11 @@ public abstract class AbstractImageHandlerEncoder extends DefaultImageHandler{
         // Create an buffered image where the image will be drawn
         Dimension size = new Dimension(image.getWidth(null), image.getHeight(null));
         BufferedImage buf = buildBufferedImage(size);
+
         java.awt.Graphics2D g = buf.createGraphics();
+        g.setRenderingHint(RenderingHintsKeyExt.KEY_BUFFERED_IMAGE, buf);
+        g.clip(new Rectangle(0, 0, buf.getWidth(), buf.getHeight()));
+
         g.drawImage(image, 0, 0, null);
         g.dispose();
 
@@ -102,8 +106,14 @@ public abstract class AbstractImageHandlerEncoder extends DefaultImageHandler{
         // Create an buffered image where the image will be drawn
         Dimension size = new Dimension(image.getWidth(), image.getHeight());
         BufferedImage buf = buildBufferedImage(size);
-        java.awt.Graphics2D g = GraphicsUtil.createGraphics(buf);
-        GraphicsUtil.drawImage(g, image);
+
+        java.awt.Graphics2D g = buf.createGraphics();
+
+        // The following help to keep the GVT renderer happy.
+        g.setRenderingHint(RenderingHintsKeyExt.KEY_BUFFERED_IMAGE, buf);
+        g.clip(new Rectangle(0, 0, buf.getWidth(), buf.getHeight()));
+
+        g.drawRenderedImage(image, IDENTITY);
         g.dispose();
 
         // Save image into file
@@ -119,8 +129,14 @@ public abstract class AbstractImageHandlerEncoder extends DefaultImageHandler{
         Dimension size = new Dimension((int)Math.ceil(image.getWidth()),
                                        (int)Math.ceil(image.getHeight()));
         BufferedImage buf = buildBufferedImage(size);
-        java.awt.Graphics2D g = GraphicsUtil.createGraphics(buf);
-        GraphicsUtil.drawImage(g, image);
+
+        java.awt.Graphics2D g = buf.createGraphics();
+
+        // The following help to keep the GVT renderer happy.
+        g.setRenderingHint(RenderingHintsKeyExt.KEY_BUFFERED_IMAGE, buf);
+        g.clip(new Rectangle(0, 0, buf.getWidth(), buf.getHeight()));
+
+        g.drawRenderableImage(image, IDENTITY);
         g.dispose();
 
         // Save image into file

@@ -1,12 +1,42 @@
+/*****************************************************************************
+ * Copyright (C) The Apache Software Foundation. All rights reserved.        *
+ * ------------------------------------------------------------------------- *
+ * This software is published under the terms of the Apache Software License *
+ * version 1.1, a copy of which has been included with this distribution in  *
+ * the LICENSE file.                                                         *
+ *****************************************************************************/
+
 package org.apache.batik.ext.awt.image.rendered;
 
 public class LRUCache {
+    /**
+     * Interface for object participating in the LRU Cache.  These
+     * inform the object of key events in the status of the object in
+     * the LRU cache.  
+     */
 	public interface LRUObj {
+        /**
+         * Called when the object first becomes active in the LRU cache.
+         * @param nde The LRU cache node associated with this object.
+         *            should be remembered so it can be returned by
+         *            <tt>lruGet</tt>.  
+         */
 		public  void    lruSet(LRUNode nde);
+        /**
+         * Called to get the LRU node for this object.  Should return the
+         * node passed in to lruSet.
+         */
 		public  LRUNode lruGet();
+        /**
+         * Called to inform the object that it is no longer in the cache.
+         */
 		public  void    lruRemove();
 	}
 
+    /**
+     * Interface for nodes in the LRU cache, basicly nodes in a doubly
+     * linked list.
+     */
 	public class LRUNode {
 		private LRUNode next = null;
 		private LRUNode prev = null;
@@ -57,6 +87,10 @@ public class LRUCache {
 		}
 	}
 
+    /**
+     * A simple Doublly Linked list class, designed to avoid
+     * O(n) behaviour on insert and delete.
+     */
 	public class LRUList {
 
 		private LRUNode head = null;

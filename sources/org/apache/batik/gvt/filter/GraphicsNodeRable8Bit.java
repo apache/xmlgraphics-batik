@@ -12,6 +12,8 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Shape;
+import java.awt.Composite;
+import java.awt.color.ColorSpace;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Rectangle2D;
@@ -24,7 +26,10 @@ import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.filter.GraphicsNodeRable;
 import org.apache.batik.ext.awt.RenderingHintsKeyExt;
+import org.apache.batik.ext.awt.image.GraphicsUtil;
+import org.apache.batik.ext.awt.image.renderable.SVGComposite;
 import org.apache.batik.ext.awt.image.renderable.AbstractRable;
+import org.apache.batik.ext.awt.image.renderable.PaintRable;
 import org.apache.batik.ext.awt.image.rendered.CachableRed;
 import org.apache.batik.ext.awt.image.rendered.TranslateRed;
 
@@ -38,7 +43,7 @@ import org.apache.batik.ext.awt.image.rendered.TranslateRed;
  */
 public class GraphicsNodeRable8Bit 
     extends    AbstractRable 
-    implements GraphicsNodeRable {
+    implements GraphicsNodeRable, PaintRable {
 
     private AffineTransform cachedUsr2dev = null;
     private CachableRed     cachedRed = null;
@@ -150,6 +155,47 @@ public class GraphicsNodeRable8Bit
      */
     public boolean isDynamic(){
         return false;
+    }
+
+    /**
+     * Should perform the equivilent action as 
+     * createRendering followed by drawing the RenderedImage to 
+     * Graphics2D, or return false.
+     *
+     * @param g2d The Graphics2D to draw to.
+     * @return true if the paint call succeeded, false if
+     *         for some reason the paint failed (in which 
+     *         case a createRendering should be used).
+     */
+    public boolean paintRable(Graphics2D g2d) {
+        // This optimization only apply if we are using
+        // SrcOver.  Otherwise things break...
+        Composite c = g2d.getComposite();
+        if (!SVGComposite.OVER.equals(c))
+            return false;
+        
+        ColorSpace g2dCS = GraphicsUtil.getDestinationColorSpace(g2d);
+        if (g2dCS != ColorSpace.getInstance(ColorSpace.CS_sRGB))
+            // Only draw directly into sRGB destinations...
+            return false;
+
+        // System.out.println("drawImage GNR: " + g2dCS);
+        GraphicsNode gn = getGraphicsNode();
+        GraphicsNodeRenderContext gnrc
+            = GraphicsNodeRenderContext.getGraphicsNodeRenderContext(g2d);
+
+        try {
+            if (getUsePrimitivePaint())
+                gn.primitivePaint(g2d, gnrc);
+            else
+                gn.paint(g2d, gnrc);
+
+        } catch (InterruptedException ie) {
+            // Don't do anything we just return...
+        }
+
+        // Paint did the work...
+        return true;
     }
 
     /**

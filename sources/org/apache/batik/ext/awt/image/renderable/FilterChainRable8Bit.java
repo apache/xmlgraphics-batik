@@ -8,19 +8,13 @@
 
 package org.apache.batik.ext.awt.image.renderable;
 
-import java.awt.geom.AffineTransform;
+import java.awt.Graphics2D;
+import java.awt.Composite;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.RenderedImage;
 import java.awt.image.renderable.RenderContext;
 
-
-
-
-
-
-
-
-
+import org.apache.batik.ext.awt.image.GraphicsUtil;
 
 /**
  * Implements a filter chain. A filter chain is defined by its
@@ -39,7 +33,7 @@ import java.awt.image.renderable.RenderContext;
  * @version $Id$
  */
 public class FilterChainRable8Bit extends AbstractRable
-    implements FilterChainRable {
+    implements FilterChainRable, PaintRable {
     /**
      * Resolution along the X axis
      */
@@ -220,6 +214,28 @@ public class FilterChainRable8Bit extends AbstractRable
      */
     public Rectangle2D getBounds2D(){
         return (Rectangle2D)filterRegion.clone();
+    }
+
+    /**
+     * Should perform the equivilent action as 
+     * createRendering followed by drawing the RenderedImage to 
+     * Graphics2D, or return false.
+     *
+     * @param g2d The Graphics2D to draw to.
+     * @return true if the paint call succeeded, false if
+     *         for some reason the paint failed (in which 
+     *         case a createRendering should be used).
+     */
+    public boolean paintRable(Graphics2D g2d) {
+        // This optimization only apply if we are using
+        // SrcOver.  Otherwise things break...
+        Composite c = g2d.getComposite();
+        if (!SVGComposite.OVER.equals(c))
+            return false;
+        
+        GraphicsUtil.drawImage(g2d, getSource());
+
+        return true;
     }
 
     public RenderedImage createRendering(RenderContext context){
