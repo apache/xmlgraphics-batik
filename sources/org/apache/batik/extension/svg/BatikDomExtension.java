@@ -11,7 +11,8 @@ package org.apache.batik.extension.svg;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import org.apache.batik.dom.svg.SVGOMDocument;
+import org.apache.batik.dom.svg.ExtensibleSVGDOMImplementation;
+import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.apache.batik.dom.svg.DomExtension;
 import org.apache.batik.dom.AbstractDocument;
 
@@ -70,13 +71,13 @@ public class BatikDomExtension
      *
      * @param ctx The DomContext instance to be updated
      */
-    public void registerTags(SVGOMDocument doc) {
-        doc.registerCustomElementFactory
+    public void registerTags(ExtensibleSVGDOMImplementation di) {
+        di.registerCustomElementFactory
             (BATIK_EXT_NAMESPACE_URI,
              BATIK_EXT_REGULAR_POLYGON_TAG,
              new BatikRegularPolygonElementFactory());
 
-        doc.registerCustomElementFactory
+        di.registerCustomElementFactory
             (BATIK_EXT_NAMESPACE_URI,
              BATIK_EXT_STAR_TAG,
              new BatikStarElementFactory());
@@ -86,7 +87,7 @@ public class BatikDomExtension
      * To create a 'regularPolygon' element.
      */
     protected static class BatikRegularPolygonElementFactory 
-        implements SVGOMDocument.ElementFactory {
+        implements SVGDOMImplementation.ElementFactory {
         public BatikRegularPolygonElementFactory() {}
         /**
          * Creates an instance of the associated element type.
@@ -102,7 +103,7 @@ public class BatikDomExtension
      * To create a 'star' element.
      */
     protected static class BatikStarElementFactory 
-        implements SVGOMDocument.ElementFactory {
+        implements SVGDOMImplementation.ElementFactory {
         public BatikStarElementFactory() {}
         /**
          * Creates an instance of the associated element type.

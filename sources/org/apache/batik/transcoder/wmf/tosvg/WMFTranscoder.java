@@ -30,7 +30,7 @@ import org.xml.sax.XMLFilter;
 import org.apache.batik.util.SVGConstants;
 
 import org.apache.batik.svggen.SVGGraphics2D;
-import org.apache.batik.dom.svg.SVGDOMImplementation;
+import org.apache.batik.dom.svg.ExtensibleSVGDOMImplementation;
 
 import org.apache.batik.transcoder.AbstractTranscoder;
 import org.apache.batik.transcoder.TranscoderInput;
@@ -103,7 +103,7 @@ public class WMFTranscoder extends AbstractTranscoder
         // Use SVGGraphics2D to generate SVG content
         //
         DOMImplementation domImpl 
-            = SVGDOMImplementation.getDOMImplementation();
+            = ExtensibleSVGDOMImplementation.getDOMImplementation();
 
         Document doc = domImpl.createDocument(SVG_NAMESPACE_URI, 
                                               SVG_SVG_TAG, null);

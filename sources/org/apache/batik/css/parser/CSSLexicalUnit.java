@@ -17,6 +17,7 @@ import org.w3c.css.sac.LexicalUnit;
  * @version $Id$
  */
 public abstract class CSSLexicalUnit implements LexicalUnit {
+
     /**
      * The lexical unit type.
      */

@@ -8,9 +8,6 @@
 
 package org.apache.batik.css.parser;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.w3c.css.sac.SACMediaList;
 
 /**
@@ -20,16 +17,22 @@ import org.w3c.css.sac.SACMediaList;
  * @version $Id$
  */
 public class CSSSACMediaList implements SACMediaList {
+
     /**
      * The list.
      */
-    protected List list = new ArrayList(3);
+    protected String[] list = new String[3];
+
+    /**
+     * The list length.
+     */
+    protected int length;
 
     /**
      * <b>SAC</b>: Returns the length of this selector list
      */    
     public int getLength() {
-        return list.size();
+        return length;
     }
 
     /**
@@ -37,13 +40,23 @@ public class CSSSACMediaList implements SACMediaList {
      * <code>null</code> if this is not a valid index.  
      */
     public String item(int index) {
-        return (String)list.get(index);
+        if (index < 0 || index >= length) {
+            return null;
+        }
+        return list[index];
     }
 
     /**
      * Appends an item to the list.
      */
     public void append(String item) {
-        list.add(item);
+        if (length == list.length) {
+            String[] tmp = list;
+            list = new String[list.length * 3 / 2];
+            for (int i = 0; i < tmp.length; i++) {
+                list[i] = tmp[i];
+            }
+        }
+        list[length++] = item;
     }
 }

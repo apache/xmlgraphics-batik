@@ -11,9 +11,10 @@ package org.apache.batik.css.svg;
 import org.apache.batik.css.CSSOMReadOnlyStyleDeclaration;
 import org.apache.batik.css.CSSOMReadOnlyValue;
 import org.apache.batik.css.value.AbstractValueFactory;
-import org.apache.batik.css.value.ImmutableValue;
 import org.apache.batik.css.value.RelativeValueResolver;
+
 import org.w3c.dom.Element;
+import org.w3c.dom.css.CSSPrimitiveValue;
 import org.w3c.dom.css.ViewCSS;
 
 /**
@@ -63,6 +64,5 @@ public class ClipPathResolver implements RelativeValueResolver {
 			     CSSOMReadOnlyValue value,
 			     String priority,
 			     int origin) {
-        // Nothing to do.
     }
 }

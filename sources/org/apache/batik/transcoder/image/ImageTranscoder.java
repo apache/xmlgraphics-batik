@@ -38,7 +38,7 @@ import org.apache.batik.bridge.ViewBox;
 
 import org.apache.batik.dom.svg.DefaultSVGContext;
 import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
-import org.apache.batik.dom.svg.SVGDOMImplementation;
+import org.apache.batik.dom.svg.ExtensibleSVGDOMImplementation;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.DocumentFactory;
 
@@ -119,7 +119,7 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
         hints.put(KEY_DOCUMENT_ELEMENT,
                   SVGConstants.SVG_SVG_TAG);
         hints.put(KEY_DOM_IMPLEMENTATION,
-                  SVGDOMImplementation.getDOMImplementation());
+                  ExtensibleSVGDOMImplementation.getDOMImplementation());
     }
 
     /**

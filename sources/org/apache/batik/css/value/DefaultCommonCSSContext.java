@@ -8,6 +8,8 @@
 
 package org.apache.batik.css.value;
 
+import java.net.URL;
+
 import java.util.ArrayList;
 import java.util.List;
 

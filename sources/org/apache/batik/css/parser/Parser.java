@@ -54,98 +54,51 @@ public class Parser
      */
     protected final static Map ENCODINGS = new HashMap();
     static {
-        ENCODINGS.put("iso-ir-6",             "ASCII");
-        ENCODINGS.put("ANSI_X3.4-1986",       "ASCII");
-        ENCODINGS.put("ISO_646.irv:1991",     "ASCII");
-        ENCODINGS.put("ASCII",                "ASCII");
-        ENCODINGS.put("ISO646-US",            "ASCII");
-        ENCODINGS.put("US-ASCII",             "ASCII");
-        ENCODINGS.put("us",                   "ASCII");
-        ENCODINGS.put("IBM367",               "ASCII");
-        ENCODINGS.put("cp367",                "ASCII");
-        ENCODINGS.put("csASCII",              "ASCII");
+        ENCODINGS.put("UTF-8",           "UTF8");
+        ENCODINGS.put("UTF-16",          "Unicode");
+        ENCODINGS.put("US-ASCII",        "ASCII");
 
-        ENCODINGS.put("iso-ir-100",           "ISO8859_1");
-        ENCODINGS.put("ISO_8859-1:1987",      "ISO8859_1");
-        ENCODINGS.put("ISO_8859-1",           "ISO8859_1");
-        ENCODINGS.put("ISO-8859-1",           "ISO8859_1");
-        ENCODINGS.put("latin1",               "ISO8859_1");
-        ENCODINGS.put("l1",                   "ISO8859_1");
-        ENCODINGS.put("IBM819",               "ISO8859_1");
-        ENCODINGS.put("CP819",                "ISO8859_1");
-        ENCODINGS.put("csISOLatin1",          "ISO8859_1");
+        ENCODINGS.put("ISO-8859-1",      "8859_1");
+        ENCODINGS.put("ISO-8859-2",      "8859_2");
+        ENCODINGS.put("ISO-8859-3",      "8859_3");
+        ENCODINGS.put("ISO-8859-4",      "8859_4");
+        ENCODINGS.put("ISO-8859-5",      "8859_5");
+        ENCODINGS.put("ISO-8859-6",      "8859_6");
+        ENCODINGS.put("ISO-8859-7",      "8859_7");
+        ENCODINGS.put("ISO-8859-8",      "8859_8");
+        ENCODINGS.put("ISO-8859-9",      "8859_9");
+        ENCODINGS.put("ISO-2022-JP",     "JIS");
 
-        ENCODINGS.put("iso-ir-101",           "ISO8859_2"); 
-        ENCODINGS.put("ISO_8859-2:1987",      "ISO8859_2"); 
-        ENCODINGS.put("ISO_8859-2",           "ISO8859_2"); 
-        ENCODINGS.put("ISO-8859-2",           "ISO8859_2");
-        ENCODINGS.put("latin2",               "ISO8859_2"); 
-        ENCODINGS.put("l2",                   "ISO8859_2"); 
-        ENCODINGS.put("csISOLatin2",          "ISO8859_2");
+        ENCODINGS.put("WINDOWS-31J",     "MS932");
+        ENCODINGS.put("EUC-JP",          "EUCJIS");
+        ENCODINGS.put("GB2312",          "GB2312");
+        ENCODINGS.put("BIG5",            "Big5");
+        ENCODINGS.put("EUC-KR",          "KSC5601");
+        ENCODINGS.put("ISO-2022-KR",     "ISO2022KR");
+        ENCODINGS.put("KOI8-R",          "KOI8_R");
 
-        ENCODINGS.put("ISO_8859-3:1988",      "ISO8859_3");
-        ENCODINGS.put("iso-ir-109",           "ISO8859_3");
-        ENCODINGS.put("ISO_8859-3",           "ISO8859_3");
-        ENCODINGS.put("ISO-8859-3",           "ISO8859_3");
-        ENCODINGS.put("latin3",               "ISO8859_3");
-        ENCODINGS.put("l3",                   "ISO8859_3");
-        ENCODINGS.put("csISOLatin3",          "ISO8859_3");
+        ENCODINGS.put("EBCDIC-CP-US",    "Cp037");
+        ENCODINGS.put("EBCDIC-CP-CA",    "Cp037");
+        ENCODINGS.put("EBCDIC-CP-NL",    "Cp037");
+	ENCODINGS.put("EBCDIC-CP-WT",    "Cp037");
+        ENCODINGS.put("EBCDIC-CP-DK",    "Cp277");
+        ENCODINGS.put("EBCDIC-CP-NO",    "Cp277");
+        ENCODINGS.put("EBCDIC-CP-FI",    "Cp278");
+        ENCODINGS.put("EBCDIC-CP-SE",    "Cp278");
+        ENCODINGS.put("EBCDIC-CP-IT",    "Cp280");
+        ENCODINGS.put("EBCDIC-CP-ES",    "Cp284");
+        ENCODINGS.put("EBCDIC-CP-GB",    "Cp285");
+        ENCODINGS.put("EBCDIC-CP-FR",    "Cp297");
+        ENCODINGS.put("EBCDIC-CP-AR1",   "Cp420");
+        ENCODINGS.put("EBCDIC-CP-HE",    "Cp424");
+        ENCODINGS.put("EBCDIC-CP-BE",    "Cp500");
+        ENCODINGS.put("EBCDIC-CP-CH",    "Cp500");
+        ENCODINGS.put("EBCDIC-CP-ROECE", "Cp870");
+        ENCODINGS.put("EBCDIC-CP-YU",    "Cp870");
+        ENCODINGS.put("EBCDIC-CP-IS",    "Cp871");
+        ENCODINGS.put("EBCDIC-CP-AR2",   "Cp918");
 
-        ENCODINGS.put("iso-ir-110",           "ISO8859_4");
-        ENCODINGS.put("ISO_8859-4:1988",      "ISO8859_4");
-        ENCODINGS.put("ISO_8859-4",           "ISO8859_4");
-        ENCODINGS.put("ISO-8859-4",           "ISO8859_4");
-        ENCODINGS.put("latin4",               "ISO8859_4");
-        ENCODINGS.put("l4",                   "ISO8859_4");
-        ENCODINGS.put("csISOLatin4",          "ISO8859_4");
-
-        ENCODINGS.put("iso-ir-127",           "ISO8859_6");
-        ENCODINGS.put("ISO_8859-6",           "ISO8859_6");
-        ENCODINGS.put("ISO_8859-6:1987",      "ISO8859_6");
-        ENCODINGS.put("ISO-8859-6",           "ISO8859_6");
-        ENCODINGS.put("ECMA-114",             "ISO8859_6");
-        ENCODINGS.put("ASMO-708",             "ISO8859_6");
-        ENCODINGS.put("arabic",               "ISO8859_6");
-        ENCODINGS.put("csISOLatinArabic",     "ISO8859_6");
-
-        ENCODINGS.put("iso-ir-126",           "ISO8859_7");
-        ENCODINGS.put("ISO_8859-7",           "ISO8859_7");
-        ENCODINGS.put("ISO_8859-7:1987",      "ISO8859_7");
-        ENCODINGS.put("ISO-8859-7",           "ISO8859_7");
-        ENCODINGS.put("ELOT_928",             "ISO8859_7");
-        ENCODINGS.put("ECMA-118",             "ISO8859_7");
-        ENCODINGS.put("greek",                "ISO8859_7");
-        ENCODINGS.put("greek8",               "ISO8859_7");
-        ENCODINGS.put("csISOLatinGreek",      "ISO8859_7");
-
-        ENCODINGS.put("ISO_8859-8:1988",      "ISO8859_8");
-        ENCODINGS.put("iso-ir-138",           "ISO8859_8");
-        ENCODINGS.put("ISO_8859-8",           "ISO8859_8");
-        ENCODINGS.put("ISO-8859-8",           "ISO8859_8");
-        ENCODINGS.put("hebrew",               "ISO8859_8");
-        ENCODINGS.put("csISOLatinHebrew",     "ISO8859_8");
-
-        ENCODINGS.put("ISO_8859-9:1989",      "ISO8859_9");
-        ENCODINGS.put("iso-ir-148",           "ISO8859_9");
-        ENCODINGS.put("ISO_8859-9",           "ISO8859_9");
-        ENCODINGS.put("ISO-8859-9",           "ISO8859_9");
-        ENCODINGS.put("latin5",               "ISO8859_9");
-        ENCODINGS.put("l5",                   "ISO8859_9");
-        ENCODINGS.put("csISOLatin5",          "ISO8859_9");
-
-        ENCODINGS.put("ISO_8859-15",          "ISO8859_15_FDIS");
-
-        ENCODINGS.put("UTF-8",                "UTF8");
-
-        ENCODINGS.put("Shift_JIS",            "SJIS");
-        ENCODINGS.put("MS_Kanji",             "SJIS");
-        ENCODINGS.put("csShiftJIS",           "SJIS");
-
-        ENCODINGS.put("EUC-JP",               "EUC_JP");
-        ENCODINGS.put("csEUCPkdFmtJapanese",  "EUC_JP");
-        ENCODINGS.put("Extended_UNIX_Code_Packed_Format_for_Japanese", "EUC_JP");
-
-        ENCODINGS.put("csBig5",               "Big5");
+        ENCODINGS.put("CP1252",          "Cp1252");
     }
 
     public final static String MIME_TYPE_CSS = "text/css";
@@ -271,7 +224,7 @@ public class Parser
      */
     public void parseStyleSheet(InputSource source) 
         throws CSSException, IOException {
-        scanner = new Scanner(characterStream(source, null), null);
+        scanner = new Scanner(characterStream(source, null));
 
         try {
             documentHandler.startDocument(source);
@@ -289,9 +242,9 @@ public class Parser
                 }
                 break;
             case LexicalUnits.COMMENT:
-                documentHandler.comment(scanner.currentValue());
+                documentHandler.comment(scanner.getStringValue());
             }
-            
+
             skipSpacesAndCDOCDC();
             for (;;) {
                 if (current == LexicalUnits.IMPORT_SYMBOL) {
@@ -346,7 +299,7 @@ public class Parser
      */
     public void parseStyleDeclaration(InputSource source) 
         throws CSSException, IOException {
-        scanner = new Scanner(characterStream(source, null), null);
+        scanner = new Scanner(characterStream(source, null));
         nextIgnoreSpaces();
         try {
             parseStyleDeclaration(false);
@@ -359,7 +312,7 @@ public class Parser
      * <b>SAC</b>: Implements {@link org.w3c.css.sac.Parser#parseRule(InputSource)}.
      */
     public void parseRule(InputSource source) throws CSSException, IOException {
-        scanner = new Scanner(characterStream(source, null), null);
+        scanner = new Scanner(characterStream(source, null));
         nextIgnoreSpaces();
         parseRule();
     }
@@ -369,7 +322,7 @@ public class Parser
      */    
     public SelectorList parseSelectors(InputSource source)
         throws CSSException, IOException {
-        scanner = new Scanner(characterStream(source, null), null);
+        scanner = new Scanner(characterStream(source, null));
         nextIgnoreSpaces();
 
         return parseSelectorList();
@@ -381,7 +334,7 @@ public class Parser
      */    
     public LexicalUnit parsePropertyValue(InputSource source)
         throws CSSException, IOException {
-        scanner = new Scanner(characterStream(source, null), null);
+        scanner = new Scanner(characterStream(source, null));
         nextIgnoreSpaces();
         
         LexicalUnit exp = null;
@@ -390,7 +343,7 @@ public class Parser
             exp = parseExpression(false);
         } catch (CSSParseException e) {
             reportError(e);
-            return null;
+            throw e;
         }
 
         if (current != LexicalUnits.EOF) {
@@ -405,7 +358,7 @@ public class Parser
      */    
     public boolean parsePriority(InputSource source)
         throws CSSException, IOException {
-        scanner = new Scanner(characterStream(source, null), null);
+        scanner = new Scanner(characterStream(source, null));
         nextIgnoreSpaces();
         switch (current) {
         case LexicalUnits.EOF:
@@ -413,7 +366,7 @@ public class Parser
         case LexicalUnits.IMPORT_SYMBOL:
             return true;
         default:
-            reportError("token");
+            reportError("token", new Object[] { new Integer(current) });
             return false;
         }
     }
@@ -422,7 +375,7 @@ public class Parser
      * Parses a rule.
      */
     protected void parseRule() {
-        switch (scanner.currentType()) {
+        switch (scanner.getType()) {
         case LexicalUnits.IMPORT_SYMBOL:
             nextIgnoreSpaces();
             parseImportRule();
@@ -452,8 +405,8 @@ public class Parser
      * Parses an unknown rule.
      */
     protected void parseAtRule() {
-        String text = scanner.scanAtRule();
-        documentHandler.ignorableAtRule(text);
+        scanner.scanAtRule();
+        documentHandler.ignorableAtRule(scanner.getStringValue());
         nextIgnoreSpaces();
     }
 
@@ -468,7 +421,7 @@ public class Parser
             return;
         case LexicalUnits.STRING:
         case LexicalUnits.URI:
-            uri = scanner.currentValue();
+            uri = scanner.getStringValue();
             nextIgnoreSpaces();
         }
 
@@ -494,7 +447,7 @@ public class Parser
      */
     protected CSSSACMediaList parseMediaList() {
         CSSSACMediaList result = new CSSSACMediaList();
-        result.append(scanner.currentValue());
+        result.append(scanner.getStringValue());
         nextIgnoreSpaces();
         
         while (current == LexicalUnits.COMMA) {
@@ -505,7 +458,7 @@ public class Parser
                 reportError("identifier");
                 break;
             case LexicalUnits.IDENTIFIER:
-                result.append(scanner.currentValue());
+                result.append(scanner.getStringValue());
                 nextIgnoreSpaces();
             }
         }
@@ -553,7 +506,7 @@ public class Parser
         String ppage = null;
 
         if (current == LexicalUnits.IDENTIFIER) {
-            page = scanner.currentValue();
+            page = scanner.getStringValue();
             nextIgnoreSpaces();
 
             if (current == LexicalUnits.COLON) {
@@ -563,7 +516,7 @@ public class Parser
                     reportError("identifier");
                     return;
                 }
-                ppage = scanner.currentValue();
+                ppage = scanner.getStringValue();
                 nextIgnoreSpaces();
             }
         }
@@ -615,8 +568,14 @@ public class Parser
             } else {
                 nextIgnoreSpaces();
             
-                while (current != LexicalUnits.RIGHT_CURLY_BRACE) {
-                    parseRuleSet();
+                loop: for (;;) {
+                    switch (current) {
+                    case LexicalUnits.EOF:
+                    case LexicalUnits.RIGHT_CURLY_BRACE:
+                        break loop;
+                    default:
+                        parseRuleSet();
+                    }
                 }
 
                 nextIgnoreSpaces();
@@ -738,7 +697,7 @@ public class Parser
         switch (current) {
         case LexicalUnits.IDENTIFIER:
             result = selectorFactory.createElementSelector(null,
-                                                           scanner.currentValue());
+                                                           scanner.getStringValue());
             next();
             break;
         case LexicalUnits.ANY:
@@ -751,21 +710,22 @@ public class Parser
             Condition c = null;
             switch (current) {
             case LexicalUnits.HASH:
-                c = conditionFactory.createIdCondition(scanner.currentValue());
+                c = conditionFactory.createIdCondition(scanner.getStringValue());
                 next();
                 break;
             case LexicalUnits.DOT:
                 if (next() != LexicalUnits.IDENTIFIER) {
                     throw createCSSParseException("identifier");
                 }
-                c = conditionFactory.createClassCondition(null, scanner.currentValue());
+                c = conditionFactory.createClassCondition(null,
+                                                          scanner.getStringValue());
                 next();
                 break;
             case LexicalUnits.LEFT_BRACKET:
                 if (nextIgnoreSpaces() != LexicalUnits.IDENTIFIER) {
                     throw createCSSParseException("identifier");
                 }
-                String name = scanner.currentValue();
+                String name = scanner.getStringValue();
                 int op = nextIgnoreSpaces();
                 switch (op) {
                 default:
@@ -784,7 +744,7 @@ public class Parser
                         throw createCSSParseException("identifier.or.string");
                     case LexicalUnits.STRING:
                     case LexicalUnits.IDENTIFIER:
-                        val = scanner.currentValue();
+                        val = scanner.getStringValue();
                         nextIgnoreSpaces();
                     }
                     if (current != LexicalUnits.RIGHT_BRACKET) {
@@ -811,7 +771,7 @@ public class Parser
             case LexicalUnits.COLON:
                 switch (nextIgnoreSpaces()) {
                 case LexicalUnits.IDENTIFIER:
-                    String val = scanner.currentValue();
+                    String val = scanner.getStringValue();
                     if (isPseudoElement(val)) {
                         if (pseudoElement != null) {
                             throw createCSSParseException("duplicate.pseudo.element");
@@ -823,11 +783,11 @@ public class Parser
                     next();
                     break;
                 case LexicalUnits.FUNCTION:
-                    String func = scanner.currentValue();
+                    String func = scanner.getStringValue();
                     if (nextIgnoreSpaces() != LexicalUnits.IDENTIFIER) {
                         throw createCSSParseException("identifier");
                     }
-                    String lang = scanner.currentValue();
+                    String lang = scanner.getStringValue();
                     if (nextIgnoreSpaces() != LexicalUnits.RIGHT_BRACE) {
                         throw createCSSParseException("right.brace");
                     }
@@ -906,7 +866,7 @@ public class Parser
             case LexicalUnits.IDENTIFIER:
             }
 
-            String name = scanner.currentValue();
+            String name = scanner.getStringValue();
         
             if (nextIgnoreSpaces() != LexicalUnits.COLON) {
                 throw createCSSParseException("colon");
@@ -958,7 +918,8 @@ public class Parser
             if (param) {
                 if (current == LexicalUnits.RIGHT_BRACE) {
                     if (op) {
-                        throw createCSSParseException("token");
+                        throw createCSSParseException("token",
+                                                 new Object[] { new Integer(current) });
                     }
                     return result;
                 }
@@ -970,7 +931,8 @@ public class Parser
                 case LexicalUnits.RIGHT_CURLY_BRACE:
                 case LexicalUnits.EOF:
                     if (op) {
-                        throw createCSSParseException("token");
+                        throw createCSSParseException("token",
+                                                 new Object[] { new Integer(current) });
                     }
                     return result;
                 default:
@@ -997,7 +959,7 @@ public class Parser
             switch (current) {
             case LexicalUnits.INTEGER:
                 int s = (plus) ? 1 : -1;
-                int val = s * Integer.parseInt(scanner.currentValue());
+                int val = s * Integer.parseInt(scanner.getStringValue());
                 nextIgnoreSpaces();
                 return CSSLexicalUnit.createInteger(val, prev);
             case LexicalUnits.REAL:
@@ -1057,17 +1019,18 @@ public class Parser
                 return parseFunction(plus, prev);
             }
             if (sgn) {
-                throw createCSSParseException("token");
+                throw createCSSParseException("token",
+                                              new Object[] { new Integer(current) });
             }
         }
         switch (current) {
         case LexicalUnits.STRING:
-            String val = scanner.currentValue();
+            String val = scanner.getStringValue();
             nextIgnoreSpaces();
             return CSSLexicalUnit.createString(LexicalUnit.SAC_STRING_VALUE,
                                                val, prev);
         case LexicalUnits.IDENTIFIER:
-            val = scanner.currentValue();
+            val = scanner.getStringValue();
             nextIgnoreSpaces();
             if (val.equalsIgnoreCase("inherit")) {
                 return CSSLexicalUnit.createSimple(LexicalUnit.SAC_INHERIT,
@@ -1077,15 +1040,15 @@ public class Parser
                                                    val, prev);
             }
         case LexicalUnits.URI:
-            val = scanner.currentValue();
+            val = scanner.getStringValue();
             nextIgnoreSpaces();
             return CSSLexicalUnit.createString(LexicalUnit.SAC_URI,
                                                val, prev);
         case LexicalUnits.HASH:
             return hexcolor(prev);
         default:
-            new Exception().printStackTrace();
-            throw createCSSParseException("token" + current);
+            throw createCSSParseException("token",
+                                          new Object[] { new Integer(current) });
         }
     }
 
@@ -1093,13 +1056,14 @@ public class Parser
      * Parses a CSS2 function.
      */
     protected LexicalUnit parseFunction(boolean positive, LexicalUnit prev) {
-        String name = scanner.currentValue();
+        String name = scanner.getStringValue();
         nextIgnoreSpaces();
         
         LexicalUnit params = parseExpression(true);
 
         if (current != LexicalUnits.RIGHT_BRACE) {
-            throw createCSSParseException("token");
+            throw createCSSParseException("token",
+                                          new Object[] { new Integer(current) });
         }
         nextIgnoreSpaces();
 
@@ -1432,7 +1396,7 @@ public class Parser
      * Converts a hash unit to a RGB color.
      */
     protected LexicalUnit hexcolor(LexicalUnit prev) {
-        String val = scanner.currentValue();
+        String val = scanner.getStringValue();
         int len = val.length();
         LexicalUnit params = null;
         switch (len) {
@@ -1443,7 +1407,7 @@ public class Parser
             if (!ScannerUtilities.isCSSHexadecimalCharacter(rc) ||
                 !ScannerUtilities.isCSSHexadecimalCharacter(gc) ||
                 !ScannerUtilities.isCSSHexadecimalCharacter(bc)) {
-                throw createCSSParseException("rgb.color");
+                throw createCSSParseException("rgb.color", new Object[] { val });
             }
             int t;
             int r = t = (rc >= '0' && rc <= '9') ? rc - '0' : rc - 'a' + 10;
@@ -1493,7 +1457,7 @@ public class Parser
             tmp = CSSLexicalUnit.createInteger(b, tmp);
             break;
         default:
-            throw createCSSParseException("rgb.color");
+            throw createCSSParseException("rgb.color", new Object[] { val });
         }
         nextIgnoreSpaces();
         return CSSLexicalUnit.createPredefinedFunction(LexicalUnit.SAC_RGBCOLOR,
@@ -1505,10 +1469,9 @@ public class Parser
      * Returns the Java encoding string mapped with the given CSS encoding string.
      */
     protected String javaEncoding(String encoding) {
-        String result = (String)ENCODINGS.get(encoding);
+        String result = (String)ENCODINGS.get(encoding.toUpperCase());
         if (result == null) {
-            throw new CSSException(formatMessage("encoding",
-                                                 new Object[] { encoding }));
+            throw createCSSParseException("encoding", new Object[] { encoding });
         }
         return result;
     }
@@ -1520,27 +1483,27 @@ public class Parser
      */
     protected Reader characterStream(InputSource source, String enc) {
         Reader r = source.getCharacterStream();
-        if (r != null) {
-            return r;
-        }
-
-        InputStream is = source.getByteStream();
-        if (is != null) {
-            return characterStream(source, is, enc);
-        }
-
-        String uri = source.getURI();
-        if (uri != null) {
-            try {
-                ParsedURL purl = new ParsedURL(uri);
-                return characterStream(source, 
-                                       purl.openStreamRaw(MIME_TYPE_CSS), 
-                                       enc);
-            } catch (IOException e) {
-                throw new CSSException(e);
+        if (r == null) {
+            InputStream is = source.getByteStream();
+            if (is != null) {
+                r = characterStream(source, is, enc);
+            } else {
+                String uri = source.getURI();
+                if (uri != null) {
+                    try {
+                        ParsedURL purl = new ParsedURL(uri);
+                        r = characterStream(source, 
+                                            purl.openStreamRaw(MIME_TYPE_CSS), 
+                                            enc);
+                    } catch (IOException e) {
+                        throw new CSSException(e);
+                    }
+                } else {
+                    throw new CSSException("Empty source");
+                }
             }
         }
-        throw new CSSException("Empty source");
+        return r;
     }
 
     /**
@@ -1575,7 +1538,7 @@ public class Parser
      * Skips the white spaces.
      */
     protected int skipSpaces() {
-        int lex = scanner.currentType();
+        int lex = scanner.getType();
         while (lex == LexicalUnits.SPACE) {
             lex = next();
         }
@@ -1595,6 +1558,7 @@ public class Parser
             case LexicalUnits.CDO:
             case LexicalUnits.CDC:
             }
+            scanner.clearBuffer();
             next();
         }
         return current;
@@ -1606,7 +1570,7 @@ public class Parser
     protected float number(boolean positive) {
         try {
             float sgn = (positive) ? 1 : -1;
-            String val = scanner.currentValue();
+            String val = scanner.getStringValue();
             nextIgnoreSpaces();
             return sgn * Float.parseFloat(val);
         } catch (NumberFormatException e) {
@@ -1620,7 +1584,7 @@ public class Parser
     protected LexicalUnit dimension(boolean positive, LexicalUnit prev) {
         try {
             float sgn = (positive) ? 1 : -1;
-            String val = scanner.currentValue();
+            String val = scanner.getStringValue();
             int i;
             loop: for (i = 0; i < val.length(); i++) {
                 switch (val.charAt(i)) {
@@ -1647,9 +1611,10 @@ public class Parser
     protected int next() {
         try {
             for (;;) {
+                scanner.clearBuffer();
                 current = scanner.next();
                 if (current == LexicalUnits.COMMENT) {
-                    documentHandler.comment(scanner.currentValue());
+                    documentHandler.comment(scanner.getStringValue());
                 } else {
                     break;
                 }
@@ -1667,10 +1632,11 @@ public class Parser
     protected int nextIgnoreSpaces() {
         try {
             loop: for (;;) {
+                scanner.clearBuffer();
                 current = scanner.next();
                 switch (current) {
                 case LexicalUnits.COMMENT:
-                    documentHandler.comment(scanner.currentValue());
+                    documentHandler.comment(scanner.getStringValue());
                     break;
                 default:
                     break loop;
@@ -1688,7 +1654,14 @@ public class Parser
      * Reports a parsing error.
      */
     protected void reportError(String key) {
-        reportError(createCSSParseException(key));
+        reportError(key, null);
+    }
+
+    /**
+     * Reports a parsing error.
+     */
+    protected void reportError(String key, Object[] params) {
+        reportError(createCSSParseException(key, params));
     }
 
     /**
@@ -1705,7 +1678,6 @@ public class Parser
             case LexicalUnits.SEMI_COLON:
             case LexicalUnits.RIGHT_CURLY_BRACE:
                 if (--cbraces == 0) {
-                    nextIgnoreSpaces();
                     return;
                 }
             case LexicalUnits.LEFT_CURLY_BRACE:
@@ -1719,7 +1691,14 @@ public class Parser
      * Creates a parse exception.
      */
     protected CSSParseException createCSSParseException(String key) {
-        return new CSSParseException(formatMessage(key, null),
+        return createCSSParseException(key, null);
+    }
+
+    /**
+     * Creates a parse exception.
+     */
+    protected CSSParseException createCSSParseException(String key, Object[] params) {
+        return new CSSParseException(formatMessage(key, params),
                                      documentURI,
                                      scanner.getLine(),
                                      scanner.getColumn());

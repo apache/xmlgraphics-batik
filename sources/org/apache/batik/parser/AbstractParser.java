@@ -18,7 +18,6 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import org.apache.batik.i18n.LocalizableSupport;
-import org.apache.batik.util.InputBuffer;
 
 /**
  * This class is the superclass of all parsers. It provides localization
@@ -47,14 +46,44 @@ public abstract class AbstractParser implements Parser {
         new LocalizableSupport(BUNDLE_CLASSNAME);
 
     /**
-     * The current input buffer.
+     * The reader.
      */
-    protected InputBuffer inputBuffer;
+    protected Reader reader;
+
+    /**
+     * The current line.
+     */
+    protected int line = 1;
+
+    /**
+     * The current column.
+     */
+    protected int column = 1;
+
+    /**
+     * The buffer.
+     */
+    protected char[] buffer = new char[4096];
+
+    /**
+     * The current position in the buffer.
+     */
+    protected int position;
+
+    /**
+     * The current count of characters in the buffer.
+     */
+    protected int count;
 
     /**
      * The current character.
      */
     protected int current;
+
+    /**
+     * The previous char.
+     */
+    protected int previous;
 
     /**
      * Returns the current character value.
@@ -106,14 +135,7 @@ public abstract class AbstractParser implements Parser {
      * Initializes the parser.
      */
     protected void initialize(Reader r) {
-        try {
-            inputBuffer = new InputBuffer(r);
-        } catch (IOException e) {
-            errorHandler.error
-                (new ParseException
-                    (createErrorMessage("io.exception", null),
-                     e));
-        }
+        reader = r;
     }
 
     /**
@@ -122,8 +144,45 @@ public abstract class AbstractParser implements Parser {
      */
     protected void read() {
         try {
-            current = inputBuffer.current();
-            inputBuffer.next();
+            if (position == count) {
+                position = 0;
+                count = reader.read(buffer, 0, buffer.length);
+                if (count == -1) {
+                    count = 0;
+                    current = -1;
+                    return;
+                }
+            }
+            int c = buffer[position++];
+
+            switch (c) {
+            case -1:
+                current = previous = -1;
+                return;
+
+            case 10:
+                if (previous == 13) {
+                    previous = 10;
+                    read();
+                    return;
+                }
+                line++;
+                column = 1;
+                previous = c;
+                break;
+
+            case 13:
+                previous = c;
+                c = 10;
+                line++;
+                column = 1;
+                break;
+
+            default:
+                previous = c;
+                column++;
+            }
+            current = c;
         } catch (IOException e) {
             errorHandler.error
                 (new ParseException
@@ -140,8 +199,8 @@ public abstract class AbstractParser implements Parser {
     protected void reportError(String key, Object[] args)
         throws ParseException {
 	errorHandler.error(new ParseException(createErrorMessage(key, args),
-					      inputBuffer.getLine(),
-                                              inputBuffer.getColumn()));
+					      line,
+                                              column));
     }
 
     /**

@@ -147,7 +147,8 @@
 
                 <p>
                 The key class for building the DOM tree is the
-                <code>SVGOMDocument</code> class.  When an instance of this class
+                <code>ExtensibleSVGDOMImplementation</code> class.
+                When an instance of this class
                 is constructed it searches for instances of the
                 <code>org.apache.batik.dom.svg.DomExtension</code>
                 Service Provider interface.  It then calls the
@@ -175,7 +176,7 @@
                 and
                 <code>org.apache.batik.extension.svg.BatikRegularPolygonElement</code>.
                 These examples also include the required <code>DomExtension</code> instance to
-                register the elements with the <code>SVGOMDocument</code>.
+                register the elements with the <code>ExtensibleSVGDOMImplementation</code>.
                 </p>
             </s2>
 

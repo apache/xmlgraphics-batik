@@ -240,11 +240,11 @@ public class XMLUtilities extends XMLCharacters {
 
         for (;;) {
             c = r.read();
-            if (!isXMLVersionCharacter((char)c)) {
-                return e;
-            }
             if (c == sc) {
                 break;
+            }
+            if (!isXMLVersionCharacter((char)c)) {
+                return e;
             }
         }
 
@@ -296,6 +296,7 @@ public class XMLUtilities extends XMLCharacters {
 
         StringBuffer enc = new StringBuffer();
         for (;;) {
+            c = r.read();
             if (c == -1) {
                 return e;
             }
