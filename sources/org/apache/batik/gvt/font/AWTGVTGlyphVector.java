@@ -472,23 +472,35 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
         return glyphOutlines[glyphIndex];
     }
 
+    // This is true if GlyphVector.getGlyphOutline returns glyph outlines
+    // that are positioned (if it is false the outlines are always at 0,0).
     private static final boolean outlinesPositioned;
+    // This is true if Graphics2D.drawGlyphVector works for the
+    // current JDK/OS combination.
+    private static final boolean drawGlyphVectorWorks;
+    // This is true if Graphics2D.drawGlyphVector will correctly
+    // render Glyph Vectors with per glyph transforms.
     private static final boolean glyphVectorTransformWorks;
 
     static {
         String s = System.getProperty("java.specification.version");
         if ("1.4".compareTo(s) <= 0) {
             outlinesPositioned = true;
+            drawGlyphVectorWorks = true;
             glyphVectorTransformWorks = true;
         } else if ("Mac OS X".equals(System.getProperty("os.name"))) {
             outlinesPositioned = true;
-            glyphVectorTransformWorks = false;  // Note sure about this...
+            drawGlyphVectorWorks = false;
+            glyphVectorTransformWorks = false;
         } else {
             outlinesPositioned = false;
+            drawGlyphVectorWorks = true;
             glyphVectorTransformWorks = false;
         }
     }
 
+    // Returns true if GlyphVector.getGlyphOutlines returns glyph outlines
+    // that are positioned (otherwise they are always at 0,0).
     static boolean outlinesPositioned() {
         return outlinesPositioned;
     }
@@ -760,7 +772,7 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
                                     (stroke == null)))
             return;
 
-        boolean useHinting = true;
+        boolean useHinting = drawGlyphVectorWorks;
         if ((stroke != null) && (strokePaint != null))
             useHinting = false;
 
@@ -772,6 +784,7 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
 
         final int typeGRot   = AffineTransform.TYPE_GENERAL_ROTATION;
         final int typeGTrans = AffineTransform.TYPE_GENERAL_TRANSFORM;
+
         if (useHinting) {
             // Check if usr->dev transform has general rotation,
             // or shear..
