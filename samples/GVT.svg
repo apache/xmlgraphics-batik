@@ -36,7 +36,7 @@
 	        <feGaussianBlur in="SourceAlpha" stdDeviation="6" result="blur"/>
             <feSpecularLighting in="blur" surfaceScale="-3" 
                 specularConstant="1" specularExponent="20" 
-                lighting-color="white"  result="spec">
+                lighting-color="white"  result="spec" kernelUnitLength="1" >
                 <feDistantLight azimuth="45" elevation="60" />
 	    </feSpecularLighting>
 
