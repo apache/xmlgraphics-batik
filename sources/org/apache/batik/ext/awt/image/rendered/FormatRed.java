@@ -135,9 +135,7 @@ public class FormatRed extends AbstractRed {
     }
 
     public WritableRaster copyData(WritableRaster wr) {
-        ColorModel   cm   = getColorModel();
-        SampleModel  sm   = getSampleModel();
-
+        ColorModel  cm    = getColorModel();
         CachableRed cr    = getSource();
         ColorModel  srcCM = cr.getColorModel();
         SampleModel srcSM = cr.getSampleModel();
@@ -207,8 +205,6 @@ public class FormatRed extends AbstractRed {
             preMult = false;
 
         if (sm instanceof ComponentSampleModel) {
-            ComponentSampleModel csm = (ComponentSampleModel)sm;
-
             int [] bitsPer = new int[bands];
             for (int i=0; i<bands; i++)
                 bitsPer[i] = bits;

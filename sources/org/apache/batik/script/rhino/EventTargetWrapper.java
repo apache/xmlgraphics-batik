@@ -243,9 +243,9 @@ class EventTargetWrapper extends NativeJavaObject {
     private final static String NAME = "name";
 
     EventTargetWrapper(Scriptable scope, EventTarget object) {
-        super(scope, object, (Class)null);
+        super(scope, object, null);
         try {
-            HashMap listenerMap = new HashMap(2);;
+            HashMap listenerMap = new HashMap(2);
             methodadd = new RhinoNativeJavaAddMethod
                 (object.getClass().getMethod(ADD_NAME,ARGS_TYPE), 
                  ADD_NAME, listenerMap);

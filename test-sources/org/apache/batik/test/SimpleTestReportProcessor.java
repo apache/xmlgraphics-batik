@@ -50,10 +50,9 @@
 
 package org.apache.batik.test;
 
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.io.PrintWriter;
-import java.io.OutputStreamWriter;
 
 /**
  * A simple implementation of the <tt>TestReportProcessor</tt> interface

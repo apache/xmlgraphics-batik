@@ -50,7 +50,6 @@
 
 package org.apache.batik.ext.awt.image;
 
-import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
@@ -89,8 +88,6 @@ import org.apache.batik.ext.awt.image.rendered.Any2sRGBRed;
 import org.apache.batik.ext.awt.image.rendered.BufferedImageCachableRed;
 import org.apache.batik.ext.awt.image.rendered.CachableRed;
 import org.apache.batik.ext.awt.image.rendered.FormatRed;
-import org.apache.batik.ext.awt.image.rendered.MultiplyAlphaRed;
-import org.apache.batik.ext.awt.image.rendered.PadRed;
 import org.apache.batik.ext.awt.image.rendered.RenderedImageCachableRed;
 import org.apache.batik.ext.awt.image.rendered.TranslateRed;
 
@@ -327,7 +324,6 @@ public class GraphicsUtil {
                                        cr.getTileGridYOffset());
                 }
 
-                DataBuffer db = wr.getDataBuffer();
                 int yloc = yt0*th+cr.getTileGridYOffset();
                 int skip = (clipR.y-yloc)/th;
                 if (skip <0) skip = 0;
@@ -823,8 +819,6 @@ public class GraphicsUtil {
             y1 = src.getMinY()+src.getHeight()-1;
 
         int width  = x1-x0+1;
-        int height = y1-y0+1;
-
         int [] data = null;
 
         for (int y = y0; y <= y1 ; y++)  {
@@ -888,7 +882,6 @@ public class GraphicsUtil {
      * @return    A writable copy of <tt>ras</tt>
      */
     public static WritableRaster copyRaster(Raster ras, int minX, int minY) {
-        WritableRaster newSrcWR;
         WritableRaster ret = Raster.createWritableRaster
             (ras.getSampleModel(),
              new Point(0,0));
@@ -1128,10 +1121,7 @@ public class GraphicsUtil {
         copyData(BufferedImage src, Rectangle srcRect,
                  BufferedImage dst, Point destP) {
 
-        ColorSpace srcCS = src.getColorModel().getColorSpace();
-        ColorSpace dstCS = dst.getColorModel().getColorSpace();
-
-        /*
+       /*
         if (srcCS != dstCS)
             throw new IllegalArgumentException
                 ("Images must be in the same ColorSpace in order "+
@@ -1160,7 +1150,6 @@ public class GraphicsUtil {
         Raster         srcR  = src.getRaster();
         WritableRaster dstR  = dst.getRaster();
         int            bands = dstR.getNumBands();
-        float          norm;
 
         int dx = destP.x-srcRect.x;
         int dy = destP.y-srcRect.y;
@@ -1168,7 +1157,6 @@ public class GraphicsUtil {
         int w  = srcRect.width;
         int x0 = srcRect.x;
         int y0 = srcRect.y;
-        int x1 = x0+srcRect.width-1;
         int y1 = y0+srcRect.height-1;
 
         if (!srcAlpha) {
@@ -1241,7 +1229,7 @@ public class GraphicsUtil {
                             }
                         }
                     }
-                };
+                }
                 dstR.setPixels(x0+dx, y+dy, w, 1, pixel);
             }
         } else if (dstAlpha && !dst.isAlphaPremultiplied()) {
@@ -1401,7 +1389,7 @@ public class GraphicsUtil {
             = (db.getOffset() +
                sppsm.getOffset(wr.getMinX()-wr.getSampleModelTranslateX(),
                                wr.getMinY()-wr.getSampleModelTranslateY()));
-        int pixel, a, aFP, n=0;
+        int pixel, a, aFP;
         // Access the pixel data array
         final int pixels[] = db.getBankData()[0];
         for (int y=0; y<wr.getHeight(); y++) {
@@ -1440,7 +1428,6 @@ public class GraphicsUtil {
             = (db.getOffset() +
                sppsm.getOffset(wr.getMinX()-wr.getSampleModelTranslateX(),
                                wr.getMinY()-wr.getSampleModelTranslateY()));
-        int n=0;
         // Access the pixel data array
         final int pixels[] = db.getBankData()[0];
         for (int y=0; y<wr.getHeight(); y++) {

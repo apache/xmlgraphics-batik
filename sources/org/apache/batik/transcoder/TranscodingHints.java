@@ -94,7 +94,7 @@ public class TranscodingHints extends HashMap {
      * <tt>TranscodingHints.Key</tt>
      */
     public boolean containsKey(Object key) {
-        return super.containsKey((Key)key);
+        return super.containsKey(key);
     }
 
     /**
@@ -105,7 +105,7 @@ public class TranscodingHints extends HashMap {
      * <tt>TranscodingHints.Key</tt>
      */
     public Object get(Object key) {
-        return super.get((Key) key);
+        return super.get(key);
     }
 
     /**
@@ -137,7 +137,7 @@ public class TranscodingHints extends HashMap {
      * <tt>TranscodingHints.Key</tt>
      */
     public Object remove(Object key) {
-        return super.remove((Key) key);
+        return super.remove(key);
     }
 
     /**

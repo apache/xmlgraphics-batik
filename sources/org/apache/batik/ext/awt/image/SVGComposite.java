@@ -1005,9 +1005,6 @@ public class SVGComposite
              final int [] dstInPixels,  final int dstInAdjust,  int dstInSp,
              final int [] dstOutPixels, final int dstOutAdjust, int dstOutSp) {
 
-            final int norm = (1<<24)/255;
-            final int pt5  = (1<<23);
-
             int srcP, dstP, a, r, g, b;
 
             for (int y = 0; y<height; y++) {
@@ -1083,9 +1080,6 @@ public class SVGComposite
              final int [] srcPixels,    final int srcAdjust,    int srcSp,
              final int [] dstInPixels,  final int dstInAdjust,  int dstInSp,
              final int [] dstOutPixels, final int dstOutAdjust, int dstOutSp) {
-
-            final int norm = (1<<24)/255;
-            final int pt5  = (1<<23);
 
             int srcP, dstP;
             int a, r, g, b;

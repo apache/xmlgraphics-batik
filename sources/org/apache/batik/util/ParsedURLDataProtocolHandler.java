@@ -83,8 +83,6 @@ public class ParsedURLDataProtocolHandler
         DataParsedURLData ret = new DataParsedURLData();
 
         int pidx=0, idx;
-        int len = urlStr.length();
-
         idx = urlStr.indexOf(':');
         if (idx != -1) {
             // May have a protocol spec...

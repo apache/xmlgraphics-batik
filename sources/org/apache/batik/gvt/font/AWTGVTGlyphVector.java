@@ -837,7 +837,6 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
         }
             
         if (useHinting) {
-            double [] mat = new double[4];
             for (int i=0; i<numGlyphs; i++) {
                 if (!glyphVisible[i]) {
                     useHinting = false;

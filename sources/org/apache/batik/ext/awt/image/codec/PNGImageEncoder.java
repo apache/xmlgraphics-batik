@@ -314,7 +314,7 @@ public class PNGImageEncoder extends ImageEncoderImpl {
         super(output, param);
 
         if (param != null) {
-            this.param = (PNGEncodeParam)param;
+            this.param = param;
         }
         this.dataOutput = new DataOutputStream(output);
     }
@@ -786,8 +786,6 @@ public class PNGImageEncoder extends ImageEncoderImpl {
         int numChunks = param.getNumPrivateChunks();
         for (int i = 0; i < numChunks; i++) {
             String type = param.getPrivateChunkType(i);
-            char char3 = type.charAt(3);
-
             byte[] data = param.getPrivateChunkData(i);
 
             ChunkStream cs = new ChunkStream(type);

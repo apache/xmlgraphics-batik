@@ -514,8 +514,8 @@ public class PNGRed extends AbstractRed {
     private static String getChunkType(DataInputStream distream) {
         try {
             distream.mark(8);
-            int length = distream.readInt();
-            int type = distream.readInt();
+            /* int length = */ distream.readInt();
+            int type      =    distream.readInt();
             distream.reset();
 
             String typeString = new String();
@@ -1195,7 +1195,7 @@ public class PNGRed extends AbstractRed {
             significantBits = new int[inputBands];
         }
         for (int i = 0; i < significantBits.length; i++) {
-            int bits = (int)chunk.getByte(i);
+            int bits = chunk.getByte(i);
             int depth = (colorType == PNG_COLOR_PALETTE) ? 8 : bitDepth;
             if (bits <= 0 || bits > depth) {
                 // Error -- significant bits must be between 0 and
@@ -1380,7 +1380,7 @@ public class PNGRed extends AbstractRed {
         while ((b = chunk.getByte(textIndex++)) != 0) {
             key += (char)b;
         }
-        int method = chunk.getByte(textIndex++);
+        /* int method = */ chunk.getByte(textIndex++);
 
         try {
             int length = chunk.getLength() - textIndex;

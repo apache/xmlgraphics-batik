@@ -397,7 +397,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
      * Invoked when an MutationEvent of type 'DOMNodeInserted' is fired.
      */
     public void handleDOMNodeRemovedEvent(MutationEvent evt) {
-        EventTarget evtTarget = (EventTarget)evt.getTarget();
+        EventTarget evtTarget = evt.getTarget();
         evtTarget.removeEventListener("DOMNodeRemoved",
                                       childNodeRemovedEventListener,
                                       true);
@@ -1090,8 +1090,6 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         String dyAtt = element.getAttributeNS(null, SVG_DY_ATTRIBUTE);
         String rotateAtt = element.getAttributeNS(null, SVG_ROTATE_ATTRIBUTE);
 
-        UnitProcessor.Context uctx = UnitProcessor.createContext(ctx, element);
-
         ArrayList al;
         int len;
 
@@ -1366,9 +1364,6 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         Map result = new HashMap();
         String s;
         float f;
-        short t;
-        boolean verticalText = false;
-
         result.put
         (GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER,
          element);
@@ -1407,8 +1402,6 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                    TextUtilities.convertFontStyle(element));
 
         // Font stretch
-        String fontStretchString = CSSUtilities.getComputedStyle
-            (element, SVGCSSEngine.FONT_STRETCH_INDEX).getStringValue();
         result.put(TextAttribute.WIDTH,
                    TextUtilities.convertFontStretch(element));
 
@@ -1750,8 +1743,6 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         }
 
         TextDecoration textDecoration = new TextDecoration(parent);
-
-        short t = val.getCssValueType();
 
         switch (val.getCssValueType()) {
         case CSSValue.CSS_VALUE_LIST:
@@ -2220,7 +2211,6 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
 
         int lastChar = getLastCharacterIndexForElement(aci,element);
 
-        StrokingTextPainter.TextRun lastRun = null;
         //retrieve the text run for the text node
         List list = getTextRuns((TextNode)node);
 
@@ -2256,7 +2246,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                                 charactersInRun++;
                                 k++;
                             }
-                            visible += (int)(charactersInRun*visibleGlyphs/glyphs);
+                            visible += (charactersInRun*visibleGlyphs/glyphs);
                         }
                         else{
                             int lastGlyphIndexFound = -1;
@@ -2427,7 +2417,6 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
     protected Point2D getEndPositionOfChar(Element element,int charnum ){
 
         AttributedCharacterIterator aci = ((TextNode)node).getAttributedCharacterIterator();
-        TextNode textNode = (TextNode)node;
 
         int firstChar = getFirstCharacterIndexForElement(aci,element);
 
@@ -2490,8 +2479,6 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
     protected float getRotationOfChar(Element element, int charnum){
 
         AttributedCharacterIterator aci = ((TextNode)node).getAttributedCharacterIterator();
-        TextNode textNode = (TextNode)node;
-
         //first the first character for the element
         int firstChar = getFirstCharacterIndexForElement(aci,element);
 
@@ -2854,7 +2841,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                                 charactersInRun++;
                                 k++;
                             }
-                            visible += (int)(charactersInRun*visibleGlyphs/glyphs);
+                            visible += (charactersInRun*visibleGlyphs/glyphs);
                             
                             if ( visible > charnum +1 ){
                                 visible = charnum +1;

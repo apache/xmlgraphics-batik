@@ -297,12 +297,12 @@ public class XMLTestReportProcessor
         // Create sub-directory name based on date and time
         //
         Calendar c = Calendar.getInstance();
-        String dirName = "" + c.get(c.YEAR) + "."
-            + makeTwoDigits(1 + c.get(c.MONTH)) + "." 
-            + makeTwoDigits(c.get(c.DAY_OF_MONTH)) + "-"
-            + makeTwoDigits(c.get(c.HOUR_OF_DAY)) + "h"
-            + makeTwoDigits(c.get(c.MINUTE)) + "m"
-            + makeTwoDigits(c.get(c.SECOND)) + "s";
+        String dirName = "" + c.get(Calendar.YEAR) + "."
+            + makeTwoDigits  (c.get(Calendar.MONTH)+1) + "." 
+            + makeTwoDigits  (c.get(Calendar.DAY_OF_MONTH)) + "-"
+            + makeTwoDigits  (c.get(Calendar.HOUR_OF_DAY)) + "h"
+            + makeTwoDigits  (c.get(Calendar.MINUTE)) + "m"
+            + makeTwoDigits  (c.get(Calendar.SECOND)) + "s";
         
         reportDate = dirName;
         reportDirectory = new File(baseReportDir, dirName);

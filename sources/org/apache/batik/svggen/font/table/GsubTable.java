@@ -68,10 +68,10 @@ public class GsubTable implements Table, LookupSubtableFactory {
         raf.seek(de.getOffset());
 
         // GSUB Header
-        int version = raf.readInt();
-        int scriptListOffset = raf.readUnsignedShort();
+        /* int version = */     raf.readInt();
+        int scriptListOffset  = raf.readUnsignedShort();
         int featureListOffset = raf.readUnsignedShort();
-        int lookupListOffset = raf.readUnsignedShort();
+        int lookupListOffset  = raf.readUnsignedShort();
 
         // Script List
         scriptList = new ScriptList(raf, de.getOffset() + scriptListOffset);

@@ -90,7 +90,7 @@ public class ScriptList {
         if (tag.length() != 4) {
             return null;
         }
-        int tagVal = (int)((tag.charAt(0)<<24)
+        int tagVal = ((tag.charAt(0)<<24)
             | (tag.charAt(1)<<16)
             | (tag.charAt(2)<<8)
             | tag.charAt(3));

@@ -260,7 +260,7 @@ public class ImageTagRegistry implements ErrorConstants {
 
         boolean needRawData = (colorSpace != null);
 
-        Filter ret = null;;
+        Filter ret = null;
 
         Iterator i = entries.iterator();
         while (i.hasNext()) {
@@ -318,7 +318,7 @@ public class ImageTagRegistry implements ErrorConstants {
             return extensions;
         
         extensions = new LinkedList();
-        Iterator iter = entries.iterator();;
+        Iterator iter = entries.iterator();
         while(iter.hasNext()) {
             RegistryEntry re = (RegistryEntry)iter.next();
             extensions.addAll(re.getStandardExtensions());
@@ -337,7 +337,7 @@ public class ImageTagRegistry implements ErrorConstants {
             return mimeTypes;
 
         mimeTypes = new LinkedList();
-        Iterator iter = entries.iterator();;
+        Iterator iter = entries.iterator();
         while(iter.hasNext()) {
             RegistryEntry re = (RegistryEntry)iter.next();
             mimeTypes.addAll(re.getMimeTypes());

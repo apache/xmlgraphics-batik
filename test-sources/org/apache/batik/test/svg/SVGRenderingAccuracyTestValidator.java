@@ -54,21 +54,17 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.StringReader;
-
 import java.net.URL;
-import java.net.MalformedURLException;
 
+import org.apache.batik.test.AbstractTest;
+import org.apache.batik.test.DefaultTestSuite;
+import org.apache.batik.test.Test;
+import org.apache.batik.test.TestReport;
+import org.apache.batik.test.TestReportValidator;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.image.ImageTranscoder;
 import org.apache.batik.transcoder.image.PNGTranscoder;
-
-import org.apache.batik.test.Test;
-import org.apache.batik.test.AbstractTest;
-import org.apache.batik.test.DefaultTestReport;
-import org.apache.batik.test.DefaultTestSuite;
-import org.apache.batik.test.TestReport;
-import org.apache.batik.test.TestReportValidator;
 
 /**
  * Validates the operation of <tt>SVGRenderingAccuracyTest</tt>

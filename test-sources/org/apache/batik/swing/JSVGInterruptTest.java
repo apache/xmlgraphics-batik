@@ -269,7 +269,7 @@ public class JSVGInterruptTest extends JSVGMemoryLeakTest {
 
     interface SetDelayable {
         public void setDelay(int delay);
-    };
+    }
 
     class MyLoaderListener implements SVGDocumentLoaderListener, SetDelayable {
         int delay = 0;
@@ -296,7 +296,7 @@ public class JSVGInterruptTest extends JSVGMemoryLeakTest {
                 JSVGInterruptTest.this.notifyAll();
             }
         }
-    };
+    }
 
     class MyBuildListener implements GVTTreeBuilderListener, SetDelayable {
         int delay = 0;
@@ -327,7 +327,7 @@ public class JSVGInterruptTest extends JSVGMemoryLeakTest {
                 JSVGInterruptTest.this.notifyAll();
             }
         }
-    };
+    }
 
     class MyOnloadListener 
         implements SVGLoadEventDispatcherListener, SetDelayable {
@@ -363,7 +363,7 @@ public class JSVGInterruptTest extends JSVGMemoryLeakTest {
                     JSVGInterruptTest.this.notifyAll();
                 }
             }
-        };
+        }
 
     class MyRenderListener implements GVTTreeRendererListener, SetDelayable {
             int delay = 0;
@@ -397,7 +397,7 @@ public class JSVGInterruptTest extends JSVGMemoryLeakTest {
                     JSVGInterruptTest.this.notifyAll();
                 }
             }
-        };
+        }
 
 
     static class StopRunnable implements Runnable {
@@ -412,7 +412,7 @@ public class JSVGInterruptTest extends JSVGMemoryLeakTest {
             else
                 EventQueue.invokeLater(this);
         }
-    };
+    }
 
 
     class DelayRunnable extends Thread {

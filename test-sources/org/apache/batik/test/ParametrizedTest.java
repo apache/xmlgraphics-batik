@@ -50,7 +50,6 @@
 
 package org.apache.batik.test;
 
-import java.util.Vector;
 
 /**
  * This test validates that test properties are inherited from the class that

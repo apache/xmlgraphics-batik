@@ -140,7 +140,7 @@ public class SVGClipPathElementBridge extends AbstractSVGBridge
             node = node.getNextSibling()) {
 
             // check if the node is a valid Element
-            if (node.getNodeType() != node.ELEMENT_NODE) {
+            if (node.getNodeType() != Node.ELEMENT_NODE) {
                 continue;
             }
 

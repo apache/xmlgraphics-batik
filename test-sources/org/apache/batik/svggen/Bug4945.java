@@ -50,10 +50,9 @@
 
 package org.apache.batik.svggen;
 
-import java.awt.*;
-import java.awt.geom.*;
-import java.awt.image.*;
-import javax.swing.ImageIcon;
+import java.awt.Graphics2D;
+import java.awt.Font;
+import java.awt.geom.AffineTransform;
 
 /**
  * This test validates fix to Bug #4945 which checks that 
@@ -64,7 +63,6 @@ import javax.swing.ImageIcon;
  */
 public class Bug4945 implements Painter {
     public void paint(Graphics2D g){
-        AffineTransform origAT = g.getTransform(); 
         Font origFont = g.getFont(); 
 
         g.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING,

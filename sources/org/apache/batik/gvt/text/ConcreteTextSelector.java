@@ -110,7 +110,6 @@ public class ConcreteTextSelector implements Selector {
     }
 
     public void mouseMoved(GraphicsNodeMouseEvent evt) {
-        ;
     }
 
     public void mousePressed(GraphicsNodeMouseEvent evt) {
@@ -189,7 +188,7 @@ public class ConcreteTextSelector implements Selector {
             }
             else {
                  try {
-                     t = (AffineTransform) t.createInverse();
+                     t = t.createInverse();
                  } catch (NoninvertibleTransformException ni) {
                  }
             }

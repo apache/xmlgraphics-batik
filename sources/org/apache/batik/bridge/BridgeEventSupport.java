@@ -398,9 +398,9 @@ public class BridgeEventSupport implements SVGConstants {
          */
         protected short getButton(GraphicsNodeMouseEvent evt) {
             short button = 1;
-            if ((evt.BUTTON1_MASK & evt.getModifiers()) != 0) {
+            if ((GraphicsNodeMouseEvent.BUTTON1_MASK & evt.getModifiers()) != 0) {
                 button = 0;
-            } else if ((evt.BUTTON3_MASK & evt.getModifiers()) != 0) {
+            } else if ((GraphicsNodeMouseEvent.BUTTON3_MASK & evt.getModifiers()) != 0) {
                 button = 2;
             }
             return button;
@@ -445,7 +445,7 @@ public class BridgeEventSupport implements SVGConstants {
                     }
                 }
             }
-            return (Element)target;
+            return target;
         }
     }
 }

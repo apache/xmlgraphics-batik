@@ -250,9 +250,8 @@ public class Base64Test extends AbstractTest {
         byte [] data2 = new byte[100];
         int off1=0;
         int off2=0;
-
-        boolean match = true;
         int idx=0;
+
         try {
             while(true) {
                 int len1 = is1.read(data1, off1, data1.length-off1);

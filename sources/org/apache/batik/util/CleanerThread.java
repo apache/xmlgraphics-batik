@@ -147,4 +147,4 @@ public class CleanerThread extends Thread {
             }
         }
     }
-};
+}

@@ -50,17 +50,22 @@
 
 package org.apache.batik.svggen;
 
-import org.apache.batik.swing.*;
-import org.apache.batik.svggen.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Shape;
+import java.awt.geom.Ellipse2D;
+
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Element;
+import org.w3c.dom.svg.SVGDocument;
+
+import org.apache.batik.bridge.BaseScriptingEnvironment;
+import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.bridge.GVTBuilder;
+import org.apache.batik.bridge.UserAgentAdapter;
 import org.apache.batik.dom.svg.SVGDOMImplementation;
-import org.w3c.dom.*;
-import org.w3c.dom.svg.*;
-import org.apache.batik.dom.svg.*;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.geom.*;
-import org.apache.batik.bridge.*;
-import org.apache.batik.test.*;
+import org.apache.batik.test.AbstractTest;
+import org.apache.batik.test.TestReport;
 
 /**
  * Checks that the content generated from the SVGGraphics2D and to which

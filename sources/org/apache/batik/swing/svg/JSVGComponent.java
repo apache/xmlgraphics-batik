@@ -50,14 +50,12 @@
 
 package org.apache.batik.swing.svg;
 
-import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
-import java.awt.Window;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
@@ -1518,7 +1516,7 @@ public class JSVGComponent extends JGVTComponent {
             if (nextUpdateManager != null) {
                 updateManager = nextUpdateManager;
                 nextUpdateManager = null;
-                updateManager.addUpdateManagerListener((SVGListener)this);
+                updateManager.addUpdateManagerListener(this);
                 updateManager.manageUpdates(renderer);
             }
         }
@@ -3094,7 +3092,6 @@ public class JSVGComponent extends JGVTComponent {
          * user agent.
          */
         public boolean supportExtension(String s) {
-            boolean ret = false;
             if ((svgUserAgent != null) &&
                 (svgUserAgent.supportExtension(s)))
                 return true;

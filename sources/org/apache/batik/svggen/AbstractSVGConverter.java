@@ -55,8 +55,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import java.util.Locale;
-
 /**
  * Abstract class with common utility methods used by subclasses
  * for specific convertion operations. It holds a reference to a

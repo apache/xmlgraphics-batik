@@ -209,8 +209,6 @@ public abstract class SVGShapeElementBridge extends AbstractGraphicsNodeBridge {
             if (!hasNewShapePainter) {
                 hasNewShapePainter = true;
                 ShapeNode shapeNode = (ShapeNode)node;
-                ShapePainter painter = 
-                    PaintServer.convertFillAndStroke(e, shapeNode, ctx);
                 shapeNode.setShapePainter(createShapePainter(ctx, e, shapeNode));
             }
             break;

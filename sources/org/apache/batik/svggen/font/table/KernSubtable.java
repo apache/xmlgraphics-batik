@@ -70,10 +70,10 @@ public abstract class KernSubtable {
 
     public static KernSubtable read(RandomAccessFile raf) throws IOException {
         KernSubtable table = null;
-        int version = raf.readUnsignedShort();
-        int length = raf.readUnsignedShort();
-        int coverage = raf.readUnsignedShort();
-        int format = coverage >> 8;
+        /* int version =*/ raf.readUnsignedShort();
+        /* int length  =*/ raf.readUnsignedShort();
+        int coverage   = raf.readUnsignedShort();
+        int format     = coverage >> 8;
         
         switch (format) {
         case 0:

@@ -1319,9 +1319,9 @@ abstract class MultipleGradientPaintContext implements PaintContext {
 
         float input, output;
 
-        input = ((float) color) / 255.0f;
+        input = color/255.0f;
         if (input <= 0.04045f) {
-            output = input / 12.92f;
+            output = input/12.92f;
         }
         else {
             output = (float) Math.pow((input + 0.055) / 1.055, 2.4);
@@ -1338,7 +1338,7 @@ abstract class MultipleGradientPaintContext implements PaintContext {
 
         float input, output;
 
-        input = ((float) color) / 255.0f;
+        input = color/255.0f;
 
         if (input <= 0.0031308) {
             output = input * 12.92f;

@@ -275,8 +275,6 @@ public class DynamicRenderer extends StaticRenderer {
                                             COPY_LINE_OVERHEAD); 
 
                     iter = damagedAreas.iterator();
-                    Rectangle sr = currentRaster.getBounds();
-
                     while (iter.hasNext()) {
                         Rectangle r = (Rectangle)iter.next();
                         // System.out.println("Copy: " + r);

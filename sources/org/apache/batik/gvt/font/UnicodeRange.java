@@ -105,7 +105,7 @@ public class UnicodeRange {
      */
     public boolean contains(String unicode) {
         if (unicode.length() == 1) {
-            int unicodeVal = (int)unicode.charAt(0);
+            int unicodeVal = unicode.charAt(0);
             if (unicodeVal >= firstUnicodeValue
                  && unicodeVal <= lastUnicodeValue) {
                 return true;

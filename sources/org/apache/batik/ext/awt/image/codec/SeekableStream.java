@@ -359,7 +359,7 @@ public abstract class SeekableStream extends InputStream implements DataInput {
         if (n <= 0) {
             return 0;
         }
-	return (int)skip((long)n);
+	return (int)skip(n);
     }
 
     /**
@@ -712,10 +712,10 @@ public abstract class SeekableStream extends InputStream implements DataInput {
      */
     public final long readUnsignedIntLE() throws IOException {
         this.readFully(ruileBuf);
-	long ch1 = (long)(ruileBuf[0] & 0xff);
-	long ch2 = (long)(ruileBuf[1] & 0xff);
-	long ch3 = (long)(ruileBuf[2] & 0xff);
-	long ch4 = (long)(ruileBuf[3] & 0xff);
+	long ch1 = (ruileBuf[0] & 0xff);
+	long ch2 = (ruileBuf[1] & 0xff);
+	long ch3 = (ruileBuf[2] & 0xff);
+	long ch4 = (ruileBuf[3] & 0xff);
 
 	return ((ch4 << 24) + (ch3 << 16) + (ch2 << 8) + (ch1 << 0));
     }

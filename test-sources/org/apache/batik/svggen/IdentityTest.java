@@ -50,8 +50,9 @@
 
 package org.apache.batik.svggen;
 
-import java.awt.*;
-import java.awt.geom.*;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 
 /**
  * This test validates the convertion of Java 2D AffineTransform into SVG

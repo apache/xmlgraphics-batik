@@ -71,7 +71,7 @@ public class SVGOMRect implements SVGRect{
     public float getY( ) { return y; }
     public void  setY( float y ) throws DOMException { this.y = y; }
     public float getWidth( ) { return w; }
-    public void  setWidth( float width ) throws DOMException { this.w = w; }
+    public void  setWidth( float width ) throws DOMException { this.w = width; }
     public float getHeight( ) { return h; }
-    public void  setHeight( float height ) throws DOMException { this.h = h; }
+    public void  setHeight( float height ) throws DOMException { this.h = height; }
 }

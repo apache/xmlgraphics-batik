@@ -276,5 +276,5 @@ public abstract class NumberParser extends AbstractParser {
         for (int i = 0; i < pow10.length; i++) {
             pow10[i] = (float)Math.pow(10, i);
         }
-    };
+    }
 }

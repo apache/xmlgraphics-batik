@@ -149,7 +149,7 @@ public class SVGFeMergeElementBridge
         // handle the 'color-interpolation-filters' property
         handleColorInterpolationFilters(filter, filterElement);
 
-        filter = new PadRable8Bit(filter, primitiveRegion, PadMode.ZERO_PAD);;
+        filter = new PadRable8Bit(filter, primitiveRegion, PadMode.ZERO_PAD);
 
         // update the filter Map
         updateFilterMap(filterElement, filter, filterMap);

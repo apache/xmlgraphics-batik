@@ -509,7 +509,6 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
 
         // Only paint if needed.
         if (paintNeeded){
-            AffineTransform txf = g2d.getTransform();
             boolean antialiasedClip = false;
             if(clip != null){
                 antialiasedClip = false;
@@ -753,7 +752,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
         //if (bounds == null) return;
 
         if (parent != null) {
-            ((AbstractGraphicsNode) parent).invalidateGeometryCache();
+            parent.invalidateGeometryCache();
         }
         bounds = null;
     }
@@ -830,7 +829,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
         // Factor in the clipping area, if any
         if (tBounds != null) {
             if (clip != null) {
-                tBounds.intersect
+                Rectangle2D.intersect
                     (tBounds,
                      t.createTransformedShape(clip.getClipPath()).getBounds2D(),
                      tBounds);
@@ -838,7 +837,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
 
             // Factor in the mask, if any
             if(mask != null) {
-                tBounds.intersect
+                Rectangle2D.intersect
                     (tBounds,
                      t.createTransformedShape(mask.getBounds2D()).getBounds2D(),
                      tBounds);

@@ -50,15 +50,10 @@
 
 package org.apache.batik.transcoder.image;
 
-import java.awt.image.BufferedImage;
-import java.awt.geom.Rectangle2D;
-
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
-import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderInput;
-import org.apache.batik.transcoder.TranscoderOutput;
 
 /**
  * Test the ImageTranscoder with the KEY_DEFAULT_FONT_FAMILY transcoding hint.

@@ -73,7 +73,6 @@ import java.awt.image.renderable.RenderableImage;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.io.Writer;
 import java.text.AttributedCharacterIterator;
 
@@ -462,8 +461,6 @@ public class SVGGraphics2D extends AbstractGraphics2D
                                    XMLNS_PREFIX + ":" + XLINK_PREFIX,
                                    XLINK_NAMESPACE_URI);
 
-
-            PrintWriter out = new PrintWriter(writer);
             DocumentFragment svgDocument =
                 svgRoot.getOwnerDocument().createDocumentFragment();
             svgDocument.appendChild(svgRoot);

@@ -79,7 +79,6 @@ import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.gvt.CanvasGraphicsNode;
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.transcoder.image.resources.Messages;
 import org.apache.batik.transcoder.keys.BooleanKey;
 import org.apache.batik.transcoder.keys.FloatKey;
 import org.apache.batik.transcoder.keys.LengthKey;

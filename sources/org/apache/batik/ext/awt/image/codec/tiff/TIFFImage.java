@@ -298,7 +298,7 @@ public class TIFFImage extends AbstractRed {
                     }
                 }
             }
-            sampleSize = (int)bitsPerSample[0];
+            sampleSize = bitsPerSample[0];
 
             // Read the TIFF_SAMPLE_FORMAT tag to see whether the data might be
             // signed or floating point
@@ -882,7 +882,6 @@ public class TIFFImage extends AbstractRed {
         byte bswap;
         short sswap;
         int iswap;
-        float fswap;
 
         // Save original file pointer position and seek to tile data location.
         long save_offset = 0;
@@ -1543,9 +1542,10 @@ public class TIFFImage extends AbstractRed {
                         }
                     } else if (dataType == DataBuffer.TYPE_INT) {
 
-                        long uintMax = Integer.MAX_VALUE - Integer.MIN_VALUE;
+                        long uintMax = ((long)Integer.MAX_VALUE - 
+                                        (long)Integer.MIN_VALUE);
                         for (int l = 0; l < idata.length; l += numBands) {
-                            idata[l] = (int)(uintMax - (long)idata[l]);
+                            idata[l] = (int)(uintMax - idata[l]);
                         }
                     }
                 }
@@ -1731,21 +1731,19 @@ public class TIFFImage extends AbstractRed {
         if (isBigEndian) {
 	    
             for (int i=0; i<intCount; i++) {
-                intArray[i] =
-                    (int)(((byteArray[j++] & 0xff) << 24) |
-                          ((byteArray[j++] & 0xff) << 16) |
-                          ((byteArray[j++] & 0xff) << 8) |
-                          (byteArray[j++] & 0xff));
+                intArray[i] = (((byteArray[j++] & 0xff) << 24) |
+                               ((byteArray[j++] & 0xff) << 16) |
+                               ((byteArray[j++] & 0xff) << 8) |
+                               ( byteArray[j++] & 0xff));
             }
 	    
         } else {
 	    
             for (int i=0; i<intCount; i++) {
-                intArray[i] =
-                    (int)((byteArray[j++] & 0xff) |
-                          ((byteArray[j++] & 0xff) << 8) |
-                          ((byteArray[j++] & 0xff) << 16) |
-                          ((byteArray[j++] & 0xff) << 24));
+                intArray[i] = ((byteArray[j++] & 0xff) |
+                              ((byteArray[j++] & 0xff) << 8) |
+                              ((byteArray[j++] & 0xff) << 16) |
+                              ((byteArray[j++] & 0xff) << 24));
             }
         }
     }

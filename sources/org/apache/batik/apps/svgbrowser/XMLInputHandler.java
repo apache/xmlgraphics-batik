@@ -72,7 +72,6 @@ import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLResourceDescriptor;
 import org.w3c.dom.Attr;
-import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -223,9 +222,6 @@ public class XMLInputHandler implements SquiggleInputHandler {
             (new DocumentURIResolver(parsedXSLStyleSheetURI.toString()));
 
         // Now, apply the transformation to the input document.
-        DOMImplementation impl = SVGDOMImplementation.getDOMImplementation();
-        String svgNS = SVGDOMImplementation.SVG_NAMESPACE_URI;
-
         //
         // <!> Due to issues with namespaces, the transform creates the 
         //     result in a stream which is parsed. This is sub-optimal
@@ -265,7 +261,7 @@ public class XMLInputHandler implements SquiggleInputHandler {
         // Patch the result tree to go under the root node
         // checkAndPatch(outDoc);
         
-        svgViewerFrame.getJSVGCanvas().setSVGDocument((SVGDocument)outDoc);
+        svgViewerFrame.getJSVGCanvas().setSVGDocument(outDoc);
         svgViewerFrame.setSVGDocument(outDoc,
                                       uri,
                                       outDoc.getTitle());
@@ -288,7 +284,7 @@ public class XMLInputHandler implements SquiggleInputHandler {
                 (Resources.getString(ERROR_TRANSFORM_PRODUCED_NO_CONTENT));
         }
 
-        if (realRoot.getNodeType() != realRoot.ELEMENT_NODE
+        if (realRoot.getNodeType() != Node.ELEMENT_NODE
             || 
             !SVGConstants.SVG_SVG_TAG.equals(realRoot.getLocalName())) {
             throw new IllegalArgumentException
@@ -322,7 +318,7 @@ public class XMLInputHandler implements SquiggleInputHandler {
     protected String extractXSLProcessingInstruction(Document doc) {
         Node child = doc.getFirstChild();
         while (child != null) {
-            if (child.getNodeType() == child.PROCESSING_INSTRUCTION_NODE) {
+            if (child.getNodeType() == Node.PROCESSING_INSTRUCTION_NODE) {
                 ProcessingInstruction pi 
                     = (ProcessingInstruction)child;
                 

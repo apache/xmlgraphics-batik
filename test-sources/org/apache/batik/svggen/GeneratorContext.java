@@ -50,14 +50,18 @@
 
 package org.apache.batik.svggen;
 
-import org.apache.batik.svggen.SVGGeneratorContext.GraphicContextDefaults;
-
-import java.awt.*;
-import java.awt.geom.*;
-import org.w3c.dom.*;
-import java.util.*;
+import java.awt.Font;
 import java.net.URL;
+import java.util.Iterator;
+import java.util.Map;
+
+import org.w3c.dom.CDATASection;
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 import org.apache.batik.dom.svg.SVGDOMImplementation;
+import org.apache.batik.svggen.SVGGeneratorContext.GraphicContextDefaults;
 import org.apache.batik.util.SVGConstants;
 
 /**

@@ -220,13 +220,13 @@ public class PrintTranscoder extends SVGAbstractTranscoder
 
         String pageOrientation = (String)hints.get(KEY_PAGE_ORIENTATION);
         if(VALUE_PAGE_ORIENTATION_PORTRAIT.equalsIgnoreCase(pageOrientation)){
-            pageFormat.setOrientation(pageFormat.PORTRAIT);
+            pageFormat.setOrientation(PageFormat.PORTRAIT);
         }
         else if(VALUE_PAGE_ORIENTATION_LANDSCAPE.equalsIgnoreCase(pageOrientation)){
-            pageFormat.setOrientation(pageFormat.LANDSCAPE);
+            pageFormat.setOrientation(PageFormat.LANDSCAPE);
         }
         else if(VALUE_PAGE_ORIENTATION_REVERSE_LANDSCAPE.equalsIgnoreCase(pageOrientation)){
-            pageFormat.setOrientation(pageFormat.REVERSE_LANDSCAPE);
+            pageFormat.setOrientation(PageFormat.REVERSE_LANDSCAPE);
         }
 
         pageFormat.setPaper(paper);

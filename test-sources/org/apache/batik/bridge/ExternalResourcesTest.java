@@ -52,40 +52,21 @@ package org.apache.batik.bridge;
 
 import java.io.File;
 import java.io.IOException;
-
-import java.net.URL;
 import java.net.MalformedURLException;
-
+import java.net.URL;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
-import org.apache.batik.bridge.BaseScriptingEnvironment;
-import org.apache.batik.bridge.BridgeContext;
-import org.apache.batik.bridge.BridgeException;
-
-import org.apache.batik.bridge.GVTBuilder;
-import org.apache.batik.bridge.UserAgent;
-import org.apache.batik.bridge.UserAgentAdapter;
-
-import org.apache.batik.test.AbstractTest;
-import org.apache.batik.test.DefaultTestReport;
-import org.apache.batik.test.TestReport;
-
-import org.apache.batik.util.XMLResourceDescriptor;
-
-import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
-
-import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.NamedNodeMap;
 
-import org.apache.batik.test.*;
-import org.apache.batik.util.ApplicationSecurityEnforcer;
+import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
+import org.apache.batik.test.AbstractTest;
+import org.apache.batik.test.DefaultTestReport;
+import org.apache.batik.test.TestReport;
 import org.apache.batik.util.ParsedURL;
-import org.apache.batik.test.svg.SelfContainedSVGOnLoadTest;
+import org.apache.batik.util.XMLResourceDescriptor;
 
 /**
  * This test validates that SecurityExceptions are generated when 
@@ -322,7 +303,7 @@ public class ExternalResourcesTest extends AbstractTest {
         Node next = null;
         while (child != null) {
             next = child.getNextSibling();
-            if (child.getNodeType() == child.PROCESSING_INSTRUCTION_NODE) {
+            if (child.getNodeType() == Node.PROCESSING_INSTRUCTION_NODE) {
                 doc.removeChild(child);
             }
             child = next;

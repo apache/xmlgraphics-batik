@@ -50,13 +50,12 @@
 
 package org.apache.batik.util;
 
-import org.apache.batik.test.AbstractTest;
-import org.apache.batik.test.DefaultTestReport;
-import org.apache.batik.test.TestReport;
-
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+
+import org.apache.batik.test.AbstractTest;
+import org.apache.batik.test.TestReport;
 
 public class RunnableQueueTest extends AbstractTest {
 

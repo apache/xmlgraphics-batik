@@ -359,7 +359,7 @@ public class DisplacementMapRed extends AbstractRed {
 
         long start = System.currentTimeMillis();
 
-        int sdp, pel00, pel01, pel10, pel11, xFrac, yFrac, newPel;
+        int pel00, pel01, pel10, pel11, xFrac, yFrac, newPel;
         int sp0, sp1, pel0, pel1;
 
         int x, y, x0, y0, xDisplace, yDisplace, dPel;
@@ -545,7 +545,7 @@ public class DisplacementMapRed extends AbstractRed {
 
         long start = System.currentTimeMillis();
 
-        int sdp, pel00, pel01, pel10, pel11, xFrac, yFrac, newPel;
+        int pel00, pel01, pel10, pel11, xFrac, yFrac, newPel;
         int sp0, sp1, pel0, pel1, a00, a01, a10, a11;
 
         int x, y, x0, y0, xDisplace, yDisplace, dPel;

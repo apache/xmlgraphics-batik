@@ -801,7 +801,7 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
         Node parentNode = filterPrimitiveElement.getParentNode();
         String units = "";
         if ((parentNode != null) &&
-            (parentNode.getNodeType() == parentNode.ELEMENT_NODE)) {
+            (parentNode.getNodeType() == Node.ELEMENT_NODE)) {
             Element parent = (Element)parentNode;
             units = getChainableAttributeNS(parent,
                                             null,
@@ -897,7 +897,7 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
 
         units = "";
         if ((parentNode != null) &&
-            (parentNode.getNodeType() == parentNode.ELEMENT_NODE)) {
+            (parentNode.getNodeType() == Node.ELEMENT_NODE)) {
             Element parent = (Element)parentNode;
             units = getChainableAttributeNS
                 (parent,
@@ -951,7 +951,7 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
                               region,
                               uctx);
         
-        region.intersect(region, filterRegion, region);
+        Rectangle2D.intersect(region, filterRegion, region);
 
         return region;
     }

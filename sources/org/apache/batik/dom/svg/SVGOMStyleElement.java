@@ -140,8 +140,8 @@ public class SVGOMStyleElement
                 if (n != null) {
                     StringBuffer sb = new StringBuffer();
                     while (n != null) {
-                        if (n.getNodeType() == n.CDATA_SECTION_NODE
-                            || n.getNodeType() == n.TEXT_NODE)
+                        if (n.getNodeType() == Node.CDATA_SECTION_NODE
+                            || n.getNodeType() == Node.TEXT_NODE)
                             sb.append(n.getNodeValue());
                         n = n.getNextSibling();
                     }

@@ -72,7 +72,6 @@ import org.apache.batik.util.RunnableQueue;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLResourceDescriptor;
 import org.w3c.dom.Document;
-import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.events.Event;
@@ -770,7 +769,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
                     for (Node n = d.getDocumentElement().getFirstChild();
                          n != null;
                          n = n.getNextSibling()) {
-                        if (n.getNodeType() == n.ELEMENT_NODE) {
+                        if (n.getNodeType() == Node.ELEMENT_NODE) {
                             n = doc.importNode(n, true);
                             Node result = doc.createDocumentFragment();
                             result.appendChild(n);
@@ -975,7 +974,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
 
             DocumentLoader dl = bridgeContext.getDocumentLoader();
             SVGDocument d = (SVGDocument)elt.getOwnerDocument();
-            int line = dl.getLineNumber((Element)elt);
+            int line = dl.getLineNumber(elt);
             final String desc = Messages.formatMessage
                 (EVENT_SCRIPT_DESCRIPTION,
                  new Object [] {d.getURL(), attribute, new Integer(line)});

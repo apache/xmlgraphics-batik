@@ -254,4 +254,4 @@ public abstract class MemoryLeakTest  extends AbstractTest {
         
     }
     
-};
+}

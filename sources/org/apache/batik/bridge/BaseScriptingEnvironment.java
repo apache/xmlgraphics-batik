@@ -430,9 +430,9 @@ public class BaseScriptingEnvironment {
                     reader = new InputStreamReader(purl.openStream());
                 } else {
                     DocumentLoader dl = bridgeContext.getDocumentLoader();
-                    Element e = (Element)script;
+                    Element e = script;
                     SVGDocument d = (SVGDocument)e.getOwnerDocument();
-                    int line = dl.getLineNumber((Element)script);
+                    int line = dl.getLineNumber(script);
                     desc = Messages.formatMessage
                         (INLINE_SCRIPT_DESCRIPTION,
                          new Object [] {d.getURL(),
@@ -443,8 +443,8 @@ public class BaseScriptingEnvironment {
                     if (n != null) {
                         StringBuffer sb = new StringBuffer();
                         while (n != null) {
-                            if (n.getNodeType() == n.CDATA_SECTION_NODE
-                                || n.getNodeType() == n.TEXT_NODE)
+                            if (n.getNodeType() == Node.CDATA_SECTION_NODE
+                                || n.getNodeType() == Node.TEXT_NODE)
                                 sb.append(n.getNodeValue());
                             n = n.getNextSibling();
                         }
@@ -501,7 +501,7 @@ public class BaseScriptingEnvironment {
         for (Node n = elt.getFirstChild();
              n != null;
              n = n.getNextSibling()) {
-            if (n.getNodeType() == n.ELEMENT_NODE) {
+            if (n.getNodeType() == Node.ELEMENT_NODE) {
                 dispatchSVGLoad((Element)n, checkCanRun, lang);
             }
         }
@@ -537,7 +537,7 @@ public class BaseScriptingEnvironment {
 
         DocumentLoader dl = bridgeContext.getDocumentLoader();
         SVGDocument d = (SVGDocument)elt.getOwnerDocument();
-        int line = dl.getLineNumber((Element)elt);
+        int line = dl.getLineNumber(elt);
         final String desc = Messages.formatMessage
             (EVENT_SCRIPT_DESCRIPTION,
              new Object [] {d.getURL(),

@@ -85,8 +85,7 @@ public class SVGTextPositioningElementSupport {
                                                  X_DEFAULT_VALUE,
                                                  AbstractSVGLength.HORIZONTAL_LENGTH);
             e.putLiveAttributeValue(null,
-                                    SVGConstants.SVG_X_ATTRIBUTE, 
-                                    (LiveAttributeValue)result);
+                                    SVGConstants.SVG_X_ATTRIBUTE, result);
         }
         return result;
     }
@@ -105,8 +104,7 @@ public class SVGTextPositioningElementSupport {
                                                  Y_DEFAULT_VALUE,
                                                  AbstractSVGLength.VERTICAL_LENGTH);
             e.putLiveAttributeValue(null,
-                                    SVGConstants.SVG_Y_ATTRIBUTE, 
-                                    (LiveAttributeValue)result);
+                                    SVGConstants.SVG_Y_ATTRIBUTE, result);
         }
         return result;
     }
@@ -125,8 +123,7 @@ public class SVGTextPositioningElementSupport {
                                                  DX_DEFAULT_VALUE,
                                                  AbstractSVGLength.HORIZONTAL_LENGTH);
             e.putLiveAttributeValue(null,
-                                    SVGConstants.SVG_DX_ATTRIBUTE, 
-                                    (LiveAttributeValue)result);
+                                    SVGConstants.SVG_DX_ATTRIBUTE, result);
         }
         return result;
     }
@@ -145,8 +142,7 @@ public class SVGTextPositioningElementSupport {
                                                  DY_DEFAULT_VALUE,
                                                  AbstractSVGLength.VERTICAL_LENGTH);
             e.putLiveAttributeValue(null,
-                                    SVGConstants.SVG_DY_ATTRIBUTE, 
-                                    (LiveAttributeValue)result);
+                                    SVGConstants.SVG_DY_ATTRIBUTE, result);
         }
         return result;
     }

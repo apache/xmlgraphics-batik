@@ -159,7 +159,7 @@ public class SVGPaint implements SVGConverter {
 
         if (paintDesc == null) {
             if (paint instanceof Color)
-                paintDesc = svgColor.toSVG((Color)paint, generatorContext);
+                paintDesc = SVGColor.toSVG((Color)paint, generatorContext);
             else if (paint instanceof GradientPaint)
                 paintDesc = svgLinearGradient.toSVG((GradientPaint)paint);
             else if (paint instanceof TexturePaint)

@@ -60,7 +60,6 @@ import java.util.Set;
 
 import org.apache.batik.util.ParsedURL;
 
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGDocument;
@@ -69,7 +68,6 @@ import org.apache.batik.dom.svg.XMLBaseSupport;
 import org.apache.batik.gvt.font.GVTFontFamily;
 import org.apache.batik.gvt.font.GVTFontFace;
 import org.apache.batik.gvt.font.AWTFontFamily;
-import org.apache.batik.util.SVGConstants;
 
 /**
  * This class represents a &lt;font-face> element or @font-face rule
@@ -148,10 +146,8 @@ public abstract class FontFace extends GVTFontFace {
         while (iter.hasNext()) {
             Object o = iter.next();
             if (o instanceof String) {
-                String s= (String)o;
                 if (fontSet.contains(o))
                     return new AWTFontFamily(createFontFace((String)o, this));
-
             } else if (o instanceof ParsedURL) {
                 try {
                     GVTFontFamily ff = getFontFamily(ctx, (ParsedURL)o);
@@ -195,13 +191,12 @@ public abstract class FontFace extends GVTFontFace {
                 CSSUtilities.computeStyleAndURIs(ref, fontElt, purlStr);
             }
             
-            GVTFontFace gvtFontFace = this;
             // Search for a font-face element
             Element fontFaceElt = null;
             for (Node n = fontElt.getFirstChild();
                  n != null;
                  n = n.getNextSibling()) {
-                if ((n.getNodeType() == n.ELEMENT_NODE) &&
+                if ((n.getNodeType() == Node.ELEMENT_NODE) &&
                     n.getNamespaceURI().equals(SVG_NAMESPACE_URI) &&
                     n.getLocalName().equals(SVG_FONT_FACE_TAG)) {
                     fontFaceElt = (Element)n;

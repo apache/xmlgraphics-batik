@@ -521,12 +521,12 @@ public class TIFFImageEncoder extends ImageEncoderImpl {
 	// Image Width
 	fields.add(new TIFFField(TIFFImageDecoder.TIFF_IMAGE_WIDTH, 
                                  TIFFField.TIFF_LONG, 1, 
-                                 (Object)(new long[] {(long)width})));
+                                 new long[] {width}));
 
 	// Image Length
 	fields.add(new TIFFField(TIFFImageDecoder.TIFF_IMAGE_LENGTH, 
                                  TIFFField.TIFF_LONG, 1, 
-                                 new long[] {(long)height}));
+                                 new long[] {height}));
 
         char [] shortSampleSize = new char[numBands];
         for (int i=0; i<numBands; i++)
@@ -547,7 +547,7 @@ public class TIFFImageEncoder extends ImageEncoderImpl {
         if(!isTiled) {
             fields.add(new TIFFField(TIFFImageDecoder.TIFF_STRIP_OFFSETS,
                                      TIFFField.TIFF_LONG, numTiles, 
-                                     (long[])tileOffsets));
+                                     tileOffsets));
         }
 	
 	fields.add(new TIFFField(TIFFImageDecoder.TIFF_SAMPLES_PER_PIXEL,
@@ -557,11 +557,11 @@ public class TIFFImageEncoder extends ImageEncoderImpl {
         if(!isTiled) {
             fields.add(new TIFFField(TIFFImageDecoder.TIFF_ROWS_PER_STRIP, 
                                      TIFFField.TIFF_LONG, 1, 
-                                     new long[] {(long)tileHeight}));
+                                     new long[] {tileHeight}));
 
             fields.add(new TIFFField(TIFFImageDecoder.TIFF_STRIP_BYTE_COUNTS,
                                      TIFFField.TIFF_LONG, numTiles, 
-                                     (long[])tileByteCounts));
+                                     tileByteCounts));
         }
 
 	if (colormap != null) {
@@ -573,19 +573,19 @@ public class TIFFImageEncoder extends ImageEncoderImpl {
         if(isTiled) {
             fields.add(new TIFFField(TIFFImageDecoder.TIFF_TILE_WIDTH, 
                                      TIFFField.TIFF_LONG, 1, 
-                                     new long[] {(long)tileWidth}));
+                                     new long[] {tileWidth}));
 
             fields.add(new TIFFField(TIFFImageDecoder.TIFF_TILE_LENGTH, 
                                      TIFFField.TIFF_LONG, 1, 
-                                     new long[] {(long)tileHeight}));
+                                     new long[] {tileHeight}));
 
             fields.add(new TIFFField(TIFFImageDecoder.TIFF_TILE_OFFSETS,
                                      TIFFField.TIFF_LONG, numTiles, 
-                                     (long[])tileOffsets));
+                                     tileOffsets));
 
             fields.add(new TIFFField(TIFFImageDecoder.TIFF_TILE_BYTE_COUNTS,
                                      TIFFField.TIFF_LONG, numTiles, 
-                                     (long[])tileByteCounts));
+                                     tileByteCounts));
         }
 
         if(numExtraSamples > 0) {
@@ -781,8 +781,6 @@ public class TIFFImageEncoder extends ImageEncoderImpl {
         boolean skipByte = false;
 
         Deflater deflater = null;
-        int deflateLevel = Deflater.DEFAULT_COMPRESSION;
-
         boolean jpegRGBToYCbCr = false;
 
         if(compression == COMP_NONE) {
@@ -970,7 +968,7 @@ public class TIFFImageEncoder extends ImageEncoderImpl {
 
                 int index;
 
-                int pixel = 0;;
+                int pixel = 0;
                 int k = 0;
                 switch(sampleSize[0]) {
 

@@ -50,11 +50,11 @@
 
 package org.apache.batik.svggen;
 
-import java.awt.*;
-import java.awt.geom.*;
-import java.awt.image.*;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+
 import javax.swing.JComponent;
-import javax.swing.JFrame;
 
 /**
  * Simple component which displays the rendering created by

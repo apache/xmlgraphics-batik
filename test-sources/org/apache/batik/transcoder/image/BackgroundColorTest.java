@@ -59,7 +59,6 @@ import java.io.ByteArrayOutputStream;
 import java.util.Map;
 import java.util.HashMap;
 
-import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 

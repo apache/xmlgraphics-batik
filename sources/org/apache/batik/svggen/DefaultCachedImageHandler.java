@@ -208,10 +208,8 @@ public abstract class DefaultCachedImageHandler
             // Then create the transformation:
             // Because we cache image data, the stored image may
             // need to be scaled.
-            af = handleTransform(imageElement, (double) x, (double) y,
-                                 (double) imageWidth, (double) imageHeight,
-                                 (double) width, (double) height,
-                                 generatorContext);
+            af = handleTransform(imageElement, x, y, imageWidth, imageHeight,
+                                 width, height, generatorContext);
         }
         return af;
     }
@@ -252,9 +250,8 @@ public abstract class DefaultCachedImageHandler
             // Then create the transformation:
             // Because we cache image data, the stored image may
             // need to be scaled.
-            af = handleTransform(imageElement, (double) x, (double) y,
-                                 (double) imageWidth, (double) imageHeight,
-                                 (double) width, (double) height, generatorContext);
+            af = handleTransform(imageElement, x, y, imageWidth, imageHeight,
+                                 width, height, generatorContext);
         }
         return af;
     }

@@ -594,7 +594,6 @@ public class GlyphLayout implements TextSpanLayout {
             endCharIndex = temp;
         }
         GeneralPath shape = null;
-        int start       = aci.getBeginIndex();
         int numGlyphs = getGlyphCount();
 
         Point2D.Float [] topPts = new Point2D.Float[2*numGlyphs];
@@ -1447,22 +1446,19 @@ public class GlyphLayout implements TextSpanLayout {
         boolean doLetterSpacing = false;
         float kernVal = 0f;
         float letterSpacingVal = 0f;
-        float wordSpacingVal = 0f;
 
-        if ((kern instanceof Float) && (!kern.isNaN())) {
+        if ((kern != null) && (!kern.isNaN())) {
             kernVal = kern.floatValue();
             autoKern = false;
             //System.out.println("KERNING: "+kernVal);
         }
-        if ((letterSpacing instanceof Float) && (!letterSpacing.isNaN())) {
+        if ((letterSpacing != null) && (!letterSpacing.isNaN())) {
             letterSpacingVal = letterSpacing.floatValue();
             doLetterSpacing = true;
             //System.out.println("LETTER-SPACING: "+letterSpacingVal);
         }
-        if ((wordSpacing instanceof Float) && (!wordSpacing.isNaN())) {
-            wordSpacingVal = wordSpacing.floatValue();
+        if ((wordSpacing != null) && (!wordSpacing.isNaN())) {
             doWordSpacing = true;
-            //System.out.println("WORD_SPACING: "+wordSpacingVal);
         }
 
         int numGlyphs = gv.getNumGlyphs();
@@ -1570,9 +1566,9 @@ public class GlyphLayout implements TextSpanLayout {
                         dx = (float) (gpos.getX() - px)/(nWS+1);
                         dy = (float) (gpos.getY() - py)/(nWS+1);
                         if (vertical) {
-                            dy += (float) wordSpacing.floatValue()/(nWS+1);
+                            dy += wordSpacing.floatValue()/(nWS+1);
                         } else {
-                            dx += (float) wordSpacing.floatValue()/(nWS+1);
+                            dx += wordSpacing.floatValue()/(nWS+1);
                         }
                         for (int j=beginWS; j<=endWS; ++j) {
                             x += dx;
@@ -1630,8 +1626,8 @@ public class GlyphLayout implements TextSpanLayout {
         int numGlyphs = gv.getNumGlyphs();
         float [] gp   = gv.getGlyphPositions(0, numGlyphs+1, null);
 
-        float initX   = (float) gp[0];
-        float initY   = (float) gp[1];
+        float initX   = gp[0];
+        float initY   = gp[1];
         float dx = 0f;
         float dy = 0f;
         for (int i = 0; i <= numGlyphs; i++) {
@@ -2064,7 +2060,6 @@ public class GlyphLayout implements TextSpanLayout {
     public static void textWrapTextChunk(AttributedCharacterIterator [] acis,
                                          List chunkLayouts,
                                          List flowRects) {
-        int numChunks = acis.length;
         // System.out.println("Len: " + acis.length + " Size: " + 
         //                    chunkLayouts.size());
 
@@ -2154,7 +2149,7 @@ public class GlyphLayout implements TextSpanLayout {
             if (mi == null) {
               continue;
             }
-            int justification = mi.getJustification();
+            // int justification = mi.getJustification();
 
             if (currentRegion == null) {
                 for(int idx=0; idx <numGlyphs; idx++) 
@@ -2250,7 +2245,6 @@ public class GlyphLayout implements TextSpanLayout {
 
                         // New rect so no previous row to consider...
                         dy = firstLine ? mi.getTopMargin() : 0;
-                        ;
                         prevDesc  = 0;
                         gi = lineGI.copy(gi);
                         continue;
@@ -2355,7 +2349,6 @@ public class GlyphLayout implements TextSpanLayout {
 
                     // New rect so no previous row to consider...
                     dy = firstLine ? mi.getTopMargin() : 0;
-                    ;
                     prevDesc  = 0;
                     // previous flows?
 

@@ -153,7 +153,6 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
         int offset = 0;
 
         while (offset < count) {
-            Point point_minus1 = glyph.getPoint((offset==0) ? startIndex+count-1 : startIndex+(offset-1)%count);
             Point point = glyph.getPoint(startIndex + offset%count);
             Point point_plus1 = glyph.getPoint(startIndex + (offset+1)%count);
             Point point_plus2 = glyph.getPoint(startIndex + (offset+2)%count);

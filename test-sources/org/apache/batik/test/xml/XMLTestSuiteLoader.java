@@ -50,29 +50,17 @@
 
 package org.apache.batik.test.xml;
 
-import java.io.File;
 import java.io.StringWriter;
 import java.io.PrintWriter;
 
-import java.net.URL;
-import java.net.MalformedURLException;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-
-import java.util.Vector;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 
 import org.apache.batik.test.DefaultTestSuite;
-import org.apache.batik.test.TestReport;
 import org.apache.batik.test.TestSuite;
 import org.apache.batik.test.Test;
 import org.apache.batik.test.TestException;
-import org.apache.batik.test.TestReportProcessor;
-
-import org.xml.sax.InputSource;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Document;
@@ -161,8 +149,9 @@ public class XMLTestSuiteLoader implements XTSConstants {
         DefaultTestSuite testSuite 
             = new DefaultTestSuite();
 
-        String suiteName 
-            = element.getAttribute(XTS_NAME_ATTRIBUTE);
+        /* FIXX: Not used -- should we call testSuite.setName(suiteName)??? */
+        // String suiteName 
+        //     = element.getAttribute(XTS_NAME_ATTRIBUTE);
 
         String suiteId 
             = element.getAttribute(XTS_ID_ATTRIBUTE);

@@ -382,8 +382,6 @@ public class TileRed extends AbstractRed implements TileGenerator {
 
     protected void fillOutRaster_FALLBACK(WritableRaster wr) {
         // System.out.println("Fast copyData");
-        int x0     = wr.getMinX();
-        int y0     = wr.getMinY();
         int width  = wr.getWidth();
         int height = wr.getHeight();
 

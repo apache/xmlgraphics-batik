@@ -51,14 +51,8 @@
 package org.apache.batik.test.svg;
 
 import java.io.File;
-import java.net.URL;
 import java.net.MalformedURLException;
-
-import org.apache.batik.dom.svg.SVGOMDocument;
-
-import org.apache.batik.test.AbstractTest;
-
-import org.w3c.dom.Document;
+import java.net.URL;
 
 /**
  * Base class for tests which take an additional parameter in addition

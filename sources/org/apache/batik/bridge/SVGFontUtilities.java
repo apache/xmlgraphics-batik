@@ -58,8 +58,6 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 import org.apache.batik.dom.svg.SVGOMDocument;
-import org.apache.batik.dom.svg.XMLBaseSupport;
-import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.gvt.font.GVTFontFamily;
 import org.apache.batik.gvt.font.GVTFontFace;
 import org.apache.batik.gvt.font.UnresolvedFontFamily;
@@ -70,7 +68,6 @@ import org.apache.batik.css.engine.FontFaceRule;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
@@ -223,7 +220,7 @@ public abstract class SVGFontUtilities implements SVGConstants {
                         new StringTokenizer(fontFamilyWeight, " ,");
                     while (st.hasMoreTokens()) {
                         int weightNum = Integer.parseInt(st.nextToken());
-                        int difference = (int)Math.abs(weightNum - i);
+                        int difference = Math.abs(weightNum - i);
                         if (difference < minDifference) {
                             minDifference = difference;
                             minDifferenceIndex = j;

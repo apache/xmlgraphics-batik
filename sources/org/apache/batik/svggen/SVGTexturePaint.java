@@ -122,10 +122,7 @@ public class SVGTexturePaint extends AbstractSVGConverter {
             //
             // Now, add an image element for the image.
             //
-            BufferedImage textureImage = (BufferedImage)texture.getImage();
-            Element imageElement =
-                domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_IMAGE_TAG);
-
+            BufferedImage textureImage = texture.getImage();
             //
             // Rescale the image to fit the anchor rectangle
             //

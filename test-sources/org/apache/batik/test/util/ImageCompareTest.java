@@ -52,38 +52,26 @@ package org.apache.batik.test.util;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
 import java.awt.image.RenderedImage;
 import java.awt.image.WritableRaster;
-import java.awt.image.ColorModel;
-
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.io.IOException;
-
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import java.util.Vector;
-
-import org.apache.batik.ext.awt.image.spi.ImageTagRegistry;
-import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.GraphicsUtil;
-
-import org.apache.batik.util.ParsedURL;
-
-import org.apache.batik.ext.awt.image.CompositeRule;
-import org.apache.batik.ext.awt.image.rendered.CompositeRed;
-import org.apache.batik.ext.awt.image.rendered.BufferedImageCachableRed;
-
-import org.apache.batik.ext.awt.image.codec.PNGImageEncoder;
 import org.apache.batik.ext.awt.image.codec.PNGEncodeParam;
-
+import org.apache.batik.ext.awt.image.codec.PNGImageEncoder;
+import org.apache.batik.ext.awt.image.renderable.Filter;
+import org.apache.batik.ext.awt.image.spi.ImageTagRegistry;
 import org.apache.batik.test.AbstractTest;
 import org.apache.batik.test.TestReport;
+import org.apache.batik.util.ParsedURL;
 
 /**
  * This test does a pixel comparison of two images and passes if the 
@@ -353,7 +341,6 @@ public class ImageCompareTest extends AbstractTest {
 
         int w=ref.getWidth();
         int h=ref.getHeight();
-        int nb = ref.getSampleModel().getNumBands();
 
         int y, i,val;
         int [] refPix = null;
@@ -393,7 +380,6 @@ public class ImageCompareTest extends AbstractTest {
                                   InputStream newStream)
         throws IOException{
         int b, nb;
-        boolean accurate;
         do {
             b = refStream.read();
             nb = newStream.read();

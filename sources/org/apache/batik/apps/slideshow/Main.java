@@ -109,10 +109,8 @@ public class Main extends JComponent {
         loader    = new DocumentLoader(userAgent);
         ctx       = new BridgeContext(userAgent, loader);
 
-        boolean frameless = false;
         if (size == null) {
             size = Toolkit.getDefaultToolkit().getScreenSize();
-            frameless = true;
         }
 
         setPreferredSize(size);

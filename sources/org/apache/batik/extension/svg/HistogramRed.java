@@ -107,7 +107,6 @@ public class HistogramRed extends AbstractRed {
 
         int xtiles = src.getNumXTiles();
         int xt0 = src.getMinTileX();
-        int xt1 = xt0+xtiles-1;
             
         for (int y=0; y<src.getNumYTiles(); y++) {
             for (int x=0; x<xtiles; x++) {

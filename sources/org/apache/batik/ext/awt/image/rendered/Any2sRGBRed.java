@@ -329,9 +329,6 @@ public class Any2sRGBRed extends AbstractRed {
         SampleModel sm = src.getSampleModel();
         ColorModel  cm = src.getColorModel();
 
-        int width  = sm.getWidth();
-        int height = sm.getHeight();
-
         boolean alpha = false;
 
         if (cm != null)

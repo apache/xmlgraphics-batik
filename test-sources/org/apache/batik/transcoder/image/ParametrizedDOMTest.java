@@ -50,21 +50,13 @@
 
 package org.apache.batik.transcoder.image;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage; 
-
 import java.io.IOException;
 
-import org.apache.batik.transcoder.TranscoderException;
-import org.apache.batik.transcoder.TranscoderInput;
-import org.apache.batik.transcoder.TranscoderOutput;
+import org.w3c.dom.Document;
 
 import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
-
+import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.util.XMLResourceDescriptor;
-
-import org.w3c.dom.Document;
 
 /**
  * Test the ImageTranscoder input with a DOM tree.

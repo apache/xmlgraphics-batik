@@ -167,8 +167,7 @@ public class SpecularLightingRed extends AbstractTiledRed{
         final int scanStride = sppsm.getScanlineStride();
         final int adjust = scanStride - w;
         int p = offset;
-        int r=0, g=0, b=0, a=0;
-        int i=0, j=0;
+        int a=0, i=0, j=0;
 
         // x and y are in user space
         double x = scaleX*minX;

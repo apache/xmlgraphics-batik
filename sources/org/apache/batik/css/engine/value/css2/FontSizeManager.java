@@ -208,7 +208,7 @@ public class FontSizeManager extends LengthManager {
 
             v = value.getFloatValue();
             CSSStylableElement p;
-            p = (CSSStylableElement)CSSEngine.getParentCSSStylableElement(elt);
+            p = CSSEngine.getParentCSSStylableElement(elt);
             float fs;
             if (p == null) {
                 ctx = engine.getCSSContext();
@@ -222,7 +222,7 @@ public class FontSizeManager extends LengthManager {
             sm.putParentRelative(idx, true);
 
             v = value.getFloatValue();
-            p = (CSSStylableElement)CSSEngine.getParentCSSStylableElement(elt);
+            p = CSSEngine.getParentCSSStylableElement(elt);
             if (p == null) {
                 ctx = engine.getCSSContext();
                 fs = ctx.getMediumFontSize();
@@ -236,7 +236,7 @@ public class FontSizeManager extends LengthManager {
             sm.putParentRelative(idx, true);
 
             v = value.getFloatValue();
-            p = (CSSStylableElement)CSSEngine.getParentCSSStylableElement(elt);
+            p = CSSEngine.getParentCSSStylableElement(elt);
             if (p == null) {
                 ctx = engine.getCSSContext();
                 fs = ctx.getMediumFontSize();
@@ -251,7 +251,7 @@ public class FontSizeManager extends LengthManager {
             sm.putParentRelative(idx, true);
 
             CSSStylableElement p;
-            p = (CSSStylableElement)CSSEngine.getParentCSSStylableElement(elt);
+            p = CSSEngine.getParentCSSStylableElement(elt);
             float fs;
             if (p == null) {
                 CSSContext ctx = engine.getCSSContext();
@@ -265,7 +265,7 @@ public class FontSizeManager extends LengthManager {
             sm.putParentRelative(idx, true);
 
             CSSStylableElement p;
-            p = (CSSStylableElement)CSSEngine.getParentCSSStylableElement(elt);
+            p = CSSEngine.getParentCSSStylableElement(elt);
             float fs;
             if (p == null) {
                 CSSContext ctx = engine.getCSSContext();

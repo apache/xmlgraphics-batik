@@ -1572,7 +1572,6 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
         BufferedImage finalDest = dest;
 
         if (!isCompatible(src.getColorModel(), src.getSampleModel())) {
-            BufferedImage newSrc;
             src = new BufferedImage(src.getWidth(), src.getHeight(),
                                     BufferedImage.TYPE_INT_ARGB_PRE);
             GraphicsUtil.copyData(origSrc, src);

@@ -115,7 +115,7 @@ public class ReplaceChildTest extends AbstractTest {
         for (Node n = e.getFirstChild();
              n != null;
              n = n.getNextSibling()) {
-            if (n.getNodeType() == n.ELEMENT_NODE) {
+            if (n.getNodeType() == Node.ELEMENT_NODE) {
                 fc = (Element)n;
                 break;
             }
@@ -125,7 +125,7 @@ public class ReplaceChildTest extends AbstractTest {
 
         if (ne.getParentNode() != e || fc.getParentNode() != null) {
             DefaultTestReport report = new DefaultTestReport(this);
-            report.setErrorCode(report.ERROR_TEST_FAILED);
+            report.setErrorCode(TestReport.ERROR_TEST_FAILED);
             report.setPassed(false);
             return report;
         }

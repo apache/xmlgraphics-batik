@@ -64,10 +64,10 @@ public class GposTable implements Table {
         raf.seek(de.getOffset());
 
         // GPOS Header
-        int version = raf.readInt();
-        int scriptList = raf.readInt();
-        int featureList = raf.readInt();
-        int lookupList = raf.readInt();
+        /* int version     = */ raf.readInt();
+        /* int scriptList  = */ raf.readInt();
+        /* int featureList = */ raf.readInt();
+        /* int lookupList  = */ raf.readInt();
 /*        
         for (int i = 0; i < t_maxp.getNumGlyphs(); i++) {
             raf.seek(tde.getOffset() + t_loca.getOffset(i));

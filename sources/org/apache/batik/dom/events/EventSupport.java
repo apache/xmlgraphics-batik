@@ -54,7 +54,6 @@ import org.apache.batik.dom.util.HashTable;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventException;
 import org.w3c.dom.events.EventListener;
-import org.w3c.dom.events.EventTarget;
 
 /**
  * The class allows registration and removal of EventListeners on
@@ -212,7 +211,7 @@ public class EventSupport {
 	    throw createUnspecifiedEventTypeErr("Event type can't be null");
 	}
 	// fix event status
-	evt.setTarget((EventTarget) target);
+	evt.setTarget(target);
 	evt.stopPropagation(false);
 	evt.preventDefault(false);
 	// dump the tree hierarchy from top to the target

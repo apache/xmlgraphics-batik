@@ -501,7 +501,7 @@ public class AWTEventDispatcher implements EventDispatcher,
             // node.processMouseEvent(gvtevt);
             processMouseEvent(gvtevt);
 
-        } else if (node == null && evt.getID() == evt.MOUSE_CLICKED
+        } else if (node == null && evt.getID() == MouseEvent.MOUSE_CLICKED
               && evt.getClickCount() == 1) {
             // this is a deselect event, dispatch it to dummy node
             gvtevt = new GraphicsNodeMouseEvent(dummyNode,

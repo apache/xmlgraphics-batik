@@ -73,8 +73,6 @@ import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.awt.print.PrinterException;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeEvent;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -103,8 +101,8 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JMenuBar;
 import javax.swing.JMenu;
+import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
@@ -167,13 +165,12 @@ import org.apache.batik.util.gui.resource.MissingListenerException;
 import org.apache.batik.util.gui.resource.ResourceManager;
 import org.apache.batik.util.gui.resource.ToolBarFactory;
 import org.apache.batik.xml.XMLUtilities;
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.ContextListener;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.css.ViewCSS;
 import org.w3c.dom.svg.SVGDocument;
-
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.ContextListener;
 
 /**
  * This class represents a SVG viewer swing frame.
@@ -416,7 +413,7 @@ public class JSVGViewerFrame
     /**
      * The current path.
      */
-    protected File currentPath = new File("");;
+    protected File currentPath = new File("");
 
     /**
      * The current export path.
@@ -816,7 +813,6 @@ public class JSVGViewerFrame
 
                     if (st != null) {
                         if (svgDocument != null) {
-                            SVGOMDocument doc = (SVGOMDocument)svgDocument;
                             ParsedURL docPURL 
                                 = new ParsedURL(svgDocument.getURL());
                             ParsedURL purl = new ParsedURL(docPURL, st);
@@ -1216,14 +1212,14 @@ public class JSVGViewerFrame
                         //
                         // Set transcoding hints
                         //
-                        pt.addTranscodingHint(pt.KEY_XML_PARSER_CLASSNAME,
+                        pt.addTranscodingHint(PrintTranscoder.KEY_XML_PARSER_CLASSNAME,
                                               application.getXMLParserClassName());
 
-                        pt.addTranscodingHint(pt.KEY_SHOW_PAGE_DIALOG,
+                        pt.addTranscodingHint(PrintTranscoder.KEY_SHOW_PAGE_DIALOG,
                                               Boolean.TRUE);
 
 
-                        pt.addTranscodingHint(pt.KEY_SHOW_PRINTER_DIALOG,
+                        pt.addTranscodingHint(PrintTranscoder.KEY_SHOW_PRINTER_DIALOG,
                                               Boolean.TRUE);
 
                         //
@@ -1608,7 +1604,7 @@ public class JSVGViewerFrame
                 ButtonGroup buttonGroup = new ButtonGroup();
 
                 for (Node n = doc.getFirstChild();
-                     n != null && n.getNodeType() != n.ELEMENT_NODE;
+                     n != null && n.getNodeType() != Node.ELEMENT_NODE;
                      n = n.getNextSibling()) {
                     if (n instanceof StyleSheetProcessingInstruction) {
                         StyleSheetProcessingInstruction sspi;

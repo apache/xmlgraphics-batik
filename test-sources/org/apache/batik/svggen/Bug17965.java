@@ -50,10 +50,10 @@
 
 package org.apache.batik.svggen;
 
-import java.awt.*;
-import java.awt.geom.*;
-import java.awt.image.*;
-import javax.swing.ImageIcon;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics2D;
+
 
 /**
  * This test validates fix to Bug #17965 and checks that 

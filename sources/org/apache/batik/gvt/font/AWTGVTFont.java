@@ -99,7 +99,7 @@ public class AWTGVTFont implements GVTFont {
      * @param scale The scale factor to apply to font...
      */
     public AWTGVTFont(Font font, float scale) {
-        this.size = font.getSize2D()*scale;;
+        this.size = font.getSize2D()*scale;
         this.awtFont = font.deriveFont(FONT_SIZE);
         this.scale = size/awtFont.getSize2D();
         initializeFontCache(awtFont);

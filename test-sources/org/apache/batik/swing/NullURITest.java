@@ -50,13 +50,16 @@
 
 package org.apache.batik.swing;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Dimension;
 
-import org.apache.batik.swing.svg.*;
-import org.apache.batik.swing.gvt.*;
-import org.apache.batik.test.*;
+import javax.swing.JFrame;
+
+import org.apache.batik.swing.gvt.GVTTreeRendererAdapter;
+import org.apache.batik.swing.gvt.GVTTreeRendererEvent;
+import org.apache.batik.swing.svg.SVGDocumentLoaderAdapter;
+import org.apache.batik.swing.svg.SVGDocumentLoaderEvent;
+import org.apache.batik.test.AbstractTest;
+import org.apache.batik.test.TestReport;
 
 /**
  * This test makes sure that setting the canvas's document uri to 

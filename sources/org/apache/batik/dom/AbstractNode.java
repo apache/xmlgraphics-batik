@@ -477,7 +477,7 @@ public abstract class AbstractNode
                                  null,   // prevValueArg
                                  null,   // newValueArg
                                  null,   // attrNameArg
-                                 ev.ADDITION);
+                                 MutationEvent.ADDITION);
             dispatchEvent(ev);
         }
     }
@@ -497,7 +497,7 @@ public abstract class AbstractNode
                                  null,   // prevValueArg
                                  null,   // newValueArg
                                  null,   // attrNameArg
-                                 ev.REMOVAL);
+                                 MutationEvent.REMOVAL);
             dispatchEvent(ev);
         }
     }
@@ -518,7 +518,7 @@ public abstract class AbstractNode
                                  oldv,  // prevValueArg
                                  newv,  // newValueArg
                                  null,  // attrNameArg
-                                 ev.MODIFICATION);
+                                 MutationEvent.MODIFICATION);
             dispatchEvent(ev);
         }
     }

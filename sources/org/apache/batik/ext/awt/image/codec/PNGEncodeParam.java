@@ -1254,7 +1254,7 @@ public abstract class PNGEncodeParam implements ImageEncodeParam {
      */
     public synchronized void addPrivateChunk(String type, byte[] data) {
         chunkType.add(type);
-        chunkData.add((byte[])data.clone());
+        chunkData.add(data.clone());
     }
 
     /**

@@ -50,8 +50,6 @@
 
 package org.apache.batik.gvt.event;
 
-import java.awt.geom.Rectangle2D;
-
 import org.apache.batik.gvt.GraphicsNode;
 
 /**

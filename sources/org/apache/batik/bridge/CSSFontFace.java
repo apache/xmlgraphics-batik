@@ -49,7 +49,6 @@
 */
 
 package org.apache.batik.bridge;
-import java.io.IOException;
 import java.util.List;
 import java.util.LinkedList;
 
@@ -63,11 +62,8 @@ import org.apache.batik.css.engine.value.ValueManager;
 import org.apache.batik.gvt.font.GVTFontFamily;
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.SVGConstants;
-import org.apache.batik.gvt.font.AWTFontFamily;
-
 import org.w3c.dom.css.CSSValue;
 import org.w3c.dom.css.CSSPrimitiveValue;
-import org.w3c.dom.Element;
 
 /**
  * This class represents a &lt;font-face> element or @font-face rule
@@ -110,7 +106,6 @@ public class CSSFontFace extends FontFace implements SVGConstants {
 
         CSSFontFace ret = new CSSFontFace(familyName);
 
-        ValueManager [] vms = eng.getValueManagers();
         Value v;
         v = sm.getValue(SVGCSSEngine.FONT_WEIGHT_INDEX);
         if (v != null) 

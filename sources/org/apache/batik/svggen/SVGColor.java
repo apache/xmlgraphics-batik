@@ -157,7 +157,6 @@ public class SVGColor extends AbstractSVGConverter{
         //
         // Now, convert the alpha value, if needed
         //
-        int alphaInt = color.getAlpha();
         float alpha = color.getAlpha()/255f;
 
         String alphaString = gc.doubleString(alpha);

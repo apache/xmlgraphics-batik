@@ -53,10 +53,8 @@ package org.apache.batik.bridge;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Rectangle2D;
-import java.net.URL;
 import java.util.Map;
 
-import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.util.XMLConstants;
 import org.apache.batik.ext.awt.image.PadMode;
@@ -68,8 +66,6 @@ import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.util.ParsedURL;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.svg.SVGDocument;
 
 /**
  * Bridge class for the &lt;feImage> element.
@@ -140,7 +136,6 @@ public class SVGFeImageElementBridge
         // from objectBoundingBox space to user space.
         //
         
-        GraphicsNode gn = null;
         Document document = filterElement.getOwnerDocument();
         boolean isUse = (uriStr.indexOf("#") != -1);
         Element contentElement = null;

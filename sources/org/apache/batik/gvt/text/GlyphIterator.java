@@ -157,7 +157,7 @@ public class GlyphIterator {
         this.runLimit  = aci.getRunLimit(TEXT_COMPOUND_DELIMITER);
         
         this.lineBreakRunLimit = aci.getRunLimit(FLOW_LINE_BREAK);
-        Object o = (Object)aci.getAttribute(FLOW_LINE_BREAK);
+        Object o = aci.getAttribute(FLOW_LINE_BREAK);
         this.lineBreakCount = (o == null)?0:1;
 
 
@@ -311,7 +311,7 @@ public class GlyphIterator {
             lineBreakRunLimit = aci.getRunLimit(FLOW_LINE_BREAK);
             aci.setIndex(aciIdx);  // Restore location...
 
-            Object o = (Object)aci.getAttribute(FLOW_LINE_BREAK);
+            Object o = aci.getAttribute(FLOW_LINE_BREAK);
             lineBreakCount = (o == null)?0:1;
         }
         return ret;

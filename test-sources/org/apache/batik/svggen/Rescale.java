@@ -50,9 +50,14 @@
 
 package org.apache.batik.svggen;
 
-import java.awt.*;
-import java.awt.geom.*;
-import java.awt.image.*;
+import java.awt.Button;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.MediaTracker;
+import java.awt.RenderingHints;
+import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
 
 /**
  * This test validates the convertion of Java 2D RescaleOp
@@ -66,9 +71,6 @@ public class Rescale implements Painter {
     public void paint(Graphics2D g) {
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                            RenderingHints.VALUE_ANTIALIAS_ON);
-
-        java.awt.geom.AffineTransform defaultTransform = g.getTransform();
-
         //
         // Load Image
         //

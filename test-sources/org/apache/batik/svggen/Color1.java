@@ -50,8 +50,9 @@
 
 package org.apache.batik.svggen;
 
-import java.awt.*;
-import java.awt.geom.*;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.Font;
 
 /**
  * This test validates convertion of Java 2D Color into SVG fill,

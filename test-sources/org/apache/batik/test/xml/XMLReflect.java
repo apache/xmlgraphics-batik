@@ -50,13 +50,11 @@
 
 package org.apache.batik.test.xml;
 
-import java.util.Vector;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.util.Vector;
 
 import org.w3c.dom.Element;
-import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -162,7 +160,6 @@ public class XMLReflect implements XMLReflectConstants{
             NodeList children = element.getChildNodes();
             if(children != null && children.getLength() > 0){
                 int n = children.getLength();
-                Vector args = new Vector();
                 for(int i=0; i<n; i++){
                     Node child = children.item(i);
                     if(child.getNodeType() == Node.ELEMENT_NODE){

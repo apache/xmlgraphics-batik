@@ -122,8 +122,6 @@ public class SimpleImageHandler implements GenericImageHandler, SVGSyntax, Error
 
         int imageWidth      = image.getWidth(null);
         int imageHeight     = image.getHeight(null);
-        AffineTransform af  = null;
-
         if(imageWidth == 0 || imageHeight == 0 ||
            width == 0 || height == 0) {
 
@@ -132,8 +130,7 @@ public class SimpleImageHandler implements GenericImageHandler, SVGSyntax, Error
 
         } else {
             imageHandler.handleImage(image, imageElement, generatorContext);
-            setImageAttributes(imageElement, (double) x, (double) y,
-                               (double)width, (double)height,
+            setImageAttributes(imageElement, x, y, width, height,
                                generatorContext);
         }
         return null;
@@ -150,7 +147,6 @@ public class SimpleImageHandler implements GenericImageHandler, SVGSyntax, Error
 
         int imageWidth      = image.getWidth();
         int imageHeight     = image.getHeight();
-        AffineTransform af  = null;
 
         if(imageWidth == 0 || imageHeight == 0 ||
            width == 0 || height == 0) {
@@ -160,8 +156,8 @@ public class SimpleImageHandler implements GenericImageHandler, SVGSyntax, Error
 
         } else {
             imageHandler.handleImage(image, imageElement, generatorContext);
-            setImageAttributes(imageElement, (double) x, (double) y,
-                               (double)width, (double)height, generatorContext);
+            setImageAttributes(imageElement, x, y, width, height, 
+                               generatorContext);
         }
         return null;
     }
@@ -177,7 +173,6 @@ public class SimpleImageHandler implements GenericImageHandler, SVGSyntax, Error
 
         double imageWidth   = image.getWidth();
         double imageHeight  = image.getHeight();
-        AffineTransform af  = null;
 
         if(imageWidth == 0 || imageHeight == 0 ||
            width == 0 || height == 0) {

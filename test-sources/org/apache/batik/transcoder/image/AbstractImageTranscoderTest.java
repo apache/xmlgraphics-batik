@@ -60,7 +60,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
-import java.io.PrintWriter;
 import java.io.StringWriter;
 
 import java.net.MalformedURLException;
@@ -73,8 +72,6 @@ import org.apache.batik.ext.awt.image.renderable.Filter;
 
 import org.apache.batik.ext.awt.image.codec.PNGImageEncoder;
 import org.apache.batik.ext.awt.image.codec.PNGEncodeParam;
-
-import org.apache.batik.util.ParsedURL;
 
 import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderInput;
@@ -352,7 +349,6 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
             }
             
             if (refImgData.length != imgData.length) {
-                String varURI;
                 report.setErrorCode(ERROR_IMAGE_DIFFER);
                 report.addDescriptionEntry(ERROR_IMAGE_DIFFER, "");
                 report.setPassed(false);

@@ -78,7 +78,7 @@ public class UserAgentAdapter implements UserAgent {
     protected Set extensions = new HashSet();
 
     public UserAgentAdapter() {
-    };
+    }
 
     public void addStdFeatures() {
         FEATURES.add(SVGConstants.SVG_ORG_W3C_SVG_FEATURE);

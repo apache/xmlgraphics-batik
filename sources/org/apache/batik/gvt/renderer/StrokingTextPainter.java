@@ -469,7 +469,7 @@ public class StrokingTextPainter extends BasicTextPainter {
             if (fontFamilies == null ) {
                 // no font families set this chunk so just increment...
                 asOff += aciLength;
-                moreChunks = (aci.setIndex(end) != aci.DONE);
+                moreChunks = (aci.setIndex(end) != AttributedCharacterIterator.DONE);
                 continue;
             }
 
@@ -505,7 +505,7 @@ public class StrokingTextPainter extends BasicTextPainter {
             if (as == null)
                 as = new AttributedString(aci);
 
-            GVTFont defaultFont = null;;
+            GVTFont defaultFont = null;
             int numSet=0;
             int firstUnset=start;
             boolean firstUnsetSet;
@@ -632,7 +632,7 @@ public class StrokingTextPainter extends BasicTextPainter {
 	    }
 
             asOff += aciLength;
-            if (aci.setIndex(end) == aci.DONE) {
+            if (aci.setIndex(end) == AttributedCharacterIterator.DONE) {
                 moreChunks = false;
             }
             start = end;
@@ -769,7 +769,6 @@ public class StrokingTextPainter extends BasicTextPainter {
             // We have to do this here since textLength needs to be
             // handled at the text chunk level. Otherwise tspans get
             // messed up.
-            float delta = 0;
             if (layout.isVertical()) {
                 if (lengthAdj == ADJUST_SPACING) {
                     yScale = (float)
@@ -1138,8 +1137,6 @@ public class StrokingTextPainter extends BasicTextPainter {
         Rectangle2D bounds = null;
         // for each text run, get its stroke outline and append it to the overall outline
         for (int i = 0; i < textRuns.size(); ++i) {
-            Shape textRunStrokeOutline = null;
-
             TextRun textRun = (TextRun)textRuns.get(i);
             AttributedCharacterIterator textRunACI = textRun.getACI();
             textRunACI.first();

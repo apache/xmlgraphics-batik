@@ -256,7 +256,7 @@ public class SpecularLightingRable8Bit
             aoi = getBounds2D();
 
         Rectangle2D aoiR = aoi.getBounds2D();
-        aoiR.intersect(aoiR, getBounds2D(), aoiR);
+        Rectangle2D.intersect(aoiR, getBounds2D(), aoiR);
 
         AffineTransform at = rc.getTransform();
         Rectangle devRect = at.createTransformedShape(aoiR).getBounds();

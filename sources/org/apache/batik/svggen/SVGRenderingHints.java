@@ -112,22 +112,22 @@ public class SVGRenderingHints extends AbstractSVGConverter{
         // RENDERING
         //
         if(hints != null){
-            Object rendering = hints.get(hints.KEY_RENDERING);
-            if(rendering == hints.VALUE_RENDER_DEFAULT){
+            Object rendering = hints.get(RenderingHints.KEY_RENDERING);
+            if(rendering == RenderingHints.VALUE_RENDER_DEFAULT){
                 colorInterpolation = SVG_AUTO_VALUE;
                 colorRendering = SVG_AUTO_VALUE;
                 textRendering = SVG_AUTO_VALUE;
                 shapeRendering = SVG_AUTO_VALUE;
                 imageRendering = SVG_AUTO_VALUE;
             }
-            else if(rendering == hints.VALUE_RENDER_SPEED){
+            else if(rendering == RenderingHints.VALUE_RENDER_SPEED){
                 colorInterpolation = SVG_SRGB_VALUE;
                 colorRendering = SVG_OPTIMIZE_SPEED_VALUE;
                 textRendering = SVG_OPTIMIZE_SPEED_VALUE;
                 shapeRendering = SVG_GEOMETRIC_PRECISION_VALUE;
                 imageRendering = SVG_OPTIMIZE_SPEED_VALUE;
             }
-            else if(rendering == hints.VALUE_RENDER_QUALITY){
+            else if(rendering == RenderingHints.VALUE_RENDER_QUALITY){
                 colorInterpolation = SVG_LINEAR_RGB_VALUE;
                 colorRendering = SVG_OPTIMIZE_QUALITY_VALUE;
                 textRendering = SVG_OPTIMIZE_QUALITY_VALUE;
@@ -138,16 +138,16 @@ public class SVGRenderingHints extends AbstractSVGConverter{
             //
             // Fractional Metrics
             //
-            Object fractionalMetrics = hints.get(hints.KEY_FRACTIONALMETRICS);
-            if(fractionalMetrics == hints.VALUE_FRACTIONALMETRICS_ON){
+            Object fractionalMetrics = hints.get(RenderingHints.KEY_FRACTIONALMETRICS);
+            if(fractionalMetrics == RenderingHints.VALUE_FRACTIONALMETRICS_ON){
                 textRendering = SVG_OPTIMIZE_QUALITY_VALUE;
                 shapeRendering = SVG_GEOMETRIC_PRECISION_VALUE;
             }
-            else if(fractionalMetrics == hints.VALUE_FRACTIONALMETRICS_OFF){
+            else if(fractionalMetrics == RenderingHints.VALUE_FRACTIONALMETRICS_OFF){
                 textRendering = SVG_OPTIMIZE_SPEED_VALUE;
                 shapeRendering = SVG_OPTIMIZE_SPEED_VALUE;
             }
-            else if(fractionalMetrics == hints.VALUE_FRACTIONALMETRICS_DEFAULT){
+            else if(fractionalMetrics == RenderingHints.VALUE_FRACTIONALMETRICS_DEFAULT){
                 textRendering = SVG_AUTO_VALUE;
                 shapeRendering = SVG_AUTO_VALUE;
             }
@@ -155,16 +155,16 @@ public class SVGRenderingHints extends AbstractSVGConverter{
             //
             // Antialiasing
             //
-            Object antialiasing = hints.get(hints.KEY_ANTIALIASING);
-            if(antialiasing == hints.VALUE_ANTIALIAS_ON){
+            Object antialiasing = hints.get(RenderingHints.KEY_ANTIALIASING);
+            if(antialiasing == RenderingHints.VALUE_ANTIALIAS_ON){
                 textRendering = SVG_OPTIMIZE_LEGIBILITY_VALUE;
                 shapeRendering = SVG_AUTO_VALUE;
             }
-            else if(antialiasing == hints.VALUE_ANTIALIAS_OFF){
+            else if(antialiasing == RenderingHints.VALUE_ANTIALIAS_OFF){
                 textRendering = SVG_GEOMETRIC_PRECISION_VALUE;
                 shapeRendering = SVG_CRISP_EDGES_VALUE;
             }
-            else if(antialiasing == hints.VALUE_ANTIALIAS_DEFAULT){
+            else if(antialiasing == RenderingHints.VALUE_ANTIALIAS_DEFAULT){
                 textRendering = SVG_AUTO_VALUE;
                 shapeRendering = SVG_AUTO_VALUE;
             }
@@ -172,34 +172,34 @@ public class SVGRenderingHints extends AbstractSVGConverter{
             //
             // Text Antialiasing
             //
-            Object textAntialiasing = hints.get(hints.KEY_TEXT_ANTIALIASING);
-            if(textAntialiasing == hints.VALUE_TEXT_ANTIALIAS_ON)
+            Object textAntialiasing = hints.get(RenderingHints.KEY_TEXT_ANTIALIASING);
+            if(textAntialiasing == RenderingHints.VALUE_TEXT_ANTIALIAS_ON)
                 textRendering = SVG_OPTIMIZE_LEGIBILITY_VALUE;
-            else if(textAntialiasing == hints.VALUE_TEXT_ANTIALIAS_OFF)
+            else if(textAntialiasing == RenderingHints.VALUE_TEXT_ANTIALIAS_OFF)
                 textRendering = SVG_OPTIMIZE_SPEED_VALUE;
-            else if(textAntialiasing == hints.VALUE_TEXT_ANTIALIAS_DEFAULT)
+            else if(textAntialiasing == RenderingHints.VALUE_TEXT_ANTIALIAS_DEFAULT)
                 textRendering = SVG_AUTO_VALUE;
 
             //
             // Color Rendering
             //
-            Object colorRenderingHint = hints.get(hints.KEY_COLOR_RENDERING);
-            if(colorRenderingHint == hints.VALUE_COLOR_RENDER_DEFAULT)
+            Object colorRenderingHint = hints.get(RenderingHints.KEY_COLOR_RENDERING);
+            if(colorRenderingHint == RenderingHints.VALUE_COLOR_RENDER_DEFAULT)
                 colorRendering = SVG_AUTO_VALUE;
-            else if(colorRenderingHint == hints.VALUE_COLOR_RENDER_QUALITY)
+            else if(colorRenderingHint == RenderingHints.VALUE_COLOR_RENDER_QUALITY)
                 colorRendering = SVG_OPTIMIZE_QUALITY_VALUE;
-            else if(colorRenderingHint == hints.VALUE_COLOR_RENDER_SPEED)
+            else if(colorRenderingHint == RenderingHints.VALUE_COLOR_RENDER_SPEED)
                 colorRendering = SVG_OPTIMIZE_SPEED_VALUE;
 
             //
             // Interpolation
             //
-            Object interpolation = hints.get(hints.KEY_INTERPOLATION);
-            if(interpolation == hints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR)
+            Object interpolation = hints.get(RenderingHints.KEY_INTERPOLATION);
+            if(interpolation == RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR)
                 imageRendering = SVG_OPTIMIZE_SPEED_VALUE;
-            else if(interpolation == hints.VALUE_INTERPOLATION_BICUBIC
+            else if(interpolation == RenderingHints.VALUE_INTERPOLATION_BICUBIC
                     ||
-                    interpolation == hints.VALUE_INTERPOLATION_BILINEAR)
+                    interpolation == RenderingHints.VALUE_INTERPOLATION_BILINEAR)
                 imageRendering = SVG_OPTIMIZE_QUALITY_VALUE;
         } // if(hints != null)
 

@@ -342,7 +342,6 @@ public class SVGFlowTextElementBridge extends SVGTextElementBridge
         // Note: The Working Group (in conjunction with XHTML working
         // group) has decided that multiple line elements collapse.
         int prevLN = 0;
-        int lnCount = 0;
         Iterator lnIter = lnLocs.iterator();
         while (lnIter.hasNext()) {
             int nextLN = ((Integer)lnIter.next()).intValue();

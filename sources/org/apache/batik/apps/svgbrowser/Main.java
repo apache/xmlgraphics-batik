@@ -342,7 +342,7 @@ public class Main implements Application {
             String dir = System.getProperty(PROPERTY_USER_HOME);
             File f = new File(dir, BATIK_CONFIGURATION_SUBDIRECTORY);
             f.mkdir();
-            preferenceManager.setPreferenceDirectory(f.getCanonicalPath());
+            XMLPreferenceManager.setPreferenceDirectory(f.getCanonicalPath());
             preferenceManager.load();
             setPreferences();
             initializeLastVisited();
