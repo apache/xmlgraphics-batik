@@ -93,7 +93,7 @@ public class SVGPathElementBridge extends SVGDecoratedShapeElementBridge {
         String attrName = evt.getAttrName();
         if (attrName.equals(SVG_D_ATTRIBUTE)) {
 
-            BridgeUpdateEvent be = new BridgeUpdateEvent();
+            BridgeUpdateEvent be = new BridgeUpdateEvent(this);
             fireBridgeUpdateStarting(be);
             buildShape(ctx, e, (ShapeNode)node);
             if (((ShapeNode)node).getShape() == null) {

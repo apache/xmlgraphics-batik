@@ -9,8 +9,8 @@
 package org.apache.batik.bridge;
 
 /**
- * Interface for objects interesed in being notified of updates
- * by a <tt>DynamicBridge</tt>.
+ * Interface for objects interested in being notified of updates
+ * by a <tt>Bridge</tt>.
  * 
  * @author <a href="mailto:vincent.hardy@apache.org">Vincent Hardy</a>
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
@@ -19,12 +19,16 @@ package org.apache.batik.bridge;
 public interface BridgeUpdateHandler {
     
     /**
+     * Invoked when a bridge update starts.
      *
+     * @param evt the evt that describes the incoming update
      */
-    public void bridgeUpdateStarting(BridgeUpdateEvent e);
+    void bridgeUpdateStarting(BridgeUpdateEvent evt);
 
     /**
-     * 
+     * Invoked when a bridge update ends.
+     *
+     * @param evt the evt that describes the update
      */
-    public void bridgeUpdateCompleted(BridgeUpdateEvent e);
+    void bridgeUpdateCompleted(BridgeUpdateEvent evt);
 }

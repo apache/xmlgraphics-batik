@@ -63,7 +63,7 @@ import org.w3c.dom.events.MutationEvent;
  * @version $Id$
  */
 public class SVGTextElementBridge extends AbstractSVGBridge
-    implements GraphicsNodeBridge, ErrorConstants {
+    implements BridgeUpdateHandler, GraphicsNodeBridge, ErrorConstants {
 
     /**
      * The element that has been handled by this bridge.
@@ -193,6 +193,13 @@ public class SVGTextElementBridge extends AbstractSVGBridge
     public void buildGraphicsNode(BridgeContext ctx,
                                   Element e,
                                   GraphicsNode node) {
+
+
+        // push 'this' as the current BridgeUpdateHandler for subbridges
+        if (ctx.isDynamic()) {
+            ctx.pushBridgeUpdateHandler(this);
+        }
+
         e.normalize();
         AttributedString as = buildAttributedString(ctx, e, node);
         addGlyphPositionAttributes(as, e, ctx);
@@ -220,6 +227,8 @@ public class SVGTextElementBridge extends AbstractSVGBridge
             this.node = node;
             this.ctx = ctx;
             initializeDynamicSupport();
+            // 'this' is no more the current BridgeUpdateHandler
+            ctx.popBridgeUpdateHandler();
         }
 
         // Handle children elements such as <title>
@@ -250,6 +259,26 @@ public class SVGTextElementBridge extends AbstractSVGBridge
     }
 
     /**
+     * Invoked when a bridge update is starting.
+     *
+     * @param evt the evt that describes the incoming update
+     */
+    public void bridgeUpdateStarting(BridgeUpdateEvent evt) {
+        System.out.println("("+e.getLocalName()+" "+node+") update started "+
+                           evt.getHandlerKey());
+    }
+
+    /**
+     * Invoked when a bridge update is completed.
+     *
+     * @param evt the evt that describes the update
+     */
+    public void bridgeUpdateCompleted(BridgeUpdateEvent evt) {
+        System.out.println("("+e.getLocalName()+" "+node+") update completed "+
+                           evt.getHandlerKey());
+    }
+
+    /**
      * Handles DOMAttrModified events.
      *
      * @param evt the DOM mutation event
@@ -257,7 +286,7 @@ public class SVGTextElementBridge extends AbstractSVGBridge
     protected void handleDOMAttrModifiedEvent(MutationEvent evt) {
         String attrName = evt.getAttrName();
         if (attrName.equals(SVG_TRANSFORM_ATTRIBUTE)) {
-            BridgeUpdateEvent be = new BridgeUpdateEvent();
+            BridgeUpdateEvent be = new BridgeUpdateEvent(this);
             fireBridgeUpdateStarting(be);
             
             String s = evt.getNewValue();
