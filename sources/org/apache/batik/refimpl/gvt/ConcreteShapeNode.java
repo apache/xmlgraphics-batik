@@ -9,14 +9,14 @@
 package org.apache.batik.refimpl.gvt;
 
 import java.awt.Graphics2D;
-import java.awt.Shape;
 import java.awt.RenderingHints;
-import java.awt.geom.Rectangle2D;
+import java.awt.Shape;
 import java.awt.geom.AffineTransform;
-
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.ShapeNode;
 import org.apache.batik.gvt.ShapePainter;
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
 
 /**
  * An implementation of the <tt>ShapeNode</tt> interface.
@@ -41,6 +41,11 @@ public class ConcreteShapeNode extends AbstractGraphicsNode
      * Primitive bounds
      */
     protected Rectangle2D primitiveBounds;
+
+    /**
+     * The painted area.
+     */
+    protected Shape paintedArea;
 
     /**
      * Constructs a new empty shape node.
@@ -97,21 +102,32 @@ public class ConcreteShapeNode extends AbstractGraphicsNode
     //
     // Geometric methods
     //
-    public Rectangle2D getPrimitiveBounds() {
-        if(primitiveBounds == null){
-            if(shapePainter == null)
-                return null;
-            primitiveBounds = shapePainter.getPaintedArea(shape).getBounds2D();
-        }
 
+    public boolean contains(Point2D p) {
+        return (getBounds().contains(p) && getOutline().contains(p));
+    }
+
+
+    public Rectangle2D getPrimitiveBounds() {
+        if (primitiveBounds == null) {
+            if (shapePainter == null) {
+                return null;
+            }
+            paintedArea = shapePainter.getPaintedArea(shape);
+            primitiveBounds = paintedArea.getBounds2D();
+        }
         return primitiveBounds;
 
     }
 
     public Shape getOutline() {
-        // <!> FIXME : TODO
-        // may not be the intended behavior for stroked shapes, since the outline
-        // does not include the rendered extents
-        return shape;
+        if (primitiveBounds == null) {
+            if(shapePainter == null) {
+                return null;
+            }
+            paintedArea = shapePainter.getPaintedArea(shape);
+            primitiveBounds = paintedArea.getBounds2D();
+        }
+        return paintedArea;
     }
 }
