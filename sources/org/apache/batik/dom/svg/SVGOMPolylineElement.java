@@ -46,7 +46,7 @@ public class SVGOMPolylineElement
 
     /**
      * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGAnimatedLength#getPoints()}.
+     * org.w3c.dom.svg.SVGAnimatedPoints#getPoints()}.
      */
     public SVGList getPoints() {
         throw new RuntimeException(" !!! TODO");
@@ -54,7 +54,7 @@ public class SVGOMPolylineElement
 
     /**
      * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGAnimatedLength#getAnimatedPoints()}.
+     * org.w3c.dom.svg.SVGAnimatedPoints#getAnimatedPoints()}.
      */
     public SVGList getAnimatedPoints() {
         throw new RuntimeException(" !!! TODO");
