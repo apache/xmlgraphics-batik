@@ -42,7 +42,7 @@
         The SVG DOM (Document Object Model) defines the API that programming
         languages use to interact with SVG documents. There are different 'bindings'
         of the DOM API for different languages. For example, there is an ECMAScript
-        binding which allows SVG scripts to access or modify SVG document, for example
+        binding which allows SVG scripts to access or modify SVG documents, for example
         in reaction to events. There is also a Java technology binding which allows
         Java programs to dynamically interact with SVG documents. The Java binding
         and the ECMA Script binding are both available in Batik.
