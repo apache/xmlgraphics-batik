@@ -162,6 +162,20 @@ public class FilterResRable8Bit extends AbstractRable
                     
                     newUsr2Dev.concatenate(usr2dev);
                     
+                    // This splits out the scale so we know how much to pad
+                    // in user space so we have a pixel surround in device
+                    // space for the affine.
+                    double sx = newUsr2Dev.getScaleX();
+                    double sy = newUsr2Dev.getScaleY();
+
+                    double shx = newUsr2Dev.getShearX();
+                    double shy = newUsr2Dev.getShearY();
+
+                    // The Scale is roughly the "hypotonose" of the
+                    // matrix vectors.
+                    double devSX = Math.sqrt(sx*sx + shy*shy);
+                    double devSY = Math.sqrt(sy*sy + shx*shx);
+
                     //
                     // Create a new RenderingContext
                     //
@@ -180,10 +194,10 @@ public class FilterResRable8Bit extends AbstractRable
                     //
                     Rectangle2D newAOI = aoi.getBounds2D();
                     newAOI = new Rectangle2D.Double
-                        (newAOI.getX()-1/scaleX,
-                         newAOI.getY()-1/scaleY,
-                         newAOI.getWidth()+2/scaleX,
-                         newAOI.getHeight()+2/scaleY);
+                        (newAOI.getX()-1/devSX,
+                         newAOI.getY()-1/devSY,
+                         newAOI.getWidth()+2/devSX,
+                         newAOI.getHeight()+2/devSY);
 
                     newRenderContext.setAreaOfInterest(newAOI);
 
@@ -196,6 +210,7 @@ public class FilterResRable8Bit extends AbstractRable
                     
                     RenderedImage result = null;
                     result = localSource.createRendering(newRenderContext);
+                    // org.ImageDisplay.showImage("AT: " + newUsr2Dev, result);
                     if (result != null)
                         result = new AffineRed
                             (GraphicsUtil.wrap(result),
