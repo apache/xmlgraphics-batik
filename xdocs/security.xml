@@ -26,7 +26,14 @@
         <p>
         With the addition of scripting support in Batik 1.5, security features
         have also been added to enable users of the Batik toolkit to run 
-        scripts in a secure manner. There are two major security features in Batik:
+        scripts in a secure manner.</p>
+        <p>
+        If you are using scripts, please make sure you have reviewed the 
+        <link href="index.html#SecurityWarning">Script Security 
+        Warning</link> with regards to the Batik 1.5 release.
+        </p>
+        <p>
+       There are two major script security features in Batik:
         </p>
         <ul>
             <li><link href="#sandBox">Script execution</link></li>

@@ -36,24 +36,13 @@
         generation or manipulation.
         </p>
 	 <ul>
+		<li><link href="#SecurityWarning">Script Security Warning</link></li>
 		<li><link href="#BatikApplications">Applications of Batik</link></li>
 		<li><link href="#SVGSpecification">The SVG Specification</link></li>
 		<li><link href="#BatikStatus">What is Batik's Implementation Status?</link></li>
             		<li><link href="#DownloadBatik">Downloading the Batik distribution (source and binary)</link></li>
 		<li><link href="#projectAndProductExamples">Examples of projects and products using Batik</link></li>
 	</ul>
-      <p>
-       This is a warning that a security issue was reported in the
-       Batik Squiggle browser. Squiggle uses the Rhino scripting
-       engine and some features of that engine can be leveraged by
-       malicious scripts to gain access to otherwise protected
-       resources (like the file system).
-
-       The Batik team has worked with the Rhino team to fix the isssue
-       that was reported and the Batik 1.5.1 patch release addresses
-       the issue:
-       </p>
-
         <p>
         The project's ambition is to give developers a set of 
         <link href="architecture.html#coreComponents">core 
@@ -74,6 +63,22 @@
         </p>
 
         </s1>
+
+        <anchor id="SecurityWarning" />
+        <s1 title="Script Security Warning">
+      <p>
+       This is a warning that a script security issue was reported in
+       the Batik Squiggle browser. Squiggle uses the Rhino scripting
+       engine and some features of that engine can be leveraged by
+       malicious scripts to gain access to otherwise protected
+       resources (like the file system).
+      </p>
+      <p>
+       The Batik team has worked with the Rhino team to fix the isssue
+       that was reported and the <link href="http://www.apache.org/dyn/closer.cgi/xml/batik">Batik 1.5.1</link>
+       patch release addresses the issue.
+       </p>
+    </s1>
 
         <anchor id="BatikApplications" />
         <s1 title="Applications of Batik">
