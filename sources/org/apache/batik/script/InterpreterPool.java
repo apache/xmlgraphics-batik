@@ -99,7 +99,8 @@ public class InterpreterPool {
         Interpreter interpreter = null;
         if (factory != null)
             try {
-                interpreter = factory.createInterpreter();
+                interpreter = factory.createInterpreter
+                    (((SVGOMDocument)document).getURLObject());
                 if (document != null) {
                     interpreter.bindObject("document", document);
                 }

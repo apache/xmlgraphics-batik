@@ -8,7 +8,11 @@
 
 package org.apache.batik.swing.svg;
 
+import java.net.URL;
+
 import org.w3c.dom.Element;
+
+import org.apache.batik.bridge.ScriptSecurity;
 
 /**
  * This interface must be implemented to provide client services to
@@ -113,4 +117,23 @@ public interface SVGUserAgent {
      * way.
      */
     void handleElement(Element elt, Object data);
+
+
+    /**
+     * Returns the security settings for the given script
+     * type, script url and document url
+     * 
+     * @param scriptType type of script, as found in the 
+     *        type attribute of the &lt;script&gt; element.
+     * @param scriptURL url for the script, as defined in
+     *        the script's xlink:href attribute. If that
+     *        attribute was empty, then this parameter should
+     *        be null
+     * @param docURL url for the document into which the 
+     *        script was found.
+     */
+    ScriptSecurity getScriptSecurity(final String scriptType,
+                                     final URL scriptURL,
+                                     final URL docURL);
+        
 }

@@ -6,23 +6,27 @@
  * the LICENSE file.                                                         *
  *****************************************************************************/
 
-package org.apache.batik.script;
-
-import java.net.URL;
+package org.apache.batik.bridge;
 
 /**
- * An hight level interface that represents a factory allowing
- * to create instances of a particular <code>Interpreter</code> interface
- * implementation.
- * @author <a href="mailto:cjolif@ilog.fr">Christophe Jolif</a>
+ * An interface that allows UserAgents to describe the security 
+ * constraints desired for scripting.
+ *
+ * Right now, this interface only has one method, but it may be 
+ * extended in the future to add finer control over the security
+ * settings for scripts.
+ *
+ * @author <a href="mailto:vhardy@apache.org">Vincent Hardy</a>
  * @version $Id$
  */
-public interface InterpreterFactory {
+public interface ScriptSecurity {
     /**
-     * This method should create an instance of <code>Interpreter</code>
-     * interface implementation.
-     * 
-     * @param documentURL the url for the document which will be scripted
+     * Controls whether the script should be loaded or not.
+     *
+     * @throws SecurityException if the script should not be loaded.
      */
-    public Interpreter createInterpreter(URL documentURL);
+    void checkLoadScript();
 }
+
+
+    

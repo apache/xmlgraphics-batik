@@ -41,8 +41,10 @@ import javax.swing.JOptionPane;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeException;
 import org.apache.batik.bridge.BridgeExtension;
+import org.apache.batik.bridge.DefaultScriptSecurity;
 import org.apache.batik.bridge.DocumentLoader;
 import org.apache.batik.bridge.GraphicsNodeBridge;
+import org.apache.batik.bridge.ScriptSecurity;
 import org.apache.batik.bridge.UpdateManager;
 import org.apache.batik.bridge.UpdateManagerEvent;
 import org.apache.batik.bridge.UpdateManagerListener;
@@ -1937,6 +1939,42 @@ public class JSVGComponent extends JGVTComponent {
         }
 
         /**
+         * Returns the security settings for the given script
+         * type, script url and document url
+         * 
+         * @param scriptType type of script, as found in the 
+         *        type attribute of the &lt;script&gt; element.
+         * @param scriptURL url for the script, as defined in
+         *        the script's xlink:href attribute. If that
+         *        attribute was empty, then this parameter should
+         *        be null
+         * @param docURL url for the document into which the 
+         *        script was found.
+         */
+        public ScriptSecurity getScriptSecurity(final String scriptType,
+                                                final URL scriptURL,
+                                                final URL docURL){
+            if (EventQueue.isDispatchThread()) {
+                return userAgent.getScriptSecurity(scriptType,
+                                                   scriptURL,
+                                                   docURL);
+            } else {
+                class Query implements Runnable {
+                    ScriptSecurity result;
+                    public void run() {
+                        result = userAgent.getScriptSecurity(scriptType,
+                                                             scriptURL,
+                                                             docURL);
+                    }
+                }
+                Query q = new Query();
+                invokeAndWait(q);
+                return q.result;
+            }
+        }
+    
+
+        /**
          * Invokes the given runnable from the event thread, and wait
          * for the run method to terminate.
          */
@@ -2271,6 +2309,35 @@ public class JSVGComponent extends JGVTComponent {
                 svgUserAgent.handleElement(elt, data);
             }
         }
+
+        /**
+         * Returns the security settings for the given script
+         * type, script url and document url
+         * 
+         * @param scriptType type of script, as found in the 
+         *        type attribute of the &lt;script&gt; element.
+         * @param scriptURL url for the script, as defined in
+         *        the script's xlink:href attribute. If that
+         *        attribute was empty, then this parameter should
+         *        be null
+         * @param docURL url for the document into which the 
+         *        script was found.
+         */
+        public ScriptSecurity getScriptSecurity(String scriptType,
+                                                URL scriptURL,
+                                                URL docURL){
+            if (svgUserAgent != null){
+                return svgUserAgent.getScriptSecurity(scriptType,
+                                                      scriptURL,
+                                                      docURL);
+            } else {
+                return new DefaultScriptSecurity(scriptType, 
+                                                 scriptURL, 
+                                                 docURL);
+            }
+        }
+    
+
     }
 
     protected final static Set FEATURES = new HashSet();

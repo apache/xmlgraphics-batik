@@ -8,6 +8,8 @@
 
 package org.apache.batik.script.jpython;
 
+import java.net.URL;
+
 import org.apache.batik.script.Interpreter;
 import org.apache.batik.script.InterpreterFactory;
 
@@ -26,8 +28,10 @@ public class JPythonInterpreterFactory implements InterpreterFactory {
 
     /**
      * Creates an instance of <code>JPythonInterpreter</code> class.
+     * 
+     * @param documentURL the url for the document which will be scripted
      */
-    public Interpreter createInterpreter() {
+    public Interpreter createInterpreter(URL documentURL) {
         return new JPythonInterpreter();
     }
 }

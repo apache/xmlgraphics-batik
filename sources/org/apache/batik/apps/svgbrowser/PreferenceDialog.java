@@ -125,6 +125,20 @@ public class PreferenceDialog extends JDialog
     public static final String LABEL_IS_XML_PARSER_VALIDATING
         = "PreferenceDialog.label.is.xml.parser.validating";
 
+    public static final String LABEL_ENFORCE_SECURE_SCRIPTING
+        = "PreferenceDialog.label.enforce.secure.scripting";
+
+    public static final String LABEL_LOAD_JAVA
+        = "PreferenceDialog.label.load.java";
+
+    public static final String LABEL_LOAD_ECMASCRIPT
+        = "PreferenceDialog.label.load.ecmascript";
+
+    public static final String LABEL_CONSTRAIN_SCRIPT_ORIGIN
+        = "PreferenceDialog.label.constrain.script.origin";
+
+    
+
     public static final String LABEL_HOST
         = "PreferenceDialog.label.host";
 
@@ -196,6 +210,18 @@ public class PreferenceDialog extends JDialog
     public static final String PREFERENCE_KEY_PROXY_PORT
         = "preference.key.proxy.port";
 
+    public static final String PREFERENCE_KEY_ENFORCE_SECURE_SCRIPTING
+        = "preference.key.enforce.secure.scripting";
+
+    public static final String PREFERENCE_KEY_LOAD_ECMASCRIPT
+        = "preference.key.load.ecmascript";
+
+    public static final String PREFERENCE_KEY_LOAD_JAVA
+        = "preference.key.load.java.script";
+
+    public static final String PREFERENCE_KEY_CONSTRAIN_SCRIPT_ORIGIN
+        = "preference.key.constrain.script.origin";
+
     /**
      * <tt>PreferenceManager</tt> used to store and retrieve
      * preferences
@@ -228,6 +254,14 @@ public class PreferenceDialog extends JDialog
     protected JCheckBox selectionXorMode;
 
     protected JCheckBox isXMLParserValidating;
+
+    protected JCheckBox enforceSecureScripting;
+
+    protected JCheckBox loadJava;
+
+    protected JCheckBox loadEcmascript;
+
+    protected JCheckBox constrainScriptOrigin;
 
     protected JTextField host, port;
 
@@ -290,6 +324,10 @@ public class PreferenceDialog extends JDialog
         selectionXorMode.setSelected(model.getBoolean(PREFERENCE_KEY_SELECTION_XOR_MODE));
 
         isXMLParserValidating.setSelected(model.getBoolean(PREFERENCE_KEY_IS_XML_PARSER_VALIDATING));
+        enforceSecureScripting.setSelected(model.getBoolean(PREFERENCE_KEY_ENFORCE_SECURE_SCRIPTING));
+        loadJava.setSelected(model.getBoolean(PREFERENCE_KEY_LOAD_JAVA));
+        loadEcmascript.setSelected(model.getBoolean(PREFERENCE_KEY_LOAD_ECMASCRIPT));
+        constrainScriptOrigin.setSelected(model.getBoolean(PREFERENCE_KEY_CONSTRAIN_SCRIPT_ORIGIN));
 
         showRendering.setEnabled
             (!model.getBoolean(PREFERENCE_KEY_ENABLE_DOUBLE_BUFFERING));
@@ -330,6 +368,14 @@ public class PreferenceDialog extends JDialog
                          selectionXorMode.isSelected());
         model.setBoolean(PREFERENCE_KEY_IS_XML_PARSER_VALIDATING,
                          isXMLParserValidating.isSelected());
+        model.setBoolean(PREFERENCE_KEY_ENFORCE_SECURE_SCRIPTING,
+                         enforceSecureScripting.isSelected());
+        model.setBoolean(PREFERENCE_KEY_LOAD_JAVA,
+                         loadJava.isSelected());
+        model.setBoolean(PREFERENCE_KEY_LOAD_ECMASCRIPT,
+                         loadEcmascript.isSelected());
+        model.setBoolean(PREFERENCE_KEY_CONSTRAIN_SCRIPT_ORIGIN,
+                         constrainScriptOrigin.isSelected());
 
         model.setString(PREFERENCE_KEY_PROXY_HOST,
                         host.getText());
@@ -511,12 +557,28 @@ public class PreferenceDialog extends JDialog
         isXMLParserValidating
             = new JCheckBox(Resources.getString(LABEL_IS_XML_PARSER_VALIDATING));
 
+        enforceSecureScripting
+            = new JCheckBox(Resources.getString(LABEL_ENFORCE_SECURE_SCRIPTING));
+
+        loadJava
+            = new JCheckBox(Resources.getString(LABEL_LOAD_JAVA));
+
+        loadEcmascript
+            = new JCheckBox(Resources.getString(LABEL_LOAD_ECMASCRIPT));
+
+        constrainScriptOrigin
+            = new JCheckBox(Resources.getString(LABEL_CONSTRAIN_SCRIPT_ORIGIN));
+
         p.add(showRendering,    0, 0, 1, 1, WEST, HORIZONTAL, 1, 0);
         p.add(autoAdjustWindow, 0, 1, 1, 1, WEST, HORIZONTAL, 1, 0);
         p.add(enableDoubleBuffering, 0, 2, 1, 1, WEST, HORIZONTAL, 1, 0);
         p.add(showDebugTrace,   0, 3, 1, 1, WEST, HORIZONTAL, 1, 0);
         p.add(selectionXorMode,   0, 4, 1, 1, WEST, HORIZONTAL, 1, 0);
         p.add(isXMLParserValidating,   0, 5, 1, 1, WEST, HORIZONTAL, 1, 0);
+        p.add(enforceSecureScripting, 0, 6, 1, 1, WEST, HORIZONTAL, 1, 0);
+        p.add(loadJava, 0, 7, 1, 1, WEST, HORIZONTAL, 1, 0);
+        p.add(loadEcmascript, 0, 8, 1, 1, WEST, HORIZONTAL, 1, 0);
+        p.add(constrainScriptOrigin, 0, 9, 1, 1, WEST, HORIZONTAL, 1, 0);
 
         p.setBorder(BorderFactory.createCompoundBorder
                     (BorderFactory.createTitledBorder

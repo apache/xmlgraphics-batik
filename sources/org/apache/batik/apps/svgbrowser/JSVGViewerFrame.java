@@ -82,6 +82,10 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.text.Document;
 import javax.swing.text.PlainDocument;
 
+import org.apache.batik.bridge.DefaultScriptSecurity;
+import org.apache.batik.bridge.NoLoadScriptSecurity;
+import org.apache.batik.bridge.RelaxedScriptSecurity;
+import org.apache.batik.bridge.ScriptSecurity;
 import org.apache.batik.bridge.UpdateManagerEvent;
 import org.apache.batik.bridge.UpdateManagerListener;
 
@@ -2044,6 +2048,37 @@ public class JSVGViewerFrame
         }
 
         public void handleElement(Element elt, Object data){
+        }
+
+        /**
+         * Returns the security settings for the given script
+         * type, script url and document url
+         * 
+         * @param scriptType type of script, as found in the 
+         *        type attribute of the &lt;script&gt; element.
+         * @param scriptURL url for the script, as defined in
+         *        the script's xlink:href attribute. If that
+         *        attribute was empty, then this parameter should
+         *        be null
+         * @param docURL url for the document into which the 
+         *        script was found.
+         */
+        public ScriptSecurity getScriptSecurity(String scriptType,
+                                                URL scriptURL,
+                                                URL docURL){
+            if (!application.canLoadScriptType(scriptType)) {
+                return new NoLoadScriptSecurity(scriptType);
+            } else {
+                if (application.constrainScriptOrigin()) {
+                    return new DefaultScriptSecurity(scriptType, 
+                                                     scriptURL, 
+                                                     docURL);
+                } else {
+                    return new RelaxedScriptSecurity(scriptType, 
+                                                     scriptURL,
+                                                     docURL);
+                }
+            }
         }
     }
 

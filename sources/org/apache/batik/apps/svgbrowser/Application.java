@@ -77,4 +77,16 @@ public interface Application {
      */
     boolean isSelectionOverlayXORMode();
 
+    /**
+     * Returns true if the input scriptType can be loaded in
+     * this application.
+     */
+    boolean canLoadScriptType(String scriptType);
+
+    /**
+     * Returns true if the script origin should be constrained
+     * to be the same as the corresponding document's origin.
+     */
+    boolean constrainScriptOrigin();
+
 }

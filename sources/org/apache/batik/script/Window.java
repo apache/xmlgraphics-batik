@@ -21,7 +21,6 @@ import org.w3c.dom.DocumentFragment;
  * @version $Id$
  */
 public interface Window {
-
     /**
      * Evaluates the given string repeatedly after the given amount of
      * time.  This method does not stall the script: the evaluation is

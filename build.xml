@@ -78,6 +78,7 @@ To display the available targets type:
     <property name="build"           value="${project}-${version}"/>
     <property name="docs"            value="${build}/docs"/>
     <property name="lib"             value="lib"/>
+    <property name="samples"         value="samples"/>
     <property name="package-prefix"  value="org/apache/${project}"/>
 
     <property name="class-prefix"    value="org.apache.${project}"/>
@@ -143,6 +144,7 @@ To display the available targets type:
     <echo message="   regard        --> runs the regard regression utility"/>
     <echo message="   runtestsuite  --> runs a TestSuite, given an XML test suite"/>
     <echo message="                     document"/>
+    <echo message="   runtest       --> runs a test whose class name is given at the command line"/>
     <echo message="   showpainter   --> runs a Painter test instance to check its rendering."/>
     <echo message="   javadoc       --> generates the API documentation"/>
     <echo message="   site          --> generates the site documentation"/>
@@ -245,6 +247,37 @@ To display the available targets type:
       </classpath>
     </javac>
   </target>
+
+  <!-- Builds Jar Files needed for test purposes. This is done in the samples directory -->
+  <target name="testjar" depends="security2.jar" />
+
+  <target name       ="compilesamples"
+          depends    ="compile"
+          description="Compiles the source files for the samples scripts">
+    <mkdir dir="${dest}/tmp"/>
+
+    <echo message="debug ${debug}, optimize ${optimize}, deprecation ${deprecation}"/>
+
+    <javac srcdir="${samples}/tests/resources/java/sources" destdir="${samples}/tests/resources/java/classes"  deprecation="${deprecation}" 
+           debug="${debug}" optimize="${optimize}" >
+      <classpath>
+        <pathelement location="${dest}" />
+        <pathelement location="${samples}/tests/resources/java/classes" />
+        <path refid="libs-classpath"/>
+        <path refid="libs-build-classpath"/>
+      </classpath>
+    </javac>
+  </target>
+
+  <target name="security2.jar" depends="compilesamples" >
+    <jar manifest="${samples}/tests/resources/java/resources/com/untrusted/script/security2.mf"
+         jarfile="samples/tests/spec/scripting/security2.jar">
+      <fileset dir="${samples}/tests/resources/java/classes">
+        <include name="com/untrusted/script/**/*.class"/>
+      </fileset>
+    </jar>
+  </target>
+
 
   <target name       ="compile"
           depends    ="init"
@@ -640,6 +673,10 @@ To display the available targets type:
 
   <!-- SVG Browser (dependencies: all) -->
   <target name="svg-browser-jar" depends="compile, prepare-build">
+    <move file="${resources}/${package-prefix}/apps/svgbrowser/resources/svgbrowser.policy"
+          tofile="${resources}/${package-prefix}/apps/svgbrowser/resources/svgbrowser.classes.policy" />
+    <move file="${resources}/${package-prefix}/apps/svgbrowser/resources/svgbrowser.bin.policy"
+          tofile="${resources}/${package-prefix}/apps/svgbrowser/resources/svgbrowser.policy" />
     <jar manifest="${src}/${project}-browser.mf"
          jarfile="${build}/${project}-svgbrowser.jar">
       <fileset dir="${dest}">
@@ -650,6 +687,10 @@ To display the available targets type:
         <include name="${package-prefix}/apps/svgbrowser/**/resources/**"/>
       </fileset>
     </jar>
+    <move file="${resources}/${package-prefix}/apps/svgbrowser/resources/svgbrowser.policy"
+          tofile="${resources}/${package-prefix}/apps/svgbrowser/resources/svgbrowser.bin.policy" />
+    <move file="${resources}/${package-prefix}/apps/svgbrowser/resources/svgbrowser.classes.policy"
+          tofile="${resources}/${package-prefix}/apps/svgbrowser/resources/svgbrowser.policy" />
   </target>
 
 
@@ -694,7 +735,14 @@ To display the available targets type:
         <path refid="libs-classpath"/>
         <pathelement location="resources" />
       </classpath>
-      <arg line="${args}"/>
+      <arg line="${args}"/> 
+      <!-- <jvmarg value="-Djava.security.debug=all"/>  <jvmarg value="-verbose" /> -->
+     <!-- 
+      <jvmarg value="-Djava.security.debug=access failure"/> 
+      <jvmarg value="-Djava.security.debug=policy"/> 
+      <jvmarg value="-Djava.security.manager"/> 
+      <jvmarg value="-Djava.security.policy=resources/org/apache/batik/apps/svgbrowser/resources/svgbrowser.policy"/> 
+      -->
     </java>
   </target>
 
@@ -860,6 +908,21 @@ To display the available targets type:
         <pathelement location="test-resources" />
       </classpath>
       <arg line="${args}"/>
+    </java>
+  </target>
+
+  <target name="runtest"
+          depends="compiletest, testdirs"
+          description="Runs test whose class name is passed as an input">
+    <java fork="yes"
+          classname="${args}">
+      <classpath>
+        <pathelement location="${dest}" />
+        <path refid="libs-classpath"/>
+        <path refid="libs-build-classpath"/>
+        <pathelement location="resources" />
+        <pathelement location="test-resources" />
+      </classpath>
     </java>
   </target>
 
