@@ -60,6 +60,9 @@ public class AboutDialog extends JWindow
     public static final String LABEL_CONTRIBUTORS
         = "AboutDialog.label.contributors";
 
+    public static final String LABEL_DEVELOPMENT_BUILD
+        = "AboutDialog.label.development.build";
+
     /**
      * Default constructor
      */
@@ -131,7 +134,14 @@ public class AboutDialog extends JWindow
         //
         // Add exact revision information
         //
-        panel.add(new JLabel("$Name$"),
+        String tagName = "$Name$";
+        tagName = tagName.substring(6, tagName.length()-1);
+        
+        if(tagName.trim().intern().equals("")){
+            tagName = Resources.getString(LABEL_DEVELOPMENT_BUILD);
+        }
+
+        panel.add(new JLabel(tagName),
                   0, 2, 1, 1, EAST, NONE, 0, 0);
 
         setBackground(Color.white);
