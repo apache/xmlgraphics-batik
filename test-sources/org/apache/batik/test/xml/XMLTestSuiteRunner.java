@@ -248,28 +248,60 @@ public class XMLTestSuiteRunner implements XTSConstants{
         }
         
         Constructor constructor 
-            = cl.getDeclaredConstructor(argsClasses);
+            = getDeclaredConstructor(cl, argsClasses);
         
         return constructor.newInstance(argsArray);
     }
 
     /**
+     * Returns a constructor that has can be used for the input class
+     * types.
+     */
+    protected Constructor getDeclaredConstructor(Class cl,
+                                                 Class[] argClasses){
+        Constructor[] cs = cl.getDeclaredConstructors();
+        for(int i=0; i<cs.length; i++){
+            Class[] reqArgClasses = cs[i].getParameterTypes();
+            if(reqArgClasses.length == argClasses.length){
+                int j=0;
+                for(; j<argClasses.length; j++){
+                    if(!reqArgClasses[j].isAssignableFrom(argClasses[j])){
+                        break;
+                    }
+                }
+                if(j == argClasses.length){
+                    return cs[i];
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Limitation: Arguments *must* have a String based
-     * constructor.
+     * constructor. Or be an object that takes a set of string
+     * based arguments.
      */
     public Object buildArgument(Element element) throws Exception {
-        String type = element.getAttributeNS(null,
+        String classAttr = element.getAttributeNS(null,
                                              XTS_CLASS_ATTRIBUTE);
 
-        String value = element.getAttributeNS(null,
-                                              XTS_VALUE_ATTRIBUTE);
-
-        Class cl = Class.forName(type);
-        
-        Constructor constructor 
-            = cl.getDeclaredConstructor(new Class[] { String.class });
-
-        return constructor.newInstance(new Object[] {value});
+        if(!element.hasChildNodes()){
+            String value = element.getAttributeNS(null,
+                                                  XTS_VALUE_ATTRIBUTE);
+            
+            // String based argument
+            Class cl = Class.forName(classAttr);
+            
+            Constructor constructor 
+                = cl.getDeclaredConstructor(new Class[] { String.class });
+            
+            return constructor.newInstance(new Object[] {value});
+        }
+        else{
+            return buildObject(classAttr, element);
+        }
     }
 
     /**

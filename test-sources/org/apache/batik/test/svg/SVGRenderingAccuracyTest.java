@@ -14,11 +14,27 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
+import java.io.StringWriter;
+import java.io.PrintWriter;
 
 import java.net.URL;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.Vector;
+
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+
+import org.apache.batik.ext.awt.image.CompositeRule;
+import org.apache.batik.ext.awt.image.rendered.CompositeRed;
+import org.apache.batik.ext.awt.image.rendered.BufferedImageCachableRed;
+
+import org.apache.batik.ext.awt.image.ImageLoader;
+
+import org.apache.batik.ext.awt.image.codec.PNGImageEncoder;
+import org.apache.batik.ext.awt.image.codec.PNGEncodeParam;
 
 import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderInput;
@@ -107,16 +123,33 @@ public class SVGRenderingAccuracyTest implements Test{
         = "SVGRenderingAccuracyTest.entry.key.error.description";
 
     /**
-     * Entry describing the reference image URL
+     * Entry describing the reference/generated image file
      */
-    public static final String ENTRY_KEY_REFERENCE_IMAGE_URI
-        = "SVGRenderingAccuracyTest.entry.key.reference.image.uri";
+    public static final String ENTRY_KEY_REFERENCE_GENERATED_IMAGE_URI
+        = "SVGRenderingAccuracyTest.entry.key.reference.generated.image.file";
 
     /**
-     * Entry describing the generated image 
+     * Entry describing the generated difference image
      */
-    public static final String ENTRY_KEY_TEMPORARY_FILE
-        = "SVGRenderingAccuracyTest.entry.key.temporary.file";
+    public static final String ENTRY_KEY_DIFFERENCE_IMAGE
+        = "SVGRenderingAccuracyTest.entry.key.difference.image";
+
+    /**
+     * Entry describing that an internal error occured while
+     * generating the test failure description
+     */
+    public static final String ENTRY_KEY_INTERNAL_ERROR
+        = "SVGRenderingAccuracyTest.entry.key.internal.error";
+
+    /**
+     * Messages expressing that comparison images could not be
+     * created:
+     * {0} : exception class
+     * {1} : exception message
+     * {2} : exception stack trace.
+     */
+    public static final String COULD_NOT_GENERATE_COMPARISON_IMAGES
+        = "SVGRenderingAccuracyTest.message.error.could.not.generate.comparison.images";
 
     /**
      * The gui resources file name
@@ -325,14 +358,35 @@ public class SVGRenderingAccuracyTest implements Test{
         // If the files differ, return an error
         //
         if(!accurate){
+            // Build two images:
+            // a. One with the reference image and the newly generated image
+            // b. One with the difference between the two images and the set of 
+            //    different pixels.
             report.setErrorCode(ERROR_SVG_RENDERING_NOT_ACCURATE);
-            report.setDescription(new TestReport.Entry[]{
-                new TestReport.Entry(Messages.formatMessage(ENTRY_KEY_ERROR_DESCRIPTION, null),
-                                     Messages.formatMessage(ERROR_SVG_RENDERING_NOT_ACCURATE, null)),
-                new TestReport.Entry(Messages.formatMessage(ENTRY_KEY_REFERENCE_IMAGE_URI, null),
-                                     refImgURL),
-                new TestReport.Entry(Messages.formatMessage(ENTRY_KEY_TEMPORARY_FILE, null),
-                                     tmpFile) });
+            try{
+                File cmpDiffFile[] = buildCompareAndDiffImages(refImgURL, tmpFile);
+                
+                report.setDescription(new TestReport.Entry[]{
+                    new TestReport.Entry(Messages.formatMessage(ENTRY_KEY_ERROR_DESCRIPTION, null),
+                                         Messages.formatMessage(ERROR_SVG_RENDERING_NOT_ACCURATE, null)),
+                    new TestReport.Entry(Messages.formatMessage(ENTRY_KEY_REFERENCE_GENERATED_IMAGE_URI, null),
+                                         cmpDiffFile[0]),
+                    new TestReport.Entry(Messages.formatMessage(ENTRY_KEY_DIFFERENCE_IMAGE, null),
+                                         cmpDiffFile[1]) });
+            }catch(IOException e){
+                StringWriter trace = new StringWriter();
+                e.printStackTrace(new PrintWriter(trace));
+                
+                report.setDescription(new TestReport.Entry[]{
+                    new TestReport.Entry(Messages.formatMessage(ENTRY_KEY_ERROR_DESCRIPTION, null),
+                                         Messages.formatMessage(ERROR_SVG_RENDERING_NOT_ACCURATE, null)),
+                    new TestReport.Entry(Messages.formatMessage(ENTRY_KEY_INTERNAL_ERROR, null),
+                                         Messages.formatMessage(COULD_NOT_GENERATE_COMPARISON_IMAGES, 
+                                                                new Object[]{e.getClass().getName(),
+                                                                             e.getMessage(),
+                                                                             trace.toString()})) });
+            }
+            
             report.setPassed(false);
             return report;
         }
@@ -343,6 +397,77 @@ public class SVGRenderingAccuracyTest implements Test{
         //
         report.setPassed(true);
         return report;
+    }
+
+    /**
+     * This method builds two images from the two input images:
+     * + One with the 2 input images side by side
+     * + One with the differences between the two images.
+     */
+    protected File[] buildCompareAndDiffImages(URL refImgURL,
+                                               File generatedFile) 
+        throws IOException 
+    {
+        BufferedImage ref = ImageLoader.loadImage(refImgURL,
+                                                  BufferedImage.TYPE_INT_ARGB);
+
+        BufferedImage gen = ImageLoader.loadImage(generatedFile,
+                                                  BufferedImage.TYPE_INT_ARGB);
+
+        BufferedImage cmp = new BufferedImage(ref.getWidth()*2,
+                                              ref.getHeight(),
+                                              BufferedImage.TYPE_INT_ARGB);
+
+        Graphics2D g = cmp.createGraphics();
+        g.setPaint(Color.white);
+        g.fillRect(0, 0, cmp.getWidth(), cmp.getHeight());
+        g.drawImage(ref, 0, 0, null);
+        g.translate(ref.getWidth(), 0);
+        g.drawImage(gen, 0, 0, null);
+        g.dispose();
+
+        BufferedImage diff = new BufferedImage(ref.getWidth(),
+                                               ref.getHeight(),
+                                               BufferedImage.TYPE_INT_ARGB);
+
+        Vector src = new Vector();
+        src.addElement(new BufferedImageCachableRed(ref));
+        src.addElement(new BufferedImageCachableRed(gen));
+
+        CompositeRed cr = new CompositeRed(src,
+                                            new CompositeRule(0, 1, -1, 0));
+        /*g = diff.createGraphics();
+        g.setPaint(Color.white);
+        g.fillRect(0, 0, diff.getWidth(), diff.getHeight());
+        g.drawImage(ref, 0, 0, null);
+        g.setXORMode(Color.white);
+        g.drawImage(gen, 0, 0, null);*/
+        cr.copyToRaster(diff.getRaster());
+
+        return new File[] { imageToFile(cmp),
+                            imageToFile(diff) };
+    }
+
+    /**
+     * Creates a temporary File into which the input image is
+     * saved.
+     */
+    protected File imageToFile(BufferedImage img)
+        throws IOException {
+
+        File imgFile 
+            = File.createTempFile(TEMP_FILE_PREFIX,
+                                  TEMP_FILE_SUFFIX,
+                                  null);
+        imgFile.deleteOnExit();
+
+        PNGImageEncoder encoder 
+            = new PNGImageEncoder(new FileOutputStream(imgFile),
+                             PNGEncodeParam.getDefaultEncodeParam(img));
+
+        encoder.encode(img);
+
+        return imgFile;
     }
 
     /**
