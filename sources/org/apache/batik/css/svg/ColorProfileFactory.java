@@ -47,7 +47,7 @@ public class ColorProfileFactory
      * Returns the name of the property handled.
      */
     public String getPropertyName() {
-	return CSS_TEXT_ANCHOR_PROPERTY;
+	return CSS_COLOR_PROFILE_PROPERTY;
     }
     
     /**
@@ -72,9 +72,12 @@ public class ColorProfileFactory
      */
     public ImmutableValue createStringValue(short type, String value)
 	throws DOMException {
-	if (type == CSSPrimitiveValue.CSS_IDENT &&
-            value.equalsIgnoreCase(CSS_AUTO_VALUE)) {
-            return AUTO_VALUE;
+	if (type == CSSPrimitiveValue.CSS_IDENT) {
+            String s = value.toLowerCase();
+            if (!s.equals(CSS_AUTO_VALUE) &&
+                !s.equals(CSS_SRGB_VALUE)) {
+                return new ImmutableString(CSSPrimitiveValue.CSS_IDENT, s);
+            }
         }
         return super.createStringValue(type, value);
     }
