@@ -148,17 +148,17 @@ public class SVGFeTurbulenceElementBridge implements FilterBridge,
         CSSStyleDeclaration cssDecl
             = bridgeContext.getViewCSS().getComputedStyle(filterElement,
                                                           null);
-        
+
         UnitProcessor.Context uctx
             = new DefaultUnitProcessorContext(bridgeContext,
                                               cssDecl);
 
         Rectangle2D turbulenceRegion
-            = SVGUtilities.convertFilterPrimitiveRegion2(filterElement,
-                                                         filteredElement,
-                                                         defaultRegion,
-                                                         filteredNode,
-                                                         uctx);
+            = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
+                                                        filteredElement,
+                                                        defaultRegion,
+                                                        filteredNode,
+                                                        uctx);
 
         TurbulenceRable turbulenceRable
             = new ConcreteTurbulenceRable(turbulenceRegion);
@@ -174,7 +174,7 @@ public class SVGFeTurbulenceElementBridge implements FilterBridge,
         String result
             = filterElement.getAttributeNS(null,
                                            ATTR_RESULT);
-        
+
         if((result != null) && (result.trim().length() > 0)){
             filterMap.put(result, turbulenceRable);
         }

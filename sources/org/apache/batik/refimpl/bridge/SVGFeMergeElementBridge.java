@@ -82,8 +82,8 @@ public class SVGFeMergeElementBridge implements FilterBridge,
 
             String inAttr = elt.getAttributeNS(null, ATTR_IN);
             Filter tmp;
-            tmp = CSSUtilities.getFilterSource(filteredNode, inAttr, 
-                                               bridgeContext, 
+            tmp = CSSUtilities.getFilterSource(filteredNode, inAttr,
+                                               bridgeContext,
                                                elt, in, filterMap);
             if (tmp == null) continue;
             srcs[count++] = in = tmp;
@@ -110,19 +110,18 @@ public class SVGFeMergeElementBridge implements FilterBridge,
         CSSStyleDeclaration cssDecl
             = bridgeContext.getViewCSS().getComputedStyle(filterElement,
                                                           null);
-        
+
         UnitProcessor.Context uctx
             = new DefaultUnitProcessorContext(bridgeContext,
                                               cssDecl);
-        
-        Rectangle2D primitiveRegion 
-            = SVGUtilities.convertFilterPrimitiveRegion2
-            (filterElement,
-             filteredElement,
-             defaultRegion,
-             filteredNode,
-             uctx);
-        
+
+        Rectangle2D primitiveRegion
+            = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
+                                                        filteredElement,
+                                                        defaultRegion,
+                                                        filteredNode,
+                                                        uctx);
+
         // Now, do the Merge.
         Vector srcsVec = new Vector(count);
         for (int i=0; i<count; i++)
@@ -130,12 +129,12 @@ public class SVGFeMergeElementBridge implements FilterBridge,
 
         Filter filter = null;
         filter = new ConcreteCompositeRable(srcsVec, CompositeRule.OVER);
-        
+
         filter = new ConcretePadRable(filter,
                                       primitiveRegion,
                                       PadMode.ZERO_PAD);;
-        
-        
+
+
         // Get result attribute and update map
         String result = filterElement.getAttributeNS(null, ATTR_RESULT);
         if((result != null) && (result.trim().length() > 0)){

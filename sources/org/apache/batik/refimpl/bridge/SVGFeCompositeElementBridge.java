@@ -43,11 +43,11 @@ public class SVGFeCompositeElementBridge implements FilterBridge,
     public static CompositeRule getRule(Element filterElement) {
 
         String oper = filterElement.getAttributeNS(null, ATTR_OPERATOR);
-        if (oper == null) 
+        if (oper == null)
             return CompositeRule.OVER;
 
         switch (oper.charAt(0)) {
-        case 'a': case 'A':            
+        case 'a': case 'A':
             switch (oper.charAt(1)) {
             case 't': case 'T':
                 // 'atop'
@@ -67,7 +67,7 @@ public class SVGFeCompositeElementBridge implements FilterBridge,
                     ((oper.charAt(7) != 't') && (oper.charAt(7) != 'T')) ||
                     ((oper.charAt(8) != 'i') && (oper.charAt(8) != 'I')) ||
                     ((oper.charAt(9) != 'c') && (oper.charAt(9) != 'C')))
-                    return null; // error 
+                    return null; // error
 
                 float k1=0, k2=0, k3=0, k4=0;
 
@@ -78,7 +78,7 @@ public class SVGFeCompositeElementBridge implements FilterBridge,
                         k1 = SVGUtilities.convertSVGNumber(kAttr);
                     }  catch (NumberFormatException e) { }
                 }
-                    
+
 
                 kAttr = filterElement.getAttributeNS(null, ATTR_K2);
                 if (kAttr != null) {
@@ -86,7 +86,7 @@ public class SVGFeCompositeElementBridge implements FilterBridge,
                         k2 = SVGUtilities.convertSVGNumber(kAttr);
                     }  catch (NumberFormatException e) { }
                 }
-                    
+
 
                 kAttr = filterElement.getAttributeNS(null, ATTR_K3);
                 if (kAttr != null) {
@@ -94,7 +94,7 @@ public class SVGFeCompositeElementBridge implements FilterBridge,
                         k3 = SVGUtilities.convertSVGNumber(kAttr);
                     }  catch (NumberFormatException e) { }
                 }
-                    
+
 
                 kAttr = filterElement.getAttributeNS(null, ATTR_K4);
                 if (kAttr != null) {
@@ -177,17 +177,17 @@ public class SVGFeCompositeElementBridge implements FilterBridge,
             throw new IllegalArgumentException
                 ("Unknown composite operator: " + oper);
         }
-                                           
+
         // Extract sources
         String in1Attr = filterElement.getAttributeNS(null, ATTR_IN);
         Filter in1;
-        in1 = CSSUtilities.getFilterSource(filteredNode, in1Attr, 
+        in1 = CSSUtilities.getFilterSource(filteredNode, in1Attr,
                                            bridgeContext, filteredElement,
                                            in, filterMap);
 
         String in2Attr = filterElement.getAttributeNS(null, ATTR_IN2);
         Filter in2;
-        in2 = CSSUtilities.getFilterSource(filteredNode, in2Attr, 
+        in2 = CSSUtilities.getFilterSource(filteredNode, in2Attr,
                                            bridgeContext, filteredElement,
                                            in, filterMap);
 
@@ -197,16 +197,16 @@ public class SVGFeCompositeElementBridge implements FilterBridge,
         //
         // The default region is the union of the input
         // sources regions unless 'in' is 'SourceGraphic'
-        // in which case the default region is the 
+        // in which case the default region is the
         // filterChain's region
         //
-        Filter sourceGraphics 
+        Filter sourceGraphics
             = (Filter)filterMap.get(VALUE_SOURCE_GRAPHIC);
-        
-        Rectangle2D defaultRegion 
+
+        Rectangle2D defaultRegion
             = in1.getBounds2D();
         defaultRegion.add(in2.getBounds2D());
-        
+
         if(in1 == sourceGraphics){
             defaultRegion = filterRegion;
         }
@@ -215,35 +215,34 @@ public class SVGFeCompositeElementBridge implements FilterBridge,
             = bridgeContext.getViewCSS().getComputedStyle
             (filterElement,
              null);
-        
+
         UnitProcessor.Context uctx
             = new DefaultUnitProcessorContext
                 (bridgeContext,
                  cssDecl);
 
         Rectangle2D compositeArea
-            = SVGUtilities.convertFilterPrimitiveRegion2
-            (filterElement,
-             filteredElement,
-             defaultRegion,
-             filteredNode,
-             uctx);
-        
+            = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
+                                                        filteredElement,
+                                                        defaultRegion,
+                                                        filteredNode,
+                                                        uctx);
+
         // Now, do the composite.
         Filter filter = null;
         Vector srcs = new Vector(2);
         srcs.add(in2);
         srcs.add(in1);
         filter = new ConcreteCompositeRable(srcs, rule);
-        
+
         filter = new ConcretePadRable(filter,
                                       compositeArea,
                                       PadMode.ZERO_PAD);
-        
-        
+
+
         // Get result attribute and update map
-        String result 
-            = filterElement.getAttributeNS(null, 
+        String result
+            = filterElement.getAttributeNS(null,
                                            ATTR_RESULT);
         if((result != null) && (result.trim().length() > 0)){
             filterMap.put(result, filter);

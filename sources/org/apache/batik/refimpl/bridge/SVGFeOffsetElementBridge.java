@@ -100,7 +100,7 @@ public class SVGFeOffsetElementBridge implements FilterBridge, SVGConstants {
 
         // Get source
         String inAttr = filterElement.getAttributeNS(null, ATTR_IN);
-        in = CSSUtilities.getFilterSource(filteredNode, inAttr, bridgeContext, 
+        in = CSSUtilities.getFilterSource(filteredNode, inAttr, bridgeContext,
                                           filteredElement,
                                           in, filterMap);
 
@@ -112,35 +112,34 @@ public class SVGFeOffsetElementBridge implements FilterBridge, SVGConstants {
         //
         // The default region is the input source's region
         // unless the source is SourceGraphics, in which
-        // case the default region is the filter chain's 
+        // case the default region is the filter chain's
         // region
         //
-        Filter sourceGraphics 
+        Filter sourceGraphics
             = (Filter)filterMap.get(VALUE_SOURCE_GRAPHIC);
-        
-        Rectangle2D defaultRegion 
+
+        Rectangle2D defaultRegion
             = in.getBounds2D();
-        
+
         if(in == sourceGraphics){
             defaultRegion = filterRegion;
         }
-        
+
         CSSStyleDeclaration cssDecl
             = bridgeContext.getViewCSS().getComputedStyle(filterElement,
                                                           null);
-        
+
         UnitProcessor.Context uctx
             = new DefaultUnitProcessorContext(bridgeContext,
                                               cssDecl);
-        
-        Rectangle2D offsetArea 
-            = SVGUtilities.convertFilterPrimitiveRegion2
-            (filterElement,
-             filteredElement,
-             defaultRegion,
-             filteredNode,
-             uctx);
-        
+
+        Rectangle2D offsetArea
+            = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
+                                                        filteredElement,
+                                                        defaultRegion,
+                                                        filteredNode,
+                                                        uctx);
+
         PadRable pad = new ConcretePadRable(in,
                                             offsetArea,
                                             PadMode.ZERO_PAD);

@@ -70,7 +70,7 @@ public class SVGFeComponentTransferElementBridge implements FilterBridge,
         // First, extract source
         //
         String inAttr = filterElement.getAttributeNS(null, ATTR_IN);
-        in = CSSUtilities.getFilterSource(filteredNode, inAttr, 
+        in = CSSUtilities.getFilterSource(filteredNode, inAttr,
                                            bridgeContext, filteredElement,
                                           in, filterMap);
 
@@ -78,13 +78,13 @@ public class SVGFeComponentTransferElementBridge implements FilterBridge,
             //
             // The default region is the input source's region
             // unless the source is SourceGraphics, in which
-            // case the default region is the filter chain's 
+            // case the default region is the filter chain's
             // region
             //
-            Filter sourceGraphics 
+            Filter sourceGraphics
                 = (Filter)filterMap.get(VALUE_SOURCE_GRAPHIC);
 
-            Rectangle2D defaultRegion 
+            Rectangle2D defaultRegion
                 = in.getBounds2D();
 
             if(in == sourceGraphics){
@@ -99,13 +99,12 @@ public class SVGFeComponentTransferElementBridge implements FilterBridge,
                 = new DefaultUnitProcessorContext(bridgeContext,
                                                   cssDecl);
 
-            Rectangle2D primitiveRegion 
-                = SVGUtilities.convertFilterPrimitiveRegion2
-                (filterElement,
-                 filteredElement,
-                 defaultRegion,
-                 filteredNode,
-                 uctx);
+            Rectangle2D primitiveRegion
+                = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
+                                                            filteredElement,
+                                                            defaultRegion,
+                                                            filteredNode,
+                                                            uctx);
 
             //
             // Now, extract the various transfer functions. They

@@ -30,7 +30,7 @@ import org.w3c.dom.css.CSSStyleDeclaration;
 import org.apache.batik.refimpl.gvt.filter.ConcreteTileRable;
 
 /**
- * This class bridges an SVG <tt>feTile</tt> filter element 
+ * This class bridges an SVG <tt>feTile</tt> filter element
  * with <tt>ConcreteTileRable</tt>.
  *
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
@@ -38,7 +38,7 @@ import org.apache.batik.refimpl.gvt.filter.ConcreteTileRable;
  */
 public class SVGFeTileElementBridge implements FilterBridge, SVGConstants {
     /**
-     * Returns the <tt>Filter</tt> that implements the filter 
+     * Returns the <tt>Filter</tt> that implements the filter
      * operation modeled by the input DOM element
      *
      * @param filteredNode the node to which the filter will be attached.
@@ -46,9 +46,9 @@ public class SVGFeTileElementBridge implements FilterBridge, SVGConstants {
      * @param filterElement DOM element that represents a filter abstraction
      * @param in the <tt>Filter</tt> that represents the current
      *        filter input if the filter chain.
-     * @param filterRegion the filter area defined for the filter chained 
+     * @param filterRegion the filter area defined for the filter chained
      *        the new node will be part of.
-     * @param filterMap a map where the mediator can map a name to the 
+     * @param filterMap a map where the mediator can map a name to the
      *        <tt>Filter</tt> it creates. Other <tt>FilterBridge</tt>s
      *        can then access a filter node from the filterMap if they
      *        know its name.
@@ -64,33 +64,33 @@ public class SVGFeTileElementBridge implements FilterBridge, SVGConstants {
         // Tile region is defined by the filter region
         //
         CSSStyleDeclaration cssDecl
-            = bridgeContext.getViewCSS().getComputedStyle(filterElement, 
+            = bridgeContext.getViewCSS().getComputedStyle(filterElement,
                                                           null);
-        
+
         UnitProcessor.Context uctx
             = new DefaultUnitProcessorContext(bridgeContext,
                                               cssDecl);
-        
+
         //
-        // Get the tiled region. For feTile, the default for the 
+        // Get the tiled region. For feTile, the default for the
         // filter primitive subregion is the parent filter region.
         //
         Rectangle2D defaultRegion = filterRegion;
 
-        Rectangle2D tiledRegion 
-            = SVGUtilities.convertFilterPrimitiveRegion2(filterElement,
-                                                         filteredElement,
-                                                         defaultRegion,
-                                                         filteredNode,
-                                                         uctx);
+        Rectangle2D tiledRegion
+            = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
+                                                        filteredElement,
+                                                        defaultRegion,
+                                                        filteredNode,
+                                                        uctx);
         //
         // Get the tile source
         //
-        String inAttr 
+        String inAttr
             = filterElement.getAttributeNS(null, ATTR_IN);
-        in = CSSUtilities.getFilterSource(filteredNode, 
-                                          inAttr, 
-                                          bridgeContext, 
+        in = CSSUtilities.getFilterSource(filteredNode,
+                                          inAttr,
+                                          bridgeContext,
                                           filteredElement,
                                           in, filterMap);
 
@@ -100,9 +100,9 @@ public class SVGFeTileElementBridge implements FilterBridge, SVGConstants {
         TileRable tileRable = null;
 
         if(in != null){
-            tileRable 
-                = new ConcreteTileRable(in, 
-                                        tiledRegion, 
+            tileRable
+                = new ConcreteTileRable(in,
+                                        tiledRegion,
                                         in.getBounds2D(),
                                         false);
         }

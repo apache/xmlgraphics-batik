@@ -51,7 +51,7 @@ import org.apache.batik.dom.util.XLinkSupport;
  */
 public class SVGFeImageElementBridge implements FilterBridge,
                                                 SVGConstants {
-    
+
     public final static String PROTOCOL_DATA = "data:";
 
     /**
@@ -94,18 +94,17 @@ public class SVGFeImageElementBridge implements FilterBridge,
             = bridgeContext.getViewCSS().getComputedStyle
             (filterElement,
              null);
-        
+
         UnitProcessor.Context uctx
             = new DefaultUnitProcessorContext(bridgeContext,
                                               cssDecl);
-        
-        Rectangle2D primitiveRegion 
-            = SVGUtilities.convertFilterPrimitiveRegion2
-            (filterElement,
-             filteredElement,
-             defaultRegion,
-             filteredNode,
-             uctx);
+
+        Rectangle2D primitiveRegion
+            = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
+                                                        filteredElement,
+                                                        defaultRegion,
+                                                        filteredNode,
+                                                        uctx);
 
         Filter filter = null;
         if (uriStr.startsWith(PROTOCOL_DATA))
@@ -125,7 +124,7 @@ public class SVGFeImageElementBridge implements FilterBridge,
 
                 URIResolver ur = new URIResolver
                     (svgDoc, bridgeContext.getDocumentLoader());
-            
+
                 Node refNode = ur.getNode(url.toString());
                 if (refNode == null)
                     return null;
@@ -140,9 +139,9 @@ public class SVGFeImageElementBridge implements FilterBridge,
                 if(refElement == null){
                     return null;
                 }
-             
+
                 GraphicsNode gn;
-                gn = bridgeContext.getGVTBuilder().build(bridgeContext, 
+                gn = bridgeContext.getGVTBuilder().build(bridgeContext,
                                                          refElement);
 
                 GraphicsNodeRableFactory gnrFactory
@@ -153,15 +152,15 @@ public class SVGFeImageElementBridge implements FilterBridge,
                 // Need to translate the image to the x, y coordinate to
                 // have the same behavior as the <use> element
                 // <!> FIX ME? I THINK THIS IS ONLY PARTIALLY IMPLEMENTING THE
-                //     SPEC. 
+                //     SPEC.
                 // <!> TO DO : HANDLE TRANSFORM
                 AffineTransform at = new AffineTransform();
                 at.translate(primitiveRegion.getX(), primitiveRegion.getY());
 
                 filter = new ConcreteAffineRable(filter, at);
-                
+
             } catch (Exception ex) {
-                // 
+                //
                 // Need to fit the raster image to the filter
                 // region so that we have the same behavior as
                 // raster images in the <image> element.
@@ -178,12 +177,12 @@ public class SVGFeImageElementBridge implements FilterBridge,
                 filter = new ConcreteAffineRable(filter, scale);
             }
         }
-        
+
         filter = new ConcretePadRable(filter,
                                       primitiveRegion,
                                       PadMode.ZERO_PAD);
-        
-        
+
+
         // Get result attribute and update map
         String result = filterElement.getAttributeNS(null, ATTR_RESULT);
         if((result != null) && (result.trim().length() > 0)){
