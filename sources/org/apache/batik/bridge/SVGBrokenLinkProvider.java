@@ -114,28 +114,38 @@ public class SVGBrokenLinkProvider
      *        the circumstances of the failure.  */
     public Filter getBrokenLinkImage(Object base, String code, 
                                      Object[] params) {
-        if (gvtRoot != null) {
-            String message = formatMessage(base, code, params);
-            Document doc = DOMUtilities.deepCloneDocument
-              (svgDoc, svgDoc.getImplementation());
-            Element infoE = doc.getElementById("More_About");
-            Element title = doc.createElementNS(SVGConstants.SVG_NAMESPACE_URI,
-                                                SVGConstants.SVG_TITLE_TAG);
-            title.appendChild(doc.createTextNode
-                              (Messages.formatMessage
-                               (MSG_BROKEN_LINK_TITLE, null)));
-            infoE.appendChild(title);
-            Element desc = doc.createElementNS(SVGConstants.SVG_NAMESPACE_URI,
-                                               SVGConstants.SVG_DESC_TAG);
-            desc.appendChild(doc.createTextNode(message));
-            infoE.appendChild(desc);
+        if (gvtRoot == null) 
+            return null;
 
-            Map props = new HashMap();
-            props.put(BROKEN_LINK_PROPERTY, message);
-            props.put(SVG_BROKEN_LINK_DOCUMENT_PROPERTY, doc);
+        String message = formatMessage(base, code, params);
+        Document doc = getBrokenLinkDocument(message);
+        Map props = new HashMap();
+        props.put(BROKEN_LINK_PROPERTY, message);
+        props.put(SVG_BROKEN_LINK_DOCUMENT_PROPERTY, doc);
+        
+        return new GraphicsNodeRable8Bit(gvtRoot, props);
+    }
 
-            return new GraphicsNodeRable8Bit(gvtRoot, props);
-        }
-        return null;
+    public SVGDocument getBrokenLinkDocument(Object base, 
+                                          String code, Object [] params) {
+        String message = formatMessage(base, code, params);
+        return getBrokenLinkDocument(message);
+    }
+
+    public SVGDocument getBrokenLinkDocument(String message) {
+        SVGDocument doc = (SVGDocument)DOMUtilities.deepCloneDocument
+            (svgDoc, svgDoc.getImplementation());
+        Element infoE = doc.getElementById("__More_About");
+        Element title = doc.createElementNS(SVGConstants.SVG_NAMESPACE_URI,
+                                            SVGConstants.SVG_TITLE_TAG);
+        title.appendChild(doc.createTextNode
+                          (Messages.formatMessage
+                           (MSG_BROKEN_LINK_TITLE, null)));
+        Element desc = doc.createElementNS(SVGConstants.SVG_NAMESPACE_URI,
+                                           SVGConstants.SVG_DESC_TAG);
+        desc.appendChild(doc.createTextNode(message));
+        infoE.insertBefore(desc, infoE.getFirstChild());
+        infoE.insertBefore(title, desc);
+        return doc;
     }
 }

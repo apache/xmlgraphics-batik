@@ -100,7 +100,7 @@ import org.w3c.dom.svg.SVGSVGElement;
 public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
 
     protected SVGDocument imgDocument;
-
+    protected boolean hitCheckChildren = false;
     /**
      * Constructs a new bridge for the &lt;image> element.
      */
@@ -134,6 +134,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
             return null;
         }
 
+        hitCheckChildren = false;
         GraphicsNode node = buildImageGraphicsNode(ctx,e);
 
         if (node == null) {
@@ -143,6 +144,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
         }
 
         imageNode.setImage(node);
+        imageNode.setHitCheckChildren(hitCheckChildren);
 
         // 'image-rendering' and 'color-rendering'
         RenderingHints hints = CSSUtilities.convertImageRendering(e, null);
@@ -257,6 +259,8 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
         } catch (SecurityException ex) {
             throw new BridgeException(e, ERR_URI_UNSECURE,
                                       new Object[] {purl});
+        } catch (IOException ioe) {
+            return createBrokenImageNode(ctx, e, purl.toString());
         }
 
         {
@@ -278,8 +282,13 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
             // Reset the stream for next try.
             reference.retry();
         } catch (IOException ioe) {
-            // Couldn't reset stream so reopen it.
-            reference = openStream(e, purl);
+            try {
+                // Couldn't reset stream so reopen it.
+                reference = openStream(e, purl);
+            } catch (IOException ioe2) {
+                // Since we already opened the stream this is unlikely.
+                return createBrokenImageNode(ctx, e, purl.toString());
+            }
         }
 
         try {
@@ -301,8 +310,12 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
         try {
             reference.retry();
         } catch (IOException ioe) {
-            // Couldn't reset stream so reopen it.
-            reference = openStream(e, purl);
+            try {
+                // Couldn't reset stream so reopen it.
+                reference = openStream(e, purl);
+            } catch (IOException ioe2) {
+                return createBrokenImageNode(ctx, e, purl.toString());
+            }
         }
 
         try {
@@ -358,19 +371,13 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
         }
     }
 
-    protected ProtectedStream openStream(Element e, ParsedURL purl) {
-        ProtectedStream ret = null;
-        try {
-            List mimeTypes = new ArrayList
-                (ImageTagRegistry.getRegistry().getRegisteredMimeTypes());
-            mimeTypes.add(MimeTypeConstants.MIME_TYPES_SVG);
-            InputStream reference = purl.openStream(mimeTypes.iterator());
-            ret = new ProtectedStream(reference);
-        } catch (IOException ioe) {
-            throw new BridgeException(e, ERR_URI_IO, 
-                                      new Object[] {purl.toString()});
-        }
-        return ret;
+    protected ProtectedStream openStream(Element e, ParsedURL purl) 
+        throws IOException {
+        List mimeTypes = new ArrayList
+            (ImageTagRegistry.getRegistry().getRegisteredMimeTypes());
+        mimeTypes.add(MimeTypeConstants.MIME_TYPES_SVG);
+        InputStream reference = purl.openStream(mimeTypes.iterator());
+        return new ProtectedStream(reference);
     }
 
     /**
@@ -554,8 +561,6 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
             sn.setShape(bounds);
             return sn;
         }
-        RasterImageNode node = new RasterImageNode();
-
         Object           obj = img.getProperty
             (SVGBrokenLinkProvider.SVG_BROKEN_LINK_DOCUMENT_PROPERTY);
         if ((obj != null) && (obj instanceof SVGDocument)) {
@@ -564,6 +569,8 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
             ctx.initializeDocument(doc);
             return createSVGImageNode(ctx, e, doc);
         }
+
+        RasterImageNode node = new RasterImageNode();
         node.setImage(img);
         Rectangle2D imgBounds = img.getBounds2D();
 
@@ -865,7 +872,36 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
         return new Rectangle2D.Float(x, y, w, h);
     }
 
+    GraphicsNode createBrokenImageNode
+        (BridgeContext ctx, Element e, String uri) {
+        
+        String lname = "<Unknown Element>";
+        SVGDocument doc = null;
+        if (e != null) {
+            doc = (SVGDocument)e.getOwnerDocument();
+            lname = e.getLocalName();
+        }
+        String docUri;
+        if (doc == null)  docUri = "<Unknown Document>";
+        else              docUri = doc.getURL();
+        int line = ctx.getDocumentLoader().getLineNumber(e);
+        Object [] fullparams = new Object[4];
+        fullparams[0] = docUri;
+        fullparams[1] = new Integer(line);
+        fullparams[2] = lname;
+        fullparams[3] = uri;
+
+        SVGDocument blDoc = brokenLinkProvider.getBrokenLinkDocument
+            (this, ERR_URI_IO, fullparams);
+        ctx.initializeDocument(blDoc);
+        hitCheckChildren = true;
+        return createSVGImageNode(ctx, e, blDoc);
+    }
+
+
+    static SVGBrokenLinkProvider brokenLinkProvider
+        = new SVGBrokenLinkProvider();
     static {
-        ImageTagRegistry.setBrokenLinkProvider(new SVGBrokenLinkProvider());
+        ImageTagRegistry.setBrokenLinkProvider(brokenLinkProvider);
     }
 }
