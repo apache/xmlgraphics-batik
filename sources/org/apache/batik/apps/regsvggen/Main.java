@@ -26,6 +26,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
 import java.awt.image.SampleModel;
@@ -444,6 +445,15 @@ public class Main {
         Dimension size = painter.getSize();
         BufferedImage buf = transcoder.createImage(size.width, size.height);
         Graphics2D g = buf.createGraphics();
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                           RenderingHints.VALUE_ANTIALIAS_ON);
+
+        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+                               RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        
+        g.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
+                               RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+
         painter.paint(g);
         g.dispose();
 
@@ -477,15 +487,25 @@ public class Main {
 
         // Second, create an instance of the generator and paint to it
 
-        SVGGraphics2D svggen = new SVGGraphics2D(domFactory);
+        ImageHandler imageHandler 
+            = new ImageHandlerPNGEncoder(REGSVGGEN_DIRECTORY_NAME +
+                                         FILE_SEPARATOR +
+                                         REGSVGGEN_NEW_DIRECTORY_NAME,
+                                         "../" +
+                                         REGSVGGEN_NEW_DIRECTORY_NAME);
+        ExtensionHandler extensionHandler
+            = new DefaultExtensionHandler();
+        SVGGraphics2D svggen = new SVGGraphics2D(domFactory,
+                                                 imageHandler,
+                                                 extensionHandler,
+                                                 false);
         Dimension size = painter.getSize();
         svggen.setSVGCanvasSize(size);
         painter.paint(svggen);
 
         // Third, find out whether to use XML attributes or CSS properties
         // and write the SVG content to the output file
-        String useCssStr = System.getProperty("useCss", "true");
-        boolean useCss = useCssStr.equalsIgnoreCase("true");
+        boolean useCss = false;
         svggen.stream(testImageName, useCss);
     }
     /**
@@ -644,7 +664,7 @@ public class Main {
             display(String.valueOf(i+1) + ". " + "Creating the difference image file of " + refImg.getName());
             try{
                 String s = diffImg.toURL().toString();
-                content += "<br>" + String.valueOf(i+1) + ". " + "<a href=" + "\"" + s + "\"" +">" + "<img src=" + "\"" + s + "\"" + " height=80 width=60" + " />" + "</a>";
+                content += "<br>" + String.valueOf(i+1) + ". " + "<a href=" + "\"" + s + "\"" +">" + "<img src=" + "\"" + s + "\"" + " height=40 width=90" + " />" + "</a>";
             }
             catch(MalformedURLException e){
             }

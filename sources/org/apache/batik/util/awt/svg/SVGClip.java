@@ -47,11 +47,6 @@ public class SVGClip extends AbstractSVGConverter{
     /**
      * Converts part or all of the input GraphicContext into
      * a set of attribute/value pairs and related definitions.
-     * Because the available SVG viewer do not support the userSpaceOnUse
-     * value for the clip unit at the time of this writing, the
-     * clip is specified in device space, which is equivalent to
-     * the initial user space.
-     *
      * @param gc GraphicContext to be converted
      * @return descriptor of the attributes required to represent
      *         some or all of the GraphicContext state, along
@@ -60,12 +55,7 @@ public class SVGClip extends AbstractSVGConverter{
      */
     public SVGDescriptor toSVG(GraphicContext gc){
         Shape userClip = gc.getClip();
-        Shape deviceClip = null;
-
-        if(userClip != null)
-            deviceClip = gc.getTransform().createTransformedShape(userClip);
-
-        return toSVG(deviceClip);
+        return toSVG(userClip);
     }
 
     /**
@@ -108,21 +98,14 @@ public class SVGClip extends AbstractSVGConverter{
 
     /**
      * In the following method, an clipping Shape is converted to
-     * an SVG clipPath. Note that in the Java 2D API, the clip is
-     * defined in user space, but is converted to device space at
-     * the time it is set in the graphic context. Hence, the SVGClip
-     * converter is invoked with a device space clipping path.
-     * Because the clipDef is to be inserted in a group to which
-     * no transform is applied, the SVG clip is defined in USER_SPACE,
-     * i.e., the coordinate system at the time of its definition, which
-     * happens to be the same as the device space.
+     * an SVG clipPath. 
      *
      * @param clip path to convert to an SVG clipPath
      *        element
      */
     private Element clipToSVG(Shape clip){
         Element clipDef = domFactory.createElement(TAG_CLIP_PATH);
-        clipDef.setAttribute(ATTR_CLIP_PATH_UNITS, VALUE_USER_SPACE);
+        clipDef.setAttribute(ATTR_CLIP_PATH_UNITS, VALUE_USER_SPACE_ON_USE);
         clipDef.setAttribute(ATTR_ID, SVGIDGenerator.generateID(ID_PREFIX_CLIP_PATH));
 
         Element clipPath = shapeConverter.toSVG(clip);

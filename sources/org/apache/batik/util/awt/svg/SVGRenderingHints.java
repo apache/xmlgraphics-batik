@@ -115,7 +115,7 @@ public class SVGRenderingHints extends AbstractSVGConverter{
                 shapeRendering = VALUE_GEOMETRIC_PRECISION;
             }
             else if(antialiasing == hints.VALUE_ANTIALIAS_OFF){
-                textRendering = VALUE_CRISP_EDGES;
+                textRendering = VALUE_OPTIMIZE_LEGIBILITY;
                 shapeRendering = VALUE_CRISP_EDGES;
             }
             else if(antialiasing == hints.VALUE_ANTIALIAS_DEFAULT){
@@ -130,7 +130,7 @@ public class SVGRenderingHints extends AbstractSVGConverter{
             if(textAntialiasing == hints.VALUE_TEXT_ANTIALIAS_ON)
                 textRendering = VALUE_GEOMETRIC_PRECISION;
             else if(textAntialiasing == hints.VALUE_TEXT_ANTIALIAS_OFF)
-                textRendering = VALUE_CRISP_EDGES;
+                textRendering = VALUE_OPTIMIZE_LEGIBILITY;
             else if(textAntialiasing == hints.VALUE_TEXT_ANTIALIAS_DEFAULT)
                 textRendering = VALUE_AUTO;
 

@@ -85,6 +85,7 @@ public class SVGCustomBufferedImageOp extends AbstractSVGFilterConverter{
 }
 
 
+
 class NullOp implements BufferedImageOp {
     public BufferedImage filter(BufferedImage src, BufferedImage dest){
         java.awt.Graphics2D g = dest.createGraphics();
@@ -133,3 +134,5 @@ class NullOp implements BufferedImageOp {
         return null;
     }
 }
+
+
