@@ -68,7 +68,7 @@ public class GlyphLayout implements TextSpanLayout {
         this.gv = font.createGlyphVector(frc, ci);
         this.gv.performDefaultLayout();
         this.offset = offset;
-        doExplicitGlyphLayout();
+        doExplicitGlyphLayout(false);
     }
 
     /**
@@ -109,6 +109,8 @@ public class GlyphLayout implements TextSpanLayout {
     public void setOffset(Point2D offset) {
         //System.out.println("Offset set to "+offset);
         this.offset = offset;
+        this.gv.performDefaultLayout();
+        doExplicitGlyphLayout(true);
     }
 
     /**
@@ -528,13 +530,15 @@ public class GlyphLayout implements TextSpanLayout {
         return new Font(aci.getAttributes());
     }
 
-    protected void doExplicitGlyphLayout() {
+    protected void doExplicitGlyphLayout(boolean applyOffset) {
         char ch = aci.first();
         int i=0;
         float[] gp = new float[(gv.getNumGlyphs()+1)*2];
         gp = (float[]) gv.getGlyphPositions(0, gv.getNumGlyphs(), gp).clone();
-        float curr_x_pos = gp[0] + (float) offset.getX();
-        float curr_y_pos = gp[1] + (float) offset.getY();
+        float init_x_pos = (float) offset.getX();
+        float init_y_pos = (float) offset.getY();
+        float curr_x_pos = gp[0] + init_x_pos;
+        float curr_y_pos = gp[1] + init_y_pos;
 
         while ((ch != CharacterIterator.DONE) && (i < gp.length/2)) {
             Float x = (Float) aci.getAttribute(
@@ -546,18 +550,37 @@ public class GlyphLayout implements TextSpanLayout {
             Float dy = (Float) aci.getAttribute(
                              GVTAttributedCharacterIterator.TextAttribute.DY);
             if (x!= null && !x.isNaN()) {
-                curr_x_pos = x.floatValue();
+                if (i==0) {
+                    if (applyOffset) {
+                        curr_x_pos = (float) offset.getX();
+                    } else {
+                        curr_x_pos = x.floatValue();
+                        init_x_pos = curr_x_pos;
+                    }
+                } else {
+                    curr_x_pos = x.floatValue();
+                }
             } else if (dx != null && !dx.isNaN()) {
                 curr_x_pos += dx.floatValue();
             }
 
             if (y != null && !y.isNaN()) {
-                curr_y_pos = y.floatValue();
+                if (i==0) {
+                    if (applyOffset) {
+                        curr_y_pos = (float) offset.getY();
+                    } else {
+                        curr_y_pos = y.floatValue();
+                        init_y_pos = curr_y_pos;
+                    }
+                } else {
+                    curr_y_pos = y.floatValue();
+                }
             } else if (dy != null && !dy.isNaN()) {
                 curr_y_pos += dy.floatValue();
             } else if (i>0) {
                 curr_y_pos += gp[i*2 + 1]-gp[i*2 - 1];
             }
+
             gv.setGlyphPosition(i, new Point2D.Float(curr_x_pos,  curr_y_pos));
             //System.out.print(ch);
             //System.out.print("["+curr_x_pos+","+curr_y_pos+"]");
@@ -569,6 +592,9 @@ public class GlyphLayout implements TextSpanLayout {
 
         advance = new Point2D.Float((float) (curr_x_pos-offset.getX()),
                                     (float) (curr_y_pos-offset.getY()));
+
+        offset = new Point2D.Float(init_x_pos, init_y_pos);
+
         computeGlyphLogicalBounds();
     }
 

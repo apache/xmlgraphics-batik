@@ -265,21 +265,6 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
             i += aci.getEndIndex();
         }
 
-        AttributedCharacterIterator iter = result.getIterator();
-        int ch = iter.first();
-        while (ch != CharacterIterator.DONE) {
-            Float dx = (Float) iter.getAttribute(
-                           GVTAttributedCharacterIterator.TextAttribute.DX);
-            Float dy = (Float) iter.getAttribute(
-                           GVTAttributedCharacterIterator.TextAttribute.DY);
-            //System.out.println((char) ch+" deltas : ("+dx+","+dy+")");
-            Float x = (Float) iter.getAttribute(
-                           GVTAttributedCharacterIterator.TextAttribute.X);
-            Float y = (Float) iter.getAttribute(
-                           GVTAttributedCharacterIterator.TextAttribute.Y);
-            //System.out.println((char) ch+" pos : ("+x+","+y+")");
-            ch = iter.next();
-        }
         return result;
     }
 
@@ -300,8 +285,8 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
         boolean preserve = s.equals("preserve");
         boolean first = true;
         boolean last;
-        boolean stripFirst = true;
-        boolean stripLast = true;
+        boolean stripFirst = !preserve;
+        boolean stripLast = !preserve;
         Element nodeElement = element;
         AttributedString as = null;
 
@@ -317,7 +302,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
 
             int lastChar = (as != null) ?
                   (as.getIterator().last()) : CharacterIterator.DONE;
-            stripFirst = first &&
+            stripFirst = !preserve && first &&
                   (top ||
                   (lastChar == ' ') ||
                   (lastChar == CharacterIterator.DONE));
@@ -351,8 +336,8 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                                                     stripFirst, last && top);
                         if (as != null) {
                             addGlyphPositionAttributes(
-                                 as, indexMap, ctx, nodeElement);
-                            stripLast = (as.getIterator().first() == ' ');
+                                 as, true, indexMap, ctx, nodeElement);
+                            stripLast = !preserve && (as.getIterator().first() == ' ');
                             if (stripLast) {
                                 AttributedString las =
                                      (AttributedString) result.removeLast();
@@ -382,9 +367,9 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                               s, m, indexMap, preserve, stripFirst, last && top);
                 if (as != null) {
                      if (first) {
-                         addGlyphPositionAttributes(as, indexMap, ctx, element);
+                         addGlyphPositionAttributes(as, !top, indexMap, ctx, element);
                      }
-                     stripLast = (as.getIterator().first() == ' ');
+                     stripLast = !preserve && (as.getIterator().first() == ' ');
                      if (stripLast && !result.isEmpty()) {
                          AttributedString las =
                               (AttributedString) result.removeLast();
@@ -508,6 +493,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
      * Adds glyph position attributes to an AttributedString.
      */
     protected void addGlyphPositionAttributes(AttributedString as,
+                                  boolean isChild,
                                   int[] indexMap,
                                   BridgeContext ctx,
                                   Element element) {
@@ -533,7 +519,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                 as.addAttribute(GVTAttributedCharacterIterator.TextAttribute.X,
                                 new Float(Float.NaN), 0, asLength);
 
-                if (x.length > 1) {
+                if ((x.length > 1) || (isChild)) {
                     as.addAttribute(
                 GVTAttributedCharacterIterator.TextAttribute.EXPLICIT_LAYOUT,
                                 new Boolean(true), 0, asLength);
@@ -558,7 +544,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                 as.addAttribute(GVTAttributedCharacterIterator.TextAttribute.Y,
                                 new Float(Float.NaN), 0, asLength);
 
-                if (y.length > 1) {
+                if ((y.length > 1) || (isChild)) {
                     as.addAttribute(
                 GVTAttributedCharacterIterator.TextAttribute.EXPLICIT_LAYOUT,
                                 new Boolean(true), 0, asLength);
