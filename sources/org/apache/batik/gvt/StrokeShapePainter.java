@@ -8,27 +8,77 @@
 
 package org.apache.batik.gvt;
 
+import java.awt.Shape;
+import java.awt.Graphics2D;
 import java.awt.Stroke;
 import java.awt.Paint;
 
 /**
- * Renders the shape of a <tt>ShapeNode</tt> using a <tt>Stroke</tt>
- * and a <tt>Paint</tt> that decorate the outline of the shape.
+ * The default implementation of the <tt>StrokeShapePainter</tt>.
  *
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  * @version $Id$
  */
-public interface StrokeShapePainter extends ShapePainter {
+public class StrokeShapePainter implements ShapePainter {
 
     /**
-     * Sets the stroke of this shape painter.
-     * @param newStroke the new stroke of this shape painter
+     * The stroke attribute used to draw the outline of the shape.
      */
-    void setStroke(Stroke newStroke);
+    protected Stroke stroke;
 
     /**
-     * Sets the paint used to draw the outline of the shape.
-     * @param newPaint the new paint used to draw the outline of the shape
+     * The paint attribute used to draw the outline of the shape.
      */
-    void setPaint(Paint newPaint);
+    protected Paint paint;
+
+    /**
+     * Constructs a new <tt>ShapePainter</tt> that can be used to draw
+     * the outline of a <tt>Shape</tt>.
+     */
+    public StrokeShapePainter() {}
+
+    /**
+     * Sets the stroke used to draw the outline of a shape.
+     * @param newStroke the stroke object used to draw the outline of the shape
+     */
+    public void setStroke(Stroke newStroke) {
+        this.stroke = newStroke;
+    }
+
+    /**
+     * Sets the paint used to fill a shape.
+     * @param newPaint the paint object used to fill the shape
+     */
+    public void setPaint(Paint newPaint) {
+        this.paint = newPaint;
+    }
+
+    /**
+     * Paints the outline of the specified shape using the specified
+     * Graphics2D and context.
+     * @param shape the shape to paint
+     * @param g2d the Graphics2D to use
+     * @param ctx the render context to use
+     */
+    public void paint(Shape shape,
+                      Graphics2D g2d,
+                      GraphicsNodeRenderContext ctx) {
+        if (stroke != null && paint != null) {
+            g2d.setPaint(paint);
+            g2d.setStroke(stroke);
+            g2d.draw(shape);
+        }
+    }
+
+    /**
+     * Returns the area painted by this painter for a given input shape
+     * @param shape the shape to paint
+     */
+    public Shape getPaintedArea(Shape shape){
+        if(paint != null && stroke != null){
+            return stroke.createStrokedShape(shape);
+        } else {
+            return shape;
+        }
+    }
 }

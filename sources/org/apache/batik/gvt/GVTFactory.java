@@ -9,74 +9,72 @@
 package org.apache.batik.gvt;
 
 /**
- * Factory class for vending GVT objects.
+ * The <tt>GVTFactory</tt> implementation.
  *
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  * @version $Id$
  */
-public interface GVTFactory {
+public class GVTFactory {
+
+    private static GVTFactory singleton = new GVTFactory();
+
+    /**
+     * Creates the GVTFactory instance.
+     */
+    public static GVTFactory getGVTFactoryImplementation() {
+        return singleton;
+    }
+
+    /**
+     * No instance of this class
+     */
+    protected GVTFactory() {}
 
     //
     // Methods for vending GraphicsNode objects
     //
 
-    /**
-     * Creates a new <tt>CanvasGraphicsNode</tt>.
-     */
-    CanvasGraphicsNode createCanvasGraphicsNode();
+    public CanvasGraphicsNode createCanvasGraphicsNode() {
+        return new CanvasGraphicsNode();
+    }
 
-    /**
-     * Creates a new <tt>CompositeGraphicsNode</tt>.
-     */
-    CompositeGraphicsNode createCompositeGraphicsNode();
+    public CompositeGraphicsNode createCompositeGraphicsNode() {
+        return new CompositeGraphicsNode();
+    }
 
-    /**
-     * Creates a new <tt>ShapeNode</tt>.
-     */
-    ShapeNode createShapeNode();
+    public ShapeNode createShapeNode() {
+        return new ShapeNode();
+    }
 
-    /**
-     * Creates a new <tt>TextNode</tt>.
-     */
-    TextNode createTextNode();
+    public TextNode createTextNode() {
+        return new TextNode();
+    }
 
-    /**
-     * Creates a new <tt>RootGraphicsNode</tt>.
-     */
-    RootGraphicsNode createRootGraphicsNode();
+    public RootGraphicsNode createRootGraphicsNode() {
+        return new RootGraphicsNode();
+    }
 
-    /**
-     * Creates a new <tt>ImageNode</tt>.
-     */
-    ImageNode createImageNode();
+    public ImageNode createImageNode() {
+        return new ImageNode();
+    }
 
-    /**
-     * Creates a new <tt>RasterImageNode</tt>.
-     */
-    RasterImageNode createRasterImageNode();
-
-    /**
-     * Creates a new <tt>ProxyGraphicsNode</tt>.
-     */
-    ProxyGraphicsNode createProxyGraphicsNode();
+    public RasterImageNode createRasterImageNode() {
+        return new RasterImageNode();
+    }
 
     //
     // Methods for vending rendering objects
     //
 
-    /**
-     * Creates a new <tt>StrokeShapePainter</tt>.
-     */
-    StrokeShapePainter createStrokeShapePainter();
+    public StrokeShapePainter createStrokeShapePainter() {
+        return new StrokeShapePainter();
+    }
 
-    /**
-     * Creates a new <tt>FillShapePainter</tt>.
-     */
-    FillShapePainter createFillShapePainter();
+    public FillShapePainter createFillShapePainter() {
+        return new FillShapePainter();
+    }
 
-    /**
-     * Creates a new <tt>CompositeShapePainter</tt>.
-     */
-    CompositeShapePainter createCompositeShapePainter();
-
+    public CompositeShapePainter createCompositeShapePainter() {
+        return new CompositeShapePainter();
+    }
 }

@@ -83,7 +83,7 @@ import org.apache.batik.bridge.DefaultUserAgent;
 import org.apache.batik.bridge.SVGBridgeContext;
 import org.apache.batik.bridge.SVGUtilities;
 
-import org.apache.batik.gvt.ConcreteGVTFactory;
+import org.apache.batik.gvt.GVTFactory;
 
 import org.apache.batik.gvt.text.ConcreteTextSelector;
 
@@ -119,7 +119,7 @@ import org.w3c.dom.events.MutationEvent;
 public class JSVGCanvas
     extends    JComponent
     implements ActionMap,
-               DynamicRenderer.RepaintHandler,
+               //               DynamicRenderer.RepaintHandler,
                SelectionListener {
     // The action names.
     public final static String UNZOOM_ACTION = "UnzoomAction";
@@ -607,7 +607,7 @@ public class JSVGCanvas
      * rendering into the offscreen buffer, so it will block the AWT
      * event thread.</em>
      */
-    public void notifyRepaintedRegion(Shape oldAoi, Shape newAoi,
+/*    public void notifyRepaintedRegion(Shape oldAoi, Shape newAoi,
                                                     Renderer renderer) {
 
         // XXX: this is not threaded yet, so it will block AWT!
@@ -626,6 +626,7 @@ public class JSVGCanvas
         } catch (InterruptedException ie) {
         }
     }
+*/
 
     /**
      * Sets the value of the requested cursor, but in a thread-safe way.
@@ -682,7 +683,7 @@ public class JSVGCanvas
         result.setDocumentLoader
             (new BufferedDocumentLoader
              (new SVGDocumentLoader(userAgent.getXMLParserClassName())));
-        result.setGVTFactory(ConcreteGVTFactory.getGVTFactoryImplementation());
+        result.setGVTFactory(GVTFactory.getGVTFactoryImplementation());
         result.setParserFactory(parserFactory);
         result.setUserAgent(userAgent);
         result.setGraphicsNodeRableFactory
@@ -900,7 +901,7 @@ public class JSVGCanvas
 
         if (bufferNeedsRendering) {
             renderer = rendererFactory.createRenderer(buffer);
-            ((DynamicRenderer)renderer).setRepaintHandler(this);
+            //((DynamicRenderer)renderer).setRepaintHandler(this);
             renderer.setTransform(transform);
         }
         if (renderer != null && gvtRoot != null &&
@@ -1706,8 +1707,8 @@ public class JSVGCanvas
      * This class represents the thumbnail canvas.
      */
     protected class ThumbnailCanvas
-        extends    JComponent
-        implements DynamicRenderer.RepaintHandler {
+        extends    JComponent {
+        //        implements DynamicRenderer.RepaintHandler {
 
         /**
          * The offscreen buffer.
@@ -1813,7 +1814,7 @@ public class JSVGCanvas
             updateBuffer(w, h);
             if (bufferNeedsRendering) {
                 renderer = rendererFactory.createRenderer(buffer);
-                ((DynamicRenderer)renderer).setRepaintHandler(this);
+                //((DynamicRenderer)renderer).setRepaintHandler(this);
                 renderer.setTransform(transform);
             }
             if (renderer != null && gvtRoot != null &&
@@ -1963,7 +1964,7 @@ public class JSVGCanvas
          * Notifies that the specified area of interest need to be repainted.
          * @param aoi the area of interest to repaint
          */
-        public void notifyRepaintedRegion(Shape oldAoi, Shape newAoi,
+/*        public void notifyRepaintedRegion(Shape oldAoi, Shape newAoi,
                                           Renderer renderer) {
 
             // TODO: thread this (it's used by DynamicRenderer)
@@ -1983,6 +1984,7 @@ public class JSVGCanvas
             } catch (InterruptedException ie) {
             }
         }
+*/
 
         /**
          * @return the area of interest displayed in the viewer, in usr space.

@@ -28,7 +28,7 @@ import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
 import org.apache.batik.parser.ParserFactory;
 import org.apache.batik.bridge.resources.Messages;
-import org.apache.batik.gvt.ConcretePatternPaint;
+import org.apache.batik.gvt.PatternPaint;
 import org.apache.batik.ext.awt.image.renderable.ClipRable8Bit;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.UnitProcessor;
@@ -249,12 +249,12 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
         }
 
         // Now, build a Paint from the pattern content
-        Paint paint = new ConcretePatternPaint(patternContentNode,
-                                               rc,
-                                               nodeTransform,
-                                               patternRegion,
-                                               overflow,
-                                               patternTransform);
+        Paint paint = new PatternPaint(patternContentNode,
+                                       rc,
+                                       nodeTransform,
+                                       patternRegion,
+                                       overflow,
+                                       patternTransform);
 
         return paint;
     }
