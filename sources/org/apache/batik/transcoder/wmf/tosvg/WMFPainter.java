@@ -54,6 +54,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Polygon;
 import java.awt.Shape;
 import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
@@ -209,7 +210,7 @@ public class WMFPainter {
                         catch ( Exception e ) {}
                         int brushStyle = mr.ElementAt( 0 ).intValue();
                         if ( brushStyle == 0 ) {
-                            addObjectAt(currentStore, BRUSH, 
+                            addObjectAt(currentStore, BRUSH,
                                         new Color(mr.ElementAt( 1 ).intValue(),
                                                   mr.ElementAt( 2 ).intValue(),
                                                   mr.ElementAt( 3 ).intValue()),
@@ -329,28 +330,31 @@ public class WMFPainter {
 
                 case WMFConstants.META_POLYPOLYGON:
                     {
-                        int numPolygons = mr.ElementAt( 0 ).intValue();
-                        int[] pts = new int[ numPolygons ];
-                        for ( int ip = 0; ip < numPolygons; ip++ )
-                            pts[ ip ] = mr.ElementAt( ip + 1 ).intValue();
+                      int numPolygons = mr.ElementAt( 0 ).intValue();
+                      int[] pts = new int[ numPolygons ];
+                      for ( int ip = 0; ip < numPolygons; ip++ )
+                          pts[ ip ] = mr.ElementAt( ip + 1 ).intValue();
 
-                        int offset = numPolygons+1;
-                        for ( int j = 0; j < numPolygons; j++ ) {
-                            int count = pts[ j ];
-                            int[] xpts = new int[ count ];
-                            int[] ypts = new int[ count ];
-                            for ( int k = 0; k < count; k++ ) {
-                                xpts[k] = (int)(  scaleX * ( vpX + mr.ElementAt( offset + k*2 ).intValue()));
-                                ypts[k] = (int)( scaleY * ( vpY + mr.ElementAt( offset + k*2+1 ).intValue()));
-                            }
-                            offset += count;
-                            if ( brushObject >= 0 ) {
-                                setBrushColor( currentStore, g, brushObject );
-                                g.fillPolygon( xpts, ypts, count );
-                            }
-                            setPenColor( currentStore, g, penObject );
-                            g.drawPolygon( xpts, ypts, count );
-                        }
+                      GeneralPath gp = new GeneralPath();
+                      int offset = numPolygons+1;
+                      for ( int j = 0; j < numPolygons; j++ ) {
+                          int count = pts[ j ];
+                          int[] xpts = new int[ count ];
+                          int[] ypts = new int[ count ];
+                          for ( int k = 0; k < count; k++ ) {
+                              xpts[k] = (int)(  scaleX * ( vpX + mr.ElementAt( offset + k*2 ).intValue()));
+                              ypts[k] = (int)( scaleY * ( vpY + mr.ElementAt( offset + k*2+1 ).intValue()));
+                          }
+                          offset += count;
+                          Polygon p = new Polygon(xpts, ypts, count);
+                          gp.append( p, true );
+                      }
+                      if ( brushObject >= 0 ) {
+                          setBrushColor( currentStore, g, brushObject );
+                          ( (Graphics2D) g).fill(gp);
+                      }
+                      setPenColor( currentStore, g, penObject );
+                      ( (Graphics2D) g).draw(gp);
                     }
                     break;
 
@@ -776,4 +780,5 @@ class GdiObject /*implements Serializable*/
         Object obj;
         int type = 0;
 }
+
 
