@@ -22,18 +22,94 @@
         <property name="SaveSVG" class="java.io.File" value="test-references/org/apache/batik/svggen/candidate-ref/BasicShapes2.svg" />
     </test>
     <test class="org.apache.batik.svggen.SVGAccuracyTest">
-        <arg class="org.apache.batik.svggen.AffineTransform" />
-	<arg class="java.net.URL" value="file:test-references/org/apache/batik/svggen/AffineTransform.svg"/>
-        <property name="SaveSVG" class="java.io.File" value="test-references/org/apache/batik/svggen/candidate-ref/AffineTransform.svg" />
+        <arg class="org.apache.batik.svggen.ATransform" />
+	<arg class="java.net.URL" value="file:test-references/org/apache/batik/svggen/ATransform.svg"/>
+        <property name="SaveSVG" class="java.io.File" value="test-references/org/apache/batik/svggen/candidate-ref/ATransform.svg" />
     </test>
      <test class="org.apache.batik.svggen.SVGAccuracyTest">
         <arg class="org.apache.batik.svggen.AttributedCharacterIterator" />
 	<arg class="java.net.URL" value="file:test-references/org/apache/batik/svggen/AttributedCharacterIterator.svg"/>
         <property name="SaveSVG" class="java.io.File" value="test-references/org/apache/batik/svggen/candidate-ref/AttributedCharacterIterator.svg" />
     </test>
- <test class="org.apache.batik.svggen.SVGAccuracyTest">
+    <test class="org.apache.batik.svggen.SVGAccuracyTest">
         <arg class="org.apache.batik.svggen.BEExample" />
 	<arg class="java.net.URL" value="file:test-references/org/apache/batik/svggen/BEExample.svg"/>
         <property name="SaveSVG" class="java.io.File" value="test-references/org/apache/batik/svggen/candidate-ref/BEExample.svg" />
+    </test>
+    <test class="org.apache.batik.svggen.SVGAccuracyTest">
+        <arg class="org.apache.batik.svggen.BStroke" />
+	<arg class="java.net.URL" value="file:test-references/org/apache/batik/svggen/BStroke.svg"/>
+        <property name="SaveSVG" class="java.io.File" value="test-references/org/apache/batik/svggen/candidate-ref/BStroke.svg" />
+    </test>
+
+    <test class="org.apache.batik.svggen.SVGAccuracyTest">
+        <arg class="org.apache.batik.svggen.Clip" />
+	<arg class="java.net.URL" value="file:test-references/org/apache/batik/svggen/Clip.svg"/>
+        <property name="SaveSVG" class="java.io.File" value="test-references/org/apache/batik/svggen/candidate-ref/Clip.svg" />
+    </test>
+    <test class="org.apache.batik.svggen.SVGAccuracyTest">
+        <arg class="org.apache.batik.svggen.Color1" />
+	<arg class="java.net.URL" value="file:test-references/org/apache/batik/svggen/Color1.svg"/>
+        <property name="SaveSVG" class="java.io.File" value="test-references/org/apache/batik/svggen/candidate-ref/Color1.svg" />
+    </test>
+    <test class="org.apache.batik.svggen.SVGAccuracyTest">
+        <arg class="org.apache.batik.svggen.Color2" />
+	<arg class="java.net.URL" value="file:test-references/org/apache/batik/svggen/Color2.svg"/>
+        <property name="SaveSVG" class="java.io.File" value="test-references/org/apache/batik/svggen/candidate-ref/Color2.svg" />
+    </test>
+    <test class="org.apache.batik.svggen.SVGAccuracyTest">
+        <arg class="org.apache.batik.svggen.Font1" />
+	<arg class="java.net.URL" value="file:test-references/org/apache/batik/svggen/Font1.svg"/>
+        <property name="SaveSVG" class="java.io.File" value="test-references/org/apache/batik/svggen/candidate-ref/Font1.svg" />
+    </test>
+    <test class="org.apache.batik.svggen.SVGAccuracyTest">
+        <arg class="org.apache.batik.svggen.Font2" />
+	<arg class="java.net.URL" value="file:test-references/org/apache/batik/svggen/Font2.svg"/>
+        <property name="SaveSVG" class="java.io.File" value="test-references/org/apache/batik/svggen/candidate-ref/Font2.svg" />
+    </test>
+    <test class="org.apache.batik.svggen.SVGAccuracyTest">
+        <arg class="org.apache.batik.svggen.GVector" />
+	<arg class="java.net.URL" value="file:test-references/org/apache/batik/svggen/GVector.svg"/>
+        <property name="SaveSVG" class="java.io.File" value="test-references/org/apache/batik/svggen/candidate-ref/GVector.svg" />
+    </test>
+    <test class="org.apache.batik.svggen.SVGAccuracyTest">
+        <arg class="org.apache.batik.svggen.Gradient" />
+	<arg class="java.net.URL" value="file:test-references/org/apache/batik/svggen/Gradient.svg"/>
+        <property name="SaveSVG" class="java.io.File" value="test-references/org/apache/batik/svggen/candidate-ref/Gradient.svg" />
+    </test>
+    <test class="org.apache.batik.svggen.SVGAccuracyTest">
+        <arg class="org.apache.batik.svggen.GraphicObjects" />
+	<arg class="java.net.URL" value="file:test-references/org/apache/batik/svggen/GraphicObjects.svg"/>
+        <property name="SaveSVG" class="java.io.File" value="test-references/org/apache/batik/svggen/candidate-ref/GraphicObjects.svg" />
+    </test>
+    <test class="org.apache.batik.svggen.SVGAccuracyTest">
+        <arg class="org.apache.batik.svggen.Lookup" />
+	<arg class="java.net.URL" value="file:test-references/org/apache/batik/svggen/Lookup.svg"/>
+        <property name="SaveSVG" class="java.io.File" value="test-references/org/apache/batik/svggen/candidate-ref/Lookup.svg" />
+    </test>
+    <test class="org.apache.batik.svggen.SVGAccuracyTest">
+        <arg class="org.apache.batik.svggen.Paints" />
+	<arg class="java.net.URL" value="file:test-references/org/apache/batik/svggen/Paints.svg"/>
+        <property name="SaveSVG" class="java.io.File" value="test-references/org/apache/batik/svggen/candidate-ref/Paints.svg" />
+    </test>
+    <test class="org.apache.batik.svggen.SVGAccuracyTest">
+        <arg class="org.apache.batik.svggen.RHints" />
+	<arg class="java.net.URL" value="file:test-references/org/apache/batik/svggen/RHints.svg"/>
+        <property name="SaveSVG" class="java.io.File" value="test-references/org/apache/batik/svggen/candidate-ref/RHints.svg" />
+    </test>
+    <test class="org.apache.batik.svggen.SVGAccuracyTest">
+        <arg class="org.apache.batik.svggen.Rescale" />
+	<arg class="java.net.URL" value="file:test-references/org/apache/batik/svggen/Rescale.svg"/>
+        <property name="SaveSVG" class="java.io.File" value="test-references/org/apache/batik/svggen/candidate-ref/Rescale.svg" />
+    </test>
+    <test class="org.apache.batik.svggen.SVGAccuracyTest">
+        <arg class="org.apache.batik.svggen.ShearTest" />
+	<arg class="java.net.URL" value="file:test-references/org/apache/batik/svggen/ShearTest.svg"/>
+        <property name="SaveSVG" class="java.io.File" value="test-references/org/apache/batik/svggen/candidate-ref/ShearTest.svg" />
+    </test>
+    <test class="org.apache.batik.svggen.SVGAccuracyTest">
+        <arg class="org.apache.batik.svggen.Texture" />
+	<arg class="java.net.URL" value="file:test-references/org/apache/batik/svggen/Texture.svg"/>
+        <property name="SaveSVG" class="java.io.File" value="test-references/org/apache/batik/svggen/candidate-ref/Texture.svg" />
     </test>
 </testSuite>
