@@ -220,6 +220,12 @@ public class SVGRenderingAccuracyTest extends AbstractTest {
         = configuration.getString("temp.file.suffix");
 
     /**
+     * Validating parser class name
+     */
+    public static final String VALIDATING_PARSER
+	= configuration.getString("validating.parser");
+
+    /**
      * The URL where the SVG can be found.
      */
     protected URL svgURL;
@@ -889,9 +895,10 @@ public class SVGRenderingAccuracyTest extends AbstractTest {
                              new Color(0,0,0,0));
 
         if (validate){
-            System.out.println("Using validation");
             t.addTranscodingHint(PNGTranscoder.KEY_XML_PARSER_VALIDATING,
                                  new Boolean(true));
+	    t.addTranscodingHint(PNGTranscoder.KEY_XML_PARSER_CLASSNAME,
+				 VALIDATING_PARSER);
         }
 
         return t;
