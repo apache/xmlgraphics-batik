@@ -150,6 +150,9 @@ public class BridgeEventSupport implements SVGConstants {
                                         GraphicsNodeKeyEvent evt) {
             Element targetElement = 
                 (Element)context.getFocusManager().getCurrentEventTarget();
+            if (targetElement == null) {
+                return;
+            }
             DocumentEvent d = (DocumentEvent)targetElement.getOwnerDocument();
             DOMKeyEvent keyEvt = (DOMKeyEvent)d.createEvent("KeyEvents");
             keyEvt.initKeyEvent(eventType, 
