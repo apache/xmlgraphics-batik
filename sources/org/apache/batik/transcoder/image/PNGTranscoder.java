@@ -14,6 +14,7 @@ import java.awt.image.SinglePixelPackedSampleModel;
 import java.io.IOException;
 import java.io.OutputStream;
 import org.apache.batik.transcoder.keys.BooleanKey;
+import org.apache.batik.transcoder.keys.FloatKey;
 import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.TranscodingHints;
@@ -28,11 +29,12 @@ import org.apache.batik.ext.awt.image.codec.PNGImageEncoder;
  * @version $Id$
  */
 public class PNGTranscoder extends ImageTranscoder {
+
     /**
      * Constructs a new transcoder that produces png images.
      */
-    public PNGTranscoder() { 
-        hints.put(KEY_FORCE_TRANSPARENT_WHITE, new Boolean(false));
+    public PNGTranscoder() {
+        hints.put(KEY_FORCE_TRANSPARENT_WHITE, Boolean.FALSE);
     }
 
     /**
@@ -60,9 +62,13 @@ public class PNGTranscoder extends ImageTranscoder {
         }
         PNGEncodeParam.RGB params =
             (PNGEncodeParam.RGB)PNGEncodeParam.getDefaultEncodeParam(img);
-	params.setBackgroundRGB(new int [] { 255, 255, 255 });
-        // We are using sRGB (gamma 2.2).
-	params.setSRGBIntent(PNGEncodeParam.INTENT_PERCEPTUAL);
+        params.setBackgroundRGB(new int [] { 255, 255, 255 });
+        if (hints.containsKey(KEY_GAMMA)) {
+            params.setGamma(((Float)hints.get(KEY_GAMMA)).floatValue());
+        } else {
+            // We are using sRGB (gamma 2.2).
+            params.setSRGBIntent(PNGEncodeParam.INTENT_PERCEPTUAL);
+        }
 
         //
         // This is a trick so that viewers which do not support the alpha
@@ -71,16 +77,16 @@ public class PNGTranscoder extends ImageTranscoder {
         boolean forceTransparentWhite = false;
 
         if (hints.containsKey(KEY_FORCE_TRANSPARENT_WHITE)) {
-            forceTransparentWhite = 
-		((Boolean)hints.get
-		 (KEY_FORCE_TRANSPARENT_WHITE)).booleanValue();
+            forceTransparentWhite =
+                ((Boolean)hints.get
+                 (KEY_FORCE_TRANSPARENT_WHITE)).booleanValue();
         }
 
         if (forceTransparentWhite) {
             int w = img.getWidth(), h = img.getHeight();
             DataBufferInt biDB = (DataBufferInt)img.getRaster().getDataBuffer();
             int scanStride = ((SinglePixelPackedSampleModel)
-			      img.getSampleModel()).getScanlineStride();
+                              img.getSampleModel()).getScanlineStride();
             int dbOffset = biDB.getOffset();
             int pixels[] = biDB.getBankData()[0];
             int p = dbOffset;
@@ -120,14 +126,59 @@ public class PNGTranscoder extends ImageTranscoder {
     // --------------------------------------------------------------------
 
     /**
-     * The 'forceTransparentWhite' key.  It controls whether the encoder should
-     * force the image's fully transparent pixels to be fully transparent white
-     * instead of fully transparent black.  This is usefull when the encoded PNG
-     * is displayed in a browser which does not support PNG transparency and
-     * lets the image display with a white background instead of a black
-     * background. <br /> However, note that the modified image will display
-     * differently over a white background in a viewer that supports
-     * transparency.  */
+     * The forceTransparentWhite key.
+     *
+     * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Key: </TH>
+     * <TD VALIGN="TOP">KEY_FORCE_TRANSPARENT_WHITE</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Value: </TH>
+     * <TD VALIGN="TOP">Boolean</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Default: </TH>
+     * <TD VALIGN="TOP">false</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Required: </TH>
+     * <TD VALIGN="TOP">No</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Description: </TH>
+     * <TD VALIGN="TOP">It controls whether the encoder should
+     * force the image's fully transparent pixels to be fully transparent
+     * white instead of fully transparent black.  This is usefull when the
+     * encoded PNG is displayed in a browser which does not support PNG
+     * transparency and lets the image display with a white background instead
+     * of a black background. <br /> However, note that the modified image
+     * will display differently over a white background in a viewer that
+     * supports transparency.</TD></TR>
+     * </TABLE>
+     */
     public static final TranscodingHints.Key KEY_FORCE_TRANSPARENT_WHITE
         = new BooleanKey();
+
+    /**
+     * The gamma correction key.
+     *
+     * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Key: </TH>
+     * <TD VALIGN="TOP">KEY_GAMMA</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Value: </TH>
+     * <TD VALIGN="TOP">Float</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Default: </TH>
+     * <TD VALIGN="TOP">PNGEncodeParam.INTENT_PERCEPTUAL</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Required: </TH>
+     * <TD VALIGN="TOP">No</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Description: </TH>
+     * <TD VALIGN="TOP">Controls the gamma correction of the png image.</TD>
+     * </TR>
+     * </TABLE>
+     */
+    public static final TranscodingHints.Key KEY_GAMMA
+        = new FloatKey();
+
 }
