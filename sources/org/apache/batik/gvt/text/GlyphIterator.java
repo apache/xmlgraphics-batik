@@ -41,12 +41,21 @@ public class GlyphIterator {
 
     // The ACI index of current glyph.
     int   aciIdx      = -1;
+    // The number of characters in ACI for current Glyph.
+    int   charCount   = -1;
+
     // The total advance for line including last non-space glyph
     float adv         =  0;
     // The total advance for line including spaces at end of line.
     float adj         =  0;
-    // The runLimit (for current font)
+    // The runLimit for current font
     int     runLimit   = 0;
+
+    // The runLimit for current line element (need a line break at end).
+    int     lineBreakRunLimit = 0;
+    int     lineBreakCount    = 0;
+
+
     GVTFont font       = null;
     int     fontStart  = 0;
     float   maxAscent  = 0;
@@ -74,20 +83,21 @@ public class GlyphIterator {
     // The current left shift (inherited from previous line).
     int leftShift = 0;
 
+    Point2D gvBase = null;
 
     
     public GlyphIterator(AttributedCharacterIterator aci,
                          GVTGlyphVector gv) {
-        this.aci      = aci;
-        this.gv       = gv;
-
-        this.idx      = 0;
-        this.chIdx    = 0;
-        this.lineIdx  = 0;
-        this.aciIdx   = aci.getBeginIndex();
-        this.ch       = aci.first();
-        this.chIdx    = 0;
-        this.frc      = gv.getFontRenderContext();
+        this.aci       = aci;
+        this.gv        = gv;
+ 
+        this.idx       = 0;
+        this.chIdx     = -1;
+        this.lineIdx   = 0;
+        this.aciIdx    = aci.getBeginIndex();
+        this.charCount = gv.getCharacterCount(idx, idx);
+        this.ch        = aci.first();
+        this.frc       = gv.getFontRenderContext();
         
         this.font = (GVTFont)aci.getAttribute(GVT_FONT);
         if (font == null) {
@@ -100,9 +110,15 @@ public class GlyphIterator {
 
         // Figure out where the font size might change again...
         this.runLimit  = aci.getRunLimit(TEXT_COMPOUND_DELIMITER);
+        
+        this.lineBreakRunLimit = aci.getRunLimit(FLOW_LINE_BREAK);
+        Object o = (Object)aci.getAttribute(FLOW_LINE_BREAK);
+        this.lineBreakCount = (o == null)?0:1;
+
 
         this.numGlyphs   = gv.getNumGlyphs();
         this.gp          = gv.getGlyphPositions(0, this.numGlyphs+1, null);
+        this.gvBase      = new Point2D.Float(gp[0], gp[1]);
         this.adv = getCharWidth();
         this.adj = getCharAdvance();
     }
@@ -122,13 +138,17 @@ public class GlyphIterator {
         gi.idx        = this.idx;
         gi.chIdx      = this.chIdx;
         gi.aciIdx     = this.aciIdx;
+        gi.charCount  = this.charCount;
         gi.adv        = this.adv;
         gi.adj        = this.adj;
         gi.runLimit   = this.runLimit;
         gi.ch         = this.ch;
-        gi.chIdx      = this.chIdx;
         gi.numGlyphs  = this.numGlyphs;
         gi.gp         = this.gp;
+        gi.gvBase     = this.gvBase;
+
+        gi.lineBreakRunLimit = this.lineBreakRunLimit;
+        gi.lineBreakCount    = this.lineBreakCount;
 
         gi.frc         = this.frc;
         gi.font        = this.font;
@@ -166,6 +186,12 @@ public class GlyphIterator {
     public float getAdv() { return adv; }
 
     /**
+     * @return The origin of the glyph vector (the point all glyphs are
+     * layed out with respect to).
+     */
+    public Point2D getOrigin() { return gvBase; }
+
+    /**
      * @return The current adjustment for the line.  This is the ammount
      * that needs to be subracted from the following line to get it back
      * to the start of the next line.
@@ -174,7 +200,7 @@ public class GlyphIterator {
 
     public float getMaxFontSize()  {
         if (aciIdx >= fontStart) {
-            int newFS = aciIdx + gv.getCharacterCount(idx,idx);
+            int newFS = aciIdx + charCount;
             updateLineMetrics(newFS);
             fontStart = newFS;
         }
@@ -183,7 +209,7 @@ public class GlyphIterator {
 
     public float getMaxAscent()  { 
         if (aciIdx >= fontStart) {
-            int newFS = aciIdx + gv.getCharacterCount(idx,idx);
+            int newFS = aciIdx + charCount;
             updateLineMetrics(newFS);
             fontStart = newFS;
         }
@@ -192,7 +218,7 @@ public class GlyphIterator {
 
     public float getMaxDescent() { 
         if (aciIdx >= fontStart) {
-            int newFS = aciIdx + gv.getCharacterCount(idx,idx);
+            int newFS = aciIdx + charCount;
             updateLineMetrics(newFS);
             fontStart = newFS;
         }
@@ -228,9 +254,22 @@ public class GlyphIterator {
     }        
        
     public int getLineBreaks() {
-        Integer i = (Integer)aci.getAttribute(FLOW_LINE_BREAK);
-        if (i == null) return 0;
-        return i.intValue();
+        int ret = 0;
+        if (aciIdx+charCount >= lineBreakRunLimit) {
+            // Next char is outside this line element so break after
+            // the current char.
+            ret = lineBreakCount;
+
+            // Update the lineBreakRunLimit, this is a bit tricky since
+            // The attribute doesn't change until the next glyph...
+            aci.setIndex(aciIdx+charCount);
+            lineBreakRunLimit = aci.getRunLimit(FLOW_LINE_BREAK);
+            aci.setIndex(aciIdx);  // Restore location...
+
+            Object o = (Object)aci.getAttribute(FLOW_LINE_BREAK);
+            lineBreakCount = (o == null)?0:1;
+        }
+        return ret;
     }
 
     /**
@@ -243,32 +282,14 @@ public class GlyphIterator {
             // Special handling for soft hyphens and zero-width spaces
             gv.setGlyphVisible(idx, false);
             float chAdv = getCharAdvance();
-            float chW   = getCharWidth();
-            adv -= chW;
             adj -= chAdv;
-            if (leftShiftIdx == null) {
-                leftShiftIdx = new int[1];
-                leftShiftIdx[0] = idx;
-                leftShiftAmt = new float[1];
-                leftShiftAmt[0] = chAdv;
-            } else {
-                int [] newLeftShiftIdx = new int[leftShiftIdx.length+1];
-                for (int i=0; i<leftShiftIdx.length; i++)
-                    newLeftShiftIdx[i] = leftShiftIdx[i];
-                newLeftShiftIdx[leftShiftIdx.length] = idx;
-                leftShiftIdx = newLeftShiftIdx;
-
-                float [] newLeftShiftAmt = new float[leftShiftAmt.length+1];
-                for (int i=0; i<leftShiftAmt.length; i++)
-                    newLeftShiftAmt[i] = leftShiftAmt[i];
-                newLeftShiftAmt[leftShiftAmt.length] = chAdv;
-                leftShiftAmt = newLeftShiftAmt;
-            }
+            addLeftShift(idx, chAdv);
         }
 
-        aciIdx += gv.getCharacterCount(idx,idx);
+        aciIdx += charCount;
         ch = aci.setIndex(aciIdx);
         idx++;
+        charCount = gv.getCharacterCount(idx,idx);
         if (idx == numGlyphs) return;
 
         if (aciIdx >= runLimit) {
@@ -290,6 +311,27 @@ public class GlyphIterator {
         }
     }
 
+    protected void addLeftShift(int idx, float chAdv) {
+        if (leftShiftIdx == null) {
+            leftShiftIdx = new int[1];
+            leftShiftIdx[0] = idx;
+            leftShiftAmt = new float[1];
+            leftShiftAmt[0] = chAdv;
+        } else {
+            int [] newLeftShiftIdx = new int[leftShiftIdx.length+1];
+            for (int i=0; i<leftShiftIdx.length; i++)
+                newLeftShiftIdx[i] = leftShiftIdx[i];
+            newLeftShiftIdx[leftShiftIdx.length] = idx;
+            leftShiftIdx = newLeftShiftIdx;
+
+            float [] newLeftShiftAmt = new float[leftShiftAmt.length+1];
+            for (int i=0; i<leftShiftAmt.length; i++)
+                newLeftShiftAmt[i] = leftShiftAmt[i];
+            newLeftShiftAmt[leftShiftAmt.length] = chAdv;
+            leftShiftAmt = newLeftShiftAmt;
+        }
+    }
+
     protected void updateLineMetrics(int end) {
         GVTLineMetrics glm = font.getLineMetrics
             (aci, fontStart, end, frc);
@@ -301,9 +343,9 @@ public class GlyphIterator {
         if (fontSz >  maxFontSize) maxFontSize = fontSz;
     }
 
-    public LineInfo getLineInfo(Point2D.Float loc, 
-                                float lineWidth, 
-                                boolean partial) {
+    public LineInfo newLine(Point2D.Float loc, 
+                            float lineWidth, 
+                            boolean partial) {
         if (ch == SOFT_HYPHEN) {
             gv.setGlyphVisible(idx, true);
         }
@@ -324,23 +366,48 @@ public class GlyphIterator {
         leftShiftIdx = null;
         leftShiftAmt = null;
 
-        return new LineInfo(aci, gv, lineIdx, idx+1, loc, adv, adj,
-                            getCharWidth(chIdx), lineWidth, partial);
-    }
+        int   lineInfoIdx = idx+1;
+        float lineInfoAdv = adv;
+        float lineInfoAdj = adj;
+        float lineInfoChW;
+        int   hideIdx;
+        if (chIdx != -1) {
+            lineInfoChW = getCharWidth(chIdx);
+            hideIdx     = chIdx+1;
+        } else {
+            lineInfoChW = 0;
+            hideIdx     = 0;
+        }
 
-    public void newLine() {
-        adv=0;
-        adj=0;
+        while (!done()) {
+          adv=0;
+          adj=0;
+
+          if ((ch == ZERO_WIDTH_SPACE) ||
+              (ch == ZERO_WIDTH_JOINER))
+            gv.setGlyphVisible(idx, false);
+
+          ch = 0;  // Disable soft-hyphen/ZWS advance adjustment.
+          nextChar();
+
+          if (isPrinting()) break;
+
+          lineInfoIdx = idx+1;
+          lineInfoAdj += adj;
+        }
+        // hide trailing spaces if any
+        for (int i = hideIdx; i<lineInfoIdx; i++)
+          gv.setGlyphVisible(i, false);
+
         maxAscent   = -Float.MAX_VALUE;
         maxDescent  = -Float.MAX_VALUE;
         maxFontSize = -Float.MAX_VALUE;
 
-        if ((ch == ZERO_WIDTH_SPACE) ||
-            (ch == ZERO_WIDTH_JOINER))
-            gv.setGlyphVisible(idx, false);
-        ch = 0;  // Disable soft-hyphen/ZWS advance adjustment.
-        nextChar();
         lineIdx = idx;
+
+        return new LineInfo(loc, aci, gv, lineIdx, lineInfoIdx, 
+                            lineInfoAdj, lineInfoAdv, lineInfoChW, 
+                            lineWidth, partial);
     }
 
     public boolean isPrinting() {
@@ -376,8 +443,8 @@ public class GlyphIterator {
      * the rightmost part of the glyph.
      */
     protected float getCharWidth(int gvIdx) {
-        Rectangle2D lcBound = gv.getGlyphVisualBounds(chIdx).getBounds2D();
-        Point2D     lcLoc   = gv.getGlyphPosition(chIdx);
+        Rectangle2D lcBound = gv.getGlyphVisualBounds(gvIdx).getBounds2D();
+        Point2D     lcLoc   = gv.getGlyphPosition(gvIdx);
         return (float)(lcBound.getX()+lcBound.getWidth()- lcLoc.getX());
     }
 }

@@ -43,17 +43,32 @@
         <test id="samples/textRotateShadows.svg" />
     </testGroup>
 
-    <!-- ======================================================================= -->
-    <!-- Samples extensions files                                                -->
-    <!-- ======================================================================= -->
+    <!-- ================================================================== -->
+    <!-- Samples extensions files                                           -->
+    <!-- ================================================================== -->
     <testGroup id="extensions" name="extensions rendering">
-        <test id="samples/extensions/regularPolygon.svg" >
-            <property name="Validating" class="java.lang.Boolean" value="false" />
-	</test>
-        <test id="samples/extensions/star.svg" >
+        <test id="samples/extensions/colorSwitch.svg" >
             <property name="Validating" class="java.lang.Boolean" value="false" />
 	</test>
         <test id="samples/extensions/histogramNormalization.svg" >
+            <property name="Validating" class="java.lang.Boolean" value="false" />
+	</test>
+        <test id="samples/extensions/flowText.svg" >
+            <property name="Validating" class="java.lang.Boolean" value="false" />
+	</test>
+        <test id="samples/extensions/multi.svg" >
+            <property name="Validating" class="java.lang.Boolean" value="false" />
+	</test>
+        <test id="samples/extensions/regularPolygon.svg" >
+            <property name="Validating" class="java.lang.Boolean" value="false" />
+	</test>
+        <test id="samples/extensions/solidColor.svg" >
+            <property name="Validating" class="java.lang.Boolean" value="false" />
+	</test>
+        <test id="samples/extensions/solidColor2.svg" >
+            <property name="Validating" class="java.lang.Boolean" value="false" />
+	</test>
+        <test id="samples/extensions/star.svg" >
             <property name="Validating" class="java.lang.Boolean" value="false" />
 	</test>
     </testGroup>
@@ -244,6 +259,7 @@
         <test id="samples/tests/spec/text/textFeatures.svg" />
         <test id="samples/tests/spec/text/textLayout.svg" />
         <test id="samples/tests/spec/text/textLayout2.svg" />
+        <test id="samples/tests/spec/text/textLength.svg" />
         <test id="samples/tests/spec/text/textOnPath.svg" />
         <test id="samples/tests/spec/text/textOnPathSpaces.svg" />
         <test id="samples/tests/spec/text/textPCDATA.svg" />

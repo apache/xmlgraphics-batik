@@ -905,6 +905,22 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge {
 
             return result;
         }
+
+        public String toString() {
+            switch (count) {
+            case 0:
+                return "";
+            case 1:
+                return (String)strings.get(0);
+            }
+
+            StringBuffer sb = new StringBuffer();
+            Iterator it = strings.iterator();
+            while (it.hasNext()) {
+                sb.append((String)it.next());
+            }
+            return sb.toString();
+        }
     }
 
     /**

@@ -145,6 +145,11 @@ public interface GVTGlyphVector {
     void setGlyphVisible(int glyphIndex, boolean visible);
 
     /**
+     * Returns true if specified glyph will be drawn.
+     */
+    public boolean isGlyphVisible(int glyphIndex);
+
+    /**
      * Returns the number of chars represented by the glyphs within the
      * specified range.
      *

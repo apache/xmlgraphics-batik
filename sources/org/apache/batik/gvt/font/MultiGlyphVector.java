@@ -184,6 +184,14 @@ public class MultiGlyphVector implements GVTGlyphVector {
     }
 
     /**
+     * Returns true if specified glyph will be drawn.
+     */
+    public boolean isGlyphVisible(int glyphIndex) {
+        int idx = getGVIdx(glyphIndex);
+        return gvs[idx].isGlyphVisible(glyphIndex-off[idx]);
+    }
+
+    /**
      * Returns an array of glyphcodes for the specified glyphs.
      */
     public int[] getGlyphCodes(int beginGlyphIndex, int numEntries, 

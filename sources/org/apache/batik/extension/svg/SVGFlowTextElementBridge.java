@@ -289,34 +289,26 @@ public class SVGFlowTextElementBridge extends SVGTextElementBridge
         // Layer in the PARAGRAPH/LINE_BREAK Attributes so we can
         // break up text chunks.
         AttributedString ret = asb.toAttributedString();
-        int start=0;
-        List emptyPara = null;
-        int prevLN = -1;
-        Iterator lnIter = lnLocs.iterator();
 
-        // The Working Group (in conjunction with XHTML working group
-        // has decided that multiple line elements collapse so I don't
-        // use the counting I do.
+        // Note: The Working Group (in conjunction with XHTML working
+        // group) has decided that multiple line elements collapse.
+        int prevLN = 0;
         int lnCount = 0;
+        Iterator lnIter = lnLocs.iterator();
         while (lnIter.hasNext()) {
             int nextLN = ((Integer)lnIter.next()).intValue();
-            if (nextLN == prevLN) {
-                lnCount++;
-            } else {
-                if (prevLN != -1)
-                    ret.addAttribute(FLOW_LINE_BREAK, 
-                                     new Integer(1), // new Integer(lnCount), 
-                                     prevLN-1, prevLN);
-                prevLN  = nextLN;
-                lnCount = 1;
-            }
-        }
-        if (prevLN != -1)
-            ret.addAttribute(FLOW_LINE_BREAK,
-                             new Integer(1), // new Integer(lnCount), 
-                             prevLN-1, prevLN);
+            if (nextLN == prevLN) continue;
 
+            ret.addAttribute(FLOW_LINE_BREAK, 
+                             new Object(),
+                             prevLN, nextLN);
+            // System.out.println("Attr: [" + prevLN + "," + nextLN + "]");
+            prevLN  = nextLN;
+        }
+
+        int start=0;
         int end;
+        List emptyPara = null;
         for (int i=0; i<paraElems.size(); i++, start=end) {
             Element elem = (Element)paraElems.get(i);
             end  = ((Integer)paraEnds.get(i)).intValue();
@@ -326,7 +318,7 @@ public class SVGFlowTextElementBridge extends SVGTextElementBridge
                 emptyPara.add(makeMarginInfo(elem));
                 continue;
             }
-            
+            // System.out.println("Para: [" + start + ", " + end + "]");
             ret.addAttribute(FLOW_PARAGRAPH, makeMarginInfo(elem), start, end);
             if (emptyPara != null) {
                 ret.addAttribute(FLOW_EMPTY_PARAGRAPH, emptyPara, start, end);
@@ -354,7 +346,6 @@ public class SVGFlowTextElementBridge extends SVGTextElementBridge
     
     protected List gatherRects(BridgeContext ctx, Element rgn) {
         List ret = new LinkedList();
-        UnitProcessor.Context uctx = UnitProcessor.createContext(ctx, rgn);
         for (Node n = rgn.getFirstChild(); 
              n != null; n = n.getNextSibling()) {
             if (n.getNodeType()     != Node.ELEMENT_NODE) continue;
@@ -363,6 +354,8 @@ public class SVGFlowTextElementBridge extends SVGTextElementBridge
 
             String ln = n.getLocalName();
             if (ln.equals(BATIK_EXT_REGION_TAG)) {
+                UnitProcessor.Context uctx;
+                uctx = UnitProcessor.createContext(ctx, e);
                 Rectangle2D r2d = buildRect(uctx, e);
                 if (r2d != null)
                     ret.add(r2d);
@@ -471,6 +464,8 @@ public class SVGFlowTextElementBridge extends SVGTextElementBridge
                 if (ln.equals(BATIK_EXT_FLOW_LINE_TAG)) {
                     fillAttributedStringBuffer(ctx, nodeElement, 
                                                false, asb, lnLocs);
+                    // System.out.println("Line: " + asb.length() + 
+                    //                    " - '" +  asb + "'");
                     lnLocs.add(new Integer(asb.length()));
                 } else if (ln.equals(BATIK_EXT_FLOW_SPAN_TAG) ||
                     ln.equals(SVG_ALT_GLYPH_TAG) ||
@@ -615,6 +610,26 @@ public class SVGFlowTextElementBridge extends SVGTextElementBridge
             }
         } catch(NumberFormatException nfe) { /* nothing */ }
 
+        float flLeft  = left;
+        float flRight = right;
+
+        s = e.getAttributeNS(null, BATIK_EXT_FIRST_LINE_LEFT_MARGIN_ATTRIBUTE);
+        try {
+            if (s.length() != 0) {
+                float f = Float.parseFloat(s);
+                flLeft = f;
+            }
+        } catch(NumberFormatException nfe) { /* nothing */ }
+
+        s = e.getAttributeNS(null,BATIK_EXT_FIRST_LINE_RIGHT_MARGIN_ATTRIBUTE);
+        try {
+            if (s.length() != 0) {
+                float f = Float.parseFloat(s);
+                flRight = f;
+            }
+        } catch(NumberFormatException nfe) { /* nothing */ }
+
+
         int justification = MarginInfo.JUSTIFY_START;
         s = e.getAttributeNS(null, BATIK_EXT_JUSTIFICATION_ATTRIBUTE);
         try {
@@ -633,7 +648,8 @@ public class SVGFlowTextElementBridge extends SVGTextElementBridge
 
         String ln = e.getLocalName();
         boolean rgnBr = ln.equals(BATIK_EXT_FLOW_REGION_BREAK_TAG);
-        return new MarginInfo(top, right, bottom, left, justification, rgnBr);
+        return new MarginInfo(top, right, bottom, left, flLeft, flRight,
+                              justification, rgnBr);
     }
 
 

@@ -12,46 +12,54 @@ import java.awt.geom.Point2D;
 import java.text.AttributedCharacterIterator;
 import org.apache.batik.gvt.font.GVTGlyphVector;
 
+/**
+ * This class encapsulates the layout information about a single line
+ * in a multi-line flow.
+ */
 public class LineInfo {
+
+    Point2D.Float               loc;
     AttributedCharacterIterator aci;
     GVTGlyphVector              gv;
     int                         startIdx;
     int                         endIdx;
-    Point2D.Float               loc;
     float                       advance;
-    float                       offset;
+    float                       visualAdvance;
     float                       lastCharWidth;
     float                       lineWidth;
     boolean                     partial;
 
-    public LineInfo(AttributedCharacterIterator aci,
+    /**
+     * 
+     */
+    public LineInfo(Point2D.Float loc,
+                    AttributedCharacterIterator aci,
                     GVTGlyphVector gv,
                     int startIdx, int endIdx,
-                    Point2D.Float loc,
                     float advance,
-                    float offset,
+                    float visualAdvance,
                     float lastCharWidth,
                     float lineWidth,
                     boolean partial) {
+        this.loc           = loc;
         this.aci           = aci;
         this.gv            = gv;
         this.startIdx      = startIdx;
         this.endIdx        = endIdx;
-        this.loc           = loc;
         this.advance       = advance;
-        this.offset        = offset;
+        this.visualAdvance = visualAdvance;
         this.lastCharWidth = lastCharWidth;
         this.lineWidth     = lineWidth;
         this.partial       = partial;
     }
-                        
+
+    public Point2D.Float  getLocation()         { return loc; }
     public AttributedCharacterIterator getACI() { return aci; }
     public GVTGlyphVector getGlyphVector()      { return gv; }
     public int            getStartIdx()         { return startIdx; }
     public int            getEndIdx()           { return endIdx; }
-    public Point2D.Float  getLocation()         { return loc; }
     public float          getAdvance()          { return advance; }
-    public float          getOffset()           { return offset; }
+    public float          getVisualAdvance()    { return visualAdvance; }
     public float          getLastCharWidth()    { return lastCharWidth; }
     public float          getLineWidth()        { return lineWidth; }
     public boolean        isPartialLine()       { return partial; }
