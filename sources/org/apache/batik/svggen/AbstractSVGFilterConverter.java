@@ -76,17 +76,4 @@ public abstract class AbstractSVGFilterConverter
             return Double.toString(value);
     }
 
-    /**
-     * Utility method for subclasses.
-     * @return the double value formated as an int if there
-     *         is no fractional part. This avoids the extra
-     *         ".0" that a standard convertion gives.
-     */
-    public static String doubleString(double value, int precision){
-        value = Math.round(value*precision)/(double)precision;
-        if(((int)value) == value)
-            return Integer.toString((int)value);
-        else
-            return Double.toString(value);
-    }
 }
