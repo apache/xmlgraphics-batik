@@ -33,12 +33,12 @@ import org.w3c.dom.Element;
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
-public class SVGPath extends SVGGraphicObjectConverter{
+public class SVGPath extends SVGGraphicObjectConverter {
     /**
-     * @param domFactory used to build Elements
+     * @param generatorContext used to build Elements
      */
-    public SVGPath(Document domFactory) {
-        super(domFactory);
+    public SVGPath(SVGGeneratorContext generatorContext) {
+        super(generatorContext);
     }
 
     /**
@@ -46,7 +46,7 @@ public class SVGPath extends SVGGraphicObjectConverter{
      *        element.
      * @return a path Element.
      */
-    public Element toSVG(Shape path){
+    public Element toSVG(Shape path) {
         // Convert input path to GeneralPath if necessary
         GeneralPath shape = null;
         if (path instanceof GeneralPath)
@@ -63,7 +63,9 @@ public class SVGPath extends SVGGraphicObjectConverter{
             return null;
         }
 
-        Element svgPath = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_PATH_TAG);
+        Element svgPath =
+            generatorContext.domFactory.createElementNS(SVG_NAMESPACE_URI,
+                                                        SVG_PATH_TAG);
         svgPath.setAttributeNS(null, SVG_D_ATTRIBUTE, dAttr);
 
         // Set winding rule if different than SVG's default

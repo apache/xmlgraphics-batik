@@ -27,13 +27,16 @@ import org.apache.batik.ext.awt.g2d.TransformStackElement;
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
-public class SVGGraphicContextConverter implements SVGSyntax{
-    public static final String ERROR_NULL_INPUT = "domFactory, extensionHandler and imageHandler should not be null";
+public class SVGGraphicContextConverter implements SVGSyntax {
+    private static final String ERROR_CONTEXT_NULL =
+        "generatorContext should not be null";
+
     private static final int GRAPHIC_CONTEXT_CONVERTER_COUNT = 6;
 
-    private String leafOnlyAttributes[] = { ATTR_OPACITY,
-                                            SVG_FILTER_ATTRIBUTE,
-                                            SVG_CLIP_PATH_ATTRIBUTE
+    private String leafOnlyAttributes[] = {
+        ATTR_OPACITY,
+        SVG_FILTER_ATTRIBUTE,
+        SVG_CLIP_PATH_ATTRIBUTE
     };
 
     private SVGTransform transformConverter;
@@ -43,7 +46,8 @@ public class SVGGraphicContextConverter implements SVGSyntax{
     private SVGClip clipConverter;
     private SVGRenderingHints hintsConverter;
     private SVGFont fontConverter;
-    private SVGConverter converters[] = new SVGConverter[GRAPHIC_CONTEXT_CONVERTER_COUNT];
+    private SVGConverter converters[] =
+        new SVGConverter[GRAPHIC_CONTEXT_CONVERTER_COUNT];
 
     public SVGTransform getTransformConverter() { return transformConverter; }
     public SVGPaint getPaintConverter(){ return paintConverter; }
@@ -54,27 +58,18 @@ public class SVGGraphicContextConverter implements SVGSyntax{
     public SVGFont getFontConverter(){ return fontConverter; }
 
     /**
-     * @param domFactory used to create top level svg root node
-     *                    and children group nodes.
-     * @param extensionHandler used by SVGConverters to handle custom
-     *                         implementations of interfaces such as Paint,
-     *                         Composite and BufferedImageOp.
-     * @param imageHandler used by SVGConverters that need to create
-     *                     image elements (e.g., SVGTexturePaint)
+     * @param generatorContext the context that will be used to create
+     * elements, handle extension and images.
      */
-    public SVGGraphicContextConverter(Document domFactory,
-                                      ExtensionHandler extensionHandler,
-                                      ImageHandler imageHandler){
-        if(domFactory==null ||
-           extensionHandler==null ||
-           imageHandler == null)
-            throw new IllegalArgumentException(ERROR_NULL_INPUT);
+    public SVGGraphicContextConverter(SVGGeneratorContext generatorContext) {
+        if (generatorContext == null)
+            throw new IllegalArgumentException(ERROR_CONTEXT_NULL);
 
         transformConverter = new SVGTransform();
-        paintConverter = new SVGPaint(domFactory, imageHandler, extensionHandler);
+        paintConverter = new SVGPaint(generatorContext);
         strokeConverter = new SVGBasicStroke();
-        compositeConverter = new SVGComposite(domFactory, extensionHandler);
-        clipConverter = new SVGClip(domFactory);
+        compositeConverter = new SVGComposite(generatorContext);
+        clipConverter = new SVGClip(generatorContext);
         hintsConverter = new SVGRenderingHints();
         fontConverter = new SVGFont();
 
@@ -85,14 +80,6 @@ public class SVGGraphicContextConverter implements SVGSyntax{
         converters[i++] = clipConverter;
         converters[i++] = hintsConverter;
         converters[i++] = fontConverter;
-    }
-
-    /**
-     * @param new extension handler this object should use
-     */
-    void setExtensionHandler(ExtensionHandler extensionHandler){
-        paintConverter.setExtensionHandler(extensionHandler);
-        compositeConverter.setExtensionHandler(extensionHandler);
     }
 
     /**
@@ -129,7 +116,8 @@ public class SVGGraphicContextConverter implements SVGSyntax{
             }
         }
 
-        return new SVGGraphicContext(groupAttrMap, graphicElementsMap, gc.getTransformStack());
+        return new SVGGraphicContext(groupAttrMap, graphicElementsMap,
+                                     gc.getTransformStack());
     }
 
     /**

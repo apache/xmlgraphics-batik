@@ -27,8 +27,7 @@ import java.util.*;
 import java.awt.font.TextAttribute;
 
 /**
- * This class factorizes all unit test of the SVG generator classes
- * classes.
+ * This class factorizes all unit tests of the SVG generator classes.
  *
  * @author <a href="mailto:cjolif@ilog.fr">Christophe Jolif</a>
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
@@ -46,7 +45,12 @@ public class SVGGraphics2DUnitTester implements SVGConstants {
     }
 
     protected Document getDocumentPrototype() {
-        return new SVGOMDocument(null, SVGDOMImplementation.getDOMImplementation());
+        return new SVGOMDocument(null,
+                                 SVGDOMImplementation.getDOMImplementation());
+    }
+
+    protected SVGGeneratorContext getContext(Document domFactory) {
+        return SVGGeneratorContext.createDefault(domFactory);
     }
 
     protected void trace(Element element, OutputStream out)
@@ -172,11 +176,10 @@ public class SVGGraphics2DUnitTester implements SVGConstants {
         Document domFactory = getDocumentPrototype();
 
         GraphicContext gc = new GraphicContext(new AffineTransform());
+        SVGGeneratorContext ctx = SVGGeneratorContext.createDefault(domFactory);
         DOMTreeManager domTreeManager
             = new DOMTreeManager(gc,
-                                 domFactory,
-                                 new DefaultExtensionHandler(),
-                                 new DefaultImageHandler(),
+                                 ctx,
                                  2);
 
         DOMGroupManager domGroupManager
@@ -283,8 +286,9 @@ public class SVGGraphics2DUnitTester implements SVGConstants {
                g.dispose();
            }
 
-           ImageHandler imageHandler = new ImageHandlerBase64Encoder();
            Document domFactory = getDocumentPrototype();
+           ImageHandler imageHandler =
+               new ImageHandlerBase64Encoder(getContext(domFactory));
            Element imageElement = domFactory.createElementNS(SVG_NAMESPACE_URI, SVGSyntax.SVG_IMAGE_TAG);
 
            imageHandler.handleImage((RenderedImage)buf, imageElement);
@@ -310,8 +314,11 @@ public class SVGGraphics2DUnitTester implements SVGConstants {
             imageDir = ".";
         }
 
-        ImageHandler imageHandler = new ImageHandlerJPEGEncoder(imageDir, urlRoot);
         Document domFactory = getDocumentPrototype();
+        ImageHandler imageHandler =
+            new ImageHandlerJPEGEncoder(getContext(domFactory),
+                                        imageDir,
+                                        urlRoot);
         Element imageElement = domFactory.createElementNS(SVG_NAMESPACE_URI, SVGSyntax.SVG_IMAGE_TAG);
 
         BufferedImage testImage = new BufferedImage(60, 40, BufferedImage.TYPE_INT_ARGB);
@@ -338,8 +345,11 @@ public class SVGGraphics2DUnitTester implements SVGConstants {
             imageDir = ".";
         }
 
-        ImageHandler imageHandler = new ImageHandlerPNGEncoder(imageDir, urlRoot);
         Document domFactory = getDocumentPrototype();
+        ImageHandler imageHandler =
+            new ImageHandlerPNGEncoder(getContext(domFactory),
+                                       imageDir,
+                                       urlRoot);
         Element imageElement = domFactory.createElementNS(SVG_NAMESPACE_URI, SVGSyntax.SVG_IMAGE_TAG);
 
         BufferedImage testImage = new BufferedImage(60, 40, BufferedImage.TYPE_INT_ARGB);
@@ -372,7 +382,8 @@ public class SVGGraphics2DUnitTester implements SVGConstants {
                                         ac.getInstance(ac.CLEAR, .5f) };
 
         Document domFactory = getDocumentPrototype();
-        SVGAlphaComposite converter = new SVGAlphaComposite(domFactory);
+        SVGAlphaComposite converter =
+            new SVGAlphaComposite(getContext(domFactory));
 
         Element groupOne = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
         groupOne.setAttributeNS(null, ATTR_ID, "groupOne");
@@ -391,7 +402,8 @@ public class SVGGraphics2DUnitTester implements SVGConstants {
 
         Element groupThree = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
         groupThree.setAttributeNS(null, ATTR_ID, "groupThree");
-        SVGAlphaComposite newConverter = new SVGAlphaComposite(domFactory);
+        SVGAlphaComposite newConverter =
+            new SVGAlphaComposite(getContext(domFactory));
         buildTestGroup(groupThree, new AlphaComposite[]{ ac.SrcIn, ac.DstOut },
         newConverter);
         Element newDefs = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_DEFS_TAG);
@@ -488,8 +500,8 @@ public class SVGGraphics2DUnitTester implements SVGConstants {
         };
 
         Document domFactory = getDocumentPrototype();
-        SVGBufferedImageOp converter = new SVGBufferedImageOp(domFactory,
-                                                              new DefaultExtensionHandler());
+        SVGBufferedImageOp converter =
+            new SVGBufferedImageOp(getContext(domFactory));
 
         Element group = domFactory.createElementNS(SVG_NAMESPACE_URI,
                                                    SVG_G_TAG);
@@ -611,7 +623,7 @@ public class SVGGraphics2DUnitTester implements SVGConstants {
         };
 
         Document domFactory = getDocumentPrototype();
-        SVGClip converter = new SVGClip(domFactory);
+        SVGClip converter = new SVGClip(getContext(domFactory));
 
         Element topLevelGroup = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
         Element defs = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_DEFS_TAG);
@@ -701,7 +713,7 @@ public class SVGGraphics2DUnitTester implements SVGConstants {
                                      new ConvolveOp(k, ConvolveOp.EDGE_ZERO_FILL, null) };
 
 
-        SVGConvolveOp converter = new SVGConvolveOp(domFactory);
+        SVGConvolveOp converter = new SVGConvolveOp(getContext(domFactory));
 
         Element group = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
         Element defs = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_DEFS_TAG);
@@ -742,7 +754,7 @@ public class SVGGraphics2DUnitTester implements SVGConstants {
                                   new Ellipse2D.Float(40, 100, 240, 200) };
 
         Document domFactory = getDocumentPrototype();
-        SVGEllipse converter = new SVGEllipse(domFactory);
+        SVGEllipse converter = new SVGEllipse(getContext(domFactory));
         Element group = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
         for(int i=0; i<ellipses.length; i++)
             group.appendChild(converter.toSVG(ellipses[i]));
@@ -837,9 +849,7 @@ public class SVGGraphics2DUnitTester implements SVGConstants {
 
         GraphicContext gc = new GraphicContext(new AffineTransform());
         SVGGraphicContextConverter converter =
-            new SVGGraphicContextConverter(domFactory,
-                                           new DefaultExtensionHandler(),
-                                           new DefaultImageHandler());
+            new SVGGraphicContextConverter(getContext(domFactory));
         SVGGraphicContext defaultSVGGC = converter.toSVG(gc);
         traceSVGGC(defaultSVGGC, converter);
 
@@ -914,7 +924,7 @@ public class SVGGraphics2DUnitTester implements SVGConstants {
                             new Line2D.Double(10, 20, 30, 40) };
 
         Document domFactory = getDocumentPrototype();
-        SVGLine converter = new SVGLine(domFactory);
+        SVGLine converter = new SVGLine(getContext(domFactory));
         Element group = domFactory.createElementNS(SVG_NAMESPACE_URI,
                                                    SVG_G_TAG);
         for(int i=0; i<lines.length; i++)
@@ -932,7 +942,8 @@ public class SVGGraphics2DUnitTester implements SVGConstants {
                                                    new Color(220, 230, 240),
                                                    true);
 
-        SVGLinearGradient converter = new SVGLinearGradient(domFactory);
+        SVGLinearGradient converter =
+            new SVGLinearGradient(getContext(domFactory));
 
         Element group = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
         Element defs = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_DEFS_TAG);
@@ -992,7 +1003,7 @@ public class SVGGraphics2DUnitTester implements SVGConstants {
         for(int i=0; i<tables.length; i++)
             lookupOps[i] = new LookupOp(tables[i], null);
 
-        SVGLookupOp converter = new SVGLookupOp(domFactory);
+        SVGLookupOp converter = new SVGLookupOp(getContext(domFactory));
 
         Element group = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
         Element defs = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_DEFS_TAG);
@@ -1038,7 +1049,7 @@ public class SVGGraphics2DUnitTester implements SVGConstants {
         };
 
         Document domFactory = getDocumentPrototype();
-        SVGPath converter = new SVGPath(domFactory);
+        SVGPath converter = new SVGPath(getContext(domFactory));
 
         Element group = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
         for(int i=0; i < shapes.length; i++) {
@@ -1051,8 +1062,6 @@ public class SVGGraphics2DUnitTester implements SVGConstants {
     }
 
     public void testSVGPolygon() throws Exception {
-        Document domFactory = getDocumentPrototype();
-
         Polygon polygon = new Polygon();
         polygon.addPoint(350, 75);
         polygon.addPoint(379, 161);
@@ -1065,7 +1074,7 @@ public class SVGGraphics2DUnitTester implements SVGConstants {
         polygon.addPoint(231, 161);
         polygon.addPoint(321, 161);
 
-        SVGPolygon converter = new SVGPolygon(domFactory);
+        SVGPolygon converter = new SVGPolygon(getContext(getDocumentPrototype()));
         Element svgPolygon = converter.toSVG(polygon);
         trace(svgPolygon, System.out);
         System.out.println();
@@ -1073,7 +1082,7 @@ public class SVGGraphics2DUnitTester implements SVGConstants {
 
     public void testSVGRectangle() throws Exception {
         Document domFactory = getDocumentPrototype();
-        SVGRectangle converter = new SVGRectangle(domFactory);
+        SVGRectangle converter = new SVGRectangle(getContext(domFactory));
 
         Element rects[] = {
             converter.toSVG(new Rectangle(10, 20, 30, 40)),
@@ -1185,7 +1194,7 @@ public class SVGGraphics2DUnitTester implements SVGConstants {
                                                  new float[]{10, 20, 30, 40}, null),
         };
 
-        SVGRescaleOp converter = new SVGRescaleOp(domFactory);
+        SVGRescaleOp converter = new SVGRescaleOp(getContext(domFactory));
 
         Element group = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
         Element defs = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_DEFS_TAG);
@@ -1273,7 +1282,7 @@ public class SVGGraphics2DUnitTester implements SVGConstants {
 
         Document domFactory = getDocumentPrototype();
         Element group = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
-        SVGShape converter = new SVGShape(domFactory);
+        SVGShape converter = new SVGShape(getContext(domFactory));
 
         for(int i=0; i<shapes.length; i++)
             group.appendChild(converter.toSVG(shapes[i]));
@@ -1287,7 +1296,8 @@ public class SVGGraphics2DUnitTester implements SVGConstants {
         BufferedImage buf = new BufferedImage(200, 200, BufferedImage.TYPE_INT_RGB);
         TexturePaint paint = new TexturePaint(buf, new Rectangle(0, 0, 200, 200));
 
-        SVGTexturePaint converter = new SVGTexturePaint(domFactory, new DefaultImageHandler());
+        SVGTexturePaint converter =
+            new SVGTexturePaint(getContext(domFactory));
         Element group = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
         Element defs = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_DEFS_TAG);
 

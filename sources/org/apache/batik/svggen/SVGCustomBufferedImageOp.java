@@ -28,26 +28,16 @@ import org.w3c.dom.Element;
  * @version $Id$
  * @see                org.apache.batik.svggen.SVGBufferedImageOp
  */
-public class SVGCustomBufferedImageOp extends AbstractSVGFilterConverter{
-    public static final String ERROR_EXTENSION_HANDLER_NULL = "extensionHandler should not be null";
+public class SVGCustomBufferedImageOp extends AbstractSVGFilterConverter {
+    private static final String ERROR_EXTENSION =
+        "SVGCustomBufferedImageOp:: ExtensionHandler could not convert filter";
 
     /**
-     * BufferedImageOp conversion is handed to the extensionHandler.
-     * This class keeps track of already converted BufferedImageOps
+     * @param generatorContext for use by SVGCustomBufferedImageOp to
+     * build Elements.
      */
-    private ExtensionHandler extensionHandler;
-
-    /**
-     * @param domFactory for use by SVGCustomBufferedImageOp to build Elements
-     */
-    public SVGCustomBufferedImageOp(Document domFactory,
-                                    ExtensionHandler extensionHandler){
-        super(domFactory);
-
-        if(extensionHandler == null)
-            throw new IllegalArgumentException(ERROR_EXTENSION_HANDLER_NULL);
-
-        this.extensionHandler = extensionHandler;
+    public SVGCustomBufferedImageOp(SVGGeneratorContext generatorContext) {
+        super(generatorContext);
     }
 
     /**
@@ -59,23 +49,24 @@ public class SVGCustomBufferedImageOp extends AbstractSVGFilterConverter{
      *         BufferedImageOp equivalent to the input BufferedImageOp.
      */
     public SVGFilterDescriptor toSVG(BufferedImageOp filter,
-                                     Rectangle filterRect){
-        SVGFilterDescriptor filterDesc = (SVGFilterDescriptor)descMap.get(filter);
+                                     Rectangle filterRect) {
+        SVGFilterDescriptor filterDesc =
+            (SVGFilterDescriptor)descMap.get(filter);
 
-        if(filterDesc == null){
+        if (filterDesc == null) {
             // First time this filter is used. Request handler
             // to do the convertion
-            filterDesc
-                = extensionHandler.handleFilter(filter, filterRect, domFactory);
+            filterDesc =
+                generatorContext.extensionHandler.
+                handleFilter(filter, filterRect, generatorContext.domFactory);
 
-            if(filterDesc != null){
+            if (filterDesc != null) {
                 Element def = filterDesc.getDef();
                 if(def != null)
                     defSet.add(def);
                 descMap.put(filter, filterDesc);
-            }
-            else{
-                System.err.println("SVGCustomBufferedImageOp:: ExtensionHandler could not convert filter");
+            } else {
+                System.err.println(ERROR_EXTENSION);
             }
         }
 

@@ -36,7 +36,7 @@ import org.apache.batik.ext.awt.g2d.GraphicContext;
  * @version $Id$
  * @see                org.apache.batik.svggen.SVGAlphaComposite
  */
-public class SVGComposite implements SVGConverter{
+public class SVGComposite implements SVGConverter {
     /**
      * All AlphaComposite convertion is handed to svgAlphaComposite
      */
@@ -50,7 +50,7 @@ public class SVGComposite implements SVGConverter{
     /**
      * Used to create DOM elements
      */
-    private Document domFactory;
+    private SVGGeneratorContext generatorContext;
 
     /**
      * @param domFactory used by the converter to create Element and other
@@ -58,17 +58,10 @@ public class SVGComposite implements SVGConverter{
      * @param extensionHandler can be invoked to handle unknown Composite
      *        implementations.
      */
-    public SVGComposite(Document domFactory, ExtensionHandler extensionHandler){
-        this.svgAlphaComposite = new SVGAlphaComposite(domFactory);
-        this.svgCustomComposite = new SVGCustomComposite(domFactory, extensionHandler);
-        this.domFactory = domFactory;
-    }
-
-    /**
-     * @param new extension handler this object should use
-     */
-    void setExtensionHandler(ExtensionHandler extensionHandler){
-        this.svgCustomComposite = new SVGCustomComposite(domFactory, extensionHandler);
+    public SVGComposite(SVGGeneratorContext generatorContext) {
+        this.svgAlphaComposite =  new SVGAlphaComposite(generatorContext);
+        this.svgCustomComposite = new SVGCustomComposite(generatorContext);
+        this.generatorContext = generatorContext;
     }
 
     /**
@@ -81,11 +74,11 @@ public class SVGComposite implements SVGConverter{
         return compositeDefs;
     }
 
-    public SVGAlphaComposite getAlphaCompositeConverter(){
+    public SVGAlphaComposite getAlphaCompositeConverter() {
         return svgAlphaComposite;
     }
 
-    public SVGCustomComposite getCustomCompositeConverter(){
+    public SVGCustomComposite getCustomCompositeConverter() {
         return svgCustomComposite;
     }
 
@@ -99,7 +92,7 @@ public class SVGComposite implements SVGConverter{
      *         with the related definitions
      * @see org.apache.batik.svggen.SVGDescriptor
      */
-    public SVGDescriptor toSVG(GraphicContext gc){
+    public SVGDescriptor toSVG(GraphicContext gc) {
         return toSVG(gc.getComposite());
     }
 
@@ -108,7 +101,7 @@ public class SVGComposite implements SVGConverter{
      * @return an SVGCompositeDescriptor mapping the SVG composite
      *         equivalent of the input Composite
      */
-    public SVGCompositeDescriptor toSVG(Composite composite){
+    public SVGCompositeDescriptor toSVG(Composite composite) {
         if(composite instanceof AlphaComposite)
             return svgAlphaComposite.toSVG((AlphaComposite)composite);
         else

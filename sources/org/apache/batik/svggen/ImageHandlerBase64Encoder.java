@@ -33,14 +33,22 @@ import org.w3c.dom.*;
  * @see             org.apache.batik.svggen.SVGGraphics2D
  * @see             org.apache.batik.svggen.ImageHandler
  */
-public class ImageHandlerBase64Encoder extends DefaultImageHandler{
-    private static final String DATA_PROTOCOL_PNG_PREFIX = "data:image/png;base64,";
+public class ImageHandlerBase64Encoder extends DefaultImageHandler {
+    private static final String DATA_PROTOCOL_PNG_PREFIX =
+        "data:image/png;base64,";
+
+    /**
+     * Build an <code>ImageHandlerBase64Encoder</code> instance.
+     */
+    public ImageHandlerBase64Encoder(SVGGeneratorContext generatorContext) {
+        super(generatorContext);
+    }
 
     /**
      * The handler should set the xlink:href tag and the width and
      * height attributes.
      */
-    protected void handleHREF(Image image, Element imageElement){
+    protected void handleHREF(Image image, Element imageElement) {
         if(image == null){
             throw new IllegalArgumentException();
         }
@@ -56,8 +64,9 @@ public class ImageHandlerBase64Encoder extends DefaultImageHandler{
                 handleHREF((RenderedImage)image, imageElement);
             }
             else{
-                BufferedImage buf = new BufferedImage(width, height,
-                                                      BufferedImage.TYPE_INT_ARGB);
+                BufferedImage buf =
+                    new BufferedImage(width, height,
+                                      BufferedImage.TYPE_INT_ARGB);
 
                 Graphics2D g = buf.createGraphics();
                 g.drawImage(image, 0, 0, null);
@@ -86,7 +95,8 @@ public class ImageHandlerBase64Encoder extends DefaultImageHandler{
     }
 
     protected void handleEmptyImage(Element imageElement){
-        imageElement.setAttributeNS(XLinkSupport.XLINK_NAMESPACE_URI, ATTR_XLINK_HREF, DATA_PROTOCOL_PNG_PREFIX);
+        imageElement.setAttributeNS(XLinkSupport.XLINK_NAMESPACE_URI,
+                                    ATTR_XLINK_HREF, DATA_PROTOCOL_PNG_PREFIX);
         imageElement.setAttributeNS(null, SVG_WIDTH_ATTRIBUTE, "0");
         imageElement.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE, "0");
     }
@@ -120,7 +130,8 @@ public class ImageHandlerBase64Encoder extends DefaultImageHandler{
         //
         // Finally, write out url
         //
-        imageElement.setAttributeNS(XLinkSupport.XLINK_NAMESPACE_URI, ATTR_XLINK_HREF,
+        imageElement.setAttributeNS(XLinkSupport.XLINK_NAMESPACE_URI,
+                                    ATTR_XLINK_HREF,
                                     DATA_PROTOCOL_PNG_PREFIX +
                                     os.toString());
 
@@ -144,7 +155,8 @@ public class ImageHandlerBase64Encoder extends DefaultImageHandler{
      * This method creates a BufferedImage with an alpha channel, as this is
      * supported by Base64.
      */
-    public BufferedImage buildBufferedImage(Dimension size){
-        return new BufferedImage(size.width, size.height, BufferedImage.TYPE_INT_ARGB);
+    public BufferedImage buildBufferedImage(Dimension size) {
+        return new BufferedImage(size.width, size.height,
+                                 BufferedImage.TYPE_INT_ARGB);
     }
 }

@@ -33,27 +33,12 @@ import org.apache.batik.ext.awt.g2d.GraphicContext;
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
-public class SVGTexturePaint extends AbstractSVGConverter{
-    public static final String ERROR_IMAGE_HANDLER_NULL =
-        "imageHandler should not be null";
-
+public class SVGTexturePaint extends AbstractSVGConverter {
     /**
-     * Used to populate image Element attributes
+     * @param generatorContext used to build Elements
      */
-    private ImageHandler imageHandler;
-
-    /**
-     * @param domFactory used to build Elements
-     * @param imageHandler used to populate image Elements
-     */
-    public SVGTexturePaint(Document domFactory,
-                           ImageHandler imageHandler){
-        super(domFactory);
-
-        if(imageHandler == null)
-            throw new IllegalArgumentException(ERROR_IMAGE_HANDLER_NULL);
-
-        this.imageHandler = imageHandler;
+    public SVGTexturePaint(SVGGeneratorContext generatorContext) {
+        super(generatorContext);
     }
 
     /**
@@ -66,7 +51,7 @@ public class SVGTexturePaint extends AbstractSVGConverter{
      *         with the related definitions
      * @see org.apache.batik.svggen.SVGDescriptor
      */
-    public SVGDescriptor toSVG(GraphicContext gc){
+    public SVGDescriptor toSVG(GraphicContext gc) {
         return toSVG((TexturePaint)gc.getPaint());
     }
 
@@ -76,11 +61,12 @@ public class SVGTexturePaint extends AbstractSVGConverter{
      *         a pattern. The definition of the
      *         pattern in put in the patternDefsMap
      */
-    public SVGPaintDescriptor toSVG(TexturePaint texture){
+    public SVGPaintDescriptor toSVG(TexturePaint texture) {
         // Reuse definition if pattern has already been converted
         SVGPaintDescriptor patternDesc = (SVGPaintDescriptor)descMap.get(texture);
+        Document domFactory = generatorContext.domFactory;
 
-        if(patternDesc == null){
+        if (patternDesc == null) {
             Rectangle2D anchorRect = texture.getAnchorRect();
             Element patternDef = domFactory.createElementNS(SVG_NAMESPACE_URI,
                                                             SVG_PATTERN_TAG);
@@ -103,12 +89,13 @@ public class SVGTexturePaint extends AbstractSVGConverter{
             // Now, add an image element for the image.
             //
             BufferedImage textureImage = (BufferedImage)texture.getImage();
-            Element imageElement = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_IMAGE_TAG);
+            Element imageElement =
+                domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_IMAGE_TAG);
 
             //
             // Rescale the image to fit the anchor rectangle
             //
-            if(textureImage.getWidth() > 0 &&
+            if (textureImage.getWidth() > 0 &&
                textureImage.getHeight() > 0){
 
                 // Rescale only if necessary
@@ -118,11 +105,15 @@ public class SVGTexturePaint extends AbstractSVGConverter{
                     // Rescale only if anchor area is not a point or a line
                     if(anchorRect.getWidth() > 0 &&
                        anchorRect.getHeight() > 0){
-                        double scaleX = anchorRect.getWidth()/textureImage.getWidth();
-                        double scaleY = anchorRect.getHeight()/textureImage.getHeight();
+                        double scaleX =
+                            anchorRect.getWidth()/textureImage.getWidth();
+                        double scaleY =
+                            anchorRect.getHeight()/textureImage.getHeight();
                         BufferedImage newImage
-                            = new BufferedImage((int)(scaleX*textureImage.getWidth()),
-                                                (int)(scaleY*textureImage.getHeight()),
+                            = new BufferedImage((int)(scaleX*
+                                                      textureImage.getWidth()),
+                                                (int)(scaleY*
+                                                      textureImage.getHeight()),
                                                 BufferedImage.TYPE_INT_ARGB);
 
                         Graphics2D g = newImage.createGraphics();
@@ -135,11 +126,13 @@ public class SVGTexturePaint extends AbstractSVGConverter{
                 }
             }
 
-            imageHandler.handleImage((RenderedImage)textureImage, imageElement);
+            generatorContext.imageHandler.
+                handleImage((RenderedImage)textureImage, imageElement);
             patternDef.appendChild(imageElement);
 
             patternDef.setAttributeNS(null, ATTR_ID,
-                                    SVGIDGenerator.generateID(ID_PREFIX_PATTERN));
+                                      generatorContext.idGenerator.
+                                      generateID(ID_PREFIX_PATTERN));
 
             StringBuffer patternAttrBuf = new StringBuffer(URL_PREFIX);
             patternAttrBuf.append(SIGN_POUND);

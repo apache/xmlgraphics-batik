@@ -26,13 +26,14 @@ import org.w3c.dom.Document;
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
-public abstract class AbstractSVGFilterConverter implements SVGFilterConverter{
-    public static final String ERROR_DOM_FACTORY_NULL = "domFactory should not be null";
+public abstract class AbstractSVGFilterConverter implements SVGFilterConverter {
+    private static final String ERROR_CONTEXT_NULL =
+        "generatorContext should not be null";
 
     /**
      * Used by converters to create Elements and other DOM objects
      */
-    protected Document domFactory;
+    protected SVGGeneratorContext generatorContext;
 
     /**
      * Map of descriptions already processed by this converter. The
@@ -47,14 +48,13 @@ public abstract class AbstractSVGFilterConverter implements SVGFilterConverter{
     protected Set defSet = new HashSet();
 
     /**
-     * @param domFactory Can be used by the SVGConverter extentions
+     * @param generatorContext an be used by the SVGConverter extentions
      *        to create Elements and other types of DOM objects.
      */
-    public AbstractSVGFilterConverter(Document domFactory){
-        if(domFactory==null)
-            throw new IllegalArgumentException(ERROR_DOM_FACTORY_NULL);
-
-        this.domFactory = domFactory;
+    public AbstractSVGFilterConverter(SVGGeneratorContext generatorContext) {
+        if (generatorContext == null)
+            throw new IllegalArgumentException(ERROR_CONTEXT_NULL);
+        this.generatorContext = generatorContext;
     }
 
     /**
@@ -69,6 +69,7 @@ public abstract class AbstractSVGFilterConverter implements SVGFilterConverter{
     }
 
     /**
+     * Utility method for subclasses.
      * @return the double value formated as an int if there
      *         is no fractional part. This avoids the extra
      *         ".0" that a standard convertion gives.
@@ -81,6 +82,7 @@ public abstract class AbstractSVGFilterConverter implements SVGFilterConverter{
     }
 
     /**
+     * Utility method for subclasses.
      * @return the double value formated as an int if there
      *         is no fractional part. This avoids the extra
      *         ".0" that a standard convertion gives.

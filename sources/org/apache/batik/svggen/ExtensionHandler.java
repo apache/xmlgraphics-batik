@@ -19,14 +19,14 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Document;
 
 /**
- * The ExtensionHandler interface allows the user to handler
+ * The ExtensionHandler interface allows the user to handle
  * Java 2D API extensions that map to SVG concepts (such as custom
- * Paints, Composites or BufferedImageOp filters.
+ * Paints, Composites or BufferedImageOp filters).
  *
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
-public interface ExtensionHandler{
+public interface ExtensionHandler {
     /**
      * @param paint Custom Paint to be converted to SVG
      * @param domFactory allows the handler to build DOM objects as needed.
@@ -37,10 +37,12 @@ public interface ExtensionHandler{
     /**
      * @param composite Custom Composite to be converted to SVG.
      * @param domFactory allows the handler to build DOM objects as needed.
-     * @return an SVGCompositeDescriptor which contains a valid SVG filter, or null if the composite cannot be handled
+     * @return an SVGCompositeDescriptor which contains a valid SVG filter,
+     * or null if the composite cannot be handled
      *
      */
-    public SVGCompositeDescriptor handleComposite(Composite composite, Document domFactory);
+    public SVGCompositeDescriptor handleComposite(Composite composite,
+                                                  Document domFactory);
 
     /**
      * @param filter Custom filter to be converted to SVG.
@@ -48,7 +50,8 @@ public interface ExtensionHandler{
      *        to which filtering applies. May be null, meaning that the
      *        area is undefined.
      * @param domFactory allows the handler to build DOM objects as needed.
-     * @return an SVGFilterDescriptor which contains a valid SVG filter, or null if the composite cannot be handled
+     * @return an SVGFilterDescriptor which contains a valid SVG filter,
+     * or null if the composite cannot be handled
      */
     public SVGFilterDescriptor handleFilter(BufferedImageOp filter,
                                             Rectangle filterRect,

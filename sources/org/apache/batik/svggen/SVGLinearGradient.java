@@ -30,12 +30,12 @@ import org.apache.batik.ext.awt.g2d.GraphicContext;
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
-public class SVGLinearGradient extends AbstractSVGConverter{
+public class SVGLinearGradient extends AbstractSVGConverter {
     /**
-     * @param domFactory used to build Elements
+     * @param generatorContext used to build Elements
      */
-    public SVGLinearGradient(Document domFactory){
-        super(domFactory);
+    public SVGLinearGradient(SVGGeneratorContext generatorContext) {
+        super(generatorContext);
     }
 
     /**
@@ -48,7 +48,7 @@ public class SVGLinearGradient extends AbstractSVGConverter{
      *         with the related definitions
      * @see org.apache.batik.svggen.SVGDescriptor
      */
-    public SVGDescriptor toSVG(GraphicContext gc){
+    public SVGDescriptor toSVG(GraphicContext gc) {
         Paint paint = gc.getPaint();
         return toSVG((GradientPaint)paint);
     }
@@ -59,24 +59,33 @@ public class SVGLinearGradient extends AbstractSVGConverter{
      to the gradient Paint. The definiton of the
      *         linearGradient is put in the linearGradientDefsMap
      */
-    public SVGPaintDescriptor toSVG(GradientPaint gradient){
+    public SVGPaintDescriptor toSVG(GradientPaint gradient) {
         // Reuse definition if gradient has already been converted
-        SVGPaintDescriptor gradientDesc = (SVGPaintDescriptor)descMap.get(gradient);
+        SVGPaintDescriptor gradientDesc =
+            (SVGPaintDescriptor)descMap.get(gradient);
 
-        if(gradientDesc == null){
-            Element gradientDef = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_LINEAR_GRADIENT_TAG);
+        Document domFactory = generatorContext.domFactory;
+
+        if (gradientDesc == null) {
+            Element gradientDef =
+                domFactory.createElementNS(SVG_NAMESPACE_URI,
+                                           SVG_LINEAR_GRADIENT_TAG);
             gradientDef.setAttributeNS(null, ATTR_GRADIENT_UNITS,
-                                     SVG_USER_SPACE_ON_USE_VALUE);
+                                       SVG_USER_SPACE_ON_USE_VALUE);
 
             //
             // Process gradient vector
             //
             Point2D p1 = gradient.getPoint1();
             Point2D p2 = gradient.getPoint2();
-            gradientDef.setAttributeNS(null, ATTR_X1, "" + doubleString(p1.getX()));
-            gradientDef.setAttributeNS(null, ATTR_Y1, "" + doubleString(p1.getY()));
-            gradientDef.setAttributeNS(null, ATTR_X2, "" + doubleString(p2.getX()));
-            gradientDef.setAttributeNS(null, ATTR_Y2, "" + doubleString(p2.getY()));
+            gradientDef.setAttributeNS(null, ATTR_X1,
+                                       "" + doubleString(p1.getX()));
+            gradientDef.setAttributeNS(null, ATTR_Y1,
+                                       "" + doubleString(p1.getY()));
+            gradientDef.setAttributeNS(null, ATTR_X2,
+                                       "" + doubleString(p2.getX()));
+            gradientDef.setAttributeNS(null, ATTR_Y2,
+                                       "" + doubleString(p2.getY()));
 
             //
             // Spread method
@@ -89,7 +98,8 @@ public class SVGLinearGradient extends AbstractSVGConverter{
             //
             // First gradient stop
             //
-            Element gradientStop = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_STOP_TAG);
+            Element gradientStop =
+                domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_STOP_TAG);
             gradientStop.setAttributeNS(null, SVG_OFFSET_ATTRIBUTE,
                                       VALUE_ZERO_PERCENT);
 
@@ -104,7 +114,8 @@ public class SVGLinearGradient extends AbstractSVGConverter{
             //
             // Second gradient stop
             //
-            gradientStop = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_STOP_TAG);
+            gradientStop =
+                domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_STOP_TAG);
             gradientStop.setAttributeNS(null, SVG_OFFSET_ATTRIBUTE,
                                       VALUE_HUNDRED_PERCENT);
 
@@ -119,7 +130,10 @@ public class SVGLinearGradient extends AbstractSVGConverter{
             //
             // Gradient ID
             //
-            gradientDef.setAttributeNS(null, ATTR_ID, SVGIDGenerator.generateID(ID_PREFIX_LINEAR_GRADIENT));
+            gradientDef.
+                setAttributeNS(null, ATTR_ID,
+                               generatorContext.idGenerator.
+                               generateID(ID_PREFIX_LINEAR_GRADIENT));
 
             //
             // Build Paint descriptor

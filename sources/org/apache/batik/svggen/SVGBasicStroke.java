@@ -69,7 +69,8 @@ public class SVGBasicStroke extends AbstractSVGConverter{
         // Dash offset
         String dashOffset = doubleString(stroke.getDashPhase());
 
-        return new SVGStrokeDescriptor(strokeWidth, capStyle, joinStyle, miterLimit,
+        return new SVGStrokeDescriptor(strokeWidth, capStyle,
+                                       joinStyle, miterLimit,
                                        dashArray, dashOffset);
     }
 

@@ -27,13 +27,14 @@ import org.w3c.dom.Document;
  * @version $Id$
  */
 
-public abstract class AbstractSVGConverter implements SVGConverter{
-    public static final String ERROR_DOM_FACTORY_NULL = "domFactory should not be null";
+public abstract class AbstractSVGConverter implements SVGConverter {
+    private static final String ERROR_CONTEXT_NULL =
+        "generatorContext should not be null";
 
     /**
      * Used by converters to create Elements and other DOM objects
      */
-    protected Document domFactory;
+    protected SVGGeneratorContext generatorContext;
 
     /**
      * Map of descriptions already processed by this converter. The
@@ -48,21 +49,20 @@ public abstract class AbstractSVGConverter implements SVGConverter{
     protected Set defSet = new HashSet();
 
     /**
-     * @param domFactory Can be used by the SVGConverter extentions
+     * @param genratorContext can be used by the SVGConverter extentions
      *        to create Elements and other types of DOM objects.
      */
-    public AbstractSVGConverter(Document domFactory){
-        if(domFactory==null)
-            throw new IllegalArgumentException(ERROR_DOM_FACTORY_NULL);
+    public AbstractSVGConverter(SVGGeneratorContext generatorContext) {
+        if (generatorContext == null)
+            throw new IllegalArgumentException(ERROR_CONTEXT_NULL);
 
-        this.domFactory = domFactory;
+        this.generatorContext = generatorContext;
     }
 
     /**
      * Default constructor
      */
-    public AbstractSVGConverter(){
-    }
+    public AbstractSVGConverter() {}
 
     /**
      * @return set of definitions referenced by the attribute
@@ -71,16 +71,17 @@ public abstract class AbstractSVGConverter implements SVGConverter{
      *         If no definition is needed, an empty set should be
      *         returned.
      */
-    public Set getDefinitionSet(){
+    public Set getDefinitionSet() {
         return defSet;
     }
 
     /**
+     * Utility method for subclasses.
      * @return the double value formated as an int if there
      *         is no fractional part. This avoids the extra
      *         ".0" that a standard convertion gives.
      */
-    public static String doubleString(double value){
+    public static String doubleString(double value) {
         if(((int)value) == value)
             return Integer.toString((int)value);
         else

@@ -32,26 +32,26 @@ import org.w3c.dom.Element;
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
-public class SVGShape extends SVGGraphicObjectConverter{
+public class SVGShape extends SVGGraphicObjectConverter {
     /*
      * Subconverts, for each type of Shape class
      */
-    SVGPolygon svgPolygon;
-    SVGRectangle svgRectangle;
-    SVGEllipse svgEllipse;
-    SVGLine svgLine;
-    SVGPath svgPath;
+    private SVGPolygon svgPolygon;
+    private SVGRectangle svgRectangle;
+    private SVGEllipse svgEllipse;
+    private SVGLine svgLine;
+    private SVGPath svgPath;
 
     /**
-     * @param domFactory used to build Elements
+     * @param generatorContext used to build Elements
      */
-    public SVGShape(Document domFactory){
-        super(domFactory);
-        svgPolygon = new SVGPolygon(domFactory);
-        svgRectangle = new SVGRectangle(domFactory);
-        svgEllipse = new SVGEllipse(domFactory);
-        svgLine = new SVGLine(domFactory);
-        svgPath = new SVGPath(domFactory);
+    public SVGShape(SVGGeneratorContext generatorContext) {
+        super(generatorContext);
+        svgPolygon = new SVGPolygon(generatorContext);
+        svgRectangle = new SVGRectangle(generatorContext);
+        svgEllipse = new SVGEllipse(generatorContext);
+        svgLine = new SVGLine(generatorContext);
+        svgPath = new SVGPath(generatorContext);
     }
 
     /**

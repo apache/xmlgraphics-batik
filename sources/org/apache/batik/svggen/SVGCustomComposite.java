@@ -29,26 +29,12 @@ import org.apache.batik.ext.awt.g2d.GraphicContext;
  * @version $Id$
  * @see                org.apache.batik.svggen.SVGComposite
  */
-public class SVGCustomComposite extends AbstractSVGConverter{
-    public static final String ERROR_EXTENSION_HANDLER_NULL = "extensionHandler should not be null";
-
+public class SVGCustomComposite extends AbstractSVGConverter {
     /**
-     * Composite conversion is handed to the extensionHandler.
-     * This class keeps track of already converted Composites
+     * @param generatorContext for use by SVGCustomComposite to build Elements
      */
-    private ExtensionHandler extensionHandler;
-
-    /**
-     * @param domFactory for use by SVGCustomComposite to build Elements
-     */
-    public SVGCustomComposite(Document domFactory,
-                              ExtensionHandler extensionHandler){
-        super(domFactory);
-
-        if(extensionHandler == null)
-            throw new IllegalArgumentException(ERROR_EXTENSION_HANDLER_NULL);
-
-        this.extensionHandler = extensionHandler;
+    public SVGCustomComposite(SVGGeneratorContext generatorContext) {
+        super(generatorContext);
     }
 
     /**
@@ -61,7 +47,7 @@ public class SVGCustomComposite extends AbstractSVGConverter{
      *         with the related definitions
      * @see org.apache.batik.svggen.SVGDescriptor
      */
-    public SVGDescriptor toSVG(GraphicContext gc){
+    public SVGDescriptor toSVG(GraphicContext gc) {
         return toSVG(gc.getComposite());
     }
 
@@ -70,16 +56,19 @@ public class SVGCustomComposite extends AbstractSVGConverter{
      * @return an SVGCompositeDescriptor mapping the SVG
      *         composite equivalent to the input Composite.
      */
-    public SVGCompositeDescriptor toSVG(Composite composite){
-        SVGCompositeDescriptor compositeDesc = (SVGCompositeDescriptor)descMap.get(composite);
+    public SVGCompositeDescriptor toSVG(Composite composite) {
+        SVGCompositeDescriptor compositeDesc =
+            (SVGCompositeDescriptor)descMap.get(composite);
 
-        if(compositeDesc == null){
+        if (compositeDesc == null) {
             // First time this composite is used. Request handler
             // to do the convertion
-            SVGCompositeDescriptor desc
-                = extensionHandler.handleComposite(composite, domFactory);
+            SVGCompositeDescriptor desc =
+                generatorContext.
+                extensionHandler.handleComposite(composite,
+                                                 generatorContext.domFactory);
 
-            if(desc != null){
+            if (desc != null) {
                 Element def = desc.getDef();
                 if(def != null)
                     defSet.add(def);

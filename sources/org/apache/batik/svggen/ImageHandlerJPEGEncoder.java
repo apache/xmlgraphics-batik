@@ -31,27 +31,31 @@ import org.w3c.dom.*;
  * @see             org.apache.batik.svggen.ImageHandlerJPEGEncoder
  * @see             org.apache.batik.svggen.ImageHandlerPNGEncoder
  */
-public class ImageHandlerJPEGEncoder extends AbstractImageHandlerEncoder{
+public class ImageHandlerJPEGEncoder extends AbstractImageHandlerEncoder {
     /**
+     * @param generatorContext the context.
      * @param imageDir directory where this handler should generate images.
      *        If null, an IllegalArgumentException is thrown.
      * @param urlRoot root for the urls that point to images created by this
      *        image handler. If null, then the url corresponding to imageDir
      *        is used.
      */
-    public ImageHandlerJPEGEncoder(String imageDir, String urlRoot){
-        super(imageDir, urlRoot);
+    public ImageHandlerJPEGEncoder(SVGGeneratorContext generatorContext,
+                                   String imageDir, String urlRoot) {
+        super(generatorContext, imageDir, urlRoot);
     }
 
     /**
-     * @return the suffix used by this encoder. E.g., ".jpg" for ImageHandlerJPEGEncoder
+     * @return the suffix used by this encoder. E.g., ".jpg" for
+     *  ImageHandlerJPEGEncoder
      */
     public final String getSuffix(){
         return ".jpg";
     }
 
     /**
-     * @return the prefix used by this encoder. E.g., "jpegImage" for ImageHandlerJPEGEncoder
+     * @return the prefix used by this encoder. E.g., "jpegImage" for
+     * ImageHandlerJPEGEncoder
      */
     public final String getPrefix(){
         return "jpegImage";
@@ -61,7 +65,7 @@ public class ImageHandlerJPEGEncoder extends AbstractImageHandlerEncoder{
      * Derived classes should implement this method and encode the input
      * BufferedImage as needed
      */
-    public void encodeImage(BufferedImage buf, File imageFile){
+    public void encodeImage(BufferedImage buf, File imageFile) {
         try{
             OutputStream os = new FileOutputStream(imageFile);
             JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(os);
@@ -79,7 +83,8 @@ public class ImageHandlerJPEGEncoder extends AbstractImageHandlerEncoder{
      * This method creates a BufferedImage of the right size and type
      * for the derived class.
      */
-    public BufferedImage buildBufferedImage(Dimension size){
-        return new BufferedImage(size.width, size.height, BufferedImage.TYPE_INT_RGB);
+    public BufferedImage buildBufferedImage(Dimension size) {
+        return new BufferedImage(size.width, size.height,
+                                 BufferedImage.TYPE_INT_RGB);
     }
 }

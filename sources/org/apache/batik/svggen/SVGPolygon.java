@@ -21,20 +21,20 @@ import org.w3c.dom.Element;
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
-public class SVGPolygon extends SVGGraphicObjectConverter{
+public class SVGPolygon extends SVGGraphicObjectConverter {
     /**
-     * @param domFactory used to build Elements
+     * @param generatorContext used to build Elements
      */
-    public SVGPolygon(Document domFactory){
-        super(domFactory);
+    public SVGPolygon(SVGGeneratorContext generatorContext) {
+        super(generatorContext);
     }
 
     /**
      * @param polygon polygon object to convert to SVG
      */
-    public Element toSVG(Polygon polygon){
-
-        Element svgPolygon = domFactory.createElementNS(SVG_NAMESPACE_URI,
+    public Element toSVG(Polygon polygon) {
+        Element svgPolygon =
+            generatorContext.domFactory.createElementNS(SVG_NAMESPACE_URI,
                                                         SVG_POLYGON_TAG);
         StringBuffer points = new StringBuffer(" ");
         PathIterator pi = polygon.getPathIterator(null);
@@ -49,10 +49,8 @@ public class SVGPolygon extends SVGGraphicObjectConverter{
             case PathIterator.SEG_LINETO:
                 appendPoint(points, seg[0], seg[1]);
                 break;
-
             case PathIterator.SEG_CLOSE:
                 break;
-
             case PathIterator.SEG_QUADTO:
             case PathIterator.SEG_CUBICTO:
             default:
@@ -61,7 +59,9 @@ public class SVGPolygon extends SVGGraphicObjectConverter{
             pi.next();
         } // while !isDone
 
-        svgPolygon.setAttributeNS(null, ATTR_POINTS, points.substring(0, points.length() - 1));
+        svgPolygon.setAttributeNS(null,
+                                  ATTR_POINTS,
+                                  points.substring(0, points.length() - 1));
 
         return svgPolygon;
     }

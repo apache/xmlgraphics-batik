@@ -23,21 +23,34 @@ import org.apache.batik.ext.awt.g2d.GraphicContext;
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
-public class SVGFont extends AbstractSVGConverter{
-    public static final float EXTRA_LIGHT = TextAttribute.WEIGHT_EXTRA_LIGHT.floatValue();
-    public static final float LIGHT = TextAttribute.WEIGHT_LIGHT.floatValue();
-    public static final float DEMILIGHT = TextAttribute.WEIGHT_DEMILIGHT.floatValue();
-    public static final float REGULAR = TextAttribute.WEIGHT_REGULAR.floatValue();
-    public static final float SEMIBOLD = TextAttribute.WEIGHT_SEMIBOLD.floatValue();
-    public static final float MEDIUM = TextAttribute.WEIGHT_MEDIUM.floatValue();
-    public static final float DEMIBOLD = TextAttribute.WEIGHT_DEMIBOLD.floatValue();
-    public static final float BOLD = TextAttribute.WEIGHT_BOLD.floatValue();
-    public static final float HEAVY = TextAttribute.WEIGHT_HEAVY.floatValue();
-    public static final float EXTRABOLD = TextAttribute.WEIGHT_EXTRABOLD.floatValue();
-    public static final float ULTRABOLD = TextAttribute.WEIGHT_ULTRABOLD.floatValue();
+public class SVGFont extends AbstractSVGConverter {
+    public static final float EXTRA_LIGHT =
+        TextAttribute.WEIGHT_EXTRA_LIGHT.floatValue();
+    public static final float LIGHT =
+        TextAttribute.WEIGHT_LIGHT.floatValue();
+    public static final float DEMILIGHT =
+        TextAttribute.WEIGHT_DEMILIGHT.floatValue();
+    public static final float REGULAR =
+        TextAttribute.WEIGHT_REGULAR.floatValue();
+    public static final float SEMIBOLD =
+        TextAttribute.WEIGHT_SEMIBOLD.floatValue();
+    public static final float MEDIUM =
+        TextAttribute.WEIGHT_MEDIUM.floatValue();
+    public static final float DEMIBOLD =
+        TextAttribute.WEIGHT_DEMIBOLD.floatValue();
+    public static final float BOLD =
+        TextAttribute.WEIGHT_BOLD.floatValue();
+    public static final float HEAVY =
+        TextAttribute.WEIGHT_HEAVY.floatValue();
+    public static final float EXTRABOLD =
+        TextAttribute.WEIGHT_EXTRABOLD.floatValue();
+    public static final float ULTRABOLD =
+        TextAttribute.WEIGHT_ULTRABOLD.floatValue();
 
-    public static final float POSTURE_REGULAR = TextAttribute.POSTURE_REGULAR.floatValue();
-    public static final float POSTURE_OBLIQUE = TextAttribute.POSTURE_OBLIQUE.floatValue();
+    public static final float POSTURE_REGULAR =
+        TextAttribute.POSTURE_REGULAR.floatValue();
+    public static final float POSTURE_OBLIQUE =
+        TextAttribute.POSTURE_OBLIQUE.floatValue();
 
     /**
      * Contains threshold value for the various Font styles. If a given
@@ -45,14 +58,16 @@ public class SVGFont extends AbstractSVGConverter{
      * of that interval.
      * @see #styleToSVG
      */
-    static final float fontStyles[] = { POSTURE_REGULAR + (POSTURE_OBLIQUE - POSTURE_REGULAR)/2 };
+    static final float fontStyles[] = {
+        POSTURE_REGULAR + (POSTURE_OBLIQUE - POSTURE_REGULAR)/2
+    };
 
     /**
      * SVG Styles corresponding to the fontStyles
      */
     static final String svgStyles[] = {
         /*POSTURE_REGULAR*/   VALUE_FONT_STYLE_NORMAL,
-                              /*POSTURE_OBLIQUE*/   VALUE_FONT_STYLE_ITALIC
+        /*POSTURE_OBLIQUE*/   VALUE_FONT_STYLE_ITALIC
     };
 
     /**
@@ -78,16 +93,16 @@ public class SVGFont extends AbstractSVGConverter{
      */
     static final String svgWeights[] = {
         /*EXTRA_LIGHT*/ VALUE_FONT_WEIGHT_100,
-                        /*LIGHT*/       VALUE_FONT_WEIGHT_200,
-                        /*DEMILIGHT*/   VALUE_FONT_WEIGHT_300,
-                        /*REGULAR*/     VALUE_FONT_WEIGHT_NORMAL,
-                        /*SEMIBOLD*/    VALUE_FONT_WEIGHT_500,
-                        /*MEDIUM*/      VALUE_FONT_WEIGHT_500,
-                        /*DEMIBOLD*/    VALUE_FONT_WEIGHT_600,
-                        /*BOLD*/        VALUE_FONT_WEIGHT_BOLD,
-                        /*HEAVY*/       VALUE_FONT_WEIGHT_800,
-                        /*EXTRABOLD*/   VALUE_FONT_WEIGHT_800,
-                        /*ULTRABOLD*/   VALUE_FONT_WEIGHT_900
+        /*LIGHT*/       VALUE_FONT_WEIGHT_200,
+        /*DEMILIGHT*/   VALUE_FONT_WEIGHT_300,
+        /*REGULAR*/     VALUE_FONT_WEIGHT_NORMAL,
+        /*SEMIBOLD*/    VALUE_FONT_WEIGHT_500,
+        /*MEDIUM*/      VALUE_FONT_WEIGHT_500,
+        /*DEMIBOLD*/    VALUE_FONT_WEIGHT_600,
+        /*BOLD*/        VALUE_FONT_WEIGHT_BOLD,
+        /*HEAVY*/       VALUE_FONT_WEIGHT_800,
+        /*EXTRABOLD*/   VALUE_FONT_WEIGHT_800,
+        /*ULTRABOLD*/   VALUE_FONT_WEIGHT_900
     };
 
     /**
@@ -95,7 +110,7 @@ public class SVGFont extends AbstractSVGConverter{
      */
     static Hashtable logicalFontMap = new Hashtable();
 
-    static{
+    static {
         logicalFontMap.put("dialog", "sans-serif");
         logicalFontMap.put("dialoginput", "monospace");
         logicalFontMap.put("monospaced", "monospace");
@@ -114,7 +129,7 @@ public class SVGFont extends AbstractSVGConverter{
      *         with the related definitions
      * @see org.apache.batik.svggen.SVGDescriptor
      */
-    public SVGDescriptor toSVG(GraphicContext gc){
+    public SVGDescriptor toSVG(GraphicContext gc) {
         return toSVG(gc.getFont());
     }
 
@@ -123,7 +138,7 @@ public class SVGFont extends AbstractSVGConverter{
      *        of SVG attributes
      * @return description of attribute values that describe the font
      */
-    public static SVGFontDescriptor toSVG(Font font){
+    public static SVGFontDescriptor toSVG(Font font) {
         String fontSize = "" + font.getSize();
         String fontWeight = weightToSVG(font);
         String fontStyle = styleToSVG(font);
@@ -134,7 +149,8 @@ public class SVGFont extends AbstractSVGConverter{
 
         fontFamilyStr = fontFamily.toString();
 
-        String logicalFontFamily = (String)logicalFontMap.get(font.getName().toLowerCase());
+        String logicalFontFamily =
+            (String)logicalFontMap.get(font.getName().toLowerCase());
         if(logicalFontFamily != null)
             fontFamilyStr = logicalFontFamily;
 
@@ -146,7 +162,7 @@ public class SVGFont extends AbstractSVGConverter{
      * @param font whose style should be converted to an SVG string
      *        value.
      */
-    private static String styleToSVG(Font font){
+    private static String styleToSVG(Font font) {
         Map attrMap = font.getAttributes();
         Float styleValue = (Float)attrMap.get(TextAttribute.POSTURE);
 
@@ -173,7 +189,7 @@ public class SVGFont extends AbstractSVGConverter{
      *        value. Note that there is loss of precision for
      *        semibold and extrabold.
      */
-    private static String weightToSVG(Font font){
+    private static String weightToSVG(Font font) {
         Map attrMap = font.getAttributes();
         Float weightValue = (Float)attrMap.get(TextAttribute.WEIGHT);
         if(weightValue==null){

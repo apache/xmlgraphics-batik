@@ -37,7 +37,7 @@ import org.apache.batik.ext.awt.g2d.GraphicContext;
  * @see              org.apache.batik.svggen.SVGLinearGradient
  * @see              org.apache.batik.svggen.SVGTexturePaint
  */
-public class SVGPaint implements SVGConverter{
+public class SVGPaint implements SVGConverter {
     /**
      * All GradientPaint convertions are handed to svgLinearGradient
      */
@@ -61,29 +61,17 @@ public class SVGPaint implements SVGConverter{
     /**
      * Used to generate DOM elements
      */
-    private Document domFactory;
+    private SVGGeneratorContext generatorContext;
 
     /**
-     * @param domFactory used to build Elements
-     * @param imageHandler used to populate image Elements (for TexturePaints)
-     * @param extensionHandler used to handle custom Paints
+     * @param generatorContext the context.
      */
-    public SVGPaint(Document domFactory,
-                    ImageHandler imageHandler,
-                    ExtensionHandler extensionHandler){
-
-        this.svgLinearGradient = new SVGLinearGradient(domFactory);
-        this.svgTexturePaint = new SVGTexturePaint(domFactory, imageHandler);
-        this.svgCustomPaint = new SVGCustomPaint(domFactory, extensionHandler);
+    public SVGPaint(SVGGeneratorContext generatorContext) {
+        this.svgLinearGradient = new SVGLinearGradient(generatorContext);
+        this.svgTexturePaint = new SVGTexturePaint(generatorContext);
+        this.svgCustomPaint = new SVGCustomPaint(generatorContext);
         this.svgColor = new SVGColor();
-        this.domFactory = domFactory;
-    }
-
-    /**
-     * @param new extension handler this object should use
-     */
-    void setExtensionHandler(ExtensionHandler extensionHandler){
-        this.svgCustomPaint = new SVGCustomPaint(domFactory, extensionHandler);
+        this.generatorContext = generatorContext;
     }
 
     /**

@@ -29,26 +29,12 @@ import org.apache.batik.ext.awt.g2d.GraphicContext;
  * @version $Id$
  * @see                org.apache.batik.svggen.SVGPaint
  */
-public class SVGCustomPaint extends AbstractSVGConverter{
-    public static final String ERROR_EXTENSION_HANDLER_NULL = "extensionHandler should not be null";
-
+public class SVGCustomPaint extends AbstractSVGConverter {
     /**
-     * Paint conversion is handed to the extensionHandler.
-     * This class keeps track of already converted Paints
+     * @param generatorContext the context.
      */
-    private ExtensionHandler extensionHandler;
-
-    /**
-     * @param domFactory for use by SVGCustomPaint to build Elements
-     */
-    public SVGCustomPaint(Document domFactory,
-                          ExtensionHandler extensionHandler){
-        super(domFactory);
-
-        if(extensionHandler == null)
-            throw new IllegalArgumentException(ERROR_EXTENSION_HANDLER_NULL);
-
-        this.extensionHandler = extensionHandler;
+    public SVGCustomPaint(SVGGeneratorContext generatorContext) {
+        super(generatorContext);
     }
 
     /**
@@ -61,7 +47,7 @@ public class SVGCustomPaint extends AbstractSVGConverter{
      *         with the related definitions
      * @see org.apache.batik.svggen.SVGDescriptor
      */
-    public SVGDescriptor toSVG(GraphicContext gc){
+    public SVGDescriptor toSVG(GraphicContext gc) {
         return toSVG(gc.getPaint());
     }
 
@@ -71,15 +57,18 @@ public class SVGCustomPaint extends AbstractSVGConverter{
      *         to the Paint. The definiton of the paint is put in the
      *         linearGradientDefsMap
      */
-    public SVGPaintDescriptor toSVG(Paint paint){
+    public SVGPaintDescriptor toSVG(Paint paint) {
         SVGPaintDescriptor paintDesc = (SVGPaintDescriptor)descMap.get(paint);
 
-        if(paintDesc == null){
+        if (paintDesc == null) {
             // First time this paint is used. Request handler
             // to do the convertion
-            paintDesc = extensionHandler.handlePaint(paint, domFactory);
+            paintDesc =
+                generatorContext.extensionHandler.
+                handlePaint(paint,
+                            generatorContext.domFactory);
 
-            if(paintDesc != null){
+            if (paintDesc != null) {
                 Element def = paintDesc.getDef();
                 if(def != null) defSet.add(def);
                 descMap.put(paint, paintDesc);
