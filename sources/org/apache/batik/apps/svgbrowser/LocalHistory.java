@@ -164,7 +164,7 @@ public class LocalHistory {
         state = STABLE_STATE;
         if (++currentURI < visitedURIs.size()) {
             if (!visitedURIs.get(currentURI).equals(uri)) {
-                for (int i = currentURI + 1; i + index <= menu.getItemCount(); i++) {
+                for (int i = currentURI + 1; i + index < menu.getItemCount(); i++) {
                     JMenuItem mi = menu.getItem(index + i - 1);
                     group.remove(mi);
                     menu.remove(index + i - 1);
