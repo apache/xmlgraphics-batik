@@ -8,11 +8,16 @@
 
 package org.apache.batik.test.svg;
 
+import java.awt.Graphics2D;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.PrintWriter;
 import java.net.URL;
+
+import java.util.List;
+import java.util.Iterator;
 
 import org.apache.batik.test.DefaultTestReport;
 import org.apache.batik.test.TestReport;
@@ -20,6 +25,7 @@ import org.apache.batik.test.TestReport;
 import org.apache.batik.swing.JSVGCanvasHandler;
 
 import org.apache.batik.swing.JSVGCanvas;
+import org.apache.batik.swing.gvt.Overlay;
 
 import java.awt.image.BufferedImage;
 
@@ -106,7 +112,19 @@ public class JSVGRenderingAccuracyTest extends SamplesRenderingTest
                 return;
 
             try {
+                // Get the base image
                 BufferedImage theImage = copyImage(canvas.getOffScreen());
+
+                // Capture the overlays
+                List overlays = canvas.getOverlays();
+
+                // Paint the overlays
+                Graphics2D g = theImage.createGraphics();
+                Iterator it = overlays.iterator();
+                while (it.hasNext()) {
+                    ((Overlay)it.next()).paint(g);
+                }
+
                 saveImage(theImage, fos);
             } catch (IOException ioe) {
                 StringWriter trace = new StringWriter();
