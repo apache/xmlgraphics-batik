@@ -40,7 +40,8 @@ public class NullURITest extends AbstractTest {
         final String monitor = "monitor";
 
         f.getContentPane().add(canvas);
-        f.setSize(new Dimension(450, 500));
+        canvas.setPreferredSize(new Dimension(450, 500));
+        f.pack();
         f.setVisible(true);
 
         // This class is not fool-proof: it assumes that the
