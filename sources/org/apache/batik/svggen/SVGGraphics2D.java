@@ -386,21 +386,24 @@ public class SVGGraphics2D extends AbstractGraphics2D
     public void stream(Element svgRoot, Writer writer, boolean useCss)
         throws SVGGraphics2DIOException {
         try {
+            //
+            // Enforce that the default ans xlink namespace
+            // declarations appear on the root element
+            //
+            svgRoot.setAttributeNS(XMLNS_NAMESPACE_URI,
+                                   XMLNS_PREFIX,
+                                   SVG_NAMESPACE_URI);
+
+            svgRoot.setAttributeNS(XMLNS_NAMESPACE_URI,
+                                   XMLNS_PREFIX + ":" + XLINK_PREFIX,
+                                   XLINK_NAMESPACE_URI);
+
+
             PrintWriter out = new PrintWriter(writer);
             DocumentFragment svgDocument =
                 svgRoot.getOwnerDocument().createDocumentFragment();
             svgDocument.appendChild(svgRoot);
 
-            /*if(useCss){
-              Node svgCssDocument = svgDocument;
-              SVGCSSStyler.style(svgCssDocument);
-              XmlWriter.writeXml(svgCssDocument, writer);
-              writer.flush();
-              }
-              else{
-              XmlWriter.writeXml(svgDocument, writer);
-              writer.flush();
-              }*/
             if (useCss)
                 SVGCSSStyler.style(svgDocument);
 
