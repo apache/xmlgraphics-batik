@@ -21,8 +21,6 @@ import java.awt.image.ColorModel;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.PatternPaint;
 
-import org.apache.batik.util.awt.geom.AffineTransformSource;
-
 /**
  * Concrete implementation of the <tt>PatternPaint</tt> interface
  *

@@ -29,16 +29,11 @@ import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
 
 import org.apache.batik.parser.AWTTransformProducer;
-import org.apache.batik.refimpl.gvt.AffineTransformSourceBoundingBox;
 import org.apache.batik.refimpl.gvt.filter.ConcreteClipRable;
 
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.SVGUtilities;
 import org.apache.batik.util.UnitProcessor;
-import org.apache.batik.util.awt.geom.AffineTransformSource;
-import org.apache.batik.util.awt.geom.CompositeAffineTransformSource;
-import org.apache.batik.util.awt.geom.DefaultAffineTransformSource;
-import org.apache.batik.util.awt.geom.TransformedShape;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.css.CSSPrimitiveValue;

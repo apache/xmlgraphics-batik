@@ -11,7 +11,6 @@ package org.apache.batik.refimpl.gvt.filter;
 import org.apache.batik.gvt.GraphicsNode;
 
 import org.apache.batik.gvt.filter.Filter;
-import org.apache.batik.gvt.filter.FilterRegion;
 import org.apache.batik.gvt.filter.CachableRed;
 import org.apache.batik.gvt.filter.Clip;
 import org.apache.batik.gvt.filter.PadMode;

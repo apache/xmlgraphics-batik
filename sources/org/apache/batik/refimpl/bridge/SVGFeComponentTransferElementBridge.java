@@ -23,7 +23,6 @@ import org.apache.batik.gvt.filter.PadRable;
 import org.apache.batik.refimpl.gvt.filter.ConcreteComponentTransferFunction;
 import org.apache.batik.refimpl.gvt.filter.ConcreteComponentTransferRable;
 import org.apache.batik.refimpl.gvt.filter.ConcretePadRable;
-import org.apache.batik.refimpl.gvt.filter.FilterSourceRegion;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.SVGUtilities;
 import org.apache.batik.util.UnitProcessor;
