@@ -32,6 +32,7 @@ import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.renderable.TileRable;
 import org.apache.batik.ext.awt.image.renderable.TileRable8Bit;
 import org.apache.batik.ext.awt.image.rendered.TileCacheRed;
+import org.apache.batik.ext.awt.image.rendered.CachableRed;
 
 /**
  * <tt>PaintContext</tt> for the <tt>ConcretePatterPaint</tt>
@@ -98,7 +99,6 @@ public class PatternPaintContext implements PaintContext {
                                                 EVERYTHING,
                                                 patternRegion,
                                                 overflow);
-
         ColorSpace destCS = destCM.getColorSpace();
         if (destCS == ColorSpace.getInstance(ColorSpace.CS_sRGB))
             tileRable.setColorSpaceLinear(false);
@@ -107,17 +107,23 @@ public class PatternPaintContext implements PaintContext {
 
         RenderContext rc = new RenderContext(usr2dev,  EVERYTHING, hints);
         tiled = tileRable.createRendering(rc);
-
         // System.out.println("tileRed: " + tiled);
         // org.apache.batik.test.gvt.ImageDisplay.showImage("Tiled: ", tiled);
 
         //System.out.println("Created rendering");
-        if(tiled == null) {
+        if(tiled != null) {
+            Rectangle2D devRgn = usr2dev.createTransformedShape
+                (patternRegion).getBounds();
+            if ((devRgn.getWidth() > 128) ||
+                (devRgn.getHeight() > 128))
+                tiled = new TileCacheRed(GraphicsUtil.wrap(tiled), 256, 64);
+        } else {
             //System.out.println("Tile was null");
             rasterCM = ColorModel.getRGBdefault();
             WritableRaster wr;
             wr = rasterCM.createCompatibleWritableRaster(32, 32);
-            tiled = new BufferedImage(rasterCM, wr, false, null);
+            tiled = GraphicsUtil.wrap
+                (new BufferedImage(rasterCM, wr, false, null));
             return;
         }
 

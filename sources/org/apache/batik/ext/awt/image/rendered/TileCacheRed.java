@@ -10,6 +10,8 @@ package org.apache.batik.ext.awt.image.rendered;
 
 import java.awt.Rectangle;
 import java.awt.image.WritableRaster;
+import java.awt.image.ColorModel;
+import java.awt.image.SampleModel;
 
 /**
  * This implementation of RenderedImage only serves to put the tiles
@@ -26,6 +28,20 @@ public class TileCacheRed extends AbstractTiledRed {
      */
     public TileCacheRed(CachableRed cr) {
         super(cr, null);
+    }
+
+    /**
+     * Place the results of computations of cr into the global tile cache.
+     * @param cr The operation to cache results from.
+     */
+    public TileCacheRed(CachableRed cr, int tileWidth, int tileHeight) {
+        super();
+        ColorModel  cm = cr.getColorModel();
+        Rectangle bounds = cr.getBounds();
+        if (tileWidth  > bounds.width)  tileWidth  = bounds.width;
+        if (tileHeight > bounds.height) tileHeight = bounds.height;
+        SampleModel sm = cm.createCompatibleSampleModel(tileWidth, tileHeight);
+        init(cr, cr.getBounds(), cm, sm, 0, 0, null);
     }
 
     public void genRect(WritableRaster wr) {

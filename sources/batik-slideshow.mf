@@ -1,0 +1,16 @@
+Manifest-Version: $Id$
+Class-Path: lib/batik-ext.jar \
+            lib/batik-dom.jar \
+            lib/batik-css.jar \
+            lib/batik-svg-dom.jar \
+            lib/batik-gvt.jar \
+            lib/batik-parser.jar \
+            lib/batik-script.jar \
+            lib/batik-bridge.jar \
+            lib/batik-transcoder.jar \
+            lib/batik-awt-util.jar \
+            lib/batik-util.jar \
+            lib/batik-xml.jar \
+            lib/crimson-parser.jar \
+            lib/js.jar
+Main-Class: org.apache.batik.apps.slideshow.Main

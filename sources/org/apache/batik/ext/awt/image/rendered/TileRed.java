@@ -55,6 +55,7 @@ public class TileRed extends AbstractRed implements TileGenerator {
     private RenderingHints  hints;
 
     final boolean is_INT_PACK;
+    final boolean alphaPremult;
 
     /**
      * Tile
@@ -93,18 +94,21 @@ public class TileRed extends AbstractRed implements TileGenerator {
         }
 
         // org.apache.batik.test.gvt.ImageDisplay.showImage("Tile: ", tile);
-        this.tiledRegion = tiledRegion;
-        this.xStep       = xStep;
-        this.yStep       = yStep;
-        this.hints       = hints;
+        this.tiledRegion  = tiledRegion;
+        this.xStep        = xStep;
+        this.yStep        = yStep;
+        this.hints        = hints;
+        this.alphaPremult = false;
 
-        SampleModel sm = fixSampleModel(tile, tiledRegion);
-        ColorModel cm = tile.getColorModel();
+        SampleModel sm = fixSampleModel(tile, xStep, yStep);
+        ColorModel cm  = fixColorModel(tile, alphaPremult);
 
-        double smSz   = sm.getWidth()*sm.getHeight();
+        double smSz   = AbstractTiledRed.getDefaultTileSize();
+        smSz = smSz*smSz;
+
         double stepSz = (xStep*(double)yStep);
         // be prepaired to grow the default tile size quite a bit if
-        // it means the image to tile will fit in it...
+        // it means the image tile will fit in it...
         if (16.1*smSz > stepSz) {
             int xSz = xStep;
             int ySz = yStep;
@@ -116,13 +120,14 @@ public class TileRed extends AbstractRed implements TileGenerator {
                 xSz *= mult;
                 ySz *= mult;
             }
-
+            // System.out.println("Using Raster for pattern");
             sm = sm.createCompatibleSampleModel(xSz, ySz);
             raster = Raster.createWritableRaster
                 (sm, new Point(tile.getMinX(), tile.getMinY()));
         }
         
         is_INT_PACK = GraphicsUtil.is_INT_PACK_Data(sm, false);
+        // System.out.println("Is INT PACK: " + is_INT_PACK);
 
         // Initialize our base class We set our bounds be we will
         // respond with data for any area we cover.  This is needed
@@ -321,8 +326,14 @@ public class TileRed extends AbstractRed implements TileGenerator {
         count %= colors.length;
 
         g.fillRect(0, 0, maxX, maxY);*/
-
+        GraphicsUtil.coerceData(wr, src.getColorModel(), alphaPremult);
         return wr;
+    }
+
+    protected static ColorModel fixColorModel(RenderedImage src,
+                                              boolean alphaPremult) {
+        return GraphicsUtil.coerceColorModel(src.getColorModel(), 
+                                             alphaPremult);
     }
     
     /**
@@ -331,15 +342,15 @@ public class TileRed extends AbstractRed implements TileGenerator {
      * much larger than my width.
      */
     protected static SampleModel fixSampleModel(RenderedImage src,
-                                                Rectangle   bounds) {
+                                                int stepX, int stepY) {
         int defSz = AbstractTiledRed.getDefaultTileSize();
         SampleModel sm = src.getSampleModel();
         int w = sm.getWidth();
         if (w < defSz) w = defSz;
-        if (w > bounds.width)  w = bounds.width;
+        if (w > stepX)  w = stepX;
         int h = sm.getHeight();
         if (h < defSz) h = defSz;
-        if (h > bounds.height) h = bounds.height;
+        if (h > stepY) h = stepY;
         return sm.createCompatibleSampleModel(w, h);
     }
 }
