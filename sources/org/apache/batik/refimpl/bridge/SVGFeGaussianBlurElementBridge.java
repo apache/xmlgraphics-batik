@@ -13,7 +13,7 @@ import java.util.Map;
 
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeMutationEvent;
-import org.apache.batik.bridge.FilterBridge;
+import org.apache.batik.bridge.FilterPrimitiveBridge;
 import org.apache.batik.bridge.IllegalAttributeValueException;
 
 import org.apache.batik.gvt.GraphicsNode;
@@ -38,9 +38,10 @@ import org.w3c.dom.css.CSSStyleDeclaration;
  * <tt>Filter</tt>
  *
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
+ * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  * @version $Id$
  */
-public class SVGFeGaussianBlurElementBridge implements FilterBridge,
+public class SVGFeGaussianBlurElementBridge implements FilterPrimitiveBridge,
                                                        SVGConstants {
     /**
      * Returns the <tt>Filter</tt> that implements the filter
