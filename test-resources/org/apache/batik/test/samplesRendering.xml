@@ -270,6 +270,7 @@
         <test id="samples/tests/spec/scripting/fill.svg" />
         <test id="samples/tests/spec/scripting/visibility.svg" />
         <test id="samples/tests/spec/scripting/textProperties.svg" />
+        <test id="samples/tests/spec/scripting/nestedsvg.svg" />
     </testGroup>
 
 </testSuite>
