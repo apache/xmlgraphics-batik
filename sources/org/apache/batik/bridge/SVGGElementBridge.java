@@ -124,7 +124,7 @@ public class SVGGElementBridge extends AbstractGraphicsNodeBridge {
         GVTBuilder builder = ctx.getGVTBuilder();
         GraphicsNode childNode = builder.build(ctx, childElt);
         if (childNode == null) {
-            return;
+            return; // the added element is not a graphic element
         }
         // add the graphics node
         Node n = e.getFirstChild();
@@ -136,7 +136,7 @@ public class SVGGElementBridge extends AbstractGraphicsNodeBridge {
             // append at the end
             ((CompositeGraphicsNode)node).add(childNode);
         } else {
-            // find the index into the CompositeGraphicsNode
+            // find the index of the GraphicsNode to add
             int index = 0;
             while (n != lastChild && n != childElt) {
                 if (n.getNodeType() == Node.ELEMENT_NODE) {
@@ -159,6 +159,9 @@ public class SVGGElementBridge extends AbstractGraphicsNodeBridge {
     protected void handleDOMNodeRemoved(MutationEvent evt) {
         //System.out.println("handleDOMNodeRemoved "+e.getLocalName());
         Element childElt = (Element)evt.getTarget();
+        if (!ctx.hasGraphicsNodeBridge(childElt)) {
+            return; // the removed element is not a graphic element
+        }
         Node n = e.getFirstChild();
         Node lastChild = e.getLastChild();
         if (n == childElt) {
@@ -169,7 +172,7 @@ public class SVGGElementBridge extends AbstractGraphicsNodeBridge {
             CompositeGraphicsNode cgn = (CompositeGraphicsNode)node;
             cgn.remove(cgn.size()-1);
         } else {
-            // find the index into the CompositeGraphicsNode
+            // find the index of the GraphicsNode to remove
             int index = 0;
             while (n != lastChild && n != childElt) {
                 if (n.getNodeType() == Node.ELEMENT_NODE) {

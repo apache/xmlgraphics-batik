@@ -81,6 +81,11 @@ public class BridgeContext implements ErrorConstants {
     protected List viewportStack = new LinkedList();
 
     /**
+     * The BridgeUpdateHandler stack. Used in building time.
+     */
+    protected List bridgeUpdateHandlerStack = new LinkedList();
+
+    /**
      * The user agent.
      */
     protected UserAgent userAgent;
@@ -389,7 +394,7 @@ public class BridgeContext implements ErrorConstants {
      * @param e the element that closes its viewport
      */
     public void closeViewport(Element e) {
-        viewportMap.remove(e);
+        //viewportMap.remove(e); FIXME: potential memory leak
         viewportStack.remove(0);
         if (viewportStack.size() == 0) {
             viewportStack = null;
@@ -612,6 +617,46 @@ public class BridgeContext implements ErrorConstants {
             }
         }
     }
+
+    // dynamic support
+
+    public void pushBridgeUpdateHandler(BridgeUpdateHandler handler) {
+        bridgeUpdateHandlerStack.add(0, new BridgeUpdateHandlerInfo(handler));
+    }
+
+    public void setCurrentBridgeUpdateHandlerKey(int handlerKey) {
+        BridgeUpdateHandlerInfo info = 
+            (BridgeUpdateHandlerInfo)bridgeUpdateHandlerStack.get(0);
+        info.handlerKey = handlerKey;
+    }
+
+    public BridgeUpdateHandler getCurrentBridgeUpdateHandler() {
+        BridgeUpdateHandlerInfo info = 
+            (BridgeUpdateHandlerInfo)bridgeUpdateHandlerStack.get(0);
+        return info.handler;
+    }
+
+    public int getCurrentBridgeUpdateHandlerKey() {
+        BridgeUpdateHandlerInfo info = 
+            (BridgeUpdateHandlerInfo)bridgeUpdateHandlerStack.get(0);
+        return info.handlerKey;
+    }
+
+    public void popBridgeUpdateHandler() {
+        bridgeUpdateHandlerStack.remove(0);
+    }
+
+    protected static class BridgeUpdateHandlerInfo {
+
+        protected BridgeUpdateHandler handler;
+        protected int handlerKey;
+
+        public BridgeUpdateHandlerInfo(BridgeUpdateHandler handler) {
+            this.handler = handler;
+        }
+    }
+
+    // bridge extensions support
 
    /**
      * Registers the bridges to handle SVG 1.0 elements.

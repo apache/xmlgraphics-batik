@@ -17,6 +17,15 @@ import org.apache.batik.gvt.ShapePainter;
 
 import org.w3c.dom.Element;
 
+
+import org.apache.batik.gvt.CompositeShapePainter;
+import org.apache.batik.gvt.FillShapePainter;
+import org.apache.batik.gvt.StrokeShapePainter;
+import java.awt.Paint;
+import java.awt.Shape;
+
+
+
 /**
  * The base bridge class for shapes. Subclasses bridge <tt>ShapeNode</tt>.
  *
@@ -84,8 +93,19 @@ public abstract class SVGShapeElementBridge extends AbstractGraphicsNodeBridge {
     public void buildGraphicsNode(BridgeContext ctx,
                                   Element e,
                                   GraphicsNode node) {
+        // push 'this' as the current BridgeUpdateHandler for subbridges
+        if (ctx.isDynamic()) {
+            ctx.pushBridgeUpdateHandler(this);
+        }
+
         ShapeNode shapeNode = (ShapeNode)node;
         shapeNode.setShapePainter(createShapePainter(ctx, e, shapeNode));
+
+        // 'this' is no more the current BridgeUpdateHandler
+        if (ctx.isDynamic()) {
+            ctx.popBridgeUpdateHandler();
+        }
+
         super.buildGraphicsNode(ctx, e, node);
     }
 
@@ -131,5 +151,62 @@ public abstract class SVGShapeElementBridge extends AbstractGraphicsNodeBridge {
      */
     public boolean isComposite() {
         return false;
+    }
+
+    // dynamic support
+
+    /**
+     * Invoked when a bridge update is starting.
+     *
+     * @param evt the evt that describes the incoming update
+     */
+    public void bridgeUpdateStarting(BridgeUpdateEvent evt) {
+        //        System.out.println("("+e.getLocalName()+" "+node+") update started "+evt.getHandlerKey());
+    }
+
+    /**
+     * Invoked when a bridge update is completed.
+     *
+     * @param evt the evt that describes the update
+     */
+    public void bridgeUpdateCompleted(BridgeUpdateEvent evt) {
+        //        System.out.println(">>> ("+e.getLocalName()+" "+node+") update completed "+ evt.getHandlerKey());
+        switch(evt.getHandlerKey()) {
+        case PaintServer.KEY_FILL: {
+            Paint paint = (Paint)evt.getNewValue();
+            ShapeNode shapeNode = (ShapeNode)node;
+            Shape shape = shapeNode.getShape();
+            ShapePainter painter = shapeNode.getShapePainter();
+            if (painter instanceof FillShapePainter) {
+                FillShapePainter fp = (FillShapePainter)painter;
+                fp.setPaint(paint);
+                shapeNode.setShapePainter(fp);
+            } else if (painter instanceof CompositeShapePainter) {
+                CompositeShapePainter cp = (CompositeShapePainter)painter;
+                FillShapePainter fp = (FillShapePainter)cp.getShapePainter(0);
+                fp.setPaint(paint);
+                shapeNode.setShapePainter(cp);
+            }
+            break;
+        } case PaintServer.KEY_STROKE: {
+              Paint paint = (Paint)evt.getNewValue();
+              ShapeNode shapeNode = (ShapeNode)node;
+              Shape shape = shapeNode.getShape();
+              ShapePainter painter = shapeNode.getShapePainter();
+              if (painter instanceof StrokeShapePainter) {
+                  StrokeShapePainter sp = (StrokeShapePainter)painter;
+                  sp.setPaint(paint);
+                  shapeNode.setShapePainter(sp);
+              } else if (painter instanceof CompositeShapePainter) {
+                  CompositeShapePainter cp = (CompositeShapePainter)painter;
+                  StrokeShapePainter sp = 
+                      (StrokeShapePainter)cp.getShapePainter(1);
+                  sp.setPaint(paint);
+                shapeNode.setShapePainter(cp);
+              }
+              break;
+          }
+        }
+        //        System.out.println("<<< ("+e.getLocalName()+" "+node+") update completed "+ evt.getHandlerKey());
     }
 }

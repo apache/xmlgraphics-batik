@@ -74,6 +74,25 @@ public class CompositeShapePainter implements ShapePainter {
     }
 
     /**
+     * Sets to the specified index, the specified ShapePainter.
+     *
+     * @param index the index where to set the ShapePainter
+     * @param shapePainter the ShapePainter to set
+     */
+    /*    public void setShapePainter(int index, ShapePainter shapePainter) {
+        if (shapePainter == null) {
+            return;
+        }
+        if (this.shape != shapePainter.getShape()) {
+            shapePainter.setShape(shape);
+        }
+        if (painters == null || index >= painters.length) {
+            throw new IllegalArgumentException("Bad index: "+index);
+        }
+        painters[index] = shapePainter;
+        }*/
+
+    /**
      * Returns the shape painter at the specified index.
      *
      * @param index the index of the shape painter to return

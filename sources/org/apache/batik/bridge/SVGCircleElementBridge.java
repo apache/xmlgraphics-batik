@@ -108,7 +108,7 @@ public class SVGCircleElementBridge extends SVGShapeElementBridge {
             attrName.equals(SVG_CY_ATTRIBUTE) ||
             attrName.equals(SVG_R_ATTRIBUTE)) {
 
-            BridgeUpdateEvent be = new BridgeUpdateEvent();
+            BridgeUpdateEvent be = new BridgeUpdateEvent(this);
             fireBridgeUpdateStarting(be);
             buildShape(ctx, e, (ShapeNode)node);
             if (((ShapeNode)node).getShape() == null) {

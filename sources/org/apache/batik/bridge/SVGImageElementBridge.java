@@ -235,7 +235,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
             attrName.equals(SVG_WIDTH_ATTRIBUTE) ||
             attrName.equals(SVG_HEIGHT_ATTRIBUTE)) {
 
-            BridgeUpdateEvent be = new BridgeUpdateEvent();
+            BridgeUpdateEvent be = new BridgeUpdateEvent(this);
             fireBridgeUpdateStarting(be);
             
             // <!> FIXME: Not yet implemented

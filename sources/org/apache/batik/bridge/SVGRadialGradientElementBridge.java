@@ -19,6 +19,7 @@ import org.apache.batik.ext.awt.MultipleGradientPaint;
 import org.apache.batik.gvt.GraphicsNode;
 
 import org.w3c.dom.Element;
+import org.w3c.dom.events.MutationEvent;
 
 /**
  * Bridge class for the &lt;radialGradient> element.
@@ -40,6 +41,13 @@ public class SVGRadialGradientElementBridge
      */
     public String getLocalName() {
         return SVG_RADIAL_GRADIENT_TAG;
+    }
+
+    /**
+     * Returns a new instance of this bridge.
+     */
+    public Bridge getInstance() {
+        return new SVGRadialGradientElementBridge();
     }
 
     /**
@@ -152,6 +160,37 @@ public class SVGRadialGradientElementBridge
                                            spreadMethod,
                                            RadialGradientPaint.SRGB,
                                            transform);
+        }
+    }
+
+    // dynamic support
+
+    /**
+     * Handles DOMAttrModified events.
+     *
+     * @param evt the DOM mutation event
+     */
+    protected void handleDOMAttrModifiedEvent(MutationEvent evt) {
+        String attrName = evt.getAttrName();
+        if (attrName.equals(SVG_CX_ATTRIBUTE) ||
+            attrName.equals(SVG_CY_ATTRIBUTE) ||
+            attrName.equals(SVG_R_ATTRIBUTE) ||
+            attrName.equals(SVG_FX_ATTRIBUTE) ||
+            attrName.equals(SVG_FY_ATTRIBUTE) ||
+            attrName.equals(SVG_GRADIENT_UNITS_ATTRIBUTE)) {
+            //long t0 = System.currentTimeMillis();
+            BridgeUpdateEvent be = new BridgeUpdateEvent(this);
+            be.setOldValue(paint);
+            fireBridgeUpdateStarting(be);
+            // <!> FIXME: create a new paint each time
+            this.paint = createPaint
+                (ctx, paintElement, paintedElement, paintedNode, opacity);
+            be.setNewValue(paint);
+            fireBridgeUpdateCompleted(be);
+            //long t1 = System.currentTimeMillis();
+            //System.out.println("new grad: "+(t1-t0));
+        } else {
+            super.handleDOMAttrModifiedEvent(evt);
         }
     }
 }

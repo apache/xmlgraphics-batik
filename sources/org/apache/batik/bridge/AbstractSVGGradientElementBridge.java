@@ -24,6 +24,10 @@ import org.apache.batik.gvt.GraphicsNode;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.events.Event;
+import org.w3c.dom.events.EventListener;
+import org.w3c.dom.events.EventTarget;
+import org.w3c.dom.events.MutationEvent;
 
 /**
  * Bridge class for vending gradients.
@@ -33,6 +37,18 @@ import org.w3c.dom.Node;
  */
 public abstract class AbstractSVGGradientElementBridge extends AbstractSVGBridge
     implements PaintBridge, ErrorConstants {
+
+    protected BridgeContext ctx;
+
+    protected Element paintElement;
+
+    protected Element paintedElement;
+
+    protected GraphicsNode paintedNode;
+
+    protected float opacity;
+
+    protected Paint paint;
 
     /**
      * Constructs a new AbstractSVGGradientElementBridge.
@@ -100,15 +116,36 @@ public abstract class AbstractSVGGradientElementBridge extends AbstractSVGBridge
             transform = new AffineTransform();
         }
 
-        return buildGradient(paintElement,
-                             paintedElement,
-                             paintedNode,
-                             spreadMethod,
-                             colorSpace,
-                             transform,
-                             colors,
-                             offsets,
-                             ctx);
+        Paint paint = buildGradient(paintElement,
+                                    paintedElement,
+                                    paintedNode,
+                                    spreadMethod,
+                                    colorSpace,
+                                    transform,
+                                    colors,
+                                    offsets,
+                                    ctx);
+
+        if (ctx.isDynamic()) {
+            if (handler == null) { // quick hack to fix dynamic
+                this.handler = ctx.getCurrentBridgeUpdateHandler();
+                this.handlerKey = ctx.getCurrentBridgeUpdateHandlerKey();
+
+                this.ctx = ctx;
+                this.paintElement = paintElement;
+                this.paintedElement = paintedElement;
+                this.paintedNode = paintedNode;
+                this.opacity = opacity;
+
+                ((EventTarget)paintElement).addEventListener
+                    ("DOMAttrModified",
+                     new DOMAttrModifiedEventListener(),
+                     false);
+            }
+            this.paint = paint;
+        }
+
+        return paint;
     }
 
     /**
@@ -134,6 +171,55 @@ public abstract class AbstractSVGGradientElementBridge extends AbstractSVGBridge
                             Color [] colors,
                             float [] offsets,
                             BridgeContext ctx);
+    // dynamic support
+
+    /**
+     * Handles DOMAttrModified events.
+     *
+     * @param evt the DOM mutation event
+     */
+    protected void handleDOMAttrModifiedEvent(MutationEvent evt) {
+        String attrName = evt.getAttrName();
+        if (attrName.equals(SVG_GRADIENT_TRANSFORM_ATTRIBUTE) ||
+            attrName.equals(SVG_SPREAD_METHOD_ATTRIBUTE)) {
+
+            BridgeUpdateEvent be = new BridgeUpdateEvent(this);
+            be.setOldValue(paint);
+            fireBridgeUpdateStarting(be);
+            this.paint = createPaint
+                (ctx, paintElement, paintedElement, paintedNode, opacity);
+            be.setNewValue(paint);
+            fireBridgeUpdateCompleted(be);
+        } else {
+            System.out.println("Unsupported attribute modification: "+attrName+
+                               " on "+paintElement.getLocalName());
+        }
+    }
+
+    /**
+     * The listener class for 'DOMAttrModified' event.
+     */
+    protected class DOMAttrModifiedEventListener implements EventListener {
+
+        /**
+         * Handles 'DOMAttrModfied' events and deleguates to the
+         * 'handleDOMAttrModifiedEvent' method any changes to the
+         * GraphicsNode if any.
+         *
+         * @param evt the DOM event
+         */
+        public void handleEvent(Event evt) {
+            Element e = (Element)evt.getTarget();
+            // <!> FIXME: need to check if e is a stop
+            // check if an attribute has changed on the gradient or on a stop
+            if (e != paintElement && e.getParentNode() != paintElement) {
+                return;
+            }
+            handleDOMAttrModifiedEvent((MutationEvent)evt);
+        }
+    }
+
+    // convenient methods
 
     /**
      * Converts the spreadMethod attribute.

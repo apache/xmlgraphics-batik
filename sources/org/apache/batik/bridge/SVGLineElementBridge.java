@@ -107,7 +107,7 @@ public class SVGLineElementBridge extends SVGDecoratedShapeElementBridge {
             attrName.equals(SVG_X2_ATTRIBUTE) ||
             attrName.equals(SVG_Y2_ATTRIBUTE)) {
 
-            BridgeUpdateEvent be = new BridgeUpdateEvent();
+            BridgeUpdateEvent be = new BridgeUpdateEvent(this);
             fireBridgeUpdateStarting(be);
             buildShape(ctx, e, (ShapeNode)node);
             if (((ShapeNode)node).getShape() == null) {

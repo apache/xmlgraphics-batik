@@ -248,7 +248,7 @@ public class SVGSVGElementBridge extends AbstractSVGBridge
     protected void handleDOMAttrModifiedEvent(MutationEvent evt) {
         String attrName = evt.getAttrName();
 
-        BridgeUpdateEvent be = new BridgeUpdateEvent();
+        BridgeUpdateEvent be = new BridgeUpdateEvent(this);
         fireBridgeUpdateStarting(be);
         System.out.println("Unsupported attribute modification: "+attrName+
                            " on "+e.getLocalName());
