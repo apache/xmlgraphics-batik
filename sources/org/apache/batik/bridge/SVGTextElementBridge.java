@@ -84,6 +84,12 @@ public class SVGTextElementBridge extends AbstractSVGBridge
     public GraphicsNode createGraphicsNode(BridgeContext ctx, Element e) {
 
         TextNode node = new TextNode();
+	// specify the text painter to use if one has been provided in the
+	// bridge context
+	if (ctx.getTextPainter() != null) {
+	    node.setTextPainter(ctx.getTextPainter());
+	}
+
         // 'transform'
         String s = e.getAttributeNS(null, SVG_TRANSFORM_ATTRIBUTE);
         if (s.length() != 0) {
