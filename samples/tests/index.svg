@@ -38,7 +38,7 @@
     }
     text.link {
       fill:            rgb(103, 103, 153);
-      font-size:       16;
+      font-size:       14;
       font-family:     'SunSansCondensed-Normal';
       text-decoration: underline;
       text-anchor:     middle;
@@ -46,7 +46,7 @@
 
     text.link2 {
       fill:            black;
-      font-size:       16;
+      font-size:       14;
       font-family:     'SunSansCondensed-Normal';
       text-decoration: underline;
       text-anchor:     middle;
@@ -80,76 +80,76 @@
   </a>
 
   <rect x="5" y="95" width="440" height="30" style="fill:rgb(203, 203, 255)"/>
-  <a xlink:href="feTurbulence.svg" xlink:show="new">
+  <a xlink:href="colorProfile.svg" xlink:show="new">
     <text class="link" x="50%" y="115">
-      feTurbulence Effect (feTurbulence.svg)
+      Color Profile (colorProfile.svg)
     </text>
   </a>
 
   <rect x="5" y="130" width="440" height="30" style="fill:rgb(153, 153, 203)"/>
-  <a xlink:href="feColorMatrix.svg" xlink:show="new">
+  <a xlink:href="dataProtocol.svg" xlink:show="new">
     <text class="link2" x="50%" y="150">
-      feColorMatrix Effect (feColorMatrix.svg)
+      Data Protocol (dataProtocol.svg)
     </text>
   </a>
 
   <rect x="5" y="165" width="440" height="30"
         style="fill:rgb(203, 203, 255)"/>
-  <a xlink:href="feComponentTransfer.svg" xlink:show="new">
+  <a xlink:href="enableBackground.svg" xlink:show="new">
     <text class="link" x="50%" y="185">
-      feComponentTransfer Effect (feComponentTransfer.svg)
+      enable-background (enableBackground.svg)
     </text>
   </a>
 
   <rect x="5" y="200" width="440" height="30" style="fill:rgb(153, 153, 203)"/>
-  <a xlink:href="feComponentTransfer2.svg" xlink:show="new">
+  <a xlink:href="feConvolveMatrix.svg" xlink:show="new">
     <text class="link2" x="50%" y="220">
-      feComponentTransfer Effect (feComponentTransfer2.svg)
+      feConvolveMatrix Effect (feConvolveMatrix.svg)
     </text>
   </a>
 
   <rect x="5" y="235" width="440" height="30"
         style="fill:rgb(203, 203, 255)"/>
-  <a xlink:href="opacity.svg" xlink:show="new">
+  <a xlink:href="markersMisc.svg" xlink:show="new">
     <text class="link" x="50%" y="255">
-      Opacity (opacity.svg)
+      Markers (markersMisc.svg)
     </text>
   </a>
 
   <rect x="5" y="270" width="440" height="30" style="fill:rgb(153, 153, 203)"/>
-  <a xlink:href="opacity2.svg" xlink:show="new">
+  <a xlink:href="markersOrientA.svg" xlink:show="new">
     <text class="link2" x="50%" y="290">
-      Opacity on Group (opacity2.svg)
+      Markers Orientation (markersOrientA.svg)
     </text>
   </a>
 
   <rect x="5" y="305" width="440" height="30"
         style="fill:rgb(203, 203, 255)"/>
-  <a xlink:href="filterRegions.svg" xlink:show="new">
+  <a xlink:href="markersOrientB.svg" xlink:show="new">
     <text class="link" x="50%" y="325">
-      Filter Regions (filterRegions.svg)
+      Markers Orientation 2 (markersOrientB.svg)
     </text>
   </a>
 
   <rect x="5" y="340" width="440" height="30" style="fill:rgb(153, 153, 203)"/>
-  <a xlink:href="feMorphology.svg" xlink:show="new">
+  <a xlink:href="markersPreserveAspectRatio.svg" xlink:show="new">
     <text class="link2" x="50%" y="360">
-      Morphology Effect (feMorphology.svg)
+      Markers PreserveAspectRatio (markersPreserveAspectRatio.svg)
     </text>
   </a>
 
   <rect x="5" y="375" width="440" height="30"
         style="fill:rgb(203, 203, 255)"/>
-  <a xlink:href="mask.svg" xlink:show="new">
+  <a xlink:href="markersShapes.svg" xlink:show="new">
     <text class="link" x="50%" y="395">
-      Masking (mask.svg)
+      Markers Shapes (markersShapes.svg)
     </text>
   </a>
 
   <rect x="5" y="410" width="440" height="30" style="fill:rgb(153, 153, 203)"/>
-  <a xlink:href="textPath.svg" xlink:show="new">
+  <a xlink:href="paintOpacity.svg" xlink:show="new">
     <text class="link2" x="50%" y="430">
-      Text on a Path (textPath.svg)
+      Paint Opacity (paintOpacity.svg)
     </text>
   </a>
 

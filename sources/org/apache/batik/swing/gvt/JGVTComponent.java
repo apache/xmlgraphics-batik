@@ -502,7 +502,7 @@ public class JGVTComponent extends JComponent {
                         try {
                             while (!isInterrupted()) {
                                 repaint();
-                                sleep(100);
+                                sleep(200);
                             }
                         } catch (InterruptedException e) {
                         }

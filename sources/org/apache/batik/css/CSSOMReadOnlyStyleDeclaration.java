@@ -181,8 +181,7 @@ public class CSSOMReadOnlyStyleDeclaration implements CSSStyleDeclaration {
 				    String   imp,
 				    int      orig) {
 	/*ValueEntry ve = (ValueEntry)*/
-        properties.put(propertyName, createValueEntry((CSSOMReadOnlyValue)v,
-                                                      imp, orig));
+        properties.put(propertyName, (CSSOMReadOnlyValue)v, imp, orig);
     }
 
     /**
@@ -294,7 +293,7 @@ public class CSSOMReadOnlyStyleDeclaration implements CSSStyleDeclaration {
     /**
      * Creates a new value entry.
      */
-    protected ValueEntry createValueEntry(CSSOMReadOnlyValue v, String s, int p) {
+    protected static ValueEntry createValueEntry(CSSOMReadOnlyValue v, String s, int p) {
         switch (p) {
         case USER_AGENT_ORIGIN:
             if (s.length() == 0) {
@@ -587,14 +586,27 @@ public class CSSOMReadOnlyStyleDeclaration implements CSSStyleDeclaration {
          * Sets a new value for the given variable
          * @return the old value or null
          */
-        public void put(String key, ValueEntry valueEntry) {
+        public void put(String key, CSSOMReadOnlyValue v, String imp, int orig) {
             int hash  = key.hashCode() & 0x7FFFFFFF;
             int index = hash % table.length;
 	
+            ValueEntry prev = null;
             for (ValueEntry e = table[index]; e != null; e = e.next) {
                 if ((e.hash == hash) && e.key == key) {
-                    e.value = valueEntry.value;
+                    if (e.getPriority().equals(imp) && e.getOrigin() == orig) {
+                        e.value = v;
+                    } else {
+                        ValueEntry ve = createValueEntry(v, imp, orig);
+                        ve.initialize(hash, key, e.next);
+                        if (prev == null) {
+                            table[index] = ve;
+                        } else {
+                            prev.next = ve;
+                        }
+                    }
+                    return;
                 }
+                prev = e;
             }
 	
             // The key is not in the hash table
@@ -604,8 +616,51 @@ public class CSSOMReadOnlyStyleDeclaration implements CSSStyleDeclaration {
                 index = hash % table.length;
             }
 	
-            valueEntry.initialize(hash, key, table[index]);
-            table[index] = valueEntry;
+            ValueEntry ve = createValueEntry(v, imp, orig);
+            ve.initialize(hash, key, table[index]);
+            table[index] = ve;
+        }
+
+        /**
+         * Sets a new value for the given variable
+         * @return the old value or null
+         */
+        public void put(String key, ValueEntry ve) {
+            int hash  = key.hashCode() & 0x7FFFFFFF;
+            int index = hash % table.length;
+	
+            ValueEntry prev = null;
+            for (ValueEntry e = table[index]; e != null; e = e.next) {
+                if ((e.hash == hash) && e.key == key) {
+                    if (e.getPriority().equals(ve.getPriority()) &&
+                        e.getOrigin() == ve.getOrigin()) {
+                        e.value = ve.value;
+                    } else {
+                        ValueEntry ventry = createValueEntry(ve.value, ve.getPriority(),
+                                                          ve.getOrigin());
+                        ve.initialize(hash, key, e.next);
+                        if (prev == null) {
+                            table[index] = ventry;
+                        } else {
+                            prev.next = ventry;
+                        }
+                    }
+                    return;
+                }
+                prev = e;
+            }
+	
+            // The key is not in the hash table
+            int len = table.length;
+            if (count++ >= (len * 3) >>> 2) {
+                rehash();
+                index = hash % table.length;
+            }
+	
+            ValueEntry ventry = createValueEntry(ve.value, ve.getPriority(),
+                                              ve.getOrigin());
+            ventry.initialize(hash, key, table[index]);
+            table[index] = ventry;
         }
 
         /**

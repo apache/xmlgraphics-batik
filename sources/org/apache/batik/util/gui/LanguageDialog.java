@@ -58,6 +58,17 @@ import org.apache.batik.util.gui.resource.ResourceManager;
  * @version $Id$
  */
 public class LanguageDialog extends JDialog implements ActionMap {
+
+    /**
+     * The return value if 'OK' is chosen.
+     */
+    public final static int OK_OPTION = 0;
+
+    /**
+     * The return value if 'Cancel' is chosen.
+     */
+    public final static int CANCEL_OPTION = 1;
+
     /**
      * The resource file name
      */
@@ -90,9 +101,9 @@ public class LanguageDialog extends JDialog implements ActionMap {
     protected Panel panel = new Panel();
 
     /**
-     * The language change handler.
+     * The last return code.
      */
-    protected LanguageChangeHandler languageChangeHandler;
+    protected int returnCode;
 
     /**
      * Creates a new LanguageDialog object.
@@ -112,10 +123,12 @@ public class LanguageDialog extends JDialog implements ActionMap {
     }
 
     /**
-     * Sets a language change handler.
+     * Shows the dialog.
+     * @return OK_CANCEL or CANCEL_OPTION.
      */
-    public void setLanguageChangeHandler(LanguageChangeHandler lch) {
-        languageChangeHandler = lch;
+    public int showDialog() {
+        show();
+        return returnCode;
     }
 
     /**
@@ -123,6 +136,13 @@ public class LanguageDialog extends JDialog implements ActionMap {
      */
     public void setLanguages(String s) {
         panel.setLanguages(s);
+    }
+
+    /**
+     * Returns the user languages.
+     */
+    public String getLanguages() {
+        return panel.getLanguages();
     }
 
     // ActionMap implementation ///////////////////////////////////////
@@ -603,9 +623,7 @@ public class LanguageDialog extends JDialog implements ActionMap {
      */
     protected class OKButtonAction extends AbstractAction {
         public void actionPerformed(ActionEvent e) {
-            if (languageChangeHandler != null) {
-                languageChangeHandler.languageChanged(panel.getLanguages());
-            }
+            returnCode = OK_OPTION;
             dispose();
         }
     }
@@ -615,6 +633,7 @@ public class LanguageDialog extends JDialog implements ActionMap {
      */
     protected class CancelButtonAction extends AbstractAction {
         public void actionPerformed(ActionEvent e) {
+            returnCode = CANCEL_OPTION;
             dispose();
         }
     }

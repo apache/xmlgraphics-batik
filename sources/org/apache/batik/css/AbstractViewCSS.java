@@ -222,7 +222,7 @@ public abstract class AbstractViewCSS implements ViewCSS {
                 val = null;
             }
             rd.setPropertyCSSValue(prop, val, "",
-                             CSSOMReadOnlyStyleDeclaration.USER_AGENT_ORIGIN);
+                             CSSOMReadOnlyStyleDeclaration.AUTHOR_ORIGIN);
             if (val != null) {
                 rvr.resolveValue(e, pe, this, rd, val, prio, orig);
             }
