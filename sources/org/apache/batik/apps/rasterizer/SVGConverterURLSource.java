@@ -75,6 +75,10 @@ public class SVGConverterURLSource implements SVGConverterSource {
         return url.toString();
     }
 
+    public String getURI(){
+        return toString();
+    }
+
     public boolean equals(Object o){
         if (o == null || !(o instanceof SVGConverterURLSource)){
             return false;

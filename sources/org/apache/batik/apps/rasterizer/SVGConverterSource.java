@@ -39,5 +39,10 @@ public interface SVGConverterSource {
      * Checks if source can be read
      */
     public boolean isReadable();
+
+    /**
+     * Returns a URI string corresponding to this source
+     */
+    public String getURI();
 }
 
