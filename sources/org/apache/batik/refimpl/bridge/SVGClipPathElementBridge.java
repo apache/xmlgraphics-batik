@@ -90,7 +90,7 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
                     if (clip != null) {
                         Shape clipPath = clip.getClipPath();
                         if (clipPath != null) {
-                            // outline.subtract(new Area(clipPath));
+                            outline.subtract(new Area(clipPath));
                         }
                     }
                     area.add(outline);
