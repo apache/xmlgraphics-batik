@@ -69,122 +69,32 @@ public class ConcreteTextLayoutFactory implements TextLayoutFactory {
     public TextSpanLayout createTextLayout(AttributedCharacterIterator aci,
                                                 Point2D offset,
                                                 FontRenderContext frc) {
-/*
+
         Set keys = aci.getAllAttributeKeys();
         Set glyphPositionKeys = new HashSet();
-        glyphPositionKeys.add(
-              GVTAttributedCharacterIterator.TextAttribute.EXPLICIT_LAYOUT);
-        glyphPositionKeys.add(
-              GVTAttributedCharacterIterator.TextAttribute.CUSTOM_SPACING);
-        glyphPositionKeys.add(
-              GVTAttributedCharacterIterator.TextAttribute.BBOX_WIDTH);
-        glyphPositionKeys.add(GVTAttributedCharacterIterator.TextAttribute.DX);
-        glyphPositionKeys.add(GVTAttributedCharacterIterator.TextAttribute.DY);
-        glyphPositionKeys.add(
-                GVTAttributedCharacterIterator.TextAttribute.ROTATION);
-        glyphPositionKeys.add(
-                GVTAttributedCharacterIterator.TextAttribute.BASELINE_SHIFT);
-        glyphPositionKeys.add(
-                GVTAttributedCharacterIterator.TextAttribute.TEXTPATH);
+        glyphPositionKeys.add(TextAttribute.BIDI_EMBEDDING);
         glyphPositionKeys.retainAll(keys);
 
-        Vector fontFamilies = (Vector)aci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.GVT_FONT_FAMILIES);
+        if (glyphPositionKeys.isEmpty() ||
+            (aci.getAttribute(TextAttribute.RUN_DIRECTION) ==
+	     TextAttribute.RUN_DIRECTION_RTL)) {
+            return new TextLayoutAdapter(new TextLayout(aci, frc), offset, aci);
+        } else {
+            char ch = aci.first();
+            do {
+               if (isRTL(ch)) {
+	       // System.out.println("Using java TextLayout");
+               return new TextLayoutAdapter(new TextLayout(aci, frc), offset, aci);
+               }
+               ch = aci.next();
+            } while (ch != CharacterIterator.DONE);
 
-        if (fontFamilies == null) {
-            fontFamilies = new Vector();
+            return new GlyphLayout(aci, offset, frc);
         }
-
-        // need to see if any of the fontFamilies are for SVGFonts
-        boolean containsSVGFont = false;
-        for (int i = 0; i < fontFamilies.size(); i++) {
-            if (fontFamilies.get(i) instanceof SVGFontFamily) {
-                containsSVGFont = true;
-            }
-        }
-
-            // We really want to use the new GlyphLayout to layout
-            // the text. At the moment, use the old code if there is
-            // only one resolved font and it isn't an SVG Font.
-            // Of course, we shouldn't explicitly test for SVG here
-            // (don't want SVG mentioned in GVT :) but we'll try to
-            // use GlyphLayout for everything soon!
-
-  /*      if (fontFamilies.size() <= 1 && !containsSVGFont) {
-
-            if (fontFamilies.size() == 1) {
-
-                // need to add the awt font back into the aci attributes, otherwise
-                // it uses the default font.
-
-                AttributedString as = new AttributedString(aci);
-
-                GVTFontFamily fontFamily = (GVTFontFamily)fontFamilies.get(0);
-                GVTFontFamily resolvedFontFamily;
-                if (fontFamily instanceof UnresolvedFontFamily) {
-                    resolvedFontFamily = FontFamilyResolver.resolve((UnresolvedFontFamily)fontFamily);
-                } else {
-                    resolvedFontFamily = fontFamily;
-                }
-                as.addAttribute(TextAttribute.FAMILY, resolvedFontFamily.getFamilyName());
-                aci = as.getIterator();
-            }
-*/
-/*
-        if (!containsSVGFont) {
-
-            // the folowing code does what the old font code used to do
-            // using this will prevent any font switching within the text
-            if (fontFamilies.size() > 0) {
-
-                // need to add the awt font back into the aci attributes, otherwise
-                // it uses the default font.
-
-                AttributedString as = new AttributedString(aci);
-                boolean fontAssigned = false;
-                // find the first font family in the list that is not the
-                // default font (the default font indicates that a matching font
-                // could not be found) and assign that
-                for (int i = 0; i < fontFamilies.size(); i++) {
-
-                    GVTFontFamily fontFamily = (GVTFontFamily)fontFamilies.get(i);
-                    GVTFontFamily resolvedFontFamily;
-                    if (fontFamily instanceof UnresolvedFontFamily) {
-                        resolvedFontFamily = FontFamilyResolver.resolve((UnresolvedFontFamily)fontFamily);
-                    } else {
-                        resolvedFontFamily = fontFamily;
-                    }
-                    if (resolvedFontFamily != null) {
-                        as.addAttribute(TextAttribute.FAMILY, resolvedFontFamily.getFamilyName());
-                        aci = as.getIterator();
-                        fontAssigned = true;
-                        break;
-                    }
-                }
-                if (!fontAssigned) {
-                    // could not match any of the fonts, use the default font
-                    as.addAttribute(TextAttribute.FAMILY, FontFamilyResolver.defaultFont.getFamilyName());
-                    aci = as.getIterator();
-                }
-            }
-
-            if (glyphPositionKeys.isEmpty()) {
-                return new TextLayoutAdapter(new TextLayout(aci, frc), offset, aci);
-            } else {
-                char ch = aci.first();
-                do {
-                    if (isRTL(ch)) {
-                      return new TextLayoutAdapter(new TextLayout(aci, frc), offset, aci);
-                    }
-                    ch = aci.next();
-                } while (ch != CharacterIterator.DONE);
-            }
-        }
-        //  System.out.println("Using GlyphLayout"); */
-        return new GlyphLayout(aci, offset, frc);
     }
 
     private boolean isRTL(char ch) {
-        int bidiCode = UnicodeData.getBiDiCode(Character.getNumericValue(ch));
+        int bidiCode = UnicodeData.getBiDiCode(ch);
         switch (bidiCode) {
             case R:
             case AL:
@@ -203,23 +113,52 @@ public class ConcreteTextLayoutFactory implements TextLayoutFactory {
 
         protected static Object[] unicodeValues = new Object[0xFF00];
 
-        public static int getBiDiCode(int ch) {
+        public static int getBiDiCode(char ch) {
             int i;
+	    /*  
             try {
                  i = ((Integer) Array.get(getUnicodeData(ch), BIDI_CODE_NDX)).intValue();
             } catch (Exception e) {
+		 System.out.println("Error getting BiDi code "+e);
                  i = 0;
+	    } 
+            */
+
+            /* intermediate solution: rather than parsing the whole unicode database,
+             * we will check for known RTL codepages.  It will return incorrect values
+             * for chars that are LTR within RTL codepages (such as arabic numerals?)
+             * but should suffice for our current purpose of flagging BiDi or RTL strings.
+             *
+             * KNOWN Bug:  Alphabetic Presentation Forms (block contains RTL and LTR)
+             */                   
+
+            Character.UnicodeBlock ucb = Character.UnicodeBlock.of(ch);
+
+            if ((ucb == Character.UnicodeBlock.ARABIC_PRESENTATION_FORMS_A) ||
+                (ucb == Character.UnicodeBlock.ARABIC_PRESENTATION_FORMS_B) ||
+                (ucb == Character.UnicodeBlock.ARABIC) ||
+                (ucb == Character.UnicodeBlock.HEBREW)) {
+		i = RLO;
+            } else {
+                i = LRO;
             }
-            return i;
+	    return i;
         }
 
         public static Array getUnicodeData(int ch) {
-             Array data = (Array) unicodeValues[ch];
-             if (data == null) {
-                 data = parseUnicodeDataEntry(ch);
-                 unicodeValues[ch] = data;
+             Array array = null;
+             Object data = unicodeValues[ch];
+             if (!(data instanceof Array)) {
+                 try {
+                 array = parseUnicodeDataEntry(ch);
+                 unicodeValues[ch] = array;
+                 } catch (Exception e) {
+		     System.out.println("Error parsing Unicode data "+e);
+                 }
+             } else {
+                 array = (Array) data;
              }
-             return data;
+             return array;
         }
 
         public static Array parseUnicodeDataEntry(int ch) {
