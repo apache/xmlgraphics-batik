@@ -195,7 +195,7 @@
             }
             updateText("help", helpText1)
 
-            itv = setInterval("animateStars()", 50)
+            itv = setInterval("animateStars()", 10)
  
             startDate = new Date()
             nframe = 0
@@ -217,6 +217,7 @@
 
                 updateText("fps1", val);
                 updateText("fps2", val);
+                // System.err.println("FPS: " + val);
                 startDate = d
                 nframe = 0
             }
