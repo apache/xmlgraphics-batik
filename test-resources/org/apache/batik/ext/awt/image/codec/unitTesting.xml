@@ -10,15 +10,10 @@
 <!-- @author vincent.hardy@eng.sun.com                                         -->
 <!-- @version $Id$ -->
 <!-- ========================================================================= -->
-<testSuite name="Test Module - Unit Testing">
+<testSuite name="org.apache.batik.ext.awt.image.codec package - Unit Testing">
     <!-- ========================================================================== -->
-    <!-- Validates that the SVGRenderingAccuracyTest class is operating as expected -->
+    <!-- Validates that PNGEncoding is operating as expected                        -->
     <!-- ========================================================================== -->
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTestValidator" />
-
-    <!-- ========================================================================== -->
-    <!-- Validates that the SVGAccuracyTest class is operating as expected          -->
-    <!-- ========================================================================== -->
-    <test class="org.apache.batik.svggen.SVGAccuracyTestValidator" />
-
+    <test class="org.apache.batik.ext.awt.image.codec.PNGEncoderTest" />
+    <test class="org.apache.batik.ext.awt.image.codec.Base64PNGEncoderTest" />
 </testSuite>

@@ -1,0 +1,245 @@
+<!-- ====================================================================== -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.     -->
+<!--                                                                        -->
+<!-- This software is published under the terms of the Apache Software      -->
+<!-- License version 1.1, a copy of which has been included with this       -->
+<!-- distribution in the LICENSE file.                                      -->
+<!-- ====================================================================== -->
+
+<!-- ====================================================================== -->
+<!-- @author deweese@apache.org                                             -->
+<!-- @author vincent.hardy@sun.com                                          -->
+<!-- @version $Id$  -->
+<!-- ====================================================================== -->
+<testSuite name="org.apache.batik.util Unit Testing">
+
+    <!-- ====================================================================== -->
+    <!--                         Base64 Tests                                   -->
+    <!-- ====================================================================== -->
+
+    <test class="org.apache.batik.util.Base64Test">
+        <arg class="java.lang.String" value="ENCODE" />
+        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/zeroByte" />
+        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/zeroByte.64" />
+    </test>
+    <test class="org.apache.batik.util.Base64Test">
+        <arg class="java.lang.String" value="DECODE" />
+        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/zeroByte.64" />
+        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/zeroByte" />
+    </test>
+    <test class="org.apache.batik.util.Base64Test">
+        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/zeroByte" />
+    </test>
+
+    <test class="org.apache.batik.util.Base64Test">
+        <arg class="java.lang.String" value="ENCODE" />
+        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/oneByte" />
+        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/oneByte.64" />
+    </test>
+    <test class="org.apache.batik.util.Base64Test">
+        <arg class="java.lang.String" value="DECODE" />
+        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/oneByte.64" />
+        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/oneByte" />
+    </test>
+    <test class="org.apache.batik.util.Base64Test">
+        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/oneByte" />
+    </test>
+
+    <test class="org.apache.batik.util.Base64Test">
+        <arg class="java.lang.String" value="ENCODE" />
+        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/twoByte" />
+        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/twoByte.64" />
+    </test>
+    <test class="org.apache.batik.util.Base64Test">
+        <arg class="java.lang.String" value="DECODE" />
+        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/twoByte.64" />
+        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/twoByte" />
+    </test>
+    <test class="org.apache.batik.util.Base64Test">
+        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/twoByte" />
+    </test>
+
+    <test class="org.apache.batik.util.Base64Test">
+        <arg class="java.lang.String" value="ENCODE" />
+        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/threeByte" />
+        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/threeByte.64" />
+    </test>
+    <test class="org.apache.batik.util.Base64Test">
+        <arg class="java.lang.String" value="DECODE" />
+        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/threeByte.64" />
+        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/threeByte" />
+    </test>
+    <test class="org.apache.batik.util.Base64Test">
+        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/threeByte" />
+    </test>
+
+    <test class="org.apache.batik.util.Base64Test">
+        <arg class="java.lang.String" value="ENCODE" />
+        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/fourByte" />
+        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/fourByte.64" />
+    </test>
+    <test class="org.apache.batik.util.Base64Test">
+        <arg class="java.lang.String" value="DECODE" />
+        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/fourByte.64" />
+        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/fourByte" />
+    </test>
+    <test class="org.apache.batik.util.Base64Test">
+        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/fourByte" />
+    </test>
+
+    <test class="org.apache.batik.util.Base64Test">
+        <arg class="java.lang.String" value="ENCODE" />
+        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/tenByte" />
+        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/tenByte.64" />
+    </test>
+    <test class="org.apache.batik.util.Base64Test">
+        <arg class="java.lang.String" value="DECODE" />
+        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/tenByte.64" />
+        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/tenByte" />
+    </test>
+    <test class="org.apache.batik.util.Base64Test">
+        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/tenByte" />
+    </test>
+
+    <test class="org.apache.batik.util.Base64Test">
+        <arg class="java.lang.String" value="ENCODE" />
+        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/small" />
+        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/small.64" />
+    </test>
+    <test class="org.apache.batik.util.Base64Test">
+        <arg class="java.lang.String" value="DECODE" />
+        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/small.64" />
+        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/small" />
+    </test>
+    <test class="org.apache.batik.util.Base64Test">
+        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/small" />
+    </test>
+
+    <test class="org.apache.batik.util.Base64Test">
+        <arg class="java.lang.String" value="ENCODE" />
+        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/medium" />
+        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/medium.64" />
+    </test>
+    <test class="org.apache.batik.util.Base64Test">
+        <arg class="java.lang.String" value="DECODE" />
+        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/medium.64" />
+        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/medium" />
+    </test>
+    <test class="org.apache.batik.util.Base64Test">
+        <arg class="java.lang.String" value="DECODE" />
+        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/medium.pc.64" />
+        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/medium" />
+    </test>
+    <test class="org.apache.batik.util.Base64Test">
+        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/medium" />
+    </test>
+
+    <test class="org.apache.batik.util.Base64Test">
+        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/large" />
+    </test>
+
+
+    <!-- ====================================================================== -->
+    <!--                         ParsedURL Tests                                -->
+    <!-- ====================================================================== -->
+    <test class="org.apache.batik.util.ParsedURLTest">
+        <!-- Test simple parsing -->
+        <arg class="java.lang.String" value="xml.apache.org" />
+        <arg class="java.lang.String" value="//xml.apache.org" />
+    </test>
+    <test class="org.apache.batik.util.ParsedURLTest">
+        <!-- Test simple parsing -->
+        <arg class="java.lang.String" value="fooz:/home/deweese/.cshrc" />
+        <arg class="java.lang.String" value="fooz:/home/deweese/.cshrc" />
+    </test>
+    <test class="org.apache.batik.util.ParsedURLTest">
+        <!-- Test simple parsing -->
+        <arg class="java.lang.String" value="fazz:///home/deweese/.cshrc" />
+        <arg class="java.lang.String" value="fazz:/home/deweese/.cshrc" />
+    </test>
+    <test class="org.apache.batik.util.ParsedURLTest">
+        <!-- Test simple parsing of single URL -->
+        <arg class="java.lang.String" 
+             value="fooz://www.com:1234/home/deweese/.cshrc#abcd" />
+        <arg class="java.lang.String" 
+             value="fooz://www.com:1234/home/deweese/.cshrc#abcd" />
+    </test>
+    <test class="org.apache.batik.util.ParsedURLTest">
+        <!-- Test relative url off root -->
+        <arg class="java.lang.String" value="http://xml.apache.org/" />
+        <arg class="java.lang.String" value="~deweese" />
+        <arg class="java.lang.String" value="http://xml.apache.org/~deweese" />
+    </test>
+    <test class="org.apache.batik.util.ParsedURLTest">
+        <!-- Test relative url off file in root dir -->
+        <arg class="java.lang.String" value="file:///xml.apache.org" />
+        <arg class="java.lang.String" value="~deweese" />
+        <arg class="java.lang.String" value="file:/~deweese" />
+    </test>
+    <test class="org.apache.batik.util.ParsedURLTest">
+        <!-- Test relative with partial path and fragement ident -->
+        <arg class="java.lang.String" 
+             value="fooz://www.com:1234/home/deweese/.cshrc#abcd" />
+        <arg class="java.lang.String" 
+             value="xyz.html#efgh" />
+        <arg class="java.lang.String" 
+             value="fooz://www.com:1234/home/deweese/xyz.html#efgh" />
+    </test>
+    <test class="org.apache.batik.util.ParsedURLTest">
+        <!-- Test relative with absolute path and fragement ident -->
+        <arg class="java.lang.String" 
+             value="fooz://www.com:1234/home/deweese/xyz.html#efgh" />
+        <arg class="java.lang.String" 
+             value="/xyz.svg#ijkl" />
+        <arg class="java.lang.String" 
+             value="fooz://www.com:1234/xyz.svg#ijkl" />
+    </test>
+    <test class="org.apache.batik.util.ParsedURLTest">
+        <!-- Test relative with matching protocol -->
+        <arg class="java.lang.String" 
+             value="file:/home/deweese/test.txt" />
+        <arg class="java.lang.String" 
+             value="file:junk.html" />
+        <arg class="java.lang.String" 
+             value="file:/home/deweese/junk.html" />
+    </test>
+    <test class="org.apache.batik.util.ParsedURLTest">
+        <!-- Test just keeping protocol -->
+        <arg class="java.lang.String" value="http://xml.apache.org/batik/" />
+        <arg class="java.lang.String" value="//jakarta.apache.org/ant/" />
+        <arg class="java.lang.String" value="http://jakarta.apache.org/ant/" />
+    </test>
+    <test class="org.apache.batik.util.ParsedURLTest">
+        <!-- Test references to same document -->
+        <arg class="java.lang.String" 
+             value="http://xml.apache.org/batik/#test" />
+        <arg class="java.lang.String" value="" />
+        <arg class="java.lang.String" 
+             value="http://xml.apache.org/batik/#test" />
+    </test>
+    <test class="org.apache.batik.util.ParsedURLTest">
+        <!-- Test relative with absolute path to root -->
+        <arg class="java.lang.String" value="http://xml.apache.org/batik/" />
+        <arg class="java.lang.String" value="/" />
+        <arg class="java.lang.String" value="http://xml.apache.org/" />
+    </test>
+    <test class="org.apache.batik.util.ParsedURLTest">
+        <!-- Test relative with absolute path to item -->
+        <arg class="java.lang.String" value="http://xml.apache.org/batik/" />
+        <arg class="java.lang.String" value="/fop/" />
+        <arg class="java.lang.String" value="http://xml.apache.org/fop/" />
+    </test>
+    <test class="org.apache.batik.util.ParsedURLTest">
+        <!-- Test relative with absolute path to item -->
+        <arg class="java.lang.String" value="file:helloWorld.svg" />
+        <arg class="java.lang.String" value="file:test.svg#Foo" />
+        <arg class="java.lang.String" value="file:test.svg#Foo" />
+    </test>
+    <test class="org.apache.batik.util.ParsedURLTest">
+        <!-- Test relative with absolute path to item -->
+        <arg class="java.lang.String" value="file:" />
+        <arg class="java.lang.String" value="file:junk.svg#Bar" />
+        <arg class="java.lang.String" value="file:junk.svg#Bar" />
+    </test>
+
+</testSuite>
