@@ -14,6 +14,7 @@ import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Shape;
 
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Dimension2D;
@@ -34,12 +35,14 @@ import java.awt.event.ActionListener;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
 import javax.swing.event.DocumentListener;
@@ -78,7 +81,9 @@ public class FindDialog extends JDialog implements ActionMap {
 
     // action names
     public final static String FIND_ACTION = "FindButtonAction";
+
     public final static String CLEAR_ACTION = "ClearButtonAction";
+
     public final static String CLOSE_ACTION = "CloseButtonAction";
 
     /**
@@ -105,9 +110,7 @@ public class FindDialog extends JDialog implements ActionMap {
     /** The GVTTreeWalker used to scan the GVT Tree. */
     protected GVTTreeWalker walker;
 
-    /**
-     * The current index in the TextNode's string.
-     */
+    /** The current index in the TextNode's string. */
     protected int currentIndex;
 
     /** The TextField that owns the text to search. */
@@ -125,12 +128,17 @@ public class FindDialog extends JDialog implements ActionMap {
     /** The case sensitive button. */
     protected JCheckBox caseSensitive;
 
-    /** The zoom button. */
-    protected JCheckBox enableZoom;
-
     /** The canvas. */
     protected JSVGCanvas svgCanvas;
 
+    /** The highlight button. */
+    protected JRadioButton highlightButton;
+
+    /** The highlight and center button. */
+    protected JRadioButton highlightCenterButton;
+
+    /** The highlight center and zoom button. */
+    protected JRadioButton highlightCenterZoomButton;
     /**
      * Constructs a new <tt>FindDialog</tt>.
      */
@@ -147,11 +155,21 @@ public class FindDialog extends JDialog implements ActionMap {
 
         buttonFactory = new ButtonFactory(bundle, this);
 
-        listeners.put(FIND_ACTION, new FindButtonAction());
-        listeners.put(CLEAR_ACTION, new ClearButtonAction());
-        listeners.put(CLOSE_ACTION, new CloseButtonAction());
+        listeners.put(FIND_ACTION, 
+		      new FindButtonAction());
 
-        getContentPane().add(createFindPanel(), BorderLayout.CENTER);
+        listeners.put(CLEAR_ACTION, 
+		      new ClearButtonAction());
+
+        listeners.put(CLOSE_ACTION, 
+		      new CloseButtonAction());
+
+	JPanel p = new JPanel(new BorderLayout());
+	p.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
+	p.add(createFindPanel(), BorderLayout.CENTER);
+	p.add(createShowResultPanel(), BorderLayout.SOUTH);
+
+	getContentPane().add(p, BorderLayout.CENTER);
         getContentPane().add(createButtonsPanel(), BorderLayout.SOUTH);
     }
 
@@ -186,14 +204,44 @@ public class FindDialog extends JDialog implements ActionMap {
         caseSensitive = buttonFactory.createJCheckBox("CaseSensitiveCheckBox");
         panel.add(caseSensitive, gbc);
 
-        gbc.fill = ExtendedGridBagConstraints.NONE;
-        gbc.anchor = ExtendedGridBagConstraints.WEST;
-        gbc.setWeight(0, 0);
-        gbc.setGridBounds(2, 1, 1, 1);
-        enableZoom = buttonFactory.createJCheckBox("EnableZoomCheckBox");
-        //panel.add(enableZoom, gbc);
-
         return panel;
+    }
+
+    protected JPanel createShowResultPanel() {
+        JPanel panel = new JPanel(new GridBagLayout());
+
+        panel.setBorder(BorderFactory.createTitledBorder
+                        (BorderFactory.createEtchedBorder(),
+                         resources.getString("ShowResultPanel.title")));
+
+        ExtendedGridBagConstraints gbc = new ExtendedGridBagConstraints();
+        gbc.insets = new Insets(2, 2, 2, 2);
+
+        gbc.anchor = ExtendedGridBagConstraints.WEST;
+        gbc.fill = ExtendedGridBagConstraints.NONE;
+        gbc.setWeight(0, 0);
+
+	ButtonGroup grp = new ButtonGroup();
+
+	highlightButton = buttonFactory.createJRadioButton("Highlight");
+	highlightButton.setSelected(true);
+	grp.add(highlightButton);
+        gbc.setGridBounds(0, 0, 1, 1);
+        panel.add(highlightButton, gbc);
+
+	highlightCenterButton = 
+	    buttonFactory.createJRadioButton("HighlightAndCenter");
+	grp.add(highlightCenterButton);
+        gbc.setGridBounds(0, 1, 1, 1);
+        panel.add(highlightCenterButton, gbc);
+
+	highlightCenterZoomButton = 
+	    buttonFactory.createJRadioButton("HighlightCenterAndZoom");
+	grp.add(highlightCenterZoomButton);
+        gbc.setGridBounds(0, 2, 1, 1);
+        panel.add(highlightCenterZoomButton, gbc);
+
+	return panel;
     }
 
     /**
@@ -294,23 +342,46 @@ public class FindDialog extends JDialog implements ActionMap {
 	svgCanvas.select(startMark, endMark);
 
 	// zoom on the TextNode if needed
-        if (enableZoom.isSelected()) {
-	    Dimension2D docSize = svgCanvas.getSVGDocumentSize();
-	    Rectangle2D nb = textNode.getBounds();
-	    AffineTransform at = gn.getGlobalTransform();
+        if (highlightButton.isSelected()) {
+	    return;
+	}
 
-	    Rectangle2D gnb = at.createTransformedShape(nb).getBounds();
-	    Dimension canvasSize = svgCanvas.getSize();
-
-	    Point2D p = at.deltaTransform
-		(new Point2D.Float(canvasSize.width, canvasSize.height), null);
+	// get the highlight shape in GVT root (global) coordinate sytem
+	Shape s = textNode.getHighlightShape();
+	AffineTransform at;
+	if (highlightCenterZoomButton.isSelected()) {
+	    at = svgCanvas.getInitialTransform();
+	} else {
+	    at = svgCanvas.getRenderingTransform();
+	}
+	// get the bounds of the highlight shape in the canvas coordinate system
+	Rectangle2D gnb = at.createTransformedShape(s).getBounds();
 	    
-	    AffineTransform Tx = AffineTransform.getTranslateInstance
-		(-gnb.getX() - gnb.getWidth() / 2 + p.getX() / 2, 
-		 -gnb.getY() - gnb.getHeight() / 2 + p.getY() / 2);
-
-	    svgCanvas.setRenderingTransform(Tx);
-        }
+	Dimension canvasSize = svgCanvas.getSize();
+	// translate the highlight region to (0, 0) in the canvas coordinate
+	// system
+	AffineTransform Tx = AffineTransform.getTranslateInstance
+	    (-gnb.getX()-gnb.getWidth()/2,
+	     -gnb.getY()-gnb.getHeight()/2);
+	
+	if (highlightCenterZoomButton.isSelected()) {
+	    // zoom on the highlight shape such as the shape takes x% of the
+	    // canvas size
+	    double sx = canvasSize.width/gnb.getWidth();
+	    double sy = canvasSize.height/gnb.getHeight();
+	    double scale = Math.min(sx, sy) / 8;
+	    if (scale > 1) {
+		Tx.preConcatenate
+		    (AffineTransform.getScaleInstance(scale, scale));
+	    }
+	}
+	Tx.preConcatenate(AffineTransform.getTranslateInstance
+			  (canvasSize.width/2, canvasSize.height/2));
+	// take into account the initial transform
+	AffineTransform newRT = new AffineTransform(at);
+	newRT.preConcatenate(Tx);
+	// change the rendering transform
+	svgCanvas.setRenderingTransform(newRT);
     }
 
     // ActionMap implementation
