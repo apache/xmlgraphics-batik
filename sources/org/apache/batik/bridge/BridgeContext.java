@@ -141,6 +141,18 @@ public class BridgeContext implements SVGConstants {
      * Constructs a new bridge context.
      * @param userAgent the user agent
      * @param rc the graphics node renderer context
+     * @param documentLoader document loader
+     */
+    public BridgeContext(UserAgent userAgent,
+                         GraphicsNodeRenderContext rc,
+                         DocumentLoader loader) {
+        this(userAgent, rc, sharedPool, loader);
+    }
+
+    /**
+     * Constructs a new bridge context.
+     * @param userAgent the user agent
+     * @param rc the graphics node renderer context
      * @param interpreterPool the interpreter pool
      * @param documentLoader document loader
      */
