@@ -80,30 +80,25 @@ public class AffineRed extends AbstractRed {
         Rectangle srcR;
         srcR = me2src.createTransformedShape(wr.getBounds()).getBounds();
 
-        WritableRaster srcWR = wr.createCompatibleWritableRaster(srcR);
-
         CachableRed src = (CachableRed)getSources().get(0);
+
+        // Don't try and get data from src that it doesn't have...
+        srcR = srcR.intersection(src.getBounds());
+
+        WritableRaster srcWR = wr.createCompatibleWritableRaster(srcR);
         src.copyData(srcWR);
 
-        // NOTE: This may be _WAY_ off. The idea is to
-        // try to work around the problem that the buffered ops
+        // This works around the problem that the buffered ops
         // completely ignore the coords of the Rasters passed in.
         AffineTransform aff = (AffineTransform)src2me.clone();
-
-        Point2D tmpPt;
-
-        tmpPt = new Point(srcWR.getMinX(), srcWR.getMinY());
-        tmpPt = aff.transform(tmpPt, null);
 
         // Translate what is at 0,0 (which will be what our current
         // minX/Y is) to our current minX,minY.
         aff.concatenate(AffineTransform.getTranslateInstance
                         (srcWR.getMinX(), srcWR.getMinY()));
 
-        tmpPt = new Point(0, 0);
-        tmpPt = aff.transform(tmpPt, null);
-
-        Point2D srcPt = me2src.transform(new Point(wr.getMinX(), wr.getMinY()), null);
+        Point2D srcPt = me2src.transform(new Point(wr.getMinX(), 
+                                                   wr.getMinY()), null);
 
         Point2D destPt = new Point2D.Double(srcPt.getX()-srcWR.getMinX(), 
                                             srcPt.getY()-srcWR.getMinY());
@@ -116,7 +111,6 @@ public class AffineRed extends AbstractRed {
         aff.preConcatenate(AffineTransform.getTranslateInstance
                            (-destPt.getX(), -destPt.getY()));
 
-        destPt = aff.transform(new Point(0,0), null);
         AffineTransform invAff=null;
         try {
             invAff = aff.createInverse();

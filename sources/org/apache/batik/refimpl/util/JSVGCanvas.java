@@ -222,7 +222,7 @@ public class JSVGCanvas
         = new BasicStroke(1, BasicStroke.CAP_SQUARE,
                           BasicStroke.JOIN_MITER,
                           10,
-                          new float[]{1, 3}, 0);
+                          new float[]{4, 4}, 0);
     /**
      * Creates a new SVG canvas.
      */

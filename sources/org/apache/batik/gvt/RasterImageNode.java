@@ -8,52 +8,38 @@
 
 package org.apache.batik.gvt;
 
-import java.awt.geom.Point2D;
-import java.awt.geom.Dimension2D;
-import java.awt.image.renderable.RenderableImage;
+import java.awt.geom.Rectangle2D;
+import org.apache.batik.gvt.filter.Filter;
 
 /**
  * A graphics node that represents a raster image.
  *
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
+ * @author <a href="mailto:Thomas.DeWeese@Kodak.com>Thomas DeWeese</a>
  * @version $Id$
  */
 public interface RasterImageNode extends LeafGraphicsNode {
+    /**
+     * Sets the bounds of this raster image node.
+     * @param newBounds the new bounds of this raster image node
+     */
+    void setBounds(Rectangle2D newBounds);
 
     /**
-     * Sets the location of this raster image node.
-     * @param newLocation the new location of this raster image node
+     * Returns the bounds of this raster image node.
+     * @return the bounds of this raster image node
      */
-    void setLocation(Point2D newLocation);
-
-    /**
-     * Returns the location of this raster image node.
-     * @return the location of this raster image node
-     */
-    Point2D getLocation();
-
-    /**
-     * Sets the size of this raster image node.
-     * @param newSize the new size of this raster image node
-     */
-    void setSize(Dimension2D newSize);
-
-    /**
-     * Returns the size of this raster image node.
-     * @return the size of this raster image node
-     */
-    Dimension2D getSize();
+    Rectangle2D getBounds();
 
     /**
      * Sets the raster image of this raster image node.
      * @param newImage the new raster image of this raster image node
      */
-    void setImage(RenderableImage newImage);
+    void setImage(Filter newImage);
 
     /**
      * Returns the raster image of this raster image node.
      * @return the raster image of this raster image node
      */
-    RenderableImage getImage();
-
+    Filter getImage();
 }
