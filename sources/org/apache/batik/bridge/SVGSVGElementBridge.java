@@ -11,26 +11,22 @@ package org.apache.batik.bridge;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Rectangle2D;
-
-import org.apache.batik.bridge.BridgeMutationEvent;
-import org.apache.batik.bridge.GraphicsNodeBridge;
-import org.apache.batik.bridge.BridgeContext;
-import org.apache.batik.bridge.SVGViewport;
+import org.apache.batik.ext.awt.image.renderable.ClipRable8Bit;
+import org.apache.batik.ext.awt.image.renderable.Filter;
+import org.apache.batik.gvt.CanvasGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
-import org.apache.batik.gvt.CanvasGraphicsNode;
+import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.UnitProcessor;
-
-import org.apache.batik.ext.awt.image.renderable.Filter;
-import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
-import org.apache.batik.ext.awt.image.renderable.ClipRable8Bit;
-
 import org.w3c.dom.Element;
+import org.w3c.dom.css.CSSPrimitiveValue;
+import org.w3c.dom.css.CSSStyleDeclaration;
+import org.w3c.dom.css.Rect;
 import org.w3c.dom.svg.SVGElement;
 import org.w3c.dom.svg.SVGSVGElement;
-import org.w3c.dom.css.CSSStyleDeclaration;
 
 /**
  * A factory for the &lt;svg&gt; SVG element.
@@ -106,26 +102,43 @@ public class SVGSVGElementBridge implements GraphicsNodeBridge, SVGConstants {
         at = SVGUtilities.getPreserveAspectRatioTransform
             (svgElement, w, h);
         at.preConcatenate(AffineTransform.getTranslateInstance(x, y));
+
+        Shape clip = null;
         if (svgElement.getOwnerSVGElement() != null) {
             // <!> as it is already done in the JSVGCanvas, we don't have to
             // do it for the top most svg element
             node.setTransform(at);
+            // Get the overflow property on the svg element
+            if (CSSUtilities.convertOverflow(svgElement)) { // hidden
+                float [] offsets = CSSUtilities.convertClip(svgElement);
+                if (offsets == null) { // auto
+                    clip = new Rectangle2D.Float(x, y, w, h);
+                } else { // clip
+                    // offsets[0] = top
+                    // offsets[1] = right
+                    // offsets[2] = bottom
+                    // offsets[3] = left
+                    clip = new Rectangle2D.Float(x+offsets[3],
+                                                 y+offsets[0],
+                                                 w-offsets[1],
+                                                 h-offsets[2]);
+                }
+            }
+        } else {
+            clip = new Rectangle2D.Float(x, y, w, h);
         }
-        try {
-            at = at.createInverse(); // clip in user space
-
-            GraphicsNodeRableFactory gnrFactory
-                = ctx.getGraphicsNodeRableFactory();
-
-            Filter filter = gnrFactory.createGraphicsNodeRable(node,
-                                       ctx.getGraphicsNodeRenderContext());
-
-            Shape clip = at.createTransformedShape
-                (new Rectangle2D.Float(x, y, w, h));
-
-            node.setClip(new ClipRable8Bit(filter, clip));
-
-        } catch (java.awt.geom.NoninvertibleTransformException ex) {}
+        if (clip != null) {
+            try {
+                at = at.createInverse(); // clip in user space
+                clip = at.createTransformedShape(clip);
+                GraphicsNodeRableFactory gnrFactory
+                    = ctx.getGraphicsNodeRableFactory();
+                Filter filter =
+                    gnrFactory.createGraphicsNodeRable(node,
+                                     ctx.getGraphicsNodeRenderContext());
+                node.setClip(new ClipRable8Bit(filter, clip));
+            } catch (NoninvertibleTransformException ex) {}
+        }
 
         // <!> TODO only when binding is enabled
         BridgeEventSupport.addDOMListener(ctx, svgElement);
