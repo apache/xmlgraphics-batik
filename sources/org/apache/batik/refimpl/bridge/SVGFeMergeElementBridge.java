@@ -107,6 +107,7 @@ public class SVGFeMergeElementBridge implements FilterBridge, SVGConstants {
         }
 
         if (srcs.size() == 0) { // no subelement found
+            // <!> FIXME :  the result is unspecified
             return null;
         }
 

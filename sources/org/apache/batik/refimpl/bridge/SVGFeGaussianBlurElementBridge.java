@@ -79,6 +79,7 @@ public class SVGFeGaussianBlurElementBridge implements FilterBridge,
             stdDeviationX = deviationPair[0].floatValue();
         }
         if (stdDeviationX == 0) {
+            // <!> FIXME :  the result is a fully transparent image
             // A value of zero disables the effect of the filter primitive
             return null;
         } else if (stdDeviationX < 0) {
@@ -94,6 +95,7 @@ public class SVGFeGaussianBlurElementBridge implements FilterBridge,
             stdDeviationY = deviationPair[1].floatValue();
         }
         if (stdDeviationY == 0) {
+            // <!> FIXME :  the result is a fully transparent image
             // A value of zero disables the effect of the filter primitive
             return null;
         } else if (stdDeviationY < 0) {

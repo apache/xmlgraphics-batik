@@ -102,51 +102,16 @@ public class SVGUtilities implements SVGConstants {
     public static int parseCoordinateSystem(String value) {
         int len = value.length();
         if (len == 0) {
-            value = VALUE_OBJECT_BOUNDING_BOX;
-            len = value.length();
+            // INTERNAL : should never happen
+            throw new Error("Can't accept empty coordinate system");
         }
-        if (len != 0) {
-            switch(value.charAt(0)) {
-            case 'u':
-                if (len == VALUE_USER_SPACE_ON_USE.length() &&
-                    value.charAt(1) == 's' &&
-                    value.charAt(2) == 'e' &&
-                    value.charAt(3) == 'r' &&
-                    value.charAt(4) == 'S' &&
-                    value.charAt(5) == 'p' &&
-                    value.charAt(6) == 'a' &&
-                    value.charAt(7) == 'c' &&
-                    value.charAt(8) == 'e' &&
-                    value.charAt(9) == 'O' &&
-                    value.charAt(10) == 'n' &&
-                    value.charAt(11) == 'U' &&
-                    value.charAt(12) == 's' &&
-                    value.charAt(13) == 'e') {
-                    return USER_SPACE_ON_USE;
-            }
-            case 'o':
-                if (len == VALUE_OBJECT_BOUNDING_BOX.length() &&
-                    value.charAt(1) == 'b' &&
-                    value.charAt(2) == 'j' &&
-                    value.charAt(3) == 'e' &&
-                    value.charAt(4) == 'c' &&
-                    value.charAt(5) == 't' &&
-                    value.charAt(6) == 'B' &&
-                    value.charAt(7) == 'o' &&
-                    value.charAt(8) == 'u' &&
-                    value.charAt(9) == 'n' &&
-                    value.charAt(10) == 'd' &&
-                    value.charAt(11) == 'i' &&
-                    value.charAt(12) == 'n' &&
-                    value.charAt(13) == 'g' &&
-                    value.charAt(14) == 'B' &&
-                    value.charAt(15) == 'o' &&
-                    value.charAt(16) == 'x') {
-                    return OBJECT_BOUNDING_BOX;
-                }
-            }
+        if (VALUE_USER_SPACE_ON_USE.equals(value)) {
+            return USER_SPACE_ON_USE;
+        } else if (VALUE_OBJECT_BOUNDING_BOX.equals(value)) {
+            return OBJECT_BOUNDING_BOX;
+        } else {
+            throw new IllegalArgumentException("Bad coordinate system: "+value);
         }
-        throw new IllegalArgumentException("Bad coordinate system: "+value);
     }
 
     /**

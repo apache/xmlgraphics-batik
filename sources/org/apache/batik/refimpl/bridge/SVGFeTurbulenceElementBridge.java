@@ -78,7 +78,7 @@ public class SVGFeTurbulenceElementBridge implements FilterBridge,
         Float baseFrequencies[] =
             SVGUtilities.buildFloatPair(baseFrequencyAttr);
 
-        float baseFrequencyX = 0; // default is 0
+        float baseFrequencyX = 0.001f; // default is 0
         if (baseFrequencies[0] != null) {
             baseFrequencyX = baseFrequencies[0].floatValue();
         }
