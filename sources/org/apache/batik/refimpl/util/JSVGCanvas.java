@@ -61,7 +61,7 @@ import org.apache.batik.dom.svg.SVGDocumentLoader;
 import org.apache.batik.dom.svg.SVGOMDocument;
 
 import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.GraphicsNodeTreeIterator;
+// import org.apache.batik.gvt.GraphicsNodeTreeIterator;
 import org.apache.batik.gvt.Selectable;
 import org.apache.batik.gvt.Selector;
 
@@ -649,7 +649,7 @@ public class JSVGCanvas
      * Selector instances.
      */
     public void initSelectors(GraphicsNode treeRoot) {
-        Iterator nodeIter = new GraphicsNodeTreeIterator(treeRoot);
+        /* Iterator nodeIter = new GraphicsNodeTreeIterator(treeRoot);
         if (textSelector == null) {
             textSelector =
                 new ConcreteTextSelector(
@@ -663,7 +663,7 @@ public class JSVGCanvas
                              (GraphicsNodeMouseListener) textSelector);
                 // should make sure this does not add duplicates
             }
-        }
+            }*/
         selectionHighlightShape = null;
         canvasSpaceHighlightShape = null;
     }

@@ -39,7 +39,6 @@ import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
 import org.apache.batik.gvt.filter.Clip;
 import org.apache.batik.gvt.filter.Mask;
-import org.apache.batik.gvt.filter.FilterRegion;
 
 import org.apache.batik.refimpl.bridge.resources.Messages;
 

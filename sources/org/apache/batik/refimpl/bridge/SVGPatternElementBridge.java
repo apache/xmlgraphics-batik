@@ -17,7 +17,8 @@ import java.io.StringReader;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.GVTBuilder;
 import org.apache.batik.bridge.PaintBridge;
-import org.apache.batik.util.awt.geom.AffineTransformSource;
+import org.apache.batik.bridge.ObjectBoundingBoxViewport;
+import org.apache.batik.bridge.Viewport;
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GVTFactory;
@@ -82,6 +83,13 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
                                 GraphicsNode paintedNode,
                                 Element paintedElement,
                                 Element paintElement) {
+        String patternContentUnits 
+            = paintElement.getAttributeNS(null, 
+                                          ATTR_PATTERN_CONTENT_UNITS);
+        if(patternContentUnits.length() == 0){
+            patternContentUnits = VALUE_USER_SPACE_ON_USE;
+        }
+
         //
         // Build pattern content
         //
@@ -89,6 +97,13 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
 
         CompositeGraphicsNode patternContentNode
             = ctx.getGVTFactory().createCompositeGraphicsNode();
+
+        // If we are in objectBoundingBox units, percentages
+        // are relative to a (0, 0, 1, 1) viewport
+        Viewport oldViewport = ctx.getCurrentViewport();        
+        if(VALUE_OBJECT_BOUNDING_BOX.equals(patternContentUnits)){
+            ctx.setCurrentViewport(new ObjectBoundingBoxViewport());
+        }
 
         // build the GVT tree that represents the pattern
         for(Node child=paintElement.getFirstChild();
@@ -110,6 +125,8 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
             return null;
         }
 
+        ctx.setCurrentViewport(oldViewport);
+
         //
         // Get the patternTransfrom
         //
@@ -118,19 +135,11 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
              ctx.getParserFactory());
 
         //
-        // Get unit processor to compute the pattern region
-        //
-        CSSStyleDeclaration cssDecl
-            = ctx.getViewCSS().getComputedStyle(paintedElement, null);
-
-        // <!> QUESTION : SHOULD THE UNIT PROCESSOR COME FROM THE paintedElement
-        //     OR FROM THE paintElement. Same question for the overflow property.
-        UnitProcessor.Context uctx
-            = new DefaultUnitProcessorContext(ctx, cssDecl);
-
-        //
         // Get the overflow property on the pattern element
         //
+        CSSStyleDeclaration cssDecl
+            = ctx.getViewCSS().getComputedStyle(paintElement, null);
+
         CSSPrimitiveValue vbOverflow 
             = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue(OVERFLOW_PROPERTY);
         
@@ -147,8 +156,14 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
         }
 
         //
-        // Get pattern region
+        // Get pattern region. This is from the paintedElement, as
+        // percentages are from the referencing element.
         //
+        CSSStyleDeclaration cssDeclPainted
+            = ctx.getViewCSS().getComputedStyle(paintedElement, null);
+        UnitProcessor.Context uctx
+            = new DefaultUnitProcessorContext(ctx, cssDecl);
+
         Rectangle2D patternRegion 
             = SVGUtilities.convertPatternRegion(paintElement,
                                                 paintedElement,
@@ -191,8 +206,6 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
         AffineTransform patternContentTransform = null;
 
         if(!hasViewBox){
-            String patternContentUnits 
-                = paintElement.getAttributeNS(null, ATTR_PATTERN_CONTENT_UNITS);
             if(VALUE_OBJECT_BOUNDING_BOX.equals(patternContentUnits)){
                 Rectangle2D bounds = paintedNode.getGeometryBounds();
                 patternContentTransform = new AffineTransform();

@@ -13,6 +13,7 @@ import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.CachableRed;
 import org.apache.batik.gvt.filter.Mask;
+import org.apache.batik.gvt.filter.PadRable;
 import org.apache.batik.gvt.filter.PadMode;
 
 import java.awt.Shape;
@@ -118,75 +119,31 @@ public class ConcreteMaskRable
      */
     public Rectangle2D getBounds2D(){
         return (Rectangle2D)filterRegion.clone();
-        // return getSource().getBounds2D();
     }
 
     public RenderedImage createRendering(RenderContext rc) {
+        //
+        // Get the mask content
+        //
         Filter maskSrc = new ConcreteGraphicsNodeRable(getMaskNode());
-        maskSrc = new FilterAsAlphaRable(maskSrc);
-
-        AffineTransform at = rc.getTransform();
-        AffineTransform adjustTxf = new AffineTransform();
-        
-        // Adjust the transform to fit the source region
-        // into this mask's region. Add an additional 
-        // transform so that maskSrc bounds match the desired
-        // maskBounds, as defined by the filterRegion
-        Rectangle2D maskSrcBounds = maskSrc.getBounds2D();
-        Rectangle2D maskBounds = getBounds2D();
-
-        if(maskSrcBounds.getWidth() == 0 
-           ||
-           maskSrcBounds.getHeight() == 0
-           ||
-           maskBounds.getWidth() == 0
-           ||
-           maskBounds.getHeight() == 0){
-            return null;
-        }
-
-        adjustTxf.translate(maskBounds.getX(),
-                            maskBounds.getY());
-
-        adjustTxf.scale(maskBounds.getWidth()/maskSrcBounds.getWidth(),
-                        maskBounds.getHeight()/maskSrcBounds.getHeight());
-
-        adjustTxf.translate(- maskSrcBounds.getX(),
-                            - maskSrcBounds.getY());
-
-        // Just copy over the rendering hints.
-        RenderingHints rh = rc.getRenderingHints();
-        if (rh == null) rh = new RenderingHints(null);
-
-        Shape aoi = rc.getAreaOfInterest();
-        if(aoi == null)
-            aoi = getBounds2D();
-
-        RenderedImage ri;
-
-        ri = getSource().createRendering(new RenderContext(at, aoi, rh));
-        CachableRed cr = ConcreteRenderedImageCachableRed.wrap(ri);
-
-        //
-        // Compute mask transform and new area of interest for
-        // mask.
-        //
-        Shape maskAoi = aoi;
-        try{
-            maskAoi = adjustTxf.createInverse().createTransformedShape(aoi);
-        }catch(NoninvertibleTransformException e){
-            // With the checks made above, this should never happen
-            throw new Error();
-        }
-
-        AffineTransform maskTxf = new AffineTransform(at);
-        maskTxf.concatenate(adjustTxf);
-        ri = maskSrc.createRendering(new RenderContext(maskTxf, maskAoi, rh));
+        PadRable maskPad = new ConcretePadRable(maskSrc, getBounds2D(),
+                                                PadMode.ZERO_PAD);
+        maskSrc = new FilterAsAlphaRable(maskPad);
+        RenderedImage ri = maskSrc.createRendering(rc);
         CachableRed maskCr = ConcreteRenderedImageCachableRed.wrap(ri);
+
+        //
+        // Get the masked content
+        //
+        PadRable maskedPad = new ConcretePadRable(getSource(),
+                                                  getBounds2D(),
+                                                  PadMode.ZERO_PAD);
+        ri = maskedPad.createRendering(rc);
+        CachableRed cr = ConcreteRenderedImageCachableRed.wrap(ri);
 
         CachableRed ret = new MultiplyAlphaRed(cr, maskCr);
 
-        ret = new PadRed(ret, cr.getBounds(), PadMode.ZERO_PAD, rh);
+        // ret = new PadRed(ret, cr.getBounds(), PadMode.ZERO_PAD, rh);
 
         return ret;
     }

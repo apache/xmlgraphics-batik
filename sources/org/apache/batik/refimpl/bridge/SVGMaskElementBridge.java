@@ -21,6 +21,9 @@ import org.apache.batik.bridge.BridgeMutationEvent;
 import org.apache.batik.bridge.MaskBridge;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.GVTBuilder;
+import org.apache.batik.bridge.ObjectBoundingBoxViewport;
+import org.apache.batik.bridge.Viewport;
+
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.Filter;
@@ -59,7 +62,9 @@ public class SVGMaskElementBridge
                            BridgeContext bridgeContext,
                            Element maskElement,
                            Element maskedElement) {
-
+        //
+        // Get the mask region
+        //
         CSSStyleDeclaration cssDecl
             = bridgeContext.getViewCSS().getComputedStyle
             (maskElement, null);
@@ -68,7 +73,6 @@ public class SVGMaskElementBridge
             = new DefaultUnitProcessorContext(bridgeContext, 
                                               cssDecl);
 
-        // Get the mask region
         Rectangle2D maskRegion 
             = SVGUtilities.convertMaskRegion(maskElement,
                                              maskedElement,
@@ -79,10 +83,27 @@ public class SVGMaskElementBridge
             throw new Error();
         }
 
+        //
         // Build the GVT tree that represents the mask
+        //
+        String maskContentUnits 
+            = maskElement.getAttributeNS(null,
+                                         ATTR_MASK_CONTENT_UNITS);
+        if(maskContentUnits.length() == 0){
+            maskContentUnits = VALUE_USER_SPACE_ON_USE;
+        }
+
+        Viewport oldViewport = bridgeContext.getCurrentViewport();
+        if(VALUE_OBJECT_BOUNDING_BOX.equals(maskContentUnits)){
+            bridgeContext.setCurrentViewport(new ObjectBoundingBoxViewport());
+        }
+
         GVTBuilder builder = bridgeContext.getGVTBuilder();
         CompositeGraphicsNode maskNode
             = bridgeContext.getGVTFactory().createCompositeGraphicsNode();
+        CompositeGraphicsNode maskNodeContent
+            = bridgeContext.getGVTFactory().createCompositeGraphicsNode();
+        maskNode.getChildren().add(maskNodeContent);
         for(Node child=maskElement.getFirstChild();
             child != null;
             child = child.getNextSibling()){
@@ -91,19 +112,23 @@ public class SVGMaskElementBridge
                 GraphicsNode node
                     = builder.build(bridgeContext, e) ;
                 if(node != null){
-                    maskNode.getChildren().add(node);
+                    maskNodeContent.getChildren().add(node);
                 }
             }
         }
 
-        // <!> FIXME: Compute the global matrix of this mask Element
-        //            Here we just consider the additional transform on mask
+        bridgeContext.setCurrentViewport(oldViewport);
+
+        //
+        // Get the mask transform
+        //
         AffineTransform at = AWTTransformProducer.createAffineTransform
             (new StringReader(maskElement.getAttributeNS(null, ATTR_TRANSFORM)),
              bridgeContext.getParserFactory());
-        maskNode.setTransform(at);
+        at = SVGUtilities.convertAffineTransform(at, maskedNode,
+                                                 maskContentUnits);
+        maskNodeContent.setTransform(at);
 
-        // OTHER PROBLEM: SHOULD TAKE MASK REGION INTO ACCOUNT
         Filter filter = maskedNode.getFilter();
         if (filter == null) {
             // Make the initial source as a RenderableImage
@@ -112,7 +137,8 @@ public class SVGMaskElementBridge
             filter = gnrFactory.createGraphicsNodeRable(maskedNode);
         }
 
-        return new ConcreteMaskRable(filter, maskNode, maskRegion);
+        return new ConcreteMaskRable(filter, maskNode, 
+                                     maskRegion);
     }
 
     public void update(BridgeMutationEvent evt) {

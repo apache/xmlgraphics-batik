@@ -139,6 +139,7 @@ public interface SVGConstants extends CSSConstants {
     String ATTR_LIMITING_CONE_ANGLE = "limitingConeAngle";
     String ATTR_NUM_OCTAVES = "numOctaves";
     String ATTR_MASK = "mask";
+    String ATTR_MASK_CONTENT_UNITS = "maskContentUnits";
     String ATTR_MASK_UNITS = "maskUnits";
     String ATTR_MEDIA = "media";
     String ATTR_METHOD = "method";
