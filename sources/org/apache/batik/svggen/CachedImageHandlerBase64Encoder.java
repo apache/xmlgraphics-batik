@@ -66,7 +66,8 @@ public class CachedImageHandlerBase64Encoder extends DefaultCachedImageHandler {
                                               double srcWidth,
                                               double srcHeight,
                                               double dstWidth,
-                                              double dstHeight) {
+                                              double dstHeight,
+                                              SVGGeneratorContext generatorContext) {
 
         // If scaling is necessary, create a transform, since "width" and "height"
         // have no effect on a <use> element referring to an <image> element.

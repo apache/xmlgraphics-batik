@@ -42,14 +42,14 @@ gAARECACAkRAgEhq9ABtlAUWpLluEgAAAABJRU5ErkJggg==" xlink:type="simple" xlink:actu
       <g class="testC1">
         <rect width="100" x="5" height="75" y="10" class="testC2" />
         <use transform="matrix(1,0,0,1,5,10)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC3" xlink:actuate="onRequest" xlink:show="replace" />
-        <use transform="translate(150,0) matrix(0.5,0,0,0.533333333333,5,10)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC4" xlink:actuate="onRequest" xlink:show="replace" />
+        <use transform="translate(150,0) matrix(0.5,0,0,0.5333,5,10)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC4" xlink:actuate="onRequest" xlink:show="replace" />
         <use transform="translate(0,80) matrix(0.8,0,0,1.2,5,10)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage2" xlink:type="simple" class="testC5" xlink:actuate="onRequest" xlink:show="replace" />
         <rect x="5" y="10" transform="translate(150,80)" width="40" class="testC6" height="30" />
         <use transform="translate(150,80) matrix(0.8,0,0,1.2,5,10)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage3" xlink:type="simple" class="testC7" xlink:actuate="onRequest" xlink:show="replace" />
         <use transform="translate(0,160) matrix(0.5,0,0,0.3,2.5,3)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC8" xlink:actuate="onRequest" xlink:show="replace" />
         <use transform="translate(150,160) matrix(1,0,0,1,5,10)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage4" xlink:type="simple" class="testC9" xlink:actuate="onRequest" xlink:show="replace" />
         <rect x="5" y="10" transform="translate(0,240)" width="50" class="testC10" height="40" />
-        <use transform="translate(0,240) matrix(0.5,0,0,0.533333333333,5,10)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC11" xlink:actuate="onRequest" xlink:show="replace" />
+        <use transform="translate(0,240) matrix(0.5,0,0,0.5333,5,10)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC11" xlink:actuate="onRequest" xlink:show="replace" />
       </g>
     </g>
   </g>
