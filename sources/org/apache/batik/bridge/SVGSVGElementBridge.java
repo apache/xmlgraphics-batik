@@ -172,15 +172,6 @@ public class SVGSVGElementBridge extends AbstractSVGBridge
     }
 
     /**
-     * Performs an update according to the specified event.
-     *
-     * @param evt the event describing the update to perform
-     */
-    public void update(BridgeMutationEvent evt) {
-        throw new Error("Not implemented");
-    }
-
-    /**
      * Builds using the specified BridgeContext and element, the
      * specified graphics node.
      *

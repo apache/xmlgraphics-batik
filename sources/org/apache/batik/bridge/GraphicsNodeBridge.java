@@ -45,13 +45,6 @@ public interface GraphicsNodeBridge extends Bridge {
     void buildGraphicsNode(BridgeContext ctx, Element e, GraphicsNode node);
 
     /**
-     * Performs an update according to the specified event.
-     *
-     * @param evt the event describing the update to perform
-     */
-    void update(BridgeMutationEvent evt);
-
-    /**
      * Returns true if the bridge handles container element, false
      * otherwise.
      */

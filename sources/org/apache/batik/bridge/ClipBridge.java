@@ -35,11 +35,4 @@ public interface ClipBridge extends Bridge {
                          Element clipElement,
                          Element clipedElement,
                          GraphicsNode clipedNode);
-
-    /**
-     * Performs an update according to the specified event.
-     *
-     * @param evt the event describing the update to perform
-     */
-    void update(BridgeMutationEvent evt);
 }

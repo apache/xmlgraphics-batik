@@ -160,13 +160,4 @@ public class SVGClipPathElementBridge extends AbstractSVGBridge
         }
         return new ClipRable8Bit(filter, clipPath);
     }
-
-    /**
-     * Performs an update according to the specified event.
-     *
-     * @param evt the event describing the update to perform
-     */
-    public void update(BridgeMutationEvent evt) {
-        throw new Error("Not implemented");
-    }
 }

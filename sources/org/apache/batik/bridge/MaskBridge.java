@@ -33,12 +33,4 @@ public interface MaskBridge extends Bridge {
                     Element maskedElement,
                     GraphicsNode maskedNode);
 
-    /**
-     * Updates the <tt>Mask</tt> object to reflect the current
-     * configuration in the <tt>Element</tt> that models the mask.
-     *
-     * @param evt the event that describes the modification to perform
-     */
-    void update(BridgeMutationEvent evt);
-
 }
