@@ -218,7 +218,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
             }
         }
 
-        ctx = new BridgeContext(userAgent);
+        ctx = createBridgeContext();
         SVGOMDocument svgDoc = (SVGOMDocument)document;
         SVGSVGElement root = svgDoc.getRootElement();
 
@@ -315,6 +315,15 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
         if (!(gn instanceof CanvasGraphicsNode))
             return null;
         return (CanvasGraphicsNode)gn;
+    }
+
+    /**
+     * Factory method for constructing an configuring a
+     * BridgeContext so subclasses can insert new/modified
+     * bridges in the context.
+     */
+    protected BridgeContext createBridgeContext() {
+        return new BridgeContext(userAgent);
     }
 
     /**
