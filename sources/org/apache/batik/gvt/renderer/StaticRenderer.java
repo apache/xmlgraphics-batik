@@ -26,6 +26,7 @@ import org.apache.batik.ext.awt.image.GraphicsUtil;
 import org.apache.batik.ext.awt.image.PadMode;
 import org.apache.batik.ext.awt.image.rendered.CachableRed;
 import org.apache.batik.ext.awt.image.rendered.PadRed;
+import org.apache.batik.ext.awt.image.rendered.TranslateRed;
 
 import java.util.Iterator;
 import java.util.Stack;
@@ -403,9 +404,14 @@ public class StaticRenderer implements ImageRenderer {
             workingRaster     = null;
             workingOffScreen  = null;
 
+            AffineTransform at, rcAT;
+            at = nodeRenderContext.getTransform();
+            rcAT = new AffineTransform(at.getScaleX(), at.getShearY(),
+                                       at.getShearX(), at.getScaleY(),
+                                       0, 0);
+
             RenderContext rc = new RenderContext
-                (nodeRenderContext.getTransform(),
-                 null,
+                (rcAT, null,
                  nodeRenderContext.getRenderingHints());
             
             RenderedImage ri = rootGNR.createRendering(rc);
@@ -413,6 +419,10 @@ public class StaticRenderer implements ImageRenderer {
                 return;
 
             rootCR = GraphicsUtil.wrap(ri);
+            int dx = Math.round((float)at.getTranslateX()+0.5f);
+            int dy = Math.round((float)at.getTranslateY()+0.5f);
+            rootCR = new TranslateRed(rootCR, rootCR.getMinX()+dx, 
+                                      rootCR.getMinY()+dy);
             rootCR = GraphicsUtil.convertTosRGB(rootCR);
 
         }

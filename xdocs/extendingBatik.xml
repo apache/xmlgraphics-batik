@@ -75,32 +75,60 @@
             There are three basic options Batik considers:
             </p>
             <dl>
-                <dt> Tags appear in the DOM tree. </dt>
+                <dt> Having your tags appear in the DOM tree. </dt>
                 <dd><br/>
-                If your only interest if for the custom tags to appear
-                in the SVG DOM tree, you need do nothing more than
-                provide appropriate namespacing and DTD(s) (ie. simply
-                make your new content well formed and/or valid XML).
-                Batik will ignore the branches of the DOM that it
-                doesn't understand.
+                As long as your custom tags are well formed (and
+                preferably valid) XML they will appear in the SVG DOM
+                tree.  When rendering Batik will skip branches of the
+                tree that use a tag it doesn't know about (so even if
+                standard SVG tags are child nodes they will not be
+                displayed).
+                <br/>
+                It is strongly suggested that you make use of XML
+                namespaces for your personal tags even if you are not
+                planning on validating the XML.
+                <br/>
+                This can be useful if you want to add extra pieces of
+                data into the standard SVG drawing.  These might be
+                annotations, or other application specific data.  In
+                general this wouldn't be particularly useful with the
+                svgbrowser or rasterizer, but might be very useful if
+                you were writing a custom browser, rasterizer, or
+                pre/post processing tools.
                 </dd>
     
                 <dt> Tags use a custom element in  the DOM tree</dt>
                 <dd><br/>
+
                 If you need your tags to use a custom element subclass
                 in the DOM tree (for behavioral or performance
-                reasons) then you need to provide an 
-                <link href="#domExtension"> extension to the Batik
-                DOM.</link>
+                reasons) then you need to provide an <link
+                href="#domExtension"> extension to the Batik
+                DOM.</link> <br/>
+
+                Doing this gives you the opportunity to override the
+                standard methods on DOM elements, or to provide
+                additional methods to your DOM elements.  For example
+                all of the SVG elements in Batik implement the
+                getAttribute methods to respect the CSS styling
+                properties.  They also provide additional methods to
+                implement the SVG DOM.
                 </dd>
     
-                <dt> Tags affect rendering.</dt>
+                <dt> Tags that get rendered.</dt>
                 <dd><br/>
-                If your interest is in having the new tag participate
-                in or affect the rendering or transcoding operations
-                then you must provide an <link href="#bridgeExtension">
-                extension to the Batik Bridge</link> (you may
-                also need to write an extension to the DOM as well).
+
+                Probably the most common reason to develop custom tags
+                is to add new rendering primitives to the SVG
+                language.  In this case you must provide an <link
+                href="#bridgeExtension"> extension to the Batik
+                Bridge</link>.  The bridge extension is resposible for
+                constructing the class(es) that will handle the
+                rendering of the new primitive in Batik.  <br/>
+
+                In most cases it will also be necessary to write a DOM
+                extension to make the tag behave like other SVG tags
+                (most notably for support of styling).
                 </dd>
             </dl>
 
