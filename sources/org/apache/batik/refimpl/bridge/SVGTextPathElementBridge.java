@@ -69,7 +69,7 @@ import org.w3c.dom.svg.SVGDocument;
  */
 public class SVGTextPathElementBridge implements GraphicsNodeBridge, SVGConstants {
     protected final static Map fonts = new HashMap(11);
-    static { 
+    static {
         fonts.put("serif",           "Serif");
         fonts.put("Times",           "Serif");
         fonts.put("Times New Roman", "Serif");
@@ -89,8 +89,8 @@ public class SVGTextPathElementBridge implements GraphicsNodeBridge, SVGConstant
     public GraphicsNode createGraphicsNode(BridgeContext ctx,
                                            Element element){
 
-	//System.out.println("creating Text Path node");
-	
+        //System.out.println("creating Text Path node");
+
         SVGElement svgElement = (SVGElement) element;
         CSSStyleDeclaration cssDecl
             = ctx.getViewCSS().getComputedStyle(element, null);
@@ -100,7 +100,7 @@ public class SVGTextPathElementBridge implements GraphicsNodeBridge, SVGConstant
 
         ShapeNode node = ctx.getGVTFactory().createShapeNode();
 
-	// Initialize the style properties
+        // Initialize the style properties
         ShapePainter painter
             = CSSUtilities.convertStrokeAndFill(svgElement, node,
                                                 ctx, cssDecl, uctx);
@@ -137,40 +137,40 @@ public class SVGTextPathElementBridge implements GraphicsNodeBridge, SVGConstant
 
         // Location
         String s = element.getAttributeNS(null, ATTR_START_OFFSET);
-	// is this really a HORIZONTAL LENGTH?
+        // is this really a HORIZONTAL LENGTH?
         float startOffset = UnitProcessor.svgToUserSpace(s,
-							 (SVGElement)element,
-							 UnitProcessor.HORIZONTAL_LENGTH,
-							 uctx);
+                                                         (SVGElement)element,
+                                                         UnitProcessor.HORIZONTAL_LENGTH,
+                                                         uctx);
 
-	//System.out.println("--- startOffset = " + startOffset);
+        //System.out.println("--- startOffset = " + startOffset);
 
         // TextLength
         s = element.getAttributeNS(null, ATTR_TEXT_LENGTH);
-	// is this really a HORIZONTAL LENGTH?
-	boolean lengthSpecified = true;
+        // is this really a HORIZONTAL LENGTH?
+        boolean lengthSpecified = true;
         float textLength = UnitProcessor.svgToUserSpace(s,
-							(SVGElement)element,
-							UnitProcessor.HORIZONTAL_LENGTH,
-							uctx);
+                                                        (SVGElement)element,
+                                                        UnitProcessor.HORIZONTAL_LENGTH,
+                                                        uctx);
 
-	// FIXME : do this a better way
-	if (textLength == 0f) {
-	    lengthSpecified = false;
-	}
-	
+        // FIXME : do this a better way
+        if (textLength == 0f) {
+            lengthSpecified = false;
+        }
 
-	//System.out.println("--- textLength = " + textLength);
+
+        //System.out.println("--- textLength = " + textLength);
 
         s = element.getAttributeNS(null, ATTR_METHOD);
         int method = TextPathLayout.ADJUST_SPACING;
         if (s.equals(VALUE_ALIGN)) {
-	    method = TextPathLayout.ADJUST_SPACING;
-	} else if (s.equals(VALUE_STRETCH)) {
-	    method = TextPathLayout.ADJUST_GLYPHS;
-	}
+            method = TextPathLayout.ADJUST_SPACING;
+        } else if (s.equals(VALUE_STRETCH)) {
+            method = TextPathLayout.ADJUST_GLYPHS;
+        }
 
-	//System.out.println("--- method = " + method);
+        //System.out.println("--- method = " + method);
 
 
         // !!! TODO better text handling
@@ -184,7 +184,7 @@ public class SVGTextPathElementBridge implements GraphicsNodeBridge, SVGConstant
         }
         text = (text.length() == 0) ? " " : text;
 
-	Map attrs = new HashMap();
+        Map attrs = new HashMap();
 
         // Font size
         float fs = CSSUtilities.convertFontSize((SVGElement)element,
@@ -211,7 +211,7 @@ public class SVGTextPathElementBridge implements GraphicsNodeBridge, SVGConstant
             align = TextPathLayout.ALIGN_END;
         }
 
-	//System.out.println("--- align = " + align);
+        //System.out.println("--- align = " + align);
 
         // Font family
         CSSValueList ff = (CSSValueList)cssDecl.getPropertyCSSValue
@@ -223,7 +223,7 @@ public class SVGTextPathElementBridge implements GraphicsNodeBridge, SVGConstant
         }
         s = (s == null) ? "SansSerif" : s;
         attrs.put(TextAttribute.FAMILY, s);
-                        
+
         // Font weight
         v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue
             (FONT_WEIGHT_PROPERTY);
@@ -357,75 +357,76 @@ public class SVGTextPathElementBridge implements GraphicsNodeBridge, SVGConstant
                 }
             }
         }
-       
-
-	Font font = new Font(attrs);
 
 
-	// get the path
+        Font font = new Font(attrs);
 
-	URIResolver ur;
-	ur = new URIResolver((SVGDocument)element.getOwnerDocument(),
-			     ctx.getDocumentLoader());
-	String uriString = XLinkSupport.getXLinkHref(element);
-	Shape path = null;
 
-	try {
-	    Node n = ur.getNode(uriString);
-	    if (n.getOwnerDocument() == null) {
-		throw new Error("Can't use documents");
-	    }
-	    Element elt = (Element)n;
-	    boolean local =
-		n.getOwnerDocument() == element.getOwnerDocument();
-	
-	    Element pathElement = null;
-	    if (local) {
-		pathElement = (Element)elt.cloneNode(true);
-	    } else {
-		pathElement = (Element)element.getOwnerDocument().importNode(elt, true);
+        // get the path
 
-	    }
-	
-	    if (pathElement != null) {
-	    
-		String d = pathElement.getAttributeNS(null, ATTR_D);
-		try {
-		
-		    // add the transform for the path as well
-		
-		    path = AWTPathProducer.createShape(new StringReader(d),
-						       PathIterator.WIND_NON_ZERO,
-						       ctx.getParserFactory());
-		} catch (IOException e) {
-		    throw new RuntimeException(e.getMessage());
-		}
-	    
-	    }
-	} catch (Exception ex) {
-	    System.out.println("bad url " + uriString);
-	    ex.printStackTrace();
-	}
+        URIResolver ur;
+        ur = new URIResolver((SVGDocument)element.getOwnerDocument(),
+                             ctx.getDocumentLoader());
+        String uriString = XLinkSupport.getXLinkHref(element);
+        Shape path = null;
 
-	GlyphVector vector = font.createGlyphVector(new FontRenderContext(null, true, true),
-						    new String(text));
+        try {
+            Node n = ur.getNode(uriString);
+            if (n.getOwnerDocument() == null) {
+                throw new Error("Can't use documents");
+            }
+            Element elt = (Element)n;
+            boolean local =
+                n.getOwnerDocument() == element.getOwnerDocument();
 
-	//System.out.println("num glyphs in vector == " + vector.getNumGlyphs());
+            Element pathElement = null;
+            if (local) {
+                pathElement = (Element)elt.cloneNode(true);
+            } else {
+                pathElement = (Element)element.getOwnerDocument().importNode(elt, true);
 
-	Shape shape = null;
-	
-	if (!lengthSpecified) {
-	    textLength = (float) vector.getVisualBounds().getWidth();
-	} 
+            }
 
-	shape = TextPathLayout.layoutGlyphVector(vector, path, align, startOffset, textLength, method);
-	
-	node.setShape(shape);
-	    
+            if (pathElement != null) {
+
+                String d = pathElement.getAttributeNS(null, ATTR_D);
+                try {
+
+                    // add the transform for the path as well
+
+                    path = AWTPathProducer.createShape(new StringReader(d),
+                                                       PathIterator.WIND_NON_ZERO,
+                                                       ctx.getParserFactory());
+                } catch (IOException e) {
+                    throw new RuntimeException(e.getMessage());
+                }
+
+            }
+        } catch (Exception ex) {
+            System.out.println("bad url " + uriString);
+            ex.printStackTrace();
+        }
+
+        GlyphVector vector = font.createGlyphVector(new FontRenderContext(null, true, true),
+                                                    new String(text));
+
+        //System.out.println("num glyphs in vector == " + vector.getNumGlyphs());
+
+        Shape shape = null;
+
+        if (!lengthSpecified) {
+            textLength = (float) vector.getVisualBounds().getWidth();
+        }
+
+        shape = TextPathLayout.layoutGlyphVector(vector, path, align, startOffset, textLength, method);
+
+        node.setShape(shape);
+
         return node;
     }
 
-    public void build(GraphicsNode node, BridgeContext ctx, Element elt) {
+    public void buildGraphicsNode(GraphicsNode node, BridgeContext ctx,
+                                  Element elt) {
     }
 
     public void update(BridgeMutationEvent evt) {
