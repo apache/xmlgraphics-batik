@@ -212,7 +212,6 @@ public class RhinoInterpreter implements Interpreter {
 
         Object rv = null;
         final Context ctx = enterContext();
-
         try {
             rv = ctx.evaluateReader(globalObject,
                                     scriptreader,
@@ -258,75 +257,80 @@ public class RhinoInterpreter implements Interpreter {
      */
     public Object evaluate(final String scriptstr)
         throws InterpreterException {
-
-        final Context ctx = enterContext();
-
-        Script script = null;
-        Entry et = null;
-        Iterator it = compiledScripts.iterator();
-        // between nlog(n) and log(n) because it is
-        // an AbstractSequentialList
-        while (it.hasNext()) {
-            if ((et = (Entry)(it.next())).str.equals(scriptstr)) {
-                // if it is not at the end, remove it because
-                // it will change from place (it is faster
-                // to remove it now)
-                script = et.script;
-                it.remove();
-                break;
-            }
-        }
-
-        if (script == null) {
-            // this script has not been compiled yet or has been forgotten
-            // since the compilation:
-            // compile it and store it for future use.
-
-            script = (Script)AccessController.doPrivileged(new PrivilegedAction() {
-                    public Object run() {
-                        try {
-                            return ctx.compileReader(globalObject,
-                                                     new StringReader(scriptstr),
-                                                     SOURCE_NAME_SVG,
-                                                     1, rhinoClassLoader);
-                        } catch (IOException io) {
-                            // Should never happen: we are using a string
-                            throw new Error();
-                        }
-                    }
-                });
-
-            if (compiledScripts.size()+1 > MAX_CACHED_SCRIPTS) {
-                // too many cached items - we should delete the oldest entry.
-                // all of this is very fast on linkedlist
-                compiledScripts.removeFirst();
-            }
-            // stroring is done here:
-            compiledScripts.addLast(new Entry(scriptstr, script));
-        } else {
-            // this script has been compiled before,
-            // just update it's index so it won't get deleted soon.
-            compiledScripts.addLast(et);
-        }
         Object rv = null;
+        final Context ctx = enterContext();
         try {
-            rv = script.exec(ctx, globalObject);
-        } catch (JavaScriptException e) {
-            // exception from JavaScript (possibly wrapping a Java Ex)
-            if (e.getValue() instanceof Exception) {
-                Exception ex = (Exception)e.getValue();
-                throw new InterpreterException(ex, ex.getMessage(), -1, -1);
-            } else
-                throw new InterpreterException(e, e.getMessage(), -1, -1);
-        } catch (WrappedException we) {
-            // main Rhino RuntimeException
-            throw
-                new InterpreterException((Exception)we.getWrappedException(),
-                                         we.getWrappedException().getMessage(),
-                                         -1, -1);
-        } catch (RuntimeException re) {
-            // other RuntimeExceptions
-            throw new InterpreterException(re, re.getMessage(), -1, -1);
+            Script script = null;
+            Entry et = null;
+            Iterator it = compiledScripts.iterator();
+            // between nlog(n) and log(n) because it is
+            // an AbstractSequentialList
+            while (it.hasNext()) {
+                if ((et = (Entry)(it.next())).str.equals(scriptstr)) {
+                    // if it is not at the end, remove it because
+                    // it will change from place (it is faster
+                    // to remove it now)
+                    script = et.script;
+                    it.remove();
+                    break;
+                }
+            }
+
+            if (script == null) {
+                // this script has not been compiled yet or has been forgotten
+                // since the compilation:
+                // compile it and store it for future use.
+
+                script = (Script)AccessController.doPrivileged
+                    (new PrivilegedAction() {
+                            public Object run() {
+                                try {
+                                    return ctx.compileReader
+                                        (globalObject, 
+                                         new StringReader(scriptstr),
+                                         SOURCE_NAME_SVG,
+                                         1, rhinoClassLoader);
+                                } catch (IOException io) {
+                                    // Should never happen: using a string
+                                    throw new Error();
+                                }
+                            }
+                        });
+
+                if (compiledScripts.size()+1 > MAX_CACHED_SCRIPTS) {
+                    // too many cached items - we should delete the
+                    // oldest entry.  all of this is very fast on
+                    // linkedlist
+                    compiledScripts.removeFirst();
+                }
+                // stroring is done here:
+                compiledScripts.addLast(new Entry(scriptstr, script));
+            } else {
+                // this script has been compiled before,
+                // just update it's index so it won't get deleted soon.
+                compiledScripts.addLast(et);
+            }
+
+            try {
+                rv = script.exec(ctx, globalObject);
+            } catch (JavaScriptException e) {
+                // exception from JavaScript (possibly wrapping a Java Ex)
+                if (e.getValue() instanceof Exception) {
+                    Exception ex = (Exception)e.getValue();
+                    throw new InterpreterException(ex, ex.getMessage(), -1,-1);
+                } else
+                    throw new InterpreterException(e, e.getMessage(), -1, -1);
+            } catch (WrappedException we) {
+                // main Rhino RuntimeException
+                throw
+                    new InterpreterException
+                    ((Exception)we.getWrappedException(),
+                     we.getWrappedException().getMessage(), -1, -1);
+            } catch (RuntimeException re) {
+                // other RuntimeExceptions
+                throw new InterpreterException(re, re.getMessage(), -1, -1);
+            }
+        
         } finally {
             Context.exit();
         }
@@ -337,6 +341,8 @@ public class RhinoInterpreter implements Interpreter {
      * For <code>RhinoInterpreter</code> this method does nothing.
      */
     public void dispose() {
+        Context.setCachingEnabled(false);
+        Context.setCachingEnabled(true);
     }
 
     /**
@@ -347,7 +353,7 @@ public class RhinoInterpreter implements Interpreter {
      */
     public void bindObject(String name, Object object) {
         Context ctx = enterContext();
-
+        
         try {
             if (name.equals(BIND_NAME_WINDOW) && object instanceof Window) {
                 window = (Window)object;
@@ -413,7 +419,6 @@ public class RhinoInterpreter implements Interpreter {
                      Object arg)
         throws JavaScriptException {
         Context ctx = enterContext();
-
         try {
             arg = Context.toObject(arg, globalObject);
             Object[] args = {arg};
@@ -431,7 +436,6 @@ public class RhinoInterpreter implements Interpreter {
                     ArgumentsBuilder ab)
         throws JavaScriptException {
         Context ctx = enterContext();
-
         try {
             ScriptableObject.callMethod(obj, methodName, ab.buildArguments());
         } finally {
@@ -446,7 +450,6 @@ public class RhinoInterpreter implements Interpreter {
                      Object[] args)
         throws JavaScriptException {
         Context ctx = enterContext();
-
         try {
             handler.call(ctx, globalObject, globalObject, args);
         } finally {
@@ -460,10 +463,9 @@ public class RhinoInterpreter implements Interpreter {
     void callHandler(Function handler,
                      ArgumentsBuilder ab)
         throws JavaScriptException {
-        Context ctx = enterContext();
-
+        Context ctx = enterContext(); 
         try {
-            handler.call(ctx, globalObject, globalObject, ab.buildArguments());
+           handler.call(ctx, globalObject, globalObject, ab.buildArguments());
         } finally {
             Context.exit();
         }

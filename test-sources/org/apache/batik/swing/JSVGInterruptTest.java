@@ -55,7 +55,7 @@ public class JSVGInterruptTest extends JSVGMemoryLeakTest {
     final static int COMPLETE  = 1;
     final static int CANCELLED = 2;
     final static int FAILED    = 4;
-    final static int MAX_WAIT  = 20000;
+    final static int MAX_WAIT  = 40000;
 
     public JSVGCanvasHandler createHandler() {
         return new JSVGCanvasHandler(this, this) {

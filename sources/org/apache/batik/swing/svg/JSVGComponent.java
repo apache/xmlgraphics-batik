@@ -341,6 +341,11 @@ public class JSVGComponent extends JGVTComponent {
         addSVGLoadEventDispatcherListener((SVGListener)listener);
     }
 
+    public void removeNotify() {
+        setSVGDocument(null);
+        super.removeNotify();
+    }
+
     /**
      * Tells whether the component use dynamic features to
      * process the current document.

@@ -82,8 +82,13 @@ public class AWTEventDispatcher implements EventDispatcher,
      * These are used to queue events while a rendering event
      * is in progress.
      */
-    protected List eventQueue = new LinkedList();
+    protected List    eventQueue = new LinkedList();
     protected boolean eventDispatchEnabled = true;
+    protected int     eventQueueMaxSize = MAX_QUEUE_SIZE;
+    /**
+     * default max size of the event queue.
+     */
+    final static int MAX_QUEUE_SIZE = 10;
 
     private int nodeIncrementEventID = KeyEvent.KEY_PRESSED;
     private int nodeIncrementEventCode = KeyEvent.VK_TAB;
@@ -104,6 +109,8 @@ public class AWTEventDispatcher implements EventDispatcher,
      * @param root the root node
      */
     public void setRootNode(GraphicsNode root) {
+        if (this.root != root)
+            eventQueue.clear(); // new root so clear 'old' events.
         this.root = root;
     }
 
@@ -121,6 +128,11 @@ public class AWTEventDispatcher implements EventDispatcher,
      * @param t the affine transform
      */
     public void setBaseTransform(AffineTransform t) {
+        if ((baseTransform != t) &&
+            ((baseTransform == null) || (!baseTransform.equals(t))))
+            // new Display transform so events are not where user
+            // thinks they were.
+            eventQueue.clear(); 
         baseTransform = t;
     }
 
@@ -309,16 +321,28 @@ public class AWTEventDispatcher implements EventDispatcher,
             }
         }
     }
+    public void setEventQueueMaxSize(int n) {
+        eventQueueMaxSize = n;
+        if (n == 0) eventQueue.clear();
+        while(eventQueue.size() > eventQueueMaxSize)
+            eventQueue.remove(0);
+    }
 
     /**
      * Dispatches the specified AWT event.
      * @param evt the event to dispatch
      */
     public void dispatchEvent(EventObject evt) {
-        if (root == null) 
+        if (root == null) // No root do not store anything.
             return;
         if (!eventDispatchEnabled) {
-            eventQueue.add(evt);
+            if (eventQueueMaxSize > 0) {
+                eventQueue.add(evt);
+                while (eventQueue.size() > eventQueueMaxSize)
+                    // Limit how many events we queue - don't want
+                    // user waiting forever for them to clear.
+                    eventQueue.remove(0); 
+            }
             return;
         }
         if (evt instanceof MouseEvent) {
