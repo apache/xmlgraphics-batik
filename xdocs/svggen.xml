@@ -39,6 +39,7 @@
                     <li><link href="#whatIsIt">What is <code>SVGGraphics2D</code>?</link></li>
                     <li><link href="#howToUse">How to use <code>SVGGraphics2D</code>?</link></li>
                     <li><link href="#custom">How to customize SVG Generation process?</link></li>
+                    <li><link href="#view">How to view the generated SVG document?</link></li>
                 </ul>                          
 
         </s1>
@@ -415,5 +416,54 @@ ctx.setExtensionHandler(new SubExtensionHandler());
 SVGGraphics2D g2d = new SVGGraphics2D(ctx, false);</source>
   </s2>
   </s1>
+
+    <anchor id="view"/>
+    <s1 title="How to view the generated SVG document">
+
+        <p>The following code example illustrates how to view the SVG content generated
+           by an <code>SVGGraphics2D</code> object.</p>
+
+<source>
+import org.apache.batik.swing.*;
+import org.apache.batik.svggen.*;
+import org.apache.batik.dom.svg.SVGDOMImplementation;
+import org.w3c.dom.*;
+import org.w3c.dom.svg.*;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.geom.*;
+
+DOMImplementation impl = SVGDOMImplementation.getDOMImplementation();
+String svgNS = SVGDOMImplementation.SVG_NAMESPACE_URI;
+SVGDocument doc = (SVGDocument)impl.createDocument(svgNS, "svg", null);
+
+SVGGraphics2D g = new SVGGraphics2D(doc);
+
+// Draw into g. For example:
+// 
+Shape circle = new Ellipse2D.Double(0,0,50,50);
+g.setPaint(Color.red);
+g.fill(circle);
+g.translate(60,0);
+g.setPaint(Color.green);
+g.fill(circle);
+g.translate(60,0);
+g.setPaint(Color.blue);
+g.fill(circle);
+g.setSVGCanvasSize(new Dimension(180,50));
+
+// The following populates the document root with the 
+// generated SVG content.
+Element root = doc.getDocumentElement();
+g.getRoot(root);
+
+// Now, display the document
+JSVGCanvas canvas = new JSVGCanvas();
+JFrame f = new JFrame();
+f.getContentPane().add(canvas);
+canvas.setSVGDocument(doc);
+f.pack();
+f.setVisible(true);</source>
+    </s1>
     </body>
 </document>
