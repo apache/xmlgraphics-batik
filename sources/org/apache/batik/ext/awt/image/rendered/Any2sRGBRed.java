@@ -238,7 +238,8 @@ public class Any2sRGBRed extends AbstractRed {
             op.filter(srcRas, wr);
         } else {
             ColorModel dstCM = getColorModel();
-            if (srcCM.getColorSpace() == dstCM.getColorSpace()) {
+            if ((srcCM.getColorSpace() == dstCM.getColorSpace()) &&
+                srcCM.isCompatibleRaster(wr)) {
                 // No transform needed, just reformat data...
                 // System.out.println("Bypassing");
 
