@@ -44,35 +44,20 @@
 	       rx="10" ry="10"
 	       style="fill:Green" />
 
-    	<filter id="Merge1">
-	  <feImage xlink:href="#Circle1" result="Circle1" />
-	  <feImage xlink:href="#Circle2" result="Circle2" />
-	  <feImage xlink:href="#Rect1"   result="Rect1" />
-	  <feImage xlink:href="#Rect2"   result="Rect2" />
-
-    	  <feMerge>
-	    <feMergeNode in="Circle1"/>
-	    <feMergeNode in="Circle2"/>
-	    <feMergeNode in="Rect1"/>
-	    <feMergeNode in="Rect2"/>
-	  </feMerge>
+    	<filter id="Merge1" x="0" y="0" width="1" height="1">
+	        <feImage xlink:href="#Circle1" result="Circle1" />
+	        <feImage xlink:href="#Circle2" result="Circle2" />
+	        <feImage xlink:href="#Rect1"   result="Rect1" />
+	        <feImage xlink:href="#Rect2"   result="Rect2" />
+    	    <feMerge>
+	            <feMergeNode in="Circle1"/>
+	            <feMergeNode in="Circle2"/>
+	            <feMergeNode in="Rect1"/>
+	            <feMergeNode in="Rect2"/>
+	        </feMerge>
     	</filter>
   
-    	<filter id="Merge2">
-	  <feImage xlink:href="#Circle1" result="Circle1" />
-	  <feImage xlink:href="#Circle2" result="Circle2" />
-	  <feImage xlink:href="#Rect1"   result="Rect1" />
-	  <feImage xlink:href="#Rect2"   result="Rect2" />
-
-    	  <feMerge>
-	    <feMergeNode in="Circle1"/>
-	    <feMergeNode in="Rect1"/>
-	    <feMergeNode in="Circle2"/>
-	    <feMergeNode in="Rect2"/>
-	  </feMerge>
-    	</filter>
-  
-    	<filter id="Merge3">
+    	<filter id="Merge2" x="0" y="0" width="1" height="1">
 	  <feImage xlink:href="#Circle1" result="Circle1" />
 	  <feImage xlink:href="#Circle2" result="Circle2" />
 	  <feImage xlink:href="#Rect1"   result="Rect1" />
@@ -81,12 +66,26 @@
     	  <feMerge>
 	    <feMergeNode in="Circle1"/>
 	    <feMergeNode in="Rect1"/>
+	    <feMergeNode in="Circle2"/>
+	    <feMergeNode in="Rect2"/>
+	  </feMerge>
+    	</filter>
+  
+    	<filter id="Merge3" x="0" y="0" width="1" height="1">
+	  <feImage xlink:href="#Circle1" result="Circle1" />
+	  <feImage xlink:href="#Circle2" result="Circle2" />
+	  <feImage xlink:href="#Rect1"   result="Rect1" />
+	  <feImage xlink:href="#Rect2"   result="Rect2" />
+
+    	  <feMerge>
+	    <feMergeNode in="Circle1"/>
+	    <feMergeNode in="Rect1"/>
 	    <feMergeNode in="Rect2"/>
 	    <feMergeNode in="Circle2"/>
 	  </feMerge>
     	</filter>
   
-    	<filter id="Merge4">
+    	<filter id="Merge4" x="0" y="0" width="1" height="1">
 	  <feImage xlink:href="#Circle1" result="Circle1" />
 	  <feImage xlink:href="#Circle2" result="Circle2" />
 	  <feImage xlink:href="#Rect1"   result="Rect1" />
@@ -100,7 +99,7 @@
 	  </feMerge>
     	</filter>
   
-    	<filter id="Merge5">
+    	<filter id="Merge5" x="0" y="0" width="1" height="1">
 	  <feImage xlink:href="#Circle1" result="Circle1" />
 	  <feImage xlink:href="#Circle2" result="Circle2" />
 	  <feImage xlink:href="#Rect1"   result="Rect1" />
@@ -114,7 +113,7 @@
 	  </feMerge>
     	</filter>
   
-    	<filter id="Merge6">
+    	<filter id="Merge6" x="0" y="0" width="1" height="1">
 	  <feImage xlink:href="#Circle1" result="Circle1" />
 	  <feImage xlink:href="#Circle2" result="Circle2" />
 	  <feImage xlink:href="#Rect1"   result="Rect1" />

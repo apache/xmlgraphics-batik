@@ -36,60 +36,60 @@
   
        <circle id="Circle2" cx="80" cy="60" r="30" style="fill:blue" />
   
-    	<filter id="feImage1">
+    	<filter id="feImage1" x="0" y="0" width="1" height="1">
     	  <feImage xlink:href="#Circle1"/>
     	</filter>
   
-    	<filter id="feImage2">
+    	<filter id="feImage2" x="0" y="0" width="1" height="1">
     	  <feImage xlink:href="#Circle2"/>
     	</filter>
   
-    	<filter id="feComposite1_2">
+    	<filter id="feComposite1_2" x="0" y="0" width="1" height="1">
     	  <feImage xlink:href="#Circle1" result="c1" />
     	  <feImage xlink:href="#Circle2" result="c2" />
     	  <feComposite in="c2" in2="c1" operator="over" />
     	</filter>
   
 
-    	<filter id="feComposite1_3">
+    	<filter id="feComposite1_3" x="0" y="0" width="1" height="1">
     	  <feImage xlink:href="#Circle1" result="c1" />
     	  <feImage xlink:href="#Circle2" result="c2" />
     	  <feComposite in="c2" in2="c1" operator="in" />
     	</filter>
   
-    	<filter id="feComposite2_1">
+    	<filter id="feComposite2_1" x="0" y="0" width="1" height="1">
     	  <feImage xlink:href="#Circle1" result="c1" />
     	  <feImage xlink:href="#Circle2" result="c2" />
     	  <feComposite in="c2" in2="c1" operator="out" />
     	</filter>
   
-    	<filter id="feComposite2_2">
+    	<filter id="feComposite2_2" x="0" y="0" width="1" height="1">
     	  <feImage xlink:href="#Circle1" result="c1" />
     	  <feImage xlink:href="#Circle2" result="c2" />
     	  <feComposite in="c2" in2="c1" operator="atop" />
     	</filter>
   
-    	<filter id="feComposite2_3">
+    	<filter id="feComposite2_3" x="0" y="0" width="1" height="1">
     	  <feImage xlink:href="#Circle1" result="c1" />
     	  <feImage xlink:href="#Circle2" result="c2" />
     	  <feComposite in="c2" in2="c1" operator="xor" />
     	</filter>
   
-    	<filter id="feComposite3_1">
+    	<filter id="feComposite3_1" x="0" y="0" width="1" height="1">
     	  <feImage xlink:href="#Circle1" result="c1" />
     	  <feImage xlink:href="#Circle2" result="c2" />
     	  <feComposite in="c2" in2="c1" operator="arithmetic" 
            k2="0.5" k3="0.5" />
     	</filter>
   
-    	<filter id="feComposite3_2">
+    	<filter id="feComposite3_2" x="0" y="0" width="1" height="1">
     	  <feImage xlink:href="#Circle1" result="c1" />
     	  <feImage xlink:href="#Circle2" result="c2" />
     	  <feComposite in="c2" in2="c1" operator="arithmetic" 
            k2="0.75" k3="0.25" />
     	</filter>
   
-    	<filter id="feComposite3_3">
+    	<filter id="feComposite3_3" x="0" y="0" width="1" height="1">
     	  <feImage xlink:href="#Circle1" result="c1" />
     	  <feImage xlink:href="#Circle2" result="c2" />
     	  <feComposite in="c2" in2="c1" operator="arithmetic" 

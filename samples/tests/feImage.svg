@@ -34,19 +34,19 @@
       <defs>
 
        <g id="elem1">
-         <circle id="Circle1" cx="40" cy="60" r="30" style="fill:orange" />
-         <circle id="Circle2" cx="80" cy="60" r="30" style="fill:blue" />
+         <circle id="Circle1" cx="112.5" cy="250" r="100" style="fill:orange" />
+         <circle id="Circle2" cx="337.5" cy="250" r="100" style="fill:blue" />
        </g>
   
-    	<filter id="Elem1">
+    	<filter id="Elem1" x="0" y="0" width="1" height="1">
     	  <feImage xlink:href="#elem1"/>
     	</filter>
   
-    	<filter id="Elem2">
+    	<filter id="Elem2" x="0" y="0" width="1" height="1">
     	  <feImage xlink:href="opacity2.svg"/>
     	</filter>
   
-    	<filter id="Elem3">
+    	<filter id="Elem3" x="0" y="0" width="1" height="1">
     	  <feImage xlink:href="dataProtocol.svg#testContent"/>
     	</filter>
   
@@ -59,34 +59,43 @@
         <!-- ============================================== -->
         <g transform="translate(40 20)" class="row1" >
     	  <g id="c1" transform="translate(20 0)">
-              <rect x="0" y="0" width="120" height="120" style="fill:Beige"/>
-    	      <rect x="0" y="0" width="120" height="120" 
+              <rect x="0" y="0" width="450" height="500" transform="scale(0.25 0.25)" fill="Beige"/>
+    	      <rect x="0" y="0" width="450" height="500" transform="scale(0.25 0.25)"
     	            style="fill:FireBrick;  filter:url(#Elem1)"/>
-              <text x="60" y="130" style="text-anchor:middle">
-               1.1 Reference local element
+              <text x="60" y="140" style="text-anchor:middle">
+               1.1 Reference 
+              </text>
+              <text x="60" y="152">
+               local element
               </text>
     	  </g>
              
     	  <g id="c2" transform="translate(120 200)">
-              <rect x="0" y="0" width="120" height="120" style="fill:Beige"/>
-    	      <rect x="0" y="0" width="480" height="480" 
+              <rect x="0" y="0" width="450" height="500" transform="scale(0.25 0.25)" fill="Beige"/>
+    	      <rect x="0" y="0" width="450" height="500" 
 	            transform="scale(0.25 0.25)"
     	            style="fill:FireBrick;  filter:url(#Elem2)" />
               <text x="60" y="140" style="text-anchor:middle">
-               1.2 Reference external SVG file
+               1.2 Reference 
+              </text>
+              <text x="60" y="152">
+               external SVG file
               </text>
     	  </g>
   
   
-    	  <g id="c2" transform="translate(220 0)">
-              <rect x="0" y="0" width="120" height="120" style="fill:Beige"/>
-    	      <rect x="0" y="0" width="480" height="480" 
-                    transform="scale(0.25)"
+    	  <g id="c3" transform="translate(240, 0)">
+              <rect x="0" y="0" width="450" height="500" transform="scale(.25, .25)" fill="Beige"/>
+    	      <rect x="0" y="0" width="450" height="500" 
+                    transform="scale(.25, .25)"
     	            style="fill:FireBrick;  filter:url(#Elem3)" />
-              <g transform="translate(60, 130)">
-               <text x="0" y="0" style="text-anchor:middle">
-               1.3 Reference external SVG element
-               </text>
+              <g transform="translate(60, 140)">
+                    <text x="0" y="0" style="text-anchor:middle">
+                    1.3 Reference 
+                    </text>
+                    <text x="0" y="12">
+                    external SVG element
+                    </text>
              </g>
     	  </g>
     	</g>
