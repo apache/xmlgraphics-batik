@@ -40,6 +40,7 @@ import org.apache.batik.gvt.TextNode;
 import org.apache.batik.gvt.ShapeNode;
 import org.apache.batik.gvt.ShapePainter;
 import org.apache.batik.gvt.filter.Filter;
+import org.apache.batik.gvt.filter.Clip;
 import org.apache.batik.gvt.filter.Mask;
 import org.apache.batik.parser.AWTTransformProducer;
 import org.apache.batik.util.SVGConstants;
@@ -123,8 +124,8 @@ public class SVGTextPathElementBridge implements GraphicsNodeBridge, SVGConstant
         node.setMask(mask);
 
         // Set the node clip
-        Shape clip = CSSUtilities.convertClipPath(element, node, ctx);
-        node.setClippingArea(clip);
+        Clip clip = CSSUtilities.convertClipPath(element, node, ctx);
+        node.setClip(clip);
 
         // <!> TODO only when binding is enabled
         //BridgeEventSupport.addDOMListener(ctx, element);

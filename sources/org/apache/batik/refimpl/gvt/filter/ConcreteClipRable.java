@@ -13,7 +13,7 @@ import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.FilterRegion;
 import org.apache.batik.gvt.filter.CachableRed;
-import org.apache.batik.gvt.filter.Mask;
+import org.apache.batik.gvt.filter.Clip;
 import org.apache.batik.gvt.filter.PadMode;
 
 import java.awt.Shape;
@@ -40,7 +40,8 @@ import java.awt.image.renderable.RenderContext;
  * @version $Id$
  */
 public class ConcreteClipRable
-    extends    AbstractRable {
+    extends    AbstractRable 
+    implements Clip {
 
     /**
      * The node who's outline specifies our mask.
@@ -119,6 +120,15 @@ public class ConcreteClipRable
         devAOIR = usr2dev.createTransformedShape(aoi).getBounds();
 
         Graphics2D g2d = bi.createGraphics();
+        g2d.setRenderingHints(rh);
+        if (false) {
+            java.util.Set s = rh.keySet();
+            java.util.Iterator i = s.iterator();
+            while (i.hasNext()) {
+                Object o = i.next();
+                System.out.println("XXX: " + o + " -> " + rh.get(o));
+            }
+        }
         g2d.translate(-devR.x, -devR.y);
         g2d.setPaint(Color.white);
         g2d.fill(devShape);

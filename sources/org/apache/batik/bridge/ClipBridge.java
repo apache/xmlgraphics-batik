@@ -10,6 +10,7 @@ package org.apache.batik.bridge;
 
 import java.awt.Shape;
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.filter.Clip;
 import org.w3c.dom.Element;
 
 /**
@@ -17,26 +18,26 @@ import org.w3c.dom.Element;
  * clipping area.
  *
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
+ * @author <a href="mailto:Thomas.DeWeeese@Kodak.com">Thomas DeWeese</a>
  * @version $Id$
  */
 public interface ClipBridge extends Bridge {
 
     /**
-     * Creates a <tt>Shape</tt> using the specified context and element.
+     * Creates a <tt>Clip</tt> filter using the specified context and element.
      * @param node the GraphicsNode clipedNode
      * @param ctx the context to use
      * @param clipElement element containing the clip definition
      * @param clipedElement the Element with the 'clip-path' attribute
      */
-    Shape createClip(BridgeContext ctx,
-                     GraphicsNode node,
-                     Element clipElement,
-                     Element clipedElement);
+    Clip createClip(BridgeContext ctx,
+                    GraphicsNode node,
+                    Element clipElement,
+                    Element clipedElement);
 
     /**
      * Updates an Element coresponding to the specified BridgeMutationEvent.
      * @param evt the event that describes the modification to perform
      */
     void update(BridgeMutationEvent evt);
-
 }

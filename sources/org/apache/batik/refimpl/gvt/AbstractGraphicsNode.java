@@ -52,6 +52,7 @@ import org.apache.batik.gvt.event.GraphicsNodeEventFilter;
 import org.apache.batik.gvt.event.CompositeGraphicsNodeEvent;
 import org.apache.batik.gvt.event.CompositeGraphicsNodeListener;
 import org.apache.batik.gvt.filter.Filter;
+import org.apache.batik.gvt.filter.Clip;
 import org.apache.batik.gvt.filter.Mask;
 import org.apache.batik.gvt.filter.PadMode;
 
@@ -60,6 +61,7 @@ import org.apache.batik.gvt.filter.PadMode;
  *
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  * @author <a href="mailto:etissandier@ilog.fr">Emmanuel Tissandier</a>
+ * @author <a href="mailto:Thomas.DeWeeese@Kodak.com">Thomas DeWeese</a>
  * @version $Id$
  */
 public abstract class AbstractGraphicsNode implements GraphicsNode {
@@ -113,9 +115,9 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     protected boolean isVisible = true;
 
     /**
-     * The clipping area of this graphics node.
+     * The clipping filter for this graphics node.
      */
-    protected Shape clip;
+    protected Clip clip;
 
     /**
      * The rendering hints that control the quality to use when rendering
@@ -249,14 +251,14 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
         return isVisible;
     }
 
-    public void setClippingArea(Shape newClippingArea) {
+    public void setClip(Clip newClipper) {
         invalidateGeometryCache();
-        Shape oldClip = clip;
-        this.clip = newClippingArea;
-        firePropertyChange("clippingArea", oldClip, newClippingArea);
+        Clip oldClip = clip;
+        this.clip = newClipper;
+        firePropertyChange("clippingArea", oldClip, newClipper);
     }
 
-    public Shape getClippingArea() {
+    public Clip getClip() {
         return clip;
     }
 
@@ -327,15 +329,11 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
         if (transform != null) {
             g2d.transform(transform);
         }
-        if (clip != null) {
-            g2d.clip(clip);
-        }
         if (composite != null) {
             g2d.setComposite(composite);
         }
 
         rc.setTransform(g2d.getTransform());
-        rc.setAreaOfInterest(g2d.getClip());
         rc.setRenderingHints(g2d.getRenderingHints());
 
         //
@@ -344,9 +342,9 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
         //
         boolean paintNeeded = true;
         Rectangle2D bounds = getBounds();
-        Shape clip = g2d.getClip();
-        if(clip != null){
-            Rectangle2D clipBounds = clip.getBounds();
+        Shape g2dClip = g2d.getClip();
+        if(g2dClip != null){
+            Rectangle2D clipBounds = g2dClip.getBounds();
             if(!bounds.intersects(clipBounds.getX(),
                                   clipBounds.getY(),
                                   clipBounds.getWidth(),
@@ -355,13 +353,31 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
             }
         }
 
+        boolean useOffscreen = isOffscreenBufferNeeded();
+        if ((!useOffscreen) && 
+            (clip != null)) {
+              // If we are doing high quality rendering or the user
+              // wants anti-aliasing then we should switch to offscreen
+              // so we can use an anti-aliased clip-path.
+            if ((g2d.getRenderingHint(RenderingHints.KEY_ANTIALIASING) ==
+                 RenderingHints.VALUE_ANTIALIAS_ON) ||
+                (g2d.getRenderingHint(RenderingHints.KEY_RENDERING) ==
+                 RenderingHints.VALUE_RENDER_QUALITY))
+                useOffscreen = true;
+        }
+
         //
         // Only paint if needed.
         //
         // paintNeeded = true;
         if (paintNeeded){
-            if (!isOffscreenBufferNeeded()) {
-                // Render directly on the canvas
+            if (!useOffscreen) {
+                if (clip != null) {
+                    g2d.clip(clip.getClipPath());
+                }
+                rc.setAreaOfInterest(g2d.getClip());
+
+                  // Render directly on the canvas
                 primitivePaint(g2d, rc);
             } else{
                 Filter filteredImage = null;
@@ -382,13 +398,23 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
                     filteredImage = mask;
                 }
 
-                // Create the render context for drawing this node.
-                AffineTransform usr2dev = g2d.getTransform();
+                if (clip != null) {
+                    if ((g2d.getRenderingHint(RenderingHints.KEY_ANTIALIASING)
+                         == RenderingHints.VALUE_ANTIALIAS_ON) 
+                        || (g2d.getRenderingHint(RenderingHints.KEY_RENDERING) 
+                            == RenderingHints.VALUE_RENDER_QUALITY)) {
+                        if (clip.getSource() != filteredImage){
+                            clip.setSource(filteredImage);
+                        }
+                        filteredImage = clip;
+                    }
+                    else
+                          // Hard edged clip...
+                        g2d.setClip(clip.getClipPath());
+                }
 
+                rc.setAreaOfInterest(g2d.getClip());
                 RenderedImage renderedNodeImage = filteredImage.createRendering(rc);
-                Rectangle2D filterBounds = filteredImage.getBounds2D();
-                g2d.clip(filterBounds);
-
                 if(renderedNodeImage != null){
                       // Draw RenderedImage has problems....
                       // This works around them...
@@ -606,7 +632,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
             // Factor in the clipping area, if any
             if(clip != null) {
                 bounds.intersect(bounds,
-                                 clip.getBounds2D(),
+                                 clip.getClipPath().getBounds2D(),
                                  bounds);
             }
             // Factor in the mask, if any
