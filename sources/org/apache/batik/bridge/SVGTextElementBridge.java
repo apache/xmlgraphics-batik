@@ -597,6 +597,7 @@ public class SVGTextElementBridge extends AbstractSVGBridge
         String s;
         float f;
         short t;
+        boolean verticalText = false;
 
         result.put(GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER, element);
 
@@ -876,6 +877,45 @@ public class SVGTextElementBridge extends AbstractSVGBridge
                        TextAttribute.WRITING_MODE_RTL);
             break;
         case 't':
+	    result.put(GVTAttributedCharacterIterator.
+		       TextAttribute.WRITING_MODE,
+		       GVTAttributedCharacterIterator.
+		       TextAttribute.WRITING_MODE_TTB);
+            break;
+        }
+
+        // glyph-orientation-vertical
+
+        v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValueInternal
+            (CSS_GLYPH_ORIENTATION_VERTICAL_PROPERTY);
+
+        // why is it that getStringValue() throws an exception?
+        s = v.getCssText();
+        switch (s.charAt(0)) {
+        case 'a':
+            result.put(GVTAttributedCharacterIterator.
+                       TextAttribute.VERTICAL_ORIENTATION,
+                       GVTAttributedCharacterIterator.
+                       TextAttribute.ORIENTATION_AUTO);
+            break;
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':
+        case '.':
+            result.put(GVTAttributedCharacterIterator.
+                       TextAttribute.VERTICAL_ORIENTATION,
+                       GVTAttributedCharacterIterator.
+                       TextAttribute.ORIENTATION_ANGLE);
+            result.put(GVTAttributedCharacterIterator.
+                       TextAttribute.VERTICAL_ORIENTATION_ANGLE,
+                       new Float(s));
             break;
         }
 

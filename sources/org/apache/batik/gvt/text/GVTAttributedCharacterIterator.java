@@ -323,6 +323,11 @@ public interface GVTAttributedCharacterIterator extends
         public final static TextAttribute WRITING_MODE =
                                           new TextAttribute("WRITING_MODE");
 
+        public final static TextAttribute VERTICAL_ORIENTATION =
+                                          new TextAttribute("VERTICAL_ORIENTATION");
+
+        public final static TextAttribute VERTICAL_ORIENTATION_ANGLE =
+                                          new TextAttribute("VERTICAL_ORIENTATION_ANGLE");
 
         public final static TextAttribute GVT_FONT_FAMILIES =
                                           new TextAttribute("GVT_FONT_FAMILIES");
@@ -340,6 +345,15 @@ public interface GVTAttributedCharacterIterator extends
 
         /** Value for WRITING_MODE indicating right-to-left */
         public final static Integer WRITING_MODE_RTL = new Integer(0x2);
+
+        /** Value for WRITING_MODE indicating top-to-botton */
+        public final static Integer WRITING_MODE_TTB = new Integer(0x3);
+
+        /** Value for VERTICAL_ORIENTATION indicating an angle */
+        public final static Integer ORIENTATION_ANGLE = new Integer(0x1);
+
+        /** Value for VERTICAL_ORIENTATION indicating auto */
+        public final static Integer ORIENTATION_AUTO = new Integer(0x2);
 
         /** Value for FONT_VARIANT specifying small caps */
         public final static Integer SMALL_CAPS = new Integer(0x10);

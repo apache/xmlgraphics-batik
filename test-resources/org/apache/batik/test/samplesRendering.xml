@@ -589,4 +589,11 @@
         <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/linkingViewBox.png" />
     </test>
 
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:samples/tests/verticalText.svg" />
+        <arg class="java.net.URL" value="file:test-references/samples/tests/verticalText.png" />
+        <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/verticalText.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/verticalText.png" />
+    </test>
+
 </testSuite>
