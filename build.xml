@@ -65,6 +65,8 @@ To display the available targets type:
 
     <property name="src"             value="sources"/>
     <property name="resources"       value="resources"/>
+    <property name="testsrc"         value="test-sources"/>
+    <property name="testresources"   value="test-resources"/>
     <property name="dest"            value="classes"/>
     <property name="build"           value="${project}-${version}"/>
     <property name="docs"            value="${build}/docs"/>
@@ -118,10 +120,12 @@ To display the available targets type:
     <echo message="   dist-zip      --> build the zip distributions"/>
     <echo message="   dist-tgz      --> build the tgz distributions"/>
     <echo message="   compile       --> compiles the source code"/>
+    <echo message="   compiletest   --> compiles the tests source code"/>
     <echo message="   svgbrowser    --> runs the SVG browser"/>
     <echo message="   svgrasterizer --> runs the SVG rasterizer"/>
     <echo message="   svgpp         --> runs the SVG pretty-printer"/>
     <echo message="   regard        --> runs the regard regression utility"/>
+    <echo message="   runtest       --> runs a Test, given a class name as an input" />
     <echo message="   javadoc       --> generates the API documentation"/>
     <echo message="   site          --> generates the site documentation"/>
     <echo message="   sitedoc       --> generates the site documentation without"/>
@@ -196,6 +200,20 @@ To display the available targets type:
 
 
   <!-- Compilation ........................................................ -->
+  <target name       ="compiletest"
+          depends    ="compile"
+          description="Compiles the tests infrastructure source files">
+    <mkdir dir="${dest}"/>
+
+    <javac srcdir="${testsrc}" destdir="${dest}" deprecation="on">
+      <classpath>
+        <pathelement location="${dest}" />
+        <path refid="libs-classpath"/>
+        <path refid="libs-build-classpath"/>
+      </classpath>
+    </javac>
+  </target>
+
   <target name       ="compile"
           depends    ="init"
           description="Compiles the source files">
@@ -564,6 +582,37 @@ To display the available targets type:
         <pathelement location="${dest}" />
         <path refid="libs-classpath"/>
         <pathelement location="resources" />
+      </classpath>
+      <arg value="${args}"/>
+    </java>
+  </target>
+
+  <target name="runtest"
+          depends="compiletest"
+          description="Runs test whose class name is passed as an input">
+    <java fork="yes"
+          classname="${class-prefix}.test.SimpleTestRunner">
+      <classpath>
+        <pathelement location="${dest}" />
+        <path refid="libs-classpath"/>
+        <pathelement location="resources" />
+        <pathelement location="test-resources" />
+      </classpath>
+      <arg line="${args}"/>
+    </java>
+  </target>
+
+  <target name="runtestsuite"
+          depends="compiletest"
+          description="Runs test suite whose file or uri is passed as an input">
+    <java fork="yes"
+          classname="${class-prefix}.test.xml.XMLTestSuiteRunner">
+      <classpath>
+        <pathelement location="${dest}" />
+        <path refid="libs-classpath"/>
+        <path refid="libs-build-classpath"/>
+        <pathelement location="resources" />
+        <pathelement location="test-resources" />
       </classpath>
       <arg line="${args}"/>
     </java>
