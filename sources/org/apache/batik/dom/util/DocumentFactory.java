@@ -14,6 +14,8 @@ import java.io.Reader;
 
 import org.w3c.dom.Document;
 
+import org.xml.sax.XMLReader;
+
 /**
  * This interface represents an object which can build a Document.
  *
@@ -53,6 +55,17 @@ public interface DocumentFactory {
      * @exception IOException if an error occured while reading the document.
      */
     Document createDocument(String ns, String root, String uri, InputStream is)
+        throws IOException;
+
+    /**
+     * Creates a Document instance.
+     * @param ns The namespace URI of the root element of the document.
+     * @param root The name of the root element of the document.
+     * @param uri The document URI.
+     * @param r An XMLReader instance
+     * @exception IOException if an error occured while reading the document.
+     */
+    Document createDocument(String ns, String root, String uri, XMLReader r)
         throws IOException;
 
     /**
