@@ -332,9 +332,12 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
 
             last = n.getNextSibling() == null;
 
-            int lastChar = (as != null) ? (as.getIterator().last()) : CharacterIterator.DONE;
+            int lastChar = (as != null) ?
+                  (as.getIterator().last()) : CharacterIterator.DONE;
             stripFirst = first &&
-                         (top || (lastChar == ' ') || (lastChar == CharacterIterator.DONE));
+                  (top ||
+                  (lastChar == ' ') ||
+                  (lastChar == CharacterIterator.DONE));
 
             switch (n.getNodeType()) {
             case Node.ELEMENT_NODE:
@@ -366,18 +369,18 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                         if (as != null) {
                             addGlyphPositionAttributes(
                                  as, indexMap, ctx, nodeElement);
-                            stripLast = last && (as.getIterator().first() == ' ');
+                            stripLast = (as.getIterator().first() == ' ');
                             if (stripLast) {
                                 AttributedString las =
                                      (AttributedString) result.removeLast();
                                 if (las != null) {
                                     AttributedCharacterIterator iter = las.getIterator();
-                                    AttributedCharacterIterator.Attribute[] atts =
-                                       (AttributedCharacterIterator.Attribute[])
-                                       iter.getAllAttributeKeys().toArray();
-                                    las = new AttributedString(
-                                         las.getIterator(atts,
-                                             iter.getBeginIndex(), iter.getEndIndex()-1));
+                                    int endIndex = iter.getEndIndex()-1;
+                                    if (iter.setIndex(endIndex) == ' ') {
+                                         las = new AttributedString(
+                                             las.getIterator(null,
+                                                 iter.getBeginIndex(), endIndex));
+                                    }
                                     result.add(las);
                                 }
                             }
@@ -396,6 +399,21 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                               s, m, indexMap, preserve, stripFirst, last && top);
                 if (as != null) {
                      addGlyphPositionAttributes(as, indexMap, ctx, element);
+                     stripLast = (as.getIterator().first() == ' ');
+                     if (stripLast && !result.isEmpty()) {
+                         AttributedString las =
+                              (AttributedString) result.removeLast();
+                         if (las != null) {
+                             AttributedCharacterIterator iter = las.getIterator();
+                             int endIndex = iter.getEndIndex()-1;
+                             if (iter.setIndex(endIndex) == ' ') {
+                                 las = new AttributedString(
+                                         las.getIterator(null,
+                                             iter.getBeginIndex(), endIndex));
+                             }
+                             result.add(las);
+                         }
+                     }
                      result.add(as);
                 }
             }
