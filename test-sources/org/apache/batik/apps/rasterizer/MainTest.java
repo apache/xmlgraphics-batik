@@ -375,12 +375,12 @@ public class MainTest extends DefaultTestSuite {
         addTest(t);
         t.setId("MainConfigTest.quality");
 
-        t = new MainConfigTest("-indexed"){
+        t = new MainConfigTest("-indexed 8"){
                 public TestReport validate(SVGConverter c){
-                    if(c.getIndexed()){
+                    if(c.getIndexed() == 8){
                         return reportSuccess();
                     } else {
-                        return reportError("-indexed", "true", 
+                        return reportError("-indexed", "8", 
                                            "" + c.getIndexed());
                     }
                 }
