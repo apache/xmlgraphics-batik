@@ -49,6 +49,8 @@ public class SVGCSSEngine extends CSSEngine {
               null,
               null,
               "style",
+              null,
+              "class",
               true,
               null,
               ctx);
@@ -77,6 +79,8 @@ public class SVGCSSEngine extends CSSEngine {
               null,
               null,
               "style",
+              null,
+              "class",
               true,
               null,
               ctx);

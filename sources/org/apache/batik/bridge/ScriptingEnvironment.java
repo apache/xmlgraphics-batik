@@ -56,11 +56,6 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
     protected Timer timer = new Timer(true);
 
     /**
-     * The bridge context.
-     */
-    protected BridgeContext context;
-
-    /**
      * The update manager.
      */
     protected UpdateManager updateManager;
@@ -69,11 +64,6 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
      * The update runnable queue.
      */
     protected RunnableQueue updateRunnableQueue;
-
-    /**
-     * The DOMAttrModified event listener.
-     */
-    protected EventListener domAttrModifiedListener;
 
     /**
      * The DOMNodeInserted event listener.
@@ -199,21 +189,14 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
      */
     public ScriptingEnvironment(BridgeContext ctx) {
         super(ctx);
-        context = ctx;
         updateManager = ctx.getUpdateManager();
         updateRunnableQueue = updateManager.getUpdateRunnableQueue();
         
-        Document doc = ctx.getDocument();
-
         // Add the scripting listeners.
-        addScriptingListeners(doc.getDocumentElement());
+        addScriptingListeners(document.getDocumentElement());
 
         // Add the listeners responsible of updating the event attributes
-        EventTarget et = (EventTarget)doc;
-        domAttrModifiedListener = new DOMAttrModifiedListener();
-        et.addEventListener("DOMAttrModified",
-                            domAttrModifiedListener,
-                            false);
+        EventTarget et = (EventTarget)document;
         domNodeInsertedListener = new DOMNodeInsertedListener();
         et.addEventListener("DOMNodeInserted",
                             domNodeInsertedListener,
@@ -260,7 +243,17 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
      */
     public void interrupt() {
         timer.cancel();
-        // !!! remove the DOM listeners.
+        // Remove the scripting listeners.
+        removeScriptingListeners(document.getDocumentElement());
+
+        // Remove the listeners responsible of updating the event attributes
+        EventTarget et = (EventTarget)document;
+        et.removeEventListener("DOMNodeInserted",
+                               domNodeInsertedListener,
+                               false);
+        et.removeEventListener("DOMAttrRemoved",
+                               domNodeRemovedListener,
+                               false);
     }
 
     /**
@@ -312,7 +305,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
                             target.addEventListener("endEvent",
                                                     endListener,
                                                     false);
-                    }
+                        }
                         if (elt.hasAttributeNS(null, "onrepeat")) {
                             target.addEventListener("repeatEvent",
                                                     repeatListener ,
@@ -362,24 +355,64 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
     }
 
     /**
-     * To wrap an event listener.
+     * Removes the scripting listeners from the given element.
      */
-    protected class EventListenerWrapper implements EventListener {
+    protected void removeScriptingListeners(Node node) {
+        if (node.getNodeType() == Node.ELEMENT_NODE) {
+            // Detach the listeners
+            Element elt = (Element)node;
+            EventTarget target = (EventTarget)elt;
+            if (SVGConstants.SVG_NAMESPACE_URI.equals(elt.getNamespaceURI())) {
+                if (SVGConstants.SVG_SVG_TAG.equals(elt.getLocalName())) {
+                    // <svg> listeners
+                    target.removeEventListener("SVGAbort",
+                                                   svgAbortListener, false);
+                    target.removeEventListener("SVGError",
+                                               svgErrorListener, false);
+                    target.removeEventListener("SVGResize",
+                                               svgResizeListener, false);
+                    target.removeEventListener("SVGScroll",
+                                               svgScrollListener, false);
+                    target.removeEventListener("SVGUnload",
+                                               svgUnloadListener, false);
+                    target.removeEventListener("SVGZoom",
+                                               svgZoomListener, false);
+                } else {
+                    String name = elt.getLocalName();
+                    if (name.equals(SVGConstants.SVG_SET_TAG) ||
+                        name.startsWith("animate")) {
+                        // animation listeners
+                        target.removeEventListener("beginEvent",
+                                                   beginListener ,
+                                                   false);
+                        target.removeEventListener("endEvent",
+                                                   endListener,
+                                                   false);
+                        target.removeEventListener("repeatEvent",
+                                                   repeatListener ,
+                                                   false);
+                        return;
+                    }
+                }
+            }
 
-        /**
-         * The wrapped event listener.
-         */
-        protected EventListener eventListener;
-
-        /**
-         * Creates a new EventListenerWrapper.
-         */
-        public EventListenerWrapper(EventListener el) {
-            eventListener = el;
+            // UI listeners
+            target.removeEventListener("focusin", focusinListener, false);
+            target.removeEventListener("focusout", focusoutListener, false);
+            target.removeEventListener("activate", activateListener, false);
+            target.removeEventListener("click", clickListener, false);
+            target.removeEventListener("mousedown", mousedownListener, false);
+            target.removeEventListener("mouseup", mouseupListener, false);
+            target.removeEventListener("mouseover", mouseoverListener, false);
+            target.removeEventListener("mouseout", mouseoutListener, false);
+            target.removeEventListener("mousemove", mousemoveListener, false);
         }
 
-        public void handleEvent(final Event evt) {
-            eventListener.handleEvent(evt);
+        // Removes the listeners from the children
+        for (Node n = node.getFirstChild();
+             n != null;
+             n = n.getNextSibling()) {
+            removeScriptingListeners(n);
         }
     }
 
@@ -605,7 +638,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
             text = "<svg>" + text + "</svg>";
             SAXSVGDocumentFactory df = new SAXSVGDocumentFactory
                 (XMLResourceDescriptor.getXMLParserClassName());
-            String uri = ((SVGOMDocument)context.getDocument()).
+            String uri = ((SVGOMDocument)bridgeContext.getDocument()).
                 getURLObject().toString();
             DocumentFragment result = null;
             try {
@@ -669,7 +702,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
                         } catch (Exception e) {
                             updateRunnableQueue.invokeLater(new Runnable() {
                                     public void run() {
-                                        h.getURLDone(false, "", "");
+                                        h.getURLDone(false, null, null);
                                     }
                                 });
                         }
@@ -735,16 +768,6 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
     }
 
     /**
-     * To handle the element attributes modification in the associated
-     * document.
-     */
-    protected class DOMAttrModifiedListener implements EventListener {
-        public void handleEvent(Event evt) {
-            // !!! Updates the listeners.
-        }
-    }
-
-    /**
      * The listener class for 'DOMNodeInserted' event.
      */
     protected class DOMNodeInsertedListener implements EventListener {
@@ -758,7 +781,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
      */
     protected class DOMNodeRemovedListener implements EventListener {
         public void handleEvent(Event evt) {
-            // !!! Updates the listeners.
+            removeScriptingListeners((Node)evt.getTarget());
         }
     }
 
