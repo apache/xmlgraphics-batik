@@ -91,6 +91,7 @@ public class SAXSVGDocumentFactory
         }
 
         InputSource isrc = new InputSource(is);
+        isrc.setSystemId(uri);
 
         SVGOMDocument doc = (SVGOMDocument)super.createDocument
             (SVGDOMImplementation.SVG_NAMESPACE_URI, "svg", uri, isrc);

@@ -950,13 +950,6 @@ public class JSVGViewerFrame
 
                         InputStream is = ParsedURL.checkGZIP(u.openStream());
 
-                        try {
-                            is = new GZIPInputStream(is);
-                        } catch (IOException ex) {
-                            is.close();
-                            is = u.openStream();
-                        }
-
                         Reader in = XMLUtilities.createXMLDocumentReader(is);
                         int len;
                         while ((len = in.read(buffer, 0, buffer.length)) != -1) {
