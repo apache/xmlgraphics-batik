@@ -76,9 +76,6 @@ public class SVGPathElementBridge extends SVGDecoratedShapeElementBridge {
             } finally {
                 shapeNode.setShape(app.getShape());
             }
-        } else {
-            throw new BridgeException(e, ERR_ATTRIBUTE_MISSING,
-                                      new Object[] {SVG_D_ATTRIBUTE});
         }
     }
 
