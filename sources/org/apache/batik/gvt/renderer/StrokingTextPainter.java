@@ -35,6 +35,7 @@ import java.util.Set;
 import java.util.Vector;
 
 import org.apache.batik.gvt.TextNode;
+import org.apache.batik.gvt.TextPainter;
 
 import org.apache.batik.gvt.font.FontFamilyResolver;
 import org.apache.batik.gvt.font.GVTFont;
@@ -69,6 +70,18 @@ public class StrokingTextPainter extends BasicTextPainter {
         extendedAtts.add(GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER);
         extendedAtts.add(GVTAttributedCharacterIterator.TextAttribute.GVT_FONT);
         extendedAtts.add(GVTAttributedCharacterIterator.TextAttribute.BIDI_LEVEL);
+    }
+
+    /**
+     * A unique instance of this class.
+     */
+    protected static TextPainter singleton = new StrokingTextPainter();
+
+    /**
+     * Returns a unique instance of this class.
+     */
+    public static TextPainter getInstance() {
+	return singleton;
     }
 
     /**

@@ -78,7 +78,7 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
     /**
      * The text painter used to display the text of this text node.
      */
-    protected static TextPainter textPainter = new StrokingTextPainter();
+    protected TextPainter textPainter = StrokingTextPainter.getInstance();
 
     /**
      * Internal Cache: Bounds for this text node, without taking any of the
@@ -102,6 +102,27 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
     public TextNode() {
     }
 
+    /**
+     * Sets the text painter of this text node. If the specified text painter is
+     * null, this text node will use its default text painter
+     * (StrokingTextPainter.getInstance()).
+     *
+     * @param textPainter the text painter to use 
+     */
+    public void setTextPainter(TextPainter textPainter) {
+	if (textPainter == null) {
+	    this.textPainter = StrokingTextPainter.getInstance();
+	} else {
+	    this.textPainter = textPainter;
+	}
+    }
+
+    /**
+     * Returns the text painter of this text node.
+     */
+    public TextPainter getTextPainter() {
+	return textPainter;
+    }
 
     /**
      * Returns a list of text runs.

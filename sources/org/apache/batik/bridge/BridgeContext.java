@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.apache.batik.css.HiddenChildElementSupport;
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.TextPainter;
 import org.apache.batik.script.InterpreterPool;
 import org.apache.batik.util.Service;
 import org.apache.batik.util.SVGConstants;
@@ -121,6 +122,12 @@ public class BridgeContext implements ErrorConstants {
     protected Dimension2D documentSize;
 
     /**
+     * The text painter to use. Typically, you can specify the text painter that
+     * will be used be text nodes.
+     */
+    protected TextPainter textPainter;
+
+    /**
      * Constructs a new empty bridge context.
      */
     protected BridgeContext() {}
@@ -169,6 +176,24 @@ public class BridgeContext implements ErrorConstants {
     /////////////////////////////////////////////////////////////////////////
     // properties
     /////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Sets the text painter that will be used by text nodes. This attributes
+     * might be used by bridges (especially SVGTextElementBridge) to set the
+     * text painter of each TextNode.
+     *
+     * @param textPainter the text painter for text nodes 
+     */
+    public void setTextPainter(TextPainter textPainter) {
+	this.textPainter = textPainter;
+    }
+
+    /**
+     * Returns the text painter that will be used be text nodes.
+     */
+    public TextPainter getTextPainter() {
+	return textPainter;
+    }
 
     /**
      * Returns the user agent of this bridge context.
