@@ -47,7 +47,6 @@ public class JPythonInterpreter implements org.apache.batik.script.Interpreter {
     public Object evaluate(String script)
         throws InterpreterException {
         try {
-            String str = sbuffer.toString();
             interpreter.exec(script);
         } catch (org.python.core.PyException e) {
             throw new InterpreterException(e, e.getMessage(), -1, -1);
