@@ -45,6 +45,7 @@ public class Main {
             ostream.flush();
             ostream.close();
         } catch(Exception ex) {
+            ex.printStackTrace();
             System.out.println("Error while writing "+uri+" to "+output);
         }
     }
@@ -136,12 +137,8 @@ public class Main {
             mimeType.equals("image/jpeg") ||
             mimeType.equals("image/jpe")) {
             t = new JPEGTranscoder();
-            t.addTranscodingHint(JPEGTranscoder.KEY_XML_PARSER_CLASSNAME,
-                                 "org.apache.crimson.parser.XMLReaderImpl");
         } else if (mimeType.equals("image/png")) {
             t = new PNGTranscoder();
-            t.addTranscodingHint(PNGTranscoder.KEY_XML_PARSER_CLASSNAME,
-                                 "org.apache.crimson.parser.XMLReaderImpl");
         }
         if (t == null) {
             error("No transcoder found for mime type : "+mimeType);
@@ -152,7 +149,7 @@ public class Main {
             t.addTranscodingHint(ImageTranscoder.KEY_WIDTH,
                                  new Float(width));
         }
-        
+
         if(!Float.isNaN(height)){
             t.addTranscodingHint(ImageTranscoder.KEY_HEIGHT,
                                  new Float(height));
@@ -183,10 +180,10 @@ public class Main {
                 if (directory == null) {
                     directory = getDirectory(s);
                 }
-						
+
                 if (directory != null) {
                     File output = new File(directory, uri);
-							
+
                     writeImage((ImageTranscoder)t,
                                url.toString(),
                                output.getAbsolutePath());
@@ -200,33 +197,33 @@ public class Main {
         System.exit(0);
     }
 
-	public static URL getSVGURL(String s) {
-		URL url = null;
+        public static URL getSVGURL(String s) {
+                URL url = null;
 
-		try{
-			File f = new File(s);
-			if(f.exists()){
-				url = f.toURL();
-			}
-			else{
-				url = new URL(s);
-			}
-		}catch(MalformedURLException e){
-			error("Bad svg file: " + s);
-		}
+                try{
+                        File f = new File(s);
+                        if(f.exists()){
+                                url = f.toURL();
+                        }
+                        else{
+                                url = new URL(s);
+                        }
+                }catch(MalformedURLException e){
+                        error("Bad svg file: " + s);
+                }
 
-		return url;
-	}
+                return url;
+        }
 
-	public static String getDirectory(String s){
-		File f = new File(s);
-		if(f.exists()){
-			return f.getParent();
-		}
-		else{
-			return null;
-		}
-	}
+        public static String getDirectory(String s){
+                File f = new File(s);
+                if(f.exists()){
+                        return f.getParent();
+                }
+                else{
+                        return null;
+                }
+        }
 
 }
 

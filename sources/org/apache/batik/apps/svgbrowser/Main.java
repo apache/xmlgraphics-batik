@@ -31,6 +31,7 @@ import javax.swing.UIManager;
 import javax.swing.plaf.FontUIResource;
 
 import org.apache.batik.css.CSSDocumentHandler;
+import org.apache.batik.util.XMLResourceDescriptor;
 
 import org.apache.batik.util.gui.resource.ResourceManager;
 
@@ -80,12 +81,6 @@ public class Main implements Application {
         bundle = ResourceBundle.getBundle(RESOURCES, Locale.getDefault());
         resources = new ResourceManager(bundle);
     }
-
-    /**
-     * The XML parser class name.
-     */
-    protected static String xmlParserClassName =
-        resources.getString(XML_PARSER_CLASS_NAME_KEY);
 
     /**
      * The frame's icon.
@@ -148,9 +143,9 @@ public class Main implements Application {
 
                 File file = new File(arguments[i]);
                 if (file.canRead()) {
-                    if (frame == null) 
+                    if (frame == null)
                         frame = createAndShowJSVGViewerFrame();
-                    
+
                     frame.getJSVGCanvas().loadSVGDocument
                         (file.toURL().toString());
                     frame = null;
@@ -158,15 +153,15 @@ public class Main implements Application {
                     // Let the user know that we are
                     // skipping this file...
 
-                    // Note that frame may be null, which is 
+                    // Note that frame may be null, which is
                     // a valid argument for showMessageDialog
 
                     // NOTE: Need to revisit Resources/Messages usage to
-                    //       have a single entry point. Should have a 
+                    //       have a single entry point. Should have a
                     //       formated message here instead of a + ...
                     JOptionPane.showMessageDialog
-                        (frame, 
-                         resources.getString("Error.skipping.file") 
+                        (frame,
+                         resources.getString("Error.skipping.file")
                          + file.getAbsolutePath());
                 }
                 i++;
@@ -283,7 +278,7 @@ public class Main implements Application {
         }
         f.setVisible(false);
     }
-    
+
     /**
      * Creates a new application exit action.
      */
@@ -307,7 +302,6 @@ public class Main implements Application {
      * Returns the XML parser class name.
      */
     public String getXMLParserClassName() {
-        return xmlParserClassName;
+        return XMLResourceDescriptor.getXMLParserClassName();
     }
-
 }

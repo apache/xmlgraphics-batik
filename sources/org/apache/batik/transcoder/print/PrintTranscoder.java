@@ -73,6 +73,7 @@ import org.apache.batik.transcoder.keys.Rectangle2DKey;
 import org.apache.batik.transcoder.keys.StringKey;
 
 import org.apache.batik.util.SVGConstants;
+import org.apache.batik.util.XMLResourceDescriptor;
 
 import org.w3c.dom.DOMException;
 import org.w3c.dom.DOMImplementation;
@@ -832,7 +833,11 @@ public class PrintTranscoder extends XMLAbstractTranscoder
          * <tt>TranscodingHints</tt> or null if any.
          */
         public String getUserStyleSheetURI() {
-            return (String)hints.get(KEY_USER_STYLESHEET_URI);
+            if (hints.containsKey(KEY_XML_PARSER_CLASSNAME)) {
+                return (String)hints.get(KEY_XML_PARSER_CLASSNAME);
+            } else {
+                return XMLResourceDescriptor.getXMLParserClassName();
+            }
         }
 
         /**
