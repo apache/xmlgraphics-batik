@@ -26,7 +26,7 @@ public class Font1 implements Painter {
                            RenderingHints.VALUE_ANTIALIAS_ON);
 
         // Set default font
-        g.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 12));
+        g.setFont(new java.awt.Font("sans-serif", java.awt.Font.BOLD, 12));
 
         // Colors used for labels and test output
         Color labelColor = new Color(0x666699);
@@ -88,10 +88,10 @@ public class Font1 implements Painter {
         //
         // Font families
         //
-        String fontFamilies[] = { "Arial",
-                                  "SunSansCondensed-Heavy",
-                                  "Impact",
-                                  "Allegro BT" };
+        String fontFamilies[] = { "Lucida Sans",
+                                  "Lucida Bright",
+                                  "Lucida Console",
+                                  "Lucida Sans Typewriter" };
 
         g.setFont(defaultFont);
         g.setPaint(labelColor);
