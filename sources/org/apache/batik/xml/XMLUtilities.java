@@ -15,8 +15,7 @@ import java.io.IOException;
 import java.io.PushbackInputStream;
 import java.io.Reader;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.apache.batik.util.EncodingUtilities;
 
 /**
  * A collection of utility functions for XML.
@@ -314,59 +313,7 @@ public class XMLUtilities extends XMLCharacters {
      * @param de the encoding string if no corresponding encoding was found.
      */
     public static String encodingToJavaEncoding(String e, String de) {
-        String result = (String)ENCODINGS.get(e.toUpperCase());
+        String result = EncodingUtilities.javaEncoding(e);
         return (result == null) ? de : result;
-    }
-
-    /**
-     * The table used to convert the encoding names.
-     */
-    protected static Map ENCODINGS = new HashMap();
-    static {
-        ENCODINGS.put("UTF-8",           "UTF8");
-        ENCODINGS.put("UTF-16",          "Unicode");
-        ENCODINGS.put("US-ASCII",        "ASCII");
-
-        ENCODINGS.put("ISO-8859-1",      "8859_1");
-        ENCODINGS.put("ISO-8859-2",      "8859_2");
-        ENCODINGS.put("ISO-8859-3",      "8859_3");
-        ENCODINGS.put("ISO-8859-4",      "8859_4");
-        ENCODINGS.put("ISO-8859-5",      "8859_5");
-        ENCODINGS.put("ISO-8859-6",      "8859_6");
-        ENCODINGS.put("ISO-8859-7",      "8859_7");
-        ENCODINGS.put("ISO-8859-8",      "8859_8");
-        ENCODINGS.put("ISO-8859-9",      "8859_9");
-        ENCODINGS.put("ISO-2022-JP",     "JIS");
-
-        ENCODINGS.put("WINDOWS-31J",     "MS932");
-        ENCODINGS.put("EUC-JP",          "EUCJIS");
-        ENCODINGS.put("GB2312",          "GB2312");
-        ENCODINGS.put("BIG5",            "Big5");
-        ENCODINGS.put("EUC-KR",          "KSC5601");
-        ENCODINGS.put("ISO-2022-KR",     "ISO2022KR");
-        ENCODINGS.put("KOI8-R",          "KOI8_R");
-
-        ENCODINGS.put("EBCDIC-CP-US",    "CP037");
-        ENCODINGS.put("EBCDIC-CP-CA",    "CP037");
-        ENCODINGS.put("EBCDIC-CP-NL",    "CP037");
-	ENCODINGS.put("EBCDIC-CP-WT",    "CP037");
-        ENCODINGS.put("EBCDIC-CP-DK",    "CP277");
-        ENCODINGS.put("EBCDIC-CP-NO",    "CP277");
-        ENCODINGS.put("EBCDIC-CP-FI",    "CP278");
-        ENCODINGS.put("EBCDIC-CP-SE",    "CP278");
-        ENCODINGS.put("EBCDIC-CP-IT",    "CP280");
-        ENCODINGS.put("EBCDIC-CP-ES",    "CP284");
-        ENCODINGS.put("EBCDIC-CP-GB",    "CP285");
-        ENCODINGS.put("EBCDIC-CP-FR",    "CP297");
-        ENCODINGS.put("EBCDIC-CP-AR1",   "CP420");
-        ENCODINGS.put("EBCDIC-CP-HE",    "CP424");
-        ENCODINGS.put("EBCDIC-CP-BE",    "CP500");
-        ENCODINGS.put("EBCDIC-CP-CH",    "CP500");
-        ENCODINGS.put("EBCDIC-CP-ROECE", "CP870");
-        ENCODINGS.put("EBCDIC-CP-YU",    "CP870");
-        ENCODINGS.put("EBCDIC-CP-IS",    "CP871");
-        ENCODINGS.put("EBCDIC-CP-AR2",   "CP918");
-
-        ENCODINGS.put("CP1252",          "CP1252");
     }
 }

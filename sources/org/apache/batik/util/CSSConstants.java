@@ -16,6 +16,12 @@ package org.apache.batik.util;
  * @version $Id$
  */
 public interface CSSConstants {
+
+    //
+    // The CSS mime-type string.
+    //
+    String CSS_MIME_TYPE = "text/css";
+
     //
     // The CSS property names.
     //
