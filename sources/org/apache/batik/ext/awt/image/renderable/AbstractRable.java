@@ -43,9 +43,9 @@ import org.apache.batik.ext.awt.image.rendered.PadRed;
  */
 public abstract class AbstractRable implements Filter {
 
-    protected Vector            srcs;
-    protected Map               props;
-    protected long              stamp=0;
+    protected Vector srcs;
+    protected Map    props = new HashMap();
+    protected long   stamp = 0;
 
     /**
      * void constructor. The subclass must call one of the
@@ -143,7 +143,6 @@ public abstract class AbstractRable implements Filter {
      */
     protected void init(Filter src, Map props) {
         init (src);
-        this.props = new HashMap();
         if(props != null){
             this.props.putAll(props);
         }
@@ -174,7 +173,6 @@ public abstract class AbstractRable implements Filter {
      */
     protected void init(List srcs, Map props) {
         init (srcs);
-        this.props = new HashMap();
         if(props != null)
             this.props.putAll(props);
     }

@@ -98,4 +98,10 @@ public interface ErrorConstants {
      */
     public static final String ERR_URI_IMAGE_INVALID
         = "uri.image.invalid";
+
+    /**
+     * The resource that contains the title for the Broken Link message
+     */
+    public static final String MSG_BROKEN_LINK_TITLE
+        = "broken.link.title";
 }

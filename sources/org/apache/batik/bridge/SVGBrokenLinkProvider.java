@@ -13,6 +13,7 @@ import java.net.URL;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.spi.DefaultBrokenLinkProvider;
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.filter.GraphicsNodeRable8Bit;
 import org.apache.batik.gvt.renderer.StaticRenderer;
 import org.apache.batik.i18n.LocalizableSupport;
 
@@ -34,7 +35,9 @@ import java.util.HashMap;
  * generating a placeholder image when the ImageTagRegistry
  * fails to handle a given reference.
  */
-public class SVGBrokenLinkProvider extends DefaultBrokenLinkProvider {
+public class SVGBrokenLinkProvider 
+    extends    DefaultBrokenLinkProvider 
+    implements ErrorConstants {
 
     final static String SVG_BROKEN_LINK_DOCUMENT_PROPERTY = 
         "org.apache.batik.bridge.BrokenLinkDocument";
@@ -80,9 +83,15 @@ public class SVGBrokenLinkProvider extends DefaultBrokenLinkProvider {
                                      Object[] params) {
         if (gvtRoot != null) {
             String message = formatMessage(base, code, params);
-            Document doc = DOMUtilities.deepCloneDocument(svgDoc,
-                                                          svgDoc.getImplementation());
+            Document doc = DOMUtilities.deepCloneDocument
+              (svgDoc, svgDoc.getImplementation());
             Element infoE = doc.getElementById("More_About");
+            Element title = doc.createElementNS(SVGConstants.SVG_NAMESPACE_URI,
+                                                SVGConstants.SVG_TITLE_TAG);
+            title.appendChild(doc.createTextNode
+                              (Messages.formatMessage
+                               (MSG_BROKEN_LINK_TITLE, null)));
+            infoE.appendChild(title);
             Element desc = doc.createElementNS(SVGConstants.SVG_NAMESPACE_URI,
                                                SVGConstants.SVG_DESC_TAG);
             desc.appendChild(doc.createTextNode(message));
@@ -92,9 +101,7 @@ public class SVGBrokenLinkProvider extends DefaultBrokenLinkProvider {
             props.put(BROKEN_LINK_PROPERTY, message);
             props.put(SVG_BROKEN_LINK_DOCUMENT_PROPERTY, doc);
 
-            // We should format the code and params and replace a node
-            // in the gvtRoot with the result.
-            return gvtRoot.getGraphicsNodeRable();
+            return new GraphicsNodeRable8Bit(gvtRoot, props);
         }
         return null;
     }
