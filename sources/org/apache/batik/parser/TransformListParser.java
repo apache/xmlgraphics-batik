@@ -68,6 +68,7 @@ public class TransformListParser extends NumberParser {
 	    case 0xA:
 	    case 0x20:
 	    case 0x9:
+            case ',':
 		break;
 	    case 'm':
 		parseMatrix();

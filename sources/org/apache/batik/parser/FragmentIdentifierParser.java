@@ -661,7 +661,6 @@ public class FragmentIdentifierParser extends AbstractParser {
                 tloop: for (;;) {
                     read();
                     switch (current) {
-                    case ';':
                     case ',':
                         break;
                     case 'm':

@@ -102,6 +102,8 @@ import org.apache.batik.transcoder.image.PNGTranscoder;
 
 import org.apache.batik.transcoder.print.PrintTranscoder;
 
+import org.apache.batik.util.XMLUtilities;
+
 import org.apache.batik.util.gui.DOMViewer;
 import org.apache.batik.util.gui.LanguageDialog;
 import org.apache.batik.util.gui.LocationBar;
@@ -887,24 +889,12 @@ public class JSVGViewerFrame
                             is.close();
                             is = u.openStream();
                         }
-                        try {
-                            Reader in = new InputStreamReader(is, "Unicode");
-                            int nch;
-                            while ((nch = in.read(buffer, 0, buffer.length)) != -1) {
-                                doc.insertString(doc.getLength(),
-                                                 new String(buffer, 0, nch), null);
-                            }
-                        } catch (java.io.CharConversionException ioce) {
-                            // try default encoding...
-                            doc = new PlainDocument();
-                            is = u.openStream();
 
-                            Reader in = new InputStreamReader(is);
-                            int nch;
-                            while ((nch = in.read(buffer, 0, buffer.length))!=-1){
-                                doc.insertString(doc.getLength(),
-                                                 new String(buffer, 0, nch), null);
-                            }
+                        Reader in = XMLUtilities.createXMLDocumentReader(is);
+                        int len;
+                        while ((len = in.read(buffer, 0, buffer.length)) != -1) {
+                            doc.insertString(doc.getLength(),
+                                             new String(buffer, 0, len), null);
                         }
 
                         ta.setDocument(doc);
