@@ -66,6 +66,27 @@
     </test>
 
     <!-- ========================================================================== -->
+    <!-- removeAttribute test                                                       -->
+    <!-- ========================================================================== -->
+    <test id="removeAttribute1"
+          class="org.apache.batik.dom.RemoveAttributeTest" >
+        <arg class="java.lang.String"
+             value="test-resources/org/apache/batik/dom/dummyXML3.xml" />
+        <arg class="java.lang.String" value="doc" />
+        <arg class="java.lang.String" value="root" />
+        <arg class="java.lang.String" value="attr" />
+    </test>
+
+    <test id="removeAttribute2"
+          class="org.apache.batik.dom.RemoveAttributeTest" >
+        <arg class="java.lang.String"
+             value="test-resources/org/apache/batik/dom/dummyXML3.xml" />
+        <arg class="java.lang.String" value="doc" />
+        <arg class="java.lang.String" value="root" />
+        <arg class="java.lang.String" value="attr2" />
+    </test>
+
+    <!-- ========================================================================== -->
     <!-- Serialization test                                                         -->
     <!-- ========================================================================== -->
     <test id="serialization1" class="org.apache.batik.dom.SerializationTest">
