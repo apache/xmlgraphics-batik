@@ -150,39 +150,39 @@ public class ConcreteTextSelector implements Selector {
                                                         renderContext);;
                      selectionNode = source;
                 } else {
-                    ((Selectable) source).selectTo(p.getX(), p.getY(), 
-							renderContext);
-                    Shape newShape = 
+                    ((Selectable) source).selectTo(p.getX(), p.getY(),
+                                                        renderContext);
+                    Shape newShape =
                     ((Selectable) source).getHighlightShape(renderContext);
                     dispatchSelectionEvent(
-                        new SelectionEvent(null, 
-                                SelectionEvent.SELECTION_CHANGED, 
+                        new SelectionEvent(null,
+                                SelectionEvent.SELECTION_CHANGED,
                                 newShape));
                 }
 
             } else if (isSelectStartGesture(evt)) {
 
                 selectionNode = source;
-                ((Selectable) source).selectAt(p.getX(), p.getY(), 
+                ((Selectable) source).selectAt(p.getX(), p.getY(),
                                                           renderContext);
                 dispatchSelectionEvent(
-                        new SelectionEvent(null, 
-                                SelectionEvent.SELECTION_CLEARED, 
+                        new SelectionEvent(null,
+                                SelectionEvent.SELECTION_CLEARED,
                                 null));
-  
+
             } else if (isSelectEndGesture(evt)) {
 
                 selectionNode = source;
 
-                ((Selectable) source).selectTo(p.getX(), p.getY(), 
+                ((Selectable) source).selectTo(p.getX(), p.getY(),
                                                           renderContext);
 
                 Object oldSelection = getSelection();
-                Shape newShape = 
+                Shape newShape =
                     ((Selectable) source).getHighlightShape(renderContext);
                 dispatchSelectionEvent(
-                        new SelectionEvent(oldSelection, 
-                                SelectionEvent.SELECTION_DONE, 
+                        new SelectionEvent(oldSelection,
+                                SelectionEvent.SELECTION_DONE,
                                 newShape));
                 copyToClipboard(oldSelection);
 
@@ -190,14 +190,14 @@ public class ConcreteTextSelector implements Selector {
 
                 selectionNode = source;
 
-                ((Selectable) source).selectAll(p.getX(), p.getY(), 
+                ((Selectable) source).selectAll(p.getX(), p.getY(),
                                                         renderContext);
                 Object oldSelection = getSelection();
-                Shape newShape = 
+                Shape newShape =
                     ((Selectable) source).getHighlightShape(renderContext);
                 dispatchSelectionEvent(
-                        new SelectionEvent(oldSelection, 
-                                SelectionEvent.SELECTION_DONE, 
+                        new SelectionEvent(oldSelection,
+                                SelectionEvent.SELECTION_DONE,
                                 newShape));
                 copyToClipboard(oldSelection);
             }
@@ -217,7 +217,8 @@ public class ConcreteTextSelector implements Selector {
     }
 
     private boolean isSelectAllGesture(GraphicsNodeEvent evt) {
-        return (evt.getID() == GraphicsNodeMouseEvent.MOUSE_CLICKED);
+        return ((evt.getID() == GraphicsNodeMouseEvent.MOUSE_CLICKED)
+            && (((GraphicsNodeMouseEvent) evt).getClickCount() == 2));
     }
 
     /*
@@ -243,7 +244,7 @@ public class ConcreteTextSelector implements Selector {
      */
     public void dispatchSelectionEvent(SelectionEvent e) {
         if (listeners != null) {
-	    Iterator iter = listeners.iterator();
+            Iterator iter = listeners.iterator();
             while (iter.hasNext()) {
                 ((SelectionListener)iter.next()).selectionChanged(e);
             }
@@ -256,9 +257,9 @@ public class ConcreteTextSelector implements Selector {
      */
     public void addSelectionListener(SelectionListener l) {
         if (listeners == null) {
-	    listeners = new ArrayList();
+            listeners = new ArrayList();
         }
-	listeners.add(l);
+        listeners.add(l);
     }
 
     /**
@@ -267,7 +268,7 @@ public class ConcreteTextSelector implements Selector {
      */
     public void removeSelectionListener(SelectionListener l) {
         if (listeners != null) {
-	    listeners.remove(l);
+            listeners.remove(l);
         }
     }
 
