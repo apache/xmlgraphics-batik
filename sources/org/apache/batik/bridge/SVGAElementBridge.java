@@ -87,8 +87,7 @@ public class SVGAElementBridge extends AbstractGraphicsNodeBridge {
     /**
      * To handle a click on an anchor.
      */
-    protected static class AnchorListener
-        implements UnwrappedEventListener {
+    protected static class AnchorListener implements EventListener {
 
         protected UserAgent userAgent;
 
@@ -116,8 +115,7 @@ public class SVGAElementBridge extends AbstractGraphicsNodeBridge {
     /**
      * To handle a mouseover on an anchor and set the cursor.
      */
-    protected static class CursorMouseOverListener
-        implements UnwrappedEventListener {
+    protected static class CursorMouseOverListener implements EventListener {
 
         protected UserAgent userAgent;
 
@@ -148,8 +146,7 @@ public class SVGAElementBridge extends AbstractGraphicsNodeBridge {
     /**
      * To handle a mouseout on an anchor and set the cursor.
      */
-    protected static class CursorMouseOutListener
-        implements UnwrappedEventListener {
+    protected static class CursorMouseOutListener implements EventListener {
 
         protected UserAgent userAgent;
 

@@ -217,8 +217,7 @@ class BridgeEventSupport implements SVGConstants {
      * This class is a listener that will remove all listeners installed
      * by the bridge on the unload event.
      */
-    private static class SVGUnloadListener
-        implements UnwrappedEventListener {
+    private static class SVGUnloadListener implements EventListener {
         private class Entry {
             String type;
             EventListener caller;
@@ -279,8 +278,7 @@ class BridgeEventSupport implements SVGConstants {
         }
     }
 
-    private static class GVTUnloadListener
-        implements UnwrappedEventListener {
+    private static class GVTUnloadListener implements EventListener {
         private EventDispatcher dispatcher;
         private Listener listener;
         GVTUnloadListener(EventDispatcher dispatcher, Listener listener) {
@@ -417,7 +415,7 @@ class BridgeEventSupport implements SVGConstants {
         }
     }
 
-    public static class ScriptCaller implements UnwrappedEventListener {
+    public static class ScriptCaller implements EventListener {
         private String script = null;
         private BridgeContext context;
         private String language;
