@@ -10,7 +10,6 @@ package org.apache.batik.gvt;
 
 import java.awt.AlphaComposite;
 import java.awt.Composite;
-import java.awt.Cursor;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Shape;
@@ -37,7 +36,6 @@ import org.apache.batik.ext.awt.image.renderable.Clip;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.renderable.PadMode;
 import org.apache.batik.gvt.event.GraphicsNodeEvent;
-import org.apache.batik.gvt.event.GraphicsNodeEventFilter;
 import org.apache.batik.gvt.event.GraphicsNodeKeyEvent;
 import org.apache.batik.gvt.event.GraphicsNodeKeyListener;
 import org.apache.batik.gvt.event.GraphicsNodeMouseEvent;
@@ -65,19 +63,9 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     protected EventListenerList listeners;
 
     /**
-     * The filter used to filter graphics node events.
-     */
-    protected GraphicsNodeEventFilter eventFilter;
-
-    /**
      * The hit detector used to filter mouse events.
      */
     protected GraphicsNodeHitDetector hitDetector;
-
-    /**
-     * The cursor attached to this graphics node.
-     */
-    protected Cursor cursor;
 
     /**
      * The transform of this graphics node.
@@ -139,21 +127,6 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     //
     // Properties methods
     //
-
-    /**
-     * Sets the cursor of this node.
-     * @param newCursor the new cursor of this node
-     */
-    public void setCursor(Cursor newCursor) {
-        this.cursor = newCursor;
-    }
-
-    /**
-     * Returns the cursor of this node.
-     */
-    public Cursor getCursor() {
-        return cursor;
-    }
 
     /**
      * Sets the transform of this node.
@@ -330,10 +303,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
         if (Thread.currentThread().isInterrupted()) {
             throw new InterruptedException();
         }
-        if (!isVisible) {
-            // Exit if the visible flag is off
-            return;
-        }
+
         //
         // Set up graphic context. It is important to setup the
         // transform first, because the clip is defined in this
@@ -567,21 +537,6 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     }
 
     /**
-     * Sets the graphics node event filter of this node.
-     * @param evtFilter the new graphics node event filter
-     */
-    public void setGraphicsNodeEventFilter(GraphicsNodeEventFilter evtFilter) {
-        this.eventFilter = evtFilter;
-    }
-
-    /**
-     * Returns the graphics node event filter of this node.
-     */
-    public GraphicsNodeEventFilter getGraphicsNodeEventFilter() {
-        return eventFilter;
-    }
-
-    /**
      * Sets the hit detector for this node.
      * @param hitDetector the new hit detector
      */
@@ -687,8 +642,8 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
                     listeners[i].mouseReleased(evt);
                 }
                 break;
-                default:
-                    throw new Error("Unknown Mouse Event type: "+evt.getID());
+            default:
+                throw new Error("Unknown Mouse Event type: "+evt.getID());
             }
         }
         evt.consume();
@@ -731,11 +686,9 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     /**
      * Returns true is this node accepts the specified event, false otherwise.
      * @param evt the event to check
+     * @return always true at this time
      */
     protected boolean acceptEvent(GraphicsNodeEvent evt) {
-        if (eventFilter != null) {
-            return eventFilter.accept(this, evt);
-        }
         return true;
     }
 
