@@ -148,11 +148,13 @@ public class ApplicationSecurityEnforcer {
             // We want to install a SecurityManager.
             if (sm == null) {
                 installSecurityManager();
+                System.err.println("installed SecurityManager");
             }
         } else {
             if (sm != null) {
                 System.setSecurityManager(null);
                 lastSecurityManagerInstalled = null;
+                System.err.println("Removed SecurityManager");
             }
         }
     }

@@ -426,6 +426,34 @@ public class Main implements SVGConverterController {
         = Messages.get("Main.cl.option.quality.description", "No description");
 
     /**
+     * Option to specify the set of allowed scripts
+     */
+    public static String CL_OPTION_ALLOWED_SCRIPTS
+        = Messages.get("Main.cl.option.allowed.scripts", "-scripts");
+
+    public static String CL_OPTION_ALLOWED_SCRIPTS_DESCRIPTION
+        = Messages.get("Main.cl.option.allowed.scripts.description", "No description");
+
+    /**
+     * Option to determine whether scripts a constrained to the 
+     * same origin as the document referencing them.
+     */
+    public static String CL_OPTION_CONSTRAIN_SCRIPT_ORIGIN
+        = Messages.get("Main.cl.option.constrain.script.origin", "-anyScriptOrigin");
+
+    public static String CL_OPTION_CONSTRAIN_SCRIPT_ORIGIN_DESCRIPTION
+        = Messages.get("Main.cl.option.constrain.script.origin.description", "No description");
+
+    /**
+     * Option to turn off secure execution of scripts
+     */
+    public static String CL_OPTION_SECURITY_OFF
+        = Messages.get("Main.cl.option.security.off", "-scriptSecurityOff");
+    
+    public static String CL_OPTION_SECURITY_OFF_DESCRIPTION
+        = Messages.get("Main.cl.option.security.off.description", "No description");
+
+    /**
      * Static map containing all the option handlers able to analyze the
      * various options.
      */
@@ -636,7 +664,40 @@ public class Main implements SVGConverterController {
                                   return CL_OPTION_ONLOAD_DESCRIPTION;
                               }
                           });
+
+        optionMap.put(CL_OPTION_ALLOWED_SCRIPTS,
+                      new SingleValueOptionHandler() {
+                          public void handleOption(String optionValue,
+                                                   SVGConverter c){
+                              c.setAllowedScriptTypes(optionValue);
+                          }
+                          
+                          public String getOptionDescription(){
+                              return CL_OPTION_ALLOWED_SCRIPTS_DESCRIPTION;
+                          }
+                      });
         
+        optionMap.put(CL_OPTION_CONSTRAIN_SCRIPT_ORIGIN,
+                      new NoValueOptionHandler(){
+                          public void handleOption(SVGConverter c){
+                              c.setConstrainScriptOrigin(false);
+                          }
+
+                          public String getOptionDescription(){
+                              return CL_OPTION_CONSTRAIN_SCRIPT_ORIGIN_DESCRIPTION;
+                          }
+                      });
+                                                
+        optionMap.put(CL_OPTION_SECURITY_OFF,
+                      new NoValueOptionHandler() {
+                          public void handleOption(SVGConverter c){
+                              c.setSecurityOff(true);
+                          }
+
+                          public String getOptionDescription(){
+                              return CL_OPTION_SECURITY_OFF_DESCRIPTION;
+                          }
+                      });
     }
       
     /**
@@ -645,24 +706,11 @@ public class Main implements SVGConverterController {
      */
     protected Vector args;
 
-    /**
-     * Script security enforcement is delegated to the 
-     * security utility 
-     */
-    protected ApplicationSecurityEnforcer securityEnforcer;
-
     public Main(String[] args){
         this.args = new Vector();
         for (int i=0; i<args.length; i++){
             this.args.addElement(args[i]);
         }
-
-        securityEnforcer = 
-            new ApplicationSecurityEnforcer(this.getClass(),
-                                            RASTERIZER_SECURITY_POLICY,
-                                            RASTERIZER_JAR_NAME);
-
-        securityEnforcer.enforceSecurity(true);
     }
 
     protected void error(String errorCode,
@@ -734,6 +782,14 @@ public class Main implements SVGConverterController {
             }
         }
 
+        // Apply script security option
+        ApplicationSecurityEnforcer securityEnforcer = 
+            new ApplicationSecurityEnforcer(this.getClass(),
+                                            RASTERIZER_SECURITY_POLICY,
+                                            RASTERIZER_JAR_NAME);
+
+        securityEnforcer.enforceSecurity(!c.getSecurityOff());
+
         String expandedSources[] = expandSources(sources);
 
         c.setSources(expandedSources);
@@ -741,8 +797,9 @@ public class Main implements SVGConverterController {
         validateConverterConfig(c);
 
         if (expandedSources== null || expandedSources.length < 1){
-            System.out.println("sources.length : " + sources.size());
             System.out.println(USAGE);
+            System.out.flush();
+            securityEnforcer.enforceSecurity(false);
             return;
         }
 
@@ -751,6 +808,9 @@ public class Main implements SVGConverterController {
         } catch(SVGConverterException e){
             error(ERROR_WHILE_CONVERTING_FILES,
                   new Object[] { e.getMessage() });
+        } finally {
+            System.out.flush();
+            securityEnforcer.enforceSecurity(false);
         }
     }
 

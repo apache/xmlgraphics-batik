@@ -222,6 +222,16 @@ public class SVGConverter {
     /** Execute the 'onload' scripts flag */
     protected boolean executeOnload = false;
 
+    /** Set of allowed script types. */
+    protected String allowedScriptTypes = null;
+
+    /** Controls whether scripts can only have the same origin as 
+        the document which references them. */
+    protected boolean constrainScriptOrigin = true;
+
+    /** Controls whether scripts should be run securely or not */
+    protected boolean securityOff = false;
+
     /** Sources files or URLs */
     protected Vector sources = null;
 
@@ -498,6 +508,54 @@ public class SVGConverter {
     }
     
     /**
+     * Sets the set of allowed script types (i.e., the set of possible
+     * values for the type attribute in the &lt;script&gt; element),
+     * as a comma separated list of allowed values.
+     */
+    public void setAllowedScriptTypes(String allowedScriptTypes){
+        this.allowedScriptTypes = allowedScriptTypes;
+    }
+
+    /**
+     * Returns the list of allowed script types.
+     *
+     * @see #setAllowedScriptTypes
+     */
+    public String getAllowedScriptTypes(){
+        return allowedScriptTypes;
+    }
+
+    /**
+     * Sets whether scripts should only be loaded from the same
+     * location as the documents referencing them.
+     */
+    public void setConstrainScriptOrigin(boolean constrainScriptOrigin){
+        this.constrainScriptOrigin = constrainScriptOrigin;
+    }
+
+    /**
+     * Returns whether scripts can only be loaded from the same
+     * origin as the documents referencing them.
+     */
+    public boolean getConstrainScriptOrigin(){
+        return constrainScriptOrigin;
+    }
+
+    /**
+     * Sets whether or not scripts should be run securely
+     */
+    public void setSecurityOff(boolean securityOff){
+        this.securityOff = securityOff;
+    }
+
+    /**
+     * Returns whether or not scripts will be run securely
+     */
+    public boolean getSecurityOff(){
+        return securityOff;
+    }
+
+    /**
      * Returns true if f is a File. f is found to be a file if
      * it exists and is a file. If it does not exist, it is declared
      * to be a file if it has the same extension as the DestinationType.
@@ -733,6 +791,17 @@ public class SVGConverter {
             map.put(ImageTranscoder.KEY_EXECUTE_ONLOAD, new Boolean(executeOnload));
         }
         
+        // Set allowed scripts
+        if (allowedScriptTypes != null) {
+            map.put(ImageTranscoder.KEY_ALLOWED_SCRIPT_TYPES, allowedScriptTypes);
+        }
+
+        // Set constrain script origin
+        if (!constrainScriptOrigin) {
+            map.put(ImageTranscoder.KEY_CONSTRAIN_SCRIPT_ORIGIN, 
+                    new Boolean(constrainScriptOrigin));
+        }
+
         return map;
     }
 

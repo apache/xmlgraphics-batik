@@ -50,7 +50,7 @@ import java.io.PrintWriter;
  *       return report;
  *    }
  * 
- *    return reportSuccess;
+ *    return reportSuccess();
  * }
  * </code>
  *
