@@ -30,6 +30,11 @@ import org.apache.batik.ext.awt.image.GraphicsUtil;
 import org.apache.batik.ext.awt.image.spi.ImageTagRegistry;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 
+import org.apache.batik.css.engine.SVGCSSEngine;
+import org.apache.batik.css.engine.value.ListValue;
+import org.apache.batik.css.engine.value.StringValue;
+import org.apache.batik.css.engine.value.Value;
+
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.dom.svg.XMLBaseSupport;
 import org.apache.batik.util.SVGConstants;
@@ -37,6 +42,9 @@ import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.SoftReferenceCache;
 
 import org.w3c.dom.Element;
+import org.w3c.dom.css.CSSPrimitiveValue;
+import org.w3c.dom.css.CSSValue;
+
 
 /**
  * The CursorManager class is a helper class which preloads the cursors 
@@ -45,7 +53,7 @@ import org.w3c.dom.Element;
  * @author <a href="mailto:vincent.hardy@sun.com">Vincent Hardy</a>
  * @version $Id$
  */
-public class CursorManager implements SVGConstants {
+public class CursorManager implements SVGConstants, ErrorConstants {
     /**
      * Maps SVG Cursor Values to Java Cursors
      */
@@ -134,11 +142,168 @@ public class CursorManager implements SVGConstants {
     public static Cursor getPredefinedCursor(String cursorName){
         return (Cursor)cursorMap.get(cursorName);
     }
-    
+
     /**
-     * Returns a cursor for the given cursorElement
+     * Returns the Cursor corresponding to the input element's cursor property
+     *
+     * @param e the element on which the cursor property is set
      */
-    public Cursor convertSVGCursor(Element cursorElement) {
+    public Cursor convertCursor(Element e) {
+        Value cursorValue 
+            = CSSUtilities.getComputedStyle(e, 
+                                            SVGCSSEngine.CURSOR_INDEX);
+
+        String cursorStr = SVGConstants.SVG_AUTO_VALUE;
+
+        if (cursorValue != null) {
+            if (cursorValue.getCssValueType() ==  CSSValue.CSS_PRIMITIVE_VALUE
+                &&
+                cursorValue.getPrimitiveType() == CSSPrimitiveValue.CSS_IDENT) {
+                // Single Value : should be one of the predefined cursors or 
+                // 'inherit'
+                cursorStr = cursorValue.getStringValue();
+                return convertBuiltInCursor(e, cursorStr);
+            } else if (cursorValue.getCssValueType() == CSSValue.CSS_VALUE_LIST) {
+                ListValue l = (ListValue)cursorValue;
+                int nValues = l.getLength();
+                if (nValues == 1) {
+                    cursorValue = l.item(nValues-1);
+                    if (cursorValue.getPrimitiveType() == CSSPrimitiveValue.CSS_IDENT) {
+                        cursorStr = cursorValue.getStringValue();
+                        return convertBuiltInCursor(e, cursorStr);
+                    }
+                } else if (nValues > 1) {
+                    //
+                    // Look for the first cursor url we can handle.
+                    // That would be a reference to a <cursor> element.
+                    //
+                    return convertSVGCursor(e, l);
+                }
+            }
+        } 
+        
+        return convertBuiltInCursor(e, cursorStr);
+    }
+    
+    public Cursor convertBuiltInCursor(Element e, String cursorStr) {
+        Cursor cursor = null;
+
+        // The CSS engine guarantees an non null, non empty string
+        // as the computed value for cursor. Therefore, the following
+        // test is safe.
+        if (cursorStr.charAt(0) == 'a') { 
+            //
+            // Handle 'auto' value.
+            //
+            // - <a> The following sets the cursor for <a> element enclosing
+            //   text nodes. Setting the proper cursor (i.e., depending on the
+            //   children's 'cursor' property, is handled in the SVGAElementBridge
+            //   so as to avoid going up the tree on mouseover events (looking for
+            //   an anchor ancestor.
+            //
+            // - <image> The following does not change the cursor if the 
+            //   element's cursor property is set to 'auto'. Otherwise, it takes
+            //   precedence over any child (in case of SVG content) cursor setting.
+            //   This means that for images referencing SVG content, a cursor 
+            //   property set to 'auto' on the <image> element will not override 
+            //   the cursor settings inside the SVG image. Any other cursor property
+            //   will take precedence.
+            //
+            // - <use> Same behavior as for <image> except that the behavior 
+            //   is controlled from the <use> element bridge (SVGUseElementBridge).
+            //
+            // - <text>, <tref> and <tspan> : a cursor value of auto will cause the
+            //   cursor to be set to a text cursor. Note that text content with an
+            //   'auto' cursor and descendant of an anchor will have its cursor
+            //   set to the anchor cursor through the SVGAElementBridge.
+            //
+            String nameSpaceURI = e.getNamespaceURI();
+            String tag = e.getNodeName();
+            if (SVGConstants.SVG_NAMESPACE_URI.equals(nameSpaceURI)) {
+                if (SVGConstants.SVG_A_TAG.equals(tag)) {
+                    cursor = CursorManager.ANCHOR_CURSOR;
+                } else if (SVGConstants.SVG_TEXT_TAG.equals(tag) ||
+                           SVGConstants.SVG_TSPAN_TAG.equals(tag) ||
+                           SVGConstants.SVG_TREF_TAG.equals(tag) ) {
+                    cursor = CursorManager.TEXT_CURSOR;
+                } else if (SVGConstants.SVG_IMAGE_TAG.equals(tag)) {
+                    // Do not change the cursor 
+                    return null;
+                } else {
+                    cursor = CursorManager.DEFAULT_CURSOR;
+                }
+            } else {
+                cursor = CursorManager.DEFAULT_CURSOR;
+            }
+        } else {
+            // Specific, logical cursor
+            cursor = CursorManager.getPredefinedCursor(cursorStr);
+        }
+        
+        return cursor;
+    }
+
+       
+    /**
+     * Returns a cursor for the given value list. Note that the 
+     * code assumes that the input value has at least two entries.
+     * So the caller should check that before calling the method.
+     * For example, CSSUtilities.convertCursor performs that check.
+     */
+    public Cursor convertSVGCursor(Element e, ListValue l) {
+        int nValues = l.getLength();
+        Element cursorElement = null;
+        for (int i=0; i<nValues-1; i++) {
+            Value cursorValue = l.item(i);
+            if (cursorValue.getPrimitiveType() == CSSPrimitiveValue.CSS_URI) {
+                String uri = cursorValue.getStringValue();
+                
+                // If the uri does not resolve to a cursor element,
+                // then, this is not a type of cursor uri we can handle:
+                // go to the next or default to logical cursor
+                try {
+                    cursorElement = ctx.getReferencedElement(e, uri);
+                } catch (BridgeException be) {
+                    // Be only silent if this is a case where the target
+                    // could not be found. Do not catch other errors (e.g,
+                    // malformed URIs)
+                    if (!ERR_URI_BAD_TARGET.equals(be.getCode())) {
+                        throw be;
+                    }
+                }
+                
+                if (cursorElement != null) {
+                    // We go an element, check it is of type cursor
+                    String cursorNS = cursorElement.getNamespaceURI();
+                    if (SVGConstants.SVG_NAMESPACE_URI.equals(cursorNS)
+                        &&
+                        SVGConstants.SVG_CURSOR_TAG.equals(cursorElement.getNodeName())) {
+                        Cursor c = convertSVGCursorElement(cursorElement);
+                        if (c != null) { 
+                            return c;
+                        }
+                    }
+                }
+            }
+        }
+        
+        // If we got to that point, it means that no cursorElement
+        // produced a valid cursor, i.e., either a format we support
+        // or a valid referenced image (no broken image).
+        // Fallback on the built in cursor property.
+        Value cursorValue = l.item(nValues-1);
+        String cursorStr = SVGConstants.SVG_AUTO_VALUE;
+        if (cursorValue.getPrimitiveType() == CSSPrimitiveValue.CSS_IDENT) {
+            cursorStr = cursorValue.getStringValue();
+        }
+          
+        return convertBuiltInCursor(e, cursorStr);
+    }
+
+    /**
+     * Returns a cursor for a given element
+     */
+    public Cursor convertSVGCursorElement(Element cursorElement) {
         // One of the cursor url resolved to a <cursor> element
         // Try to handle its image.
         String uriStr = XLinkSupport.getXLinkHref(cursorElement);
@@ -182,12 +347,23 @@ public class CursorManager implements SVGConstants {
         ImageTagRegistry reg = ImageTagRegistry.getRegistry();
         Filter f = reg.readURL(purl);
 
+
+        //
+        // Check if we got a broken image
+        //
+        if (f.getProperty
+            (SVGBrokenLinkProvider.SVG_BROKEN_LINK_DOCUMENT_PROPERTY) != null) {
+            cursorCache.clearCursor(desc);
+            return null;
+        } 
+            
         //
         // Now, get the preferred cursor dimension
         //
         Rectangle preferredSize = f.getBounds2D().getBounds();
         if (preferredSize == null || preferredSize.width <=0
             || preferredSize.height <=0 ) {
+            cursorCache.clearCursor(desc);
             return null;
         }
 
@@ -215,14 +391,14 @@ public class CursorManager implements SVGConstants {
                 rh = cursorSize.height;
             }
             
-            RenderedImage img = f.createScaledRendering((int)Math.round(rw),
-                                                        (int)Math.round(rh),
-                                                        null);
+            RenderedImage ri = f.createScaledRendering((int)Math.round(rw),
+                                                       (int)Math.round(rh),
+                                                       null);
             
-            if (img instanceof Image) {
-                bi = (Image)img;
+            if (ri instanceof Image) {
+                bi = (Image)ri;
             } else {
-                bi = renderedImageToImage(img);
+                bi = renderedImageToImage(ri);
             }
 
             // Apply the scale transform that is applied to the image
@@ -252,7 +428,7 @@ public class CursorManager implements SVGConstants {
         y = y > (cursorSize.height-1) ? cursorSize.height - 1: y;
 
         //
-        // The cursor image is not into the bi image
+        // The cursor image is now into the bi image
         //
         Cursor c = Toolkit.getDefaultToolkit()
             .createCustomCursor(bi, 
@@ -349,6 +525,10 @@ public class CursorManager implements SVGConstants {
         public void putCursor(CursorDescriptor desc, 
                               Cursor cursor) {
             putImpl(desc, cursor);
+        }
+
+        public void clearCursor(CursorDescriptor desc) {
+            clearImpl(desc);
         }
     }
 
