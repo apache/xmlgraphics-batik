@@ -199,6 +199,16 @@ public class SAXDocumentFactory
 
     /**
      * Creates a Document instance.
+     * @param uri The document URI.
+     * @exception IOException if an error occured while reading the document.
+     */
+    public Document createDocument(String uri)
+        throws IOException {
+        return createDocument(new InputSource(uri));
+    }
+
+    /**
+     * Creates a Document instance.
      * @param ns The namespace URI of the root element of the document.
      * @param root The name of the root element of the document.
      * @param uri The document URI.
@@ -214,6 +224,19 @@ public class SAXDocumentFactory
 
     /**
      * Creates a Document instance.
+     * @param uri The document URI.
+     * @param is The document input stream.
+     * @exception IOException if an error occured while reading the document.
+     */
+    public Document createDocument(String uri, InputStream is) 
+        throws IOException {
+        InputSource inp = new InputSource(is);
+        inp.setSystemId(uri);
+        return createDocument(inp);
+    }
+
+    /**
+     * Creates a Document instance.
      * @param ns The namespace URI of the root element of the document.
      * @param root The name of the root element of the document.
      * @param uri The document URI.
@@ -225,6 +248,18 @@ public class SAXDocumentFactory
         InputSource inp = new InputSource(r);
         inp.setSystemId(uri);
         return createDocument(ns, root, uri, inp);
+    }
+
+    /**
+     * Creates a Document instance.
+     * @param uri The document URI.
+     * @param r The document reader.
+     * @exception IOException if an error occured while reading the document.
+     */
+    public Document createDocument(String uri, Reader r) throws IOException {
+        InputSource inp = new InputSource(r);
+        inp.setSystemId(uri);
+        return createDocument(inp);
     }
 
     /**

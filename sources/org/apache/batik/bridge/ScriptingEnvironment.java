@@ -721,8 +721,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
                          XMLResourceDescriptor.getXMLParserClassName());
                     try {
                         Document d = sdf.createDocument
-                            ("http://example.org/Foo", "foo", 
-                             uri, new StringReader(text));
+                            (uri, new StringReader(text));
                         result = doc.createDocumentFragment();
                         result.appendChild(doc.importNode(d.getDocumentElement(), true));
                     } catch (Exception ext) {
