@@ -67,7 +67,7 @@
       </g>
 
       <radialGradient id="light" gradientUnits="userSpace" 
-                      cx="200" cy="250" fx="20" fy="20" r="280">
+                      cx="200" cy="250" fx="20" fy="20" r="300">
                       <stop offset="0%" style="stop-color:white; stop-opacity:.3" />
                       <stop offset="100%" style="stop-color:black; stop-opacity:.2" />
       </radialGradient>
@@ -80,7 +80,24 @@
       <use xlink:href="#linePair" transform="translate(0 200)"/>
       <use xlink:href="#linePair" transform="translate(0 300)"/>
     </g>
-    <rect x="25" y="25" width="400" height="400" style="fill:url(#light); fill-opacity:.2"/>
+    <rect x="25" y="25" width="400" height="400" style="fill:url(#light);"/>
+    <defs>
+      <radialGradient id="psion" gradientUnits="objectBoundingBox" fx="30%" fy="40%" r="100%">
+                      <stop offset="0%"   style="stop-color:white;" />
+                      <stop offset="50%" style="stop-color:black;" />
+      </radialGradient>
+      <radialGradient id="psion2" gradientUnits="objectBoundingBox" fx="20%" fy="30%" r="60%">
+                      <stop offset="0%"   style="stop-color:white;" />
+                      <stop offset="100%" style="stop-color:black;" />
+      </radialGradient>
+    </defs>
+    <g id="shadow" style="fill:black; fill-opacity:.6" transform="translate(172 168) rotate(120)">
+      <circle cx="19" cy="20" r="10"/>
+      <path d="M13 28L24 28C27 28 24 42 32 48L8 48C13 42 13 34 13 28Z"/>
+      <rect x="2" y="48" width="36" height="18"/>
+    </g>
+    <circle cx="100" cy="150" r="18" style="fill:url(#psion2); stroke:black; stroke-width:2"/>
+    <circle cx="100" cy="150" r="10" style="fill:url(#psion);"/>
     </g>
 
     <!-- ============================================================= -->
