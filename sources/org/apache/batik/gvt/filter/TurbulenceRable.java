@@ -22,12 +22,12 @@ public interface TurbulenceRable extends Filter {
      * Sets the turbulence region
      * @param TurbulenceRable region to fill with turbulence function.
      */
-    public void setTurbulenceRegion(Rectangle2D turbulenceRegion);
+    public void setTurbulenceRegion(FilterRegion turbulenceRegion);
 
     /**
      * Get the turbulence region
      */
-     public Rectangle2D getTurbulenceRegion();
+     public FilterRegion getTurbulenceRegion();
 
     /**
      * Get the current seed value for the pseudo random number generator.
@@ -60,12 +60,12 @@ public interface TurbulenceRable extends Filter {
     public boolean isStitched();
 
     /**
-     * Returns true if the turbulence function is using fractile noise,
+     * Returns true if the turbulence function is using fractal noise,
      * instead of turbulence noise.
-     * @return true if the turbulence function is using fractile noise,
+     * @return true if the turbulence function is using fractal noise,
      * instead of turbulence noise.
      */
-    public boolean isFractileNoise();
+    public boolean isFractalNoise();
 
     /**
      * Set the seed value for the pseudo random number generator.
@@ -98,10 +98,10 @@ public interface TurbulenceRable extends Filter {
     public void setStitched(boolean stitched);
 
     /**
-     * Turns on/off fractile noise.
-     * @param fractileNoise true if fractile noise should be used.
+     * Turns on/off fractal noise.
+     * @param fractalNoise true if fractal noise should be used.
      */
-    public void setFractileNoise(boolean fractileNoise);
+    public void setFractalNoise(boolean fractalNoise);
 }
 
 

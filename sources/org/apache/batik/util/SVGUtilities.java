@@ -462,6 +462,13 @@ public class SVGUtilities implements SVGConstants {
     }
 
     /**
+     * Parses an SVG integer
+     */
+    public static int convertSVGInteger(String intStr){
+        return Integer.parseInt(intStr);
+    }
+
+    /**
      * Creates a filter region from a filter element's x, y, width
      * and height attributes. Uses the input <tt>GraphicsNode</tt>
      * as a default for the region bounds
