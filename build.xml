@@ -60,17 +60,17 @@ To display the available targets type:
 
   <target name="init" depends="init-args">
     <tstamp/>
-    <property name="Project"  value="Batik"/>
-    <property name="project"  value="batik"/>
-    <property name="year"     value="2002"/>
-    <property name="version"  value="1.5.1"/>
-    <property name="revisionType" value="rc"/>
-    <property name="revisionNumber" value="2" />
+    <property name="Project"         value="Batik"/>
+    <property name="project"         value="batik"/>
+    <property name="year"            value="2004"/>
+    <property name="version"         value="1.5.1"/>
+    <property name="revisionType"    value=""/>
+    <property name="revisionNumber"  value="" />
 
     <property file="build.properties"/>
-    <property name="debug"       value="off"/>
-    <property name="optimize"    value="on"/>
-    <property name="deprecation" value="on"/>
+    <property name="debug"           value="off"/>
+    <property name="optimize"        value="on"/>
+    <property name="deprecation"     value="on"/>
 
     <property name="src"             value="sources"/>
     <property name="resources"       value="resources"/>
