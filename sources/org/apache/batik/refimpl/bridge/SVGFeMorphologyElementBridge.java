@@ -10,19 +10,26 @@ package org.apache.batik.refimpl.bridge;
 
 import java.awt.geom.Rectangle2D;
 import java.util.Map;
+
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeMutationEvent;
 import org.apache.batik.bridge.FilterBridge;
+import org.apache.batik.bridge.IllegalAttributeValueException;
+
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.MorphologyRable;
 import org.apache.batik.gvt.filter.PadMode;
 import org.apache.batik.gvt.filter.PadRable;
+
+import org.apache.batik.refimpl.bridge.resources.Messages;
 import org.apache.batik.refimpl.gvt.filter.ConcreteMorphologyRable;
 import org.apache.batik.refimpl.gvt.filter.ConcretePadRable;
+
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.SVGUtilities;
 import org.apache.batik.util.UnitProcessor;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.css.CSSStyleDeclaration;
@@ -35,7 +42,8 @@ import org.w3c.dom.css.CSSStyleDeclaration;
  * @version $Id$
  */
 public class SVGFeMorphologyElementBridge implements FilterBridge,
-                                                       SVGConstants {
+                                                     SVGConstants {
+
     /**
      * Returns the <tt>Filter</tt> that implements the filter
      * operation modeled by the input DOM element
@@ -59,72 +67,85 @@ public class SVGFeMorphologyElementBridge implements FilterBridge,
                          Filter in,
                          Rectangle2D filterRegion,
                          Map filterMap){
-        //
-        // Extract standard deviation
-        //
-        String radius
-            = filterElement.getAttributeNS(null,
-                                           ATTR_RADIUS);
 
-        Float radiusPair[]
-            = SVGUtilities.buildFloatPair(radius);
+        // Extract the radius (or radii) for the operation.
+        String radius = filterElement.getAttributeNS(null, ATTR_RADIUS);
 
-        String operator
-            = filterElement.getAttributeNS(null,
-                                           ATTR_OPERATOR);
+        Float radiusPair[] = SVGUtilities.buildFloatPair(radius);
 
-        boolean doDilation = VALUE_DILATE.equals(operator);
-
-        //
-        // Build filter only if radius is not negative
-        //
-        if((radiusPair[0] == null)
-           || (radiusPair[0].floatValue() <= 0))
+        // parse the radiusX
+        float radiusX = 0; // default is 0
+        if (radiusPair[0] != null) {
+            radiusX = radiusPair[0].floatValue();
+        }
+        if (radiusX == 0) {
+            // A value of zero disables the effect of the filter primitive
             return null;
-
-        float radiusX = radiusPair[0].floatValue();
-        float radiusY = radiusX;
-        if(radiusPair[1] != null){
-            radiusY = radiusPair[1].floatValue();
+        } else if (radiusX < 0) {
+            // A negative value is an error
+            throw new IllegalAttributeValueException(
+                Messages.formatMessage("feMorphology.radiusX.invalid", null));
         }
 
-        if(radiusY <= 0)
+        // parse the radiusY
+        float radiusY = radiusX; // default is the radiusX
+        if (radiusPair[1] != null) {
+            radiusY = radiusPair[1].floatValue();
+        }
+        if (radiusY == 0) {
+            // A value of zero disables the effect of the filter primitive
             return null;
+        } else if (radiusY < 0) {
+            // A negative value is an error
+            throw new IllegalAttributeValueException(
+                Messages.formatMessage("feMorphology.radiusY.invalid", null));
+        }
 
-          // Get source
+        String operatorStr = filterElement.getAttributeNS(null, ATTR_OPERATOR);
+        boolean doDilation;
+        if (operatorStr.length() == 0) {
+            doDilation = false; // default is erode
+        } else if (VALUE_DILATE.equals(operatorStr)) {
+            doDilation = true;
+        } else if (VALUE_ERODE.equals(operatorStr)) {
+            doDilation = false;
+        } else {
+            throw new IllegalAttributeValueException(
+                Messages.formatMessage("feMorphology.operator.invalid",
+                                       new Object[] { operatorStr }));
+        }
+
+        // Get source
         String inAttr = filterElement.getAttributeNS(null, ATTR_IN);
-        in = CSSUtilities.getFilterSource(filteredNode, inAttr,
+        in = CSSUtilities.getFilterSource(filteredNode,
+                                          inAttr,
                                           bridgeContext,
                                           filteredElement,
-                                          in, filterMap);
+                                          in,
+                                          filterMap);
 
         // feMorphology is a point operation. Therefore, to take the
         // filter primitive region into account, only a pad operation
         // on the input is required.
 
         //
-        // The default region is the input source's region
-        // unless the source is SourceGraphics, in which
-        // case the default region is the filter chain's
-        // region
+        // The default region is the input source's region unless the
+        // source is SourceGraphics, in which case the default region
+        // is the filter chain's region
         //
-        Filter sourceGraphics
-            = (Filter)filterMap.get(VALUE_SOURCE_GRAPHIC);
+        Filter sourceGraphics = (Filter)filterMap.get(VALUE_SOURCE_GRAPHIC);
 
-        Rectangle2D defaultRegion
-            = in.getBounds2D();
+        Rectangle2D defaultRegion = in.getBounds2D();
 
-        if(in == sourceGraphics){
+        if (in == sourceGraphics) {
             defaultRegion = filterRegion;
         }
 
         CSSStyleDeclaration cssDecl
-            = bridgeContext.getViewCSS().getComputedStyle(filterElement,
-                                                          null);
+            = bridgeContext.getViewCSS().getComputedStyle(filterElement, null);
 
         UnitProcessor.Context uctx
-            = new DefaultUnitProcessorContext(bridgeContext,
-                                              cssDecl);
+            = new DefaultUnitProcessorContext(bridgeContext, cssDecl);
 
         Rectangle2D primitiveRegion
             = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
@@ -133,14 +154,13 @@ public class SVGFeMorphologyElementBridge implements FilterBridge,
                                                         filteredNode,
                                                         uctx);
 
-        PadRable pad
-            = new ConcretePadRable(in,
-                                   primitiveRegion,
-                                   PadMode.ZERO_PAD);
+        PadRable pad = new ConcretePadRable(in,
+                                            primitiveRegion,
+                                            PadMode.ZERO_PAD);
 
         // Build filter
-        Filter filter = null;
-        filter = new ConcreteMorphologyRable(pad, radiusX, radiusY, doDilation);
+        Filter filter =
+            new ConcreteMorphologyRable(pad, radiusX, radiusY, doDilation);
 
         // Get result attribute if any
         String result = filterElement.getAttributeNS(null, ATTR_RESULT);

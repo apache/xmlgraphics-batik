@@ -10,11 +10,8 @@ package org.apache.batik.refimpl.bridge;
 
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
-
 import java.awt.image.RenderedImage;
-
 import java.awt.image.renderable.RenderContext;
-
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
@@ -23,24 +20,32 @@ import java.util.Vector;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeMutationEvent;
 import org.apache.batik.bridge.FilterBridge;
+import org.apache.batik.bridge.IllegalAttributeValueException;
+import org.apache.batik.bridge.MissingAttributeException;
+
+import org.apache.batik.dom.svg.SVGOMDocument;
+import org.apache.batik.dom.util.XLinkSupport;
+
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.Filter;
-import org.apache.batik.gvt.filter.PadMode;
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
+import org.apache.batik.gvt.filter.PadMode;
+
+import org.apache.batik.refimpl.bridge.resources.Messages;
 import org.apache.batik.refimpl.gvt.filter.ConcreteAffineRable;
 import org.apache.batik.refimpl.gvt.filter.ConcretePadRable;
 import org.apache.batik.refimpl.gvt.filter.RasterRable;
+
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.SVGUtilities;
 import org.apache.batik.util.UnitProcessor;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.svg.SVGElement;
-import org.apache.batik.dom.svg.SVGOMDocument;
-import org.apache.batik.dom.util.XLinkSupport;
 
 /**
  * This class bridges an SVG <tt>feImage</tt> element with
@@ -49,8 +54,7 @@ import org.apache.batik.dom.util.XLinkSupport;
  * @author <a href="mailto:Thomas.DeWeeese@Kodak.com">Thomas DeWeese</a>
  * @version $Id $
  */
-public class SVGFeImageElementBridge implements FilterBridge,
-                                                SVGConstants {
+public class SVGFeImageElementBridge implements FilterBridge, SVGConstants {
 
     public final static String PROTOCOL_DATA = "data:";
 
@@ -77,12 +81,13 @@ public class SVGFeImageElementBridge implements FilterBridge,
                          Filter in,
                          Rectangle2D filterRegion,
                          Map filterMap){
+
         SVGElement svgElement = (SVGElement) filterElement;
 
         String uriStr = XLinkSupport.getXLinkHref(svgElement);
-        // nothing referenced.
         if (uriStr == null) {
-            return null;
+            throw new MissingAttributeException(
+                Messages.formatMessage("feImage.xlinkHref.required", null));
         }
 
         //
@@ -91,13 +96,10 @@ public class SVGFeImageElementBridge implements FilterBridge,
         Rectangle2D defaultRegion = filterRegion;
 
         CSSStyleDeclaration cssDecl
-            = bridgeContext.getViewCSS().getComputedStyle
-            (filterElement,
-             null);
+            = bridgeContext.getViewCSS().getComputedStyle(filterElement, null);
 
         UnitProcessor.Context uctx
-            = new DefaultUnitProcessorContext(bridgeContext,
-                                              cssDecl);
+            = new DefaultUnitProcessorContext(bridgeContext, cssDecl);
 
         Rectangle2D primitiveRegion
             = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
@@ -107,9 +109,9 @@ public class SVGFeImageElementBridge implements FilterBridge,
                                                         uctx);
 
         Filter filter = null;
-        if (uriStr.startsWith(PROTOCOL_DATA))
+        if (uriStr.startsWith(PROTOCOL_DATA)) {
             filter = RasterRable.create(uriStr, null);
-        else {
+        } else {
             SVGDocument svgDoc;
             svgDoc = (SVGDocument)filterElement.getOwnerDocument();
             URL baseURL = ((SVGOMDocument)svgDoc).getURLObject();
@@ -117,32 +119,39 @@ public class SVGFeImageElementBridge implements FilterBridge,
             try {
                 url = new URL(baseURL, uriStr);
             } catch (MalformedURLException mue) {
-                return null;
+                throw new IllegalAttributeValueException(
+                    Messages.formatMessage("feImage.xlinkHref.badURL", null));
             }
 
             try {
 
-                URIResolver ur = new URIResolver
-                    (svgDoc, bridgeContext.getDocumentLoader());
+                URIResolver ur =
+                    new URIResolver(svgDoc, bridgeContext.getDocumentLoader());
 
                 Node refNode = ur.getNode(url.toString());
-                if (refNode == null)
-                    return null;
+                if (refNode == null) {
+                    throw new IllegalAttributeValueException(
+                        Messages.formatMessage("feImage.xlinkHref.badURL",
+                                               null));
+                }
 
                 Element refElement;
-                if (refNode.getNodeType() == refNode.DOCUMENT_NODE)
+                if (refNode.getNodeType() == refNode.DOCUMENT_NODE) {
                     refElement = ((SVGDocument)refNode).getRootElement();
-                else
+                } else {
                     refElement = (Element)refNode;
+                }
 
                 // Cannot access referenced file...
                 if(refElement == null){
-                    return null;
+                    throw new IllegalAttributeValueException(
+                        Messages.formatMessage("feImage.xlinkHref.badURL",
+                                               null));
                 }
 
-                GraphicsNode gn;
-                gn = bridgeContext.getGVTBuilder().build(bridgeContext,
-                                                         refElement);
+                GraphicsNode gn =
+                    bridgeContext.getGVTBuilder().build(bridgeContext,
+                                                        refElement);
 
                 GraphicsNodeRableFactory gnrFactory
                     = bridgeContext.getGraphicsNodeRableFactory();
@@ -161,9 +170,9 @@ public class SVGFeImageElementBridge implements FilterBridge,
 
             } catch (Exception ex) {
                 //
-                // Need to fit the raster image to the filter
-                // region so that we have the same behavior as
-                // raster images in the <image> element.
+                // Need to fit the raster image to the filter region
+                // so that we have the same behavior as raster images
+                // in the <image> element.
                 //
                 filter = RasterRable.create(url, null);
 

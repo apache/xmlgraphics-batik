@@ -1456,7 +1456,7 @@ public class SVGUtilities implements SVGConstants {
     public static Float[] buildFloatPair(String attrValue) {
         StringTokenizer st = new StringTokenizer(attrValue);
         Float pair[] = new Float[2];
-        if(st.countTokens()>0){
+        if(st.countTokens() > 0) {
             // Get first value
             String firstValue = st.nextToken();
             try{
