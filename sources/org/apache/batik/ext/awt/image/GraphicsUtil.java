@@ -1010,61 +1010,71 @@ public class GraphicsUtil {
 
         // System.out.println("CoerceData: " + wr.getSampleModel());
 
-        int [] pixel = null;
-        int    bands = wr.getNumBands();
-        float  norm;
         if (newAlphaPreMult) {
-            if (is_BYTE_COMP_Data(wr.getSampleModel()))
-                mult_BYTE_COMP_Data(wr);
-            else if (is_INT_PACK_Data(wr.getSampleModel(), true))
-                mult_INT_PACK_Data(wr);
-            else {
-                norm = 1f/255f;
-                int x0, x1, y0, y1, a, b;
-                float alpha;
-                x0 = wr.getMinX();
-                x1 = x0+wr.getWidth();
-                y0 = wr.getMinY();
-                y1 = y0+wr.getHeight();
-                for (int y=y0; y<y1; y++)
-                    for (int x=x0; x<x1; x++) {
-                        pixel = wr.getPixel(x,y,pixel);
-                        a = pixel[bands-1];
-                        if ((a >= 0) && (a < 255)) {
-                            alpha = a*norm;
-                            for (b=0; b<bands-1; b++)
-                                pixel[b] = (int)(pixel[b]*alpha+0.5f);
-                            wr.setPixel(x,y,pixel);
-                        }
-                    }
-            }
+            multiplyAlpha(wr);
         } else {
-            if (is_BYTE_COMP_Data(wr.getSampleModel()))
-                divide_BYTE_COMP_Data(wr);
-            else if (is_INT_PACK_Data(wr.getSampleModel(), true))
-                divide_INT_PACK_Data(wr);
-            else {
-                int x0, x1, y0, y1, a, b;
-                float ialpha;
-                x0 = wr.getMinX();
-                x1 = x0+wr.getWidth();
-                y0 = wr.getMinY();
-                y1 = y0+wr.getHeight();
-                for (int y=y0; y<y1; y++)
-                    for (int x=x0; x<x1; x++) {
-                        pixel = wr.getPixel(x,y,pixel);
-                        a = pixel[bands-1];
-                        if ((a > 0) && (a < 255)) {
-                            ialpha = 255/(float)a;
-                            for (b=0; b<bands-1; b++)
-                                pixel[b] = (int)(pixel[b]*ialpha+0.5f);
-                            wr.setPixel(x,y,pixel);
-                        }
-                    }
-            }
+            divideAlpha(wr);
         }
 
         return coerceColorModel(cm, newAlphaPreMult);
+    }
+
+    public static void multiplyAlpha(WritableRaster wr) {
+        if (is_BYTE_COMP_Data(wr.getSampleModel()))
+            mult_BYTE_COMP_Data(wr);
+        else if (is_INT_PACK_Data(wr.getSampleModel(), true))
+            mult_INT_PACK_Data(wr);
+        else {
+            int [] pixel = null;
+            int    bands = wr.getNumBands();
+            float  norm = 1f/255f;
+            int x0, x1, y0, y1, a, b;
+            float alpha;
+            x0 = wr.getMinX();
+            x1 = x0+wr.getWidth();
+            y0 = wr.getMinY();
+            y1 = y0+wr.getHeight();
+            for (int y=y0; y<y1; y++)
+                for (int x=x0; x<x1; x++) {
+                    pixel = wr.getPixel(x,y,pixel);
+                    a = pixel[bands-1];
+                    if ((a >= 0) && (a < 255)) {
+                        alpha = a*norm;
+                        for (b=0; b<bands-1; b++)
+                            pixel[b] = (int)(pixel[b]*alpha+0.5f);
+                        wr.setPixel(x,y,pixel);
+                    }
+                }
+        }
+    }
+    
+    public static void divideAlpha(WritableRaster wr) {
+        if (is_BYTE_COMP_Data(wr.getSampleModel()))
+            divide_BYTE_COMP_Data(wr);
+        else if (is_INT_PACK_Data(wr.getSampleModel(), true))
+            divide_INT_PACK_Data(wr);
+        else {
+            int x0, x1, y0, y1, a, b;
+            float ialpha;
+            int    bands = wr.getNumBands();
+            int [] pixel = null;
+        
+            x0 = wr.getMinX();
+            x1 = x0+wr.getWidth();
+            y0 = wr.getMinY();
+            y1 = y0+wr.getHeight();
+            for (int y=y0; y<y1; y++)
+                for (int x=x0; x<x1; x++) {
+                    pixel = wr.getPixel(x,y,pixel);
+                    a = pixel[bands-1];
+                    if ((a > 0) && (a < 255)) {
+                        ialpha = 255/(float)a;
+                        for (b=0; b<bands-1; b++)
+                            pixel[b] = (int)(pixel[b]*ialpha+0.5f);
+                        wr.setPixel(x,y,pixel);
+                    }
+                }
+        }
     }
 
     /**
