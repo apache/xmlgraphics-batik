@@ -42,11 +42,6 @@ import java.awt.image.WritableRaster;
 import java.awt.image.renderable.RenderContext;
 import java.awt.image.renderable.RenderableImage;
 
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
-import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.CompositeGraphicsNode;
-import org.apache.batik.gvt.filter.GraphicsNodeRable;
-
 import org.apache.batik.ext.awt.RenderingHintsKeyExt;
 import org.apache.batik.ext.awt.image.PadMode;
 import org.apache.batik.ext.awt.image.renderable.Filter;
@@ -119,9 +114,9 @@ public class GraphicsUtil {
                 // System.out.println("testing Translate");
                 int dx = tr.getDeltaX();
                 int dy = tr.getDeltaY();
-                if (at == null) 
+                if (at == null)
                     at = AffineTransform.getTranslateInstance(dx, dy);
-                else 
+                else
                     at.translate(dx, dy);
                 cr = tr.getSource();
                 continue;
@@ -134,7 +129,7 @@ public class GraphicsUtil {
             at = g2dAt;
         else
             at.preConcatenate(g2dAt);
-    
+
         if (false) {
             System.out.println("CR: " + cr);
             System.out.println("CRR: " + cr.getBounds());
@@ -151,7 +146,7 @@ public class GraphicsUtil {
                 cr = new TranslateRed(cr, xloc, yloc);
             }
         }
-    
+
         ColorSpace g2dCS = getDestinationColorSpace(g2d);
         if (g2dCS == null)
             // Assume device is sRGB
@@ -198,14 +193,14 @@ public class GraphicsUtil {
         Rectangle crR  = cr.getBounds();
         Shape     clip = g2d.getClip();
 
-        try { 
+        try {
             Rectangle clipR;
             if (clip == null) {
                 clip  = crR;
                 clipR = crR;
             } else {
                 clipR   = clip.getBounds();
-            
+
                 if (clipR.intersects(crR) == false)
                     return; // Nothing to draw...
                 clipR = clipR.intersection(crR);
@@ -265,7 +260,7 @@ public class GraphicsUtil {
                         big2d.dispose();
 
                         CachableRed cCr;
-                        cCr = new BufferedImageCachableRed(bi, clipR.x, 
+                        cCr = new BufferedImageCachableRed(bi, clipR.x,
                                                            clipR.y);
                         cr     = new MultiplyAlphaRed     (cr, cCr);
                     }
@@ -314,7 +309,7 @@ public class GraphicsUtil {
 
             int endX = clipR.x+clipR.width-1;
             int endY = clipR.y+clipR.height-1;
-            
+
             if (false) {
                 System.out.println("clipR: " + clipR + " TG: [" +
                                    xt0 +"," +
@@ -339,7 +334,7 @@ public class GraphicsUtil {
                     tR.x = xloc;
                     tR.y = yloc;
                     Rectangle2D.intersect(crR, tR, iR);
-                    
+
                     WritableRaster twr;
                     twr = wr.createWritableChild(0, 0,
                                                  iR.width, iR.height,
@@ -450,19 +445,19 @@ public class GraphicsUtil {
      * BufferedImage.createGraphics that arranges for bi to be stored
      * in a Rendering hint in the returned Graphics2D.
      * This allows for accurate determination of the 'devices' size,
-     * and colorspace.  
+     * and colorspace.
 
      * @param bi The BufferedImage that the returned Graphics should
      *           draw into.
      * @return A Graphics2D that draws into BufferedImage with <tt>bi</tt>
      *         stored in a rendering hint.
      */
-    public static Graphics2D createGraphics(BufferedImage bi, 
+    public static Graphics2D createGraphics(BufferedImage bi,
                                             RenderingHints hints) {
         Graphics2D g2d = bi.createGraphics();
         if (hints != null)
             g2d.addRenderingHints(hints);
-        g2d.setRenderingHint(RenderingHintsKeyExt.KEY_BUFFERED_IMAGE, 
+        g2d.setRenderingHint(RenderingHintsKeyExt.KEY_BUFFERED_IMAGE,
                              new WeakReference(bi));
         g2d.clip(new Rectangle(0, 0, bi.getWidth(), bi.getHeight()));
         return g2d;
@@ -471,7 +466,7 @@ public class GraphicsUtil {
 
     public static Graphics2D createGraphics(BufferedImage bi) {
         Graphics2D g2d = bi.createGraphics();
-        g2d.setRenderingHint(RenderingHintsKeyExt.KEY_BUFFERED_IMAGE, 
+        g2d.setRenderingHint(RenderingHintsKeyExt.KEY_BUFFERED_IMAGE,
                              new WeakReference(bi));
         g2d.clip(new Rectangle(0, 0, bi.getWidth(), bi.getHeight()));
         return g2d;
@@ -1052,7 +1047,7 @@ public class GraphicsUtil {
     }
 
 
-    
+
 
 
     /**
@@ -1132,7 +1127,7 @@ public class GraphicsUtil {
             int [] oPix = new int[bands*w];
             int out = (w*bands)-1; // The 2 skips alpha channel
             while(out >= 0) {
-                // Fill alpha channel with 255's 
+                // Fill alpha channel with 255's
                 oPix[out] = 255;
                 out -= bands;
             }
@@ -1170,7 +1165,7 @@ public class GraphicsUtil {
                 switch (bands) {
                 case 4:
                     while(in >= 0) {
-                        a = pixel[in]; 
+                        a = pixel[in];
                         if (a == 255)
                             in -= 4;
                         else {
@@ -1184,7 +1179,7 @@ public class GraphicsUtil {
                     break;
                 default:
                     while(in >= 0) {
-                        a = pixel[in]; 
+                        a = pixel[in];
                         if (a == 255)
                             in -= bands;
                         else {
@@ -1210,7 +1205,7 @@ public class GraphicsUtil {
                 case 4:
                     while(in >= 0) {
                         a = pixel[in];
-                        if ((a <= 0) || (a >= 255)) 
+                        if ((a <= 0) || (a >= 255))
                             in -= 4;
                         else {
                             in--;
@@ -1224,7 +1219,7 @@ public class GraphicsUtil {
                 default:
                     while(in >= 0) {
                         a = pixel[in];
-                        if ((a <= 0) || (a >= 255)) 
+                        if ((a <= 0) || (a >= 255))
                             in -= bands;
                         else {
                             in--;
@@ -1433,7 +1428,7 @@ public class GraphicsUtil {
             = (db.getOffset() +
                csm.getOffset(wr.getMinX()-wr.getSampleModelTranslateX(),
                              wr.getMinY()-wr.getSampleModelTranslateY()));
-        
+
 
         int a=0;
         int aOff = bandOff[bandOff.length-1];
@@ -1447,7 +1442,7 @@ public class GraphicsUtil {
             while (sp < end) {
               a = pixels[sp+aOff]&0xFF;
               if (a==0) {
-                for (b=0; b<bands; b++) 
+                for (b=0; b<bands; b++)
                   pixels[sp+bandOff[b]] = (byte)0xFF;
               } else if (a<255) {
                 int aFP = (0x00FF0000/a);
@@ -1478,7 +1473,7 @@ public class GraphicsUtil {
             = (db.getOffset() +
                csm.getOffset(wr.getMinX()-wr.getSampleModelTranslateX(),
                              wr.getMinY()-wr.getSampleModelTranslateY()));
-        
+
 
         int a=0;
         int aOff = bandOff[bandOff.length-1];
