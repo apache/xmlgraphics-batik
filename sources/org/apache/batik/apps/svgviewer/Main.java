@@ -154,6 +154,7 @@ public class Main implements ViewerFrame.Application {
             } catch (InterruptedException e) {
             }
             mainFrame.setFixedSize(false);
+            mainFrame.setVisible(true);
         }
     }
 

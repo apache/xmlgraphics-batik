@@ -17,7 +17,6 @@ import org.apache.batik.gvt.Selectable;
 import org.apache.batik.gvt.filter.GraphicsNodeRable;
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
 import org.apache.batik.gvt.renderer.Renderer;
-import org.apache.batik.gvt.event.GraphicsNodeMouseListener;
 
 import org.apache.batik.refimpl.gvt.filter.ConcreteGraphicsNodeRableFactory;
 import org.apache.batik.refimpl.gvt.text.ConcreteTextSelector;
@@ -79,6 +78,16 @@ public class StaticRenderer implements Renderer {
 
     /**
      * @param offScreen image where the Renderer should do its rendering
+     * @param rc a GraphicsNodeRenderContext which this renderer should use
+     */
+    public StaticRenderer(BufferedImage offScreen, 
+					GraphicsNodeRenderContext rc){
+        setOffScreen(offScreen);
+        setRenderContext(rc);
+    }
+
+    /**
+     * @param offScreen image where the Renderer should do its rendering
      */
     public StaticRenderer(BufferedImage offScreen){
         setOffScreen(offScreen);
@@ -107,6 +116,23 @@ public class StaticRenderer implements Renderer {
                                           gnrFactory);
     }
 
+
+    /**
+     * @param rc a GraphicsNodeRenderContext which the Renderer should use
+     *           for its rendering
+     */
+    public void setRenderContext(GraphicsNodeRenderContext rc) {
+	this.nodeRenderContext = rc;
+    }
+
+    /**
+     * @return the GraphicsNodeRenderContext which the Renderer uses
+     *           for its rendering
+     */
+    public GraphicsNodeRenderContext getRenderContext() {
+	return nodeRenderContext;
+    }
+
     /**
      * @param offScreen image where the Renderer should do its rendering
      */
@@ -128,8 +154,6 @@ public class StaticRenderer implements Renderer {
      */
     public void setTree(GraphicsNode treeRoot){
         this.treeRoot = treeRoot;
-        // associate selectable nodes with selector object(s)
-        //initSelectors();
     }
 
     /**
@@ -216,81 +240,8 @@ public class StaticRenderer implements Renderer {
         this.progressivePaintAllowed = progressivePaintAllowed;
     }
 
-    /**
-     * Associate selectable elements in the current tree with
-     * Selector instances.
-     */
-    public void initSelectors() {
-        Iterator nodeIter = new GraphicsNodeTreeIterator(treeRoot);
-        if (textSelector == null) {
-            textSelector =
-                new ConcreteTextSelector(nodeRenderContext);
-        }
-        while (nodeIter.hasNext()) {
-            GraphicsNode node = (GraphicsNode) nodeIter.next();
-            if (node instanceof Selectable) {
-                node.addGraphicsNodeMouseListener(
-                             (GraphicsNodeMouseListener) textSelector);
-                // should make sure this does not add duplicates
-            }
-        }
-    }
-
-    class GraphicsNodeTreeIterator implements Iterator {
-
-        GraphicsNode root;
-        GraphicsNode current = null;
-        Iterator currentIter;
-        Stack iterStack;
-        Stack nodeStack;
-
-        public GraphicsNodeTreeIterator(GraphicsNode root) {
-            this.root = root;
-            if (root instanceof CompositeGraphicsNode) {
-                currentIter = ((CompositeGraphicsNode) root).getChildren().iterator();
-            }
-            iterStack = new Stack();
-            nodeStack = new Stack();
-        }
-
-        public boolean hasNext() {
-            return (current != root);
-        }
-
-        public Object next() {
-            if (currentIter.hasNext()) {
-                current = (GraphicsNode) currentIter.next();
-                while (current instanceof CompositeGraphicsNode) {
-                    iterStack.push(currentIter);
-                    nodeStack.push(current);
-                    currentIter = ((CompositeGraphicsNode) current).getChildren().iterator();
-                    if (currentIter.hasNext()) {
-                        current = (GraphicsNode) currentIter.next();
-                    } else {
-                        currentIter = (Iterator) iterStack.pop();
-                        current = (GraphicsNode) nodeStack.pop();
-                        break;
-                    }
-                }
-            } else {
-                if (!iterStack.empty()) {
-                    do {
-                        currentIter = (Iterator) iterStack.pop();
-                        current = (GraphicsNode) nodeStack.pop();
-                    } while (!currentIter.hasNext() && !iterStack.isEmpty());
-                } else {
-                    current = root;
-                }
-            }
-            return current;
-        }
-
-        public void remove() {
-            ; // FIXME: should throw an exception, probably
-        }
-    }
-
 }
+
 
 
 

@@ -10,6 +10,8 @@ package org.apache.batik.gvt.renderer;
 
 import java.awt.image.BufferedImage;
 
+import org.apache.batik.gvt.GraphicsNodeRenderContext;
+
 /**
  * Interface for GVT renderer factory.
  *
@@ -22,4 +24,11 @@ public interface RendererFactory {
      * @param im The buffered image used to render.
      */
     Renderer createRenderer(BufferedImage im);
+
+    /**
+     * @return a GraphicsNodeRenderContext of the type used by the renderers.
+     * This may be a shared instance or a new instance, clients of this
+     * API should not depend on which.
+     */
+    GraphicsNodeRenderContext getRenderContext();
 }

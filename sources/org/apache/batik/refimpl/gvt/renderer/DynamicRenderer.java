@@ -16,6 +16,7 @@ import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.RootGraphicsNode;
 import org.apache.batik.gvt.renderer.Renderer;
 import org.apache.batik.gvt.event.GraphicsNodePaintEvent;
@@ -46,6 +47,16 @@ public class DynamicRenderer extends StaticRenderer {
      */
     public DynamicRenderer(BufferedImage offScreen) {
         super(offScreen);
+    }
+
+    /**
+     * Constructs a new dynamic renderer with the specified buffer image.
+     * @param offScreen the offscreen buffer to use
+     * @param rc the GraphicsNodeRenderContext to use
+     */
+    public DynamicRenderer(BufferedImage offScreen, 
+                                  GraphicsNodeRenderContext rc) {
+        super(offScreen, rc);
     }
 
     public void setTree(GraphicsNode newTreeRoot){

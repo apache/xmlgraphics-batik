@@ -8,7 +8,7 @@
 
 package org.apache.batik.gvt;
 
-import java.awt.Graphics2D;
+import java.awt.Shape;
 
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
 
@@ -41,4 +41,9 @@ public interface Selectable {
      * @return an object containing the selected content.
      */
     Object getSelection(GraphicsNodeRenderContext rc);
+
+    /** 
+     * Return a shape in user coords which encloses the current selection.
+     */
+    Shape getHighlightShape(GraphicsNodeRenderContext rc);
 }

@@ -9,6 +9,7 @@
 package org.apache.batik.gvt;
 
 import java.awt.Graphics2D;
+import java.awt.Shape;
 import java.text.AttributedCharacterIterator;
 import java.awt.image.renderable.RenderContext;
 import java.awt.font.FontRenderContext;
@@ -59,4 +60,16 @@ public interface TextPainter {
      */
     public int[] getSelected(AttributedCharacterIterator aci,
                              Mark start, Mark finish);
+
+
+    /*
+     * Get a Shape which encloses the textnode glyphs bounded by two Marks.
+     * Note that the instances of Mark passed to this function
+     * <em>must come</em>
+     * from the same TextPainter that generated them via selectAt() and 
+     * selectTo(), since the TextPainter implementation may rely on hidden
+     * implementation details of its own Mark implementation.
+     */
+     public Shape getHighlightShape(Mark beginMark, Mark endMark);
+
 }

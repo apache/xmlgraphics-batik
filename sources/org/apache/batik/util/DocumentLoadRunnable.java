@@ -134,7 +134,7 @@ public class DocumentLoadRunnable implements Runnable, DocumentEventSource {
      * Note that since java events are processed in the
      * firing thread, not in the AWT event thread, we must
      * wrap the event notification in an "invokeLater" or
-     * "invokeAntWait" call.
+     * "invokeAndWait" call.
      * If the delivering thread is already the AWT Event thread the
      * event is delivered directly.
      * @param e the DocumentEvent to be asynchronously delivered.
@@ -165,7 +165,7 @@ public class DocumentLoadRunnable implements Runnable, DocumentEventSource {
                     EventQueue.invokeLater(dispatchRunnable);
                 }
             } else {
-              dispatchRunnable.run(); // execute in current thread
+                dispatchRunnable.run(); // execute in current thread
             }
         }
     }
@@ -268,10 +268,6 @@ public class DocumentLoadRunnable implements Runnable, DocumentEventSource {
             float h = elt.getHeight().getBaseVal().getValue();
 
             checkInterrupt();
-            fireAsyncDocumentEvent(new DocumentPropertyEvent(
-                DocumentPropertyEvent.SIZE,
-                new Dimension((int)w, (int)h)), false);
-
             String description =
                         SVGUtilities.getDescription(doc.getRootElement());
 
@@ -280,6 +276,10 @@ public class DocumentLoadRunnable implements Runnable, DocumentEventSource {
 
             fireAsyncDocumentEvent(new DocumentLoadingEvent(
                 DocumentLoadingEvent.DONE, doc), false);
+
+            fireAsyncDocumentEvent(new DocumentPropertyEvent(
+                DocumentPropertyEvent.SIZE,
+                new Dimension((int)w, (int)h)), false);
 
         } catch (InterruptedException e) {
             System.out.println("Document loading thread interrupted.");

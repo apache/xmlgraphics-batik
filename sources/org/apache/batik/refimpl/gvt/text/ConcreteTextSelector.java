@@ -9,18 +9,25 @@
 package org.apache.batik.refimpl.gvt.text;
 
 import java.awt.Toolkit;
+import java.awt.Shape;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Clipboard;
+import java.awt.geom.NoninvertibleTransformException;
 import java.text.CharacterIterator;
+
+import java.util.ArrayList;
+import java.util.Iterator;
 
 import org.apache.batik.gvt.*;
 import org.apache.batik.gvt.event.GraphicsNodeMouseEvent;
 import org.apache.batik.gvt.event.GraphicsNodeEvent;
 import org.apache.batik.gvt.event.GraphicsNodeKeyEvent;
 import org.apache.batik.gvt.event.GraphicsNodeMouseListener;
+import org.apache.batik.gvt.event.SelectionEvent;
+import org.apache.batik.gvt.event.SelectionListener;
 
 /**
  * ConcreteTextSelector.java:
@@ -32,6 +39,7 @@ import org.apache.batik.gvt.event.GraphicsNodeMouseListener;
 
 public class ConcreteTextSelector implements Selector {
 
+    private ArrayList listeners = null;
     private GraphicsNode selectionNode = null;
     private GraphicsNode currentNode = null;
     private int firstHit;
@@ -42,12 +50,18 @@ public class ConcreteTextSelector implements Selector {
     // strategy that sends highlight requests directly to the Renderer.
     private Graphics2D g2d;
 
+    private AffineTransform baseTransform = new AffineTransform();
+
     public ConcreteTextSelector(GraphicsNodeRenderContext rc) {
         renderContext = rc;
     }
 
     public void setGraphics2D(Graphics2D g2d) {
         this.g2d = g2d;
+    }
+
+    public void setBaseTransform(AffineTransform t) {
+        this.baseTransform = t;
     }
 
     public void mouseClicked(GraphicsNodeMouseEvent evt) {
@@ -112,134 +126,79 @@ public class ConcreteTextSelector implements Selector {
 
         GraphicsNode source = evt.getGraphicsNode();
 
-        // TODO: re-order branching below to check instanceof Selectable first
+        if ((source instanceof Selectable) && (mevt != null)) {
 
-        if (isSelectContinueGesture(evt)) {
-            if ((source instanceof Selectable) && (mevt != null)) {
-                Point2D p = new Point2D.Double(mevt.getX(), mevt.getY());
-                AffineTransform t = source.getTransform();
-                if (t == null) {
-                    t = new AffineTransform();
-                } else {
-                    t = (AffineTransform) t.clone();
-                }
-                if (source instanceof TextNode) {
-                    Point2D location = ((TextNode) source).getLocation();
-                    t.translate(-location.getX(), -location.getY());
-                }
-                p = t.transform(p, null);
-                //System.out.println("Select action at "+p);
+            Point2D p = new Point2D.Double(mevt.getX(), mevt.getY());
+            AffineTransform t = source.getTransform();
+            if (t == null) {
+                t = new AffineTransform();
+            }
+            else {
+                 try {
+                     t = (AffineTransform) t.createInverse();
+                 } catch (NoninvertibleTransformException ni) {
+                 }
+            }
+            p = t.transform(p, null);
+
+            if (isSelectContinueGesture(evt)) {
+
                 if (selectionNode != source) {
                      // have been dragged into new node!
-                     System.out.println("Select (Entering) at "+p);
+                     // System.out.println("Select (Entering) at "+p);
                      ((Selectable) source).selectAt(p.getX(), p.getY(),
                                                         renderContext);;
                      selectionNode = source;
                 } else {
-                    // Shape oldShape = source.getHighlightShape();
-                    // Shape newShape =
-                    ((Selectable) source).selectTo(p.getX(), p.getY(), renderContext);
-                    /* TODO: fire a property change event on source!
-                     * Perhaps selectTo should return the outline shape ?
-                     * thus: source.firePropertyChangeEvent(
-                     *         new PropertyChangeEvent(source,
-                     *                                 Selectable.HIGHLIGHT_CHANGE,
-                     *                                 oldshape, newShape));
-                     */
+                    ((Selectable) source).selectTo(p.getX(), p.getY(), 
+							renderContext);
+                    Shape newShape = 
+                    ((Selectable) source).getHighlightShape(renderContext);
+                    dispatchSelectionEvent(
+                        new SelectionEvent(null, 
+                                SelectionEvent.SELECTION_CHANGED, 
+                                newShape));
                 }
-            }
-        } else if (isSelectStartGesture(evt)) {
-            if ((source instanceof Selectable) && (mevt != null)) {
+
+            } else if (isSelectStartGesture(evt)) {
+
                 selectionNode = source;
-                Point2D p = new Point2D.Double(mevt.getX(), mevt.getY());
-                AffineTransform t = source.getTransform();
-                if (t == null) {
-                    t = new AffineTransform();
-                } else {
-                    t = (AffineTransform) t.clone();
-                }
-                if (source instanceof TextNode) {
-                    Point2D location = ((TextNode) source).getLocation();
-                    t.translate(-location.getX(), -location.getY());
-                }
-                p = t.transform(p, null);
-                //System.out.println("Select at "+p);
-                ((Selectable) source).selectAt(p.getX(), p.getY(), renderContext);
-            }
-        } else if (isSelectEndGesture(evt)) {
-            if ((source instanceof Selectable) && (mevt != null)) {
+                ((Selectable) source).selectAt(p.getX(), p.getY(), 
+                                                          renderContext);
+                dispatchSelectionEvent(
+                        new SelectionEvent(null, 
+                                SelectionEvent.SELECTION_CLEARED, 
+                                null));
+  
+            } else if (isSelectEndGesture(evt)) {
+
                 selectionNode = source;
-                Point2D p = new Point2D.Double(mevt.getX(), mevt.getY());
-                AffineTransform t = source.getTransform();
-                if (t == null) {
-                    t = new AffineTransform();
-                } else {
-                    t = (AffineTransform) t.clone();
-                }
-                if (source instanceof TextNode) {
-                    Point2D location = ((TextNode) source).getLocation();
-                   t.translate(-location.getX(), -location.getY());
-                }
-                p = t.transform(p, null);
-                //System.out.println("Select to "+p);
-                // Object oldSelection = source.getSelection();
-                // Shape oldShape = source.getHighlightShape();
-                // Shape newShape =
-                ((Selectable) source).selectTo(p.getX(), p.getY(), renderContext);
-                /* TODO: fire a property change event on source!
-                 * Perhaps selectTo should return the outline shape ?
-                 * thus: source.firePropertyChangeEvent(
-                 *         new PropertyChangeEvent(source,
-                 *                                 Selectable.HIGHLIGHT_CHANGE,
-                 *                                 oldshape, newShape));
-                 *
-                 * followed by:
-                 *        source.firePropertyChangeEvent(
-                 *          new PropertyChangeEvent(source,
-                 *                                 Selectable.SELECTION_CHANGE,
-                 *                                 oldSelection, newSelection));
-                 *
-                 */
+
+                ((Selectable) source).selectTo(p.getX(), p.getY(), 
+                                                          renderContext);
+
                 Object oldSelection = getSelection();
+                Shape newShape = 
+                    ((Selectable) source).getHighlightShape(renderContext);
+                dispatchSelectionEvent(
+                        new SelectionEvent(oldSelection, 
+                                SelectionEvent.SELECTION_DONE, 
+                                newShape));
                 copyToClipboard(oldSelection);
-            }
 
-        } else if (isSelectAllGesture(evt)) {
-            if ((source instanceof Selectable) && (mevt != null)) {
+            } else if (isSelectAllGesture(evt)) {
+
                 selectionNode = source;
-                Point2D p = new Point2D.Double(mevt.getX(), mevt.getY());
-                AffineTransform t = source.getTransform();
-                if (t == null) {
-                    t = new AffineTransform();
-                } else {
-                    t = (AffineTransform) t.clone();
-                }
-                if (source instanceof TextNode) {
-                    Point2D location = ((TextNode) source).getLocation();
-                    t.translate(-location.getX(), -location.getY());
-                }
-                p = t.transform(p, null);
-                //System.out.println("Select all "+p);
 
-                // Object oldSelection = source.getSelection();
-                // Shape oldShape = source.getHighlightShape();
-                // Shape newShape =
-                ((Selectable) source).selectAll(p.getX(), p.getY(), renderContext);
-                /* TODO: fire a property change event on source!
-                 * Perhaps selectTo should return the outline shape ?
-                 * thus: source.firePropertyChangeEvent(
-                 *         new PropertyChangeEvent(source,
-                 *                                 Selectable.HIGHLIGHT_CHANGE,
-                 *                                 oldshape, newShape));
-                 *
-                 * followed by:
-                 *        source.firePropertyChangeEvent(
-                 *          new PropertyChangeEvent(source,
-                 *                                 Selectable.SELECTION_CHANGE,
-                 *                                 oldSelection, newSelection));
-                 *
-                 */
+                ((Selectable) source).selectAll(p.getX(), p.getY(), 
+                                                        renderContext);
                 Object oldSelection = getSelection();
+                Shape newShape = 
+                    ((Selectable) source).getHighlightShape(renderContext);
+                dispatchSelectionEvent(
+                        new SelectionEvent(oldSelection, 
+                                SelectionEvent.SELECTION_DONE, 
+                                newShape));
                 copyToClipboard(oldSelection);
             }
         }
@@ -279,12 +238,41 @@ public class ConcreteTextSelector implements Selector {
         return (getSelection() == null);
     }
 
-    private void squawkLikeAParrot(Object o) {
-        System.out.println("Selection: "+o);
+    /**
+     * Reports whether the current selection contains any objects.
+     */
+    public void dispatchSelectionEvent(SelectionEvent e) {
+        if (listeners != null) {
+	    Iterator iter = listeners.iterator();
+            while (iter.hasNext()) {
+                ((SelectionListener)iter.next()).selectionChanged(e);
+            }
+        }
+    }
+
+    /**
+     * Add a SelectionListener to this Selector's notification list.
+     * @param l the SelectionListener to add.
+     */
+    public void addSelectionListener(SelectionListener l) {
+        if (listeners == null) {
+	    listeners = new ArrayList();
+        }
+	listeners.add(l);
+    }
+
+    /**
+     * Remove a SelectionListener from this Selector's notification list.
+     * @param l the SelectionListener to be removed.
+     */
+    public void removeSelectionListener(SelectionListener l) {
+        if (listeners != null) {
+	    listeners.remove(l);
+        }
     }
 
     private void copyToClipboard(Object o) {
-        String label="[unknown return type]";
+        String label = "";
         if (o instanceof CharacterIterator) {
             CharacterIterator iter = (CharacterIterator) o;
             char[] cbuff = new char[iter.getEndIndex()-iter.getBeginIndex()];
@@ -310,8 +298,6 @@ public class ConcreteTextSelector implements Selector {
                 clipboard.setContents(selection, selection);
             }
         }
-        // remove this later
-        squawkLikeAParrot(label);
     }
 
     private void report(GraphicsNodeEvent evt, String message) {
