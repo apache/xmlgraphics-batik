@@ -22,25 +22,26 @@ import org.apache.batik.transcoder.wmf.WMFConstants;
  */
 public class WMFRecordStore extends RecordStore implements WMFConstants{
 
+    private byte js2B[] = new byte[ 2 ];
+    private byte js4B[] = new byte[ 4 ];
+
     public WMFRecordStore(){
     }
 
     private short readShort( DataInputStream is  ) throws IOException{
-        byte js[] = new byte[ 2 ];
-        is.read( js );
-        int iTemp = ((0xff) & js[ 1 ] ) << 8;
+        is.read( js2B );
+        int iTemp = ((0xff) & js2B[ 1 ] ) << 8;
         short i = (short)(0xffff & iTemp);
-        i |= ((0xff) & js[ 0 ] );
+        i |= ((0xff) & js2B[ 0 ] );
         return i;
     }
 
     private int readInt( DataInputStream is  ) throws IOException {
-        byte js[] = new byte[ 4 ];
-        is.read( js );
-        int i = ((0xff) & js[ 3 ] ) << 24;
-        i |= ((0xff) & js[ 2 ] ) << 16;
-        i |= ((0xff) & js[ 1 ] ) << 8;
-        i |= ((0xff) & js[ 0 ] );
+        is.read( js4B );
+        int i = ((0xff) & js4B[ 3 ] ) << 24;
+        i |= ((0xff) & js4B[ 2 ] ) << 16;
+        i |= ((0xff) & js4B[ 1 ] ) << 8;
+        i |= ((0xff) & js4B[ 0 ] );
         return i;
     }
 
@@ -244,6 +245,8 @@ public class WMFRecordStore extends RecordStore implements WMFConstants{
                     int width = readShort( is );
                     int colorref =  readInt( is );
                     int height = readShort( is );
+                    for ( int j = 5; j < recSize; j++ )
+                       readShort( is );
 
                     int red = colorref & 0xff;
                     int green = ( colorref & 0xff00 ) >> 8;
