@@ -100,7 +100,7 @@ public class XSLTransformer {
         for (Node n = node; n != null; n = n.getNextSibling()) {
             switch (n.getNodeType()) {
             case Node.ELEMENT_NODE:
-                if (n.getNamespaceURI().equals(XSL_NAMESPACE_URI) &&
+                if (XSL_NAMESPACE_URI.equals(n.getNamespaceURI()) &&
                     n.getLocalName().equals("stylesheet")) {
                     Document d = GenericDOMImplementation.
                         getDOMImplementation().

@@ -75,6 +75,10 @@ public class BufferedDocumentLoader implements DocumentLoader {
      * @param uri the uri of the document to return
      */
     public Document loadDocument(String uri) throws DOMException, SAXException {
+        int n = uri.indexOf('#');
+        if (n != -1) {
+            uri = uri.substring(0, n);
+        }
         Document document = (Document) documentMap.get(uri);
         if (document != null) {
             DocumentState state = getDocumentState(document);
@@ -133,7 +137,7 @@ public class BufferedDocumentLoader implements DocumentLoader {
      */
     protected int getNodeCount(Node n) {
         int num = 1;
-        for (Node c = n.getFirstChild(); c != null; c = n.getNextSibling()) {
+        for (Node c = n.getFirstChild(); c != null; c = c.getNextSibling()) {
             num += getNodeCount(c);
         }
         return num;

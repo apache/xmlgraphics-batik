@@ -93,7 +93,7 @@ public class SimpleColorResolver implements RelativeValueResolver {
 			     String priority,
 			     int origin) {
         ImmutableValue im = value.getImmutableValue();
-        if (im == PaintFactory.CURRENTCOLOR_VALUE) {
+        if (im == SimpleColorFactory.CURRENT_COLOR) {
 	    styleDeclaration.setPropertyCSSValue
                 (getPropertyName(),
                  styleDeclaration.getPropertyCSSValue("color"),

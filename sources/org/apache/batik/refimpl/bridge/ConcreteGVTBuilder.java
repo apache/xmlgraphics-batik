@@ -8,6 +8,8 @@
 
 package org.apache.batik.refimpl.bridge;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 
 import org.apache.batik.bridge.BridgeContext;
@@ -17,6 +19,7 @@ import org.apache.batik.bridge.GVTBuilder;
 import org.apache.batik.css.AbstractViewCSS;
 import org.apache.batik.css.CSSOMReadOnlyStyleDeclaration;
 import org.apache.batik.css.HiddenChildElement;
+import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.CanvasGraphicsNode;
@@ -32,7 +35,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.w3c.dom.css.ViewCSS;
 import org.w3c.dom.events.EventTarget;
 import org.w3c.dom.events.EventListener;
@@ -122,7 +124,8 @@ public class ConcreteGVTBuilder implements GVTBuilder, SVGConstants {
             throw new IllegalArgumentException(
                  "Bridge for "+element.getTagName()+" is not registered");
 
-        GraphicsNode treeRoot = graphicsNodeBridge.createGraphicsNode(ctx, element);
+        GraphicsNode treeRoot;
+        treeRoot = graphicsNodeBridge.createGraphicsNode(ctx, element);
 
         if(treeRoot instanceof CompositeGraphicsNode){
             buildComposite(ctx,
@@ -168,16 +171,33 @@ public class ConcreteGVTBuilder implements GVTBuilder, SVGConstants {
                 buildComposite(ctx,
                                (CompositeGraphicsNode)childGVTNode,
                                e.getFirstChild());
-            } else if (e.getLocalName().equals(TAG_USE)) {
+            } else if (TAG_USE.equals(e.getLocalName())) {
+                URIResolver ur;
+                ur = new URIResolver((SVGDocument)e.getOwnerDocument(),
+                                     ctx.getDocumentLoader());
+                
                 String href = XLinkSupport.getXLinkHref(e);
-                if (href.startsWith("#")) {
-                    Document doc = e.getOwnerDocument();
-                    Element elt = doc.getElementById(href.substring(1));
-                    Element inst = (Element)elt.cloneNode(true);
+                try {
+                    Node n = ur.getNode(href);
+                    if (n.getOwnerDocument() == null) {
+                        throw new Error("Can't use documents");
+                    }
+                    Element elt = (Element)n;
+                    boolean local =
+                        n.getOwnerDocument() == e.getOwnerDocument();
+
+                    Element inst;
+                    if (local) {
+                        inst = (Element)elt.cloneNode(true);
+                    } else {
+                        inst = (Element)e.getOwnerDocument().
+                            importNode(elt, true);
+                    }
+
                     if (inst instanceof SVGSymbolElement) {
                         Element tmp = e.getOwnerDocument().createElementNS
                             (SVG_NAMESPACE_URI, TAG_SVG);
-                        for (Node n = inst.getFirstChild();
+                        for (n = inst.getFirstChild();
                              n != null;
                              n = inst.getFirstChild()) {
                             tmp.appendChild(n);
@@ -195,6 +215,7 @@ public class ConcreteGVTBuilder implements GVTBuilder, SVGConstants {
                         tmp.setAttributeNS(null, ATTR_HEIGHT, "100%");
                         inst = tmp;
                     }
+                    
                     ((HiddenChildElement)inst).setParentElement(e);
                     if (inst instanceof SVGSVGElement) {
                         if (e.hasAttributeNS(null, ATTR_WIDTH)) {
@@ -208,14 +229,24 @@ public class ConcreteGVTBuilder implements GVTBuilder, SVGConstants {
                                                                  ATTR_HEIGHT));
                         }
                     }
-                    /*
-                    SVGDocument svgdoc = (SVGDocument)doc;
-                    computeStyle(elt,  (ViewCSS)svgdoc.getRootElement(),
-                                 inst, ctx.getViewCSS());
-                    */
+
+                    if (!local) {
+                        SVGOMDocument doc;
+                        doc = (SVGOMDocument)elt.getOwnerDocument();
+                        updateURIs(inst,
+                                   ((SVGOMDocument)doc).getURLObject());
+
+                        SVGOMDocument d;
+                        d = (SVGOMDocument)e.getOwnerDocument();
+                        computeStyle(elt,  (ViewCSS)doc.getDefaultView(),
+                                     inst, (ViewCSS)d.getDefaultView());
+                    }
+
                     buildGraphicsNode(ctx,
                                       (CompositeGraphicsNode)childGVTNode,
                                       inst);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
                 }
             } else if (e.getLocalName().equals(TAG_SWITCH)) {
                 for (Node n = e.getFirstChild();
@@ -240,7 +271,25 @@ public class ConcreteGVTBuilder implements GVTBuilder, SVGConstants {
     }
 
     /**
-     *
+     * Recursively updates the URIs in the given tree.
+     */
+    protected void updateURIs(Element e, URL url) throws MalformedURLException {
+        String href = XLinkSupport.getXLinkHref(e);
+
+        if (!href.equals("")) {
+            XLinkSupport.setXLinkHref(e, new URL(url, href).toString());
+        }
+
+        for (Node n = e.getFirstChild(); n != null; n = n.getNextSibling()) {
+            if (n.getNodeType() == n.ELEMENT_NODE) {
+                updateURIs((Element)n, url);
+            }
+        }
+    }
+
+    /**
+     * Partially computes the style in the use tree and set it in
+     * the target tree.
      */
     protected void computeStyle(Element use, ViewCSS uv,
                                 Element def, ViewCSS dv) {
