@@ -11,6 +11,10 @@ package org.apache.batik.script.rhino;
 import java.io.IOException;
 import java.io.StringReader;
 
+import java.security.AccessControlContext;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.FunctionObject;
@@ -169,18 +173,26 @@ public class WindowWrapper extends ScriptableObject {
      */
     public static Object jsFunction_parseXML(Context cx,
                                              Scriptable thisObj,
-                                             Object[] args,
+                                             final Object[] args,
                                              Function funObj)
         throws JavaScriptException {
         int len = args.length;
         WindowWrapper ww = (WindowWrapper)thisObj;
-        Window window = ww.window;
+        final Window window = ww.window;
         if (len < 2) {
             throw Context.reportRuntimeError("invalid argument count");
         }
-        return window.parseXML
-            ((String)NativeJavaObject.coerceType(String.class, args[0]),
-             (Document)NativeJavaObject.coerceType(Document.class, args[1]));
+
+        AccessControlContext acc = 
+            ((RhinoInterpreter)window.getInterpreter()).getAccessControlContext();
+        
+        return AccessController.doPrivileged( new PrivilegedAction() {
+                public Object run() {
+                    return window.parseXML
+                        ((String)NativeJavaObject.coerceType(String.class, args[0]),
+                         (Document)NativeJavaObject.coerceType(Document.class, args[1]));
+                }
+            }, acc);
     }
 
     /**
@@ -188,27 +200,39 @@ public class WindowWrapper extends ScriptableObject {
      */
     public static void jsFunction_getURL(Context cx,
                                          Scriptable thisObj,
-                                         Object[] args,
+                                         final Object[] args,
                                          Function funObj)
         throws JavaScriptException {
         int len = args.length;
         WindowWrapper ww = (WindowWrapper)thisObj;
-        Window window = ww.window;
+        final Window window = ww.window;
         if (len < 2) {
             throw Context.reportRuntimeError("invalid argument count");
         }
         RhinoInterpreter interp =
             (RhinoInterpreter)window.getInterpreter();
-        String uri;
-        uri = (String)NativeJavaObject.coerceType(String.class, args[0]);
-        GetURLFunctionWrapper fw;
-        fw = new GetURLFunctionWrapper(interp, (Function)args[1], ww);
+        final String uri = (String)NativeJavaObject.coerceType(String.class, args[0]);
+        final GetURLFunctionWrapper fw = new GetURLFunctionWrapper(interp, (Function)args[1], ww);
+        
+        AccessControlContext acc = 
+            ((RhinoInterpreter)window.getInterpreter()).getAccessControlContext();
+
         if (len == 2) {
-            window.getURL(uri, fw);
+            AccessController.doPrivileged( new PrivilegedAction() {
+                    public Object run(){
+                        window.getURL(uri, fw);
+                        return null;
+                    }
+                }, acc);
         } else {
-            window.getURL
-                (uri, fw,
-                 (String)NativeJavaObject.coerceType(String.class, args[2]));
+            AccessController.doPrivileged( new PrivilegedAction() {
+                    public Object run() {
+                        window.getURL
+                            (uri, fw,
+                             (String)NativeJavaObject.coerceType(String.class, args[2]));
+                        return null;
+                    }
+                }, acc);
         }
     }
 

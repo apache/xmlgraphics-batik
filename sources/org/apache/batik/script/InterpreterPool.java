@@ -104,9 +104,10 @@ public class InterpreterPool {
                 if (document != null) {
                     interpreter.bindObject("document", document);
                 }
-            } catch (Throwable t) {
-                // may append if the batik interpreters class is here but
+            } catch (Exception t) {
+                // may happen if the batik interpreters class is here but
                 // not the scripting engine jar
+                t.printStackTrace();
             }
         return interpreter;
     }

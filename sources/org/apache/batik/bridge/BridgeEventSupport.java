@@ -325,22 +325,24 @@ public class BridgeEventSupport implements SVGConstants {
                     node.getGlobalTransform().createInverse().transform(coords, coords);
                 } catch (NoninvertibleTransformException ex) {
                 }
-		for (int i = 0 ; i < list.size(); i++) {
-                    StrokingTextPainter.TextRun run =
-                        (StrokingTextPainter.TextRun)list.get(i);
-                    AttributedCharacterIterator aci = run.getACI();
-                    TextSpanLayout layout = run.getLayout();
-                    float x = (float)coords.getX();
-                    float y = (float)coords.getY();
-                    TextHit textHit = layout.hitTestChar(x, y);
-                    if (textHit != null && layout.getBounds().contains(x, y)) {
-                        Object delimiter = aci.getAttribute
-                            (GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER);
-                        if (delimiter instanceof Element) {
-                            return (Element)delimiter;
+                if (list != null){
+                    for (int i = 0 ; i < list.size(); i++) {
+                        StrokingTextPainter.TextRun run =
+                            (StrokingTextPainter.TextRun)list.get(i);
+                        AttributedCharacterIterator aci = run.getACI();
+                        TextSpanLayout layout = run.getLayout();
+                        float x = (float)coords.getX();
+                        float y = (float)coords.getY();
+                        TextHit textHit = layout.hitTestChar(x, y);
+                        if (textHit != null && layout.getBounds().contains(x, y)) {
+                            Object delimiter = aci.getAttribute
+                                (GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER);
+                            if (delimiter instanceof Element) {
+                                return (Element)delimiter;
+                            }
                         }
                     }
-		}
+                }
             }
             return (Element)target;
         }
