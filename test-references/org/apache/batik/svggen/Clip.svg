@@ -7,22 +7,22 @@
   <g>
     <defs id="defs1">
       <clipPath clipPathUnits="userSpaceOnUse" id="clipPath1">
-        <path d="M 0 0 L 300 0 L 300 400 L 0 400 L 0 0 Z" />
+        <path d="M0 0 L300 0 L300 400 L0 400 L0 0 Z" />
       </clipPath>
       <clipPath clipPathUnits="userSpaceOnUse" id="clipPath2">
-        <path d="M 50 0 L 100 0 L 100 25 L 50 25 L 50 0 Z" />
+        <path d="M50 0 L100 0 L100 25 L50 25 L50 0 Z" />
       </clipPath>
       <clipPath clipPathUnits="userSpaceOnUse" id="clipPath3">
-        <path d="M 100 25 C 100 38.80711364746094 77.6142349243164 50 50 50 C 22.38576316833496 50 0 38.80711364746094 0 25 C 0 11.192886352539062 22.38576316833496 0 50 0 C 77.6142349243164 0 100 11.192886352539062 100 25 Z" />
+        <path d="M100 25 C100 38.80711364746094 77.6142349243164 50 50 50 C22.38576316833496 50 0 38.80711364746094 0 25 C0 11.192886352539062 22.38576316833496 0 50 0 C77.6142349243164 0 100 11.192886352539062 100 25 Z" />
       </clipPath>
       <clipPath clipPathUnits="userSpaceOnUse" id="clipPath4">
-        <path d="M 100 25 C 100 38.80712890625 77.6142349243164 50 50 50 C 22.38576316833496 50 0 38.80712890625 0 25 C 0 11.19287109375 22.38576316833496 0 50 0 C 77.6142349243164 0 100 11.19287109375 100 25 Z" />
+        <path d="M100 25 C100 38.80712890625 77.6142349243164 50 50 50 C22.38576316833496 50 0 38.80712890625 0 25 C0 11.19287109375 22.38576316833496 0 50 0 C77.6142349243164 0 100 11.19287109375 100 25 Z" />
       </clipPath>
       <clipPath clipPathUnits="userSpaceOnUse" id="clipPath5">
-        <path d="M 200 50 C 200 77.6142578125 155.2284698486328 100 100 100 C 44.77152633666992 100 0 77.6142578125 0 50 C 0 22.3857421875 44.77152633666992 0 100 0 C 155.2284698486328 0 200 22.3857421875 200 50 Z" />
+        <path d="M200 50 C200 77.6142578125 155.2284698486328 100 100 100 C44.77152633666992 100 0 77.6142578125 0 50 C0 22.3857421875 44.77152633666992 0 100 0 C155.2284698486328 0 200 22.3857421875 200 50 Z" />
       </clipPath>
     </defs>
-    <g text-rendering="geometricPrecision" shape-rendering="geometricPrecision">
+    <g text-rendering="optimizeLegibility" shape-rendering="geometricPrecision">
       <image x="0" y="0" clip-path="url(#clipPath1)" width="100" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAIAAAAlV+npAAAAYklEQVR42u3ZwQkA
 MAgEwTOk/5ZNC3kKzlYgw/2sdCZWE486ESxYsGDBgiVYsGDBggVLsGDBggULlmDB
 ggUL1vZu+7JaFixYsGDBEixYsGDBgiVYsGDBggVLsGDBggULlr57aAcDZaydo60A
@@ -38,7 +38,7 @@ ggUL1vZu+7JaFixYsGDBEixYsGDBgiVYsGDBggVLsGDBggULlr57aAcDZaydo60A
 AAAASUVORK5CYIJY
 " height="50" />
     </g>
-    <g text-rendering="geometricPrecision" shape-rendering="geometricPrecision" transform="translate(0,140)">
+    <g text-rendering="optimizeLegibility" shape-rendering="geometricPrecision" transform="translate(0,140)">
       <text x="110" y="15" stroke="none">Clip set to upper right quarter
       </text>
       <text x="110" y="30" stroke="none">after .5 scale
@@ -49,7 +49,7 @@ ggUL1vZu+7JaFixYsGDBEixYsGDBgiVYsGDBggVLsGDBggULlr57aAcDZaydo60A
 AAAASUVORK5CYIJY
 " height="50" />
     </g>
-    <g text-rendering="geometricPrecision" shape-rendering="geometricPrecision" transform="translate(0,210)">
+    <g text-rendering="optimizeLegibility" shape-rendering="geometricPrecision" transform="translate(0,210)">
       <text x="110" y="25" stroke="none">Non-Rectagular clip
       </text>
       <image x="0" y="0" clip-path="url(#clipPath3)" width="100" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAIAAAAlV+npAAAAYklEQVR42u3ZwQkA
@@ -58,7 +58,7 @@ ggUL1vZu+7JaFixYsGDBEixYsGDBgiVYsGDBggVLsGDBggULlr57aAcDZaydo60A
 AAAASUVORK5CYIJY
 " height="50" />
     </g>
-    <g text-rendering="geometricPrecision" shape-rendering="geometricPrecision" transform="translate(0,280)">
+    <g text-rendering="optimizeLegibility" shape-rendering="geometricPrecision" transform="translate(0,280)">
       <text x="110" y="15" stroke="none">Non-Rectagular clip after
       </text>
       <text x="110" y="30" stroke="none">.5 scale
@@ -69,7 +69,7 @@ ggUL1vZu+7JaFixYsGDBEixYsGDBgiVYsGDBggVLsGDBggULlr57aAcDZaydo60A
 AAAASUVORK5CYIJY
 " height="50" />
     </g>
-    <g text-rendering="geometricPrecision" shape-rendering="geometricPrecision" transform="translate(0,350)">
+    <g text-rendering="optimizeLegibility" shape-rendering="geometricPrecision" transform="translate(0,350)">
       <text x="110" y="15" stroke="none">Non-Rectagular clip before
       </text>
       <text x="110" y="30" stroke="none">.5 scale
