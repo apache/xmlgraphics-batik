@@ -135,7 +135,8 @@
 
         <g transform="translate(10,370)">
             <use xlink:href="#Path2" style="fill:none; stroke:blue; stroke-width:2"/>
-            <text font-size="15" writing-mode="tb" glyph-orientation-vertical="auto">
+            <text id="supersub" font-size="15" writing-mode="tb" 
+                  glyph-orientation-vertical="auto">
                <textPath xlink:href="#Path2"><tspan baseline-shift="super" fill="green">super</tspan> and <tspan baseline-shift="sub" fill="red">sub</tspan>scripts</textPath>
             </text>
             <text font-size="10" x="20" y="65">baseline-shift="super"</text>
@@ -146,7 +147,8 @@
 
          <g transform="translate(300,370)">
             <use xlink:href="#Path2" style="fill:none; stroke:blue; stroke-width:2"/>
-	      <text font-size="15" writing-mode="tb" glyph-orientation-vertical="auto">
+	      <text id="negpos" font-size="15" writing-mode="tb" 
+                    glyph-orientation-vertical="auto">
                 <textPath xlink:href="#Path2"><tspan baseline-shift="+20%" fill="green">positive</tspan> and <tspan baseline-shift="-20%" fill="red">negative </tspan></textPath>
             </text>
 		<text font-size="10" x="20" y="65">baseline-shift="+/-20%"</text>
@@ -156,7 +158,8 @@
         <g transform="translate(180,370)">
             <g transform="scale(0.75)">
             <use xlink:href="#Path2" style="fill:none; stroke:blue; stroke-width:2"/>
-            <text font-size="20" x="10" y="-20" writing-mode="tb" glyph-orientation-vertical="auto">before path
+            <text id="beforeafter" font-size="20" x="10" y="-20" 
+                  writing-mode="tb" glyph-orientation-vertical="auto">before path
                <textPath xlink:href="#Path2" fill="red" startOffset="10%">on path</textPath>after path
             </text>
             </g>

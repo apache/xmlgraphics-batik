@@ -48,11 +48,11 @@ public interface BatikExtConstants {
         "trim";
 
     /** Attribute name for color attribute */
-    public static final String BATIK_EXT_COLOR_ATTRIBUTE = 
-        "color";
+    public static final String BATIK_EXT_SOLID_COLOR_PROPERTY = 
+        "solid-color";
 
     /** Attribute name for opacity attribute */
-    public static final String BATIK_EXT_OPACITY_ATTRIBUTE = 
-        "opacity";
+    public static final String BATIK_EXT_SOLID_OPACITY_PROPERTY = 
+        "solid-opacity";
 
 }

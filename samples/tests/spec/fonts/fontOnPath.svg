@@ -85,7 +85,8 @@
 
          <g transform="translate(150,220)">
             <use xlink:href="#Path1" style="fill:none; stroke:blue; stroke-width:2"/>
-	      <text font-family="'SVGComic'" font-size="20" style="text-anchor:middle">
+	      <text id="middle50" font-family="'SVGComic'" 
+                    font-size="20" style="text-anchor:middle">
                 <textPath xlink:href="#Path1" startOffset="50%">Font <tspan fill="red" dy="-10">on</tspan><tspan dy="10"> a Path</tspan></textPath>
             </text>
             <text font-size="10" x="35" y="60">startOffset="50%"</text>
@@ -104,7 +105,8 @@
 
         <g transform="translate(0,370)">
             <use xlink:href="#Path1" style="fill:none; stroke:blue; stroke-width:2"/>
-	      <text font-family="'SVGComic'" font-size="20" style="text-anchor:start">
+	      <text id="start35" font-family="'SVGComic'" 
+                    font-size="20" style="text-anchor:start">
                 <textPath xlink:href="#Path1" startOffset="35">Font <tspan fill="red" dy="-10">on</tspan><tspan dy="10"> a Path</tspan></textPath>
             </text>
             <text font-size="10" x="35" y="60">startOffset="35"</text>

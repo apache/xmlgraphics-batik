@@ -51,9 +51,9 @@
              fill="#0D0" stroke="#88F" stroke-width="2">
 
             <batik:colorSwitch id="TransPurple">
-                <batik:solidColor color="red" 
+                <batik:solidColor solid-color="red" 
                        requiredExtensions="NonExistantExtension"/>
-                <batik:solidColor color="#FF00FF" opacity=".5"
+                <batik:solidColor solid-color="#FF00FF" solid-opacity=".5"
                        requiredExtensions="http://xml.apache.org/batik/ext/solidColor/1.0"/>
                 <linearGradient>
                     <stop offset="0" stop-color="#FF0000" stop-opacity="0.5"/>
@@ -61,7 +61,7 @@
             </batik:colorSwitch>
 
             <batik:colorSwitch id="SolidPurple">
-                <batik:solidColor color="#FF00FF" 
+                <batik:solidColor solid-color="#FF00FF" 
                        requiredExtensions="http://xml.apache.org/batik/ext/solidColor/1.0"/>
                 <linearGradient>
                     <stop offset="0" stop-color="#FFFF00" />
@@ -69,7 +69,7 @@
             </batik:colorSwitch>
 
             <batik:colorSwitch id="orange">
-                <batik:solidColor color="orange" opacity="1"
+                <batik:solidColor solid-color="orange" solid-opacity="1"
                        requiredExtensions="NonExistantExtension" />
                 <linearGradient y2="100%">
                     <stop offset=".1" stop-color="crimson" />

@@ -23,8 +23,7 @@ import java.io.PrintWriter;
 import java.net.URL;
 
 /**
- * This test validates that the ParsedURL class properly parses and
- * cascades URLs.
+ * This test validates that the Base65 encoder/decoders work properly.
  *
  * @author <a href="mailto:deweese@apache.org">Thomas DeWeese</a>
  * @version $Id$
@@ -200,7 +199,7 @@ public class Base64Test extends AbstractTest {
      * Returns true if the contents of <tt>is1</tt> match the
      * contents of <tt>is2</tt>
      */
-    static int compareStreams(InputStream is1, InputStream is2, 
+    public static int compareStreams(InputStream is1, InputStream is2, 
                               boolean skipws) {
         byte [] data1 = new byte[100];
         byte [] data2 = new byte[100];

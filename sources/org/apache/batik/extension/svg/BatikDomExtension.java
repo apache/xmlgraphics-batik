@@ -16,6 +16,10 @@ import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.apache.batik.dom.svg.DomExtension;
 import org.apache.batik.dom.AbstractDocument;
 
+import org.apache.batik.css.value.DefaultSystemColorResolver;
+import org.apache.batik.css.svg.SimpleColorFactory;
+import org.apache.batik.css.svg.OpacityFactory;
+
 /**
  * This is a Service interface for classes that want to extend the
  * functionality of the Dom, to support new tags in the rendering tree.
@@ -91,6 +95,13 @@ public class BatikDomExtension
             (BATIK_EXT_NAMESPACE_URI,
              BATIK_EXT_SOLID_COLOR_TAG,
              new SolidColorElementFactory());
+
+        di.registerCustomCSSValueFactory
+            (new SimpleColorFactory(null, BATIK_EXT_SOLID_COLOR_PROPERTY, 
+                                    new DefaultSystemColorResolver()));
+
+        di.registerCustomCSSValueFactory
+            (new OpacityFactory(null, BATIK_EXT_SOLID_OPACITY_PROPERTY));
 
         di.registerCustomElementFactory
             (BATIK_EXT_NAMESPACE_URI,

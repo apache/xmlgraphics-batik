@@ -35,33 +35,33 @@
                selections across bi-directional text.
         </text>
       <g font-family="dialog" font-size="3%" text-anchor="start">
-        <text fill="MidnightBlue" x="10%" y="45%">latin:
+        <text id="latin" fill="MidnightBlue" x="10%" y="45%">latin:
          ABCDEFG
          abcdefg
          hijklmnop
          qrstuvwxyz
         </text> 
-        <text fill="Sienna" x="10%" y="50%">latin-extended: 
+        <text id="latin-extended" fill="Sienna" x="10%" y="50%">latin-extended: 
          &#x0e6;&#x0e7;&#x0e8;&#x0e9;&#x0ea;&#x0eb;&#x0ec;
          &#x0ed;&#x0ee;&#x0ef;&#x0f0;&#x0f1;&#x0f2;&#x0f3;&#x0f4;
         </text>
-        <text fill="Indigo" x="10%" y="55%">cyrillic: 
+        <text id="cyrillic" fill="Indigo" x="10%" y="55%">cyrillic: 
          &#x411;&#x412;&#x413;&#x414;&#x415;&#x416;&#x417;&#x418;&#x419;
          &#x41a;&#x41b;&#x41c;&#x41d;&#x41e;&#x41f;&#x420;&#x421;&#x422;
          &#x423;&#x424;&#x425;&#x426;&#x427;
         </text>
-        <text fill="Maroon" x="10%" y="60%">greek:
+        <text id="greek" fill="Maroon" x="10%" y="60%">greek:
          &#x391;&#x392;&#x393;&#x394;&#x3b1;&#x3b2;&#x3b3;&#x3b4;&#x3b5;  
          &#x3b6;&#x3b7;&#x3b8;&#x3b9;&#x3ba;&#x3bb;&#x3bc;&#x3bd;&#x3be;  
          &#x3bf;&#x3c0;&#x3c1;&#x3c2;&#x3c3;&#x3c4;&#x3c5;&#x3c6;&#x3c7;  
          &#x3c8;&#x3c9;  
         </text> 
-        <text fill="DarkOliveGreen" x="10%" y="65%">hebrew: 
+        <text id="hebrew" fill="DarkOliveGreen" x="10%" y="65%">hebrew: 
          &#x5d0;&#x5d1;&#x5d2;&#x5d3;&#x5d4;&#x5d5;&#x5d6;&#x5d7;&#x5d8;
          &#x5d9;&#x5da;&#x5db;&#x5dc;&#x5dd;&#x5de;&#x5df;&#x5e0;&#x5e1;
          &#x5e2;&#x5e3;&#x5e4;&#x5e5;&#x5e6;&#x5e7;&#x5e8;&#x5e9;&#x5ea;
         </text>
-        <text fill="DarkRed" x="10%" y="70%">arabic: 
+        <text id="arabic" fill="DarkRed" x="10%" y="70%">arabic: 
          &#x621;&#x623;&#x624;&#x625;&#x626;&#x627;&#x628;&#x629;&#x62a;
          &#x62b;&#x62c;&#x62d;&#x62e;&#x62f;&#x630;&#x631;&#x632;&#x633;
          &#x634;&#x635;&#x636;&#x637;&#x638;&#x639;&#x640;&#x641;&#x642;
