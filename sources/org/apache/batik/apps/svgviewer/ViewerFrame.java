@@ -581,6 +581,9 @@ public class ViewerFrame
             if (loadedDocumentsCount == loadedDocument) {
                 loadedDocumentsCount++;
             }
+            backAction.update();
+            forwardAction.update();
+
             locationBar.setText(uri);
             Thread t = DocumentLoadRunnable.createLoaderThread(uri, this, df);
             runThread(t);
