@@ -111,6 +111,8 @@
         <test id="samples/tests/spec/linking/anchor.svg" />
         <test id="samples/tests/spec/linking/linkingTransform.svg" />
         <test id="samples/tests/spec/linking/linkingViewBox.svg" />   
+        <test id="samples/tests/spec/linking/pointerEvents.svg" />   
+        <test id="samples/tests/spec/linking/pointerEvents2.svg" />   
 
         <testGroup id="reference" class="org.apache.batik.test.svg.SVGReferenceRenderingAccuracyTest">
             <test id="samples/anne.svg#svgView(viewBox(0,0,100,200))-ViewBox1" />
