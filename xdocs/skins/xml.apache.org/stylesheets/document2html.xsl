@@ -298,7 +298,7 @@
 <!-- ====================================================================== -->
 
   <xsl:template match="p">
-    <p align="justify"><xsl:apply-templates/></p>
+    <p><xsl:apply-templates/></p>
   </xsl:template>
 
   <xsl:template match="note">
