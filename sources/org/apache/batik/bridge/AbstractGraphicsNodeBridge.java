@@ -15,6 +15,10 @@ import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.parser.ParseException;
 
 import org.w3c.dom.Element;
+import org.w3c.dom.events.Event;
+import org.w3c.dom.events.EventListener;
+import org.w3c.dom.events.EventTarget;
+import org.w3c.dom.events.MutationEvent;
 
 /**
  * The base bridge class for SVG graphics node. By default, the namespace URI is
@@ -39,6 +43,21 @@ import org.w3c.dom.Element;
  */
 public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
     implements GraphicsNodeBridge, ErrorConstants {
+
+    /**
+     * The element that has been handled by this bridge.
+     */
+    protected Element e;
+
+    /**
+     * The graphics node constructed by this bridge.
+     */
+    protected GraphicsNode node;
+
+    /**
+     * The bridge context to use for dynamic updates.
+     */
+    protected BridgeContext ctx;
 
     /**
      * Constructs a new abstract bridge.
@@ -100,6 +119,12 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
 
         // bind the specified element and its associated graphics node if needed
         if (ctx.isDynamic()) {
+            ((EventTarget)e).addEventListener("DOMAttrModified", 
+                                              new DOMAttrModifiedEventListener(),
+                                              false);
+            this.e = e;
+            this.node = node;
+            this.ctx = ctx;
             ctx.bind(e, node);
             BridgeEventSupport.addDOMListener(ctx, e);
         }
@@ -107,7 +132,48 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
         SVGUtilities.bridgeChildren(ctx, e);
     }
 
-    public Bridge getInstance(){
-        return this;
+    // dynamic support
+
+    /**
+     * Handles DOMAttrModified events.
+     *
+     * @param evt the DOM mutation event
+     */
+    protected void handleDOMAttrModifiedEvent(MutationEvent evt) {
+        if (evt.getAttrName().equals(SVG_TRANSFORM_ATTRIBUTE)) {
+            BridgeUpdateEvent be = new BridgeUpdateEvent();
+            fireBridgeUpdateStarting(be);
+            
+            String s = evt.getNewValue();
+            AffineTransform at = GraphicsNode.IDENTITY;
+            if (s.length() != 0) {
+                at = SVGUtilities.convertTransform
+                    (e, SVG_TRANSFORM_ATTRIBUTE, s);
+            }
+            node.setTransform(at);
+
+            fireBridgeUpdateCompleted(be);
+        }
+    }
+
+
+    /**
+     * The listener class for 'DOMAttrModified' event.
+     */
+    protected class DOMAttrModifiedEventListener implements EventListener {
+
+        /**
+         * Handles 'DOMAttrModfied' events and deleguates to the
+         * 'handleDOMAttrModifiedEvent' method any changes to the
+         * GraphicsNode if any.
+         *
+         * @param evt the DOM event
+         */
+        public void handleEvent(Event evt) {
+            if (evt.getTarget() != e) {
+                throw new Error("handleEvent bad target");
+            }
+            handleDOMAttrModifiedEvent((MutationEvent)evt);
+        }
     }
 }

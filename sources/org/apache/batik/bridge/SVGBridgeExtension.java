@@ -133,12 +133,12 @@ public class SVGBridgeExtension implements BridgeExtension {
         // single if() and register all the right bridges
         // for static or dynamic together.
         //
-        if (true) { // ctx.isDynamic()){
+        // if (false) { // ctx.isDynamic()){
             // System.out.println("Using Dynamic rect Bridge");
-            ctx.putBridge(new SVGRectElementBridge.Dynamic());
-        } else {
-        ctx.putBridge(new SVGRectElementBridge());
-        }
+            //ctx.putBridge(new SVGRectElementBridge.Dynamic());
+        //} else {
+            ctx.putBridge(new SVGRectElementBridge());
+            //}
 
         ctx.putBridge(new AbstractSVGGradientElementBridge.SVGStopElementBridge());
         ctx.putBridge(new SVGSVGElementBridge());

@@ -16,6 +16,8 @@ import org.apache.batik.gvt.ShapeNode;
 
 import org.w3c.dom.Element;
 
+import org.w3c.dom.events.MutationEvent;
+
 /**
  * Bridge class for the &lt;circle> element.
  *
@@ -34,6 +36,13 @@ public class SVGCircleElementBridge extends SVGShapeElementBridge {
      */
     public String getLocalName() {
         return SVG_CIRCLE_TAG;
+    }
+
+    /**
+     * Returns a new instance of this bridge.
+     */
+    public Bridge getInstance() {
+        return new SVGCircleElementBridge();
     }
 
     /**
@@ -84,5 +93,29 @@ public class SVGCircleElementBridge extends SVGShapeElementBridge {
         float y = cy - r;
         float w = r * 2;
         shapeNode.setShape(new Ellipse2D.Float(x, y, w, w));
+    }
+
+    // dynamic support
+
+    /**
+     * Handles DOMAttrModified events.
+     *
+     * @param evt the DOM mutation event
+     */
+    protected void handleDOMAttrModifiedEvent(MutationEvent evt) {
+        if (evt.getAttrName().equals(SVG_CX_ATTRIBUTE) ||
+            evt.getAttrName().equals(SVG_CY_ATTRIBUTE) ||
+            evt.getAttrName().equals(SVG_R_ATTRIBUTE)) {
+
+            BridgeUpdateEvent be = new BridgeUpdateEvent();
+            fireBridgeUpdateStarting(be);
+            buildShape(ctx, e, (ShapeNode)node);
+            if (((ShapeNode)node).getShape() == null) {
+                // <!> FIXME: disable the rendering
+            }
+            fireBridgeUpdateCompleted(be);
+        } else {
+            super.handleDOMAttrModifiedEvent(evt);
+        }
     }
 }

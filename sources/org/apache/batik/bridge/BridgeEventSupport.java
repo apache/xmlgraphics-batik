@@ -319,8 +319,7 @@ class BridgeEventSupport implements SVGConstants {
         for (int i = 0; i < list.getLength(); i++) {
             language = (selement = (Element)list.item(i)).
                 getAttribute("type");
-            final Interpreter interpret =
-                ctx.getInterpreterPool().getInterpreter(doc, language);
+            final Interpreter interpret = ctx.getInterpreter(language);
             if (interpret != null) {
                 if (language != lang) {
                     se.setEnvironment(interpret, language);
