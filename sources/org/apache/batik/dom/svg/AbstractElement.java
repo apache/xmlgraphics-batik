@@ -26,6 +26,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
+import org.w3c.dom.events.MutationEvent;
+
 /**
  * This class provides a superclass to implement an SVG element, or
  * an element interoperable with the SVG elements.
@@ -209,6 +211,46 @@ public abstract class AbstractElement
     }
 
     /**
+     * Called when an attribute has been added.
+     */
+    protected void attrAdded(Attr node, String newv) {
+        LiveAttributeValue lav = getLiveAttributeValue(node);
+        if (lav != null) {
+            lav.attrAdded(node, newv);
+        }
+    }
+
+    /**
+     * Called when an attribute has been modified.
+     */
+    protected void attrModified(Attr node, String oldv, String newv) {
+        LiveAttributeValue lav = getLiveAttributeValue(node);
+        if (lav != null) {
+            lav.attrModified(node, oldv, newv);
+        }
+    }
+
+    /**
+     * Called when an attribute has been removed.
+     */
+    protected void attrRemoved(Attr node, String oldv) {
+        LiveAttributeValue lav = getLiveAttributeValue(node);
+        if (lav != null) {
+            lav.attrRemoved(node, oldv);
+        }
+    }
+
+    /**
+     * Gets Returns the live attribute value associated with given attribute, if any.
+     */
+    private LiveAttributeValue getLiveAttributeValue(Attr node) {
+        String ns = node.getNamespaceURI();
+        return getLiveAttributeValue(ns, (ns == null)
+                                     ? node.getNodeName()
+                                     : node.getLocalName());
+    }
+
+    /**
      * An implementation of the {@link NamedNodeMap}.
      */
     protected class ExtendedNamedNodeHashMap extends NamedNodeHashMap {
@@ -217,20 +259,6 @@ public abstract class AbstractElement
          * Creates a new ExtendedNamedNodeHashMap object.
          */
         public ExtendedNamedNodeHashMap() {
-        }
-
-        /**
-         * Adds a node to the map.
-         */
-        public Node setNamedItem(String ns, String name, Node arg)  throws DOMException {
-            Attr result = (Attr)super.setNamedItem(ns, name, arg);
-
-            LiveAttributeValue lav = getLiveAttributeValue(ns, name);
-            if (lav != null) {
-                lav.valueChanged(result, (Attr)arg);
-            }
-
-            return result;
         }
 
 	/**
@@ -274,7 +302,8 @@ public abstract class AbstractElement
             // Reset the attribute to its default value
             if (!resetAttribute(namespaceURI, prefix, localName)) {
                 // Mutation event
-                fireDOMAttrModifiedEvent(n.getNodeName(), n.getNodeValue(), "");
+                fireDOMAttrModifiedEvent(n.getNodeName(), n, n.getNodeValue(), "",
+                                         MutationEvent.REMOVAL);
             }
             return n;
 	}

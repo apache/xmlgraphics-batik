@@ -19,9 +19,17 @@ import org.w3c.dom.Attr;
  */
 public interface LiveAttributeValue {
     /**
-     * Called when the string representation of the value as been modified.
-     * @param oldValue The old Attr node.
-     * @param newValue The new Attr node.
+     * Called when an Attr node has been added.
      */
-    void valueChanged(Attr oldValue, Attr newValue);
+    void attrAdded(Attr node, String newv);
+
+    /**
+     * Called when an Attr node has been modified.
+     */
+    void attrModified(Attr node, String oldv, String newv);
+
+    /**
+     * Called when an Attr node has been removed.
+     */
+    void attrRemoved(Attr node, String oldv);
 }

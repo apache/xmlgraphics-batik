@@ -120,9 +120,14 @@ public abstract class AbstractElement
 	if (attributes == null) {
 	    attributes = createAttributes();
 	}
-	Attr attr = getOwnerDocument().createAttribute(name);
-	attr.setValue(value);
-	attributes.setNamedItem(attr);
+        Attr attr = getAttributeNode(name);
+        if (attr == null) {
+            attr = getOwnerDocument().createAttribute(name);
+            attr.setValue(value);
+            attributes.setNamedItem(attr);
+        } else {
+            attr.setValue(value);
+        }
     }
 
     /**
@@ -223,10 +228,21 @@ public abstract class AbstractElement
 	if (attributes == null) {
 	    attributes = createAttributes();
 	}
-	Attr attr = getOwnerDocument().createAttributeNS(namespaceURI,
-                                                         qualifiedName);
-	attr.setValue(value);
-	attributes.setNamedItemNS(attr);
+        Attr attr = getAttributeNodeNS(namespaceURI, qualifiedName);
+        if (attr == null) {
+            attr = getOwnerDocument().createAttributeNS(namespaceURI,
+                                                        qualifiedName);
+            attr.setValue(value);
+            attributes.setNamedItemNS(attr);
+        } else {
+            String s = attr.getValue();
+            attr.setValue(value);
+            fireDOMAttrModifiedEvent(qualifiedName,
+                                     attr,
+                                     s,
+                                     value,
+                                     MutationEvent.MODIFICATION);
+        }
     }
 
     /**
@@ -446,26 +462,58 @@ public abstract class AbstractElement
      * <!> WARNING: public accessor because of compilation problems
      *     on Solaris. Do not change.
      *
-     * @param name The attribute name.
+     * @param name The attribute's name.
+     * @param node The attribute's node.
      * @param oldv The old value of the attribute.
      * @param newv The new value of the attribute.
+     * @param change The modification type.
      */
-    public void fireDOMAttrModifiedEvent(String name, String oldv,
-                                            String newv) {
+    public void fireDOMAttrModifiedEvent(String name, Attr node, String oldv,
+                                         String newv, short change) {
+        switch (change) {
+        case MutationEvent.ADDITION:
+            attrAdded(node, newv);
+            break;
+
+        case MutationEvent.MODIFICATION:
+            attrModified(node, oldv, newv);
+            break;
+
+        default: // MutationEvent.REMOVAL:
+            attrRemoved(node, oldv);
+        }
 	AbstractDocument doc = getCurrentDocument();
 	if (doc.getEventsEnabled() && !oldv.equals(newv)) {
 	    DocumentEvent de = (DocumentEvent)doc;
 	    MutationEvent ev = (MutationEvent)de.createEvent("MutationEvents");
 	    ev.initMutationEvent("DOMAttrModified",
-				 true,  // canBubbleArg
-				 false, // cancelableArg
-				 null,  // relatedNodeArg
-				 oldv,  // prevValueArg
-				 newv,  // newValueArg
-				 name,  // attrNameArg
-                                 ev.MODIFICATION);
+				 true,    // canBubbleArg
+				 false,   // cancelableArg
+				 node,    // relatedNodeArg
+				 oldv,    // prevValueArg
+				 newv,    // newValueArg
+				 name,    // attrNameArg
+                                 change); // attrChange
 	    dispatchEvent(ev);
 	}
+    }
+
+    /**
+     * Called when an attribute has been added.
+     */
+    protected void attrAdded(Attr node, String newv) {
+    }
+
+    /**
+     * Called when an attribute has been modified.
+     */
+    protected void attrModified(Attr node, String oldv, String newv) {
+    }
+
+    /**
+     * Called when an attribute has been removed.
+     */
+    protected void attrRemoved(Attr node, String oldv) {
     }
 
     /**
@@ -606,7 +654,8 @@ public abstract class AbstractElement
 	    n.setOwnerElement(null);
 	    
 	    // Mutation event
-	    fireDOMAttrModifiedEvent(n.getNodeName(), n.getNodeValue(), "");
+	    fireDOMAttrModifiedEvent(n.getNodeName(), n, n.getNodeValue(), "",
+                                     MutationEvent.REMOVAL);
 	    return n;
 	}
 
@@ -620,13 +669,16 @@ public abstract class AbstractElement
 	    if (result != null) {
 		result.setOwnerElement(null);
 		fireDOMAttrModifiedEvent(name,
+                                         result,
 					 result.getNodeValue(),
-					 arg.getNodeValue());
-	    } else {
-		fireDOMAttrModifiedEvent(name,
 					 "",
-					 arg.getNodeValue());
+                                         MutationEvent.REMOVAL);
 	    }
+            fireDOMAttrModifiedEvent(name,
+                                     (Attr)arg,
+                                     "",
+                                     arg.getNodeValue(),
+                                     MutationEvent.ADDITION);
 	    return result;
 	}
 

@@ -14,6 +14,8 @@ import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import org.w3c.dom.events.MutationEvent;
+
 /**
  * This class implements the {@link org.w3c.dom.Attr} interface.
  *
@@ -34,7 +36,7 @@ public abstract class AbstractAttr extends AbstractParentNode implements Attr {
     /**
      * The owner element.
      */
-    protected transient Element ownerElement;
+    protected transient AbstractElement ownerElement;
 
     /**
      * Creates a new Attr object.
@@ -114,6 +116,8 @@ public abstract class AbstractAttr extends AbstractParentNode implements Attr {
 						    getNodeName() });
 	}
 
+        String s = getNodeValue();
+
 	// Remove all the children
 	Node n;
 	while ((n = getFirstChild()) != null) {
@@ -125,6 +129,14 @@ public abstract class AbstractAttr extends AbstractParentNode implements Attr {
                                               ? ""
                                               : nodeValue);
 	appendChild(n);
+
+        if (ownerElement != null) {
+            ownerElement.fireDOMAttrModifiedEvent(nodeName,
+                                                  this,
+                                                  s,
+                                                  nodeValue,
+                                                  MutationEvent.MODIFICATION);
+        }
     }
 
     /**
@@ -168,7 +180,7 @@ public abstract class AbstractAttr extends AbstractParentNode implements Attr {
     /**
      * Sets the owner element.
      */
-    public void setOwnerElement(Element v) {
+    public void setOwnerElement(AbstractElement v) {
 	ownerElement = v;
     }
     
