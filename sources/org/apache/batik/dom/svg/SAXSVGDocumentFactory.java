@@ -11,7 +11,7 @@ package org.apache.batik.dom.svg;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.Reader;
-import java.io.ByteArrayInputStream;
+import java.io.StringReader;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -57,6 +57,11 @@ public class SAXSVGDocumentFactory
     public static final String KEY_SKIPPABLE_PUBLIC_IDS = "skippablePublicIds";
 
     /**
+     * Key used for the skippable DTD substitution
+     */
+    public static final String KEY_SKIP_DTD = "skipDTD";
+
+    /**
      * Key used for system identifiers
      */
     public static final String KEY_SYSTEM_ID = "systemId.";
@@ -81,6 +86,11 @@ public class SAXSVGDocumentFactory
      * The DTD public IDs we know we can skip.
      */
     protected static String skippable_dtdids;
+
+    /**
+     * The DTD content to use when skipping
+     */
+    protected static String skip_dtd;
 
     /**
      * The ResourceBunder for the public and system ids
@@ -316,14 +326,17 @@ public class SAXSVGDocumentFactory
 
             if (skippable_dtdids == null)
                 skippable_dtdids = rb.getString(KEY_SKIPPABLE_PUBLIC_IDS);
+            if (skip_dtd == null)
+                skip_dtd = rb.getString(KEY_SKIP_DTD);
 
             if (publicId != null){
                 if (!isValidating && 
                     (skippable_dtdids.indexOf(publicId) != -1)) {
                     // We are not validating and this is a DTD we can
-                    // safely skip so do it...
-                    byte [] bytes = new byte[0];
-                    return new InputSource(new ByteArrayInputStream(bytes));
+                    // safely skip so do it...  Here we provide just enough
+                    // of the DTD to keep stuff running (set svg and
+                    // xlink namespaces).
+                    return new InputSource(new StringReader(skip_dtd));
                 }
 
                 if (dtdids.indexOf(publicId) != -1) {
