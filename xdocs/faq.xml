@@ -554,4 +554,14 @@
         directory.</p>
     </answer>
 </faq>
+<faq>
+    <question>
+    How do I checkout the latest CVS version of Batik?
+    </question> 
+    <answer>
+      <p>You just have to follow the instructions posted on the
+      <link href="http://xml.apache.org/cvs.html">XML Apache CVS page</link>.
+      </p>
+    </answer>
+</faq>
 </faqs>
