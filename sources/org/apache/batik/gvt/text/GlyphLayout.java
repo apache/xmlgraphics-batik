@@ -245,16 +245,17 @@ public class GlyphLayout implements TextSpanLayout {
      * (e.g. if the aci has multiple X or Y values).
      */
     public void setOffset(Point2D offset) {
-
+        // System.out.println("SetOffset: " + offset + " - " + this.offset);
         if ((offset.getX() != this.offset.getX()) ||
             (offset.getY() != this.offset.getY())) {
-            if (layoutApplied) {
+            if ((layoutApplied)||(spacingApplied)) {
                 // Already layed out need to shift glyph positions to
                 // account for new offset.
                 float dx = (float)(offset.getX()-this.offset.getX());
                 float dy = (float)(offset.getY()-this.offset.getY());
                 int numGlyphs = gv.getNumGlyphs();
 
+                // System.out.println("DXY: [" + dx +","+dy+"]");
                 float [] gp = gv.getGlyphPositions(0, numGlyphs+1, null);
                 for (int i=0; i<=numGlyphs; i++) {
                     gv.setGlyphPosition(i, new Point2D.Float(gp[2*i]+dx,
@@ -358,7 +359,7 @@ public class GlyphLayout implements TextSpanLayout {
      * of glyph layout.
      */
     public Point2D getAdvance2D() {
-        syncLayout();
+        adjustTextSpacing();
         return advance;
     }
 
@@ -488,7 +489,9 @@ public class GlyphLayout implements TextSpanLayout {
             char ch = aci.setIndex(currentChar);
             int glyphCharIndex = charMap[currentChar-start];
             if ((glyphCharIndex >= beginCharIndex) &&
-                (glyphCharIndex <= endCharIndex)) {
+                (glyphCharIndex <= endCharIndex) &&
+                gv.isGlyphVisible(i)) {
+                    
                 Shape gbounds = gv.getGlyphLogicalBounds(i);
                 if (gbounds != null) {
                     // We got something...
@@ -1009,10 +1012,10 @@ public class GlyphLayout implements TextSpanLayout {
         Float x=null, y=null, dx=null, dy=null, rotation=null;
         Object baseline=null;
 
-        float init_x_pos = (float) offset.getX();
-        float init_y_pos = (float) offset.getY();
-        float curr_x_pos = init_x_pos;
-        float curr_y_pos = init_y_pos;
+        float shift_x_pos = 0;
+        float shift_y_pos = 0;
+        float curr_x_pos = (float)offset.getX();
+        float curr_y_pos = (float)offset.getY();
 
         while (i < numGlyphs) {
             //System.out.println("limit: " + runLimit + ", " + aciIndex);
@@ -1093,16 +1096,18 @@ public class GlyphLayout implements TextSpanLayout {
                 }
 
                 if ((x != null) && !x.isNaN()) {
-                    if (i != 0)  /// First x is factored into offset...
-                        curr_x_pos = x.floatValue();
+                    if (i == 0)  
+                        shift_x_pos = (float)(x.floatValue()-offset.getX());
+                    curr_x_pos = x.floatValue()-shift_x_pos;
                 } 
                 if (dx != null && !dx.isNaN()) {
                     curr_x_pos += dx.floatValue();
                 }
 
                 if ((y != null) && !y.isNaN()) {
-                    if (i != 0)
-                        curr_y_pos = y.floatValue();
+                    if (i == 0)  
+                        shift_y_pos = (float)(y.floatValue()-offset.getY());
+                    curr_y_pos = y.floatValue()-shift_y_pos;
                 } 
                 if (dy != null && !dy.isNaN()) {
                     curr_y_pos += dy.floatValue();
@@ -1208,9 +1213,8 @@ public class GlyphLayout implements TextSpanLayout {
         // Update last glyph pos
         gv.setGlyphPosition(i, new Point2D.Float(curr_x_pos,curr_y_pos));
 
-        offset  = new Point2D.Float(init_x_pos, init_y_pos);
-        advance = new Point2D.Float(curr_x_pos - init_x_pos, 
-                                    curr_y_pos - init_y_pos);
+        advance = new Point2D.Float((float)(curr_x_pos - offset.getX()), 
+                                    (float)(curr_y_pos - offset.getY()));
 
         layoutApplied  = true;
         spacingApplied = false;
@@ -1925,9 +1929,6 @@ public class GlyphLayout implements TextSpanLayout {
                     if (cRect == null) break;
                 }
             }
-            aci.first();
-            MarginInfo mi = (MarginInfo)aci.getAttribute(FLOW_PARAGRAPH);
-            justification = mi.getJustification();
 
             List gvl = new LinkedList();
             List layouts = (List)clIter.next();
@@ -1941,6 +1942,13 @@ public class GlyphLayout implements TextSpanLayout {
             int numGlyphs = gv.getNumGlyphs();
 
             // System.out.println("Glyphs: " + numGlyphs);
+
+            aci.first();
+            MarginInfo mi = (MarginInfo)aci.getAttribute(FLOW_PARAGRAPH);
+            if (mi == null) {
+              continue;
+            }
+            justification = mi.getJustification();
 
             if (cRect == null) {
                 for(int idx=0; idx <numGlyphs; idx++) 
@@ -1967,10 +1975,12 @@ public class GlyphLayout implements TextSpanLayout {
             }
             prevBotMargin = mi.getBottomMargin();
 
-            x0    = (float)cRect.getX() + mi.getLeftMargin();
+            float leftMargin = mi.getFirstLineLeftMargin();
+            float rightMargin = mi.getFirstLineRightMargin();
+
+            x0    = (float)cRect.getX() + leftMargin;
             y0    = (float)cRect.getY();
-            width = (float)(cRect.getWidth() - 
-                            (mi.getLeftMargin()+mi.getRightMargin()));
+            width = (float)(cRect.getWidth() - (leftMargin+rightMargin));
             height = (float)cRect.getHeight();
             
             List lineInfos = new LinkedList();
@@ -1978,6 +1988,16 @@ public class GlyphLayout implements TextSpanLayout {
             float prevDesc = 0.0f;
             GlyphIterator gi = new GlyphIterator(aci, gv);
             GlyphIterator breakGI  = null, newBreakGI = null;
+
+            if (!gi.done() && !gi.isPrinting()) {
+              // This will place any preceeding whitespace on an imaginary
+              // line that preceeds the real first line of the paragraph.
+              lineInfos.add(gi.newLine
+                            (new Point2D.Float(x0, y0+dy), 
+                             width, true));
+            }
+
+
             GlyphIterator lineGI   =  gi.copy();
             boolean firstLine = true;
             while (!gi.done()) {
@@ -1995,11 +2015,10 @@ public class GlyphLayout implements TextSpanLayout {
                         }
 
                         cRect = (Rectangle2D)flowRectsIter.next();
-                        x0    = (float) cRect.getX() + mi.getLeftMargin();
+                        x0    = (float) cRect.getX() + leftMargin;
                         y0    = (float) cRect.getY();
                         width = (float)(cRect.getWidth() - 
-                                        (mi.getLeftMargin()+
-                                         mi.getRightMargin()));
+                                        (leftMargin+rightMargin));
                         height = (float)cRect.getHeight();
 
                         // New rect so no previous row to consider...
@@ -2024,13 +2043,13 @@ public class GlyphLayout implements TextSpanLayout {
                     if (doBreak)
                         nextLineMult -= 1;
                     nextLineMult += lnBreaks;
-                    partial = true;
                     doBreak = true;
+                    partial = true;
                 }
 
                 if (!doBreak) {
                     // System.out.println("No Brk Adv: " + gi.getAdv());
-                    // We don't need to break the line because of this char
+                    // We don't need to break the line because of this glyph
                     // So we just check if we need to update our break loc.
                     if ((gi.isBreakChar()) ||
                         (breakGI == null)  ||
@@ -2055,7 +2074,7 @@ public class GlyphLayout implements TextSpanLayout {
                 // System.out.println("   Brk Adv: " + gi.getAdv());
 
                 // We will now attempt to break the line just
-                // after the breakGI.
+                // after 'gi'.
 
                 // Note we are trying to figure out where the current
                 // line is going to be placed (not the next line).  We
@@ -2098,10 +2117,10 @@ public class GlyphLayout implements TextSpanLayout {
 
                     // Get info for new flow rect.
                     cRect = (Rectangle2D)flowRectsIter.next();
-                    x0    = (float) cRect.getX() + mi.getLeftMargin();
+                    x0    = (float) cRect.getX() + leftMargin;
                     y0    = (float) cRect.getY();
                     width = (float)(cRect.getWidth() - 
-                                    (mi.getLeftMargin()+mi.getRightMargin()));
+                                    (leftMargin+rightMargin));
                     height = (float)cRect.getHeight();
 
                     // New rect so no previous row to consider...
@@ -2118,14 +2137,18 @@ public class GlyphLayout implements TextSpanLayout {
 
                 prevDesc = newDesc + (nextLineMult-1)*lineBoxHeight;
                 nextLineMult = 0f;
+                lineInfos.add(gi.newLine
+                              (new Point2D.Float(x0, y0+dy), width, partial));
 
-                
                 // System.out.println("Fit: " + dy);
-                lineInfos.add(gi.getLineInfo
-                              (new Point2D.Float(x0, y0+dy),
-                               width,
-                               partial));
-                gi.newLine();
+                x0    -= leftMargin;
+                width += leftMargin+rightMargin;
+
+                leftMargin  = mi.getLeftMargin();
+                rightMargin = mi.getRightMargin();
+                x0    += leftMargin;
+                width -= leftMargin+rightMargin;
+
                 firstLine = false;
                 // The line fits in the current flow rectangle.
                 lineGI  = gi.copy(lineGI);
@@ -2137,7 +2160,7 @@ public class GlyphLayout implements TextSpanLayout {
             while(idx <numGlyphs) 
                 gv.setGlyphVisible(idx++, false);
 
-            layoutChunk(aci, gv, justification, lineInfos);
+            layoutChunk(aci, gv, gi.getOrigin(), justification, lineInfos);
 
             if (mi.isFlowRegionBreak()) {
                 // Move to next flow region..
@@ -2152,17 +2175,18 @@ public class GlyphLayout implements TextSpanLayout {
     }
 
     public static void layoutChunk(AttributedCharacterIterator aci,
-                                   GVTGlyphVector gv, int justification,
+                                   GVTGlyphVector gv, Point2D origin,
+                                   int justification,
                                    List lineInfos) {
         Iterator lInfoIter = lineInfos.iterator();
         int numGlyphs      = gv.getNumGlyphs();
         float [] gp        = gv.getGlyphPositions(0, numGlyphs+1, null);
-        Point2D.Float lineLoc = null;
-        float         lineAdv = 0;
-        float         lineAdj = 0;
+        Point2D.Float lineLoc  = null;
+        float         lineAdv  = 0;
+        float         lineVAdv = 0;
 
-        float xOrig=gp[0];
-        float yOrig=gp[1];
+        float xOrig=(float)origin.getX();
+        float yOrig=(float)origin.getY();
 
         float xScale=1;
         float xAdj=0;
@@ -2179,7 +2203,7 @@ public class GlyphLayout implements TextSpanLayout {
                 // Always comes through here on first char...
 
                 // Update offset for new line based on last line length
-                xOrig += lineAdj;
+                xOrig += lineAdv;
 
                 // Get new values for everything...
                 if (!lInfoIter.hasNext())
@@ -2188,7 +2212,7 @@ public class GlyphLayout implements TextSpanLayout {
                 lineEnd   = li.getEndIdx();
                 lineLoc   = li.getLocation();
                 lineAdv   = li.getAdvance();
-                lineAdj   = li.getOffset();
+                lineVAdv  = li.getVisualAdvance();
                 charW     = li.getLastCharWidth();
                 lineWidth = li.getLineWidth();
                 partial   = li.isPartialLine();
@@ -2198,13 +2222,13 @@ public class GlyphLayout implements TextSpanLayout {
                 // Recalc justification info.
                 switch (justification) {
                 case 0: default: break;                  // Left
-                case 1: xAdj = (lineWidth-lineAdv)/2; break; // Center
-                case 2: xAdj =  lineWidth-lineAdv;    break; // Right
+                case 1: xAdj = (lineWidth-lineVAdv)/2; break; // Center
+                case 2: xAdj =  lineWidth-lineVAdv;    break; // Right
                 case 3:                                  // Full
                     if ((!partial) && (lineEnd != i+1)) {
                         // More than one char on line...
                         // Scale char spacing to fill line.
-                        xScale = (lineWidth-charW)/(lineAdv-charW);
+                        xScale = (lineWidth-charW)/(lineVAdv-charW);
                     }
                     break;
                 }
@@ -2217,8 +2241,8 @@ public class GlyphLayout implements TextSpanLayout {
         float x = xOrig;
         float y = yOrig;
         if (lineLoc != null) {
-            x = lineLoc.x + (gp[2*i]  -xOrig)*xScale+xAdj;
-            y = lineLoc.y + (gp[2*i+1]-yOrig);
+          x = lineLoc.x + (gp[2*i]  -xOrig)*xScale+xAdj;
+          y = lineLoc.y + (gp[2*i+1]-yOrig);
         }
         gv.setGlyphPosition(i, new Point2D.Float(x, y));
     }

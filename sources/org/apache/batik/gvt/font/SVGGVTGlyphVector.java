@@ -672,10 +672,20 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
      * Tells the glyph vector whether or not to draw the specified glyph.
      */
     public void setGlyphVisible(int glyphIndex, boolean visible) {
+        if (visible == glyphVisible[glyphIndex]) 
+            return;
+
         glyphVisible[glyphIndex] = visible;
         outline = null;
         logicalBounds = null;
         glyphLogicalBounds[glyphIndex] = null;
+    }
+
+    /**
+     * Returns true if specified glyph will be rendered.
+     */
+    public boolean isGlyphVisible(int glyphIndex) {
+        return glyphVisible[glyphIndex];
     }
 
     /**

@@ -94,12 +94,12 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
         outline       = null;
         logicalBounds = null;
         int numGlyphs = glyphVector.getNumGlyphs();
-        glyphPositions     = new Point2D.Float[numGlyphs+1];
+        glyphPositions     = new Point2D.Float  [numGlyphs+1];
         glyphTransforms    = new AffineTransform[numGlyphs];
-        glyphOutlines      = new Shape[numGlyphs];
-        glyphVisualBounds  = new Shape[numGlyphs];
-        glyphLogicalBounds = new Shape[numGlyphs];
-        glyphVisible       = new boolean[numGlyphs];
+        glyphOutlines      = new Shape          [numGlyphs];
+        glyphVisualBounds  = new Shape          [numGlyphs];
+        glyphLogicalBounds = new Shape          [numGlyphs];
+        glyphVisible       = new boolean        [numGlyphs];
         glyphMetrics       = new GVTGlyphMetrics[numGlyphs];
 
         for (int i = 0; i < numGlyphs; i++) {
@@ -590,7 +590,7 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
             glyphVisualBounds [i] = null;
             glyphLogicalBounds[i] = null;
             glyphOutlines     [i] = null;
-
+            glyphMetrics      [i] = null;
             Point2D glyphPos = defaultGlyphPositions[i];
             glyphPositions[i] = new Point2D.Float
                 ((float)((glyphPos.getX() * scaleFactor)-shiftLeft),
@@ -621,9 +621,10 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
         logicalBounds = null;
         visualBounds = null;
         if (glyphIndex != getNumGlyphs()) {
-            glyphVisualBounds[glyphIndex] = null;
+            glyphVisualBounds [glyphIndex] = null;
             glyphLogicalBounds[glyphIndex] = null;
-            glyphOutlines[glyphIndex] = null;
+            glyphOutlines     [glyphIndex] = null;
+            glyphMetrics      [glyphIndex] = null;
         }
     }
 
@@ -635,22 +636,33 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
         outline = null;
         logicalBounds = null;
         visualBounds = null;
-        glyphVisualBounds[glyphIndex] = null;
+        glyphVisualBounds [glyphIndex] = null;
         glyphLogicalBounds[glyphIndex] = null;
-        glyphOutlines[glyphIndex] = null;
+        glyphOutlines     [glyphIndex] = null;
+        glyphMetrics      [glyphIndex] = null;
     }
 
     /**
      * Tells the glyph vector whether or not to draw the specified glyph.
      */
     public void setGlyphVisible(int glyphIndex, boolean visible) {
+        if (visible == glyphVisible[glyphIndex]) 
+            return;
         glyphVisible[glyphIndex] = visible;
-        outline = null;
+        outline       = null;
         logicalBounds = null;
-        visualBounds = null;
-        glyphVisualBounds[glyphIndex] = null;
+        visualBounds  = null;
+        glyphVisualBounds [glyphIndex] = null;
         glyphLogicalBounds[glyphIndex] = null;
-        glyphOutlines[glyphIndex] = null;
+        glyphOutlines     [glyphIndex] = null;
+        glyphMetrics      [glyphIndex] = null;
+    }
+
+    /**
+     * Returns true if specified glyph will be rendered.
+     */
+    public boolean isGlyphVisible(int glyphIndex) {
+        return glyphVisible[glyphIndex];
     }
 
     /**

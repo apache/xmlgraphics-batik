@@ -64,6 +64,8 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
     private String language;
     private String orientation;
 
+    private GVTLineMetrics lineMetrics=null;
+
     /**
      * Constructs a new SVGGVTFont of the specified size.
      *
@@ -767,6 +769,9 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
      */
     public GVTLineMetrics getLineMetrics(CharacterIterator ci, int beginIndex,
                                          int limit, FontRenderContext frc) {
+        if (lineMetrics != null) 
+            return lineMetrics;
+
         float fontHeight = fontFace.getUnitsPerEm();
         float scale = fontSize/fontHeight;
 
@@ -778,22 +783,21 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
         baselineOffsets[Font.CENTER_BASELINE]  = (ascent+descent)/2-ascent;
         baselineOffsets[Font.HANGING_BASELINE] = -ascent;
 
-        float strikethroughOffset = fontFace.getStrikethroughPosition() *
-            -scale;
-        float strikethroughThickness = fontFace.getStrikethroughThickness() *
-            scale;
-        float underlineOffset    = fontFace.getUnderlinePosition()  * scale;
-        float underlineThickness = fontFace.getUnderlineThickness() * scale;
-        float overlineOffset     = fontFace.getOverlinePosition()   * -scale;
-        float overlineThickness  = fontFace.getOverlineThickness()  * scale;
+        float stOffset    = fontFace.getStrikethroughPosition() * -scale;
+        float stThickness = fontFace.getStrikethroughThickness() * scale;
+        float ulOffset    = fontFace.getUnderlinePosition() * scale;
+        float ulThickness = fontFace.getUnderlineThickness() * scale;
+        float olOffset    = fontFace.getOverlinePosition() * -scale;
+        float olThickness = fontFace.getOverlineThickness() * scale;
 
 
-        return new GVTLineMetrics(ascent, Font.ROMAN_BASELINE,
-                                  baselineOffsets, descent, fontHeight,
-                                  fontHeight, limit-beginIndex, 
-                                  strikethroughOffset, strikethroughThickness,
-                                  underlineOffset, underlineThickness, 
-                                  overlineOffset, overlineThickness);
+        lineMetrics = new GVTLineMetrics
+            (ascent, Font.ROMAN_BASELINE, baselineOffsets, descent, 
+             fontHeight, fontHeight, limit-beginIndex, 
+             stOffset, stThickness, 
+             ulOffset, ulThickness, 
+             olOffset, olThickness);
+        return lineMetrics;
     }
 
     /**

@@ -47,21 +47,27 @@ public interface BatikExtConstants {
     public static final String BATIK_EXT_HEIGHT_ATTRIBUTE = 
         "height";
 
-    /** Attribute name for margine psudo-attribute */
+    /** Attribute name for margin psudo-attribute */
     public static final String BATIK_EXT_MARGIN_ATTRIBUTE = 
         "margin";
-    /** Attribute name for margine psudo-attribute */
+    /** Attribute name for top-margin attribute */
     public static final String BATIK_EXT_TOP_MARGIN_ATTRIBUTE = 
         "top-margin";
-    /** Attribute name for margine psudo-attribute */
+    /** Attribute name for right-margin attribute */
     public static final String BATIK_EXT_RIGHT_MARGIN_ATTRIBUTE = 
         "right-margin";
-    /** Attribute name for margine psudo-attribute */
+    /** Attribute name for bottom-margin attribute */
     public static final String BATIK_EXT_BOTTOM_MARGIN_ATTRIBUTE = 
         "bottom-margin";
-    /** Attribute name for margine psudo-attribute */
+    /** Attribute name for left-margin attribute */
     public static final String BATIK_EXT_LEFT_MARGIN_ATTRIBUTE = 
         "left-margin";
+    /** Attribute name for first-line-left-margin attribute */
+    public static final String BATIK_EXT_FIRST_LINE_LEFT_MARGIN_ATTRIBUTE = 
+        "first-line-left-margin";
+    /** Attribute name for first-line-right-margin attribute */
+    public static final String BATIK_EXT_FIRST_LINE_RIGHT_MARGIN_ATTRIBUTE = 
+        "first-line-right-margin";
     /** Attribute name for margine psudo-attribute */
     public static final String BATIK_EXT_JUSTIFICATION_ATTRIBUTE = 
         "justification";
