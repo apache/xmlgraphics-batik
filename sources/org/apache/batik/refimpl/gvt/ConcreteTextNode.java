@@ -11,11 +11,13 @@ package org.apache.batik.refimpl.gvt;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Shape;
+import java.awt.BasicStroke;
 import java.awt.font.TextLayout;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+
 import java.text.AttributedCharacterIterator;
 
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
@@ -133,7 +135,7 @@ public class ConcreteTextNode
      */
     public Rectangle2D getPrimitiveBounds(){
         // HACK, until we change getBounds to take GraphicsNodeRenderContext
-        // We don't consider stroke and/or fill yet
+        // We don't consider stroke and/or fill yet,
         if (primitiveBounds == null) {
             if (aci != null) {
                 java.awt.font.TextLayout layout
@@ -161,15 +163,28 @@ public class ConcreteTextNode
                     double decorationThickness = layout.getAscent()/12f;
                     double dy =
                         layout.getAscent()*0.1 + decorationThickness/2f;
-                    geometryBounds.setRect(primitiveBounds.getX(), primitiveBounds.getY(),
+                    primitiveBounds.setRect(primitiveBounds.getX(), primitiveBounds.getY(),
                                  primitiveBounds.getWidth(), primitiveBounds.getHeight()+dy);
                 }
+
+                BasicStroke stroke = (BasicStroke) aci.getAttribute(
+                        GVTAttributedCharacterIterator.TextAttribute.STROKE);
+
+                if (stroke != null) {
+                     float strokeHalfThickness = stroke.getLineWidth();
+                     primitiveBounds.setRect(
+                           primitiveBounds.getX()-strokeHalfThickness,
+                           primitiveBounds.getY()-strokeHalfThickness,
+                           primitiveBounds.getWidth()+strokeHalfThickness,
+                           primitiveBounds.getHeight()+strokeHalfThickness);
+                }
+
                 double tx = location.getX();
                 double ty = location.getY();
                 if (anchor == Anchor.MIDDLE) {
-                    tx -= primitiveBounds.getWidth()/2;
+                    tx -= layout.getAdvance()/2;
                 } else if (anchor == Anchor.END) {
-                    tx -= primitiveBounds.getWidth();
+                    tx -= layout.getAdvance();
                 }
 
                 AffineTransform t =
@@ -181,6 +196,7 @@ public class ConcreteTextNode
                 return new Rectangle2D.Float(0, 0, 0, 0);
             }
         }
+
         return primitiveBounds;
     }
 
@@ -197,33 +213,12 @@ public class ConcreteTextNode
                                                           true));
                 geometryBounds = layout.getBounds();
 
-                if (aci.getAttribute(GVTAttributedCharacterIterator.
-                                        TextAttribute.UNDERLINE) != null) {
-                    // TODO: check WEIGHT attribute and adjust thickness
-                    double decorationThickness = layout.getAscent()/12f;
-                    double y =
-                        layout.getDescent()/2 + decorationThickness/2f;
-
-                    geometryBounds.setRect(geometryBounds.getX(), geometryBounds.getY(),
-                                 geometryBounds.getWidth(), geometryBounds.getHeight()+y);
-                }
-
-                if (aci.getAttribute(GVTAttributedCharacterIterator.
-                                        TextAttribute.OVERLINE) != null) {
-                    // TODO: check WEIGHT attribute and adjust thickness
-                    double decorationThickness = layout.getAscent()/12f;
-                    double dy =
-                        layout.getAscent()*0.1 + decorationThickness/2f;
-                    geometryBounds.setRect(geometryBounds.getX(), geometryBounds.getY(),
-                                 geometryBounds.getWidth(), geometryBounds.getHeight()+dy);
-                }
-
                 double tx = location.getX();
                 double ty = location.getY();
                 if (anchor == Anchor.MIDDLE) {
-                    tx -= geometryBounds.getWidth()/2;
+                    tx -= layout.getAdvance()/2;
                 } else if (anchor == Anchor.END) {
-                    tx -= geometryBounds.getWidth();
+                    tx -= layout.getAdvance();
                 }
 
                 AffineTransform t =
@@ -235,6 +230,7 @@ public class ConcreteTextNode
                 return new Rectangle2D.Float(0, 0, 0, 0);
             }
         }
+
         return geometryBounds;
     }
 
