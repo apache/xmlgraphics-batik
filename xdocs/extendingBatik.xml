@@ -10,7 +10,7 @@
 <!-- ====================================================================== -->
 
 <!-- ====================================================================== -->
-<!-- author vincent.hardy@eng.sun.com                                       -->
+<!-- author Thomas.DeWeese@kodak.com                                        -->
 <!-- version $Id$ -->
 <!-- ====================================================================== -->
 
@@ -47,38 +47,163 @@
                     </link></li>
             </ul>
 
+            <p>
+            In general extensions are done throught the Service
+            Provider Interface mechanism as described in the 
+            <link href="http://java.sun.com/j2se/1.3/docs/guide/jar/jar.html#Service Provider">
+            Jar file</link> documentation.
+            </p>
+
+            <p>
+            This allows for the extension of Batik simply by adding a
+            new jar file(s) to the class path.  
+            </p>
+
             <note>
             If you feel that we have overlooked an important area for
             extension please let your feelings be known on the mailing-lists.
             </note>
         </s1>
 
+        <anchor id="customXMLTags" />
         <s1 title="Custom XML Tags">
             <p>
             First one must ask "What does it mean to support custom 
             XML tags?"
             </p>
+
             <p>
             If your only interest if for the custom tags to appear in
             the SVG DOM tree, you need do nothing more than provide
             appropriate namespacing and DTD(s) (ie. simply make your
-            new content well formed XML).  Batik will ignore the parts
-            that aren't part of SVG.
+            new content well formed and/or valid XML).  Batik will
+            ignore the branches of the DOM that it doesn't understand.
             </p>
 
             <p>
             If your interest is in having the new tag participate in
-            the generation of graphics then you must inform the Bridge
-            about your new tags.
+            or affect the rendering or transcoding operations then you
+            must inform the bridge package about your new tags.  The
+            bridge package is responsible for creating and maintaining
+            elements in the GVT tree from the coresponding element in
+            the SVG DOM.  The GVT tree is used for all
+            rendering/transcoding operations.
             </p>
+
+            <p>
+            The key class for this conversion is the BridgeContext
+            class.  This class maintains an association between a tag
+            name with namespace and a bridge instance that will handle
+            it.  The work of constructing the proper entities in the
+            GVT tree is then defered to the Bridge instance.
+            </p>
+
+            <p>
+            The Bridge interface it's self is a simple interface that
+            includes methods to get the namespace and local name of
+            the tag the bridge is to be used for.  This interface is
+            then extended for each of the major concepts present in
+            SVG:
+            </p>
+            <ul>
+                <li>
+                GraphicsNodeBridge - These are probably the most
+                common SVG elements they represent graphic elements in
+                what I'll call the "visible" SVG tree. These are the
+                elements most other bridges modify in some way
+                (by cliping, masking, filtering, etc).
+                <br/>
+                Examples of existing tags: svg, g, path, rect.
+                </li>
+
+                <li>
+                FilterBridge - Handles the SVG 'filter' element.  If
+                you wanted to implement a new tag that could be
+                referenced from the 'filter' attribute on an SVG
+                graphics node then you would need to subclass this
+                bridge.  However adding new types of filters to the
+                existing SVG 'filter' element is accomplished via the
+                FilterPrimitiveBridge.
+                <br/>
+                Example of existing tag: filter
+                </li>
+
+                <li>
+                FilterPrimitiveBridge - Constructs an element in the
+                filter chain applied to a SVG graphics node.
+                <br/>
+                Examples of existing tags: feBlend, feCompose, ...
+                </li>
+
+                <li>
+                PaintBridge - Constructs a java Paint object to be used
+                in filling or stroking graphic elements.  
+                <br/>
+                Examples of existing tags: gradient, pattern.
+                </li>
+
+                <li>
+                ClipBridge - Constructs a ClipRable to apply to a
+                Graphics Node. 
+                <br/>
+                Example of existing tag: clip-path.
+                </li>
+
+                <li>
+                MarkerBridge - Constructs a Marker for annotating the
+                path of a GraphicsNode.
+                <br/>
+                Example of existing tag: marker
+                </li>
+
+                <li>
+                MaskBridge - Constructs a Mask Filter to apply to 
+                a Graphics Node. 
+                <br/>
+                Example of existing tag: mask.
+                </li>
+            </ul>
         </s1>
 
+        <anchor id="imageTagFormats" />
         <s1 title="New File Formats">
+        <p>
+        When Batik encounters an 'image' element and it determins the
+        element does not reference an SVG file. It defers the loading
+        of the referenced image to
+        org.apache.batik.ext.awt.image.spi.ImageTagRegistry.  This
+        class maintains a list of RegistryEntries, generally one for
+        each format.  
+        </p>
+
+        <p>
+        There are currently two flavors of RegistryEntry:
+        </p>
+        <ul>
+           <li>
+           URLRegistryEntry - These take a ParsedURL and try to decide
+           if the URL is intended for them.  This group is mostly
+           intended to handle alternate network protocols.  It can
+           also be useful for interfacing with librarys that want a
+           URL instead of a stream.
+           </li>
+
+           <li>
+           StreamRegistryEntry - These work with a markable
+           InputStream. This is the prefered form of registry entry as
+           it generally avoids opening a potentially expensive
+           connection multiple times.
+           </li>
+        </ul>
+
+        
         </s1>
 
+        <anchor id="urlProtocols" />
         <s1 title="New Protocols">
         </s1>
 
+        <anchor id="transcoders" />
         <s1 title="New Transcoders">
         </s1>
     </body>
