@@ -46,7 +46,7 @@
       <line x1="243" y1="70" x2="243" y2="490" stroke="grey" fill="none"/>
       <line x1="423" y1="70" x2="423" y2="490" stroke="grey" fill="none"/>
 
-      <flowRoot font-size="20" xml:space="preserve">
+      <flowRoot font-size="20">
          <flowRegion>
 	    <rect x="17"  y="80" width="200" height="400"/>
 	    <rect x="233" y="80" width="200" height="400"/>

@@ -31,6 +31,7 @@ import java.util.Map;
 import org.apache.batik.bridge.Bridge;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeException;
+import org.apache.batik.bridge.CSSUtilities;
 import org.apache.batik.bridge.SVGAElementBridge;
 import org.apache.batik.bridge.SVGTextElementBridge;
 import org.apache.batik.bridge.SVGUtilities;
@@ -530,18 +531,23 @@ public class BatikFlowTextElementBridge extends SVGTextElementBridge
                                               Integer bidiLevel,
                                               AttributedStringBuffer asb,
                                               List lnLocs) {
-        // 'requiredFeatures', 'requiredExtensions' and 'systemLanguage'
-        if (!SVGUtilities.matchUserAgent(element, ctx.getUserAgent())) {
+        // 'requiredFeatures', 'requiredExtensions', 'systemLanguage' &
+        // 'display="none".
+        if ((!SVGUtilities.matchUserAgent(element, ctx.getUserAgent())) ||
+            (!CSSUtilities.convertDisplay(element))) {
             return;
         }
+
         String  s        = XMLSupport.getXMLSpace(element);
         boolean preserve = s.equals(SVG_PRESERVE_VALUE);
-        boolean first = true;
-        boolean last;
-        boolean stripFirst  = !preserve;
-        boolean stripLast   = !preserve;
+        boolean prevEndsWithSpace;
         Element nodeElement = element;
 
+        if (top)
+            endLimit = 0;
+        if (preserve)
+            endLimit = asb.length();
+        
 	Map map = getAttributeMap(ctx, element, null, bidiLevel);
 	Object o = map.get(TextAttribute.BIDI_EMBEDDING);
         Integer subBidiLevel = bidiLevel;
@@ -552,22 +558,26 @@ public class BatikFlowTextElementBridge extends SVGTextElementBridge
              n != null;
              n = n.getNextSibling()) {
             
-            last = n.getNextSibling() == null;
-
-            int lastChar = asb.getLastChar();
-            stripFirst = !preserve && first &&
-                (top || lastChar == ' ' || lastChar == -1);
+            if (preserve) {
+                prevEndsWithSpace = false;
+            } else {
+                if (asb.length() == 0) 
+                    prevEndsWithSpace = true;
+                else
+                    prevEndsWithSpace = (asb.getLastChar() == ' ');
+            }
 
             switch (n.getNodeType()) {
             case Node.ELEMENT_NODE:
                 // System.out.println("Element: " + n);
                 if ((!getNamespaceURI().equals(n.getNamespaceURI())) &&
-                    (!SVG_NAMESPACE_URI.equals(n.getNamespaceURI()))) {
+                    (!SVG_NAMESPACE_URI.equals(n.getNamespaceURI()))) 
                     break;
-                }
                 
                 nodeElement = (Element)n;
+
                 String ln = n.getLocalName();
+
                 if (ln.equals(BATIK_EXT_FLOW_LINE_TAG)) {
                     fillAttributedStringBuffer(ctx, nodeElement, 
                                                false, subBidiLevel, 
@@ -607,12 +617,8 @@ public class BatikFlowTextElementBridge extends SVGTextElementBridge
                     String uriStr = XLinkSupport.getXLinkHref((Element)n);
                     Element ref = ctx.getReferencedElement((Element)n, uriStr);
                     s = TextUtilities.getElementContent(ref);
-                    s = normalizeString(s, preserve, stripFirst, last && top);
+                    s = normalizeString(s, preserve, prevEndsWithSpace);
                     if (s != null) {
-                        stripLast = !preserve && s.charAt(0) == ' ';
-                        if (stripLast && !asb.isEmpty()) {
-                            asb.stripLast();
-                        }
                         Map m = getAttributeMap(ctx, nodeElement, null, 
 						bidiLevel);
                         asb.append(s, m);
@@ -623,16 +629,16 @@ public class BatikFlowTextElementBridge extends SVGTextElementBridge
             case Node.TEXT_NODE:
             case Node.CDATA_SECTION_NODE:
                 s = n.getNodeValue();
-                s = normalizeString(s, preserve, stripFirst, last && top);
-                if (s != null) {
-                    stripLast = !preserve && s.charAt(0) == ' ';
-                    if (stripLast && !asb.isEmpty()) {
-                        asb.stripLast();
-                    }
-                    asb.append(s, map);
-                }
+                s = normalizeString(s, preserve, prevEndsWithSpace);
+                asb.append(s, map);
+                if (preserve)
+                    endLimit = asb.length();
             }
-            first = false;
+        }
+
+        if (top) {
+            while ((endLimit < asb.length()) && (asb.getLastChar() == ' '))
+                asb.stripLast();
         }
     }
 

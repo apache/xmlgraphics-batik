@@ -100,6 +100,7 @@ public class FlowGlyphLayout extends GlyphLayout {
             prevBotMargin = bi.getBottomMargin();
             numWords += wordInfos[chunk].length;
         }
+
         Iterator frIter = flowRects.iterator();
         RegionInfo currentRegion = null;
         int currWord = 0;

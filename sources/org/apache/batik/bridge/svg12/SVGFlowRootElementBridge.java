@@ -281,10 +281,10 @@ public class SVGFlowRootElementBridge extends SVGTextElementBridge {
             int nextLN = ((Integer)lnIter.next()).intValue();
             if (nextLN == prevLN) continue;
 
+            // System.out.println("Attr: [" + prevLN + "," + nextLN + "]");
             ret.addAttribute(FLOW_LINE_BREAK, 
                              new Object(),
                              prevLN, nextLN);
-            // System.out.println("Attr: [" + prevLN + "," + nextLN + "]");
             prevLN  = nextLN;
         }
 
@@ -359,6 +359,8 @@ public class SVGFlowRootElementBridge extends SVGTextElementBridge {
         }
     }
 
+    protected int startLen;
+
     /**
      * Fills the given AttributedStringBuffer.
      */
@@ -368,18 +370,24 @@ public class SVGFlowRootElementBridge extends SVGTextElementBridge {
                                               Integer bidiLevel,
                                               AttributedStringBuffer asb,
                                               List lnLocs) {
-        // 'requiredFeatures', 'requiredExtensions' and 'systemLanguage'
-        if (!SVGUtilities.matchUserAgent(element, ctx.getUserAgent())) {
+        // 'requiredFeatures', 'requiredExtensions', 'systemLanguage' &
+        // 'display="none".
+        if ((!SVGUtilities.matchUserAgent(element, ctx.getUserAgent())) ||
+            (!CSSUtilities.convertDisplay(element))) {
             return;
         }
+
         String  s        = XMLSupport.getXMLSpace(element);
         boolean preserve = s.equals(SVG_PRESERVE_VALUE);
-        boolean first = true;
-        boolean last;
-        boolean stripFirst  = !preserve;
-        boolean stripLast   = !preserve;
+        boolean prevEndsWithSpace;
         Element nodeElement = element;
 
+        if (top)
+            endLimit = startLen = asb.length();
+
+        if (preserve)
+            endLimit = startLen;
+        
 	Map map = getAttributeMap(ctx, element, null, bidiLevel);
 	Object o = map.get(TextAttribute.BIDI_EMBEDDING);
         Integer subBidiLevel = bidiLevel;
@@ -394,28 +402,33 @@ public class SVGFlowRootElementBridge extends SVGTextElementBridge {
              n != null;
              n = n.getNextSibling()) {
             
-            last = n.getNextSibling() == null;
-
-            int lastChar = asb.getLastChar();
-            stripFirst = (!preserve && first &&
-                          (lastChar == ' ' || lastChar == -1));
-            // Strip spaces at start of para/regionBk
-            if (top && first)
-                stripFirst = true;
-            // Strip spaces after lineBreak.
-            if (asb.length() == lineBreak) 
-                stripFirst = true;
+            if (preserve) {
+                prevEndsWithSpace = false;
+            } else {
+                int len = asb.length();
+                if (len == startLen) 
+                    prevEndsWithSpace = true;
+                else {
+                    prevEndsWithSpace = (asb.getLastChar() == ' ');
+                    int idx = lnLocs.size()-1;
+                    if (!prevEndsWithSpace && (idx >= 0)) {
+                        Integer i = (Integer)lnLocs.get(idx);
+                        if (i.intValue() == len)
+                            prevEndsWithSpace = true;
+                    }
+                }
+            }
 
             switch (n.getNodeType()) {
             case Node.ELEMENT_NODE:
                 // System.out.println("Element: " + n);
-                if ((!getNamespaceURI().equals(n.getNamespaceURI())) &&
-                    (!SVG_NAMESPACE_URI.equals(n.getNamespaceURI()))) {
+                if (!SVG_NAMESPACE_URI.equals(n.getNamespaceURI()))
                     break;
-                }
                 
                 nodeElement = (Element)n;
+
                 String ln = n.getLocalName();
+
                 if (ln.equals(SVG12Constants.SVG_FLOW_LINE_TAG)) {
                     fillAttributedStringBuffer(ctx, nodeElement, 
                                                false, subBidiLevel, 
@@ -456,32 +469,46 @@ public class SVGFlowRootElementBridge extends SVGTextElementBridge {
                     String uriStr = XLinkSupport.getXLinkHref((Element)n);
                     Element ref = ctx.getReferencedElement((Element)n, uriStr);
                     s = TextUtilities.getElementContent(ref);
-                    s = normalizeString(s, false, stripFirst, last && top);
+                    s = normalizeString(s, preserve, prevEndsWithSpace);
                     if (s != null) {
-                        stripLast = !preserve && s.charAt(0) == ' ';
-                        if (stripLast && !asb.isEmpty()) {
-                            asb.stripLast();
-                        }
                         Map m = getAttributeMap(ctx, nodeElement, null, 
 						bidiLevel);
                         asb.append(s, m);
                     }
-                } 
+                }
                 break;
                 
             case Node.TEXT_NODE:
             case Node.CDATA_SECTION_NODE:
                 s = n.getNodeValue();
-                s = normalizeString(s, false, stripFirst, last && top);
-                if (s != null) {
-                    stripLast = !preserve && s.charAt(0) == ' ';
-                    if (stripLast && !asb.isEmpty()) {
-                        asb.stripLast();
-                    }
-                    asb.append(s, map);
-                }
+                s = normalizeString(s, preserve, prevEndsWithSpace);
+                asb.append(s, map);
+                if (preserve)
+                    endLimit = asb.length();
             }
-            first = false;
+        }
+
+        if (top) {
+            while ((endLimit < asb.length()) && (asb.getLastChar() == ' ')) {
+                int idx = lnLocs.size()-1;
+                int len = asb.length();
+                if (idx >= 0) {
+                    Integer i = (Integer)lnLocs.get(idx);
+                    if (i.intValue() >= len) {
+                        i = new Integer(len-1);
+                        lnLocs.set(idx, i);
+                        idx--;
+                        while (idx >= 0) {
+                            i = (Integer)lnLocs.get(idx);
+                            if (i.intValue() < len-1)
+                                break;
+                            lnLocs.remove(idx);
+                            idx--;
+                        }
+                    }
+                }
+                asb.stripLast();
+            }
         }
     }
 

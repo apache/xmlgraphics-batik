@@ -42,7 +42,7 @@
       <use width="400" height="400" xlink:href="../../../batikLogo.svg#Batik_Squiggle" opacity="0.5"/>
 
       <g transform="rotate(-45, 200, 200)">
-      <flowRoot font-size="15.75" xml:space="preserve">
+      <flowRoot font-size="15.75">
          <flowRegion>
             <use transform="rotate(45, 200, 200)" width="400" height="400" xlink:href="../../../batikLogo.svg#Batik_Squiggle" />
          </flowRegion>
@@ -72,7 +72,7 @@
            <use xlink:href="../../../batikLogo.svg#Batik_Squiggle_Green"/>
         </g>
       <g transform="rotate(-45, 200, 200)">
-      <flowRoot font-size="16.5" xml:space="preserve">
+      <flowRoot font-size="16.5">
          <flowRegion>
            <use transform="rotate(45, 200, 200), scale(.73,.73)" 
                 xlink:href="../../../batikLogo.svg#Batik_Squiggle_Blue"/>

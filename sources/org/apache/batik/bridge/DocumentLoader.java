@@ -24,6 +24,8 @@ import java.util.HashMap;
 import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
 import org.apache.batik.dom.svg.SVGDocumentFactory;
 import org.apache.batik.dom.util.DocumentDescriptor;
+import org.apache.batik.util.CleanerThread;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGDocument;
@@ -80,9 +82,12 @@ public class DocumentLoader {
         if (n != -1) {
             uri = uri.substring(0, n);
         }
-        DocumentState state = (DocumentState)cacheMap.get(uri);
+        DocumentState state;
+        synchronized (cacheMap) {
+            state = (DocumentState)cacheMap.get(uri);
+        }
         if (state != null)
-            return state.document;
+            return state.getDocument();
         return null;
     }
 
@@ -101,9 +106,11 @@ public class DocumentLoader {
 
         DocumentDescriptor desc = documentFactory.getDocumentDescriptor();
         DocumentState state = new DocumentState(uri, document, desc);
-        cacheMap.put(uri, state);
+        synchronized (cacheMap) {
+            cacheMap.put(uri, state);
+        }
 
-        return state.document;
+        return state.getDocument();
     }
 
     /**
@@ -122,9 +129,11 @@ public class DocumentLoader {
 
         DocumentDescriptor desc = documentFactory.getDocumentDescriptor();
         DocumentState state = new DocumentState(uri, document, desc);
-        cacheMap.put(uri, state);
+        synchronized (cacheMap) {
+            cacheMap.put(uri, state);
+        }
 
-        return state.document;
+        return state.getDocument();
     }
 
     /**
@@ -139,7 +148,9 @@ public class DocumentLoader {
      */
     public void dispose() {
         // new Exception("purge the cache").printStackTrace();
-        cacheMap.clear();
+        synchronized (cacheMap) {
+            cacheMap.clear();
+        }
     }
 
     /**
@@ -152,7 +163,10 @@ public class DocumentLoader {
      */
     public int getLineNumber(Element e) {
         String uri = ((SVGDocument)e.getOwnerDocument()).getURL();
-        DocumentState state = (DocumentState)cacheMap.get(uri);
+        DocumentState state;
+        synchronized (cacheMap) {
+            state = (DocumentState)cacheMap.get(uri);
+        }
         if (state == null) {
             return -1;
         } else {
@@ -163,18 +177,23 @@ public class DocumentLoader {
     /**
      * A simple class that contains a Document and its number of nodes.
      */
-    private static class DocumentState {
+    private class DocumentState extends CleanerThread.SoftReferenceCleared {
 
         private String uri;
-        private Document document;
         private DocumentDescriptor desc;
 
         public DocumentState(String uri,
                              Document document,
                              DocumentDescriptor desc) {
+            super(document);
             this.uri = uri;
-            this.document = document;
             this.desc = desc;
+        }
+
+        public void cleared() {
+            synchronized (cacheMap) {
+                cacheMap.remove(uri);
+            }
         }
 
         public DocumentDescriptor getDocumentDescriptor() {
@@ -186,7 +205,8 @@ public class DocumentLoader {
         }
 
         public Document getDocument() {
-            return document;
+            return (Document)get();
         }
     }
+
 }
