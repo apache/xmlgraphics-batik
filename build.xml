@@ -436,7 +436,6 @@ To display the available targets type:
          manifest="${src}/${project}-bean.mf">
       <fileset dir="${dest}">
         <include name="org/w3c/**"/>
-        <include name="org/xml/**"/>
         <include name="${package-prefix}/bridge/*.class"/>
         <include name="${package-prefix}/css/**/*.class"/>
         <include name="${package-prefix}/dom/**/*.class"/>
@@ -472,7 +471,6 @@ To display the available targets type:
     <jar jarfile="${build}/lib/${project}-ext.jar">
       <fileset dir="${dest}">
         <include name="org/w3c/**"/>
-        <include name="org/xml/**"/>
       </fileset>
     </jar>
   </target>
@@ -515,6 +513,22 @@ To display the available targets type:
     <jar jarfile="${build}/lib/${project}-svggen.jar">
       <fileset dir="${dest}">
         <include name="${package-prefix}/svggen/**/*.class"/>
+      </fileset>
+      <fileset dir="${resources}" excludes="${resources}/**/CVS">
+        <include name="${package-prefix}/svggen/font/resources/**"/>
+      </fileset>
+    </jar>
+  </target>
+
+  <!-- SVGGraphics2D (dependencies: util, awt-util) -->
+  <target name="svggen-full-jar" depends="compile, prepare-build">
+    <jar jarfile="${build}/lib/${project}-svggenfull.jar">
+      <fileset dir="${dest}">
+        <include name="${package-prefix}/svggen/**/*.class"/>
+        <include name="${package-prefix}/util/Base64*.class"/>
+        <include name="${package-prefix}/ext/awt/image/codec/*ImageEncoder.class"/>
+        <include name="${package-prefix}/ext/awt/g2d/*.class"/>
+        <include name="${package-prefix}/util/*Constants.class"/>
       </fileset>
       <fileset dir="${resources}" excludes="${resources}/**/CVS">
         <include name="${package-prefix}/svggen/font/resources/**"/>
@@ -643,7 +657,6 @@ To display the available targets type:
     </jar>
   </target>
 
-
   <!-- XML (dependencies: util) -->
   <target name="xml-jar" depends="compile, prepare-build">
     <jar jarfile="${build}/lib/${project}-xml.jar">
@@ -655,7 +668,6 @@ To display the available targets type:
       </fileset>
     </jar>
   </target>
-
 
   <!-- Bridge (dependencies: all) -->
   <target name="bridge-jar" depends="compile, prepare-build">
@@ -804,6 +816,18 @@ To display the available targets type:
         <fileset dir="${test-resources}">
           <include name="${package-prefix}/test/resources/*.properties" />
           <include name="${package-prefix}/test/xml/resources/*.properties" />
+        </fileset>
+    </jar>
+  </target>
+
+  <!-- imageCodecs.jar : A jar containing the image codecs -->
+  <target name="imageCodecs-jar" depends="compiletest, prepare-build">
+    <jar jarfile="imageCodecs.jar">
+        <fileset dir="${dest}">
+          <include name="${package-prefix}/ext/awt/image/codec/*.class"/>
+        </fileset>
+        <fileset dir="${test-resources}">
+          <include name="${package-prefix}/ext/awt/image/codec/resources/*.properties" />
         </fileset>
     </jar>
   </target>
