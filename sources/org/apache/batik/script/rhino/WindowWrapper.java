@@ -371,7 +371,7 @@ public class WindowWrapper extends ImporterTopLevel {
                                final String content) {
             try {
                 interpreter.callHandler
-                    (function,
+                    (function, 
                      new GetURLDoneArgBuilder(success, mime, content, scope));
             } catch (JavaScriptException e) {
                 throw new WrappedException(e);
@@ -400,7 +400,6 @@ public class WindowWrapper extends ImporterTopLevel {
          */
         private ScriptableObject scope;
 
-        private Object[] array = new Object[1];
         private static final String COMPLETE = "operationComplete";
 
         /**
@@ -449,7 +448,6 @@ public class WindowWrapper extends ImporterTopLevel {
         }
 
         public Object[] buildArguments() {
-            Object[] arguments = new Object[1];
             ScriptableObject so = new NativeObject();
             so.put("success", so,
                    (success) ? Boolean.TRUE : Boolean.FALSE);
@@ -461,8 +459,7 @@ public class WindowWrapper extends ImporterTopLevel {
                 so.put("content", so,
                        Context.toObject(content, scope));
             }
-            arguments[0] = so;
-            return arguments;
+            return new Object [] { so };
         }
     }
     
