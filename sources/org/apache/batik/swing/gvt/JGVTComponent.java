@@ -962,7 +962,7 @@ public class JGVTComponent extends JComponent {
          * Invoked when the mouse enters a component.
          */
         public void mouseEntered(MouseEvent e) {
-            requestFocus();
+            // requestFocus();  // This would grab focus every time mouse enters!
             selectInteractor(e);
             if (interactor != null) {
                 interactor.mouseEntered(e);

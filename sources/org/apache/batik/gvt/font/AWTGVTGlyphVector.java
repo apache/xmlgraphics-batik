@@ -477,7 +477,7 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
     private static final boolean outlinesPositioned;
 
     static {
-        String s = System.getProperty("java.version");
+        String s = System.getProperty("java.specification.version");
         if ("1.4".compareTo(s) <= 0) {
             outlinesPositioned = true;
         } else if ("Mac OS X".equals(System.getProperty("os.name"))) {

@@ -30,8 +30,7 @@
     <page id="license"            label="License"                  source="license.xml"/>
     <external                     label="Download"                 href="http://xml.apache.org/batik/dist" />
     <page id="install"            label="Install"                  source="installing.xml"/>
-    <!-- <page id="batikDemo"          label="Demo"                     source="batikDemo.xml"/> -->
-    <external                     label="Demo"                     href="batikDemo.html"/>
+    <page id="batikDemo"          label="Demo"                     source="batikDemo.xml"/>
     <separator/>
 
     <!-- ======================= -->
@@ -56,13 +55,14 @@
     <!-- Developer's Guides and Tutorials     -->
     <!-- ==================================== -->
     <page id="architecture"       label="Architecture"             source="architecture.xml"/>
+    <external id="javadoc"            label="API (Javadoc)"        href="javadoc/index.html"/>
     <page id="svggen"             label="Generator"                source="svggen.xml" />
     <page id="domapi"             label="DOM API"                  source="domTutorial.xml" />
     <page id="svgcanvas"          label="JSVGCanvas"               source="jsvgcanvas.xml" />
     <page id="rasterizerTutorial" label="Transcoder API"           source="rasterizerTutorial.xml"/>
     <separator/>
     <page id="scripting"          label="Scripting Intro"          source="scriptIntro.xml" />
-    <page id="scriptfeatures"     label="Scripting Features"       source="scriptFeatures.xml" />
+    <page id="scriptingFeatures"  label="Scripting Features"       source="scriptFeatures.xml" />
     <page id="javaScripting"      label="Java Scripting"           source="javaScripting.xml" />
     <page id="security"           label="Security"                 source="security.xml" />
     <separator />
@@ -81,7 +81,7 @@
     <!-- ======================= -->
     <!-- Admin / Status          -->
     <!-- ======================= -->
-    <external                     label="CVS Repository"           href="http://cvs.apache.org/viewcvs.cgi/xml-batik/"/>
+    <page id="cvs"                label="CVS Repository"           source="cvs.xml"/>
     <external                     label="Bug Database"             href="http://nagoya.apache.org/bugzilla"/>
     <separator/>
     <page id="status"             label="Status"                   source="status.xml" />

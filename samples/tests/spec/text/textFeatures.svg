@@ -60,10 +60,14 @@
         </text> 
         <text x="10%" y="60%">
         <tspan text-decoration="line-through">strikethrough.</tspan>
-<!--    <tspan baseline-shift="super">  Super</tspan>- and-
-        <tspan baseline-shift="sub">sub</tspan>-scripts are available.-->
-        </text>
-        <text x="10%" y="70%" stroke-linecap="round" stroke-linejoin="round">
+        <tspan baseline-shift="super" font-size="75%">super</tspan>-and-
+        <tspan baseline-shift="sub" font-size="75%">sub</tspan>-scripts 
+	are available.</text>
+        <text x="10%" y="65%">Baseline can also be shifted
+        <tspan baseline-shift="50%" font-size="75%">up</tspan> and
+        <tspan baseline-shift="-50%" font-size="75%">down</tspan> 
+	by percentage.</text>
+        <text x="10%" y="75%" stroke-linecap="round" stroke-linejoin="round">
             Various 
             <tspan stroke="red" fill="none" stroke-width="0.5">outline
             </tspan>styles, 
@@ -72,16 +76,16 @@
             <tspan stroke="red" stroke-width="1" fill="blue" >thicknesses
             </tspan>can be
         </text>
-        <text x="10%" y="75%">used, and the outline stroke can be 
+        <text x="10%" y="80%">used, and the outline stroke can be 
             <tspan stroke="black" fill="none" stroke-width="0.5" 
                stroke-linecap="round" stroke-linejoin="round">rounded</tspan>
             or 
             <tspan stroke="black" fill="none" stroke-width="0.5" 
                stroke-linecap="square" stroke-linejoin="miter">mitered.</tspan>
         </text>
-        <text x="10%" y="85%">Text elements also can be</text>
-        <text x="10%" y="90%">filtered and transformed.</text>
-        <g font-size="40" transform="translate(250, 450)">  
+        <text x="10%" y="90%">Text elements also can be</text>
+        <text x="10%" y="95%">filtered and transformed.</text>
+        <g font-size="40" transform="translate(250, 475)">  
         <text x="0" y="0" filter="url(#blur)" fill="black" opacity="0.7"
          transform="skewX(40) translate(-6,-6)">
             Shadow

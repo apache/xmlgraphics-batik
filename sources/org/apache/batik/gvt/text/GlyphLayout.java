@@ -1694,7 +1694,6 @@ public class GlyphLayout implements TextSpanLayout {
         int currentChar = 0;
         int lastGlyphDrawn = -1;
         float lastGlyphAdvance = 0;
-
         // iterate through the GlyphVector placing each glyph
         for (int i = 0; i < numGlyphs; i++) {
 

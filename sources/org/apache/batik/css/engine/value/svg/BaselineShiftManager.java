@@ -115,7 +115,15 @@ public class BaselineShiftManager extends LengthManager {
             sm.putLineHeightRelative(idx, true);
 
             int fsi = engine.getLineHeightIndex();
-            Value fs = engine.getComputedStyle(elt, pseudo, fsi);
+	    CSSStylableElement parent;
+	    parent = (CSSStylableElement)elt.getParentNode();
+	    if (parent == null) {
+		// Hmmm somthing pretty odd - can't happen accordint to spec, 
+		// should always have text parent.
+		// http://www.w3.org/TR/SVG11/text.html#BaselineShiftProperty
+		parent = elt;
+	    }
+            Value fs = engine.getComputedStyle(parent, pseudo, fsi);
             float fsv = fs.getFloatValue();
             float v = value.getFloatValue();
             return new FloatValue(CSSPrimitiveValue.CSS_NUMBER,

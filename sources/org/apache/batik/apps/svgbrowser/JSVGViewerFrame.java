@@ -1892,6 +1892,7 @@ public class JSVGViewerFrame
         svgCanvas.setCursor(DEFAULT_CURSOR);
         svgCanvas.setSelectionOverlayXORMode
             (application.isSelectionOverlayXORMode());
+        svgCanvas.requestFocus();  // request focus when load completes.
         if (autoAdjust) {
             pack();
         }

@@ -123,7 +123,7 @@ public class MarkerShapePainter implements ShapePainter {
 	 if (markerGroup == null) {
 	     buildMarkerGroup();
 	 }
-        return markerGroup.getBounds();
+        return markerGroup.getOutline();
     }
 
     /**

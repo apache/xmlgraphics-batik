@@ -555,6 +555,7 @@ public class StrokingTextPainter extends BasicTextPainter {
                     char c = aci.setIndex(start+i);
                     GVTFontFamily fontFamily;
                     fontFamily = FontFamilyResolver.getFamilyThatCanDisplay(c);
+                    // fontFamily = (GVTFontFamily)resolvedFontFamilies.get(0);
 
                     if (runStart == -1) {
                         // Starting a new run...
@@ -784,16 +785,16 @@ public class StrokingTextPainter extends BasicTextPainter {
         float tpShiftX = 0;
         float tpShiftY = 0;
 
-        // Of course X and Y override that...
-        if ((runX != null) && (!runX.isNaN())) {
-            absX = runX.floatValue();
-            tpShiftX = absX;
-        }
-
-        if ((runY != null) && (!runY.isNaN())) {
-            absY = runY.floatValue();
-            tpShiftY = absY;
-        }
+        // Of course X and Y override that, but they don't apply for text on a path.
+	if ((runX != null) && (!runX.isNaN())) {
+	    absX = runX.floatValue();
+	    tpShiftX = absX;
+	}
+	
+	if ((runY != null) && (!runY.isNaN())) {
+	    absY = runY.floatValue();
+	    tpShiftY = absY;
+	}
 
         // Factor in text-anchor in writing direction.
         // Ignore tpShift in non-writing direction.

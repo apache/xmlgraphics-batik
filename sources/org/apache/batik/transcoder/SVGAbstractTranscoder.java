@@ -89,6 +89,16 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
     protected GraphicsNode root;
 
     /**
+     * Current bridge context
+     */
+    protected BridgeContext ctx;
+
+    /**
+     * Current gvt builder
+     */
+    protected GVTBuilder builder;
+
+    /**
      * Image's width and height.
      */
     protected float width, height;
@@ -151,12 +161,12 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
                 Messages.formatMessage("notsvg", null));
         }
 
-        BridgeContext ctx = new BridgeContext(userAgent);
+        ctx = new BridgeContext(userAgent);
         SVGOMDocument svgDoc = (SVGOMDocument)document;
         SVGSVGElement root = svgDoc.getRootElement();
 
         // build the GVT tree
-        GVTBuilder builder = new GVTBuilder();
+        builder = new GVTBuilder();
         // flag that indicates if the document is dynamic
         boolean isDynamic = 
             (hints.containsKey(KEY_EXECUTE_ONLOAD) &&
@@ -173,7 +183,6 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
         // get the 'width' and 'height' attributes of the SVG document
         float docWidth = (float)ctx.getDocumentSize().getWidth();
         float docHeight = (float)ctx.getDocumentSize().getHeight();
-        builder = null;
 
         setImageSize(docWidth, docHeight);
 
@@ -235,8 +244,6 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
         } catch (BridgeException ex) {
             throw new TranscoderException(ex);
         }
-        ctx = null;
-
 
         this.root = gvtRoot;
     }
