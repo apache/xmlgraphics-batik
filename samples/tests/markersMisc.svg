@@ -58,10 +58,10 @@
                 <use x="120" xlink:href="#crossHair" />
             </g>
 
-            <g id="markerContent">
+            <g id="markerContent" fill="none" stroke="none">
                 <circle r="1.8" stroke="black" fill="crimson" stroke-width=".4" />
                 <path d="M 0 -1.8 L 0.3 -0.3 L 1.8 0  L 0.3 0.3 L 0 1.8 L -.2 0.3 L -1.8 0 L -0.3 -0.3 Z" 
-                      fill="yellow" stroke="none" />
+                      fill="yellow" stroke="none" /> 
             </g>
 
             <!-- ============================= -->
@@ -72,7 +72,7 @@
                     markerUnits="strokeWidth" overflow="hidden">
                 <g>
                     <use xlink:href="#markerContent" />
-                    <circle fill="white" cx="-1" cy="-1" r=".4" />
+                    <circle fill="white" stroke="none" cx="-1" cy="-1" r=".4" />
                 </g>
             </marker>
 
@@ -81,7 +81,7 @@
                     markerUnits="strokeWidth" overflow="hidden">
                 <g>
                     <use xlink:href="#markerContent" />
-                    <circle fill="white" cx="0" cy="0" r=".4" />
+                    <circle fill="white" stroke="none" cx="0" cy="0" r=".4" />
                 </g>
             </marker>
 
@@ -90,7 +90,7 @@
                     markerUnits="strokeWidth" overflow="hidden">
                 <g>
                     <use xlink:href="#markerContent" />
-                    <circle fill="white" cx="1" cy="1" r=".4" />
+                    <circle fill="white" stroke="none" cx="1" cy="1" r=".4" /> 
                 </g>
             </marker>
 
@@ -171,7 +171,7 @@
                  marker-mid="url(#markerCenterRef)" 
                  marker-end="url(#markerTopRef)" 
                  class="markedPath"/>
-            <use xlink:href="#testPathCrossHairs" />
+            <!-- <use xlink:href="#testPathCrossHairs" /> -->
 
             <g class="label" transform="translate(60, 50)" text-anchor="middle">
                 <text y="0">Various values for refX/refY </text>
