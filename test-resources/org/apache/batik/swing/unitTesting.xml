@@ -8,7 +8,7 @@
 
 <!-- ========================================================================= -->
 <!-- @author vincent.hardy@eng.sun.com                                         -->
-<!-- @version $Id $  -->
+<!-- @version $Id$  -->
 <!-- ========================================================================= -->
 <testSuite id="swing.unitTesting" name="org.apache.batik.swing package - Unit Testing">
     <test id="NullURITest" class="org.apache.batik.swing.NullURITest" />
