@@ -302,6 +302,8 @@ To display the available targets type:
     <jar jarfile="${build}/lib/${project}-libs.jar">
       <fileset dir="${dest}" excludes="**/CVS">
         <include name="org/apache/batik/**"/>
+        <include name="org/w3c/dom/smil/**"/>
+        <include name="org/w3c/dom/svg/**"/>
       </fileset>
       <fileset dir="${resources}" excludes="${resources}/**/CVS">
         <include name="**"/>
