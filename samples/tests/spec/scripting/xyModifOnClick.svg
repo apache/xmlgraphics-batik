@@ -25,8 +25,8 @@
     <script type="text/ecmascript">
 
     function moveToX(evt, target, val){
-        var r = evt.getTarget();
-        var doc = r.getOwnerDocument();
+        var r = evt.target;
+        var doc = r.ownerDocument;
         var t = doc.getElementById(target);
         t.setAttribute('x', val);
     }
