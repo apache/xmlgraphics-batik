@@ -1,0 +1,26 @@
+<!-- ========================================================================= -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.        -->
+<!--                                                                           -->
+<!-- This software is published under the terms of the Apache Software License -->
+<!-- version 1.1, a copy of which has been included with this distribution in  -->
+<!-- the LICENSE file.                                                         -->
+<!-- ========================================================================= -->
+
+<!-- ========================================================================= -->
+<!-- @author vincent.hardy@eng.sun.com                                         -->
+<!-- @author shillion@ilog.fr                                                  -->
+<!-- @version $Id$  -->
+<!-- ========================================================================= -->
+<testSuite id="dom.unitTesting" name="org.apache.batik.dom package - Unit Testing">
+    <!-- ========================================================================== -->
+    <!-- setAttribute test                                                          -->
+    <!-- ========================================================================== -->
+    <test id="setAttribute" class="org.apache.batik.dom.SetAttributeTest" >
+        <arg class="java.lang.String" value="test-resources/org/apache/batik/dom/dummyXML.xml" />
+        <arg class="java.lang.String" value="doc" />
+        <arg class="java.lang.String" value="root" />
+        <arg class="java.lang.String" value="targetAttribute" />
+        <arg class="java.lang.String" value="targetValue" />
+        <property name="ParserClassName" class="java.lang.String" value="org.apache.crimson.parser.XMLReaderImpl" />
+    </test>
+</testSuite>
