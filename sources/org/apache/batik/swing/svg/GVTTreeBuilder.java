@@ -114,7 +114,7 @@ public class GVTTreeBuilder extends Thread {
             exception = new Exception(t.getMessage());
             fireEvent(failedDispatcher, ev);
         } finally {
-            bridgeContext.getDocumentLoader().dispose();
+            // bridgeContext.getDocumentLoader().dispose();
         }
     }
 

@@ -710,6 +710,14 @@ public class JSVGViewerFrame
     }
 
     /**
+     * Call dispose on canvas as well.
+     */
+    public void dispose() {
+        svgCanvas.dispose();
+        super.dispose();
+    }
+
+    /**
      * Whether to show the debug traces.
      */
     public void setDebug(boolean b) {

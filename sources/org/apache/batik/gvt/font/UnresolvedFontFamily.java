@@ -18,7 +18,16 @@ import java.text.AttributedCharacterIterator;
  */
 public class UnresolvedFontFamily implements GVTFontFamily {
 
-    protected String familyName;
+    protected GVTFontFace fontFace;
+
+    /**
+     * Constructs an UnresolvedFontFamily with the specified familyName.
+     *
+     * @param familyName The name of the font family.
+     */
+    public UnresolvedFontFamily(GVTFontFace fontFace) {
+        this.fontFace = fontFace;
+    }
 
     /**
      * Constructs an UnresolvedFontFamily with the specified familyName.
@@ -26,7 +35,14 @@ public class UnresolvedFontFamily implements GVTFontFamily {
      * @param familyName The name of the font family.
      */
     public UnresolvedFontFamily(String familyName) {
-        this.familyName = familyName;
+        this(new GVTFontFace(familyName));
+    }
+
+    /**
+     * Returns the font-face information for this font family.
+     */
+    public GVTFontFace getFontFace() {
+        return fontFace;
     }
 
     /**
@@ -35,7 +51,7 @@ public class UnresolvedFontFamily implements GVTFontFamily {
      * @return the family name.
      */
     public String getFamilyName() {
-        return familyName;
+        return fontFace.getFamilyName();
     }
 
     /**

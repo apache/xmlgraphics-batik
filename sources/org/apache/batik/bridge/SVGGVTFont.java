@@ -23,6 +23,7 @@ import org.apache.batik.css.engine.SVGCSSEngine;
 import org.apache.batik.css.engine.value.Value;
 import org.apache.batik.dom.util.XMLSupport;
 import org.apache.batik.gvt.font.GVTFont;
+import org.apache.batik.gvt.font.GVTFontFace;
 import org.apache.batik.gvt.font.GVTGlyphVector;
 import org.apache.batik.gvt.font.GVTLineMetrics;
 import org.apache.batik.gvt.font.Glyph;
@@ -42,7 +43,7 @@ import org.w3c.dom.Element;
 public final class SVGGVTFont implements GVTFont, SVGConstants {
 
     private float fontSize;
-    private SVGFontFace fontFace;
+    private GVTFontFace fontFace;
     private String[] glyphUnicodes;
     private String[] glyphNames;
     private String[] glyphLangs;
@@ -83,7 +84,7 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
      * be rendered using this font.
      */
     public SVGGVTFont(float fontSize,
-                      SVGFontFace fontFace,
+                      GVTFontFace fontFace,
                       String[] glyphUnicodes,
                       String[] glyphNames,
                       String[] glyphLangs,

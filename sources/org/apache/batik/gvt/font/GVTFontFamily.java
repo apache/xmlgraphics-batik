@@ -26,11 +26,16 @@ public interface GVTFontFamily {
     String getFamilyName();
 
     /**
+     * Returns the FontFace for this fontFamily instance.
+     */
+    GVTFontFace getFontFace();
+
+    /**
      * Derives a GVTFont object of the correct size.
      *
      * @param size The required size of the derived font.
-     * @param aci The character iterator that will be rendered using the derived
-     * font.
+     * @param aci The character iterator that will be rendered using
+     * the derived font.
      */
     GVTFont deriveFont(float size, AttributedCharacterIterator aci);
 

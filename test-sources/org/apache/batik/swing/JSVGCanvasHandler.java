@@ -217,7 +217,8 @@ public class JSVGCanvasHandler {
                     }
                 }
             };
-        if (updateManager == null) {
+        if ((updateManager == null) ||
+            (!updateManager.isRunning())){
             // Don't run it in this thread or we deadlock the event queue.
             Thread t = new Thread(r);
             t.start();

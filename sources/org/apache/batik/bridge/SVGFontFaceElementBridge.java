@@ -8,7 +8,15 @@
 
 package org.apache.batik.bridge;
 
+import java.util.List;
+import java.util.LinkedList;
+
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+
+import org.apache.batik.dom.svg.XMLBaseSupport;
+import org.apache.batik.dom.util.XLinkSupport;
+import org.apache.batik.util.ParsedURL;
 
 /**
  * Bridge class for the &lt;font-face> element.
@@ -118,8 +126,8 @@ public class SVGFontFaceElementBridge extends AbstractSVGBridge
         String ascentStr = fontFaceElement.getAttributeNS
             (null, SVG_ASCENT_ATTRIBUTE);
         if (ascentStr.length() == 0) {
-            // set it to be unitsPerEm/2, not sure if this is correct or not
-            ascentStr = String.valueOf(unitsPerEm/2);
+            // set it to be unitsPerEm * .8
+            ascentStr = String.valueOf(unitsPerEm*.8);
         }
         float ascent;
         try {
@@ -134,8 +142,8 @@ public class SVGFontFaceElementBridge extends AbstractSVGBridge
         String descentStr = fontFaceElement.getAttributeNS
             (null, SVG_DESCENT_ATTRIBUTE);
         if (descentStr.length() == 0) {
-            // set it to be unitsPerEm/2, not sure if this is correct or not
-            descentStr = String.valueOf(unitsPerEm/2);
+            // set it to be unitsPerEm *.2.
+            descentStr = String.valueOf(unitsPerEm*.2);
         }
         float descent;
         try {
@@ -150,7 +158,7 @@ public class SVGFontFaceElementBridge extends AbstractSVGBridge
         String underlinePosStr = fontFaceElement.getAttributeNS
             (null, SVG_UNDERLINE_POSITION_ATTRIBUTE);
         if (underlinePosStr.length() == 0) {
-            underlinePosStr = "0";
+            underlinePosStr = String.valueOf(-3*unitsPerEm/40);
         }
         float underlinePos;
         try {
@@ -185,7 +193,7 @@ public class SVGFontFaceElementBridge extends AbstractSVGBridge
         String strikethroughPosStr = fontFaceElement.getAttributeNS
             (null, SVG_STRIKETHROUGH_POSITION_ATTRIBUTE);
         if (strikethroughPosStr.length() == 0) {
-            strikethroughPosStr = String.valueOf(ascent/3);
+            strikethroughPosStr = String.valueOf(3*ascent/8);
         }
         float strikethroughPos;
         try {
@@ -250,14 +258,67 @@ public class SVGFontFaceElementBridge extends AbstractSVGBridge
                                overlineThicknessStr});
         }
 
+        List srcs = null;
+        Element fontElt = SVGUtilities.getParentElement(fontFaceElement);
+        if (!fontElt.getNamespaceURI().equals(SVG_NAMESPACE_URI) ||
+            !fontElt.getLocalName().equals(SVG_FONT_TAG)) {
+            srcs = getFontFaceSrcs(fontFaceElement);
+        }
 
         // TODO: get the rest of the attributes
-
-        return new SVGFontFace(familyNames, unitsPerEm, fontWeight, fontStyle,
+        return new SVGFontFace(fontFaceElement, srcs,
+                               familyNames, unitsPerEm, fontWeight, fontStyle,
                                fontVariant, fontStretch, slope, panose1,
                                ascent, descent, strikethroughPos,
                                strikethroughThickness, underlinePos,
                                underlineThickness, overlinePos,
                                overlineThickness);
+    }
+
+
+    public List getFontFaceSrcs(Element fontFaceElement) {
+        // Search for a font-face-src element
+        Element ffsrc = null;
+        for (Node n = fontFaceElement.getFirstChild();
+             n != null;
+             n = n.getNextSibling()) {
+            if ((n.getNodeType() == n.ELEMENT_NODE) &&
+                n.getNamespaceURI().equals(SVG_NAMESPACE_URI) &&
+                n.getLocalName().equals(SVG_FONT_FACE_SRC_TAG)) {
+                    ffsrc = (Element)n;
+                    break;
+            }
+        }
+        if (ffsrc == null)
+            return null;
+
+        List ret = new LinkedList();
+
+        // Search for a font-face-uri, or font-face-name elements
+        for (Node n = ffsrc.getFirstChild();
+             n != null;
+             n = n.getNextSibling()) {
+            if ((n.getNodeType() != n.ELEMENT_NODE) ||
+                !n.getNamespaceURI().equals(SVG_NAMESPACE_URI))
+                continue;
+
+            if (n.getLocalName().equals(SVG_FONT_FACE_URI_TAG)) {
+                Element ffuri = (Element)n;
+                String uri = XLinkSupport.getXLinkHref(ffuri);
+                String base = XMLBaseSupport.getCascadedXMLBase(ffuri);
+                ParsedURL purl;
+                if (base != null) purl = new ParsedURL(base, uri);
+                else              purl = new ParsedURL(uri);
+                ret.add(purl);
+                continue;
+            }
+            if (n.getLocalName().equals(SVG_FONT_FACE_NAME_TAG)) {
+                Element ffname = (Element)n;
+                String s = ffname.getAttribute("name");
+                if (s.length() != 0)
+                    ret.add(s);
+            }
+        }
+        return ret;
     }
 }

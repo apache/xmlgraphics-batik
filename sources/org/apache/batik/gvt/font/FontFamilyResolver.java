@@ -25,10 +25,11 @@ import java.util.Vector;
 public class FontFamilyResolver {
 
     /**
-     * The default font. This will be used when no font families can be resolved
-     * for a particular text chunck/run.
+     * The default font. This will be used when no font families can
+     * be resolved for a particular text chunck/run.
      */
-    public final static AWTFontFamily defaultFont = new AWTFontFamily("SansSerif");
+    public final static AWTFontFamily defaultFont = 
+        new AWTFontFamily("SansSerif");
 
     /**
      * List of all available fonts on the current system, plus a few common

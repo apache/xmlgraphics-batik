@@ -8,16 +8,24 @@
 
 package org.apache.batik.bridge;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
-import java.util.Vector;
 
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.svg.XMLBaseSupport;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.gvt.font.GVTFontFamily;
+import org.apache.batik.gvt.font.GVTFontFace;
 import org.apache.batik.gvt.font.UnresolvedFontFamily;
 import org.apache.batik.util.SVGConstants;
+
+import org.apache.batik.css.engine.CSSEngine;
+import org.apache.batik.css.engine.FontFaceRule;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -30,6 +38,41 @@ import org.w3c.dom.NodeList;
  * @version $Id$
  */
 public abstract class SVGFontUtilities implements SVGConstants {
+
+    public static List getFontFaces(Document doc,
+                                    BridgeContext ctx) {
+        // check fontFamilyMap to see if we have already created an
+        // FontFamily that matches
+        Map fontFamilyMap = ctx.getFontFamilyMap();
+        List ret = (List)fontFamilyMap.get(doc);
+        if (ret != null) 
+            return ret;
+
+        ret = new LinkedList();
+
+        NodeList fontFaceElements = doc.getElementsByTagNameNS
+	    (SVG_NAMESPACE_URI, SVG_FONT_FACE_TAG);
+
+        SVGFontFaceElementBridge fontFaceBridge;
+        fontFaceBridge = (SVGFontFaceElementBridge)ctx.getBridge
+            (SVG_NAMESPACE_URI, SVG_FONT_FACE_TAG);
+
+        for (int i = 0; i < fontFaceElements.getLength(); i++) {
+            Element fontFaceElement = (Element)fontFaceElements.item(i);
+            ret.add(fontFaceBridge.createFontFace
+                    (ctx, fontFaceElement));
+        }
+
+        CSSEngine engine = ((SVGOMDocument)doc).getCSSEngine();
+        List sms = engine.getFontFaces();
+        Iterator iter = sms.iterator();
+        while (iter.hasNext()) {
+            FontFaceRule ffr = (FontFaceRule)iter.next();
+            ret.add(CSSFontFace.createCSSFontFace(engine, ffr));
+        }
+        return ret;
+    }
+                                       
 
     /**
      * Given a font family name tries to find a matching SVG font
@@ -71,70 +114,48 @@ public abstract class SVGFontUtilities implements SVGConstants {
 
         // try to find a matching SVGFontFace element
         Document doc = textElement.getOwnerDocument();
-        NodeList fontFaceElements = doc.getElementsByTagNameNS
-	    (SVG_NAMESPACE_URI, SVG_FONT_FACE_TAG);
 
-        Vector svgFontFamilies = new Vector();
+        List fontFaces = (List)fontFamilyMap.get(doc);
+        
+        if (fontFaces == null) {
+            fontFaces = getFontFaces(doc, ctx);
+            fontFamilyMap.put(doc, fontFaces);
+        }
 
-        for (int i = 0; i < fontFaceElements.getLength(); i++) {
+        
+        Iterator iter = fontFaces.iterator();
+        List svgFontFamilies = new LinkedList();
+        while (iter.hasNext()) {
+            FontFace fontFace = (FontFace)iter.next();
 
-            Element fontFaceElement = (Element)fontFaceElements.item(i);
+            if (!fontFace.hasFamilyName(fontFamilyName)) {
+                continue;
+            }
 
-            // find matching font element
-            Element fontElement = findFontElement(fontFaceElement,
-                                                  fontFamilyName,
-                                                  ctx);
-            if (fontElement != null) {
-                // create a font face
-                Element fontFaceChild = null;
-                for (Node n = fontElement.getFirstChild();
-                     n != null;
-                     n = n.getNextSibling()) {
-                    if (n.getNodeType() == n.ELEMENT_NODE) {
-                        if (n.getNamespaceURI().equals(SVG_NAMESPACE_URI) &&
-                            n.getLocalName().equals(SVG_FONT_FACE_TAG)) {
-                            fontFaceChild = (Element)n;
-                            break;
-                        }
-                    }
-                }
-                if (fontFaceChild == null) {
-                    continue;
-                }
-                SVGFontFaceElementBridge fontFaceBridge =
-                    (SVGFontFaceElementBridge)ctx.getBridge(fontFaceChild);
-                SVGFontFace fontFace =
-                    fontFaceBridge.createFontFace(ctx, fontFaceChild);
-                
-                // see if the font face is ok for the font-weight and style etc
-                
-                String fontFaceStyle = fontFace.getFontStyle();
-                
-                if (fontFaceStyle.equals(SVG_ALL_VALUE) ||
-                    fontFaceStyle.indexOf(fontStyle) != -1) {
-                    
-                    // create a new SVGFontFamily
-                    GVTFontFamily gvtFontFamily =
-                        new SVGFontFamily(fontFace, fontElement, ctx);
-                    svgFontFamilies.add(gvtFontFamily);
-                }
+            String fontFaceStyle = fontFace.getFontStyle();
+            if (fontFaceStyle.equals(SVG_ALL_VALUE) ||
+                fontFaceStyle.indexOf(fontStyle) != -1) {
+                GVTFontFamily ffam = fontFace.getFontFamily(ctx);
+                if (ffam != null) 
+                    svgFontFamilies.add(ffam);
             }
         }
 
         if (svgFontFamilies.size() == 1) {
             // only found one matching svg font family
-            fontFamilyMap.put(fontKeyName, svgFontFamilies.elementAt(0));
-            return (GVTFontFamily)svgFontFamilies.elementAt(0);
+            fontFamilyMap.put(fontKeyName, svgFontFamilies.get(0));
+            return (GVTFontFamily)svgFontFamilies.get(0);
             
         } else if (svgFontFamilies.size() > 1) {
             // need to find font face that matches the font-weight closest
             String fontWeightNumber = getFontWeightNumberString(fontWeight);
 
             // create lists of font weight numbers for each font family
-            Vector fontFamilyWeights = new Vector();
-            for (int i = 0; i < svgFontFamilies.size(); i++) {
-                SVGFontFace fontFace =
-                    ((SVGFontFamily)svgFontFamilies.get(i)).getFontFace();
+            List fontFamilyWeights = new ArrayList(svgFontFamilies.size());
+            Iterator ffiter = svgFontFamilies.iterator();
+            while(ffiter.hasNext()) {
+                GVTFontFace fontFace;
+                fontFace = ((GVTFontFamily)ffiter.next()).getFontFace();
                 String fontFaceWeight = fontFace.getFontWeight();
                 fontFaceWeight = getFontWeightNumberString(fontFaceWeight);
                 fontFamilyWeights.add(fontFaceWeight);
@@ -144,7 +165,7 @@ public abstract class SVGFontUtilities implements SVGConstants {
             // assigned to a font-face, if not then need to "fill the
             // holes"
 
-            Vector newFontFamilyWeights = (Vector)fontFamilyWeights.clone();
+            List newFontFamilyWeights = new ArrayList(fontFamilyWeights);
             for (int i = 100; i <= 900; i+= 100) {
                 String weightString = String.valueOf(i);
                 boolean matched = false;
@@ -169,10 +190,10 @@ public abstract class SVGFontUtilities implements SVGConstants {
                 }
                 if (!matched) {
                     String newFontFamilyWeight =
-                        newFontFamilyWeights.elementAt(minDifferenceIndex) +
+                        newFontFamilyWeights.get(minDifferenceIndex) +
                         ", " + weightString;
-                    newFontFamilyWeights.setElementAt
-                        (newFontFamilyWeight, minDifferenceIndex);
+                    newFontFamilyWeights.set(minDifferenceIndex, 
+                                             newFontFamilyWeight);
                 }
             }
 
@@ -182,12 +203,12 @@ public abstract class SVGFontUtilities implements SVGConstants {
                 String fontFaceWeight = (String)newFontFamilyWeights.get(i);
                 if (fontFaceWeight.indexOf(fontWeightNumber) > -1) {
                     fontFamilyMap.put(fontKeyName, svgFontFamilies.get(i));
-                    return (GVTFontFamily)svgFontFamilies.elementAt(i);
+                    return (GVTFontFamily)svgFontFamilies.get(i);
                 }
             }
             // should not get here, just return the first svg font family
-            fontFamilyMap.put(fontKeyName, svgFontFamilies.elementAt(0));
-            return (GVTFontFamily) svgFontFamilies.elementAt(0);
+            fontFamilyMap.put(fontKeyName, svgFontFamilies.get(0));
+            return (GVTFontFamily) svgFontFamilies.get(0);
 
         } else {
             // couldn't find one so return an UnresolvedFontFamily object
@@ -216,149 +237,5 @@ public abstract class SVGFontUtilities implements SVGConstants {
             return "100, 200, 300, 400, 500, 600, 700, 800, 900";
         }
         return fontWeight;
-    }
-
-    /**
-     * Finds the font element corresponding to the given font-face element.
-     */
-    protected static Element findFontElement(Element ffElt, String family,
-                                             BridgeContext ctx) {
-        String ffname = ffElt.getAttributeNS(null, SVG_FONT_FAMILY_ATTRIBUTE);
-
-        if (ffname.length() < family.length()) {
-            return null;
-        }
-
-        ffname = ffname.toLowerCase();
-
-        int idx = ffname.indexOf(family.toLowerCase());
-
-        if (idx == -1) {
-            return null;
-        }
-
-        // see if the family name is not the part of a bigger family name.
-        if (ffname.length() > family.length()) {
-            boolean quote = false;
-            if (idx > 0) {
-                char c = ffname.charAt(idx - 1);
-                switch (c) {
-                default:
-                    return null;
-                case ' ':
-                    loop: for (int i = idx - 2; i >= 0; --i) {
-                        switch (ffname.charAt(i)) {
-                        default:
-                            return null;
-                        case ' ':
-                            continue;
-                        case '"':
-                        case '\'':
-                            quote = true;
-                            break loop;
-                        }
-                    }
-                    break;
-                case '"':
-                case '\'':
-                    quote = true;
-                case ',':
-                }
-            }
-            if (idx + family.length() < ffname.length()) {
-                char c = ffname.charAt(idx + family.length());
-                switch (c) {
-                default:
-                    return null;
-                case ' ':
-                    loop: for (int i = idx + family.length() + 1;
-                         i < ffname.length(); i++) {
-                        switch (ffname.charAt(i)) {
-                        default:
-                            return null;
-                        case ' ':
-                            continue;
-                        case '"':
-                        case '\'':
-                            if (!quote) {
-                                return null;
-                            }
-                            break loop;
-                        }
-                    }
-                    break;
-                case '"':
-                case '\'':
-                    if (!quote) {
-                        return null;
-                    }
-                case ',':
-                }
-            }
-        }
-
-        Element fontElt = SVGUtilities.getParentElement(ffElt);
-        if (fontElt.getNamespaceURI() == SVG_NAMESPACE_URI &&
-            fontElt.getLocalName().equals(SVG_FONT_TAG)) {
-            return fontElt;
-        }
-
-        // Search for a font-face-src element
-        Element ffsrc = null;
-        for (Node n = ffElt.getFirstChild();
-             n != null;
-             n = n.getNextSibling()) {
-            if (n.getNodeType() == n.ELEMENT_NODE) {
-                if (n.getNamespaceURI().equals(SVG_NAMESPACE_URI) &&
-                    n.getLocalName().equals(SVG_FONT_FACE_SRC_TAG)) {
-                    ffsrc = (Element)n;
-                    break;
-                }
-            }
-        }
-        if (ffsrc == null) {
-            return null;
-        }
-
-        // Search for a font-face-uri element
-        Element ffuri = null;
-        for (Node n = ffsrc.getFirstChild();
-             n != null;
-             n = n.getNextSibling()) {
-            if (n.getNodeType() == n.ELEMENT_NODE) {
-                if (n.getNamespaceURI().equals(SVG_NAMESPACE_URI) &&
-                    n.getLocalName().equals(SVG_FONT_FACE_URI_TAG)) {
-                    ffuri = (Element)n;
-                    break;
-                }
-            }
-        }
-        if (ffuri == null) {
-            return null;
-        }
-        
-        String uri = XLinkSupport.getXLinkHref(ffuri);
-        Element ref = ctx.getReferencedElement(ffuri, uri);
-        if (ref.getNamespaceURI() != SVG_NAMESPACE_URI ||
-            ref.getLocalName() != SVG_FONT_TAG) {
-            return null;
-        }
-
-        SVGOMDocument doc = (SVGOMDocument)ffuri.getOwnerDocument();
-        SVGOMDocument rdoc = (SVGOMDocument)ref.getOwnerDocument();
-
-        boolean isLocal = doc == rdoc;
-        fontElt = (isLocal) ? ref : (Element)doc.importNode(ref, true);
-        
-        if (!isLocal) {
-            String base = XMLBaseSupport.getCascadedXMLBase(ffuri);
-            Element g = doc.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
-            g.appendChild(fontElt);
-            g.setAttributeNS(XMLBaseSupport.XML_NAMESPACE_URI,
-                             "xml:base",
-                             base);
-            CSSUtilities.computeStyleAndURIs(ref, fontElt, uri);
-        }
-        return fontElt;
     }
 }

@@ -19,6 +19,7 @@ import java.util.Vector;
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.font.Glyph;
+import org.apache.batik.gvt.font.GVTFontFace;
 import org.apache.batik.parser.AWTPathProducer;
 import org.apache.batik.parser.ParseException;
 import org.apache.batik.parser.PathParser;
@@ -67,7 +68,7 @@ public class SVGGlyphElementBridge extends AbstractSVGBridge
                              Element textElement,
                              int glyphCode,
                              float fontSize,
-                             SVGFontFace fontFace,
+                             GVTFontFace fontFace,
                              Paint fillPaint,
                              Paint strokePaint,
                              Stroke stroke) {

@@ -65,7 +65,7 @@ public class JSVGMemoryLeakTest extends MemoryLeakTest
                     // System.out.println("In Invoke");
                     theCanvas.dispose();
                     theFrame.remove(theCanvas);
-                    theFrame.removeNotify();
+                    theFrame.dispose();
                     theFrame=null;
                     theCanvas=null;
                 }
@@ -79,7 +79,7 @@ public class JSVGMemoryLeakTest extends MemoryLeakTest
             jframe.setSize(new java.awt.Dimension(40, 50));
             jframe.setVisible(true);
             jframe.setVisible(false);
-            jframe.removeNotify();
+            jframe.dispose();
         }
 
         handler = null;

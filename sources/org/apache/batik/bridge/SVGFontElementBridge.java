@@ -9,6 +9,7 @@
 package org.apache.batik.bridge;
 
 import org.apache.batik.gvt.text.ArabicTextHandler;
+import org.apache.batik.gvt.font.GVTFontFace;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -49,7 +50,7 @@ public class SVGFontElementBridge extends AbstractSVGBridge {
                                  Element fontElement,
                                  Element textElement,
                                  float size,
-                                 SVGFontFace fontFace) {
+                                 GVTFontFace fontFace) {
 
 
         // construct a list of glyph codes that this font can display and
@@ -109,9 +110,10 @@ public class SVGFontElementBridge extends AbstractSVGBridge {
         }
 
         // return the new SVGGVTFont
-        return new SVGGVTFont(size, fontFace, glyphCodes, glyphNames, glyphLangs,
-                              glyphOrientations, glyphForms, ctx,
-                              glyphElementArray, missingGlyphElement,
-                              hkernElementArray, vkernElementArray, textElement);
+        return new SVGGVTFont
+            (size, fontFace, glyphCodes, glyphNames, glyphLangs,
+             glyphOrientations, glyphForms, ctx,
+             glyphElementArray, missingGlyphElement,
+             hkernElementArray, vkernElementArray, textElement);
     }
 }
