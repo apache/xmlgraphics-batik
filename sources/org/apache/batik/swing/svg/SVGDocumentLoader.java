@@ -74,7 +74,6 @@ public class SVGDocumentLoader extends Thread {
             exception = e;
             fireFailedEvent();
         }
-        loader.dispose();
     }
 
     /**
