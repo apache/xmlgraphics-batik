@@ -81,11 +81,11 @@
         </p>
         <p>
         The SVG specification can be found on the 
-        <link href="http://www.w3.org/TR/SVG/">W3C site</link>. <strong>Batik 1.0 is conformant
-        with the November 2nd, 2000 Candidate Recommendation Specification</strong> and its 
-        modifications leading to the upcoming Proposed Recommendation. The current 1.1rcN releases
+        <link href="http://www.w3.org/TR/SVG/">W3C site</link>. Batik 1.0 is conformant
+        with the November 2nd, 2000 Candidate Recommendation Specification and its 
+        modifications which led to the Proposed Recommendation. <strong>The current 1.1rcN releases
         are (and the upcoming 1.1 release
-        will be) conformant with the final recommendation of September 4th, 2000. </p>
+        will be) conformant with the final recommendation of September 4th, 2000. </strong></p>
          </s1>
 
         <s1 title="Batik's Implementation Status">
