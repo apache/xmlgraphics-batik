@@ -215,7 +215,7 @@ public class ConcreteCompositeGraphicsNode extends AbstractGraphicsNode
         if (r == null) {
             return null;
         } else {
-            return getGlobalTransform().createTransformedShape(r).getBounds();
+            return getGlobalTransform().createTransformedShape(r).getBounds2D();
         }
     }
 

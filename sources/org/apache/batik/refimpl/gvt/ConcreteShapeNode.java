@@ -11,6 +11,7 @@ package org.apache.batik.refimpl.gvt;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Shape;
+import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -141,7 +142,7 @@ public class ConcreteShapeNode extends AbstractGraphicsNode
 
     public Rectangle2D getPrimitiveBounds() {
         if (primitiveBounds == null) {
-            if (shapePainter == null || shape == null) {
+            if ((shape == null) || (shapePainter == null)) {
                 return null;
             }
             paintedArea = shapePainter.getPaintedArea(shape);
@@ -155,7 +156,7 @@ public class ConcreteShapeNode extends AbstractGraphicsNode
             if (shape == null) {
                 return null;
             }
-            geometryBounds = shape.getBounds();
+            geometryBounds = shape.getBounds2D();
         }
         return geometryBounds;
     }
