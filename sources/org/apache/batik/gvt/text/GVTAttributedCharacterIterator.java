@@ -224,6 +224,9 @@ public interface GVTAttributedCharacterIterator extends
         /** Underline flag for character.*/
         public final static TextAttribute UNDERLINE = new TextAttribute("UNDERLINE");
 
+        /** Overline flag for character.*/
+        public final static TextAttribute OVERLINE = new TextAttribute("OVERLINE");
+
         /** Stroke used to paint character underline.*/
         public final static TextAttribute UNDERLINE_STROKE = new TextAttribute("UNDERLINE_STROKE");
 
@@ -232,6 +235,9 @@ public interface GVTAttributedCharacterIterator extends
 
         /** Paint used to stroke character outline for underline.*/
         public final static TextAttribute UNDERLINE_STROKE_PAINT = new TextAttribute("UNDERLINE_STROKE_PAINT");
+
+	/** Flag indicating that chars are to be "struck through" */
+	public final static TextAttribute STRIKETHROUGH = new TextAttribute("STRIKETHROUGH");
 
         /** Author-expected width for bounding box containing all text string glyphs.*/
         public final static TextAttribute BBOX_WIDTH = new TextAttribute("BBOX_WIDTH");
@@ -247,6 +253,12 @@ public interface GVTAttributedCharacterIterator extends
 
 	/** Value for UNDERLINE specifying underlining-on */
 	public final static Integer UNDERLINE_ON = java.awt.font.TextAttribute.UNDERLINE_ON;
+
+	/** Value for OVERLINE specifying overlining-on */
+	public final static Boolean OVERLINE_ON = new Boolean(true);
+
+	/** Value for STRIKETHROUGH specifying strikethrough-on */
+	public final static Boolean STRIKETHROUGH_ON = java.awt.font.TextAttribute.STRIKETHROUGH_ON;
 
 
     }
