@@ -404,7 +404,13 @@ public class BridgeContext implements ErrorConstants {
     public Viewport getViewport(Element e) {
         if (viewportStack != null) {
             // building time
-            return (Viewport)viewportStack.get(0);
+            if (viewportStack.size() == 0) {
+                // outermost svg element
+                return (Viewport)viewportMap.get(userAgent);
+            } else {
+                // current viewport
+                return (Viewport)viewportStack.get(0);
+            }
         } else {
             // search the first parent which has defined a viewport
             e = HiddenChildElementSupport.getParentElement(e);
