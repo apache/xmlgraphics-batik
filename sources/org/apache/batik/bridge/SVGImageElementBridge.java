@@ -94,6 +94,40 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
             return null;
         }
 
+        GraphicsNode node = buildImageGraphicsNode(ctx,e);
+
+        if (node == null) {
+            String uriStr = XLinkSupport.getXLinkHref(e);
+            throw new BridgeException(e, ERR_URI_IMAGE_INVALID,
+                                      new Object[] {uriStr});
+        }
+
+        imageNode.setImage(node);
+
+        // 'image-rendering' and 'color-rendering'
+        RenderingHints hints = CSSUtilities.convertImageRendering(e, null);
+        hints = CSSUtilities.convertColorRendering(e, hints);
+        if (hints != null) {
+            imageNode.setRenderingHints(hints);
+        }
+
+        return imageNode;
+    }
+
+    /**
+     * Create a Graphics node according to the 
+     * resource pointed by the href : RasterImageNode
+     * for bitmaps, CompositeGraphicsNode for svg files.
+     *
+     * @param ctx : the bridge context to use
+     * @param e the element that describes the graphics node to build
+     * 
+     * @return the graphic node that represent the resource
+     *  pointed by the reference
+     */
+    protected GraphicsNode buildImageGraphicsNode
+        (BridgeContext ctx, Element e){
+
         // 'xlink:href' attribute - required
         String uriStr = XLinkSupport.getXLinkHref(e);
         if (uriStr.length() == 0) {
@@ -104,6 +138,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
             throw new BridgeException(e, ERR_ATTRIBUTE_VALUE_MALFORMED,
                                       new Object[] {"xlink:href", uriStr});
         }
+
         GraphicsNode node = null;
         // try to load the image as an svg document
         SVGDocument svgDoc = (SVGDocument)e.getOwnerDocument();
@@ -137,22 +172,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
             // try to load the image as a raster image (JPG or PNG)
             node = createRasterImageNode(ctx, e, purl);
         }
-
-        if (node == null) {
-            throw new BridgeException(e, ERR_URI_IMAGE_INVALID,
-                                      new Object[] {uriStr});
-        }
-
-        imageNode.setImage(node);
-
-        // 'image-rendering' and 'color-rendering'
-        RenderingHints hints = CSSUtilities.convertImageRendering(e, null);
-        hints = CSSUtilities.convertColorRendering(e, hints);
-        if (hints != null) {
-            imageNode.setRenderingHints(hints);
-        }
-
-        return imageNode;
+        return node;
     }
 
     /**
@@ -201,7 +221,9 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
      */
     public void handleDOMAttrModifiedEvent(MutationEvent evt) {
 
-	    String attrName = evt.getAttrName();
+        String attrName = evt.getAttrName();
+        Node evtNode = evt.getRelatedNode();
+
         if (attrName.equals(SVG_X_ATTRIBUTE) ||
             attrName.equals(SVG_Y_ATTRIBUTE) ||
             attrName.equals(SVG_WIDTH_ATTRIBUTE) ||
@@ -238,6 +260,37 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
                 // the image node
                 initializeViewport(ctx, e, imageNode, vb, bounds);
             }
+            
+        } else if (( XLinkSupport.XLINK_NAMESPACE_URI.equals
+                     (evtNode.getNamespaceURI()) ) 
+                   && SVG_HREF_ATTRIBUTE.equals(evtNode.getLocalName()) ){
+            //reference copy of the imgDocument
+            SVGDocument oldSVGDoc = imgDocument;
+
+            //update of the reference of the image.
+            GraphicsNode inode = buildImageGraphicsNode(ctx,e);
+
+            if (inode == null) {
+                String uriStr = XLinkSupport.getXLinkHref(e);
+                throw new BridgeException(e, ERR_URI_IMAGE_INVALID,
+                                          new Object[] {uriStr});
+            }
+            ImageNode imgNode = (ImageNode)node;
+            //HACK : see 'initializeDynamicSupport'
+            if (imgNode.getImage() instanceof RasterImageNode) {
+                // register the RasterImageNode instead
+                ctx.unbind(e);
+                ctx.bind(e, inode );
+            }
+            else{
+                //it was an svg file referenced
+                //dispose it
+                if ( oldSVGDoc != null ){
+                    disposeTree(oldSVGDoc);
+                }
+            }
+            imgNode.setImage(inode);
+            
 	} else {
 	    super.handleDOMAttrModifiedEvent(evt);
 	}
