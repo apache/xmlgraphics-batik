@@ -62,9 +62,13 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
         GVTBuilder builder = ctx.getGVTBuilder();
 
         // parse the transform attribute
-        AffineTransform Tx =
-            SVGUtilities.convertAffineTransform(clipElement,
-                                                ATTR_TRANSFORM);
+        String transformStr = clipElement.getAttributeNS(null, ATTR_TRANSFORM);
+        AffineTransform Tx;
+        if (transformStr.length() > 0) {
+            Tx = SVGUtilities.convertAffineTransform(transformStr);
+        } else {
+            Tx = new AffineTransform();
+        }
 
         // parse the clipPathUnits attribute
         String units = clipElement.getAttributeNS(null, SVG_CLIP_PATH_UNITS_ATTRIBUTE);

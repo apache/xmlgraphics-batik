@@ -54,9 +54,11 @@ public abstract class SVGShapeElementBridge implements GraphicsNodeBridge,
                                               cssDecl);
         ShapeNode node = new ShapeNode();
         // Initialize the transform
-        AffineTransform at =
-            SVGUtilities.convertAffineTransform(element, ATTR_TRANSFORM);
-        node.setTransform(at);
+        String transformStr = element.getAttributeNS(null, ATTR_TRANSFORM);
+        if (transformStr.length() > 0) {
+            AffineTransform at = SVGUtilities.convertAffineTransform(transformStr);
+            node.setTransform(at);
+        }
         // Initialize the shape of the ShapeNode
         buildShape(ctx, svgElement, node, cssDecl, uctx);
 

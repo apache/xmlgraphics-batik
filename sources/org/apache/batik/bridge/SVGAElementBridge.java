@@ -55,13 +55,14 @@ public class SVGAElementBridge implements GraphicsNodeBridge, SVGConstants {
 
     public GraphicsNode createGraphicsNode(BridgeContext ctx, Element element) {
 
-        CompositeGraphicsNode gn;
-        gn = new CompositeGraphicsNode();
+        CompositeGraphicsNode gn = new CompositeGraphicsNode();
 
         // Initialize the transform
-        AffineTransform at =
-            SVGUtilities.convertAffineTransform(element, ATTR_TRANSFORM);
-        gn.setTransform(at);
+        String transformStr = element.getAttributeNS(null, ATTR_TRANSFORM);
+        if (transformStr.length() > 0) {
+            AffineTransform at = SVGUtilities.convertAffineTransform(transformStr);
+            gn.setTransform(at);
+        }
 
         CSSStyleDeclaration decl = CSSUtilities.getComputedStyle(element);
         UnitProcessor.Context uctx

@@ -185,11 +185,21 @@ public class SVGRadialGradientBridge extends SVGGradientBridge
             convertSpreadMethod(spreadMethod);
 
         // Extract gradient transform
-        AffineTransform at =
-            SVGUtilities.convertAffineTransform(paintElement,
-                                                ATTR_GRADIENT_TRANSFORM);
+        String transformStr =
+            SVGUtilities.getChainableAttributeNS(paintElement,
+                                                 null,
+                                                 ATTR_GRADIENT_TRANSFORM,
+                                                 loader);
+        AffineTransform at;
+        if (transformStr.length() == 0) {
+            at = new AffineTransform();
+        } else {
+            at = SVGUtilities.convertAffineTransform(transformStr);
+        }
 
-        at = SVGUtilities.convertAffineTransform(at, paintedNode, rc,
+        at = SVGUtilities.convertAffineTransform(at,
+                                                 paintedNode,
+                                                 rc,
                                                  unitsType);
 
         // Extract stop colors and intervals
