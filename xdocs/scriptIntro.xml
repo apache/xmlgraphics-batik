@@ -24,7 +24,7 @@
     <body>
         <s1 title="Introduction">
            <p>
-               Batik 1.0 is a static SVG implementation, that's why scripting cannot be used to modify the rendering of the SVG elements on the screen. However you will find below a little introduction on scripting basics, on how it could be useful through an example and on how you can go a little bit further.
+               Batik 1.1 is a static SVG implementation, that's why scripting cannot be used to modify the rendering of the SVG elements on the screen. However you will find below a little introduction on scripting basics, on how it could be useful through an example and on how you can go a little bit further.
            </p>
         </s1>
         <s1 title="Scripting Basics">
@@ -67,7 +67,7 @@
            </ul>
         </s1>
         <s1 title="Scripting Uses in Batik">
-	<p>Batik release 1.0 is a static SVG implementation, that's why in this version you can't use scripting to move or change graphic objects on the screen, however it can still be usefull for other purposes.</p>
+	<p>Batik release 1.1 is a static SVG implementation, that's why in this version you can't use scripting to move or change graphic objects on the screen, however it can still be usefull for other purposes.</p>
 	<p>The following simplified example that you can find in your Batik distribution uses the Java Sound API through scripting to simulate a piano in SVG:</p>
 	<source>
 
@@ -148,7 +148,7 @@
 	A similar job is done in the <code>drag</code> function.
 	</p>
 	<p>
-	To sum up, this sample shows that the Batik 1.0 release is able to handle events and perform
+	To sum up, this sample shows that the Batik 1.1 release is able to handle events and perform
 	some actions in ECMAScript when receiving them. Here the action is to play music with the Java 
 	Sound API, it could be other kind of job (logging user actions, performing tasks in answer
 	to user actions...).

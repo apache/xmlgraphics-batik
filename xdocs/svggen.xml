@@ -17,7 +17,7 @@
 <document>
     <header>
         <title>SVGGraphics2D</title>
-        <subtitle>A brief of the SVG Generator in Java(SVGGraphics2D)</subtitle>
+        <subtitle>A brief of the SVG Generator in Java (SVGGraphics2D)</subtitle>
         <authors>
             <person name="Sheng Pei" email="spei@cs.uiowa.edu"/>
             <person name="Vincent Hardy" email="vincent.hardy@eng.sun.com"/>
@@ -30,7 +30,7 @@
 
         <figure src="images/svggen.jpg" alt="Batik SVG Generator"/>
         <p>
-                As SVG(Scalable Vector Graphics) is emerging as a promising graphics format 
+                As SVG (Scalable Vector Graphics) is emerging as a promising graphics format 
                 for a wide range of domains and applications, bridging it with Java becomes important. 
                 This page explains how Batik's <code>SVGGraphics2D</code>, referred to as the SVG Generator, makes
                 this possible. It is divided into three parts: </p>
@@ -88,7 +88,7 @@
                 <s1 title="How to use SVGGraphics2D">
                 <p>
                 From the figure in the previous section we can see that in order for an instance of <code>SVGGraphics2D</code> to build      
-                the SVG content(the DOM tree), an instance of DOM's <code>Document</code> class is needed. The DOM tree is an in-memory
+                the SVG content (the DOM tree), an instance of DOM's <code>Document</code> class is needed. The DOM tree is an in-memory
                 representation of the SVG document, which can be further manipulated by the user using DOM API or be streamed
                 out into any <code>java.io.Writer</code>. 
                 </p>
@@ -194,7 +194,7 @@ svgGenerator.stream(out, useCSS);
   </p>
   <s2 title="Have your own comment in the generated SVG file">
   <p>
-  We begin with the simpliest possible example. If you integrate the Batik SVG generator in your own Java application, you may want to specialize the comment generated in the XML code. You can proceed as below.
+  We begin with the simplest possible example. If you integrate the Batik SVG generator in your own Java application, you may want to specialize the comment generated in the XML code. You can proceed as below.
   </p>
   <source>
 
