@@ -33,7 +33,13 @@ import org.apache.batik.gvt.text.AttributedCharacterSpanIterator;
 import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
 
 /**
- * Renders the attributed character iterator of a <tt>TextNode</tt>.
+ * More sophisticated implementation of TextPainter which
+ * renders the attributed character iterator of a <tt>TextNode</tt>.
+ * <em>StrokingTextPainter includes support for stroke, fill, opacity,
+ * text-decoration, and other attributes, but does not handle
+ * explicit per-glyph positioning.</em>
+ * @see org.apache.batik.gvt.TextPainter
+ * @see org.apache.batik.gvt.text.GVTAttributedCharacterIterator
  *
  * @author <a href="bill.haneman@ireland.sun.com>Bill Haneman</a>
  * @version $Id$

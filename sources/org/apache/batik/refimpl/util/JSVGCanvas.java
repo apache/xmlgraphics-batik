@@ -109,7 +109,7 @@ import org.w3c.dom.events.MutationEvent;
 
 
 /**
- * This class represents a JComponent which is able to represents
+ * This class implements a JComponent which is able to display
  * a SVG document.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
@@ -121,7 +121,7 @@ public class JSVGCanvas
     implements ActionMap,
                DynamicRenderer.RepaintHandler,
                SelectionListener {
-    // The actions names.
+    // The action names.
     public final static String UNZOOM_ACTION = "UnzoomAction";
     public final static String ZOOM_IN_ACTION = "ZoomInAction";
     public final static String ZOOM_OUT_ACTION = "ZoomOutAction";
@@ -182,12 +182,6 @@ public class JSVGCanvas
      */
     protected GraphicsNode gvtRoot;
 
-    /**
-     * The current renderer.
-     *
-     * protected Renderer renderer;
-     * NOTE: Removed,  no longer a state variable!
-     */
 
     /**
      * The renderer factory.
@@ -324,7 +318,7 @@ public class JSVGCanvas
      */
     protected boolean documentTransformed;
 
-     /**
+    /**
      * Used to draw marker
      */
     protected BasicStroke markerStroke
@@ -357,7 +351,7 @@ public class JSVGCanvas
     }
 
     /**
-     * Creates a new SVG canvas.
+     * Creates a new SVG canvas, associating it with a UserAgent.
      */
     public JSVGCanvas(UserAgent ua) {
         userAgent = ua;
@@ -433,6 +427,9 @@ public class JSVGCanvas
         zoomHandler = h;
     }
 
+    /**
+     * Interface implemented by zoom handlers.
+     */
     public interface ZoomHandler {
         public void zoomChanged(float f);
     }
@@ -520,12 +517,25 @@ public class JSVGCanvas
 
     }
 
+    /**
+     * An inner class which allows certain operations
+     * resulting from a change in the JSVGCanvas' root node
+     * to be performed in a background thread.
+     */
     class RootNodeChangedRunnable implements Runnable {
 
         GraphicsNode root;
         BridgeContext bridgeContext;
         SVGDocument document;
 
+        /**
+         * Create a RootNodeChangedRunnable that sets the
+         * current root node and document.
+         * @param newRoot the new SVG root GraphicsNode
+         * @param doc the new SVGDocument
+         * @param bridgeContext the bridgeContext to use when setting
+         * the root node and document.
+         */
         public RootNodeChangedRunnable(GraphicsNode newRoot,
                                        BridgeContext bridgeContext,
                                        SVGDocument doc) {
@@ -534,6 +544,9 @@ public class JSVGCanvas
             this.document = doc;
         }
 
+        /**
+         * Executes the root node change request.
+         */
         public void run() {
             setRootNode(root, bridgeContext, document);
             setIsLoadPending(false);
@@ -541,6 +554,12 @@ public class JSVGCanvas
         }
     }
 
+
+    /**
+     * Sets the root node adn current document, notifies the document
+     * that it has been installed, and issues necessary notifications and
+     * repaints to this JSVGCanvas.
+     */
     public void setRootNode(GraphicsNode root, BridgeContext bridgeContext,
                             SVGDocument document) {
 
@@ -577,7 +596,14 @@ public class JSVGCanvas
 
     /**
      * Notifies that the specified area of interest need to be repainted.
-     * @param aoi the area of interest to repaint
+     * If the current thread is interrupted while repainting
+     * this method will return silently.
+     * @param oldAoi the previous area of interest
+     * @param newAoi the new area of interest to repaint
+     * @param renderer the Renderer instance which does the repainting
+     * <em>Note: this function has not yet been modified to allow background
+     * rendering into the offscreen buffer, so it will block the AWT
+     * event thread.</em>
      */
     public void notifyRepaintedRegion(Shape oldAoi, Shape newAoi,
                                                     Renderer renderer) {
@@ -833,7 +859,11 @@ public class JSVGCanvas
     }
 
     /**
-     * Paints this component.
+     * Paints this component into a graphics context.
+     * Note that if the offscreen buffer has been marked for
+     * re-rendering, this method will initiate a background
+     * rendering thread and cue another repaint.  Otherwise,
+     * it simply repaints the offscreen buffer and overlays.
      */
     protected void paintComponent(Graphics g) {
 
@@ -915,7 +945,9 @@ public class JSVGCanvas
         }
     }
 
-
+    /**
+     * The color used for the XOR painting of the selection highlight.
+     */
     protected static Color selectionXORColor = Color.black;
 
     /**
@@ -1023,6 +1055,11 @@ public class JSVGCanvas
         updateBaseTransform();
     }
 
+    /**
+     * Updates the document bounding box, selection highlight
+     * and event dispatcher coordinate system
+     * based on the new value of the transform attribute.
+     */
     protected void updateBaseTransform() {
         canvasSpaceHighlightShape =
                 transform.createTransformedShape(selectionHighlightShape);
@@ -1043,12 +1080,15 @@ public class JSVGCanvas
         }
     }
 
+    /**
+     * Returns the current document-to-device space transform.
+     */
     public AffineTransform getTransform() {
         return transform;
     }
 
     /**
-     * To repaint the buffer.
+     * Initiates the repainting of the offscreen buffer in a background thread.
      */
     protected void repaintAOI(Renderer renderer, Dimension size,
                                                  BufferedImage buffer) {
@@ -1072,7 +1112,7 @@ public class JSVGCanvas
     private static final int REPAINT_THUMBNAIL_PENDING = 1;
 
     /**
-     *
+     * Class which encapsulates the current repainting state of the JSVGCanvas.
      * Methods are not synchronized since access it intended
      * to occur within a synchronized block.
      */
@@ -1091,6 +1131,13 @@ public class JSVGCanvas
 
     private RepaintState repaintState = new RepaintState(REPAINT_DONE);
 
+    /**
+     * An instance of Runnable which encapsulates the task of repainting
+     * an offscreen buffer from a Renderer, in a background thread.
+     * This method must not call any immediate-mode AWT commands on
+     * visible AWT Components - it cues a repaint() when the background
+     * rendering is complete.
+     */
     class RenderBufferAOIRunnable implements Runnable {
 
         private Shape aoi;
@@ -1099,6 +1146,14 @@ public class JSVGCanvas
         private Dimension size;
         private Component component;
 
+        /**
+         * Construct a RenderBufferAOIRunnable
+         * @param renderer the Renderer instance to use
+         * @param aoi the area of interest to render
+         * @param buffer the offscreen buffer in which to render
+         * @param size the size of the offscreen buffer area
+         * @param component the component to notify when repaint is done.
+         */
         RenderBufferAOIRunnable(Renderer renderer,
                                 Shape aoi,
                                 BufferedImage buffer,
@@ -1441,6 +1496,9 @@ public class JSVGCanvas
             dispatcher.mouseExited(e);
         }
 
+        /**
+         * Called to do cleanup when a mouse operation has been handled.
+         */
         protected void endOperation(int x, int y) {
             if (cursor != null) {
                 requestCursor(cursor);
@@ -1709,7 +1767,10 @@ public class JSVGCanvas
             repaint();
         }
 
-
+      /**
+       * Paints the thumbnail component.
+       * @see org.apache.batik.refimpl.util.JSVGCanvas#paintComponent
+       */
       public void paintComponent(Graphics g) {
 
             if (!EventQueue.isDispatchThread()) {
@@ -1766,50 +1827,8 @@ public class JSVGCanvas
         }
 
         /**
-         * Paints this component.
+         * Paints the AOI region onto the thumbnail.
          */
-        protected void paintComponentOld(Graphics g) {
-            super.paintComponent(g);
-
-            Dimension size = getSize();
-            int w = size.width;
-            int h = size.height;
-
-            if (w < 1 || h < 1) {
-                return;
-            }
-
-            if (repaintThread != null) {
-                Graphics2D g2d = (Graphics2D)g;
-                g2d.drawImage(buffer, null, 0, 0);
-                return;
-            }
-
-            updateBuffer(w, h);
-            if (bufferNeedsRendering) {
-                renderer = rendererFactory.createRenderer(buffer);
-                ((DynamicRenderer)renderer).setRepaintHandler(this);
-                renderer.setTransform(transform);
-            }
-            if (renderer != null && gvtRoot != null &&
-                renderer.getTree() != gvtRoot) {
-                renderer.setTree(gvtRoot);
-                bufferNeedsRendering = true;
-            }
-            if (bufferNeedsRendering) {
-                clearBuffer(w, h);
-                renderer.setTransform(transform);
-                repaintThumbnail();
-                bufferNeedsRendering = false;
-                return;
-            }
-            Graphics2D g2d = (Graphics2D)g;
-            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                                 RenderingHints.VALUE_ANTIALIAS_ON);
-            g2d.drawImage(offscreenBuffer, null, 0, 0);
-
-        }
-
         public void paintOverlays(Graphics g) {
             Graphics2D g2d = (Graphics2D)g;
             if (gvtRoot != null) {
@@ -2052,8 +2071,10 @@ public class JSVGCanvas
                     markerTransform = new AffineTransform();
                 }
             }
+
             public void mouseMoved(MouseEvent e) {
             }
+
             public void mouseExited(MouseEvent e) {
                 if (in) {
                     in = false;

@@ -26,8 +26,10 @@ import java.awt.font.FontRenderContext;
 import java.awt.font.TextHitInfo;
 
 /**
- * Renders the attributed character iterator of a <tt>TextNode</tt>.
- * Suitable for use with "standard" TextAttributes only.
+ * Basic implementation of TextPainter which
+ * renders the attributed character iterator of a <tt>TextNode</tt>.
+ * Suitable for use with "standard" java.awt.font.TextAttributes only.
+ * @see java.awt.font.TextAttribute
  *
  * @author <a href="bill.haneman@ireland.sun.com>Bill Haneman</a>
  * @author <a href="vincent.hardy@sun.com>>Vincent Hardy</a>
@@ -76,6 +78,13 @@ public class BasicTextPainter implements TextPainter {
                          (float)location.getY());
     }
 
+    /**
+     * Given an X, y coordinate, text anchor type,
+     * AttributedCharacterIterator, and GraphicsNodeRenderContext,
+     * return a Mark which encapsulates a "selection start" action.
+     * The standard order of method calls for selection is:
+     * selectAt(); [selectTo(),...], selectTo(); getSelection().
+     */
     public org.apache.batik.gvt.text.Mark selectAt(double x, double y,
                          AttributedCharacterIterator aci,
                          TextNode.Anchor anchor,
@@ -83,6 +92,13 @@ public class BasicTextPainter implements TextPainter {
         return hitTest(x, y, aci, anchor, context);
     }
 
+    /**
+     * Given an X, y coordinate, text anchor type, starting Mark,
+     * AttributedCharacterIterator, and GraphicsNodeRenderContext,
+     * return a Mark which encapsulates a "selection continued" action.
+     * The standard order of method calls for selection is:
+     * selectAt(); [selectTo(),...], selectTo(); getSelection().
+     */
     public org.apache.batik.gvt.text.Mark selectTo(double x, double y,
                             org.apache.batik.gvt.text.Mark beginMark,
                             AttributedCharacterIterator aci,
@@ -103,6 +119,11 @@ public class BasicTextPainter implements TextPainter {
         return newMark;
     }
 
+    /**
+     * Select the entire contents of an
+     * AttributedCharacterIterator, and
+     * return a Mark which encapsulates that selection action.
+     */
     public org.apache.batik.gvt.text.Mark selectAll(double x, double y,
                             AttributedCharacterIterator aci,
                             TextNode.Anchor anchor,
@@ -112,6 +133,13 @@ public class BasicTextPainter implements TextPainter {
         return newMark;
     }
 
+    /**
+     * Returns an array of ints representing begin/end index pairs into
+     * an AttributedCharacterIterator which represents the text
+     * selection delineated by two Mark instances.
+     * <em>Note: The Mark instances passed must have been instantiated by
+     * an instance of this enclosing TextPainter implementation.</em>
+     */
     public int[] getSelected(AttributedCharacterIterator aci,
                              org.apache.batik.gvt.text.Mark start,
                              org.apache.batik.gvt.text.Mark finish) {
@@ -132,17 +160,17 @@ public class BasicTextPainter implements TextPainter {
             int[] indices = null;
             try {
                 indices = new int[2];
-                indices[0] = (begin.getHit().isLeadingEdge()) ? 
-                              begin.getHit().getCharIndex() : 
+                indices[0] = (begin.getHit().isLeadingEdge()) ?
+                              begin.getHit().getCharIndex() :
                               begin.getHit().getCharIndex()+1;
-                indices[1] = (end.getHit().isLeadingEdge()) ? 
+                indices[1] = (end.getHit().isLeadingEdge()) ?
                               end.getHit().getCharIndex() :
                               end.getHit().getCharIndex()+1;
                 if (indices[0] > indices[1]) {
                     int temp = indices[0];
                     indices[0] = indices[1];
                     indices[1] = temp;
-                } 
+                }
             } catch (Exception e) {
                 return null;
             }
@@ -156,7 +184,12 @@ public class BasicTextPainter implements TextPainter {
         }
     }
 
-
+    /**
+     * Return a Shape, in the coordinate system of the text layout,
+     * which encloses the text selection delineated by two Mark instances.
+     * <em>Note: The Mark instances passed must have been instantiated by
+     * an instance of this enclosing TextPainter implementation.</em>
+     */
     public Shape getHighlightShape(org.apache.batik.gvt.text.Mark beginMark,
                                    org.apache.batik.gvt.text.Mark endMark) {
 
@@ -183,17 +216,17 @@ public class BasicTextPainter implements TextPainter {
             int firsthit = 0;
             int lasthit = 0;
             if (begin != end) {
-                firsthit = (begin.getHit().isLeadingEdge()) ? 
-                              begin.getHit().getCharIndex() : 
+                firsthit = (begin.getHit().isLeadingEdge()) ?
+                              begin.getHit().getCharIndex() :
                               begin.getHit().getCharIndex()+1;
-                lasthit = (end.getHit().isLeadingEdge()) ? 
+                lasthit = (end.getHit().isLeadingEdge()) ?
                               end.getHit().getCharIndex() :
                               end.getHit().getCharIndex()+1;
                 if (firsthit > lasthit) {
                     int temp = firsthit;
                     firsthit = lasthit;
                     lasthit = temp;
-                } 
+                }
             } else {
                 lasthit = layout.getCharacterCount();
             }
@@ -234,6 +267,9 @@ public class BasicTextPainter implements TextPainter {
         return new BasicTextPainter.Mark(x, y, layout, textHit);
     }
 
+    /**
+     * This TextPainter's implementation of the Mark interface.
+     */
     class Mark implements org.apache.batik.gvt.text.Mark {
 
         private TextHitInfo hit;

@@ -58,7 +58,7 @@ public class SelectionEvent {
     public SelectionEvent(Object selection, int id, Shape highlightShape ) {
         this.id = id;
         this.selection = selection;
-	this.highlightShape = highlightShape;
+        this.highlightShape = highlightShape;
     }
 
     /**
@@ -78,9 +78,9 @@ public class SelectionEvent {
 
     /**
      * Returns the event's selection event type.
-     * @see org.apache.batik.gvt.event.SelectionEvent.SELECTION_CHANGED
-     * @see org.apache.batik.gvt.event.SelectionEvent.SELECTION_CLEARED
-     * @see org.apache.batik.gvt.event.SelectionEvent.SELECTION_DONE
+     * @see org.apache.batik.gvt.event.SelectionEvent#SELECTION_CHANGED
+     * @see org.apache.batik.gvt.event.SelectionEvent#SELECTION_CLEARED
+     * @see org.apache.batik.gvt.event.SelectionEvent#SELECTION_DONE
      */
     public int getType() {
         return id;

@@ -238,12 +238,15 @@ public class ConcreteTextNode
         return geometryBounds;
     }
 
+    /**
+     * Returns whether a given point is enclosed by the text node's bounds.
+     */
     public boolean contains(Point2D p) {
         return getBounds().contains(p.getX(), p.getY());
     }
 
     /**
-     * @deprecated
+     * @return a Shape which matches the text's geometry.
      */
     public Shape getOutline() {
 
@@ -333,7 +336,7 @@ public class ConcreteTextNode
             // for now use this as the signal for select all
             o = aci;
         } else {
-            if ((ranges != null) && (ranges.length > 1) 
+            if ((ranges != null) && (ranges.length > 1)
                 && (ranges[1] > ranges[0])) {
                 o = new AttributedCharacterSpanIterator(
                                            aci, ranges[0], ranges[1]);
@@ -345,6 +348,9 @@ public class ConcreteTextNode
         return o;
     }
 
+    /**
+     * @return a Shape which encloses the current text selection.
+     */
     public Shape getHighlightShape(GraphicsNodeRenderContext rc) {
         Shape shape;
         shape =
