@@ -98,8 +98,6 @@
             Batik toolkit rendering components (i.e., the <code>ImageTranscoder</code> and the
             <code>JSVGCanvas</code> Swing component).  </p>
 
-            <p>Insert <strong>CSS Properties support here</strong></p>
-
             </s1>
 
             <anchor id="domLevel2Status" />
@@ -243,7 +241,7 @@
 
         <anchor id="metrics" />
         <s1 title="Batik Metrics">
-            <p>The following numbers are as of November 7th 2001</p>
+            <p>The following numbers are as of May 7th 2002</p>
 
             <p><strong>Modules Binary size</strong></p>
             <table>
