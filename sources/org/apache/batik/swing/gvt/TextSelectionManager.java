@@ -123,6 +123,12 @@ public class TextSelectionManager {
         public void mousePressed(GraphicsNodeMouseEvent evt) {
             if (evt.getSource() instanceof Selectable) {
                 textSelector.mousePressed(evt);
+            } else {
+                if (selectionHighlight != null) {
+                    Rectangle r = getHighlightBounds();
+                    selectionHighlight = null;
+                    component.paintImmediately(r);
+                }
             }
         }
 
