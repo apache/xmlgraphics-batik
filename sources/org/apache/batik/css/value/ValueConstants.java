@@ -310,11 +310,11 @@ public interface ValueConstants extends CSSConstants {
                             CSS_MEDIUM_VALUE);
 
     /**
-     * The 'monospaced' keyword.
+     * The 'monospace' keyword.
      */
-    ImmutableValue MONOSPACED_VALUE =
+    ImmutableValue MONOSPACE_VALUE =
 	new ImmutableString(CSSPrimitiveValue.CSS_IDENT,
-                            CSS_MONOSPACED_VALUE);
+                            CSS_MONOSPACE_VALUE);
 
     /**
      * The 'move' identifier value.

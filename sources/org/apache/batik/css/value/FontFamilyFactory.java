@@ -33,7 +33,7 @@ public class FontFamilyFactory
     static {
 	values.put(CSS_CURSIVE_VALUE,    CURSIVE_VALUE);
 	values.put(CSS_FANTASY_VALUE,    FANTASY_VALUE);
-	values.put(CSS_MONOSPACED_VALUE, MONOSPACED_VALUE);
+	values.put(CSS_MONOSPACE_VALUE, MONOSPACE_VALUE);
 	values.put(CSS_SERIF_VALUE,      SERIF_VALUE);
 	values.put(CSS_SANS_SERIF_VALUE, SANS_SERIF_VALUE);
     }
