@@ -18,7 +18,7 @@
 <!-- @version $Id$        -->
 <!-- ========================================================================= -->
 
-<?xml-stylesheet type="text/css" href="tests/test.css" ?>
+<?xml-stylesheet type="text/css" href="tests/resources/style/test.css" ?>
 <svg id="body" width="450" height="500" xml:space="preserve" viewBox="0 0 450 500">
     <title>Bar Chart</title>
 
