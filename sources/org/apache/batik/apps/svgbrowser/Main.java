@@ -144,10 +144,15 @@ public class Main implements Application {
                 File file = new File(arguments[i]);
                 String uri = null;
 
-                if (file.canRead()) {
-                    uri = file.toURL().toString();
+                try{
+                    if (file.canRead()) {
+                        uri = file.toURL().toString();
+                    }
+                }catch(SecurityException se){
+                    // Cannot access files. 
                 }
-                else{
+                
+                if(uri == null){
                     uri = arguments[i];
                     URL url = null;
                     try{
