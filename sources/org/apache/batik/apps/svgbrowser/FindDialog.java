@@ -16,6 +16,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Dimension2D;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
 import java.text.AttributedCharacterIterator;
@@ -102,6 +104,11 @@ public class FindDialog extends JDialog implements ActionMap {
 
     /** The GVTTreeWalker used to scan the GVT Tree. */
     protected GVTTreeWalker walker;
+
+    /**
+     * The current index in the TextNode's string.
+     */
+    protected int currentIndex;
 
     /** The TextField that owns the text to search. */
     protected JTextField search;
@@ -224,27 +231,18 @@ public class FindDialog extends JDialog implements ActionMap {
 	if (walker == null && gvtRoot != null) {
 	    walker = new GVTTreeWalker(gvtRoot);
 	}
-        GraphicsNode gn = walker.nextGraphicsNode();
-        while (gn != null && !match(gn, text)) {
-            gn = walker.nextGraphicsNode();
-        }
-        return gn;
-    }
-
-    /**
-     * Returns the previous GraphicsNode that matches the specified string or
-     * null if any.
-     *
-     * @param text the text to match
-     */
-    protected GraphicsNode getPrevious(String text) {
-	if (walker == null && gvtRoot != null) {
-	    walker = new GVTTreeWalker(gvtRoot);
+        GraphicsNode gn = walker.getCurrentGraphicsNode();
+	int index = match(gn, text, currentIndex+text.length());
+	if (index >= 0) {
+	    currentIndex = index;
+	} else {
+	    currentIndex = 0;
+	    gn = walker.nextGraphicsNode();
+	    while (gn != null && 
+		   ((currentIndex = match(gn, text, currentIndex)) < 0)) {
+		gn = walker.nextGraphicsNode();
+	    }
 	}
-        GraphicsNode gn = walker.previousGraphicsNode();
-        while (gn != null && !match(gn, text)) {
-            gn = walker.previousGraphicsNode();
-        }
         return gn;
     }
 
@@ -254,19 +252,20 @@ public class FindDialog extends JDialog implements ActionMap {
      *
      * @param node the graphics node to check
      * @param text the text use to match 
+     * @param index the index from which to start
      */
-    protected boolean match(GraphicsNode node, String text) {
+    protected int match(GraphicsNode node, String text, int index) {
         if (!(node instanceof TextNode)
             || !node.isVisible()
             || text == null || text.length() == 0) {
-            return false;
+            return -1;
         }
         String s = ((TextNode)node).getText();
         if (!caseSensitive.isSelected()) {
             s = s.toLowerCase();
             text = text.toLowerCase();
         }
-        return (s.indexOf(text) >= 0);
+        return s.indexOf(text, index);
     }
 
     /**
@@ -284,7 +283,7 @@ public class FindDialog extends JDialog implements ActionMap {
 	AttributedCharacterIterator aci = 
 	    textNode.getAttributedCharacterIterator();
 	aci.first();
-	for (int i=0; i < text.indexOf(pattern); ++i) {
+	for (int i=0; i < text.indexOf(pattern, currentIndex); ++i) {
 	    aci.next();
 	}
 	Mark startMark = textNode.getMarkerForChar(aci.getIndex(), true);
@@ -296,16 +295,21 @@ public class FindDialog extends JDialog implements ActionMap {
 
 	// zoom on the TextNode if needed
         if (enableZoom.isSelected()) {
-            Rectangle2D bounds = gn.getBounds();
-            bounds = gn.getGlobalTransform().createTransformedShape
-                (bounds).getBounds();
-            Dimension dim = svgCanvas.getSize();
-            AffineTransform Tx = new AffineTransform();
-            double s = Math.min(dim.width/bounds.getWidth(),
-                                dim.height/bounds.getHeight());
-            Tx.scale(s*.8, s*.8);
-            Tx.translate(-bounds.getX(), -bounds.getY());
-            svgCanvas.setRenderingTransform(Tx);
+	    Dimension2D docSize = svgCanvas.getSVGDocumentSize();
+	    Rectangle2D nb = textNode.getBounds();
+	    AffineTransform at = gn.getGlobalTransform();
+
+	    Rectangle2D gnb = at.createTransformedShape(nb).getBounds();
+	    Dimension canvasSize = svgCanvas.getSize();
+
+	    Point2D p = at.deltaTransform
+		(new Point2D.Float(canvasSize.width, canvasSize.height), null);
+	    
+	    AffineTransform Tx = AffineTransform.getTranslateInstance
+		(-gnb.getX() - gnb.getWidth() / 2 + p.getX() / 2, 
+		 -gnb.getY() - gnb.getHeight() / 2 + p.getY() / 2);
+
+	    svgCanvas.setRenderingTransform(Tx);
         }
     }
 

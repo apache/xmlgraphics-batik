@@ -99,7 +99,7 @@ public class TextSelectionManager {
      * A flag bit that indicates whether or not the selection overlay is painted
      * in XOR mode.
      */
-    protected boolean xorMode = true;
+    protected boolean xorMode = false;
 
     /**
      * Creates a new TextSelectionManager.

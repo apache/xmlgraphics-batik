@@ -312,7 +312,7 @@ public class ConcreteTextSelector implements Selector {
     }
 
     private void copyToClipboard(Object o) {
-
+/*
         // first see if we can access the clipboard
         SecurityManager securityManager = System.getSecurityManager();
         boolean canAccessClipboard = true;
@@ -339,7 +339,7 @@ public class ConcreteTextSelector implements Selector {
             Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
             StringSelection selection = new StringSelection(label);
             clipboard.setContents(selection, selection);
-        }
+        }*/
     }
 
     private void report(GraphicsNodeEvent evt, String message) {
