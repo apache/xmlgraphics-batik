@@ -142,10 +142,26 @@ public class Main implements Application {
                 oh.handleOption();
                 index++;
             }
-            createAndShowJSVGViewerFrame();
-            if (index < arguments.length) {
-                mainFrame.getJSVGCanvas().loadSVGDocument
-                    (new File(arguments[index]).toURL().toString());
+            JSVGViewerFrame frame = createAndShowJSVGViewerFrame();
+            while (index < arguments.length) {
+                if (arguments[index].length() == 0) {
+                    index++;
+                    continue;
+                }
+
+                File file = new File(arguments[index]);
+                if (file.canRead()) {
+                    if (frame == null) 
+                        frame = createAndShowJSVGViewerFrame();
+                    
+                    frame.getJSVGCanvas().loadSVGDocument
+                        (file.toURL().toString());
+                    frame = null;
+                } else {
+                    // Should let the user know that we are
+                    // skipping this file...
+                }
+                index++;
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -42,24 +42,19 @@ import org.apache.batik.ext.awt.image.rendered.FloodRed;
  * @version $Id$
  */
 public class CompositeRable8Bit
-    extends    AbstractRable
+    extends    AbstractColorInterpRable
     implements CompositeRable, PaintRable {
 
     protected CompositeRule rule;
-    protected ColorSpace    colorspace;
-    protected boolean       csIsLinear;
 
     public CompositeRable8Bit(List srcs,
                               CompositeRule rule,
                               boolean csIsLinear) {
         super(srcs);
 
+        setCSLinear(csIsLinear);
+
         this.rule = rule;
-        this.csIsLinear = csIsLinear;
-        if (csIsLinear)
-            colorspace = ColorSpace.getInstance(ColorSpace.CS_LINEAR_RGB);
-        else
-            colorspace = ColorSpace.getInstance(ColorSpace.CS_sRGB);
     }
 
       /**
@@ -87,30 +82,6 @@ public class CompositeRable8Bit
         return this.rule;
     }
 
-      /**
-       * Set the colorspace to perform compositing in
-       * @param cs ColorSpace to use.
-       */
-    public void setCompositeColorSpace(ColorSpace cs) {
-        touch();
-        if (cs == ColorSpace.getInstance(ColorSpace.CS_LINEAR_RGB))
-            csIsLinear = true;
-        else if (cs == ColorSpace.getInstance(ColorSpace.CS_sRGB))
-            csIsLinear = false;
-        else
-            throw new IllegalArgumentException
-                ("Unsupported ColorSpace for Composite: " + cs);
-        this.colorspace = cs;
-    }
-
-      /**
-       * Get the colorspace to that compositing will be performed in
-       * @return ColorSpace for compositing.
-       */
-    public ColorSpace getCompositeColorSpace() {
-        return this.colorspace;
-    }
-
     /**
      * Should perform the equivilent action as 
      * createRendering followed by drawing the RenderedImage to 
@@ -132,7 +103,7 @@ public class CompositeRable8Bit
         if (getCompositeRule() != CompositeRule.OVER) 
             return false;
 
-        ColorSpace crCS = getCompositeColorSpace();
+        ColorSpace crCS = getOperationColorSpace();
         ColorSpace g2dCS = GraphicsUtil.getDestinationColorSpace(g2d);
         if ((g2dCS == null) || (g2dCS != crCS))
             return false;
@@ -185,15 +156,8 @@ public class CompositeRable8Bit
             RenderedImage ri = filt.createRendering(rc);
             if (ri != null) {
                 CachableRed cr;
-                cr = GraphicsUtil.wrap(ri);
-
-                if (csIsLinear)
-                    cr = GraphicsUtil.convertToLsRGB(cr);
-                else
-                    cr = GraphicsUtil.convertTosRGB(cr);
-
+                cr = convertSourceCS(ri);
                 srcs.add(cr);
-                
             } else {
                 
                 // Blank image...
