@@ -6,7 +6,7 @@
  * the LICENSE file.                                                         *
  *****************************************************************************/
 
-package org.apache.batik.refimpl.script.rhino;
+package org.apache.batik.script.rhino;
 
 import java.io.IOException;
 import java.io.Reader;

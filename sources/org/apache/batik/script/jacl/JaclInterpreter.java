@@ -6,7 +6,7 @@
  * the LICENSE file.                                                         *
  *****************************************************************************/
 
-package org.apache.batik.refimpl.script.jacl;
+package org.apache.batik.script.jacl;
 
 import java.io.*;
 import java.util.Locale;

@@ -6,7 +6,7 @@
  * the LICENSE file.                                                         *
  *****************************************************************************/
 
-package org.apache.batik.refimpl.script.jpython;
+package org.apache.batik.script.jpython;
 
 import org.apache.batik.script.Interpreter;
 import org.apache.batik.script.InterpreterFactory;
