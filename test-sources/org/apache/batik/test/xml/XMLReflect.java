@@ -40,8 +40,11 @@ public class XMLReflect implements XMLReflectConstants{
      */
     public static Object buildObject(Element element) throws Exception {
 
+        Element classDefiningElement = 
+            getClassDefiningElement(element);
+
         String className
-            = getInheritedClassAttribute(element);
+            = classDefiningElement.getAttribute(XR_CLASS_ATTRIBUTE);
 
         Class cl = Class.forName(className);
         Object[] argsArray = null;
@@ -91,32 +94,48 @@ public class XMLReflect implements XMLReflectConstants{
                                                                       argsClassesStr }));
         }
         return configureObject(constructor.newInstance(argsArray),
-                               element);
+                               element, classDefiningElement);
     }
 
     /**
      * Implementation helper: configures a generic object
      */
     public static Object configureObject(Object obj,
-                                         Element element) throws Exception {
-        NodeList children = element.getChildNodes();
-        if(children != null && children.getLength() > 0){
-            int n = children.getLength();
-            Vector args = new Vector();
-            for(int i=0; i<n; i++){
-                Node child = children.item(i);
-                if(child.getNodeType() == Node.ELEMENT_NODE){
-                    Element childElement = (Element)child;
-                    String tagName = childElement.getTagName().intern();
-                    if(tagName == XR_PROPERTY_TAG){
-                        Object arg = buildArgument(childElement);
-                        String propertyName
-                            = childElement.getAttribute(XR_NAME_ATTRIBUTE);
-                        setObjectProperty(obj, propertyName, arg);
+                                         Element element,
+                                         Element classDefiningElement) throws Exception {
+        // First, build a vector of elements from the child element
+        // to the classDefiningElement so that we can go from the 
+        // top (classDefiningElement) to the child and apply properties
+        // as we iterate
+        Vector v = new Vector();
+        v.addElement(element);
+        while (element != classDefiningElement) {
+            element = (Element) element.getParentNode();
+            v.addElement(element);
+        }
+
+        int ne = v.size();
+        for (int j=ne-1; j>=0; j--) {
+            element = (Element)v.elementAt(j);
+            NodeList children = element.getChildNodes();
+            if(children != null && children.getLength() > 0){
+                int n = children.getLength();
+                Vector args = new Vector();
+                for(int i=0; i<n; i++){
+                    Node child = children.item(i);
+                    if(child.getNodeType() == Node.ELEMENT_NODE){
+                        Element childElement = (Element)child;
+                        String tagName = childElement.getTagName().intern();
+                        if(tagName == XR_PROPERTY_TAG){
+                            Object arg = buildArgument(childElement);
+                            String propertyName
+                                = childElement.getAttribute(XR_NAME_ATTRIBUTE);
+                            setObjectProperty(obj, propertyName, arg);
+                        }
                     }
                 }
+                
             }
-
         }
 
         return obj;
@@ -129,6 +148,7 @@ public class XMLReflect implements XMLReflectConstants{
                                          String propertyName,
                                          Object propertyValue)
         throws Exception {
+        System.err.println(">>>>>>>>>>> setObjectProperty (" + obj.getClass().getName() + ", " + propertyName + ", " + propertyValue + ")");
         Class cl = obj.getClass();
         Method m = null;
         try {
@@ -208,7 +228,10 @@ public class XMLReflect implements XMLReflectConstants{
      */
     public static Object buildArgument(Element element) throws Exception {
         if(!element.hasChildNodes()){
-            String classAttr = getInheritedClassAttribute(element);
+            Element classDefiningElement = 
+                getClassDefiningElement(element);
+
+            String classAttr = classDefiningElement.getAttribute(XR_CLASS_ATTRIBUTE);
 
             // String based argument
             Class cl = Class.forName(classAttr);
@@ -233,25 +256,23 @@ public class XMLReflect implements XMLReflectConstants{
     }
 
     /**
-     * The class name to use is that of the element itself or, if not
-     * specified, that of its closest ancestor which defines it
-     * (through the XR_CLASS_ATTRIBUTE
+     * Gets the defining class element
      */
-    public static String getInheritedClassAttribute(Element element){
+    public static Element getClassDefiningElement(Element element) {
         if(element != null){
             String classAttr = element.getAttribute(XR_CLASS_ATTRIBUTE);
 
             if(classAttr == null || "".equals(classAttr)){
                 Node parent = element.getParentNode();
                 if(parent != null && parent.getNodeType() == Node.ELEMENT_NODE){
-                    return getInheritedClassAttribute((Element)parent);
+                    return getClassDefiningElement((Element)parent);
                 }
                 else{
                     return null;
                 }
             }
             
-            return classAttr;
+            return element;
 
         }
 
