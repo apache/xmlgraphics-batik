@@ -163,8 +163,12 @@ public class RhinoInterpreter implements Interpreter {
      * @see org.apache.batik.script.InterpreterPool
      */
     public RhinoInterpreter(URL documentURL) {
-        rhinoClassLoader = new RhinoClassLoader(documentURL,
-                                                getClass().getClassLoader());
+        try { 
+            rhinoClassLoader = new RhinoClassLoader
+                (documentURL, getClass().getClassLoader());
+        } catch (SecurityException se) {
+            rhinoClassLoader = null;
+        }
         // entering a context
         Context ctx = enterContext();
         try {

@@ -79,13 +79,11 @@ import javax.swing.event.ChangeEvent;
 import org.apache.batik.bridge.ViewBox;
 
 import org.apache.batik.swing.JSVGCanvas;
-
+import org.apache.batik.swing.gvt.JGVTComponentListener;
 import org.apache.batik.swing.svg.SVGDocumentLoaderAdapter;
 import org.apache.batik.swing.svg.SVGDocumentLoaderEvent;
-
-import org.apache.batik.swing.gvt.JGVTComponentListener;
-import org.apache.batik.swing.gvt.GVTTreeRendererListener;
-import org.apache.batik.swing.gvt.GVTTreeRendererEvent;
+import org.apache.batik.swing.svg.GVTTreeBuilderListener;
+import org.apache.batik.swing.svg.GVTTreeBuilderEvent;
 
 import org.apache.batik.util.SVGConstants;
 
@@ -176,7 +174,7 @@ public class JSVGScrollPane extends JPanel
         ScrollListener xlistener = new ScrollListener();
         canvas.addJGVTComponentListener(xlistener);
         this.addComponentListener(xlistener);
-        canvas.addGVTTreeRendererListener(xlistener);
+        canvas.addGVTTreeBuilderListener(xlistener);
     }// JSVGScrollPane()
 
 
@@ -379,7 +377,7 @@ public class JSVGScrollPane extends JPanel
 	
     /** Handle scroll, zoom, and resize events */
     protected class ScrollListener extends ComponentAdapter 
-        implements JGVTComponentListener, GVTTreeRendererListener
+        implements JGVTComponentListener, GVTTreeBuilderListener
     {
         protected boolean isReady = false;
 		
@@ -397,29 +395,30 @@ public class JSVGScrollPane extends JPanel
         }// componentResized()
 		
 		
-        public void gvtRenderingCompleted(GVTTreeRendererEvent e)
+        public void gvtBuildCompleted(GVTTreeBuilderEvent e)
         {
             isReady = true;
+            resizeScrollBars();
         }// gvtRenderingCompleted()
 		
 		
-        public void gvtRenderingCancelled(GVTTreeRendererEvent e)
+        public void gvtBuildCancelled(GVTTreeBuilderEvent e)
         {
             // do nothing
         }// gvtRenderingCancelled()
 		
 		
-        public void gvtRenderingFailed(GVTTreeRendererEvent e)
+        public void gvtBuildFailed(GVTTreeBuilderEvent e)
         {
             // do nothing
         }// gvtRenderingFailed()
 		
-        public void gvtRenderingPrepare(GVTTreeRendererEvent e)
+        public void gvtBuildPrepare(GVTTreeBuilderEvent e)
         {
             // do nothing
         }// gvtRenderingPrepare()
 		
-        public void gvtRenderingStarted(GVTTreeRendererEvent e)
+        public void gvtBuildStarted(GVTTreeBuilderEvent e)
         {
             // do nothing
         }// gvtRenderingStarted()

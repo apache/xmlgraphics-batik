@@ -768,12 +768,9 @@ public class JSVGComponent extends JGVTComponent {
                                          (int)dim.getHeight());
         JSVGComponent.this.setMySize(mySz);
         SVGSVGElement elt = svgDocument.getRootElement();
-        Dimension d = getSize();
-        prevComponentSize = d;
-        if (d.width  < 1) d.width  = 1;
-        if (d.height < 1) d.height = 1;
-        AffineTransform at = ViewBox.getViewTransform
-            (fragmentIdentifier, elt, d.width, d.height);
+        prevComponentSize = getSize();
+        AffineTransform at = calculateViewingTransform
+            (fragmentIdentifier, elt);
         CanvasGraphicsNode cgn = getCanvasGraphicsNode(gn);
         cgn.setViewingTransform(at);
         initialTransform = new AffineTransform();
@@ -881,6 +878,15 @@ public class JSVGComponent extends JGVTComponent {
         return ret;
     }
 
+    protected AffineTransform calculateViewingTransform
+        (String fragIdent, SVGSVGElement svgElt) {
+        Dimension d = getSize();
+        if (d.width  < 1) d.width  = 1;
+        if (d.height < 1) d.height = 1;
+        return ViewBox.getViewTransform
+            (fragIdent, svgElt, d.width, d.height);
+    }
+
     /**
      * Updates the value of the transform used for rendering.
      * Return true if a repaint is required, otherwise false.
@@ -897,8 +903,8 @@ public class JSVGComponent extends JGVTComponent {
             prevComponentSize = d;
             if (d.width  < 1) d.width  = 1;
             if (d.height < 1) d.height = 1;
-            AffineTransform at = ViewBox.getViewTransform
-                (fragmentIdentifier, elt, d.width, d.height);
+            AffineTransform at = calculateViewingTransform
+                (fragmentIdentifier, elt);
             CanvasGraphicsNode cgn = getCanvasGraphicsNode();
             AffineTransform vt = cgn.getViewingTransform();
             if (at.equals(vt)) {
@@ -1132,7 +1138,7 @@ public class JSVGComponent extends JGVTComponent {
     protected JSVGComponentListener jsvgComponentListener = 
         new JSVGComponentListener();
 
-    class JSVGComponentListener extends ComponentAdapter
+    protected class JSVGComponentListener extends ComponentAdapter
         implements JGVTComponentListener {
         float prevScale = 0;
         float prevTransX = 0;
