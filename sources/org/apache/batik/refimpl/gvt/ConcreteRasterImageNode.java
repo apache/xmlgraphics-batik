@@ -84,16 +84,18 @@ public class ConcreteRasterImageNode extends AbstractGraphicsNode
     }
 
     public void primitivePaint(Graphics2D g2d, GraphicsNodeRenderContext rc) {
-        if (image == null) {
+        if ((image == null)||
+            (bounds.getWidth()  == 0) ||
+            (bounds.getHeight() == 0)) {
             return;
         }
 
         // get the current affine transform
         AffineTransform origAt = g2d.getTransform();
         AffineTransform at     = (AffineTransform)origAt.clone();
-        
-        float tx0 = -image.getMinX();
-        float ty0 = -image.getMinY();
+
+        float tx0 = image.getMinX();
+        float ty0 = image.getMinY();
 
         float sx  = (float)(bounds.getWidth() /image.getWidth());
         float sy  = (float)(bounds.getHeight()/image.getHeight());
@@ -105,18 +107,19 @@ public class ConcreteRasterImageNode extends AbstractGraphicsNode
         // the device coord system, including scaling to our bounds.
         at.concatenate(AffineTransform.getTranslateInstance(tx1, ty1));
         at.concatenate(AffineTransform.getScaleInstance    (sx, sy));
-        at.concatenate(AffineTransform.getTranslateInstance(tx0, ty0));
+        at.concatenate(AffineTransform.getTranslateInstance(-tx0, -ty0));
+
+        AffineTransform usr2src = new AffineTransform();
+        usr2src.concatenate(AffineTransform.getTranslateInstance(tx0, ty0));
+        usr2src.concatenate(AffineTransform.getScaleInstance    (1/sx, 1/sy));
+        usr2src.concatenate(AffineTransform.getTranslateInstance(-tx1, -ty1));
 
         Shape aoi = g2d.getClip();
-        if(aoi == null) aoi = getBounds();
+        if(aoi == null) {
+            aoi = getBounds();
+        }
 
-        // Map it back to our images coord system.
-        Rectangle2D newAOI = aoi.getBounds2D();
-        newAOI = new Rectangle2D.Float((float)(newAOI.getMinX()+tx0-tx1),
-                                       (float)(newAOI.getMinY()+ty0-ty1),
-                                       (float)(newAOI.getWidth()/sx),
-                                       (float)(newAOI.getHeight()/sy));
-
+        Shape newAOI = usr2src.createTransformedShape(aoi);
         rc.setTransform(at);
         rc.setAreaOfInterest(newAOI);
         RenderedImage renderedNodeImage = image.createRendering(rc);
@@ -128,23 +131,10 @@ public class ConcreteRasterImageNode extends AbstractGraphicsNode
 
 
         // Restore default rendering attributes
-        g2d.setTransform     (origAt);
-        rc .setTransform     (origAt);
-        rc .setAreaOfInterest(g2d.getClip());
+        g2d.setTransform(origAt);
+        rc.setTransform(origAt);
+        rc.setAreaOfInterest(g2d.getClip());
     }
-
-    /*
-      {
-        float x = (float) location.getX();
-        float y = (float) location.getY();
-        int w = (int) size.getWidth();
-        int h = (int) size.getHeight();
-        RenderingHints hints = g2d.getRenderingHints();
-        RenderedImage scaledImg = image.createScaledRendering(w, h, hints);
-        AffineTransform xform = AffineTransform.getTranslateInstance(x, y);
-        g2d.drawRenderedImage(scaledImg, xform);
-    }
-    */
 
     //
     // Geometric methods
