@@ -87,7 +87,7 @@ public class GVTBuilder implements SVGConstants {
         // <!> FIXME: TO BE REMOVED
         if (ctx.isDynamic()) {
             // register GVT listeners for AWT event support
-            BridgeEventSupport.addGVTListener(ctx, svgElement);
+            BridgeEventSupport.addGVTListener(ctx, document);
             // register DOM listeners for dynamic support
             ctx.addDOMListeners();
         }

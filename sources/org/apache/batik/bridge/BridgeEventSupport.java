@@ -60,7 +60,7 @@ public class BridgeEventSupport implements SVGConstants {
      * Is called only for the root element in order to dispatch GVT
      * events to the DOM.
      */
-    public static void addGVTListener(BridgeContext ctx, Element svgRoot) {
+    public static void addGVTListener(BridgeContext ctx, Document doc) {
         UserAgent ua = ctx.getUserAgent();
         if (ua != null) {
             EventDispatcher dispatcher = ua.getEventDispatcher();
@@ -69,10 +69,9 @@ public class BridgeEventSupport implements SVGConstants {
                 dispatcher.addGraphicsNodeMouseListener(listener);
                 // add an unload listener on the SVGDocument to remove
                 // that listener for dispatching events
-                ((EventTarget)svgRoot).addEventListener
-                    ("SVGUnload",
-                     new GVTUnloadListener(dispatcher, listener),
-                     false);
+                EventListener l = new GVTUnloadListener(dispatcher, listener);
+                ((EventTarget)doc).addEventListener("SVGUnload", l, false);
+                ctx.setUnloadListener(l);
             }
         }
     }
