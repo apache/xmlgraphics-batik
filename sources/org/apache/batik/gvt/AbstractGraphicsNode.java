@@ -793,12 +793,12 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     }
 
     /**
-     * Returns the bounds of this node's primitivePaint after applying the input
-     * transform (if any), concatenated with this node's transform (if any).
+     * Returns the bounds of this node's primitivePaint after applying
+     * the input transform (if any), concatenated with this node's
+     * transform (if any).
      *
      * @param txf the affine transform with which this node's transform should
-     *        be concatenated. Should not be null.
-     */
+     *        be concatenated. Should not be null.  */
     public Rectangle2D getTransformedPrimitiveBounds(AffineTransform txf) {
         Rectangle2D tpBounds = getPrimitiveBounds();
         if (tpBounds == null) {

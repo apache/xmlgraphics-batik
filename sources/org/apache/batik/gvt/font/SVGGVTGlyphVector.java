@@ -33,13 +33,14 @@ import java.awt.font.TextAttribute;
  */
 public final class SVGGVTGlyphVector implements GVTGlyphVector {
 
-    private GVTFont font;
-    private Glyph[] glyphs;
+    private GVTFont           font;
+    private Glyph[]           glyphs;
     private FontRenderContext frc;
-    private GeneralPath outline;
-    private Rectangle2D logicalBounds;
-    private Shape[] glyphLogicalBounds;
-    private boolean[] glyphVisible;
+    private GeneralPath       outline;
+    private Rectangle2D       logicalBounds;
+    private Shape[]           glyphLogicalBounds;
+    private boolean[]         glyphVisible;
+    private Point2D           endPos;
 
     /**
      * Constructs an SVGGVTGlyphVector.
@@ -49,7 +50,8 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
      * glyph vector.
      * @param frc The current font render context.
      */
-    public SVGGVTGlyphVector(GVTFont font, Glyph[] glyphs, FontRenderContext frc) {
+    public SVGGVTGlyphVector(GVTFont font, Glyph[] glyphs, 
+                             FontRenderContext frc) {
         this.font = font;
         this.glyphs = glyphs;
         this.frc = frc;
@@ -60,6 +62,11 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
         for (int i = 0; i < glyphs.length; i++) {
             glyphVisible[i] = true;
         }
+        
+        endPos = glyphs[glyphs.length-1].getPosition();
+        endPos = new Point2D.Float
+            ((float)(endPos.getX()+glyphs[glyphs.length-1].getHorizAdvX()),
+             (float)endPos.getY());
     }
 
     /**
@@ -474,6 +481,9 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
      * Returns the position of the specified glyph within this GlyphVector.
      */
     public Point2D getGlyphPosition(int glyphIndex) {
+        if (glyphIndex == glyphs.length)
+            return endPos;
+
         if (glyphIndex < 0 || (glyphIndex > glyphs.length-1)) {
             throw new IndexOutOfBoundsException("glyphIndex: " + glyphIndex
             + ", is out of bounds. Should be between 0 and " + (glyphs.length-1) + ".");
@@ -496,7 +506,7 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
                       + " is out of bounds, should be between 0 and "
                       + (glyphs.length-1));
         }
-        if ((beginGlyphIndex+numEntries) > glyphs.length) {
+        if ((beginGlyphIndex+numEntries) > glyphs.length+1) {
              throw new IndexOutOfBoundsException("beginGlyphIndex + numEntries ("
                        + beginGlyphIndex + "+" + numEntries
                        + ") exceeds the number of glpyhs in this GlyphVector");
@@ -504,9 +514,15 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
         if (positionReturn == null) {
             positionReturn = new float[numEntries*2];
         }
+        if ((beginGlyphIndex+numEntries) == glyphs.length+1) {
+            numEntries--;
+            positionReturn[numEntries*2]   = (float)endPos.getX();
+            positionReturn[numEntries*2+1] = (float)endPos.getY();
+        }
         for (int i = beginGlyphIndex; i < (beginGlyphIndex+numEntries); i++) {
-            Point2D glyphPos = glyphs[i].getPosition();
-            positionReturn[(i-beginGlyphIndex)*2] = (float)glyphPos.getX();
+            Point2D glyphPos;
+            glyphPos = glyphs[i].getPosition();
+            positionReturn[(i-beginGlyphIndex)*2]     = (float)glyphPos.getX();
             positionReturn[(i-beginGlyphIndex)*2 + 1] = (float)glyphPos.getY();
         }
         return positionReturn;
@@ -615,6 +631,7 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
             logicalBounds = null;
             outline = null;
         }
+        endPos = new Point2D.Float(currentX, currentY);
     }
 
     /**
@@ -622,6 +639,11 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
      */
     public void setGlyphPosition(int glyphIndex, Point2D newPos)
                                  throws IndexOutOfBoundsException {
+        if (glyphIndex == glyphs.length) {
+            endPos = (Point2D)newPos.clone();
+            return;
+        }
+
         if (glyphIndex < 0 || (glyphIndex > glyphs.length-1)) {
             throw new IndexOutOfBoundsException("glyphIndex: " + glyphIndex
             + ", is out of bounds. Should be between 0 and " + (glyphs.length-1) + ".");

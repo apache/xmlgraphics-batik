@@ -152,12 +152,10 @@ public class GraphicsNodeRable8Bit
     public Rectangle2D getBounds2D(){
         if (usePrimitivePaint){
             Rectangle2D primitiveBounds = node.getPrimitiveBounds();
-            if(primitiveBounds != null){
-                return (Rectangle2D)(primitiveBounds.clone());
-            }
-            else{
+            if(primitiveBounds == null)
                 return new Rectangle2D.Double(0, 0, 0, 0);
-            }
+
+            return (Rectangle2D)(primitiveBounds.clone());
         }
 
         // When not using Primitive paint we return out bounds in our
@@ -174,7 +172,6 @@ public class GraphicsNodeRable8Bit
         if (at != null){
            bounds = at.createTransformedShape(bounds).getBounds2D();
         }
-        
         return bounds;
     }
 
