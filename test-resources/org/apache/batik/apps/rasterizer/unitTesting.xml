@@ -13,5 +13,5 @@
 <testSuite id="apps.rasterizer.unitTesting" name="org.apache.batik.apps.rasterizer Unit Testing">
 
     <test id="configTest" class="org.apache.batik.apps.rasterizer.SVGConverterTest" />
-    
+    <test id="mainTest" class="org.apache.batik.apps.rasterizer.MainTest" />
 </testSuite>
