@@ -109,11 +109,16 @@ public abstract class XMLAbstractTranscoder extends AbstractTranscoder {
                                                 documentElement,
                                                 input.getURI(),
                                                 input.getReader());
+                } else if (input.getXMLReader() != null) {
+                    document = f.createDocument(namespaceURI,
+                                                documentElement,
+                                                input.getURI(),
+                                                input.getXMLReader());
                 } else if (uri != null) {
                     document = f.createDocument(namespaceURI,
                                                 documentElement,
                                                 uri);
-                }
+                } 
             } catch (DOMException ex) {
                 handler.fatalError(new TranscoderException(ex));
             } catch (IOException ex) {

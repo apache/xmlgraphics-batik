@@ -247,6 +247,34 @@ public class SAXDocumentFactory
 
     /**
      * Creates a Document instance.
+     * @param ns The namespace URI of the root element of the document.
+     * @param root The name of the root element of the document.
+     * @param uri The document URI.
+     * @param r an XMLReaderInstance
+     * @exception IOException if an error occured while reading the document.
+     */
+    public Document createDocument(String ns, String root, String uri,
+                                   XMLReader r) throws IOException {
+        r.setContentHandler(this);
+        r.setDTDHandler(this);
+        r.setEntityResolver(this);
+        try {
+            r.parse(uri);
+        } catch (SAXException e) {
+            Exception ex = e.getException();
+            if (ex != null && ex instanceof InterruptedIOException) {
+                throw (InterruptedIOException) ex;
+            }
+            throw new IOException(e.getMessage());
+        }
+        currentNode = null;
+        Document ret = document;
+        document = null;
+        return ret;
+    }
+
+    /**
+     * Creates a Document instance.
      * @param uri The document URI.
      * @param r The document reader.
      * @exception IOException if an error occured while reading the document.
