@@ -23,6 +23,11 @@
 <title>Error: attribute "points" is missing on &lt;polyline></title>
 
     <!-- ============================================================= -->
+    <!-- Batik sample mark                                             -->
+    <!-- ============================================================= -->
+    <use xlink:href="./batikMark.svg#BatikTag" />
+
+    <!-- ============================================================= -->
     <!-- Test content                                                  -->
     <!-- ============================================================= -->
     <g id="testContent">
@@ -41,9 +46,4 @@
     <polyline transform="translate(0 190)" style="fill:none; stroke:red; stroke-width:8"/>
 
     </g>
-    <!-- ============================================================= -->
-    <!-- Batik sample mark                                             -->
-    <!-- ============================================================= -->
-    <use xlink:href="../testTemplate.svg/#BatikTag" />
-    
 </svg>

@@ -23,6 +23,11 @@
 <title>Error: attribute "operator" on &lt;feComposite> is invalid</title>
 
     <!-- ============================================================= -->
+    <!-- Batik sample mark                                             -->
+    <!-- ============================================================= -->
+    <use xlink:href="./batikMark.svg#BatikTag" />
+
+    <!-- ============================================================= -->
     <!-- Test content                                                  -->
     <!-- ============================================================= -->
     <g id="testContent">
@@ -68,11 +73,6 @@
     <rect x="165" y="100" width="120" height="100" style="filter:url(#good)"/>
     <rect x="165" y="300" width="120" height="100" style="filter:url(#bad)"/>
 
-
     </g>
-    <!-- ============================================================= -->
-    <!-- Batik sample mark                                             -->
-    <!-- ============================================================= -->
-    <use xlink:href="../testTemplate.svg/#BatikTag" />
     
 </svg>
