@@ -1,0 +1,28 @@
+<!--                                                             -->
+<!--   Ant project file, for tests and demos launching           -->
+<!--                                                             -->
+
+<project default="svgviewer" basedir=".">
+
+  <!-- Initialization target -->
+  <target name="init">
+    <tstamp/>
+    <property name="project"       value="batik"/>
+    <property name="class-prefix"  value="org.apache.${project}"/>
+  </target>
+
+  <!-- Launch the SVG viewer 1 -->
+  <target name="viewer" depends="init">
+    <java classpath="classes:lib/xerces.jar:resources"
+          classname="${class-prefix}.refimpl.gvt.renderer.util.SwingStaticViewerPanel"
+          fork="yes"/>
+  </target>
+
+  <!-- Launch the SVG viewer 2 -->
+  <target name="svgviewer" depends="init">
+    <java classpath="classes:lib/xerces.jar:resources"
+          classname="${class-prefix}.apps.svgviewer.Main"
+          fork="yes"/>
+  </target>
+
+</project>

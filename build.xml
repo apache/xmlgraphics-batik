@@ -1,0 +1,143 @@
+<!--                                                             -->
+<!--         Ant project file for the Batik project              -->
+<!--         ______________________________________              -->
+<!--                                                             -->
+<!--                          by                                 -->
+<!--                                                             -->
+<!--           Stephane Hillion and Thierry Kormann              -->
+<!--                                                             -->
+
+<project default="build" basedir=".">
+
+  <!-- Initialization target -->
+  <target name="init">
+    <tstamp/>
+    <property name="project"       value="batik"/>
+    <property name="jdoc"          value="docs/javadoc"/>
+    <property name="src"           value="sources"/>
+    <property name="dest"          value="classes"/>
+    <property name="res"           value="resources"/>
+    <property name="class-prefix"  value="org.apache.${project}"/>
+    <property name="source-prefix" value="org/apache/${project}"/>
+    <property name="packages"      value=
+                          "${class-prefix}.css,
+                           ${class-prefix}.css.event,
+                           ${class-prefix}.css.sac,
+                           ${class-prefix}.css.svg,
+                           ${class-prefix}.css.value,
+                           ${class-prefix}.dom,
+                           ${class-prefix}.dom.events,
+                           ${class-prefix}.dom.svg,
+                           ${class-prefix}.dom.util,
+                           ${class-prefix}.gvt,
+                           ${class-prefix}.gvt.event,
+                           ${class-prefix}.gvt.renderer,
+                           ${class-prefix}.gvt.text,
+                           ${class-prefix}.bridge,
+                           ${class-prefix}.i18n,
+                           ${class-prefix}.parser,
+                           ${class-prefix}.parser.style,
+                           ${class-prefix}.util,
+                           ${class-prefix}.util.gui,
+                           ${class-prefix}.util.gui.resource"/>
+    <property name="packages-ext"  value=
+                          "org.w3c.css.sac,
+                           org.w3c.css.sac.helpers,
+                           org.w3c.dom,
+                           org.w3c.dom.css,
+                           org.w3c.dom.events,
+                           org.w3c.dom.smil,
+                           org.w3c.dom.stylesheets,
+                           org.w3c.dom.svg,
+                           org.w3c.dom.views,
+                           org.xml.sax,
+                           org.xml.sax.ext,
+                           org.xml.sax.helpers"/>
+    <property name="packages-refimpl"      value="
+                           org.apache.batik.refimpl.gvt,
+                           org.apache.batik.refimpl.gvt.renderer,
+                           org.apache.batik.refimpl.gvt.renderer.util,
+                           org.apache.batik.refimpl.gvt.text,
+                           org.apache.batik.refimpl.bridge,
+                           org.apache.batik.refimpl.parser"/>
+    <property name="packages-all"  value="${packages}, 
+                                          ${packages-refimpl},
+			                  ${packages-ext}"/>
+  </target>
+
+
+  <!-- Help on usage -->
+  <target name="usage">
+    <echo message=""/>
+    <echo message=""/>
+    <echo message="Batik Build file"/>
+    <echo message="-------------------------------------------------------------"/>
+    <echo message=""/>
+    <echo message=" available targets are:"/>
+    <echo message=""/>
+    <echo message="   compile      --> compiles the source code"/>
+    <echo message="   javadoc      --> generates the API documentation"/>
+    <echo message="   clean        --> cleans up the directory"/>
+    <echo message=""/>
+    <echo message=" See the comments inside the build.xml file for more details."/>
+    <echo message="-------------------------------------------------------------"/>
+    <echo message=""/>
+    <echo message=""/>
+  </target>
+
+  <!-- Creates the jar file which contains all the classes -->
+  <target name="classes-jar" depends="compile">
+    <jar jarfile="${project}.jar" basedir="${dest}" includes="**"
+         excludes="**/test"/>
+  </target>
+
+  <!-- Cleans the jar file that contains the classes -->
+  <target name="clean-classes-jar" depends="init">
+      <delete file="${project}.jar"/>
+  </target>
+
+  <!-- Creates the jar file which contains all the resources -->
+  <target name="resources-jar" depends="init">
+    <jar jarfile="${project}-resources.jar" basedir="${res}" includes="**"/>
+  </target>
+
+  <!-- Cleans the jar file which contains the resources -->
+  <target name="clean-resources-jar" depends="init">
+      <delete file="${project}-resources.jar"/>
+  </target>
+
+  <!-- Compiles the source files to the ${dest} directory -->
+  <target name="compile" depends="init">
+    <mkdir dir="${dest}"/>
+    <javac classpath="lib/js.jar:lib/jpython.jar:lib/jacl.jar:lib/tcljava.jar" srcdir="${src}"
+           destdir="${dest}"
+           includes="**/*.java"/>
+  </target>
+
+  <!-- Cleans the files generated by a compilation -->
+  <target name="clean-compile" depends="init">
+      <deltree dir="${dest}"/>
+  </target>
+
+  <!-- Generates the javadoc for all the source files -->
+  <target name="javadoc">
+    <mkdir dir="${jdoc}"/>
+    <javadoc packagenames="${packages-all}"
+             sourcepath="${src}"
+             destdir="${jdoc}"
+             author="false"
+             version="false"/>
+  </target>
+
+  <!-- Cleans the files generated by javadoc -->
+  <target name="clean-javadoc" depends="init">
+      <deltree dir="${jdoc}"/>
+  </target>
+
+  <!-- Cleans the files generated by javadoc -->
+  <target name="clean" depends="clean-compile, 
+                                clean-javadoc, 
+                                clean-classes-jar,
+                                clean-resources-jar"/>
+
+</project>
