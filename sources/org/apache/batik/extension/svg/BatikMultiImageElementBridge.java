@@ -161,7 +161,6 @@ public class BatikMultiImageElementBridge extends SVGImageElementBridge
         b = getImageBounds(ctx, e);
 
         node.setImage(f);
-        node.setImageBounds(imgB);
 
         float []vb = new float[4];
         vb[0] = 0;

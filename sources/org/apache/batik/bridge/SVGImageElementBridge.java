@@ -289,7 +289,6 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
         }
         node.setImage(img);
         Rectangle2D imgBounds = img.getBounds2D();
-        node.setImageBounds(imgBounds);
         Rectangle2D bounds = getImageBounds(ctx, e);
 
         // create the implicit viewBox for the raster image. The viewBox for a

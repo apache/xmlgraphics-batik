@@ -87,6 +87,7 @@ public class ImageNode extends CompositeGraphicsNode {
         invalidateGeometryCache();
         if (count == 0) ensureCapacity(1);
         children[0] = newImage;
+        ((AbstractGraphicsNode)newImage).setParent(this);
         count=1;
         fireGraphicsNodeChangeCompleted();
     }

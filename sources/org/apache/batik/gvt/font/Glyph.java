@@ -250,10 +250,14 @@ public class Glyph {
      */
     public GVTGlyphMetrics getGlyphMetrics() {
         if (metrics == null) {
-            metrics = new GVTGlyphMetrics(getHorizAdvX(), 
-                                          getVertAdvY(),
-                                          getGeometryBounds(), 
-                                          GlyphMetrics.COMPONENT);
+            Rectangle2D gb = getGeometryBounds();
+            
+            metrics = new GVTGlyphMetrics
+                (getHorizAdvX(), getVertAdvY(),
+                 new Rectangle2D.Double(gb.getX()-position.getX(),
+                                        gb.getY()-position.getY(),
+                                        gb.getWidth(),gb.getHeight()),
+                 GlyphMetrics.COMPONENT);
         }
         return metrics;
     }

@@ -32,27 +32,6 @@ public class RasterImageNode extends AbstractGraphicsNode {
     protected Filter image;
 
     /**
-     * The Bounds of this image node.
-     */
-    protected Rectangle2D imageBounds;
-
-    /**
-     * The transform that go from the image to the user coordinate system.
-     */
-    protected AffineTransform img2usr;
-
-    /**
-     * The transform that go from the user to the image coordinate system.
-     */
-    protected AffineTransform usr2img;
-
-    /**
-     * This flag indicates whether or not the affine transforms have been
-     * computed.
-     */
-    protected boolean calcAffine = true;
-
-    /**
      * Constructs a new empty <tt>RasterImageNode</tt>.
      */
     public RasterImageNode() {}
@@ -70,7 +49,6 @@ public class RasterImageNode extends AbstractGraphicsNode {
         fireGraphicsNodeChangeStarted();
         invalidateGeometryCache();
         this.image = newImage;
-        calcAffine = true;
         fireGraphicsNodeChangeCompleted();
     }
 
@@ -84,25 +62,12 @@ public class RasterImageNode extends AbstractGraphicsNode {
     }
 
     /**
-     * Sets the bounds of this raster image node.
-     *
-     * @param newBounds the new bounds of this raster image node
-     */
-    public void setImageBounds(Rectangle2D newImageBounds) {
-        fireGraphicsNodeChangeStarted();
-        invalidateGeometryCache();
-        this.imageBounds = newImageBounds;
-        calcAffine = true;
-        fireGraphicsNodeChangeCompleted();
-    }
-
-    /**
      * Returns the bounds of this raster image node.
      *
      * @return the bounds of this raster image node
      */
     public Rectangle2D getImageBounds() {
-        return (Rectangle2D) imageBounds.clone();
+        return (Rectangle2D) image.getBounds2D().clone();
     }
 
     /**
@@ -112,33 +77,6 @@ public class RasterImageNode extends AbstractGraphicsNode {
      */
     public Filter getGraphicsNodeRable() {
         return image;
-    }
-
-    /**
-     * Updates bith the user->image and image->user transform.
-     */
-    protected void updateAffine() {
-        
-        float tx0 = image.getMinX();
-        float ty0 = image.getMinY();
-
-        float sx  = (float)(imageBounds.getWidth() /image.getWidth());
-        float sy  = (float)(imageBounds.getHeight()/image.getHeight());
-
-        float tx1 = (float)imageBounds.getX();
-        float ty1 = (float)imageBounds.getY();
-
-        // Make the affine go from our src Img's coord system to
-        // the device coord system, including scaling to our bounds.
-        img2usr = AffineTransform.getTranslateInstance          ( tx1,  ty1);
-        img2usr.concatenate(AffineTransform.getScaleInstance    ( sx ,  sy ));
-        img2usr.concatenate(AffineTransform.getTranslateInstance(-tx0, -ty0));
-
-        usr2img = AffineTransform.getTranslateInstance          ( tx0,  ty0);
-        usr2img.concatenate(AffineTransform.getScaleInstance    (1/sx, 1/sy));
-        usr2img.concatenate(AffineTransform.getTranslateInstance(-tx1, -ty1));
-
-        calcAffine = false;
     }
 
     //
@@ -151,15 +89,7 @@ public class RasterImageNode extends AbstractGraphicsNode {
      * @param g2d the Graphics2D to use
      */
     public void primitivePaint(Graphics2D g2d) {
-        if ((image == null) ||
-            (imageBounds.getWidth()  == 0) ||
-            (imageBounds.getHeight() == 0)) {
-            return;
-        }
-
-        if (calcAffine) {
-            updateAffine();
-        }
+        if (image == null) return;
 
         GraphicsUtil.drawImage(g2d, image);
     }
@@ -172,7 +102,7 @@ public class RasterImageNode extends AbstractGraphicsNode {
      * Returns the bounds of the area covered by this node's primitive paint.
      */
     public Rectangle2D getPrimitiveBounds() {
-        return (Rectangle2D) imageBounds.clone();
+        return image.getBounds2D();
     }
 
     /**
@@ -181,13 +111,13 @@ public class RasterImageNode extends AbstractGraphicsNode {
      * masking, filtering or stroking, for example.
      */
     public Rectangle2D getGeometryBounds() {
-        return (Rectangle2D) imageBounds.clone();
+        return image.getBounds2D();
     }
 
     /**
      * Returns the outline of this node.
      */
     public Shape getOutline() {
-        return (Rectangle2D) imageBounds.clone();
+        return image.getBounds2D();
     }
 }
