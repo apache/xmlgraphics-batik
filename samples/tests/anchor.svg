@@ -175,7 +175,7 @@
                 <text x="30" y="15" class="label">&lt;image&gt;</text>
 
                 <a xlink:href="#svgView(viewBox(3,2.5,4,4))">
-                    <image transform="translate(60, 0)" x="8" y="2" width="43" height="18" xlink:href="tke.jpg"/>
+                    <image transform="translate(60, 0)" x="8" y="2" width="43" height="18" xlink:href="tde.jpg"/>
                 </a>
 
             </g> <!-- "imageRow" -->

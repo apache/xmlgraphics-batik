@@ -137,17 +137,18 @@ public class ImageTagRegistry implements ErrorConstants {
             }
         }
         
-        if (openFailed) {
-            // Technially it's possible that it's an unknown
-            // 'protocol that caused the open to fail but probably
-            // it's a bad URL...
-            ret = getBrokenLinkImage(this, ERR_URL_UNREACHABLE,
-                                     new Object[] { purl });
-        } else {
-            // We were able to get to the data we just couldn't
-            // make sense of it...
-            ret = getBrokenLinkImage(this, ERR_URL_UNINTERPRETABLE, 
-                                     new Object[] { purl } );
+        if (ret == null) {
+            if (openFailed)
+                // Technially it's possible that it's an unknown
+                // 'protocol that caused the open to fail but probably
+                // it's a bad URL...
+                ret = getBrokenLinkImage(this, ERR_URL_UNREACHABLE,
+                                         new Object[] { purl });
+            else
+                // We were able to get to the data we just couldn't
+                // make sense of it...
+                ret = getBrokenLinkImage(this, ERR_URL_UNINTERPRETABLE, 
+                                         new Object[] { purl } );
         }
 
         cache.put(purl, ret);
