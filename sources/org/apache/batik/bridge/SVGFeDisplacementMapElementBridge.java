@@ -32,13 +32,20 @@ import org.w3c.dom.Element;
  * @version $Id$
  */
 public class SVGFeDisplacementMapElementBridge
-    extends SVGAbstractFilterPrimitiveElementBridge {
+    extends AbstractSVGFilterPrimitiveElementBridge {
 
 
     /**
      * Constructs a new bridge for the &lt;feDisplacementMap> element.
      */
     public SVGFeDisplacementMapElementBridge() {}
+
+    /**
+     * Returns 'feDisplacementMap'.
+     */
+    public String getLocalName() {
+        return SVG_FE_DISPLACEMENT_MAP_TAG;
+    }
 
     /**
      * Creates a <tt>Filter</tt> primitive according to the specified

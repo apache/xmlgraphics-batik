@@ -32,6 +32,13 @@ public class SVGPolygonElementBridge extends SVGDecoratedShapeElementBridge {
     public SVGPolygonElementBridge() {}
 
     /**
+     * Returns 'polygon'.
+     */
+    public String getLocalName() {
+        return SVG_POLYGON_TAG;
+    }
+
+    /**
      * Constructs a polygon according to the specified parameters.
      *
      * @param ctx the bridge context to use

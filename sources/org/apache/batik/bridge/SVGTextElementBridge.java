@@ -42,8 +42,6 @@ import org.apache.batik.gvt.TextNode;
 import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
 import org.apache.batik.gvt.font.GVTFontFamily;
 import org.apache.batik.gvt.font.UnresolvedFontFamily;
-import org.apache.batik.util.CSSConstants;
-import org.apache.batik.util.SVGConstants;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -58,15 +56,20 @@ import org.w3c.dom.css.CSSValueList;
  * @author <a href="bill.haneman@ireland.sun.com>Bill Haneman</a>
  * @version $Id$
  */
-public class SVGTextElementBridge implements GraphicsNodeBridge,
-                                             CSSConstants,
-                                             SVGConstants,
-                                             ErrorConstants {
+public class SVGTextElementBridge extends AbstractSVGBridge
+    implements GraphicsNodeBridge, ErrorConstants {
 
     /**
      * Constructs a new bridge for the &lt;text> element.
      */
     public SVGTextElementBridge() {}
+
+    /**
+     * Returns 'text'.
+     */
+    public String getLocalName() {
+        return SVG_TEXT_TAG;
+    }
 
     /**
      * Creates a <tt>GraphicsNode</tt> according to the specified parameters.

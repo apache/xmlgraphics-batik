@@ -31,12 +31,19 @@ import org.w3c.dom.Node;
  * @version $Id$
  */
 public class SVGFeMergeElementBridge
-    extends SVGAbstractFilterPrimitiveElementBridge {
+    extends AbstractSVGFilterPrimitiveElementBridge {
 
     /**
      * Constructs a new bridge for the &lt;feMerge> element.
      */
     public SVGFeMergeElementBridge() {}
+
+    /**
+     * Returns 'feMerge'.
+     */
+    public String getLocalName() {
+        return SVG_FE_MERGE_TAG;
+    }
 
     /**
      * Creates a <tt>Filter</tt> primitive according to the specified
@@ -154,12 +161,19 @@ public class SVGFeMergeElementBridge
     /**
      * Bridge class for the &lt;feMergeNode> element.
      */
-    public static class SVGFeMergeNodeElementBridge implements Bridge {
+    public static class SVGFeMergeNodeElementBridge extends AbstractSVGBridge {
 
         /**
          * Constructs a new bridge for the &lt;feMergeNode> element.
          */
         public SVGFeMergeNodeElementBridge() {}
+
+        /**
+         * Returns 'feMergeNode'.
+         */
+        public String getLocalName() {
+            return SVG_FE_MERGE_NODE_TAG;
+        }
 
         /**
          * Creates a <tt>Filter</tt> according to the specified parameters.

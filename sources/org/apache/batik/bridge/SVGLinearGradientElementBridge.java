@@ -28,12 +28,19 @@ import org.w3c.dom.Element;
  * @version $Id$
  */
 public class SVGLinearGradientElementBridge
-    extends SVGAbstractGradientElementBridge {
+    extends AbstractSVGGradientElementBridge {
 
     /**
      * Constructs a new SVGLinearGradientElementBridge.
      */
     public SVGLinearGradientElementBridge() {}
+
+    /**
+     * Returns 'linearGradient'.
+     */
+    public String getLocalName() {
+        return SVG_LINEAR_GRADIENT_TAG;
+    }
 
     /**
      * Builds a linear gradient according to the specified parameters.

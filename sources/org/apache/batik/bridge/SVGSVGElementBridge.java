@@ -33,14 +33,20 @@ import org.w3c.dom.svg.SVGSVGElement;
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
-public class SVGSVGElementBridge implements GraphicsNodeBridge,
-                                            SVGConstants,
-                                            ErrorConstants {
+public class SVGSVGElementBridge extends AbstractSVGBridge
+    implements GraphicsNodeBridge, ErrorConstants {
 
     /**
      * Constructs a new bridge for the &lt;svg> element.
      */
     public SVGSVGElementBridge() {}
+
+    /**
+     * Returns 'svg'.
+     */
+    public String getLocalName() {
+        return SVG_SVG_TAG;
+    }
 
     /**
      * Creates a <tt>GraphicsNode</tt> according to the specified parameters.

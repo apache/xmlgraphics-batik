@@ -30,6 +30,13 @@ public class SVGEllipseElementBridge extends SVGShapeElementBridge {
     public SVGEllipseElementBridge() {}
 
     /**
+     * Returns 'ellipse'.
+     */
+    public String getLocalName() {
+        return SVG_ELLIPSE_TAG;
+    }
+
+    /**
      * Constructs an ellipse according to the specified parameters.
      *
      * @param ctx the bridge context to use

@@ -9,7 +9,6 @@
 package org.apache.batik.bridge;
 
 import org.apache.batik.gvt.font.HKern;
-import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
 
 /**
@@ -18,11 +17,24 @@ import org.w3c.dom.Element;
  * @author <a href="mailto:dean.jackson@cmis.csiro.au">Dean Jackson</a>
  * @version $Id$
  */
-public class SVGHKernElementBridge implements Bridge, SVGConstants, ErrorConstants {
+public class SVGHKernElementBridge extends AbstractSVGBridge {
 
-    protected SVGHKernElementBridge() {}
+    /**
+     * Constructs a new bridge for the &lt;hkern> element.
+     */
+    public SVGHKernElementBridge() {}
 
-    public HKern createHKern(BridgeContext ctx, Element hkernElement, SVGFontFace fontFace, SVGGVTFont svgGvtFont) {
+    /**
+     * Returns 'hkern'.
+     */
+    public String getLocalName() {
+        return SVG_HKERN_TAG;
+    }
+
+    public HKern createHKern(BridgeContext ctx,
+                             Element hkernElement,
+                             SVGFontFace fontFace,
+                             SVGGVTFont svgGvtFont) {
 
         String g1 = hkernElement.getAttributeNS(null, SVG_G1_ATTRIBUTE);
         String g2 = hkernElement.getAttributeNS(null, SVG_G2_ATTRIBUTE);

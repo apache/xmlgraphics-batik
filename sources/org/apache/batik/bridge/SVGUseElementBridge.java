@@ -19,7 +19,6 @@ import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.util.SVGConstants;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
@@ -35,14 +34,20 @@ import org.w3c.dom.svg.SVGSymbolElement;
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
-public class SVGUseElementBridge implements GraphicsNodeBridge,
-                                            SVGConstants,
-                                            ErrorConstants {
+public class SVGUseElementBridge extends AbstractSVGBridge
+    implements GraphicsNodeBridge, ErrorConstants {
 
     /**
      * Constructs a new bridge for the &lt;use> element.
      */
     public SVGUseElementBridge() {}
+
+    /**
+     * Returns 'use'.
+     */
+    public String getLocalName() {
+        return SVG_USE_TAG;
+    }
 
     /**
      * Creates a <tt>GraphicsNode</tt> according to the specified parameters.

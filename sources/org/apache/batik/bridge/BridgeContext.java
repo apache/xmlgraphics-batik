@@ -572,6 +572,15 @@ public class BridgeContext implements ErrorConstants {
      */
     public void putBridge(String namespaceURI, String localName,
                           Bridge bridge) {
+        // debug
+        if (!(namespaceURI.equals(bridge.getNamespaceURI())
+              && localName.equals(bridge.getLocalName()))) {
+            throw new Error("Invalid Bridge: "+
+                            namespaceURI+"/"+bridge.getNamespaceURI()+" "+
+                            localName+"/"+bridge.getLocalName()+" "+
+                            bridge.getClass());
+        }
+
         if (namespaceURIMap == null) {
             namespaceURIMap = new HashMap();
         }
@@ -774,7 +783,7 @@ public class BridgeContext implements ErrorConstants {
 
         ctx.putBridge(SVGConstants.SVG_NAMESPACE_URI,
                       SVGConstants.SVG_STOP_TAG,
-                      new SVGAbstractGradientElementBridge.SVGStopElementBridge());
+                      new AbstractSVGGradientElementBridge.SVGStopElementBridge());
 
         ctx.putBridge(SVGConstants.SVG_NAMESPACE_URI,
                       SVGConstants.SVG_SVG_TAG,
@@ -794,15 +803,15 @@ public class BridgeContext implements ErrorConstants {
 
         ctx.putBridge(SVGConstants.SVG_NAMESPACE_URI,
                       SVGConstants.SVG_FE_SPOT_LIGHT_TAG,
-                      new SVGFeAbstractLightingElementBridge.SVGFeSpotLightElementBridge());
+                      new AbstractSVGLightingElementBridge.SVGFeSpotLightElementBridge());
 
         ctx.putBridge(SVGConstants.SVG_NAMESPACE_URI,
                       SVGConstants.SVG_FE_POINT_LIGHT_TAG,
-                      new SVGFeAbstractLightingElementBridge.SVGFePointLightElementBridge());
+                      new AbstractSVGLightingElementBridge.SVGFePointLightElementBridge());
 
         ctx.putBridge(SVGConstants.SVG_NAMESPACE_URI,
                       SVGConstants.SVG_FE_DISTANT_LIGHT_TAG,
-                      new SVGFeAbstractLightingElementBridge.SVGFeDistantLightElementBridge());
+                      new AbstractSVGLightingElementBridge.SVGFeDistantLightElementBridge());
 
         ctx.putBridge(SVGConstants.SVG_NAMESPACE_URI,
                       SVGConstants.SVG_FONT_TAG,
@@ -816,11 +825,9 @@ public class BridgeContext implements ErrorConstants {
                       SVGConstants.SVG_GLYPH_TAG,
                       new SVGGlyphElementBridge());
 
-        // just use the glyph bridge for missing glyph
         ctx.putBridge(SVGConstants.SVG_NAMESPACE_URI,
                       SVGConstants.SVG_MISSING_GLYPH_TAG,
-                      new SVGGlyphElementBridge());
-
+                      new SVGMissingGlyphElementBridge());
 
         ctx.putBridge(SVGConstants.SVG_NAMESPACE_URI,
                       SVGConstants.SVG_ALT_GLYPH_TAG,

@@ -32,13 +32,20 @@ import org.w3c.dom.Element;
  * @version $Id$
  */
 public class SVGFeConvolveMatrixElementBridge
-    extends SVGAbstractFilterPrimitiveElementBridge {
+    extends AbstractSVGFilterPrimitiveElementBridge {
 
 
     /**
      * Constructs a new bridge for the &lt;feConvolveMatrix> element.
      */
     public SVGFeConvolveMatrixElementBridge() {}
+
+    /**
+     * Returns 'feConvolveMatrix'.
+     */
+    public String getLocalName() {
+        return SVG_FE_CONVOLVE_MATRIX_TAG;
+    }
 
     /**
      * Creates a <tt>Filter</tt> primitive according to the specified

@@ -31,6 +31,13 @@ public class SVGRectElementBridge extends SVGShapeElementBridge {
     public SVGRectElementBridge() {}
 
     /**
+     * Returns 'rect'.
+     */
+    public String getLocalName() {
+        return SVG_RECT_TAG;
+    }
+
+    /**
      * Constructs a rectangle according to the specified parameters.
      *
      * @param ctx the bridge context to use

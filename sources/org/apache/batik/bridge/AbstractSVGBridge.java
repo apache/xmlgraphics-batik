@@ -8,25 +8,25 @@
 
 package org.apache.batik.bridge;
 
+import org.apache.batik.util.SVGConstants;
+
 /**
- * A tagging interface that all bridges must implement. A bridge is
- * responsible on creating an appropriate object according to an Element.
+ * The base bridge class for SVG elements.
  *
- * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
+ * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
-public interface Bridge {
+public abstract class AbstractSVGBridge implements Bridge, SVGConstants {
 
     /**
-     * Returns the namespace URI of the element this <tt>Bridge</tt> is
-     * dedicated to.
+     * Constructs a new abstract bridge for SVG elements.
      */
-    String getNamespaceURI();
+    protected AbstractSVGBridge() {}
 
     /**
-     * Returns the local name of the element this <tt>Bridge</tt> is dedicated
-     * to.
+     * Returns the SVG namespace URI.
      */
-    String getLocalName();
-
+    public String getNamespaceURI() {
+        return SVG_NAMESPACE_URI;
+    }
 }

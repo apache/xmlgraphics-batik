@@ -37,12 +37,19 @@ import org.w3c.dom.svg.SVGDocument;
  * @version $Id$
  */
 public class SVGFeImageElementBridge
-    extends SVGAbstractFilterPrimitiveElementBridge {
+    extends AbstractSVGFilterPrimitiveElementBridge {
 
     /**
      * Constructs a new bridge for the &lt;feImage> element.
      */
     public SVGFeImageElementBridge() {}
+
+    /**
+     * Returns 'feImage'.
+     */
+    public String getLocalName() {
+        return SVG_FE_IMAGE_TAG;
+    }
 
     /**
      * Creates a <tt>Filter</tt> primitive according to the specified
@@ -98,7 +105,7 @@ public class SVGFeImageElementBridge
             purl = new ParsedURL(baseURL.toString(), uriStr);
         else
             purl = new ParsedURL(uriStr);
-        
+
         // try to load an SVG document
         DocumentLoader loader = ctx.getDocumentLoader();
         URIResolver resolver = new URIResolver(svgDoc, loader);
@@ -119,7 +126,7 @@ public class SVGFeImageElementBridge
         } catch (BridgeException ex) {
             throw ex;
         } catch (Exception ex) { /* Nothing to do */ }
-        
+
         if (filter == null) {
             // try to load the image as a raster image (JPG or PNG)
             filter = createRasterFeImage(ctx, primitiveRegion, purl);

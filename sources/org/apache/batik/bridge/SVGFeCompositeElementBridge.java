@@ -31,13 +31,20 @@ import org.w3c.dom.Element;
  * @version $Id$
  */
 public class SVGFeCompositeElementBridge
-    extends SVGAbstractFilterPrimitiveElementBridge {
+    extends AbstractSVGFilterPrimitiveElementBridge {
 
 
     /**
      * Constructs a new bridge for the &lt;feComposite> element.
      */
     public SVGFeCompositeElementBridge() {}
+
+    /**
+     * Returns 'feComposite'.
+     */
+    public String getLocalName() {
+        return SVG_FE_COMPOSITE_TAG;
+    }
 
     /**
      * Creates a <tt>Filter</tt> primitive according to the specified

@@ -31,12 +31,19 @@ import org.w3c.dom.Node;
  * @version $Id$
  */
 public class SVGFeComponentTransferElementBridge
-    extends SVGAbstractFilterPrimitiveElementBridge {
+    extends AbstractSVGFilterPrimitiveElementBridge {
 
     /**
      * Constructs a new bridge for the &lt;feComponentTransfer> element.
      */
     public SVGFeComponentTransferElementBridge() {}
+
+    /**
+     * Returns 'feComponentTransfer'.
+     */
+    public String getLocalName() {
+        return SVG_FE_COMPONENT_TRANSFER_TAG;
+    }
 
     /**
      * Creates a <tt>Filter</tt> primitive according to the specified
@@ -150,6 +157,12 @@ public class SVGFeComponentTransferElementBridge
          */
         public SVGFeFuncAElementBridge() {}
 
+        /**
+         * Returns 'feFuncA'.
+         */
+        public String getLocalName() {
+            return SVG_FE_FUNC_A_TAG;
+        }
     }
 
     /**
@@ -162,6 +175,12 @@ public class SVGFeComponentTransferElementBridge
          */
         public SVGFeFuncRElementBridge() {}
 
+        /**
+         * Returns 'feFuncR'.
+         */
+        public String getLocalName() {
+            return SVG_FE_FUNC_R_TAG;
+        }
     }
 
     /**
@@ -174,6 +193,12 @@ public class SVGFeComponentTransferElementBridge
          */
         public SVGFeFuncGElementBridge() {}
 
+        /**
+         * Returns 'feFuncG'.
+         */
+        public String getLocalName() {
+            return SVG_FE_FUNC_G_TAG;
+        }
     }
 
     /**
@@ -186,12 +211,19 @@ public class SVGFeComponentTransferElementBridge
          */
         public SVGFeFuncBElementBridge() {}
 
+        /**
+         * Returns 'feFuncB'.
+         */
+        public String getLocalName() {
+            return SVG_FE_FUNC_B_TAG;
+        }
     }
 
     /**
      * The base bridge class for component transfer function.
      */
-    protected static abstract class SVGFeFuncElementBridge implements Bridge {
+    protected static abstract class SVGFeFuncElementBridge
+        extends AbstractSVGBridge {
 
         /**
          * Constructs a new bridge for component transfer function.

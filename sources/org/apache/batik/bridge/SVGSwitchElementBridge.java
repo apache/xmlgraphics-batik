@@ -23,12 +23,20 @@ import org.w3c.dom.svg.SVGTests;
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
-public class SVGSwitchElementBridge implements GraphicsNodeBridge {
+public class SVGSwitchElementBridge extends AbstractSVGBridge
+    implements GraphicsNodeBridge {
 
     /**
      * Constructs a new bridge for the &lt;switch> element.
      */
     public SVGSwitchElementBridge() {}
+
+    /**
+     * Returns 'switch'.
+     */
+    public String getLocalName() {
+        return SVG_SWITCH_TAG;
+    }
 
     /**
      * Creates a <tt>GraphicsNode</tt> according to the specified parameters.

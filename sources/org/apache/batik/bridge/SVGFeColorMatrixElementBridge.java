@@ -29,12 +29,19 @@ import org.w3c.dom.Element;
  * @version $Id$
  */
 public class SVGFeColorMatrixElementBridge
-    extends SVGAbstractFilterPrimitiveElementBridge {
+    extends AbstractSVGFilterPrimitiveElementBridge {
 
     /**
      * Constructs a new bridge for the &lt;feColorMatrix> element.
      */
     public SVGFeColorMatrixElementBridge() {}
+
+    /**
+     * Returns 'feColorMatrix'.
+     */
+    public String getLocalName() {
+        return SVG_FE_COLOR_MATRIX_TAG;
+    }
 
     /**
      * Creates a <tt>Filter</tt> primitive according to the specified

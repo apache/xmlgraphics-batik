@@ -29,6 +29,13 @@ public class SVGLineElementBridge extends SVGDecoratedShapeElementBridge {
     public SVGLineElementBridge() {}
 
     /**
+     * Returns 'line'.
+     */
+    public String getLocalName() {
+        return SVG_LINE_TAG;
+    }
+
+    /**
      * Constructs a line according to the specified parameters.
      *
      * @param ctx the bridge context to use

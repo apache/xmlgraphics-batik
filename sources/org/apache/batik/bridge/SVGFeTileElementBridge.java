@@ -25,13 +25,20 @@ import org.w3c.dom.Element;
  * @version $Id$
  */
 public class SVGFeTileElementBridge
-    extends SVGAbstractFilterPrimitiveElementBridge {
+    extends AbstractSVGFilterPrimitiveElementBridge {
 
 
     /**
      * Constructs a new bridge for the &lt;feTile> element.
      */
     public SVGFeTileElementBridge() {}
+
+    /**
+     * Returns 'feTile'.
+     */
+    public String getLocalName() {
+        return SVG_FE_TILE_TAG;
+    }
 
     /**
      * Creates a <tt>Filter</tt> primitive according to the specified

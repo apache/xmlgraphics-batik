@@ -9,7 +9,6 @@
 package org.apache.batik.bridge;
 
 import org.w3c.dom.Element;
-import org.apache.batik.util.SVGConstants;
 
 /**
  * Bridge class for the &lt;font-face> element.
@@ -17,12 +16,20 @@ import org.apache.batik.util.SVGConstants;
  * @author <a href="mailto:bella.robinson@cmis.csiro.au">Bella Robinson</a>
  * @version $Id$
  */
-public class SVGFontFaceElementBridge implements Bridge, SVGConstants, ErrorConstants {
+public class SVGFontFaceElementBridge extends AbstractSVGBridge
+    implements ErrorConstants {
 
     /**
      * Constructs a new bridge for the &lt;font-face> element.
      */
     public SVGFontFaceElementBridge() {
+    }
+
+    /**
+     * Returns 'fontFace'.
+     */
+    public String getLocalName() {
+        return SVG_FONT_FACE_TAG;
     }
 
     /**

@@ -30,13 +30,20 @@ import org.w3c.dom.Element;
  * @version $Id$
  */
 public class SVGFeGaussianBlurElementBridge
-    extends SVGAbstractFilterPrimitiveElementBridge {
+    extends AbstractSVGFilterPrimitiveElementBridge {
 
 
     /**
      * Constructs a new bridge for the &lt;feGaussianBlur> element.
      */
     public SVGFeGaussianBlurElementBridge() {}
+
+    /**
+     * Returns 'feGaussianBlur'.
+     */
+    public String getLocalName() {
+        return SVG_FE_GAUSSIAN_BLUR_TAG;
+    }
 
     /**
      * Creates a <tt>Filter</tt> primitive according to the specified
