@@ -53,11 +53,11 @@ package org.apache.batik.script.rhino;
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.WeakHashMap;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.JavaScriptException;
-import org.mozilla.javascript.NativeJavaMethod;
 import org.mozilla.javascript.NativeJavaObject;
 import org.mozilla.javascript.NativeObject;
 import org.mozilla.javascript.Scriptable;
@@ -105,7 +105,7 @@ class EventTargetWrapper extends NativeJavaObject {
         }
     }
 
-    class HandleEventListener implements EventListener {
+    static class HandleEventListener implements EventListener {
         private final static String HANDLE_EVENT = "handleEvent";
 
         private Scriptable scriptable;
@@ -133,11 +133,98 @@ class EventTargetWrapper extends NativeJavaObject {
         }
     }
 
-    class RhinoNativeJavaAddMethod extends NativeJavaMethod {
-        Map listenerMap;
-        RhinoNativeJavaAddMethod(Method method, String name,
-                              Map listenerMap) {
-            super(method, name);
+    static abstract class FunctionProxy implements Function {
+        protected Function delegate;
+
+        public FunctionProxy(Function delegate) {
+            this.delegate = delegate;
+        }
+
+        public Scriptable construct(Context cx,
+                                    Scriptable scope, Object[] args)
+            throws JavaScriptException {
+            return this.delegate.construct(cx, scope, args);
+        }
+
+        public String getClassName() {
+            return this.delegate.getClassName();
+        }
+
+        public Object get(String name, Scriptable start) {
+            return this.delegate.get(name, start);
+        }
+
+        public Object get(int index, Scriptable start) {
+            return this.delegate.get(index, start);
+        }
+
+        public boolean has(String name, Scriptable start) {
+            return this.delegate.has(name, start);
+        }
+
+        public boolean has(int index, Scriptable start) {
+            return this.delegate.has(index, start);
+        }
+
+        public void put(String name, Scriptable start, Object value) {
+            this.delegate.put(name, start, value);
+        }
+
+        public void put(int index, Scriptable start, Object value) {
+            this.delegate.put(index, start, value);
+        }
+
+        public void delete(String name) {
+            this.delegate.delete(name);
+        }
+
+        public void delete(int index) {
+            this.delegate.delete(index);
+        }
+
+        public Scriptable getPrototype() {
+            return this.delegate.getPrototype();
+        }
+
+        public void setPrototype(Scriptable prototype) {
+            this.delegate.setPrototype(prototype);
+        }
+
+        public Scriptable getParentScope() {
+            return this.delegate.getParentScope();
+        }
+
+        public void setParentScope(Scriptable parent) {
+            this.delegate.setParentScope(parent);
+        }
+
+        public Object[] getIds() {
+            return this.delegate.getIds();
+        }
+
+        public Object getDefaultValue(Class hint) {
+            return this.delegate.getDefaultValue(hint);
+        }
+
+        public boolean hasInstance(Scriptable instance) {
+            return this.delegate.hasInstance(instance);
+        }
+    }
+
+    /**
+     * This function proxy is delegating most of the job
+     * to the underlying NativeJavaMethod object through
+     * the FunctionProxy. However to allow user to specify
+     * "Function" or objects with an "handleEvent" method
+     * as parameter of "addEventListener"
+     * it redefines the call method to deal with these
+     * cases.
+     */
+    static class FunctionAddProxy extends FunctionProxy {
+        private Map listenerMap;
+
+        FunctionAddProxy(Function delegate, Map listenerMap) {
+            super(delegate);
             this.listenerMap = listenerMap;
         }
 
@@ -146,7 +233,6 @@ class EventTargetWrapper extends NativeJavaObject {
             throws JavaScriptException {
             NativeJavaObject  njo = (NativeJavaObject)thisObj;
             if (args[1] instanceof Function) {
-                
                 EventListener evtListener = new FunctionEventListener
                     ((Function)args[1],
                      ((RhinoInterpreter.ExtendedContext)ctx).getInterpreter());
@@ -156,41 +242,39 @@ class EventTargetWrapper extends NativeJavaObject {
                                        Boolean.TYPE };
                 for (int i = 0; i < args.length; i++)
                     args[i] = Context.toType(args[i], paramTypes[i]);
-
-                
                 ((EventTarget)njo.unwrap()).addEventListener
                     ((String)args[0], evtListener,
                      ((Boolean)args[2]).booleanValue());
                 return Undefined.instance;
-            } 
+            }
             if (args[1] instanceof NativeObject) {
                 EventListener evtListener =
-                    new HandleEventListener((Scriptable)args[1], 
-                                             ((RhinoInterpreter.ExtendedContext)ctx).getInterpreter());
+                    new HandleEventListener((Scriptable)args[1],
+                                            ((RhinoInterpreter.ExtendedContext)
+                                             ctx).getInterpreter());
                 listenerMap.put(args[1], evtListener);
                 // we need to marshall args
                 Class[] paramTypes = { String.class, Scriptable.class,
                                        Boolean.TYPE };
                 for (int i = 0; i < args.length; i++)
                     args[i] = Context.toType(args[i], paramTypes[i]);
-
                 ((EventTarget)njo.unwrap()).addEventListener
                     ((String)args[0], evtListener,
                      ((Boolean)args[2]).booleanValue());
                 return Undefined.instance;
             }
-
-            return super.call(ctx, scope, thisObj, args);
+            return delegate.call(ctx, scope, thisObj, args);
         }
     }
 
-    static class RhinoNativeJavaRemoveMethod extends NativeJavaMethod {
-        Map listenerMap; 
-        RhinoNativeJavaRemoveMethod(Method method, String name,
-                                    Map listenerMap) {
-            super(method, name);
+    static class FunctionRemoveProxy extends FunctionProxy {
+        private Map listenerMap;
+
+        FunctionRemoveProxy(Function delegate, Map listenerMap) {
+            super(delegate);
             this.listenerMap = listenerMap;
         }
+
         public Object call(Context ctx, Scriptable scope,
                            Scriptable thisObj, Object[] args)
             throws JavaScriptException {
@@ -198,26 +282,22 @@ class EventTargetWrapper extends NativeJavaObject {
             if (args[1] instanceof Function) {
                 EventListener el;
                 el = (EventListener)listenerMap.remove(args[1]);
-                if (el == null) 
+                if (el == null)
                     return Undefined.instance;
-
                 // we need to marshall args
                 Class[] paramTypes = { String.class, Function.class,
                                        Boolean.TYPE };
                 for (int i = 0; i < args.length; i++)
                     args[i] = Context.toType(args[i], paramTypes[i]);
-
                 ((EventTarget)njo.unwrap()).removeEventListener
                     ((String)args[0], el, ((Boolean)args[2]).booleanValue());
                 return Undefined.instance;
             }
-
             if (args[1] instanceof NativeObject) {
                 EventListener el;
                 el = (EventListener)listenerMap.remove(args[1]);
-                if (el == null) 
+                if (el == null)
                     return Undefined.instance;
-
                 // we need to marshall args
                 Class[] paramTypes = { String.class, Scriptable.class,
                                        Boolean.TYPE };
@@ -228,12 +308,15 @@ class EventTargetWrapper extends NativeJavaObject {
                     ((String)args[0], el, ((Boolean)args[2]).booleanValue());
                 return Undefined.instance;
             }
-            return super.call(ctx, scope, thisObj, args);
+            return delegate.call(ctx, scope, thisObj, args);
         }
     }
 
-    private NativeJavaMethod methodadd;
-    private NativeJavaMethod methodremove;
+    // the keys are the underlying Java object, in order
+    // to remove potential memory leaks use a WeakHashMap to allow
+    // to collect entries as soon as the underlying Java object is
+    // not anymore available.
+    private static WeakHashMap mapOfListenerMap;
 
     private final static String ADD_NAME    = "addEventListener";
     private final static String REMOVE_NAME = "removeEventListener";
@@ -244,29 +327,37 @@ class EventTargetWrapper extends NativeJavaObject {
 
     EventTargetWrapper(Scriptable scope, EventTarget object) {
         super(scope, object, null);
-        try {
-            HashMap listenerMap = new HashMap(2);
-            methodadd = new RhinoNativeJavaAddMethod
-                (object.getClass().getMethod(ADD_NAME,ARGS_TYPE), 
-                 ADD_NAME, listenerMap);
-            methodremove = new RhinoNativeJavaRemoveMethod
-                (object.getClass().getMethod(REMOVE_NAME,ARGS_TYPE), 
-                 REMOVE_NAME, listenerMap);
-        } catch (NoSuchMethodException e) {
-            // should not happened
-            // we are sure the method are there as we
-            // have an EventTarget in parameter
-        }
     }
 
     /**
      * Overriden Rhino method.
      */
     public Object get(String name, Scriptable start) {
-        if (name.equals(ADD_NAME))
-            return methodadd;
-        if (name.equals(REMOVE_NAME))
-            return methodremove;
-        return super.get(name, start);
+        Object method = super.get(name, start);
+        if (name.equals(ADD_NAME)) {
+            // prevent creating a Map for all JavaScript objects
+            // when we need it only from time to time...
+            method = new FunctionAddProxy((Function)method, initMap());
+        }
+        if (name.equals(REMOVE_NAME)) {
+            // prevent creating a Map for all JavaScript objects
+            // when we need it only from time to time...
+            Map listenerMap = initMap();
+            method = new FunctionRemoveProxy((Function)method, initMap());
+        }
+        return method;
+    }
+
+    // we have to store the listenerMap in a Map because
+    // several EventTargetWrapper may be created for the exact
+    // same underlying Java object.
+    public Map initMap() {
+        Map map = null;
+        if (mapOfListenerMap == null)
+            mapOfListenerMap = new WeakHashMap(10);
+        if ((map = (Map)mapOfListenerMap.get(unwrap())) == null) {
+            mapOfListenerMap.put(unwrap(), map = new HashMap(2));
+        }
+        return map;
     }
 }
