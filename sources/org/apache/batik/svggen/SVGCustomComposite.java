@@ -52,6 +52,8 @@ public class SVGCustomComposite extends AbstractSVGConverter {
      *         composite equivalent to the input Composite.
      */
     public SVGCompositeDescriptor toSVG(Composite composite) {
+        if (composite == null)
+            throw new NullPointerException();
         SVGCompositeDescriptor compositeDesc =
             (SVGCompositeDescriptor)descMap.get(composite);
 
