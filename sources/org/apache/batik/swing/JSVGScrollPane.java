@@ -19,12 +19,9 @@ package org.apache.batik.swing;
 
 import java.awt.Rectangle;
 import java.awt.Dimension;
-import java.awt.event.MouseEvent;
 import java.awt.Component;
 import java.awt.BorderLayout;
 
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseMotionListener;
 import java.awt.event.ComponentAdapter;
 /*
 import java.awt.event.MouseWheelEvent;
@@ -36,6 +33,7 @@ import java.awt.geom.AffineTransform;
 
 import java.awt.event.ComponentEvent; 
 
+import javax.swing.BoundedRangeModel;
 import javax.swing.JScrollBar;
 import javax.swing.Box;
 import javax.swing.JPanel;
@@ -44,6 +42,10 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
 
 import org.apache.batik.bridge.ViewBox;
+import org.apache.batik.bridge.UpdateManagerListener;
+import org.apache.batik.bridge.UpdateManagerEvent;
+
+import org.apache.batik.gvt.GraphicsNode;
 
 import org.apache.batik.swing.JSVGCanvas;
 import org.apache.batik.swing.gvt.JGVTComponentListener;
@@ -84,7 +86,7 @@ public class JSVGScrollPane extends JPanel
     protected SBListener hsbListener;
     protected SBListener vsbListener;
 	
-    protected Rectangle2D.Float viewBox = null; // SVG Root element viewbox 
+    protected Rectangle2D viewBox = null; // SVG Root element viewbox 
     protected boolean ignoreScrollChange = false;
 	
 
@@ -113,13 +115,9 @@ public class JSVGScrollPane extends JPanel
         // listeners
         hsbListener = createScrollBarListener(false);
         horizontal.getModel().addChangeListener(hsbListener);
-        horizontal.addMouseListener(hsbListener);
-        horizontal.addMouseMotionListener(hsbListener);
 		
         vsbListener = createScrollBarListener(true);
         vertical.getModel().addChangeListener(vsbListener);
-        vertical.addMouseListener(vsbListener);
-        vertical.addMouseMotionListener(vsbListener);
 		
         // by default, scrollbars are not visible
         horizontalPanel.setVisible(false);
@@ -139,9 +137,10 @@ public class JSVGScrollPane extends JPanel
 		
         // canvas listeners
         ScrollListener xlistener = new ScrollListener();
-        canvas.addJGVTComponentListener(xlistener);
         this.addComponentListener(xlistener);
+        canvas.addJGVTComponentListener(xlistener);
         canvas.addGVTTreeBuilderListener(xlistener);
+        canvas.addUpdateManagerListener(xlistener);
     }// JSVGScrollPane()
 
 
@@ -266,83 +265,56 @@ public class JSVGScrollPane extends JPanel
      *  'passes through' click events. It doesn't coalesce as many
      *  events as it should, but it helps * considerably.
      */
-    protected class SBListener extends MouseAdapter 
-        implements ChangeListener, MouseMotionListener
+    protected class SBListener implements ChangeListener
     {
         // 'true' if we are in a drag (versus a click)
         protected boolean inDrag = false; 
-        // true if we are in a click
-        protected boolean inClick = false;		
+        protected int startValue;
 
         protected boolean isVertical;
-        int startValue;
 
         public SBListener(boolean vertical)
         {
             isVertical = vertical;
         }// SBListener()
 			
-			
-        public synchronized void mouseDragged(MouseEvent e)
-        {
-            inDrag = true;
-            AffineTransform at;
-            if (isVertical) {
-                int newValue = vertical.getValue();
-                at = AffineTransform.getTranslateInstance
-                    (0, startValue-newValue);
-            } else {
-                int newValue = horizontal.getValue();
-                at = AffineTransform.getTranslateInstance
-                    (startValue-newValue, 0);
-            }
-
-            canvas.setPaintingTransform(at);
-        }// mouseDragged()
-			
-			
-        public synchronized void mousePressed(MouseEvent e)
-        {
-            // we've pressed the mouse
-            inClick = true;
-            if (isVertical)
-                startValue = vertical.getValue();
-            else
-                startValue = horizontal.getValue();
-       }// mousePressed()
-			
-			
-        public synchronized void mouseReleased(MouseEvent e)
-        {
-            if(inDrag) {
-                int newValue;
-                if (isVertical) newValue = vertical.getValue();
-                else            newValue = horizontal.getValue();
-                
-                if (newValue != startValue)
-                    setScrollPosition(); // This is the 'end' of a drag
-                else
-                    canvas.setPaintingTransform(new AffineTransform());
-            }
-				
-            // reset drag indicator
-            inDrag = false;
-            inClick = false;
-        }// mouseReleased()
-			
-        public void mouseMoved(MouseEvent e)
-        {
-            // do nothing
-        }// mouseMoved()
-			
         public synchronized void stateChanged(ChangeEvent e)
         {
             // only respond to changes if we are NOT being dragged
             // and ignoreScrollChange is not set
-            if(!inDrag && !inClick && !ignoreScrollChange) {
-                //System.out.println(e);
-                //System.out.println(vertical.getModel());
-                //System.out.println(horizontal.getModel());
+            if(ignoreScrollChange) return;
+
+            Object src = e.getSource();
+            if (!(src instanceof BoundedRangeModel)) 
+                return;
+
+            int val = ((isVertical)?vertical.getValue():
+                       horizontal.getValue());
+
+            BoundedRangeModel brm = (BoundedRangeModel)src;
+            if (brm.getValueIsAdjusting()) {
+                if (!inDrag) {
+                    inDrag = true;
+                    startValue = val;
+                } else {
+                    AffineTransform at;
+                    if (isVertical) {
+                        at = AffineTransform.getTranslateInstance
+                            (0, startValue-val);
+                    } else {
+                        at = AffineTransform.getTranslateInstance
+                            (startValue-val, 0);
+                    }
+                    canvas.setPaintingTransform(at);
+                }
+            } else {
+                if (inDrag) {
+                    inDrag = false;
+                    if (val == startValue) {
+                        canvas.setPaintingTransform(new AffineTransform());
+                        return;
+                    }
+                }
                 setScrollPosition();
             }
         }// stateChanged()
@@ -352,7 +324,8 @@ public class JSVGScrollPane extends JPanel
 	
     /** Handle scroll, zoom, and resize events */
     protected class ScrollListener extends ComponentAdapter 
-        implements JGVTComponentListener, GVTTreeBuilderListener
+        implements JGVTComponentListener, GVTTreeBuilderListener, 
+                   UpdateManagerListener
     {
         protected boolean isReady = false;
 		
@@ -370,34 +343,44 @@ public class JSVGScrollPane extends JPanel
         }// componentResized()
 		
 		
+        public void gvtBuildPrepare  (GVTTreeBuilderEvent e) { 
+            isReady = false;
+        }
         public void gvtBuildCompleted(GVTTreeBuilderEvent e)
         {
             isReady = true;
+            viewBox = null;   // new document forget old viewBox if any.
             resizeScrollBars();
         }// gvtRenderingCompleted()
 		
+        public void updateCompleted(UpdateManagerEvent e) { 
+            if (viewBox == null) {
+                resizeScrollBars();
+                return;
+            }
+
+            Rectangle2D newview = getViewBoxRect();
+            if ((newview.getX() != viewBox.getX()) ||
+                (newview.getY() != viewBox.getY()) ||
+                (newview.getWidth() != viewBox.getWidth()) ||
+                (newview.getHeight() != viewBox.getHeight())) {
+                viewBox = newview;
+                resizeScrollBars();
+            }
+        }
 		
-        public void gvtBuildCancelled(GVTTreeBuilderEvent e)
-        {
-            // do nothing
-        }// gvtRenderingCancelled()
-		
-		
-        public void gvtBuildFailed(GVTTreeBuilderEvent e)
-        {
-            // do nothing
-        }// gvtRenderingFailed()
-		
-        public void gvtBuildPrepare(GVTTreeBuilderEvent e)
-        {
-            // do nothing
-        }// gvtRenderingPrepare()
-		
-        public void gvtBuildStarted(GVTTreeBuilderEvent e)
-        {
-            // do nothing
-        }// gvtRenderingStarted()
- 		
+
+        public void gvtBuildCancelled(GVTTreeBuilderEvent e) { }
+        public void gvtBuildFailed   (GVTTreeBuilderEvent e) { }
+        public void gvtBuildStarted  (GVTTreeBuilderEvent e) { }
+
+        public void managerStarted  (UpdateManagerEvent e) { }
+        public void managerSuspended(UpdateManagerEvent e) { }
+        public void managerResumed  (UpdateManagerEvent e) { }
+        public void managerStopped  (UpdateManagerEvent e) { }
+        public void updateStarted   (UpdateManagerEvent e) { }
+        public void updateFailed    (UpdateManagerEvent e) { }
+
     }// inner class ScrollListener
 	
 	
@@ -502,6 +485,7 @@ public class JSVGScrollPane extends JPanel
                 horizontalPanel.setVisible(true);
                 vertical.setVisible(true);
                 cornerBox.setVisible(true);
+
                 ret.width  = minVPW;
                 ret.height = minVPH;
             } else {
@@ -550,21 +534,32 @@ public class JSVGScrollPane extends JPanel
      */
     protected void checkAndSetViewBoxRect() {
         if (viewBox != null) return;
-        SVGDocument doc = canvas.getSVGDocument();
-        if (doc == null) return;
-        SVGSVGElement el = doc.getRootElement();
-        if (el == null) return;
 
-        String viewBoxStr = el.getAttributeNS
-            (null, SVGConstants.SVG_VIEW_BOX_ATTRIBUTE);
-        float[] rect = ViewBox.parseViewBoxAttribute(el, viewBoxStr);
-        viewBox = new Rectangle2D.Float(rect[0], rect[1], rect[2], rect[3]); 
-        
+        viewBox = getViewBoxRect();
         // System.out.println("  ** viewBox rect set: "+viewBox);
         // System.out.println("  ** doc size: "+
         //                    canvas.getSVGDocumentSize());
     }// checkAndSetViewBoxRect()
-	
+
+
+    protected Rectangle2D getViewBoxRect() {
+        SVGDocument doc = canvas.getSVGDocument();
+        if (doc == null) return null;
+        SVGSVGElement el = doc.getRootElement();
+        if (el == null) return null;
+
+        String viewBoxStr = el.getAttributeNS
+            (null, SVGConstants.SVG_VIEW_BOX_ATTRIBUTE);
+        if (viewBoxStr.length() != 0) {
+            float[] rect = ViewBox.parseViewBoxAttribute(el, viewBoxStr);
+            return new Rectangle2D.Float(rect[0], rect[1], 
+                                            rect[2], rect[3]);
+        }
+        GraphicsNode gn = canvas.getGraphicsNode();
+        if (gn == null) return null;
+
+        return (Rectangle2D)gn.getBounds().clone();
+    }
 	
     /** 
      *	Called when the scale size changes. The scale factor
