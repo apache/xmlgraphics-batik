@@ -1423,11 +1423,13 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                            TextAttribute.RUN_DIRECTION_LTR);
 		if ((cbidi & 0x1) == 1) cbidi++; // was odd now even
 		else                    cbidi+=2; // next greater even number
+                break;
             case 'r':
                 result.put(TextAttribute.RUN_DIRECTION,
                            TextAttribute.RUN_DIRECTION_RTL);
 		if ((cbidi & 0x1) == 1) cbidi+=2; // next greater odd number
 		else                    cbidi++; // was even now odd
+                break;
 	    }
 	    
 	    switch (s.charAt(0)) {
@@ -1435,6 +1437,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
 		cbidi = -cbidi; // For bidi-override we want a negative number.
 		break;
 	    }
+
 	    result.put(TextAttribute.BIDI_EMBEDDING, new Integer(cbidi));
         }
 

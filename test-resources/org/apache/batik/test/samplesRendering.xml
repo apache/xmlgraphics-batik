@@ -386,5 +386,4 @@
         <test id="samples/tests/spec/scripting/rootSizeChange.svg" />
         <test id="samples/tests/spec/scripting/rectResizeOnClick.svg" />
     </testGroup>
-
 </testSuite>
