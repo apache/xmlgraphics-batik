@@ -124,6 +124,7 @@
     <testGroup id="tests.spec.masking">
         <test id="samples/tests/spec/masking/clip.svg" />
         <test id="samples/tests/spec/masking/maskRegions.svg" />
+        <test id="samples/tests/spec/masking/clipTransform.svg" />
     </testGroup>
 
     <testGroup id="tests.spec.painting">
