@@ -108,6 +108,8 @@ public abstract class CSSEngine {
      */
     public List getFontFaces() { return fontFaces; }
 
+    CSSEngineUserAgent userAgent = null;
+
     /**
      * Returns the next stylable parent of the given element.
      */
@@ -493,6 +495,7 @@ public abstract class CSSEngine {
      * Disposes the CSSEngine and all the attached resources.
      */
     public void dispose() {
+        setCSSEngineUserAgent(null);
         disposeStyleMaps(document.getDocumentElement());
         if (document instanceof EventTarget) {
             // Detach the mutation events listeners.
@@ -593,6 +596,14 @@ public abstract class CSSEngine {
      */
     public String getPropertyName(int idx) {
         return valueManagers[idx].getPropertyName();
+    }
+
+    public void setCSSEngineUserAgent(CSSEngineUserAgent userAgent) {
+        this.userAgent = userAgent;
+    }
+
+    public CSSEngineUserAgent getCSSEngineUserAgent() {
+        return userAgent;
     }
 
     /**
@@ -733,7 +744,9 @@ public abstract class CSSEngine {
                             String s = Messages.formatMessage
                                 ("property.syntax.error.at",
                                  new Object[] { u, an, attr.getNodeValue(),m});
-                            throw new DOMException(DOMException.SYNTAX_ERR, s);
+                            DOMException de = new DOMException(DOMException.SYNTAX_ERR, s);
+                            if (userAgent == null) throw de;
+                            userAgent.displayError(de);
                         }
                     }
                 }
@@ -779,7 +792,9 @@ public abstract class CSSEngine {
                         String s = Messages.formatMessage
                             ("style.syntax.error.at",
                              new Object[] { u, styleLocalName, style, m});
-                        throw new DOMException(DOMException.SYNTAX_ERR, s);
+                        DOMException de = new DOMException(DOMException.SYNTAX_ERR, s);
+                        if (userAgent == null) throw de;
+                        userAgent.displayError(de);
                     }
                 }
             }
@@ -915,12 +930,13 @@ public abstract class CSSEngine {
      */
     public Value parsePropertyValue(CSSStylableElement elt,
                                     String prop, String value) {
+        int idx = getPropertyIndex(prop);
+        if (idx == -1) return null;
+        ValueManager vm = valueManagers[idx];
         try {
             element = elt;
             LexicalUnit lu;
-            int idx = getPropertyIndex(prop);
             lu = parser.parsePropertyValue(value);
-            ValueManager vm = valueManagers[idx];
             return vm.createValue(lu, this);
         } catch (Exception e) {
             String m = e.getMessage();
@@ -930,12 +946,14 @@ public abstract class CSSEngine {
             String s = Messages.formatMessage
                 ("property.syntax.error.at",
                  new Object[] { u, prop, value, m});
-            throw new DOMException(DOMException.SYNTAX_ERR, s);
+            DOMException de = new DOMException(DOMException.SYNTAX_ERR, s);
+            if (userAgent == null) throw de;
+            userAgent.displayError(de);
         } finally {
             element = null;
             cssBaseURI = null;
         }
-
+        return vm.getDefaultValue();
     }
 
     /**
@@ -944,14 +962,13 @@ public abstract class CSSEngine {
      */
     public StyleDeclaration parseStyleDeclaration(CSSStylableElement elt,
                                                   String value) {
+        styleDeclarationBuilder.styleDeclaration = new StyleDeclaration();
         try {
+            element = elt;
             parser.setSelectorFactory(CSSSelectorFactory.INSTANCE);
             parser.setConditionFactory(cssConditionFactory);
-            element = elt;
-            styleDeclarationBuilder.styleDeclaration = new StyleDeclaration();
             parser.setDocumentHandler(styleDeclarationBuilder);
             parser.parseStyleDeclaration(value);
-            return styleDeclarationBuilder.styleDeclaration;
         } catch (Exception e) {
             String m = e.getMessage();
             if (m == null) m = "";
@@ -959,11 +976,14 @@ public abstract class CSSEngine {
                         documentURI.toString());
             String s = Messages.formatMessage
                 ("syntax.error.at", new Object[] { u, m });
-            throw new DOMException(DOMException.SYNTAX_ERR, s);
+            DOMException de = new DOMException(DOMException.SYNTAX_ERR, s);
+            if (userAgent == null) throw de;
+            userAgent.displayError(de);
         } finally {
             element = null;
             cssBaseURI = null;
         }
+        return styleDeclarationBuilder.styleDeclaration;
     }
 
     /**
@@ -983,7 +1003,10 @@ public abstract class CSSEngine {
                         documentURI.toString());
             String s = Messages.formatMessage
                 ("syntax.error.at", new Object[] { u, m });
-            throw new DOMException(DOMException.SYNTAX_ERR, s);
+            DOMException de = new DOMException(DOMException.SYNTAX_ERR, s);
+            if (userAgent == null) throw de;
+            userAgent.displayError(de);
+            return ss;
         }
         parseStyleSheet(ss, uri);
         return ss;
@@ -1008,7 +1031,9 @@ public abstract class CSSEngine {
                         documentURI.toString());
             String s = Messages.formatMessage
                 ("syntax.error.at", new Object[] { u, m });
-            throw new DOMException(DOMException.SYNTAX_ERR, s);
+            DOMException de = new DOMException(DOMException.SYNTAX_ERR, s);
+            if (userAgent == null) throw de;
+            userAgent.displayError(de);
         }
         return ss;
     }
@@ -1023,7 +1048,10 @@ public abstract class CSSEngine {
             String s = Messages.formatMessage
                 ("syntax.error.at",
                  new Object[] { "Null Document reference", "" });
-            throw new DOMException(DOMException.SYNTAX_ERR, s);
+            DOMException de = new DOMException(DOMException.SYNTAX_ERR, s);
+            if (userAgent == null) throw de;
+            userAgent.displayError(de);
+            return;
         }
 
 	try {
@@ -1043,7 +1071,9 @@ public abstract class CSSEngine {
             if (m == null) m = "";
             String s = Messages.formatMessage
                 ("syntax.error.at", new Object[] { uri.toString(), m });
-            throw new DOMException(DOMException.SYNTAX_ERR, s);
+            DOMException de = new DOMException(DOMException.SYNTAX_ERR, s);
+            if (userAgent == null) throw de;
+            userAgent.displayError(de);
         }
     }
 
@@ -1065,7 +1095,10 @@ public abstract class CSSEngine {
                         documentURI.toString());
             String s = Messages.formatMessage
                 ("syntax.error.at", new Object[] { u, m });
-            throw new DOMException(DOMException.SYNTAX_ERR, s);
+            DOMException de = new DOMException(DOMException.SYNTAX_ERR, s);
+            if (userAgent == null) throw de;
+            userAgent.displayError(de);
+            return ss;
         }
         parseStyleSheet(ss, rules, uri);
         return ss;
@@ -1088,7 +1121,9 @@ public abstract class CSSEngine {
             String s = Messages.formatMessage
                 ("stylesheet.syntax.error",
                  new Object[] { uri.toString(), rules, m });
-            throw new DOMException(DOMException.SYNTAX_ERR, s);
+            DOMException de = new DOMException(DOMException.SYNTAX_ERR, s);
+            if (userAgent == null) throw de;
+            userAgent.displayError(de);
         }
     }
 
@@ -1725,7 +1760,9 @@ public abstract class CSSEngine {
                     String s = Messages.formatMessage
                         ("style.syntax.error.at",
                          new Object[] { u, styleLocalName, decl, m });
-                    throw new DOMException(DOMException.SYNTAX_ERR, s);
+                    DOMException de = new DOMException(DOMException.SYNTAX_ERR, s);
+                    if (userAgent == null) throw de;
+                    userAgent.displayError(de);
                 } finally {
                     element = null;
                     cssBaseURI = null;
@@ -1733,7 +1770,6 @@ public abstract class CSSEngine {
             }
 
             // Fall through
-
         case MutationEvent.REMOVAL:
             boolean removed = false;
 
@@ -2051,7 +2087,9 @@ public abstract class CSSEngine {
                 String s = Messages.formatMessage
                     ("property.syntax.error.at",
                      new Object[] { u, property, evt.getNewValue(), m });
-                throw new DOMException(DOMException.SYNTAX_ERR, s);
+                DOMException de = new DOMException(DOMException.SYNTAX_ERR, s);
+                if (userAgent == null) throw de;
+                userAgent.displayError(de);
             } finally {
                 element = null;
                 cssBaseURI = null;

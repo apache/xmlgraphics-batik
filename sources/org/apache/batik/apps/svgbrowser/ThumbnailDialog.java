@@ -131,6 +131,11 @@ public class ThumbnailDialog extends JDialog {
     /** The overlay used to display the area of interest. */
     protected AreaOfInterestOverlay overlay;
 
+    /** The overlay used to display the area of interest. */
+    protected AreaOfInterestListener aoiListener;
+
+    protected boolean interactionEnabled = true;
+
     /**
      * Constructs a new <tt>ThumbnailDialog</tt> for the specified canvas.
      *
@@ -144,8 +149,8 @@ public class ThumbnailDialog extends JDialog {
         // register listeners to maintain consistency
         this.svgCanvas = svgCanvas;
         svgCanvas.addGVTTreeRendererListener(new ThumbnailGVTListener());
-        svgCanvas.addSVGDocumentLoaderListener(new ThumbnailDocumentListener());        svgCanvas.addComponentListener(new ThumbnailCanvasComponentListener());
-
+        svgCanvas.addSVGDocumentLoaderListener(new ThumbnailDocumentListener());        
+        svgCanvas.addComponentListener(new ThumbnailCanvasComponentListener());
 
         // create the thumbnail
         svgThumbnailCanvas = new JGVTComponent();
@@ -153,10 +158,26 @@ public class ThumbnailDialog extends JDialog {
         svgThumbnailCanvas.getOverlays().add(overlay);
         svgThumbnailCanvas.setPreferredSize(new Dimension(150, 150));
         svgThumbnailCanvas.addComponentListener(new ThumbnailComponentListener());
-        AreaOfInterestListener listener = new AreaOfInterestListener();
-        svgThumbnailCanvas.addMouseListener(listener);
-        svgThumbnailCanvas.addMouseMotionListener(listener);
+        aoiListener = new AreaOfInterestListener();
+        svgThumbnailCanvas.addMouseListener(aoiListener);
+        svgThumbnailCanvas.addMouseMotionListener(aoiListener);
         getContentPane().add(svgThumbnailCanvas, BorderLayout.CENTER);
+    }
+
+    public void setInteractionEnabled(boolean b) {
+        if (b == interactionEnabled) return;
+        interactionEnabled = b;
+        if (b) {
+            svgThumbnailCanvas.addMouseListener      (aoiListener);
+            svgThumbnailCanvas.addMouseMotionListener(aoiListener);
+        } else {
+            svgThumbnailCanvas.removeMouseListener      (aoiListener);
+            svgThumbnailCanvas.removeMouseMotionListener(aoiListener);
+        }
+    }
+
+    public boolean getInteractionEnabled() {
+        return interactionEnabled;
     }
 
     /**

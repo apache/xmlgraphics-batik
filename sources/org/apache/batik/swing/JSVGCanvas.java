@@ -277,7 +277,27 @@ public class JSVGCanvas extends JSVGComponent {
         actionMap.put(RESET_TRANSFORM_ACTION, new ResetTransformAction());
     }
 
-    /**
+    public void setDisableInteractions(boolean b) {
+        super.setDisableInteractions(b);
+        ActionMap actionMap = getActionMap();
+
+        actionMap.get(SCROLL_RIGHT_ACTION)     .setEnabled(!b);
+        actionMap.get(SCROLL_LEFT_ACTION)      .setEnabled(!b);
+        actionMap.get(SCROLL_UP_ACTION)        .setEnabled(!b);
+        actionMap.get(SCROLL_DOWN_ACTION)      .setEnabled(!b);
+
+        actionMap.get(FAST_SCROLL_RIGHT_ACTION).setEnabled(!b);
+        actionMap.get(FAST_SCROLL_LEFT_ACTION) .setEnabled(!b);
+        actionMap.get(FAST_SCROLL_UP_ACTION)   .setEnabled(!b);
+        actionMap.get(FAST_SCROLL_DOWN_ACTION) .setEnabled(!b);
+
+        actionMap.get(ZOOM_IN_ACTION)          .setEnabled(!b);
+        actionMap.get(ZOOM_OUT_ACTION)         .setEnabled(!b);
+        actionMap.get(RESET_TRANSFORM_ACTION)  .setEnabled(!b);
+    }
+
+
+        /**
      * Builds the InputMap of this canvas with a set of predefined
      * <tt>Action</tt>s.
      */

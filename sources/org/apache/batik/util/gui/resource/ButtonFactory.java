@@ -218,6 +218,21 @@ public class ButtonFactory extends ResourceManager {
      */
     private void initializeButton(AbstractButton b, String name)
 	throws ResourceFormatException, MissingListenerException {
+        // Action
+	try {
+	    Action a = actions.getAction(getString(name+ACTION_SUFFIX));
+	    if (a == null) {
+		throw new MissingListenerException("", "Action",
+                                                   name+ACTION_SUFFIX);
+	    }
+	    b.setAction(a);
+            b.setText(getString(name+TEXT_SUFFIX));
+	    if (a instanceof JComponentModifier) {
+		((JComponentModifier)a).addJComponent(b);
+	    }
+	} catch (MissingResourceException e) {
+	}
+
 	// Icon
 	try {
 	    String s = getString(name+ICON_SUFFIX);
@@ -237,20 +252,6 @@ public class ButtonFactory extends ResourceManager {
 		throw new ResourceFormatException("Malformed mnemonic",
 						  bundle.getClass().getName(),
 						  name+MNEMONIC_SUFFIX);
-	    }
-	} catch (MissingResourceException e) {
-	}
-
-        // Action
-	try {
-	    Action a = actions.getAction(getString(name+ACTION_SUFFIX));
-	    if (a == null) {
-		throw new MissingListenerException("", "Action",
-                                                   name+ACTION_SUFFIX);
-	    }
-	    b.addActionListener(a);
-	    if (a instanceof JComponentModifier) {
-		((JComponentModifier)a).addJComponent(b);
 	    }
 	} catch (MissingResourceException e) {
 	}

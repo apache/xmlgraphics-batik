@@ -211,7 +211,7 @@ public class JGVTComponent extends JComponent {
     protected boolean suspendInteractions;
 
     /**
-     * Whether to inconditionally disable interactions.
+     * Whether to unconditionally disable interactions.
      */
     protected boolean disableInteractions;
 
@@ -250,6 +250,14 @@ public class JGVTComponent extends JComponent {
                 }
             });
 
+    }
+
+    public void setDisableInteractions(boolean b) {
+        disableInteractions = b;
+    }
+
+    public boolean getDisableInteractions() {
+        return disableInteractions;
     }
 
     /**

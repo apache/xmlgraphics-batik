@@ -588,6 +588,18 @@ public class JSVGViewerFrame
                         JSVGViewerFrame.this.pack();
                     }
                 }
+
+                public void setDisableInteractions(boolean b) {
+                    super.setDisableInteractions(b);
+
+                    // Disable/Enable all our different ways to adjust the
+                    // rendering transform (menus, toolbar, thumbnail, keyboard).
+
+                    ((Action)listeners.get(SET_TRANSFORM_ACTION)) .setEnabled(!b);
+
+                    if (thumbnailDialog != null)
+                        thumbnailDialog.setInteractionEnabled(!b);
+                }
             };
         
         javax.swing.ActionMap map = svgCanvas.getActionMap();
@@ -1786,6 +1798,8 @@ public class JSVGViewerFrame
                 thumbnailDialog.setLocation(fr.x + (fr.width  - td.width) / 2,
                                             fr.y + (fr.height - td.height) / 2);
             }
+            thumbnailDialog.setInteractionEnabled
+                (!svgCanvas.getDisableInteractions());
             thumbnailDialog.show();
         }
     }

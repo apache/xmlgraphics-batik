@@ -57,6 +57,8 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -71,12 +73,14 @@ import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.RunnableQueue;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLResourceDescriptor;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
+import org.w3c.dom.events.MutationEvent;
 import org.w3c.dom.svg.SVGDocument;
 
 /**
@@ -100,6 +104,60 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
     protected final static String FRAGMENT_SUFFIX =
         "</svg>";
 
+    public final static String [] SVG_EVENT_ATTRS = {
+        "onabort",     // SVG element
+        "onerror",     // SVG element
+        "onresize",    // SVG element
+        "onscroll",    // SVG element
+        "onunload",    // SVG element
+        "onzoom",      // SVG element
+        
+        "onbegin",     // SMIL
+        "onend",       // SMIL
+        "onrepeat",    // SMIL
+
+        "onfocusin",   // UI Events 
+        "onfocusout",  // UI Events
+        "onactivate",  // UI Events
+        "onclick",     // UI Events
+
+        "onmousedown", // UI Events
+        "onmouseup",   // UI Events
+        "onmouseover", // UI Events
+        "onmouseout",  // UI Events
+        "onmousemove", // UI Events
+
+        "onkeypress",  // UI Events
+        "onkeydown",   // UI Events
+        "onkeyup"      // UI Events 
+    };
+
+    public final static String [] SVG_DOM_EVENT = {
+        "SVGAbort",    // SVG element
+        "SVGError",    // SVG element
+        "SVGResize",   // SVG element
+        "SVGScroll",   // SVG element
+        "SVGUnload",   // SVG element
+        "SVGZoom",     // SVG element
+        
+        "beginEvent",  // SMIL
+        "endEvent",    // SMIL
+        "repeatEvent", // SMIL
+
+        "DOMFocusIn",  // UI Events 
+        "DOMFocusOut", // UI Events
+        "DOMActivate", // UI Events
+        "click",       // UI Events
+        "mousedown",   // UI Events
+        "mouseup",     // UI Events
+        "mouseover",   // UI Events
+        "mouseout",    // UI Events
+        "mousemove",   // UI Events
+        "keypress",    // UI Events
+        "keydown",     // UI Events
+        "keyup"        // UI Events 
+    };
+
     /**
      * The timer for periodic or delayed tasks.
      */
@@ -118,12 +176,20 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
     /**
      * The DOMNodeInserted event listener.
      */
-    protected EventListener domNodeInsertedListener;
+    protected EventListener domNodeInsertedListener 
+        = new DOMNodeInsertedListener();
 
     /**
      * The DOMNodeRemoved event listener.
      */
-    protected EventListener domNodeRemovedListener;
+    protected EventListener domNodeRemovedListener
+        = new DOMNodeRemovedListener();
+
+    /**
+     * The DOMAttrModified event listener.
+     */
+    protected EventListener domAttrModifiedListener 
+        = new DOMAttrModifiedListener();
 
     /**
      * The SVGAbort event listener.
@@ -251,7 +317,43 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
     protected EventListener keyupListener =
         new ScriptingEventListener("onkeyup");
 
+    
+    protected EventListener [] listeners = {
+        svgAbortListener,
+        svgErrorListener,
+        svgResizeListener,
+        svgScrollListener,
+        svgUnloadListener,
+        svgZoomListener,
 
+        beginListener,
+        endListener,
+        repeatListener,
+
+        focusinListener,
+        focusoutListener,
+        activateListener,
+        clickListener,
+
+        mousedownListener,
+        mouseupListener,
+        mouseoverListener,
+        mouseoutListener,
+        mousemoveListener,
+
+        keypressListener,
+        keydownListener,
+        keyupListener
+    };
+
+    Map attrToDOMEvent = new HashMap(SVG_EVENT_ATTRS.length);
+    Map attrToListener = new HashMap(SVG_EVENT_ATTRS.length);
+    {
+        for (int i=0; i<SVG_EVENT_ATTRS.length; i++) {
+            attrToDOMEvent.put(SVG_EVENT_ATTRS[i], SVG_DOM_EVENT[i]);
+            attrToListener.put(SVG_EVENT_ATTRS[i], listeners[i]);
+        }
+    }
 
     /**
      * Creates a new ScriptingEnvironment.
@@ -267,13 +369,14 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
 
         // Add the listeners responsible of updating the event attributes
         EventTarget et = (EventTarget)document;
-        domNodeInsertedListener = new DOMNodeInsertedListener();
         et.addEventListener("DOMNodeInserted",
                             domNodeInsertedListener,
                             false);
-        domNodeRemovedListener = new DOMNodeRemovedListener();
-        et.addEventListener("DOMAttrRemoved",
+        et.addEventListener("DOMNodeRemoved",
                             domNodeRemovedListener,
+                            false);
+        et.addEventListener("DOMAttrModified",
+                            domAttrModifiedListener,
                             false);
     }
 
@@ -322,8 +425,11 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
         et.removeEventListener("DOMNodeInserted",
                                domNodeInsertedListener,
                                false);
-        et.removeEventListener("DOMAttrRemoved",
+        et.removeEventListener("DOMNodeRemoved",
                                domNodeRemovedListener,
+                               false);
+        et.removeEventListener("DOMAttrModified",
+                               domAttrModifiedListener,
                                false);
     }
 
@@ -500,6 +606,21 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
             removeScriptingListeners(n);
         }
     }
+
+    /**
+     * Updates the registration of a listener on the given element.
+     */
+    protected void updateScriptingListeners(Element elt, String attr) {
+        String        domEvt   = (String)       attrToDOMEvent.get(attr);
+        if (domEvt == null) return;  // Not an event attr.
+        EventListener listener = (EventListener)attrToListener.get(attr);
+        EventTarget   target   = (EventTarget)  elt;
+        if (elt.hasAttributeNS(null, attr))
+            target.addEventListener(domEvt, listener, false);
+        else
+            target.removeEventListener(domEvt, listener, false);
+    }
+    
 
     /**
      * To interpret a script.
@@ -720,7 +841,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
          * org.apache.batik.script.Window#parseXML(String,Document)}.
          */
         public Node parseXML(String text, Document doc) {
-            // System.out.println("Text: " + text);
+            // System.err.println("Text: " + text);
             // Try and parse it as an SVGDocument
             SAXSVGDocumentFactory df = new SAXSVGDocumentFactory
                 (XMLResourceDescriptor.getXMLParserClassName());
@@ -942,6 +1063,15 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
     protected class DOMNodeRemovedListener implements EventListener {
         public void handleEvent(Event evt) {
             removeScriptingListeners((Node)evt.getTarget());
+        }
+    }
+
+    protected class DOMAttrModifiedListener implements EventListener {
+        public void handleEvent (Event evt) {
+            MutationEvent me = (MutationEvent)evt;
+            if (me.getAttrChange() != MutationEvent.MODIFICATION)
+                updateScriptingListeners((Element)me.getTarget(),
+                                         me.getAttrName());
         }
     }
 
