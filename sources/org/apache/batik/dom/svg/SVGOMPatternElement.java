@@ -105,6 +105,14 @@ public class SVGOMPatternElement
     }
 
     /**
+     * <b>DOM</b>: Implements {@link
+     * org.w3c.dom.svg.SVGPatternElement#getPatternContentUnits()}.
+     */
+    public SVGAnimatedEnumeration getPatternContentUnits() {
+        throw new RuntimeException(" !!! TODO: SVGOMPatternElement.getPatternUnits()");
+    }
+
+    /**
      * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGPatternElement#getX()}.
      */
     public SVGAnimatedLength getX() {

@@ -11,6 +11,7 @@ public interface SVGPatternElement extends
                SVGFitToViewBox,
                SVGUnitTypes {
   public SVGAnimatedEnumeration   getPatternUnits( );
+  public SVGAnimatedEnumeration   getPatternContentUnits( );
   public SVGAnimatedTransformList getPatternTransform( );
   public SVGAnimatedLength        getX( );
   public SVGAnimatedLength        getY( );

@@ -319,7 +319,7 @@ public class SVGOMSVGElement
     public boolean       checkEnclosure ( SVGElement element, SVGRect rect ) {
         throw new Error();
     }
-    public void          deSelectAll (  ) {
+    public void          deselectAll (  ) {
         throw new Error();
     }
 

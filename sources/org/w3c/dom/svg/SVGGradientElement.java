@@ -5,6 +5,7 @@ public interface SVGGradientElement extends
                SVGElement,
                SVGURIReference,
                SVGExternalResourcesRequired,
+               SVGStylable,
                SVGUnitTypes {
   // Spread Method Types
   public static final short SVG_SPREADMETHOD_UNKNOWN = 0;

@@ -38,6 +38,8 @@ import org.apache.batik.bridge.GraphicsNodeBridge;
 import org.apache.batik.bridge.ViewBox;
 import org.apache.batik.bridge.UserAgent;
 
+import org.apache.batik.dom.util.XLinkSupport;
+
 import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.apache.batik.dom.svg.SVGOMDocument;
 
@@ -822,7 +824,7 @@ public class JSVGComponent extends JGVTComponent {
          * @param elt The activated link element.
          */
         public void openLink(SVGAElement elt) {
-            String show = elt.getXlinkShow();
+            String show = XLinkSupport.getXLinkShow(elt);
             String href = elt.getHref().getBaseVal();
 
             if (show.equals("new")) {

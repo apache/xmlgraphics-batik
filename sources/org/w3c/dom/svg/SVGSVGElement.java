@@ -61,7 +61,7 @@ public interface SVGSVGElement extends
   public NodeList      getEnclosureList ( SVGRect rect, SVGElement referenceElement );
   public boolean       checkIntersection ( SVGElement element, SVGRect rect );
   public boolean       checkEnclosure ( SVGElement element, SVGRect rect );
-  public void          deSelectAll (  );
+  public void          deselectAll (  );
   public SVGNumber              createSVGNumber (  );
   public SVGLength              createSVGLength (  );
   public SVGAngle               createSVGAngle (  );
@@ -70,6 +70,5 @@ public interface SVGSVGElement extends
   public SVGRect                createSVGRect (  );
   public SVGTransform           createSVGTransform (  );
   public SVGTransform     createSVGTransformFromMatrix ( SVGMatrix matrix );
-  public String              createSVGString (  );
   public Element         getElementById ( String elementId );
 }

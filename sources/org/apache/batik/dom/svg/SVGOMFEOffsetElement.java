@@ -84,11 +84,11 @@ public class SVGOMFEOffsetElement
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGFEOffsetElement#getDx()}.
      */
-    public SVGAnimatedLength getDx() {
-	SVGAnimatedLength result;
+    public SVGAnimatedNumber getDx() {
+	SVGAnimatedNumber result;
 	if (dxReference == null ||
-	    (result = (SVGAnimatedLength)dxReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, SVG_DX_ATTRIBUTE, null);
+	    (result = (SVGAnimatedNumber)dxReference.get()) == null) {
+	    result = new SVGOMAnimatedNumber(this, null, SVG_DX_ATTRIBUTE, null);
 	    dxReference = new WeakReference(result);
 	}
 	return result;
@@ -98,11 +98,11 @@ public class SVGOMFEOffsetElement
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGFEOffsetElement#getDy()}.
      */
-    public SVGAnimatedLength getDy() {
-	SVGAnimatedLength result;
+    public SVGAnimatedNumber getDy() {
+	SVGAnimatedNumber result;
 	if (dyReference == null ||
-	    (result = (SVGAnimatedLength)dyReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, SVG_DY_ATTRIBUTE, null);
+	    (result = (SVGAnimatedNumber)dyReference.get()) == null) {
+	    result = new SVGOMAnimatedNumber(this, null, SVG_DY_ATTRIBUTE, null);
 	    dyReference = new WeakReference(result);
 	}
 	return result;
