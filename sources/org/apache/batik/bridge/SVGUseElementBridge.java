@@ -255,48 +255,50 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
             } else {
                 // Remove event listeners
                 EventTarget target = l.target;
-                target.removeEventListener("DOMAttrModified",
-                                           l,
-                                           true);
-                
-                target.removeEventListener("DOMNodeInserted",
-                                           l,
-                                           true);
-                
-                target.removeEventListener("DOMNodeRemoved",
-                                           l,
-                                           true);
-                
-                target.removeEventListener("DOMCharacterDataModified",
-                                           l,
-                                           true);
+                target.removeEventListener("DOMAttrModified", l, true);
+                target.removeEventListener("DOMNodeInserted", l, true);
+                target.removeEventListener("DOMNodeRemoved", l, true);
+                target.removeEventListener("DOMCharacterDataModified",l, true);
             }
         
             EventTarget target = (EventTarget)refElement;
             l.target = target;
             
-            target.addEventListener("DOMAttrModified",
-                                    l,
-                                    true);
+            target.addEventListener("DOMAttrModified", l, true);
             ctx.storeEventListener(target, "DOMAttrModified", l, true);
             
-            target.addEventListener("DOMNodeInserted",
-                                    l,
-                                    true);
+            target.addEventListener("DOMNodeInserted", l, true);
             ctx.storeEventListener(target, "DOMNodeInserted", l, true);
             
-            target.addEventListener("DOMNodeRemoved",
-                                    l,
-                                    true);
+            target.addEventListener("DOMNodeRemoved", l, true);
             ctx.storeEventListener(target, "DOMNodeRemoved", l, true);
             
-            target.addEventListener("DOMCharacterDataModified",
-                                    l,
-                                    true);
-            ctx.storeEventListener(target, "DOMCharacterDataModified", l, true);
+            target.addEventListener("DOMCharacterDataModified", l, true);
+            ctx.storeEventListener
+                (target, "DOMCharacterDataModified", l, true);
         }
         
         return gn;
+    }
+
+    public void dispose() {
+        SVGOMUseElement ue = (SVGOMUseElement)e;
+        if ((ue != null) &&
+            (ue.getCSSImportedElementRoot() != null)) {
+            disposeTree(ue.getCSSImportedElementRoot());
+        }
+
+        super.dispose();
+
+        if (l == null) 
+            return;
+        // Remove event listeners
+        EventTarget target = l.target;
+        target.removeEventListener("DOMAttrModified", l, true);
+        target.removeEventListener("DOMNodeInserted", l, true);
+        target.removeEventListener("DOMNodeRemoved", l,true);
+        target.removeEventListener("DOMCharacterDataModified", l, true);
+        l = null;
     }
 
     /**

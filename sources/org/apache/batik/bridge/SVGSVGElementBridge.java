@@ -225,8 +225,7 @@ public class SVGSVGElementBridge extends SVGGElementBridge {
         }
 
         ctx.openViewport
-            (e, new SVGSVGElementViewport((SVGSVGElement)e,
-                                          actualWidth,
+            (e, new SVGSVGElementViewport(actualWidth,
                                           actualHeight));
         return cgn;
     }
@@ -403,7 +402,6 @@ public class SVGSVGElementBridge extends SVGGElementBridge {
         }
 
         if (rebuild) {
-            System.err.println("REbuild");
             CompositeGraphicsNode gn = node.getParent();
             gn.remove(node);
             disposeTree(e);
@@ -416,8 +414,6 @@ public class SVGSVGElementBridge extends SVGGElementBridge {
      * A viewport defined an &lt;svg> element.
      */
     public static class SVGSVGElementViewport implements Viewport {
-
-        private SVGSVGElement e;
         private float width;
         private float height;
 
@@ -427,8 +423,7 @@ public class SVGSVGElementBridge extends SVGGElementBridge {
          * @param w the width of the viewport
          * @param h the height of the viewport
          */
-        public SVGSVGElementViewport(SVGSVGElement e, float w, float h) {
-            this.e = e;
+        public SVGSVGElementViewport(float w, float h) {
             this.width = w;
             this.height = h;
         }

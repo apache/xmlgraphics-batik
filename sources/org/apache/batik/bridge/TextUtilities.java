@@ -252,6 +252,16 @@ public abstract class TextUtilities implements CSSConstants, ErrorConstants {
             return TextAttribute.WEIGHT_SEMIBOLD;
         default:
             return TextAttribute.WEIGHT_BOLD;
+            /* Would like to do this but the JDK 1.3 & 1.4
+               seems to drop back to 'REGULAR' instead of 'BOLD'
+               if there is not a match.
+        case 700:
+            return TextAttribute.WEIGHT_HEAVY;
+        case 800:
+            return TextAttribute.WEIGHT_EXTRABOLD;
+        case 900:
+            return TextAttribute.WEIGHT_ULTRABOLD;
+            */
         }
     }
 

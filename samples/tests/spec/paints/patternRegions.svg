@@ -151,25 +151,30 @@
         <!-- patternUnits : userSpaceOnUse                  -->
         <!-- patternContentUnits : objectBoundingBox        -->
         <!-- viewBox : set                                  -->
+        <!-- Note patternContentUnits is ignored if viewBox -->
+        <!-- is set.                                        -->
         <!-- ============================================== -->
         <pattern id="pattern7" 
                  patternUnits="userSpaceOnUse" 
                  patternContentUnits="objectBoundingBox"
                  x="0" y="0" width="30" height="15" 
                  viewBox="10 10 40 30" preserveAspectRatio="none">
-            <circle cx=".25" cy=".333" r="1" style="fill:red" />
+            <circle cx="20" cy="20" r="20" style="fill:red" />
         </pattern>
 
         <!-- ============================================== -->
         <!-- patternUnits : userSpaceOnUse                  -->
         <!-- patternContentUnits : objectBoundingBox        -->
         <!-- viewBox : set                                  -->
+        <!-- Note patternContentUnits is ignored if viewBox -->
+        <!-- is set.                                        -->
         <!-- ============================================== -->
         <pattern id="pattern8" 
                  patternUnits="userSpaceOnUse" 
                  patternContentUnits="objectBoundingBox"
-                 x="0" y="0" width="30" height="15" viewBox="10 10 40 40" preserveAspectRatio="xMinYMin meet">
-            <circle cx=".25" cy=".333" r="1" style="fill:red" />
+                 x="0" y="0" width="30" height="15" 
+                 viewBox="10 10 40 30" preserveAspectRatio="xMinYMin meet">
+            <circle cx="20" cy="20" r="20" style="fill:red" />
         </pattern>
 
         <radialGradient id="redToYellow" >
@@ -181,12 +186,14 @@
         <!-- patternUnits : userSpaceOnUse                  -->
         <!-- patternContentUnits : userSpaceOnUse           -->
         <!-- viewBox : set                                  -->
+        <!-- Note patternContentUnits is ignored if viewBox -->
+        <!-- is set.                                        -->
         <!-- ============================================== -->
         <pattern id="pattern9" 
                  patternUnits="userSpaceOnUse" 
                  patternContentUnits="objectBoundingBox" overflow="visible"
                  x="0" y="0" width="30" height="15" viewBox="10 10 40 40" preserveAspectRatio="xMinYMin slice">
-            <circle cx=".25" cy=".333" r="1" style="fill:url(#redToYellow)" />
+            <circle cx="20" cy="20" r="40" style="fill:url(#redToYellow)" />
         </pattern>
 
     </defs>
