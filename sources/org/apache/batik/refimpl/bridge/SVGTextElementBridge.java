@@ -75,6 +75,16 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
         //
         // Load all fonts. Work around
         //
+	/* Note to maintainer:  font init code should not be here!
+	 * we should not have dependencies in the Bridge
+	 * on java2d Fonts - they are not relevant to non-rasterizing
+	 * renderers!
+	 * We should instead support a list of fonts, in order of preference,
+	 * as CSS allows, and defer resolving these names to actual
+	 * implementation-dependent font names until render time.
+	 *
+	 *                -Bill Haneman
+	 */
         GraphicsEnvironment env;
         env = GraphicsEnvironment.getLocalGraphicsEnvironment();
         System.out.println("Initializing fonts .... please wait");
@@ -332,8 +342,12 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                 switch (c) {
                 case 10:
                 case 13:
-                    space = false;
-                    break;
+                    // I don't think behavior below is correct for tspan...
+		    // including "space = false" means that newlines
+		    // cause leading whitespace on next line to turn into
+		    // a single space!
+                    //space = false;
+                    //break; shouldn't break, newlines are whitespace also
                 case ' ':
                 case '\t':
                     if (!space) {
@@ -367,7 +381,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                         }
                     }
                 }
-            }
+             }
         }
         if (sb.length() > 0) {
             return new AttributedString(sb.toString(), m);
@@ -395,7 +409,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                                                 cssDecl,
                                                 uctx);
 
-        fs = Math.round(fs * ctx.getUserAgent().getPixelToMM() * 72f / 25.4f);
+        fs = fs * ctx.getUserAgent().getPixelToMM() * 72f / 25.4f;
 
         result.put(TextAttribute.SIZE, new Float(fs));
 
@@ -520,6 +534,41 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                        TextAttribute.WIDTH_REGULAR);
         }
 
+        // Fill
+        Paint p = CSSUtilities.convertFillToPaint((SVGElement)element,
+                                                  node,
+                                                  ctx,
+                                                  cssDecl,
+                                                  uctx);
+
+        if (p != null) {
+            result.put(TextAttribute.FOREGROUND, p);
+        }
+
+        // Stroke Paint
+        Paint sp = CSSUtilities.convertStrokeToPaint((SVGElement)element,
+                                              node,
+                                              ctx,
+                                              cssDecl,
+                                              uctx);
+
+        if (sp != null) {
+            result.put
+                (GVTAttributedCharacterIterator.TextAttribute.STROKE_PAINT, sp);
+        }
+
+        // Stroke
+        Stroke stroke
+            = CSSUtilities.convertStrokeToBasicStroke((SVGElement)element,
+                                                      ctx,
+                                                      cssDecl,
+                                                      uctx);
+
+        if(stroke != null){
+            result.put(GVTAttributedCharacterIterator.TextAttribute.STROKE,
+                       stroke);
+        }
+
         // Text decoration
         CSSValue cssVal = cssDecl.getPropertyCSSValue
             (TEXT_DECORATION_PROPERTY);
@@ -531,8 +580,20 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                 s = v.getStringValue();
                 switch (s.charAt(0)) {
                 case 'u':
-                    result.put(TextAttribute.UNDERLINE,
-                               TextAttribute.UNDERLINE_ON);
+                    result.put(GVTAttributedCharacterIterator.TextAttribute.UNDERLINE,
+                               GVTAttributedCharacterIterator.TextAttribute.UNDERLINE_ON);
+       		    if (sp != null) {
+			result.put(GVTAttributedCharacterIterator.
+				   TextAttribute.UNDERLINE_STROKE_PAINT, sp);
+		    }
+		    if (stroke != null) {
+			result.put(GVTAttributedCharacterIterator.
+				   TextAttribute.UNDERLINE_STROKE, stroke);
+		    }
+		    if (p != null) {
+			result.put(GVTAttributedCharacterIterator.
+				   TextAttribute.UNDERLINE_PAINT, p);
+		    }
                     break;
                 case 'o':
                     // !!! overline
@@ -544,38 +605,10 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
             }
         }
 
-        // Fill
-        Paint p = CSSUtilities.convertFillToPaint((SVGElement)element,
-                                                  node,
-                                                  ctx,
-                                                  cssDecl,
-                                                  uctx);
-        if (p != null) {
-            result.put(TextAttribute.FOREGROUND, p);
-        }
-
-        // Stroke Paint
-        p = CSSUtilities.convertStrokeToPaint((SVGElement)element,
-                                              node,
-                                              ctx,
-                                              cssDecl,
-                                              uctx);
-        if (p != null) {
-            result.put
-                (GVTAttributedCharacterIterator.TextAttribute.STROKE_PAINT, p);
-        }
-
-        // Stroke
-        Stroke stroke
-            = CSSUtilities.convertStrokeToBasicStroke((SVGElement)element,
-                                                      ctx,
-                                                      cssDecl,
-                                                      uctx);
-        if(stroke != null){
-            result.put(GVTAttributedCharacterIterator.TextAttribute.STROKE,
-                       stroke);
-        }
-
         return result;
     }
 }
+
+
+
+

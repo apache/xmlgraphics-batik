@@ -11,12 +11,14 @@ package org.apache.batik.refimpl.gvt.renderer;
 import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.Stroke;
+import java.awt.BasicStroke;
 import java.awt.font.FontRenderContext;
 import java.awt.font.TextAttribute;
 import java.awt.font.TextLayout;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.text.AttributedCharacterIterator;
+import java.text.AttributedString;
 import java.text.CharacterIterator;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -53,11 +55,19 @@ public class StrokingTextPainter extends BasicTextPainter {
 
         Set extendedAtts = new HashSet();
         List textRuns = new ArrayList();
-        float advance = 0f;
+        double advance = 0d;
         extendedAtts.add(
                 GVTAttributedCharacterIterator.TextAttribute.STROKE);
 	extendedAtts.add(
 		GVTAttributedCharacterIterator.TextAttribute.STROKE_PAINT);
+	extendedAtts.add(
+		GVTAttributedCharacterIterator.TextAttribute.UNDERLINE);
+	extendedAtts.add(
+		GVTAttributedCharacterIterator.TextAttribute.UNDERLINE_STROKE);
+	extendedAtts.add(
+		GVTAttributedCharacterIterator.TextAttribute.UNDERLINE_PAINT);
+	extendedAtts.add(
+		GVTAttributedCharacterIterator.TextAttribute.UNDERLINE_STROKE_PAINT);
         aci.first();
         /*
          * We iterate through the spans over extended attributes,
@@ -65,8 +75,8 @@ public class StrokingTextPainter extends BasicTextPainter {
          * accumulate an overall advance for the text display.
          */
         while (aci.current() != CharacterIterator.DONE) {
-            float x = 0f;
-            float y = 0f;
+            double x = 0d;
+            double y = 0d;
             /*
              * note that these can be superseded by X, Y attributes
              * but this hasn't been implemented yet
@@ -78,21 +88,27 @@ public class StrokingTextPainter extends BasicTextPainter {
                     new AttributedCharacterSpanIterator(aci, start, end);
 	    
             TextLayout layout = new TextLayout(runaci, frc);
+	    if (layout.isVertical()) {
+		AttributedString as = new AttributedString(runaci);
+		as.addAttribute(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
+		runaci = as.getIterator();
+	    }
             TextRun run = new TextRun(layout, runaci);
+
             textRuns.add(run);
 
-            advance += layout.getAdvance();
+            advance += (double) layout.getAdvance();
 
             // FIXME: not BIDI compliant yet!
 
             aci.setIndex(end);
         }
 
-        float x = 0f;
+        double x = 0d;
 
         switch(anchor.getType()){
         case TextNode.Anchor.ANCHOR_MIDDLE:
-            x = -advance/2;
+            x = -advance/2d;
             break;
         case TextNode.Anchor.ANCHOR_END:
             x = -advance;
@@ -107,8 +123,19 @@ public class StrokingTextPainter extends BasicTextPainter {
             TextRun textRun = (TextRun) textRuns.get(i);
             AttributedCharacterIterator runaci = textRun.getACI();
             runaci.first();
-
-            // check if we need to fill this glyph
+	    System.out.println("Painting text: ("+i+") "+runaci);
+	    for (int j=runaci.getBeginIndex(); j<runaci.getEndIndex(); ++j) {
+		System.out.print(runaci.setIndex(j));
+	    }
+	    System.out.println("");
+	    runaci.first();
+	    boolean underline = 
+		(runaci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.UNDERLINE) != null);
+	    // paint underline first, then layer glyphs over it
+	    if (underline && !textRun.getLayout().isVertical()) {
+		paintUnderline(textRun, location, x, g2d);
+	    }            
+	    // check if we need to fill this glyph
             Paint paint = (Paint) runaci.getAttribute(TextAttribute.FOREGROUND);
             if (paint != null) {
                 textRun.getLayout().draw(g2d, 
@@ -124,13 +151,53 @@ public class StrokingTextPainter extends BasicTextPainter {
                                         location.getX() + x, location.getY());
                 g2d.setStroke(stroke);
                 g2d.setPaint(paint);
-                g2d.draw(textRun.getLayout().getOutline(t));
+		g2d.draw(textRun.getLayout().getOutline(t));
             }
             x += textRun.getLayout().getAdvance();
         }
 
         // FIXME: Finish implementation! 
-	// (Currently only understands STROKE, STROKE_PAINT)
+	// (Currently only understands STROKE, STROKE_PAINT, UNDERLINE stuff)
+    }
+
+    /**
+     * Paints the underline for a given ACI - does not rely on TextLayout's
+     * internal underlining but computes the underline manually, allowing
+     * the underline fill and stroke to differ from that of the text glyphs.
+     */
+    private void paintUnderline(TextRun textRun, Point2D location,
+				double xoffset, Graphics2D g2d) {
+	AttributedCharacterIterator runaci = textRun.getACI();
+	TextLayout layout = textRun.getLayout();
+        double y = location.getY()+ (layout.getBaseline() 
+		    + layout.getDescent())/2;
+	Stroke underlineStroke = 
+	    new BasicStroke((float) layout.getAscent()/10f);
+ 	java.awt.Shape underlineShape = 
+		    underlineStroke.createStrokedShape(
+			   new java.awt.geom.Line2D.Double(
+			   location.getX()+xoffset, y, 
+			   location.getX()+xoffset+layout.getAdvance(), y));
+	// TODO: change getAdvance to getVisibleAdvance for 
+	// ACIs which do not inherit their underline attribute
+	// (not sure how to implement this yet)
+	Paint paint = (Paint) runaci.getAttribute(
+	    GVTAttributedCharacterIterator.TextAttribute.UNDERLINE_PAINT);
+	if (paint != null) {
+	    g2d.setPaint(paint);
+	    g2d.fill(underlineShape);
+	}
+	Stroke stroke = (Stroke) runaci.getAttribute(
+            GVTAttributedCharacterIterator.TextAttribute.UNDERLINE_STROKE);
+        paint = (Paint) runaci.getAttribute(
+            GVTAttributedCharacterIterator.TextAttribute.UNDERLINE_STROKE_PAINT);
+	if (stroke != null) {
+	    g2d.setStroke(stroke);
+	}
+	if (paint != null) {
+	    g2d.setPaint(paint);
+	}
+	g2d.draw(underlineShape);
     }
 
     /**

@@ -221,6 +221,18 @@ public interface GVTAttributedCharacterIterator extends
         /** Paint used to stroke character outline */
         public final static TextAttribute STROKE_PAINT = new TextAttribute("STROKE_PAINT");
 
+        /** Underline flag for character.*/
+        public final static TextAttribute UNDERLINE = new TextAttribute("UNDERLINE");
+
+        /** Stroke used to paint character underline.*/
+        public final static TextAttribute UNDERLINE_STROKE = new TextAttribute("UNDERLINE_STROKE");
+
+        /** Paint used to fill character underline.*/
+        public final static TextAttribute UNDERLINE_PAINT = new TextAttribute("UNDERLINE_PAINT");
+
+        /** Paint used to stroke character outline for underline.*/
+        public final static TextAttribute UNDERLINE_STROKE_PAINT = new TextAttribute("UNDERLINE_STROKE_PAINT");
+
         /** Author-expected width for bounding box containing all text string glyphs.*/
         public final static TextAttribute BBOX_WIDTH = new TextAttribute("BBOX_WIDTH");
 
@@ -232,6 +244,10 @@ public interface GVTAttributedCharacterIterator extends
 
         /** Value for FONT_VARIANT specifying small caps */
         public final static Integer SMALL_CAPS = new Integer(0x10);
+
+	/** Value for UNDERLINE specifying underlining-on */
+	public final static Integer UNDERLINE_ON = java.awt.font.TextAttribute.UNDERLINE_ON;
+
 
     }
 
@@ -259,3 +275,12 @@ public interface GVTAttributedCharacterIterator extends
 
     }
 }
+
+
+
+
+
+
+
+
+
