@@ -125,6 +125,17 @@ public class BridgeEventSupport implements SVGConstants {
         }
 
         public void mouseExited(GraphicsNodeMouseEvent evt) {
+            Point clientXY = getClientMouseLocation(evt.getPoint2D());
+            GraphicsNode node = evt.getGraphicsNode();
+            Element targetElement = getEventTarget(node, clientXY);
+            if (lastTargetElement != null) {
+                dispatchMouseEvent("mouseout", 
+                                   lastTargetElement, // target
+                                   targetElement,     // relatedTarget
+                                   clientXY,
+                                   evt,
+                                   true);
+                                   }
             dispatchMouseEvent("mouseout", evt, true);
         }
 
@@ -216,8 +227,8 @@ public class BridgeEventSupport implements SVGConstants {
                     ("dispatching "+eventType+
                      " target:"+targetElement.getLocalName());
 
-            }*/
-
+            }
+            */
             short button = getButton(evt);
             Point screenXY = getScreenMouseLocation(clientXY);
             // create the coresponding DOM MouseEvent
