@@ -30,6 +30,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseListener;
 
+import java.awt.geom.Arc2D;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
@@ -224,6 +225,11 @@ public class JSVGCanvas
      * The transform representing the rotation.
      */
     protected AffineTransform rotateTransform;
+
+    /**
+     * The transform representing the previous rotation.
+     */
+    protected AffineTransform previousRotateTransform;
 
     /**
      * The pan bounding box.
@@ -540,6 +546,8 @@ public class JSVGCanvas
         }
         rotateAngle = 0;
         rotateCos = 1;
+        previousRotateTransform = null;
+        rotateTransform = null;
         if (zoomHandler != null) {
             zoomHandler.zoomChanged(1);
         }
@@ -1114,6 +1122,8 @@ public class JSVGCanvas
             computeTransform();
             rotateAngle = 0;
             rotateCos = 1;
+            previousRotateTransform = null;
+            rotateTransform = null;
             if (zoomHandler != null) {
                 zoomHandler.zoomChanged(1);
             }
@@ -1132,6 +1142,8 @@ public class JSVGCanvas
             computeTransform();
             rotateAngle = 0;
             rotateCos = 1;
+            previousRotateTransform = null;
+            rotateTransform = null;
             if (zoomHandler != null) {
                 zoomHandler.zoomChanged(1);
             }
@@ -1243,6 +1255,7 @@ public class JSVGCanvas
                     }
                     requestCursor(ROTATE_CURSOR);
                     setCursor(ROTATE_CURSOR);
+                    previousRotateTransform = rotateTransform;
                     rotateTransform = new AffineTransform();
                     paintRotateMarker(sx, sy);
                     operationPerformed = true;
@@ -1395,7 +1408,15 @@ public class JSVGCanvas
                 }
             } else if (rotateMarker != null) {
                 clearRotateMarker();
+                if (previousRotateTransform != null) {
+                    try {
+                        transform.preConcatenate(
+                                       previousRotateTransform.createInverse());
+                    } catch(NoninvertibleTransformException ex) {}
+                    previousRotateTransform = null;
+                }
                 transform.preConcatenate(rotateTransform);
+
                 updateBaseTransform();
                 if (zoomHandler != null) {
                     zoomHandler.zoomChanged((float)(transform.getScaleX() /
@@ -1416,34 +1437,31 @@ public class JSVGCanvas
                 rotateMarker = null;
             } else {
                 Dimension dim = getSize();
-                int w = dim.width / 5;
-                int h = dim.height / 5;
-
-                GeneralPath p = new GeneralPath();
-                p.moveTo(dim.width / 2 - w / 2, dim.height / 2 - h / 2);
-                p.lineTo(dim.width / 2 - w / 2, dim.height / 2 + h / 2);
-                p.lineTo(dim.width / 2 + w / 2, dim.height / 2 + h / 2);
-                p.lineTo(dim.width / 2 + w / 2, dim.height / 2 - h / 2);
-                p.closePath();
-                p.moveTo(dim.width / 2, dim.height / 2 - h / 2);
-                p.lineTo(dim.width / 2 + 8, dim.height / 2 - h / 2 + 8);
-                p.moveTo(dim.width / 2, dim.height / 2 - h / 2);
-                p.lineTo(dim.width / 2 - 8, dim.height / 2 - h / 2 + 8);
+                int w = dim.width / 3;
+                int h = dim.height / 3;
 
                 double dx = x - dim.width / 2;
                 double dy = y - dim.height / 2;
                 double cos = -dy / Math.sqrt(dx * dx + dy * dy);
 
-                rotateAngle = rotateAngle +
-                    ((dx > 0) ? Math.acos(cos) : -Math.acos(cos));
+                float ax = dim.width / 2 - w / 2;
+                float ay = dim.height / 2 - h / 2;
+                double angle = ((dx > 0) ? Math.acos(cos) : -Math.acos(cos));
+
+                float extent = (float)Math.toDegrees(-angle);
+                Arc2D.Float p = new Arc2D.Float(ax, ay, w, h,
+                                                90f,
+                                                extent,
+                                                Arc2D.PIE);
+
+                rotateAngle = angle;
                 rotateCos = Math.cos(rotateAngle);
 
                 rotateTransform =
-                    AffineTransform.getRotateInstance
-                    ((dx > 0) ? Math.acos(cos) : -Math.acos(cos),
-                     dim.width / 2,
-                     dim.height / 2);
-                rotateMarker = rotateTransform.createTransformedShape(p);
+                    AffineTransform.getRotateInstance(angle,
+                                                      dim.width / 2,
+                                                      dim.height / 2);
+                rotateMarker = p;
 /*
  *               Rectangle r;
  *               r = markerStroke.createStrokedShape(rotateMarker).getBounds();
