@@ -13,6 +13,7 @@ import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.FilterRegion;
 
 import java.awt.Color;
+import java.awt.Paint;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.Rectangle;
@@ -26,7 +27,7 @@ import java.awt.image.renderable.RenderContext;
 
 /**
  * Concrete implementation of the FloodRable interface.
- * This fills the input image with a given flood color
+ * This fills the input image with a given flood paint
  *
  * @author <a href="mailto:dean@w3.org">Dean Jackson</a>
  * @version $Id$
@@ -36,45 +37,45 @@ public class ConcreteFloodRable extends AbstractRable
     implements FloodRable {
 
     /**
-     * Color to use to flood the floodRegion
+     * Paint to use to flood the floodRegion
      */
-    Color floodColor;
+    Paint floodPaint;
 
     /**
-     * Region to fill with floodColor
+     * Region to fill with floodPaint
      */
     FilterRegion floodRegion;
 
     /**
-     * @param floodRegion region to be filled with floodColor
-     * @param floodColor color to use to flood the floodRegion
+     * @param floodRegion region to be filled with floodPaint
+     * @param floodPaint paint to use to flood the floodRegion
      */
     public ConcreteFloodRable(FilterRegion floodRegion, 
-                              Color floodColor) {
-        setFloodColor(floodColor);
+                              Paint floodPaint) {
+        setFloodPaint(floodPaint);
         setFloodRegion(floodRegion);
     }
 
     /**
-     * Set the flood fill color
-     * @param color The color to use when flood filling the input image
+     * Set the flood fill paint
+     * @param paint The paint to use when flood filling the input image
      */
-    public void setFloodColor(Color color) {
-        if (color == null) {
+    public void setFloodPaint(Paint paint) {
+        if (paint == null) {
             // create a transparent flood fill
-            floodColor = new Color(0, 0, 0, 0);
+            floodPaint = new Color(0, 0, 0, 0);
         } else {
-            floodColor = color;
+            floodPaint = paint;
         }
     }
 
     /**
-     * Get the flood fill color.
-     * @return the color used to flood fill the input image
+     * Get the flood fill paint.
+     * @return the paint used to flood fill the input image
      */
-    public Color getFloodColor() {
-        // Color is immutable, we can return it
-        return floodColor;
+    public Paint getFloodPaint() {
+        // Paint is immutable, we can return it
+        return floodPaint;
     }
 
     public Rectangle2D getBounds2D() {
@@ -102,7 +103,7 @@ public class ConcreteFloodRable extends AbstractRable
 
     /**
      * Create a RenderedImage that is filled with the current
-     * flood fill color
+     * flood fill paint
      * @param rc The current render context
      * @return A RenderedImage with the flood fill
      */
@@ -169,12 +170,12 @@ public class ConcreteFloodRable extends AbstractRable
         }
 
         // do the usr2dev transform - just in case this becomes a
-        // flood paint rather than the simple color fill
+        // flood paint rather than the simple paint fill
         g.translate(-renderedArea.x, -renderedArea.y);
         g.transform(usr2dev);
 
-        // set the flood color as the paint
-        g.setPaint(getFloodColor());
+        // set the flood paint as the paint
+        g.setPaint(getFloodPaint());
 
         // fill the user space renderable area, this is the
         // area that was used to create the device space offscreen
@@ -186,5 +187,4 @@ public class ConcreteFloodRable extends AbstractRable
         return offScreen;
 
     }
-
 }

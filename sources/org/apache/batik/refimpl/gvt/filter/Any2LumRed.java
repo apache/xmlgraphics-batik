@@ -134,24 +134,6 @@ public class Any2LumRed extends AbstractRed {
         return wr;
     }
 
-    protected static void copyBand(Raster         src, int srcBand, 
-                                   WritableRaster dst, int dstBand) {
-        Rectangle srcR = new Rectangle(src.getMinX(),  src.getMinY(),
-                                       src.getWidth(), src.getHeight());
-        Rectangle dstR = new Rectangle(dst.getMinX(),  dst.getMinY(),
-                                       dst.getWidth(), dst.getHeight());
-
-        Rectangle cpR  = srcR.intersection(dstR);
-        System.out.println("In CopyBand(" + srcBand + ", " + dstBand + ", " +
-                           cpR + ", " + src.getBounds() + ", " + dst.getBounds());
-
-        int [] samples = null;
-        for (int y=cpR.y; y< cpR.y+cpR.height; y++) {
-            samples = src.getSamples(cpR.x, y, cpR.width, 1, srcBand, samples);
-            dst.setSamples(cpR.x, y, cpR.width, 1, dstBand, samples);
-        }
-    }
-
         /**
          * This function 'fixes' the source's color model.  Right now
          * it just selects if it should have one or two bands based on

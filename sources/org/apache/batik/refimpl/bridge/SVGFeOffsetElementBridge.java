@@ -102,33 +102,11 @@ public class SVGFeOffsetElementBridge implements FilterBridge, SVGConstants {
 
         // Get source
         String inAttr = filterElement.getAttributeNS(null, ATTR_IN);
-        int inValue = SVGUtilities.parseInAttribute(inAttr);
-        switch (inValue) {
-        case SVGUtilities.EMPTY:
-            // Do not change in's value. It is correctly
-            // set to the current chain result.
-            break;
-        case SVGUtilities.BACKGROUND_ALPHA:
-            throw new Error("BackgroundAlpha not implemented yet");
-        case SVGUtilities.BACKGROUND_IMAGE:
-            throw new Error("BackgroundImage not implemented yet");
-        case SVGUtilities.FILL_PAINT:
-            throw new Error("Not implemented yet");
-        case SVGUtilities.SOURCE_ALPHA:
-            throw new Error("SourceAlpha not implemented yet");
-        case SVGUtilities.SOURCE_GRAPHIC:
-            in = (Filter)filterMap.get(VALUE_SOURCE_GRAPHIC);
-            break;
-        case SVGUtilities.STROKE_PAINT:
-            throw new Error("Not implemented yet");
-        case SVGUtilities.IDENTIFIER:
-            in = (Filter)filterMap.get(inAttr);
-            break;
-        default:
-            // Should never, ever, ever happen
-            throw new Error();
-        }
+        in = CSSUtilities.getFilterSource(filteredNode, inAttr, bridgeContext, 
+                                          filteredElement,
+                                          in, filterMap);
 
+        System.out.println("In: " + in);
         // feOffset is a point operation. Therefore, to take the
         // filter primitive region into account, only a pad operation
         // on the input is required.
