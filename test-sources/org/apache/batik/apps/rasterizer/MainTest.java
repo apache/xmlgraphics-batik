@@ -124,7 +124,7 @@ public class MainTest extends DefaultTestSuite {
         addTest(t);
         t.setId("MainConfigTest.mimeType.png");
 
-        /*t = new MainConfigTest("-m image/pdf") {
+        t = new MainConfigTest("-m application/pdf") {
                 public TestReport validate(SVGConverter c){
                     DestinationType type = c.getDestinationType();
                     if(type.equals(DestinationType.PDF)){
@@ -137,7 +137,7 @@ public class MainTest extends DefaultTestSuite {
             };
     
         addTest(t);
-        t.setId("MainConfigTest.mimeType.pdf");*/
+        t.setId("MainConfigTest.mimeType.pdf");
 
         t = new MainConfigTest("-m image/tiff") {
                 public TestReport validate(SVGConverter c){

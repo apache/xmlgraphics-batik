@@ -16,9 +16,10 @@ Class-Path: lib/batik-ext.jar \
             lib/batik-root.jar \
             lib/batik-svggen.jar \
             lib/batik-xml.jar \
-            lib/xml-apis.jar \
             batik-squiggle.jar \
             batik-rasterizer.jar \
             batik-pp.jar \
-            lib/crimson-parser.jar \
+            lib/xerces_2_3_0.jar \
+            lib/xml-apis.jar \
+            lib/pdf-transcoder.jar \
             lib/js.jar

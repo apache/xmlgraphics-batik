@@ -11,8 +11,7 @@ package org.apache.batik.dom.svg;
 import org.apache.batik.parser.LengthListHandler;
 import org.apache.batik.parser.LengthListParser;
 import org.apache.batik.parser.ParseException;
-
-import org.apache.batik.util.UnitProcessor;
+import org.apache.batik.parser.UnitProcessor;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;

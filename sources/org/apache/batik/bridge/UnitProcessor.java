@@ -13,6 +13,8 @@ import java.io.StringReader;
 import org.apache.batik.parser.LengthHandler;
 import org.apache.batik.parser.LengthParser;
 import org.apache.batik.parser.ParseException;
+// import org.apache.batik.parser.UnitProcessor;
+
 import org.apache.batik.util.CSSConstants;
 
 import org.apache.batik.css.engine.SVGCSSEngine;
@@ -30,7 +32,7 @@ import org.w3c.dom.svg.SVGLength;
  * @version $Id$
  */
 public abstract class UnitProcessor
-    extends org.apache.batik.util.UnitProcessor {
+    extends org.apache.batik.parser.UnitProcessor {
 
     /**
      * No instance of this class is required.
@@ -178,7 +180,7 @@ public abstract class UnitProcessor
                                                short d,
                                                Context ctx) {
         try {
-            return org.apache.batik.util.UnitProcessor.
+            return org.apache.batik.parser.UnitProcessor.
                 svgToObjectBoundingBox(s, attr, d, ctx);
         } catch (ParseException ex) {
             throw new BridgeException(ctx.getElement(),
@@ -310,7 +312,7 @@ public abstract class UnitProcessor
                                        short d,
                                        Context ctx) {
         try {
-            return org.apache.batik.util.UnitProcessor.
+            return org.apache.batik.parser.UnitProcessor.
                 svgToUserSpace(s, attr, d, ctx);
         } catch (ParseException ex) {
             throw new BridgeException(ctx.getElement(),
