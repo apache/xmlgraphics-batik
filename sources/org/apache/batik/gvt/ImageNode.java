@@ -61,10 +61,25 @@ import java.awt.geom.Point2D;
  */
 public class ImageNode extends CompositeGraphicsNode {
 
+    protected boolean hitCheckChildren = false;
+    
     /**
      * Constructs a new empty <tt>ImageNode</tt>.
      */
     public ImageNode() {}
+
+    /**
+     * If hitCheckChildren is true then nodeHitAt will return
+     * child nodes of this image. Otherwise it will only
+     * return this node (if the point is in the image).
+     */
+    public void setHitCheckChildren(boolean hitCheckChildren) {
+        this.hitCheckChildren = hitCheckChildren;
+    }
+
+    public boolean getHitCheckChildren() { 
+        return hitCheckChildren; 
+    }
 
     /**
      * Paints this node.
@@ -109,7 +124,8 @@ public class ImageNode extends CompositeGraphicsNode {
      * @param p the specified Point2D in the user space
      */
     public GraphicsNode nodeHitAt(Point2D p) {
-        // Used to return super.nodeHitAt(p);
+        if (hitCheckChildren) return super.nodeHitAt(p);
+
         return (contains(p) ? this : null);
     }
 
