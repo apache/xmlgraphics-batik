@@ -88,6 +88,8 @@ public class ConcreteGVTBuilder implements GVTBuilder, SVGConstants {
                        (CompositeGraphicsNode)treeRoot,
                        svgRoot.getFirstChild());
 
+        graphicsNodeBridge.buildGraphicsNode(treeRoot, ctx, svgRoot);
+
         // Adds the Listener on Attr Modified event.
         ((EventTarget)svgRoot).
             addEventListener("DOMAttrModified",
@@ -138,6 +140,8 @@ public class ConcreteGVTBuilder implements GVTBuilder, SVGConstants {
                            (CompositeGraphicsNode)treeRoot,
                            element.getFirstChild());
         }
+
+        graphicsNodeBridge.buildGraphicsNode(treeRoot, ctx, element);
 
         return treeRoot;
     }
@@ -271,6 +275,7 @@ public class ConcreteGVTBuilder implements GVTBuilder, SVGConstants {
                     }
                 }
             }
+            gnb.buildGraphicsNode(childGVTNode, ctx, e);
         }
     }
 
