@@ -46,10 +46,16 @@
         <anchor id="downloading" />
         <s1 title="Downloading the pretty-printer">
 
-            <p>Refer to the <link href="install.html">install page</link> and the
-            <link href="dist">download area</link> to find out what to download and how to 
-            download it. Remember that you can get either the <link href="install.html#distributions">source distribution</link>
-            or the <link href="install.html#distributions">binary distribution</link>.</p>
+            <p>Refer to the <link href="install.html">install
+            page</link> and the <link
+            href="http://www.apache.org/dyn/closer.cgi/xml/batik">download
+            area</link> to find out what to download and how to
+            download it. Remember that you can get either the <link
+            href="install.html#distributions">source
+            distribution</link>
+ or the <link
+            href="install.html#distributions">binary
+            distribution</link>.</p>
         </s1>
 
         <anchor id="using" />

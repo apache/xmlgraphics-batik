@@ -1,175 +1,287 @@
 <?xml version="1.0"?>
 <!DOCTYPE document SYSTEM "./dtd/document-v10.dtd">
 
-<!-- ========================================================================= -->
-<!-- Copyright (C) The Apache Software Foundation. All rights reserved.        -->
-<!--                                                                           -->
-<!-- This software is published under the terms of the Apache Software License -->
-<!-- version 1.1, a copy of which has been included with this distribution in  -->
-<!-- the LICENSE file.                                                         -->
-<!-- ========================================================================= -->
+<!--
 
-<!-- ========================================================================= -->
+ ============================================================================
+                   The Apache Software License, Version 1.1
+ ============================================================================
+
+ Copyright (C) 1999-2003 The Apache Software Foundation. All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without modifica-
+ tion, are permitted provided that the following conditions are met:
+
+ 1. Redistributions of  source code must  retain the above copyright  notice,
+    this list of conditions and the following disclaimer.
+
+ 2. Redistributions in binary form must reproduce the above copyright notice,
+    this list of conditions and the following disclaimer in the documentation
+    and/or other materials provided with the distribution.
+
+ 3. The end-user documentation included with the redistribution, if any, must
+    include  the following  acknowledgment:  "This product includes  software
+    developed  by the  Apache Software Foundation  (http://www.apache.org/)."
+    Alternately, this  acknowledgment may  appear in the software itself,  if
+    and wherever such third-party acknowledgments normally appear.
+
+ 4. The names "Batik" and  "Apache Software Foundation" must  not  be
+    used to  endorse or promote  products derived from  this software without
+    prior written permission. For written permission, please contact
+    apache@apache.org.
+
+ 5. Products  derived from this software may not  be called "Apache", nor may
+    "Apache" appear  in their name,  without prior written permission  of the
+    Apache Software Foundation.
+
+ THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED WARRANTIES,
+ INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+ FITNESS  FOR A PARTICULAR  PURPOSE ARE  DISCLAIMED.  IN NO  EVENT SHALL  THE
+ APACHE SOFTWARE  FOUNDATION  OR ITS CONTRIBUTORS  BE LIABLE FOR  ANY DIRECT,
+ INDIRECT, INCIDENTAL, SPECIAL,  EXEMPLARY, OR CONSEQUENTIAL  DAMAGES (INCLU-
+ DING, BUT NOT LIMITED TO, PROCUREMENT  OF SUBSTITUTE GOODS OR SERVICES; LOSS
+ OF USE, DATA, OR  PROFITS; OR BUSINESS  INTERRUPTION)  HOWEVER CAUSED AND ON
+ ANY  THEORY OF LIABILITY,  WHETHER  IN CONTRACT,  STRICT LIABILITY,  OR TORT
+ (INCLUDING  NEGLIGENCE OR  OTHERWISE) ARISING IN  ANY WAY OUT OF THE  USE OF
+ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+ This software  consists of voluntary contributions made  by many individuals
+ on  behalf of the Apache Software  Foundation. For more  information on the
+ Apache Software Foundation, please see <http://www.apache.org/>.
+
+-->
+
+<!-- ====================================================================== -->
 <!-- version $Id$ -->
-<!-- ========================================================================= -->
+<!-- ====================================================================== -->
 <document>
-    <header>
-        <title>Installing Batik</title>
-        <authors>
-            <person name="Christophe Jolif" email="cjolif@ilog.fr"/>
-            <person name="Vincent Hardy" email="vincent.hardy@eng.sun.com"/>
-        </authors>
-    </header>
+  <header>
+    <title>Installing Batik</title>
+    <authors>
+      <person name="Christophe Jolif" email="cjolif@ilog.fr"/>
+      <person name="Vincent Hardy" email="vincent.hardy@eng.sun.com"/>
+    </authors>
+  </header>
 
-    <body>
+  <body>
+    <s1 title="Introduction">
+      <p>This page discusses the following Batik installation issues:</p>
+      <ul>
+        <li><link href="#systemRequirements">System requirements</link></li>
+        <li><link href="#distributions">Choosing a distribution to download</link></li>
+        <li><link href="#optionalComponents">Optional components</link></li>
+        <li><link href="#verify">Verifying a distribution</link></li>
+      </ul>
+    </s1>
 
-        <s1 title="Introduction">
+    <anchor id="systemRequirements" />
+    <s1 title="System Requirements">
+      <p>
+        Batik requires the following systems to be already
+        installed in your system:
+      </p>
+      <ul>
+        <li><strong>Java Virtual Machine</strong>
+          A Java 1.3 or greater compatible virtual machine must be present. 
+        </li>
+      </ul>
+    </s1>
 
-            <p>This page discusses the following Batik installation issues:</p>
-            <ul>
-                <li><link href="#systemRequirements">System Requirements</link></li>
-                <li><link href="#distributions">Choosing a download from the distribution</link></li>
-                <li><link href="#optionalComponents">OptionalComponents</link></li>
-            </ul>
-        </s1>
+    <anchor id="distributions" />
+    <s1 title="Choosing a distribution to download">
 
-        <anchor id="systemRequirements" />
-        <s1 title="System Requirements">
-            <p>
-            Batik requires the following systems to be already installed in your
-            system:
-            </p>
-            <ul>
-                <li><strong>Java Virtual Machine</strong>
-                A Java 1.3 or greater compatible virtual machine must be present. 
-                </li>
-            </ul>
-        </s1>
+      <p>To install Batik, you will need to go to the <link
+          href="http://www.apache.org/dyn/closer.cgi/xml/batik">download area</link> and download one or more
+        ZIP file containing the distribution of your choice. It is
+        good practice to <link href="verify">verify the
+          integrity</link> of the distribution files, especially if
+        you are using one of our mirror sites. Here are the
+        various components you will find in the download area and
+        their intended use:</p>
+      <ul>
+        <li><strong>batik-</strong><em>version</em><strong>.zip</strong> (e.g., <code>batik-1.5.zip.</code>)
+          The <em>binary distribution</em> contains a compiled
+          executable JAR files that let you get started with
+          Batik easily. This  is the recommended distribution
+          if you want to look at Batik's features, or you want
+          to experiment with SVG and see the fun things you can
+          do with Batik. The binary distribution comes with a
+          set of sample SVG files.</li>
 
-        <anchor id="distributions" />
-        <s1 title="Choosing a download from the distribution">
+        <li><strong>batik-src-</strong><em>version</em><strong>.zip</strong> 
+          (e.g., <code>batik-src-1.5.zip.</code>)The <em>source
+            distribution</em> contains a complete snapshot of
+          the Batik source code, documentation, regression tools
+          and utilities as well as the script for building
+          Batik. That distribution is a snapshot of the CVS
+          repository. This is the recommended distribution for
+          developers who want to dive into the code and
+          understand how Batik can be integrated in their
+          applications or how Batik can be extended. </li>
 
-            <p>To install Batik, you will need to go to the <link href="dist">download area</link>
-            and download one or more ZIP file containing the distribution of your choice. Here are
-            the various components you will find in the download area and their intended use:</p>
-            <ul>
-                <li><strong>batik-</strong><em>version</em><strong>.zip</strong> (e.g., <code>batik-1.1.zip.</code>)
-                The <em>binary distribution</em> contains a compiled executable JAR files that let you get started with Batik easily. This 
-                is the recommended distribution if you want to look at Batik's features, or you want to
-                experiment with SVG and see the fun things you can do with Batik. The binary distribution 
-                comes with a set of sample SVG files.</li>
+        <li><strong>batik-docs-</strong><em>version</em><strong>.zip</strong>
+          The <em>documentation bundle</em> contains a copy of 
+          the Javadoc for the Batik source code.</li>
+      </ul>
 
-                <li><strong>batik-src-</strong><em>version</em><strong>.zip</strong> 
-                (e.g.,  <code>batik-src-1.1.zip.</code>)The <em>source distribution</em> contains a complete 
-                snapshot of the Batik source code, documentation, regression tools and utilities as
-                well as the script for building Batik. That distribution is a snapshot of 
-                the CVS repository. This is the recommended distribution for developers who want 
-                to dive into the code and understand how Batik can be integrated in 
-                their applications or how Batik can be extended. </li>
+      <p>In all cases, the user should:</p>
+      <ul>
+        <li>Make sure a Java Development Kit (JDK) is installed on the
+        computer where Batik will be installed. See <link
+        href="requirements">System Requirements</link>.  Make sure
+        that the <code>java</code> runtime is in the <code>PATH</code>
+        environment variable.
+        </li>
+        <li>Select the directory where he/she wants to download the
+        distribution
+        </li>
+        <li>Download the desired distribution from the <link
+        href="http://www.apache.org/dyn/closer.cgi/xml/batik">download
+        area</link></li> <li>Open a console and go to the directory
+        where the distribution was downloaded.
+        </li>
+        <li>Unpack the distribution with Java's JAR utility:<br></br>
+        <code>jar xvf &lt;distribution&gt;</code><br /> For example,
+        if you have downloaded batik-1.5.zip into /home/IamHere, type
+        the following at the command prompt:<br /> <code>cd
+        /home/IamHere</code><br /> <code>jar xvf
+        batik-1.5.zip</code><br /> <strong>IMPORTANT:</strong> UNIX
+        users, do not use the <code>unzip</code> utility to unpack the
+        various Batik zip files, as this would not set the directories
+        access rights properly.
+        </li>
+        <li>From there, following the instructions specific to the
+        application you want to use.  For example, see the <link
+        href="svgviewer.html">SVG Browser</link> page or the <link
+        href="svgrasterizer.html">SVG Rasterizer</link> page for an
+        explanation on how to use these tools.
+        </li>
+      </ul>
 
-                <li><strong>batik-docs-</strong><em>version</em><strong>.zip</strong>
-                The <em>documentation bundle</em> contains a copy of 
-                the Javadoc for the Batik source code.</li>
-            </ul>
+    </s1>
 
-            <p>In all cases, the user should:</p>
-            <ul>
-                <li>Make sure a Java Development Kit (JDK) is installed on the computer
-                    where Batik will be installed. See <link href="requirements">System Requirements</link>.
-                    Make sure that the <code>java</code> runtime is in the <code>PATH</code> environment
-                    variable.</li>
-                <li>Select the directory where he/she wants to download the distribution</li>
-                <li>Download the desired distribution from the <link href="dist">download area</link></li>
-                <li>Open a console and go to the directory where the distribution was downloaded.</li>
-                <li>Unpack the distribution with Java's JAR utility:<br></br>
-                    <code>jar xvf &lt;distribution&gt;</code><br />
-                    For example, if you have downloaded batik-1.1.zip into /home/IamHere, type the
-                    following at the command prompt:<br />
-                    <code>cd /home/IamHere</code><br />
-                    <code>jar xvf batik-1.1.zip</code><br />
-                    <strong>IMPORTANT:</strong> UNIX users, do not use the <code>unzip</code> utility to
-                    unpack the various Batik zip files, as this would not set the directories access rights
-                    properly.
-                    </li>
-                <li>From there, following the instructions specific to the application you want to use.
-                    For example, see the <link href="svgviewer.html">SVG Browser</link> page or the
-                    <link href="svgrasterizer.html">SVG Rasterizer</link> page for an explanation on
-                    how to use these tools.</li>
-            </ul>
-
-        </s1>
-
-        <anchor id="optionalComponents" />
-        <s1 title="Optional Components">
-	    <p>
-	    By default, Batik source distribution comes with the <link href="http://www.mozilla.org/rhino">Mozilla Rhino</link> JavaScript Engine (<code>js.jar</code>). 
-	    </p>
-	    <p>
-	    To enable other scripting languages support, you will only need to install
-	    the correct jar files in <code>lib</code> directory of Batik and to 
-	    recompile your distribution.
-	    </p>
-	    <ul>
-	        <li>
-		For Python, you need to download Jython distribution at the following
-		URL <link href="http://www.jython.org">http://www.jython.org</link>. 
-		Then you put the <code>jython.jar</code> file in the Batik <code>
-		lib</code> directory.
-		</li>
-	        <li>
-		For Tcl, you need to download Jacl &amp; TclBlend distribution at
-		the following URL <link href="http://dev.scriptics.com/software/java/">http://dev.scriptics.com/software/java</link>. 
-		Then you put the <code>jacl.jar</code> &amp; <code>tcljava.jar</code>
-		files in the Batik <code>lib</code> directory.
-		</li>
-	    </ul>
-	    <p>
-	    Conversely, you can remove the <code>js.jar</code> of the Batik 
-	    <code>lib</code> directory to remove JavaScript support and have a smaller
-	    distribution.
-	    </p>
-        </s1>
-        <anchor id="jarFiles" />
-        <s1 title="Jar File Dependency Graph">
-	    <p>The Batik Distribution comes with many Jar files.  Not
-	    all of them are needed in every case (although the
-	    provided applications tend to use most of them).  The
-	    following is a diagram showing the dependencies between
-	    the various jar files in the Batik binary distribution (it
-	    also shows the major package interdependencies for source
-	    developers).
-            </p>
-	    <p>Jar files in white boxes are library jar files that
-	    Batik includes from external sources.  The light blue
-	    boxes correspond to library jar files (those found in the
-	    'lib' directory of a binary distribution) built from Batik
-	    source code.  The dark blue boxes represent the
-	    application jar files.
-            </p>
-	    <p>When boxes touch, the box on top depends on the box
-	    below it (there is no horizontal touching).  Arrows also
-	    indicate dependencies (the source of the arrow depends on
-	    the destination). In some cases a thick underline with an
-	    arrow is used to indicate that a large number of jar files
-	    share a common dependency, this however does not indicate
-	    any dependency between the jar files underlined.
-            </p>
-            <figure src="images/jarDependImg.png" 
-		    alt="Batik Jar File Dependency Graph" />
-            <note>  Some jar file names are shortend for clarity.<br/>
-
-                    All 'batik' package references are short for
-	            'org.apache.batik'.<br/>
-            </note>
-	    <p>It is worth pointing out that a determined/clever
-	    programmer may be able to pair down some of these
-	    dependencies.  For example the 'batik-dom.jar' depends on
-	    'xerces.jar' because of the SAXDocumentFactory class in
-	    'org.apache.batik.dom.util'.  If you didn't need to parse
-	    XML it would be possible to ignore or break this
-	    dependency and still use the 'batik-dom.jar' file for it's
-	    DOM implementation.
-            </p>
-        </s1>
-    </body>
+    <anchor id="optionalComponents" />
+    <s1 title="Optional Components">
+      <p>
+        By default, Batik source distribution comes with the <link
+          href="http://www.mozilla.org/rhino">Mozilla Rhino</link>
+        JavaScript Engine (<code>js.jar</code>).
+      </p>
+      <p>
+        To enable other scripting languages support, you will only
+        need to install the correct jar files in <code>lib</code>
+        directory of Batik and to recompile your distribution.
+      </p>
+      <ul>
+        <li>
+          For Python, you need to download Jython distribution
+          at the following URL <link
+            href="http://www.jython.org">http://www.jython.org</link>.
+          Then you put the <code>jython.jar</code> file in the
+          Batik <code> lib</code> directory.
+        </li>
+        <li>
+          For Tcl, you need to download Jacl &amp; TclBlend
+          distribution at the following URL <link
+            href="http://dev.scriptics.com/software/java/">http://dev.scriptics.com/software/java</link>.
+          Then you put the <code>jacl.jar</code> &amp;
+          <code>tcljava.jar</code> files in the Batik
+          <code>lib</code> directory.
+        </li>
+      </ul>
+      <p>
+        Conversely, you can remove the <code>js.jar</code> of the
+        Batik <code>lib</code> directory to remove JavaScript
+        support and have a smaller distribution.
+      </p>
+    </s1>
+    <anchor id="jarFiles" />
+    <s1 title="Jar File Dependency Graph">
+      <p>The Batik Distribution comes with many Jar files.  Not all of
+      them are needed in every case (although the provided
+      applications tend to use most of them).  The following is a
+      diagram showing the dependencies between the various jar files
+      in the Batik binary distribution (it also shows the major
+      package interdependencies for source developers).
+      </p>
+      <p>Jar files in white boxes are library jar files that Batik
+      includes from external sources.  The light blue boxes correspond
+      to library jar files (those found in the 'lib' directory of a
+      binary distribution) built from Batik source code.  The dark
+      blue boxes represent the application jar files.
+      </p>
+      <p>When boxes touch, the box on top depends on the box below it
+      (there is no horizontal touching).  Arrows also indicate
+      dependencies (the source of the arrow depends on the
+      destination). In some cases a thick underline with an arrow is
+      used to indicate that a large number of jar files share a common
+      dependency, this however does not indicate any dependency
+      between the jar files underlined.
+      </p>
+      <figure src="images/jarDependImg.png" 
+        alt="Batik Jar File Dependency Graph" />
+      <note>  Some jar file names are shortend for clarity.<br/>
+        All 'batik' package references are short for
+        'org.apache.batik'.<br/>
+      </note>
+      <p>It is worth pointing out that a determined/clever programmer
+      may be able to pair down some of these dependencies.  For
+      example the 'batik-dom.jar' depends on 'xerces.jar' because of
+      the SAXDocumentFactory class in 'org.apache.batik.dom.util'.  If
+      you didn't need to parse XML it would be possible to ignore or
+      break this dependency and still use the 'batik-dom.jar' file for
+      it's DOM implementation.
+      </p>
+    </s1>
+    
+    <anchor id="verify" />
+    <s1 title="Verify Releases">
+      <p>
+        It is essential that you verify the integrity of the
+        downloaded files using the PGP or MD5 signatures.
+      </p>
+      <p>
+        The PGP signatures can be verified using PGP or GPG.  First
+        download the <link
+        href="http://www.apache.org/dist/batik/KEYS">KEYS</link> as
+        well as the <code>asc</code> signature file for the particular
+        distribution you choose.  Make sure you get these files from
+        the <link href="http://www.apache.org/dist/batik/">main
+        distribution directory</link> , rather than from a
+        mirror. Then verify the signatures using
+      </p>
+      <p>
+	<code>
+          % pgpk -a KEYS <br/>
+        % pgpv batik-1.5.zip.asc<br/>
+      </code>
+        <em>or</em><br/>
+	<code>
+          % pgp -ka KEYS<br/>
+        % pgp batik-1.5.zip.asc<br/>
+      </code>
+        <em>or</em><br/>
+	<code>
+          % gpg --import KEYS<br/>
+        % gpg --verify batik-1.5.zip.asc
+      </code>
+      </p>
+      <p>
+        Alternatively, you can verify the MD5 signature on the files.
+        A unix program called <code>md5</code> or <code>md5sum</code>
+        is included in many unix distributions.  It is also available
+        as part of <link
+          href="http://www.gnu.org/software/textutils/textutils.html">GNU
+          Textutils</link> .  Windows users can get binary md5 programs
+        from <link href="http://www.fourmilab.ch/md5/">here</link> ,
+        <link
+          href="http://www.pc-tools.net/win32/freeware/console/">here</link>
+        , or <link href="http://www.slavasoft.com/fsum/">here</link> .
+      </p>
+      <p>
+        We recommend using PGP signatures as they can provide a much
+        higher level of assurance compaired with MD5.
+      </p>
+    </s1>
+  </body>
 </document>
