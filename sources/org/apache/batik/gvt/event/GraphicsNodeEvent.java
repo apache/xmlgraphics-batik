@@ -12,41 +12,12 @@ import java.util.EventObject;
 import org.apache.batik.gvt.GraphicsNode;
 
 /**
- * A low-level event which indicates that a node changed visibility or
- * geometry.
+ * A low-level event for GraphicsNode.
  *
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  * @version $Id$
  */
 public class GraphicsNodeEvent extends EventObject implements Cloneable {
-
-    /**
-     * The event mask for selecting composite graphics node events.
-     */
-    public static final int COMPOSITE_GRAPHICS_NODE_EVENT_MASK = 0x02;
-    /**
-     * The event mask for selecting graphics node mouse events.
-     */
-    public static final int GRAPHICS_NODE_MOUSE_EVENT_MASK     = 0x04;
-    /**
-     * The event mask for selecting graphics node key events.
-     */
-    public static final int GRAPHICS_NODE_KEY_EVENT_MASK       = 0x08;
-
-
-    /**
-     * The id for the "graphicsNodeShown" event.
-     */
-    public static final int GRAPHICS_NODE_SHOWN = 0;
-    /**
-     * The id for the "graphicsNodeHidden" event.
-     */
-    public static final int GRAPHICS_NODE_HIDDEN = 1;
-    /**
-     * The id for the "graphicsNodeTransformed" event.
-     */
-    public static final int GRAPHICS_NODE_TRANSFORMED = 2;
-
 
     /** Indicates whether or not this event is consumed. */
     private boolean consumed = false;
