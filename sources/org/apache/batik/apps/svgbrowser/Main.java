@@ -305,9 +305,9 @@ public class Main implements Application {
             = new ApplicationSecurityEnforcer(this.getClass(),
                                               SQUIGGLE_SECURITY_POLICY);
 
-        Authenticator.setDefault(new JAuthenticator());
-                                              
         try {
+            Authenticator.setDefault(new JAuthenticator());
+
             preferenceManager = new XMLPreferenceManager(SQUIGGLE_CONFIGURATION_FILE,
                                                          defaults);
             String dir = System.getProperty(PROPERTY_USER_HOME);
