@@ -96,6 +96,8 @@ public class DOMUtilities extends XMLUtilities {
         case Node.PROCESSING_INSTRUCTION_NODE:
             w.write("<?");
             w.write(n.getNodeName());
+            // TD: Bug #19392
+            w.write(" ");
             w.write(n.getNodeValue());
             w.write("?>");
             break;

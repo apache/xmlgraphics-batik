@@ -509,8 +509,9 @@ public class PNGImageEncoder extends ImageEncoderImpl {
             } else {
                 gamma = 1.0F/2.2F; // SRGB gamma
             }
-
-            cs.writeInt((int)(gamma*100000));
+            // TD should include the .5 but causes regard to say
+            // everything is different.
+            cs.writeInt((int)(gamma*100000/*+0.5*/));
             cs.writeToStream(dataOutput);
         }
     }

@@ -25,7 +25,7 @@ import org.w3c.dom.svg.SVGAElement;
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
-public class SVGAElementBridge extends AbstractGraphicsNodeBridge {
+public class SVGAElementBridge extends SVGGElementBridge {
 
     /**
      * Constructs a new bridge for the &lt;a> element.
@@ -44,13 +44,6 @@ public class SVGAElementBridge extends AbstractGraphicsNodeBridge {
      */
     public Bridge getInstance() {
         return new SVGAElementBridge();
-    }
-
-    /**
-     * Creates a <tt>CompositeGraphicsNode</tt>.
-     */
-    protected GraphicsNode instantiateGraphicsNode() {
-        return new CompositeGraphicsNode();
     }
 
     /**
