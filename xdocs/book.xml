@@ -1,14 +1,13 @@
 <?xml version="1.0"?>
 
-<!-- This is where you write the index of your documentation.
-     I believe it's pretty self-explanatory. -->
-
 <book title="Apache Batik documentation" copyright="2000 The Apache Software Foundation">
-  <page id="index"   label="Index" source="index.xml"/>
-  <page id="license" label="License" source="license.xml"/>
-  <page id="status"  label="Status" source="status.xml" />
+  <page id="index"    label="Overview" source="index.xml"/>
+  <page id="status"   label="Status" source="status.xml" />
+  <separator/>
+  <page id="license"  label="License" source="license.xml"/>
+  <external href="dist" label="Download"/>
+  <separator/>
 <!--
-  <page id="download" label="Download" source="download.xml" />
 <separator/>
   <page id="whoAreWe" label="Who are we?" source="whoAreWe.xml" />
 -->
