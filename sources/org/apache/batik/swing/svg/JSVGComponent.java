@@ -694,7 +694,7 @@ public class JSVGComponent extends JGVTComponent {
     /**
      * Starts a tree builder.
      */
-    private void startGVTTreeBuilder() {
+    protected void startGVTTreeBuilder() {
         gvtTreeBuilder = nextGVTTreeBuilder;
         nextGVTTreeBuilder = null;
         gvtTreeBuilder.start();

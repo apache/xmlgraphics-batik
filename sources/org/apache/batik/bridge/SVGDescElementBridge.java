@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001  The Apache Software Foundation 
+   Copyright 2001,2005  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ import org.w3c.dom.Element;
  * @author <a href="mailto:vhardy@apache.org">Vincent Hardy</a>
  * @version $Id$
  */
-public class SVGDescElementBridge extends AbstractSVGBridge implements GenericBridge {
+public class SVGDescElementBridge extends SVGDescriptiveElementBridge {
 
     /**
      * Constructs a new bridge for the &lt;desc&gt; element.
@@ -39,17 +39,10 @@ public class SVGDescElementBridge extends AbstractSVGBridge implements GenericBr
         return SVG_DESC_TAG;
     }
 
-    /**
-     * Invoked to handle an <tt>Element</tt> for a given <tt>BridgeContext</tt>.
-     * For example, see the <tt>SVGDescElementBridge</tt>.
-     *
-     * @param ctx the bridge context to use
-     * @param e the element that describes the graphics node to build
-     */
-    public void handleElement(BridgeContext ctx, Element e){
-        UserAgent ua = ctx.getUserAgent();
-        ua.handleElement(e, null);
-    }
 
+    /**
+     * Returns a new instance of this bridge.
+     */
+    public Bridge getInstance() { return new SVGDescElementBridge(); }
 }
 

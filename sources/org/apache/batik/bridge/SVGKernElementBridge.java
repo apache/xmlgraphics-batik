@@ -75,19 +75,23 @@ public abstract class SVGKernElementBridge extends AbstractSVGBridge {
                 firstUnicodeRanges.add(new UnicodeRange(token));
             } else {
                 int[] glyphCodes = font.getGlyphCodesForUnicode(token);
-                if (firstGlyphSet == null)
+                if (firstGlyphSet == null) {
                     firstGlyphSet = glyphCodes;
-                else if ((firstGlyphLen + glyphCodes.length) > 
-                         firstGlyphSet.length) {
-                    int sz = firstGlyphSet.length*2;
-                    if (sz <firstGlyphLen + glyphCodes.length)
-                        sz = firstGlyphLen + glyphCodes.length;
-                    int [] tmp = new int[sz];
+                    firstGlyphLen = glyphCodes.length;
+                }else {
+                    if ((firstGlyphLen + glyphCodes.length) > 
+                        firstGlyphSet.length) {
+                        int sz = firstGlyphSet.length*2;
+                        if (sz <firstGlyphLen + glyphCodes.length)
+                            sz = firstGlyphLen + glyphCodes.length;
+                        int [] tmp = new int[sz];
+                        for (int i = 0; i < firstGlyphLen; i++)
+                            tmp[i] = firstGlyphSet[i];
+                        firstGlyphSet = tmp;
+                    }
                     for (int i = 0; i < glyphCodes.length; i++)
-                        tmp[i] = firstGlyphSet[i];
+                        firstGlyphSet[firstGlyphLen++] = glyphCodes[i];
                 }
-                for (int i = 0; i < glyphCodes.length; i++)
-                    firstGlyphSet[firstGlyphLen++] = glyphCodes[i];
             }
         }
         
@@ -99,19 +103,23 @@ public abstract class SVGKernElementBridge extends AbstractSVGBridge {
                 secondUnicodeRanges.add(new UnicodeRange(token));
             } else {
                 int[] glyphCodes = font.getGlyphCodesForUnicode(token);
-                if (secondGlyphSet == null)
+                if (secondGlyphSet == null) {
                     secondGlyphSet = glyphCodes;
-                else if ((secondGlyphLen + glyphCodes.length) > 
-                         secondGlyphSet.length) {
-                    int sz = secondGlyphSet.length*2;
-                    if (sz <secondGlyphLen + glyphCodes.length)
-                        sz = secondGlyphLen + glyphCodes.length;
-                    int [] tmp = new int[sz];
+                    secondGlyphLen = glyphCodes.length;
+                } else {
+                    if ((secondGlyphLen + glyphCodes.length) > 
+                        secondGlyphSet.length) {
+                        int sz = secondGlyphSet.length*2;
+                        if (sz <secondGlyphLen + glyphCodes.length)
+                            sz = secondGlyphLen + glyphCodes.length;
+                        int [] tmp = new int[sz];
+                        for (int i = 0; i < secondGlyphLen; i++)
+                            tmp[i] = secondGlyphSet[i];
+                        secondGlyphSet = tmp;
+                    }
                     for (int i = 0; i < glyphCodes.length; i++)
-                        tmp[i] = secondGlyphSet[i];
+                        secondGlyphSet[secondGlyphLen++] = glyphCodes[i];
                 }
-                for (int i = 0; i < glyphCodes.length; i++)
-                    secondGlyphSet[secondGlyphLen++] = glyphCodes[i];
             }
         }
         
@@ -120,19 +128,23 @@ public abstract class SVGKernElementBridge extends AbstractSVGBridge {
         while (st.hasMoreTokens()) {
             String token = st.nextToken();
             int[] glyphCodes = font.getGlyphCodesForName(token);
-            if (firstGlyphSet == null)
+            if (firstGlyphSet == null) {
                 firstGlyphSet = glyphCodes;
-            else if ((firstGlyphLen + glyphCodes.length) > 
-                     firstGlyphSet.length) {
-                int sz = firstGlyphSet.length*2;
-                if (sz <firstGlyphLen + glyphCodes.length)
-                    sz = firstGlyphLen + glyphCodes.length;
-                int [] tmp = new int[sz];
+                firstGlyphLen = glyphCodes.length;
+            }else {
+                if ((firstGlyphLen + glyphCodes.length) > 
+                    firstGlyphSet.length) {
+                    int sz = firstGlyphSet.length*2;
+                    if (sz <firstGlyphLen + glyphCodes.length)
+                        sz = firstGlyphLen + glyphCodes.length;
+                    int [] tmp = new int[sz];
+                    for (int i = 0; i < firstGlyphLen; i++)
+                        tmp[i] = firstGlyphSet[i];
+                    firstGlyphSet = tmp;
+                }
                 for (int i = 0; i < glyphCodes.length; i++)
-                    tmp[i] = firstGlyphSet[i];
+                    firstGlyphSet[firstGlyphLen++] = glyphCodes[i];
             }
-            for (int i = 0; i < glyphCodes.length; i++)
-                firstGlyphSet[firstGlyphLen++] = glyphCodes[i];
         }
         
         // process the g2 attribute
@@ -140,19 +152,23 @@ public abstract class SVGKernElementBridge extends AbstractSVGBridge {
         while (st.hasMoreTokens()) {
             String token = st.nextToken();
             int[] glyphCodes = font.getGlyphCodesForName(token);
-            if (secondGlyphSet == null)
+            if (secondGlyphSet == null) {
                 secondGlyphSet = glyphCodes;
-            else if ((secondGlyphLen + glyphCodes.length) > 
-                     secondGlyphSet.length) {
-                int sz = secondGlyphSet.length*2;
-                if (sz <secondGlyphLen + glyphCodes.length)
-                    sz = secondGlyphLen + glyphCodes.length;
-                int [] tmp = new int[sz];
+                secondGlyphLen = glyphCodes.length;
+            } else {
+                if ((secondGlyphLen + glyphCodes.length) > 
+                    secondGlyphSet.length) {
+                    int sz = secondGlyphSet.length*2;
+                    if (sz <secondGlyphLen + glyphCodes.length)
+                        sz = secondGlyphLen + glyphCodes.length;
+                    int [] tmp = new int[sz];
+                    for (int i = 0; i < secondGlyphLen; i++)
+                        tmp[i] = secondGlyphSet[i];
+                    secondGlyphSet = tmp;
+                }
                 for (int i = 0; i < glyphCodes.length; i++)
-                    tmp[i] = secondGlyphSet[i];
+                    secondGlyphSet[secondGlyphLen++] = glyphCodes[i];
             }
-            for (int i = 0; i < glyphCodes.length; i++)
-                secondGlyphSet[secondGlyphLen++] = glyphCodes[i];
         }
 
         // construct the arrays
