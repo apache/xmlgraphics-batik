@@ -207,5 +207,6 @@ public class AboutDialog extends JWindow {
               BorderFactory.createEmptyBorder(10, 10, 10, 10))));
         
         getContentPane().add(p);
+        pack();
     }
 }
