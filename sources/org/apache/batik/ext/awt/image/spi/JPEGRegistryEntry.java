@@ -19,6 +19,8 @@ import org.apache.batik.ext.awt.image.GraphicsUtil;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.renderable.RedRable;
 import org.apache.batik.ext.awt.image.renderable.DeferRable;
+import org.apache.batik.ext.awt.image.rendered.Any2sRGBRed;
+import org.apache.batik.ext.awt.image.rendered.CachableRed;
 import org.apache.batik.util.ParsedURL;
 
 public class JPEGRegistryEntry 
@@ -67,7 +69,10 @@ public class JPEGRegistryEntry
                         decoder = JPEGCodec.createJPEGDecoder(is);
                         BufferedImage image;
                         image   = decoder.decodeAsBufferedImage();
-                        filt = new RedRable(GraphicsUtil.wrap(image));
+                        CachableRed cr;
+                        cr = GraphicsUtil.wrap(image);
+                        cr = new Any2sRGBRed(cr);
+                        filt = new RedRable(cr);
                     } catch (IOException ioe) {
                         // Something bad happened here...
                         filt = ImageTagRegistry.getBrokenLinkImage

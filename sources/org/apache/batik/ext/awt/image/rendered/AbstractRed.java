@@ -509,12 +509,13 @@ public abstract class AbstractRed implements CachableRed {
     }
 
     public Raster getData(Rectangle rect) {
-        SampleModel smRet = sm.createCompatibleSampleModel(rect.width,
-                                                           rect.height);
+        SampleModel smRet = sm.createCompatibleSampleModel
+            (rect.width, rect.height);
+
         Point pt = new Point(rect.x, rect.y);
         WritableRaster wr = Raster.createWritableRaster(smRet, pt);
-        // System.out.println("GD DB: " + wr.getDataBuffer().getSize());
 
+        // System.out.println("GD DB: " + wr.getDataBuffer().getSize());
         return copyData(wr);
     }
 

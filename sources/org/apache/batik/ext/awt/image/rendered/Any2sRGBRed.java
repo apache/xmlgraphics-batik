@@ -80,7 +80,7 @@ public class Any2sRGBRed extends AbstractRed {
    }
 
     /**
-     * Gamma for linear to sRGB convertion
+     * Exponent for linear to sRGB convertion
      */
     private static final double GAMMA = 2.4;
 
@@ -145,6 +145,7 @@ public class Any2sRGBRed extends AbstractRed {
     }
 
     public WritableRaster copyData(WritableRaster wr) {
+
         // Get my source.
         CachableRed src   = (CachableRed)getSources().get(0);
         ColorModel  srcCM = src.getColorModel();
@@ -198,17 +199,21 @@ public class Any2sRGBRed extends AbstractRed {
             BandCombineOp op = new BandCombineOp(matrix, null);
             op.filter(srcRas, wr);
         } else {
-            Raster         srcRas = src.getData(wr.getBounds());
-            WritableRaster srcWr  = (WritableRaster)srcRas;
-
             ColorModel dstCM = getColorModel();
-
             if (srcCM.getColorSpace() == dstCM.getColorSpace()) {
                 // No transform needed, just reformat data...
                 // System.out.println("Bypassing");
-                GraphicsUtil.copyData(srcRas, wr);
+
+                if (is_INT_PACK_COMP(srcSM))
+                    src.copyData(wr);
+                else
+                    GraphicsUtil.copyData(src.getData(wr.getBounds()), wr);
+
                 return wr;
             }
+
+            Raster srcRas = src.getData(wr.getBounds());
+            WritableRaster srcWr  = (WritableRaster)srcRas;
 
             // Divide out alpha if we have it.  We need to do this since
             // the color convert may not be a linear operation which may 
@@ -232,13 +237,13 @@ public class Any2sRGBRed extends AbstractRed {
 
             // System.out.println("After filter:");
             
+            WritableRaster wr00 = wr.createWritableTranslatedChild(0,0);
             for (int i=0; i<dstCM.getColorSpace().getNumComponents(); i++)
-                copyBand(dstBI.getRaster(), i, wr,    i);
-                
+                copyBand(dstBI.getRaster(), i, wr00,    i);
+
             if (dstCM.hasAlpha())
                 copyBand(srcWr, srcSM.getNumBands()-1,
                          wr,    getSampleModel().getNumBands()-1);
-
         }
         return wr;
     }
