@@ -9,8 +9,12 @@
 package org.apache.batik.css;
 
 import java.io.StringReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import org.apache.batik.css.value.ValueFactory;
 import org.apache.batik.css.value.ValueFactoryMap;
+
 import org.w3c.css.sac.CSSException;
 import org.w3c.css.sac.DocumentHandler;
 import org.w3c.css.sac.InputSource;
@@ -60,6 +64,11 @@ public class CSSDocumentHandler implements DocumentHandler {
     protected boolean append;
 
     /**
+     * The URI of the current document.
+     */
+    protected String uri;
+
+    /**
      * Sets the parser class name.
      */
     public static void setParserClassName(String name) {
@@ -91,7 +100,7 @@ public class CSSDocumentHandler implements DocumentHandler {
 	    InputSource is = new InputSource(uri);
 	    parser.setSelectorFactory(AbstractCSSRule.SELECTOR_FACTORY);
 	    parser.setConditionFactory(AbstractCSSRule.CONDITION_FACTORY);
-	    parser.setDocumentHandler(new CSSDocumentHandler(ss, true));
+	    parser.setDocumentHandler(new CSSDocumentHandler(ss, uri, true));
 	    parser.parseStyleSheet(is);
 	} catch (Exception e) {
             e.printStackTrace();
@@ -112,7 +121,7 @@ public class CSSDocumentHandler implements DocumentHandler {
 	    Parser parser = ss.getParser();
 	    parser.setSelectorFactory(AbstractCSSRule.SELECTOR_FACTORY);
 	    parser.setConditionFactory(AbstractCSSRule.CONDITION_FACTORY);
-	    parser.setDocumentHandler(new CSSDocumentHandler(ss, true));
+	    parser.setDocumentHandler(new CSSDocumentHandler(ss, null, true));
 	    parser.parseStyleSheet(new InputSource(new StringReader(rules)));
 	} catch (DOMException e) {
 	    throw CSSDOMExceptionFactory.createDOMException
@@ -137,7 +146,7 @@ public class CSSDocumentHandler implements DocumentHandler {
 	    Parser parser = ss.getParser();
 	    parser.setSelectorFactory(AbstractCSSRule.SELECTOR_FACTORY);
 	    parser.setConditionFactory(AbstractCSSRule.CONDITION_FACTORY);
-	    parser.setDocumentHandler(ssh = new CSSDocumentHandler(ss, false));
+	    parser.setDocumentHandler(ssh = new CSSDocumentHandler(ss, null, false));
 	    parser.parseRule(new InputSource(new StringReader(rule)));
 	    return ssh.currentRule;
 	} catch (DOMException e) {
@@ -156,20 +165,21 @@ public class CSSDocumentHandler implements DocumentHandler {
     /**
      * Creates a new handler.
      */
-    protected CSSDocumentHandler(CSSOMStyleSheet ss, boolean append) {
-	this(ss, null, append);
+    protected CSSDocumentHandler(CSSOMStyleSheet ss, String uri, boolean append) {
+	this(ss, uri, null, append);
     }
 
     /**
      * Creates a new handler.
      */
-    protected CSSDocumentHandler(CSSOMStyleSheet ss, CSSRule cr,
+    protected CSSDocumentHandler(CSSOMStyleSheet ss, String uri, CSSRule cr,
                                  boolean append) {
 	parser = ss.getParser();
 	factories = ss.getValueFactoryMap();
 	styleSheet = ss;
 	currentRule = cr;
 	this.append = append;
+        this.uri = uri;
     }
 
     /**
@@ -226,7 +236,12 @@ public class CSSDocumentHandler implements DocumentHandler {
 	for (int i = 0; i < media.getLength(); i++) {
 	    l.appendMedium(media.item(i));
 	}
-	currentRule = new CSSOMImportRule(styleSheet, uri, l);
+        String s = uri;
+        try {
+            s = new URL(new URL(this.uri), uri).toString();
+        } catch (Exception e) {
+        }
+	currentRule = new CSSOMImportRule(styleSheet, s, l);
 	if (append) {
 	    styleSheet.appendRule(currentRule);
 	}

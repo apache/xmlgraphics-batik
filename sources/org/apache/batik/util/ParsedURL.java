@@ -23,17 +23,18 @@ import java.net.MalformedURLException;
 public class ParsedURL {
 
     /**
-         * GZIP header magic number.
-         */
-    public final static byte GZIP_MAGIC[] = {(byte)0x8b, (byte)0x1f};
+     * GZIP header magic number bytes, like found in a gzipped
+     * files, which are encoded in Intel format (ie. little indian).
+     */
+    public final static byte GZIP_MAGIC[] = {(byte)0x1f, (byte)0x8b};
 
     /**
-         * This is a utility function others can call that checks if
-         * is is a GZIP stream if so it returns a GZIPInputStream that
-         * will decode the contents, otherwise it returns (or a
-         * buffered version of is) untouched.
-         * @param is Stream that may potentially be a GZIP stream.
-         */
+     * This is a utility function others can call that checks if
+     * is is a GZIP stream if so it returns a GZIPInputStream that
+     * will decode the contents, otherwise it returns (or a
+     * buffered version of is) untouched.
+     * @param is Stream that may potentially be a GZIP stream.
+     */
     public static InputStream checkGZIP(InputStream is) 
         throws IOException {
 
