@@ -16,8 +16,6 @@
     <!-- Samples tests files                                                     -->
     <!-- ======================================================================= -->
 
-
-
     <testGroup id="tests.spec.interactivity" name="Interactivity Tests"
                class="org.apache.batik.test.svg.JSVGRenderingAccuracyTest">
         <test id="samples/tests/spec/interactivity/cursor.svg" />
@@ -27,18 +25,19 @@
         </test>
     </testGroup>
 
-
     <testGroup id="tests.spec.scripting" name="Interactive Scripting Tests"
                class="org.apache.batik.test.svg.JSVGRenderingAccuracyTest">
         <test id="samples/tests/spec/scripting/bug12933.svg" />
         <test id="samples/tests/spec/scripting/filterPatternUpdate.svg" />
         <test id="samples/tests/spec/scripting/gradientsUpdate.svg" />
         <test id="samples/tests/spec/scripting/imageUpdate.svg" />
+        <test id="samples/tests/spec/scripting/javaBinding.svg" />
         <test id="samples/tests/spec/scripting/markerUpdate.svg" />
         <test id="samples/tests/spec/scripting/maskClipUpdate.svg" />
-        <test id="samples/tests/spec/scripting/removeLast.svg" />
+        <!-- <test id="samples/tests/spec/scripting/removeLast.svg" /> -->
         <test id="samples/tests/spec/scripting/svg.svg" />
         <test id="samples/tests/spec/scripting/svg2.svg" />
+        <test id="samples/tests/spec/scripting/textSelection.svg" />
         <test id="samples/tests/spec/scripting/use.svg" />
     </testGroup>
 
