@@ -69,7 +69,9 @@ public class SAXSVGDocumentFactory
         try {
             doc = (SVGOMDocument)super.createDocument
                 (SVGDOMImplementation.SVG_NAMESPACE_URI, "svg", uri, is);
-            doc.setURLObject(new URL(uri));
+            if (uri != null) {
+                doc.setURLObject(new URL(uri));
+            }
         } catch (MalformedURLException e) {
             throw new IOException(e.getMessage());
         }
@@ -90,7 +92,9 @@ public class SAXSVGDocumentFactory
         try {
             doc = (SVGOMDocument)super.createDocument
                 (SVGDOMImplementation.SVG_NAMESPACE_URI, "svg", uri, is);
-            doc.setURLObject(new URL(uri));
+            if (uri != null) {
+                doc.setURLObject(new URL(uri));
+            }
         } catch (MalformedURLException e) {
             throw new IOException(e.getMessage());
         }
@@ -111,7 +115,9 @@ public class SAXSVGDocumentFactory
         try {
             doc = (SVGOMDocument)super.createDocument
                 (SVGDOMImplementation.SVG_NAMESPACE_URI, "svg", uri, is);
-            doc.setURLObject(new URL(uri));
+            if (uri != null) {
+                doc.setURLObject(new URL(uri));
+            }
         } catch (MalformedURLException e) {
             throw new IOException(e.getMessage());
         }
