@@ -52,11 +52,20 @@
 	<arg class="java.net.URL" value="file:test-references/org/apache/batik/svggen/Color1.svg"/>
         <property name="SaveSVG" class="java.io.File" value="test-references/org/apache/batik/svggen/candidate-ref/Color1.svg" />
     </test>
+
+
     <test class="org.apache.batik.svggen.SVGAccuracyTest">
         <arg class="org.apache.batik.svggen.Color2" />
 	<arg class="java.net.URL" value="file:test-references/org/apache/batik/svggen/Color2.svg"/>
         <property name="SaveSVG" class="java.io.File" value="test-references/org/apache/batik/svggen/candidate-ref/Color2.svg" />
     </test>
+
+    <test class="org.apache.batik.svggen.SVGAccuracyTest">
+        <arg class="org.apache.batik.svggen.DrawImage" />
+	<arg class="java.net.URL" value="file:test-references/org/apache/batik/svggen/DrawImage.svg"/>
+        <property name="SaveSVG" class="java.io.File" value="test-references/org/apache/batik/svggen/candidate-ref/DrawImage.svg" />
+    </test>
+
     <test class="org.apache.batik.svggen.SVGAccuracyTest">
         <arg class="org.apache.batik.svggen.Font1" />
 	<arg class="java.net.URL" value="file:test-references/org/apache/batik/svggen/Font1.svg"/>
@@ -173,11 +182,19 @@
 	<arg class="java.net.URL" value="file:test-references/org/apache/batik/svggen/ContextColor1.svg"/>
         <property name="SaveSVG" class="java.io.File" value="test-references/org/apache/batik/svggen/candidate-ref/ContextColor1.svg" />
     </test>
+
     <test class="org.apache.batik.svggen.GeneratorContext">
         <arg class="org.apache.batik.svggen.Color2" />
 	<arg class="java.net.URL" value="file:test-references/org/apache/batik/svggen/ContextColor2.svg"/>
         <property name="SaveSVG" class="java.io.File" value="test-references/org/apache/batik/svggen/candidate-ref/ContextColor2.svg" />
     </test>
+
+    <test class="org.apache.batik.svggen.GeneratorContext">
+        <arg class="org.apache.batik.svggen.DrawImage" />
+	<arg class="java.net.URL" value="file:test-references/org/apache/batik/svggen/ContextDrawImage.svg"/>
+        <property name="SaveSVG" class="java.io.File" value="test-references/org/apache/batik/svggen/candidate-ref/ContextDrawImage.svg" />
+    </test>
+
     <test class="org.apache.batik.svggen.GeneratorContext">
         <arg class="org.apache.batik.svggen.Font1" />
 	<arg class="java.net.URL" value="file:test-references/org/apache/batik/svggen/ContextFont1.svg"/>
