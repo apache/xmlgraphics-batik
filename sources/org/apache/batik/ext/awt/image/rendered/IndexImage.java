@@ -23,20 +23,18 @@ import java.util.Comparator;
 import java.util.Vector;
 import java.util.Iterator;
 
+import org.apache.batik.ext.awt.image.GraphicsUtil;
+
 /**
- * This implements an adaptive pallete generator to reduce images
- * to 256 colors.
- *
- * This should probably be generalized to create a pallete with any number of
- * colors in it (rather than always 256).  This should be easy to do.
+ * This implements an adaptive pallete generator to reduce images to a
+ * specified number of colors.
  *
  * Ideally this would also support a better dither option than just 
  * the JDK's pattern dither.
  *
  * @author <a href="mailto:deweese@apache.org">Thomas DeWeese</a>
  * @author <a href="mailto:jun@oop-reserch.com">Jun Inamori</a>
- * @version $Id$
- */
+ * @version $Id$ */
 public class IndexImage{
 
     /**
@@ -57,7 +55,8 @@ public class IndexImage{
 
     /**
      * Used to define a cube of the colorspace.  The cube can be split
-     * approximagely in half to generate two cubes.  */
+     * approximagely in half to generate two cubes.  
+     */
     private static class Cube {
         int []min={0, 0, 0}, max={255,255,255};
 
@@ -324,11 +323,14 @@ public class IndexImage{
     /**
      * Converts the input image (must be TYPE_INT_RGB or
      * TYPE_INT_ARGB) to an indexed image.  Generating an adaptive
-     * pallete.  
+     * palette with number of colors specified.
+     * @param bi the image to be processed.
+     * @param nColors number of colors in the palette
      */
-    static public BufferedImage getIndexedImage(BufferedImage bi){
-	int w=bi.getWidth();
-	int h=bi.getHeight();
+    static public BufferedImage getIndexedImage
+        (BufferedImage bi, int nColors) {
+        int w=bi.getWidth();
+        int h=bi.getHeight();
 
         // Using 4 bits from RG & B.
         Vector [] colors = new Vector[1<<12]; 
@@ -368,10 +370,10 @@ public class IndexImage{
 
         int nCubes=1;
         int fCube=0;
-        Cube  [] cubes = new Cube[256];
+        Cube [] cubes = new Cube[nColors];
         cubes[0] = new Cube(colors, w*h);
         
-        while (nCubes < 256) {
+        while (nCubes < nColors) {
             while (cubes[fCube].isDone()) {
                 fCube++;
                 if (fCube == nCubes) break;
@@ -420,41 +422,45 @@ public class IndexImage{
         }
         BufferedImage indexed;
 
+
+        // The JDK doesn't seem to dither the image correctly if I go
+        // below 8bits per pixel.  So I dither to an 8bit pallete
+        // image that only has nCubes colors.  Then I copy the data to
+        // a lower bit depth image that I return.
         IndexColorModel icm=new IndexColorModel(8,nCubes,r,g,b);
         indexed =new BufferedImage
             (w, h, BufferedImage.TYPE_BYTE_INDEXED, icm);
+        Graphics2D g2d=indexed.createGraphics();
+        g2d.setRenderingHint
+            (RenderingHints.KEY_DITHERING,
+             RenderingHints.VALUE_DITHER_ENABLE);
+        g2d.drawImage(bi, 0, 0, null);
+        g2d.dispose();
 
-        /*
-            // The JDK doesn't seem to dither the image correctly if
-            // I go below 8bits per pixel.  Otherwise this code should
-            // work.
+
         int bits;
         for (bits=1; bits <=8; bits++) {
             if ((1<<bits) >= nCubes) break;
         }
-        System.out.println("Bits: " + bits + " Cubes: " + nCubes);
-        if (bits > 4) {
-            bits = 8;
-            IndexColorModel icm=new IndexColorModel(8,nCubes,r,g,b);
-            indexed =new BufferedImage
-                (w, h, BufferedImage.TYPE_BYTE_INDEXED, icm);
-        } else {
-            if (bits ==3) bits = 4;
-            ColorModel cm=new IndexColorModel(bits,nCubes,r,g,b);
-            SampleModel sm = new MultiPixelPackedSampleModel
-                (DataBuffer.TYPE_BYTE, w, h, bits);
-            WritableRaster ras = Raster.createWritableRaster
-                (sm, new Point(0,0));
-            indexed = new BufferedImage(cm, ras, 
-                                        bi.isAlphaPremultiplied(), null);
-        }
-        */
+        // System.out.println("Bits: " + bits + " Cubes: " + nCubes);
 
-	Graphics2D g2d=indexed.createGraphics();
-	g2d.setRenderingHint
-            (RenderingHints.KEY_DITHERING,RenderingHints.VALUE_DITHER_ENABLE);
-	g2d.drawImage(bi, 0, 0, null);
-        g2d.dispose();
+        if (bits > 4)
+            // 8 bit image we are done...
+            return indexed;
+
+        // Create our low bit depth image...
+        if (bits ==3) bits = 4;
+        ColorModel cm=new IndexColorModel(bits,nCubes,r,g,b);
+        SampleModel sm = new MultiPixelPackedSampleModel
+            (DataBuffer.TYPE_BYTE, w, h, bits);
+        WritableRaster ras = Raster.createWritableRaster
+            (sm, new Point(0,0));
+
+        // Copy the data to the low bitdepth image.
+        bi = indexed;
+        indexed = new BufferedImage(cm, ras, 
+                                    bi.isAlphaPremultiplied(), null);
+        GraphicsUtil.copyData(bi, indexed);
         return indexed;
     }
 }
