@@ -687,6 +687,14 @@ public abstract class SVGStylableElement
 
             int i = 0;
             int idx = cssEngine.getPropertyIndex(name);
+            if (i == -1) {
+                i = cssEngine.getShorthandIndex(name);
+                if (i == -1) {
+                    return; // Unknown property
+                }
+                // TODO: Really need to set the short property properties.
+                return;
+            }
             for (; i < declaration.size(); i++) {
                 if (idx == declaration.getIndex(i))
                     break;

@@ -217,7 +217,7 @@ public class CSSOMComputedStyle implements CSSStyleDeclaration {
     /**
      * To manage a computed CSSValue.
      */
-    protected class ComputedCSSValue
+    public class ComputedCSSValue
         extends CSSOMValue
         implements CSSOMValue.ValueProvider {
         

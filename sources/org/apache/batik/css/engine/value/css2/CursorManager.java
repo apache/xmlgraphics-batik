@@ -51,16 +51,19 @@
 package org.apache.batik.css.engine.value.css2;
 
 import org.apache.batik.css.engine.CSSEngine;
+import org.apache.batik.css.engine.CSSStylableElement;
+import org.apache.batik.css.engine.StyleMap;
 import org.apache.batik.css.engine.value.AbstractValueManager;
 import org.apache.batik.css.engine.value.ListValue;
 import org.apache.batik.css.engine.value.StringMap;
-import org.apache.batik.css.engine.value.StringValue;
+import org.apache.batik.css.engine.value.URIValue;
 import org.apache.batik.css.engine.value.Value;
 import org.apache.batik.css.engine.value.ValueConstants;
 import org.apache.batik.util.CSSConstants;
 import org.w3c.css.sac.LexicalUnit;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.css.CSSPrimitiveValue;
+import org.w3c.dom.css.CSSValue;
 
 /**
  * This class provides a manager for the 'cursor' property values.
@@ -142,10 +145,9 @@ public class CursorManager extends AbstractValueManager {
 
         case LexicalUnit.SAC_URI:
             do {
-                result.append
-                    (new StringValue(CSSPrimitiveValue.CSS_URI,
-                                     resolveURI(engine.getCSSBaseURI(),
-                                                lu.getStringValue())));
+                result.append(new URIValue(lu.getStringValue(),
+                                           resolveURI(engine.getCSSBaseURI(),
+                                                      lu.getStringValue())));
                 lu = lu.getNextLexicalUnit();
                 if (lu == null) {
                     throw createMalformedLexicalUnitDOMException();
@@ -181,4 +183,34 @@ public class CursorManager extends AbstractValueManager {
         }
         return result;
     }
+
+    /**
+     * Implements {@link
+     * ValueManager#computeValue(CSSStylableElement,String,CSSEngine,int,StyleMap,Value)}.
+     */
+    public Value computeValue(CSSStylableElement elt,
+                              String pseudo,
+                              CSSEngine engine,
+                              int idx,
+                              StyleMap sm,
+                              Value value) {
+        if (value.getCssValueType() == CSSValue.CSS_VALUE_LIST) {
+            ListValue lv = (ListValue)value;
+            int len = lv.getLength();
+            ListValue result = new ListValue(' ');
+            for (int i=0; i<len; i++) {
+                Value v = lv.item(0);
+                if (v.getPrimitiveType() == CSSPrimitiveValue.CSS_URI) {
+                    // Reveal the absolute value as the cssText now.
+                    result.append(new URIValue(v.getStringValue(),
+                                               v.getStringValue()));
+                } else {
+                    result.append(v);
+                }
+            }
+            return result;
+        }
+        return super.computeValue(elt, pseudo, engine, idx, sm, value);
+    }
+
 }

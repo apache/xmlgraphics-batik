@@ -55,6 +55,7 @@ import org.apache.batik.css.engine.value.IdentifierManager;
 import org.apache.batik.css.engine.value.ListValue;
 import org.apache.batik.css.engine.value.StringMap;
 import org.apache.batik.css.engine.value.StringValue;
+import org.apache.batik.css.engine.value.URIValue;
 import org.apache.batik.css.engine.value.Value;
 import org.apache.batik.css.engine.value.ValueConstants;
 import org.apache.batik.util.CSSConstants;
@@ -142,7 +143,7 @@ public class SrcManager extends IdentifierManager {
                 String uri = resolveURI(engine.getCSSBaseURI(), 
                                         lu.getStringValue());
                 
-                result.append(new StringValue(CSSPrimitiveValue.CSS_URI, uri));
+                result.append(new URIValue(lu.getStringValue(), uri));
                 lu = lu.getNextLexicalUnit();
                 if ((lu != null) && 
                     (lu.getLexicalUnitType() == LexicalUnit.SAC_FUNCTION)) {

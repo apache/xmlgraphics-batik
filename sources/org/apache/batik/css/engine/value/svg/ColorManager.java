@@ -665,4 +665,6 @@ public class ColorManager extends AbstractColorManager {
     public Value getDefaultValue() {
         return DEFAULT_VALUE;
     }
+
+
 }
