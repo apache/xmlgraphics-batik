@@ -280,9 +280,32 @@ public class SVGOMSVGElement
     public SVGAngle               createSVGAngle (  ) {
         throw new Error();
     }
-    public SVGPoint               createSVGPoint (  ) {
-        throw new Error();
+
+    /**
+     * <b>DOM</b>: Implements {@link SVGSVGElement#createSVGPoint()}.
+     */
+    public SVGPoint createSVGPoint() {
+        return new SVGPoint() {
+                float x;
+                float y;
+                public float getX() {
+                    return x;
+                }
+                public void setX(float x) throws DOMException {
+                    this.x = x;
+                }
+                public float getY() {
+                    return y;
+                }
+                public void setY(float y) throws DOMException {
+                    this.y = y;
+                }
+                public SVGPoint matrixTransform(SVGMatrix matrix) {
+                    throw new RuntimeException("!!! TODO: matrixTransform()");
+                }
+            };
     }
+
     public SVGMatrix              createSVGMatrix (  ) {
         throw new Error();
     }
