@@ -412,7 +412,8 @@ public class DisplacementMapRed extends AbstractRed {
                 sp0  = (pel01>>>16) & 0xFF00;
                 sp1  = (pel11>>>16) & 0xFF00;
                 pel1 = (sp0 + (((sp1-sp0)*xFrac)>>15)) & 0xFFFF;
-                newPel = (((pel0<<15) + (pel1-pel0)*yFrac)&0x7F800000)<<  1;
+                newPel = (((pel0<<15) + (pel1-pel0)*yFrac + 0x00400000)
+                          &0x7F800000)<<  1;
 
                 // Combine the red channels.
                 sp0  = (pel00>>  8) & 0xFF00;
@@ -421,7 +422,8 @@ public class DisplacementMapRed extends AbstractRed {
                 sp0  = (pel01>>  8) & 0xFF00;
                 sp1  = (pel11>>  8) & 0xFF00;
                 pel1 = (sp0 + (((sp1-sp0)*xFrac)>>15)) & 0xFFFF;
-                newPel |= (((pel0<<15) + (pel1-pel0)*yFrac)&0x7F800000)>>> 7;
+                newPel |= (((pel0<<15) + (pel1-pel0)*yFrac + 0x00400000)
+                           &0x7F800000)>>> 7;
 
                 // Combine the green channels.
                 sp0  = (pel00     ) & 0xFF00;
@@ -430,7 +432,8 @@ public class DisplacementMapRed extends AbstractRed {
                 sp0  = (pel01     ) & 0xFF00;
                 sp1  = (pel11     ) & 0xFF00;
                 pel1 = (sp0 + (((sp1-sp0)*xFrac)>>15)) & 0xFFFF;
-                newPel |= (((pel0<<15) + (pel1-pel0)*yFrac)&0x7F800000)>>>15;
+                newPel |= (((pel0<<15) + (pel1-pel0)*yFrac + 0x00400000)
+                           &0x7F800000)>>>15;
 
                 // Combine the blue channels.
                 sp0  = (pel00<<  8) & 0xFF00;
@@ -439,7 +442,8 @@ public class DisplacementMapRed extends AbstractRed {
                 sp0  = (pel01<<  8) & 0xFF00;
                 sp1  = (pel11<<  8) & 0xFF00;
                 pel1 = (sp0 + (((sp1-sp0)*xFrac)>>15)) & 0xFFFF;
-                newPel |= (((pel0<<15) + (pel1-pel0)*yFrac)&0x7F800000)>>>23;
+                newPel |= (((pel0<<15) + (pel1-pel0)*yFrac + 0x00400000)
+                           &0x7F800000)>>>23;
 
                 dstPixels[dp] = newPel;
             }
@@ -517,7 +521,7 @@ public class DisplacementMapRed extends AbstractRed {
         int sp0, sp1, pel0, pel1, a00, a01, a10, a11;
 
         int x, y, x0, y0, xDisplace, yDisplace, dPel;
-        final int norm = (1<<16)/255;
+        final int norm = (1<<24)/255;
 
         int xt=xTile[0]-1, yt=yTile[0]-1, xt1, yt1;
         int [] imgPix = null;
@@ -594,15 +598,16 @@ public class DisplacementMapRed extends AbstractRed {
                 sp0  = (pel00>>>16) & 0xFF00;
                 sp1  = (pel10>>>16) & 0xFF00;
                 pel0 = (sp0 + (((sp1-sp0)*xFrac)>>15)) & 0xFFFF;
-                a00 = (sp0>>8)*norm;
-                a10 = (sp1>>8)*norm;
+                a00 = ((sp0>>8)*norm + 0x80)>>8;
+                a10 = ((sp1>>8)*norm + 0x80)>>8;
 
                 sp0  = (pel01>>>16) & 0xFF00;
                 sp1  = (pel11>>>16) & 0xFF00;
                 pel1 = (sp0 + (((sp1-sp0)*xFrac)>>15)) & 0xFFFF;
-                a01 = (sp0>>8)*norm;
-                a11 = (sp1>>8)*norm;
-                newPel = (((pel0<<15) + (pel1-pel0)*yFrac)&0x7F800000)<<  1;
+                a01 = ((sp0>>8)*norm + 0x80)>>8;
+                a11 = ((sp1>>8)*norm + 0x80)>>8;
+                newPel = (((pel0<<15) + (pel1-pel0)*yFrac + 0x00400000)
+                          &0x7F800000)<<  1;
 
                 // Combine the red channels.
                 sp0  = ((((pel00>> 16) & 0xFF)*a00)>>8) & 0xFF00;
@@ -611,7 +616,8 @@ public class DisplacementMapRed extends AbstractRed {
                 sp0  = ((((pel01>> 16) & 0xFF)*a01)>>8) & 0xFF00;
                 sp1  = ((((pel11>> 16) & 0xFF)*a11)>>8) & 0xFF00;
                 pel1 = (sp0 + (((sp1-sp0)*xFrac)>>15)) & 0xFFFF;
-                newPel |= (((pel0<<15) + (pel1-pel0)*yFrac)&0x7F800000)>>> 7;
+                newPel |= (((pel0<<15) + (pel1-pel0)*yFrac + 0x00400000)
+                           &0x7F800000)>>> 7;
 
                 // Combine the green channels.
                 sp0  = ((((pel00>> 8) & 0xFF)*a00)>>8) & 0xFF00;
@@ -620,7 +626,8 @@ public class DisplacementMapRed extends AbstractRed {
                 sp0  = ((((pel01>> 8) & 0xFF)*a01)>>8) & 0xFF00;
                 sp1  = ((((pel11>> 8) & 0xFF)*a11)>>8) & 0xFF00;
                 pel1 = (sp0 + (((sp1-sp0)*xFrac)>>15)) & 0xFFFF;
-                newPel |= (((pel0<<15) + (pel1-pel0)*yFrac)&0x7F800000)>>>15;
+                newPel |= (((pel0<<15) + (pel1-pel0)*yFrac + 0x00400000)
+                           &0x7F800000)>>>15;
 
                 // Combine the blue channels.
                 sp0  = (((pel00 & 0xFF)*a00)>>8) & 0xFF00;
@@ -629,7 +636,8 @@ public class DisplacementMapRed extends AbstractRed {
                 sp0  = (((pel01 & 0xFF)*a01)>>8) & 0xFF00;
                 sp1  = (((pel11 & 0xFF)*a11)>>8) & 0xFF00;
                 pel1 = (sp0 + (((sp1-sp0)*xFrac)>>15)) & 0xFFFF;
-                newPel |= (((pel0<<15) + (pel1-pel0)*yFrac)&0x7F800000)>>>23;
+                newPel |= (((pel0<<15) + (pel1-pel0)*yFrac + 0x00400000)
+                           &0x7F800000)>>>23;
 
                 dstPixels[dp] = newPel;
             }
