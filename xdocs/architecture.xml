@@ -28,30 +28,30 @@
             <p>This document briefly describes the Batik architecture and the role of each of 
             its modules. For detailed module design, you can refer to the 
             <link href="http://opensource.objectsbydesign.com/batik/index.html">Batik UML diagrams.</link></p>
-            <p>There are three types of components in the Batik archtitecture:</p>
+            <p>There are three types of modules in the Batik archtitecture:</p>
             <ul>
-                <li><link href="#applicationComponents">Application Components</link></li>
-                <li><link href="#coreComponents">Core Components</link></li>
-                <li><link href="#lowLevelComponents">Low Level Components</link></li>
+                <li><link href="#applicationComponents">Application Modules</link></li>
+                <li><link href="#coreComponents">Core Modules</link></li>
+                <li><link href="#lowLevelComponents">Low Level Modules</link></li>
             </ul>
-            <p>The following figure illustrates these three components types. </p>
+            <p>The following figure illustrates these three module types. </p>
             <figure src="images/HighLevelArchitecture.png" alt="Batik Architecture" />
-            <p>Application Components illustrate how to use
-            the Core Components and let users evaluate the Batik software easily by experimenting
+            <p>Application Modules illustrate how to use
+            the Core Modules and let users evaluate the Batik software easily by experimenting
             with its features.</p>
-            <p>The Core Components are the heart of Batik and the primary deliverables for the 
-            projects. These are the components that developers use to manipulate, generate, create, 
+            <p>The Core Modules are the heart of Batik and the primary deliverables for the 
+            projects. These are the modules that developers use to manipulate, generate, create, 
             convert and render SVG content</p>
-            <p>Finally, the Low Level Components are used internally by the Core Components to 
-            accomplish their work. These components are not typically used by developers directly.</p> 
+            <p>Finally, the Low Level Modules are used internally by the Core Modules to 
+            accomplish their work. These modules are not typically used by developers directly.</p> 
         </s1>
 
         <anchor id="applicationComponents" />
-        <s1 title="Application Components">
-            <p>As mentioned earlier, the Application Components illustrate the functionalities that Batik
+        <s1 title="Application Modules">
+            <p>As mentioned earlier, the Application Modules illustrate the functionalities that Batik
             offers. </p>
             <p>For example, the <link href="svgviewer.html">SVG Browser</link> is built using several
-            Batik Core Components (such as the <code>JSVGCanvas</code> GUI component or the <code>ImageTranscoder</code>s)
+            Batik Core Modules (such as the <code>JSVGCanvas</code> GUI component or the <code>ImageTranscoder</code>s)
             and illustrates how Batik lets you view, zoom, pan and rotate SVG documents, but also search them
             and convert them to other formats (such as JPEG or PNG).</p>
             <p>The <link href="svgpp">SVG Pretty Printer</link> is another example that shows how Batik
@@ -63,15 +63,15 @@
             <p>Finally, the <link href="svgrasterizer.html">SVG Rasterizer</link> shows how to leverage the     
             <link href="rasterizerTutorial">Transcoder API</link> to convert to and from SVG content</p> 
             <p>
-            Note that even though the Application Components are meant to be usefull and fun to use, they
+            Note that even though the Application Modules are meant to be usefull and fun to use, they
             are not the primary deliverables of the Batik project. Instead, they are illustrations of how the
-            Batik core components might be used and combined.</p>
+            Batik core modules might be used and combined.</p>
         </s1>
 
         <anchor id="coreComponents" />
-        <s1 title="Core Components">
-            <p>The Batik core components are the heart of the Batik architecture. They can be used individually
-            or in combinations for various purposes, and the <link href="#applicationComponents">Application Components</link>
+        <s1 title="Core Modules">
+            <p>The Batik core modules are the heart of the Batik architecture. They can be used individually
+            or in combinations for various purposes, and the <link href="#applicationComponents">Application Modules</link>
             offer some usage examples.
             </p>
             <ul>
@@ -82,16 +82,16 @@
                 in the SVG recommendation. It lets the programmer manipulate SVG documents in a Java program.</li>
                 <li><link href="jsvgcanvas.html"><code>JSVGCanvas</code></link> is a UI component that can display
                 SVG content and let the user interact with that content (zoom, pan, rotate, text selection, etc...)</li>
-                <li><code>Bridge</code> this component, more rarely used directly, can convert an
+                <li><code>Bridge</code> this module, more rarely used directly, can convert an
                 SVG document into the internal representation Batik uses for graphics, based on the 
                 Graphic Vector Toolkit, GVT</li>
             </ul>
         </s1>
 
         <anchor id="lowLevelComponents" />
-        <s1 title="Low Level Components">
-            <p>The Low Level Components are not expected to be used directly by developers using the Batik
-            API. Rather, they are supporting the operation of the Core Components. The Low Level Components
+        <s1 title="Low Level Modules">
+            <p>The Low Level Modules are not expected to be used directly by developers using the Batik
+            API. Rather, they are supporting the operation of the Core Modules. The Low Level Modules
             include:</p>
             <ul>
                 <li>The <code>Graphic Vector Toolkit</code> (GVT), which represents a view of the DOM tree
