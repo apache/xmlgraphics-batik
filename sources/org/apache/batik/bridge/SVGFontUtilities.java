@@ -243,5 +243,4 @@ public abstract class SVGFontUtilities implements SVGConstants {
         }
         return fontWeight;
     }
-
 }

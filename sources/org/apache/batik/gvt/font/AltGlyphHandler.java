@@ -18,6 +18,7 @@ import java.awt.font.FontRenderContext;
  */
 public interface AltGlyphHandler {
 
-   public GVTGlyphVector createGlyphVector(FontRenderContext frc, float fontSize);
+    GVTGlyphVector createGlyphVector(FontRenderContext frc,
+                                     float fontSize);
 
 }

@@ -111,5 +111,5 @@ public class SVGTextPathElementBridge extends AbstractSVGBridge
     public String getLocalName() {
         return SVG_TEXT_PATH_TAG;
     }
-
 }
+

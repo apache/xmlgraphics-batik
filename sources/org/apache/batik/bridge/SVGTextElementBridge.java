@@ -1079,6 +1079,6 @@ public class SVGTextElementBridge extends AbstractSVGBridge
 
         return result;
     }
-
-
 }
+
+

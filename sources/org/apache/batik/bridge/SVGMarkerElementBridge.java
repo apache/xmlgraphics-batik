@@ -30,7 +30,6 @@ import org.w3c.dom.css.CSSPrimitiveValue;
 import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.CSSValue;
 import org.w3c.dom.css.ViewCSS;
-import org.w3c.dom.svg.SVGElement;
 
 /**
  * Bridge class for the &lt;marker> element.
