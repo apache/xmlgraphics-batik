@@ -24,6 +24,7 @@ import java.util.Vector;
 import java.util.Iterator;
 
 import org.apache.batik.gvt.*;
+import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
 import org.apache.batik.gvt.event.EventDispatcher;
 import org.apache.batik.gvt.event.GraphicsNodeEvent;
 import org.apache.batik.gvt.event.GraphicsNodeMouseEvent;
@@ -31,7 +32,8 @@ import org.apache.batik.gvt.event.GraphicsNodeEventFilter;
 import org.apache.batik.gvt.event.GraphicsNodeMouseListener;
 import org.apache.batik.refimpl.gvt.ConcreteGVTFactory;
 import org.apache.batik.refimpl.gvt.event.ConcreteEventDispatcher;
-import org.apache.batik.refimpl.gvt.renderer.BasicTextPainter;
+import org.apache.batik.refimpl.gvt.renderer.StrokingTextPainter;
+import org.apache.batik.refimpl.gvt.filter.ConcreteGraphicsNodeRableFactory;
 
 /**
  * SimpleTextDemo.java: 
@@ -42,50 +44,42 @@ import org.apache.batik.refimpl.gvt.renderer.BasicTextPainter;
  * @version $Id$
  */
 public class SimpleTextDemo implements GVTDemoSetup {
+    
+    GraphicsNodeRenderContext renderContext;
 
-        GraphicsNodeRenderContext renderContext = null;
-    /*
-      // !!! Bill: GraphicsNodeRenderContext has changed.
-
-            new GraphicsNodeRenderContext () {
-                private final AffineTransform identity = new AffineTransform();
-                private RenderContext renderableContext = 
-                        new RenderContext(identity);
-                private FontRenderContext fontRenderContext = 
-                        new FontRenderContext(identity, true, true);
-                public RenderContext getRenderContext() {
-                    return renderableContext;
-                }
-                public FontRenderContext getFontRenderContext() {
-                    return fontRenderContext;
-                }
-                public TextPainter getTextPainter() {
-                    return new BasicTextPainter();
-                }
-                public FilterContext getFilterContext() {
-                    return null; // FIXME
-                }
-                public RenderableImage getSourceGraphicsNode(
-                                               GraphicsNode node) {
-                    return null; // FIXME
-                } 
-	};
-    */
-
+ 
     CanvasGraphicsNode canvas = null;
 
-    private Graphics2D graphics2d = null;
-
     public void initGraphics2d(Graphics2D g2d) {
-	this.graphics2d = g2d;
-	// FIXME: passing the params is a hack until the Selector
-	// is integrated into the larget GVT/Bridge universe.
+	// FIXME: passing the graphics2d is a hack until the Selector
+	// is integrated into the larger GVT/Bridge universe.
 	if (selector != null) {
-	    selector.setGraphics2D(graphics2d);
+	    selector.setGraphics2D(g2d);
 	}
     }
 
     public GraphicsNodeRenderContext createGraphicsContext() {
+        RenderingHints hints = new RenderingHints(null);
+        hints.put(RenderingHints.KEY_ANTIALIASING,
+                  RenderingHints.VALUE_ANTIALIAS_ON);
+
+        hints.put(RenderingHints.KEY_INTERPOLATION,
+                  RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+
+        FontRenderContext fontRenderContext = 
+	    new FontRenderContext(new AffineTransform(), true,true);
+        TextPainter textPainter = new StrokingTextPainter();
+
+        GraphicsNodeRableFactory gnrFactory = 
+	    new ConcreteGraphicsNodeRableFactory();
+
+        renderContext =
+            new GraphicsNodeRenderContext(new AffineTransform(),
+                                          null,
+                                          hints,
+                                          fontRenderContext,
+                                          textPainter,
+                                          gnrFactory);
         return renderContext;
     }
 
