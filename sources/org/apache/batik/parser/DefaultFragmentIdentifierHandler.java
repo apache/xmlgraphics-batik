@@ -43,7 +43,6 @@ public class DefaultFragmentIdentifierHandler
      *                           fragment identifier
      */
     public void idReference(String s) throws ParseException {
-
     }
 
     /**
@@ -54,17 +53,108 @@ public class DefaultFragmentIdentifierHandler
      */
     public void viewBox(float x, float y, float width, float height)
         throws ParseException {
-
     }
 
     /**
-     * Invoked when 'viewTarget(name)' has been parsed.
+     * Invoked when a view target specification starts.
+     * @exception ParseException if an error occured while processing the
+     *                           fragment identifier
+     */
+    public void startViewTarget() throws ParseException {
+    }
+
+    /**
+     * Invoked when a view target component has been parsed.
      * @param name the target name.
      * @exception ParseException if an error occured while processing the
      *                           fragment identifier
      */
     public void viewTarget(String name) throws ParseException {
+    }
 
+    /**
+     * Invoked when a view target specification ends.
+     * @exception ParseException if an error occured while processing the
+     *                           fragment identifier
+     */
+    public void endViewTarget() throws ParseException {
+    }
+
+    /**
+     * Implements {@link TransformListHandler#startTransformList()}.
+     */
+    public void startTransformList() throws ParseException {
+    }
+
+    /**
+     * Implements {@link
+     * TransformListHandler#matrix(float,float,float,float,float,float)}.
+     */
+    public void matrix(float a, float b, float c, float d, float e, float f)
+	throws ParseException {
+    }
+
+    /**
+     * Implements {@link TransformListHandler#rotate(float)}.
+     */
+    public void rotate(float theta) throws ParseException {
+    }
+
+    /**
+     * Implements {@link TransformListHandler#rotate(float,float,float)}.
+     */
+    public void rotate(float theta, float cx, float cy) throws ParseException {
+    }
+
+    /**
+     * Implements {@link TransformListHandler#translate(float)}.
+     */
+    public void translate(float tx) throws ParseException {
+    }
+
+    /**
+     * Implements {@link TransformListHandler#translate(float,float)}.
+     */
+    public void translate(float tx, float ty) throws ParseException {
+    }
+
+    /**
+     * Implements {@link TransformListHandler#scale(float)}.
+     */
+    public void scale(float sx) throws ParseException {
+    }
+
+    /**
+     * Implements {@link TransformListHandler#scale(float,float)}.
+     */
+    public void scale(float sx, float sy) throws ParseException {
+    }
+
+    /**
+     * Implements {@link TransformListHandler#skewX(float)}.
+     */
+    public void skewX(float skx) throws ParseException {
+    }
+
+    /**
+     * Implements {@link TransformListHandler#skewY(float)}.
+     */
+    public void skewY(float sky) throws ParseException {
+    }
+
+    /**
+     * Implements {@link TransformListHandler#endTransformList()}.
+     */
+    public void endTransformList() throws ParseException {
+    }
+
+    /**
+     * Invoked when a 'zoomAndPan' specification has been parsed.
+     * @param magnify true if 'magnify' has been parsed.
+     * @exception ParseException if an error occured while processing the
+     *                           fragment identifier
+     */
+    public void zoomAndPan(boolean magnify) {
     }
 
     /**
