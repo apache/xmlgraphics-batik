@@ -554,7 +554,8 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
         // sb.append("\" k=\"");
         sb.append(XML_CHAR_QUOT).append(XML_SPACE).append(SVG_K_ATTRIBUTE).append(XML_EQUAL_QUOT);
 
-        sb.append(kp.getValue());
+        // SVG kerning values are inverted from TrueType's.
+        sb.append(-kp.getValue());
         // sb.append("\"/>");
         sb.append(XML_CHAR_QUOT).append(XML_OPEN_TAG_END_NO_CHILDREN);
 
