@@ -126,7 +126,8 @@ public class SVGGlyphElementBridge extends AbstractSVGBridge
         Shape dShape = null;
         if (d.length() != 0) {
             AWTPathProducer app = new AWTPathProducer();
-            app.setWindingRule(CSSUtilities.convertFillRule(glyphElement));
+            // Glyph is supposed to use properties from text element.
+            app.setWindingRule(CSSUtilities.convertFillRule(textElement));
             try {
                 PathParser pathParser = new PathParser();
                 pathParser.setPathHandler(app);

@@ -106,7 +106,7 @@ public class SVGOMFEPointLightElement
      * <b>DOM</b>: Implements {@link SVGFEPointLightElement#getZ()}.
      */
     public SVGAnimatedNumber getZ() {
-        return getAnimatedNumberAttribute(null, SVG_Y_ATTRIBUTE, 0f);
+        return getAnimatedNumberAttribute(null, SVG_Z_ATTRIBUTE, 0f);
     }
 
     /**

@@ -618,6 +618,7 @@ public class RectListManager implements Collection {
     }
 
     public void mergeRects(int overhead, int lineOverhead) {
+        if (size == 0) return;
         Rectangle r, cr, mr;
         int cost1, cost2, cost3;
         mr = new Rectangle();
@@ -708,6 +709,7 @@ public class RectListManager implements Collection {
         }
         size = j;
         r = getBounds();
+        if (r == null) return;
         if (overhead + (r.height*lineOverhead) + (r.height*r.width) < area) {
             rects[0] = r;
             size=1;
