@@ -53,9 +53,11 @@ import javax.swing.Action;
 import javax.swing.JComponent;
 
 import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.bridge.BridgeException;
 import org.apache.batik.bridge.BridgeMutationEvent;
-import org.apache.batik.bridge.GraphicsNodeBridge;
+import org.apache.batik.bridge.BuilderException;
 import org.apache.batik.bridge.GVTBuilder;
+import org.apache.batik.bridge.GraphicsNodeBridge;
 import org.apache.batik.bridge.UserAgent;
 import org.apache.batik.bridge.UserAgentViewport;
 
@@ -475,8 +477,8 @@ public class JSVGCanvas
             setCursor(WAIT_CURSOR);
             backgroundBuilderThread = new Thread() {
                 public void run() {
+                    GraphicsNode root = null;
                     try {
-                        GraphicsNode root;
                         BridgeContext bridgeContext = createBridgeContext(doc);
                         bridgeContext.setViewCSS(
                            (ViewCSS)((SVGOMDocument)doc).getDefaultView());
@@ -485,8 +487,13 @@ public class JSVGCanvas
                         if (Thread.currentThread().isInterrupted()) {
                             throw new InterruptedException();
                         }
-                        root = builder.build(bridgeContext, doc);
-                        initSelectors(root);
+                        try {
+                            root = builder.build(bridgeContext, doc);
+                            initSelectors(root);
+                        } catch (BuilderException ex) {
+                            userAgent.displayError(ex);
+                            root = ex.getRootGraphicsNode();
+                        }
                         bridgeContext.getDocumentLoader().dispose();
                         long t2 = System.currentTimeMillis();
 
@@ -505,7 +512,6 @@ public class JSVGCanvas
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    //requestCursor(NORMAL_CURSOR); Don't reset until buffer paint completes.
                 }
             };
             backgroundBuilderThread.setPriority(Thread.MIN_PRIORITY);

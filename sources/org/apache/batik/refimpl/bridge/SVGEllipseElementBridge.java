@@ -14,6 +14,7 @@ import java.awt.geom.Ellipse2D;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.IllegalAttributeValueException;
 import org.apache.batik.bridge.MissingAttributeException;
+import org.apache.batik.gvt.ShapeNode;
 import org.apache.batik.refimpl.bridge.resources.Messages;
 import org.apache.batik.util.UnitProcessor;
 
@@ -31,10 +32,11 @@ public class SVGEllipseElementBridge extends SVGShapeElementBridge {
     /**
      * Returns a <tt>Ellipse2D.Float</tt>.
      */
-    protected Shape createShape(BridgeContext ctx,
-                                SVGElement svgElement,
-                                CSSStyleDeclaration decl,
-                                UnitProcessor.Context uctx) {
+    protected void buildShape(BridgeContext ctx,
+                              SVGElement svgElement,
+                              ShapeNode node,
+                              CSSStyleDeclaration decl,
+                              UnitProcessor.Context uctx) {
 
         // parse the cx attribute, (default is 0)
         String s = svgElement.getAttributeNS(null, ATTR_CX);
@@ -92,6 +94,6 @@ public class SVGEllipseElementBridge extends SVGShapeElementBridge {
 
         float x = cx - rx;
         float y = cy - ry;
-        return new Ellipse2D.Float(x, y, rx*2, ry*2);
+        node.setShape(new Ellipse2D.Float(x, y, rx*2, ry*2));
     }
 }

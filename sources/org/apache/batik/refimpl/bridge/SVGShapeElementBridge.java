@@ -36,7 +36,7 @@ import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.CSSPrimitiveValue;
 
 /**
- * A factory for the &lt;rect> SVG element.
+ * A factory for the SVG elements that represents a shape.
  *
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  * @author <a href="mailto:cjolif@ilog.fr">Christophe Jolif</a>
@@ -60,14 +60,8 @@ public abstract class SVGShapeElementBridge implements GraphicsNodeBridge,
                                                 ctx.getParserFactory());
         node.setTransform(at);
         // Initialize the shape of the ShapeNode
-        Shape shape = null;
-        try {
-            shape = createShape(ctx, svgElement, cssDecl, uctx);
-        } catch (IllegalAttributeValueException ex) {
-            throw ex;
-        } finally {
-            node.setShape(shape);
-        }
+        buildShape(ctx, svgElement, node, cssDecl, uctx);
+
         return node;
     }
 
@@ -113,27 +107,6 @@ public abstract class SVGShapeElementBridge implements GraphicsNodeBridge,
     }
 
     public void update(BridgeMutationEvent evt) {
-        BridgeContext ctx = evt.getBridgeContext();
-        SVGElement svgElement = (SVGElement) evt.getElement();
-        CSSStyleDeclaration cssDecl
-            = ctx.getViewCSS().getComputedStyle(svgElement, null);
-        UnitProcessor.Context uctx
-            = new DefaultUnitProcessorContext(ctx, cssDecl);
-        ShapeNode shapeNode = (ShapeNode) evt.getGraphicsNode();
-        switch(evt.getType()) {
-        case BridgeMutationEvent.PROPERTY_MUTATION_TYPE:
-            String attrName = evt.getAttrName();
-            if (attrName.equals(ATTR_TRANSFORM)) {
-                AffineTransform at =
-                    SVGUtilities.convertAffineTransform(svgElement,
-                                                        ATTR_TRANSFORM,
-                                                        ctx.getParserFactory());
-                shapeNode.setTransform(at);
-            }
-            break;
-        case BridgeMutationEvent.STYLE_MUTATION_TYPE:
-            throw new Error("Not yet implemented");
-        }
     }
 
     public boolean isContainer() {
@@ -143,8 +116,9 @@ public abstract class SVGShapeElementBridge implements GraphicsNodeBridge,
     /**
      * Creates the shape depending on the specified context and element.
      */
-    protected abstract Shape createShape(BridgeContext ctx,
-                                         SVGElement svgElement,
-                                         CSSStyleDeclaration decl,
-                                         UnitProcessor.Context uctx);
+    protected abstract void buildShape(BridgeContext ctx,
+                                       SVGElement svgElement,
+                                       ShapeNode node,
+                                       CSSStyleDeclaration decl,
+                                       UnitProcessor.Context uctx);
 }
