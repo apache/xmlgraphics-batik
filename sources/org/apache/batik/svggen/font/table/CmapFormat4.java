@@ -59,6 +59,7 @@ import java.io.RandomAccessFile;
  */
 public class CmapFormat4 extends CmapFormat {
 
+    public  int language;
     private int segCountX2;
     private int searchRange;
     private int entrySelector;
@@ -97,7 +98,7 @@ public class CmapFormat4 extends CmapFormat {
         }
 
         // Whatever remains of this header belongs in glyphIdArray
-        int count = (length - 24) / 2;
+        int count = (length - 16 - (segCount*8)) / 2;
         glyphIdArray = new int[count];
         for (int i = 0; i < count; i++) {
             glyphIdArray[i] = raf.readUnsignedShort();

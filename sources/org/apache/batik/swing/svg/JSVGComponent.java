@@ -356,6 +356,8 @@ public class JSVGComponent extends JGVTComponent {
 
     protected Dimension prevComponentSize;
 
+    protected Runnable afterStopRunnable = null;
+
     /**
      * Creates a new JSVGComponent.
      */
@@ -589,6 +591,16 @@ public class JSVGComponent extends JGVTComponent {
      * queue thread.  It returns immediately.
      */
     protected void stopThenRun(final Runnable r) {
+        synchronized (this) {
+            if (afterStopRunnable != null) {
+                // Have it run our new runnable, and not
+                // run the 'old' runnable.
+                afterStopRunnable = r;
+                return;
+            }
+            afterStopRunnable = r;
+        }
+
         if (documentLoader != null) {
             documentLoader.addSVGDocumentLoaderListener
                 (new SVGDocumentLoaderAdapter() {
@@ -603,7 +615,10 @@ public class JSVGComponent extends JGVTComponent {
                             // Remove ourselves from the doc loader,
                             // and install the new document.
                             sdl.removeSVGDocumentLoaderListener(this);
-                            EventQueue.invokeLater(r);
+                            synchronized (JSVGComponent.this) {
+                                EventQueue.invokeLater(afterStopRunnable);
+                                afterStopRunnable = null;
+                            }
                         }
                     });
             stopProcessing();
@@ -621,7 +636,10 @@ public class JSVGComponent extends JGVTComponent {
                             // Remove ourselves from the old tree builder,
                             // and install the new document.
                             gtb.removeGVTTreeBuilderListener(this);
-                            EventQueue.invokeLater(r);
+                            synchronized (JSVGComponent.this) {
+                                EventQueue.invokeLater(afterStopRunnable);
+                                afterStopRunnable = null;
+                            }
                         }
                     });
             stopProcessing();
@@ -636,7 +654,10 @@ public class JSVGComponent extends JGVTComponent {
                             // Remove ourselves from the old update manger,
                             // and install the new document.
                             um.removeUpdateManagerListener(this);
-                            EventQueue.invokeLater(r);
+                            synchronized (JSVGComponent.this) {
+                                EventQueue.invokeLater(afterStopRunnable);
+                                afterStopRunnable = null;
+                            }
                         }
                         // There really should be an updateManagerAdapter.
                         public void managerStarted(UpdateManagerEvent e) { }
@@ -664,7 +685,10 @@ public class JSVGComponent extends JGVTComponent {
                             // Remove ourselves from the old update manger,
                             // and install the new document.
                             gtr.removeGVTTreeRendererListener(this);
-                            EventQueue.invokeLater(r);
+                            synchronized (JSVGComponent.this) {
+                                EventQueue.invokeLater(afterStopRunnable);
+                                afterStopRunnable = null;
+                            }
                         }
                     });
             stopProcessing();
@@ -685,13 +709,20 @@ public class JSVGComponent extends JGVTComponent {
                             // Remove ourselves from the old onload dispacher
                             // and install the new document.
                             sled.removeSVGLoadEventDispatcherListener(this);
-                            EventQueue.invokeLater(r);
+                            synchronized (JSVGComponent.this) {
+                                EventQueue.invokeLater(afterStopRunnable);
+                                afterStopRunnable = null;
+                            }
                         }
                     });
             stopProcessing();
         }  else {
             stopProcessing();
-            r.run();
+            synchronized (this) {
+                Runnable asr = afterStopRunnable;
+                afterStopRunnable = null;
+                asr.run();
+            }
         }
     }
 
