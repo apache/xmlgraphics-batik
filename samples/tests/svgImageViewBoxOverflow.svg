@@ -12,15 +12,15 @@
 
 <!-- ========================================================================= -->
 <!-- This example validates the handling of viewBox and preserveAspectRatio    -->
-<!-- for <symbol> elements.                                                    -->
+<!-- for <image> elements.                                                     -->
 <!--                                                                           -->
 <!-- @author vhardy@apache.org                                                 -->
-<!-- @version $Id$   -->
+<!-- @version $Id$  -->
 <!-- ========================================================================= -->
 <?xml-stylesheet type="text/css" href="test.css" ?>  
 
 <svg id="body" width="450" height="500" viewBox="0 0 450 500">
-<title>&lt;symbol&gt; and viewBox &amp; preserveAspectRatio</title>
+<title>&lt;image&gt; and viewBox &amp; preserveAspectRatio</title>
 
     <style type="text/css"><![CDATA[
         .label { text-anchor: middle; }
@@ -30,7 +30,8 @@
 
     <g id="content">
 
-        <text class="title" x="50%" y="40">viewBox &amp; preserveAspectRatio on &lt;symbol&gt;</text>
+        <text class="title" x="50%" y="30">viewBox &amp; preserveAspectRatio</text>
+        <text class="title" x="50%" y="50">on svg &lt;image&gt;, overflow="visible"</text>
 
         <g id="table" class="label" transform="translate(80, 60)">
             <rect         width="110" height="20" class="oddRow" />
@@ -132,19 +133,8 @@
 
         <g id="testCases" transform="translate(80, 80)">
             <defs>
-                <rect id="hViewBox" x="5" y="5" width="45" height="30" stroke="red" fill="none"/>     
-                <rect id="vViewBox" x="70" y="5" width="25" height="30" stroke="red" fill="none"/>     
-                <g id="smilley">
-                    <g  transform="translate(-15,-15)" >
-                        <rect x="5" y="5" width="20" height="20" fill="black" />
-                        <!-- <circle cx="10" cy="25" r="4" fill="crimson" />
-                        <circle cx="20" cy="25" r="4" fill="crimson" /> -->
-                        <circle cx="15" cy="15" r="10" fill="yellow"/>
-                        <circle cx="12" cy="12" r="1.5" fill="black"/>
-                        <circle cx="17" cy="12" r="1.5" fill="black"/>
-                        <path d="M 10 19 A 8 8 0 0 0 20 19" stroke="black" stroke-width="1" fill="none"/>
-                    </g>
-                </g>
+                <rect id="hViewBox" x="12.5" y="7.5" width="30" height="25" stroke="red" fill="none"/>     
+                <rect id="vViewBox" x="72.5" y="7.5" width="20" height="25" stroke="red" fill="none"/>     
             </defs>
 
             <!-- xMinYXXX XXX -->
@@ -152,35 +142,26 @@
                 <!-- ... YMin XXX -->
                 <g>
                     <g>
-                        <symbol id="xMinYMinMeet" viewBox="-10 -10 20 20" preserveAspectRatio="xMinYMin meet">
-                            <use xlink:href="#smilley" />
-                        </symbol>
-                        <use xlink:href="#xMinYMinMeet" x="5" y="5" width="45" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="xMinYMin meet" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
 
-                        <use xlink:href="#xMinYMinMeet" x="70" y="5" width="25" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="xMinYMin meet" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
                     </g>
 
                     <g transform="translate(110, 0)">
-                        <symbol id="xMinYMinSlice" viewBox="-10 -10 20 20" preserveAspectRatio="xMinYMin slice">
-                            <use xlink:href="#smilley" />
-                        </symbol>
-                        <use xlink:href="#xMinYMinSlice" x="5" y="5" width="45" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="xMinYMin slice" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
 
-                        <use xlink:href="#xMinYMinSlice" x="70" y="5" width="25" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="xMinYMin slice" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
                     </g>
 
                     <g transform="translate(220, 0)">
-                        <symbol id="xMinYMinUnspecified" viewBox="-10 -10 20 20" preserveAspectRatio="xMinYMin">
-                            <use xlink:href="#smilley" />
-                        </symbol>
-                        <use xlink:href="#xMinYMinUnspecified" x="5" y="5" width="45" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="xMinYMin" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
 
-                        <use xlink:href="#xMinYMinUnspecified" x="70" y="5" width="25" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="xMinYMin" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
                     </g>
                 </g>
@@ -188,35 +169,26 @@
                 <!-- ... YMid XXX -->
                 <g transform="translate(0, 40)">
                     <g>
-                        <symbol id="xMinYMidMeet" viewBox="-10 -10 20 20" preserveAspectRatio="xMinYMid meet">
-                            <use xlink:href="#smilley" />
-                        </symbol>
-                        <use xlink:href="#xMinYMidMeet" x="5" y="5" width="45" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="xMinYMid meet" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
 
-                        <use xlink:href="#xMinYMidMeet" x="70" y="5" width="25" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="xMinYMid meet" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
                     </g>
 
                     <g transform="translate(110, 0)">
-                        <symbol id="xMinYMidSlice" viewBox="-10 -10 20 20" preserveAspectRatio="xMinYMid slice">
-                            <use xlink:href="#smilley" />
-                        </symbol>
-                        <use xlink:href="#xMinYMidSlice" x="5" y="5" width="45" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="xMinYMid slice" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
 
-                        <use xlink:href="#xMinYMidSlice" x="70" y="5" width="25" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="xMinYMid slice" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
                     </g>
 
                     <g transform="translate(220, 0)">
-                        <symbol id="xMinYMidUnspecified" viewBox="-10 -10 20 20" preserveAspectRatio="xMinYMid">
-                            <use xlink:href="#smilley" />
-                        </symbol>
-                        <use xlink:href="#xMinYMidUnspecified" x="5" y="5" width="45" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="xMinYMid" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
 
-                        <use xlink:href="#xMinYMidUnspecified" x="70" y="5" width="25" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="xMinYMid" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
                     </g>
                 </g>
@@ -224,35 +196,26 @@
                 <!-- ... YMax XXX -->
                 <g transform="translate(0, 80)">
                     <g>
-                        <symbol id="xMinYMaxMeet" viewBox="-10 -10 20 20" preserveAspectRatio="xMinYMax meet">
-                            <use xlink:href="#smilley" />
-                        </symbol>
-                        <use xlink:href="#xMinYMaxMeet" x="5" y="5" width="45" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="xMinYMax meet" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
 
-                        <use xlink:href="#xMinYMaxMeet" x="70" y="5" width="25" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="xMinYMax meet" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
                     </g>
 
                     <g transform="translate(110, 0)">
-                        <symbol id="xMinYMaxSlice" viewBox="-10 -10 20 20" preserveAspectRatio="xMinYMax slice">
-                            <use xlink:href="#smilley" />
-                        </symbol>
-                        <use xlink:href="#xMinYMaxSlice" x="5" y="5" width="45" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="xMinYMax slice" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
 
-                        <use xlink:href="#xMinYMaxSlice" x="70" y="5" width="25" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="xMinYMax slice" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
                     </g>
 
                     <g transform="translate(220, 0)">
-                        <symbol id="xMinYMaxUnspecified" viewBox="-10 -10 20 20" preserveAspectRatio="xMinYMax">
-                            <use xlink:href="#smilley" />
-                        </symbol>
-                        <use xlink:href="#xMinYMaxUnspecified" x="5" y="5" width="45" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="xMinYMax" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
 
-                        <use xlink:href="#xMinYMaxUnspecified" x="70" y="5" width="25" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="xMinYMax" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
                     </g>
                 </g>
@@ -264,35 +227,26 @@
                 <!-- ... YMin XXX -->
                 <g>
                     <g>
-                        <symbol id="xMidYMinMeet" viewBox="-10 -10 20 20" preserveAspectRatio="xMidYMin meet">
-                            <use xlink:href="#smilley" />
-                        </symbol>
-                        <use xlink:href="#xMidYMinMeet" x="5" y="5" width="45" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="xMidYMin meet" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
 
-                        <use xlink:href="#xMidYMinMeet" x="70" y="5" width="25" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="xMidYMin meet" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
                     </g>
 
                     <g transform="translate(110, 0)">
-                        <symbol id="xMidYMinSlice" viewBox="-10 -10 20 20" preserveAspectRatio="xMidYMin slice">
-                            <use xlink:href="#smilley" />
-                        </symbol>
-                        <use xlink:href="#xMidYMinSlice" x="5" y="5" width="45" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="xMidYMin slice" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
 
-                        <use xlink:href="#xMidYMinSlice" x="70" y="5" width="25" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="xMidYMin slice" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
                     </g>
 
                     <g transform="translate(220, 0)">
-                        <symbol id="xMidYMinUnspecified" viewBox="-10 -10 20 20" preserveAspectRatio="xMidYMin">
-                            <use xlink:href="#smilley" />
-                        </symbol>
-                        <use xlink:href="#xMidYMinUnspecified" x="5" y="5" width="45" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="xMidYMin" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
 
-                        <use xlink:href="#xMidYMinUnspecified" x="70" y="5" width="25" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="xMidYMin" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
                     </g>
                 </g>
@@ -300,35 +254,26 @@
                 <!-- ... YMid XXX -->
                 <g transform="translate(0, 40)">
                     <g>
-                        <symbol id="xMidYMidMeet" viewBox="-10 -10 20 20" preserveAspectRatio="xMidYMid meet">
-                            <use xlink:href="#smilley" />
-                        </symbol>
-                        <use xlink:href="#xMidYMidMeet" x="5" y="5" width="45" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="xMidYMid meet" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
 
-                        <use xlink:href="#xMidYMidMeet" x="70" y="5" width="25" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="xMidYMid meet" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
                     </g>
 
                     <g transform="translate(110, 0)">
-                        <symbol id="xMidYMidSlice" viewBox="-10 -10 20 20" preserveAspectRatio="xMidYMid slice">
-                            <use xlink:href="#smilley" />
-                        </symbol>
-                        <use xlink:href="#xMidYMidSlice" x="5" y="5" width="45" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="xMidYMid slice" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
 
-                        <use xlink:href="#xMidYMidSlice" x="70" y="5" width="25" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="xMidYMid slice" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
                     </g>
 
                     <g transform="translate(220, 0)">
-                        <symbol id="xMidYMidUnspecified" viewBox="-10 -10 20 20" preserveAspectRatio="xMidYMid">
-                            <use xlink:href="#smilley" />
-                        </symbol>
-                        <use xlink:href="#xMidYMidUnspecified" x="5" y="5" width="45" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="xMidYMid" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
 
-                        <use xlink:href="#xMidYMidUnspecified" x="70" y="5" width="25" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="xMidYMid" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
                     </g>
                 </g>
@@ -336,35 +281,26 @@
                 <!-- ... YMax XXX -->
                 <g transform="translate(0, 80)">
                     <g>
-                        <symbol id="xMidYMaxMeet" viewBox="-10 -10 20 20" preserveAspectRatio="xMidYMax meet">
-                            <use xlink:href="#smilley" />
-                        </symbol>
-                        <use xlink:href="#xMidYMaxMeet" x="5" y="5" width="45" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="xMidYMax meet" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
 
-                        <use xlink:href="#xMidYMaxMeet" x="70" y="5" width="25" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="xMidYMax meet" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
                     </g>
 
                     <g transform="translate(110, 0)">
-                        <symbol id="xMidYMaxSlice" viewBox="-10 -10 20 20" preserveAspectRatio="xMidYMax slice">
-                            <use xlink:href="#smilley" />
-                        </symbol>
-                        <use xlink:href="#xMidYMaxSlice" x="5" y="5" width="45" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="xMidYMax slice" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
 
-                        <use xlink:href="#xMidYMaxSlice" x="70" y="5" width="25" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="xMidYMax slice" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
                     </g>
 
                     <g transform="translate(220, 0)">
-                        <symbol id="xMidYMaxUnspecified" viewBox="-10 -10 20 20" preserveAspectRatio="xMidYMax">
-                            <use xlink:href="#smilley" />
-                        </symbol>
-                        <use xlink:href="#xMidYMaxUnspecified" x="5" y="5" width="45" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="xMidYMax" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
 
-                        <use xlink:href="#xMidYMaxUnspecified" x="70" y="5" width="25" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="xMidYMax" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
                     </g>
                 </g>
@@ -375,35 +311,26 @@
                 <!-- ... YMin XXX -->
                 <g>
                     <g>
-                        <symbol id="xMaxYMinMeet" viewBox="-10 -10 20 20" preserveAspectRatio="xMaxYMin meet">
-                            <use xlink:href="#smilley" />
-                        </symbol>
-                        <use xlink:href="#xMaxYMinMeet" x="5" y="5" width="45" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="xMaxYMin meet" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
 
-                        <use xlink:href="#xMaxYMinMeet" x="70" y="5" width="25" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="xMaxYMin meet" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
                     </g>
 
                     <g transform="translate(110, 0)">
-                        <symbol id="xMaxYMinSlice" viewBox="-10 -10 20 20" preserveAspectRatio="xMaxYMin slice">
-                            <use xlink:href="#smilley" />
-                        </symbol>
-                        <use xlink:href="#xMaxYMinSlice" x="5" y="5" width="45" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="xMaxYMin slice" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
 
-                        <use xlink:href="#xMaxYMinSlice" x="70" y="5" width="25" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="xMaxYMin slice" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
                     </g>
 
                     <g transform="translate(220, 0)">
-                        <symbol id="xMaxYMinUnspecified" viewBox="-10 -10 20 20" preserveAspectRatio="xMaxYMin">
-                            <use xlink:href="#smilley" />
-                        </symbol>
-                        <use xlink:href="#xMaxYMinUnspecified" x="5" y="5" width="45" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="xMaxYMin" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
 
-                        <use xlink:href="#xMaxYMinUnspecified" x="70" y="5" width="25" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="xMaxYMin" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
                     </g>
                 </g>
@@ -411,35 +338,26 @@
                 <!-- ... YMid XXX -->
                 <g transform="translate(0, 40)">
                     <g>
-                        <symbol id="xMaxYMidMeet" viewBox="-10 -10 20 20" preserveAspectRatio="xMaxYMid meet">
-                            <use xlink:href="#smilley" />
-                        </symbol>
-                        <use xlink:href="#xMaxYMidMeet" x="5" y="5" width="45" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="xMaxYMid meet" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
 
-                        <use xlink:href="#xMaxYMidMeet" x="70" y="5" width="25" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="xMaxYMid meet" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
                     </g>
 
                     <g transform="translate(110, 0)">
-                        <symbol id="xMaxYMidSlice" viewBox="-10 -10 20 20" preserveAspectRatio="xMaxYMid slice">
-                            <use xlink:href="#smilley" />
-                        </symbol>
-                        <use xlink:href="#xMaxYMidSlice" x="5" y="5" width="45" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="xMaxYMid slice" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
 
-                        <use xlink:href="#xMaxYMidSlice" x="70" y="5" width="25" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="xMaxYMid slice" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
                     </g>
 
                     <g transform="translate(220, 0)">
-                        <symbol id="xMaxYMidUnspecified" viewBox="-10 -10 20 20" preserveAspectRatio="xMaxYMid">
-                            <use xlink:href="#smilley" />
-                        </symbol>
-                        <use xlink:href="#xMaxYMidUnspecified" x="5" y="5" width="45" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="xMaxYMid" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
 
-                        <use xlink:href="#xMaxYMidUnspecified" x="70" y="5" width="25" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="xMaxYMid" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
                     </g>
                 </g>
@@ -447,35 +365,26 @@
                 <!-- ... YMax XXX -->
                 <g transform="translate(0, 80)">
                     <g>
-                        <symbol id="xMaxYMaxMeet" viewBox="-10 -10 20 20" preserveAspectRatio="xMaxYMax meet">
-                            <use xlink:href="#smilley" />
-                        </symbol>
-                        <use xlink:href="#xMaxYMaxMeet" x="5" y="5" width="45" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="xMaxYMax meet" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
 
-                        <use xlink:href="#xMaxYMaxMeet" x="70" y="5" width="25" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="xMaxYMax meet" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
                     </g>
 
                     <g transform="translate(110, 0)">
-                        <symbol id="xMaxYMaxSlice" viewBox="-10 -10 20 20" preserveAspectRatio="xMaxYMax slice">
-                            <use xlink:href="#smilley" />
-                        </symbol>
-                        <use xlink:href="#xMaxYMaxSlice" x="5" y="5" width="45" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="xMaxYMax slice" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
 
-                        <use xlink:href="#xMaxYMaxSlice" x="70" y="5" width="25" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="xMaxYMax slice" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
                     </g>
 
                     <g transform="translate(220, 0)">
-                        <symbol id="xMaxYMaxUnspecified" viewBox="-10 -10 20 20" preserveAspectRatio="xMaxYMax">
-                            <use xlink:href="#smilley" />
-                        </symbol>
-                        <use xlink:href="#xMaxYMaxUnspecified" x="5" y="5" width="45" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="xMaxYMax" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
 
-                        <use xlink:href="#xMaxYMaxUnspecified" x="70" y="5" width="25" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="xMaxYMax" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
                     </g>
                 </g>
@@ -486,35 +395,26 @@
             <g transform="translate(0,360)">
                 <g>
                     <g>
-                        <symbol id="noneMeet" viewBox="-10 -10 20 20" preserveAspectRatio="none meet">
-                            <use xlink:href="#smilley" />
-                        </symbol>
-                        <use xlink:href="#noneMeet" x="5" y="5" width="45" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="none meet" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
 
-                        <use xlink:href="#noneMeet" x="70" y="5" width="25" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="none meet" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
                     </g>
 
                     <g transform="translate(110, 0)">
-                        <symbol id="noneSlice" viewBox="-10 -10 20 20" preserveAspectRatio="none slice">
-                            <use xlink:href="#smilley" />
-                        </symbol>
-                        <use xlink:href="#noneSlice" x="5" y="5" width="45" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="none slice" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
 
-                        <use xlink:href="#noneSlice" x="70" y="5" width="25" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="none slice" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
                     </g>
 
                     <g transform="translate(220, 0)">
-                        <symbol id="noneUnspecified" viewBox="-10 -10 20 20" preserveAspectRatio="none">
-                            <use xlink:href="#smilley" />
-                        </symbol>
-                        <use xlink:href="#noneUnspecified" x="5" y="5" width="45" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="none" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
 
-                        <use xlink:href="#noneUnspecified" x="70" y="5" width="25" height="30" />
+                        <image xlink:href="svg3.svg" overflow="visible" preserveAspectRatio="none" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
                     </g>
                 </g>
