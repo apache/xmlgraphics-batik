@@ -27,7 +27,10 @@
       The follow code template demonstrates how to manipulate an SVG
       document displayed in a JSVGCanvas directly from a Java program.
       </p>
-
+      <p>
+      Notices that you don't have to worry about the graphics updates:
+      each event dispatch updates the canvas if needed.
+      </p>
 <source>
 import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
@@ -55,7 +58,7 @@ public class SVGApplication {
         frame = new JFrame();
         canvas = new JSVGCanvas();
         // Forces the canvas to always be dynamic even if the current
-        // document does not contains scripting or animation.
+        // document does not contain scripting or animation.
         canvas.setDocumentState(JSVGCanvas.ALWAYS_DYNAMIC);
         canvas.addSVGLoadEventDispatcherListener
             (new SVGLoadEventDispatcherAdapter() {
@@ -148,7 +151,10 @@ canvas.getUpdateManager().getUpdateRunnableQueue().
        // Insert some actions on the DOM here
     });
 </source>
-
+    <p>
+    Like with event listeners, when a Runnable is invoked from the update
+    thread the graphics are updated.
+    </p>
     </s1>
   </body>
 </document>
