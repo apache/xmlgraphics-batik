@@ -161,11 +161,9 @@ public interface GraphicsNode {
      *
      * @param g2d the Graphics2D to use
      * @param rc the GraphicsNodeRenderContext to use
-     * @exception InterruptedException thrown if the current thread
      * was interrupted during paint
      */
-    void paint(Graphics2D g2d, GraphicsNodeRenderContext rc)
-            throws InterruptedException;
+    void paint(Graphics2D g2d, GraphicsNodeRenderContext rc);
 
     /**
      * Paints this node without applying Filter, Mask, Composite and clip.

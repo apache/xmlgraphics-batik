@@ -56,9 +56,7 @@ public class ProxyGraphicsNode extends AbstractGraphicsNode {
      */
     public void primitivePaint(Graphics2D g2d, GraphicsNodeRenderContext rc) {
         if (source != null) {
-            try {
-                source.paint(g2d, rc);
-            } catch (InterruptedException ie) { }
+            source.paint(g2d, rc);
         }
     }
 

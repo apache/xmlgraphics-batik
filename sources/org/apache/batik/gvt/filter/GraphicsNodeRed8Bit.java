@@ -132,17 +132,15 @@ public class GraphicsNodeRed8Bit extends AbstractTiledRed
         g.transform(node2dev);
 
 
-        try {
-            // Invoke primitive paint.
-            if (usePrimitivePaint)
-                node.primitivePaint(g, gnrc);
-            else
-                node.paint (g, gnrc);
-        } catch (InterruptedException ie) {
-            // Do nothing just leave...
-        } finally {
-            g.dispose();
+        // Invoke primitive paint.
+        if (usePrimitivePaint){
+            node.primitivePaint(g, gnrc);
         }
+        else{
+            node.paint (g, gnrc);
+        }
+
+        g.dispose();
     }
 }
 
