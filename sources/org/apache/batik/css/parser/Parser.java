@@ -45,9 +45,7 @@ import org.w3c.css.sac.SimpleSelector;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class Parser
-    implements org.w3c.css.sac.Parser,
-               Localizable {
+public class Parser implements ExtendedParser, Localizable {
 
     /**
      * The CSS to Java encoding table.
@@ -300,7 +298,16 @@ public class Parser
      */
     public void parseStyleDeclaration(InputSource source) 
         throws CSSException, IOException {
+
         scanner = new Scanner(characterStream(source, null));
+	parseStyleDeclarationInternal();
+    }
+
+    /**
+     * Parses a style declaration using the current scanner.
+     */
+    protected void parseStyleDeclarationInternal() 
+	throws CSSException, IOException {
         nextIgnoreSpaces();
         try {
             parseStyleDeclaration(false);
@@ -314,8 +321,16 @@ public class Parser
     /**
      * <b>SAC</b>: Implements {@link org.w3c.css.sac.Parser#parseRule(InputSource)}.
      */
-    public void parseRule(InputSource source) throws CSSException, IOException {
+    public void parseRule(InputSource source) 
+	throws CSSException, IOException {
         scanner = new Scanner(characterStream(source, null));
+	parseRuleInternal();
+    }
+
+    /**
+     * Parses a rule using the current scanner.
+     */
+    protected void parseRuleInternal() throws CSSException, IOException {
         nextIgnoreSpaces();
         parseRule();
         scanner = null;
@@ -327,6 +342,14 @@ public class Parser
     public SelectorList parseSelectors(InputSource source)
         throws CSSException, IOException {
         scanner = new Scanner(characterStream(source, null));
+	return parseSelectorsInternal();
+    }
+
+    /**
+     * Parses selectors using the current scanner.
+     */
+    protected SelectorList parseSelectorsInternal() 
+	throws CSSException, IOException {
         nextIgnoreSpaces();
         SelectorList ret = parseSelectorList();
         scanner = null;
@@ -340,6 +363,14 @@ public class Parser
     public LexicalUnit parsePropertyValue(InputSource source)
         throws CSSException, IOException {
         scanner = new Scanner(characterStream(source, null));
+	return parsePropertyValueInternal();
+    }
+
+    /**
+     * Parses property value using the current scanner.
+     */
+    protected LexicalUnit parsePropertyValueInternal() 
+	throws CSSException, IOException {
         nextIgnoreSpaces();
         
         LexicalUnit exp = null;
@@ -366,6 +397,14 @@ public class Parser
     public boolean parsePriority(InputSource source)
         throws CSSException, IOException {
         scanner = new Scanner(characterStream(source, null));
+	return parsePriorityInternal();
+    }
+
+    /**
+     * Parses the priority using the current scanner.
+     */
+    protected boolean parsePriorityInternal()
+        throws CSSException, IOException {
         nextIgnoreSpaces();
 
         scanner = null;
@@ -1687,5 +1726,58 @@ public class Parser
                                      documentURI,
                                      scanner.getLine(),
                                      scanner.getColumn());
+    }
+
+    // -----------------------------------------------------------------------
+    // Extended methods
+    // -----------------------------------------------------------------------
+    
+    /**
+     * Implements {@link 
+     * org.apache.batik.css.parser.ExtendedParser#parseStyleDeclaration(String)}.
+     */
+    public void parseStyleDeclaration(String source) 
+	throws CSSException, IOException {
+        scanner = new Scanner(source);
+	parseStyleDeclarationInternal();
+    }
+
+    /**
+     * Implements {@link 
+     * org.apache.batik.css.parser.ExtendedParser#parseRule(String)}.
+     */
+    public void parseRule(String source) throws CSSException, IOException {
+        scanner = new Scanner(source);
+	parseRuleInternal();
+    }
+    
+    /**
+     * Implements {@link 
+     * org.apache.batik.css.parser.ExtendedParser#parseSelectors(String)}.
+     */
+    public SelectorList parseSelectors(String source)
+        throws CSSException, IOException {
+        scanner = new Scanner(source);
+	return parseSelectorsInternal();
+    }
+
+    /**
+     * Implements {@link 
+     * org.apache.batik.css.parser.ExtendedParser#parsePropertyValue(String)}.
+     */
+    public LexicalUnit parsePropertyValue(String source)
+        throws CSSException, IOException {
+        scanner = new Scanner(source);
+	return parsePropertyValueInternal();
+    }
+
+    /**
+     * Implements {@link 
+     * org.apache.batik.css.parser.ExtendedParser#parsePriority(String)}.
+     */
+    public boolean parsePriority(String source)
+        throws CSSException, IOException {
+        scanner = new Scanner(source);
+	return parsePriorityInternal();
     }
 }

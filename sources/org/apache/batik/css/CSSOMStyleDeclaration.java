@@ -10,17 +10,24 @@ package org.apache.batik.css;
 
 import java.io.Reader;
 import java.io.StringReader;
+
 import org.apache.batik.css.event.CSSStyleDeclarationChangeListener;
 import org.apache.batik.css.event.CSSStyleDeclarationChangeSupport;
 import org.apache.batik.css.event.CSSValueChangeListener;
+
+import org.apache.batik.css.parser.ExtendedParser;
+
 import org.apache.batik.css.value.ValueFactory;
 import org.apache.batik.css.value.ValueFactoryMap;
+
 import org.w3c.css.sac.CSSException;
 import org.w3c.css.sac.DocumentHandler;
 import org.w3c.css.sac.InputSource;
 import org.w3c.css.sac.LexicalUnit;
 import org.w3c.css.sac.Parser;
+
 import org.w3c.dom.DOMException;
+
 import org.w3c.dom.css.CSSRule;
 import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.CSSValue;
@@ -78,11 +85,17 @@ public class CSSOMStyleDeclaration
     protected CSSStyleDeclarationChangeSupport declarationChangeSupport;
 
     /**
+     * Indicates whether or not the CSS parser supports methods with String.
+     */
+    protected boolean isExtendedParser;
+
+    /**
      * Creates a new CSSStyleDeclaration object.
      */
     public CSSOMStyleDeclaration() {
 	try {
 	    parser = CSSDocumentHandler.createParser();
+	    isExtendedParser = (parser instanceof ExtendedParser);
 	} catch (Exception e) {
 	    throw new RuntimeException(e.getMessage());
 	}
@@ -93,6 +106,7 @@ public class CSSOMStyleDeclaration
      */
     public CSSOMStyleDeclaration(CSSRule r, Parser p) {
 	parser = p;
+	isExtendedParser = (parser instanceof ExtendedParser);
 	parentRule = r;
     }
 
@@ -208,9 +222,13 @@ public class CSSOMStyleDeclaration
         oldProperties = new PropertyMap(properties);
 	properties = new PropertyMap();
 	try {
-	    Reader r = new StringReader(cssText);
 	    parser.setDocumentHandler(handler);
-	    parser.parseStyleDeclaration(new InputSource(r));
+	    if (isExtendedParser) {
+		((ExtendedParser)parser).parseStyleDeclaration(cssText);
+	    } else {
+		Reader r = new StringReader(cssText);
+		parser.parseStyleDeclaration(new InputSource(r));
+	    }
 	} catch (DOMException e) {
 	    properties = pm;
 	    oldProperties = null;
@@ -320,8 +338,13 @@ public class CSSOMStyleDeclaration
 	try {
 	    ValueFactory f;
             f = factories.get(propertyName.toLowerCase().intern());
-	    InputSource is = new InputSource(new StringReader(value));
-	    LexicalUnit lu = parser.parsePropertyValue(is);
+	    LexicalUnit lu;
+	    if (isExtendedParser) {
+		lu = ((ExtendedParser)parser).parsePropertyValue(value);
+	    } else {
+		InputSource is = new InputSource(new StringReader(value));
+		lu = parser.parsePropertyValue(is);
+	    }
 	    f.createCSSValue(lu, this, prio);
 	} catch (Exception e) {
             e.printStackTrace();
