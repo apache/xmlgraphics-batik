@@ -9,6 +9,7 @@
 
 <!-- ========================================================================= -->
 <!-- author vincent.hardy@eng.sun.com                                          -->
+<!-- author cjolif@ilog.fr                                                     -->
 <!-- version $Id$ -->
 <!-- ========================================================================= -->
 
@@ -317,7 +318,7 @@
     <question>How much of SVG does Batik implement?</question>
     <answer>
         <p>
-        The following <link href="http://xml.apache.org/xml-batik/status">status page</link>
+        The following <link href="status.html">status page</link>
         show how much of the SVG specification Batik implements by showing which 
         of the tests in the SVG Basic Effectivity test suite Batik successfully passes.
         </p>
@@ -353,6 +354,8 @@
         Once Batik is installed, you need to enter the command "batik" in the directory where
         you unpacked the distribution.
         </p>
+	<p>You can have a look at the <link href="install.html">installation instructions</link> for more help on this.
+	</p>
     </answer>
 
 </faq>
@@ -380,6 +383,33 @@
         </p>
     </answer>
 
-
 </faq>
+
+<faq>
+    <question>What scripting languages can I use in my SVG files?</question>
+    <answer>
+        <p>
+	A limited support of scripting in SVG files is provided with the current
+	version of Batik (script are executed but the dynamic update is not fully
+	supported).
+	</p>
+	<p>
+	Batik can recognized the following scripting languages:
+	</p>
+	<ul>
+	    <li>ECMAScript thanks to the <link href="http://www.mozilla.org/rhino">Mozilla Rhino</link> JavaScript engine included in the distribution.
+	    </li>
+	    <li>Python for which you need to download the <link href="http://www.jpython.org">JPython</link> engine.
+	    </li>
+	    <li>Tcl for which you need to download the <link href="http://dev.scriptics.com/software/java/">Jacl</link> engine.
+	    </li>
+	</ul>
+	<p>
+	To get more information on how to install optional scripting languages
+	you can have a look at the <link href="install.html">installation instructions</link>.
+	</p>
+    </answer>
+    
+</faq>
+
 </faqs>
