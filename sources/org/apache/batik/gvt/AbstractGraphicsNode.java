@@ -878,7 +878,11 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
      * @param r the specified Rectangle2D in the user node space
      */
     public boolean intersects(Rectangle2D r) {
-        return getBounds().intersects(r);
+        if (getBounds() != null ){
+            return getBounds().intersects(r);
+        } else {
+            return false;
+        }
     }
 
     /**
