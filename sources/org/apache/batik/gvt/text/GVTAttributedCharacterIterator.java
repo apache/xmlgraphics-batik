@@ -363,6 +363,9 @@ public interface GVTAttributedCharacterIterator extends AttributedCharacterItera
         public final static TextAttribute CHAR_INDEX =
                                           new TextAttribute("CHAR_INDEX");
 
+        public final static TextAttribute ARABIC_FORM =
+                                          new TextAttribute("ARABIC_FORM");
+
         // VALUES
 
         /** Value for WRITING_MODE indicating left-to-right */
@@ -401,6 +404,13 @@ public interface GVTAttributedCharacterIterator extends AttributedCharacterItera
         /** Value for LENGTH_ADJUST specifying overall scaling of layout outlines */
         public final static Integer ADJUST_ALL =
                             new Integer(0x01);
+
+        // constant values for the arabic glyph forms
+        public final static Integer ARABIC_NONE = new Integer(0x0);
+        public final static Integer ARABIC_ISOLATED = new Integer(0x1);
+        public final static Integer ARABIC_TERMINAL = new Integer(0x2);
+        public final static Integer ARABIC_INITIAL = new Integer(0x3);
+        public final static Integer ARABIC_MEDIAL = new Integer(0x4);
 
     }
 
