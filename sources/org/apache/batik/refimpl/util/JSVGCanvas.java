@@ -276,7 +276,7 @@ public class JSVGCanvas
     /**
      * The thumbnail canvas.
      */
-    protected ThumbnailCanvas thumbnailCanvas;
+    protected ThumbnailCanvas thumbnailCanvas = null;
 
     /**
      * The parser factory.
@@ -1073,8 +1073,12 @@ public class JSVGCanvas
         if (dispatcher != null) {
             try {
                 if (gvtRoot != null) {
+
                     docBBox = transform.createTransformedShape(
-                                            gvtRoot.getBounds(null));
+                                  gvtRoot.getBounds(
+                                      getRendererFactory().
+                                          getRenderContext()));
+
                 }
                 dispatcher.setBaseTransform(transform.createInverse());
             } catch (NoninvertibleTransformException e) {
@@ -1942,6 +1946,7 @@ public class JSVGCanvas
 
             transform = SVGUtilities.getPreserveAspectRatioTransform
                 (elt, w, h, parserFactory);
+
             if (transform.isIdentity()) {
                 float dw = elt.getWidth().getBaseVal().getValue();
                 float dh = elt.getHeight().getBaseVal().getValue();
