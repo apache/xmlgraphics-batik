@@ -592,19 +592,17 @@ public class SVGGraphics2D extends AbstractGraphics2D
      * @see #setClip
      * @see #setComposite
      */
-    public void draw(Shape s){
+    public void draw(Shape s) {
         // Only BasicStroke can be converted to an SVG attribute equivalent.
         // If the GraphicContext's Stroke is not an instance of BasicStroke,
         // then the stroked outline is filled.
         Stroke stroke = gc.getStroke();
-        if(stroke instanceof BasicStroke){
+        if (stroke instanceof BasicStroke) {
             Element svgShape = shapeConverter.toSVG(s);
-            if(svgShape != null){
-                svgShape.setAttributeNS(null, SVG_FILL_ATTRIBUTE, SVG_NONE_VALUE);
-                domGroupManager.addElement(svgShape);
+            if (svgShape != null) {
+                domGroupManager.addElement(svgShape, DOMGroupManager.DRAW);
             }
-        }
-        else{
+        } else {
             Shape strokedShape = stroke.createStrokedShape(s);
             fill(strokedShape);
         }
@@ -939,9 +937,8 @@ public class SVGGraphics2D extends AbstractGraphics2D
                                 AbstractSVGConverter.doubleString(x));
             text.setAttributeNS(null, SVG_Y_ATTRIBUTE,
                                 AbstractSVGConverter.doubleString(y));
-            text.setAttributeNS(null, SVG_STROKE_ATTRIBUTE, SVG_NONE_VALUE);
             text.appendChild(getDOMFactory().createTextNode(s));
-            domGroupManager.addElement(text);
+            domGroupManager.addElement(text, DOMGroupManager.FILL);
         } else {
             GlyphVector gv = getFont().
                 createGlyphVector(getFontRenderContext(), s);
@@ -992,11 +989,10 @@ public class SVGGraphics2D extends AbstractGraphics2D
      * @see #clip
      * @see #setClip
      */
-    public void fill(Shape s){
+    public void fill(Shape s) {
         Element svgShape = shapeConverter.toSVG(s);
-        if(svgShape != null){
-            svgShape.setAttributeNS(null, SVG_STROKE_ATTRIBUTE, SVG_NONE_VALUE);
-            domGroupManager.addElement(svgShape);
+        if (svgShape != null) {
+            domGroupManager.addElement(svgShape, DOMGroupManager.FILL);
         }
     }
 

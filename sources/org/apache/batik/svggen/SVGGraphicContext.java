@@ -9,9 +9,11 @@
 package org.apache.batik.svggen;
 
 import java.util.Map;
+import java.util.HashMap;
 
 import org.w3c.dom.*;
 
+import org.apache.batik.util.SVGConstants;
 import org.apache.batik.ext.awt.g2d.GraphicContext;
 import org.apache.batik.ext.awt.g2d.TransformStackElement;
 
@@ -22,11 +24,43 @@ import org.apache.batik.ext.awt.g2d.TransformStackElement;
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
-public class SVGGraphicContext{
-    public static final String ERROR_NULL_INPUT = "groupContext, graphicElementContext and transformStack should not be null";
+public class SVGGraphicContext implements SVGConstants {
+    private static final String ERROR_NULL_INPUT =
+        "arguments should not be null";
+
+    // this properties can only be set of leaf nodes =>
+    // if they have default values they can be ignored
+    private static final String leafOnlyAttributes[] = {
+        SVG_OPACITY_ATTRIBUTE,
+        SVG_FILTER_ATTRIBUTE,
+        SVG_CLIP_PATH_ATTRIBUTE
+    };
+
+    private static final String defaultValues[] = {
+        "1",
+        SVG_NONE_VALUE,
+        SVG_NONE_VALUE
+    };
+
+    private Map context;
     private Map groupContext;
     private Map graphicElementContext;
     private TransformStackElement transformStack[];
+
+    /**
+     * @param context Set of style attributes in this context.
+     * @param transformStack Sequence of transforms that where
+     *        applied to create the context's current transform.
+     */
+    public SVGGraphicContext(Map context,
+                             TransformStackElement transformStack[]) {
+        if (context == null ||
+            transformStack == null)
+            throw new IllegalArgumentException(ERROR_NULL_INPUT);
+        this.context = context;
+        this.transformStack = transformStack;
+        computeGroupAndGraphicElementContext();
+    }
 
     /**
      * @param groupContext Set of attributes that apply to group
@@ -35,35 +69,71 @@ public class SVGGraphicContext{
      * @param transformStack Sequence of transforms that where
      *        applied to create the context's current transform.
      */
-    public SVGGraphicContext(Map groupContext,
-                             Map graphicElementContext,
-                             TransformStackElement transformStack[]){
-        if(groupContext == null || graphicElementContext == null)
+    public SVGGraphicContext(Map groupContext, Map graphicElementContext,
+                             TransformStackElement transformStack[]) {
+        if (groupContext == null || graphicElementContext == null ||
+            transformStack == null)
             throw new IllegalArgumentException(ERROR_NULL_INPUT);
 
         this.groupContext = groupContext;
         this.graphicElementContext = graphicElementContext;
         this.transformStack = transformStack;
+        computeContext();
+    }
+
+
+    /**
+     * @return set of all attributes.
+     */
+    public Map getContext() {
+        return context;
     }
 
     /**
      * @return set of attributes that can be set on a group
      */
-    public Map getGroupContext(){
+    public Map getGroupContext() {
         return groupContext;
     }
 
     /**
      * @return set of attributes that can be set on leaf node
      */
-    public Map getGraphicElementContext(){
+    public Map getGraphicElementContext() {
         return graphicElementContext;
     }
 
     /**
      * @return set of TransformStackElement for this context
      */
-    public TransformStackElement[] getTransformStack(){
+    public TransformStackElement[] getTransformStack() {
         return transformStack;
+    }
+
+    private void computeContext() {
+        if (context != null)
+            return;
+
+        context = new HashMap(groupContext);
+        context.putAll(graphicElementContext);
+    }
+
+    private void computeGroupAndGraphicElementContext() {
+        if (groupContext != null)
+            return;
+        //
+        // Now, move attributes that only apply to
+        // leaf elements to a separate map.
+        //
+        groupContext = new HashMap(context);
+        graphicElementContext = new HashMap();
+        for (int i=0; i< leafOnlyAttributes.length; i++) {
+            Object attrValue = groupContext.get(leafOnlyAttributes[i]);
+            if (attrValue != null){
+                if (!attrValue.equals(defaultValues[i]))
+                    graphicElementContext.put(leafOnlyAttributes[i], attrValue);
+                groupContext.remove(leafOnlyAttributes[i]);
+            }
+        }
     }
 }
