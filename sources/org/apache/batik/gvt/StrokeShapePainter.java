@@ -12,6 +12,7 @@ import java.awt.Shape;
 import java.awt.Graphics2D;
 import java.awt.Stroke;
 import java.awt.Paint;
+import java.awt.geom.Rectangle2D;
 
 /**
  * A shape painter that can be used to draw the outline of a shape.
@@ -91,6 +92,19 @@ public class StrokeShapePainter implements ShapePainter {
             return null;
         }
     }
+
+    /**
+     * Returns the bounds of the area painted by this shape painter
+     */
+    public Rectangle2D getPaintedBounds(){
+	Shape painted = getPaintedArea();
+	if (painted != null){
+	    return painted.getBounds2D();
+	} else {
+	    return null;
+	}
+    }
+
 
     /**
      * Sets the Shape this shape painter is associated with.

@@ -11,6 +11,7 @@ package org.apache.batik.gvt;
 import java.awt.Shape;
 import java.awt.Graphics2D;
 import java.awt.Paint;
+import java.awt.geom.Rectangle2D;
 
 /**
  * A shape painter that can be used to fill a shape.
@@ -70,6 +71,17 @@ public class FillShapePainter implements ShapePainter {
      */
     public Shape getPaintedArea(){
         return shape;
+    }
+
+    /**
+     * Returns the bounds of the area painted by this shape painter
+     */
+    public Rectangle2D getPaintedBounds(){
+	if (shape != null){
+	    return shape.getBounds2D();
+	} else {
+	    return null;
+	}
     }
 
     /**

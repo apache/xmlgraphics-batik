@@ -219,8 +219,9 @@ public class ShapeNode extends AbstractGraphicsNode {
             if ((shape == null) || (shapePainter == null)) {
                 return null;
             }
-            paintedArea = shapePainter.getPaintedArea();
-            primitiveBounds = paintedArea.getBounds2D();
+            // paintedArea = shapePainter.getPaintedArea();
+            // primitiveBounds = paintedArea.getBounds2D();
+	    primitiveBounds = shapePainter.getPaintedBounds();
 
             // Make sure we haven't been interrupted
             if (Thread.currentThread().isInterrupted()) {
