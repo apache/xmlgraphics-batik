@@ -14,48 +14,75 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 				xmlns:xlink="http://www.w3.org/2000/xlink/namespace/" >
 
+    <!-- ================================================ -->
+    <!-- Top leve template. Produces the overall document -->
+    <!-- structure.                                       -->
+    <!-- ================================================ -->
     <xsl:template match="/">
         <html>
+
+            <!-- ========= -->
+            <!-- HTML head -->
+            <!-- ========= -->
             <head>
                 <link rel="stylesheet" type="text/css" media="screen" href="../../style/style.css" />
             </head>
 
+            
+            <!-- ========== -->
+            <!--   BODY     -->
+            <!-- ========== -->
             <body style="background-image: url(../../images/background.png);">
 
-        <h1>Regard Test Report -- 
-            <xsl:value-of select="count(/descendant::testReport[@status='passed'])" />/<xsl:value-of select="count(/descendant::testReport)" />
-        </h1>
+                <!-- Report Title containing the ratio of count(success) / count(tests) -->
+                <h1>Regard Test Report -- 
+                    <xsl:value-of select="count(/descendant::testReport[@status='passed'])" />/<xsl:value-of select="count(/descendant::testReport)" />
+                </h1>
 
-        <hr noshade="noshade" size="1" width="600" align="left"/>
+                <!-- Only report summary and details if there are failed tests -->
+                <xsl:choose>
+                    <xsl:when test="count(/descendant::testReport[@status='failed']) &gt; 0">
 
-        <!-- ======= -->
-        <!-- Summary -->
-        <!-- ======= -->
-        <xsl:call-template name="summary" />
-        &#160;<br />
+                        <hr noshade="noshade" size="1" width="600" align="left"/>
 
-        <!-- ======= -->
-        <!-- Details -->
-        <!-- ======= -->
-        <xsl:call-template name="details" />
+                        <!-- ======= -->
+                        <!-- Summary -->
+                        <!-- ======= -->
+                        <xsl:call-template name="summary" />
+                        &#160;<br />
 
+                        <!-- ======= -->
+                        <!-- Details -->
+                        <!-- ======= -->
+                        <xsl:call-template name="details" />
+                    </xsl:when>
+                </xsl:choose>
             </body>
+
         </html>
 
     </xsl:template>
 
+    <!-- ============================================= -->
+    <!-- Produces the "Details" section of the report  -->
+    <!-- ============================================= -->
     <xsl:template name="details">
-
+        <!-- Header -->
         <h2>Report Details</h2>
 
+        <!-- Will produce one table per failed test -->
         <xsl:apply-templates/>
 
     </xsl:template>
 
+    <!-- ============================================== -->
+    <!-- Produces the "Summary" section of the report   -->
+    <!-- ============================================== -->
     <xsl:template name="summary">
-    
-        <h2>Failed Leaf Tests:</h2>
+        <!-- Header -->
+        <h2>Failed Leaf Tests</h2>
 
+        <!-- Produces a list with links to the failed tests details -->
         <xsl:call-template name="failedTestsLinks">
             <xsl:with-param name="failedNodes" select="/descendant::testReport[@status='failed']" />
         </xsl:call-template>
@@ -64,6 +91,10 @@
 
     </xsl:template>
 
+
+    <!-- ====================================================== -->
+    <!-- Produces a list with links to the failed tests details -->
+    <!-- ====================================================== -->
     <xsl:template name="failedTestsLinks">
         <xsl:param name="failedNodes" />
         <ol>
@@ -77,27 +108,31 @@
             </li>
         </xsl:for-each>
         </ol>                   
-
-
     </xsl:template>
 
+    <!-- ======================================================= -->
+    <!-- Processes testReport and testSuiteReport elements.      -->
+    <!-- For testSuiteReports, the template simply recursively   -->
+    <!-- scans the children. For testReports which are failed    -->
+    <!-- the template creates a table with the test name, the    -->
+    <!-- failure reason and the description entries.             -->
+    <!-- ======================================================= -->
     <xsl:template match="testReport | testSuiteReport">
         <xsl:variable name="childrenTests" select="description/testReport" />  
-
         <xsl:variable name="childrenTestSuites" select="description/testSuiteReport" />
         <xsl:variable name="childrenTestsCount" select="count($childrenTests) + count($childrenTestSuites)" />
-
-        <a>
-            <xsl:attribute name="name">
-                <xsl:value-of select="@id" />
-            </xsl:attribute>
-        </a>
-
         
         <xsl:choose>
-        <xsl:when test="$childrenTestsCount = 0 and @status='failed'">
-                    <table bgcolor="black" vspace="0" hspace="0" cellspacing="0" cellpadding="0" border="0" width="600">
-                    <tr><td>
+            <!-- Process leaf tests which have failed -->
+            <xsl:when test="$childrenTestsCount = 0 and @status='failed'">
+                <!-- Anchor so that the test can be linked to -->
+                <a>
+                    <xsl:attribute name="name">
+                        <xsl:value-of select="@id" />
+                    </xsl:attribute>
+                </a>
+
+                <table bgcolor="black" vspace="0" hspace="0" cellspacing="0" cellpadding="0" border="0" width="600"><tr><td>
                     <table bgcolor="black" vspace="0" hspace="0" cellspacing="1" cellpadding="2" border="0" width="600">
                         <tr bgcolor="#eeeeee">     
                             <td colspan="2"><img align="bottom" src="../../images/deco.png" width="16" height="16" />&#160;
@@ -128,17 +163,23 @@
                             </td>
                         </tr>
                         <xsl:apply-templates />
-                    </table></td></tr></table>
-                        <br />
+                    </table>
+                </td></tr></table>
+               <br />
 
-        </xsl:when>
-        <xsl:otherwise>
-            <xsl:apply-templates />
-        </xsl:otherwise>
+            </xsl:when>
+
+            <!-- Process children reports -->
+            <xsl:otherwise>
+                <xsl:apply-templates />
+            </xsl:otherwise>
+
         </xsl:choose>
-
     </xsl:template>
 
+    <!-- =============================== -->
+    <!-- Processes a description element -->
+    <!-- =============================== -->
     <xsl:template match="description">
         <xsl:apply-templates select="genericEntry | uriEntry | fileEntry" />
 
@@ -146,6 +187,9 @@
         </xsl:apply-templates>
     </xsl:template>
 
+    <!-- ================================ -->
+    <!-- Processes a genericEntry element -->
+    <!-- ================================ -->
     <xsl:template match="genericEntry">
         <tr bgcolor="white">
             <td><xsl:value-of select="@key" /></td>
@@ -153,6 +197,9 @@
         </tr>
     </xsl:template>
 
+    <!-- ================================ -->
+    <!-- Processes a uriEntry element     -->
+    <!-- ================================ -->
     <xsl:template match="uriEntry">
         <tr bgcolor="white" margin-left="50pt">
             <td><xsl:value-of select="@key" /></td>
@@ -161,6 +208,10 @@
         </tr>
     </xsl:template>
 
+    <!-- ================================ -->
+    <!-- Processes a fileEntry element    -->
+    <!-- Assumes the file is an image.    -->
+    <!-- ================================ -->
     <xsl:template match="fileEntry">
         <tr bgcolor="white">
             <td><xsl:value-of select="@key" /></td>
