@@ -75,8 +75,8 @@ public class SVGOMPoint implements SVGPoint {
     public void  setY( float y ) throws DOMException { this.y = y; }
 
     public SVGPoint matrixTransform ( SVGMatrix matrix ) {
-        float newX = matrix.getA()*x + matrix.getC()*y + matrix.getE();
-        float newY = matrix.getB()*x + matrix.getD()*y + matrix.getF();
+        float newX = matrix.getA()*getX() + matrix.getC()*getY() + matrix.getE();
+        float newY = matrix.getB()*getX() + matrix.getD()*getY() + matrix.getF();
         return new SVGOMPoint(newX, newY);
     }
 }

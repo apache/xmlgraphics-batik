@@ -2334,9 +2334,8 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             }
 
             //get the transform for the node
-            AffineTransform at = getCTM();
-
-            b = at.createTransformedShape(b);
+            // AffineTransform at = getCTM();
+            // b = at.createTransformedShape(b);
             
             //return the bounding box of the outline
             return b.getBounds2D();
@@ -2381,33 +2380,28 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
 
         Point2D b = it.getGlyphPosition(info.glyphIndexStart);
 
-        Point2D result = new Point2D.Float();
+        Point2D.Float result = new Point2D.Float();
             
-        AffineTransform glyphTransform = it.getGlyphTransform(info.glyphIndexStart);
+        AffineTransform glyphTransform;
+        glyphTransform = it.getGlyphTransform(info.glyphIndexStart);
 
-        double x = 0,y = 0;
+        float x = 0,y = 0;
 
         //glyph are defined starting at position (0,0)
         if ( glyphTransform != null ){
             
             //apply the glyph transformation to the start point
             glyphTransform.transform(new Point2D.Double(x,y),result);
-            x = result.getX();
-            y = result.getY();
-            
+            x = result.x;
+            y = result.y;
         }
-        
-        //apply the glyph translation to the start point
-        AffineTransform af = AffineTransform.getTranslateInstance(b.getX(), b.getY());
 
-        af.transform(new Point2D.Double(x,y),result);                
+        x += b.getX();
+        y += b.getY();
         
-        //apply the node transformation to the start point
-        AffineTransform at = new AffineTransform(getCTM());
-        Point2D startPoint = new Point2D.Float();
-        at.transform(result,startPoint);
-        
-        return startPoint;
+        result.x = x;
+        result.y = y;
+        return result;
     }
 
     /**
@@ -2443,35 +2437,30 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         
         Point2D b = it.getGlyphPosition(info.glyphIndexEnd);
         
-        Point2D result = new Point2D.Float();
+        Point2D.Float result = new Point2D.Float();
         
-        AffineTransform glyphTransform = it.getGlyphTransform(info.glyphIndexEnd);
+        AffineTransform glyphTransform;
+        glyphTransform = it.getGlyphTransform(info.glyphIndexEnd);
         
         GVTGlyphMetrics metrics = it.getGlyphMetrics(info.glyphIndexEnd);
         
-        double x = 0,y = 0;
+        float x = 0,y = 0;
             
         x = metrics.getHorizontalAdvance();
             
         if ( glyphTransform != null ){
                 
-            glyphTransform.transform(new Point2D.Double(x,y),result);
-            x = result.getX();
-            y = result.getY();
-            
+            glyphTransform.transform(new Point2D.Float(x,y),result);
+            x = result.x;
+            y = result.y;
         }
-        
-        AffineTransform af = AffineTransform.getTranslateInstance(b.getX(), b.getY());
-        
-        af.transform(new Point2D.Double(x,y),result);                
-        
-        AffineTransform at = new AffineTransform(getCTM());
-        Point2D endPoint = new Point2D.Float();
-        at.transform(result,endPoint);
-        
-        return endPoint;
-        
+        x += b.getX();
+        y += b.getY();
+        result.x = x;
+        result.y = y;
+        return result;
     }
+
     /**
      * Implementation of {@link
      * org.w3c.dom.svg.SVGTextContentElement#getRotationOfChar(int charnum)}.
