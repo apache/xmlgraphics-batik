@@ -88,7 +88,7 @@ public class SVGValueFactoryMap
             new SimpleColorFactory(p, CSS_LIGHTING_COLOR_PROPERTY));
 
 	put(CSS_MARKER_PROPERTY,
-            new MarkerFactory(p, CSS_MARKER_PROPERTY));
+            new MarkerShorthandFactory(p));
 
 	put(CSS_MARKER_END_PROPERTY,
             new MarkerFactory(p, CSS_MARKER_END_PROPERTY));

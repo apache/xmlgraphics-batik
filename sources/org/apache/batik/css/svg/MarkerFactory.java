@@ -18,7 +18,7 @@ import org.w3c.dom.DOMException;
 import org.w3c.dom.css.CSSPrimitiveValue;
 
 /**
- * This class provides a factory for the 'marker' property values.
+ * This class provides a factory for the 'marker-*' property values.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$

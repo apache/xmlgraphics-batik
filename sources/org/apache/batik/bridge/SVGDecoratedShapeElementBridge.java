@@ -84,58 +84,28 @@ public abstract class SVGDecoratedShapeElementBridge
         // Extract the marker properties
         //
         
-        // 
-        // <!> TO BE REMOVED WHEN marker IMPLEMENTED AS SHORT-HAND
-        //
 
-        // Start with marker, a short-hand for start/middle/end
-        Marker marker = CSSUtilities.convertMarker(svgElement,
-                                                   CSS_MARKER_PROPERTY,
-                                                   ctx, cssDecl, uctx);
+        // Extract start, middle and end markers
+        Marker startMarker 
+            = CSSUtilities.convertMarker(svgElement,
+                                         CSS_MARKER_START_PROPERTY,
+                                         ctx, cssDecl, uctx);
+        node.setStartMarker(startMarker);
+        
+        Marker endMarker 
+            = CSSUtilities.convertMarker(svgElement,
+                                         CSS_MARKER_END_PROPERTY,
+                                         ctx, cssDecl, uctx);
+        node.setEndMarker(endMarker);
+        
+        Marker middleMarker 
+            = CSSUtilities.convertMarker(svgElement,
+                                         CSS_MARKER_MID_PROPERTY,
+                                         ctx, cssDecl, uctx);
+        
+        node.setMiddleMarker(middleMarker);
 
-        if(marker != null){
-            node.setStartMarker(marker);
-            node.setMiddleMarker(marker);
-            node.setEndMarker(marker);
-        }
-        else{
-
-            // <!> END TO BE REMOVED
-
-            // Extract start, middle and end markers
-            if(hasStartMarker()){
-                Marker startMarker 
-                    = CSSUtilities.convertMarker(svgElement,
-                                                 CSS_MARKER_START_PROPERTY,
-                                                 ctx, cssDecl, uctx);
-                node.setStartMarker(startMarker);
-            }
-
-            if(hasEndMarker()){
-                Marker endMarker 
-                    = CSSUtilities.convertMarker(svgElement,
-                                                 CSS_MARKER_END_PROPERTY,
-                                                 ctx, cssDecl, uctx);
-                node.setEndMarker(endMarker);
-            }
-
-            Marker middleMarker 
-                = CSSUtilities.convertMarker(svgElement,
-                                             CSS_MARKER_MID_PROPERTY,
-                                             ctx, cssDecl, uctx);
-
-            node.setMiddleMarker(middleMarker);
-        }
 
         super.buildGraphicsNode(gn, ctx, element);
     }
-
-    protected boolean hasStartMarker(){
-        return true;
-    }
-
-    protected boolean hasEndMarker(){
-        return true;
-    }
-
 }

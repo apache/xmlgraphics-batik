@@ -322,9 +322,9 @@ public class CSSOMStyleDeclaration
             f = factories.get(propertyName.toLowerCase().intern());
 	    InputSource is = new InputSource(new StringReader(value));
 	    LexicalUnit lu = parser.parsePropertyValue(is);
-	    CSSOMValue   v = new CSSOMValue(f, f.createValue(lu));
-	    setPropertyCSSValue(propertyName, v, prio);
+	    f.createCSSValue(lu, this, prio);
 	} catch (Exception e) {
+            e.printStackTrace();
 	    throw CSSDOMExceptionFactory.createDOMException
 		(DOMException.INVALID_ACCESS_ERR,
 		 "property.value",
