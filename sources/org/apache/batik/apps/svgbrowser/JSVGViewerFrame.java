@@ -174,6 +174,7 @@ public class JSVGViewerFrame
     public final static String MONITOR_ACTION = "MonitorAction";
     public final static String DOM_VIEWER_ACTION = "DOMViewerAction";
     public final static String SET_TRANSFORM_ACTION = "SetTransformAction";
+    public final static String FIND_DIALOG_ACTION = "FindDialogAction";
 
     /**
      * The cursor indicating that an operation is pending.
@@ -289,6 +290,11 @@ public class JSVGViewerFrame
     protected LanguageDialog languageDialog;
 
     /**
+     * The Find dialog.
+     */
+    protected FindDialog findDialog;
+
+    /**
      * The transform dialog
      */
     protected JAffineTransformChooser.Dialog transformDialog;
@@ -382,6 +388,7 @@ public class JSVGViewerFrame
         listeners.put(MONITOR_ACTION, new MonitorAction());
         listeners.put(DOM_VIEWER_ACTION, new DOMViewerAction());
         listeners.put(SET_TRANSFORM_ACTION, new SetTransformAction());
+        listeners.put(FIND_DIALOG_ACTION, new FindDialogAction());
 
         svgCanvas = new JSVGCanvas(userAgent, true, true);
 
@@ -1210,7 +1217,7 @@ public class JSVGViewerFrame
         public SetTransformAction(){}
         public void actionPerformed(ActionEvent e){
             if (transformDialog == null){
-                transformDialog 
+                transformDialog
                     = JAffineTransformChooser.createDialog
                     (JSVGViewerFrame.this,
                      resources.getString("SetTransform.title"),
@@ -1285,6 +1292,26 @@ public class JSVGViewerFrame
                                                fr.y + (fr.height - md.height) / 2);
             }
             memoryMonitorFrame.show();
+        }
+    }
+
+    /**
+     * To display the Find dialog
+     */
+    public class FindDialogAction extends AbstractAction {
+        public FindDialogAction() {}
+        public void actionPerformed(ActionEvent e) {
+            if (findDialog == null) {
+                findDialog = new FindDialog(JSVGViewerFrame.this, svgCanvas);
+                findDialog.setGraphicsNode(svgCanvas.getGraphicsNode());
+                findDialog.pack();
+                Rectangle fr = getBounds();
+                Dimension td = findDialog.getSize();
+                findDialog.setLocation(fr.x + (fr.width  - td.width) / 2,
+                                       fr.y + (fr.height - td.height) / 2);
+            }
+            findDialog.pack();
+            findDialog.show();
         }
     }
 
@@ -1450,6 +1477,14 @@ public class JSVGViewerFrame
         if (debug) {
             System.out.print("Build completed in ");
             System.out.println((System.currentTimeMillis() - time) + " ms");
+        }
+        if (findDialog != null) {
+            if(findDialog.isVisible()) {
+                findDialog.setGraphicsNode(svgCanvas.getGraphicsNode());
+            } else {
+                findDialog.dispose();
+                findDialog = null;
+            }
         }
         stopAction.update(false);
         svgCanvas.setCursor(DEFAULT_CURSOR);
