@@ -71,6 +71,10 @@ public class SVGLocatableSupport {
      */
     public static SVGRect getBBox(Element elt) {
         final SVGOMElement svgelt = (SVGOMElement)elt;
+        SVGContext svgctx = svgelt.getSVGContext();
+        if (svgctx == null) return null;
+        if (svgctx.getBBox() == null) return null;
+
         return new SVGRect() {
                 public float getX() {
                     return (float)svgelt.getSVGContext().getBBox().getX();

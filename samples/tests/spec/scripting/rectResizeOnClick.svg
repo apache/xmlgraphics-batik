@@ -44,7 +44,7 @@
     // This function is only called if test is run from regard.
     function regardStart() {
        setRect('targetRect', '5', '5', '440', '490');
-       regardTestInstance.scriptDone();
+       setTimeout('regardTestInstance.scriptDone()', 100);
     }
    </script>
 

@@ -67,6 +67,20 @@ public class SegmentList {
         }
     }
 
+    public Rectangle2D getBounds2D() {
+        Iterator iter = iterator();
+        if (!iter.hasNext()) return null;
+
+        Rectangle2D ret;
+        ret = (Rectangle2D)((Segment)iter.next()).getBounds2D().clone();
+        while (iter.hasNext()) {
+            Segment seg = (Segment)iter.next();
+            Rectangle2D segB = seg.getBounds2D();
+            Rectangle2D.union(segB, ret, ret);
+        }
+        return ret;
+    }
+
     public void add(Segment s) {
         segments.add(s);
     }

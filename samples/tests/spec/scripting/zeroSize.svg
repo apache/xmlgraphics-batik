@@ -74,6 +74,8 @@
       if (!doShowBounds) return;
       var bbox = shape.getBBox();
       var elem;
+//      System.err.println("XXX: [" + bbox.x + ", " +bbox.y + ", " + 
+//                         bbox.width + ", " + bbox.height + "]");
       if (bbox.width == 0) {
          if (bbox.height == 0) {
            elem = document.createElementNS(svgns, "circle");

@@ -670,7 +670,7 @@ public class JGVTComponent extends JComponent {
      */
     protected boolean computeRenderingTransform() {
         initialTransform = new AffineTransform();
-        if (initialTransform != renderingTransform) {
+        if (!initialTransform.equals(renderingTransform)) {
             setRenderingTransform(initialTransform, false);
             return true;
         }

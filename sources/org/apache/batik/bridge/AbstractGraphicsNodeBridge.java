@@ -17,16 +17,20 @@
  */
 package org.apache.batik.bridge;
 
+import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
+import java.lang.ref.SoftReference;
 
 import org.apache.batik.css.engine.CSSEngineEvent;
 import org.apache.batik.css.engine.SVGCSSEngine;
 import org.apache.batik.dom.svg.SVGContext;
 import org.apache.batik.dom.svg.SVGOMElement;
+import org.apache.batik.ext.awt.geom.SegmentList;
 import org.apache.batik.gvt.CanvasGraphicsNode;
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.events.MutationEvent;
@@ -312,6 +316,9 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
             
     }
 
+    protected SoftReference bboxShape = null;
+    protected Rectangle2D bbox = null;
+
     /**
      * Returns the tight bounding box in current user space (i.e.,
      * after application of the transform attribute, if any) on the
@@ -319,7 +326,17 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
      * stroke-width and filter effects).
      */
     public Rectangle2D getBBox() {
-        return node.getPrimitiveBounds();
+        Shape s = node.getOutline();
+        
+        if ((bboxShape != null) && (s == bboxShape.get())) return bbox;
+        bboxShape = new SoftReference(s); // don't keep this live.
+        bbox = null;
+        if (s == null) return bbox;
+
+        // SegmentList.getBounds2D gives tight BBox.
+        SegmentList sl = new SegmentList(s);
+        bbox = sl.getBounds2D();
+        return bbox;
     }
 
     /**
