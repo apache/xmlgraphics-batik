@@ -218,8 +218,26 @@ public class TextLayoutAdapter implements TextSpanLayout {
         return layout.isVertical();
     }
 
-    public int getCharacterCount() {
+    public int getGlyphCount() {
         return layout.getCharacterCount();
+    }
+
+
+    /**
+     * Returns the number of chars represented by the glyphs within the
+     * specified range.
+     * @param startGlyphIndex The index of the first glyph in the range.
+     * @param endGlyphIndex The index of the last glyph in the range.
+     * @return The number of chars.
+     */
+    public int getCharacterCount(int startGlyphIndex, int endGlyphIndex) {
+        if (startGlyphIndex < 0) {
+            startGlyphIndex = 0;
+        }
+        if (endGlyphIndex > getGlyphCount()-1) {
+            endGlyphIndex = getGlyphCount()-1;
+        }
+        return endGlyphIndex - startGlyphIndex + 1;
     }
 
 //protected

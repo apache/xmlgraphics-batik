@@ -834,6 +834,11 @@ public class BridgeContext implements ErrorConstants {
         ctx.putBridge(SVGConstants.SVG_NAMESPACE_URI,
                       SVGConstants.SVG_ALT_GLYPH_TAG,
                       new SVGAltGlyphElementBridge());
+
+        ctx.putBridge(SVGConstants.SVG_NAMESPACE_URI,
+                      SVGConstants.SVG_TEXT_PATH_TAG,
+                      new SVGTextPathElementBridge());
+
     }
 
     /**
@@ -876,6 +881,7 @@ public class BridgeContext implements ErrorConstants {
         }
 
         UserAgent ua = ctx.getUserAgent();
+
         iter = entries.iterator();
         while(iter.hasNext()) {
             BridgeExtension be = (BridgeExtension)iter.next();

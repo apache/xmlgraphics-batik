@@ -98,7 +98,12 @@ public class StrokingTextPainter extends BasicTextPainter {
                              AttributedCharacterIterator aci,
                              FontRenderContext frc) {
 
-        List textRuns = new ArrayList();
+        List textRuns = node.getTextRuns();
+        if (textRuns != null) {
+            return textRuns;
+        }
+
+        textRuns = new ArrayList();
         AttributedCharacterIterator fontaci = createModifiedACIForFontMatching(node, aci);
         fontaci.first();
 
@@ -107,9 +112,9 @@ public class StrokingTextPainter extends BasicTextPainter {
          * instantiating TextLayout elements as we go, and
          * accumulate an overall advance for the text display.
          */
-       TextChunk chunk;
-       int beginChunk = 0;
-       do {
+        TextChunk chunk;
+        int beginChunk = 0;
+        do {
              /*
               * Text Chunks contain one or more TextRuns,
               * which they create from the ACI.
@@ -123,8 +128,7 @@ public class StrokingTextPainter extends BasicTextPainter {
                 beginChunk = chunk.end;
             }
 
-       } while (chunk != null);
-
+        } while (chunk != null);
         return textRuns;
     }
 
@@ -228,13 +232,6 @@ public class StrokingTextPainter extends BasicTextPainter {
      */
     private AttributedCharacterIterator createModifiedACIForFontMatching(
                                TextNode node, AttributedCharacterIterator aci) {
-
-    /*    System.out.print("selecting font characters in: ");
-        for (char c = aci.first(); c != aci.DONE; c = aci.next()) {
-            System.out.print(c);
-        }
-        System.out.println();
-*/
 
         aci.first();
         AttributedCharacterSpanIterator acsi
@@ -593,7 +590,7 @@ public class StrokingTextPainter extends BasicTextPainter {
         // for each text run, get its outline and append it to the overall outline
         for (int i = 0; i < textRuns.size(); ++i) {
             TextRun textRun = (TextRun)textRuns.get(i);
-            Shape textRunOutline = textRun.getLayout().getOutline();;
+            Shape textRunOutline = textRun.getLayout().getOutline();
 
             if (includeDecoration) {
                 AttributedCharacterIterator textRunACI = textRun.getACI();
@@ -636,6 +633,7 @@ public class StrokingTextPainter extends BasicTextPainter {
         return outline;
     }
 
+    TextNode cachedNode;
 
     protected org.apache.batik.gvt.text.Mark hitTest(
                          double x, double y, AttributedCharacterIterator aci,
@@ -647,6 +645,11 @@ public class StrokingTextPainter extends BasicTextPainter {
         // get the list of text runs
         List textRuns = getTextRuns(node, aci, frc);
 
+        // store the textRuns in the textNode for much quicker highlighting
+        // note that we can't set this earlier because of problems with
+        // caching the info
+        node.setTextRuns(textRuns);
+
         // for each text run, see if its been hit
         for (int i = 0; i < textRuns.size(); ++i) {
             TextRun textRun = (TextRun)textRuns.get(i);
@@ -655,26 +658,179 @@ public class StrokingTextPainter extends BasicTextPainter {
             if (textHit != null && layout.getBounds().contains(x,y)) {
                 textHit.setTextNode(node);
                 textHit.setFontRenderContext(frc);
-
-                // Note that a texthit char index of -1 signals that the
-                // hit, though within the text element bounds, did not
-                // coincide with a glyph.
-                if ((aci != cachedACI) ||
-                    (textHit == null) ||
-                    (cachedHit == null) ||
-                    ((textHit.getCharIndex() != -1) &&
-                    (textHit.getInsertionIndex() != cachedHit.getInsertionIndex()))) {
-                    cachedMark = new BasicTextPainter.Mark(x, y, layout, textHit);
-                    cachedACI = textRun.getACI();
-                    cachedHit = textHit;
-                    return cachedMark;
-                } // else old mark is still valid, return it.
+                cachedMark = new BasicTextPainter.Mark(x, y, layout, textHit);
+                cachedNode = node;
+                return cachedMark;
             }
         }
+
+        if (cachedNode != node) {
+            // did not hit any of the layouts and the cachedMark is invalid for
+            // this text node, so create a dummy mark
+            TextHit textHit = new TextHit(0,false);
+            textHit.setTextNode(node);
+            textHit.setFontRenderContext(frc);
+            cachedMark = new BasicTextPainter.Mark(x,y,((TextRun)textRuns.get(0)).getLayout(), textHit);
+            cachedNode = node;
+        }
+         return cachedMark;
+    }
+
+    /**
+     * Selects the first glyph in the text node.
+     */
+    public org.apache.batik.gvt.text.Mark selectFirst (
+                         double x, double y, AttributedCharacterIterator aci,
+                         TextNode node,
+                         GraphicsNodeRenderContext context) {
+
+        FontRenderContext frc = context.getFontRenderContext();
+
+        // get the list of text runs
+        List textRuns = getTextRuns(node, aci, frc);
+
+        // store the textRuns in the textNode for much quicker highlighting
+        // note that we can't set this earlier because of problems with
+        // caching the info
+        node.setTextRuns(textRuns);
+
+        TextHit textHit = new TextHit(0,false);
+        textHit.setTextNode(node);
+        textHit.setFontRenderContext(frc);
+        cachedMark = new BasicTextPainter.Mark(x,y,((TextRun)textRuns.get(0)).getLayout(), textHit);
+        cachedNode = node;
         return cachedMark;
     }
 
-  /**
+    /**
+     * Selects the last glyph in the text node.
+     */
+    public org.apache.batik.gvt.text.Mark selectLast (
+                         double x, double y, AttributedCharacterIterator aci,
+                         TextNode node,
+                         GraphicsNodeRenderContext context) {
+
+        FontRenderContext frc = context.getFontRenderContext();
+
+        // get the list of text runs
+        List textRuns = getTextRuns(node, aci, frc);
+
+        // store the textRuns in the textNode for much quicker highlighting
+        // note that we can't set this earlier because of problems with
+        // caching the info
+        node.setTextRuns(textRuns);
+
+        TextSpanLayout lastLayout = ((TextRun)textRuns.get(textRuns.size()-1)).getLayout();
+        int lastGlyphIndex = lastLayout.getGlyphCount()-1;
+        TextHit textHit = new TextHit(lastGlyphIndex,false);
+        textHit.setTextNode(node);
+        textHit.setFontRenderContext(frc);
+        cachedMark = new BasicTextPainter.Mark(x,y,lastLayout,textHit);
+        cachedNode = node;
+        return cachedMark;
+    }
+
+    /**
+     * Returns an array of ints representing begin/end index pairs into
+     * an AttributedCharacterIterator which represents the text
+     * selection delineated by two Mark instances.
+     * <em>Note: The Mark instances passed must have been instantiated by
+     * an instance of this enclosing TextPainter implementation.</em>
+     */
+    public int[] getSelected(AttributedCharacterIterator aci,
+                             org.apache.batik.gvt.text.Mark startMark,
+                             org.apache.batik.gvt.text.Mark finishMark) {
+
+        BasicTextPainter.Mark start;
+        BasicTextPainter.Mark finish;
+        try {
+            start = (BasicTextPainter.Mark) startMark;
+            finish = (BasicTextPainter.Mark) finishMark;
+        } catch (ClassCastException cce) {
+            throw new
+            Error("This Mark was not instantiated by this TextPainter class!");
+        }
+
+        TextSpanLayout startLayout = null;
+        TextSpanLayout finishLayout = null;
+        if (start != null && finish != null) {
+            startLayout = start.getLayout();
+            finishLayout = finish.getLayout();
+        }
+        if (startLayout == null || finishLayout == null) {
+            return null;
+        }
+
+        // if both layouts are the same, make sure the startMark is before the finishMark
+        if (startLayout == finishLayout) {
+            if (finish.getHit().getGlyphIndex() < start.getHit().getGlyphIndex()) {
+                // swap
+                BasicTextPainter.Mark temp = start;
+                start = finish;
+                finish = temp;
+            }
+        }
+
+        // get the list of text runs
+        TextNode textNode = start.getHit().getTextNode();
+        FontRenderContext frc = start.getHit().getFontRenderContext();
+        List textRuns = getTextRuns(textNode, textNode.getAttributedCharacterIterator(), frc);
+
+        int currentCharCount = 0;
+        int currentArrayIndex = 0;
+        int[] result = new int[2];
+
+        // for each text run, look for the start and finish mark
+        for (int i = 0; i < textRuns.size(); ++i) {
+            TextRun textRun = (TextRun)textRuns.get(i);
+            TextSpanLayout layout = textRun.getLayout();
+
+            if (layout == startLayout) { // found the first hit
+
+                int firstHit = start.getHit().getGlyphIndex();
+                if (currentArrayIndex == 0) { // selection is LTR
+                     if (firstHit == 0) {
+                        result[currentArrayIndex] = currentCharCount;
+                    } else {
+                        result[currentArrayIndex] = currentCharCount + layout.getCharacterCount(0, firstHit-1);
+                    }
+                } else { // selection is RTL
+                    result[currentArrayIndex] = currentCharCount + layout.getCharacterCount(0, firstHit) - 1;
+                }
+                currentArrayIndex++;
+                if (currentArrayIndex == 2) {
+                    // have found both marks
+                    return result;
+                }
+            }
+            if (layout == finishLayout) { // found the last hit
+
+                int lastHit = finish.getHit().getGlyphIndex();
+                if (currentArrayIndex == 0) { // selection is RTL
+                    if (lastHit == 0) {
+                        result[currentArrayIndex] = currentCharCount;
+                    } else {
+                        result[currentArrayIndex] = currentCharCount + layout.getCharacterCount(0, lastHit-1);
+                    }
+                } else {
+                    result[currentArrayIndex] = currentCharCount + layout.getCharacterCount(0, lastHit) - 1;
+                }
+                currentArrayIndex++;
+                if (currentArrayIndex == 2) {
+                    // have found both marks
+                    return result;
+                }
+            }
+
+            // increment the char count
+
+            currentCharCount += (textRun.getACI().getEndIndex() - textRun.getACI().getBeginIndex());
+        }
+        // shouldn't get here
+        return null;
+    }
+
+   /**
      * Return a Shape, in the coordinate system of the text layout,
      * which encloses the text selection delineated by two Mark instances.
      * <em>Note: The Mark instances passed must have been instantiated by
@@ -682,7 +838,6 @@ public class StrokingTextPainter extends BasicTextPainter {
      */
     public Shape getHighlightShape(org.apache.batik.gvt.text.Mark beginMark,
                                    org.apache.batik.gvt.text.Mark endMark) {
-
 
         // TODO: later we can return more complex things like
         // noncontiguous selections
@@ -697,17 +852,6 @@ public class StrokingTextPainter extends BasicTextPainter {
             Error("This Mark was not instantiated by this TextPainter class!");
         }
 
-     /*   if (begin == null) {
-            System.out.println("begin mark is null");
-        } else {
-            System.out.println("begin mark is at: " + begin.getHit().getCharIndex());
-        }
-        if (end == null) {
-            System.out.println("end mark is null");
-        } else {
-            System.out.println("end mark is at: " + end.getHit().getCharIndex());
-        }
-*/
         TextSpanLayout beginLayout = null;
         TextSpanLayout endLayout = null;
         if (begin != null && end != null) {
@@ -718,26 +862,19 @@ public class StrokingTextPainter extends BasicTextPainter {
             return null;
         }
 
-   //     System.out.println("beginLayout offset is: " + beginLayout.getOffset());
-   //     System.out.println("endLayout offset is: " + endLayout.getOffset());
-
-        if (beginLayout.getOffset().equals(endLayout.getOffset())) {
+        if (beginLayout == endLayout) {
             int firsthit = 0;
             int lasthit = 0;
             if (begin != end) {
-                firsthit = (begin.getHit().isLeadingEdge()) ?
-                              begin.getHit().getCharIndex() :
-                              begin.getHit().getCharIndex()+1;
-                lasthit = (end.getHit().isLeadingEdge()) ?
-                              end.getHit().getCharIndex() :
-                              end.getHit().getCharIndex()+1;
+                firsthit = begin.getHit().getGlyphIndex();
+                lasthit = end.getHit().getGlyphIndex();
                 if (firsthit > lasthit) {
                     int temp = firsthit;
                     firsthit = lasthit;
                     lasthit = temp;
                 }
             } else {
-                lasthit = beginLayout.getCharacterCount();
+                lasthit = beginLayout.getGlyphCount();
             }
             if (firsthit < 0) {
                 firsthit = 0;
@@ -753,8 +890,6 @@ public class StrokingTextPainter extends BasicTextPainter {
             FontRenderContext frc = begin.getHit().getFontRenderContext();
             List textRuns = getTextRuns(textNode, textNode.getAttributedCharacterIterator(), frc);
 
-
-
             // find out whether selection is right to left or not, ie. whether
             // beginLayout is before endLayout or not
             boolean leftToRight = true;
@@ -769,12 +904,6 @@ public class StrokingTextPainter extends BasicTextPainter {
                     break;
                 }
             }
-        /*    if (leftToRight) {
-                System.out.println("left to right selection");
-            } else {
-                System.out.println("right to left selection");
-            }
-*/
             GeneralPath highlightedShape = new GeneralPath();
             boolean startedHighlight = false;
             boolean finishedHighlight = false;
@@ -788,65 +917,57 @@ public class StrokingTextPainter extends BasicTextPainter {
 
                 if (leftToRight) {
 
-                    if (layout.getOffset().equals(beginLayout.getOffset())) { // found the first layout
+                    if (layout == beginLayout) { // found the first layout
 
                         startedHighlight = true;
-                        int firsthit = (begin.getHit().isLeadingEdge()) ?
-                                        begin.getHit().getCharIndex() :
-                                        begin.getHit().getCharIndex()+1;
+                        int firsthit = begin.getHit().getGlyphIndex();
                         if (firsthit < 0) {
                           firsthit = 0;
                         }
                         layoutHighlightedShape = layout.getLogicalHighlightShape(
-                                                  firsthit, layout.getCharacterCount());
+                                                  firsthit, layout.getGlyphCount());
 
-                    } else if (layout.getOffset().equals(endLayout.getOffset())) {
+                    } else if (layout == endLayout) {
 
                         finishedHighlight = true;
-                        int lasthit = (end.getHit().isLeadingEdge()) ?
-                                        end.getHit().getCharIndex() :
-                                        end.getHit().getCharIndex()+1;
+                        int lasthit = end.getHit().getGlyphIndex();
 
                         if (lasthit < 0) {
-                            lasthit = layout.getCharacterCount();
+                            lasthit = layout.getGlyphCount();
                         }
                         layoutHighlightedShape = layout.getLogicalHighlightShape(
                                                         0, lasthit);
 
                     } else if (startedHighlight) {
                         layoutHighlightedShape = layout.getLogicalHighlightShape(
-                                                     0, layout.getCharacterCount());
+                                                     0, layout.getGlyphCount());
                     }
 
                 } else {  // right to left
 
-                     if (layout.getOffset().equals(beginLayout.getOffset())) { // found the first layout
+                     if (layout == beginLayout) { // found the first layout
                         finishedHighlight = true;
-                        int lasthit = (begin.getHit().isLeadingEdge()) ?
-                                        begin.getHit().getCharIndex() :
-                                        begin.getHit().getCharIndex()+1;
+                        int lasthit = begin.getHit().getGlyphIndex();
 
                         if (lasthit < 0) {
-                            lasthit = layout.getCharacterCount();
+                            lasthit = layout.getGlyphCount();
                         }
                         layoutHighlightedShape = layout.getLogicalHighlightShape(
                                                   0, lasthit);
 
-                    } else if (layout.getOffset().equals(endLayout.getOffset())) {
+                    } else if (layout == endLayout) {
                         startedHighlight = true;
-                        int firsthit = (end.getHit().isLeadingEdge()) ?
-                                        end.getHit().getCharIndex() :
-                                        end.getHit().getCharIndex()+1;
+                        int firsthit = end.getHit().getGlyphIndex();
                         if (firsthit < 0) {
                             firsthit = 0;
                         }
 
                         layoutHighlightedShape = layout.getLogicalHighlightShape(
-                                                        firsthit, layout.getCharacterCount());
+                                                        firsthit, layout.getGlyphCount());
 
                     } else if (startedHighlight) {
                         layoutHighlightedShape = layout.getLogicalHighlightShape(
-                                                     0, layout.getCharacterCount());
+                                                     0, layout.getGlyphCount());
                     }
 
                 }

@@ -42,13 +42,13 @@
             <!-- Converted using SteadyState's TrueType/SVG font    -->
             <!-- toolkit (http://www.steadystate.com/svg            -->
 
-<font horiz-adv-x="959">
+<font horiz-adv-x="959" id="SVGComic">
 <font-face
   font-family="SVGComic"
   units-per-em="2048"
   panose-1="3 15 7 2 3 3 2 2 2 4"
   ascent="2257"
-  descent="-597"
+  descent="597"
   alphabetic="0"/>
 <missing-glyph horiz-adv-x="1024" d="M128 0V1638H896V0H128zM256 128H768V1510H256V128z"/>
 <glyph unicode=" " glyph-name="space" horiz-adv-x="612"/>
@@ -277,7 +277,7 @@
 
  
 	 <g style="font-family:SVGComic; font-size:50">
-		<text x="50" y="120">ab<tspan style="fill:blue" dy="5 5 5 5 5 5">cdefgh</tspan><tspan dy="-30">ij</tspan></text>
+		<text x="50" y="120">ab<tspan style="fill:blue" dy="5 5 5 5 5 5">cde fgh</tspan><tspan dy="-30">ij</tspan></text>
             <text x="50" y="220" style="text-decoration:underline; fill:red">UnderLine</text>
             <text x="50" y="320" style="fill:green"><tspan style="text-decoration:overline">Over</tspan>Line</text>
             <text x="50" y="420" style="fill:purple">Line<tspan style="text-decoration:line-through">Through</tspan></text>

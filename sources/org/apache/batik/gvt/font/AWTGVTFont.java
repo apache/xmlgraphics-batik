@@ -156,6 +156,13 @@ public final class AWTGVTFont implements GVTFont {
         return new GVTLineMetrics(awtFont.getLineMetrics(str, beginIndex, limit, frc));
     }
 
+    /**
+     * Returns the size of this font.
+     */
+    public float getSize() {
+        return awtFont.getSize();
+    }
+
     public String toString() {
         return awtFont.getFontName();
     }

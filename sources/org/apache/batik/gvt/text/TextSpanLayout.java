@@ -126,8 +126,16 @@ public interface TextSpanLayout {
     public boolean isVertical();
 
     /**
-     * Returns the number of characters in this layout.
+     * Returns the number of glyphs in this layout.
      */
-    public int getCharacterCount();
+    public int getGlyphCount();
 
+    /**
+     * Returns the number of chars represented by the glyphs within the
+     * specified range.
+     * @param startGlyphIndex The index of the first glyph in the range.
+     * @param endGlyphIndex The index of the last glyph in the range.
+     * @return The number of chars.
+     */
+    public int getCharacterCount(int startGlyphIndex, int endGlyphIndex);
 }

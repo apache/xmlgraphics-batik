@@ -42,6 +42,8 @@ public class Glyph {
     private GlyphMetrics metrics;
     private float kernScale;
 
+    private Shape outline; // cache the glyph outline
+
 
     /**
      * Constructs a Glyph with the specified parameters.
@@ -87,6 +89,7 @@ public class Glyph {
         this.vertAdvY = vertAdvY;
         this.position = new Point2D.Float(0,0);
         this.kernScale = kernScale;
+        this.outline = null;
     }
 
     /**
@@ -200,6 +203,7 @@ public class Glyph {
      */
     public void setTransform(AffineTransform transform) {
         this.transform = transform;
+        outline = null;
     }
 
     /**
@@ -218,6 +222,7 @@ public class Glyph {
      */
     public void setPosition(Point2D position) {
         this.position = position;
+        outline = null;
     }
 
     /**
@@ -254,16 +259,19 @@ public class Glyph {
      * @return the outline of this glyph.
      */
     public Shape getOutline() {
-        AffineTransform tr = AffineTransform.getTranslateInstance(position.getX(), position.getY());
-        if (transform != null) {
-            tr.concatenate(transform);
+        if (outline == null) {
+            AffineTransform tr = AffineTransform.getTranslateInstance(position.getX(), position.getY());
+            if (transform != null) {
+                tr.concatenate(transform);
+            }
+            Shape glyphOutline = glyphNode.getOutline(null);
+            AffineTransform glyphNodeTransform = glyphNode.getTransform();
+            if (glyphNodeTransform != null) {
+                glyphOutline = glyphNodeTransform.createTransformedShape(glyphOutline);
+            }
+            outline = tr.createTransformedShape(glyphOutline);
         }
-        Shape glyphOutline = glyphNode.getOutline(null);
-        AffineTransform glyphNodeTransform = glyphNode.getTransform();
-        if (glyphNodeTransform != null) {
-            glyphOutline = glyphNodeTransform.createTransformedShape(glyphOutline);
-        }
-        return tr.createTransformedShape(glyphOutline);
+        return outline;
     }
 
     /**

@@ -21,6 +21,8 @@ import java.awt.geom.Rectangle2D;
 import java.text.AttributedCharacterIterator;
 import java.text.CharacterIterator;
 
+import java.util.List;
+
 import org.apache.batik.gvt.text.AttributedCharacterSpanIterator;
 import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
 import org.apache.batik.gvt.text.Mark;
@@ -60,10 +62,22 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
      */
     protected String text;
 
+    protected List textRuns;
+
+
     /**
      * Constructs a new empty <tt>TextNode</tt>.
      */
     public TextNode() {}
+
+
+    public List getTextRuns() {
+        return textRuns;
+    }
+    public void setTextRuns(List textRuns) {
+        this.textRuns = textRuns;
+    }
+
 
     /**
      * Returns the text of this <tt>TextNode</tt> as a string.
@@ -224,8 +238,8 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
      * @param the anchor of this node
      */
     public boolean selectAll(double x, double y, GraphicsNodeRenderContext rc) {
-        endMark = rc.getTextPainter().selectAll(x, y, aci, this, rc);
-        beginMark = endMark;
+        beginMark = rc.getTextPainter().selectFirst(x, y, aci, this, rc);
+        endMark = rc.getTextPainter().selectLast(x, y, aci, this, rc);
         return true;
     }
 
@@ -240,20 +254,17 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
 
         // TODO: later we can return more complex things like
         // noncontiguous selections
+        if ((ranges != null) && (ranges.length > 1)) {
 
-        if (endMark == beginMark) {
-            // XXX HACK WARNING we should do this better;:
-            // for now use this as the signal for select all
-            o = aci;
-        } else {
-            if ((ranges != null) && (ranges.length > 1)
-                && (ranges[1] > ranges[0])) {
-                o = new AttributedCharacterSpanIterator(
-                                           aci, ranges[0], ranges[1]);
+            // make sure that they are in order
+            if (ranges[0] > ranges[1]) {
+                int temp = ranges[1];
+                ranges[1] = ranges[0];
+                ranges[0] = temp;
             }
+            o = new AttributedCharacterSpanIterator(
+                                  aci, ranges[0], ranges[1]+1);
         }
-        // TODO: later we will replace with
-        // AttributedCharacterMultiSpanIterator(aci, ranges);
         return o;
     }
 
@@ -262,6 +273,7 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
      */
     public Shape getHighlightShape(GraphicsNodeRenderContext rc) {
         Shape highlightShape;
+     //   System.out.println("getting highlight shape for " + this);
         highlightShape =
             rc.getTextPainter().getHighlightShape(beginMark,
                                                   endMark);

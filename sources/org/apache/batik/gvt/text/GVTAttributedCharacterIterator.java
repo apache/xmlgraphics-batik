@@ -330,6 +330,9 @@ public interface GVTAttributedCharacterIterator extends
         public final static TextAttribute GVT_FONT =
                                           new TextAttribute("GVT_FONT");
 
+        public final static TextAttribute ALT_GLYPH_HANDLER =
+                                          new TextAttribute("ALT_GLYPH_HANDLER");
+
         // VALUES
 
         /** Value for WRITING_MODE indicating left-to-right */

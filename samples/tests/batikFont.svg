@@ -76,7 +76,7 @@
                     font-family="Batik SVGFont"
                     units-per-em="240"
                     ascent="240"
-                    descent="0"
+                    descent="50"
                     alphabetic="0"/>
 
                 <missing-glyph horiz-adv-x="150" d="M20 0 V240 H100 V0 z"/>

@@ -38,7 +38,7 @@
             </font-face>
         </defs>
 
-        <text x="80" y="250" font-family="'Batik SVGFont'" font-size="250">Batik Batik</text>
+        <text x="80" y="250" font-family="'Batik SVGFont'" font-size="50">Batik Batik</text>
        
     </g>
 

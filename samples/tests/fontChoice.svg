@@ -48,7 +48,7 @@
                     units-per-em="1000"
                     panose-1="0 0 4 0 0 0 0 0 0 0"
                     ascent="900"
-                    descent="-405"
+                    descent="405"
                     alphabetic="0"/>
                 <missing-glyph horiz-adv-x="500" 
                     d="M63 0V800H438V0H63zM125 63H375V738H125V63z"/>
@@ -89,7 +89,7 @@
                     units-per-em="1000"
                     panose-1="0 0 4 0 0 0 0 0 0 0"
                     ascent="900"
-                    descent="-405"
+                    descent="405"
                     alphabetic="0"/>
                 <missing-glyph horiz-adv-x="500" 
                     d="M63 0V800H438V0H63zM125 63H375V738H125V63z"/>

@@ -55,6 +55,7 @@ public class SVGFontFace {
         this.slope = slope;
         this.panose1 = panose1;
         this.ascent = ascent;
+        this.descent = descent;
         this.strikethroughPosition = strikethroughPosition;
         this.strikethroughThickness = strikethroughThickness;
         this.underlinePosition = underlinePosition;

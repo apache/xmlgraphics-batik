@@ -143,26 +143,14 @@ public class ConcreteTextSelector implements Selector {
             }
             p = t.transform(p, null);
 
-            if (isSelectContinueGesture(evt)) {
-                if (selectionNode != source) {
-                     // have been dragged into new node!
-                     // System.out.println("Select (Entering) at "+p);
-                     ((Selectable) source).selectAt(p.getX(), p.getY(),
-                                                    renderContext);
-                     //selectionNode = source;
-                } else {
-                    boolean result = ((Selectable) source).selectTo(p.getX(), p.getY(),
-                                                        renderContext);
-                    if (result) {
-                        Shape newShape =
-                        ((Selectable) source).getHighlightShape(renderContext);
+            if (isDeselectGesture(evt)) {
 
-                        dispatchSelectionEvent(
-                            new SelectionEvent(null,
-                                SelectionEvent.SELECTION_CHANGED,
-                                newShape));
-                    }
-                }
+                dispatchSelectionEvent(
+                        new SelectionEvent(null,
+                                SelectionEvent.SELECTION_CLEARED,
+                                null));
+                copyToClipboard(null);
+
             } else if (isSelectStartGesture(evt)) {
 
                 selectionNode = source;
@@ -189,6 +177,24 @@ public class ConcreteTextSelector implements Selector {
                                 newShape));
                 copyToClipboard(oldSelection);
 
+            } else
+
+            if (isSelectContinueGesture(evt)) {
+
+                if (selectionNode == source) {
+                    boolean result = ((Selectable) source).selectTo(p.getX(), p.getY(),
+                                                        renderContext);
+                    if (result) {
+                        Shape newShape =
+                        ((Selectable) source).getHighlightShape(renderContext);
+
+                        dispatchSelectionEvent(
+                            new SelectionEvent(null,
+                                SelectionEvent.SELECTION_CHANGED,
+                                newShape));
+                    }
+                }
+
             } else if (isSelectAllGesture(evt)) {
 
                 selectionNode = source;
@@ -206,6 +212,11 @@ public class ConcreteTextSelector implements Selector {
 
             }
         }
+    }
+
+    private boolean isDeselectGesture(GraphicsNodeEvent evt) {
+        return ((evt.getID() == GraphicsNodeMouseEvent.MOUSE_CLICKED)
+            && (((GraphicsNodeMouseEvent) evt).getClickCount() == 1));
     }
 
     private boolean isSelectStartGesture(GraphicsNodeEvent evt) {
@@ -305,31 +316,33 @@ public class ConcreteTextSelector implements Selector {
     }
 
     private void copyToClipboard(Object o) {
-        String label = "";
-        if (o instanceof CharacterIterator) {
-            CharacterIterator iter = (CharacterIterator) o;
-            char[] cbuff = new char[iter.getEndIndex()-iter.getBeginIndex()];
-            if (cbuff.length > 0) {
-                cbuff[0] = iter.first();
+
+        // first see if we can access the clipboard
+        SecurityManager securityManager = System.getSecurityManager();
+        boolean canAccessClipboard = true;
+        if (securityManager != null) {
+            try {
+                securityManager.checkSystemClipboardAccess();
+            } catch (SecurityException e) {
+                canAccessClipboard = false;
             }
-            for (int i=1; i<cbuff.length;++i) {
-                cbuff[i] = iter.next();
-            }
-            label = new String(cbuff);
-            SecurityManager securityManager = System.getSecurityManager();
-            boolean canAccessClipboard = true;
-            if (securityManager != null) {
-                try {
-                    securityManager.checkSystemClipboardAccess();
-                } catch (SecurityException e) {
-                    canAccessClipboard = false;
+        }
+        if (canAccessClipboard) {
+            String label = "";
+            if (o instanceof CharacterIterator) {
+                CharacterIterator iter = (CharacterIterator) o;
+                char[] cbuff = new char[iter.getEndIndex()-iter.getBeginIndex()];
+                if (cbuff.length > 0) {
+                    cbuff[0] = iter.first();
                 }
+                for (int i=1; i<cbuff.length;++i) {
+                    cbuff[i] = iter.next();
+                }
+                label = new String(cbuff);
             }
-            if (canAccessClipboard) {
-                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-                StringSelection selection = new StringSelection(label);
-                clipboard.setContents(selection, selection);
-            }
+            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            StringSelection selection = new StringSelection(label);
+            clipboard.setContents(selection, selection);
         }
     }
 

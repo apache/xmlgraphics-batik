@@ -142,9 +142,11 @@ public abstract class SVGFontUtilities implements SVGConstants {
 
                 if (fontElement != null) {
                     // create a font face
+                    NodeList fontFaceChildren = fontElement.getElementsByTagName(SVG_FONT_FACE_TAG);
+                    Element fontFaceChild = (Element)fontFaceChildren.item(0);
                     SVGFontFaceElementBridge fontFaceBridge
-                        = (SVGFontFaceElementBridge)ctx.getBridge(fontFaceElement);
-                    SVGFontFace fontFace = fontFaceBridge.createFontFace(ctx, fontFaceElement);
+                        = (SVGFontFaceElementBridge)ctx.getBridge(fontFaceChild);
+                    SVGFontFace fontFace = fontFaceBridge.createFontFace(ctx, fontFaceChild);
 
                     // see if the font face is ok for the font-weight and style etc
 
