@@ -150,7 +150,7 @@
       <stop style="stop-color:orange" offset="1"/>
     </radialGradient>
     <clipPath id="clip">
-      <rect id="clip" x="-143" y="-500" width="2780" height="1000"/>
+      <rect x="-143" y="-500" width="2780" height="1000"/>
     </clipPath>
     <g id="sun">
 <!--
