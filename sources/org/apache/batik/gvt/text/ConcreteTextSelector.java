@@ -146,14 +146,13 @@ public class ConcreteTextSelector implements Selector {
         }
 
         GraphicsNode source = evt.getGraphicsNode();
-
         if (isDeselectGesture(evt)) {
             if (selectionNode != null)
                 selectionNode.getRoot()
                     .removeTreeGraphicsNodeChangeListener(this);
 
             clearSelection();
-        } else if ((source instanceof Selectable) && (mevt != null)) {
+        } else if (mevt != null) {
 
             Point2D p = new Point2D.Double(mevt.getX(), mevt.getY());
             AffineTransform t = source.getGlobalTransform();
@@ -168,7 +167,8 @@ public class ConcreteTextSelector implements Selector {
             }
             p = t.transform(p, null);
 
-            if (isSelectStartGesture(evt)) {
+            if ((source instanceof Selectable) && 
+                (isSelectStartGesture(evt))) {
                 if (selectionNode != source) {
                     if (selectionNode != null)
                         selectionNode.getRoot()
@@ -186,35 +186,25 @@ public class ConcreteTextSelector implements Selector {
                                 null));
 
             } else if (isSelectEndGesture(evt)) {
-                if (selectionNode != source) {
-                    if (selectionNode != null)
-                        selectionNode.getRoot()
-                            .removeTreeGraphicsNodeChangeListener(this);
-                    if (source != null)
-                        source.getRoot()
-                            .addTreeGraphicsNodeChangeListener(this);
-                }
-                selectionNode = source;
-
-                ((Selectable) source).selectTo(p.getX(), p.getY());
-
+                if (selectionNode == source) 
+                    ((Selectable) source).selectTo(p.getX(), p.getY());
                 Object oldSelection = getSelection();
-                Shape newShape =
-                    ((Selectable) source).getHighlightShape();
-                dispatchSelectionEvent(
-                        new SelectionEvent(oldSelection,
-                                SelectionEvent.SELECTION_DONE,
-                                newShape));
-            } else
-
-            if (isSelectContinueGesture(evt)) {
+                if (selectionNode != null) {
+                    Shape newShape;
+                    newShape = ((Selectable)selectionNode).getHighlightShape();
+                    dispatchSelectionEvent
+                        (new SelectionEvent(oldSelection,
+                                            SelectionEvent.SELECTION_DONE,
+                                            newShape));
+                }
+            } else if (isSelectContinueGesture(evt)) {
 
                 if (selectionNode == source) {
                     boolean result = ((Selectable) source).selectTo(p.getX(), 
                                                                     p.getY());
                     if (result) {
                         Shape newShape =
-                        ((Selectable) source).getHighlightShape();
+                            ((Selectable) selectionNode).getHighlightShape();
 
                         dispatchSelectionEvent(
                             new SelectionEvent(null,
@@ -222,7 +212,8 @@ public class ConcreteTextSelector implements Selector {
                                 newShape));
                     }
                 }
-            } else if (isSelectAllGesture(evt)) {
+            } else if ((source instanceof Selectable) && 
+                       (isSelectAllGesture(evt))) {
                 if (selectionNode != source) {
                     if (selectionNode != null)
                         selectionNode.getRoot()

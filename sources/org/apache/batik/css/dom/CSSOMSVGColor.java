@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import org.apache.batik.css.engine.value.FloatValue;
 import org.apache.batik.css.engine.value.Value;
 import org.apache.batik.css.engine.value.svg.ICCColor;
+import org.apache.batik.util.CSSConstants;
+
 import org.w3c.dom.DOMException;
 import org.w3c.dom.css.CSSPrimitiveValue;
 import org.w3c.dom.css.CSSValue;
@@ -127,8 +129,12 @@ public class CSSOMSVGColor
         switch (value.getCssValueType()) {
         case CSSValue.CSS_PRIMITIVE_VALUE:
             switch (value.getPrimitiveType()) {
-            case CSSPrimitiveValue.CSS_IDENT:
-                return SVG_COLORTYPE_CURRENTCOLOR;
+            case CSSPrimitiveValue.CSS_IDENT: {
+                if (value.getStringValue().equalsIgnoreCase
+                    (CSSConstants.CSS_CURRENTCOLOR_VALUE))
+                    return SVG_COLORTYPE_CURRENTCOLOR;
+                return SVG_COLORTYPE_RGBCOLOR;
+            }
             case CSSPrimitiveValue.CSS_RGBCOLOR:
                 return SVG_COLORTYPE_RGBCOLOR;
             }
@@ -817,7 +823,7 @@ public class CSSOMSVGColor
             throws DOMException {
             switch (type) {
             case SVG_COLORTYPE_CURRENTCOLOR:
-                textChanged("currentcolor");
+                textChanged(CSSConstants.CSS_CURRENTCOLOR_VALUE);
                 break;
 
             case SVG_COLORTYPE_RGBCOLOR:

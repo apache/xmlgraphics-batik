@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001-2002,2004  The Apache Software Foundation 
+   Copyright 2001-2002,2004-2005  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -61,7 +61,7 @@ public class SVG12BridgeExtension extends SVGBridgeExtension {
      * This should contain a contact address (usually an e-mail address).
      */
     public String getContactAddress() {
-        return "batik-dev@xml.apache.org";
+        return "batik-dev@xmlgraphics.apache.org";
     }
 
     /**

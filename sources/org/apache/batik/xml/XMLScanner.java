@@ -361,7 +361,6 @@ public class XMLScanner implements Localizable {
 
         case LexicalUnits.STRING:
         case LexicalUnits.ENTITY_REFERENCE:
-        case LexicalUnits.CHARACTER_REFERENCE:
         case LexicalUnits.PARAMETER_ENTITY_REFERENCE:
         case LexicalUnits.START_TAG:
         case LexicalUnits.FIRST_ATTRIBUTE_FRAGMENT:
@@ -369,6 +368,7 @@ public class XMLScanner implements Localizable {
 
         case LexicalUnits.PI_START:
         case LexicalUnits.END_TAG:
+        case LexicalUnits.CHARACTER_REFERENCE:
             return 2;
 
         case LexicalUnits.COMMENT:

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!--
 
-   Copyright 2000-2004  The Apache Software Foundation 
+   Copyright 2000-2005  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -314,7 +314,7 @@
         </p>
         <p>
         For direct participation, we suggest you to subscribe to the
-        <link href="http://xml.apache.org/mail.html">Batik mailing
+        <link href="http://xmlgraphics.apache.org/mail.html">Batik mailing
         list</link> (follow the link for information on how to
         subscribe and to access the mail list archives), and to
         checkout the <link
@@ -510,7 +510,7 @@
     <answer>
         <p>
         You can submit bug fixes and patches to the <link
-        href="mailto:batik-dev@xml.apache.org">Batik developers</link>
+        href="mailto:batik-dev@xmlgraphics.apache.org">Batik developers</link>
         mailing list and you can enter bugs in <link
         href="http://issues.apache.org/bugzilla/">Bugzilla</link>.
         </p>
@@ -765,7 +765,8 @@
     </question> 
     <answer>
       <p>You just have to follow the instructions posted on the
-      <link href="http://xml.apache.org/cvs.html">XML Apache CVS page</link>.
+      <link href="http://xmlgraphics.apache.org/repo.html">Apache 
+      XML Graphics code repository page</link>.
       </p>
     </answer>
 </faq>
