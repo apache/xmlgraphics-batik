@@ -364,43 +364,12 @@ public class GlyphLayout implements TextSpanLayout {
                                 Point2D.Float pt;
                                 pt = new Point2D.Float(pts[0], pts[1]);
                                 if (count == 0) firstPt = pt;
-                                switch(glyphOrientationAngle) {
-                                case 0:
-                                    // Use sides of rectangle...
-                                    switch (count) {
-                                    case 0: botPts[ptIdx]   = pt; break;
-                                    case 1: topPts[ptIdx]   = pt; break;
-                                    case 2: topPts[ptIdx+1] = pt; break;
-                                    case 3: botPts[ptIdx+1] = pt; break;
-                                    }
-                                    break;
-                                case 90:
-                                    // Use "top" and "bottom"
-                                    switch (count) {
-                                    case 0: topPts[ptIdx]   = pt; break;
-                                    case 1: topPts[ptIdx+1] = pt; break;
-                                    case 2: botPts[ptIdx+1] = pt; break;
-                                    case 3: botPts[ptIdx]   = pt; break;
-                                    }
-                                    break;
-                                case 180:
-                                    // Use reverse sides of rectangle...
-                                    switch (count) {
-                                    case 0: botPts[ptIdx+1] = pt; break;
-                                    case 1: topPts[ptIdx+1] = pt; break;
-                                    case 2: topPts[ptIdx]   = pt; break;
-                                    case 3: botPts[ptIdx]   = pt; break;
-                                    }
-                                    break;
-                                case 270:
-                                    // Use "bottom" and "top"
-                                    switch (count) {
-                                    case 0: topPts[ptIdx+1] = pt; break;
-                                    case 1: topPts[ptIdx]   = pt; break;
-                                    case 2: botPts[ptIdx]   = pt; break;
-                                    case 3: botPts[ptIdx+1] = pt; break;
-                                    }
-                                    break;
+                                // Use sides of  rectangle...
+                                switch (count) {
+                                case 0: botPts[ptIdx]   = pt; break;
+                                case 1: topPts[ptIdx]   = pt; break;
+                                case 2: topPts[ptIdx+1] = pt; break;
+                                case 3: botPts[ptIdx+1] = pt; break;
                                 }
                             }
                         } else if (type == PathIterator.SEG_CLOSE) {
