@@ -45,6 +45,12 @@ public class ConcreteTextNode
     private AttributedCharacterIterator aci;
 
     /**
+     * Bounds for this text node, without taking any of the
+     * rendering attributes (e.g., stroke) into account
+     */
+    private Rectangle2D geometryBounds;
+
+    /**
      * Text Anchor
      */
     private Anchor anchor = Anchor.START;
@@ -133,6 +139,36 @@ public class ConcreteTextNode
         bounds = t.createTransformedShape(bounds).getBounds();
 
         return bounds;
+    }
+
+    public Rectangle2D getGeometryBounds(){
+        if(geometryBounds == null){
+            if (aci != null) {
+                java.awt.font.TextLayout layout
+                    = new java.awt.font.TextLayout(aci,
+                                                   new java.awt.font.FontRenderContext(new AffineTransform(),
+                                                                                       true,
+                                                                                       true));
+                geometryBounds = layout.getBounds();
+                
+                double tx = location.getX();
+                double ty = location.getY();
+                if (anchor == Anchor.MIDDLE) {
+                    tx -= geometryBounds.getWidth()/2;
+                } else if (anchor == Anchor.END) {
+                    tx -= geometryBounds.getWidth();
+                }
+                
+                AffineTransform t = AffineTransform.getTranslateInstance(tx, ty);
+                
+                geometryBounds = t.createTransformedShape(geometryBounds).getBounds();
+
+
+            } else {
+                geometryBounds = new Rectangle2D.Float(0, 0, 0, 0);
+            }
+        }
+        return geometryBounds;
     }
 
     public boolean contains(Point2D p) {

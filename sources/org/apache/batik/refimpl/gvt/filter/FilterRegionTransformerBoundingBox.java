@@ -97,13 +97,12 @@ public class FilterRegionTransformerBoundingBox implements FilterRegionTransform
      * bounding box.
      */
     private TransformDescriptor getTransformDescriptor(){
-        Rectangle2D bounds = node.getPrimitiveBounds();
+        Rectangle2D bounds = node.getGeometryBounds();
         TransformDescriptor desc = new TransformDescriptor();
         desc.tx = (float)bounds.getX();
         desc.ty = (float)bounds.getY();
         desc.sx = (float)bounds.getWidth();
         desc.sy = (float)bounds.getHeight();
-
         return desc;
     }
 }
