@@ -189,9 +189,19 @@ public class GraphicsUtil {
             }
             else if (filter instanceof GraphicsNodeRable) {
                 GraphicsNodeRable gnr = (GraphicsNodeRable)filter;
-                gnr.getGraphicsNode().primitivePaint
-                    (g2d, GraphicsNodeRenderContext.
-                     getGraphicsNodeRenderContext(g2d));
+                if (gnr.getUsePrimitivePaint()) {
+                    gnr.getGraphicsNode().primitivePaint
+                        (g2d, GraphicsNodeRenderContext.
+                         getGraphicsNodeRenderContext(g2d));
+                } else {
+                    try {
+                        gnr.getGraphicsNode().paint
+                            (g2d, GraphicsNodeRenderContext.
+                             getGraphicsNodeRenderContext(g2d));
+                    } catch (InterruptedException ie) {
+                        // Don't do anything we just return...
+                    }
+                }
                 // Primitive Paint did the work...
                 return;
             }

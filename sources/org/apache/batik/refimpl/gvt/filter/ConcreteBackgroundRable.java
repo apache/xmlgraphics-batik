@@ -32,6 +32,7 @@ import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.GraphicsNodeRable;
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
 import org.apache.batik.gvt.filter.CompositeRule;
+import org.apache.batik.gvt.filter.PadMode;
 
 /**
  * This implementation of RenderableImage will render its input
@@ -258,11 +259,28 @@ public class ConcreteBackgroundRable
                 srcs.add(gnr);
             }
         }
+        if (srcs.size() == 0)
+            return null;
+
         Filter ret = null;
-        if (srcs.size() > 1)
-            ret = new ConcreteCompositeRable(srcs, CompositeRule.OVER);
-        if (srcs.size() > 0)
+        if (srcs.size() == 1)
             ret = (Filter)srcs.get(0);
+        else
+            ret = new ConcreteCompositeRable(srcs, CompositeRule.OVER);
+
+        if (child != null) {
+            // We are returning the filter to child so make
+            // sure to map the filter from the parents user space
+            // to the childs user space...
+
+            try {
+                AffineTransform at = child.getTransform();
+                at = at.createInverse();
+                ret = new ConcreteAffineRable(ret, at);
+            } catch (NoninvertibleTransformException nte) {
+                ret = null;
+            }
+        }
 
         return ret;
     }
@@ -300,8 +318,11 @@ public class ConcreteBackgroundRable
             getGraphicsNodeRenderContext(renderContext);
 
         Filter f = getBackground(node, null, gnrc);
-        
-        // f = new ConcreteClipRable(f, getBounds2D());
+        if ( f == null)
+            return null;
+        Rectangle2D r2d = getBounds2D();
+        f = new ConcretePadRable(f, r2d, PadMode.ZERO_PAD);
+        // System.out.println("Bounds: " + r2d);
         
         RenderedImage ri = f.createRendering(renderContext);
         return ri;

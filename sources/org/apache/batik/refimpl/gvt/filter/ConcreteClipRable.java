@@ -110,6 +110,9 @@ public class ConcreteClipRable
         Rectangle2D.intersect(rect, aoi.getBounds2D(), rect);
 
         Rectangle devR = usr2dev.createTransformedShape(rect).getBounds();
+
+        if ((devR.width == 0) || (devR.height == 0))
+            return null;
         
         BufferedImage bi = new BufferedImage(devR.width, devR.height,
                                              BufferedImage.TYPE_BYTE_GRAY);
