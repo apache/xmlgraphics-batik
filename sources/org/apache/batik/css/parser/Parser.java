@@ -8,31 +8,25 @@
 
 package org.apache.batik.css.parser;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
-import java.io.UnsupportedEncodingException;
-
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.StringTokenizer;
 
-import org.apache.batik.util.CSSConstants;
-import org.apache.batik.util.EncodingUtilities;
-import org.apache.batik.util.ParsedURL;
 import org.apache.batik.i18n.Localizable;
 import org.apache.batik.i18n.LocalizableSupport;
-
-import org.w3c.css.sac.ConditionFactory;
-import org.w3c.css.sac.Condition;
+import org.apache.batik.util.CSSConstants;
+import org.apache.batik.util.ParsedURL;
 import org.w3c.css.sac.CSSException;
 import org.w3c.css.sac.CSSParseException;
+import org.w3c.css.sac.Condition;
+import org.w3c.css.sac.ConditionFactory;
 import org.w3c.css.sac.DocumentHandler;
 import org.w3c.css.sac.ErrorHandler;
 import org.w3c.css.sac.InputSource;
 import org.w3c.css.sac.LexicalUnit;
-import org.w3c.css.sac.Locator;
 import org.w3c.css.sac.SACMediaList;
 import org.w3c.css.sac.Selector;
 import org.w3c.css.sac.SelectorFactory;
