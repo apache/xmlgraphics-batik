@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- ========================================================================= -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.        -->
+<!--                                                                           -->
+<!-- This software is published under the terms of the Apache Software License -->
+<!-- version 1.1, a copy of which has been included with this distribution in  -->
+<!-- the LICENSE file.                                                         -->
+<!-- ========================================================================= -->
+
+<project name="RasterizerTask" default="help" basedir=".">
+    <!-- ================================================================= -->
+    <!-- 
+         This is a build project for RasterizerTask task.
+
+         Use compile target to compile source code and help target to 
+         display all available targets.
+
+         Author: Henri Ruini
+    -->
+    <!-- ================================================================= -->
+
+    <!-- == Global properties ============================================ -->
+    <property name="root" value="${basedir}" />
+    <!-- root: Root directory of all the other directories. -->
+    <property name="lib" value="${root}/../../lib" />
+    <!-- lib: Directory where the library files (jars etc.) are located. -->
+    <property name="src" value="${root}/sources" />
+    <!-- src: Directory for source files. -->
+    <property name="build" value="${root}/classes" />
+    <!-- build: Directory for compiles class files. -->
+    <property name="javadoc" value="${root}/javadoc" />
+    <!-- javadocs: Directory for javadocs. -->
+
+
+
+    <!-- == Targets ====================================================== -->
+    <target name="help"
+        description="Displays usage information.">
+        <echo>SVG Rasterizer Task build file.</echo>
+        <echo>Available targets are:</echo>
+        <echo>  compile --> Compiles the source code.</echo>
+        <echo>  javadoc --> Generates Javadoc documentation.</echo>
+        <echo>  jar     --> Builds the JAR distribution.</echo>
+        <echo>  clean   --> Deletes the generated directories.</echo>
+    </target>
+
+    <target name="prepare">
+        <tstamp/>
+    </target>
+
+    <target name="compile" depends="prepare"
+        description="Compiles source files.">
+        <!-- Clean and (re)create the build directory. -->
+        <delete dir="${build}" />
+        <mkdir dir="${build}" />
+        <!-- Compile code. -->
+        <javac srcdir="${src}" destdir="${build}" />
+    </target>
+
+    <target name="javadoc" depends="prepare"
+        description="Generates Javadoc documentation.">
+        <!-- Clean and (re)create the javadocs directory. -->
+        <delete dir="${javadoc}" />
+        <mkdir dir="${javadoc}" />
+        <!-- Create javadocs. -->
+        <javadoc destdir="${javadoc}"
+            packagenames="org.apache.tools.ant.*"
+            version="false"
+            author="false"
+            windowtitle="Rasterizer Task Javadoc"
+            doctitle="Rasterizer Task API Specification"
+            bottom="Copyright &#169; 2001 Apache Software Foundation. All Rights Reserved.">
+            <sourcepath>
+                <pathelement path="${src}" />
+                <pathelement path="${root}/../../sources" />
+            </sourcepath>
+            <group title="SVG Rasterizer Task" packages="org.apache.tools.ant.taskdefs.optional.RasterizerTask" />
+        </javadoc>
+    </target>
+
+    <target name="jar" depends="prepare, compile"
+        description="Creates a JAR package.">
+        <jar jarfile="${root}/RasterizerTask.jar"
+            basedir="${build}"
+            excludes="**/CVS"
+            includes="**/*.class">
+        </jar>
+    </target>
+
+    <target name="clean"
+        description="Deletes directories created by this script.">
+        <delete dir="${javadoc}" />
+        <delete dir="${build}" />
+    </target>
+
+</project>
+
