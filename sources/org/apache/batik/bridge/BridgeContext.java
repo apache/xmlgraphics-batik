@@ -17,12 +17,14 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 
 import org.apache.batik.css.HiddenChildElementSupport;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.script.InterpreterPool;
+import org.apache.batik.util.Service;
 import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGDocument;
@@ -835,7 +837,7 @@ public class BridgeContext implements ErrorConstants {
     }
 
     /**
-     * Associates the specified <tt>Bridge</tt> object with it's 
+     * Associates the specified <tt>Bridge</tt> object with it's
      * namespace URI and local name.
      * @param bridge the bridge that manages the element
      */
@@ -846,26 +848,24 @@ public class BridgeContext implements ErrorConstants {
     }
 
     /**
-     * Register Extensions
+     * Registers extensions to the specified <tt>BridgeContext</tt>.
+     *
+     * @param ctx the bridge context to initialize with extensions
      */
     public static void registerBridgeExtensions(BridgeContext ctx) {
-        java.util.List entries = new java.util.LinkedList();
 
-        java.util.Iterator iter = org.apache.batik.util.Service.providers
-            (BridgeExtension.class);
+        List entries = new LinkedList();
+        Iterator iter = Service.providers(BridgeExtension.class);
+
         while (iter.hasNext()) {
             BridgeExtension be = (BridgeExtension)iter.next();
-            // System.out.println("BE: " + be);
             float priority  = be.getPriority();
-
-            java.util.ListIterator li;
-            li = entries.listIterator();
-            while (true) {
+            ListIterator li = entries.listIterator();
+            for (;;) {
                 if (!li.hasNext()) {
                     li.add(be);
                     break;
                 }
-
                 BridgeExtension lbe = (BridgeExtension)li.next();
                 if (lbe.getPriority() > priority) {
                     li.previous();
@@ -874,14 +874,13 @@ public class BridgeContext implements ErrorConstants {
                 }
             }
         }
-        
-        UserAgent ua = ctx.getUserAgent();
 
+        UserAgent ua = ctx.getUserAgent();
         iter = entries.iterator();
         while(iter.hasNext()) {
             BridgeExtension be = (BridgeExtension)iter.next();
             be.registerTags(ctx);
-            java.util.Iterator exts = be.getImplementedExtensions();
+            Iterator exts = be.getImplementedExtensions();
             while (exts.hasNext()) {
                 String ext = (String)exts.next();
                 // ua.addExtension(ext);

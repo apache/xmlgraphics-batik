@@ -52,13 +52,11 @@ public class TranscoderException extends Exception {
      */
     public String getMessage() {
         String msg = super.getMessage();
-        if (msg != null) {
-            return msg;
-        } else if (ex != null) {
-            return ex.getMessage();
-        } else {
-            return null;
+        if (ex != null) {
+            msg += "\nEnclosed Exception:\n";
+            msg += ex.getMessage();
         }
+        return msg;
     }
 
     /**
