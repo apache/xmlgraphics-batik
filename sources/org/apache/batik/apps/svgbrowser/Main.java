@@ -389,6 +389,7 @@ public class Main implements Application {
      * Closes the given viewer frame.
      */
     public void closeJSVGViewerFrame(JSVGViewerFrame f) {
+        f.getJSVGCanvas().stopProcessing();
         viewerFrames.remove(f);
         if (viewerFrames.size() == 0) {
             System.exit(0);
