@@ -27,6 +27,10 @@ public interface BatikExtConstants {
     public static final String BATIK_EXT_SOLID_COLOR_TAG = 
         "solidColor";
 
+    /** Tag name for Batik's regular poly extension. */
+    public static final String BATIK_EXT_COLOR_SWITCH_TAG = 
+        "colorSwitch";
+
     /** Tag name for Batik's star extension. */
     public static final String BATIK_EXT_HISTOGRAM_NORMALIZATION_TAG =
         "histogramNormalization";
