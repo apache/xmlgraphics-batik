@@ -84,14 +84,15 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
                 }
             }
         }
-        bridgeContext.setCurrentViewport(oldViewport);
 
         // Apply the clip-path property of this clipPath Element
-        Shape clipedElementClipPath =
+        Shape clipElementClipPath =
             CSSUtilities.convertClipPath(clipElement, gn, bridgeContext);
-        if (clipedElementClipPath != null) {
-            area.subtract(new Area(clipedElementClipPath));
+        if (clipElementClipPath != null) {
+            System.out.println(clipElementClipPath);
+            area.subtract(new Area(clipElementClipPath));
         }
+        bridgeContext.setCurrentViewport(oldViewport);
 
         // Convert the Area to a path and apply the winding rule
         GeneralPath path = new GeneralPath(area);
