@@ -69,8 +69,6 @@ public class DistantLight implements Light {
         Lx = Math.cos(Math.PI*azimuth/180.)*Math.cos(Math.PI*elevation/180.);
         Ly = Math.sin(Math.PI*azimuth/180.)*Math.cos(Math.PI*elevation/180.);
         Lz = Math.sin(Math.PI*elevation/180);
-
-        System.out.println("L = " + Lx + "/" + Ly + "/" + Lz);
     }
 
     /**
@@ -103,6 +101,37 @@ public class DistantLight implements Light {
         L[0] = Lx;
         L[1] = Ly;
         L[2] = Lz;
+    }
+
+    /**
+     * Returns a light map, starting in (x, y) with dx, dy increments, a given
+     * width and height, and z elevations stored in the fourth component on the 
+     * N array.
+     *
+     * @param x x-axis coordinate where the light should be computed
+     * @param y y-axis coordinate where the light should be computed
+     * @param dx delta x for computing light vectors in user space
+     * @param dy delta y for computing light vectors in user space
+     * @param width number of samples to compute on the x axis
+     * @param height number of samples to compute on the y axis
+     * @param z array containing the z elevation for all the points
+     */
+    public double[][][] getLightMap(double x, double y, 
+                                  final double dx, final double dy,
+                                  final int width, final int height,
+                                  final double[][][] z)
+    {
+        double[][][] L = new double[height][width][];
+        double[] CL = new double[3];
+        getLight(0, 0, 0, CL);
+
+        for(int i=0; i<height; i++){
+            for(int j=0; j<width; j++){
+                L[i][j] = CL;
+            }
+        }
+
+        return L;
     }
 }
 

@@ -110,10 +110,10 @@ public class SpotLight implements Light {
         return color;
     }
 
-    public SpotLight(double lightX, double lightY, double lightZ,
-                     double pointAtX, double pointAtY, double pointAtZ,
-                     double specularExponent, double limitingConeAngle,
-                     Color lightColor){
+    public SpotLight(final double lightX, final double lightY, final double lightZ,
+                     final double pointAtX, final double pointAtY, final double pointAtZ,
+                     final double specularExponent, final double limitingConeAngle,
+                     final Color lightColor){
         this.lightX = lightX;
         this.lightY = lightY;
         this.lightZ = lightZ;
@@ -155,7 +155,7 @@ public class SpotLight implements Light {
      * @return true if the light is constant over the whole surface
      */
     public boolean isConstant(){
-        return true;
+        return false;
     }
 
     /**
@@ -166,22 +166,22 @@ public class SpotLight implements Light {
      * @param z z-axis coordinate where the light should be computed
      * @param L array of length 3 where the result is stored
      */
-    public void getLight(final double x, final double y, final double z, final double L[]){
+    public final void getLight(final double x, final double y, final double z, final double L[]){
         // Light Vector, L
         L[0] = lightX - x;
         L[1] = lightY - y;
         L[2] = lightZ - z;
 
-        double norm = Math.sqrt(L[0]*L[0] +
-                                L[1]*L[1] +
-                                L[2]*L[2]);
+        final double norm = Math.sqrt(L[0]*L[0] +
+                                      L[1]*L[1] +
+                                      L[2]*L[2]);
 
         L[0] /= norm;
         L[1] /= norm;
         L[2] /= norm;
-
+        
         double LS = -(L[0]*S[0] + L[1]*S[1] + L[2]*S[2]);
-
+        
         if(LS > limitingCos){
             double Iatt = limitingCos/LS;
             Iatt *= Iatt;
@@ -203,6 +203,39 @@ public class SpotLight implements Light {
             L[1] = 0;
             L[2] = 0;
         }
+    }
+
+    /**
+     * Returns a light map, starting in (x, y) with dx, dy increments, a given
+     * width and height, and z elevations stored in the fourth component on the 
+     * N array.
+     *
+     * @param x x-axis coordinate where the light should be computed
+     * @param y y-axis coordinate where the light should be computed
+     * @param dx delta x for computing light vectors in user space
+     * @param dy delta y for computing light vectors in user space
+     * @param width number of samples to compute on the x axis
+     * @param height number of samples to compute on the y axis
+     * @param z array containing the z elevation for all the points
+     */
+    public double[][][] getLightMap(double x, double y, 
+                                  final double dx, final double dy,
+                                  final int width, final int height,
+                                  final double[][][] z)
+    {
+        double[][][] L = new double[height][width][3];
+        final double xStart = x;
+
+        for(int i=0; i<height; i++){
+            for(int j=0; j<width; j++){
+                getLight(x, y, z[i][j][3], L[i][j]);
+                x += dx;
+            }
+            x = xStart;
+            y += dy;
+        }
+
+        return L;
     }
 }
 

@@ -36,6 +36,28 @@ public interface Light {
     public void getLight(final double x, final double y, final double z, final double L[]);
 
     /**
+     * Returns a light map, starting in (x, y) with dx, dy increments, a given
+     * width and height, and z elevations stored in the fourth component on the 
+     * N array.
+     *
+     * @param x x-axis coordinate where the light should be computed
+     * @param y y-axis coordinate where the light should be computed
+     * @param dx delta x for computing light vectors in user space
+     * @param dy delta y for computing light vectors in user space
+     * @param width number of samples to compute on the x axis
+     * @param height number of samples to compute on the y axis
+     * @param z array containing the z elevation for all the points
+     *
+     * @return an array of height rows, width columns where each element
+     *         is an array of three components representing the x, y and z
+     *         components of the light vector.
+     */
+    public double[][][] getLightMap(double x, double y, 
+                                  final double dx, final double dy,
+                                  final int width, final int height,
+                                  final double[][][] z);
+
+    /**
      * @return the Light's color. The return value is an array of normalized
      *         RGB intensities.
      */
