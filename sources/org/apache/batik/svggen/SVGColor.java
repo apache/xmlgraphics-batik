@@ -11,7 +11,7 @@ package org.apache.batik.svggen;
 import java.awt.Color;
 import java.awt.Paint;
 import java.util.Map;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Iterator;
 
 import org.w3c.dom.*;
@@ -50,7 +50,7 @@ public class SVGColor extends AbstractSVGConverter{
     /**
      * Color map maps Color values to HTML 4.0 color names
      */
-    private static Hashtable colorMap = new Hashtable();
+    private static Map colorMap = new HashMap();
 
     static {
         colorMap.put(black, "black");

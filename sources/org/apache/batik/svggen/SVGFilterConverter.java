@@ -10,7 +10,7 @@ package org.apache.batik.svggen;
 
 import java.awt.Rectangle;
 import java.awt.image.BufferedImageOp;
-import java.util.Set;
+import java.util.List;
 
 /**
  * Defines the interface for classes that are able to convert
@@ -42,5 +42,5 @@ public interface SVGFilterConverter extends SVGSyntax {
      *         If no definition is needed, an empty set should be
      *         returned.
      */
-    public Set getDefinitionSet();
+    public List getDefinitionSet();
 }

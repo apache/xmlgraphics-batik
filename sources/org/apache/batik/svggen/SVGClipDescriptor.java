@@ -8,10 +8,7 @@
 
 package org.apache.batik.svggen;
 
-import java.util.Map;
-import java.util.Hashtable;
-import java.util.Set;
-import java.util.HashSet;
+import java.util.*;
 
 import org.w3c.dom.*;
 
@@ -47,9 +44,9 @@ public class SVGClipDescriptor implements SVGDescriptor, SVGSyntax{
      * @return a map containing the SVG attributes needed by the
      *         descriptor.
      */
-    public Map getAttributeMap(Map attrMap){
-        if(attrMap == null)
-            attrMap = new Hashtable();
+    public Map getAttributeMap(Map attrMap) {
+        if (attrMap == null)
+            attrMap = new HashMap();
 
         attrMap.put(SVG_CLIP_PATH_ATTRIBUTE, clipPathValue);
 
@@ -66,11 +63,11 @@ public class SVGClipDescriptor implements SVGDescriptor, SVGSyntax{
      * @return a set containing Elements that represent the definition
      *         of the descriptor's attribute values
      */
-    public Set getDefinitionSet(Set defSet){
-        if(defSet == null)
-            defSet = new HashSet();
+    public List getDefinitionSet(List defSet) {
+        if (defSet == null)
+            defSet = new LinkedList();
 
-        if(clipPathDef != null)
+        if (clipPathDef != null)
             defSet.add(clipPathDef);
 
         return defSet;

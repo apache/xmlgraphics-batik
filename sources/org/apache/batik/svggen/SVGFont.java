@@ -9,7 +9,7 @@
 package org.apache.batik.svggen;
 
 import java.awt.Font;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Map;
 import java.awt.font.TextAttribute;
 
@@ -108,7 +108,7 @@ public class SVGFont extends AbstractSVGConverter {
     /**
      * Logical fonts mapping
      */
-    static Hashtable logicalFontMap = new Hashtable();
+    static Map logicalFontMap = new HashMap();
 
     static {
         logicalFontMap.put("dialog", "sans-serif");

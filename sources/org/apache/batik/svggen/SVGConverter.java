@@ -8,7 +8,7 @@
 
 package org.apache.batik.svggen;
 
-import java.util.Set;
+import java.util.List;
 
 import org.apache.batik.ext.awt.g2d.GraphicContext;
 
@@ -40,5 +40,5 @@ public interface SVGConverter extends SVGSyntax{
      *         If no definition is needed, an empty set should be
      *         returned.
      */
-    public Set getDefinitionSet();
+    public List getDefinitionSet();
 }

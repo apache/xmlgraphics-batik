@@ -8,10 +8,7 @@
 
 package org.apache.batik.svggen;
 
-import java.util.Map;
-import java.util.Hashtable;
-import java.util.Set;
-import java.util.HashSet;
+import java.util.*;
 
 import org.w3c.dom.Element;
 
@@ -52,9 +49,9 @@ public class SVGCompositeDescriptor implements SVGDescriptor, SVGSyntax{
         return def;
     }
 
-    public Map getAttributeMap(Map attrMap){
+    public Map getAttributeMap(Map attrMap) {
         if(attrMap == null)
-            attrMap = new Hashtable();
+            attrMap = new HashMap();
 
         attrMap.put(SVG_OPACITY_ATTRIBUTE, opacityValue);
         attrMap.put(SVG_FILTER_ATTRIBUTE, filterValue);
@@ -62,11 +59,11 @@ public class SVGCompositeDescriptor implements SVGDescriptor, SVGSyntax{
         return attrMap;
     }
 
-    public Set getDefinitionSet(Set defSet){
-        if(defSet == null)
-            defSet = new HashSet();
+    public List getDefinitionSet(List defSet) {
+        if (defSet == null)
+            defSet = new LinkedList();
 
-        if(def != null)
+        if (def != null)
             defSet.add(def);
 
         return defSet;

@@ -9,12 +9,9 @@
 package org.apache.batik.svggen;
 
 import java.awt.geom.*;
-import java.awt.*;
-import java.util.Map;
-import java.util.Iterator;
-import java.util.Hashtable;
-import java.util.Set;
-import java.util.HashSet;
+import java.awt.Composite;
+import java.awt.AlphaComposite;
+import java.util.*;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -68,8 +65,8 @@ public class SVGComposite implements SVGConverter {
      * @return Set of filter Elements defining the composites this
      *         Converter has processed since it was created.
      */
-    public Set getDefinitionSet(){
-        Set compositeDefs = new HashSet(svgAlphaComposite.getDefinitionSet());
+    public List getDefinitionSet() {
+        List compositeDefs = new LinkedList(svgAlphaComposite.getDefinitionSet());
         compositeDefs.addAll(svgCustomComposite.getDefinitionSet());
         return compositeDefs;
     }

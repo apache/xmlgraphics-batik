@@ -8,10 +8,7 @@
 
 package org.apache.batik.svggen;
 
-import java.util.Map;
-import java.util.Hashtable;
-import java.util.Set;
-import java.util.HashSet;
+import java.util.*;
 
 import org.w3c.dom.Element;
 
@@ -54,7 +51,7 @@ public class SVGPaintDescriptor implements SVGDescriptor, SVGSyntax{
 
     public Map getAttributeMap(Map attrMap){
         if(attrMap == null)
-            attrMap = new Hashtable();
+            attrMap = new HashMap();
 
         attrMap.put(SVG_FILL_ATTRIBUTE, paintValue);
         attrMap.put(SVG_STROKE_ATTRIBUTE, paintValue);
@@ -64,9 +61,9 @@ public class SVGPaintDescriptor implements SVGDescriptor, SVGSyntax{
         return attrMap;
     }
 
-    public Set getDefinitionSet(Set defSet){
+    public List getDefinitionSet(List defSet){
         if(defSet == null)
-            defSet = new HashSet();
+            defSet = new LinkedList();
 
         if(def != null)
             defSet.add(def);

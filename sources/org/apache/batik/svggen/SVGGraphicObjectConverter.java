@@ -8,10 +8,6 @@
 
 package org.apache.batik.svggen;
 
-import java.util.Map;
-import java.util.Hashtable;
-import java.util.Set;
-import java.util.HashSet;
 
 import org.w3c.dom.Document;
 
