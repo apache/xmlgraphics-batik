@@ -562,12 +562,17 @@ public class MarkerShapePainter implements ShapePainter {
         if (inSlope == null) {
             return 0;
         }
-       
-        double rotationIn  = Math.atan2(inSlope[1], inSlope[0])*180./Math.PI;
-        double rotationOut = Math.atan2(outSlope[1], outSlope[0])*180./Math.PI;
-        double rotation = (rotationIn + rotationOut)/2;
-	
-        return rotation;
+
+        double dx = inSlope[0] + outSlope[0];
+        double dy = inSlope[1] + outSlope[1];
+
+        if (dx == 0 && dy == 0) {
+            // The two vectors are exact opposites. There is no way to 
+            // know which direction to go (+90 or -90). Choose +90
+            return Math.atan2(inSlope[1], inSlope[0])*180./Math.PI + 90;
+        } else {
+            return Math.atan2(dy, dx)*180./Math.PI;
+        }
     }
 
     /**
@@ -657,7 +662,7 @@ public class MarkerShapePainter implements ShapePainter {
             return null;
         }
 
-        return new double[] { dx, dy };
+        return normalize(new double[] { dx, dy });
     }
 
     /**
@@ -730,7 +735,17 @@ public class MarkerShapePainter implements ShapePainter {
             return null;
         }
 
-        return new double[] { dx, dy };
+        return normalize(new double[] { dx, dy });
+    }
+
+    /**
+     * Normalizes the input vector. This assumes an non-zero length
+     */
+    public double[] normalize(double[] v) {
+        double n = Math.sqrt(v[0]*v[0]+v[1]*v[1]);
+        v[0] /= n;
+        v[1] /= n;
+        return v;
     }
 
     /**
