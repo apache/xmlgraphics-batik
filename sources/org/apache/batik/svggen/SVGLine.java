@@ -33,11 +33,11 @@ public class SVGLine extends SVGGraphicObjectConverter{
      * @param line the Line2D object to be converted
      */
     public Element toSVG(Line2D line){
-        Element svgLine = domFactory.createElement(TAG_LINE);
-        svgLine.setAttributeNS(SVG_NAMESPACE_URI, ATTR_X1, doubleString(line.getX1()));
-        svgLine.setAttributeNS(SVG_NAMESPACE_URI, ATTR_Y1, doubleString(line.getY1()));
-        svgLine.setAttributeNS(SVG_NAMESPACE_URI, ATTR_X2, doubleString(line.getX2()));
-        svgLine.setAttributeNS(SVG_NAMESPACE_URI, ATTR_Y2, doubleString(line.getY2()));
+        Element svgLine = domFactory.createElementNS(SVG_NAMESPACE_URI, TAG_LINE);
+        svgLine.setAttributeNS(null, ATTR_X1, doubleString(line.getX1()));
+        svgLine.setAttributeNS(null, ATTR_Y1, doubleString(line.getY1()));
+        svgLine.setAttributeNS(null, ATTR_X2, doubleString(line.getX2()));
+        svgLine.setAttributeNS(null, ATTR_Y2, doubleString(line.getY2()));
         return svgLine;
     }
 
@@ -50,7 +50,7 @@ public class SVGLine extends SVGGraphicObjectConverter{
 
         Document domFactory = TestUtil.getDocumentPrototype();
         SVGLine converter = new SVGLine(domFactory);
-        Element group = domFactory.createElement(SVG_G_TAG);
+        Element group = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
         for(int i=0; i<lines.length; i++)
             group.appendChild(converter.toSVG(lines[i]));
 

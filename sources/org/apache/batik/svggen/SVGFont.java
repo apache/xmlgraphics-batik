@@ -248,22 +248,22 @@ public class SVGFont extends AbstractSVGConverter{
      */
     public static void traceFonts(Font fonts[]) throws Exception{
         Document domFactory = TestUtil.getDocumentPrototype();
-        Element group = domFactory.createElement(SVG_G_TAG);
+        Element group = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
         SVGFont converter = new SVGFont();
 
         for(int i=0; i<fonts.length; i++){
             Font font = fonts[i];
             Map attrMap = converter.toSVG(font).getAttributeMap(null);
-            Element textElement = domFactory.createElement(SVG_TEXT_TAG);
+            Element textElement = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_TEXT_TAG);
             Iterator iter = attrMap.keySet().iterator();
             while(iter.hasNext()){
                 String attrName = (String)iter.next();
                 String attrValue = (String)attrMap.get(attrName);
-                textElement.setAttributeNS(SVG_NAMESPACE_URI, attrName, attrValue);
+                textElement.setAttributeNS(null, attrName, attrValue);
             }
-            textElement.setAttributeNS(SVG_NAMESPACE_URI, SVG_FONT_SIZE_ATTRIBUTE, "30");
-            textElement.setAttributeNS(SVG_NAMESPACE_URI, SVG_X_ATTRIBUTE, "30");
-            textElement.setAttributeNS(SVG_NAMESPACE_URI, SVG_Y_ATTRIBUTE, "" + (40*(i+1)));
+            textElement.setAttributeNS(null, SVG_FONT_SIZE_ATTRIBUTE, "30");
+            textElement.setAttributeNS(null, SVG_X_ATTRIBUTE, "30");
+            textElement.setAttributeNS(null, SVG_Y_ATTRIBUTE, "" + (40*(i+1)));
             textElement.appendChild(domFactory.createTextNode(font.getFamily()));
             group.appendChild(textElement);
         }

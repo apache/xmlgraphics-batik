@@ -400,12 +400,12 @@ class XmlWriter implements SVGConstants {
     public static void main(String args[]) throws Exception {
         Document domFactory = TestUtil.getDocumentPrototype();
 
-        Element root = domFactory.createElement(TAG_SVG);
-        Element genericDefs = domFactory.createElement(SVG_DEFS_TAG);
-        Element topLevelGroup = domFactory.createElement(SVG_G_TAG);
-        Element topLevelDefs = domFactory.createElement(SVG_DEFS_TAG);
-        Element groupA = domFactory.createElement(SVG_G_TAG);
-        Element groupB = domFactory.createElement(SVG_G_TAG);
+        Element root = domFactory.createElementNS(SVG_NAMESPACE_URI, TAG_SVG);
+        Element genericDefs = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_DEFS_TAG);
+        Element topLevelGroup = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
+        Element topLevelDefs = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_DEFS_TAG);
+        Element groupA = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
+        Element groupB = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
         Comment comment = domFactory.createComment("This is the topLevelGroup comment");
 
         topLevelGroup.appendChild(comment);

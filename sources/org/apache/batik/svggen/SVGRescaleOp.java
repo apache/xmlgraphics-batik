@@ -79,9 +79,9 @@ public class SVGRescaleOp extends AbstractSVGFilterConverter{
             // First time filter is converted: create its corresponding
             // SVG filter
             //
-            Element filterDef = domFactory.createElement(SVG_FILTER_TAG);
+            Element filterDef = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_FILTER_TAG);
             Element feComponentTransferDef =
-                domFactory.createElement(SVG_FE_COMPONENT_TRANSFER_TAG);
+                domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_FE_COMPONENT_TRANSFER_TAG);
 
             // Append transfer function for each component, setting
             // the attributes corresponding to the scale and offset.
@@ -103,42 +103,42 @@ public class SVGRescaleOp extends AbstractSVGFilterConverter{
                offsets.length != 4)
                 throw new IllegalArgumentException(ERROR_ILLEGAL_BUFFERED_IMAGE_RESCALE_OP);
 
-            Element feFuncR = domFactory.createElement(SVG_FE_FUNC_R_TAG);
-            Element feFuncG = domFactory.createElement(SVG_FE_FUNC_G_TAG);
-            Element feFuncB = domFactory.createElement(SVG_FE_FUNC_B_TAG);
+            Element feFuncR = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_FE_FUNC_R_TAG);
+            Element feFuncG = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_FE_FUNC_G_TAG);
+            Element feFuncB = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_FE_FUNC_B_TAG);
             Element feFuncA = null;
             String type = VALUE_TYPE_LINEAR;
 
             if(offsets.length == 1){
                 String slope = doubleString(scaleFactors[0]);
                 String intercept = doubleString(offsets[0]);
-                feFuncR.setAttributeNS(SVG_NAMESPACE_URI, SVG_TYPE_ATTRIBUTE, type);
-                feFuncG.setAttributeNS(SVG_NAMESPACE_URI, SVG_TYPE_ATTRIBUTE, type);
-                feFuncB.setAttributeNS(SVG_NAMESPACE_URI, SVG_TYPE_ATTRIBUTE, type);
-                feFuncR.setAttributeNS(SVG_NAMESPACE_URI, SVG_SLOPE_ATTRIBUTE, slope);
-                feFuncG.setAttributeNS(SVG_NAMESPACE_URI, SVG_SLOPE_ATTRIBUTE, slope);
-                feFuncB.setAttributeNS(SVG_NAMESPACE_URI, SVG_SLOPE_ATTRIBUTE, slope);
-                feFuncR.setAttributeNS(SVG_NAMESPACE_URI, SVG_INTERCEPT_ATTRIBUTE, intercept);
-                feFuncG.setAttributeNS(SVG_NAMESPACE_URI, SVG_INTERCEPT_ATTRIBUTE, intercept);
-                feFuncB.setAttributeNS(SVG_NAMESPACE_URI, SVG_INTERCEPT_ATTRIBUTE, intercept);
+                feFuncR.setAttributeNS(null, SVG_TYPE_ATTRIBUTE, type);
+                feFuncG.setAttributeNS(null, SVG_TYPE_ATTRIBUTE, type);
+                feFuncB.setAttributeNS(null, SVG_TYPE_ATTRIBUTE, type);
+                feFuncR.setAttributeNS(null, SVG_SLOPE_ATTRIBUTE, slope);
+                feFuncG.setAttributeNS(null, SVG_SLOPE_ATTRIBUTE, slope);
+                feFuncB.setAttributeNS(null, SVG_SLOPE_ATTRIBUTE, slope);
+                feFuncR.setAttributeNS(null, SVG_INTERCEPT_ATTRIBUTE, intercept);
+                feFuncG.setAttributeNS(null, SVG_INTERCEPT_ATTRIBUTE, intercept);
+                feFuncB.setAttributeNS(null, SVG_INTERCEPT_ATTRIBUTE, intercept);
             }
             else if(offsets.length >= 3){
-                feFuncR.setAttributeNS(SVG_NAMESPACE_URI, SVG_TYPE_ATTRIBUTE, type);
-                feFuncG.setAttributeNS(SVG_NAMESPACE_URI, SVG_TYPE_ATTRIBUTE, type);
-                feFuncB.setAttributeNS(SVG_NAMESPACE_URI, SVG_TYPE_ATTRIBUTE, type);
-                feFuncR.setAttributeNS(SVG_NAMESPACE_URI, SVG_SLOPE_ATTRIBUTE, doubleString(scaleFactors[0]));
-                feFuncG.setAttributeNS(SVG_NAMESPACE_URI, SVG_SLOPE_ATTRIBUTE, doubleString(scaleFactors[1]));
-                feFuncB.setAttributeNS(SVG_NAMESPACE_URI, SVG_SLOPE_ATTRIBUTE, doubleString(scaleFactors[2]));
-                feFuncR.setAttributeNS(SVG_NAMESPACE_URI, SVG_INTERCEPT_ATTRIBUTE, doubleString(offsets[0]));
-                feFuncG.setAttributeNS(SVG_NAMESPACE_URI, SVG_INTERCEPT_ATTRIBUTE, doubleString(offsets[1]));
-                feFuncB.setAttributeNS(SVG_NAMESPACE_URI, SVG_INTERCEPT_ATTRIBUTE, doubleString(offsets[2]));
+                feFuncR.setAttributeNS(null, SVG_TYPE_ATTRIBUTE, type);
+                feFuncG.setAttributeNS(null, SVG_TYPE_ATTRIBUTE, type);
+                feFuncB.setAttributeNS(null, SVG_TYPE_ATTRIBUTE, type);
+                feFuncR.setAttributeNS(null, SVG_SLOPE_ATTRIBUTE, doubleString(scaleFactors[0]));
+                feFuncG.setAttributeNS(null, SVG_SLOPE_ATTRIBUTE, doubleString(scaleFactors[1]));
+                feFuncB.setAttributeNS(null, SVG_SLOPE_ATTRIBUTE, doubleString(scaleFactors[2]));
+                feFuncR.setAttributeNS(null, SVG_INTERCEPT_ATTRIBUTE, doubleString(offsets[0]));
+                feFuncG.setAttributeNS(null, SVG_INTERCEPT_ATTRIBUTE, doubleString(offsets[1]));
+                feFuncB.setAttributeNS(null, SVG_INTERCEPT_ATTRIBUTE, doubleString(offsets[2]));
 
                 if(offsets.length == 4){
-                    feFuncA = domFactory.createElement(SVG_FE_FUNC_A_TAG);
-                    feFuncA.setAttributeNS(SVG_NAMESPACE_URI, SVG_TYPE_ATTRIBUTE, type);
-                    feFuncA.setAttributeNS(SVG_NAMESPACE_URI, SVG_SLOPE_ATTRIBUTE,
+                    feFuncA = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_FE_FUNC_A_TAG);
+                    feFuncA.setAttributeNS(null, SVG_TYPE_ATTRIBUTE, type);
+                    feFuncA.setAttributeNS(null, SVG_SLOPE_ATTRIBUTE,
                                          doubleString(scaleFactors[3]));
-                    feFuncA.setAttributeNS(SVG_NAMESPACE_URI, SVG_INTERCEPT_ATTRIBUTE,
+                    feFuncA.setAttributeNS(null, SVG_INTERCEPT_ATTRIBUTE,
                                          doubleString(offsets[3]));
                 }
             }
@@ -150,7 +150,7 @@ public class SVGRescaleOp extends AbstractSVGFilterConverter{
                 feComponentTransferDef.appendChild(feFuncA);
 
             filterDef.appendChild(feComponentTransferDef);
-            filterDef.setAttributeNS(SVG_NAMESPACE_URI, ATTR_ID, SVGIDGenerator.generateID(ID_PREFIX_FE_COMPONENT_TRANSFER));
+            filterDef.setAttributeNS(null, ATTR_ID, SVGIDGenerator.generateID(ID_PREFIX_FE_COMPONENT_TRANSFER));
 
             //
             // Create a filter descriptor
@@ -159,7 +159,7 @@ public class SVGRescaleOp extends AbstractSVGFilterConverter{
             // Process filter attribute
             StringBuffer filterAttrBuf = new StringBuffer(URL_PREFIX);
             filterAttrBuf.append(SIGN_POUND);
-            filterAttrBuf.append(filterDef.getAttributeNS(SVG_NAMESPACE_URI, ATTR_ID));
+            filterAttrBuf.append(filterDef.getAttributeNS(null, ATTR_ID));
             filterAttrBuf.append(URL_SUFFIX);
 
             filterDesc = new SVGFilterDescriptor(filterAttrBuf.toString(), filterDef);
@@ -184,22 +184,22 @@ public class SVGRescaleOp extends AbstractSVGFilterConverter{
 
         SVGRescaleOp converter = new SVGRescaleOp(domFactory);
 
-        Element group = domFactory.createElement(SVG_G_TAG);
-        Element defs = domFactory.createElement(SVG_DEFS_TAG);
-        Element rectGroupOne = domFactory.createElement(SVG_G_TAG);
-        Element rectGroupTwo = domFactory.createElement(SVG_G_TAG);
+        Element group = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
+        Element defs = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_DEFS_TAG);
+        Element rectGroupOne = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
+        Element rectGroupTwo = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
 
         for(int i=0; i<rescaleOps.length; i++){
             SVGFilterDescriptor filterDesc = converter.toSVG(rescaleOps[i]);
-            Element rect = domFactory.createElement(TAG_RECT);
-            rect.setAttributeNS(SVG_NAMESPACE_URI, SVG_FILTER_ATTRIBUTE, filterDesc.getFilterValue());
+            Element rect = domFactory.createElementNS(SVG_NAMESPACE_URI, TAG_RECT);
+            rect.setAttributeNS(null, SVG_FILTER_ATTRIBUTE, filterDesc.getFilterValue());
             rectGroupOne.appendChild(rect);
         }
 
         for(int i=0; i<rescaleOps.length; i++){
             SVGFilterDescriptor filterDesc = converter.toSVG(rescaleOps[i]);
-            Element rect = domFactory.createElement(TAG_RECT);
-            rect.setAttributeNS(SVG_NAMESPACE_URI, SVG_FILTER_ATTRIBUTE, filterDesc.getFilterValue());
+            Element rect = domFactory.createElementNS(SVG_NAMESPACE_URI, TAG_RECT);
+            rect.setAttributeNS(null, SVG_FILTER_ATTRIBUTE, filterDesc.getFilterValue());
             rectGroupTwo.appendChild(rect);
         }
 

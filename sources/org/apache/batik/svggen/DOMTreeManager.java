@@ -214,7 +214,7 @@ public class DOMTreeManager implements SVGSyntax{
         }
 
         // Create top level group node
-        topLevelGroup = domFactory.createElement(SVG_G_TAG);
+        topLevelGroup = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
 
         // Build new converters
         if(recycleConverters){
@@ -243,11 +243,11 @@ public class DOMTreeManager implements SVGSyntax{
      * the topLevelGroup.
      */
     public Element getRoot(){
-        Element svg = domFactory.createElement(TAG_SVG);
+        Element svg = domFactory.createElementNS(SVG_NAMESPACE_URI, TAG_SVG);
 
         // Enable background if required by AlphaComposite convertion
         if(gcConverter.getCompositeConverter().getAlphaCompositeConverter().requiresBackgroundAccess())
-            svg.setAttributeNS(SVG_NAMESPACE_URI, SVG_ENABLE_BACKGROUND_ATTRIBUTE, VALUE_NEW);
+            svg.setAttributeNS(null, SVG_ENABLE_BACKGROUND_ATTRIBUTE, VALUE_NEW);
 
         Comment generatorComment = domFactory.createComment(GENERATOR_COMMENT);
         svg.appendChild(generatorComment);
@@ -257,7 +257,7 @@ public class DOMTreeManager implements SVGSyntax{
         Iterator iter = groupDefaults.keySet().iterator();
         while(iter.hasNext()){
             String attrName = (String)iter.next();
-            svg.setAttributeNS(SVG_NAMESPACE_URI, attrName, (String)groupDefaults.get(attrName));
+            svg.setAttributeNS(null, attrName, (String)groupDefaults.get(attrName));
         }
 
         svg.appendChild(getGenericDefinitions());
@@ -271,13 +271,13 @@ public class DOMTreeManager implements SVGSyntax{
      *         definitions
      */
     public Element getGenericDefinitions(){
-        Element genericDefs = domFactory.createElement(SVG_DEFS_TAG);
+        Element genericDefs = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_DEFS_TAG);
         Iterator iter = genericDefSet.iterator();
         while(iter.hasNext()){
             genericDefs.appendChild((Element)iter.next());
         }
 
-        genericDefs.setAttributeNS(SVG_NAMESPACE_URI, ATTR_ID, ID_PREFIX_GENERIC_DEFS);
+        genericDefs.setAttributeNS(null, ATTR_ID, ID_PREFIX_GENERIC_DEFS);
         return genericDefs;
     }
 
@@ -356,8 +356,8 @@ public class DOMTreeManager implements SVGSyntax{
                     defElement = (Element)defsElements.item(0);
 
                 if(defElement == null){
-                    defElement = domFactory.createElement(SVG_DEFS_TAG);
-                    defElement.setAttributeNS(SVG_NAMESPACE_URI, ATTR_ID, SVGIDGenerator.generateID(ID_PREFIX_DEFS));
+                    defElement = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_DEFS_TAG);
+                    defElement.setAttributeNS(null, ATTR_ID, SVGIDGenerator.generateID(ID_PREFIX_DEFS));
                     if(topLevelGroup.getChildNodes().getLength() > 0)
                         topLevelGroup.insertBefore(defElement, topLevelGroup.getFirstChild());
                     else
@@ -409,14 +409,14 @@ public class DOMTreeManager implements SVGSyntax{
         // + Add a polygon: should be under a new group
         //
 
-        Element rect = domFactory.createElement(TAG_RECT);
-        Element ellipse = domFactory.createElement(SVG_ELLIPSE_TAG);
-        Element circle = domFactory.createElement(SVG_CIRCLE_TAG);
-        Element path = domFactory.createElement(TAG_PATH);
-        Element polygon = domFactory.createElement(TAG_POLYGON);
+        Element rect = domFactory.createElementNS(SVG_NAMESPACE_URI, TAG_RECT);
+        Element ellipse = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_ELLIPSE_TAG);
+        Element circle = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_CIRCLE_TAG);
+        Element path = domFactory.createElementNS(SVG_NAMESPACE_URI, TAG_PATH);
+        Element polygon = domFactory.createElementNS(SVG_NAMESPACE_URI, TAG_POLYGON);
 
-        rect.setAttributeNS(SVG_NAMESPACE_URI, SVG_FILL_ATTRIBUTE, SVG_NONE_VALUE);
-        polygon.setAttributeNS(SVG_NAMESPACE_URI, ATTR_STROKE, SVG_NONE_VALUE);
+        rect.setAttributeNS(null, SVG_FILL_ATTRIBUTE, SVG_NONE_VALUE);
+        polygon.setAttributeNS(null, ATTR_STROKE, SVG_NONE_VALUE);
 
         domGroupManager.addElement(rect);
 

@@ -169,7 +169,7 @@ public class SVGRenderingHints extends AbstractSVGConverter{
      */
     public static void main(String args[]) throws Exception {
         Document domFactory = TestUtil.getDocumentPrototype();
-        Element group = domFactory.createElement(SVG_G_TAG);
+        Element group = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
         Map testMap = new Hashtable();
 
         // Various RENDERING values
@@ -235,15 +235,15 @@ public class SVGRenderingHints extends AbstractSVGConverter{
         while(iter.hasNext()){
             String testName = (String)iter.next();
             RenderingHints hints[] = (RenderingHints[])testMap.get(testName);
-            Element testGroup = domFactory.createElement(SVG_G_TAG);
-            testGroup.setAttributeNS(SVG_NAMESPACE_URI, ATTR_ID, testName);
+            Element testGroup = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
+            testGroup.setAttributeNS(null, ATTR_ID, testName);
             for(int i=0; i<hints.length; i++){
-                Element testRect = domFactory.createElement(TAG_RECT);
+                Element testRect = domFactory.createElementNS(SVG_NAMESPACE_URI, TAG_RECT);
                 Map attrMap = converter.toSVG(hints[i]).getAttributeMap(null);
                 Iterator attrIter = attrMap.keySet().iterator();
                 while(attrIter.hasNext()){
                     String attrName = (String)attrIter.next();
-                    testRect.setAttributeNS(SVG_NAMESPACE_URI, attrName, (String)attrMap.get(attrName));
+                    testRect.setAttributeNS(null, attrName, (String)attrMap.get(attrName));
                 }
                 testGroup.appendChild(testRect);
             }

@@ -147,17 +147,17 @@ public class SVGBasicStroke extends AbstractSVGConverter{
                                                   10)
         };
 
-        Element rectGroup = domFactory.createElement(SVG_G_TAG);
+        Element rectGroup = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
 
         for(int i=0; i<strokes.length; i++){
             BasicStroke stroke = strokes[i];
             Map attrMap = SVGBasicStroke.toSVG(stroke).getAttributeMap(null);
-            Element rectElement = domFactory.createElement(TAG_RECT);
+            Element rectElement = domFactory.createElementNS(SVG_NAMESPACE_URI, TAG_RECT);
             Iterator iter = attrMap.keySet().iterator();
             while(iter.hasNext()){
                 String attrName = (String)iter.next();
                 String attrValue = (String)attrMap.get(attrName);
-                rectElement.setAttributeNS(SVG_NAMESPACE_URI, attrName, attrValue);
+                rectElement.setAttributeNS(null, attrName, attrValue);
             }
             rectGroup.appendChild(rectElement);
         }

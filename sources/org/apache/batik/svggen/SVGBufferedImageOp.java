@@ -149,16 +149,16 @@ public class SVGBufferedImageOp extends AbstractSVGFilterConverter{
         SVGBufferedImageOp converter = new SVGBufferedImageOp(domFactory,
                                                               new DefaultExtensionHandler());
 
-        Element group = domFactory.createElement(SVG_G_TAG);
-        Element defs = domFactory.createElement(SVG_DEFS_TAG);
-        Element rectGroupOne = domFactory.createElement(SVG_G_TAG);
-        Element rectGroupTwo = domFactory.createElement(SVG_G_TAG);
+        Element group = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
+        Element defs = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_DEFS_TAG);
+        Element rectGroupOne = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
+        Element rectGroupTwo = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
 
         for(int i=0; i<ops.length; i++){
             SVGFilterDescriptor filterDesc = converter.toSVG(ops[i], null);
             if(filterDesc != null){
-                Element rect = domFactory.createElement(TAG_RECT);
-                rect.setAttributeNS(SVG_NAMESPACE_URI, SVG_FILTER_ATTRIBUTE, filterDesc.getFilterValue());
+                Element rect = domFactory.createElementNS(SVG_NAMESPACE_URI, TAG_RECT);
+                rect.setAttributeNS(null, SVG_FILTER_ATTRIBUTE, filterDesc.getFilterValue());
                 rectGroupOne.appendChild(rect);
             }
         }
@@ -166,8 +166,8 @@ public class SVGBufferedImageOp extends AbstractSVGFilterConverter{
         for(int i=0; i<ops.length; i++){
             SVGFilterDescriptor filterDesc = converter.toSVG(ops[i], null);
             if(filterDesc != null){
-                Element rect = domFactory.createElement(TAG_RECT);
-                rect.setAttributeNS(SVG_NAMESPACE_URI, SVG_FILTER_ATTRIBUTE, filterDesc.getFilterValue());
+                Element rect = domFactory.createElementNS(SVG_NAMESPACE_URI, TAG_RECT);
+                rect.setAttributeNS(null, SVG_FILTER_ATTRIBUTE, filterDesc.getFilterValue());
                 rectGroupTwo.appendChild(rect);
             }
         }

@@ -145,12 +145,12 @@ public class SVGColor extends AbstractSVGConverter{
         };
 
         Document domFactory = TestUtil.getDocumentPrototype();
-        Element group = domFactory.createElement(SVG_G_TAG);
+        Element group = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
         for(int i=0; i<testColors.length; i++){
             SVGPaintDescriptor paintDesc = toSVG(testColors[i]);
-            Element rect = domFactory.createElement(TAG_RECT);
-            rect.setAttributeNS(SVG_NAMESPACE_URI, SVG_FILL_ATTRIBUTE, paintDesc.getPaintValue());
-            rect.setAttributeNS(SVG_NAMESPACE_URI, SVG_FILL_OPACITY_ATTRIBUTE, paintDesc.getOpacityValue());
+            Element rect = domFactory.createElementNS(SVG_NAMESPACE_URI, TAG_RECT);
+            rect.setAttributeNS(null, SVG_FILL_ATTRIBUTE, paintDesc.getPaintValue());
+            rect.setAttributeNS(null, SVG_FILL_OPACITY_ATTRIBUTE, paintDesc.getOpacityValue());
             group.appendChild(rect);
         }
 

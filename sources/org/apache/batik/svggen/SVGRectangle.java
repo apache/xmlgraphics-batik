@@ -42,8 +42,8 @@ public class SVGRectangle extends SVGGraphicObjectConverter{
      */
     public Element toSVG(RoundRectangle2D rect){
         Element svgRect = toSVG((RectangularShape)rect);
-        svgRect.setAttributeNS(SVG_NAMESPACE_URI, SVG_RX_ATTRIBUTE, doubleString(rect.getArcWidth()/2));
-        svgRect.setAttributeNS(SVG_NAMESPACE_URI, SVG_RY_ATTRIBUTE, doubleString(rect.getArcHeight()/2));
+        svgRect.setAttributeNS(null, SVG_RX_ATTRIBUTE, doubleString(rect.getArcWidth()/2));
+        svgRect.setAttributeNS(null, SVG_RY_ATTRIBUTE, doubleString(rect.getArcHeight()/2));
         return svgRect;
     }
 
@@ -52,11 +52,11 @@ public class SVGRectangle extends SVGGraphicObjectConverter{
      * @param rect rectangle object to convert to SVG
      */
     private Element toSVG(RectangularShape rect){
-        Element svgRect = domFactory.createElement(TAG_RECT);
-        svgRect.setAttributeNS(SVG_NAMESPACE_URI, SVG_X_ATTRIBUTE, doubleString(rect.getX()));
-        svgRect.setAttributeNS(SVG_NAMESPACE_URI, SVG_Y_ATTRIBUTE, doubleString(rect.getY()));
-        svgRect.setAttributeNS(SVG_NAMESPACE_URI, SVG_WIDTH_ATTRIBUTE, doubleString(rect.getWidth()));
-        svgRect.setAttributeNS(SVG_NAMESPACE_URI, SVG_HEIGHT_ATTRIBUTE, doubleString(rect.getHeight()));
+        Element svgRect = domFactory.createElementNS(SVG_NAMESPACE_URI, TAG_RECT);
+        svgRect.setAttributeNS(null, SVG_X_ATTRIBUTE, doubleString(rect.getX()));
+        svgRect.setAttributeNS(null, SVG_Y_ATTRIBUTE, doubleString(rect.getY()));
+        svgRect.setAttributeNS(null, SVG_WIDTH_ATTRIBUTE, doubleString(rect.getWidth()));
+        svgRect.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE, doubleString(rect.getHeight()));
 
         return svgRect;
     }
@@ -76,7 +76,7 @@ public class SVGRectangle extends SVGGraphicObjectConverter{
             converter.toSVG(new RoundRectangle2D.Float(35f, 45f, 55f, 65f, 25f, 45f))
         };
 
-        Element group = domFactory.createElement(SVG_G_TAG);
+        Element group = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
         for(int i=0; i<rects.length; i++)
             group.appendChild(rects[i]);
 

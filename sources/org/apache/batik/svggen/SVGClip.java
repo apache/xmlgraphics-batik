@@ -81,7 +81,7 @@ public class SVGClip extends AbstractSVGConverter{
             if(clipDesc == null){
                 Element clipDef = clipToSVG(clip);
                 clipPathAttrBuf.append(SIGN_POUND);
-                clipPathAttrBuf.append(clipDef.getAttributeNS(SVG_NAMESPACE_URI, ATTR_ID));
+                clipPathAttrBuf.append(clipDef.getAttributeNS(null, ATTR_ID));
                 clipPathAttrBuf.append(URL_SUFFIX);
 
                 clipDesc = new SVGClipDescriptor(clipPathAttrBuf.toString(),
@@ -105,9 +105,9 @@ public class SVGClip extends AbstractSVGConverter{
      *        element
      */
     private Element clipToSVG(Shape clip){
-        Element clipDef = domFactory.createElement(SVG_CLIP_PATH_TAG);
-        clipDef.setAttributeNS(SVG_NAMESPACE_URI, SVG_CLIP_PATH_UNITS_ATTRIBUTE, SVG_USER_SPACE_ON_USE_VALUE);
-        clipDef.setAttributeNS(SVG_NAMESPACE_URI, ATTR_ID, SVGIDGenerator.generateID(ID_PREFIX_CLIP_PATH));
+        Element clipDef = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_CLIP_PATH_TAG);
+        clipDef.setAttributeNS(null, SVG_CLIP_PATH_UNITS_ATTRIBUTE, SVG_USER_SPACE_ON_USE_VALUE);
+        clipDef.setAttributeNS(null, ATTR_ID, SVGIDGenerator.generateID(ID_PREFIX_CLIP_PATH));
 
         Element clipPath = shapeConverter.toSVG(clip);
         clipDef.appendChild(clipPath);
@@ -183,25 +183,25 @@ public class SVGClip extends AbstractSVGConverter{
         Document domFactory = TestUtil.getDocumentPrototype();
         SVGClip converter = new SVGClip(domFactory);
 
-        Element topLevelGroup = domFactory.createElement(SVG_G_TAG);
-        Element defs = domFactory.createElement(SVG_DEFS_TAG);
+        Element topLevelGroup = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
+        Element defs = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_DEFS_TAG);
 
-        Element groupOne = domFactory.createElement(SVG_G_TAG);
+        Element groupOne = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
         for(int i=0; i<clips.length; i++){
-            Element rect = domFactory.createElement(TAG_RECT);
-            rect.setAttributeNS(SVG_NAMESPACE_URI, ATTR_ID, clips[i].getClass().getName());
-            rect.setAttributeNS(SVG_NAMESPACE_URI, SVG_CLIP_PATH_ATTRIBUTE, (String)converter.toSVG(clips[i]).getAttributeMap(null).get(SVG_CLIP_PATH_ATTRIBUTE));
+            Element rect = domFactory.createElementNS(SVG_NAMESPACE_URI, TAG_RECT);
+            rect.setAttributeNS(null, ATTR_ID, clips[i].getClass().getName());
+            rect.setAttributeNS(null, SVG_CLIP_PATH_ATTRIBUTE, (String)converter.toSVG(clips[i]).getAttributeMap(null).get(SVG_CLIP_PATH_ATTRIBUTE));
             groupOne.appendChild(rect);
         }
 
         // Elements in groupTwo should have the same clip reference as
         // corresponding elements in groupOne, as the clip definition
         // has already be done and put in clipDefsMap.
-        Element groupTwo = domFactory.createElement(SVG_G_TAG);
+        Element groupTwo = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
         for(int i=0; i<clips.length; i++){
-            Element rect = domFactory.createElement(TAG_RECT);
-            rect.setAttributeNS(SVG_NAMESPACE_URI, ATTR_ID, clips[i].getClass().getName());
-            rect.setAttributeNS(SVG_NAMESPACE_URI, SVG_CLIP_PATH_ATTRIBUTE, (String)converter.toSVG(clips[i]).getAttributeMap(null).get(SVG_CLIP_PATH_ATTRIBUTE));
+            Element rect = domFactory.createElementNS(SVG_NAMESPACE_URI, TAG_RECT);
+            rect.setAttributeNS(null, ATTR_ID, clips[i].getClass().getName());
+            rect.setAttributeNS(null, SVG_CLIP_PATH_ATTRIBUTE, (String)converter.toSVG(clips[i]).getAttributeMap(null).get(SVG_CLIP_PATH_ATTRIBUTE));
             groupTwo.appendChild(rect);
         }
 

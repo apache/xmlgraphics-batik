@@ -17,6 +17,8 @@ import java.net.*;
 
 import org.w3c.dom.Element;
 
+import org.apache.batik.dom.util.XLinkSupport;
+
 /**
  * This abstract implementation of the ImageHandler interface
  * is intended to be the base class for ImageHandlers that generate
@@ -141,7 +143,7 @@ public abstract class AbstractImageHandlerEncoder extends DefaultImageHandler{
         encodeImage(buf, imageFile);
 
         // Update HREF
-        imageElement.setAttributeNS(SVG_NAMESPACE_URI, ATTR_HREF, urlRoot + "/" + imageFile.getName());
+        imageElement.setAttributeNS(XLinkSupport.XLINK_NAMESPACE_URI, ATTR_XLINK_HREF, urlRoot + "/" + imageFile.getName());
     }
 
     /**

@@ -100,7 +100,7 @@ public class DOMGroupManager implements SVGSyntax{
      */
     void recycleCurrentGroup(){
         // Create new initial current group node
-        currentGroup = domTreeManager.domFactory.createElement(SVG_G_TAG);
+        currentGroup = domTreeManager.domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
     }
 
     /**
@@ -146,7 +146,7 @@ public class DOMGroupManager implements SVGSyntax{
                     //
                     // Need to create a new current group
                     //
-                    currentGroup = domTreeManager.domFactory.createElement(SVG_G_TAG);
+                    currentGroup = domTreeManager.domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
                     addElement(element);
                 }
             }
@@ -155,7 +155,7 @@ public class DOMGroupManager implements SVGSyntax{
                                 // Transform stack is invalid. Create a new current
                                 // group and validate the stack
                                 //
-                currentGroup = domTreeManager.domFactory.createElement(SVG_G_TAG);
+                currentGroup = domTreeManager.domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
                 gc.validateTransformStack();
                 addElement(element);
             }
@@ -199,7 +199,7 @@ public class DOMGroupManager implements SVGSyntax{
     private void setTransform(Element element, TransformStackElement transformStack[]){
         String transform = domTreeManager.gcConverter.toSVG(transformStack).trim();
         if(transform.length() > 0)
-            element.setAttributeNS(SVG_NAMESPACE_URI, ATTR_TRANSFORM, transform);
+            element.setAttributeNS(null, ATTR_TRANSFORM, transform);
     }
 
     /**
@@ -212,8 +212,8 @@ public class DOMGroupManager implements SVGSyntax{
         Iterator iter = attrMap.keySet().iterator();
         while(iter.hasNext()){
             String attrName = (String)iter.next();
-            if(element.getAttributeNS(SVG_NAMESPACE_URI, attrName).length() == 0)
-                element.setAttributeNS(SVG_NAMESPACE_URI, attrName, (String)attrMap.get(attrName));
+            if(element.getAttributeNS(null, attrName).length() == 0)
+                element.setAttributeNS(null, attrName, (String)attrMap.get(attrName));
         }
     }
 
@@ -315,14 +315,14 @@ public class DOMGroupManager implements SVGSyntax{
                 // + Add a polygon: should be under a new group
                 //
 
-                Element rect = domFactory.createElement(TAG_RECT);
-                Element ellipse = domFactory.createElement(TAG_ELLIPSE);
-                Element circle = domFactory.createElement(TAG_CIRCLE);
-                Element path = domFactory.createElement(TAG_PATH);
-                Element polygon = domFactory.createElement(TAG_POLYGON);
+                Element rect = domFactory.createElementNS(SVG_NAMESPACE_URI, TAG_RECT);
+                Element ellipse = domFactory.createElementNS(SVG_NAMESPACE_URI, TAG_ELLIPSE);
+                Element circle = domFactory.createElementNS(SVG_NAMESPACE_URI, TAG_CIRCLE);
+                Element path = domFactory.createElementNS(SVG_NAMESPACE_URI, TAG_PATH);
+                Element polygon = domFactory.createElementNS(SVG_NAMESPACE_URI, TAG_POLYGON);
 
-                rect.setAttributeNS(SVG_NAMESPACE_URI, ATTR_FILL, VALUE_NONE);
-                polygon.setAttributeNS(SVG_NAMESPACE_URI, ATTR_STROKE, VALUE_NONE);
+                rect.setAttributeNS(null, ATTR_FILL, VALUE_NONE);
+                polygon.setAttributeNS(null, ATTR_STROKE, VALUE_NONE);
 
                 domTreeManager.addElement(rect);
 
