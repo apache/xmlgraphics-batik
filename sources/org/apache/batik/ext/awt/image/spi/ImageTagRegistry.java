@@ -23,13 +23,7 @@ import org.apache.batik.ext.awt.color.ICCColorSpaceExt;
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.Service;
 
-import java.awt.Graphics2D;
-import java.awt.Color;
-import java.awt.image.BufferedImage;
-
-import org.apache.batik.ext.awt.image.GraphicsUtil;
 import org.apache.batik.ext.awt.image.URLImageCache;
-import org.apache.batik.ext.awt.image.renderable.RedRable;
 import org.apache.batik.ext.awt.image.renderable.ProfileRable;
 
 
@@ -40,7 +34,8 @@ import org.apache.batik.ext.awt.image.renderable.ProfileRable;
  * @author <a href="mailto:Thomas.DeWeeese@Kodak.com">Thomas DeWeese</a>
  * @version $Id$
  */
-public class ImageTagRegistry {
+public class ImageTagRegistry implements ErrorConstants {
+
     List entries = new LinkedList();
 
     URLImageCache rawCache;
@@ -126,7 +121,7 @@ public class ImageTagRegistry {
                     }
 
                     if (sre.isCompatibleStream(is)) {
-                        ret = sre.handleStream(is, needRawData);
+                        ret = sre.handleStream(is, purl, needRawData);
                         if (ret != null) break;
                     }
                 } catch (StreamCorruptedException sce) {
@@ -136,15 +131,16 @@ public class ImageTagRegistry {
             }
         }
         
-        if (ret == null) {
-            cache.clear(purl);
-            ret = getBrokenLinkImage();
-        } else if (ret != getBrokenLinkImage()) {
-            cache.put(purl, ret);
+        if (ret == null) 
+            ret = getBrokenLinkImage(ERR_URL_UNREADABLE, 
+                                     new Object[] { purl } );
 
-            if (colorSpace != null)
-                ret = new ProfileRable(ret, colorSpace);
-        }
+        cache.put(purl, ret);
+
+        if ((colorSpace != null) &&
+            ret.getProperty(BrokenLinkProvider.BROKEN_LINK_PROPERTY) == null)
+            // Don't profile the Broken link image.
+            ret = new ProfileRable(ret, colorSpace);
 
         return ret;
     }
@@ -171,7 +167,7 @@ public class ImageTagRegistry {
 
             try {
                 if (sre.isCompatibleStream(is)) {
-                    ret = sre.handleStream(is, needRawData);
+                    ret = sre.handleStream(is, null, needRawData);
 
                     if (ret != null) break;
                 }
@@ -181,9 +177,10 @@ public class ImageTagRegistry {
         }
 
         if (ret == null)
-            ret = getBrokenLinkImage();
+            ret = getBrokenLinkImage(ERR_STREAM_UNREADABLE, null);
         else if ((colorSpace != null) &&
-                 (ret != getBrokenLinkImage()))
+                 (ret.getProperty(BrokenLinkProvider.BROKEN_LINK_PROPERTY) 
+                  == null))
             ret = new ProfileRable(ret, colorSpace);
 
         return ret;
@@ -229,25 +226,20 @@ public class ImageTagRegistry {
         return registry;
     }
 
-    static Filter brokenLinkImg = null;
+    static BrokenLinkProvider brokenLinkProvider = null;
 
-    static public synchronized Filter getBrokenLinkImage() {
-        if (brokenLinkImg != null)
-            return brokenLinkImg;
+    public synchronized static Filter 
+        getBrokenLinkImage(String code, Object [] params) {
+        if (brokenLinkProvider == null)
+            brokenLinkProvider = new DefaultBrokenLinkProvider();
 
-        BufferedImage bi;
-        bi = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2d = bi.createGraphics();
-	
-        g2d.setColor(new Color(255,255,255,190));
-        g2d.fillRect(0, 0, 100, 100);
-        g2d.setColor(Color.black);
-        g2d.drawRect(2, 2, 96, 96);
-        g2d.drawString("Broken Image", 6, 50);
-        g2d.dispose();
-
-        brokenLinkImg = new RedRable(GraphicsUtil.wrap(bi));
-        return brokenLinkImg;
+        return brokenLinkProvider.getBrokenLinkImage(code, params);
     }
 
+
+    public synchronized static void 
+        setBrokenLinkProvider(BrokenLinkProvider provider) {
+        brokenLinkProvider = provider;
+    }
 }
+

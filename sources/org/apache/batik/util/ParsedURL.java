@@ -8,25 +8,120 @@
 
 package org.apache.batik.util;
 
-import java.util.Map;
 import java.util.HashMap;
-import java.util.zip.GZIPInputStream;
+import java.util.Iterator;
+import java.util.Map;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 import java.net.URL;
-import java.net.MalformedURLException;
 
+import org.apache.batik.util.Service;
+
+/**
+ * This class is used as a replacement for java.net.URL.  This is done
+ * for several reasons.  First unlike java.net.URL this class will
+ * accept and parse as much of a URL as possible, without throwing a
+ * MalformedURL exception.  This  makes it extreamly useful for simply
+ * parsing a URL string (hence it's name).
+ *
+ * Second it allows for extension of the protocols supported by the
+ * URL parser.  Batik uses this to support the 'Data' protocol.
+ * 
+ * Third by default it checks the streams that it opens to see if they
+ * are GZIP compressed, if so it automatically uncompresses them
+ * (avoiding opening the stream twice in the processes).
+ *
+ * It is worth noting that most real work is defered to the
+ * ParsedURLData class to which most methods are forwarded.  This is
+ * done because it allows a constructor interface to ParsedURL (mostly
+ * for compatability with core URL), in spite of the fact that the
+ * real implemenation uses the protocol handlers as factories for
+ * protocol specific instances of the ParsedURLData class.
+ */
 public class ParsedURL {
 
-    /**
-     * GZIP header magic number bytes, like found in a gzipped
-     * files, which are encoded in Intel format (ie. little indian).
+    /** 
+     * The data class we defer most things to.
      */
-    public final static byte GZIP_MAGIC[] = {(byte)0x1f, (byte)0x8b};
+    ParsedURLData data;
+
+    /**
+     * This maps between protocol names and ParsedURLProtocolHandler instances.
+     */
+    private static Map handlersMap = null; 
+
+    /**
+     * The default protocol handler.  This handler is used when
+     * other handlers fail or no match for a protocol can be
+     * found.
+     */
+    private static ParsedURLProtocolHandler defaultHandler 
+        = new ParsedURLDefaultProtocolHandler();
+
+    /**
+     * Returns the shared instance of HandlersMap.  This method is
+     * also responsible for initializing the handler map if this is
+     * the first time it has been requested since the class was
+     * loaded.
+     */
+    private static synchronized Map getHandlersMap() { 
+        if (handlersMap != null) return handlersMap;
+
+        handlersMap = new HashMap();
+        registerHandler(new ParsedURLDataProtocolHandler());
+
+        Iterator iter = Service.providers(ParsedURLProtocolHandler.class);
+        while (iter.hasNext()) {
+            ParsedURLProtocolHandler handler;
+            handler = (ParsedURLProtocolHandler)iter.next();
+
+            // System.out.println("Handler: " + handler);
+            registerHandler(handler);
+        }
+
+
+        return handlersMap;
+        
+    }
+
+    /**
+     *  Returns the handler for a particular protocol.  If protocol is
+     * <tt>null</tt> or no match is found in the handlers map it
+     * returns the default protocol handler.  
+     * @param protocol The protocol to get a handler for.
+     */
+    public static synchronized ParsedURLProtocolHandler getHandler
+        (String protocol) {
+        if (protocol == null)
+            return defaultHandler;
+
+        Map handlers = getHandlersMap();
+        ParsedURLProtocolHandler ret;
+        ret = (ParsedURLProtocolHandler)handlers.get(protocol);
+        if (ret == null)
+            ret = defaultHandler;
+        return ret;
+    }
+
+    /**
+     * Registers a Protocol handler by adding it to the handlers map.
+     * If the given protocol handler returns <tt>null</tt> as it's
+     * supported protocol then it is registered as the default
+     * protocol handler.
+     * @param handler the new Protocol Handler to register 
+     */
+    public static synchronized void registerHandler
+        (ParsedURLProtocolHandler handler) {
+        if (handler.getProtocolHandled() == null) {
+            defaultHandler = handler;
+            return;
+        }
+
+        Map handlers = getHandlersMap();
+        handlers.put(handler.getProtocolHandled(), handler);
+    }
 
     /**
      * This is a utility function others can call that checks if
@@ -37,215 +132,35 @@ public class ParsedURL {
      */
     public static InputStream checkGZIP(InputStream is) 
         throws IOException {
-
-            if (!is.markSupported())
-                is = new BufferedInputStream(is);
-            byte data[] = new byte[2];
-            try {
-                is.mark(2);
-                is.read(data);
-                is.reset();
-            } catch (Throwable t) {
-                is.reset();
-                return is;
-            }
-        if ((data[0] == GZIP_MAGIC[0]) &&
-            (data[1] == GZIP_MAGIC[1]))
-            return new GZIPInputStream(is);
-        return is;
+        return ParsedURLData.checkGZIP(is);
     }
 
-    static class URLData {
-        public String protocol = null;
-        public String host     = null;
-        public int    port     = -1;
-        public String path     = null;
-        public String ref      = null;
-
-        public URLData() {
-        }
-
-        public URLData(URL url) {
-            protocol = url.getProtocol();
-            if ((protocol != null) && (protocol.length() == 0)) 
-                protocol = null;
-
-            host = url.getHost();
-            if ((host != null) && (host.length() == 0)) 
-                host = null;
-
-            port     = url.getPort();
-
-            path     = url.getPath();
-            if ((path != null) && (path.length() == 0)) 
-                path = null;
-
-            ref      = url.getRef();
-            if ((ref != null) && (ref.length() == 0))  
-                ref = null;
-        }
-
-        protected URL buildURL() throws MalformedURLException {
-            String file = "";
-            if (path != null) 
-                file = path;
-            if (ref != null)
-                file += "#" + ref;
-
-            if (port == -1)
-                return new URL(protocol, host, file);
-
-            return new URL(protocol, host, port, file);
-        }
-
-        public int hashCode() {
-            int hc = port;
-            if (protocol != null) 
-                hc ^= protocol.hashCode();
-            if (host != null)
-                hc ^= host.hashCode();
-
-            // For some URLS path and ref can get fairly long
-            // and the most unique part is towards the end
-            // so we grab that part for HC purposes
-            if (path != null) {
-                int len = path.length();
-                if (len > 20)
-                    hc ^= path.substring(len-20).hashCode();
-                else
-                    hc ^= path.hashCode();
-            }
-            if (ref != null) {
-                int len = ref.length();
-                if (len > 20)
-                    hc ^= ref.substring(len-20).hashCode();
-                else
-                    hc ^= ref.hashCode();
-            }
-
-            return hc;
-        }
-
-        public boolean equals(Object obj) {
-            if (obj == null) return false;
-            if (! (obj instanceof URLData)) 
-                return false;
-
-            URLData ud = (URLData)obj;
-            if (ud.port != port)
-                return false;
-            
-            if (ud.protocol==null) {
-                if (protocol != null)
-                    return false;
-            } else if (protocol == null)
-                return false;
-            else if (!ud.protocol.equals(protocol))
-                return false;
-
-            if (ud.host==null) {
-                if (host   !=null)
-                    return false;
-            } else if (host == null)
-                return false;
-            else if (!ud.host.equals(host))
-                return false;
-
-            if (ud.ref==null) {
-                if (ref   !=null)
-                    return false;
-            } else if (ref == null)
-                return false;
-            else if (!ud.ref.equals(ref))
-                return false;
-
-            if (ud.path==null) {
-                if (path   !=null)
-                    return false;
-            } else if (path == null)
-                return false;
-            else if (!ud.path.equals(path))
-                return false;
-
-            return true;
-        }
-
-        public boolean complete() {
-            try {
-                URL url = buildURL();
-            } catch (MalformedURLException mue) {
-                return false;
-            }
-            return true;
-        }
-
-        public InputStream openStream() throws IOException {
-            URL url = null;
-            try {
-                url = buildURL();
-            } catch (MalformedURLException mue) {
-                throw new IOException
-                    ("Unable to make sense of URL for connection");
-            }
-
-            if (url != null)
-                return checkGZIP(url.openStream());
-
-            return null;
-        }
-
-        public String getPortStr() {
-            String portStr ="";
-            if (protocol != null)
-                portStr += protocol + ":";
-
-            if ((host != null) || (port != -1)) {
-                portStr += "//";
-                if (host != null) portStr += host;
-                if (port != -1)   portStr += ":" + port;
-            }
-
-            return portStr;
-        }
-
-        public String toString() {
-            String ret = getPortStr();
-            if (path != null)
-                ret += path;
-
-            if (ref != null) 
-                ret += "#" + ref;
-
-            return ret;
-        }
-    };
-
-    URLData data;
-
-    static Map            parsers       = new HashMap();
-    static ProtocolParser defaultParser = new DefaultProtocolParser();
-
-    static void registerParser(ProtocolParser pp) {
-        if (pp.getProtocolHandled() == null) {
-            defaultParser = pp;
-            return;
-        }
-
-        parsers.put(pp.getProtocolHandled(), pp);
-    }
-
-    static {
-        registerParser(new DataProtocolParser());
-    }
-
+    /**
+     * Construct a ParsedURL from the given url string.
+     * @param urlStr The string to try and parse as a URL 
+     */
     public ParsedURL(String urlStr) {
         data = parseURL(urlStr);
     }
 
+    /**
+     * Construct a ParsedURL from the given java.net.URL instance.
+     * This is useful if you already have a valid java.net.URL
+     * instance.  This bypasses most of the parsing and hence is
+     * quicker and less prone to reinterpretation than converting the
+     * URL to a string before construction.
+     * @param url The URL to "mimic".  
+     */
     public ParsedURL(URL url) {
-        data = new URLData(url);
+        data = new ParsedURLData(url);
     }
 
+    /**
+     * Construct a sub URL from two strings.
+     * @param baseStr The 'parent' URL.  Should be complete.
+     * @param urlStr The 'sub' URL may be complete or partial.
+     *               the missing pieces will be taken from the baseStr.
+     */
     public ParsedURL(String baseStr, String urlStr) {
         if (baseStr != null)
             data = parseURL(baseStr, urlStr);
@@ -253,6 +168,12 @@ public class ParsedURL {
             data = parseURL(urlStr);
     }
 
+    /**
+     * Construct a sub URL from a base URL and a string for the sub url.
+     * @param baseURL The 'parent' URL.
+     * @param urlStr The 'sub' URL may be complete or partial.
+     *               the missing pieces will be taken from the baseURL.
+     */
     public ParsedURL(URL baseURL, String urlStr) {
         if (baseURL != null)
             data = parseURL(new ParsedURL(baseURL), urlStr);
@@ -260,6 +181,12 @@ public class ParsedURL {
             data = parseURL(urlStr);
     }
 
+    /**
+     * Construct a sub URL from a base ParsedURL and a string for the sub url.
+     * @param baseURL The 'parent' URL.
+     * @param urlStr The 'sub' URL may be complete or partial.
+     *               the missing pieces will be taken from the baseURL.
+     */
     public ParsedURL(ParsedURL baseURL, String urlStr) {
         if (baseURL != null)
             data = parseURL(baseURL, urlStr);
@@ -267,10 +194,19 @@ public class ParsedURL {
             data = parseURL(urlStr);
     }
 
+    /**
+     * Return a string rep of the URL (can be passed back into the 
+     * constructor if desired).
+     */
     public String toString() {
         return data.toString();
     }
 
+    /**
+     * Implement Object.equals.
+     * Relies heavily on the contained ParsedURLData's implementation
+     * of equals.
+     */
     public boolean equals(Object obj) {
         if (obj == null) return false;
         if (! (obj instanceof ParsedURL)) 
@@ -279,41 +215,94 @@ public class ParsedURL {
         return data.equals(purl.data);
     }
 
+    /**
+     * Implement Object.hashCode.
+     * Relies on the contained ParsedURLData's implementation
+     * of hashCode.
+     */
     public int hashCode() {
         return data.hashCode();
     }
         
+    /**
+     * Returns true if the URL looks well formed and complete.
+     * This does not garuntee that the stream can be opened but
+     * is a good indication that things aren't totally messed up.
+     */
     public boolean complete() {
         return data.complete();
     }
 
+    /**
+     * Returns the protocol for this URL.
+     * The protocol is everything upto the first ':'.
+     */
     public String getProtocol() { 
         if (data.protocol == null) return null;
         return new String(data.protocol); 
     }
+    
+    /**
+     * Returns the host for this URL, if any, <tt>null</tt> if there isn't
+     * one or it doesn't make sense for the protocol.
+     */
     public String getHost()     { 
         if (data.host == null) return null;
         return new String(data.host); 
     }
+
+    /**
+     * Returns the port on the host to connect to, if it was specified
+     * in the url that was parsed, otherwise returns -1.
+     */
+    public int    getPort()     { return data.port; }
+
+    /**
+     * Returns the path for this URL, if any (where appropriate for
+     * the protocol this also includes the file, not just directory.) 
+     */
     public String getPath()     { 
         if (data.path == null) return null;
         return new String(data.path); 
     }
+
+    /**
+     * Returns the 'fragment' reference in the URL.
+     */
     public String getRef()      { 
         if (data.ref == null) return null;
         return new String(data.ref); 
     }
-    public int    getPort()     { return data.port; }
+    
 
-
+    /**
+     * Returns the URL up to and include the port number on
+     * the host.  Does not include the path or fragment pieces.
+     */
     public String getPortStr() {
         return data.getPortStr();
     }
 
+    /**
+     * Attempt to open the stream checking for common compression
+     * types, and automatically decompressing them if found.  
+     */
     public InputStream openStream() throws IOException {
         return data.openStream();
     }
 
+    /**
+     * Attempt to open the stream.
+     */
+    public InputStream openStreamRaw() throws IOException {
+        return data.openStreamRaw();
+    }
+
+    /**
+     * Parse out the protocol from a url string. Used internally to
+     * select the proper handler, all other parsing is done by
+     * the selected protocol handler.
+     */
     protected static String getProtocol(String urlStr) {
         int idx = urlStr.indexOf(':');
         if (idx == -1) 
@@ -329,21 +318,23 @@ public class ParsedURL {
         return protocol;
     }
 
-
-    public static URLData parseURL(String urlStr) {
-        String protocol = getProtocol(urlStr);
-        if (protocol == null)
-            // no protocol given, use default parser.
-            return defaultParser.parseURL(urlStr);
-
-        Object o = parsers.get(protocol);
-        if (o==null)
-            return defaultParser.parseURL(urlStr);
-
-        return ((ProtocolParser)o).parseURL(urlStr);
+    
+    /**
+     * Factory method to construct an appropriate subclass of  ParsedURLData
+     * @param urlStr the string to parse.
+     */
+    public static ParsedURLData parseURL(String urlStr) {
+        ParsedURLProtocolHandler handler = getHandler(getProtocol(urlStr));
+        return handler.parseURL(urlStr);        
     }
 
-    public static URLData parseURL(String baseStr, String urlStr) {
+    /**
+     * Factory method to construct an appropriate subclass of  ParsedURLData,
+     * for a sub url.
+     * @param baseStr The base URL string to parse.
+     * @param urlStr the sub URL string to parse.
+     */
+    public static ParsedURLData parseURL(String baseStr, String urlStr) {
         String protocol = getProtocol(urlStr);
         if (protocol != null)
             // Protocol given, ignore base...
@@ -353,228 +344,21 @@ public class ParsedURL {
         return parseURL(purl, urlStr);
     }
 
-    public static URLData parseURL(ParsedURL baseURL, String urlStr) {
+    /**
+     * Factory method to construct an appropriate subclass of  ParsedURLData,
+     * for a sub url.
+     * @param baseURL The base ParsedURL to parse.
+     * @param urlStr the sub URL string to parse.
+     */
+    public static ParsedURLData parseURL(ParsedURL baseURL, String urlStr) {
         String protocol = getProtocol(urlStr);
         if (protocol != null)
             // Protocol given, ignore base...
             return parseURL(urlStr);
 
-        Object o = parsers.get(protocol);
-        if (o==null)
-            return defaultParser.parseURL(baseURL, urlStr);
-
-        return ((ProtocolParser)o).parseURL(baseURL, urlStr);        
+        ParsedURLProtocolHandler handler = getHandler(protocol);
+        return handler.parseURL(baseURL, urlStr);        
     }
-
-
-
-    static public abstract class ProtocolParser {
-        String protocol;
-        public ProtocolParser(String protocol) {
-            this.protocol = protocol;
-        }
-
-        public String getProtocolHandled() {
-            return protocol;
-        }
-
-        abstract public URLData parseURL(String urlStr);
-        abstract public URLData parseURL(ParsedURL basepurl, String urlStr);
-    }
-
-    static public class DefaultProtocolParser extends ProtocolParser {
-
-        public DefaultProtocolParser() {
-            super(null);
-        }
-
-        public URLData parseURL(String urlStr) {
-            try {
-                URL url = new URL(urlStr);
-                return new URLData(url);
-            } catch (MalformedURLException mue) {
-                // Built in URL wouldn't take it...
-            }
-
-            URLData ret = new URLData();
-
-            int pidx=0, idx;
-            int len = urlStr.length();
-
-            idx = urlStr.indexOf(':');
-            if (idx != -1) {
-                // May have a protocol spec...
-                ret.protocol = urlStr.substring(pidx, idx);
-                if (ret.protocol.indexOf('/') == -1)
-                    pidx = idx+1;
-                else {
-                    // Got a slash in protocol probably means 
-                    // no protocol given, (host and port?)
-                    ret.protocol = null;
-                    pidx = 0;
-                }
-            }
-
-            // See if we have host/port spec.
-            idx = urlStr.indexOf('/');
-            if ((idx == -1) || ((pidx+2<len)                   &&
-                                (urlStr.charAt(pidx)   == '/') &&
-                                (urlStr.charAt(pidx+1) == '/'))) {
-                // No slashes (apache.org) or a double slash 
-                // (//apache.org/....) so
-                // we should have host[:port] before next slash.
-
-                if (idx != -1) 
-                    pidx+=2;  // Skip double slash...
-
-                idx = urlStr.indexOf('/', pidx);  // find end of host:Port spec
-                String hostPort;
-                if (idx == -1) 
-                    // Just host and port nothing following...
-                    hostPort = urlStr.substring(pidx);
-                else
-                    // Path spec follows...
-                    hostPort = urlStr.substring(pidx, idx);
-
-                pidx = idx;  // Remember location of '/'
-
-                // pull apart host and port number...
-                idx = hostPort.indexOf(':');
-                ret.port = -1;
-                if (idx == -1) {
-                    // Just Host...
-                    if (hostPort.length() == 0)
-                        ret.host = null;
-                    else
-                        ret.host = hostPort;
-                } else {
-                    // Host and port
-                    if (idx == 0) 
-                        ret.host = null;
-                    else
-                        ret.host = hostPort.substring(0,idx);
-
-                    if (idx+1 < hostPort.length()) {
-                        String portStr = hostPort.substring(idx+1);
-                        try {
-                            ret.port = Integer.parseInt(portStr);
-                        } catch (NumberFormatException nfe) { 
-                            // bad port leave as '-1'
-                        }
-                    }
-                }
-            }
-
-            if ((pidx == -1) || (pidx >= len)) return ret; // Nothing follows
-
-            String pathRef = urlStr.substring(pidx);
-            idx = pathRef.indexOf('#');
-            ret.ref = null;
-            if (idx == -1) {
-                // No ref (fragment) in URL
-                ret.path = pathRef;
-            } else {
-                ret.path = pathRef.substring(0,idx);
-                if (idx+1 < pathRef.length())
-                    ret.ref = pathRef.substring(idx+1);
-            }
-            return ret;
-        }
-
-        public URLData parseURL(ParsedURL baseURL, String urlStr) {
-            int idx = urlStr.indexOf(':');
-            if (idx != -1)
-                // Absolute URL ignore base...
-                return parseURL(urlStr);
-
-            if (urlStr.startsWith("/"))
-                // Absolute path.
-                return parseURL(baseURL.getPortStr() + urlStr);
-
-            if (urlStr.startsWith("#"))
-                return parseURL(baseURL.getPortStr() + 
-                                baseURL.getPath() + urlStr);
-
-            String path = baseURL.getPath();
-            if (path == null) path = "/";
-            idx = path.lastIndexOf('/');
-            if (idx == -1) 
-                path = "/";
-            else
-                path = path.substring(0,idx+1);
-        
-            return parseURL(baseURL.getPortStr() + path + urlStr);
-        }
-    }
-
-    static public class DataProtocolParser extends ProtocolParser {
-
-        public DataProtocolParser() {
-            super("data");
-        }
-
-        static class DataURLData extends URLData {
-
-            public boolean complete() {
-                return (path != null);
-            }
-
-            public String getPortStr() {
-                String portStr ="data:";
-                if (host != null) portStr += host;
-                portStr += ",";
-                return portStr;
-            }
-                
-            public String toString() {
-                String ret = getPortStr();
-                if (path != null) ret += path;
-                return ret;
-            }
-
-            public InputStream openStream() throws IOException {
-                byte [] data = path.getBytes();
-                InputStream is = new ByteArrayInputStream(data);
-                return checkGZIP(new Base64DecodeStream(is));
-            }
-        }
-
-        public URLData parseURL(String urlStr) {
-            URLData ret = new DataURLData();
-
-            int pidx=0, idx;
-            int len = urlStr.length();
-
-            idx = urlStr.indexOf(':');
-            if (idx != -1) {
-                // May have a protocol spec...
-                ret.protocol = urlStr.substring(pidx, idx);
-                if (ret.protocol.indexOf('/') == -1)
-                    pidx = idx+1;
-                else {
-                    // Got a slash in protocol probably means 
-                    // no protocol given, (host and port?)
-                    ret.protocol = null;
-                    pidx = 0;
-                }
-            }
-
-            idx = urlStr.indexOf(',',pidx);
-            if (idx != -1) {
-                ret.host = urlStr.substring(pidx, idx);
-                pidx = idx+1;
-            }
-            if (pidx != urlStr.length()) 
-                ret.path = urlStr.substring(pidx);
-
-            return ret;
-        }
-
-        public URLData parseURL(ParsedURL baseURL, String urlStr) {
-            // No relative form...
-            return parseURL(urlStr);
-        }
-    }    
 
     static public void main1(String []args) {
         for (int i=0; i<args.length; i++) {

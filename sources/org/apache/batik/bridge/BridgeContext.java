@@ -832,6 +832,60 @@ public class BridgeContext implements ErrorConstants {
         ctx.putBridge(SVGConstants.SVG_NAMESPACE_URI,
                       SVGConstants.SVG_ALT_GLYPH_TAG,
                       new SVGAltGlyphElementBridge());
+    }
 
+    /**
+     * Associates the specified <tt>Bridge</tt> object with it's 
+     * namespace URI and local name.
+     * @param bridge the bridge that manages the element
+     */
+    public void putBridge(Bridge bridge) {
+        putBridge(bridge.getNamespaceURI(),
+                  bridge.getLocalName(),
+                  bridge);
+    }
+
+    /**
+     * Register Extensions
+     */
+    public static void registerBridgeExtensions(BridgeContext ctx) {
+        java.util.List entries = new java.util.LinkedList();
+
+        java.util.Iterator iter = org.apache.batik.util.Service.providers
+            (BridgeExtension.class);
+        while (iter.hasNext()) {
+            BridgeExtension be = (BridgeExtension)iter.next();
+            // System.out.println("BE: " + be);
+            float priority  = be.getPriority();
+
+            java.util.ListIterator li;
+            li = entries.listIterator();
+            while (true) {
+                if (!li.hasNext()) {
+                    li.add(be);
+                    break;
+                }
+
+                BridgeExtension lbe = (BridgeExtension)li.next();
+                if (lbe.getPriority() > priority) {
+                    li.previous();
+                    li.add(be);
+                    break;
+                }
+            }
+        }
+        
+        UserAgent ua = ctx.getUserAgent();
+
+        iter = entries.iterator();
+        while(iter.hasNext()) {
+            BridgeExtension be = (BridgeExtension)iter.next();
+            be.registerTags(ctx);
+            java.util.Iterator exts = be.getImplementedExtensions();
+            while (exts.hasNext()) {
+                String ext = (String)exts.next();
+                // ua.addExtension(ext);
+            }
+        }
     }
 }

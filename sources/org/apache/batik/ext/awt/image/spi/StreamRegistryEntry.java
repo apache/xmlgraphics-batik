@@ -12,7 +12,7 @@ import java.io.InputStream;
 import java.io.StreamCorruptedException;
 
 import org.apache.batik.ext.awt.image.renderable.Filter;
-
+import org.apache.batik.util.ParsedURL;
 
 /**
  * This type of Image tag registy entry is used for most normal image
@@ -46,13 +46,22 @@ public interface StreamRegistryEntry extends RegistryEntry {
         throws StreamCorruptedException;
 
     /**
-     * Decode the Stream into a RenderableImage
+     * Decode the Stream into a Filter.  If the stream turns out not to
+     * be of a format this RegistryEntry can handle you should attempt
+     * to reset the stream, then return null.<P>
+     *
+     * This should only return a broken link image when the image is
+     * clearly of this format, but is unreadable for some reason.
      *
      * @param is The input stream that contains the image.
+     * @param origURL The original URL, if any, for documentation
+     *                purposes only.  This may be null.
      * @param needRawData If true the image returned should not have
      *                    any default color correction the file may 
      *                    specify applied.  
      */
-    public Filter handleStream(InputStream is, boolean needRawData);
+    public Filter handleStream(InputStream is, 
+                               ParsedURL   origURL,
+                               boolean     needRawData);
 }
 

@@ -79,8 +79,6 @@ public class JDKRegistryEntry extends AbstractRegistryEntry
      */
     public Filter handleURL(ParsedURL purl, boolean needRawData) {
         
-        final DeferRable       dr         = new DeferRable();
-	
         URL              url;
         try {
             url = new URL(purl.toString());
@@ -92,6 +90,10 @@ public class JDKRegistryEntry extends AbstractRegistryEntry
         final Image img = tk.createImage(url);
         if (img == null)
             return null;
+
+        final DeferRable dr     = new DeferRable();
+        final String     errCode  = ERR_URL_FORMAT_UNREADABLE;
+        final Object []  errParam = new Object[] {"JDK", purl};
 
         Thread t = new Thread() {
                 
@@ -146,7 +148,8 @@ public class JDKRegistryEntry extends AbstractRegistryEntry
                     Filter filt;
                     RenderedImage ri = loadImage(img);
                     if (ri == null)
-                        filt = ImageTagRegistry.getBrokenLinkImage();
+                        filt = ImageTagRegistry.getBrokenLinkImage
+                            (errCode, errParam);
                     else
                         filt = new RedRable(GraphicsUtil.wrap(ri));
                     dr.setSource(filt);

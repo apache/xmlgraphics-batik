@@ -41,6 +41,14 @@ public class RedRable
         return src;
     }
 
+    public Object getProperty(String name) {
+        return src.getProperty(name);
+    }
+
+    public String [] getPropertyNames() {
+        return src.getPropertyNames();
+    }
+
     public Rectangle2D getBounds2D() {
         return getSource().getBounds();
     }

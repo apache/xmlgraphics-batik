@@ -168,39 +168,123 @@
         <anchor id="imageTagFormats" />
         <s1 title="New File Formats">
         <p>
-        When Batik encounters an 'image' element and it determins the
+        When Batik encounters an 'image' element and it determines the
         element does not reference an SVG file. It defers the loading
         of the referenced image to
         org.apache.batik.ext.awt.image.spi.ImageTagRegistry.  This
         class maintains a list of RegistryEntries, generally one for
-        each format.  
+        each format.
         </p>
 
         <p>
-        There are currently two flavors of RegistryEntry:
+        Since the formats supported natively by Batik are also
+        implemented through this mechanism. The JPEGRegistryEntry and
+        PNGRegistryEntry should be used as good references for
+        extensions.
         </p>
-        <ul>
-           <li>
-           URLRegistryEntry - These take a ParsedURL and try to decide
-           if the URL is intended for them.  This group is mostly
-           intended to handle alternate network protocols.  It can
-           also be useful for interfacing with librarys that want a
-           URL instead of a stream.
-           </li>
 
-           <li>
-           StreamRegistryEntry - These work with a markable
-           InputStream. This is the prefered form of registry entry as
-           it generally avoids opening a potentially expensive
-           connection multiple times.
-           </li>
-        </ul>
+          <s2 title="RegistryEntry">
+          <p>
+          There are currently two flavors of RegistryEntry:
+          </p>
+  
+          <ul>
+             <li>
+             URLRegistryEntry - These take a ParsedURL and try to decide
+             if the URL is intended for them.  This group is mostly
+             intended to handle alternate network protocols.  It can
+             also be useful for interfacing with librarys that want a
+             URL instead of a stream.
+             </li>
+  
+             <li>
+             StreamRegistryEntry - These work with a markable
+             InputStream. This is the prefered form of registry entry as
+             it generally avoids opening a potentially expensive
+             connection multiple times, instead it opens the stream
+             once and relys on mark and reset to allow entries to
+             check the stream.
+             </li>
+  
+          </ul>
+          </s2>        
 
-        
+          <s2 title="Helper classes">
+          <p>
+          There exists quite a number of classes to assist in implementing
+          a RegistryEntry.  It is strongly recommended that you review these
+          classes and make use of them where appropriate.  They will likely
+          save you time and improve the integration with Batik.
+          </p>
+          <ul>
+             <li> 
+             MagicNumberRegistryEntry - An abstract class that can
+             handle the isCompatibleStream method for formats that make
+             use of "magic numbers".  Magic numbers are a well known
+             sequence of bytes at a well known offset in the file.
+             </li>
+  
+             <li>
+             RedRable - This takes any java.awt.image.RenderedImage and
+             wraps it into a 'Filter' (Batik's subclass of RenderableImage).
+             This is extreamly useful for 'single resolution' file formats.
+             </li> 
+  
+             <li>
+             DeferRable - This allows one to load the image in a background
+             thread, rather than hold up the construction of the GVT tree
+             while reading the image (useful since reading the image is
+             generally I/O bound, so it makes a good background task).  This
+             is used by all the current Image readers.
+             </li> 
+  
+             <li>
+             AbstractRable - An abstract base class that makes it 
+             relatively easy to implement the Filter interface.
+             </li> 
+  
+             <li>
+             AbstractRed - An abstract base class that makes it 
+             relatively easy to implement the CacheableRed interface
+             (Batik's subclass of RenderedImage).
+             </li> 
+          </ul>
+          </s2>
         </s1>
 
         <anchor id="urlProtocols" />
-        <s1 title="New Protocols">
+        <s1 title="New URL Protocols">
+        <p>
+        For a variety of reasons (not the least of which is the heavy 
+        use of the 'data:' protocol in SVG).  Several parts of Batik use
+        what we call a "ParsedURL" instead of the JDK's java.net.URL class.
+        </p>
+        
+        <p>
+        This class offers a few advantages over the JDK's URL class.
+        First, it is designed to make minimal use of exceptions, so
+        it is possible to use it to parse a malformed URL and get 
+        "the good parts".  Second, it is extensible, so support for
+        new protocols can be added, even protocols that change the
+        normal parsing rules for URLs (such as our friend the 'data' protocol).
+        Third it can automatically check a stream when opened for common 
+        compression types and decode them for you (this behaviour can also 
+        be bypassed if needed).
+        </p>
+        
+        <p>
+        The service class is org.apache.batik.util.ParsedURLProtocolHandler.
+        This interface consists of three methods, one returns the
+        protocol to be handled, one is for parsing absolute URL string and one
+        is for parsing relative URL strings. Both the parsing methods return 
+        a ParsedURLData or a subclass there of.
+        </p>
+        
+        <p>
+        The ParsedURLData class holds all the data and implements the
+        stream commands for the ParsedURL class.  This allows 
+        ProtocolHandlers to return custom subclasses for particular protocols.
+        </p>
         </s1>
 
         <anchor id="transcoders" />
