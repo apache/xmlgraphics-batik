@@ -9,21 +9,29 @@
 package org.apache.batik.refimpl.bridge;
 
 import java.awt.geom.Rectangle2D;
+
 import java.util.Map;
 import java.util.StringTokenizer;
+
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeMutationEvent;
 import org.apache.batik.bridge.FilterBridge;
+import org.apache.batik.bridge.IllegalAttributeValueException;
+
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.ColorMatrixRable;
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.PadMode;
 import org.apache.batik.gvt.filter.PadRable;
+
+import org.apache.batik.refimpl.bridge.resources.Messages;
 import org.apache.batik.refimpl.gvt.filter.ConcreteColorMatrixRable;
 import org.apache.batik.refimpl.gvt.filter.ConcretePadRable;
+
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.SVGUtilities;
 import org.apache.batik.util.UnitProcessor;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -64,94 +72,89 @@ public class SVGFeColorMatrixElementBridge implements FilterBridge,
                          Map filterMap){
         Filter filter = null;
 
-        //
         // First, extract source
-        //
         String inAttr = filterElement.getAttributeNS(null, ATTR_IN);
+        in = CSSUtilities.getFilterSource(filteredNode,
+                                          inAttr,
+                                          bridgeContext,
+                                          filteredElement,
+                                          in,
+                                          filterMap);
 
-        in = CSSUtilities.getFilterSource
-            (filteredNode, inAttr,
-             bridgeContext, filteredElement,
-             in, filterMap);
+        // Exit if no 'in' found
+        if (in == null) {
+            return null;
+        }
 
-        if(in != null){
-            //
-            // The default region is the input source's region
-            // unless the source is SourceGraphics, in which
-            // case the default region is the filter chain's
-            // region
-            //
-            Filter sourceGraphics
-                = (Filter)filterMap.get(VALUE_SOURCE_GRAPHIC);
+        //
+        // The default region is the input source's region unless the
+        // source is SourceGraphics, in which case the default region
+        // is the filter chain's region
+        //
+        Filter sourceGraphics = (Filter)filterMap.get(VALUE_SOURCE_GRAPHIC);
 
-            Rectangle2D defaultRegion
-                = in.getBounds2D();
+        Rectangle2D defaultRegion = in.getBounds2D();
 
-            if(in == sourceGraphics){
-                defaultRegion = filterRegion;
-            }
+        if (in == sourceGraphics){
+            defaultRegion = filterRegion;
+        }
 
-            CSSStyleDeclaration cssDecl
-                = bridgeContext.getViewCSS().getComputedStyle(filterElement,
-                                                              null);
+        CSSStyleDeclaration cssDecl
+            = bridgeContext.getViewCSS().getComputedStyle(filterElement, null);
 
-            UnitProcessor.Context uctx
-                = new DefaultUnitProcessorContext(bridgeContext,
-                                                  cssDecl);
+        UnitProcessor.Context uctx
+            = new DefaultUnitProcessorContext(bridgeContext, cssDecl);
 
-            Rectangle2D primitiveRegion
-                = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
-                                                            filteredElement,
-                                                            defaultRegion,
-                                                            filteredNode,
-                                                            uctx);
+        Rectangle2D primitiveRegion
+            = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
+                                                        filteredElement,
+                                                        defaultRegion,
+                                                        filteredNode,
+                                                        uctx);
 
-            //
-            // Extract the matrix type. Interpret the values
-            // accordingly.
-            //
-            String typeStr = filterElement.getAttributeNS(null, ATTR_TYPE);
-            int type = convertType(typeStr);
-            String valuesStr = filterElement.getAttributeNS(null, ATTR_VALUES);
-            ColorMatrixRable colorMatrix = null;
+        //
+        // Extract the matrix type. Interpret the values accordingly.
+        //
+        String typeStr = filterElement.getAttributeNS(null, ATTR_TYPE);
+        int type = convertType(typeStr);
+        String valuesStr = filterElement.getAttributeNS(null, ATTR_VALUES);
+        ColorMatrixRable colorMatrix;
+        switch(type){
+        case ColorMatrixRable.TYPE_MATRIX:
+            float matrix[][] = convertValuesToMatrix(valuesStr);
+            colorMatrix = ConcreteColorMatrixRable.buildMatrix(matrix);
+            break;
+        case ColorMatrixRable.TYPE_SATURATE:
+            float s = CSSUtilities.convertRatio(valuesStr);
+            colorMatrix = ConcreteColorMatrixRable.buildSaturate(s);
+            break;
+        case ColorMatrixRable.TYPE_HUE_ROTATE:
+            float a = (float) (convertFloatValue(valuesStr) * Math.PI/180);
+            colorMatrix = ConcreteColorMatrixRable.buildHueRotate(a);
+            break;
+        case ColorMatrixRable.TYPE_LUMINANCE_TO_ALPHA:
+            colorMatrix = ConcreteColorMatrixRable.buildLuminanceToAlpha();
+            break;
+        default:
+            /* Never happen: Bad type is catched previously */
+            throw new Error();
+        }
 
-            switch(type){
-            case ColorMatrixRable.TYPE_MATRIX:
-                float matrix[][] = convertValuesToMatrix(valuesStr);
-                colorMatrix = ConcreteColorMatrixRable.buildMatrix(matrix);
-                break;
-            case ColorMatrixRable.TYPE_SATURATE:
-                float s = CSSUtilities.convertRatio(valuesStr);
-                colorMatrix = ConcreteColorMatrixRable.buildSaturate(s);
-                break;
-            case ColorMatrixRable.TYPE_HUE_ROTATE:
-                float a = convertFloatValue(valuesStr);
-                colorMatrix = ConcreteColorMatrixRable.buildHueRotate((float)(a*Math.PI/180));
-                break;
-            case ColorMatrixRable.TYPE_LUMINANCE_TO_ALPHA:
-                colorMatrix = ConcreteColorMatrixRable.buildLuminanceToAlpha();
-                break;
-            }
+        colorMatrix.setSource(in);
 
-            colorMatrix.setSource(in);
-
-            filter = new ConcretePadRable(colorMatrix,
-                                          primitiveRegion,
-                                          PadMode.ZERO_PAD);
+        filter = new ConcretePadRable(colorMatrix,
+                                      primitiveRegion,
+                                      PadMode.ZERO_PAD);
 
 
-            // Get result attribute and update map
-            String result
-                = filterElement.getAttributeNS(null,
-                                               ATTR_RESULT);
+        // Get result attribute and update map
+        String result = filterElement.getAttributeNS(null, ATTR_RESULT);
 
-            if((result != null) && (result.trim().length() > 0)){
-                filterMap.put(result, filter);
-            }
+        if ((result != null) && (result.trim().length() > 0)) {
+            filterMap.put(result, filter);
         }
 
         return filter;
-
     }
 
     /**
@@ -161,12 +164,14 @@ public class SVGFeColorMatrixElementBridge implements FilterBridge,
         StringTokenizer st = new StringTokenizer(value, " ,");
         float matrix[][] = new float[4][5];
         if(st.countTokens() != 20){
-            throw new IllegalArgumentException();
+            throw new IllegalAttributeValueException(
+                Messages.formatMessage("feColorMatrix.values.invalid",
+                                       new Object[] { value }));
         }
         int i = 0;
         while(st.hasMoreTokens()){
             String v = st.nextToken();
-            matrix[i/5][i%5] = Float.parseFloat(v);
+            matrix[i/5][i%5] = convertFloatValue(v);
             i++;
         }
 
@@ -175,30 +180,6 @@ public class SVGFeColorMatrixElementBridge implements FilterBridge,
         }
         return matrix;
     }
-
-    /**
-     * Converts the input value to a ratio between 0 and 1
-     */
-/*    private static float convertRatio(String value){
-        value = value.trim();
-        float r = 0;
-        float d = 1;
-        if(value.length() > 0 && value.endsWith("%")){
-            value = value.substring(0, value.length() - 1);
-            d = 100;
-        }
-
-        r = Float.parseFloat(value);
-        r /= d;
-
-        if(r < 0){
-            r = 0;
-        }
-        else if(r > 1){
-            r = 1;
-        }
-        return r;
-    }*/
 
     /**
      * Converts a float value
@@ -212,61 +193,74 @@ public class SVGFeColorMatrixElementBridge implements FilterBridge,
      * ComponentTransferFunction type constant
      */
     private static int convertType(String value){
-        int type = ColorMatrixRable.TYPE_MATRIX;
         if(value.length() > 0){
             switch(value.charAt(0)){
             case 's': // saturate
-                if(value.length() == "saturate".length()){
+                if(value.length() == VALUE_SATURATE.length()){
                     if(value.charAt(1) == 'a' &&
-                       value.charAt(2) == 't' &&
-                       value.charAt(3) == 'u' &&
-                       value.charAt(4) == 'r' &&
-                       value.charAt(5) == 'a' &&
-                       value.charAt(6) == 't' &&
-                       value.charAt(7) == 'e' ){
-                        type = ColorMatrixRable.TYPE_SATURATE;
+                           value.charAt(2) == 't' &&
+                           value.charAt(3) == 'u' &&
+                           value.charAt(4) == 'r' &&
+                           value.charAt(5) == 'a' &&
+                           value.charAt(6) == 't' &&
+                           value.charAt(7) == 'e' ){
+                        return ColorMatrixRable.TYPE_SATURATE;
                     }
                 }
                 break;
             case 'h': // hueRotate
-                if(value.length() == "hueRotate".length()){
+                if(value.length() == VALUE_HUE_ROTATE.length()){
                     if(value.charAt(1) == 'u' &&
-                       value.charAt(2) == 'e' &&
-                       value.charAt(3) == 'R' &&
-                       value.charAt(4) == 'o' &&
-                       value.charAt(5) == 't' &&
-                       value.charAt(6) == 'a' &&
-                       value.charAt(7) == 't' &&
-                       value.charAt(8) == 'e'){
-                        type = ColorMatrixRable.TYPE_HUE_ROTATE;
+                           value.charAt(2) == 'e' &&
+                           value.charAt(3) == 'R' &&
+                           value.charAt(4) == 'o' &&
+                           value.charAt(5) == 't' &&
+                           value.charAt(6) == 'a' &&
+                           value.charAt(7) == 't' &&
+                           value.charAt(8) == 'e'){
+                        return ColorMatrixRable.TYPE_HUE_ROTATE;
                     }
                 }
                 break;
             case 'l': // luminanceToAlpha
-                if(value.length() == "luminanceToAlpha".length()){
+                if(value.length() == VALUE_LUMINANCE_TO_ALPHA.length()){
                     if(value.charAt(1) == 'u' &&
-                       value.charAt(2) == 'm' &&
-                       value.charAt(3) == 'i' &&
-                       value.charAt(4) == 'n' &&
-                       value.charAt(5) == 'a' &&
-                       value.charAt(6) == 'n' &&
-                       value.charAt(7) == 'c' &&
-                       value.charAt(8) == 'e' &&
-                       value.charAt(9) == 'T' &&
-                       value.charAt(10) == 'o' &&
-                       value.charAt(11) == 'A' &&
-                       value.charAt(12) == 'l' &&
-                       value.charAt(13) == 'p' &&
-                       value.charAt(14) == 'h' &&
-                       value.charAt(15) == 'a'){
-                        type = ColorMatrixRable.TYPE_LUMINANCE_TO_ALPHA;
+                           value.charAt(2) == 'm' &&
+                           value.charAt(3) == 'i' &&
+                           value.charAt(4) == 'n' &&
+                           value.charAt(5) == 'a' &&
+                           value.charAt(6) == 'n' &&
+                           value.charAt(7) == 'c' &&
+                           value.charAt(8) == 'e' &&
+                           value.charAt(9) == 'T' &&
+                           value.charAt(10) == 'o' &&
+                           value.charAt(11) == 'A' &&
+                           value.charAt(12) == 'l' &&
+                           value.charAt(13) == 'p' &&
+                           value.charAt(14) == 'h' &&
+                           value.charAt(15) == 'a'){
+                        return ColorMatrixRable.TYPE_LUMINANCE_TO_ALPHA;
+                    }
+                }
+            case 'm': // matrix
+                if(value.length() == VALUE_MATRIX.length()){
+                    if(value.charAt(1) == 'a' &&
+                           value.charAt(2) == 't' &&
+                           value.charAt(3) == 'r' &&
+                           value.charAt(4) == 'i' &&
+                           value.charAt(5) == 'x' ){
+                        return ColorMatrixRable.TYPE_MATRIX;
                     }
                 }
                 break;
             }
-        }
 
-        return type;
+            throw new IllegalAttributeValueException(
+                Messages.formatMessage("feColorMatrix.type.invalid",
+                                       new Object[] { value }));
+        } else {
+            return ColorMatrixRable.TYPE_MATRIX;
+        }
     }
 
 
