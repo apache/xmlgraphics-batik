@@ -326,7 +326,7 @@ public class SVGRenderingAccuracyTestValidator extends DefaultTestSuite {
             //
             // Create an valid URL for the reference image.
             //
-            URL validRefImageURL = createSVGSourceURL(validSmallSVG);
+            URL validRefImageURL = createValidReferenceImage(validSmallSVG);
             
             //
             // Run test and check report
@@ -348,7 +348,7 @@ public class SVGRenderingAccuracyTestValidator extends DefaultTestSuite {
             URL validSVGURL = createSVGSourceURL(validSVG);
 
             // Create an valid URL for the reference image.
-            URL validRefImageURL = createSVGSourceURL(validRedSVG);
+            URL validRefImageURL = createValidReferenceImage(validRedSVG);
             
 
             Test t = new SVGRenderingAccuracyTest(validSVGURL.toString(),
