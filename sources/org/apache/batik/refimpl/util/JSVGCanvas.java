@@ -51,8 +51,6 @@ import java.util.Map;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JComponent;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
 
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeException;
@@ -379,35 +377,6 @@ public class JSVGCanvas
         listeners.put(UNZOOM_ACTION, new UnzoomAction());
         listeners.put(ZOOM_IN_ACTION, new ZoomInAction());
         listeners.put(ZOOM_OUT_ACTION, new ZoomOutAction());
-
-        /*final JPopupMenu popup = new JPopupMenu();
-        JMenuItem item = new JMenuItem("Zoom In");
-        item.addActionListener(getAction(JSVGCanvas.ZOOM_IN_ACTION));
-        popup.add(item);
-        item = new JMenuItem("Zoom Out");
-        item.addActionListener(getAction(JSVGCanvas.ZOOM_OUT_ACTION));
-        popup.add(item);
-        item = new JMenuItem("Zoom 1:1");
-        item.addActionListener(getAction(JSVGCanvas.UNZOOM_ACTION));
-        popup.add(item);
-        addMouseListener(new MouseAdapter() {
-            public void mousePressed(MouseEvent e) {
-                maybeShowPopup(e);
-            }
-
-            public void mouseReleased(MouseEvent e) {
-                maybeShowPopup(e);
-            }
-
-            private void maybeShowPopup(MouseEvent e) {
-                int mods = e.getModifiers();
-                if (!((mods & e.CTRL_MASK) != 0) && e.isPopupTrigger()) {
-                    popup.show(e.getComponent(),
-                               e.getX(), e.getY());
-                }
-            }
-            });*/
-
     }
 
     /**
@@ -511,7 +480,7 @@ public class JSVGCanvas
                         bridgeContext.setViewCSS(
                            (ViewCSS)((SVGOMDocument)doc).getDefaultView());
                         bridgeContext.setGraphicsNodeRenderContext(
-                          getRendererFactory().getRenderContext());
+                                       getRendererFactory().getRenderContext());
                         bridgeContext.setGVTBuilder(builder);
                         long t1 = System.currentTimeMillis();
                         if (Thread.currentThread().isInterrupted()) {
@@ -624,12 +593,7 @@ public class JSVGCanvas
         if (thumbnailCanvas != null) {
              thumbnailCanvas.fullRepaint();
         }
-
-        if(document != null && gvtRoot != null){
-            // System.out.println("SSSS");
-            repaint(); // scheduled after the thumbnail repaint
-            // paintComponent(getGraphics());
-        }
+        repaint(); // scheduled after the thumbnail repaint
     }
 
     /**
@@ -669,33 +633,6 @@ public class JSVGCanvas
      */
     protected synchronized void requestCursor(Cursor newCursor) {
         this.requestedCursor = newCursor;
-    }
-
-    /**
-     * Repaints the specified rectangle of this component within
-     * <code>tm</code> milliseconds.
-     * <p>
-     * This method causes a call to this component's
-     * <code>update</code> method.
-     * @param     tm   maximum time in milliseconds before update.
-     * @param     x    the <i>x</i> coordinate.
-     * @param     y    the <i>y</i> coordinate.
-     * @param     width    the width.
-     * @param     height   the height.
-     * @see       java.awt.Component#update(java.awt.Graphics)
-     * @since     JDK1.0
-     */
-    public void repaint(long tm, int x, int y, int width, int height) {
-        javax.swing.RepaintManager repaintManager 
-            = javax.swing.RepaintManager.currentManager(this);
-
-        repaintManager.addDirtyRegion(this, x, y, width, height);
-    }
-
-    public void paintImmediately(int x,int y,int w, int h) {
-        Graphics g = getGraphics();
-        g.clipRect(x, y, w, h);
-        paintComponent(g);
     }
 
     /**
@@ -751,7 +688,7 @@ public class JSVGCanvas
         result.setGraphicsNodeRableFactory
             (new ConcreteGraphicsNodeRableFactory());
         result.setGraphicsNodeRenderContext(
-            getRendererFactory().getRenderContext());
+                                       getRendererFactory().getRenderContext());
         ((SVGBridgeContext)result).setInterpreterPool
             (new ConcreteInterpreterPool(doc));
         result.setCurrentViewport(new UserAgentViewport(userAgent));
@@ -812,11 +749,8 @@ public class JSVGCanvas
                  userAgent.displayMessage("Selection: "+selectionString);
             }
             // [repaint will reset to "requested" cursor]
-            if(document != null && gvtRoot != null){
-                // System.out.println("XXXXX");
-                repaint(); // in case immediate-mode XORs are out of sync
-                // with the regular repaint-on-request repaints
-            }
+            repaint(); // in case immediate-mode XORs are out of sync
+                       // with the regular repaint-on-request repaints
         } else if (e.getType() == SelectionEvent.SELECTION_START) {
             setCursor(TEXT_CURSOR);
             userAgent.displayMessage("");
@@ -827,10 +761,7 @@ public class JSVGCanvas
             canvasSpaceHighlightShape = null;
             selectionHighlightShape = null;
             // change highlight and notify user agent
-            if(document != null && gvtRoot != null){
-                // System.out.println("XXXX2");
-                // repaint();
-            }
+            repaint();
         }
     }
 
@@ -938,17 +869,7 @@ public class JSVGCanvas
      * rendering thread and cue another repaint.  Otherwise,
      * it simply repaints the offscreen buffer and overlays.
      */
-    int paintCount = 0;
     protected void paintComponent(Graphics g) {
-        if(document == null || gvtRoot == null){
-            return;
-        }
-
-        /*System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-        System.out.println("NEW PAINT " + paintCount++);
-        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-        Exception e = new Exception();
-        e.printStackTrace();*/
 
         if (!EventQueue.isDispatchThread()) {
             System.err.println(
@@ -957,7 +878,7 @@ public class JSVGCanvas
 
         // TODO: simplify and clean up this code
 
-        // super.paintComponent(g);
+        super.paintComponent(g);
 
         Dimension size = getSize();
         int w = size.width;
@@ -997,10 +918,10 @@ public class JSVGCanvas
                 panTransform = null;
                 g2d.drawImage(buffer, null, 0, 0);
             } else {
-                /*g2d.setComposite(AlphaComposite.SrcOver);
+                g2d.setComposite(AlphaComposite.SrcOver);
                 g2d.setClip(0, 0, w, h);
                 g2d.setPaint(Color.white);
-                g2d.fillRect(0, 0, w, h);*/
+                g2d.fillRect(0, 0, w, h);
             }
             clearBuffer(w, h);
             renderer.setTransform(transform);
@@ -1154,10 +1075,6 @@ public class JSVGCanvas
                 if (gvtRoot != null) {
                     docBBox = transform.createTransformedShape(
                                             gvtRoot.getBounds(null));
-
-                    // XXX: relies on fact that gvtRoot is not a text node
-                    // and therefore does not use the GraphicsNodeRenderContext
-                    // parameter
                 }
                 dispatcher.setBaseTransform(transform.createInverse());
             } catch (NoninvertibleTransformException e) {
@@ -1282,7 +1199,7 @@ public class JSVGCanvas
                         // BUG: something is not initialized or
                         // got destroyed in the interrupted thread
                         // not a disaster since another repaint will follow
-                        // System.out.println("(AOI repaint did not complete.)");
+                        System.out.println("(AOI repaint did not complete.)");
                     } catch (Exception e) {
                         // don't quit altogether...
                         e.printStackTrace();
@@ -1307,10 +1224,7 @@ public class JSVGCanvas
                 if (!isLoadPending()) {
                     requestCursor(NORMAL_CURSOR);
                 }
-                if(document != null && gvtRoot != null){
-                    // System.out.println("YYYYY");
-                    component.repaint();
-                }
+                component.repaint();
             }
         }
     }
@@ -1333,7 +1247,6 @@ public class JSVGCanvas
             try {
                 sleep(interval);
                 while (!interrupted()) {
-                    // System.out.println("ZZZZ");
                    target.repaint();
                    sleep(interval);
                 }
@@ -1581,11 +1494,7 @@ public class JSVGCanvas
             markerBottom = null;
             markerRight = null;
             panTransform = null;
-            if(document != null && gvtRoot != null){
-                // System.out.println("WWWWWW");
-                repaint();
-                // paintComponent(getGraphics());
-            }
+            repaint();
             AbstractEventDispatcher dispatcher =
                 (AbstractEventDispatcher)userAgent.getEventDispatcher();
             dispatcher.mouseExited(e);
@@ -1602,7 +1511,6 @@ public class JSVGCanvas
             cursor = null;
 
             if (mouseExited) {
-                // System.out.println("AAAA");
                 repaint();
                 return;
             }
@@ -1613,10 +1521,8 @@ public class JSVGCanvas
                 documentTransformed = true;
                 updateBaseTransform();
                 bufferNeedsRendering = true;
-                // System.out.println("BBBB");
                 repaint();
                 if (thumbnailCanvas != null) {
-                    // System.out.println("CCCC");
                     thumbnailCanvas.repaint();
                 }
             } else if (markerTop != null) {
@@ -1653,7 +1559,6 @@ public class JSVGCanvas
                                                     rotateCos / initialScale));
                 }
                 bufferNeedsRendering = true;
-                // System.out.println("DDDD");
                 repaint();
                 if (thumbnailCanvas != null) {
                     thumbnailCanvas.repaint();
@@ -1675,7 +1580,6 @@ public class JSVGCanvas
                                                     rotateCos / initialScale));
                 }
                 bufferNeedsRendering = true;
-                // System.out.println("EEEE");
                 repaint();
                 if (thumbnailCanvas != null) {
                     thumbnailCanvas.repaint();
@@ -1864,8 +1768,7 @@ public class JSVGCanvas
             }
             bufferNeedsRendering = true;
             computeTransform();
-            // System.out.println("FFFF");
-            ThumbnailCanvas.this.repaint();
+            repaint();
         }
 
       /**
@@ -2063,10 +1966,10 @@ public class JSVGCanvas
                 renderer.repaint(newAoi);
                 Rectangle2D r =
                     transform.createTransformedShape(oldAoi).getBounds();
-                ThumbnailCanvas.this.repaint((int)r.getX()-1, (int)r.getY()-1,
+                repaint((int)r.getX()-1, (int)r.getY()-1,
                         (int)r.getWidth()+2, (int)r.getHeight()+2);
                 r = transform.createTransformedShape(newAoi).getBounds();
-                ThumbnailCanvas.this.repaint((int)r.getX()-1, (int)r.getY()-1,
+                repaint((int)r.getX()-1, (int)r.getY()-1,
                         (int)r.getWidth()+2, (int)r.getHeight()+2);
             } catch (InterruptedException ie) {
             }
@@ -2094,8 +1997,7 @@ public class JSVGCanvas
             try {
                 renderer.repaint(getAreaOfInterest
                                (new Rectangle(0, 0, size.width, size.height)));
-                // System.out.println("FFFF");
-                ThumbnailCanvas.this.repaint();
+                repaint();
             } catch (InterruptedException ie) {
             }
         }
@@ -2139,7 +2041,7 @@ public class JSVGCanvas
                         AffineTransform.getTranslateInstance(e.getX() - sx,
                                                              e.getY() - sy);
                     Dimension d = getSize();
-                    ThumbnailCanvas.this.paintImmediately(0, 0, d.width, d.height);
+                    paintImmediately(0, 0, d.width, d.height);
                 }
             }
             public void mouseReleased(MouseEvent e) {
@@ -2152,7 +2054,7 @@ public class JSVGCanvas
                     markerTransform =
                         AffineTransform.getTranslateInstance(dx, dy);
                     Dimension d = getSize();
-                    ThumbnailCanvas.this.paintImmediately(0, 0, d.width, d.height);
+                    paintImmediately(0, 0, d.width, d.height);
 
                     Point2D pt0 = new Point2D.Float(0, 0);
                     Point2D pt = new Point2D.Float(dx, dy);
@@ -2168,7 +2070,6 @@ public class JSVGCanvas
                     JSVGCanvas.this.transform.concatenate(markerTransform);
                     JSVGCanvas.this.updateBaseTransform();
                     JSVGCanvas.this.bufferNeedsRendering = true;
-                    // System.out.println("GGGG");
                     JSVGCanvas.this.repaint();
 
                     markerTransform = new AffineTransform();
@@ -2184,7 +2085,7 @@ public class JSVGCanvas
                     markerTransform = new AffineTransform();
 
                     Dimension d = getSize();
-                    ThumbnailCanvas.this.paintImmediately(0, 0, d.width, d.height);
+                    paintImmediately(0, 0, d.width, d.height);
                 }
             }
         }
