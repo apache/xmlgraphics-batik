@@ -71,6 +71,12 @@
         <test id="samples/extensions/star.svg" >
             <property name="Validating" class="java.lang.Boolean" value="false" />
 	</test>
+        <test id="samples/extensions/filterRegion.svg" >
+            <property name="Validating" class="java.lang.Boolean" value="false" />
+	</test>
+        <test id="samples/extensions/filterRegionDetailed.svg" >
+            <property name="Validating" class="java.lang.Boolean" value="false" />
+	</test>
     </testGroup>
 
     <!-- ======================================================================= -->

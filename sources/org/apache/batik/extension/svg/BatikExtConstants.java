@@ -34,6 +34,30 @@ public interface BatikExtConstants {
     public static final String BATIK_EXT_FLOW_REGION_TAG = 
         "flowRegion";
 
+    /** Attribute name for dx attribute */
+    public static final String BATIK_EXT_DX_ATRIBUTE =
+        "dx";
+    
+    /** Attribute name for dy attribute */
+    public static final String BATIK_EXT_DY_ATRIBUTE =
+        "dy";
+    
+    /** Attribute name for dw attribute */
+    public static final String BATIK_EXT_DW_ATRIBUTE =
+        "dw";
+    
+    /** Attribute name for dh attribute */
+    public static final String BATIK_EXT_DH_ATRIBUTE =
+        "dh";
+
+    /** Attribute name for filterPrimitiveMarginsUnits */
+    public static final String BATIK_EXT_FILTER_PRIMITIVE_MARGINS_UNITS_ATTRIBUTE
+        = "filterPrimitiveMarginsUnits";
+
+    /** Attribute name for filterMarginsUnits */
+    public static final String BATIK_EXT_FILTER_MARGINS_UNITS_ATTRIBUTE
+        = "filterMarginsUnits";
+
     /** Attribute name for x attribute */
     public static final String BATIK_EXT_X_ATTRIBUTE = 
         "x";
@@ -74,7 +98,6 @@ public interface BatikExtConstants {
     /** Attribute name for preformated data */
     public static final String BATIK_EXT_PREFORMATTED_ATTRIBUTE = 
         "preformatted";
-
 
     /** Tag name for Batik's flowText extension div element SVG 1.1). */
     public static final String BATIK_EXT_FLOW_DIV_TAG = 
@@ -145,4 +168,15 @@ public interface BatikExtConstants {
     public static final String BATIK_EXT_SOLID_OPACITY_PROPERTY = 
         "solid-opacity";
 
+    /** Default value for filter dx */
+    public static final String SVG_FILTER_DX_DEFAULT_VALUE = "0";
+
+    /** Default value for filter dy */
+    public static final String SVG_FILTER_DY_DEFAULT_VALUE = "0";
+
+    /** Default value for filter dw */
+    public static final String SVG_FILTER_DW_DEFAULT_VALUE = "0";
+
+    /** Default value for filter dh */
+    public static final String SVG_FILTER_DH_DEFAULT_VALUE = "0";
 }
