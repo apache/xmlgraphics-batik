@@ -1,0 +1,67 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20000802//EN"
+"http://www.w3.org/TR/2000/CR-SVG-20000802/DTD/svg-20000802.dtd">
+
+<!-- ====================================================================== -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.     -->
+<!--                                                                        -->
+<!-- This software is published under the terms of the Apache Software      -->
+<!-- License version 1.1, a copy of which has been included with this       -->
+<!-- distribution in the LICENSE file.                                      -->
+<!-- ====================================================================== -->
+
+<!-- ====================================================================== -->
+<!-- Modification of a rect's x,y,width and height attributes in an         -->
+<!-- 'onclick' event handler. This is actually mostly testing a change in   -->
+<!-- the documents size.                                                    -->
+<!--                                                                        -->
+<!-- @author deweese@apache.org                                             -->
+<!-- @version $Id$  -->
+<!-- ========================================================================= -->
+<?xml-stylesheet type="text/css" href="../../resources/style/test.css" ?>  
+<svg id="body" width="450" height="500" viewBox="0 0 450 500">
+   <title>&lt;rect&gt; width &amp; hieght modification in 'onclick'</title>
+
+   <script type="text/ecmascript">
+
+    function setRect(evt, target, valX, valY, valW, valH){
+        var r = evt.getTarget();
+        var doc = r.getOwnerDocument();
+        var t = doc.getElementById(target);
+        t.setAttribute('x', valX);
+        t.setAttribute('y', valY);
+        t.setAttribute('width', valW);
+        t.setAttribute('height', valH);
+    }
+
+   </script>
+
+   <text x="50%" y="45" class="title">&lt;rect&gt; width &amp; height modification in 'onclick'</text>
+
+
+   <g id="test-content" >
+      <rect style="fill:none; stroke:black" 
+            x="182" y="97" width="86" height="46" />
+      <text class="legend" x="225" y="160">Position A</text>
+
+      <rect style="fill:none; stroke:black" 
+            x="182" y="177" width="86" height="46" />
+      <text class="legend" x="225" y="240">Click Target</text>
+
+      <g stroke="black"
+         onclick="setRect(evt, 'targetRect', '5', '5', '440', '490')" >
+         <circle cx="225" cy="200"  r="10"           fill="crimson"/>
+         <line   x1="225" x2="225" y1="185" y2="215" fill="none" />
+         <line   x1="210" x2="240" y1="200" y2="200" fill="none" />
+      </g>
+
+      <rect id="targetRect" fill="crimson" 
+            x="185" y="100" width="80" height="40" />
+
+      <text class="legend">
+         <tspan x="225" y="270">Click on the Click Target (crimson circle)</tspan>
+         <tspan x="225" y="285">to resize the rectangle to fill the viewport.</tspan>
+         <tspan x="225" y="300">Hiding everything but this text.</tspan>
+      </text>
+   </g>
+</svg>
