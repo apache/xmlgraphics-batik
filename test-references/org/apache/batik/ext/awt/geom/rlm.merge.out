@@ -1,0 +1,60 @@
+ID: rlm1-1 Sz: 2
+  java.awt.Rectangle[x=0,y=0,width=50,height=50]
+  java.awt.Rectangle[x=30,y=30,width=40,height=40]
+
+ID: rlm2-1 Sz: 3
+  java.awt.Rectangle[x=0,y=0,width=30,height=30]
+  java.awt.Rectangle[x=20,y=20,width=30,height=30]
+  java.awt.Rectangle[x=40,y=40,width=30,height=30]
+
+ID: rlm2-1 Sz: 3
+  java.awt.Rectangle[x=0,y=0,width=30,height=30]
+  java.awt.Rectangle[x=20,y=20,width=30,height=30]
+  java.awt.Rectangle[x=40,y=40,width=30,height=30]
+
+ID: rlm2-1 Sz: 2
+  java.awt.Rectangle[x=0,y=0,width=50,height=50]
+  java.awt.Rectangle[x=40,y=40,width=30,height=30]
+
+ID: rlm3-1 Sz: 3
+  java.awt.Rectangle[x=0,y=40,width=30,height=30]
+  java.awt.Rectangle[x=20,y=20,width=30,height=30]
+  java.awt.Rectangle[x=40,y=0,width=30,height=30]
+
+ID: rlm3-1 Sz: 3
+  java.awt.Rectangle[x=0,y=40,width=30,height=30]
+  java.awt.Rectangle[x=20,y=20,width=30,height=30]
+  java.awt.Rectangle[x=40,y=0,width=30,height=30]
+
+ID: rlm3-1 Sz: 2
+  java.awt.Rectangle[x=0,y=20,width=50,height=50]
+  java.awt.Rectangle[x=40,y=0,width=30,height=30]
+
+ID: rlm4-1 Sz: 2
+  java.awt.Rectangle[x=0,y=0,width=30,height=30]
+  java.awt.Rectangle[x=40,y=0,width=30,height=30]
+
+ID: rlm4-1 Sz: 1
+  java.awt.Rectangle[x=0,y=0,width=70,height=30]
+
+ID: rlm5-1 Sz: 1
+  java.awt.Rectangle[x=0,y=0,width=70,height=30]
+
+ID: rlm6-1 Sz: 2
+  java.awt.Rectangle[x=0,y=40,width=30,height=30]
+  java.awt.Rectangle[x=0,y=0,width=30,height=30]
+
+ID: rlm6-1 Sz: 1
+  java.awt.Rectangle[x=0,y=0,width=30,height=70]
+
+ID: rlm7-1 Sz: 2
+  java.awt.Rectangle[x=0,y=40,width=30,height=30]
+  java.awt.Rectangle[x=0,y=0,width=30,height=30]
+
+ID: rlm7-1 Sz: 2
+  java.awt.Rectangle[x=0,y=40,width=30,height=30]
+  java.awt.Rectangle[x=0,y=0,width=30,height=30]
+
+ID: rlm7-1 Sz: 1
+  java.awt.Rectangle[x=0,y=0,width=30,height=70]
+

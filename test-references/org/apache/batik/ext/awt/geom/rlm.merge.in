@@ -1,0 +1,79 @@
+# Test merging stuff
+RectListManger rlm1-1
+rect  0  0 30 30
+rect 10 10 30 30
+rect 20 20 30 30
+rect 30 30 30 30
+rect 40 40 30 30
+merge 0 0
+print
+
+RectListManger rlm2-1
+rect  0  0 30 30
+rect 20 20 30 30
+rect 40 40 30 30
+# Should not collapse (overhead not high enough)
+merge 0 0
+print
+# Should not collapse (overhead not high enough)
+merge 400 0
+print
+# Should collapse (overhead high enough)
+merge 700 0
+print
+
+RectListManger rlm3-1
+rect  0 40 30 30
+rect 20 20 30 30
+rect 40  0 30 30
+# Should not collapse (overhead not high enough)
+merge 0 0
+print
+# Should not collapse (overhead not high enough)
+merge 400 0
+print
+# Should collapse (overhead high enough)
+merge 700 0
+print
+
+RectListManger rlm4-1
+rect  0  0 30 30
+rect 40  0 30 30
+# Should not collapse (overhead not high enough)
+merge 0 0
+print
+# Should collapse (overhead high enough)
+merge 400 0
+print
+
+RectListManger rlm5-1
+rect  0  0 30 30
+rect 40  0 30 30
+# Should collapse (line overhead high enough)
+merge 0 11
+print
+
+RectListManger rlm6-1
+rect  0  0  30 30
+rect  0 40 30 30
+# Should not collapse (overhead not high enough)
+merge 0 0
+print
+# Should collapse (overhead high enough)
+merge 400 0
+print
+
+RectListManger rlm7-1
+rect  0  0 30 30
+rect  0 40 30 30
+# Should not collapse (line overhead does affect)
+merge 0 11
+print
+# Should not collapse (line overhead affects merged)
+merge 400 11
+print
+# Should collapse (overhead overcomes)
+merge 440 11
+print
+
+

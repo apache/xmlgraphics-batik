@@ -1,0 +1,196 @@
+# First test add a bunch of rects make sure they are in both lists
+rectlistmanger rlm0-1
+rect 5 1 9 1
+rect 0 1 9 1
+rect 4 1 9 1
+rect 9 1 9 1
+rect 1 1 9 1
+rect 2 1 9 1
+rect 3 1 9 1
+rect 8 1 9 1
+rect 7 1 9 1
+rect 6 1 9 1
+print
+rectlistmanger rlm0-2
+rect 6 1 9 1
+rect 7 1 9 1
+rect 8 1 9 1
+rect 3 1 9 1
+rect 2 1 9 1
+rect 1 1 9 1
+rect 9 1 9 1
+rect 4 1 9 1
+rect 0 1 9 1
+rect 5 1 9 1
+print
+retainAll rlm0-1
+print
+add rlm0-1
+add rlm0-1
+print
+retainAll rlm0-1
+print
+
+# Second test add a bunch more rects make sure aren't in both list until
+# added.
+rectlistmanger rlm1-1
+rect 5 1 9 1
+rect 0 1 9 1
+rect 4 1 9 1
+rect 9 1 9 1
+rect 1 1 9 1
+rect 2 1 9 1
+rect 3 1 9 1
+rect 8 1 9 1
+rect 7 1 9 1
+rect 6 1 9 1
+print
+rectlistmanger rlm1-2
+rect 16 1 9 1
+rect 19 1 9 1
+rect 12 1 9 1
+rect 15 1 9 1
+rect 10 1 9 1
+rect 11 1 9 1
+rect 17 1 9 1
+rect 18 1 9 1
+rect 13 1 9 1
+rect 14 1 9 1
+print
+retainAll rlm1-1
+print
+add rlm1-1
+print
+retainAll rlm1-1
+print
+
+# Third test reverse rects make sure aren't in both list until added.
+rectlistmanger rlm2-1
+rect 16 1 9 1
+rect 19 1 9 1
+rect 12 1 9 1
+rect 15 1 9 1
+rect 10 1 9 1
+rect 11 1 9 1
+rect 17 1 9 1
+rect 18 1 9 1
+rect 13 1 9 1
+rect 14 1 9 1
+print
+rectlistmanger rlm2-2
+rect 5 1 9 1
+rect 0 1 9 1
+rect 4 1 9 1
+rect 9 1 9 1
+rect 1 1 9 1
+rect 2 1 9 1
+rect 3 1 9 1
+rect 8 1 9 1
+rect 7 1 9 1
+rect 6 1 9 1
+print
+retainAll rlm2-1
+print
+add rlm2-1
+print
+retainAll rlm2-1
+print
+
+# Fourth test a small subset sparsely in major
+rectlistmanger rlm3-1
+rect 4 1 9 1
+rect 9 1 9 1
+rect 1 1 9 1
+print
+rectlistmanger rlm3-2
+rect 5 1 9 1
+rect 0 1 9 1
+rect 4 1 9 1
+rect 9 1 9 1
+rect 1 1 9 1
+rect 2 1 9 1
+rect 3 1 9 1
+rect 8 1 9 1
+rect 7 1 9 1
+rect 6 1 9 1
+print
+retainAll rlm3-1
+print
+
+# Fifth test a large superset 
+rectlistmanger rlm4-1
+rect 5 1 9 1
+rect 0 1 9 1
+rect 4 1 9 1
+rect 9 1 9 1
+rect 1 1 9 1
+rect 2 1 9 1
+rect 3 1 9 1
+rect 8 1 9 1
+rect 7 1 9 1
+rect 6 1 9 1
+print
+rectlistmanger rlm4-2
+rect  4 1 9 1
+rect  0 1 9 1
+rect  9 1 9 1
+rect 23 1 9 1
+rect  1 1 9 1
+print
+retainAll rlm4-1
+print
+
+# Sixth test a large group of duplicates 
+rectlistmanger rlm5-1
+rect 0 1 9 1
+rect 9 1 9 1
+rect 1 1 9 1
+rect 4 1 9 1
+rect 4 1 9 1
+rect 9 1 9 1
+rect 0 1 9 1
+rect 1 1 9 1
+rect 4 1 9 1
+rect 9 1 9 1
+rect 0 1 9 1
+rect 1 1 9 1
+rect 9 1 9 1
+rect 9 1 9 1
+rect 4 1 9 1
+print
+rectlistmanger rlm5-2
+rect 4 1 9 1
+rect 0 1 9 1
+rect 9 1 9 1
+rect 1 1 9 1
+print
+retainAll rlm5-1
+print
+
+# Seveth test retain subset from large group of duplicates 
+rectlistmanger rlm6-1
+rect 4 1 9 1
+rect 0 1 9 1
+rect 9 1 9 1
+rect 1 1 9 1
+print
+rectlistmanger rlm6-2
+rect 0 1 9 1
+rect 9 1 9 1
+rect 1 1 9 1
+rect 4 1 9 1
+rect 4 1 9 1
+rect 9 1 9 1
+rect 0 1 9 1
+rect 1 1 9 1
+rect 5 1 9 1
+rect 4 1 9 1
+rect 9 1 9 1
+rect 0 1 9 1
+rect 1 1 9 1
+rect 9 1 9 1
+rect 9 1 9 1
+rect 4 1 9 1
+print
+retainAll rlm6-1
+print

@@ -778,6 +778,8 @@ To display the available targets type:
     <mkdir dir="${test-references}/org/apache/batik/svggen/rendering/accepted-variation" />
     <mkdir dir="${test-references}/org/apache/batik/gvt/candidate" />
     <mkdir dir="${test-references}/org/apache/batik/gvt/variation" />
+    <mkdir dir="${test-references}/org/apache/batik/ext/awt/geom/candidate" />
+    <mkdir dir="${test-references}/org/apache/batik/ext/awt/geom/variation" />
   </target>
 
   <target name="ttf2svg"
