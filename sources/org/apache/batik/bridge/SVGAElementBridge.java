@@ -63,17 +63,17 @@ public class SVGAElementBridge extends AbstractGraphicsNodeBridge {
 
         EventTarget target = (EventTarget)e;
 
-        target.addEventListener(SVG_EVENT_CLICK,
-                                new AnchorListener(ctx.getUserAgent()),
-                                false);
+        EventListener l = new AnchorListener(ctx.getUserAgent());
+        target.addEventListener(SVG_EVENT_CLICK, l, false);
+        ctx.storeEventListener(target, SVG_EVENT_CLICK, l, false);
 
-        target.addEventListener(SVG_EVENT_MOUSEOVER,
-                                new CursorMouseOverListener(ctx.getUserAgent()),
-                                false);
+        l = new CursorMouseOverListener(ctx.getUserAgent());
+        target.addEventListener(SVG_EVENT_MOUSEOVER, l, false);
+        ctx.storeEventListener(target, SVG_EVENT_MOUSEOVER, l, false);
 
-        target.addEventListener(SVG_EVENT_MOUSEOUT,
-                                new CursorMouseOutListener(ctx.getUserAgent()),
-                                false);
+        l = new CursorMouseOutListener(ctx.getUserAgent());
+        target.addEventListener(SVG_EVENT_MOUSEOUT, l, false);
+        ctx.storeEventListener(target, SVG_EVENT_MOUSEOUT, l, false);
     }
 
     /**
