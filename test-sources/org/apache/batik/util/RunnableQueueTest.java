@@ -20,6 +20,8 @@ public class RunnableQueueTest extends AbstractTest {
 
     public int nThreads;
     public int activeThreads;
+    public Random rand;
+    public RunnableQueue rq;
 
     /**
      * Constructor
@@ -43,32 +45,61 @@ public class RunnableQueueTest extends AbstractTest {
      * of the test's internal operation fails.
      */
     public TestReport runImpl() throws Exception {
-        RunnableQueue rq = RunnableQueue.createRunnableQueue();
+        rq = RunnableQueue.createRunnableQueue();
 
         List l = new ArrayList(nThreads);
-        Random rand = new Random(2345);
+        rand = new Random(2345);
+
+        // Two switch flickers to make things interesting...
+        l.add(new SwitchFlicker());
+        l.add(new SwitchFlicker());
+
         for (int i=0; i<nThreads; i++) {
-            Runnable rqRable = new RQRable(i, rand.nextInt(50));
+            Runnable rqRable = new RQRable(i, rand.nextInt(50)+1);
             l.add(new TPRable(rq, i, rand.nextBoolean(),
-                              rand.nextInt(1000), 20, rqRable));
+                              rand.nextInt(500)+1, 20, rqRable));
         }
+
         synchronized (this) {
             ThreadPounder tp = new ThreadPounder(l);
             tp.start();
             activeThreads = nThreads;
             while (activeThreads != 0) {
-                rq.suspendExecution();
-                System.out.println("Suspended");
-                wait(rand.nextInt(100));
-                if (activeThreads == 0) break;
-                System.out.println("Resuming");
-                rq.resumeExecution();
-                wait(rand.nextInt(500));
+                wait();
             }
         }
 
         System.exit(0);
         return null;
+    }
+
+    public class SwitchFlicker implements Runnable {
+        public void run() {
+            boolean suspendp, waitp;
+            int time;
+            while (true) {
+                try {
+                    synchronized (rand) {
+                        suspendp = rand.nextBoolean();
+                        waitp = rand.nextBoolean();
+                        time  = rand.nextInt(500);
+                    }
+                    if (suspendp) {
+                        // 1/2 of the time suspend, 1/2 time wait, 1/2 the
+                        // time don't
+                        rq.suspendExecution(waitp);
+                        System.out.println("Suspended - " + 
+                                           (waitp?"Wait":"Later"));
+                        Thread.sleep(time/10);
+                    } else {
+                        // 1/2 the time resume
+                        rq.resumeExecution();
+                        System.out.println("Resumed");
+                        Thread.sleep(time);
+                    }
+                } catch(InterruptedException ie) { }
+            }
+        }
     }
 
     public class TPRable implements Runnable {
