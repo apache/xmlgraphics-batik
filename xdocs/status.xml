@@ -46,10 +46,10 @@
             static and dynamic SVG tests separately.
             </p>
            <p>
-            Static ratings : passed: 88, close: 2, not at all: 4 (Total: 90/94)
+            Static ratings : passed: 91, not passed: 3 (Total: 91/94)
            </p>
            <p>
-            Dynamic ratings : passed: 5, not at all: 27 (Total: 5/32)
+            Dynamic ratings : passed: 5, not passed 27 (Total: 5/32)
            </p>
         </s1>
 
@@ -412,10 +412,22 @@
 	      <td >text-altGlyph-BE-07.svg</td>
 	      <td >&nbsp;</td>
 	    </tr>
+
+	    <tr>
+	      <td >text-i18n-BE-09.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+
 	    <tr>
 	      <td >text-alignment-BE-10.svg</td>
 	      <td >&nbsp;</td>
 	    </tr>
+
+	    <tr>
+	      <td >text-alignment-BE-11.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+
 	    <tr>
 	      <td >text-selection-BE-13.svg</td>
 	      <td >&nbsp;</td>
@@ -484,22 +496,12 @@
 
     <s1 title="Tests Not Passed by Batik">
        <s2 title="Static">
-        <p><em>Close, but not quite</em></p>
-        
         <table>
-
 	    <tr>
 	      <td >text-decoration-BE-12.svg</td>
-	      <td >Underline stroke not inherited independent of glyph stroke.</td>
+	      <td >Issue with underline inheritance.</td>
 	    </tr>
-	    <tr>
-	      <td >text-i18n-BE-09.svg</td>
-	      <td >Contains vertical layout, which is not yet supported.  Depends on installed system fonts.</td>
-	    </tr>
-        </table>
 
-        <p><em>Not at all</em></p>
-        <table>
 	    <tr>
 	      <td >extend-multiNS-BE-01.svg</td>
 	      <td >&nbsp;</td>
@@ -511,10 +513,6 @@
 	      <td >&nbsp;</td>
 	    </tr>
 
-	    <tr>
-	      <td >text-alignment-BE-11.svg</td>
-	      <td >Numeric and relative baseline shifts not implemented.</td>
-	    </tr>
         </table>
     </s2>
 
