@@ -180,8 +180,10 @@ public class ExtendedRhinoInterpreter extends RhinoIntepreter {
         super(); // build RhinoInterpreter
         final String[] names = { "print" }
         try {
-            getGlobalObject().defineFunctionProperties(names, ExtendedRhinoIntepreter.class,
-                                                       ScriptableObject.DONTENUM);
+            getGlobalObject().
+	            defineFunctionProperties(names, 
+	                          ExtendedRhinoIntepreter.class,
+                                  ScriptableObject.DONTENUM);
         } catch (PropertyException e) {
             throw new Error(e.getMessage());
         }
@@ -193,7 +195,8 @@ public class ExtendedRhinoInterpreter extends RhinoIntepreter {
             if (i &gt; 0)
                 System.out.print(" ");
 	    
-            // Convert the arbitrary JavaScript value into a string form.
+            // Convert the arbitrary JavaScript value into 
+            // a string form.
             String s = Context.toString(args[i]);
 	    
             System.out.print(s);
@@ -202,12 +205,13 @@ public class ExtendedRhinoInterpreter extends RhinoIntepreter {
     }
 }</source>
            <p>
-	   Now, you should tell to Batik to use this interpreter instead of the default.
+	   Now, you should tell to Batik to use this interpreter instead of the default one.
 	   For that, you should first define a factory to create instances of your interpreter.
 	   </p>
 	   <source>
 
-public class ExtendedRhinoInterpreterFactory implements InterpreterFactory {
+public class ExtendedRhinoInterpreterFactory 
+  implements InterpreterFactory {
     public Interpreter createInterpreter() {
         return new ExtendedRhinoInterpreter();
     }
@@ -221,7 +225,8 @@ public class ExtendedRhinoInterpreterFactory implements InterpreterFactory {
 org.apache.batik.bridge BridgeContext ctx = ...;
 org.apache.batik.script.InterpreterPool pool =
     new org.apache.batik.scriptInterpreterPool();
-pool.putInterpreterFactory("text/ecmascript", new ExtendedRhinoInterpreterFactory());
+pool.putInterpreterFactory("text/ecmascript", 
+                           new ExtendedRhinoInterpreterFactory());
 ctx.setIntepreterPool(pool);</source>
            <p>
 	   For example if you are using the Batik SVGBrowser application you should be able to use
