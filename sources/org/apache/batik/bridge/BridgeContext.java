@@ -452,6 +452,21 @@ public class BridgeContext implements SVGConstants {
     }
 
     /**
+     * Returns the bridge associated with the element type
+     * @param nameSpaceURI namespace of the requested element
+     * @param localName element's local name
+     *
+     */
+    public Bridge getBridge(String namespaceURI,
+                            String localName){
+        HashMap localNameMap = (HashMap) namespaceURIMap.get(namespaceURI);
+        if (localNameMap == null) {
+            return null;
+        }
+        return (Bridge)localNameMap.get(localName);
+    }
+
+    /**
      * Associates the specified <tt>Bridge</tt> object with the specified
      * namespace URI and local name.
      * @param namespaceURI the namespace URI
@@ -529,6 +544,10 @@ public class BridgeContext implements SVGConstants {
         ctx.putBridge(SVG_NAMESPACE_URI,
                       SVG_CLIP_PATH_TAG,
                       new SVGClipPathElementBridge());
+
+        ctx.putBridge(SVG_NAMESPACE_URI,
+                      SVG_COLOR_PROFILE_TAG,
+                      new SVGColorProfileElementBridge());
 
         ctx.putBridge(SVG_NAMESPACE_URI,
                       SVG_ELLIPSE_TAG,

@@ -15,6 +15,7 @@ import java.awt.Composite;
 import java.awt.Paint;
 import java.awt.Shape;
 import java.awt.Stroke;
+import java.awt.color.ICC_ColorSpace;
 import java.awt.geom.Rectangle2D;
 
 import java.net.MalformedURLException;
@@ -38,6 +39,7 @@ import org.apache.batik.gvt.ShapePainter;
 import org.apache.batik.gvt.StrokeShapePainter;
 import org.apache.batik.ext.awt.image.renderable.Clip;
 import org.apache.batik.ext.awt.image.renderable.Filter;
+import org.apache.batik.ext.awt.color.ICCColorSpaceExt;
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
 import org.apache.batik.gvt.filter.Mask;
 import org.apache.batik.bridge.resources.Messages;
@@ -48,6 +50,7 @@ import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.UnitProcessor;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.css.CSSPrimitiveValue;
@@ -56,9 +59,11 @@ import org.w3c.dom.css.CSSValue;
 import org.w3c.dom.css.CSSValueList;
 import org.w3c.dom.css.RGBColor;
 import org.w3c.dom.css.ViewCSS;
+import org.w3c.dom.svg.SVGICCColor;
 import org.w3c.dom.svg.SVGColor;
 import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.svg.SVGElement;
+import org.w3c.dom.svg.SVGNumberList;
 import org.w3c.dom.svg.SVGPaint;
 
 /**
@@ -473,6 +478,25 @@ public class CSSUtilities implements SVGConstants {
                                              CSSStyleDeclaration decl,
                                              UnitProcessor.Context uctx) {
         CSSValue val = decl.getPropertyCSSValue(CSS_STROKE_PROPERTY);
+        CSSPrimitiveValue vv = (CSSPrimitiveValue)decl.getPropertyCSSValue
+            (CSS_STROKE_OPACITY_PROPERTY);
+        float opacity = convertOpacity(vv);
+
+        return convertPaintDefinitionToPaint(element, node, ctx, decl, uctx,
+                                             val, opacity, true);
+    }
+
+    /**
+     * @param val the value of the Paint definition property
+     * @param opacity opacity associated with the paint definition
+     */
+    public static Paint convertPaintDefinitionToPaint(SVGElement element,
+                                                      GraphicsNode node,
+                                                      BridgeContext ctx,
+                                                      CSSStyleDeclaration decl,
+                                                      UnitProcessor.Context uctx,
+                                                      CSSValue val, float opacity,
+                                                      boolean isStroke){
 
         if (val.getCssValueType() == CSSValue.CSS_PRIMITIVE_VALUE) {
             CSSPrimitiveValue v = (CSSPrimitiveValue)val;
@@ -482,34 +506,175 @@ public class CSSUtilities implements SVGConstants {
                 return null; // 'stroke:none'
 
             case CSSPrimitiveValue.CSS_RGBCOLOR:
-                CSSPrimitiveValue vv = (CSSPrimitiveValue)decl.getPropertyCSSValue
-                    (CSS_STROKE_OPACITY_PROPERTY);
-                float opacity = convertOpacity(vv);
                 return convertColor(v.getRGBColorValue(), opacity);
             case CSSPrimitiveValue.CSS_URI:
                 return convertURIToPaint(element, node, ctx, decl,
-                                         uctx, v.getStringValue());
+                                         uctx, v.getStringValue(), isStroke);
             default:
                 throw new Error(); // can't be reached
             }
         } else { // SVGPaint
             SVGPaint p = (SVGPaint)val;
+            Paint paint = null;
 
             switch (p.getPaintType()) {
             case SVGPaint.SVG_PAINTTYPE_RGBCOLOR_ICCCOLOR:
-                throw new InternalError("!!! TODO SVG_PAINTTYPE_RGBCOLOR_ICCCOLOR");
+                return convertRGBICCColor(element, p, opacity, ctx);
+
             case SVGPaint.SVG_PAINTTYPE_URI_NONE:
-                throw new InternalError("!!! TODO SVG_PAINTTYPE_URI_NONE");
+                // If silentConvertURIPaint returns null, this
+                // will return null, hence be equivalent to a 
+                // value of none.
+                return silentConvertURIPaint(element, node, ctx, decl, 
+                                             uctx, p, opacity, isStroke);
+                
             case SVGPaint.SVG_PAINTTYPE_URI_CURRENTCOLOR:
-                throw new InternalError("!!! TODO SVG_PAINTTYPE_URI_CURRENTCOLOR");
+                paint = silentConvertURIPaint(element, node, ctx, decl, 
+                                              uctx, p, opacity, isStroke);
+                if(paint == null){
+                    CSSValue vvv = decl.getPropertyCSSValue(CSS_COLOR_PROPERTY);
+                    paint = convertColor(((CSSPrimitiveValue)vvv).getRGBColorValue(), opacity);
+                }
+                return paint;
+
             case SVGPaint.SVG_PAINTTYPE_URI_RGBCOLOR:
-                throw new InternalError("!!! TODO SVG_PAINTTYPE_URI_RGBCOLOR");
+                paint = silentConvertURIPaint(element, node, ctx, decl, 
+                                              uctx, p, opacity, isStroke);
+                if(paint == null){
+                    // Could not convert paint, fall back to RGB color definition
+                    paint = convertColor(p.getRGBColor(), opacity);
+                }
+                return paint;
             case SVGPaint.SVG_PAINTTYPE_URI_RGBCOLOR_ICCCOLOR:
-                throw new InternalError("!!! TODO SVG_PAINTTYPE_URI_RGBCOLOR_ICCCOLOR");
+                paint = silentConvertURIPaint(element, node, ctx, decl,
+                                              uctx, p, opacity, isStroke);
+                if(paint == null){
+                    paint = convertRGBICCColor(element, p, opacity, ctx);
+                }
+                return paint;
             default:
                 throw new Error(); // can't be reached
             }
         }
+    }
+
+    /**
+     * Converts the input Paint using it's URI. If the Paint cannot be converted, for
+     * any reason, this returns null and does not throw any exception
+     */
+    public static Paint silentConvertURIPaint(SVGElement e, GraphicsNode node, BridgeContext ctx, 
+                                              CSSStyleDeclaration decl, UnitProcessor.Context uctx, SVGPaint p, 
+                                              float opacity, boolean isStroke){
+        Paint paint = null;
+        try{
+            paint = convertURIToPaint(e, node, ctx, decl, uctx, p.getUri(), isStroke);
+        }catch(Exception ex){
+            // Could not convert paint. Jus return null
+        }
+
+        return paint;
+    }
+
+    /**
+     * Returns a Color object that corresponds to the input Paint's ICC
+     * color value or null if the  related color profile could not be used or loaded for any
+     * reason.
+     */
+    public static Color convertRGBICCColor(Element e, SVGColor p, 
+                                           float opacity,
+                                           BridgeContext ctx){
+        SVGICCColor iccColor = p.getICCColor();
+        Color color = null;
+        if(iccColor != null){
+            color = convertICCColor(e, iccColor, opacity, ctx);
+        }
+
+        if(color == null){
+            color = convertColor(p.getRGBColor(), opacity);
+        }
+
+        return color;
+    }
+
+    /**
+     * Returns a Color object that corresponds to the input Paint's ICC
+     * color value or null if the  related color profile could not be used or loaded for any
+     * reason.
+     */
+    public static Color convertICCColor(Element e, SVGICCColor c, 
+                                        float opacity,
+                                        BridgeContext ctx){
+        // 
+        // Get ICC Profile's name
+        //
+        String iccProfileName = c.getColorProfile();
+        if(iccProfileName == null){
+            return null;
+        }
+
+        //
+        // Now, ask the bridge to map the ICC profile name
+        // to an ICC_Profile object
+        //
+        SVGColorProfileElementBridge profileBridge =
+            (SVGColorProfileElementBridge)
+            ctx.getBridge(SVG_NAMESPACE_URI,
+                          SVG_COLOR_PROFILE_TAG);
+
+        if(profileBridge == null){
+            return null;
+        }
+
+        ICCColorSpaceExt profileCS
+            = profileBridge.build(iccProfileName,
+                                  ctx, e);
+
+        if(profileCS == null){
+            return null;
+        }
+
+        //
+        // Now, convert the colors to an array of floats
+        //
+        float[] colorValue 
+            = convertSVGNumberList(c.getColors());
+        
+        if(colorValue == null){
+            return null;
+        }
+
+        for(int i=0; i<colorValue.length; i++){
+            System.out.println("colorValue[" + i + "] = " + colorValue[i]);
+            // colorValue[i] /= 255f;
+        }
+
+        System.out.println("opacity : " + opacity);
+
+        // Convert values to RGB
+        float rgb[] = profileCS.intendedToRGB(colorValue);
+        for(int i=0; i<colorValue.length; i++){
+            System.out.println("rgb[" + i + "] = " + rgb[i]);
+        }
+
+        return new Color(rgb[0], rgb[1], rgb[2], opacity);
+    }
+
+    /**
+     * Converts an SVGNumberList into a float array
+     */
+    public static float[] convertSVGNumberList(SVGNumberList l){
+        int n = l.getNumberOfItems();
+        float fl[] = new float[n];
+        try{
+            for(int i=0; i<n; i++){
+                fl[i] = l.getItem(i).getValue();
+            }
+        }catch(DOMException e){
+            e.printStackTrace();
+            fl = null;
+        }
+        
+        return fl;
     }
 
     /**
@@ -660,7 +825,7 @@ public class CSSUtilities implements SVGConstants {
                                           BridgeContext ctx,
                                           CSSStyleDeclaration decl,
                                           UnitProcessor.Context uctx,
-                                          String uri){
+                                          String uri, boolean isStroke){
 
         URIResolver ur =
             new URIResolver((SVGDocument)svgElement.getOwnerDocument(),
@@ -684,10 +849,19 @@ public class CSSUtilities implements SVGConstants {
         }
         PaintBridge paintBridge = (PaintBridge)bridge;
         SVGOMDocument doc = (SVGOMDocument)paintElement.getOwnerDocument();
-        Paint paint = paintBridge.createStrokePaint(ctx,
-                                                    node,
-                                                    svgElement,
-                                                    paintElement);
+        Paint paint = null;
+        if(isStroke){
+            paint = paintBridge.createStrokePaint(ctx,
+                                                  node,
+                                                  svgElement,
+                                                  paintElement);
+        }
+        else{
+            paint = paintBridge.createFillPaint(ctx,
+                                                node,
+                                                svgElement,
+                                                paintElement);
+        }            
         return paint;
     }
 
@@ -703,42 +877,13 @@ public class CSSUtilities implements SVGConstants {
                                            UnitProcessor.Context uctx) {
 
         CSSValue val = decl.getPropertyCSSValue(CSS_FILL_PROPERTY);
-
-        if (val.getCssValueType() == CSSValue.CSS_PRIMITIVE_VALUE) {
-            CSSPrimitiveValue v = (CSSPrimitiveValue)val;
-            switch(v.getPrimitiveType()) {
-            case CSSPrimitiveValue.CSS_IDENT:
-                return null; // fill:'none'
-            case CSSPrimitiveValue.CSS_RGBCOLOR:
-                CSSPrimitiveValue vv =
-                    (CSSPrimitiveValue)decl.getPropertyCSSValue
-                    (CSS_FILL_OPACITY_PROPERTY);
-                float opacity = convertOpacity(vv);
-                return convertColor(v.getRGBColorValue(), opacity);
-            case CSSPrimitiveValue.CSS_URI:
-                return convertURIToPaint(element, node, ctx,
-                                         decl, uctx, v.getStringValue());
-            default:
-                throw new Error(); // can't be reached
-            }
-        } else { // SVGPaint
-            SVGPaint p = (SVGPaint)val;
-
-            switch (p.getPaintType()) {
-            case SVGPaint.SVG_PAINTTYPE_RGBCOLOR_ICCCOLOR:
-                throw new InternalError("!!! TODO SVG_PAINTTYPE_RGBCOLOR_ICCCOLOR");
-            case SVGPaint.SVG_PAINTTYPE_URI_NONE:
-                throw new InternalError("!!! TODO SVG_PAINTTYPE_URI_NONE");
-            case SVGPaint.SVG_PAINTTYPE_URI_CURRENTCOLOR:
-                throw new InternalError("!!! TODO SVG_PAINTTYPE_URI_CURRENTCOLOR");
-            case SVGPaint.SVG_PAINTTYPE_URI_RGBCOLOR:
-                throw new InternalError("!!! TODO SVG_PAINTTYPE_URI_RGBCOLOR");
-            case SVGPaint.SVG_PAINTTYPE_URI_RGBCOLOR_ICCCOLOR:
-                throw new InternalError("!!! TODO SVG_PAINTTYPE_URI_RGBCOLOR_ICCCOLOR");
-            default:
-                throw new Error(); // can't be reached
-            }
-        }
+        CSSPrimitiveValue vv =
+            (CSSPrimitiveValue)decl.getPropertyCSSValue
+            (CSS_FILL_OPACITY_PROPERTY);
+        float opacity = convertOpacity(vv);
+        
+        return convertPaintDefinitionToPaint(element, node, ctx, decl, uctx, 
+                                             val, opacity, false);
     }
 
     /**
@@ -810,18 +955,21 @@ public class CSSUtilities implements SVGConstants {
      * Element using the specified context and css style declaration.
      * @param decl the css style declaration
      */
-    public static Color convertFloodColorToPaint(CSSStyleDeclaration decl) {
+    public static Color convertFloodColorToPaint(Element e, CSSStyleDeclaration decl,
+                                                 BridgeContext ctx) {
         CSSValue val = decl.getPropertyCSSValue(CSS_FLOOD_COLOR_PROPERTY);
+        CSSPrimitiveValue vv =
+            (CSSPrimitiveValue)decl.getPropertyCSSValue(CSS_FLOOD_OPACITY_PROPERTY);
+        float opacity = convertOpacity(vv);
 
         if (val.getCssValueType() == CSSValue.CSS_PRIMITIVE_VALUE) {
             CSSPrimitiveValue v = (CSSPrimitiveValue)val;
-            CSSPrimitiveValue vv =
-                (CSSPrimitiveValue)decl.getPropertyCSSValue(CSS_FLOOD_OPACITY_PROPERTY);
-            float opacity = convertOpacity(vv);
             return convertColor(v.getRGBColorValue(), opacity);
         } else { // SVGColor
             SVGColor c = (SVGColor)val;
-            throw new InternalError("!!! TODO: SVG_COLORTYPE_RGBCOLOR_ICCCOLOR");
+            return convertRGBICCColor(e, c, 
+                                      opacity, ctx);
+                                      
         }
     }
 
@@ -830,7 +978,8 @@ public class CSSUtilities implements SVGConstants {
      * attribute.
      * @param decl the css style declaration
      */
-    public static Color convertLightingColor(CSSStyleDeclaration decl) {
+    public static Color convertLightingColor(Element e, CSSStyleDeclaration decl,
+                                             BridgeContext ctx) {
         CSSValue val = decl.getPropertyCSSValue(CSS_LIGHTING_COLOR_PROPERTY);
 
         if (val.getCssValueType() == CSSValue.CSS_PRIMITIVE_VALUE) {
@@ -838,7 +987,9 @@ public class CSSUtilities implements SVGConstants {
             return convertColor(v.getRGBColorValue(), 1);
         } else { // SVGPaint
             SVGColor c = (SVGColor)val;
-            throw new InternalError("!!! TODO: SVG_COLORTYPE_RGBCOLOR_ICCCOLOR");
+            return convertRGBICCColor(e, c, 
+                                      1, ctx);
+                                      
         }
     }
 
@@ -847,18 +998,20 @@ public class CSSUtilities implements SVGConstants {
      * attributes.
      * @param decl the css style declaration
      */
-    public static Color convertStopColorToPaint(CSSStyleDeclaration decl) {
+    public static Color convertStopColorToPaint(Element e, CSSStyleDeclaration decl, 
+                                                float extraOpacity, BridgeContext ctx) {
         CSSValue val = decl.getPropertyCSSValue(CSS_STOP_COLOR_PROPERTY);
+        CSSPrimitiveValue vv =
+            (CSSPrimitiveValue)decl.getPropertyCSSValue(CSS_STOP_OPACITY_PROPERTY);
+        float opacity = extraOpacity*convertOpacity(vv);
 
         if (val.getCssValueType() == CSSValue.CSS_PRIMITIVE_VALUE) {
             CSSPrimitiveValue v = (CSSPrimitiveValue)val;
-            CSSPrimitiveValue vv =
-                (CSSPrimitiveValue)decl.getPropertyCSSValue(CSS_STOP_OPACITY_PROPERTY);
-            float opacity = convertOpacity(vv);
             return convertColor(v.getRGBColorValue(), opacity);
         } else { // SVGColor
             SVGColor c = (SVGColor)val;
-            throw new InternalError("!!! TODO: SVG_COLORTYPE_RGBCOLOR_ICCCOLOR");
+            return convertRGBICCColor(e, c, 
+                                      opacity, ctx);
         }
     }
 

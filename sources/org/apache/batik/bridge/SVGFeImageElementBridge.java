@@ -113,7 +113,7 @@ public class SVGFeImageElementBridge implements FilterPrimitiveBridge,
 
         Filter filter = null;
         if (uriStr.startsWith(PROTOCOL_DATA)) {
-            filter = RasterRable.create(uriStr, null);
+            filter = RasterRable.create(uriStr, null, null);
         } else {
             SVGDocument svgDoc;
             svgDoc = (SVGDocument)filterElement.getOwnerDocument();
@@ -177,7 +177,7 @@ public class SVGFeImageElementBridge implements FilterPrimitiveBridge,
                 // so that we have the same behavior as raster images
                 // in the <image> element.
                 //
-                filter = RasterRable.create(url, null);
+                filter = RasterRable.create(url, null, null);
 
                 Rectangle2D bounds = filter.getBounds2D();
                 AffineTransform scale = new AffineTransform();

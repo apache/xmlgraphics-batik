@@ -8,7 +8,7 @@
 
 package org.apache.batik.ext.awt.image.renderable;
 
-import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
 
 import java.net.URL;
 
@@ -21,7 +21,7 @@ import java.lang.ref.SoftReference;
  * This class manages a cache of soft references to Images that
  * we have already loaded.  Adding an image is two fold.
  * First you add the URL, this lets the cache know that someone is
- * working on this URL.  Then when the completed BufferedImage is
+ * working on this URL.  Then when the completed RenderedImage is
  * ready you put it into the cache.<P>
  *
  * If someone requests a URL after it has been added but before it has
@@ -54,7 +54,7 @@ public class URLImageCache {
     }
 
     /**
-     * Check if <tt>request(url)</tt> will return with a BufferedImage
+     * Check if <tt>request(url)</tt> will return with a RenderedImage
      * (not putting you on the hook for it).  Note that it is possible
      * that this will return true but between this call and the call
      * to request the soft-reference will be cleared.  So it
@@ -84,7 +84,7 @@ public class URLImageCache {
 
     /**
      * Check if <tt>request(url)</tt> will return immediately with the
-     * BufferedImage.  Note that it is possible that this will return
+     * RenderedImage.  Note that it is possible that this will return
      * true but between this call and the call to request the
      * soft-reference will be cleared.
      */
@@ -103,9 +103,9 @@ public class URLImageCache {
 
     /**
      * If this returns null then you are now 'on the hook'.
-     * to put the BufferedImage associated with URL into the
+     * to put the RenderedImage associated with URL into the
      * cache.  */
-    public synchronized BufferedImage request(URL url) {
+    public synchronized RenderedImage request(URL url) {
         if (map.containsKey(url)) {
 
             Object o = map.get(url);
@@ -128,7 +128,7 @@ public class URLImageCache {
                 SoftReference sr = (SoftReference)o;
                 o = sr.get();
                 if (o != null)
-                    return (BufferedImage)o;
+                    return (RenderedImage)o;
             }
         }
 
@@ -154,7 +154,7 @@ public class URLImageCache {
      * probably cleared or flushed since we were put on the hook
      * for it, so in that case we will do nothing.
      */
-    public synchronized void put(URL url, BufferedImage bi) {
+    public synchronized void put(URL url, RenderedImage bi) {
         if (map.containsKey(url)) {
             SoftReference ref = new SoftReference(bi);
             map.put(url, ref);

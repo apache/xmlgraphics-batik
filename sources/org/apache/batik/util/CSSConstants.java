@@ -24,6 +24,7 @@ public interface CSSConstants {
     String CSS_CLIP_PROPERTY = "clip";
     String CSS_CLIP_PATH_PROPERTY = "clip-path";
     String CSS_CLIP_RULE_PROPERTY = "clip-rule";
+    String CSS_COLOR_PROFILE_PROPERTY = "color-profile";
     String CSS_COLOR_PROPERTY = "color";
     String CSS_COLOR_INTERPOLATION_PROPERTY = "color-interpolation";
     String CSS_COLOR_RENDERING_PROPERTY = "color-rendering";

@@ -49,7 +49,8 @@ public class SVGLinearGradientBridge extends SVGGradientBridge
                                    GraphicsNode paintedNode,
                                    Element paintedElement,
                                    Element paintElement){
-        return createPaint(ctx, paintedNode, paintedElement, paintElement);
+        return createPaint(ctx, paintedNode, paintedElement, 
+                           paintElement, CSS_STROKE_OPACITY_PROPERTY);
     }
 
     /**
@@ -64,13 +65,15 @@ public class SVGLinearGradientBridge extends SVGGradientBridge
                                  GraphicsNode paintedNode,
                                  Element paintedElement,
                                  Element paintElement){
-        return createPaint(ctx, paintedNode, paintedElement, paintElement);
+        return createPaint(ctx, paintedNode, paintedElement, 
+                           paintElement, CSS_FILL_OPACITY_PROPERTY);
     }
 
     protected Paint createPaint(BridgeContext ctx,
                                 GraphicsNode paintedNode,
                                 Element paintedElement,
-                                Element paintElement) {
+                                Element paintElement,
+                                String paintOpacityProperty) {
 
         GraphicsNodeRenderContext rc =
                          ctx.getGraphicsNodeRenderContext();
@@ -187,8 +190,14 @@ public class SVGLinearGradientBridge extends SVGGradientBridge
                                                   rc,
                                                   unitsType);
 
-        // Extract stop colors and intervals
-        Vector stopVector = extractGradientStops(paintElement, ctx);
+        // Extract stop colors and intervals. To do this, we need
+        // to first compute the paint opacity
+        CSSStyleDeclaration paintedCssDecl
+            = CSSUtilities.getComputedStyle(paintedElement);
+        CSSPrimitiveValue v =
+            (CSSPrimitiveValue)paintedCssDecl.getPropertyCSSValue(paintOpacityProperty);
+        float opacity = CSSUtilities.convertOpacity(v);
+        Vector stopVector = extractGradientStops(paintElement, ctx, opacity);
 
         // if no stop, fill is 'none'
         if (stopVector.size() == 0) {

@@ -154,6 +154,7 @@ public interface SVGConstants extends CSSConstants {
     String ATTR_MEDIA = "media";
     String ATTR_METHOD = "method";
     String SVG_MODE_ATTRIBUTE = "mode";
+    String SVG_NAME_ATTRIBUTE = "name";
     String SVG_NUM_OCTAVES_ATTRIBUTE = "numOctaves";
     String SVG_OFFSET_ATTRIBUTE = "offset";
     String ATTR_OPACITY = CSS_OPACITY_PROPERTY;
@@ -176,6 +177,7 @@ public interface SVGConstants extends CSSConstants {
     String ATTR_RADIUS = "radius";
     String SVG_REFX_ATTRIBUTE = "refX";
     String SVG_REFY_ATTRIBUTE = "refY";
+    String SVG_RENDERING_INTENT_ATTRIBUTE = "rendering-intent";
     String ATTR_RESULT = "result";
     String ATTR_RESULT_SCALE = "resultScale";
     String SVG_RX_ATTRIBUTE = "rx";
@@ -311,6 +313,11 @@ public interface SVGConstants extends CSSConstants {
     String SVG_SCREEN_VALUE = "screen";
     String VALUE_ADJUST_SPACING = "spacing";
     String VALUE_ADJUST_SPACINGANDGLYPHS = "spacingAndGlyphs";
+    String VALUE_RENDERING_INTENT_AUTO_VALUE = "auto";
+    String VALUE_RENDERING_INTENT_PERCEPTUAL_VALUE = "perceptual";
+    String VALUE_RENDERING_INTENT_RELATIVE_COLORIMETRIC_VALUE = "relative-colorimetric";
+    String VALUE_RENDERING_INTENT_SATURATION_VALUE = "saturation";
+    String VALUE_RENDERING_INTENT_ABSOLUTE_COLORIMETRIC_VALUE = "absolute-colorimetric";
     String VALUE_SOURCE_GRAPHIC = "SourceGraphic";
     String VALUE_SRGB = "sRGB";
     String VALUE_START = "start";
