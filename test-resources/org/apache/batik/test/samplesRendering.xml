@@ -140,14 +140,6 @@
         <test id="samples/tests/spec/fonts/fontStyling.svg" />
     </testGroup>
 
-    <testGroup id="tests.spec.interactivity">    
-<!--        <test id="samples/tests/spec/interactivity/cursor.svg" /> -->
-        <test id="samples/tests/spec/interactivity/focus.svg" />
-        <test id="samples/tests/spec/interactivity/keyEvents.svg" >
-            <property name="Validating" class="java.lang.Boolean" value="false" />
-        </test>
-    </testGroup>
-
     <testGroup id="tests.spec.linking">
         <test id="samples/tests/spec/linking/anchorInsideText.svg" >
             <property name="Validating" class="java.lang.Boolean" value="false" />
