@@ -35,8 +35,8 @@ import org.apache.batik.bridge.CSSUtilities;
 import org.apache.batik.bridge.SVGImageElementBridge;
 import org.apache.batik.bridge.SVGUtilities;
 import org.apache.batik.bridge.Viewport;
-import org.apache.batik.dom.AbstractNode;
 import org.apache.batik.dom.svg.SVGOMElement;
+import org.apache.batik.dom.svg.XMLBaseSupport;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.ImageNode;
@@ -288,7 +288,7 @@ public class SVGMultiImageElementBridge extends SVGImageElementBridge {
             throw new BridgeException(e, ERR_ATTRIBUTE_MISSING,
                                       new Object[] {"xlink:href"});
         }
-        String baseURI = AbstractNode.getBaseURI(e);
+        String baseURI = XMLBaseSupport.getCascadedXMLBase(e);
         ParsedURL purl;
         if (baseURI == null) purl = new ParsedURL(uriStr);
         else                 purl = new ParsedURL(baseURI, uriStr);

@@ -17,8 +17,6 @@
  */
 package org.apache.batik.dom.events;
 
-import java.util.HashSet;
-
 import org.w3c.dom.events.EventTarget;
 import org.w3c.dom.events.MouseEvent;
 import org.w3c.dom.views.AbstractView;
@@ -29,9 +27,7 @@ import org.w3c.dom.views.AbstractView;
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  */
-public class DOMMouseEvent
-        extends DOMUIEvent
-        implements org.apache.batik.dom.dom3.events.MouseEvent {
+public class DOMMouseEvent extends DOMUIEvent implements MouseEvent {
 
     private int screenX; 
     private int screenY; 
@@ -43,11 +39,6 @@ public class DOMMouseEvent
     private boolean metaKey; 
     private short button; 
     private EventTarget relatedTarget;
-
-    /**
-     * The modifier keys in effect at the time of the event.
-     */
-    protected HashSet modifierKeys;
 
     /**
      * DOM: <code>screenX</code> indicates the horizontal coordinate
@@ -90,7 +81,7 @@ public class DOMMouseEvent
      * depressed during the firing of the event.  
      */
     public boolean getCtrlKey() {
-        return modifierKeys.contains(DOMKeyboardEvent.KEY_CONTROL);
+	return ctrlKey;
     }
 
     /**
@@ -98,7 +89,7 @@ public class DOMMouseEvent
      * was depressed during the firing of the event. 
      */
     public boolean getShiftKey() {
-        return modifierKeys.contains(DOMKeyboardEvent.KEY_SHIFT);
+	return shiftKey;
     }
 
     /**
@@ -107,7 +98,7 @@ public class DOMMouseEvent
      * this key may map to an alternative key name.  
      */
     public boolean getAltKey() {
-        return modifierKeys.contains(DOMKeyboardEvent.KEY_ALT);
+	return altKey;
     }
 
     /**
@@ -116,7 +107,7 @@ public class DOMMouseEvent
      * this key may map to an alternative key name. 
      */
     public boolean getMetaKey() {
-        return modifierKeys.contains(DOMKeyboardEvent.KEY_META);
+	return metaKey;
     }
 
     /**
@@ -143,14 +134,6 @@ public class DOMMouseEvent
      */
     public EventTarget getRelatedTarget() {
 	return relatedTarget;
-    }
-
-    /**
-     * <b>DOM</b>: Returns whether the given modifier key was pressed at the
-     * time of the event.
-     */
-    public boolean getModifierState(String keyIdentifierArg) {
-        return modifierKeys.contains(keyIdentifierArg);
     }
 
     /**
@@ -213,40 +196,5 @@ public class DOMMouseEvent
 	this.metaKey = metaKeyArg; 
 	this.button = buttonArg;  
 	this.relatedTarget = relatedTargetArg;
-    }
-
-    /**
-     * <b>DOM</b>: Initializes this event object.
-     */
-    public void initMouseEventNS(String namespaceURIArg,
-                                 String typeArg,
-                                 boolean canBubbleArg, 
-                                 boolean cancelableArg, 
-                                 AbstractView viewArg, 
-                                 int detailArg, 
-                                 int screenXArg, 
-                                 int screenYArg, 
-                                 int clientXArg, 
-                                 int clientYArg, 
-                                 short buttonArg,
-                                 EventTarget relatedTargetArg,
-                                 String modifiersList) {
-        initUIEventNS(namespaceURIArg,
-                      typeArg,
-                      canBubbleArg,
-                      cancelableArg, 
-                      viewArg,
-                      detailArg);
-        screenX = screenXArg;
-        screenY = screenYArg; 
-        clientX = clientXArg; 
-        clientY = clientYArg; 
-        button = buttonArg;  
-        relatedTarget = relatedTargetArg;
-        modifierKeys = new HashSet();
-        String[] modifiers = split(modifiersList);
-        for (int i = 0; i < modifiers.length; i++) {
-            modifierKeys.add(modifiers[i]);
-        }
     }
 }

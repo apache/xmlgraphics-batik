@@ -114,7 +114,7 @@ public class SVGOMStyleElement
                 }
                 URL burl = null;
                 try {
-                    String bu = getBaseURI();
+                    String bu = XMLBaseSupport.getCascadedXMLBase(this);
                     if (bu != null) {
                         burl = new URL(bu);
                     }

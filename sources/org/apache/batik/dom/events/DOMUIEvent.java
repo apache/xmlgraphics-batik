@@ -17,10 +17,6 @@
  */
 package org.apache.batik.dom.events;
 
-import java.util.ArrayList;
-
-import org.apache.batik.xml.XMLUtilities;
-
 import org.w3c.dom.events.UIEvent;
 import org.w3c.dom.views.AbstractView;
 
@@ -30,9 +26,7 @@ import org.w3c.dom.views.AbstractView;
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  */
-public class DOMUIEvent
-        extends AbstractEvent
-        implements org.apache.batik.dom.dom3.events.UIEvent {
+public class DOMUIEvent extends AbstractEvent implements UIEvent {
 
     private AbstractView view;
     private int detail;
@@ -78,48 +72,5 @@ public class DOMUIEvent
 	initEvent(typeArg, canBubbleArg, cancelableArg);
 	this.view = viewArg;
 	this.detail = detailArg;
-    }
-
-    /**
-     * <b>DOM</b>: Initializes this event object.
-     */
-    public void initUIEventNS(String namespaceURIArg,
-                              String typeArg,
-                              boolean canBubbleArg, 
-                              boolean cancelableArg, 
-                              AbstractView viewArg, 
-                              int detailArg) {
-        initEventNS(namespaceURIArg, typeArg, canBubbleArg, cancelableArg);
-	this.view = viewArg;
-	this.detail = detailArg;
-    }
-
-    /**
-     * Splits a whitespace separated string into tokens.
-     */
-    protected String[] split(String s) {
-        ArrayList a = new ArrayList(8);
-        StringBuffer sb;
-        int i = 0;
-        int len = s.length();
-        while (i < len) {
-            char c = s.charAt(i++);
-            if (XMLUtilities.isXMLSpace(c)) {
-                continue;
-            }
-            sb = new StringBuffer();
-            sb.append(c);
-            while (i < len) {
-                c = s.charAt(i++);
-                if (XMLUtilities.isXMLSpace(c)) {
-                    a.add(sb.toString());
-                    break;
-                }
-            }
-            if (i == len) {
-                a.add(sb.toString());
-            }
-        }
-        return (String[]) a.toArray(new String[a.size()]);
     }
 }

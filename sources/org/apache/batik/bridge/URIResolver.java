@@ -20,8 +20,8 @@ package org.apache.batik.bridge;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
-import org.apache.batik.dom.AbstractNode;
 import org.apache.batik.dom.svg.SVGOMDocument;
+import org.apache.batik.dom.svg.XMLBaseSupport;
 import org.apache.batik.util.ParsedURL;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -92,7 +92,7 @@ public class URIResolver {
     public Node getNode(String uri, Element ref)
         throws MalformedURLException, IOException, SecurityException {
 
-        String baseURI = AbstractNode.getBaseURI(ref);
+        String baseURI = XMLBaseSupport.getCascadedXMLBase(ref);
         // System.err.println("baseURI: " + baseURI);
         // System.err.println("URI: " + uri);
         if ((baseURI == null) &&

@@ -63,7 +63,8 @@ public class GenericDOMImplementation extends AbstractDOMImplementation {
 
     /**
      * <b>DOM</b>: Implements {@link
-     * DOMImplementation#createDocument(String,String,DocumentType)}.
+     * DOMImplementation#createDocument(String,String,DocumentType)}
+.
      */
     public Document createDocument(String namespaceURI, 
                                    String qualifiedName, 

@@ -17,7 +17,6 @@
  */
 package org.apache.batik.dom;
 
-import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
 import org.w3c.dom.Notation;
 
@@ -29,8 +28,7 @@ import org.w3c.dom.Notation;
  */
 public abstract class AbstractNotation
     extends    AbstractNode
-    implements org.apache.batik.dom.dom3.Notation {
-
+    implements Notation {
     /**
      * The node name.
      */
@@ -96,12 +94,6 @@ public abstract class AbstractNotation
      */
     public void setSystemId(String id) {
 	systemId = id;
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.Node#setTextContent(String)}.
-     */
-    public void setTextContent(String s) throws DOMException {
     }
 
     /**

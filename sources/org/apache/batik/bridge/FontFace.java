@@ -31,12 +31,11 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGDocument;
 
-import org.apache.batik.dom.AbstractNode;
+import org.apache.batik.dom.svg.XMLBaseSupport;
 import org.apache.batik.gvt.font.GVTFontFamily;
 import org.apache.batik.gvt.font.GVTFontFace;
 import org.apache.batik.gvt.font.AWTFontFamily;
 import org.apache.batik.gvt.font.FontFamilyResolver;
-import org.apache.batik.util.XMLConstants;
 
 /**
  * This class represents a &lt;font-face> element or @font-face rule
@@ -149,7 +148,7 @@ public abstract class FontFace extends GVTFontFace
             pDocURL = new ParsedURL(docURL);
 
         // try to load an SVG document
-        String baseURI = AbstractNode.getBaseURI(e);
+        String baseURI = XMLBaseSupport.getCascadedXMLBase(e);
         purl = new ParsedURL(baseURI, purlStr);
         UserAgent userAgent = ctx.getUserAgent();
 
@@ -179,10 +178,10 @@ public abstract class FontFace extends GVTFontFace
             Element fontElt = ref;
             if (doc != rdoc) {
                 fontElt = (Element)doc.importNode(ref, true);
-                String base = AbstractNode.getBaseURI(ref);
+                String base = XMLBaseSupport.getCascadedXMLBase(ref);
                 Element g = doc.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
                 g.appendChild(fontElt);
-                g.setAttributeNS(XMLConstants.XML_NAMESPACE_URI,
+                g.setAttributeNS(XMLBaseSupport.XML_NAMESPACE_URI,
                                  "xml:base", base);
                 CSSUtilities.computeStyleAndURIs(ref, fontElt, purlStr);
             }

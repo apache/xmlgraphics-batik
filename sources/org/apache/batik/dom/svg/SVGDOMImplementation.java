@@ -88,6 +88,7 @@ public class SVGDOMImplementation
         return DOM_IMPLEMENTATION;
     }
 
+    
     /**
      * Creates a new SVGDOMImplementation object.
      */

@@ -36,7 +36,7 @@ import java.util.Map;
 
 import org.apache.batik.css.engine.SVGCSSEngine;
 import org.apache.batik.css.engine.value.Value;
-import org.apache.batik.dom.AbstractNode;
+import org.apache.batik.dom.svg.XMLBaseSupport;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.ext.awt.image.PadMode;
 import org.apache.batik.ext.awt.image.renderable.AffineRable8Bit;
@@ -333,7 +333,7 @@ public class CursorManager implements SVGConstants, ErrorConstants {
                                       new Object[] {"xlink:href"});
         }
 
-        String baseURI = AbstractNode.getBaseURI(cursorElement);
+        String baseURI = XMLBaseSupport.getCascadedXMLBase(cursorElement);
         ParsedURL purl;
         if (baseURI == null) {
             purl = new ParsedURL(uriStr);

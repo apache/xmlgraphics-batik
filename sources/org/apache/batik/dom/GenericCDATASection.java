@@ -27,10 +27,7 @@ import org.w3c.dom.Text;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class GenericCDATASection
-        extends AbstractText
-        implements org.apache.batik.dom.dom3.CDATASection {
-
+public class GenericCDATASection extends AbstractText implements CDATASection {
     /**
      * Is this element immutable?
      */

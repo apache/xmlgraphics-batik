@@ -213,16 +213,13 @@ public class DOMUtilities extends XMLUtilities {
      * Tests whether the given string is a valid name.
      */
     public static boolean isValidName(String s) {
-	int len = s.length();
-        if (len == 0) {
-            return false;
-        }
 	char c = s.charAt(0);
         int d = c / 32;
         int m = c % 32;
 	if ((NAME_FIRST_CHARACTER[d] & (1 << m)) == 0) {
 	    return false;
 	}
+	int len = s.length();
 	for (int i = 1; i < len; i++) {
 	    c = s.charAt(i);
 	    d = c / 32;
@@ -232,31 +229,6 @@ public class DOMUtilities extends XMLUtilities {
 	    }
 	}
 	return true;
-    }
-    
-    /**
-     * Tests whether the given string is a valid XML 1.1 name.
-     */
-    public static boolean isValidName11(String s) {
-        int len = s.length();
-        if (len == 0) {
-            return false;
-        }
-        char c = s.charAt(0);
-        int d = c / 32;
-        int m = c % 32;
-        if ((NAME11_FIRST_CHARACTER[d] & (1 << m)) == 0) {
-            return false;
-        }
-        for (int i = 1; i < len; i++) {
-            c = s.charAt(i);
-            d = c / 32;
-            m = c % 32;
-            if ((NAME11_CHARACTER[d] & (1 << m)) == 0) {
-                return false;
-            }
-        }
-        return true;
     }
     
     /**

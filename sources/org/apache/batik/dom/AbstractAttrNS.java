@@ -69,9 +69,6 @@ public abstract class AbstractAttrNS extends AbstractAttr {
 	super(qname, owner);
 	namespaceURI = nsURI;
 	String prefix = DOMUtilities.getPrefix(qname);
-        if (!owner.getStrictErrorChecking()) {
-            return;
-        }
 	if (prefix != null) {
 	    if (nsURI == null || nsURI.equals("") ||
 		("xml".equals(prefix) &&

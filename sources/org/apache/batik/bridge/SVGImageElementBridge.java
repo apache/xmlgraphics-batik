@@ -31,9 +31,9 @@ import java.util.List;
 
 import org.apache.batik.css.engine.CSSEngine;
 import org.apache.batik.css.engine.SVGCSSEngine;
-import org.apache.batik.dom.AbstractNode;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.svg.SVGOMElement;
+import org.apache.batik.dom.svg.XMLBaseSupport;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.ext.awt.color.ICCColorSpaceExt;
 import org.apache.batik.ext.awt.image.renderable.ClipRable8Bit;
@@ -152,7 +152,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
         }
 
         // Build the URL.
-        String baseURI = AbstractNode.getBaseURI(e);
+        String baseURI = XMLBaseSupport.getCascadedXMLBase(e);
         ParsedURL purl;
         if (baseURI == null)
             purl = new ParsedURL(uriStr);
