@@ -238,7 +238,7 @@ To display the available targets type:
           description="Compiles the source files">
     <mkdir dir="${dest}"/>
 
-    <javac srcdir="${src}" destdir="${dest}" deprecation="on" >
+    <javac srcdir="${src}" destdir="${dest}" deprecation="on" debug="on">
       <classpath refid="libs-classpath"/>
       <exclude name="**/*.html"/>
       <exclude name="**/rhino/*" unless="rhino.present"/>      
