@@ -25,7 +25,6 @@ table tr td {
 
 p,ol,ul,li { font-family: serif;}
 h1, h2, h3, h4, h5, h6 { text-align: left }
-/* background should be transparent, but WebTV has a bug */
 h1, h2, h3 { color: #444; background: white; }
 h1 { font: 270% serif; }
 h2 { font: 240% serif }
@@ -34,61 +33,19 @@ h4 { font: bold 100% serif }
 h5 { font: italic 100% serif }
 h6 { font: small-caps 100% serif }
 h7 { font-family: serif; }
-.hide { display: none }
-
-.oddRow  { background: #dddddd; }
-.evenRow { background: #ffffff; }
-.tableBackground   { background: black; } 
-
-.lightEvenRow { background: #cccccc;  }
-.lightOddRow  { background: #eeeeee; }
 
 .titlefailed { font-family: Arial; font-weight: bolder; font-size: 12;}
 .titlepassed {}
-
+.reportDate {
+    text-align: right;
+    font-family: sans-serif;
+}
 div.head { margin-bottom: 1em }
 div.head h1 { margin-top: 2em; clear: both }
 div.head table { margin-left: 2em; margin-top: 2em }
 div.head img { color: white; border: none } /* remove border from top image */
 
 .margin0 { background: red;}
-.repaintThread {
-    color: black;
-    font-weight: bold;
-}
-
-.uiThread {
-    color: #aaF;
-    font-weight: bold;
-}
-
-.svgLoadingThread {
-    color: #2F2;
-    font-weight: bold;
-}
-
-.gvtBuildingThread {
-    color: #dddddd;
-    font-weight: bold;
-}
-
-.scriptingThread {
-    color: gold;
-    font-weight: bold;
-}
-
-.updateThread {
-    color: crimson;
-    font-weight: bold;
-}
-
-.margin0 { margin-left: 10px; }
-.margin1 { margin-left: 18px;}
-.margin2 { margin-left: 26px; }
-.margin3 { margin-left: 34px; }
-.margin4 { margin-left: 42px; }
-.margin5 { margin-left: 50px; }
-.margin6 { margin-left: 58px; }
 
 p.copyright { font-size: small }
 p.copyright small { font-size: small }
@@ -98,12 +55,7 @@ a:hover { background: #ffa }
 }
 
 pre { color: #99F; }
-/*
-p {
-  margin-top: 0.6em;
-  margin-bottom: 0.6em;
-}
-*/
+
 dt, dd { margin-top: 0; margin-bottom: 0 } /* opera 3.50 */
 dt { font-weight: bold }
 
