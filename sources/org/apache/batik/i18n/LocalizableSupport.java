@@ -12,8 +12,6 @@ import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import org.apache.batik.util.gui.resource.ResourceManager;
-
 /**
  * This class provides a default implementation of the Localizable interface.
  * You can use it as a base class or as a member field and delegates various
@@ -99,11 +97,6 @@ public class LocalizableSupport implements Localizable {
     protected ResourceBundle resourceBundle;
 
     /**
-     * The resource manager
-     */
-    protected ResourceManager resourceManager;
-
-    /**
      * Same as LocalizableSupport(s, null).
      */
     public LocalizableSupport(String s) {
@@ -132,7 +125,6 @@ public class LocalizableSupport implements Localizable {
         if (locale != l) {
             locale = l;
             resourceBundle = null;
-            resourceManager = null;
         }
     }
 
@@ -192,7 +184,6 @@ public class LocalizableSupport implements Localizable {
      */
     public ResourceBundle getResourceBundle() {
         Locale l;
-        ResourceBundle oldBundle = resourceBundle;
 
         if (resourceBundle == null) {
             if (locale == null) {
@@ -239,14 +230,6 @@ public class LocalizableSupport implements Localizable {
             }
         }
 
-        if(oldBundle != resourceBundle){
-            resourceManager = new ResourceManager(resourceBundle);
-        }
-
         return resourceBundle;
-    }
-
-    public ResourceManager getResourceManager(){
-        return resourceManager;
     }
 }

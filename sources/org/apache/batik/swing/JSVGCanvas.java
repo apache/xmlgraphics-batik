@@ -102,12 +102,10 @@ public class JSVGCanvas extends JSVGComponent {
         new AbstractResetTransformInteractor() {
         public boolean startInteraction(InputEvent ie) {
             int mods = ie.getModifiers();
-            if (ie.getID() != KeyEvent.KEY_PRESSED) {
-                return false;
-            }
-            int key = ((KeyEvent)ie).getKeyCode();
             return
-                key == KeyEvent.VK_T &&
+                ie.getID() == MouseEvent.MOUSE_CLICKED &&
+                (mods & ie.BUTTON3_MASK) != 0 &&
+                (mods & ie.SHIFT_MASK) != 0 &&
                 (mods & ie.CTRL_MASK) != 0;
         }
     };
@@ -335,7 +333,7 @@ public class JSVGCanvas extends JSVGComponent {
      * Returns true if the reset transform interactor is enabled, false otherwise.
      */
     public boolean getEnableResetTransformInteractor() {
-        return isRotateInteractorEnabled;
+        return isResetTransformInteractorEnabled;
     }
 
     /**
