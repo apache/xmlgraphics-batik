@@ -53,7 +53,27 @@ public interface SVGConstants extends CSSConstants {
      */
     String SVG_SVGEVENTS_EVENT_TYPE = "SVGEvents";
 
+    /**
+     * The event type for KeyEvent.
+     */
+    String SVG_KEYEVENTS_EVENT_TYPE = "KeyEvents";
+
     // ---------------------------------------------------------------------
+
+    /**
+     * The event type for 'keydown' KeyEvent.
+     */
+    String SVG_KEYDOWN_EVENT_TYPE = "keydown";
+
+    /**
+     * The event type for 'keypress' KeyEvent.
+     */
+    String SVG_KEYPRESS_EVENT_TYPE = "keypress";
+
+    /**
+     * The event type for 'keyup' KeyEvent.
+     */
+    String SVG_KEYUP_EVENT_TYPE = "keyup";
 
     /**
      * The event type for 'click' MouseEvent.
@@ -136,6 +156,21 @@ public interface SVGConstants extends CSSConstants {
     String SVG_SVGZOOM_EVENT_TYPE = "SVGZoom";
 
     // ---------------------------------------------------------------------
+
+    /**
+     * The 'onkeyup' attribute name of type KeyEvents.
+     */
+    String SVG_ONKEYUP_ATTRIBUTE = "onkeyup";
+
+    /**
+     * The 'onkeydown' attribute name of type KeyEvents.
+     */
+    String SVG_ONKEYDOWN_ATTRIBUTE = "onkeydown";
+
+    /**
+     * The 'onkeypress' attribute name of type KeyEvents.
+     */
+    String SVG_ONKEYPRESS_ATTRIBUTE = "onkeypress";
 
     /**
      * The 'onabort' attribute name of type SVGEvents.
