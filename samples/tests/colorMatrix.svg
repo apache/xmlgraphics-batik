@@ -1,0 +1,109 @@
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20000802//EN"
+"http://www.w3.org/TR/2000/CR-SVG-20000802/DTD/svg-20000802.dtd">
+
+<svg width="450" height="450" >
+  <text x="225" y="50"
+        style="font-family:Helvetica; font-size:16; text-anchor:middle">
+    Filter Effect: feComponentTransfer (2)
+  </text>
+    <defs>
+      <filter id="turbSource" filterUnits="objectBoundingBox" 
+              x="0%" y="0%" width="100%" height="100%">
+        <feTurbulence type="turbulence" baseFrequency="0.05" numOctaves="2"/>
+      </filter>
+
+      <filter id="luminanceToAlpha" filterUnits="objectBoundingBox" 
+              x="0%" y="0%" width="100%" height="100%">
+        <feTurbulence type="turbulence" baseFrequency="0.05" numOctaves="2"/>
+        <feColorMatrix filterUnits="objectBoundingBox" 
+              x="0%" y="0%" width="100%" height="100%" 
+              type="luminanceToAlpha" />
+      </filter>
+
+      <filter id="hueRotate" filterUnits="objectBoundingBox" 
+              x="0%" y="0%" width="100%" height="100%">
+        <feTurbulence type="turbulence" baseFrequency="0.05" numOctaves="2"/>
+        <feColorMatrix filterUnits="objectBoundingBox" 
+              x="0%" y="0%" width="100%" height="100%" 
+              type="hueRotate" values="90"/>
+      </filter>
+
+      <filter id="saturate" filterUnits="objectBoundingBox" 
+              x="0%" y="0%" width="100%" height="100%">
+        <feTurbulence type="turbulence" baseFrequency="0.05" numOctaves="2"/>
+        <feColorMatrix filterUnits="objectBoundingBox" 
+              x="0%" y="0%" width="100%" height="100%" 
+              type="saturate" values="600%"/>
+      </filter>
+
+      <filter id="matrixAlpha" filterUnits="objectBoundingBox" 
+              x="0%" y="0%" width="100%" height="100%">
+        <feTurbulence type="turbulence" baseFrequency="0.05" numOctaves="2" stitchTiles="noStitch" seed="0" result="turb"/>
+		<feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" />
+      </filter>
+
+      <filter id="matrixRed" filterUnits="objectBoundingBox" 
+              x="0%" y="0%" width="100%" height="100%">
+        <feTurbulence type="turbulence" baseFrequency="0.05" numOctaves="2" stitchTiles="noStitch" seed="0" result="turb"/>
+        <feColorMatrix type="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0 1" />
+      </filter>
+
+      <filter id="matrixGreen" filterUnits="objectBoundingBox" 
+              x="0%" y="0%" width="100%" height="100%">
+        <feTurbulence type="turbulence" baseFrequency="0.05" numOctaves="2" stitchTiles="noStitch" seed="0" result="turb"/>
+	    <feColorMatrix type="matrix" values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 0 1" />
+      </filter>
+
+      <filter id="matrixBlue" filterUnits="objectBoundingBox" 
+              x="0%" y="0%" width="100%" height="100%">
+        <feTurbulence type="turbulence" baseFrequency="0.05" numOctaves="2" stitchTiles="noStitch" seed="0" result="turb"/>
+		<feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 0 1" />
+      </filter>
+
+    </defs>
+
+<g transform="translate(0, 60)" style="text-anchor:middle">
+    <g id="reference_Group">
+        <rect x="25" y="25" width="100" height="75" style="filter:url(#turbSource)" />
+        <text x="75" y="117">Reference Image</text>
+    </g>
+
+    <g id="luminanceToAlpha_Group" transform="translate(120, 0)">
+        <rect x="25" y="25" width="100" height="75" style="filter:url(#luminanceToAlpha)" />
+        <text x="75" y="117">type=luminanceToAlpha</text>
+    </g>
+
+    <g id="hueRotate_Group" transform="translate(240, 0)">
+        <rect x="25" y="25" width="100" height="75" style="filter:url(#hueRotate)" />
+        <text x="75" y="117">type=hueRotate</text>
+    </g>
+
+    <g id="saturate_Group" transform="translate(0, 120)">
+        <rect x="25" y="25" width="100" height="75" style="filter:url(#saturate)" />
+        <text x="75" y="117">type=saturate</text>
+    </g>
+
+    <g id="matrixAlpha_Group" transform="translate(120, 120)">
+        <rect x="25" y="25" width="100" height="75" style="filter:url(#matrixAlpha)" />
+        <text x="75" y="117">type=matrix (alpha)</text>
+    </g>
+
+    <g id="matrixRed_Group" transform="translate(240, 120)">
+        <rect x="25" y="25" width="100" height="75" style="filter:url(#matrixRed)" />
+        <text x="75" y="117">type=matrix (red)</text>
+    </g>
+
+    <g id="matrixGreen_Group" transform="translate(0, 240)">
+        <rect x="25" y="25" width="100" height="75" style="filter:url(#matrixGreen)" />
+        <text x="75" y="117">type=matrix (green)</text>
+    </g>
+
+    <g id="matrixBlue_Group" transform="translate(120, 240)">
+        <rect x="25" y="25" width="100" height="75" style="filter:url(#matrixBlue)" />
+        <text x="75" y="117">type=matrix (blue)</text>
+    </g>
+
+
+</g>
+</svg>
+

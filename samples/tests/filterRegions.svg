@@ -18,7 +18,7 @@
 <!-- of the filter.                                                            -->
 <!--                                                                           -->
 <!-- @author vincent.hardy@eng.sun.com                                         -->
-<!-- @version $Id$                                                             -->
+<!-- @version $Id$    -->
 <!-- ========================================================================= -->
 
 <svg width="450" height="450">
@@ -334,8 +334,10 @@
     <!-- ============================ -->
     <!-- filterRegion_6               -->
     <!-- ============================ -->
-    <g transform="translate(100, 75)">
-        <rect x="0" y="3000" width="20000000" height="25" style="filter:url(#filterRegion_6);" />
+    <g transform="translate(100, 75)" style="filter:url(#filterRegion_6);">
+        <rect x="0" y="3000" width="20000000" height="25"/>
+    </g>
+    <g transform="translate(100, 75)" >
         <rect class="filterRegionControl" x="20" y="30" width="40" height="40" />
         <text x="45" y="25" class="filterRegionControlLabel">filterRegion_6</text>
     </g>
@@ -362,8 +364,8 @@
     <!-- ============================ -->
     <!-- filterRegion_2_2             -->
     <!-- ============================ -->
-    <g transform="translate(100, 160)" style="filter:url(#filterRegion_2_2);">
-        <rect x="20" y="30" width="50" height="40" />
+    <g transform="translate(100, 160)" >
+        <rect x="20" y="30" width="50" height="40" style="filter:url(#filterRegion_2_2);"/>
     </g>
     <g transform="translate(100, 160)">
         <rect class="filterRegionControl" x="20" y="30" width="50" height="40" />
