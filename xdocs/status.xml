@@ -110,7 +110,9 @@
             <anchor id="svgDomStatus" />
             <s1 title="SVG DOM Support" >
 
-            <p>This information will be provided shortly</p>
+            <p>The <link href="SVGDOMstatus.html">SVG DOM implementation
+            table</link> lists all SVG DOM interfaces and indicates for all
+            methods the status of the implementation in Batik.</p>
 
             </s1>
 
