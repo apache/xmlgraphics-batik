@@ -99,74 +99,74 @@ final class RadialGradientPaintContext extends MultipleGradientPaintContext {
      *
      */
     public RadialGradientPaintContext(ColorModel cm,
-				      Rectangle deviceBounds,
-				      Rectangle2D userBounds,
-				      AffineTransform t,
-				      RenderingHints hints,
-				      float cx, float cy,
-				      float r,
-				      float fx, float fy,
-				      float[] fractions,
-				      Color[] colors,
-				      MultipleGradientPaint.CycleMethodEnum 
-				      cycleMethod,
-				      MultipleGradientPaint.ColorSpaceEnum 
-				      colorSpace)
-	throws NoninvertibleTransformException
+                                      Rectangle deviceBounds,
+                                      Rectangle2D userBounds,
+                                      AffineTransform t,
+                                      RenderingHints hints,
+                                      float cx, float cy,
+                                      float r,
+                                      float fx, float fy,
+                                      float[] fractions,
+                                      Color[] colors,
+                                      MultipleGradientPaint.CycleMethodEnum 
+                                      cycleMethod,
+                                      MultipleGradientPaint.ColorSpaceEnum 
+                                      colorSpace)
+        throws NoninvertibleTransformException
     {       	
-	super(cm, deviceBounds, userBounds, t, hints, fractions, colors, 
-	      cycleMethod, colorSpace);
+        super(cm, deviceBounds, userBounds, t, hints, fractions, colors, 
+              cycleMethod, colorSpace);
 
-	//call superclass method to calculate the gradients
-	calculateGradientFractions();
+        //call superclass method to calculate the gradients
+        calculateGradientFractions();
 	
-	//copy some parameters.
-	centerX = cx;
-	centerY = cy;	
-	focusX = fx;
-	focusY = fy;
-	radius = r;
+        //copy some parameters.
+        centerX = cx;
+        centerY = cy;	
+        focusX = fx;
+        focusY = fy;
+        radius = r;
 	
-	this.isSimpleFocus = (focusX == centerX) && (focusY == centerY);
-	this.isNonCyclic = (cycleMethod == RadialGradientPaint.NO_CYCLE);
+        this.isSimpleFocus = (focusX == centerX) && (focusY == centerY);
+        this.isNonCyclic = (cycleMethod == RadialGradientPaint.NO_CYCLE);
 	
-	//for use in the quadractic equation
-	radiusSq = radius * radius;
+        //for use in the quadractic equation
+        radiusSq = radius * radius;
 
-	float dX = focusX - centerX;
-	float dY = focusY - centerY;
+        float dX = focusX - centerX;
+        float dY = focusY - centerY;
 
-	double dist = Math.sqrt((dX * dX) + (dY * dY));
+        double dist = Math.sqrt((dX * dX) + (dY * dY));
 
-	//test if distance from focus to center is greater than the radius
-	if (dist > radius) { //clamp focus to radius
+        //test if distance from focus to center is greater than the radius
+        if (dist > radius) { //clamp focus to radius
 
-	    if (dY == 0) {  //avoid divide by zero
-		focusY = centerY;
-		focusX = centerX + (radius * SCALEBACK);
-	    }
-	    else {	    
-		double angle = Math.atan2(dY, dX);
+            if (dY == 0) {  //avoid divide by zero
+                focusY = centerY;
+                focusX = centerX + (radius * SCALEBACK);
+            }
+            else {	    
+                double angle = Math.atan2(dY, dX);
 			
-		//x = r cos theta, y = r sin theta
-		focusX = (float)Math.floor((SCALEBACK * radius * 
-					    Math.cos(angle))) + centerX;
+                //x = r cos theta, y = r sin theta
+                focusX = (float)Math.floor((SCALEBACK * radius * 
+                                            Math.cos(angle))) + centerX;
 
-		focusY = (float)Math.floor((SCALEBACK * radius * 
-					    Math.sin(angle))) + centerY;
-	    }	    	   
-	}
+                focusY = (float)Math.floor((SCALEBACK * radius * 
+                                            Math.sin(angle))) + centerY;
+            }	    	   
+        }
 
-	//calculate the solution to be used in the case where X == focusX
-	//in cyclicCircularGradientFillRaster
-	dX = focusX - centerX;
-	trivial = (float)Math.sqrt(radiusSq - (dX * dX));
+        //calculate the solution to be used in the case where X == focusX
+        //in cyclicCircularGradientFillRaster
+        dX = focusX - centerX;
+        trivial = (float)Math.sqrt(radiusSq - (dX * dX));
 
-	// constant parts of X, Y user space coordinates 
-	constA = a02 - centerX;
-	constB = a12 - centerY;
+        // constant parts of X, Y user space coordinates 
+        constA = a02 - centerX;
+        constB = a12 - centerY;
 
-	this.calculateFixedPointSqrtLookupTable();
+        this.calculateFixedPointSqrtLookupTable();
     }   
     
     /**
@@ -176,16 +176,16 @@ final class RadialGradientPaintContext extends MultipleGradientPaintContext {
      * generated.
      */
     protected void fillRaster(int pixels[], int off, int adjust,
-			      int x, int y, int w, int h) {
+                              int x, int y, int w, int h) {
 	
-  	if (isSimpleFocus && isNonCyclic && isSimpleLookup) {
-	    fixedPointSimplestCaseNonCyclicFillRaster(pixels, off, adjust, x, 
-						      y, w, h);
-	}      
+        if (isSimpleFocus && isNonCyclic && isSimpleLookup) {
+            fixedPointSimplestCaseNonCyclicFillRaster(pixels, off, adjust, x, 
+                                                      y, w, h);
+        }      
 	
-	else {
-	    cyclicCircularGradientFillRaster(pixels, off, adjust, x, y, w, h);
-	}
+        else {
+            cyclicCircularGradientFillRaster(pixels, off, adjust, x, y, w, h);
+        }
 	
     }    
     
@@ -196,83 +196,160 @@ final class RadialGradientPaintContext extends MultipleGradientPaintContext {
      *
      */         
     private void fixedPointSimplestCaseNonCyclicFillRaster(int pixels[], 
-							   int off,
-							   int adjust, 
-							   int x, int y, 
-							   int w, int h) {
+                                                           int off,
+                                                           int adjust, 
+                                                           int x, int y, 
+                                                           int w, int h) {
+        float iSq;  // Square distance index
+        final float indexFactor = fastGradientArraySize / radius;      
 	
-	float g;//value between 0 and 1 specifying position in the gradient
+        //constant part of X and Y coordinates for the entire raster
+        final float constX = (a00*x) + (a01*y) + constA;
+        final float constY = (a10*x) + (a11*y) + constB;
+        final float deltaX = indexFactor * a00; //incremental change in dX
+        final float deltaY = indexFactor * a10; //incremental change in dY
+        float dX, dY; //the current distance from center
+        int indexer = off;//used to index pixels array
+        int i, j; //indexing variables
+        final int fixedArraySizeSq=
+            (fastGradientArraySize * fastGradientArraySize);
+        float g, gDelta, gDeltaDelta, temp; //gradient square value
+        int gIndex; // integer number used to index gradient array
+        int iSqInt; // Square distance index       		   
+	
+        // For every point in the raster, calculate the color at that point
+        for(j = 0; j < h; j++){ //for every row
+            //x and y (in user space) of the first pixel of this row
+            dX = indexFactor * ((a01*j) + constX);
+            dY = indexFactor * ((a11*j) + constY);	   	   
+
+            // these values below here allow for an incremental calculation
+            // of dX^2 + dY^2 
+            temp = ((deltaX * deltaX) + (deltaY * deltaY));
+
+            //initialize to be equal to distance squared
+            g = (((dY * dY) + (dX * dX)) );
+            gDelta =  (((((deltaY * dY) + (deltaX * dX))* 2) + 
+                        temp));	 
+            gDeltaDelta = ((temp * 2));
+	    
+            //for every column (inner loop begins here)
+            for (i = 0; i < w; i++) {	       
+                //determine the distance to the center
+		
+                //since this is a non cyclic fill raster, crop at "1" and 0
+                if (g > fixedArraySizeSq) {
+                    gIndex = fastGradientArraySize;
+                }
+		
+                // This should not happen as gIndex is a square
+                // quantity. Code commented out on purpose
+                // else if (g < 0) {
+                //    gIndex = 0;		    
+                // }
+		
+                else {
+                    iSq = (g / sqStepFloat);
+                    
+                    iSqInt = (int)iSq; //chop off fractional part
+                    iSq -= iSqInt;		    
+                    gIndex = (int)((iSq * sqrtLutFixed[iSqInt + 1]) + 
+                                   ((1-iSq) * sqrtLutFixed[iSqInt]));
+                }
+		
+                pixels[indexer++] = gradient[gIndex]; 
+				
+                //incremental calculation
+                g += gDelta;
+                gDelta += gDeltaDelta;		
+            }	  
+            indexer += adjust;
+        }
+    }
+
+    /**
+     * This code works in the simplest of cases, where the focus == center 
+     * point, the gradient is noncyclic, and the gradient lookup method is 
+     * fast (single array index, no conversion necessary).
+     *
+     */         
+    private void fixedPointSimplestCaseNonCyclicFillRasterOriginal(int pixels[], 
+                                                           int off,
+                                                           int adjust, 
+                                                           int x, int y, 
+                                                           int w, int h) {
+        // float g;//value between 0 and 1 specifying position in the gradient
         float iSq;  // Square distance index
         float p;  // Squrare root penetration in square root interval
-	//this factor is used to scale the index calculation by the array size
-	//and 1/radius (normalize the distance)
-	float indexFactor = fastGradientArraySize / radius;      
-	float factor = 16;  //2^16 factor for converting to/from floating point
+        //this factor is used to scale the index calculation by the array size
+        //and 1/radius (normalize the distance)
+        float indexFactor = fastGradientArraySize / radius;      
+        float factor = 16;  //2^16 factor for converting to/from floating point
 	
-	//constant part of X and Y coordinates for the entire raster
-	float constX = (a00*x) + (a01*y) + constA;
-	float constY = (a10*x) + (a11*y) + constB;
-	float deltaX = indexFactor * a00; //incremental change in dX
-	float deltaY = indexFactor * a10; //incremental change in dY
-	float dX, dY; //the current distance from center
-	int indexer = off;//used to index pixels array
-	int i, j; //indexing variables
-	int precalc = w+adjust;  //precalculate this number
-	int fixedArraySizeSq=
-	    (fastGradientArraySize * fastGradientArraySize) << 4;
-	int gFixed;//fixed point integer
-	int gIndex;//non-fixed-pt integer number used to index gradient array
-	int iSqInt; // Square distance index       		   
+        //constant part of X and Y coordinates for the entire raster
+        float constX = (a00*x) + (a01*y) + constA;
+        float constY = (a10*x) + (a11*y) + constB;
+        float deltaX = indexFactor * a00; //incremental change in dX
+        float deltaY = indexFactor * a10; //incremental change in dY
+        float dX, dY; //the current distance from center
+        int indexer = off;//used to index pixels array
+        int i, j; //indexing variables
+        int precalc = w+adjust;  //precalculate this number
+        int fixedArraySizeSq=
+            (fastGradientArraySize * fastGradientArraySize) << 4;
+        int gFixed;//fixed point integer
+        int gIndex;//non-fixed-pt integer number used to index gradient array
+        int iSqInt; // Square distance index       		   
 	
-	// For every point in the raster, calculate the color at that point
-	for(j = 0; j < h; j++){ //for every row
+        // For every point in the raster, calculate the color at that point
+        for(j = 0; j < h; j++){ //for every row
 	    
-	    //constants from column to column
+            //constants from column to column
 	    
-	    //x and y (in user space) of the first pixel of this row
-	    dX = indexFactor * ((a01*j) + constX);
-	    dY = indexFactor * ((a11*j) + constY);	   	   
+            //x and y (in user space) of the first pixel of this row
+            dX = indexFactor * ((a01*j) + constX);
+            dY = indexFactor * ((a11*j) + constY);	   	   
 
-	    // these values below here allow for an incremental calculation
-	    // of dX^2 + dY^2 
-	    int temp = (int)((deltaX * deltaX) + (deltaY * deltaY));
-	    //initialize to be equal to distance squared
-	    gFixed = (int)(((dY * dY) + (dX * dX)) * factor);
-	    int gFixeddelta =  (int)(((((deltaY * dY) + (deltaX * dX))* 2) + 
-				      temp) * factor);	 
-	    int gFixeddeltadelta =(int)((temp * 2) * factor);
+            // these values below here allow for an incremental calculation
+            // of dX^2 + dY^2 
+            int temp = (int)((deltaX * deltaX) + (deltaY * deltaY));
+            //initialize to be equal to distance squared
+            gFixed = (int)(((dY * dY) + (dX * dX)) * factor);
+            int gFixeddelta =  (int)(((((deltaY * dY) + (deltaX * dX))* 2) + 
+                                      temp) * factor);	 
+            int gFixeddeltadelta =(int)((temp * 2) * factor);
 	    
-	    //for every column (inner loop begins here)
- 	    for (i = 0; i < w; i++) {	       
-		//determine the distance to the center
+            //for every column (inner loop begins here)
+            for (i = 0; i < w; i++) {	       
+                //determine the distance to the center
 		
-		//since this is a non cyclic fill raster, crop at "1" and 0
-		if (gFixed > fixedArraySizeSq) {
-		    gIndex = fastGradientArraySize;
-		}
+                //since this is a non cyclic fill raster, crop at "1" and 0
+                if (gFixed > fixedArraySizeSq) {
+                    gIndex = fastGradientArraySize;
+                }
 		
-		else if (gFixed < 0) { 
-		    gIndex = 0;		    
-		}
+                else if (gFixed < 0) {
+                    gIndex = 0;		    
+                }
 		
-		else {
-		    iSq = (gFixed >>> 4) / sqStepFloat;
+                else {
+                    iSq = (gFixed >>> 4) / sqStepFloat;
 		    		  
-		    iSqInt = (int)iSq; //chop off fractional part
+                    iSqInt = (int)iSq; //chop off fractional part
 		    
-		    p = iSq - iSqInt;		    
-		    gIndex = (int)((p * sqrtLutFixed[iSqInt + 1]) + 
-				   ((1-p) * sqrtLutFixed[iSqInt]));
-		}
+                    p = iSq - iSqInt;		    
+                    gIndex = (int)((p * sqrtLutFixed[iSqInt + 1]) + 
+                                   ((1-p) * sqrtLutFixed[iSqInt]));
+                }
 		
-		pixels[indexer + i] = gradient[gIndex]; 
+                pixels[indexer + i] = gradient[gIndex]; 
 				
-		//incremental calculation
-		gFixed += gFixeddelta;
-		gFixeddelta += gFixeddeltadelta;		
-	    }	  
-	    indexer += precalc;
-	}
+                //incremental calculation
+                gFixed += gFixeddelta;
+                gFixeddelta += gFixeddeltadelta;		
+            }	  
+            indexer += precalc;
+        }
     }
     
     /** Used to limit the size of the square root lookup table */
@@ -288,17 +365,17 @@ final class RadialGradientPaintContext extends MultipleGradientPaintContext {
      * Build square root lookup table
      */       
     private void calculateFixedPointSqrtLookupTable() {	      
-	sqStepFloat = (fastGradientArraySize  * fastGradientArraySize) 
-	    / (MAX_PRECISION - 2);
+        sqStepFloat = (fastGradientArraySize  * fastGradientArraySize) 
+            / (MAX_PRECISION - 2);
 	
-	// The last two values are the same so that linear square root 
-	// interpolation can happen on the maximum reachable element in the 
-	// lookup table (precision-2)
-	int i;
-	for (i = 0; i < MAX_PRECISION - 1; i++) {
-	    sqrtLutFixed[i] = (int)(Math.sqrt(i*sqStepFloat));
-	}
-	sqrtLutFixed[i] = sqrtLutFixed[i-1];	
+        // The last two values are the same so that linear square root 
+        // interpolation can happen on the maximum reachable element in the 
+        // lookup table (precision-2)
+        int i;
+        for (i = 0; i < MAX_PRECISION - 1; i++) {
+            sqrtLutFixed[i] = (int)(Math.sqrt(i*sqStepFloat));
+        }
+        sqrtLutFixed[i] = sqrtLutFixed[i-1];	
     }
     
     /** Fill the raster, cycling the gradient colors when a point falls outside
@@ -321,114 +398,113 @@ final class RadialGradientPaintContext extends MultipleGradientPaintContext {
      *
      */   
     private void cyclicCircularGradientFillRaster(int pixels[], int off, 
-						  int adjust, 
-						  int x, int y, 
-						  int w, int h) {
-
-	// Constant part of the C factor of the quadratic equation
-	final double constC = 
-	    -(radiusSq) + (centerX * centerX) + (centerY * centerY);
-	double A; //coefficient of the quadratic equation (Ax^2 + Bx + C = 0)
-	double B; //coefficient of the quadratic equation
-	double C; //coefficient of the quadratic equation
-	double slope; //slope of the focus-perimeter line
-	double yintcpt; //y-intercept of the focus-perimeter line
-	double solutionX;//intersection with circle X coordinate
-	double solutionY;//intersection with circle Y coordinate       
+                                                  int adjust, 
+                                                  int x, int y, 
+                                                  int w, int h) {
+        // Constant part of the C factor of the quadratic equation
+        final double constC = 
+            -(radiusSq) + (centerX * centerX) + (centerY * centerY);
+        double A; //coefficient of the quadratic equation (Ax^2 + Bx + C = 0)
+        double B; //coefficient of the quadratic equation
+        double C; //coefficient of the quadratic equation
+        double slope; //slope of the focus-perimeter line
+        double yintcpt; //y-intercept of the focus-perimeter line
+        double solutionX;//intersection with circle X coordinate
+        double solutionY;//intersection with circle Y coordinate       
        	final float constX = (a00*x) + (a01*y) + a02;//const part of X coord
-	final float constY = (a10*x) + (a11*y) + a12; //const part of Y coord
+        final float constY = (a10*x) + (a11*y) + a12; //const part of Y coord
        	final float precalc2 = 2 * centerY;//const in inner loop quad. formula
-	final float precalc3 =-2 * centerX;//const in inner loop quad. formula
-	float X; // User space point X coordinate 
-	float Y; // User space point Y coordinate
-	float g;//value between 0 and 1 specifying position in the gradient
+        final float precalc3 =-2 * centerX;//const in inner loop quad. formula
+        float X; // User space point X coordinate 
+        float Y; // User space point Y coordinate
+        float g;//value between 0 and 1 specifying position in the gradient
         float det; //determinant of quadratic formula (should always be >0)
-	float currentToFocusSq;//sq distance from the current pt. to focus
-	float intersectToFocusSq;//sq distance from the intersect pt. to focus
-	float deltaXSq; //temp variable for a change in X squared.
-	float deltaYSq; //temp variable for a change in Y squared.
-	int indexer = off; //index variable for pixels array
-	int i, j; //indexing variables for FOR loops
-	int pixInc = w+adjust;//incremental index change for pixels array
+        float currentToFocusSq;//sq distance from the current pt. to focus
+        float intersectToFocusSq;//sq distance from the intersect pt. to focus
+        float deltaXSq; //temp variable for a change in X squared.
+        float deltaYSq; //temp variable for a change in Y squared.
+        int indexer = off; //index variable for pixels array
+        int i, j; //indexing variables for FOR loops
+        int pixInc = w+adjust;//incremental index change for pixels array
 	
-	for (j = 0; j < h; j++) { //for every row
+        for (j = 0; j < h; j++) { //for every row
 	    
-	    X = (a01*j) + constX; //constants from column to column
-	    Y = (a11*j) + constY;
+            X = (a01*j) + constX; //constants from column to column
+            Y = (a11*j) + constY;
 	    
-	    //for every column (inner loop begins here)
-	    for (i = 0; i < w; i++) {	       			
+            //for every column (inner loop begins here)
+            for (i = 0; i < w; i++) {	       			
 	
-		// special case to avoid divide by zero
-		if (X == focusX) {		   
-		    solutionX = focusX;
+                // special case to avoid divide by zero
+                if (X == focusX) {		   
+                    solutionX = focusX;
 		    
-		    solutionY = centerY;
+                    solutionY = centerY;
 		    
-		    solutionY += (Y > focusY)?trivial:-trivial;
-		}
+                    solutionY += (Y > focusY)?trivial:-trivial;
+                }
 		
-		else {    
+                else {    
 		    
-		    //slope of the focus-current line
-		    slope =   (Y - focusY) / (X - focusX);
+                    //slope of the focus-current line
+                    slope =   (Y - focusY) / (X - focusX);
 		    
-		    yintcpt = Y - (slope * X); //y-intercept of that same line
+                    yintcpt = Y - (slope * X); //y-intercept of that same line
 		    
-		    //use the quadratic formula to calculate the intersection
-		    //point		  
-		    A = (slope * slope) + 1; 
+                    //use the quadratic formula to calculate the intersection
+                    //point		  
+                    A = (slope * slope) + 1; 
 		    
-		    B =  precalc3 + (-2 * slope * (centerY - yintcpt));
+                    B =  precalc3 + (-2 * slope * (centerY - yintcpt));
 		    
-		    C =  constC + (yintcpt* (yintcpt - precalc2));
+                    C =  constC + (yintcpt* (yintcpt - precalc2));
 		    
-		    det = (float)Math.sqrt((B * B) - ( 4 * A * C));
+                    det = (float)Math.sqrt((B * B) - ( 4 * A * C));
 		    
-		    solutionX = -B;
+                    solutionX = -B;
 		    
-		    //choose the positive or negative root depending
-		    //on where the X coord lies with respect to the focus.
-		    solutionX += (X < focusX)?-det:det;
+                    //choose the positive or negative root depending
+                    //on where the X coord lies with respect to the focus.
+                    solutionX += (X < focusX)?-det:det;
 		    
-		    solutionX = solutionX / (2 * A);//divisor
+                    solutionX = solutionX / (2 * A);//divisor
 		    
-		    solutionY = (slope * solutionX) + yintcpt;
-		}	                    	
+                    solutionY = (slope * solutionX) + yintcpt;
+                }	                    	
 
-		//calculate the square of the distance from the current point 
-		//to the focus and the square of the distance from the 
-		//intersection point to the focus. Want the squares so we can
-		//do 1 square root after division instead of 2 before.
+                //calculate the square of the distance from the current point 
+                //to the focus and the square of the distance from the 
+                //intersection point to the focus. Want the squares so we can
+                //do 1 square root after division instead of 2 before.
 
-		deltaXSq = X - focusX;
-		deltaXSq = deltaXSq * deltaXSq;
+                deltaXSq = X - focusX;
+                deltaXSq = deltaXSq * deltaXSq;
 
-		deltaYSq = Y - focusY;
-		deltaYSq = deltaYSq * deltaYSq;
+                deltaYSq = Y - focusY;
+                deltaYSq = deltaYSq * deltaYSq;
 
-		currentToFocusSq = deltaXSq + deltaYSq;
+                currentToFocusSq = deltaXSq + deltaYSq;
 
-		deltaXSq = (float)solutionX - focusX;
-		deltaXSq = deltaXSq * deltaXSq;
+                deltaXSq = (float)solutionX - focusX;
+                deltaXSq = deltaXSq * deltaXSq;
 
-		deltaYSq = (float)solutionY - focusY;
-		deltaYSq = deltaYSq * deltaYSq;
+                deltaYSq = (float)solutionY - focusY;
+                deltaYSq = deltaYSq * deltaYSq;
 
-		intersectToFocusSq = deltaXSq + deltaYSq;
+                intersectToFocusSq = deltaXSq + deltaYSq;
 
-		//want the percentage (0-1) of the current point along the 
-		//focus-circumference line
-		g = (float)Math.sqrt(currentToFocusSq / intersectToFocusSq);
+                //want the percentage (0-1) of the current point along the 
+                //focus-circumference line
+                g = (float)Math.sqrt(currentToFocusSq / intersectToFocusSq);
 	       	       		
-		//save the color at this point
-		pixels[indexer + i] = indexIntoGradientsArrays(g);
+                //save the color at this point
+                pixels[indexer + i] = indexIntoGradientsArrays(g);
 		
-		X += a00; //incremental change in X, Y
-		Y += a10;	
-	    } //end inner loop
-	    indexer += pixInc;
-	} //end outer loop
+                X += a00; //incremental change in X, Y
+                Y += a10;	
+            } //end inner loop
+            indexer += pixInc;
+        } //end outer loop
     }
     
 }
