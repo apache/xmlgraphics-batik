@@ -23,7 +23,6 @@ import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.Clip;
 import org.apache.batik.gvt.filter.Mask;
-import org.apache.batik.parser.AWTTransformProducer;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.UnitProcessor;
 
@@ -79,9 +78,11 @@ public class SVGUseElementBridge
         }
 
         AffineTransform at = AffineTransform.getTranslateInstance(x, y);
-        at.preConcatenate(AWTTransformProducer.createAffineTransform
-                (new StringReader(element.getAttributeNS(null, ATTR_TRANSFORM)),
-                 ctx.getParserFactory()));
+        at.preConcatenate(
+                 SVGUtilities.convertAffineTransform(element,
+                                                     ATTR_TRANSFORM,
+                                                     ctx.getParserFactory()));
+
         gn.setTransform(at);
 
         return gn;

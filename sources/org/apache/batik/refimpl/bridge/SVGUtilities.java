@@ -19,6 +19,8 @@ import org.apache.batik.bridge.MissingAttributeException;
 import org.apache.batik.bridge.UserAgent;
 import org.apache.batik.dom.util.XMLSupport;
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.parser.AWTPathProducer;
+import org.apache.batik.parser.AWTTransformProducer;
 import org.apache.batik.parser.LengthHandler;
 import org.apache.batik.parser.LengthParser;
 import org.apache.batik.parser.ParseException;
@@ -1014,6 +1016,28 @@ public class SVGUtilities implements SVGConstants {
     // ------------------------------------------------------------------------
 
     /**
+     * Creates an <tt>AffineTransform</tt> using the element and its specified
+     * attribute.
+     *
+     * @param the e that defines a transform
+     * @param the attribute that defines the transform
+     * @param pf the parser factory to use
+     */
+    public static AffineTransform convertAffineTransform(Element e,
+                                                         String attrName,
+                                                         ParserFactory pf) {
+        try {
+            StringReader r = new StringReader(e.getAttributeNS(null, attrName));
+            return AWTTransformProducer.createAffineTransform(r, pf);
+        } catch (ParseException ex) {
+            throw new IllegalAttributeValueException(
+                Messages.formatMessage("transform.invalid",
+                                       new Object[] {e.getLocalName(),
+                                                     ex.getMessage()}));
+        }
+    }
+
+    /**
      * Creates an <tt>AffineTransform</tt> with the specified
      * additional transform, in the space of the specified graphics
      * node according to the 'units' coordinate system.
@@ -1118,6 +1142,7 @@ public class SVGUtilities implements SVGConstants {
                                             direction,
                                             uctx);
     }
+
     /**
      * Returns the float that represents a specified value or
      * percentage. This method is used when the coordinate system is

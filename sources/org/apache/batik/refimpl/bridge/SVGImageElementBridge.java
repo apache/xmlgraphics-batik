@@ -38,8 +38,6 @@ import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
 import org.apache.batik.gvt.filter.Mask;
 
-import org.apache.batik.parser.AWTTransformProducer;
-
 import org.apache.batik.refimpl.bridge.resources.Messages;
 import org.apache.batik.refimpl.gvt.filter.ConcreteClipRable;
 import org.apache.batik.refimpl.gvt.filter.RasterRable;
@@ -121,6 +119,12 @@ public class SVGImageElementBridge implements GraphicsNodeBridge,
         }
         ImageNode imgNode = ctx.getGVTFactory().createImageNode();
         imgNode.setImage(node);
+        // initialize the transform
+        AffineTransform at =
+            SVGUtilities.convertAffineTransform(element,
+                                                ATTR_TRANSFORM,
+                                                ctx.getParserFactory());
+        imgNode.setTransform(at);
         // bind it as soon as it's available...
         ctx.bind(element, imgNode);
 
@@ -162,11 +166,6 @@ public class SVGImageElementBridge implements GraphicsNodeBridge,
         Rectangle2D bounds = getImageBounds(ctx, svgElement);
         node.setImage(RasterRable.create(uriStr, bounds));
         node.setImageBounds(bounds);
-        // initialize the transform
-        AffineTransform at = AWTTransformProducer.createAffineTransform
-            (new StringReader(svgElement.getAttributeNS(null, ATTR_TRANSFORM)),
-             ctx.getParserFactory());
-        node.setTransform(at);
         return node;
     }
 
@@ -178,11 +177,6 @@ public class SVGImageElementBridge implements GraphicsNodeBridge,
         Rectangle2D bounds = getImageBounds(ctx, svgElement);
         node.setImage(RasterRable.create(url, bounds));
         node.setImageBounds(bounds);
-        // initialize the transform
-        AffineTransform at = AWTTransformProducer.createAffineTransform
-            (new StringReader(svgElement.getAttributeNS(null, ATTR_TRANSFORM)),
-             ctx.getParserFactory());
-        node.setTransform(at);
         return node;
     }
 

@@ -15,16 +15,18 @@ import java.awt.geom.AffineTransform;
 
 import java.io.StringReader;
 
+import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeMutationEvent;
 import org.apache.batik.bridge.GraphicsNodeBridge;
-import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.bridge.IllegalAttributeValueException;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.ShapeNode;
 import org.apache.batik.gvt.ShapePainter;
-import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.Clip;
+import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.Mask;
-import org.apache.batik.parser.AWTTransformProducer;
+import org.apache.batik.parser.ParseException;
+import org.apache.batik.refimpl.bridge.resources.Messages;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.UnitProcessor;
 
@@ -51,9 +53,21 @@ public abstract class SVGShapeElementBridge implements GraphicsNodeBridge,
             = new DefaultUnitProcessorContext(ctx,
                                               cssDecl);
         ShapeNode node = ctx.getGVTFactory().createShapeNode();
+        // Initialize the transform
+        AffineTransform at =
+            SVGUtilities.convertAffineTransform(element,
+                                                ATTR_TRANSFORM,
+                                                ctx.getParserFactory());
+        node.setTransform(at);
         // Initialize the shape of the ShapeNode
-        node.setShape(createShape(ctx, svgElement, cssDecl, uctx));
-
+        Shape shape = null;
+        try {
+            shape = createShape(ctx, svgElement, cssDecl, uctx);
+        } catch (IllegalAttributeValueException ex) {
+            throw ex;
+        } finally {
+            node.setShape(shape);
+        }
         return node;
     }
 
@@ -73,11 +87,6 @@ public abstract class SVGShapeElementBridge implements GraphicsNodeBridge,
             = CSSUtilities.convertStrokeAndFill(svgElement, node,
                                                 ctx, cssDecl, uctx);
         node.setShapePainter(painter);
-        // Initialize the transform
-        AffineTransform at = AWTTransformProducer.createAffineTransform
-            (new StringReader(element.getAttributeNS(null, ATTR_TRANSFORM)),
-             ctx.getParserFactory());
-        node.setTransform(at);
 
         // Set node composite
         CSSPrimitiveValue opacityVal =
@@ -115,8 +124,10 @@ public abstract class SVGShapeElementBridge implements GraphicsNodeBridge,
         case BridgeMutationEvent.PROPERTY_MUTATION_TYPE:
             String attrName = evt.getAttrName();
             if (attrName.equals(ATTR_TRANSFORM)) {
-                AffineTransform at = AWTTransformProducer.createAffineTransform
-                    (new StringReader(svgElement.getAttributeNS(null, ATTR_TRANSFORM)), ctx.getParserFactory());
+                AffineTransform at =
+                    SVGUtilities.convertAffineTransform(svgElement,
+                                                        ATTR_TRANSFORM,
+                                                        ctx.getParserFactory());
                 shapeNode.setTransform(at);
             }
             break;

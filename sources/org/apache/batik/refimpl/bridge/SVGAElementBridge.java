@@ -14,7 +14,6 @@ import java.awt.Cursor;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
-
 import java.io.StringReader;
 
 import org.apache.batik.bridge.BridgeContext;
@@ -23,26 +22,21 @@ import org.apache.batik.bridge.GraphicsNodeBridge;
 import org.apache.batik.bridge.UserAgent;
 import org.apache.batik.css.HiddenChildElementSupport;
 import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.Clip;
+import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.Mask;
-import org.apache.batik.parser.AWTTransformProducer;
 import org.apache.batik.util.SVGConstants;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-
-import org.w3c.dom.css.ViewCSS;
 import org.w3c.dom.css.CSSPrimitiveValue;
 import org.w3c.dom.css.CSSStyleDeclaration;
-
+import org.w3c.dom.css.ViewCSS;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
-
 import org.w3c.dom.svg.SVGAElement;
-
 import org.w3c.dom.views.DocumentView;
 
 /**
@@ -53,12 +47,16 @@ import org.w3c.dom.views.DocumentView;
  */
 public class SVGAElementBridge implements GraphicsNodeBridge, SVGConstants {
 
-    public GraphicsNode createGraphicsNode(BridgeContext ctx,
-                                           Element element){
+    public GraphicsNode createGraphicsNode(BridgeContext ctx, Element element){
+
         GraphicsNode gn = ctx.getGVTFactory().createCompositeGraphicsNode();
-        AffineTransform at = AWTTransformProducer.createAffineTransform
-            (new StringReader(element.getAttributeNS(null, ATTR_TRANSFORM)),
-             ctx.getParserFactory());
+
+        // Initialize the transform
+        AffineTransform at =
+            SVGUtilities.convertAffineTransform(element,
+                                                ATTR_TRANSFORM,
+                                                ctx.getParserFactory());
+
         gn.setTransform(at);
 
         return gn;
