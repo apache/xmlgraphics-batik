@@ -9,7 +9,6 @@
 package org.apache.batik.util;
 
 import java.lang.ref.Reference;
-import java.lang.ref.ReferenceQueue;
 import java.lang.ref.SoftReference;
 import java.util.HashMap;
 
@@ -149,69 +148,29 @@ public class SoftReferenceCache {
      */
     protected final synchronized void putImpl(Object key, Object object) {
         if (map.containsKey(key)) {
-            SoftReference ref = new SoftReference(object, queue);
+            SoftReference ref = new SoftRefKey(object, key);
             map.put(key, ref);
-            synchronized (refMap) {
-                refMap.put(ref, new Info(key, this));
-            }
             this.notifyAll();
         }
     }
 
-    static class Info {
+    class SoftRefKey extends CleanerThread.SoftReferenceCleared {
         Object key;
-        SoftReference cacheRef;
-        public Info(Object key,
-                    SoftReferenceCache cache) {
+        public SoftRefKey(Object o, Object key) {
+            super(o);
             this.key = key;
-            this.cacheRef = new SoftReference(cache);
         }
 
-        public Object getKey() { return key; }
-
-        public SoftReferenceCache getCache() { 
-            return (SoftReferenceCache)cacheRef.get(); 
+        public void cleared() {
+            SoftReferenceCache cache = SoftReferenceCache.this;
+            if (cache == null) return; // Can't really happen.
+            synchronized (cache) {
+                Object o = cache.map.remove(key);
+                if (this != o)
+                    // Must not have been ours put it back...
+                    // Can happen if a clear is done.
+                    cache.map.put(key, o);
+            }
         }
     }
-
-    private static HashMap        refMap = new HashMap();
-    private static ReferenceQueue queue = new ReferenceQueue();
-    private static Thread cleanup;
-
-    static {
-        cleanup = new Thread() {
-                public void run() {
-                    while(true) {
-                        Reference ref;
-                        try {
-                            ref = queue.remove();
-                        } catch (InterruptedException ie) {
-                            continue;
-                        }
-
-                        Object o;
-                        synchronized (refMap) {
-                            o = refMap.remove(ref);
-                        }
-
-                        // System.out.println("Cleaning: " + o);
-                        if (o == null) continue;
-                        Info info = (Info)o;
-                        SoftReferenceCache cache = info.getCache();
-                        if (cache == null) continue;
-                        synchronized (cache) {
-                            o = cache.map.remove(info.getKey());
-                            if (ref != o)
-                                // Must not have been ours put it back...
-                                // Can happen if a clear is done.
-                                cache.map.put(info.getKey(), o);
-                        }
-                    }
-                }
-            };
-        cleanup.setDaemon(true);
-        cleanup.start();
-    }
-
-
 }

@@ -10,23 +10,31 @@ package org.apache.batik.ext.awt.image.rendered;
 
 import java.awt.Point;
 import java.awt.image.Raster;
-import java.lang.ref.Reference;
-import java.lang.ref.ReferenceQueue;
 import java.lang.ref.SoftReference;
 import java.util.HashMap;
+
+import org.apache.batik.util.CleanerThread;
 
 public class TileMap implements TileStore {
     private static final boolean DEBUG = false;
     private static final boolean COUNT = false;		
 
-    private static ReferenceQueue queue = new ReferenceQueue();
-
-    private static HashMap items  =new HashMap();
     private HashMap rasters=new HashMap();
 
     static class TileMapLRUMember extends TileLRUMember {
         public Point   pt;
         public SoftReference parent;
+
+        class RasterSoftRef extends CleanerThread.SoftReferenceCleared {
+            RasterSoftRef(Object o) { super(o); }
+            public void cleared() {
+                if (DEBUG) System.err.println("Cleaned: " + this);
+                TileMap tm = (TileMap)parent.get();
+                if (tm != null)
+                    tm.rasters.remove(pt);
+            }
+        };
+
         TileMapLRUMember(TileMap parent, Point pt, Raster ras) {
             super(ras);
             this.parent = new SoftReference(parent);
@@ -35,12 +43,7 @@ public class TileMap implements TileStore {
 
         public void setRaster(Raster ras) {
             hRaster = ras;
-            synchronized (items) {
-                if (wRaster != null)
-                    items.remove(wRaster);
-                wRaster = new SoftReference(ras, queue);
-                items.put(wRaster, this);
-            }
+            wRaster = new RasterSoftRef(ras);
         }
     }
 
@@ -135,35 +138,4 @@ public class TileMap implements TileStore {
 
     static int requests;
     static int misses;
-
-    static Thread cleanup;
-
-    static {
-        cleanup = new Thread() {
-                public void run() {
-                    while(true) {
-                        Reference ref;
-
-                        try {
-                            ref = queue.remove();
-                        } catch (InterruptedException ie) {
-                            continue;
-                        }
-                        synchronized (items) {
-                            Object o = items.remove(ref);
-                            if (DEBUG) System.out.println("Cleaning: " + o);
-                            if (o == null) continue;
-                        
-                            TileMapLRUMember item = (TileMapLRUMember)o;
-			    TileMap parent = (TileMap)item.parent.get();
-			    if (parent != null)
-				parent.rasters.remove(item.pt);
-                        }
-                    }
-                }
-            };
-        cleanup.setDaemon(true);
-        cleanup.start();
-    }
-
 }
