@@ -93,10 +93,11 @@ public interface CSSConstants {
     String CSS_ACTIVEBORDER_VALUE = "activeborder";
     String CSS_ACTIVECAPTION_VALUE = "activecaption";
     String CSS_AFTER_EDGE_VALUE = "after-edge";
+    String CSS_AUTOSENSE_SCRIPT_VALUE = "autosense-script";
+    String CSS_ALPHABETIC_VALUE = "alphabetic";
     String CSS_ALL_VALUE = "all";
     String CSS_APPWORKSPACE_VALUE = "appworkspace";
     String CSS_AUTO_VALUE = "auto";
-    String CSS_AUTOSENSE_SCRIPT_VALUE = "autosense-script";
     String CSS_BACKGROUND_VALUE = "background";
     String CSS_BASELINE_VALUE = "baseline";
     String CSS_BEFORE_EDGE_VALUE = "before-edge";
@@ -114,6 +115,7 @@ public interface CSSConstants {
     String CSS_BUTTONTEXT_VALUE = "buttontext";
     String CSS_CAPTIONTEXT_VALUE = "captiontext";
     String CSS_CENTER_VALUE = "center";
+    String CSS_CENTRAL_VALUE = "central";
     String CSS_COLLAPSE_VALUE = "collapse";
     String CSS_COMPACT_VALUE = "compact";
     String CSS_CONDENSED_VALUE = "condensed";
@@ -184,6 +186,7 @@ public interface CSSConstants {
     String CSS_PAINTED_VALUE = "painted";
     String CSS_POINTER_VALUE = "pointer";
     String CSS_RESET_VALUE = "reset";
+    String CSS_RESET_SIZE_VALUE = "reset-size";
     String CSS_RL_VALUE = "rl";
     String CSS_RL_TB_VALUE = "rl-tb";
     String CSS_ROUND_VALUE = "round";
@@ -232,6 +235,7 @@ public interface CSSConstants {
     String CSS_ULTRA_CONDENSED_VALUE = "ultra-condensed";
     String CSS_ULTRA_EXPANDED_VALUE = "ultra-expanded";
     String CSS_UNDERLINE_VALUE = "underline";
+    String CSS_USE_SCRIPT_VALUE = "use-script";
     String CSS_VISIBLE_VALUE = "visible";
     String CSS_VISIBLEFILL_VALUE = "visiblefill";
     String CSS_VISIBLEFILLSTROKE_VALUE = "visiblefillstroke";
