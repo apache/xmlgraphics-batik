@@ -183,11 +183,9 @@ public class SVGSVGElementBridge extends SVGGElementBridge {
         if (!isOutermost) {
             // X & Y are ignored on outermost SVG.
             cgn.setPositionTransform(positionTransform);
-        } else {
+        } else if (doc == ctx.getDocument()) {
             // <!> FIXME: hack to compute the original document's size
-            if (ctx.getDocumentSize() == null) {
-                ctx.setDocumentSize(new Dimension((int)w, (int)h));
-            }
+            ctx.setDocumentSize(new Dimension((int)w, (int)h));
         }
         // Set the viewing transform, this is often updated when the
         // component prepares for rendering.

@@ -596,33 +596,26 @@ public class JSVGComponent extends JGVTComponent {
      * queue thread.  It returns immediately.
      */
     protected void stopThenRun(final Runnable r) {
-        synchronized (this) {
-            if (afterStopRunnable != null) {
-                // Have it run our new runnable, and not
+        if (afterStopRunnable != null) {
+            // Have it run our new runnable, and not
                 // run the 'old' runnable.
-                afterStopRunnable = r;
-                return;
-            }
             afterStopRunnable = r;
+            return;
         }
 
-        if (documentLoader != null) {
-            stopProcessing();
-        } else if (gvtTreeBuilder != null) {
-            stopProcessing();
-        } else if (updateManager != null) {
-            stopProcessing();
-        } else if (nextUpdateManager != null) {
-            stopProcessing();
-        } else if (svgLoadEventDispatcher != null) {
-            stopProcessing();
-        }  else {
-            stopProcessing();
-            synchronized (this) {
-                Runnable asr = afterStopRunnable;
-                afterStopRunnable = null;
-                asr.run();
-            }
+        afterStopRunnable = r;
+
+        stopProcessing();
+
+        if ((documentLoader         == null) &&
+            (gvtTreeBuilder         == null) &&
+            (gvtTreeRenderer        == null) &&
+            (svgLoadEventDispatcher == null) &&
+            (nextUpdateManager      == null) &&
+            (updateManager          == null)) {
+            Runnable asr = afterStopRunnable;
+            afterStopRunnable = null;
+            asr.run();
         }
     }
 
@@ -747,6 +740,28 @@ public class JSVGComponent extends JGVTComponent {
     public void flushImageCache() {
         ImageTagRegistry reg = ImageTagRegistry.getRegistry();
         reg.flushCache();
+    }
+
+    public void setGraphicsNode(GraphicsNode gn, boolean createDispatcher) {
+        Dimension2D dim = bridgeContext.getDocumentSize();
+        Dimension   mySz = new Dimension((int)dim.getWidth(),
+                                         (int)dim.getHeight());
+        JSVGComponent.this.setMySize(mySz);
+        SVGSVGElement elt = svgDocument.getRootElement();
+        Dimension d = getSize();
+        prevComponentSize = d;
+        if (d.width  < 1) d.width  = 1;
+        if (d.height < 1) d.height = 1;
+        AffineTransform at = ViewBox.getViewTransform
+            (fragmentIdentifier, elt, d.width, d.height);
+        CanvasGraphicsNode cgn = getCanvasGraphicsNode(gn);
+        cgn.setViewingTransform(at);
+        initialTransform = new AffineTransform();
+        setRenderingTransform(initialTransform, false);
+        jsvgComponentListener.updateMatrix(initialTransform);
+        addJGVTComponentListener(jsvgComponentListener);
+        addComponentListener(jsvgComponentListener);
+        super.setGraphicsNode(gn, createDispatcher);
     }
 
     /**
@@ -1282,24 +1297,6 @@ public class JSVGComponent extends JGVTComponent {
                 return;
             }
 
-            Dimension2D dim = bridgeContext.getDocumentSize();
-            Dimension   mySz = new Dimension((int)dim.getWidth(),
-                                             (int)dim.getHeight());
-            JSVGComponent.this.setMySize(mySz);
-            SVGSVGElement elt = svgDocument.getRootElement();
-            Dimension d = getSize();
-            prevComponentSize = d;
-            if (d.width  < 1) d.width  = 1;
-            if (d.height < 1) d.height = 1;
-            AffineTransform at = ViewBox.getViewTransform
-                (fragmentIdentifier, elt, d.width, d.height);
-            CanvasGraphicsNode cgn = getCanvasGraphicsNode(e.getGVTRoot());
-            cgn.setViewingTransform(at);
-            initialTransform = new AffineTransform();
-            setRenderingTransform(initialTransform, false);
-            jsvgComponentListener.updateMatrix(initialTransform);
-            addJGVTComponentListener(jsvgComponentListener);
-            addComponentListener(jsvgComponentListener);
             gvtRoot = null;
 
             if (isDynamicDocument && JSVGComponent.this.eventsEnabled) {

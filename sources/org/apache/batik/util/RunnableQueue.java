@@ -111,6 +111,8 @@ public class RunnableQueue implements Runnable {
      */
     protected DoublyLinkedList list = new DoublyLinkedList();
 
+    protected int preemptCount = 0;
+
     /**
      * The object which handle run events.
      */
@@ -191,6 +193,7 @@ public class RunnableQueue implements Runnable {
                     if (state == SUSPENDING)
                         continue;
                     l = (Link)list.pop();
+                    if (preemptCount != 0) preemptCount--;
                     if (l == null) {
                         // No item to run, wait till there is one.
                         list.wait();
@@ -288,7 +291,8 @@ public class RunnableQueue implements Runnable {
                 ("RunnableQueue not started or has exited");
         }
         synchronized (list) {
-            list.unpop(new Link(r));
+            list.add(preemptCount, new Link(r));
+            preemptCount++;
             list.notify();
         }
     }
@@ -315,7 +319,8 @@ public class RunnableQueue implements Runnable {
 
         LockableLink l = new LockableLink(r);
         synchronized (list) {
-            list.unpop(l);
+            list.add(preemptCount, l);
+            preemptCount++;
             list.notify();
         }
         l.lock();

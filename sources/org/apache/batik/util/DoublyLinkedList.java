@@ -148,6 +148,19 @@ public class DoublyLinkedList {
         head = nde;
     }
 
+    public void add(int index, Node nde) {
+        if (nde == null) return;
+        Node after = head;
+        while (index != 0) {
+            after = after.getNext();
+            index--;
+        }
+        nde.insertBefore(after);
+        if (after == head) 
+            head=nde;
+        size++;
+    }
+
     /**
      * Adds <tt>nde</tt> to the head of the list.
      * In perl this is called an 'unpop'.  <tt>nde</tt> should
