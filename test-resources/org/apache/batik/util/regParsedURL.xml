@@ -111,4 +111,62 @@
         <arg class="java.lang.String" value="file:junk.svg#Bar" />
         <arg class="java.lang.String" value="file:junk.svg#Bar" />
     </test>
+
+    <!-- Tests for the jar protocol... -->
+    <test class="org.apache.batik.util.ParsedURLTest">
+        <!-- Test basic parsing of jar URL -->
+        <arg class="java.lang.String" 
+             value="jar:file:dir/file.jar!/p/a/t/h/init.svg" />
+        <arg class="java.lang.String" 
+             value="jar:file:dir/file.jar!/p/a/t/h/init.svg" />
+    </test>
+    <test class="org.apache.batik.util.ParsedURLTest">
+        <!-- more basic parsing of jar URL -->
+        <arg class="java.lang.String" 
+             value="jar:file:dir/file.jar!/p/a/t/h/init.svg#foo" />
+        <arg class="java.lang.String" 
+             value="jar:file:dir/file.jar!/p/a/t/h/init.svg#foo" />
+    </test>
+    <test class="org.apache.batik.util.ParsedURLTest">
+        <!-- Test relative file from base jar URL -->
+        <arg class="java.lang.String" 
+             value="jar:file:dir/file.jar!/p/a/t/h/init.svg" />
+        <arg class="java.lang.String" value="../base.svg" />
+        <arg class="java.lang.String" 
+             value="jar:file:dir/file.jar!/p/a/t/base.svg" />
+    </test>
+    <test class="org.apache.batik.util.ParsedURLTest">
+        <!-- Test fragment from base jar URL -->
+        <arg class="java.lang.String" 
+             value="jar:file:dir/file.jar!/p/a/t/h/init.svg" />
+        <arg class="java.lang.String" value="#foo" />
+        <arg class="java.lang.String" 
+             value="jar:file:dir/file.jar!/p/a/t/h/init.svg#foo" />
+    </test>
+    <test class="org.apache.batik.util.ParsedURLTest">
+        <!-- Test fragment replacement in base jar URL -->
+        <arg class="java.lang.String" 
+             value="jar:file:dir/file.jar!/p/a/t/h/init.svg#bar" />
+        <arg class="java.lang.String" value="#faz" />
+        <arg class="java.lang.String" 
+             value="jar:file:dir/file.jar!/p/a/t/h/init.svg#faz" />
+    </test>
+    <test class="org.apache.batik.util.ParsedURLTest">
+        <!-- Test simple absolute child jar URL -->
+        <arg class="java.lang.String" 
+             value="jar:file:/path1!/path2" />
+        <arg class="java.lang.String" 
+             value="jar:file:/path3!/path4" />
+        <arg class="java.lang.String" 
+             value="jar:file:/path3!/path4" />
+    </test>
+    <test class="org.apache.batik.util.ParsedURLTest">
+        <!-- Test complex absolute child jar URL -->
+        <arg class="java.lang.String" 
+             value="jar:file:dir/file.jar!/p/a/t/h/init.svg" />
+        <arg class="java.lang.String" 
+             value="jar:file:dir/file.jar!/b/a/t/i/k/new.svg#bar" />
+        <arg class="java.lang.String" 
+             value="jar:file:dir/file.jar!/b/a/t/i/k/new.svg#bar" />
+    </test>
 </testSuite>
