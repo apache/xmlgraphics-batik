@@ -311,10 +311,27 @@ public class PadRed extends AbstractRed {
         int height = wrR.height;
 
         Rectangle   r;
-        if (wrR.intersects(srcR))
-            r = wrR.intersection(srcR);
-        else
-            r = new Rectangle(0,0,0,0);
+        {
+            // Calculate an intersection that makes some sense
+            // even when the rects don't really intersect 
+            // (The x and y ranges will be correct if they
+            // overlap in one dimension even if they don't
+            // intersect in both dimensions).
+            int minX = (srcR.x > x) ? srcR.x : x;
+            int maxX = (((srcR.x+srcR.width-1) < (x+width-1)) ? 
+                        ( srcR.x+srcR.width-1) : (x+width-1));
+            int minY = (srcR.y > y) ? srcR.y : y;
+            int maxY = (((srcR.y+srcR.height-1) < (y+height-1)) ? 
+                        ( srcR.y+srcR.height-1) : (y+height-1));
+
+            int x0 = minX;
+            int w = maxX-minX+1;
+            int y0 = minY;
+            int h = maxY-minY+1;
+            if (w <0 ) { x0 = 0; w = 0; }
+            if (h <0 ) { y0 = 0; h = 0; }
+            r = new Rectangle(x0, y0, w, h);
+        }
 
         // We split the edge drawing up into four parts.
         //
