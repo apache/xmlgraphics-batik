@@ -122,7 +122,7 @@
         <li><link href="http://xml.apache.org/fop">The Apache FOP project</link> uses Batik to handle SVG images. It uses the SVG rasterizer and extends the Batik transcoder 
             architecture to offer SVG to PDF conversion.</li>
         <li><link href="http://xml.apache.org/cocoon">The Apache Cocoon project</link> uses Batik to rasterize SVG images. </li>
-        <li><link href="http://www.jrefinery.com/jfreechart">The JFreeChart Project</link> uses Batik to export charts in the SVG format. </li>
+        <li><link href="http://www.object-refinery.com/jfreechart/index.html">The JFreeChart Project</link> uses Batik to export charts in the SVG format. </li>
         <li><link href="http://www.ilog.com/products/jviews">ILOG's JViews</link> product uses and extends the Batik SVG export module. </li>
         <li><link href="http://otn.oracle.com/products/jdev/content.html">Oracle Corp.'s JDeveloper9i</link> uses Batik to export class diagrams in SVG. It uses the
         SVG export module (SVGGraphics2D).</li>
