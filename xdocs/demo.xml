@@ -25,6 +25,20 @@
 
     <body>
         <s1 title="Demo of SVG Tools">
+          <ul>
+            <li><link href="#SVGViewer">SVG Viewer</link></li>
+            <li><link href="#SVGPlugin">SVG Plugin</link></li>
+            <li><link href="#SVGRasterizer">SVG Rasterizer</link></li>
+            <li><link href="#SVGGen">SVG Graphics2D Generator</link></li>
+          </ul>
+        </s1> 
+        <s1 id="SVGViewer" title="SVG Viewer">
         </s1>
-    </body>
+        <s1 id="SVGPlugin" title="SVG Plugin">
+        </s1>
+        <s1 id="SVGRasterizer" title="SVG Rasterizer">
+        </s1>
+        <s1 id="SVGGen" title="SVG Graphics2D Generator">
+        </s1>
+   </body>
 </document>
