@@ -16,7 +16,7 @@ import java.io.*;
 import java.net.*;
 
 import org.apache.batik.dom.util.XLinkSupport;
-import org.apache.batik.util.svg.Base64Encoder;
+import org.apache.batik.util.Base64Encoder;
 import org.apache.batik.ext.awt.image.codec.ImageEncoder;
 import org.apache.batik.ext.awt.image.codec.PNGImageEncoder;
 
@@ -24,7 +24,7 @@ import org.w3c.dom.*;
 
 /**
  * This implementation of ImageHandler encodes the input image as
- * a PNG image first, then encodes the PNG image using Base64 
+ * a PNG image first, then encodes the PNG image using Base64
  * encoding and uses the result to encoder the image url using
  * the data protocol.
  *
@@ -58,7 +58,7 @@ public class ImageHandlerBase64Encoder extends DefaultImageHandler{
             else{
                 BufferedImage buf = new BufferedImage(width, height,
                                                       BufferedImage.TYPE_INT_ARGB);
-                
+
                 Graphics2D g = buf.createGraphics();
                 g.drawImage(image, 0, 0, null);
                 g.dispose();
@@ -75,7 +75,7 @@ public class ImageHandlerBase64Encoder extends DefaultImageHandler{
         if(image == null){
             throw new IllegalArgumentException();
         }
-        
+
         RenderedImage r = image.createDefaultRendering();
         if(r == null){
             handleEmptyImage(imageElement);
@@ -94,7 +94,7 @@ public class ImageHandlerBase64Encoder extends DefaultImageHandler{
     /**
      * This version of handleHREF encodes the input image into a
      * PNG image whose bytes are then encoded with Base64. The
-     * resulting encoded data is used to set the url on the 
+     * resulting encoded data is used to set the url on the
      * input imageElement, using the data: protocol.
      */
     protected void handleHREF(RenderedImage image, Element imageElement){
@@ -121,9 +121,9 @@ public class ImageHandlerBase64Encoder extends DefaultImageHandler{
         // Finally, write out url
         //
         imageElement.setAttributeNS(XLinkSupport.XLINK_NAMESPACE_URI, ATTR_XLINK_HREF,
-                                    DATA_PROTOCOL_PNG_PREFIX + 
+                                    DATA_PROTOCOL_PNG_PREFIX +
                                     os.toString());
-        
+
     }
 
     public byte[] encodeImage(RenderedImage buf){
@@ -171,7 +171,7 @@ public class ImageHandlerBase64Encoder extends DefaultImageHandler{
         System.out.println();
         System.out.println("<svg width=\"450\" height=\"500\">");
         System.out.println("    <rect width=\"100%\" height=\"100%\" fill=\"yellow\" />");
-        System.out.println("    <image x=\"30\" y=\"30\" xlink:href=\"" + imageElement.getAttributeNS(null, SVGSyntax.ATTR_XLINK_HREF) + "\" width=\"100\" height=\"100\" />");        
+        System.out.println("    <image x=\"30\" y=\"30\" xlink:href=\"" + imageElement.getAttributeNS(null, SVGSyntax.ATTR_XLINK_HREF) + "\" width=\"100\" height=\"100\" />");
         System.out.println("</svg>");
         System.exit(0);
     }

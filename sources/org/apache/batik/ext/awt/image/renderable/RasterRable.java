@@ -9,7 +9,7 @@
 package org.apache.batik.ext.awt.image.renderable;
 
 import org.apache.batik.ext.awt.image.rendered.CachableRed;
-import org.apache.batik.util.svg.Base64Decoder;
+import org.apache.batik.util.Base64Decoder;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -147,7 +147,7 @@ public class RasterRable
      * Toolkit.createImage(...) function.
      * @param dataUrl the data url containing the complete base64
      *                encoded image data.
-     * @param bounds The bounds of the image 
+     * @param bounds The bounds of the image
      */
     public static Filter create(String dataUrl, Rectangle2D bounds){
         //
@@ -196,7 +196,7 @@ public class RasterRable
             try {
                 Image img = createImage();
 
-                if (img == null) 
+                if (img == null)
                     // No Image was created, something is wrong...
                     return null;
 
@@ -223,7 +223,7 @@ public class RasterRable
                         // isn't done yet, so try again.
                         continue;
                     };
-                
+
                     // All done!
                     break;
                 }
@@ -240,10 +240,10 @@ public class RasterRable
 
                 g2d.drawImage(img, 0, 0, null);
                 g2d.dispose();
-                
+
                 return bi;
             }
-            catch (Exception e) { 
+            catch (Exception e) {
                 // Just catch everything.
             }
 
@@ -269,7 +269,7 @@ public class RasterRable
                 g2d.dispose();
             }
 
-            // Store the result in the RasterRable, and wake up 
+            // Store the result in the RasterRable, and wake up
             // anyone who is waiting for our image..
             synchronized (this) {
                 src = RenderedImageCachableRed.wrap(bi);
@@ -292,7 +292,7 @@ public class RasterRable
         /** The URL cache we are associated with */
         protected URLImageCache cache;
 
-        /** 
+        /**
          * Load an image from a url.
          * This will use the default URL cache.
          * @param url The url of the image to load (must be readable
@@ -302,7 +302,7 @@ public class RasterRable
             this(url, URLImageCache.getDefaultCache());
         }
 
-        /** 
+        /**
          * Load an image from a url.
          * @param url The url of the image to load (must be readable
          *            with Toolkit.createImage(url).
@@ -329,15 +329,15 @@ public class RasterRable
          */
         public BufferedImage load() {
             BufferedImage bi = cache.request(url);
-            
-            if (bi != null) 
+
+            if (bi != null)
                 return bi;
 
             bi = super.load();
 
             if (bi != null)
                 cache.put(url, bi); // Let other people use our work..
-            else 
+            else
                 // Something wrong, We Couldn't loda the image.
                 // This is debateable but I'm going to clear my entry
                 // rather than put the 'broken link' image here...
@@ -363,7 +363,7 @@ public class RasterRable
          */
         public Base64ImageLoader(String base64Data) {
             this.base64Data = base64Data;
-            this.start      = 0; 
+            this.start      = 0;
             this.length     = base64Data.length();;
         }
 
@@ -376,7 +376,7 @@ public class RasterRable
          */
         public Base64ImageLoader(String base64Data, int start, int length) {
             this.base64Data = base64Data;
-            this.start      = start; 
+            this.start      = start;
             this.length     = length;
         }
 
