@@ -17,6 +17,8 @@ import java.net.URL;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -73,6 +75,24 @@ public class Main implements ViewerFrame.Application {
      * @param args The command-line arguments.
      */
     public static void main(String[] args) {
+        //
+        // Break down args in case they have been concatenated
+        //
+        Vector argsVector = new Vector();
+        int nArgs = args.length;
+        for(int j=0; j<nArgs; j++){
+            String arg = args[j];
+            StringTokenizer st = new StringTokenizer(arg, " ");
+            while(st.hasMoreTokens()){
+                argsVector.addElement(st.nextToken());
+            }
+        }
+
+        args = new String[argsVector.size()];
+        for(int j=0; j<args.length; j++){
+            args[j] = (String)argsVector.elementAt(j);
+        }
+
         int i = 0;
         while (i < args.length) {
             if (args[i].equals("-sf")) {
@@ -96,8 +116,8 @@ public class Main implements ViewerFrame.Application {
         }
         if (i > 0) {
             String[] t = new String[args.length - i];
-            for (int n = i; n < t.length; n++) {
-                t[n] = args[n + 1];
+            for (int n = 0; n < t.length; n++) {
+                t[n] = args[n + i];
             }
             args = t;
         }
