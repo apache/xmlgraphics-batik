@@ -30,11 +30,11 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseListener;
 
-import java.awt.geom.Arc2D;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
+import java.awt.geom.Arc2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.NoninvertibleTransformException;
 
@@ -226,11 +226,6 @@ public class JSVGCanvas
      * The transform representing the rotation.
      */
     protected AffineTransform rotateTransform;
-
-    /**
-     * The transform representing the previous rotation.
-     */
-    protected AffineTransform previousRotateTransform;
 
     /**
      * The pan bounding box.
@@ -546,16 +541,14 @@ public class JSVGCanvas
         }
         rotateAngle = 0;
         rotateCos = 1;
-        previousRotateTransform = null;
-        rotateTransform = null;
         if (zoomHandler != null) {
             zoomHandler.zoomChanged(1);
         }
         bufferNeedsRendering = true;
-        repaint();
         if (thumbnailCanvas != null) {
              thumbnailCanvas.fullRepaint();
         }
+        repaint(); // scheduled after the thumbnail repaint
     }
 
     /**
@@ -698,7 +691,9 @@ public class JSVGCanvas
             canvasSpaceHighlightShape =
                 transform.createTransformedShape(selectionHighlightShape);
             String selectionString = getSelectionDescription(e.getSelection());
-            userAgent.displayMessage("Selection: "+selectionString);
+            if (selectionString != null) {
+                 userAgent.displayMessage("Selection: "+selectionString);
+            }
             repaint(); // in case immediate-mode XORs are out of sync
                        // with the regular repaint-on-request repaints
         } else if (e.getType() == SelectionEvent.SELECTION_CLEARED) {
@@ -715,7 +710,7 @@ public class JSVGCanvas
     }
 
     private String getSelectionDescription(Object o) {
-        String label="[unknown return type]";
+        String label=null;
         if (o instanceof CharacterIterator) {
             CharacterIterator iter = (CharacterIterator) o;
             char[] cbuff = new char[iter.getEndIndex()-iter.getBeginIndex()];
@@ -794,9 +789,15 @@ public class JSVGCanvas
             throw new Error(e.getMessage());
         }
 
-        //System.out.println("devAOI : " + devAOI);
-        //System.out.println("usrAOI : " + dev2usr.createTransformedShape(devAOI).getBounds2D());
-        //System.out.println("devAOI 2: " + transform.createTransformedShape(dev2usr.createTransformedShape(devAOI)).getBounds2D());
+        /*
+         * System.out.println("devAOI : " + devAOI);
+         * System.out.println("usrAOI : " +
+         *    dev2usr.createTransformedShape(devAOI).getBounds2D());
+         * System.out.println("devAOI 2: " +
+         *   transform.createTransformedShape(dev2usr.createTransformedShape(
+         * devAOI)).getBounds2D());
+         */
+
         return dev2usr.createTransformedShape(devAOI);
     }
 
@@ -807,7 +808,7 @@ public class JSVGCanvas
 
         if (!EventQueue.isDispatchThread()) {
             System.err.println(
-                "ERROR: JSVGCanvas paintComponent() called outside AWT thread!");
+              "ERROR: JSVGCanvas paintComponent() called outside AWT thread!");
         }
 
         // TODO: simplify and clean up this code
@@ -883,6 +884,9 @@ public class JSVGCanvas
         }
     }
 
+
+    protected static Color selectionXORColor = Color.black;
+
     /**
      * Paints the canvas "overlay" primitives
      * (rotation box, zoom AOI box, highlight [not yet implemented], etc.
@@ -910,7 +914,7 @@ public class JSVGCanvas
             g2d.draw(docBBox);
         }
         if (canvasSpaceHighlightShape != null) {
-            g2d.setColor(Color.black);
+            g2d.setColor(selectionXORColor);
             g2d.fill(canvasSpaceHighlightShape);
         }
         g2d.setXORMode(Color.white);
@@ -1017,7 +1021,8 @@ public class JSVGCanvas
         Shape aoi = getAreaOfInterest(
                         new Rectangle(0, 0, size.width, size.height));
         Thread t = new Thread(
-                   new RenderBufferAOIRunnable(renderer, aoi, buffer, size));
+                   new RenderBufferAOIRunnable(
+                            renderer, aoi, buffer, size, JSVGCanvas.this));
         t.setPriority(Thread.MIN_PRIORITY);
         if ((backgroundRenderThread != null) &&
                        (backgroundRenderThread.isAlive())) {
@@ -1027,25 +1032,62 @@ public class JSVGCanvas
         t.start();
     }
 
+    private static final int REPAINT_DONE = 0;
+
+    private static final int REPAINT_THUMBNAIL_PENDING = 1;
+
+    /**
+     *
+     * Methods are not synchronized since access it intended
+     * to occur within a synchronized block.
+     */
+    class RepaintState {
+        private int i;
+        public RepaintState(int i) {
+            this.i = i;
+        }
+        public void setValue(int i) {
+            this.i = i;
+        }
+        public int getValue() {
+            return i;
+        }
+    }
+
+    private RepaintState repaintState = new RepaintState(REPAINT_DONE);
+
     class RenderBufferAOIRunnable implements Runnable {
 
         private Shape aoi;
         private Renderer renderer;
         private BufferedImage buffer;
         private Dimension size;
+        private Component component;
 
-        RenderBufferAOIRunnable(Renderer renderer, Shape aoi, BufferedImage buffer,
-                                                                     Dimension size) {
+        RenderBufferAOIRunnable(Renderer renderer,
+                                Shape aoi,
+                                BufferedImage buffer,
+                                Dimension size,
+                                Component component) {
             this.renderer = renderer;
             this.aoi = aoi;
             this.buffer = buffer; // Hack, should be able to get this from renderer
             this.size = size;
+            this.component = component;
         }
 
         public void run() {
             long t1 = System.currentTimeMillis();
             requestCursor(WAIT_CURSOR);
-            synchronized (globalBuffer) {
+            synchronized (repaintState) {
+                if ((repaintState.getValue() == REPAINT_THUMBNAIL_PENDING)
+                    && !(component instanceof JSVGCanvas.ThumbnailCanvas)) {
+                    try {
+                        repaintState.wait(5000);
+                        // timeout prevents deadlock if something goes wrong
+                    } catch (InterruptedException ie) {
+                    }
+                }
                 // if we don't synchronize, we can accidentlly
                 // paint twice after clearing twice
                 if (!Thread.currentThread().isInterrupted()) {
@@ -1053,7 +1095,7 @@ public class JSVGCanvas
                                     (int) (this.size.getHeight()));
                     RepaintTimer timer = null;
                     if (progressiveRenderingEnabled) {
-                        timer = new RepaintTimer(JSVGCanvas.this, 1000);
+                        timer = new RepaintTimer(component, 1000);
                         timer.start();
                     }
                     try {
@@ -1072,6 +1114,8 @@ public class JSVGCanvas
                         if (timer != null) {
                             timer.interrupt();
                         }
+                        repaintState.setValue(REPAINT_DONE);
+                        repaintState.notifyAll();
                         // always de-register as a listener, to avoid
                         // memory leak
                         renderer.dispose();
@@ -1086,7 +1130,7 @@ public class JSVGCanvas
                 if (!isLoadPending()) {
                     requestCursor(NORMAL_CURSOR);
                 }
-                JSVGCanvas.this.repaint();
+                component.repaint();
             }
         }
     }
@@ -1129,8 +1173,6 @@ public class JSVGCanvas
             computeTransform();
             rotateAngle = 0;
             rotateCos = 1;
-            previousRotateTransform = null;
-            rotateTransform = null;
             if (zoomHandler != null) {
                 zoomHandler.zoomChanged(1);
             }
@@ -1149,8 +1191,6 @@ public class JSVGCanvas
             computeTransform();
             rotateAngle = 0;
             rotateCos = 1;
-            previousRotateTransform = null;
-            rotateTransform = null;
             if (zoomHandler != null) {
                 zoomHandler.zoomChanged(1);
             }
@@ -1263,7 +1303,6 @@ public class JSVGCanvas
                     }
                     requestCursor(ROTATE_CURSOR);
                     setCursor(ROTATE_CURSOR);
-                    previousRotateTransform = rotateTransform;
                     rotateTransform = new AffineTransform();
                     paintRotateMarker(sx, sy);
                     operationPerformed = true;
@@ -1417,15 +1456,7 @@ public class JSVGCanvas
                 }
             } else if (rotateMarker != null) {
                 clearRotateMarker();
-                if (previousRotateTransform != null) {
-                    try {
-                        transform.preConcatenate(
-                                       previousRotateTransform.createInverse());
-                    } catch(NoninvertibleTransformException ex) {}
-                    previousRotateTransform = null;
-                }
                 transform.preConcatenate(rotateTransform);
-
                 updateBaseTransform();
                 if (zoomHandler != null) {
                     zoomHandler.zoomChanged((float)(transform.getScaleX() /
@@ -1467,27 +1498,18 @@ public class JSVGCanvas
                 rotateCos = Math.cos(rotateAngle);
 
                 rotateTransform =
-                    AffineTransform.getRotateInstance(angle,
-                                                      dim.width / 2,
-                                                      dim.height / 2);
+                    AffineTransform.getRotateInstance(
+                     angle,
+                     dim.width / 2,
+                     dim.height / 2);
+
                 rotateMarker = p;
-/*
- *               Rectangle r;
- *               r = markerStroke.createStrokedShape(rotateMarker).getBounds();
- *               paintImmediately(r.x, r.y, r.width, r.height);
- */
-                 paintOverlays(getGraphics());
+
+                paintOverlays(getGraphics());
            }
         }
 
         protected void clearRotateMarker() {
-/*            if (rotateMarker != null) {
- *               Rectangle r;
- *               r = markerStroke.createStrokedShape(rotateMarker).getBounds();
- *               rotateMarker = null;
- *               paintImmediately(r.x, r.y, r.width, r.height);
- *            }
- */
               paintOverlays(getGraphics());
               rotateMarker = null;
         }
@@ -1596,6 +1618,11 @@ public class JSVGCanvas
         protected AffineTransform markerTransform = new AffineTransform();
 
         /**
+         * The background rendering thread instance - should be only one alive.
+         */
+        private Thread backgroundRenderThread = null;
+
+         /**
          * Used to draw marker
          */
         protected BasicStroke markerStroke
@@ -1617,15 +1644,74 @@ public class JSVGCanvas
          * Recomputes the offscreen buffer and repaint.
          */
         public void fullRepaint() {
+            synchronized (repaintState) {
+                repaintState.setValue(REPAINT_THUMBNAIL_PENDING);
+            }
             bufferNeedsRendering = true;
             computeTransform();
             repaint();
         }
 
+
+      public void paintComponent(Graphics g) {
+
+            if (!EventQueue.isDispatchThread()) {
+                System.err.println(
+            "ERROR: Thumbnail paintComponent() called outside AWT thread!");
+            }
+
+            // TODO: simplify and clean up this code
+
+            super.paintComponent(g);
+
+            Dimension size = getSize();
+            int w = size.width;
+            int h = size.height;
+
+            if (w < 1 || h < 1) {
+                return;
+            }
+
+            Renderer renderer = null;
+
+            if (repaintThread != null) {
+                Graphics2D g2d = (Graphics2D)g;
+                g2d.drawImage(buffer, null, 0, 0);
+                return;
+            }
+
+            updateBuffer(w, h);
+            if (bufferNeedsRendering) {
+                renderer = rendererFactory.createRenderer(buffer);
+                ((DynamicRenderer)renderer).setRepaintHandler(this);
+                renderer.setTransform(transform);
+            }
+            if (renderer != null && gvtRoot != null &&
+                renderer.getTree() != gvtRoot) {
+                renderer.setTree(gvtRoot);
+                bufferNeedsRendering = true;
+            }
+            if (bufferNeedsRendering) {
+                clearBuffer(w, h);
+                renderer.setTransform(transform);
+                repaintAOI(renderer, size, buffer);
+                bufferNeedsRendering = false; // repaint is already queued
+                return;
+            } else { // buffer is current, just transform and draw it
+
+                Graphics2D g2d = (Graphics2D)g;
+                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                             RenderingHints.VALUE_ANTIALIAS_ON);
+                g2d.drawImage(buffer, null, 0, 0);
+
+                paintOverlays(g);
+            }
+        }
+
         /**
          * Paints this component.
          */
-        protected void paintComponent(Graphics g) {
+        protected void paintComponentOld(Graphics g) {
             super.paintComponent(g);
 
             Dimension size = getSize();
@@ -1665,6 +1751,10 @@ public class JSVGCanvas
                                  RenderingHints.VALUE_ANTIALIAS_ON);
             g2d.drawImage(offscreenBuffer, null, 0, 0);
 
+        }
+
+        public void paintOverlays(Graphics g) {
+            Graphics2D g2d = (Graphics2D)g;
             if (gvtRoot != null) {
                 // Paint the marker
                 Dimension csize = JSVGCanvas.this.getSize();
@@ -1690,6 +1780,26 @@ public class JSVGCanvas
                 g2d.draw(s);
                 g2d.setXORMode(Color.white);
             }
+        }
+
+        /**
+         * To repaint the buffer.
+         */
+        protected void repaintAOI(Renderer renderer, Dimension size,
+                                                 BufferedImage buffer) {
+
+            Shape aoi = getAreaOfInterest(
+                        new Rectangle(0, 0, size.width, size.height));
+            Thread t = new Thread(
+                   new RenderBufferAOIRunnable(
+                         renderer, aoi, buffer, size, ThumbnailCanvas.this));
+            t.setPriority(Thread.MIN_PRIORITY);
+            if ((backgroundRenderThread != null) &&
+                       (backgroundRenderThread.isAlive())) {
+                backgroundRenderThread.interrupt();
+            }
+            backgroundRenderThread = t;
+            t.start();
         }
 
         /**
