@@ -296,11 +296,10 @@ public class ThumbnailDialog extends JDialog {
             Dimension dim = svgCanvas.getSize();
             s = new Rectangle2D.Float(0, 0, dim.width, dim.height);
             try {
-                at = svgCanvas.getRenderingTransform().createInverse();
+		at = svgCanvas.getRenderingTransform().createInverse();
 		at.preConcatenate(svgThumbnailCanvas.getRenderingTransform());
                 s = at.createTransformedShape(s);
             } catch (NoninvertibleTransformException ex) {
-		ex.printStackTrace();
                 dim = svgThumbnailCanvas.getSize();
                 s = new Rectangle2D.Float(0, 0, dim.width, dim.height);
             }
