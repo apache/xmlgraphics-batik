@@ -10,12 +10,14 @@ package org.apache.batik.gvt.renderer;
 
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
+import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
+import java.awt.image.SampleModel;
 
 import java.util.List;
 import java.util.Iterator;
@@ -67,6 +69,55 @@ public class DynamicRenderer extends StaticRenderer {
     public void flush(List areas) {
         // Since we don't cache we don't need to flush
         return;
+    }
+
+    protected void updateWorkingBuffers() {
+        if (rootFilter == null) {
+            rootFilter = rootGN.getGraphicsNodeRable(true);
+            rootCR = null;
+        }
+
+        rootCR = renderGNR();
+        if (rootCR == null) {
+            // No image to display so clear everything out...
+            workingRaster = null;
+            workingOffScreen = null;
+            workingBaseRaster = null;
+            
+            currentOffScreen = null;
+            currentBaseRaster = null;
+            currentRaster = null;
+            return;
+        }
+
+        SampleModel sm = rootCR.getSampleModel();
+        int         w  = offScreenWidth;
+        int         h  = offScreenHeight;
+
+        if ((workingBaseRaster == null) ||
+            (workingBaseRaster.getWidth()  < w) ||
+            (workingBaseRaster.getHeight() < h)) {
+
+            sm = sm.createCompatibleSampleModel(w, h);
+            
+            workingBaseRaster 
+                = Raster.createWritableRaster(sm, new Point(0,0));
+
+            workingRaster = workingBaseRaster.createWritableChild
+                (0, 0, w, h, 0, 0, null);
+
+            workingOffScreen =  new BufferedImage
+                (rootCR.getColorModel(), 
+                 workingRaster,
+                 rootCR.getColorModel().isAlphaPremultiplied(), null);
+
+        }
+
+        if (!isDoubleBuffered) {
+            currentOffScreen  = workingOffScreen;
+            currentBaseRaster = workingBaseRaster;
+            currentRaster     = workingRaster;
+        }
     }
 
     /**
