@@ -58,78 +58,82 @@ public class PathParser extends NumberParser {
 
 	read();
 	loop: for (;;) {
-	    switch (current) {
-	    case 0xD:
-	    case 0xA:
-	    case 0x20:
-	    case 0x9:
-		read();
-		break;
-	    case 'z':
-	    case 'Z':
-		read();
-		pathHandler.closePath();
-		break;
-	    case 'm':
-		parsem();
-	    case 'l':
-		parsel();
-		break;
-	    case 'M':
-		parseM();
-	    case 'L':
-		parseL();
-		break;
-	    case 'h':
-		parseh();
-		break;
-	    case 'H':
-		parseH();
-		break;
-	    case 'v':
-		parsev();
-		break;
-	    case 'V':
-		parseV();
-		break;
-	    case 'c':
-		parsec();
-		break;
-	    case 'C':
-		parseC();
-		break;
-	    case 'q':
-		parseq();
-		break;
-	    case 'Q':
-		parseQ();
-		break;
-	    case 's':
-		parses();
-		break;
-	    case 'S':
-		parseS();
-		break;
-	    case 't':
-		parset();
-		break;
-	    case 'T':
-		parseT();
-		break;
-	    case 'a':
-		parsea();
-		break;
-	    case 'A':
-		parseA();
-		break;
-	    default:
-		if (current == -1) {
-		    break loop;
-		}
-		reportError("character.unexpected",
-			    new Object[] { new Integer(current) });
-		skipSubPath();
-	    }
+            try {
+                switch (current) {
+                case 0xD:
+                case 0xA:
+                case 0x20:
+                case 0x9:
+                    read();
+                    break;
+                case 'z':
+                case 'Z':
+                    read();
+                    pathHandler.closePath();
+                    break;
+                case 'm':
+                    parsem();
+                case 'l':
+                    parsel();
+                    break;
+                case 'M':
+                    parseM();
+                case 'L':
+                    parseL();
+                    break;
+                case 'h':
+                    parseh();
+                    break;
+                case 'H':
+                    parseH();
+                    break;
+                case 'v':
+                    parsev();
+                    break;
+                case 'V':
+                    parseV();
+                    break;
+                case 'c':
+                    parsec();
+                    break;
+                case 'C':
+                    parseC();
+                    break;
+                case 'q':
+                    parseq();
+                    break;
+                case 'Q':
+                    parseQ();
+                    break;
+                case 's':
+                    parses();
+                    break;
+                case 'S':
+                    parseS();
+                    break;
+                case 't':
+                    parset();
+                    break;
+                case 'T':
+                    parseT();
+                    break;
+                case 'a':
+                    parsea();
+                    break;
+                case 'A':
+                    parseA();
+                    break;
+                case -1:
+                    break loop;
+                default:
+                    reportError("character.unexpected",
+                                new Object[] { new Integer(current) });
+                    skipSubPath();
+                }
+	    } catch (ParseException e) {
+                errorHandler.error(e);
+                skipSubPath();
+            }
 	}
 
 	skipSpaces();
@@ -148,17 +152,11 @@ public class PathParser extends NumberParser {
 	read();
 	skipSpaces();
 
-	try {
-	    float x = parseFloat();
-	    skipCommaSpaces();
-	    float y = parseFloat();
+        float x = parseFloat();
+        skipCommaSpaces();
+        float y = parseFloat();
 
-	    pathHandler.movetoRel(x, y);
-	} catch (NumberFormatException e) {
-        reportError("character.unexpected",
-                    new Object[] { new Integer(current) });
-	    skipSubPath();
-	}
+        pathHandler.movetoRel(x, y);
         skipCommaSpaces();
     }
 
@@ -175,18 +173,11 @@ public class PathParser extends NumberParser {
 	    case '+': case '-': case '.':
 	    case '0': case '1': case '2': case '3': case '4':
 	    case '5': case '6': case '7': case '8': case '9':
-		try {
-		    float x = parseFloat();
-		    skipCommaSpaces();
-		    float y = parseFloat();
+                float x = parseFloat();
+                skipCommaSpaces();
+                float y = parseFloat();
 
-		    pathHandler.linetoRel(x, y);
-		} catch (NumberFormatException e) {
-            reportError("character.unexpected",
-                        new Object[] { new Integer(current) });
-            skipSubPath();
-		    return;
-		}
+                pathHandler.linetoRel(x, y);
 		break;
 	    default:
 		return;
@@ -202,17 +193,11 @@ public class PathParser extends NumberParser {
 	read();
 	skipSpaces();
 
-	try {
-	    float x = parseFloat();
-	    skipCommaSpaces();
-	    float y = parseFloat();
+        float x = parseFloat();
+        skipCommaSpaces();
+        float y = parseFloat();
 	    
-	    pathHandler.movetoAbs(x, y);
-	} catch (NumberFormatException e) {
-        reportError("character.unexpected",
-                    new Object[] { new Integer(current) });
-	    skipSubPath();
-	}	
+        pathHandler.movetoAbs(x, y);
         skipCommaSpaces();
     }
 
@@ -229,21 +214,14 @@ public class PathParser extends NumberParser {
 	    case '+': case '-': case '.':
 	    case '0': case '1': case '2': case '3': case '4':
 	    case '5': case '6': case '7': case '8': case '9':
-		try {
-		    float x = parseFloat();
-		    skipCommaSpaces();
-		    float y = parseFloat();
+                float x = parseFloat();
+                skipCommaSpaces();
+                float y = parseFloat();
 
-		    pathHandler.linetoAbs(x, y);
-		} catch (NumberFormatException e) {
-            reportError("character.unexpected",
-                        new Object[] { new Integer(current) });
-		    skipSubPath();
-		    return;
-		}
-		break;
+                pathHandler.linetoAbs(x, y);
+                break;
 	    default:
-		return;
+                return;
 	    }
 	    skipCommaSpaces();
 	}
@@ -261,15 +239,8 @@ public class PathParser extends NumberParser {
 	    case '+': case '-': case '.':
 	    case '0': case '1': case '2': case '3': case '4':
 	    case '5': case '6': case '7': case '8': case '9':
-		try {
-		    float x = parseFloat();
-		    pathHandler.linetoHorizontalRel(x);
-		} catch (NumberFormatException e) {
-            reportError("character.unexpected",
-                        new Object[] { new Integer(current) });
-		    skipSubPath();
-		    return;
-		}
+                float x = parseFloat();
+                pathHandler.linetoHorizontalRel(x);
 		break;
 	    default:
 		return;
@@ -290,15 +261,8 @@ public class PathParser extends NumberParser {
 	    case '+': case '-': case '.':
 	    case '0': case '1': case '2': case '3': case '4':
 	    case '5': case '6': case '7': case '8': case '9':
-		try {
-		    float x = parseFloat();
-		    pathHandler.linetoHorizontalAbs(x);
-		} catch (NumberFormatException e) {
-            reportError("character.unexpected",
-                        new Object[] { new Integer(current) });
-		    skipSubPath();
-		    return;
-		}
+                float x = parseFloat();
+                pathHandler.linetoHorizontalAbs(x);
 		break;
 	    default:
 		return;
@@ -319,15 +283,8 @@ public class PathParser extends NumberParser {
 	    case '+': case '-': case '.':
 	    case '0': case '1': case '2': case '3': case '4':
 	    case '5': case '6': case '7': case '8': case '9':
-		try {
-		    float x = parseFloat();
-		    pathHandler.linetoVerticalRel(x);
-		} catch (NumberFormatException e) {
-            reportError("character.unexpected",
-                        new Object[] { new Integer(current) });
-		    skipSubPath();
-		    return;
-		}
+                float x = parseFloat();
+                pathHandler.linetoVerticalRel(x);
 		break;
 	    default:
 		return;
@@ -348,15 +305,8 @@ public class PathParser extends NumberParser {
 	    case '+': case '-': case '.':
 	    case '0': case '1': case '2': case '3': case '4':
 	    case '5': case '6': case '7': case '8': case '9':
-		try {
-		    float x = parseFloat();
-		    pathHandler.linetoVerticalAbs(x);
-		} catch (NumberFormatException e) {
-            reportError("character.unexpected",
-                        new Object[] { new Integer(current) });
-		    skipSubPath();
-		    return;
-		}
+                float x = parseFloat();
+                pathHandler.linetoVerticalAbs(x);
 		break;
 	    default:
 		return;
@@ -381,26 +331,19 @@ public class PathParser extends NumberParser {
 	    case '5': case '6': case '7': case '8': case '9':
 	    }
 
-	    try {
-		float x1 = parseFloat();
-		skipCommaSpaces();
-		float y1 = parseFloat();
-		skipCommaSpaces();
-		float x2 = parseFloat();
-		skipCommaSpaces();
-		float y2 = parseFloat();
-		skipCommaSpaces();
-		float x = parseFloat();
-		skipCommaSpaces();
-		float y = parseFloat();
+            float x1 = parseFloat();
+            skipCommaSpaces();
+            float y1 = parseFloat();
+            skipCommaSpaces();
+            float x2 = parseFloat();
+            skipCommaSpaces();
+            float y2 = parseFloat();
+            skipCommaSpaces();
+            float x = parseFloat();
+            skipCommaSpaces();
+            float y = parseFloat();
 
-		pathHandler.curvetoCubicRel(x1, y1, x2, y2, x, y);
-	    } catch (NumberFormatException e) {
-            reportError("character.unexpected",
-                        new Object[] { new Integer(current) });
-            skipSubPath();
-            return;
-	    }
+            pathHandler.curvetoCubicRel(x1, y1, x2, y2, x, y);
 	    skipCommaSpaces();
 	}
     }		
@@ -421,26 +364,19 @@ public class PathParser extends NumberParser {
 	    case '5': case '6': case '7': case '8': case '9':
 	    }
 
-	    try {
-		float x1 = parseFloat();
-		skipCommaSpaces();
-		float y1 = parseFloat();
-		skipCommaSpaces();
-		float x2 = parseFloat();
-		skipCommaSpaces();
-		float y2 = parseFloat();
-		skipCommaSpaces();
-		float x = parseFloat();
-		skipCommaSpaces();
-		float y = parseFloat();
+            float x1 = parseFloat();
+            skipCommaSpaces();
+            float y1 = parseFloat();
+            skipCommaSpaces();
+            float x2 = parseFloat();
+            skipCommaSpaces();
+            float y2 = parseFloat();
+            skipCommaSpaces();
+            float x = parseFloat();
+            skipCommaSpaces();
+            float y = parseFloat();
 
-		pathHandler.curvetoCubicAbs(x1, y1, x2, y2, x, y);
-	    } catch (NumberFormatException e) {
-            reportError("character.unexpected",
-                        new Object[] { new Integer(current) });
-            skipSubPath();
-            return;
-	    }
+            pathHandler.curvetoCubicAbs(x1, y1, x2, y2, x, y);
 	    skipCommaSpaces();
 	}
     }
@@ -461,22 +397,15 @@ public class PathParser extends NumberParser {
 	    case '5': case '6': case '7': case '8': case '9':
 	    }
 
-	    try {
-		float x1 = parseFloat();
-		skipCommaSpaces();
-		float y1 = parseFloat();
-		skipCommaSpaces();
-		float x = parseFloat();
-		skipCommaSpaces();
-		float y = parseFloat();
+            float x1 = parseFloat();
+            skipCommaSpaces();
+            float y1 = parseFloat();
+            skipCommaSpaces();
+            float x = parseFloat();
+            skipCommaSpaces();
+            float y = parseFloat();
 
-		pathHandler.curvetoQuadraticRel(x1, y1, x, y);
-	    } catch (NumberFormatException e) {
-            reportError("character.unexpected",
-                        new Object[] { new Integer(current) });
-            skipSubPath();
-		return;
-	    }
+            pathHandler.curvetoQuadraticRel(x1, y1, x, y);
 	    skipCommaSpaces();
 	}
     }
@@ -497,22 +426,15 @@ public class PathParser extends NumberParser {
 	    case '5': case '6': case '7': case '8': case '9':
 	    }
 
-	    try {
-		float x1 = parseFloat();
-		skipCommaSpaces();
-		float y1 = parseFloat();
-		skipCommaSpaces();
-		float x = parseFloat();
-		skipCommaSpaces();
-		float y = parseFloat();
+            float x1 = parseFloat();
+            skipCommaSpaces();
+            float y1 = parseFloat();
+            skipCommaSpaces();
+            float x = parseFloat();
+            skipCommaSpaces();
+            float y = parseFloat();
 
-		pathHandler.curvetoQuadraticAbs(x1, y1, x, y);
-	    } catch (NumberFormatException e) {
-            reportError("character.unexpected",
-                        new Object[] { new Integer(current) });
-		skipSubPath();
-		return;
-	    }
+            pathHandler.curvetoQuadraticAbs(x1, y1, x, y);
 	    skipCommaSpaces();
 	}
     }
@@ -533,22 +455,15 @@ public class PathParser extends NumberParser {
 	    case '5': case '6': case '7': case '8': case '9':
 	    }
 	    
-	    try {
-		float x2 = parseFloat();
-		skipCommaSpaces();
-		float y2 = parseFloat();
-		skipCommaSpaces();
-		float x = parseFloat();
-		skipCommaSpaces();
-		float y = parseFloat();
+            float x2 = parseFloat();
+            skipCommaSpaces();
+            float y2 = parseFloat();
+            skipCommaSpaces();
+            float x = parseFloat();
+            skipCommaSpaces();
+            float y = parseFloat();
 
-		pathHandler.curvetoCubicSmoothRel(x2, y2, x, y);
-	    } catch (NumberFormatException e) {
-            reportError("character.unexpected",
-                        new Object[] { new Integer(current) });
-            skipSubPath();
-		return;
-	    }
+            pathHandler.curvetoCubicSmoothRel(x2, y2, x, y);
 	    skipCommaSpaces();
 	}
     }		
@@ -569,22 +484,15 @@ public class PathParser extends NumberParser {
 	    case '5': case '6': case '7': case '8': case '9':
 	    }
 	    
-	    try {
-		float x2 = parseFloat();
-		skipCommaSpaces();
-		float y2 = parseFloat();
-		skipCommaSpaces();
-		float x = parseFloat();
-		skipCommaSpaces();
-		float y = parseFloat();
+            float x2 = parseFloat();
+            skipCommaSpaces();
+            float y2 = parseFloat();
+            skipCommaSpaces();
+            float x = parseFloat();
+            skipCommaSpaces();
+            float y = parseFloat();
 
-		pathHandler.curvetoCubicSmoothAbs(x2, y2, x, y);
-	    } catch (NumberFormatException e) {
-            reportError("character.unexpected",
-                        new Object[] { new Integer(current) });
-		skipSubPath();
-		return;
-	    }
+            pathHandler.curvetoCubicSmoothAbs(x2, y2, x, y);
 	    skipCommaSpaces();
 	}
     }		
@@ -605,18 +513,11 @@ public class PathParser extends NumberParser {
 	    case '5': case '6': case '7': case '8': case '9':
 	    }
 
-	    try {
-		float x = parseFloat();
-		skipCommaSpaces();
-		float y = parseFloat();
-
-		pathHandler.curvetoQuadraticSmoothRel(x, y);
-	    } catch (NumberFormatException e) {
-            reportError("character.unexpected",
-                        new Object[] { new Integer(current) });
-            skipSubPath();
-		return;
-	    }
+            float x = parseFloat();
+            skipCommaSpaces();
+            float y = parseFloat();
+            
+            pathHandler.curvetoQuadraticSmoothRel(x, y);
 	    skipCommaSpaces();
 	}		
     }
@@ -637,18 +538,11 @@ public class PathParser extends NumberParser {
 	    case '5': case '6': case '7': case '8': case '9':
 	    }
 
-	    try {
-		float x = parseFloat();
-		skipCommaSpaces();
-		float y = parseFloat();
+            float x = parseFloat();
+            skipCommaSpaces();
+            float y = parseFloat();
 
-		pathHandler.curvetoQuadraticSmoothAbs(x, y);
-	    } catch (NumberFormatException e) {
-            reportError("character.unexpected",
-                        new Object[] { new Integer(current) });
-            skipSubPath();
-            return;
-	    }
+            pathHandler.curvetoQuadraticSmoothAbs(x, y);
 	    skipCommaSpaces();
 	}		
     }
@@ -669,61 +563,54 @@ public class PathParser extends NumberParser {
 	    case '5': case '6': case '7': case '8': case '9':
 	    }
 
-	    try {
-		float rx = parseFloat();
-		skipCommaSpaces();
-		float ry = parseFloat();
-		skipCommaSpaces();
-		float ax = parseFloat();
-		skipCommaSpaces();
+            float rx = parseFloat();
+            skipCommaSpaces();
+            float ry = parseFloat();
+            skipCommaSpaces();
+            float ax = parseFloat();
+            skipCommaSpaces();
 		
-		boolean laf;
-		switch (current) {
-		case '0':
-		    laf = false;
-		    break;
-		case '1':
-		    laf = true;
-		    break;
-		default:
-		    reportError("character.unexpected",
-				new Object[] { new Integer(current) });
-		    skipSubPath();
-		    return;
-		}
+            boolean laf;
+            switch (current) {
+            case '0':
+                laf = false;
+                break;
+            case '1':
+                laf = true;
+                break;
+            default:
+                reportError("character.unexpected",
+                            new Object[] { new Integer(current) });
+                skipSubPath();
+                return;
+            }
 
-		read();
-		skipCommaSpaces();
+            read();
+            skipCommaSpaces();
 
-		boolean sf;
-		switch (current) {
-		case '0':
-		    sf = false;
-		    break;
-		case '1':
-		    sf = true;
-		    break;
-		default:
-		    reportError("character.unexpected",
-				new Object[] { new Integer(current) });
-		    skipSubPath();
-		    return;
-		}
+            boolean sf;
+            switch (current) {
+            case '0':
+                sf = false;
+                break;
+            case '1':
+                sf = true;
+                break;
+            default:
+                reportError("character.unexpected",
+                            new Object[] { new Integer(current) });
+                skipSubPath();
+                return;
+            }
 
-		read();
-		skipCommaSpaces();
+            read();
+            skipCommaSpaces();
 
-		float x = parseFloat();
-		skipCommaSpaces();
-		float y = parseFloat();
+            float x = parseFloat();
+            skipCommaSpaces();
+            float y = parseFloat();
 
-		pathHandler.arcRel(rx, ry, ax, laf, sf, x, y);
-	    } catch (NumberFormatException e) {
-            reportError("character.unexpected",
-                        new Object[] { new Integer(current) });
-            skipSubPath();
-            return;
-	    }
+            pathHandler.arcRel(rx, ry, ax, laf, sf, x, y);
 	    skipCommaSpaces();
 	}
     }
@@ -744,60 +631,53 @@ public class PathParser extends NumberParser {
 	    case '5': case '6': case '7': case '8': case '9':
 	    }
 
-	    try {
-		float rx = parseFloat();
-		skipCommaSpaces();
-		float ry = parseFloat();
-		skipCommaSpaces();
-		float ax = parseFloat();
-		skipCommaSpaces();
+            float rx = parseFloat();
+            skipCommaSpaces();
+            float ry = parseFloat();
+            skipCommaSpaces();
+            float ax = parseFloat();
+            skipCommaSpaces();
+            
+            boolean laf;
+            switch (current) {
+            case '0':
+                laf = false;
+                break;
+            case '1':
+                laf = true;
+                break;
+            default:
+                reportError("character.unexpected",
+                            new Object[] { new Integer(current) });
+                skipSubPath();
+                return;
+            }
+            
+            read();
+            skipCommaSpaces();
 
-		boolean laf;
-		switch (current) {
-		case '0':
-		    laf = false;
-		    break;
-		case '1':
-		    laf = true;
-		    break;
-		default:
-		    reportError("character.unexpected",
-				new Object[] { new Integer(current) });
-		    skipSubPath();
-		    return;
-		}
+            boolean sf;
+            switch (current) {
+            case '0':
+                sf = false;
+                break;
+            case '1':
+                sf = true;
+                break;
+            default:
+                reportError("character.unexpected",
+                            new Object[] { new Integer(current) });
+                skipSubPath();
+                return;
+            }
 
-		read();
-		skipCommaSpaces();
+            read();
+            skipCommaSpaces();
+            float x = parseFloat();
+            skipCommaSpaces();
+            float y = parseFloat();
 
-		boolean sf;
-		switch (current) {
-		case '0':
-		    sf = false;
-		    break;
-		case '1':
-		    sf = true;
-		    break;
-		default:
-		    reportError("character.unexpected",
-				new Object[] { new Integer(current) });
-		    skipSubPath();
-		    return;
-		}
-
-		read();
-		skipCommaSpaces();
-		float x = parseFloat();
-		skipCommaSpaces();
-		float y = parseFloat();
-
-		pathHandler.arcAbs(rx, ry, ax, laf, sf, x, y);
-	    } catch (NumberFormatException e) {
-            reportError("character.unexpected",
-                        new Object[] { new Integer(current) });
-            skipSubPath();
-            return;
-	    }
+            pathHandler.arcAbs(rx, ry, ax, laf, sf, x, y);
 	    skipCommaSpaces();
 	}
     }

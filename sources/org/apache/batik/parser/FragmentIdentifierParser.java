@@ -19,7 +19,7 @@ import org.apache.batik.xml.XMLUtilities;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class FragmentIdentifierParser extends AbstractParser {
+public class FragmentIdentifierParser extends NumberParser {
     
     /**
      * The buffer used for numbers.
@@ -679,36 +679,41 @@ public class FragmentIdentifierParser extends AbstractParser {
                 fragmentIdentifierHandler.startTransformList();
 
                 tloop: for (;;) {
-                    read();
-                    switch (current) {
-                    case ',':
-                        break;
-                    case 'm':
-                        parseMatrix();
-                        break;
-                    case 'r':
-                        parseRotate();
-                        break;
-                    case 't':
-                        parseTranslate();
-                        break;
-                    case 's':
+                    try {
                         read();
                         switch (current) {
-                        case 'c':
-                            parseScale();
+                        case ',':
                             break;
-                        case 'k':
-                            parseSkew();
+                        case 'm':
+                            parseMatrix();
+                            break;
+                        case 'r':
+                            parseRotate();
+                            break;
+                        case 't':
+                            parseTranslate();
+                            break;
+                        case 's':
+                            read();
+                            switch (current) {
+                            case 'c':
+                                parseScale();
+                                break;
+                            case 'k':
+                                parseSkew();
+                                break;
+                            default:
+                                reportError("character.unexpected",
+                                            new Object[] { new Integer(current) });
+                                skipTransform();
+                            }
                             break;
                         default:
-                            reportError("character.unexpected",
-                                        new Object[] { new Integer(current) });
-                            skipTransform();
+                            break tloop;
                         }
-                        break;
-                    default:
-                        break tloop;
+                    } catch (ParseException e) {
+                        errorHandler.error(e);
+                        skipTransform();
                     }
                 }
 
@@ -915,16 +920,6 @@ public class FragmentIdentifierParser extends AbstractParser {
     }
 
     /**
-     * Parses the content of the buffer and converts it to a float.
-     */
-    protected float parseFloat()
-	throws NumberFormatException,
-	       ParseException {
-	readNumber();
-	return Float.parseFloat(getBufferContent());
-    }
-
-    /**
      * Returns the content of the buffer.
      */
     protected String getBufferContent() {
@@ -943,26 +938,6 @@ public class FragmentIdentifierParser extends AbstractParser {
 	    buffer = t;
 	}
 	buffer[bufferSize++] = (char)current;
-    }
-
-    /**
-     * Reads a number.
-     */
-    protected void readNumber() throws ParseException {
-	bufferSize = 0;
-        for (;;) {
-	    switch (current) {
-	    case ',':
-	    case ')':
-                return;
-	    default:
-		if (current == -1) {
-		    return;
-		}
-		bufferize();
-	    }
-	    read();
-	}
     }
 
     /**
@@ -1041,34 +1016,28 @@ public class FragmentIdentifierParser extends AbstractParser {
 	read();
 	skipSpaces();
 
-	try {
-	    float a = parseFloat();
-	    skipCommaSpaces();
-	    float b = parseFloat();
-	    skipCommaSpaces();
-	    float c = parseFloat();
-	    skipCommaSpaces();
-	    float d = parseFloat();
-	    skipCommaSpaces();
-	    float e = parseFloat();
-	    skipCommaSpaces();
-	    float f = parseFloat();
+        float a = parseFloat();
+        skipCommaSpaces();
+        float b = parseFloat();
+        skipCommaSpaces();
+        float c = parseFloat();
+        skipCommaSpaces();
+        float d = parseFloat();
+        skipCommaSpaces();
+        float e = parseFloat();
+        skipCommaSpaces();
+        float f = parseFloat();
 	
-	    // Parse 'wsp? )'
-	    skipSpaces();
-	    if (current != ')') {
-		reportError("character.expected",
-			    new Object[] { new Character(')'),
-					   new Integer(current) });
-		skipTransform();
-		return;
-	    }
+        skipSpaces();
+        if (current != ')') {
+            reportError("character.expected",
+                        new Object[] { new Character(')'),
+                                       new Integer(current) });
+            skipTransform();
+            return;
+        }
 
-	    fragmentIdentifierHandler.matrix(a, b, c, d, e, f);
-	} catch (NumberFormatException ex) {
-	    reportError("float.format", new Object[] { getBufferContent() });
-	    skipTransform();
-	}
+        fragmentIdentifierHandler.matrix(a, b, c, d, e, f);
     }
 
     /**
@@ -1131,38 +1100,32 @@ public class FragmentIdentifierParser extends AbstractParser {
 	read();
 	skipSpaces();
 
-	try {
-	    float theta = parseFloat();
-	    skipSpaces();
+        float theta = parseFloat();
+        skipSpaces();
 
-	    switch (current) {
-	    case ')':
-		fragmentIdentifierHandler.rotate(theta);
-		return;
-	    case ',':
-		read();
-		skipSpaces();
-	    }
+        switch (current) {
+        case ')':
+            fragmentIdentifierHandler.rotate(theta);
+            return;
+        case ',':
+            read();
+            skipSpaces();
+        }
+        
+        float cx = parseFloat();
+        skipCommaSpaces();
+        float cy = parseFloat();
 
-	    float cx = parseFloat();
-	    skipCommaSpaces();
-	    float cy = parseFloat();
+        skipSpaces();
+        if (current != ')') {
+            reportError("character.expected",
+                        new Object[] { new Character(')'),
+                                       new Integer(current) });
+            skipTransform();
+            return;
+        }
 
-	    // Parse 'wsp? )'
-	    skipSpaces();
-	    if (current != ')') {
-		reportError("character.expected",
-			    new Object[] { new Character(')'),
-					   new Integer(current) });
-		skipTransform();
-		return;
-	    }
-
-	    fragmentIdentifierHandler.rotate(theta, cx, cy);
-	} catch (NumberFormatException e) {
-	    reportError("float.format", new Object[] { getBufferContent() });
-	    skipTransform();
-	}
+        fragmentIdentifierHandler.rotate(theta, cx, cy);
     }
 
     /**
@@ -1249,36 +1212,30 @@ public class FragmentIdentifierParser extends AbstractParser {
 	read();
 	skipSpaces();
 
-	try {
-	    float tx = parseFloat();
-	    skipSpaces();
+        float tx = parseFloat();
+        skipSpaces();
 
-	    switch (current) {
-	    case ')':
-		fragmentIdentifierHandler.translate(tx);
-		return;
-	    case ',':
-		read();
-		skipSpaces();
-	    }
+        switch (current) {
+        case ')':
+            fragmentIdentifierHandler.translate(tx);
+            return;
+        case ',':
+            read();
+            skipSpaces();
+        }
 
-	    float ty = parseFloat();
+        float ty = parseFloat();
 
-	    // Parse 'wsp? )'
-	    skipSpaces();
-	    if (current != ')') {
-		reportError("character.expected",
-			    new Object[] { new Character(')'),
-					   new Integer(current) });
-		skipTransform();
-		return;
-	    }
+        skipSpaces();
+        if (current != ')') {
+            reportError("character.expected",
+                        new Object[] { new Character(')'),
+                                       new Integer(current) });
+            skipTransform();
+            return;
+        }
 
-	    fragmentIdentifierHandler.translate(tx, ty);
-	} catch (NumberFormatException e) {
-	    reportError("float.format", new Object[] { getBufferContent() });
-	    skipTransform();
-	}
+        fragmentIdentifierHandler.translate(tx, ty);
     }
 
     /**
@@ -1324,36 +1281,30 @@ public class FragmentIdentifierParser extends AbstractParser {
 	read();
 	skipSpaces();
 
-	try {
-	    float sx = parseFloat();
-	    skipSpaces();
+        float sx = parseFloat();
+        skipSpaces();
 
-	    switch (current) {
-	    case ')':
-		fragmentIdentifierHandler.scale(sx);
-		return;
-	    case ',':
-		read();
-		skipSpaces();
-	    }
+        switch (current) {
+        case ')':
+            fragmentIdentifierHandler.scale(sx);
+            return;
+        case ',':
+            read();
+            skipSpaces();
+        }
 
-	    float sy = parseFloat();
+        float sy = parseFloat();
 
-	    // Parse 'wsp? )'
-	    skipSpaces();
-	    if (current != ')') {
-		reportError("character.expected",
-			    new Object[] { new Character(')'),
-					   new Integer(current) });
-		skipTransform();
-		return;
-	    }
+        skipSpaces();
+        if (current != ')') {
+            reportError("character.expected",
+                        new Object[] { new Character(')'),
+                                       new Integer(current) });
+            skipTransform();
+            return;
+        }
 
-	    fragmentIdentifierHandler.scale(sx, sy);
-	} catch (NumberFormatException e) {
-	    reportError("float.format", new Object[] { getBufferContent() });
-	    skipTransform();
-	}
+        fragmentIdentifierHandler.scale(sx, sy);
     }
 
     /**
@@ -1406,28 +1357,22 @@ public class FragmentIdentifierParser extends AbstractParser {
 	read();
 	skipSpaces();
 
-	try {
-	    float sk = parseFloat();
+        float sk = parseFloat();
 
-	    // Parse 'wsp? )'
-	    skipSpaces();
-	    if (current != ')') {
-		reportError("character.expected",
-			    new Object[] { new Character(')'),
-					   new Integer(current) });
-		skipTransform();
-		return;
-	    }
+        skipSpaces();
+        if (current != ')') {
+            reportError("character.expected",
+                        new Object[] { new Character(')'),
+                                       new Integer(current) });
+            skipTransform();
+            return;
+        }
 
-	    if (skewX) {
-		fragmentIdentifierHandler.skewX(sk);
-	    } else {
-		fragmentIdentifierHandler.skewY(sk);
-	    }
-	} catch (NumberFormatException e) {
-	    reportError("float.format", new Object[] { getBufferContent() });
-	    skipTransform();
-	}
+        if (skewX) {
+            fragmentIdentifierHandler.skewX(sk);
+        } else {
+            fragmentIdentifierHandler.skewY(sk);
+        }
     }
 
     /**
@@ -1762,11 +1707,8 @@ public class FragmentIdentifierParser extends AbstractParser {
 	    switch(current) {
 	    case 0xD: case 0xA: case 0x20: case 0x9:
 		read();
-		break loop;
-	    default:
-		if (current == -1) {
-		    break loop;
-		}
+            case -1:
+                break loop;
 	    }
 	}
     }

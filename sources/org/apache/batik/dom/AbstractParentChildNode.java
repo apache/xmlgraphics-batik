@@ -21,17 +21,17 @@ public abstract class AbstractParentChildNode extends AbstractParentNode {
     /**
      * The parent node of this node.
      */
-    protected transient Node parentNode;
+    protected Node parentNode;
 
     /**
      * The previous sibling.
      */
-    protected transient Node previousSibling;
+    protected Node previousSibling;
 
     /**
      * Returns the next sibling.
      */
-    protected transient Node nextSibling;
+    protected Node nextSibling;
 
     /**
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getParentNode()}.

@@ -470,25 +470,18 @@ public abstract class AbstractDocument
 	}
     }
 
-    // Serialization //////////////////////////////////////////////////////
+    // Serializable /////////////////////////////////////////////////
 
-    /**
-     * Writes the object to the given stream.
-     */
     private void writeObject(ObjectOutputStream s) throws IOException {
         s.defaultWriteObject();
-            
-        // Save the name of the DOM implementation class.
+
         s.writeObject(implementation.getClass().getName());
     }
 
-    /**
-     * Reads the object from the given stream.
-     */
     private void readObject(ObjectInputStream s) 
         throws IOException, ClassNotFoundException {
         s.defaultReadObject();
-        
+
         localizableSupport = new LocalizableSupport(RESOURCES);
 
         Class c = Class.forName((String)s.readObject());

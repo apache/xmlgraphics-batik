@@ -12,15 +12,35 @@
 <!-- @version $Id$  -->
 <!-- ========================================================================= -->
 <testSuite id="dom.unitTesting" name="org.apache.batik.dom package - Unit Testing">
+
     <!-- ========================================================================== -->
     <!-- setAttribute test                                                          -->
     <!-- ========================================================================== -->
     <test id="setAttribute" class="org.apache.batik.dom.SetAttributeTest" >
-        <arg class="java.lang.String" value="test-resources/org/apache/batik/dom/dummyXML.xml" />
+        <arg class="java.lang.String"
+             value="test-resources/org/apache/batik/dom/dummyXML.xml" />
         <arg class="java.lang.String" value="doc" />
         <arg class="java.lang.String" value="root" />
         <arg class="java.lang.String" value="targetAttribute" />
         <arg class="java.lang.String" value="targetValue" />
-        <property name="ParserClassName" class="java.lang.String" value="org.apache.crimson.parser.XMLReaderImpl" />
+        <property name="ParserClassName"
+                  class="java.lang.String"
+                  value="org.apache.crimson.parser.XMLReaderImpl" />
     </test>
+
+    <!-- ========================================================================== -->
+    <!-- Serialization test                                                         -->
+    <!-- ========================================================================== -->
+    <test id="serialization1" class="org.apache.batik.dom.SerializationTest">
+        <arg class="java.lang.String"
+             value="test-resources/org/apache/batik/dom/dummyXML.xml"/>
+        <arg class="java.lang.String" value="doc"/>
+    </test>
+
+    <test id="serialization2" class="org.apache.batik.dom.SerializationTest">
+        <arg class="java.lang.String"
+             value="test-resources/org/apache/batik/dom/dummyXML2.xml"/>
+        <arg class="java.lang.String" value="doc"/>
+    </test>
+
 </testSuite>

@@ -55,7 +55,7 @@ public class PreserveAspectRatioParser extends AbstractParser {
     }
 
     /**
-     * Parses the given reader.
+     * Parses the current stream.
      */
     protected void doParse() throws ParseException {
 	read();

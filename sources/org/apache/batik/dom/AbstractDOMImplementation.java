@@ -8,6 +8,8 @@
 
 package org.apache.batik.dom;
 
+import java.io.Serializable;
+
 import org.apache.batik.dom.events.DocumentEventSupport;
 import org.apache.batik.dom.util.HashTable;
 
@@ -21,7 +23,10 @@ import org.w3c.dom.DOMImplementation;
  * @version $Id$
  */
 
-public abstract class AbstractDOMImplementation implements DOMImplementation {
+public abstract class AbstractDOMImplementation
+    implements DOMImplementation,
+               Serializable {
+
     /**
      * The supported features.
      */

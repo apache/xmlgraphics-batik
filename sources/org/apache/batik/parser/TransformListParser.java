@@ -54,53 +54,57 @@ public class TransformListParser extends NumberParser {
     }
 
     /**
-     * Parses the given reader.
+     * Parses the current reader.
      */
     protected void doParse() throws ParseException {
 	transformListHandler.startTransformList();
 
 	loop: for (;;) {
-	    read();
-	    switch (current) {
-	    case 0xD:
-	    case 0xA:
-	    case 0x20:
-	    case 0x9:
-            case ',':
-		break;
-	    case 'm':
-		parseMatrix();
-		break;
-	    case 'r':
-		parseRotate();
-		break;
-	    case 't':
-		parseTranslate();
-		break;
-	    case 's':
-		read();
-		switch (current) {
-		case 'c':
-		    parseScale();
-		    break;
-		case 'k':
-		    parseSkew();
-		    break;
-		default:
-		    reportError("character.unexpected",
-				new Object[] { new Integer(current) });
-		    skipTransform();
-		}
-		break;
-	    default:
-		if (current == -1) {
-		    break loop;
-		}
-		reportError("character.unexpected",
-			    new Object[] { new Integer(current) });
-		skipTransform();
-	    }
-	}
+            try {
+                read();
+                switch (current) {
+                case 0xD:
+                case 0xA:
+                case 0x20:
+                case 0x9:
+                case ',':
+                    break;
+                case 'm':
+                    parseMatrix();
+                    break;
+                case 'r':
+                    parseRotate();
+                    break;
+                case 't':
+                    parseTranslate();
+                    break;
+                case 's':
+                    read();
+                    switch (current) {
+                    case 'c':
+                        parseScale();
+                        break;
+                    case 'k':
+                        parseSkew();
+                        break;
+                    default:
+                        reportError("character.unexpected",
+                                    new Object[] { new Integer(current) });
+                        skipTransform();
+                    }
+                    break;
+                case -1:
+                    break loop;
+                default:
+                    reportError("character.unexpected",
+                                new Object[] { new Integer(current) });
+                    skipTransform();
+                }
+            } catch (ParseException e) {
+                errorHandler.error(e);
+                skipTransform();
+            }
+        }
 	skipSpaces();
 	if (current != -1) {
 	    reportError("end.of.stream.expected",
@@ -168,35 +172,28 @@ public class TransformListParser extends NumberParser {
 	read();
 	skipSpaces();
 
-	try {
-	    float a = parseFloat();
-	    skipCommaSpaces();
-	    float b = parseFloat();
-	    skipCommaSpaces();
-	    float c = parseFloat();
-	    skipCommaSpaces();
-	    float d = parseFloat();
-	    skipCommaSpaces();
-	    float e = parseFloat();
-	    skipCommaSpaces();
-	    float f = parseFloat();
+        float a = parseFloat();
+        skipCommaSpaces();
+        float b = parseFloat();
+        skipCommaSpaces();
+        float c = parseFloat();
+        skipCommaSpaces();
+        float d = parseFloat();
+        skipCommaSpaces();
+        float e = parseFloat();
+        skipCommaSpaces();
+        float f = parseFloat();
 	
-	    // Parse 'wsp? )'
-	    skipSpaces();
-	    if (current != ')') {
-		reportError("character.expected",
-			    new Object[] { new Character(')'),
-					   new Integer(current) });
-		skipTransform();
-		return;
-	    }
+        skipSpaces();
+        if (current != ')') {
+            reportError("character.expected",
+                        new Object[] { new Character(')'),
+                                       new Integer(current) });
+            skipTransform();
+            return;
+        }
 
-	    transformListHandler.matrix(a, b, c, d, e, f);
-	} catch (NumberFormatException ex) {
-        reportError("character.unexpected",
-                    new Object[] { new Integer(current) });
-	    skipTransform();
-	}
+        transformListHandler.matrix(a, b, c, d, e, f);
     }
 
     /**
@@ -259,39 +256,32 @@ public class TransformListParser extends NumberParser {
 	read();
 	skipSpaces();
 
-	try {
-	    float theta = parseFloat();
-	    skipSpaces();
+        float theta = parseFloat();
+        skipSpaces();
+        
+        switch (current) {
+        case ')':
+            transformListHandler.rotate(theta);
+            return;
+        case ',':
+            read();
+            skipSpaces();
+        }
+        
+        float cx = parseFloat();
+        skipCommaSpaces();
+        float cy = parseFloat();
+        
+        skipSpaces();
+        if (current != ')') {
+            reportError("character.expected",
+                        new Object[] { new Character(')'),
+                                       new Integer(current) });
+            skipTransform();
+            return;
+        }
 
-	    switch (current) {
-	    case ')':
-		transformListHandler.rotate(theta);
-		return;
-	    case ',':
-		read();
-		skipSpaces();
-	    }
-
-	    float cx = parseFloat();
-	    skipCommaSpaces();
-	    float cy = parseFloat();
-
-	    // Parse 'wsp? )'
-	    skipSpaces();
-	    if (current != ')') {
-		reportError("character.expected",
-			    new Object[] { new Character(')'),
-					   new Integer(current) });
-		skipTransform();
-		return;
-	    }
-
-	    transformListHandler.rotate(theta, cx, cy);
-	} catch (NumberFormatException e) {
-        reportError("character.unexpected",
-                    new Object[] { new Integer(current) });
-	    skipTransform();
-	}
+        transformListHandler.rotate(theta, cx, cy);
     }
 
     /**
@@ -378,37 +368,30 @@ public class TransformListParser extends NumberParser {
 	read();
 	skipSpaces();
 
-	try {
-	    float tx = parseFloat();
-	    skipSpaces();
+        float tx = parseFloat();
+        skipSpaces();
 
-	    switch (current) {
-	    case ')':
-		transformListHandler.translate(tx);
-		return;
-	    case ',':
-		read();
-		skipSpaces();
-	    }
+        switch (current) {
+        case ')':
+            transformListHandler.translate(tx);
+            return;
+        case ',':
+            read();
+            skipSpaces();
+        }
 
-	    float ty = parseFloat();
+        float ty = parseFloat();
 
-	    // Parse 'wsp? )'
-	    skipSpaces();
-	    if (current != ')') {
-		reportError("character.expected",
-			    new Object[] { new Character(')'),
-					   new Integer(current) });
-		skipTransform();
-		return;
-	    }
+        skipSpaces();
+        if (current != ')') {
+            reportError("character.expected",
+                        new Object[] { new Character(')'),
+                                       new Integer(current) });
+            skipTransform();
+            return;
+        }
 
-	    transformListHandler.translate(tx, ty);
-	} catch (NumberFormatException e) {
-        reportError("character.unexpected",
-                    new Object[] { new Integer(current) });
-	    skipTransform();
-	}
+        transformListHandler.translate(tx, ty);
     }
 
     /**
@@ -454,37 +437,30 @@ public class TransformListParser extends NumberParser {
 	read();
 	skipSpaces();
 
-	try {
-	    float sx = parseFloat();
-	    skipSpaces();
+        float sx = parseFloat();
+        skipSpaces();
 
-	    switch (current) {
-	    case ')':
-		transformListHandler.scale(sx);
-		return;
-	    case ',':
-		read();
-		skipSpaces();
-	    }
+        switch (current) {
+        case ')':
+            transformListHandler.scale(sx);
+            return;
+        case ',':
+            read();
+            skipSpaces();
+        }
 
-	    float sy = parseFloat();
+        float sy = parseFloat();
 
-	    // Parse 'wsp? )'
-	    skipSpaces();
-	    if (current != ')') {
-		reportError("character.expected",
-			    new Object[] { new Character(')'),
-					   new Integer(current) });
-		skipTransform();
-		return;
-	    }
-
-	    transformListHandler.scale(sx, sy);
-	} catch (NumberFormatException e) {
-        reportError("character.unexpected",
-                    new Object[] { new Integer(current) });
-	    skipTransform();
-	}
+        skipSpaces();
+        if (current != ')') {
+            reportError("character.expected",
+                        new Object[] { new Character(')'),
+                                       new Integer(current) });
+            skipTransform();
+            return;
+        }
+        
+        transformListHandler.scale(sx, sy);
     }
 
     /**
@@ -537,29 +513,22 @@ public class TransformListParser extends NumberParser {
 	read();
 	skipSpaces();
 
-	try {
-	    float sk = parseFloat();
+        float sk = parseFloat();
 
-	    // Parse 'wsp? )'
-	    skipSpaces();
-	    if (current != ')') {
-		reportError("character.expected",
-			    new Object[] { new Character(')'),
-					   new Integer(current) });
-		skipTransform();
-		return;
-	    }
-
-	    if (skewX) {
-		transformListHandler.skewX(sk);
-	    } else {
-		transformListHandler.skewY(sk);
-	    }
-	} catch (NumberFormatException e) {
-        reportError("character.unexpected",
-                    new Object[] { new Integer(current) });
-	    skipTransform();
-	}
+        skipSpaces();
+        if (current != ')') {
+            reportError("character.expected",
+                        new Object[] { new Character(')'),
+                                       new Integer(current) });
+            skipTransform();
+            return;
+        }
+        
+        if (skewX) {
+            transformListHandler.skewX(sk);
+        } else {
+            transformListHandler.skewY(sk);
+        }
     }
 
     /**
