@@ -59,12 +59,17 @@ public class StaticRenderer implements Renderer {
     /**
      * Offscreen image where the Renderer does its rendering
      */
-    private BufferedImage offScreen;
+    protected BufferedImage offScreen;
 
     /**
      * Passed to the GVT tree to describe the rendering environment
      */
-    private GraphicsNodeRenderContext nodeRenderContext;
+    protected GraphicsNodeRenderContext nodeRenderContext;
+
+    /**
+     * The transform to go to device space.
+     */
+    protected AffineTransform usr2dev;
 
     /**
      * @param offScreen image where the Renderer should do its rendering
@@ -79,11 +84,13 @@ public class StaticRenderer implements Renderer {
         hints.put(RenderingHints.KEY_INTERPOLATION,
                   RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 
-        FontRenderContext fontRenderContext = 
-	    new FontRenderContext(new AffineTransform(), true, true);
+        FontRenderContext fontRenderContext =
+            new FontRenderContext(new AffineTransform(), true, true);
+
         TextPainter textPainter = new StrokingTextPainter();
 
-        GraphicsNodeRableFactory gnrFactory = new ConcreteGraphicsNodeRableFactory();
+        GraphicsNodeRableFactory gnrFactory =
+            new ConcreteGraphicsNodeRableFactory();
 
         this.nodeRenderContext =
             new GraphicsNodeRenderContext(new AffineTransform(),
@@ -116,8 +123,8 @@ public class StaticRenderer implements Renderer {
      */
     public void setTree(GraphicsNode treeRoot){
         this.treeRoot = treeRoot;
-	// associate selectable nodes with selector object(s)
-	initSelectors();
+        // associate selectable nodes with selector object(s)
+        //        initSelectors();
     }
 
     /**
@@ -138,6 +145,7 @@ public class StaticRenderer implements Renderer {
      */
     public void repaint(Shape area){
         // First, set the Area Of Interest in the renderContext
+        //        nodeRenderContext.setTransform(usr2dev);
         nodeRenderContext.setAreaOfInterest(area);
 
         // Now, paint into offscreen image
@@ -153,8 +161,9 @@ public class StaticRenderer implements Renderer {
         g.addRenderingHints(nodeRenderContext.getRenderingHints());
 
         // Render tree
-        if(treeRoot != null)
+        if(treeRoot != null) {
             treeRoot.paint(g, nodeRenderContext);
+        }
     }
 
     /**
@@ -165,11 +174,13 @@ public class StaticRenderer implements Renderer {
      *        the identity transform will be set.
      */
     public void setTransform(AffineTransform usr2dev){
-        if(usr2dev == null)
+        if(usr2dev == null) {
             usr2dev = new AffineTransform();
-
+        }
+        //this.usr2dev = usr2dev;
         // Update the RenderContext in the nodeRenderContext
         nodeRenderContext.setTransform(usr2dev);
+
     }
 
     /**
@@ -200,75 +211,75 @@ public class StaticRenderer implements Renderer {
 
     /**
      * Associate selectable elements in the current tree with
-     * Selector instances. 
+     * Selector instances.
      */
     public void initSelectors() {
-	Iterator nodeIter = new GraphicsNodeTreeIterator(treeRoot);
-	Selector selector = 
-	    new org.apache.batik.test.gvt.TestSelector(nodeRenderContext);
-	while (nodeIter.hasNext()) {
-	    GraphicsNode node = (GraphicsNode) nodeIter.next();
-	    if (node instanceof Selectable) {
+        Iterator nodeIter = new GraphicsNodeTreeIterator(treeRoot);
+        Selector selector =
+            new org.apache.batik.test.gvt.TestSelector(nodeRenderContext);
+        while (nodeIter.hasNext()) {
+            GraphicsNode node = (GraphicsNode) nodeIter.next();
+            if (node instanceof Selectable) {
 
 // temporarily disabled until we can debug ...
-/*	        node.addGraphicsNodeMouseListener(
-			     (GraphicsNodeMouseListener) selector) */ ; 
+/*              node.addGraphicsNodeMouseListener(
+                             (GraphicsNodeMouseListener) selector) */ ;
 
-	    }
-	}
+            }
+        }
     }
 
     class GraphicsNodeTreeIterator implements Iterator {
 
-	GraphicsNode root;
-	GraphicsNode current = null;
-	Iterator currentIter;
-	Stack iterStack;
-	Stack nodeStack;
+        GraphicsNode root;
+        GraphicsNode current = null;
+        Iterator currentIter;
+        Stack iterStack;
+        Stack nodeStack;
 
-	public GraphicsNodeTreeIterator(GraphicsNode root) {
-	    this.root = root;
-	    if (root instanceof CompositeGraphicsNode) {
-		currentIter = ((CompositeGraphicsNode) root).getChildren().iterator();
-	    } 
-	    iterStack = new Stack();
-	    nodeStack = new Stack();
-	}
+        public GraphicsNodeTreeIterator(GraphicsNode root) {
+            this.root = root;
+            if (root instanceof CompositeGraphicsNode) {
+                currentIter = ((CompositeGraphicsNode) root).getChildren().iterator();
+            }
+            iterStack = new Stack();
+            nodeStack = new Stack();
+        }
 
-	public boolean hasNext() {
-	    return (current != root);
-	}
+        public boolean hasNext() {
+            return (current != root);
+        }
 
-	public Object next() {
-	    if (currentIter.hasNext()) {
-		current = (GraphicsNode) currentIter.next();
-		while (current instanceof CompositeGraphicsNode) {
-		    iterStack.push(currentIter);
-		    nodeStack.push(current);
-		    currentIter = ((CompositeGraphicsNode) current).getChildren().iterator();
-		    if (currentIter.hasNext()) {
-			current = (GraphicsNode) currentIter.next();
-		    } else {
-			currentIter = (Iterator) iterStack.pop();
-			current = (GraphicsNode) nodeStack.pop();
-		    }
-		}
-	    } else {
-		if (!iterStack.empty()) {
-		    do {
-			currentIter = (Iterator) iterStack.pop();
-			current = (GraphicsNode) nodeStack.pop();
-		    } while (!currentIter.hasNext() && !iterStack.isEmpty());
-		} else {
-		    current = root;
-		}
-	    }
-	    return current;
-	}
+        public Object next() {
+            if (currentIter.hasNext()) {
+                current = (GraphicsNode) currentIter.next();
+                while (current instanceof CompositeGraphicsNode) {
+                    iterStack.push(currentIter);
+                    nodeStack.push(current);
+                    currentIter = ((CompositeGraphicsNode) current).getChildren().iterator();
+                    if (currentIter.hasNext()) {
+                        current = (GraphicsNode) currentIter.next();
+                    } else {
+                        currentIter = (Iterator) iterStack.pop();
+                        current = (GraphicsNode) nodeStack.pop();
+                    }
+                }
+            } else {
+                if (!iterStack.empty()) {
+                    do {
+                        currentIter = (Iterator) iterStack.pop();
+                        current = (GraphicsNode) nodeStack.pop();
+                    } while (!currentIter.hasNext() && !iterStack.isEmpty());
+                } else {
+                    current = root;
+                }
+            }
+            return current;
+        }
 
-	public void remove() {
-	    ; // FIXME: should throw an exception, probably
-	}
+        public void remove() {
+            ; // FIXME: should throw an exception, probably
+        }
     }
 
 }
