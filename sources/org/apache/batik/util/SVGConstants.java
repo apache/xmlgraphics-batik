@@ -225,6 +225,7 @@ public interface SVGConstants extends CSSConstants {
     String VALUE_CRISP_EDGES = "crispEdges";
     String VALUE_DIGIT_ONE = "1";
     String VALUE_DILATE = "dilate";
+    String VALUE_DISCRETE = "discrete";
     String VALUE_EDGE_DUPLICATE = "duplicate";
     String VALUE_EDGE_NONE = "none";
     String VALUE_END = "end";
@@ -252,9 +253,13 @@ public interface SVGConstants extends CSSConstants {
     String VALUE_FONT_STYLE_ITALIC = "italic";
     String VALUE_FONT_STYLE_OBLIQUE = "oblique";
     String VALUE_FRACTAL_NOISE = "fractalNoise";
+    String VALUE_GAMMA = "gamma";
     String VALUE_GEOMETRIC_PRECISION = "geometricPrecision";
+    String VALUE_HUE_ROTATE = "hueRotate";
     String VALUE_HUNDRED_PERCENT = "100%";
     String VALUE_IN = "in";
+    String VALUE_IDENTITY = "identity";
+    String VALUE_LINEAR = "linear";
     String VALUE_LINE_CAP_BUTT = "butt";
     String VALUE_LINE_CAP_SQUARE = "square";
     String VALUE_LINE_CAP_ROUND = "round";
@@ -289,11 +294,13 @@ public interface SVGConstants extends CSSConstants {
     String VALUE_PRESERVE = "preserve";
     String VALUE_REFLECT = "reflect";
     String VALUE_REPEAT = "repeat";
+    String VALUE_SATURATE = "saturate";
     String VALUE_SOURCE_GRAPHIC = "SourceGraphic";
     String VALUE_SRGB = "sRGB";
     String VALUE_START = "start";
     String VALUE_STITCH = "stitch";
     String VALUE_STRETCH = "stretch";
+    String VALUE_TABLE = "table";
     String VALUE_TURBULENCE = "turbulence";
     String VALUE_TYPE_LINEAR = "linear";
     String VALUE_TYPE_TABLE = "table";

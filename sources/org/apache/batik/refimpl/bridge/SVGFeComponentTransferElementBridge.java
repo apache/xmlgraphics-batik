@@ -9,23 +9,32 @@
 package org.apache.batik.refimpl.bridge;
 
 import java.awt.geom.Rectangle2D;
+
 import java.util.Map;
 import java.util.StringTokenizer;
+
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeMutationEvent;
 import org.apache.batik.bridge.FilterBridge;
+import org.apache.batik.bridge.IllegalAttributeValueException;
+import org.apache.batik.bridge.MissingAttributeException;
+
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.ComponentTransferFunction;
 import org.apache.batik.gvt.filter.ComponentTransferRable;
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.PadMode;
 import org.apache.batik.gvt.filter.PadRable;
+
+import org.apache.batik.refimpl.bridge.resources.Messages;
 import org.apache.batik.refimpl.gvt.filter.ConcreteComponentTransferFunction;
 import org.apache.batik.refimpl.gvt.filter.ConcreteComponentTransferRable;
 import org.apache.batik.refimpl.gvt.filter.ConcretePadRable;
+
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.SVGUtilities;
 import org.apache.batik.util.UnitProcessor;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -66,132 +75,128 @@ public class SVGFeComponentTransferElementBridge implements FilterBridge,
                          Map filterMap){
         Filter filter = null;
 
-        //
         // First, extract source
-        //
         String inAttr = filterElement.getAttributeNS(null, ATTR_IN);
-        in = CSSUtilities.getFilterSource(filteredNode, inAttr,
-                                           bridgeContext, filteredElement,
-                                          in, filterMap);
+        in = CSSUtilities.getFilterSource(filteredNode,
+                                          inAttr,
+                                          bridgeContext,
+                                          filteredElement,
+                                          in,
+                                          filterMap);
 
-        if(in != null){
-            //
-            // The default region is the input source's region
-            // unless the source is SourceGraphics, in which
-            // case the default region is the filter chain's
-            // region
-            //
-            Filter sourceGraphics
-                = (Filter)filterMap.get(VALUE_SOURCE_GRAPHIC);
+        // Exit if no 'in' found
+        if (in == null) {
+            return null;
+        }
 
-            Rectangle2D defaultRegion
-                = in.getBounds2D();
+        //
+        // The default region is the input source's region unless the
+        // source is SourceGraphics, in which case the default region
+        // is the filter chain's region
+        //
+        Filter sourceGraphics = (Filter)filterMap.get(VALUE_SOURCE_GRAPHIC);
 
-            if(in == sourceGraphics){
-                defaultRegion = filterRegion;
-            }
+        Rectangle2D defaultRegion = in.getBounds2D();
 
-            CSSStyleDeclaration cssDecl
-                = bridgeContext.getViewCSS().getComputedStyle(filterElement,
-                                                              null);
+        if (in == sourceGraphics){
+            defaultRegion = filterRegion;
+        }
 
-            UnitProcessor.Context uctx
-                = new DefaultUnitProcessorContext(bridgeContext,
-                                                  cssDecl);
+        CSSStyleDeclaration cssDecl
+            = bridgeContext.getViewCSS().getComputedStyle(filterElement, null);
 
-            Rectangle2D primitiveRegion
-                = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
-                                                            filteredElement,
-                                                            defaultRegion,
-                                                            filteredNode,
-                                                            uctx);
+        UnitProcessor.Context uctx
+            = new DefaultUnitProcessorContext(bridgeContext, cssDecl);
 
-            //
-            // Now, extract the various transfer functions. They
-            // are defined in the filterElement's children. Functions
-            // are ordered as follow: r, g, b, a. We start by the
-            // last child.
-            //
-            NodeList children = filterElement.getChildNodes();
-            int nChildren = children.getLength();
-            int curChild = nChildren - 1;
+        Rectangle2D primitiveRegion
+            = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
+                                                        filteredElement,
+                                                        defaultRegion,
+                                                        filteredNode,
+                                                        uctx);
 
-            ComponentTransferFunction alphaFunction = null;
-            ComponentTransferFunction redFunction = null;
-            ComponentTransferFunction greenFunction = null;
-            ComponentTransferFunction blueFunction = null;
+        //
+        // Now, extract the various transfer functions. They
+        // are defined in the filterElement's children. Functions
+        // are ordered as follow: r, g, b, a. We start by the
+        // last child.
+        //
+        NodeList children = filterElement.getChildNodes();
+        int nChildren = children.getLength();
+        int curChild = nChildren - 1;
 
-            if(curChild >= 0){
-                alphaFunction
-                    = createComponentTransferFunction(filterElement,
-                                                      children.item(curChild),
-                                                      TAG_FE_FUNC_A);
-                if(alphaFunction != null){
-                    curChild--;
-                }
-            }
+        ComponentTransferFunction alphaFunction = null;
+        ComponentTransferFunction redFunction = null;
+        ComponentTransferFunction greenFunction = null;
+        ComponentTransferFunction blueFunction = null;
 
-            if(curChild >= 0){
-                blueFunction
-                    = createComponentTransferFunction(filterElement,
-                                                      children.item(curChild),
-                                                      TAG_FE_FUNC_B);
-                if(blueFunction != null){
-                    curChild--;
-                }
-            }
-
-            if(curChild >= 0){
-                greenFunction
-                    = createComponentTransferFunction(filterElement,
-                                                      children.item(curChild),
-                                                      TAG_FE_FUNC_G);
-                if(greenFunction != null){
-                    curChild--;
-                }
-            }
-
-            if(curChild >= 0){
-                redFunction
-                    = createComponentTransferFunction(filterElement,
-                                                      children.item(curChild),
-                                                      TAG_FE_FUNC_R);
-            }
-
-
-            filter = new ConcreteComponentTransferRable
-                (in,
-                 alphaFunction,
-                 redFunction,
-                 greenFunction,
-                 blueFunction);
-
-            filter = new ConcretePadRable(filter,
-                                          primitiveRegion,
-                                          PadMode.ZERO_PAD);
-
-
-            // Get result attribute and update map
-            String result
-                = filterElement.getAttributeNS(null,
-                                               ATTR_RESULT);
-            if((result != null) && (result.trim().length() > 0)){
-                filterMap.put(result, filter);
+        if(curChild >= 0){
+            alphaFunction
+                = createComponentTransferFunction(filterElement,
+                                                  children.item(curChild),
+                                                  TAG_FE_FUNC_A);
+            if(alphaFunction != null){
+                curChild--;
             }
         }
 
-        return filter;
+        if(curChild >= 0){
+            blueFunction
+                = createComponentTransferFunction(filterElement,
+                                                  children.item(curChild),
+                                                  TAG_FE_FUNC_B);
+            if(blueFunction != null){
+                curChild--;
+            }
+        }
 
+        if(curChild >= 0){
+            greenFunction
+                = createComponentTransferFunction(filterElement,
+                                                  children.item(curChild),
+                                                  TAG_FE_FUNC_G);
+            if(greenFunction != null){
+                curChild--;
+            }
+        }
+
+        if(curChild >= 0){
+            redFunction
+                = createComponentTransferFunction(filterElement,
+                                                  children.item(curChild),
+                                                  TAG_FE_FUNC_R);
+        }
+
+
+        filter = new ConcreteComponentTransferRable(in,
+                                                    alphaFunction,
+                                                    redFunction,
+                                                    greenFunction,
+                                                    blueFunction);
+
+        filter = new ConcretePadRable(filter,
+                                      primitiveRegion,
+                                      PadMode.ZERO_PAD);
+
+
+        // Get result attribute and update map
+        String result = filterElement.getAttributeNS(null, ATTR_RESULT);
+        if ((result != null) && (result.trim().length() > 0)) {
+            filterMap.put(result, filter);
+        }
+
+        return filter;
     }
 
     /**
      * Creates a ComponentTransferFunction corresponding to the
      * input tag (i.e., feFuncXX, where XX can be A, R, G or B).
      */
-    private static ComponentTransferFunction
-        createComponentTransferFunction(Element filterElement,
-                                        Node node,
-                                        String tag){
+    private static
+        ComponentTransferFunction createComponentTransferFunction(
+                                                          Element filterElement,
+                                                          Node node,
+                                                          String tag) {
         ComponentTransferFunction txfFunc = null;
 
         if(node.getNodeType() == Node.ELEMENT_NODE){
@@ -206,7 +211,8 @@ public class SVGFeComponentTransferElementBridge implements FilterBridge,
 
                 switch(type){
                 case ComponentTransferFunction.IDENTITY:
-                    txfFunc = ConcreteComponentTransferFunction.getIdentityTransfer();
+                    txfFunc =
+                        ConcreteComponentTransferFunction.getIdentityTransfer();
                     break;
                 case ComponentTransferFunction.TABLE:
                     {
@@ -248,7 +254,8 @@ public class SVGFeComponentTransferElementBridge implements FilterBridge,
                     }
                     break;
                 default:
-                    throw new IllegalArgumentException();
+                    /* Never happen: Bad type is catched previously */
+                    throw new Error();
                 }
 
             }
@@ -265,7 +272,7 @@ public class SVGFeComponentTransferElementBridge implements FilterBridge,
         int i = 0;
         while(st.hasMoreTokens()){
             String v = st.nextToken();
-            tableValues[i++] = Float.parseFloat(v);
+            tableValues[i++] = convertFloatValue(v);
         }
 
         return tableValues;
@@ -283,58 +290,74 @@ public class SVGFeComponentTransferElementBridge implements FilterBridge,
      * ComponentTransferFunction type constant
      */
     private static int convertType(String value){
-        System.out.println("Converting : " + value);
-        int type = ComponentTransferFunction.IDENTITY;
-        if(value.length() > 0){
+        if (value.length() == 0) {
+            throw new MissingAttributeException(
+                Messages.formatMessage("feComponentTransfer.type.required",
+                                       null));
+        } else {
             switch(value.charAt(0)){
             case 't': // table
-                if(value.length() == "table".length()){
+                if(value.length() == VALUE_TABLE.length()){
                     if(value.charAt(1) == 'a' &&
-                       value.charAt(2) == 'b' &&
-                       value.charAt(3) == 'l' &&
-                       value.charAt(4) == 'e'){
-                        type = ComponentTransferFunction.TABLE;
+                           value.charAt(2) == 'b' &&
+                           value.charAt(3) == 'l' &&
+                           value.charAt(4) == 'e'){
+                        return ComponentTransferFunction.TABLE;
                     }
                 }
                 break;
             case 'd': // discrete
-                if(value.length() == "discrete".length()){
+                if(value.length() == VALUE_DISCRETE.length()){
                     if(value.charAt(1) == 'i' &&
-                       value.charAt(2) == 's' &&
-                       value.charAt(3) == 'c' &&
-                       value.charAt(4) == 'r' &&
-                       value.charAt(5) == 'e' &&
-                       value.charAt(6) == 't' &&
-                       value.charAt(7) == 'e'){
-                        type = ComponentTransferFunction.DISCRETE;
+                           value.charAt(2) == 's' &&
+                           value.charAt(3) == 'c' &&
+                           value.charAt(4) == 'r' &&
+                           value.charAt(5) == 'e' &&
+                           value.charAt(6) == 't' &&
+                           value.charAt(7) == 'e'){
+                        return ComponentTransferFunction.DISCRETE;
                     }
                 }
                 break;
             case 'l': // linear
-                if(value.length() == "linear".length()){
+                if(value.length() == VALUE_LINEAR.length()){
                     if(value.charAt(1) == 'i' &&
-                       value.charAt(2) == 'n' &&
-                       value.charAt(3) == 'e' &&
-                       value.charAt(4) == 'a' &&
-                       value.charAt(5) == 'r' ){
-                        type = ComponentTransferFunction.LINEAR;
+                           value.charAt(2) == 'n' &&
+                           value.charAt(3) == 'e' &&
+                           value.charAt(4) == 'a' &&
+                           value.charAt(5) == 'r' ){
+                        return ComponentTransferFunction.LINEAR;
                     }
                 }
                 break;
             case 'g': // gamma
-                if(value.length() == "gamma".length()){
+                if(value.length() == VALUE_GAMMA.length()){
                     if(value.charAt(1) == 'a' &&
-                       value.charAt(2) == 'm' &&
-                       value.charAt(3) == 'm' &&
-                       value.charAt(4) == 'a'){
-                        type = ComponentTransferFunction.GAMMA;
+                           value.charAt(2) == 'm' &&
+                           value.charAt(3) == 'm' &&
+                           value.charAt(4) == 'a'){
+                        return ComponentTransferFunction.GAMMA;
+                    }
+                }
+                break;
+            case 'i': // identity
+                if(value.length() == VALUE_IDENTITY.length()){
+                    if(value.charAt(1) == 'd' &&
+                           value.charAt(2) == 'e' &&
+                           value.charAt(3) == 'n' &&
+                           value.charAt(4) == 't' &&
+                           value.charAt(5) == 'i' &&
+                           value.charAt(6) == 't' &&
+                           value.charAt(7) == 'y'){
+                        return ComponentTransferFunction.IDENTITY;
                     }
                 }
                 break;
             }
         }
-
-        return type;
+        throw new IllegalAttributeValueException(
+                Messages.formatMessage("feComponentTransfer.type.invalid",
+                                       new Object[] { value }));
     }
 
 
