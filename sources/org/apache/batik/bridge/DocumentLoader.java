@@ -15,6 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
 import org.apache.batik.dom.svg.SVGDocumentFactory;
+import org.apache.batik.dom.util.DocumentDescriptor;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -48,13 +49,16 @@ public class DocumentLoader {
     private HashMap documentMap = new HashMap();
 
     /**
-     * A list of the <tt>DocumentState</tt>. Each time a document is
-     * loaded, the first item becomes this document.
-     *
-     * WARNING: tagged private as no element of this List should be
-     * referenced outside of this class.
+     * A list of the cached documents that can be removed from the
+     * cache at any time.
      */
-    private List documentList = new LinkedList();
+    private List cachedDocs = new LinkedList();
+
+    /**
+     * A list of the <tt>DocumentState</tt> that represents the
+     * documents in progress.
+     */
+    private List currentDocs = new LinkedList();
 
     /**
      * The current number of cached nodes.
@@ -64,7 +68,7 @@ public class DocumentLoader {
     /**
      * The size of the cache.
      */
-    protected int size;
+    private int size;
 
     /**
      * Constructs a new <tt>DocumentLoader</tt>.
@@ -102,9 +106,12 @@ public class DocumentLoader {
         Document document = (Document) documentMap.get(uri);
         if (document != null) {
             //System.out.println("reusing: "+uri);
-            DocumentState state = getDocumentState(document);
-            documentList.remove(state);
-            documentList.add(0, state);
+            DocumentState state = getDocumentState(cachedDocs, document);
+            // move the state if the document is cached and not in progress
+            if (state != null) {
+                cachedDocs.remove(state);
+                cachedDocs.add(0, state);
+            }
         } else {
             //System.out.println("loading: "+uri);
             // load the document
@@ -112,38 +119,67 @@ public class DocumentLoader {
             // update the cache
             int num = getNodeCount(document.getDocumentElement());
             while ((currentCachedNodeCount + num) > size &&
-                    documentList.size() > 0) {
+                    cachedDocs.size() > 0) {
                 // remove the oldest document loaded
-                int i = documentList.size()-1;
-                DocumentState state = (DocumentState) documentList.get(i);
-                documentList.remove(i);
+                int i = cachedDocs.size()-1;
+                DocumentState state = (DocumentState)cachedDocs.get(i);
+                cachedDocs.remove(i);
                 documentMap.remove(state.uri);
                 currentCachedNodeCount -= state.nodeCount;
             }
             currentCachedNodeCount += num;
             // add the new loaded document to the cache
-            DocumentState state = new DocumentState(uri, document, num);
-            documentList.add(0, state);
+            DocumentDescriptor desc = documentFactory.getDocumentDescriptor();
+            DocumentState state = new DocumentState(uri, document, num, desc);
+            currentDocs.add(0, state);
             documentMap.put(uri, document);
         }
         return document;
     }
 
     /**
+     * Disposes and releases all resources allocated for the specified
+     * document. It's the document loader's responsability to
+     * physically removed the specified document from the cache when
+     * needed. The specified document is in fact just tagged as no
+     * more in progress.
+     *
+     * @param document the document to dispose
+     */
+    public void dispose(Document document) {
+        DocumentState state = getDocumentState(currentDocs, document);
+        if (state != null) {
+            //System.out.println("disposing "+state.document);
+            // allow GC of the DocumentDescriptor
+            state.desc = null;
+            // remove the state from the 'in progress' list
+            currentDocs.remove(state);
+            // add the state to the cached document list. The document
+            // is tagged as no more in progress and can be removed
+            // from the cache at any time
+            cachedDocs.add(0, state);
+        }
+    }
+
+    /**
      * Disposes and releases all resources allocated by this document loader.
      */
     public void dispose() {
-        //System.out.println("disposing...");
+        if (currentDocs.size() > 0) {
+            System.err.println(
+                "WARNING: The loader still has "+currentDocs.size()+" documents marked in progress.");
+        }
+        //System.out.println("purge the cache");
         documentMap.clear();
-        documentList.clear();
+        cachedDocs.clear();
     }
 
     /**
      * Returns the <tt>DocumentState</tt> of the specified Document.
      * @param document the document
      */
-    protected DocumentState getDocumentState(Document document) {
-        for (Iterator i = documentList.iterator(); i.hasNext();) {
+    protected DocumentState getDocumentState(List l, Document document) {
+        for (Iterator i = l.iterator(); i.hasNext();) {
             DocumentState state = (DocumentState) i.next();
             if (state.document == document) {
                 return state;
@@ -171,11 +207,20 @@ public class DocumentLoader {
         private String uri;
         private Document document;
         private int nodeCount;
+        private DocumentDescriptor desc;
 
-        public DocumentState(String uri, Document document, int nodeCount) {
+        public DocumentState(String uri,
+                             Document document,
+                             int nodeCount,
+                             DocumentDescriptor desc) {
             this.uri = uri;
             this.document = document;
             this.nodeCount = nodeCount;
+            this.desc = desc;
+        }
+
+        public DocumentDescriptor getDocumentDescriptor() {
+            return desc;
         }
 
         public String getURI() {
