@@ -1063,6 +1063,7 @@ public class ViewerFrame
         case (DocumentLoadingEvent.START_LOADING):
             setCursor(WAIT_CURSOR);
             setSVGCursor(WAIT_CURSOR);
+            canvas.setSVGDocument(null);
             reloadAction.update(false);
             stopAction.update(true);
             statusBar.setMainMessage
@@ -1130,8 +1131,6 @@ public class ViewerFrame
         case (DocumentPropertyEvent.DESCRIPTION) :
             String desc = (String) e.getValue();
             if (desc.equals("")) {
-                   // possibly unsafe to ask resources
-                    // (resources may need synchronized access)
                 desc = resources.getString("Description.no_description");
             }
             description = desc;

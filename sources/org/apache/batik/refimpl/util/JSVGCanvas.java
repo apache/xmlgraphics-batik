@@ -393,6 +393,10 @@ public class JSVGCanvas
      */
     public void setSVGDocument(final SVGDocument doc) {
 
+        if ((backgroundRenderThread != null) &&
+                       (backgroundRenderThread.isAlive())) {
+                backgroundRenderThread.interrupt();
+        }
         if (document != null) {
             // fire the unload event
             Event evt = document.createEvent("SVGEvents");
@@ -462,7 +466,6 @@ public class JSVGCanvas
                             SVGDocument document) {
 
         gvtRoot = root;  // based on event notification
-        docBBox = root.getBounds();
         JSVGCanvas.this.document = document;
 
         if (root != null) {
@@ -713,7 +716,7 @@ public class JSVGCanvas
                 g2d.setPaint(Color.white);
                 g2d.fillRect(0, 0, w, h);
             }
-
+            clearBuffer(w, h);
             renderer.setTransform(transform);
             repaintAOI(renderer, size, buffer);
             bufferNeedsRendering = false; // repaint is already queued
@@ -903,6 +906,9 @@ public class JSVGCanvas
                         renderer.repaint(aoi);
                     } catch (InterruptedException ie) {
                     } catch (NoClassDefFoundError ncdfe) {
+                        // BUG: something is not initialized or
+                        // got destroyed in the interrupted thread
+                        // not a disaster since another repaint will follow
                         System.out.println("(AOI repaint did not complete.)");
                     } catch (Exception e) {
                         // don't quit altogether...
@@ -1582,6 +1588,9 @@ public class JSVGCanvas
          */
         public void notifyRepaintedRegion(Shape oldAoi, Shape newAoi,
                                           Renderer renderer) {
+
+            // TODO: thread this (it's used by DynamicRenderer)
+
             clearBuffer(oldAoi);
             clearBuffer(newAoi);
             try {
