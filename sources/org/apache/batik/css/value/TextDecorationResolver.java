@@ -26,21 +26,21 @@ public class TextDecorationResolver implements RelativeValueResolver {
      * Whether the handled property is inherited or not.
      */
     public boolean isInheritedProperty() {
-	return false;
+        return false;
     }
 
     /**
      * Returns the name of the handled property.
      */
     public String getPropertyName() {
-	return ValueConstants.CSS_TEXT_DECORATION_PROPERTY;
+        return ValueConstants.CSS_TEXT_DECORATION_PROPERTY;
     }
 
     /**
      * Returns the default value for the handled property.
      */
     public CSSOMReadOnlyValue getDefaultValue() {
-	return new CSSOMReadOnlyValue(TextDecorationFactory.NONE_VALUE);
+        return new CSSOMReadOnlyValue(TextDecorationFactory.NONE_VALUE);
     }
 
     /**

@@ -35,7 +35,6 @@ public class TextDecorationFactory
 	values.put(CSS_LINE_THROUGH_VALUE, LINE_THROUGH_VALUE);
 	values.put(CSS_OVERLINE_VALUE,     OVERLINE_VALUE);
 	values.put(CSS_UNDERLINE_VALUE,    UNDERLINE_VALUE);
-    values.put(CSS_NONE_VALUE,    NONE_VALUE);
     }
 
     /**
@@ -67,6 +66,9 @@ public class TextDecorationFactory
 	case LexicalUnit.SAC_INHERIT:
 	    return INHERIT;
 	case LexicalUnit.SAC_IDENT:
+        if (lu.getStringValue().equalsIgnoreCase(CSS_NONE_VALUE)) {
+		    return NONE_VALUE;
+	    }
 	    ImmutableValueList list = new ImmutableValueList(' ');
 	    do {
 		list.append(new CSSOMValue(identFactory,
