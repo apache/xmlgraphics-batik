@@ -54,12 +54,12 @@ public class SVGGraphicContextConverter {
         if (generatorContext == null)
             throw new SVGGraphics2DRuntimeException(ErrorConstants.ERR_CONTEXT_NULL);
 
-        transformConverter = new SVGTransform();
+        transformConverter = new SVGTransform(generatorContext);
         paintConverter = new SVGPaint(generatorContext);
-        strokeConverter = new SVGBasicStroke();
+        strokeConverter = new SVGBasicStroke(generatorContext);
         compositeConverter = new SVGComposite(generatorContext);
         clipConverter = new SVGClip(generatorContext);
-        hintsConverter = new SVGRenderingHints();
+        hintsConverter = new SVGRenderingHints(generatorContext);
         fontConverter = new SVGFont(generatorContext);
 
         int i=0;

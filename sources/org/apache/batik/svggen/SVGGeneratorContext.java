@@ -16,6 +16,11 @@ import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.Stroke;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+
+import java.util.Locale;
+
 import org.w3c.dom.Document;
 
 /**
@@ -89,6 +94,12 @@ public class SVGGeneratorContext implements ErrorConstants {
      * GraphicContextDefaults
      */
     GraphicContextDefaults gcDefaults;
+
+    /**
+     * Number of decimal places to use in output values.
+     * 3 decimal places are used by default.
+     */
+    int precision;
 
     /**
      * Class to describe the GraphicContext defaults to
@@ -368,4 +379,66 @@ public class SVGGeneratorContext implements ErrorConstants {
     final public void setEmbeddedFontsOn(boolean svgFont) {
         this.svgFont = svgFont;
     }
+
+    /**
+     * Returns the current precision used by this context
+     */
+    final public int getPrecision() {
+        return precision;
+    }
+
+    /**
+     * Sets the precision used by this context. The precision controls
+     * the number of decimal places used in floating point values
+     * output by the SVGGraphics2D generator.
+     * Note that the precision is clipped to the [0,12] range.
+     */
+    final public void setPrecision(int precision) {
+        if (precision < 0) {
+            precision = 0;
+        } else if (precision > 12) {
+            precision = 12;
+        } else {
+            this.precision = precision;
+        }
+        decimalFormat = decimalFormats[this.precision];
+    }
+
+    /**
+     * Converts the input double value to a string with a number of 
+     * decimal places controlled by the precision attribute.
+     */
+    final public String doubleString(double value) {
+        double absvalue = Math.abs(value);
+        // above 10e7 we do not output decimals as anyway
+        // in scientific notation they were not available
+        if (absvalue >= 10e7 || (int)value == value) {
+            return Integer.toString((int)value);
+        }
+        // under 10e-3 we have to put decimals
+        else {
+            return decimalFormat.format(value);
+        } 
+    }
+
+    /**
+     * Current double value formatter
+     */
+    protected DecimalFormat decimalFormat = decimalFormats[3];
+
+    protected static DecimalFormatSymbols dsf 
+        = new DecimalFormatSymbols(Locale.US);
+
+    protected static DecimalFormat decimalFormats[] = new DecimalFormat[13];
+
+    {
+        decimalFormats[0] = new DecimalFormat("#", dsf);
+
+        String format = "#.";
+        for (int i=0; i<=12; i++) {
+            format += "#";
+            decimalFormats[i] = new DecimalFormat(format, dsf);
+        }
+    }
+
 }

@@ -50,7 +50,7 @@ public class SVGPath extends SVGGraphicObjectConverter {
     public Element toSVG(Shape path) {
         // Create the path element and process its
         // d attribute.
-        String dAttr = toSVGPathData(path);
+        String dAttr = toSVGPathData(path, generatorContext);
         if (dAttr==null || dAttr.length() == 0){
             // be careful not to append null to the DOM tree
             // because it will crash
@@ -73,7 +73,7 @@ public class SVGPath extends SVGGraphicObjectConverter {
      * @param path the GeneralPath to convert
      * @return the value of the corresponding d attribute
      */
-     public static String toSVGPathData(Shape path) {
+     public static String toSVGPathData(Shape path, SVGGeneratorContext gc) {
         StringBuffer d = new StringBuffer("");
         PathIterator pi = path.getPathIterator(null);
         float seg[] = new float[6];
@@ -83,25 +83,25 @@ public class SVGPath extends SVGGraphicObjectConverter {
             switch(segType) {
             case PathIterator.SEG_MOVETO:
                 d.append(PATH_MOVE);
-                appendPoint(d, seg[0], seg[1]);
+                appendPoint(d, seg[0], seg[1], gc);
                 break;
             case PathIterator.SEG_LINETO:
                 d.append(PATH_LINE_TO);
-                appendPoint(d, seg[0], seg[1]);
+                appendPoint(d, seg[0], seg[1], gc);
                 break;
             case PathIterator.SEG_CLOSE:
                 d.append(PATH_CLOSE);
                 break;
             case PathIterator.SEG_QUADTO:
                 d.append(PATH_QUAD_TO);
-                appendPoint(d, seg[0], seg[1]);
-                appendPoint(d, seg[2], seg[3]);
+                appendPoint(d, seg[0], seg[1], gc);
+                appendPoint(d, seg[2], seg[3], gc);
                 break;
             case PathIterator.SEG_CUBICTO:
                 d.append(PATH_CUBIC_TO);
-                appendPoint(d, seg[0], seg[1]);
-                appendPoint(d, seg[2], seg[3]);
-                appendPoint(d, seg[4], seg[5]);
+                appendPoint(d, seg[0], seg[1], gc);
+                appendPoint(d, seg[2], seg[3], gc);
+                appendPoint(d, seg[4], seg[5], gc);
                 break;
             default:
                 throw new Error();
@@ -127,10 +127,10 @@ public class SVGPath extends SVGGraphicObjectConverter {
     /**
      * Appends a coordinate to the path data
      */
-    private static void appendPoint(StringBuffer d, float x, float y) {
-        d.append(doubleString(x));
+    private static void appendPoint(StringBuffer d, float x, float y, SVGGeneratorContext gc) {
+        d.append(gc.doubleString(x));
         d.append(SPACE);
-        d.append(doubleString(y));
+        d.append(gc.doubleString(y));
         d.append(SPACE);
     }
 }

@@ -38,7 +38,7 @@
       <g class="testC1" transform="translate(30,40)">
         <text xml:space="preserve" x="0" y="0" class="testC2">translate collapse</text>
         <text xml:space="preserve" x="10" y="10" class="testC3" transform="scale(4,8)">scale collapse</text>
-        <text xml:space="preserve" x="0" y="40" class="testC4" transform="rotate(30.000000000000004)">rotate collapse</text>
+        <text xml:space="preserve" x="0" y="40" class="testC4" transform="rotate(30)">rotate collapse</text>
         <text xml:space="preserve" x="0" y="80" class="testC5">identity</text>
       </g>
     </g>

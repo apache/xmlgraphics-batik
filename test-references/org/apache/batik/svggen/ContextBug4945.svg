@@ -51,7 +51,7 @@
         <line y2="80" x1="20" class="testC6" x2="120" y1="80" />
         <text xml:space="preserve" x="20" y="120" class="testC7" transform="matrix(1,0.5,0.5,1,-60,-10)">Sheared Font</text>
       </g>
-      <g class="testC8" transform="matrix(0.7071067811865476,0.7071067811865475,-0.7071067811865475,0.7071067811865476,149.28932188134524,-120.41630560342614)">
+      <g class="testC8" transform="matrix(0.707106781187,0.707106781187,-0.707106781187,0.707106781187,149.289321881345,-120.416305603426)">
         <text xml:space="preserve" x="220" y="120" class="testC9">Rotated Font</text>
       </g>
     </g>

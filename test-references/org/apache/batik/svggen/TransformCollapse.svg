@@ -8,7 +8,7 @@
     <g transform="translate(30,40)">
       <text xml:space="preserve" x="0" y="0" stroke="none">translate collapse</text>
       <text xml:space="preserve" x="10" y="10" transform="scale(4,8)" stroke="none">scale collapse</text>
-      <text xml:space="preserve" x="0" y="40" transform="rotate(30.000000000000004)" stroke="none">rotate collapse</text>
+      <text xml:space="preserve" x="0" y="40" transform="rotate(30)" stroke="none">rotate collapse</text>
       <text xml:space="preserve" x="0" y="80" stroke="none">identity</text>
     </g>
   </g>

@@ -12,7 +12,7 @@
 .testC4 {opacity:0.5;stroke-width:5;fill:none;stroke:lime;}
 .testC5 {opacity:0.5;stroke-width:5;stroke:none;}
 .testC6 {stroke-width:5;stroke:none;}
-.testC7 {fill-opacity:0.501960813999176;text-rendering:optimizeLegibility;stroke-width:5;stroke-opacity:0.501960813999176;stroke:rgb(0,0,255);fill:rgb(0,0,255);}
+.testC7 {fill-opacity:0.501960813999;text-rendering:optimizeLegibility;stroke-width:5;stroke-opacity:0.501960813999;stroke:rgb(0,0,255);fill:rgb(0,0,255);}
 .testC8 {stroke:none;}
 .testC9 {fill:none;stroke:rgb(0,255,0);}
 .testC10 {stroke-dashoffset:0;text-rendering:auto;color-rendering:auto;stroke-linecap:square;fill:black;font-size:12;stroke-linejoin:miter;font-weight:normal;stroke:black;fill-opacity:1;font-style:normal;stroke-dasharray:none;stroke-miterlimit:10;color-interpolation:auto;image-rendering:auto;shape-rendering:auto;font-family:'Arial';stroke-width:1;stroke-opacity:1;}

@@ -21,6 +21,14 @@ import org.apache.batik.ext.awt.g2d.GraphicContext;
  */
 public class SVGBasicStroke extends AbstractSVGConverter{
     /**
+     * @param generatorContext used by converter to handle precision
+     *        or to create elements.
+     */
+    public SVGBasicStroke(SVGGeneratorContext generatorContext) {
+        super(generatorContext);
+    }
+
+    /**
      * Converts part or all of the input GraphicContext into
      * a set of attribute/value pairs and related definitions
      *
@@ -42,7 +50,7 @@ public class SVGBasicStroke extends AbstractSVGConverter{
      *        SVG attributes
      * @return map of attributes describing the stroke
      */
-    public static SVGStrokeDescriptor toSVG(BasicStroke stroke)
+    public final SVGStrokeDescriptor toSVG(BasicStroke stroke)
     {
         // Stroke width
         String strokeWidth = doubleString(stroke.getLineWidth());
@@ -75,7 +83,7 @@ public class SVGBasicStroke extends AbstractSVGConverter{
     /**
      * @param dashArray float array to convert to a string
      */
-    private static String dashArrayToSVG(float dashArray[]){
+    private final String dashArrayToSVG(float dashArray[]){
         StringBuffer dashArrayBuf = new StringBuffer();
         if(dashArray.length > 0)
             dashArrayBuf.append(doubleString(dashArray[0]));

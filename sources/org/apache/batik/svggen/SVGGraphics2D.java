@@ -1158,9 +1158,9 @@ public class SVGGraphics2D extends AbstractGraphics2D
             Element text =
                 getDOMFactory().createElementNS(SVG_NAMESPACE_URI, SVG_TEXT_TAG);
             text.setAttributeNS(null, SVG_X_ATTRIBUTE,
-                                AbstractSVGConverter.doubleString(x));
+                                generatorCtx.doubleString(x));
             text.setAttributeNS(null, SVG_Y_ATTRIBUTE,
-                                AbstractSVGConverter.doubleString(y));
+                                generatorCtx.doubleString(y));
             text.setAttributeNS(XML_NAMESPACE_URI,
                                 XML_SPACE_ATTRIBUTE,
                                 XML_PRESERVE_VALUE);

@@ -168,7 +168,8 @@ public abstract class DefaultCachedImageHandler
             // need to be scaled.
             af = handleTransform(imageElement, (double) x, (double) y,
                                  (double) imageWidth, (double) imageHeight,
-                                 (double) width, (double) height);
+                                 (double) width, (double) height,
+                                 generatorContext);
         }
         return af;
     }
@@ -211,7 +212,7 @@ public abstract class DefaultCachedImageHandler
             // need to be scaled.
             af = handleTransform(imageElement, (double) x, (double) y,
                                  (double) imageWidth, (double) imageHeight,
-                                 (double) width, (double) height);
+                                 (double) width, (double) height, generatorContext);
         }
         return af;
     }
@@ -254,7 +255,7 @@ public abstract class DefaultCachedImageHandler
             // need to be scaled.
             af = handleTransform(imageElement, x,y,
                                  imageWidth, imageHeight,
-                                 width, height);
+                                 width, height, generatorContext);
         }
         return af;
     }
@@ -269,23 +270,23 @@ public abstract class DefaultCachedImageHandler
                                               double srcWidth,
                                               double srcHeight,
                                               double dstWidth,
-                                              double dstHeight) {
+                                              double dstHeight,
+                                              SVGGeneratorContext generatorContext) {
         // In this the default case, <image> element, we just
         // set x, y, width and height attributes.
         // No additional transform is necessary.
-        
         imageElement.setAttributeNS(null,
                                     SVG_X_ATTRIBUTE,
-                                    AbstractSVGConverter.doubleString(x));
+                                    generatorContext.doubleString(x));
         imageElement.setAttributeNS(null,
                                     SVG_Y_ATTRIBUTE,
-                                    AbstractSVGConverter.doubleString(y));
+                                    generatorContext.doubleString(y));
         imageElement.setAttributeNS(null,
                                     SVG_WIDTH_ATTRIBUTE,
-                                    AbstractSVGConverter.doubleString(dstWidth));
+                                    generatorContext.doubleString(dstWidth));
         imageElement.setAttributeNS(null,
                                     SVG_HEIGHT_ATTRIBUTE,
-                                    AbstractSVGConverter.doubleString(dstHeight));
+                                    generatorContext.doubleString(dstHeight));
         return null;
     }
               

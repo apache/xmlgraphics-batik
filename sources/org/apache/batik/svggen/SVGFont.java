@@ -282,7 +282,7 @@ public class SVGFont extends AbstractSVGConverter {
             missingGlyphShape = at.createTransformedShape(missingGlyphShape);
 
             missingGlyphElement.setAttributeNS(null, SVG_D_ATTRIBUTE,
-                                    SVGPath.toSVGPathData(missingGlyphShape));
+                                    SVGPath.toSVGPathData(missingGlyphShape, generatorContext));
             missingGlyphElement.setAttributeNS(null, SVG_HORIZ_ADV_X_ATTRIBUTE,
                                                "" + gm.getAdvance());
             fontDef.appendChild(missingGlyphElement);
@@ -340,7 +340,7 @@ public class SVGFont extends AbstractSVGConverter {
                 glyphShape = at.createTransformedShape(glyphShape);
 
                 glyphElement.setAttributeNS(null, SVG_D_ATTRIBUTE,
-                                            SVGPath.toSVGPathData(glyphShape));
+                                            SVGPath.toSVGPathData(glyphShape, generatorContext));
                 glyphElement.setAttributeNS(null, SVG_HORIZ_ADV_X_ATTRIBUTE,
                                             "" + gm.getAdvance());
                 glyphElement.setAttributeNS(null, SVG_UNICODE_ATTRIBUTE,
