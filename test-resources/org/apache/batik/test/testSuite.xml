@@ -1,0 +1,23 @@
+<testSuite name="regard">
+    <testReportProcessor class="org.apache.batik.test.xml.XMLTestReportProcessor" />
+
+    <testReportProcessor class="org.apache.batik.test.TestReportMailer">
+        <arg class="java.lang.String" value="vhardy@eng.sun.com" />
+        <arg class="java.lang.String" value="vhardy@eng.sun.com" />
+        <arg class="java.lang.String" value="jurassic.eng.sun.com" />
+    </testReportProcessor>
+
+    <!-- Validates that the SVGRenderingAccuracyTest class is operating as expected -->
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTestValidator" />
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:samples/anne.svg" />
+        <arg class="java.net.URL" value="file:samples/anne.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:samples/batikFX.svg" />
+        <arg class="java.net.URL" value="file:samples/batikFX.png" />
+    </test>
+
+</testSuite>
