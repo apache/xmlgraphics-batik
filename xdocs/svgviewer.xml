@@ -103,10 +103,8 @@
 
             <s2 title="SVG viewer screen shot">
 
-                <p><link href="images/svgviewerDefaultRegular.jpg">
-                        <!-- <img src="images/viewerDefaultSmall.jpg" alt="Batik Viewer"/> -->
-                    </link>
-                </p>
+                <p><link href="images/svgviewerDefaultRegular.jpg"><icon src="images/svgviewerDefaultSmall.jpg" alt="Batik Viewer"/></link></p>
+                
 
             </s2>
         </s1>
@@ -117,7 +115,7 @@
             
             <s2 title="Opening a local SVG file">
 
-            <p><!-- <img src="images/svgviewerFileOpen.jpg" alt="File Open in SVG Viewer"/>--></p>
+            <figure src="images/svgviewerFileOpen.gif" alt="File Open in SVG Viewer"/>
             <p>In situations where you have an SVG file locally on the machine where you are running the
             Batik SVG viewer, you can use the "File-&gt;File Open" menu item to open that file, or use
             the "Ctrl-F" key accelerator. Doing so brings up a file choser that lets you select the file
@@ -127,7 +125,7 @@
 
             <s2 title="Opening an SVG file from the Web">
 
-            <p><!--img src="images/svgviewerOpenPage.jpg" alt="Open Page in SVG Viewer"/--></p>
+            <figure src="images/svgviewerOpenPage.gif" alt="Open Page in SVG Viewer"/>
             <p>There are many situations where the SVG content you want to view is not local to the machine
             where the viewer is running. In that case, you can use the "File-&gt;Open Page" menu item, or use
             the "Ctrl-O" key accelerator to open that page. Doing so brings up a dialog box where you 
@@ -137,7 +135,7 @@
 
             <s2 title="Using the location text field to view an SVG file">
 
-            <p><!--img src="images/svgviewerLocationBar.jpg" alt="Location Bar in SVG Viewer"/--></p>
+            <figure src="images/svgviewerLocationBar.gif" alt="Location Bar in SVG Viewer"/>
             <p>When you know the URL of the document you want to view, you can enter it directly in 
             the location bar text field at the top of the SVG viewer, the same way you can enter a
             URL in an HTML browser</p>
@@ -175,25 +173,25 @@
         <anchor id="viewingMultiple" />
         <s1 title="Viewing multiple SVG files">
 
-            <p><!--img src="images/svgViewerMultipleFiles.jpg" alt="Viewing multiple files" /--></p>
+            <figure src="images/svgviewerMultipleFiles.gif" alt="Viewing multiple files" />
             <p>The Batik SVG Viewer can display multiple files simultaneously in different windows. To view a
-            new file in a separate window, simply select the "File-&lt; New Window..." menu item or use
+            new file in a separate window, simply select the "File-&gt; New Window..." menu item or use
             the Ctrl-N keyboard accelerator.</p>
         </s1>
 
         <anchor id="viewingSource" />
         <s1 title="Viewing the source">
 
-            <p><!--img src="images/svgviewerViewSource.jpg" alt="Viewing the source code" /--></p>
+            <figure src="images/svgviewerViewSource.gif" alt="Viewing the source code" />
             <p>When the viewer displays an SVG file, you can select
-            the "View-&lt; View Source..." menu item or use the Ctrl-U keyboard accelerator to view the 
+            the "View-&gt; View Source..." menu item or use the Ctrl-U keyboard accelerator to view the 
             source code.</p>
         </s1>
 
         <anchor id="viewingTree" />
         <s1 title="Viewing the document tree">
-            <p><!--img src="images/svgviewerViewTree.jpg" alt="Viewing the document tree" /--></p>
-            <p>When the viewer displays an SVG file, you can select the "View-&lt; View Document Tree..."
+            <figure src="images/svgviewerViewTree.gif" alt="Viewing the document tree" />
+            <p>When the viewer displays an SVG file, you can select the "View-&gt; View Document Tree..."
             menu item or use the Ctrl-T keyboard accelerator to open a dialog that shows the SVG
             document in the form of a tree. The dialog lets you navigate the tree, select individual
             elements, such as a filter element, and view the attributes and CSS values that apply to
@@ -204,10 +202,11 @@
         <s1 title="Zooming, panning and rotating documents">
             
             <s2 title="Zooming in">
-                <p><!--img src="images/svgviewerZoomin.jpg" alt="Zooming in an SVG document" /--></p>
+                <figure src="images/svgviewerZoomin.gif" alt="Zooming in an SVG document" />
+                <figure src="images/svgviewerAOI.gif" alt="Zooming in an SVG document" />
                 <p>There are several methods to zoom in an SVG Document:</p>
                 <ul>
-                    <li>You can select the "View -&lt; Zoom In" menu item</li>
+                    <li>You can select the "View -&gt; Zoom In" menu item</li>
                     <li>You can click on the "Zoom In" tool bar buttom (the one that shows a magnifying glass
                         with a "+" sign)</li>
                     <li>You can use the "Ctrl+Shift+P" keyboard acceleration</li>
@@ -218,10 +217,10 @@
 
             
             <s2 title="Zooming out">
-                <p><!--img src="images/svgviewerZoomout.jpg" alt="Zooming out an SVG document" /--></p>
+                <figure src="images/svgviewerZoomout.gif" alt="Zooming out an SVG document" />
                 <p>There are several methods to zoom out in an SVG Document:</p>
                 <ul>
-                    <li>You can select the "View -&lt; Zoom Out" menu item</li>
+                    <li>You can select the "View -&gt; Zoom Out" menu item</li>
                     <li>You can click on the "Zoom Out" tool bar buttom (the one that shows a magnifying glass
                         with a "-" sign)</li>
                     <li>You can use the "Ctrl+Shift+O" keyboard acceleration</li>
@@ -229,10 +228,11 @@
             </s2>
 
             <s2 title="Restoring the original size of a document">
+                <figure src="images/svgviewerZoomRestore.gif" alt="Restoring the initial zoom in an SVG document" />
                 <p>Sometimes, after zooming, panning and rotating a document, it is useful to be able
                 to restore its original size, i.e., view it as it was first loaded:</p>
                <ul>
-                    <li>You can select the "View -&lt; Initial Zoom" menu item</li>
+                    <li>You can select the "View -&gt; Initial Zoom" menu item</li>
                     <li>You can click on the "Initial Zoom" tool bar buttom (the one that shows a square with four
                     arrows pointing in the Nort, East, South and West directions)</li>
                     <li>You can use the "Ctrl+1" keyboard acceleration</li>
@@ -241,7 +241,7 @@
 
 
             <s2 title="Panning a document">
-                <p><!--img src="images/svgviewerPan.svg" alt="Panning in an SVG document" /--></p>
+                <figure src="images/svgviewerPan.gif" alt="Panning in an SVG document" />
                 <p>Some documents are too big to fit into the viewer, especially when you zoom in with a
                 large zoom factor. In these circumstances, it is usefull to be able to 'move around' the 
                 document and pan to view different parts of the documents. Again, there are multiple ways
@@ -256,7 +256,7 @@
             </s2>
 
             <s2 title="Rotating a document">
-                <p><!--img src="images/svgviewerRotate.svg" alt="Rotating an SVG document" /--></p>
+                <figure src="images/svgviewerRotate.gif" alt="Rotating an SVG document" />
                 <p>It is sometimes useful to be able to rotate a document (maps for example). You can
                 do this in the Batik viewer by first pressing the Ctrl key and then clicking and dragging
                 the left mouse button to a new location. A marker will show the rotation angle corresponding
