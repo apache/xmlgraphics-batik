@@ -91,8 +91,8 @@ public class TextSelectionManager {
     protected Color selectionOverlayStrokeColor = new Color(255, 255, 255, 255);
 
     /**
-     * A flag bit that indicates whether or not the selection overlay is painted
-     * in XOR mode.
+     * A flag bit that indicates whether or not the selection overlay is 
+     * painted in XOR mode.
      */
     protected boolean xorMode = false;
 
@@ -201,7 +201,7 @@ public class TextSelectionManager {
                 if (selectionHighlight != null) {
                     Rectangle r = getHighlightBounds();
                     selectionHighlight = null;
-                    component.paintImmediately(r);
+                    component.repaint(r);
                 }
             }
         }
@@ -258,7 +258,7 @@ public class TextSelectionManager {
             if (selectionHighlight != null) {
                 Rectangle r = getHighlightBounds();
                 selectionHighlight = null;
-                component.paintImmediately(r);
+                component.repaint(r);
             }
         }
         public void selectionChanged(SelectionEvent e) {
@@ -273,12 +273,12 @@ public class TextSelectionManager {
             if (selectionHighlight != null) {
                 if (r != null) {
                     Rectangle r2 = getHighlightBounds();
-                    component.paintImmediately(r.union(r2));
+                    component.repaint(r.union(r2));
                 } else {
-                    component.paintImmediately(getHighlightBounds());
+                    component.repaint(getHighlightBounds());
                 }
             } else if (r != null) {
-                component.paintImmediately(r);
+                component.repaint(r);
             }
         }
 

@@ -414,15 +414,21 @@ public class JGVTComponent extends JComponent {
     public void immediateRepaint() {
         if (EventQueue.isDispatchThread()) {
             Dimension dim = getSize();
-            paintImmediately(0, 0, dim.width, dim.height);
+            if (doubleBufferedRendering)
+                repaint(0, 0, dim.width, dim.height);
+            else
+                paintImmediately(0, 0, dim.width, dim.height);
         } else {
             try {
                 EventQueue.invokeAndWait(new Runnable() {
-                    public void run() {
-                        Dimension dim = getSize();
-                        paintImmediately(0, 0, dim.width, dim.height);
-                    }
-                });
+                        public void run() {
+                            Dimension dim = getSize();
+                            if (doubleBufferedRendering)
+                                repaint(0, 0, dim.width, dim.height);
+                            else
+                                paintImmediately(0, 0, dim.width, dim.height);
+                        }
+                    });
             } catch (Exception e) {
             }
         }
@@ -704,14 +710,13 @@ public class JGVTComponent extends JComponent {
                         final Thread thisThread = this;
                         try {
                             while (!isInterrupted()) {
-                                EventQueue.invokeAndWait(new Runnable() {
+                                EventQueue.invokeLater(new Runnable() {
                                     public void run() {
                                         if (progressivePaintThread ==
                                             thisThread) {
                                             Dimension dim = getSize();
-                                            paintImmediately(0, 0,
-                                                             dim.width,
-                                                             dim.height);
+                                            repaint(0, 0, dim.width,
+                                                    dim.height);
                                         }
                                     }
                                 });
