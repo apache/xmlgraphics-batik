@@ -790,7 +790,7 @@ public class JSVGCanvas
         public void run() {
             long t1 = System.currentTimeMillis();
             requestCursor(WAIT_CURSOR);
-            synchronized (buffer) {
+            synchronized (globalBuffer) {
 
                 // if we don't synchronize, we can accidentlly
                 // paint twice after clearing twice
