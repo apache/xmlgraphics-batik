@@ -332,6 +332,7 @@
         <test id="samples/tests/spec/scripting/use.svg" />
         <test id="samples/tests/spec/scripting/svg.svg" />
         <test id="samples/tests/spec/scripting/svg2.svg" />
+        <test id="samples/tests/spec/scripting/bug12933.svg" />
     </testGroup>
 
 </testSuite>

@@ -171,7 +171,11 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
             dirtyNodes.put(gnWRef, at);
         }
 
-        Rectangle2D r2d = gnce.getFrom();
+        Rectangle2D r2d = null;
+        if ( gnce.getFrom() != null ){
+            r2d = (Rectangle2D)gnce.getFrom().clone();
+        }
+
         if (r2d == null) 
             r2d = gn.getBounds();
         if (r2d != null) {
@@ -181,7 +185,13 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
             fromBounds.put(gnWRef, r2d);
         }
 
-        r2d = gnce.getTo();
+        if ( gnce.getTo() != null ){
+            r2d = (Rectangle2D)gnce.getTo().clone();
+        }
+        else{
+            r2d = null;
+        }
+
         if (r2d != null) {
             Rectangle2D rgn = (Rectangle2D)toBounds.remove(gnWRef);
             if (rgn != null)
