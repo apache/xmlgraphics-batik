@@ -30,7 +30,8 @@
     Test 'visibility' property inheritance
   </text>
 <g transform="translate(0 10)" style="font-size:12">
-    <g transform="translate(160 40)">
+
+    <g transform="translate(80 40)">
       <g>
          <rect x="0"  y="45" width="40" height="50" style="fill:#eee"/>
          <rect x="40" y="45" width="40" height="50" style="fill:#aaa"/>
@@ -38,14 +39,26 @@
 	 <text x="60" y="120" style="text-anchor:middle">inherit | inherit | inherit</text>
 	 <text x="60" y="136" style="text-anchor:middle">&lt;g> inherit</text>
       </g>
+      <g transform="translate(160, 0)">
+         <rect x="0"  y="45" width="40" height="50" style="fill:#eee"/>
+         <rect x="40" y="45" width="40" height="50" style="fill:#aaa"/>
+         <rect x="80" y="45" width="40" height="50" style="fill:#444"/>
+	 <text x="60" y="120" style="text-anchor:middle">inherit | inherit | inherit</text>
+	 <text x="60" y="136" style="text-anchor:middle">&lt;g> hidden</text>
+      </g>
       <g transform="translate(0 10)">
       <g style="visibility:inherit">
-         <rect x="0"  y="45" width="40" height="50" style="fill:gold"/>
-         <rect x="40" y="45" width="40" height="50" style="fill:orange"/>
-         <rect x="80" y="45" width="40" height="50" style="fill:crimson"/>
+         <rect x="0"  y="45" width="40" height="50" style="visibility:inherit; fill:gold"/>
+         <rect x="40" y="45" width="40" height="50" style="visibility:inherit; fill:orange"/>
+         <rect x="80" y="45" width="40" height="50" style="visibility:inherit; fill:crimson"/>
+      </g>
+      <g style="visibility:hidden" transform="translate(160, 0)">
+         <rect x="0"  y="45"  width="40" height="50" style="visibility:inherit; fill:gold"/>
+         <rect x="40" y="45" width="40" height="50" style="visibility:inherit; fill:orange"/>
+         <rect x="80" y="45" width="40" height="50" style="visibility:inherit; fill:crimson"/>
       </g>
       </g>
-  </g>
+    </g>
 
 <!-- ########################################################################### -->
     <g transform="translate(80 160)">
