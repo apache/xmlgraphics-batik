@@ -14,6 +14,7 @@ import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.image.ImageTranscoder;
 import org.apache.batik.transcoder.image.JPEGTranscoder;
+import org.apache.batik.transcoder.image.PNGTranscoder;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -62,19 +63,25 @@ import java.util.StringTokenizer;
  * see the {@link DestinationType} documentation.</li>
  * <li>width/height: they control the desired width and height, in user space,
  * for the output image.</li>
- * <li>area: controls the specific sub-area of the image which should be rendered.</li>
- * <li>backgroundColor: controls the color which is used to fill the background 
- * before rendering the image</li>
+ * <li>area: controls the specific sub-area of the image which should be 
+ *     rendered.</li>
+ * <li>backgroundColor: controls the color which is used to fill the 
+ *     background before rendering the image</li>
  * <li>quality: relevant only for JPEG destinations, this controls the 
- * encoding quality.</li>
+ *     encoding quality.</li>
+ * <li>indexed: relevant only for PNG, controls the writting of 
+ *     indexed files.</li>
  * <li>mediaType: controls the CSS media, or list of media, for which the 
- * image should be rendered.</li>
- * <li>alternate: controls the alternate CSS stylesheet to activate, if any.</li>
- * <li>language: controls the user language with which the SVG document should
- * be converted.</li>
+ *     image should be rendered.</li>
+ * <li>alternate: controls the alternate CSS stylesheet to activate, 
+ *     if any.</li>
+ * <li>language: controls the user language with which the SVG document 
+ *     should be converted.</li>
  * <li>userStylesheet: defines the user stylesheet to apply to SVG documents 
- * in addition to other stylesheets referenced by or embedded in the SVG documents.</li>
- * <li>pixelUnitToMillimeter: defines the size of a pixel in millimeters to use when processing the SVG documents.</li>
+ *     in addition to other stylesheets referenced by or embedded in the 
+ *     SVG documents.</li>
+ * <li>pixelUnitToMillimeter: defines the size of a pixel in millimeters 
+ *     to use when processing the SVG documents.</li>
  * </ul>
  *
  * @version $Id$
@@ -200,6 +207,9 @@ public class SVGConverter {
 
     /** Output image quality. */
     protected float quality = DEFAULT_QUALITY;
+
+    /** Should output Image be indexed . */
+    protected boolean indexed = false;
 
     /** Output AOI area. */
     protected Rectangle2D area = null;
@@ -335,6 +345,18 @@ public class SVGConverter {
 
     public float getQuality(){
         return quality;
+    }
+
+    /**
+     * Tells the PNG encoder to reduce the image to 256 colors, so the
+     * PNG file is indexed.
+     */
+    public void setIndexed(boolean indexed) throws IllegalArgumentException {
+        this.indexed = indexed;
+    }
+
+    public boolean getIndexed(){
+        return indexed;
     }
 
     /**
@@ -737,6 +759,11 @@ public class SVGConverter {
         // Set image quality. ------------------------------------------------
         if (quality > 0) {
             map.put(JPEGTranscoder.KEY_QUALITY, new Float(this.quality));
+        } 
+
+        // Set image indexed. ------------------------------------------------
+        if (indexed) {
+            map.put(PNGTranscoder.KEY_INDEXED, new Boolean(indexed));
         } 
 
         // Set image background color -----------------------------------------

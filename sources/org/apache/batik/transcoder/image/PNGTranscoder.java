@@ -21,6 +21,7 @@ import org.apache.batik.transcoder.TranscodingHints;
 import org.apache.batik.transcoder.image.resources.Messages;
 import org.apache.batik.ext.awt.image.codec.PNGEncodeParam;
 import org.apache.batik.ext.awt.image.codec.PNGImageEncoder;
+import org.apache.batik.ext.awt.image.rendered.IndexImage;
 
 /**
  * This class is an <tt>ImageTranscoder</tt> that produces a PNG image.
@@ -60,24 +61,6 @@ public class PNGTranscoder extends ImageTranscoder {
             throw new TranscoderException(
                 Messages.formatMessage("png.badoutput", null));
         }
-        PNGEncodeParam.RGB params =
-            (PNGEncodeParam.RGB)PNGEncodeParam.getDefaultEncodeParam(img);
-        params.setBackgroundRGB(new int [] { 255, 255, 255 });
-
-        // If they specify GAMMA key then use it otherwise don't
-        // write a gAMA chunk, (default Gamma=2.2).
-        if (hints.containsKey(KEY_GAMMA)) {
-            params.setGamma(((Float)hints.get(KEY_GAMMA)).floatValue());
-        } 
-
-        // We always want an sRGB chunk and Our encoding intent is
-        // perceptual
-        params.setSRGBIntent(PNGEncodeParam.INTENT_PERCEPTUAL);
-
-        float PixSzMM = userAgent.getPixelUnitToMillimeter();
-        // num Pixs in 1 Meter
-        int numPix      = (int)((1000/PixSzMM)+0.5);
-        params.setPhysicalDimension(numPix, numPix, 1); // 1 means 'pix/meter'
 
         //
         // This is a trick so that viewers which do not support the alpha
@@ -121,6 +104,32 @@ public class PNGTranscoder extends ImageTranscoder {
             }
         }
 
+        if (hints.containsKey(KEY_INDEXED)) {
+            if (((Boolean)hints.get(KEY_INDEXED)).booleanValue())
+                img = IndexImage.getIndexedImage(img);
+        }
+
+        PNGEncodeParam params = PNGEncodeParam.getDefaultEncodeParam(img);
+        if (params instanceof PNGEncodeParam.RGB) {
+            ((PNGEncodeParam.RGB)params).setBackgroundRGB
+                (new int [] { 255, 255, 255 });
+        }
+
+        // If they specify GAMMA key then use it otherwise don't
+        // write a gAMA chunk, (default Gamma=2.2).
+        if (hints.containsKey(KEY_GAMMA)) {
+            params.setGamma(((Float)hints.get(KEY_GAMMA)).floatValue());
+        } 
+
+        // We always want an sRGB chunk and Our encoding intent is
+        // perceptual
+        params.setSRGBIntent(PNGEncodeParam.INTENT_PERCEPTUAL);
+
+        float PixSzMM = userAgent.getPixelUnitToMillimeter();
+        // num Pixs in 1 Meter
+        int numPix      = (int)((1000/PixSzMM)+0.5);
+        params.setPhysicalDimension(numPix, numPix, 1); // 1 means 'pix/meter'
+
         try {
             PNGImageEncoder pngEncoder = new PNGImageEncoder(ostream, params);
             pngEncoder.encode(img);
@@ -133,37 +142,6 @@ public class PNGTranscoder extends ImageTranscoder {
     // --------------------------------------------------------------------
     // Keys definition
     // --------------------------------------------------------------------
-
-    /**
-     * The forceTransparentWhite key.
-     *
-     * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Key: </TH>
-     * <TD VALIGN="TOP">KEY_FORCE_TRANSPARENT_WHITE</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Value: </TH>
-     * <TD VALIGN="TOP">Boolean</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Default: </TH>
-     * <TD VALIGN="TOP">false</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Required: </TH>
-     * <TD VALIGN="TOP">No</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Description: </TH>
-     * <TD VALIGN="TOP">It controls whether the encoder should
-     * force the image's fully transparent pixels to be fully transparent
-     * white instead of fully transparent black.  This is usefull when the
-     * encoded PNG is displayed in a browser which does not support PNG
-     * transparency and lets the image display with a white background instead
-     * of a black background. <br /> However, note that the modified image
-     * will display differently over a white background in a viewer that
-     * supports transparency.</TD></TR>
-     * </TABLE>
-     */
-    public static final TranscodingHints.Key KEY_FORCE_TRANSPARENT_WHITE
-        = ImageTranscoder.KEY_FORCE_TRANSPARENT_WHITE;
 
     /**
      * The gamma correction key.
@@ -189,5 +167,31 @@ public class PNGTranscoder extends ImageTranscoder {
      */
     public static final TranscodingHints.Key KEY_GAMMA
         = new FloatKey();
+
+    /**
+     * The write a 256 color indexed image key.
+     *
+     * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Key: </TH>
+     * <TD VALIGN="TOP">KEY_INDEXED</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Value: </TH>
+     * <TD VALIGN="TOP">Boolean</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Default: </TH>
+     * <TD VALIGN="TOP">False</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Required: </TH>
+     * <TD VALIGN="TOP">No</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Description: </TH>
+     * <TD VALIGN="TOP">Turns on the reduction of the image to 256 colors.  
+     *     The resultant PNG will be an indexed PNG with 256 colors.</TD>
+     * </TR>
+     * </TABLE>
+     */
+    public static final TranscodingHints.Key KEY_INDEXED
+        = new BooleanKey();
 
 }

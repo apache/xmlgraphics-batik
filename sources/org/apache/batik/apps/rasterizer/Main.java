@@ -420,6 +420,15 @@ public class Main implements SVGConverterController {
         = Messages.get("Main.cl.option.quality.description", "No description");
 
     /**
+     * Option to specify if the PNG should be indexed.
+     */
+    public static String CL_OPTION_INDEXED
+        = Messages.get("Main.cl.option.indexed", "-indexed");
+
+    public static String CL_OPTION_INDEXED_DESCRIPTION
+        = Messages.get("Main.cl.option.indexed.description", "No description");
+
+    /**
      * Option to specify the set of allowed scripts
      */
     public static String CL_OPTION_ALLOWED_SCRIPTS
@@ -639,6 +648,16 @@ public class Main implements SVGConverterController {
                               }
                           });
 
+        optionMap.put(CL_OPTION_INDEXED,
+                      new NoValueOptionHandler(){
+                              public void handleOption(SVGConverter c){
+                                  c.setIndexed(true);
+                             }
+
+                              public String getOptionDescription(){
+                                  return CL_OPTION_INDEXED_DESCRIPTION;
+                              }
+                          });
         optionMap.put(CL_OPTION_VALIDATE,
                       new NoValueOptionHandler(){
                               public void handleOption(SVGConverter c){
