@@ -81,6 +81,11 @@ public class BatikDomExtension
             (BATIK_EXT_NAMESPACE_URI,
              BATIK_EXT_STAR_TAG,
              new BatikStarElementFactory());
+
+        di.registerCustomElementFactory
+            (BATIK_EXT_NAMESPACE_URI,
+             BATIK_EXT_HISTOGRAM_NORMALIZATION_TAG,
+             new BatikHistogramNormalizationElementFactory());
     }
 
     /**
@@ -110,6 +115,21 @@ public class BatikDomExtension
          */
         public Element create(String prefix, Document doc) {
             return new BatikStarElement(prefix, (AbstractDocument)doc);
+        }
+    }
+
+    /**
+     * To create a 'histogramNormalization' element.
+     */
+    protected static class BatikHistogramNormalizationElementFactory 
+        implements SVGDOMImplementation.ElementFactory {
+        public BatikHistogramNormalizationElementFactory() {}
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix, Document doc) {
+            return new BatikHistogramNormalizationElement
+                (prefix, (AbstractDocument)doc);
         }
     }
 

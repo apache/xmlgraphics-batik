@@ -23,6 +23,10 @@ public interface BatikExtConstants {
     public static final String BATIK_EXT_STAR_TAG = 
         "star";
 
+    /** Tag name for Batik's star extension. */
+    public static final String BATIK_EXT_HISTOGRAM_NORMALIZATION_TAG =
+        "histogramNormalization";
+
     /** Attribute name for sides attribute */
     public static final String BATIK_EXT_SIDES_ATTRIBUTE = 
         "sides";
@@ -30,4 +34,9 @@ public interface BatikExtConstants {
     /** Attribute name for inner radius attribute */
     public static final String BATIK_EXT_IR_ATTRIBUTE = 
         "ir";
+
+    /** Attribute name for trim percent attribute */
+    public static final String BATIK_EXT_TRIM_ATTRIBUTE = 
+        "trim";
+
 }
