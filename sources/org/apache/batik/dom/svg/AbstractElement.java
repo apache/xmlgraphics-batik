@@ -8,6 +8,8 @@
 
 package org.apache.batik.dom.svg;
 
+import org.apache.batik.css.CSSOMReadOnlyStyleDeclaration;
+import org.apache.batik.css.ElementWithBaseURI;
 import org.apache.batik.css.ElementWithID;
 import org.apache.batik.css.ElementWithPseudoClass;
 import org.apache.batik.css.HiddenChildElement;
@@ -18,7 +20,7 @@ import org.apache.batik.dom.AbstractDocument;
 
 import org.apache.batik.dom.events.NodeEventTarget;
 
-import org.apache.batik.dom.util.SoftDoublyIndexedTable;
+import org.apache.batik.util.SoftDoublyIndexedTable;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
@@ -37,7 +39,8 @@ import org.w3c.dom.events.MutationEvent;
  */
 public abstract class AbstractElement
     extends org.apache.batik.dom.AbstractElement
-    implements ElementWithID,
+    implements ElementWithBaseURI,
+               ElementWithID,
                ElementWithPseudoClass,
                HiddenChildElement {
     
@@ -50,6 +53,11 @@ public abstract class AbstractElement
      * The live attribute values.
      */
     protected transient SoftDoublyIndexedTable liveAttributeValues;
+
+    /**
+     * The cascaded style, if any.
+     */
+    protected transient CSSOMReadOnlyStyleDeclaration cascadedStyle;
 
     /**
      * Creates a new Element object.
@@ -66,6 +74,20 @@ public abstract class AbstractElement
         ownerDocument = owner;
         setPrefix(prefix);
 	initializeAttributes();
+    }
+
+    // ElementWithBaseURI ////////////////////////////////////////////
+
+    /**
+     * Returns this element's base URI.
+     */
+    public String getBaseURI() {
+        try {
+            return new java.net.URL(((SVGOMDocument)ownerDocument).getURLObject(),
+                                    XMLBaseSupport.getXMLBase(this)).toString();
+        } catch (java.net.MalformedURLException e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     // ElementWithID /////////////////////////////////////////////////
@@ -122,6 +144,20 @@ public abstract class AbstractElement
      */
     public void setParentElement(Element elt) {
         parentElement = elt;
+    }
+
+    /**
+     * Sets the cascaded style of this element.
+     */
+    public CSSOMReadOnlyStyleDeclaration getCascadedStyle() {
+        return cascadedStyle;
+    }
+
+    /**
+     * Sets the cascaded style of this element.
+     */
+    public void setCascadedStyle(CSSOMReadOnlyStyleDeclaration sd) {
+        cascadedStyle = sd;
     }
 
     /**

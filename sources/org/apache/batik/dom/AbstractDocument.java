@@ -20,9 +20,10 @@ import java.util.WeakHashMap;
 
 import org.apache.batik.dom.events.DocumentEventSupport;
 import org.apache.batik.dom.traversal.TraversalSupport;
-import org.apache.batik.dom.util.SoftDoublyIndexedTable;
 import org.apache.batik.i18n.Localizable;
 import org.apache.batik.i18n.LocalizableSupport;
+
+import org.apache.batik.util.SoftDoublyIndexedTable;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;

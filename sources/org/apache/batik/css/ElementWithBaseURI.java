@@ -8,19 +8,17 @@
 
 package org.apache.batik.css;
 
-import org.w3c.dom.css.ElementCSSInlineStyle;
-
 /**
- * This interface extends the {@link org.w3c.dom.css.ElementCSSInlineStyle}.
+ * This interface represents elements which are able to compute their
+ * base URI.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public interface ExtendedElementCSSInlineStyle extends ElementCSSInlineStyle {
-
+public interface ElementWithBaseURI {
+    
     /**
-     * Whether the element that implements this interface has a specified
-     * style attribute.
+     * Returns this element's base URI. Must be absolute.
      */
-    boolean hasStyle();
+    String getBaseURI();
 }
