@@ -197,7 +197,7 @@ public abstract class SVGOMTextContentElement
 
     /**
      * Implements {@link
-     * OverrideStyleElement#hasOverrideStyle(String)}.
+     * org.apache.batik.dom.util.OverrideStyleElement#hasOverrideStyle(String)}.
      */
     public boolean hasOverrideStyle(String pseudoElt) {
 	return SVGStylableSupport.hasOverrideStyle(pseudoElt);
@@ -205,7 +205,7 @@ public abstract class SVGOMTextContentElement
 
     /**
      * Implements {@link
-     * OverrideStyleElement#getOverrideStyle(String)}.
+     * org.apache.batik.dom.util.OverrideStyleElement#getOverrideStyle(String)}.
      */
     public CSSStyleDeclaration getOverrideStyle(String pseudoElt) {
 	return SVGStylableSupport.getOverrideStyle(pseudoElt, this);
@@ -215,7 +215,7 @@ public abstract class SVGOMTextContentElement
 
     /**
      * <b>DOM</b>: Implements {@link
-     * SVGExternalResourcesRequired#getExternalResourcesRequired()}.
+     * org.w3c.dom.svg.SVGExternalResourcesRequired#getExternalResourcesRequired()}.
      */
     public SVGAnimatedBoolean getExternalResourcesRequired() {
 	return SVGExternalResourcesRequiredSupport.

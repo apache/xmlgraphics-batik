@@ -67,8 +67,7 @@ public class SVGOMEllipseElement
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGEllipseElement#getRy()}.
+     * <b>DOM</b>: Implements {@link SVGEllipseElement#getRy()}.
      */
     public SVGAnimatedLength getRy() {
         throw new RuntimeException("!!! TODO: getRy()");

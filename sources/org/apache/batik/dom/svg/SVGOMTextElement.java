@@ -46,7 +46,7 @@ public class SVGOMTextElement
     }
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
+     * <b>DOM</b>: Implements {@link Node#getLocalName()}.
      */
     public String getLocalName() {
         return SVG_TEXT_TAG;
@@ -71,21 +71,21 @@ public class SVGOMTextElement
     }
 
     /**
-     * <b>DOM</b>: Implements {@link SVGLocatable#getBBox()}.
+     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGLocatable#getBBox()}.
      */
     public SVGRect getBBox() {
 	return SVGLocatableSupport.getBBox(this);
     }
 
     /**
-     * <b>DOM</b>: Implements {@link SVGLocatable#getCTM()}.
+     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGLocatable#getCTM()}.
      */
     public SVGMatrix getCTM() {
 	return SVGLocatableSupport.getCTM(this);
     }
 
     /**
-     * <b>DOM</b>: Implements {@link SVGLocatable#getScreenCTM()}.
+     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGLocatable#getScreenCTM()}.
      */
     public SVGMatrix getScreenCTM() {
 	return SVGLocatableSupport.getScreenCTM(this);
@@ -103,7 +103,7 @@ public class SVGOMTextElement
     // SVGTransformable support /////////////////////////////////////////////
 
     /**
-     * <b>DOM</b>: Implements {@link SVGTransformable#getTransform()}.
+     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGTransformable#getTransform()}.
      */
     public SVGAnimatedTransformList getTransform() {
 	return SVGTransformableSupport.getTransform(this);

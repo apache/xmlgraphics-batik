@@ -50,7 +50,7 @@ import org.w3c.dom.events.Event;
 import org.w3c.dom.stylesheets.StyleSheet;
 
 /**
- * This class implements the {@link org.w3c.dom.DOMImplementation} interface.
+ * This class implements the {@link DOMImplementation} interface.
  * It provides support the SVG 1.0 documents.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>

@@ -34,13 +34,12 @@ public abstract class SVGOMURIReferenceElement
      * @param prefix The namespace prefix.
      * @param owner The owner document.
      */
-    protected SVGOMURIReferenceElement(String prefix,
-                                                      AbstractDocument owner) {
+    protected SVGOMURIReferenceElement(String prefix, AbstractDocument owner) {
         super(prefix, owner);
     }
 
     /**
-     * <b>DOM</b>: Implements {@link SVGURIReference#getHref()}.
+     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGURIReference#getHref()}.
      */
     public SVGAnimatedString getHref() {
         return SVGURIReferenceSupport.getHref(this);

@@ -8,11 +8,7 @@
 
 package org.apache.batik.dom.svg;
 
-import java.net.URL;
-
-import org.apache.batik.bridge.UserAgent;
 import org.apache.batik.css.svg.DefaultSVGCSSContext;
-import org.apache.batik.css.svg.SVGCSSContext;
 
 
 /**

@@ -427,7 +427,7 @@ public class SVGOMSVGElement
 
     /**
      * <b>DOM</b>: Implements {@link
-     * SVGExternalResourcesRequired#getExternalResourcesRequired()}.
+     * org.w3c.dom.svg.SVGExternalResourcesRequired#getExternalResourcesRequired()}.
      */
     public SVGAnimatedBoolean getExternalResourcesRequired() {
         return SVGExternalResourcesRequiredSupport.
@@ -437,28 +437,28 @@ public class SVGOMSVGElement
     // SVGTests support ///////////////////////////////////////////////////
 
     /**
-     * <b>DOM</b>: Implements {@link SVGTests#getRequiredFeatures()}.
+     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGTests#getRequiredFeatures()}.
      */
     public SVGStringList getRequiredFeatures() {
         return SVGTestsSupport.getRequiredFeatures(this);
     }
 
     /**
-     * <b>DOM</b>: Implements {@link SVGTests#getRequiredExtensions()}.
+     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGTests#getRequiredExtensions()}.
      */
     public SVGStringList getRequiredExtensions() {
         return SVGTestsSupport.getRequiredExtensions(this);
     }
 
     /**
-     * <b>DOM</b>: Implements {@link SVGTests#getSystemLanguage()}.
+     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGTests#getSystemLanguage()}.
      */
     public SVGStringList getSystemLanguage() {
         return SVGTestsSupport.getSystemLanguage(this);
     }
 
     /**
-     * <b>DOM</b>: Implements {@link SVGTests#hasExtension(String)}.
+     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGTests#hasExtension(String)}.
      */
     public boolean hasExtension(String extension) {
         return SVGTestsSupport.hasExtension(extension, this);

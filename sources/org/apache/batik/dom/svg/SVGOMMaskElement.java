@@ -55,8 +55,7 @@ public class SVGOMMaskElement
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGPatternElement#getMaskContentUnits()}.
+     * <b>DOM</b>: Implements {@link SVGMaskElement#getMaskContentUnits()}.
      */
     public SVGAnimatedEnumeration getMaskContentUnits() {
         throw new RuntimeException(" !!! TODO: getMaskContentUnits()");

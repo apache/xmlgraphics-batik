@@ -13,7 +13,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGDescElement;
 
 /**
- * This class implements {@link org.w3c.dom.svg.SVGDescElement}.
+ * This class implements {@link SVGDescElement}.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$

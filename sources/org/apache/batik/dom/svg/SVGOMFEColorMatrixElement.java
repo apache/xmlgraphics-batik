@@ -18,7 +18,7 @@ import org.w3c.dom.svg.SVGAnimatedString;
 import org.w3c.dom.svg.SVGFEColorMatrixElement;
 
 /**
- * This class implements {@link org.w3c.dom.svg.SVGFEColorMatrixElement}.
+ * This class implements {@link SVGFEColorMatrixElement}.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$

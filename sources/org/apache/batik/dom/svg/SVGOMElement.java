@@ -25,7 +25,7 @@ import org.w3c.dom.svg.SVGFitToViewBox;
 import org.w3c.dom.svg.SVGSVGElement;
 
 /**
- * This class implements the {@link org.w3c.dom.svg.SVGElement} interface.
+ * This class implements the {@link SVGElement} interface.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
