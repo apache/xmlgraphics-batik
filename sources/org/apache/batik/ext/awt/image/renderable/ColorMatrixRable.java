@@ -15,7 +15,8 @@ package org.apache.batik.ext.awt.image.renderable;
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
-public interface ColorMatrixRable extends FilterColorInterp {
+public interface ColorMatrixRable extends FilterColorInterpolation {
+
     /**
      * Identifier used to refer to predefined matrices
      */
@@ -28,7 +29,7 @@ public interface ColorMatrixRable extends FilterColorInterp {
      * Returns the source to be offset.
      */
     public Filter getSource();
-    
+
     /**
      * Sets the source to be offset.
      * @param src image to offset.
@@ -36,7 +37,7 @@ public interface ColorMatrixRable extends FilterColorInterp {
     public void setSource(Filter src);
 
     /**
-     * Returns the type of this color matrix. 
+     * Returns the type of this color matrix.
      * @return one of TYPE_MATRIX, TYPE_SATURATE, TYPE_HUE_ROTATE,
      *         TYPE_LUMINANCE_TO_ALPHA
      */
@@ -47,5 +48,5 @@ public interface ColorMatrixRable extends FilterColorInterp {
      * the same convention as BandCombineOp.
      */
     public float[][] getMatrix();
-    
+
 }

@@ -18,13 +18,13 @@ import org.apache.batik.ext.awt.image.rendered.CachableRed;
 
 /**
  * This is an abstract base class that adds the ability to specify the
- * Color Space that the operation should take place in (linear sRGB or 
+ * Color Space that the operation should take place in (linear sRGB or
  * gamma corrected sRBG).
  *
  * @author <a href="mailto:Thomas.DeWeeese@Kodak.com">Thomas DeWeese</a>
  * @version $Id$
  */
-public abstract class AbstractColorInterpRable extends AbstractRable {
+public abstract class AbstractColorInterpolationRable extends AbstractRable {
 
     /**
      * Indicates if the operation should be done in linear or gamma
@@ -37,7 +37,7 @@ public abstract class AbstractColorInterpRable extends AbstractRable {
      * flavors of init before the object becomes usable.
      * This is useful when the proper parameters to the init
      * method need to be computed in the subclasses constructor.  */
-    protected AbstractColorInterpRable() {
+    protected AbstractColorInterpolationRable() {
         super();
     }
 
@@ -47,7 +47,7 @@ public abstract class AbstractColorInterpRable extends AbstractRable {
      * Vector. The bounds of src are also used to set the bounds of
      * this renderable.
      */
-    protected AbstractColorInterpRable(Filter src) {
+    protected AbstractColorInterpolationRable(Filter src) {
         super(src);
     }
 
@@ -57,7 +57,7 @@ public abstract class AbstractColorInterpRable extends AbstractRable {
      * the srcs Vector.
      * @param props use to initialize the properties on this renderable image.
      */
-    protected AbstractColorInterpRable(Filter src, Map props) {
+    protected AbstractColorInterpolationRable(Filter src, Map props) {
         super(src, props);
     }
 
@@ -68,7 +68,7 @@ public abstract class AbstractColorInterpRable extends AbstractRable {
      * of all the sources in srcs.  All the members of srcs must be
      * CachableRable otherwise an error will be thrown.
      */
-    protected AbstractColorInterpRable(List srcs) {
+    protected AbstractColorInterpolationRable(List srcs) {
         super(srcs);
     }
 
@@ -79,7 +79,7 @@ public abstract class AbstractColorInterpRable extends AbstractRable {
      * will be thrown.
      * @param props use to initialize the properties on this renderable image.
      */
-    protected AbstractColorInterpRable(List srcs, Map props) {
+    protected AbstractColorInterpolationRable(List srcs, Map props) {
         super(srcs, props);
     }
 
@@ -88,23 +88,23 @@ public abstract class AbstractColorInterpRable extends AbstractRable {
      * the linear sRGB colorspace, returns false if the
      * operation is performed in gamma corrected sRGB.
      */
-    public boolean isCSLinear() { return csLinear; }
+    public boolean isColorSpaceLinear() { return csLinear; }
 
     /**
      * Sets the colorspace the operation will be performed in.
      * @param csLinear if true this operation will be performed in the
      * linear sRGB colorspace, if false the operation will be performed in
-     * gamma corrected sRGB.  
+     * gamma corrected sRGB.
      */
-    public void setCSLinear(boolean csLinear) {
+    public void setColorSpaceLinear(boolean csLinear) {
         touch();
         this.csLinear = csLinear;
     }
 
     public ColorSpace getOperationColorSpace() {
-        if (csLinear) 
+        if (csLinear)
             return ColorSpace.getInstance(ColorSpace.CS_LINEAR_RGB);
-        else 
+        else
             return ColorSpace.getInstance(ColorSpace.CS_sRGB);
     }
 

@@ -15,12 +15,13 @@ package org.apache.batik.ext.awt.image.renderable;
  * @author <a href="mailto:vincent.hardy@eng.sun.com>Vincent Hardy</a>
  * @version $Id$
  */
-public interface GaussianBlurRable extends FilterColorInterp {
+public interface GaussianBlurRable extends FilterColorInterpolation {
+
     /**
      * Returns the source to be Blurred
      */
     public Filter getSource();
-    
+
     /**
      * Sets the source to be blurred.
      * @param src image to blurred.

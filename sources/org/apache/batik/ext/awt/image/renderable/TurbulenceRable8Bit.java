@@ -46,9 +46,9 @@ import org.apache.batik.ext.awt.image.rendered.BufferedImageCachableRed;
  * @version $Id$
  */
 public class TurbulenceRable8Bit
-    extends    AbstractColorInterpRable
+    extends    AbstractColorInterpolationRable
     implements TurbulenceRable {
-    
+
     /**
      * Paint used to clear the area outside the area of interest
      */
@@ -232,7 +232,7 @@ public class TurbulenceRable8Bit
         // System.out.println("Turbulence aoi : " + aoi);
         // System.out.println("Scale X : " + usr2dev.getScaleX() + " scaleY : " + usr2dev.getScaleY());
         // System.out.println("Turbulence aoi dev : " + usr2dev.createTransformedShape(aoi).getBounds());
-        final Rectangle rasterRect 
+        final Rectangle rasterRect
             = usr2dev.createTransformedShape(aoiRect).getBounds();
 
         if ((rasterRect.width <= 0) ||
@@ -241,21 +241,21 @@ public class TurbulenceRable8Bit
 
         ColorSpace cs = getOperationColorSpace();
         ColorModel cm = new DirectColorModel
-            (cs, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000, 
+            (cs, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000,
              false, DataBuffer.TYPE_INT);
 
         // Create a raster for the turbulence pattern
         WritableRaster wr, twr;
-        wr = cm.createCompatibleWritableRaster(rasterRect.width, 
+        wr = cm.createCompatibleWritableRaster(rasterRect.width,
                                                rasterRect.height);
-        twr = wr.createWritableTranslatedChild(rasterRect.x, 
+        twr = wr.createWritableTranslatedChild(rasterRect.x,
                                                rasterRect.y);
 
         // Create a TurbulencePatternGenerator that will do the job
         // <!> FIX ME. The tile is not propagated properly to the turbulence op
         // <!> FIX ME. SHOULD OPTIMIZE THE CHANNELS REQUIRED FROM THE
         //             FILTER. THIS COULD BE ADDED TO THE RENDER CONTEXT.
-        TurbulencePatternGenerator turbGenerator 
+        TurbulencePatternGenerator turbGenerator
             = new TurbulencePatternGenerator
                 (baseFreqX, baseFreqY, numOctaves,
                  seed, stitched, fractalNoise,
@@ -271,7 +271,7 @@ public class TurbulenceRable8Bit
         turbGenerator.generatePattern(twr, patternTxf);
 
         // Wrap raster in buffered image
-        BufferedImage bi = new BufferedImage(cm, wr, 
+        BufferedImage bi = new BufferedImage(cm, wr,
                                              cm.isAlphaPremultiplied(),
                                              null);
 
@@ -284,7 +284,7 @@ public class TurbulenceRable8Bit
             }
             g.setRenderingHints(hints);
             g.setComposite(AlphaComposite.Src);
-        
+
             Area nonAoi = new Area(rasterRect);
             nonAoi.subtract(new Area(usr2dev.createTransformedShape(aoi)));
             g.setPaint(CLEAR_PAINT);

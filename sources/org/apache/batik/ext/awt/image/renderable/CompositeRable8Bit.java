@@ -42,7 +42,7 @@ import org.apache.batik.ext.awt.image.rendered.FloodRed;
  * @version $Id$
  */
 public class CompositeRable8Bit
-    extends    AbstractColorInterpRable
+    extends    AbstractColorInterpolationRable
     implements CompositeRable, PaintRable {
 
     protected CompositeRule rule;
@@ -52,7 +52,7 @@ public class CompositeRable8Bit
                               boolean csIsLinear) {
         super(srcs);
 
-        setCSLinear(csIsLinear);
+        setColorSpaceLinear(csIsLinear);
 
         this.rule = rule;
     }
@@ -83,13 +83,13 @@ public class CompositeRable8Bit
     }
 
     /**
-     * Should perform the equivilent action as 
-     * createRendering followed by drawing the RenderedImage to 
+     * Should perform the equivilent action as
+     * createRendering followed by drawing the RenderedImage to
      * Graphics2D, or return false.
      *
      * @param g2d The Graphics2D to draw to.
      * @return true if the paint call succeeded, false if
-     *         for some reason the paint failed (in which 
+     *         for some reason the paint failed (in which
      *         case a createRendering should be used).
      */
     public boolean paintRable(Graphics2D g2d) {
@@ -98,9 +98,9 @@ public class CompositeRable8Bit
         Composite c = g2d.getComposite();
         if (!SVGComposite.OVER.equals(c))
             return false;
-        
+
         // For the over mode we can just draw them in order...
-        if (getCompositeRule() != CompositeRule.OVER) 
+        if (getCompositeRule() != CompositeRule.OVER)
             return false;
 
         ColorSpace crCS = getOperationColorSpace();
@@ -130,14 +130,14 @@ public class CompositeRable8Bit
 
         Shape aoi = rc.getAreaOfInterest();
         Rectangle2D aoiR;
-        if (aoi == null) 
+        if (aoi == null)
             aoiR = getBounds2D();
         else {
             aoiR = aoi.getBounds2D();
             Rectangle2D bounds2d = getBounds2D();
             if (bounds2d.intersects(aoiR) == false)
                 return null;
-                
+
             Rectangle2D.intersect(aoiR, bounds2d, aoiR);
         }
 
@@ -146,7 +146,7 @@ public class CompositeRable8Bit
         rc = new RenderContext(at, aoiR, rh);
 
         Vector srcs = new Vector();
-        
+
         Iterator i = getSources().iterator();
         while (i.hasNext()) {
             // Get the source to work with...
@@ -159,7 +159,7 @@ public class CompositeRable8Bit
                 cr = convertSourceCS(ri);
                 srcs.add(cr);
             } else {
-                
+
                 // Blank image...
                 switch (rule.getRule()) {
                 case CompositeRule.RULE_IN:
@@ -168,7 +168,7 @@ public class CompositeRable8Bit
                     return null;
 
                 case CompositeRule.RULE_OUT:
-                    // For mode OUT blank image clears output 
+                    // For mode OUT blank image clears output
                     // up to this point, so ignore inputs to this point.
                     srcs.clear();
                     break;

@@ -19,13 +19,13 @@ import org.apache.batik.ext.awt.image.PadMode;
  * @author <a href="mailto:Thomas.DeWeeese@Kodak.com">Thomas DeWeese</a>
  * @version $Id$
  */
-public interface ConvolveMatrixRable extends FilterColorInterp {
+public interface ConvolveMatrixRable extends FilterColorInterpolation {
 
     /**
      * Returns the source to be Convolved
      */
     public Filter getSource();
-    
+
     /**
      * Sets the source to be Convolved
      * @param src image to Convolved.
@@ -60,7 +60,7 @@ public interface ConvolveMatrixRable extends FilterColorInterp {
      * Returns the shift value to apply to the result of convolution
      */
     public double getBias();
-    
+
     /**
      * Sets the shift value to apply to the result of convolution
      */
@@ -70,7 +70,7 @@ public interface ConvolveMatrixRable extends FilterColorInterp {
      * Returns the current edge handling mode.
      */
     public PadMode getEdgeMode();
-    
+
     /**
      * Sets the current edge handling mode.
      */
