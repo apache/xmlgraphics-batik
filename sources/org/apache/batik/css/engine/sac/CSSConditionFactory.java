@@ -29,14 +29,34 @@ import org.w3c.css.sac.PositionalCondition;
 public class CSSConditionFactory implements ConditionFactory {
 
     /**
-     * The instance of this class.
+     * The class attribute namespace URI.
      */
-    public final static ConditionFactory INSTANCE = new CSSConditionFactory();
+    protected String classNamespaceURI;
 
     /**
-     * This class does not need to be instantiated.
+     * The class attribute local name.
      */
-    protected CSSConditionFactory() {
+    protected String classLocalName;
+    
+    /**
+     * The id attribute namespace URI.
+     */
+    protected String idNamespaceURI;
+
+    /**
+     * The id attribute local name.
+     */
+    protected String idLocalName;
+    
+    /**
+     * Creates a new condition factory.
+     */
+    public CSSConditionFactory(String cns,  String cln,
+                               String idns, String idln) {
+        classNamespaceURI = cns;
+        classLocalName = cln;
+        idNamespaceURI = idns;
+        idLocalName = idln;
     }
 
     /**
@@ -98,7 +118,7 @@ public class CSSConditionFactory implements ConditionFactory {
      */    
     public AttributeCondition createIdCondition(String value)
         throws CSSException {
-	return new CSSIdCondition(value);
+	return new CSSIdCondition(idNamespaceURI, idLocalName, value);
     }
 
     /**
@@ -143,7 +163,7 @@ public class CSSConditionFactory implements ConditionFactory {
     public AttributeCondition createClassCondition(String namespaceURI,
 						   String value)
 	throws CSSException {
-	return new CSSClassCondition(namespaceURI, value);
+	return new CSSClassCondition(classLocalName, classNamespaceURI, value);
     }
 
     /**

@@ -332,10 +332,12 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
                 target.addEventListener("DOMFocusIn", focusinListener, false);
             }
             if (elt.hasAttributeNS(null, "onfocusout")) {
-                target.addEventListener("DOMFocusOut", focusoutListener, false);
+                target.addEventListener("DOMFocusOut", focusoutListener,
+                                        false);
             }
             if (elt.hasAttributeNS(null, "onactivate")) {
-                target.addEventListener("DOMActivate", activateListener, false);
+                target.addEventListener("DOMActivate", activateListener,
+                                        false);
             }
             if (elt.hasAttributeNS(null, "onclick")) {
                 target.addEventListener("click", clickListener, false);

@@ -25,6 +25,7 @@ import org.apache.batik.util.ParsedURL;
 
 import org.w3c.css.sac.InputSource;
 
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
 
 /**
@@ -105,6 +106,15 @@ public class SVGStyleSheetProcessingInstruction
             }
         }
         return styleSheet;
+    }
+
+    /**
+     * <b>DOM</b>: Implements {@link
+     * org.w3c.dom.ProcessingInstruction#setData(String)}.
+     */
+    public void setData(String data) throws DOMException {
+	super.setData(data);
+        styleSheet = null;
     }
 
     /**

@@ -35,6 +35,7 @@ import org.apache.batik.script.Interpreter;
 import org.apache.batik.script.InterpreterException;
 import org.apache.batik.script.ScriptHandler;
 
+import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.SVGConstants;
 
 import org.w3c.dom.Document;
@@ -58,6 +59,7 @@ import org.w3c.dom.svg.SVGSVGElement;
  * @version $Id$
  */
 public class BaseScriptingEnvironment {
+
     /**
      * Tells whether the given SVG document is dynamic.
      */
@@ -307,7 +309,8 @@ public class BaseScriptingEnvironment {
                     url = new URL(XMLBaseSupport.getCascadedXMLBase(script));
                     url = new URL(url, href);
                     checkCompatibleScriptURL(type, url);
-                    reader = new InputStreamReader(url.openStream());
+                    ParsedURL purl = new ParsedURL(url);
+                    reader = new InputStreamReader(purl.openStream());
                 } else {
                     // Inline script.
                     Node n = script.getFirstChild();
@@ -353,7 +356,8 @@ public class BaseScriptingEnvironment {
                                                               docURL);
 
         if (security == null) {
-            security = new DefaultScriptSecurity(scriptType, scriptURL, docURL);
+            security = new DefaultScriptSecurity(scriptType, scriptURL,
+                                                 docURL);
         }
 
         security.checkLoadScript();

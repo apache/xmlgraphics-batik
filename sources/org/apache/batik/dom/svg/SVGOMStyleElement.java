@@ -20,8 +20,14 @@ import org.apache.batik.dom.util.XMLSupport;
 
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
-import org.w3c.dom.stylesheets.LinkStyle;
+
 import org.w3c.dom.css.DOMImplementationCSS;
+
+import org.w3c.dom.events.Event;
+import org.w3c.dom.events.EventListener;
+
+import org.w3c.dom.stylesheets.LinkStyle;
+
 import org.w3c.dom.svg.SVGStyleElement;
 
 /**
@@ -51,12 +57,18 @@ public class SVGOMStyleElement
     /**
      * The style sheet.
      */
-    protected org.w3c.dom.stylesheets.StyleSheet sheet;
+    protected transient org.w3c.dom.stylesheets.StyleSheet sheet;
 
     /**
-     * The style-sheet.
+     * The DOM CSS style-sheet.
      */
-    protected StyleSheet styleSheet;
+    protected transient StyleSheet styleSheet;
+
+    /**
+     * The listener used to track the content changes.
+     */
+    protected transient EventListener domCharacterDataModifiedListener =
+        new DOMCharacterDataModifiedListener();
 
     /**
      * Creates a new SVGOMStyleElement object.
@@ -71,7 +83,6 @@ public class SVGOMStyleElement
      */
     public SVGOMStyleElement(String prefix, AbstractDocument owner) {
         super(prefix, owner);
-
     }
 
     /**
@@ -112,6 +123,9 @@ public class SVGOMStyleElement
                 }
                 String  media = getAttributeNS(null, SVG_MEDIA_ATTRIBUTE);
                 styleSheet = e.parseStyleSheet(text, burl, media);
+                addEventListener("DOMCharacterDataModified",
+                                 domCharacterDataModifiedListener,
+                                 false);
             }
         }
         return styleSheet;
@@ -123,13 +137,6 @@ public class SVGOMStyleElement
      */
     public org.w3c.dom.stylesheets.StyleSheet getSheet() {
         throw new RuntimeException(" !!! Not implemented.");
-    }
-
-    /**
-     * Returns the URI of the referenced stylesheet.
-     */
-    public String getStyleSheetURI() {
-        return XMLBaseSupport.getCascadedXMLBase(this);
     }
 
     /**
@@ -203,5 +210,15 @@ public class SVGOMStyleElement
      */
     protected Node newNode() {
         return new SVGOMStyleElement();
+    }
+
+    /**
+     * The DOMCharacterDataModified listener.
+     */
+    protected class DOMCharacterDataModifiedListener
+        implements EventListener {
+        public void handleEvent(Event evt) {
+            styleSheet = null;
+        }
     }
 }
