@@ -704,6 +704,11 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     // dynamic support ////////////////////////////////////////////////////////
 
     /**
+     * The DOM EventListener to receive 'DOMCharacterDataModified' event.
+     */
+    protected EventListener domCharacterDataModifiedListener;
+
+    /**
      * The DOM EventListener to receive 'DOMAttrModified' event.
      */
     protected EventListener domAttrModifiedEventListener;
@@ -729,19 +734,29 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      * properties and update the GVT tree in response.
      */
     public void addDOMListeners() {
-        domAttrModifiedEventListener = new DOMAttrModifiedEventListener();
         EventTarget evtTarget = (EventTarget)document;
+
+        domAttrModifiedEventListener = new DOMAttrModifiedEventListener();
         evtTarget.addEventListener("DOMAttrModified",
                                    domAttrModifiedEventListener,
                                    true);
+
         domNodeInsertedEventListener = new DOMNodeInsertedEventListener();
         evtTarget.addEventListener("DOMNodeInserted",
                                    domNodeInsertedEventListener,
                                    true);
+
         domNodeRemovedEventListener = new DOMNodeRemovedEventListener();
         evtTarget.addEventListener("DOMNodeRemoved",
                                    domNodeRemovedEventListener,
                                    true);
+
+        domCharacterDataModifiedListener = 
+            new DOMCharacterDataModifiedListener();
+        evtTarget.addEventListener("DOMCharacterDataModified",
+                                   domCharacterDataModifiedListener,
+                                   true);
+
         SVGOMDocument svgDocument = (SVGOMDocument)document;
         CSSEngine cssEngine = svgDocument.getCSSEngine();
         cssPropertiesChangedListener = new CSSPropertiesChangedListener();
@@ -761,6 +776,9 @@ public class BridgeContext implements ErrorConstants, CSSContext {
                                       true);
         evtTarget.removeEventListener("DOMNodeRemoved",
                                       domNodeRemovedEventListener, 
+                                      true);
+        evtTarget.removeEventListener("DOMCharacterDataModified",
+                                      domCharacterDataModifiedListener, 
                                       true);
 
         SVGOMDocument svgDocument = (SVGOMDocument)document;
@@ -814,7 +832,8 @@ public class BridgeContext implements ErrorConstants, CSSContext {
          */
         public void handleEvent(Event evt) {
             MutationEvent me = (MutationEvent)evt;
-            BridgeUpdateHandler h = getBridgeUpdateHandler(me.getRelatedNode());
+            BridgeUpdateHandler h = 
+                getBridgeUpdateHandler(me.getRelatedNode());
             if (h != null) {
                 h.handleDOMNodeInsertedEvent(me);
             }
@@ -834,6 +853,26 @@ public class BridgeContext implements ErrorConstants, CSSContext {
             BridgeUpdateHandler h = getBridgeUpdateHandler(node);
             if (h != null) {
                 h.handleDOMNodeRemovedEvent((MutationEvent)evt);
+            }
+        }
+    }
+
+    /**
+     * The DOM EventListener invoked when a character data is changed.
+     */
+    protected class DOMCharacterDataModifiedListener implements EventListener {
+
+        /**
+         * Handles 'DOMNodeRemoved' event type.
+         */
+        public void handleEvent(Event evt) {
+            Node node = (Node)evt.getTarget();
+            while (node != null && !(node instanceof SVGOMElement)) {
+                node = node.getParentNode();
+            }
+            BridgeUpdateHandler h = getBridgeUpdateHandler(node);
+            if (h != null) {
+                h.handleDOMCharacterDataModified((MutationEvent)evt);
             }
         }
     }

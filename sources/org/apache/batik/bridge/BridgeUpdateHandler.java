@@ -36,6 +36,12 @@ public interface BridgeUpdateHandler {
     void handleDOMNodeRemovedEvent(MutationEvent evt);
 
     /**
+     * Invoked when an MutationEvent of type 'DOMCharacterDataModified' 
+     * is fired.
+     */
+    void handleDOMCharacterDataModified(MutationEvent evt);
+
+    /**
      * Invoked when an CSSEngineEvent is fired.
      */
     void handleCSSEngineEvent(CSSEngineEvent evt);

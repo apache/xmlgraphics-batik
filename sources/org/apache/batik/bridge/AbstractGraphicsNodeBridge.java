@@ -184,6 +184,13 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
     }
 
     /**
+     * Invoked when an MutationEvent of type 'DOMCharacterDataModified' 
+     * is fired.
+     */
+    public void handleDOMCharacterDataModified(MutationEvent evt) {
+    }
+
+    /**
      * Disposes this BridgeUpdateHandler and releases all resources.
      */
     public void dispose() {
@@ -202,7 +209,7 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
             BridgeUpdateHandler h = (BridgeUpdateHandler)elt.getSVGContext();
             h.dispose();
         }
-        for (Node n = node.getFirstChild(); n != null; n = n.getNextSibling()) {
+        for (Node n = node.getFirstChild(); n!=null; n = n.getNextSibling()) {
             disposeTree(n);
         }
     }
