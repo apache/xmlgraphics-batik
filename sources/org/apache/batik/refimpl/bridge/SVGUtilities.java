@@ -512,9 +512,9 @@ public class SVGUtilities implements SVGConstants {
      * Tests whether or not the given element match a user agent.
      */
     public static boolean matchUserAgent(Element elt, UserAgent ua) {
-        if (elt.hasAttributeNS(null, ATTR_SYSTEM_LANGUAGE)) {
+        if (elt.hasAttributeNS(null, SVG_SYSTEM_LANGUAGE_ATTRIBUTE)) {
             // Evaluates the system languages
-            String sl = elt.getAttributeNS(null, ATTR_SYSTEM_LANGUAGE);
+            String sl = elt.getAttributeNS(null, SVG_SYSTEM_LANGUAGE_ATTRIBUTE);
             StringTokenizer st = new StringTokenizer(sl, ",");
             while (st.hasMoreTokens()) {
                 String s = st.nextToken();
@@ -522,9 +522,12 @@ public class SVGUtilities implements SVGConstants {
                     return true;
                 }
             }
+            return false;
+        } else {
+            return true;
         }
+
         // !!! TODO requiredFeatures, requiredExtensions
-        return false;
     }
 
     /**
