@@ -234,10 +234,6 @@ public interface SVGConstants extends CSSConstants {
     String VALUE_ERODE = "erode";
     String VALUE_EVEN_ODD = "evenodd";
     String VALUE_EXACT = "exact";
-    String VALUE_FILTER_X_DEFAULT = "-10%";
-    String VALUE_FILTER_Y_DEFAULT = "-10%";
-    String VALUE_FILTER_WIDTH_DEFAULT = "120%";
-    String VALUE_FILTER_HEIGHT_DEFAULT = "120%";
     String VALUE_FLOOD = "flood";
     String VALUE_FONT_WEIGHT_BOLD = "bold";
     String VALUE_FONT_WEIGHT_BOLDER = "bolder";
@@ -272,10 +268,6 @@ public interface SVGConstants extends CSSConstants {
     String VALUE_LINE_JOIN_MITER = "miter";
     String VALUE_LINEAR_RGB = "linearRGB";
     String VALUE_LUMINANCE_TO_ALPHA = "luminanceToAlpha";
-    String VALUE_MASK_X_DEFAULT = "-10%";
-    String VALUE_MASK_Y_DEFAULT = "-10%";
-    String VALUE_MASK_WIDTH_DEFAULT = "120%";
-    String VALUE_MASK_HEIGHT_DEFAULT = "120%";
     String VALUE_MATRIX = "matrix";
     String VALUE_MIDDLE = "middle";
     String VALUE_NEW = "new";
@@ -291,10 +283,6 @@ public interface SVGConstants extends CSSConstants {
     String VALUE_OUT = "out";
     String VALUE_OVER = "over";
     String VALUE_PAD = "pad";
-    String VALUE_PATTERN_X_DEFAULT = "0%";
-    String VALUE_PATTERN_Y_DEFAULT = "0%";
-    String VALUE_PATTERN_WIDTH_DEFAULT = "100%";
-    String VALUE_PATTERN_HEIGHT_DEFAULT = "100%";
     String VALUE_PRESERVE = "preserve";
     String VALUE_R = "R";
     String VALUE_REFLECT = "reflect";
@@ -337,14 +325,44 @@ public interface SVGConstants extends CSSConstants {
     /**
      * Default values for attributes
      */
-    float   DEFAULT_VALUE_BASE_FREQUENCY = 0.001f;
-    float   DEFAULT_VALUE_DX = 0f;
-    float   DEFAULT_VALUE_DY = 0f;
-    boolean DEFAULT_VALUE_FE_TURBULENCE_TYPE = false;
-    String  DEFAULT_VALUE_FILL_RULE = VALUE_NON_ZERO;
-    int     DEFAULT_VALUE_NUM_OCTAVES = 1;
-    int     DEFAULT_VALUE_SEED = 0;
-    boolean DEFAULT_VALUE_STITCH_TILES = false;
-    String  DEFAULT_VALUE_TEXT_ANCHOR = VALUE_START;
+    String DEFAULT_VALUE_FILTER_X = "-10%";
+    String DEFAULT_VALUE_FILTER_Y = "-10%";
+    String DEFAULT_VALUE_FILTER_WIDTH = "120%";
+    String DEFAULT_VALUE_FILTER_HEIGHT = "120%";
+
+    String DEFAULT_VALUE_MASK_X = "-10%";
+    String DEFAULT_VALUE_MASK_Y = "-10%";
+    String DEFAULT_VALUE_MASK_WIDTH = "120%";
+    String DEFAULT_VALUE_MASK_HEIGHT = "120%";
+
+    String DEFAULT_VALUE_PATTERN_X = "0%";
+    String DEFAULT_VALUE_PATTERN_Y = "0%";
+    String DEFAULT_VALUE_PATTERN_WIDTH = null; // required
+    String DEFAULT_VALUE_PATTERN_HEIGHT = null; // required
+
+    /**
+     * Default values for attributes
+     */
+    //String VALUE_FILTER_X_DEFAULT = "-10%";
+    //String VALUE_FILTER_Y_DEFAULT = "-10%";
+    //String VALUE_FILTER_WIDTH_DEFAULT = "120%";
+    //String VALUE_FILTER_HEIGHT_DEFAULT = "120%";
+    //String VALUE_MASK_X_DEFAULT = "-10%";
+    //String VALUE_MASK_Y_DEFAULT = "-10%";
+    //String VALUE_MASK_WIDTH_DEFAULT = "120%";
+    //String VALUE_MASK_HEIGHT_DEFAULT = "120%";
+    //String VALUE_PATTERN_X_DEFAULT = "0%";
+    //String VALUE_PATTERN_Y_DEFAULT = "0%";
+    //String VALUE_PATTERN_WIDTH_DEFAULT = "100%";
+    //String VALUE_PATTERN_HEIGHT_DEFAULT = "100%";
+    //float   DEFAULT_VALUE_BASE_FREQUENCY = 0.001f;
+    //float   DEFAULT_VALUE_DX = 0f;
+    //float   DEFAULT_VALUE_DY = 0f;
+    //boolean DEFAULT_VALUE_FE_TURBULENCE_TYPE = false;
+    //String  DEFAULT_VALUE_FILL_RULE = VALUE_NON_ZERO;
+    //int     DEFAULT_VALUE_NUM_OCTAVES = 1;
+    //int     DEFAULT_VALUE_SEED = 0;
+    //boolean DEFAULT_VALUE_STITCH_TILES = false;
+    //String  DEFAULT_VALUE_TEXT_ANCHOR = VALUE_START;
 
 }

@@ -14,16 +14,15 @@ import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
-
 import java.io.StringReader;
 
-import org.apache.batik.bridge.BridgeMutationEvent;
-import org.apache.batik.bridge.MaskBridge;
 import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.bridge.BridgeMutationEvent;
 import org.apache.batik.bridge.GVTBuilder;
+import org.apache.batik.bridge.IllegalAttributeValueException;
+import org.apache.batik.bridge.MaskBridge;
 import org.apache.batik.bridge.ObjectBoundingBoxViewport;
 import org.apache.batik.bridge.Viewport;
-
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.Filter;
@@ -31,14 +30,13 @@ import org.apache.batik.gvt.filter.GraphicsNodeRable;
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
 import org.apache.batik.gvt.filter.Mask;
 import org.apache.batik.parser.AWTTransformProducer;
+import org.apache.batik.refimpl.bridge.resources.Messages;
+import org.apache.batik.refimpl.gvt.filter.ConcreteMaskRable;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.UnitProcessor;
 
-import org.apache.batik.refimpl.gvt.filter.ConcreteMaskRable;
-
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-
 import org.w3c.dom.css.ViewCSS;
 import org.w3c.dom.css.CSSPrimitiveValue;
 import org.w3c.dom.css.CSSStyleDeclaration;
@@ -75,10 +73,6 @@ public class SVGMaskElementBridge implements MaskBridge, SVGConstants {
                                              maskedNode,
                                              uctx);
 
-        if(maskRegion == null) {
-            throw new Error();
-        }
-
         //
         // Build the GVT tree that represents the mask
         //
@@ -99,28 +93,43 @@ public class SVGMaskElementBridge implements MaskBridge, SVGConstants {
         CompositeGraphicsNode maskNodeContent
             = bridgeContext.getGVTFactory().createCompositeGraphicsNode();
         maskNode.getChildren().add(maskNodeContent);
-        for(Node child=maskElement.getFirstChild();
-            child != null;
-            child = child.getNextSibling()){
-            if(child.getNodeType() == child.ELEMENT_NODE){
-                Element e = (Element)child;
-                GraphicsNode node
-                    = builder.build(bridgeContext, e) ;
-                if(node != null){
-                    maskNodeContent.getChildren().add(node);
-                }
+        boolean hasChildren = false;
+        for(Node node=maskElement.getFirstChild();
+                node != null;
+                node = node.getNextSibling()){
+
+            // check if the node is a valid Element
+            if(node.getNodeType() != node.ELEMENT_NODE) {
+                continue;
             }
+            Element child = (Element)node;
+            String namespaceURI = child.getNamespaceURI();
+            if (namespaceURI == null ||
+                    !namespaceURI.equals(SVG_NAMESPACE_URI)) {
+                continue; // skip element in the wrong namespace
+            }
+
+            GraphicsNode gn = builder.build(bridgeContext, child) ;
+            if(gn == null) {
+                throw new IllegalAttributeValueException(
+                    Messages.formatMessage("mask.subelement.illegal",
+                                           new Object[] {node.getLocalName()}));
+            }
+            hasChildren = true;
+            maskNodeContent.getChildren().add(gn);
+        }
+        // restore the viewport
+        bridgeContext.setCurrentViewport(oldViewport);
+        if (!hasChildren) {
+            return null; // no mask defined
         }
 
-        bridgeContext.setCurrentViewport(oldViewport);
-
-        //
         // Get the mask transform
-        //
         AffineTransform at = AWTTransformProducer.createAffineTransform
             (new StringReader(maskElement.getAttributeNS(null, ATTR_TRANSFORM)),
              bridgeContext.getParserFactory());
-        at = SVGUtilities.convertAffineTransform(at, maskedNode,
+        at = SVGUtilities.convertAffineTransform(at,
+                                                 maskedNode,
                                                  maskContentUnits);
         maskNodeContent.setTransform(at);
 
@@ -132,8 +141,7 @@ public class SVGMaskElementBridge implements MaskBridge, SVGConstants {
             filter = gnrFactory.createGraphicsNodeRable(maskedNode);
         }
 
-        return new ConcreteMaskRable(filter, maskNode,
-                                     maskRegion);
+        return new ConcreteMaskRable(filter, maskNode, maskRegion);
     }
 
     public void update(BridgeMutationEvent evt) {
