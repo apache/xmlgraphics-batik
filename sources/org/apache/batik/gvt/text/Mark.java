@@ -7,24 +7,18 @@
  *****************************************************************************/
 
 package org.apache.batik.gvt.text;
+import org.apache.batik.gvt.TextNode;
 
 /**
- * Marker interface, mostly, that encapsulates information about a selection
- * gesture.
- * @author <a href="bill.haneman@ireland.sun.com>Bill Haneman</a>
- * @version $Id$
+ * Marker interface, mostly, that encapsulates information about a
+ * selection gesture.
+ *
+ * @author <a href="mailto:bill.haneman@ireland.sun.com">Bill Haneman</a>
+ * @version $Id$ 
  */
-
 public interface Mark {
-
     /*
-     * Return the x coordinate associated with this mark.
+     * Return the TextNode this Mark is associated with 
      */
-    public double getX();
-
-    /*
-     * Return the y coordinate associated with this mark.
-     */
-    public double getY();
-
+    TextNode getTextNode();
 }

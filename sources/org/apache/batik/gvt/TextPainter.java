@@ -40,42 +40,32 @@ public interface TextPainter {
      * Initiates a text selection on a particular AttributedCharacterIterator,
      * using the text/font metrics employed by this TextPainter instance.
      */
-    Mark selectAt(double x, 
-		  double y, 
-		  AttributedCharacterIterator aci,
-		  TextNode node);
+    Mark selectAt(double x, double y, TextNode node);
 
     /**
      * Continues a text selection on a particular AttributedCharacterIterator,
      * using the text/font metrics employed by this TextPainter instance.
      */
-    Mark selectTo(double x, double y, Mark beginMark,
-		  AttributedCharacterIterator aci,
-		  TextNode node);
-
-    /**
-     * Select all of the text represented by an AttributedCharacterIterator,
-     * using the text/font metrics employed by this TextPainter instance.
-     */
-    Mark selectAll(double x, double y,
-		   AttributedCharacterIterator aci,
-		   TextNode node);
-
+    Mark selectTo(double x, double y, Mark beginMark);
 
     /**
      * Selects the first glyph in the text node.
      */
-    Mark selectFirst(double x, double y,
-		     AttributedCharacterIterator aci,
-		     TextNode node);
+    Mark selectFirst(TextNode node);
 
 
     /**
      * Selects the last glyph in the text node.
      */
-    Mark selectLast(double x, double y,
-		    AttributedCharacterIterator aci,
-		    TextNode node);
+    Mark selectLast(TextNode node);
+
+    /**
+     * Returns a mark for the char at index in node's
+     * AttributedCharacterIterator.  Leading edge indicates if the 
+     * mark should be considered immediately 'before' glyph or
+     * after
+     */
+     Mark getMark(TextNode node, int index, boolean beforeGlyph);
 
     /*
      * Get an array of index pairs corresponding to the indices within an
@@ -84,11 +74,8 @@ public interface TextPainter {
      * Note that the instances of Mark passed to this function <em>must
      * come</em> from the same TextPainter that generated them via selectAt()
      * and selectTo(), since the TextPainter implementation may rely on hidden
-     * implementation details of its own Mark implementation.  
-     */
-    int[] getSelected(AttributedCharacterIterator aci,
-		      Mark start, 
-		      Mark finish);
+     * implementation details of its own Mark implementation.  */
+    int[] getSelected(Mark start, Mark finish);
     
 
     /*

@@ -88,6 +88,16 @@ public class StaticRenderer implements ImageRenderer {
     protected RenderingHints renderingHints;
     protected AffineTransform usr2dev;
 
+    protected static RenderingHints defaultRenderingHints;
+    static {
+        defaultRenderingHints = new RenderingHints(null);
+        defaultRenderingHints.put(RenderingHints.KEY_ANTIALIASING,
+                                  RenderingHints.VALUE_ANTIALIAS_ON);
+
+        defaultRenderingHints.put(RenderingHints.KEY_INTERPOLATION,
+                                  RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+    }
+
     /**
      * @param rh Hints for rendering.
      * @param at Starting user to device coordinate system transform.
@@ -102,12 +112,7 @@ public class StaticRenderer implements ImageRenderer {
      * @param offScreen image where the Renderer should do its rendering
      */
     public StaticRenderer(){
-        renderingHints = new RenderingHints(null);
-        renderingHints.put(RenderingHints.KEY_ANTIALIASING,
-                           RenderingHints.VALUE_ANTIALIAS_ON);
-
-        renderingHints.put(RenderingHints.KEY_INTERPOLATION,
-                           RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        renderingHints = new RenderingHints(defaultRenderingHints);
         usr2dev = new AffineTransform();
     }
 
@@ -148,6 +153,8 @@ public class StaticRenderer implements ImageRenderer {
         currentOffScreen = null;
         currentBaseRaster = null;
         currentRaster = null;
+
+        // renderingHints = new RenderingHints(defaultRenderingHints);
     }
 
     /**

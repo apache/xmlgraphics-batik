@@ -20,6 +20,9 @@ import java.net.MalformedURLException;
  * protocols, such as 'file' 'http' 'ftp'.
  * The parsing should be general enought to support most
  * 'normal' URL formats, so in many cases 
+ *
+ * @author <a href="mailto:deweese@apache.org">Thomas DeWeese</a>
+ * @version $Id$ 
  */
 public class ParsedURLDefaultProtocolHandler 
     extends AbstractParsedURLProtocolHandler {

@@ -15,6 +15,9 @@ import java.util.Iterator;
 
 /**
  * Protocol Handler for the 'data' protocol.
+ *
+ * @author <a href="mailto:deweese@apache.org">Thomas DeWeese</a>
+ * @version $Id$ 
  */
 public class ParsedURLDataProtocolHandler 
     extends AbstractParsedURLProtocolHandler {

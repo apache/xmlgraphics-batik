@@ -283,9 +283,22 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
         return outline;
     }
 
+    /**
+     * Return the marker for the character at index in this nodes
+     * AttributedCharacterIterator.  Before Char indicates if the
+     * Marker should be considered before or after char.
+     */
+    public Mark getMarkerForChar(int index, boolean beforeChar) {
+        return textPainter.getMark(this, index, beforeChar);
+    }
+
     //
     // Selection methods
     //
+    public void setSelection(Mark begin, Mark end) {
+        beginMark = begin;
+        endMark   = end;
+    }
 
     /**
      * Initializes the current selection to begin with the character at (x, y).
@@ -293,8 +306,8 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
      * @param the anchor of this node
      */
     public boolean selectAt(double x, double y) {
-	beginMark = textPainter.selectAt(x, y, aci, this);
-	return true; // assume this always changes selection, for now.
+        beginMark = textPainter.selectAt(x, y, this);
+        return true; // assume this always changes selection, for now.
     }
 
     /**
@@ -303,23 +316,24 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
      * @param the anchor of this node
      */
     public boolean selectTo(double x, double y) {
-        Mark tmpMark = textPainter.selectTo(x, y, beginMark, aci, this);
-        boolean result = false;
+        Mark tmpMark = textPainter.selectTo(x, y, beginMark);
+        if (tmpMark == null)
+            return false;
         if (tmpMark != endMark) {
             endMark = tmpMark;
-            result = true;
+            return true;
         }
-        return result;
+        return false;
     }
 
     /**
-     * Extends the current selection to the character at (x, y)..
+     * Selects all the text in this TextNode...
      *
      * @param the anchor of this node
      */
     public boolean selectAll(double x, double y) {
-        beginMark = textPainter.selectFirst(x, y, aci, this);
-        endMark = textPainter.selectLast(x, y, aci, this);
+        beginMark = textPainter.selectFirst(this);
+        endMark = textPainter.selectLast(this);
         return true;
     }
 
@@ -330,7 +344,7 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
      */
     public Object getSelection() {
 
-        int[] ranges = textPainter.getSelected(aci, beginMark, endMark);
+        int[] ranges = textPainter.getSelected(beginMark, endMark);
         Object o = null;
 
 	// TODO: later we can return more complex things like
