@@ -349,16 +349,18 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
     public GVTGlyphMetrics getGlyphMetrics(int glyphIndex) {
         if (glyphMetrics[glyphIndex] == null) {
             GlyphMetrics gm = awtGlyphVector.getGlyphMetrics(glyphIndex);
-            Rectangle2D gmBounds = gm.getBounds2D();
-
-            Rectangle2D bounds = 
-                new Rectangle2D.Double(gmBounds.getX()      * scaleFactor, 
-                                       gmBounds.getY()      * scaleFactor,
-                                       gmBounds.getWidth()  * scaleFactor, 
-                                       gmBounds.getHeight() * scaleFactor);
-
+            Rectangle2D gmB = gm.getBounds2D();
+            Rectangle2D bounds = new Rectangle2D.Double
+                (gmB.getX()     * scaleFactor, gmB.getY()      * scaleFactor,
+                 gmB.getWidth() * scaleFactor, gmB.getHeight() * scaleFactor);
+            
+            // defaultGlyphPositions has one more entry than glyphs
+            // the last entry stores the total advance for the
+            // glyphVector.
+            float adv = (float)(defaultGlyphPositions[glyphIndex+1].getX()-
+                                defaultGlyphPositions[glyphIndex]  .getX());
             glyphMetrics[glyphIndex] =  new GVTGlyphMetrics
-                (gm.getAdvance()*scaleFactor, (ascent+descent), 
+                (adv*scaleFactor, (ascent+descent), 
                  bounds, GlyphMetrics.STANDARD);
         }
         return glyphMetrics[glyphIndex];
@@ -536,8 +538,8 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
     public void performDefaultLayout() {
         if (defaultGlyphPositions == null) {
             awtGlyphVector.performDefaultLayout();
-            defaultGlyphPositions = new Point2D.Float[getNumGlyphs()];
-            for (int i = 0; i < getNumGlyphs(); i++)
+            defaultGlyphPositions = new Point2D.Float[getNumGlyphs()+1];
+            for (int i = 0; i <= getNumGlyphs(); i++)
                 defaultGlyphPositions[i] = awtGlyphVector.getGlyphPosition(i);
         }
 
