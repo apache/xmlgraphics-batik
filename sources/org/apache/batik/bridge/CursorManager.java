@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Hashtable;
 import java.lang.ref.SoftReference;
 
+import org.apache.batik.ext.awt.image.GraphicsUtil;
 import org.apache.batik.ext.awt.image.spi.ImageTagRegistry;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 
@@ -218,7 +219,7 @@ public class CursorManager implements SVGConstants {
                                                         (int)Math.round(rh),
                                                         null);
             
-            if (bi instanceof Image) {
+            if (img instanceof Image) {
                 bi = (Image)img;
             } else {
                 bi = renderedImageToImage(img);
@@ -237,8 +238,8 @@ public class CursorManager implements SVGConstants {
             RenderedImage ri = f.createScaledRendering(preferredSize.width,
                                                        preferredSize.height,
                                                        null);
-            Graphics2D g = tbi.createGraphics();
-            g.drawRenderedImage(ri, new AffineTransform());
+            Graphics2D g = GraphicsUtil.createGraphics(tbi);
+            GraphicsUtil.drawImage(g, ri);
             g.dispose();
             bi = tbi;
         }
@@ -274,10 +275,7 @@ public class CursorManager implements SVGConstants {
         WritableRaster wr = Raster.createWritableRaster(sm, new Point(x,y));
         ri.copyData(wr);
 
-        return new BufferedImage(ri.getColorModel(),
-                                 wr,
-                                 cm.isAlphaPremultiplied(),
-                                 null);
+        return new BufferedImage(cm, wr, cm.isAlphaPremultiplied(), null);
     }
 
     /**
