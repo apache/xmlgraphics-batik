@@ -97,7 +97,7 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
             ctx.setCurrentViewport(new ObjectBoundingBoxViewport());
         }
         // compute an additional transform related the clipPathUnits
-        Tx = SVGUtilities.convertAffineTransform(Tx, gn, units);
+        Tx = SVGUtilities.convertAffineTransform(Tx, gn, unitsType);
 
         // build the clipPath according to the clipPath's children
         boolean hasChildren = false;

@@ -14,12 +14,16 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.io.StringReader;
 import java.util.Vector;
+
 import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.bridge.IllegalAttributeValueException;
 import org.apache.batik.bridge.PaintBridge;
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.refimpl.bridge.resources.Messages;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.UnitProcessor;
 import org.apache.batik.util.awt.LinearGradientPaint;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.css.CSSPrimitiveValue;
@@ -109,17 +113,26 @@ public class SVGLinearGradientBridge extends SVGGradientBridge
             y2 = "0%";
         }
 
+        int unitsType;
+        try {
+            unitsType = SVGUtilities.parseCoordinateSystem(units);
+        } catch (IllegalArgumentException ex) {
+            throw new IllegalAttributeValueException(
+                Messages.formatMessage("linearGradient.units.invalid",
+                                       new Object[] {units,
+                                                     ATTR_GRADIENT_UNITS}));
+        }
         SVGElement svgPaintedElement = (SVGElement) paintedElement;
         Point2D p1
             = SVGUtilities.convertGradientPoint(svgPaintedElement,
                                                 ATTR_X1, x1,
                                                 ATTR_Y1, y1,
-                                                units, uctx);
+                                                unitsType, uctx);
         Point2D p2
             = SVGUtilities.convertGradientPoint(svgPaintedElement,
                                                 ATTR_X2, x2,
                                                 ATTR_Y2, y2,
-                                                units, uctx);
+                                                unitsType, uctx);
 
         // parse the 'spreadMethod' attribute, (default is PAD)
         String spreadMethod =
@@ -137,7 +150,7 @@ public class SVGLinearGradientBridge extends SVGGradientBridge
                                                 ATTR_GRADIENT_TRANSFORM,
                                                 ctx.getParserFactory());
 
-        at  = SVGUtilities.convertAffineTransform(at, paintedNode, units);
+        at  = SVGUtilities.convertAffineTransform(at, paintedNode, unitsType);
 
         // Extract stop colors and intervals
         Vector stopVector = extractGradientStops(paintElement, ctx);
