@@ -105,7 +105,6 @@ public class CompositeShapePainter implements ShapePainter {
      * Returns the area painted by this shape painter.
      */
     public Shape getPaintedArea(){
-        // <!> FIX ME: Use of GeneralPath is a work around Area problems.
         if (painters != null) {
             Area paintedArea = new Area();
             for (int i=0; i < count; ++i) {
