@@ -15,7 +15,7 @@
 <!-- version $Id$        -->
 <!-- ========================================================================= -->
 
-<book title="Apache Batik documentation" copyright="2000 The Apache Software Foundation">
+<book title="Apache Batik documentation" copyright="2000-2001 The Apache Software Foundation">
     <!-- ======================= -->
     <!-- Home                    -->
     <!-- ======================= -->
@@ -59,6 +59,7 @@
     <!-- <todo id="todo" label="Todo" source="todo.xml"/> -->
     <external label="CVS Repository" href="http://xml.apache.org/websrc/index.cgi/xml-batik/"/>
     <!-- <external label="Snapshots" href="http://xml.apache.org/from-cvs/xml-batik/"/> -->
+    <page id="mailList" label="Mail Lists" source="mail-lists.xml"/>
     <external label="Mail Archive" href="http://mail-archives.apache.org/"/>
     <external label="Bug Database" href="http://xml.apache.org/bugs/"/>
     <separator/>
