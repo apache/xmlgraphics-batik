@@ -29,7 +29,12 @@ import org.apache.batik.swing.svg.JSVGComponent;
 import org.apache.batik.swing.svg.SVGUserAgent;
 
 /**
- * This class represents a general-purpose SVG component.
+ * This class represents a general-purpose swing SVG component. The
+ * <tt>JSVGCanvas</tt> does not provided additional functionalities compared to
+ * the <tt>JSVGComponent</tt> but simply provides an API conformed to the
+ * JavaBean specification. The only major change between the
+ * <tt>JSVGComponent</tt> and this component is that interactors and text
+ * selection are activated by default.
  *
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
@@ -96,7 +101,7 @@ public class JSVGCanvas extends JSVGComponent {
 
     /**
      * An interactor to reset the rendering transform.
-     * <p>Binding: CTRL+T</p>
+     * <p>Binding: CTRL+SHIFT+BUTTON3</p>
      */
     protected Interactor resetTransformInteractor =
         new AbstractResetTransformInteractor() {
