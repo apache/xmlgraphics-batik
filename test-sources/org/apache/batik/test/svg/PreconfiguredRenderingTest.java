@@ -77,7 +77,10 @@ public abstract class PreconfiguredRenderingTest extends SVGRenderingAccuracyTes
      */
     public void setId(String id){
         super.setId(id);
+        setFile(id);
+    }
 
+    public void setFile(String id) {
         String svgFile = id;
 
         String[] dirNfile = breakSVGFile(svgFile);

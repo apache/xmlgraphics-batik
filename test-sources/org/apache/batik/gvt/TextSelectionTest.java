@@ -50,32 +50,17 @@
 
 package org.apache.batik.gvt;
 
-import java.awt.Shape;
-import java.awt.geom.PathIterator;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
-import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 import org.w3c.dom.Element;
-import org.w3c.dom.svg.SVGDocument;
+import org.w3c.dom.svg.SVGTextContentElement;
 
-import org.apache.batik.bridge.BridgeContext;
-import org.apache.batik.bridge.DocumentLoader;
-import org.apache.batik.bridge.GVTBuilder;
-import org.apache.batik.bridge.UserAgent;
-import org.apache.batik.bridge.UserAgentAdapter;
-import org.apache.batik.gvt.text.Mark;
-import org.apache.batik.test.AbstractTest;
+import org.apache.batik.swing.JSVGCanvas;
+import org.apache.batik.swing.JSVGCanvasHandler;
 import org.apache.batik.test.DefaultTestReport;
 import org.apache.batik.test.TestReport;
-import org.apache.batik.util.Base64Test;
+import org.apache.batik.test.svg.JSVGRenderingAccuracyTest;
 
 
 /**
@@ -84,7 +69,7 @@ import org.apache.batik.util.Base64Test;
  * @author <a href="mailto:deweese@apache.org">Thomas DeWeese</a>
  * @version $Id$
  */
-public class TextSelectionTest extends AbstractTest {
+public class TextSelectionTest extends JSVGRenderingAccuracyTest {
 
     /**
      * Directory for reference files
@@ -158,13 +143,11 @@ public class TextSelectionTest extends AbstractTest {
     public static final String ENTRY_KEY_ERROR_DESCRIPTION
         = "TextSelectionTest.entry.key.error.description";
 
-    protected URL    svg   = null;
-    protected String id    = null;
+    protected String textID    = null;
     protected int    start;
     protected int    end;
-    protected URL    ref   = null;
-    protected URL    var   = null;
-    protected File   can   = null;
+
+    public void setId(String id) { this.id = id; }
 
     /**
      * Constructor. ref is ignored if action == ROUND.
@@ -174,123 +157,83 @@ public class TextSelectionTest extends AbstractTest {
      * @param end    The last character to select
      * @param ref    The reference file.
      */
-    public TextSelectionTest(String svg, String id, 
-                             Integer start, Integer end, 
-                             String ref) {
-        this.svg   = resolveURL(svg);
-        this.id    = id;
+    public TextSelectionTest(String file,   String textID, 
+                             Integer start, Integer end) {
+        this.textID    = textID;
         this.start = start.intValue();
         this.end   = end.intValue();
-        this.ref   = resolveURL(REFERENCE_DIR+ref);
-        this.var   = resolveURL(REFERENCE_DIR+VARIATION_DIR+ref);
-        this.can   = new File(REFERENCE_DIR+CANDIDATE_DIR+ref);
+        super.setFile(file);
     }
 
-    /**
-     * Resolves the input string as follows.
-     * + First, the string is interpreted as a file description.
-     *   If the file exists, then the file name is turned into
-     *   a URL.
-     * + Otherwise, the string is supposed to be a URL. If it
-     *   is an invalid URL, an IllegalArgumentException is thrown.
-     */
-    protected URL resolveURL(String url){
-        // Is url a file?
-        File f = (new File(url)).getAbsoluteFile();
-        if(f.getParentFile().exists()){
-            try{
-                return f.toURL();
-            }catch(MalformedURLException e){
-                throw new IllegalArgumentException();
-            }
-        }
-        
-        // url is not a file. It must be a regular URL...
-        try{
-            return new URL(url);
-        }catch(MalformedURLException e){
-            throw new IllegalArgumentException(url);
-        }
+    protected String buildRefImgURL(String svgDir, String svgFile){
+        return getRefImagePrefix() + svgDir + getRefImageSuffix() + 
+            svgFile + "-" +textID+ "-" + start + "-" + end +PNG_EXTENSION;
     }
 
+    public String buildVariationURL(String svgDir, String svgFile){
+        return getVariationPrefix() + svgDir + getVariationSuffix() + 
+            svgFile + "-" +textID+ "-" + start + "-" + end +PNG_EXTENSION;
+
+    }
+
+    public String  buildSaveVariationFile(String svgDir, String svgFile){
+        return getSaveVariationPrefix() + svgDir + getSaveVariationSuffix() + 
+            svgFile + "-" +textID+ "-" + start + "-" + end +PNG_EXTENSION;
+    }
+
+    public String  buildCandidateReferenceFile(String svgDir, String svgFile){
+        return getCandidateReferencePrefix() + svgDir + getCandidateReferenceSuffix() + 
+            svgFile + "-" +textID+ "-" + start + "-" + end +PNG_EXTENSION;
+    }
     /**
      * Returns this Test's name
      */
     public String getName() {
-        return svg + "#" + id + "(" + start + "," + end + ")";
+        return super.getName() + "#" +textID+ "(" + start + "," + end + ")";
+    }
+    
+    public JSVGCanvasHandler createCanvasHandler() {
+        return new JSVGCanvasHandler(this, this) {
+                public JSVGCanvas createCanvas() { 
+                    JSVGCanvas ret = new JSVGCanvas(); 
+                    ret.setDocumentState(JSVGCanvas.ALWAYS_DYNAMIC);
+                    return ret;
+                }
+            };
     }
 
-
-    /**
-     * This method will only throw exceptions if some aspect
-     * of the test's internal operation fails.
-     */
-    public TestReport runImpl() throws Exception {
+    public void canvasRendered(JSVGCanvas canvas) {
         DefaultTestReport report = new DefaultTestReport(this);
-
-        SVGDocument  svgDoc;
-        BridgeContext  ctx;
         try {
-            UserAgent      userAgent = new UserAgentAdapter();
-            DocumentLoader loader    = new DocumentLoader(userAgent);
-            GVTBuilder     builder   = new GVTBuilder();
-
-            ctx     = new BridgeContext(userAgent, loader);
-            ctx.setDynamic(true);
-            svgDoc  = (SVGDocument)loader.loadDocument(svg.toString());
-            builder.build(ctx, svgDoc);
-        } catch(Exception e) {
-            StringWriter trace = new StringWriter();
-            e.printStackTrace(new PrintWriter(trace));
-            report.setErrorCode(ERROR_READING_SVG);
-            report.setDescription(new TestReport.Entry[] {
-                new TestReport.Entry
-                    (Messages.formatMessage(ENTRY_KEY_ERROR_DESCRIPTION, null),
-                     Messages.formatMessage
-                     (ERROR_READING_SVG,
-                      new String[]{svg.toString(), trace.toString()}))
-                    });
-            report.setPassed(false);
-            return report;
-        }
-
-        Shape highlight = null;
-        try {
-            Element e = svgDoc.getElementById(id);
-            /// System.out.println("Element: " + e + " CTX: " + ctx );
-            GraphicsNode gn = ctx.getGraphicsNode(e);
-            if (gn == null) {
+            Element e = canvas.getSVGDocument().getElementById(textID);
+            if (e == null) {
                 report.setErrorCode(ERROR_BAD_ID);
                 report.setDescription(new TestReport.Entry[] {
                     new TestReport.Entry
                         (Messages.formatMessage
                          (ENTRY_KEY_ERROR_DESCRIPTION, null),
                          Messages.formatMessage
-                         (ERROR_BAD_ID, new String[]{ id }))
+                         (ERROR_BAD_ID, new String[]{textID}))
                         });
                 report.setPassed(false);
-                return report;
+                failReport = report;
+                return;
             }
-
-            if (!(gn instanceof TextNode)) {
+            if (!(e instanceof SVGTextContentElement)) {
                 report.setErrorCode(ERROR_ID_NOT_TEXT);
                 report.setDescription(new TestReport.Entry[] {
                     new TestReport.Entry
                         (Messages.formatMessage
                          (ENTRY_KEY_ERROR_DESCRIPTION, null),
                          Messages.formatMessage
-                         (ERROR_ID_NOT_TEXT, new String[]{id, gn.toString()}))
+                         (ERROR_ID_NOT_TEXT, new String[]{id, e.toString()}))
                         });
                 report.setPassed(false);
-                return report;
+                failReport = report;
+                return;
             }
-
-
-            TextNode tn = (TextNode)gn;
-            Mark f = tn.getMarkerForChar(start,true);
-            Mark l = tn.getMarkerForChar(end,false);
-            tn.setSelection(f, l);
-            highlight = tn.getHighlightShape();
+            SVGTextContentElement tce = (SVGTextContentElement)e;
+            tce.selectSubString(start, end);
         } catch(Exception e) {
             StringWriter trace = new StringWriter();
             e.printStackTrace(new PrintWriter(trace));
@@ -303,138 +246,11 @@ public class TextSelectionTest extends AbstractTest {
                       new String[]{id, ""+start, ""+end, trace.toString()}))
                     });
             report.setPassed(false);
-            return report;
+            failReport = report;
         }
-
-        InputStream refIS = null;
-        try {
-            refIS = var.openStream();
-        } catch(Exception e) { try {
-            refIS = ref.openStream();
-        } catch(Exception ex) {
-            StringWriter trace = new StringWriter();
-            e.printStackTrace(new PrintWriter(trace));
-            report.setErrorCode(ERROR_CANNOT_READ_REF_URL);
-            report.setDescription
-                (new TestReport.Entry[] {
-                    new TestReport.Entry
-                        (Messages.formatMessage
-                         (ENTRY_KEY_ERROR_DESCRIPTION, null),
-                         Messages.formatMessage
-                         (ERROR_CANNOT_READ_REF_URL,
-                          new String[]{ref.toString(), trace.toString()}))
-                        });
-            report.setPassed(false);
-        }
-        }
-
-        int mismatch = -2;
-        if (refIS != null) {
-            PipedOutputStream pos  = new PipedOutputStream();
-            InputStream       inIS = new PipedInputStream(pos);
-            Checker check = new Checker(inIS, refIS);
-            check.start();
-            PrintStream pw = new PrintStream(pos);
-            printShape(highlight, pw);
-            pw.flush();
-            pw.close();
-            pos.close();
-            mismatch = check.getMismatch();
-
-        }
-
-        if (mismatch == -1) {
-          report.setPassed(true);
-          return report;
-        }
-
-        if (mismatch == -2) {
-            report.setErrorCode(ERROR_NO_REFERENCE);
-            report.setDescription(new TestReport.Entry[] {
-                new TestReport.Entry
-                    (Messages.formatMessage(ENTRY_KEY_ERROR_DESCRIPTION, null),
-                     Messages.formatMessage(ERROR_NO_REFERENCE, 
-                                            new String[]{ref.toString()}))
-                    });
-        } else {
-            report.setErrorCode(ERROR_WRONG_RESULT);
-            report.setDescription(new TestReport.Entry[] {
-                new TestReport.Entry
-                    (Messages.formatMessage(ENTRY_KEY_ERROR_DESCRIPTION, null),
-                     Messages.formatMessage(ERROR_WRONG_RESULT, 
-                                            new String[]{""+mismatch}))
-                    });
-        }
-        report.setPassed(false);
-
-        // Now write a canidate reference/variation file...
-        if (can.exists())
-            can.delete();
-
-        printShape(highlight, new PrintStream(new FileOutputStream(can)));
-
-        return report;
-    }
-
-    public static class Checker extends Thread {
-        int mismatch = -2;
-        InputStream is1, is2;
-        public Checker(InputStream is1, InputStream is2) {
-            this.is1 = is1;
-            this.is2 = is2;
-        }
-        public int getMismatch() {
-            while (true) {
-                try {
-                    this.join();
-                    break;
-                } catch (InterruptedException ie) { }
-            }
-
-            return mismatch;
-        }
-        public void run() {
-            mismatch = Base64Test.compareStreams (is1, is2, false);
+        finally {
+            scriptDone();
         }
     }
-
-    public static void printShape(Shape s, PrintStream ps) {
-        PathIterator pi = s.getPathIterator(null);
-        float pts [] = new float[6];
-        int type;
-        while (!pi.isDone()) {
-            type = pi.currentSegment(pts);
-            switch (type) {
-            case PathIterator.SEG_MOVETO:
-                ps.println(" MoveTo: [" + 
-                                   pts[0] + ", " + pts[1] + "]");
-                break;
-            case PathIterator.SEG_LINETO:
-                ps.println(" LineTo: [" + 
-                                   pts[0] + ", " + pts[1] + "]");
-                break;
-
-            case PathIterator.SEG_QUADTO:
-                ps.println(" QuadTo: [" + 
-                                   pts[0] + ", " + pts[1] + "] [" +
-                                   pts[2] + ", " + pts[3] + "]");
-                break;
-
-            case PathIterator.SEG_CUBICTO:
-                ps.println("CurveTo: [" + 
-                                   pts[0] + ", " + pts[1] + "] [" +
-                                   pts[2] + ", " + pts[3] + "] [" +
-                                   pts[4] + ", " + pts[5] + "]");
-                break;
-
-            case PathIterator.SEG_CLOSE:
-                ps.println("Close");
-                break;
-            }
-            pi.next();
-        }
-    }
-
-
 }
 
