@@ -419,12 +419,11 @@ public class StaticRenderer implements ImageRenderer {
                 return;
 
             rootCR = GraphicsUtil.wrap(ri);
-            int dx = Math.round((float)at.getTranslateX()+0.5f);
-            int dy = Math.round((float)at.getTranslateY()+0.5f);
+            int dx = Math.round((float)at.getTranslateX());
+            int dy = Math.round((float)at.getTranslateY());
             rootCR = new TranslateRed(rootCR, rootCR.getMinX()+dx, 
                                       rootCR.getMinY()+dy);
             rootCR = GraphicsUtil.convertTosRGB(rootCR);
-
         }
 
         SampleModel sm = rootCR.getSampleModel();

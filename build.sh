@@ -23,7 +23,9 @@ CP=$JAVA_HOME/lib/tools.jar:$ANT_HOME/lib/build/ant_1_3.jar:./lib/build/parser.j
 # ----- Execute The Requested Build -------------------------------------------
 
 TARGET=$1;
-shift 1
+if [ $# != 0 ] ; then
+  shift 1
+fi
 
 $JAVA_HOME/bin/java $ANT_OPTS -classpath $CP org.apache.tools.ant.Main -Dant.home=$ANT_HOME $TARGET -Dargs="$*"
 
