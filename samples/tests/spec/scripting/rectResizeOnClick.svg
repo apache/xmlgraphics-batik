@@ -24,16 +24,19 @@
 
    <script type="text/ecmascript">
 
-    function setRect(evt, target, valX, valY, valW, valH){
-        var r = evt.getTarget();
-        var doc = r.getOwnerDocument();
-        var t = doc.getElementById(target);
+    function setRect(target, valX, valY, valW, valH){
+        var t = document.getElementById(target);
         t.setAttribute('x', valX);
         t.setAttribute('y', valY);
         t.setAttribute('width', valW);
         t.setAttribute('height', valH);
     }
 
+    // This function is only called if test is run from regard.
+    function regardStart() {
+       setRect('targetRect', '5', '5', '440', '490');
+       regardTestInstance.scriptDone();
+    }
    </script>
 
    <text x="50%" y="45" class="title">&lt;rect&gt; width &amp; height modification in 'onclick'</text>
@@ -49,7 +52,7 @@
       <text class="legend" x="225" y="240">Click Target</text>
 
       <g stroke="black"
-         onclick="setRect(evt, 'targetRect', '5', '5', '440', '490')" >
+         onclick="setRect('targetRect', '5', '5', '440', '490')" >
          <circle cx="225" cy="200"  r="10"           fill="crimson"/>
          <line   x1="225" x2="225" y1="185" y2="215" fill="none" />
          <line   x1="210" x2="240" y1="200" y2="200" fill="none" />

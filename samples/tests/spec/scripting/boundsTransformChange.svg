@@ -26,7 +26,8 @@
     <desc>This tests changing the bounds of an object then changing a
     a parent's transform to ensure the dirty regions are properly
     computed.</desc>
-    <script type="text/ecmascript">
+    <script type="text/ecmascript"><![CDATA[
+        var inRegard=false;
 	var time1 = 90;
 	function updateGroup1() {
             var elt = document.getElementById("g1");
@@ -37,9 +38,15 @@
 	    var y = Math.sin(.5*(time1+90)*3.1415926/180)*150 + 250;
             elt.setAttribute("transform", "translate("+x+","+y+")");
 	    time1 += 20;
-	    setTimeout('updateGroup1()', 100);
+            if (inRegard && (time1 >= 270))
+               regardTestInstance.scriptDone();
+            else
+               setTimeout('updateGroup1()', 100);
 	}
-    </script>
+       function regardStart() {
+          inRegard = true;
+       }
+    ]]></script>
 
     <g id="test-content">
        <g id="g1">
