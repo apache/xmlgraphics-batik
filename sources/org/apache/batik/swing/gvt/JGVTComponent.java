@@ -758,6 +758,7 @@ public class JGVTComponent extends JComponent {
                                 });
                                 sleep(200);
                             }
+                        } catch (InterruptedException ie) {
                         } catch (Throwable t) {
                             t.printStackTrace();
                         }

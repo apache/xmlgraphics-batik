@@ -61,6 +61,7 @@ public class GraphicsNodeRed8Bit extends AbstractRed {
 
         AffineTransform at = node2dev;
         Rectangle2D bounds2D = node.getPrimitiveBounds();
+        if (bounds2D == null) bounds2D = new Rectangle2D.Float(0,0,1,1);
         if (!usePrimitivePaint) {
             // When not using Primitive paint we return our bounds in
             // the nodes parent's user space.  This makes sense since
