@@ -25,20 +25,11 @@
     <text x="50%" y="45" class="title">&lt;rect&gt; x Animation in 'onclick'</text>
 
     <script type="text/ecmascript">
-
-    var r;
-    var doc;
-    var t;
-    var start;
-    var end;
-    var inc =2;
-    var frac=2;    
-    var cont;
+    var t, start, end, inc, cont, frac=0;    
 
     function startAnim(evt, target, xStart, xEnd){
-        r = evt.target;
-        doc = r.ownerDocument;
-        t = doc.getElementById(target);
+	if (cont == 1) return;
+        t = document.getElementById(target);
         start = xStart
         end   = xEnd;
         cont = 1;
@@ -51,17 +42,12 @@
 
     function cyclopse() {
         t.setAttribute('x', (end-start)*frac/100+start);
-        if (frac == 100) {
-          inc = -2;
-        } else if (frac == 0) {
-          inc = 2;
-        }
+        if (frac == 100) inc = -2;
+        if (frac ==   0) inc =  2;
         frac += inc;
-        if (cont == 1) {
+        if (cont == 1)
           setTimeout('cyclopse()', 50);
-        }
     }
-
     </script>
 
     <g id="test-content">
