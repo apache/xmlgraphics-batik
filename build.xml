@@ -893,6 +893,7 @@ To display the available targets type:
                            org.xml.*,
                            org.w3c.css.*,
                            org.w3c.dom.*"
+             maxmemory="128m"
              sourcepath="${src}"
              destdir="${docs}/javadoc"
              author="false"

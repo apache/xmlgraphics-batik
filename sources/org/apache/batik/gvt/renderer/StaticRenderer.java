@@ -9,10 +9,10 @@
 package org.apache.batik.gvt.renderer;
 
 import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.filter.GraphicsNodeRable;
 
 import org.apache.batik.ext.awt.image.GraphicsUtil;
 import org.apache.batik.ext.awt.image.PadMode;
+import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.rendered.CachableRed;
 import org.apache.batik.ext.awt.image.rendered.PadRed;
 import org.apache.batik.ext.awt.image.rendered.TranslateRed;
@@ -58,7 +58,7 @@ public class StaticRenderer implements ImageRenderer {
      * Tree this Renderer paints.
      */
     protected GraphicsNode      rootGN;
-    protected GraphicsNodeRable rootGNR;
+    protected Filter            rootFilter;
     protected CachableRed       rootCR;
     protected SoftReference     lastCR;
     protected SoftReference     lastCache;
@@ -121,9 +121,9 @@ public class StaticRenderer implements ImageRenderer {
      * Disposes all resources of this renderer.
      */
     public void dispose() {
-        rootGN  = null;
-        rootGNR = null;
-        rootCR  = null;
+        rootGN     = null;
+        rootFilter = null;
+        rootCR     = null;
         
         workingOffScreen = null;
         workingBaseRaster = null;
@@ -143,8 +143,8 @@ public class StaticRenderer implements ImageRenderer {
      */
     public void setTree(GraphicsNode rootGN){
         this.rootGN = rootGN;
-        rootGNR = null;
-        rootCR  = null;
+        rootFilter  = null;
+        rootCR      = null;
 
         workingOffScreen = null;
         workingBaseRaster = null;
@@ -170,7 +170,7 @@ public class StaticRenderer implements ImageRenderer {
     public void setRenderingHints(RenderingHints rh) {
         renderingHints = new RenderingHints(rh);
 
-        rootGNR    = null;
+        rootFilter = null;
         rootCR     = null;
 
         workingOffScreen = null;
@@ -423,7 +423,7 @@ public class StaticRenderer implements ImageRenderer {
 
         RenderContext rc = new RenderContext(rcAT, null, renderingHints);
             
-        RenderedImage ri = rootGNR.createRendering(rc);
+        RenderedImage ri = rootFilter.createRendering(rc);
         if (ri == null)
             return null;
 
@@ -445,8 +445,8 @@ public class StaticRenderer implements ImageRenderer {
      * various set methods.  
      */
     protected void updateWorkingBuffers() {
-        if (rootGNR == null) {
-            rootGNR = rootGN.getGraphicsNodeRable();
+        if (rootFilter == null) {
+            rootFilter = rootGN.getGraphicsNodeRable();
             rootCR = null;
         }
 

@@ -102,6 +102,15 @@ public class RasterImageNode extends AbstractGraphicsNode {
     }
 
     /**
+     * Returns the RenderableImage for this node.  The returned
+     * RenderableImage this node before any of the filter operations
+     * have been applied.  
+     */
+    public Filter getGraphicsNodeRable() {
+        return image;
+    }
+
+    /**
      * Updates bith the user->image and image->user transform.
      */
     protected void updateAffine() {

@@ -19,6 +19,7 @@ import java.awt.image.renderable.RenderContext;
 import org.apache.batik.ext.awt.image.PadMode;
 import org.apache.batik.ext.awt.image.rendered.CachableRed;
 import org.apache.batik.ext.awt.image.rendered.AffineRed;
+import org.apache.batik.ext.awt.image.rendered.TranslateRed;
 import org.apache.batik.ext.awt.image.rendered.PadRed;
 
 /**
@@ -59,6 +60,8 @@ public class RedRable
 
 
     public RenderedImage createRendering(RenderContext rc) {
+        // System.out.println("RedRable Create Rendering: " + this);
+
         // Just copy over the rendering hints.
         RenderingHints rh = rc.getRenderingHints();
         if (rh == null) rh = new RenderingHints(null);
@@ -80,12 +83,26 @@ public class RedRable
 
         if (aoiR.intersects(cr.getBounds()) == false)
             return null;
-        aoiR = aoiR.intersection(cr.getBounds());
 
-        // Get the device bounds, we will crop the affine to those
-        // bounds.
-        Rectangle devAOI = at.createTransformedShape(aoiR).getBounds();
+        if (at.isIdentity()) {
+            // System.out.println("Using as is");
+            return cr;
+        }
 
+        if ((at.getScaleX() == 1.0) && (at.getScaleY() == 1.0) &&
+            (at.getShearX() == 0.0) && (at.getShearY() == 0.0)) {
+            int xloc = (int)(cr.getMinX()+at.getTranslateX());
+            int yloc = (int)(cr.getMinY()+at.getTranslateY());
+            double dx = xloc - (cr.getMinX()+at.getTranslateX());
+            double dy = yloc - (cr.getMinY()+at.getTranslateY());
+            if (((dx > -0.0001) && (dx < 0.0001)) &&
+                ((dy > -0.0001) && (dy < 0.0001))) {
+                // System.out.println("Using TranslateRed");
+                return new TranslateRed(cr, xloc, yloc);
+            }
+        }
+
+        // System.out.println("Using Full affine: " + at);
         return new AffineRed(cr, at, rh);
     }
 }

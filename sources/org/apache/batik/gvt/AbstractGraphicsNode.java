@@ -340,7 +340,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
      * The GraphicsNodeRable is the Renderable (Filter) before any
      * of the filter operations have been applied.
      */
-    public GraphicsNodeRable getGraphicsNodeRable() {
+    public Filter getGraphicsNodeRable() {
         GraphicsNodeRable ret = null;
         if (graphicsNodeRable != null) {
             ret = (GraphicsNodeRable)graphicsNodeRable.get();
