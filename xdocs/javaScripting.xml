@@ -22,13 +22,13 @@
   </header>
 
   <body>
-    <s1 title="How to manipulate a JSVGCanvas DOM">
+    <s1 title="How to manipulate a JSVGCanvas DOM document">
       <p>
       The follow code template demonstrates how to manipulate an SVG
       document displayed in a JSVGCanvas directly from a Java program.
       </p>
       <p>
-      Notices that you don't have to worry about the graphics updates:
+      Notice that you don't have to worry about the graphics updates:
       each event dispatch updates the canvas if needed.
       </p>
 <source>
@@ -124,7 +124,6 @@ public class SVGApplication {
             // Insert animation code here...
         }
     }
-
 }
 </source>
     </s1>
@@ -153,7 +152,7 @@ canvas.getUpdateManager().getUpdateRunnableQueue().
 </source>
     <p>
     Like with event listeners, when a Runnable is invoked from the update
-    thread the graphics are updated.
+    thread, the graphics are updated.
     </p>
     </s1>
   </body>
