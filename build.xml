@@ -53,8 +53,7 @@ To display the available targets type:
 
   <!-- Initializations .................................................... -->
   <target name="init-args" unless="args">
-    <property name="args"
-              value="resources/org/apache/batik/apps/svgviewer/resources/usage.svg"/>
+    <property name="args" value=""/>
   </target>
 
   <target name="init" depends="init-args">
@@ -116,21 +115,23 @@ To display the available targets type:
     <echo message=""/>
     <echo message=" Available targets are:"/>
     <echo message=""/>
-    <echo message="   dist-zip   --> build the zip distributions"/>
-    <echo message="   dist-tgz   --> build the tgz distributions"/>
-    <echo message="   compile    --> compiles the source code"/>
-    <echo message="   svgviewer  --> runs the SVG viewer"/>
-    <echo message="   regard     --> runs the regard regression utility"/>
-    <echo message="   javadoc    --> generates the API documentation"/>
-    <echo message="   site       --> generates the site documentation"/>
-    <echo message="   sitedoc    --> generates the site documentation without"/>
-    <echo message="                  the Javadoc"/>
-    <echo message="   html       --> generates the site documentation in ${build}/docs/"/>
-    <echo message="   htmldoc    --> generates the site documentation in ${build}/docs/"/>
-    <echo message="                  without the Javadoc"/>
-    <echo message="   printerdoc --> generates the printable documentation in"/>
-    <echo message="                  ${build}/docs/print"/>
-    <echo message="   clean      --> cleans up the directory"/>
+    <echo message="   dist-zip      --> build the zip distributions"/>
+    <echo message="   dist-tgz      --> build the tgz distributions"/>
+    <echo message="   compile       --> compiles the source code"/>
+    <echo message="   svgviewer     --> runs the SVG viewer"/>
+    <echo message="   svgrasterizer --> runs the SVG viewer"/>
+    <echo message="   regard        --> runs the regard regression utility"/>
+    <echo message="   javadoc       --> generates the API documentation"/>
+    <echo message="   site          --> generates the site documentation"/>
+    <echo message="   sitedoc       --> generates the site documentation without"/>
+    <echo message="                     the Javadoc"/>
+    <echo message="   html          --> generates the site documentation in"/>
+    <echo message="                     ${build}/docs/"/>
+    <echo message="   htmldoc       --> generates the site documentation in"/>
+    <echo message="                     ${build}/docs/ without the Javadoc"/>
+    <echo message="   printerdoc    --> generates the printable documentation in"/>
+    <echo message="                     ${build}/docs/print"/>
+    <echo message="   clean         --> cleans up the directory"/>
     <echo message=""/>
     <echo message=" See the comments in the build.xml file for more details."/>
     <echo message=""/>
@@ -515,6 +516,20 @@ To display the available targets type:
           description="Runs the SVG viewer">
     <java fork="yes"
           classname="${class-prefix}.apps.svgviewer.Main">
+      <classpath>
+        <pathelement location="${dest}" />
+        <path refid="libs-classpath"/>
+        <pathelement location="resources" />
+      </classpath>
+      <arg value="${args}"/>
+    </java>
+  </target>
+
+  <target name="svgrasterizer"
+          depends="compile"
+          description="Runs the SVG rasterizer">
+    <java fork="yes"
+          classname="${class-prefix}.apps.rasterizer.Main">
       <classpath>
         <pathelement location="${dest}" />
         <path refid="libs-classpath"/>
