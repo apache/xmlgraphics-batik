@@ -23,6 +23,9 @@ import java.io.Reader;
 import java.io.Writer;
 import java.security.Policy;
 
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -30,6 +33,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -111,6 +116,35 @@ public class Main implements Application {
         = "grant {\n  permission java.io.FilePermission \"<<ALL FILES>>\", \"read\";\n};\n\n";
 
     /**
+     * Entry for the list of recently visited URI
+     */
+    public static final String PREFERENCE_KEY_VISITED_URI_LIST
+        = "preference.key.visited.uri.list";
+
+    /**
+     * Entry for the maximum number of last visited URIs
+     */
+    public static final String PREFERENCE_KEY_VISITED_URI_LIST_LENGTH
+        = "preference.key.visited.uri.list.length";
+
+    /**
+     * List of separators between URI values in the preference
+     * file
+     */
+    public static final String URI_SEPARATOR = " ";
+
+    /**
+     * SVG initialization file, used to trigger loading of most of
+     * the Batik classes
+     */
+    public static final String SVG_INITIALIZATION = "resources/init.svg";
+
+    /**
+     * Stores the initialization file URI
+     */
+    protected String svgInitializationURI;
+
+    /**
      * Creates a viewer frame and shows it..
      * @param args The command-line arguments.
      */
@@ -160,6 +194,21 @@ public class Main implements Application {
      * The preference manager.
      */
     protected XMLPreferenceManager preferenceManager;
+
+    /**
+     * Maximum number of recently visited URIs
+     */
+    public static final int MAX_VISITED_URIS = 10;
+
+    /**
+     * The array of last visited URIs
+     */
+    protected Vector lastVisited = new Vector();
+
+    /**
+     * The actual allowed maximum number of last visited URIs
+     */
+    protected int maxVisitedURIs = MAX_VISITED_URIS;
 
     /**
      * The arguments.
@@ -244,6 +293,10 @@ public class Main implements Application {
                      new Integer(ResourceOrigin.DOCUMENT));
         defaults.put(PreferenceDialog.PREFERENCE_KEY_ALLOWED_EXTERNAL_RESOURCE_ORIGIN,
                      new Integer(ResourceOrigin.ANY));
+        defaults.put(PREFERENCE_KEY_VISITED_URI_LIST,
+                     "");
+        defaults.put(PREFERENCE_KEY_VISITED_URI_LIST_LENGTH,
+                     new Integer(MAX_VISITED_URIS));
 	
         securityEnforcer 
             = new ApplicationSecurityEnforcer(this.getClass(),
@@ -259,6 +312,7 @@ public class Main implements Application {
             preferenceManager.setPreferenceDirectory(f.getCanonicalPath());
             preferenceManager.load();
             setPreferences();
+            initializeLastVisited();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -303,9 +357,10 @@ public class Main implements Application {
                 run();
             }
         });
+
         c.setSize(100, 100);
-        c.loadSVGDocument(Main.class.getResource("resources/init.svg").toString());
-                                                           
+        svgInitializationURI = Main.class.getResource(SVG_INITIALIZATION).toString();
+        c.loadSVGDocument(svgInitializationURI);
     }
 
     /**
@@ -722,4 +777,83 @@ public class Main implements Application {
         return ret;
     }
 
+    /**
+     * Notifies Application of recently visited URI
+     */ 
+    public void addVisitedURI(String uri) {
+        if(svgInitializationURI.equals(uri)) {
+            return;
+        }
+        
+        int maxVisitedURIs = 
+            preferenceManager.getInteger
+            (PREFERENCE_KEY_VISITED_URI_LIST_LENGTH);
+        
+        if (maxVisitedURIs < 0) {
+            maxVisitedURIs = 0;
+        }
+
+        while (lastVisited.size() > maxVisitedURIs) {
+            lastVisited.removeElementAt(0);
+        } 
+
+        if (lastVisited.contains(uri)) {
+            lastVisited.removeElement(uri);
+        }
+
+        lastVisited.addElement(uri);
+
+        // Now, save the list of visited URL into the preferences
+        StringBuffer lastVisitedBuffer = new StringBuffer();
+
+        for (int i=0; i<lastVisited.size(); i++) {
+            lastVisitedBuffer.append(URLEncoder.encode(lastVisited.elementAt(i).toString()));
+            lastVisitedBuffer.append(URI_SEPARATOR);
+        }
+        
+        preferenceManager.setString
+            (PREFERENCE_KEY_VISITED_URI_LIST,
+             lastVisitedBuffer.toString());
+
+        try {
+            preferenceManager.save();
+        } catch (Exception e) {
+            // As in other places. But this is ugly...
+        }
+    }
+
+    /**
+     * Asks Application for a list of recently visited URI.
+     */
+    public String[] getVisitedURIs() {
+        String[] visitedURIs = new String[lastVisited.size()];
+        lastVisited.copyInto(visitedURIs);
+        return visitedURIs;
+    }
+
+    /**
+     * Initializes the lastVisited array
+     */
+    protected void initializeLastVisited(){
+        String lastVisitedStr 
+            = preferenceManager.getString(PREFERENCE_KEY_VISITED_URI_LIST);
+
+        StringTokenizer st 
+            = new StringTokenizer(lastVisitedStr,
+                                  URI_SEPARATOR);
+
+        int n = st.countTokens();
+
+        int maxVisitedURIs 
+            = preferenceManager.getInteger
+            (PREFERENCE_KEY_VISITED_URI_LIST_LENGTH);
+
+        if (n > maxVisitedURIs) {
+            n = maxVisitedURIs;
+        }
+
+        for (int i=0; i<n; i++) {
+            lastVisited.addElement(URLDecoder.decode(st.nextToken()));
+        }
+    }
 }

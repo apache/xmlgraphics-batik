@@ -97,4 +97,14 @@ public interface Application {
      */
     int getAllowedExternalResourceOrigin();
 
+    /**
+     * Notifies Application of recently visited URI
+     */
+    void addVisitedURI(String uri);
+
+    /**
+     * Asks Application for a list of recently visited URI
+     */
+    String[] getVisitedURIs();
+
 }

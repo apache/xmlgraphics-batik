@@ -519,6 +519,12 @@ public class JSVGViewerFrame
 
             localHistory = new LocalHistory(mb, svgCanvas);
 
+            String uri[] = application.getVisitedURIs();
+            for (int i=0; i<uri.length; i++) {
+                if (uri[i] != null && !"".equals(uri[i])) {
+                    localHistory.update(uri[i]);
+                }
+            }
             p = new JPanel(new BorderLayout());
 
             // Create the toolbar
@@ -1624,6 +1630,7 @@ public class JSVGViewerFrame
         }
 
         localHistory.update(s);
+        application.addVisitedURI(s);
         backAction.update();
         forwardAction.update();
 
@@ -1877,6 +1884,7 @@ public class JSVGViewerFrame
 
             if (s.indexOf("#") != -1) {
                 localHistory.update(s);
+                application.addVisitedURI(s);
                 backAction.update();
                 forwardAction.update();
 
