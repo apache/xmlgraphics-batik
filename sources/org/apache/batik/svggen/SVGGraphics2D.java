@@ -401,7 +401,7 @@ public class SVGGraphics2D extends AbstractGraphics2D
      */
     public Element getRoot(){
         Element svgRoot = domTreeManager.getRoot();
-        if(svgCanvasSize != null){
+        if (svgCanvasSize != null){
             svgRoot.setAttributeNS(null, SVG_WIDTH_ATTRIBUTE,
                                    "" + svgCanvasSize.width);
             svgRoot.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE,
@@ -662,7 +662,7 @@ public class SVGGraphics2D extends AbstractGraphics2D
 
         if (xform == null) {
             retVal = drawImage(img, 0, 0, null);
-        } else if(xform.getDeterminant() != 0){            
+        } else if(xform.getDeterminant() != 0){
             AffineTransform inverseTransform = null;
             try{
                 inverseTransform = xform.createInverse();
@@ -840,7 +840,7 @@ public class SVGGraphics2D extends AbstractGraphics2D
                              Integer.toString(img.getWidth()));
         image.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE,
                              Integer.toString(img.getHeight()));
-        
+
         if (xform == null) {
             domGroupManager.addElement(image);
         } else if(xform.getDeterminant() != 0){
