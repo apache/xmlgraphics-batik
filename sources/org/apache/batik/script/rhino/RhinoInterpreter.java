@@ -156,7 +156,6 @@ public class RhinoInterpreter implements Interpreter {
      */
     public Object evaluate(String scriptstr)
         throws InterpreterException {
-        System.out.println("evaluate "+scriptstr);
         Context ctx = Context.enter(context);
         Script script = null;
         Entry et = null;
@@ -199,8 +198,6 @@ public class RhinoInterpreter implements Interpreter {
         }
         Object rv = null;
         try {
-            System.out.println("ctx "+ctx);
-            System.out.println("global "+globalObject);
             rv = script.exec(ctx, globalObject);
         } catch (JavaScriptException e) {
             // exception from JavaScript (possibly wrapping a Java Ex)
@@ -217,7 +214,6 @@ public class RhinoInterpreter implements Interpreter {
                                          -1, -1);
         } catch (RuntimeException re) {
             // other RuntimeExceptions
-            re.printStackTrace();
             throw new InterpreterException(re, re.getMessage(), -1, -1);
         } finally {
             Context.exit();
