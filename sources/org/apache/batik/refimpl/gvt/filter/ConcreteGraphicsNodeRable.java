@@ -328,6 +328,7 @@ public class ConcreteGraphicsNodeRable implements GraphicsNodeRable{
         else{
             // There is a non-empty intersection. Render into
             // that image
+            System.out.println("rendered area: " + renderedArea);
             BufferedImage offScreen 
                 = new BufferedImage(renderedArea.width,
                                     renderedArea.height,
@@ -348,6 +349,9 @@ public class ConcreteGraphicsNodeRable implements GraphicsNodeRable{
             // Set transform
             g.transform(usr2dev);
 
+            // Clip 
+            g.clip(renderContext.getAreaOfInterest());
+
             // Invoke primitive paint.
             node.primitivePaint(g, 
                                 GraphicsNodeRenderContext.getGraphicsNodeRenderContext(renderContext));
@@ -367,6 +371,7 @@ public class ConcreteGraphicsNodeRable implements GraphicsNodeRable{
 
         }
 
+        System.out.println("ConcreteGraphicsNodeRable done");
         return renderedImage;
     }
 }

@@ -157,6 +157,11 @@ public class ConcreteFilterResRable extends AbstractRable
                 RenderContext localRenderContext = renderContext;
                 
                 if((scaleX < 1) || (scaleY < 1)){
+                    System.out.println("filterResolution X " + filterResolutionX + " Y : " + filterResolutionY);
+
+                    scaleX = scaleX < scaleY ? scaleX : scaleY;
+                    scaleY = scaleX;
+
                     //
                     // Create a rendering that will be less than
                     // or equal to filterResolutionX by filterResolutionY.
@@ -194,5 +199,4 @@ public class ConcreteFilterResRable extends AbstractRable
         return null;
     }
 }
-
 
