@@ -89,6 +89,11 @@ public interface UserAgent {
     public AffineTransform getTransform();
 
     /**
+     * Returns this user agent's CSS media.
+     */
+    public String getMedia();
+
+    /**
      * Returns the location on the screen of the
      * client area in the UserAgent.
      */

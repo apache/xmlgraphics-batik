@@ -57,6 +57,11 @@ public interface SVGUserAgent {
     String getXMLParserClassName();
 
     /**
+     * Returns this user agent's CSS media.
+     */
+    String getMedia();
+
+    /**
      * Opens a link in a new component.
      * @param uri The document URI.
      * @param newc Whether the link should be activated in a new component.

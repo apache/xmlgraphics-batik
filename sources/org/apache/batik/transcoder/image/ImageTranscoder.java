@@ -119,6 +119,8 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
                   SVGConstants.SVG_SVG_TAG);
         hints.put(KEY_DOM_IMPLEMENTATION,
                   ExtensibleSVGDOMImplementation.getDOMImplementation());
+        hints.put(KEY_MEDIA,
+                  "screen");
     }
 
     /**
@@ -389,6 +391,13 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
         }
 
         /**
+         * Returns this user agent's CSS media.
+         */
+        public String getMedia() {
+            return (String)hints.get(KEY_MEDIA);
+        }
+
+        /**
          * Unsupported operation.
          */
         public EventDispatcher getEventDispatcher() {
@@ -566,6 +575,30 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
      * </TABLE>
      */
     public static final TranscodingHints.Key KEY_LANGUAGE
+        = new StringKey();
+
+    /**
+     * The language key.
+     * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Key: </TH>
+     * <TD VALIGN="TOP">KEY_MEDIA</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Value: </TH>
+     * <TD VALIGN="TOP">String</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Default: </TH>
+     * <TD VALIGN="TOP">"screen"</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Required: </TH>
+     * <TD VALIGN="TOP">No</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Description: </TH>
+     * <TD VALIGN="TOP">Specify the media to use with CSS.
+     * </TD></TR>
+     * </TABLE>
+     */
+    public static final TranscodingHints.Key KEY_MEDIA
         = new StringKey();
 
     /**

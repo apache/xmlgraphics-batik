@@ -131,6 +131,7 @@ public class PrintTranscoder extends XMLAbstractTranscoder
     public static final String KEY_USER_STYLESHEET_URI_STR = "userStylesheet";
     public static final String KEY_WIDTH_STR = "width";
     public static final String KEY_XML_PARSER_CLASSNAME_STR = "xmlParserClassName";
+    public static final String VALUE_MEDIA_PRINT = "print";
     public static final String VALUE_PAGE_ORIENTATION_LANDSCAPE = "landscape";
     public static final String VALUE_PAGE_ORIENTATION_PORTRAIT  = "portrait";
     public static final String VALUE_PAGE_ORIENTATION_REVERSE_LANDSCAPE = "reverseLandscape";
@@ -196,6 +197,8 @@ public class PrintTranscoder extends XMLAbstractTranscoder
                   SVGConstants.SVG_SVG_TAG);
         hints.put(KEY_DOM_IMPLEMENTATION,
                   ExtensibleSVGDOMImplementation.getDOMImplementation());
+        hints.put(KEY_MEDIA,
+                  VALUE_MEDIA_PRINT);
     }
 
     public void transcode(TranscoderInput in,
@@ -623,6 +626,30 @@ public class PrintTranscoder extends XMLAbstractTranscoder
         = new StringKey();
 
     /**
+     * The CSS media.
+     * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Key: </TH>
+     * <TD VALIGN="TOP">KEY_MEDIA</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Value: </TH>
+     * <TD VALIGN="TOP">String</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Default: </TH>
+     * <TD VALIGN="TOP">"print"</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Required: </TH>
+     * <TD VALIGN="TOP">No</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Description: </TH>
+     * <TD VALIGN="TOP">Specify the media to use with CSS.
+     * </TD></TR>
+     * </TABLE>
+     */
+    public static final TranscodingHints.Key KEY_MEDIA
+        = new StringKey();
+
+    /**
      * The user stylesheet URI key.
      * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
      * <TR>
@@ -809,6 +836,13 @@ public class PrintTranscoder extends XMLAbstractTranscoder
             } else {
                 return XMLResourceDescriptor.getXMLParserClassName();
             }
+        }
+
+        /**
+         * Returns this user agent's CSS media.
+         */
+        public String getMedia() {
+            return (String)hints.get(KEY_MEDIA);
         }
 
         /**
